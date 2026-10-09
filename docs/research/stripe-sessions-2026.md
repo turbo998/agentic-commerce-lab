@@ -20,7 +20,7 @@ Stripe 的 Agentic Commerce 不是一个统一的“Agent 支付 API”，而是
 
 ## 2. Sessions 发布日与当前状态矩阵
 
-发布日列只依据当日官方公告；当前列依据研究日直接读取的产品文档。`preview`、`soon`、`now` 和“有文档”均不能统一改写成全球 GA。[S01][S02]
+发布日列只依据当日官方公告；当前列依据研究日直接读取的产品文档。`preview`、`soon`、`now` 和“有文档”均不能统一改写成全球 GA。[S01]、[S02]
 
 | 能力 | 2026-04-29 公告基线 | 2026-10-09 文档/资格证据 | 本轮未核实项 |
 |---|---|---|---|
@@ -28,9 +28,9 @@ Stripe 的 Agentic Commerce 不是一个统一的“Agent 支付 API”，而是
 | ACS for platforms / Connect | 公告为平台接入 preview | 文档要求美国业务、waitlist approval；连接账户分别上传目录、配置 hooks、选择渠道 [S04] | 非美国平台开放计划、合同与渠道商业费用 |
 | Google / UCP | 公告称买家“soon”可在 AI Mode/Gemini 购买 | 不能仅凭 UCP 文档存在认定该渠道对所有账户已上线 | 本轮没有逐账户验证渠道 enablement |
 | Link Agent Wallet | 公告发布 Agent 钱包，强调批准与购买可见性 | 支付面向美国/加拿大客户；financial insights 面向美国客户；运营企业和卖家可以在这些国家之外 [S05] | 个别用户/支付方式资格与商业收费 |
-| MPP + SPT | 公告称支持机器交易和通过 SPT/稳定币付款 | 文档给出 profile、402、PaymentIntent 处理及方法/地区门槛 [S08][S09] | 具体账户 enablement、实际退款/争议与端到端兼容 |
+| MPP + SPT | 公告称支持机器交易和通过 SPT/稳定币付款 | 文档给出 profile、402、PaymentIntent 处理及方法/地区门槛 [S08]、[S09] | 具体账户 enablement、实际退款/争议与端到端兼容 |
 | Issuing for agents | 公告为 preview | 当前文档描述自用企业卡与平台发行卡；通过 Dashboard apply 或联系 Stripe [S10] | 发卡项目、地区、卡产品、卡组织与合同资格 |
-| Metronome + Tempo | 公告宣布 streaming payments 组合 | 本轮核实公告；machine payments 文档另区分 sub-cent 计量与最小结算额 [S01][S02][S09] | 实际计量延迟、配置、渠道/链上最终性和商业条款 |
+| Metronome + Tempo | 公告宣布 streaming payments 组合 | 本轮核实公告；machine payments 文档另区分 sub-cent 计量与最小结算额 [S01]、[S02]、[S09] | 实际计量延迟、配置、渠道/链上最终性和商业条款 |
 | Radar token abuse | 官方新闻稿宣布覆盖 signup/usage 风险 | 本轮核实公告级能力，不声称取得风控 API 权限 [S02] | API/SDK、定价、数据要求、误拒绝率与账户 enablement |
 | Stripe Projects | 公告称向所有开发者开放，当日累计 32 providers | 当前文档称 60+ providers，并描述 provisioning、credential vault、环境和计费管理 [S11] | 某 provider 的实际供给/价格、企业政策和区域限制 |
 | Agent-ready Treasury / MCP | 公告称企业金融 Agent 及关键动作人工确认 | MCP 文档把 balance summary 标 public preview，convert/send/setup recipient/transfer 标 private preview [S12] | 账户及地区资格、每项金融写操作是否获准、合同与费用 |
@@ -41,7 +41,7 @@ Stripe 的 Agentic Commerce 不是一个统一的“Agent 支付 API”，而是
 
 ### 3.1 谁服务谁
 
-ACS 面向希望通过 AI 渠道销售商品的商户。平台版本让 SaaS/Connect 平台为 connected accounts 上传目录、配置 checkout hooks，让连接账户选择启用的渠道。[S03][S04]
+ACS 面向希望通过 AI 渠道销售商品的商户。平台版本让 SaaS/Connect 平台为 connected accounts 上传目录、配置 checkout hooks，让连接账户选择启用的渠道。[S03]、[S04]
 
 这条链路解决的是 **目录分发、交易信息回传、checkout 配置和商户运营**。它不能替消费者 Agent 判断是否具有用户的有效付款委托，也不能把自然语言“帮我买合适的东西”当成无限制 mandate。
 
@@ -199,7 +199,7 @@ Issuing 文档明确将 partial captures、over-captures、force captures 纳入
 
 ## 8. Metronome、Tempo 与 Radar：计量和风险同样需要原生设计
 
-Sessions 把 streaming payments 定位为应对 Agent 在机器速度下消耗 token 的方式：Metronome 负责精确 usage/rating，Tempo 提供稳定币微支付能力。[S01][S02]
+Sessions 把 streaming payments 定位为应对 Agent 在机器速度下消耗 token 的方式：Metronome 负责精确 usage/rating，Tempo 提供稳定币微支付能力。[S01]、[S02]
 
 对 AI 服务提供商而言，需要分别保存 usage event、rated charge、预留/可用信用、已付金额与最终结算；对消费这些服务的 Personal Agent，则需要任务预算、调用次数/时长上限和停止策略。不能把“模型愿意继续调用”当用户同意持续付费。
 
