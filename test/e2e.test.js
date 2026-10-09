@@ -268,7 +268,7 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
       body: "{}",
     });
 
-    test("task proposal/action boundary accepts injected mock planner but never model approval", async () => {
+    await test("task proposal/action boundary accepts injected mock planner but never model approval", async () => {
       const directory = mkdtempSync(join(tmpdir(), "commerce-planner-"));
       const statePath = join(directory, "state.json");
       let plannerCalls = 0;

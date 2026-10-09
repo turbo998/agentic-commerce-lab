@@ -34,6 +34,19 @@ npm start
 - [Copilot Studio connector 与本地旅程](docs/copilot-studio-connector.md)：typed API 契约、合成角色登录、独立人工批准、两条 walkthrough 和真实租户接入门槛。
 - [实现、状态机与运行手册](docs/architecture.md)：架构和模拟边界、故障场景、API 和测试说明。
 - [来源与发布资格](docs/sources.md)：一手来源、证据等级、许可证与清洁室决策。
+- [2026-10-09 每日研究基线](research/daily/2026-10-09.md)：Visa/Stripe 发布与当前状态、架构影响和六类 Agent 场景。
+- [机器可读来源登记](research/sources.json)：22 条一手来源，区分发布日期、复核日、规范/API 版本与固定代码 revision。
+- [架构与协议分层](docs/architecture-and-protocols.md)：TAP、ACP/UCP、AP2、SPT、VIC、MPP 的职责、信任边界和选型门槛。
+- [每日研究维护与校验](docs/daily-research.md)：增量研究、证据边界、来源引用校验与分支/PR 发布流程。
+
+研究记录校验工具需要 Python 3.11+ 标准库，无安装依赖或网络访问：
+
+```powershell
+python -m lab.check_research
+python -m unittest discover -s tests -v
+```
+
+既有每日 22:00 研究自动化保持不变，依赖 Copilot App、本机和网络；GitHub Actions 仅检查研究完整性与已有离线实验，不生成新闻，也不自动合并。研究文档由 AI 辅助撰写，生产可用性与合规判断需人工及供应商复核。
 
 ## 验收证据
 

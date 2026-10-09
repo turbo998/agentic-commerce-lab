@@ -1,0 +1,210 @@
+{
+  "reviewed_on": "2026-10-09",
+  "timezone": "Asia/Shanghai",
+  "method": "Primary pages read directly. Publication dates are separate from review dates. Null dates mean the publication date was not verified. Summaries are original, not archived copies.",
+  "sources": [
+    {
+      "id": "S01",
+      "publisher": "Visa",
+      "title": "Find and Buy with AI: Visa Unveils New Era of Commerce",
+      "url": "https://investor.visa.com/news/news-details/2025/Find-and-Buy-with-AI-Visa-Unveils-New-Era-of-Commerce/",
+      "published_on": "2025-04-30",
+      "kind": "announcement",
+      "observation": "Initial Intelligent Commerce announcement: agent-specific credentials, consumer limits, consented personalization and commerce signals. Announcement does not establish universal GA."
+    },
+    {
+      "id": "S02",
+      "publisher": "Visa",
+      "title": "Visa Intelligent Commerce developer overview",
+      "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Onboarding, token provisioning, passkey-authenticated payment instructions, credential retrieval, network merchant/amount controls and commerce signals."
+    },
+    {
+      "id": "S03",
+      "publisher": "Visa",
+      "title": "Visa Introduces Trusted Agent Protocol",
+      "url": "https://investor.visa.com/news/news-details/2025/Visa-Introduces-Trusted-Agent-Protocol-An-Ecosystem-Led-Framework-for-AI-Commerce/default.aspx",
+      "published_on": "2025-10-14",
+      "kind": "announcement",
+      "observation": "Developed with Cloudflare; published protocol complements ACP and seeks x402 interoperability. Partner feedback is not proof of deployed integrations."
+    },
+    {
+      "id": "S04",
+      "publisher": "Visa",
+      "title": "Trusted Agent Protocol overview",
+      "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Merchant- and purpose-specific time-bound signatures; distinguishes commerce agents from malicious bots."
+    },
+    {
+      "id": "S05",
+      "publisher": "Visa",
+      "title": "Trusted Agent Protocol reference repository",
+      "url": "https://github.com/visa/trusted-agent-protocol/tree/16d59bdf3f8a542bc538d0962edbb80ea30a02af",
+      "published_on": null,
+      "kind": "reference-code",
+      "revision": "16d59bdf3f8a542bc538d0962edbb80ea30a02af",
+      "observation": "README describes RFC 9421 signatures, registry, CDN verifier, merchant and agent components. Reviewed overview only; not executed or certified."
+    },
+    {
+      "id": "S06",
+      "publisher": "Visa",
+      "title": "Visa Opens the Door to AI-Driven Shopping for Businesses Worldwide",
+      "url": "https://usa.visa.com/about-visa/newsroom/press-releases.releaseId.22276.html",
+      "published_on": "2026-04-08",
+      "kind": "announcement",
+      "observation": "Intelligent Commerce Connect announced as a single integration via Visa Acceptance Platform with network/protocol/token-vault abstraction. Select-partner pilot at announcement; no verified universal GA."
+    },
+    {
+      "id": "S07",
+      "publisher": "Stripe",
+      "title": "Stripe powers Instant Checkout in ChatGPT and releases Agentic Commerce Protocol",
+      "url": "https://stripe.com/newsroom/news/stripe-openai-instant-checkout",
+      "published_on": "2025-09-29",
+      "kind": "announcement",
+      "observation": "ACP co-developed with OpenAI; merchant retains order acceptance, tax, fulfillment and returns. SPT scoped to merchant and basket total."
+    },
+    {
+      "id": "S08",
+      "publisher": "Stripe",
+      "title": "Stripe launches the Agentic Commerce Suite",
+      "url": "https://stripe.com/newsroom/news/agentic-commerce-suite",
+      "published_on": "2025-12-11",
+      "kind": "announcement",
+      "observation": "Low-code multi-agent selling integration; product suite is not the protocol specification."
+    },
+    {
+      "id": "S09",
+      "publisher": "Stripe",
+      "title": "Everything we announced at Sessions 2026",
+      "url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+      "published_on": "2026-04-29",
+      "kind": "announcement",
+      "observation": "Suite expansion, Link agent wallet, MPP and SPTs; platform support and several other capabilities explicitly previewed. Google distribution described as coming soon."
+    },
+    {
+      "id": "S10",
+      "publisher": "Stripe",
+      "title": "Agentic commerce",
+      "url": "https://docs.stripe.com/agentic-commerce",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Seller ACP/UCP and machine MPP/x402 routes; agent embedding explicitly private preview at review."
+    },
+    {
+      "id": "S11",
+      "publisher": "Stripe",
+      "title": "Shared payment tokens: Agents",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=agent",
+      "published_on": null,
+      "kind": "documentation",
+      "api_version": "2026-09-30.preview",
+      "observation": "Seller profile, currency, max amount, expiry, revocation and requires_action lifecycle. US, Canada and listed European countries; API examples use preview version. Network tokens may be provisioned through Visa Intelligent Commerce or Mastercard Agent Pay."
+    },
+    {
+      "id": "S12",
+      "publisher": "Stripe",
+      "title": "Link Agent Wallet",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Customer OAuth to Link API, separate from Stripe API keys; spend request requires customer approval. Agent payments for US/Canadian customers; financial insights for US customers."
+    },
+    {
+      "id": "S13",
+      "publisher": "Stripe",
+      "title": "Agents and AI on Stripe",
+      "url": "https://docs.stripe.com/agents",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Current entry point recommends agent plugins bundling MCP and skills; machine-readable docs and skills catalog."
+    },
+    {
+      "id": "S14",
+      "publisher": "Stripe",
+      "title": "Model Context Protocol",
+      "url": "https://docs.stripe.com/mcp",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "OAuth or agent API keys, environment-scoped sessions and tool approval. Documented future cutoff on 2026-10-31 for full-access secret keys and restricted keys without Agent tag."
+    },
+    {
+      "id": "S15",
+      "publisher": "OpenAI and Stripe",
+      "title": "Agentic Commerce Protocol repository",
+      "url": "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/tree/7fdd78df677a94dce04c770644b0fbbb1401272b",
+      "published_on": null,
+      "kind": "specification",
+      "revision": "7fdd78df677a94dce04c770644b0fbbb1401272b",
+      "spec_version": "2026-04-17",
+      "observation": "README marks protocol beta; dated snapshot 2026-04-17 and separate unreleased directory. Latest dated version observed, not a universal production support guarantee."
+    },
+    {
+      "id": "S16",
+      "publisher": "OpenAI and Stripe",
+      "title": "ACP 2026-04-17 changelog",
+      "url": "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/changelog/2026-04-17.md",
+      "published_on": "2026-04-17",
+      "kind": "specification",
+      "revision": "7fdd78df677a94dce04c770644b0fbbb1401272b",
+      "observation": "Discovery, carts, feed push to agents, delegated authentication and version mismatch guidance. Changelog contains historical unreleased path wording; implementation must consult dated schemas."
+    },
+    {
+      "id": "S17",
+      "publisher": "Stripe",
+      "title": "MPP integration",
+      "url": "https://docs.stripe.com/payments/machine/mpp",
+      "published_on": null,
+      "kind": "documentation",
+      "observation": "Stripe/Tempo MPP over HTTP 402; cards through SPTs and stablecoins. Card minimum USD 0.50, stablecoin minimum 0.01 USDC at review; account/geography requirements apply."
+    },
+    {
+      "id": "S18",
+      "publisher": "Universal Commerce Protocol",
+      "title": "UCP overview",
+      "url": "https://ucp.dev/",
+      "published_on": null,
+      "kind": "specification",
+      "observation": "Commerce capabilities and extension model; merchant retains merchant-of-record role. Homepage links latest and draft surfaces, which must not be conflated."
+    },
+    {
+      "id": "S19",
+      "publisher": "Google Agentic Commerce",
+      "title": "Agent Payments Protocol",
+      "url": "https://ap2-protocol.org/",
+      "published_on": null,
+      "kind": "specification",
+      "observation": "Current overview describes open/closed Checkout Mandates and Payment Mandates and cryptographically verifiable intent; not just tool access."
+    },
+    {
+      "id": "S20",
+      "publisher": "Machine Payments Protocol",
+      "title": "MPP overview and protocol index",
+      "url": "https://mpp.dev/",
+      "published_on": null,
+      "kind": "specification",
+      "observation": "Challenge, credential and receipt model for machine payments; links HTTP and MCP transports. x402 interoperability does not imply identical wire contracts."
+    },
+    {
+      "id": "S21",
+      "publisher": "IETF",
+      "title": "RFC 9421: HTTP Message Signatures",
+      "url": "https://www.rfc-editor.org/rfc/rfc9421.html",
+      "published_on": null,
+      "kind": "specification",
+      "observation": "HTTP component signing foundation. Signature verification alone is not user payment consent or guaranteed prevention of fraud."
+    },
+    {
+      "id": "S22",
+      "publisher": "AWS Labs",
+      "title": "AgentCore Shopping Concierge README",
+      "url": "https://github.com/awslabs/agentcore-samples/tree/main/05-blueprints/shopping-concierge-agent",
+      "published_on": null,
+      "kind": "reference-code",
+      "observation": "README-level review: AgentCore, Strands, MCP, Amplify/React, Cognito and memory; Visa tokenization behind feature flag. Explicitly not production ready. No code audit or deployment performed."
+    }
+  ]
+}

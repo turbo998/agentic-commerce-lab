@@ -1,0 +1,26 @@
+name: Validate offline research and lab
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test existing offline commerce lab
+        run: npm run check
+      - name: Test research integrity tooling
+        run: python -m unittest discover -s tests -v
+      - name: Validate source registry
+        run: python -m lab.check_research

@@ -259,7 +259,7 @@ test("Commerce API binds identity server-side and separates agent tools from hum
       },
     });
 
-    test("task budget caps cumulative capture and concurrent consent reservations", async () => {
+    await test("task budget caps cumulative capture and concurrent consent reservations", async () => {
       const directory = mkdtempSync(join(tmpdir(), "commerce-task-budget-"));
       const app = await start(join(directory, "state.json"));
       try {
