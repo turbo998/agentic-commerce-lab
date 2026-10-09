@@ -30,8 +30,13 @@ npm start
 ## 研究
 
 - [Agentic Commerce 研究报告（中文）](docs/research.md)：商业场景、价值链、AI 边界、协议地图、参考架构、Visa 生命周期和供应商状态区分。
+- [Stripe Sessions 2026 专题研究](docs/research/stripe-sessions-2026.md)：ACS/Connect、Link Agent Wallet、SPT、MPP/x402、Issuing、Metronome/Tempo/Radar、Projects/Treasury 的发布日与当前文档状态、费用/资格边界及官方来源。
 - [实现、状态机与运行手册](docs/architecture.md)：架构和模拟边界、故障场景、API 和测试说明。
 - [来源与发布资格](docs/sources.md)：一手来源、证据等级、许可证与清洁室决策。
+
+## 验收证据
+
+代码与离线 demo 的验证记录针对实现提交 [`56027ee`](https://github.com/turbo998/agentic-commerce-lab/commit/56027ee01138b6257a256121b59e8510fcb992a1)：`npm ci --ignore-scripts` 成功；`npm run check` 18/18 通过；`npm run test:e2e` 2/2 通过；`npm audit --omit=dev` 为 0 vulnerabilities。浏览器走查覆盖任务建议与授权、402 资源挑战/授权/重试交付、履约失败在重载后恢复并进行补偿退款。Stripe 专题仅为公开文档研究；未执行 sandbox、live provider、真实支付、云部署或计费模型调用。纯文档整合未重跑代码测试。
 
 ## 现状与非目标
 

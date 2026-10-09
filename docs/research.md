@@ -84,6 +84,8 @@ Stripe 在 **2026-04-29 Sessions 发布日**的[公告汇总](https://stripe.com
 
 截至研究日的 [Stripe Agentic Commerce 文档](https://docs.stripe.com/agentic-commerce) 将能力区分为卖家、Agent、嵌入商品/跳转卖家/Agent 钱包等集成路径，并列出商品目录、结账、共享支付 token 与 MPP/x402 等组合。该文档明确写明 Agents 相关能力为 **Private preview**；可用性和申请资格应以当时账户/产品文档为准。产品名相似并不意味各路径共用同一凭证、协议或结算方式。
 
+关于 ACS/Connect、Link Agent Wallet、SPT、MPP/x402、Issuing、Metronome/Tempo/Radar、Projects 与 Treasury 的逐项发布日/当前状态、地区与资格、费用未知项及官方来源，请参阅[Stripe Sessions 2026 专题研究](research/stripe-sessions-2026.md)。专题特别区分 `--no-request-approval` 的“暂不发起批准请求”语义与付款批准、当前平台 Issuing consumer-card 路线与个人 Link Wallet，并记录 Stripe MCP 所述 2026-10-31 Agent key 认证迁移；这些专题内容是 2026-10-09 的公开文档研究快照，不代表 sandbox 或 live 验证。
+
 ### Visa：VIC 生命周期与 TAP 的角色不同
 
 Visa 官方 [VIC overview](https://developer.visa.com/capabilities/visa-intelligent-commerce/overview) 描述以下生命周期：代理接入 Visa Intelligent Commerce；用户配置代理专属 token，可添加 Visa 卡并进行 step-up 验证和 passkey 设置；代理提议采购后管理用户同意；代理用 passkey 认证 payment instruction；VIC 校验凭证请求是否匹配该 authenticated instruction 并设网络控制；代理起初通过 guest checkout/form fill 在商户付款；VisaNet 对指定商户和金额实施控制；代理回传购买结果信号，以帮助处理争议。该 overview 不足以推断 API 地域、费率、资格或上线范围。
