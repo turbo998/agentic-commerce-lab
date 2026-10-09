@@ -66,7 +66,7 @@ def validate(root: Path = ROOT) -> list[str]:
     for note in [*notes, *(root / "docs").glob("*.md")]:
         content = note.read_text(encoding="utf-8")
         references = set(re.findall(r"\bS\d{2,}\b", content))
-        for start, end in re.findall(r"\bS(\d{2,})[–-]S(\d{2,})\b", content):
+        for start, end in re.findall(r"\bS(\d{2,})[\u2013-]S(\d{2,})\b", content):
             if int(end) < int(start):
                 errors.append(f"{note.name}: reversed source range S{start}-S{end}")
             else:
