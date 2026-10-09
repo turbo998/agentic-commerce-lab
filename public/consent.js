@@ -42,6 +42,7 @@ async function loadConsentRequest(id) {
       <strong>任务：</strong>${item.taskId}<br>
       <strong>报价版本：</strong>${item.quoteVersion}<br>
       <strong>任务限额：</strong>${money(item.budgetLimit.amountMinor, item.budgetLimit.currency)} ${item.budgetLimit.currency}<br>
+      ${item.budgetPolicySource === "legacy-migration-not-user-policy" ? "<strong>迁移说明：</strong>此额度由旧版本记录兼容迁移，不代表原用户曾填写结构化限额；新旅程请创建新任务。<br>" : ""}
       <strong>到期：</strong>${new Date(item.expiresAt).toLocaleString()}<br>
       <strong>权限：</strong>仅本 task/merchant/items/amount/currency/quote 版本，不增加预算，不授权其他订单。</p></div>
     </article>`;

@@ -88,6 +88,59 @@ async function createQuoteRequest(app, { journey, quoteId, goal, principal = "al
   return { task, request: request.body.result, challenge: challenge?.body.challenge };
 }
 
+test("legacy state upgrades retain compensated payments and populate consent budget fields without reset", async () => {
+  const directory = mkdtempSync(join(tmpdir(), "commerce-upgrade-"));
+  const statePath = join(directory, "state.json");
+  let app = await start(statePath);
+  try {
+    const { task, request } = await createQuoteRequest(app, {
+      journey: "weekend", quoteId: "weekend-camera", goal: "upgrade fixture",
+    });
+    const approved = await app.call(`/api/commerce/v1/consent-requests/${request.id}/approve`, {
+      method: "POST", body: {}, role: "human",
+    });
+    const captured = await app.call(`/api/commerce/v1/consents/${approved.body.result.consent.id}/execute`, {
+      method: "POST", body: {},
+    });
+    const paymentId = captured.body.result.payment.id;
+    await app.call("/api/payments/fulfillment/fail", {
+      method: "POST", role: "human", body: { paymentId, reason: "simulated_failure" },
+    });
+    const compensated = await app.call("/api/payments/fulfillment/resolve", {
+      method: "POST", role: "human", body: { paymentId, action: "refund" },
+    });
+    assert.equal(compensated.status, 200);
+    const before = (await app.call("/api/state")).body;
+    await app.close();
+    app = null;
+    const legacy = JSON.parse(readFileSync(statePath, "utf8"));
+    delete legacy.tasks[task.id].budgetLimit;
+    delete legacy.consentRequests[request.id].budgetLimit;
+    for (const section of ["tasks", "consents", "consentRequests", "payments"]) {
+      for (const record of Object.values(legacy[section])) {
+        record.ownerId = "user-demo";
+        delete record.tenantId;
+      }
+    }
+    writeFileSync(statePath, JSON.stringify(legacy));
+    app = await start(statePath);
+    const after = (await app.call("/api/state")).body;
+    assert.deepEqual(after.balances, before.balances);
+    assert.deepEqual(after.events, before.events);
+    assert.equal(after.payments[0].id, paymentId);
+    assert.equal(after.payments[0].fulfillmentStatus, "compensated");
+    assert.equal(after.payments[0].refundedMinor, 5999);
+    assert.ok(after.consentRequests[0].budgetLimit.amountMinor > 0);
+    assert.equal(after.consentRequests[0].budgetPolicySource, "legacy-migration-not-user-policy");
+    assert.equal(after.tasks[0].budgetPolicySource, "legacy-migration-not-user-policy");
+    assert.equal((await app.call("/api/reset", { method: "POST", role: "human", body: {} })).status, 200);
+    assert.equal((await app.call("/api/state")).body.payments.length, 0);
+  } finally {
+    if (app) await app.close();
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("expired requests persist their terminal status once across refresh and restart", async () => {
   const directory = mkdtempSync(join(tmpdir(), "commerce-expiry-"));
   const statePath = join(directory, "state.json");

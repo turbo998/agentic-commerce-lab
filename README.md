@@ -37,7 +37,7 @@ npm start
 
 ## 验收证据
 
-本工作树最新实现运行 `npm run check` 23/23 通过，包含 23 个固定混合 Agent 向量（正常建议完成率 100%、正确拒绝率 100%、误拒绝 0、重复副作用 0、恢复完整性通过、未授权付款 0）；`npm run test:e2e` 2/2 通过；`npm audit --omit=dev` 为 0 vulnerabilities。独立 loopback 浏览器走查实际完成结构化 USDC task limit、typed HTTP 402 challenge、challenge-bound 人工批准、retry、模拟 receipt/resource delivery，并确认审批页从 pending 更新为 completed。自动验收还覆盖并发额度争用、10 次相同请求/事件/履约/退款重放、30 次对账、服务重启恢复、跨 owner/tenant 拒绝和履约补偿处理。Stripe 专题仅为公开文档研究；未执行 sandbox、live provider、真实支付、云部署或计费模型调用。
+本工作树最新实现运行 `npm run check` 24/24 通过，包含 23 个固定混合 Agent 向量（正常建议完成率 100%、正确拒绝率 100%、误拒绝 0、重复副作用 0、恢复完整性通过、未授权付款 0）；`npm run test:e2e` 2/2 通过；`npm audit --omit=dev` 为 0 vulnerabilities。独立 loopback 浏览器走查实际完成结构化 USDC task limit、typed HTTP 402 challenge、challenge-bound 人工批准、retry、模拟 receipt/resource delivery，并确认审批页从 pending 更新为 completed。自动验收还覆盖并发额度争用、10 次相同请求/事件/履约/退款重放、30 次对账、服务重启恢复、旧版本持久状态升级保留补偿付款、跨 owner/tenant 拒绝和履约补偿处理。Stripe 专题仅为公开文档研究；未执行 sandbox、live provider、真实支付、云部署或计费模型调用。
 
 ## 现状与非目标
 

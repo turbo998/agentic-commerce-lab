@@ -52,11 +52,13 @@ function readState(path) {
       ...Object.values(loaded.tasks).map((task) => task.id),
       ...Object.values(loaded.payments).map((payment) => payment.taskId),
       ...Object.values(loaded.consents).map((consent) => consent.taskId),
+      ...Object.values(loaded.consentRequests).map((request) => request.taskId),
     ].filter(Boolean));
     for (const taskId of taskIds) {
       const associated = [
         ...Object.values(loaded.payments).filter((payment) => payment.taskId === taskId),
         ...Object.values(loaded.consents).filter((consent) => consent.taskId === taskId),
+        ...Object.values(loaded.consentRequests).filter((request) => request.taskId === taskId),
       ];
       const ownerId = associated[0]?.ownerId ?? "alex";
       const tenantId = associated[0]?.tenantId ?? "tenant-demo";
@@ -80,10 +82,20 @@ function readState(path) {
           currency: quoteCurrency,
           amountMinor: Math.max(committedMinor, CATALOG[associated[0]?.quoteId]?.amountMinor ?? 1),
         };
+        record.budgetPolicySource = "legacy-migration-not-user-policy";
       }
       record.ownerId = record.ownerId === "user-demo" ? "alex" : record.ownerId;
       record.tenantId ??= tenantId;
       loaded.tasks[taskId] = record;
+    }
+    for (const request of Object.values(loaded.consentRequests)) {
+      if (!request.budgetLimit) {
+        const task = loaded.tasks[request.taskId];
+        if (!task) throw new Error("Legacy consent request is missing its task.");
+        task.budgetPolicySource ??= "legacy-migration-not-user-policy";
+        request.budgetLimit = structuredClone(task.budgetLimit);
+        request.budgetPolicySource = "legacy-migration-not-user-policy";
+      }
     }
     return loaded;
   } catch (error) {

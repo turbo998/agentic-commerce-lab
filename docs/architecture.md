@@ -54,6 +54,8 @@ stateDiagram-v2
 
 兼容 `/api/consents` 只创建 pending 人工批准请求，并不签发可执行 consent；用该 request ID 调用 `/api/payments` 会被拒绝且不产生副作用。所有网络事件模拟入口也检查 payment 的 owner/tenant。过期 pending 请求在下一次所属身份访问时持久化为 expired，重复访问及服务重启不追加重复过期事件。旧 `/api/resources/*` 的无绑定 402 仅为 compatibility challenge 展示，不代表完成付费旅程；新 UI 使用 typed facade 的 task-bound challenge。
 
+旧版本持久状态升级会填补 tenant、task 和旧审批卡缺失的 budgetLimit，保留原付款、收据、退款余额及履约补偿状态，不需要 reset。迁移额度显式标为 `legacy-migration-not-user-policy`，不是原用户曾设置的结构化授权；要体验新的限额政策，应创建新任务。HTTP 升级回归固定断言 compensated 付款、5999 最小单位退款、余额和事件完整保留，并验证旧记录仍可由所属 synthetic human 清理。
+
 ## 快速运行
 
 ```sh

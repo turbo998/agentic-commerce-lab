@@ -76,7 +76,7 @@ async function refresh() {
   ).join("");
   document.querySelector("#task-budgets").innerHTML = state.tasks.slice().reverse().map((task) =>
     `<article class="payment"><div><h3>绑定任务额度 ${escapeHtml(task.id)}</h3>
-    <p>${escapeHtml(task.budgetLimit.currency)} · 上限 ${money(task.budgetLimit.amountMinor, task.budgetLimit.currency)}
+    <p>${task.budgetPolicySource === "legacy-migration-not-user-policy" ? "旧版本迁移额度（非原用户结构化授权） · " : ""}${escapeHtml(task.budgetLimit.currency)} · 上限 ${money(task.budgetLimit.amountMinor, task.budgetLimit.currency)}
     · 已支出 ${money(task.budgetUsage.spentMinor, task.budgetLimit.currency)}
     · 有效预留 ${money(task.budgetUsage.reservedMinor, task.budgetLimit.currency)}
     · 剩余 ${money(task.budgetUsage.remainingMinor, task.budgetLimit.currency)}</p></div></article>`,
