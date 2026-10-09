@@ -1,30 +1,36 @@
 # Agentic Commerce Lab
 
-面向 Personal Agent 的 Agentic Commerce 研究与可运行模拟实验：聚焦商业场景、AI 职责、授权与支付原生架构。
+面向 Personal Agent 的 Agentic Commerce 研究与离线模拟实验室。项目聚焦商业价值链、AI 职责边界、用户授权与支付原生架构，研究 Stripe Agentic Commerce / Sessions 2026、Visa Intelligent Commerce / Trusted Agent Protocol，以及公开的 AWS Shopping Concierge 示例。
 
-本仓库将研究 Stripe Sessions 2026、Visa Intelligent Commerce / Trusted Agent Protocol 与公开的 AWS Shopping Concierge 示例，并记录来源、发布日期、适用范围和证据等级。研究内容会区分产品公告、当前文档、协议规范、代码观察和本地模拟，不把演示结果描述为供应商认证或真实支付结算。
+> **安全边界：** Demo 仅处理合成数据，在本地模拟授权、扣款、退款和对账；不调用支付网络、不连接账户、不持有支付凭证、不启动云资源。可选 LLM 尚未接入。请勿输入真实卡号、凭证或个人财务数据。
 
-## 目标
+## 快速开始
 
-- 研究 Agent 参与发现、比较、委托、批准、支付、履约和售后的商业价值链。
-- 设计把用户同意、交易约束、支付凭证隔离、持久状态和恢复流程放在确定性权限层中的 Personal Agent 架构。
-- 提供无需支付账户、真实资金或云资源即可运行的合成购物与支付模拟。
-- 将可选模型推理与支付执行隔离；模型只能提出建议和动作请求，不能批准或扩大权限。
+需要 Node.js 22 或更高版本。无第三方运行依赖。
 
-默认实验是离线模拟。真实商户支付、账户连接、付费模型调用及云部署均不属于默认能力。请勿输入真实卡号、账户凭证或个人财务数据。
+```sh
+npm ci
+npm run check
+npm run test:e2e
+npm start
+```
 
-## 研究边界
+打开 <http://127.0.0.1:4173>。页面带有醒目的 `SIMULATED / OFFLINE` 标记。运行状态写入 `data/state.json`，该文件已排除在版本控制之外；点击重置可恢复合成初始余额。
 
-本仓库只发布原创说明、合成数据和经许可审核的代码；不托管内部材料、客户信息、支付秘密或第三方资料副本。各能力的集成与验证状态会明确标记。
+## Demo 能力
 
-## 状态
+- 周末多商户购物、旅行预订和按次付费信息服务的合成目录。
+- 用户明确确认后，创建绑定用户、任务、商户、商品明细、精确金额/币种、报价版本和有效期的授权指令。
+- 先创建待执行授权，再次明确批准执行；授权可在执行前撤销。确定性权限层验证授权与余额，模型/代理建议不会创建授权，也无法扩大预算或批准付款。
+- USD、HKD、USDC 分开记账，不隐式换汇；单调状态机、幂等键、未知结果对账、重启恢复与累计退款上限。
+- 模拟收据、商户履约状态、退款、离线事件记录和 20 个未授权工具调用的回归评估。
 
-研究和模拟 demo 正在建设中。尚未验证的功能会明确标注，不能据此推断生产可用性。
+## 研究
 
-## 公开参考
+- [Agentic Commerce 研究报告（中文）](docs/research.md)：商业场景、价值链、AI 边界、协议地图、参考架构、Visa 生命周期和供应商状态区分。
+- [实现、状态机与运行手册](docs/architecture.md)：架构和模拟边界、故障场景、API 和测试说明。
+- [来源与发布资格](docs/sources.md)：一手来源、证据等级、许可证与清洁室决策。
 
-- [Stripe: Sessions 2026 announcements](https://stripe.com/blog/everything-we-announced-at-sessions-2026)
-- [Stripe: Agentic commerce](https://docs.stripe.com/agentic-commerce)
-- [Visa: Intelligent Commerce](https://www.visa.com/en-us/solutions/intelligent-commerce)
-- [Visa: Trusted Agent Protocol overview](https://developer.visa.com/capabilities/trusted-agent-protocol/overview)
-- [AWS AgentCore Shopping Concierge sample](https://github.com/awslabs/agentcore-samples/tree/main/05-blueprints/shopping-concierge-agent)
+## 现状与非目标
+
+这是研究原型，不是可部署的支付产品，不表示 Stripe、Visa、AWS 或任何协议组织认证或背书。本地模拟不验证供应商集成，也不代表真实授权、清算或结算。Demo 没有生产鉴权、并发数据库或多租户部署设计。任何未来真实支付适配器都必须另行进行安全、合规和供应商环境验证，不能绕过确定性权限层。

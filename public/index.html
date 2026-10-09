@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#122238">
+    <title>Agentic Commerce Lab · 离线模拟</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">Commerce <span>Lab</span></a>
+      <span class="offline-badge">SIMULATED · OFFLINE</span>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">PERSONAL AGENT · AUTHORIZATION FIRST</div>
+        <h1>让代理提议，<em>让人授权</em></h1>
+        <p>探索购物、旅行与按次付费信息服务。每笔模拟交易都受独立、确定性的用户授权与币种预算约束。</p>
+        <div class="hero-actions">
+          <button id="reset" class="button secondary">重置本地模拟</button>
+          <a href="/docs" id="research-link" hidden>研究资料</a>
+        </div>
+      </section>
+
+      <section class="balances panel" aria-labelledby="balance-title">
+        <div class="section-heading">
+          <div><span class="eyebrow">USER-CONTROLLED SPEND</span><h2 id="balance-title">独立预算</h2></div>
+          <span class="subtle">不进行币种换算</span>
+        </div>
+        <div id="balances" class="balance-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="section-heading catalog-heading">
+        <div><span class="eyebrow">SYNTHETIC MERCHANTS</span><h2>选择一项提议</h2></div>
+        <p class="subtle">代理只能请求报价；点击“审核并授权”后才会产生有界授权。</p>
+      </section>
+      <div class="journey-tabs" role="tablist" aria-label="购物旅程">
+        <button class="tab active" data-journey="weekend" role="tab" aria-selected="true">周末购物</button>
+        <button class="tab" data-journey="travel" role="tab" aria-selected="false">旅行与付费信息</button>
+      </div>
+      <section id="catalog" class="catalog-grid" aria-live="polite"></section>
+
+      <section class="panel activity">
+        <div class="section-heading">
+          <div><span class="eyebrow">EXPLICIT HUMAN APPROVAL</span><h2>待执行授权</h2></div>
+          <span class="subtle">可在执行前撤销</span>
+        </div>
+        <div id="consents" class="payment-list"></div>
+      </section>
+
+      <section class="panel activity">
+        <div class="section-heading">
+          <div><span class="eyebrow">AUDITABLE SIMULATION</span><h2>授权与交易</h2></div>
+          <span id="event-count" class="subtle"></span>
+        </div>
+        <div id="payments" class="payment-list"></div>
+      </section>
+      <p id="notice" class="notice" role="status" aria-live="polite"></p>
+      <footer>原创教学模拟 · 无支付网络调用 · 不代表供应商认证、真实授权或结算</footer>
+    </main>
+  </body>
+</html>
