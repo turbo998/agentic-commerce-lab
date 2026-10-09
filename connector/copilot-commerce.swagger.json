@@ -1,0 +1,240 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Copilot Commerce Guardian (local contract)",
+    "description": "Local synthetic contract for the consent-bound Commerce API. The bearer token is issued by the loopback-only demo session endpoint and is not Microsoft Entra authentication. This file is an import scaffold, not a published or tenant-validated connector.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:4173",
+  "basePath": "/api/commerce/v1",
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "LocalDemoBearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "For local contract tests only. Enter the full value `Bearer <agentToken>` returned from POST /api/demo/session. Replace with approved Entra OAuth configuration before any tenant use."
+    }
+  },
+  "security": [{ "LocalDemoBearer": [] }],
+  "paths": {
+    "/catalog": {
+      "get": {
+        "operationId": "Commerce_ListSyntheticOffers",
+        "summary": "List synthetic catalog offers",
+        "description": "Returns fixed local offers and currencies. It does not search live merchants or reserve inventory.",
+        "parameters": [{
+          "name": "journey",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "enum": ["weekend", "travel"]
+        }],
+        "responses": {
+          "200": { "description": "Synthetic offers and supported simulation currencies" },
+          "401": { "description": "Missing or invalid local demo session" }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/tasks": {
+      "post": {
+        "operationId": "Commerce_CreateTask",
+        "summary": "Create an offline commerce task",
+        "description": "The server binds subject and tenant from the authenticated context. The planner is a deterministic script, not model inference.",
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": { "$ref": "#/definitions/CreateTask" }
+        }],
+        "responses": {
+          "201": { "description": "Task with structured quote suggestions" },
+          "400": { "description": "Invalid task or planner output" },
+          "401": { "description": "Missing or invalid local demo session" }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/tasks/{taskId}": {
+      "get": {
+        "operationId": "Commerce_GetTask",
+        "summary": "Get an owned task",
+        "parameters": [{
+          "name": "taskId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": { "description": "Owned task and quote suggestions" },
+          "404": { "description": "Task is not visible to this principal" }
+        }
+      }
+    },
+    "/tasks/{taskId}/actions": {
+      "post": {
+        "operationId": "Commerce_RequestQuote",
+        "summary": "Request a suggested quote",
+        "description": "Only request_quote actions already present in this task's structured suggestions are accepted. Approval, payment, budget changes, credential access and arbitrary URLs are not available operations.",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": { "$ref": "#/definitions/RequestQuote" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Quote request result" },
+          "400": { "description": "Action is outside task or authority scope" },
+          "404": { "description": "Task is not visible to this principal" }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/consent-requests": {
+      "post": {
+        "operationId": "Commerce_RequestHumanApproval",
+        "summary": "Request human approval for an exact offer",
+        "description": "Creates a pending request; it does not create an executable consent or charge. A separate human-only local approval page decides.",
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": { "$ref": "#/definitions/ConsentRequest" }
+        }],
+        "responses": {
+          "201": { "description": "Pending, quote-bound human approval request" },
+          "400": { "description": "Offer is not in the task proposal" },
+          "404": { "description": "Task is not visible to this principal" }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/resources/travel-guide": {
+      "post": {
+        "operationId": "Commerce_RequestPaidResourceChallenge",
+        "summary": "Request a task-bound 402 resource challenge",
+        "description": "For a task that already proposes the synthetic travel guide, returns an HTTP 402-shaped challenge bound to that task and exact resource quote. The agent can then request human approval with the returned challengeId; it cannot retry the resource itself.",
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": { "$ref": "#/definitions/ResourceChallenge" }
+        }],
+        "responses": {
+          "402": { "description": "Task-bound simulated payment challenge" },
+          "400": { "description": "Task is not eligible for this resource or task limit is insufficient" },
+          "401": { "description": "Missing or invalid local demo session" }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "Commerce_GetMyCommerceStatus",
+        "summary": "Get this principal's commerce status",
+        "description": "Returns only the caller's tenant/subject records and that tenant's separate synthetic currency budgets.",
+        "responses": {
+          "200": { "description": "Owned tasks, consent requests, payments, receipts and refund requests" },
+          "401": { "description": "Missing or invalid local demo session" }
+        }
+      }
+    },
+    "/refund-requests": {
+      "post": {
+        "operationId": "Commerce_RequestEligibleRefund",
+        "summary": "Request a bounded refund",
+        "description": "Creates a pending human review request against an owned captured payment. The tool cannot approve or execute a refund.",
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": { "$ref": "#/definitions/RefundRequest" }
+        }],
+        "responses": {
+          "201": { "description": "Pending refund review" },
+          "400": { "description": "Payment or amount is not eligible" },
+          "404": { "description": "Payment is not visible to this principal" }
+        },
+        "x-ms-visibility": "advanced"
+      }
+    }
+  },
+  "definitions": {
+    "CreateTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["journey", "goal", "budgetLimit"],
+      "properties": {
+        "journey": { "type": "string", "enum": ["weekend", "travel"] },
+        "goal": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "quoteId": { "type": "string" },
+        "budgetLimit": { "$ref": "#/definitions/BudgetLimit" }
+      }
+    },
+    "BudgetLimit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "amountMinor"],
+      "properties": {
+        "currency": { "type": "string", "enum": ["USD", "HKD", "USDC"] },
+        "amountMinor": { "type": "integer", "minimum": 1, "description": "Positive integer in the currency's minor units; USDC uses 6 decimals." }
+      }
+    },
+    "RequestQuote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "idempotencyKey"],
+      "properties": {
+        "action": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "quoteId"],
+          "properties": {
+            "type": { "type": "string", "enum": ["request_quote"] },
+            "quoteId": { "type": "string" }
+          }
+        },
+        "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    },
+    "ConsentRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId", "quoteId"],
+      "properties": {
+        "taskId": { "type": "string" },
+        "quoteId": { "type": "string" },
+        "challengeId": { "type": "string" }
+      }
+    },
+    "ResourceChallenge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId"],
+      "properties": {
+        "taskId": { "type": "string" }
+      }
+    },
+    "RefundRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["paymentId", "amountMinor", "idempotencyKey"],
+      "properties": {
+        "paymentId": { "type": "string" },
+        "amountMinor": { "type": "integer", "minimum": 1 },
+        "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    }
+  }
+}

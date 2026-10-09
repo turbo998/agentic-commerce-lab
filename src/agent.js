@@ -1,13 +1,14 @@
 import { randomUUID } from "node:crypto";
-import { CATALOG } from "./catalog.js";
+import { CATALOG, CURRENCIES } from "./catalog.js";
 import { AuthorityError } from "./authority.js";
 
 export const offlinePlanner = Object.freeze({
   kind: "scripted-offline",
-  async propose({ journey, goal, quoteId }) {
+  async propose({ journey, goal, quoteId, budgetLimit }) {
     const refusal = /\b(no|don't|do not|cancel|stop)\b|不买|取消|停止/i.test(goal);
     if (refusal) return { summary: "已记录不购买/取消意图，不创建付款操作。", suggestions: [] };
-    const quotes = Object.values(CATALOG).filter((quote) => quote.journey === journey);
+    const quotes = Object.values(CATALOG).filter((quote) =>
+      quote.journey === journey && quote.currency === budgetLimit.currency);
     const selected = quoteId ? quotes.filter((quote) => quote.id === quoteId) : quotes.slice(0, 3);
     return {
       summary: `离线脚本为“${goal}”列出 ${selected.length} 个合成报价；这不是 LLM 推理。`,
@@ -31,7 +32,7 @@ export function plannerContract(planner) {
   return planner;
 }
 
-function validatePlan(plan, journey) {
+function validatePlan(plan, journey, budgetLimit) {
   if (!plan || typeof plan.summary !== "string" || !Array.isArray(plan.suggestions) || plan.suggestions.length > 3) {
     throw new AuthorityError("PLANNER_OUTPUT_INVALID", "Planner 输出不符合结构化建议格式。");
   }
@@ -42,6 +43,7 @@ function validatePlan(plan, journey) {
       suggestion.action !== "request_quote" ||
       !quote ||
       quote.journey !== journey ||
+      quote.currency !== budgetLimit.currency ||
       suggestion.merchantId !== quote.merchantId ||
       suggestion.amountMinor !== quote.amountMinor ||
       suggestion.currency !== quote.currency ||
@@ -69,21 +71,35 @@ export async function proposeTask(input, planner = offlinePlanner) {
   if (typeof input.goal !== "string" || !input.goal.trim() || input.goal.length > 300) {
     throw new AuthorityError("INVALID_TASK", "任务目标必须是 1 至 300 个字符。");
   }
+  if (
+    !input.budgetLimit ||
+    !Object.hasOwn(CURRENCIES, input.budgetLimit.currency) ||
+    !Number.isSafeInteger(input.budgetLimit.amountMinor) ||
+    input.budgetLimit.amountMinor < 1
+  ) {
+    throw new AuthorityError("INVALID_TASK_BUDGET", "任务必须绑定一个受支持币种的正整数限额（最小货币单位）。");
+  }
   if (input.quoteId && CATALOG[input.quoteId]?.journey !== input.journey) {
     throw new AuthorityError("INVALID_TASK", "指定报价不属于该旅程。");
+  }
+  if (input.quoteId && CATALOG[input.quoteId].currency !== input.budgetLimit.currency) {
+    throw new AuthorityError("TASK_BUDGET_CURRENCY_MISMATCH", "任务限额币种必须与所选报价一致；不会进行币种换算。");
   }
   const request = {
     ownerId: input.ownerId,
     journey: input.journey,
     goal: input.goal.trim(),
     quoteId: input.quoteId,
+    budgetLimit: { ...input.budgetLimit },
   };
-  const plan = validatePlan(await planner.propose(request), input.journey);
+  const plan = validatePlan(await planner.propose(request), input.journey, request.budgetLimit);
   return {
     id: `task-${randomUUID()}`,
     ownerId: input.ownerId,
+    tenantId: input.tenantId ?? "tenant-demo",
     journey: input.journey,
     goal: request.goal,
+    budgetLimit: request.budgetLimit,
     status: plan.suggestions.length ? "proposed" : "no_action",
     planner: planner.kind === "scripted-offline" ? "scripted-offline (not model inference)" : "injected-test-client",
     summary: plan.summary,
@@ -93,9 +109,9 @@ export async function proposeTask(input, planner = offlinePlanner) {
   };
 }
 
-export function requestTaskAction(state, { ownerId, taskId, action, idempotencyKey }) {
+export function requestTaskAction(state, { ownerId, tenantId, taskId, action, idempotencyKey }) {
   const task = state.tasks[taskId];
-  if (!task || task.ownerId !== ownerId) {
+  if (!task || task.ownerId !== ownerId || (tenantId && task.tenantId !== tenantId)) {
     throw new AuthorityError("TASK_NOT_FOUND", "任务不存在或不属于此用户。");
   }
   if (typeof idempotencyKey !== "string" || !idempotencyKey) {

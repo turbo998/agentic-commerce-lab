@@ -10,17 +10,68 @@ async function start(statePath, planner) {
   const server = createAppServer({ statePath, ...(planner ? { planner } : {}) });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
+  const issueSession = async (persona) => {
+    const response = await fetch(`${base}/api/demo/session`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ persona }),
+    });
+    return response.json();
+  };
+  const issueHumanSession = async (persona) => {
+    const response = await fetch(`${base}/api/demo/human-session`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        origin: base,
+        "sec-fetch-site": "same-origin",
+      },
+      body: JSON.stringify({ persona }),
+    });
+    return response.json();
+  };
+  const identities = {
+    alex: { ...await issueSession("alex"), ...await issueHumanSession("alex") },
+    sam: { ...await issueSession("sam"), ...await issueHumanSession("sam") },
+  };
+  const tokenFor = (role) => {
+    if (role === "sam" || role === "sam-agent") return identities.sam.agentToken;
+    if (role === "sam-human") return identities.sam.humanToken;
+    return role === "human" ? identities.alex.humanToken : identities.alex.agentToken;
+  };
+  const roleFor = (path) => (
+    path === "/api/reset" ||
+    path.includes("/approve") ||
+    path.includes("/revoke") ||
+    path.includes("/fulfill") ||
+    path.includes("/refund") ||
+    path.includes("/payments/events")
+  ) ? "human" : "agent";
   return {
     server,
     base,
-    async get(path) {
-      const response = await fetch(`${base}${path}`);
+    identities,
+    async get(path, role = "agent") {
+      const response = await fetch(`${base}${path}`, {
+        headers: { authorization: `Bearer ${tokenFor(role)}` },
+      });
       return { status: response.status, body: await response.json() };
     },
-    async post(path, body) {
+    async post(path, body, role = roleFor(path)) {
+      const safeBody = body && typeof body === "object" && !Array.isArray(body)
+        ? Object.fromEntries(Object.entries(body).filter(([key]) => !["ownerId", "tenantId", "subject"].includes(key)))
+        : body;
       const response = await fetch(`${base}${path}`, {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", authorization: `Bearer ${tokenFor(role)}` },
+        body: JSON.stringify(safeBody),
+      });
+      return { status: response.status, body: await response.json() };
+    },
+    async rawPost(path, body, role = "agent") {
+      const response = await fetch(`${base}${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${tokenFor(role)}` },
         body: JSON.stringify(body),
       });
       return { status: response.status, body: await response.json() };
@@ -31,11 +82,13 @@ async function start(statePath, planner) {
 
 async function taskAndConsent(app, ownerId, quoteId) {
   const journey = quoteId.startsWith("travel-") ? "travel" : "weekend";
+  const quote = CATALOG[quoteId];
   const taskResponse = await app.post("/api/tasks", {
     ownerId,
     journey,
     goal: `compare and request ${quoteId}`,
     quoteId,
+    budgetLimit: { currency: quote.currency, amountMinor: quote.amountMinor * 2 },
   });
   assert.equal(taskResponse.status, 201);
   const task = taskResponse.body.result;
@@ -46,13 +99,22 @@ async function taskAndConsent(app, ownerId, quoteId) {
   });
   assert.equal(action.status, 200);
   assert.equal(action.body.result.replay, false);
+  let challenge;
+  if (quoteId === "travel-guide") {
+    challenge = await app.post("/api/commerce/v1/resources/travel-guide", { taskId: task.id });
+    assert.equal(challenge.status, 402);
+  }
   const consentResponse = await app.post("/api/consents", {
     ownerId,
     taskId: task.id,
     quoteId,
+    ...(challenge ? { challengeId: challenge.body.challenge.challengeId } : {}),
   });
   assert.equal(consentResponse.status, 200);
-  return { task, consent: consentResponse.body.result };
+  const request = consentResponse.body.result;
+  const approval = await app.post(`/api/commerce/v1/consent-requests/${request.id}/approve`, {}, "human");
+  assert.equal(approval.status, 200);
+  return { task, consent: approval.body.result.consent };
 }
 
 test("HTTP demo enforces contention, idempotency and restart reconciliation", async () => {
@@ -198,7 +260,11 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
     assert.equal((await app.post("/api/no-such-api", {})).status, 404);
     const crossOrigin = await fetch(`${app.base}/api/reset`, {
       method: "POST",
-      headers: { "content-type": "application/json", origin: "https://attacker.example" },
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${app.identities.alex.humanToken}`,
+        origin: "https://attacker.example",
+      },
       body: "{}",
     });
 
@@ -226,6 +292,7 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
         app = await start(statePath, planner);
         const taskResult = await app.post("/api/tasks", {
           ownerId: "agent-user", journey: "weekend", goal: "compare camera", quoteId: "weekend-camera",
+          budgetLimit: { currency: "USD", amountMinor: 10_000 },
         });
         assert.equal(taskResult.status, 201);
         assert.equal(taskResult.body.result.planner, "injected-test-client");
@@ -240,7 +307,7 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
         const stateAfterReject = await app.get("/api/state");
         assert.equal(stateAfterReject.body.payments.length, 0);
         assert.equal(stateAfterReject.body.balances.USD, 30000);
-        assert.equal((await app.get(`/api/tasks/${task.id}?ownerId=other`)).status, 404);
+        assert.equal((await app.get(`/api/tasks/${task.id}`, "sam")).status, 404);
         const quoteAction = {
           ownerId: "agent-user",
           action: { type: "request_quote", quoteId: "weekend-camera" },
@@ -269,6 +336,7 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
         app = await start(join(directory, "unsafe.json"), badPlanner);
         const unsafeOutput = await app.post("/api/tasks", {
           ownerId: "agent-user", journey: "weekend", goal: "buy camera",
+          budgetLimit: { currency: "USD", amountMinor: 10_000 },
         });
         assert.equal(unsafeOutput.status, 400);
         assert.equal(unsafeOutput.body.error, "PLANNER_OUTPUT_INVALID");
@@ -281,7 +349,10 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
     assert.equal(crossOrigin.status, 403);
     const formRequest = await fetch(`${app.base}/api/reset`, {
       method: "POST",
-      headers: { "content-type": "text/plain" },
+      headers: {
+        "content-type": "text/plain",
+        authorization: `Bearer ${app.identities.alex.humanToken}`,
+      },
       body: "{}",
     });
     assert.equal(formRequest.status, 415);
@@ -352,30 +423,58 @@ test("HTTP demo enforces contention, idempotency and restart reconciliation", as
     assert.equal(compensation.body.result.fulfillmentStatus, "compensated");
 
     await app.post("/api/reset", {});
-    const challenge = await app.post("/api/resources/travel-guide", {});
+    const legacyChallenge = await app.post("/api/resources/travel-guide", {});
+    assert.equal(legacyChallenge.status, 402);
+    assert.equal(legacyChallenge.body.challenge.challengeId, null);
+    assert.match(legacyChallenge.body.protocol, /not full MPP\/x402 conformance/);
+    const paidTaskResponse = await app.post("/api/commerce/v1/tasks", {
+      journey: "travel",
+      goal: "request a paid local guide",
+      quoteId: "travel-guide",
+      budgetLimit: { currency: "USDC", amountMinor: 2_000_000 },
+    });
+    assert.equal(paidTaskResponse.status, 201);
+    const paidTask = paidTaskResponse.body.result;
+    const challenge = await app.post("/api/commerce/v1/resources/travel-guide", { taskId: paidTask.id });
     assert.equal(challenge.status, 402);
     assert.equal(challenge.body.challenge.amountMinor, 1_200_000);
-    assert.match(challenge.body.protocol, /not full MPP\/x402 conformance/);
-    const paidPrepared = await taskAndConsent(app, "resource-user", "travel-guide");
+    assert.equal(challenge.body.challenge.taskId, paidTask.id);
+    const quoteAction = await app.post(`/api/commerce/v1/tasks/${paidTask.id}/actions`, {
+      action: { type: "request_quote", quoteId: "travel-guide" },
+      idempotencyKey: "resource-quote",
+    });
+    assert.equal(quoteAction.status, 200);
+    const consentRequest = await app.post("/api/commerce/v1/consent-requests", {
+      taskId: paidTask.id,
+      quoteId: "travel-guide",
+      challengeId: challenge.body.challenge.challengeId,
+    });
+    assert.equal(consentRequest.status, 201);
+    assert.equal(consentRequest.body.result.resourceChallengeId, challenge.body.challenge.challengeId);
+    const approvedResource = await app.post(
+      `/api/commerce/v1/consent-requests/${consentRequest.body.result.id}/approve`, {}, "human",
+    );
+    assert.equal(approvedResource.status, 200);
     const resourceInput = {
-      ownerId: "resource-user",
-      taskId: paidPrepared.task.id,
-      consentId: paidPrepared.consent.id,
-      idempotencyKey: "resource-paid-once",
+      taskId: paidTask.id,
+      consentRequestId: consentRequest.body.result.id,
+      challengeId: challenge.body.challenge.challengeId,
     };
-    const delivered = await app.post("/api/resources/travel-guide", resourceInput);
+    const delivered = await app.post("/api/commerce/v1/resources/travel-guide", resourceInput);
     assert.equal(delivered.status, 200);
     assert.equal(delivered.body.result.delivery.simulated, true);
     assert.equal(delivered.body.result.payment.receipt.simulated, true);
-    const deliveredEvents = delivered.body.state.events.length;
+    const deliveredEvents = (await app.get("/api/state")).body.events.length;
+    const deliveredState = readFileSync(statePath, "utf8");
     for (let index = 0; index < 10; index++) {
-      const replay = await app.post("/api/resources/travel-guide", resourceInput);
+      const replay = await app.post("/api/commerce/v1/resources/travel-guide", resourceInput);
       assert.equal(replay.body.result.delivery.id, delivered.body.result.delivery.id);
-      assert.equal(replay.body.state.events.length, deliveredEvents);
     }
+    assert.equal((await app.get("/api/state")).body.events.length, deliveredEvents);
+    assert.equal(readFileSync(statePath, "utf8"), deliveredState);
     await app.close();
     app = await start(statePath);
-    const restartDelivery = await app.post("/api/resources/travel-guide", resourceInput);
+    const restartDelivery = await app.post("/api/commerce/v1/resources/travel-guide", resourceInput);
     assert.equal(restartDelivery.body.result.delivery.id, delivered.body.result.delivery.id);
     assert.equal(restartDelivery.body.state.resourceDeliveries.length, 1);
     const paymentId = restartDelivery.body.result.payment.id;

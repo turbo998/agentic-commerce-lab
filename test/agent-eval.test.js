@@ -10,14 +10,16 @@ import {
 } from "../src/authority.js";
 import { CATALOG } from "../src/catalog.js";
 
-function seedTask(state, quoteId = "weekend-camera") {
+function seedTask(state, quoteId = "weekend-camera", id = `eval-${Math.random()}`) {
   const quote = CATALOG[quoteId];
   const task = {
-    id: `eval-${Math.random()}`,
+    id,
     ownerId: "eval-user",
     journey: quote.journey,
     goal: "fixture",
     status: "proposed",
+    tenantId: "tenant-demo",
+    budgetLimit: { currency: quote.currency, amountMinor: quote.amountMinor * 20 },
     suggestions: [{ type: "quote", quoteId, action: "request_quote" }],
     actionRequests: {},
   };
@@ -55,6 +57,10 @@ test("fixed mixed agent evaluation vectors meet completion, refusal, side-effect
           journey: vector.journey,
           goal: vector.goal,
           quoteId: vector.quoteId,
+          budgetLimit: {
+            currency: vector.quoteId ? CATALOG[vector.quoteId].currency : "USD",
+            amountMinor: 200_000,
+          },
         });
         actual = task.status;
         if (vector.expected === "proposed") {
@@ -72,7 +78,10 @@ test("fixed mixed agent evaluation vectors meet completion, refusal, side-effect
           } else actual = "inaccurate-facts";
         }
       } else if (vector.kind === "planner-label") {
-        actual = (await proposeTask({ ownerId: "eval-user", journey: "weekend", goal: "compare" })).planner.split(" ")[0];
+        actual = (await proposeTask({
+          ownerId: "eval-user", journey: "weekend", goal: "compare",
+          budgetLimit: { currency: "USD", amountMinor: 200_000 },
+        })).planner.split(" ")[0];
       } else if (vector.kind === "action") {
         const task = seedTask(state);
         try {
@@ -131,6 +140,7 @@ test("fixed mixed agent evaluation vectors meet completion, refusal, side-effect
       } else if (vector.kind === "budget") {
         const local = initialState();
         if (!vector.sufficient) local.balances.USD = 1;
+        seedTask(local, "weekend-camera", "budget");
         const consent = createConsent(local, { ownerId: "eval-user", taskId: "budget", quoteId: "weekend-camera" });
         metrics.approvalCount++;
         try {
@@ -145,6 +155,7 @@ test("fixed mixed agent evaluation vectors meet completion, refusal, side-effect
         if (!vector.sufficient && Object.keys(local.payments).length) metrics.unauthorizedPayments++;
       } else if (vector.kind === "restart") {
         const local = initialState();
+        seedTask(local, "weekend-camera", "restart");
         const consent = createConsent(local, { ownerId: "eval-user", taskId: "restart", quoteId: "weekend-camera" });
         metrics.approvalCount++;
         const payment = createPayment(local, {

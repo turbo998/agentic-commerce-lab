@@ -29,6 +29,7 @@ test("planner interface accepts an injected mock client and enforces proposal-on
   };
   const proposal = await proposeTask({
     ownerId: "mock-user", journey: "weekend", goal: "compare", quoteId: "weekend-camera",
+    budgetLimit: { currency: "USD", amountMinor: 10000 },
   }, mock);
   assert.equal(calls, 1);
   assert.equal(proposal.planner, "injected-test-client");
@@ -45,7 +46,10 @@ test("planner interface accepts an injected mock client and enforces proposal-on
     },
   };
   await assert.rejects(
-    proposeTask({ ownerId: "mock-user", journey: "weekend", goal: "pay" }, unsafe),
+    proposeTask({
+      ownerId: "mock-user", journey: "weekend", goal: "pay",
+      budgetLimit: { currency: "USD", amountMinor: 10000 },
+    }, unsafe),
     (error) => error instanceof AuthorityError && error.code === "PLANNER_OUTPUT_INVALID",
   );
   assert.throws(() => plannerContract({}), (error) => error.code === "PLANNER_INTERFACE_INVALID");

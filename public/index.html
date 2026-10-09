@@ -17,8 +17,9 @@
       <section class="hero">
         <div class="eyebrow">PERSONAL AGENT · AUTHORIZATION FIRST</div>
         <h1>让代理提议，<em>让人授权</em></h1>
-        <p>探索购物、旅行与按次付费信息服务。每笔模拟交易都受独立、确定性的用户授权与币种预算约束。</p>
-        <p class="planner-note">Planner：确定性离线脚本（不是 LLM 推理）；Agent action 只可请求已列出的报价。</p>
+        <p>用本地 Copilot-style 对话探索购物、旅行和付费信息。Payment Authority 独立执行确定性授权与恢复。</p>
+        <p class="planner-note">脚本离线建议 · 合成身份 · SIMULATED/OFFLINE；这不是 Microsoft 365 Copilot、Teams 或 Entra 集成。</p>
+        <p id="identity-label" class="subtle">正在创建本地合成演示会话…</p>
         <div class="hero-actions">
           <button id="reset" class="button secondary">重置本地模拟</button>
           <a href="/docs" id="research-link" hidden>研究资料</a>
@@ -37,6 +38,32 @@
         <div><span class="eyebrow">SYNTHETIC MERCHANTS</span><h2>选择一项提议</h2></div>
         <p class="subtle">代理只能请求报价；点击“审核并授权”后才会产生有界授权。</p>
       </section>
+      <section class="panel activity" aria-labelledby="conversation-title">
+        <div class="section-heading">
+          <div><span class="eyebrow">SCRIPTED-OFFLINE COPILOT-STYLE UI</span><h2 id="conversation-title">描述你的目标</h2></div>
+          <span class="subtle">聊天中的“同意”不会批准支出</span>
+        </div>
+        <form id="task-form" class="task-form">
+          <label for="goal">任务目标</label>
+          <textarea id="goal" maxlength="300" rows="2" placeholder="例如：帮我比较周末相机，最多只按显示的报价逐笔批准" required></textarea>
+          <fieldset class="budget-fields">
+            <legend>结构化任务支出限额（不会从任务描述中推断）</legend>
+            <label for="budget-currency">单一币种</label>
+            <select id="budget-currency" required>
+              <option value="USD">USD</option>
+              <option value="HKD">HKD</option>
+              <option value="USDC">USDC</option>
+            </select>
+            <label for="budget-amount">此任务累计上限</label>
+            <input id="budget-amount" type="number" min="0.01" step="0.01" required>
+            <small>包含本任务已捕获金额与有效 consent 预留；退款不会增加任务额度。账户预算仍独立生效。</small>
+          </fieldset>
+          <p id="selected-quote" class="subtle"></p>
+          <button class="button primary" type="submit">让离线脚本生成建议</button>
+        </form>
+        <div id="conversation" class="payment-list" aria-live="polite"></div>
+        <div id="task-budgets" class="payment-list" aria-live="polite"></div>
+      </section>
       <div class="journey-tabs" role="tablist" aria-label="购物旅程">
         <button class="tab active" data-journey="weekend" role="tab" aria-selected="true">周末购物</button>
         <button class="tab" data-journey="travel" role="tab" aria-selected="false">旅行与付费信息</button>
@@ -45,10 +72,19 @@
 
       <section class="panel activity">
         <div class="section-heading">
-          <div><span class="eyebrow">EXPLICIT HUMAN APPROVAL</span><h2>待执行授权</h2></div>
-          <span class="subtle">可在执行前撤销</span>
+          <div><span class="eyebrow">HUMAN-ONLY APPROVAL HANDOFF</span><h2>待人工审核的请求</h2></div>
+          <span class="subtle">在独立批准页审核精确条款</span>
         </div>
         <div id="consents" class="payment-list"></div>
+        <div id="refund-requests" class="payment-list"></div>
+      </section>
+
+      <section class="panel activity">
+        <div class="section-heading">
+          <div><span class="eyebrow">TYPED TOOL TRACE</span><h2>Agent 工具轨迹</h2></div>
+          <span class="subtle">不显示 token 或支付凭证</span>
+        </div>
+        <ol id="tool-trace" class="tool-trace" aria-live="polite"></ol>
       </section>
 
       <section class="panel activity">
@@ -59,7 +95,7 @@
         <div id="payments" class="payment-list"></div>
       </section>
       <p id="notice" class="notice" role="status" aria-live="polite"></p>
-      <footer>原创教学模拟 · 无支付网络调用 · 不代表供应商认证、真实授权或结算</footer>
+      <footer>原创教学模拟 · 无支付网络调用 · Synthetic local identity only · 不代表 Entra/Copilot Studio 集成、真实授权或结算</footer>
     </main>
   </body>
 </html>

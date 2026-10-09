@@ -13,6 +13,7 @@ import {
   revokeConsent,
   resolveFulfillment,
 } from "../src/authority.js";
+import { CATALOG } from "../src/catalog.js";
 
 const quoteId = "weekend-camera";
 const request = (consent, overrides = {}) => ({
@@ -23,12 +24,24 @@ const request = (consent, overrides = {}) => ({
   ...overrides,
 });
 const expectCode = (code, fn) => assert.throws(fn, (error) => error instanceof AuthorityError && error.code === code);
+function createTestConsent(state, { ownerId, taskId, quoteId, tenantId = "tenant-demo" }, now) {
+  const quote = CATALOG[quoteId];
+  if (!state.tasks[taskId]) {
+    state.tasks[taskId] = {
+      id: taskId, ownerId, tenantId, journey: quote.journey, goal: "test task",
+      budgetLimit: { currency: quote.currency, amountMinor: quote.amountMinor * 20 },
+      suggestions: [{ type: "quote", quoteId, action: "request_quote" }],
+      actionRequests: {},
+    };
+  }
+  return createConsent(state, { ownerId, tenantId, taskId, quoteId }, now);
+}
 
 test("only one of twenty reservations wins when the remaining budget fits one quote", () => {
   const state = initialState();
   state.balances.USD = 6000;
   const consents = Array.from({ length: 20 }, (_, index) =>
-    createConsent(state, { ownerId: `owner-${index}`, taskId: "weekend", quoteId }),
+    createTestConsent(state, { ownerId: `owner-${index}`, taskId: `weekend-${index}`, quoteId }),
   );
   const results = consents.map((consent) => {
     try { return createPayment(state, request(consent)); }
@@ -43,7 +56,7 @@ test("all twenty authorized reservations succeed when budget is sufficient", () 
   const state = initialState();
   state.balances.USD = 200_000;
   const consents = Array.from({ length: 20 }, (_, index) =>
-    createConsent(state, { ownerId: `owner-${index}`, taskId: "weekend", quoteId }),
+    createTestConsent(state, { ownerId: `owner-${index}`, taskId: `weekend-${index}`, quoteId }),
   );
   for (const consent of consents) createPayment(state, request(consent));
   assert.equal(Object.keys(state.payments).length, 20);
@@ -52,7 +65,7 @@ test("all twenty authorized reservations succeed when budget is sufficient", () 
 
 test("request replay returns one payment and never repeats the balance or event effect", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const input = request(consent, { idempotencyKey: "same-key" });
   const first = createPayment(state, input);
   const events = state.events.length;
@@ -75,7 +88,7 @@ test("authorization is bound to its owner, task, merchant, amount, currency, ite
   ];
   for (const override of changed) {
     const state = initialState();
-    const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+    const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
     expectCode(override.ownerId ? "CONSENT_NOT_FOUND" : "TERMS_CHANGED", () =>
       createPayment(state, request(consent, override)),
     );
@@ -85,12 +98,12 @@ test("authorization is bound to its owner, task, merchant, amount, currency, ite
 
 test("revoked and expired authorizations cannot be exercised", () => {
   const revokedState = initialState();
-  const revoked = createConsent(revokedState, { ownerId: "u1", taskId: "trip", quoteId }, 100);
+  const revoked = createTestConsent(revokedState, { ownerId: "u1", taskId: "trip", quoteId }, 100);
   revokeConsent(revokedState, { ownerId: "u1", consentId: revoked.id }, 101);
   expectCode("CONSENT_REVOKED", () => createPayment(revokedState, request(revoked), 102));
 
   const expiredState = initialState();
-  const expired = createConsent(expiredState, { ownerId: "u1", taskId: "trip", quoteId }, 100);
+  const expired = createTestConsent(expiredState, { ownerId: "u1", taskId: "trip", quoteId }, 100);
   expectCode("CONSENT_EXPIRED", () => createPayment(expiredState, request(expired), expired.expiresAt));
 });
 
@@ -98,7 +111,7 @@ test("consent is single-use and independent currencies never cross-fund", () => 
   const state = initialState();
   state.balances.USD = 0;
   state.balances.HKD = 15000;
-  const consent = createConsent(state, { ownerId: "u1", taskId: "travel", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "travel", quoteId });
   expectCode("BUDGET_EXCEEDED", () => createPayment(state, request(consent)));
   assert.equal(state.balances.HKD, 15000);
   state.balances.USD = 6000;
@@ -108,7 +121,7 @@ test("consent is single-use and independent currencies never cross-fund", () => 
 
 test("thirty reconciliations of an unchanged unknown payment append one event only", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent, { outcome: "unknown" }));
   for (let index = 0; index < 30; index++) reconcilePayment(state, { paymentId: payment.id }, 1000 + index);
   assert.equal(state.payments[payment.id].status, "captured");
@@ -118,7 +131,7 @@ test("thirty reconciliations of an unchanged unknown payment append one event on
 
 test("out-of-order or duplicate events cannot regress a terminal payment state", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent, { outcome: "unknown" }));
   applyPaymentEvent(state, { paymentId: payment.id, eventId: "network-1", status: "captured" });
   const eventCount = state.events.length;
@@ -130,7 +143,7 @@ test("out-of-order or duplicate events cannot regress a terminal payment state",
 
 test("authorization events can advance to capture but cannot regress afterward", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent, { outcome: "unknown" }));
   applyPaymentEvent(state, { paymentId: payment.id, eventId: "network-auth", status: "authorized" });
   assert.equal(state.payments[payment.id].status, "authorized");
@@ -147,7 +160,7 @@ test("authorization events can advance to capture but cannot regress afterward",
 
 test("capture issues a synthetic receipt; fulfillment is owner-bound and idempotent", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent));
   assert.equal(payment.receipt.simulated, true);
   assert.equal(payment.receipt.amountMinor, payment.amountMinor);
@@ -159,7 +172,7 @@ test("capture issues a synthetic receipt; fulfillment is owner-bound and idempot
   fulfillPayment(state, { ownerId: "u1", paymentId: payment.id });
   assert.equal(state.events.length, eventCount);
 
-  const unknownConsent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const unknownConsent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const unknown = createPayment(state, request(unknownConsent, { outcome: "unknown" }));
   assert.equal(unknown.receipt, null);
   expectCode("PAYMENT_NOT_FULFILLABLE", () => fulfillPayment(state, { ownerId: "u1", paymentId: unknown.id }));
@@ -167,7 +180,7 @@ test("capture issues a synthetic receipt; fulfillment is owner-bound and idempot
 
 test("failed fulfillment persists manual review and supports retry or refund compensation", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent));
   const balanceAfterCapture = state.balances.USD;
   const failed = recordFulfillmentFailure(state, {
@@ -185,7 +198,7 @@ test("failed fulfillment persists manual review and supports retry or refund com
   assert.equal(fulfillPayment(state, { ownerId: "u1", paymentId: payment.id }).fulfillmentStatus, "fulfilled");
   assert.equal(state.balances.USD, balanceAfterCapture);
 
-  const secondConsent = createConsent(state, { ownerId: "u1", taskId: "trip-2", quoteId });
+  const secondConsent = createTestConsent(state, { ownerId: "u1", taskId: "trip-2", quoteId });
   const secondPayment = createPayment(state, request(secondConsent));
   recordFulfillmentFailure(state, { ownerId: "u1", paymentId: secondPayment.id });
   const compensated = resolveFulfillment(state, {
@@ -203,7 +216,7 @@ test("failed fulfillment persists manual review and supports retry or refund com
 
 test("cumulative refunds cannot exceed capture and duplicate refund keys restore budget once", () => {
   const state = initialState();
-  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const consent = createTestConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
   const payment = createPayment(state, request(consent));
   const refundInput = { ownerId: "u1", paymentId: payment.id, amountMinor: 1000, idempotencyKey: "refund-1" };
   const afterCapture = state.balances.USD;

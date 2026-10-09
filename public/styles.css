@@ -59,3 +59,72 @@ h2 { margin: 7px 0 0; font-size: 23px; letter-spacing: -.04em; }
 .notice { min-height: 22px; color: #9b2b30; font-size: 13px; }
 footer { padding: 20px 0 40px; color: var(--muted); font-size: 11px; text-align: center; }
 @media (max-width: 760px) { .catalog-grid { grid-template-columns: 1fr; } .balance-grid { grid-template-columns: 1fr; } .catalog-heading, .section-heading { align-items: start; flex-direction: column; } .payment { grid-template-columns: 1fr; } .payment-actions { justify-content: start; } .hero { padding-top: 45px; } }
+.task-form {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.budget-fields {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(8rem, 1fr);
+  gap: 0.5rem 0.75rem;
+  border: 1px solid var(--line, #c9d4e2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.budget-fields legend,
+.budget-fields small {
+  color: var(--muted, #566579);
+}
+
+.budget-fields small {
+  grid-column: 1 / -1;
+}
+
+.budget-fields input,
+.budget-fields select {
+  min-width: 0;
+  border: 1px solid var(--line, #c9d4e2);
+  border-radius: 0.5rem;
+  padding: 0.55rem;
+  font: inherit;
+}
+
+.task-form label {
+  font-weight: 650;
+}
+
+.task-form textarea {
+  width: 100%;
+  min-height: 5rem;
+  resize: vertical;
+  border: 1px solid #a9b8c8;
+  border-radius: 0.55rem;
+  padding: 0.8rem;
+  font: inherit;
+}
+
+.tool-trace {
+  display: grid;
+  gap: 0.55rem;
+  padding-left: 1.25rem;
+}
+
+.tool-trace li {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) auto;
+  gap: 0.2rem 0.75rem;
+  border-bottom: 1px solid #dce3eb;
+  padding: 0.5rem 0;
+}
+
+.tool-trace small {
+  grid-column: 1 / -1;
+  color: #546477;
+}
+
+.agent-message {
+  border-left: 3px solid #3778bd;
+}
