@@ -2,16 +2,21 @@ import { createServer as httpServer } from "node:http";
 import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { proposeTask, requestTaskAction, offlinePlanner } from "./agent.js";
+import { paymentRequired } from "./protocol.js";
 import {
   AuthorityError,
   applyPaymentEvent,
-  createConsent,
   createPayment,
+  createTaskConsent,
+  deliverPaidResource,
   fulfillPayment,
   initialState,
   reconcilePayment,
+  recordFulfillmentFailure,
   refundPayment,
   revokeConsent,
+  resolveFulfillment,
   snapshot,
 } from "./authority.js";
 
@@ -80,7 +85,7 @@ function json(response, status, value) {
   response.end(JSON.stringify(value));
 }
 
-function createHandler(statePath) {
+function createHandler(statePath, planner = offlinePlanner) {
   let state = readState(statePath);
   const commit = (operation) => {
     const next = JSON.parse(JSON.stringify(state));
@@ -108,15 +113,71 @@ function createHandler(statePath) {
       return json(response, 200, snapshot(state));
     }
     if (url.pathname.startsWith("/api/")) {
+      const taskLookup = url.pathname.match(/^\/api\/tasks\/([^/]+)$/);
+      if (request.method === "GET" && taskLookup) {
+        const task = state.tasks[taskLookup[1]];
+        if (!task || task.ownerId !== url.searchParams.get("ownerId")) {
+          return json(response, 404, { error: "TASK_NOT_FOUND" });
+        }
+        return json(response, 200, task);
+      }
       if (request.method !== "POST") return json(response, 405, { error: "METHOD_NOT_ALLOWED" });
       const rejected = mutationError(request);
       if (rejected) return json(response, rejected.status, rejected);
       try {
         const input = await readBody(request);
         let result;
+        const taskAction = url.pathname.match(/^\/api\/tasks\/([^/]+)\/actions$/);
+        if (url.pathname === "/api/tasks" && request.method === "POST") {
+          const task = await proposeTask(input, planner);
+          result = commit((next) => {
+            next.tasks[task.id] = task;
+            next.events.push({
+              id: `evt-${next.sequence++}`,
+              type: "agent.task_proposed",
+              paymentId: null,
+              taskId: task.id,
+              at: new Date().toISOString(),
+            });
+            return task;
+          });
+          return json(response, 201, { result, state: snapshot(state) });
+        }
+        if (taskAction) {
+          result = commit((next) => requestTaskAction(next, {
+            ...input,
+            taskId: taskAction[1],
+          }));
+          return json(response, 200, { result, state: snapshot(state) });
+        }
+        const resourceRoute = url.pathname.match(/^\/api\/resources\/([^/]+)$/);
+        if (resourceRoute) {
+          if (!input.consentId) {
+            const challenge = paymentRequired(resourceRoute[1]);
+            return json(response, challenge.status, challenge);
+          }
+          result = commit((next) => {
+            const consent = next.consents[input.consentId];
+            if (!consent || consent.quoteId !== resourceRoute[1]) {
+              throw new AuthorityError("RESOURCE_CONSENT_REQUIRED", "此资源需要匹配的用户授权。");
+            }
+            const payment = createPayment(next, {
+              ownerId: input.ownerId,
+              taskId: input.taskId,
+              consentId: input.consentId,
+              idempotencyKey: input.idempotencyKey,
+            });
+            const delivery = deliverPaidResource(next, {
+              ownerId: input.ownerId,
+              paymentId: payment.id,
+            });
+            return { payment, delivery };
+          });
+          return json(response, 200, { result, state: snapshot(state) });
+        }
         switch (url.pathname) {
           case "/api/consents":
-            result = commit((next) => createConsent(next, input));
+            result = commit((next) => createTaskConsent(next, input));
             break;
           case "/api/consents/revoke":
             result = commit((next) => revokeConsent(next, input));
@@ -129,6 +190,12 @@ function createHandler(statePath) {
             break;
           case "/api/payments/fulfill":
             result = commit((next) => fulfillPayment(next, input));
+            break;
+          case "/api/payments/fulfillment/fail":
+            result = commit((next) => recordFulfillmentFailure(next, input));
+            break;
+          case "/api/payments/fulfillment/resolve":
+            result = commit((next) => resolveFulfillment(next, input));
             break;
           case "/api/payments/refund":
             result = commit((next) => refundPayment(next, input));
@@ -147,6 +214,7 @@ function createHandler(statePath) {
     }
 
     if (request.method !== "GET") return json(response, 405, { error: "METHOD_NOT_ALLOWED" });
+    if (url.pathname.startsWith("/api/resources/")) return json(response, 405, { error: "METHOD_NOT_ALLOWED" });
     const requested = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
     const path = resolve(staticRoot, requested);
     if (!path.startsWith(staticRoot + sep)) return json(response, 404, { error: "NOT_FOUND" });
@@ -167,8 +235,8 @@ function createHandler(statePath) {
   };
 }
 
-export function createAppServer({ statePath = defaultStatePath } = {}) {
-  const handler = createHandler(statePath);
+export function createAppServer({ statePath = defaultStatePath, planner = offlinePlanner } = {}) {
+  const handler = createHandler(statePath, planner);
   return httpServer((request, response) => {
     handler(request, response).catch((error) => {
       console.error("Request failed:", error);

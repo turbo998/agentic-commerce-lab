@@ -8,8 +8,10 @@ import {
   fulfillPayment,
   initialState,
   reconcilePayment,
+  recordFulfillmentFailure,
   refundPayment,
   revokeConsent,
+  resolveFulfillment,
 } from "../src/authority.js";
 
 const quoteId = "weekend-camera";
@@ -126,6 +128,23 @@ test("out-of-order or duplicate events cannot regress a terminal payment state",
   assert.equal(state.events.length, eventCount);
 });
 
+test("authorization events can advance to capture but cannot regress afterward", () => {
+  const state = initialState();
+  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const payment = createPayment(state, request(consent, { outcome: "unknown" }));
+  applyPaymentEvent(state, { paymentId: payment.id, eventId: "network-auth", status: "authorized" });
+  assert.equal(state.payments[payment.id].status, "authorized");
+  applyPaymentEvent(state, { paymentId: payment.id, eventId: "network-capture", status: "captured" });
+  assert.equal(state.payments[payment.id].status, "captured");
+  const balance = state.balances.USD;
+  const eventCount = state.events.length;
+  applyPaymentEvent(state, { paymentId: payment.id, eventId: "network-auth", status: "declined" });
+  applyPaymentEvent(state, { paymentId: payment.id, eventId: "late-decline", status: "declined" });
+  assert.equal(state.payments[payment.id].status, "captured");
+  assert.equal(state.balances.USD, balance);
+  assert.equal(state.events.length, eventCount);
+});
+
 test("capture issues a synthetic receipt; fulfillment is owner-bound and idempotent", () => {
   const state = initialState();
   const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
@@ -144,6 +163,42 @@ test("capture issues a synthetic receipt; fulfillment is owner-bound and idempot
   const unknown = createPayment(state, request(unknownConsent, { outcome: "unknown" }));
   assert.equal(unknown.receipt, null);
   expectCode("PAYMENT_NOT_FULFILLABLE", () => fulfillPayment(state, { ownerId: "u1", paymentId: unknown.id }));
+});
+
+test("failed fulfillment persists manual review and supports retry or refund compensation", () => {
+  const state = initialState();
+  const consent = createConsent(state, { ownerId: "u1", taskId: "trip", quoteId });
+  const payment = createPayment(state, request(consent));
+  const balanceAfterCapture = state.balances.USD;
+  const failed = recordFulfillmentFailure(state, {
+    ownerId: "u1", paymentId: payment.id, reason: "simulated_failure",
+  });
+  assert.equal(failed.fulfillmentStatus, "manual_review");
+  assert.equal(failed.fulfillmentFailure.reason, "simulated_failure");
+  assert.equal(failed.status, "captured");
+  expectCode("PAYMENT_NOT_FOUND", () => resolveFulfillment(state, {
+    ownerId: "other", paymentId: payment.id, action: "refund",
+  }));
+  assert.equal(resolveFulfillment(state, {
+    ownerId: "u1", paymentId: payment.id, action: "retry",
+  }).fulfillmentStatus, "retrying");
+  assert.equal(fulfillPayment(state, { ownerId: "u1", paymentId: payment.id }).fulfillmentStatus, "fulfilled");
+  assert.equal(state.balances.USD, balanceAfterCapture);
+
+  const secondConsent = createConsent(state, { ownerId: "u1", taskId: "trip-2", quoteId });
+  const secondPayment = createPayment(state, request(secondConsent));
+  recordFulfillmentFailure(state, { ownerId: "u1", paymentId: secondPayment.id });
+  const compensated = resolveFulfillment(state, {
+    ownerId: "u1", paymentId: secondPayment.id, action: "refund",
+  });
+  assert.equal(compensated.status, "refunded");
+  assert.equal(compensated.fulfillmentStatus, "compensated");
+  assert.equal(state.balances.USD, balanceAfterCapture);
+  const eventCount = state.events.length;
+  expectCode("FULFILLMENT_NOT_IN_REVIEW", () => resolveFulfillment(state, {
+    ownerId: "u1", paymentId: secondPayment.id, action: "refund",
+  }));
+  assert.equal(state.events.length, eventCount);
 });
 
 test("cumulative refunds cannot exceed capture and duplicate refund keys restore budget once", () => {

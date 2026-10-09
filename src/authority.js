@@ -16,7 +16,9 @@ export function initialState() {
       Object.entries(CURRENCIES).map(([currency, config]) => [currency, config.initialMinor]),
     ),
     consents: {},
+    tasks: {},
     payments: {},
+    resourceDeliveries: {},
     idempotency: {},
     events: [],
     sequence: 1,
@@ -82,6 +84,15 @@ export function createConsent(state, { ownerId, taskId, quoteId }, now = Date.no
   };
   state.consents[consent.id] = consent;
   return clone(consent);
+}
+
+export function createTaskConsent(state, { ownerId, taskId, quoteId }, now = Date.now()) {
+  const task = state.tasks[taskId];
+  if (!task || task.ownerId !== ownerId) fail("TASK_NOT_FOUND", "任务不存在或不属于此用户。");
+  if (!task.suggestions.some((suggestion) => suggestion.type === "quote" && suggestion.quoteId === quoteId)) {
+    fail("TERMS_CHANGED", "报价不在此任务的结构化建议中。");
+  }
+  return createConsent(state, { ownerId, taskId, quoteId }, now);
 }
 
 export function revokeConsent(state, { ownerId, consentId }, now = Date.now()) {
@@ -188,12 +199,80 @@ export function fulfillPayment(state, { ownerId, paymentId }) {
   if (!["captured", "partially_refunded"].includes(payment.status) || !payment.receipt) {
     fail("PAYMENT_NOT_FULFILLABLE", "只有已模拟扣款并生成收据的订单可以履约。");
   }
-  if (payment.fulfillmentStatus === "pending") {
+  if (payment.fulfillmentStatus === "pending" || payment.fulfillmentStatus === "retrying") {
     payment.fulfillmentStatus = "fulfilled";
     payment.fulfilledAt = Date.now();
     event(state, "fulfillment.simulated", payment.id);
   }
   return clone(payment);
+}
+
+export function recordFulfillmentFailure(state, { ownerId, paymentId, reason = "simulated_failure" }) {
+  const payment = state.payments[paymentId];
+  if (!payment || payment.ownerId !== ownerId) fail("PAYMENT_NOT_FOUND", "付款不存在或不属于此用户。");
+  if (payment.status !== "captured" && payment.status !== "partially_refunded") {
+    fail("PAYMENT_NOT_FULFILLABLE", "只有已确认扣款的订单可以进入履约处理。");
+  }
+  if (payment.fulfillmentStatus !== "pending" && payment.fulfillmentStatus !== "retrying") {
+    fail("FULFILLMENT_NOT_PENDING", "只有待处理或重试中的履约可以失败。");
+  }
+  if (!["simulated_failure", "merchant_unavailable"].includes(reason)) {
+    fail("INVALID_FAILURE_REASON", "履约失败原因不在本地模拟清单中。");
+  }
+  payment.fulfillmentStatus = "manual_review";
+  payment.fulfillmentFailure = { reason, recordedAt: Date.now() };
+  event(state, "fulfillment.manual_review_required", payment.id, { reason });
+  return clone(payment);
+}
+
+export function resolveFulfillment(state, { ownerId, paymentId, action }) {
+  const payment = state.payments[paymentId];
+  if (!payment || payment.ownerId !== ownerId) fail("PAYMENT_NOT_FOUND", "付款不存在或不属于此用户。");
+  if (payment.fulfillmentStatus !== "manual_review") {
+    fail("FULFILLMENT_NOT_IN_REVIEW", "订单不处于待人工处理状态。");
+  }
+  if (action === "retry") {
+    payment.fulfillmentStatus = "retrying";
+    payment.fulfillmentRetryCount = (payment.fulfillmentRetryCount ?? 0) + 1;
+    event(state, "fulfillment.retry_authorized", payment.id);
+    return clone(payment);
+  }
+  if (action === "refund") {
+    const remaining = payment.amountMinor - payment.refundedMinor;
+    if (remaining <= 0) fail("REFUND_LIMIT", "订单没有可补偿退款余额。");
+    refundPayment(state, {
+      ownerId,
+      paymentId,
+      amountMinor: remaining,
+      idempotencyKey: `fulfillment-compensation-${payment.id}`,
+    });
+    payment.fulfillmentStatus = "compensated";
+    event(state, "fulfillment.compensated_refund", payment.id);
+    return clone(payment);
+  }
+  fail("INVALID_FULFILLMENT_ACTION", "人工处理操作只允许 retry 或 refund。");
+}
+
+export function deliverPaidResource(state, { ownerId, paymentId }) {
+  const payment = state.payments[paymentId];
+  if (!payment || payment.ownerId !== ownerId) fail("PAYMENT_NOT_FOUND", "付款不存在或不属于此用户。");
+  if (payment.quoteId !== "travel-guide" || payment.status !== "captured" || !payment.receipt) {
+    fail("RESOURCE_NOT_PAID", "该资源需要匹配的已确认模拟付款。");
+  }
+  const existing = state.resourceDeliveries[payment.id];
+  if (existing) return clone(existing);
+  const delivery = {
+    id: `delivery-${randomUUID()}`,
+    paymentId,
+    resourceId: "travel-guide",
+    content: "模拟旅行情报：旧城区步行环线全程 2.4 公里；雨天备选为中央市场室内展区。此固定内容不含实时数据。",
+    deliveredAt: Date.now(),
+    simulated: true,
+  };
+  state.resourceDeliveries[payment.id] = delivery;
+  payment.fulfillmentStatus = "fulfilled";
+  event(state, "resource.delivered_simulated", payment.id, { deliveryId: delivery.id });
+  return clone(delivery);
 }
 
 export function refundPayment(state, { ownerId, paymentId, amountMinor, idempotencyKey }) {
@@ -228,6 +307,7 @@ export function applyPaymentEvent(state, { paymentId, eventId, status }) {
   if (state.events.some((entry) => entry.externalEventId === eventId)) return clone(payment);
   const allowed = {
     unknown: new Set(["authorized", "captured", "declined"]),
+    authorized: new Set(["captured", "declined"]),
     captured: new Set(),
     partially_refunded: new Set(),
     refunded: new Set(),
@@ -250,7 +330,9 @@ export function snapshot(state) {
     balances: clone(state.balances),
     catalog: clone(CATALOG),
     consents: Object.values(state.consents).map(clone),
+    tasks: Object.values(state.tasks).map(clone),
     payments: Object.values(state.payments).map(clone),
+    resourceDeliveries: Object.values(state.resourceDeliveries).map(clone),
     events: clone(state.events),
   };
 }

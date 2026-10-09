@@ -8,7 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "check": "node --check src/authority.js && node --check src/server.js && node --check public/app.js && node --test",
+    "check": "node --check src/authority.js && node --check src/agent.js && node --check src/protocol.js && node --check src/server.js && node --check public/app.js && node --test",
     "test:e2e": "node --test test/e2e.test.js",
     "start": "node src/server.js"
   }

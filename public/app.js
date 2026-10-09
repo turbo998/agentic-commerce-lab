@@ -6,6 +6,8 @@ const labels = {
   declined: "模拟拒绝",
   partially_refunded: "部分退款",
   refunded: "已全额退款",
+  manual_review: "履约失败 · 待人工处理",
+  compensated: "已补偿退款",
 };
 let currentJourney = "weekend";
 
@@ -22,6 +24,7 @@ async function api(path, body) {
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const data = await response.json();
+  if (response.status === 402) return data;
   if (!response.ok) throw new Error(data.message ?? data.error ?? "请求失败");
   return data;
 }
@@ -45,29 +48,43 @@ async function refresh() {
       <button class="button primary" data-quote="${quote.id}">审核并授权</button>
     </article>
   `).join("");
-  document.querySelectorAll("[data-quote]").forEach((button) => button.addEventListener("click", () => approveAndPay(button.dataset.quote)));
+  document.querySelectorAll("[data-quote]").forEach((button) => button.addEventListener("click", () =>
+    button.dataset.quote === "travel-guide" ? requestPaidResource() : approveAndPay(button.dataset.quote),
+  ));
   const pendingConsents = state.consents.filter((consent) =>
     !consent.revokedAt && !consent.usedByPaymentId && consent.expiresAt > Date.now(),
   );
   document.querySelector("#consents").innerHTML = pendingConsents.map((consent) => {
     const quote = state.catalog[consent.quoteId];
-    return `<article class="payment"><div><h3>${quote.merchant} <span class="status">待执行</span></h3><p>${consent.items.map((item) => `${item.name} × ${item.quantity}`).join("、")} · ${money(consent.amountMinor, consent.currency)} · ${consent.currency} · ${consent.quoteVersion}<br>任务 ${consent.taskId} · 授权有效 15 分钟</p></div><div class="payment-actions"><button class="button primary" data-pay="${consent.id}">批准并模拟扣款</button><button class="button secondary" data-unknown="${consent.id}">模拟结果未知</button><button class="button secondary" data-revoke="${consent.id}">撤销</button></div></article>`;
+    const execute = consent.quoteId === "travel-guide"
+      ? `<button class="button primary" data-retry-resource="${consent.id}">批准并重试 402 资源</button>`
+      : `<button class="button primary" data-pay="${consent.id}">批准并模拟扣款</button><button class="button secondary" data-unknown="${consent.id}">模拟结果未知</button>`;
+    return `<article class="payment"><div><h3>${quote.merchant} <span class="status">待执行</span></h3><p>${consent.items.map((item) => `${item.name} × ${item.quantity}`).join("、")} · ${money(consent.amountMinor, consent.currency)} · ${consent.currency} · ${consent.quoteVersion}<br>任务 ${consent.taskId} · 授权有效 15 分钟</p></div><div class="payment-actions">${execute}<button class="button secondary" data-revoke="${consent.id}">撤销</button></div></article>`;
   }).join("") || `<p class="subtle">暂无待执行授权。审核商户报价后，可在执行前再次批准或撤销。</p>`;
   document.querySelectorAll("[data-pay]").forEach((button) => button.addEventListener("click", () => payConsent(button.dataset.pay, "captured")));
   document.querySelectorAll("[data-unknown]").forEach((button) => button.addEventListener("click", () => payConsent(button.dataset.unknown, "unknown")));
+  document.querySelectorAll("[data-retry-resource]").forEach((button) => button.addEventListener("click", () => retryPaidResource(button.dataset.retryResource)));
   document.querySelectorAll("[data-revoke]").forEach((button) => button.addEventListener("click", () => revoke(button.dataset.revoke)));
   document.querySelector("#payments").innerHTML = state.payments.slice().reverse().map((payment) => {
     const title = payment.items.map((item) => item.name).join("、");
     const actions = payment.status === "unknown"
       ? `<button class="button secondary" data-reconcile="${payment.id}">查询模拟结果</button>`
       : ["captured", "partially_refunded"].includes(payment.status)
-        ? `${payment.fulfillmentStatus === "pending" ? `<button class="button secondary" data-fulfill="${payment.id}">模拟商户履约</button>` : ""}<button class="button secondary" data-refund="${payment.id}" data-amount="${payment.amountMinor - payment.refundedMinor}">模拟剩余退款</button>`
+          ? `${payment.fulfillmentStatus === "pending" ? `<button class="button secondary" data-fulfill="${payment.id}">模拟商户履约</button><button class="button secondary" data-fail-fulfillment="${payment.id}">模拟履约失败</button>` : ""}${payment.fulfillmentStatus === "manual_review" ? `<button class="button secondary" data-retry-fulfillment="${payment.id}">人工决定：重试履约</button><button class="button secondary" data-compensate="${payment.id}">人工决定：补偿退款</button>` : ""}${payment.fulfillmentStatus === "retrying" ? `<button class="button secondary" data-fulfill="${payment.id}">再次模拟履约</button><button class="button secondary" data-fail-fulfillment="${payment.id}">再次模拟失败</button>` : ""}${payment.status !== "refunded" ? `<button class="button secondary" data-refund="${payment.id}" data-amount="${payment.amountMinor - payment.refundedMinor}">模拟剩余退款</button>` : ""}`
         : "";
     const receipt = payment.receipt ? ` · 收据 ${payment.receipt.id} · 履约 ${payment.fulfillmentStatus}` : "";
-    return `<article class="payment"><div><h3>${title} <span class="status">${labels[payment.status] ?? payment.status}</span></h3><p>${payment.merchantId} · ${money(payment.amountMinor, payment.currency)} · ${payment.id}${receipt}</p></div><div class="payment-actions">${actions}</div></article>`;
+    const visibleStatus = payment.fulfillmentStatus === "manual_review"
+      ? labels.manual_review
+      : payment.fulfillmentStatus === "compensated"
+        ? labels.compensated
+        : labels[payment.status] ?? payment.status;
+    return `<article class="payment"><div><h3>${title} <span class="status">${visibleStatus}</span></h3><p>${payment.merchantId} · ${money(payment.amountMinor, payment.currency)} · ${payment.id}${receipt}</p></div><div class="payment-actions">${actions}</div></article>`;
   }).join("") || `<p class="subtle">尚无模拟交易。先选择一个商户报价，仔细审核后再授权。</p>`;
   document.querySelectorAll("[data-reconcile]").forEach((button) => button.addEventListener("click", () => reconcile(button.dataset.reconcile)));
   document.querySelectorAll("[data-fulfill]").forEach((button) => button.addEventListener("click", () => fulfill(button.dataset.fulfill)));
+  document.querySelectorAll("[data-fail-fulfillment]").forEach((button) => button.addEventListener("click", () => failFulfillment(button.dataset.failFulfillment)));
+  document.querySelectorAll("[data-retry-fulfillment]").forEach((button) => button.addEventListener("click", () => resolveFulfillment(button.dataset.retryFulfillment, "retry")));
+  document.querySelectorAll("[data-compensate]").forEach((button) => button.addEventListener("click", () => resolveFulfillment(button.dataset.compensate, "refund")));
   document.querySelectorAll("[data-refund]").forEach((button) => button.addEventListener("click", () => refund(button.dataset.refund, Number(button.dataset.amount))));
   document.querySelector("#event-count").textContent = `${state.events.length} 条本地事件`;
 }
@@ -79,13 +96,66 @@ async function approveAndPay(quoteId) {
   );
   if (!accepted) return;
   try {
-    await api("/api/consents", { ownerId: OWNER, taskId: TASKS[currentJourney], quoteId });
+    const task = await api("/api/tasks", {
+      ownerId: OWNER,
+      journey: currentJourney,
+      goal: `Compare and request this offer: ${quote.items[0].name}`,
+      quoteId,
+    });
+    const suggestion = task.result.suggestions.find((item) => item.quoteId === quoteId);
+    if (!suggestion) throw new Error("Offline planner did not return the selected quote.");
+    const action = await api(`/api/tasks/${task.result.id}/actions`, {
+      ownerId: OWNER,
+      action: { type: "request_quote", quoteId },
+      idempotencyKey: `quote-${task.result.id}`,
+    });
+    if (action.result.quote.id !== quoteId) throw new Error("Constrained quote action returned an unexpected offer.");
+    await api("/api/consents", { ownerId: OWNER, taskId: task.result.id, quoteId });
     showNotice("一次性授权已建立。可再次审核后执行模拟付款，也可在执行前撤销。");
     await refresh();
   } catch (error) {
     showNotice(error.message);
     await refresh();
   }
+}
+
+async function requestPaidResource() {
+  try {
+    const challenge = await api("/api/resources/travel-guide", {});
+    if (challenge.status !== 402) throw new Error("Expected a local HTTP 402 challenge.");
+    const offer = challenge.challenge;
+    if (!window.confirm(`HTTP 402 · 付费资源挑战\n\n资源：${offer.resource}\n商户：${offer.merchantId}\n金额：${money(offer.amountMinor, offer.currency)}\n报价版本：${offer.quoteVersion}\n模式：${offer.settlement}\n\n这只是本地 protocol-shaped simulation，不是真实 MPP/x402 或结算。是否继续创建待执行授权？`)) return;
+    const task = await api("/api/tasks", {
+      ownerId: OWNER,
+      journey: "travel",
+      goal: "Request the synthetic neighborhood travel guide",
+      quoteId: offer.quoteId,
+    });
+    const action = await api(`/api/tasks/${task.result.id}/actions`, {
+      ownerId: OWNER,
+      action: { type: "request_quote", quoteId: offer.quoteId },
+      idempotencyKey: `resource-quote-${task.result.id}`,
+    });
+    if (action.result.quote.id !== offer.quoteId) throw new Error("The constrained task action did not match the 402 challenge.");
+    await api("/api/consents", { ownerId: OWNER, taskId: task.result.id, quoteId: offer.quoteId });
+    showNotice("已收到 402 挑战并创建待执行建议。审核授权后，可重试获取本地模拟资源。");
+    await refresh();
+  } catch (error) { showNotice(error.message); }
+}
+
+async function retryPaidResource(consentId) {
+  try {
+    const consent = (await api("/api/state")).consents.find((item) => item.id === consentId);
+    if (!window.confirm(`再次确认后重试 HTTP 402 资源\n\n${consent.items[0].name}\n${money(consent.amountMinor, consent.currency)} ${consent.currency}\n\n本次仅为离线模拟，不会真实结算。`)) return;
+    const response = await api("/api/resources/travel-guide", {
+      ownerId: OWNER,
+      taskId: consent.taskId,
+      consentId,
+      idempotencyKey: `resource-${consentId}`,
+    });
+    showNotice(`本地模拟资源已交付：${response.result.delivery.id}；已生成模拟收据。`);
+    await refresh();
+  } catch (error) { showNotice(error.message); }
 }
 
 async function payConsent(consentId, outcome) {
@@ -124,6 +194,28 @@ async function fulfill(paymentId) {
   try {
     const response = await api("/api/payments/fulfill", { ownerId: OWNER, paymentId });
     showNotice(`履约状态：${response.result.fulfillmentStatus}（模拟）。`);
+    await refresh();
+  } catch (error) { showNotice(error.message); }
+}
+
+async function failFulfillment(paymentId) {
+  try {
+    await api("/api/payments/fulfillment/fail", {
+      ownerId: OWNER,
+      paymentId,
+      reason: "simulated_failure",
+    });
+    showNotice("模拟履约失败已持久化；已转为待人工处理，未标记完成。");
+    await refresh();
+  } catch (error) { showNotice(error.message); }
+}
+
+async function resolveFulfillment(paymentId, action) {
+  try {
+    const title = action === "retry" ? "重试履约" : "退还剩余付款";
+    if (!window.confirm(`人工处理待审核订单：${title}？此操作仍为本地模拟。`)) return;
+    await api("/api/payments/fulfillment/resolve", { ownerId: OWNER, paymentId, action });
+    showNotice(action === "retry" ? "已记录人工重试决定；请再次尝试履约。" : "已记录补偿退款决定。");
     await refresh();
   } catch (error) { showNotice(error.message); }
 }
