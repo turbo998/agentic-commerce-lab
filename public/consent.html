@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#122238">
+    <title>Human approval · Commerce Lab</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/consent.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">Commerce <span>Lab</span></a>
+      <span class="offline-badge">HUMAN REVIEW · SIMULATED</span>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">SEPARATE CONSENT EXPERIENCE</div>
+        <h1>你决定是否授权</h1>
+        <p>只有此页面单独启动的 synthetic human-role 演示会话可以批准。agent 工具契约不包含人工会话签发。</p>
+        <p id="consent-identity" class="planner-note"></p>
+      </section>
+      <section class="panel activity">
+        <button id="human-start" class="button primary">开始本地人工审核</button>
+        <div id="human-workspace" hidden>
+        <div id="consent-details" class="payment-list" aria-live="polite">正在读取待审核请求…</div>
+        <div id="consent-actions" class="payment-actions"></div>
+        <p id="consent-result" class="notice" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+      <footer>本地 synthetic identity，不是 Entra 身份认证或生产安全边界；本地模拟，不涉及真实付款、退款或供应商连接。</footer>
+    </main>
+  </body>
+</html>
