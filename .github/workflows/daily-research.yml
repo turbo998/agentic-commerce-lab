@@ -1,0 +1,68 @@
+name: Daily public-source observations
+
+on:
+  schedule:
+    - cron: "20 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: daily-public-source-observations
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Observe sources
+        id: monitor
+        continue-on-error: true
+        run: python -m scripts.daily_monitor
+      - name: Preserve observations even on source failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-source-observations-${{ github.run_id }}
+          path: |
+            research/observations/
+            research/monitor-state.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish review branch and pull request
+        if: always() && hashFiles('research/observations/*.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="research/observations-${RUN_ID}-${RUN_ATTEMPT}"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/observations research/monitor-state.json
+          git diff --cached --quiet && exit 0
+          git commit -m "research: record daily public-source observations"
+          git push origin "$branch"
+          gh api "repos/${REPOSITORY}/pulls" \
+            -f title="research: review daily source observations" \
+            -f head="$branch" -f base="$DEFAULT_BRANCH" \
+            -f body="Automated source observations only. Review source failures, verify changes and add an original architecture synthesis before accepting the new baseline. No provider release or production availability is inferred. No automatic merge."
+      - name: Surface source monitoring failures
+        if: always() && steps.monitor.outcome == 'failure'
+        run: |
+          echo "::error::Some sources could not be observed. Review the artifact and preserve prior baselines."
+          exit 1
