@@ -1,0 +1,157 @@
+[
+  {
+    "id": "visa-intelligent-commerce-launch",
+    "vendor": "Visa",
+    "kind": "announcement",
+    "url": "https://investor.visa.com/news/news-details/2025/Find-and-Buy-with-AI-Visa-Unveils-New-Era-of-Commerce/default.aspx",
+    "published_date": "2025-04-30",
+    "checked_on": "2026-10-10",
+    "notes": "AI-ready cards, consumer-set controls and consented personalization; announcement is not universal production eligibility."
+  },
+  {
+    "id": "visa-tap-launch",
+    "vendor": "Visa",
+    "kind": "announcement",
+    "url": "https://investor.visa.com/news/news-details/2025/Visa-Introduces-Trusted-Agent-Protocol-An-Ecosystem-Led-Framework-for-AI-Commerce/default.aspx",
+    "published_date": "2025-10-14",
+    "checked_on": "2026-10-10",
+    "notes": "Public developer specifications and reference sample; initial network scope and interoperability intentions are qualified."
+  },
+  {
+    "id": "visa-tap-overview",
+    "vendor": "Visa",
+    "kind": "documentation",
+    "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Merchant/purpose/time-bound signatures; access requirements and full specification must be checked separately."
+  },
+  {
+    "id": "visa-tap-code",
+    "vendor": "Visa",
+    "kind": "reference_code",
+    "url": "https://github.com/visa/trusted-agent-protocol",
+    "monitor_url": "https://raw.githubusercontent.com/visa/trusted-agent-protocol/main/README.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "revision": "16d59bdf3f8a542bc538d0962edbb80ea30a02af",
+    "notes": "Registry, CDN verifier, merchant backend/frontend and agent sample. Not executed or copied into this lab."
+  },
+  {
+    "id": "visa-commerce-connect",
+    "vendor": "Visa",
+    "kind": "announcement",
+    "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-intelligent-commerce-connect-ai-shopping-for-businesses.html",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Visa Acceptance Platform on-ramp; Visa/non-Visa, multiple protocols and vaults subject to availability. Exact announcement date not confirmed from fetched text."
+  },
+  {
+    "id": "stripe-suite-launch",
+    "vendor": "Stripe",
+    "kind": "announcement",
+    "url": "https://stripe.com/newsroom/news/agentic-commerce-suite",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Single integration for multiple agent surfaces; announcement date not confirmed from fetched text."
+  },
+  {
+    "id": "stripe-sessions-2026",
+    "vendor": "Stripe",
+    "kind": "announcement",
+    "url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "288 products/features across Stripe, NOT 288 agentic commerce features. Distinguish now, preview and soon in each individual statement."
+  },
+  {
+    "id": "stripe-commerce-overview",
+    "vendor": "Stripe",
+    "kind": "documentation",
+    "url": "https://docs.stripe.com/agentic-commerce",
+    "monitor_url": "https://docs.stripe.com/agentic-commerce.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Sellers vs agents vs machine payments; Agents section marked private preview."
+  },
+  {
+    "id": "stripe-acp-docs",
+    "vendor": "Stripe",
+    "kind": "documentation",
+    "url": "https://docs.stripe.com/agentic-commerce/protocols/acp",
+    "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/acp.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Checkout, cart/feed, payment handlers, delegated authentication, orders/webhooks."
+  },
+  {
+    "id": "acp-spec",
+    "vendor": "ACP",
+    "kind": "specification",
+    "url": "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol",
+    "monitor_url": "https://raw.githubusercontent.com/agentic-commerce-protocol/agentic-commerce-protocol/main/README.md",
+    "published_date": "2025-09-29",
+    "checked_on": "2026-10-10",
+    "revision": "7fdd78df677a94dce04c770644b0fbbb1401272b",
+    "selected_version": "2026-04-17",
+    "notes": "README says beta; dated snapshots differ from unreleased. Repository maintainers and Stripe documentation use different partner descriptions."
+  },
+  {
+    "id": "stripe-spt",
+    "vendor": "Stripe",
+    "kind": "documentation",
+    "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+    "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Profile-bound grants, currency/max_amount/expires_at, revocation/deactivation, PaymentIntent and webhooks. Fetched seller example uses 2026-09-30.preview."
+  },
+  {
+    "id": "stripe-mpp",
+    "vendor": "Stripe",
+    "kind": "documentation",
+    "url": "https://docs.stripe.com/payments/machine/mpp",
+    "monitor_url": "https://docs.stripe.com/payments/machine/mpp.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "HTTP 402 challenge, credential retry and receipt; Stripe/Tempo. Per-method minimum amounts and account eligibility apply."
+  },
+  {
+    "id": "stripe-agent-tools",
+    "vendor": "Stripe",
+    "kind": "documentation",
+    "url": "https://docs.stripe.com/agents",
+    "monitor_url": "https://docs.stripe.com/agents.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Current MCP, plugins and skills guidance; access to Stripe tools is not permission to spend for a consumer."
+  },
+  {
+    "id": "stripe-ai-code",
+    "vendor": "Stripe",
+    "kind": "reference_code",
+    "url": "https://github.com/stripe/ai",
+    "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Former stripe/agent-toolkit redirects here; current README includes billing SDKs, MCP and skills."
+  },
+  {
+    "id": "google-ucp",
+    "vendor": "Google",
+    "kind": "documentation",
+    "url": "https://developers.googleblog.com/under-the-hood-universal-commerce-protocol-ucp/",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Discovery at /.well-known/ucp, capabilities/extensions and API/MCP/A2A bindings; fetched example version 2026-01-11."
+  },
+  {
+    "id": "google-ap2",
+    "vendor": "Google",
+    "kind": "announcement",
+    "url": "https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol",
+    "published_date": null,
+    "checked_on": "2026-10-10",
+    "notes": "Signed intent and cart mandates, human-present and delegated flows. No AP2 credential implementation in this lab."
+  }
+]
