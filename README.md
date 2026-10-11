@@ -17,9 +17,41 @@
 
 本仓库只发布原创说明、合成数据和经许可审核的代码；不托管内部材料、客户信息、支付秘密或第三方资料副本。各能力的集成与验证状态会明确标记。
 
-## 状态
+## 研究与技术资产
 
-研究和模拟 demo 正在建设中。尚未验证的功能会明确标注，不能据此推断生产可用性。
+| 入口 | 内容 |
+|---|---|
+| [2026-10-11 每日研究](research/daily/2026-10-11.md) | 今日结论、发布事实纠错、技术资产、证据缺口与日更机制 |
+| [协议与产品分层](research/protocols.md) | Visa VIC/TAP/MCP/Toolkit；Stripe ACP/UCP/Suite/SPT/Link/MPP/x402/MCP |
+| [Personal Agent 参考架构](research/architecture.md) | 信任边界、审批、幂等、异步支付恢复与非功能取舍 |
+| [Agent 使用场景](research/use-cases.md) | 零售、补货、预订、B2B 开票、API 付费、售后与财务洞察 |
+| [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
+| [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
+
+## 本地运行
+
+要求 Python 3.12+；只使用标准库，无需支付账户、模型密钥、联网或安装依赖：
+
+```powershell
+python -m lab.demo
+python -m unittest discover -s tests -v
+```
+
+demo 使用自动清理的临时 SQLite 数据库，输出 `status=simulated`。可信调用方预置批准与时钟；生产需要独立用户认证/同意与支付 broker。此实验**不是** ACP/AP2/TAP/SPT 协议实现、真实支付或认证结果。
+
+## 每日研究
+
+已有 Copilot App 自动化每日 22:00 执行研究，已补充官方来源核验、检查未合并分支、按日期增量研究、相关测试、提交推送与 PR 的要求。日更依赖本机 App/执行主机可用；GitHub Actions 目前仅执行 CI，不负责生成研究。
+
+需要联网的公开来源跟踪命令：
+
+```powershell
+python -m scripts.source_monitor
+```
+
+生成 `research/daily/YYYY-MM-DD-sources.json`（北京时间），只记录 URL、哈希及错误，不保存第三方全文。任何抓取失败返回非零退出码；同日重跑仍对比此前日期的最后成功结果。HTML 导航或文案变化也可能改变哈希，**不能据此判断产品发布或标准升级**。专家研究写入同日 `.md`，将最新官方正文与公告日期、准入限制分开。
+
+研究上传当前会话分支并通过 PR 汇总；未合并前不代表默认分支已更新。尚未验证的能力会明确标注，不能据此推断生产可用性。
 
 ## 公开参考
 

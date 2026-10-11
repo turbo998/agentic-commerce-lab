@@ -1,0 +1,153 @@
+{
+  "checked_on": "2026-10-11",
+  "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
+  "sources": [
+    {
+      "id": "stripe-acp-launch",
+      "url": "https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce",
+      "published_on": "2025-09-29",
+      "evidence": "Official announcement; datePublished metadata verified."
+    },
+    {
+      "id": "stripe-suite-launch",
+      "url": "https://stripe.com/blog/agentic-commerce-suite",
+      "published_on": "2025-12-11",
+      "evidence": "Official announcement; SPT already described here, not first introduced at Sessions 2026."
+    },
+    {
+      "id": "stripe-sessions-2026",
+      "url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+      "published_on": "2026-04-29",
+      "evidence": "Official announcement; separates available, previewed and coming-soon features."
+    },
+    {
+      "id": "stripe-commerce-docs",
+      "url": "https://docs.stripe.com/agentic-commerce",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce.md",
+      "published_on": null,
+      "evidence": "Current documentation; agent embedding is private preview."
+    },
+    {
+      "id": "stripe-spt",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry."
+    },
+    {
+      "id": "stripe-mcp",
+      "url": "https://docs.stripe.com/mcp",
+      "monitor_url": "https://docs.stripe.com/mcp.md",
+      "published_on": null,
+      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31."
+    },
+    {
+      "id": "stripe-mpp",
+      "url": "https://docs.stripe.com/payments/machine/mpp",
+      "monitor_url": "https://docs.stripe.com/payments/machine/mpp.md",
+      "published_on": null,
+      "api_version_observed": "2026-07-29.preview",
+      "evidence": "MPP 402 challenge, Stripe PaymentIntent, SPT/card and stablecoin integrations."
+    },
+    {
+      "id": "stripe-x402",
+      "url": "https://docs.stripe.com/payments/machine/x402",
+      "monitor_url": "https://docs.stripe.com/payments/machine/x402.md",
+      "published_on": null,
+      "api_version_observed": "2026-05-27.preview",
+      "evidence": "Facilitator settlement then PaymentIntent recording; access and geographic restrictions."
+    },
+    {
+      "id": "stripe-acp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/acp",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/acp.md",
+      "published_on": null,
+      "spec_version_observed": "2026-04-17",
+      "evidence": "Current docs name Stripe/OpenAI/Meta; launch article named Stripe/OpenAI."
+    },
+    {
+      "id": "stripe-link-wallet",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet.md",
+      "published_on": null,
+      "evidence": "Link customer OAuth, one-time credentials, US/Canada payments and US financial insights."
+    },
+    {
+      "id": "stripe-machine-payments",
+      "url": "https://docs.stripe.com/payments/machine",
+      "monitor_url": "https://docs.stripe.com/payments/machine.md",
+      "published_on": null,
+      "evidence": "Protocol/network/token matrix, minimum settlement amounts and access requirements."
+    },
+    {
+      "id": "stripe-frameworks",
+      "url": "https://docs.stripe.com/agents",
+      "monitor_url": "https://docs.stripe.com/agents.md",
+      "published_on": null,
+      "evidence": "Current recommended plugin/MCP/skills setup; historical agent-toolkit repo resolves to Stripe AI."
+    },
+    {
+      "id": "visa-vic",
+      "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
+      "published_on": null,
+      "evidence": "Onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls."
+    },
+    {
+      "id": "visa-tap",
+      "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+      "published_on": null,
+      "evidence": "Merchant/purpose/time-bound signatures and replay/relay prevention."
+    },
+    {
+      "id": "visa-tap-announcement",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html",
+      "published_on": null,
+      "evidence": "Official announcement; HTTP Message Signatures, Cloudflare, initial Visa-network scope; exact date not independently extracted."
+    },
+    {
+      "id": "visa-toolkit",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/innovation/visa-mcp-server-agent-acceptance-toolkit.html",
+      "published_on": null,
+      "evidence": "MCP Server and Acceptance Agent Toolkit described as pilot, with invoicing and Pay By Link workflows."
+    },
+    {
+      "id": "visa-tap-code",
+      "url": "https://raw.githubusercontent.com/visa/trusted-agent-protocol/main/README.md",
+      "published_on": null,
+      "revision_observed": "16d59bdf3f8a542bc538d0962edbb80ea30a02af",
+      "evidence": "Readme only; registry/CDN proxy/merchant/agent reference topology, not a full code audit."
+    },
+    {
+      "id": "ucp",
+      "url": "https://ucp.dev/latest/specification/overview/",
+      "published_on": null,
+      "revision_observed": "ad9950ba5c7bcd02af648f849bf7344052f76f57",
+      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding."
+    },
+    {
+      "id": "ap2",
+      "url": "https://ap2-protocol.org/",
+      "monitor_url": "https://raw.githubusercontent.com/google-agentic-commerce/AP2/main/docs/index.md",
+      "published_on": null,
+      "tag_observed": "v0.2.0",
+      "tag_revision": "b4587ac1d055888a73b4b21750973cffba961793",
+      "revision_observed": "e1ea56db72a6385bce3e5c1112b3a56ce60acb43",
+      "evidence": "Current main docs: open/closed Checkout and Payment Mandates; must not attribute main content automatically to tag."
+    },
+    {
+      "id": "mcp",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "published_on": null,
+      "schema_directories_observed": ["2025-11-25", "2026-07-28", "draft"],
+      "evidence": "2025-11-25 text read; 2026-07-28 schema existence separately verified, not treated as reviewed."
+    },
+    {
+      "id": "a2a",
+      "url": "https://a2a-protocol.org/latest/specification/",
+      "published_on": null,
+      "spec_version_observed": "1.0.0",
+      "evidence": "Latest page explicitly identifies release; canonical proto, operations and transport bindings."
+    }
+  ]
+}
