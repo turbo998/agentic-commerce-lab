@@ -1,0 +1,107 @@
+# Agentic Commerce 协议与产品分层
+
+验证日期：**2026-10-11（北京时间）**。这是架构研究，不是供应商集成认证。事实依据见 [来源注册表](sources.json)；官网 `latest`、`main` 与当前文档可能继续变化，不能用首次公告替代今天的能力边界。
+
+## 不要把所有协议放在同一张“支付协议”清单里
+
+| 层次 | 协议或产品 | 解决的问题 | 不负责什么 |
+|---|---|---|---|
+| 工具访问 | MCP；Visa MCP Server；Stripe MCP | Host/Client/Server 之间的工具、资源、能力协商及 API 访问 | 不替用户批准订单；不等于商业交易协议；不保证支付成功 |
+| Agent 协作 | A2A | AgentCard、Message、Task、Artifact；跨 Agent 任务、流式与异步交互 | 不定义购物税费、卡凭证、资金结算 |
+| 商业流程 | ACP、UCP | 商品、购物车、checkout、账户关联、订单及履约扩展 | 本身不成为收单网络，不免除商户责任 |
+| 请求信任 | Visa TAP | 商户识别可信 Agent，验证绑定上下文的请求签名与识别信息 | 可信请求不等于资金授权成功，更不等于结算完成 |
+| 意图与授权证据 | AP2；Visa authenticated Payment Instruction | 可验证的用户约束、最终交易授权与审计证据 | 不把自然语言意图自动升级为无上限授权 |
+| 凭证委托 | Stripe SPT；Visa agent-specific tokens/credentials；Link Agent Wallet | 隔离原始支付信息、限定商户/金额/有效期、用户批准与一次性凭证 | 不是所有商户/地域都能使用的通用 bearer token |
+| 机器付费 | MPP、x402 | HTTP 402 challenge → 付款证明或凭证 → 重试 → 资源及回执 | 不是完整商品发现与售后协议；也不免除退款、税务、合规义务 |
+| 商户集成产品 | Stripe Agentic Commerce Suite | 产品目录分发、托管商业接口、checkout、支付、风控与订单事件 | 不是 ACP 的同义词；标准开放不代表渠道接入已获批准 |
+
+## Visa：网络级授权与商户信任
+
+### Visa Intelligent Commerce（VIC）
+
+[开发者正文](https://developer.visa.com/capabilities/visa-intelligent-commerce/overview)描述的链路为：
+
+1. Agent onboarding → 用户添加卡 → step-up verification → 设置 Passkey。
+2. Agent 提出一笔或多笔购买建议，用户同意并用 Passkey 认证 Payment Instruction。
+3. Agent 请求凭证；VIC 校验其与已认证指令一致，并设置 network-level controls。
+4. Agent 在商户结账；正文将初期路径描述为 guest checkout/form fill。
+5. VisaNet 在授权阶段执行预期商户与金额控制；Agent 回传购买结果，为争议处理提供证据。
+
+**架构含义：**签名与授权证据在模型之外管理。浏览器表单自动化也必须受到同一授权约束，不能因为 API 尚未接通就绕过凭证隔离。文档可阅读不代表该账户具备生产接入资格；onboarding、市场、发行方、token provisioning 与商业合作仍需单独确认。
+
+### Trusted Agent Protocol（TAP）
+
+[公告](https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html)说明 TAP 基于 HTTP Message Signatures，与 Cloudflare 合作，并与 Web Bot Auth 相关标准方向对齐。初期规格作用于 Visa network 场景，目标是开放生态互操作；不能据此声称已完成跨网络认证或成为最终行业标准。
+
+[开发者正文](https://developer.visa.com/capabilities/trusted-agent-protocol/overview)明确 merchant/purpose/time-bound signatures、防重放和防 relay。[官方仓库](https://github.com/visa/trusted-agent-protocol)的 README 展示 Agent Registry、CDN Proxy、Merchant Backend/Frontend、TAP Agent 拓扑，并提到 RFC 9421。今天仅核验 README 和仓库头提交，不宣称审阅了整个代码库或验证参考实现的生产安全性。
+
+**设计要求：**在 CDN/网关验证公钥来源、签名覆盖组件、有效期、nonce/重放状态、商户域与操作上下文；保留独立交易授权与 PSP 风控。不能靠 User-Agent 字符串放行，也不能将 TAP 放行当作卡授权。
+
+### Visa MCP Server / Acceptance Agent Toolkit
+
+[官方产品更新](https://corporate.visa.com/en/sites/visa-perspectives/innovation/visa-mcp-server-agent-acceptance-toolkit.html)将两者描述为 **pilot**。Toolkit 的明确示例是 Acceptance Invoicing、Pay By Link 和交易信息查询；不将“开票工具”包装成已完成自主卡付款的能力。角色授权、读写工具分离、发票金额校验和确认应由宿主与服务执行层落实。
+
+## Stripe：商户编排、凭证与机器支付
+
+### 发布事实与今天的文档要分开
+
+| 官方来源 | 核验的发布日期 | 实际证据与边界 |
+|---|---|---|
+| [ACP / Instant Checkout 公告](https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce) | 2025-09-29 | 首发正文为 Stripe/OpenAI 共建；可开放实现标准与加入具体 AI 渠道是不同事项 |
+| [Suite 公告](https://stripe.com/blog/agentic-commerce-suite) | 2025-12-11 | 单集成处理发现、checkout、支付、风控；正文已介绍 SPT，因此不能说 SPT 首发于 Sessions 2026 |
+| [Sessions 2026](https://stripe.com/blog/everything-we-announced-at-sessions-2026) | 2026-04-29 | Link agent wallet、MPP、Suite 渠道扩展；平台能力为 preview，Google/Gemini 购买路径用的是 coming-soon 表述 |
+
+以上日期从 Stripe 页面 `datePublished` 元数据读取。Visa 两篇公告的日期未从本轮正文/元数据独立提取，注册表保留 `null`，不把搜索摘要的日期当成确认事实。
+
+[当前 ACP 文档](https://docs.stripe.com/agentic-commerce/protocols/acp)已经列出 Stripe/OpenAI/Meta，包含 checkout、cart/feed、delegate payment、OAuth delegate authentication、orders/webhooks。文档链接指向 `spec/2026-04-17` 的 OpenAPI 与 JSON Schema；仓库另有 `unreleased`，必须固定实际选择的规格，不能实现浮动主分支后自称特定版本合规。
+
+### Shared Payment Tokens（SPT）和 Link Agent Wallet
+
+[SPT seller 文档](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller)：
+
+- SPT 对卖家的 Stripe profile 提供 scoped grant，包含 `usage_limits[currency]`、`max_amount`、`expires_at`。
+- 今天示例 API version 为 **`2026-09-30.preview`**，不能混用旧示例的请求字段。
+- 卖家用 `payment_method_data[shared_payment_granted_token]` 创建/确认 PaymentIntent；风控、退款、支付状态仍由 Stripe 的实际结果决定。
+- 地域为美国、加拿大与部分欧洲国家；agent、customer、seller 的资格需分别查。地区列表并不等于 Link 钱包的可用地区。
+
+[Link Agent Wallet 文档](https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet)：
+
+- 具体 purchase 的 spend request 经客户批准后获得一次性 payment credential。
+- Agent payments 面向美国/加拿大客户，financial insights 面向美国客户；卖家和 Agent 开发者所在地可以不同。
+- Link API 位于 `api.link.com`，授权服务器为 `login.link.com`；使用客户 OAuth token，**不是 Stripe API key**。CLI 和 Link SDK 的认证/存储边界与 Stripe server SDK 不同。
+- Financial insights 的账户授权和支付批准是不同 scope；不要把“可读余额”当作“可支出资金”。
+
+### MPP 与 x402
+
+[Stripe MPP](https://docs.stripe.com/payments/machine/mpp)是 Stripe/Tempo 共建的 Machine Payments Protocol。HTTP 402 要求付费，Agent 授权后重试，服务端核验并返回付费资源及 receipt；Stripe 集成支持 SPT/card 和 stablecoin。今天文档含 `2026-07-29.preview` API 示例。不能把 MPP 限定为 stablecoin-only，也不能将两个 402 协议当作相同 wire format。
+
+[Stripe x402](https://docs.stripe.com/payments/machine/x402)的示例：Client → HTTP 402 → 带凭证重试 → facilitator verify/settle on-chain → Stripe `transaction_verification` PaymentIntent 记录 → 资源。示例为 Base/USDC，API version **`2026-05-27.preview`**。链上已结算但 Stripe 记录失败，需要以交易 hash 幂等重试对账，不能再次付款。
+
+[Machine payments 总览](https://docs.stripe.com/payments/machine)区分协议支持矩阵：MPP/Tempo/USDC.e、MPP/Solana/USDC、x402/Base/USDC。卡/SPT 最小金额 $0.50，stablecoin 最小 0.01 USDC；sessions 的 sub-cent 计量不等于每次 sub-cent 都能立即结算。稳定币接入需审批，美国纽约州不在文档的可用范围，其他市场需申请。金额与网络边界不能从“微支付”营销词自行推断。
+
+### Stripe MCP：本月需要特别跟踪
+
+[当前文档](https://docs.stripe.com/mcp)明确：从 **2026-10-31** 开始不再接受 full-access secret keys 或没有 Agent tag 的 restricted keys。交互客户端优先 OAuth，无交互应用使用最小权限 Agent Keys。生产迁移先在 sandbox 验证，再过期旧 key；本仓库不创建、读取或保存任何真实 key。
+
+### Agent 框架、Toolkit、Plugin 与 Skills
+
+[当前开发者入口](https://docs.stripe.com/agents)优先推荐组合了 MCP 与 Skills 的 agent plugin；Stripe CLI 的 `stripe agent setup` 可按客户端安装。Skills 是构建指导，不是远程付款授权，更不能覆盖权限策略。
+
+历史 `stripe/agent-toolkit` 仓库的 GitHub Contents API 当前返回标题为 **Stripe AI** 的 README，指向 `stripe/ai`。该 README 列出 `@stripe/ai-sdk`（Vercel AI SDK 的计费集成）、`@stripe/token-meter`（原生模型 SDK 的计量集成）、remote MCP 与 plugins/skills。因此今天不沿用旧教程假设 Toolkit 目录结构和支付能力未变化；仅核验 README，不宣称执行或认证其 SDK。计费/计量、商户 checkout 与替用户付款是三个不同职责。
+
+## 其他标准的版本与语义漂移
+
+| 标准 | 今天的直接证据 | 架构注意事项 |
+|---|---|---|
+| AP2 | [当前官方正文](https://ap2-protocol.org/)使用 Checkout Mandate / Payment Mandate，各有 Open / Closed 阶段；GitHub tag 存在 `v0.2.0` | 老材料的 Intent/Cart 命名不能未经核对写成当前规范；main 正文与 tag 必须分别核验。FIDO 标准化继续进行，不表示所有实现已认证 |
+| UCP | [规范](https://ucp.dev/latest/specification/overview/)要求精确协议版本选择、能力协商、reverse-domain namespace 与 schema origin 绑定 | provenance 不是 trust。远程 schema 解析需 allowlist、HTTPS、大小/超时限制，防 SSRF 与依赖投毒；draft 能力不自动成为稳定能力 |
+| MCP | 已读 `2025-11-25` 文本；官方 schema 目录另有 `2026-07-28` 与 `draft` | 本轮不宣称完整审阅新版本；MCP 代表 Model Context Protocol，不是 Merchant Commerce Protocol |
+| A2A | [latest 规格页](https://a2a-protocol.org/latest/specification/)显示 `1.0.0`，canonical proto → abstract operations → JSON-RPC/gRPC/HTTP bindings | 协作消息的身份认证与付款授权分开；附带授权证据不能省略校验 |
+
+## 方案选型
+
+零售商已有 Stripe 与库存/履约系统：先评估 Suite 或 ACP/UCP adapter 的系统接入成本，保留商户主权和订单事件回写。需要多 PSP 时，将授权、商业协议、支付 handler 分层，不将 Stripe 特有 SPT 字段扩散到领域模型。
+
+面向消费者的 Personal Agent：先落地**报价 → 人工批准 → 最终购物车绑定 → 限额凭证 → 商户支付 → 异步确认**。再评估具备明确 Open Mandate 的补货场景；未证明撤销、累计预算、并发控制与价格漂移处理前，不开放自主购买。
+
+API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域接入、最低金额、单位经济、钱包能力及链上失败恢复。不要为了展示“Agent 自动付款”而跳过服务定价、退款 SLA、密钥隔离与合规分析。
