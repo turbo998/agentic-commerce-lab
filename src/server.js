@@ -648,7 +648,9 @@ export function createAppServer({ statePath = defaultStatePath, planner = offlin
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const port = Number(process.env.PORT ?? 4173);
-  const server = createAppServer();
+  const server = createAppServer({
+    statePath: process.env.COMMERCE_STATE_PATH ? resolve(process.env.COMMERCE_STATE_PATH) : defaultStatePath,
+  });
   server.listen(port, "127.0.0.1", () => {
     console.log(`SIMULATED / OFFLINE demo: http://127.0.0.1:${port}`);
   });
