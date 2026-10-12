@@ -21,12 +21,14 @@
 
 | 入口 | 内容 |
 |---|---|
-| [2026-10-11 每日研究](research/daily/2026-10-11.md) | 今日结论、发布事实纠错、技术资产、证据缺口与日更机制 |
+| [2026-10-12 每日研究](research/daily/2026-10-12.md) | 官方证据增量、AI Native 与 WAF 辩证比较、UCP handler 边界及 MCP 迁移盘点 |
+| [2026-10-11 研究基线](research/daily/2026-10-11.md) | 发布事实纠错、已有技术资产、证据缺口与日更机制 |
 | [协议与产品分层](research/protocols.md) | Visa VIC/TAP/MCP/Toolkit；Stripe ACP/UCP/Suite/SPT/Link/MPP/x402/MCP |
 | [Personal Agent 参考架构](research/architecture.md) | 信任边界、审批、幂等、异步支付恢复与非功能取舍 |
 | [Agent 使用场景](research/use-cases.md) | 零售、补货、预订、B2B 开票、API 付费、售后与财务洞察 |
 | [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
 | [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
+| [离线 MCP 迁移盘点](lab/mcp_migration.py) | Stripe MCP 2026-10-31 auth 类别期限检查；只接受无密钥元数据，不验证账户 |
 
 ## 本地运行
 
@@ -38,6 +40,17 @@ python -m unittest discover -s tests -v
 ```
 
 demo 使用自动清理的临时 SQLite 数据库，输出 `status=simulated`。可信调用方预置批准与时钟；生产需要独立用户认证/同意与支付 broker。此实验**不是** ACP/AP2/TAP/SPT 协议实现、真实支付或认证结果。
+
+### Stripe MCP 迁移盘点（不读取密钥）
+
+```powershell
+python -m lab.mcp_migration --as-of 2026-10-12
+python -m lab.mcp_migration --as-of 2026-10-31
+```
+
+默认读取 [合成客户端清单](lab/mcp_inventory.example.json)；`--inventory` 可指定仅含 alias、环境和 auth 类别的 JSON。禁止填入实际 key、账户 ID 或个人数据；不传 `--as-of` 时使用北京时间当天日期。示例含两种旧认证类别，两个命令都**预期 exit 1**，分别输出 `migration_required` / `blocked_by_documented_policy`；空/无效输入 exit 2。全部记录为 OAuth/Agent Key 时 exit 0 只表示元数据类别匹配，始终 `account_verification=not_performed`，不是已迁移或已获付款权限。
+
+Stripe 文档未说明 cutoff 的具体时刻/时区，本工具只做日期模拟，不检测服务器 401。依据是 [MCP 官方正文](https://docs.stripe.com/mcp)，人工迁移与验收边界见 [今日研究](research/daily/2026-10-12.md)。工具无网络调用，不创建、轮换或撤销实际凭证。
 
 ## 每日研究
 

@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-11",
+  "checked_on": "2026-10-12",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -33,7 +33,7 @@
       "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
       "published_on": null,
       "api_version_observed": "2026-09-30.preview",
-      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry."
+      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry. Repeated same-day fetches differ in generated example expires_at; hash changes are not release evidence."
     },
     {
       "id": "stripe-mcp",
@@ -122,8 +122,8 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "ad9950ba5c7bcd02af648f849bf7344052f76f57",
-      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding."
+      "revision_observed": "a5e7cfe3a03392899b2199ff751be6ae7c928c8a",
+      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding. Today's head commit changes only uv.lock urllib3 dependency, not evidence of a protocol release."
     },
     {
       "id": "ap2",
@@ -147,7 +147,59 @@
       "url": "https://a2a-protocol.org/latest/specification/",
       "published_on": null,
       "spec_version_observed": "1.0.0",
-      "evidence": "Latest page explicitly identifies release; canonical proto, operations and transport bindings."
+      "release_tag_observed": "v1.0.1",
+      "release_published_at": "2026-05-28T11:34:36Z",
+      "evidence": "Latest website displays 1.0.0 but official repository latest release is v1.0.1. Do not silently equate moving website content with a pinned tag."
+    },
+    {
+      "id": "stripe-ucp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp.md",
+      "published_on": null,
+      "evidence": "Stripe UCP Tech Council membership and checkout, identity linking, order and payment-token exchange building blocks."
+    },
+    {
+      "id": "stripe-ucp-handler",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler.md",
+      "published_on": null,
+      "handler_version_observed": "2026-06-25",
+      "ucp_example_version_observed": "2026-04-08",
+      "evidence": "Current handler supports card/Apple Pay completion; advertised link is not accepted by current complete endpoint. Google Pay uses com.google.pay; tokenize requires same environment and confirmed commerce relationship. Example versions are not universal latest-version claims."
+    },
+    {
+      "id": "stripe-agent-keys",
+      "url": "https://docs.stripe.com/keys",
+      "monitor_url": "https://docs.stripe.com/keys.md",
+      "published_on": null,
+      "evidence": "Agent Keys are agent-tagged restricted API keys with approval-rule governance; key prefixes alone do not prove tagging, least privilege or transaction authority."
+    },
+    {
+      "id": "stripe-suite-retail",
+      "url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail.md",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "Current ACS seller availability in US, Canada, selected Europe. Feed imports are asynchronous and unordered; upsert omission is not deletion and replace removes omitted products."
+    },
+    {
+      "id": "mcp-auth-2026-07-28",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "published_on": null,
+      "spec_version_observed": "2026-07-28",
+      "evidence": "Reviewed authorization overview only, not full protocol conformance. HTTP OAuth resource metadata, discovery and scopes are separate from payment consent."
+    },
+    {
+      "id": "azure-waf-ai-design",
+      "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design",
+      "published_on": null,
+      "evidence": "Current official WAF already covers five AI layers, deterministic orchestration versus agent collaboration, policy enforcement, durable state and AI-aware caching."
+    },
+    {
+      "id": "azure-n-tier",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier",
+      "published_on": null,
+      "evidence": "N-tier is an architecture style, not the definition of WAF. Logical layers and physical tiers need not map one-to-one; asynchronous messaging is supported."
     }
   ]
 }

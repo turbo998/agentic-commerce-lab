@@ -49,10 +49,12 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(observe(self.source, digest).status, "error")
 
     def test_registry_and_url_validation(self) -> None:
+        validate_url("https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design")
         for url in [
             "http://docs.stripe.com/mcp", "https://docs.stripe.com.evil.example",
             "https://user:secret@docs.stripe.com/mcp", "https://127.0.0.1/",
             "https://docs.stripe.com:8080/",
+            "https://learn.microsoft.com.evil.example/",
         ]:
             with self.subTest(url=url), self.assertRaises(ValueError):
                 validate_url(url)
@@ -81,6 +83,11 @@ class MonitorTests(unittest.TestCase):
     def test_checked_registry_loads(self) -> None:
         sources = load_sources(Path("research") / "sources.json")
         self.assertGreaterEqual(len(sources), 10)
+
+    def test_generated_example_expiry_changes_hash_not_product_claim(self) -> None:
+        first = fingerprint(b'{"expires_at": 1794406247}', "text/plain")
+        second = fingerprint(b'{"expires_at": 1794406248}', "text/plain")
+        self.assertNotEqual(first, second)
 
     def test_main_records_failure_and_returns_nonzero(self) -> None:
         failure = Observation(
