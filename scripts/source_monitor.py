@@ -19,6 +19,7 @@ ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
     "a2a-protocol.org", "mpp.dev",
+    "learn.microsoft.com",
 })
 
 

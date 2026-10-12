@@ -105,3 +105,12 @@
 面向消费者的 Personal Agent：先落地**报价 → 人工批准 → 最终购物车绑定 → 限额凭证 → 商户支付 → 异步确认**。再评估具备明确 Open Mandate 的补货场景；未证明撤销、累计预算、并发控制与价格漂移处理前，不开放自主购买。
 
 API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域接入、最低金额、单位经济、钱包能力及链上失败恢复。不要为了展示“Agent 自动付款”而跳过服务定价、退款 SLA、密钥隔离与合规分析。
+
+## 2026-10-12 增量核验
+
+以上保留为 10-11 基线；当日证据与未解决问题见 [10-12 日研](daily/2026-10-12.md)，不能将本节新增核验当作新发布。
+
+- [Stripe UCP handler](https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler) 示例分开 UCP `2026-04-08` 与 handler `2026-06-25`：card/Apple Pay completion、Google Pay 使用 `com.google.pay`；discovery 宣告 `link` 不代表当前 `/complete` 接受 `link` instrument。Tokenize 还要求相同环境与已确认商业关系，profile ID 不是客户 OAuth token。
+- [API keys 正文](https://docs.stripe.com/keys)确认 Agent Key 是 Agent-tagged restricted key，受 approval rules 治理。MCP 2026-10-31 期限仍未变；新离线盘点只判断 auth class，不能验证实际 tag、审批或权限。
+- A2A 官网仍显示 `1.0.0`，但 [官方 repo release](https://github.com/a2aproject/A2A/releases/tag/v1.0.1) 为 `v1.0.1`，GitHub publication 为 2026-05-28；这不是今天的 release。固定 tag/proto 后再做契约验证，不将 website `latest` 自动等同于 tag。
+- SPT seller 示例到期时间会动态变化；UCP 昨日到今日 head 仅更新依赖锁文件。两种变化都不构成产品发布证据。
