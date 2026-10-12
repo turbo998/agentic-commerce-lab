@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="面向合作伙伴工程师的 GitHub Copilot 与 HVE 深度研究：组件、RPI、上下文、治理与可复现 Agentic Commerce 案例。">
+<title>HVE 深度研究 · 从使用 Copilot 到工程化开发 Agent</title>
+<link rel="icon" href="data:,">
+<script src="./hve-theme.js"></script>
+<link rel="stylesheet" href="./hve-report.css">
+</head>
+<body>
+<a class="skip" href="#report-main">跳到研究正文</a>
+<div class="layout">
+<aside aria-label="研究导航">
+  <p class="brand">HVE / Copilot</p>
+  <p class="small muted">合作伙伴工程师深读材料<br>方法、源码合同、业务边界</p>
+  <label for="search">检索研究章节</label>
+  <input id="search" type="search" placeholder="例如：critique、预算、Full Auto" autocomplete="off">
+  <p id="search-status" class="small muted" role="status" aria-live="polite"></p>
+  <nav aria-label="章节目录"><ol id="toc"><li><a href="#positioning">HVE 的定位与非目标</a></li>
+<li><a href="#layers">两类 Agent 与四层职责</a></li>
+<li><a href="#artifacts">Agents Instructions Skills Prompts 如何选择</a></li>
+<li><a href="#discovery">发现 加载 遵守 强制控制</a></li>
+<li><a href="#rpi">RPI 生命周期与最小入口</a></li>
+<li><a href="#research">Research readiness 与证据研究</a></li>
+<li><a href="#plan">Plan critique 任务ID与验收</a></li>
+<li><a href="#implement">Implement 范围与计划偏离</a></li>
+<li><a href="#review">Review 与 Follow-up 验收路由</a></li>
+<li><a href="#context">上下文工程 artifacts 状态与恢复</a></li>
+<li><a href="#modes">Manual Full Auto 人类判断与授权</a></li>
+<li><a href="#installation">版本安装分发与复现</a></li>
+<li><a href="#builder">HVE Builder 与团队定制</a></li>
+<li><a href="#commerce">Commerce预算增量与运行边界</a></li>
+<li><a href="#adoption">团队采用与工程效率衡量</a></li>
+<li><a href="#misconceptions">误区与带走的行动</a></li></ol></nav>
+  <div class="toolbar"><button id="theme" type="button">切换主题</button><button id="print" type="button">打印全文</button></div>
+  <a href="./">打开 Commerce Demo</a>
+  <p class="small"><a href="/workshop/outline.md">60 分钟详细大纲</a><br>
+  <a href="/workshop/demo-runbook.md">可复现 Demo 手册</a><br>
+  <a href="/workshop/sources.json">来源与结论登记</a></p>
+</aside>
+<main id="report-main" tabindex="-1">
+<header>
+  <p class="eyebrow">DEEP RESEARCH · ENGINEERING WITH AGENTS</p>
+  <h1>从使用 Copilot，<br>到用 HVE 工程化开发 Agent</h1>
+  <p>HVE 的关键不在于让模型一次写出更多代码，而在于让工程知识、证据和判断进入可复用的工作流程。本报告用 Agentic Commerce 的预算推荐增量，解释这种方法怎样落到源码、测试与人工审批边界。</p>
+  <span class="badge">已有 Copilot 基础</span><span class="badge">VS Code 教学主路径</span><span class="badge">业务运行：离线 MOCK</span><span class="badge">无真实支付 / 无付费模型调用</span>
+  <p class="small muted">研究固定快照：<code>49dfb73866f8c5f81bf734d6ca808dac25a2a330</code>。这是上游源码研究基准，不是当前客户端已安装版本，也不代表 Marketplace Stable 与该快照一致。</p>
+  <div class="callout"><strong>阅读证据标签：</strong>“官方说明”表示发布文档的声明；“源码合同”表示固定文件规定的行为，不等于执行保证；“案例观察”表示已有 Commerce 源码；“运行证据”必须来自实际会话和检查；“采用建议”是本报告的工程判断。</div>
+  <p class="small muted" id="execution-note">执行口径：本次开发实际 host 是 Copilot App/CLI 1.0.94-3，Node 24.13.1；本机 RPI phase skills 以文件哈希登记，上游 revision 未确定，未运行 current RPI Agent wrapper 或 Builder。真实 Research → Plan/critique 在应用修改前完成。业务 focused 12/12、完整 check 38/38、HTTP e2e 2/2，以及 Playwright 13 条业务和 35 条 H5 实际断言通过：16章/26来源、检索/主题、390px无溢出、键盘跳读、原CSP/零外部运行请求和真实Chromium PDF渲染。打印会展开3个代码示例并恢复原状态；复制验证精确API载荷与失败降级，此浏览器host读回为空，未声称OS剪贴板round-trip通过。最终阶段证据与host登记见下方分享包入口。VS Code Chat 是待主讲人复现的教学路径，不能把本地 artifacts 当作其执行证明。</p>
+  <p class="small"><a href="/workshop/evidence/host.json">实际 host / skill 哈希</a> ·
+  <a href="/workshop/evidence/rpi-execution.md">真实阶段预演与最终审查</a> ·
+  <a href="/workshop/evidence/browser-commerce.json">业务浏览器断言</a> ·
+  <a href="/workshop/evidence/browser-report.json">研究页浏览器断言</a></p>
+  <p id="copy-status" class="small muted" role="status" aria-live="polite">示例可用复制按钮操作；复制失败会明确提示。</p>
+  <noscript><p>已提供完整正文、目录和来源。交互检索、主题切换及复制需要本地 JavaScript；外部来源不是运行依赖。</p></noscript>
+</header>
+<p id="empty" hidden role="status">没有匹配章节。更换关键词或清空搜索，可恢复完整正文。</p>
+
+<article id="positioning" data-title="HVE 的定位与非目标">
+<h2>01 · HVE 是什么，不是什么</h2>
+<span class="badge">官方说明</span><span class="badge">采用建议</span>
+<p>HVE Core 当前将自己定义为高度有主张的 agentic SDLC framework：重点是上下文管理、治理、可复用组织知识，以及跨团队一致的工程实践。它把已有的工程经验写入 agents、instructions、skills 和可调用入口，使这些经验能随着开发任务被带入上下文，而不是依赖每个人记住同样长的提示词。</p>
+<p>其核心原则可概括为“AI 携带规则，人保留判断”。这里的“规则”包含调查方法、编码标准、评审流程和验证要求；“判断”包含业务目标是否值得做、哪些风险可以接受、哪些取舍需要负责人决定，以及结果是否满足需求。带有标准的生成过程仍然可能犯错，因此要保留检验和决策记录。</p>
+<p>HVE 不是另一个基础模型，不是 Commerce Agent 的生产运行时，也不是付款授权服务。安装它不会自动带来供应商集成、可信身份、预算权限或真实交易能力。把这些职责混在一起，会将开发工具的建议错误地提升为业务系统的执行权限。</p>
+<div class="callout warn"><strong>重要采用边界：</strong>当前官方明确提醒：HVE 快速演进，接口、工作流和架构可能出现不兼容变化，适合作为模式和学习来源，不宜未经评估就视为稳定平台或生产依赖。对合作伙伴更稳妥的做法，是固定参考版本、选择有用模式，并逐步形成自己拥有和维护的工程资产。</div>
+<p class="refs">依据：<a data-source="readme" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/README.md">HVE README 与生命周期提示</a><a data-source="builder-types" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">Artifact 责任与强制控制</a></p>
+</article>
+
+<article id="layers" data-title="两类 Agent 与四层职责">
+<h2>02 · 工程 Agent 与业务 Agent：不要混称</h2>
+<span class="badge">源码合同</span><span class="badge">案例观察</span>
+<p>这场分享中存在两种 Agent。Copilot 工程 Agent 读取仓库、调用工具、研究、计划、改代码和运行检查；Commerce 业务 Agent 接受购物目标和结构化限额，提出报价建议。HVE 组织前者的开发过程；后者才是被开发的产品能力。名称相似，不表示它们共享权限。</p>
+<div class="flow" aria-label="四层职责">
+<div><strong>Host / 模型</strong>Copilot、工具授权、上下文和实际执行环境</div>
+<div><strong>HVE 工程工件</strong>phase skills、规范、证据和推进合同</div>
+<div><strong>Commerce Planner</strong>本地 mock 提出候选，不批准付款</div>
+<div><strong>业务 Authority</strong>人工同意、额度、范围、幂等与模拟执行</div>
+</div>
+<p>模型能力决定它怎样理解、生成和推理；host 决定发现、工具调用和授权方式；HVE 工件描述应该怎样工作；程序里的 authority 提供硬性业务约束。只有最后一层才能决定某笔模拟执行是否被允许。即便工程 Agent 生成了正确的 instructions，也不能据此省略服务端的批准、范围和预算校验。</p>
+<p>本案例默认 Commerce planner 是确定性离线脚本，并非真实 LLM 推理。它可以演示 planner/validator/action 的接口边界与可重复结果，但不能证明真实模型的购物判断能力。开发环节仍由真实 Copilot 工作；“无模型密钥”指业务 Demo，不表示现场 Copilot 不需要访问其服务。</p>
+<p class="refs">依据：<a data-source="builder-types" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">责任、激活与 enforced controls</a><a data-source="commerce-architecture" href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/docs/architecture.md">Commerce 基线架构</a><a data-source="commerce-agent" href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/src/agent.js#L5-L66">Planner 源码基线</a></p>
+</article>
+
+<article id="artifacts" data-title="Agents Instructions Skills Prompts 如何选择">
+<h2>03 · 四类工件，按职责选择而非按热度堆叠</h2>
+<span class="badge">官方说明</span><span class="badge">源码合同</span>
+<div class="table-wrap"><table><thead><tr><th>工件</th><th>主要职责</th><th>典型触发</th><th>案例映射</th></tr></thead><tbody>
+<tr><td>Agent<br><code>.agent.md</code></td><td>会话角色、工作方式、工具与交接入口</td><td>用户选择、明确调用或 host 支持的 handoff</td><td>RPI Agent 管理同一任务的生命周期</td></tr>
+<tr><td>Instructions<br><code>.instructions.md</code></td><td>项目或路径相关标准、约定和长期不变量</td><td>项目上下文、匹配 applyTo、相关性加载或手动附加，取决于 host</td><td>整数金额、人工批准、不可扩大预算</td></tr>
+<tr><td>Skill<br><code>SKILL.md</code></td><td>按需加载的流程、参考知识与工具能力；脚本可选</td><td>描述匹配、明确调用、user-invocable slash command</td><td>rpi-research、rpi-plan、rpi-implement、rpi-review</td></tr>
+<tr><td>Prompt<br><code>.prompt.md</code></td><td>可重复的用户意图与一次工作入口</td><td>用户 slash command 或明确入口</td><td>保留的特定操作入口；不把旧 RPI prompt 清单当成当前 phase skills</td></tr>
+</tbody></table></div>
+<p>当前 README 主线强调 agents、instructions 和 skills，但源码和分发体系仍需要理解 prompts 的角色。不要由此推导“所有 prompts 已删除”，也不要拿旧版 prompt 入口代替当前 RPI skills。演示应以固定源码和实际客户端可见入口为准。</p>
+<p>Skill 不等于“一段 shell 脚本”：核心是一个可被按需加载的能力合同，参考文件和脚本只是实现手段。反过来，instruction 即使包含强硬措辞，也通常仍是模型上下文里的指导。需要确定性约束时，应使用严格 schema、权限边界、测试和执行代码，而不是继续加长提示词。</p>
+<div class="callout"><strong>最小选择规则：</strong>共享不变量写 instructions；重复领域流程写 skill；有明确会话身份和生命周期责任才建 agent；有独立高量证据调查、确实需要上下文隔离时再考虑 subagent。复用优先于新建。</div>
+<p class="refs">依据：<a data-source="architecture" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/architecture/ai-artifacts.md">AI Artifacts Architecture</a><a data-source="builder-types" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">Artifact Types 与 delegation cost</a><a data-source="vs-skills" href="https://code.visualstudio.com/docs/agent-customization/agent-skills">VS Code Agent Skills</a></p>
+</article>
+
+<article id="discovery" data-title="发现 加载 遵守 强制控制">
+<h2>04 · 发现不是加载，加载不是保证遵守</h2>
+<span class="badge">Host 官方说明</span><span class="badge">采用建议</span>
+<p>在演示中看到一个 skill 出现在列表，只能证明 host 发现了它。还需要确认这次请求确实加载了该 skill，然后检查工具活动、产出的文件和验证结果。最终规则是否得到遵守，要看行为证据；安全或额度是否受到硬性保护，要看执行层，而不是 customization 列表。</p>
+<div class="flow" aria-label="四种不同证据"><div><strong>Discovery</strong>配置入口可见</div><div><strong>Invocation</strong>本次会话引用/加载</div><div><strong>Adherence</strong>行为和产物符合要求</div><div><strong>Enforcement</strong>程序拒绝非法操作</div></div>
+<p>VS Code 官方说明，custom instructions 的支持依赖所选 session/harness。项目级 <code>.github/copilot-instructions.md</code>、路径级 <code>.github/instructions/</code> 与个人配置的发现方式并不完全相同。演示记录应包含版本、harness、安装方式、相关设置以及是否有同名个人技能，否则同样的 prompt 可能加载不同内容。</p>
+<p>当前上游 RPI skills 位于 <code>.github/skills/rpi/rpi-*/</code>；HVE Builder 位于 <code>.github/skills/hve-core/hve-builder/</code>。如果把目录误写为 <code>hve-core/rpi-*</code>，查找会失败。源码分类目录是组织方式，不直接意味着存在同名独立 Marketplace 产品。</p>
+<p>VS Code skills 默认在父上下文 inline 执行；<code>context: fork</code> 属于受 host/设置影响的实验性能力。不能从“安装了 skill”推导“每次自动启动一个独立 Agent”。</p>
+<div class="callout warn"><strong>冲突处理：</strong>VS Code 官方建议不要依赖文件顺序或某种 precedence rule 解决冲突。<code>applyTo</code> 主要用于匹配并附加规则，并不保证“更具体的 glob 必定覆盖更宽规则”。应主动消除矛盾，并用执行层保护关键不变量；HVE 文档中的组织约定不能泛化成所有 host 的保证。</div>
+<p class="refs">依据：<a data-source="vs-instructions" href="https://code.visualstudio.com/docs/agent-customization/custom-instructions">VS Code：发现、验证与冲突</a><a data-source="vs-skills" href="https://code.visualstudio.com/docs/agent-customization/agent-skills">VS Code：技能加载与 fork</a><a data-source="research" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/SKILL.md#L11-L123">当前 RPI skill 路径</a></p>
+</article>
+
+<article id="rpi" data-title="RPI 生命周期与最小入口">
+<h2>05 · RPI：选择下一步，不强制一条固定流水线</h2>
+<span class="badge">源码合同</span>
+<p>当前 RPI 将 Research、Plan、Implement、Review 和 Follow-up 的责任分开。首先判断现有任务描述、验收条件、约束、依赖和已完成研究是否足够；只有缺少决策所需证据时才补 Research。一个明确且孤立的小改动不必因为使用 HVE 就增加全套研究仪式。</p>
+<div class="flow"><div><strong>Readiness</strong>已有证据是否够用？</div><div><strong>Research when needed</strong>补关键缺口</div><div><strong>Plan + critique</strong>可检查的实施策略</div><div><strong>Implement</strong>范围内执行与验证</div><div><strong>Review / Follow-up</strong>对账并路由剩余工作</div></div>
+<p>使用 <strong>RPI Agent</strong>，意味着用户选择一个生命周期包装入口，由它管理同一任务的身份、模式、状态和阶段推进，并激活相应 phase skill。它不是必须依次派发专职 Researcher、Planner、Implementer、Reviewer 的多 worker 引擎。各阶段通常可以在当前上下文完成，子代理只是有明确收益的有界辅助。</p>
+<p>如果已知道下一步，就使用最小入口：有证据缺口用 <code>/rpi-research</code>；证据充分但要制定策略用 <code>/rpi-plan</code>；实施就绪用 <code>/rpi-implement</code>；需要验收对账用 <code>/rpi-review</code>。独立 phase skill 与 wrapper 的默认推进策略需要分别解释，不能混成一条不可跳过的流程。</p>
+<p>本机旧版 <code>rpi-research</code> 要求有 dispatch 工具时委派 Researcher；固定上游当前合同则明确“subagent is never required”。这类行为差异直接影响时延、上下文和讲解，必须在材料里标记版本，而不是用一个名字掩盖差异。</p>
+<p class="refs">依据：<a data-source="rpi-overview" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/README.md">RPI Overview</a><a data-source="rpi-agent" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/agents/hve-core/rpi-agent.agent.md#L45-L168">RPI Agent</a><a data-source="research-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/references/research.md#L213-L257">Research helper contract</a></p>
+</article>
+
+<article id="research" data-title="Research readiness 与证据研究">
+<h2>06 · Research：只填真实缺口，事实与建议分开</h2>
+<span class="badge">源码合同</span><span class="badge">案例映射</span>
+<p>研究阶段不能以“已经找到几篇链接”为完成条件。它要回答与当前决策直接相关的问题：现有代码如何工作、哪些验收已经确定、还缺哪些事实、替代方案有什么取舍、风险是否会改变设计。当前合同要求 Wider → Deeper → Contrarian：先识别相关面，再深入关键点，最后寻找可能推翻结论的反证。</p>
+<p>Commerce 案例中的真实缺口是：planner 目前按旅程和币种列报价，是否已按金额过滤？硬预算检查在哪里？新解释字段会影响哪些 API、UI 和评估合同？研究应以源码为证，不重复研究已经明确的支付模拟边界，也不引入真实 PSP 集成。</p>
+<p>输出要分开“源码事实”“确认方向”“建议”和“未知”。例如“权限层已有累计额度控制”是可由代码核实的事实；“推荐层也应避免提出单报价超限候选”是本次已确认的目标；“新建多个专用业务 Agent”则没有成为本次需求，不能由研究自动扩张 scope。</p>
+<p>Planning Readiness 使用 <code>Ready / Not ready / Not applicable / Blocked</code>。research-only/no-handoff 对应不支持规划交接的状态；缺失关键证据不能用漂亮结论替代。helper 返回是候选信息，由研究上下文核实并写正式 artifact。</p>
+<details><summary>本案例可复用的 Research 输入</summary><pre><code>/rpi-research
+调查现有 planner、输出校验、任务 API、UI 与评估测试。
+目标：只推荐旅程/币种一致且单报价不超任务限额的固定目录报价；
+明确解释超预算与币种排除，不改支付 Authority。
+区分已存在的硬权限、推荐质量缺口、接口影响和未知事实。
+只研究，不编辑应用源码。</code></pre></details>
+<p class="refs">依据：<a data-source="research" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/SKILL.md#L11-L123">Research SKILL</a><a data-source="research-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/references/research.md#L213-L257">Readiness 与调查合同</a><a data-source="commerce-agent" href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/src/agent.js#L5-L66">基线 Planner</a></p>
+</article>
+
+<article id="plan" data-title="Plan critique 任务ID与验收">
+<h2>07 · Plan 与 critique：先把“完成”变成可检查的约定</h2>
+<span class="badge">源码合同</span><span class="badge">案例映射</span>
+<p>计划不是文件清单，而是可验证的实施策略。当前计划围绕 task identity、phase/task marker、依赖和明确 requirements 展开，每项任务记录 Goals、Requirements、Details、References、Dependencies。这些信息让实现者知道目标和边界，而不只是照着一串猜测的编辑步骤执行。</p>
+<p>整体 task identity 需要稳定；当前阶段使用 <code>Pxx</code> 与 <code>Pxx-Txx</code>，配合 HTML markers 定位。规划重组时这些 phase/task 编号可以重编号，因此真正稳定的是任务身份与可恢复证据，不是任何一次排版产生的行号。</p>
+<p>Plan critique 默认运行，可由明确方向跳过；深度模式必须有明确请求，不能仅凭“项目复杂”推定。独立评估责任不等于必须另起子代理。Critique 只读计划和直接相关证据，只写一个记录，把 <code>PC-xxx</code> finding 交回 planner 处理，不自行改计划或向用户追加新决策。</p>
+<div class="table-wrap"><table><thead><tr><th>本案例 requirement</th><th>最小可检查结果</th></tr></thead><tbody>
+<tr><td>单报价不超限</td><td>USD 70：相机 59.99 与咖啡 18.99 可推荐，耳机 79.99 排除</td></tr>
+<tr><td>无候选不伪造成功</td><td>USD 10：空 suggestions、no_action 和明确原因</td></tr>
+<tr><td>不扩权</td><td>未批准无付款；planner 无法改变原请求预算</td></tr>
+<tr><td>维持原有累计约束</td><td>相机执行后再请求咖啡，仍由 Authority 拒绝累计超限</td></tr>
+</tbody></table></div>
+<p>“Approved plan”在当前 Implement 合同中指实施就绪的范围，不自动等于所有业务负责人签字，更不等于授予了真实支付、云资源或破坏性操作权限。需要的安全确认与人审仍必须保留。</p>
+<p class="refs">依据：<a data-source="plan" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan/SKILL.md#L19-L103">Plan SKILL</a><a data-source="planning-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan/references/planning.md#L7-L248">任务/依赖/critique</a><a data-source="critique" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan-critique/SKILL.md#L17-L76">Plan Critique SKILL</a></p>
+</article>
+
+<article id="implement" data-title="Implement 范围与计划偏离">
+<h2>08 · Implement：计划不是冻结目标，也不是自由扩张目标</h2>
+<span class="badge">源码合同</span><span class="badge">采用建议</span>
+<p>实施按完整计划、一个 phase 或一个 task 的已就绪范围执行。完成声明必须与该范围一致：完成 <code>P01-T01</code> 不代表整个项目结束；测试运行也不能替代尚未解决的方向决策。当前合同要求只有 requirements 得到证据、changes 记录存在后，才更新相应完成状态。</p>
+<p>实现中要区分普通本地判断、checklist/Guidance 等实施注释、范围外 follow-up，以及改变要求、架构、安全或依赖的计划更新。比如发现评估 fixture 的预算低于它声称正常的报价，应纠正 fixture 并增加边界测试；不能简单放宽预算校验来让旧测试变绿。</p>
+<p>重大或分歧选择尚未被确认方向解决时，暂停受影响工作并取得必要决策；需要更广重规划才回 Plan。不要把每个微小实现调整都升格为重跑所有阶段，也不要用“我在 autopilot”绕过实质 scope 改变。Implement 不自行接管 critique 的职责。</p>
+<p>本案例实现应在 planner、服务端输出校验和 UI 解释层做增量。Authority 的批准、任务累计额、余额、身份范围和幂等语义保持不变。测试要覆盖真实边界，而不是以“UI 显示了一个金额”代理“服务端不会接受超预算”。</p>
+<details><summary>实施输入：必须替换为当前任务真实计划路径</summary><pre><code>/rpi-implement plan=&lt;当前任务的实际计划路径&gt; task=P01-T01
+只执行该任务的已确认 requirements。
+保持 Authority 合同；记录 passed/failed/skipped/unavailable。
+若发现需要改变预算或批准语义，先记录发现和必要决策。</code></pre></details>
+<p class="refs">依据：<a data-source="implement" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-implement/SKILL.md#L17-L79">Implement SKILL</a><a data-source="implementation-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-implement/references/implementation.md#L31-L111">计划更新与范围完成</a></p>
+</article>
+
+<article id="review" data-title="Review 与 Follow-up 验收路由">
+<h2>09 · Review：执行完成，与结果可接受是两个维度</h2>
+<span class="badge">源码合同</span>
+<p>Review 对齐 requirements、已接受方向、plan/critique、changes 和验证证据，形成一次可追溯的验收对账。它不是泛泛夸赞代码，也不是直接修代码的阶段；当前合同中它只写自己的 review record，不改 research、plan、changes 或被审源码。</p>
+<div class="table-wrap"><table><thead><tr><th>维度</th><th>当前合同词汇</th><th>含义</th></tr></thead><tbody>
+<tr><td>Execution Status</td><td>Complete / Partial / Blocked</td><td>本次审查范围被执行到何种程度</td></tr>
+<tr><td>Outcome</td><td>Conformant / Conformant with justified divergence / Defects found / Residual work / Not accepted</td><td>证据支持什么验收判定</td></tr>
+</tbody></table></div>
+<p>一次审查可以执行完整，同时发现缺陷。“检查没有运行”应记为 unavailable/skipped，不是通过；“缺少证据”也不自动等于已经证明功能有缺陷。每个 <code>RV-xxx</code> 要绑定 requirement 或接受方向，说明 expected/observed、证据、影响、可检查 resolving condition 和去向。</p>
+<p>实现缺陷回 Implement；材料决策或无效计划假设回 Plan；决策关键证据缺口回 Research；非阻断剩余工作进入独立 follow-up。这样把“需要修代码”和“需要做判断”分开，避免一切都进入无目的自动循环。修复后也不机械要求再跑一轮完整 Review；新的审查由具体需要决定。</p>
+<div class="callout"><strong>本案例的关键审查问题：</strong>planner 的输出是不是建议而非授权？收到 planner 的对象是否与服务器原始请求隔离？原有幂等与累计预算是否仍有真实回归证据？真实执行 host 是否被如实标记？</div>
+<p class="refs">依据：<a data-source="review" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-review/SKILL.md#L21-L85">Review SKILL</a><a data-source="review-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-review/references/review.md#L30-L101">Execution / outcome / routing</a></p>
+</article>
+
+<article id="context" data-title="上下文工程 artifacts 状态与恢复">
+<h2>10 · 上下文工程：让证据可恢复，不让对话无限增长</h2>
+<span class="badge">源码合同</span><span class="badge">采用建议</span>
+<p>上下文管理的实用目标，是让下一步获得足够且相关的信息。长对话中可能混入过期输出、其他任务和相互矛盾的方向；持久 artifacts 将研究、计划、变更和验收分开，使工程师可以在新会话中引用真正需要的证据，而不是依靠模型“记得我们前面聊过”。</p>
+<pre><code>.copilot-tracking/research/YYYY-MM-DD/{slug}-research.md
+.copilot-tracking/plans/YYYY-MM-DD/{slug}-plan.md
+.copilot-tracking/reviews/plans/YYYY-MM-DD/{slug}-plan-critique.md
+.copilot-tracking/changes/YYYY-MM-DD/{slug}-changes.md
+.copilot-tracking/reviews/logs/YYYY-MM-DD/{slug}-review.md</code></pre>
+<p>这是固定上游的 canonical 路径示例，不一定等于旧安装实际输出。新会话恢复时引用同一任务的真实文件、当前 marker、确认方向和下一步，不自动重做已经充分的 Research。<code>/clear</code> 或新会话在上下文积累干扰时有用，但不是每个阶段必做的仪式。</p>
+<p>RPI Agent 状态区分 task status 与 session status，保存 artifact pointers 与派生路由；不复制 critique/Review 的全部内容。状态转换前保存 intended next_action，转换后保存 resulting state；写失败应停止并对照 canonical artifacts 恢复，不能因末次写缺失而盲目重放阶段。</p>
+<p>这些是 Markdown 中的协作规范，不是数据库事务，也不保证 host 总能执行到位。官方 context-engineering 文档中的特定 token 数字和机制解释，宜作为作者论述而非未经实测的普遍定律。本报告不以这些数字证明提效或模型注意力机制。</p>
+<p class="refs">依据：<a data-source="context-engineering" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/context-engineering.md">Context Engineering</a><a data-source="rpi-agent" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/agents/hve-core/rpi-agent.agent.md#L45-L168">State 与 transition persistence</a><a data-source="planning-reference" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan/references/planning.md#L7-L248">路径与 marker</a></p>
+</article>
+
+<article id="modes" data-title="Manual Full Auto 人类判断与授权">
+<h2>11 · Manual / Full Auto：推进权限，不是无限业务权限</h2>
+<span class="badge">源码合同</span>
+<p>Manual 模式由用户明确选择阶段推进；automatic 模式可以在已经授权的范围内继续阶段与必要 follow-up。RPI Agent 还支持“Research 和 Plan 后停在实施前”的边界，以及在特定阶段保留用户判断。这些决定需要被状态与确认记录保存，恢复时不能被一句模糊的“继续”擦掉。</p>
+<p>Full Auto 授权普通生命周期推进，不意味着允许任何破坏性操作、真实支付、账号连接或云部署。已明确保留的 stop-before-Implementation 边界、必要安全确认、人类审查和阻塞仍适用。把“自动继续”解释成“用户批准全部外部副作用”，既不是上游合同，也不是本案例允许的行为。</p>
+<p>现场教学采用手动讲解阶段更清楚：在计划阶段说明人做了什么取舍，在实现阶段说明范围和检查，在审查阶段说明如何处理证据与 finding。自动模式可作为对照介绍，但不应将“工具没有再问我”当成没有风险或已经满足验收的证明。</p>
+<div class="callout"><strong>两条授权不能混淆：</strong>“允许 Copilot 实施预算筛选功能”是工程修改授权；“允许 Commerce 执行一笔已绑定报价的模拟交易”是业务人审授权。前者不能替代后者。</div>
+<p class="refs">依据：<a data-source="rpi-agent" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/agents/hve-core/rpi-agent.agent.md#L45-L168">Mode choice / stop rules</a><a data-source="commerce-architecture" href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/docs/architecture.md">业务批准与执行层</a></p>
+</article>
+
+<article id="installation" data-title="版本安装分发与复现">
+<h2>12 · 安装与版本：研究 main，不能假装运行的是 main</h2>
+<span class="badge">官方说明</span><span class="badge">采用建议</span>
+<p>当前 HVE 有一个 VS Code 扩展身份 <code>ise-hve-essentials.hve-core</code> 和一个 Copilot CLI plugin 身份 <code>hve-core</code>。同名不意味着不同 host 的全部发现与指令行为相同。当前 CLI 注册跟踪 main；扩展 Stable 和 PreRelease 从发布分支/tag 产生，Stable 可能落后于最新 main。</p>
+<p>root <code>plugin.json</code> 是统一 component membership 权威；package-scoped 路径参与分发，仓库内部 root-level artifacts 按其规则排除。这个分发规则是 HVE 自身的 package policy，不等于普通下游项目的 <code>.github/copilot-instructions.md</code> 不会被 host 发现。</p>
+<div class="table-wrap"><table><thead><tr><th>方式</th><th>适合</th><th>必须记录的取舍</th></tr></thead><tbody>
+<tr><td>VS Code 扩展</td><td>快速开始、managed 安装</td><td>实际扩展版本/渠道；不要假设与研究 SHA 相同</td></tr>
+<tr><td>固定源码 / selective adoption</td><td>教学复现、团队拥有所选模式</td><td>SHA、选择组件、许可、发现配置、更新与冲突责任</td></tr>
+<tr><td>CLI plugin</td><td>CLI 工作习惯</td><td>main 更新与已安装版本不同；插件内 instructions 不自动应用的 host 限制</td></tr>
+</tbody></table></div>
+<p>本次复现清单包括 host 版本、harness、Copilot/模型配置、HVE 来源与 SHA/哈希、安装方式、可见入口、实际调用证据、执行范围与验证结果。研究固定快照只锁定引用，不替代安装和行为证据。</p>
+<p>官方建议将项目 <code>.copilot-tracking/</code> 加入 gitignore。要共享教学过程，应审阅并整理为可发布的原创证据摘要，而不是把整个工作目录、个人配置或原始对话无审查提交。</p>
+<p class="refs">依据：<a data-source="install" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/getting-started/install.md">Installation</a><a data-source="channels" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/getting-started/packages.md">Identity / Channels / CLI limitation</a><a data-source="architecture" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/architecture/ai-artifacts.md">Manifest membership</a></p>
+</article>
+
+<article id="builder" data-title="HVE Builder 与团队定制">
+<h2>13 · 用 HVE Builder 沉淀组织知识，而不是制造更多 Agent</h2>
+<span class="badge">源码合同</span><span class="badge">采用建议</span>
+<p>HVE Builder 可创建、改进、重构、替换、审查或验证 prompts、instructions、agents 与 skills。只读 review/validation 请求不自动继承修改权限；replace 需要明确边界。它先解析目标和质量要求，形成完整候选，运行适用机械检查，再做评审和必要纠正，而不是不停添加零散提示词。</p>
+<p>定制前先按责任选择工件。Commerce 项目的跨切不变量是“只处理合成数据、整数金额、建议不授予付款权、验证原有批准/预算合同”，适合项目 instructions。若要反复执行一个领域调查流程，可写按需 skill。只有一项独立高量调查值得隔离上下文时，才考虑 subagent。</p>
+<p>下游扩展的 description 应明确服务哪个阶段、何时使用、输入是什么、返回什么。Research/Plan/Review 自己核实建议并拥有正式 artifacts；不能靠一个宽泛 description 让 helper 接管全部生命周期。当前 Implement 合同并不以同样方式执行这套阶段扩展发现。</p>
+<details><summary>项目规范示例：这是工程指导，不是支付权限</summary><pre><code># Commerce engineering invariants
+- Business demo remains synthetic and offline.
+- Money uses safe integer minor units; no implicit FX.
+- Planner proposals never approve payment or expand a task budget.
+- Validate proposals against the server-owned normalized request.
+- Preserve human approval, cumulative authority and idempotency.
+- Verify changed behavior with existing Node tests.</code></pre></details>
+<p>本报告推荐将定制作为有 owner、评审和更新策略的团队代码维护。不要把 HVE Builder 的 Pass 当成所有 host 已验证，也不要把语义规则检查当成生产安全认证。</p>
+<p class="refs">依据：<a data-source="builder" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/SKILL.md">HVE Builder SKILL</a><a data-source="builder-extension" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/extending-hve-builder.md#L9-L155">Extension discovery contract</a><a data-source="builder-types" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">Artifact selection</a></p>
+</article>
+
+<article id="commerce" data-title="Commerce预算增量与运行边界">
+<h2>14 · Commerce 案例：推荐质量与执行权限分离</h2>
+<span class="badge">案例观察</span><span class="badge">已确认需求</span>
+<p>基线来自尚未合并的 Commerce PR #1：Node 原生 HTTP、固定商品目录、mock planner、受限 action、独立人工批准、确定性 Authority、模拟支付与持久状态。PR #4 的 Python/SQLite 离线实验和公开来源研究用于理解授权设计，不作为第二个服务引入 Demo。main 原本只有初始 README，不能把未合并资产描述成已在 main 上线。</p>
+<p>本次聚焦增量是按旅程、币种、单报价金额筛选建议，并解释超预算或币种排除。无候选要有真实 no_action，不能虚构更低价格或扩大限额。建议字段由服务端重新对照目录事实，不能采信 planner 声称的授权或修改后的预算。</p>
+<p class="callout">运行证据：下表是验收要求，现已由新增 unit/HTTP 回归与 13 条实际浏览器断言分别覆盖。Camera 5999 执行后此任务剩余 1001；同 consent 重放 payment ID、余额和 events 不变。复现脚本与失败后修正记录可由上方教学证据入口核对，不宣称真实模型或支付供应商已验证。</p>
+<div class="table-wrap"><table><thead><tr><th>固定场景</th><th>要求结果</th><th>展示什么</th></tr></thead><tbody>
+<tr><td>USD 70</td><td>相机 59.99、咖啡 18.99 作为单报价候选；耳机 79.99 超限 9.99</td><td>可测边界与拒绝解释</td></tr>
+<tr><td>USD 10</td><td>无合格报价、明确 no_action、无批准/付款</td><td>失败路径的诚实结果</td></tr>
+<tr><td>币种错配</td><td>不隐式换汇；显式错误或排除契约清楚</td><td>领域不变量落到代码</td></tr>
+<tr><td>恶意/错误 mock 输出</td><td>事实篡改、预算扩张和越权动作被校验拒绝</td><td>上下文指导不替代验证</td></tr>
+<tr><td>先买相机再买咖啡</td><td>两者各自可推荐，但累计超出 USD 70 仍被 Authority 阻止</td><td>候选集合不是已批准购物车</td></tr>
+<tr><td>重复执行同一授权</td><td>保持原幂等，不重复模拟副作用</td><td>增量不破坏既有合同</td></tr>
+</tbody></table></div>
+<p>一个容易漏掉的输入所有权问题是：如果把服务端原始 request 对象直接交给可注入 planner，planner 可以修改它，使之后校验和持久化使用被扩大后的预算。正确边界是 planner 接收独立副本，校验与存储使用服务端保留的规范化原始请求。这个检查既是业务边界，也是“测试精确要求而非代理指标”的例子。</p>
+<p class="callout warn">所有报价、身份与交易都为合成模拟。人工审核页不是生产强认证，JSON 状态不是跨进程事务数据库，HTTP 402-shaped challenge 不是完整 MPP/x402 互操作，既有测试不表示 Visa/Stripe/AWS 认证或真实结算。Demo 只绑定 loopback，不暴露公网。</p>
+<p class="refs">依据：<a data-source="commerce-pr1" href="https://github.com/turbo998/agentic-commerce-lab/pull/1">Commerce PR #1</a><a data-source="commerce-pr4" href="https://github.com/turbo998/agentic-commerce-lab/pull/4">研究 PR #4</a><a data-source="commerce-architecture" href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/docs/architecture.md">基线 Authority 与运行边界</a></p>
+</article>
+
+<article id="adoption" data-title="团队采用与工程效率衡量">
+<h2>15 · 合作伙伴落地：把组织知识变成可维护资产</h2>
+<span class="badge">官方说明</span><span class="badge">采用建议</span>
+<p>采用不必从全组织统一替换工具开始。先选择一个有明确验收、反复出现的工程任务，用少量 instructions 固定不变量，再将真实有效的流程沉淀为可复用 skill/入口。关键不在 artifact 数量，而在它们是否减少重复解释、降低返工、维持验收边界并改善交接。</p>
+<p>每个共享工件需要 owner、PR review、更新策略和退役路径。发现冲突时，应由维护者解决，不寄希望于模型自动选出“更重要的规则”。固定源码不是永久停止更新：需要知道自己复制了什么、依据什么版本、升级会影响哪些 host 和合同。</p>
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>可采集证据</th><th>避免错误解释</th></tr></thead><tbody>
+<tr><td>验收覆盖</td><td>requirement → 实际 test/浏览器结果的映射</td><td>代码量不等于完成度</td></tr>
+<tr><td>返工与纠偏</td><td>Review finding、修复记录、人工方向变更</td><td>更多 finding 不必然更差，也可能检查更认真</td></tr>
+<tr><td>交接复现</td><td>另一工程师从证据恢复并完成同样场景</td><td>原作者能运行不等于团队能复现</td></tr>
+<tr><td>端到端成本</td><td>任务执行时延、调用、人工决策与维护成本</td><td>不能只比较一次代码生成速度</td></tr>
+<tr><td>领域安全边界</td><td>未批准付款数、重复副作用、范围拒绝与恢复结果</td><td>mock 固定向量不等于真实模型或生产安全评估</td></tr>
+</tbody></table></div>
+<p>如要验证“更快”，应对等任务、同样验收和同样环境进行对照，并记录失败与返工。此分享不伪造提效百分比。HVE 对小改动可能增加流程开销，收益更可能出现在有证据缺口、跨文件影响、组织标准或交接需求的任务上；需要用实际数据判断。</p>
+<p class="refs">依据：<a data-source="team" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/customization/team-adoption.md">Team Adoption</a><a data-source="rpi-overview" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/README.md">何时使用 RPI</a><a data-source="builder-types" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">隔离成本与最小工件</a></p>
+</article>
+
+<article id="misconceptions" data-title="误区与带走的行动">
+<h2>16 · 六个误区，以及一条可复制的行动路径</h2>
+<span class="badge">综合研究</span>
+<ul>
+<li><strong>“HVE 是另一套模型/业务运行时。”</strong>它组织工程工作，模型、host 和业务权限分层。</li>
+<li><strong>“RPI 每次必须全阶段、多专职 Agent。”</strong>当前合同先评估证据，按最小负责入口推进。</li>
+<li><strong>“Instructions 足够强就能授权安全。”</strong>运行时校验、权限、schema 和测试才提供硬约束。</li>
+<li><strong>“Full Auto 表示无需人类判断。”</strong>它自动推进授权范围，保留必要确认和决策边界。</li>
+<li><strong>“看到 artifacts 就验证了 VS Code 执行。”</strong>需要 actual host、加载、工具活动和运行证据。</li>
+<li><strong>“mock Demo 跑通就证明模型智能或供应商集成。”</strong>它证明的是明确的模拟合同和工程流程。</li>
+</ul>
+<p>推荐行动：选择一个真实且有界任务 → 写下可检查验收 → 固定实际工具/工件版本 → 只补证据缺口 → 计划并 critique → 范围内实施 → 对账与 follow-up → 保存可复现证据 → 将经验证的组织知识纳入团队维护。不要从“复制所有配置”和“再造一套多 Agent”开始。</p>
+<div class="callout"><strong>本场分享的交付目标：</strong>带走一份可供 Cowork 制作的详细大纲、一份可追溯深度研究、一套能本地运行的业务模拟，以及如何用 HVE 改进工程工作的判断方式。不是带走一张未经验证的能力承诺表。</div>
+<p class="refs">依据：<a data-source="readme" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/README.md">HVE 定位与风险提示</a><a data-source="rpi-overview" href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/README.md">RPI</a><a data-source="vs-instructions" href="https://code.visualstudio.com/docs/agent-customization/custom-instructions">Host 验证边界</a></p>
+</article>
+
+<section class="sources" id="sources" aria-labelledby="sources-title">
+<h2 id="sources-title">一手来源与证据口径</h2>
+<p>HVE 链接固定到同一 SHA；VS Code 页面为在线官方 host 说明，不能自动代表某个已安装客户端。Commerce 源码固定基线 commit，PR 状态可能继续变化。各条链接是研究引用，不是本页面的运行依赖。</p>
+<ol class="source-list" id="source-list"><li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/README.md">HVE README</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/architecture/ai-artifacts.md">AI Artifacts Architecture</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/README.md">RPI overview</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/agents/hve-core/rpi-agent.agent.md#L45-L168">RPI Agent lifecycle wrapper</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/SKILL.md#L11-L123">Current research skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-research/references/research.md#L213-L257">Research reference</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan/SKILL.md#L19-L103">Current plan skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan/references/planning.md#L7-L248">Planning reference</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-plan-critique/SKILL.md#L17-L76">Plan critique skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-implement/SKILL.md#L17-L79">Current implement skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-implement/references/implementation.md#L31-L111">Implementation reference</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-review/SKILL.md#L21-L85">Current review skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/rpi/rpi-review/references/review.md#L30-L101">Review reference</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/rpi/context-engineering.md">Context engineering</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/getting-started/install.md">Install</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/getting-started/packages.md">Identity and channels</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/SKILL.md">HVE Builder skill</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/extending-hve-builder.md#L9-L155">Builder extension rules</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/.github/skills/hve-core/hve-builder/references/artifact-types.md#L9-L122">Builder artifact types</a></li>
+<li><a href="https://github.com/microsoft/hve-core/blob/49dfb73866f8c5f81bf734d6ca808dac25a2a330/docs/customization/team-adoption.md">Team adoption</a></li>
+<li><a href="https://code.visualstudio.com/docs/agent-customization/custom-instructions">VS Code custom instructions</a></li>
+<li><a href="https://code.visualstudio.com/docs/agent-customization/agent-skills">VS Code agent skills</a></li>
+<li><a href="https://github.com/turbo998/agentic-commerce-lab/pull/1">Commerce PR1</a></li>
+<li><a href="https://github.com/turbo998/agentic-commerce-lab/pull/4">Commerce PR4</a></li>
+<li><a href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/docs/architecture.md">Commerce PR1 architecture</a></li>
+<li><a href="https://github.com/turbo998/agentic-commerce-lab/blob/7c5d931f38a1743be7d99e99324755ae2a176693/src/agent.js#L5-L66">Commerce PR1 baseline</a></li></ol>
+</section>
+<footer>原创研究与教学表达。仅作工程方法与本地模拟说明，不构成生产可用性、支付认证或量化提效保证。页面无需 CDN 或外部 API 即可阅读、检索与打印。</footer>
+</main>
+</div>
+<script src="./hve-report.js"></script>
+</body>
+</html>

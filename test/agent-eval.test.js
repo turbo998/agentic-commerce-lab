@@ -59,7 +59,7 @@ test("fixed mixed agent evaluation vectors meet completion, refusal, side-effect
           quoteId: vector.quoteId,
           budgetLimit: {
             currency: vector.quoteId ? CATALOG[vector.quoteId].currency : "USD",
-            amountMinor: 200_000,
+            amountMinor: vector.quoteId ? Math.max(200_000, CATALOG[vector.quoteId]?.amountMinor ?? 0) : 200_000,
           },
         });
         actual = task.status;

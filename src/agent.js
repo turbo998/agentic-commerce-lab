@@ -2,16 +2,39 @@ import { randomUUID } from "node:crypto";
 import { CATALOG, CURRENCIES } from "./catalog.js";
 import { AuthorityError } from "./authority.js";
 
+function assessQuotes({ journey, quoteId, budgetLimit }) {
+  const eligible = [];
+  const exclusions = [];
+  for (const quote of Object.values(CATALOG).filter((entry) =>
+    entry.journey === journey && (!quoteId || entry.id === quoteId))) {
+    const reasonCode = quote.currency !== budgetLimit.currency
+      ? "CURRENCY_MISMATCH"
+      : quote.amountMinor > budgetLimit.amountMinor ? "OVER_BUDGET" : null;
+    if (!reasonCode) {
+      eligible.push(quote);
+    } else {
+      exclusions.push({
+        quoteId: quote.id,
+        amountMinor: quote.amountMinor,
+        currency: quote.currency,
+        reasonCode,
+        ...(reasonCode === "OVER_BUDGET" ? { shortfallMinor: quote.amountMinor - budgetLimit.amountMinor } : {}),
+      });
+    }
+  }
+  return { eligible, exclusions };
+}
+
 export const offlinePlanner = Object.freeze({
   kind: "scripted-offline",
   async propose({ journey, goal, quoteId, budgetLimit }) {
     const refusal = /\b(no|don't|do not|cancel|stop)\b|不买|取消|停止/i.test(goal);
     if (refusal) return { summary: "已记录不购买/取消意图，不创建付款操作。", suggestions: [] };
-    const quotes = Object.values(CATALOG).filter((quote) =>
-      quote.journey === journey && quote.currency === budgetLimit.currency);
-    const selected = quoteId ? quotes.filter((quote) => quote.id === quoteId) : quotes.slice(0, 3);
+    const selected = assessQuotes({ journey, quoteId, budgetLimit }).eligible.slice(0, 3);
     return {
-      summary: `离线脚本为“${goal}”列出 ${selected.length} 个合成报价；这不是 LLM 推理。`,
+      summary: selected.length
+        ? `离线脚本为“${goal}”列出 ${selected.length} 个单报价预算内候选；这些不是获准购物车，也不是 LLM 推理。`
+        : "没有符合旅程、币种和单报价限额的候选；不创建购买操作，不换汇或修改报价。",
       suggestions: selected.map((quote) => ({
         type: "quote",
         quoteId: quote.id,
@@ -32,29 +55,46 @@ export function plannerContract(planner) {
   return planner;
 }
 
-function validatePlan(plan, journey, budgetLimit) {
+function validatePlan(plan, request) {
+  const { journey, budgetLimit } = request;
   if (!plan || typeof plan.summary !== "string" || !Array.isArray(plan.suggestions) || plan.suggestions.length > 3) {
     throw new AuthorityError("PLANNER_OUTPUT_INVALID", "Planner 输出不符合结构化建议格式。");
   }
   for (const suggestion of plan.suggestions) {
     const quote = CATALOG[suggestion?.quoteId];
     if (
+      !suggestion ||
       suggestion.type !== "quote" ||
       suggestion.action !== "request_quote" ||
       !quote ||
       quote.journey !== journey ||
       quote.currency !== budgetLimit.currency ||
+      quote.amountMinor > budgetLimit.amountMinor ||
+      (request.quoteId && quote.id !== request.quoteId) ||
       suggestion.merchantId !== quote.merchantId ||
       suggestion.amountMinor !== quote.amountMinor ||
       suggestion.currency !== quote.currency ||
       suggestion.quoteVersion !== quote.quoteVersion
     ) {
-      throw new AuthorityError("PLANNER_OUTPUT_INVALID", "Planner 只能建议本旅程中匹配固定目录报价的 request_quote。");
+      throw new AuthorityError("PLANNER_OUTPUT_INVALID", "Planner 只能建议本任务范围内、币种一致且单报价不超限的固定目录 request_quote。");
     }
   }
+  const { eligible, exclusions } = assessQuotes(request);
   return {
     summary: plan.summary.slice(0, 500),
-    suggestions: plan.suggestions.map((suggestion) => ({ ...suggestion })),
+    suggestions: plan.suggestions.map((suggestion) => ({
+      type: "quote",
+      quoteId: suggestion.quoteId,
+      merchantId: suggestion.merchantId,
+      amountMinor: suggestion.amountMinor,
+      currency: suggestion.currency,
+      quoteVersion: suggestion.quoteVersion,
+      action: "request_quote",
+      reasonCode: "WITHIN_SINGLE_QUOTE_LIMIT",
+      budgetHeadroomMinor: budgetLimit.amountMinor - suggestion.amountMinor,
+    })),
+    exclusions,
+    noActionReason: plan.suggestions.length ? null : eligible.length ? "PLANNER_NO_PROPOSALS" : "NO_ELIGIBLE_QUOTES",
   };
 }
 
@@ -92,7 +132,7 @@ export async function proposeTask(input, planner = offlinePlanner) {
     quoteId: input.quoteId,
     budgetLimit: { ...input.budgetLimit },
   };
-  const plan = validatePlan(await planner.propose(request), input.journey, request.budgetLimit);
+  const plan = validatePlan(await planner.propose(structuredClone(request)), request);
   return {
     id: `task-${randomUUID()}`,
     ownerId: input.ownerId,
@@ -104,6 +144,8 @@ export async function proposeTask(input, planner = offlinePlanner) {
     planner: planner.kind === "scripted-offline" ? "scripted-offline (not model inference)" : "injected-test-client",
     summary: plan.summary,
     suggestions: plan.suggestions,
+    exclusions: plan.exclusions,
+    noActionReason: plan.noActionReason,
     createdAt: Date.now(),
     actionRequests: {},
   };

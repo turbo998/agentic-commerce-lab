@@ -148,6 +148,7 @@ async function createTask(goal) {
     return;
   }
   try {
+    showNotice("");
     const budgetCurrency = document.querySelector("#budget-currency").value;
     const budgetAmount = document.querySelector("#budget-amount").value.trim();
     const decimals = { USD: 2, HKD: 2, USDC: 6 }[budgetCurrency];
@@ -172,12 +173,21 @@ async function createTask(goal) {
       <article class="payment agent-message"><div><h3>离线任务建议</h3>
       <p>${escapeHtml(task.summary)}</p><p>Task ${escapeHtml(task.id)} · ${task.suggestions.length} 个目录建议</p>
       <p>结构化任务上限 ${money(task.budgetLimit.amountMinor, task.budgetLimit.currency)} ${task.budgetLimit.currency}；自由文本不是额度政策。</p></div></article>
+      <p class="subtle">每个候选仅按单报价筛选，不代表同时购买全部候选；累计支出、有效预留、账户余额和人工批准仍独立检查。</p>
       ${task.suggestions.map((suggestion) => {
         const quote = response.result.suggestions.find((entry) => entry.quoteId === suggestion.quoteId);
         return `<article class="offer"><h3>${quote.quoteId} · ${quote.currency} ${money(quote.amountMinor, quote.currency)}</h3>
-          <p>${quote.merchantId} · ${quote.quoteVersion}</p>
+          <p>${escapeHtml(quote.merchantId)} · ${escapeHtml(quote.quoteVersion)}</p>
+          <p>单报价在限额内 · 相对上限余量 ${money(quote.budgetHeadroomMinor, quote.currency)}；这不是可用余额或付款授权。</p>
           <button class="button primary" data-request-consent="${quote.quoteId}" data-task="${task.id}">请求人工批准</button></article>`;
-      }).join("") || `<p class="subtle">脚本未提出购买建议。</p>`}
+      }).join("") || `<p class="subtle" data-no-action>不执行购买（no_action）：${task.noActionReason === "NO_ELIGIBLE_QUOTES" ? "没有符合旅程、币种和单报价限额的候选。" : "Planner 未提出操作；取消意图不会产生批准。"}</p>`}
+      ${(task.exclusions ?? []).length ? `<section aria-label="报价排除说明"><h3>未推荐的报价与原因</h3>
+      ${task.exclusions.map((entry) => `<article class="payment" data-exclusion="${escapeHtml(entry.quoteId)}"><div>
+        <h4>${escapeHtml(entry.quoteId)} · ${money(entry.amountMinor, entry.currency)} ${escapeHtml(entry.currency)}</h4>
+        <p>${entry.reasonCode === "OVER_BUDGET"
+          ? `超出单报价限额 ${money(entry.shortfallMinor, entry.currency)}（OVER_BUDGET）；不会降低目录价格或扩大预算。`
+          : `币种不匹配（CURRENCY_MISMATCH）：任务仅允许 ${escapeHtml(task.budgetLimit.currency)}，不会隐式换汇。`}</p>
+      </div></article>`).join("")}</section>` : ""}
     `;
     document.querySelectorAll("[data-request-consent]").forEach((button) =>
       button.addEventListener("click", () => requestConsent(button.dataset.task, button.dataset.requestConsent)),
@@ -289,6 +299,9 @@ async function initialize() {
   document.querySelector("#reset").addEventListener("click", async () => {
     if (!window.confirm("清除本地模拟交易并恢复初始合成预算？")) return;
     await api("/api/reset", {}, "human");
+    selectedQuote = undefined;
+    document.querySelector("#selected-quote").textContent = "";
+    document.querySelector("#conversation").replaceChildren();
     trace.length = 0;
     recordTool("Reset", "local state reset");
     showNotice("本地模拟状态已重置。");
