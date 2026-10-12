@@ -31,6 +31,15 @@
     "dispatches": "One bounded RPI Validator dispatch with five phase passes; one full-quality Implementation Validator; parent owns all validation commands",
     "initialFindings": { "critical": 0, "high": 0, "medium": 1, "low": 3 },
     "remainingFindingsAfterParentVerification": { "critical": 0, "high": 0, "medium": 0, "low": 0 },
-    "followUp": "Four surgical corrections implemented after Review phase ended; parent check38/38, HTTP e2e2/2 and H5 browser35 passed; publication next, not claimed verified in this snapshot"
+    "followUp": "Four surgical corrections implemented after Review phase ended; parent check38/38, HTTP e2e2/2 and H5 browser35 passed; scoped publication verified below"
+  },
+  "publication": {
+    "pullRequest": "https://github.com/turbo998/agentic-commerce-lab/pull/5",
+    "base": "turbo998-agentic-commerce-lab",
+    "verifiedBaseRevision": "7c5d931f38a1743be7d99e99324755ae2a176693",
+    "verifiedMaterialCheckpoint": "a998f5f5682198477ede493469535e430e496746",
+    "state": "OPEN",
+    "autoMergeRequest": null,
+    "note": "Receipt appended after actual push/PR verification; final receipt commit is identified by branch HEAD, not a circular self-hash"
   }
 }

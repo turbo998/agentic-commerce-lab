@@ -76,6 +76,12 @@ Review阶段只产出审查记录，结束后回到实施阶段做上述最小�
 
 操作手册干净重启也实际执行：只停止自有detached workshop进程，窄范围移除其专用文件，再`npm run demo`启动；状态在首次写入前可在内存初始化，不能把文件不存在误判为服务失败。认证status HTTP200，tasks0/payments0/consentRequests0；只监听127.0.0.1:4187，默认state仍不存在。最终服务保留给审阅，独立shell `hve-workshop-delivery`、验证PID34500。
 
+## 持久交付验收
+
+已真实提交并推送材料检查点`a998f5f5682198477ede493469535e430e496746`，创建 [stacked PR #5](https://github.com/turbo998/agentic-commerce-lab/pull/5)。在线核验OPEN、base为`turbo998-agentic-commerce-lab`、head匹配该检查点、autoMergeRequest为null；merge-base仍是PR1固定`7c5d931f…`，仅26个增量文件，不把整条基线伪装成新增功能。没有合并PR1/PR4/新PR或启用自动合并。本文与host.json的发布回执在该真实验收后追加，最终回执提交以本branch HEAD为准，避免自引用commit hash。
+
+完整实施/材料/Review及限定follow-up已完成；剩余仅已声明的host/生产非目标，不将它们描述成已运行。可按runbook从此分支复制预演，或直接打开保留的loopback Demo/H5。
+
 ## 版本与真实限制
 
 实际host/skill哈希见 [host.json](host.json)。Copilot App/CLI报告1.0.94-3；Node24.13.1；npm11.8.0。执行skill的上游revision未知。未选固定current RPI Agent wrapper，未运行HVE Builder或VS Code Chat。所引用共享tracking instruction本机缺失，按已加载明确phase合同执行，已披露。
