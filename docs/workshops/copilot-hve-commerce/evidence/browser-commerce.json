@@ -1,0 +1,32 @@
+{
+  "executedAt": "2026-10-12",
+  "base": "http://127.0.0.1:4187",
+  "executor": "Playwright MCP Chromium, actual rendered UI plus same-origin fetch assertions",
+  "script": "scripts/browser-commerce-check.js",
+  "passedAssertions": 13,
+  "scriptErrors": [],
+  "resetConfirmation": "window.confirm accepted by test stub; independent payment approval still clicked through actual human page",
+  "checks": [
+    "USD70: exactly camera and coffee request buttons",
+    "USD70: headphones exclusion shortfall exactly USD9.99",
+    "UI distinguishes independent candidate from basket/authorization",
+    "Pending request has zero payments; agent approve HTTP403, unapproved execute404",
+    "Independent human page starts human session, clicks approve and captures synthetic receipt",
+    "Same-consent replay uses same payment; event count and balance unchanged; remainingMinor1001",
+    "Camera then coffee: cumulative runtime denial shown in UI",
+    "USD10: no request action button",
+    "USD10: three explained exclusions",
+    "Selected HKD versus USD quote: explicit mismatch, no FX",
+    "Untrusted summary HTML escaped; no injected img rendered",
+    "Workshop reset clears stale action buttons",
+    "No browser script errors"
+  ],
+  "replay": {
+    "samePayment": true,
+    "sameEvents": true,
+    "sameBalance": true,
+    "remainingMinor": 1001
+  },
+  "expectedHttpErrors": [403, 404, 400],
+  "limitations": ["Only synthetic local personas; no production human authentication", "No VS Code UI execution", "No model/provider/network payment", "Earlier attempt stopped on modal harness/wait selector; fixed test selector and confirmation handling before successful rerun"]
+}

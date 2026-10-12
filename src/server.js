@@ -31,8 +31,17 @@ import { createIdentityRegistry, assertIdentityRole, assertNoClientIdentity } fr
 
 const root = dirname(fileURLToPath(import.meta.url));
 const staticRoot = resolve(root, "..", "public");
+const workshopRoot = resolve(root, "..", "docs", "workshops", "copilot-hve-commerce");
+const workshopFiles = new Map([
+  "outline.md", "demo-runbook.md", "sources.json",
+  "evidence/host.json", "evidence/rpi-execution.md",
+  "evidence/browser-commerce.json", "evidence/browser-report.json",
+].map((name) => [`/workshop/${name}`, resolve(workshopRoot, ...name.split("/"))]));
 const defaultStatePath = resolve(root, "..", "data", "state.json");
-const MIME = { ".css": "text/css; charset=utf-8", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8" };
+const MIME = {
+  ".css": "text/css; charset=utf-8", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8", ".md": "text/plain; charset=utf-8",
+};
 
 function readState(path) {
   if (!existsSync(path)) return initialState();
@@ -615,8 +624,9 @@ function createHandler(statePath, planner = offlinePlanner, identities) {
     if (request.method !== "GET") return json(response, 405, { error: "METHOD_NOT_ALLOWED" });
     if (url.pathname.startsWith("/api/resources/")) return json(response, 405, { error: "METHOD_NOT_ALLOWED" });
     const requested = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
-    const path = resolve(staticRoot, requested);
-    if (!path.startsWith(staticRoot + sep)) return json(response, 404, { error: "NOT_FOUND" });
+    const workshopPath = workshopFiles.get(url.pathname);
+    const path = workshopPath ?? resolve(staticRoot, requested);
+    if (!workshopPath && !path.startsWith(staticRoot + sep)) return json(response, 404, { error: "NOT_FOUND" });
     try {
       const content = readFileSync(path);
       response.writeHead(200, {
