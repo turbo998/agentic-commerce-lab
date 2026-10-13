@@ -90,3 +90,11 @@ Agent 只能请求动作，不能调用批准接口、扩大预算或修改已�
 [今日研究](daily/2026-10-12.md)对照官方 WAF AI application design：其已包含 AI 五层、确定性编排/Agent 协作、策略执行和持久状态。Agentic Commerce 需要在此基础上明确每笔交易的消费者授权、credential 隔离、经济副作用状态与对账证据，而不是用更多 Agent 取代确定性执行层。逻辑信任边界不强制微服务；先复用模块化单体，再按真实隔离/扩缩容需求拆分。
 
 新增 `lab/mcp_migration.py` 仅检查 Stripe MCP 认证类别元数据和日期期限，不验证云身份、消费者同意或任何实际权限；它映射本架构的运维/演进职责，不是新增支付能力。
+
+## 2026-10-13 增量：发现、兼容、授权、结果四个独立门槛
+
+[今日研究](daily/2026-10-13.md)补强商业 adapter 入口：发现宣告 → 可执行能力交集 → 消费者最终报价授权 → provider 可信结果。不能从发现到付款直接跳步。版本匹配、受支持 instrument 和卡 tokenization 的环境/关系前置条件只构成接入候选；它们不证明 schema 来源可信、客户已同意、账号可用或付款成功。
+
+`lab/ucp_preflight.py` 是无网络、无凭证的**合成元数据预检**。它拒绝未审阅版本、缺失双方宣告、Stripe handler 下的 Link/Google Pay completion；card 和 Apple Pay 返回不同 credential path，且所有输出 `payment_authorized=false`。本地保守的版本白名单是研究边界，不是供应商兼容矩阵。没有将它连接为现有 checkout 的批准来源，没有新增 tokenize 或付款工具。
+
+Stripe 的自动更新 skills/plugin 改变的是开发指导面，不是交易授权来源。应记录实际加载的版本/revision，并对可执行 tool/schema 的变化做回归；供应商 skill 的反馈建议不能自动获得上传业务资料的权限。可复用的逻辑分层仍可在模块化单体中实现，不需要再造“第六层”或默认拆成多 Agent 微服务。
