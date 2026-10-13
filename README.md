@@ -21,6 +21,7 @@
 
 | 入口 | 内容 |
 |---|---|
+| [2026-10-13 每日研究](research/daily/2026-10-13.md) | 官方 skills 增量、可执行能力边界、UCP 离线预检及 MCP 18 日迁移窗口 |
 | [2026-10-12 每日研究](research/daily/2026-10-12.md) | 官方证据增量、AI Native 与 WAF 辩证比较、UCP handler 边界及 MCP 迁移盘点 |
 | [2026-10-11 研究基线](research/daily/2026-10-11.md) | 发布事实纠错、已有技术资产、证据缺口与日更机制 |
 | [协议与产品分层](research/protocols.md) | Visa VIC/TAP/MCP/Toolkit；Stripe ACP/UCP/Suite/SPT/Link/MPP/x402/MCP |
@@ -29,6 +30,7 @@
 | [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
 | [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
 | [离线 MCP 迁移盘点](lab/mcp_migration.py) | Stripe MCP 2026-10-31 auth 类别期限检查；只接受无密钥元数据，不验证账户 |
+| [离线 UCP handler 预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件检查；兼容候选不等于支付授权 |
 
 ## 本地运行
 
@@ -44,13 +46,25 @@ demo 使用自动清理的临时 SQLite 数据库，输出 `status=simulated`。
 ### Stripe MCP 迁移盘点（不读取密钥）
 
 ```powershell
-python -m lab.mcp_migration --as-of 2026-10-12
+python -m lab.mcp_migration --as-of 2026-10-13
 python -m lab.mcp_migration --as-of 2026-10-31
 ```
 
 默认读取 [合成客户端清单](lab/mcp_inventory.example.json)；`--inventory` 可指定仅含 alias、环境和 auth 类别的 JSON。禁止填入实际 key、账户 ID 或个人数据；不传 `--as-of` 时使用北京时间当天日期。示例含两种旧认证类别，两个命令都**预期 exit 1**，分别输出 `migration_required` / `blocked_by_documented_policy`；空/无效输入 exit 2。全部记录为 OAuth/Agent Key 时 exit 0 只表示元数据类别匹配，始终 `account_verification=not_performed`，不是已迁移或已获付款权限。
 
-Stripe 文档未说明 cutoff 的具体时刻/时区，本工具只做日期模拟，不检测服务器 401。依据是 [MCP 官方正文](https://docs.stripe.com/mcp)，人工迁移与验收边界见 [今日研究](research/daily/2026-10-12.md)。工具无网络调用，不创建、轮换或撤销实际凭证。
+Stripe 文档未说明 cutoff 的具体时刻/时区，本工具只做日期模拟，不检测服务器 401。10-13 再核验，剩余 18 个日历日；依据是 [MCP 官方正文](https://docs.stripe.com/mcp)，人工迁移 runbook 见 [10-12 研究](research/daily/2026-10-12.md)，今日变化见 [10-13 研究](research/daily/2026-10-13.md)。工具无网络调用，不创建、轮换或撤销实际凭证。
+
+### UCP handler 兼容性预检（不获取凭证）
+
+```powershell
+python -m lab.ucp_preflight
+python -m lab.ucp_preflight --instrument card --relationship confirmed
+python -m lab.ucp_preflight --instrument apple_pay
+```
+
+默认用完全合成的双方宣告测试 `link`，**预期 exit 1**：当前 Stripe `/complete` 不接受该 instrument。后两条 exit 0 仅为 `candidate_unverified`，始终 `payment_authorized=false`、`provider_verification=not_performed`。Google Pay 在本预检中拒绝，不自动转到 `com.google.pay`、转换 instrument 或降级到浏览器付款。
+
+本地只审阅 UCP `2026-04-08` / Stripe handler `2026-06-25` 文档示例，匹配但未经本地审阅的版本也拒绝；这不是声明其他版本被供应商禁止。卡 tokenize 才检查双方 `sandbox/production` 环境一致和关系已确认，不能把该条件套到 Apple Pay wallet 路径。`--business-ucp-version` / `--business-handler-version` 可模拟版本漂移；无效日期 exit 2。所有参数只是元数据声明，不读取实际 UCP profile、key、PAN、SPT 或钱包数据，也不验证客户同意、Apple Pay 商户配置、地域/账户资格或支付结果。此工具不是 UCP wire-format/conformance 实现，更不是 checkout 的授权层。
 
 ## 每日研究
 

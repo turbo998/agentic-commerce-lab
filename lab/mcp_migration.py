@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Literal
 
 DEADLINE = date(2026, 10, 31)
-POLICY_CHECKED_ON = date(2026, 10, 12)
+POLICY_CHECKED_ON = date(2026, 10, 13)
 SOURCE_URL = "https://docs.stripe.com/mcp"
 MAX_BYTES = 64 * 1024
 AuthMethod = Literal[

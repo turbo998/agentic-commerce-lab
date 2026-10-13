@@ -1,0 +1,268 @@
+{
+  "checked_at": "2026-10-13T22:23:42.245284+08:00",
+  "kind": "source-fingerprint-monitor-not-research-conclusions",
+  "normalization": "utf8-visible-html-text-or-markdown-whitespace-v1",
+  "observations": [
+    {
+      "id": "stripe-acp-launch",
+      "url": "https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce",
+      "fetched_url": "https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce",
+      "status": "ok",
+      "sha256": "81f2c085eebeb1224c5288dcdea99f3b7169a698d9ce758402191c848c7715cf",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-suite-launch",
+      "url": "https://stripe.com/blog/agentic-commerce-suite",
+      "fetched_url": "https://stripe.com/blog/agentic-commerce-suite",
+      "status": "ok",
+      "sha256": "b0c546c80fd15e6829f94c6c9fe495d18ffd1e62ac92063bedd2a39d63fa703f",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-sessions-2026",
+      "url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+      "fetched_url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+      "status": "ok",
+      "sha256": "df6bea089c77bc91edbe2322d1735e4f06d2fadb466741d84b56be41bf1ba80f",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-commerce-docs",
+      "url": "https://docs.stripe.com/agentic-commerce",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce.md",
+      "status": "ok",
+      "sha256": "60d70b43ea6f68c9b93a83cc5ca46875ebe3a61ea3c7836b52457d678109eae2",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-spt",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+      "status": "ok",
+      "sha256": "0710d04c6153c693c09bb82e49e81013b7b89b9d95190b9f58ec96ff994c3df8",
+      "change": "changed",
+      "error": null
+    },
+    {
+      "id": "stripe-mcp",
+      "url": "https://docs.stripe.com/mcp",
+      "fetched_url": "https://docs.stripe.com/mcp.md",
+      "status": "ok",
+      "sha256": "a2f92dd5d410011403d5014d27b531c63b5b7e4fca3db0f8c2b5ca637a10ac01",
+      "change": "changed",
+      "error": null
+    },
+    {
+      "id": "stripe-mpp",
+      "url": "https://docs.stripe.com/payments/machine/mpp",
+      "fetched_url": "https://docs.stripe.com/payments/machine/mpp.md",
+      "status": "ok",
+      "sha256": "c955525db19ea4a12ff44ac5a9ed04397c20c57c3db8adc00ae096d60642d69b",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-x402",
+      "url": "https://docs.stripe.com/payments/machine/x402",
+      "fetched_url": "https://docs.stripe.com/payments/machine/x402.md",
+      "status": "ok",
+      "sha256": "0dd8da3a51f720137e2c7feb78e75fd0b019dbdd7e8c5c1efc4245f5a1f222f6",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-acp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/acp",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/protocols/acp.md",
+      "status": "ok",
+      "sha256": "f15b4beae87122bd6dc0208d0ede1d68f104619c0dcd742c97bbd5aff16f45d8",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-link-wallet",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet.md",
+      "status": "ok",
+      "sha256": "1861aa00823f24f2266fc32a81fff20fec704b21a0a3d1858c83190c669de0a6",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-machine-payments",
+      "url": "https://docs.stripe.com/payments/machine",
+      "fetched_url": "https://docs.stripe.com/payments/machine.md",
+      "status": "ok",
+      "sha256": "6d9bcbc270ed8e4689030e3d9e42bd215dc7bfdab730030ef9b8fd8c8b50cf9e",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-frameworks",
+      "url": "https://docs.stripe.com/agents",
+      "fetched_url": "https://docs.stripe.com/agents.md",
+      "status": "ok",
+      "sha256": "342020f6ac627b66c887d533c78c4d15ebc23c734ffeae00e72fa92eac9d1258",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "visa-vic",
+      "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
+      "fetched_url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
+      "status": "ok",
+      "sha256": "47f9440e38b2a23a6ed74e9cae0f5a224d3ac0e55a13b9beef8313763e926b9d",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "visa-tap",
+      "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+      "fetched_url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+      "status": "ok",
+      "sha256": "b9ed14d264520b0a0e4f42ea039cf716aa10d2536c1da2ba96b9fc4f55567796",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "visa-tap-announcement",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html",
+      "fetched_url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html",
+      "status": "ok",
+      "sha256": "05ae32fdd210f69a6bfe6196a3673f53c04fe777c3f35e6fffabab3576fab9df",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "visa-toolkit",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/innovation/visa-mcp-server-agent-acceptance-toolkit.html",
+      "fetched_url": "https://corporate.visa.com/en/sites/visa-perspectives/innovation/visa-mcp-server-agent-acceptance-toolkit.html",
+      "status": "ok",
+      "sha256": "d84db06fe51d0259361e2c128d7a5127379d617c642363c427fae25cbbf8f206",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "visa-tap-code",
+      "url": "https://raw.githubusercontent.com/visa/trusted-agent-protocol/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/visa/trusted-agent-protocol/main/README.md",
+      "status": "ok",
+      "sha256": "c1f7ae3d910323af3991a91901d5ea39e58fe5300e1454cd89f6e40e13cefe93",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "ucp",
+      "url": "https://ucp.dev/latest/specification/overview/",
+      "fetched_url": "https://ucp.dev/latest/specification/overview/",
+      "status": "ok",
+      "sha256": "e9e9a67b4f31647e52864cc7f9139495d5f5938f4407ccf1b8f2adf7b790624c",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-ai-skills",
+      "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "fetched_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "status": "ok",
+      "sha256": "7c7d6741270b755006abf98ffeda41fc3f674fb683e2eb8524a4eebcb2f2969d",
+      "change": "baseline",
+      "error": null
+    },
+    {
+      "id": "ap2",
+      "url": "https://ap2-protocol.org/",
+      "fetched_url": "https://raw.githubusercontent.com/google-agentic-commerce/AP2/main/docs/index.md",
+      "status": "ok",
+      "sha256": "714ceab5c88beb0925378ad2cc7b6eb2703b0111901d81c60166371f294d36f0",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "mcp",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "fetched_url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "status": "ok",
+      "sha256": "5719901d4823a3554328544c57472681992f37a3db2df42d0ffc4916575163b7",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "a2a",
+      "url": "https://a2a-protocol.org/latest/specification/",
+      "fetched_url": "https://a2a-protocol.org/latest/specification/",
+      "status": "ok",
+      "sha256": "be4b2ba52aef47060f1862caf9e3492a81f0eba25037daf37c46b3cf75d0ec7d",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-ucp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp.md",
+      "status": "ok",
+      "sha256": "c09076dbe92db69989e7d906de00720488cd7fe18409b8cec649221b6e4ab352",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-ucp-handler",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler.md",
+      "status": "ok",
+      "sha256": "2307593a2b0abc91ea049a25de7bfc380ec4760915cf1633eb61e04ded3e5dbe",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-agent-keys",
+      "url": "https://docs.stripe.com/keys",
+      "fetched_url": "https://docs.stripe.com/keys.md",
+      "status": "ok",
+      "sha256": "63241a3a57d94fe39ee919777a278bc76d490aae0959a0e398ee840fa6a392c5",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "stripe-suite-retail",
+      "url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail",
+      "fetched_url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail.md",
+      "status": "ok",
+      "sha256": "a6dc3bc9d976409021603aa2546ed43852d4ef7b5633c6ea6989818ee1c69d88",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "mcp-auth-2026-07-28",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "fetched_url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "status": "ok",
+      "sha256": "032dd2163cdb25ee9a32156c078c57eb414954bc0ec51b0583703b5add59bd45",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "azure-waf-ai-design",
+      "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design",
+      "fetched_url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design",
+      "status": "ok",
+      "sha256": "b4156ad53f813f7f778791f2e0eb750f12818e345bc17c23e0a94ec95384ef08",
+      "change": "unchanged",
+      "error": null
+    },
+    {
+      "id": "azure-n-tier",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier",
+      "fetched_url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier",
+      "status": "ok",
+      "sha256": "d2fee0790a0ce0ea301de20578693f2ccbcd8abe3eb4c44783e2a684ad502740",
+      "change": "unchanged",
+      "error": null
+    }
+  ]
+}

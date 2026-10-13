@@ -114,3 +114,11 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
 - [API keys 正文](https://docs.stripe.com/keys)确认 Agent Key 是 Agent-tagged restricted key，受 approval rules 治理。MCP 2026-10-31 期限仍未变；新离线盘点只判断 auth class，不能验证实际 tag、审批或权限。
 - A2A 官网仍显示 `1.0.0`，但 [官方 repo release](https://github.com/a2aproject/A2A/releases/tag/v1.0.1) 为 `v1.0.1`，GitHub publication 为 2026-05-28；这不是今天的 release。固定 tag/proto 后再做契约验证，不将 website `latest` 自动等同于 tag。
 - SPT seller 示例到期时间会动态变化；UCP 昨日到今日 head 仅更新依赖锁文件。两种变化都不构成产品发布证据。
+
+## 2026-10-13 增量核验
+
+完整证据和失败记录见 [10-13 日研](daily/2026-10-13.md)。首次公告与历史版本保持原记录，不以本日复核替换。
+
+- Stripe MCP 指纹相对 10-12 改变，两次本日正文获取指纹一致；未保留昨日正文，不能精确重建全部语义 diff。**2026-10-31** 认证迁移期限仍未变，本日剩余 18 个日历日；MCP 的 Agent Key 规则不能泛化到 UCP tokenize 或 Link OAuth。
+- UCP overview 未变；当前官方 head `9756aa9…` 是 contributing/roadmap/navigation 文档提交，不是协议升级。Stripe handler 文档仍区分 card tokenize → SPT、Apple Pay direct token、Link credential acquisition 与 `com.google.pay` completion。本地新增预检只处理已审阅的 Stripe handler 示例，不宣称 Google Pay 或 UCP conformance。
+- [Stripe AI 官方提交](https://github.com/stripe/ai/commit/deae744bc0cbf6034b4b6f22f51c690b71a4e779)在北京时间 10-13 同步 skills，plugin manifest `0.5.16 → 0.5.17`；升级 skill 生成日期改变但 fallback API version 仍是 `2026-09-30.endive`。反馈指导调整不是新付款能力，本轮未安装插件、运行供应商 CLI 或提交反馈。

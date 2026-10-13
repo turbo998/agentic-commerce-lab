@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-12",
+  "checked_on": "2026-10-13",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -40,7 +40,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31."
+      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31. Oct 13 fingerprint differs from Oct 12 and is stable in two same-day probes; no retained Oct 12 body to establish a complete semantic diff. Cutoff date remains unchanged."
     },
     {
       "id": "stripe-mpp",
@@ -122,8 +122,18 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "a5e7cfe3a03392899b2199ff751be6ae7c928c8a",
-      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding. Today's head commit changes only uv.lock urllib3 dependency, not evidence of a protocol release."
+      "revision_observed": "9756aa9625bf6055c31354409a90b6b15dca6a98",
+      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding. Since the Oct 12 observation, one commit added a contributing guide and updated roadmap/navigation; overview unchanged, not a protocol release."
+    },
+    {
+      "id": "stripe-ai-skills",
+      "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "published_on": null,
+      "revision_observed": "deae744bc0cbf6034b4b6f22f51c690b71a4e779",
+      "commit_committed_at": "2026-10-13T00:56:32Z",
+      "plugin_version_observed": "0.5.17",
+      "evidence": "Official sync-skills commit and selected patches reviewed. Plugin manifests 0.5.16 to 0.5.17; feedback guidance changed; upgrade skill regeneration date changed but fallback API version remains 2026-09-30.endive. Commit observation is not a commerce product release. README monitoring does not cover all skill file changes."
     },
     {
       "id": "ap2",
