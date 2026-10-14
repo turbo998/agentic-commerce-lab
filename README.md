@@ -21,6 +21,7 @@
 
 | 入口 | 内容 |
 |---|---|
+| [2026-10-14 每日研究](research/daily/2026-10-14.md) | TAP 文档迁移、UCP 扩展契约漏检修复、MCP 告示事实监测及 17 日迁移窗口 |
 | [2026-10-13 每日研究](research/daily/2026-10-13.md) | 官方 skills 增量、可执行能力边界、UCP 离线预检及 MCP 18 日迁移窗口 |
 | [2026-10-12 每日研究](research/daily/2026-10-12.md) | 官方证据增量、AI Native 与 WAF 辩证比较、UCP handler 边界及 MCP 迁移盘点 |
 | [2026-10-11 研究基线](research/daily/2026-10-11.md) | 发布事实纠错、已有技术资产、证据缺口与日更机制 |
@@ -46,13 +47,13 @@ demo 使用自动清理的临时 SQLite 数据库，输出 `status=simulated`。
 ### Stripe MCP 迁移盘点（不读取密钥）
 
 ```powershell
-python -m lab.mcp_migration --as-of 2026-10-13
+python -m lab.mcp_migration --as-of 2026-10-14
 python -m lab.mcp_migration --as-of 2026-10-31
 ```
 
 默认读取 [合成客户端清单](lab/mcp_inventory.example.json)；`--inventory` 可指定仅含 alias、环境和 auth 类别的 JSON。禁止填入实际 key、账户 ID 或个人数据；不传 `--as-of` 时使用北京时间当天日期。示例含两种旧认证类别，两个命令都**预期 exit 1**，分别输出 `migration_required` / `blocked_by_documented_policy`；空/无效输入 exit 2。全部记录为 OAuth/Agent Key 时 exit 0 只表示元数据类别匹配，始终 `account_verification=not_performed`，不是已迁移或已获付款权限。
 
-Stripe 文档未说明 cutoff 的具体时刻/时区，本工具只做日期模拟，不检测服务器 401。10-13 再核验，剩余 18 个日历日；依据是 [MCP 官方正文](https://docs.stripe.com/mcp)，人工迁移 runbook 见 [10-12 研究](research/daily/2026-10-12.md)，今日变化见 [10-13 研究](research/daily/2026-10-13.md)。工具无网络调用，不创建、轮换或撤销实际凭证。
+Stripe 文档未说明 cutoff 的具体时刻/时区，本工具只做日期模拟，不检测服务器 401。10-14 再核验，剩余 17 个日历日；依据是 [MCP 官方正文](https://docs.stripe.com/mcp)，人工迁移 runbook 见 [10-12 研究](research/daily/2026-10-12.md)，今日变化见 [10-14 研究](research/daily/2026-10-14.md)。工具无网络调用，不创建、轮换或撤销实际凭证；来源监测发现变化也不会自动更新本工具的规则。
 
 ### UCP handler 兼容性预检（不获取凭证）
 
@@ -76,7 +77,11 @@ python -m lab.ucp_preflight --instrument apple_pay
 python -m scripts.source_monitor
 ```
 
-生成 `research/daily/YYYY-MM-DD-sources.json`（北京时间），只记录 URL、哈希及错误，不保存第三方全文。任何抓取失败返回非零退出码；同日重跑仍对比此前日期的最后成功结果。HTML 导航或文案变化也可能改变哈希，**不能据此判断产品发布或标准升级**。专家研究写入同日 `.md`，将最新官方正文与公告日期、准入限制分开。
+生成 `research/daily/YYYY-MM-DD-sources.json`（北京时间），只记录 URL、哈希、错误和选定结构化事实，不保存第三方全文。任何抓取失败返回非零退出码；同日重跑仍对比此前日期的最后成功结果。HTML 导航或文案变化也可能改变哈希，**不能据此判断产品发布或标准升级**。专家研究写入同日 `.md`，将最新官方正文与公告日期、准入限制分开。
+
+10-14 起，对 `stripe-mcp` 的已审阅 Markdown 迁移告示额外输出 `policy_facts` / `policy_change` / `policy_error`：截止日期、两类被拒绝 key、OAuth/Agent Key 替代路径、文档所述 401/OAuth discovery，以及未知的截止时刻/时区。首次提取为 `baseline`，不回填历史；`policy_change=unchanged` 只表示这些字段相同，不是整个政策、tool/schema 或实际账户权限未变。
+
+提取器仅识别固定的短告示语法，忽略 fenced code 中的示例。缺失/重复告示、日期矛盾或措辞变化均 `unknown` 并返回非零，不猜测新语义、不退回旧事实冒充本日成功。正文抓取成功但解析失败时 `status=ok` 与 `policy_error` 同时记录；fetch 失败则 `status=error`。两种失败都保留此前日期最后成功基线。当前可识别语法之外的合理文案变化也会要求人工审阅，这是保守的监测取舍，不是 Stripe 拒绝该政策。
 
 研究上传当前会话分支并通过 PR 汇总；未合并前不代表默认分支已更新。尚未验证的能力会明确标注，不能据此推断生产可用性。
 
