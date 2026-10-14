@@ -2,7 +2,7 @@
 
 面向 Personal Agent 的 Agentic Commerce 研究与可运行模拟实验：聚焦商业场景、AI 职责、授权与支付原生架构。
 
-本仓库将研究 Stripe Sessions 2026、Visa Intelligent Commerce / Trusted Agent Protocol 与公开的 AWS Shopping Concierge 示例，并记录来源、发布日期、适用范围和证据等级。研究内容会区分产品公告、当前文档、协议规范、代码观察和本地模拟，不把演示结果描述为供应商认证或真实支付结算。
+本仓库将研究 Stripe Sessions 2026、Visa Intelligent Commerce / Trusted Agent Protocol、Sierra Agent OS / Personal Agent Protocol（"Poppy" `v0.1` 草案）与公开的 AWS Shopping Concierge 示例，并记录来源、发布日期、适用范围和证据等级。研究内容会区分产品公告、当前文档、协议规范、代码观察和本地模拟，不把演示结果描述为供应商认证或真实支付结算。
 
 ## 目标
 
@@ -21,17 +21,18 @@
 
 | 入口 | 内容 |
 |---|---|
-| [2026-10-14 每日研究](research/daily/2026-10-14.md) | TAP 文档迁移、UCP 扩展契约漏检修复、MCP 告示事实监测及 17 日迁移窗口 |
+| [2026-10-14 每日研究](research/daily/2026-10-14.md) | Sierra 与 Poppy `v0.1` 草案/当日建仓核验、TAP 迁移、UCP 扩展修复、MCP 告示监测及 17 日窗口 |
 | [2026-10-13 每日研究](research/daily/2026-10-13.md) | 官方 skills 增量、可执行能力边界、UCP 离线预检及 MCP 18 日迁移窗口 |
 | [2026-10-12 每日研究](research/daily/2026-10-12.md) | 官方证据增量、AI Native 与 WAF 辩证比较、UCP handler 边界及 MCP 迁移盘点 |
 | [2026-10-11 研究基线](research/daily/2026-10-11.md) | 发布事实纠错、已有技术资产、证据缺口与日更机制 |
-| [协议与产品分层](research/protocols.md) | Visa VIC/TAP/MCP/Toolkit；Stripe ACP/UCP/Suite/SPT/Link/MPP/x402/MCP |
-| [Personal Agent 参考架构](research/architecture.md) | 信任边界、审批、幂等、异步支付恢复与非功能取舍 |
-| [Agent 使用场景](research/use-cases.md) | 零售、补货、预订、B2B 开票、API 付费、售后与财务洞察 |
+| [协议与产品分层](research/protocols.md) | Visa VIC/TAP/MCP/Toolkit；Stripe ACP/UCP/Suite/SPT/Link/MPP/x402/MCP；Sierra & Poppy `v0.1` |
+| [Personal Agent 参考架构](research/architecture.md) | 信任边界、审批、幂等、异步支付恢复、Sierra 纵深防御与非功能取舍 |
+| [Agent 使用场景](research/use-cases.md) | 零售、补货、预订、B2B 开票、API 付费、售后改单（Poppy/Sierra）与财务洞察 |
 | [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
 | [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
 | [离线 MCP 迁移盘点](lab/mcp_migration.py) | Stripe MCP 2026-10-31 auth 类别期限检查；只接受无密钥元数据，不验证账户 |
 | [离线 UCP handler 预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件检查；兼容候选不等于支付授权 |
+| [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/DPoP/MCP 令牌校验、`operations` v1 修订确认与 $\tau^3$-bench 零售改单护栏 |
 
 ## 本地运行
 
@@ -66,6 +67,14 @@ python -m lab.ucp_preflight --instrument apple_pay
 默认用完全合成的双方宣告测试 `link`，**预期 exit 1**：当前 Stripe `/complete` 不接受该 instrument。后两条 exit 0 仅为 `candidate_unverified`，始终 `payment_authorized=false`、`provider_verification=not_performed`。Google Pay 在本预检中拒绝，不自动转到 `com.google.pay`、转换 instrument 或降级到浏览器付款。
 
 本地只审阅 UCP `2026-04-08` / Stripe handler `2026-06-25` 文档示例，匹配但未经本地审阅的版本也拒绝；这不是声明其他版本被供应商禁止。卡 tokenize 才检查双方 `sandbox/production` 环境一致和关系已确认，不能把该条件套到 Apple Pay wallet 路径。`--business-ucp-version` / `--business-handler-version` 可模拟版本漂移；无效日期 exit 2。所有参数只是元数据声明，不读取实际 UCP profile、key、PAN、SPT 或钱包数据，也不验证客户同意、Apple Pay 商户配置、地域/账户资格或支付结果。此工具不是 UCP wire-format/conformance 实现，更不是 checkout 的授权层。
+
+### Poppy `v0.1` 发现与 Sierra 零售售后确定性护栏（离线模拟）
+
+```powershell
+python -m lab.poppy_guard
+```
+
+演练 Personal Agent Protocol（"Poppy" `v0.1` 草案）的 `/.well-known/poppy.json` 发现与 OAuth `poppy_domains` 双向防伪校验、OpenAPI/Operations `DPoP` vs MCP 单一 `resource` 绑定 `Bearer` 令牌验证，以及结合 Sierra Defense-in-Depth 与 $\tau^2/\tau^3$-bench 零售策略的两阶段 `operations` v1 订单修改确认：拒绝用对话消息（含 `sender: "human"`）确认操作、对最新不可变 `revision` 幂等确认执行，并拦截同一待发货订单的二次商品修改。此模块仅使用合成内存数据，不发起真实网络请求或支付调用。
 
 ## 每日研究
 

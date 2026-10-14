@@ -216,6 +216,84 @@
       "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier",
       "published_on": null,
       "evidence": "N-tier is an architecture style, not the definition of WAF. Logical layers and physical tiers need not map one-to-one; asynchronous messaging is supported."
+    },
+    {
+      "id": "sierra-pap-launch",
+      "url": "https://sierra.ai/blog/introducing-personal-agent-protocol",
+      "published_on": "2026-10-06",
+      "evidence": "Official announcement (publishedAt 2026-10-06T17:32:00.000Z); Meta and Sierra co-developed Personal Agent Protocol with Genesys, Instinct, NiCE, Rocket, Shopify, Stripe, and Walmart. Stated v0.1 spec planned later in Oct 2026 and payment extensions are future directions ('could let')."
+    },
+    {
+      "id": "sierra-poppy-draft",
+      "url": "https://sierra.ai/blog/poppy",
+      "published_on": "2026-10-09",
+      "evidence": "Official announcement (publishedAt 2026-10-09T19:56:06.371Z); publishes draft Personal Agent Protocol (Poppy) at personalagentprotocol.org (/.well-known/poppy.json) and announces 35 additional design partners including Visa, Mastercard, Adyen, PayPal, Venmo, Plaid, OpenAI, Cloudflare, Okta, 1Password, and Target. Explicitly positions Poppy as complementary to UCP."
+    },
+    {
+      "id": "poppy-spec",
+      "url": "https://personalagentprotocol.org/docs/spec",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/spec.mdx",
+      "published_on": null,
+      "spec_version_observed": "0.1",
+      "revision_observed": "f766ef8bdc249c66b2a42671ea9e7d53c3555665",
+      "commit_committed_at": "2026-10-14T15:35:49Z",
+      "evidence": "Draft v0.1 specification; public GitHub repository personal-agent-protocol/personal-agent-protocol created on 2026-10-14 (initial commit e259d57 at 12:58:23Z, head f766ef8 at 15:35:49Z). Defines /.well-known/poppy.json discovery, mutual OAuth poppy_domains check, DPoP session tokens, resource-bound Bearer tokens for MCP (2025-06-18+), poppy:read/poppy:write scopes, and Conversations/Direct Conversations. Payments and push notifications remain open topics in /docs/path-to-1."
+    },
+    {
+      "id": "poppy-operations-ext",
+      "url": "https://personalagentprotocol.org/docs/extensions/operations",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/operations.mdx",
+      "published_on": null,
+      "spec_version_observed": "1",
+      "revision_observed": "f766ef8bdc249c66b2a42671ea9e7d53c3555665",
+      "evidence": "Draft v1 operations extension for Poppy v0.1. Defines two-phase proposed/confirm/in_progress/succeeded/failed/cancelled/expired state machine with immutable revision numbers, approved_by ('user' vs 'permission'), conversation-message non-confirmation rule, and at-most-once execution keyed by operation_id."
+    },
+    {
+      "id": "sierra-summit-2026",
+      "url": "https://sierra.ai/blog/summit-recap-2026",
+      "published_on": "2026-10-06",
+      "evidence": "Official Summit 2026 recap (publishedAt 2026-10-06T18:01:51.141Z); documents Constellation of models (Linnaeus, Darwin, Curie, Fleming), Tandem Voice (Conversation vs Reasoning layers), Horizon long-running workflows, Ghostwriter, and Sierra one-click app in the Stripe App Marketplace."
+    },
+    {
+      "id": "sierra-caller-id",
+      "url": "https://sierra.ai/blog/caller-id-in-the-age-of-agents",
+      "published_on": "2026-10-08",
+      "evidence": "Official announcement (publishedAt 2026-10-08T17:32:00.000Z); introduces fleming-1 real-time voice caller-agent detection model ('Information, not judgement') as a voice-channel complement to Personal Agent Protocol self-identification."
+    },
+    {
+      "id": "sierra-defense-in-depth",
+      "url": "https://sierra.ai/blog/defense-in-depth-in-the-age-of-agents",
+      "published_on": "2026-08-13",
+      "evidence": "Official technical blog (publishedAt 2026-08-13T16:51:46.690Z); defines four runtime layers (Content, Rules & Policies, Supervisors, Deterministic Guards) plus offline Simulations, Red-teaming, and Agent Monitors."
+    },
+    {
+      "id": "sierra-mcp-gateway",
+      "url": "https://sierra.ai/blog/building-sierras-mcp-gateway-an-engineering-iceberg",
+      "published_on": "2026-07-22",
+      "evidence": "Official engineering blog (publishedAt 2026-07-22T14:00:00.000Z); documents centralized MCP Gateway enforcing tool visibility gating ('an agent can't misuse what it never sees'), single-customer session isolation, and human-identity vs pre-authorized service-account workflow separation."
+    },
+    {
+      "id": "sierra-payments",
+      "url": "https://sierra.ai/blog/payments",
+      "published_on": "2026-04-07",
+      "evidence": "Official announcement (publishedAt 2026-04-07T19:35:00.000Z); Sierra verified as Level 1 PCI-compliant service provider on the Visa Global Service Provider Registry. Switches chat/voice payment collection out of the LLM loop into a predetermined server-validated PCI flow so raw Cardholder Data never enters LLM context."
+    },
+    {
+      "id": "sierra-tau2-bench",
+      "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md",
+      "published_on": null,
+      "release_tag_observed": "v1.0.1",
+      "release_published_at": "2026-07-22T21:22:42Z",
+      "revision_observed": "dd8757d4c8791dad7b3cdaf02a105a3d5f9d86bd",
+      "commit_committed_at": "2026-10-13T16:48:45Z",
+      "evidence": "Official Sierra Research tau2-bench (now tau3-bench) repository. Head commit dd8757d (2026-10-14 00:48:45+08:00 Beijing time) is a README community spotlight update (#613), not a new benchmark release. Evaluation docs confirm default reward_basis=['DB','COMMUNICATE'] via gold-trajectory DB state hash rather than single-path action matching."
+    },
+    {
+      "id": "sierra-tau2-retail-policy",
+      "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/data/tau2/domains/retail/policy.md",
+      "published_on": null,
+      "revision_observed": "dd8757d4c8791dad7b3cdaf02a105a3d5f9d86bd",
+      "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product variant-only item swap, and original-payment/gift-card refund constraints."
     }
   ]
 }

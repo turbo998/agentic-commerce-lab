@@ -20,6 +20,7 @@ ALLOWED_HOSTS = frozenset({
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
     "a2a-protocol.org", "mpp.dev",
     "learn.microsoft.com",
+    "sierra.ai", "personalagentprotocol.org",
 })
 
 

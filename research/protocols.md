@@ -9,11 +9,12 @@
 | 工具访问 | MCP；Visa MCP Server；Stripe MCP | Host/Client/Server 之间的工具、资源、能力协商及 API 访问 | 不替用户批准订单；不等于商业交易协议；不保证支付成功 |
 | Agent 协作 | A2A | AgentCard、Message、Task、Artifact；跨 Agent 任务、流式与异步交互 | 不定义购物税费、卡凭证、资金结算 |
 | 商业流程 | ACP、UCP | 商品、购物车、checkout、账户关联、订单及履约扩展 | 本身不成为收单网络，不免除商户责任 |
-| 请求信任 | Visa TAP | 商户识别可信 Agent，验证绑定上下文的请求签名与识别信息 | 可信请求不等于资金授权成功，更不等于结算完成 |
-| 意图与授权证据 | AP2；Visa authenticated Payment Instruction | 可验证的用户约束、最终交易授权与审计证据 | 不把自然语言意图自动升级为无上限授权 |
-| 凭证委托 | Stripe SPT；Visa agent-specific tokens/credentials；Link Agent Wallet | 隔离原始支付信息、限定商户/金额/有效期、用户批准与一次性凭证 | 不是所有商户/地域都能使用的通用 bearer token |
+| 个人代理连接与操作确认 | Personal Agent Protocol（Poppy `v0.1` 草案）及 `operations` v1 | `/.well-known/poppy.json` 发现、OAuth `poppy_domains` 双向绑定、DPoP vs MCP Bearer、会话及两阶段 `operations` 修订确认 | `v0.1` 明确未定义 Payments（列为 Open Topic）；与 UCP 互补而非替代 |
+| 请求信任 | Visa TAP；Sierra `fleming-1` 语音识别 | 商户识别可信 Agent、验证绑定上下文的请求签名（TAP）或实时音频 caller-agent 检测（`fleming-1`） | 可信请求或声学提示不等于资金授权成功，更不等于结算完成 |
+| 意图与授权证据 | AP2；Visa authenticated Payment Instruction；Poppy `operations` revision | 可验证的用户约束、不可变修订提案确认与审计证据 | 不把自然语言意图或对话文本（含 `sender: "human"`）自动升级为交易确认 |
+| 凭证委托与 PCI 隔离 | Stripe SPT；Visa agent-specific tokens；Link Agent Wallet；Sierra Payments（Level 1 PCI） | 隔离原始支付信息、限定商户/金额/有效期、或将卡收集切出 LLM 进入服务端预定义 PCI 流 | 不是所有商户/地域都能使用的通用 bearer token |
 | 机器付费 | MPP、x402 | HTTP 402 challenge → 付款证明或凭证 → 重试 → 资源及回执 | 不是完整商品发现与售后协议；也不免除退款、税务、合规义务 |
-| 商户集成产品 | Stripe Agentic Commerce Suite | 产品目录分发、托管商业接口、checkout、支付、风控与订单事件 | 不是 ACP 的同义词；标准开放不代表渠道接入已获批准 |
+| 商户与客服集成产品 | Stripe Agentic Commerce Suite；Sierra Agent OS（含 Stripe App） | 产品目录分发、托管商业接口、客服订单操作、语音/全渠道交互与四层运行时护栏 | 不是开放协议的同义词；标准开放不代表渠道接入已获批准 |
 
 ## Visa：网络级授权与商户信任
 
@@ -132,3 +133,6 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
 - Stripe MCP 截止日期仍 **2026-10-31**，本日相差 **17 个日历日**；未说明准确时刻/时区。当前正文也列出通用 `stripe_api_write` 和 Treasury public-preview 写操作；未保留昨日全文，不能称为今日新增工具。工具 catalog 可见不意味着任意账号、地区或审批条件下可执行。
 - Stripe AI [`789ef5e…`](https://github.com/stripe/ai/commit/789ef5e0a55ee1d0787a5974660b15bf76dc29b5)仅本轮观察到 manifest bump 和 upgrade skill 生成日改变，fallback API 仍 `2026-09-30.endive`。各 provider 版本不同，不用 agent-plugins 的 `0.5.18` 代替 Claude/Codex 等版本。
 - 来源监测开始记录 MCP 告示的选定结构化事实，**不是**将官网文本自动变成付款/运维权限。字段变化或解析失败需人工核验后显式修改规则，不能触发自动创建 key、绕过审批或高权限回退。
+- **Personal Agent Protocol（Poppy `v0.1` 草案）与 Sierra 体系核验**：
+  - [Meta 与 Sierra 首发公告（2026-10-06）](https://sierra.ai/blog/introducing-personal-agent-protocol)、[Poppy `v0.1` 草案发布（2026-10-09）](https://sierra.ai/blog/poppy)（新增 Visa、Mastercard、Adyen、PayPal、OpenAI、Cloudflare、Okta 等 35+ 设计伙伴，合著方含 Stripe、Shopify、Walmart）与**北京时间 2026-10-14 建仓**的 [GitHub 规范仓库](https://github.com/personal-agent-protocol/personal-agent-protocol)（head `f766ef8b…`）：定义 `/.well-known/poppy.json` 发现、OAuth metadata `poppy_domains` 双向防伪、OpenAPI/会话/Operations 强制 `DPoP`（RFC 9449）vs MCP 强制单服务端 `resource` 绑定 `Bearer`（RFC 8707），以及 [`operations` v1 扩展](https://personalagentprotocol.org/docs/extensions/operations)的两阶段 `proposed` → `revision` → 独立端点确认机制（明确禁止用对话消息确认操作）。官方 [`/docs/path-to-1`](https://personalagentprotocol.org/docs/path-to-1) 将 **Payments** 列为尚未定义的 Open Topic，并明确与 UCP 互补。
+  - [Sierra Summit 2026（2026-10-06）](https://sierra.ai/blog/summit-recap-2026)、[`fleming-1` 语音 Agent 识别（2026-10-08）](https://sierra.ai/blog/caller-id-in-the-age-of-agents)、[Defense-in-Depth（2026-08-13）](https://sierra.ai/blog/defense-in-depth-in-the-age-of-agents)、[MCP Gateway（2026-07-22）](https://sierra.ai/blog/building-sierras-mcp-gateway-an-engineering-iceberg)、[Payments（2026-04-07）](https://sierra.ai/blog/payments) 与 [$\tau^2/\tau^3$-bench（`v1.0.1` / head `dd8757d4…`）](https://github.com/sierra-research/tau2-bench)：构成企业侧 Agent 的 PCI 旁路收款（Visa Level 1 PCI，LLM 零接触 CHD）、语音双速架构（Tandem Voice）及四层运行时护栏（Content → Rules → Supervisors → Deterministic Guards）。

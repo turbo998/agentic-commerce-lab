@@ -108,3 +108,8 @@ API 文档表可能漏掉定义在 `securitySchemes` / `security` 或 content ma
 AI Native 的核心区别是**模型可变的行动空间与不可随意扩大、可追溯的经济权限之间的隔离**，不是推翻 WAF。建议保留 WAF 的可靠性、安全、成本、运维和性能取舍，增补领域不变量：消费者批准绑定最终报价；副作用总额不超过任务预算；`unknown` 不许新扣款；退款请求与确认到账分开；Agent 角色不能批准自己提出的动作。普通三层或模块化单体也可承载这些逻辑边界，不必默认采用多 Agent 或微服务。
 
 新监测资产仅改善**证据/规则变更的运维闭环**：获取成功 → 固定语法选定事实 → 人工审阅 → 显式规则变更 → 回归。`policy_change=unchanged` 不等于业务授权仍有效；`unknown` 不进入自动执行路径。源码、tool schema、prompt/model、商业协议、handler、preview API、资格/地区和客户授权均需独立版本/状态记录。模型 failover 可以更换推理服务，但不能自动换付款凭证、收款方或提高工具权限。
+
+**Sierra 与 Poppy `v0.1` 对 AI-Native 架构的进一步补充**：
+- **双轨会话令牌与双向域名防伪**：Poppy `v0.1` 要求发现文档 `auth.issuer` 与 OAuth metadata `poppy_domains` 双向绑定；OpenAPI/会话/Operations 必须校验请求绑定的 `DPoP` 证明（防重放 `jti`），而 MCP 通道必须使用绑定单一 `resource` 的 `Bearer` 令牌，并根据登录方式（`direct` / `device` / `mediated`）限制最大可授予 scope。
+- **四层纵深防御与两阶段 `operations` 修订确认**：Sierra 的实践证明自然语言 Rules 与 Supervisors 仍属概率控制，涉及账户修改、换货、退款或支付的工具必须具备第 4 层确定性护栏（未鉴权不暴露修改工具、单会话锁定单客户账户、待发货订单仅允许一次修改），并配合 Poppy `operations` v1：工具调用仅生成带不可变 `revision` 的 `proposed` 操作，仅由独立确认端点针对最新 `revision` 幂等执行（对话消息绝不触发确认）。
+- **PCI 支付旁路与目标状态哈希评测**：第一方 Agent 收款（Sierra Payments）将支付信息采集切出 LLM，由服务端预定义序列直传 Stripe；而评测准则（$\tau^2/\tau^3$-bench `reward_basis=["DB","COMMUNICATE"]`）以最终确定性业务数据库状态哈希为准，允许推理探索路径变化但严守终态不变量。新增离线资产 `lab/poppy_guard.py` 实现了上述 Poppy `v0.1` 发现/令牌校验与 Sierra/$\tau^3$-bench 零售售后确定性护栏。
