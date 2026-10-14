@@ -98,3 +98,13 @@ Agent 只能请求动作，不能调用批准接口、扩大预算或修改已�
 `lab/ucp_preflight.py` 是无网络、无凭证的**合成元数据预检**。它拒绝未审阅版本、缺失双方宣告、Stripe handler 下的 Link/Google Pay completion；card 和 Apple Pay 返回不同 credential path，且所有输出 `payment_authorized=false`。本地保守的版本白名单是研究边界，不是供应商兼容矩阵。没有将它连接为现有 checkout 的批准来源，没有新增 tokenize 或付款工具。
 
 Stripe 的自动更新 skills/plugin 改变的是开发指导面，不是交易授权来源。应记录实际加载的版本/revision，并对可执行 tool/schema 的变化做回归；供应商 skill 的反馈建议不能自动获得上传业务资料的权限。可复用的逻辑分层仍可在模块化单体中实现，不需要再造“第六层”或默认拆成多 Agent 微服务。
+
+## 2026-10-14 增量：可解析、可执行、可授权必须分别成立
+
+[今日研究](daily/2026-10-14.md)中的 UCP 官方修复表明：开放的基础 capability schema 允许额外字段，基础验证通过不意味着 fulfillment/AP2 等 extension 内容有效。生产商业 adapter 应分别验证已协商的 capability、extension composed schemas、方向/操作和语义约束；AP2 字符串符合格式也不等于签名、issuer、audience、有效期及最终报价绑定已验证。未知扩展隔离或显式拒绝，不能凭模型解释提升为可信条款。
+
+API 文档表可能漏掉定义在 `securitySchemes` / `security` 或 content maps 中的字段。生成客户端和集成契约应读取固定版本的完整 OpenAPI，不靠截图、字段表或 Agent 的“参数齐全”判断认证是否必需。已有 `lab/ucp_preflight.py` 只做合成版本/instrument/环境声明检查，没有因此获得 wire-format 或 cryptographic conformance。
+
+AI Native 的核心区别是**模型可变的行动空间与不可随意扩大、可追溯的经济权限之间的隔离**，不是推翻 WAF。建议保留 WAF 的可靠性、安全、成本、运维和性能取舍，增补领域不变量：消费者批准绑定最终报价；副作用总额不超过任务预算；`unknown` 不许新扣款；退款请求与确认到账分开；Agent 角色不能批准自己提出的动作。普通三层或模块化单体也可承载这些逻辑边界，不必默认采用多 Agent 或微服务。
+
+新监测资产仅改善**证据/规则变更的运维闭环**：获取成功 → 固定语法选定事实 → 人工审阅 → 显式规则变更 → 回归。`policy_change=unchanged` 不等于业务授权仍有效；`unknown` 不进入自动执行路径。源码、tool schema、prompt/model、商业协议、handler、preview API、资格/地区和客户授权均需独立版本/状态记录。模型 failover 可以更换推理服务，但不能自动换付款凭证、收款方或提高工具权限。

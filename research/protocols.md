@@ -122,3 +122,13 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
 - Stripe MCP 指纹相对 10-12 改变，两次本日正文获取指纹一致；未保留昨日正文，不能精确重建全部语义 diff。**2026-10-31** 认证迁移期限仍未变，本日剩余 18 个日历日；MCP 的 Agent Key 规则不能泛化到 UCP tokenize 或 Link OAuth。
 - UCP overview 未变；当前官方 head `9756aa9…` 是 contributing/roadmap/navigation 文档提交，不是协议升级。Stripe handler 文档仍区分 card tokenize → SPT、Apple Pay direct token、Link credential acquisition 与 `com.google.pay` completion。本地新增预检只处理已审阅的 Stripe handler 示例，不宣称 Google Pay 或 UCP conformance。
 - [Stripe AI 官方提交](https://github.com/stripe/ai/commit/deae744bc0cbf6034b4b6f22f51c690b71a4e779)在北京时间 10-13 同步 skills，plugin manifest `0.5.16 → 0.5.17`；升级 skill 生成日期改变但 fallback API version 仍是 `2026-09-30.endive`。反馈指导调整不是新付款能力，本轮未安装插件、运行供应商 CLI 或提交反馈。
+
+## 2026-10-14 增量核验
+
+完整证据、来源失败及版本边界见 [10-14 日研](daily/2026-10-14.md)。没有已核验的本日 Visa/Stripe 商业产品首发；以下是正文路径、文档/代码和监测增量。
+
+- Visa TAP 原 overview 现在重定向到 [getting started](https://developer.visa.com/docs/trusted-agent-protocol)，其[商户规格入口](https://developer.visa.com/docs/trusted-agent-protocol/trusted-agent-protocol-specifications)说明 browsing/payment 两类交互，以及 consumer recognition / optional payment information。首次看到此路径不等于今日发布。TAP 可承载支付相关信息，但请求/数据签名仍不能代替消费者最终授权和 PSP/network 结果。**VIC 开发者正文获取 403**，今日不能将历史生命周期说明标为重新核验成功。
+- UCP 固定 commit [`72ea9a9…`](https://github.com/Universal-Commerce-Protocol/ucp/commit/72ea9a95c4aaaabb042adc6906430578c54549e3)修正文档示例，并对基础 capability 未声明、由 extension 引入的字段追加 composed-schema 校验。另一个 commit [`e45c021…`](https://github.com/Universal-Commerce-Protocol/ucp/commit/e45c02121fbef9125286b9f55c1f04be6a7d682a)使文档表从 OpenAPI `securitySchemes` / `security` 和 content maps 生成认证及媒体 headers。这是契约验证和文档生成修复，不是已证明的协议版本升级；本仓库 UCP metadata 预检没有新增扩展/schema/签名认证能力。
+- Stripe MCP 截止日期仍 **2026-10-31**，本日相差 **17 个日历日**；未说明准确时刻/时区。当前正文也列出通用 `stripe_api_write` 和 Treasury public-preview 写操作；未保留昨日全文，不能称为今日新增工具。工具 catalog 可见不意味着任意账号、地区或审批条件下可执行。
+- Stripe AI [`789ef5e…`](https://github.com/stripe/ai/commit/789ef5e0a55ee1d0787a5974660b15bf76dc29b5)仅本轮观察到 manifest bump 和 upgrade skill 生成日改变，fallback API 仍 `2026-09-30.endive`。各 provider 版本不同，不用 agent-plugins 的 `0.5.18` 代替 Claude/Codex 等版本。
+- 来源监测开始记录 MCP 告示的选定结构化事实，**不是**将官网文本自动变成付款/运维权限。字段变化或解析失败需人工核验后显式修改规则，不能触发自动创建 key、绕过审批或高权限回退。

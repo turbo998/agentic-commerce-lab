@@ -1,4 +1,4 @@
-"""Record public source fingerprints, never third-party document bodies."""
+"""Record public source fingerprints and selected facts, never document bodies."""
 
 import argparse
 import hashlib
@@ -64,6 +64,66 @@ class Observation:
     sha256: str | None
     change: str
     error: str | None = None
+    policy_facts: dict[str, object] | None = None
+    policy_change: str | None = None
+    policy_error: str | None = None
+
+
+def mcp_policy_facts(body: bytes) -> dict[str, object]:
+    """Extract only the reviewed auth notice; changed wording requires human review."""
+    lines: list[str] = []
+    fence: tuple[str, int] | None = None
+    for line in body.decode("utf-8").splitlines():
+        line = re.sub(r"^>\s?", "", line)
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if marker:
+            if fence is None:
+                fence = (marker[1][0], len(marker[1]))
+            elif (
+                marker[1][0] == fence[0] and len(marker[1]) >= fence[1]
+                and not marker[2].strip()
+            ):
+                fence = None
+            continue
+        if fence is None:
+            lines.append(line)
+    text = "\n".join(lines)
+    headings = list(re.finditer(
+        r"(?m)^#### Update API key authentication by ([^\n]+)\n", text
+    ))
+    if len(headings) != 1:
+        raise ValueError("Expected one MCP auth notice; missing or duplicate notice needs review.")
+    heading = headings[0]
+    section = re.split(r"(?m)^#{1,6} ", text[heading.end():], maxsplit=1)[0]
+    notice = re.sub(r"\s+", " ", section).strip()
+    match = re.fullmatch(
+        r"Beginning (\d{1,2} [A-Z][a-z]+ \d{4}), Stripe MCP no longer accepts "
+        r"full-access secret keys or restricted API keys without the Agent tag\. "
+        r"Before then, replace these keys with newly created Agent Keys or reconnect with OAuth\. "
+        r"Requests using an unsupported key receive a `401` response with an OAuth discovery challenge\.",
+        notice,
+    )
+    if match is None:
+        raise ValueError("MCP auth notice wording changed; selected facts remain unverified.")
+    try:
+        deadline = datetime.strptime(match[1], "%d %B %Y").date()
+        heading_date = datetime.strptime(heading[1].strip(), "%d %B %Y").date()
+    except ValueError as error:
+        raise ValueError("MCP auth notice has an invalid calendar date; review required.") from error
+    if deadline != heading_date:
+        raise ValueError("MCP auth notice dates conflict; review required.")
+    return {
+        "parser_version": "stripe-mcp-auth-notice-v1",
+        "deadline": deadline.isoformat(),
+        "full_access_secret_rejected": True,
+        "restricted_without_agent_tag_rejected": True,
+        "replacement_oauth": True,
+        "replacement_agent_key": True,
+        "rejection_http_status": 401,
+        "oauth_discovery_challenge": True,
+        "cutoff_time": None,
+        "cutoff_timezone": None,
+    }
 
 
 def validate_url(url: str) -> None:
@@ -89,7 +149,10 @@ def fingerprint(body: bytes, content_type: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def observe(source: Source, previous_hash: str | None) -> Observation:
+def observe(
+    source: Source, previous_hash: str | None,
+    previous_policy: dict[str, object] | None = None,
+) -> Observation:
     """Fetch one source with bounded size and report failure with context."""
     validate_url(source.monitor_url)
     request = Request(source.monitor_url, headers={"User-Agent": "AgenticCommerceLab/0.1"})
@@ -105,11 +168,31 @@ def observe(source: Source, previous_hash: str | None) -> Observation:
         return Observation(
             source.id, source.url, source.monitor_url, "error", None, "unknown",
             f"{type(error).__name__}: {error}",
+            policy_change="unknown" if source.id == "stripe-mcp" else None,
+            policy_error="MCP auth facts unavailable because source fetch failed."
+            if source.id == "stripe-mcp" else None,
         )
     change = "baseline" if previous_hash is None else (
         "unchanged" if digest == previous_hash else "changed"
     )
-    return Observation(source.id, source.url, fetched_url, "ok", digest, change)
+    facts = None
+    policy_change = None
+    policy_error = None
+    if source.id == "stripe-mcp":
+        try:
+            if fetched_url != "https://docs.stripe.com/mcp.md":
+                raise ValueError("MCP auth extraction requires the reviewed official Markdown URL.")
+            facts = mcp_policy_facts(body)
+            policy_change = "baseline" if previous_policy is None else (
+                "unchanged" if facts == previous_policy else "changed"
+            )
+        except ValueError as error:
+            policy_change = "unknown"
+            policy_error = str(error)
+    return Observation(
+        source.id, source.url, fetched_url, "ok", digest, change,
+        policy_facts=facts, policy_change=policy_change, policy_error=policy_error,
+    )
 
 
 def load_sources(path: Path) -> list[Source]:
@@ -140,8 +223,25 @@ def previous_hashes(directory: Path, *, before_date: str | None = None) -> dict[
     return hashes
 
 
+def previous_policy_facts(directory: Path, *, before_date: str) -> dict[str, object] | None:
+    """Use the last successful fact observation, not today's rerun or a failed parse."""
+    for path in sorted(directory.glob("*-sources.json"), reverse=True):
+        if path.name[:10] >= before_date:
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        for item in report["observations"]:
+            facts = item.get("policy_facts")
+            if (
+                item["id"] == "stripe-mcp" and item["status"] == "ok"
+                and not item.get("policy_error") and isinstance(facts, dict)
+                and facts.get("parser_version") == "stripe-mcp-auth-notice-v1"
+            ):
+                return facts
+    return None
+
+
 def main() -> int:
-    """Write a dated fingerprint report; return nonzero on any fetch failure."""
+    """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry", type=Path, default=Path("research") / "sources.json")
     parser.add_argument("--output-dir", type=Path, default=Path("research") / "daily")
@@ -150,13 +250,15 @@ def main() -> int:
     sources = load_sources(args.registry)
     now = datetime.now(BEIJING)
     previous = previous_hashes(args.output_dir, before_date=str(now.date()))
-    observations = [observe(source, previous.get(source.id)) for source in sources]
+    policy = previous_policy_facts(args.output_dir, before_date=str(now.date()))
+    observations = [observe(source, previous.get(source.id), policy) for source in sources]
     target = args.output_dir / f"{now.date()}-sources.json"
     args.output_dir.mkdir(parents=True, exist_ok=True)
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v1",
+        "policy_scope": "Selected Stripe MCP auth notice facts only; not live access or a release claim.",
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
@@ -164,7 +266,10 @@ def main() -> int:
     temporary.replace(target)
     for observation in observations:
         logging.info(json.dumps(asdict(observation), ensure_ascii=False))
-    return int(any(observation.status == "error" for observation in observations))
+    return int(any(
+        observation.status == "error" or observation.policy_error
+        for observation in observations
+    ))
 
 
 if __name__ == "__main__":

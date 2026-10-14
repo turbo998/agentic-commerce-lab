@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-13",
+  "checked_on": "2026-10-14",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -40,7 +40,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31. Oct 13 fingerprint differs from Oct 12 and is stable in two same-day probes; no retained Oct 12 body to establish a complete semantic diff. Cutoff date remains unchanged."
+      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31. Oct 14 body reverified; selected auth-notice facts now recorded separately from whole-body hashes. First structured fact baseline, not a historical semantic diff or live account verification. Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -91,13 +91,19 @@
       "id": "visa-vic",
       "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
       "published_on": null,
-      "evidence": "Onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls."
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14 monitor and web_fetch both returned HTTP 403; current developer body and availability not reverified. Public product landing page resolved but yielded insufficient technical text."
     },
     {
       "id": "visa-tap",
       "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
       "published_on": null,
-      "evidence": "Merchant/purpose/time-bound signatures and replay/relay prevention."
+      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Getting-started text now points to merchant specifications; route/content change has no independently verified deployment or release date. Historical detailed claims retained as historical evidence, not revalidated by the short introduction."
+    },
+    {
+      "id": "visa-tap-specs",
+      "url": "https://developer.visa.com/docs/trusted-agent-protocol/trusted-agent-protocol-specifications",
+      "published_on": null,
+      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. No explicit protocol version or first-publication date obtained; not a full cryptographic conformance review."
     },
     {
       "id": "visa-tap-announcement",
@@ -122,18 +128,18 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "9756aa9625bf6055c31354409a90b6b15dca6a98",
-      "evidence": "Latest is moving; exact-version negotiation and namespace/schema provenance binding. Since the Oct 12 observation, one commit added a contributing guide and updated roadmap/navigation; overview unchanged, not a protocol release."
+      "revision_observed": "e45c02121fbef9125286b9f55c1f04be6a7d682a",
+      "evidence": "Oct 14 official fixed commits inspected: 72ea9a9 corrects examples and validates extension-composed schemas; e45c021 derives auth/media headers from OpenAPI security/content maps. Four commits since Oct 13 including two dependency bumps. Whole normalized overview hash unchanged; not evidence of a new protocol release or vendor conformance."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "deae744bc0cbf6034b4b6f22f51c690b71a4e779",
-      "commit_committed_at": "2026-10-13T00:56:32Z",
-      "plugin_version_observed": "0.5.17",
-      "evidence": "Official sync-skills commit and selected patches reviewed. Plugin manifests 0.5.16 to 0.5.17; feedback guidance changed; upgrade skill regeneration date changed but fallback API version remains 2026-09-30.endive. Commit observation is not a commerce product release. README monitoring does not cover all skill file changes."
+      "revision_observed": "789ef5e0a55ee1d0787a5974660b15bf76dc29b5",
+      "commit_committed_at": "2026-10-14T00:44:36Z",
+      "plugin_version_observed": "0.5.18",
+      "evidence": "Official Oct 14 sync-skills commit reviewed: agent-plugins 0.5.18, Claude 0.11.18, Cursor/Grok 0.9.18, Codex 5.8.18 are provider-specific manifest versions. Upgrade skill regeneration date changed but fallback API version remains 2026-09-30.endive. Not package-marketplace publication, new payment capability or protocol release; README hash unchanged."
     },
     {
       "id": "ap2",
