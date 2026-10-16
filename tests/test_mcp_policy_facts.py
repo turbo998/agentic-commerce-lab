@@ -21,6 +21,15 @@ NOTICE = (
     "## Tools\nSynthetic unrelated content.\n"
 ).encode()
 
+NOTICE_NOV_2026 = (
+    "> #### Update API key authentication by November 30, 2026\n>\n"
+    "> Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting "
+    "full-access secret keys and restricted API keys without the Agent tag. Replace these "
+    "keys with newly created agent API keys or reconnect with OAuth. Requests using an "
+    "unsupported key receive a `401` response with an OAuth discovery challenge.\n\n"
+    "## Tools\nSynthetic unrelated content.\n"
+).encode()
+
 
 class PolicyFactsTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -96,11 +105,22 @@ class PolicyFactsTests(unittest.TestCase):
     def test_first_fact_baseline_and_changed_deadline(self) -> None:
         with patch("scripts.source_monitor.urlopen", return_value=self.response):
             baseline = observe(self.source, None)
-            self.response.read.return_value = NOTICE.replace(b"31 October", b"30 October")
+            self.response.read.return_value = NOTICE_NOV_2026
             changed = observe(self.source, baseline.sha256, baseline.policy_facts)
         self.assertEqual(baseline.policy_change, "baseline")
         self.assertEqual(changed.policy_change, "changed")
-        self.assertEqual(changed.policy_facts["deadline"], "2026-10-30")
+        self.assertEqual(changed.policy_facts["deadline"], "2026-11-30")
+
+    def test_november_2026_notice_checks_following_month_consistency(self) -> None:
+        facts = mcp_policy_facts(NOTICE_NOV_2026)
+        self.assertEqual(facts["deadline"], "2026-11-30")
+        for invalid in [
+            NOTICE_NOV_2026.replace(b"Starting in December", b"Starting in January"),
+            NOTICE_NOV_2026.replace(b"November 30, 2026", b"November 15, 2026"),
+            NOTICE_NOV_2026.replace(b"Migrate by November 30", b"Migrate by November 29"),
+        ]:
+            with self.subTest(invalid=invalid[:40]), self.assertRaises(ValueError):
+                mcp_policy_facts(invalid)
 
     def test_fetch_and_parse_failures_do_not_claim_unchanged(self) -> None:
         with patch("scripts.source_monitor.urlopen", side_effect=URLError("synthetic offline")):

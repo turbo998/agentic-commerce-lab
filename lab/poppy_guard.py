@@ -17,9 +17,9 @@ from typing import Any
 from urllib.parse import urlsplit
 
 
-def _strip_www(host: str) -> str:
-    host = host.lower().strip()
-    return host[4:] if host.startswith("www.") else host
+def _normalize_domain(host: str) -> str:
+    """Normalize domain per Poppy v0.1 #37 (efc12168): compare ignoring case, and nothing else."""
+    return host.lower().strip()
 
 
 def _canonical_htu(url: str) -> str:
@@ -45,9 +45,18 @@ def verify_poppy_discovery(
     requested_well_known_url: str,
     poppy_doc: dict[str, Any],
     oauth_metadata: dict[str, Any],
+    *,
+    final_well_known_url: str | None = None,
 ) -> DiscoveryCheckResult:
-    """Verify Poppy v0.1 discovery document and mutual OAuth server `poppy_domains` binding."""
-    parsed_req = urlsplit(requested_well_known_url)
+    """Verify Poppy v0.1 discovery document and mutual OAuth server `poppy_domains` binding.
+
+    Per commit efc12168 (#37), `organization.domain` MUST match the host that serves
+    `poppy.json` after any redirects (`final_well_known_url` when redirected), compared
+    ignoring case and nothing else (no `www.` stripping). Per commit 46dafba3 (#36),
+    OAuth metadata `dpop_signing_alg_values_supported` (when present) MUST include `"ES256"`.
+    """
+    serving_url = final_well_known_url or requested_well_known_url
+    parsed_req = urlsplit(serving_url)
     if parsed_req.scheme != "https" or not parsed_req.hostname:
         return DiscoveryCheckResult(False, "https_well_known_required")
     if parsed_req.path != "/.well-known/poppy.json":
@@ -61,8 +70,8 @@ def verify_poppy_discovery(
         return DiscoveryCheckResult(False, "unsupported_major_version", protocol_version=version)
 
     org = poppy_doc.get("organization") or {}
-    org_domain = str(org.get("domain", "")).lower().strip()
-    if not org_domain or _strip_www(parsed_req.hostname) != _strip_www(org_domain):
+    org_domain = _normalize_domain(str(org.get("domain", "")))
+    if not org_domain or _normalize_domain(parsed_req.hostname) != org_domain:
         return DiscoveryCheckResult(
             False,
             "organization_domain_mismatch",
@@ -90,12 +99,23 @@ def verify_poppy_discovery(
             issuer=issuer,
         )
 
+    if "dpop_signing_alg_values_supported" in oauth_metadata:
+        dpop_algs = oauth_metadata.get("dpop_signing_alg_values_supported")
+        if not isinstance(dpop_algs, list) or "ES256" not in dpop_algs:
+            return DiscoveryCheckResult(
+                False,
+                "dpop_es256_unsupported",
+                protocol_version=version,
+                organization_domain=org_domain,
+                issuer=issuer,
+            )
+
     poppy_domains = {
-        _strip_www(str(d))
+        _normalize_domain(str(d))
         for d in (oauth_metadata.get("poppy_domains") or [])
         if isinstance(d, str) and d.strip()
     }
-    if _strip_www(org_domain) not in poppy_domains:
+    if org_domain not in poppy_domains:
         return DiscoveryCheckResult(
             False,
             "issuer_domain_unverified",
@@ -137,6 +157,10 @@ class DPoPProof:
     iat: int
     ath: str
     jwk_thumbprint: str
+    typ: str = "dpop+jwt"
+    alg: str = "ES256"
+    nonce: str | None = None
+    has_private_key_material: bool = False
 
 
 @dataclass(frozen=True)
@@ -146,10 +170,24 @@ class TokenCheckResult:
     http_status: int
 
 
+def verify_poppy_assertion_audience(
+    aud: Any,
+    *,
+    auth_issuer: str,
+) -> TokenCheckResult:
+    """Verify Poppy v0.1 #50 (483c3cea): client and Session assertions MUST set `aud`
+    to the Company's `auth.issuer` as a single string (never `token_endpoint` or an array).
+    """
+    expected = auth_issuer.strip()
+    if type(aud) is not str or not expected or aud != expected:
+        return TokenCheckResult(False, "invalid_client_or_session_assertion_aud", 400)
+    return TokenCheckResult(True, None, 200)
+
+
 def verify_poppy_request_token(
     *,
     token: SessionToken,
-    channel: str,  # "openapi", "conversation", "operations", or "mcp"
+    channel: str,  # "token", "openapi", "conversation", "operations", or "mcp"
     http_method: str,
     target_url: str,
     now: int,
@@ -158,6 +196,8 @@ def verify_poppy_request_token(
     dpop_proof: DPoPProof | None = None,
     seen_jti: set[str] | None = None,
     max_proof_age_seconds: int = 60,
+    dpop_signing_algs_supported: set[str] | None = None,
+    expected_dpop_nonce: str | None = None,
 ) -> TokenCheckResult:
     """Verify Poppy v0.1 Session Token transport (DPoP vs MCP Bearer) and sign-in scope caps."""
     if now >= token.expires_at:
@@ -179,24 +219,36 @@ def verify_poppy_request_token(
             return TokenCheckResult(False, "bearer_required_for_mcp", 401)
         if not token.resource or _canonical_htu(token.resource) != _canonical_htu(target_url):
             return TokenCheckResult(False, "resource_mismatch", 401)
-    elif channel in {"openapi", "conversation", "operations"}:
+    elif channel in {"token", "openapi", "conversation", "operations"}:
+        # Per #36 (46dafba3): DPoP errors return 400 at token endpoint and 401 at APIs/conversations
+        dpop_err_status = 400 if channel == "token" else 401
+        supported_algs = dpop_signing_algs_supported or {"ES256"}
         if token.token_type != "DPoP":
-            return TokenCheckResult(False, "dpop_required", 401)
+            return TokenCheckResult(False, "dpop_required", dpop_err_status)
         if dpop_proof is None:
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
+        if (
+            dpop_proof.typ.lower() != "dpop+jwt"
+            or dpop_proof.alg == "none"
+            or dpop_proof.alg not in supported_algs
+            or dpop_proof.has_private_key_material
+        ):
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
         if not token.jwk_thumbprint or dpop_proof.jwk_thumbprint != token.jwk_thumbprint:
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
         if dpop_proof.htm.upper() != http_method.upper():
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
         if _canonical_htu(dpop_proof.htu) != _canonical_htu(target_url):
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
         if abs(now - dpop_proof.iat) > max_proof_age_seconds:
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
-        if dpop_proof.ath != sha256_token(token.access_token):
-            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
+        if channel != "token" and dpop_proof.ath != sha256_token(token.access_token):
+            return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
+        if expected_dpop_nonce is not None and dpop_proof.nonce != expected_dpop_nonce:
+            return TokenCheckResult(False, "use_dpop_nonce", dpop_err_status)
         if seen_jti is not None:
             if dpop_proof.jti in seen_jti:
-                return TokenCheckResult(False, "invalid_dpop_proof", 401)
+                return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
             seen_jti.add(dpop_proof.jti)
     else:
         return TokenCheckResult(False, "unsupported_channel", 400)
@@ -270,6 +322,26 @@ class GuardDecision:
     operation: dict[str, Any] | None = None
 
 
+def verify_cross_company_content_boundary(
+    *,
+    source_company_domain: str,
+    target_company_domain: str,
+    triggered_by_company_content: bool,
+    explicit_user_target_domains: set[str],
+) -> GuardDecision:
+    """Enforce Poppy v0.1 Section 8.1 (#51, e910c866): Company content is untrusted data.
+
+    A Personal Agent MUST NOT act at Company B or send it data because Company A's
+    content (messages, tool descriptions/results, web pages, operation summaries) asked it to.
+    """
+    src = _normalize_domain(source_company_domain)
+    dst = _normalize_domain(target_company_domain)
+    allowed_targets = {_normalize_domain(d) for d in explicit_user_target_domains}
+    if triggered_by_company_content and src != dst and dst not in allowed_targets:
+        return GuardDecision(False, "cross_company_prompt_injection_blocked", 403)
+    return GuardDecision(True, "allowed", 200)
+
+
 class RetailOrderMutationGuard:
     """Combines Sierra Defense-in-Depth / tau3-bench retail rules with Poppy `operations` v1."""
 
@@ -286,8 +358,44 @@ class RetailOrderMutationGuard:
         self.orders = orders
         self.payment_methods = payment_methods
         self.session_accounts: dict[str, str] = {}
+        self.signed_out_sessions: set[str] = set()
+        self.revoked_sessions: set[str] = set()
         self.operations: dict[str, OperationRecord] = {}
         self._op_seq = 0
+
+    def sign_out_session(self, session_id: str, *, revoked: bool = False) -> None:
+        """Sign out a Session while keeping its persistent account binding (#41, #49, #53)."""
+        self.signed_out_sessions.add(session_id)
+        if revoked:
+            self.revoked_sessions.add(session_id)
+
+    def authenticate_session_account(
+        self,
+        *,
+        session_id: str,
+        account_id: str,
+        sign_in_method: str,
+        stored_credentials_used: bool = False,
+        user_initiated: bool = True,
+    ) -> GuardDecision:
+        """Enforce persistent Session-to-account binding (#41, #49) and post-revocation mediated rule (#53)."""
+        if sign_in_method not in {"direct", "device", "mediated", "account_token"}:
+            return GuardDecision(False, "unsupported_sign_in_method", 400)
+        if (
+            session_id in self.revoked_sessions
+            and sign_in_method == "mediated"
+            and stored_credentials_used
+            and not user_initiated
+        ):
+            return GuardDecision(False, "auto_resignin_after_revocation_forbidden", 403)
+        bound = self.session_accounts.get(session_id)
+        if bound is not None and bound != account_id:
+            return GuardDecision(False, "account_mismatch", 400)
+        self.session_accounts[session_id] = account_id
+        self.signed_out_sessions.discard(session_id)
+        if user_initiated:
+            self.revoked_sessions.discard(session_id)
+        return GuardDecision(True, "signed_in", 200)
 
     def _check_session_and_scope(
         self,
@@ -519,11 +627,22 @@ class RetailOrderMutationGuard:
         if revision != op.revision:
             return GuardDecision(False, "terms_changed", 409, asdict(op))
 
+        # Per #51 (e910c866) Section 8.1 & operations §3.1: verify Company `summary` agrees with
+        # material `terms` values (order_id, replacement_item_id, price_difference_cents, payment_method_id)
+        expected_fragments = (
+            f"order {op.terms['order_id']}",
+            f"({op.terms['replacement_item_id']})",
+            f"price_difference_cents={op.terms['price_difference_cents']}",
+            f"payment_method_id={op.terms['payment_method_id']}",
+        )
+        if any(fragment not in op.summary for fragment in expected_fragments):
+            return GuardDecision(False, "summary_terms_mismatch", 409, asdict(op))
+
         if approved_by == "permission":
             if op.user_approval_required or standing_permission is None:
                 return GuardDecision(False, "user_approval_required", 403, asdict(op))
             if (
-                _strip_www(standing_permission.company_domain) != _strip_www(self.company_domain)
+                _normalize_domain(standing_permission.company_domain) != _normalize_domain(self.company_domain)
                 or standing_permission.account_id != op.account_id
                 or now >= standing_permission.expires_at
                 or op.terms["action"] not in standing_permission.allowed_actions

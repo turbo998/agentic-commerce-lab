@@ -5,9 +5,11 @@ import hashlib
 import json
 import logging
 import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
+from http.client import HTTPException
 from pathlib import Path
 from urllib.error import URLError
 from urllib.parse import urlsplit
@@ -97,22 +99,7 @@ def mcp_policy_facts(body: bytes) -> dict[str, object]:
     heading = headings[0]
     section = re.split(r"(?m)^#{1,6} ", text[heading.end():], maxsplit=1)[0]
     notice = re.sub(r"\s+", " ", section).strip()
-    match = re.fullmatch(
-        r"Beginning (\d{1,2} [A-Z][a-z]+ \d{4}), Stripe MCP no longer accepts "
-        r"full-access secret keys or restricted API keys without the Agent tag\. "
-        r"Before then, replace these keys with newly created Agent Keys or reconnect with OAuth\. "
-        r"Requests using an unsupported key receive a `401` response with an OAuth discovery challenge\.",
-        notice,
-    )
-    if match is None:
-        raise ValueError("MCP auth notice wording changed; selected facts remain unverified.")
-    try:
-        deadline = datetime.strptime(match[1], "%d %B %Y").date()
-        heading_date = datetime.strptime(heading[1].strip(), "%d %B %Y").date()
-    except ValueError as error:
-        raise ValueError("MCP auth notice has an invalid calendar date; review required.") from error
-    if deadline != heading_date:
-        raise ValueError("MCP auth notice dates conflict; review required.")
+    deadline = _parse_reviewed_mcp_notice(heading[1].strip(), notice)
     return {
         "parser_version": "stripe-mcp-auth-notice-v1",
         "deadline": deadline.isoformat(),
@@ -125,6 +112,46 @@ def mcp_policy_facts(body: bytes) -> dict[str, object]:
         "cutoff_time": None,
         "cutoff_timezone": None,
     }
+
+
+def _parse_reviewed_mcp_notice(heading_raw: str, notice: str) -> date:
+    """Parse only human-reviewed Stripe MCP auth notice grammars and verify date consistency."""
+    october_match = re.fullmatch(
+        r"Beginning (\d{1,2} [A-Z][a-z]+ \d{4}), Stripe MCP no longer accepts "
+        r"full-access secret keys or restricted API keys without the Agent tag\. "
+        r"Before then, replace these keys with newly created Agent Keys or reconnect with OAuth\. "
+        r"Requests using an unsupported key receive a `401` response with an OAuth discovery challenge\.",
+        notice,
+    )
+    if october_match is not None:
+        try:
+            deadline = datetime.strptime(october_match[1], "%d %B %Y").date()
+            heading_date = datetime.strptime(heading_raw, "%d %B %Y").date()
+        except ValueError as error:
+            raise ValueError("MCP auth notice has an invalid calendar date; review required.") from error
+        if deadline != heading_date:
+            raise ValueError("MCP auth notice dates conflict; review required.")
+        return deadline
+
+    november_match = re.fullmatch(
+        r"Migrate by ([A-Z][a-z]+ \d{1,2}, \d{4})\. Starting in ([A-Z][a-z]+), Stripe MCP will stop accepting "
+        r"full-access secret keys and restricted API keys without the Agent tag\. "
+        r"Replace these keys with newly created agent API keys or reconnect with OAuth\. "
+        r"Requests using an unsupported key receive a `401` response with an OAuth discovery challenge\.",
+        notice,
+    )
+    if november_match is not None:
+        try:
+            deadline = datetime.strptime(november_match[1], "%B %d, %Y").date()
+            heading_date = datetime.strptime(heading_raw, "%B %d, %Y").date()
+        except ValueError as error:
+            raise ValueError("MCP auth notice has an invalid calendar date; review required.") from error
+        next_day = deadline + timedelta(days=1)
+        if deadline != heading_date or next_day.day != 1 or next_day.strftime("%B") != november_match[2]:
+            raise ValueError("MCP auth notice dates conflict; review required.")
+        return deadline
+
+    raise ValueError("MCP auth notice wording changed; selected facts remain unverified.")
 
 
 def validate_url(url: str) -> None:
@@ -165,7 +192,7 @@ def observe(
             if len(body) > MAX_BYTES:
                 raise ValueError("Source exceeds the 4 MiB research fetch limit.")
             digest = fingerprint(body, response.headers.get("Content-Type", "text/plain"))
-    except (URLError, OSError, UnicodeError, ValueError) as error:
+    except (URLError, HTTPException, OSError, UnicodeError, ValueError) as error:
         return Observation(
             source.id, source.url, source.monitor_url, "error", None, "unknown",
             f"{type(error).__name__}: {error}",
@@ -252,7 +279,10 @@ def main() -> int:
     now = datetime.now(BEIJING)
     previous = previous_hashes(args.output_dir, before_date=str(now.date()))
     policy = previous_policy_facts(args.output_dir, before_date=str(now.date()))
-    observations = [observe(source, previous.get(source.id), policy) for source in sources]
+    with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
+        observations = list(
+            executor.map(lambda source: observe(source, previous.get(source.id), policy), sources)
+        )
     target = args.output_dir / f"{now.date()}-sources.json"
     args.output_dir.mkdir(parents=True, exist_ok=True)
     report = {

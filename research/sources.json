@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-14",
+  "checked_on": "2026-10-16",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -40,7 +40,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; unsupported key authentication stops on 2026-10-31. Oct 14 body reverified; selected auth-notice facts now recorded separately from whole-body hashes. First structured fact baseline, not a historical semantic diff or live account verification. Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from 'Update API key authentication by 31 October 2026' to 'Update API key authentication by November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Recorded as policy_change='changed' with deadline='2026-11-30' after human review and grammar update. Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -91,7 +91,7 @@
       "id": "visa-vic",
       "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
       "published_on": null,
-      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14 monitor and web_fetch both returned HTTP 403; current developer body and availability not reverified. Public product landing page resolved but yielded insufficient technical text."
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14 and Oct 16 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403); current developer body and availability not reverified."
     },
     {
       "id": "visa-tap",
@@ -128,18 +128,19 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "e45c02121fbef9125286b9f55c1f04be6a7d682a",
-      "evidence": "Oct 14 official fixed commits inspected: 72ea9a9 corrects examples and validates extension-composed schemas; e45c021 derives auth/media headers from OpenAPI security/content maps. Four commits since Oct 13 including two dependency bumps. Whole normalized overview hash unchanged; not evidence of a new protocol release or vendor conformance."
+      "revision_observed": "5021fa83a652ef9f1d00eb2b53e1de790f0a427f",
+      "commit_committed_at": "2026-10-16T07:29:41Z",
+      "evidence": "Oct 16 ucp.dev overview fetch timed out in source_monitor (recorded as status='error'); official repository Universal-Commerce-Protocol/ucp verified at 5021fa83a652 (4 commits since Oct 14: 69e28f4f BREAKING CHANGE adding webhook-id and webhook-timestamp to closed RFC 9421 signing gate and defining retry/convergence rules; d9c18e0d covering ucp-agent in checkout REST signed example; 5021fa83 allowing 304 Not Modified while keeping 3xx redirects forbidden; 72ee4240 upgrading source-map-js for CVE-2026-93749)."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "789ef5e0a55ee1d0787a5974660b15bf76dc29b5",
-      "commit_committed_at": "2026-10-14T00:44:36Z",
-      "plugin_version_observed": "0.5.18",
-      "evidence": "Official Oct 14 sync-skills commit reviewed: agent-plugins 0.5.18, Claude 0.11.18, Cursor/Grok 0.9.18, Codex 5.8.18 are provider-specific manifest versions. Upgrade skill regeneration date changed but fallback API version remains 2026-09-30.endive. Not package-marketplace publication, new payment capability or protocol release; README hash unchanged."
+      "revision_observed": "ad3c5817ff05681e6c96303d342c39d4548421b6",
+      "commit_committed_at": "2026-10-16T00:44:30Z",
+      "plugin_version_observed": "0.5.20",
+      "evidence": "Official Oct 16 sync-skills commit reviewed (2 commits since Oct 14: 4f842d4e, ad3c5817): agent-plugins 0.5.20, Claude 0.11.20, Cursor/Grok 0.9.20, Codex 5.8.20. Adds Billing script extension references (item-handling, customer-balance, discount-calculation) and expands Tax 'Register for me' guidance to Canada GST/HST and EU Non-Union OSS via Ireland; upgrade skill fallback API version remains 2026-09-30.endive."
     },
     {
       "id": "ap2",
@@ -155,7 +156,11 @@
       "id": "mcp",
       "url": "https://modelcontextprotocol.io/specification/2025-11-25",
       "published_on": null,
-      "schema_directories_observed": ["2025-11-25", "2026-07-28", "draft"],
+      "schema_directories_observed": [
+        "2025-11-25",
+        "2026-07-28",
+        "draft"
+      ],
       "evidence": "2025-11-25 text read; 2026-07-28 schema existence separately verified, not treated as reviewed."
     },
     {
@@ -235,9 +240,9 @@
       "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/spec.mdx",
       "published_on": null,
       "spec_version_observed": "0.1",
-      "revision_observed": "f766ef8bdc249c66b2a42671ea9e7d53c3555665",
-      "commit_committed_at": "2026-10-14T15:35:49Z",
-      "evidence": "Draft v0.1 specification; public GitHub repository personal-agent-protocol/personal-agent-protocol created on 2026-10-14 (initial commit e259d57 at 12:58:23Z, head f766ef8 at 15:35:49Z). Defines /.well-known/poppy.json discovery, mutual OAuth poppy_domains check, DPoP session tokens, resource-bound Bearer tokens for MCP (2025-06-18+), poppy:read/poppy:write scopes, and Conversations/Direct Conversations. Payments and push notifications remain open topics in /docs/path-to-1."
+      "revision_observed": "e910c8669be9318546848c4f413f4725e0415c9e",
+      "commit_committed_at": "2026-10-16T13:19:34Z",
+      "evidence": "Draft v0.1 specification; 17 commits landed between 2026-10-14T22:55Z and 2026-10-16T13:19Z (f766ef8 -> e910c86): post-redirect case-insensitive-only organization.domain match (#37), RFC 9449 DPoP alignment with dpop_signing_alg_values_supported + 400 on token vs 401 on APIs (#36), client/Session assertion aud == auth.issuer (#50), persistent Session account binding across sign-out (#41, #49), mediated sign-in credential handling & post-revocation rule (#40, #53), non-Poppy MCP session lifespan (#42), conversation cursor/SSE/idempotency rules (#43-#47), and new Section 8 Security considerations (#51)."
     },
     {
       "id": "poppy-operations-ext",
@@ -245,8 +250,9 @@
       "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/operations.mdx",
       "published_on": null,
       "spec_version_observed": "1",
-      "revision_observed": "f766ef8bdc249c66b2a42671ea9e7d53c3555665",
-      "evidence": "Draft v1 operations extension for Poppy v0.1. Defines two-phase proposed/confirm/in_progress/succeeded/failed/cancelled/expired state machine with immutable revision numbers, approved_by ('user' vs 'permission'), conversation-message non-confirmation rule, and at-most-once execution keyed by operation_id."
+      "revision_observed": "e910c8669be9318546848c4f413f4725e0415c9e",
+      "evidence": "Draft v1 operations extension for Poppy v0.1. Commit e910c86 (#51) adds normative guidance that Personal Agents SHOULD surface material terms values (amounts, dates, items) alongside summary or verify they agree before asking the User for approval because the Company writes both and summary could misdescribe terms.",
+      "commit_committed_at": "2026-10-16T13:19:34Z"
     },
     {
       "id": "sierra-summit-2026",
@@ -284,15 +290,15 @@
       "published_on": null,
       "release_tag_observed": "v1.0.1",
       "release_published_at": "2026-07-22T21:22:42Z",
-      "revision_observed": "dd8757d4c8791dad7b3cdaf02a105a3d5f9d86bd",
-      "commit_committed_at": "2026-10-13T16:48:45Z",
-      "evidence": "Official Sierra Research tau2-bench (now tau3-bench) repository. Head commit dd8757d (2026-10-14 00:48:45+08:00 Beijing time) is a README community spotlight update (#613), not a new benchmark release. Evaluation docs confirm default reward_basis=['DB','COMMUNICATE'] via gold-trajectory DB state hash rather than single-path action matching."
+      "revision_observed": "96a3ef92329ba1c6be1430fd83c8d6df32a57198",
+      "commit_committed_at": "2026-10-15T23:02:21Z",
+      "evidence": "Official Sierra Research tau2-bench (now tau3-bench) repository. Three commits since Oct 14 (dd8757d -> 96a3ef9): 2fbecd0 adds Salesforce Launa v1 audio-native voice provider and leaderboard submission, 5ade54e adds xAI Grok Voice 3.0 custom voice leaderboard submission, and 96a3ef9 fixes standalone page favicons (#598). README hash unchanged."
     },
     {
       "id": "sierra-tau2-retail-policy",
       "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/data/tau2/domains/retail/policy.md",
       "published_on": null,
-      "revision_observed": "dd8757d4c8791dad7b3cdaf02a105a3d5f9d86bd",
+      "revision_observed": "96a3ef92329ba1c6be1430fd83c8d6df32a57198",
       "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product variant-only item swap, and original-payment/gift-card refund constraints."
     }
   ]

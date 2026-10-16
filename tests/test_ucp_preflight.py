@@ -9,7 +9,8 @@ from unittest.mock import patch
 
 from lab.ucp_preflight import (
     INSTRUMENTS, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
-    HandlerMetadata, assess, main,
+    HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
+    main, verify_ucp_discovery_response_status, verify_ucp_signing_gate,
 )
 
 
@@ -128,6 +129,130 @@ class PreflightTests(unittest.TestCase):
                     self.assertEqual(report["decision"]["provider_verification"], "not_performed")
                     self.assertEqual(report["policy_checked_on"], "2026-10-13")
                     self.assertEqual(len(report["remaining_checks"]), 4)
+
+    def test_ucp_signing_gate_requires_webhook_and_agent_headers_when_present(self) -> None:
+        # Checkout REST request with UCP-Agent and Idempotency-Key (#795)
+        checkout_headers = frozenset({
+            "content-digest", "content-type", "ucp-agent", "signature-agent", "idempotency-key"
+        })
+        omitted_agent = verify_ucp_signing_gate(
+            has_query=False,
+            has_body=True,
+            present_headers=checkout_headers,
+            covered_components=(
+                "@method", "@authority", "@path", "content-digest",
+                "content-type", "signature-agent", "idempotency-key",
+            ),
+        )
+        self.assertFalse(omitted_agent.accepted)
+        self.assertEqual(omitted_agent.reason, "closed_sign_if_present_violation")
+        self.assertEqual(omitted_agent.missing_components, ("ucp-agent",))
+
+        # Order webhook must cover webhook-id and webhook-timestamp (#659)
+        webhook_headers = frozenset({
+            "content-digest", "content-type", "webhook-id", "webhook-timestamp", "signature-agent"
+        })
+        omitted_webhook_headers = verify_ucp_signing_gate(
+            has_query=False,
+            has_body=True,
+            present_headers=webhook_headers,
+            covered_components=(
+                "@method", "@authority", "@path", "content-digest", "content-type", "signature-agent"
+            ),
+        )
+        self.assertFalse(omitted_webhook_headers.accepted)
+        self.assertEqual(omitted_webhook_headers.missing_components, ("webhook-id", "webhook-timestamp"))
+
+        valid_webhook = verify_ucp_signing_gate(
+            has_query=False,
+            has_body=True,
+            present_headers=webhook_headers,
+            covered_components=(
+                "@method", "@authority", "@path", "content-digest", "content-type",
+                "signature-agent", "webhook-id", "webhook-timestamp",
+            ),
+        )
+        self.assertTrue(valid_webhook.accepted)
+
+    def test_ucp_discovery_status_allows_conditional_304_and_forbids_redirects(self) -> None:
+        self.assertTrue(verify_ucp_discovery_response_status(200).accepted)
+        self.assertTrue(
+            verify_ucp_discovery_response_status(
+                304, conditional_request=True, has_cached_entry=True
+            ).accepted
+        )
+        self.assertFalse(
+            verify_ucp_discovery_response_status(
+                304, conditional_request=False, has_cached_entry=True
+            ).accepted
+        )
+        for redirect_code in (301, 302, 303, 307, 308):
+            with self.subTest(redirect_code=redirect_code):
+                dec = verify_ucp_discovery_response_status(redirect_code)
+                self.assertFalse(dec.accepted)
+                self.assertEqual(dec.reason, "redirect_forbidden")
+
+    def test_ucp_order_webhooks_deduplicate_retries_and_converge_out_of_order(self) -> None:
+        headers = frozenset({"content-digest", "content-type", "webhook-id", "webhook-timestamp"})
+        covered = (
+            "@method", "@authority", "@path", "content-digest",
+            "content-type", "webhook-id", "webhook-timestamp",
+        )
+        # Delivered out-of-order (T2 arrives before T1), plus valid retry of T1,
+        # plus mutated-timestamp retry of T2, plus unsigned webhook T3
+        d_t2 = UCPOrderWebhookDelivery(
+            webhook_id="wh_evt_2",
+            webhook_timestamp="2026-10-16T08:10:00Z",
+            order_id="ord_900",
+            order_state={"status": "shipped", "tracking": "1Z999"},
+            present_headers=headers,
+            covered_components=covered,
+        )
+        d_t1 = UCPOrderWebhookDelivery(
+            webhook_id="wh_evt_1",
+            webhook_timestamp="2026-10-16T08:00:00Z",
+            order_id="ord_900",
+            order_state={"status": "processing", "tracking": None},
+            present_headers=headers,
+            covered_components=covered,
+        )
+        d_t1_retry = UCPOrderWebhookDelivery(
+            webhook_id="wh_evt_1",
+            webhook_timestamp="2026-10-16T08:00:00Z",
+            order_id="ord_900",
+            order_state={"status": "processing", "tracking": None},
+            present_headers=headers,
+            covered_components=covered,
+        )
+        d_t2_mutated_retry = UCPOrderWebhookDelivery(
+            webhook_id="wh_evt_2",
+            webhook_timestamp="2026-10-16T08:15:00Z",
+            order_id="ord_900",
+            order_state={"status": "shipped", "tracking": "1Z999"},
+            present_headers=headers,
+            covered_components=covered,
+        )
+        d_t3_unsigned = UCPOrderWebhookDelivery(
+            webhook_id="wh_evt_3",
+            webhook_timestamp="2026-10-16T08:20:00Z",
+            order_id="ord_900",
+            order_state={"status": "cancelled", "tracking": None},
+            present_headers=headers,
+            covered_components=("@method", "@authority", "@path", "content-digest", "content-type"),
+        )
+        result = converge_ucp_order_webhooks(
+            [d_t2, d_t1, d_t1_retry, d_t2_mutated_retry, d_t3_unsigned]
+        )
+        self.assertEqual(result.applied_webhook_ids, ("wh_evt_1", "wh_evt_2"))
+        self.assertEqual(result.deduplicated_retry_ids, ("wh_evt_1",))
+        self.assertEqual(
+            result.rejected_deliveries,
+            (
+                ("wh_evt_2", "webhook_timestamp_mutated_on_retry"),
+                ("wh_evt_3", "closed_sign_if_present_violation"),
+            ),
+        )
+        self.assertEqual(result.converged_order_state, {"status": "shipped", "tracking": "1Z999"})
 
 
 if __name__ == "__main__":

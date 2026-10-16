@@ -113,3 +113,11 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 - **双轨会话令牌与双向域名防伪**：Poppy `v0.1` 要求发现文档 `auth.issuer` 与 OAuth metadata `poppy_domains` 双向绑定；OpenAPI/会话/Operations 必须校验请求绑定的 `DPoP` 证明（防重放 `jti`），而 MCP 通道必须使用绑定单一 `resource` 的 `Bearer` 令牌，并根据登录方式（`direct` / `device` / `mediated`）限制最大可授予 scope。
 - **四层纵深防御与两阶段 `operations` 修订确认**：Sierra 的实践证明自然语言 Rules 与 Supervisors 仍属概率控制，涉及账户修改、换货、退款或支付的工具必须具备第 4 层确定性护栏（未鉴权不暴露修改工具、单会话锁定单客户账户、待发货订单仅允许一次修改），并配合 Poppy `operations` v1：工具调用仅生成带不可变 `revision` 的 `proposed` 操作，仅由独立确认端点针对最新 `revision` 幂等执行（对话消息绝不触发确认）。
 - **PCI 支付旁路与目标状态哈希评测**：第一方 Agent 收款（Sierra Payments）将支付信息采集切出 LLM，由服务端预定义序列直传 Stripe；而评测准则（$\tau^2/\tau^3$-bench `reward_basis=["DB","COMMUNICATE"]`）以最终确定性业务数据库状态哈希为准，允许推理探索路径变化但严守终态不变量。新增离线资产 `lab/poppy_guard.py` 实现了上述 Poppy `v0.1` 发现/令牌校验与 Sierra/$\tau^3$-bench 零售售后确定性护栏。
+
+## 2026-10-16 增量：闭合信封签名门禁、防跨企断言重放与不可信企业内容隔离
+
+[今日研究](daily/2026-10-16.md)结合 UCP `#659` 与 Poppy `#36/#37/#49/#50/#51/#53` 提炼出三项区别于经典 Web 三层架构的 AI-Native 控制面要求：
+
+1. **闭合“存在即必签（Closed Sign-if-Present）”门禁与完整状态收敛（UCP `#659`、`#795`）**：不能只校验 HTTP Body 摘要（`Content-Digest`）而放任 `Webhook-Id`、`Webhook-Timestamp`、`UCP-Agent`、`Idempotency-Key` 裸奔；一旦上述请求头存在，必须全部纳入 RFC 9421 `Signature-Input` 覆盖集。订单 Webhook 采用完整状态快照而非增量事件，按 `Webhook-Id` 幂等去重、禁止重试篡改 `Webhook-Timestamp`，并按事件时间戳偏序收敛。
+2. **跨企业断言防重放与单账户终身会话锚定（Poppy `#36`、`#37`、`#49`、`#50`、`#53`）**：面对开放生态中不可全信的企业端点，客户端与会话断言 `aud` 必须锁定为企业 `auth.issuer` 单一字符串（不得设为 `token_endpoint`）；发现文档域名仅按忽略大小写匹配重定向后主机名；Session 跨登出永久绑定同一用户账户，且在登录态被吊销后严禁后台凭受托存储凭证自动重登。
+3. **不可信企业内容隔离与 `summary`-vs-`terms` 机器核对（Poppy `#51` Section 8.1）**：企业返回的消息、工具描述/结果与操作 `summary` 均视为外部不可信数据；个人 Agent 必须阻断由企业 A 内容触发的向企业 B 的跨企调用，并在请求用户批准前机器核对企业 `summary` 与结构化 `terms` 一致。相应确定性检查已增量合入 `lab/poppy_guard.py`、`lab/ucp_preflight.py` 与 `lab/mcp_migration.py`。

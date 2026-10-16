@@ -38,17 +38,18 @@ class MigrationTests(unittest.TestCase):
             for environment in ["sandbox", "live"]:
                 client = Client(**self.row(auth, environment))
                 for day, expected in [
-                    (date(2026, 10, 12), "migration_required"),
-                    (date(2026, 10, 30), "migration_required"),
-                    (date(2026, 10, 31), "blocked_by_documented_policy"),
-                    (date(2026, 11, 1), "blocked_by_documented_policy"),
+                    (date(2026, 10, 16), "migration_required"),
+                    (date(2026, 10, 31), "migration_required"),
+                    (date(2026, 11, 29), "migration_required"),
+                    (date(2026, 11, 30), "blocked_by_documented_policy"),
+                    (date(2026, 12, 1), "blocked_by_documented_policy"),
                 ]:
                     with self.subTest(auth=auth, environment=environment, day=day):
                         self.assertEqual(assess(client, as_of=day).status, expected)
 
     def test_supported_metadata_never_claims_verified_access(self) -> None:
         for auth in ["oauth", "agent_key"]:
-            for day in [date(2026, 10, 12), date(2026, 10, 31), date(2027, 1, 1)]:
+            for day in [date(2026, 10, 16), date(2026, 11, 30), date(2027, 1, 1)]:
                 with self.subTest(auth=auth, day=day):
                     finding = assess(Client(**self.row(auth)), as_of=day)
                     self.assertEqual(finding.status, "recorded_supported_unverified")
@@ -62,24 +63,26 @@ class MigrationTests(unittest.TestCase):
             {**self.row("restricted_without_agent_tag"), "client_id": "untagged"},
         ]
         self.write_inventory(rows)
-        code, output, errors = self.run_cli()
+        code, output, errors = self.run_cli("2026-10-16")
         self.assertEqual(code, 1)
         self.assertEqual(errors, "")
         report = json.loads(output)
         self.assertEqual(report["migration_count"], 2)
-        self.assertEqual(report["calendar_days_until_deadline"], 19)
+        self.assertEqual(report["deadline"], "2026-11-30")
+        self.assertEqual(report["previous_deadline"], "2026-10-31")
+        self.assertEqual(report["enforcement_starts"], "2026-12-01")
+        self.assertEqual(report["calendar_days_until_deadline"], 45)
         self.assertEqual(report["account_verification"], "not_performed")
         self.assertIn("not specified", report["cutoff_time"])
         self.assertEqual(report["policy_source"], "https://docs.stripe.com/mcp")
-        code, output, _ = self.run_cli("2026-10-13")
-        self.assertEqual(code, 1)
-        self.assertEqual(json.loads(output)["calendar_days_until_deadline"], 18)
-        self.assertEqual(json.loads(output)["policy_checked_on"], "2026-10-14")
-        code, output, _ = self.run_cli("2026-10-14")
-        self.assertEqual(code, 1)
-        self.assertEqual(json.loads(output)["calendar_days_until_deadline"], 17)
+        self.assertEqual(report["policy_checked_on"], "2026-10-16")
         code, output, _ = self.run_cli("2026-10-31")
         self.assertEqual(code, 1)
+        self.assertEqual(json.loads(output)["calendar_days_until_deadline"], 30)
+        self.assertEqual(json.loads(output)["findings"][1]["status"], "migration_required")
+        code, output, _ = self.run_cli("2026-11-30")
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(output)["calendar_days_until_deadline"], 0)
         self.assertEqual(json.loads(output)["findings"][1]["status"], "blocked_by_documented_policy")
 
     def test_all_supported_inventory_exit_zero_is_metadata_only(self) -> None:

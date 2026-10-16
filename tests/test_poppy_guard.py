@@ -12,6 +12,8 @@ from lab.poppy_guard import (
     StandingPermission,
     run_demo,
     sha256_token,
+    verify_cross_company_content_boundary,
+    verify_poppy_assertion_audience,
     verify_poppy_discovery,
     verify_poppy_request_token,
 )
@@ -35,13 +37,31 @@ class PoppyDiscoveryAndTokenTests(unittest.TestCase):
         }
 
     def test_discovery_verifies_mutual_issuer_and_domain(self) -> None:
+        # Per #37 (efc12168): post-redirect host must match organization.domain ignoring case only (no www. stripping)
         res = verify_poppy_discovery(
+            "https://www.manzanitasupply.example/.well-known/poppy.json",
+            self.poppy_doc,
+            {**self.oauth_meta, "dpop_signing_alg_values_supported": ["ES256"]},
+            final_well_known_url="https://ManzanitaSupply.Example/.well-known/poppy.json",
+        )
+        self.assertTrue(res.allowed)
+        self.assertEqual(res.reason, "verified")
+
+        unredirected_www = verify_poppy_discovery(
             "https://www.manzanitasupply.example/.well-known/poppy.json",
             self.poppy_doc,
             self.oauth_meta,
         )
-        self.assertTrue(res.allowed)
-        self.assertEqual(res.reason, "verified")
+        self.assertFalse(unredirected_www.allowed)
+        self.assertEqual(unredirected_www.reason, "organization_domain_mismatch")
+
+        missing_es256 = verify_poppy_discovery(
+            "https://manzanitasupply.example/.well-known/poppy.json",
+            self.poppy_doc,
+            {**self.oauth_meta, "dpop_signing_alg_values_supported": ["RS256"]},
+        )
+        self.assertFalse(missing_es256.allowed)
+        self.assertEqual(missing_es256.reason, "dpop_es256_unsupported")
 
         spoofed_meta = {
             "issuer": "https://auth.manzanitasupply.example",
@@ -54,6 +74,78 @@ class PoppyDiscoveryAndTokenTests(unittest.TestCase):
         )
         self.assertFalse(spoofed.allowed)
         self.assertEqual(spoofed.reason, "issuer_domain_unverified")
+
+    def test_assertion_audience_and_dpop_token_vs_api_status_codes(self) -> None:
+        issuer = "https://auth.manzanitasupply.example"
+        self.assertTrue(verify_poppy_assertion_audience(issuer, auth_issuer=issuer).allowed)
+        for bad_aud in [
+            "https://auth.manzanitasupply.example/oauth/token",
+            [issuer],
+            "",
+            None,
+        ]:
+            with self.subTest(bad_aud=bad_aud):
+                chk = verify_poppy_assertion_audience(bad_aud, auth_issuer=issuer)
+                self.assertFalse(chk.allowed)
+                self.assertEqual(chk.http_status, 400)
+                self.assertEqual(chk.error, "invalid_client_or_session_assertion_aud")
+
+        dpop_token = SessionToken(
+            access_token="tok_dpop_status",
+            token_type="DPoP",
+            session_id="ses_status",
+            client_id="https://agent.example/agent.json",
+            user_id="usr_1",
+            signed_in=True,
+            account_id="cust_1",
+            scopes=frozenset({"poppy:read"}),
+            sign_in_method="direct",
+            jwk_thumbprint="jkt_status",
+            expires_at=2000,
+        )
+        # Missing DPoP proof returns 400 at token endpoint and 401 at API endpoint (#36)
+        tok_ep = verify_poppy_request_token(
+            token=dpop_token,
+            channel="token",
+            http_method="POST",
+            target_url="https://auth.manzanitasupply.example/oauth/token",
+            now=1000,
+            poppy_auth_config=self.poppy_doc["auth"],
+            dpop_proof=None,
+        )
+        self.assertEqual((tok_ep.allowed, tok_ep.http_status, tok_ep.error), (False, 400, "invalid_dpop_proof"))
+
+        api_ep = verify_poppy_request_token(
+            token=dpop_token,
+            channel="openapi",
+            http_method="GET",
+            target_url="https://api.manzanitasupply.example/orders",
+            now=1000,
+            poppy_auth_config=self.poppy_doc["auth"],
+            dpop_proof=None,
+        )
+        self.assertEqual((api_ep.allowed, api_ep.http_status, api_ep.error), (False, 401, "invalid_dpop_proof"))
+
+        # Server-issued DPoP nonce mismatch returns use_dpop_nonce
+        proof_no_nonce = DPoPProof(
+            jti="jti_n1",
+            htm="GET",
+            htu="https://api.manzanitasupply.example/orders",
+            iat=1000,
+            ath=sha256_token("tok_dpop_status"),
+            jwk_thumbprint="jkt_status",
+        )
+        nonce_chk = verify_poppy_request_token(
+            token=dpop_token,
+            channel="openapi",
+            http_method="GET",
+            target_url="https://api.manzanitasupply.example/orders",
+            now=1000,
+            poppy_auth_config=self.poppy_doc["auth"],
+            dpop_proof=proof_no_nonce,
+            expected_dpop_nonce="srv_nonce_99",
+        )
+        self.assertEqual((nonce_chk.allowed, nonce_chk.http_status, nonce_chk.error), (False, 401, "use_dpop_nonce"))
 
     def test_discovery_rejects_unsupported_major_version_or_bad_host(self) -> None:
         v1_doc = {**self.poppy_doc, "protocol_version": "1.0"}
@@ -296,6 +388,75 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
             now=1000,
         )
         self.assertEqual(cross_cust.code, "account_mismatch")
+
+        # Per #41/#49: Session remains tied to cust_alice even after sign-out; signing in as cust_bob returns 400
+        self.guard.sign_out_session("ses_alice", revoked=True)
+        diff_acct = self.guard.authenticate_session_account(
+            session_id="ses_alice",
+            account_id="cust_bob",
+            sign_in_method="direct",
+        )
+        self.assertEqual((diff_acct.allowed, diff_acct.http_status, diff_acct.code), (False, 400, "account_mismatch"))
+
+        # Per #53: Automatic background re-sign-in with stored mediated credentials after revocation is forbidden
+        auto_med = self.guard.authenticate_session_account(
+            session_id="ses_alice",
+            account_id="cust_alice",
+            sign_in_method="mediated",
+            stored_credentials_used=True,
+            user_initiated=False,
+        )
+        self.assertEqual(
+            (auto_med.allowed, auto_med.http_status, auto_med.code),
+            (False, 403, "auto_resignin_after_revocation_forbidden"),
+        )
+
+        # User-initiated sign-in back to the same bound account succeeds
+        re_signin = self.guard.authenticate_session_account(
+            session_id="ses_alice",
+            account_id="cust_alice",
+            sign_in_method="mediated",
+            stored_credentials_used=True,
+            user_initiated=True,
+        )
+        self.assertEqual((re_signin.allowed, re_signin.http_status, re_signin.code), (True, 200, "signed_in"))
+
+    def test_security_considerations_cross_company_and_summary_terms_agreement(self) -> None:
+        # Per #51 Section 8.1: Company A content cannot trigger action/data transfer to Company B
+        blocked = verify_cross_company_content_boundary(
+            source_company_domain="manzanitasupply.example",
+            target_company_domain="exfiltrate-partner.example",
+            triggered_by_company_content=True,
+            explicit_user_target_domains={"manzanitasupply.example"},
+        )
+        self.assertEqual(
+            (blocked.allowed, blocked.http_status, blocked.code),
+            (False, 403, "cross_company_prompt_injection_blocked"),
+        )
+
+        # Per #51 operations §3.1 & Section 8.1: misleading summary vs structured terms blocks confirmation
+        prop = self.guard.propose_item_change(
+            token=self.alice_token,
+            order_id="ord_pending",
+            action="modify_pending_order_items",
+            current_item_id="jkt-m",
+            replacement_item_id="jkt-l",
+            payment_method_id="card_orig",
+            now=1000,
+        )
+        op_id = prop.operation["operation_id"]
+        self.guard.operations[op_id].summary = (
+            "modify_pending_order_items on order ord_pending: replace Storm Jacket M (jkt-m) "
+            "with Storm Jacket L (jkt-l), price_difference_cents=0, payment_method_id=card_orig."
+        )
+        mismatch = self.guard.confirm_operation(
+            token=self.alice_token,
+            operation_id=op_id,
+            revision=1,
+            approved_by="user",
+            now=1010,
+        )
+        self.assertEqual((mismatch.allowed, mismatch.http_status, mismatch.code), (False, 409, "summary_terms_mismatch"))
 
     def test_enforces_tau2_retail_domain_invariants(self) -> None:
         # Same variant swap forbidden

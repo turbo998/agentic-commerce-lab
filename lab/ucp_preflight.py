@@ -5,8 +5,8 @@ import json
 import re
 import sys
 from dataclasses import asdict, dataclass
-from datetime import date
-from typing import Literal
+from datetime import date, datetime
+from typing import Any, Literal
 
 POLICY_CHECKED_ON = date(2026, 10, 13)
 SOURCE_URL = "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler"
@@ -14,6 +14,14 @@ REVIEWED_UCP_VERSION = "2026-04-08"
 REVIEWED_HANDLER_VERSION = "2026-06-25"
 STRIPE_HANDLER = "com.stripe.payments"
 INSTRUMENTS = frozenset({"card", "apple_pay", "link", "google_pay"})
+UCP_SIGN_IF_PRESENT_HEADERS = frozenset({
+    "ucp-agent",
+    "signature-agent",
+    "idempotency-key",
+    "webhook-id",
+    "webhook-timestamp",
+})
+FORBIDDEN_REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
 Environment = Literal["sandbox", "production"]
 Relationship = Literal["confirmed", "missing", "unknown"]
 
@@ -109,6 +117,147 @@ def assess(
         return Decision("blocked", tuple(reasons), None)
     path = "card_tokenize_to_spt" if instrument == "card" else "apple_pay_direct_to_complete"
     return Decision("candidate_unverified", (), path)
+
+
+@dataclass(frozen=True)
+class SigningGateDecision:
+    """Offline UCP RFC 9421 closed 'sign-if-present' covered-component gate (#659, #795)."""
+
+    accepted: bool
+    reason: str
+    missing_components: tuple[str, ...] = ()
+
+
+def verify_ucp_signing_gate(
+    *,
+    has_query: bool,
+    has_body: bool,
+    present_headers: set[str] | frozenset[str],
+    covered_components: tuple[str, ...],
+) -> SigningGateDecision:
+    """Verify UCP IRA step 5 closed covered-components set for signed HTTP requests/webhooks.
+
+    Always required: `@method`, `@authority`, `@path`.
+    Required when present: `@query` (if URL has query), `content-digest` & `content-type`
+    (if HTTP body present), plus `ucp-agent`, `signature-agent`, `idempotency-key`,
+    `webhook-id`, and `webhook-timestamp` (#659, #795).
+    """
+    normalized_headers = {h.lower().strip() for h in present_headers}
+    covered_set = {c.lower().strip() for c in covered_components}
+
+    if has_body and not {"content-digest", "content-type"}.issubset(normalized_headers):
+        return SigningGateDecision(
+            False,
+            "missing_required_body_headers",
+            tuple(sorted({"content-digest", "content-type"} - normalized_headers)),
+        )
+
+    required: list[str] = ["@method", "@authority", "@path"]
+    if has_query:
+        required.append("@query")
+    if has_body:
+        required.extend(["content-digest", "content-type"])
+    for header in sorted(UCP_SIGN_IF_PRESENT_HEADERS):
+        if header in normalized_headers:
+            required.append(header)
+
+    missing = tuple(comp for comp in required if comp not in covered_set)
+    if missing:
+        return SigningGateDecision(False, "closed_sign_if_present_violation", missing)
+    return SigningGateDecision(True, "verified", ())
+
+
+@dataclass(frozen=True)
+class DiscoveryStatusDecision:
+    """Offline UCP profile/JWKS/CIMD HTTP status check (#933: 304 allowed, 3xx redirects forbidden)."""
+
+    accepted: bool
+    reason: str
+
+
+def verify_ucp_discovery_response_status(
+    http_status: int,
+    *,
+    conditional_request: bool = False,
+    has_cached_entry: bool = False,
+) -> DiscoveryStatusDecision:
+    """Enforce UCP #933 (5021fa83a652): redirects are forbidden, conditional 304 is allowed."""
+    if http_status == 200:
+        return DiscoveryStatusDecision(True, "ok_fresh")
+    if http_status == 304:
+        if conditional_request and has_cached_entry:
+            return DiscoveryStatusDecision(True, "ok_not_modified_cache_valid")
+        return DiscoveryStatusDecision(False, "unsolicited_or_uncached_304")
+    if http_status in FORBIDDEN_REDIRECT_STATUSES or 300 <= http_status < 400:
+        return DiscoveryStatusDecision(False, "redirect_forbidden")
+    return DiscoveryStatusDecision(False, f"unexpected_http_status_{http_status}")
+
+
+@dataclass(frozen=True)
+class UCPOrderWebhookDelivery:
+    """Synthetic UCP order webhook delivery carrying full current order state (#659)."""
+
+    webhook_id: str
+    webhook_timestamp: str
+    order_id: str
+    order_state: dict[str, Any]
+    present_headers: frozenset[str]
+    covered_components: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class WebhookConvergenceResult:
+    converged_order_state: dict[str, Any] | None
+    applied_webhook_ids: tuple[str, ...]
+    deduplicated_retry_ids: tuple[str, ...]
+    rejected_deliveries: tuple[tuple[str, str], ...]
+
+
+def converge_ucp_order_webhooks(
+    deliveries: list[UCPOrderWebhookDelivery],
+) -> WebhookConvergenceResult:
+    """Deduplicate by `Webhook-Id` and converge full-state order webhooks by `Webhook-Timestamp` (#659)."""
+    seen_events: dict[str, tuple[datetime, UCPOrderWebhookDelivery]] = {}
+    deduplicated: list[str] = []
+    rejected: list[tuple[str, str]] = []
+
+    for delivery in deliveries:
+        headers_lower = {h.lower().strip() for h in delivery.present_headers}
+        if not {"webhook-id", "webhook-timestamp"}.issubset(headers_lower):
+            rejected.append((delivery.webhook_id, "missing_webhook_identity_headers"))
+            continue
+        gate = verify_ucp_signing_gate(
+            has_query=False,
+            has_body=True,
+            present_headers=headers_lower,
+            covered_components=delivery.covered_components,
+        )
+        if not gate.accepted:
+            rejected.append((delivery.webhook_id, gate.reason))
+            continue
+        try:
+            ts = datetime.fromisoformat(delivery.webhook_timestamp.replace("Z", "+00:00"))
+        except ValueError:
+            rejected.append((delivery.webhook_id, "invalid_webhook_timestamp"))
+            continue
+
+        existing = seen_events.get(delivery.webhook_id)
+        if existing is not None:
+            if existing[0] != ts:
+                rejected.append((delivery.webhook_id, "webhook_timestamp_mutated_on_retry"))
+            else:
+                deduplicated.append(delivery.webhook_id)
+            continue
+        seen_events[delivery.webhook_id] = (ts, delivery)
+
+    ordered = sorted(seen_events.values(), key=lambda pair: (pair[0], pair[1].webhook_id))
+    latest_state = dict(ordered[-1][1].order_state) if ordered else None
+    return WebhookConvergenceResult(
+        converged_order_state=latest_state,
+        applied_webhook_ids=tuple(pair[1].webhook_id for pair in ordered),
+        deduplicated_retry_ids=tuple(deduplicated),
+        rejected_deliveries=tuple(rejected),
+    )
 
 
 def main() -> int:

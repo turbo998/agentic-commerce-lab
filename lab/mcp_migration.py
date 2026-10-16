@@ -9,8 +9,10 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 
-DEADLINE = date(2026, 10, 31)
-POLICY_CHECKED_ON = date(2026, 10, 14)
+PREVIOUS_DEADLINE = date(2026, 10, 31)
+DEADLINE = date(2026, 11, 30)
+ENFORCEMENT_STARTS = date(2026, 12, 1)
+POLICY_CHECKED_ON = date(2026, 10, 16)
 SOURCE_URL = "https://docs.stripe.com/mcp"
 MAX_BYTES = 64 * 1024
 AuthMethod = Literal[
@@ -124,6 +126,8 @@ def main() -> int:
         "policy_checked_on": POLICY_CHECKED_ON.isoformat(),
         "policy_source": SOURCE_URL,
         "deadline": DEADLINE.isoformat(),
+        "previous_deadline": PREVIOUS_DEADLINE.isoformat(),
+        "enforcement_starts": ENFORCEMENT_STARTS.isoformat(),
         "calendar_days_until_deadline": (DEADLINE - args.as_of).days,
         "cutoff_time": "not specified in the reviewed documentation",
         "account_verification": "not_performed",
