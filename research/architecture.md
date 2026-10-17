@@ -131,4 +131,5 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
    - **协议发现平面（UCP `#933`）**：严禁任何 `3xx` 重定向（防信任根劫持与 SSRF），仅允许条件 `304 Not Modified`。
    - **永久链接入口平面（UCP `#913`）**：强制 `303 See Other`，且必须同时携带 `Location`、`Cache-Control: no-store` 与 `Referrer-Policy: no-referrer`，防止 Permalink URL 中的买家 PII（邮箱、电话）通过缓存或 `Referer` 外泄。
    - **Agent 到浏览器有状态交接平面（Poppy `#35` Section 5）**：强制 `303 See Other`，对 `return_to` 执行 URL 解析级主机名匹配（禁字符串前缀匹配），并设置 `Secure; HttpOnly; SameSite=Lax|None` Cookie（严禁 `SameSite=Strict`，避免跨站重定向首跳丢弃 Cookie），同时将浏览器会话权限限制在该 Poppy Session 的实时 Scopes 内。
-3. **Scope 正交性与人工坐席接管（Handoff）权限延续（Poppy `#35` `patterns/scopes.md`）**：`poppy:write` 不隐含 `poppy:read`；且当会话转接给真人客服坐席（Handoff）后，坐席代客执行的操作仍受同一 Session Scopes 约束。上述检查已合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
+3. **Scope 正交性与人工坐席接管（Handoff）权限延续（Poppy `#35` `patterns/scopes.md`）**：`poppy:write` 不隐含 `poppy:read`；且当会话转接给真人客服坐席（Handoff）后，坐席代客执行的操作仍受同一 Session Scopes 约束。
+4. **对话适配器事件流与多租户完整 Issuer 边界（Poppy `#35` Milestone 2 `conversations.*` & RFC 8414 §3.1 / RFC 9728）**：对话适配器按 `(client_id, user_id)` 校验 `message.id` 幂等与内容哈希冲突（`409 message_id_conflict`），隔离 Section 7.10 Direct Conversation 直连客户消息不回传父会话事件流，并在多租户托管平台下按完整路径级 `auth.issuer` 隔离令牌与匿名 `user_id`；UCP 准入阶段单次评估 Mandate 存活并在 `complete_in_progress` 异步结算期冻结授权。上述检查已合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。

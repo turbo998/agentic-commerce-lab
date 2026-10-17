@@ -6,14 +6,17 @@ from lab.poppy_guard import (
     CatalogVariant,
     DPoPProof,
     PaymentInstrument,
+    PoppyConversationGuard,
     RetailOrder,
     RetailOrderMutationGuard,
     SessionAssertionClaims,
     SessionToken,
     StandingPermission,
+    build_rfc8414_metadata_url,
     run_demo,
     sha256_token,
     verify_cross_company_content_boundary,
+    verify_hosted_company_isolation,
     verify_poppy_assertion_audience,
     verify_poppy_browser_session_exchange,
     verify_poppy_discovery,
@@ -817,6 +820,221 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
             summary["second_pending_modify_blocked"],
             "one_time_modification_limit_exceeded",
         )
+
+    def test_rfc8414_path_scoped_metadata_url_and_hosted_company_isolation(self) -> None:
+        # RFC 8414 Section 3.1 inserts /.well-known/oauth-authorization-server before issuer path
+        self.assertEqual(
+            build_rfc8414_metadata_url("https://auth.platform.example/outfitters"),
+            "https://auth.platform.example/.well-known/oauth-authorization-server/outfitters",
+        )
+        self.assertEqual(
+            build_rfc8414_metadata_url("https://auth.manzanitasupply.example"),
+            "https://auth.manzanitasupply.example/.well-known/oauth-authorization-server",
+        )
+        for bad_issuer in (
+            "http://auth.platform.example/outfitters",
+            "https://auth.platform.example/outfitters/",
+            "https://auth.platform.example/outfitters?tenant=1",
+        ):
+            with self.assertRaises(ValueError):
+                build_rfc8414_metadata_url(bad_issuer)
+
+        outfitters_meta = {
+            "issuer": "https://auth.platform.example/outfitters",
+            "poppy_domains": ["outfitters.example", "outfitters-uk.example"],
+        }
+        books_meta = {
+            "issuer": "https://auth.platform.example/books",
+            "poppy_domains": ["books.example"],
+        }
+
+        # Two domains sharing the exact same path-scoped issuer are one Company
+        same_company = verify_hosted_company_isolation(
+            token_issuer="https://auth.platform.example/outfitters",
+            target_company_issuer="https://auth.platform.example/outfitters",
+            target_storefront_domain="outfitters-uk.example",
+            target_oauth_metadata=outfitters_meta,
+            agent_user_id="usr_outfitters_1",
+            known_user_ids_by_issuer={
+                "https://auth.platform.example/outfitters": "usr_outfitters_1",
+                "https://auth.platform.example/books": "usr_books_9",
+            },
+        )
+        self.assertTrue(same_company.allowed)
+
+        # Cross-company token reuse on same platform host is rejected
+        cross_token = verify_hosted_company_isolation(
+            token_issuer="https://auth.platform.example/outfitters",
+            target_company_issuer="https://auth.platform.example/books",
+            target_storefront_domain="books.example",
+            target_oauth_metadata=books_meta,
+            agent_user_id="usr_books_9",
+            known_user_ids_by_issuer={},
+        )
+        self.assertFalse(cross_token.allowed)
+        self.assertEqual(cross_token.reason, "cross_company_token_rejected")
+
+        # Reusing the same opaque user_id across distinct issuers on the same platform is rejected
+        reused_uid = verify_hosted_company_isolation(
+            token_issuer="https://auth.platform.example/books",
+            target_company_issuer="https://auth.platform.example/books",
+            target_storefront_domain="books.example",
+            target_oauth_metadata=books_meta,
+            agent_user_id="usr_shared_bad",
+            known_user_ids_by_issuer={
+                "https://auth.platform.example/outfitters": "usr_shared_bad",
+            },
+        )
+        self.assertFalse(reused_uid.allowed)
+        self.assertEqual(reused_uid.reason, "cross_company_user_id_reuse_forbidden")
+
+    def test_milestone2_conversation_checks_and_direct_conversation_isolation(self) -> None:
+        conv_guard = PoppyConversationGuard()
+        other_user_token = SessionToken(
+            access_token="tok_dpop_bob",
+            token_type="DPoP",
+            session_id="ses_bob",
+            client_id="https://agent.example/agent.json",
+            user_id="usr_Bob99",
+            signed_in=False,
+            account_id=None,
+            scopes=frozenset(),
+            jwk_thumbprint="jkt_p256_bob",
+            expires_at=2000,
+        )
+
+        # conversations.not-found -> 404 conversation_not_found
+        status, body = conv_guard.read_events(token=self.alice_token, conversation_id="cnv_unknown")
+        self.assertEqual((status, body["error"]), (404, "conversation_not_found"))
+
+        # conversations.invalid-message-id & conversations.empty-message -> 400 invalid_request
+        bad_id_status, bad_id_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message={"id": "msg validator!", "sender": "agent", "text": "hello"},
+        )
+        self.assertEqual((bad_id_status, bad_id_body["error"]), (400, "invalid_request"))
+
+        empty_status, empty_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message={"id": "msg_empty_1", "sender": "agent"},
+        )
+        self.assertEqual((empty_status, empty_body["error"]), (400, "invalid_request"))
+
+        # conversations.start -> 201 Created
+        first_msg = {"id": "msg_first_1", "sender": "agent", "text": "Validator test message."}
+        st_start, start_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message=first_msg,
+        )
+        self.assertEqual(st_start, 201)
+        conv_id = start_body["conversation_id"]
+        self.assertEqual(start_body["status"], "idle")
+        self.assertEqual(start_body["responder"], "agent")
+
+        # Cross-user access returns 404 conversation_not_found (enumeration prevention)
+        cross_st, cross_body = conv_guard.read_events(token=other_user_token, conversation_id=conv_id)
+        self.assertEqual((cross_st, cross_body["error"]), (404, "conversation_not_found"))
+
+        # conversations.retry-same-id -> 201 with same conversation_id, no duplicate event
+        st_retry, retry_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message=first_msg,
+        )
+        self.assertEqual(st_retry, 201)
+        self.assertEqual(retry_body["conversation_id"], conv_id)
+
+        # conversations.message-id-conflict -> 409 message_id_conflict when content differs
+        st_conflict, conflict_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message={"id": "msg_first_1", "sender": "agent", "text": "Changed text."},
+        )
+        self.assertEqual((st_conflict, conflict_body["error"]), (409, "message_id_conflict"))
+
+        # conversations.follow-up -> 202 Accepted
+        st_follow, follow_body = conv_guard.post_message(
+            token=self.alice_token,
+            conversation_id=conv_id,
+            message={"id": "msg_second_2", "sender": "agent", "text": "Follow-up question."},
+        )
+        self.assertEqual(st_follow, 202)
+        self.assertEqual(follow_body["status"], "idle")
+
+        # Section 7.10 Direct Conversation: direct messages never leak into parent GET /events
+        st_dir, dir_body = conv_guard.open_direct_conversation(
+            token=self.alice_token,
+            conversation_id=conv_id,
+            direct_customer_message="Private customer note not for Personal Agent.",
+        )
+        self.assertEqual(st_dir, 201)
+        self.assertIn("direct_conversation_id", dir_body)
+        st_dir_dup, dir_dup_body = conv_guard.open_direct_conversation(
+            token=self.alice_token,
+            conversation_id=conv_id,
+            direct_customer_message="Second concurrent direct chat.",
+        )
+        self.assertEqual((st_dir_dup, dir_dup_body["error"]), (409, "direct_conversation_already_open"))
+        st_dir_close, _ = conv_guard.close_direct_conversation(
+            token=self.alice_token,
+            conversation_id=conv_id,
+        )
+        self.assertEqual(st_dir_close, 200)
+
+        # conversations.events-read, user-message-recorded, retry-not-duplicated
+        st_read, read_body = conv_guard.read_events(token=self.alice_token, conversation_id=conv_id, wait=1)
+        self.assertEqual(st_read, 200)
+        self.assertFalse(read_body["has_more"])
+        first_events = [
+            e for e in read_body["events"]
+            if e["type"] == "message" and e["message"]["id"] == "msg_first_1"
+        ]
+        self.assertEqual(len(first_events), 1)
+        self.assertEqual(first_events[0]["message"]["role"], "user")
+        # Direct customer message text is not present in parent events
+        self.assertNotIn("Private customer note", str(read_body["events"]))
+        direct_states = [e.get("direct") for e in read_body["events"] if e["type"] == "state"]
+        self.assertEqual(direct_states, ["direct_opened", "direct_closed"])
+
+        # conversations.invalid-wait & conversations.unknown-cursor
+        st_bad_wait, bad_wait_body = conv_guard.read_events(
+            token=self.alice_token, conversation_id=conv_id, wait="soon"
+        )
+        self.assertEqual((st_bad_wait, bad_wait_body["error"]), (400, "invalid_request"))
+        st_bad_cur, bad_cur_body = conv_guard.read_events(
+            token=self.alice_token, conversation_id=conv_id, cursor="evt_unknown_999"
+        )
+        self.assertEqual((st_bad_cur, bad_cur_body["error"]), (400, "invalid_cursor"))
+
+        # conversations.close, close-event, close-again, closed-message, closed-handoff
+        cursor_before_close = read_body["cursor"]
+        st_close, close_body = conv_guard.close_conversation(
+            token=self.alice_token, conversation_id=conv_id
+        )
+        self.assertEqual((st_close, close_body["status"]), (200, "closed"))
+        _, after_close = conv_guard.read_events(
+            token=self.alice_token, conversation_id=conv_id, cursor=cursor_before_close
+        )
+        self.assertEqual(len(after_close["events"]), 1)
+        self.assertEqual(after_close["events"][0]["status"], "closed")
+
+        st_close_again, close_again_body = conv_guard.close_conversation(
+            token=self.alice_token, conversation_id=conv_id
+        )
+        self.assertEqual((st_close_again, close_again_body["status"]), (200, "closed"))
+        _, after_second_close = conv_guard.read_events(
+            token=self.alice_token, conversation_id=conv_id, cursor=after_close["cursor"]
+        )
+        self.assertEqual(after_second_close["events"], [])
+
+        st_closed_msg, closed_msg_body = conv_guard.post_message(
+            token=self.alice_token,
+            conversation_id=conv_id,
+            message={"id": "msg_after_close", "sender": "agent", "text": "Still there?"},
+        )
+        self.assertEqual((st_closed_msg, closed_msg_body["error"]), (409, "conversation_closed"))
+        st_closed_ho, closed_ho_body = conv_guard.request_handoff(
+            token=self.alice_token, conversation_id=conv_id
+        )
+        self.assertEqual((st_closed_ho, closed_ho_body["error"]), (409, "conversation_closed"))
 
 
 if __name__ == "__main__":

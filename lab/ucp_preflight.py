@@ -314,6 +314,120 @@ def converge_ucp_order_webhooks(
     )
 
 
+@dataclass(frozen=True)
+class IdentityDiscoveryResult:
+    selected_issuer: str | None
+    reason: str
+    discarded_entries: tuple[tuple[str, str], ...]
+
+
+def select_ucp_identity_authorization_server(
+    *,
+    protected_resource_metadata: dict[str, Any],
+    expected_resource: str,
+    oauth_metadata_by_entry: dict[str, dict[str, Any]],
+    usable_client_issuers: set[str],
+) -> IdentityDiscoveryResult:
+    """Evaluate multi-entry RFC 9728 `authorization_servers` with RFC 8414 §3.3 exact `issuer` match.
+
+    Models UCP `dev.ucp.common.identity_linking` multi-entry evaluation (RFC 9728 / RFC 8414 §3.3;
+    clarified in UCP PR #891):
+    - Every candidate in `authorization_servers` must have discovered OAuth metadata whose `issuer`
+      is byte-for-byte identical to the entry (a custom storefront vanity domain whose metadata
+      reports a different provider URI fails Step 2 and is discarded without aborting discovery).
+    - Entries where the platform holds no usable client identity are discarded.
+    - Among remaining entries, the first valid entry in array order is selected; discovery fails
+      only when no valid entry remains.
+    """
+    resource = str(protected_resource_metadata.get("resource", "")).strip()
+    if resource != expected_resource.strip():
+        return IdentityDiscoveryResult(None, "resource_mismatch", ())
+
+    entries = protected_resource_metadata.get("authorization_servers")
+    if not isinstance(entries, list) or not entries:
+        return IdentityDiscoveryResult(None, "missing_authorization_servers", ())
+
+    discarded: list[tuple[str, str]] = []
+    for raw_entry in entries:
+        if not isinstance(raw_entry, str) or not raw_entry.strip().startswith("https://"):
+            discarded.append((str(raw_entry), "invalid_issuer_uri"))
+            continue
+        entry = raw_entry.strip()
+        meta = oauth_metadata_by_entry.get(entry)
+        if not isinstance(meta, dict):
+            discarded.append((entry, "metadata_unavailable"))
+            continue
+        meta_issuer = str(meta.get("issuer", "")).strip()
+        if meta_issuer != entry:
+            discarded.append((entry, "issuer_mismatch"))
+            continue
+        if entry not in usable_client_issuers:
+            discarded.append((entry, "no_usable_client_identity"))
+            continue
+        return IdentityDiscoveryResult(entry, "selected", tuple(discarded))
+
+    return IdentityDiscoveryResult(None, "no_valid_authorization_server", tuple(discarded))
+
+
+@dataclass(frozen=True)
+class MandateAdmissionResult:
+    admitted: bool
+    checkout_status: str  # "complete_in_progress", "completed", or "canceled"
+    error_code: str | None
+    admission_evidence: dict[str, Any]
+
+
+def evaluate_ucp_mandate_admission(
+    *,
+    reference: str,
+    checkout_id: str,
+    mandate_exp: int,
+    evaluated_at: int,
+    settlement_completed_at: int | None = None,
+) -> MandateAdmissionResult:
+    """Evaluate AP2 mandate liveness once at Complete Checkout admission (UCP #512 / draft PR #540).
+
+    Enforces the admission-time boundary shared with `lab/checkout.py`:
+    - Mandate TTL is evaluated **once** at admission (`evaluated_at <= mandate_exp`).
+    - If expired at admission (`evaluated_at > mandate_exp`), checkout MUST NOT enter
+      `complete_in_progress` and terminates `canceled` with `mandate_expired`.
+    - If valid at admission, authorization is frozen for settlement: entering `complete_in_progress`
+      and settling at `settlement_completed_at > mandate_exp` MUST NOT abort or emit `mandate_expired`.
+    """
+    if not reference.strip() or not checkout_id.strip():
+        raise ValueError("reference and checkout_id are required")
+    if evaluated_at <= 0 or mandate_exp <= 0:
+        raise ValueError("timestamps must be positive Unix epoch seconds")
+
+    if evaluated_at > mandate_exp:
+        return MandateAdmissionResult(
+            admitted=False,
+            checkout_status="canceled",
+            error_code="mandate_expired",
+            admission_evidence={
+                "reference": reference,
+                "checkout_id": checkout_id,
+                "evaluated_at": evaluated_at,
+                "mandate_exp": mandate_exp,
+                "result": "expired_at_admission",
+            },
+        )
+
+    terminal_status = "completed" if settlement_completed_at is not None else "complete_in_progress"
+    return MandateAdmissionResult(
+        admitted=True,
+        checkout_status=terminal_status,
+        error_code=None,
+        admission_evidence={
+            "reference": reference,
+            "checkout_id": checkout_id,
+            "evaluated_at": evaluated_at,
+            "mandate_exp": mandate_exp,
+            "result": "admitted",
+        },
+    )
+
+
 def main() -> int:
     """Assess synthetic declarations; exit 1 for blocked and 2 for invalid metadata."""
     parser = argparse.ArgumentParser(description=__doc__)

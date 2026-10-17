@@ -10,7 +10,8 @@ from unittest.mock import patch
 from lab.ucp_preflight import (
     INSTRUMENTS, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
     HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
-    main, verify_ucp_discovery_response_status, verify_ucp_permalink_redirect,
+    evaluate_ucp_mandate_admission, main, select_ucp_identity_authorization_server,
+    verify_ucp_discovery_response_status, verify_ucp_permalink_redirect,
     verify_ucp_signing_gate,
 )
 
@@ -291,6 +292,74 @@ class PreflightTests(unittest.TestCase):
         )
         self.assertEqual(result.converged_order_state, {"status": "shipped", "tracking": "1Z999"})
 
+    def test_ucp_multi_entry_identity_authorization_server_selection(self) -> None:
+        # Custom vanity domain fails RFC 8414 §3.3 exact issuer match, but second entry succeeds (#891)
+        prm = {
+            "resource": "https://www.merchant.example.com",
+            "authorization_servers": [
+                "https://account.merchant.example.com",
+                "https://auth.provider.example/authentication/12345",
+            ],
+            "bearer_methods_supported": ["header"],
+        }
+        metadata_by_entry = {
+            "https://account.merchant.example.com": {
+                "issuer": "https://auth.provider.example/authentication/12345",
+            },
+            "https://auth.provider.example/authentication/12345": {
+                "issuer": "https://auth.provider.example/authentication/12345",
+            },
+        }
+        res = select_ucp_identity_authorization_server(
+            protected_resource_metadata=prm,
+            expected_resource="https://www.merchant.example.com",
+            oauth_metadata_by_entry=metadata_by_entry,
+            usable_client_issuers={"https://auth.provider.example/authentication/12345"},
+        )
+        self.assertEqual(res.selected_issuer, "https://auth.provider.example/authentication/12345")
+        self.assertEqual(res.reason, "selected")
+        self.assertEqual(
+            res.discarded_entries,
+            (("https://account.merchant.example.com", "issuer_mismatch"),),
+        )
+
+        # If no entry passes both RFC 8414 §3.3 and usable client identity, discovery fails cleanly
+        none_ok = select_ucp_identity_authorization_server(
+            protected_resource_metadata=prm,
+            expected_resource="https://www.merchant.example.com",
+            oauth_metadata_by_entry=metadata_by_entry,
+            usable_client_issuers=set(),
+        )
+        self.assertIsNone(none_ok.selected_issuer)
+        self.assertEqual(none_ok.reason, "no_valid_authorization_server")
+
+    def test_ucp_mandate_liveness_evaluated_once_at_admission(self) -> None:
+        # Valid at admission (evaluated_at <= mandate_exp) -> settles even if wall clock passes mandate_exp
+        admitted = evaluate_ucp_mandate_admission(
+            reference="ap2_mandate_sha256_abc",
+            checkout_id="chk_100",
+            mandate_exp=1700000100,
+            evaluated_at=1700000090,
+            settlement_completed_at=1700000150,
+        )
+        self.assertTrue(admitted.admitted)
+        self.assertEqual(admitted.checkout_status, "completed")
+        self.assertIsNone(admitted.error_code)
+        self.assertEqual(admitted.admission_evidence["result"], "admitted")
+
+        # Expired at admission (evaluated_at > mandate_exp) -> canceled with mandate_expired
+        expired = evaluate_ucp_mandate_admission(
+            reference="ap2_mandate_sha256_abc",
+            checkout_id="chk_101",
+            mandate_exp=1700000100,
+            evaluated_at=1700000101,
+        )
+        self.assertFalse(expired.admitted)
+        self.assertEqual(expired.checkout_status, "canceled")
+        self.assertEqual(expired.error_code, "mandate_expired")
+        self.assertEqual(expired.admission_evidence["result"], "expired_at_admission")
+
 
 if __name__ == "__main__":
     unittest.main()
+

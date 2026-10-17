@@ -13,12 +13,14 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 import hashlib
 import json
+import re
 from typing import Any
 from urllib.parse import urlsplit
 
 
 FORBIDDEN_DPOP_ALGS = frozenset({"none", "HS256", "HS384", "HS512"})
 RESERVED_POPPY_SCOPES = frozenset({"poppy:read", "poppy:write"})
+URL_SAFE_BASE64_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,256}$")
 
 
 def _normalize_domain(host: str) -> str:
@@ -134,6 +136,93 @@ def verify_poppy_discovery(
         protocol_version=version,
         organization_domain=org_domain,
         issuer=issuer,
+    )
+
+
+def build_rfc8414_metadata_url(issuer: str) -> str:
+    """Build RFC 8414 Section 3.1 OAuth Authorization Server Metadata URL for an `auth.issuer`.
+
+    Per RFC 8414 §3.1 and Poppy v0.1 Section 3.2 (and multi-tenant hosted platform guidance),
+    when an issuer identifier contains a path component (e.g., `https://auth.platform.example/outfitters`),
+    the well-known suffix `/.well-known/oauth-authorization-server` MUST be inserted between the
+    host component and the path component rather than appended to the end.
+    """
+    raw = issuer.strip()
+    parsed = urlsplit(raw)
+    if (
+        parsed.scheme.lower() != "https"
+        or not parsed.netloc
+        or parsed.query
+        or parsed.fragment
+        or raw.endswith("/")
+    ):
+        raise ValueError("invalid_oauth_issuer_identifier")
+    clean_path = parsed.path.rstrip("/")
+    return f"https://{parsed.netloc.lower()}/.well-known/oauth-authorization-server{clean_path}"
+
+
+def verify_hosted_company_isolation(
+    *,
+    token_issuer: str,
+    target_company_issuer: str,
+    target_storefront_domain: str,
+    target_oauth_metadata: dict[str, Any],
+    agent_user_id: str,
+    known_user_ids_by_issuer: dict[str, str],
+) -> DiscoveryCheckResult:
+    """Verify multi-tenant hosted commerce platform company isolation (Poppy v0.1 §3.2 & §4.2).
+
+    A Company is identified by its full `auth.issuer` URL (including path), not by its hosting
+    provider hostname. Storefronts that share the exact same `auth.issuer` and appear in its
+    `poppy_domains` share one Company identity; storefronts with different `auth.issuer` paths
+    on the same platform host are separate Companies and MUST NOT share Session/Account Tokens
+    or Personal Agent opaque User IDs.
+    """
+    tok_iss = token_issuer.strip()
+    tgt_iss = target_company_issuer.strip()
+    if not tok_iss.startswith("https://") or not tgt_iss.startswith("https://"):
+        return DiscoveryCheckResult(False, "invalid_auth_issuer")
+
+    meta_iss = str(target_oauth_metadata.get("issuer", "")).strip()
+    if meta_iss != tgt_iss:
+        return DiscoveryCheckResult(False, "oauth_issuer_mismatch", issuer=tgt_iss)
+
+    norm_domain = _normalize_domain(target_storefront_domain)
+    poppy_domains = {
+        _normalize_domain(str(d))
+        for d in (target_oauth_metadata.get("poppy_domains") or [])
+        if isinstance(d, str) and d.strip()
+    }
+    if norm_domain not in poppy_domains:
+        return DiscoveryCheckResult(
+            False,
+            "issuer_domain_unverified",
+            organization_domain=norm_domain,
+            issuer=tgt_iss,
+        )
+
+    if tok_iss != tgt_iss:
+        return DiscoveryCheckResult(
+            False,
+            "cross_company_token_rejected",
+            organization_domain=norm_domain,
+            issuer=tgt_iss,
+        )
+
+    for other_issuer, other_user_id in known_user_ids_by_issuer.items():
+        if other_issuer.strip() != tgt_iss and other_user_id == agent_user_id:
+            return DiscoveryCheckResult(
+                False,
+                "cross_company_user_id_reuse_forbidden",
+                organization_domain=norm_domain,
+                issuer=tgt_iss,
+            )
+
+    return DiscoveryCheckResult(
+        True,
+        "verified",
+        organization_domain=norm_domain,
+        issuer=tgt_iss,
     )
 
 
@@ -876,6 +965,355 @@ class RetailOrderMutationGuard:
             },
         }
         return GuardDecision(True, "succeeded", 200, asdict(op))
+
+
+@dataclass
+class _ConversationState:
+    conversation_id: str
+    client_id: str
+    user_id: str
+    account_id: str | None
+    status: str  # "idle", "working", "queued", "closed"
+    responder: str  # "agent", "human"
+    first_message_id: str
+    events: list[dict[str, Any]] = field(default_factory=list)
+    open_direct_conversation_id: str | None = None
+    direct_messages: list[dict[str, Any]] = field(default_factory=list)
+
+
+class PoppyConversationGuard:
+    """Poppy v0.1 Section 7 (`spec#conversations`) & Milestone 2 conversation adapter guard (#35).
+
+    Enforces the 19 deterministic `conversations.*` conformance invariants from
+    `kit/company/validate/checks/conversations.ts` and `kit/company/patterns/conversations.md`:
+    - Per-user `(client_id, user_id)` message ID deduplication and content-hash conflict (`409 message_id_conflict`).
+    - URL-safe base64 alphabet IDs (`^[A-Za-z0-9_-]{1,256}$`) and non-empty message (`text`, `data`, or `context`).
+    - Ownership isolation returning `404 conversation_not_found` for unknown or cross-user conversations.
+    - Ordered Company event log (`cursor`, `has_more`, `status`, `responder` always present), strict cursor
+      validation (`400 invalid_cursor`), and whole-number `wait` validation (`400 invalid_request`).
+    - Idempotent close (`200 OK`, single `state: "closed"` event on first close, zero extra events on repeat close)
+      and post-close write/handoff lock (`409 conversation_closed`).
+    - Section 7.10 Direct Conversation isolation: at most one open Direct Conversation per parent, parent records
+      only `direct_opened` / `direct_closed` state events, and direct customer messages are never returned to the
+      Personal Agent's parent `GET /events` feed.
+    """
+
+    def __init__(self) -> None:
+        self._conversations: dict[str, _ConversationState] = {}
+        # Scoped per (client_id, user_id) -> message_id -> (content_hash, conversation_id, is_first, response_payload)
+        self._accepted_messages: dict[tuple[str, str], dict[str, tuple[str, str, bool, dict[str, Any]]]] = {}
+        self._conv_seq = 0
+        self._event_seq = 0
+
+    @staticmethod
+    def _valid_id(value: str) -> bool:
+        return bool(isinstance(value, str) and URL_SAFE_BASE64_ID_RE.match(value))
+
+    @staticmethod
+    def _validate_message_payload(message: dict[str, Any] | None) -> tuple[bool, str, str]:
+        if not isinstance(message, dict):
+            return False, "invalid_request", ""
+        msg_id = message.get("id")
+        if not isinstance(msg_id, str) or not PoppyConversationGuard._valid_id(msg_id):
+            return False, "invalid_request", ""
+        sender = message.get("sender")
+        if sender not in {"agent", "human"}:
+            return False, "invalid_request", ""
+        has_text = isinstance(message.get("text"), str) and bool(message.get("text").strip())
+        has_data = message.get("data") is not None
+        has_context = message.get("context") is not None
+        if not (has_text or has_data or has_context):
+            return False, "invalid_request", ""
+        canonical = json.dumps(
+            {
+                "sender": sender,
+                "text": message.get("text"),
+                "data": message.get("data"),
+                "context": message.get("context"),
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        content_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        return True, msg_id, content_hash
+
+    def _next_event_id(self) -> str:
+        self._event_seq += 1
+        return f"evt_{self._event_seq:04d}"
+
+    def _check_ownership(self, token: SessionToken, conversation_id: str) -> _ConversationState | None:
+        conv = self._conversations.get(conversation_id)
+        if conv is None:
+            return None
+        if conv.client_id != token.client_id or conv.user_id != token.user_id:
+            return None
+        if conv.account_id is not None and token.account_id is not None and conv.account_id != token.account_id:
+            return None
+        return conv
+
+    def start_conversation(
+        self,
+        *,
+        token: SessionToken,
+        message: dict[str, Any] | None,
+        now: str = "2026-10-17T00:00:00Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST /conversations` (`conversations.start`, `retry-same-id`, `message-id-conflict`)."""
+        ok, msg_id_or_err, content_hash = self._validate_message_payload(message)
+        if not ok:
+            return 400, {"error": msg_id_or_err}
+        msg_id = msg_id_or_err
+        user_scope = (token.client_id, token.user_id)
+        user_msgs = self._accepted_messages.setdefault(user_scope, {})
+
+        existing = user_msgs.get(msg_id)
+        if existing is not None:
+            prev_hash, prev_conv_id, is_first, prev_resp = existing
+            if prev_hash != content_hash or not is_first:
+                return 409, {"error": "message_id_conflict"}
+            conv = self._conversations[prev_conv_id]
+            return 201, {
+                "conversation_id": conv.conversation_id,
+                "status": conv.status,
+                "responder": conv.responder,
+            }
+
+        self._conv_seq += 1
+        conv_id = f"cnv_{self._conv_seq:04d}"
+        conv = _ConversationState(
+            conversation_id=conv_id,
+            client_id=token.client_id,
+            user_id=token.user_id,
+            account_id=token.account_id if token.signed_in else None,
+            status="idle",
+            responder="agent",
+            first_message_id=msg_id,
+        )
+        recorded_msg = dict(message)  # type: ignore[arg-type]
+        recorded_msg["role"] = "user"
+        conv.events.append(
+            {
+                "id": self._next_event_id(),
+                "type": "message",
+                "created_at": now,
+                "message": recorded_msg,
+            }
+        )
+        self._conversations[conv_id] = conv
+        resp = {
+            "conversation_id": conv_id,
+            "status": conv.status,
+            "responder": conv.responder,
+        }
+        user_msgs[msg_id] = (content_hash, conv_id, True, resp)
+        return 201, resp
+
+    def post_message(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        message: dict[str, Any] | None,
+        now: str = "2026-10-17T00:00:01Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST /conversations/{id}/messages` (`conversations.follow-up`, `closed-message`)."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+        if conv.status == "closed":
+            return 409, {"error": "conversation_closed"}
+
+        ok, msg_id_or_err, content_hash = self._validate_message_payload(message)
+        if not ok:
+            return 400, {"error": msg_id_or_err}
+        msg_id = msg_id_or_err
+        user_scope = (token.client_id, token.user_id)
+        user_msgs = self._accepted_messages.setdefault(user_scope, {})
+
+        existing = user_msgs.get(msg_id)
+        if existing is not None:
+            prev_hash, prev_conv_id, is_first, _ = existing
+            if prev_hash != content_hash or prev_conv_id != conversation_id or is_first:
+                return 409, {"error": "message_id_conflict"}
+            return 202, {"status": conv.status, "responder": conv.responder}
+
+        if token.signed_in and token.account_id and conv.account_id is None:
+            conv.account_id = token.account_id
+
+        recorded_msg = dict(message)  # type: ignore[arg-type]
+        recorded_msg["role"] = "user"
+        conv.events.append(
+            {
+                "id": self._next_event_id(),
+                "type": "message",
+                "created_at": now,
+                "message": recorded_msg,
+            }
+        )
+        resp = {"status": conv.status, "responder": conv.responder}
+        user_msgs[msg_id] = (content_hash, conversation_id, False, resp)
+        return 202, resp
+
+    def read_events(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        cursor: str | None = None,
+        wait: str | int | None = None,
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `GET /conversations/{id}/events` (`events-read`, `unknown-cursor`, `invalid-wait`)."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+
+        if wait is not None:
+            if isinstance(wait, bool):
+                return 400, {"error": "invalid_request"}
+            if isinstance(wait, int):
+                if wait < 0:
+                    return 400, {"error": "invalid_request"}
+            elif isinstance(wait, str):
+                if not wait.isdigit():
+                    return 400, {"error": "invalid_request"}
+            else:
+                return 400, {"error": "invalid_request"}
+
+        start_idx = 0
+        if cursor is not None:
+            if not self._valid_id(cursor):
+                return 400, {"error": "invalid_cursor"}
+            found_idx = None
+            for idx, ev in enumerate(conv.events):
+                if ev["id"] == cursor:
+                    found_idx = idx + 1
+                    break
+            if found_idx is None:
+                return 400, {"error": "invalid_cursor"}
+            start_idx = found_idx
+
+        sliced = list(conv.events[start_idx:])
+        new_cursor = conv.events[-1]["id"] if conv.events else cursor
+        return 200, {
+            "events": sliced,
+            "cursor": new_cursor,
+            "has_more": False,
+            "status": conv.status,
+            "responder": conv.responder,
+        }
+
+    def request_handoff(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        live_agent_joined: bool = False,
+        now: str = "2026-10-17T00:00:02Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST /conversations/{id}/handoff` (`spec#handoff`, `closed-handoff`)."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+        if conv.status == "closed":
+            return 409, {"error": "conversation_closed"}
+
+        conv.status = "idle" if live_agent_joined else "queued"
+        conv.responder = "human" if live_agent_joined else "agent"
+        conv.events.append(
+            {
+                "id": self._next_event_id(),
+                "type": "state",
+                "created_at": now,
+                "status": conv.status,
+                "responder": conv.responder,
+            }
+        )
+        return 200, {"status": conv.status, "responder": conv.responder}
+
+    def open_direct_conversation(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        direct_customer_message: str,
+        now: str = "2026-10-17T00:00:03Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Open a Section 7.10 Direct Conversation without leaking direct messages to the Personal Agent."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+        if conv.status == "closed":
+            return 409, {"error": "conversation_closed"}
+        if conv.open_direct_conversation_id is not None:
+            return 409, {"error": "direct_conversation_already_open"}
+
+        direct_id = f"dir_{conv.conversation_id}"
+        conv.open_direct_conversation_id = direct_id
+        conv.direct_messages.append({"role": "user", "sender": "human", "text": direct_customer_message})
+        conv.events.append(
+            {
+                "id": self._next_event_id(),
+                "type": "state",
+                "created_at": now,
+                "direct": "direct_opened",
+                "status": conv.status,
+                "responder": conv.responder,
+            }
+        )
+        return 201, {"direct_conversation_id": direct_id, "status": conv.status}
+
+    def close_direct_conversation(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        now: str = "2026-10-17T00:00:04Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Close an open Section 7.10 Direct Conversation and record `direct_closed` on the parent."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+        if conv.open_direct_conversation_id is None:
+            return 409, {"error": "no_open_direct_conversation"}
+
+        conv.open_direct_conversation_id = None
+        conv.events.append(
+            {
+                "id": self._next_event_id(),
+                "type": "state",
+                "created_at": now,
+                "direct": "direct_closed",
+                "status": conv.status,
+                "responder": conv.responder,
+            }
+        )
+        return 200, {"status": conv.status, "responder": conv.responder}
+
+    def close_conversation(
+        self,
+        *,
+        token: SessionToken,
+        conversation_id: str,
+        now: str = "2026-10-17T00:00:05Z",
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST /conversations/{id}/close` (`close`, `close-event`, `close-again`)."""
+        conv = self._check_ownership(token, conversation_id)
+        if conv is None:
+            return 404, {"error": "conversation_not_found"}
+
+        if conv.status != "closed":
+            conv.status = "closed"
+            conv.open_direct_conversation_id = None
+            conv.events.append(
+                {
+                    "id": self._next_event_id(),
+                    "type": "state",
+                    "created_at": now,
+                    "status": "closed",
+                    "responder": conv.responder,
+                }
+            )
+        return 200, {"status": conv.status, "responder": conv.responder}
 
 
 def run_demo() -> dict[str, Any]:
