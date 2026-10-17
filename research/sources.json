@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-16",
+  "checked_on": "2026-10-17",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -25,7 +25,7 @@
       "url": "https://docs.stripe.com/agentic-commerce",
       "monitor_url": "https://docs.stripe.com/agentic-commerce.md",
       "published_on": null,
-      "evidence": "Current documentation; agent embedding is private preview."
+      "evidence": "Current documentation; agent embedding is private preview. Oct 17 hash change across docs.stripe.com/*.md reflects UK/Commonwealth English spelling rendering ('authorise', 'organisation', 'fulfilment'), not a product or API version change."
     },
     {
       "id": "stripe-spt",
@@ -33,14 +33,14 @@
       "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
       "published_on": null,
       "api_version_observed": "2026-09-30.preview",
-      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry. Repeated same-day fetches differ in generated example expires_at; hash changes are not release evidence."
+      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry. Repeated same-day fetches differ in generated example expires_at and UK/US locale rendering; hash changes are not release evidence."
     },
     {
       "id": "stripe-mcp",
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from 'Update API key authentication by 31 October 2026' to 'Update API key authentication by November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Recorded as policy_change='changed' with deadline='2026-11-30' after human review and grammar update. Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17 fetch served the UK-formatted date string ('30 November 2026') with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' after human review. Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -91,7 +91,7 @@
       "id": "visa-vic",
       "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
       "published_on": null,
-      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14 and Oct 16 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403); current developer body and availability not reverified."
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14, Oct 16, and Oct 17 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403); current developer body and availability not reverified."
     },
     {
       "id": "visa-tap",
@@ -128,19 +128,19 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "5021fa83a652ef9f1d00eb2b53e1de790f0a427f",
-      "commit_committed_at": "2026-10-16T07:29:41Z",
-      "evidence": "Oct 16 ucp.dev overview fetch timed out in source_monitor (recorded as status='error'); official repository Universal-Commerce-Protocol/ucp verified at 5021fa83a652 (4 commits since Oct 14: 69e28f4f BREAKING CHANGE adding webhook-id and webhook-timestamp to closed RFC 9421 signing gate and defining retry/convergence rules; d9c18e0d covering ucp-agent in checkout REST signed example; 5021fa83 allowing 304 Not Modified while keeping 3xx redirects forbidden; 72ee4240 upgrading source-map-js for CVE-2026-93749)."
+      "revision_observed": "3ab41043b79373df33a6e2c377bc82a806175f78",
+      "commit_committed_at": "2026-10-16T17:50:28Z",
+      "evidence": "Oct 17 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged' vs Oct 14 baseline after Oct 16 timeout). Official repository Universal-Commerce-Protocol/ucp advanced 1 commit to 3ab41043b793 (#913, 'docs(permalink): show the mandated headers on every 303 example'): enforces that every 303 See Other permalink redirect carries Location, Cache-Control: no-store, and Referrer-Policy: no-referrer so buyer PII in permalink query strings does not leak via caching or Referer headers."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "ad3c5817ff05681e6c96303d342c39d4548421b6",
-      "commit_committed_at": "2026-10-16T00:44:30Z",
-      "plugin_version_observed": "0.5.20",
-      "evidence": "Official Oct 16 sync-skills commit reviewed (2 commits since Oct 14: 4f842d4e, ad3c5817): agent-plugins 0.5.20, Claude 0.11.20, Cursor/Grok 0.9.20, Codex 5.8.20. Adds Billing script extension references (item-handling, customer-balance, discount-calculation) and expands Tax 'Register for me' guidance to Canada GST/HST and EU Non-Union OSS via Ireland; upgrade skill fallback API version remains 2026-09-30.endive."
+      "revision_observed": "c1f5b0826f3f33d7e1cc7eff5e5e6cd42749808b",
+      "commit_committed_at": "2026-10-17T00:45:19Z",
+      "plugin_version_observed": "0.5.21",
+      "evidence": "Official Oct 17 sync-skills commit reviewed (c1f5b0826f3f): bumps agent-plugins 0.5.20 -> 0.5.21, Claude 0.11.20 -> 0.11.21, Cursor/Grok 0.9.20 -> 0.9.21, Codex 5.8.20 -> 5.8.21, and updates upgrade-stripe snapshot date to 2026-10-17 while keeping fallback API version 2026-09-30.endive."
     },
     {
       "id": "ap2",
@@ -240,9 +240,9 @@
       "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/spec.mdx",
       "published_on": null,
       "spec_version_observed": "0.1",
-      "revision_observed": "e910c8669be9318546848c4f413f4725e0415c9e",
-      "commit_committed_at": "2026-10-16T13:19:34Z",
-      "evidence": "Draft v0.1 specification; 17 commits landed between 2026-10-14T22:55Z and 2026-10-16T13:19Z (f766ef8 -> e910c86): post-redirect case-insensitive-only organization.domain match (#37), RFC 9449 DPoP alignment with dpop_signing_alg_values_supported + 400 on token vs 401 on APIs (#36), client/Session assertion aud == auth.issuer (#50), persistent Session account binding across sign-out (#41, #49), mediated sign-in credential handling & post-revocation rule (#40, #53), non-Poppy MCP session lifespan (#42), conversation cursor/SSE/idempotency rules (#43-#47), and new Section 8 Security considerations (#51)."
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
+      "commit_committed_at": "2026-10-17T00:08:46Z",
+      "evidence": "Draft v0.1 specification; spec.mdx hash unchanged on Oct 17 while repository advanced to 95fcbf22c599 (#35, 'Add the Company implementation kit and replace the review kit'): adds kit/company/ with 18 Draft 2020-12 JSON Schemas, 10 architecture integration patterns, a Before-vs-After Company architecture comparison, and a zero-dependency TypeScript conformance validator."
     },
     {
       "id": "poppy-operations-ext",
@@ -250,9 +250,19 @@
       "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/operations.mdx",
       "published_on": null,
       "spec_version_observed": "1",
-      "revision_observed": "e910c8669be9318546848c4f413f4725e0415c9e",
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
       "evidence": "Draft v1 operations extension for Poppy v0.1. Commit e910c86 (#51) adds normative guidance that Personal Agents SHOULD surface material terms values (amounts, dates, items) alongside summary or verify they agree before asking the User for approval because the Company writes both and summary could misdescribe terms.",
-      "commit_committed_at": "2026-10-16T13:19:34Z"
+      "commit_committed_at": "2026-10-17T00:08:46Z"
+    },
+    {
+      "id": "poppy-company-kit",
+      "url": "https://personalagentprotocol.org/kit/company",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/kit/company/SKILL.md",
+      "published_on": null,
+      "spec_version_observed": "0.1",
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
+      "commit_committed_at": "2026-10-17T00:08:46Z",
+      "evidence": "Added in commit 95fcbf22c599 (#35, 2026-10-17T00:08:46Z): Company implementation kit ('implement-personal-agent-protocol' skill), 18 JSON Schemas (kit/company/schemas/*.schema.json), 10 Company integration patterns (token-issuance, dpop-verification, sign-in, session-state, scopes, web-browsing, mcp-auth, conversations, error-handling, operations), and automated conformance validator (kit/company/validate/)."
     },
     {
       "id": "sierra-summit-2026",

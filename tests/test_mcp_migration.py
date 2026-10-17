@@ -75,7 +75,7 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(report["account_verification"], "not_performed")
         self.assertIn("not specified", report["cutoff_time"])
         self.assertEqual(report["policy_source"], "https://docs.stripe.com/mcp")
-        self.assertEqual(report["policy_checked_on"], "2026-10-16")
+        self.assertEqual(report["policy_checked_on"], "2026-10-17")
         code, output, _ = self.run_cli("2026-10-31")
         self.assertEqual(code, 1)
         self.assertEqual(json.loads(output)["calendar_days_until_deadline"], 30)

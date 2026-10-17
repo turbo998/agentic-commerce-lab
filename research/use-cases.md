@@ -10,7 +10,7 @@
 | B2B 发票与付款链接 | 将工单转成发票、核对收款人、汇总应收 | 创建发票和实际支付分别授权；金额、期限、收款方由确定性系统校验 | Visa Acceptance Toolkit pilot；验收重复工单不开第二张票，读权限不能创建或撤销发票 |
 | 开发 Agent 购买 API/数据 | 选择资源、估算成本、按请求或 session 付费 | 资源/单次/累计预算、网络与钱包隔离、收款地址、challenge freshness、付费后交付 | MPP、x402；402 不能仅以存在付款头放行；结算失败不得交付，已结算记账失败不得再次付款 |
 | 商户售后 Agent | 查询订单/物流、提出换货/改单/退款、解释争议 | 查询和修改/退款不同权限；未鉴权不暴露修改工具；单会话跨登出终身绑定单客户（`#49`）；待发货订单商品修改仅限一次；确认前核对 `summary` 与 `terms` 一致（`#51`） | Sierra Defense-in-Depth + $\tau^3$-bench 零售策略 + Poppy `operations` v1 两阶段 `revision` 确认；见 `lab/poppy_guard.py` |
-| 跨渠道个人代理接入企业客服（Poppy） | 通过 `/.well-known/poppy.json` 发现企业 API/MCP/对话入口，先只读咨询，必要时升级 OAuth 代客改单 | 重定向后主机名精确匹配 `organization.domain`（`#37`）；断言 `aud == auth.issuer`（`#50`）；吊销后禁止受托凭证自动重登（`#53`）；阻断跨企业内容注入（`#51`） | Poppy `v0.1` 草案 + `operations` v1；Payments 仍为 Open Topic，付款需桥接 UCP/ACP + SPT/VIC |
+| 跨渠道个人代理接入企业客服与网页交接（Poppy） | 通过 `/.well-known/poppy.json` 发现企业 API/MCP/对话入口，先只读咨询，必要时升级 OAuth 代客改单或通过 `browser_session_endpoint` 交接至用户浏览器 | 重定向后主机名精确匹配 `organization.domain`（`#37`）；断言 `aud == auth.issuer`（`#50`）；令牌端点拒收 `poppy-browser+jwt`、浏览器交接强制 URL 解析 `return_to` 主机名并用 `SameSite=Lax|None` Cookie（`#35`）；吊销后禁止受托凭证自动重登（`#53`）；阻断跨企业内容注入（`#51`） | Poppy `v0.1` 草案 + `operations` v1 + Company Implementation Kit（`#35`）；Payments 仍为 Open Topic，付款需桥接 UCP/ACP + SPT/VIC |
 | 企业语音客服来电核身与收款 | 实时语音接待、识别来电是否为个人 AI Agent、在通话中完成账单或订单尾款支付 | 声学检测（`fleming-1`）仅作阶梯核身信号而不直接拒付；采集卡号时切出 LLM 进入服务端 Level 1 PCI 流 | Sierra Tandem Voice + `fleming-1` + Sierra Payments / Stripe App |
 | 财务洞察与采购建议 | 经授权读取交易、余额，建议预算或采购 | Financial insights scope 不包含 spend scope；模型看脱敏数据，敏感原文不写 GitHub | Link Agent Wallet / permissioned accounts；拒绝读取未授权账户，支付仍须独立同意 |
 

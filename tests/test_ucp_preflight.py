@@ -10,7 +10,8 @@ from unittest.mock import patch
 from lab.ucp_preflight import (
     INSTRUMENTS, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
     HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
-    main, verify_ucp_discovery_response_status, verify_ucp_signing_gate,
+    main, verify_ucp_discovery_response_status, verify_ucp_permalink_redirect,
+    verify_ucp_signing_gate,
 )
 
 
@@ -191,6 +192,42 @@ class PreflightTests(unittest.TestCase):
                 dec = verify_ucp_discovery_response_status(redirect_code)
                 self.assertFalse(dec.accepted)
                 self.assertEqual(dec.reason, "redirect_forbidden")
+
+    def test_ucp_permalink_redirect_requires_303_no_store_and_no_referrer(self) -> None:
+        valid_headers = {
+            "Location": "https://merchant.example/checkout/sessions/cs_123",
+            "Cache-Control": "no-store",
+            "Referrer-Policy": "no-referrer",
+        }
+        ok = verify_ucp_permalink_redirect(303, valid_headers)
+        self.assertTrue(ok.accepted)
+        self.assertEqual(ok.reason, "ok_permalink_303_no_store_no_referrer")
+
+        # Missing Cache-Control and Referrer-Policy (the exact #913 doc bug in 5 examples)
+        incomplete = verify_ucp_permalink_redirect(
+            303, {"Location": "https://merchant.example/checkout/sessions/cs_123"}
+        )
+        self.assertFalse(incomplete.accepted)
+        self.assertEqual(incomplete.reason, "missing_mandated_permalink_headers")
+        self.assertEqual(incomplete.missing_headers, ("cache-control", "referrer-policy"))
+
+        # Wrong status code (e.g. 302 Found instead of 303 See Other)
+        wrong_status = verify_ucp_permalink_redirect(302, valid_headers)
+        self.assertFalse(wrong_status.accepted)
+        self.assertEqual(wrong_status.reason, "permalink_redirect_requires_303")
+
+        # Cacheable redirect or leaking Referrer-Policy rejected
+        cacheable = verify_ucp_permalink_redirect(
+            303, {**valid_headers, "Cache-Control": "private, max-age=60"}
+        )
+        self.assertFalse(cacheable.accepted)
+        self.assertEqual(cacheable.reason, "cache_control_must_include_no_store")
+
+        leaking_ref = verify_ucp_permalink_redirect(
+            303, {**valid_headers, "Referrer-Policy": "origin-when-cross-origin"}
+        )
+        self.assertFalse(leaking_ref.accepted)
+        self.assertEqual(leaking_ref.reason, "referrer_policy_must_be_no_referrer")
 
     def test_ucp_order_webhooks_deduplicate_retries_and_converge_out_of_order(self) -> None:
         headers = frozenset({"content-digest", "content-type", "webhook-id", "webhook-timestamp"})

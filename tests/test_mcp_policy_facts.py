@@ -30,6 +30,15 @@ NOTICE_NOV_2026 = (
     "## Tools\nSynthetic unrelated content.\n"
 ).encode()
 
+NOTICE_NOV_2026_UK = (
+    "> #### Update API key authentication by 30 November 2026\n>\n"
+    "> Migrate by 30 November 2026. Starting in December, Stripe MCP will stop accepting "
+    "full-access secret keys and restricted API keys without the Agent tag. Replace these "
+    "keys with newly created agent API keys or reconnect with OAuth. Requests using an "
+    "unsupported key receive a `401` response with an OAuth discovery challenge.\n\n"
+    "## Tools\nSynthetic unrelated content.\n"
+).encode()
+
 
 class PolicyFactsTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -113,11 +122,15 @@ class PolicyFactsTests(unittest.TestCase):
 
     def test_november_2026_notice_checks_following_month_consistency(self) -> None:
         facts = mcp_policy_facts(NOTICE_NOV_2026)
+        facts_uk = mcp_policy_facts(NOTICE_NOV_2026_UK)
         self.assertEqual(facts["deadline"], "2026-11-30")
+        self.assertEqual(facts, facts_uk)
         for invalid in [
             NOTICE_NOV_2026.replace(b"Starting in December", b"Starting in January"),
             NOTICE_NOV_2026.replace(b"November 30, 2026", b"November 15, 2026"),
             NOTICE_NOV_2026.replace(b"Migrate by November 30", b"Migrate by November 29"),
+            NOTICE_NOV_2026_UK.replace(b"Migrate by 30 November 2026", b"Migrate by November 30, 2026"),
+            NOTICE_NOV_2026_UK.replace(b"30 November 2026", b"31 November 2026"),
         ]:
             with self.subTest(invalid=invalid[:40]), self.assertRaises(ValueError):
                 mcp_policy_facts(invalid)

@@ -121,3 +121,14 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 1. **闭合“存在即必签（Closed Sign-if-Present）”门禁与完整状态收敛（UCP `#659`、`#795`）**：不能只校验 HTTP Body 摘要（`Content-Digest`）而放任 `Webhook-Id`、`Webhook-Timestamp`、`UCP-Agent`、`Idempotency-Key` 裸奔；一旦上述请求头存在，必须全部纳入 RFC 9421 `Signature-Input` 覆盖集。订单 Webhook 采用完整状态快照而非增量事件，按 `Webhook-Id` 幂等去重、禁止重试篡改 `Webhook-Timestamp`，并按事件时间戳偏序收敛。
 2. **跨企业断言防重放与单账户终身会话锚定（Poppy `#36`、`#37`、`#49`、`#50`、`#53`）**：面对开放生态中不可全信的企业端点，客户端与会话断言 `aud` 必须锁定为企业 `auth.issuer` 单一字符串（不得设为 `token_endpoint`）；发现文档域名仅按忽略大小写匹配重定向后主机名；Session 跨登出永久绑定同一用户账户，且在登录态被吊销后严禁后台凭受托存储凭证自动重登。
 3. **不可信企业内容隔离与 `summary`-vs-`terms` 机器核对（Poppy `#51` Section 8.1）**：企业返回的消息、工具描述/结果与操作 `summary` 均视为外部不可信数据；个人 Agent 必须阻断由企业 A 内容触发的向企业 B 的跨企调用，并在请求用户批准前机器核对企业 `summary` 与结构化 `terms` 一致。相应确定性检查已增量合入 `lab/poppy_guard.py`、`lab/ucp_preflight.py` 与 `lab/mcp_migration.py`。
+
+## 2026-10-17 增量：传统企业架构改造对照、跨上下文断言防混淆与三类 `3xx` 重定向安全契约
+
+[今日研究](daily/2026-10-17.md)结合 Poppy `#35`（`95fcbf22c599`）官方发布的 **Before-vs-After 企业架构改造对照图** 与 UCP `#913`（`3ab41043b793`）提炼出三项面向生产落地的架构演进原则：
+
+1. **跨上下文 JWT 类型隔离与 Sidecar 令牌服务拓扑（Poppy `#35` `session.browser-assertion-rejected` & `patterns/token-issuance.md`）**：同一 Session 私钥既签发令牌端点的 `poppy-session+jwt`（`aud == auth.issuer`），又签发浏览器交接端点的 `poppy-browser+jwt`（`aud == browser_session_endpoint`）。令牌端点必须强校验 `typ == "poppy-session+jwt"` 并以 `400 invalid_grant` 拒收浏览器断言；对于不支持动态 URL `client_id` 的既有企业 IdP，优先采用 Sidecar Poppy Token Service + RFC 8693 Token Exchange 模式，避免推翻现有认证中心。
+2. **三类 HTTP `3xx` 重定向的差异化安全契约（UCP `#933` vs UCP `#913` vs Poppy `#35` Section 5）**：
+   - **协议发现平面（UCP `#933`）**：严禁任何 `3xx` 重定向（防信任根劫持与 SSRF），仅允许条件 `304 Not Modified`。
+   - **永久链接入口平面（UCP `#913`）**：强制 `303 See Other`，且必须同时携带 `Location`、`Cache-Control: no-store` 与 `Referrer-Policy: no-referrer`，防止 Permalink URL 中的买家 PII（邮箱、电话）通过缓存或 `Referer` 外泄。
+   - **Agent 到浏览器有状态交接平面（Poppy `#35` Section 5）**：强制 `303 See Other`，对 `return_to` 执行 URL 解析级主机名匹配（禁字符串前缀匹配），并设置 `Secure; HttpOnly; SameSite=Lax|None` Cookie（严禁 `SameSite=Strict`，避免跨站重定向首跳丢弃 Cookie），同时将浏览器会话权限限制在该 Poppy Session 的实时 Scopes 内。
+3. **Scope 正交性与人工坐席接管（Handoff）权限延续（Poppy `#35` `patterns/scopes.md`）**：`poppy:write` 不隐含 `poppy:read`；且当会话转接给真人客服坐席（Handoff）后，坐席代客执行的操作仍受同一 Session Scopes 约束。上述检查已合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。

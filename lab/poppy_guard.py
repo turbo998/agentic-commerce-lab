@@ -17,6 +17,10 @@ from typing import Any
 from urllib.parse import urlsplit
 
 
+FORBIDDEN_DPOP_ALGS = frozenset({"none", "HS256", "HS384", "HS512"})
+RESERVED_POPPY_SCOPES = frozenset({"poppy:read", "poppy:write"})
+
+
 def _normalize_domain(host: str) -> str:
     """Normalize domain per Poppy v0.1 #37 (efc12168): compare ignoring case, and nothing else."""
     return host.lower().strip()
@@ -184,6 +188,177 @@ def verify_poppy_assertion_audience(
     return TokenCheckResult(True, None, 200)
 
 
+@dataclass(frozen=True)
+class SessionAssertionClaims:
+    """Decoded claims from a Poppy Session assertion (`poppy-session+jwt`) or Browser assertion (`poppy-browser+jwt`)."""
+
+    typ: str
+    iss: str
+    sub: str
+    aud: Any
+    iat: int
+    exp: int
+    jti: str
+    session_id: str | None = None
+    return_to: str | None = None
+
+
+@dataclass(frozen=True)
+class BrowserSessionResult:
+    """Result of exchanging a Browser assertion at `web.browser_session_endpoint` (#35, Section 5)."""
+
+    allowed: bool
+    http_status: int
+    error: str | None
+    redirect_location: str | None = None
+    cookie_attributes: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class MCPProtectedResourceResult:
+    """Result of verifying Poppy MCP server 401 challenge and RFC 9728 Protected Resource Metadata (#35)."""
+
+    allowed: bool
+    error: str | None
+    resource: str | None = None
+
+
+def verify_poppy_session_assertion(
+    assertion: SessionAssertionClaims,
+    *,
+    auth_issuer: str,
+    now: int,
+    seen_jti: set[str],
+    active_sessions: dict[str, tuple[str, str]] | None = None,
+) -> TokenCheckResult:
+    """Verify a Session assertion at the Token Endpoint (`kit/company/validate/checks/session.ts`, #35).
+
+    Enforces:
+    - `session.browser-assertion-rejected`: `typ: "poppy-browser+jwt"` presented at the token endpoint
+      MUST be rejected with HTTP 400 `invalid_grant`.
+    - `session.assertion-replay`: replayed `jti` or `len(jti) < 22` MUST be rejected with 400 `invalid_grant`.
+    - `session.unknown-session`: unknown `session_id` on renewal MUST return 400 `invalid_session`.
+    """
+    if assertion.typ != "poppy-session+jwt":
+        return TokenCheckResult(False, "invalid_grant", 400)
+    aud_check = verify_poppy_assertion_audience(assertion.aud, auth_issuer=auth_issuer)
+    if not aud_check.allowed:
+        return TokenCheckResult(False, "invalid_grant", 400)
+    if (
+        not isinstance(assertion.jti, str)
+        or len(assertion.jti) < 22
+        or assertion.exp <= assertion.iat
+        or not (assertion.iat <= now < assertion.exp)
+    ):
+        return TokenCheckResult(False, "invalid_grant", 400)
+    if assertion.jti in seen_jti:
+        return TokenCheckResult(False, "invalid_grant", 400)
+    seen_jti.add(assertion.jti)
+
+    if assertion.session_id is not None and active_sessions is not None:
+        owner = active_sessions.get(assertion.session_id)
+        if owner is None:
+            return TokenCheckResult(False, "invalid_session", 400)
+        if owner != (assertion.iss, assertion.sub):
+            return TokenCheckResult(False, "invalid_grant", 400)
+
+    return TokenCheckResult(True, None, 200)
+
+
+def verify_poppy_browser_session_exchange(
+    assertion: SessionAssertionClaims,
+    *,
+    browser_session_endpoint: str,
+    organization_domain: str,
+    now: int,
+    seen_jti: set[str],
+    active_sessions: dict[str, SessionToken],
+    cookie_same_site: str = "Lax",
+) -> BrowserSessionResult:
+    """Verify a Browser assertion at `web.browser_session_endpoint` (`patterns/web-browsing.md`, #35).
+
+    Enforces `typ == "poppy-browser+jwt"`, `aud == browser_session_endpoint`, `0 < exp - iat <= 60`,
+    `len(jti) >= 22` with replay cache, active Session owned by `(iss, sub)`, URL-parsed `return_to`
+    hostname matching `organization.domain` (never string-prefix matched), and `303 See Other` with
+    `Secure; HttpOnly; SameSite=Lax|None` (never `SameSite=Strict`).
+    """
+    if assertion.typ != "poppy-browser+jwt":
+        return BrowserSessionResult(False, 400, "invalid_browser_assertion_typ")
+    if (
+        type(assertion.aud) is not str
+        or not browser_session_endpoint.strip()
+        or _canonical_htu(assertion.aud) != _canonical_htu(browser_session_endpoint)
+    ):
+        return BrowserSessionResult(False, 400, "invalid_browser_assertion_aud")
+    lifetime = assertion.exp - assertion.iat
+    if lifetime <= 0 or lifetime > 60 or not (assertion.iat <= now < assertion.exp):
+        return BrowserSessionResult(False, 400, "invalid_browser_assertion_lifetime")
+    if not isinstance(assertion.jti, str) or len(assertion.jti) < 22 or assertion.jti in seen_jti:
+        return BrowserSessionResult(False, 400, "browser_assertion_replayed_or_invalid_jti")
+    seen_jti.add(assertion.jti)
+
+    if not assertion.session_id or assertion.session_id not in active_sessions:
+        return BrowserSessionResult(False, 400, "invalid_session")
+    session = active_sessions[assertion.session_id]
+    if now >= session.expires_at or (session.client_id, session.user_id) != (assertion.iss, assertion.sub):
+        return BrowserSessionResult(False, 400, "session_owner_or_expiry_mismatch")
+
+    if not assertion.return_to or not isinstance(assertion.return_to, str):
+        return BrowserSessionResult(False, 400, "missing_return_to")
+    parsed_ret = urlsplit(assertion.return_to)
+    if (
+        parsed_ret.scheme.lower() != "https"
+        or not parsed_ret.hostname
+        or _normalize_domain(parsed_ret.hostname) != _normalize_domain(organization_domain)
+    ):
+        return BrowserSessionResult(False, 400, "return_to_domain_mismatch")
+
+    if cookie_same_site not in {"Lax", "None"}:
+        return BrowserSessionResult(False, 400, "samesite_strict_breaks_cross_site_redirect")
+
+    return BrowserSessionResult(
+        True,
+        303,
+        None,
+        redirect_location=assertion.return_to,
+        cookie_attributes={
+            "Secure": True,
+            "HttpOnly": True,
+            "SameSite": cookie_same_site,
+            "session_id": session.session_id,
+            "signed_in": session.signed_in,
+            "account_id": session.account_id,
+            "scopes": sorted(session.scopes),
+        },
+    )
+
+
+def verify_poppy_mcp_protected_resource(
+    *,
+    mcp_server_url: str,
+    auth_issuer: str,
+    unauthenticated_http_status: int,
+    www_authenticate_header: str,
+    protected_resource_metadata: dict[str, Any],
+) -> MCPProtectedResourceResult:
+    """Verify Poppy MCP server 401 discovery challenge and RFC 9728 Protected Resource Metadata (#35)."""
+    if unauthenticated_http_status != 401:
+        return MCPProtectedResourceResult(False, "mcp_unauthenticated_must_return_401")
+    header = (www_authenticate_header or "").strip()
+    if not header.lower().startswith("bearer") or "resource_metadata=" not in header:
+        return MCPProtectedResourceResult(False, "missing_resource_metadata_challenge")
+
+    resource = str(protected_resource_metadata.get("resource", "")).strip()
+    if not resource or _canonical_htu(resource) != _canonical_htu(mcp_server_url):
+        return MCPProtectedResourceResult(False, "protected_resource_mismatch")
+
+    auth_servers = protected_resource_metadata.get("authorization_servers")
+    if not isinstance(auth_servers, list) or auth_issuer.strip() not in auth_servers:
+        return MCPProtectedResourceResult(False, "auth_issuer_missing_from_authorization_servers")
+
+    return MCPProtectedResourceResult(True, None, resource=resource)
+
+
 def verify_poppy_request_token(
     *,
     token: SessionToken,
@@ -204,6 +379,8 @@ def verify_poppy_request_token(
         return TokenCheckResult(False, "invalid_token", 401)
 
     # Check sign-in method scope ceiling declared in poppy.json `auth`
+    if any(s.startswith("poppy:") and s not in RESERVED_POPPY_SCOPES for s in token.scopes):
+        return TokenCheckResult(False, "invalid_scope", 403)
     if token.signed_in:
         if not token.sign_in_method or token.sign_in_method not in {"direct", "device", "mediated"}:
             return TokenCheckResult(False, "invalid_grant", 401)
@@ -229,7 +406,7 @@ def verify_poppy_request_token(
             return TokenCheckResult(False, "invalid_dpop_proof", dpop_err_status)
         if (
             dpop_proof.typ.lower() != "dpop+jwt"
-            or dpop_proof.alg == "none"
+            or dpop_proof.alg in FORBIDDEN_DPOP_ALGS
             or dpop_proof.alg not in supported_algs
             or dpop_proof.has_private_key_material
         ):

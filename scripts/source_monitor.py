@@ -114,6 +114,16 @@ def mcp_policy_facts(body: bytes) -> dict[str, object]:
     }
 
 
+def _parse_reviewed_date(raw: str) -> date:
+    """Parse human-reviewed US ('%B %d, %Y') or UK ('%d %B %Y') calendar dates."""
+    for fmt in ("%B %d, %Y", "%d %B %Y"):
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError("MCP auth notice has an invalid calendar date; review required.")
+
+
 def _parse_reviewed_mcp_notice(heading_raw: str, notice: str) -> date:
     """Parse only human-reviewed Stripe MCP auth notice grammars and verify date consistency."""
     october_match = re.fullmatch(
@@ -134,20 +144,22 @@ def _parse_reviewed_mcp_notice(heading_raw: str, notice: str) -> date:
         return deadline
 
     november_match = re.fullmatch(
-        r"Migrate by ([A-Z][a-z]+ \d{1,2}, \d{4})\. Starting in ([A-Z][a-z]+), Stripe MCP will stop accepting "
+        r"Migrate by (\d{1,2} [A-Z][a-z]+ \d{4}|[A-Z][a-z]+ \d{1,2}, \d{4})\. Starting in ([A-Z][a-z]+), Stripe MCP will stop accepting "
         r"full-access secret keys and restricted API keys without the Agent tag\. "
         r"Replace these keys with newly created agent API keys or reconnect with OAuth\. "
         r"Requests using an unsupported key receive a `401` response with an OAuth discovery challenge\.",
         notice,
     )
     if november_match is not None:
-        try:
-            deadline = datetime.strptime(november_match[1], "%B %d, %Y").date()
-            heading_date = datetime.strptime(heading_raw, "%B %d, %Y").date()
-        except ValueError as error:
-            raise ValueError("MCP auth notice has an invalid calendar date; review required.") from error
+        deadline = _parse_reviewed_date(november_match[1])
+        heading_date = _parse_reviewed_date(heading_raw)
         next_day = deadline + timedelta(days=1)
-        if deadline != heading_date or next_day.day != 1 or next_day.strftime("%B") != november_match[2]:
+        if (
+            november_match[1] != heading_raw
+            or deadline != heading_date
+            or next_day.day != 1
+            or next_day.strftime("%B") != november_match[2]
+        ):
             raise ValueError("MCP auth notice dates conflict; review required.")
         return deadline
 

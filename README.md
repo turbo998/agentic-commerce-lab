@@ -21,6 +21,7 @@
 
 | 入口 | 内容 |
 |---|---|
+| [2026-10-17 每日研究](research/daily/2026-10-17.md) | Poppy `#35` 企业实现套件/18 份 Schema/改造前后架构对照、UCP `#913` Permalink `303` 安全头、Stripe MCP 英式日期核验 |
 | [2026-10-16 每日研究](research/daily/2026-10-16.md) | Stripe MCP 迁移延期至 `2026-11-30`、Poppy `v0.1` 17 项安全/DPoP/会话提交、UCP Webhook 签名门禁（`#659`） |
 | [2026-10-14 每日研究](research/daily/2026-10-14.md) | Sierra 与 Poppy `v0.1` 草案/当日建仓核验、TAP 迁移、UCP 扩展修复、MCP 告示监测及 17 日窗口 |
 | [2026-10-13 每日研究](research/daily/2026-10-13.md) | 官方 skills 增量、可执行能力边界、UCP 离线预检及 MCP 18 日迁移窗口 |
@@ -32,8 +33,8 @@
 | [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
 | [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
 | [离线 MCP 迁移盘点](lab/mcp_migration.py) | Stripe MCP `2026-11-30`（原 `2026-10-31`）auth 类别期限检查；只接受无密钥元数据，不验证账户 |
-| [离线 UCP handler 与签名预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件、RFC 9421 闭合必签门禁（`#659`/`#795`）与订单 Webhook 收敛 |
-| [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/DPoP/断言 `aud`/跨登出单账户绑定、`operations` v1 条款对齐与 $\tau^3$-bench 零售改单护栏 |
+| [离线 UCP handler 与签名预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件、RFC 9421 闭合必签门禁（`#659`/`#795`）、Permalink `303` 安全头（`#913`）与订单 Webhook 收敛 |
+| [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/DPoP/跨上下文断言防混淆与浏览器交接（`#35`）、`operations` v1 条款对齐与 $\tau^3$-bench 零售改单护栏 |
 
 ## 本地运行
 
@@ -75,7 +76,7 @@ python -m lab.ucp_preflight --instrument apple_pay
 python -m lab.poppy_guard
 ```
 
-演练 Personal Agent Protocol（"Poppy" `v0.1` 草案）的 `/.well-known/poppy.json` 发现与 OAuth `poppy_domains` 双向防伪校验、OpenAPI/Operations `DPoP` vs MCP 单一 `resource` 绑定 `Bearer` 令牌验证，以及结合 Sierra Defense-in-Depth 与 $\tau^2/\tau^3$-bench 零售策略的两阶段 `operations` v1 订单修改确认：拒绝用对话消息（含 `sender: "human"`）确认操作、对最新不可变 `revision` 幂等确认执行，并拦截同一待发货订单的二次商品修改。此模块仅使用合成内存数据，不发起真实网络请求或支付调用。
+演练 Personal Agent Protocol（"Poppy" `v0.1` 草案）的 `/.well-known/poppy.json` 发现与 OAuth `poppy_domains` 双向防伪校验、令牌端点 `poppy-session+jwt` 与浏览器会话端点 `poppy-browser+jwt` 跨上下文防混淆校验（`#35`）、OpenAPI/Operations `DPoP`（封禁 `HS*` 对称算法）vs MCP 单一 `resource` 绑定 `Bearer` 与 RFC 9728 元数据验证，以及结合 Sierra Defense-in-Depth 与 $\tau^2/\tau^3$-bench 零售策略的两阶段 `operations` v1 订单修改确认：拒绝用对话消息（含 `sender: "human"`）确认操作、核对企业 `summary` 与结构化 `terms` 一致（`#51`）、对最新不可变 `revision` 幂等确认执行，并拦截同一待发货订单的二次商品修改。此模块仅使用合成内存数据，不发起真实网络请求或支付调用。
 
 ## 每日研究
 

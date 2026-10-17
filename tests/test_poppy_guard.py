@@ -8,14 +8,18 @@ from lab.poppy_guard import (
     PaymentInstrument,
     RetailOrder,
     RetailOrderMutationGuard,
+    SessionAssertionClaims,
     SessionToken,
     StandingPermission,
     run_demo,
     sha256_token,
     verify_cross_company_content_boundary,
     verify_poppy_assertion_audience,
+    verify_poppy_browser_session_exchange,
     verify_poppy_discovery,
+    verify_poppy_mcp_protected_resource,
     verify_poppy_request_token,
+    verify_poppy_session_assertion,
 )
 
 
@@ -279,6 +283,184 @@ class PoppyDiscoveryAndTokenTests(unittest.TestCase):
         )
         self.assertFalse(res.allowed)
         self.assertEqual(res.error, "invalid_scope")
+
+    def test_company_kit_session_vs_browser_assertion_and_mcp_metadata(self) -> None:
+        # Per #35 (95fcbf22c599) checks/session.ts: browser assertion rejected at token endpoint
+        seen_jti: set[str] = set()
+        browser_as_session = SessionAssertionClaims(
+            typ="poppy-browser+jwt",
+            iss="https://agent.example/agent.json",
+            sub="usr_1",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1060,
+            jti="jti_browser_123456789012345",
+            session_id="ses_1",
+            return_to="https://manzanitasupply.example/orders/ord_1",
+        )
+        rejected = verify_poppy_session_assertion(
+            browser_as_session,
+            auth_issuer="https://auth.manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+        )
+        self.assertEqual((rejected.allowed, rejected.http_status, rejected.error), (False, 400, "invalid_grant"))
+
+        # Valid session assertion succeeds once, replay fails with 400 invalid_grant, unknown session_id -> invalid_session
+        valid_session_assertion = SessionAssertionClaims(
+            typ="poppy-session+jwt",
+            iss="https://agent.example/agent.json",
+            sub="usr_1",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1060,
+            jti="jti_session_123456789012345",
+            session_id="ses_1",
+        )
+        active_owners = {"ses_1": ("https://agent.example/agent.json", "usr_1")}
+        ok_sess = verify_poppy_session_assertion(
+            valid_session_assertion,
+            auth_issuer="https://auth.manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+            active_sessions=active_owners,
+        )
+        self.assertTrue(ok_sess.allowed)
+        replayed_sess = verify_poppy_session_assertion(
+            valid_session_assertion,
+            auth_issuer="https://auth.manzanitasupply.example",
+            now=1011,
+            seen_jti=seen_jti,
+            active_sessions=active_owners,
+        )
+        self.assertEqual((replayed_sess.allowed, replayed_sess.error), (False, "invalid_grant"))
+
+        unknown_sess = verify_poppy_session_assertion(
+            SessionAssertionClaims(
+                typ="poppy-session+jwt",
+                iss="https://agent.example/agent.json",
+                sub="usr_1",
+                aud="https://auth.manzanitasupply.example",
+                iat=1000,
+                exp=1060,
+                jti="jti_unknown_123456789012345",
+                session_id="ses_missing",
+            ),
+            auth_issuer="https://auth.manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+            active_sessions=active_owners,
+        )
+        self.assertEqual((unknown_sess.allowed, unknown_sess.error), (False, "invalid_session"))
+
+        # Browser session endpoint (#35 patterns/web-browsing.md & browser-assertion.schema.json)
+        active_tokens = {
+            "ses_1": SessionToken(
+                access_token="tok_1",
+                token_type="DPoP",
+                session_id="ses_1",
+                client_id="https://agent.example/agent.json",
+                user_id="usr_1",
+                signed_in=True,
+                account_id="cust_1",
+                scopes=frozenset({"poppy:read"}),
+                sign_in_method="mediated",
+                jwk_thumbprint="jkt_1",
+                expires_at=2000,
+            )
+        }
+        browser_endpoint = "https://manzanitasupply.example/poppy/browser-session"
+        valid_browser = SessionAssertionClaims(
+            typ="poppy-browser+jwt",
+            iss="https://agent.example/agent.json",
+            sub="usr_1",
+            aud=browser_endpoint,
+            iat=1000,
+            exp=1060,
+            jti="jti_brows_ok_12345678901234",
+            session_id="ses_1",
+            return_to="https://manzanitasupply.example/orders/ord_1",
+        )
+        b_ok = verify_poppy_browser_session_exchange(
+            valid_browser,
+            browser_session_endpoint=browser_endpoint,
+            organization_domain="manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+            active_sessions=active_tokens,
+        )
+        self.assertTrue(b_ok.allowed)
+        self.assertEqual(b_ok.http_status, 303)
+        self.assertEqual(b_ok.cookie_attributes["SameSite"], "Lax")
+        self.assertEqual(b_ok.cookie_attributes["scopes"], ["poppy:read"])
+
+        # Prefix-spoofed return_to domain & SameSite=Strict are rejected
+        evil_return = verify_poppy_browser_session_exchange(
+            SessionAssertionClaims(
+                **{
+                    **valid_browser.__dict__,
+                    "jti": "jti_brows_ev_12345678901234",
+                    "return_to": "https://manzanitasupply.example.evil.test/orders",
+                }
+            ),
+            browser_session_endpoint=browser_endpoint,
+            organization_domain="manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+            active_sessions=active_tokens,
+        )
+        self.assertEqual((evil_return.allowed, evil_return.error), (False, "return_to_domain_mismatch"))
+
+        strict_cookie = verify_poppy_browser_session_exchange(
+            SessionAssertionClaims(
+                **{**valid_browser.__dict__, "jti": "jti_brows_st_12345678901234"}
+            ),
+            browser_session_endpoint=browser_endpoint,
+            organization_domain="manzanitasupply.example",
+            now=1010,
+            seen_jti=seen_jti,
+            active_sessions=active_tokens,
+            cookie_same_site="Strict",
+        )
+        self.assertEqual(
+            (strict_cookie.allowed, strict_cookie.error),
+            (False, "samesite_strict_breaks_cross_site_redirect"),
+        )
+
+        # Symmetric HS256 DPoP alg is forbidden even if caller lists it in supported algs (#35 dpop-proof.schema.json)
+        hs_proof = DPoPProof(
+            jti="jti_hs256_1234567890123456",
+            htm="GET",
+            htu="https://api.manzanitasupply.example/orders",
+            iat=1000,
+            ath=sha256_token("tok_1"),
+            jwk_thumbprint="jkt_1",
+            alg="HS256",
+        )
+        hs_res = verify_poppy_request_token(
+            token=active_tokens["ses_1"],
+            channel="openapi",
+            http_method="GET",
+            target_url="https://api.manzanitasupply.example/orders",
+            now=1000,
+            poppy_auth_config=self.poppy_doc["auth"],
+            dpop_proof=hs_proof,
+            dpop_signing_algs_supported={"ES256", "HS256"},
+        )
+        self.assertEqual((hs_res.allowed, hs_res.error), (False, "invalid_dpop_proof"))
+
+        # MCP Protected Resource Metadata (RFC 9728, #35 checks/mcp.ts)
+        mcp_meta_ok = verify_poppy_mcp_protected_resource(
+            mcp_server_url="https://mcp.manzanitasupply.example/mcp",
+            auth_issuer="https://auth.manzanitasupply.example",
+            unauthenticated_http_status=401,
+            www_authenticate_header='Bearer resource_metadata="https://mcp.manzanitasupply.example/.well-known/oauth-protected-resource/mcp"',
+            protected_resource_metadata={
+                "resource": "https://mcp.manzanitasupply.example/mcp",
+                "authorization_servers": ["https://auth.manzanitasupply.example"],
+            },
+        )
+        self.assertTrue(mcp_meta_ok.allowed)
 
 
 class RetailOrderMutationGuardTests(unittest.TestCase):

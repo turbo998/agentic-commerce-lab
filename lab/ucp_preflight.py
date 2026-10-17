@@ -7,6 +7,7 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 POLICY_CHECKED_ON = date(2026, 10, 13)
 SOURCE_URL = "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler"
@@ -191,6 +192,59 @@ def verify_ucp_discovery_response_status(
     if http_status in FORBIDDEN_REDIRECT_STATUSES or 300 <= http_status < 400:
         return DiscoveryStatusDecision(False, "redirect_forbidden")
     return DiscoveryStatusDecision(False, f"unexpected_http_status_{http_status}")
+
+
+@dataclass(frozen=True)
+class PermalinkRedirectDecision:
+    """Offline UCP permalink 303 redirect header check (#913, 3ab41043b793)."""
+
+    accepted: bool
+    reason: str
+    missing_headers: tuple[str, ...] = ()
+
+
+def verify_ucp_permalink_redirect(
+    http_status: int,
+    headers: dict[str, str],
+) -> PermalinkRedirectDecision:
+    """Enforce UCP #913 (3ab41043b793): permalink 303 redirect MUST carry Location,
+    Cache-Control: no-store, and Referrer-Policy: no-referrer to prevent buyer PII leakage.
+    """
+    if http_status != 303:
+        return PermalinkRedirectDecision(False, "permalink_redirect_requires_303")
+
+    normalized = {
+        str(k).lower().strip(): str(v).strip()
+        for k, v in (headers or {}).items()
+        if isinstance(k, str) and isinstance(v, str) and v.strip()
+    }
+    required = ("location", "cache-control", "referrer-policy")
+    missing = tuple(h for h in required if h not in normalized)
+    if missing:
+        return PermalinkRedirectDecision(False, "missing_mandated_permalink_headers", missing)
+
+    loc = normalized["location"]
+    parsed_loc = urlsplit(loc)
+    if parsed_loc.scheme.lower() != "https" or not parsed_loc.hostname or any(c.isspace() for c in loc):
+        return PermalinkRedirectDecision(False, "invalid_location_url")
+
+    cc_directives = {
+        token.strip().lower()
+        for token in normalized["cache-control"].split(",")
+        if token.strip()
+    }
+    if "no-store" not in cc_directives:
+        return PermalinkRedirectDecision(False, "cache_control_must_include_no_store")
+
+    ref_tokens = [
+        token.strip().lower()
+        for token in normalized["referrer-policy"].split(",")
+        if token.strip()
+    ]
+    if not ref_tokens or ref_tokens[-1] != "no-referrer":
+        return PermalinkRedirectDecision(False, "referrer_policy_must_be_no_referrer")
+
+    return PermalinkRedirectDecision(True, "ok_permalink_303_no_store_no_referrer", ())
 
 
 @dataclass(frozen=True)
