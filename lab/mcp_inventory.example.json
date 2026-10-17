@@ -1,0 +1,24 @@
+{
+  "clients": [
+    {
+      "client_id": "synthetic-legacy-worker",
+      "environment": "live",
+      "auth_method": "full_access_secret"
+    },
+    {
+      "client_id": "synthetic-untagged-worker",
+      "environment": "sandbox",
+      "auth_method": "restricted_without_agent_tag"
+    },
+    {
+      "client_id": "synthetic-interactive-client",
+      "environment": "sandbox",
+      "auth_method": "oauth"
+    },
+    {
+      "client_id": "synthetic-autonomous-client",
+      "environment": "live",
+      "auth_method": "agent_key"
+    }
+  ]
+}

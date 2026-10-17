@@ -11,3 +11,11 @@
 **/*.p12
 **/*.tfstate
 **/*.tfstate.*
+
+__pycache__/
+*.py[cod]
+.venv/
+.lab/
+*.sqlite3
+*.sqlite3-*
+
