@@ -2,6 +2,7 @@
 
 import argparse
 import base64
+import copy
 import json
 import posixpath
 import re
@@ -11,7 +12,7 @@ from datetime import date, datetime
 from typing import Any, Literal
 from urllib.parse import parse_qsl, quote, unquote, urlsplit
 
-POLICY_CHECKED_ON = date(2026, 10, 17)
+POLICY_CHECKED_ON = date(2026, 10, 18)
 SOURCE_URL = "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler"
 REVIEWED_UCP_VERSION = "2026-04-08"
 REVIEWED_HANDLER_VERSION = "2026-06-25"
@@ -680,6 +681,389 @@ def evaluate_ucp_mandate_admission(
             "mandate_exp": mandate_exp,
             "result": "admitted",
         },
+    )
+
+
+UCP_CONSENT_SOURCES = frozenset({"business", "platform"})
+
+
+@dataclass(frozen=True)
+class ConsentValidationResult:
+    """Offline UCP `dev.ucp.shopping.buyer_consent` state & replacement-carve-out decision."""
+
+    accepted: bool
+    reason: str
+    effective_consent: dict[str, dict[str, Any]]
+    missing_dependency_codes: tuple[str, ...] = ()
+
+
+def validate_and_merge_ucp_buyer_consent(
+    *,
+    advertised_consent: dict[str, dict[str, Any]],
+    prior_consent: dict[str, dict[str, Any]] | None,
+    submitted_consent: dict[str, dict[str, Any]] | None,
+    operation: Literal["create", "update", "complete"],
+    buyer_stated_keys: set[str] | frozenset[str] = frozenset(),
+    buyer_info: dict[str, Any] | None = None,
+    required_buyer_fields_by_key: dict[str, str] | None = None,
+) -> ConsentValidationResult:
+    """Validate UCP `dev.ucp.shopping.buyer_consent` normative rules & full-replacement carve-out (#660).
+
+    Enforces:
+    1. Full-replacement carve-out (#660): omitting `buyer.consent` on `update` or `complete` MUST NOT
+       clear previously captured consent (`prior_consent` is preserved rather than reset to defaults).
+    2. Confirm completeness (Normative Rule 2): when `submitted_consent` is provided, every advertised
+       purpose and segment key MUST be included with both `granted` (bool) and `source` (`business` or `platform`);
+       omitting an advertised key inside a submitted `consent` map is rejected.
+    3. Advertised set is authoritative (Normative Rule 3): unadvertised purposes/segments are ignored.
+    4. Source attribution (Normative Rule 5): a platform MAY change `source` from `"business"` to
+       `"platform"` only when the key is in `buyer_stated_keys`; otherwise it MUST echo the prior/advertised
+       `granted` and `source` unchanged.
+    5. Data dependencies: if a confirmed `granted: True` choice requires a buyer field (e.g.,
+       `dev.ucp.consent.marketing.sms` requires `phone_number`) that is missing, `create`/`update`
+       records a `missing_consent_data` warning code while `complete` is blocked from completing.
+    """
+    baseline = copy.deepcopy(prior_consent) if prior_consent is not None else copy.deepcopy(advertised_consent)
+    deps = required_buyer_fields_by_key or {
+        "dev.ucp.consent.marketing.sms": "phone_number",
+    }
+    buyer_data = buyer_info or {}
+
+    if submitted_consent is None:
+        effective = baseline
+    else:
+        if not isinstance(submitted_consent, dict):
+            return ConsentValidationResult(False, "invalid_consent_map", baseline)
+        effective = {}
+        for purpose_key, adv_purpose in advertised_consent.items():
+            if purpose_key not in submitted_consent:
+                return ConsentValidationResult(
+                    False, f"missing_advertised_purpose:{purpose_key}", baseline
+                )
+            sub_purpose = submitted_consent[purpose_key]
+            if (
+                not isinstance(sub_purpose, dict)
+                or type(sub_purpose.get("granted")) is not bool
+                or sub_purpose.get("source") not in UCP_CONSENT_SOURCES
+            ):
+                return ConsentValidationResult(
+                    False, f"invalid_purpose_entry:{purpose_key}", baseline
+                )
+            base_purpose = baseline.get(purpose_key, adv_purpose)
+            if purpose_key not in buyer_stated_keys:
+                if (
+                    sub_purpose["granted"] != base_purpose.get("granted")
+                    or sub_purpose["source"] != base_purpose.get("source")
+                ):
+                    return ConsentValidationResult(
+                        False, f"unauthored_consent_mutation:{purpose_key}", baseline
+                    )
+            else:
+                if sub_purpose["source"] != "platform":
+                    return ConsentValidationResult(
+                        False, f"buyer_preference_requires_platform_source:{purpose_key}", baseline
+                    )
+
+            merged_purpose: dict[str, Any] = {
+                "granted": sub_purpose["granted"],
+                "source": sub_purpose["source"],
+            }
+            if "description" in adv_purpose:
+                merged_purpose["description"] = adv_purpose["description"]
+
+            adv_segments = adv_purpose.get("segments")
+            if isinstance(adv_segments, dict) and adv_segments:
+                sub_segments = sub_purpose.get("segments")
+                if not isinstance(sub_segments, dict):
+                    return ConsentValidationResult(
+                        False, f"missing_advertised_segments:{purpose_key}", baseline
+                    )
+                base_segments = base_purpose.get("segments") or adv_segments
+                merged_segments: dict[str, dict[str, Any]] = {}
+                for seg_key, adv_seg in adv_segments.items():
+                    if seg_key not in sub_segments:
+                        return ConsentValidationResult(
+                            False, f"missing_advertised_segment:{seg_key}", baseline
+                        )
+                    sub_seg = sub_segments[seg_key]
+                    if (
+                        not isinstance(sub_seg, dict)
+                        or type(sub_seg.get("granted")) is not bool
+                        or sub_seg.get("source") not in UCP_CONSENT_SOURCES
+                    ):
+                        return ConsentValidationResult(
+                            False, f"invalid_segment_entry:{seg_key}", baseline
+                        )
+                    base_seg = base_segments.get(seg_key, adv_seg)
+                    full_seg_id = f"{purpose_key}.{seg_key}" if not seg_key.startswith(purpose_key) else seg_key
+                    stated = seg_key in buyer_stated_keys or full_seg_id in buyer_stated_keys
+                    if not stated:
+                        if (
+                            sub_seg["granted"] != base_seg.get("granted")
+                            or sub_seg["source"] != base_seg.get("source")
+                        ):
+                            return ConsentValidationResult(
+                                False, f"unauthored_segment_mutation:{seg_key}", baseline
+                            )
+                    else:
+                        if sub_seg["source"] != "platform":
+                            return ConsentValidationResult(
+                                False, f"buyer_preference_requires_platform_source:{seg_key}", baseline
+                            )
+                    merged_seg: dict[str, Any] = {
+                        "granted": sub_seg["granted"],
+                        "source": sub_seg["source"],
+                    }
+                    if "description" in adv_seg:
+                        merged_seg["description"] = adv_seg["description"]
+                    merged_segments[seg_key] = merged_seg
+                merged_purpose["segments"] = merged_segments
+            effective[purpose_key] = merged_purpose
+
+    missing_deps: list[str] = []
+    for purpose_key, p_val in effective.items():
+        if p_val.get("granted") is True and purpose_key in deps:
+            field_name = deps[purpose_key]
+            if not str(buyer_data.get(field_name, "")).strip():
+                missing_deps.append(f"{purpose_key}->$.buyer.{field_name}")
+        for seg_key, s_val in (p_val.get("segments") or {}).items():
+            if s_val.get("granted") is True and seg_key in deps:
+                field_name = deps[seg_key]
+                if not str(buyer_data.get(field_name, "")).strip():
+                    missing_deps.append(f"{seg_key}->$.buyer.{field_name}")
+
+    if missing_deps and operation == "complete":
+        return ConsentValidationResult(
+            False,
+            "missing_consent_data_blocks_complete",
+            effective,
+            tuple(missing_deps),
+        )
+    return ConsentValidationResult(
+        True,
+        "verified_with_warnings" if missing_deps else "verified",
+        effective,
+        tuple(missing_deps),
+    )
+
+
+def resolve_ucp_effective_consent(
+    consent_map: dict[str, dict[str, Any]],
+    *,
+    purpose: str,
+    segment: str | None = None,
+) -> bool | None:
+    """Resolve effective `granted` boolean where segment overrides parent purpose (Normative Rule 4)."""
+    p_obj = consent_map.get(purpose)
+    if not isinstance(p_obj, dict):
+        return None
+    if segment is not None:
+        seg_map = p_obj.get("segments")
+        if isinstance(seg_map, dict) and segment in seg_map:
+            seg_val = seg_map[segment].get("granted")
+            if type(seg_val) is bool:
+                return seg_val
+    val = p_obj.get("granted")
+    return val if type(val) is bool else None
+
+
+@dataclass(frozen=True)
+class EscalationContractDecision:
+    """Offline UCP `requires_escalation` -> `continue_url` contract check (checkout/index.md & PR #912)."""
+
+    accepted: bool
+    reason: str
+
+
+def verify_ucp_checkout_escalation_contract(
+    checkout_payload: dict[str, Any],
+    *,
+    direction: Literal["request", "response"] = "response",
+) -> EscalationContractDecision:
+    """Verify UCP checkout `requires_escalation` contract (checkout/index.md L949/L1022 & PR #912).
+
+    - Requests MUST omit response-only `status` and `continue_url` (`ucp_request: omit`).
+    - Responses with `status == "requires_escalation"` MUST provide a valid HTTPS `continue_url`
+      for buyer handoff.
+    """
+    if direction == "request":
+        if "status" in checkout_payload or "continue_url" in checkout_payload:
+            return EscalationContractDecision(False, "response_only_escalation_fields_in_request")
+        return EscalationContractDecision(True, "verified")
+
+    status = checkout_payload.get("status")
+    if status == "requires_escalation":
+        continue_url = checkout_payload.get("continue_url")
+        if not isinstance(continue_url, str) or not continue_url.strip():
+            return EscalationContractDecision(False, "missing_continue_url_on_requires_escalation")
+        parsed = urlsplit(continue_url.strip())
+        if parsed.scheme.lower() != "https" or not parsed.netloc:
+            return EscalationContractDecision(False, "invalid_https_continue_url")
+    return EscalationContractDecision(True, "verified")
+
+
+UCP_RETURN_ELIGIBILITY_TYPES = frozenset({"window", "unlimited", "not_accepted"})
+UCP_RETURN_ANCHORS = frozenset({"purchased", "fulfilled", "delivered"})
+UCP_WELL_KNOWN_RETURN_FEES = frozenset({
+    "dev.ucp.shopping.fee.restocking",
+    "dev.ucp.shopping.fee.return_shipping",
+    "dev.ucp.shopping.fee.handling",
+})
+UCP_ISO8601_DURATION_RE = re.compile(
+    r"^P(?:[1-9]\d*[YMWD])+(?:T(?:[1-9]\d*[HMS])+)?$|^PT(?:[1-9]\d*[HMS])+$"
+)
+REVERSE_DOMAIN_FEE_RE = re.compile(r"^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*){2,}$")
+
+
+@dataclass(frozen=True)
+class ReturnPolicyEvaluation:
+    """Offline UCP `dev.ucp.shopping.policy.return` schema & platform no-date-math check (PR #966)."""
+
+    valid_schema: bool
+    reason: str
+    eligibility_status: Literal[
+        "window_open",
+        "window_floor_lapsed_not_prohibited",
+        "window_terms_only_no_platform_date_math",
+        "unlimited_time_bound",
+        "not_accepted",
+        "unstructured_or_unknown_no_inference",
+        "invalid_policy",
+    ]
+    authoritative_expires_at: str | None = None
+
+
+def evaluate_ucp_return_policy(
+    policy: dict[str, Any],
+    *,
+    now_iso: str | None = None,
+    platform_computed_expires_at: str | None = None,
+) -> ReturnPolicyEvaluation:
+    """Validate UCP `dev.ucp.shopping.policy.return` invariants and platform responsibilities (PR #966).
+
+    Enforces:
+    1. Platform MUST NOT perform date math to synthesize a return deadline from `duration` + `anchor`
+       when the business has not resolved `expires_at` (`platform_computed_expires_at` is rejected).
+    2. Omitted `eligibility` or unknown `eligibility.type` means not stated structurally; platforms
+       MUST NOT infer `unlimited` or `not_accepted`.
+    3. `window` requires valid positive ISO 8601 `duration` and `anchor`; `unlimited` and `not_accepted`
+       MUST NOT carry `duration`, `anchor`, or `expires_at`.
+    4. When `eligibility.type == "not_accepted"`, `supported_resolutions`, `methods`, and `fees` MUST be omitted.
+    5. Each `fees[]` entry enforces mutual exclusion of `amount` and `basis_points`, `max_amount` requiring
+       `basis_points`, and mandatory `display_text` when `type` is a vendor fee or when neither `amount`
+       nor `basis_points` is present.
+    6. `window` expiry is a guaranteed minimum floor, not a prohibition ceiling (`window_floor_lapsed_not_prohibited`).
+    """
+    if platform_computed_expires_at is not None:
+        return ReturnPolicyEvaluation(
+            False,
+            "platform_date_math_forbidden",
+            "invalid_policy",
+        )
+    if not isinstance(policy, dict) or policy.get("type") != "dev.ucp.shopping.policy.return":
+        return ReturnPolicyEvaluation(False, "invalid_policy_type", "invalid_policy")
+
+    eligibility = policy.get("eligibility")
+    if eligibility is not None and not isinstance(eligibility, dict):
+        return ReturnPolicyEvaluation(False, "invalid_eligibility_object", "invalid_policy")
+
+    elig_type: str | None = None
+    if isinstance(eligibility, dict):
+        raw_type = eligibility.get("type")
+        if not isinstance(raw_type, str) or not raw_type.strip():
+            return ReturnPolicyEvaluation(False, "missing_eligibility_type", "invalid_policy")
+        elig_type = raw_type.strip()
+
+        if elig_type == "window":
+            duration = eligibility.get("duration")
+            anchor = eligibility.get("anchor")
+            if not isinstance(duration, str) or not UCP_ISO8601_DURATION_RE.match(duration):
+                return ReturnPolicyEvaluation(False, "invalid_window_duration", "invalid_policy")
+            if not isinstance(anchor, str) or not anchor.strip():
+                return ReturnPolicyEvaluation(False, "missing_window_anchor", "invalid_policy")
+            exp_raw = eligibility.get("expires_at")
+            if exp_raw is not None:
+                if not isinstance(exp_raw, str):
+                    return ReturnPolicyEvaluation(False, "invalid_expires_at", "invalid_policy")
+                try:
+                    datetime.fromisoformat(exp_raw.replace("Z", "+00:00"))
+                except ValueError:
+                    return ReturnPolicyEvaluation(False, "invalid_expires_at", "invalid_policy")
+        elif elig_type in {"unlimited", "not_accepted"}:
+            if any(k in eligibility for k in ("duration", "anchor", "expires_at")):
+                return ReturnPolicyEvaluation(
+                    False, f"window_fields_forbidden_on_{elig_type}", "invalid_policy"
+                )
+            if elig_type == "not_accepted" and any(
+                k in policy for k in ("supported_resolutions", "methods", "fees")
+            ):
+                return ReturnPolicyEvaluation(
+                    False, "resolutions_methods_fees_forbidden_on_not_accepted", "invalid_policy"
+                )
+
+    fees = policy.get("fees")
+    if fees is not None:
+        if not isinstance(fees, list) or not fees:
+            return ReturnPolicyEvaluation(False, "invalid_fees_list", "invalid_policy")
+        for fee in fees:
+            if not isinstance(fee, dict):
+                return ReturnPolicyEvaluation(False, "invalid_fee_entry", "invalid_policy")
+            fee_type = fee.get("type")
+            if not isinstance(fee_type, str) or not REVERSE_DOMAIN_FEE_RE.match(fee_type):
+                return ReturnPolicyEvaluation(False, "invalid_fee_type", "invalid_policy")
+            has_amount = "amount" in fee
+            has_bps = "basis_points" in fee
+            if has_amount and has_bps:
+                return ReturnPolicyEvaluation(
+                    False, "fee_amount_and_basis_points_mutually_exclusive", "invalid_policy"
+                )
+            if "max_amount" in fee and not has_bps:
+                return ReturnPolicyEvaluation(
+                    False, "fee_max_amount_requires_basis_points", "invalid_policy"
+                )
+            if has_amount and (type(fee["amount"]) is not int or fee["amount"] < 0):
+                return ReturnPolicyEvaluation(False, "invalid_fee_amount", "invalid_policy")
+            if has_bps and (
+                type(fee["basis_points"]) is not int or not (1 <= fee["basis_points"] <= 10000)
+            ):
+                return ReturnPolicyEvaluation(False, "invalid_fee_basis_points", "invalid_policy")
+            needs_display = (fee_type not in UCP_WELL_KNOWN_RETURN_FEES) or (
+                not has_amount and not has_bps
+            )
+            if needs_display and (
+                not isinstance(fee.get("display_text"), str) or not fee["display_text"].strip()
+            ):
+                return ReturnPolicyEvaluation(
+                    False, "missing_required_fee_display_text", "invalid_policy"
+                )
+
+    if elig_type is None or elig_type not in UCP_RETURN_ELIGIBILITY_TYPES:
+        return ReturnPolicyEvaluation(
+            True, "verified", "unstructured_or_unknown_no_inference"
+        )
+    if elig_type == "not_accepted":
+        return ReturnPolicyEvaluation(True, "verified", "not_accepted")
+    if elig_type == "unlimited":
+        return ReturnPolicyEvaluation(True, "verified", "unlimited_time_bound")
+
+    assert isinstance(eligibility, dict)
+    exp_str = eligibility.get("expires_at")
+    if not exp_str:
+        return ReturnPolicyEvaluation(
+            True, "verified", "window_terms_only_no_platform_date_math"
+        )
+    if now_iso is not None:
+        exp_dt = datetime.fromisoformat(exp_str.replace("Z", "+00:00"))
+        now_dt = datetime.fromisoformat(now_iso.replace("Z", "+00:00"))
+        if now_dt > exp_dt:
+            return ReturnPolicyEvaluation(
+                True,
+                "verified",
+                "window_floor_lapsed_not_prohibited",
+                authoritative_expires_at=exp_str,
+            )
+    return ReturnPolicyEvaluation(
+        True, "verified", "window_open", authoritative_expires_at=exp_str
     )
 
 

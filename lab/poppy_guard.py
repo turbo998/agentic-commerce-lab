@@ -569,15 +569,16 @@ class OperationRecord:
     session_id: str
     client_id: str
     user_id: str
-    account_id: str
+    account_id: str | None
     revision: int
-    state: str  # "proposed", "succeeded", "cancelled", "expired"
+    state: str  # "proposed", "in_progress", "succeeded", "failed", "cancelled", "expired"
     summary: str
     terms: dict[str, Any]
     expires_at: int
     user_approval_required: bool
     confirmation: dict[str, Any] | None = None
     result: dict[str, Any] | None = None
+    retry_after_seconds: int | None = None
 
 
 @dataclass(frozen=True)
@@ -586,6 +587,23 @@ class GuardDecision:
     code: str
     http_status: int
     operation: dict[str, Any] | None = None
+    headers: dict[str, str] | None = None
+
+
+POPPY_STANDARD_EXTENSIONS = frozenset({"operations"})
+POPPY_DOMAIN_PREFIXED_EXTENSION_RE = re.compile(
+    r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+/[A-Za-z0-9._-]+$"
+)
+
+
+def validate_poppy_extension_name(name: str) -> bool:
+    """Validate Poppy §3.3 extension naming: standard extension or domain-prefixed `<domain>/<name>`."""
+    if not isinstance(name, str) or not name.strip():
+        return False
+    val = name.strip()
+    if val in POPPY_STANDARD_EXTENSIONS:
+        return True
+    return bool(POPPY_DOMAIN_PREFIXED_EXTENSION_RE.match(val))
 
 
 def verify_cross_company_content_boundary(
@@ -734,6 +752,22 @@ class RetailOrderMutationGuard:
 
         return None, price_diff
 
+    def _check_operation_ownership(
+        self,
+        token: SessionToken,
+        op: OperationRecord,
+        required_scope: str,
+    ) -> GuardDecision | None:
+        """Enforce Poppy operations §3.2 ownership across signed-in vs signed-out Sessions."""
+        if op.client_id != token.client_id or op.user_id != token.user_id:
+            return GuardDecision(False, "operation_not_found", 404)
+        if op.account_id is None:
+            # Signed-out operation: strictly bound to the originating session_id
+            if token.session_id != op.session_id:
+                return GuardDecision(False, "operation_not_found", 404)
+            return None
+        return self._check_session_and_scope(token, op.account_id, required_scope)
+
     def propose_item_change(
         self,
         *,
@@ -746,8 +780,25 @@ class RetailOrderMutationGuard:
         now: int,
         ttl_seconds: int = 900,
         user_approval_required: bool = False,
+        client_extensions: set[str] | frozenset[str] | None = None,
     ) -> GuardDecision:
-        """Validate retail policy invariants and return a Poppy `operations` v1 proposal (HTTP 202)."""
+        """Validate retail policy invariants and return a Poppy `operations` v1 proposal (HTTP 202).
+
+        Enforces:
+        - `operations` §2 extension negotiation: if `client_extensions` is provided and does not
+          include `"operations"`, returns HTTP `403 extension_required`.
+        - `operations` §4 cross-channel deduplication: if an identical unexpired `proposed`
+          operation already exists for `(client_id, user_id, account_id, terms)`, returns the
+          existing proposal rather than creating a duplicate across channels (e.g., OpenAPI after
+          Conversation).
+        """
+        if client_extensions is not None and "operations" not in client_extensions:
+            return GuardDecision(
+                False,
+                "extension_required",
+                403,
+                {"error": "extension_required", "extension": "operations"},
+            )
         order = self.orders.get(order_id)
         if order is None:
             return GuardDecision(False, "order_not_found", 404)
@@ -765,6 +816,25 @@ class RetailOrderMutationGuard:
         )
         if policy_err is not None:
             return policy_err
+
+        candidate_terms = {
+            "action": action,
+            "order_id": order_id,
+            "current_item_id": current_item_id,
+            "replacement_item_id": replacement_item_id,
+            "price_difference_cents": price_diff,
+            "payment_method_id": payment_method_id,
+        }
+        for existing_op in self.operations.values():
+            if (
+                existing_op.state == "proposed"
+                and now < existing_op.expires_at
+                and existing_op.client_id == token.client_id
+                and existing_op.user_id == token.user_id
+                and existing_op.account_id == order.customer_id
+                and existing_op.terms == candidate_terms
+            ):
+                return GuardDecision(True, "proposed_deduplicated", 202, asdict(existing_op))
 
         self._op_seq += 1
         op_id = f"op_ret_{self._op_seq:04d}"
@@ -784,19 +854,63 @@ class RetailOrderMutationGuard:
             revision=1,
             state="proposed",
             summary=summary,
-            terms={
-                "action": action,
-                "order_id": order_id,
-                "current_item_id": current_item_id,
-                "replacement_item_id": replacement_item_id,
-                "price_difference_cents": price_diff,
-                "payment_method_id": payment_method_id,
-            },
+            terms=candidate_terms,
             expires_at=now + ttl_seconds,
             user_approval_required=user_approval_required,
         )
         self.operations[op_id] = record
         return GuardDecision(True, "proposed", 202, asdict(record))
+
+    def propose_signed_out_operation(
+        self,
+        *,
+        token: SessionToken,
+        summary: str,
+        terms: dict[str, Any],
+        now: int,
+        ttl_seconds: int = 900,
+    ) -> GuardDecision:
+        """Create a signed-out Poppy `operations` v1 proposal bound strictly to `token.session_id` (§3.2)."""
+        self._op_seq += 1
+        op_id = f"op_ret_{self._op_seq:04d}"
+        record = OperationRecord(
+            operation_id=op_id,
+            session_id=token.session_id,
+            client_id=token.client_id,
+            user_id=token.user_id,
+            account_id=None,
+            revision=1,
+            state="proposed",
+            summary=summary,
+            terms=dict(terms),
+            expires_at=now + ttl_seconds,
+            user_approval_required=True,
+        )
+        self.operations[op_id] = record
+        return GuardDecision(True, "proposed", 202, asdict(record))
+
+    def get_operation(
+        self,
+        *,
+        token: SessionToken,
+        operation_id: str,
+    ) -> GuardDecision:
+        """Read an operation (`GET /operations/{id}`, `operations` §§3.2, 6).
+
+        Includes `Retry-After` header when `state == "in_progress"` and `retry_after_seconds` is set.
+        """
+        op = self.operations.get(operation_id)
+        if op is None:
+            return GuardDecision(False, "operation_not_found", 404)
+        own_err = self._check_operation_ownership(token, op, "poppy:read")
+        if own_err is not None:
+            return own_err
+        headers = (
+            {"Retry-After": str(op.retry_after_seconds)}
+            if op.state == "in_progress" and op.retry_after_seconds is not None
+            else None
+        )
+        return GuardDecision(True, op.state, 200, asdict(op), headers=headers)
 
     def revise_operation(
         self,
@@ -872,19 +986,42 @@ class RetailOrderMutationGuard:
         approved_by: str,  # "user" or "permission"
         now: int,
         standing_permission: StandingPermission | None = None,
+        downstream_outcome_unknown: bool = False,
+        retry_after_seconds: int = 5,
     ) -> GuardDecision:
-        """Confirm a specific revision of a proposed operation and execute at most once."""
+        """Confirm a specific revision of a proposed operation and execute at most once.
+
+        Enforces `operations` §§5.3 & 6:
+        - Repeated confirm on `in_progress`, `succeeded`, `failed`, or `cancelled` returns HTTP 200
+          with the current Operation (and `Retry-After` if `in_progress`) without running the action again.
+        - If a downstream dependency times out (`downstream_outcome_unknown=True`), the Operation
+          transitions to `in_progress` with `Retry-After` rather than prematurely reporting `failed`.
+        """
         op = self.operations.get(operation_id)
-        if op is None or op.client_id != token.client_id or op.user_id != token.user_id:
+        if op is None:
             return GuardDecision(False, "operation_not_found", 404)
 
-        session_err = self._check_session_and_scope(token, op.account_id, "poppy:write")
-        if session_err is not None:
-            return session_err
+        own_err = self._check_operation_ownership(token, op, "poppy:write")
+        if own_err is not None:
+            return own_err
 
-        # At-most-once idempotency on repeated confirmation
+        if op.state == "expired":
+            return GuardDecision(False, "expired", 409, asdict(op))
+
+        # At-most-once idempotency on repeated confirmation (operations §5.3)
         if op.state != "proposed":
-            return GuardDecision(True, "already_final", 200, asdict(op))
+            headers = (
+                {"Retry-After": str(op.retry_after_seconds)}
+                if op.state == "in_progress" and op.retry_after_seconds is not None
+                else None
+            )
+            return GuardDecision(
+                True,
+                "in_progress" if op.state == "in_progress" else "already_final",
+                200,
+                asdict(op),
+                headers=headers,
+            )
 
         if now >= op.expires_at:
             op.state = "expired"
@@ -895,29 +1032,50 @@ class RetailOrderMutationGuard:
 
         # Per #51 (e910c866) Section 8.1 & operations §3.1: verify Company `summary` agrees with
         # material `terms` values (order_id, replacement_item_id, price_difference_cents, payment_method_id)
-        expected_fragments = (
-            f"order {op.terms['order_id']}",
-            f"({op.terms['replacement_item_id']})",
-            f"price_difference_cents={op.terms['price_difference_cents']}",
-            f"payment_method_id={op.terms['payment_method_id']}",
-        )
-        if any(fragment not in op.summary for fragment in expected_fragments):
-            return GuardDecision(False, "summary_terms_mismatch", 409, asdict(op))
+        if "order_id" in op.terms:
+            expected_fragments = (
+                f"order {op.terms['order_id']}",
+                f"({op.terms['replacement_item_id']})",
+                f"price_difference_cents={op.terms['price_difference_cents']}",
+                f"payment_method_id={op.terms['payment_method_id']}",
+            )
+            if any(fragment not in op.summary for fragment in expected_fragments):
+                return GuardDecision(False, "summary_terms_mismatch", 409, asdict(op))
 
         if approved_by == "permission":
-            if op.user_approval_required or standing_permission is None:
+            if op.user_approval_required or standing_permission is None or op.account_id is None:
                 return GuardDecision(False, "user_approval_required", 403, asdict(op))
             if (
                 _normalize_domain(standing_permission.company_domain) != _normalize_domain(self.company_domain)
                 or standing_permission.account_id != op.account_id
                 or now >= standing_permission.expires_at
-                or op.terms["action"] not in standing_permission.allowed_actions
-                or op.terms["price_difference_cents"]
+                or op.terms.get("action") not in standing_permission.allowed_actions
+                or op.terms.get("price_difference_cents", 0)
                 > standing_permission.max_price_difference_cents
             ):
                 return GuardDecision(False, "user_approval_required", 403, asdict(op))
         elif approved_by != "user":
             return GuardDecision(False, "invalid_approved_by", 400, asdict(op))
+
+        if "order_id" not in op.terms:
+            op.confirmation = {
+                "revision": revision,
+                "approved_by": approved_by,
+                "confirmed_at": now,
+            }
+            if downstream_outcome_unknown:
+                op.state = "in_progress"
+                op.retry_after_seconds = retry_after_seconds
+                return GuardDecision(
+                    True,
+                    "in_progress",
+                    200,
+                    asdict(op),
+                    headers={"Retry-After": str(retry_after_seconds)},
+                )
+            op.state = "succeeded"
+            op.result = {"summary": f"Completed signed-out operation {op.operation_id}."}
+            return GuardDecision(True, "succeeded", 200, asdict(op))
 
         order = self.orders[op.terms["order_id"]]
         policy_err, price_diff = self._validate_item_change_terms(
@@ -930,7 +1088,30 @@ class RetailOrderMutationGuard:
         if policy_err is not None:
             return policy_err
 
-        # Execute deterministic state transition
+        op.confirmation = {
+            "revision": revision,
+            "approved_by": approved_by,
+            "confirmed_at": now,
+        }
+        if downstream_outcome_unknown:
+            # operations §6: If a downstream dependency times out while executing, keep `in_progress`
+            # and return Retry-After; NEVER report `failed` while outcome is unknown.
+            op.state = "in_progress"
+            op.retry_after_seconds = retry_after_seconds
+            return GuardDecision(
+                True,
+                "in_progress",
+                200,
+                asdict(op),
+                headers={"Retry-After": str(retry_after_seconds)},
+            )
+
+        self._apply_retail_order_mutation(order, op, price_diff)
+        return GuardDecision(True, "succeeded", 200, asdict(op))
+
+    def _apply_retail_order_mutation(
+        self, order: RetailOrder, op: OperationRecord, price_diff: int
+    ) -> None:
         cur_item = op.terms["current_item_id"]
         rep_item = op.terms["replacement_item_id"]
         self.catalog[cur_item].available_stock += 1
@@ -950,11 +1131,7 @@ class RetailOrderMutationGuard:
             order.exchanged_items[cur_item] = rep_item
 
         op.state = "succeeded"
-        op.confirmation = {
-            "revision": revision,
-            "approved_by": approved_by,
-            "confirmed_at": now,
-        }
+        op.retry_after_seconds = None
         op.result = {
             "summary": f"Completed {op.terms['action']} on {order.order_id}.",
             "data": {
@@ -964,7 +1141,90 @@ class RetailOrderMutationGuard:
                 "price_difference_cents": price_diff,
             },
         }
-        return GuardDecision(True, "succeeded", 200, asdict(op))
+
+    def resolve_in_progress_operation(
+        self,
+        *,
+        operation_id: str,
+        outcome: str,  # "succeeded", "failed", "cancelled"
+        summary: str | None = None,
+        error_code: str | None = None,
+    ) -> GuardDecision:
+        """Resolve an `in_progress` operation once the downstream outcome is definitively known (§6)."""
+        op = self.operations.get(operation_id)
+        if op is None:
+            return GuardDecision(False, "operation_not_found", 404)
+        if op.state != "in_progress":
+            return GuardDecision(False, "operation_not_in_progress", 409, asdict(op))
+        if outcome not in {"succeeded", "failed", "cancelled"}:
+            return GuardDecision(False, "invalid_outcome", 400, asdict(op))
+
+        if outcome == "succeeded" and "order_id" in op.terms:
+            order = self.orders[op.terms["order_id"]]
+            self._apply_retail_order_mutation(
+                order, op, int(op.terms["price_difference_cents"])
+            )
+            if summary and summary.strip():
+                op.result["summary"] = summary.strip()  # type: ignore[index]
+            return GuardDecision(True, "succeeded", 200, asdict(op))
+
+        if not summary or not summary.strip():
+            return GuardDecision(False, "missing_final_result_summary", 400, asdict(op))
+
+        op.state = outcome
+        op.retry_after_seconds = None
+        res_obj: dict[str, Any] = {"summary": summary.strip()}
+        if outcome == "failed" and error_code:
+            res_obj["error"] = error_code
+        op.result = res_obj
+        return GuardDecision(True, outcome, 200, asdict(op))
+
+    def cancel_operation(
+        self,
+        *,
+        token: SessionToken,
+        operation_id: str,
+        downstream_stopped: bool = True,
+    ) -> GuardDecision:
+        """Cancel an operation (`POST /operations/{id}/cancel`, `operations` §7).
+
+        - If `proposed`, transitions to `cancelled` with non-empty `result.summary`.
+        - If `in_progress`, returns `cancelled` only when `downstream_stopped=True`; otherwise
+          remains `in_progress` (with `Retry-After`) until the Company knows whether the action stopped.
+        - If already in a final state (`succeeded`, `failed`, `cancelled`, `expired`), returns as-is (HTTP 200).
+        """
+        op = self.operations.get(operation_id)
+        if op is None:
+            return GuardDecision(False, "operation_not_found", 404)
+
+        own_err = self._check_operation_ownership(token, op, "poppy:write")
+        if own_err is not None:
+            return own_err
+
+        if op.state == "proposed":
+            op.state = "cancelled"
+            op.retry_after_seconds = None
+            op.result = {
+                "summary": f"Cancelled operation {op.operation_id} before confirmation."
+            }
+            return GuardDecision(True, "cancelled", 200, asdict(op))
+
+        if op.state == "in_progress":
+            if downstream_stopped:
+                op.state = "cancelled"
+                op.retry_after_seconds = None
+                op.result = {
+                    "summary": f"Stopped in-progress operation {op.operation_id}."
+                }
+                return GuardDecision(True, "cancelled", 200, asdict(op))
+            headers = (
+                {"Retry-After": str(op.retry_after_seconds)}
+                if op.retry_after_seconds is not None
+                else None
+            )
+            return GuardDecision(True, "in_progress", 200, asdict(op), headers=headers)
+
+        return GuardDecision(True, op.state, 200, asdict(op))
 
 
 @dataclass

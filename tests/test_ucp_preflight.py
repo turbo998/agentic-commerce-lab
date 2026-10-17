@@ -10,9 +10,11 @@ from unittest.mock import patch
 from lab.ucp_preflight import (
     INSTRUMENTS, POLICY_CHECKED_ON, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
     HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
-    decode_ucp_item_id_token, encode_ucp_item_id_token, evaluate_ucp_mandate_admission, main,
-    select_ucp_identity_authorization_server, validate_ucp_continue_to,
-    validate_ucp_permalink_request, verify_ucp_discovery_response_status,
+    decode_ucp_item_id_token, encode_ucp_item_id_token, evaluate_ucp_mandate_admission,
+    evaluate_ucp_return_policy, main, resolve_ucp_effective_consent,
+    select_ucp_identity_authorization_server, validate_and_merge_ucp_buyer_consent,
+    validate_ucp_continue_to, validate_ucp_permalink_request,
+    verify_ucp_checkout_escalation_contract, verify_ucp_discovery_response_status,
     verify_ucp_permalink_redirect, verify_ucp_signing_gate,
 )
 
@@ -428,6 +430,203 @@ class PreflightTests(unittest.TestCase):
         )
         self.assertFalse(secret_leak.accepted)
         self.assertEqual(secret_leak.reason, "forbidden_secret_or_credential_in_permalink")
+
+    def test_ucp_buyer_consent_carve_out_segment_override_and_missing_data_gate(self) -> None:
+        advertised = {
+            "dev.ucp.consent.analytics": {
+                "granted": True,
+                "source": "business",
+                "description": "Measure site usage",
+            },
+            "dev.ucp.consent.marketing": {
+                "granted": False,
+                "source": "business",
+                "description": "Promotional messages",
+                "segments": {
+                    "dev.ucp.consent.marketing.email": {"granted": False, "source": "business"},
+                    "dev.ucp.consent.marketing.sms": {"granted": False, "source": "business"},
+                },
+            },
+        }
+        # 1. Platform submits buyer-stated SMS marketing opt-in + analytics opt-out
+        submitted = {
+            "dev.ucp.consent.analytics": {"granted": False, "source": "platform"},
+            "dev.ucp.consent.marketing": {
+                "granted": False,
+                "source": "business",
+                "segments": {
+                    "dev.ucp.consent.marketing.email": {"granted": False, "source": "business"},
+                    "dev.ucp.consent.marketing.sms": {"granted": True, "source": "platform"},
+                },
+            },
+            "vendor.unknown.unadvertised": {"granted": True, "source": "platform"},
+        }
+        create_res = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=None,
+            submitted_consent=submitted,
+            operation="create",
+            buyer_stated_keys={"dev.ucp.consent.analytics", "dev.ucp.consent.marketing.sms"},
+            buyer_info={"email": "jane@example.com"},
+        )
+        self.assertTrue(create_res.accepted)
+        self.assertEqual(create_res.reason, "verified_with_warnings")
+        self.assertEqual(
+            create_res.missing_dependency_codes,
+            ("dev.ucp.consent.marketing.sms->$.buyer.phone_number",),
+        )
+        self.assertNotIn("vendor.unknown.unadvertised", create_res.effective_consent)
+
+        # Segment overrides parent purpose (Normative Rule 4)
+        self.assertFalse(
+            resolve_ucp_effective_consent(
+                create_res.effective_consent, purpose="dev.ucp.consent.marketing"
+            )
+        )
+        self.assertTrue(
+            resolve_ucp_effective_consent(
+                create_res.effective_consent,
+                purpose="dev.ucp.consent.marketing",
+                segment="dev.ucp.consent.marketing.sms",
+            )
+        )
+
+        # 2. Full-replacement carve-out (#660): omitting consent on update retains prior consent
+        update_omitted = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=create_res.effective_consent,
+            submitted_consent=None,
+            operation="update",
+            buyer_info={"email": "jane@example.com"},
+        )
+        self.assertTrue(update_omitted.accepted)
+        self.assertEqual(update_omitted.effective_consent, create_res.effective_consent)
+
+        # 3. Complete checkout is blocked while SMS consent is granted without phone_number
+        complete_blocked = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=create_res.effective_consent,
+            submitted_consent=None,
+            operation="complete",
+            buyer_info={"email": "jane@example.com"},
+        )
+        self.assertFalse(complete_blocked.accepted)
+        self.assertEqual(complete_blocked.reason, "missing_consent_data_blocks_complete")
+
+        # Providing buyer.phone_number unblocks completion
+        complete_ok = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=create_res.effective_consent,
+            submitted_consent=None,
+            operation="complete",
+            buyer_info={"email": "jane@example.com", "phone_number": "+14155550199"},
+        )
+        self.assertTrue(complete_ok.accepted)
+        self.assertEqual(complete_ok.reason, "verified")
+
+        # 4. Partial map (omitting an advertised key) or unauthored mutation is rejected
+        partial = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=None,
+            submitted_consent={"dev.ucp.consent.analytics": {"granted": True, "source": "business"}},
+            operation="update",
+        )
+        self.assertFalse(partial.accepted)
+        self.assertIn("missing_advertised_purpose", partial.reason)
+
+        unauthored = validate_and_merge_ucp_buyer_consent(
+            advertised_consent=advertised,
+            prior_consent=None,
+            submitted_consent=submitted,
+            operation="update",
+            buyer_stated_keys=set(),  # No buyer preference recorded for this business
+        )
+        self.assertFalse(unauthored.accepted)
+        self.assertIn("unauthored_consent_mutation", unauthored.reason)
+
+    def test_ucp_checkout_escalation_and_return_policy_contracts(self) -> None:
+        # Checkout requires_escalation requires HTTPS continue_url (checkout/index.md & PR #912)
+        self.assertFalse(
+            verify_ucp_checkout_escalation_contract(
+                {"status": "requires_escalation"}, direction="response"
+            ).accepted
+        )
+        self.assertFalse(
+            verify_ucp_checkout_escalation_contract(
+                {"status": "requires_escalation", "continue_url": "http://merchant.example/esc"},
+                direction="response",
+            ).accepted
+        )
+        self.assertTrue(
+            verify_ucp_checkout_escalation_contract(
+                {"status": "requires_escalation", "continue_url": "https://merchant.example/esc"},
+                direction="response",
+            ).accepted
+        )
+        self.assertFalse(
+            verify_ucp_checkout_escalation_contract(
+                {"continue_url": "https://merchant.example/esc"}, direction="request"
+            ).accepted
+        )
+
+        # Return policy (#966): platform date math forbidden, omitted eligibility != unlimited
+        no_math = evaluate_ucp_return_policy(
+            {
+                "type": "dev.ucp.shopping.policy.return",
+                "eligibility": {"type": "window", "duration": "P30D", "anchor": "delivered"},
+            },
+            platform_computed_expires_at="2026-11-17T00:00:00Z",
+        )
+        self.assertFalse(no_math.valid_schema)
+        self.assertEqual(no_math.reason, "platform_date_math_forbidden")
+
+        omitted_elig = evaluate_ucp_return_policy(
+            {"type": "dev.ucp.shopping.policy.return", "description": "See store terms"}
+        )
+        self.assertTrue(omitted_elig.valid_schema)
+        self.assertEqual(omitted_elig.eligibility_status, "unstructured_or_unknown_no_inference")
+
+        # Window expiry is a minimum floor, not a prohibition ceiling
+        lapsed = evaluate_ucp_return_policy(
+            {
+                "type": "dev.ucp.shopping.policy.return",
+                "eligibility": {
+                    "type": "window",
+                    "duration": "P30D",
+                    "anchor": "purchased",
+                    "expires_at": "2026-10-10T00:00:00Z",
+                },
+                "fees": [
+                    {"type": "dev.ucp.shopping.fee.restocking", "basis_points": 1500, "max_amount": 2500},
+                ],
+            },
+            now_iso="2026-10-18T00:00:00Z",
+        )
+        self.assertTrue(lapsed.valid_schema)
+        self.assertEqual(lapsed.eligibility_status, "window_floor_lapsed_not_prohibited")
+
+        # Fee validation: amount + basis_points mutually exclusive; not_accepted forbids fees
+        bad_fee = evaluate_ucp_return_policy(
+            {
+                "type": "dev.ucp.shopping.policy.return",
+                "eligibility": {"type": "window", "duration": "P30D", "anchor": "delivered"},
+                "fees": [{"type": "dev.ucp.shopping.fee.restocking", "amount": 500, "basis_points": 1000}],
+            }
+        )
+        self.assertFalse(bad_fee.valid_schema)
+        self.assertEqual(bad_fee.reason, "fee_amount_and_basis_points_mutually_exclusive")
+
+        bad_not_accepted = evaluate_ucp_return_policy(
+            {
+                "type": "dev.ucp.shopping.policy.return",
+                "eligibility": {"type": "not_accepted"},
+                "supported_resolutions": ["refund"],
+            }
+        )
+        self.assertFalse(bad_not_accepted.valid_schema)
+        self.assertEqual(
+            bad_not_accepted.reason, "resolutions_methods_fees_forbidden_on_not_accepted"
+        )
 
 
 if __name__ == "__main__":

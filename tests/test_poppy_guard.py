@@ -22,6 +22,7 @@ from lab.poppy_guard import (
     redact_poppy_value,
     run_demo,
     sha256_token,
+    validate_poppy_extension_name,
     verify_cross_company_content_boundary,
     verify_hosted_company_isolation,
     verify_poppy_assertion_audience,
@@ -1329,6 +1330,183 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
         red_url = redact_poppy_url("https://auth.example/cb?code=code_987654321&state=xyz")
         self.assertIn("code=code_…(redacted)", red_url)
         self.assertIn("state=xyz", red_url)
+
+    def test_operations_v1_extension_negotiation_dedup_timeout_cancel_and_session_ownership(
+        self,
+    ) -> None:
+        # 1. Extension naming rules (spec §3.3 & operations §2)
+        self.assertTrue(validate_poppy_extension_name("operations"))
+        self.assertTrue(validate_poppy_extension_name("manzanitasupply.example/gift-wrap"))
+        self.assertFalse(validate_poppy_extension_name("gift-wrap"))
+        self.assertFalse(validate_poppy_extension_name("https://manzanitasupply.example/gift-wrap"))
+
+        guard = RetailOrderMutationGuard(
+            company_domain="manzanitasupply.example",
+            catalog={
+                "item_1": CatalogVariant("item_1", "prod_a", "Trail Pack S", 10000, 3),
+                "item_2": CatalogVariant("item_2", "prod_a", "Trail Pack M", 11200, 2),
+            },
+            orders={
+                "ord_1": RetailOrder(
+                    order_id="ord_1",
+                    customer_id="cust_1",
+                    status="pending",
+                    items={"line_1": "item_1"},
+                    original_payment_method_id="pm_card_1",
+                )
+            },
+            payment_methods={
+                "cust_1": {"pm_card_1": PaymentInstrument("pm_card_1", "card", 0)},
+            },
+        )
+        tok_ses1 = SessionToken(
+            access_token="tok_ses1",
+            token_type="DPoP",
+            session_id="ses_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_1",
+            account_id="cust_1",
+            signed_in=True,
+            scopes=frozenset({"poppy:read", "poppy:write"}),
+            jwk_thumbprint="jkt_1",
+            expires_at=2000,
+        )
+        tok_ses2_same_acct = SessionToken(
+            access_token="tok_ses2",
+            token_type="DPoP",
+            session_id="ses_2",
+            client_id="https://agent.example/client.json",
+            user_id="usr_1",
+            account_id="cust_1",
+            signed_in=True,
+            scopes=frozenset({"poppy:read", "poppy:write"}),
+            jwk_thumbprint="jkt_2",
+            expires_at=2000,
+        )
+
+        # 2. Extension negotiation (`operations` §2): client without `"operations"` gets 403 extension_required
+        ext_err = guard.propose_item_change(
+            token=tok_ses1,
+            order_id="ord_1",
+            action="modify_pending_order_items",
+            current_item_id="item_1",
+            replacement_item_id="item_2",
+            payment_method_id="pm_card_1",
+            now=1000,
+            client_extensions={"manzanitasupply.example/gift-wrap"},
+        )
+        self.assertEqual((ext_err.allowed, ext_err.http_status, ext_err.code), (False, 403, "extension_required"))
+        self.assertEqual(ext_err.operation, {"error": "extension_required", "extension": "operations"})
+
+        # 3. Cross-channel deduplication (`operations` §4): proposing identical terms returns existing op
+        prop1 = guard.propose_item_change(
+            token=tok_ses1,
+            order_id="ord_1",
+            action="modify_pending_order_items",
+            current_item_id="item_1",
+            replacement_item_id="item_2",
+            payment_method_id="pm_card_1",
+            now=1000,
+            client_extensions={"operations"},
+        )
+        prop2 = guard.propose_item_change(
+            token=tok_ses2_same_acct,
+            order_id="ord_1",
+            action="modify_pending_order_items",
+            current_item_id="item_1",
+            replacement_item_id="item_2",
+            payment_method_id="pm_card_1",
+            now=1010,
+            client_extensions={"operations"},
+        )
+        self.assertEqual(prop1.http_status, 202)
+        self.assertEqual(prop2.code, "proposed_deduplicated")
+        self.assertEqual(prop1.operation["operation_id"], prop2.operation["operation_id"])  # type: ignore[index]
+        op_id = prop1.operation["operation_id"]  # type: ignore[index]
+
+        # 4. Signed-in cross-session ownership (`operations` §3.2): ses_2 of same account can confirm/poll
+        in_prog = guard.confirm_operation(
+            token=tok_ses2_same_acct,
+            operation_id=op_id,
+            revision=1,
+            approved_by="user",
+            now=1020,
+            downstream_outcome_unknown=True,
+            retry_after_seconds=7,
+        )
+        self.assertEqual((in_prog.http_status, in_prog.code), (200, "in_progress"))
+        self.assertEqual(in_prog.headers, {"Retry-After": "7"})
+        # Order is not mutated yet while downstream outcome is unknown
+        self.assertEqual(guard.orders["ord_1"].status, "pending")
+
+        # Polling GET /operations/{id} returns `in_progress` + `Retry-After`
+        polled = guard.get_operation(token=tok_ses1, operation_id=op_id)
+        self.assertEqual((polled.http_status, polled.code), (200, "in_progress"))
+        self.assertEqual(polled.headers, {"Retry-After": "7"})
+
+        # Cancelling while `in_progress` when downstream hasn't stopped stays `in_progress` (§7)
+        cancel_pending = guard.cancel_operation(
+            token=tok_ses1, operation_id=op_id, downstream_stopped=False
+        )
+        self.assertEqual(cancel_pending.code, "in_progress")
+        self.assertEqual(cancel_pending.headers, {"Retry-After": "7"})
+
+        # Resolving `in_progress` to `succeeded` applies the mutation once and populates result.summary
+        resolved = guard.resolve_in_progress_operation(
+            operation_id=op_id,
+            outcome="succeeded",
+            summary="Downstream warehouse confirmed item replacement on ord_1.",
+        )
+        self.assertEqual((resolved.http_status, resolved.code), (200, "succeeded"))
+        self.assertEqual(guard.orders["ord_1"].status, "pending (items modified)")
+
+        # Cancelling a final-state operation returns as-is (HTTP 200) without mutating state (§7)
+        cancel_final = guard.cancel_operation(token=tok_ses1, operation_id=op_id)
+        self.assertEqual((cancel_final.http_status, cancel_final.code), (200, "succeeded"))
+
+        # 5. Signed-out operation is strictly bound to originating session_id (§3.2)
+        tok_out_1 = SessionToken(
+            access_token="tok_out_1",
+            token_type="DPoP",
+            session_id="ses_out_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_guest",
+            account_id=None,
+            signed_in=False,
+            scopes=frozenset(),
+            jwk_thumbprint="jkt_g1",
+            expires_at=2000,
+        )
+        tok_out_2 = SessionToken(
+            access_token="tok_out_2",
+            token_type="DPoP",
+            session_id="ses_out_2",
+            client_id="https://agent.example/client.json",
+            user_id="usr_guest",
+            account_id=None,
+            signed_in=False,
+            scopes=frozenset(),
+            jwk_thumbprint="jkt_g2",
+            expires_at=2000,
+        )
+        so_prop = guard.propose_signed_out_operation(
+            token=tok_out_1,
+            summary="Guest quote hold q_99",
+            terms={"quote_id": "q_99"},
+            now=1000,
+        )
+        so_id = so_prop.operation["operation_id"]  # type: ignore[index]
+        # Another session for the same signed-out user gets 404 operation_not_found
+        self.assertEqual(
+            guard.get_operation(token=tok_out_2, operation_id=so_id).http_status, 404
+        )
+        self.assertEqual(
+            guard.cancel_operation(token=tok_out_2, operation_id=so_id).http_status, 404
+        )
+        # Originating session can cancel proposed -> cancelled with non-empty result.summary
+        so_cancel = guard.cancel_operation(token=tok_out_1, operation_id=so_id)
+        self.assertEqual((so_cancel.http_status, so_cancel.code), (200, "cancelled"))
+        self.assertTrue(bool(so_cancel.operation["result"]["summary"]))  # type: ignore[index]
 
 
 if __name__ == "__main__":

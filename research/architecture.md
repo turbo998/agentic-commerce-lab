@@ -133,3 +133,12 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
    - **Agent 到浏览器有状态交接平面（Poppy `#35` Section 5）**：强制 `303 See Other`，对 `return_to` 执行 URL 解析级主机名匹配（禁字符串前缀匹配），并设置 `Secure; HttpOnly; SameSite=Lax|None` Cookie（严禁 `SameSite=Strict`，避免跨站重定向首跳丢弃 Cookie），同时将浏览器会话权限限制在该 Poppy Session 的实时 Scopes 内。
 3. **Scope 正交性与人工坐席接管（Handoff）权限延续（Poppy `#35` `patterns/scopes.md`）**：`poppy:write` 不隐含 `poppy:read`；且当会话转接给真人客服坐席（Handoff）后，坐席代客执行的操作仍受同一 Session Scopes 约束。
 4. **对话适配器事件流、Milestone 3 Account Token 哈希生命周期与 Permalink 不可信输入门禁（Poppy `#35` Milestones 2–3 & UCP `permalink.md` `#913`）**：对话适配器按 `(client_id, user_id)` 校验 `message.id` 幂等与内容哈希冲突（`409 message_id_conflict`），在 Section 7.10 Direct Conversation 打开期间以 `409 direct_conversation_open` 锁定父会话并阻断直连客户消息回流父会话事件流；Milestone 3 登录流强制 Direct PKCE `S256` 与 RFC 9207 `iss`、Mediated 统一 `{"status": "failed"}` 防枚举与同 Session 二步验证码校验、Account Token SHA-256 哈希存储/单向缩权/RFC 7009 级联登出及 Section 8.2 日志/上下文敏感字段确定性脱敏；UCP Permalink 对不可信 GET 输入执行 `continue_to` 五步防开放重定向校验、`~`-base64url 商品 ID 解码、紧凑路径数量权威保护、JSON Pointer 冲突拒绝与禁带支付凭证检查。上述检查已全部合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
+
+## 2026-10-18 增量：混合状态合并契约、商户时间计算主权与下游超时 `in_progress` 驻留
+
+[今日研究](daily/2026-10-18.md)聚焦多轮 Agent 状态更新、政策时间计算与下游不确定态处理：
+
+1. **资源全量替换下的合规同意豁免与依赖门禁（UCP `buyer-consent.md` & `#660`）**：商品与履约行保持全量替换以消除多轮残留，但省略 `buyer.consent` 时必须保留既有同意状态；一旦提交 `consent`，则强制回传全部已宣告 purpose/segment、校验 `source: "platform"` 仅用于买家对该商户的显式偏好，并在 `complete_checkout` 阶段阻断缺失必填依赖字段（如开启 SMS 同意但无 `buyer.phone_number`）的交易完成。
+2. **剥夺平台日期推算权（UCP PR `#966` `dev.ucp.shopping.policy.return` 草案）**：退货截止时间 `expires_at` 只能由商户服务端按自身日历/时区解析下发，平台与 Agent 严禁用 `anchor + duration` 自算截止日，严禁把省略 `eligibility` 推断为无限期退货，并将窗口期视为最低保障下限而非禁止提交上限。
+3. **下游超时严禁误报 `failed` 与跨通道提案去重（Poppy `operations` §§2, 3.2, 4, 6, 7）**：确认操作时若下游超时、结果未知，必须驻留 `in_progress` 并返回 `Retry-After`（防止 Agent 误判失败而换路重下新单）；取消请求在下游未确认停止前同样保持 `in_progress`；提案阶段对跨通道相同 `terms` 自动去重，并区分已登录跨 Session 账户共享与未登录单 `session_id` 严格隔离。对应校验已增量合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
+
