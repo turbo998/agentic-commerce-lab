@@ -8,11 +8,12 @@ from dataclasses import replace
 from unittest.mock import patch
 
 from lab.ucp_preflight import (
-    INSTRUMENTS, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
+    INSTRUMENTS, POLICY_CHECKED_ON, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
     HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
-    evaluate_ucp_mandate_admission, main, select_ucp_identity_authorization_server,
-    verify_ucp_discovery_response_status, verify_ucp_permalink_redirect,
-    verify_ucp_signing_gate,
+    decode_ucp_item_id_token, encode_ucp_item_id_token, evaluate_ucp_mandate_admission, main,
+    select_ucp_identity_authorization_server, validate_ucp_continue_to,
+    validate_ucp_permalink_request, verify_ucp_discovery_response_status,
+    verify_ucp_permalink_redirect, verify_ucp_signing_gate,
 )
 
 
@@ -129,7 +130,7 @@ class PreflightTests(unittest.TestCase):
                     self.assertFalse(report["real_payments"])
                     self.assertFalse(report["decision"]["payment_authorized"])
                     self.assertEqual(report["decision"]["provider_verification"], "not_performed")
-                    self.assertEqual(report["policy_checked_on"], "2026-10-13")
+                    self.assertEqual(report["policy_checked_on"], POLICY_CHECKED_ON.isoformat())
                     self.assertEqual(len(report["remaining_checks"]), 4)
 
     def test_ucp_signing_gate_requires_webhook_and_agent_headers_when_present(self) -> None:
@@ -358,6 +359,75 @@ class PreflightTests(unittest.TestCase):
         self.assertEqual(expired.checkout_status, "canceled")
         self.assertEqual(expired.error_code, "mandate_expired")
         self.assertEqual(expired.admission_evidence["result"], "expired_at_admission")
+
+    def test_ucp_permalink_input_validation_item_tokens_and_continue_to(self) -> None:
+        # Raw vs ~base64url item ID token encoding/decoding (permalink.md #Item ID Token)
+        self.assertEqual(encode_ucp_item_id_token("sku_123-A.1"), "sku_123-A.1")
+        uri_token = encode_ucp_item_id_token("gid://shop/ProductVariant/42")
+        self.assertTrue(uri_token.startswith("~"))
+        self.assertEqual(decode_ucp_item_id_token(uri_token), "gid://shop/ProductVariant/42")
+        with self.assertRaisesRegex(ValueError, "percent_encoded_item_token_forbidden"):
+            decode_ucp_item_id_token("sku%2F42")
+        with self.assertRaisesRegex(ValueError, "non_canonical_tilde_base64url"):
+            decode_ucp_item_id_token("~c2t1=")
+
+        # 5-step continue_to validation (permalink.md #Destination Preference)
+        dest_ok, fallback_ok = validate_ucp_continue_to("/cart?promo=SAVE10", default_destination="/checkout")
+        self.assertEqual((dest_ok, fallback_ok), ("/cart?promo=SAVE10", False))
+        for unsafe in (
+            "//evil.example/phish",
+            "https://evil.example/phish",
+            "/%2f/evil.example",
+            "/\\evil.example",
+            "/cart\r\nSet-Cookie: session=evil",
+        ):
+            dest_fb, used_fb = validate_ucp_continue_to(unsafe, default_destination="/checkout")
+            self.assertEqual((dest_fb, used_fb), ("/checkout", True))
+
+        # Valid permalink request with compact path authority over line_items/0/quantity
+        valid = validate_ucp_permalink_request(
+            f"https://merchant.example/buy/sku_1:2,{uri_token}:1"
+            "?buyer/email=jane%40example.com&line_items/0/quantity=99&line_items/0/selling_plan=monthly"
+            "&continue_to=/cart&utm_source=agent",
+            configured_endpoint="https://merchant.example/buy",
+        )
+        self.assertTrue(valid.accepted)
+        self.assertEqual(
+            valid.resolved_line_items,
+            (
+                {"item": {"id": "sku_1"}, "quantity": 2},
+                {"item": {"id": "gid://shop/ProductVariant/42"}, "quantity": 1},
+            ),
+        )
+        # Compact path quantity (2) stays authoritative over query parameter (99)
+        self.assertEqual(valid.applied_ucp_fields["/line_items/0/quantity"], "2")
+        self.assertEqual(valid.applied_ucp_fields["/line_items/0/selling_plan"], "monthly")
+        self.assertEqual(valid.non_ucp_params, {"utm_source": "agent"})
+        self.assertEqual(valid.resolved_continue_to, "/cart")
+
+        # Canonical JSON Pointer collision (`buyer/email` and `/buyer/email`) rejected
+        collision = validate_ucp_permalink_request(
+            "https://merchant.example/buy/sku_1:1?buyer/email=a@example.com&/buyer/email=b@example.com",
+            configured_endpoint="https://merchant.example/buy",
+        )
+        self.assertFalse(collision.accepted)
+        self.assertEqual(collision.reason, "duplicate_ucp_pointer_collision")
+
+        # Server-owned fields (`totals`, `status`, `order`) rejected
+        server_owned = validate_ucp_permalink_request(
+            "https://merchant.example/buy/sku_1:1?totals/0/amount=0",
+            configured_endpoint="https://merchant.example/buy",
+        )
+        self.assertFalse(server_owned.accepted)
+        self.assertEqual(server_owned.reason, "server_owned_field_forbidden")
+
+        # Forbidden credentials / mandates / tokens in permalink URL rejected
+        secret_leak = validate_ucp_permalink_request(
+            "https://merchant.example/buy/sku_1:1?shared_payment_granted_token=spt_test_123",
+            configured_endpoint="https://merchant.example/buy",
+        )
+        self.assertFalse(secret_leak.accepted)
+        self.assertEqual(secret_leak.reason, "forbidden_secret_or_credential_in_permalink")
 
 
 if __name__ == "__main__":

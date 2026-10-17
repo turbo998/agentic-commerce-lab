@@ -1,15 +1,17 @@
 """Offline, metadata-only UCP handler preflight; never authorize or send payments."""
 
 import argparse
+import base64
 import json
+import posixpath
 import re
 import sys
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from typing import Any, Literal
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, quote, unquote, urlsplit
 
-POLICY_CHECKED_ON = date(2026, 10, 13)
+POLICY_CHECKED_ON = date(2026, 10, 17)
 SOURCE_URL = "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler"
 REVIEWED_UCP_VERSION = "2026-04-08"
 REVIEWED_HANDLER_VERSION = "2026-06-25"
@@ -23,6 +25,35 @@ UCP_SIGN_IF_PRESENT_HEADERS = frozenset({
     "webhook-timestamp",
 })
 FORBIDDEN_REDIRECT_STATUSES = frozenset({301, 302, 303, 307, 308})
+UCP_RAW_ITEM_TOKEN_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+UCP_BASE64URL_NOPAD_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+UCP_POSITIVE_QUANTITY_RE = re.compile(r"^[1-9][0-9]*$")
+UCP_SERVER_OWNED_ROOTS = frozenset({
+    "totals",
+    "presentment_currency",
+    "status",
+    "id",
+    "identifiers",
+    "order",
+})
+UCP_FORBIDDEN_PERMALINK_SECRET_KEYS = frozenset({
+    "access_token",
+    "api_key",
+    "bearer_token",
+    "card_number",
+    "client_secret",
+    "cvv",
+    "mandate",
+    "pan",
+    "payment_credential",
+    "payment_instrument_token",
+    "refresh_token",
+    "secret",
+    "session_cookie",
+    "shared_payment_granted_token",
+    "spt",
+    "token",
+})
 Environment = Literal["sandbox", "production"]
 Relationship = Literal["confirmed", "missing", "unknown"]
 
@@ -245,6 +276,230 @@ def verify_ucp_permalink_redirect(
         return PermalinkRedirectDecision(False, "referrer_policy_must_be_no_referrer")
 
     return PermalinkRedirectDecision(True, "ok_permalink_303_no_store_no_referrer", ())
+
+
+@dataclass(frozen=True)
+class PermalinkInputValidationDecision:
+    """Offline UCP `dev.ucp.shopping.permalink` untrusted GET input validator (`permalink.md`, #913)."""
+
+    accepted: bool
+    reason: str
+    resolved_line_items: tuple[dict[str, Any], ...] = ()
+    resolved_continue_to: str = "/"
+    applied_ucp_fields: dict[str, str] | None = None
+    non_ucp_params: dict[str, str] | None = None
+
+
+def encode_ucp_item_id_token(item_id: str) -> str:
+    """Encode an item identifier per UCP `permalink.md` (#Item ID Token).
+
+    Raw tokens matching `^[A-Za-z0-9._-]+$` may be used directly; any other identifier MUST be
+    encoded as `"~" + base64url_no_padding(utf8(item_identifier))` (never percent-encoded).
+    """
+    if not isinstance(item_id, str) or not item_id or any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in item_id):
+        raise ValueError("item_id must be a non-empty string without control characters")
+    if UCP_RAW_ITEM_TOKEN_RE.match(item_id):
+        return item_id
+    encoded = base64.urlsafe_b64encode(item_id.encode("utf-8")).decode("ascii").rstrip("=")
+    return f"~{encoded}"
+
+
+def decode_ucp_item_id_token(token: str) -> str:
+    """Decode and validate a UCP compact-path `item_id_token` (`permalink.md` #Item ID Token)."""
+    if not isinstance(token, str) or not token:
+        raise ValueError("empty_item_id_token")
+    if "%" in token:
+        raise ValueError("percent_encoded_item_token_forbidden")
+    if token.startswith("~"):
+        b64_part = token[1:]
+        if not b64_part or "=" in b64_part or not UCP_BASE64URL_NOPAD_RE.match(b64_part):
+            raise ValueError("non_canonical_tilde_base64url")
+        padding = "=" * ((4 - (len(b64_part) % 4)) % 4)
+        try:
+            raw_bytes = base64.urlsafe_b64decode(b64_part + padding)
+            decoded = raw_bytes.decode("utf-8")
+        except Exception as exc:
+            raise ValueError("invalid_tilde_base64url_utf8") from exc
+        # Verify canonical base64url without padding (reject non-zero trailing pad bits)
+        reencoded = base64.urlsafe_b64encode(raw_bytes).decode("ascii").rstrip("=")
+        if reencoded != b64_part or not decoded:
+            raise ValueError("non_canonical_tilde_base64url")
+        if any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in decoded):
+            raise ValueError("control_character_in_decoded_item_id")
+        return decoded
+    if not UCP_RAW_ITEM_TOKEN_RE.match(token):
+        raise ValueError("invalid_raw_item_id_token")
+    return token
+
+
+def validate_ucp_continue_to(
+    raw_continue_to: str | None,
+    *,
+    default_destination: str = "/checkout",
+) -> tuple[str, bool]:
+    """Validate `continue_to` in strict 5-step order (`permalink.md` #Destination Preference).
+
+    Returns `(canonical_reencoded_path, used_fallback)`. Any value failing the 5 steps falls back
+    to `default_destination` rather than reflecting untrusted input or allowing open redirect/CRLF.
+    """
+    if raw_continue_to is None or not isinstance(raw_continue_to, str) or not raw_continue_to:
+        return default_destination, False
+    # Step 1: Percent-decode once
+    decoded = unquote(raw_continue_to)
+    # Step 2: Must start with single `/` (not `//`), no scheme, backslash, whitespace, or control chars
+    if (
+        not decoded.startswith("/")
+        or decoded.startswith("//")
+        or "\\" in decoded
+        or "://" in decoded
+        or any(ch.isspace() or ord(ch) < 0x20 or ord(ch) == 0x7F for ch in decoded)
+    ):
+        return default_destination, True
+    parsed = urlsplit(decoded)
+    if parsed.scheme or parsed.netloc:
+        return default_destination, True
+    # Step 3 & 4: Apply dot-segment removal and verify same-origin relative path
+    norm_path = posixpath.normpath(parsed.path)
+    if not norm_path.startswith("/") or norm_path.startswith("//"):
+        return default_destination, True
+    if parsed.path.endswith("/") and norm_path != "/":
+        norm_path += "/"
+    # Step 5: Emit re-encoded canonical path without control characters
+    reencoded_path = quote(norm_path, safe="/:@!$&'()*+,;=-._~")
+    if parsed.query:
+        reencoded_query = quote(parsed.query, safe="=&/:@!$'()*+,;-._~")
+        reencoded_path = f"{reencoded_path}?{reencoded_query}"
+    if any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in reencoded_path):
+        return default_destination, True
+    return reencoded_path, False
+
+
+def validate_ucp_permalink_request(
+    permalink_url: str,
+    *,
+    configured_endpoint: str = "https://merchant.example/buy",
+    allowed_ucp_roots: frozenset[str] = frozenset({"buyer", "context", "attribution", "discounts", "line_items"}),
+    default_destination: str = "/checkout",
+    max_url_octets: int = 2048,
+) -> PermalinkInputValidationDecision:
+    """Validate an untrusted UCP `dev.ucp.shopping.permalink` GET URL (`permalink.md`, #913).
+
+    Enforces:
+    - UTF-8 octet budget (`max_url_octets`, default 2,048 octets per `permalink.md` #URL Budget).
+    - Compact item path (`{item_id_token}:{quantity}`) with raw vs `~`-base64url decoding and positive
+      base-10 integer quantities without leading zeros.
+    - Query parameter classification, canonical JSON Pointer normalization (`/buyer/email` == `buyer/email`),
+      duplicate pointer collision rejection, and duplicate `continue_to` rejection.
+    - Compact-path authority over `line_items/{i}/id` and `line_items/{i}/quantity` (query parameters
+      targeting path-created item IDs or quantities cannot override them, while extension fields like
+      `line_items/0/selling_plan` are allowed).
+    - Rejection of server-owned fields (`totals`, `status`, `order`, `presentment_currency`) and
+      prohibition of payment credentials, mandates, or secrets in permalink URLs.
+    """
+    if not isinstance(permalink_url, str) or not permalink_url.strip():
+        return PermalinkInputValidationDecision(False, "empty_permalink_url")
+    if len(permalink_url.encode("utf-8")) > max_url_octets:
+        return PermalinkInputValidationDecision(False, "url_budget_exceeded")
+
+    ep = urlsplit(configured_endpoint.rstrip("/"))
+    u = urlsplit(permalink_url)
+    if (
+        u.scheme.lower() != "https"
+        or u.netloc.lower() != ep.netloc.lower()
+        or u.username
+        or u.password
+        or "\\" in permalink_url
+        or any(ch.isspace() or ord(ch) < 0x20 or ord(ch) == 0x7F for ch in permalink_url)
+    ):
+        return PermalinkInputValidationDecision(False, "invalid_permalink_endpoint_origin")
+
+    base_path = ep.path.rstrip("/")
+    if u.path == base_path or u.path == f"{base_path}/":
+        compact_segment = ""
+    elif u.path.startswith(f"{base_path}/"):
+        compact_segment = u.path[len(base_path) + 1 :]
+        if "/" in compact_segment or "%2f" in compact_segment.lower():
+            return PermalinkInputValidationDecision(False, "invalid_compact_item_path")
+    else:
+        return PermalinkInputValidationDecision(False, "permalink_path_mismatch")
+
+    line_items: list[dict[str, Any]] = []
+    if compact_segment:
+        for pair_str in compact_segment.split(","):
+            if ":" not in pair_str:
+                return PermalinkInputValidationDecision(False, "malformed_item_pair")
+            token_part, qty_part = pair_str.split(":", 1)
+            if not UCP_POSITIVE_QUANTITY_RE.match(qty_part):
+                return PermalinkInputValidationDecision(False, "invalid_item_quantity")
+            try:
+                decoded_item_id = decode_ucp_item_id_token(token_part)
+            except ValueError as err:
+                return PermalinkInputValidationDecision(False, str(err))
+            line_items.append({"item": {"id": decoded_item_id}, "quantity": int(qty_part)})
+
+    raw_pairs = parse_qsl(u.query, keep_blank_values=True)
+    continue_to_values: list[str] = []
+    ucp_fields: dict[str, str] = {}
+    non_ucp_params: dict[str, str] = {}
+
+    for raw_key, raw_val in raw_pairs:
+        if any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in raw_key) or any(
+            ord(ch) < 0x20 or ord(ch) == 0x7F for ch in raw_val
+        ):
+            return PermalinkInputValidationDecision(False, "control_character_in_query")
+
+        if raw_key == "continue_to":
+            continue_to_values.append(raw_val)
+            continue
+
+        norm_pointer = "/" + raw_key.lstrip("/")
+        tokens = [t for t in norm_pointer.split("/") if t]
+        if not tokens:
+            return PermalinkInputValidationDecision(False, "empty_query_key")
+
+        # Enforce Privacy rule: permalinks MUST NOT contain payment credentials, mandates, or secrets
+        lowered_tokens = {t.lower() for t in tokens}
+        if lowered_tokens & UCP_FORBIDDEN_PERMALINK_SECRET_KEYS:
+            return PermalinkInputValidationDecision(False, "forbidden_secret_or_credential_in_permalink")
+
+        root = tokens[0]
+        if root in UCP_SERVER_OWNED_ROOTS:
+            return PermalinkInputValidationDecision(False, "server_owned_field_forbidden")
+
+        if root in allowed_ucp_roots:
+            if norm_pointer in ucp_fields:
+                return PermalinkInputValidationDecision(False, "duplicate_ucp_pointer_collision")
+            # Merge rule: compact item path is authoritative for line_items IDs and quantities
+            if root == "line_items" and len(tokens) >= 3 and tokens[1].isdigit():
+                idx = int(tokens[1])
+                leaf = "/".join(tokens[2:])
+                if idx < len(line_items) and leaf in {"quantity", "item/id", "id"}:
+                    # Compact path stays authoritative; ignore query override of path item ID/quantity
+                    ucp_fields[norm_pointer] = str(
+                        line_items[idx]["quantity"] if leaf == "quantity" else line_items[idx]["item"]["id"]
+                    )
+                    continue
+            ucp_fields[norm_pointer] = raw_val
+        else:
+            if raw_key in non_ucp_params:
+                return PermalinkInputValidationDecision(False, "duplicate_query_parameter")
+            non_ucp_params[raw_key] = raw_val
+
+    if len(continue_to_values) > 1:
+        return PermalinkInputValidationDecision(False, "duplicate_continue_to_collision")
+
+    resolved_dest, _ = validate_ucp_continue_to(
+        continue_to_values[0] if continue_to_values else None,
+        default_destination=default_destination,
+    )
+    return PermalinkInputValidationDecision(
+        accepted=True,
+        reason="ok_permalink_validated",
+        resolved_line_items=tuple(line_items),
+        resolved_continue_to=resolved_dest,
+        applied_ucp_fields=ucp_fields,
+        non_ucp_params=non_ucp_params,
+    )
 
 
 @dataclass(frozen=True)

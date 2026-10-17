@@ -15,7 +15,7 @@ import hashlib
 import json
 import re
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 
 FORBIDDEN_DPOP_ALGS = frozenset({"none", "HS256", "HS384", "HS512"})
@@ -979,6 +979,7 @@ class _ConversationState:
     events: list[dict[str, Any]] = field(default_factory=list)
     open_direct_conversation_id: str | None = None
     direct_messages: list[dict[str, Any]] = field(default_factory=list)
+    parent_conversation_id: str | None = None
 
 
 class PoppyConversationGuard:
@@ -988,14 +989,16 @@ class PoppyConversationGuard:
     `kit/company/validate/checks/conversations.ts` and `kit/company/patterns/conversations.md`:
     - Per-user `(client_id, user_id)` message ID deduplication and content-hash conflict (`409 message_id_conflict`).
     - URL-safe base64 alphabet IDs (`^[A-Za-z0-9_-]{1,256}$`) and non-empty message (`text`, `data`, or `context`).
-    - Ownership isolation returning `404 conversation_not_found` for unknown or cross-user conversations.
+    - Ownership isolation returning `404 conversation_not_found` for unknown or cross-user conversations,
+      and `401 sign_in_required` when an account-bound conversation (7.11) is accessed with a signed-out token.
     - Ordered Company event log (`cursor`, `has_more`, `status`, `responder` always present), strict cursor
       validation (`400 invalid_cursor`), and whole-number `wait` validation (`400 invalid_request`).
     - Idempotent close (`200 OK`, single `state: "closed"` event on first close, zero extra events on repeat close)
       and post-close write/handoff lock (`409 conversation_closed`).
-    - Section 7.10 Direct Conversation isolation: at most one open Direct Conversation per parent, parent records
-      only `direct_opened` / `direct_closed` state events, and direct customer messages are never returned to the
-      Personal Agent's parent `GET /events` feed.
+    - Section 7.10 Direct Conversation isolation: at most one open Direct Conversation per parent, parentcannot
+      itself be a Direct Conversation, parent messages/handoff return `409 direct_conversation_open` with
+      `conversation_id` while direct is open, parent records only `direct_opened` / `direct_closed` events,
+      and direct customer messages are never returned to the Personal Agent's parent `GET /events` feed.
     """
 
     def __init__(self) -> None:
@@ -1041,24 +1044,32 @@ class PoppyConversationGuard:
         self._event_seq += 1
         return f"evt_{self._event_seq:04d}"
 
-    def _check_ownership(self, token: SessionToken, conversation_id: str) -> _ConversationState | None:
+    def _check_ownership_or_error(
+        self, token: SessionToken, conversation_id: str
+    ) -> tuple[_ConversationState | None, tuple[int, dict[str, Any]] | None]:
         conv = self._conversations.get(conversation_id)
         if conv is None:
-            return None
+            return None, (404, {"error": "conversation_not_found"})
         if conv.client_id != token.client_id or conv.user_id != token.user_id:
-            return None
-        if conv.account_id is not None and token.account_id is not None and conv.account_id != token.account_id:
-            return None
-        return conv
+            return None, (404, {"error": "conversation_not_found"})
+        if conv.account_id is not None:
+            if not token.signed_in or token.account_id is None:
+                # Spec 7.11: Once a conversation has used the User's account, a request from a
+                # token for the same User that isn't signed in to that account gets sign_in_required.
+                return None, (401, {"error": "sign_in_required"})
+            if token.account_id != conv.account_id:
+                return None, (404, {"error": "conversation_not_found"})
+        return conv, None
 
     def start_conversation(
         self,
         *,
         token: SessionToken,
         message: dict[str, Any] | None,
+        parent_conversation_id: str | None = None,
         now: str = "2026-10-17T00:00:00Z",
     ) -> tuple[int, dict[str, Any]]:
-        """Handle `POST /conversations` (`conversations.start`, `retry-same-id`, `message-id-conflict`)."""
+        """Handle `POST /conversations` (`conversations.start`, `retry-same-id`, `message-id-conflict`, 7.10)."""
         ok, msg_id_or_err, content_hash = self._validate_message_payload(message)
         if not ok:
             return 400, {"error": msg_id_or_err}
@@ -1078,16 +1089,35 @@ class PoppyConversationGuard:
                 "responder": conv.responder,
             }
 
+        parent_conv: _ConversationState | None = None
+        if parent_conversation_id is not None:
+            if message.get("sender") != "human":  # type: ignore[union-attr]
+                return 400, {"error": "invalid_request"}
+            parent_conv, err_resp = self._check_ownership_or_error(token, parent_conversation_id)
+            if err_resp is not None:
+                return err_resp
+            assert parent_conv is not None
+            if parent_conv.parent_conversation_id is not None:
+                return 404, {"error": "conversation_not_found"}
+            if parent_conv.status == "closed":
+                return 409, {"error": "conversation_closed"}
+            if parent_conv.open_direct_conversation_id is not None:
+                return 409, {
+                    "error": "direct_conversation_open",
+                    "conversation_id": parent_conv.open_direct_conversation_id,
+                }
+
         self._conv_seq += 1
         conv_id = f"cnv_{self._conv_seq:04d}"
         conv = _ConversationState(
             conversation_id=conv_id,
             client_id=token.client_id,
             user_id=token.user_id,
-            account_id=token.account_id if token.signed_in else None,
+            account_id=token.account_id if token.signed_in else (parent_conv.account_id if parent_conv else None),
             status="idle",
             responder="agent",
             first_message_id=msg_id,
+            parent_conversation_id=parent_conversation_id,
         )
         recorded_msg = dict(message)  # type: ignore[arg-type]
         recorded_msg["role"] = "user"
@@ -1100,6 +1130,17 @@ class PoppyConversationGuard:
             }
         )
         self._conversations[conv_id] = conv
+        if parent_conv is not None:
+            parent_conv.open_direct_conversation_id = conv_id
+            parent_conv.direct_messages.append(recorded_msg)
+            parent_conv.events.append(
+                {
+                    "id": self._next_event_id(),
+                    "type": "direct_opened",
+                    "created_at": now,
+                    "conversation_id": conv_id,
+                }
+            )
         resp = {
             "conversation_id": conv_id,
             "status": conv.status,
@@ -1116,12 +1157,18 @@ class PoppyConversationGuard:
         message: dict[str, Any] | None,
         now: str = "2026-10-17T00:00:01Z",
     ) -> tuple[int, dict[str, Any]]:
-        """Handle `POST /conversations/{id}/messages` (`conversations.follow-up`, `closed-message`)."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
+        """Handle `POST /conversations/{id}/messages` (`conversations.follow-up`, `closed-message`, 7.10)."""
+        conv, err_resp = self._check_ownership_or_error(token, conversation_id)
+        if err_resp is not None:
+            return err_resp
+        assert conv is not None
         if conv.status == "closed":
             return 409, {"error": "conversation_closed"}
+        if conv.open_direct_conversation_id is not None:
+            return 409, {
+                "error": "direct_conversation_open",
+                "conversation_id": conv.open_direct_conversation_id,
+            }
 
         ok, msg_id_or_err, content_hash = self._validate_message_payload(message)
         if not ok:
@@ -1150,6 +1197,10 @@ class PoppyConversationGuard:
                 "message": recorded_msg,
             }
         )
+        if conv.parent_conversation_id is not None:
+            parent_conv = self._conversations.get(conv.parent_conversation_id)
+            if parent_conv is not None:
+                parent_conv.direct_messages.append(recorded_msg)
         resp = {"status": conv.status, "responder": conv.responder}
         user_msgs[msg_id] = (content_hash, conversation_id, False, resp)
         return 202, resp
@@ -1163,9 +1214,10 @@ class PoppyConversationGuard:
         wait: str | int | None = None,
     ) -> tuple[int, dict[str, Any]]:
         """Handle `GET /conversations/{id}/events` (`events-read`, `unknown-cursor`, `invalid-wait`)."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
+        conv, err_resp = self._check_ownership_or_error(token, conversation_id)
+        if err_resp is not None:
+            return err_resp
+        assert conv is not None
 
         if wait is not None:
             if isinstance(wait, bool):
@@ -1210,12 +1262,18 @@ class PoppyConversationGuard:
         live_agent_joined: bool = False,
         now: str = "2026-10-17T00:00:02Z",
     ) -> tuple[int, dict[str, Any]]:
-        """Handle `POST /conversations/{id}/handoff` (`spec#handoff`, `closed-handoff`)."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
+        """Handle `POST /conversations/{id}/handoff` (`spec#handoff`, `closed-handoff`, 7.10)."""
+        conv, err_resp = self._check_ownership_or_error(token, conversation_id)
+        if err_resp is not None:
+            return err_resp
+        assert conv is not None
         if conv.status == "closed":
             return 409, {"error": "conversation_closed"}
+        if conv.open_direct_conversation_id is not None:
+            return 409, {
+                "error": "direct_conversation_open",
+                "conversation_id": conv.open_direct_conversation_id,
+            }
 
         conv.status = "idle" if live_agent_joined else "queued"
         conv.responder = "human" if live_agent_joined else "agent"
@@ -1228,7 +1286,7 @@ class PoppyConversationGuard:
                 "responder": conv.responder,
             }
         )
-        return 200, {"status": conv.status, "responder": conv.responder}
+        return 202, {"status": conv.status, "responder": conv.responder}
 
     def open_direct_conversation(
         self,
@@ -1239,28 +1297,24 @@ class PoppyConversationGuard:
         now: str = "2026-10-17T00:00:03Z",
     ) -> tuple[int, dict[str, Any]]:
         """Open a Section 7.10 Direct Conversation without leaking direct messages to the Personal Agent."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
-        if conv.status == "closed":
-            return 409, {"error": "conversation_closed"}
-        if conv.open_direct_conversation_id is not None:
-            return 409, {"error": "direct_conversation_already_open"}
-
-        direct_id = f"dir_{conv.conversation_id}"
-        conv.open_direct_conversation_id = direct_id
-        conv.direct_messages.append({"role": "user", "sender": "human", "text": direct_customer_message})
-        conv.events.append(
-            {
-                "id": self._next_event_id(),
-                "type": "state",
-                "created_at": now,
-                "direct": "direct_opened",
-                "status": conv.status,
-                "responder": conv.responder,
-            }
+        status, resp = self.start_conversation(
+            token=token,
+            parent_conversation_id=conversation_id,
+            message={
+                "id": f"msg_dir_{self._conv_seq + 1:04d}",
+                "sender": "human",
+                "text": direct_customer_message,
+            },
+            now=now,
         )
-        return 201, {"direct_conversation_id": direct_id, "status": conv.status}
+        if status == 201:
+            return 201, {
+                "direct_conversation_id": resp["conversation_id"],
+                "conversation_id": resp["conversation_id"],
+                "status": resp["status"],
+                "responder": resp["responder"],
+            }
+        return status, resp
 
     def close_direct_conversation(
         self,
@@ -1270,24 +1324,15 @@ class PoppyConversationGuard:
         now: str = "2026-10-17T00:00:04Z",
     ) -> tuple[int, dict[str, Any]]:
         """Close an open Section 7.10 Direct Conversation and record `direct_closed` on the parent."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
+        conv, err_resp = self._check_ownership_or_error(token, conversation_id)
+        if err_resp is not None:
+            return err_resp
+        assert conv is not None
         if conv.open_direct_conversation_id is None:
             return 409, {"error": "no_open_direct_conversation"}
 
-        conv.open_direct_conversation_id = None
-        conv.events.append(
-            {
-                "id": self._next_event_id(),
-                "type": "state",
-                "created_at": now,
-                "direct": "direct_closed",
-                "status": conv.status,
-                "responder": conv.responder,
-            }
-        )
-        return 200, {"status": conv.status, "responder": conv.responder}
+        direct_id = conv.open_direct_conversation_id
+        return self.close_conversation(token=token, conversation_id=direct_id, now=now)
 
     def close_conversation(
         self,
@@ -1296,14 +1341,49 @@ class PoppyConversationGuard:
         conversation_id: str,
         now: str = "2026-10-17T00:00:05Z",
     ) -> tuple[int, dict[str, Any]]:
-        """Handle `POST /conversations/{id}/close` (`close`, `close-event`, `close-again`)."""
-        conv = self._check_ownership(token, conversation_id)
-        if conv is None:
-            return 404, {"error": "conversation_not_found"}
+        """Handle `POST /conversations/{id}/close` (`close`, `close-event`, `close-again`, 7.10 cascade)."""
+        conv, err_resp = self._check_ownership_or_error(token, conversation_id)
+        if err_resp is not None:
+            return err_resp
+        assert conv is not None
 
         if conv.status != "closed":
             conv.status = "closed"
-            conv.open_direct_conversation_id = None
+            if conv.open_direct_conversation_id is not None:
+                direct_id = conv.open_direct_conversation_id
+                conv.open_direct_conversation_id = None
+                direct_conv = self._conversations.get(direct_id)
+                if direct_conv is not None and direct_conv.status != "closed":
+                    direct_conv.status = "closed"
+                    direct_conv.events.append(
+                        {
+                            "id": self._next_event_id(),
+                            "type": "state",
+                            "created_at": now,
+                            "status": "closed",
+                            "responder": direct_conv.responder,
+                        }
+                    )
+                conv.events.append(
+                    {
+                        "id": self._next_event_id(),
+                        "type": "direct_closed",
+                        "created_at": now,
+                        "conversation_id": direct_id,
+                    }
+                )
+            if conv.parent_conversation_id is not None:
+                parent_conv = self._conversations.get(conv.parent_conversation_id)
+                if parent_conv is not None and parent_conv.open_direct_conversation_id == conv.conversation_id:
+                    parent_conv.open_direct_conversation_id = None
+                    parent_conv.events.append(
+                        {
+                            "id": self._next_event_id(),
+                            "type": "direct_closed",
+                            "created_at": now,
+                            "conversation_id": conv.conversation_id,
+                        }
+                    )
             conv.events.append(
                 {
                     "id": self._next_event_id(),
@@ -1314,6 +1394,530 @@ class PoppyConversationGuard:
                 }
             )
         return 200, {"status": conv.status, "responder": conv.responder}
+
+
+REDACTED_SUFFIX = "…(redacted)"
+SECRET_JSON_OR_FORM_FIELDS = frozenset(
+    {
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "device_code",
+        "assertion",
+        "client_assertion",
+        "code",
+        "code_verifier",
+        "token",
+        "password",
+        "credentials",
+        "client_secret",
+    }
+)
+SECRET_HTTP_HEADERS = frozenset(
+    {
+        "authorization",
+        "dpop",
+        "cookie",
+        "set-cookie",
+        "proxy-authorization",
+    }
+)
+JWT_INLINE_RE = re.compile(r"eyJ[A-Za-z0-9_-]{2,}(?:\.[A-Za-z0-9_-]*){1,4}")
+
+
+def redact_poppy_value(value: str) -> str:
+    """Redact a secret token, JWT, or credential while preserving a recognizable short prefix (#35 `redact.ts`)."""
+    if value == "":
+        return value
+    if value.startswith("eyJ"):
+        return value[:8] + REDACTED_SUFFIX
+    prefix_match = re.match(r"^[A-Za-z]{2,5}_", value)
+    if prefix_match and len(value) > len(prefix_match.group(0)) + 4:
+        return prefix_match.group(0) + REDACTED_SUFFIX
+    return "(redacted)"
+
+
+def redact_poppy_text(text: str) -> str:
+    """Redact inline JWTs anywhere in free text (#35 `redact.ts` & spec Section 8.2)."""
+    return JWT_INLINE_RE.sub(lambda m: m.group(0)[:8] + REDACTED_SUFFIX, text)
+
+
+def redact_poppy_headers(headers: dict[str, str]) -> dict[str, str]:
+    """Redact sensitive HTTP headers (`Authorization`, `DPoP`, `Cookie`, `Set-Cookie`, `Proxy-Authorization`)."""
+    out: dict[str, str] = {}
+    for name, value in (headers or {}).items():
+        lower = name.lower().strip()
+        if lower in {"authorization", "proxy-authorization"}:
+            space = value.find(" ")
+            if space > 0:
+                out[name] = value[: space + 1] + redact_poppy_value(value[space + 1 :].strip())
+            else:
+                out[name] = redact_poppy_value(value)
+        elif lower == "set-cookie":
+            eq = value.find("=")
+            semi = value.find(";")
+            if eq > 0:
+                out[name] = value[: eq + 1] + "(redacted)" + (value[semi:] if semi > 0 else "")
+            else:
+                out[name] = "(redacted)"
+        elif lower in SECRET_HTTP_HEADERS:
+            out[name] = redact_poppy_value(value)
+        else:
+            out[name] = redact_poppy_text(value)
+    return out
+
+
+def _redact_json_node(value: Any) -> Any:
+    if isinstance(value, list):
+        return [_redact_json_node(item) for item in value]
+    if isinstance(value, dict):
+        out: dict[str, Any] = {}
+        for k, v in value.items():
+            if str(k) in SECRET_JSON_OR_FORM_FIELDS:
+                out[k] = redact_poppy_value(v) if isinstance(v, str) else "(redacted)"
+            else:
+                out[k] = _redact_json_node(v)
+        return out
+    if isinstance(value, str):
+        return redact_poppy_text(value)
+    return value
+
+
+def _redact_form_string(form: str) -> str:
+    parts: list[str] = []
+    for pair in form.split("&"):
+        eq = pair.find("=")
+        if eq < 0:
+            parts.append(redact_poppy_text(pair))
+            continue
+        raw_name = pair[:eq]
+        raw_val = pair[eq + 1 :]
+        decoded_name = unquote(raw_name.replace("+", " "))
+        if decoded_name in SECRET_JSON_OR_FORM_FIELDS:
+            decoded_val = unquote(raw_val.replace("+", " "))
+            parts.append(f"{raw_name}={redact_poppy_value(decoded_val)}")
+        else:
+            parts.append(redact_poppy_text(pair))
+    return "&".join(parts)
+
+
+def redact_poppy_body(body: str) -> str:
+    """Redact JSON, form-encoded, or free-text HTTP bodies before logging or model context (#35 `redact.ts`)."""
+    trimmed = body.strip()
+    if trimmed.startswith("{") or trimmed.startswith("["):
+        try:
+            parsed = json.loads(trimmed)
+            return json.dumps(_redact_json_node(parsed), separators=(",", ":"))
+        except json.JSONDecodeError:
+            pass
+    if re.match(r"^[A-Za-z0-9_.~%+-]+=[^\s]*(&[A-Za-z0-9_.~%+-]+=[^\s]*)*$", trimmed):
+        return _redact_form_string(trimmed)
+    return redact_poppy_text(body)
+
+
+def redact_poppy_url(url: str) -> str:
+    """Redact secret query parameters (such as `access_token` or `code`) and inline JWTs in a URL."""
+    q = url.find("?")
+    if q == -1:
+        return redact_poppy_text(url)
+    h = url.find("#", q)
+    query = url[q + 1 :] if h == -1 else url[q + 1 : h]
+    suffix = "" if h == -1 else url[h:]
+    return redact_poppy_text(url[: q + 1] + _redact_form_string(query) + suffix)
+
+
+@dataclass
+class _MediatedSignInAttempt:
+    sign_in_id: str
+    session_id: str
+    client_id: str
+    user_id: str
+    account_id: str
+    granted_scopes: frozenset[str]
+    expected_code: str
+    expires_at: int
+    attempts_remaining: int
+    status: str  # "code_required", "complete", "failed", "expired"
+
+
+@dataclass
+class _AccountTokenRecord:
+    token_hash: str
+    client_id: str
+    user_id: str
+    account_id: str
+    scopes: frozenset[str]
+    expires_at: int
+    revoked: bool = False
+
+
+class PoppySignInAndAccountTokenGuard:
+    """Poppy v0.1 Section 4.4–4.9 & Milestone 3 (`kit/company/milestones/sign-in.md`) guard (#35).
+
+    Enforces:
+    - Scope ceiling by sign-in method (`direct`, `device`, `mediated`), rejecting missing, unknown,
+      or unavailable scopes with `invalid_scope`, and intersecting with user-approved scopes.
+    - Persistent single-account Session binding (`account_mismatch` across sign-in & refresh, even
+      after sign-out, per #41/#49).
+    - Mediated Sign-In (`spec#mediated-sign-in` 4.7): validates required `auth.mediated.fields`,
+      returns uniform `status: "failed"` (HTTP 200) for unknown account vs wrong password (preventing
+      account enumeration), supports step-up `code_required` with same-Session-only code submission
+      (`404 sign_in_not_found` for other Sessions) and sticky terminal `failed`/`expired` status, and
+      never echoes raw credentials.
+    - Account Token (`spec#account-tokens` 4.8) lifecycle: stored only as SHA-256 hash (`patterns/session-records.md`),
+      bound to `client_id` + `user_id` + `account_id`, allows scope narrowing only (never widening),
+      does not extend lifetime on use, and issues either a DPoP Session Token or an MCP resource-bound
+      Bearer Session Token (`spec#sending-tokens` 4.3).
+    - RFC 7009 revocation (`spec#sign-out` 4.9): revokes the Account Token and immediately signs out all
+      Sessions signed in with it while keeping Sessions alive in signed-out state for non-account actions.
+    """
+
+    def __init__(
+        self,
+        *,
+        allowed_scopes_by_method: dict[str, set[str]],
+        mediated_fields: tuple[str, ...] = ("email", "password"),
+        mcp_resources: set[str] | None = None,
+        accounts_by_email: dict[str, tuple[str, str]] | None = None,  # email -> (account_id, password)
+        max_code_attempts: int = 3,
+    ) -> None:
+        self.allowed_scopes_by_method = {k: set(v) for k, v in allowed_scopes_by_method.items()}
+        self.mediated_fields = mediated_fields
+        self.mcp_resources = set(mcp_resources or set())
+        self.accounts_by_email = dict(accounts_by_email or {})
+        self.max_code_attempts = max_code_attempts
+        # session_id -> {client_id, user_id, bound_account_id, signed_in, active_account_token_hash}
+        self.sessions: dict[str, dict[str, Any]] = {}
+        self.account_tokens: dict[str, _AccountTokenRecord] = {}
+        self.mediated_attempts: dict[str, _MediatedSignInAttempt] = {}
+        self._seq = 0
+
+    def _next_id(self, prefix: str) -> str:
+        self._seq += 1
+        return f"{prefix}_{self._seq:04d}"
+
+    def register_session(self, *, session_id: str, client_id: str, user_id: str) -> None:
+        self.sessions.setdefault(
+            session_id,
+            {
+                "client_id": client_id,
+                "user_id": user_id,
+                "bound_account_id": None,
+                "signed_in": False,
+                "active_account_token_hash": None,
+            },
+        )
+
+    def _parse_and_validate_scopes(
+        self,
+        *,
+        method: str,
+        requested_scope_str: str,
+        user_approved_scopes: set[str] | None = None,
+    ) -> frozenset[str] | None:
+        allowed = self.allowed_scopes_by_method.get(method)
+        if not allowed or not isinstance(requested_scope_str, str) or not requested_scope_str.strip():
+            return None
+        requested = [s for s in requested_scope_str.split(" ") if s]
+        if not requested or any(s not in allowed for s in requested):
+            return None
+        approved = set(requested) if user_approved_scopes is None else (set(requested) & set(user_approved_scopes))
+        if not approved:
+            return frozenset()
+        return frozenset(approved)
+
+    def _issue_account_and_session_tokens(
+        self,
+        *,
+        session_id: str,
+        client_id: str,
+        user_id: str,
+        account_id: str,
+        granted_scopes: frozenset[str],
+        now: int,
+        account_token_ttl: int = 2592000,
+    ) -> dict[str, Any]:
+        sess = self.sessions[session_id]
+        raw_refresh = f"pat_{self._next_id('rt')}_secret"
+        rt_hash = sha256_token(raw_refresh)
+        self.account_tokens[rt_hash] = _AccountTokenRecord(
+            token_hash=rt_hash,
+            client_id=client_id,
+            user_id=user_id,
+            account_id=account_id,
+            scopes=granted_scopes,
+            expires_at=now + account_token_ttl,
+        )
+        sess["bound_account_id"] = account_id
+        sess["signed_in"] = True
+        sess["active_account_token_hash"] = rt_hash
+        access_tok = f"pst_{self._next_id('at')}_dpop"
+        return {
+            "access_token": access_tok,
+            "token_type": "DPoP",
+            "expires_in": 3600,
+            "refresh_token": raw_refresh,
+            "refresh_token_expires_in": account_token_ttl,
+            "scope": " ".join(sorted(granted_scopes)),
+            "session_id": session_id,
+            "signed_in": True,
+        }
+
+    def complete_direct_or_device_sign_in(
+        self,
+        *,
+        method: str,  # "direct" or "device"
+        session_id: str,
+        client_id: str,
+        user_id: str,
+        account_id: str,
+        requested_scope: str,
+        user_approved_scopes: set[str] | None,
+        expected_issuer: str | None = None,
+        received_iss: str | None = None,
+        pkce_method: str = "S256",
+        now: int = 1000,
+    ) -> tuple[int, dict[str, Any]]:
+        """Complete Direct (4.5) or Device (4.6) Sign-In with PKCE `S256`, RFC 9207 `iss`, and scope ceiling."""
+        if method not in {"direct", "device"}:
+            return 400, {"error": "invalid_request"}
+        if method == "direct":
+            if pkce_method != "S256":
+                return 400, {"error": "invalid_request", "reason": "pkce_s256_required"}
+            if expected_issuer is not None and received_iss != expected_issuer:
+                return 400, {"error": "invalid_grant", "reason": "issuer_mismatch_rfc9207"}
+        sess = self.sessions.get(session_id)
+        if sess is None or sess["client_id"] != client_id or sess["user_id"] != user_id:
+            return 400, {"error": "invalid_session"}
+        if sess["bound_account_id"] is not None and sess["bound_account_id"] != account_id:
+            return 400, {"error": "account_mismatch"}
+
+        granted = self._parse_and_validate_scopes(
+            method=method,
+            requested_scope_str=requested_scope,
+            user_approved_scopes=user_approved_scopes,
+        )
+        if granted is None:
+            return 400, {"error": "invalid_scope"}
+        if not granted:
+            return 400, {"error": "access_denied"}
+
+        return 200, self._issue_account_and_session_tokens(
+            session_id=session_id,
+            client_id=client_id,
+            user_id=user_id,
+            account_id=account_id,
+            granted_scopes=granted,
+            now=now,
+        )
+
+    def start_mediated_sign_in(
+        self,
+        *,
+        token: SessionToken,
+        scope: str,
+        credentials: dict[str, str] | None,
+        require_step_up_code: str | None = None,
+        now: int = 1000,
+        code_ttl: int = 300,
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST {auth.mediated.endpoint}` (Spec 4.7 & `mediated-sign-in-response.schema.json`)."""
+        if token.token_type != "DPoP":
+            return 401, {"error": "invalid_token"}
+        sess = self.sessions.get(token.session_id)
+        if sess is None or sess["client_id"] != token.client_id or sess["user_id"] != token.user_id:
+            return 400, {"error": "invalid_session"}
+
+        granted = self._parse_and_validate_scopes(method="mediated", requested_scope_str=scope)
+        if granted is None or not granted:
+            return 400, {"error": "invalid_scope"}
+
+        if not isinstance(credentials, dict) or any(
+            not isinstance(credentials.get(f), str) or not credentials.get(f, "").strip()
+            for f in self.mediated_fields
+        ):
+            return 400, {"error": "invalid_request"}
+
+        email = credentials["email"].strip().lower()
+        provided_pw = credentials["password"]
+        acct_entry = self.accounts_by_email.get(email)
+        # Spec 4.7 & guides#company-mediated: return identical HTTP 200 `{"status": "failed"}`
+        # for unknown account and wrong password, and never echo credentials.
+        if acct_entry is None or acct_entry[1] != provided_pw:
+            return 200, {"status": "failed"}
+
+        account_id = acct_entry[0]
+        if sess["bound_account_id"] is not None and sess["bound_account_id"] != account_id:
+            return 400, {"error": "account_mismatch"}
+
+        if require_step_up_code is not None:
+            sign_in_id = self._next_id("sgn")
+            self.mediated_attempts[sign_in_id] = _MediatedSignInAttempt(
+                sign_in_id=sign_in_id,
+                session_id=token.session_id,
+                client_id=token.client_id,
+                user_id=token.user_id,
+                account_id=account_id,
+                granted_scopes=granted,
+                expected_code=require_step_up_code,
+                expires_at=now + code_ttl,
+                attempts_remaining=self.max_code_attempts,
+                status="code_required",
+            )
+            return 200, {
+                "status": "code_required",
+                "sign_in_id": sign_in_id,
+                "code": {"sent_to": "Registered verification channel"},
+                "expires_at": "2026-10-17T00:05:00Z",
+            }
+
+        tokens = self._issue_account_and_session_tokens(
+            session_id=token.session_id,
+            client_id=token.client_id,
+            user_id=token.user_id,
+            account_id=account_id,
+            granted_scopes=granted,
+            now=now,
+        )
+        return 200, {"status": "complete", **tokens}
+
+    def submit_mediated_code(
+        self,
+        *,
+        token: SessionToken,
+        sign_in_id: str,
+        payload: dict[str, Any],
+        now: int = 1010,
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `POST {auth.mediated.endpoint}/{sign_in_id}` (Spec 4.7 `mediated-code-request.schema.json`)."""
+        if token.token_type != "DPoP":
+            return 401, {"error": "invalid_token"}
+        # Spec 4.7: carries only `code`, never `credentials` again
+        if not isinstance(payload, dict) or "credentials" in payload:
+            return 400, {"error": "invalid_request"}
+        code = payload.get("code")
+        if not isinstance(code, str) or not code.strip():
+            return 400, {"error": "invalid_request"}
+
+        attempt = self.mediated_attempts.get(sign_in_id)
+        # Spec 4.7: unknown `sign_in_id` OR started by a different Session -> 404 `sign_in_not_found`
+        if attempt is None or attempt.session_id != token.session_id:
+            return 404, {"error": "sign_in_not_found"}
+
+        # Spec 4.7: Once a sign-in is `failed` or `expired`, submitting a code returns the same status again
+        if attempt.status in {"failed", "expired"}:
+            return 200, {"status": attempt.status}
+        if now >= attempt.expires_at:
+            attempt.status = "expired"
+            return 200, {"status": "expired"}
+
+        if code != attempt.expected_code:
+            attempt.attempts_remaining -= 1
+            if attempt.attempts_remaining <= 0:
+                attempt.status = "failed"
+                return 200, {"status": "failed"}
+            return 200, {
+                "status": "code_required",
+                "sign_in_id": attempt.sign_in_id,
+                "code": {"sent_to": "Registered verification channel"},
+                "expires_at": "2026-10-17T00:05:00Z",
+            }
+
+        attempt.status = "complete"
+        tokens = self._issue_account_and_session_tokens(
+            session_id=attempt.session_id,
+            client_id=attempt.client_id,
+            user_id=attempt.user_id,
+            account_id=attempt.account_id,
+            granted_scopes=attempt.granted_scopes,
+            now=now,
+        )
+        return 200, {"status": "complete", **tokens}
+
+    def exchange_account_token(
+        self,
+        *,
+        refresh_token: str,
+        client_id: str,
+        user_id: str,
+        session_id: str | None = None,
+        requested_scope: str | None = None,
+        has_dpop_proof: bool = True,
+        resource: str | None = None,
+        now: int = 1100,
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle `grant_type=refresh_token` Account Token exchange (Spec 4.8 & 4.3)."""
+        rt_hash = sha256_token(refresh_token)
+        rec = self.account_tokens.get(rt_hash)
+        if rec is None or rec.revoked or now >= rec.expires_at:
+            return 400, {"error": "invalid_grant"}
+        if rec.client_id != client_id or rec.user_id != user_id:
+            return 400, {"error": "invalid_grant"}
+
+        if requested_scope is not None:
+            req_scopes = frozenset(s for s in requested_scope.split(" ") if s)
+            if not req_scopes or not req_scopes.issubset(rec.scopes):
+                return 400, {"error": "invalid_scope"}
+            effective_scopes = req_scopes
+        else:
+            effective_scopes = rec.scopes
+
+        if not has_dpop_proof:
+            if not resource or resource not in self.mcp_resources:
+                return 400, {"error": "invalid_dpop_proof"}
+            token_type = "Bearer"
+        else:
+            if resource is not None and resource not in self.mcp_resources:
+                return 400, {"error": "invalid_target"}
+            token_type = "DPoP"
+
+        if session_id is not None:
+            sess = self.sessions.get(session_id)
+            if sess is None or sess["client_id"] != client_id or sess["user_id"] != user_id:
+                return 400, {"error": "invalid_session"}
+            if sess["bound_account_id"] is not None and sess["bound_account_id"] != rec.account_id:
+                return 400, {"error": "account_mismatch"}
+            target_session_id = session_id
+        else:
+            target_session_id = self._next_id("ses")
+            self.register_session(session_id=target_session_id, client_id=client_id, user_id=user_id)
+            sess = self.sessions[target_session_id]
+
+        sess["bound_account_id"] = rec.account_id
+        sess["signed_in"] = True
+        sess["active_account_token_hash"] = rt_hash
+        # Spec 4.8: Using an Account Token does NOT extend its lifetime (`rec.expires_at` unchanged)
+        return 200, {
+            "access_token": f"pst_{self._next_id('at')}_{token_type.lower()}",
+            "token_type": token_type,
+            "expires_in": 3600,
+            "scope": " ".join(sorted(effective_scopes)),
+            "session_id": target_session_id,
+            "signed_in": True,
+        }
+
+    def revoke_account_token(
+        self,
+        *,
+        refresh_token: str,
+        client_id: str,
+    ) -> tuple[int, dict[str, Any]]:
+        """Handle RFC 7009 revocation at `revocation_endpoint` (Spec 4.9)."""
+        rt_hash = sha256_token(refresh_token)
+        rec = self.account_tokens.get(rt_hash)
+        if rec is None:
+            return 200, {"revoked": False}
+        if rec.client_id != client_id:
+            return 400, {"error": "invalid_client"}
+        rec.revoked = True
+        signed_out_sessions: list[str] = []
+        for sid, sess in self.sessions.items():
+            if sess.get("active_account_token_hash") == rt_hash:
+                sess["signed_in"] = False
+                sess["active_account_token_hash"] = None
+                # `bound_account_id` stays set permanently per Spec 4.4 / #49
+                signed_out_sessions.append(sid)
+        return 200, {"revoked": True, "signed_out_sessions": tuple(signed_out_sessions)}
 
 
 def run_demo() -> dict[str, Any]:

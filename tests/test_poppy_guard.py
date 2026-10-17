@@ -1,5 +1,6 @@
 """Unit tests for Poppy v0.1 discovery/token verification and Sierra retail mutation guards."""
 
+import json
 import unittest
 
 from lab.poppy_guard import (
@@ -7,12 +8,18 @@ from lab.poppy_guard import (
     DPoPProof,
     PaymentInstrument,
     PoppyConversationGuard,
+    PoppySignInAndAccountTokenGuard,
     RetailOrder,
     RetailOrderMutationGuard,
     SessionAssertionClaims,
     SessionToken,
     StandingPermission,
     build_rfc8414_metadata_url,
+    redact_poppy_body,
+    redact_poppy_headers,
+    redact_poppy_text,
+    redact_poppy_url,
+    redact_poppy_value,
     run_demo,
     sha256_token,
     verify_cross_company_content_boundary,
@@ -972,12 +979,74 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
             conversation_id=conv_id,
             direct_customer_message="Second concurrent direct chat.",
         )
-        self.assertEqual((st_dir_dup, dir_dup_body["error"]), (409, "direct_conversation_already_open"))
+        self.assertEqual((st_dir_dup, dir_dup_body["error"]), (409, "direct_conversation_open"))
+        self.assertEqual(dir_dup_body["conversation_id"], dir_body["direct_conversation_id"])
+
+        # While Direct Conversation is open, parent POST /messages and POST /handoff return 409 direct_conversation_open
+        st_parent_msg_blocked, parent_msg_blocked = conv_guard.post_message(
+            token=self.alice_token,
+            conversation_id=conv_id,
+            message={"id": "msg_blocked_while_direct", "sender": "agent", "text": "Agent tries to message parent."},
+        )
+        self.assertEqual((st_parent_msg_blocked, parent_msg_blocked["error"]), (409, "direct_conversation_open"))
+        self.assertEqual(parent_msg_blocked["conversation_id"], dir_body["direct_conversation_id"])
+
+        st_parent_ho_blocked, parent_ho_blocked = conv_guard.request_handoff(
+            token=self.alice_token,
+            conversation_id=conv_id,
+        )
+        self.assertEqual((st_parent_ho_blocked, parent_ho_blocked["error"]), (409, "direct_conversation_open"))
+        self.assertEqual(parent_ho_blocked["conversation_id"], dir_body["direct_conversation_id"])
+
+        # Section 7.10 via POST /conversations with parent_conversation_id: agent sender rejected
+        st_agent_dir, agent_dir_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message={"id": "msg_agent_dir", "sender": "agent", "text": "Agent cannot open direct"},
+            parent_conversation_id=conv_id,
+        )
+        self.assertEqual((st_agent_dir, agent_dir_body["error"]), (400, "invalid_request"))
+
+        # Nested direct conversation (parent is itself a direct conversation) returns 404 conversation_not_found
+        st_nested_dir, nested_dir_body = conv_guard.start_conversation(
+            token=self.alice_token,
+            message={"id": "msg_nested_dir", "sender": "human", "text": "Nested direct"},
+            parent_conversation_id=dir_body["direct_conversation_id"],
+        )
+        self.assertEqual((st_nested_dir, nested_dir_body["error"]), (404, "conversation_not_found"))
+
         st_dir_close, _ = conv_guard.close_direct_conversation(
             token=self.alice_token,
             conversation_id=conv_id,
         )
         self.assertEqual(st_dir_close, 200)
+
+        # Section 7.9 Handoff returns 202 with status=queued and responder=agent
+        st_ho, ho_body = conv_guard.request_handoff(
+            token=self.alice_token,
+            conversation_id=conv_id,
+        )
+        self.assertEqual(st_ho, 202)
+        self.assertEqual(ho_body["status"], "queued")
+        self.assertEqual(ho_body["responder"], "agent")
+
+        # Section 7.11 Conversations and Sign-In: once a conversation uses an account, signed-out token gets 401 sign_in_required
+        signed_out_alice = SessionToken(
+            access_token="tok_alice_signed_out",
+            token_type="DPoP",
+            session_id="ses_alice_signed_out",
+            client_id=self.alice_token.client_id,
+            user_id=self.alice_token.user_id,
+            signed_in=False,
+            account_id=None,
+            scopes=frozenset({"poppy:read", "poppy:write"}),
+            jwk_thumbprint="jkt_alice_1",
+            expires_at=2000,
+        )
+        st_signed_out, signed_out_body = conv_guard.read_events(
+            token=signed_out_alice,
+            conversation_id=conv_id,
+        )
+        self.assertEqual((st_signed_out, signed_out_body["error"]), (401, "sign_in_required"))
 
         # conversations.events-read, user-message-recorded, retry-not-duplicated
         st_read, read_body = conv_guard.read_events(token=self.alice_token, conversation_id=conv_id, wait=1)
@@ -991,8 +1060,10 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
         self.assertEqual(first_events[0]["message"]["role"], "user")
         # Direct customer message text is not present in parent events
         self.assertNotIn("Private customer note", str(read_body["events"]))
-        direct_states = [e.get("direct") for e in read_body["events"] if e["type"] == "state"]
-        self.assertEqual(direct_states, ["direct_opened", "direct_closed"])
+        direct_event_types = [
+            e["type"] for e in read_body["events"] if e["type"] in {"direct_opened", "direct_closed"}
+        ]
+        self.assertEqual(direct_event_types, ["direct_opened", "direct_closed"])
 
         # conversations.invalid-wait & conversations.unknown-cursor
         st_bad_wait, bad_wait_body = conv_guard.read_events(
@@ -1035,6 +1106,229 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
             token=self.alice_token, conversation_id=conv_id
         )
         self.assertEqual((st_closed_ho, closed_ho_body["error"]), (409, "conversation_closed"))
+
+    def test_milestone3_sign_in_account_tokens_revocation_and_secret_redaction(self) -> None:
+        sign_in_guard = PoppySignInAndAccountTokenGuard(
+            allowed_scopes_by_method={
+                "direct": {"poppy:read", "poppy:write", "orders:read", "orders:write"},
+                "device": {"poppy:read", "poppy:write", "orders:read"},
+                "mediated": {"poppy:read", "orders:read"},
+            },
+            mcp_resources={"https://mcp.manzanitasupply.example"},
+            accounts_by_email={"alice@example.com": ("acct_alice_100", "correct-horse-battery")},
+        )
+        sign_in_guard.register_session(
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+        )
+        sign_in_guard.register_session(
+            session_id="ses_alice_2",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+        )
+
+        # Direct Sign-In (4.5): enforces PKCE S256, scope ceiling, and RFC 9207 `iss` parameter
+        st_bad_pkce, bad_pkce = sign_in_guard.complete_direct_or_device_sign_in(
+            method="direct",
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            account_id="acct_alice_100",
+            requested_scope="poppy:read",
+            user_approved_scopes={"poppy:read"},
+            pkce_method="plain",
+            expected_issuer="https://auth.manzanitasupply.example",
+            received_iss="https://auth.manzanitasupply.example",
+        )
+        self.assertEqual((st_bad_pkce, bad_pkce["error"]), (400, "invalid_request"))
+
+        st_bad_iss, bad_iss = sign_in_guard.complete_direct_or_device_sign_in(
+            method="direct",
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            account_id="acct_alice_100",
+            requested_scope="poppy:read",
+            user_approved_scopes={"poppy:read"},
+            pkce_method="S256",
+            expected_issuer="https://auth.manzanitasupply.example",
+            received_iss="https://evil.example",
+        )
+        self.assertEqual((st_bad_iss, bad_iss["error"]), (400, "invalid_grant"))
+
+        st_direct, direct_res = sign_in_guard.complete_direct_or_device_sign_in(
+            method="direct",
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            account_id="acct_alice_100",
+            requested_scope="poppy:read orders:read orders:write",
+            user_approved_scopes={"poppy:read", "orders:read"},
+            pkce_method="S256",
+            expected_issuer="https://auth.manzanitasupply.example",
+            received_iss="https://auth.manzanitasupply.example",
+        )
+        self.assertEqual(st_direct, 200)
+        self.assertEqual(direct_res["scope"], "orders:read poppy:read")
+        raw_rt = direct_res["refresh_token"]
+        # Stored as SHA-256 hash, never cleartext
+        self.assertIn(sha256_token(raw_rt), sign_in_guard.account_tokens)
+        self.assertNotIn(raw_rt, sign_in_guard.account_tokens)
+
+        alice_ses2_token = SessionToken(
+            access_token="tok_alice_ses2",
+            token_type="DPoP",
+            session_id="ses_alice_2",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            signed_in=False,
+            account_id=None,
+            scopes=frozenset({"poppy:read"}),
+            jwk_thumbprint="jkt_alice_2",
+            expires_at=2000,
+        )
+        alice_ses1_token = SessionToken(
+            access_token="tok_alice_ses1",
+            token_type="DPoP",
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            signed_in=True,
+            account_id="acct_alice_100",
+            scopes=frozenset({"poppy:read", "orders:read"}),
+            jwk_thumbprint="jkt_alice_1",
+            expires_at=2000,
+        )
+
+        # Mediated Sign-In (4.7): uniform {"status": "failed"} for unknown account vs wrong password
+        st_unk, unk_res = sign_in_guard.start_mediated_sign_in(
+            token=alice_ses2_token,
+            scope="poppy:read",
+            credentials={"email": "unknown@example.com", "password": "wrong"},
+        )
+        st_wrong_pw, wrong_pw_res = sign_in_guard.start_mediated_sign_in(
+            token=alice_ses2_token,
+            scope="poppy:read",
+            credentials={"email": "alice@example.com", "password": "wrong"},
+        )
+        self.assertEqual((st_unk, unk_res), (200, {"status": "failed"}))
+        self.assertEqual(unk_res, wrong_pw_res)
+
+        # Mediated Sign-In step-up `code_required`: rejects credentials in step-up & wrong session
+        st_step, step_res = sign_in_guard.start_mediated_sign_in(
+            token=alice_ses2_token,
+            scope="poppy:read orders:read",
+            credentials={"email": "alice@example.com", "password": "correct-horse-battery"},
+            require_step_up_code="654321",
+        )
+        self.assertEqual((st_step, step_res["status"]), (200, "code_required"))
+        sign_in_id = step_res["sign_in_id"]
+
+        st_wrong_ses, wrong_ses = sign_in_guard.submit_mediated_code(
+            token=alice_ses1_token,
+            sign_in_id=sign_in_id,
+            payload={"code": "654321"},
+        )
+        self.assertEqual((st_wrong_ses, wrong_ses["error"]), (404, "sign_in_not_found"))
+
+        st_cred_in_code, cred_in_code = sign_in_guard.submit_mediated_code(
+            token=alice_ses2_token,
+            sign_in_id=sign_in_id,
+            payload={"code": "654321", "credentials": {"password": "secret"}},
+        )
+        self.assertEqual((st_cred_in_code, cred_in_code["error"]), (400, "invalid_request"))
+
+        st_code_ok, code_ok_res = sign_in_guard.submit_mediated_code(
+            token=alice_ses2_token,
+            sign_in_id=sign_in_id,
+            payload={"code": "654321"},
+        )
+        self.assertEqual((st_code_ok, code_ok_res["status"]), (200, "complete"))
+
+        # Account Token refresh (4.8): narrows scope, does not extend expires_at, issues MCP Bearer when resource set
+        rec_before = sign_in_guard.account_tokens[sha256_token(raw_rt)]
+        exp_before = rec_before.expires_at
+        st_widen, widen_res = sign_in_guard.exchange_account_token(
+            refresh_token=raw_rt,
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            session_id="ses_alice_1",
+            requested_scope="poppy:read orders:write",
+        )
+        self.assertEqual((st_widen, widen_res["error"]), (400, "invalid_scope"))
+
+        st_narrow, narrow_res = sign_in_guard.exchange_account_token(
+            refresh_token=raw_rt,
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            session_id="ses_alice_1",
+            requested_scope="poppy:read",
+            now=2000,
+        )
+        self.assertEqual(st_narrow, 200)
+        self.assertEqual((narrow_res["token_type"], narrow_res["scope"]), ("DPoP", "poppy:read"))
+        self.assertEqual(
+            sign_in_guard.account_tokens[sha256_token(raw_rt)].expires_at,
+            exp_before,
+        )
+
+        st_mcp, mcp_res = sign_in_guard.exchange_account_token(
+            refresh_token=raw_rt,
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            session_id="ses_alice_1",
+            has_dpop_proof=False,
+            resource="https://mcp.manzanitasupply.example",
+        )
+        self.assertEqual(st_mcp, 200)
+        self.assertEqual(mcp_res["token_type"], "Bearer")
+
+        # Account Token revocation (4.9): signs out active sessions immediately, keeps permanent single-account binding
+        st_rev, rev_res = sign_in_guard.revoke_account_token(
+            refresh_token=raw_rt,
+            client_id="https://agent.example/client.json",
+        )
+        self.assertEqual(st_rev, 200)
+        self.assertTrue(rev_res["revoked"])
+        self.assertFalse(sign_in_guard.sessions["ses_alice_1"]["signed_in"])
+        self.assertEqual(sign_in_guard.sessions["ses_alice_1"]["bound_account_id"], "acct_alice_100")
+
+        # Attempting to sign into a second account on the same Session returns 400 account_mismatch
+        st_mismatch, mismatch_res = sign_in_guard.complete_direct_or_device_sign_in(
+            method="device",
+            session_id="ses_alice_1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice",
+            account_id="acct_bob_999",
+            requested_scope="poppy:read",
+            user_approved_scopes={"poppy:read"},
+        )
+        self.assertEqual((st_mismatch, mismatch_res["error"]), (400, "account_mismatch"))
+
+        # Section 8.2 & kit/company/validate/redact.ts secret redaction
+        self.assertEqual(redact_poppy_value("pat_secret_12345"), "pat_…(redacted)")
+        self.assertEqual(redact_poppy_value("short"), "(redacted)")
+        jwt_text = "Header eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfMSJ9.c2lnbmF0dXJlX2hlcmU"
+        self.assertEqual(redact_poppy_text(jwt_text), "Header eyJhbGci…(redacted)")
+        red_headers = redact_poppy_headers(
+            {"Authorization": "DPoP eyJhbGciOiJFUzI1NiJ9.eyJzdWIiOiIxIn0.c2ln", "Content-Type": "application/json"}
+        )
+        self.assertTrue(red_headers["Authorization"].endswith("…(redacted)"))
+        self.assertEqual(red_headers["Content-Type"], "application/json")
+        red_body = json.loads(
+            redact_poppy_body(
+                json.dumps(
+                    {"access_token": "tok_secret_value_1", "credentials": {"password": "pw123"}, "status": "complete"}
+                )
+            )
+        )
+        self.assertEqual(red_body["access_token"], "tok_…(redacted)")
+        self.assertEqual(red_body["credentials"], "(redacted)")
+        self.assertEqual(red_body["status"], "complete")
+        red_url = redact_poppy_url("https://auth.example/cb?code=code_987654321&state=xyz")
+        self.assertIn("code=code_…(redacted)", red_url)
+        self.assertIn("state=xyz", red_url)
 
 
 if __name__ == "__main__":
