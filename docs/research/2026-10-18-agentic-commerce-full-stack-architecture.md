@@ -325,6 +325,23 @@ Screens SAM.gov / EU procurement debarment lists (`DEBARRED_OR_EXCLUDED_VENDOR_R
 
 Enforces ABA Model Rule 1.15 anti-commingling (`IOLTA_TRUST_COMMINGLING_OR_DIRECT_OPERATING_DEBIT_BLOCKED`), blocks premature drawdown of unearned client retainers (`IOLTA_UNEARNED_RETAINER_PREMATURE_DRAWDOWN_BLOCKED`), and sweeps accrued IOLTA interest to the state bar foundation (`IOLTA_EARNED_FEE_DISBURSED_AND_BAR_INTEREST_SWEPT`).
 
+---
+
+## 38. Aviation IATA NDC Interline IRROPS Escrow, Open-Banking VRP Sweeping Guard & Telecom 5G uRLLC Network-Slice SLA Escrow (Stage 32)
+
+### 38.1 Aviation IATA NDC / ONE Order Interline & EU261 IRROPS Escrow (`evaluate_iata_ndc_irrops_interline_escrow`)
+
+Computes operating vs marketing carrier prorate splits (`IATA_ONE_ORDER_INTERLINE_PRORATE_SETTLED`), triggers automatic EU261 / DOT statutory passenger compensation (`€250`/`€400`/`€600`) on non-weather delays `>= 180 min` (`IATA_IRROPS_STATUTORY_COMPENSATION_OR_REFUND_TRIGGERED`), and recognizes extraordinary weather/ATC exemptions (`IRROPS_EXTRAORDINARY_CIRCUMSTANCE_COMPENSATION_EXEMPT`).
+
+### 38.2 UK OBIE / EU PSD3 Open-Banking VRP Sweeping Guard (`evaluate_open_banking_vrp_sweeping_guard`)
+
+Verifies PSU SCA device-bound consent (`VRP_SCA_CONSENT_BINDING_SIGNATURE_INVALID_BLOCKED`), blocks third-party commercial merchants from abusing zero-fee `SWEEPING` VRP rails (`VRP_SWEEPING_THIRD_PARTY_MERCHANT_BYPASS_BLOCKED`), and enforces single-transfer and monthly cumulative caps (`VRP_PERIODIC_OR_SINGLE_LIMIT_EXCEEDED_BLOCKED`).
+
+### 38.3 Telecom 3GPP 5G Network-Slice uRLLC SLA Escrow (`evaluate_telecom_5g_network_slice_sla_escrow`)
+
+Verifies signed TWAMP active probe telemetry (`UNSIGNED_TWAMP_5G_SLICE_TELEMETRY_BLOCKED`) and automatically slashes 25%–50% of the network-slice fee when p99 latency or packet loss breaches uRLLC commitments (`TELECOM_5G_URLLC_SLA_BREACH_REBATE_SLASHED`).
+
+
 
 
 

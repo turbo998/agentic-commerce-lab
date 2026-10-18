@@ -206,6 +206,13 @@
 2. **Executable Guard Module & Unit Tests (234 Total Tests)**:
    - [`lab/construction_lien_public_tender_iolta_guard.py`](../../lab/construction_lien_public_tender_iolta_guard.py) & [`tests/test_construction_lien_public_tender_iolta_guard.py`](../../tests/test_construction_lien_public_tender_iolta_guard.py)
 
+### Stage 32 — Aviation IATA NDC Interline IRROPS Escrow, Open-Banking VRP Sweeping Guard & Telecom 5G uRLLC Network-Slice SLA Escrow + Stages 30–32 16-Scenario 7-Card Deck
+1. **IATA NDC IRROPS, Open-Banking VRP Sweeping & 5G Slice SLA Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §38)**:
+   - Implemented IATA ONE Order interline prorate and EU261 statutory IRROPS compensation (`IATA_IRROPS_STATUTORY_COMPENSATION_OR_REFUND_TRIGGERED`), OBIE/PSD3 VRP sweeping beneficial-owner verification (`VRP_SWEEPING_THIRD_PARTY_MERCHANT_BYPASS_BLOCKED`), and 3GPP 5G uRLLC slice TWAMP telemetry SLA slashing (`TELECOM_5G_URLLC_SLA_BREACH_REBATE_SLASHED`), plus the 16-scenario 7-Card 4:5 visual benchmark [`reports/agentic-commerce-mobility-civic-bench/index.html`](../../reports/agentic-commerce-mobility-civic-bench/index.html).
+2. **Executable Guard Modules, 16-Scenario 7-Card Deck & Unit Tests (238 Total Tests)**:
+   - [`lab/aviation_ndc_vrp_telecom_slice_guard.py`](../../lab/aviation_ndc_vrp_telecom_slice_guard.py) & [`tests/test_aviation_ndc_vrp_telecom_slice_guard.py`](../../tests/test_aviation_ndc_vrp_telecom_slice_guard.py)
+   - [`lab/mobility_construction_aviation_bench.py`](../../lab/mobility_construction_aviation_bench.py) & [`reports/agentic-commerce-mobility-civic-bench/index.html`](../../reports/agentic-commerce-mobility-civic-bench/index.html)
+
 ---
 
 ## Quick Verification Commands

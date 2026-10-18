@@ -27,10 +27,12 @@ __all__ = [
     "evaluate_generative_ip_royalty_micro_split",
     "evaluate_gpu_spot_compute_sla_and_carbon_retirement",
     "evaluate_hs_code_landed_cost_and_deminimis",
+    "evaluate_iata_ndc_irrops_interline_escrow",
     "evaluate_iolta_fiduciary_trust_account_guard",
     "evaluate_loyalty_points_escrow_and_return_clawback",
     "evaluate_m2m_esim_roaming_cdr_settlement",
     "evaluate_marine_demurrage_detention_parametric_escrow",
+    "evaluate_open_banking_vrp_sweeping_guard",
     "evaluate_parametric_sla_microinsurance_claim",
     "evaluate_promo_coupon_stacking_invariant",
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
@@ -38,6 +40,7 @@ __all__ = [
     "evaluate_sigis_fsa_hsa_iias_split_tender",
     "evaluate_sovereign_procurement_bid_bond_and_domestic_content",
     "evaluate_split_settlement_invariant",
+    "evaluate_telecom_5g_network_slice_sla_escrow",
     "evaluate_trade_in_residual_value_and_grade_clawback",
     "evaluate_usage_based_metering_idempotency",
     "evaluate_vickrey_reverse_auction_clearing",
@@ -50,6 +53,7 @@ __all__ = [
     "redact_hipaa_phi_from_payment_descriptor",
     "run_global_clearing_privacy_benchmark",
     "run_lifecycle_finance_circular_benchmark",
+    "run_mobility_construction_aviation_benchmark",
     "run_trade_sovereign_settlement_benchmark",
     "run_vertical_domain_clearing_benchmark",
     "scan_and_redact_agent_context_pii_pci",
@@ -67,6 +71,18 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_iata_ndc_irrops_interline_escrow",
+        "evaluate_open_banking_vrp_sweeping_guard",
+        "evaluate_telecom_5g_network_slice_sla_escrow",
+    }:
+        from lab import aviation_ndc_vrp_telecom_slice_guard
+
+        return getattr(aviation_ndc_vrp_telecom_slice_guard, name)
+    if name == "run_mobility_construction_aviation_benchmark":
+        from lab import mobility_construction_aviation_bench
+
+        return getattr(mobility_construction_aviation_bench, name)
     if name in {
         "evaluate_aia_g702_mechanics_lien_waiver_escrow",
         "evaluate_iolta_fiduciary_trust_account_guard",
