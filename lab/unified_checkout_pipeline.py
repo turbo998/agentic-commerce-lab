@@ -87,6 +87,11 @@ from lab.loyalty_affiliate_promo_stacking_guard import (
     evaluate_promo_coupon_stacking_invariant,
     verify_cryptographic_affiliate_attribution_chain,
 )
+from lab.embedded_bnpl_parametric_insurance_guard import (
+    evaluate_agentic_bnpl_trade_credit_underwriting,
+    evaluate_parametric_sla_microinsurance_claim,
+    verify_invoice_factoring_ucc_lien_uniqueness,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -219,6 +224,11 @@ class UnifiedCheckoutPipelineInput:
     promo_stacking_context: dict[str, Any] | None = None
     affiliate_attribution_bundle: dict[str, Any] | None = None
     loyalty_clawback_context: dict[str, Any] | None = None
+
+    # Optional Stage 20 Embedded BNPL, Parametric Microinsurance & Invoice Factoring Gate
+    bnpl_underwriting_request: dict[str, Any] | None = None
+    parametric_insurance_claim: dict[str, Any] | None = None
+    invoice_factoring_request: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -677,8 +687,28 @@ def execute_unified_agentic_checkout(
         promo_attr_ok = lc_res.allowed
         promo_attr_reason = lc_res.decision_code
 
+    bnpl_ins_ok = True
+    bnpl_ins_reason = ""
+    if inp.bnpl_underwriting_request is not None:
+        bn_res = evaluate_agentic_bnpl_trade_credit_underwriting(inp.bnpl_underwriting_request)
+        bnpl_ins_ok = bn_res.approved
+        bnpl_ins_reason = bn_res.decision_code
+    if bnpl_ins_ok and inp.parametric_insurance_claim is not None:
+        pi_res = evaluate_parametric_sla_microinsurance_claim(inp.parametric_insurance_claim)
+        bnpl_ins_ok = pi_res.payout_approved
+        bnpl_ins_reason = pi_res.decision_code
+    if bnpl_ins_ok and inp.invoice_factoring_request is not None:
+        if_res = verify_invoice_factoring_ucc_lien_uniqueness(inp.invoice_factoring_request)
+        bnpl_ins_ok = if_res.allowed
+        bnpl_ins_reason = if_res.decision_code
+
     g6_passed = (
-        connect_res.valid and spt_res.allowed and b2b_3way_ok and mkt_split_ok and promo_attr_ok
+        connect_res.valid
+        and spt_res.allowed
+        and b2b_3way_ok
+        and mkt_split_ok
+        and promo_attr_ok
+        and bnpl_ins_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -692,7 +722,11 @@ def execute_unified_agentic_checkout(
                 else (
                     b2b_3way_reason
                     if not b2b_3way_ok
-                    else (mkt_split_reason if not mkt_split_ok else promo_attr_reason)
+                    else (
+                        mkt_split_reason
+                        if not mkt_split_ok
+                        else (promo_attr_reason if not promo_attr_ok else bnpl_ins_reason)
+                    )
                 )
             )
         )

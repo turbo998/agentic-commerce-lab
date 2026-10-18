@@ -131,6 +131,12 @@
 2. **Executable Guard Module & Unit Tests (178 Total Tests)**:
    - [`lab/loyalty_affiliate_promo_stacking_guard.py`](../../lab/loyalty_affiliate_promo_stacking_guard.py) & [`tests/test_loyalty_affiliate_promo_stacking_guard.py`](../../tests/test_loyalty_affiliate_promo_stacking_guard.py)
 
+### Stage 20 — Agentic Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard
+1. **Embedded BNPL, Parametric Microinsurance & Factoring Lien Guard ([`docs/architecture/embedded-bnpl-and-parametric-insurance-guard.md`](../architecture/embedded-bnpl-and-parametric-insurance-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §26)**:
+   - Enforced Debt Service Coverage Ratio (`dscr >= 1.35`), open-banking cash buffer, and cross-issuer BNPL velocity (`MULTI_ISSUER_BNPL_STACKING_BLOCKED`) with Largest Remainder installment conservation (`BNPL_TRADE_CREDIT_APPROVED`); multi-oracle quorum parametric SLA instant payout (`PARAMETRIC_INSTANT_PAYOUT_SETTLED`) with anti-double-dip Indemnity Principle enforcement (`DOUBLE_DIP_INDEMNITY_BLOCKED`); and canonical SHA-256 invoice factoring lien uniqueness (`INVOICE_DOUBLE_PLEDGING_BLOCKED`).
+2. **Executable Guard Module & Unit Tests (183 Total Tests)**:
+   - [`lab/embedded_bnpl_parametric_insurance_guard.py`](../../lab/embedded_bnpl_parametric_insurance_guard.py) & [`tests/test_embedded_bnpl_parametric_insurance_guard.py`](../../tests/test_embedded_bnpl_parametric_insurance_guard.py)
+
 ---
 
 ## Quick Verification Commands

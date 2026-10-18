@@ -137,6 +137,23 @@ Verifies multi-hop discovery/comparison/checkout JWS attribution proofs, blocks 
 
 Holds order-earned loyalty points/cashback in `PENDING_RETURN_WINDOW_ESCROW` during the return window; when a buyer returns goods after redeeming rewards, claws back available points (`LOYALTY_POINTS_CLAWED_BACK`) and deducts any unrecovered spent deficit from the principal refund (`CASHBACK_DEFICIT_DEDUCTED_FROM_REFUND`).
 
+---
+
+## 26. Agentic Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard (Stage 20)
+
+### 26.1 Embedded BNPL & B2B Trade-Credit Underwriting (`evaluate_agentic_bnpl_trade_credit_underwriting`)
+
+Enforces Debt Service Coverage Ratio (`dscr >= 1.35`), open-banking cash buffer, and cross-issuer BNPL velocity (`concurrent_active_bnpl_issuers <= 2`, `post_purchase_dti_bps <= 4000`) to block phantom multi-issuer over-indebtedness (`MULTI_ISSUER_BNPL_STACKING_BLOCKED`), while generating an exact integer-cent installment schedule via the Largest Remainder Method (`sum(installment_principal_minor) == financed_principal_minor`).
+
+### 26.2 Parametric SLA Microinsurance & Indemnity Guard (`evaluate_parametric_sla_microinsurance_claim`)
+
+Requires multi-oracle quorum signatures (`oracle_quorum_signatures >= 2`) and deterministic threshold breach (`actual_metric >= policy_trigger_threshold`) for instant payout (`PARAMETRIC_INSTANT_PAYOUT_SETTLED`), while enforcing the Indemnity Principle to block double-dipping when the buyer already received a merchant refund or SLA credit (`DOUBLE_DIP_INDEMNITY_BLOCKED`).
+
+### 26.3 Invoice Factoring UCC Lien & Double-Pledge Guard (`verify_invoice_factoring_ucc_lien_uniqueness`)
+
+Computes canonical SHA-256 invoice fingerprints and verifies global lien uniqueness plus countersigned buyer ERP Notice of Assignment (NOA) locks, blocking double-pledging fraud (`INVOICE_DOUBLE_PLEDGING_BLOCKED`).
+
+
 
 
 

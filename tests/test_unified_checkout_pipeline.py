@@ -381,6 +381,26 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(hijack_fail.blocked_at_gate, 6)
         self.assertIn("LAST_SECOND_ATTRIBUTION_HIJACK_BLOCKED", hijack_fail.terminal_decision_code)
 
+    def test_gate6_blocks_multi_issuer_bnpl_stacking_and_invoice_double_pledging(self) -> None:
+        pledge_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                invoice_factoring_request={
+                    "invoice_id": "inv_pipe_20",
+                    "seller_id": "acct_seller_jp_01",
+                    "buyer_id": "buyer_corp_01",
+                    "invoice_number": "INV-2026-20",
+                    "invoice_total_minor": 20_000,
+                    "issue_date": "2026-10-19",
+                    "requesting_factor_id": "factor_beta",
+                    "notice_of_assignment_locked": True,
+                    "global_lien_registry": {"inv_pipe_20": "factor_alpha"},
+                }
+            )
+        )
+        self.assertFalse(pledge_fail.checkout_committed)
+        self.assertEqual(pledge_fail.blocked_at_gate, 6)
+        self.assertIn("INVOICE_DOUBLE_PLEDGING_BLOCKED", pledge_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)
