@@ -338,10 +338,10 @@ Verdict: IOLTA_UNEARNED_RETAINER_PREMATURE_DRAWDOWN_BLOCKED</div>
     <div>
       <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
       <h2>Deterministic CAM Cap, AV Citation Liability &amp; VRP Sweeping Ownership Verification</h2>
-      <div class="codebox">{"lease_id": "lease_01", "pro_rata_bps": 1000, "annual_cam_cap_bps": 500, "excluded_roof_capex": 5000000}
+      <div class="codebox">{{"lease_id": "lease_01", "pro_rata_bps": 1000, "annual_cam_cap_bps": 500, "excluded_roof_capex": 5000000}}
   ↓ evaluate_commercial_cam_lease_reconciliation()
 &lt;answer&gt;CAM_CONTROLLABLE_CAP_APPLIED_AND_RECONCILED (capped=$10,500, excluded=$5,000)&lt;/answer&gt;</div>
-      <div class="codebox" style="margin-top:10px;">{"vrp_category": "SWEEPING", "debtor_owner": "user_alice", "creditor_owner": "merchant_evil"}
+      <div class="codebox" style="margin-top:10px;">{{"vrp_category": "SWEEPING", "debtor_owner": "user_alice", "creditor_owner": "merchant_evil"}}
   ↓ evaluate_open_banking_vrp_sweeping_guard()
 &lt;answer&gt;VRP_SWEEPING_THIRD_PARTY_MERCHANT_BYPASS_BLOCKED&lt;/answer&gt;</div>
     </div>
