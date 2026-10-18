@@ -59,6 +59,13 @@
    - [`lab/unified_checkout_pipeline.py`](../../lab/unified_checkout_pipeline.py) & [`tests/test_unified_checkout_pipeline.py`](../../tests/test_unified_checkout_pipeline.py)
    - [`reports/agentic-commerce-resilience-bench/index.html`](../../reports/agentic-commerce-resilience-bench/index.html) & [`reports/agentic-commerce-resilience-bench/report.json`](../../reports/agentic-commerce-resilience-bench/report.json)
 
+### Stage 9 — Recurring Mandate Free-Trial Trap Defense, Total Committed Contract Value (`TCCV`) & Atomic 3-Layer Revocation Guard
+1. **Negative-Option Trial Trap Defense & Atomic 3-Layer Revocation ([`docs/architecture/recurring-mandates-and-subscription-guard.md`](../architecture/recurring-mandates-and-subscription-guard.md))**:
+   - Formalized the worst-case Total Committed Contract Value ($\text{TCCV} = C_{\text{initial}} + \max(N_{\text{min\_commit}}, 1) \times C_{\text{recurring}} + F_{\text{ETF}}$) pre-authorization invariant, blocking `$0.00` deceptive trials that exceed `mandate.max_total_commitment_minor` or violate `mandate.allow_recurring`.
+   - Formalized the Atomic 3-Layer Revocation Cascade across AP2 `MandateRevocation` JWS, Stripe SPT / Card Network Token deactivation, and Stripe Billing subscription state, intercepting post-revocation Zombie MIT charges with Visa `13.5` / Mastercard `4841` representment receipts.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/recurring_subscription_guard.py`](../../lab/recurring_subscription_guard.py) & [`tests/test_recurring_subscription_guard.py`](../../tests/test_recurring_subscription_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -72,5 +79,6 @@ python -m lab.protocol_readiness_auditor
 python -m lab.booking_sftp_reconciliation_guard
 python -m lab.agent_identity_attestation_guard
 python -m lab.unified_checkout_pipeline
+python -m lab.recurring_subscription_guard
 python -m unittest discover -s tests -v
 ```

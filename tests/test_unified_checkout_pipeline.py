@@ -139,6 +139,33 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(bad_eod.blocked_at_gate, 7)
         self.assertNotEqual(bad_eod.eod_variance_minor, 0)
 
+    def test_gate2_blocks_free_trial_negative_option_tccv_overflow(self) -> None:
+        dark_trial = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                recurring_mandate={
+                    "mandate_id": "mandate_onetime_50usd",
+                    "allow_recurring": False,
+                    "max_total_commitment_minor": 5_000,
+                    "max_per_cycle_minor": 5_000,
+                },
+                subscription_offer_terms={
+                    "billing_interval": "month",
+                    "trial_days": 7,
+                    "auto_convert": True,
+                    "initial_charge_minor": 0,
+                    "recurring_charge_minor": 19_900,
+                    "min_commitment_cycles": 12,
+                    "early_termination_fee_minor": 15_000,
+                    "cancel_cutoff_hours_before_trial_end": 72.0,
+                    "auto_cancel_hook_armed": False,
+                    "summary_discloses_recurring": True,
+                },
+            )
+        )
+        self.assertFalse(dark_trial.checkout_committed)
+        self.assertEqual(dark_trial.blocked_at_gate, 2)
+        self.assertIn("NEGATIVE_OPTION_MANDATE_MISMATCH", dark_trial.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

@@ -48,6 +48,9 @@ from lab.dispute_evidence_replay import (
     CryptographicDisputeEvidenceInput,
     compile_cryptographic_dispute_bundle,
 )
+from lab.recurring_subscription_guard import (
+    verify_subscription_trial_and_recurring_mandate,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -125,6 +128,10 @@ class UnifiedCheckoutPipelineInput:
     token_billed_minor: int
     token_collected_minor: int
     reported_bank_payout_minor: int
+
+    # Optional Stage 9 Recurring Subscription & TCCV Mandate Gate
+    recurring_mandate: dict[str, Any] | None = None
+    subscription_offer_terms: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -212,11 +219,25 @@ def execute_unified_agentic_checkout(
         automated_webview_submit=False,
         cross_company_triggered_by_untrusted_content=inp.cross_company_injected,
     )
-    g2_passed = feed_res.valid and broker_res.allowed
+    recurring_ok = True
+    recurring_reason = ""
+    if inp.recurring_mandate is not None and inp.subscription_offer_terms is not None:
+        rec_res = verify_subscription_trial_and_recurring_mandate(
+            mandate=inp.recurring_mandate,
+            offer_terms=inp.subscription_offer_terms,
+        )
+        recurring_ok = rec_res.allowed
+        recurring_reason = rec_res.decision_code
+
+    g2_passed = feed_res.valid and broker_res.allowed and recurring_ok
     g2_code = (
         "CATALOG_AND_POLICY_BROKER_VERIFIED"
         if g2_passed
-        else (feed_res.reason if not feed_res.valid else broker_res.reason)
+        else (
+            feed_res.reason
+            if not feed_res.valid
+            else (broker_res.reason if not broker_res.allowed else recurring_reason)
+        )
     )
     dt2 = max((time.perf_counter() - t0) * 1_000_000.0, 14.0)
     traces.append(
