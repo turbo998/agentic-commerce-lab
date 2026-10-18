@@ -40,6 +40,7 @@
 | [离线六平面 AI-Native 负载架构基准](lab/workload_arch_bench.py) | Connect SPT 档案路由、单次 `SPT Resolve` + RSA 切片、SPT 3DS 状态机与 AP2 §7.4 受托熔断器（`#165`）、Policy Broker、UCP RFC 9530 批量目录摘要屏障（`#866`）、ATDRP Appendix C 17 网关兜底证据编译（`#316`）、MPP Tempo 亚美分尾差没收审计及 [7-Card 4:5 视觉报告](reports/agentic-commerce-6plane-bench/index.html) |
 | [离线跨境多卖家分账、Token 毛利熔断与关税条款护栏](lab/cross_border_b2b_guard.py) | Connect 多卖家跨境拆单守恒与逆向退费 `reverse_transfer` 防垫付赤字、LLM Token 成本 + 支付通道费穿底触发 AP2 `COST_ENVELOPE_EXCEEDED`、`DDP` vs `DDU`/`DAP` 完税交货与 WCO 6 位 `HS` 编码防篡改校验（配套架构深潜见 [`docs/architecture/cross-border-b2b-settlement.md`](docs/architecture/cross-border-b2b-settlement.md) 与 [2026-10-19 更新索引](docs/research/2026-10-19-daily-update.md)） |
 | [离线跨协议 CE 3.0 争议证据编译与 17 网关抗辩回放](lab/dispute_evidence_replay.py) | 串联 AP2 Mandate JWS + SPT 商户绑定/卡组密文 + UCP RFC 9530 `sha-256` 目录快照 + 跨境 `DDP`/HS6 守恒证明，映射 ACP `PR #316` Appendix C 17 网关抗辩载荷与三方责任定界（配套文档 [`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md) 及 [7-Card B2B/争议基准报告](reports/agentic-commerce-b2b-settlement-bench/index.html)） |
+| [离线企业级全链路协议就绪度审计与交互式 H5 工作台](lab/protocol_readiness_auditor.py) | 串联 Phase A（MCP `2026-11-30` 42 天倒计时认证迁移 + Connect SPT 拆单）、Phase B（UCP RFC 9530 目录摘要屏障 + Policy Broker）与 Phase C（AP2 毛利熔断 + `DDP`/HS6 + 17 网关 CE 3.0 抗辩）端到端评分，配套 [企业割接手册](docs/architecture/enterprise-deployment-and-migration-playbook.md) 与 [自包含 H5 架构师工作台](reports/agentic-commerce-workbench/index.html) |
 
 ## 本地运行
 
@@ -106,6 +107,14 @@ python -m lab.dispute_evidence_replay --output-dir reports/agentic-commerce-b2b-
 ```
 
 针对 Visa `10.4`/`13.3` 与 Mastercard `4837`/`4853` 拒付争议，编译四支柱密码学证据包（AP2 Mandate JWS + Stripe SPT/卡组密文 + UCP RFC 9530 `sha-256` 目录快照 + 跨境 `DDP`/HS6 与 Connect 守恒证明），校验篡改并做三方定责（Buyer / Agent Platform / Merchant），映射 ACP `PR #316` Appendix C 全部 17 家网关字段，并生成 [`reports/agentic-commerce-b2b-settlement-bench/report.json`](reports/agentic-commerce-b2b-settlement-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-b2b-settlement-bench/index.html`](reports/agentic-commerce-b2b-settlement-bench/index.html)。架构说明见 [`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md)。
+
+### 企业级全链路协议就绪度审计与交互式 H5 架构师工作台（离线模拟）
+
+```powershell
+python -m lab.protocol_readiness_auditor --output-dir reports/agentic-commerce-workbench
+```
+
+面向 `2026-11-30` Stripe MCP 42 天割接倒计时，串联 Phase A（MCP OAuth/Agent Key 认证 + Connect 拆单守恒）、Phase B（UCP RFC 9530 `sha-256` 目录屏障 + Policy Broker）与 Phase C（AP2 毛利熔断 + `DDP`/HS6 + 17 网关 CE 3.0 抗辩）输出 0–100 分就绪度评估与阻断项清单，并生成自包含交互式 H5 架构师工作台 [`reports/agentic-commerce-workbench/index.html`](reports/agentic-commerce-workbench/index.html)。割接蓝图见 [`docs/architecture/enterprise-deployment-and-migration-playbook.md`](docs/architecture/enterprise-deployment-and-migration-playbook.md)。
 
 
 ## 每日研究

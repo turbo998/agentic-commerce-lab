@@ -31,6 +31,13 @@
    - [`lab/dispute_evidence_replay.py`](../../lab/dispute_evidence_replay.py) & [`tests/test_dispute_evidence_replay.py`](../../tests/test_dispute_evidence_replay.py)
    - [`reports/agentic-commerce-b2b-settlement-bench/index.html`](../../reports/agentic-commerce-b2b-settlement-bench/index.html) & [`reports/agentic-commerce-b2b-settlement-bench/report.json`](../../reports/agentic-commerce-b2b-settlement-bench/report.json) (**`10/10` (`100.0%`) AI-Native vs `1/10` (`10.0%`) Classic 3-Tier**, `0.0 pts` perturbation drift across all 17 gateways).
 
+### Stage 5 — Enterprise Dual-Stack Cutover Playbook (`2026-11-30` 42-Day Countdown), End-to-End Readiness Auditor & Interactive H5 Workbench
+1. **Enterprise Cutover Playbook ([`docs/architecture/enterprise-deployment-and-migration-playbook.md`](../architecture/enterprise-deployment-and-migration-playbook.md))**:
+   - Structured the 3-Phase production migration blueprint (Phase A: OAuth/Agent Key + SPT & single-use resolve; Phase B: UCP `PR #866` RFC 9530 `sha-256` Feed barrier + WebMCP & Policy Broker; Phase C: AP2 `PR #165` FCB + Token/Rail FinOps + Connect/DDP/HS6 + 17-gateway CE 3.0 representment) ahead of the `2026-11-30` Stripe MCP legacy key cutoff (42 days remaining).
+2. **Unified Pipeline Readiness Auditor & Self-Contained H5 Architect Workbench**:
+   - [`lab/protocol_readiness_auditor.py`](../../lab/protocol_readiness_auditor.py) & [`tests/test_protocol_readiness_auditor.py`](../../tests/test_protocol_readiness_auditor.py)
+   - [`reports/agentic-commerce-workbench/index.html`](../../reports/agentic-commerce-workbench/index.html)
+
 ---
 
 ## Quick Verification Commands
@@ -40,5 +47,6 @@ python -m scripts.source_monitor
 python -m lab.workload_arch_bench
 python -m lab.cross_border_b2b_guard
 python -m lab.dispute_evidence_replay
+python -m lab.protocol_readiness_auditor
 python -m unittest discover -s tests -v
 ```
