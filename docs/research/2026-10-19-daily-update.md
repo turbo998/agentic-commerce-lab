@@ -45,6 +45,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/booking_sftp_reconciliation_guard.py`](../../lab/booking_sftp_reconciliation_guard.py) & [`tests/test_booking_sftp_reconciliation_guard.py`](../../tests/test_booking_sftp_reconciliation_guard.py)
 
+### Stage 7 — Cryptographic Agent Identity Attestation (RFC 9421 × Visa TAP × Stripe Directory) & Anti-Scalping Scarcity Quotas
+1. **Edge Attestation & Principal-Bound Anti-Sybil Quotas ([`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](../architecture/agent-identity-and-anti-scalping-attestation.md))**:
+   - Formalized mandatory RFC 9421 6-component HTTP message signatures (`@method`, `@authority`, `@path`, `content-digest`, `x-ucp-idempotency-key`, `x-ap2-mandate-digest`), `<= 60s` clock windows, and single-use `nonce` anti-replay at the WAF/CDN edge.
+   - Enforced federated Visa TAP / Stripe Agent Directory JWKS key liveness, WebMCP same-origin binding, and `(principal_did, sku_id)` anti-Sybil fan-out & scarcity allocation caps.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/agent_identity_attestation_guard.py`](../../lab/agent_identity_attestation_guard.py) & [`tests/test_agent_identity_attestation_guard.py`](../../tests/test_agent_identity_attestation_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -56,5 +63,6 @@ python -m lab.cross_border_b2b_guard
 python -m lab.dispute_evidence_replay
 python -m lab.protocol_readiness_auditor
 python -m lab.booking_sftp_reconciliation_guard
+python -m lab.agent_identity_attestation_guard
 python -m unittest discover -s tests -v
 ```

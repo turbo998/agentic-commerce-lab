@@ -42,6 +42,7 @@
 | [离线跨协议 CE 3.0 争议证据编译与 17 网关抗辩回放](lab/dispute_evidence_replay.py) | 串联 AP2 Mandate JWS + SPT 商户绑定/卡组密文 + UCP RFC 9530 `sha-256` 目录快照 + 跨境 `DDP`/HS6 守恒证明，映射 ACP `PR #316` Appendix C 17 网关抗辩载荷与三方责任定界（配套文档 [`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md) 及 [7-Card B2B/争议基准报告](reports/agentic-commerce-b2b-settlement-bench/index.html)） |
 | [离线企业级全链路协议就绪度审计与交互式 H5 工作台](lab/protocol_readiness_auditor.py) | 串联 Phase A（MCP `2026-11-30` 42 天倒计时认证迁移 + Connect SPT 拆单）、Phase B（UCP RFC 9530 目录摘要屏障 + Policy Broker）与 Phase C（AP2 毛利熔断 + `DDP`/HS6 + 17 网关 CE 3.0 抗辩）端到端评分，配套 [企业割接手册](docs/architecture/enterprise-deployment-and-migration-playbook.md) 与 [自包含 H5 架构师工作台](reports/agentic-commerce-workbench/index.html) |
 | [离线多段联程预订两阶段 Hold Saga 与 SFTP 三方日终对账护栏](lab/booking_sftp_reconciliation_guard.py) | 机票+酒店+算力异构 TTL 两阶段手动预授权原子捕获/撤单防孤儿单，以及 Stripe SFTP × MPP Tempo 亚美分尾差 × Metronome Token 账单 `00:00 UTC` 三方平账校验（配套架构深潜 [`docs/architecture/booking-hold-and-sftp-reconciliation.md`](docs/architecture/booking-hold-and-sftp-reconciliation.md)） |
+| [离线 RFC 9421 Agent 身份证明与委托人反女巫限购配额护栏](lab/agent_identity_attestation_guard.py) | RFC 9421 强制签名域（`@method`/`@authority`/`@path`/`content-digest`/`x-ucp-idempotency-key`/`x-ap2-mandate-digest`、60s 窗口与单次 `nonce`）、Visa TAP / Stripe Agent Directory 密钥状态与 WebMCP 同源校验、基于 `principal_did` 的防黄牛/防女巫并发配额（配套架构深潜 [`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](docs/architecture/agent-identity-and-anti-scalping-attestation.md)） |
 
 ## 本地运行
 
@@ -124,6 +125,14 @@ python -m lab.booking_sftp_reconciliation_guard
 ```
 
 演练异构供应方（GDS 机票 + PMS 酒店 + 算力）两阶段手动预授权 `HOLD_ALL -> VERIFY -> ATOMIC_CAPTURE_OR_REVERSE` 防孤儿单护栏，以及跨 `00:00 UTC` 日切窗口的 Stripe SFTP 批量结算单 × MPP Tempo 亚美分尾差没收 × Metronome Token 账单三方平账方程。架构推导见 [`docs/architecture/booking-hold-and-sftp-reconciliation.md`](docs/architecture/booking-hold-and-sftp-reconciliation.md)。
+
+### 密码学 Agent 身份证明（RFC 9421 × Visa TAP × Stripe Directory）与防女巫并发配额护栏（离线模拟）
+
+```powershell
+python -m lab.agent_identity_attestation_guard
+```
+
+演练 WAF/CDN 边缘层的 RFC 9421 强制 6 组件签名校验、RFC 9530 `Content-Digest` 防篡改、60s 时间窗与单次 `nonce` 防重放、Visa TAP / Stripe Agent Directory 密钥吊销拦截、WebMCP 同源校验，以及基于人类委托人 `principal_did` 的反女巫（Anti-Sybil）并发代理扇出与稀缺库存限购配额。架构推导见 [`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](docs/architecture/agent-identity-and-anti-scalping-attestation.md)。
 
 
 ## 每日研究
