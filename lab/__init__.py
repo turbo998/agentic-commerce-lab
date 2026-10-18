@@ -10,7 +10,10 @@ __all__ = [
     "evaluate_authenticated_c2c_escrow_inspection_release",
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
+    "evaluate_digital_license_seat_activation_guard",
+    "evaluate_event_ticket_anti_scalping_escrow",
     "evaluate_fx_quote_lock_and_slippage",
+    "evaluate_generative_ip_royalty_micro_split",
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_loyalty_points_escrow_and_return_clawback",
     "evaluate_parametric_sla_microinsurance_claim",
@@ -39,6 +42,14 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_digital_license_seat_activation_guard",
+        "evaluate_event_ticket_anti_scalping_escrow",
+        "evaluate_generative_ip_royalty_micro_split",
+    }:
+        from lab import digital_goods_ticketing_ip_royalty_guard
+
+        return getattr(digital_goods_ticketing_ip_royalty_guard, name)
     if name in {
         "evaluate_consortium_group_buying_tier_escrow",
         "evaluate_vickrey_reverse_auction_clearing",

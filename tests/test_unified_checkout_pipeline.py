@@ -438,6 +438,22 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(collusion_fail.blocked_at_gate, 3)
         self.assertIn("BID_RIGGING_OR_SHILL_COLLUSION_BLOCKED", collusion_fail.terminal_decision_code)
 
+    def test_gate6_blocks_refunded_digital_license_and_ticket_scalping(self) -> None:
+        lic_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                digital_license_context={
+                    "license_id": "lic_revoked_23",
+                    "order_refunded_or_disputed": True,
+                    "datacenter_bulk_proxy_detected": False,
+                    "max_concurrent_seats": 2,
+                    "active_tpm_enclave_fingerprints": ["tpm_a"],
+                }
+            )
+        )
+        self.assertFalse(lic_fail.checkout_committed)
+        self.assertEqual(lic_fail.blocked_at_gate, 6)
+        self.assertIn("REFUNDED_LICENSE_KEY_REVOKED_BLOCKED", lic_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

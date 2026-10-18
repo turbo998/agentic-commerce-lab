@@ -150,6 +150,12 @@
 2. **Executable Guard Module & Unit Tests (194 Total Tests)**:
    - [`lab/agentic_auction_consortium_clearing_guard.py`](../../lab/agentic_auction_consortium_clearing_guard.py) & [`tests/test_agentic_auction_consortium_clearing_guard.py`](../../tests/test_agentic_auction_consortium_clearing_guard.py)
 
+### Stage 23 — Digital Goods / SaaS Seat DRM Revocation, Secondary Ticketing Anti-Scalping Rotating-QR Escrow & C2PA Generative IP Micro-Royalty Split Guard
+1. **Digital DRM Revocation, Anti-Scalping Ticketing Escrow & C2PA Micro-Royalty Split ([`docs/architecture/digital-goods-ticketing-and-ip-royalty-guard.md`](../architecture/digital-goods-ticketing-and-ip-royalty-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §29)**:
+   - Enforced instant license key revocation on refunded/disputed orders (`REFUNDED_LICENSE_KEY_REVOKED_BLOCKED`), datacenter proxy bulk key harvesting blocking (`DATACENTER_BULK_KEY_HARVESTING_BLOCKED`), and TPM/Enclave seat concurrency limits (`SEAT_CONCURRENCY_LIMIT_EXCEEDED`); secondary event ticket markup caps (`RESALE_MARKUP_CAP_EXCEEDED_SCALPING_BLOCKED`), `<= 15s` rotating TOTP QR freshness (`STATIC_SCREENSHOT_QR_EXPIRED_BLOCKED`), and venue turnstile check-in escrow release (`VENUE_CHECKIN_VERIFIED_ESCROW_RELEASED`); and C2PA Content Credentials provenance + Largest Remainder multi-creator micro-royalty split (`C2PA_ROYALTY_MICRO_SPLIT_SETTLED`).
+2. **Executable Guard Module & Unit Tests (200 Total Tests)**:
+   - [`lab/digital_goods_ticketing_ip_royalty_guard.py`](../../lab/digital_goods_ticketing_ip_royalty_guard.py) & [`tests/test_digital_goods_ticketing_ip_royalty_guard.py`](../../tests/test_digital_goods_ticketing_ip_royalty_guard.py)
+
 ---
 
 ## Quick Verification Commands

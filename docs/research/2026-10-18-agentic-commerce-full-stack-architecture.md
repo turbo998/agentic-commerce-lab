@@ -185,6 +185,23 @@ Unlocks volume wholesale pricing tiers across multi-buyer consortium pools while
 
 Slashes 100% of the winning bidder's earnest bond when settlement TTL expires (`WINNER_DEFAULT_EARNEST_BOND_SLASHED`) and seamlessly awards the contract to the second-price runner-up bidder (`SECOND_PRICE_FALLBACK_AWARDED`).
 
+---
+
+## 29. Digital Goods / SaaS Seat DRM Revocation, Secondary Ticketing Anti-Scalping Rotating-QR Escrow & C2PA Generative IP Micro-Royalty Split Guard (Stage 23)
+
+### 29.1 Digital License DRM Revocation & TPM Seat Concurrency (`evaluate_digital_license_seat_activation_guard`)
+
+Revokes activation keys immediately upon order refund/dispute (`REFUNDED_LICENSE_KEY_REVOKED_BLOCKED`), blocks datacenter proxy bulk key harvesting (`DATACENTER_BULK_KEY_HARVESTING_BLOCKED`), and enforces hardware TPM/Enclave seat concurrency limits (`SEAT_CONCURRENCY_LIMIT_EXCEEDED`).
+
+### 29.2 Secondary Ticket Anti-Scalping & `<= 15s` Rotating TOTP QR Escrow (`evaluate_event_ticket_anti_scalping_escrow`)
+
+Enforces face-value resale markup caps (`RESALE_MARKUP_CAP_EXCEEDED_SCALPING_BLOCKED`), requires `<= 15s` rotating TOTP cryptographic QR tokens (`STATIC_SCREENSHOT_QR_EXPIRED_BLOCKED`), and releases escrow only after venue turnstile check-in (`VENUE_CHECKIN_VERIFIED_ESCROW_RELEASED`).
+
+### 29.3 C2PA Provenance & Multi-Creator Micro-Royalty Split (`evaluate_generative_ip_royalty_micro_split`)
+
+Verifies C2PA Content Credentials signatures and blocks unauthorized training scrapes (`C2PA_PROVENANCE_MISSING_OR_SCRAPE_BLOCKED`), splitting net creator pools across contribution weights via the Largest Remainder Method with `conservation_delta_minor == 0` (`C2PA_ROYALTY_MICRO_SPLIT_SETTLED`).
+
+
 
 
 

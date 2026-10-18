@@ -102,6 +102,11 @@ from lab.agentic_auction_consortium_clearing_guard import (
     evaluate_vickrey_reverse_auction_clearing,
     verify_winner_commitment_earnest_bond_slash,
 )
+from lab.digital_goods_ticketing_ip_royalty_guard import (
+    evaluate_digital_license_seat_activation_guard,
+    evaluate_event_ticket_anti_scalping_escrow,
+    evaluate_generative_ip_royalty_micro_split,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -249,6 +254,11 @@ class UnifiedCheckoutPipelineInput:
     vickrey_auction_bundle: dict[str, Any] | None = None
     consortium_escrow_bundle: dict[str, Any] | None = None
     earnest_bond_default_context: dict[str, Any] | None = None
+
+    # Optional Stage 23 Digital License DRM, Anti-Scalping Ticket Escrow & C2PA Royalty Split Gate
+    digital_license_context: dict[str, Any] | None = None
+    event_ticket_escrow_bundle: dict[str, Any] | None = None
+    c2pa_ip_royalty_bundle: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -766,6 +776,21 @@ def execute_unified_agentic_checkout(
         dpp_circular_ok = ti_res.allowed
         dpp_circular_reason = ti_res.decision_code
 
+    dig_ip_ok = True
+    dig_ip_reason = ""
+    if inp.digital_license_context is not None:
+        dl_res = evaluate_digital_license_seat_activation_guard(inp.digital_license_context)
+        dig_ip_ok = dl_res.allowed
+        dig_ip_reason = dl_res.decision_code
+    if dig_ip_ok and inp.event_ticket_escrow_bundle is not None:
+        et_res = evaluate_event_ticket_anti_scalping_escrow(inp.event_ticket_escrow_bundle)
+        dig_ip_ok = et_res.escrow_released
+        dig_ip_reason = et_res.decision_code
+    if dig_ip_ok and inp.c2pa_ip_royalty_bundle is not None:
+        c2_res = evaluate_generative_ip_royalty_micro_split(inp.c2pa_ip_royalty_bundle)
+        dig_ip_ok = c2_res.allowed
+        dig_ip_reason = c2_res.decision_code
+
     g6_passed = (
         connect_res.valid
         and spt_res.allowed
@@ -774,6 +799,7 @@ def execute_unified_agentic_checkout(
         and promo_attr_ok
         and bnpl_ins_ok
         and dpp_circular_ok
+        and dig_ip_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -793,7 +819,11 @@ def execute_unified_agentic_checkout(
                         else (
                             promo_attr_reason
                             if not promo_attr_ok
-                            else (bnpl_ins_reason if not bnpl_ins_ok else dpp_circular_reason)
+                            else (
+                                bnpl_ins_reason
+                                if not bnpl_ins_ok
+                                else (dpp_circular_reason if not dpp_circular_ok else dig_ip_reason)
+                            )
                         )
                     )
                 )
