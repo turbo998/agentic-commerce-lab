@@ -48,6 +48,7 @@
 | [离线企业级 B2B 三单匹配、分批履约托管、BEC 防劫持与 2/10 Net 30 动态贴现护栏](lab/b2b_three_way_match_guard.py) | 校验 `PO Mandate == GRN == e-Invoice` 三单匹配、分批发货按实收合格量按比例 Capture（阻断缺货行提前请款）、KYB 收款账户防篡改/OFAC 制裁筛查与 `2/10 Net 30` 动态贴现隐含年化收益率（37.24% APR）精算（配套架构深潜 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)） |
 | [离线密封二价反向竞标 (Vickrey RFQ)、跨境 B2B VAT 逆向征税与售后 RMA 双向护栏](lab/reverse_auction_tax_returns_guard.py) | 校验多卖家 Commit-Reveal 二价反向询价与 Checkout 防加价（Anti-Bait-and-Switch）、跨境 B2B VAT `0%` 逆向征税与税务联结资质、以及售后 RMA 退货硬件序列号/净重防掉包与质量缺陷零整新费保护（配套架构深潜 [`docs/architecture/reverse-auction-tax-and-returns-guard.md`](docs/architecture/reverse-auction-tax-and-returns-guard.md)） |
 | [离线混合支付瀑布流反套现、企业多成本中心预占分摊与 12 场景企业采购 7-Card 基准报告](lab/split_tender_finops_guard.py) | 校验促销券+储值卡/积分+开环卡/USDC 混合支付逆向退费上限（阻断闭环余额洗钱套现与先赚积分后退货双花）、企业多成本中心并发预算预占（Encumbrance）与包含 LLM Token 杂费的平衡 GL 总账分录，生成 [7-Card 企业采购基准报告](reports/agentic-commerce-enterprise-procurement-bench/index.html)（配套架构深潜 [`docs/architecture/split-tender-and-finops-chargeback.md`](docs/architecture/split-tender-and-finops-chargeback.md)） |
+| [离线 x402 EIP-3009 最终性门禁、稳定币脱锚熔断与 Gas 拥堵 MPP Tempo 自动路由护栏](lab/onchain_finality_peg_guard.py) | 校验 `x402` EIP-3009 授权有效窗（`<= 300s`）、官方 USDC 合约白名单与 `32-byte nonce` 防重放，按交易金额与不可逆交付分级强制 L2/L1 区块最终性，监控预言机陈旧度与 `50 bps` 稳定币脱锚熔断，并在 Gas/价值比 `> 15%` 时自动聚合至 `Stripe MPP Tempo` 流式状态通道（配套架构深潜 [`docs/architecture/onchain-settlement-finality-and-peg-guard.md`](docs/architecture/onchain-settlement-finality-and-peg-guard.md)） |
 
 ## 本地运行
 

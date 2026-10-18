@@ -51,6 +51,10 @@ from lab.dispute_evidence_replay import (
     CryptographicDisputeEvidenceInput,
     compile_cryptographic_dispute_bundle,
 )
+from lab.onchain_finality_peg_guard import (
+    evaluate_stablecoin_depeg_and_gas_routing,
+    verify_x402_eip3009_and_finality_guard,
+)
 from lab.recurring_subscription_guard import (
     verify_subscription_trial_and_recurring_mandate,
 )
@@ -158,6 +162,11 @@ class UnifiedCheckoutPipelineInput:
     # Optional Stage 12 Split-Tender Waterfall & Enterprise Cost-Center Encumbrance Gate
     split_tender_bundle: dict[str, Any] | None = None
     cost_center_chargeback_bundle: dict[str, Any] | None = None
+
+    # Optional Stage 13 x402 EIP-3009 Finality & Stablecoin De-Peg / Gas Routing Gate
+    x402_auth_bundle: dict[str, Any] | None = None
+    x402_delivery_context: dict[str, Any] | None = None
+    stablecoin_peg_and_gas_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -376,7 +385,25 @@ def execute_unified_agentic_checkout(
         cost_center_ok = cc_res.allowed
         cost_center_reason = cc_res.decision_code
 
-    g4_passed = margin_res.allowed and split_tender_ok and cost_center_ok
+    onchain_ok = True
+    onchain_reason = ""
+    if inp.x402_auth_bundle is not None and inp.x402_delivery_context is not None:
+        x402_res = verify_x402_eip3009_and_finality_guard(
+            inp.x402_auth_bundle,
+            inp.x402_delivery_context,
+        )
+        onchain_ok = x402_res.allowed
+        onchain_reason = x402_res.decision_code
+    if onchain_ok and inp.stablecoin_peg_and_gas_context is not None:
+        peg_res = evaluate_stablecoin_depeg_and_gas_routing(
+            inp.stablecoin_peg_and_gas_context
+        )
+        onchain_ok = peg_res.allowed_onchain_x402
+        onchain_reason = peg_res.decision_code
+
+    g4_passed = (
+        margin_res.allowed and split_tender_ok and cost_center_ok and onchain_ok
+    )
     dt4 = max((time.perf_counter() - t0) * 1_000_000.0, 11.0)
     g4_code = (
         "MARGIN_ENVELOPE_HEALTHY"
@@ -384,7 +411,11 @@ def execute_unified_agentic_checkout(
         else (
             (margin_res.tripped_condition or "COST_ENVELOPE_EXCEEDED")
             if not margin_res.allowed
-            else (split_tender_reason if not split_tender_ok else cost_center_reason)
+            else (
+                split_tender_reason
+                if not split_tender_ok
+                else (cost_center_reason if not cost_center_ok else onchain_reason)
+            )
         )
     )
     traces.append(

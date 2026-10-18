@@ -349,6 +349,7 @@ def render_interactive_workbench_html() -> str:
         <tr><td><strong>Stage 10 B2B 3-Way Match &amp; Escrow</strong></td><td>Deterministic <code>PO == GRN == Invoice</code> 3-Way Match, Split-Shipment Partial Capture, BEC/Sanctions Block &amp; <code>2/10 Net 30</code> Dynamic Discounting (37.24% APR)</td><td><code>lab/b2b_three_way_match_guard.py</code></td><td class="pass">READY (3-Way Match + 37.24% APR)</td></tr>
         <tr><td><strong>Stage 11 Vickrey RFQ, Tax Nexus &amp; RMA</strong></td><td>Commit-Reveal Second-Price Reverse Auction (RFQ), Cross-Border B2B VAT Reverse-Charge &amp; Bilateral RMA Serial/Weight + Restocking Guard</td><td><code>lab/reverse_auction_tax_returns_guard.py</code></td><td class="pass">READY (Sealed RFQ + RMA Guard)</td></tr>
         <tr><td><strong>Stage 12 Split-Tender &amp; FinOps GL</strong></td><td>Split-Tender Reverse Waterfall (Anti-Cash-Out Laundering), Multi-Cost-Center Pre-Auth Encumbrance &amp; 12-Scenario Enterprise 7-Card Benchmark</td><td><code>lab/split_tender_finops_guard.py</code></td><td class="pass">READY (12/12 Pass)</td></tr>
+        <tr><td><strong>Stage 13 x402 EIP-3009 Finality &amp; Peg Guard</strong></td><td>EIP-3009 ValidWindow/Contract/Nonce Guard, Tiered L2 Finality Gate, 50 bps Stablecoin De-Peg Breaker &amp; MPP Tempo Gas Router</td><td><code>lab/onchain_finality_peg_guard.py</code></td><td class="pass">READY (L1/L2 Finality + Peg Guard)</td></tr>
       </tbody>
     </table>
   </div>

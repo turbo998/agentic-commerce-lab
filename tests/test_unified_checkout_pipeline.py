@@ -249,6 +249,22 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(launder_fail.blocked_at_gate, 4)
         self.assertIn("CLOSED_LOOP_CASH_OUT_LAUNDERING_BLOCKED", launder_fail.terminal_decision_code)
 
+    def test_gate4_blocks_x402_soft_confirm_on_high_value_and_stablecoin_depeg(self) -> None:
+        depeg_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                stablecoin_peg_and_gas_context={
+                    "stablecoin_price_usd": "0.9910",
+                    "oracle_published_epoch": 1_760_800_040,
+                    "now_epoch": 1_760_800_060,
+                    "payment_value_usd": "120.00",
+                    "relayer_gas_usd": "0.02",
+                }
+            )
+        )
+        self.assertFalse(depeg_fail.checkout_committed)
+        self.assertEqual(depeg_fail.blocked_at_gate, 4)
+        self.assertIn("STABLECOIN_DEPEG_CIRCUIT_BREAKER", depeg_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

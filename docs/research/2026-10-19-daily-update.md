@@ -87,6 +87,13 @@
    - [`lab/split_tender_finops_guard.py`](../../lab/split_tender_finops_guard.py) & [`tests/test_split_tender_finops_guard.py`](../../tests/test_split_tender_finops_guard.py)
    - [`reports/agentic-commerce-enterprise-procurement-bench/index.html`](../../reports/agentic-commerce-enterprise-procurement-bench/index.html) & [`reports/agentic-commerce-enterprise-procurement-bench/report.json`](../../reports/agentic-commerce-enterprise-procurement-bench/report.json) (**`12/12` (`100.0%`) AI-Native vs `1/12` (`8.3%`) Classic 3-Tier**, `0.0 pts` perturbation drift).
 
+### Stage 13 — `x402` EIP-3009 Finality Gate, Stablecoin De-Peg Circuit Breaker & Gas-Congestion `MPP Tempo` Streaming Router
+1. **On-Chain Finality, Peg Integrity & Gas-Aware Channel Routing ([`docs/architecture/onchain-settlement-finality-and-peg-guard.md`](../architecture/onchain-settlement-finality-and-peg-guard.md))**:
+   - Enforced `EIP-3009` `validBefore - now <= 300s` window caps (`EIP3009_VALID_WINDOW_EXCEEDED`), canonical USDC contract whitelists (`EIP3009_CONTRACT_OR_CHAIN_MISMATCH`), 32-byte nonce anti-replay, and tiered L2/L1 block finality (`INSUFFICIENT_FINALITY_FOR_HIGH_VALUE_DELIVERY`).
+   - Enforced Pyth/Chainlink `<= 60s` oracle freshness (`ORACLE_FEED_STALE`), `50 bps` stablecoin de-peg circuit breaking (`STABLECOIN_DEPEG_CIRCUIT_BREAKER` -> fiat `Stripe SPT` fallback), and `> 15%` gas-to-value automatic routing to `Stripe MPP Tempo` streaming channels (`GAS_TO_VALUE_RATIO_EXCEEDED_ROUTE_TO_MPP_CHANNEL`).
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/onchain_finality_peg_guard.py`](../../lab/onchain_finality_peg_guard.py) & [`tests/test_onchain_finality_peg_guard.py`](../../tests/test_onchain_finality_peg_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -104,5 +111,6 @@ python -m lab.recurring_subscription_guard
 python -m lab.b2b_three_way_match_guard
 python -m lab.reverse_auction_tax_returns_guard
 python -m lab.split_tender_finops_guard
+python -m lab.onchain_finality_peg_guard
 python -m unittest discover -s tests -v
 ```
