@@ -112,6 +112,12 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/green_logistics_customs_sla_guard.py`](../../lab/green_logistics_customs_sla_guard.py) & [`tests/test_green_logistics_customs_sla_guard.py`](../../tests/test_green_logistics_customs_sla_guard.py)
 
+### Stage 17 — Privacy-Preserving Zero-Knowledge Eligibility (`SD-JWT` / `zk-VC`), PCI-DSS v4.0.1 Redaction Firewall & GDPR Crypto-Shredding Ledger
+1. **Selective-Disclosure Eligibility, PCI Redaction & Crypto-Shredding ([`docs/architecture/zk-eligibility-pci-redaction-and-crypto-shredding.md`](../architecture/zk-eligibility-pci-redaction-and-crypto-shredding.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §23)**:
+   - Enforced zero-raw-PII boolean predicate proofs (`ZK_SELECTIVE_DISCLOSURE_ELIGIBILITY_VERIFIED`) while blocking raw SSN/DOB harvesting (`OVERPRIVILEGED_PII_HARVESTING_BLOCKED`), pre-LLM Luhn PAN/CVV and `sk_live_*` redaction (`PCI_RAW_PAN_OR_CVV_LEAK_BLOCKED`), and KMS CEK destruction (`CRYPTO_SHREDDED_TOMBSTONE_VERIFIED`) preserving ACP `PR #316` ATDRP Merkle roots.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/zk_eligibility_privacy_redaction_guard.py`](../../lab/zk_eligibility_privacy_redaction_guard.py) & [`tests/test_zk_eligibility_privacy_redaction_guard.py`](../../tests/test_zk_eligibility_privacy_redaction_guard.py)
+
 ---
 
 ## Quick Verification Commands

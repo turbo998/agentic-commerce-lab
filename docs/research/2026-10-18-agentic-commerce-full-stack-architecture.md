@@ -89,4 +89,21 @@ When thermal excursions outside `[2.0°C, 8.0°C]` exceed `15 minutes` or $T_{\t
 
 Selects $\arg\min_{r \in \mathcal{F}} \text{kgCO}_2\text{e}(r)$ subject to $\text{hours}(r) \le T_{\text{SLA}}$, $\text{cost}(r) \le B_{\text{cost}}$, and $\text{kgCO}_2\text{e}(r) \le B_{\text{carbon}}$.
 
+---
+
+## 23. Zero-Knowledge Selective-Disclosure Eligibility (`SD-JWT` / `zk-VC`), PCI-DSS v4.0.1 Redaction Firewall & GDPR Art. 17 Crypto-Shredding Ledger (Stage 17)
+
+### 23.1 Selective-Disclosure Predicate Eligibility (`evaluate_zk_selective_disclosure_eligibility`)
+
+Enforces zero-raw-PII boolean predicate proofs (`age_over_21`, `residency_eu`, `professional_license_active`) signed by trusted DID issuers (`did:web:trust.visa.com:tap-vc`, `did:web:identity.stripe.com:vc-issuer`), bound to `presentation_nonce == checkout_session_id` within `proof_ttl_seconds <= 300`, while blocking merchant MCP requests for raw `ssn`, `date_of_birth`, or `passport_number` (`OVERPRIVILEGED_PII_HARVESTING_BLOCKED`).
+
+### 23.2 PCI-DSS v4.0.1 Luhn PAN/CVV & Live Key Context Firewall (`scan_and_redact_agent_context_pii_pci`)
+
+Intercepts Luhn-valid 13–19 digit PANs, CVVs, SSNs, and live API secret keys (`sk_live_*`, `rk_live_*`, `whsec_*`) before LLM inference or telemetry persistence (`PCI_RAW_PAN_OR_CVV_LEAK_BLOCKED`), replacing them with deterministic vault surrogates (`<REDACTED_PAN_L4:4242>`).
+
+### 23.3 GDPR Art. 17 Crypto-Shredding vs. ATDRP Merkle Non-Repudiation (`verify_crypto_shredding_erasure_tombstone`)
+
+Commits only salted ciphertext digests $L_{\text{pii}} = \text{SHA256}(\text{Enc}_{\text{CEK}_u}(\text{PII}) \parallel \text{salt})$ into the ACP `PR #316` ATDRP Merkle tree; destroying $\text{CEK}_u$ in KMS renders PII mathematically irrecoverable (`CRYPTO_SHREDDED_TOMBSTONE_VERIFIED`) while keeping `ATDRP_CE3_MERKLE_ROOT` 100% verifiable for 7-year financial/tax audits.
+
+
 

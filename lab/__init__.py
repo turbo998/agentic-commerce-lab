@@ -11,14 +11,25 @@ __all__ = [
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_seller_kyb_rolling_reserve",
     "evaluate_split_settlement_invariant",
+    "evaluate_zk_selective_disclosure_eligibility",
     "execute_negative_balance_clawback_waterfall",
     "optimize_carbon_pareto_carrier_route",
     "optimize_multicurrency_netting_sweep",
+    "scan_and_redact_agent_context_pii_pci",
     "validate_iso20022_pacs008_instruction",
+    "verify_crypto_shredding_erasure_tombstone",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_zk_selective_disclosure_eligibility",
+        "scan_and_redact_agent_context_pii_pci",
+        "verify_crypto_shredding_erasure_tombstone",
+    }:
+        from lab import zk_eligibility_privacy_redaction_guard
+
+        return getattr(zk_eligibility_privacy_redaction_guard, name)
     if name in {
         "evaluate_cold_chain_iot_telemetry_escrow",
         "evaluate_hs_code_landed_cost_and_deminimis",

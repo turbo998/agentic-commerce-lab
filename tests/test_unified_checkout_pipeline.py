@@ -320,6 +320,25 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(structuring_fail.blocked_at_gate, 3)
         self.assertIn("CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED", structuring_fail.terminal_decision_code)
 
+    def test_gate2_blocks_overprivileged_pii_harvesting_and_raw_pan_leak(self) -> None:
+        pii_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                zk_eligibility_context={
+                    "checkout_session_id": "cs_zk_01",
+                    "presentation_nonce": "cs_zk_01",
+                    "issuer_did": "did:web:trust.visa.com:tap-vc",
+                    "issued_at_epoch": 1_000,
+                    "now_epoch": 1_050,
+                    "merchant_requested_fields": ["age_over_21", "ssn"],
+                    "required_predicates": ["age_over_21"],
+                    "verified_predicates": {"age_over_21": True},
+                }
+            )
+        )
+        self.assertFalse(pii_fail.checkout_committed)
+        self.assertEqual(pii_fail.blocked_at_gate, 2)
+        self.assertIn("OVERPRIVILEGED_PII_HARVESTING_BLOCKED", pii_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

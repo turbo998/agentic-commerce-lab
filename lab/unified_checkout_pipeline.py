@@ -83,6 +83,10 @@ from lab.workload_arch_bench import (
     verify_spt_resolve_single_use,
     verify_ucp_catalog_feed_snapshot,
 )
+from lab.zk_eligibility_privacy_redaction_guard import (
+    evaluate_zk_selective_disclosure_eligibility,
+    scan_and_redact_agent_context_pii_pci,
+)
 
 
 @dataclass(frozen=True)
@@ -192,6 +196,10 @@ class UnifiedCheckoutPipelineInput:
     customs_deminimis_cbam_context: dict[str, Any] | None = None
     cold_chain_telemetry_bundle: dict[str, Any] | None = None
 
+    # Optional Stage 17 ZK Selective-Disclosure Eligibility & PCI/PII Context Firewall Gate
+    zk_eligibility_context: dict[str, Any] | None = None
+    agent_context_payload_text: str | None = None
+
 
 @dataclass(frozen=True)
 class GateExecutionTrace:
@@ -288,14 +296,33 @@ def execute_unified_agentic_checkout(
         recurring_ok = rec_res.allowed
         recurring_reason = rec_res.decision_code
 
-    g2_passed = feed_res.valid and broker_res.allowed and recurring_ok
+    zk_pci_ok = True
+    zk_pci_reason = ""
+    if inp.zk_eligibility_context is not None:
+        zk_res = evaluate_zk_selective_disclosure_eligibility(
+            inp.zk_eligibility_context
+        )
+        zk_pci_ok = zk_res.allowed
+        zk_pci_reason = zk_res.decision_code
+    if zk_pci_ok and inp.agent_context_payload_text is not None:
+        pci_res = scan_and_redact_agent_context_pii_pci(inp.agent_context_payload_text)
+        zk_pci_ok = pci_res.safe_to_transmit
+        zk_pci_reason = pci_res.decision_code
+
+    g2_passed = (
+        feed_res.valid and broker_res.allowed and recurring_ok and zk_pci_ok
+    )
     g2_code = (
         "CATALOG_AND_POLICY_BROKER_VERIFIED"
         if g2_passed
         else (
             feed_res.reason
             if not feed_res.valid
-            else (broker_res.reason if not broker_res.allowed else recurring_reason)
+            else (
+                broker_res.reason
+                if not broker_res.allowed
+                else (recurring_reason if not recurring_ok else zk_pci_reason)
+            )
         )
     )
     dt2 = max((time.perf_counter() - t0) * 1_000_000.0, 14.0)
