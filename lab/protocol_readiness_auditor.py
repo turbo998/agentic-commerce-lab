@@ -348,6 +348,7 @@ def render_interactive_workbench_html() -> str:
         <tr><td><strong>Stage 9 Recurring &amp; TCCV Guard</strong></td><td>Free-Trial Negative-Option Trap Defense (<code>TCCV</code> Worst-Case Commitment Cap) &amp; Atomic 3-Layer Revocation Cascade (Visa <code>13.5</code> / MC <code>4841</code> Zombie MIT Block)</td><td><code>lab/recurring_subscription_guard.py</code></td><td class="pass">READY (TCCV + 3-Layer Revocation)</td></tr>
         <tr><td><strong>Stage 10 B2B 3-Way Match &amp; Escrow</strong></td><td>Deterministic <code>PO == GRN == Invoice</code> 3-Way Match, Split-Shipment Partial Capture, BEC/Sanctions Block &amp; <code>2/10 Net 30</code> Dynamic Discounting (37.24% APR)</td><td><code>lab/b2b_three_way_match_guard.py</code></td><td class="pass">READY (3-Way Match + 37.24% APR)</td></tr>
         <tr><td><strong>Stage 11 Vickrey RFQ, Tax Nexus &amp; RMA</strong></td><td>Commit-Reveal Second-Price Reverse Auction (RFQ), Cross-Border B2B VAT Reverse-Charge &amp; Bilateral RMA Serial/Weight + Restocking Guard</td><td><code>lab/reverse_auction_tax_returns_guard.py</code></td><td class="pass">READY (Sealed RFQ + RMA Guard)</td></tr>
+        <tr><td><strong>Stage 12 Split-Tender &amp; FinOps GL</strong></td><td>Split-Tender Reverse Waterfall (Anti-Cash-Out Laundering), Multi-Cost-Center Pre-Auth Encumbrance &amp; 12-Scenario Enterprise 7-Card Benchmark</td><td><code>lab/split_tender_finops_guard.py</code></td><td class="pass">READY (12/12 Pass)</td></tr>
       </tbody>
     </table>
   </div>

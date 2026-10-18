@@ -47,6 +47,7 @@
 | [离线周期订阅免费试用陷阱拦截、TCCV 边界与三层原子吊销护栏](lab/recurring_subscription_guard.py) | 校验免费试用自动转付费暗黑模式（Negative-Option Billing）、总承诺合同价值 `TCCV` 预算上限、48h 退订窗口门禁与 AP2 + SPT/Network Token + Stripe Billing 三层原子撤权级联及僵尸 MIT 扣款拦截（Visa `13.5` / MC `4841`）（配套架构深潜 [`docs/architecture/recurring-mandates-and-subscription-guard.md`](docs/architecture/recurring-mandates-and-subscription-guard.md)） |
 | [离线企业级 B2B 三单匹配、分批履约托管、BEC 防劫持与 2/10 Net 30 动态贴现护栏](lab/b2b_three_way_match_guard.py) | 校验 `PO Mandate == GRN == e-Invoice` 三单匹配、分批发货按实收合格量按比例 Capture（阻断缺货行提前请款）、KYB 收款账户防篡改/OFAC 制裁筛查与 `2/10 Net 30` 动态贴现隐含年化收益率（37.24% APR）精算（配套架构深潜 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)） |
 | [离线密封二价反向竞标 (Vickrey RFQ)、跨境 B2B VAT 逆向征税与售后 RMA 双向护栏](lab/reverse_auction_tax_returns_guard.py) | 校验多卖家 Commit-Reveal 二价反向询价与 Checkout 防加价（Anti-Bait-and-Switch）、跨境 B2B VAT `0%` 逆向征税与税务联结资质、以及售后 RMA 退货硬件序列号/净重防掉包与质量缺陷零整新费保护（配套架构深潜 [`docs/architecture/reverse-auction-tax-and-returns-guard.md`](docs/architecture/reverse-auction-tax-and-returns-guard.md)） |
+| [离线混合支付瀑布流反套现、企业多成本中心预占分摊与 12 场景企业采购 7-Card 基准报告](lab/split_tender_finops_guard.py) | 校验促销券+储值卡/积分+开环卡/USDC 混合支付逆向退费上限（阻断闭环余额洗钱套现与先赚积分后退货双花）、企业多成本中心并发预算预占（Encumbrance）与包含 LLM Token 杂费的平衡 GL 总账分录，生成 [7-Card 企业采购基准报告](reports/agentic-commerce-enterprise-procurement-bench/index.html)（配套架构深潜 [`docs/architecture/split-tender-and-finops-chargeback.md`](docs/architecture/split-tender-and-finops-chargeback.md)） |
 
 ## 本地运行
 

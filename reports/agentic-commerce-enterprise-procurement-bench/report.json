@@ -1,0 +1,144 @@
+{
+  "benchmark_id": "agentic-commerce-enterprise-procurement-bench",
+  "benchmark_version": "2026-10-19",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 12,
+  "ai_native_passed": 12,
+  "classic_3tier_passed": 1,
+  "perturbation_drift_pts": 0.0,
+  "scenarios": [
+    {
+      "id": "E01",
+      "domain": "Stage 9 \u00b7 TCCV",
+      "title": "Compliant SaaS seat subscription ($344 TCCV <= $600 cap)",
+      "expected": "ALLOW",
+      "model_answer": "RECURRING_MANDATE_VERIFIED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": true,
+      "action": "Act automatically",
+      "latency_us": 18.4
+    },
+    {
+      "id": "E02",
+      "domain": "Stage 9 \u00b7 Trial Trap",
+      "title": "$0 free trial with hidden $2,538 12-mo lock-in & ETF",
+      "expected": "BLOCK",
+      "model_answer": "SUMMARY_HIDES_NEGATIVE_OPTION_RENEWAL",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Block & alert principal",
+      "latency_us": 19.2
+    },
+    {
+      "id": "E03",
+      "domain": "Stage 9 \u00b7 Revocation",
+      "title": "Post-revocation Zombie MIT charge intercepted (Visa 13.5 / MC 4841)",
+      "expected": "BLOCK",
+      "model_answer": "ZOMBIE_MIT_BLOCKED_VISA_13_5_MC_4841",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Block MIT & compile 13.5/4841",
+      "latency_us": 21.6
+    },
+    {
+      "id": "E04",
+      "domain": "Stage 10 \u00b7 3-Way Match",
+      "title": "Split-shipment partial capture for 6/10 accepted GRN units",
+      "expected": "ALLOW_PARTIAL",
+      "model_answer": "THREE_WAY_MATCH_PARTIAL_CAPTURE_APPROVED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Capture 60% & hold 40% escrow",
+      "latency_us": 24.5
+    },
+    {
+      "id": "E05",
+      "domain": "Stage 10 \u00b7 Backorder",
+      "title": "Supplier bills 10/10 units while 6 remain unshipped on backorder",
+      "expected": "BLOCK",
+      "model_answer": "UNFULFILLED_BACKORDER_CAPTURE_VIOLATION",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Block unfulfilled capture",
+      "latency_us": 22.1
+    },
+    {
+      "id": "E06",
+      "domain": "Stage 10 \u00b7 BEC Defense",
+      "title": "Spoofed e-Invoice swaps payout account away from KYB vendor master",
+      "expected": "BLOCK",
+      "model_answer": "BENEFICIARY_ENDPOINT_HIJACK_BLOCKED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Freeze payout & alert AP",
+      "latency_us": 20.8
+    },
+    {
+      "id": "E07",
+      "domain": "Stage 10 \u00b7 Treasury APR",
+      "title": "2/10 Net 30 early discount yields 37.24% implied APR (> 8% hurdle)",
+      "expected": "ACCELERATE_DAY_10",
+      "model_answer": "ACCELERATE_SETTLEMENT_CAPTURE_DISCOUNT",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Settle Day 10 & capture 2%",
+      "latency_us": 14.7
+    },
+    {
+      "id": "E08",
+      "domain": "Stage 11 \u00b7 Vickrey RFQ",
+      "title": "Winning RFQ bidder injects $35 hidden activation surcharge at checkout",
+      "expected": "BLOCK",
+      "model_answer": "BAIT_SWITCH_SURCHARGE_INJECTION",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Reject surcharge drift",
+      "latency_us": 26.3
+    },
+    {
+      "id": "E09",
+      "domain": "Stage 11 \u00b7 B2B Tax",
+      "title": "Seller charges 20% VAT on Intra-EU B2B reverse-charge order (0% due)",
+      "expected": "BLOCK",
+      "model_answer": "INVALID_B2B_VAT_REVERSE_CHARGE_OVERCOLLECTION",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Enforce 0% reverse-charge",
+      "latency_us": 25.1
+    },
+    {
+      "id": "E10",
+      "domain": "Stage 11 \u00b7 RMA Guard",
+      "title": "Merchant deducts 15% restocking fee on verified defective/SNAD return",
+      "expected": "BLOCK",
+      "model_answer": "ILLEGAL_SNAD_RESTOCKING_FEE_BLOCKED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Mandate 100% SNAD refund",
+      "latency_us": 17.9
+    },
+    {
+      "id": "E11",
+      "domain": "Stage 12 \u00b7 Split-Tender",
+      "title": "Refund attempts to cash out $350 gift card onto open-loop USDC/Card",
+      "expected": "BLOCK",
+      "model_answer": "CLOSED_LOOP_CASH_OUT_LAUNDERING_BLOCKED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Cap open-loop refund at $100",
+      "latency_us": 19.8
+    },
+    {
+      "id": "E12",
+      "domain": "Stage 12 \u00b7 Encumbrance",
+      "title": "60/40 cost-center split breaches CC_AI_RND unencumbered budget ($600 > $500)",
+      "expected": "BLOCK",
+      "model_answer": "COST_CENTER_ENCUMBRANCE_EXCEEDED",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "action": "Block encumbrance overflow",
+      "latency_us": 18.6
+    }
+  ]
+}

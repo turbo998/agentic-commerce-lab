@@ -228,6 +228,27 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(rfq_fail.blocked_at_gate, 3)
         self.assertIn("BAIT_SWITCH_SURCHARGE_INJECTION", rfq_fail.terminal_decision_code)
 
+    def test_gate4_blocks_split_tender_cash_out_and_cost_center_encumbrance_overflow(self) -> None:
+        launder_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                split_tender_bundle={
+                    "order_id": "ord_pipe_01",
+                    "gross_order_minor": 20_000,
+                    "promo_discount_minor": 2_000,
+                    "max_promo_discount_cap_minor": 5_000,
+                    "mutually_exclusive_coupons_stacked": False,
+                    "closed_loop_tender_minor": 13_000,
+                    "captured_open_loop_minor": 5_000,
+                    "refund_requested_minor": 15_000,
+                    "proposed_open_loop_refund_minor": 15_000,
+                    "proposed_closed_loop_refund_minor": 0,
+                }
+            )
+        )
+        self.assertFalse(launder_fail.checkout_committed)
+        self.assertEqual(launder_fail.blocked_at_gate, 4)
+        self.assertIn("CLOSED_LOOP_CASH_OUT_LAUNDERING_BLOCKED", launder_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

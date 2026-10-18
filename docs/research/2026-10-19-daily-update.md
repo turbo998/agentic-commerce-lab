@@ -80,6 +80,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/reverse_auction_tax_returns_guard.py`](../../lab/reverse_auction_tax_returns_guard.py) & [`tests/test_reverse_auction_tax_returns_guard.py`](../../tests/test_reverse_auction_tax_returns_guard.py)
 
+### Stage 12 — Split-Tender Reverse Waterfall & Anti-Cash-Out Laundering, Multi-Cost-Center Encumbrance & 12-Scenario Enterprise Procurement 7-Card Report
+1. **Split-Tender Anti-Cash-Out & FinOps Cost-Center Encumbrance ([`docs/architecture/split-tender-and-finops-chargeback.md`](../architecture/split-tender-and-finops-chargeback.md))**:
+   - Enforced strict reverse refund waterfalls ($R_{\text{open\_loop}} \le C_{\text{captured\_open\_loop}}$), non-refundable promo caps, and unvested loyalty earn clawbacks (`CLOSED_LOOP_CASH_OUT_LAUNDERING_BLOCKED`, `LOYALTY_EARN_CLAWBACK_DEFICIT`), plus atomic multi-cost-center pre-auth encumbrance (`COST_CENTER_ENCUMBRANCE_EXCEEDED`) and balanced double-entry GL journals including `6150-Agent-Token-Overhead`.
+2. **Executable Guard, Unit Tests & 7-Card 4:5 Enterprise Procurement Report**:
+   - [`lab/split_tender_finops_guard.py`](../../lab/split_tender_finops_guard.py) & [`tests/test_split_tender_finops_guard.py`](../../tests/test_split_tender_finops_guard.py)
+   - [`reports/agentic-commerce-enterprise-procurement-bench/index.html`](../../reports/agentic-commerce-enterprise-procurement-bench/index.html) & [`reports/agentic-commerce-enterprise-procurement-bench/report.json`](../../reports/agentic-commerce-enterprise-procurement-bench/report.json) (**`12/12` (`100.0%`) AI-Native vs `1/12` (`8.3%`) Classic 3-Tier**, `0.0 pts` perturbation drift).
+
 ---
 
 ## Quick Verification Commands
@@ -96,5 +103,6 @@ python -m lab.unified_checkout_pipeline
 python -m lab.recurring_subscription_guard
 python -m lab.b2b_three_way_match_guard
 python -m lab.reverse_auction_tax_returns_guard
+python -m lab.split_tender_finops_guard
 python -m unittest discover -s tests -v
 ```

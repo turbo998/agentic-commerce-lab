@@ -57,6 +57,10 @@ from lab.recurring_subscription_guard import (
 from lab.reverse_auction_tax_returns_guard import (
     verify_sealed_rfq_and_tax_nexus,
 )
+from lab.split_tender_finops_guard import (
+    verify_enterprise_cost_center_chargeback,
+    verify_split_tender_waterfall_and_clawback,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -150,6 +154,10 @@ class UnifiedCheckoutPipelineInput:
     rfq_bids: list[dict[str, Any]] | None = None
     rfq_checkout_quote: dict[str, Any] | None = None
     rfq_tax_context: dict[str, Any] | None = None
+
+    # Optional Stage 12 Split-Tender Waterfall & Enterprise Cost-Center Encumbrance Gate
+    split_tender_bundle: dict[str, Any] | None = None
+    cost_center_chargeback_bundle: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -352,22 +360,43 @@ def execute_unified_agentic_checkout(
         output_tokens=inp.output_tokens,
         payment_rail=inp.payment_rail,
     )
+    split_tender_ok = True
+    split_tender_reason = ""
+    if inp.split_tender_bundle is not None:
+        st_res = verify_split_tender_waterfall_and_clawback(inp.split_tender_bundle)
+        split_tender_ok = st_res.allowed
+        split_tender_reason = st_res.decision_code
+
+    cost_center_ok = True
+    cost_center_reason = ""
+    if inp.cost_center_chargeback_bundle is not None:
+        cc_res = verify_enterprise_cost_center_chargeback(
+            inp.cost_center_chargeback_bundle
+        )
+        cost_center_ok = cc_res.allowed
+        cost_center_reason = cc_res.decision_code
+
+    g4_passed = margin_res.allowed and split_tender_ok and cost_center_ok
     dt4 = max((time.perf_counter() - t0) * 1_000_000.0, 11.0)
     g4_code = (
         "MARGIN_ENVELOPE_HEALTHY"
-        if margin_res.allowed
-        else (margin_res.tripped_condition or "COST_ENVELOPE_EXCEEDED")
+        if g4_passed
+        else (
+            (margin_res.tripped_condition or "COST_ENVELOPE_EXCEEDED")
+            if not margin_res.allowed
+            else (split_tender_reason if not split_tender_ok else cost_center_reason)
+        )
     )
     traces.append(
         GateExecutionTrace(
             4,
             "Token Margin & AP2 Fiduciary Circuit Breaker",
-            margin_res.allowed,
+            g4_passed,
             g4_code,
             round(dt4, 2),
         )
     )
-    if not margin_res.allowed:
+    if not g4_passed:
         return UnifiedCheckoutPipelineResult(
             False,
             4,
