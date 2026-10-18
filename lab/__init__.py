@@ -20,6 +20,7 @@ __all__ = [
     "evaluate_promo_coupon_stacking_invariant",
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
     "evaluate_seller_kyb_rolling_reserve",
+    "evaluate_sigis_fsa_hsa_iias_split_tender",
     "evaluate_split_settlement_invariant",
     "evaluate_trade_in_residual_value_and_grade_clawback",
     "evaluate_usage_based_metering_idempotency",
@@ -29,6 +30,7 @@ __all__ = [
     "execute_negative_balance_clawback_waterfall",
     "optimize_carbon_pareto_carrier_route",
     "optimize_multicurrency_netting_sweep",
+    "redact_hipaa_phi_from_payment_descriptor",
     "run_global_clearing_privacy_benchmark",
     "run_lifecycle_finance_circular_benchmark",
     "scan_and_redact_agent_context_pii_pci",
@@ -36,12 +38,21 @@ __all__ = [
     "verify_crypto_shredding_erasure_tombstone",
     "verify_cryptographic_affiliate_attribution_chain",
     "verify_digital_product_passport_provenance",
+    "verify_eprescribing_ncpdp_dea_dispense_guard",
     "verify_invoice_factoring_ucc_lien_uniqueness",
     "verify_winner_commitment_earnest_bond_slash",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_sigis_fsa_hsa_iias_split_tender",
+        "redact_hipaa_phi_from_payment_descriptor",
+        "verify_eprescribing_ncpdp_dea_dispense_guard",
+    }:
+        from lab import healthcare_fsa_rx_hipaa_guard
+
+        return getattr(healthcare_fsa_rx_hipaa_guard, name)
     if name in {
         "evaluate_digital_license_seat_activation_guard",
         "evaluate_event_ticket_anti_scalping_escrow",

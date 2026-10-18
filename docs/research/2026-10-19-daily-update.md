@@ -156,6 +156,12 @@
 2. **Executable Guard Module & Unit Tests (200 Total Tests)**:
    - [`lab/digital_goods_ticketing_ip_royalty_guard.py`](../../lab/digital_goods_ticketing_ip_royalty_guard.py) & [`tests/test_digital_goods_ticketing_ip_royalty_guard.py`](../../tests/test_digital_goods_ticketing_ip_royalty_guard.py)
 
+### Stage 24 — Healthcare & Pharmacy FSA/HSA SIGIS IIAS Dual-Tender Split, NCPDP/DEA eRx Dispense Guard & HIPAA PHI Descriptor Scrubber
+1. **SIGIS IIAS Split-Tender, NCPDP/DEA eRx Dispense & HIPAA Scrubber ([`docs/architecture/healthcare-fsa-rx-and-hipaa-settlement-guard.md`](../architecture/healthcare-fsa-rx-and-hipaa-settlement-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §30)**:
+   - Enforced IRS §213(d) & SIGIS IIAS dual-tender cart splitting with automatic backup-card routing for unverified LMN dual-purpose items (`DUAL_PURPOSE_SKU_LMN_MISSING_ROUTED_TO_BACKUP` & `SIGIS_IIAS_DUAL_TENDER_SPLIT_VERIFIED`, `conservation_delta_minor == 0`); NCPDP SCRIPT / DEA EPCS hardware signature and PDMP duplicate-fill blocking (`DEA_EPCS_OR_PDMP_DUPLICATE_FILL_BLOCKED`) plus `80%` refill utilization gating (`EARLY_REFILL_ACCUMULATION_BLOCKED`); and HIPAA §164.502(b) scrubbing of `ICD-10` diagnosis codes and `NDC` drug identifiers from payment descriptors (`HIPAA_PHI_DESCRIPTOR_SCRUBBED_TO_NEUTRAL_MCC`).
+2. **Executable Guard Module & Unit Tests (206 Total Tests)**:
+   - [`lab/healthcare_fsa_rx_hipaa_guard.py`](../../lab/healthcare_fsa_rx_hipaa_guard.py) & [`tests/test_healthcare_fsa_rx_hipaa_guard.py`](../../tests/test_healthcare_fsa_rx_hipaa_guard.py)
+
 ---
 
 ## Quick Verification Commands

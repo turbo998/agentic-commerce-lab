@@ -201,6 +201,23 @@ Enforces face-value resale markup caps (`RESALE_MARKUP_CAP_EXCEEDED_SCALPING_BLO
 
 Verifies C2PA Content Credentials signatures and blocks unauthorized training scrapes (`C2PA_PROVENANCE_MISSING_OR_SCRAPE_BLOCKED`), splitting net creator pools across contribution weights via the Largest Remainder Method with `conservation_delta_minor == 0` (`C2PA_ROYALTY_MICRO_SPLIT_SETTLED`).
 
+---
+
+## 30. Healthcare & Pharmacy FSA/HSA SIGIS IIAS Dual-Tender Split, NCPDP/DEA eRx Dispense Guard & HIPAA PHI Descriptor Scrubber (Stage 24)
+
+### 30.1 IRS §213(d) & SIGIS IIAS Dual-Tender Split (`evaluate_sigis_fsa_hsa_iias_split_tender`)
+
+Partitions mixed healthcare shopping baskets into SIGIS-qualified medical SKUs (`ELIGIBLE_RX`, `ELIGIBLE_OTC`), dual-purpose SKUs requiring a Letter of Medical Necessity (`DUAL_PURPOSE_LMN` — routing unverified LMN items to the backup payment card via `DUAL_PURPOSE_SKU_LMN_MISSING_ROUTED_TO_BACKUP`), and general retail merchandise, enforcing penny-exact conservation `conservation_delta_minor == 0` between tax-advantaged FSA/HSA tender and backup card (`SIGIS_IIAS_DUAL_TENDER_SPLIT_VERIFIED`).
+
+### 30.2 NCPDP SCRIPT / DEA EPCS & PDMP Dispense Guard (`verify_eprescribing_ncpdp_dea_dispense_guard`)
+
+Verifies prescriber DEA hardware token signatures and state Prescription Drug Monitoring Program (PDMP) duplicate active fill checks (`DEA_EPCS_OR_PDMP_DUPLICATE_FILL_BLOCKED`), and enforces the mandatory `80%` days-supply utilization window before authorizing refill dispensing (`EARLY_REFILL_ACCUMULATION_BLOCKED`).
+
+### 30.3 HIPAA §164.502(b) Minimum-Necessary Payment Descriptor Scrubber (`redact_hipaa_phi_from_payment_descriptor`)
+
+Detects and scrubs `ICD-10` diagnosis codes, `NDC` drug identifiers, and clinical specialty strings from ISO 8583 / card statement descriptors and acquirer metadata, replacing them with a neutral MCC-8099 descriptor and opaque `iias_substantiation_ref` (`HIPAA_PHI_DESCRIPTOR_SCRUBBED_TO_NEUTRAL_MCC`).
+
+
 
 
 

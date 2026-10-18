@@ -107,6 +107,11 @@ from lab.digital_goods_ticketing_ip_royalty_guard import (
     evaluate_event_ticket_anti_scalping_escrow,
     evaluate_generative_ip_royalty_micro_split,
 )
+from lab.healthcare_fsa_rx_hipaa_guard import (
+    evaluate_sigis_fsa_hsa_iias_split_tender,
+    redact_hipaa_phi_from_payment_descriptor,
+    verify_eprescribing_ncpdp_dea_dispense_guard,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -260,6 +265,11 @@ class UnifiedCheckoutPipelineInput:
     event_ticket_escrow_bundle: dict[str, Any] | None = None
     c2pa_ip_royalty_bundle: dict[str, Any] | None = None
 
+    # Optional Stage 24 Healthcare FSA/HSA SIGIS IIAS, NCPDP/DEA eRx & HIPAA Descriptor Scrubber Gate
+    sigis_fsa_cart_context: dict[str, Any] | None = None
+    eprescribing_rx_context: dict[str, Any] | None = None
+    hipaa_descriptor_context: dict[str, Any] | None = None
+
 
 @dataclass(frozen=True)
 class GateExecutionTrace:
@@ -388,12 +398,39 @@ def execute_unified_agentic_checkout(
         sub_lifecycle_ok = cc_off_res.canceled
         sub_lifecycle_reason = cc_off_res.decision_code
 
+    healthcare_ok = True
+    healthcare_reason = ""
+    if inp.sigis_fsa_cart_context is not None:
+        sigis_res = evaluate_sigis_fsa_hsa_iias_split_tender(inp.sigis_fsa_cart_context)
+        healthcare_ok = bool(sigis_res["allowed"])
+        healthcare_reason = (
+            sigis_res["reason_codes"][0]
+            if sigis_res["reason_codes"]
+            else "SIGIS_IIAS_SPLIT_FAILED"
+        )
+    if healthcare_ok and inp.eprescribing_rx_context is not None:
+        rx_res = verify_eprescribing_ncpdp_dea_dispense_guard(
+            inp.eprescribing_rx_context
+        )
+        healthcare_ok = bool(rx_res["allowed"])
+        healthcare_reason = (
+            rx_res["reason_codes"][0]
+            if rx_res["reason_codes"]
+            else "NCPDP_DISPENSE_BLOCKED"
+        )
+    if healthcare_ok and inp.hipaa_descriptor_context is not None:
+        hipaa_res = redact_hipaa_phi_from_payment_descriptor(
+            inp.hipaa_descriptor_context
+        )
+        healthcare_reason = hipaa_res["reason_codes"][0]
+
     g2_passed = (
         feed_res.valid
         and broker_res.allowed
         and recurring_ok
         and zk_pci_ok
         and sub_lifecycle_ok
+        and healthcare_ok
     )
     g2_code = (
         "CATALOG_AND_POLICY_BROKER_VERIFIED"
@@ -407,7 +444,15 @@ def execute_unified_agentic_checkout(
                 else (
                     recurring_reason
                     if not recurring_ok
-                    else (zk_pci_reason if not zk_pci_ok else sub_lifecycle_reason)
+                    else (
+                        zk_pci_reason
+                        if not zk_pci_ok
+                        else (
+                            sub_lifecycle_reason
+                            if not sub_lifecycle_ok
+                            else healthcare_reason
+                        )
+                    )
                 )
             )
         )
