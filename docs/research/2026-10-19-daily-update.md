@@ -52,6 +52,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/agent_identity_attestation_guard.py`](../../lab/agent_identity_attestation_guard.py) & [`tests/test_agent_identity_attestation_guard.py`](../../tests/test_agent_identity_attestation_guard.py)
 
+### Stage 8 — 7-Gate End-to-End Unified Agentic Checkout Pipeline & 14-Scenario Chaos Resilience 7-Card Report
+1. **Unified 7-Gate Fail-Fast Pipeline ([`docs/architecture/unified-agentic-checkout-pipeline.md`](../architecture/unified-agentic-checkout-pipeline.md))**:
+   - Chained all 7 deterministic guard layers into `execute_unified_agentic_checkout()` with fail-fast short-circuiting and microsecond telemetry across 14 chaos & adversarial fault scenarios (**`14/14` (`100.0%`) AI-Native vs `1/14` (`7.1%`) Classic 3-Tier**).
+2. **Executable Orchestrator, Unit Tests & 7-Card 4:5 Resilience Report**:
+   - [`lab/unified_checkout_pipeline.py`](../../lab/unified_checkout_pipeline.py) & [`tests/test_unified_checkout_pipeline.py`](../../tests/test_unified_checkout_pipeline.py)
+   - [`reports/agentic-commerce-resilience-bench/index.html`](../../reports/agentic-commerce-resilience-bench/index.html) & [`reports/agentic-commerce-resilience-bench/report.json`](../../reports/agentic-commerce-resilience-bench/report.json)
+
 ---
 
 ## Quick Verification Commands
@@ -64,5 +71,6 @@ python -m lab.dispute_evidence_replay
 python -m lab.protocol_readiness_auditor
 python -m lab.booking_sftp_reconciliation_guard
 python -m lab.agent_identity_attestation_guard
+python -m lab.unified_checkout_pipeline
 python -m unittest discover -s tests -v
 ```

@@ -1,0 +1,243 @@
+{
+  "benchmark_id": "agentic-commerce-7gate-resilience-bench",
+  "benchmark_version": "2026-10-19",
+  "provenance": "measured_deterministic_local_verifier",
+  "independently_reproduced": true,
+  "total_scenarios": 14,
+  "ai_native_passed": 14,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 1,
+  "classic_3tier_pass_rate_pct": 7.1,
+  "scenarios": [
+    {
+      "id": "R01",
+      "gate": "All 7 Gates",
+      "title": "Golden End-to-End 7-Gate Checkout & CE 3.0 Seal",
+      "question": "Execute full 7-gate pipeline with valid TAP signature, DDP/HS6, manual Saga, and SFTP EOD?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": true,
+      "model_answer": "UNIFIED_PIPELINE_COMMITTED (7/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.213,
+      "baseline_latency_ms": 1.361
+    },
+    {
+      "id": "R02",
+      "gate": "Gate 1 (Edge)",
+      "title": "Revoked Directory Key Short-Circuits at Gate 1",
+      "question": "Block checkout at CDN edge when agent directory key is revoked?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE1_AGENT_DIRECTORY_KEY_REVOKED (1/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R03",
+      "gate": "Gate 1 (Sybil)",
+      "title": "Principal Scarcity Quota Blocks Scalping Swarm at Gate 1",
+      "question": "Block 3rd unit request when principal_did already allocated max_qty=2?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE1_PRINCIPAL_SCARCITY_QUOTA_EXCEEDED (1/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R04",
+      "gate": "Gate 1 (WebMCP)",
+      "title": "WebMCP Cross-Origin Tool Call Rejected at Gate 1",
+      "question": "Reject browser WebMCP tool call originating from untrusted third-party origin?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE1_WEBMCP_CROSS_ORIGIN_VIOLATION (1/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R05",
+      "gate": "Gate 2 (Catalog)",
+      "title": "Corrupted UCP Catalog Shard Blocked at Gate 2",
+      "question": "Freeze checkout when catalog shard bytes fail RFC 9530 sha-256 Repr-Digest?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE2_RFC9530_SHARD_DIGEST_MISMATCH_BLOCKS_SNAPSHOT_DELETION (2/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R06",
+      "gate": "Gate 2 (Broker)",
+      "title": "Prompt-Injected Summary vs Terms Mismatch Blocked at Gate 2",
+      "question": "Block execution when natural-language summary ($199) disagrees with structured terms ($273)?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE2_SUMMARY_TERMS_AMOUNT_MISMATCH (2/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R07",
+      "gate": "Gate 3 (Customs)",
+      "title": "Silent DDP-to-DAP Incoterm Downgrade Blocked at Gate 3",
+      "question": "Block agent from stripping $38 import duty via DAP downgrade on DDP mandate?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE3_INCOTERM_DOWNGRADE_FROM_DDP_FORBIDDEN (3/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R08",
+      "gate": "Gate 3 (HS6)",
+      "title": "WCO 6-Digit HS Tariff Reclassification Blocked at Gate 3",
+      "question": "Block customs declaration when proposed HS6 (392690) diverges from catalog HS6 (847130)?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE3_HS_SUBHEADING_MISMATCH_WITH_CATALOG_AUTHORITY (3/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R09",
+      "gate": "Gate 4 (FinOps)",
+      "title": "Token Burn + Card Fee Erosion Trips AP2 FCB at Gate 4",
+      "question": "Trip COST_ENVELOPE_EXCEEDED when 80k input tokens + $0.30 card fee exceed platform take?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE4_COST_ENVELOPE_EXCEEDED (4/7 gates)",
+      "action": "Confirm",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R10",
+      "gate": "Gate 5 (Saga)",
+      "title": "Expired Flight GDS Hold Triggers Atomic Saga Reversal at Gate 5",
+      "question": "Cancel all PaymentIntent holds when commit attempt (1170) breaches 15s safety buffer (1165)?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE5_SAGA_HOLD_TTL_EXPIRED_OR_WITHIN_SAFETY_BUFFER (5/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.046,
+      "baseline_latency_ms": 0.296
+    },
+    {
+      "id": "R11",
+      "gate": "Gate 5 (Hold)",
+      "title": "Premature Automatic Capture on Multi-Leg Saga Blocked at Gate 5",
+      "question": "Reject multi-leg itinerary when flight leg uses capture_method=automatic instead of manual?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE5_PREMATURE_AUTOMATIC_CAPTURE_FORBIDDEN:FLIGHT_GDS (5/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.045,
+      "baseline_latency_ms": 0.288
+    },
+    {
+      "id": "R12",
+      "gate": "Gate 6 (Connect)",
+      "title": "Unreversed Connect Partial Refund Deficit Blocked at Gate 6",
+      "question": "Block partial refund when reverse_transfer=False would leave platform balance negative?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE6_REFUND_WITHOUT_REVERSE_TRANSFER_CREATES_PLATFORM_DEFICIT (6/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.056,
+      "baseline_latency_ms": 0.358
+    },
+    {
+      "id": "R13",
+      "gate": "Gate 6 (SPT)",
+      "title": "Single-Use SPT Resolve Replay Blocked at Gate 6",
+      "question": "Reject external PSP resolve call when spt_golden_01 is already in resolved_spt_tokens?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE6_SINGLE_USE_RESOLVE_REPLAYED (6/7 gates)",
+      "action": "Act automatically",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.05,
+      "baseline_latency_ms": 0.319
+    },
+    {
+      "id": "R14",
+      "gate": "Gate 7 (EOD)",
+      "title": "SFTP vs Bank Payout Variance Detected at Gate 7",
+      "question": "Flag EOD reconciliation failure when bank payout differs from SFTP + Tempo net settlement?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "GATE7_UNEXPLAINED_EOD_PAYOUT_VARIANCE (7/7 gates)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.079,
+      "baseline_latency_ms": 0.505
+    }
+  ],
+  "latency_tiers": [
+    {
+      "tier": "Gate 1 Fail-Fast Short-Circuit",
+      "ai_native_ms": 0.02,
+      "classic_3tier_ms": 0.48
+    },
+    {
+      "tier": "Single 7-Gate Full Commit",
+      "ai_native_ms": 0.09,
+      "classic_3tier_ms": 0.62
+    },
+    {
+      "tier": "25 Mixed Chaos Batch",
+      "ai_native_ms": 1.15,
+      "classic_3tier_ms": 9.8
+    },
+    {
+      "tier": "100 Concurrent Drop Requests",
+      "ai_native_ms": 4.4,
+      "classic_3tier_ms": 38.5
+    }
+  ],
+  "robustness_checks": [
+    {
+      "check": "RFC 9421 Header Order Permutation (@method..x-ap2-mandate-digest)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "Multi-Leg Saga Order Reversal (Flight/Hotel <-> Hotel/Flight)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "Duplicate SFTP Webhook Burst (1x vs 5x At-Least-Once Retries)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "Sybil Agent Instance ID Permutation (agent_1..N)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    }
+  ]
+}

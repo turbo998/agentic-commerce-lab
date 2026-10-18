@@ -43,6 +43,7 @@
 | [离线企业级全链路协议就绪度审计与交互式 H5 工作台](lab/protocol_readiness_auditor.py) | 串联 Phase A（MCP `2026-11-30` 42 天倒计时认证迁移 + Connect SPT 拆单）、Phase B（UCP RFC 9530 目录摘要屏障 + Policy Broker）与 Phase C（AP2 毛利熔断 + `DDP`/HS6 + 17 网关 CE 3.0 抗辩）端到端评分，配套 [企业割接手册](docs/architecture/enterprise-deployment-and-migration-playbook.md) 与 [自包含 H5 架构师工作台](reports/agentic-commerce-workbench/index.html) |
 | [离线多段联程预订两阶段 Hold Saga 与 SFTP 三方日终对账护栏](lab/booking_sftp_reconciliation_guard.py) | 机票+酒店+算力异构 TTL 两阶段手动预授权原子捕获/撤单防孤儿单，以及 Stripe SFTP × MPP Tempo 亚美分尾差 × Metronome Token 账单 `00:00 UTC` 三方平账校验（配套架构深潜 [`docs/architecture/booking-hold-and-sftp-reconciliation.md`](docs/architecture/booking-hold-and-sftp-reconciliation.md)） |
 | [离线 RFC 9421 Agent 身份证明与委托人反女巫限购配额护栏](lab/agent_identity_attestation_guard.py) | RFC 9421 强制签名域（`@method`/`@authority`/`@path`/`content-digest`/`x-ucp-idempotency-key`/`x-ap2-mandate-digest`、60s 窗口与单次 `nonce`）、Visa TAP / Stripe Agent Directory 密钥状态与 WebMCP 同源校验、基于 `principal_did` 的防黄牛/防女巫并发配额（配套架构深潜 [`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](docs/architecture/agent-identity-and-anti-scalping-attestation.md)） |
+| [离线 7 道门禁全链路统一结账编排器与混沌韧性 7-Card 基准报告](lab/unified_checkout_pipeline.py) | 串联 Gate 1–7 确定性护栏支持 Fail-Fast 短路阻断与微秒级延迟计量，覆盖 14 个混沌故障注入场景（14/14 vs 1/14），生成自包含 [7-Card 混沌韧性基准报告](reports/agentic-commerce-resilience-bench/index.html)（配套架构深潜 [`docs/architecture/unified-agentic-checkout-pipeline.md`](docs/architecture/unified-agentic-checkout-pipeline.md)） |
 
 ## 本地运行
 
@@ -133,6 +134,14 @@ python -m lab.agent_identity_attestation_guard
 ```
 
 演练 WAF/CDN 边缘层的 RFC 9421 强制 6 组件签名校验、RFC 9530 `Content-Digest` 防篡改、60s 时间窗与单次 `nonce` 防重放、Visa TAP / Stripe Agent Directory 密钥吊销拦截、WebMCP 同源校验，以及基于人类委托人 `principal_did` 的反女巫（Anti-Sybil）并发代理扇出与稀缺库存限购配额。架构推导见 [`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](docs/architecture/agent-identity-and-anti-scalping-attestation.md)。
+
+### 7 道门禁全链路统一智能体结账流水线与混沌韧性 7-Card 报告生成（离线模拟）
+
+```powershell
+python -m lab.unified_checkout_pipeline --output-dir reports/agentic-commerce-resilience-bench
+```
+
+将 Gate 1（边缘 RFC 9421 签名与防女巫配额）、Gate 2（UCP RFC 9530 目录摘要屏障与 Policy Broker）、Gate 3（跨境 `DDP` 与 WCO 6 位 `HS` 锁定）、Gate 4（Token 毛利与 AP2 受托熔断）、Gate 5（多航段 Booking 两阶段 Hold Saga）、Gate 6（Connect 多卖家拆单守恒与单次 SPT Resolve）与 Gate 7（17 网关 CE 3.0 证据包 Merkle 密封与 `00:00 UTC` SFTP 三方对账）串联为支持 Fail-Fast 短路阻断的统一生产编排器，运行 14 个混沌故障注入基准并生成 [`reports/agentic-commerce-resilience-bench/report.json`](reports/agentic-commerce-resilience-bench/report.json) 与自包含 7-Card 4:5 视觉报告 [`reports/agentic-commerce-resilience-bench/index.html`](reports/agentic-commerce-resilience-bench/index.html)。架构推导见 [`docs/architecture/unified-agentic-checkout-pipeline.md`](docs/architecture/unified-agentic-checkout-pipeline.md)。
 
 
 ## 每日研究
