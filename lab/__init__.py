@@ -6,16 +6,27 @@ from typing import Any
 
 __all__ = [
     "allocate_by_largest_remainder",
+    "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_fx_quote_lock_and_slippage",
+    "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_seller_kyb_rolling_reserve",
     "evaluate_split_settlement_invariant",
     "execute_negative_balance_clawback_waterfall",
+    "optimize_carbon_pareto_carrier_route",
     "optimize_multicurrency_netting_sweep",
     "validate_iso20022_pacs008_instruction",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_cold_chain_iot_telemetry_escrow",
+        "evaluate_hs_code_landed_cost_and_deminimis",
+        "optimize_carbon_pareto_carrier_route",
+    }:
+        from lab import green_logistics_customs_sla_guard
+
+        return getattr(green_logistics_customs_sla_guard, name)
     if name in {
         "evaluate_fx_quote_lock_and_slippage",
         "optimize_multicurrency_netting_sweep",

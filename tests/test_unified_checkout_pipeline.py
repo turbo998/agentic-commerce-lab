@@ -302,6 +302,24 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(fx_fail.blocked_at_gate, 3)
         self.assertIn("FX_VOLATILITY_COLLAR_BREACHED_REQUOTE_REQUIRED", fx_fail.terminal_decision_code)
 
+    def test_gate3_blocks_customs_structuring_and_cold_chain_mkt_breach(self) -> None:
+        structuring_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                customs_deminimis_cbam_context={
+                    "destination_jurisdiction": "EU",
+                    "declared_fob_minor": 12_000,
+                    "reference_fair_value_minor": 12_500,
+                    "freight_minor": 1_000,
+                    "insurance_minor": 200,
+                    "claimed_de_minimis_exempt": True,
+                    "same_consignee_24h_cumulative_minor": 38_000,
+                }
+            )
+        )
+        self.assertFalse(structuring_fail.checkout_committed)
+        self.assertEqual(structuring_fail.blocked_at_gate, 3)
+        self.assertIn("CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED", structuring_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

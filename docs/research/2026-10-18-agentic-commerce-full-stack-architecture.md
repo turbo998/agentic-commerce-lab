@@ -70,3 +70,23 @@ By settling $V_{\text{matched},c}$ internally at `0 bps` and sweeping only $E_{\
 
 Enforces canonical UUIDv4 `UETR` (`ISO20022_INVALID_UETR_UUIDV4`), regulatory trade purpose code (`GDDS`/`SUPP`/`CORT`), `DEBT` (`OUR`) charge bearer for full-principal B2B invoices (`ISO20022_CHARGE_BEARER_VIOLATES_FULL_VALUE_DELIVERY`), and correspondent bank cutoff windows (`ISO20022_CORRESPONDENT_CUTOFF_WINDOW_MISSED`).
 
+---
+
+## 22. Cross-Border HS-Code DDP Landed Cost (De-Minimis / CBAM), Cold-Chain IoT Mean Kinetic Temperature (`MKT`) Escrow & Scope 3 Low-Carbon Pareto Carrier Router (Stage 16)
+
+### 22.1 DDP Landed Cost, CBAM & De-Minimis Anti-Structuring (`evaluate_hs_code_landed_cost_and_deminimis`)
+
+$$\text{DDP}_{\text{total}} = (\text{CIF} + \text{Duty} + \text{Surtax} + \text{CBAM}) \times (1 + r_{\text{VAT}})$$
+- Blocks undervaluation (`declared_fob_minor < 0.70 * reference_fair_value_minor` $\Rightarrow$ `CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED`).
+- Blocks split-consignment structuring (`same_consignee_24h_cumulative_minor > de_minimis_cap_minor` with `claimed_de_minimis_exempt=True` $\Rightarrow$ `CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED`).
+
+### 22.2 Arrhenius Mean Kinetic Temperature (`MKT`) Cold-Chain Escrow (`evaluate_cold_chain_iot_telemetry_escrow`)
+
+$$T_{\text{MKT (K)}} = \frac{\Delta H / R}{-\ln\!\left(\frac{1}{n}\sum_{i=1}^n \exp\!\left(\frac{-\Delta H}{R \cdot (T_{C,i} + 273.15)}\right)\right)}$$
+When thermal excursions outside `[2.0°C, 8.0°C]` exceed `15 minutes` or $T_{\text{MKT}} > 8.0^\circ\text{C}$, seller settlement is frozen and escrow compensation is automatically routed to the buyer (`COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED`).
+
+### 22.3 Scope 3 Carbon Pareto Multimodal Routing (`optimize_carbon_pareto_carrier_route`)
+
+Selects $\arg\min_{r \in \mathcal{F}} \text{kgCO}_2\text{e}(r)$ subject to $\text{hours}(r) \le T_{\text{SLA}}$, $\text{cost}(r) \le B_{\text{cost}}$, and $\text{kgCO}_2\text{e}(r) \le B_{\text{carbon}}$.
+
+

@@ -106,6 +106,12 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/fx_treasury_iso20022_guard.py`](../../lab/fx_treasury_iso20022_guard.py) & [`tests/test_fx_treasury_iso20022_guard.py`](../../tests/test_fx_treasury_iso20022_guard.py)
 
+### Stage 16 — Cross-Border Customs DDP Landed Cost (De-Minimis / CBAM), Cold-Chain IoT `MKT` Escrow Auto-Claim & Scope 3 Low-Carbon Pareto Router
+1. **Customs Anti-Structuring/CBAM, Arrhenius MKT Cold-Chain Escrow & Scope 3 Routing ([`docs/architecture/green-logistics-customs-and-cold-chain-sla.md`](../architecture/green-logistics-customs-and-cold-chain-sla.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §22)**:
+   - Enforced full DDP Landed Cost (`CIF + Duty + Surtax + CBAM + Import VAT`), De-Minimis anti-structuring (`CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED`) and `<70%` undervaluation blocking (`CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED`), Arrhenius Mean Kinetic Temperature (`MKT > 8.0°C` or excursion `> 15 min`) automatic escrow claim (`COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED`), and Scope 3 carbon Pareto carrier routing (`95.48%` $\text{CO}_2\text{e}$ reduction vs air freight).
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/green_logistics_customs_sla_guard.py`](../../lab/green_logistics_customs_sla_guard.py) & [`tests/test_green_logistics_customs_sla_guard.py`](../../tests/test_green_logistics_customs_sla_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -126,5 +132,6 @@ python -m lab.split_tender_finops_guard
 python -m lab.onchain_finality_peg_guard
 python -m lab.marketplace_split_settlement_guard
 python -m lab.fx_treasury_iso20022_guard
+python -m lab.green_logistics_customs_sla_guard
 python -m unittest discover -s tests -v
 ```

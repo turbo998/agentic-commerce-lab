@@ -55,6 +55,10 @@ from lab.fx_treasury_iso20022_guard import (
     evaluate_fx_quote_lock_and_slippage,
     validate_iso20022_pacs008_instruction,
 )
+from lab.green_logistics_customs_sla_guard import (
+    evaluate_cold_chain_iot_telemetry_escrow,
+    evaluate_hs_code_landed_cost_and_deminimis,
+)
 from lab.marketplace_split_settlement_guard import (
     evaluate_seller_kyb_rolling_reserve,
     evaluate_split_settlement_invariant,
@@ -183,6 +187,10 @@ class UnifiedCheckoutPipelineInput:
     # Optional Stage 15 FX Quote Lock & ISO 20022 pacs.008 Instruction Gate
     fx_quote_lock_context: dict[str, Any] | None = None
     iso20022_pacs008_payload: dict[str, Any] | None = None
+
+    # Optional Stage 16 HS-Code DDP De-Minimis/CBAM & Cold-Chain IoT MKT Escrow Gate
+    customs_deminimis_cbam_context: dict[str, Any] | None = None
+    cold_chain_telemetry_bundle: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -356,7 +364,24 @@ def execute_unified_agentic_checkout(
         fx_iso_ok = iso_res.valid
         fx_iso_reason = iso_res.decision_code
 
-    g3_passed = customs_res.allowed and rfq_tax_ok and fx_iso_ok
+    green_customs_ok = True
+    green_customs_reason = ""
+    if inp.customs_deminimis_cbam_context is not None:
+        cd_res = evaluate_hs_code_landed_cost_and_deminimis(
+            inp.customs_deminimis_cbam_context
+        )
+        green_customs_ok = cd_res.allowed
+        green_customs_reason = cd_res.decision_code
+    if green_customs_ok and inp.cold_chain_telemetry_bundle is not None:
+        cc_iot_res = evaluate_cold_chain_iot_telemetry_escrow(
+            inp.cold_chain_telemetry_bundle
+        )
+        green_customs_ok = cc_iot_res.sla_compliant
+        green_customs_reason = cc_iot_res.decision_code
+
+    g3_passed = (
+        customs_res.allowed and rfq_tax_ok and fx_iso_ok and green_customs_ok
+    )
     dt3 = max((time.perf_counter() - t0) * 1_000_000.0, 10.0)
     g3_code = (
         "DDP_AND_HS6_LOCKED"
@@ -364,7 +389,11 @@ def execute_unified_agentic_checkout(
         else (
             customs_res.reason
             if not customs_res.allowed
-            else (rfq_tax_reason if not rfq_tax_ok else fx_iso_reason)
+            else (
+                rfq_tax_reason
+                if not rfq_tax_ok
+                else (fx_iso_reason if not fx_iso_ok else green_customs_reason)
+            )
         )
     )
     traces.append(
