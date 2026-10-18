@@ -261,6 +261,23 @@ Cross-checks hardware TPM 2.0 location signatures and Precision Time Protocol (`
 
 Automatically computes contractual service credit tiers (`10%`, `25%`, `100%`) when observed uptime falls below `committed_sla_bps` and nets the credit note directly against the invoice (`SLA_BREACH_CREDIT_NOTE_AUTO_NETTED`).
 
+---
+
+## 34. B2B Contractor Milestone Escrow, IRS 1099-K / W-8BEN-E Tax Withholding & Sovereign Data-Clean-Room Differential Privacy Budget Guard (Stage 28)
+
+### 34.1 B2B Contractor Milestone Escrow & Retainage Holdback (`evaluate_b2b_contractor_milestone_escrow`)
+
+Requires cryptographic CI/CD or formal acceptance attestation (`UNVERIFIED_MILESTONE_DELIVERABLE_ESCROW_HELD`), blocks unapproved change-order overruns (`UNAPPROVED_CHANGE_ORDER_OVERRUN_BLOCKED`), and disburses milestone payouts net of retainage holdbacks (`MILESTONE_ESCROW_RELEASED_WITH_RETAINAGE_HOLD`).
+
+### 34.2 IRS §6050W (`1099-K`) & Chapter 3 (`W-8BEN-E`) Statutory Tax Withholding (`evaluate_cross_border_tax_withholding_1099k_w8bene`)
+
+Applies 24% US backup withholding for missing TINs (`TIN_MISSING_24PCT_BACKUP_WITHHOLDING_APPLIED`), 30% statutory Chapter 3 withholding for foreign payees lacking a valid `W-8BEN-E` (`W8BENE_MISSING_30PCT_STATUTORY_WITHHOLDING_APPLIED`), or verified tax-treaty rates (`TAX_TREATY_RATE_VERIFIED_NET_SETTLED`).
+
+### 34.3 Data-Clean-Room $(\varepsilon, \delta)$ Differential Privacy Budget Guard (`evaluate_data_clean_room_differential_privacy_budget`)
+
+Tracks cumulative privacy loss $\varepsilon$ across buyer-agent clean-room queries and blocks dataset reconstruction attacks when projected $\varepsilon$ exceeds `max_epsilon_budget` (`DIFFERENTIAL_PRIVACY_EPSILON_BUDGET_EXHAUSTED_BLOCKED`).
+
+
 
 
 

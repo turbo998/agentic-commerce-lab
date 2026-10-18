@@ -181,6 +181,12 @@
 2. **Executable Guard Module & Unit Tests (221 Total Tests)**:
    - [`lab/rtb_ad_fraud_sovereign_compute_guard.py`](../../lab/rtb_ad_fraud_sovereign_compute_guard.py) & [`tests/test_rtb_ad_fraud_sovereign_compute_guard.py`](../../tests/test_rtb_ad_fraud_sovereign_compute_guard.py)
 
+### Stage 28 — B2B Contractor Milestone Escrow, IRS 1099-K / W-8BEN-E Tax Withholding & Data-Clean-Room Differential Privacy Budget Guard
+1. **Milestone Retainage Escrow, Statutory Tax Withholding & Clean-Room DP Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §34)**:
+   - Implemented CI/CD-attested milestone escrow and change-order overrun caps (`MILESTONE_ESCROW_RELEASED_WITH_RETAINAGE_HOLD`), IRS 1099-K 24% / W-8BEN-E 30% & treaty withholding (`TAX_TREATY_RATE_VERIFIED_NET_SETTLED`), and cumulative $(\varepsilon, \delta)$ differential privacy budget enforcement (`DIFFERENTIAL_PRIVACY_EPSILON_BUDGET_EXHAUSTED_BLOCKED`).
+2. **Executable Guard Module & Unit Tests (224 Total Tests)**:
+   - [`lab/b2b_milestone_tax_withholding_cleanroom_guard.py`](../../lab/b2b_milestone_tax_withholding_cleanroom_guard.py) & [`tests/test_b2b_milestone_tax_withholding_cleanroom_guard.py`](../../tests/test_b2b_milestone_tax_withholding_cleanroom_guard.py)
+
 ---
 
 ## Quick Verification Commands

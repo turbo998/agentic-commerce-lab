@@ -9,8 +9,11 @@ __all__ = [
     "evaluate_agentic_bnpl_trade_credit_underwriting",
     "evaluate_agentic_rtb_invalid_traffic_escrow",
     "evaluate_authenticated_c2c_escrow_inspection_release",
+    "evaluate_b2b_contractor_milestone_escrow",
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
+    "evaluate_cross_border_tax_withholding_1099k_w8bene",
+    "evaluate_data_clean_room_differential_privacy_budget",
     "evaluate_digital_license_seat_activation_guard",
     "evaluate_eucp600_letter_of_credit_document_presentation",
     "evaluate_ev_iso15118_v2g_energy_settlement",
@@ -54,6 +57,14 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_b2b_contractor_milestone_escrow",
+        "evaluate_cross_border_tax_withholding_1099k_w8bene",
+        "evaluate_data_clean_room_differential_privacy_budget",
+    }:
+        from lab import b2b_milestone_tax_withholding_cleanroom_guard
+
+        return getattr(b2b_milestone_tax_withholding_cleanroom_guard, name)
     if name in {
         "evaluate_agentic_rtb_invalid_traffic_escrow",
         "reconcile_cloud_sla_downtime_credit_note",
