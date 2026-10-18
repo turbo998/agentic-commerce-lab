@@ -11,6 +11,7 @@ __all__ = [
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
     "evaluate_digital_license_seat_activation_guard",
+    "evaluate_eucp600_letter_of_credit_document_presentation",
     "evaluate_ev_iso15118_v2g_energy_settlement",
     "evaluate_event_ticket_anti_scalping_escrow",
     "evaluate_fx_quote_lock_and_slippage",
@@ -18,6 +19,7 @@ __all__ = [
     "evaluate_gpu_spot_compute_sla_and_carbon_retirement",
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_loyalty_points_escrow_and_return_clawback",
+    "evaluate_marine_demurrage_detention_parametric_escrow",
     "evaluate_parametric_sla_microinsurance_claim",
     "evaluate_promo_coupon_stacking_invariant",
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
@@ -43,11 +45,20 @@ __all__ = [
     "verify_digital_product_passport_provenance",
     "verify_eprescribing_ncpdp_dea_dispense_guard",
     "verify_invoice_factoring_ucc_lien_uniqueness",
+    "verify_mletr_electronic_bill_of_lading_endorsement",
     "verify_winner_commitment_earnest_bond_slash",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_eucp600_letter_of_credit_document_presentation",
+        "evaluate_marine_demurrage_detention_parametric_escrow",
+        "verify_mletr_electronic_bill_of_lading_endorsement",
+    }:
+        from lab import trade_finance_ebl_lc_demurrage_guard
+
+        return getattr(trade_finance_ebl_lc_demurrage_guard, name)
     if name in {
         "evaluate_ev_iso15118_v2g_energy_settlement",
         "evaluate_gpu_spot_compute_sla_and_carbon_retirement",

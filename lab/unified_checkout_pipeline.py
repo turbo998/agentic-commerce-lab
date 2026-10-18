@@ -116,6 +116,11 @@ from lab.healthcare_fsa_rx_hipaa_guard import (
     redact_hipaa_phi_from_payment_descriptor,
     verify_eprescribing_ncpdp_dea_dispense_guard,
 )
+from lab.trade_finance_ebl_lc_demurrage_guard import (
+    evaluate_eucp600_letter_of_credit_document_presentation,
+    evaluate_marine_demurrage_detention_parametric_escrow,
+    verify_mletr_electronic_bill_of_lading_endorsement,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -277,6 +282,11 @@ class UnifiedCheckoutPipelineInput:
     # Optional Stage 25 EV ISO 15118/V2G Energy Settlement, GPU Goodput SLA & Carbon Retirement Gate
     v2g_energy_session_context: dict[str, Any] | None = None
     gpu_compute_carbon_context: dict[str, Any] | None = None
+
+    # Optional Stage 26 MLETR eBL Title Transfer, eUCP 600 LC & Marine Demurrage Escrow Gate
+    mletr_ebl_context: dict[str, Any] | None = None
+    eucp600_lc_context: dict[str, Any] | None = None
+    marine_demurrage_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -563,12 +573,34 @@ def execute_unified_agentic_checkout(
         auction_consortium_ok = not eb_res.default_handled
         auction_consortium_reason = eb_res.decision_code
 
+    trade_finance_ok = True
+    trade_finance_reason = ""
+    if inp.mletr_ebl_context is not None:
+        ebl_res = verify_mletr_electronic_bill_of_lading_endorsement(
+            inp.mletr_ebl_context
+        )
+        trade_finance_ok = bool(ebl_res["allowed"])
+        trade_finance_reason = str(ebl_res["decision_code"])
+    if trade_finance_ok and inp.eucp600_lc_context is not None:
+        lc_res = evaluate_eucp600_letter_of_credit_document_presentation(
+            inp.eucp600_lc_context
+        )
+        trade_finance_ok = bool(lc_res["honored"])
+        trade_finance_reason = str(lc_res["decision_code"])
+    if trade_finance_ok and inp.marine_demurrage_context is not None:
+        dm_res = evaluate_marine_demurrage_detention_parametric_escrow(
+            inp.marine_demurrage_context
+        )
+        trade_finance_ok = bool(dm_res["settled"])
+        trade_finance_reason = str(dm_res["decision_code"])
+
     g3_passed = (
         customs_res.allowed
         and rfq_tax_ok
         and fx_iso_ok
         and green_customs_ok
         and auction_consortium_ok
+        and trade_finance_ok
     )
     dt3 = max((time.perf_counter() - t0) * 1_000_000.0, 10.0)
     g3_code = (
@@ -586,7 +618,11 @@ def execute_unified_agentic_checkout(
                     else (
                         green_customs_reason
                         if not green_customs_ok
-                        else auction_consortium_reason
+                        else (
+                            auction_consortium_reason
+                            if not auction_consortium_ok
+                            else trade_finance_reason
+                        )
                     )
                 )
             )

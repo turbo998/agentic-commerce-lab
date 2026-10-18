@@ -169,6 +169,12 @@
    - [`lab/energy_v2g_compute_carbon_guard.py`](../../lab/energy_v2g_compute_carbon_guard.py) & [`tests/test_energy_v2g_compute_carbon_guard.py`](../../tests/test_energy_v2g_compute_carbon_guard.py)
    - [`lab/vertical_domain_clearing_bench.py`](../../lab/vertical_domain_clearing_bench.py) & [`reports/agentic-commerce-vertical-domain-bench/index.html`](../../reports/agentic-commerce-vertical-domain-bench/index.html)
 
+### Stage 26 — Maritime Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard
+1. **MLETR eBL Singularity of Control, eUCP 600 LC & FMC Demurrage Guard ([`docs/architecture/trade-finance-ebl-lc-and-demurrage-guard.md`](../architecture/trade-finance-ebl-lc-and-demurrage-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §32)**:
+   - Enforced UNCITRAL MLETR / DCSA eBL 3.0 exclusive control anti-double-spend (`EBL_EXCLUSIVE_CONTROL_DOUBLE_SPEND_BLOCKED`) and atomic title transfer (`MLETR_EBL_ATOMIC_TITLE_TRANSFERRED`), ICC eUCP 600 Art. 30 `±5%` quantity tolerance and timely shipment verification (`EUCP600_DOCUMENT_DISCREPANCY_TOLERANCE_BREACH` / `EUCP600_COMPLIANT_PRESENTATION_HONORED`), and FMC OSRA excusable port-congestion demurrage waivers (`PORT_CONGESTION_OR_CARRIER_FAULT_DEMURRAGE_WAIVED`).
+2. **Executable Guard Module & Unit Tests (217 Total Tests)**:
+   - [`lab/trade_finance_ebl_lc_demurrage_guard.py`](../../lab/trade_finance_ebl_lc_demurrage_guard.py) & [`tests/test_trade_finance_ebl_lc_demurrage_guard.py`](../../tests/test_trade_finance_ebl_lc_demurrage_guard.py)
+
 ---
 
 ## Quick Verification Commands

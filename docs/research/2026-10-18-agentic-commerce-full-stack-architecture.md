@@ -229,6 +229,23 @@ Verifies ISO 15118-20 contract certificates and signed hardware Open Charge Mete
 
 Blocks double-counted or unverified Verra/Gold Standard carbon retirement serials (`CARBON_CREDIT_DOUBLE_COUNTING_RETIREMENT_BLOCKED`), voids 100% of spot GPU charges when preemption occurs before durable checkpoint commit (`UNCHECKPOINTED_PREEMPTION_CHARGE_VOIDED`), and slashes escrow when measured effective throughput (`measured_goodput_tflops`) falls below `85%` of promised capacity (`COMPUTE_GOODPUT_SLA_BREACH_ESCROW_SLASHED`).
 
+---
+
+## 32. Maritime Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard (Stage 26)
+
+### 32.1 UNCITRAL MLETR / DCSA eBL 3.0 Exclusive Control (`verify_mletr_electronic_bill_of_lading_endorsement`)
+
+Enforces "singularity of control" on transferable electronic bills of lading (`eBL`), blocking duplicate trade-finance pledges or stale control tokens (`EBL_EXCLUSIVE_CONTROL_DOUBLE_SPEND_BLOCKED`) and executing atomic title transfer upon escrow confirmation (`MLETR_EBL_ATOMIC_TITLE_TRANSFERRED`).
+
+### 32.2 ICC eUCP 600 Documentary Credit Compliance (`evaluate_eucp600_letter_of_credit_document_presentation`)
+
+Automates multi-document examination across Commercial Invoice, clean-on-board eBL, and packing lists—blocking late shipments/presentations (`EUCP600_LATE_PRESENTATION_OR_EXPIRED_LC_BLOCKED`) and UCP 600 Art. 30 `±5%` quantity tolerance breaches (`EUCP600_DOCUMENT_DISCREPANCY_TOLERANCE_BREACH`).
+
+### 32.3 FMC OSRA Excusable Marine Demurrage & Detention Escrow (`evaluate_marine_demurrage_detention_parametric_escrow`)
+
+Subtracts carrier port-congestion and customs inspection hold hours from container dwell time before applying free-time windows, waiving non-consignee-fault demurrage (`PORT_CONGESTION_OR_CARRIER_FAULT_DEMURRAGE_WAIVED`) and capping chargeable overage fees (`MARINE_DEMURRAGE_CAPPED_SETTLED`).
+
+
 
 
 
