@@ -9,6 +9,7 @@ __all__ = [
     "evaluate_agentic_bnpl_trade_credit_underwriting",
     "evaluate_authenticated_c2c_escrow_inspection_release",
     "evaluate_cold_chain_iot_telemetry_escrow",
+    "evaluate_consortium_group_buying_tier_escrow",
     "evaluate_fx_quote_lock_and_slippage",
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_loyalty_points_escrow_and_return_clawback",
@@ -19,6 +20,7 @@ __all__ = [
     "evaluate_split_settlement_invariant",
     "evaluate_trade_in_residual_value_and_grade_clawback",
     "evaluate_usage_based_metering_idempotency",
+    "evaluate_vickrey_reverse_auction_clearing",
     "evaluate_zk_selective_disclosure_eligibility",
     "execute_ftc_click_to_cancel_symmetric_offramp",
     "execute_negative_balance_clawback_waterfall",
@@ -32,10 +34,19 @@ __all__ = [
     "verify_cryptographic_affiliate_attribution_chain",
     "verify_digital_product_passport_provenance",
     "verify_invoice_factoring_ucc_lien_uniqueness",
+    "verify_winner_commitment_earnest_bond_slash",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_consortium_group_buying_tier_escrow",
+        "evaluate_vickrey_reverse_auction_clearing",
+        "verify_winner_commitment_earnest_bond_slash",
+    }:
+        from lab import agentic_auction_consortium_clearing_guard
+
+        return getattr(agentic_auction_consortium_clearing_guard, name)
     if name in {
         "evaluate_authenticated_c2c_escrow_inspection_release",
         "evaluate_trade_in_residual_value_and_grade_clawback",

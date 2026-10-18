@@ -97,6 +97,11 @@ from lab.resale_dpp_authenticity_escrow_guard import (
     evaluate_trade_in_residual_value_and_grade_clawback,
     verify_digital_product_passport_provenance,
 )
+from lab.agentic_auction_consortium_clearing_guard import (
+    evaluate_consortium_group_buying_tier_escrow,
+    evaluate_vickrey_reverse_auction_clearing,
+    verify_winner_commitment_earnest_bond_slash,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -239,6 +244,11 @@ class UnifiedCheckoutPipelineInput:
     dpp_provenance_bundle: dict[str, Any] | None = None
     c2c_escrow_context: dict[str, Any] | None = None
     trade_in_valuation_context: dict[str, Any] | None = None
+
+    # Optional Stage 22 Vickrey Auction / Reverse RFQ, Consortium Group-Buying Escrow & Bond Slash Gate
+    vickrey_auction_bundle: dict[str, Any] | None = None
+    consortium_escrow_bundle: dict[str, Any] | None = None
+    earnest_bond_default_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -473,8 +483,29 @@ def execute_unified_agentic_checkout(
         green_customs_ok = cc_iot_res.sla_compliant
         green_customs_reason = cc_iot_res.decision_code
 
+    auction_consortium_ok = True
+    auction_consortium_reason = ""
+    if inp.vickrey_auction_bundle is not None:
+        vk_res = evaluate_vickrey_reverse_auction_clearing(inp.vickrey_auction_bundle)
+        auction_consortium_ok = vk_res.cleared
+        auction_consortium_reason = vk_res.decision_code
+    if auction_consortium_ok and inp.consortium_escrow_bundle is not None:
+        cg_res = evaluate_consortium_group_buying_tier_escrow(inp.consortium_escrow_bundle)
+        auction_consortium_ok = cg_res.settled
+        auction_consortium_reason = cg_res.decision_code
+    if auction_consortium_ok and inp.earnest_bond_default_context is not None:
+        eb_res = verify_winner_commitment_earnest_bond_slash(
+            inp.earnest_bond_default_context
+        )
+        auction_consortium_ok = not eb_res.default_handled
+        auction_consortium_reason = eb_res.decision_code
+
     g3_passed = (
-        customs_res.allowed and rfq_tax_ok and fx_iso_ok and green_customs_ok
+        customs_res.allowed
+        and rfq_tax_ok
+        and fx_iso_ok
+        and green_customs_ok
+        and auction_consortium_ok
     )
     dt3 = max((time.perf_counter() - t0) * 1_000_000.0, 10.0)
     g3_code = (
@@ -486,7 +517,15 @@ def execute_unified_agentic_checkout(
             else (
                 rfq_tax_reason
                 if not rfq_tax_ok
-                else (fx_iso_reason if not fx_iso_ok else green_customs_reason)
+                else (
+                    fx_iso_reason
+                    if not fx_iso_ok
+                    else (
+                        green_customs_reason
+                        if not green_customs_ok
+                        else auction_consortium_reason
+                    )
+                )
             )
         )
     )

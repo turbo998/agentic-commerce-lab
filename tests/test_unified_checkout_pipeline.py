@@ -418,6 +418,26 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(dpp_fail.blocked_at_gate, 6)
         self.assertIn("STOLEN_OR_RECALLED_DPP_ASSET_BLOCKED", dpp_fail.terminal_decision_code)
 
+    def test_gate3_blocks_vickrey_bid_rigging_and_consortium_under_moq(self) -> None:
+        collusion_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                vickrey_auction_bundle={
+                    "auction_id": "rfq_collusion_22",
+                    "direction": "REVERSE",
+                    "reserve_price_minor": 150_000,
+                    "scheduled_close_epoch": 5_000,
+                    "shill_bid_self_dealing_detected": True,
+                    "collusion_ring_score": 0.92,
+                    "bids": [
+                        {"bidder_id": "seller_a", "principal_id": "did:web:a", "bid_amount_minor": 140_000, "bid_epoch": 4_800},
+                    ],
+                }
+            )
+        )
+        self.assertFalse(collusion_fail.checkout_committed)
+        self.assertEqual(collusion_fail.blocked_at_gate, 3)
+        self.assertIn("BID_RIGGING_OR_SHILL_COLLUSION_BLOCKED", collusion_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

@@ -169,6 +169,23 @@ Releases buyer escrow only when an accredited authentication hub verifies `inspe
 
 Blocks unilateral post-receipt Trade-In card debits when re-grading slashes the locked quote by `> 500 bps` (`5%`, `UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED`), requiring explicit buyer re-consent or free prepaid device return (`TRADE_IN_DOWNGRADE_RECONSENT_OR_FREE_RETURN`).
 
+---
+
+## 28. Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard (Stage 22)
+
+### 28.1 Vickrey Second-Price Auction Clearing, Anti-Sniping Soft Close & Anti-Collusion (`evaluate_vickrey_reverse_auction_clearing`)
+
+Enforces incentive-compatible Vickrey second-price clearing (`VICKREY_INCENTIVE_COMPATIBLE_CLEARED`) across B2B Reverse RFQs and scarce compute/ad-slot forward auctions, extends auctions by `+30s` when bids arrive within `<= 15s` of close (`ANTI_SNIPING_SOFT_CLOSE_EXTENDED`), and blocks shill self-dealing or collusion rings (`collusion_ring_score >= 0.85`, `BID_RIGGING_OR_SHILL_COLLUSION_BLOCKED`).
+
+### 28.2 Consortium Group-Buying Tiered Escrow (`evaluate_consortium_group_buying_tier_escrow`)
+
+Unlocks volume wholesale pricing tiers across multi-buyer consortium pools while enforcing exact rebate conservation `sum(final_charges + rebates) == sum(initial_holds)` (`GROUP_TIER_UNLOCKED_REBATE_SETTLED`), or automatically releases 100% of pre-authorized holds when cutoff demand falls below MOQ (`MOQ_NOT_MET_ESCROW_AUTO_RELEASED`).
+
+### 28.3 Winner Griefing-Default Earnest-Bond Slashing & Runner-Up Fallback (`verify_winner_commitment_earnest_bond_slash`)
+
+Slashes 100% of the winning bidder's earnest bond when settlement TTL expires (`WINNER_DEFAULT_EARNEST_BOND_SLASHED`) and seamlessly awards the contract to the second-price runner-up bidder (`SECOND_PRICE_FALLBACK_AWARDED`).
+
+
 
 
 

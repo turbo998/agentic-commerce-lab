@@ -144,6 +144,12 @@
    - [`lab/resale_dpp_authenticity_escrow_guard.py`](../../lab/resale_dpp_authenticity_escrow_guard.py) & [`tests/test_resale_dpp_authenticity_escrow_guard.py`](../../tests/test_resale_dpp_authenticity_escrow_guard.py)
    - [`lab/lifecycle_finance_circular_bench.py`](../../lab/lifecycle_finance_circular_bench.py) & [`reports/agentic-commerce-lifecycle-finance-bench/index.html`](../../reports/agentic-commerce-lifecycle-finance-bench/index.html)
 
+### Stage 22 — Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard
+1. **Vickrey Auction Clearing, Consortium Tiered Escrow & Earnest-Bond Slash ([`docs/architecture/agentic-auction-and-consortium-clearing-guard.md`](../architecture/agentic-auction-and-consortium-clearing-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §28)**:
+   - Enforced Vickrey second-price incentive-compatible clearing (`VICKREY_INCENTIVE_COMPATIBLE_CLEARED`), `<= 15s` anti-sniping `+30s` soft-close extension (`ANTI_SNIPING_SOFT_CLOSE_EXTENDED`), and shill/collusion blocking (`BID_RIGGING_OR_SHILL_COLLUSION_BLOCKED`); multi-buyer consortium group-buying tier rebate conservation (`GROUP_TIER_UNLOCKED_REBATE_SETTLED` vs `MOQ_NOT_MET_ESCROW_AUTO_RELEASED`); and winning bidder griefing-default earnest-bond slashing (`WINNER_DEFAULT_EARNEST_BOND_SLASHED`) with runner-up fallback (`SECOND_PRICE_FALLBACK_AWARDED`).
+2. **Executable Guard Module & Unit Tests (194 Total Tests)**:
+   - [`lab/agentic_auction_consortium_clearing_guard.py`](../../lab/agentic_auction_consortium_clearing_guard.py) & [`tests/test_agentic_auction_consortium_clearing_guard.py`](../../tests/test_agentic_auction_consortium_clearing_guard.py)
+
 ---
 
 ## Quick Verification Commands
