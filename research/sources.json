@@ -1,0 +1,315 @@
+{
+  "checked_on": "2026-10-18",
+  "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
+  "sources": [
+    {
+      "id": "stripe-acp-launch",
+      "url": "https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce",
+      "published_on": "2025-09-29",
+      "evidence": "Official announcement; datePublished metadata verified."
+    },
+    {
+      "id": "stripe-suite-launch",
+      "url": "https://stripe.com/blog/agentic-commerce-suite",
+      "published_on": "2025-12-11",
+      "evidence": "Official announcement; SPT already described here, not first introduced at Sessions 2026."
+    },
+    {
+      "id": "stripe-sessions-2026",
+      "url": "https://stripe.com/blog/everything-we-announced-at-sessions-2026",
+      "published_on": "2026-04-29",
+      "evidence": "Official announcement; separates available, previewed and coming-soon features."
+    },
+    {
+      "id": "stripe-commerce-docs",
+      "url": "https://docs.stripe.com/agentic-commerce",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce.md",
+      "published_on": null,
+      "evidence": "Current documentation; agent embedding is private preview. Oct 17 hash change across docs.stripe.com/*.md reflects UK/Commonwealth English spelling rendering ('authorise', 'organisation', 'fulfilment'), not a product or API version change."
+    },
+    {
+      "id": "stripe-spt",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry. Repeated same-day fetches differ in generated example expires_at and UK/US locale rendering; hash changes are not release evidence."
+    },
+    {
+      "id": "stripe-mcp",
+      "url": "https://docs.stripe.com/mcp",
+      "monitor_url": "https://docs.stripe.com/mcp.md",
+      "published_on": null,
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17–18 fetches served the UK-formatted date string ('30 November 2026') with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' (43 calendar days remaining as of 2026-10-18). Cutoff time/timezone remain unspecified."
+    },
+    {
+      "id": "stripe-mpp",
+      "url": "https://docs.stripe.com/payments/machine/mpp",
+      "monitor_url": "https://docs.stripe.com/payments/machine/mpp.md",
+      "published_on": null,
+      "api_version_observed": "2026-07-29.preview",
+      "evidence": "MPP 402 challenge, Stripe PaymentIntent, SPT/card and stablecoin integrations."
+    },
+    {
+      "id": "stripe-x402",
+      "url": "https://docs.stripe.com/payments/machine/x402",
+      "monitor_url": "https://docs.stripe.com/payments/machine/x402.md",
+      "published_on": null,
+      "api_version_observed": "2026-05-27.preview",
+      "evidence": "Facilitator settlement then PaymentIntent recording; access and geographic restrictions."
+    },
+    {
+      "id": "stripe-acp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/acp",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/acp.md",
+      "published_on": null,
+      "spec_version_observed": "2026-04-17",
+      "evidence": "Current docs name Stripe/OpenAI/Meta; launch article named Stripe/OpenAI."
+    },
+    {
+      "id": "stripe-link-wallet",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet.md",
+      "published_on": null,
+      "evidence": "Link customer OAuth, one-time credentials, US/Canada payments and US financial insights."
+    },
+    {
+      "id": "stripe-machine-payments",
+      "url": "https://docs.stripe.com/payments/machine",
+      "monitor_url": "https://docs.stripe.com/payments/machine.md",
+      "published_on": null,
+      "evidence": "Protocol/network/token matrix, minimum settlement amounts and access requirements."
+    },
+    {
+      "id": "stripe-frameworks",
+      "url": "https://docs.stripe.com/agents",
+      "monitor_url": "https://docs.stripe.com/agents.md",
+      "published_on": null,
+      "evidence": "Current recommended plugin/MCP/skills setup; historical agent-toolkit repo resolves to Stripe AI."
+    },
+    {
+      "id": "visa-vic",
+      "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
+      "published_on": null,
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14, Oct 16, and Oct 17 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403); current developer body and availability not reverified."
+    },
+    {
+      "id": "visa-tap",
+      "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
+      "published_on": null,
+      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Getting-started text now points to merchant specifications; route/content change has no independently verified deployment or release date. Historical detailed claims retained as historical evidence, not revalidated by the short introduction."
+    },
+    {
+      "id": "visa-tap-specs",
+      "url": "https://developer.visa.com/docs/trusted-agent-protocol/trusted-agent-protocol-specifications",
+      "published_on": null,
+      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. No explicit protocol version or first-publication date obtained; not a full cryptographic conformance review."
+    },
+    {
+      "id": "visa-tap-announcement",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/newsroom/visa-unveils-trusted-agent-protocol-for-ai-commerce.html",
+      "published_on": null,
+      "evidence": "Official announcement; HTTP Message Signatures, Cloudflare, initial Visa-network scope; exact date not independently extracted."
+    },
+    {
+      "id": "visa-toolkit",
+      "url": "https://corporate.visa.com/en/sites/visa-perspectives/innovation/visa-mcp-server-agent-acceptance-toolkit.html",
+      "published_on": null,
+      "evidence": "MCP Server and Acceptance Agent Toolkit described as pilot, with invoicing and Pay By Link workflows."
+    },
+    {
+      "id": "visa-tap-code",
+      "url": "https://raw.githubusercontent.com/visa/trusted-agent-protocol/main/README.md",
+      "published_on": null,
+      "revision_observed": "16d59bdf3f8a542bc538d0962edbb80ea30a02af",
+      "evidence": "Readme only; registry/CDN proxy/merchant/agent reference topology, not a full code audit."
+    },
+    {
+      "id": "ucp",
+      "url": "https://ucp.dev/latest/specification/overview/",
+      "published_on": null,
+      "revision_observed": "3ab41043b79373df33a6e2c377bc82a806175f78",
+      "commit_committed_at": "2026-10-16T17:50:28Z",
+      "evidence": "Oct 17 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged' vs Oct 14 baseline after Oct 16 timeout). Official repository Universal-Commerce-Protocol/ucp advanced 1 commit to 3ab41043b793 (#913, 'docs(permalink): show the mandated headers on every 303 example'): enforces that every 303 See Other permalink redirect carries Location, Cache-Control: no-store, and Referrer-Policy: no-referrer so buyer PII in permalink query strings does not leak via caching or Referer headers."
+    },
+    {
+      "id": "stripe-ai-skills",
+      "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
+      "published_on": null,
+      "revision_observed": "c1f5b0826f3f33d7e1cc7eff5e5e6cd42749808b",
+      "commit_committed_at": "2026-10-17T00:45:19Z",
+      "plugin_version_observed": "0.5.21",
+      "evidence": "Official Oct 17 sync-skills commit reviewed (c1f5b0826f3f): bumps agent-plugins 0.5.20 -> 0.5.21, Claude 0.11.20 -> 0.11.21, Cursor/Grok 0.9.20 -> 0.9.21, Codex 5.8.20 -> 5.8.21, and updates upgrade-stripe snapshot date to 2026-10-17 while keeping fallback API version 2026-09-30.endive."
+    },
+    {
+      "id": "ap2",
+      "url": "https://ap2-protocol.org/",
+      "monitor_url": "https://raw.githubusercontent.com/google-agentic-commerce/AP2/main/docs/index.md",
+      "published_on": null,
+      "tag_observed": "v0.2.0",
+      "tag_revision": "b4587ac1d055888a73b4b21750973cffba961793",
+      "revision_observed": "e1ea56db72a6385bce3e5c1112b3a56ce60acb43",
+      "evidence": "Current main docs: open/closed Checkout and Payment Mandates; must not attribute main content automatically to tag."
+    },
+    {
+      "id": "mcp",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25",
+      "published_on": null,
+      "schema_directories_observed": [
+        "2025-11-25",
+        "2026-07-28",
+        "draft"
+      ],
+      "evidence": "2025-11-25 text read; 2026-07-28 schema existence separately verified, not treated as reviewed."
+    },
+    {
+      "id": "a2a",
+      "url": "https://a2a-protocol.org/latest/specification/",
+      "published_on": null,
+      "spec_version_observed": "1.0.0",
+      "release_tag_observed": "v1.0.1",
+      "release_published_at": "2026-05-28T11:34:36Z",
+      "evidence": "Latest website displays 1.0.0 but official repository latest release is v1.0.1. Do not silently equate moving website content with a pinned tag."
+    },
+    {
+      "id": "stripe-ucp-docs",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp.md",
+      "published_on": null,
+      "evidence": "Stripe UCP Tech Council membership and checkout, identity linking, order and payment-token exchange building blocks."
+    },
+    {
+      "id": "stripe-ucp-handler",
+      "url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler.md",
+      "published_on": null,
+      "handler_version_observed": "2026-06-25",
+      "ucp_example_version_observed": "2026-04-08",
+      "evidence": "Current handler supports card/Apple Pay completion; advertised link is not accepted by current complete endpoint. Google Pay uses com.google.pay; tokenize requires same environment and confirmed commerce relationship. Example versions are not universal latest-version claims."
+    },
+    {
+      "id": "stripe-agent-keys",
+      "url": "https://docs.stripe.com/keys",
+      "monitor_url": "https://docs.stripe.com/keys.md",
+      "published_on": null,
+      "evidence": "Agent Keys are agent-tagged restricted API keys with approval-rule governance; key prefixes alone do not prove tagging, least privilege or transaction authority."
+    },
+    {
+      "id": "stripe-suite-retail",
+      "url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail.md",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "Current ACS seller availability in US, Canada, selected Europe. Feed imports are asynchronous and unordered; upsert omission is not deletion and replace removes omitted products."
+    },
+    {
+      "id": "mcp-auth-2026-07-28",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
+      "published_on": null,
+      "spec_version_observed": "2026-07-28",
+      "evidence": "Reviewed authorization overview only, not full protocol conformance. HTTP OAuth resource metadata, discovery and scopes are separate from payment consent."
+    },
+    {
+      "id": "azure-waf-ai-design",
+      "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design",
+      "published_on": null,
+      "evidence": "Current official WAF already covers five AI layers, deterministic orchestration versus agent collaboration, policy enforcement, durable state and AI-aware caching."
+    },
+    {
+      "id": "azure-n-tier",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/n-tier",
+      "published_on": null,
+      "evidence": "N-tier is an architecture style, not the definition of WAF. Logical layers and physical tiers need not map one-to-one; asynchronous messaging is supported."
+    },
+    {
+      "id": "sierra-pap-launch",
+      "url": "https://sierra.ai/blog/introducing-personal-agent-protocol",
+      "published_on": "2026-10-06",
+      "evidence": "Official announcement (publishedAt 2026-10-06T17:32:00.000Z); Meta and Sierra co-developed Personal Agent Protocol with Genesys, Instinct, NiCE, Rocket, Shopify, Stripe, and Walmart. Stated v0.1 spec planned later in Oct 2026 and payment extensions are future directions ('could let')."
+    },
+    {
+      "id": "sierra-poppy-draft",
+      "url": "https://sierra.ai/blog/poppy",
+      "published_on": "2026-10-09",
+      "evidence": "Official announcement (publishedAt 2026-10-09T19:56:06.371Z); publishes draft Personal Agent Protocol (Poppy) at personalagentprotocol.org (/.well-known/poppy.json) and announces 35 additional design partners including Visa, Mastercard, Adyen, PayPal, Venmo, Plaid, OpenAI, Cloudflare, Okta, 1Password, and Target. Explicitly positions Poppy as complementary to UCP."
+    },
+    {
+      "id": "poppy-spec",
+      "url": "https://personalagentprotocol.org/docs/spec",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/spec.mdx",
+      "published_on": null,
+      "spec_version_observed": "0.1",
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
+      "commit_committed_at": "2026-10-17T00:08:46Z",
+      "evidence": "Draft v0.1 specification; spec.mdx hash unchanged on Oct 17 while repository advanced to 95fcbf22c599 (#35, 'Add the Company implementation kit and replace the review kit'): adds kit/company/ with 18 Draft 2020-12 JSON Schemas, 10 architecture integration patterns, a Before-vs-After Company architecture comparison, and a zero-dependency TypeScript conformance validator."
+    },
+    {
+      "id": "poppy-operations-ext",
+      "url": "https://personalagentprotocol.org/docs/extensions/operations",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/operations.mdx",
+      "published_on": null,
+      "spec_version_observed": "1",
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
+      "evidence": "Draft v1 operations extension for Poppy v0.1. Commit e910c86 (#51) adds normative guidance that Personal Agents SHOULD surface material terms values (amounts, dates, items) alongside summary or verify they agree before asking the User for approval because the Company writes both and summary could misdescribe terms.",
+      "commit_committed_at": "2026-10-17T00:08:46Z"
+    },
+    {
+      "id": "poppy-company-kit",
+      "url": "https://personalagentprotocol.org/kit/company",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/kit/company/SKILL.md",
+      "published_on": null,
+      "spec_version_observed": "0.1",
+      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
+      "commit_committed_at": "2026-10-17T00:08:46Z",
+      "evidence": "Added in commit 95fcbf22c599 (#35, 2026-10-17T00:08:46Z): Company implementation kit ('implement-personal-agent-protocol' skill), 18 JSON Schemas (kit/company/schemas/*.schema.json), 10 Company integration patterns (token-issuance, dpop-verification, sign-in, session-state, scopes, web-browsing, mcp-auth, conversations, error-handling, operations), and automated conformance validator (kit/company/validate/)."
+    },
+    {
+      "id": "sierra-summit-2026",
+      "url": "https://sierra.ai/blog/summit-recap-2026",
+      "published_on": "2026-10-06",
+      "evidence": "Official Summit 2026 recap (publishedAt 2026-10-06T18:01:51.141Z); documents Constellation of models (Linnaeus, Darwin, Curie, Fleming), Tandem Voice (Conversation vs Reasoning layers), Horizon long-running workflows, Ghostwriter, and Sierra one-click app in the Stripe App Marketplace."
+    },
+    {
+      "id": "sierra-caller-id",
+      "url": "https://sierra.ai/blog/caller-id-in-the-age-of-agents",
+      "published_on": "2026-10-08",
+      "evidence": "Official announcement (publishedAt 2026-10-08T17:32:00.000Z); introduces fleming-1 real-time voice caller-agent detection model ('Information, not judgement') as a voice-channel complement to Personal Agent Protocol self-identification."
+    },
+    {
+      "id": "sierra-defense-in-depth",
+      "url": "https://sierra.ai/blog/defense-in-depth-in-the-age-of-agents",
+      "published_on": "2026-08-13",
+      "evidence": "Official technical blog (publishedAt 2026-08-13T16:51:46.690Z); defines four runtime layers (Content, Rules & Policies, Supervisors, Deterministic Guards) plus offline Simulations, Red-teaming, and Agent Monitors."
+    },
+    {
+      "id": "sierra-mcp-gateway",
+      "url": "https://sierra.ai/blog/building-sierras-mcp-gateway-an-engineering-iceberg",
+      "published_on": "2026-07-22",
+      "evidence": "Official engineering blog (publishedAt 2026-07-22T14:00:00.000Z); documents centralized MCP Gateway enforcing tool visibility gating ('an agent can't misuse what it never sees'), single-customer session isolation, and human-identity vs pre-authorized service-account workflow separation."
+    },
+    {
+      "id": "sierra-payments",
+      "url": "https://sierra.ai/blog/payments",
+      "published_on": "2026-04-07",
+      "evidence": "Official announcement (publishedAt 2026-04-07T19:35:00.000Z); Sierra verified as Level 1 PCI-compliant service provider on the Visa Global Service Provider Registry. Switches chat/voice payment collection out of the LLM loop into a predetermined server-validated PCI flow so raw Cardholder Data never enters LLM context."
+    },
+    {
+      "id": "sierra-tau2-bench",
+      "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md",
+      "published_on": null,
+      "release_tag_observed": "v1.0.1",
+      "release_published_at": "2026-07-22T21:22:42Z",
+      "revision_observed": "96a3ef92329ba1c6be1430fd83c8d6df32a57198",
+      "commit_committed_at": "2026-10-15T23:02:21Z",
+      "evidence": "Official Sierra Research tau2-bench (now tau3-bench) repository. Three commits since Oct 14 (dd8757d -> 96a3ef9): 2fbecd0 adds Salesforce Launa v1 audio-native voice provider and leaderboard submission, 5ade54e adds xAI Grok Voice 3.0 custom voice leaderboard submission, and 96a3ef9 fixes standalone page favicons (#598). README hash unchanged."
+    },
+    {
+      "id": "sierra-tau2-retail-policy",
+      "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/data/tau2/domains/retail/policy.md",
+      "published_on": null,
+      "revision_observed": "96a3ef92329ba1c6be1430fd83c8d6df32a57198",
+      "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product variant-only item swap, and original-payment/gift-card refund constraints."
+    }
+  ]
+}
