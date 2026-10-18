@@ -125,6 +125,12 @@
    - [`lab/subscription_metering_click_to_cancel_guard.py`](../../lab/subscription_metering_click_to_cancel_guard.py) & [`tests/test_subscription_metering_click_to_cancel_guard.py`](../../tests/test_subscription_metering_click_to_cancel_guard.py)
    - [`lab/global_clearing_privacy_bench.py`](../../lab/global_clearing_privacy_bench.py), [`reports/agentic-commerce-global-clearing-privacy-bench/index.html`](../../reports/agentic-commerce-global-clearing-privacy-bench/index.html) & [`tests/test_global_clearing_privacy_bench.py`](../../tests/test_global_clearing_privacy_bench.py)
 
+### Stage 19 — Agentic Promo Coupon Stacking Guard, Cryptographic Multi-Hop Affiliate Attribution & Loyalty Return Clawback
+1. **Promo Stacking, Affiliate Attribution & Loyalty Clawback ([`docs/architecture/loyalty-affiliate-and-promo-stacking-guard.md`](../architecture/loyalty-affiliate-and-promo-stacking-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §25)**:
+   - Enforced post-discount merchant margin floor (`PROMO_STACK_EXCEEDS_FLOOR_MARGIN_BLOCKED`), campaign exclusivity groups (`EXCLUSIVITY_GROUP_CONFLICT`), and Sybil self-referral ring blocking (`SELF_REFERRAL_SYBIL_RING_BLOCKED`); cryptographic multi-hop JWS attribution anti-hijack (`LAST_SECOND_ATTRIBUTION_HIJACK_BLOCKED` within `<= 5s`) with Largest Remainder commission split; and return-window loyalty escrow (`PENDING_RETURN_WINDOW_ESCROW`) with spent-reward principal refund deduction (`CASHBACK_DEFICIT_DEDUCTED_FROM_REFUND`).
+2. **Executable Guard Module & Unit Tests (178 Total Tests)**:
+   - [`lab/loyalty_affiliate_promo_stacking_guard.py`](../../lab/loyalty_affiliate_promo_stacking_guard.py) & [`tests/test_loyalty_affiliate_promo_stacking_guard.py`](../../tests/test_loyalty_affiliate_promo_stacking_guard.py)
+
 ---
 
 ## Quick Verification Commands

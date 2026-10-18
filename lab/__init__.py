@@ -9,6 +9,8 @@ __all__ = [
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_fx_quote_lock_and_slippage",
     "evaluate_hs_code_landed_cost_and_deminimis",
+    "evaluate_loyalty_points_escrow_and_return_clawback",
+    "evaluate_promo_coupon_stacking_invariant",
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
     "evaluate_seller_kyb_rolling_reserve",
     "evaluate_split_settlement_invariant",
@@ -22,10 +24,19 @@ __all__ = [
     "scan_and_redact_agent_context_pii_pci",
     "validate_iso20022_pacs008_instruction",
     "verify_crypto_shredding_erasure_tombstone",
+    "verify_cryptographic_affiliate_attribution_chain",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_loyalty_points_escrow_and_return_clawback",
+        "evaluate_promo_coupon_stacking_invariant",
+        "verify_cryptographic_affiliate_attribution_chain",
+    }:
+        from lab import loyalty_affiliate_promo_stacking_guard
+
+        return getattr(loyalty_affiliate_promo_stacking_guard, name)
     if name in {
         "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
         "evaluate_usage_based_metering_idempotency",

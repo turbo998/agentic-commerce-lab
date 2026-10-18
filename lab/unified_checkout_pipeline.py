@@ -82,6 +82,11 @@ from lab.subscription_metering_click_to_cancel_guard import (
     evaluate_usage_based_metering_idempotency,
     execute_ftc_click_to_cancel_symmetric_offramp,
 )
+from lab.loyalty_affiliate_promo_stacking_guard import (
+    evaluate_loyalty_points_escrow_and_return_clawback,
+    evaluate_promo_coupon_stacking_invariant,
+    verify_cryptographic_affiliate_attribution_chain,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -209,6 +214,11 @@ class UnifiedCheckoutPipelineInput:
     usage_metering_bundle: dict[str, Any] | None = None
     recurring_renewal_context: dict[str, Any] | None = None
     click_to_cancel_request: dict[str, Any] | None = None
+
+    # Optional Stage 19 Promo Coupon Stacking, Affiliate Attribution & Loyalty Clawback Gate
+    promo_stacking_context: dict[str, Any] | None = None
+    affiliate_attribution_bundle: dict[str, Any] | None = None
+    loyalty_clawback_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -652,8 +662,23 @@ def execute_unified_agentic_checkout(
         mkt_split_ok = kr_res.payouts_allowed
         mkt_split_reason = kr_res.decision_code
 
+    promo_attr_ok = True
+    promo_attr_reason = ""
+    if inp.promo_stacking_context is not None:
+        pr_res = evaluate_promo_coupon_stacking_invariant(inp.promo_stacking_context)
+        promo_attr_ok = pr_res.allowed
+        promo_attr_reason = pr_res.decision_code
+    if promo_attr_ok and inp.affiliate_attribution_bundle is not None:
+        at_res = verify_cryptographic_affiliate_attribution_chain(inp.affiliate_attribution_bundle)
+        promo_attr_ok = at_res.allowed
+        promo_attr_reason = at_res.decision_code
+    if promo_attr_ok and inp.loyalty_clawback_context is not None:
+        lc_res = evaluate_loyalty_points_escrow_and_return_clawback(inp.loyalty_clawback_context)
+        promo_attr_ok = lc_res.allowed
+        promo_attr_reason = lc_res.decision_code
+
     g6_passed = (
-        connect_res.valid and spt_res.allowed and b2b_3way_ok and mkt_split_ok
+        connect_res.valid and spt_res.allowed and b2b_3way_ok and mkt_split_ok and promo_attr_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -664,7 +689,11 @@ def execute_unified_agentic_checkout(
             else (
                 spt_res.reason
                 if not spt_res.allowed
-                else (b2b_3way_reason if not b2b_3way_ok else mkt_split_reason)
+                else (
+                    b2b_3way_reason
+                    if not b2b_3way_ok
+                    else (mkt_split_reason if not mkt_split_ok else promo_attr_reason)
+                )
             )
         )
     )

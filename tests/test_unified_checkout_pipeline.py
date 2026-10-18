@@ -357,6 +357,30 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(wall_fail.blocked_at_gate, 2)
         self.assertIn("DARK_PATTERN_RETENTION_WALL_BLOCKED", wall_fail.terminal_decision_code)
 
+    def test_gate6_blocks_promo_margin_floor_breach_and_last_second_affiliate_hijack(self) -> None:
+        hijack_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                affiliate_attribution_bundle={
+                    "order_id": "ord_pipe_19",
+                    "total_commission_minor": 1_000,
+                    "checkout_epoch": 5_000,
+                    "hijack_window_seconds": 5,
+                    "attribution_hops": [
+                        {
+                            "hop_id": "hop_extension_hijack",
+                            "timestamp_epoch": 4_998,
+                            "jws_signature_valid": True,
+                            "verified_interaction_digest": "",
+                            "weight_bps": 10000,
+                        }
+                    ],
+                }
+            )
+        )
+        self.assertFalse(hijack_fail.checkout_committed)
+        self.assertEqual(hijack_fail.blocked_at_gate, 6)
+        self.assertIn("LAST_SECOND_ATTRIBUTION_HIJACK_BLOCKED", hijack_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

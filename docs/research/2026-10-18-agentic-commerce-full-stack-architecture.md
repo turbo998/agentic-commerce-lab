@@ -121,6 +121,23 @@ Enforces `>= 48h` pre-debit notification (`PRE_DEBIT_NOTICE_WINDOW_VIOLATION`), 
 
 Enforces `required_cancellation_steps <= min(enrollment_steps, 2)` and zero retention walls (`DARK_PATTERN_RETENTION_WALL_BLOCKED`), computes exact unused-cycle refund $R_{\text{pro\_rata}} = \lfloor C_{\text{paid}} \cdot D_{\text{unused}} / D_{\text{total}} \rfloor$ (`PRO_RATA_REFUND_ISSUED`), and atomically revokes downstream Stripe `SPT` / network tokens.
 
+---
+
+## 25. Agentic Promo Coupon Stacking Guard, Cryptographic Multi-Hop Affiliate Attribution & Loyalty Return Clawback (Stage 19)
+
+### 25.1 Promo Coupon Stacking & Margin Floor Invariant (`evaluate_promo_coupon_stacking_invariant`)
+
+Blocks Sybil self-referral rings (`SELF_REFERRAL_SYBIL_RING_BLOCKED`), mutually exclusive campaign group collisions (`EXCLUSIVITY_GROUP_CONFLICT`), and coupon combinations that drive post-discount net margin below `merchant_floor_margin_bps` (`PROMO_STACK_EXCEEDS_FLOOR_MARGIN_BLOCKED`).
+
+### 25.2 Cryptographic Multi-Hop Affiliate Attribution (`verify_cryptographic_affiliate_attribution_chain`)
+
+Verifies multi-hop discovery/comparison/checkout JWS attribution proofs, blocks last-second browser extension or rogue intermediary attribution hijacks injected within `<= 5s` of checkout without verified discovery lineage (`LAST_SECOND_ATTRIBUTION_HIJACK_BLOCKED`), and allocates total commission across valid hops via the Largest Remainder Method (`AFFILIATE_ATTRIBUTION_SPLIT_VERIFIED`).
+
+### 25.3 Return-Window Loyalty Escrow & Clawback (`evaluate_loyalty_points_escrow_and_return_clawback`)
+
+Holds order-earned loyalty points/cashback in `PENDING_RETURN_WINDOW_ESCROW` during the return window; when a buyer returns goods after redeeming rewards, claws back available points (`LOYALTY_POINTS_CLAWED_BACK`) and deducts any unrecovered spent deficit from the principal refund (`CASHBACK_DEFICIT_DEDUCTED_FROM_REFUND`).
+
+
 
 
 
