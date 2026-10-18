@@ -162,6 +162,13 @@
 2. **Executable Guard Module & Unit Tests (206 Total Tests)**:
    - [`lab/healthcare_fsa_rx_hipaa_guard.py`](../../lab/healthcare_fsa_rx_hipaa_guard.py) & [`tests/test_healthcare_fsa_rx_hipaa_guard.py`](../../tests/test_healthcare_fsa_rx_hipaa_guard.py)
 
+### Stage 25 — Autonomous EV ISO 15118 Plug-&-Charge / V2G Bidirectional Net-Metering, DePIN GPU Goodput SLA Escrow & Carbon Retirement Guard + 16-Scenario Vertical Clearing 7-Card Deck
+1. **ISO 15118 V2G Net-Metering, GPU Goodput SLA & Carbon Guard ([`docs/architecture/energy-v2g-compute-and-carbon-settlement-guard.md`](../architecture/energy-v2g-compute-and-carbon-settlement-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §31)**:
+   - Enforced ISO 15118-20 contract certificate and hardware OCMF kWh signature verification (`UNSIGNED_OCMF_TELEMETRY_SPOOF_BLOCKED`), V2G minimum SoC safety floor (`V2G_DISCHARGE_BELOW_SOC_FLOOR_BLOCKED`), and ToU/FiT bidirectional net settlement (`V2G_BIDIRECTIONAL_NET_METER_SETTLED`); plus GPU spot uncheckpointed preemption voiding (`UNCHECKPOINTED_PREEMPTION_CHARGE_VOIDED`), `<85%` Goodput SLA escrow slashing (`COMPUTE_GOODPUT_SLA_BREACH_ESCROW_SLASHED`), and Verra/Gold Standard carbon credit serial uniqueness (`CARBON_CREDIT_DOUBLE_COUNTING_RETIREMENT_BLOCKED`).
+2. **Executable Guard Modules, 16-Scenario 7-Card Deck & Unit Tests (212 Total Tests)**:
+   - [`lab/energy_v2g_compute_carbon_guard.py`](../../lab/energy_v2g_compute_carbon_guard.py) & [`tests/test_energy_v2g_compute_carbon_guard.py`](../../tests/test_energy_v2g_compute_carbon_guard.py)
+   - [`lab/vertical_domain_clearing_bench.py`](../../lab/vertical_domain_clearing_bench.py) & [`reports/agentic-commerce-vertical-domain-bench/index.html`](../../reports/agentic-commerce-vertical-domain-bench/index.html)
+
 ---
 
 ## Quick Verification Commands

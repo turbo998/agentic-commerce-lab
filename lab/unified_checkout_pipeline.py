@@ -107,6 +107,10 @@ from lab.digital_goods_ticketing_ip_royalty_guard import (
     evaluate_event_ticket_anti_scalping_escrow,
     evaluate_generative_ip_royalty_micro_split,
 )
+from lab.energy_v2g_compute_carbon_guard import (
+    evaluate_ev_iso15118_v2g_energy_settlement,
+    evaluate_gpu_spot_compute_sla_and_carbon_retirement,
+)
 from lab.healthcare_fsa_rx_hipaa_guard import (
     evaluate_sigis_fsa_hsa_iias_split_tender,
     redact_hipaa_phi_from_payment_descriptor,
@@ -269,6 +273,10 @@ class UnifiedCheckoutPipelineInput:
     sigis_fsa_cart_context: dict[str, Any] | None = None
     eprescribing_rx_context: dict[str, Any] | None = None
     hipaa_descriptor_context: dict[str, Any] | None = None
+
+    # Optional Stage 25 EV ISO 15118/V2G Energy Settlement, GPU Goodput SLA & Carbon Retirement Gate
+    v2g_energy_session_context: dict[str, Any] | None = None
+    gpu_compute_carbon_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -836,6 +844,19 @@ def execute_unified_agentic_checkout(
         dig_ip_ok = c2_res.allowed
         dig_ip_reason = c2_res.decision_code
 
+    v2g_compute_ok = True
+    v2g_compute_reason = ""
+    if inp.v2g_energy_session_context is not None:
+        v2g_res = evaluate_ev_iso15118_v2g_energy_settlement(inp.v2g_energy_session_context)
+        v2g_compute_ok = bool(v2g_res["allowed"])
+        v2g_compute_reason = str(v2g_res["decision_code"])
+    if v2g_compute_ok and inp.gpu_compute_carbon_context is not None:
+        gpu_res = evaluate_gpu_spot_compute_sla_and_carbon_retirement(
+            inp.gpu_compute_carbon_context
+        )
+        v2g_compute_ok = bool(gpu_res["allowed"])
+        v2g_compute_reason = str(gpu_res["decision_code"])
+
     g6_passed = (
         connect_res.valid
         and spt_res.allowed
@@ -845,6 +866,7 @@ def execute_unified_agentic_checkout(
         and bnpl_ins_ok
         and dpp_circular_ok
         and dig_ip_ok
+        and v2g_compute_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -867,7 +889,11 @@ def execute_unified_agentic_checkout(
                             else (
                                 bnpl_ins_reason
                                 if not bnpl_ins_ok
-                                else (dpp_circular_reason if not dpp_circular_ok else dig_ip_reason)
+                                else (
+                                    dpp_circular_reason
+                                    if not dpp_circular_ok
+                                    else (dig_ip_reason if not dig_ip_ok else v2g_compute_reason)
+                                )
                             )
                         )
                     )

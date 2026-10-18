@@ -217,6 +217,19 @@ Verifies prescriber DEA hardware token signatures and state Prescription Drug Mo
 
 Detects and scrubs `ICD-10` diagnosis codes, `NDC` drug identifiers, and clinical specialty strings from ISO 8583 / card statement descriptors and acquirer metadata, replacing them with a neutral MCC-8099 descriptor and opaque `iias_substantiation_ref` (`HIPAA_PHI_DESCRIPTOR_SCRUBBED_TO_NEUTRAL_MCC`).
 
+---
+
+## 31. Autonomous EV ISO 15118 Plug-&-Charge / V2G Bidirectional Net-Metering, DePIN GPU Goodput SLA Escrow & Carbon Retirement Guard (Stage 25)
+
+### 31.1 ISO 15118-20 OCMF Telemetry & V2G Bidirectional Settlement (`evaluate_ev_iso15118_v2g_energy_settlement`)
+
+Verifies ISO 15118-20 contract certificates and signed hardware Open Charge Metering Format (OCMF) kWh telemetry (`UNSIGNED_OCMF_TELEMETRY_SPOOF_BLOCKED`), blocks V2G grid discharge below the vehicle's minimum safety State-of-Charge floor (`V2G_DISCHARGE_BELOW_SOC_FLOOR_BLOCKED`), and settles net Time-of-Use (ToU) charging vs Feed-in-Tariff (FiT) export credits (`V2G_BIDIRECTIONAL_NET_METER_SETTLED`).
+
+### 31.2 DePIN GPU Goodput SLA Escrow & Carbon Credit Uniqueness (`evaluate_gpu_spot_compute_sla_and_carbon_retirement`)
+
+Blocks double-counted or unverified Verra/Gold Standard carbon retirement serials (`CARBON_CREDIT_DOUBLE_COUNTING_RETIREMENT_BLOCKED`), voids 100% of spot GPU charges when preemption occurs before durable checkpoint commit (`UNCHECKPOINTED_PREEMPTION_CHARGE_VOIDED`), and slashes escrow when measured effective throughput (`measured_goodput_tflops`) falls below `85%` of promised capacity (`COMPUTE_GOODPUT_SLA_BREACH_ESCROW_SLASHED`).
+
+
 
 
 

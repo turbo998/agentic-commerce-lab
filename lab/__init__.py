@@ -11,9 +11,11 @@ __all__ = [
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
     "evaluate_digital_license_seat_activation_guard",
+    "evaluate_ev_iso15118_v2g_energy_settlement",
     "evaluate_event_ticket_anti_scalping_escrow",
     "evaluate_fx_quote_lock_and_slippage",
     "evaluate_generative_ip_royalty_micro_split",
+    "evaluate_gpu_spot_compute_sla_and_carbon_retirement",
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_loyalty_points_escrow_and_return_clawback",
     "evaluate_parametric_sla_microinsurance_claim",
@@ -33,6 +35,7 @@ __all__ = [
     "redact_hipaa_phi_from_payment_descriptor",
     "run_global_clearing_privacy_benchmark",
     "run_lifecycle_finance_circular_benchmark",
+    "run_vertical_domain_clearing_benchmark",
     "scan_and_redact_agent_context_pii_pci",
     "validate_iso20022_pacs008_instruction",
     "verify_crypto_shredding_erasure_tombstone",
@@ -45,6 +48,17 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_ev_iso15118_v2g_energy_settlement",
+        "evaluate_gpu_spot_compute_sla_and_carbon_retirement",
+    }:
+        from lab import energy_v2g_compute_carbon_guard
+
+        return getattr(energy_v2g_compute_carbon_guard, name)
+    if name == "run_vertical_domain_clearing_benchmark":
+        from lab import vertical_domain_clearing_bench
+
+        return getattr(vertical_domain_clearing_bench, name)
     if name in {
         "evaluate_sigis_fsa_hsa_iias_split_tender",
         "redact_hipaa_phi_from_payment_descriptor",
