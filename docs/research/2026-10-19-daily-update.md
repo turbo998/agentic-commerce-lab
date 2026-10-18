@@ -200,6 +200,12 @@
 2. **Executable Guard Module & Unit Tests (231 Total Tests)**:
    - [`lab/fleet_mobility_prop_lease_eor_payroll_guard.py`](../../lab/fleet_mobility_prop_lease_eor_payroll_guard.py) & [`tests/test_fleet_mobility_prop_lease_eor_payroll_guard.py`](../../tests/test_fleet_mobility_prop_lease_eor_payroll_guard.py)
 
+### Stage 31 — Construction AIA G702/G703 Mechanics' Lien-Waiver Escrow, Sovereign Procurement Bid-Bond / Domestic-Content Guard & Legal IOLTA Trust Interest Sweep Guard
+1. **AIA G702 Lien-Waiver Escrow, Sovereign Tender Bid-Bond & IOLTA Trust Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §37)**:
+   - Implemented AIA G702/G703 subcontractor mechanics' lien-waiver verification (`SUBCONTRACTOR_MECHANICS_LIEN_WAIVER_MISSING_HOLD`), sovereign procurement surety bid-bond and Buy-American domestic BOM content gating (`DOMESTIC_CONTENT_BUY_AMERICAN_THRESHOLD_BREACH_BLOCKED`), and ABA Rule 1.15 IOLTA client trust anti-commingling and unearned retainer protection (`IOLTA_UNEARNED_RETAINER_PREMATURE_DRAWDOWN_BLOCKED`).
+2. **Executable Guard Module & Unit Tests (234 Total Tests)**:
+   - [`lab/construction_lien_public_tender_iolta_guard.py`](../../lab/construction_lien_public_tender_iolta_guard.py) & [`tests/test_construction_lien_public_tender_iolta_guard.py`](../../tests/test_construction_lien_public_tender_iolta_guard.py)
+
 ---
 
 ## Quick Verification Commands

@@ -309,6 +309,23 @@ Scrubs duplicate transponder tolls against GNSS telemetry, routes municipal traf
 
 Verifies worker classification compliance (`EOR_WORKER_MISCLASSIFICATION_COMPLIANCE_HOLD`), statutory minimum wage floors (`STATUTORY_MINIMUM_WAGE_FLOOR_VIOLATION_BLOCKED`), and pre-funded escrow adequacy across gross wages, employer social contributions, and EOR platform fees (`EOR_PAYROLL_PREFUNDING_DEFICIT_BLOCKED` / `EOR_STATUTORY_PAYROLL_DISBURSEMENT_SETTLED`).
 
+---
+
+## 37. Construction AIA G702/G703 Mechanics' Lien-Waiver Escrow, Sovereign Procurement Bid-Bond / Domestic-Content Guard & Legal IOLTA Trust Interest Sweep Guard (Stage 31)
+
+### 37.1 Construction AIA G702/G703 Mechanics' Lien-Waiver Escrow (`evaluate_aia_g702_mechanics_lien_waiver_escrow`)
+
+Requires unconditional subcontractor mechanics' lien waivers for prior paid draws and conditional waivers for current billings (`SUBCONTRACTOR_MECHANICS_LIEN_WAIVER_MISSING_HOLD`) before releasing progress payments net of retainage (`AIA_G702_LIEN_WAIVER_VERIFIED_PROGRESS_RELEASED`).
+
+### 37.2 Sovereign Procurement Bid-Bond & Domestic Content Guard (`evaluate_sovereign_procurement_bid_bond_and_domestic_content`)
+
+Screens SAM.gov / EU procurement debarment lists (`DEBARRED_OR_EXCLUDED_VENDOR_REGISTRY_BLOCKED`), verifies surety bid-bond backing (`SURETY_BID_BOND_INSUFFICIENT_OR_UNSIGNED_BLOCKED`), and enforces Buy-American / domestic BOM thresholds (`DOMESTIC_CONTENT_BUY_AMERICAN_THRESHOLD_BREACH_BLOCKED`).
+
+### 37.3 Legal / Fiduciary IOLTA Client Trust Account Guard (`evaluate_iolta_fiduciary_trust_account_guard`)
+
+Enforces ABA Model Rule 1.15 anti-commingling (`IOLTA_TRUST_COMMINGLING_OR_DIRECT_OPERATING_DEBIT_BLOCKED`), blocks premature drawdown of unearned client retainers (`IOLTA_UNEARNED_RETAINER_PREMATURE_DRAWDOWN_BLOCKED`), and sweeps accrued IOLTA interest to the state bar foundation (`IOLTA_EARNED_FEE_DISBURSED_AND_BAR_INTEREST_SWEPT`).
+
+
 
 
 
