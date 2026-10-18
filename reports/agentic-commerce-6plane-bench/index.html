@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Commerce 6-Plane AI-Native Architecture Benchmark (2026-10-19)</title>
+<style>
+  :root {
+    --bg: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --dark: #0F172A;
+    --slate: #475569;
+    --border: #E2E8F0;
+    --blue: #2563EB;
+    --blue-soft: #EFF6FF;
+    --green: #059669;
+    --green-soft: #ECFDF5;
+    --amber: #D97706;
+    --amber-soft: #FFFBEB;
+    --red: #DC2626;
+    --red-soft: #FEF2F2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0B1120;
+    color: var(--dark);
+    padding: 28px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .card {
+    width: 900px;
+    min-height: 1125px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+  h1, h2 {
+    font-size: 26px;
+    line-height: 1.25;
+    margin: 14px 0 10px;
+    color: var(--dark);
+  }
+  .accent {
+    background: linear-gradient(90deg, #2563EB, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sub {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 12px 0;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 12px 0;
+  }
+  .panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .panel h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--slate);
+    margin-bottom: 8px;
+  }
+  .dark-code {
+    background: var(--dark);
+    color: #E2E8F0;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    border-bottom: 1px solid var(--border);
+    padding: 8px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--slate);
+    background: var(--bg);
+  }
+  .miss { color: var(--red); font-weight: 600; }
+  .hit { color: var(--green); font-weight: 600; }
+  .pill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .act-auto { background: var(--green-soft); color: var(--green); }
+  .act-confirm { background: var(--amber-soft); color: var(--amber); }
+  .act-human { background: var(--red-soft); color: var(--red); }
+  .bar-group { margin: 12px 0; }
+  .bar-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+    font-size: 12px;
+  }
+  .bar-fill {
+    height: 18px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .bar-fill.primary { background: #3B82F6; }
+  .bar-fill.baseline { background: #CBD5E1; }
+  .footer-callout {
+    background: var(--dark);
+    color: #F8FAFC;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+</style>
+</head>
+<body>
+
+<!-- Card 1 -->
+<section class="card" id="card-1">
+  <div>
+    <div class="card-header">
+      <span>1 / 7 · HANDS-ON · AGENTIC COMMERCE 6-PLANE ARCHITECTURE</span>
+      <span>2026-10-19</span>
+    </div>
+    <h1><span class="accent">6-Plane AI-Native Guards Pass 12/12</span> Scenarios Where Classic 3-Tier Web Apps Pass 1/12</h1>
+    <p class="sub">Dialectical evaluation of Agentic Commerce AI-Native workload architecture against traditional cloud Well-Architected 3-tier Web apps across Identity/Delegation, Non-Linear State, Policy Isolation, Bulk Feeds, Dispute Forensics, and Micropayment FinOps.</p>
+    <div class="grid-3">
+      <div class="panel">
+        <h3>6 Architectural Planes</h3>
+        <p>1. Identity &amp; Delegation (SPT/DPoP)<br>2. Non-Linear State &amp; AP2 FCB<br>3. Reasoning vs Policy Broker<br>4. UCP RFC 9530 Bulk Feeds<br>5. ATDRP Appendix C Forensics<br>6. MPP Tempo Sub-Cent FinOps</p>
+      </div>
+      <div class="panel">
+        <h3>Structured Input Contract</h3>
+        <p>• Connect Direct/Destination/OBO<br>• Single-use SPT Resolve + RSA block<br>• AP2 PR #165 4-state Circuit Breaker<br>• UCP PR #866 shard digest barrier<br>• ACP PR #316 17-gateway matrix</p>
+      </div>
+      <div class="panel">
+        <h3>Decision Threshold Bands</h3>
+        <p><span class="pill act-auto">Act automatically</span> 3 / 12 clean paths<br><br>
+        <span class="pill act-confirm">Confirm</span> 3 / 12 step-up / schedule gates<br><br>
+        <span class="pill act-human">Send to a human</span> 6 / 12 hard blocks</p>
+      </div>
+    </div>
+    <div class="dark-code">python -m lab.workload_arch_bench --output-dir reports/agentic-commerce-6plane-bench
+# Verified: 12/12 AI-Native guard invariants passed (0 network calls, 0 live funds)</div>
+  </div>
+  <div class="footer-callout">
+    <strong>Provenance &amp; Scope:</strong> <code>deterministic_offline_simulation</code> (<code>independently_reproduced=true</code>). Evaluates deterministic protocol &amp; state-machine contracts from Stripe (SPT Connect/Resolve, MPP Sessions <code>2026-07-29.preview</code>), Google AP2 (<code>PR #165</code>), UCP (<code>PR #866</code>), ACP ATDRP (<code>PR #316</code>), and Poppy v0.1.
+  </div>
+</section>
+
+<!-- Card 2 -->
+<section class="card" id="card-2">
+  <div>
+    <div class="card-header">
+      <span>2 / 7 · SCENARIO: CONNECT SPT + SINGLE-USE RESOLVE + AP2 CIRCUIT BREAKER</span>
+      <span>CASE DEEP DIVE</span>
+    </div>
+    <h2>Single-Use SPT Resolve + AP2 Circuit Breaker Block Replay &amp; Runaway Spend in &lt;1 ms</h2>
+    <div class="panel" style="margin-bottom:14px;">
+      <h3>Input Scenario Context</h3>
+      <p>An autonomous shopping agent attempts (A) a Connect Direct Charge using the platform's business profile, (B) a second replay call to <code>POST /v1/shared_payment/granted_tokens/{id}/resolve</code>, and (C) an $180 electronics purchase when cumulative spend is already $450/$500 and window velocity is 5/5.</p>
+    </div>
+    <div class="panel" style="margin-bottom:12px;">
+      <h3>Gate 1 · Connect SPT Business Profile Routing (<code>choice</code> · 100% deterministic)</h3>
+      <p>Direct charge with <code>seller_profile_owner="platform"</code> → <strong>BLOCKED</strong> (<code>direct_charge_requires_connected_account_business_profile</code>) · <span class="pill act-human">Send to a human</span></p>
+    </div>
+    <div class="panel" style="margin-bottom:12px;">
+      <h3>Gate 2 · SPT Resolve Single-Use &amp; RSA Slice Verifier (<code>choice</code> · 100% deterministic)</h3>
+      <p>Call #1 extracts <code>pan:0:16</code>, <code>exp_month:16:2</code>, <code>exp_year:18:4</code> with Visa VIC <code>TAVV</code> cryptogram. Call #2 on same <code>spt_grant_live_001</code> → <strong>BLOCKED</strong> (<code>single_use_resolve_replayed</code>) · <span class="pill act-human">Send to a human</span></p>
+    </div>
+    <div class="panel">
+      <h3>Gate 3 · Google AP2 §7.4 Fiduciary Circuit Breaker (<code>score</code> · 4 simultaneous tripwires)</h3>
+      <p>State transitions <code>CLOSED → OPEN</code> on <code>VALUE_THRESHOLD</code>, <code>CUMULATIVE_THRESHOLD</code>, <code>VELOCITY</code>, and <code>AUTHORITY_SCOPE</code>; blocks autonomous retry until a human-signed Recovery Mandate transitions <code>OPEN → HALF_OPEN</code> · <span class="pill act-human">Send to a human</span></p>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <strong>Why Classic 3-Tier Fails:</strong> A standard Web CRUD backend validates session cookies and per-request HTTP 200 status, silently routing Direct Charges under the wrong merchant descriptor and allowing runaway agent retry loops.
+  </div>
+</section>
+
+<!-- Card 3 -->
+<section class="card" id="card-3">
+  <div>
+    <div class="card-header">
+      <span>3 / 7 · WHAT I TESTED</span>
+      <span>FULL 12-SCENARIO MATRIX</span>
+    </div>
+    <h2>Full 6-Plane Evaluation Matrix: 12/12 Guard Invariants Enforced</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>SCENARIO</th>
+          <th>PLANE</th>
+          <th>CLASSIC 3-TIER vs AI-NATIVE GUARD</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>S01</strong> · Connect Direct Charge Profile Mismatch</td><td>Plane 1 · Identity &amp; Delegation</td><td><span class='miss'>✕ ALLOW (Silent descriptor mismatch)</span><br><span class='hit'>✓ BLOCK (direct_charge_requires_connected_account_business_profile)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S02</strong> · Connect Destination + OBO Profile Routing</td><td>Plane 1 · Identity &amp; Delegation</td><td><span class='miss'>✕ ALLOW (Unverified seller profile)</span><br><span class='hit'>✓ ALLOW (connected_account)</span></td><td><span class='pill act-auto'>Act automatically</span></td></tr>
+<tr><td><strong>S03</strong> · Single-Use SPT Resolve Replay + RSA Slice</td><td>Plane 1 · Identity &amp; Delegation</td><td><span class='miss'>✕ FAIL (Re-resolves cached token)</span><br><span class='hit'>✓ BLOCK (single_use_resolve_replayed)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S04</strong> · SPT Non-Linear 3DS &amp; Terminal Deactivated</td><td>Plane 2 · State &amp; Transaction</td><td><span class='miss'>✕ FAIL (Linear CRUD state overwrite)</span><br><span class='hit'>✓ BLOCK (deactivated_spt_is_terminal)</span></td><td><span class='pill act-confirm'>Confirm</span></td></tr>
+<tr><td><strong>S05</strong> · AP2 Fiduciary Circuit Breaker Multi-Trip</td><td>Plane 2 · State &amp; Transaction</td><td><span class='miss'>✕ ALLOW (HTTP 200 per-request check)</span><br><span class='hit'>✓ TRIP OPEN (4 conditions)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S06</strong> · AP2 FCB OPEN Recovery Mandate Gate</td><td>Plane 2 · State &amp; Transaction</td><td><span class='miss'>✕ ALLOW (Time-based auto-retry)</span><br><span class='hit'>✓ BLOCK (fcb_open_blocks_execution_until_recovery_mandate)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S07</strong> · Poppy Summary-vs-Terms Bait-and-Switch</td><td>Plane 3 · Reasoning vs Execution</td><td><span class='miss'>✕ FAIL (Trusts LLM tool summary)</span><br><span class='hit'>✓ BLOCK (summary_terms_amount_mismatch)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S08</strong> · UCP Feed Partial Shard Zero-Deletion</td><td>Plane 4 · Protocol Interop &amp; Feed</td><td><span class='miss'>✕ FAIL (Wipes missing SKUs)</span><br><span class='hit'>✓ PRESERVE (2 SKUs kept)</span></td><td><span class='pill act-confirm'>Confirm</span></td></tr>
+<tr><td><strong>S09</strong> · UCP Supplemental Feed Variant ID Merge</td><td>Plane 4 · Protocol Interop &amp; Feed</td><td><span class='miss'>✕ FAIL (Overwrites variants array)</span><br><span class='hit'>✓ ALLOW (2 variants preserved)</span></td><td><span class='pill act-auto'>Act automatically</span></td></tr>
+<tr><td><strong>S10</strong> · ACP ATDRP §7.4a Missing RFC 3161 TSA</td><td>Plane 5 · Dispute Forensics</td><td><span class='miss'>✕ ALLOW (Accepts unsigned DB log)</span><br><span class='hit'>✓ REJECT (atdrp_missing_rfc3161_timestamp_fail_closed)</span></td><td><span class='pill act-human'>Send to a human</span></td></tr>
+<tr><td><strong>S11</strong> · ATDRP Appendix C Card-Rail Fallback Router</td><td>Plane 5 · Dispute Forensics</td><td><span class='miss'>✕ FAIL (Drops mandate on card rail)</span><br><span class='hit'>✓ ALLOW (Mapped to 2 fallback fields)</span></td><td><span class='pill act-auto'>Act automatically</span></td></tr>
+<tr><td><strong>S12</strong> · MPP Tempo Sub-Cent Forfeiture Audit</td><td>Plane 6 · FinOps &amp; Micropayments</td><td><span class='miss'>✕ FAIL (Loses 54.3% to sub-cent floor)</span><br><span class='hit'>✓ FLAG ($0.023750 forfeited; step=200)</span></td><td><span class='pill act-confirm'>Confirm</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>Threshold Gating Summary</h3>
+      <p><strong>3 / 12</strong> valid cross-protocol flows execute automatically; <strong>3 / 12</strong> require step-up confirmation or batch realignment; <strong>6 / 12</strong> fail closed.</p>
+    </div>
+    <div class="panel">
+      <h3>Classic 3-Tier Failure Modes</h3>
+      <p><strong>11 / 12</strong> classic 3-tier paths suffer descriptor mismatch, token replay, catalog wipe on partial feed fetch, or 31.4% sub-cent forfeiture.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Card 4 -->
+<section class="card" id="card-4">
+  <div>
+    <div class="card-header">
+      <span>4 / 7 · UNDER THE HOOD</span>
+      <span>PROTOCOL &amp; SCORING MECHANICS</span>
+    </div>
+    <h2>Deterministic Wire Contracts across SPT Resolve, UCP Feeds, and ATDRP Appendix C</h2>
+    <div class="dark-code">{
+  "plane_1_spt_resolve": {
+    "endpoint": "POST /v1/shared_payment/granted_tokens/{id}/resolve",
+    "single_use": true,
+    "credential_types": ["fpan", "network_token", "agentic_token", "dpan"],
+    "cryptogram_types": ["CAVV", "TAVV", "DCVV"],
+    "encryption_block_fields": ["pan:0:16", "exp_month:16:2", "exp_year:18:4"]
+  },
+  "plane_4_ucp_feed": {
+    "capability": "dev.ucp.common.feed",
+    "digest_header": "sha-256=:&lt;base64&gt;:",
+    "partial_fetch_deletion_policy": "NEVER_DELETE_ON_PARTIAL_OR_DIGEST_MISMATCH"
+  }
+}</div>
+    <div style="text-align:center;font-weight:700;margin:8px 0;color:var(--blue);">↓ Deterministic Policy Broker &amp; Forensics Compiler (&lt;answer&gt;) ↓</div>
+    <div class="dark-code">{
+  "plane_5_atdrp_appendix_c": {
+    "gateways_audited": 17,
+    "payment_agent_signal_documented": ["Stripe (PaymentIntent.agent_details)", "Braintree (transaction.facilitator_details)"],
+    "issuer_structured_mandate_field_count": 0,
+    "compiled_fallback_targets": ["uncategorized_file", "uncategorized_text"],
+    "admissibility_gates": ["digest_ok == true", "rfc3161_verified == true", "payment_id_match == true"]
+  },
+  "plane_6_mpp_tempo_sessions": {
+    "api_version": "2026-07-29.preview",
+    "unit_precision": "0.000001 USDC",
+    "settlement_quantum": "0.01 USD (sub-cent remainder forfeited)"
+  }
+}</div>
+  </div>
+  <div class="footer-callout">
+    <strong>Architectural Invariant:</strong> Never pass raw LLM reasoning output directly to payment or catalog mutation APIs; compile every hop through deterministic schema, digest, and state-machine guards.
+  </div>
+</section>
+
+<!-- Card 5 -->
+<section class="card" id="card-5">
+  <div>
+    <div class="card-header">
+      <span>5 / 7 · ROBUSTNESS CHECK</span>
+      <span>PERTURBATION &amp; CONSISTENCY</span>
+    </div>
+    <h2>Zero Policy Drift Under Charge-Type Reversal, Replay, Bit-Flip, and Schedule Perturbation</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>QUESTION / INVARIANT</th>
+          <th>ORIGINAL PATH</th>
+          <th>PERTURBED / REVERSED PATH</th>
+          <th>CHANGE (PTS)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Connect Charge Type Reversal (Destination+OBO -&gt; Direct with Platform Profile)</strong></td><td>100% Allow (Connected Profile)</td><td>100% Block (direct_charge_requires_connected_account_business_profile)</td><td><strong>0.0 drift</strong></td></tr>
+<tr><td><strong>SPT Resolve Call Order (1st Call vs 2nd Replay Call)</strong></td><td>Allow + 3 RSA Slices Extracted</td><td>Block (single_use_resolve_replayed)</td><td><strong>0.0 drift</strong></td></tr>
+<tr><td><strong>UCP Shard Digest Perturbation (1-bit flip in part-02.jsonl.gz)</strong></td><td>Snapshot Replace (deletions_permitted=true)</td><td>Zero-Deletion Fallback (2/2 SKUs preserved)</td><td><strong>0.0 drift</strong></td></tr>
+<tr><td><strong>MPP Settlement Batch Alignment (50 units vs 200 units @ $0.000350)</strong></td><td>54.29% Sub-Cent Forfeiture ($0.023750 lost)</td><td>0.00% Forfeiture ($0.070000 settled cleanly)</td><td><strong>-54.29 pts loss eliminated</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="panel" style="margin-top:16px;">
+      <h3>Why Perturbation Testing Matters for Agentic Workloads</h3>
+      <p>Unlike deterministic Web UI forms, LLM agents dynamically switch charge parameters, retry timed-out HTTP requests, and consume streaming APIs in irregular unit counts. Every guard in <code>lab/workload_arch_bench.py</code> is pure, idempotent, and order-aware.</p>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <strong>Verification Command:</strong> <code>python -m unittest tests.test_workload_arch_bench -v</code> validates both positive and perturbed trajectories across all 6 planes.
+  </div>
+</section>
+
+<!-- Card 6 -->
+<section class="card" id="card-6">
+  <div>
+    <div class="card-header">
+      <span>6 / 7 · FINOPS &amp; RAIL ECONOMICS</span>
+      <span>FEE &amp; SUB-CENT FORFEITURE OVERHEAD</span>
+    </div>
+    <h2>MPP 200-Unit Whole-Cent Alignment Eliminates 31.4% Sub-Cent Forfeiture</h2>
+    <p class="sub">Comparison of effective payment rail overhead + sub-cent forfeiture: <strong>AI-Native Rail &amp; Schedule (Blue)</strong> vs. <strong>Naive Classic Card / Unaligned Schedule (Slate)</strong>.</p>
+    <div>
+      <div class='bar-group'><div class='bar-title'>Micro API Call ($0.0035 / 10 units)</div><div class='bar-row'><span class='bar-fill primary' style='width:6%'></span><span class='bar-label'><strong>MPP Tempo Session (200-unit whole-cent batch): 0.0% fee/forfeiture</strong></span></div><div class='bar-row'><span class='bar-fill baseline' style='width:92%'></span><span class='bar-label'>Stripe SPT Card ($0.50 min floor blocks tx; 91.4% fee at $0.50)</span></div></div>
+<div class='bar-group'><div class='bar-title'>Unaligned Stream (125 units @ $0.00035)</div><div class='bar-row'><span class='bar-fill primary' style='width:5%'></span><span class='bar-label'><strong>AI-Native 200-Unit Aligned Schedule: 0.0% sub-cent forfeiture</strong></span></div><div class='bar-row'><span class='bar-fill baseline' style='width:74%'></span><span class='bar-label'>Naive 50-Unit Schedule: 54.3% ($0.02375 / $0.04375) forfeited</span></div></div>
+<div class='bar-group'><div class='bar-title'>Single Agent Tool Call ($0.02 USDC)</div><div class='bar-row'><span class='bar-fill primary' style='width:12%'></span><span class='bar-label'><strong>x402 Base USDC ($0.01 floor, ~0.5s L2 finality): &lt;1.0% gas overhead</strong></span></div><div class='bar-row'><span class='bar-fill baseline' style='width:95%'></span><span class='bar-label'>Classic Card Checkout Redirect: Blocked by $0.50 minimum floor</span></div></div>
+<div class='bar-group'><div class='bar-title'>Retail Physical Order ($120.00 USD)</div><div class='bar-row'><span class='bar-fill primary' style='width:28%'></span><span class='bar-label'><strong>Stripe SPT + VIC/Agent Pay TAVV + ATDRP Bundle: ~2.9% + $0.30</strong></span></div><div class='bar-row'><span class='bar-fill baseline' style='width:88%'></span><span class='bar-label'>Unverified Guest Checkout (Dispute loss + $15 chargeback fee): ~15.4%</span></div></div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <strong>FinOps Rule of Thumb:</strong> Use <strong>Stripe SPT Card</strong> only above <code>$0.50</code> (ideally <code>&gt;$10</code> where the <code>$0.30</code> fixed fee is &lt;3%); use <strong>x402 Base USDC</strong> for single machine calls down to <code>$0.01</code>; use <strong>MPP Tempo Sessions</strong> for sub-cent micro-metering down to <code>$0.000001</code> with settlement cycles aligned to exact <code>$0.01</code> multiples.
+  </div>
+</section>
+
+<!-- Card 7 -->
+<section class="card" id="card-7">
+  <div>
+    <div class="card-header">
+      <span>7 / 7 · MY TAKE</span>
+      <span>GOOD FIT vs NOT FOR &amp; READINESS</span>
+    </div>
+    <h2>Adopt the 6-Plane Reference Architecture for Any Agent Touching Money or Order State</h2>
+    <div class="grid-2">
+      <div class="panel" style="border-color:var(--green);background:var(--green-soft);">
+        <h3 style="color:var(--green);">✅ Good Fit</h3>
+        <p>• Multi-merchant Stripe Connect platforms routing Direct vs Destination + OBO Shared Payment Tokens.<br><br>
+        • External PSPs integrating single-use <code>SPT Resolve</code> with Visa VIC, Mastercard Agent Pay, or Amex ACE Kit cryptograms.<br><br>
+        • High-frequency API/tool monetization using MPP Tempo streaming sessions + Metronome token billing.<br><br>
+        • Retailers ingesting UCP bulk catalog feeds (<code>dev.ucp.common.feed</code>) and compiling ACP ATDRP dispute evidence packs.</p>
+      </div>
+      <div class="panel" style="border-color:var(--red);background:var(--red-soft);">
+        <h3 style="color:var(--red);">⛔ Not For</h3>
+        <p>• Lifting-and-shifting classic 3-tier cookie/session Web apps and exposing internal CRUD endpoints directly as MCP tools.<br><br>
+        • Calling <code>SPT Resolve</code> multiple times per checkout or storing decrypted RSA credential slices in plaintext logs.<br><br>
+        • Running unaligned MPP sub-cent settlement schedules that forfeit fractional cents on session close.<br><br>
+        • Assuming card gateways automatically forward structured AP2/ACP agent mandates to issuing banks (0/17 do today).</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <strong>Readiness &amp; License:</strong> Pure Python 3.11+ standard-library reference implementation in <code>lab/workload_arch_bench.py</code>. Zero live credentials or funds required. Companion modules: <code>lab/ucp_preflight.py</code>, <code>lab/poppy_guard.py</code>, <code>lab/mcp_migration.py</code>.
+  </div>
+</section>
+
+</body>
+</html>

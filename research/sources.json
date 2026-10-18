@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-18",
+  "checked_on": "2026-10-19",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -33,7 +33,15 @@
       "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
       "published_on": null,
       "api_version_observed": "2026-09-30.preview",
-      "evidence": "Seller & agent variants; 33 countries (US, CA, GB, CH, NO, GI, LI + 26 EU countries); profile-scoped limits and expiry. Agent variant documents Payment Element sellerDetails.networkBusinessProfile, card network tokens via Visa Intelligent Commerce & Mastercard Agent Pay, and Affirm buyer-navigation rules. Repeated same-day fetches differ in generated example expires_at and UK/US locale rendering."
+      "evidence": "Oct 19: base shared-payment-tokens.md became a 3-variant index (seller, agent, connect). Seller & agent variants cover 33 countries (US, CA, GB, CH, NO, GI, LI + 26 EU countries), profile-scoped limits/expiry, link-cli spend-request create live testing, SPT Resolve API (fpan/network_token/agentic_token/dpan with CAVV/TAVV/DCVV cryptograms across Visa VIC, Mastercard Agent Pay, and Amex ACE Kit + PaymentRecord report_payment), Payment Element sellerDetails.networkBusinessProfile, and Affirm buyer-navigation rules."
+    },
+    {
+      "id": "stripe-spt-connect",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens?agent-seller=connect",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "First verified Oct 19: Connect platform variant for Shared Payment Tokens. Defines network_business_profile routing rules by Connect charge type (Direct charge -> connected account profile; Destination charge / Separate charges and transfers -> platform profile, or connected account profile recommended when using on_behalf_of) and Stripe-Account header scoping on SPT retrieval."
     },
     {
       "id": "stripe-mcp",
@@ -352,6 +360,28 @@
       "monitor_url": "https://docs.stripe.com/directory.md",
       "published_on": null,
       "evidence": "First verified Oct 18: Stripe Directory preview (stripe directory search, stripe.directory) and docs.stripe.com/.well-known/skills/index.json (10 skills including stripe-directory and stripe-pay). Indexes Stripe Apps, Stripe Projects (projects.dev), Machine Payments (mpp.dev), and Stripe business profiles (@handle) for B2B stripe pay transfers."
+    },
+    {
+      "id": "stripe-how-it-works",
+      "url": "https://docs.stripe.com/agents/how-it-works",
+      "monitor_url": "https://docs.stripe.com/agents/how-it-works.md",
+      "published_on": null,
+      "evidence": "First verified Oct 19: official Stripe agent ecosystem architecture overview separating three components: Agent developer tools (MCP server, Agent skills, Stripe CLI), Stripe Billing (token metering, subscriptions), and Agentic commerce (catalogs, payments, discovery)."
+    },
+    {
+      "id": "stripe-mpp-sessions",
+      "url": "https://docs.stripe.com/payments/machine/mpp/sessions",
+      "monitor_url": "https://docs.stripe.com/payments/machine/mpp/sessions.md",
+      "published_on": null,
+      "api_version_observed": "2026-07-29.preview",
+      "evidence": "First verified Oct 19: streaming micropayment sessions over Tempo network (API version 2026-07-29.preview). Supports sub-cent per-unit accrual down to 0.000001 USDC with periodic whole-cent settlement (>= 0.01 USD) to Stripe Balance; sub-cent remainders on session close or non-multiple settlement schedules are forfeited."
+    },
+    {
+      "id": "stripe-token-billing",
+      "url": "https://docs.stripe.com/billing/token-billing",
+      "monitor_url": "https://docs.stripe.com/billing/token-billing.md",
+      "published_on": null,
+      "evidence": "First verified Oct 19: public preview guide for LLM token billing via Metronome + Stripe Billing. Supports reselling LLM tokens with automatic price syncing across OpenAI/Anthropic/Google, per-token/per-unit metering (input, output, cached tokens), AI credit packs, and hybrid subscriptions."
     }
   ]
 }

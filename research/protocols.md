@@ -166,3 +166,16 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
   - [Stripe Directory（Preview）](https://docs.stripe.com/directory.md) 与 [`stripe pay`](https://docs.stripe.com/cli/pay.md) 提供跨 Stripe Apps、Stripe Projects（`projects.dev`）、MPP（`mpp.dev`）与商户 `@handle` 的发现及 B2B 账上划转。
 - **Poppy `operations` v1 全生命周期细则与 UCP/ACP 开放规范草案（区分已合并规范与未合并 PR）**：核验 Poppy `#35` `operations` v1（扩展协商、跨通道相同 `terms` 去重、下游超时驻留 `in_progress` + `Retry-After`、已登录跨 Session 共享 vs 未登录单 `session_id` 隔离）；核验 UCP 主分支 `buyer-consent.md` 与开放 PR `#660`（全量替换豁免）、PR `#912`（`requires_escalation` 携带 HTTPS `continue_url`）、PR `#940`（`create_checkout` 的 `cart_id` 互斥与禁静默回退）、PR `#783` / Issue `#970`（Accelerated IdP `subject_token` 绑定当前会话用户）及 PR `#966`（`policy.return` 禁止平台自算 `expires_at`）；核验 ACP PR `#316` Section 7.4a（ATDRP 证据包 fail-closed 准入与 `no_record` 沉默非验收规则）。
 
+## 2026-10-19 增量核验
+
+完整证据、50 个来源监控状态与六平面架构分析见 [10-19 日研](daily/2026-10-19.md)。
+
+- **来源监控（扩充至 50 个来源）与 Stripe MCP 42 日窗口**：新增收录 `stripe-spt-connect`、`stripe-how-it-works`、`stripe-mpp-sessions` 与 `stripe-token-billing`。`stripe-mcp` 保持 `policy_change="unchanged"`，迁移截止日仍为 **`2026-11-30`**（距 2026-10-19 剩余 **42 个日历日**，距原定 `2026-10-31` 节点 12 天）。`visa-vic` 仍返回 HTTP 403，另有 10 个来源在 `00:20 +08:00` 遇到瞬时 DNS/SSL 超时，已显式记录为 `status="error"`, `change="unknown"`。
+- **Stripe Shared Payment Tokens（SPT）三角色变体（Seller / Agent / Connect）、SPT Resolve 与三大卡组织协同**：
+  - [Connect 平台视图（`?agent-seller=connect`）](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect)：Direct charges 必须传入关联商户 `network_business_profile` 并在创建 `PaymentIntent` 时携带 `Stripe-Account` 头；Destination charges / Separate charges and transfers 默认传入平台档案，但配合 `on_behalf_of` 时推荐传入关联商户档案。
+  - [外部 PSP 卖家 `SPT Resolve`（`?agent-seller=seller`）](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller)：`POST /v1/shared_payment/granted_tokens/{id}/resolve` 严格限单次调用（single-use only），返回 `fpan`/`network_token`/`agentic_token`/`dpan` 与 `CAVV`/`TAVV`/`DCVV` 密文，并列点名 **Mastercard Agent Pay**、**Visa Intelligent Commerce** 与 **American Express ACE Kit**；自定义 RSA 加密使用 `encryption_block_fields`（`<field>:<start>:<length>`）。
+  - [Agent 侧状态机（`?agent-seller=agent`）](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=agent)：`active` $\leftrightarrow$ `requires_action`（3DS 阶梯认证通过 `stripe.handleNextAction({ hashedValue })` 恢复）$\rightarrow$ `deactivated`（不可逆终态）。
+- **Stripe MPP Tempo 流式微支付会话与 Token 计费**：[MPP Sessions（`2026-07-29.preview`）](https://docs.stripe.com/payments/machine/mpp/sessions.md) 支持 `0.000001 USDC` 最小计价精度，但向 Stripe Balance 仅按整美分（$\ge \$0.01$）结算，**会话关闭或非整美分倍数结算周期产生的亚美分尾差将被直接没收（forfeited）**；[Token Billing](https://docs.stripe.com/billing/token-billing.md) 基于 Metronome 提供按输入/输出/缓存 Token 计量与 AI Credit Packs。
+- **上游开放规范草案（Google AP2 `#165`/`#385`、UCP `#866`、ACP `#316` Appendix C）**：AP2 PR `#165` 定义四态受托熔断器（`CLOSED` $\rightarrow$ `OPEN` $\rightarrow$ `HALF_OPEN` $\rightarrow$ `TERMINATED`）与 10 类触发条件；UCP PR `#866` 定义 `dev.ucp.common.feed` RFC 9530 分片摘要校验与残缺分片零删除保证；ACP PR `#316` Appendix C 审计 17 家支付网关，证明 0/17 家网关具备发卡行侧结构化 Mandate 字段，需通过确定性编译器映射至 `uncategorized_file`/`uncategorized_text` 等兜底字段。
+
+

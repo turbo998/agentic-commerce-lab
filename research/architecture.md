@@ -143,3 +143,15 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 3. **混合状态合并契约、剥夺平台算日权与下游超时 `in_progress` 驻留（UCP `#660`/`#966` & Poppy `operations` §§2–7）**：省略 `buyer.consent` 时保留既有同意状态，提交时强制完整回传并在 `complete` 阻断缺失依赖字段（如 SMS 缺 `phone_number`）；严禁平台用 `anchor + duration` 自算退货截止日 `expires_at`；确认操作遇下游超时必须驻留 `in_progress` + `Retry-After`（严禁误报 `failed`），并区分已登录跨 Session 账户共享与未登录单 `session_id` 隔离。
 4. **Accelerated IdP 单用户换票绑定与 ATDRP 证据包 Fail-Closed 准入（UCP `#783`/`#970` & ACP `#316` §7.4a）**：RFC 8693 换票提交的 `subject_token` 必须绑定当前会话用户（严禁跨用户复用或服务账号代换）；争议证据包在逐项裁决前先做摘要与 RFC 3161 验真，将未固定公钥日志降级为一致性参考，并坚持“买家沉默（`no_record`）绝不等于验收通过”。对应确定性检查已全部合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
 
+## 2026-10-19 增量：AI-Native 负载架构 vs 经典三层 Web 架构六大平面系统重构
+
+[今日研究](daily/2026-10-19.md)将 Agentic Commerce 的 AI-Native 负载架构与云厂商传统 Well-Architected 三层 Web 架构（Presentation / Stateless App / ACID DB）进行系统级对照，提炼出**六大架构平面（Six Architectural Planes）**，并在 [`lab/workload_arch_bench.py`](../lab/workload_arch_bench.py) 与 [7-Card 4:5 视觉基准报告](../reports/agentic-commerce-6plane-bench/index.html) 中实现了 12 个对抗性场景的确定性验证（AI-Native 六平面护栏通过 **12/12**，经典三层 Web 架构仅通过 **1/12**）：
+
+1. **Plane 1 — 身份与委托平面（Identity & Delegation）**：从单跳 Cookie / 平台共享 API Key 重构为**通道绑定令牌（OpenAPI `DPoP` vs MCP `resource` 绑定 `Bearer`）+ Connect 多商户 SPT 档案路由 + 单次消费 `SPT Resolve`**。Direct Charge 强制传入关联商户 `network_business_profile` 与 `Stripe-Account` 头；Destination Charge 配合 `on_behalf_of` 推荐传入关联商户档案；外部 PSP 调用 `POST /v1/shared_payment/granted_tokens/{id}/resolve` 严格限单次调用，强制校验 `CAVV`/`TAVV`/`DCVV` 密文（覆盖 Visa VIC、Mastercard Agent Pay、Amex ACE Kit）与 `<field>:<start>:<length>` RSA 切片不重叠。
+2. **Plane 2 — 状态与事务平面（State & Transaction）**：从线性 CRUD 跃迁与定时自动重试重构为**非线性 SPT 状态机（`active` $\leftrightarrow$ `requires_action` $\rightarrow$ `deactivated` 终态）+ Google AP2 §7.4 受托熔断器（Fiduciary Circuit Breaker，`PR #165`）**。一旦触发单笔超限、累计超支、窗口高频或类目越权进入 `OPEN`，严禁凭冷却时间自动恢复扣款，必须验证人类签署的 Recovery Mandate 才可进入 `HALF_OPEN` 单笔探测。
+3. **Plane 3 — 推理与执行隔离平面（Reasoning vs. Execution Isolation）**：在 LLM 与工具执行之间部署提示词注入免疫的确定性 **Policy Broker**——强制核对企业 `summary` 金额与结构化 `terms` 完全一致、拦截跨企业不可信内容诱导的调用、对 WebMCP `consequentialHint` 强制插入人工确认门禁，并严禁脚本化提交 Affirm BNPL WebView。
+4. **Plane 4 — 协议互操作与批量目录平面（Protocol Interop & Bulk Discovery）**：基于 UCP `dev.ucp.common.feed`（`PR #866`），将控制面 `config.endpoint` 与不可变数据面 `manifest` 分离；每个分片强制校验 RFC 9530 `sha-256` 摘要，**任何分片拉取失败或摘要不匹配严禁触发快照差集删除**；`supplemental` 补充流按变体 `id` 精确合并而非覆盖整个 `variants` 数组。
+5. **Plane 5 — 可观测与争议取证平面（Observability & Dispute Forensics）**：基于 ACP ATDRP `PR #316` Appendix C 对 17 家支付网关的审计结论（仅 Stripe 与 Braintree 记录支付侧 Agent 信号，**0/17 家网关提供发卡行侧结构化 Mandate 字段**），先 fail-closed 校验 `digest_ok` 与 RFC 3161 时间戳，再将 Mandate JWS 与结账哈希确定性编译进网关兜底证据字段（如 Stripe `uncategorized_file` / `uncategorized_text`）。
+6. **Plane 6 — FinOps 与微支付经济学平面（FinOps & Micropayment Economics）**：结合 Stripe Billing（Metronome Token 计费）与支付轨下限（SPT 卡 `$0.50`、x402 Base `$0.01`、MPP Tempo Sessions `0.000001 USDC`），针对 MPP Tempo 流式会话“仅整美分（$\ge \$0.01$）结算、亚美分尾差直接没收（forfeited）”规则，通过最大公约数算法将结算周期强制对齐至 `$0.01` 的最小整数倍步长（如单价 `$0.000350` 对齐为 `200 units = $0.07`），消除高达 **54.29%** 的亚美分尾差没收损耗。
+
+

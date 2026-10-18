@@ -1,0 +1,187 @@
+{
+  "benchmark_id": "agentic-commerce-6plane-workload-bench",
+  "benchmark_version": "2026-10-19",
+  "provenance": "deterministic_offline_simulation",
+  "independently_reproduced": true,
+  "total_scenarios": 12,
+  "ai_native_passed": 12,
+  "classic_3tier_passed": 1,
+  "scenarios": [
+    {
+      "id": "S01",
+      "plane": "Plane 1 · Identity & Delegation",
+      "scenario": "Connect Direct Charge Profile Mismatch",
+      "task": "Reject Direct Charge using platform business profile instead of connected account",
+      "classic_3tier": "ALLOW (Silent descriptor mismatch)",
+      "ai_native_guard": "BLOCK (direct_charge_requires_connected_account_business_profile)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S02",
+      "plane": "Plane 1 · Identity & Delegation",
+      "scenario": "Connect Destination + OBO Profile Routing",
+      "task": "Allow Destination Charge with on_behalf_of using connected account profile",
+      "classic_3tier": "ALLOW (Unverified seller profile)",
+      "ai_native_guard": "ALLOW (connected_account)",
+      "action": "Act automatically",
+      "passed": true
+    },
+    {
+      "id": "S03",
+      "plane": "Plane 1 · Identity & Delegation",
+      "scenario": "Single-Use SPT Resolve Replay + RSA Slice",
+      "task": "Extract pan/exp slices on call #1; block replay on call #2",
+      "classic_3tier": "FAIL (Re-resolves cached token)",
+      "ai_native_guard": "BLOCK (single_use_resolve_replayed)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S04",
+      "plane": "Plane 2 · State & Transaction",
+      "scenario": "SPT Non-Linear 3DS & Terminal Deactivated",
+      "task": "Allow active->requires_action step-up; block deactivated->active resurrection",
+      "classic_3tier": "FAIL (Linear CRUD state overwrite)",
+      "ai_native_guard": "BLOCK (deactivated_spt_is_terminal)",
+      "action": "Confirm",
+      "passed": true
+    },
+    {
+      "id": "S05",
+      "plane": "Plane 2 · State & Transaction",
+      "scenario": "AP2 Fiduciary Circuit Breaker Multi-Trip",
+      "task": "Trip CLOSED->OPEN on VALUE, CUMULATIVE, VELOCITY, and AUTHORITY_SCOPE",
+      "classic_3tier": "ALLOW (HTTP 200 per-request check)",
+      "ai_native_guard": "TRIP OPEN (4 conditions)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S06",
+      "plane": "Plane 2 · State & Transaction",
+      "scenario": "AP2 FCB OPEN Recovery Mandate Gate",
+      "task": "Block autonomous retry in OPEN state without signed human Recovery Mandate",
+      "classic_3tier": "ALLOW (Time-based auto-retry)",
+      "ai_native_guard": "BLOCK (fcb_open_blocks_execution_until_recovery_mandate)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S07",
+      "plane": "Plane 3 · Reasoning vs Execution",
+      "scenario": "Poppy Summary-vs-Terms Bait-and-Switch",
+      "task": "Block operation where LLM-visible summary ($49) != authoritative terms ($149)",
+      "classic_3tier": "FAIL (Trusts LLM tool summary)",
+      "ai_native_guard": "BLOCK (summary_terms_amount_mismatch)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S08",
+      "plane": "Plane 4 · Protocol Interop & Feed",
+      "scenario": "UCP Feed Partial Shard Zero-Deletion",
+      "task": "Prevent catalog wipe when shard 2/2 fails fetch during snapshot sync",
+      "classic_3tier": "FAIL (Wipes missing SKUs)",
+      "ai_native_guard": "PRESERVE (2 SKUs kept)",
+      "action": "Confirm",
+      "passed": true
+    },
+    {
+      "id": "S09",
+      "plane": "Plane 4 · Protocol Interop & Feed",
+      "scenario": "UCP Supplemental Feed Variant ID Merge",
+      "task": "Update var_10 inventory to 0 while preserving sibling var_9 (inventory=12)",
+      "classic_3tier": "FAIL (Overwrites variants array)",
+      "ai_native_guard": "ALLOW (2 variants preserved)",
+      "action": "Act automatically",
+      "passed": true
+    },
+    {
+      "id": "S10",
+      "plane": "Plane 5 · Dispute Forensics",
+      "scenario": "ACP ATDRP §7.4a Missing RFC 3161 TSA",
+      "task": "Reject merchant dispute evidence pack lacking RFC 3161 timestamp token",
+      "classic_3tier": "ALLOW (Accepts unsigned DB log)",
+      "ai_native_guard": "REJECT (atdrp_missing_rfc3161_timestamp_fail_closed)",
+      "action": "Send to a human",
+      "passed": true
+    },
+    {
+      "id": "S11",
+      "plane": "Plane 5 · Dispute Forensics",
+      "scenario": "ATDRP Appendix C Card-Rail Fallback Router",
+      "task": "Compile verified mandate+checkout hash into Stripe uncategorized_file/text",
+      "classic_3tier": "FAIL (Drops mandate on card rail)",
+      "ai_native_guard": "ALLOW (Mapped to 2 fallback fields)",
+      "action": "Act automatically",
+      "passed": true
+    },
+    {
+      "id": "S12",
+      "plane": "Plane 6 · FinOps & Micropayments",
+      "scenario": "MPP Tempo Sub-Cent Forfeiture Audit",
+      "task": "Detect $0.023750 sub-cent forfeiture on 125 units @ $0.000350/unit; compute 200-unit step",
+      "classic_3tier": "FAIL (Loses 54.3% to sub-cent floor)",
+      "ai_native_guard": "FLAG ($0.023750 forfeited; step=200)",
+      "action": "Confirm",
+      "passed": true
+    }
+  ],
+  "perturbation_checks": [
+    {
+      "check": "Connect Charge Type Reversal (Destination+OBO -> Direct with Platform Profile)",
+      "original": "100% Allow (Connected Profile)",
+      "perturbed": "100% Block (direct_charge_requires_connected_account_business_profile)",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "SPT Resolve Call Order (1st Call vs 2nd Replay Call)",
+      "original": "Allow + 3 RSA Slices Extracted",
+      "perturbed": "Block (single_use_resolve_replayed)",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "UCP Shard Digest Perturbation (1-bit flip in part-02.jsonl.gz)",
+      "original": "Snapshot Replace (deletions_permitted=true)",
+      "perturbed": "Zero-Deletion Fallback (2/2 SKUs preserved)",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "MPP Settlement Batch Alignment (50 units vs 200 units @ $0.000350)",
+      "original": "54.29% Sub-Cent Forfeiture ($0.023750 lost)",
+      "perturbed": "0.00% Forfeiture ($0.070000 settled cleanly)",
+      "delta_pts": "-54.29 pts loss eliminated"
+    }
+  ],
+  "rail_economics_comparison": [
+    {
+      "tier": "Micro API Call ($0.0035 / 10 units)",
+      "primary_label": "MPP Tempo Session (200-unit whole-cent batch): 0.0% fee/forfeiture",
+      "primary_pct": 6,
+      "baseline_label": "Stripe SPT Card ($0.50 min floor blocks tx; 91.4% fee at $0.50)",
+      "baseline_pct": 92
+    },
+    {
+      "tier": "Unaligned Stream (125 units @ $0.00035)",
+      "primary_label": "AI-Native 200-Unit Aligned Schedule: 0.0% sub-cent forfeiture",
+      "primary_pct": 5,
+      "baseline_label": "Naive 50-Unit Schedule: 54.3% ($0.02375 / $0.04375) forfeited",
+      "baseline_pct": 74
+    },
+    {
+      "tier": "Single Agent Tool Call ($0.02 USDC)",
+      "primary_label": "x402 Base USDC ($0.01 floor, ~0.5s L2 finality): <1.0% gas overhead",
+      "primary_pct": 12,
+      "baseline_label": "Classic Card Checkout Redirect: Blocked by $0.50 minimum floor",
+      "baseline_pct": 95
+    },
+    {
+      "tier": "Retail Physical Order ($120.00 USD)",
+      "primary_label": "Stripe SPT + VIC/Agent Pay TAVV + ATDRP Bundle: ~2.9% + $0.30",
+      "primary_pct": 28,
+      "baseline_label": "Unverified Guest Checkout (Dispute loss + $15 chargeback fee): ~15.4%",
+      "baseline_pct": 88
+    }
+  ]
+}

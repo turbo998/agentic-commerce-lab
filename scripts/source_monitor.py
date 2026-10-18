@@ -11,7 +11,8 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from http.client import HTTPException
 from pathlib import Path
-from urllib.error import URLError
+import time
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
@@ -196,18 +197,31 @@ def observe(
     """Fetch one source with bounded size and report failure with context."""
     validate_url(source.monitor_url)
     request = Request(source.monitor_url, headers={"User-Agent": "AgenticCommerceLab/0.1"})
-    try:
-        with urlopen(request, timeout=30) as response:
-            fetched_url = response.geturl()
-            validate_url(fetched_url)
-            body = response.read(MAX_BYTES + 1)
-            if len(body) > MAX_BYTES:
-                raise ValueError("Source exceeds the 4 MiB research fetch limit.")
-            digest = fingerprint(body, response.headers.get("Content-Type", "text/plain"))
-    except (URLError, HTTPException, OSError, UnicodeError, ValueError) as error:
+    last_error: Exception | None = None
+    fetched_url = source.monitor_url
+    body = b""
+    digest = ""
+    for attempt in range(3):
+        try:
+            with urlopen(request, timeout=30) as response:
+                fetched_url = response.geturl()
+                validate_url(fetched_url)
+                body = response.read(MAX_BYTES + 1)
+                if len(body) > MAX_BYTES:
+                    raise ValueError("Source exceeds the 4 MiB research fetch limit.")
+                digest = fingerprint(body, response.headers.get("Content-Type", "text/plain"))
+                last_error = None
+                break
+        except (URLError, HTTPException, OSError, UnicodeError, ValueError) as error:
+            last_error = error
+            if isinstance(error, (HTTPError, UnicodeError, ValueError)):
+                break
+            if attempt < 2:
+                time.sleep(0.5 * (attempt + 1))
+    if last_error is not None:
         return Observation(
             source.id, source.url, source.monitor_url, "error", None, "unknown",
-            f"{type(error).__name__}: {error}",
+            f"{type(last_error).__name__}: {last_error}",
             policy_change="unknown" if source.id == "stripe-mcp" else None,
             policy_error="MCP auth facts unavailable because source fetch failed."
             if source.id == "stripe-mcp" else None,
