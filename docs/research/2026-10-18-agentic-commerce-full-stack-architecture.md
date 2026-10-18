@@ -341,6 +341,23 @@ Verifies PSU SCA device-bound consent (`VRP_SCA_CONSENT_BINDING_SIGNATURE_INVALI
 
 Verifies signed TWAMP active probe telemetry (`UNSIGNED_TWAMP_5G_SLICE_TELEMETRY_BLOCKED`) and automatically slashes 25%–50% of the network-slice fee when p99 latency or packet loss breaches uRLLC commitments (`TELECOM_5G_URLLC_SLA_BREACH_REBATE_SLASHED`).
 
+---
+
+## 39. Wholesale CBDC mBridge PvP Settlement, LBMA Allocated Bullion Bar Audit & Dual-Satellite NDVI Crop Insurance Escrow Guard (Stage 33)
+
+### 39.1 Multi-CBDC Bridge (mBridge) Wholesale PvP Settlement (`evaluate_mbridge_wholesale_cbdc_pvp_settlement`)
+
+Enforces asymmetric HTLC timelock ordering (`initiator_htlc_timelock_sec - responder_htlc_timelock_sec >= min_htlc_safety_margin_sec`) to eliminate unilateral Herstatt principal risk (`MBRIDGE_HTLC_TIMELOCK_INVERSION_HERSTATT_RISK_BLOCKED`), verifies signed SAFE / capital-account declarations and commercial bank reserve locks (`MBRIDGE_CAPITAL_ACCOUNT_OR_RESERVE_LOCK_MISSING_BLOCKED`), and enforces FX corridor rate bands (`<= 25 bps`, `MBRIDGE_FX_CORRIDOR_BAND_EXCEEDED_BLOCKED`) before atomic Payment-versus-Payment settlement (`MBRIDGE_WHOLESALE_CBDC_ATOMIC_PVP_SETTLED`).
+
+### 39.2 LBMA Good Delivery Allocated Bullion Bar Audit (`evaluate_lbma_allocated_bullion_bar_audit`)
+
+Blocks substitution of unallocated paper gold pools for physical delivery (`LBMA_UNALLOCATED_PAPER_GOLD_SUBSTITUTION_BLOCKED`), enforces active LBMA Good Delivery refiner status, ultrasonic C-scan tungsten-core screening, and `>= 999.5‰` assay fineness (`LBMA_FINENESS_OR_ULTRASONIC_ASSAY_FAILURE_BLOCKED`), and settles exact fine-troy-ounce weight with zero conservation drift (`LBMA_ALLOCATED_BULLION_FINE_WEIGHT_SETTLED`).
+
+### 39.3 Parametric Crop Insurance Dual-Satellite NDVI & Weather Quorum (`evaluate_parametric_crop_ndvi_weather_escrow`)
+
+Cross-verifies Sentinel-2 and MODIS multispectral NDVI vegetation indices alongside signed ground weather-station rainfall telemetry (`SATELLITE_NDVI_DIVERGENCE_OR_SPOOFED_ORACLE_BLOCKED`), releasing tiered 50% or 100% drought indemnity payouts (`PARAMETRIC_CROP_NDVI_DROUGHT_INDEMNITY_RELEASED`) while preserving exact escrow conservation.
+
+
 
 
 

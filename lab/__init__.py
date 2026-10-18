@@ -30,9 +30,12 @@ __all__ = [
     "evaluate_iata_ndc_irrops_interline_escrow",
     "evaluate_iolta_fiduciary_trust_account_guard",
     "evaluate_loyalty_points_escrow_and_return_clawback",
+    "evaluate_lbma_allocated_bullion_bar_audit",
     "evaluate_m2m_esim_roaming_cdr_settlement",
     "evaluate_marine_demurrage_detention_parametric_escrow",
+    "evaluate_mbridge_wholesale_cbdc_pvp_settlement",
     "evaluate_open_banking_vrp_sweeping_guard",
+    "evaluate_parametric_crop_ndvi_weather_escrow",
     "evaluate_parametric_sla_microinsurance_claim",
     "evaluate_promo_coupon_stacking_invariant",
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
@@ -71,6 +74,14 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_lbma_allocated_bullion_bar_audit",
+        "evaluate_mbridge_wholesale_cbdc_pvp_settlement",
+        "evaluate_parametric_crop_ndvi_weather_escrow",
+    }:
+        from lab import cbdc_mbridge_bullion_crop_oracle_guard
+
+        return getattr(cbdc_mbridge_bullion_crop_oracle_guard, name)
     if name in {
         "evaluate_iata_ndc_irrops_interline_escrow",
         "evaluate_open_banking_vrp_sweeping_guard",

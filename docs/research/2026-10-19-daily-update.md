@@ -213,6 +213,12 @@
    - [`lab/aviation_ndc_vrp_telecom_slice_guard.py`](../../lab/aviation_ndc_vrp_telecom_slice_guard.py) & [`tests/test_aviation_ndc_vrp_telecom_slice_guard.py`](../../tests/test_aviation_ndc_vrp_telecom_slice_guard.py)
    - [`lab/mobility_construction_aviation_bench.py`](../../lab/mobility_construction_aviation_bench.py) & [`reports/agentic-commerce-mobility-civic-bench/index.html`](../../reports/agentic-commerce-mobility-civic-bench/index.html)
 
+### Stage 33 — Wholesale CBDC mBridge PvP Settlement, LBMA Allocated Bullion Bar Audit & Dual-Satellite NDVI Crop Insurance Escrow Guard
+1. **mBridge Wholesale CBDC PvP, LBMA Allocated Bullion & Dual-Satellite Crop NDVI Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §39)**:
+   - Implemented mBridge wholesale CBDC asymmetric HTLC timelock ordering (`MBRIDGE_HTLC_TIMELOCK_INVERSION_HERSTATT_RISK_BLOCKED`), capital-account declaration verification, and `<= 25 bps` FX corridor band enforcement (`MBRIDGE_WHOLESALE_CBDC_ATOMIC_PVP_SETTLED`); LBMA Good Delivery allocated gold bar serial audit blocking unallocated paper substitution (`LBMA_UNALLOCATED_PAPER_GOLD_SUBSTITUTION_BLOCKED`) and `< 999.5‰` assay/ultrasonic failures (`LBMA_ALLOCATED_BULLION_FINE_WEIGHT_SETTLED`); and Sentinel-2 + MODIS NDVI dual-satellite + ground rainfall quorum verification (`PARAMETRIC_CROP_NDVI_DROUGHT_INDEMNITY_RELEASED`).
+2. **Executable Guard Module & Unit Tests (241 Total Tests)**:
+   - [`lab/cbdc_mbridge_bullion_crop_oracle_guard.py`](../../lab/cbdc_mbridge_bullion_crop_oracle_guard.py) & [`tests/test_cbdc_mbridge_bullion_crop_oracle_guard.py`](../../tests/test_cbdc_mbridge_bullion_crop_oracle_guard.py)
+
 ---
 
 ## Quick Verification Commands
