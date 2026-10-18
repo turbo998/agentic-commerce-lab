@@ -38,6 +38,13 @@
    - [`lab/protocol_readiness_auditor.py`](../../lab/protocol_readiness_auditor.py) & [`tests/test_protocol_readiness_auditor.py`](../../tests/test_protocol_readiness_auditor.py)
    - [`reports/agentic-commerce-workbench/index.html`](../../reports/agentic-commerce-workbench/index.html)
 
+### Stage 6 — Multi-Leg Booking Two-Phase Hold Saga & SFTP / MPP Tempo / Token Three-Way EOD Reconciliation
+1. **Booking Hold Saga & Three-Way Ledger Reconciliation ([`docs/architecture/booking-hold-and-sftp-reconciliation.md`](../architecture/booking-hold-and-sftp-reconciliation.md))**:
+   - Formalized `HOLD_ALL (manual capture) -> VERIFY_TTL_AND_REFUND_WINDOW -> ATOMIC_CAPTURE_OR_REVERSE` to eliminate orphan-leg financial exposure across heterogeneous GDS/PMS/Compute hold TTLs and non-refundable cutoffs.
+   - Formalized the end-of-day `00:00 UTC` three-way reconciliation equation across Stripe SFTP Payout Feeds, MPP Tempo sub-cent forfeiture, Metronome Token Billing, duplicate webhook deduplication, and Connect unreversed refund deficits.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/booking_sftp_reconciliation_guard.py`](../../lab/booking_sftp_reconciliation_guard.py) & [`tests/test_booking_sftp_reconciliation_guard.py`](../../tests/test_booking_sftp_reconciliation_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -48,5 +55,6 @@ python -m lab.workload_arch_bench
 python -m lab.cross_border_b2b_guard
 python -m lab.dispute_evidence_replay
 python -m lab.protocol_readiness_auditor
+python -m lab.booking_sftp_reconciliation_guard
 python -m unittest discover -s tests -v
 ```

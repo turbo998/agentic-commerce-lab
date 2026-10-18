@@ -342,6 +342,7 @@ def render_interactive_workbench_html() -> str:
         <tr><td><strong>Phase A</strong></td><td>Migrate legacy <code>rak_</code>/<code>sk_</code> to OAuth or Stripe Agent Key; enforce <code>separate_charges_and_transfers</code> &amp; single-use <code>SPT Resolve</code></td><td><code>lab/mcp_migration.py</code> · <code>lab/cross_border_b2b_guard.py</code></td><td class="pass">READY (42-day window)</td></tr>
         <tr><td><strong>Phase B</strong></td><td>Enforce UCP <code>PR #866</code> RFC 9530 <code>sha-256</code> Catalog Feed barrier &amp; Policy Broker <code>summary==terms</code> gate</td><td><code>lab/workload_arch_bench.py</code> · <code>lab/ucp_preflight.py</code></td><td class="pass">READY</td></tr>
         <tr><td><strong>Phase C</strong></td><td>Enable AP2 <code>PR #165</code> <code>COST_ENVELOPE_EXCEEDED</code> FCB, WCO 6-digit <code>HS</code>/<code>DDP</code> lock &amp; 17-gateway CE 3.0 representment</td><td><code>lab/dispute_evidence_replay.py</code> · <code>lab/protocol_readiness_auditor.py</code></td><td class="pass">READY</td></tr>
+        <tr><td><strong>Stage 6 Saga &amp; EOD</strong></td><td>Multi-Leg Booking 2-Phase Hold Saga (15s TTL buffer, <code>manual</code> capture) &amp; SFTP × MPP Tempo × Token 3-Way EOD Reconciliation</td><td><code>lab/booking_sftp_reconciliation_guard.py</code></td><td class="pass">READY (0 Variance)</td></tr>
       </tbody>
     </table>
   </div>
