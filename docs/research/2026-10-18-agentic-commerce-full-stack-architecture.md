@@ -293,6 +293,23 @@ Blocks replayed or unsigned visited-network CDR batches (`CDR_BATCH_REPLAY_OR_SI
 
 Requires verified Unique Mandate Reference (`UMR`) signatures, debtor IBAN binding (`PAIN008_UMR_OR_IBAN_BINDING_INVALID_BLOCKED`), and debtor-bank SDD B2B pre-registration (`PAIN008_B2B_PRE_REGISTRATION_OR_CAP_BLOCKED`) before executing `pain.008` A2A pull settlement (`ISO20022_PAIN008_DIRECT_DEBIT_SETTLED`).
 
+---
+
+## 36. Commercial Real Estate CAM Lease Audit, Autonomous Fleet Mobility Toll/Deductible Escrow & Cross-Border EOR Payroll Statutory Withholding Guard (Stage 30)
+
+### 36.1 Commercial Real Estate Triple-Net (NNN) CAM Reconciliation (`evaluate_commercial_cam_lease_reconciliation`)
+
+Strips excluded structural CapEx and landlord executive overhead (`EXCLUDED_STRUCTURAL_CAPEX_CAM_PASS_THROUGH_BLOCKED`) and enforces annual controllable CAM inflation caps (`CAM_CONTROLLABLE_CAP_APPLIED_AND_RECONCILED`) before reconciling prepaid estimates against actual operating expenses.
+
+### 36.2 Autonomous Fleet Mobility Toll, Citation Liability & Collision Deductible Escrow (`evaluate_autonomous_fleet_toll_and_deductible_escrow`)
+
+Scrubs duplicate transponder tolls against GNSS telemetry, routes municipal traffic citations to the AV operator when FSD/autonomous mode was active at the infraction timestamp (`AV_CITATION_ROUTED_TO_OPERATOR_AND_ESCROW_SETTLED`), and blocks unsigned telematics collision deductible claims (`UNSIGNED_TELEMATICS_COLLISION_CLAIM_BLOCKED`).
+
+### 36.3 Global EOR Cross-Border Payroll Statutory & Pre-Funding Guard (`evaluate_eor_cross_border_payroll_statutory_escrow`)
+
+Verifies worker classification compliance (`EOR_WORKER_MISCLASSIFICATION_COMPLIANCE_HOLD`), statutory minimum wage floors (`STATUTORY_MINIMUM_WAGE_FLOOR_VIOLATION_BLOCKED`), and pre-funded escrow adequacy across gross wages, employer social contributions, and EOR platform fees (`EOR_PAYROLL_PREFUNDING_DEFICIT_BLOCKED` / `EOR_STATUTORY_PAYROLL_DISBURSEMENT_SETTLED`).
+
+
 
 
 

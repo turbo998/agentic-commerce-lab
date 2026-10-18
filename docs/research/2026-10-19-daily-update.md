@@ -194,6 +194,12 @@
    - [`lab/commodity_weather_esim_roaming_pain008_guard.py`](../../lab/commodity_weather_esim_roaming_pain008_guard.py) & [`tests/test_commodity_weather_esim_roaming_pain008_guard.py`](../../tests/test_commodity_weather_esim_roaming_pain008_guard.py)
    - [`lab/trade_sovereign_settlement_bench.py`](../../lab/trade_sovereign_settlement_bench.py) & [`reports/agentic-commerce-trade-sovereign-bench/index.html`](../../reports/agentic-commerce-trade-sovereign-bench/index.html)
 
+### Stage 30 — Commercial Real Estate CAM Lease Audit, Autonomous Fleet Mobility Toll/Deductible Escrow & Cross-Border EOR Payroll Statutory Withholding Guard
+1. **Commercial CAM Lease Audit, AV Fleet Mobility Escrow & EOR Statutory Payroll Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §36)**:
+   - Implemented NNN commercial lease CAM excluded CapEx scrubbing (`EXCLUDED_STRUCTURAL_CAPEX_CAM_PASS_THROUGH_BLOCKED`) and controllable expense cap reconciliation (`CAM_CONTROLLABLE_CAP_APPLIED_AND_RECONCILED`), autonomous fleet FSD vs manual traffic citation liability routing (`AV_CITATION_ROUTED_TO_OPERATOR_AND_ESCROW_SETTLED`) and signed crash-log deductible escrow (`UNSIGNED_TELEMATICS_COLLISION_CLAIM_BLOCKED`), and cross-border EOR statutory social contribution & pre-funding verification (`EOR_STATUTORY_PAYROLL_DISBURSEMENT_SETTLED`).
+2. **Executable Guard Module & Unit Tests (231 Total Tests)**:
+   - [`lab/fleet_mobility_prop_lease_eor_payroll_guard.py`](../../lab/fleet_mobility_prop_lease_eor_payroll_guard.py) & [`tests/test_fleet_mobility_prop_lease_eor_payroll_guard.py`](../../tests/test_fleet_mobility_prop_lease_eor_payroll_guard.py)
+
 ---
 
 ## Quick Verification Commands

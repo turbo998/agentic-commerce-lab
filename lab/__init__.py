@@ -9,13 +9,16 @@ __all__ = [
     "evaluate_agentic_bnpl_trade_credit_underwriting",
     "evaluate_agentic_rtb_invalid_traffic_escrow",
     "evaluate_authenticated_c2c_escrow_inspection_release",
+    "evaluate_autonomous_fleet_toll_and_deductible_escrow",
     "evaluate_b2b_contractor_milestone_escrow",
     "evaluate_cold_chain_iot_telemetry_escrow",
+    "evaluate_commercial_cam_lease_reconciliation",
     "evaluate_commodity_weather_index_forward_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
     "evaluate_cross_border_tax_withholding_1099k_w8bene",
     "evaluate_data_clean_room_differential_privacy_budget",
     "evaluate_digital_license_seat_activation_guard",
+    "evaluate_eor_cross_border_payroll_statutory_escrow",
     "evaluate_eucp600_letter_of_credit_document_presentation",
     "evaluate_ev_iso15118_v2g_energy_settlement",
     "evaluate_event_ticket_anti_scalping_escrow",
@@ -61,6 +64,14 @@ __all__ = [
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_autonomous_fleet_toll_and_deductible_escrow",
+        "evaluate_commercial_cam_lease_reconciliation",
+        "evaluate_eor_cross_border_payroll_statutory_escrow",
+    }:
+        from lab import fleet_mobility_prop_lease_eor_payroll_guard
+
+        return getattr(fleet_mobility_prop_lease_eor_payroll_guard, name)
     if name in {
         "evaluate_commodity_weather_index_forward_escrow",
         "evaluate_m2m_esim_roaming_cdr_settlement",
