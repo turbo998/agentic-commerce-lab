@@ -1,4 +1,4 @@
-"""Stage 28: Autonomous B2B Contractor Milestone Escrow, IRS 1099-K / W-8BEN-E Tax Withholding & Sovereign AI Data-Clean-Room Differential Privacy Budget Guard.
+r"""Stage 28: Autonomous B2B Contractor Milestone Escrow, IRS 1099-K / W-8BEN-E Tax Withholding & Sovereign AI Data-Clean-Room Differential Privacy Budget Guard.
 
 Implements three deterministic enterprise services & data-marketplace invariants:
 1. `evaluate_b2b_contractor_milestone_escrow`:

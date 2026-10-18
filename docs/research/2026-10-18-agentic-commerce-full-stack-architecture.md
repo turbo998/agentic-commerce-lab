@@ -277,6 +277,23 @@ Applies 24% US backup withholding for missing TINs (`TIN_MISSING_24PCT_BACKUP_WI
 
 Tracks cumulative privacy loss $\varepsilon$ across buyer-agent clean-room queries and blocks dataset reconstruction attacks when projected $\varepsilon$ exceeds `max_epsilon_budget` (`DIFFERENTIAL_PRIVACY_EPSILON_BUDGET_EXHAUSTED_BLOCKED`).
 
+---
+
+## 35. Commodity Weather-Index Forward Escrow, GSMA SGP.32 M2M eSIM Roaming CDR Settlement & ISO 20022 `pain.008` Direct Debit Guard (Stage 29)
+
+### 35.1 WMO/Satellite Weather-Index Commodity Forward Escrow (`evaluate_commodity_weather_index_forward_escrow`)
+
+Verifies multi-oracle weather quorum (`UNVERIFIED_WEATHER_ORACLE_QUORUM_BLOCKED`) and triggers automatic drought/frost hedge rebates when observed rainfall drops below `drought_trigger_mm` (`PARAMETRIC_WEATHER_HEDGE_PAYOUT_TRIGGERED`).
+
+### 35.2 GSMA SGP.32 M2M eSIM Wholesale Roaming CDR Guard (`evaluate_m2m_esim_roaming_cdr_settlement`)
+
+Blocks replayed or unsigned visited-network CDR batches (`CDR_BATCH_REPLAY_OR_SIGNATURE_INVALID_BLOCKED`) and enforces wholesale per-MB rate caps (`ROAMING_WHOLESALE_RATE_CAP_BREACH_BLOCKED`).
+
+### 35.3 Open-Banking / SEPA B2B ISO 20022 `pain.008` Direct Debit Mandate (`verify_open_banking_pain008_direct_debit_mandate`)
+
+Requires verified Unique Mandate Reference (`UMR`) signatures, debtor IBAN binding (`PAIN008_UMR_OR_IBAN_BINDING_INVALID_BLOCKED`), and debtor-bank SDD B2B pre-registration (`PAIN008_B2B_PRE_REGISTRATION_OR_CAP_BLOCKED`) before executing `pain.008` A2A pull settlement (`ISO20022_PAIN008_DIRECT_DEBIT_SETTLED`).
+
+
 
 
 

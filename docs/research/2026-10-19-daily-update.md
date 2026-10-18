@@ -187,6 +187,13 @@
 2. **Executable Guard Module & Unit Tests (224 Total Tests)**:
    - [`lab/b2b_milestone_tax_withholding_cleanroom_guard.py`](../../lab/b2b_milestone_tax_withholding_cleanroom_guard.py) & [`tests/test_b2b_milestone_tax_withholding_cleanroom_guard.py`](../../tests/test_b2b_milestone_tax_withholding_cleanroom_guard.py)
 
+### Stage 29 — Commodity Weather-Index Forward Escrow, GSMA SGP.32 M2M eSIM Roaming CDR Settlement & ISO 20022 `pain.008` Direct Debit Guard + Stages 26–29 16-Scenario 7-Card Deck
+1. **Weather-Index Hedge, M2M eSIM Roaming & ISO 20022 `pain.008` Guard ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §35)**:
+   - Implemented WMO/satellite weather-index forward drought hedge (`PARAMETRIC_WEATHER_HEDGE_PAYOUT_TRIGGERED`), GSMA SGP.32 M2M eSIM wholesale roaming rate-cap enforcement (`ROAMING_WHOLESALE_RATE_CAP_BREACH_BLOCKED`), and SEPA B2B / A2A ISO 20022 `pain.008` UMR direct-debit verification (`ISO20022_PAIN008_DIRECT_DEBIT_SETTLED`), plus the 16-scenario 7-Card 4:5 visual benchmark [`reports/agentic-commerce-trade-sovereign-bench/index.html`](../../reports/agentic-commerce-trade-sovereign-bench/index.html).
+2. **Executable Guard Modules, 16-Scenario 7-Card Deck & Unit Tests (228 Total Tests)**:
+   - [`lab/commodity_weather_esim_roaming_pain008_guard.py`](../../lab/commodity_weather_esim_roaming_pain008_guard.py) & [`tests/test_commodity_weather_esim_roaming_pain008_guard.py`](../../tests/test_commodity_weather_esim_roaming_pain008_guard.py)
+   - [`lab/trade_sovereign_settlement_bench.py`](../../lab/trade_sovereign_settlement_bench.py) & [`reports/agentic-commerce-trade-sovereign-bench/index.html`](../../reports/agentic-commerce-trade-sovereign-bench/index.html)
+
 ---
 
 ## Quick Verification Commands

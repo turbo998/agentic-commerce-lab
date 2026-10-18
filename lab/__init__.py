@@ -11,6 +11,7 @@ __all__ = [
     "evaluate_authenticated_c2c_escrow_inspection_release",
     "evaluate_b2b_contractor_milestone_escrow",
     "evaluate_cold_chain_iot_telemetry_escrow",
+    "evaluate_commodity_weather_index_forward_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
     "evaluate_cross_border_tax_withholding_1099k_w8bene",
     "evaluate_data_clean_room_differential_privacy_budget",
@@ -23,6 +24,7 @@ __all__ = [
     "evaluate_gpu_spot_compute_sla_and_carbon_retirement",
     "evaluate_hs_code_landed_cost_and_deminimis",
     "evaluate_loyalty_points_escrow_and_return_clawback",
+    "evaluate_m2m_esim_roaming_cdr_settlement",
     "evaluate_marine_demurrage_detention_parametric_escrow",
     "evaluate_parametric_sla_microinsurance_claim",
     "evaluate_promo_coupon_stacking_invariant",
@@ -42,6 +44,7 @@ __all__ = [
     "redact_hipaa_phi_from_payment_descriptor",
     "run_global_clearing_privacy_benchmark",
     "run_lifecycle_finance_circular_benchmark",
+    "run_trade_sovereign_settlement_benchmark",
     "run_vertical_domain_clearing_benchmark",
     "scan_and_redact_agent_context_pii_pci",
     "validate_iso20022_pacs008_instruction",
@@ -51,12 +54,25 @@ __all__ = [
     "verify_eprescribing_ncpdp_dea_dispense_guard",
     "verify_invoice_factoring_ucc_lien_uniqueness",
     "verify_mletr_electronic_bill_of_lading_endorsement",
+    "verify_open_banking_pain008_direct_debit_mandate",
     "verify_sovereign_compute_export_geofence_attestation",
     "verify_winner_commitment_earnest_bond_slash",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_commodity_weather_index_forward_escrow",
+        "evaluate_m2m_esim_roaming_cdr_settlement",
+        "verify_open_banking_pain008_direct_debit_mandate",
+    }:
+        from lab import commodity_weather_esim_roaming_pain008_guard
+
+        return getattr(commodity_weather_esim_roaming_pain008_guard, name)
+    if name == "run_trade_sovereign_settlement_benchmark":
+        from lab import trade_sovereign_settlement_bench
+
+        return getattr(trade_sovereign_settlement_bench, name)
     if name in {
         "evaluate_b2b_contractor_milestone_escrow",
         "evaluate_cross_border_tax_withholding_1099k_w8bene",
