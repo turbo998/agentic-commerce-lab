@@ -38,6 +38,7 @@
 | [离线 UCP handler 与协议边界预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件、RFC 9421 闭合必签门禁（`#659`/`#795`）、Permalink `303` 安全头与不可信 GET 输入校验（`#913`）、RFC 9728 多条目身份发现与 Accelerated IdP 单用户换票绑定（`#783`/`#970`）、Cart-to-Checkout 互斥与优先级（`#940`）、`buyer.consent` 全量替换豁免（`#660`）、退货政策禁算日校验（`#966`）、Stripe OCA/SFTP/WebMCP 护栏及 ACP ATDRP §7.4a 证据包准入（`#316`） |
 | [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/RFC 8414 §3.1 路径多租户隔离/DPoP/跨上下文断言防混淆与浏览器交接/Milestone 2 `conversations.*` 与 Milestone 3 Sign-In & Account Token 生命周期及脱敏（`#35`）、`operations` v1 扩展协商/跨通道去重/下游超时 `in_progress` 驻留/取消与 $\tau^3$-bench 零售改单护栏 |
 | [离线六平面 AI-Native 负载架构基准](lab/workload_arch_bench.py) | Connect SPT 档案路由、单次 `SPT Resolve` + RSA 切片、SPT 3DS 状态机与 AP2 §7.4 受托熔断器（`#165`）、Policy Broker、UCP RFC 9530 批量目录摘要屏障（`#866`）、ATDRP Appendix C 17 网关兜底证据编译（`#316`）、MPP Tempo 亚美分尾差没收审计及 [7-Card 4:5 视觉报告](reports/agentic-commerce-6plane-bench/index.html) |
+| [离线跨境多卖家分账、Token 毛利熔断与关税条款护栏](lab/cross_border_b2b_guard.py) | Connect 多卖家跨境拆单守恒与逆向退费 `reverse_transfer` 防垫付赤字、LLM Token 成本 + 支付通道费穿底触发 AP2 `COST_ENVELOPE_EXCEEDED`、`DDP` vs `DDU`/`DAP` 完税交货与 WCO 6 位 `HS` 编码防篡改校验（配套架构深潜见 [`docs/architecture/cross-border-b2b-settlement.md`](docs/architecture/cross-border-b2b-settlement.md) 与 [2026-10-19 更新索引](docs/research/2026-10-19-daily-update.md)） |
 
 ## 本地运行
 
@@ -88,6 +89,14 @@ python -m lab.workload_arch_bench --output-dir reports/agentic-commerce-6plane-b
 ```
 
 运行覆盖六大架构平面的 12 个对抗性评测场景（Stripe Connect SPT 档案路由、单次 `SPT Resolve` 重放拦截与 RSA 切片提取、SPT 3DS 非线性状态机、Google AP2 §7.4 四态受托熔断器、Policy Broker `summary`-vs-`terms` 校验、UCP `dev.ucp.common.feed` RFC 9530 分片摘要屏障与变体按 `id` 合并、ACP ATDRP Appendix C 17 网关争议证据兜底编译、Stripe MPP Tempo 流式会话亚美分尾差没收审计），并输出确定性评估数据 [`reports/agentic-commerce-6plane-bench/report.json`](reports/agentic-commerce-6plane-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-6plane-bench/index.html`](reports/agentic-commerce-6plane-bench/index.html)。
+
+### 跨境多卖家分账、Token 毛利穿底熔断与关税条款护栏（离线模拟）
+
+```powershell
+python -m lab.cross_border_b2b_guard
+```
+
+演练 Stripe Connect 跨境多卖家拆单守恒（强制 `separate_charges_and_transfers`、FX 锁汇报价 TTL/滑点走廊、部分退货 `reverse_transfer=true` 防赤字）、`stripe-token-billing` + 三类支付通道（`stripe_spt_card` / `x402_base_usdc` / `mpp_tempo_session`）毛利穿底触发 Google AP2 `COST_ENVELOPE_EXCEEDED` 受托熔断器，以及跨境贸易条款（`DDP` vs `DDU`/`DAP`）与 WCO 6 位 `HS` 商品编码防幻觉篡改校验。架构推导见 [`docs/architecture/cross-border-b2b-settlement.md`](docs/architecture/cross-border-b2b-settlement.md)。
 
 
 ## 每日研究
