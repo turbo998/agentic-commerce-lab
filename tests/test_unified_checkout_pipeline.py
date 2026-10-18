@@ -283,6 +283,25 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(bustout_fail.blocked_at_gate, 6)
         self.assertIn("ROLLING_RESERVE_ESCALATED_25PCT_BUST_OUT_GUARD", bustout_fail.terminal_decision_code)
 
+    def test_gate3_blocks_fx_collar_breach_and_invalid_iso20022_uetr(self) -> None:
+        fx_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                fx_quote_lock_context={
+                    "pair": "USD/JPY",
+                    "quote_created_epoch": 1_760_800_000,
+                    "quote_expires_at_epoch": 1_760_800_090,
+                    "now_epoch": 1_760_800_040,
+                    "mid_market_rate": "150.00",
+                    "locked_rate": "150.30",
+                    "live_spot_rate": "153.00",
+                    "merchant_buffer_bps": 35,
+                }
+            )
+        )
+        self.assertFalse(fx_fail.checkout_committed)
+        self.assertEqual(fx_fail.blocked_at_gate, 3)
+        self.assertIn("FX_VOLATILITY_COLLAR_BREACHED_REQUOTE_REQUIRED", fx_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

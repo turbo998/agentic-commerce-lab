@@ -51,6 +51,10 @@ from lab.dispute_evidence_replay import (
     CryptographicDisputeEvidenceInput,
     compile_cryptographic_dispute_bundle,
 )
+from lab.fx_treasury_iso20022_guard import (
+    evaluate_fx_quote_lock_and_slippage,
+    validate_iso20022_pacs008_instruction,
+)
 from lab.marketplace_split_settlement_guard import (
     evaluate_seller_kyb_rolling_reserve,
     evaluate_split_settlement_invariant,
@@ -175,6 +179,10 @@ class UnifiedCheckoutPipelineInput:
     # Optional Stage 14 Marketplace Split Settlement & Sub-Merchant KYB Rolling Reserve Gate
     marketplace_settlement_bundle: dict[str, Any] | None = None
     seller_kyb_risk_profile: dict[str, Any] | None = None
+
+    # Optional Stage 15 FX Quote Lock & ISO 20022 pacs.008 Instruction Gate
+    fx_quote_lock_context: dict[str, Any] | None = None
+    iso20022_pacs008_payload: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -337,12 +345,27 @@ def execute_unified_agentic_checkout(
         rfq_tax_ok = rfq_res.allowed
         rfq_tax_reason = rfq_res.decision_code
 
-    g3_passed = customs_res.allowed and rfq_tax_ok
+    fx_iso_ok = True
+    fx_iso_reason = ""
+    if inp.fx_quote_lock_context is not None:
+        fx_res = evaluate_fx_quote_lock_and_slippage(inp.fx_quote_lock_context)
+        fx_iso_ok = fx_res.allowed
+        fx_iso_reason = fx_res.decision_code
+    if fx_iso_ok and inp.iso20022_pacs008_payload is not None:
+        iso_res = validate_iso20022_pacs008_instruction(inp.iso20022_pacs008_payload)
+        fx_iso_ok = iso_res.valid
+        fx_iso_reason = iso_res.decision_code
+
+    g3_passed = customs_res.allowed and rfq_tax_ok and fx_iso_ok
     dt3 = max((time.perf_counter() - t0) * 1_000_000.0, 10.0)
     g3_code = (
         "DDP_AND_HS6_LOCKED"
         if g3_passed
-        else (customs_res.reason if not customs_res.allowed else rfq_tax_reason)
+        else (
+            customs_res.reason
+            if not customs_res.allowed
+            else (rfq_tax_reason if not rfq_tax_ok else fx_iso_reason)
+        )
     )
     traces.append(
         GateExecutionTrace(

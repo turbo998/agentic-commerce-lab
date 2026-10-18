@@ -100,6 +100,12 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/marketplace_split_settlement_guard.py`](../../lab/marketplace_split_settlement_guard.py) & [`tests/test_marketplace_split_settlement_guard.py`](../../tests/test_marketplace_split_settlement_guard.py)
 
+### Stage 15 — Cross-Border Real-Time FX Quote Lock, Multi-Currency Natural Netting Sweep & ISO 20022 `pacs.008` Clearing Compliance Guard
+1. **FX Volatility Collar, Natural Netting & ISO 20022 Wire Guard ([`docs/architecture/fx-treasury-netting-and-iso20022-guard.md`](../architecture/fx-treasury-netting-and-iso20022-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §21)**:
+   - Enforced `quote_ttl_seconds <= 120`, spread caps, and 3-zone volatility collars (`FX_SLIPPAGE_ABSORBED_BY_MERCHANT_BUFFER` vs `FX_VOLATILITY_COLLAR_BREACHED_REQUOTE_REQUIRED`), multi-currency natural netting across `USD/EUR/GBP/JPY/SGD` (`< 12 bps` blended FX drag), and ISO 20022 `pacs.008` UUIDv4 `UETR`, purpose code, `DEBT` full-value bearer, and correspondent cutoff checks.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/fx_treasury_iso20022_guard.py`](../../lab/fx_treasury_iso20022_guard.py) & [`tests/test_fx_treasury_iso20022_guard.py`](../../tests/test_fx_treasury_iso20022_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -119,5 +125,6 @@ python -m lab.reverse_auction_tax_returns_guard
 python -m lab.split_tender_finops_guard
 python -m lab.onchain_finality_peg_guard
 python -m lab.marketplace_split_settlement_guard
+python -m lab.fx_treasury_iso20022_guard
 python -m unittest discover -s tests -v
 ```

@@ -46,3 +46,27 @@ When a defaulting sub-merchant owes $R_{\text{obligation}}$ on a failed bundle l
 2. **Stage 2 (`Rolling Reserve Pool Offset`)**: $C_2 = \min(R_{\text{obligation}} - C_1, B_{\text{reserve}})$
 3. **Stage 3 (`Linked Guarantor Debit`)**: $C_3 = \min(R_{\text{obligation}} - C_1 - C_2, B_{\text{guarantor}})$
 4. **Stage 4 (`Platform Risk Reserve Isolation`)**: $C_4 = \min(R_{\text{obligation}} - C_1 - C_2 - C_3, B_{\text{platform\_cap}})$, locking the sub-merchant account (`seller_account_locked=True`). Any remaining deficit triggers `UNCOVERED_DEFAULT_EXCEEDS_PLATFORM_RISK_BUFFER`.
+
+---
+
+## 21. Cross-Border Real-Time FX Quote Lock, Multi-Currency Natural Netting Sweep & ISO 20022 `pacs.008` Clearing Compliance (Stage 15)
+
+### 21.1 Bounded FX Quote Lock & Volatility Collar (`evaluate_fx_quote_lock_and_slippage`)
+
+- **TTL & Markup Bounds**: Enforces $\text{TTL}_{\text{quote}} \le 120\text{s}$ (`FX_QUOTE_TTL_EXCEEDED_OR_EXPIRED`) and mid-market markup $\le 50\text{ bps}$ (`FX_SPREAD_MARKUP_EXCEEDED`).
+- **Three-Zone Volatility Collar**:
+  $$\Delta_{\text{slippage}} = \left\lfloor \frac{|S_{\text{live}} - R_{\text{locked}}|}{R_{\text{locked}}} \times 10000 \right\rceil$$
+  - $\Delta_{\text{slippage}} \le C_{\text{collar}}$ (`75 bps`): `FX_QUOTE_LOCK_WITHIN_COLLAR`
+  - $C_{\text{collar}} < \Delta_{\text{slippage}} \le C_{\text{collar}} + B_{\text{merchant}}$: `FX_SLIPPAGE_ABSORBED_BY_MERCHANT_BUFFER`
+  - $\Delta_{\text{slippage}} > C_{\text{collar}} + B_{\text{merchant}}$: `FX_VOLATILITY_COLLAR_BREACHED_REQUOTE_REQUIRED`
+
+### 21.2 Multi-Currency Natural Netting Sweep (`optimize_multicurrency_netting_sweep`)
+
+Across non-USD sub-ledgers $c \in \{\text{EUR}, \text{GBP}, \text{JPY}, \text{SGD}\}$:
+$$V_{\text{matched},c} = 2 \min(\text{AR}_c, \text{AP}_c), \qquad E_{\text{net},c} = |\text{AR}_c - \text{AP}_c|$$
+By settling $V_{\text{matched},c}$ internally at `0 bps` and sweeping only $E_{\text{net},c}$ at wholesale institutional spreads (`10 bps` vs `275 bps` retail), effective blended FX drag drops from `275 bps` to **`< 12 bps`** (`0.54 bps` on balanced global treasury books).
+
+### 21.3 ISO 20022 `pacs.008` / SWIFT gpi `UETR` Instruction Compliance (`validate_iso20022_pacs008_instruction`)
+
+Enforces canonical UUIDv4 `UETR` (`ISO20022_INVALID_UETR_UUIDV4`), regulatory trade purpose code (`GDDS`/`SUPP`/`CORT`), `DEBT` (`OUR`) charge bearer for full-principal B2B invoices (`ISO20022_CHARGE_BEARER_VIOLATES_FULL_VALUE_DELIVERY`), and correspondent bank cutoff windows (`ISO20022_CORRESPONDENT_CUTOFF_WINDOW_MISSED`).
+

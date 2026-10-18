@@ -351,6 +351,7 @@ def render_interactive_workbench_html() -> str:
         <tr><td><strong>Stage 12 Split-Tender &amp; FinOps GL</strong></td><td>Split-Tender Reverse Waterfall (Anti-Cash-Out Laundering), Multi-Cost-Center Pre-Auth Encumbrance &amp; 12-Scenario Enterprise 7-Card Benchmark</td><td><code>lab/split_tender_finops_guard.py</code></td><td class="pass">READY (12/12 Pass)</td></tr>
         <tr><td><strong>Stage 13 x402 EIP-3009 Finality &amp; Peg Guard</strong></td><td>EIP-3009 ValidWindow/Contract/Nonce Guard, Tiered L2 Finality Gate, 50 bps Stablecoin De-Peg Breaker &amp; MPP Tempo Gas Router</td><td><code>lab/onchain_finality_peg_guard.py</code></td><td class="pass">READY (L1/L2 Finality + Peg Guard)</td></tr>
         <tr><td><strong>Stage 14 Marketplace Split &amp; Rolling Reserve</strong></td><td>Largest-Remainder Split Conservation, Sub-Merchant KYB Visa VAMP/GMV Rolling Reserve Escalation (5%-&gt;15%-&gt;25%) &amp; 4-Stage Clawback Waterfall</td><td><code>lab/marketplace_split_settlement_guard.py</code></td><td class="pass">READY (Split + Reserve + Clawback)</td></tr>
+        <tr><td><strong>Stage 15 FX Collar, Netting &amp; ISO 20022</strong></td><td>Bounded FX Quote Lock (&lt;=120s TTL + Volatility Collar), Multi-Currency Natural Netting (&lt;12 bps) &amp; ISO 20022 <code>pacs.008</code> UETR Wire Guard</td><td><code>lab/fx_treasury_iso20022_guard.py</code></td><td class="pass">READY (FX Collar + ISO 20022)</td></tr>
       </tbody>
     </table>
   </div>
