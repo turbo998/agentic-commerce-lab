@@ -77,6 +77,11 @@ from lab.split_tender_finops_guard import (
     verify_enterprise_cost_center_chargeback,
     verify_split_tender_waterfall_and_clawback,
 )
+from lab.subscription_metering_click_to_cancel_guard import (
+    evaluate_recurring_mandate_renewal_and_pre_debit_notice,
+    evaluate_usage_based_metering_idempotency,
+    execute_ftc_click_to_cancel_symmetric_offramp,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -200,6 +205,11 @@ class UnifiedCheckoutPipelineInput:
     zk_eligibility_context: dict[str, Any] | None = None
     agent_context_payload_text: str | None = None
 
+    # Optional Stage 18 Subscription Metering, PSD3 Renewal & FTC Click-to-Cancel Gate
+    usage_metering_bundle: dict[str, Any] | None = None
+    recurring_renewal_context: dict[str, Any] | None = None
+    click_to_cancel_request: dict[str, Any] | None = None
+
 
 @dataclass(frozen=True)
 class GateExecutionTrace:
@@ -309,8 +319,31 @@ def execute_unified_agentic_checkout(
         zk_pci_ok = pci_res.safe_to_transmit
         zk_pci_reason = pci_res.decision_code
 
+    sub_lifecycle_ok = True
+    sub_lifecycle_reason = ""
+    if inp.usage_metering_bundle is not None:
+        um_res = evaluate_usage_based_metering_idempotency(inp.usage_metering_bundle)
+        sub_lifecycle_ok = um_res.allowed
+        sub_lifecycle_reason = um_res.decision_code
+    if sub_lifecycle_ok and inp.recurring_renewal_context is not None:
+        rn_res = evaluate_recurring_mandate_renewal_and_pre_debit_notice(
+            inp.recurring_renewal_context
+        )
+        sub_lifecycle_ok = rn_res.allowed
+        sub_lifecycle_reason = rn_res.decision_code
+    if sub_lifecycle_ok and inp.click_to_cancel_request is not None:
+        cc_off_res = execute_ftc_click_to_cancel_symmetric_offramp(
+            inp.click_to_cancel_request
+        )
+        sub_lifecycle_ok = cc_off_res.canceled
+        sub_lifecycle_reason = cc_off_res.decision_code
+
     g2_passed = (
-        feed_res.valid and broker_res.allowed and recurring_ok and zk_pci_ok
+        feed_res.valid
+        and broker_res.allowed
+        and recurring_ok
+        and zk_pci_ok
+        and sub_lifecycle_ok
     )
     g2_code = (
         "CATALOG_AND_POLICY_BROKER_VERIFIED"
@@ -321,7 +354,11 @@ def execute_unified_agentic_checkout(
             else (
                 broker_res.reason
                 if not broker_res.allowed
-                else (recurring_reason if not recurring_ok else zk_pci_reason)
+                else (
+                    recurring_reason
+                    if not recurring_ok
+                    else (zk_pci_reason if not zk_pci_ok else sub_lifecycle_reason)
+                )
             )
         )
     )

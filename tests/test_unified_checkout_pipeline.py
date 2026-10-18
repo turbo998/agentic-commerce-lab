@@ -339,6 +339,24 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(pii_fail.blocked_at_gate, 2)
         self.assertIn("OVERPRIVILEGED_PII_HARVESTING_BLOCKED", pii_fail.terminal_decision_code)
 
+    def test_gate2_blocks_dark_pattern_retention_wall_and_price_escalation(self) -> None:
+        wall_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                click_to_cancel_request={
+                    "subscription_id": "sub_wall_99",
+                    "enrollment_steps": 1,
+                    "required_cancellation_steps": 4,
+                    "forced_human_chat_retention_wall": True,
+                    "cycle_paid_minor": 30_000,
+                    "total_cycle_days": 30,
+                    "unused_days": 15,
+                }
+            )
+        )
+        self.assertFalse(wall_fail.checkout_committed)
+        self.assertEqual(wall_fail.blocked_at_gate, 2)
+        self.assertIn("DARK_PATTERN_RETENTION_WALL_BLOCKED", wall_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

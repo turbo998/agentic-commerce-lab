@@ -118,6 +118,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/zk_eligibility_privacy_redaction_guard.py`](../../lab/zk_eligibility_privacy_redaction_guard.py) & [`tests/test_zk_eligibility_privacy_redaction_guard.py`](../../tests/test_zk_eligibility_privacy_redaction_guard.py)
 
+### Stage 18 — Agentic Subscription Lifecycle, Usage-Metering Watermark Idempotency & FTC Click-to-Cancel / PSD3 Recurring Mandate Guard + 15-Scenario Global Clearing & Privacy 7-Card Deck
+1. **Subscription Metering, PSD3 Renewal & FTC Click-to-Cancel ([`docs/architecture/subscription-metering-and-click-to-cancel-guard.md`](../architecture/subscription-metering-and-click-to-cancel-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §24)**:
+   - Enforced UUIDv7 usage metering deduplication, `<= 300s` watermark expiration (`USAGE_EVENT_LATE_WATERMARK_EXPIRED`), and runaway loop spend-cap throttling (`SPEND_CAP_HARD_LIMIT_REACHED_THROTTLED`); PSD3 `>= 48h` pre-debit notice and `> 5%` escalation re-consent (`RECURRING_PRICE_ESCALATION_RECONSENT_REQUIRED`); and FTC symmetric Click-to-Cancel (`<= 2` calls, `DARK_PATTERN_RETENTION_WALL_BLOCKED`, pro-rata refund `PRO_RATA_REFUND_ISSUED`, and atomic SPT revocation).
+2. **Executable Guard Modules, 15-Scenario 7-Card Deck & Unit Tests**:
+   - [`lab/subscription_metering_click_to_cancel_guard.py`](../../lab/subscription_metering_click_to_cancel_guard.py) & [`tests/test_subscription_metering_click_to_cancel_guard.py`](../../tests/test_subscription_metering_click_to_cancel_guard.py)
+   - [`lab/global_clearing_privacy_bench.py`](../../lab/global_clearing_privacy_bench.py), [`reports/agentic-commerce-global-clearing-privacy-bench/index.html`](../../reports/agentic-commerce-global-clearing-privacy-bench/index.html) & [`tests/test_global_clearing_privacy_bench.py`](../../tests/test_global_clearing_privacy_bench.py)
+
 ---
 
 ## Quick Verification Commands

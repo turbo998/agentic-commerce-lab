@@ -105,5 +105,22 @@ Intercepts Luhn-valid 13–19 digit PANs, CVVs, SSNs, and live API secret keys (
 
 Commits only salted ciphertext digests $L_{\text{pii}} = \text{SHA256}(\text{Enc}_{\text{CEK}_u}(\text{PII}) \parallel \text{salt})$ into the ACP `PR #316` ATDRP Merkle tree; destroying $\text{CEK}_u$ in KMS renders PII mathematically irrecoverable (`CRYPTO_SHREDDED_TOMBSTONE_VERIFIED`) while keeping `ATDRP_CE3_MERKLE_ROOT` 100% verifiable for 7-year financial/tax audits.
 
+---
+
+## 24. Agentic Subscription Lifecycle, Usage-Metering Watermark Idempotency & FTC Click-to-Cancel / PSD3 Recurring Mandate Guard (Stage 18)
+
+### 24.1 Usage Metering Watermark & Hard Spend Cap (`evaluate_usage_based_metering_idempotency`)
+
+Deduplicates high-frequency token/API usage events by `idempotency_key` (UUIDv7), rejects late events beyond `max_watermark_lateness_seconds <= 300` (`USAGE_EVENT_LATE_WATERMARK_EXPIRED`), and halts runaway agent loops when cumulative spend exceeds `hard_spend_cap_minor` (`SPEND_CAP_HARD_LIMIT_REACHED_THROTTLED`).
+
+### 24.2 PSD3 / RBI Recurring Mandate Renewal & Price-Escalation Guard (`evaluate_recurring_mandate_renewal_and_pre_debit_notice`)
+
+Enforces `>= 48h` pre-debit notification (`PRE_DEBIT_NOTICE_WINDOW_VIOLATION`), explicit trial-to-paid consent (`TRIAL_TO_PAID_EXPLICIT_CONSENT_MISSING`), and fresh buyer re-consent whenever renewal exceeds `mandate_max_amount_minor` or escalates `> 500 bps` (`5%`) over the prior cycle (`RECURRING_PRICE_ESCALATION_RECONSENT_REQUIRED`).
+
+### 24.3 FTC "Click-to-Cancel" Symmetric Offramp & Pro-Rata Refund (`execute_ftc_click_to_cancel_symmetric_offramp`)
+
+Enforces `required_cancellation_steps <= min(enrollment_steps, 2)` and zero retention walls (`DARK_PATTERN_RETENTION_WALL_BLOCKED`), computes exact unused-cycle refund $R_{\text{pro\_rata}} = \lfloor C_{\text{paid}} \cdot D_{\text{unused}} / D_{\text{total}} \rfloor$ (`PRO_RATA_REFUND_ISSUED`), and atomically revokes downstream Stripe `SPT` / network tokens.
+
+
 
 
