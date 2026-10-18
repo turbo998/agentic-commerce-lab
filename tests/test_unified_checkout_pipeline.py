@@ -265,6 +265,24 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(depeg_fail.blocked_at_gate, 4)
         self.assertIn("STABLECOIN_DEPEG_CIRCUIT_BREAKER", depeg_fail.terminal_decision_code)
 
+    def test_gate6_blocks_marketplace_split_rounding_drift_and_bustout_kyb_risk(self) -> None:
+        bustout_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                seller_kyb_risk_profile={
+                    "seller_id": "acct_bustout_01",
+                    "kyb_verified": True,
+                    "dispute_rate_bps": 88,
+                    "gmv_velocity_multiple_30d": "4.5",
+                    "current_settlement_gross_minor": 50_000,
+                    "applied_reserve_bps": 500,
+                    "instant_payout_requested": True,
+                }
+            )
+        )
+        self.assertFalse(bustout_fail.checkout_committed)
+        self.assertEqual(bustout_fail.blocked_at_gate, 6)
+        self.assertIn("ROLLING_RESERVE_ESCALATED_25PCT_BUST_OUT_GUARD", bustout_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

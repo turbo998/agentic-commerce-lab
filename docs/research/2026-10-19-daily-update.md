@@ -94,6 +94,12 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/onchain_finality_peg_guard.py`](../../lab/onchain_finality_peg_guard.py) & [`tests/test_onchain_finality_peg_guard.py`](../../tests/test_onchain_finality_peg_guard.py)
 
+### Stage 14 — Multi-Party Marketplace Split Settlement, Sub-Merchant KYB Rolling Reserve Escalation & Negative-Balance Clawback Waterfall
+1. **Split Conservation, Bust-Out Reserve Escalation & 4-Stage Clawback ([`docs/architecture/marketplace-split-settlement-and-reserve-guard.md`](../architecture/marketplace-split-settlement-and-reserve-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md))**:
+   - Enforced Largest Remainder Method allocation and exact split conservation (`gross_amount_minor == sum(seller_net_splits) + platform_commission + tax_withholding + rolling_reserve_hold`), dynamic rolling reserve escalation (`5% -> 15% -> 25%`) with `T+0` Instant Payout freeze on Visa VAMP (`> 65 bps`) or GMV velocity (`> 3.5x`) breaches, and deterministic 4-stage negative-balance clawback waterfall.
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/marketplace_split_settlement_guard.py`](../../lab/marketplace_split_settlement_guard.py) & [`tests/test_marketplace_split_settlement_guard.py`](../../tests/test_marketplace_split_settlement_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -112,5 +118,6 @@ python -m lab.b2b_three_way_match_guard
 python -m lab.reverse_auction_tax_returns_guard
 python -m lab.split_tender_finops_guard
 python -m lab.onchain_finality_peg_guard
+python -m lab.marketplace_split_settlement_guard
 python -m unittest discover -s tests -v
 ```

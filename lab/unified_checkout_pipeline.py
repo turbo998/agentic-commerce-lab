@@ -51,6 +51,10 @@ from lab.dispute_evidence_replay import (
     CryptographicDisputeEvidenceInput,
     compile_cryptographic_dispute_bundle,
 )
+from lab.marketplace_split_settlement_guard import (
+    evaluate_seller_kyb_rolling_reserve,
+    evaluate_split_settlement_invariant,
+)
 from lab.onchain_finality_peg_guard import (
     evaluate_stablecoin_depeg_and_gas_routing,
     verify_x402_eip3009_and_finality_guard,
@@ -167,6 +171,10 @@ class UnifiedCheckoutPipelineInput:
     x402_auth_bundle: dict[str, Any] | None = None
     x402_delivery_context: dict[str, Any] | None = None
     stablecoin_peg_and_gas_context: dict[str, Any] | None = None
+
+    # Optional Stage 14 Marketplace Split Settlement & Sub-Merchant KYB Rolling Reserve Gate
+    marketplace_settlement_bundle: dict[str, Any] | None = None
+    seller_kyb_risk_profile: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -517,14 +525,31 @@ def execute_unified_agentic_checkout(
         b2b_3way_ok = b2b_res.settlement_approved
         b2b_3way_reason = b2b_res.decision_code
 
-    g6_passed = connect_res.valid and spt_res.allowed and b2b_3way_ok
+    mkt_split_ok = True
+    mkt_split_reason = ""
+    if inp.marketplace_settlement_bundle is not None:
+        ms_res = evaluate_split_settlement_invariant(inp.marketplace_settlement_bundle)
+        mkt_split_ok = ms_res.allowed
+        mkt_split_reason = ms_res.decision_code
+    if mkt_split_ok and inp.seller_kyb_risk_profile is not None:
+        kr_res = evaluate_seller_kyb_rolling_reserve(inp.seller_kyb_risk_profile)
+        mkt_split_ok = kr_res.payouts_allowed
+        mkt_split_reason = kr_res.decision_code
+
+    g6_passed = (
+        connect_res.valid and spt_res.allowed and b2b_3way_ok and mkt_split_ok
+    )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
         if g6_passed
         else (
             connect_res.reason
             if not connect_res.valid
-            else (spt_res.reason if not spt_res.allowed else b2b_3way_reason)
+            else (
+                spt_res.reason
+                if not spt_res.allowed
+                else (b2b_3way_reason if not b2b_3way_ok else mkt_split_reason)
+            )
         )
     )
     dt6 = max((time.perf_counter() - t0) * 1_000_000.0, 13.0)
