@@ -92,6 +92,11 @@ from lab.embedded_bnpl_parametric_insurance_guard import (
     evaluate_parametric_sla_microinsurance_claim,
     verify_invoice_factoring_ucc_lien_uniqueness,
 )
+from lab.resale_dpp_authenticity_escrow_guard import (
+    evaluate_authenticated_c2c_escrow_inspection_release,
+    evaluate_trade_in_residual_value_and_grade_clawback,
+    verify_digital_product_passport_provenance,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -229,6 +234,11 @@ class UnifiedCheckoutPipelineInput:
     bnpl_underwriting_request: dict[str, Any] | None = None
     parametric_insurance_claim: dict[str, Any] | None = None
     invoice_factoring_request: dict[str, Any] | None = None
+
+    # Optional Stage 21 EU ESPR DPP Provenance, C2C Authentication Escrow & Trade-In Gate
+    dpp_provenance_bundle: dict[str, Any] | None = None
+    c2c_escrow_context: dict[str, Any] | None = None
+    trade_in_valuation_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -702,6 +712,21 @@ def execute_unified_agentic_checkout(
         bnpl_ins_ok = if_res.allowed
         bnpl_ins_reason = if_res.decision_code
 
+    dpp_circular_ok = True
+    dpp_circular_reason = ""
+    if inp.dpp_provenance_bundle is not None:
+        dp_res = verify_digital_product_passport_provenance(inp.dpp_provenance_bundle)
+        dpp_circular_ok = dp_res.allowed
+        dpp_circular_reason = dp_res.decision_code
+    if dpp_circular_ok and inp.c2c_escrow_context is not None:
+        ce_res = evaluate_authenticated_c2c_escrow_inspection_release(inp.c2c_escrow_context)
+        dpp_circular_ok = ce_res.escrow_released_to_seller
+        dpp_circular_reason = ce_res.decision_code
+    if dpp_circular_ok and inp.trade_in_valuation_context is not None:
+        ti_res = evaluate_trade_in_residual_value_and_grade_clawback(inp.trade_in_valuation_context)
+        dpp_circular_ok = ti_res.allowed
+        dpp_circular_reason = ti_res.decision_code
+
     g6_passed = (
         connect_res.valid
         and spt_res.allowed
@@ -709,6 +734,7 @@ def execute_unified_agentic_checkout(
         and mkt_split_ok
         and promo_attr_ok
         and bnpl_ins_ok
+        and dpp_circular_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -725,7 +751,11 @@ def execute_unified_agentic_checkout(
                     else (
                         mkt_split_reason
                         if not mkt_split_ok
-                        else (promo_attr_reason if not promo_attr_ok else bnpl_ins_reason)
+                        else (
+                            promo_attr_reason
+                            if not promo_attr_ok
+                            else (bnpl_ins_reason if not bnpl_ins_ok else dpp_circular_reason)
+                        )
                     )
                 )
             )

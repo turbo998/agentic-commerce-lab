@@ -153,6 +153,23 @@ Requires multi-oracle quorum signatures (`oracle_quorum_signatures >= 2`) and de
 
 Computes canonical SHA-256 invoice fingerprints and verifies global lien uniqueness plus countersigned buyer ERP Notice of Assignment (NOA) locks, blocking double-pledging fraud (`INVOICE_DOUBLE_PLEDGING_BLOCKED`).
 
+---
+
+## 27. EU ESPR Digital Product Passport (DPP) Provenance, Two-Hop C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard (Stage 21)
+
+### 27.1 EU ESPR Digital Product Passport Provenance (`verify_digital_product_passport_provenance`)
+
+Verifies GS1 Digital Link identifiers, OEM hardware signatures (`manufacturer_signature_valid`), repair Merkle lineage (`repair_merkle_root_valid`), and stolen/recall registries, blocking stolen or recalled hardware (`STOLEN_OR_RECALLED_DPP_ASSET_BLOCKED`) and counterfeit passports (`COUNTERFEIT_DPP_SIGNATURE_REJECTED`).
+
+### 27.2 Two-Hop Authenticated C2C Escrow & Brand Royalty Split (`evaluate_authenticated_c2c_escrow_inspection_release`)
+
+Releases buyer escrow only when an accredited authentication hub verifies `inspection_verdict == "AUTHENTIC"` and `hardware_serial_matches_dpp == True`, splitting `escrow_gross_minor` via the Largest Remainder Method across `seller_net_minor`, `authentication_fee_minor`, and `brand_resale_royalty_minor` (`AUTHENTICATED_ESCROW_RELEASED_WITH_ROYALTY_SPLIT`), or refunding 100% of buyer escrow and slashing the seller's collateral bond on counterfeit detection (`COUNTERFEIT_INSPECTION_FAILED_BUYER_REFUNDED`).
+
+### 27.3 Trade-In Residual Valuation & Anti-Bait-and-Switch Guard (`evaluate_trade_in_residual_value_and_grade_clawback`)
+
+Blocks unilateral post-receipt Trade-In card debits when re-grading slashes the locked quote by `> 500 bps` (`5%`, `UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED`), requiring explicit buyer re-consent or free prepaid device return (`TRADE_IN_DOWNGRADE_RECONSENT_OR_FREE_RETURN`).
+
+
 
 
 

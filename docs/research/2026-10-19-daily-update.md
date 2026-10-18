@@ -137,6 +137,13 @@
 2. **Executable Guard Module & Unit Tests (183 Total Tests)**:
    - [`lab/embedded_bnpl_parametric_insurance_guard.py`](../../lab/embedded_bnpl_parametric_insurance_guard.py) & [`tests/test_embedded_bnpl_parametric_insurance_guard.py`](../../tests/test_embedded_bnpl_parametric_insurance_guard.py)
 
+### Stage 21 — EU ESPR Digital Product Passport (DPP) Provenance, C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard + 16-Scenario Lifecycle, Finance & Circular 7-Card Deck
+1. **EU ESPR DPP Provenance, Two-Hop C2C Auth Escrow & Trade-In Guard ([`docs/architecture/resale-dpp-authenticity-and-trade-in-guard.md`](../architecture/resale-dpp-authenticity-and-trade-in-guard.md) & [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §27)**:
+   - Enforced GS1 Digital Link + OEM hardware signature + repair Merkle lineage + stolen/recall registry verification (`STOLEN_OR_RECALLED_DPP_ASSET_BLOCKED` / `COUNTERFEIT_DPP_SIGNATURE_REJECTED`), 2-hop laboratory authentication escrow with Largest Remainder brand resale royalty split (`AUTHENTICATED_ESCROW_RELEASED_WITH_ROYALTY_SPLIT` vs `COUNTERFEIT_INSPECTION_FAILED_BUYER_REFUNDED`), and post-receipt Trade-In anti-bait-and-switch protection (`UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED` on `> 500 bps` downgrade).
+2. **Executable Guard Modules, 16-Scenario 7-Card Deck & Unit Tests (188 Total Tests)**:
+   - [`lab/resale_dpp_authenticity_escrow_guard.py`](../../lab/resale_dpp_authenticity_escrow_guard.py) & [`tests/test_resale_dpp_authenticity_escrow_guard.py`](../../tests/test_resale_dpp_authenticity_escrow_guard.py)
+   - [`lab/lifecycle_finance_circular_bench.py`](../../lab/lifecycle_finance_circular_bench.py) & [`reports/agentic-commerce-lifecycle-finance-bench/index.html`](../../reports/agentic-commerce-lifecycle-finance-bench/index.html)
+
 ---
 
 ## Quick Verification Commands

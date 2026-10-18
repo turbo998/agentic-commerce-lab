@@ -7,6 +7,7 @@ from typing import Any
 __all__ = [
     "allocate_by_largest_remainder",
     "evaluate_agentic_bnpl_trade_credit_underwriting",
+    "evaluate_authenticated_c2c_escrow_inspection_release",
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_fx_quote_lock_and_slippage",
     "evaluate_hs_code_landed_cost_and_deminimis",
@@ -16,6 +17,7 @@ __all__ = [
     "evaluate_recurring_mandate_renewal_and_pre_debit_notice",
     "evaluate_seller_kyb_rolling_reserve",
     "evaluate_split_settlement_invariant",
+    "evaluate_trade_in_residual_value_and_grade_clawback",
     "evaluate_usage_based_metering_idempotency",
     "evaluate_zk_selective_disclosure_eligibility",
     "execute_ftc_click_to_cancel_symmetric_offramp",
@@ -23,15 +25,29 @@ __all__ = [
     "optimize_carbon_pareto_carrier_route",
     "optimize_multicurrency_netting_sweep",
     "run_global_clearing_privacy_benchmark",
+    "run_lifecycle_finance_circular_benchmark",
     "scan_and_redact_agent_context_pii_pci",
     "validate_iso20022_pacs008_instruction",
     "verify_crypto_shredding_erasure_tombstone",
     "verify_cryptographic_affiliate_attribution_chain",
+    "verify_digital_product_passport_provenance",
     "verify_invoice_factoring_ucc_lien_uniqueness",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_authenticated_c2c_escrow_inspection_release",
+        "evaluate_trade_in_residual_value_and_grade_clawback",
+        "verify_digital_product_passport_provenance",
+    }:
+        from lab import resale_dpp_authenticity_escrow_guard
+
+        return getattr(resale_dpp_authenticity_escrow_guard, name)
+    if name == "run_lifecycle_finance_circular_benchmark":
+        from lab import lifecycle_finance_circular_bench
+
+        return getattr(lifecycle_finance_circular_bench, name)
     if name in {
         "evaluate_agentic_bnpl_trade_credit_underwriting",
         "evaluate_parametric_sla_microinsurance_claim",

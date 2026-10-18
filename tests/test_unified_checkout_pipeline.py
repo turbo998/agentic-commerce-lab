@@ -401,6 +401,23 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(pledge_fail.blocked_at_gate, 6)
         self.assertIn("INVOICE_DOUBLE_PLEDGING_BLOCKED", pledge_fail.terminal_decision_code)
 
+    def test_gate6_blocks_stolen_dpp_asset_and_unilateral_trade_in_bait_and_switch(self) -> None:
+        dpp_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                dpp_provenance_bundle={
+                    "dpp_id": "dpp_stolen_21",
+                    "gs1_digital_link": "https://id.gs1.org/01/09506000134352/21/SN-H100-77",
+                    "oem_issuer_did": "did:web:nvidia.com:dpp",
+                    "manufacturer_signature_valid": True,
+                    "repair_merkle_root_valid": True,
+                    "reported_stolen_or_recalled": True,
+                }
+            )
+        )
+        self.assertFalse(dpp_fail.checkout_committed)
+        self.assertEqual(dpp_fail.blocked_at_gate, 6)
+        self.assertIn("STOLEN_OR_RECALLED_DPP_ASSET_BLOCKED", dpp_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)
