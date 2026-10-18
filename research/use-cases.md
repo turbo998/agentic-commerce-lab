@@ -4,10 +4,10 @@
 
 | 场景 | Agent 职责与价值 | 授权/系统边界 | 候选技术与验收 |
 |---|---|---|---|
-| 对话式零售购买 | 需求澄清、商品比较、报价、发起 checkout、追踪履约 | 用户批准最终 SKU/数量/总价/商户；商户负责税费、库存、履约和争议 | ACP/UCP/Suite + SPT/钱包；购物车替换、金额超限、重复请求均不得新增订单 |
+| 对话式零售购买与嵌入式结账 | 需求澄清、商品比较、报价、发起 checkout、追踪履约；通过 SFTP 摄取百万级目录或通过 WebMCP 辅助浏览器结账 | 用户批准最终 SKU/数量/总价/商户；SFTP 以 `manifest.json` 为完成屏障，`disable_checkout=true` 仅跳转 `link`；OCA 仅卖家发起且终止后仅终止方重发起；WebMCP 切换支付方式后必须重发现 Schema，带 `consequentialHint` 工具须先获用户确认，Affirm WebView 严禁 Agent 编程点击 | ACP/UCP/Suite Embedded（OCA `2026-09-30.preview` + `RequestedSession` `2026-04-22.preview`）+ SPT/VIC/Mastercard Agent Pay + WebMCP；见 `lab/ucp_preflight.py` |
 | Personal Agent 补货 | 在库存/价格条件满足时提出或执行补货 | 需可信 Open Mandate、周期/累计预算、允许商户、撤销、有效期和替代商品规则 | AP2/VIC 指令机制候选；默认先人工批准。当前 demo 仅 Closed-style final-cart binding，不实现自主循环补货 |
-| 旅行预订 | 比较日期/交通/酒店，解释取消与退款条件 | 时间敏感报价、实名/旅客信息、分阶段付款、部分成功和不可退款风险 | UCP booking 当前页面有 draft 链接；需固定规格与商户能力，不将其当已稳定生产支持 |
-| B2B 发票与付款链接 | 将工单转成发票、核对收款人、汇总应收 | 创建发票和实际支付分别授权；金额、期限、收款方由确定性系统校验 | Visa Acceptance Toolkit pilot；验收重复工单不开第二张票，读权限不能创建或撤销发票 |
+| 旅行与本地服务预订（Service Bookings） | 检索可用时段（`search_availability`）、锁定预订（`create_booking`）、展示取消条款并完成付款（`complete_booking`） | 时段冲突返回 `409 slot_unavailable` 触发重选；`Idempotency-Key` 保留 $\ge 24$h（同键异体返回 `409 Conflict`）；SPT 有效期最长 180 天以覆盖远期入住/服务结算 | Stripe Service Bookings（Muse/Instinct 模式）+ UCP Lodging Booking Draft + `com.stripe.payments`（`2026-06-25`）+ SPT（`2026-09-30.preview`） |
+| B2B 发票、目录发现与企业账上划转 | 将工单转成发票、通过 Stripe Directory 发现已验证商户/服务、向 `@handle` 发起 B2B 资金划转 | 创建发票和实际支付分别授权；`stripe directory search` 优先于开放网页搜索；`stripe pay` 要求双方具备 Stripe Profile 与合格资金账户，必须先以 `--agent`/`--json` 预览并在用户确认后才可加 `--yes` | Visa Acceptance Toolkit pilot；Stripe Directory（Preview）+ `stripe pay` CLI plugin |
 | 开发 Agent 购买 API/数据 | 选择资源、估算成本、按请求或 session 付费 | 资源/单次/累计预算、网络与钱包隔离、收款地址、challenge freshness、付费后交付 | MPP、x402；402 不能仅以存在付款头放行；结算失败不得交付，已结算记账失败不得再次付款 |
 | 商户售后 Agent | 查询订单/物流、提出换货/改单/退款、解释争议 | 查询和修改/退款不同权限；未鉴权不暴露修改工具；单会话跨登出终身绑定单客户（`#49`）；待发货订单商品修改仅限一次；确认前核对 `summary` 与 `terms` 一致（`#51`）；跨通道相同 `terms` 提案去重、下游超时保持 `in_progress` + `Retry-After` 不误报失败（`operations` §§4, 6, 7）；平台不自算退货截止日（UCP `#966`） | Sierra Defense-in-Depth + $\tau^3$-bench 零售策略 + Poppy `operations` v1 两阶段 `revision` 确认 + UCP `policy.return` 预检；见 `lab/poppy_guard.py`、`lab/ucp_preflight.py` |
 | 跨渠道个人代理接入企业客服与网页交接（Poppy） | 通过 `/.well-known/poppy.json` 发现企业 API/MCP/对话入口，先只读咨询，必要时升级 OAuth 代客改单或通过 `browser_session_endpoint` 交接至用户浏览器 | 重定向后主机名精确匹配 `organization.domain`（`#37`）；断言 `aud == auth.issuer`（`#50`）；令牌端点拒收 `poppy-browser+jwt`、浏览器交接强制 URL 解析 `return_to` 主机名并用 `SameSite=Lax|None` Cookie（`#35`）；吊销后禁止受托凭证自动重登（`#53`）；阻断跨企业内容注入（`#51`） | Poppy `v0.1` 草案 + `operations` v1 + Company Implementation Kit（`#35`）；Payments 仍为 Open Topic，付款需桥接 UCP/ACP + SPT/VIC |

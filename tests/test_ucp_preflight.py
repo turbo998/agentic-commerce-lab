@@ -10,12 +10,16 @@ from unittest.mock import patch
 from lab.ucp_preflight import (
     INSTRUMENTS, POLICY_CHECKED_ON, REVIEWED_HANDLER_VERSION, REVIEWED_UCP_VERSION, STRIPE_HANDLER,
     HandlerMetadata, UCPOrderWebhookDelivery, assess, converge_ucp_order_webhooks,
-    decode_ucp_item_id_token, encode_ucp_item_id_token, evaluate_ucp_mandate_admission,
+    decode_ucp_item_id_token, encode_ucp_item_id_token,
+    evaluate_atdrp_evidence_pack_admissibility, evaluate_ucp_mandate_admission,
     evaluate_ucp_return_policy, main, resolve_ucp_effective_consent,
     select_ucp_identity_authorization_server, validate_and_merge_ucp_buyer_consent,
+    validate_stripe_oca_transition, validate_stripe_sftp_batch_and_checkout_eligibility,
+    validate_ucp_accelerated_idp_subject_token, validate_ucp_checkout_item_source,
     validate_ucp_continue_to, validate_ucp_permalink_request,
-    verify_ucp_checkout_escalation_contract, verify_ucp_discovery_response_status,
-    verify_ucp_permalink_redirect, verify_ucp_signing_gate,
+    validate_webmcp_payment_tool_call, verify_ucp_checkout_escalation_contract,
+    verify_ucp_discovery_response_status, verify_ucp_permalink_redirect,
+    verify_ucp_signing_gate,
 )
 
 
@@ -627,6 +631,301 @@ class PreflightTests(unittest.TestCase):
         self.assertEqual(
             bad_not_accepted.reason, "resolutions_methods_fees_forbidden_on_not_accepted"
         )
+
+    def test_ucp_checkout_cart_item_source_and_accelerated_idp_user_binding(self) -> None:
+        # UCP PR #940: create_checkout requires anyOf(line_items, cart_id)
+        neither = validate_ucp_checkout_item_source({}, operation="create")
+        self.assertFalse(neither.accepted)
+        self.assertEqual(neither.reason, "missing_line_items_and_cart_id")
+
+        # Unnegotiated Cart capability MUST reject cart_id rather than silently falling back to line_items
+        unnegotiated = validate_ucp_checkout_item_source(
+            {"cart_id": "cart_123", "line_items": [{"id": "li_1", "quantity": 1}]},
+            operation="create",
+            cart_capability_negotiated=False,
+        )
+        self.assertFalse(unnegotiated.accepted)
+        self.assertEqual(unnegotiated.reason, "cart_capability_not_negotiated")
+
+        # When both cart_id and line_items are present and Cart is negotiated, Cart contents take precedence
+        cart_precedence = validate_ucp_checkout_item_source(
+            {"cart_id": "cart_123", "line_items": [{"id": "li_inline", "quantity": 1}]},
+            operation="create",
+            cart_capability_negotiated=True,
+            cart_items=[{"id": "li_from_cart", "quantity": 2}],
+        )
+        self.assertTrue(cart_precedence.accepted)
+        self.assertEqual(cart_precedence.reason, "verified_cart_precedence")
+        self.assertEqual(cart_precedence.effective_source, "cart_id")
+        self.assertEqual(cart_precedence.resolved_items, ({"id": "li_from_cart", "quantity": 2},))
+
+        # cart_id is create-only: rejected on update, complete, and response
+        for op in ("update", "complete", "response"):
+            with self.subTest(op=op):
+                bad_op = validate_ucp_checkout_item_source(
+                    {"cart_id": "cart_123", "line_items": [{"id": "li_1", "quantity": 1}]},
+                    operation=op,
+                    cart_capability_negotiated=True,
+                )
+                self.assertFalse(bad_op.accepted)
+                self.assertEqual(bad_op.reason, "cart_id_only_allowed_on_create")
+
+        # UCP PR #783 & Issue #970: Accelerated IdP subject_token user binding
+        cross_user = validate_ucp_accelerated_idp_subject_token(
+            acting_session_user_id="user_alice",
+            token_subject_user_id="user_bob",
+            token_scopes={"openid", "email"},
+            required_claims={"email"},
+            user_idp_consent_granted=True,
+        )
+        self.assertFalse(cross_user.accepted)
+        self.assertEqual(cross_user.reason, "cross_user_token_substitution_forbidden")
+        self.assertTrue(cross_user.fallback_to_direct_oauth)
+
+        svc_token = validate_ucp_accelerated_idp_subject_token(
+            acting_session_user_id="user_alice",
+            token_subject_user_id="user_alice",
+            is_service_account_token=True,
+            token_scopes={"openid", "email"},
+            required_claims={"email"},
+            user_idp_consent_granted=True,
+        )
+        self.assertFalse(svc_token.accepted)
+        self.assertEqual(svc_token.reason, "service_account_token_forbidden")
+        self.assertTrue(svc_token.fallback_to_direct_oauth)
+
+        missing_claim = validate_ucp_accelerated_idp_subject_token(
+            acting_session_user_id="user_alice",
+            token_subject_user_id="user_alice",
+            token_scopes={"openid"},
+            required_claims={"email", "profile"},
+            user_idp_consent_granted=True,
+        )
+        self.assertFalse(missing_claim.accepted)
+        self.assertEqual(missing_claim.reason, "missing_required_claim_scopes")
+        self.assertEqual(missing_claim.missing_claims, ("email", "profile"))
+        self.assertTrue(missing_claim.fallback_to_direct_oauth)
+
+        valid_idp = validate_ucp_accelerated_idp_subject_token(
+            acting_session_user_id="user_alice",
+            token_subject_user_id="user_alice",
+            token_scopes={"openid", "email", "profile"},
+            required_claims={"email"},
+            user_idp_consent_granted=True,
+        )
+        self.assertTrue(valid_idp.accepted)
+        self.assertFalse(valid_idp.fallback_to_direct_oauth)
+
+    def test_stripe_oca_sftp_webmcp_and_atdrp_evidence_pack_guards(self) -> None:
+        # 1. Stripe OCA lifecycle (embedded.md): seller-only initial initiation & termination lock
+        agent_init = validate_stripe_oca_transition(
+            current_state="none", action="initiate", actor="agent"
+        )
+        self.assertFalse(agent_init.accepted)
+        self.assertEqual(agent_init.reason, "agent_cannot_initiate_initial_oca")
+
+        seller_init = validate_stripe_oca_transition(
+            current_state="none", action="initiate", actor="seller"
+        )
+        self.assertTrue(seller_init.accepted)
+        self.assertEqual(seller_init.next_state, "partially_confirmed")
+
+        unverified_confirm = validate_stripe_oca_transition(
+            current_state="partially_confirmed",
+            action="confirm",
+            actor="agent",
+            seller_verified_by_agent=False,
+        )
+        self.assertFalse(unverified_confirm.accepted)
+        self.assertEqual(unverified_confirm.reason, "seller_verification_required_before_confirm")
+
+        confirmed = validate_stripe_oca_transition(
+            current_state="partially_confirmed",
+            action="confirm",
+            actor="agent",
+            seller_verified_by_agent=True,
+        )
+        self.assertTrue(confirmed.accepted)
+        self.assertEqual(confirmed.next_state, "confirmed")
+
+        terminated = validate_stripe_oca_transition(
+            current_state="confirmed", action="terminate", actor="agent"
+        )
+        self.assertTrue(terminated.accepted)
+        self.assertEqual(terminated.next_state, "terminated")
+        self.assertEqual(terminated.terminated_by, "agent")
+
+        # Seller cannot re-initiate an OCA that was terminated by the agent
+        seller_reinit = validate_stripe_oca_transition(
+            current_state="terminated",
+            action="initiate",
+            actor="seller",
+            terminated_by="agent",
+        )
+        self.assertFalse(seller_reinit.accepted)
+        self.assertEqual(seller_reinit.reason, "only_terminating_party_can_reinitiate_oca")
+
+        agent_reinit = validate_stripe_oca_transition(
+            current_state="terminated",
+            action="initiate",
+            actor="agent",
+            terminated_by="agent",
+        )
+        self.assertTrue(agent_reinit.accepted)
+        self.assertEqual(agent_reinit.next_state, "partially_confirmed")
+
+        # 2. Stripe SFTP manifest barrier & disable_checkout guard (sftp-catalog-ingestion.md)
+        no_manifest = validate_stripe_sftp_batch_and_checkout_eligibility(
+            manifest=None,
+            present_shard_filenames={"catalog_000.csv.gz"},
+            feed_type="master",
+            item_row={"id": "sku_1"},
+        )
+        self.assertFalse(no_manifest.batch_ready)
+        self.assertEqual(no_manifest.reason, "missing_manifest_completion_barrier")
+
+        manifest = {
+            "total_shards": 2,
+            "shards": [{"filename": "catalog_000.csv.gz"}, {"filename": "catalog_001.csv.gz"}],
+        }
+        missing_shard = validate_stripe_sftp_batch_and_checkout_eligibility(
+            manifest=manifest,
+            present_shard_filenames={"catalog_000.csv.gz"},
+            feed_type="master",
+            item_row={"id": "sku_1"},
+        )
+        self.assertFalse(missing_shard.batch_ready)
+        self.assertEqual(missing_shard.reason, "incomplete_shard_upload")
+
+        discovery_only = validate_stripe_sftp_batch_and_checkout_eligibility(
+            manifest=manifest,
+            present_shard_filenames={"catalog_000.csv.gz", "catalog_001.csv.gz"},
+            feed_type="master",
+            item_row={
+                "id": "sku_custom",
+                "disable_checkout": True,
+                "link": "https://merchant.example/p/sku_custom",
+            },
+            attempt_delegated_checkout=True,
+        )
+        self.assertTrue(discovery_only.batch_ready)
+        self.assertFalse(discovery_only.checkout_allowed)
+        self.assertEqual(discovery_only.reason, "discovery_only_item_must_redirect_to_link")
+        self.assertEqual(discovery_only.redirect_url, "https://merchant.example/p/sku_custom")
+
+        # 3. Stripe WebMCP consequentialHint, schema rediscovery & Affirm webview guard (webmcp.md)
+        affirm_blocked = validate_webmcp_payment_tool_call(
+            tool_name="submit_payment",
+            has_consequential_hint=True,
+            user_confirmed_after_final_amount=True,
+            schema_epoch_at_discovery=2,
+            current_form_schema_epoch=2,
+            is_affirm_webview_automation=True,
+        )
+        self.assertFalse(affirm_blocked.allowed)
+        self.assertEqual(
+            affirm_blocked.reason, "affirm_webview_programmatic_interaction_forbidden"
+        )
+
+        stale_schema = validate_webmcp_payment_tool_call(
+            tool_name="submit_payment",
+            has_consequential_hint=True,
+            user_confirmed_after_final_amount=True,
+            schema_epoch_at_discovery=1,
+            current_form_schema_epoch=2,
+        )
+        self.assertFalse(stale_schema.allowed)
+        self.assertEqual(stale_schema.reason, "stale_tool_schema_rediscovery_required")
+
+        unconfirmed_consequential = validate_webmcp_payment_tool_call(
+            tool_name="submit_payment",
+            has_consequential_hint=True,
+            user_confirmed_after_final_amount=False,
+            schema_epoch_at_discovery=2,
+            current_form_schema_epoch=2,
+        )
+        self.assertFalse(unconfirmed_consequential.allowed)
+        self.assertEqual(
+            unconfirmed_consequential.reason,
+            "consequential_tool_requires_explicit_user_confirmation",
+        )
+
+        valid_webmcp = validate_webmcp_payment_tool_call(
+            tool_name="submit_payment",
+            has_consequential_hint=True,
+            user_confirmed_after_final_amount=True,
+            schema_epoch_at_discovery=2,
+            current_form_schema_epoch=2,
+        )
+        self.assertTrue(valid_webmcp.allowed)
+
+        # 4. ACP ATDRP Section 7.4a evidence-pack admissibility (PR #316)
+        base_summary = {
+            "digest_ok": True,
+            "rfc3161_verified": True,
+            "producer_present": True,
+            "producer_trusted": True,
+            "anchors_verified": 1,
+            "rfc3161_claimed": True,
+            "self_asserted_only": False,
+        }
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility({**base_summary, "digest_ok": False}).admissibility,
+            "inadmissible_tamper",
+        )
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility(
+                {**base_summary, "verification_status": "key_unresolved"}
+            ).admissibility,
+            "pending_key_resolution",
+        )
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility(
+                {**base_summary, "producer_trusted": False}
+            ).admissibility,
+            "consistency_check_only",
+        )
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility(
+                {**base_summary, "anchors_verified": 0, "rfc3161_claimed": False},
+                claim_type="expiry",
+                has_independent_network_timestamp=False,
+            ).admissibility,
+            "insufficient_for_expiry_without_independent_timestamp",
+        )
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility(
+                base_summary,
+                claim_type="work_acceptance",
+                work_acceptance={"no_record": True},
+            ).admissibility,
+            "not_responded_silence_is_not_acceptance",
+        )
+        self.assertEqual(
+            evaluate_atdrp_evidence_pack_admissibility(
+                base_summary,
+                claim_type="work_acceptance",
+                work_acceptance={
+                    "pre_committed_criteria": True,
+                    "checker_key": "did:web:producer.example#k1",
+                    "producer_key": "did:web:producer.example#k1",
+                    "not_evaluated_count": 0,
+                },
+            ).admissibility,
+            "work_acceptance_insufficient",
+        )
+        ok_pack = evaluate_atdrp_evidence_pack_admissibility(
+            base_summary,
+            claim_type="work_acceptance",
+            work_acceptance={
+                "pre_committed_criteria": True,
+                "checker_key": "did:web:buyer-evaluator.example#k1",
+                "producer_key": "did:web:producer.example#k1",
+                "not_evaluated_count": 0,
+            },
+        )
+        self.assertTrue(ok_pack.can_overturn)
+        self.assertEqual(ok_pack.admissibility, "admissible_verified")
 
 
 if __name__ == "__main__":

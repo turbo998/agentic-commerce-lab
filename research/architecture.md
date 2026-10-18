@@ -134,11 +134,12 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 3. **Scope 正交性与人工坐席接管（Handoff）权限延续（Poppy `#35` `patterns/scopes.md`）**：`poppy:write` 不隐含 `poppy:read`；且当会话转接给真人客服坐席（Handoff）后，坐席代客执行的操作仍受同一 Session Scopes 约束。
 4. **对话适配器事件流、Milestone 3 Account Token 哈希生命周期与 Permalink 不可信输入门禁（Poppy `#35` Milestones 2–3 & UCP `permalink.md` `#913`）**：对话适配器按 `(client_id, user_id)` 校验 `message.id` 幂等与内容哈希冲突（`409 message_id_conflict`），在 Section 7.10 Direct Conversation 打开期间以 `409 direct_conversation_open` 锁定父会话并阻断直连客户消息回流父会话事件流；Milestone 3 登录流强制 Direct PKCE `S256` 与 RFC 9207 `iss`、Mediated 统一 `{"status": "failed"}` 防枚举与同 Session 二步验证码校验、Account Token SHA-256 哈希存储/单向缩权/RFC 7009 级联登出及 Section 8.2 日志/上下文敏感字段确定性脱敏；UCP Permalink 对不可信 GET 输入执行 `continue_to` 五步防开放重定向校验、`~`-base64url 商品 ID 解码、紧凑路径数量权威保护、JSON Pointer 冲突拒绝与禁带支付凭证检查。上述检查已全部合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
 
-## 2026-10-18 增量：混合状态合并契约、商户时间计算主权与下游超时 `in_progress` 驻留
+## 2026-10-18 增量：动态工具重发现、双边非对称商业契约、混合状态合并与证据包准入
 
-[今日研究](daily/2026-10-18.md)聚焦多轮 Agent 状态更新、政策时间计算与下游不确定态处理：
+[今日研究](daily/2026-10-18.md)结合 Stripe 新增的 WebMCP / Embedded Commerce / SFTP Feed / Service Bookings 文档、Poppy `operations` v1 与 UCP/ACP 规范演进，提炼出四项 AI-Native 控制面原则：
 
-1. **资源全量替换下的合规同意豁免与依赖门禁（UCP `buyer-consent.md` & `#660`）**：商品与履约行保持全量替换以消除多轮残留，但省略 `buyer.consent` 时必须保留既有同意状态；一旦提交 `consent`，则强制回传全部已宣告 purpose/segment、校验 `source: "platform"` 仅用于买家对该商户的显式偏好，并在 `complete_checkout` 阶段阻断缺失必填依赖字段（如开启 SMS 同意但无 `buyer.phone_number`）的交易完成。
-2. **剥夺平台日期推算权（UCP PR `#966` `dev.ucp.shopping.policy.return` 草案）**：退货截止时间 `expires_at` 只能由商户服务端按自身日历/时区解析下发，平台与 Agent 严禁用 `anchor + duration` 自算截止日，严禁把省略 `eligibility` 推断为无限期退货，并将窗口期视为最低保障下限而非禁止提交上限。
-3. **下游超时严禁误报 `failed` 与跨通道提案去重（Poppy `operations` §§2, 3.2, 4, 6, 7）**：确认操作时若下游超时、结果未知，必须驻留 `in_progress` 并返回 `Retry-After`（防止 Agent 误判失败而换路重下新单）；取消请求在下游未确认停止前同样保持 `in_progress`；提案阶段对跨通道相同 `terms` 自动去重，并区分已登录跨 Session 账户共享与未登录单 `session_id` 严格隔离。对应校验已增量合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
+1. **WebMCP 动态工具重发现、`consequentialHint` 确认门禁与 BNPL 人类导航主权（Stripe `webmcp.md` & `embedded.md`）**：切换支付方式会实时改变表单必填 Schema，Agent 必须在状态变更后重新发现工具；对带 `consequentialHint` 的支付提交工具必须先展示最终金额并获用户显式确认；对 Affirm 贷款 WebView 严禁 Agent 编程点击，必须交由买本人导航确认。
+2. **双边非对称协议握手、分片完成屏障与显式拒绝未协商参数（Stripe OCA / SFTP Feed & UCP `#940`）**：Stripe OCA 仅允许卖家发起初始协议，且终止后仅终止方有权重新发起；SFTP 百万商品分片同步必须以最后上传的 `manifest.json` 为完成屏障，并对 `disable_checkout=true` 的发现型商品阻断 `RequestedSession` 创建；UCP `create_checkout` 在未协商 Cart 能力时收到 `cart_id` 必须显式拒绝，严禁静默回退到 `line_items`（`#940`）。
+3. **混合状态合并契约、剥夺平台算日权与下游超时 `in_progress` 驻留（UCP `#660`/`#966` & Poppy `operations` §§2–7）**：省略 `buyer.consent` 时保留既有同意状态，提交时强制完整回传并在 `complete` 阻断缺失依赖字段（如 SMS 缺 `phone_number`）；严禁平台用 `anchor + duration` 自算退货截止日 `expires_at`；确认操作遇下游超时必须驻留 `in_progress` + `Retry-After`（严禁误报 `failed`），并区分已登录跨 Session 账户共享与未登录单 `session_id` 隔离。
+4. **Accelerated IdP 单用户换票绑定与 ATDRP 证据包 Fail-Closed 准入（UCP `#783`/`#970` & ACP `#316` §7.4a）**：RFC 8693 换票提交的 `subject_token` 必须绑定当前会话用户（严禁跨用户复用或服务账号代换）；争议证据包在逐项裁决前先做摘要与 RFC 3161 验真，将未固定公钥日志降级为一致性参考，并坚持“买家沉默（`no_record`）绝不等于验收通过”。对应确定性检查已全部合入 `lab/poppy_guard.py` 与 `lab/ucp_preflight.py`。
 

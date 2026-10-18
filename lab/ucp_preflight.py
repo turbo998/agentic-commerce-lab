@@ -1067,6 +1067,407 @@ def evaluate_ucp_return_policy(
     )
 
 
+@dataclass(frozen=True)
+class CheckoutItemSourceDecision:
+    """Offline UCP `create_checkout` item source disjunction & precedence check (PR #940)."""
+
+    accepted: bool
+    reason: str
+    effective_source: Literal["cart_id", "line_items", "none"] = "none"
+    resolved_items: tuple[dict[str, Any], ...] = ()
+
+
+def validate_ucp_checkout_item_source(
+    payload: dict[str, Any],
+    *,
+    operation: Literal["create", "update", "complete", "response"],
+    cart_capability_negotiated: bool = False,
+    cart_items: list[dict[str, Any]] | tuple[dict[str, Any], ...] | None = None,
+) -> CheckoutItemSourceDecision:
+    """Enforce UCP PR #940 (`allow cart-only checkout creation`):
+
+    1. `cart_id` is create-only input (`ucp_request: {create: optional, update: omit, complete: omit}`
+       and omitted from responses).
+    2. On `create`, at least one of `line_items` or `cart_id` is required (`anyOf`).
+    3. If `cart_id` is provided when `dev.ucp.shopping.cart` capability is NOT negotiated, the
+       Business MUST reject the request and MUST NOT silently fall back to inline `line_items`.
+    4. When both `cart_id` and `line_items` are present on `create` and Cart capability is negotiated,
+       Cart contents take precedence.
+    """
+    if not isinstance(payload, dict):
+        return CheckoutItemSourceDecision(False, "invalid_checkout_payload")
+
+    has_cart_id = "cart_id" in payload and payload["cart_id"] is not None
+    has_line_items = "line_items" in payload and payload["line_items"] is not None
+
+    if operation != "create" and has_cart_id:
+        return CheckoutItemSourceDecision(False, "cart_id_only_allowed_on_create")
+
+    if operation == "create":
+        if not has_cart_id and not has_line_items:
+            return CheckoutItemSourceDecision(False, "missing_line_items_and_cart_id")
+        if has_cart_id:
+            raw_cart_id = payload["cart_id"]
+            if not isinstance(raw_cart_id, str) or not raw_cart_id.strip():
+                return CheckoutItemSourceDecision(False, "invalid_cart_id")
+            if not cart_capability_negotiated:
+                return CheckoutItemSourceDecision(False, "cart_capability_not_negotiated")
+            if cart_items is None or not len(cart_items):
+                return CheckoutItemSourceDecision(False, "cart_not_found_or_empty")
+            return CheckoutItemSourceDecision(
+                True,
+                "verified_cart_precedence" if has_line_items else "verified_cart_only",
+                "cart_id",
+                tuple(cart_items),
+            )
+        line_items = payload.get("line_items")
+        if not isinstance(line_items, list) or not line_items:
+            return CheckoutItemSourceDecision(False, "empty_or_invalid_line_items")
+        return CheckoutItemSourceDecision(
+            True, "verified_inline_line_items", "line_items", tuple(line_items)
+        )
+
+    if has_line_items:
+        line_items = payload.get("line_items")
+        if not isinstance(line_items, list):
+            return CheckoutItemSourceDecision(False, "empty_or_invalid_line_items")
+        return CheckoutItemSourceDecision(
+            True, "verified", "line_items", tuple(line_items)
+        )
+    return CheckoutItemSourceDecision(True, "verified", "none", ())
+
+
+@dataclass(frozen=True)
+class AcceleratedIdPSubjectTokenDecision:
+    """Offline UCP Accelerated IdP `subject_token` user-binding & claim-scope check (#783, #970)."""
+
+    accepted: bool
+    reason: str
+    fallback_to_direct_oauth: bool
+    missing_claims: tuple[str, ...] = ()
+
+
+def validate_ucp_accelerated_idp_subject_token(
+    *,
+    acting_session_user_id: str | None,
+    token_subject_user_id: str | None,
+    is_service_account_token: bool = False,
+    token_scopes: set[str] | frozenset[str] = frozenset(),
+    required_claims: set[str] | frozenset[str] = frozenset(),
+    user_idp_consent_granted: bool = False,
+) -> AcceleratedIdPSubjectTokenDecision:
+    """Enforce UCP PR #783 & Issue #970 (`Subject Token User Binding` in Accelerated IdP Flow):
+
+    1. The `subject_token` submitted in RFC 8693 token exchange MUST represent the user currently
+       acting in the platform session (`token_subject_user_id == acting_session_user_id`).
+    2. Platforms MUST NOT substitute or reuse a token belonging to a different user, nor use a
+       shared/service-account token.
+    3. The user MUST have granted IdP consent (platform-level or per-business), and the token scopes
+       MUST cover all business-declared `required_claims` (e.g., `email`, `profile`).
+    4. When no suitable token exists for the current user, the platform MUST fall back to the
+       standard OAuth authorization code flow (`fallback_to_direct_oauth=True`).
+    """
+    if not isinstance(acting_session_user_id, str) or not acting_session_user_id.strip():
+        return AcceleratedIdPSubjectTokenDecision(False, "missing_acting_session_user", True)
+    if is_service_account_token:
+        return AcceleratedIdPSubjectTokenDecision(False, "service_account_token_forbidden", True)
+    if not isinstance(token_subject_user_id, str) or not token_subject_user_id.strip():
+        return AcceleratedIdPSubjectTokenDecision(False, "no_subject_token_for_user", True)
+    if token_subject_user_id.strip() != acting_session_user_id.strip():
+        return AcceleratedIdPSubjectTokenDecision(
+            False, "cross_user_token_substitution_forbidden", True
+        )
+    if not user_idp_consent_granted:
+        return AcceleratedIdPSubjectTokenDecision(False, "missing_user_idp_consent", True)
+
+    missing = tuple(sorted(set(required_claims) - set(token_scopes)))
+    if missing:
+        return AcceleratedIdPSubjectTokenDecision(
+            False, "missing_required_claim_scopes", True, missing
+        )
+    return AcceleratedIdPSubjectTokenDecision(
+        True, "verified_user_bound_subject_token", False, ()
+    )
+
+
+@dataclass(frozen=True)
+class StripeOCATransitionDecision:
+    """Offline Stripe Orchestrated Commerce Agreement (`/v2/orchestrated_commerce/agreements`) state check."""
+
+    accepted: bool
+    reason: str
+    next_state: Literal["none", "created", "partially_confirmed", "confirmed", "terminated"]
+    terminated_by: Literal["seller", "agent"] | None = None
+
+
+def validate_stripe_oca_transition(
+    *,
+    current_state: Literal["none", "created", "partially_confirmed", "confirmed", "terminated"],
+    action: Literal["initiate", "confirm", "terminate"],
+    actor: Literal["seller", "agent"],
+    terminated_by: Literal["seller", "agent"] | None = None,
+    seller_verified_by_agent: bool = False,
+) -> StripeOCATransitionDecision:
+    """Enforce Stripe Embedded Commerce OCA lifecycle rules (`docs.stripe.com/agentic-commerce/agents/embedded.md`):
+
+    1. Only a seller can initiate a brand-new OCA (`current_state == "none"`).
+    2. Once an OCA reaches `partially_confirmed`, the agent must verify the seller (`seller_verified_by_agent`)
+       before calling `/v2/orchestrated_commerce/agreements/{id}/confirm` to reach `confirmed`.
+    3. Either the seller or the agent can call `/terminate` on an existing agreement.
+    4. After termination (`current_state == "terminated"`), ONLY the party that terminated the OCA
+       can initiate a new agreement (`actor == terminated_by`).
+    """
+    if action == "initiate":
+        if current_state == "none":
+            if actor != "seller":
+                return StripeOCATransitionDecision(
+                    False, "agent_cannot_initiate_initial_oca", current_state, terminated_by
+                )
+            return StripeOCATransitionDecision(
+                True, "ok_seller_initiated_oca", "partially_confirmed", None
+            )
+        if current_state == "terminated":
+            if terminated_by not in {"seller", "agent"} or actor != terminated_by:
+                return StripeOCATransitionDecision(
+                    False,
+                    "only_terminating_party_can_reinitiate_oca",
+                    current_state,
+                    terminated_by,
+                )
+            return StripeOCATransitionDecision(
+                True, "ok_reinitiated_by_terminating_party", "partially_confirmed", None
+            )
+        return StripeOCATransitionDecision(
+            False, "oca_already_active", current_state, terminated_by
+        )
+
+    if action == "confirm":
+        if current_state != "partially_confirmed":
+            return StripeOCATransitionDecision(
+                False, "confirm_requires_partially_confirmed_state", current_state, terminated_by
+            )
+        if actor != "agent":
+            return StripeOCATransitionDecision(
+                False, "only_agent_can_confirm_partially_confirmed_oca", current_state, terminated_by
+            )
+        if not seller_verified_by_agent:
+            return StripeOCATransitionDecision(
+                False, "seller_verification_required_before_confirm", current_state, terminated_by
+            )
+        return StripeOCATransitionDecision(True, "ok_oca_confirmed", "confirmed", None)
+
+    if action == "terminate":
+        if current_state not in {"created", "partially_confirmed", "confirmed"}:
+            return StripeOCATransitionDecision(
+                False, "cannot_terminate_inactive_oca", current_state, terminated_by
+            )
+        return StripeOCATransitionDecision(
+            True, "ok_oca_terminated", "terminated", actor
+        )
+
+    return StripeOCATransitionDecision(False, "unknown_oca_action", current_state, terminated_by)
+
+
+@dataclass(frozen=True)
+class StripeSFTPBatchAndItemDecision:
+    """Offline Stripe SFTP catalog ingestion manifest barrier & `disable_checkout` guard."""
+
+    batch_ready: bool
+    checkout_allowed: bool
+    reason: str
+    redirect_url: str | None = None
+
+
+def validate_stripe_sftp_batch_and_checkout_eligibility(
+    *,
+    manifest: dict[str, Any] | None,
+    present_shard_filenames: set[str] | frozenset[str],
+    feed_type: Literal["master", "delta"],
+    item_row: dict[str, Any],
+    attempt_delegated_checkout: bool = False,
+) -> StripeSFTPBatchAndItemDecision:
+    """Enforce Stripe SFTP Catalog Ingestion & Embedded Checkout rules (`sftp-catalog-ingestion.md`):
+
+    1. `manifest.json` MUST be uploaded last and acts as the batch completion barrier; shards MUST NOT
+       be ingested if `manifest` is missing or any listed shard in `shards` is absent.
+    2. If `item_row.get("delete") is True`, the product is marked deleted and cannot enter checkout.
+    3. If `item_row.get("disable_checkout") is True`, the product is discovery-only; attempting to
+       create a Delegated Checkout `RequestedSession` is forbidden and the agent MUST redirect the
+       buyer to `item_row["link"]`.
+    """
+    if not isinstance(manifest, dict):
+        return StripeSFTPBatchAndItemDecision(
+            False, False, "missing_manifest_completion_barrier"
+        )
+    shards = manifest.get("shards")
+    total_shards = manifest.get("total_shards")
+    if (
+        not isinstance(shards, list)
+        or not shards
+        or type(total_shards) is not int
+        or total_shards != len(shards)
+    ):
+        return StripeSFTPBatchAndItemDecision(False, False, "invalid_manifest_shard_count")
+    for shard in shards:
+        fname = shard.get("filename") if isinstance(shard, dict) else None
+        if not isinstance(fname, str) or fname not in present_shard_filenames:
+            return StripeSFTPBatchAndItemDecision(False, False, "incomplete_shard_upload")
+
+    if feed_type not in {"master", "delta"}:
+        return StripeSFTPBatchAndItemDecision(False, False, "invalid_feed_type")
+
+    if item_row.get("delete") is True:
+        return StripeSFTPBatchAndItemDecision(True, False, "item_explicitly_deleted")
+
+    if item_row.get("disable_checkout") is True:
+        link_url = item_row.get("link")
+        if attempt_delegated_checkout:
+            return StripeSFTPBatchAndItemDecision(
+                True,
+                False,
+                "discovery_only_item_must_redirect_to_link",
+                redirect_url=link_url if isinstance(link_url, str) else None,
+            )
+        return StripeSFTPBatchAndItemDecision(
+            True,
+            False,
+            "discovery_only_redirect_ready",
+            redirect_url=link_url if isinstance(link_url, str) else None,
+        )
+
+    return StripeSFTPBatchAndItemDecision(True, True, "eligible_for_delegated_checkout")
+
+
+@dataclass(frozen=True)
+class WebMCPToolCallDecision:
+    """Offline Stripe WebMCP browser payment tool guard (`docs.stripe.com/agentic-commerce/agents/webmcp.md`)."""
+
+    allowed: bool
+    reason: str
+
+
+def validate_webmcp_payment_tool_call(
+    *,
+    tool_name: str,
+    has_consequential_hint: bool,
+    user_confirmed_after_final_amount: bool,
+    schema_epoch_at_discovery: int,
+    current_form_schema_epoch: int,
+    is_affirm_webview_automation: bool = False,
+) -> WebMCPToolCallDecision:
+    """Enforce Stripe WebMCP & Embedded Checkout browser agent safety rules (`webmcp.md`, `embedded.md`):
+
+    1. Agents MUST NOT programmatically interact with the Affirm loan application UI inside the webview
+       (`affirm_webview_programmatic_interaction_forbidden`).
+    2. Selecting a payment method or mutating the form changes required fields; if `schema_epoch_at_discovery`
+       does not match `current_form_schema_epoch`, the agent MUST re-discover tools before invoking
+       (`stale_tool_schema_rediscovery_required`).
+    3. Tools marked with `consequentialHint` submit payments or mutate irreversible state; the hint itself
+       is NOT user confirmation, and the agent MUST obtain explicit user confirmation after displaying
+       the final amount (`consequential_tool_requires_explicit_user_confirmation`).
+    """
+    if not isinstance(tool_name, str) or not tool_name.strip():
+        return WebMCPToolCallDecision(False, "invalid_tool_name")
+    if is_affirm_webview_automation:
+        return WebMCPToolCallDecision(
+            False, "affirm_webview_programmatic_interaction_forbidden"
+        )
+    if schema_epoch_at_discovery != current_form_schema_epoch:
+        return WebMCPToolCallDecision(False, "stale_tool_schema_rediscovery_required")
+    if has_consequential_hint and not user_confirmed_after_final_amount:
+        return WebMCPToolCallDecision(
+            False, "consequential_tool_requires_explicit_user_confirmation"
+        )
+    return WebMCPToolCallDecision(True, "verified_webmcp_tool_call")
+
+
+@dataclass(frozen=True)
+class ATDRPEvidencePackDecision:
+    """Offline ACP ATDRP Section 7.4a evidence-pack admissibility decision (PR #316)."""
+
+    admissibility: Literal[
+        "admissible_verified",
+        "inadmissible_tamper",
+        "pending_key_resolution",
+        "mandate_signed_facts_only",
+        "consistency_check_only",
+        "insufficient_for_expiry_without_independent_timestamp",
+        "uncorroborated_self_assertion",
+        "not_responded_silence_is_not_acceptance",
+        "work_acceptance_insufficient",
+    ]
+    can_overturn: bool
+
+
+def evaluate_atdrp_evidence_pack_admissibility(
+    verification_summary: dict[str, Any],
+    *,
+    claim_type: Literal["general", "expiry", "work_acceptance"] = "general",
+    issuer_key_matched_out_of_band: bool = False,
+    has_independent_network_timestamp: bool = False,
+    work_acceptance: dict[str, Any] | None = None,
+) -> ATDRPEvidencePackDecision:
+    """Enforce ACP PR #316 Section 7.4a (`Evidence-pack verdicts / admissibility`) fail-closed rules:
+
+    1. `digest_ok: False` or `rfc3161_verified: False` -> `inadmissible_tamper` (never supports `overturn`).
+    2. `verification_status == "key_unresolved"` -> `pending_key_resolution` (distinct from `signature_invalid`).
+    3. `producer_present: False` -> `mandate_signed_facts_only`.
+    4. `producer_trusted: False` -> `consistency_check_only` (cannot be sole basis for `overturn`).
+    5. `claim_type == "expiry"` with `anchors_verified == 0` and `rfc3161_claimed == False` requires an
+       independent PSP/network timestamp (`insufficient_for_expiry_without_independent_timestamp`).
+    6. `self_asserted_only: True` requires out-of-band issuer key confirmation (`uncorroborated_self_assertion`).
+    7. For `work_acceptance`, `no_record: True` maps to `not_responded_silence_is_not_acceptance`
+       (buyer silence is never positive acceptance); otherwise requires `pre_committed_criteria`,
+       `checker_key != producer_key`, and `not_evaluated_count == 0`.
+    """
+    if (
+        verification_summary.get("digest_ok") is False
+        or verification_summary.get("rfc3161_verified") is False
+    ):
+        return ATDRPEvidencePackDecision("inadmissible_tamper", False)
+
+    if verification_summary.get("verification_status") == "key_unresolved":
+        return ATDRPEvidencePackDecision("pending_key_resolution", False)
+
+    if verification_summary.get("producer_present") is False:
+        return ATDRPEvidencePackDecision("mandate_signed_facts_only", False)
+
+    if verification_summary.get("producer_trusted") is False:
+        return ATDRPEvidencePackDecision("consistency_check_only", False)
+
+    if (
+        claim_type == "expiry"
+        and verification_summary.get("anchors_verified", 0) == 0
+        and not verification_summary.get("rfc3161_claimed", False)
+        and not has_independent_network_timestamp
+    ):
+        return ATDRPEvidencePackDecision(
+            "insufficient_for_expiry_without_independent_timestamp", False
+        )
+
+    if verification_summary.get("self_asserted_only") is True and not issuer_key_matched_out_of_band:
+        return ATDRPEvidencePackDecision("uncorroborated_self_assertion", False)
+
+    if claim_type == "work_acceptance" or work_acceptance is not None:
+        wa = work_acceptance or {}
+        if wa.get("no_record") is True:
+            return ATDRPEvidencePackDecision(
+                "not_responded_silence_is_not_acceptance", False
+            )
+        checker_key = wa.get("checker_key")
+        producer_key = wa.get("producer_key")
+        if (
+            wa.get("pre_committed_criteria") is not True
+            or not isinstance(checker_key, str)
+            or not checker_key.strip()
+            or checker_key == producer_key
+            or wa.get("not_evaluated_count", 0) != 0
+        ):
+            return ATDRPEvidencePackDecision("work_acceptance_insufficient", False)
+
+    return ATDRPEvidencePackDecision("admissible_verified", True)
+
+
 def main() -> int:
     """Assess synthetic declarations; exit 1 for blocked and 2 for invalid metadata."""
     parser = argparse.ArgumentParser(description=__doc__)

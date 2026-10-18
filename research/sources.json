@@ -25,7 +25,7 @@
       "url": "https://docs.stripe.com/agentic-commerce",
       "monitor_url": "https://docs.stripe.com/agentic-commerce.md",
       "published_on": null,
-      "evidence": "Current documentation; agent embedding is private preview. Oct 17 hash change across docs.stripe.com/*.md reflects UK/Commonwealth English spelling rendering ('authorise', 'organisation', 'fulfilment'), not a product or API version change."
+      "evidence": "Oct 18 overview page expanded with links to WebMCP for browser payments (agents/webmcp.md, experimental), Service bookings (sellers/use-cases/booking.md), Embedded commerce (agents/embedded.md, private preview), Catalog feed (concepts/catalog-feed.md), and How agents work with Stripe (agents/how-it-works.md). Ten other docs.stripe.com/*.md endpoints oscillated between UK and US English locale rendering without API or policy changes."
     },
     {
       "id": "stripe-spt",
@@ -33,14 +33,14 @@
       "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
       "published_on": null,
       "api_version_observed": "2026-09-30.preview",
-      "evidence": "Seller variant; US, Canada, selected Europe; profile-scoped limits and expiry. Repeated same-day fetches differ in generated example expires_at and UK/US locale rendering; hash changes are not release evidence."
+      "evidence": "Seller & agent variants; 33 countries (US, CA, GB, CH, NO, GI, LI + 26 EU countries); profile-scoped limits and expiry. Agent variant documents Payment Element sellerDetails.networkBusinessProfile, card network tokens via Visa Intelligent Commerce & Mastercard Agent Pay, and Affirm buyer-navigation rules. Repeated same-day fetches differ in generated example expires_at and UK/US locale rendering."
     },
     {
       "id": "stripe-mcp",
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17–18 fetches served the UK-formatted date string ('30 November 2026') with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' (43 calendar days remaining as of 2026-10-18). Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17–18 fetches alternated between UK ('30 November 2026') and US ('November 30, 2026') locale strings with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' (43 calendar days remaining as of 2026-10-18). Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -137,10 +137,10 @@
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "c1f5b0826f3f33d7e1cc7eff5e5e6cd42749808b",
-      "commit_committed_at": "2026-10-17T00:45:19Z",
-      "plugin_version_observed": "0.5.21",
-      "evidence": "Official Oct 17 sync-skills commit reviewed (c1f5b0826f3f): bumps agent-plugins 0.5.20 -> 0.5.21, Claude 0.11.20 -> 0.11.21, Cursor/Grok 0.9.20 -> 0.9.21, Codex 5.8.20 -> 5.8.21, and updates upgrade-stripe snapshot date to 2026-10-17 while keeping fallback API version 2026-09-30.endive."
+      "revision_observed": "24947f1632eea27d0377c5047755f98838db6105",
+      "commit_committed_at": "2026-10-18T00:50:19Z",
+      "plugin_version_observed": "0.5.22",
+      "evidence": "Official Oct 18 sync-skills commit reviewed (24947f1632ee): bumps agent-plugins 0.5.21 -> 0.5.22, Claude 0.11.21 -> 0.11.22, Cursor/Grok 0.9.21 -> 0.9.22, Codex 5.8.21 -> 5.8.22, and updates upgrade-stripe snapshot date to 2026-10-18 while keeping fallback API version 2026-09-30.endive."
     },
     {
       "id": "ap2",
@@ -156,12 +156,14 @@
       "id": "mcp",
       "url": "https://modelcontextprotocol.io/specification/2025-11-25",
       "published_on": null,
+      "revision_observed": "1155ca460e50bfaf3b7c00f2e10e3015f4e6a997",
+      "commit_committed_at": "2026-10-18T02:02:09Z",
       "schema_directories_observed": [
         "2025-11-25",
         "2026-07-28",
         "draft"
       ],
-      "evidence": "2025-11-25 text read; 2026-07-28 schema existence separately verified, not treated as reviewed."
+      "evidence": "2025-11-25 text read; 2026-07-28 schema existence separately verified. Official repository advanced on Oct 18 to 1155ca460e50 (#3439): regenerated SEP index for SEP-2127 (MCP Server Cards, status Final, extension io.modelcontextprotocol/server-card) and fixed broken SEP-2133 link in SEP-2640 (Skills Extension)."
     },
     {
       "id": "a2a",
@@ -310,6 +312,46 @@
       "published_on": null,
       "revision_observed": "96a3ef92329ba1c6be1430fd83c8d6df32a57198",
       "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product variant-only item swap, and original-payment/gift-card refund constraints."
+    },
+    {
+      "id": "stripe-webmcp",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/webmcp",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/agents/webmcp.md",
+      "published_on": null,
+      "evidence": "First verified Oct 18: experimental browser capability based on Chrome WebMCP (developer.chrome.com/docs/ai/webmcp) across Full page Checkout, Embedded form, Elements, and Hosted invoice page. Requires runtime tool re-discovery after payment-method selection and explicit user confirmation before invoking tools marked with consequentialHint."
+    },
+    {
+      "id": "stripe-booking",
+      "url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/booking",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/sellers/use-cases/booking.md",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "handler_version_observed": "2026-06-25",
+      "evidence": "First verified Oct 18: official guide for programmatic service bookings via Booking REST API or MCP (search_availability, create_booking, complete_booking, modify_booking, cancel_booking), naming partners Muse and Instinct, referencing UCP Lodging Booking Draft and UCP Payment Handler com.stripe.payments (2026-06-25), 409 slot_unavailable recovery, >=24h Idempotency-Key retention, and SPT completion (2026-09-30.preview)."
+    },
+    {
+      "id": "stripe-embedded",
+      "url": "https://docs.stripe.com/agentic-commerce/agents/embedded",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/agents/embedded.md?agent-checkout-mode=full",
+      "published_on": null,
+      "oca_api_version_observed": "2026-09-30.preview",
+      "delegated_checkout_api_version_observed": "2026-04-22.preview",
+      "evidence": "First verified Oct 18: Agent-side ACS private preview in 33 countries (full checkout and feed-only variants). Documents Orchestrated Commerce Agreements (/v2/orchestrated_commerce/agreements, 2026-09-30.preview; seller-only initiation, termination re-initiation lock) and Delegated Checkout RequestedSession (/v1/delegated_checkout/requested_sessions, 2026-04-22.preview; 424 on seller webhook error, Affirm buyer-navigation rules, VIC/Mastercard Agent Pay network tokens)."
+    },
+    {
+      "id": "stripe-sftp-feed",
+      "url": "https://docs.stripe.com/agentic-commerce/concepts/catalog-feed/sftp-catalog-ingestion",
+      "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/catalog-feed/sftp-catalog-ingestion.md",
+      "published_on": null,
+      "api_version_observed": "2026-09-30.preview",
+      "evidence": "First verified Oct 18: SFTP catalog ingestion architecture for ACS agents. Specifies stripe-verification.txt challenge, 365-day Ed25519 SSH key rotation, 24h Product Master Feed + hourly opt-in Delta Feed, manifest.json uploaded last as shard-completion barrier, disable_checkout discovery-only flag, and explicit delete=true vs implicit omission deletion rules."
+    },
+    {
+      "id": "stripe-directory",
+      "url": "https://docs.stripe.com/directory",
+      "monitor_url": "https://docs.stripe.com/directory.md",
+      "published_on": null,
+      "evidence": "First verified Oct 18: Stripe Directory preview (stripe directory search, stripe.directory) and docs.stripe.com/.well-known/skills/index.json (10 skills including stripe-directory and stripe-pay). Indexes Stripe Apps, Stripe Projects (projects.dev), Machine Payments (mpp.dev), and Stripe business profiles (@handle) for B2B stripe pay transfers."
     }
   ]
 }

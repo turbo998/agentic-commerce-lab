@@ -21,7 +21,7 @@
 
 | 入口 | 内容 |
 |---|---|
-| [2026-10-18 每日研究](research/daily/2026-10-18.md) | Poppy `operations` v1 超时 `in_progress`/取消/跨通道去重细则、UCP `buyer.consent` 全量替换豁免与退货政策禁算日规则、Stripe MCP 43 日核验 |
+| [2026-10-18 每日研究](research/daily/2026-10-18.md) | Stripe WebMCP/Booking/Embedded(OCA & RequestedSession)/SFTP Feed/Directory 新文档核验、Poppy `operations` v1 超时 `in_progress`/取消/去重、UCP `#940`/`#970`/`#660`/`#966` 与 ACP ATDRP §7.4a、Stripe MCP 43 日核验 |
 | [2026-10-17 每日研究](research/daily/2026-10-17.md) | Poppy `#35` 企业实现套件/18 份 Schema/改造前后架构对照、UCP `#913` Permalink `303` 安全头、Stripe MCP 英式日期核验 |
 | [2026-10-16 每日研究](research/daily/2026-10-16.md) | Stripe MCP 迁移延期至 `2026-11-30`、Poppy `v0.1` 17 项安全/DPoP/会话提交、UCP Webhook 签名门禁（`#659`） |
 | [2026-10-14 每日研究](research/daily/2026-10-14.md) | Sierra 与 Poppy `v0.1` 草案/当日建仓核验、TAP 迁移、UCP 扩展修复、MCP 告示监测及 17 日窗口 |
@@ -34,7 +34,7 @@
 | [官方来源注册表](research/sources.json) | 来源、验证日期、发布日期、版本与证据边界 |
 | [离线 checkout 实验](lab/checkout.py) | 合成报价授权、购物车绑定、单次消费、持久幂等及并发保护 |
 | [离线 MCP 迁移盘点](lab/mcp_migration.py) | Stripe MCP `2026-11-30`（原 `2026-10-31`）auth 类别期限检查；只接受无密钥元数据，不验证账户 |
-| [离线 UCP handler 与签名预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件、RFC 9421 闭合必签门禁（`#659`/`#795`）、Permalink `303` 安全头与不可信 GET 输入校验（`#913`）、RFC 9728 多条目身份发现、订单 Webhook 收敛、`buyer.consent` 全量替换豁免与依赖门禁（`#660`）及退货政策校验（`#966`） |
+| [离线 UCP handler 与协议边界预检](lab/ucp_preflight.py) | 版本/宣告 instrument/card tokenize 前置条件、RFC 9421 闭合必签门禁（`#659`/`#795`）、Permalink `303` 安全头与不可信 GET 输入校验（`#913`）、RFC 9728 多条目身份发现与 Accelerated IdP 单用户换票绑定（`#783`/`#970`）、Cart-to-Checkout 互斥与优先级（`#940`）、`buyer.consent` 全量替换豁免（`#660`）、退货政策禁算日校验（`#966`）、Stripe OCA/SFTP/WebMCP 护栏及 ACP ATDRP §7.4a 证据包准入（`#316`） |
 | [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/RFC 8414 §3.1 路径多租户隔离/DPoP/跨上下文断言防混淆与浏览器交接/Milestone 2 `conversations.*` 与 Milestone 3 Sign-In & Account Token 生命周期及脱敏（`#35`）、`operations` v1 扩展协商/跨通道去重/下游超时 `in_progress` 驻留/取消与 $\tau^3$-bench 零售改单护栏 |
 
 ## 本地运行
