@@ -166,6 +166,33 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(dark_trial.blocked_at_gate, 2)
         self.assertIn("NEGATIVE_OPTION_MANDATE_MISMATCH", dark_trial.terminal_decision_code)
 
+    def test_gate6_blocks_b2b_bec_beneficiary_hijack(self) -> None:
+        bec_hijack = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                b2b_po_mandate={
+                    "po_id": "po_01",
+                    "ancillary_allowance_minor": 1000,
+                    "lines": [{"sku": "sku_01", "qty_ordered": 2, "unit_price_minor": 10000}],
+                },
+                b2b_grn_receipt={
+                    "lines": [{"sku": "sku_01", "qty_delivered": 2, "qty_rejected_damaged": 0}]
+                },
+                b2b_e_invoice={
+                    "invoice_id": "inv_01",
+                    "payout_endpoint_id": "acct_attacker_spoofed",
+                    "ancillary_charges_minor": 1000,
+                    "lines": [{"sku": "sku_01", "qty_invoiced": 2, "unit_price_minor": 10000}],
+                },
+                b2b_vendor_master={
+                    "kyb_verified_endpoint_id": "acct_seller_jp_01",
+                    "ofac_sanctioned": False,
+                },
+            )
+        )
+        self.assertFalse(bec_hijack.checkout_committed)
+        self.assertEqual(bec_hijack.blocked_at_gate, 6)
+        self.assertIn("BENEFICIARY_ENDPOINT_HIJACK_BLOCKED", bec_hijack.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)

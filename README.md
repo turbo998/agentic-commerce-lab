@@ -45,6 +45,7 @@
 | [离线 RFC 9421 Agent 身份证明与委托人反女巫限购配额护栏](lab/agent_identity_attestation_guard.py) | RFC 9421 强制签名域（`@method`/`@authority`/`@path`/`content-digest`/`x-ucp-idempotency-key`/`x-ap2-mandate-digest`、60s 窗口与单次 `nonce`）、Visa TAP / Stripe Agent Directory 密钥状态与 WebMCP 同源校验、基于 `principal_did` 的防黄牛/防女巫并发配额（配套架构深潜 [`docs/architecture/agent-identity-and-anti-scalping-attestation.md`](docs/architecture/agent-identity-and-anti-scalping-attestation.md)） |
 | [离线 7 道门禁全链路统一结账编排器与混沌韧性 7-Card 基准报告](lab/unified_checkout_pipeline.py) | 串联 Gate 1–7 确定性护栏支持 Fail-Fast 短路阻断与微秒级延迟计量，覆盖 14 个混沌故障注入场景（14/14 vs 1/14），生成自包含 [7-Card 混沌韧性基准报告](reports/agentic-commerce-resilience-bench/index.html)（配套架构深潜 [`docs/architecture/unified-agentic-checkout-pipeline.md`](docs/architecture/unified-agentic-checkout-pipeline.md)） |
 | [离线周期订阅免费试用陷阱拦截、TCCV 边界与三层原子吊销护栏](lab/recurring_subscription_guard.py) | 校验免费试用自动转付费暗黑模式（Negative-Option Billing）、总承诺合同价值 `TCCV` 预算上限、48h 退订窗口门禁与 AP2 + SPT/Network Token + Stripe Billing 三层原子撤权级联及僵尸 MIT 扣款拦截（Visa `13.5` / MC `4841`）（配套架构深潜 [`docs/architecture/recurring-mandates-and-subscription-guard.md`](docs/architecture/recurring-mandates-and-subscription-guard.md)） |
+| [离线企业级 B2B 三单匹配、分批履约托管、BEC 防劫持与 2/10 Net 30 动态贴现护栏](lab/b2b_three_way_match_guard.py) | 校验 `PO Mandate == GRN == e-Invoice` 三单匹配、分批发货按实收合格量按比例 Capture（阻断缺货行提前请款）、KYB 收款账户防篡改/OFAC 制裁筛查与 `2/10 Net 30` 动态贴现隐含年化收益率（37.24% APR）精算（配套架构深潜 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)） |
 
 ## 本地运行
 
@@ -151,6 +152,14 @@ python -m lab.recurring_subscription_guard --json
 ```
 
 演练免费试用自动转付费暗黑模式（Negative-Option Billing）拦截、最坏情况总承诺合同价值 $\text{TCCV} = C_{\text{initial}} + \max(N_{\text{min\_commit}}, 1) \times C_{\text{recurring}} + F_{\text{ETF}}$ 预算校验、掠夺性提前退订截止窗拦截，以及 AP2 `MandateRevocation` + Stripe SPT/卡组 Network Token 失活 + 商户 Stripe Billing 订阅取消三层原子撤权级联与僵尸 MIT 扣款拦截（自动生成 Visa `13.5` / Mastercard `4841` 抗辩载荷）。架构推导见 [`docs/architecture/recurring-mandates-and-subscription-guard.md`](docs/architecture/recurring-mandates-and-subscription-guard.md)。
+
+### 企业级 B2B 三单匹配（`PO == GRN == Invoice`）、分批履约托管与 `2/10 Net 30` 动态贴现护栏（离线模拟）
+
+```powershell
+python -m lab.b2b_three_way_match_guard --json
+```
+
+演练企业级 B2B 分批发货按实收合格量（`qty_delivered - qty_rejected_damaged`）按比例请款（拦截缺货未发行的提前全额 Capture）、`PO == GRN == e-Invoice` 零正单价漂移校验、供应商收款终端被篡改（BEC）与 OFAC 制裁名单秒级熔断，以及 `2/10 Net 30` 提前付款贴现隐含年化收益率（$37.2449\%$ APR）精算。架构推导见 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)。
 
 
 ## 每日研究

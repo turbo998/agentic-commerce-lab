@@ -32,6 +32,9 @@ from lab.agent_identity_attestation_guard import (
     sign_rfc9421_request,
     verify_rfc9421_agent_attestation_and_quota,
 )
+from lab.b2b_three_way_match_guard import (
+    verify_b2b_three_way_match_and_escrow,
+)
 from lab.booking_sftp_reconciliation_guard import (
     BookingLegHold,
     SftpPayoutBatchRow,
@@ -132,6 +135,12 @@ class UnifiedCheckoutPipelineInput:
     # Optional Stage 9 Recurring Subscription & TCCV Mandate Gate
     recurring_mandate: dict[str, Any] | None = None
     subscription_offer_terms: dict[str, Any] | None = None
+
+    # Optional Stage 10 Enterprise B2B 3-Way Match & Split-Shipment Escrow Gate
+    b2b_po_mandate: dict[str, Any] | None = None
+    b2b_grn_receipt: dict[str, Any] | None = None
+    b2b_e_invoice: dict[str, Any] | None = None
+    b2b_vendor_master: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -400,11 +409,32 @@ def execute_unified_agentic_checkout(
         },
         resolved_token_ledger=inp.resolved_spt_tokens,
     )
-    g6_passed = connect_res.valid and spt_res.allowed
+    b2b_3way_ok = True
+    b2b_3way_reason = ""
+    if (
+        inp.b2b_po_mandate is not None
+        and inp.b2b_grn_receipt is not None
+        and inp.b2b_e_invoice is not None
+        and inp.b2b_vendor_master is not None
+    ):
+        b2b_res = verify_b2b_three_way_match_and_escrow(
+            po_mandate=inp.b2b_po_mandate,
+            grn_receipt=inp.b2b_grn_receipt,
+            e_invoice=inp.b2b_e_invoice,
+            vendor_master=inp.b2b_vendor_master,
+        )
+        b2b_3way_ok = b2b_res.settlement_approved
+        b2b_3way_reason = b2b_res.decision_code
+
+    g6_passed = connect_res.valid and spt_res.allowed and b2b_3way_ok
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
         if g6_passed
-        else (connect_res.reason if not connect_res.valid else spt_res.reason)
+        else (
+            connect_res.reason
+            if not connect_res.valid
+            else (spt_res.reason if not spt_res.allowed else b2b_3way_reason)
+        )
     )
     dt6 = max((time.perf_counter() - t0) * 1_000_000.0, 13.0)
     traces.append(

@@ -66,6 +66,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/recurring_subscription_guard.py`](../../lab/recurring_subscription_guard.py) & [`tests/test_recurring_subscription_guard.py`](../../tests/test_recurring_subscription_guard.py)
 
+### Stage 10 — Enterprise B2B 3-Way Match (`PO == GRN == Invoice`), Split-Shipment Partial Capture Escrow & `2/10 Net 30` Dynamic Discounting Guard
+1. **B2B 3-Way Match, BEC/Sanctions Defense & Dynamic Discounting ([`docs/architecture/b2b-three-way-match-and-escrow.md`](../architecture/b2b-three-way-match-and-escrow.md))**:
+   - Enforced split-shipment partial capture against accepted GRN quantities (`qty_delivered - qty_rejected_damaged`), zero positive unit-price tolerance against PO Mandates, KYB payout endpoint anti-hijack (`BENEFICIARY_ENDPOINT_HIJACK_BLOCKED`), and OFAC sanctions screening.
+   - Formalized the `2/10 Net 30` dynamic discounting implied annualized return formula ($\text{APR}_{\text{implied}} = \frac{d}{1-d} \times \frac{365}{T_{\text{net}} - T_{\text{disc}}} = 37.2449\%$).
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/b2b_three_way_match_guard.py`](../../lab/b2b_three_way_match_guard.py) & [`tests/test_b2b_three_way_match_guard.py`](../../tests/test_b2b_three_way_match_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -80,5 +87,6 @@ python -m lab.booking_sftp_reconciliation_guard
 python -m lab.agent_identity_attestation_guard
 python -m lab.unified_checkout_pipeline
 python -m lab.recurring_subscription_guard
+python -m lab.b2b_three_way_match_guard
 python -m unittest discover -s tests -v
 ```
