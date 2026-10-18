@@ -7,6 +7,7 @@ from typing import Any
 __all__ = [
     "allocate_by_largest_remainder",
     "evaluate_agentic_bnpl_trade_credit_underwriting",
+    "evaluate_agentic_rtb_invalid_traffic_escrow",
     "evaluate_authenticated_c2c_escrow_inspection_release",
     "evaluate_cold_chain_iot_telemetry_escrow",
     "evaluate_consortium_group_buying_tier_escrow",
@@ -34,6 +35,7 @@ __all__ = [
     "execute_negative_balance_clawback_waterfall",
     "optimize_carbon_pareto_carrier_route",
     "optimize_multicurrency_netting_sweep",
+    "reconcile_cloud_sla_downtime_credit_note",
     "redact_hipaa_phi_from_payment_descriptor",
     "run_global_clearing_privacy_benchmark",
     "run_lifecycle_finance_circular_benchmark",
@@ -46,11 +48,20 @@ __all__ = [
     "verify_eprescribing_ncpdp_dea_dispense_guard",
     "verify_invoice_factoring_ucc_lien_uniqueness",
     "verify_mletr_electronic_bill_of_lading_endorsement",
+    "verify_sovereign_compute_export_geofence_attestation",
     "verify_winner_commitment_earnest_bond_slash",
 ]
 
 
 def __getattr__(name: str) -> Any:
+    if name in {
+        "evaluate_agentic_rtb_invalid_traffic_escrow",
+        "reconcile_cloud_sla_downtime_credit_note",
+        "verify_sovereign_compute_export_geofence_attestation",
+    }:
+        from lab import rtb_ad_fraud_sovereign_compute_guard
+
+        return getattr(rtb_ad_fraud_sovereign_compute_guard, name)
     if name in {
         "evaluate_eucp600_letter_of_credit_document_presentation",
         "evaluate_marine_demurrage_detention_parametric_escrow",

@@ -175,6 +175,12 @@
 2. **Executable Guard Module & Unit Tests (217 Total Tests)**:
    - [`lab/trade_finance_ebl_lc_demurrage_guard.py`](../../lab/trade_finance_ebl_lc_demurrage_guard.py) & [`tests/test_trade_finance_ebl_lc_demurrage_guard.py`](../../tests/test_trade_finance_ebl_lc_demurrage_guard.py)
 
+### Stage 27 — Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (SIVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Credit-Note Reconciliation Guard
+1. **OpenRTB `ads.cert` 2.0 SIVT Escrow, Sovereign Compute Geofence & SLA Credit Auto-Netting ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §33)**:
+   - Implemented `ads.cert` 2.0 impression signature verification and SIVT bot click-farm escrow withholding (`RTB_SIVT_BOT_CLICK_FARM_ESCROW_WITHHELD`), hardware TPM/PTP sovereign compute export control geofencing (`EAR_EXPORT_CONTROL_OR_RESIDENCY_GEOFENCE_BLOCKED`), and contractual SLA downtime credit-note auto-netting (`SLA_BREACH_CREDIT_NOTE_AUTO_NETTED`).
+2. **Executable Guard Module & Unit Tests (221 Total Tests)**:
+   - [`lab/rtb_ad_fraud_sovereign_compute_guard.py`](../../lab/rtb_ad_fraud_sovereign_compute_guard.py) & [`tests/test_rtb_ad_fraud_sovereign_compute_guard.py`](../../tests/test_rtb_ad_fraud_sovereign_compute_guard.py)
+
 ---
 
 ## Quick Verification Commands

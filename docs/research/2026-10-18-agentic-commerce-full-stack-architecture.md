@@ -245,6 +245,23 @@ Automates multi-document examination across Commercial Invoice, clean-on-board e
 
 Subtracts carrier port-congestion and customs inspection hold hours from container dwell time before applying free-time windows, waiving non-consignee-fault demurrage (`PORT_CONGESTION_OR_CARRIER_FAULT_DEMURRAGE_WAIVED`) and capping chargeable overage fees (`MARINE_DEMURRAGE_CAPPED_SETTLED`).
 
+---
+
+## 33. Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (IVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Credit-Note Reconciliation Guard (Stage 27)
+
+### 33.1 OpenRTB 3.0 / IAB `ads.cert` 2.0 & SIVT Bot Click-Farm Escrow (`evaluate_agentic_rtb_invalid_traffic_escrow`)
+
+Verifies `ads.cert` 2.0 cryptographic impression signatures (`ADS_CERT_IMPRESSION_SIGNATURE_INVALID_BLOCKED`) and withholds ad-spend escrow when Sophisticated Invalid Traffic (`SIVT`) exceeds the contractual tolerance ceiling (`RTB_SIVT_BOT_CLICK_FARM_ESCROW_WITHHELD`).
+
+### 33.2 Sovereign AI Compute Export Control & PTP/TPM Geofence (`verify_sovereign_compute_export_geofence_attestation`)
+
+Cross-checks hardware TPM 2.0 location signatures and Precision Time Protocol (`PTP`) network latency triangulation (`HARDWARE_LOCATION_ATTESTATION_SPOOF_BLOCKED`), blocking accelerator leases in embargoed or non-sovereign regions (`EAR_EXPORT_CONTROL_OR_RESIDENCY_GEOFENCE_BLOCKED`).
+
+### 33.3 Cloud/API SLA Downtime Credit-Note Auto-Netting (`reconcile_cloud_sla_downtime_credit_note`)
+
+Automatically computes contractual service credit tiers (`10%`, `25%`, `100%`) when observed uptime falls below `committed_sla_bps` and nets the credit note directly against the invoice (`SLA_BREACH_CREDIT_NOTE_AUTO_NETTED`).
+
+
 
 
 
