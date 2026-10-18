@@ -73,6 +73,13 @@
 2. **Executable Guard Module & Unit Tests**:
    - [`lab/b2b_three_way_match_guard.py`](../../lab/b2b_three_way_match_guard.py) & [`tests/test_b2b_three_way_match_guard.py`](../../tests/test_b2b_three_way_match_guard.py)
 
+### Stage 11 — Sealed-Bid Vickrey Reverse Auction (`Commit-Reveal RFQ`), Cross-Border B2B VAT Reverse-Charge & Post-Purchase RMA Bilateral Guard
+1. **Vickrey RFQ, B2B VAT Reverse-Charge & Bilateral RMA Guard ([`docs/architecture/reverse-auction-tax-and-returns-guard.md`](../architecture/reverse-auction-tax-and-returns-guard.md))**:
+   - Enforced SHA-256 `Commit-Reveal` sealed-bid second-price (Vickrey) RFQ clearing, blocking post-award checkout surcharges (`BAIT_SWITCH_SURCHARGE_INJECTION`), cross-border B2B VAT over-collection (`INVALID_B2B_VAT_REVERSE_CHARGE_OVERCOLLECTION`), and unregistered seller tax collection (`UNREGISTERED_TAX_COLLECTION_BLOCKED`).
+   - Enforced bilateral RMA return fairness: blocking restocking fees on defective/SNAD items (`ILLEGAL_SNAD_RESTOCKING_FEE_BLOCKED`) while verifying returned hardware serial SHA-256 and carrier net weight (`RMA_SERIAL_OR_WEIGHT_FRAUD_BLOCKED`).
+2. **Executable Guard Module & Unit Tests**:
+   - [`lab/reverse_auction_tax_returns_guard.py`](../../lab/reverse_auction_tax_returns_guard.py) & [`tests/test_reverse_auction_tax_returns_guard.py`](../../tests/test_reverse_auction_tax_returns_guard.py)
+
 ---
 
 ## Quick Verification Commands
@@ -88,5 +95,6 @@ python -m lab.agent_identity_attestation_guard
 python -m lab.unified_checkout_pipeline
 python -m lab.recurring_subscription_guard
 python -m lab.b2b_three_way_match_guard
+python -m lab.reverse_auction_tax_returns_guard
 python -m unittest discover -s tests -v
 ```

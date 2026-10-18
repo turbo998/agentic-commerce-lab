@@ -46,6 +46,7 @@
 | [离线 7 道门禁全链路统一结账编排器与混沌韧性 7-Card 基准报告](lab/unified_checkout_pipeline.py) | 串联 Gate 1–7 确定性护栏支持 Fail-Fast 短路阻断与微秒级延迟计量，覆盖 14 个混沌故障注入场景（14/14 vs 1/14），生成自包含 [7-Card 混沌韧性基准报告](reports/agentic-commerce-resilience-bench/index.html)（配套架构深潜 [`docs/architecture/unified-agentic-checkout-pipeline.md`](docs/architecture/unified-agentic-checkout-pipeline.md)） |
 | [离线周期订阅免费试用陷阱拦截、TCCV 边界与三层原子吊销护栏](lab/recurring_subscription_guard.py) | 校验免费试用自动转付费暗黑模式（Negative-Option Billing）、总承诺合同价值 `TCCV` 预算上限、48h 退订窗口门禁与 AP2 + SPT/Network Token + Stripe Billing 三层原子撤权级联及僵尸 MIT 扣款拦截（Visa `13.5` / MC `4841`）（配套架构深潜 [`docs/architecture/recurring-mandates-and-subscription-guard.md`](docs/architecture/recurring-mandates-and-subscription-guard.md)） |
 | [离线企业级 B2B 三单匹配、分批履约托管、BEC 防劫持与 2/10 Net 30 动态贴现护栏](lab/b2b_three_way_match_guard.py) | 校验 `PO Mandate == GRN == e-Invoice` 三单匹配、分批发货按实收合格量按比例 Capture（阻断缺货行提前请款）、KYB 收款账户防篡改/OFAC 制裁筛查与 `2/10 Net 30` 动态贴现隐含年化收益率（37.24% APR）精算（配套架构深潜 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)） |
+| [离线密封二价反向竞标 (Vickrey RFQ)、跨境 B2B VAT 逆向征税与售后 RMA 双向护栏](lab/reverse_auction_tax_returns_guard.py) | 校验多卖家 Commit-Reveal 二价反向询价与 Checkout 防加价（Anti-Bait-and-Switch）、跨境 B2B VAT `0%` 逆向征税与税务联结资质、以及售后 RMA 退货硬件序列号/净重防掉包与质量缺陷零整新费保护（配套架构深潜 [`docs/architecture/reverse-auction-tax-and-returns-guard.md`](docs/architecture/reverse-auction-tax-and-returns-guard.md)） |
 
 ## 本地运行
 
@@ -160,6 +161,14 @@ python -m lab.b2b_three_way_match_guard --json
 ```
 
 演练企业级 B2B 分批发货按实收合格量（`qty_delivered - qty_rejected_damaged`）按比例请款（拦截缺货未发行的提前全额 Capture）、`PO == GRN == e-Invoice` 零正单价漂移校验、供应商收款终端被篡改（BEC）与 OFAC 制裁名单秒级熔断，以及 `2/10 Net 30` 提前付款贴现隐含年化收益率（$37.2449\%$ APR）精算。架构推导见 [`docs/architecture/b2b-three-way-match-and-escrow.md`](docs/architecture/b2b-three-way-match-and-escrow.md)。
+
+### 密封二价反向竞标（Commit-Reveal Vickrey RFQ）、跨境 B2B VAT 逆向征税与售后 RMA 双向护栏（离线模拟）
+
+```powershell
+python -m lab.reverse_auction_tax_returns_guard --json
+```
+
+演练多卖家 `Commit-Reveal` 二价反向询价（Vickrey 激励相容定价）与结账防加价（`BAIT_SWITCH_SURCHARGE_INJECTION`）、跨境 B2B VAT `0%` 逆向征税（`INVALID_B2B_VAT_REVERSE_CHARGE_OVERCOLLECTION`）及无税务联结违规收税拦截（`UNREGISTERED_TAX_COLLECTION_BLOCKED`），以及售后 RMA 质量缺陷零整新费保护（`ILLEGAL_SNAD_RESTOCKING_FEE_BLOCKED`）与退货序列号/净重掉包欺诈阻断（`RMA_SERIAL_OR_WEIGHT_FRAUD_BLOCKED`）。架构推导见 [`docs/architecture/reverse-auction-tax-and-returns-guard.md`](docs/architecture/reverse-auction-tax-and-returns-guard.md)。
 
 
 ## 每日研究

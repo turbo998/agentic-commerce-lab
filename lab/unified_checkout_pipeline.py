@@ -54,6 +54,9 @@ from lab.dispute_evidence_replay import (
 from lab.recurring_subscription_guard import (
     verify_subscription_trial_and_recurring_mandate,
 )
+from lab.reverse_auction_tax_returns_guard import (
+    verify_sealed_rfq_and_tax_nexus,
+)
 from lab.workload_arch_bench import (
     compute_rfc9530_sha256,
     verify_reasoning_execution_isolation,
@@ -141,6 +144,12 @@ class UnifiedCheckoutPipelineInput:
     b2b_grn_receipt: dict[str, Any] | None = None
     b2b_e_invoice: dict[str, Any] | None = None
     b2b_vendor_master: dict[str, Any] | None = None
+
+    # Optional Stage 11 Sealed-Bid Vickrey RFQ & Cross-Border B2B Tax Nexus Gate
+    rfq_spec: dict[str, Any] | None = None
+    rfq_bids: list[dict[str, Any]] | None = None
+    rfq_checkout_quote: dict[str, Any] | None = None
+    rfq_tax_context: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -286,18 +295,40 @@ def execute_unified_agentic_checkout(
         estimated_duty_tax_minor=inp.estimated_duty_tax_minor,
         quoted_checkout_total_minor=inp.quoted_checkout_total_minor,
     )
+    rfq_tax_ok = True
+    rfq_tax_reason = ""
+    if (
+        inp.rfq_spec is not None
+        and inp.rfq_bids is not None
+        and inp.rfq_checkout_quote is not None
+        and inp.rfq_tax_context is not None
+    ):
+        rfq_res = verify_sealed_rfq_and_tax_nexus(
+            rfq_spec=inp.rfq_spec,
+            bids=inp.rfq_bids,
+            checkout_quote=inp.rfq_checkout_quote,
+            tax_context=inp.rfq_tax_context,
+        )
+        rfq_tax_ok = rfq_res.allowed
+        rfq_tax_reason = rfq_res.decision_code
+
+    g3_passed = customs_res.allowed and rfq_tax_ok
     dt3 = max((time.perf_counter() - t0) * 1_000_000.0, 10.0)
-    g3_code = "DDP_AND_HS6_LOCKED" if customs_res.allowed else customs_res.reason
+    g3_code = (
+        "DDP_AND_HS6_LOCKED"
+        if g3_passed
+        else (customs_res.reason if not customs_res.allowed else rfq_tax_reason)
+    )
     traces.append(
         GateExecutionTrace(
             3,
             "Cross-Border DDP & WCO HS6 Customs Gate",
-            customs_res.allowed,
+            g3_passed,
             g3_code,
             round(dt3, 2),
         )
     )
-    if not customs_res.allowed:
+    if not g3_passed:
         return UnifiedCheckoutPipelineResult(
             False,
             3,

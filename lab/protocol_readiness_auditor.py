@@ -347,6 +347,7 @@ def render_interactive_workbench_html() -> str:
         <tr><td><strong>Stage 8 7-Gate Orchestrator</strong></td><td>Fail-Fast 7-Gate Unified Checkout Pipeline &amp; 14-Scenario Chaos Resilience Benchmark (14/14 AI-Native vs 1/14 Classic 3-Tier)</td><td><code>lab/unified_checkout_pipeline.py</code></td><td class="pass">READY (14/14 Pass)</td></tr>
         <tr><td><strong>Stage 9 Recurring &amp; TCCV Guard</strong></td><td>Free-Trial Negative-Option Trap Defense (<code>TCCV</code> Worst-Case Commitment Cap) &amp; Atomic 3-Layer Revocation Cascade (Visa <code>13.5</code> / MC <code>4841</code> Zombie MIT Block)</td><td><code>lab/recurring_subscription_guard.py</code></td><td class="pass">READY (TCCV + 3-Layer Revocation)</td></tr>
         <tr><td><strong>Stage 10 B2B 3-Way Match &amp; Escrow</strong></td><td>Deterministic <code>PO == GRN == Invoice</code> 3-Way Match, Split-Shipment Partial Capture, BEC/Sanctions Block &amp; <code>2/10 Net 30</code> Dynamic Discounting (37.24% APR)</td><td><code>lab/b2b_three_way_match_guard.py</code></td><td class="pass">READY (3-Way Match + 37.24% APR)</td></tr>
+        <tr><td><strong>Stage 11 Vickrey RFQ, Tax Nexus &amp; RMA</strong></td><td>Commit-Reveal Second-Price Reverse Auction (RFQ), Cross-Border B2B VAT Reverse-Charge &amp; Bilateral RMA Serial/Weight + Restocking Guard</td><td><code>lab/reverse_auction_tax_returns_guard.py</code></td><td class="pass">READY (Sealed RFQ + RMA Guard)</td></tr>
       </tbody>
     </table>
   </div>

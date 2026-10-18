@@ -193,6 +193,41 @@ class UnifiedCheckoutPipelineTests(unittest.TestCase):
         self.assertEqual(bec_hijack.blocked_at_gate, 6)
         self.assertIn("BENEFICIARY_ENDPOINT_HIJACK_BLOCKED", bec_hijack.terminal_decision_code)
 
+    def test_gate3_blocks_rfq_bait_switch_and_b2b_vat_overcharge(self) -> None:
+        from lab.reverse_auction_tax_returns_guard import compute_rfq_bid_commitment
+
+        rfq_fail = execute_unified_agentic_checkout(
+            build_golden_pipeline_input(
+                rfq_spec={"rfq_id": "rfq_pipe_01", "reserve_price_minor": 25_000},
+                rfq_bids=[
+                    {
+                        "seller_id": "acct_seller_jp_01",
+                        "all_in_price_minor": 20_000,
+                        "salt": "salt_pipe",
+                        "commitment_sha256": compute_rfq_bid_commitment(
+                            "acct_seller_jp_01", "rfq_pipe_01", 20_000, "salt_pipe"
+                        ),
+                    }
+                ],
+                rfq_checkout_quote={
+                    "seller_id": "acct_seller_jp_01",
+                    "pre_tax_all_in_minor": 22_000,  # bait-and-switch surcharge
+                    "tax_charged_minor": 4_400,
+                },
+                rfq_tax_context={
+                    "seller_country": "JP",
+                    "buyer_country": "US",
+                    "buyer_is_b2b": True,
+                    "buyer_vat_verified": True,
+                    "seller_tax_registration_valid": True,
+                    "statutory_tax_rate_bps": 1000,
+                },
+            )
+        )
+        self.assertFalse(rfq_fail.checkout_committed)
+        self.assertEqual(rfq_fail.blocked_at_gate, 3)
+        self.assertIn("BAIT_SWITCH_SURCHARGE_INJECTION", rfq_fail.terminal_decision_code)
+
     def test_resilience_benchmark_and_seven_card_report_generation(self) -> None:
         suite = run_resilience_benchmark_suite()
         self.assertEqual(suite["total_scenarios"], 14)
