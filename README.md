@@ -39,6 +39,7 @@
 | [离线 Poppy & Sierra 零售护栏](lab/poppy_guard.py) | Poppy `v0.1` 发现/RFC 8414 §3.1 路径多租户隔离/DPoP/跨上下文断言防混淆与浏览器交接/Milestone 2 `conversations.*` 与 Milestone 3 Sign-In & Account Token 生命周期及脱敏（`#35`）、`operations` v1 扩展协商/跨通道去重/下游超时 `in_progress` 驻留/取消与 $\tau^3$-bench 零售改单护栏 |
 | [离线六平面 AI-Native 负载架构基准](lab/workload_arch_bench.py) | Connect SPT 档案路由、单次 `SPT Resolve` + RSA 切片、SPT 3DS 状态机与 AP2 §7.4 受托熔断器（`#165`）、Policy Broker、UCP RFC 9530 批量目录摘要屏障（`#866`）、ATDRP Appendix C 17 网关兜底证据编译（`#316`）、MPP Tempo 亚美分尾差没收审计及 [7-Card 4:5 视觉报告](reports/agentic-commerce-6plane-bench/index.html) |
 | [离线跨境多卖家分账、Token 毛利熔断与关税条款护栏](lab/cross_border_b2b_guard.py) | Connect 多卖家跨境拆单守恒与逆向退费 `reverse_transfer` 防垫付赤字、LLM Token 成本 + 支付通道费穿底触发 AP2 `COST_ENVELOPE_EXCEEDED`、`DDP` vs `DDU`/`DAP` 完税交货与 WCO 6 位 `HS` 编码防篡改校验（配套架构深潜见 [`docs/architecture/cross-border-b2b-settlement.md`](docs/architecture/cross-border-b2b-settlement.md) 与 [2026-10-19 更新索引](docs/research/2026-10-19-daily-update.md)） |
+| [离线跨协议 CE 3.0 争议证据编译与 17 网关抗辩回放](lab/dispute_evidence_replay.py) | 串联 AP2 Mandate JWS + SPT 商户绑定/卡组密文 + UCP RFC 9530 `sha-256` 目录快照 + 跨境 `DDP`/HS6 守恒证明，映射 ACP `PR #316` Appendix C 17 网关抗辩载荷与三方责任定界（配套文档 [`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md) 及 [7-Card B2B/争议基准报告](reports/agentic-commerce-b2b-settlement-bench/index.html)） |
 
 ## 本地运行
 
@@ -97,6 +98,14 @@ python -m lab.cross_border_b2b_guard
 ```
 
 演练 Stripe Connect 跨境多卖家拆单守恒（强制 `separate_charges_and_transfers`、FX 锁汇报价 TTL/滑点走廊、部分退货 `reverse_transfer=true` 防赤字）、`stripe-token-billing` + 三类支付通道（`stripe_spt_card` / `x402_base_usdc` / `mpp_tempo_session`）毛利穿底触发 Google AP2 `COST_ENVELOPE_EXCEEDED` 受托熔断器，以及跨境贸易条款（`DDP` vs `DDU`/`DAP`）与 WCO 6 位 `HS` 商品编码防幻觉篡改校验。架构推导见 [`docs/architecture/cross-border-b2b-settlement.md`](docs/architecture/cross-border-b2b-settlement.md)。
+
+### 跨协议 CE 3.0 争议证据链编译与 17 网关抗辩 7-Card 报告生成（离线模拟）
+
+```powershell
+python -m lab.dispute_evidence_replay --output-dir reports/agentic-commerce-b2b-settlement-bench
+```
+
+针对 Visa `10.4`/`13.3` 与 Mastercard `4837`/`4853` 拒付争议，编译四支柱密码学证据包（AP2 Mandate JWS + Stripe SPT/卡组密文 + UCP RFC 9530 `sha-256` 目录快照 + 跨境 `DDP`/HS6 与 Connect 守恒证明），校验篡改并做三方定责（Buyer / Agent Platform / Merchant），映射 ACP `PR #316` Appendix C 全部 17 家网关字段，并生成 [`reports/agentic-commerce-b2b-settlement-bench/report.json`](reports/agentic-commerce-b2b-settlement-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-b2b-settlement-bench/index.html`](reports/agentic-commerce-b2b-settlement-bench/index.html)。架构说明见 [`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md)。
 
 
 ## 每日研究

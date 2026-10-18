@@ -23,6 +23,14 @@
    - [`lab/cross_border_b2b_guard.py`](../../lab/cross_border_b2b_guard.py)
    - [`tests/test_cross_border_b2b_guard.py`](../../tests/test_cross_border_b2b_guard.py)
 
+### Stage 4 — ACP PR #316 Appendix C 17-Gateway CE 3.0 Dispute Evidence Compilation & 7-Card B2B Benchmark Report
+1. **Cryptographic Non-Repudiation & 17-Gateway Mapping ([`docs/architecture/dispute-evidence-and-cryptographic-nonrepudiation.md`](../architecture/dispute-evidence-and-cryptographic-nonrepudiation.md))**:
+   - Linked 4 cryptographic pillars into a single Merkle root (`AP2 Mandate JWS` + `Stripe SPT seller scope & VIC/Agent Pay cryptogram` + `UCP PR #866 RFC 9530 sha-256 catalog digest` + `DDP/HS6 & Connect conservation proof`) to defend Visa `10.4`/`13.3` and Mastercard `4837`/`4853` chargebacks across all **17 ACP Appendix C payment gateways**.
+   - Formalized deterministic three-way liability routing (`buyer_liable_merchant_wins`, `agent_platform_liable`, `merchant_liable`).
+2. **Executable Compiler, Unit Tests & 7-Card 4:5 Visual Benchmark Report**:
+   - [`lab/dispute_evidence_replay.py`](../../lab/dispute_evidence_replay.py) & [`tests/test_dispute_evidence_replay.py`](../../tests/test_dispute_evidence_replay.py)
+   - [`reports/agentic-commerce-b2b-settlement-bench/index.html`](../../reports/agentic-commerce-b2b-settlement-bench/index.html) & [`reports/agentic-commerce-b2b-settlement-bench/report.json`](../../reports/agentic-commerce-b2b-settlement-bench/report.json) (**`10/10` (`100.0%`) AI-Native vs `1/10` (`10.0%`) Classic 3-Tier**, `0.0 pts` perturbation drift across all 17 gateways).
+
 ---
 
 ## Quick Verification Commands
@@ -31,5 +39,6 @@
 python -m scripts.source_monitor
 python -m lab.workload_arch_bench
 python -m lab.cross_border_b2b_guard
+python -m lab.dispute_evidence_replay
 python -m unittest discover -s tests -v
 ```

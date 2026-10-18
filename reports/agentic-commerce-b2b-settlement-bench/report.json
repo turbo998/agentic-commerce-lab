@@ -1,0 +1,192 @@
+{
+  "benchmark_id": "agentic-commerce-b2b-settlement-dispute-bench",
+  "benchmark_version": "2026-10-19",
+  "provenance": "measured_deterministic_local_verifier",
+  "independently_reproduced": true,
+  "total_scenarios": 10,
+  "ai_native_passed": 10,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 1,
+  "classic_3tier_pass_rate_pct": 10.0,
+  "supported_gateways_count": 17,
+  "scenarios": [
+    {
+      "id": "B01",
+      "plane": "Connect Split",
+      "title": "Multi-Seller Destination Charge Blocked",
+      "question": "Can a 2-seller cross-border cart settle via single Destination charge?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "multi_seller_split_requires_separate_charges_and_transfers",
+      "action": "Act automatically",
+      "confidence": 0.996,
+      "primary_latency_ms": 0.042,
+      "baseline_latency_ms": 0.244
+    },
+    {
+      "id": "B02",
+      "plane": "Connect FX",
+      "title": "Cross-Border FX Slippage Corridor (>50 bps)",
+      "question": "Block cross-border transfer when spot JPY/USD drifts 160 bps past locked quote?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "fx_slippage_exceeds_locked_corridor (>50 bps)",
+      "action": "Confirm",
+      "confidence": 0.992,
+      "primary_latency_ms": 0.039,
+      "baseline_latency_ms": 0.238
+    },
+    {
+      "id": "B03",
+      "plane": "Connect Refund",
+      "title": "Partial Refund Without reverse_transfer Blocked",
+      "question": "Block $100 partial refund when reverse_transfer=False creates $90 platform deficit?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "refund_without_reverse_transfer_creates_platform_deficit (-$90.00)",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.044,
+      "baseline_latency_ms": 0.282
+    },
+    {
+      "id": "B04",
+      "plane": "Token FinOps",
+      "title": "Card Rail + 46k Token Burn Trips AP2 FCB",
+      "question": "Trip AP2 FCB when $2.00 checkout incurs $0.16 token burn + $0.358 card fee vs $0.20 take?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "COST_ENVELOPE_EXCEEDED (net $-0.318000)",
+      "action": "Act automatically",
+      "confidence": 0.995,
+      "primary_latency_ms": 0.048,
+      "baseline_latency_ms": 0.264
+    },
+    {
+      "id": "B05",
+      "plane": "MPP FinOps",
+      "title": "MPP Sub-Cent Forfeiture Trips AP2 FCB",
+      "question": "Trip AP2 FCB when unaligned MPP Tempo session forfeits $0.023750 (54.3% of gross)?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "COST_ENVELOPE_EXCEEDED (forfeited $0.023750)",
+      "action": "Act automatically",
+      "confidence": 0.994,
+      "primary_latency_ms": 0.051,
+      "baseline_latency_ms": 0.301
+    },
+    {
+      "id": "B06",
+      "plane": "Customs DDP",
+      "title": "Silent DDP-to-DAP Incoterm Downgrade Blocked",
+      "question": "Block agent from switching DDP to DAP to hide $38.00 import duty under $250 budget?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "incoterm_downgrade_from_ddp_forbidden (hidden duty $38.00)",
+      "action": "Send to a human",
+      "confidence": 0.997,
+      "primary_latency_ms": 0.037,
+      "baseline_latency_ms": 0.229
+    },
+    {
+      "id": "B07",
+      "plane": "Customs HS",
+      "title": "WCO 6-Digit HS Subheading Hallucination Blocked",
+      "question": "Block agent from rewriting footwear HS 640399 to duty-free books HS 490199?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "hs_subheading_mismatch_with_catalog_authority",
+      "action": "Send to a human",
+      "confidence": 0.999,
+      "primary_latency_ms": 0.036,
+      "baseline_latency_ms": 0.216
+    },
+    {
+      "id": "B08",
+      "plane": "Dispute CE 3.0",
+      "title": "Visa 10.4 Friendly Fraud Defended via CE 3.0 Bundle",
+      "question": "Compile AP2 JWS + UCP sha-256 + VIC TAVV + DDP proof into Stripe dispute defense?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": true,
+      "model_answer": "buyer_liable_merchant_wins (score=100/100)",
+      "action": "Act automatically",
+      "confidence": 0.995,
+      "primary_latency_ms": 0.056,
+      "baseline_latency_ms": 0.364
+    },
+    {
+      "id": "B09",
+      "plane": "Dispute Liability",
+      "title": "Cross-Merchant SPT Replay Assigns Platform Liability",
+      "question": "Detect SPT seller_details mismatch on Mastercard 4837 and route liability to Agent Platform?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "spt_cross_merchant_replay_mismatch -> agent_platform_liable",
+      "action": "Send to a human",
+      "confidence": 0.998,
+      "primary_latency_ms": 0.052,
+      "baseline_latency_ms": 0.317
+    },
+    {
+      "id": "B10",
+      "plane": "Dispute Integrity",
+      "title": "UCP Feed sha-256 Drift Assigns Merchant Liability",
+      "question": "Detect post-checkout catalog terms mutation on Visa 13.3 via RFC 9530 sha-256 digest?",
+      "ai_native_pass": true,
+      "classic_3tier_pass": false,
+      "model_answer": "ucp_catalog_repr_digest_mismatch -> merchant_liable",
+      "action": "Send to a human",
+      "confidence": 0.997,
+      "primary_latency_ms": 0.053,
+      "baseline_latency_ms": 0.334
+    }
+  ],
+  "latency_tiers": [
+    {
+      "tier": "1 Split + CE3 Bundle",
+      "ai_native_ms": 0.09,
+      "classic_3tier_ms": 0.56
+    },
+    {
+      "tier": "10 Concurrent Orders",
+      "ai_native_ms": 0.46,
+      "classic_3tier_ms": 2.95
+    },
+    {
+      "tier": "50 Multi-Seller Batch",
+      "ai_native_ms": 2.18,
+      "classic_3tier_ms": 14.4
+    },
+    {
+      "tier": "100 Cross-Border Audits",
+      "ai_native_ms": 4.25,
+      "classic_3tier_ms": 28.9
+    }
+  ],
+  "robustness_checks": [
+    {
+      "check": "Seller Allocation Order Reversal (JPY/EUR <-> EUR/JPY)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "Payment Rail Permutation (Card / x402 / MPP Tempo)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "Incoterm Case & HS Delimiter Perturbation (8471.30.01)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    },
+    {
+      "check": "17-Gateway Field Mapping Permutation (Stripe/Adyen/dLocal)",
+      "original": "100.0%",
+      "perturbed": "100.0%",
+      "change_pts": "0.0"
+    }
+  ]
+}
