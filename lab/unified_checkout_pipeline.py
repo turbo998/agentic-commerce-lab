@@ -194,6 +194,12 @@ from lab.acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard import (
     evaluate_acp_delegate_signature_mcp_idempotency_and_deep_links_guard,
     evaluate_visa_tap_rfc9421_and_hybrid_pq_did_guard,
 )
+from lab.ucp_address_components_capability_webhooks_quote_acp_feed_guard import (
+    evaluate_acp_host_gate_server_timing_and_feed_update_guard,
+    evaluate_ucp_address_line_components_guard,
+    evaluate_ucp_identity_selection_and_capability_webhook_guard,
+    evaluate_ucp_quote_and_declared_fields_guard,
+)
 
 
 @dataclass(frozen=True)

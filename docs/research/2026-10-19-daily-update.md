@@ -319,6 +319,12 @@
 2. **Unit Tests (299 Total Tests)**:
    - [`tests/test_ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py`](../../tests/test_ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py)
 
+### Stage 50 — UCP Address Line Components (`#981`), Identity-Linking Multi-AS Selection (`#980`), Capability Event Webhooks (`#938`), Time-Bound Quote & `declared_fields` (`#930`/`#915`), and ACP Host Spend Gate / `Server-Timing` / Feed Update Provenance (`#314`/`#273`/`#260`)
+1. **UCP Address Line Components, Multi-AS Candidate Selection, Capability Webhooks, Quote/Declared Fields & ACP Host/Timing/Feed Provenance Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §51)**:
+   - Enforced UCP PR `#981` (`dev.shopify.common.address_line_components`) shipping/billing destination scope (blocking `business_location` pickup and Cart), component precedence over flat lines, prohibition on business flat-line splitting, and `null`-free clearing by omission; UCP PR `#980` 3-step `authorization_servers` candidate selection (OIDC fallback only on `404`, byte-for-byte `issuer` match, surfacing discarded candidates, and rejecting unaccepted AS entries) and PR `#938` (`config.webhook`) thin broadcast event notifications, unfiltered `lookup_locations` removal confirmation, and RFC 9421 `webhook-id`/`webhook-timestamp`/`ucp-agent` signing; UCP PR `#930` (`dev.ucp.common.quote`) single `totals[type="quote"]` reflection and `complete_checkout` field omission alongside PR `#915` Reverse-DNS `declared_fields` scope isolation; and ACP PRs `#314` (fail-closed host spend gate), `#273` (`Server-Timing: acp;dur=<ms>` without topology leaks), and `#260` (`feed_update_id` -> `Product.last_update_id` -> `suggested_price.source` provenance).
+2. **Executable Guard Module & Unit Tests (303 Total Tests)**:
+   - [`lab/ucp_address_components_capability_webhooks_quote_acp_feed_guard.py`](../../lab/ucp_address_components_capability_webhooks_quote_acp_feed_guard.py) & [`tests/test_ucp_address_components_capability_webhooks_quote_acp_feed_guard.py`](../../tests/test_ucp_address_components_capability_webhooks_quote_acp_feed_guard.py)
+
 ---
 
 ## Quick Verification Commands
