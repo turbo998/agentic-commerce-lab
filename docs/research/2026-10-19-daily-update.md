@@ -277,6 +277,12 @@
 2. **Executable Guard Module & Unit Tests (275 Total Tests)**:
    - [`lab/ucp_payment_finality_order_access_acp_india_guard.py`](../../lab/ucp_payment_finality_order_access_acp_india_guard.py) & [`tests/test_ucp_payment_finality_order_access_acp_india_guard.py`](../../tests/test_ucp_payment_finality_order_access_acp_india_guard.py)
 
+### Stage 43 — 16-Scenario 7-Card 4:5 Benchmark Report for UCP Nested Bundles, AP2 `/tokenize` & ISO 4217 Budget, Payment Finality, Guest Order Access, REST `;req` Binding & ACP India/Feed Guards (`BF-01`..`BF-16`)
+1. **16-Scenario Benchmark & Self-Contained 7-Card 4:5 Visual Deck ([`lab/ucp_bundle_finality_ap2_acp_bench.py`](../../lab/ucp_bundle_finality_ap2_acp_bench.py) & [`reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/index.html`](../../reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/index.html))**:
+   - Evaluates `BF-01` through `BF-16`: **16/16 (`100.0%`) AI-Native 6-Plane pass rate vs 1/16 (`6.2%`) Classic 3-Tier pass rate**, `0.44 ms` vs `2.09 ms` latency, `100.0%` perturbation stability.
+2. **Unit Tests (278 Total Tests)**:
+   - [`tests/test_ucp_bundle_finality_ap2_acp_bench.py`](../../tests/test_ucp_bundle_finality_ap2_acp_bench.py)
+
 ---
 
 ## Quick Verification Commands
