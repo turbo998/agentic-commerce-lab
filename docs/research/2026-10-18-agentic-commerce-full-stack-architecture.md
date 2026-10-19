@@ -375,3 +375,24 @@ Enforces UCP Oct-19 (`#881`, `#755`, `#731`, `#912`, commit `29e2d562ec0e`) and 
 - **Deferred Payment Conservation (`verify_ucp_deferred_payment_terms_and_totals`)**: Verifies `due_now + sum(deferred) == total` across deposits, installments, and B2B Net-30/60/90 schedules (`#881`), allowing zero-upfront checkout completion when `due_now == 0`.
 - **OAuth Grant Restriction & `201 Location` / Escalation `continue_url` (`verify_ucp_identity_grant_and_location_headers`)**: Restricts Identity Linking `oauth2.grant_types` to `authorization_code` and `refresh_token` (`#755`), requires `Location` on all `201 Created` POST responses (`#731`), and requires an HTTPS `continue_url` whenever `status == "requires_escalation"` (`#912`).
 - **Multi-Hop Terminal Key Binding JWT (`verify_ap2_sd_jwt_kb_terminal_chain`)**: Verifies RFC 9901 `SD-JWT+KB` (`typ == "kb+jwt"`, `sd_hash`, `nonce`, and terminal agent holder binding, AP2 `#369`).
+
+---
+
+## 41. UCP Post-Order Modification (`#945`) & Consultation (`#946`), Catalog Substitute vs Search (`#974`), Food Allergen Fail-Closed (`#964`) & ACP MCP Spend Gate (`#296`/`#314`) (Stage 35)
+
+### 41.1 UCP Food Allergen Fail-Closed & No-Inference Guard (`evaluate_ucp_food_allergen_and_dietary_guard`, UCP PR `#964`)
+
+Prohibits platforms/agents from inferring `free_of` from prose (`PLATFORM_INFERRED_FREE_OF_FORBIDDEN`) or businesses from clearing allergens using buyer restrictions (`BUSINESS_RESTRICTION_CLEARING_FORBIDDEN`), and emits `ALLERGEN_CONFLICT_REQUIRES_BUYER_REVIEW` whenever a buyer-restricted allergen is `contains`, `may_contain`, or unrecorded on the dish.
+
+### 41.2 UCP Catalog Entity `substitutes` vs Open-Ended `like` Discovery (`evaluate_ucp_catalog_substitute_vs_search_guard`, UCP PR `#974`)
+
+Enforces the architectural boundary between entity-level `get_product(include=["substitutes"])` (business-asserted replacements) and open-ended discovery `search_catalog(like=[...])` or cross-sell `recommendations` (`UNVERIFIED_SIMILARITY_SEARCH_OR_RECOMMENDATION_SUBSTITUTION_BLOCKED`).
+
+### 41.3 UCP Cancellation-First Order Modification Safe Lookup & Atomic Fence (`evaluate_ucp_order_modification_lookup_and_fence`, UCP PR `#945` / EP `#943`)
+
+Enforces `base_order_version == current_order_version`, guarantees that `GET /orders/{id}/modifications/lookup` (`Original-Idempotency-Key` header) is strictly read-only per RFC 9110 §9.2.1 (`UNSAFE_GET_LOOKUP_STATE_MUTATION_FORBIDDEN`), and implements atomic compare-and-set fencing (`POST /orders/{id}/modifications/fence`) to tombstone timed-out cancellation keys (`FENCED_IDEMPOTENCY_KEY_LATE_ARRIVAL_BLOCKED`).
+
+### 41.4 UCP Business-Initiated Post-Order Consultation & ACP MCP Host Spend Gate (`evaluate_ucp_order_consultation_decision_guard`, `evaluate_acp_mcp_mutating_tool_and_host_gate`, UCP PR `#946` & ACP PR `#296`/`#314`)
+
+Verifies reversed-host schema authority binding (`SCHEMA_AUTHORITY_BINDING_INVALID`), evaluates buyer Identity Linking authentication and dedicated `dev.ucp.shopping.order_consultation:decide` scope before replay cache lookup, verifies RFC 8785 canonical JSON `proposal_digest` (`sha-256:<hex>`), and requires `meta.idempotency_key` + signed `mcpToolGate` on mutating/spend-capable ACP MCP tools.
+

@@ -229,6 +229,12 @@
    - [`lab/protocol_v02_sovereign_cbdc_bench.py`](../../lab/protocol_v02_sovereign_cbdc_bench.py) & [`tests/test_protocol_v02_sovereign_cbdc_bench.py`](../../tests/test_protocol_v02_sovereign_cbdc_bench.py)
    - [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](../../reports/agentic-commerce-protocol-v02-cbdc-bench/index.html) & [`reports/agentic-commerce-protocol-v02-cbdc-bench/report.json`](../../reports/agentic-commerce-protocol-v02-cbdc-bench/report.json) (**AI-Native `16/16` (`100.0%`) vs Classic 3-Tier `1/16` (`6.2%`)**)
 
+### Stage 35 — UCP Post-Order Modification (`#945`) & Consultation (`#946`), Catalog Substitute vs Search (`#974`), Food Allergen Fail-Closed (`#964`) & ACP MCP Mutating Tool Gate (`#296`/`#314`)
+1. **UCP Post-Order Lifecycle, Catalog Substitution, Food Allergen & ACP Host Spend Gate ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §41)**:
+   - Enforced UCP PR `#964` food allergen fail-closed checks (`PLATFORM_INFERRED_FREE_OF_FORBIDDEN`, `BUSINESS_RESTRICTION_CLEARING_FORBIDDEN`, and `ALLERGEN_CONFLICT_REQUIRES_BUYER_REVIEW` on `contains`/`may_contain`/unrecorded allergens); UCP PR `#974` separation between entity `get_product(include=["substitutes"])` and open-ended `search_catalog(like=[...])` (`UNVERIFIED_SIMILARITY_SEARCH_OR_RECOMMENDATION_SUBSTITUTION_BLOCKED`); UCP PR `#945` (EP `#943`) cancellation-first order modification with RFC 9110 §9.2.1 safe GET lookup (`UNSAFE_GET_LOOKUP_STATE_MUTATION_FORBIDDEN`) and atomic POST fencing (`FENCED_IDEMPOTENCY_KEY_LATE_ARRIVAL_BLOCKED`); UCP PR `#946` (EP `#944`) post-order consultation schema-authority binding, auth-before-replay with `dev.ucp.shopping.order_consultation:decide` scope, and RFC 8785 `proposal_digest`; plus ACP PR `#296`/`#314` `meta.idempotency_key` and signed `mcpToolGate` verification.
+2. **Executable Guard Module & Unit Tests (249 Total Tests)**:
+   - [`lab/ucp_post_order_catalog_food_guard.py`](../../lab/ucp_post_order_catalog_food_guard.py) & [`tests/test_ucp_post_order_catalog_food_guard.py`](../../tests/test_ucp_post_order_catalog_food_guard.py)
+
 ---
 
 ## Quick Verification Commands

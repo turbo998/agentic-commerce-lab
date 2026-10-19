@@ -131,6 +131,13 @@ from lab.zk_eligibility_privacy_redaction_guard import (
     evaluate_zk_selective_disclosure_eligibility,
     scan_and_redact_agent_context_pii_pci,
 )
+from lab.ucp_post_order_catalog_food_guard import (
+    evaluate_acp_mcp_mutating_tool_and_host_gate,
+    evaluate_ucp_catalog_substitute_vs_search_guard,
+    evaluate_ucp_food_allergen_and_dietary_guard,
+    evaluate_ucp_order_consultation_decision_guard,
+    evaluate_ucp_order_modification_lookup_and_fence,
+)
 
 
 @dataclass(frozen=True)
