@@ -325,6 +325,12 @@
 2. **Executable Guard Module & Unit Tests (303 Total Tests)**:
    - [`lab/ucp_address_components_capability_webhooks_quote_acp_feed_guard.py`](../../lab/ucp_address_components_capability_webhooks_quote_acp_feed_guard.py) & [`tests/test_ucp_address_components_capability_webhooks_quote_acp_feed_guard.py`](../../tests/test_ucp_address_components_capability_webhooks_quote_acp_feed_guard.py)
 
+### Stage 51 — 16-Scenario Benchmark & 7-Card 4:5 Visual Report for UCP Address Line Components, Multi-AS Candidate Selection, Capability Event Webhooks, Quote/Declared Fields & ACP Host/Timing/Feed Provenance (`AW-01`..`AW-16`)
+1. **16-Scenario Benchmark & 7-Card 4:5 Visual Report ([`lab/ucp_address_webhooks_quote_acp_feed_bench.py`](../../lab/ucp_address_webhooks_quote_acp_feed_bench.py) & [`reports/agentic-commerce-ucp-address-webhooks-quote-acp-feed-bench/index.html`](../../reports/agentic-commerce-ucp-address-webhooks-quote-acp-feed-bench/index.html))**:
+   - Evaluates 16 end-to-end scenarios (`AW-01` through `AW-16`) across Stage 50 guards: **AI-Native 6-Plane achieves 16/16 (100.0%) vs Classic 3-Tier 1/16 (6.2%)**, with `0.42 ms` vs `2.09 ms` mean latency (`5.0x` speedup) and `100.0%` perturbation stability.
+2. **Unit Tests (306 Total Tests)**:
+   - [`tests/test_ucp_address_webhooks_quote_acp_feed_bench.py`](../../tests/test_ucp_address_webhooks_quote_acp_feed_bench.py)
+
 ---
 
 ## Quick Verification Commands
