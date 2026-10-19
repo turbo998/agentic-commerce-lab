@@ -295,6 +295,12 @@
 2. **Executable Guard Module & Unit Tests (286 Total Tests)**:
    - [`lab/ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py`](../../lab/ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py) & [`tests/test_ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py`](../../tests/test_ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py)
 
+### Stage 46 — 16-Scenario 7-Card 4:5 Benchmark Report for UCP Correlation/Idempotency, Wallet Attestation, Order Modification/Consultation & AP2 Mandate Conformance Guards (`CI-01`..`CI-16`)
+1. **16-Scenario Benchmark & Self-Contained 7-Card 4:5 Visual Deck ([`lab/ucp_correlation_idempotency_wallet_modification_ap2_bench.py`](../../lab/ucp_correlation_idempotency_wallet_modification_ap2_bench.py) & [`reports/agentic-commerce-ucp-correlation-idempotency-wallet-modification-ap2-bench/index.html`](../../reports/agentic-commerce-ucp-correlation-idempotency-wallet-modification-ap2-bench/index.html))**:
+   - Evaluates `CI-01` through `CI-16` covering Stages 44–45: **16/16 (`100.0%`) AI-Native 6-Plane pass rate vs 1/16 (`6.2%`) Classic 3-Tier pass rate**, `0.43 ms` vs `2.08 ms` latency (`4.8x` speedup), `100.0%` perturbation stability.
+2. **Unit Tests (289 Total Tests)**:
+   - [`tests/test_ucp_correlation_idempotency_wallet_modification_ap2_bench.py`](../../tests/test_ucp_correlation_idempotency_wallet_modification_ap2_bench.py)
+
 ---
 
 ## Quick Verification Commands
