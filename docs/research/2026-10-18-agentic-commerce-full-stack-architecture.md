@@ -580,4 +580,25 @@ Enforces UCP PR `#930`: reflects an accepted quote as exactly one `totals[]` ent
 
 Enforces ACP PR `#314` (fail-closed host-side `mcpToolGate` allow/deny verification before sensitive ACP spend steps without replacing ACP `Authorization`/`Signature`/`Timestamp`/`Idempotency-Key` headers or exposing API keys in prompts), PR `#273` (`Server-Timing: acp;dur=<ms>` metric format without leaking internal database/shard/topology tokens or replacing independent client latency measurement), and PR `#260` (SEP `#259` `UpsertProductsResponse.feed_update_id` propagation to `Product.last_update_id` on touched items and verification against `suggested_price.source` at checkout).
 
+---
+
+## 52. UCP AP2 Payment Mandate Verification & Token Issuance (`#916`), RFC 9530 Raw-Byte `Content-Digest` (`#917`), Relational Catalog Search `purpose` & `reference_ids` (`#902`), ACP Feed Extensions & Razorpay UPI Circle (`#223`/`#216`), and AP2 `open_mandate_hash` / `checkout_hash` Entropy + Visa TAP RFC 9421 (`#279`/`#278`/`#21`) (Stage 52)
+
+### 52.1 UCP AP2 Payment Mandate Verification at Token Issuance & RFC 9530 Raw-Byte `Content-Digest` (`evaluate_ucp_ap2_token_issuance_and_content_digest_guard`, UCP PRs `#916`, `#917`)
+
+Enforces UCP PR `#916` (Step 3 `Payment Mandate Verification & Token Issuance`): requires presenting the AP2 Payment Mandate as a source credential (`credential.type == "ap2_payment_mandate"` with `payment_mandate` SD-JWT+kb and `checkout_jwt` Compact JWS plus `binding.type == "dev.ucp.shopping.checkout"`) to `/tokenize` without adding top-level `/tokenize` members; requires the Credential Provider to verify mandate signature, key binding, expiration, and `transaction_id` correlation against `checkout_jwt` before issuing an opaque, non-reversible token (`>= 128 bits` entropy, rejecting reversible "composite tokens"); and returns `payment_mandate_required` on `complete_checkout` when AP2 is negotiated without a mandate-derived token. Also enforces UCP PR `#917`: verifies `Content-Digest` (`sha-256=:<base64>:`) per RFC 9530 over the exact raw HTTP body bytes rather than RFC 8785 JCS-canonicalized JSON.
+
+### 52.2 UCP Relational Catalog Search `purpose` & `reference_ids` Pairing and Self-Exclusion (`evaluate_ucp_catalog_search_purpose_and_reference_ids_guard`, UCP PR `#902`)
+
+Enforces UCP PR `#902` (`dev.ucp.shopping.catalog.search`): validates `purpose` (`"search"`, `"recommendation"`, `"swap"`, rejecting unsupported values with HTTP 400 `unsupported_purpose` / JSON-RPC `-32602` instead of fallback browse), forbids `reference_ids` when `purpose == "search"`, requires `reference_ids` (`minItems: 1`, `uniqueItems: true`) when `purpose == "swap"`, excludes all referenced product/variant IDs and parent products on `recommendation`, and excludes referenced items and bare parent products on `swap` unless returning a distinct substitute variant (`is_variant == True` and `id != referenced_variant_id`).
+
+### 52.3 ACP Feed Extensions JSONPath Whitelist & Razorpay UPI Circle Delegated Payment Handler (`evaluate_acp_feed_extensions_and_razorpay_upi_circle_guard`, ACP PRs `#223`, `#216`)
+
+Enforces ACP PR `#223` (SEP `#222` `FeedMetadata.extensions` JSONPath `extends` whitelist with mandatory `https://` `schema` and `spec` URIs, rejecting undeclared extension fields on feed objects) and ACP PR `#216` (`com.razorpay.upi_circle` delegated payment handler for India's NPCI UPI Circle: requires opaque `delegate_id` `ucirc_...` without exposing raw PSP `mandate_id`, a fresh one-time `credential.type == "upi_circle_cryptogram"` from Razorpay TSP with `expires_at > now`, `currency == "inr"` with NPCI regulatory per-transaction ceiling `max_amount <= 1500000` paise / `₹15,000`, and `risk_signals == []`).
+
+### 52.4 AP2 `open_mandate_hash` RFC 8785 JCS Conformance Vectors, High-Entropy `checkout_hash` Payload Claim & Visa TAP RFC 9421 `@signature-params` Verifier (`evaluate_ap2_open_mandate_hash_entropy_and_tap_rfc9421_guard`, AP2 PRs `#279`, `#278` & Visa TAP PR `#21`)
+
+Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned_open_checkout_mandate_body))` computed over the unsigned claims object rather than the JWS compact string, rejecting float minor-unit encoding and preserving exact Unicode code points without NFC/NFD pre-normalization), AP2 PR `#278` (requiring `>= 128 bits` of payload entropy in the Checkout JWT so deterministic `Ed25519` signatures satisfy rainbow-table resistance), and Visa TAP PR `#21` (merchant backend RFC 9421 signature base ending with `@signature-params`, individually quoted covered components `("@authority" "@path")`, and `Ed25519` / `RSA-PSS` algorithm support).
+
+
 

@@ -200,6 +200,16 @@ from lab.ucp_address_components_capability_webhooks_quote_acp_feed_guard import 
     evaluate_ucp_identity_selection_and_capability_webhook_guard,
     evaluate_ucp_quote_and_declared_fields_guard,
 )
+from lab.ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard import (
+    ACPFeedExtensionsAndRazorpayUPICircleGuardResult,
+    AP2OpenMandateHashEntropyAndTAPSIMGuardResult,
+    UCPAP2TokenIssuanceAndContentDigestGuardResult,
+    UCPCatalogSearchPurposeAndReferenceIdsGuardResult,
+    evaluate_acp_feed_extensions_and_razorpay_upi_circle_guard,
+    evaluate_ap2_open_mandate_hash_entropy_and_tap_rfc9421_guard,
+    evaluate_ucp_ap2_token_issuance_and_content_digest_guard,
+    evaluate_ucp_catalog_search_purpose_and_reference_ids_guard,
+)
 
 
 @dataclass(frozen=True)

@@ -331,6 +331,14 @@
 2. **Unit Tests (306 Total Tests)**:
    - [`tests/test_ucp_address_webhooks_quote_acp_feed_bench.py`](../../tests/test_ucp_address_webhooks_quote_acp_feed_bench.py)
 
+### Stage 52 — UCP AP2 Payment Mandate Verification & Token Issuance (`#916`), RFC 9530 Raw-Byte `Content-Digest` (`#917`), Catalog Search `purpose` & `reference_ids` (`#902`), ACP Feed Extensions & Razorpay UPI Circle (`#223`/`#216`), and AP2 `open_mandate_hash` / Visa TAP RFC 9421 (`#279`/`#278`/`#21`)
+1. **Primary-Source Protocol Research**:
+   - **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**: Audited PR `#916` (Step 3 `Payment Mandate Verification & Token Issuance` via `/tokenize` `ap2_payment_mandate` source credential producing an opaque non-reversible token, plus `payment_mandate_required` error code), PR `#917` (RFC 9530 raw-byte `Content-Digest` on Shopping REST responses instead of RFC 8785 JCS), and PR `#902` (`dev.ucp.shopping.catalog.search` `purpose` and `reference_ids` pairing and self-exclusion rules for `recommendation` and `swap`).
+   - **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**: Audited PR `#223` (SEP `#222` `FeedMetadata.extensions` JSONPath `extends` whitelist) and PR `#216` (`com.razorpay.upi_circle` delegated payment handler with opaque `delegate_id`, one-time `upi_circle_cryptogram`, `INR 15,000` NPCI limit, and `risk_signals: []`).
+   - **Google AP2 (`google-agentic-commerce/AP2`) & Visa TAP (`visa/trusted-agent-protocol`)**: Audited AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned_open_checkout_mandate_body))` 7-vector conformance rules), AP2 PR `#278` (high-entropy payload requirement on `checkout_hash` enabling `Ed25519`), and Visa TAP PR `#21` (merchant backend RFC 9421 `@signature-params` final line and individually quoted covered components).
+2. **Executable Guard Module & Unit Tests (310 Total Tests)**:
+   - [`lab/ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py`](../../lab/ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py) & [`tests/test_ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py`](../../tests/test_ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py)
+
 ---
 
 ## Quick Verification Commands
