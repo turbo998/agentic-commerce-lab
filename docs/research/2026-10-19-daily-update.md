@@ -289,6 +289,12 @@
 2. **Executable Guard Module & Unit Tests (282 Total Tests)**:
    - [`lab/ucp_correlation_idempotency_ap2_conformance_guard.py`](../../lab/ucp_correlation_idempotency_ap2_conformance_guard.py) & [`tests/test_ucp_correlation_idempotency_ap2_conformance_guard.py`](../../tests/test_ucp_correlation_idempotency_ap2_conformance_guard.py)
 
+### Stage 45 — UCP `wallet_attestation` (`#415`) & `render_artifact` (`#635`), Order Modification Safe Lookup & Permanent Fence (`#945`), Order Consultation Proposal Digest & Pre-Replay Auth (`#946`), and AP2 `merchant_authorization` / `SD-JWT+kb` / `P-521` Curve Pairing (`#466`/`#496`/`#610`/`#625`/`#618`) + Discount/Fulfillment Guards (`#577`/`#578`/`#609`/`#617`)
+1. **Wallet Attestation, Order Modification/Consultation & AP2 SD-JWT+kb / Curve Pairing Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §48)**:
+   - Enforced UCP PR `#415` `wallet_attestation` signed boolean predicate verification, freshness, and raw portfolio privacy alongside PR `#635` `com.mercadopago.payment.render_artifact` action contract; UCP PR `#945` (`dev.ucp.shopping.order_modification`) safe read-only `GET lookup_modification` vs permanent tombstone `POST fence_modification` (`TEMPORARY_FENCED_UNTIL_TOMBSTONE_FORBIDDEN`); UCP PR `#946` (`dev.ucp.shopping.order_consultation`) pre-replay buyer `:decide` scope check, single serialization-point closure, and RFC 8785 JCS `proposal_digest`; and UCP PRs `#466`/`#496`/`#610`/`#625`/`#618` (`ap2.merchant_authorization` requirement, `SD-JWT+kb`/`dSD-JWT` 3-part key-binding JWT regex, `P-521`/`ES512` JWK pairing) plus PRs `#577`/`#578`/`#609`/`#617` (`gift_line_item_id`, secret promo code protection on `discounts.available[]`, and `fulfillment_event` selection linkage).
+2. **Executable Guard Module & Unit Tests (286 Total Tests)**:
+   - [`lab/ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py`](../../lab/ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py) & [`tests/test_ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py`](../../tests/test_ucp_wallet_order_modification_consultation_ap2_sdjwt_guard.py)
+
 ---
 
 ## Quick Verification Commands

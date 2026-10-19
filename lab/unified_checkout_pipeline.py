@@ -176,6 +176,13 @@ from lab.ucp_correlation_idempotency_ap2_conformance_guard import (
     evaluate_ucp_identity_recognized_issuer_and_loyalty_guard,
     evaluate_ucp_platform_reference_and_permalink_version_guard,
 )
+from lab.ucp_wallet_order_modification_consultation_ap2_sdjwt_guard import (
+    compute_ucp_consultation_proposal_digest,
+    evaluate_ucp_ap2_merchant_auth_sdjwt_and_discount_fulfillment_guard,
+    evaluate_ucp_order_consultation_digest_and_auth_guard,
+    evaluate_ucp_order_modification_lookup_and_fence_guard,
+    evaluate_ucp_wallet_attestation_and_payment_render_artifact_guard,
+)
 
 
 @dataclass(frozen=True)

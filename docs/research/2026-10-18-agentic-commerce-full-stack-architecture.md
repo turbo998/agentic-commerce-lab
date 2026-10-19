@@ -504,6 +504,27 @@ Enforces UCP PR `#850`: selects a business's `config.providers` `oauth2` entry o
 
 Computes `open_mandate_hash = SHA-256(JCS_RFC8785(unsigned_open_checkout_mandate_body))` over the unsigned claims object without sorting arrays or hashing JWS envelopes (`#279`), requires `>= 128` bits of payload entropy for `checkout_hash` so Ed25519/WBA integrators resist rainbow-table attacks (`#278`), matches allowed payment instruments by `(type, id)` (`#301`), matches allowed merchants by non-empty `merchant.id` without spoofable `name + website` fallback (`#324`, CWE-639), and prevents `PaymentReceipt` from asserting `rail_confirmation_verified=true` on self-generated UUIDs (`#335`).
 
+---
+
+## 48. UCP `wallet_attestation` Identity Linking (`#415`) & `render_artifact` Pix Action (`#635`), Cancellation-First Order Modification Safe Lookup & Permanent Fence (`#945`), Post-Order Consultation Proposal Digest & Pre-Replay Auth (`#946`), and AP2 `merchant_authorization` / `SD-JWT+kb` / `P-521` Curve Binding (`#466`/`#496`/`#610`/`#625`/`#618`) + Discount/Fulfillment Guards (`#577`/`#578`/`#609`/`#617`) (Stage 45)
+
+### 48.1 Non-OAuth `wallet_attestation` Identity Linking & `com.mercadopago.payment.render_artifact` Action (`evaluate_ucp_wallet_attestation_and_payment_render_artifact_guard`, UCP PRs `#415`, `#635`)
+
+Enforces UCP PR `#415` (RFC `#355` Phase 3): `type: "wallet_attestation"` entries in `config.providers` require `provider_jwks` (`https://`), verify JWS signature by `kid`/`alg`, check freshness (`exp` and `attested_at` max-age), treat the signed boolean predicate outcome as the sole entitlement decision (`UNSIGNED_WALLET_ENTITLEMENT_OVERRIDE_BLOCKED`), forbid unrequested raw wallet portfolio disclosure (`WALLET_ATTESTATION_RAW_PORTFOLIO_DISCLOSURE_LEAK_BLOCKED`), and contribute zero OAuth scopes. Also enforces UCP PR `#635` (`com.mercadopago.payment.render_artifact`): rejects `required` boolean fields on the action instance (`RENDER_ARTIFACT_FORBIDDEN_REQUIRED_BOOLEAN_FIELD`) and enforces inert display artifacts with origin-allowlisted `https://` `instructions_url`.
+
+### 48.2 Cancellation-First Order Modification Safe GET `lookup_modification` & Permanent POST `fence_modification` (`evaluate_ucp_order_modification_lookup_and_fence_guard`, UCP PR `#945` / EP `#943`)
+
+Enforces UCP PR `#945`: restricts `op == "cancel"`, verifies `base_order_version == order_version` on fresh admission, blocks partial commits under `atomicity == "atomic"` while any unit awaits business review (`ATOMIC_MODIFICATION_PARTIAL_COMMIT_WHILE_REVIEW_PENDING_BLOCKED`), enforces strictly safe `GET /orders/{id}/modifications/lookup` with `Original-Idempotency-Key` header that never installs a fence or mutates state (`LOOKUP_MODIFICATION_MUTATED_FENCE_OR_CLAIM_STATE_BLOCKED`), and enforces `POST /orders/{id}/modifications/fence` atomic compare-and-set with a permanent tombstone (`fenced_until` temporary fences are forbidden: `TEMPORARY_FENCED_UNTIL_TOMBSTONE_FORBIDDEN`).
+
+### 48.3 Business-Initiated Post-Order Consultation Pre-Replay `:decide` Auth, Serialization-Point Closure & RFC 8785 `proposal_digest` (`evaluate_ucp_order_consultation_digest_and_auth_guard`, UCP PR `#946` / EP `#944`)
+
+Enforces UCP PR `#946`: evaluates buyer Identity Linking authentication and dedicated scope `dev.ucp.shopping.order_consultation:decide` **before** checking the replay store (`CONSULTATION_DECIDE_AUTH_OR_SCOPE_FAILED_BEFORE_REPLAY`), checks delegation limits and exact revision/deadline at the single serialization point (`CONSULTATION_STALE_REVISION_OR_EXPIRED_AT_SERIALIZATION_POINT_BLOCKED`), verifies `proposal_digest = "sha-256:" + sha256(JCS_RFC8785(canonical_proposal_input))` (`CONSULTATION_PROPOSAL_DIGEST_MISMATCH_BLOCKED`), and separates approval receipt issuance from payment capture.
+
+### 48.4 AP2 `merchant_authorization` Required Field, `SD-JWT+kb` / `dSD-JWT` Regex & `P-521`/`ES512` Curve Pairing + Discount/Fulfillment Integrity (`evaluate_ucp_ap2_merchant_auth_sdjwt_and_discount_fulfillment_guard`, UCP PRs `#466`, `#496`, `#610`, `#625`, `#618`, `#577`, `#578`, `#609`, `#617`)
+
+Requires `ap2.merchant_authorization` in all AP2-active checkout responses (`#466`), machine-enforces `P-521` -> `ES512` (alongside `P-256`/`ES256`, `P-384`/`ES384`, `Ed25519`/`EdDSA`) JWK curve-to-algorithm pairing (`#625`, `#618`), validates `checkout_mandate` against the `SD-JWT+kb` / `dSD-JWT` (`~~`) pattern requiring a 3-part key-binding JWT (`#496`, `#610`), links zero-price promotional gift items via `applied_discount.gift_line_item_id` (`#578`), hides secret promo codes on `discounts.available[]` (`#609`), and binds `fulfillment_event` back to checkout `fulfillment_method_id` / `fulfillment_option_id` (`#617`).
+
+
 
 
 
