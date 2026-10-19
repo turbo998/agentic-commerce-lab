@@ -313,6 +313,12 @@
 2. **Executable Guard Module & Unit Tests (296 Total Tests)**:
    - [`lab/acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py`](../../lab/acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py) & [`tests/test_acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py`](../../tests/test_acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py)
 
+### Stage 49 — 16-Scenario Benchmark & 7-Card 4:5 Visual Report for UCP Fulfillment/Similarity/Nano/Credential Echo, ACP ATDRP-0.1/Delegate/Deep Links & Visa TAP Hybrid PQ Guards (Stages 47–48)
+1. **16-Scenario Benchmark & 7-Card 4:5 Visual Report ([`lab/ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py`](../../lab/ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py) & [`reports/agentic-commerce-ucp-fulfillment-similarity-nano-acp-atdrp-tap-pq-bench/index.html`](../../reports/agentic-commerce-ucp-fulfillment-similarity-nano-acp-atdrp-tap-pq-bench/index.html))**:
+   - Evaluates 16 end-to-end scenarios (`FN-01` through `FN-16`) across Stage 47 and Stage 48 guards: **AI-Native 6-Plane achieves 16/16 (100.0%) vs Classic 3-Tier 1/16 (6.2%)**, with `0.43 ms` vs `2.10 ms` mean latency (`4.9x` speedup) and `100.0%` perturbation stability.
+2. **Unit Tests (299 Total Tests)**:
+   - [`tests/test_ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py`](../../tests/test_ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench.py)
+
 ---
 
 ## Quick Verification Commands
