@@ -265,6 +265,12 @@
 2. **Unit Tests (267 Total Tests)**:
    - [`tests/test_ucp_return_webhook_food_lodging_bench.py`](../../tests/test_ucp_return_webhook_food_lodging_bench.py)
 
+### Stage 41 — UCP Nested Bundle Line Items (`#976`), UCP-AP2 Credential Provider Tokenization (`#916`), Google AP2 ISO 4217 Budget & ISO 8601 Window (`#368`/`#377`/`#378`), and UCP Catalog Purpose / ACP Delegate Telemetry & Deep Links (`#902`/`#238`/`#285`/`#287`/`#237`)
+1. **Bundle Line Items, Credential Provider Mandate Tokenization, ISO 4217 Budget & ACP Delegate Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §45)**:
+   - Enforced UCP PR `#976` single-level `parent_id` bundle semantics, component breakdown conservation, and checkout aggregate double-count prevention (`BUNDLE_COMPONENTS_DOUBLE_COUNTED_IN_CHECKOUT_TOTALS_BLOCKED`), plus PR `#940` input-only `cart_id` and PR `#908` `payment: {}` on deferred-terms completion; UCP PR `#916` Credential Provider `ap2_payment_mandate` + `checkout_jwt` correlation at `/tokenize` (`AP2_MANDATE_CHECKOUT_JWT_CORRELATION_MISMATCH_AT_TOKENIZE`); Google AP2 PRs `#368`/`#377` ISO 4217 minor-unit exponent & `Decimal` floor budget conversion, PR `#378` chronological ISO 8601 `execution_date` bounds, and PR `#352` post-transaction non-fraud dispute resolution; and UCP PR `#902` catalog search `purpose`/`reference_ids` self-exclusion alongside ACP PRs `#285`/`#287` required `Signature`/`Timestamp`, `#238` `session_context` separation, and `#237` `app_links` registered scheme verification.
+2. **Executable Guard Module & Unit Tests (271 Total Tests)**:
+   - [`lab/ucp_bundle_ap2_budget_acp_telemetry_guard.py`](../../lab/ucp_bundle_ap2_budget_acp_telemetry_guard.py) & [`tests/test_ucp_bundle_ap2_budget_acp_telemetry_guard.py`](../../tests/test_ucp_bundle_ap2_budget_acp_telemetry_guard.py)
+
 ---
 
 ## Quick Verification Commands

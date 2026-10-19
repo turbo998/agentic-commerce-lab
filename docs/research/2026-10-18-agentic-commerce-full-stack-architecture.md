@@ -444,6 +444,27 @@ Enforces half-open `[start, end)` POSIX cutoff selection and blocks multiplying 
 
 Iterates RFC 9728 `authorization_servers[]` without aborting on custom-domain issuer mismatches (`#891`), enforces `draft-hardt-email-verification §3` `_email-verification.<domain>` TXT delegation before Accelerated IdP email auto-linking (`#876`), and enforces RFC 9421 §3.3.4/§3.3.5 fixed-width 64/96-byte raw `r||s` ECDSA signatures (`ASN1_DER_OR_INVALID_LENGTH_ECDSA_SIGNATURE_BLOCKED`, `#963`).
 
+---
+
+## 45. UCP Nested Bundle Line Items (`#976`), UCP-AP2 Credential Provider Tokenization (`#916`), Google AP2 ISO 4217 Budget & ISO 8601 Window (`#368`/`#377`/`#378`), and ACP Delegate Telemetry & Deep Links (`#238`/`#285`/`#287`/`#237`) (Stage 41)
+
+### 45.1 Nested Bundle Line Items, Cart-Only Checkout & Deferred Terms (`evaluate_ucp_bundle_cart_and_deferred_terms_guard`, UCP PRs `#976`, `#940`, `#908`)
+
+Enforces UCP PR `#976` single-level `parent_id` bundle containment (`BUNDLE_MULTI_LEVEL_OR_ORPHAN_NESTING_BLOCKED`), verifies that component `totals[type="total"]` sum to the parent bundle's `totals[type="subtotal"]` (`BUNDLE_COMPONENT_TOTALS_MISMATCH_PARENT_SUBTOTAL`), excludes `parent_id` components from checkout-level `subtotal`/`items_discount` to prevent double-counting (`BUNDLE_COMPONENTS_DOUBLE_COUNTED_IN_CHECKOUT_TOTALS_BLOCKED`), forbids businesses from rejecting echoed components on update (`BUSINESS_REJECTED_ECHOED_BUNDLE_COMPONENTS_FORBIDDEN`), blocks echoing input-only `cart_id` in responses (`#940`), and enforces `payment: {}` (with `selected_term_id` omitted) on `complete_checkout` for fully deferred payment terms (`#908`).
+
+### 45.2 UCP-AP2 Step 3 Credential Provider Payment Mandate Verification & Token Issuance (`evaluate_ucp_ap2_credential_provider_tokenization_guard`, UCP PR `#916`)
+
+Separates the AP2 `payment_mandate` (presented as `credential.type == "ap2_payment_mandate"` alongside `checkout_jwt` at `POST /tokenize`) from the resulting opaque handler token (`payment.instruments[*].credential.token`), blocking reversible composite tokens (`REVERSIBLE_COMPOSITE_MANDATE_TOKEN_CONFLATION_BLOCKED`), verifying `payment_mandate.transaction_id == checkout_jwt_hash` before token issuance (`AP2_MANDATE_CHECKOUT_JWT_CORRELATION_MISMATCH_AT_TOKENIZE`), and rejecting `complete_checkout` with `payment_mandate_required` when AP2 is negotiated without a mandate-derived token (`AP2_NEGOTIATED_WITHOUT_MANDATE_DERIVED_TOKEN_BLOCKED`).
+
+### 45.3 Google AP2 ISO 4217 Minor-Unit Budget, ISO 8601 Execution-Date Bounds & Non-Fraud Dispute Resolver (`evaluate_ap2_iso4217_budget_execution_and_dispute_guard`, AP2 PRs `#368`, `#377`, `#378`, `#352`)
+
+Replaces binary float `int(max * 100)` with `Decimal(str(max)) * (10 ** exponent)` (`ROUND_FLOOR`) across zero-decimal (`JPY`, `KRW`), two-decimal (`USD`, `EUR`), three-decimal (`KWD`, `BHD`), and four-decimal (`CLF`) currencies (`AP2_BUDGET_ISO4217_MINOR_UNIT_CAP_EXCEEDED`), compares `execution_date` against `not_before`/`not_after` as chronological ISO 8601 instants/dates (`AP2_EXECUTION_DATE_OUTSIDE_ISO8601_WINDOW_BLOCKED`), and resolves post-transaction partial-fulfillment disputes once the mandate-to-receipt authorization chain is verified (`#352`).
+
+### 45.4 UCP Catalog Search `purpose` & `reference_ids` Self-Exclusion and ACP Delegate Signature, `session_context` & `app_links` Guards (`evaluate_ucp_catalog_purpose_and_acp_delegate_telemetry_guard`, UCP PR `#902`, ACP PRs `#238`, `#285`, `#287`, `#237`)
+
+Enforces UCP PR `#902` `purpose` (`search` | `recommendation` | `swap`) and `reference_ids` pairing rules, rejects unsupported purposes (`UNSUPPORTED_SEARCH_PURPOSE_FALLBACK_BROWSE_BLOCKED`), and enforces variant/parent-product self-exclusion (`CATALOG_SEARCH_ANCHOR_SELF_EXCLUSION_VIOLATED`), while enforcing ACP `Signature`/`Timestamp` headers on `delegate_payment` and `delegate_authentication` (`#285`/`#287`), `session_context` vs `risk_signals` separation (`#238`), and registered URI scheme verification on `app_links` (`ACP_APP_LINK_UNREGISTERED_SCHEME_SQUATTING_BLOCKED`, `#237`).
+
+
 
 
 

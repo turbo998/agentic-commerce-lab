@@ -157,6 +157,12 @@ from lab.ucp_food_lodging_feed_identity_guard import (
     evaluate_ucp_identity_linking_and_ecdsa_raw_rs_guard,
     evaluate_ucp_lodging_cancellation_schedule_guard,
 )
+from lab.ucp_bundle_ap2_budget_acp_telemetry_guard import (
+    evaluate_ap2_iso4217_budget_execution_and_dispute_guard,
+    evaluate_ucp_ap2_credential_provider_tokenization_guard,
+    evaluate_ucp_bundle_cart_and_deferred_terms_guard,
+    evaluate_ucp_catalog_purpose_and_acp_delegate_telemetry_guard,
+)
 
 
 @dataclass(frozen=True)
