@@ -163,6 +163,12 @@ from lab.ucp_bundle_ap2_budget_acp_telemetry_guard import (
     evaluate_ucp_bundle_cart_and_deferred_terms_guard,
     evaluate_ucp_catalog_purpose_and_acp_delegate_telemetry_guard,
 )
+from lab.ucp_payment_finality_order_access_acp_india_guard import (
+    evaluate_acp_razorpay_upi_s2s_and_feed_extensions_guard,
+    evaluate_ucp_checkout_payment_finality_and_order_reporting_guard,
+    evaluate_ucp_guest_order_access_and_rest_response_binding_guard,
+    evaluate_ucp_token_context_buyer_consent_and_correspondence_guard,
+)
 
 
 @dataclass(frozen=True)

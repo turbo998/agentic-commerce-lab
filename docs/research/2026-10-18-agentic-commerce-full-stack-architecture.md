@@ -464,6 +464,27 @@ Replaces binary float `int(max * 100)` with `Decimal(str(max)) * (10 ** exponent
 
 Enforces UCP PR `#902` `purpose` (`search` | `recommendation` | `swap`) and `reference_ids` pairing rules, rejects unsupported purposes (`UNSUPPORTED_SEARCH_PURPOSE_FALLBACK_BROWSE_BLOCKED`), and enforces variant/parent-product self-exclusion (`CATALOG_SEARCH_ANCHOR_SELF_EXCLUSION_VIOLATED`), while enforcing ACP `Signature`/`Timestamp` headers on `delegate_payment` and `delegate_authentication` (`#285`/`#287`), `session_context` vs `risk_signals` separation (`#238`), and registered URI scheme verification on `app_links` (`ACP_APP_LINK_UNREGISTERED_SCHEME_SQUATTING_BLOCKED`, `#237`).
 
+---
+
+## 46. UCP Checkout Payment Finality & Order Reporting (`#816`), Guest Order Access (`#848`), RFC 9421 §2.4 REST Response Binding (`#699`), `TokenCredential` Context & `buyer.consent` Exemption (`#792`/`#660`), `Correspondence` & 3-Axis Adjustment Cause (`#836`/`#837`/`#843`), and ACP Razorpay UPI/CoFT & Feed Extensions (`#217`/`#218`/`#223`) (Stage 42)
+
+### 46.1 Checkout Payment Finality (`final` vs `provisional`) & Order Instrument Reporting (`evaluate_ucp_checkout_payment_finality_and_order_reporting_guard`, UCP PR `#816`)
+
+Enforces UCP PR `#816` (EP `#815`): only the aggregate `totals[type="total"]` entry may carry `amount_finality` (`NON_AGGREGATE_TOTAL_AMOUNT_FINALITY_FORBIDDEN`), final totals omit `payment.maximum_amount` (`FINAL_TOTAL_MAXIMUM_AMOUNT_MUST_BE_OMITTED`), provisional totals require `payment.maximum_amount >= aggregate_total` and buyer disclosure (`PROVISIONAL_TOTAL_MAXIMUM_AMOUNT_MISSING_OR_BELOW_TOTAL`), and `Order` responses carry immutable `order.payment.maximum_amount` while stripping `credential`, `handler_id`, and `selected` from `order.payment.instruments[]` (`ORDER_PAYMENT_INSTRUMENT_FORBIDDEN_CHECKOUT_OR_CREDENTIAL_FIELD_LEAK`).
+
+### 46.2 Guest Order Access Credentials & RFC 9421 §2.4 REST Response-to-Request Binding (`evaluate_ucp_guest_order_access_and_rest_response_binding_guard`, UCP PRs `#848`, `#699`)
+
+Enforces single-order-bound guest `order_confirmation.access` credentials (`#848`), blocking cross-order enumeration (`ORDER_ACCESS_CREDENTIAL_CROSS_ORDER_ENUMERATION_BLOCKED`), listing calls, permalink URL token leakage, missing `Cache-Control: no-store`, and unrevoked credentials after guest-to-account claim (`CLAIMED_ACCOUNT_GUEST_ORDER_CREDENTIAL_NOT_REVOKED`), alongside RFC 9421 §2.4 `;req` response signature binding (`@status`, `@authority;req`, `@method;req`, `@path;req`, `content-digest`, `content-type`, plus `@query;req`/`content-digest;req`) reconstructed from the client's sent request within a 300s `created` freshness window (`#699`).
+
+### 46.3 `TokenCredential` Binding, `buyer.consent` Full-Replacement Exemption, `Correspondence` & 3-Axis `Adjustment.cause` (`evaluate_ucp_token_context_buyer_consent_and_correspondence_guard`, UCP PRs `#792`, `#660`, `#836`, `#837`, `#843`)
+
+Preserves `TokenCredential.binding` across Platform/Business/Processor while blocking `TokenCredential.identity` as caller authentication (`#792`), exempts `buyer.consent` from full-replacement reset on `update_cart`/`update_checkout` (`BUYER_CONSENT_DROPPED_ON_FULL_REPLACEMENT_UPDATE_BLOCKED`, `#660`), prevents treating `correspondence.status == "unverifiable"` as `"agrees"` (`#836`), and enforces 3-axis `Adjustment.cause` (`category`, `attributed_to`, `nature`) with `undetermined` fallback when false assertion (`fraud`) vs rule exploitation (`abuse`) is unproven (`#837`/`#843`).
+
+### 46.4 ACP Razorpay UPI Intent (`#217`), RBI CoFT S2S Cards (`#218`) & Feed Extensions Framework (`#223`) (`evaluate_acp_razorpay_upi_s2s_and_feed_extensions_guard`)
+
+Enforces NPCI `<= ₹1,00,000` (`10,000,000` paise) cap, `INR` currency lock, and `upi://pay` `tr == checkout_session_id` binding (`#217`), RBI CoFT merchant-scoped `token_id` with zero raw PAN/CVV (`#218`), and declared `FeedMetadata.extensions[]` verification without SSRF external schema auto-fetching (`#223`).
+
+
 
 
 

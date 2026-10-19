@@ -271,6 +271,12 @@
 2. **Executable Guard Module & Unit Tests (271 Total Tests)**:
    - [`lab/ucp_bundle_ap2_budget_acp_telemetry_guard.py`](../../lab/ucp_bundle_ap2_budget_acp_telemetry_guard.py) & [`tests/test_ucp_bundle_ap2_budget_acp_telemetry_guard.py`](../../tests/test_ucp_bundle_ap2_budget_acp_telemetry_guard.py)
 
+### Stage 42 — UCP Checkout Payment Finality & Order Reporting (`#816`), Guest Order Access Credentials (`#848`), RFC 9421 §2.4 REST Response-to-Request Binding (`#699`), `TokenCredential` Context & `buyer.consent` Exemption (`#792`/`#660`), `Correspondence` & 3-Axis Adjustment Cause (`#836`/`#837`/`#843`), and ACP Razorpay UPI/CoFT & Feed Extensions (`#217`/`#218`/`#223`)
+1. **Payment Finality, Guest Order Access, REST Response Binding, Consent Exemption & ACP India/Feed Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §46)**:
+   - Enforced UCP PR `#816` aggregate-only `totals[].amount_finality` (`final` | `provisional`), `payment.maximum_amount` presence/omission rules, and `order_payment_instrument` sanitization (`ORDER_PAYMENT_INSTRUMENT_FORBIDDEN_CHECKOUT_OR_CREDENTIAL_FIELD_LEAK`); UCP PR `#848` single-order guest `access` credentials with account-claim revocation (`CLAIMED_ACCOUNT_GUEST_ORDER_CREDENTIAL_NOT_REVOKED`) and UCP PR `#699` RFC 9421 §2.4 `;req` REST response binding; UCP PR `#792` `TokenCredential` `binding`/`identity` checks, PR `#660` `buyer.consent` full-replacement exemption (`BUYER_CONSENT_DROPPED_ON_FULL_REPLACEMENT_UPDATE_BLOCKED`), and PRs `#836`/`#837`/`#843` `Correspondence` & 3-axis `Adjustment.cause` guards; plus ACP PRs `#217` (Razorpay UPI Intent ₹1,00,000 cap & `tr` binding), `#218` (RBI CoFT S2S cards), and `#223` (`FeedMetadata.extensions`).
+2. **Executable Guard Module & Unit Tests (275 Total Tests)**:
+   - [`lab/ucp_payment_finality_order_access_acp_india_guard.py`](../../lab/ucp_payment_finality_order_access_acp_india_guard.py) & [`tests/test_ucp_payment_finality_order_access_acp_india_guard.py`](../../tests/test_ucp_payment_finality_order_access_acp_india_guard.py)
+
 ---
 
 ## Quick Verification Commands
