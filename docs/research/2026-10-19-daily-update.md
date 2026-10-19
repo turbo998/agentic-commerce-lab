@@ -339,6 +339,12 @@
 2. **Executable Guard Module & Unit Tests (310 Total Tests)**:
    - [`lab/ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py`](../../lab/ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py) & [`tests/test_ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py`](../../tests/test_ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard.py)
 
+### Stage 53 — 16-Scenario Benchmark & 7-Card 4:5 Visual Report for UCP AP2 Token Issuance, Catalog Purpose, ACP Feed Extensions & Razorpay UPI Circle, and AP2/Visa TAP RFC 9421 (`TI-01`..`TI-16`)
+1. **16-Scenario Benchmark & 7-Card 4:5 Visual Report ([`lab/ucp_ap2_token_catalog_purpose_acp_upi_circle_tap_bench.py`](../../lab/ucp_ap2_token_catalog_purpose_acp_upi_circle_tap_bench.py) & [`reports/agentic-commerce-ucp-ap2-token-catalog-purpose-acp-upi-circle-tap-bench/index.html`](../../reports/agentic-commerce-ucp-ap2-token-catalog-purpose-acp-upi-circle-tap-bench/index.html))**:
+   - Evaluates 16 end-to-end scenarios (`TI-01` through `TI-16`) across Stage 52 guards: **AI-Native 6-Plane achieves 16/16 (100.0%) vs Classic 3-Tier 1/16 (6.2%)**, with `0.41 ms` vs `2.08 ms` mean latency (`5.1x` speedup) and `100.0%` perturbation stability.
+2. **Unit Tests (312 Total Tests)**:
+   - [`tests/test_ucp_ap2_token_catalog_purpose_acp_upi_circle_tap_bench.py`](../../tests/test_ucp_ap2_token_catalog_purpose_acp_upi_circle_tap_bench.py)
+
 ---
 
 ## Quick Verification Commands
