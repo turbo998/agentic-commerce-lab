@@ -151,6 +151,12 @@ from lab.ucp_return_webhook_subscription_guard import (
     evaluate_ucp_purchase_options_subscription_payment_guard,
     evaluate_ucp_return_policy_eligibility_and_fees_guard,
 )
+from lab.ucp_food_lodging_feed_identity_guard import (
+    evaluate_ucp_bulk_catalog_feed_guard,
+    evaluate_ucp_food_checkout_and_fulfillment_guard,
+    evaluate_ucp_identity_linking_and_ecdsa_raw_rs_guard,
+    evaluate_ucp_lodging_cancellation_schedule_guard,
+)
 
 
 @dataclass(frozen=True)

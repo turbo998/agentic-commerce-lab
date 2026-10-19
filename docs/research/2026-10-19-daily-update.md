@@ -253,6 +253,12 @@
 2. **Executable Guard Module & Unit Tests (260 Total Tests)**:
    - [`lab/ucp_return_webhook_subscription_guard.py`](../../lab/ucp_return_webhook_subscription_guard.py) & [`tests/test_ucp_return_webhook_subscription_guard.py`](../../tests/test_ucp_return_webhook_subscription_guard.py)
 
+### Stage 39 — UCP Food Checkout & Fulfillment (`#897`), Lodging Deterministic Cancellation Schedule (`#861`), Bulk Catalog Feed (`#866`), Identity Linking (`#876`/`#891`) & RFC 9421 ECDSA Raw `r||s` (`#963`)
+1. **Single-Kitchen Food Checkout, Half-Open Lodging Schedules, Bulk Feed Authority & DNS-Delegated Identity Linking ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §44)**:
+   - Enforced UCP PR `#897` (`dev.ucp.food.checkout` & `dev.ucp.food.fulfillment`) single-establishment scope, structured `modification` arithmetic vs free-form `dish.note` (`PAID_ADDON_IN_FREEFORM_KITCHEN_NOTE_BLOCKED`), and order-wide fulfillment; UCP PR `#861` half-open `[start, end)` lodging cancellation cutoffs and multi-stay penalty protection (`MULTI_STAY_PENALTY_MULTIPLICATION_BLOCKED`); UCP PR `#866` RFC 9530 bulk feed digest verification and live serving-time authority (`STALE_BULK_FEED_USED_AS_CHECKOUT_AUTHORITY_BLOCKED`); UCP PRs `#891`/`#876` RFC 9728 multi-entry `authorization_servers` discovery and `_email-verification.<domain>` DNS-delegated email auto-linking; and UCP PR `#963` RFC 9421 §3.3.4/§3.3.5 ECDSA fixed-width raw `r||s` encoding (`ASN1_DER_OR_INVALID_LENGTH_ECDSA_SIGNATURE_BLOCKED`).
+2. **Executable Guard Module & Unit Tests (264 Total Tests)**:
+   - [`lab/ucp_food_lodging_feed_identity_guard.py`](../../lab/ucp_food_lodging_feed_identity_guard.py) & [`tests/test_ucp_food_lodging_feed_identity_guard.py`](../../tests/test_ucp_food_lodging_feed_identity_guard.py)
+
 ---
 
 ## Quick Verification Commands

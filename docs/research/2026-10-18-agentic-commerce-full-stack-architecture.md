@@ -428,5 +428,22 @@ Enforces RFC 9421 signed webhook delivery covering `webhook-id`, `webhook-timest
 
 Prevents default options from auto-subscribing when a one-time option exists, blocks replacing a withdrawn subscription with another subscription (`SILENT_SUBSCRIPTION_TO_SUBSCRIPTION_REPLACEMENT_BLOCKED`), and retains only open-ended (unamounted) instruments for recurring orders (`SUBSCRIPTION_MISSING_OPEN_ENDED_RECURRING_INSTRUMENT`), while enforcing UCP PR `#939` business identity separation and PR `#912` `requires_escalation` `continue_url` validation.
 
+---
+
+## 44. UCP Food Checkout & Fulfillment (`#897`), Lodging Deterministic Cancellation Schedule (`#861`), Bulk Catalog Feed (`#866`), Identity Linking (`#876`/`#891`) & RFC 9421 ECDSA Raw `r||s` (`#963`) (Stage 39)
+
+### 44.1 Single-Kitchen Food Checkout, Modification Arithmetic & Free-Form Note Isolation (`evaluate_ucp_food_checkout_and_fulfillment_guard`, UCP PR `#897`)
+
+Enforces single-establishment binding (`MULTI_ESTABLISHMENT_OR_FOREIGN_DISH_BLOCKED`), order-wide single-destination fulfillment (`FOOD_SPLIT_DESTINATION_DELIVERY_FORBIDDEN`), exact `(dish.price + sum(mod.price * mod.quantity)) * line_item.quantity` arithmetic, and blocks paid add-ons inside free-form `dish.note` (`PAID_ADDON_IN_FREEFORM_KITCHEN_NOTE_BLOCKED`).
+
+### 44.2 Lodging Deterministic Cancellation Schedule & Bulk Catalog Feed Authority (`evaluate_ucp_lodging_cancellation_schedule_guard`, `evaluate_ucp_bulk_catalog_feed_guard`, UCP PRs `#861`, `#866`)
+
+Enforces half-open `[start, end)` POSIX cutoff selection and blocks multiplying penalties across multiple targeted stays (`MULTI_STAY_PENALTY_MULTIPLICATION_BLOCKED`, `#861`), while verifying RFC 9530 `sha-256` file digests on bulk catalog snapshots and blocking stale offline feeds from acting as checkout price/availability authority (`STALE_BULK_FEED_USED_AS_CHECKOUT_AUTHORITY_BLOCKED`, `#866`).
+
+### 44.3 Identity Linking Multi-Entry Discovery, DNS-Delegated Email Matching & RFC 9421 ECDSA Raw `r||s` (`evaluate_ucp_identity_linking_and_ecdsa_raw_rs_guard`, UCP PRs `#891`, `#876`, `#963`)
+
+Iterates RFC 9728 `authorization_servers[]` without aborting on custom-domain issuer mismatches (`#891`), enforces `draft-hardt-email-verification §3` `_email-verification.<domain>` TXT delegation before Accelerated IdP email auto-linking (`#876`), and enforces RFC 9421 §3.3.4/§3.3.5 fixed-width 64/96-byte raw `r||s` ECDSA signatures (`ASN1_DER_OR_INVALID_LENGTH_ECDSA_SIGNATURE_BLOCKED`, `#963`).
+
+
 
 
