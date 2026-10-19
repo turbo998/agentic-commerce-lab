@@ -307,6 +307,12 @@
 2. **Executable Guard Module & Unit Tests (293 Total Tests)**:
    - [`lab/ucp_fulfillment_events_similarity_nano_credential_guard.py`](../../lab/ucp_fulfillment_events_similarity_nano_credential_guard.py) & [`tests/test_ucp_fulfillment_events_similarity_nano_credential_guard.py`](../../tests/test_ucp_fulfillment_events_similarity_nano_credential_guard.py)
 
+### Stage 48 — OpenAI/Stripe ACP ATDRP-0.1 Agentic Transaction Dispute Resolution (`#316`), Delegate Payment/Auth Signature Headers & MCP Idempotency (`#288`/`#285`/`#296`/`#275`/`#238`), Embedded App Deep Links (`#237`), and Visa TAP RFC 9421 + Hybrid PQ `ed25519-ml-dsa-65` & DID Resolver (`#21`/`#18`)
+1. **ACP ATDRP-0.1 Dispute Resolution, Delegate Signature/MCP Idempotency/Deep Links & Visa TAP Hybrid PQ Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §50)**:
+   - Enforced ACP PR `#316` (SEP `#303` ATDRP-0.1) authorization chain binding, Section 7.4a fail-closed evidence admissibility, Section 7.4 deterministic per-line decision rules (upholding merchant settlement and recording an agent-platform finding when buyer instructions conflict with a valid signed cart), and human signer / `prohibited_screened: true` verification; ACP PRs `#288`/`#287`/`#285`/`#296`/`#275`/`#238`/`#237` (`delegate_payment` `Signature` + `Timestamp`, MCP `meta.idempotency_key`, `session_context` vs `risk_signals` separation, and `app_links` custom scheme verification with web checkout fallback); and Visa TAP PRs `#21`/`#18` (RFC 9421 `@signature-params`, verify-before-recording nonce cache, explicit `DIDResolverRegistry`, and Hybrid PQ `ed25519-ml-dsa-65` `3373B` dual-leg verification + `1952B` FIPS 204 public key).
+2. **Executable Guard Module & Unit Tests (296 Total Tests)**:
+   - [`lab/acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py`](../../lab/acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py) & [`tests/test_acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py`](../../tests/test_acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard.py)
+
 ---
 
 ## Quick Verification Commands
