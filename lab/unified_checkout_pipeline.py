@@ -169,6 +169,13 @@ from lab.ucp_payment_finality_order_access_acp_india_guard import (
     evaluate_ucp_guest_order_access_and_rest_response_binding_guard,
     evaluate_ucp_token_context_buyer_consent_and_correspondence_guard,
 )
+from lab.ucp_correlation_idempotency_ap2_conformance_guard import (
+    compute_ap2_open_mandate_hash,
+    evaluate_ap2_mandate_hash_constraints_and_receipt_guard,
+    evaluate_ucp_idempotency_conditional_write_and_signals_guard,
+    evaluate_ucp_identity_recognized_issuer_and_loyalty_guard,
+    evaluate_ucp_platform_reference_and_permalink_version_guard,
+)
 
 
 @dataclass(frozen=True)

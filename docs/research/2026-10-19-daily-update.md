@@ -283,6 +283,12 @@
 2. **Unit Tests (278 Total Tests)**:
    - [`tests/test_ucp_bundle_finality_ap2_acp_bench.py`](../../tests/test_ucp_bundle_finality_ap2_acp_bench.py)
 
+### Stage 44 — UCP `platform_reference` Correlation (`#839`), Cart `continue_url` & `ucp/version` Permalinks (`#801`/`#793`), Per-Operation-Class Idempotency & `ETag`/`If-Match` Conditional Writes (`#782`/`#679`/`#628`) + Agent Signals (`#835`), Recognized-Issuer Anchoring & Loyalty Breakdown (`#850`/`#783`/`#662`), and Google AP2 `open_mandate_hash` JCS (`#279`), `checkout_hash` Entropy (`#278`), `(type, id)` / `Merchant.id` Constraints (`#301`/`#324`) & `rail_confirmation_verified` Receipt Honesty (`#335`)
+1. **Correlation, Idempotency, Conditional Writes, Recognized-Issuer Anchoring & AP2 Conformance Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §47)**:
+   - Enforced UCP PR `#839` `platform_reference` create-time immutability, Order carry-over, and PII/credential/auth prohibition, alongside PR `#801` Cart `continue_url` item preservation and PR `#793` `ucp/version` two-phase permalink resolution; UCP PRs `#782`/`#679` per-operation-class idempotency binding `(operation_name, target_resource_id)`, JCS payload hashing, and header-equals-meta verification, plus PR `#628` `ETag`/`If-Match` optimistic concurrency (`412`/`428`) and PR `#835` agent signal rules; UCP PR `#850` recognized-issuer exact string anchoring (`UNRECOGNIZED_OR_NORMALIZED_IDP_ISSUER_SUBJECT_TOKEN_EXFILTRATION_BLOCKED`), PR `#783` per-user `subject_token` binding, and PR `#662` loyalty breakdown sum invariant; and Google AP2 PR `#279` `open_mandate_hash` RFC 8785 JCS derivation, PR `#278` `>= 128`-bit `checkout_hash` entropy, PR `#301` `(type, id)` instrument matching, PR `#324` non-empty `Merchant.id` matching (CWE-639), and PR `#335` `rail_confirmation_verified` receipt honesty.
+2. **Executable Guard Module & Unit Tests (282 Total Tests)**:
+   - [`lab/ucp_correlation_idempotency_ap2_conformance_guard.py`](../../lab/ucp_correlation_idempotency_ap2_conformance_guard.py) & [`tests/test_ucp_correlation_idempotency_ap2_conformance_guard.py`](../../tests/test_ucp_correlation_idempotency_ap2_conformance_guard.py)
+
 ---
 
 ## Quick Verification Commands

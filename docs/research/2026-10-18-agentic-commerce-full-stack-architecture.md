@@ -484,6 +484,27 @@ Preserves `TokenCredential.binding` across Platform/Business/Processor while blo
 
 Enforces NPCI `<= ₹1,00,000` (`10,000,000` paise) cap, `INR` currency lock, and `upi://pay` `tr == checkout_session_id` binding (`#217`), RBI CoFT merchant-scoped `token_id` with zero raw PAN/CVV (`#218`), and declared `FeedMetadata.extensions[]` verification without SSRF external schema auto-fetching (`#223`).
 
+---
+
+## 47. UCP `platform_reference` Correlation & Immutability (`#839`), Cart `continue_url` & `ucp/version` Permalinks (`#801`/`#793`), Per-Operation-Class Idempotency & `ETag`/`If-Match` Conditional Writes (`#782`/`#679`/`#628`) + Agent Signals (`#835`), Recognized-Issuer Anchoring & Loyalty Breakdown (`#850`/`#783`/`#662`), and Google AP2 `open_mandate_hash` JCS Derivation (`#279`), `checkout_hash` Entropy (`#278`), `(type, id)` / `Merchant.id` Constraints (`#301`/`#324`) & `rail_confirmation_verified` Receipt Honesty (`#335`) (Stage 44)
+
+### 47.1 `platform_reference` Create-Time Immutability, Cart `continue_url` & Two-Phase `ucp/version` Permalink Resolution (`evaluate_ucp_platform_reference_and_permalink_version_guard`, UCP PRs `#839`, `#801`, `#793`)
+
+Enforces UCP PR `#839`: `platform_reference` (`1..512` chars) is set on Create Checkout, ignored on Update/Complete (`PLATFORM_REFERENCE_MUTATED_ON_UPDATE_OR_COMPLETE_BLOCKED`), carried unchanged onto Order (`ORDER_PLATFORM_REFERENCE_CARRYOVER_MISMATCH`), and forbidden from carrying PII/JWTs/credentials or serving as auth/idempotency (`PLATFORM_REFERENCE_PII_CREDENTIAL_OR_AUTH_MISUSE_BLOCKED`). Also enforces UCP PR `#801` (Cart `continue_url` absolute HTTPS + `line_items` preservation) and UCP PR `#793` (`ucp/version` two-phase query processing, control-parameter consumption, and browser fall-forward without JSON `version_unsupported` errors).
+
+### 47.2 Per-Operation-Class Idempotency Identity, `ETag`/`If-Match` Conditional Writes & Agent Signals (`evaluate_ucp_idempotency_conditional_write_and_signals_guard`, UCP PRs `#782`, `#679`, `#628`, `#835`)
+
+Enforces UCP PRs `#782`/`#679`: binds stored `Idempotency-Key` to `(operation_name, target_resource_id)` (`409 Conflict` / `-32000` on cross-operation or cross-target reuse even for target-only operations like `cancel_checkout`), compares payload-carrying operations via RFC 8785 JCS SHA-256, and requires `arguments.meta["idempotency-key"]` to match the covered `Idempotency-Key` header on signed requests (`IDEMPOTENCY_HEADER_META_MISMATCH_BLOCKED`). Also enforces UCP PR `#628` optimistic concurrency (`ETag` / `If-Match` returning `412 Precondition Failed` or `428 Precondition Required`) and UCP PR `#835` (`dev.ucp.payee_continuity` scoring-only non-decline rule and non-penalization of absent browser signals).
+
+### 47.3 Identity-Linking Recognized-Issuer Anchoring, Per-User `subject_token` Binding & Loyalty Breakdown Sum Invariant (`evaluate_ucp_identity_recognized_issuer_and_loyalty_guard`, UCP PRs `#850`, `#783`, `#662`)
+
+Enforces UCP PR `#850`: selects a business's `config.providers` `oauth2` entry only when `auth_url` is character-for-character identical (RFC 8414 §3.3, no trailing-slash normalization) to a pre-recognized IdP issuer and blocks discovery or `subject_token` presentation against unrecognized URLs (`UNRECOGNIZED_OR_NORMALIZED_IDP_ISSUER_SUBJECT_TOKEN_EXFILTRATION_BLOCKED`), enforces per-user `subject_token` binding (`#783`/`#970`), and verifies `sum(earning_forecast.breakdown) == earning_forecast.amount` and minor-unit loyalty discounts (`#662`).
+
+### 47.4 Google AP2 `open_mandate_hash` JCS Derivation, `checkout_hash` Entropy, `(type, id)` Instrument / Non-Empty `Merchant.id` Constraints & `rail_confirmation_verified` Receipt Honesty (`evaluate_ap2_mandate_hash_constraints_and_receipt_guard`, AP2 PRs `#279`, `#278`, `#301`, `#324`, `#335`)
+
+Computes `open_mandate_hash = SHA-256(JCS_RFC8785(unsigned_open_checkout_mandate_body))` over the unsigned claims object without sorting arrays or hashing JWS envelopes (`#279`), requires `>= 128` bits of payload entropy for `checkout_hash` so Ed25519/WBA integrators resist rainbow-table attacks (`#278`), matches allowed payment instruments by `(type, id)` (`#301`), matches allowed merchants by non-empty `merchant.id` without spoofable `name + website` fallback (`#324`, CWE-639), and prevents `PaymentReceipt` from asserting `rail_confirmation_verified=true` on self-generated UUIDs (`#335`).
+
+
 
 
 
