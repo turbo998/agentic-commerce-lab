@@ -138,6 +138,13 @@ from lab.ucp_post_order_catalog_food_guard import (
     evaluate_ucp_order_consultation_decision_guard,
     evaluate_ucp_order_modification_lookup_and_fence,
 )
+from lab.ucp_ui_quote_offer_declared_fields_guard import (
+    evaluate_ucp_declared_fields_extensible_checkout,
+    evaluate_ucp_offer_decision_integrity_guard,
+    evaluate_ucp_quote_lifecycle_and_totals_guard,
+    evaluate_ucp_ui_extension_a2ui_mcp_guard,
+    verify_ucp_split_payment_no_credential_echo,
+)
 
 
 @dataclass(frozen=True)

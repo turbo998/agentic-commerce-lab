@@ -235,6 +235,12 @@
 2. **Executable Guard Module & Unit Tests (249 Total Tests)**:
    - [`lab/ucp_post_order_catalog_food_guard.py`](../../lab/ucp_post_order_catalog_food_guard.py) & [`tests/test_ucp_post_order_catalog_food_guard.py`](../../tests/test_ucp_post_order_catalog_food_guard.py)
 
+### Stage 36 — UCP Declarative A2UI / MCP Apps Isolation (`#899`), Time-Bound Quote Extension (`#930`), Offer Provenance Binding (`#918`), Reverse-DNS `declared_fields` (`#915`) & Split-Payment Credential Echo Guard (`#893`)
+1. **A2UI Model-Context Exclusion, Quote `totals` Projection, Offer Provenance & Split-Payment PCI Scope ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §42)**:
+   - Enforced UCP PR `#899` (`dev.ucp.common.ui`) omission of business-authored UI from MCP `content[]` model context (`BUSINESS_UI_INJECTED_INTO_MCP_MODEL_CONTEXT_BLOCKED`), executable HTML sandboxing (`EXECUTABLE_HTML_IN_DECLARATIVE_UI_PAYLOAD_BLOCKED`), and `create_cart -> update_cart` merge on held carts; UCP PR `#930` (`dev.ucp.common.quote`) authoritative `totals[type="quote"]` reflection and `order.quote = {id, subtotal}` projection; UCP PR `#918` Offer provenance under-binding & `applied`-vs-`committed` separation (`OFFER_DIGEST_PROVENANCE_UNDERBOUND_BLOCKED`); UCP PR `#915` Reverse-DNS `declared_fields` scope validation; and UCP PR `#893` one-way `Platform -> Business` split-payment credential flow (`SPLIT_PAYMENT_CREDENTIAL_ECHO_LEAK_BLOCKED`).
+2. **Executable Guard Module & Unit Tests (253 Total Tests)**:
+   - [`lab/ucp_ui_quote_offer_declared_fields_guard.py`](../../lab/ucp_ui_quote_offer_declared_fields_guard.py) & [`tests/test_ucp_ui_quote_offer_declared_fields_guard.py`](../../tests/test_ucp_ui_quote_offer_declared_fields_guard.py)
+
 ---
 
 ## Quick Verification Commands

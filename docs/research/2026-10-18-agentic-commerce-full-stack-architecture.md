@@ -396,3 +396,20 @@ Enforces `base_order_version == current_order_version`, guarantees that `GET /or
 
 Verifies reversed-host schema authority binding (`SCHEMA_AUTHORITY_BINDING_INVALID`), evaluates buyer Identity Linking authentication and dedicated `dev.ucp.shopping.order_consultation:decide` scope before replay cache lookup, verifies RFC 8785 canonical JSON `proposal_digest` (`sha-256:<hex>`), and requires `meta.idempotency_key` + signed `mcpToolGate` on mutating/spend-capable ACP MCP tools.
 
+---
+
+## 42. UCP Declarative A2UI / MCP Apps Isolation (`#899`), Time-Bound Quote Extension (`#930`), Offer Provenance Binding (`#918`), Reverse-DNS `declared_fields` (`#915`) & Split-Payment Credential Echo Guard (`#893`) (Stage 36)
+
+### 42.1 UCP Declarative A2UI vs Sandboxed MCP Apps & Model-Context Isolation (`evaluate_ucp_ui_extension_a2ui_mcp_guard`, UCP PR `#899`)
+
+Enforces `dev.ucp.common.ui`: excludes business-authored UI strings from MCP `content[]` model context (`BUSINESS_UI_INJECTED_INTO_MCP_MODEL_CONTEXT_BLOCKED`), blocks executable HTML in declarative `ui` fields (`EXECUTABLE_HTML_IN_DECLARATIVE_UI_PAYLOAD_BLOCKED`), scopes UI actions to negotiated capabilities, and merges `create_cart` into `update_cart` when a cart is already held.
+
+### 42.2 UCP Time-Bound Quote Extension (`evaluate_ucp_quote_lifecycle_and_totals_guard`, UCP PR `#930` / EP `#929`)
+
+Verifies quote expiry (`quote_unavailable`), line-item immutability (`quote_changed`), omission of `accepted_id` on `complete`, authoritative reflection as a single `totals[type="quote"]` entry, and projection to `order.quote = {id, subtotal}`.
+
+### 42.3 Offer Provenance Under-Binding, Reverse-DNS `declared_fields` & Split-Payment Credential Echo Guard (`lab/ucp_ui_quote_offer_declared_fields_guard.py`, UCP PRs `#918`, `#915`, `#893`)
+
+Blocks Offer digests that omit commercial-provenance extensions (`OFFER_DIGEST_PROVENANCE_UNDERBOUND_BLOCKED`) or conflate Cart `"applied"` with Checkout `"committed"` (`CART_APPLIED_CONFLATED_WITH_CHECKOUT_COMMITTED_BLOCKED`), validates Reverse-DNS `declared_fields` scope bindings (`#915`), and blocks businesses from echoing payment credentials/tokens in split-payment responses (`SPLIT_PAYMENT_CREDENTIAL_ECHO_LEAK_BLOCKED`, `#893`).
+
+
