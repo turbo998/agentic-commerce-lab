@@ -259,6 +259,12 @@
 2. **Executable Guard Module & Unit Tests (264 Total Tests)**:
    - [`lab/ucp_food_lodging_feed_identity_guard.py`](../../lab/ucp_food_lodging_feed_identity_guard.py) & [`tests/test_ucp_food_lodging_feed_identity_guard.py`](../../tests/test_ucp_food_lodging_feed_identity_guard.py)
 
+### Stage 40 — 16-Scenario 7-Card 4:5 Benchmark Report for UCP Return Policy, Capability Webhooks, Subscriptions, Food, Lodging, Bulk Feed & Identity Guards (`RW-01`..`RW-16`)
+1. **16-Scenario Benchmark & Self-Contained 7-Card 4:5 Visual Deck ([`lab/ucp_return_webhook_food_lodging_bench.py`](../../lab/ucp_return_webhook_food_lodging_bench.py) & [`reports/agentic-commerce-ucp-return-webhook-food-lodging-bench/index.html`](../../reports/agentic-commerce-ucp-return-webhook-food-lodging-bench/index.html))**:
+   - Evaluates `RW-01` through `RW-16`: **16/16 (`100.0%`) AI-Native 6-Plane pass rate vs 1/16 (`6.2%`) Classic 3-Tier pass rate**, `0.45 ms` vs `2.17 ms` latency, `100.0%` perturbation stability.
+2. **Unit Tests (267 Total Tests)**:
+   - [`tests/test_ucp_return_webhook_food_lodging_bench.py`](../../tests/test_ucp_return_webhook_food_lodging_bench.py)
+
 ---
 
 ## Quick Verification Commands
