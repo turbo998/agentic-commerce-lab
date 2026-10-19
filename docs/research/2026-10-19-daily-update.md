@@ -247,6 +247,12 @@
 2. **Unit Tests (256 Total Tests)**:
    - [`tests/test_ucp_post_order_ui_quote_bench.py`](../../tests/test_ucp_post_order_ui_quote_bench.py)
 
+### Stage 38 — UCP Return Policy Eligibility & Typed Fees (`#966`), Capability Event Webhooks (`#938`), Subscription Purchase Options (`#890`), Business Identity (`#939`) & Escalation `continue_url` (`#912`)
+1. **Explicit Return Deadlines, Thin Webhook Read-Back & Subscription Open-Ended Instrument Retention ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §43)**:
+   - Enforced UCP PR `#966` (`dev.ucp.shopping.policy.return`) explicit eligibility, prohibition on platform date math (`PLATFORM_COMPUTED_RETURN_DEADLINE_FORBIDDEN`), narrowest-wins method-scoped `fees[]`, and zero-fee verification before presenting free returns (`CHANNEL_FALSELY_PRESENTED_AS_FREE_RETURN_BLOCKED`); UCP PR `#938` (`config.webhook`) RFC 9421 `webhook-id`/`webhook-timestamp`/`ucp-agent` signing, thin event read-back, and unfiltered `lookup_locations` confirmation before delisting (`FILTERED_LOOKUP_USED_FOR_LOCATION_REMOVAL_BLOCKED`); UCP PR `#890` (`dev.ucp.shopping.purchase_options`) open-ended vs amounted instrument retention (`SUBSCRIPTION_MISSING_OPEN_ENDED_RECURRING_INSTRUMENT`); and UCP PRs `#939`/`#912` business identity separation and `requires_escalation` `continue_url` enforcement.
+2. **Executable Guard Module & Unit Tests (260 Total Tests)**:
+   - [`lab/ucp_return_webhook_subscription_guard.py`](../../lab/ucp_return_webhook_subscription_guard.py) & [`tests/test_ucp_return_webhook_subscription_guard.py`](../../tests/test_ucp_return_webhook_subscription_guard.py)
+
 ---
 
 ## Quick Verification Commands

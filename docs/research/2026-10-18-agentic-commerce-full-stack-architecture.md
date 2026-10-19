@@ -412,4 +412,21 @@ Verifies quote expiry (`quote_unavailable`), line-item immutability (`quote_chan
 
 Blocks Offer digests that omit commercial-provenance extensions (`OFFER_DIGEST_PROVENANCE_UNDERBOUND_BLOCKED`) or conflate Cart `"applied"` with Checkout `"committed"` (`CART_APPLIED_CONFLATED_WITH_CHECKOUT_COMMITTED_BLOCKED`), validates Reverse-DNS `declared_fields` scope bindings (`#915`), and blocks businesses from echoing payment credentials/tokens in split-payment responses (`SPLIT_PAYMENT_CREDENTIAL_ECHO_LEAK_BLOCKED`, `#893`).
 
+---
+
+## 43. UCP Return Policy Eligibility & Typed Fees (`#966`), Capability Event Webhooks (`#938`), Subscription Purchase Options (`#890`), Business Identity (`#939`) & Escalation `continue_url` (`#912`) (Stage 38)
+
+### 43.1 Explicit Return Eligibility, Business-Stated Deadlines & Narrowest-Wins Typed Fees (`evaluate_ucp_return_policy_eligibility_and_fees_guard`, UCP PR `#966`)
+
+Enforces explicit `eligibility.type` (`window` | `unlimited` | `not_accepted`; omitted never means `unlimited`), forbids platform date math from `duration` (`PLATFORM_COMPUTED_RETURN_DEADLINE_FORBIDDEN`), resolves method-scoped `fees[]` via narrowest-wins, and blocks presenting a return channel as free unless all well-known fees resolve to `0` (`CHANNEL_FALSELY_PRESENTED_AS_FREE_RETURN_BLOCKED`).
+
+### 43.2 Generalized Capability Event Webhooks & Unfiltered Read-Back (`evaluate_ucp_capability_event_webhook_guard`, UCP PR `#938`)
+
+Enforces RFC 9421 signed webhook delivery covering `webhook-id`, `webhook-timestamp`, and `ucp-agent`, requires thin `event.json` envelopes for broadcast capabilities (`THIN_EVENT_TREATED_AS_STATE_WITHOUT_READBACK_BLOCKED`), and requires an unfiltered `lookup_locations` read-back before delisting on `location.lookup:removed` (`FILTERED_LOOKUP_USED_FOR_LOCATION_REMOVAL_BLOCKED`).
+
+### 43.3 Purchase Options, Subscription Schedules & Open-Ended Payment Instrument Retention (`evaluate_ucp_purchase_options_subscription_payment_guard`, UCP PR `#890`)
+
+Prevents default options from auto-subscribing when a one-time option exists, blocks replacing a withdrawn subscription with another subscription (`SILENT_SUBSCRIPTION_TO_SUBSCRIPTION_REPLACEMENT_BLOCKED`), and retains only open-ended (unamounted) instruments for recurring orders (`SUBSCRIPTION_MISSING_OPEN_ENDED_RECURRING_INSTRUMENT`), while enforcing UCP PR `#939` business identity separation and PR `#912` `requires_escalation` `continue_url` validation.
+
+
 
