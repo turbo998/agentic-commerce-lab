@@ -200,6 +200,12 @@ python -m lab.protocol_v02_sovereign_cbdc_bench --output-dir reports/agentic-com
 
 运行覆盖 Stages 33–34 的 16 个确定性评测场景（mBridge 批发型 CBDC 非对称 HTLC 时间锁与汇率走廊 PvP 结算、LBMA 分配金条超声/纯度审计、Sentinel-2 + MODIS 双源卫星 NDVI 农业保险托管、Poppy `v0.2` 全链路 HTTPS/禁重定向凭证转发/按 User ID 隔离 DPoP 密钥/MCP 原生 DPoP 令牌选择/未登录禁发 `operations`、UCP `deferred_payment` 账期守恒与 Identity Linking 禁 `client_credentials`、Google AP2 `#369` `SD-JWT+KB` 终端委托链证明及 ACP `#316` 17 网关映射），输出 [`reports/agentic-commerce-protocol-v02-cbdc-bench/report.json`](reports/agentic-commerce-protocol-v02-cbdc-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](reports/agentic-commerce-protocol-v02-cbdc-bench/index.html)。
 
+```powershell
+python -m lab.ucp_post_order_ui_quote_bench
+```
+
+运行覆盖 Stages 35–37 的 16 个确定性评测场景（UCP `#964` 餐饮逐过敏原状态与禁平台推断 `free_of`、UCP `#974` 目录实体 `substitutes` 与 `search_catalog(like=[...])` 向量相似搜索隔离、UCP `#945` 取消优先改单安全 `GET /lookup` 与原子 `POST /fence` 墓碑锁、UCP `#946` 履约异常协商逆序域名 Schema 权威绑定与 RFC 8785 `proposal_digest`、ACP `#296`/`#314` 变更型 MCP 工具幂等键与宿主 `mcpToolGate`、UCP `#899` 声明式 A2UI 剥离 MCP `content[]` 模型上下文防提示词注入、UCP `#930` 时限报价 `totals[type="quote"]` 映射与订单投影、UCP `#918` Offer 商业溯源防欠绑定、UCP `#915` Reverse-DNS `declared_fields` 及 UCP `#893` 拆单支付禁回显凭证），输出 [`reports/agentic-commerce-ucp-post-order-ui-quote-bench/report.json`](reports/agentic-commerce-ucp-post-order-ui-quote-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-ucp-post-order-ui-quote-bench/index.html`](reports/agentic-commerce-ucp-post-order-ui-quote-bench/index.html)。
+
 
 ## 每日研究
 

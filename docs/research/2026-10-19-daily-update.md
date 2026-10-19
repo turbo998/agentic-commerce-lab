@@ -241,6 +241,12 @@
 2. **Executable Guard Module & Unit Tests (253 Total Tests)**:
    - [`lab/ucp_ui_quote_offer_declared_fields_guard.py`](../../lab/ucp_ui_quote_offer_declared_fields_guard.py) & [`tests/test_ucp_ui_quote_offer_declared_fields_guard.py`](../../tests/test_ucp_ui_quote_offer_declared_fields_guard.py)
 
+### Stage 37 — 16-Scenario 7-Card 4:5 Benchmark Report for UCP Post-Order, Catalog, Food, A2UI & Quote Guards (`PU-01`..`PU-16`)
+1. **16-Scenario Benchmark & Self-Contained 7-Card 4:5 Visual Deck ([`lab/ucp_post_order_ui_quote_bench.py`](../../lab/ucp_post_order_ui_quote_bench.py) & [`reports/agentic-commerce-ucp-post-order-ui-quote-bench/index.html`](../../reports/agentic-commerce-ucp-post-order-ui-quote-bench/index.html))**:
+   - Evaluates `PU-01` through `PU-16`: **16/16 (`100.0%`) AI-Native 6-Plane pass rate vs 1/16 (`6.2%`) Classic 3-Tier pass rate**, `0.47 ms` vs `2.21 ms` latency, `100.0%` perturbation stability.
+2. **Unit Tests (256 Total Tests)**:
+   - [`tests/test_ucp_post_order_ui_quote_bench.py`](../../tests/test_ucp_post_order_ui_quote_bench.py)
+
 ---
 
 ## Quick Verification Commands
