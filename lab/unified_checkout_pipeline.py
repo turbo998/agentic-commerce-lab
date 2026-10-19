@@ -183,6 +183,12 @@ from lab.ucp_wallet_order_modification_consultation_ap2_sdjwt_guard import (
     evaluate_ucp_order_modification_lookup_and_fence_guard,
     evaluate_ucp_wallet_attestation_and_payment_render_artifact_guard,
 )
+from lab.ucp_fulfillment_events_similarity_nano_credential_guard import (
+    evaluate_ucp_catalog_similarity_extension_and_image_anchor_guard,
+    evaluate_ucp_credential_echo_cart_checkout_and_deferred_terms_guard,
+    evaluate_ucp_nano_payment_instrument_and_session_binding_guard,
+    evaluate_ucp_standardized_fulfillment_events_and_split_shipment_guard,
+)
 
 
 @dataclass(frozen=True)

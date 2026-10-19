@@ -301,6 +301,12 @@
 2. **Unit Tests (289 Total Tests)**:
    - [`tests/test_ucp_correlation_idempotency_wallet_modification_ap2_bench.py`](../../tests/test_ucp_correlation_idempotency_wallet_modification_ap2_bench.py)
 
+### Stage 47 — UCP Standardized Fulfillment Events (`#979`), Catalog Similarity Extension & Seller/Business Identity (`#977`/`#962`/`#939`), Nano (`XNO`) Payment Instrument Session Binding (`#862`), and Credential Echo / Cart-Only Checkout / Escalation / Deferred Terms / Lodging Guards (`#868`/`#940`/`#912`/`#908`/`#934`/`#870`)
+1. **Fulfillment Events, Catalog Similarity, Nano Payment Instrument & Credential/Cart/Deferred-Terms Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §49)**:
+   - Enforced UCP PR `#979` five well-known fulfillment event types (`processing`, `shipped`, `in_transit`, `delivered`, `canceled`), custom synonym blocking, conditional non-empty `description` on custom events, and split-shipment event quantity non-summing; UCP PR `#977` `dev.ucp.shopping.catalog.similarity` explicit profile negotiation, `config.like.max_items` truncation, `config.like.images` default-off, and PR `#962`/`#939` seller logo vs MoR / location separation; UCP PR `#862` Nano (`XNO`) server-side `receive_address` and `amount_raw` binding, single-use `(network, settlement_block)` atomic claim, and exact amount matching; and UCP PRs `#868`/`#940`/`#912`/`#908`/`#934`/`#870` sensitive credential echo blocking outside `/detokenize`, conditional REST `Idempotency-Key`, cart-only checkout creation, `requires_escalation` `continue_url`, deferred terms `"payment": {}`, and Lodging raw `r||s` / check-out night arithmetic.
+2. **Executable Guard Module & Unit Tests (293 Total Tests)**:
+   - [`lab/ucp_fulfillment_events_similarity_nano_credential_guard.py`](../../lab/ucp_fulfillment_events_similarity_nano_credential_guard.py) & [`tests/test_ucp_fulfillment_events_similarity_nano_credential_guard.py`](../../tests/test_ucp_fulfillment_events_similarity_nano_credential_guard.py)
+
 ---
 
 ## Quick Verification Commands
