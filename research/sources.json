@@ -48,7 +48,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17–18 fetches alternated between UK ('30 November 2026') and US ('November 30, 2026') locale strings with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' (43 calendar days remaining as of 2026-10-18). Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Oct 17–19 fetches alternated between UK ('30 November 2026') and US ('November 30, 2026') locale strings with identical policy facts; recorded as policy_change='unchanged' with deadline='2026-11-30' (42 calendar days remaining as of 2026-10-19). Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -136,19 +136,19 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "3ab41043b79373df33a6e2c377bc82a806175f78",
-      "commit_committed_at": "2026-10-16T17:50:28Z",
-      "evidence": "Oct 17 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged' vs Oct 14 baseline after Oct 16 timeout). Official repository Universal-Commerce-Protocol/ucp advanced 1 commit to 3ab41043b793 (#913, 'docs(permalink): show the mandated headers on every 303 example'): enforces that every 303 See Other permalink redirect carries Location, Cache-Control: no-store, and Referrer-Policy: no-referrer so buyer PII in permalink query strings does not leak via caching or Referer headers."
+      "revision_observed": "29e2d562ec0e2ae2ebf3d9aa2e4798ea9a5430da",
+      "commit_committed_at": "2026-10-19T13:56:05Z",
+      "evidence": "Oct 19 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged'). Official repository Universal-Commerce-Protocol/ucp advanced 6 commits on Oct 19 to 29e2d562ec0e: #755 fixes free-shipping totals double-counting and scopes discount allocations invariant; #681 adds multi-rate VAT tax-inclusive totals example; #881 requires empty payment object (\"payment\": {}) on complete for fully deferred payment terms; #731 clarifies single-use JWT grant jti tracking (<=60s) and prohibits grant relay; #784 documents required Request-Id and UCP-Agent headers on Location REST binding; #968 reverts #789 on permalink cart merge."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "24947f1632eea27d0377c5047755f98838db6105",
-      "commit_committed_at": "2026-10-18T00:50:19Z",
-      "plugin_version_observed": "0.5.22",
-      "evidence": "Official Oct 18 sync-skills commit reviewed (24947f1632ee): bumps agent-plugins 0.5.21 -> 0.5.22, Claude 0.11.21 -> 0.11.22, Cursor/Grok 0.9.21 -> 0.9.22, Codex 5.8.21 -> 5.8.22, and updates upgrade-stripe snapshot date to 2026-10-18 while keeping fallback API version 2026-09-30.endive."
+      "revision_observed": "2f68b6e13ceab52310058fd60d3ea24adaf8df32",
+      "commit_committed_at": "2026-10-19T00:49:34Z",
+      "plugin_version_observed": "0.5.23",
+      "evidence": "Official Oct 19 sync-skills commit reviewed (2f68b6e13cea): bumps agent-plugins 0.5.22 -> 0.5.23, Claude 0.11.22 -> 0.11.23, Cursor/Grok 0.9.22 -> 0.9.23, Codex 5.8.22 -> 5.8.23, and updates upgrade-stripe snapshot date to 2026-10-19 while keeping fallback API version 2026-09-30.endive."
     },
     {
       "id": "ap2",
@@ -247,32 +247,33 @@
     {
       "id": "poppy-spec",
       "url": "https://personalagentprotocol.org/docs/spec",
-      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/spec.mdx",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/versions/0.2/spec.mdx",
       "published_on": null,
-      "spec_version_observed": "0.1",
-      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
-      "commit_committed_at": "2026-10-17T00:08:46Z",
-      "evidence": "Draft v0.1 specification; spec.mdx hash unchanged on Oct 17 while repository advanced to 95fcbf22c599 (#35, 'Add the Company implementation kit and replace the review kit'): adds kit/company/ with 18 Draft 2020-12 JSON Schemas, 10 architecture integration patterns, a Before-vs-After Company architecture comparison, and a zero-dependency TypeScript conformance validator."
+      "spec_version_observed": "0.2-draft",
+      "frozen_v0_1_published_on": "2026-10-09",
+      "revision_observed": "30c476455c20c23c13b050c74c47d9b3269413c7",
+      "commit_committed_at": "2026-10-19T12:25:50Z",
+      "evidence": "Oct 19 repository advanced 14 commits (#54, #57–#70) to 30c476455c20: froze v0.1 at content/versions/0.1/spec.mdx (/docs/0.1/spec) and opened Draft 0.2 at content/versions/0.2/spec.mdx (/docs/spec) with content/shared/changelog.mdx. Draft 0.2 introduces breaking security & identity hardening: HTTPS everywhere (#67), exact major.minor matching before 1.0 (#67), no credential forwarding on redirects & anti-SSRF loopback/private/link-local blocking (#68), one issuer per Company (#54), unified client & session assertion aud=auth.issuer with <=300s lifetime & jti replay protection (#68), distinct ES256 DPoP key pair per User ID & anonymous browsing User IDs (#62/#65/#68), MCP server token-type selection (DPoP-only when dpop_signing_alg_values_supported lists ES256, Bearer otherwise, mandatory resource parameter) (#64/#69), sticky account binding across sign-out (#70), and Section 8 capability-gap feedback.endpoint (#59)."
     },
     {
       "id": "poppy-operations-ext",
       "url": "https://personalagentprotocol.org/docs/extensions/operations",
-      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/operations.mdx",
+      "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/content/versions/0.2/extensions/operations.mdx",
       "published_on": null,
       "spec_version_observed": "1",
-      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
-      "evidence": "Draft v1 operations extension for Poppy v0.1. Commit e910c86 (#51) adds normative guidance that Personal Agents SHOULD surface material terms values (amounts, dates, items) alongside summary or verify they agree before asking the User for approval because the Company writes both and summary could misdescribe terms.",
-      "commit_committed_at": "2026-10-17T00:08:46Z"
+      "revision_observed": "30c476455c20c23c13b050c74c47d9b3269413c7",
+      "evidence": "Draft v1 operations extension (moved to content/versions/0.2/extensions/operations.mdx in #57; v0.1 frozen at content/versions/0.1/extensions/operations.mdx). Commits #69 and #70 (Oct 19, 30c476455c20) enforce that an operation proposed in a signed-in Session can be used ONLY by a Session signed in to the same account at request time (returning sign_in_required to signed-out tokens), replace extension_required with rate_limited in the Operations error table, and require MCP tools needing Operations to return ordinary tool errors.",
+      "commit_committed_at": "2026-10-19T12:25:50Z"
     },
     {
       "id": "poppy-company-kit",
       "url": "https://personalagentprotocol.org/kit/company",
       "monitor_url": "https://raw.githubusercontent.com/personal-agent-protocol/personal-agent-protocol/main/kit/company/SKILL.md",
       "published_on": null,
-      "spec_version_observed": "0.1",
-      "revision_observed": "95fcbf22c5991a0090061aed3dbeb68c0ea575e0",
-      "commit_committed_at": "2026-10-17T00:08:46Z",
-      "evidence": "Added in commit 95fcbf22c599 (#35, 2026-10-17T00:08:46Z): Company implementation kit ('implement-personal-agent-protocol' skill), 18 JSON Schemas (kit/company/schemas/*.schema.json), 10 Company integration patterns (token-issuance, dpop-verification, sign-in, session-state, scopes, web-browsing, mcp-auth, conversations, error-handling, operations), and automated conformance validator (kit/company/validate/)."
+      "spec_version_observed": "0.2-draft",
+      "revision_observed": "30c476455c20c23c13b050c74c47d9b3269413c7",
+      "commit_committed_at": "2026-10-19T12:25:50Z",
+      "evidence": "Updated through commit 30c476455c20 (#67–#70, 2026-10-19T12:25:50Z): Company implementation kit ('implement-personal-agent-protocol' skill), 18 JSON Schemas, 10 Company integration patterns, and zero-dependency TypeScript conformance validator updated to verify HTTPS-only endpoints, exact protocol_version matching, DPoP MCP servers (checks/mcp.ts), and signed-out session rules."
     },
     {
       "id": "sierra-summit-2026",

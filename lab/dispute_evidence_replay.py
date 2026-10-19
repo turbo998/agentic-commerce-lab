@@ -94,6 +94,7 @@ ACP_APPENDIX_C_GATEWAYS: dict[str, dict[str, str]] = {
         "catalog_digest_field": "evidence.catalogSnapshotHash",
         "fulfillment_field": "evidence.deliveryTracking",
         "consent_audit_field": "evidence.interactionTranscriptHash",
+        "payment_link_mechanism": "Chargeback DMN TransactionDetails.TransactionId",
     },
     "dlocal": {
         "api_method": "v1/chargebacks/{id}/documents",
@@ -153,6 +154,25 @@ SUPPORTED_REASON_CODES = {
     "visa_13_3": "not_as_described_or_defective_terms",
     "mastercard_4853": "cardholder_dispute_terms_or_customs",
 }
+
+# ACP PR #316 (SEP #303 ATDRP) Appendix C 17-gateway survey (updated in commit b998b915638a on 2026-10-18T22:22:09Z):
+# - 7 of 17 gateways link disputes back to payment objects in API/webhook payloads (Nuvei added via Chargeback DMN TransactionDetails.TransactionId).
+# - 2 of 17 gateways carry a native agent/initiation signal on the payment object (Stripe, Braintree).
+# - 0 of 17 gateways expose a structured issuer field for cryptographic agent mandates (all rely on free-text/PDF representment).
+ACP_APPENDIX_C_GATEWAYS_LINKING_DISPUTE_TO_PAYMENT: frozenset[str] = frozenset({
+    "stripe",
+    "adyen",
+    "braintree",
+    "checkout_com",
+    "paypal",
+    "square",
+    "nuvei",
+})
+ACP_APPENDIX_C_GATEWAYS_WITH_AGENT_SIGNAL: frozenset[str] = frozenset({
+    "stripe",
+    "braintree",
+})
+ACP_APPENDIX_C_GATEWAYS_WITH_STRUCTURED_MANDATE_FIELD: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)

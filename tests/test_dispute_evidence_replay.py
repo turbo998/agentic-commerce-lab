@@ -4,6 +4,9 @@ import tempfile
 
 from lab.dispute_evidence_replay import (
     ACP_APPENDIX_C_GATEWAYS,
+    ACP_APPENDIX_C_GATEWAYS_LINKING_DISPUTE_TO_PAYMENT,
+    ACP_APPENDIX_C_GATEWAYS_WITH_AGENT_SIGNAL,
+    ACP_APPENDIX_C_GATEWAYS_WITH_STRUCTURED_MANDATE_FIELD,
     CryptographicDisputeEvidenceInput,
     compile_cryptographic_dispute_bundle,
     main,
@@ -49,6 +52,14 @@ class DisputeEvidenceReplayTests(unittest.TestCase):
 
     def test_all_17_acp_appendix_c_gateways_map_deterministically(self) -> None:
         self.assertEqual(len(ACP_APPENDIX_C_GATEWAYS), 17)
+        self.assertEqual(len(ACP_APPENDIX_C_GATEWAYS_LINKING_DISPUTE_TO_PAYMENT), 7)
+        self.assertIn("nuvei", ACP_APPENDIX_C_GATEWAYS_LINKING_DISPUTE_TO_PAYMENT)
+        self.assertEqual(
+            ACP_APPENDIX_C_GATEWAYS["nuvei"]["payment_link_mechanism"],
+            "Chargeback DMN TransactionDetails.TransactionId",
+        )
+        self.assertEqual(len(ACP_APPENDIX_C_GATEWAYS_WITH_AGENT_SIGNAL), 2)
+        self.assertEqual(len(ACP_APPENDIX_C_GATEWAYS_WITH_STRUCTURED_MANDATE_FIELD), 0)
         for gw in ACP_APPENDIX_C_GATEWAYS:
             res = compile_cryptographic_dispute_bundle(self._valid_input(gateway=gw))
             self.assertTrue(res.defensible)

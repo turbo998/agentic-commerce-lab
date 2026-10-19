@@ -357,21 +357,21 @@ Blocks substitution of unallocated paper gold pools for physical delivery (`LBMA
 
 Cross-verifies Sentinel-2 and MODIS multispectral NDVI vegetation indices alongside signed ground weather-station rainfall telemetry (`SATELLITE_NDVI_DIVERGENCE_OR_SPOOFED_ORACLE_BLOCKED`), releasing tiered 50% or 100% drought indemnity payouts (`PARAMETRIC_CROP_NDVI_DROUGHT_INDEMNITY_RELEASED`) while preserving exact escrow conservation.
 
+---
 
+## 40. Poppy Draft `0.2` Security Hardening, UCP `deferred_payment` / Identity / `201 Location` Guards & Google AP2 `SD-JWT+KB` Terminal Chain (Stage 34)
 
+### 40.1 Poppy Draft `0.2` Transport, Redirect, Per-User DPoP & MCP Token Selection Guards (`lab/poppy_guard.py`)
 
+Enforces Poppy `v0.2` (`#54`, `#57`–`#70`, commit `30c476455c20`):
+- **HTTPS & Minor-Version Backward Compatibility (`verify_poppy_v02_https_and_version_compat`)**: Requires `https` without `#fragment` on all protocol URLs (`#67`), case-sensitive post-host comparison (`#68`), and client backward compatibility across all earlier minor versions within the same major version (`0.2 -> 0.1`, `#66`).
+- **DNS-Rebinding SSRF & Non-Discovery Redirect Credential Isolation (`verify_poppy_v02_network_and_redirect_safety`)**: Blocks resolved private/loopback/link-local IP addresses (`#57`) and forbids following HTTP `3xx` redirects or forwarding `Authorization`/`DPoP` headers on any non-discovery request (`#68`).
+- **Assertion `iat` Window, Per-User-ID DPoP Key Isolation & Browser `jti` Replay Cache (`verify_poppy_v02_assertion_and_user_dpop_isolation`)**: Enforces `|now - iat| <= 300s` (`#68`), forbids sharing an ES256 DPoP keypair across distinct User IDs (`#68`), and enforces single-use `jti` replay protection on `poppy-browser+jwt` assertions (`#69`).
+- **DPoP-Capable MCP Server Token Selection & Signed-Out Operation Prohibition (`verify_poppy_v02_mcp_token_selection`, `RetailOrderMutationGuard`)**: Selects DPoP Session Tokens when an MCP server advertises DPoP support in RFC 9728 metadata (`#64`), forbids sending DPoP tokens under `Authorization: Bearer` (`#69`), requires direct `401 invalid_token` on expired tokens (`#69`), and blocks signed-out sessions from creating/listing/confirming `operations` (`#59`).
 
+### 40.2 UCP `deferred_payment` Conservation, Identity Grant Restriction & Google AP2 `SD-JWT+KB` (`lab/ucp_preflight.py`)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Enforces UCP Oct-19 (`#881`, `#755`, `#731`, `#912`, commit `29e2d562ec0e`) and Google AP2 (`#369`):
+- **Deferred Payment Conservation (`verify_ucp_deferred_payment_terms_and_totals`)**: Verifies `due_now + sum(deferred) == total` across deposits, installments, and B2B Net-30/60/90 schedules (`#881`), allowing zero-upfront checkout completion when `due_now == 0`.
+- **OAuth Grant Restriction & `201 Location` / Escalation `continue_url` (`verify_ucp_identity_grant_and_location_headers`)**: Restricts Identity Linking `oauth2.grant_types` to `authorization_code` and `refresh_token` (`#755`), requires `Location` on all `201 Created` POST responses (`#731`), and requires an HTTPS `continue_url` whenever `status == "requires_escalation"` (`#912`).
+- **Multi-Hop Terminal Key Binding JWT (`verify_ap2_sd_jwt_kb_terminal_chain`)**: Verifies RFC 9901 `SD-JWT+KB` (`typ == "kb+jwt"`, `sd_hash`, `nonce`, and terminal agent holder binding, AP2 `#369`).

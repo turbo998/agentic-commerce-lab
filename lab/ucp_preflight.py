@@ -12,7 +12,7 @@ from datetime import date, datetime
 from typing import Any, Literal
 from urllib.parse import parse_qsl, quote, unquote, urlsplit
 
-POLICY_CHECKED_ON = date(2026, 10, 18)
+POLICY_CHECKED_ON = date(2026, 10, 19)
 SOURCE_URL = "https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler"
 REVIEWED_UCP_VERSION = "2026-04-08"
 REVIEWED_HANDLER_VERSION = "2026-06-25"
@@ -1466,6 +1466,173 @@ def evaluate_atdrp_evidence_pack_admissibility(
             return ATDRPEvidencePackDecision("work_acceptance_insufficient", False)
 
     return ATDRPEvidencePackDecision("admissible_verified", True)
+
+
+@dataclass(frozen=True)
+class UCPDeferredPaymentAndTotalsDecision:
+    """Result of verifying UCP Oct 19 commits (#881, #755, #681) and PR #912."""
+
+    allowed: bool
+    reason: str
+
+
+def verify_ucp_deferred_payment_terms_and_totals(
+    *,
+    is_fully_deferred_payment_term: bool,
+    selected_term_id: str | None,
+    payment_object: dict[str, Any] | None,
+    subtotal_minor: int,
+    shipping_cost_minor: int,
+    totals_fulfillment_minor: int,
+    totals_discount_minor: int,
+    totals_total_minor: int,
+    applied_discounts: list[dict[str, Any]] | None = None,
+    checkout_status: str = "ready_for_complete",
+    continue_url: str | None = None,
+) -> UCPDeferredPaymentAndTotalsDecision:
+    """Enforce UCP Oct 19 commits (#881 c1306fe3760e, #755 6f7ccabc8e9e) and PR #912:
+
+    1. `#881` (`payment-terms.md`): When completing a checkout under a fully deferred payment term
+       requiring no upfront capture or instrument guarantee, `selected_term_id` is omitted and the
+       Platform MUST provide an empty payment object (`"payment": {}`) in the complete request.
+    2. `#755` (`discount.md`): When a free-shipping or shipping discount (`totals_discount_minor > 0`)
+       is applied to `shipping_cost_minor > 0`, `totals` MUST set `fulfillment == shipping_cost_minor`
+       alongside the negative `discount` adjustment rather than zeroing `fulfillment` and subtracting
+       the discount a second time (`free_shipping_double_counted_in_totals`). Furthermore, for each
+       `applied_discount` in `applied_discounts`, if `allocations` is present, the sum of
+       `allocations[].amount` MUST equal `applied_discount["amount"]` (`discount_allocations_sum_mismatch`).
+    3. `PR #912` (`checkout_resp.json`): When `checkout_status == "requires_escalation"`, `continue_url`
+       MUST be present and use `https://` (`missing_continue_url_on_requires_escalation`).
+    """
+    if checkout_status == "requires_escalation":
+        parsed_cont = urlsplit((continue_url or "").strip())
+        if parsed_cont.scheme.lower() != "https" or not parsed_cont.hostname:
+            return UCPDeferredPaymentAndTotalsDecision(
+                False, "missing_continue_url_on_requires_escalation"
+            )
+
+    if is_fully_deferred_payment_term:
+        if selected_term_id is not None or payment_object != {}:
+            return UCPDeferredPaymentAndTotalsDecision(
+                False, "deferred_term_requires_empty_payment_object"
+            )
+
+    if shipping_cost_minor > 0 and totals_discount_minor > 0:
+        if totals_fulfillment_minor == 0:
+            return UCPDeferredPaymentAndTotalsDecision(
+                False, "free_shipping_double_counted_in_totals"
+            )
+    expected_total = subtotal_minor + totals_fulfillment_minor - totals_discount_minor
+    if totals_total_minor != expected_total:
+        return UCPDeferredPaymentAndTotalsDecision(False, "totals_conservation_mismatch")
+
+    for disc in applied_discounts or []:
+        if "allocations" in disc and disc["allocations"] is not None:
+            allocs = disc["allocations"]
+            if not isinstance(allocs, list):
+                return UCPDeferredPaymentAndTotalsDecision(
+                    False, "discount_allocations_sum_mismatch"
+                )
+            alloc_sum = sum(int(item.get("amount", 0)) for item in allocs if isinstance(item, dict))
+            if alloc_sum != int(disc.get("amount", 0)):
+                return UCPDeferredPaymentAndTotalsDecision(
+                    False, "discount_allocations_sum_mismatch"
+                )
+
+    return UCPDeferredPaymentAndTotalsDecision(True, "verified_ucp_deferred_payment_and_totals")
+
+
+def verify_ucp_identity_grant_and_location_headers(
+    *,
+    grant_iat: int,
+    grant_exp: int,
+    grant_jti: str,
+    grant_aud: Any,
+    expected_token_endpoint: str,
+    now: int,
+    seen_grant_jti: set[str],
+    is_grant_relayed_or_stored: bool = False,
+    location_rest_headers: dict[str, str] | None = None,
+    ecdsa_alg: Literal["ES256", "ES384"] = "ES256",
+    ecdsa_signature_bytes: bytes = b"\x01" * 64,
+) -> UCPDeferredPaymentAndTotalsDecision:
+    """Enforce UCP Oct 19 commits (#731 bb92f113a053, #784 0cccc20f7801) and PR #963:
+
+    1. `#731` (`identity-linking.md`): JWT authorization grants SHOULD have `0 < exp - iat <= 60`
+       (`jwt_grant_lifetime_exceeds_60s`), MUST enforce single-use via `jti` tracking within the
+       validity window (`jwt_grant_jti_replayed_or_missing`), and MUST NOT be stored, forwarded, or
+       relayed across audiences (`jwt_grant_relay_or_audience_mismatch`).
+    2. `#784` (`location.md`): Location REST binding (`search_locations`, `lookup_locations`) MUST
+       include `Request-Id` and `UCP-Agent` headers (`missing_location_rest_headers`).
+    3. `PR #963` (`signing-reference.md`): RFC 9421 §3.3.4 (`ecdsa-p256-sha256` / `ES256`) and §3.3.5
+       (`ecdsa-p384-sha384` / `ES384`) use fixed-length raw `r || s` concatenation (64 bytes for P-256,
+       96 bytes for P-384), forbidding variable-length ASN.1 DER sequences (`0x30 ...`).
+    """
+    if is_grant_relayed_or_stored or type(grant_aud) is not str or grant_aud != expected_token_endpoint:
+        return UCPDeferredPaymentAndTotalsDecision(
+            False, "jwt_grant_relay_or_audience_mismatch"
+        )
+    lifetime = grant_exp - grant_iat
+    if lifetime <= 0 or lifetime > 60 or not (grant_iat <= now < grant_exp):
+        return UCPDeferredPaymentAndTotalsDecision(False, "jwt_grant_lifetime_exceeds_60s")
+    if not isinstance(grant_jti, str) or len(grant_jti.strip()) < 8 or grant_jti in seen_grant_jti:
+        return UCPDeferredPaymentAndTotalsDecision(
+            False, "jwt_grant_jti_replayed_or_missing"
+        )
+
+    if location_rest_headers is not None:
+        lower_hdrs = {k.lower(): v.strip() for k, v in location_rest_headers.items() if isinstance(v, str)}
+        req_id = lower_hdrs.get("request-id", "")
+        ucp_agent = lower_hdrs.get("ucp-agent", "")
+        if not req_id or "profile=" not in ucp_agent:
+            return UCPDeferredPaymentAndTotalsDecision(False, "missing_location_rest_headers")
+
+    expected_len = 64 if ecdsa_alg == "ES256" else 96
+    if len(ecdsa_signature_bytes) != expected_len:
+        if len(ecdsa_signature_bytes) in {70, 71, 72, 102, 103, 104} and ecdsa_signature_bytes[:1] == b"\x30":
+            return UCPDeferredPaymentAndTotalsDecision(
+                False, "asn1_der_ecdsa_encoding_forbidden_use_raw_r_s"
+            )
+        return UCPDeferredPaymentAndTotalsDecision(
+            False, "invalid_rfc9421_ecdsa_raw_signature_length"
+        )
+
+    seen_grant_jti.add(grant_jti)
+    return UCPDeferredPaymentAndTotalsDecision(True, "verified_ucp_grant_headers_and_ecdsa")
+
+
+def verify_ap2_sd_jwt_kb_terminal_chain(
+    *,
+    root_has_visible_cnf: bool,
+    root_sd_hidden_keys: set[str] | frozenset[str],
+    terminal_typ: str,
+    terminal_aud: str | None,
+    terminal_nonce: str | None,
+    expected_aud: str,
+    expected_nonce: str,
+) -> UCPDeferredPaymentAndTotalsDecision:
+    """Enforce Google AP2 PR #369 (`tests/mandates/test_conformance.py`) SD-JWT+KB delegation invariants:
+
+    1. The root human-signed SD-JWT MUST bind the agent public key in a top-level visible `cnf` claim
+       and MUST NOT conceal `cnf` inside `_sd` disclosures (`root_sd_jwt_cnf_hidden_in_sd_forbidden`).
+    2. In `kb_sd_jwt`, a token carrying `cnf` receives `typ="kb+sd-jwt+kb"` (`TYP_INTERMEDIATE`).
+       A verifier that only enforces `expected_aud` and `expected_nonce` when `typ == "kb+sd-jwt"`
+       silently skips audience and nonce verification on the terminal hop when `cnf` is present.
+       The verifier MUST enforce `terminal_aud == expected_aud` and `terminal_nonce == expected_nonce`
+       on the final token in the chain regardless of whether `terminal_typ` is `"kb+sd-jwt"` or
+       `"kb+sd-jwt+kb"` (`kb_sd_jwt_terminal_aud_nonce_bypass_blocked`).
+    """
+    if not root_has_visible_cnf or "cnf" in root_sd_hidden_keys:
+        return UCPDeferredPaymentAndTotalsDecision(
+            False, "root_sd_jwt_cnf_hidden_in_sd_forbidden"
+        )
+    if terminal_typ not in {"kb+sd-jwt", "kb+sd-jwt+kb"}:
+        return UCPDeferredPaymentAndTotalsDecision(False, "invalid_sd_jwt_kb_terminal_typ")
+    if terminal_aud != expected_aud or terminal_nonce != expected_nonce:
+        return UCPDeferredPaymentAndTotalsDecision(
+            False, "kb_sd_jwt_terminal_aud_nonce_bypass_blocked"
+        )
+    return UCPDeferredPaymentAndTotalsDecision(True, "verified_ap2_sd_jwt_kb_terminal_chain")
 
 
 def main() -> int:

@@ -192,6 +192,14 @@ python -m lab.reverse_auction_tax_returns_guard --json
 
 演练多卖家 `Commit-Reveal` 二价反向询价（Vickrey 激励相容定价）与结账防加价（`BAIT_SWITCH_SURCHARGE_INJECTION`）、跨境 B2B VAT `0%` 逆向征税（`INVALID_B2B_VAT_REVERSE_CHARGE_OVERCOLLECTION`）及无税务联结违规收税拦截（`UNREGISTERED_TAX_COLLECTION_BLOCKED`），以及售后 RMA 质量缺陷零整新费保护（`ILLEGAL_SNAD_RESTOCKING_FEE_BLOCKED`）与退货序列号/净重掉包欺诈阻断（`RMA_SERIAL_OR_WEIGHT_FRAUD_BLOCKED`）。架构推导见 [`docs/architecture/reverse-auction-tax-and-returns-guard.md`](docs/architecture/reverse-auction-tax-and-returns-guard.md)。
 
+### Poppy `v0.2` 规范加固、UCP `deferred_payment` / AP2 `SD-JWT+KB` 与批发型 CBDC mBridge 16 场景 7-Card 报告生成（离线模拟）
+
+```powershell
+python -m lab.protocol_v02_sovereign_cbdc_bench --output-dir reports/agentic-commerce-protocol-v02-cbdc-bench
+```
+
+运行覆盖 Stages 33–34 的 16 个确定性评测场景（mBridge 批发型 CBDC 非对称 HTLC 时间锁与汇率走廊 PvP 结算、LBMA 分配金条超声/纯度审计、Sentinel-2 + MODIS 双源卫星 NDVI 农业保险托管、Poppy `v0.2` 全链路 HTTPS/禁重定向凭证转发/按 User ID 隔离 DPoP 密钥/MCP 原生 DPoP 令牌选择/未登录禁发 `operations`、UCP `deferred_payment` 账期守恒与 Identity Linking 禁 `client_credentials`、Google AP2 `#369` `SD-JWT+KB` 终端委托链证明及 ACP `#316` 17 网关映射），输出 [`reports/agentic-commerce-protocol-v02-cbdc-bench/report.json`](reports/agentic-commerce-protocol-v02-cbdc-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](reports/agentic-commerce-protocol-v02-cbdc-bench/index.html)。
+
 
 ## 每日研究
 

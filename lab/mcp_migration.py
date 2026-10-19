@@ -12,7 +12,7 @@ from typing import Literal
 PREVIOUS_DEADLINE = date(2026, 10, 31)
 DEADLINE = date(2026, 11, 30)
 ENFORCEMENT_STARTS = date(2026, 12, 1)
-POLICY_CHECKED_ON = date(2026, 10, 18)
+POLICY_CHECKED_ON = date(2026, 10, 19)
 SOURCE_URL = "https://docs.stripe.com/mcp"
 MAX_BYTES = 64 * 1024
 AuthMethod = Literal[

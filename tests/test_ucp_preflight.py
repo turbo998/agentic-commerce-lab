@@ -927,6 +927,191 @@ class PreflightTests(unittest.TestCase):
         self.assertTrue(ok_pack.can_overturn)
         self.assertEqual(ok_pack.admissibility, "admissible_verified")
 
+    def test_ucp_oct19_deferred_payment_totals_jwt_grant_location_and_ap2_sd_jwt_kb(self) -> None:
+        from lab.ucp_preflight import (
+            verify_ap2_sd_jwt_kb_terminal_chain,
+            verify_ucp_deferred_payment_terms_and_totals,
+            verify_ucp_identity_grant_and_location_headers,
+        )
+
+        # 1. #881 deferred payment terms require "payment": {} and omitted selected_term_id
+        bad_deferred = verify_ucp_deferred_payment_terms_and_totals(
+            is_fully_deferred_payment_term=True,
+            selected_term_id="net_30",
+            payment_object={"instruments": []},
+            subtotal_minor=10000,
+            shipping_cost_minor=1000,
+            totals_fulfillment_minor=1000,
+            totals_discount_minor=1000,
+            totals_total_minor=10000,
+        )
+        self.assertEqual(bad_deferred.reason, "deferred_term_requires_empty_payment_object")
+
+        # 2. #755 free-shipping double-counting (fulfillment=0 while also subtracting discount)
+        double_counted = verify_ucp_deferred_payment_terms_and_totals(
+            is_fully_deferred_payment_term=True,
+            selected_term_id=None,
+            payment_object={},
+            subtotal_minor=10000,
+            shipping_cost_minor=1000,
+            totals_fulfillment_minor=0,
+            totals_discount_minor=1000,
+            totals_total_minor=9000,
+        )
+        self.assertEqual(double_counted.reason, "free_shipping_double_counted_in_totals")
+
+        # 3. #755 discount allocations sum mismatch
+        bad_alloc = verify_ucp_deferred_payment_terms_and_totals(
+            is_fully_deferred_payment_term=True,
+            selected_term_id=None,
+            payment_object={},
+            subtotal_minor=10000,
+            shipping_cost_minor=1000,
+            totals_fulfillment_minor=1000,
+            totals_discount_minor=1000,
+            totals_total_minor=10000,
+            applied_discounts=[
+                {
+                    "code": "FREESHIP",
+                    "amount": 1000,
+                    "allocations": [{"path": "$.totals[?(@.type=='fulfillment')]", "amount": 600}],
+                }
+            ],
+        )
+        self.assertEqual(bad_alloc.reason, "discount_allocations_sum_mismatch")
+
+        # 4. PR #912 requires_escalation must include https continue_url
+        missing_cont = verify_ucp_deferred_payment_terms_and_totals(
+            is_fully_deferred_payment_term=False,
+            selected_term_id="net_30",
+            payment_object={"instruments": [{"id": "pi_1"}]},
+            subtotal_minor=10000,
+            shipping_cost_minor=1000,
+            totals_fulfillment_minor=1000,
+            totals_discount_minor=1000,
+            totals_total_minor=10000,
+            checkout_status="requires_escalation",
+            continue_url=None,
+        )
+        self.assertEqual(missing_cont.reason, "missing_continue_url_on_requires_escalation")
+
+        ok_totals = verify_ucp_deferred_payment_terms_and_totals(
+            is_fully_deferred_payment_term=True,
+            selected_term_id=None,
+            payment_object={},
+            subtotal_minor=10000,
+            shipping_cost_minor=1000,
+            totals_fulfillment_minor=1000,
+            totals_discount_minor=1000,
+            totals_total_minor=10000,
+            applied_discounts=[
+                {
+                    "code": "FREESHIP",
+                    "amount": 1000,
+                    "allocations": [{"path": "$.totals[?(@.type=='fulfillment')]", "amount": 1000}],
+                }
+            ],
+            checkout_status="requires_escalation",
+            continue_url="https://merchant.example/checkout/escalate/chk_1",
+        )
+        self.assertTrue(ok_totals.allowed)
+
+        # 5. #731 JWT grant single-use jti (<=60s), #784 Location headers, #963 raw r||s 64-byte ES256
+        seen_grants: set[str] = set()
+        token_ep = "https://auth.merchant.example/oauth/token"
+        loc_headers = {
+            "Request-Id": "550e8400-e29b-41d4-a716-446655440000",
+            "UCP-Agent": 'profile="https://agent.example/profiles/shopping-v1.json"',
+        }
+        ok_grant = verify_ucp_identity_grant_and_location_headers(
+            grant_iat=1000,
+            grant_exp=1060,
+            grant_jti="jti_grant_0001",
+            grant_aud=token_ep,
+            expected_token_endpoint=token_ep,
+            now=1020,
+            seen_grant_jti=seen_grants,
+            location_rest_headers=loc_headers,
+            ecdsa_alg="ES256",
+            ecdsa_signature_bytes=b"\x11" * 64,
+        )
+        self.assertTrue(ok_grant.allowed)
+
+        # Replaying same grant jti rejected (#731)
+        replay_grant = verify_ucp_identity_grant_and_location_headers(
+            grant_iat=1000,
+            grant_exp=1060,
+            grant_jti="jti_grant_0001",
+            grant_aud=token_ep,
+            expected_token_endpoint=token_ep,
+            now=1025,
+            seen_grant_jti=seen_grants,
+            location_rest_headers=loc_headers,
+        )
+        self.assertEqual(replay_grant.reason, "jwt_grant_jti_replayed_or_missing")
+
+        # ASN.1 DER 71-byte signature rejected (#963)
+        der_sig = verify_ucp_identity_grant_and_location_headers(
+            grant_iat=1000,
+            grant_exp=1060,
+            grant_jti="jti_grant_0002",
+            grant_aud=token_ep,
+            expected_token_endpoint=token_ep,
+            now=1025,
+            seen_grant_jti=seen_grants,
+            location_rest_headers=loc_headers,
+            ecdsa_alg="ES256",
+            ecdsa_signature_bytes=b"\x30" + b"\x22" * 70,
+        )
+        self.assertEqual(der_sig.reason, "asn1_der_ecdsa_encoding_forbidden_use_raw_r_s")
+
+        # Missing Location REST headers rejected (#784)
+        missing_hdr = verify_ucp_identity_grant_and_location_headers(
+            grant_iat=1000,
+            grant_exp=1060,
+            grant_jti="jti_grant_0003",
+            grant_aud=token_ep,
+            expected_token_endpoint=token_ep,
+            now=1025,
+            seen_grant_jti=seen_grants,
+            location_rest_headers={"Request-Id": "550e8400-e29b-41d4-a716-446655440000"},
+        )
+        self.assertEqual(missing_hdr.reason, "missing_location_rest_headers")
+
+        # 6. Google AP2 PR #369 kb+sd-jwt+kb terminal hop audience/nonce bypass & visible root cnf
+        bypass_attempt = verify_ap2_sd_jwt_kb_terminal_chain(
+            root_has_visible_cnf=True,
+            root_sd_hidden_keys=set(),
+            terminal_typ="kb+sd-jwt+kb",
+            terminal_aud="https://wrong-merchant.example",
+            terminal_nonce="nonce_123",
+            expected_aud="https://merchant.example",
+            expected_nonce="nonce_123",
+        )
+        self.assertEqual(bypass_attempt.reason, "kb_sd_jwt_terminal_aud_nonce_bypass_blocked")
+
+        hidden_cnf = verify_ap2_sd_jwt_kb_terminal_chain(
+            root_has_visible_cnf=True,
+            root_sd_hidden_keys={"cnf"},
+            terminal_typ="kb+sd-jwt+kb",
+            terminal_aud="https://merchant.example",
+            terminal_nonce="nonce_123",
+            expected_aud="https://merchant.example",
+            expected_nonce="nonce_123",
+        )
+        self.assertEqual(hidden_cnf.reason, "root_sd_jwt_cnf_hidden_in_sd_forbidden")
+
+        valid_ap2_chain = verify_ap2_sd_jwt_kb_terminal_chain(
+            root_has_visible_cnf=True,
+            root_sd_hidden_keys=set(),
+            terminal_typ="kb+sd-jwt+kb",
+            terminal_aud="https://merchant.example",
+            terminal_nonce="nonce_123",
+            expected_aud="https://merchant.example",
+            expected_nonce="nonce_123",
+        )
+        self.assertTrue(valid_ap2_chain.allowed)
+
 
 if __name__ == "__main__":
     unittest.main()

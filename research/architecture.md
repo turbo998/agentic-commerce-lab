@@ -153,5 +153,10 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 4. **Plane 4 — 协议互操作与批量目录平面（Protocol Interop & Bulk Discovery）**：基于 UCP `dev.ucp.common.feed`（`PR #866`），将控制面 `config.endpoint` 与不可变数据面 `manifest` 分离；每个分片强制校验 RFC 9530 `sha-256` 摘要，**任何分片拉取失败或摘要不匹配严禁触发快照差集删除**；`supplemental` 补充流按变体 `id` 精确合并而非覆盖整个 `variants` 数组。
 5. **Plane 5 — 可观测与争议取证平面（Observability & Dispute Forensics）**：基于 ACP ATDRP `PR #316` Appendix C 对 17 家支付网关的审计结论（仅 Stripe 与 Braintree 记录支付侧 Agent 信号，**0/17 家网关提供发卡行侧结构化 Mandate 字段**），先 fail-closed 校验 `digest_ok` 与 RFC 3161 时间戳，再将 Mandate JWS 与结账哈希确定性编译进网关兜底证据字段（如 Stripe `uncategorized_file` / `uncategorized_text`）。
 6. **Plane 6 — FinOps 与微支付经济学平面（FinOps & Micropayment Economics）**：结合 Stripe Billing（Metronome Token 计费）与支付轨下限（SPT 卡 `$0.50`、x402 Base `$0.01`、MPP Tempo Sessions `0.000001 USDC`），针对 MPP Tempo 流式会话“仅整美分（$\ge \$0.01$）结算、亚美分尾差直接没收（forfeited）”规则，通过最大公约数算法将结算周期强制对齐至 `$0.01` 的最小整数倍步长（如单价 `$0.000350` 对齐为 `200 units = $0.07`），消除高达 **54.29%** 的亚美分尾差没收损耗。
+7. **Stage 34 协议层安全加固（Poppy `v0.2` `#54`–`#70`、UCP `#881`/`#755`/`#731`、AP2 `#369`）**：
+   - **按 User ID 隔离 DPoP 密钥与非发现重定向零凭证转发（Poppy `v0.2` `#68`）**：传统 Web 后端常使用进程级单例客户端密钥并任由 HTTP 客户端在 `302` 重定向时自动携带 `Authorization` 头；AI-Native 个人 Agent 必须按 User ID 隔离 ES256 DPoP 密钥对以阻断跨用户硬件指纹关联，并在除两处 `.well-known` 发现端点外的全部协议请求中禁止自动跟随重定向转发凭证。
+   - **MCP 通道原生 `DPoP` 升级与 `401 invalid_token` 一步刷新（Poppy `v0.2` `#64`, `#69`）**：当 MCP 服务器在 RFC 9728 元数据中声明支持 `dpop` 时，直接复用 `DPoP` 会话令牌而非降级为 `Bearer`，且严禁将 `DPoP` 令牌放入 `Bearer` 头；令牌过期时资源服务器直接返回 `401 invalid_token` 一步触发刷新。
+   - **延期付款总额守恒与多跳委托终端 `SD-JWT+KB` 绑定（UCP `#881`, `#755` & AP2 `#369`）**：B2B 账期/定金/分期结账强制校验 `due_now + sum(deferred) == total`；Identity Linking 彻底禁用 `client_credentials` 防平台越权代绑；多跳 Agent 委托链末端强制校验 RFC 9901 `kb+jwt` 终端持有者证明与 `sd_hash` 完整性。对应 16 场景基准报告见 [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](../reports/agentic-commerce-protocol-v02-cbdc-bench/index.html)（**AI-Native `16/16` vs 经典三层 `1/16`**）。
+
 
 

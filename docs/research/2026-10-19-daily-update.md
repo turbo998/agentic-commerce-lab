@@ -219,6 +219,16 @@
 2. **Executable Guard Module & Unit Tests (241 Total Tests)**:
    - [`lab/cbdc_mbridge_bullion_crop_oracle_guard.py`](../../lab/cbdc_mbridge_bullion_crop_oracle_guard.py) & [`tests/test_cbdc_mbridge_bullion_crop_oracle_guard.py`](../../tests/test_cbdc_mbridge_bullion_crop_oracle_guard.py)
 
+### Stage 34 — Poppy Draft `0.2` Security Hardening, UCP `deferred_payment` / Identity / `201 Location` Guards, Google AP2 `SD-JWT+KB` Terminal Chain & ACP `#316` Nuvei Update + Stages 33–34 16-Scenario 7-Card Deck
+1. **Evening Source Monitor Verification (`50/51` `status="ok"` at `22:24 +08:00`) & CDN Locale Fix ([`scripts/source_monitor.py`](../../scripts/source_monitor.py))**:
+   - Fixed `docs.stripe.com/*.md` APAC Geo-IP locale drift (`ja-JP` markdown responses) by pinning `"Accept-Language": "en-US,en;q=0.9"`, restoring deterministic English SHA-256 hashes and `stripe-mcp` policy extraction (`42` calendar days remaining until `2026-11-30`).
+2. **Poppy `v0.2` (`#54`–`#70`, `30c476455c20`), UCP Oct-19 (`#881`–`#963`, `29e2d562ec0e`), AP2 `#369` & ACP `#316` (`b998b915638a`) Guards ([`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](./2026-10-18-agentic-commerce-full-stack-architecture.md) §40)**:
+   - Implemented Poppy `v0.2` HTTPS/no-fragment URL & minor-version backward compatibility (`#66`, `#67`), DNS-rebinding SSRF & non-discovery `3xx` credential-forwarding blocking (`#57`, `#68`), `iat` 5-minute window + per-User-ID DPoP key isolation + browser assertion `jti` anti-replay (`#62`, `#68`, `#69`), DPoP-capable MCP token selection & direct `401 invalid_token` expiry signaling (`#64`, `#69`), signed-out session operation blocking (`#59`), and `CapabilityFeedback` validation (`#70`) in [`lab/poppy_guard.py`](../../lab/poppy_guard.py).
+   - Implemented UCP `dev.ucp.shopping.deferred_payment` (`due_now + sum(deferred) == total`, `#881`), Identity Linking `client_credentials` prohibition (`#755`), `201 Created` `Location` header & `requires_escalation` `continue_url` enforcement (`#731`, `#912`), and Google AP2 `#369` `SD-JWT+KB` (`typ == "kb+jwt"`, `sd_hash`) verification in [`lab/ucp_preflight.py`](../../lab/ucp_preflight.py), plus ACP `#316` `b998b915638a` Nuvei payment-link update (`7/17` gateways) in [`lab/dispute_evidence_replay.py`](../../lab/dispute_evidence_replay.py).
+3. **Executable 16-Scenario 7-Card Deck & Unit Tests (244 Total Tests)**:
+   - [`lab/protocol_v02_sovereign_cbdc_bench.py`](../../lab/protocol_v02_sovereign_cbdc_bench.py) & [`tests/test_protocol_v02_sovereign_cbdc_bench.py`](../../tests/test_protocol_v02_sovereign_cbdc_bench.py)
+   - [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](../../reports/agentic-commerce-protocol-v02-cbdc-bench/index.html) & [`reports/agentic-commerce-protocol-v02-cbdc-bench/report.json`](../../reports/agentic-commerce-protocol-v02-cbdc-bench/report.json) (**AI-Native `16/16` (`100.0%`) vs Classic 3-Tier `1/16` (`6.2%`)**)
+
 ---
 
 ## Quick Verification Commands

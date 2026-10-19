@@ -196,7 +196,13 @@ def observe(
 ) -> Observation:
     """Fetch one source with bounded size and report failure with context."""
     validate_url(source.monitor_url)
-    request = Request(source.monitor_url, headers={"User-Agent": "AgenticCommerceLab/0.1"})
+    request = Request(
+        source.monitor_url,
+        headers={
+            "User-Agent": "AgenticCommerceLab/0.1",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+    )
     last_error: Exception | None = None
     fetched_url = source.monitor_url
     body = b""

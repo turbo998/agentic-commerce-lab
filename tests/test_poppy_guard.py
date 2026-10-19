@@ -31,6 +31,11 @@ from lab.poppy_guard import (
     verify_poppy_mcp_protected_resource,
     verify_poppy_request_token,
     verify_poppy_session_assertion,
+    verify_poppy_v02_assertion_and_user_dpop_isolation,
+    verify_poppy_v02_capability_feedback,
+    verify_poppy_v02_https_and_version_compat,
+    verify_poppy_v02_mcp_token_selection,
+    verify_poppy_v02_network_and_redirect_safety,
 )
 
 
@@ -1507,6 +1512,325 @@ class RetailOrderMutationGuardTests(unittest.TestCase):
         so_cancel = guard.cancel_operation(token=tok_out_1, operation_id=so_id)
         self.assertEqual((so_cancel.http_status, so_cancel.code), (200, "cancelled"))
         self.assertTrue(bool(so_cancel.operation["result"]["summary"]))  # type: ignore[index]
+
+    def test_poppy_v02_https_ssrf_assertion_dpop_mcp_and_signout_guards(self) -> None:
+        v02_doc = {
+            "protocol_version": "0.2",
+            "organization": {"name": "Manzanita Supply", "domain": "manzanitasupply.example"},
+            "auth": {
+                "issuer": "https://auth.manzanitasupply.example",
+                "mediated": {"endpoint": "https://api.manzanitasupply.example/poppy/sign-in"},
+            },
+            "conversations": {"endpoint": "https://api.manzanitasupply.example/poppy/conversations"},
+            "web": {"browser_session_endpoint": "https://manzanitasupply.example/poppy/browser-session"},
+            "feedback": {"endpoint": "https://api.manzanitasupply.example/poppy/feedback"},
+            "apis": [
+                {
+                    "name": "orders",
+                    "spec_url": "https://api.manzanitasupply.example/openapi.json",
+                    "servers": ["https://api.manzanitasupply.example"],
+                }
+            ],
+            "mcp_servers": [{"name": "catalog", "url": "https://mcp.manzanitasupply.example/mcp"}],
+            "extensions": {
+                "operations": {
+                    "version": "1",
+                    "endpoint": "https://api.manzanitasupply.example/poppy/operations",
+                }
+            },
+        }
+        self.assertTrue(verify_poppy_v02_https_and_version_compat(v02_doc).allowed)
+
+        # Minor 0.x version mismatch rejected (#67)
+        v03_doc = {**v02_doc, "protocol_version": "0.3"}
+        self.assertEqual(
+            verify_poppy_v02_https_and_version_compat(v03_doc).reason,
+            "unsupported_protocol_version",
+        )
+
+        # Non-HTTPS protocol URL rejected (#67)
+        http_mcp = {
+            **v02_doc,
+            "mcp_servers": [{"name": "catalog", "url": "http://mcp.manzanitasupply.example/mcp"}],
+        }
+        self.assertEqual(
+            verify_poppy_v02_https_and_version_compat(http_mcp).reason,
+            "non_https_protocol_url_forbidden",
+        )
+
+        # SSRF private/loopback/link-local blocked & credential redirect forwarding blocked (#68)
+        for bad_url in [
+            "https://127.0.0.1/poppy/token",
+            "https://10.0.1.25/poppy/orders",
+            "https://169.254.169.254/latest/meta-data",
+            "https://localhost/poppy",
+        ]:
+            self.assertEqual(
+                verify_poppy_v02_network_and_redirect_safety(target_url=bad_url).error,
+                "ssrf_loopback_private_or_link_local_forbidden",
+            )
+        redir_block = verify_poppy_v02_network_and_redirect_safety(
+            target_url="https://api.manzanitasupply.example/v2/orders",
+            is_redirect=True,
+            is_discovery_endpoint=False,
+            carries_credentials_or_dpop=True,
+        )
+        self.assertEqual(redir_block.error, "credential_redirect_forwarding_forbidden")
+        # Discovery redirect without credentials is allowed
+        self.assertTrue(
+            verify_poppy_v02_network_and_redirect_safety(
+                target_url="https://manzanitasupply.example/.well-known/poppy.json",
+                is_redirect=True,
+                is_discovery_endpoint=True,
+                carries_credentials_or_dpop=False,
+            ).allowed
+        )
+
+        # Assertion <=300s TTL, jti replay, and per-User-ID DPoP key isolation (#62, #65, #68)
+        seen_client_jti: set[tuple[str, str]] = set()
+        known_jkt: dict[str, str] = {}
+        valid_assertion = SessionAssertionClaims(
+            typ="poppy-session+jwt",
+            iss="https://agent.example/client.json",
+            sub="usr_alice_01",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1300,
+            jti="jti_v02_valid_assertion_0001",
+        )
+        self.assertTrue(
+            verify_poppy_v02_assertion_and_user_dpop_isolation(
+                assertion=valid_assertion,
+                auth_issuer="https://auth.manzanitasupply.example",
+                now=1050,
+                seen_jti_by_client=seen_client_jti,
+                dpop_jkt="jkt_es256_alice",
+                user_id="usr_alice_01",
+                known_jkt_by_user_id=known_jkt,
+            ).allowed
+        )
+        # Reusing Alice's DPoP key for Bob is rejected (#68)
+        bob_assertion = SessionAssertionClaims(
+            typ="poppy-session+jwt",
+            iss="https://agent.example/client.json",
+            sub="usr_bob_02",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1300,
+            jti="jti_v02_valid_assertion_0002",
+        )
+        self.assertEqual(
+            verify_poppy_v02_assertion_and_user_dpop_isolation(
+                assertion=bob_assertion,
+                auth_issuer="https://auth.manzanitasupply.example",
+                now=1050,
+                seen_jti_by_client=seen_client_jti,
+                dpop_jkt="jkt_es256_alice",
+                user_id="usr_bob_02",
+                known_jkt_by_user_id=known_jkt,
+            ).error,
+            "cross_user_dpop_key_reuse_forbidden",
+        )
+        # Assertion TTL > 300s rejected (#68)
+        long_ttl_assertion = SessionAssertionClaims(
+            typ="poppy-session+jwt",
+            iss="https://agent.example/client.json",
+            sub="usr_bob_02",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1600,
+            jti="jti_v02_valid_assertion_0003",
+        )
+        self.assertEqual(
+            verify_poppy_v02_assertion_and_user_dpop_isolation(
+                assertion=long_ttl_assertion,
+                auth_issuer="https://auth.manzanitasupply.example",
+                now=1050,
+                seen_jti_by_client=seen_client_jti,
+                dpop_jkt="jkt_es256_bob",
+                user_id="usr_bob_02",
+                known_jkt_by_user_id=known_jkt,
+            ).error,
+            "assertion_lifetime_exceeds_300s",
+        )
+        # Anonymous browsing reusing a signed-in user_id is rejected (#62)
+        anon_reuse = SessionAssertionClaims(
+            typ="poppy-session+jwt",
+            iss="https://agent.example/client.json",
+            sub="usr_alice_01",
+            aud="https://auth.manzanitasupply.example",
+            iat=1000,
+            exp=1200,
+            jti="jti_v02_valid_assertion_0004",
+        )
+        self.assertEqual(
+            verify_poppy_v02_assertion_and_user_dpop_isolation(
+                assertion=anon_reuse,
+                auth_issuer="https://auth.manzanitasupply.example",
+                now=1050,
+                seen_jti_by_client=seen_client_jti,
+                dpop_jkt="jkt_es256_anon",
+                user_id="usr_alice_01",
+                known_jkt_by_user_id=known_jkt,
+                is_anonymous_browsing=True,
+                signed_in_user_ids={"usr_alice_01"},
+            ).error,
+            "anonymous_browsing_user_id_reuse_forbidden",
+        )
+
+        # MCP token selection: DPoP-enabled MCP server vs Bearer-only MCP server (#64, #69)
+        mcp_url = "https://mcp.manzanitasupply.example/mcp"
+        dpop_mcp_meta = {
+            "resource": mcp_url,
+            "authorization_servers": ["https://auth.manzanitasupply.example"],
+            "dpop_signing_alg_values_supported": ["ES256"],
+        }
+        bearer_mcp_meta = {
+            "resource": mcp_url,
+            "authorization_servers": ["https://auth.manzanitasupply.example"],
+        }
+        mcp_dpop_tok = SessionToken(
+            access_token="pst_mcp_dpop_1",
+            token_type="DPoP",
+            session_id="ses_m1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice_01",
+            signed_in=True,
+            account_id="cust_1",
+            scopes=frozenset({"poppy:read", "poppy:write"}),
+            jwk_thumbprint="jkt_m1",
+            resource=mcp_url,
+            expires_at=2000,
+        )
+        mcp_proof = DPoPProof(
+            jti="jti_mcp_1",
+            htm="POST",
+            htu=mcp_url,
+            iat=1000,
+            ath=sha256_token("pst_mcp_dpop_1"),
+            jwk_thumbprint="jkt_m1",
+        )
+        self.assertTrue(
+            verify_poppy_v02_mcp_token_selection(
+                token=mcp_dpop_tok,
+                mcp_server_url=mcp_url,
+                protected_resource_metadata=dpop_mcp_meta,
+                authorization_scheme="DPoP",
+                dpop_proof=mcp_proof,
+                now=1005,
+            ).allowed
+        )
+        # Sending DPoP token as Authorization: Bearer is rejected (#69)
+        self.assertEqual(
+            verify_poppy_v02_mcp_token_selection(
+                token=mcp_dpop_tok,
+                mcp_server_url=mcp_url,
+                protected_resource_metadata=dpop_mcp_meta,
+                authorization_scheme="Bearer",
+                dpop_proof=mcp_proof,
+                now=1005,
+            ).error,
+            "dpop_token_sent_as_bearer_forbidden",
+        )
+        # Sending Bearer token to DPoP-enabled MCP server is rejected (#64)
+        mcp_bearer_tok = SessionToken(
+            access_token="pst_mcp_bearer_1",
+            token_type="Bearer",
+            session_id="ses_m1",
+            client_id="https://agent.example/client.json",
+            user_id="usr_alice_01",
+            signed_in=True,
+            account_id="cust_1",
+            scopes=frozenset({"poppy:read"}),
+            resource=mcp_url,
+            expires_at=2000,
+        )
+        self.assertEqual(
+            verify_poppy_v02_mcp_token_selection(
+                token=mcp_bearer_tok,
+                mcp_server_url=mcp_url,
+                protected_resource_metadata=dpop_mcp_meta,
+                authorization_scheme="Bearer",
+                now=1005,
+            ).error,
+            "mcp_dpop_required_by_resource_metadata",
+        )
+        # MCP server without dpop_signing_alg_values_supported accepts Bearer (#64)
+        self.assertTrue(
+            verify_poppy_v02_mcp_token_selection(
+                token=mcp_bearer_tok,
+                mcp_server_url=mcp_url,
+                protected_resource_metadata=bearer_mcp_meta,
+                authorization_scheme="Bearer",
+                now=1005,
+            ).allowed
+        )
+
+        # Signed-in operation requires signed-in session even after sign_out_session (#69, #70)
+        guard = RetailOrderMutationGuard(
+            company_domain="manzanitasupply.example",
+            catalog={
+                "item_1": CatalogVariant("item_1", "prod_a", "Trail Pack S", 10000, 3),
+                "item_2": CatalogVariant("item_2", "prod_a", "Trail Pack M", 11200, 2),
+            },
+            orders={
+                "ord_1": RetailOrder(
+                    order_id="ord_1",
+                    customer_id="cust_1",
+                    status="pending",
+                    items={"line_1": "item_1"},
+                    original_payment_method_id="pm_card_1",
+                )
+            },
+            payment_methods={
+                "cust_1": {"pm_card_1": PaymentInstrument("pm_card_1", "card", 0)},
+            },
+        )
+        prop = guard.propose_item_change(
+            token=mcp_dpop_tok,
+            order_id="ord_1",
+            action="modify_pending_order_items",
+            current_item_id="item_1",
+            replacement_item_id="item_2",
+            payment_method_id="pm_card_1",
+            now=1000,
+        )
+        op_id = prop.operation["operation_id"]  # type: ignore[index]
+        guard.sign_out_session("ses_m1", revoked=True)
+        # Stale token from signed-out session is rejected with 401 sign_in_required on GET / confirm (#69, #70)
+        self.assertEqual(
+            guard.get_operation(token=mcp_dpop_tok, operation_id=op_id).code,
+            "sign_in_required",
+        )
+        self.assertEqual(
+            guard.confirm_operation(
+                token=mcp_dpop_tok, operation_id=op_id, revision=1, approved_by="user", now=1010
+            ).code,
+            "sign_in_required",
+        )
+
+        # Capability feedback endpoint (#59)
+        self.assertTrue(
+            verify_poppy_v02_capability_feedback(
+                feedback_endpoint="https://api.manzanitasupply.example/poppy/feedback",
+                payload={
+                    "kind": "missing",
+                    "task": "Split a single order across two shipping addresses",
+                    "description": "The orders API supports only a single shipping_address per order.",
+                },
+            ).allowed
+        )
+        self.assertEqual(
+            verify_poppy_v02_capability_feedback(
+                feedback_endpoint="https://api.manzanitasupply.example/poppy/feedback",
+                payload={
+                    "kind": "missing",
+                    "task": "Update shipping for alice@example.com on ord_1",
+                    "description": "Missing endpoint",
+                },
+            ).code,
+            "pii_or_secret_in_capability_feedback_forbidden",
+        )
 
 
 if __name__ == "__main__":

@@ -41,8 +41,10 @@ class MonitorTests(unittest.TestCase):
         response.headers.get.return_value = "text/plain"
         response.__enter__.return_value = response
         digest = fingerprint(b"source text", "text/plain")
-        with patch("scripts.source_monitor.urlopen", return_value=response):
+        with patch("scripts.source_monitor.urlopen", return_value=response) as mocked_open:
             self.assertEqual(observe(self.source, None).change, "baseline")
+            req_sent = mocked_open.call_args[0][0]
+            self.assertEqual(req_sent.get_header("Accept-language"), "en-US,en;q=0.9")
             self.assertEqual(observe(self.source, digest).change, "unchanged")
             self.assertEqual(observe(self.source, "older").change, "changed")
             response.read.return_value = b"x" * (MAX_BYTES + 1)

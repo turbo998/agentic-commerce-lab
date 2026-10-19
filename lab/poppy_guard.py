@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 import hashlib
+import ipaddress
 import json
 import re
 from typing import Any
@@ -687,7 +688,7 @@ class RetailOrderMutationGuard:
         target_customer_id: str,
         required_scope: str,
     ) -> GuardDecision | None:
-        if not token.signed_in or not token.account_id:
+        if not token.signed_in or not token.account_id or token.session_id in self.signed_out_sessions:
             return GuardDecision(False, "sign_in_required", 401)
         bound = self.session_accounts.get(token.session_id)
         if bound is not None and bound != token.account_id:
@@ -2178,6 +2179,254 @@ class PoppySignInAndAccountTokenGuard:
                 # `bound_account_id` stays set permanently per Spec 4.4 / #49
                 signed_out_sessions.append(sid)
         return 200, {"revoked": True, "signed_out_sessions": tuple(signed_out_sessions)}
+
+
+def _is_loopback_private_or_link_local_host(hostname: str | None) -> bool:
+    """Return True if hostname resolves to loopback, RFC 1918 private, or link-local IP/host (#68)."""
+    if not hostname:
+        return True
+    host = hostname.strip().lower().strip("[]")
+    if host in {"localhost", "localhost.localdomain"} or host.endswith(".localhost"):
+        return True
+    try:
+        ip = ipaddress.ip_address(host)
+        return bool(
+            ip.is_loopback
+            or ip.is_private
+            or ip.is_link_local
+            or ip.is_unspecified
+            or ip.is_reserved
+        )
+    except ValueError:
+        return False
+
+
+def verify_poppy_v02_https_and_version_compat(
+    poppy_doc: dict[str, Any],
+    *,
+    supported_versions: set[str] | frozenset[str] = frozenset({"0.1", "0.2"}),
+) -> DiscoveryCheckResult:
+    """Enforce Poppy Draft 0.2 (#67 2fb9832a2771, #68 82ae80a295cd, #59 a5543ee7537e) discovery rules:
+
+    1. Before `1.0`, each `0.x` version can break earlier versions; a Personal Agent MUST only use
+       a `poppy.json` whose exact `major.minor` `protocol_version` it supports (`unsupported_protocol_version`).
+    2. Every protocol URL declared in `poppy.json` (`auth.issuer`, `auth.mediated.endpoint`,
+       `conversations.endpoint`, `web.browser_session_endpoint`, `feedback.endpoint`,
+       `apis[].spec_url`, `apis[].servers[]`, `mcp_servers[].url`, and `extensions.*.endpoint`)
+       MUST use `https://` (`non_https_protocol_url_forbidden`) and MUST NOT target loopback,
+       RFC 1918 private, or link-local hosts (`ssrf_private_or_loopback_host_forbidden`).
+    """
+    version = str(poppy_doc.get("protocol_version", "")).strip()
+    parts = version.split(".")
+    if len(parts) != 2 or not all(p.isdigit() for p in parts):
+        return DiscoveryCheckResult(False, "malformed_protocol_version", protocol_version=version)
+    if version not in supported_versions:
+        return DiscoveryCheckResult(False, "unsupported_protocol_version", protocol_version=version)
+
+    candidate_urls: list[str] = []
+    auth = poppy_doc.get("auth") or {}
+    if isinstance(auth, dict):
+        if "issuer" in auth:
+            candidate_urls.append(str(auth.get("issuer", "")))
+        mediated = auth.get("mediated")
+        if isinstance(mediated, dict) and "endpoint" in mediated:
+            candidate_urls.append(str(mediated.get("endpoint", "")))
+    for section_key, field_key in (
+        ("conversations", "endpoint"),
+        ("web", "browser_session_endpoint"),
+        ("feedback", "endpoint"),
+    ):
+        sec = poppy_doc.get(section_key)
+        if isinstance(sec, dict) and field_key in sec:
+            candidate_urls.append(str(sec.get(field_key, "")))
+
+    for api_item in poppy_doc.get("apis") or []:
+        if isinstance(api_item, dict):
+            if "spec_url" in api_item:
+                candidate_urls.append(str(api_item.get("spec_url", "")))
+            for srv in api_item.get("servers") or []:
+                candidate_urls.append(str(srv))
+
+    for mcp_item in poppy_doc.get("mcp_servers") or []:
+        if isinstance(mcp_item, dict) and "url" in mcp_item:
+            candidate_urls.append(str(mcp_item.get("url", "")))
+
+    extensions = poppy_doc.get("extensions") or {}
+    if isinstance(extensions, dict):
+        for ext_val in extensions.values():
+            if isinstance(ext_val, dict) and "endpoint" in ext_val:
+                candidate_urls.append(str(ext_val.get("endpoint", "")))
+
+    for raw_url in candidate_urls:
+        parsed = urlsplit(raw_url.strip())
+        if parsed.scheme.lower() != "https" or not parsed.hostname:
+            return DiscoveryCheckResult(
+                False, "non_https_protocol_url_forbidden", protocol_version=version
+            )
+        if _is_loopback_private_or_link_local_host(parsed.hostname):
+            return DiscoveryCheckResult(
+                False, "ssrf_private_or_loopback_host_forbidden", protocol_version=version
+            )
+
+    return DiscoveryCheckResult(True, "verified", protocol_version=version)
+
+
+def verify_poppy_v02_network_and_redirect_safety(
+    *,
+    target_url: str,
+    is_redirect: bool = False,
+    is_discovery_endpoint: bool = False,
+    carries_credentials_or_dpop: bool = False,
+) -> TokenCheckResult:
+    """Enforce Poppy Draft 0.2 Section 8.2 (#68 82ae80a295cd) anti-SSRF and redirect rules:
+
+    - Every protocol URL MUST use `https://` (`https_required`).
+    - Neither side connects to loopback (`127.0.0.0/8`, `::1`, `localhost`), RFC 1918 private,
+      or link-local (`169.254.0.0/16`, `fe80::/10`) addresses (`ssrf_loopback_private_or_link_local_forbidden`).
+    - Outside discovery (`not is_discovery_endpoint`), a Personal Agent MUST NOT resend tokens,
+      DPoP proofs, assertions, or credentials across HTTP redirects (`credential_redirect_forwarding_forbidden`).
+    """
+    parsed = urlsplit((target_url or "").strip())
+    if parsed.scheme.lower() != "https" or not parsed.hostname:
+        return TokenCheckResult(False, "https_required", 400)
+    if _is_loopback_private_or_link_local_host(parsed.hostname):
+        return TokenCheckResult(False, "ssrf_loopback_private_or_link_local_forbidden", 400)
+    if is_redirect and not is_discovery_endpoint and carries_credentials_or_dpop:
+        return TokenCheckResult(False, "credential_redirect_forwarding_forbidden", 400)
+    return TokenCheckResult(True, None, 200)
+
+
+def verify_poppy_v02_assertion_and_user_dpop_isolation(
+    *,
+    assertion: SessionAssertionClaims,
+    auth_issuer: str,
+    now: int,
+    seen_jti_by_client: set[tuple[str, str]],
+    dpop_jkt: str,
+    user_id: str,
+    known_jkt_by_user_id: dict[str, str],
+    is_anonymous_browsing: bool = False,
+    signed_in_user_ids: set[str] | frozenset[str] | None = None,
+) -> TokenCheckResult:
+    """Enforce Poppy Draft 0.2 (#62, #65, #68) 5-minute assertion TTL, per-client `jti` replay,
+    and per-User-ID DPoP key isolation:
+
+    1. Client and Session assertions MUST set `aud == auth.issuer` (exact character match),
+       `0 < exp - iat <= 300` (5-minute max lifetime), and unique `(iss, jti)` (`len(jti) >= 22`).
+    2. A Personal Agent MUST use a distinct `ES256` DPoP key pair (`dpop_jkt`) for each `user_id`
+       so a Company cannot correlate different users through a shared DPoP key (`cross_user_dpop_key_reuse_forbidden`).
+    3. For anonymous browsing (#62), the Personal Agent generates an ephemeral `user_id` + DPoP
+       key pair that is never signed in and never reuses a signed-in `user_id` (`anonymous_browsing_user_id_reuse_forbidden`).
+    """
+    aud_check = verify_poppy_assertion_audience(assertion.aud, auth_issuer=auth_issuer)
+    if not aud_check.allowed:
+        return TokenCheckResult(False, "invalid_client_or_session_assertion_aud", 400)
+
+    lifetime = assertion.exp - assertion.iat
+    if lifetime <= 0 or lifetime > 300 or not (assertion.iat <= now < assertion.exp):
+        return TokenCheckResult(False, "assertion_lifetime_exceeds_300s", 400)
+
+    if not isinstance(assertion.jti, str) or len(assertion.jti) < 22:
+        return TokenCheckResult(False, "invalid_grant", 400)
+    replay_key = (assertion.iss, assertion.jti)
+    if replay_key in seen_jti_by_client:
+        return TokenCheckResult(False, "invalid_grant", 400)
+
+    if not dpop_jkt or not user_id:
+        return TokenCheckResult(False, "invalid_dpop_proof", 400)
+
+    if is_anonymous_browsing and signed_in_user_ids and user_id in signed_in_user_ids:
+        return TokenCheckResult(False, "anonymous_browsing_user_id_reuse_forbidden", 400)
+
+    for existing_uid, existing_jkt in known_jkt_by_user_id.items():
+        if existing_uid != user_id and existing_jkt == dpop_jkt:
+            return TokenCheckResult(False, "cross_user_dpop_key_reuse_forbidden", 400)
+
+    seen_jti_by_client.add(replay_key)
+    known_jkt_by_user_id[user_id] = dpop_jkt
+    return TokenCheckResult(True, None, 200)
+
+
+def verify_poppy_v02_mcp_token_selection(
+    *,
+    token: SessionToken,
+    mcp_server_url: str,
+    protected_resource_metadata: dict[str, Any],
+    authorization_scheme: str,  # "DPoP" or "Bearer"
+    dpop_proof: DPoPProof | None = None,
+    now: int = 1000,
+) -> TokenCheckResult:
+    """Enforce Poppy Draft 0.2 Section 6 & 4.3 (#64 dc5730d31500, #69 554f87d0b885) MCP token selection:
+
+    - Every MCP Session Token MUST be resource-bound to `mcp_server_url` (`resource_mismatch`).
+    - When MCP Protected Resource Metadata includes `dpop_signing_alg_values_supported`:
+      * It MUST include `"ES256"` (`mcp_dpop_es256_required`).
+      * The MCP server issues and accepts ONLY `DPoP` Session Tokens (`Authorization: DPoP <token>` +
+        valid `DPoP` proof with `ath` and `htu == mcp_server_url`).
+      * Sending a `Bearer` token (`mcp_dpop_required_by_resource_metadata`) or sending a `DPoP` token
+        under `Authorization: Bearer` (`dpop_token_sent_as_bearer_forbidden`) is rejected with HTTP 401.
+    - When MCP Protected Resource Metadata omits `dpop_signing_alg_values_supported`:
+      * Personal Agents receive and send a resource-bound `Bearer` Session Token (`Authorization: Bearer`).
+    """
+    if now >= token.expires_at:
+        return TokenCheckResult(False, "invalid_token", 401)
+    if not token.resource or _canonical_htu(token.resource) != _canonical_htu(mcp_server_url):
+        return TokenCheckResult(False, "resource_mismatch", 401)
+
+    scheme = (authorization_scheme or "").strip()
+    has_dpop_metadata = "dpop_signing_alg_values_supported" in protected_resource_metadata
+    if has_dpop_metadata:
+        algs = protected_resource_metadata.get("dpop_signing_alg_values_supported")
+        if not isinstance(algs, list) or "ES256" not in algs:
+            return TokenCheckResult(False, "mcp_dpop_es256_required", 400)
+        if token.token_type == "DPoP" and scheme.lower() == "bearer":
+            return TokenCheckResult(False, "dpop_token_sent_as_bearer_forbidden", 401)
+        if token.token_type != "DPoP" or scheme.lower() != "dpop":
+            return TokenCheckResult(False, "mcp_dpop_required_by_resource_metadata", 401)
+        if (
+            dpop_proof is None
+            or dpop_proof.alg != "ES256"
+            or dpop_proof.jwk_thumbprint != token.jwk_thumbprint
+            or _canonical_htu(dpop_proof.htu) != _canonical_htu(mcp_server_url)
+            or dpop_proof.ath != sha256_token(token.access_token)
+            or abs(now - dpop_proof.iat) > 60
+        ):
+            return TokenCheckResult(False, "invalid_dpop_proof", 401)
+        return TokenCheckResult(True, None, 200)
+
+    if token.token_type != "Bearer" or scheme.lower() != "bearer":
+        return TokenCheckResult(False, "mcp_bearer_required_when_dpop_omitted", 401)
+    return TokenCheckResult(True, None, 200)
+
+
+def verify_poppy_v02_capability_feedback(
+    *,
+    feedback_endpoint: str,
+    payload: dict[str, Any],
+) -> GuardDecision:
+    """Enforce Poppy Draft 0.2 Section 8 (`Capability Feedback`, #59 a5543ee7537e):
+
+    - `feedback.endpoint` MUST use `https://` and non-private host.
+    - Payload MUST contain `kind == "missing"`, non-empty `task`, and non-empty `description`.
+    - Neither `task` nor `description` may include personal data (emails, phone numbers, account IDs,
+      or bearer/session tokens).
+    """
+    net_chk = verify_poppy_v02_network_and_redirect_safety(target_url=feedback_endpoint)
+    if not net_chk.allowed:
+        return GuardDecision(False, net_chk.error or "invalid_feedback_endpoint", 400)
+    if payload.get("kind") != "missing":
+        return GuardDecision(False, "invalid_feedback_kind", 400)
+    task = str(payload.get("task", "")).strip()
+    desc = str(payload.get("description", "")).strip()
+    if not task or not desc:
+        return GuardDecision(False, "missing_feedback_task_or_description", 400)
+    combined = f"{task} {desc}"
+    if (
+        re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", combined)
+        or re.search(r"\b(?:pst_|pat_|acct_|cust_|ord_)[A-Za-z0-9_]+\b", combined)
+    ):
+        return GuardDecision(False, "pii_or_secret_in_capability_feedback_forbidden", 400)
+    return GuardDecision(True, "feedback_accepted", 204)
 
 
 def run_demo() -> dict[str, Any]:
