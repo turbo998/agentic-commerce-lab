@@ -622,3 +622,7 @@
 
 ### Stage 104：UCP `#566`/`#483`/`#538`/`#530`/`#460`、ACP `#53`/`#52`/`#9`/`#3`、Google AP2 `#243`/`#252` + x402 `#354` 与 Sierra $\tau$-bench 2.0 `#584`/`#581`/`#570`/`#569`/`#566` 护栏
 - 新增 [`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py) 与单测 `tests/test_ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`（全仓 `562/562` 单测通过）。
+
+### Stage 105：16 场景（`WB-01..WB-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py) 与报告 [`reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/`](../../reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/index.html)（`564/564` 单测通过）。
+

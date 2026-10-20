@@ -622,3 +622,7 @@
 
 ### Stage 104: UCP `#566`/`#483`/`#538`/`#530`/`#460`, ACP `#53`/`#52`/`#9`/`#3`, Google AP2 `#243`/`#252` + x402 `#354`, and Sierra $\tau$-bench 2.0 `#584`/`#581`/`#570`/`#569`/`#566` Guardrails
 - Added [`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py) and unit tests (`562/562` total unit tests passing).
+
+### Stage 105: 16-Scenario (`WB-01..WB-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
+- Added [`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py) and [`reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/`](../../reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/index.en.html) (`564/564` total unit tests passing).
+

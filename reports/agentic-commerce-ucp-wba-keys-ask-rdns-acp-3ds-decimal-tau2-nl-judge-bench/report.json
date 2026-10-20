@@ -1,0 +1,281 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench",
+  "stage": "Stage 105",
+  "scenario_range": "WB-01..WB-16",
+  "provenance": "synthetic",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_pass_rate_pct": 25.0,
+  "reversal_invariant_count": 16,
+  "reversal_invariance_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.29,
+    "classic_3tier": 4.38,
+    "speedup_x": 15.1
+  },
+  "scenarios": [
+    {
+      "id": "WB-01",
+      "domain": "UCP #566/#483/#538/#530/#460",
+      "title_zh": "合规 UCP keys[] JWK Set、WBA 双受众签名、只读 ask 问答与 RDNS 权威绑定",
+      "title_en": "Compliant UCP canonical keys[], WBA dual-audience signature, read-only ask & RDNS authority",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "WB-02",
+      "domain": "UCP #566 & #483",
+      "title_zh": "阻断遗留 signing_keys[] 双发与缺失 web-bot-auth 标签/signature-agent 的 WBA 签名",
+      "title_en": "Block legacy signing_keys[] publication and WBA signature missing web-bot-auth tag or signature-agent",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_566_LEGACY_SIGNING_KEYS_FIELD_FORBIDDEN",
+        "UCP_483_WBA_MISSING_WEB_BOT_AUTH_TAG",
+        "UCP_483_WBA_MISSING_DUAL_AUDIENCE_COMPONENTS"
+      ]
+    },
+    {
+      "id": "WB-03",
+      "domain": "UCP #538",
+      "title_zh": "阻断 dev.ucp.common.ask 问答请求修改商业状态或覆盖结构化能力权威",
+      "title_en": "Block dev.ucp.common.ask mutating commerce state or superseding structured capability",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_538_ASK_CAPABILITY_MUTATED_COMMERCE_STATE",
+        "UCP_538_ASK_SUPERSEDED_STRUCTURED_CAPABILITY"
+      ]
+    },
+    {
+      "id": "WB-04",
+      "domain": "UCP #530 & #460",
+      "title_zh": "阻断 schema URL 越权指向非反向域名权威主机与 verified_count 超总评分数",
+      "title_en": "Block schema URL mismatching RDNS authority host and verified_count exceeding total count",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_530_SCHEMA_URL_AUTHORITY_MISMATCH",
+        "UCP_460_VERIFIED_COUNT_EXCEEDS_TOTAL_COUNT"
+      ]
+    },
+    {
+      "id": "WB-05",
+      "domain": "ACP #53/#52/#9/#3",
+      "title_zh": "合规 ACP 消费者 3DS、混合购物车履约、8 位 ISO 7812 IIN 与 B2B 小数数量",
+      "title_en": "Compliant ACP consumer 3DS, mixed-cart fulfillment, 8-digit IIN & B2B decimal quantity",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "WB-06",
+      "domain": "ACP #52",
+      "title_zh": "阻断缺失收件人电话/邮箱与混合购物车未全量覆盖数字+实体行项目",
+      "title_en": "Block missing fulfillment contact phone/email and incomplete mixed-cart option coverage",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_52_MISSING_FULFILLMENT_CONTACT_FIELD:phone",
+        "ACP_52_MISSING_FULFILLMENT_CONTACT_FIELD:email",
+        "ACP_52_MIXED_CART_ITEMS_NOT_FULLY_COVERED_BY_FULFILLMENT_OPTIONS"
+      ]
+    },
+    {
+      "id": "WB-07",
+      "domain": "ACP #53 & #9",
+      "title_zh": "阻断未验证消费者 3DS 密文与超出 ISO/IEC 7812-1 8 位上限的非法 IIN",
+      "title_en": "Block unverified consumer 3DS cryptogram and invalid IIN exceeding 8-character ISO 7812 limit",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_53_UNVERIFIED_CONSUMER_3DS_AUTHENTICATION",
+        "ACP_9_INVALID_ISO7812_IIN_LENGTH"
+      ]
+    },
+    {
+      "id": "WB-08",
+      "domain": "ACP #3",
+      "title_zh": "阻断违反 exclusiveMinimum: 0 的零或负数 B2B 小数数量",
+      "title_en": "Block zero or negative B2B decimal quantity violating exclusiveMinimum: 0",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_3_NON_POSITIVE_B2B_DECIMAL_QUANTITY"
+      ]
+    },
+    {
+      "id": "WB-09",
+      "domain": "Google AP2 #243/#252 + x402 #354",
+      "title_zh": "合规 AP2 验证器重算 checkout_hash、跨商户预算控制与 x402 SpendGuard 限额",
+      "title_en": "Compliant AP2 verifier checkout_hash recomputation, cross-merchant budget & x402 SpendGuard",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "WB-10",
+      "domain": "Google AP2 #243",
+      "title_zh": "阻断验证器跳过 checkout_hash 独立重算或放行篡改后的结账哈希",
+      "title_en": "Block payment verifier skipping checkout_hash recomputation or admitting mismatched hash",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "AP2_243_VERIFIER_SKIPPED_CHECKOUT_HASH_RECOMPUTATION",
+        "AP2_243_CHECKOUT_HASH_MISMATCH"
+      ]
+    },
+    {
+      "id": "WB-11",
+      "domain": "Google AP2 #252",
+      "title_zh": "阻断跨商户累计支出突破会话总预算上限及跨商户重放相同分配 nonce",
+      "title_en": "Block cross-merchant allocations exceeding session budget cap and replaying allocation nonces",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "AP2_252_CROSS_MERCHANT_CUMULATIVE_BUDGET_EXCEEDED",
+        "AP2_252_DUPLICATE_CROSS_MERCHANT_ALLOCATION_NONCE"
+      ]
+    },
+    {
+      "id": "WB-12",
+      "domain": "Coinbase x402 #354",
+      "title_zh": "阻断突破 x402 SpendGuard 单次调用上限与滚动时间窗累计 USDC 限额",
+      "title_en": "Block x402 payment exceeding SpendGuard per-call and rolling-window USDC caps",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "X402_354_SPENDGUARD_PER_CALL_CAP_EXCEEDED",
+        "X402_354_SPENDGUARD_WINDOW_CAP_EXCEEDED"
+      ]
+    },
+    {
+      "id": "WB-13",
+      "domain": "Sierra tau2-bench #584/#581/#570/#569/#566",
+      "title_zh": "合规 tau2-bench NL 裁判剔除空回合、裁决数校验、配对列表排序与 KB 排序加载",
+      "title_en": "Compliant tau2-bench NL judge turn filtering, verdict count check, paired list sort & sorted KB",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "WB-14",
+      "domain": "Sierra tau2-bench #584 & #581",
+      "title_zh": "阻断将工具调用回合序列化为 assistant: None 及利用空裁决列表骗取满分",
+      "title_en": "Block literal assistant: None in NL judge prompt and empty verdict list false-pass via all([])",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_584_LITERAL_ASSISTANT_NONE_IN_NL_JUDGE_PROMPT",
+        "TAU2_581_NL_JUDGE_VERDICT_COUNT_MISMATCH"
+      ]
+    },
+    {
+      "id": "WB-15",
+      "domain": "Sierra tau2-bench #570 & #569",
+      "title_zh": "阻断换货配对列表错位映射与省略金标必填参数仍误判匹配",
+      "title_en": "Block swapped paired replacement items and omitted gold action arguments false-pass",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_570_SWAPPED_OR_MISMATCHED_PAIRED_ACTION_LISTS",
+        "TAU2_569_OMITTED_OR_EXTRA_GOLD_ARG_KEYS"
+      ]
+    },
+    {
+      "id": "WB-16",
+      "domain": "Sierra tau2-bench #566",
+      "title_zh": "阻断 KnowledgeBase.load 按未排序文件系统目录顺序加载文档导致检索漂移",
+      "title_en": "Block unsorted filesystem directory order in KnowledgeBase.load causing retrieval tie-break drift",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_566_UNSORTED_FILESYSTEM_KB_LOAD_ORDER"
+      ]
+    }
+  ]
+}

@@ -210,4 +210,7 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§103.2**: ACP Consumer 3DS (`#53`), Mixed-Cart Fulfillment & Contact Address (`#52`), Extended 8-Char ISO/IEC 7812-1 `iin` (`#9`), and B2B Fractional Decimal Quantities (`#3`).
   - **§103.3**: Google AP2 Normative Verifier `checkout_hash` Obligation (`#243`), Cross-Merchant Budget Enforcement (`#252`), and Coinbase x402 SpendGuard (`#354`).
   - **§103.4**: Sierra $\tau$-bench 2.0 NL-Assertions Judge Contentless-Turn Omission (`#584`), Exact Verdict Count Check (`#581`), Paired-List Action Argument Comparison (`#570`), Union-Key Action Check (`#569`), and Sorted `KnowledgeBase.load` (`#566`).
+- **§104 (Stage 105 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WB-01..WB-16`)**: `lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py` & `reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.29 ms` vs. `4.38 ms` (`15.1x` speedup).
+
 

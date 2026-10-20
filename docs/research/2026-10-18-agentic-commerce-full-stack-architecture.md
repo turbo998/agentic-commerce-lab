@@ -1319,3 +1319,12 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 103.4 Sierra $\tau$-bench 2.0 NL 裁判无内容回合剔除（`#584`）、裁决数精确匹配（`#581`）、配对列表同行排序（`#570`）、金标参数并集校验（`#569`）与 KB 排序加载（`#566`）
 - 拦截 `assistant: None` 混入 NL 裁判提示词、拦截空或缺失裁决数组利用 `all([]) == True` 误判满分、保持 `item_ids` 与 `new_item_ids` 成对排序并检查参数键并集、强制 `KnowledgeBase.load` 按路径排序加载（参见 `lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`）。
 
+---
+
+## 104. Stage 105 基准评测：16 场景（`WB-01..WB-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 104 四大协议域的 16 个场景（`WB-01..WB-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.29 ms` vs. `4.38 ms`（`15.1x` 加速）**。
+- **技术资产**：[`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py)、[`tests/test_ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../tests/test_ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/`](../../reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/index.html)。
+
+
