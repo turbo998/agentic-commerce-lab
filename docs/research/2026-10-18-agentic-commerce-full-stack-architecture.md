@@ -1370,6 +1370,15 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 107.4 Sierra $\tau$-bench 2.0 完整性分母规则与 Live 转录缺口分类（`#650`）、`v1.0.1` 基准锁定（`#623`）及 `/{env_id}/set_state` 签名对齐（`#500`）
 - 落地 `#650` 2.0 完整性规则：基础设施报错（`error_trials`）从单元格得分分母中剔除（需满足 `scored_calls >= 1` 且 `unscored_missing_calls == 0` 且 `scored_calls + error_trials == owed_calls`），全部报错或存在漏评仍阻断提交；Live 语音转录缺失记入 `VerdictFingerprint.input_error_units` 与 `input_excluded_calls`；锁定 1.x 任务基线为 `v1.0.1`（`#623`），并要求 `POST /{env_id}/set_state` 向 `set_environment_state` 完整传入 `initialization_data` 等 4 个参数（`#500`；参见 `lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_guard.py`）。
 
+---
+
+## 108. Stage 109 基准评测：16 场景（`PC-01..PC-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 108 四大协议域的 16 个场景（`PC-01..PC-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.27 ms` vs. `4.21 ms`（`15.6x` 加速）**。
+- **技术资产**：[`lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py)、[`tests/test_ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../tests/test_ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/`](../../reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/index.html)。
+
+
 
 
 

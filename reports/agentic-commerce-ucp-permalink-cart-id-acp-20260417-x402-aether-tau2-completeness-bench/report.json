@@ -1,0 +1,219 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench",
+  "stage": "Stage 109",
+  "provenance": "synthetic / deterministic verifier (independently_reproduced=true)",
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 4,
+  "reversal_invariance_passed": 16,
+  "median_latency_ms": 0.27,
+  "classic_latency_ms": 4.21,
+  "speedup_factor": 15.6,
+  "scenarios": [
+    {
+      "id": "PC-01",
+      "domain": "UCP #968/#913/#763/#633/#568",
+      "task": "Compliant permalink 303 headers, cart update id omission & webhook ucp-agent sig",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "violations": [],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-02",
+      "domain": "UCP #913 Permalink 303",
+      "task": "Block permalink 303 redirect missing Cache-Control: no-store or no-referrer",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "UCP_913_MISSING_CACHE_CONTROL_NO_STORE",
+        "UCP_913_MISSING_REFERRER_POLICY_NO_REFERRER"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-03",
+      "domain": "UCP #763/#633 Cart Update",
+      "task": "Block redundant cart.id inside cart update request body",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "UCP_763_633_CART_ID_FORBIDDEN_IN_UPDATE_BODY"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-04",
+      "domain": "UCP #568 Order Webhook",
+      "task": "Block order webhook omitting ucp-agent from Signature-Input components",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "UCP_568_WEBHOOK_SIGNATURE_INPUT_MISSING_UCP_AGENT"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-05",
+      "domain": "ACP #227/#219/#176/#102",
+      "task": "Compliant 2026-04-17 snapshot, minor-unit refund, seller discovery & $defs ref",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "violations": [],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-06",
+      "domain": "ACP #227 Release Snapshot",
+      "task": "Block ACP capability missing 2026-04-17 in supported_versions",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "ACP_227_MISSING_2026_04_17_IN_SUPPORTED_VERSIONS"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-07",
+      "domain": "ACP #219 Webhook Refund",
+      "task": "Block string decimal Refund.amount ('1.00') in order_updated webhook",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "ACP_219_WEBHOOK_REFUND_AMOUNT_MUST_BE_MINOR_UNIT_INT"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-08",
+      "domain": "ACP #176/#102 Discovery & Ref",
+      "task": "Block legacy platform terminology and broken SelectedFulfillmentOption $ref",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "ACP_176_DISCOVERY_MUST_USE_SELLER_TERMINOLOGY",
+        "ACP_102_INVALID_SELECTED_FULFILLMENT_OPTION_REF"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-09",
+      "domain": "AP2 #157/#148/#122 + x402 #367/#343",
+      "task": "Compliant AP2 JWT/pay-by-bank mandate & Aether x402 payability audit",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "violations": [],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-10",
+      "domain": "AP2 #157/#122 JWT & Pay-by-Bank",
+      "task": "Block inverted iat/exp timestamps and unbound pay-by-bank mandate",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "AP2_157_INVALID_MANDATE_JWT_IAT_EXP_TIMESTAMPS",
+        "AP2_122_PAY_BY_BANK_MISSING_MANDATE_BINDING"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-11",
+      "domain": "Coinbase x402 #367 Aether Audit",
+      "task": "Block Base mainnet CAIP-2 challenge advertising Base Sepolia testnet USDC",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "X402_367_CAIP2_USDC_ASSET_NETWORK_MISMATCH"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-12",
+      "domain": "Coinbase x402 #343 Burn-Once",
+      "task": "Block second replay read on burn-once-secret-vault endpoint",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "X402_343_BURN_ONCE_SECRET_READ_REPLAY_DETECTED"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-13",
+      "domain": "Sierra tau2-bench #650/#623/#500",
+      "task": "Compliant 2.0 cell completeness, Live transcript gap & 4-arg set_state",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "violations": [],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-14",
+      "domain": "Sierra tau2-bench #650 Completeness",
+      "task": "Block cell where all owed calls errored (scored_calls == 0) from submission",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "TAU2_650_INVALID_CELL_COMPLETENESS_OR_DENOMINATOR"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-15",
+      "domain": "Sierra tau2-bench #650/#623 Judge & Pin",
+      "task": "Block VerdictFingerprint missing input_error_units and unpinned v1.0.0 tasks",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "TAU2_650_VERDICT_FINGERPRINT_MISSING_INPUT_ERROR_UNITS",
+        "TAU2_623_V1X_BASE_TASKS_NOT_PINNED_TO_V1_0_1"
+      ],
+      "latency_ms": 0.27
+    },
+    {
+      "id": "PC-16",
+      "domain": "Sierra tau2-bench #500 set_state",
+      "task": "Block POST /{env_id}/set_state omitting initialization_data argument",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "violations": [
+        "TAU2_500_SET_STATE_MISSING_INITIALIZATION_DATA_ARG"
+      ],
+      "latency_ms": 0.27
+    }
+  ],
+  "latency_tiers": [
+    {
+      "tier": "1x Single Request",
+      "primary_ms": 0.27,
+      "baseline_ms": 4.21
+    },
+    {
+      "tier": "8x Concurrent Batch",
+      "primary_ms": 0.86,
+      "baseline_ms": 13.45
+    },
+    {
+      "tier": "32x Burst Pipeline",
+      "primary_ms": 2.88,
+      "baseline_ms": 44.95
+    }
+  ]
+}

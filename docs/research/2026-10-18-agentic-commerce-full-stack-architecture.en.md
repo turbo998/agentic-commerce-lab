@@ -224,6 +224,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§107.2**: ACP `2026-04-17` Release Snapshot (`#227`), Webhook Refund Minor-Unit Integer (`#219`), and Seller Discovery Terminology & `#/$defs/SelectedFulfillmentOption` Reference (`#176`/`#102`).
   - **§107.3**: Google AP2 Mandate JWT Timestamp & `pay-by-bank` Binding (`#157`/`#148`/`#122`) + Coinbase `x402` Aether Payability Audit (`#367`) & `burn-once-secret-vault` Anti-Replay (`#343`).
   - **§107.4**: Sierra $\tau$-bench 2.0 Infrastructure-Error Denominator Exclusion & Live Transcript Gap Classification (`#650`), `v1.0.1` Task Pin (`#623`), and `/{env_id}/set_state` Signature Alignment (`#500`).
+- **§108 (Stage 109 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PC-01..PC-16`)**: `lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py` & `reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.27 ms` vs. `4.21 ms` (`15.6x` speedup).
+
 
 
 
