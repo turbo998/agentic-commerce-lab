@@ -41,3 +41,16 @@
   - Unit Tests: [`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py) (**322/322** total unit tests passing)
   - Bilingual Architecture Reference (§55): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 57: 16-Scenario Bilingual (CN/EN) 7-Card 4:5 Visual Benchmark Suite (`RP-01..RP-16`)
+
+- **Evaluation Scope (`RP-01..RP-16`)**:
+  - Benchmarks the AI-Native 6-Plane verifier pipeline against a Classic 3-Tier Web baseline across UCP `#891` RFC 9728/8414 multi-AS discovery, `#573` fulfillment `options[].totals` array, `#672` `ready_for_complete` status lifecycle, `#635` Mercado Pago Pix `render_artifact`, `#316` Razorpay Magic `hosted_checkout`, ACP `#287` `delegate_authentication` mandatory `Signature`, `#289` `CheckoutSessionCreateRequest` required fields, `#266` unwrapped `delegate_payment` `Error` envelope, and Sierra $\tau$-bench 2.0 `#638` Boréal Finance EN/FR `loan_servicing` + `#634` `canonicalize_time_verified`.
+  - **Results**: AI-Native pass rate **16/16 (100.0%)** vs. Classic 3-Tier **1/16 (6.2%)**, **100.0%** perturbation stability, mean latency **0.38 ms** vs. **2.06 ms** (**5.4x** speedup).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Runner: [`lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py`](../../lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py)
+  - Unit Tests: [`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py) (**324/324** total unit tests passing)
+  - Bilingual 7-Card 4:5 Visual Decks: [`reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/report.json)
+
+

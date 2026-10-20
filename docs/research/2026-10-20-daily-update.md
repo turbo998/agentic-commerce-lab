@@ -41,3 +41,16 @@
   - 单元测试：[`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py)（全仓库 **322/322** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§55)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 57：16 场景中英双语 7-Card 4:5 视觉基准评测报告（`RP-01..RP-16`）
+
+- **基准评测覆盖（`RP-01..RP-16`）**：
+  - 评估 AI-Native 6-Plane 护栏对比经典三层 Web 基线在 UCP `#891` RFC 9728/8414 多发证方身份发现、`#573` 履约 `options[].totals` 数组、`#672` `ready_for_complete` 状态回退/升级、`#635` Mercado Pago Pix `render_artifact` 带外展示构件、`#316` Razorpay Magic `hosted_checkout`、ACP `#287` `delegate_authentication` 必填 `Signature` 头、`#289` `CheckoutSessionCreateRequest` 必填字段、`#266` `delegate_payment` 顶层解包 `Error` 信封，以及 Sierra $\tau$-bench 2.0 `#638` Boréal Finance 英/法消费信贷服务与 `#634` `canonicalize_time_verified` 上的拦截表现。
+  - **评测结果**：AI-Native 通过率 **16/16 (100.0%)** vs 经典三层基线 **1/16 (6.2%)**，候选重排与时间戳变体扰动一致性 **100.0%**，平均内联延迟 **0.38 ms** vs **2.06 ms**（提速 **5.4x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py`](../../lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py)
+  - 单元测试：[`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py)（全仓库 **324/324** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/report.json)
+
+

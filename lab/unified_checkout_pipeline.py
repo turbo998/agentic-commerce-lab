@@ -236,6 +236,11 @@ from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard import (
     verify_ucp_render_artifact_and_hosted_checkout_guard,
     verify_ucp_rfc9728_identity_linking_and_checkout_lifecycle,
 )
+from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench import (
+    Rfc9728PixRazorpayAcpLoanScenarioResult,
+    run_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_benchmark,
+    write_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_report,
+)
 
 
 @dataclass(frozen=True)
