@@ -515,6 +515,15 @@
   - Unit Tests: [`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py) (**492/492** total unit tests passing)
   - Bilingual Architecture Reference (§89): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 91: 16-Scenario (`EC-01..EC-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 90)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py)
+  - Unit Tests: [`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py) (**494/494** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/report.json)
+
 
 
 

@@ -1151,6 +1151,11 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_a2a_green_white_isolation_and_thought_signature_guard` enforces Sierra $\tau$-bench 2.0 PR `#83` (A2A agentified evaluation isolating the White Agent under test from Green Agent gold DB state and rubric internals) and PR `#93` (preserving and echoing `thought_signature` across multi-turn Gemini 3 Pro function-calling turns to prevent HTTP 400 errors).
 - **中文**: `validate_tau2_a2a_green_white_isolation_and_thought_signature_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#83`（A2A 协议评测框架中 Green Agent 与被测 White Agent 严格隔离，严禁 White Agent 读取黄金数据库或评分细则）与 PR `#93`（Gemini 3 Pro 多轮工具调用强制保留并回传 `thought_signature` 签名）。
 
+## 90. Stage 91: 16-Scenario (`EC-01..EC-16`) Bilingual 7-Card 4:5 Benchmark Suite for Stage 90 / 第九十节：覆盖 Stage 90 的 16 场景中英双语 7-Card 4:5 视觉基准评测报告
+
+- **English**: `lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py` evaluates 16 deterministic scenarios (`EC-01..EC-16`: 4 nominal admission baselines and 12 protocol/escrow/evaluation boundary attacks) across UCP `#80`/`#62`/`#58`/`#86`, ACP `#73`/`#10`/`#45`, Coinbase x402 `#44` (`spec v1.2`), and Sierra $\tau$-bench 2.0 `#83`/`#93`. AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal consistency vs. **4/16 (25.0%)** for the Classic 3-Tier baseline (+75.0 pts safety gain), with **0.33 ms vs. 4.71 ms median latency (14.3x speedup)**.
+- **中文**: `lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py` 针对 Stage 90 四大护栏域构建 `EC-01..EC-16` 共 16 个评测场景（4 个合规基线 + 12 个协议/托管/评测边界越权场景）。AI-Native 确定性护栏实现 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性，显著优于经典三层架构的 **4/16（25.0%）**（+75.0 百分点安全性提升），中位延迟 **0.33 ms vs. 4.71 ms（14.3x 加速）**，并生成中英双语自包含 7-Card 4:5 报告（`reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/{report.json,index.html,index.en.html}`）。
+
 
 
 

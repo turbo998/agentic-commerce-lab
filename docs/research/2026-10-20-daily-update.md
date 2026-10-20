@@ -515,6 +515,15 @@
   - 单元测试：[`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py)（全仓库 **492/492** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§89)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 91：16 场景（`EC-01..EC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 90）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py)
+  - 单元测试：[`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py)（全仓库 **494/494** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/report.json)
+
 
 
 

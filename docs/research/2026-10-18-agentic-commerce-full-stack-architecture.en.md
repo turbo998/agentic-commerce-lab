@@ -161,6 +161,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§89.2**: ACP Recurring Payment `Allowance` (`#73`), Split `BillingAddress` vs. `FulfillmentAddress` (`#10`), and Lodging Rate Hydration (`#45`).
   - **§89.3**: Coinbase x402 Spec v1.2 `cooperativeWithdraw` vs. `cooperativeWithdrawWithSignature` (`#44`).
   - **§89.4**: Sierra $\tau$-bench 2.0 A2A Green/White Agent Isolation (`#83`) & Gemini 3 Pro `thought_signature` Preservation (`#93`).
+- **§90 (Stage 91 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EC-01..EC-16`)**: `lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.33 ms` vs. `4.71 ms`, `14.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

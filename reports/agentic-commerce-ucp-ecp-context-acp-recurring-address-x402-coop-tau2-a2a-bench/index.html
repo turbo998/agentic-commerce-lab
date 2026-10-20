@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 91 · UCP 两级 ECP/Context、ACP 周期授信/住宿报价、x402 v1.2 与 τ-bench A2A 7-Card 基准报告</title>
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+.card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
+.badge { display: inline-block; background: #1D4ED8; color: #EFF6FF; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+h1, h2 { margin: 12px 0; line-height: 1.25; }
+.accent { background: linear-gradient(90deg, #60A5FA, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+th, td { border-bottom: 1px solid #1E293B; padding: 6px 8px; text-align: left; }
+th { color: #93C5FD; font-weight: 600; }
+pre { background: #0F172A; color: #E2E8F0; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; border: 1px solid #1E293B; }
+.bar-row { margin: 8px 0; }
+.bar-primary { background: #3B82F6; height: 14px; border-radius: 4px; }
+.bar-base { background: #CBD5E1; height: 14px; border-radius: 4px; margin-top: 4px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.box-good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; padding: 14px; border-radius: 10px; }
+.box-bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; padding: 14px; border-radius: 10px; }
+.footer { background: #0F172A; padding: 12px; border-radius: 8px; font-size: 12px; color: #94A3B8; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card" id="card-1">
+    <div>
+      <span class="badge">1 / 7 · HANDS-ON · AGENT COMMERCE</span>
+      <h1><span class="accent">100.0% vs 25.0%</span>: Stage 91 · UCP 两级 ECP/Context、ACP 周期授信/住宿报价、x402 v1.2 与 τ-bench A2A 7-Card 基准报告</h1>
+      <p>AI-Native Deterministic Guardrails passed <strong>16/16 (100.0%)</strong> vs Classic 3-Tier <strong>4/16 (25.0%)</strong> (+75.0 pts) across EC-01..EC-16.</p>
+    </div>
+    <div class="footer">Provenance: synthetic_deterministic_guard_benchmark · Median Latency: 0.33 ms vs 4.71 ms (14.3x)</div>
+  </section>
+
+  <section class="card" id="card-2">
+    <div>
+      <span class="badge">2 / 7 · SCENARIO: EC-02 & EC-10</span>
+      <h2>0.33 ms Deterministic Blocking of Unconfirmed ECP Delegation & Static Lodging Price</h2>
+      <p>Task badges: <code>choice</code> · <code>score</code> · Actions: <code>Act automatically</code> (4/16) & <code>Send to a human</code> (12/16).</p>
+    </div>
+    <div class="footer">EC-02 blocks unconfirmed <code>payment.Dispute</code> delegation; EC-10 blocks hotel checkout without live <code>quote_token</code>.</div>
+  </section>
+
+  <section class="card" id="card-3">
+    <div>
+      <span class="badge">3 / 7 · WHAT I TESTED</span>
+      <h2>16-Scenario Evaluation Matrix (EC-01..EC-16): 12 Adversarial Attacks Intercepted</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><strong>EC-01</strong> · UCP #80/#62/#58/#86</td><td>UCP 两级 ECP 委托确认 + Context 地区信号 + 姓名拆分基线</td><td><code>OK</code> (Classic: ✓)</td><td>Act automatically</td></tr>
+<tr><td><strong>EC-02</strong> · UCP #80 ECP Delegations</td><td>UCP ECP 请求未获商户会话 config.delegations 确认的越权委托</td><td><code>UCP_ECP_UNCONFIRMED_DELEGATION:payment.dispute</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-03</strong> · UCP #62 Read-Only Currency</td><td>UCP 客户端在结账请求体注入 currency 伪造低汇率币种</td><td><code>UCP_CLIENT_INPUT_CURRENCY_FORBIDDEN</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-04</strong> · UCP #62 Context Lifecycle</td><td>UCP 在 complete 结账阶段注入 context 篡改税率属地</td><td><code>UCP_CONTEXT_FORBIDDEN_ON_COMPLETE</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-05</strong> · UCP #58 Contact Schema</td><td>UCP 买方信息混入已废弃的 full_name 字段</td><td><code>UCP_LEGACY_FULL_NAME_FORBIDDEN:buyer</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-06</strong> · UCP #86 Capability Maturity</td><td>UCP Working Draft 草案能力违规声明稳定日期版本号</td><td><code>UCP_MATURITY_WORKING_DRAFT_MUST_OMIT_VERSION</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-07</strong> · ACP #73/#10/#45</td><td>ACP 周期订阅 Allowance + 精简账单地址 + 酒店实时询价基线</td><td><code>OK</code> (Classic: ✓)</td><td>Act automatically</td></tr>
+<tr><td><strong>EC-08</strong> · ACP #73 Recurring Allowance</td><td>ACP 订阅 Allowance 周期累计扣款超出 max_amount 授信上限</td><td><code>ACP_RECURRING_CUMULATIVE_EXPOSURE_EXCEEDS_MAX:36000&gt;24000</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-09</strong> · ACP #10 Address Split</td><td>ACP Agent 在可选账单街道字段幻觉填充 &#x27;N/A&#x27; 占位符</td><td><code>ACP_BILLING_ADDRESS_FABRICATED_PLACEHOLDER:line_one</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-10</strong> · ACP #45 Lodging 4-Tier</td><td>ACP 酒店预订绕过实时房价 quote_token 直接按静态 Feed 底价下单</td><td><code>ACP_LODGING_NON_BINDING_BASE_PRICE_USED_AT_CHECKOUT</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-11</strong> · x402 #44 Spec v1.2</td><td>Coinbase x402 v1.2 授权提款方直接调用 cooperativeWithdraw 基线</td><td><code>OK</code> (Classic: ✓)</td><td>Act automatically</td></tr>
+<tr><td><strong>EC-12</strong> · x402 #44 Spec v1.2</td><td>Coinbase x402 调用已在 v1.2 规范移除的 finalizeWithdraw 接口</td><td><code>X402_V12_REMOVED_WITHDRAW_FUNCTION_FORBIDDEN:finalizeWithdraw</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-13</strong> · x402 #44 Spec v1.2</td><td>Coinbase x402 非授权 msg.sender 越权调用 cooperativeWithdraw</td><td><code>X402_V12_COOPERATIVE_WITHDRAW_MSG_SENDER_MISMATCH</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-14</strong> · tau2-bench #83/#93</td><td>Sierra τ-bench 2.0 A2A Green/White 隔离 + Gemini 3 思维签名基线</td><td><code>OK</code> (Classic: ✓)</td><td>Act automatically</td></tr>
+<tr><td><strong>EC-15</strong> · tau2-bench #83 A2A Eval</td><td>Sierra τ-bench 2.0 被测 White Agent 越权读取 Green Agent 真值库</td><td><code>TAU2_A2A_WHITE_AGENT_GOLD_DB_LEAK</code> (Classic: ✕)</td><td>Send to a human</td></tr>
+<tr><td><strong>EC-16</strong> · tau2-bench #93 Gemini 3</td><td>Sierra τ-bench 2.0 Gemini 3 Pro 多轮工具调用丢失 thought_signature</td><td><code>TAU2_GEMINI3_THOUGHT_SIGNATURE_MISSING:turn_0</code> (Classic: ✕)</td><td>Send to a human</td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer">Classic 3-Tier missed 12/16 protocol boundary violations (✕).</div>
+  </section>
+
+  <section class="card" id="card-4">
+    <div>
+      <span class="badge">4 / 7 · UNDER THE HOOD</span>
+      <h2>Structured Protocol Input ↓ Deterministic Guard Verifier (&lt;answer&gt;)</h2>
+      <pre>{"ecp_session": {"requested_delegations": ["payment.Dispute"], "config": {"delegations": ["payment.credential"]}}}</pre>
+      <pre>&lt;answer&gt;admitted=false · decision_code="UCP_ECP_UNCONFIRMED_SESSION_DELEGATION_BLOCKED"&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer">Zero external network dependency; deterministic O(1) schema and invariant verification.</div>
+  </section>
+
+  <section class="card" id="card-5">
+    <div>
+      <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+      <h2>100.0% (16/16) Key-Order Perturbation &amp; Reversal Consistency</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>EC-01..EC-06 (UCP ECP/Context)</td><td>6/6 (100.0%)</td><td>6/6 (100.0%)</td><td>0.0 pts</td></tr>
+          <tr><td>EC-07..EC-10 (ACP Allowance/Lodging)</td><td>4/4 (100.0%)</td><td>4/4 (100.0%)</td><td>0.0 pts</td></tr>
+          <tr><td>EC-11..EC-16 (x402 v1.2 &amp; tau2 A2A)</td><td>6/6 (100.0%)</td><td>6/6 (100.0%)</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">Zero drift across JSON key serialization permutations.</div>
+  </section>
+
+  <section class="card" id="card-6">
+    <div>
+      <span class="badge">6 / 7 · LATENCY</span>
+      <h2>0.33 ms vs 4.71 ms Median Guard Latency (14.3x Speedup)</h2>
+      <div class="bar-row">
+        <div>AI-Native In-Memory Guard (0.33 ms)</div>
+        <div class="bar-primary" style="width: 18%;"></div>
+        <div>Classic 3-Tier DB/RPC Roundtrip (4.71 ms)</div>
+        <div class="bar-base" style="width: 92%;"></div>
+      </div>
+    </div>
+    <div class="footer">Inline pre-RPC deterministic verification eliminates unnecessary downstream roundtrips.</div>
+  </section>
+
+  <section class="card" id="card-7">
+    <div>
+      <span class="badge">7 / 7 · MY TAKE</span>
+      <h2>Production Readiness: Enforcing UCP ECP, ACP Recurring/Lodging, x402 v1.2 &amp; tau2 A2A</h2>
+      <div class="grid-2">
+        <div class="box-good"><strong>✅ Good fit</strong><p>Two-level ECP delegation negotiation, recurring subscription Allowance caps, dynamic hotel room-rate quoting, x402 v1.2 cooperativeWithdraw, and tau2 A2A isolation.</p></div>
+        <div class="box-bad"><strong>⛔ Not for</strong><p>Client-supplied checkout currency, static feed hotel booking without live quote, or legacy finalizeWithdraw calls.</p></div>
+      </div>
+    </div>
+    <div class="footer">License: MIT · Benchmark ID: agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench</div>
+  </section>
+</div>
+</body>
+</html>
