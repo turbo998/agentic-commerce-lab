@@ -79,6 +79,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§65.4**: Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` Abort Classification (`#548`), Fenced Markdown JSON NL-Judge Parsing (`#562`), Deferred Checkpoint Unlink (`#533`) & Banking `tasks.json` / Airline `user_id` / `campus` Domain Invariants (`#606`, `#602`, `#596`).
 - **§66 (Stage 67 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`TO-01..TO-16`)**: `lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§67 (Stage 68 — Bilingual Chinese + English)**:
+  - **§67.1**: UCP OpenRPC `ec.auth`/`ep.cart.auth` Required `type` (`#802`), Catalog Discount Previews (`#715`), Generic SPT Handler (`#713`), `price_treatment.tax.inclusion` (`#691`), `event_feed`/`agent_hints` (`#673`) & Non-Empty `actions`/`policies.applies_to` (`#669`, `#661`).
+  - **§67.2**: ACP `UpsertProductsResponse` (`#255`), Feed API & Promotions (`#190`, `#192`), `Item.suggested_price` (`#201`), Complete `fulfillment_details` (`#200`), Marketing Consent (`#199`) & Razorpay / Pre-Checkout Cart (`#215`, `#213`, `#188`).
+  - **§67.3**: Google AP2 HNP Mandate Security Binding (`#202`, `#189`), W3C `DOMString` Currency Value (`#191`), `IntentMandate.budget` Ceiling (`#198`), Section 7.4 Fiduciary Circuit Breaker (`#187`, `#164`) & UPI Collect (`#139`).
+  - **§67.4**: Sierra $\tau$-bench 2.0 Spoken & Chunked Voice Amount Recognition (`#582`), Safe `analyze_reward` Lookup (`#575`), Trajectory `replay_mismatches` (`#573`), Union/Paired Action Matching (`#569`, `#570`) & Retail Reference Integrity (`#571`, `#567`, `#566`).
+
 
 
 

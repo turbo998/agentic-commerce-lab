@@ -203,6 +203,21 @@
   - 单元测试：[`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py)（全仓库 **373/373** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/report.json)
 
+---
+
+## Stage 68：UCP OpenRPC 内嵌认证 `type` 必填与目录折扣预览/通用 SPT/`price_treatment`/`event_feed`、ACP Feed API 与 `suggested_price` 溯源/完成阶段 `fulfillment_details`/营销授权/Razorpay & `Cart`、Google AP2 HNP 授权绑定与字符串金额/`IntentMandate.budget`/FCB 熔断器、以及 Sierra $\tau$-bench 2.0 语音口语与分片金额识别/动作并集与配对排序护栏
+
+- **一手协议与基准源审计（22 个新 PR/规范）**：
+  - **UCP (`Universal-Commerce-Protocol/ucp`)**：PR `#802`（修复 `#787`：OpenRPC `ec.auth` 与 `ep.cart.auth` 描述符中 `type` 参数必须标记 `"required": true` 且运行时请求必须携带非空 `type`）、PR `#715`（`dev.ucp.shopping.discount` 扩展至目录查询 `get_product` 响应开放 `discounts.available[]` 预览并保持 Cart/Checkout 对折扣核销的唯一权威，严禁目录响应返回 `discounts.applied[]`）、PR `#713`（`dev.ucp.payment.shared_payment_token` 通用共享支付令牌处理器要求短生命周期与商户作用域绑定，严禁暴露原始 PAN/CVC/网络令牌）、PR `#691`（`price_treatment.tax.inclusion` 标记含税/不含税/不适用并阻断对 `included` 含税价重复加税）、PR `#673`（业务画像 `event_feed` 与履约事件非规范性建议 `agent_hints[]` 严禁越权自动执行财务变更）以及 PR `#669`/`#661`（`actions` 映射 `minProperties: 1` 非空约束与 `policy.applies_to` `minItems: 1` 及 `$.products[?@.tags[?@=='...']]` 集合匹配路径）。
+  - **ACP (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#255`/`#190`/`#192`（`UpsertProductsResponse` 严格 `{"id": str, "accepted": bool}` 结构与推送式商品/促销流时间窗校验）、PR `#201`（`SEP #197`：创建结账会话 `Item.suggested_price` 必须携带 `PriceSource.feed_id` 溯源与 `observed_at`）、PR `#200`（`SEP #196`：结账完成请求携带 `fulfillment_details` 时卖家必须在扣款前先应用联系信息更新）、PR `#199`（`SEP #195`：营销授权选项 HTTPS 隐私政策链接与提交渠道白名单校验）以及 PR `#215`/`#213`/`#188`（`razorpay` PSP 与 `in.razorpay.upi` 委托支付/免 PCI 属性及结账前 `Cart` 能力禁止提前触发支付处理器协商）。
+  - **Google AP2 (`google-agentic-commerce/AP2`)**：PR `#191`（`PaymentCurrencyAmount.value` 必须对齐 W3C Payment Request API `DOMString` 字符串类型，阻断浮点数传入）、PR `#198`（`Closes #133`：`IntentMandate.budget` 机器可读支出上限强校验）、PR `#202`/`#189`（HNP 用户不在场模式下强制校验 `IntentMandate.user_authorization` 用户签名 JWT 与 `PaymentMandate` 的 `intent_mandate_id` + `intent_mandate_hash` 跨授权书哈希绑定）、PR `#187`/`#164`（Section 7.4 结构化风险信号 `RiskPayload` 与受托熔断器 `FCBState.OPEN` / `TRIPPED` 实时阻断自主执行）及 PR `#139`（UPI Collect 三段式请求信封 `transaction_data`、`cred_block`、`device_fingerprint`）。
+  - **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#582`（语音通信评估器支持识别英语口语金额如 `"five thousand two hundred forty four"` $\rightarrow$ `"5244"` 并重组跨流式分片数字）、PR `#575`（`analyze_reward()` 对 `reward_basis` 声明但 `reward_breakdown` 缺失的组件使用 `.get()` 安全读取，消除 `KeyError` 崩溃）、PR `#573`（`evaluate-trajs` 显式统计并上报 `replay_mismatches` 轨迹重放分歧数并支持 `--strict-replay`）、PR `#569`/`#570`（`Action.compare_with_tool_call` 比较双方参数键并集并对同长度标量列表如 `item_ids`/`new_item_ids` 按行配对排序）及 PR `#571`/`#567`/`#566`（零售域参考动作礼品卡余额充足性与 `delivered` 已交付订单换货前置校验）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py`](../../lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py)
+  - 单元测试：[`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py)（全仓库 **382/382** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§67)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+
 
 
 
