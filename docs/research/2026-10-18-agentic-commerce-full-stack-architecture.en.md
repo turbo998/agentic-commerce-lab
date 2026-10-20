@@ -51,3 +51,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§57.4**: Sierra $\tau$-bench 2.0 6-Language `voice-v2-banking` / `voice-v2-entity` (`#637`), Crossed Pass³ `voice-v2-rcs-v3` Seeds (`#639`) & Judged Submission Gate (`#620`).
 - **§58 (Stage 59 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PO-01..PO-16`)**: `lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.25%` Classic 3-Tier, `0.36 ms` vs. `4.595 ms`, `12.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§59 (Stage 60 — Bilingual Chinese + English)**:
+  - **§59.1**: UCP Root-Array Anti-Pattern (`#948`), Order Directional Annotation Hygiene (`#903`), Conformance Corpus Export (`#900`), Vendor Namespace Self-Hosting (`#882`) & Auth-Gated Stored User State (`#869`).
+  - **§59.2**: ACP Checkout Request `LineItem` Reference Alignment (`#270`), Flat `DelegateAuthenticationSessionWithResult` Schema (`#261`) & Inline/Embedded Example Validators (`#254`, `#252`).
+  - **§59.3**: Google AP2 Exact Versioned `.1` VCT Constants (`#349`), `PaymentInstrument` Extension Preservation (`#333`/`#329`), `~~` Multi-Hop dSD-JWT Chain Decoder (`#351`), EC/JWK Receipt Verification (`#365`) & Payment Log Redaction (`#364`).
+  - **§59.4**: Sierra $\tau$-bench 2.0 Voice Design API Units (`guidance_scale=5`, `#636`), Unpinned `voice_design/<lang>.yaml` (`#619`), Inline Text-Matrix `results.json` Trial Counting (`#616`) & Telecom `RewardType.ACTION` Ground Truth / Bounded Repair (`#645`, `#632`).

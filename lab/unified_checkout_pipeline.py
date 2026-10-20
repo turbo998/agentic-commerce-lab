@@ -256,6 +256,16 @@ from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench impo
     generate_stage59_benchmark_report,
     run_stage59_benchmark_scenarios,
 )
+from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard import (
+    AcpCheckoutLineItemAndDelegateAuthResultGuardResult,
+    Ap2VctInstrumentExtensionsAndChainDecoderGuardResult,
+    Tau2VoiceDesignScaleAndTextMatrixGuardResult,
+    UcpRootArrayOrderAndAuthStateGuardResult,
+    verify_acp_checkout_line_item_and_delegate_auth_result,
+    verify_ap2_vct_instrument_extensions_and_chain_decoder,
+    verify_tau2_voice_design_scale_and_text_matrix_inline,
+    verify_ucp_root_array_order_annotations_and_auth_state,
+)
 
 
 @dataclass(frozen=True)
