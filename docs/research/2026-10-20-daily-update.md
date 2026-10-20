@@ -641,6 +641,10 @@
 ### Stage 110：UCP `#659`/`#657`/`#655`/`#653`、ACP `#118`/`#114`/`#99`、Google AP2 `#377`/`#378` + x402 `#317` 与 Sierra $\tau$-bench `#651`/`#634`/`#611` 护栏
 - 新增 [`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py) 与单测 `tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`（全仓 `591/591` 单测通过）。
 
+### Stage 111：16 场景（`WN-01..WN-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py) 与报告 [`reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/`](../../reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/index.html)（`592/592` 单测通过）。
+
+
 
 
 

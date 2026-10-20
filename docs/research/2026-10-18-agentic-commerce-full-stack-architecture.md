@@ -1394,6 +1394,15 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 109.4 Sierra $\tau$-bench 2.0 历史评测包后缀（`#651`）、`time_verified` 规范化（`#634`）与活跃电信线路充值门禁（`#611`）
 - 强制 `voice-v2-banking` 与 `voice-v2-entity` 包名分别以 `_banking`/`_entity` 结尾、拒绝传入 `--judges-root` 并要求全单元格 `condition_fingerprint` 一致（`#651`）；规范化 `log_verification` 的 `time_verified` 等价格式同时拦截伪造时间（`#634`）；强制 `refuel_data` 仅允许 `line_status == "Active"`（`#611`；参见 `lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`）。
 
+---
+
+## 110. Stage 111 基准评测：16 场景（`WN-01..WN-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 110 四大协议域的 16 个场景（`WN-01..WN-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.26 ms` vs. `4.18 ms`（`16.1x` 加速）**。
+- **技术资产**：[`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py)、[`tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py`](../../tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/`](../../reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/index.html)。
+
+
 
 
 

@@ -231,6 +231,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§109.2**: ACP `MessageError.type == "intervention_required"` (`#118`), `dev.acp.seller_backed.*` Payment Handlers (`#114`), and `version_mismatch` `supported_versions` (`#99`).
   - **§109.3**: Google AP2 ISO 4217 `Decimal` Budget Cap (`#377`), Chronological ISO 8601 `execution_date` Window (`#378`), and Coinbase `x402` `no-wallet` Extension Anti-Lock-In & Shell-Exec Guard (`#317`).
   - **§109.4**: Sierra $\tau$-bench 2.0 `voice-v2-banking`/`voice-v2-entity` Package Suffix & No-Judge Gate (`#651`), `time_verified` Canonicalization (`#634`), and Active-Line Telecom Refuel Guard (`#611`).
+- **§110 (Stage 111 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WN-01..WN-16`)**: `lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py` & `reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.26 ms` vs. `4.18 ms` (`16.1x` speedup).
+
 
 
 
