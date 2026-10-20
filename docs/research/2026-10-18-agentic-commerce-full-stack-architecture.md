@@ -1327,4 +1327,22 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.29 ms` vs. `4.38 ms`（`15.1x` 加速）**。
 - **技术资产**：[`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py)、[`tests/test_ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py`](../../tests/test_ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/`](../../reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/index.html)。
 
+---
+
+## 105. Stage 106 深度防线：UCP ECP 结果信封对齐（`#325`）/忠诚度奖励预测扩展（`#340`）/订单 `label` 与日期版本强制（`#326`/`#324`）、ACP 巴西 PIX 即时支付（`#35`）/TLS 1.3 与恒定时间 Webhook 签名（`#32`/`#28`）/整型履约金额与自提点（`#18`/`#17`）、Google AP2 结构化字段路径错误（`#64`）/非托管月度限额（`#216`）/Coinbase `x402` RFC 6962 审计树与 Tenzro 多虚拟机（`#88`/`#135`）及 Sierra $\tau$-bench 2.0 电信 `DB` 奖励基准（`#462`）/`custom` 架构分类（`#444`）/成本与耗时分解（`#443`）
+
+### 105.1 UCP ECP 结果信封、忠诚度积分预测、订单 `label` 与日期版本强制（`#325` / `#340` / `#326` / `#324`）
+- **ECP 结果信封与 `ec.ready` 失败销毁（`#325`）**：所有 ECP 请求结果必须以 `result.ucp.status`（`"ok"` | `"error"`）判别；JSON-RPC 顶层 `error` 仅限传输层故障，严禁塞入业务委托错误；若 `ec.ready` 握手返回 `ucp.status == "error"`，宿主必须立即销毁内嵌会话（`host_tore_down_on_ec_ready_error == True`）。
+- **忠诚度扩展与订单 `label` / 版本门禁（`#340` / `#326` / `#324`）**：结账前须披露会员等级与非负积分预测；`order.label` 人类可读展示号必须与不可变内部 `order.id` 分离；公开能力发现严禁广播 `"draft"` 等非 `YYYY-MM-DD` 版本。
+
+### 105.2 ACP 巴西 PIX 即时支付（`#35`）、TLS 1.3 与恒定时间 Webhook 验签（`#32`/`#28`）及整型履约金额与自提点（`#18`/`#17`）
+- 强制 PIX 交易使用 `BRL`、受支持提供商（`mercado_pago`/`pagseguro`）及合法 11 位 CPF 或 14 位 CNPJ；强制 `TLSv1.3`、Webhook 恒定时间签名比对、`Request-Id` 幂等头与 `<= 300s` 时间窗；强制履约金额为非负整数最小货币单位且 `pickup` 必填 `pickup_location_id`。
+
+### 105.3 Google AP2 字段路径错误（`#64`）、非托管月度 USDC 上限（`#216`）与 Coinbase `x402` RFC 6962 审计证明 / Tenzro 多虚拟机（`#88`/`#135`）
+- 校验 AP2 验证错误必填 `error_code` 与 `field_path`，强制非托管 `IntentMandate` 月度累计 USDC 支出不超过上限且通过 EIP-712 验签；校验 `x402` RFC 6962 Ed25519 签名树头（STH）与 Merkle 包含证明，并按 Tenzro `evm`/`svm`（9 位小数截断检查）/`canton`（CIP-56 持仓转移校验）分派验证。
+
+### 105.4 Sierra $\tau$-bench 2.0 电信 `DB` 奖励基准（`#462`）、`custom` 架构分类（`#444`）与轨迹成本/耗时分解（`#443`）
+- 强制多客户电信任务将 `DB` 纳入 `reward_basis` 并保持完整 4,538 任务生成；严禁未修改系统架构的基线运行伪报 `submission_type="custom"`；强制 `cost + user_cost == total_cost` 与 `agent_time_seconds + user_time_seconds + tool_time_seconds <= duration_seconds`（参见 `lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`）。
+
+
 

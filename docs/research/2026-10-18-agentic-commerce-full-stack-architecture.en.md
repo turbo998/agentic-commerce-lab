@@ -212,5 +212,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§103.4**: Sierra $\tau$-bench 2.0 NL-Assertions Judge Contentless-Turn Omission (`#584`), Exact Verdict Count Check (`#581`), Paired-List Action Argument Comparison (`#570`), Union-Key Action Check (`#569`), and Sorted `KnowledgeBase.load` (`#566`).
 - **§104 (Stage 105 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WB-01..WB-16`)**: `lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_bench.py` & `reports/agentic-commerce-ucp-wba-keys-ask-rdns-acp-3ds-decimal-tau2-nl-judge-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.29 ms` vs. `4.38 ms` (`15.1x` speedup).
+- **§105 (Stage 106 — Bilingual Chinese + English)**:
+  - **§105.1**: UCP ECP Result Envelope (`#325`), Loyalty Extension (`#340`), Distinct `Order.label` (`#326`), and Dated Public Discovery Version (`#324`) (`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`).
+  - **§105.2**: ACP Brazilian PIX Payment (`#35`), Mandatory `TLSv1.3` & Constant-Time Webhook Verification (`#32`/`#28`), and Integer Minor-Unit Fulfillment & Pickup Options (`#18`/`#17`).
+  - **§105.3**: Google AP2 Field-Path Validation Error (`#64`) & Non-Custodial Monthly Cap (`#216`), plus Coinbase `x402` RFC 6962 Merkle Audit Proofs (`#88`) & Tenzro Multi-VM (`evm`/`svm`/`canton`) Dispatch (`#135`).
+  - **§105.4**: Sierra $\tau$-bench 2.0 Multi-Customer Telecom `DB` Reward Basis & 4,538-Task Completeness (`#462`), Leaderboard `"custom"` Architecture Classification (`#444`), and Cost/Time Breakdown Conservation (`#443`).
+
 
 
