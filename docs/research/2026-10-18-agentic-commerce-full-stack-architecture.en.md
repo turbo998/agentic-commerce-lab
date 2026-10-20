@@ -198,9 +198,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§99.4**: Sierra $\tau$-bench 2.0 Banking Write-Critic & Nested JSON Args (`#513`), `close_bank_account_7392` Fixed-Set Reason (`#484`), Pydantic Kwarg Coercion (`#516`), and `llm_agent_solo_gt` Detection (`#508`).
 - **§100 (Stage 101 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EG-01..EG-16`)**: `lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.30 ms` vs. `4.58 ms`, `15.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
-
-
-
-
-
+- **§101 (Stage 102 — Bilingual Chinese + English)**:
+  - **§101.1**: UCP Fulfillment Event Checkout Selection Linking (`#617`), Response-Only Discoverable Discounts & Promo Code Redaction (`#609`), Order Payment Instrument Redaction (`#584`), and Gift Line-Item & Discount Rejection Disambiguation (`#578`/`#577`) (`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`).
+  - **§101.2**: ACP `IntentTrace` Structured Cancellation Context (`#54`) & Delegated UPI + Razorpay AI Commerce TSP (`#46`).
+  - **§101.3**: Google AP2 Raw-JSON RFC 8785 JCS Cart-to-Payment Mandate Binding (`#253`) & TrustBoost Pre-LLM PII Sanitization + Solana x402 Proof Anchor (`#267`).
+  - **§101.4**: Sierra $\tau$-bench 2.0 Solo-Mode `DummyUser()` No-Arg Construction (`#534`), Atomic Checkpoint Replacement on Write Failure (`#533`), Result-Safe Hallucination Retries (`#520`), and Empty Text-Mode User-Simulator Retry (`#471`).
 

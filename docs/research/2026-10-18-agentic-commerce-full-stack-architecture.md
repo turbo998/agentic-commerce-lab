@@ -1271,30 +1271,24 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py` evaluates 16 deterministic scenarios (`EG-01..EG-16`: 4 nominal admission baselines and 12 protocol/settlement/evaluation boundary attacks) across UCP `#628`/`#625`/`#540`/`#508`, ACP `#57`/`#66`/`#45`, Google AP2 `#279`/`#278`, Coinbase `x402` `#225`/`#206`, and Sierra $\tau$-bench 2.0 `#513`/`#484`/`#516`/`#508`. AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal consistency vs. **4/16 (25.0%)** for the Classic 3-Tier baseline (+75.0 pts safety gain), with **0.30 ms vs. 4.58 ms median latency (15.3x speedup)**.
 - **中文**: `lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py` 针对 Stage 100 四大护栏域构建 `EG-01..EG-16` 共 16 个评测场景（4 个合规基线 + 12 个协议/结算/评测边界越权场景）。AI-Native 确定性护栏实现 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性，显著优于经典三层架构的 **4/16（25.0%）**（+75.0 百分点安全性提升），中位延迟 **0.30 ms vs. 4.58 ms（15.3x 加速）**，并生成中英双语自包含 7-Card 4:5 报告（`reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/{report.json,index.html,index.en.html}`）。
 
+---
 
+## 101. Stage 102 深度防线：UCP 履约事件与结账选项链接（`#617`）与可发现优惠/订单支付工具脱敏/赠品行与拒绝码（`#609`/`#584`/`#578`/`#577`）、ACP `IntentTrace` 取消原因（`#54`）与委托 UPI（`#46`）、Google AP2 原始 JSON JCS 购物车绑定（`#253`）与 TrustBoost PII 脱敏 + Solana x402 锚定（`#267`）、以及 Sierra $\tau$-bench 2.0 检查点原子替换与空回合重试（`#534`/`#533`/`#520`/`#471`）
 
+### 101.1 UCP 履约事件链接、响应只读可发现优惠、订单支付凭证脱敏与零元赠品行校验（`#617` / `#609` / `#584` / `#578` / `#577`）
+- **履约事件与结账选项双向链接（`#617`）**：`fulfillment_event` 必须携带与结账选项匹配的 `fulfillment_method_id` 和 `fulfillment_option_id`，且 `estimated_delivery.earliest <= estimated_delivery.latest`。
+- **可发现优惠响应只读与优惠码隐藏（`#609`）**：`discounts_object.available[]` 标记为 `ucp_request: omit`（禁止客户端请求写入），且当 `type == "code"` 时严禁在发现列表中泄露明文 `code`。
+- **订单支付工具字段裁剪（`#584`）**：`order.payment.instruments[]` 仅保留展示与账单快照字段，严禁将收单期 `credential`、`handler_id`、`selected` 泄露至订单对象。
+- **零元赠品行关联与拒绝码消歧（`#578` / `#577`）**：零元促销赠品行必须由 `applied_discount.gift_line_item_id` 显式指向；全局额度耗尽返回 `discount_code_usage_limit_reached`，互斥冲突返回 `discount_code_stacking_conflict`。
 
+### 101.2 ACP `IntentTrace` 结构化取消原因（`#54`）与委托 UPI + Razorpay AI Commerce TSP（`#46`）
+- **`POST /checkout_sessions/{id}/cancel` `IntentTrace`（`#54`）**：`CancelSessionRequest` 严禁未知顶层字段（`additionalProperties: false`），校验结构化 `reason_code` 并阻断买方 PII 混入 `intent_trace`。
+- **委托 UPI 支付（`#46`）**：校验 `delegate_id`、一次性 `cryptogram`（阻断重放）、`provider == "razorpay"`、预授权额度上限及印度数据本地化合规标志。
 
+### 101.3 Google AP2 原始 JSON RFC 8785 JCS 购物车绑定（`#253`）与 TrustBoost PII 脱敏 + Solana x402 锚定（`#267`）
+- **原始 JSON JCS 购物车哈希绑定（`#253`）**：`cart_mandate_hash = hex(sha256(JCS(CartMandate)))` 必须在 Pydantic 模型解析裁剪未知扩展字段**之前**对原始接收 JSON 计算（并剔除 `None` 可选字段），防止模型外扩展字段篡改逃逸校验。
+- **TrustBoost PII 脱敏与 Solana x402 证明（`#267`）**：在载荷进入 LLM 前完成 PII 脱敏、结清 Solana USDC x402 挑战并校验 `/verify/{anchor_tx}` 链上锚定证明。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 101.4 Sierra $\tau$-bench 2.0 `DummyUser()` 零参构造（`#534`）、检查点原子替换（`#533`）、幻觉重试（`#520`）与空用户回合重试（`#471`）
+- 校验 solo 模式下 `DummyUser()` 零参构造、新轨迹写入失败时保留旧检查点文件与索引、幻觉重试审查最终重试且不截断裁判工具输出，以及文本模式空用户回合带临时提醒重试且提醒不污染对话历史（参见 `lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`）。
 

@@ -614,13 +614,5 @@
   - 单元测试：[`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py)（全仓库 **544/544** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/report.json)
 
-
-
-
-
-
-
-
-
-
-
+### Stage 102：UCP `#617`/`#609`/`#584`/`#578`/`#577`、ACP `#54`/`#46`、Google AP2 `#253`/`#267` 与 Sierra $\tau$-bench 2.0 `#534`/`#533`/`#520`/`#471` 护栏
+- 新增 [`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py) 与单测 `tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`（全仓 `552/552` 单测通过）。
