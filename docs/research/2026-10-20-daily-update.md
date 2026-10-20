@@ -653,6 +653,10 @@
 ### Stage 114：UCP `#736`/`#735`/`#725`、ACP `#129`/`#117`、Google AP2 `#270`/`#269` 与 Sierra $\tau$-bench `#571`/`#567` 护栏
 - 新增 [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py) 与单测 `tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`（全仓 `609/609` 单测通过）。
 
+### Stage 115：16 场景（`CP-01..CP-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py) 与报告 [`reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/`](../../reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/index.html)（`610/610` 单测通过）。
+
+
 
 
 

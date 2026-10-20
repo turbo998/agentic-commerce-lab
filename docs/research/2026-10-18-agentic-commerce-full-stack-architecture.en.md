@@ -245,6 +245,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§113.2**: ACP `DiscountsResponse.rejected` & 3DS Frictionless Schema Alignment (`#129`) and Complete/Cancel Fulfillment Option Reference (`#117`).
   - **§113.3**: Google AP2 PSD2 Articles 64 & 89 Cancellation/Refund Attestation Envelopes (`#270`) and Admission-Time `ComplianceReceipt` (`#269`).
   - **§113.4**: Sierra $\tau$-bench 2.0 Retail Delivered-Order Exchange & Gift-Card Price-Difference Balance Check (`#571`) and Dropped `--seed` Parameter Warning (`#567`).
+- **§114 (Stage 115 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`CP-01..CP-16`)**: `lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py` & `reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.24 ms` vs. `4.12 ms` (`17.2x` speedup).
+
 
 
 

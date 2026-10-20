@@ -653,6 +653,10 @@
 ### Stage 114: UCP `#736`/`#735`/`#725`, ACP `#129`/`#117`, Google AP2 `#270`/`#269`, and Sierra $\tau$-bench `#571`/`#567` Guardrails
 - Added [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py) and unit tests (`609/609` total unit tests passing).
 
+### Stage 115: 16-Scenario (`CP-01..CP-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
+- Added [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py) and [`reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/`](../../reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/index.en.html) (`610/610` total unit tests passing).
+
+
 
 
 

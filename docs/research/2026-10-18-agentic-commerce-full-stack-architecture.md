@@ -1442,6 +1442,15 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 113.4 Sierra $\tau$-bench 2.0 零售换货前置与礼品卡差价校验（`#571`）及 `--seed` 静默丢弃告警（`#567`）
 - 拦截对 `pending` 订单调用 `exchange_delivered_order_items`（`#571` `task_64`）以及礼品卡余额不足以支付换货正差价（`#571` `task_105`）；当 `litellm.drop_params` 为不支持 Provider 丢弃 `--seed` 参数时强制触发显式告警（`#567`；参见 `lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`）。
 
+---
+
+## 114. Stage 115 基准评测：16 场景（`CP-01..CP-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 114 四大协议域的 16 个场景（`CP-01..CP-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.24 ms` vs. `4.12 ms`（`17.2x` 加速）**。
+- **技术资产**：[`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py)、[`tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/`](../../reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/index.html)。
+
+
 
 
 
