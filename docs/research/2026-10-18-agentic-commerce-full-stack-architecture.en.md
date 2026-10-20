@@ -65,4 +65,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§61.4**: Sierra $\tau$-bench 2.0 Active Telecom Line `refuel_data` Guard (`#611`), Live-DB Grading & `ToolFault` Injection (`#609`/`#610`), Language-Binding Task Replacement Verification (`#615`) & Bridged GPT-5 `tool_choice` Preservation (`#621`).
 - **§62 (Stage 63 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`CC-01..CC-16`)**: `lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.25%` Classic 3-Tier, `0.35 ms` vs. `4.605 ms`, `13.2x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§63 (Stage 64 — Bilingual Chinese + English)**:
+  - **§63.1**: UCP Service `schema` Transport Definition Polymorphism (`#833`), Reserved `ucp_` Prefix `W007` (`#831`), Payment Handler Participant Identifier (`#791`), Permalink CSRF Cart Merge Guard (`#789`) & WBA `signature-agent` Coverage (`#785`).
+  - **§63.2**: ACP Stripe Link Accelerated Wallet Handler (`com.stripe.link`, `#156`), Wallet Intervention Flows (`redirect`/`webview`/`otp`, `#150`), All 11 Session States (`#144`), On-Chain Eligibility Discount (`#166`) & Intent Traces (`#151`).
+  - **§63.3**: Google AP2 Cross-Merchant Atomic Budget Authority (`#252`), Solana Pay Single-Use Reference Pubkey Binding (`#228`) & AP2-Haggle Multi-Round Negotiation (`#229`).
+  - **§63.4**: Sierra $\tau$-bench 2.0 Incomplete Gold DB State Withdrawal (`#580`), NL-Judge Verdict Count & Contentless Turn Filtering (`#581`/`#584`), Separate `evaluator_cost` Accounting (`#593`), Telecom `check_status_bar` Grounding (`#600`) & Sandbox `srt` `SIGTERM` Cleanup (`#588`).
 

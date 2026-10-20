@@ -141,6 +141,20 @@
   - 单元测试：[`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py)（全仓库 **353/353** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/report.json)
 
+---
+
+## Stage 64：UCP 服务 `schema` 传输定义多态（`#833`）与永久链接 CSRF 合并护栏及 WBA 签名覆盖（`#831`/`#791`/`#789`/`#785`）、ACP Stripe Link 钱包处理器（`com.stripe.link`，`#156`）与钱包干预流及 11 种会话状态（`#150`/`#144`/`#166`/`#151`）、Google AP2 跨商户原子预算权威（`#252`）与 Solana Pay 单次 `reference` 公钥绑定及 `AP2-Haggle` 多轮议价（`#228`/`#229`）、以及 Sierra $\tau$-bench 2.0 残缺黄金 DB 状态撤回认证（`#580`）与 NL 裁判裁决数 / 空轮次过滤 / `evaluator_cost` 独立核算（`#581`/`#584`/`#593`/`#600`/`#588`）（中英双语）
+
+- **一手协议与上游代码审计**：
+  1. **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**：PR `#833`（明确 `services[].schema` 按 `rest`/`mcp`/`embedded`/`a2a` 指向 OpenAPI 3.1、OpenRPC 1.3.2 或缺省由 `endpoint` Agent Card 解析，区别于 `capabilities` 与 `payment_handlers` 的 JSON Schema 2020-12）、PR `#831`（`ucp-schema` `W007` 规则：将 `$defs/ucp_agent` 重命名为 `$defs/agent`，仅允许 `ucp_request`/`ucp_response` 使用 `ucp_` 前缀）、PR `#791`（`identity.access_token` 仅为参与者标识符而非调用方认证凭据，统一使用 `config.business_id`，且 `encrypted-credential` 处理器不暴露 `/tokenize` 或 `/detokenize`）、PR `#789`（阻断在页面加载、重定向或预填自动提交时静默合并购物永久链接至已登录买家购物车的 CSRF 漏洞，必须取得买家对渲染状态的显式操作）与 PR `#785`（`sign_rest_request` 必须同时覆盖 `"signature-agent";key="<label>"`、`"ucp-agent"` 及非空 `body_bytes` 的摘要头）。
+  2. **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#156`（引入首个加速结账钱包处理器 `com.stripe.link`：买家直接向 Link 邮箱+OTP 认证并返回钱包令牌，Agent 经 `delegate_payment` 换取 `vt_...`/`spt_...` 令牌，全程零原始卡号/CVC 暴露）、PR `#150`（新增 `redirect`、`webview`、`otp` 三类钱包认证干预能力及 `InterventionContext`/`InterventionResponse`）、PR `#144`（补全全部 11 种 `CheckoutSessionBase.status` 状态定义，拦截 `complete_in_progress` 期间重复 `complete` 调用并锁定终态不可变）、PR `#166`（链上持仓资格单次折扣 `duration="once"`、30 分钟 TTL 与行级 `allocations[]` 守恒）与 PR `#151`（取消结账 `intent_trace` 的 10 种标准原因码）。
+  3. **Google Agent Payments Protocol (`google-agentic-commerce/AP2`)**：PR `#252`（解决 `#207` 多商户独立 `BudgetEvaluator` 并发超支 `$120 > $100` 漏洞，通过支持 `authorize`、`commit`、`refund`、`query` 的外部原子预算权威在支付前冻结额度）、PR `#228`（Solana Pay 在场 USDC 结算：每次结账嵌入单次只读 `reference` 公钥并链上核验 `recipient`、`amount`、`spl_mint` 与签名 `PaymentMandate` 一致）与 PR `#229`（`ap2haggle/ap2/extensions/haggle/v0.1` 多轮议价扩展：拦截未签名中间 `Offer` 直接用于支付授权，校验轮次上限与底线约束，并要求 `NegotiationOutcome` 携带商户签名 `CartMandate`）。
+  4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#580`（修复 `#499`：当参考轨迹中的状态变更工具［如 retail 任务 `64` 与 `105`］重放抛错导致黄金 DB 未建成时，撤回虚假的 `db_match=True` 认证并设为 `db_check=None`）、PR `#581`（修复 `#554`：当 NL 裁判返回的裁决数与断言数不一致时抛错重试，阻断 `all([]) == True` 对空结果误判满分）、PR `#584`（修复 `#553`：在构建 NL 裁判提示词时过滤 `content=None` 的纯工具调用轮次，消除占零售轨迹 `19.9%` 的 `"assistant: None"` 噪音）、PR `#593`（修复 `#556`：独立持久化占真实总成本 `32.8%` 的 `evaluator_cost` 与 `evaluator_usage`）、PR `#600`（修正 2,285 个电信任务的用户模拟器工具锚定为 `check_status_bar`）与 PR `#588`（沙箱命令超时先发 `SIGTERM` 清理两个 `socat` 代理进程再发 `SIGKILL`）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py`](../../lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py)
+  - 单元测试：[`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py)（全仓库 **361/361** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§63)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
