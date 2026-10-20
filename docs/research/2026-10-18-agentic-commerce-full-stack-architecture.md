@@ -1197,6 +1197,11 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_nested_json_numeric_seed_and_batch_guard` enforces Sierra $\tau$-bench 2.0 PR `#401` (normalizes nested JSON-string arguments in `Action.compare_with_tool_call` so whitespace/key-order differences match semantically), PR `#397` (normalizes float-documented parameters to `:.2f` ID seeds so `33` vs `33.00` produce identical DB hashes while rejecting fractional values on integer-documented tools), and PR `#393` (catches unexpected simulation exceptions as `reward=0.0` without aborting the batch while re-raising `EvaluationCriteriaError`).
 - **中文**: `validate_tau2_nested_json_numeric_seed_and_batch_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#401`（对工具参数中的嵌套 JSON 字符串做结构化解析与键序归一化比对）、PR `#397`（将浮点型金额参数统一格式化为 `:.2f` 确定性 ID 种子以消除 `33` 与 `33.00` 的数据库哈希分叉，同时拦截整数参数工具的小数输入）与 PR `#393`（单次仿真异常捕获为 `reward=0.0` 防止整批评测中断，但对 `EvaluationCriteriaError` 配置错误强制抛出）。
 
+## 94. Stage 95: 16-Scenario (`WA-01..WA-16`) Bilingual 7-Card 4:5 Benchmark Suite for Stage 94 / 第九十四节：覆盖 Stage 94 的 16 场景中英双语 7-Card 4:5 视觉基准评测报告
+
+- **English**: `lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py` evaluates 16 deterministic scenarios (`WA-01..WA-16`: 4 nominal admission baselines and 12 protocol/settlement/evaluation boundary attacks) across UCP `#280`/`#264`/`#250`/`#271`/`#283`/`#247`, ACP `#132`/`#133`/`#128`, Coinbase x402 `#27`/`#50`/`#46`, and Sierra $\tau$-bench 2.0 `#401`/`#397`/`#393`. AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal consistency vs. **4/16 (25.0%)** for the Classic 3-Tier baseline (+75.0 pts safety gain), with **0.32 ms vs. 4.65 ms median latency (14.5x speedup)**.
+- **中文**: `lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py` 针对 Stage 94 四大护栏域构建 `WA-01..WA-16` 共 16 个评测场景（4 个合规基线 + 12 个协议/结算/评测边界越权场景）。AI-Native 确定性护栏实现 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性，显著优于经典三层架构的 **4/16（25.0%）**（+75.0 百分点安全性提升），中位延迟 **0.32 ms vs. 4.65 ms（14.5x 加速）**，并生成中英双语自包含 7-Card 4:5 报告（`reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/{report.json,index.html,index.en.html}`）。
+
 
 
 

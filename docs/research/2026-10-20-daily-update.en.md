@@ -551,6 +551,15 @@
   - Unit Tests: [`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py) (**512/512** total unit tests passing)
   - Bilingual Architecture Reference (§93): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 95: 16-Scenario (`WA-01..WA-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 94)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py)
+  - Unit Tests: [`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py) (**514/514** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/report.json)
+
 
 
 

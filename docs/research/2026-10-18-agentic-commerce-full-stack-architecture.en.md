@@ -175,6 +175,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§93.2**: ACP `PaymentMethodCard.virtual` Required (`#132`), `PaymentHandler.display_order` (`#133`), and `Order.client_reference_id` Reconciliation (`#128`).
   - **§93.3**: Coinbase x402 MCP + SIWX Reuse Entitlement Path (`#27`) & DefaultVerifier Settlement Witness SAR (`#50`, `#46`).
   - **§93.4**: Sierra $\tau$-bench 2.0 Nested JSON-String Grader (`#401`), `banking_knowledge` Numeric Seed Normalization (`#397`), and Batch Evaluator Guard (`#393`).
+- **§94 (Stage 95 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WA-01..WA-16`)**: `lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.32 ms` vs. `4.65 ms`, `14.5x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

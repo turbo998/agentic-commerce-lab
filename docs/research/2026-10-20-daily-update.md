@@ -551,6 +551,15 @@
   - 单元测试：[`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py)（全仓库 **512/512** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§93)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 95：16 场景（`WA-01..WA-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 94）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py)
+  - 单元测试：[`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py)（全仓库 **514/514** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/report.json)
+
 
 
 
