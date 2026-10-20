@@ -647,6 +647,10 @@
 ### Stage 112：UCP `#642`/`#635`/`#622`、ACP `#116`/`#111`、Google AP2 `#385`/`#365` + x402 `#324` 与 Sierra $\tau$-bench `#632`/`#602`/`#600` 护栏
 - 新增 [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py) 与单测 `tests/test_ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py`（全仓 `600/600` 单测通过）。
 
+### Stage 113：16 场景（`LR-01..LR-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) 与报告 [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.html)（`601/601` 单测通过）。
+
+
 
 
 

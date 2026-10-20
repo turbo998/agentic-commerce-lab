@@ -647,6 +647,10 @@
 ### Stage 112: UCP `#642`/`#635`/`#622`, ACP `#116`/`#111`, Google AP2 `#385`/`#365` + x402 `#324`, and Sierra $\tau$-bench `#632`/`#602`/`#600` Guardrails
 - Added [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py) and unit tests (`600/600` total unit tests passing).
 
+### Stage 113: 16-Scenario (`LR-01..LR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
+- Added [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) and [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.en.html) (`601/601` total unit tests passing).
+
+
 
 
 

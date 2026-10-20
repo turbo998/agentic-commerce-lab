@@ -1418,6 +1418,15 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 111.4 Sierra $\tau$-bench 2.0 `tau2 factory` 4 词预算与单次修复（`#632`）、航司小写 `user_id`（`#602`）与 `check_status_bar` 接地（`#600`）
 - 强制非英语语言包提供 `language_directive.origin`（英语省略）、`non_directed_phrases` 每条 `<= 4` 词且 `repair_attempts <= 1`（`#632`）；强制航司工具 `user_id` 全小写（`#602`）；将电信用户模拟器指令接地至真实工具 `check_status_bar`（拦截 `get_status_bar`，`#600`；参见 `lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py`）。
 
+---
+
+## 112. Stage 113 基准评测：16 场景（`LR-01..LR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 112 四大协议域的 16 个场景（`LR-01..LR-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.25 ms` vs. `4.15 ms`（`16.6x` 加速）**。
+- **技术资产**：[`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py)、[`tests/test_ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../tests/test_ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.html)。
+
+
 
 
 

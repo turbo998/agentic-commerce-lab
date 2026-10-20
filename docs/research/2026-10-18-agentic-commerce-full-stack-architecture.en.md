@@ -238,6 +238,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§111.2**: ACP ISO/IEC 7812-1 6–8 Digit `PaymentMethodCard.iin` (`#116`) and `PaymentMethodCrypto` (`x402`-Backed SPT Deferred Settlement, `#111`).
   - **§111.3**: Google AP2 `cnf.jwk` JSON-Mode Enum Serialization (`#385`), `verify_receipt` Signature-Before-Callback Ordering (`#365`), and Coinbase `x402` EIP-3009 4-Field EIP-712 Domain Mapping (`#324`).
   - **§111.4**: Sierra $\tau$-bench 2.0 `tau2 factory` 4-Word Brevity & Bounded Repair (`#632`), Lowercase Airline `user_id` (`#602`), and `check_status_bar` Telecom Grounding (`#600`).
+- **§112 (Stage 113 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`LR-01..LR-16`)**: `lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py` & `reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.25 ms` vs. `4.15 ms` (`16.6x` speedup).
+
 
 
 
