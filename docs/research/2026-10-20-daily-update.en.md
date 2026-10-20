@@ -64,8 +64,20 @@
   4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**: PR `#637` (`voice-v2-banking` `banking_knowledge_97` 582 calls and `voice-v2-entity` `intake_200` 1,200 calls with 240s call limit across `en/es/pt/hi/zh/ko` and per-cell `binding_revision` pins), PR `#639` (`voice-v2-rcs-v3` Crossed Pass³ seeds `42/401/16319`, read-only seed-42 `--regular-results` reuse, and `google-genai >= 2.26` check for Gemini 3.8 extended thinking), and PR `#620` (`tau2 submit prepare/validate` judged `voice-v2` submission gate requiring complete cell rewards, all applicable judge verdicts, and verified `benchmark-diagnostics.json` content fingerprints).
 - **New Code & Bilingual Documentation Assets**:
   - Guard Module: [`lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)
-  - Unit Tests: [`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py) (**328/328** total unit tests passing)
+  - Unit Tests: [`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py) (**329/329** total unit tests passing)
   - Bilingual Architecture Reference (§57): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 59: 16-Scenario Bilingual (CN/EN) 7-Card 4:5 Benchmark Suite (`PO-01..PO-16`)
+
+- **Benchmark Coverage (`PO-01..PO-16`)**:
+  - Evaluates the AI-Native 6-Plane guard pipeline against the Classic 3-Tier Web baseline across UCP `#901` Purchase Options extension, `#811` per-seller catalog `offers[]` & MoR domain attribution, `#933` HTTP `304 Not Modified` conditional cache vs `3xx` redirect blocking, `#831` MCP `$defs/agent` canonicalization, ACP `#281` `Item.url` cross-brand disambiguation, `#256`/`#241` agent-hosted Feed server & `UpsertProductsResponse`, Google AP2 `#363` multi-hop `~~` last-hop redaction isolation, `#359` presented `checkout_hash` derivation, `#347` atomic consume-once reservation, and Sierra $\tau$-bench 2.0 `#637`/`#639`/`#620` 6-language `voice-v2` & Crossed Pass³ submission gate.
+  - **Headline Metrics**: AI-Native achieves **16/16 (100.0%)** vs. Classic 3-Tier **1/16 (6.25%)**, **100.0%** option/offer/key/language order-reversal stability (`0.0 pts` drift), and **0.36 ms** vs. **4.595 ms** median latency (**12.6x** speedup).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py`](../../lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py)
+  - Unit Tests: [`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py) (**331/331** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/report.json)
 
 
 

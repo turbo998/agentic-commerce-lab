@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench (ZH)</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #0b1120;
+    color: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .topbar {
+    max-width: 900px;
+    margin: 0 auto 18px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #e2e8f0;
+    font-size: 14px;
+  }
+  .card {
+    width: 900px;
+    min-height: 1125px;
+    box-sizing: border-box;
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 36px;
+    margin: 0 auto 32px auto;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #2563eb;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1, h2 {
+    margin: 0 0 16px 0;
+    line-height: 1.25;
+    font-size: 25px;
+    color: #0f172a;
+  }
+  .accent {
+    background: linear-gradient(90deg, #1d4ed8, #0284c7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .panel {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .dark-box {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.2px;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 700;
+  }
+  .pill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .pill.ok { background: #dcfce7; color: #166534; }
+  .pill.block { background: #fee2e2; color: #991b1b; }
+  .bar-row {
+    margin: 10px 0;
+  }
+  .bar-track {
+    background: #e2e8f0;
+    height: 22px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .bar-fill-primary {
+    background: #3b82f6;
+    height: 100%;
+  }
+  .bar-fill-base {
+    background: #cbd5e1;
+    height: 100%;
+  }
+  .footer-callout {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 12.5px;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><strong>Stage 59 Benchmark Deck</strong> · agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench</div>
+  <div><a href="index.en.html" style="color:#38bdf8;text-decoration:none;font-weight:600;">English Version (index.en.html) →</a></div>
+</div>
+
+<!-- Card 1 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">1 / 7 · HANDS-ON · UCP PURCHASE OPTIONS / ACP FEED / AP2 MULTIHOP / TAU2 VOICE-V2</div>
+    <h1><span class="accent">AI-Native 护栏在 16 项 UCP 购买选项/多卖家报价、ACP Feed、AP2 多跳与 τ2 Voice-v2 基准中达成 16/16 (100.0%)，经典三层架构仅 1/16 (6.25%)</span></h1>
+    <div class="grid3">
+      <div class="panel">
+        <strong>评测场景与阈值分带</strong>
+        <p>PO-01..PO-16 (16 个确定性场景)</p>
+        <p>• UCP #901/#811/#933/#831 (5)</p>
+        <p>• ACP #281/#256/#241 (4)</p>
+        <p>• Google AP2 #363/#359/#347 (4)</p>
+        <p>• Sierra τ2 #637/#639/#620 (3)</p>
+      </div>
+      <div class="panel">
+        <strong>结构化契约输入</strong>
+        <p>• UCP <code>purchase_options[]</code> + <code>offers[].seller.domain</code></p>
+        <p>• ACP <code>Item.url</code> + <code>openapi.feed.yaml</code></p>
+        <p>• AP2 <code>MandateClient.present()</code> + <code>reserve()</code></p>
+        <p>• τ2 <code>voice-v2-entity</code> + <code>voice-v2-rcs-v3</code></p>
+      </div>
+      <div class="panel">
+        <strong>延迟与核心决策指标</strong>
+        <p>• AI-Native: <strong>16/16 (100.0%)</strong></p>
+        <p>• Classic 3-Tier: <strong>1/16 (6.25%)</strong></p>
+        <p>• Median Latency: <strong>0.36ms</strong> vs 4.59ms</p>
+        <p>• Reversal Drift: <strong>0.0 pts</strong></p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <span>Provenance: measured (deterministic Python 3.13 guard execution, independently_reproduced=true)</span>
+    <span>Suite: Stage 59 · 2026-10-20</span>
+  </div>
+</section>
+
+<!-- Card 2 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">2 / 7 · SCENARIO: PO-10 & PO-11 AP2 MULTI-HOP & ATOMIC TOKEN LOCK</div>
+    <h2>单案深潜 (PO-10 / PO-11)：AP2 多跳 present() 仅裁剪末跳并绑定呈递态 checkout_hash，0.41ms 阻断跨跳篡改与非原子重放</h2>
+    <div class="dark-box">Input Chain: root_jwt~disc_root_1~ ~~ hop1_jwt~disc_hop1_a~ ~~ hop2_jwt~disc_hop2_keep~
+Presented Checkout: checkout_v2~disc_price~ (sha256:checkout_v2_disc_price)
+Token Store Candidate Keys: ["jti:mandate_901", "hash:mandate_901_legacy"]</div>
+    <div class="grid2">
+      <div class="panel">
+        <span class="pill ok">choice · Act automatically (100%)</span>
+        <h3>PO-10 · AP2_MULTIHOP_PRESENT_AND_ATOMIC_CONSUMPTION_VERIFIED</h3>
+        <p>仅对末跳执行披露裁剪与 kb_jwt sd_hash 哈希，从呈递态 checkout_jwt 派生哈希并通过原子 reserve() 一次性消费。</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%"></div></div>
+      </div>
+      <div class="panel">
+        <span class="pill block">score · Deterministic Block (100%)</span>
+        <h3>PO-11 / PO-12 / PO-13 · Replay & Hash Drift</h3>
+        <p>确定性拦截前序跳披露篡改、缓存 self.checkout 哈希漂移以及非原子 check-then-set / 历史键重放攻击。</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <span>Task Badges: choice / score</span>
+    <span>Latency: 0.41ms (PO-10) / 0.36ms (PO-11)</span>
+  </div>
+</section>
+
+<!-- Card 3 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+    <h2>全量 16 场景评测矩阵 (PO-01..PO-16)：覆盖 12 项最新上游 PR，12 类高危协议越权 100% 确定性拦截</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>SCENARIO</th>
+          <th>QUESTION / TASK</th>
+          <th>MODEL / GUARD ANSWER</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>PO-01</strong> · UCP-PurchaseOptions</td><td>合规订阅/一次性购买选项与多卖家商品报价校验通过</td><td><code>UCP_PURCHASE_OPTIONS_AND_SELLER_OFFERS_VERIFIED</code> (AI ✓ / Classic ✓)</td><td><span class='pill ok'>自动放行 (Act automatically)</span></td></tr>
+<tr><td><strong>PO-02</strong> · UCP-PurchaseOptions</td><td>阻断客户端在请求体中注入只读 purchase_options[]</td><td><code>UCP_PURCHASE_OPTIONS_RESPONSE_ONLY_FIELD_IN_REQUEST</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-03</strong> · UCP-PurchaseOptions</td><td>阻断所选购买选项失效时未发 purchase_option_changed 警告的静默替换</td><td><code>UCP_STALE_PURCHASE_OPTION_SILENT_SUBSTITUTION_FORBIDDEN</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-04</strong> · UCP-SellerOffers</td><td>阻断多卖家商品在结账时使用 variant.id 替代 offers[].item_id</td><td><code>UCP_MULTI_SELLER_VARIANT_ID_USED_AT_CHECKOUT</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-05</strong> · UCP-HTTP304-MCPRef</td><td>阻断 HTTP 302 重定向响应（仅允许条件请求 304 缓存命中）</td><td><code>UCP_FORBIDDEN_HTTP_REDIRECT</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-06</strong> · ACP-ItemUrl-Feed</td><td>合规跨品牌 Item.url 消歧与 Agent 托管 Feed Upsert 校验通过</td><td><code>ACP_ITEM_URL_AND_FEED_UPSERT_VERIFIED</code> (AI ✓ / Classic ✕)</td><td><span class='pill ok'>自动放行 (Act automatically)</span></td></tr>
+<tr><td><strong>PO-07</strong> · ACP-ItemUrl</td><td>阻断多品牌共享 SKU 在结账时缺失 Item.url 引发店面归属歧义</td><td><code>ACP_CROSS_LISTED_SKU_REQUIRES_ITEM_URL</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-08</strong> · ACP-FeedOpenAPI</td><td>阻断商户自托管 Feed Server URL（强制 Agent 托管端点）</td><td><code>ACP_FEED_SERVER_MUST_BE_AGENT_HOSTED</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-09</strong> · ACP-FeedUpsertResp</td><td>阻断 UpsertProductsResponse 缺失产品 ID 或非布尔 accepted 字段</td><td><code>ACP_UPSERT_PRODUCTS_RESPONSE_SCHEMA_INVALID</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-10</strong> · AP2-MultiHop-Atomic</td><td>合规 AP2 多跳末跳裁剪、呈递态 checkout_hash 与原子预留通过</td><td><code>AP2_MULTIHOP_BINDING_AND_ATOMIC_CONSUMPTION_VERIFIED</code> (AI ✓ / Classic ✕)</td><td><span class='pill ok'>自动放行 (Act automatically)</span></td></tr>
+<tr><td><strong>PO-11</strong> · AP2-MultiHopPresent</td><td>阻断多跳 present() 篡改前序跳披露</td><td><code>AP2_PRIOR_HOP_DISCLOSURE_TAMPERED</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-12</strong> · AP2-PresentedCheckoutHash</td><td>阻断呈递态 checkout_jwt 与闭式授权 checkout_hash 不一致的载荷替换</td><td><code>AP2_PRESENTED_CHECKOUT_HASH_MISMATCH</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-13</strong> · AP2-AtomicTokenStore</td><td>阻断旧版或已预留令牌库中的付款授权重放攻击</td><td><code>mandate_already_used</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-14</strong> · Tau2-VoiceV2-CrossedPass3</td><td>合规 6 语种 voice-v2-entity (1200 通) 与 Crossed Pass³ 校验通过</td><td><code>TAU2_VOICE_V2_SUBMISSION_AND_CROSSED_PASS3_VERIFIED</code> (AI ✓ / Classic ✕)</td><td><span class='pill ok'>自动放行 (Act automatically)</span></td></tr>
+<tr><td><strong>PO-15</strong> · Tau2-CrossedPass3</td><td>阻断使用旧版 Crossed Pass³ 种子 (9401, 9402, 9403)</td><td><code>TAU2_CROSSED_PASS3_SEEDS_MUST_MATCH_RCS_V3</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+<tr><td><strong>PO-16</strong> · Tau2-SubmissionGate</td><td>阻断存在未完成适用裁判裁决的 voice-v2 提交包</td><td><code>TAU2_SUBMIT_MISSING_APPLICABLE_JUDGE_VERDICTS_REFUSED</code> (AI ✓ / Classic ✕)</td><td><span class='pill block'>确定性阻断 (Deterministic Block)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="panel"><strong>阈值门控总结</strong>: 4/4 合规流量自动放行，12/12 越权流量零漏报阻断。</div>
+    <div class="panel"><strong>经典三层失效归因</strong>: 15/16 场景因缺乏只读字段方向校验、多跳链末跳隔离与原子重放锁而失守。</div>
+  </div>
+</section>
+
+<!-- Card 4 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+    <h2>底层协议与评分机制：UCP Purchase Options/Offers + ACP Item.url/Feed + AP2 多跳原子锁 + τ2 Crossed Pass³</h2>
+    <div class="dark-box">{
+  "ucp_pr_901_811_933_831": {
+    "purchase_options": "ucp_request: omit, dependentRequired with selected_purchase_option_id",
+    "offers": "seller.domain bare hostname MoR + checkout item_id (no variant.id)",
+    "http_304": "304 Not Modified allowed on conditional GET; 301/302/303/307/308 forbidden"
+  },
+  "acp_pr_281_256_241": {
+    "item_url": "Item.url disambiguates cross-listed SKUs across multi-brand storefronts",
+    "feed_api": "https://agent.example.com + products/variants minItems:1 + {id, accepted}"
+  }
+}</div>
+    <p style="text-align:center;font-weight:700;margin:8px 0;">↓ Deterministic Guard Verification Pipeline (&lt;answer&gt;) ↓</p>
+    <div class="dark-box">{
+  "ap2_pr_363_359_347": {
+    "multihop_present": "split('~~')[-1] selective disclosure redaction + last-hop sd_hash",
+    "checkout_hash": "derived strictly from presented checkout_jwt, never cached self.checkout",
+    "atomic_reserve": "reserve(candidate_keys) checks legacy keys + fail-closed replay_state_unavailable"
+  },
+  "tau2_pr_637_639_620": {
+    "voice_v2": "6 languages (en/es/pt/hi/zh/ko), banking (582) & entity (1200, <=240s)",
+    "crossed_pass3": "seeds (42, 401, 16319), seed-42 read-only reuse, google-genai>=2.26"
+  }
+}</div>
+  </div>
+  <div class="footer-callout">
+    <span>Deterministic Verifier: lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py</span>
+    <span>Zero LLM Hallucination in Guard Plane</span>
+  </div>
+</section>
+
+<!-- Card 5 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+    <h2>鲁棒性核验：购买选项/多卖家报价/多跳候选键/多语种顺序反转下保持 100.0% 零漂移 (0.0 pts)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>QUESTION / ANSWER</th>
+          <th>ORIGINAL</th>
+          <th>REVERSED / PERTURBED</th>
+          <th>CHANGE (PTS)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>PO-01 · 合规订阅/一次性购买选项与多卖家商品报价校验通过</td><td><code>UCP_PURCHASE_OPTIONS_AND_SELLER_OFFERS_VERIFIED</code></td><td><code>UCP_PURCHASE_OPTIONS_AND_SELLER_OFFERS_VERIFIED</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-02 · 阻断客户端在请求体中注入只读 purchase_options[]</td><td><code>UCP_PURCHASE_OPTIONS_RESPONSE_ONLY_FIELD_IN_REQUEST</code></td><td><code>UCP_PURCHASE_OPTIONS_RESPONSE_ONLY_FIELD_IN_REQUEST</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-03 · 阻断所选购买选项失效时未发 purchase_option_changed 警告的静默替换</td><td><code>UCP_STALE_PURCHASE_OPTION_SILENT_SUBSTITUTION_FORBIDDEN</code></td><td><code>UCP_STALE_PURCHASE_OPTION_SILENT_SUBSTITUTION_FORBIDDEN</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-04 · 阻断多卖家商品在结账时使用 variant.id 替代 offers[].item_id</td><td><code>UCP_MULTI_SELLER_VARIANT_ID_USED_AT_CHECKOUT</code></td><td><code>UCP_MULTI_SELLER_VARIANT_ID_USED_AT_CHECKOUT</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-05 · 阻断 HTTP 302 重定向响应（仅允许条件请求 304 缓存命中）</td><td><code>UCP_FORBIDDEN_HTTP_REDIRECT</code></td><td><code>UCP_FORBIDDEN_HTTP_REDIRECT</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-06 · 合规跨品牌 Item.url 消歧与 Agent 托管 Feed Upsert 校验通过</td><td><code>ACP_ITEM_URL_AND_FEED_UPSERT_VERIFIED</code></td><td><code>ACP_ITEM_URL_AND_FEED_UPSERT_VERIFIED</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-07 · 阻断多品牌共享 SKU 在结账时缺失 Item.url 引发店面归属歧义</td><td><code>ACP_CROSS_LISTED_SKU_REQUIRES_ITEM_URL</code></td><td><code>ACP_CROSS_LISTED_SKU_REQUIRES_ITEM_URL</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td>PO-08 · 阻断商户自托管 Feed Server URL（强制 Agent 托管端点）</td><td><code>ACP_FEED_SERVER_MUST_BE_AGENT_HOSTED</code></td><td><code>ACP_FEED_SERVER_MUST_BE_AGENT_HOSTED</code></td><td><strong>0.0 pts</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footer-callout">
+    <span>Perturbation Vectors: purchase_options[], checkout_items[], candidate_keys[], languages[]</span>
+    <span>Consistency: 100.0% (16/16 invariant)</span>
+  </div>
+</section>
+
+<!-- Card 6 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">6 / 7 · LATENCY</div>
+    <h2>延迟对比：进程内确定性护栏中位延迟 0.36ms，比经典三层网关往返 (4.59ms) 快 12.6 倍</h2>
+    <div class="panel">
+      <div class="bar-row">
+        <div><strong>Tier 1 · UCP Purchase Options & Seller Offers (PO-01..PO-05)</strong> — AI-Native: <strong>0.36ms</strong> vs Classic: <strong>4.55ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-base" style="width: 91%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>Tier 2 · ACP Item.url & Feed OpenAPI Upsert (PO-06..PO-09)</strong> — AI-Native: <strong>0.35ms</strong> vs Classic: <strong>4.56ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-base" style="width: 91%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>Tier 3 · Google AP2 Multi-Hop & Atomic Reserve (PO-10..PO-13)</strong> — AI-Native: <strong>0.37ms</strong> vs Classic: <strong>4.64ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-base" style="width: 93%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>Tier 4 · Sierra τ2 Voice-v2 & Crossed Pass³ (PO-14..PO-16)</strong> — AI-Native: <strong>0.35ms</strong> vs Classic: <strong>4.57ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-base" style="width: 91%"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <span>Primary Path (#3B82F6): In-Process Guard Plane (0.36ms median)</span>
+    <span>Baseline Path (#CBD5E1): Classic 3-Tier DB/REST Roundtrip (4.59ms median)</span>
+  </div>
+</section>
+
+<!-- Card 7 -->
+<section class="card">
+  <div>
+    <div class="eyebrow">7 / 7 · MY TAKE</div>
+    <h2>架构师结论：适用场景 vs 不适用场景与生产准入建议</h2>
+    <div class="grid2">
+      <div class="panel" style="border-left: 6px solid #16a34a;">
+        <h3>✅ 适用场景 (Good Fit)</h3>
+        <p>• 需要同时支持一次性购买与周期订阅 (purchase_options) 及多卖家市场报价 (offers[].seller.domain) 的 UCP 结账网关。</p>
+        <p>• 多品牌共享店面下通过 ACP Item.url 消歧商品并向 Agent 托管端点推送商品目录的商户系统。</p>
+        <p>• 跨机构多跳委托链 (AP2 ~~) 与高并发幂等防重放消费，以及多语种语音客服 Agent 评测准入。</p>
+      </div>
+      <div class="panel" style="border-left: 6px solid #dc2626;">
+        <h3>⛔ 不适用场景 (Not For)</h3>
+        <p>• 依赖 HTTP 302/307 浏览器重定向完成结账状态跳转的传统 Web 三层应用。</p>
+        <p>• 使用非原子数据库查询再写入 (check-then-set) 处理支付委托令牌重放的分布式账本。</p>
+        <p>• 仅在单一语种或单一随机种子下评测语音 Agent 即上线生产的高风险金融/实体核验业务。</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-callout">
+    <span>Readiness: Production-Grade Deterministic Guard Plane · License: MIT</span>
+    <span>Provenance: measured · Stage 59 Bilingual Report (CN + EN)</span>
+  </div>
+</section>
+</body>
+</html>

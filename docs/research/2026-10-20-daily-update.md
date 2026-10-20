@@ -64,8 +64,20 @@
   4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#637`（发布跨 `en/es/pt/hi/zh/ko` 六语种的 `voice-v2-banking` `banking_knowledge_97` 共 `582` 通电话与 `voice-v2-entity` `intake_200` 共 `1,200` 通电话及 `240s` 时长上限，校验证据包每语种 `binding_revision` 锁定哈希）、PR `#639`（Crossed Pass³ 迁移至 `voice-v2-rcs-v3` 全局种子 `42/401/16319`、支持只读复用已验证的 seed-42 `--regular-results`、并要求 Gemini 3.8 扩展思考模式下 `google-genai >= 2.26`）与 PR `#620`（`tau2 submit prepare/validate` 强制 `voice-v2` 矩阵零缺失/错误/未评分记录且全部适用裁判指标均具存盘裁决，随包生成并重算校验 `benchmark-diagnostics.json` 内容指纹）。
 - **新增代码与双语文档资产**：
   - 护栏模块：[`lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)
-  - 单元测试：[`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)（全仓库 **328/328** 单测通过）
+  - 单元测试：[`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)（全仓库 **329/329** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§57)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 59：16 场景中英双语 7-Card 4:5 视觉基准评测报告（`PO-01..PO-16`）
+
+- **基准评测覆盖（`PO-01..PO-16`）**：
+  - 评估 AI-Native 6-Plane 护栏对比经典三层 Web 基线在 UCP `#901` 购买选项扩展、`#811` 多卖家目录变体 `offers[]` 归因与裸域名 MoR、`#933` HTTP `304 Not Modified` 条件缓存与 `3xx` 重定向阻断、`#831` MCP `$defs/agent` 规范化、ACP `#281` `Item.url` 跨品牌消歧、`#256`/`#241` Agent 托管 Feed 源点与 `UpsertProductsResponse`、Google AP2 `#363` 多跳 `~~` 末跳披露隔离、`#359` 呈递态 `checkout_hash` 强制派生、`#347` 原子单次预留锁，以及 Sierra $\tau$-bench 2.0 `#637`/`#639`/`#620` 六语种 `voice-v2` 与 Crossed Pass³ 评审指纹门禁上的表现。
+  - **评测结果**：AI-Native 通过率 **16/16 (100.0%)** vs 经典三层基线 **1/16 (6.25%)**，购买选项/多卖家报价/多跳候选键/多语种顺序反转一致性 **100.0%**，中位内联延迟 **0.36 ms** vs **4.595 ms**（提速 **12.6x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py`](../../lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py)
+  - 单元测试：[`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench.py)（全仓库 **331/331** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-purchase-options-offers-acp-feed-ap2-multihop-tau2-voice-bench/report.json)
 
 
 

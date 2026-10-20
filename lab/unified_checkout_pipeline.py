@@ -251,6 +251,11 @@ from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard impo
     verify_tau2_voice_v2_banking_entity_and_crossed_pass3_guard,
     verify_ucp_purchase_options_and_seller_offers_guard,
 )
+from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench import (
+    Stage59ScenarioResult,
+    generate_stage59_benchmark_report,
+    run_stage59_benchmark_scenarios,
+)
 
 
 @dataclass(frozen=True)
