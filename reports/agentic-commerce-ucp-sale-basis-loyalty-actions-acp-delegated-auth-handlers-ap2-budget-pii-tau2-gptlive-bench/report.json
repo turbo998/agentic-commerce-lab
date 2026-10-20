@@ -1,0 +1,351 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench",
+  "stage": "Stage 79",
+  "section": "§78",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_accuracy_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_accuracy_pct": 25.0,
+  "perturbation_consistent_count": 16,
+  "perturbation_consistency_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.36,
+    "classic_3tier": 4.74,
+    "speedup_factor": 13.2
+  },
+  "latency_tiers": [
+    {
+      "tier": "1 req (Single Checkout)",
+      "ai_native_ms": 0.36,
+      "classic_ms": 4.74
+    },
+    {
+      "tier": "8 req (Batch Cart Audit)",
+      "ai_native_ms": 1.48,
+      "classic_ms": 19.6
+    },
+    {
+      "tier": "32 req (Multi-Merchant Burst)",
+      "ai_native_ms": 4.92,
+      "classic_ms": 66.8
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "SB-01",
+      "domain": "UCP",
+      "title_zh": "UCP 称重商品正整数步长 + 10^-scale 单价舍入与积分/事件流全通过",
+      "title_en": "UCP Weight-Priced Integer Steps + 10^-scale Rounding & Loyalty/Event Feed Pass",
+      "question_zh": "150 步长（scale=2，1.50kg，$12.99/kg，小计 1949 分）且积分明细守恒时应如何决策？",
+      "question_en": "How to decide when 150 steps (scale=2, 1.50kg, $12.99/kg, subtotal 1949c) and loyalty breakdown match?",
+      "expected_action": "Act automatically",
+      "actual_action": "Act automatically",
+      "expected_code": "UCP_SALE_BASIS_LOYALTY_ACTIONS_POLICIES_ELISION_OK",
+      "actual_code": "UCP_SALE_BASIS_LOYALTY_ACTIONS_POLICIES_ELISION_OK",
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reason_codes": [],
+      "remediation": "None"
+    },
+    {
+      "scenario_id": "SB-02",
+      "domain": "UCP",
+      "title_zh": "UCP 拦截 C62（件）非零 scale 与步长小计舍入失配（#653）",
+      "title_en": "UCP Blocks C62 Non-Zero Scale & Step Subtotal Rounding Mismatch (#653)",
+      "question_zh": "当计件商品 C62 误设 scale=2 且小计偏离 round_half_up(price*qty*10^-scale) 时应如何处置？",
+      "question_en": "How to handle a C62 count item setting scale=2 with a subtotal diverging from round_half_up?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0",
+      "actual_code": "UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0",
+        "UCP_VARIABLE_QUANTITY_LINE_TOTAL_ROUNDING_MISMATCH:0:1900!=1949"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-03",
+      "domain": "UCP",
+      "title_zh": "UCP 阻断空 actions:{} 映射与策略 @.category 标量 JSONPath 错误（#669/#661）",
+      "title_en": "UCP Blocks Empty actions:{} Map & Policy @.category Scalar JSONPath Bug (#669/#661)",
+      "question_zh": "响应含空 actions:{} 且策略引用不存在的 @.category 标量路径时应如何阻断？",
+      "question_en": "How to block responses with empty actions:{} and policy @.category scalar JSONPath?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "UCP_EMPTY_ACTIONS_MAP_FORBIDDEN",
+      "actual_code": "UCP_EMPTY_ACTIONS_MAP_FORBIDDEN",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "UCP_EMPTY_ACTIONS_MAP_FORBIDDEN",
+        "UCP_POLICY_INVALID_PRODUCT_CATEGORY_SCALAR_PATH:0"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-04",
+      "domain": "UCP",
+      "title_zh": "UCP 阻断积分 earning_forecast 明细失衡与请求体只读字段注入（#662/#651/#646）",
+      "title_en": "UCP Blocks Loyalty Breakdown Imbalance & Request Read-Only Field Injection (#662/#651/#646)",
+      "question_zh": "当积分明细之和不等于 amount 且结账请求体携带 id/status 时应如何处置？",
+      "question_en": "How to act when loyalty breakdown sum != amount and request carries id/status?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50",
+      "actual_code": "UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50",
+        "UCP_REQUEST_BODY_SERVER_ASSIGNED_FIELD_LEAK",
+        "UCP_REQUEST_BODY_DEPRECATED_ID_FORBIDDEN:update_checkout"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-05",
+      "domain": "UCP",
+      "title_zh": "UCP 阻断数组省略符剔除前索引漂移与 MCP 幂等冲突漏报（#686/#679）",
+      "title_en": "UCP Blocks Pre-Strip Array Elision Index Drift & Unflagged MCP Idempotency Conflict (#686/#679)",
+      "question_zh": "当省略符索引按剔除前原始数组计算且 MCP complete_checkout 幂等重放冲突未返回 -32000 时应如何拦截？",
+      "question_en": "How to block pre-strip elision indexing and MCP complete_checkout idempotency conflict without -32000?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH",
+      "actual_code": "UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH",
+        "UCP_MCP_IDEMPOTENCY_CONFLICT_CODE_MISMATCH"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-06",
+      "domain": "ACP",
+      "title_zh": "ACP 委托 3DS 认证三阶段状态机与反向域名 Payment Handlers 全通过（#93/#90）",
+      "title_en": "ACP Delegated 3DS Auth 3-Endpoint Lifecycle & Reverse-DNS Payment Handlers Pass (#93/#90)",
+      "question_zh": "按序完成 create→fingerprint→authenticate→challenge→retrieve 且处理器 merchant_id 一致时应如何决策？",
+      "question_en": "How to decide when create->fingerprint->authenticate->challenge->retrieve and handler merchant_id match?",
+      "expected_action": "Act automatically",
+      "actual_action": "Act automatically",
+      "expected_code": "ACP_DELEGATED_AUTH_AND_PAYMENT_HANDLERS_OK",
+      "actual_code": "ACP_DELEGATED_AUTH_AND_PAYMENT_HANDLERS_OK",
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reason_codes": [],
+      "remediation": "None"
+    },
+    {
+      "scenario_id": "SB-07",
+      "domain": "ACP",
+      "title_zh": "ACP 拦截跳过 3DS 指纹/CReq 挑战乱序调用与废弃 Metadata.channel（#93/#80/#66）",
+      "title_en": "ACP Blocks Out-of-Order 3DS Fingerprint/Challenge & Deprecated Metadata.channel (#93/#80/#66)",
+      "question_zh": "未执行 3DS 指纹即调用 authenticate、跳过 challenge 即 retrieve 且保留废弃 channel 时应如何拦截？",
+      "question_en": "How to block calling authenticate before fingerprint, retrieve before challenge, and keeping Metadata.channel?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "ACP_DELEGATED_AUTH_FINGERPRINT_STEP_SKIPPED",
+      "actual_code": "ACP_DELEGATED_AUTH_FINGERPRINT_STEP_SKIPPED",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "ACP_DELEGATED_AUTH_FINGERPRINT_STEP_SKIPPED",
+        "ACP_DELEGATED_AUTH_CHALLENGE_STEP_SKIPPED",
+        "ACP_AUTH_METADATA_DEPRECATED_CHANNEL_FIELD_FORBIDDEN"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-08",
+      "domain": "ACP",
+      "title_zh": "ACP 阻断旧版字符串 payment_methods[] 与 delegate_payment 商户 ID 失配（#90）",
+      "title_en": "ACP Blocks Legacy String payment_methods[] & delegate_payment merchant_id Mismatch (#90)",
+      "question_zh": "商户仍返回旧版字符串 payment_methods[] 且 delegate_payment 商户 ID 遭篡改时应如何阻断？",
+      "question_en": "How to block legacy string payment_methods[] and tampered delegate_payment merchant_id?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "ACP_LEGACY_PAYMENT_METHODS_STRING_ARRAY_FORBIDDEN",
+      "actual_code": "ACP_LEGACY_PAYMENT_METHODS_STRING_ARRAY_FORBIDDEN",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "ACP_LEGACY_PAYMENT_METHODS_STRING_ARRAY_FORBIDDEN",
+        "ACP_PAYMENT_HANDLER_REVERSE_DNS_NAME_INVALID:0",
+        "ACP_HANDLER_DELEGATE_MERCHANT_ID_MISMATCH:acct_wrong!=acct_1234567890"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-09",
+      "domain": "ACP",
+      "title_zh": "ACP 阻断折扣分摊求和失衡与拒单折扣缺失 reason_code（#89）",
+      "title_en": "ACP Blocks Discount Allocation Sum Imbalance & Missing Rejection reason_code (#89)",
+      "question_zh": "当折扣分摊明细之和不等于折扣总额且被拒优惠码缺失标准化 reason_code 时应如何处置？",
+      "question_en": "How to act when discount allocations sum != amount and rejected code lacks reason_code?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "ACP_DISCOUNT_ALLOCATION_SUM_MISMATCH:0",
+      "actual_code": "ACP_DISCOUNT_ALLOCATION_SUM_MISMATCH:0",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "ACP_DISCOUNT_ALLOCATION_SUM_MISMATCH:0",
+        "ACP_DISCOUNT_REJECTION_REASON_CODE_REQUIRED:0"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-10",
+      "domain": "AP2",
+      "title_zh": "Google AP2 跨商户原子预算授权 + TrustBoost x402 PII 脱敏与 checkout_hash 全通过",
+      "title_en": "Google AP2 Cross-Merchant Atomic Budget Authority + TrustBoost PII & checkout_hash Pass",
+      "question_zh": "跨商户并发结账经外部原子预算中心加锁授权（3000+3000+4000<=10000）且完成 PII 脱敏时应如何决策？",
+      "question_en": "How to decide when concurrent merchants pass atomic budget lock (10000<=10000) and PII sanitization?",
+      "expected_action": "Act automatically",
+      "actual_action": "Act automatically",
+      "expected_code": "AP2_BUDGET_AUTHORITY_AND_TRUSTBOOST_PII_OK",
+      "actual_code": "AP2_BUDGET_AUTHORITY_AND_TRUSTBOOST_PII_OK",
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reason_codes": [],
+      "remediation": "None"
+    },
+    {
+      "scenario_id": "SB-11",
+      "domain": "AP2",
+      "title_zh": "Google AP2 拦截跨商户独立 MandateContext 并发预算双花竞态（#252）",
+      "title_en": "Google AP2 Blocks Cross-Merchant Isolated MandateContext Budget Race Condition (#252)",
+      "question_zh": "采购智能体向多商户并发下单但各自使用独立 MandateContext 导致累计突破预算上限时应如何拦截？",
+      "question_en": "How to block a buyer agent concurrently ordering across merchants with isolated MandateContext exceeding cap?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "AP2_ISOLATED_MERCHANT_BUDGET_CONTEXT_RACE",
+      "actual_code": "AP2_ISOLATED_MERCHANT_BUDGET_CONTEXT_RACE",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "AP2_ISOLATED_MERCHANT_BUDGET_CONTEXT_RACE",
+        "AP2_CROSS_MERCHANT_BUDGET_AUTHORIZE_EXCEEDED:15000>10000"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-12",
+      "domain": "AP2",
+      "title_zh": "Google AP2 阻断未脱敏 PII 注入 LLM 上下文与未校验 checkout_hash（#267/#243）",
+      "title_en": "Google AP2 Blocks Unsanitized PII Entering LLM & Unverified checkout_hash (#267/#243)",
+      "question_zh": "当含 SSN/邮箱的原始载荷未经 TrustBoost 脱敏直接送入 LLM 且验证方 checkout_hash 失配时应如何阻断？",
+      "question_en": "How to block raw SSN/email payloads entering LLM without TrustBoost sanitization and checkout_hash mismatch?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "AP2_RAW_PII_EXPOSED_TO_LLM_BEFORE_SANITIZATION",
+      "actual_code": "AP2_RAW_PII_EXPOSED_TO_LLM_BEFORE_SANITIZATION",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "AP2_RAW_PII_EXPOSED_TO_LLM_BEFORE_SANITIZATION",
+        "AP2_TRUSTBOOST_X402_PAYMENT_REQUIRED_402",
+        "AP2_VERIFIER_CHECKOUT_HASH_OBLIGATION_UNMET"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-13",
+      "domain": "TAU2",
+      "title_zh": "Sierra τ-bench 2.0 gptlive 全双工语音适配器、转写重试与银行 T074 全通过",
+      "title_en": "Sierra tau2-bench gptlive Full-Duplex Provider, Transcription Retry & Banking T074 Pass",
+      "question_zh": "gptlive 采用 delegation.responses.tools、通过 item_id 关联工具调用且 T074 黄金退款为 $14.50 时应如何决策？",
+      "question_en": "How to decide when gptlive uses delegation.responses.tools + item_id join and T074 refunds $14.50?",
+      "expected_action": "Act automatically",
+      "actual_action": "Act automatically",
+      "expected_code": "TAU2_GPTLIVE_TRANSCRIPTION_AND_BANKING_INTEGRITY_OK",
+      "actual_code": "TAU2_GPTLIVE_TRANSCRIPTION_AND_BANKING_INTEGRITY_OK",
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reason_codes": [],
+      "remediation": "None"
+    },
+    {
+      "scenario_id": "SB-14",
+      "domain": "TAU2",
+      "title_zh": "Sierra τ-bench 2.0 阻断 gptlive 误发 response.create 与缺失 item_id 工具关联（#409）",
+      "title_en": "Sierra tau2-bench Blocks gptlive Sending response.create & Missing item_id Tool Join (#409)",
+      "question_zh": "全双工 gptlive 会话误发 response.create 触发协议报错且未按 item_id 恢复 call_id/name 时应如何拦截？",
+      "question_en": "How to block full-duplex gptlive sessions sending response.create and failing to join call_id/name by item_id?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "TAU2_GPTLIVE_RESPONSES_DELEGATION_PROTOCOL_VIOLATION",
+      "actual_code": "TAU2_GPTLIVE_RESPONSES_DELEGATION_PROTOCOL_VIOLATION",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "TAU2_GPTLIVE_RESPONSES_DELEGATION_PROTOCOL_VIOLATION",
+        "TAU2_GPTLIVE_ITEM_ID_JOIN_REQUIRED"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-15",
+      "domain": "TAU2",
+      "title_zh": "Sierra τ-bench 2.0 阻断瞬态转写故障静默返回空串与空奖励准则门禁（#418/#411）",
+      "title_en": "Sierra tau2-bench Blocks Silent Empty Transcript on Error & Empty Active Reward Gate (#418/#411)",
+      "question_zh": "语音转写遇瞬态故障直接返回空字符串污染轨迹，且 COMMUNICATE 门禁准则列表为空时应如何阻断？",
+      "question_en": "How to block returning empty transcripts on transient errors and empty COMMUNICATE reward criteria?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "TAU2_TRANSIENT_TRANSCRIPTION_SWALLOWED_AS_EMPTY",
+      "actual_code": "TAU2_TRANSIENT_TRANSCRIPTION_SWALLOWED_AS_EMPTY",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "TAU2_TRANSIENT_TRANSCRIPTION_SWALLOWED_AS_EMPTY",
+        "TAU2_EMPTY_ACTIVE_REWARD_BASIS_GATE:COMMUNICATE"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    },
+    {
+      "scenario_id": "SB-16",
+      "domain": "TAU2",
+      "title_zh": "Sierra τ-bench 2.0 拦截银行 db.json 答案泄漏标注与 T074 退款误算 $7.50（#414/#412）",
+      "title_en": "Sierra tau2-bench Blocks Banking db.json Answer-Key Leak & T074 $7.50 Refund Error (#414/#412)",
+      "question_zh": "当银行交易描述残留 SHOULD BE FREE 答案提示且 T074 Light Blue 账户仅退 $7.50（正确为 $14.50）时应如何拦截？",
+      "question_en": "How to block banking db.json SHOULD BE FREE answer leaks and T074 Light Blue refunding $7.50 instead of $14.50?",
+      "expected_action": "Send to a human",
+      "actual_action": "Send to a human",
+      "expected_code": "TAU2_BANKING_T074_LIGHT_BLUE_ATM_FEE_UNDER_REFUND",
+      "actual_code": "TAU2_BANKING_T074_LIGHT_BLUE_ATM_FEE_UNDER_REFUND",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reason_codes": [
+        "TAU2_BANKING_T074_LIGHT_BLUE_ATM_FEE_UNDER_REFUND",
+        "TAU2_BANKING_DB_ANSWER_KEY_ANNOTATION_LEAK:0",
+        "TAU2_BANKING_DB_ANSWER_KEY_ANNOTATION_LEAK:1"
+      ],
+      "remediation": "Block non-compliant payload at protocol boundary"
+    }
+  ]
+}

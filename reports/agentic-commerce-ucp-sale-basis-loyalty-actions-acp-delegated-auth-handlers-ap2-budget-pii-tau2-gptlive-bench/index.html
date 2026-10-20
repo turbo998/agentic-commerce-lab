@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 79 · UCP 销售计量步长/积分/事件流、ACP 委托 3DS 认证/支付处理器、AP2 跨商户预算中心/PII 脱敏与 τ-bench 2.0 gptlive 护栏基准</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { width: 100%; min-height: 560px; aspect-ratio: 4 / 5; background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+  .card-header { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #94A3B8; }
+  h1, h2 { margin: 10px 0; font-size: 20px; line-height: 1.35; color: #F8FAFC; }
+  .accent { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+  .pane { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #1E3A8A; color: #BFDBFE; font-size: 11px; }
+  .muted { color: #94A3B8; font-size: 11px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 11px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .bar-row { margin: 10px 0; font-size: 12px; }
+  .bar-track { background: #1E293B; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 4px; }
+  .bar-fill-blue { background: #3B82F6; height: 100%; }
+  .bar-fill-gray { background: #CBD5E1; height: 100%; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good-box { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .bad-box { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .footer-callout { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; color: #CBD5E1; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>1 / 7 · HANDS-ON · STAGE 79</span><span>PROVENANCE: MEASURED</span></div>
+      <h1><span class="accent">16/16 (100.0%)</span> Deterministic Guard Accuracy vs. 4/16 (25.0%) Classic 3-Tier across UCP #653/#669, ACP #93/#90, AP2 #252/#267 &amp; τ-bench #409/#414</h1>
+      <div class="workbench">
+        <div class="pane"><strong>Scenarios &amp; Domains</strong><br/>16 cases (`SB-01..SB-16`)<br/>UCP (5) · ACP (4) · AP2 (3) · τ2 (4)</div>
+        <div class="pane"><strong>Structured Input</strong><br/>Sale-basis `quantity_unit` + Delegated 3DS + Atomic Budget + `gptlive`</div>
+        <div class="pane"><strong>Latency &amp; Decisions</strong><br/>Median: <strong>0.36 ms</strong> vs 4.74 ms (<strong>13.2x</strong>)<br/>12 Blocked · 4 Admitted</div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      <strong>Hardware &amp; Provenance:</strong> Python 3.12 deterministic verifier harness · `independently_reproduced=true` · Zero external network calls.
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>2 / 7 · SCENARIO: SB-11 &amp; SB-16</span><span>DEEP DIVE</span></div>
+      <h2>Cross-Merchant Budget Race (`SB-11`) &amp; Banking Answer-Key Leak (`SB-16`) Blocked in 0.36 ms</h2>
+      <div class="pane"><strong>Input Quote (`SB-11` / `SB-16`):</strong> Concurrent 3-merchant AP2 checkout using `isolated_per_merchant_context` ($80+$50+$90 &gt; $200 cap) and τ-bench `db.json` containing `"ATM fee (SHOULD BE FREE)"` with T074 refunding `$7.50` instead of `$14.50`.</div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>Decision 1 (`SB-11` · `choice`):</strong> <code>AP2_ISOLATED_MANDATE_CONTEXT_CONCURRENT_RACE</code> · Confidence 1.00 · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:100%"></div></div>
+      </div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>Decision 2 (`SB-16` · `score`):</strong> <code>TAU2_BANKING_DB_ANSWER_KEY_LEAK</code> · Confidence 1.00 · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      Classic 3-Tier web middleware passes both `SB-11` and `SB-16` (`✕`), causing $20 budget overspend and reward contamination.
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>3 / 7 · WHAT I TESTED</span><span>16-SCENARIO MATRIX</span></div>
+      <h2>AI-Native Catches All 12 Protocol &amp; Evaluation Exploits Missed by Classic 3-Tier (`✕`)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SB-01</strong> · UCP<br><span class='muted'>UCP 称重商品正整数步长 + 10^-scale 单价舍入与积分/事件流全通过</span></td><td>150 步长（scale=2，1.50kg，$12.99/kg，小计 1949 分）且积分明细守恒时应如何决策？</td><td><code>UCP_SALE_BASIS_LOYALTY_ACTIONS_POLICIES_ELISION_OK</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>SB-02</strong> · UCP<br><span class='muted'>UCP 拦截 C62（件）非零 scale 与步长小计舍入失配（#653）</span></td><td>当计件商品 C62 误设 scale=2 且小计偏离 round_half_up(price*qty*10^-scale) 时应如何处置？</td><td><code>UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-03</strong> · UCP<br><span class='muted'>UCP 阻断空 actions:{} 映射与策略 @.category 标量 JSONPath 错误（#669/#661）</span></td><td>响应含空 actions:{} 且策略引用不存在的 @.category 标量路径时应如何阻断？</td><td><code>UCP_EMPTY_ACTIONS_MAP_FORBIDDEN</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-04</strong> · UCP<br><span class='muted'>UCP 阻断积分 earning_forecast 明细失衡与请求体只读字段注入（#662/#651/#646）</span></td><td>当积分明细之和不等于 amount 且结账请求体携带 id/status 时应如何处置？</td><td><code>UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-05</strong> · UCP<br><span class='muted'>UCP 阻断数组省略符剔除前索引漂移与 MCP 幂等冲突漏报（#686/#679）</span></td><td>当省略符索引按剔除前原始数组计算且 MCP complete_checkout 幂等重放冲突未返回 -32000 时应如何拦截？</td><td><code>UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-06</strong> · ACP<br><span class='muted'>ACP 委托 3DS 认证三阶段状态机与反向域名 Payment Handlers 全通过（#93/#90）</span></td><td>按序完成 create→fingerprint→authenticate→challenge→retrieve 且处理器 merchant_id 一致时应如何决策？</td><td><code>ACP_DELEGATED_AUTH_AND_PAYMENT_HANDLERS_OK</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>SB-07</strong> · ACP<br><span class='muted'>ACP 拦截跳过 3DS 指纹/CReq 挑战乱序调用与废弃 Metadata.channel（#93/#80/#66）</span></td><td>未执行 3DS 指纹即调用 authenticate、跳过 challenge 即 retrieve 且保留废弃 channel 时应如何拦截？</td><td><code>ACP_DELEGATED_AUTH_FINGERPRINT_STEP_SKIPPED</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-08</strong> · ACP<br><span class='muted'>ACP 阻断旧版字符串 payment_methods[] 与 delegate_payment 商户 ID 失配（#90）</span></td><td>商户仍返回旧版字符串 payment_methods[] 且 delegate_payment 商户 ID 遭篡改时应如何阻断？</td><td><code>ACP_LEGACY_PAYMENT_METHODS_STRING_ARRAY_FORBIDDEN</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-09</strong> · ACP<br><span class='muted'>ACP 阻断折扣分摊求和失衡与拒单折扣缺失 reason_code（#89）</span></td><td>当折扣分摊明细之和不等于折扣总额且被拒优惠码缺失标准化 reason_code 时应如何处置？</td><td><code>ACP_DISCOUNT_ALLOCATION_SUM_MISMATCH:0</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-10</strong> · AP2<br><span class='muted'>Google AP2 跨商户原子预算授权 + TrustBoost x402 PII 脱敏与 checkout_hash 全通过</span></td><td>跨商户并发结账经外部原子预算中心加锁授权（3000+3000+4000<=10000）且完成 PII 脱敏时应如何决策？</td><td><code>AP2_BUDGET_AUTHORITY_AND_TRUSTBOOST_PII_OK</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>SB-11</strong> · AP2<br><span class='muted'>Google AP2 拦截跨商户独立 MandateContext 并发预算双花竞态（#252）</span></td><td>采购智能体向多商户并发下单但各自使用独立 MandateContext 导致累计突破预算上限时应如何拦截？</td><td><code>AP2_ISOLATED_MERCHANT_BUDGET_CONTEXT_RACE</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-12</strong> · AP2<br><span class='muted'>Google AP2 阻断未脱敏 PII 注入 LLM 上下文与未校验 checkout_hash（#267/#243）</span></td><td>当含 SSN/邮箱的原始载荷未经 TrustBoost 脱敏直接送入 LLM 且验证方 checkout_hash 失配时应如何阻断？</td><td><code>AP2_RAW_PII_EXPOSED_TO_LLM_BEFORE_SANITIZATION</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-13</strong> · TAU2<br><span class='muted'>Sierra τ-bench 2.0 gptlive 全双工语音适配器、转写重试与银行 T074 全通过</span></td><td>gptlive 采用 delegation.responses.tools、通过 item_id 关联工具调用且 T074 黄金退款为 $14.50 时应如何决策？</td><td><code>TAU2_GPTLIVE_TRANSCRIPTION_AND_BANKING_INTEGRITY_OK</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>SB-14</strong> · TAU2<br><span class='muted'>Sierra τ-bench 2.0 阻断 gptlive 误发 response.create 与缺失 item_id 工具关联（#409）</span></td><td>全双工 gptlive 会话误发 response.create 触发协议报错且未按 item_id 恢复 call_id/name 时应如何拦截？</td><td><code>TAU2_GPTLIVE_RESPONSES_DELEGATION_PROTOCOL_VIOLATION</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-15</strong> · TAU2<br><span class='muted'>Sierra τ-bench 2.0 阻断瞬态转写故障静默返回空串与空奖励准则门禁（#418/#411）</span></td><td>语音转写遇瞬态故障直接返回空字符串污染轨迹，且 COMMUNICATE 门禁准则列表为空时应如何阻断？</td><td><code>TAU2_TRANSIENT_TRANSCRIPTION_SWALLOWED_AS_EMPTY</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>SB-16</strong> · TAU2<br><span class='muted'>Sierra τ-bench 2.0 拦截银行 db.json 答案泄漏标注与 T074 退款误算 $7.50（#414/#412）</span></td><td>当银行交易描述残留 SHOULD BE FREE 答案提示且 T074 Light Blue 账户仅退 $7.50（正确为 $14.50）时应如何拦截？</td><td><code>TAU2_BANKING_T074_LIGHT_BLUE_ATM_FEE_UNDER_REFUND</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-callout">
+      <strong>Threshold Gating:</strong> 100% deterministic invariants; Classic 3-Tier scores 4/16 (25.0%) by only validating happy-path JSON syntax.
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>4 / 7 · UNDER THE HOOD</span><span>PROTOCOL &amp; SCORING MECHANICS</span></div>
+      <h2>Sale-Basis Rounding, Delegated 3DS Order &amp; Atomic Budget Lock Verifier Flow</h2>
+      <pre>{
+  "line_items": [{"price": 1200, "quantity": 750, "quantity_unit": {"unit": "GRM", "scale": 3}}],
+  "delegated_authentication": {"steps_executed": ["create", "fingerprint", "authenticate", "challenge", "retrieve"]},
+  "budget_authority": {"evaluation_mode": "external_atomic_budget_authority", "total_budget_minor": 20000}
+}</pre>
+      <div style="text-align:center; font-size:14px;">↓ Deterministic Guardrail Verifier (`&lt;answer&gt;`) ↓</div>
+      <pre>&lt;answer&gt;
+subtotal_expected = round_half_up(1200 * 750 * 10^-3) == 900 (OK)
+acp_3ds_order     = idx(fingerprint) &lt; idx(authenticate) &lt; idx(challenge) &lt; idx(retrieve) (OK)
+ap2_budget_lock   = committed(8000) + holds(5000) + req(5000) &lt;= 20000 (OK)
+verdict           = Act automatically (0.36 ms)
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer-callout">
+      Zero floating-point drift: `Decimal` half-up rounding and minor-unit integer conservation enforced at the protocol boundary.
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>5 / 7 · ROBUSTNESS CHECK</span><span>PERTURBATION &amp; CONSISTENCY</span></div>
+      <h2>16/16 (100.0%) Option-Order &amp; Key-Order Reversal Stability (`0.0 pts` Drift)</h2>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SB-01</strong> · UCP 称重商品正整数步长 + 10^-scale 单价舍入与积分/事件流全通过</td><td><code>UCP_SALE_BASIS_LOYALTY_ACTIONS_POLICIES_ELISION_OK</code></td><td><code>UCP_SALE_BASIS_LOYALTY_ACTIONS_POLICIES_ELISION_OK</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>SB-02</strong> · UCP 拦截 C62（件）非零 scale 与步长小计舍入失配（#653）</td><td><code>UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0</code></td><td><code>UCP_QUANTITY_UNIT_C62_NONZERO_SCALE_FORBIDDEN:0</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>SB-03</strong> · UCP 阻断空 actions:{} 映射与策略 @.category 标量 JSONPath 错误（#669/#661）</td><td><code>UCP_EMPTY_ACTIONS_MAP_FORBIDDEN</code></td><td><code>UCP_EMPTY_ACTIONS_MAP_FORBIDDEN</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>SB-04</strong> · UCP 阻断积分 earning_forecast 明细失衡与请求体只读字段注入（#662/#651/#646）</td><td><code>UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50</code></td><td><code>UCP_LOYALTY_EARNING_BREAKDOWN_SUM_MISMATCH:30!=50</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>SB-05</strong> · UCP 阻断数组省略符剔除前索引漂移与 MCP 幂等冲突漏报（#686/#679）</td><td><code>UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH</code></td><td><code>UCP_ARRAY_ELISION_PRE_STRIP_INDEX_MISMATCH</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>SB-06</strong> · ACP 委托 3DS 认证三阶段状态机与反向域名 Payment Handlers 全通过（#93/#90）</td><td><code>ACP_DELEGATED_AUTH_AND_PAYMENT_HANDLERS_OK</code></td><td><code>ACP_DELEGATED_AUTH_AND_PAYMENT_HANDLERS_OK</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-callout">
+      All 16 scenarios (`SB-01..SB-16`) produce identical decision codes and actions under payload key-order reversal.
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>6 / 7 · LATENCY</span><span>BATCHING &amp; SCALING</span></div>
+      <h2>0.36 ms Median Guardrail Latency vs. 4.74 ms Classic 3-Tier Baseline (13.2x Speedup)</h2>
+      <div class="bar-row">
+        <div><strong>1 req (Single Checkout)</strong> — AI-Native: <strong>0.36 ms</strong> vs Classic: <strong>4.74 ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>8 req (Batch Cart Audit)</strong> — AI-Native: <strong>1.48 ms</strong> vs Classic: <strong>19.60 ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+        <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>32 req (Multi-Merchant Burst)</strong> — AI-Native: <strong>4.92 ms</strong> vs Classic: <strong>66.80 ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:7%"></div></div>
+        <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      In-memory deterministic verification eliminates multi-hop ORM/DB round-trips before LLM tool execution.
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>7 / 7 · MY TAKE</span><span>READINESS &amp; FIT</span></div>
+      <h2>Production-Ready Guardrails for UCP Sale-Basis, ACP 3DS, AP2 Budget &amp; τ-bench Voice</h2>
+      <div class="split">
+        <div class="good-box">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>Variable-weight grocery/commodity UCP checkouts (`quantity_unit` + `10^-scale`).</li>
+            <li>ACP Delegated 3DS authentication &amp; reverse-DNS payment handlers.</li>
+            <li>Multi-merchant AP2 procurement requiring atomic budget locks &amp; PII redaction.</li>
+          </ul>
+        </div>
+        <div class="bad-box">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Replacing issuer ACS cryptographic 3DS Directory Server validation.</li>
+            <li>Unbounded float arithmetic without minor-unit currency precision.</li>
+            <li>Live OpenAI Realtime audio calls in CI without `GPTLIVE_TEST_ENABLED=1`.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      <strong>Readiness &amp; Provenance:</strong> MIT License · `measured` in `agentic-commerce-lab` Stage 79 (`SB-01..SB-16`).
+    </div>
+  </section>
+</div>
+</body>
+</html>

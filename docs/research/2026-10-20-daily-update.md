@@ -371,6 +371,18 @@
   - 单元测试：[`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py)（全仓库 **432/432** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§77)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 79：覆盖 Stage 78 的 16 场景（`SB-01..SB-16`）中英双语 7-Card 4:5 视觉基准评测报告
+
+- **评测矩阵与关键结果**：
+  1. **16 场景全覆盖（`SB-01..SB-16`）**：覆盖 UCP 销售计量步长 `quantity_unit`/非空 `actions` 与 `policies`/积分分摊/事件流（`SB-01..SB-05`）、ACP 委托 3DS 认证与支付处理器框架（`SB-06..SB-09`）、Google AP2 跨商户原子预算中心与 TrustBoost PII 脱敏（`SB-10..SB-12`）以及 Sierra $\tau$-bench 2.0 `gptlive` 全双工适配器/转写重试/银行题库防泄漏（`SB-13..SB-16`）。
+  2. **AI-Native vs. Classic 3-Tier 准确率与延迟**：AI-Native 确定性护栏取得 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性；经典三层架构基线仅通过 4 个正向场景（**4/16, 25.0%**），漏检全部 12 类协议与评测攻击；中位延迟 **0.36 ms vs. 4.74 ms（13.2x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准评测器：[`lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py)
+  - 单元测试：[`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py)（全仓库 **434/434** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/report.json)
+
 
 
 

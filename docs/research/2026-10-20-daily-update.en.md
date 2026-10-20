@@ -371,6 +371,18 @@
   - Unit Tests: [`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py) (**432/432** total unit tests passing)
   - Bilingual Architecture Reference (§77): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 79: 16-Scenario (`SB-01..SB-16`) Bilingual 7-Card 4:5 Benchmark Suite for Stage 78 Guardrails
+
+- **Evaluation Matrix & Key Findings**:
+  1. **16-Scenario Coverage (`SB-01..SB-16`)**: Spans UCP sale-basis quantity steps/actions/loyalty/event feed (`SB-01..SB-05`), ACP Delegated 3DS Authentication API & Payment Handlers (`SB-06..SB-09`), Google AP2 cross-merchant atomic Budget Authority & TrustBoost PII sanitization (`SB-10..SB-12`), and Sierra $\tau$-bench 2.0 `gptlive` full-duplex provider, transcription retry & banking answer-key leak scrubbing (`SB-13..SB-16`).
+  2. **AI-Native vs. Classic 3-Tier Accuracy & Latency**: AI-Native deterministic guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** option-reversal stability vs. **4/16 (25.0%)** for the Classic 3-Tier baseline, at **0.36 ms vs. 4.74 ms median latency (13.2x speedup)**.
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Runner: [`lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py)
+  - Unit Tests: [`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py) (**434/434** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/report.json)
+
 
 
 
