@@ -357,6 +357,20 @@
   - 单元测试：[`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py)（全仓库 **424/424** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/report.json)
 
+---
+
+## Stage 78：UCP 销售计量步长 `quantity_unit`/非空 `actions` 与 `policies`/积分分摊/事件流、ACP 委托 3DS 认证与支付处理器框架、Google AP2 跨商户原子预算中心与 TrustBoost PII 脱敏及 Sierra $\tau$-bench 2.0 `gptlive` 全双工适配器/转写重试/银行题库防泄漏护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 销售计量步长 `quantity_unit`（`#653`）、非空 `actions` 与 `policies[].applies_to`（`#669`/`#661`）、积分 `earning_forecast.breakdown` 守恒（`#662`）、请求体服务端字段剔除（`#651`/`#646`）及 `event_feed`/数组省略符后置索引（`#686`/`#679`/`#673`）**：校验整数步长 `quantity` 与 `10^-scale` 单价舍入守恒、禁止 `C62` 使用非零 `scale`；禁止空 `actions: {}` 与空 `applies_to: []`；强制积分明细求和等于总预测积分；阻断请求体混入只读字段与省略符前置索引偏差。
+  2. **ACP 委托 3DS 认证 API（`#93`/`#80`/`#85`/`#66`）与支付处理器/折扣扩展框架（`#90`/`#89`/`#77`/`#76`）**：强制 `create`/`authenticate`/`retrieve` 三端点顺序状态机、移除 `AuthenticationMetadata.channel`、以反向域名 `capabilities.payment.handlers[]` 替代 `payment_methods[]` 并绑定 `merchant_id`。
+  3. **Google AP2 跨商户原子预算中心（`#252`）、TrustBoost LLM 前置 PII 脱敏（`#267`）与验证方 `checkout_hash` 规范性义务（`#243`/`#233`）**：阻断多商户独立 `MandateContext` 并发超支竞态，强制四原语原子预算授权；在载荷送入 LLM 前完成 x402 付费 PII 脱敏与 Solana 链上锚定验证。
+  4. **Sierra $\tau$-bench 2.0 `gptlive` 全双工语音提供方（`#409`）、瞬态转写故障重试（`#418`）、`tau2 view` 截断（`#434`）、非空奖励准则门禁（`#411`）与银行题库答案泄漏清洗（`#429`/`#414`/`#412`/`#408`）**：校验 `delegation.responses.tools` 与 `item_id` 关联、RMS 迟滞静音门限、瞬态转写重试、移除 `db.json` 中 `SHOULD BE FREE` 等答案泄漏标注并修正 T074 黄金退款额为 `$14.50`。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py)
+  - 单元测试：[`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py)（全仓库 **432/432** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§77)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

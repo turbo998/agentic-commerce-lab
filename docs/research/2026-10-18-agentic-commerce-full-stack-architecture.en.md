@@ -114,6 +114,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§75.4**: Sierra $\tau$-bench 2.0 Voice Role-Flip Whitespace Guard (`#440`), Tri-State Realtime User Generation (`#526`, `#523`, `#521`), Qwen `qwen3.5-omni-plus-realtime` Nested Tools (`#449`, `#450`), Audio-Native Usage/Cost & Concurrency Caps (`#454`, `#456`), Parallel `WorkQueue` Leases (`#455`) & $\tau$-Voice Boundary (`#483`, `#546`, `#538`, `#535`).
 - **§76 (Stage 77 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PT-01..PT-16`)**: `lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.68 ms`, `13.4x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§77 (Stage 78 — Bilingual Chinese + English)**:
+  - **§77.1**: UCP Sale-Basis Quantity Steps (`#653`), Non-Empty `actions` Map (`#669`), Non-Empty `policies[].applies_to` (`#661`), Loyalty Breakdown Sum (`#662`), Request-Shape Read-Only Omission (`#651`, `#646`) & `event_feed` / Post-Strip Array Elision (`#686`, `#679`, `#673`).
+  - **§77.2**: ACP Delegated 3DS Authentication API (`#93`, `#80`, `#85`, `#66`) & Payment Handlers / Discount Extension Framework (`#90`, `#89`, `#77`, `#76`).
+  - **§77.3**: Google AP2 Cross-Merchant Atomic Budget Authority (`#252`), TrustBoost Pre-LLM PII Sanitization + x402 Solana Proof (`#267`) & Normative Verifier `checkout_hash` Obligation (`#243`, `#233`).
+  - **§77.4**: Sierra $\tau$-bench 2.0 `gptlive` Full-Duplex Provider (`#409`), Transient Transcription Retry (`#418`), Viewer Truncation (`#434`), Active Reward Gates (`#411`) & Banking Answer-Key Leak Scrubbing (`#429`, `#414`, `#412`, `#408`).
 
 
 

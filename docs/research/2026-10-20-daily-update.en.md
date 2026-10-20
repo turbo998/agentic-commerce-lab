@@ -357,6 +357,20 @@
   - Unit Tests: [`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py) (**424/424** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/report.json)
 
+---
+
+## Stage 78: UCP Sale-Basis Quantity Steps/Actions/Loyalty/Event Feed, ACP Delegated 3DS Auth & Payment Handlers, Google AP2 Cross-Merchant Budget Authority & TrustBoost PII Sanitization & Sierra $\tau$-bench 2.0 `gptlive`/Transcription Retry/Banking Leak Guardrails
+
+- **Primary-Source Protocol & Benchmark Evidence**:
+  1. **UCP Sale-Basis Quantity Steps (`#653`), Non-Empty `actions` & `policies[].applies_to` (`#669`/`#661`), Loyalty `earning_forecast.breakdown` Invariant (`#662`), Request-Shape Omission (`#651`/`#646`) & `event_feed`/Post-Strip Array Elision (`#686`/`#679`/`#673`)**: Validates integer step `quantity` with `10^-scale` line rounding and forbids non-zero `scale` on `C62`; rejects empty `actions: {}` and `applies_to: []`; enforces minor-unit loyalty breakdown sum; blocks server-assigned fields on request bodies; and validates post-strip array elision indices.
+  2. **ACP Delegated 3DS Authentication API (`#93`/`#80`/`#85`/`#66`) & Payment Handlers / Discount Extension Framework (`#90`/`#89`/`#77`/`#76`)**: Enforces `create`/`authenticate`/`retrieve` step ordering, removes deprecated `AuthenticationMetadata.channel`, replaces string `payment_methods[]` with reverse-DNS `capabilities.payment.handlers[]`, and binds `config.merchant_id` to `delegate_payment`.
+  3. **Google AP2 Cross-Merchant Atomic Budget Authority (`#252`), TrustBoost Pre-LLM PII Sanitization (`#267`) & Normative Verifier `checkout_hash` Obligation (`#243`/`#233`)**: Prevents cross-merchant overspend race conditions via a 4-verb atomic Budget Authority, requires x402-paid PII sanitization with Solana proof anchoring before LLM ingestion, and enforces `checkout_hash` verification.
+  4. **Sierra $\tau$-bench 2.0 `gptlive` Full-Duplex Provider (`#409`), Transient Transcription Retry (`#418`), Viewer Truncation (`#434`), Active Reward Gates (`#411`) & Banking Answer-Key Scrubbing (`#429`/`#414`/`#412`/`#408`)**: Enforces `delegation.responses.tools` + `item_id` join and RMS silence gate for `gptlive`, retries transient transcription errors, validates non-empty reward gates, and scrubs answer-key leaks (`SHOULD BE FREE`) while enforcing the `$14.50` Light Blue ATM fee refund.
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py)
+  - Unit Tests: [`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_guard.py) (**432/432** total unit tests passing)
+  - Bilingual Architecture Reference (§77): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
