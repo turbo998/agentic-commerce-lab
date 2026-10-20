@@ -154,6 +154,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§87.2**: ACP Extensions Framework JSONPath `extends` (`#89`) & Enhanced Checkout Hierarchy / Tax Exemption (`#83`).
   - **§87.3**: Coinbase x402 EIP-712 Domain Mapping for EIP-3009 (`#324`) & `@x402/base` Runtime Network Scoping (`#312`, `#229`).
   - **§87.4**: Sierra $\tau$-bench 2.0 Multilingual `LanguagePack` / `communicate_info` Judge (`#348`, `#352`) & Submission Metric Gate (`#342`).
+- **§88 (Stage 89 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`IO-01..IO-16`)**: `lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.76 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

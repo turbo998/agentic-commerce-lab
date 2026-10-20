@@ -497,6 +497,15 @@
   - 单元测试：[`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py)（全仓库 **482/482** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§87)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 89：16 场景（`IO-01..IO-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 88）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py)
+  - 单元测试：[`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py)（全仓库 **484/484** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/report.json)
+
 
 
 

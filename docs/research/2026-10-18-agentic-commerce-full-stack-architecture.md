@@ -1124,6 +1124,13 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_multilingual_judge_and_submission_metrics_guard` enforces Sierra $\tau$-bench 2.0 PRs `#348` and `#352` (auto-activating the `communicate_info` LLM judge with `[llm_judge]` justification prefix and `nl_assertions` `<lang>`/`<script>` hints for non-English runs while preserving byte-identical English substring evaluation unless forced, and keeping multilingual pack personas out of regular sampling pools) and PR `#342` (failing `tau2 submit validate` when `submission.json` misses domain results or has `pass^k` or `cost` mismatches against recomputed trajectory metrics).
 - **中文**: `validate_tau2_multilingual_judge_and_submission_metrics_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#348` 与 `#352`（非英语运行自动启用 `communicate_info` LLM 裁判并标注 `[llm_judge]` 前缀与 `nl_assertions` 语种/文字提示、英语默认保持字节级一致的子串匹配，且多语种 Persona 严禁混入常规随机采样池）与 PR `#342`（当提交榜单缺失域结果或 `pass^k` / `cost` 与重算轨迹指标不一致时强制判定校验失败）。
 
+---
+
+## 88. Stage 89: 16-Scenario (`IO-01..IO-16`) Bilingual 7-Card 4:5 Benchmark Suite / 第八十八节：Stage 89 16 场景（`IO-01..IO-16`）中英双语 7-Card 4:5 基准评测
+
+- **English**: `lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py` and `tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py` evaluate 16 synthetic scenarios (`IO-01..IO-16`) across Stage 88 UCP, ACP, x402, and $\tau$-bench 2.0 guardrails. AI-Native guardrails achieve **16/16 (100.0%)** vs. **4/16 (25.0%)** Classic 3-Tier baseline (**+75.0 pts**), **16/16 (100.0%)** guard-order reversal consistency (`0.0 pts` drift), and **0.35 ms** vs. **4.76 ms** median latency (**13.6x** speedup), generating bilingual 7-Card 4:5 visual decks (`reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/{report.json,index.html,index.en.html}`).
+- **中文**: `lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py` 与 `tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py` 构建了 16 个合成场景（`IO-01..IO-16`），AI-Native 确定性护栏取得 **16/16 (100.0%)** vs 经典三层基线 **4/16 (25.0%)**（提升 **+75.0 pts**）、评估顺序逆序零漂移（**16/16, 100.0%**）及中位延迟 **0.35 ms** vs **4.76 ms**（**13.6x** 加速），生成中英双语 7-Card 4:5 报告 `reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/{report.json,index.html,index.en.html}`。
+
 
 
 

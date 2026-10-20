@@ -497,6 +497,15 @@
   - Unit Tests: [`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py) (**482/482** total unit tests passing)
   - Bilingual Architecture Reference (§87): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 89: 16-Scenario (`IO-01..IO-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 88)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py)
+  - Unit Tests: [`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py) (**484/484** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/report.json)
+
 
 
 
