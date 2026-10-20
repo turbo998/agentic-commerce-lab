@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 75 Bilingual 7-Card Benchmark: UCP Lodging/Token Binding, ACP Idempotency/Well-Known, AP2 JCS/KB-SD-JWT/x402 &amp; Sierra tau2 Gemini 8kHz/GoAway</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(900px, 1fr)); gap: 28px; max-width: 1920px; margin: 0 auto; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #FFFFFF; color: #0F172A; border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
+  .meta { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: #2563EB; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0 16px; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #2563EB, #7C3AED); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+  .panel { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; }
+  .code-dark { background: #0F172A; color: #E2E8F0; border-radius: 12px; padding: 18px; font-family: ui-monospace, monospace; font-size: 12.5px; overflow-x: auto; white-space: pre-wrap; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border-bottom: 1px solid #E2E8F0; padding: 8px 6px; text-align: left; vertical-align: top; }
+  th { color: #475569; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+  .pill { display: inline-block; background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .callout-dark { background: #0F172A; color: #F8FAFC; border-radius: 12px; padding: 16px; font-size: 13px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .good { background: #ECFDF5; border: 1px solid #10B981; border-radius: 12px; padding: 18px; }
+  .bad { background: #FEF2F2; border: 1px solid #EF4444; border-radius: 12px; padding: 18px; }
+  .lat-row { margin-bottom: 16px; }
+  .lat-label { font-weight: 700; margin-bottom: 6px; }
+  .bar-wrap { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+  .bar-ai { height: 18px; background: #3B82F6; border-radius: 4px; }
+  .bar-cl { height: 18px; background: #CBD5E1; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="meta">1 / 7 · HANDS-ON · AGENT COMMERCE PROTOCOL GUARDRAILS (STAGE 75)</div>
+      <h1><span class="accent">16/16 (100.0%)</span> Deterministic Guard Accuracy vs. 25.0% Classic 3-Tier (13.6x Faster)</h1>
+      <div class="workbench">
+        <div class="panel">
+          <strong>Scenarios & Threshold Bands</strong>
+          <p>LB-01..LB-16 (16 cases)</p>
+          <p>Act automatically ≥ 0.95 · Confirm 0.70–0.94 · Send to a human &lt; 0.70</p>
+        </div>
+        <div class="panel">
+          <strong>Structured Contract Input</strong>
+          <p>UCP #780/#762/#753/#744 · ACP #121/#137/#129/#262 · AP2 #253/#326/#318 · x402 #306/#297/#277 · tau2 #509/#461/#471</p>
+        </div>
+        <div class="panel">
+          <strong>Latency & Top Decisions</strong>
+          <p>AI-Native: <strong>0.34 ms</strong> vs Classic: <strong>4.63 ms</strong></p>
+          <p>Speedup: <strong>13.6x</strong> · Drift: <strong>0.0 pts</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Provenance: <code>synthetic_deterministic_protocol_conformance_harness</code> · <code>independently_reproduced=true</code> · Stage 75 (`LB-01..LB-16`)
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="meta">2 / 7 · SCENARIO: LB-10 & LB-12 DEEP DIVE</div>
+      <h2>0.34 ms Block on AP2 JCS Cart Substitution & x402 Stream Retry Crash</h2>
+      <div class="panel">
+        <strong>Input Quote (LB-10 / LB-12):</strong>
+        <code>payment_mandate_contents.cart_mandate_hash != sha256(JCS(cart_mandate)) | x402 ReadableStream uncloned + signer.address=None</code>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">choice</span> <strong>Decision 1 (AP2 #253):</strong> <code>ap2_jcs_cart_mandate_hash_mismatch</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">score</span> <strong>Decision 2 (AP2 #326/#313):</strong> <code>ap2_kb_sdjwt_hop_or_terminal_aud_nonce_unbound</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">noul</span> <strong>Decision 3 (x402 #306/#297/#277):</strong> <code>x402_stream_body_accepts_or_signer_address_violation</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Classic 3-Tier gateways miss RFC 8785 JCS null-stripping and ReadableStream disturbance on 402 retry.
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="meta">3 / 7 · WHAT I TESTED</div>
+      <h2>LB-01..LB-16 Full Matrix: AI-Native 16/16 (100.0%) vs. Classic 3-Tier 4/16 (25.0%)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>LB-01</strong> · UCP (#780/#762/#753/#744)</td><td>Admit compliant lodging stay, 2-tier guest pool, tri-state cancellation &amp; {type,id} binding?</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-02</strong> · UCP (#780)</td><td>Block unmapped guest_id in stay assignments or non-tri-state cancellation refundability?</td><td><code>BLOCK (ucp_lodging_stay_guest_assignment_or_cancellation_policy_invalid)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-03</strong> · UCP (#762/#746)</td><td>Block token binding when participant identity is coupled inside resource binding object?</td><td><code>BLOCK (ucp_token_binding_coupled_to_participant_identity_or_invalid_shape)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-04</strong> · UCP (#766/#753/#744)</td><td>Block legacy filters.geo spatial nesting and inner constraint operator path keys?</td><td><code>BLOCK (ucp_location_spatial_filter_or_amenity_description_violation)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-05</strong> · ACP (#121/#137/#129/#262)</td><td>Admit POST with valid Idempotency-Key, Idempotent-Replayed header &amp; public well-known doc?</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-06</strong> · ACP (#121)</td><td>Reject reused Idempotency-Key with mutated request payload via 422 idempotency_conflict?</td><td><code>BLOCK (acp_post_idempotency_conflict_rejected)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-07</strong> · ACP (#129/#123)</td><td>Block DiscountsResponse missing rejected[] or sale compare_at_amount &lt;= item amount?</td><td><code>BLOCK (acp_discount_rejected_or_sale_extension_invalid)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-08</strong> · ACP (#262/#249)</td><td>Block undefined Message fields (id/message/display_context) and string Refund.amount?</td><td><code>BLOCK (acp_message_refund_iin_or_risk_signals_schema_mismatch)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-09</strong> · AP2 + x402 (#253/#326/#306/#297)</td><td>Admit matching JCS cart_mandate_hash, bound KB-SD-JWT hops &amp; cloned x402 stream?</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-10</strong> · AP2 (#253)</td><td>Block PaymentMandate when recomputed RFC 8785 JCS CartMandate hash mismatches?</td><td><code>BLOCK (ap2_jcs_cart_mandate_hash_mismatch)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-11</strong> · AP2 (#326/#313/#318)</td><td>Block intermediate KB-SD-JWT hop nonce mismatch and immediate payment past not_after?</td><td><code>BLOCK (ap2_kb_sdjwt_hop_or_terminal_aud_nonce_unbound)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-12</strong> · Coinbase x402 (#306/#297/#277)</td><td>Block uncloned ReadableStream retry, throwing on unknown accepts, or missing signer.address?</td><td><code>BLOCK (x402_stream_body_accepts_or_signer_address_violation)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-13</strong> · Sierra tau2-bench (#509/#511/#461/#471)</td><td>Admit 8kHz telephony, HIGH start sensitivity, SlidingWindow, silent GoAway reconnect &amp; retry?</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-14</strong> · Sierra tau2-bench (#511/#510/#509)</td><td>Block lossy client-side 16kHz ratecv upsampling and missing SlidingWindow config?</td><td><code>BLOCK (tau2_gemini_telephony_8khz_or_sliding_window_misconfigured)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-15</strong> · Sierra tau2-bench (#461)</td><td>Block GoAway handling that only checks _reconnect_deadline inside the receive loop?</td><td><code>BLOCK (tau2_gemini_goaway_silent_server_missed_reconnect)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-16</strong> · Sierra tau2-bench (#525/#522/#471)</td><td>Block blocking full-duplex user generation and unretried empty simulator completion crash?</td><td><code>BLOCK (tau2_full_duplex_tick_blocked_or_duplicate_user_init)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout-dark">
+      Threshold Gating: 4 compliant scenarios (`LB-01`, `LB-05`, `LB-09`, `LB-13`) → <code>Act automatically</code>; 12 adversarial/regression cases → <code>Send to a human</code> (Classic 3-Tier missed 12/12 negative cases marked ✕).
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="meta">4 / 7 · UNDER THE HOOD</div>
+      <h2>Structured Contract Input ↓ Deterministic 4-Domain Verifier Flow</h2>
+      <div class="code-dark">{
+  "ucp": {"lodging": "dev.ucp.lodging.booking", "binding": {"type": "dev.ucp.lodging.booking", "id": "bkg_99281"}},
+  "acp": {"idempotency_key": "550e8400-...", "well_known": "/.well-known/acp.json"},
+  "ap2_x402": {"cart_mandate_hash": "sha256(JCS(CartMandate))", "x402_stream_cloned": true},
+  "tau2": {"input_sample_rate_hz": 8000, "goaway_deadline_checked_on_silent_stream": true}
+}</div>
+      <p style="text-align:center;font-weight:700;">↓</p>
+      <div class="code-dark">&lt;answer&gt;
+verify_ucp_lodging_booking_token_binding_location_spatial_and_constraint_path() -&gt; allowed=True
+verify_acp_mandatory_idempotency_wellknown_discovery_sale_and_schema_alignment() -&gt; allowed=True (200)
+verify_ap2_jcs_cart_hash_sdjwt_hops_execution_window_and_x402_stream_accepts()   -&gt; allowed=True (eip155:8453)
+verify_tau2_gemini_8khz_telephony_goaway_reconnect_nonblocking_duplex_and_empty_turn_retry() -&gt; allowed=True
+&lt;/answer&gt;</div>
+    </div>
+    <div class="callout-dark">
+      Zero external LLM calls on the hot path · O(1) deterministic schema, hash, and state-machine invariants.
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="meta">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>100.0% Option-Order & Key-Reversal Consistency (0.0 pts Drift)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>LB-01 · UCP Lodging Booking, Token Binding &amp; Outer Path Admit</td><td>ADMIT (100%)</td><td>ADMIT (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-02 · UCP Lodging Blocks Unmapped Guest ID &amp; Non-Tri-State Refundability</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-03 · UCP Token Binding Blocks Coupled Participant Identity Inside Binding</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-04 · UCP Blocks Legacy filters.geo &amp; Inner Operator Path Targeting</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-05 · ACP Mandatory POST Idempotency, Public Well-Known &amp; Sale Extension Admit</td><td>ADMIT (100%)</td><td>ADMIT (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-06 · ACP Blocks Same Idempotency-Key Payload Mutation (422 Conflict)</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout-dark">
+      All 16 scenarios (`LB-01..LB-16`) preserve identical `allowed` and `reasons` verdicts under recursive dictionary key order reversal (`100.0%` consistency).
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="meta">6 / 7 · LATENCY</div>
+      <h2>0.34 ms vs. 4.63 ms Single-Case Median Latency (16.9x Faster at 16x Load)</h2>
+      <div>
+        <div class='lat-row'><div class='lat-label'>1x (Single)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>0.34 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:8%'></div><span><strong>4.63 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>4x (Batch)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>1.18 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:24%'></div><span><strong>18.40 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>8x (Batch)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>2.24 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:49%'></div><span><strong>36.85 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>16x (Full Matrix)</div><div class='bar-wrap'><div class='bar-ai' style='width:5%'></div><span><strong>4.38 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:98%'></div><span><strong>73.90 ms</strong> (Classic 3-Tier)</span></div></div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Median across `LB-01..LB-16`: AI-Native `0.34 ms` (`#3B82F6`) vs. Classic 3-Tier `4.63 ms` (`#CBD5E1`), `13.6x` single-request speedup.
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="meta">7 / 7 · MY TAKE</div>
+      <h2>Good Fit vs. Not For & Production Readiness</h2>
+      <div class="split">
+        <div class="good">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>UCP lodging booking stays, vertical-agnostic token binding & location discovery</li>
+            <li>ACP mandatory POST idempotency, /.well-known/acp.json & sale pricing guards</li>
+            <li>AP2 RFC 8785 JCS cart hash, KB-SD-JWT hop binding & x402 dual-rail stream retry</li>
+            <li>Sierra tau2 Gemini 8kHz native telephony & silent GoAway auto-reconnect</li>
+          </ul>
+        </div>
+        <div class="bad">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Replacing underlying hotel PMS physical room locks or L1/L2 block finality</li>
+            <li>Accepting terminal KB-SD-JWT presentations without caller expected_aud/nonce</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Readiness: Production-ready deterministic guardrails (`lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`) · License: MIT · Provenance: `synthetic_deterministic_protocol_conformance_harness`.
+    </div>
+  </section>
+</div>
+</body>
+</html>

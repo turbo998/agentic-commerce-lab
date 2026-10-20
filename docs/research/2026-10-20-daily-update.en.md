@@ -312,6 +312,24 @@
   - Unit Tests: [`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py) (**412/412** total unit tests passing)
   - Bilingual Architecture Reference (§73): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 75: 16-Scenario (`LB-01..LB-16`) Bilingual 7-Card 4:5 Visual Benchmark Report for UCP Lodging/Token Binding, ACP Mandatory Idempotency/Well-Known, AP2 JCS/KB-SD-JWT/x402 & Sierra $\tau$-bench 2.0 Gemini 8kHz/GoAway
+
+- **Evaluation Matrix (16 Scenarios, `LB-01..LB-16`)**:
+  - `LB-01..LB-04`: UCP `dev.ucp.lodging.booking` stays & tri-state cancellation policy (`#780`), vertical-agnostic `{type, id}` token binding vs. participant identity (`#762`/`#746`), root-level `distance`/`serves` & `filters.items[]` (`#766`/`#753`), and outer-only constraint `path` (`#744`).
+  - `LB-05..LB-08`: ACP mandatory POST `Idempotency-Key` & `422 idempotency_conflict` (`#121`), public `/.well-known/acp.json` (`#137`), `DiscountsResponse.rejected[]` & `sale` compare-at pricing (`#129`/`#123`), and `MessageInfo`/integer `Refund.amount` schema alignment (`#262`/`#249`).
+  - `LB-09..LB-12`: Google AP2 null-stripped RFC 8785 JCS `cart_mandate_hash` (`#253`), KB-SD-JWT per-hop `aud`/`nonce` & immediate payment execution window (`#326`/`#313`/`#318`), and Coinbase x402 `ReadableStream` cloning, unknown CAIP-2 `accepts[]` resilience & top-level `.address` (`#306`/`#297`/`#277`).
+  - `LB-13..LB-16`: Sierra $\tau$-bench 2.0 Gemini Live 8kHz native telephony & `SlidingWindow` (`#511`/`#510`/`#509`), silent `GoAway` reconnect deadline enforcement (`#461`), full-duplex nonblocking user generation (`#525`/`#522`), and empty turn `###STOP###` retry (`#471`).
+- **Headline Quantitative Findings**:
+  - **Accuracy**: AI-Native deterministic guards **16/16 (100.0%)** vs. Classic 3-Tier baseline **4/16 (25.0%)**.
+  - **Perturbation Consistency**: **100.0% (0.0 pts drift)** under option-order reversal and key reordering.
+  - **Latency**: **0.34 ms** AI-Native median latency vs. **4.63 ms** Classic 3-Tier (**13.6x speedup**).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py`](../../lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py)
+  - Unit Tests: [`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py) (**414/414** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/report.json)
+
 
 
 

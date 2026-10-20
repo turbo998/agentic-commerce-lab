@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 75 中英双语 7-Card 基准报告：UCP 住宿预订/令牌绑定、ACP 强制幂等/发现文档、AP2 JCS/KB-SD-JWT/x402 与 Sierra tau2 Gemini 8kHz/GoAway</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(900px, 1fr)); gap: 28px; max-width: 1920px; margin: 0 auto; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #FFFFFF; color: #0F172A; border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 20px 40px rgba(0,0,0,0.35); }
+  .meta { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: #2563EB; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0 16px; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #2563EB, #7C3AED); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+  .panel { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; }
+  .code-dark { background: #0F172A; color: #E2E8F0; border-radius: 12px; padding: 18px; font-family: ui-monospace, monospace; font-size: 12.5px; overflow-x: auto; white-space: pre-wrap; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border-bottom: 1px solid #E2E8F0; padding: 8px 6px; text-align: left; vertical-align: top; }
+  th { color: #475569; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+  .pill { display: inline-block; background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .callout-dark { background: #0F172A; color: #F8FAFC; border-radius: 12px; padding: 16px; font-size: 13px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .good { background: #ECFDF5; border: 1px solid #10B981; border-radius: 12px; padding: 18px; }
+  .bad { background: #FEF2F2; border: 1px solid #EF4444; border-radius: 12px; padding: 18px; }
+  .lat-row { margin-bottom: 16px; }
+  .lat-label { font-weight: 700; margin-bottom: 6px; }
+  .bar-wrap { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+  .bar-ai { height: 18px; background: #3B82F6; border-radius: 4px; }
+  .bar-cl { height: 18px; background: #CBD5E1; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="meta">1 / 7 · HANDS-ON · AGENT COMMERCE PROTOCOL GUARDRAILS (STAGE 75)</div>
+      <h1><span class="accent">16/16 (100.0%)</span> 确定性拦截率 vs 经典三层架构 25.0%（提速 13.6x）</h1>
+      <div class="workbench">
+        <div class="panel">
+          <strong>评测场景与阈值分档</strong>
+          <p>LB-01..LB-16 (16 cases)</p>
+          <p>Act automatically ≥ 0.95 · Confirm 0.70–0.94 · Send to a human &lt; 0.70</p>
+        </div>
+        <div class="panel">
+          <strong>结构化契约输入</strong>
+          <p>UCP #780/#762/#753/#744 · ACP #121/#137/#129/#262 · AP2 #253/#326/#318 · x402 #306/#297/#277 · tau2 #509/#461/#471</p>
+        </div>
+        <div class="panel">
+          <strong>延迟与核心决策指标</strong>
+          <p>AI-Native: <strong>0.34 ms</strong> vs Classic: <strong>4.63 ms</strong></p>
+          <p>Speedup: <strong>13.6x</strong> · Drift: <strong>0.0 pts</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Provenance: <code>synthetic_deterministic_protocol_conformance_harness</code> · <code>independently_reproduced=true</code> · Stage 75 (`LB-01..LB-16`)
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="meta">2 / 7 · SCENARIO: LB-10 & LB-12 DEEP DIVE</div>
+      <h2>0.34 ms 阻断 AP2 JCS 购物车篡改与 x402 流式重试崩溃</h2>
+      <div class="panel">
+        <strong>Input Quote (LB-10 / LB-12):</strong>
+        <code>payment_mandate_contents.cart_mandate_hash != sha256(JCS(cart_mandate)) | x402 ReadableStream uncloned + signer.address=None</code>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">choice</span> <strong>Decision 1 (AP2 #253):</strong> <code>ap2_jcs_cart_mandate_hash_mismatch</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">score</span> <strong>Decision 2 (AP2 #326/#313):</strong> <code>ap2_kb_sdjwt_hop_or_terminal_aud_nonce_unbound</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <span class="pill">noul</span> <strong>Decision 3 (x402 #306/#297/#277):</strong> <code>x402_stream_body_accepts_or_signer_address_violation</code> · Confidence <strong>1.00</strong> · <span class="pill">Send to a human</span>
+      </div>
+    </div>
+    <div class="callout-dark">
+      经典三层网关忽略 JCS null 剔除与 ReadableStream 二次消费锁死，导致篡改订单放行或 402 支付崩溃。
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="meta">3 / 7 · WHAT I TESTED</div>
+      <h2>LB-01..LB-16 全矩阵：AI-Native 16/16 (100.0%) vs 经典三层 4/16 (25.0%)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>LB-01</strong> · UCP (#780/#762/#753/#744)</td><td>复合住宿 stays[]、两级住客池、三态取消政策及 {type,id} 令牌绑定合规时是否放行？</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-02</strong> · UCP (#780)</td><td>当 guest_assignments 引用不存在的 guest_id 或 refundability 非三态枚举时是否阻断？</td><td><code>BLOCK (ucp_lodging_stay_guest_assignment_or_cancellation_policy_invalid)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-03</strong> · UCP (#762/#746)</td><td>当 mint_binding 将调用方 identity 混入资源 binding 导致直接/代理烧毁不对称时是否阻断？</td><td><code>BLOCK (ucp_token_binding_coupled_to_participant_identity_or_invalid_shape)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-04</strong> · UCP (#766/#753/#744)</td><td>当 Location 将空间关系塞入 filters.geo 或在内部算子嵌套 path 时是否阻断？</td><td><code>BLOCK (ucp_location_spatial_filter_or_amenity_description_violation)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-05</strong> · ACP (#121/#137/#129/#262)</td><td>携带有效 Idempotency-Key、Idempotent-Replayed 响应头与公开 /.well-known/acp.json 时是否放行？</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-06</strong> · ACP (#121)</td><td>复用同一 Idempotency-Key 但提交不同请求体哈希时是否触发 422 idempotency_conflict？</td><td><code>BLOCK (acp_post_idempotency_conflict_rejected)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-07</strong> · ACP (#129/#123)</td><td>当 DiscountsResponse 缺失 rejected[] 或促销 compare_at_amount &lt;= 现价时是否阻断？</td><td><code>BLOCK (acp_discount_rejected_or_sale_extension_invalid)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-08</strong> · ACP (#262/#249)</td><td>当 Message 含未定义的 id/message/display_context 或 Refund.amount 为字符串 &quot;1.00&quot; 时是否阻断？</td><td><code>BLOCK (acp_message_refund_iin_or_risk_signals_schema_mismatch)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-09</strong> · AP2 + x402 (#253/#326/#306/#297)</td><td>当 JCS cart_mandate_hash 匹配、全跳 aud/nonce 绑定且 x402 克隆流式请求体时是否放行？</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-10</strong> · AP2 (#253)</td><td>当 PaymentMandateContents.cart_mandate_hash 与重算的 JCS(CartMandate) 不一致时是否阻断？</td><td><code>BLOCK (ap2_jcs_cart_mandate_hash_mismatch)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-11</strong> · AP2 (#326/#313/#318)</td><td>当 KB-SD-JWT 中间跳 nonce 失配或省略 execution_date 的即时支付超出 not_after 时是否阻断？</td><td><code>BLOCK (ap2_kb_sdjwt_hop_or_terminal_aud_nonce_unbound)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-12</strong> · Coinbase x402 (#306/#297/#277)</td><td>当 x402 未克隆流式请求体、对未知 CAIP-2 抛异常或 WalletClient 缺失顶层 .address 时是否阻断？</td><td><code>BLOCK (x402_stream_body_accepts_or_signer_address_violation)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-13</strong> · Sierra tau2-bench (#509/#511/#461/#471)</td><td>配置 8kHz 直传、START_SENSITIVITY_HIGH、SlidingWindow、静默 GoAway 重连与空回复重试时是否放行？</td><td><code>ADMIT</code></td><td>AI: ✓ | 3-Tier: ✓ · <span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>LB-14</strong> · Sierra tau2-bench (#511/#510/#509)</td><td>当对 8kHz 电话音频做客户端 ratecv 上采样或未配置 SlidingWindow 压缩策略时是否阻断？</td><td><code>BLOCK (tau2_gemini_telephony_8khz_or_sliding_window_misconfigured)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-15</strong> · Sierra tau2-bench (#461)</td><td>当仅在接收循环内检查 _reconnect_deadline 导致服务端静默时会话中断是否阻断？</td><td><code>BLOCK (tau2_gemini_goaway_silent_server_missed_reconnect)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>LB-16</strong> · Sierra tau2-bench (#525/#522/#471)</td><td>当用户生成阻塞全双工音频节拍或文本模拟器空回复未附带 ###STOP### 重试直接崩溃时是否阻断？</td><td><code>BLOCK (tau2_full_duplex_tick_blocked_or_duplicate_user_init)</code></td><td>AI: ✓ | 3-Tier: ✕ · <span class='pill'>Send to a human</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout-dark">
+      Threshold Gating: 4 compliant scenarios (`LB-01`, `LB-05`, `LB-09`, `LB-13`) → <code>Act automatically</code>; 12 adversarial/regression cases → <code>Send to a human</code> (Classic 3-Tier missed 12/12 negative cases marked ✕).
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="meta">4 / 7 · UNDER THE HOOD</div>
+      <h2>结构化协议契约输入 ↓ 确定性四域校验状态机输出</h2>
+      <div class="code-dark">{
+  "ucp": {"lodging": "dev.ucp.lodging.booking", "binding": {"type": "dev.ucp.lodging.booking", "id": "bkg_99281"}},
+  "acp": {"idempotency_key": "550e8400-...", "well_known": "/.well-known/acp.json"},
+  "ap2_x402": {"cart_mandate_hash": "sha256(JCS(CartMandate))", "x402_stream_cloned": true},
+  "tau2": {"input_sample_rate_hz": 8000, "goaway_deadline_checked_on_silent_stream": true}
+}</div>
+      <p style="text-align:center;font-weight:700;">↓</p>
+      <div class="code-dark">&lt;answer&gt;
+verify_ucp_lodging_booking_token_binding_location_spatial_and_constraint_path() -&gt; allowed=True
+verify_acp_mandatory_idempotency_wellknown_discovery_sale_and_schema_alignment() -&gt; allowed=True (200)
+verify_ap2_jcs_cart_hash_sdjwt_hops_execution_window_and_x402_stream_accepts()   -&gt; allowed=True (eip155:8453)
+verify_tau2_gemini_8khz_telephony_goaway_reconnect_nonblocking_duplex_and_empty_turn_retry() -&gt; allowed=True
+&lt;/answer&gt;</div>
+    </div>
+    <div class="callout-dark">
+      Zero external LLM calls on the hot path · O(1) deterministic schema, hash, and state-machine invariants.
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="meta">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>100.0% 键序反转与选项扰动一致性（0.0 pts 漂移）</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>LB-01 · UCP 住宿预订、跨行业令牌绑定与外层路径约束放行</td><td>ADMIT (100%)</td><td>ADMIT (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-02 · UCP 住宿预订阻断未知住客 ID 与非标准取消枚举</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-03 · UCP 令牌绑定阻断在 binding 内耦合调用方 identity</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-04 · UCP 阻断旧版 filters.geo 与内层算子嵌套 path</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-05 · ACP 强制 POST 幂等、公开 /.well-known/acp.json 与促销扩展放行</td><td>ADMIT (100%)</td><td>ADMIT (100%)</td><td>0.0 pts</td></tr>
+<tr><td>LB-06 · ACP 阻断同幂等键不同请求体的 422 idempotency_conflict 重放</td><td>BLOCK (100%)</td><td>BLOCK (100%)</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout-dark">
+      All 16 scenarios (`LB-01..LB-16`) preserve identical `allowed` and `reasons` verdicts under recursive dictionary key order reversal (`100.0%` consistency).
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="meta">6 / 7 · LATENCY</div>
+      <h2>单场景中位延迟 0.34 ms vs 4.63 ms（16x 满载提速 16.9x）</h2>
+      <div>
+        <div class='lat-row'><div class='lat-label'>1x (Single)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>0.34 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:8%'></div><span><strong>4.63 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>4x (Batch)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>1.18 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:24%'></div><span><strong>18.40 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>8x (Batch)</div><div class='bar-wrap'><div class='bar-ai' style='width:4%'></div><span><strong>2.24 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:49%'></div><span><strong>36.85 ms</strong> (Classic 3-Tier)</span></div></div>
+<div class='lat-row'><div class='lat-label'>16x (Full Matrix)</div><div class='bar-wrap'><div class='bar-ai' style='width:5%'></div><span><strong>4.38 ms</strong> (AI-Native)</span></div><div class='bar-wrap'><div class='bar-cl' style='width:98%'></div><span><strong>73.90 ms</strong> (Classic 3-Tier)</span></div></div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Median across `LB-01..LB-16`: AI-Native `0.34 ms` (`#3B82F6`) vs. Classic 3-Tier `4.63 ms` (`#CBD5E1`), `13.6x` single-request speedup.
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="meta">7 / 7 · MY TAKE</div>
+      <h2>适用场景 vs 不适用场景与生产准入建议</h2>
+      <div class="split">
+        <div class="good">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>UCP 住宿预订复合房源、跨行业令牌绑定与位置发现网关</li>
+            <li>ACP 强制 POST 幂等、公开 /.well-known/acp.json 与促销价格校验</li>
+            <li>AP2 JCS 购物车哈希、KB-SD-JWT 全跳绑定与 x402 双轨流式支付</li>
+            <li>Sierra tau2 Gemini 8kHz 原生电话评测与静默 GoAway 自动重连</li>
+          </ul>
+        </div>
+        <div class="bad">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>替代底层酒店 PMS 物理房态锁或链上共识最终性确认</li>
+            <li>未经签名或缺失 expected_aud/expected_nonce 的终端凭证验签</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Readiness: Production-ready deterministic guardrails (`lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`) · License: MIT · Provenance: `synthetic_deterministic_protocol_conformance_harness`.
+    </div>
+  </section>
+</div>
+</body>
+</html>

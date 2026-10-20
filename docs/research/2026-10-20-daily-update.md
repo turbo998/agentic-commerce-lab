@@ -312,6 +312,24 @@
   - 单元测试：[`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py)（全仓库 **412/412** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§73)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 75：UCP 住宿预订/令牌绑定、ACP 强制 POST 幂等/发现文档、Google AP2 JCS 购物车哈希/KB-SD-JWT 逐跳校验/x402 流克隆与 Sierra $\tau$-bench 2.0 Gemini 8kHz/静默 `GoAway` 重连 16 场景（`LB-01..LB-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围（16 场景，`LB-01..LB-16`）**：
+  - `LB-01..LB-04`：UCP `dev.ucp.lodging.booking` 复合房源与三态取消政策（`#780`）、跨行业 `{type, id}` 令牌绑定与调用方授权分离（`#762`/`#746`）、Location 顶层空间关系 `distance`/`serves` 与 `filters.items[]`（`#766`/`#753`）及请求约束仅外层 `path`（`#744`）。
+  - `LB-05..LB-08`：ACP 强制 POST `Idempotency-Key` 与 `422 idempotency_conflict`（`#121`）、公开 `/.well-known/acp.json`（`#137`）、`DiscountsResponse.rejected[]` 与 `sale` 划线价（`#129`/`#123`）及 `MessageInfo`/整数 `Refund.amount` 对齐（`#262`/`#249`）。
+  - `LB-09..LB-12`：Google AP2 剥离 `null` 的 RFC 8785 JCS `cart_mandate_hash`（`#253`）、KB-SD-JWT 全跳 `aud`/`nonce` 与即时支付时间窗（`#326`/`#313`/`#318`）及 Coinbase x402 流式请求体克隆、未知 CAIP-2 `accepts[]` 容错与顶层 `.address`（`#306`/`#297`/`#277`）。
+  - `LB-13..LB-16`：Sierra $\tau$-bench 2.0 Gemini Live 8kHz 原生电话采样与 `SlidingWindow`（`#511`/`#510`/`#509`）、静默 `GoAway` 重连截止时间监控（`#461`）、全双工非阻塞用户语音生成（`#525`/`#522`）与空回复 `###STOP###` 重试（`#471`）。
+- **核心量化发现**：
+  - **准确率**：AI-Native 确定性护栏 **16/16 (100.0%)** vs. 经典三层架构基线 **4/16 (25.0%)**。
+  - **扰动鲁棒性**：选项逆序与字段乱序下 **100.0% (0.0 pts 漂移)**。
+  - **延迟对比**：单轮中位延迟 **0.34 ms vs. 4.63 ms（13.6x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py`](../../lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py)
+  - 单元测试：[`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py)（全仓库 **414/414** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/report.json)
+
 
 
 

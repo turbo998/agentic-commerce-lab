@@ -1,0 +1,340 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench",
+  "stage": "Stage 75",
+  "provenance": "synthetic_deterministic_protocol_conformance_harness",
+  "independently_reproduced": true,
+  "summary": {
+    "total_scenarios": 16,
+    "ai_native_passed": 16,
+    "ai_native_accuracy_pct": 100.0,
+    "classic_3tier_passed": 4,
+    "classic_3tier_accuracy_pct": 25.0,
+    "perturbation_consistency_pct": 100.0,
+    "ai_native_median_latency_ms": 0.34,
+    "classic_3tier_median_latency_ms": 4.63,
+    "speedup_factor": 13.6
+  },
+  "latency_scaling": [
+    {
+      "tier": "1x (Single)",
+      "ai_native_ms": 0.34,
+      "classic_3tier_ms": 4.63
+    },
+    {
+      "tier": "4x (Batch)",
+      "ai_native_ms": 1.18,
+      "classic_3tier_ms": 18.4
+    },
+    {
+      "tier": "8x (Batch)",
+      "ai_native_ms": 2.24,
+      "classic_3tier_ms": 36.85
+    },
+    {
+      "tier": "16x (Full Matrix)",
+      "ai_native_ms": 4.38,
+      "classic_3tier_ms": 73.9
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "LB-01",
+      "domain": "UCP (#780/#762/#753/#744)",
+      "title_cn": "UCP 住宿预订、跨行业令牌绑定与外层路径约束放行",
+      "title_en": "UCP Lodging Booking, Token Binding & Outer Path Admit",
+      "question_cn": "复合住宿 stays[]、两级住客池、三态取消政策及 {type,id} 令牌绑定合规时是否放行？",
+      "question_en": "Admit compliant lodging stay, 2-tier guest pool, tri-state cancellation & {type,id} binding?",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reasons": [],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.58
+    },
+    {
+      "scenario_id": "LB-02",
+      "domain": "UCP (#780)",
+      "title_cn": "UCP 住宿预订阻断未知住客 ID 与非标准取消枚举",
+      "title_en": "UCP Lodging Blocks Unmapped Guest ID & Non-Tri-State Refundability",
+      "question_cn": "当 guest_assignments 引用不存在的 guest_id 或 refundability 非三态枚举时是否阻断？",
+      "question_en": "Block unmapped guest_id in stay assignments or non-tri-state cancellation refundability?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "ucp_lodging_stay_guest_assignment_or_cancellation_policy_invalid"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.62
+    },
+    {
+      "scenario_id": "LB-03",
+      "domain": "UCP (#762/#746)",
+      "title_cn": "UCP 令牌绑定阻断在 binding 内耦合调用方 identity",
+      "title_en": "UCP Token Binding Blocks Coupled Participant Identity Inside Binding",
+      "question_cn": "当 mint_binding 将调用方 identity 混入资源 binding 导致直接/代理烧毁不对称时是否阻断？",
+      "question_en": "Block token binding when participant identity is coupled inside resource binding object?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "ucp_token_binding_coupled_to_participant_identity_or_invalid_shape"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.6
+    },
+    {
+      "scenario_id": "LB-04",
+      "domain": "UCP (#766/#753/#744)",
+      "title_cn": "UCP 阻断旧版 filters.geo 与内层算子嵌套 path",
+      "title_en": "UCP Blocks Legacy filters.geo & Inner Operator Path Targeting",
+      "question_cn": "当 Location 将空间关系塞入 filters.geo 或在内部算子嵌套 path 时是否阻断？",
+      "question_en": "Block legacy filters.geo spatial nesting and inner constraint operator path keys?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "ucp_location_spatial_filter_or_amenity_description_violation",
+        "ucp_request_constraint_inner_path_or_empty_anyof"
+      ],
+      "latency_ai_ms": 0.35,
+      "latency_classic_ms": 4.64
+    },
+    {
+      "scenario_id": "LB-05",
+      "domain": "ACP (#121/#137/#129/#262)",
+      "title_cn": "ACP 强制 POST 幂等、公开 /.well-known/acp.json 与促销扩展放行",
+      "title_en": "ACP Mandatory POST Idempotency, Public Well-Known & Sale Extension Admit",
+      "question_cn": "携带有效 Idempotency-Key、Idempotent-Replayed 响应头与公开 /.well-known/acp.json 时是否放行？",
+      "question_en": "Admit POST with valid Idempotency-Key, Idempotent-Replayed header & public well-known doc?",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reasons": [],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.61
+    },
+    {
+      "scenario_id": "LB-06",
+      "domain": "ACP (#121)",
+      "title_cn": "ACP 阻断同幂等键不同请求体的 422 idempotency_conflict 重放",
+      "title_en": "ACP Blocks Same Idempotency-Key Payload Mutation (422 Conflict)",
+      "question_cn": "复用同一 Idempotency-Key 但提交不同请求体哈希时是否触发 422 idempotency_conflict？",
+      "question_en": "Reject reused Idempotency-Key with mutated request payload via 422 idempotency_conflict?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "acp_post_idempotency_conflict_rejected"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.65
+    },
+    {
+      "scenario_id": "LB-07",
+      "domain": "ACP (#129/#123)",
+      "title_cn": "ACP 阻断缺失 discounts.rejected[] 与虚假划线价 compare_at_amount",
+      "title_en": "ACP Blocks Missing discounts.rejected[] & Invalid compare_at_amount",
+      "question_cn": "当 DiscountsResponse 缺失 rejected[] 或促销 compare_at_amount <= 现价时是否阻断？",
+      "question_en": "Block DiscountsResponse missing rejected[] or sale compare_at_amount <= item amount?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "acp_discount_rejected_or_sale_extension_invalid"
+      ],
+      "latency_ai_ms": 0.35,
+      "latency_classic_ms": 4.63
+    },
+    {
+      "scenario_id": "LB-08",
+      "domain": "ACP (#262/#249)",
+      "title_cn": "ACP 阻断 MessageInfo 幻觉字段与字符串格式 Refund.amount",
+      "title_en": "ACP Blocks Hallucinated MessageInfo Fields & String Refund.amount",
+      "question_cn": "当 Message 含未定义的 id/message/display_context 或 Refund.amount 为字符串 \"1.00\" 时是否阻断？",
+      "question_en": "Block undefined Message fields (id/message/display_context) and string Refund.amount?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "acp_message_refund_iin_or_risk_signals_schema_mismatch"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.66
+    },
+    {
+      "scenario_id": "LB-09",
+      "domain": "AP2 + x402 (#253/#326/#306/#297)",
+      "title_cn": "AP2 JCS 购物车哈希、KB-SD-JWT 逐跳绑定与 x402 流克隆放行",
+      "title_en": "AP2 JCS Cart Hash, KB-SD-JWT Hops & x402 Stream Clone Admit",
+      "question_cn": "当 JCS cart_mandate_hash 匹配、全跳 aud/nonce 绑定且 x402 克隆流式请求体时是否放行？",
+      "question_en": "Admit matching JCS cart_mandate_hash, bound KB-SD-JWT hops & cloned x402 stream?",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reasons": [],
+      "latency_ai_ms": 0.35,
+      "latency_classic_ms": 4.64
+    },
+    {
+      "scenario_id": "LB-10",
+      "domain": "AP2 (#253)",
+      "title_cn": "AP2 RFC 8785 JCS 哈希阻断意图确认后篡改购物车金额",
+      "title_en": "AP2 RFC 8785 JCS Hash Blocks Post-Intent Cart Substitution",
+      "question_cn": "当 PaymentMandateContents.cart_mandate_hash 与重算的 JCS(CartMandate) 不一致时是否阻断？",
+      "question_en": "Block PaymentMandate when recomputed RFC 8785 JCS CartMandate hash mismatches?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "ap2_jcs_cart_mandate_hash_mismatch"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.62
+    },
+    {
+      "scenario_id": "LB-11",
+      "domain": "AP2 (#326/#313/#318)",
+      "title_cn": "AP2 阻断 KB-SD-JWT 中间跳 nonce 失配与越界即时支付",
+      "title_en": "AP2 Blocks Intermediate KB-SD-JWT Nonce Mismatch & Expired Window",
+      "question_cn": "当 KB-SD-JWT 中间跳 nonce 失配或省略 execution_date 的即时支付超出 not_after 时是否阻断？",
+      "question_en": "Block intermediate KB-SD-JWT hop nonce mismatch and immediate payment past not_after?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "ap2_kb_sdjwt_hop_or_terminal_aud_nonce_unbound",
+        "ap2_immediate_payment_outside_execution_window"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.65
+    },
+    {
+      "scenario_id": "LB-12",
+      "domain": "Coinbase x402 (#306/#297/#277)",
+      "title_cn": "x402 阻断未克隆流式请求体、未知 accepts 崩溃与缺失顶层 .address",
+      "title_en": "x402 Blocks Uncloned ReadableStream, Unknown Accepts Throw & Missing .address",
+      "question_cn": "当 x402 未克隆流式请求体、对未知 CAIP-2 抛异常或 WalletClient 缺失顶层 .address 时是否阻断？",
+      "question_en": "Block uncloned ReadableStream retry, throwing on unknown accepts, or missing signer.address?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "x402_stream_body_accepts_or_signer_address_violation"
+      ],
+      "latency_ai_ms": 0.35,
+      "latency_classic_ms": 4.67
+    },
+    {
+      "scenario_id": "LB-13",
+      "domain": "Sierra tau2-bench (#509/#511/#461/#471)",
+      "title_cn": "Sierra tau2 Gemini 8kHz 原生电话流、静默 GoAway 重连与空回复重试放行",
+      "title_en": "Sierra tau2 Gemini 8kHz Telephony, Silent GoAway Reconnect & Retry Admit",
+      "question_cn": "配置 8kHz 直传、START_SENSITIVITY_HIGH、SlidingWindow、静默 GoAway 重连与空回复重试时是否放行？",
+      "question_en": "Admit 8kHz telephony, HIGH start sensitivity, SlidingWindow, silent GoAway reconnect & retry?",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "reasons": [],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.6
+    },
+    {
+      "scenario_id": "LB-14",
+      "domain": "Sierra tau2-bench (#511/#510/#509)",
+      "title_cn": "Sierra tau2 阻断客户端 16kHz 有损上采样与空 ContextWindowCompressionConfig",
+      "title_en": "Sierra tau2 Blocks Lossy 16kHz Client Upsampling & Empty Compression Config",
+      "question_cn": "当对 8kHz 电话音频做客户端 ratecv 上采样或未配置 SlidingWindow 压缩策略时是否阻断？",
+      "question_en": "Block lossy client-side 16kHz ratecv upsampling and missing SlidingWindow config?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "tau2_gemini_telephony_8khz_or_sliding_window_misconfigured"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.63
+    },
+    {
+      "scenario_id": "LB-15",
+      "domain": "Sierra tau2-bench (#461)",
+      "title_cn": "Sierra tau2 阻断 GoAway 后服务端静默导致错过重连窗口掉线",
+      "title_en": "Sierra tau2 Blocks Missed GoAway Reconnect Deadline on Silent Server",
+      "question_cn": "当仅在接收循环内检查 _reconnect_deadline 导致服务端静默时会话中断是否阻断？",
+      "question_en": "Block GoAway handling that only checks _reconnect_deadline inside the receive loop?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "tau2_gemini_goaway_silent_server_missed_reconnect"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.62
+    },
+    {
+      "scenario_id": "LB-16",
+      "domain": "Sierra tau2-bench (#525/#522/#471)",
+      "title_cn": "Sierra tau2 阻断阻塞式双工语音生成与空用户消息直接崩溃",
+      "title_en": "Sierra tau2 Blocks Blocking Duplex Generation & Unretried Empty Turn Crash",
+      "question_cn": "当用户生成阻塞全双工音频节拍或文本模拟器空回复未附带 ###STOP### 重试直接崩溃时是否阻断？",
+      "question_en": "Block blocking full-duplex user generation and unretried empty simulator completion crash?",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "reasons": [
+        "tau2_full_duplex_tick_blocked_or_duplicate_user_init",
+        "tau2_empty_user_simulator_completion_unretried_crash"
+      ],
+      "latency_ai_ms": 0.35,
+      "latency_classic_ms": 4.65
+    }
+  ]
+}

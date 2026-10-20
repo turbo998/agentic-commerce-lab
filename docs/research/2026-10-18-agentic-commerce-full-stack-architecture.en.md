@@ -105,6 +105,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§73.2**: ACP Mandatory POST Idempotency (`#121`), `/.well-known/acp.json` Discovery (`#137`), `sale` Extension & `DiscountsResponse.rejected[]` (`#129`, `#123`) & Schema Alignment (`#262`, `#249`, `#214`, `#116`).
   - **§73.3**: Google AP2 RFC 8785 JCS Cart-to-Payment Hash (`#253`), KB-SD-JWT Per-Hop & Terminal `aud`/`nonce` (`#342`, `#326`, `#313`), Immediate Execution Window (`#318`), Budget Major-vs-Minor Units (`#340`) & Coinbase x402 Stream Cloning / Multi-Rail `accepts` / Signer `.address` (`#323`, `#306`, `#297`, `#277`).
   - **§73.4**: Sierra $\tau$-bench 2.0 Gemini 8kHz Telephony & SlidingWindow (`#544`, `#511`, `#510`, `#509`), Silent `GoAway` Reconnect Deadline (`#461`), Full-Duplex Nonblocking User Generation (`#525`, `#522`) & Empty Turn Retry (`#471`).
+- **§74 (Stage 75 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`LB-01..LB-16`)**: `lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 
