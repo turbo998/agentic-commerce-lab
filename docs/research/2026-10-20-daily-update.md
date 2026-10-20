@@ -172,6 +172,21 @@
   - 单元测试：[`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py)（全仓库 **363/363** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/report.json)
 
+---
+
+## Stage 66：UCP 永久链接 `ucp/version` 控制参数（`#793`）与 `TokenCredential` 上下文透传 / 状态绑定 Cart `Offer` / 购物车终态 / OpenAPI `securitySchemes`（`#792`/`#773`/`#740`/`#730`/`#719`/`#716`）、ACP `session_context` 遥测统一（`#238`）与 `app_links` 内嵌深链 / 结账后订单 3 字段守恒 / 卖家侧托管支付（`#237`/`#232`/`#149`/`#114`/`#111`）、Google AP2 `(type, id)` 支付工具二元组匹配（`#301`）与 `delegate-SD-JWT` 黄金向量 / TypeScript-Zod 收据 `oneOf` 必填项（`#307`/`#305`/`#216`）、以及 Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` 中止归类（`#548`）与代码块 JSON 解析 / 检查点延迟删除 / 97 个银行任务同步（`#562`/`#533`/`#606`/`#602`/`#596`）（中英双语）
+
+- **一手协议与上游代码审计**：
+  1. **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**：PR `#793`（携带 UCP 字段路径查询参数的购物永久链接必须包含唯一 `ucp/version=YYYY-MM-DD` 控制参数、严禁预发布标识符、解析后消费控制参数禁泄漏至重定向 URL，且浏览器导航严禁返回 JSON `version_unsupported` 错误）、PR `#792`（在 `TokenCredential` 中透传可选 `binding` 与 `identity` 上下文，处理器比对签发记录且严禁将 `identity` 当作调用方认证）、PR `#773`（在 Cart `actions` 映射中表达状态绑定 `Offer`、禁平行 `offers.available[]` 数组，并绑定 `applies_to.cart_id` + `applies_to.state_ref` 与不可变 `revision`）、PR `#740`（新增不可变购物车终态 `ordered`/`canceled`/`expired`）、PR `#730`（`action.ready` 成功分支 `maxProperties: 0` 仅接受 `{}`）、PR `#719`（`com.mercadopago.shopping.digital_delivery` 挂载于持久化 `Order` 且仅存 `reference` + `lookup` 指针、禁缓存可变余额且交付不等于资金结算）与 PR `#716`（OpenAPI 3.1 通过 `components.securitySchemes` 声明认证并移除被规范忽略的 `Authorization`/`Accept`/`Content-Type`/`X-API-Key` 请求头参数）。
+  2. **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#238`（将原始买家/设备遥测对象统一命名为 `session_context` 并消除与 `delegate_payment.risk_signals` 标准化欺诈评估数组的命名冲突）、PR `#237`（`Product`/`Variant` 优先级 `app_links` 原生/内嵌应用深链及向规范 `url` 的安全回退）、PR `#232`（结账后订单 3 字段数量守恒 `ordered == fulfilled + canceled`、`returned <= fulfilled` 及订单级 `completed` 状态去重载）以及 PR `#149`/`#114`/`#111`（`content_attribution` 引用 URL 归因、`dev.acp.seller_backed.*` 卖家侧托管支付免原始凭证传输与积分余额校验，以及 `x402` 加密货币 Facilitator 验签结算）。
+  3. **Google Agent Payments Protocol (`google-agentic-commerce/AP2`)**：PR `#301`（`AllowedPaymentInstrumentEvaluator` 必须同时匹配 `(type, id)` 二元组，阻断同 `id="pi-1"` 但不同 `type="bank" != "card"` 的支付工具越权通过）、PR `#307`（固化 4 组 `delegate_sd_jwt_vectors.json` 黄金向量的线格式不变量：$N$ 段委托链必含 $N-1$ 个 `~~` 分隔符、以 `~` 结尾且通过 JWS 验签）、PR `#305`（`@ap2-protocol/sdk` TypeScript/Zod 收据根级 `oneOf` 分支必填项保留）与 PR `#216`（`ghost-protocol` Base 主网 `8453` EIP-712 非托管自治基础设施 `IntentMandate` 月度 USDC 限额门禁）。
+  4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#548`（在 `initialize()`、`step()` 与 `_process_participant` 中将用户模拟器 `###OUT-OF-SCOPE###` 优先于 `###STOP###` 归类为 `TerminationReason.OUT_OF_SCOPE` 并按规则 5 判 `0.0` 分）、PR `#562`（NL 断言评估器通过 `extract_json_from_llm_response` 解析 Markdown 代码块包裹的 JSON 并对损坏 JSON 保持抛错）、PR `#533`（目录格式检查点替换时延迟至新轨迹写入并 `os.replace` 成功后才删除旧轨迹与索引）及 PR `#606`/`#602`/`#596`（同步 `banking_knowledge/tasks.json` 全部 97 个聚合任务定义并补齐任务 `102` 缺失的 `NL_ASSERTION`、强制航空域 `user_id` 全小写、以及校验中国高校教务双控域 `campus` 的 `v1.0.1` `[DB, COMMUNICATE]` + `env_assertions` 评分基线）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py`](../../lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py)
+  - 单元测试：[`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py)（全仓库 **371/371** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§65)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+
 
 
 

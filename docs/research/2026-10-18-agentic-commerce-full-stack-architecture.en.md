@@ -72,5 +72,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§63.4**: Sierra $\tau$-bench 2.0 Incomplete Gold DB State Withdrawal (`#580`), NL-Judge Verdict Count & Contentless Turn Filtering (`#581`/`#584`), Separate `evaluator_cost` Accounting (`#593`), Telecom `check_status_bar` Grounding (`#600`) & Sandbox `srt` `SIGTERM` Cleanup (`#588`).
 - **§64 (Stage 65 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SL-01..SL-16`)**: `lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§65 (Stage 66 — Bilingual Chinese + English)**:
+  - **§65.1**: UCP Permalink `ucp/version` Control Parameter (`#793`), `TokenCredential` `binding`/`identity` Context (`#792`), State-Bound Cart `Offer` in `actions` (`#773`), Terminal Cart `status` (`#740`), `action.ready` `maxProperties: 0` (`#730`), `digital_delivery` Order Pointer (`#719`) & OpenAPI 3.1 `securitySchemes` (`#716`).
+  - **§65.2**: ACP `session_context` Telemetry Unification (`#238`), Embedded `app_links` Deep Links (`#237`), Post-Checkout 3-Field Order Alignment (`#232`) & Seller-Backed / `x402` Crypto Handlers (`#149`, `#114`, `#111`).
+  - **§65.3**: Google AP2 `(type, id)` Allowed Payment Instrument Matching (`#301`), Versioned `delegate-SD-JWT` Golden Vectors (`#307`) & TypeScript/Zod Receipt `oneOf` Branch Invariants (`#305`, `#216`).
+  - **§65.4**: Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` Abort Classification (`#548`), Fenced Markdown JSON NL-Judge Parsing (`#562`), Deferred Checkpoint Unlink (`#533`) & Banking `tasks.json` / Airline `user_id` / `campus` Domain Invariants (`#606`, `#602`, `#596`).
+
 
 
