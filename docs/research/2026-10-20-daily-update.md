@@ -488,6 +488,15 @@
   - 单元测试：[`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py)（全仓库 **474/474** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/report.json)
 
+---
+
+## Stage 88：UCP 身份绑定 OAuth 2.0 能力级 Scope 与 Webhook/订单签名头（`#354`/`#353`/`#342`/`#370`）、ACP 扩展框架 JSONPath 与增强结账（`#89`/`#83`）、Coinbase x402 EIP-712 域映射与 `@x402/base` 网络边界（`#324`/`#312`/`#229`）及 Sierra $\tau$-bench 2.0 多语种裁判与榜单指标门禁（`#348`/`#352`/`#342`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py)
+  - 单元测试：[`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py)（全仓库 **482/482** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§87)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

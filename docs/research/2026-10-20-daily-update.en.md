@@ -488,6 +488,15 @@
   - Unit Tests: [`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py) (**474/474** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/report.json)
 
+---
+
+## Stage 88: UCP Identity Linking OAuth 2.0 Capability Scopes & Order/Webhook Headers (`#354`/`#353`/`#342`/`#370`), ACP Extensions JSONPath & Enhanced Checkout (`#89`/`#83`), Coinbase x402 EIP-712 Domain Mapping & `@x402/base` Scoping (`#324`/`#312`/`#229`), and Sierra $\tau$-bench 2.0 Multilingual Judge & Submission Metric Gate (`#348`/`#352`/`#342`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../lab/ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py)
+  - Unit Tests: [`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_guard.py) (**482/482** total unit tests passing)
+  - Bilingual Architecture Reference (§87): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
