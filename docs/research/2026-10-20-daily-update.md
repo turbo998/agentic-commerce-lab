@@ -298,6 +298,20 @@
   - 单元测试：[`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py)（全仓库 **404/404** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/report.json)
 
+---
+
+## Stage 74：UCP 住宿预订能力/跨行业令牌绑定/位置空间关系/约束路径寻址、ACP 强制 POST 幂等与 `/.well-known/acp.json` 发现、Google AP2 RFC 8785 JCS 购物车哈希/KB-SD-JWT 逐跳校验与 Coinbase x402 流克隆、以及 Sierra $\tau$-bench 2.0 Gemini 8kHz 原生电话流与静默 `GoAway` 重连确定性护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 住宿预订能力与三态取消政策（`#780`）、跨行业令牌绑定与参与方授权分离（`#762`/`#746`）、位置空间关系与自描述设施（`#766`/`#765`/`#753`）及请求约束外层 `path` 寻址（`#757`/`#744`）**：`dev.ucp.lodging.booking` 引入复合住宿绑定 `stays[]`、双层住客池 `guests[]` / `guest_assignments[]` 与三态取消政策 `dev.ucp.lodging.policy.cancellation`；`common/types/binding.json` 将资源绑定收敛为 `{type, id}` 并与调用方 `identity` 授权解耦；Location 将 `distance`/`serves` 移至顶层、以 `filters.items[]` 替代状态库存过滤并要求 `amenities` 携带非空文本描述；Request Constraints 新增仅外层 RFC 9535 `path` 与 `anyOf`。
+  2. **ACP 强制 POST 幂等性保证（`#121`）、`/.well-known/acp.json` 发现文档（`#137`）、`sale` 促销扩展与 `discounts.rejected[]`（`#129`/`#123`）及 Schema 类型对齐（`#262`/`#249`/`#214`/`#116`）**：POST 强制 `Idempotency-Key`（定义 `400`/`409`/`422` 错误码与 `Idempotent-Replayed` 响应头），新增免认证 `/.well-known/acp.json`，对齐 `DiscountsResponse.rejected[]`、3DS `frictionless.type == "low_risk"`、`Message*` 严格字段、整数 `Refund.amount`、空 `risk_signals: []` 与 8 位 `iin`。
+  3. **Google AP2 RFC 8785 JCS 购物车哈希绑定（`#253`）、KB-SD-JWT 逐跳与终端 `aud`/`nonce` 绑定（`#342`/`#326`/`#313`）、即时支付时间窗与主次预算单位（`#318`/`#340`）及 Coinbase x402 流克隆/多轨 `accepts`/签名器地址校验（`#323`/`#306`/`#297`/`#277`）**：`PaymentMandateContents` 绑定剥离 `null` 后的 JCS `cart_mandate_hash`；KB-SD-JWT 在每一跳与终端跳强校验 `aud`/`nonce`；缺省 `execution_date` 按当前 UTC 时间校验 `[not_before, not_after]`；x402 在 402 探测前克隆 `ReadableStream`、跳过未知 CAIP-2 `accepts[]` 轨道并强校验顶层 `.address`。
+  4. **Sierra $\tau$-bench 2.0 Gemini 8kHz 原生电话采样与 `SlidingWindow`（`#544`/`#511`/`#510`/`#509`）、静默 `GoAway` 重连截止时间监控（`#461`）、全双工非阻塞语音生成（`#525`/`#522`）与文本模拟器空回复重试（`#471`）**：默认 8kHz 直传与 `START_SENSITIVITY_HIGH`，服务端静默时主动触发 `GoAway` 重连，非阻塞生成用户语音，并在文本模式模拟器返回空消息时附带 `###STOP###` 提示重试一次。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`](../../lab/ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py)
+  - 单元测试：[`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_guard.py)（全仓库 **412/412** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§73)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
