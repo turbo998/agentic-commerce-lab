@@ -234,6 +234,20 @@
   - 单元测试：[`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py)（全仓库 **384/384** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/report.json)
 
+---
+
+## Stage 70：UCP 订单 Webhook 签名门禁与保留 `ucp` 命名空间/`map_order`/`request_constraints`/销售基准步数、ACP `protocol.extensions` 与逐行限时报价 `valid_until`/`Merchant-Signature` 防重放/11 种会话状态/MCP 绑定、Google AP2 `FailureResponse` 与 `PaymentReceipt`/Verifiable Intent/微支付状态通道、以及 Sierra $\tau$-bench 2.0 OpenAI Live 打断信号与结果安全重试/Pydantic 强转/`llm_agent_solo_gt` 重放/`pass^k` 分母护栏
+
+- **一手协议与基准源审计（32 个新 PR/规范）**：
+  - **UCP (`Universal-Commerce-Protocol/ucp`)**：PR `#659`（将 `webhook-id` 与 `webhook-timestamp` 纳入 RFC 9421 闭集必签门禁并禁止订单 Webhook JSON 正文残留 `event_id`/`created_time`）、PR `#658`/`#657`（`ucp.capabilities` 必须为携带 `schema` URL 的字典映射；在所有结构化对象作用域保留 `ucp` 命名空间并纳入 AP2 `merchant_authorization` JCS 签名覆盖，新增仅限响应携带的 `ucp.map_order`）、PR `#655`/`#626`（响应携带的 `ucp.request_constraints` 请求约束语法及可用支付工具必填 RFC 9535 JSONPath `path`）、PR `#653`（整数步数 `quantity` 与 `quantity_unit` `10^-scale` 销售基准算术）及 PR `#642`/`#622`/`#596`（`context.location` 优先级、MCP `-32004` `rate_limit_exceeded` 与反滥用信号）。
+  - **ACP (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#178`（将扩展声明从 `capabilities.extensions` 迁移至 `protocol.extensions`）、PR `#165`（`SEP #164`：逐行商品限时报价 `valid_until` 与 `offer_valid`/`offer_expired` 状态独立于会话级 `quote_expires_at` 校验）、PR `#160`（Stripe 对齐的 `Merchant-Signature: t=<unix_seconds>,v1=<64_hex>` HMAC-SHA256 签名与 300 秒防重放窗口）、PR `#144`/`#162`/`#161`（完整 11 种结账会话状态、数字商品履约禁标 `shipped`、委托支付 401/500/503 错误枚举）及 PR `#139`/`#130`/`#125`（5 个 MCP 结账工具绑定要求 `arguments.meta.api_version` 与 `arguments.payload`）。
+  - **Google AP2 (`google-agentic-commerce/AP2`)**：PR `#131`/`#132`（`ap2.errors.FailureResponse` 错误分类与恢复动作映射，在要求 `USER_CONFIRMATION_REQUIRED` 或 `NEW_MANDATE_REQUIRED` 时阻断智能体静默重试）、PR `#110`/`#128`/`#92`（Section 7.1 `PaymentReceipt` 对 `artifacts is None` 的空安全提取、跨语言 Mandate JSON Schema `$schema`/`$id` 校验与 PCI/SOX/GDPR 审计日志脱敏）以及 PR `#144`/`#83`（Verifiable Intent 三跳 SD-JWT 委托链故障闭合验签与微支付状态通道累计存款上限及单调递增序号防重放）。
+  - **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#528`（OpenAI Live `session.input_transcript.delta` 映射为 `speech_started=True` 且不误置 `was_truncated=True`）、PR `#520`（全双工幻觉重试结果安全：校验 `hallucinations` 为列表、对最终重试执行评审、仅写入选中轨迹并保留完整工具结果）、PR `#516`/`#513`（在工具调用前通过 Pydantic 将浮点编码整数 `5.0 -> 5` 强制转换以防止黄金 DB 哈希漂移）、PR `#508`（重放评分时识别 `"llm_agent_solo_gt"` 为 Solo 模式以加载 `TelecomUserTools`）、PR `#498`（按 `.value` 过滤基础设施错误并在 `pass^k` 分母中保留全故障任务记 `0` 分）以及 PR `#484`（`close_bank_account_7392` 关户原因固定枚举校验以防自由文本污染 DB 哈希）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py`](../../lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py)
+  - 单元测试：[`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py)（全仓库 **392/392** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§69)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
