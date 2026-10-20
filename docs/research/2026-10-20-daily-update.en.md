@@ -533,6 +533,15 @@
   - Unit Tests: [`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py) (**502/502** total unit tests passing)
   - Bilingual Architecture Reference (§91): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 93: 16-Scenario (`FS-01..FS-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 92)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py`](../../lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py)
+  - Unit Tests: [`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py) (**504/504** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/report.json)
+
 
 
 

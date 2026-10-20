@@ -168,6 +168,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§91.2**: ACP Consolidated `AppliedDiscount` (`#125`), `sale` Extension EU Omnibus (`#123`), and x402-Backed Crypto SPT (`#111`).
   - **§91.3**: Google AP2 Section 7.1 `PaymentReceipt` (`#110`) & Mandate Lifecycle Audit Log (`#92`).
   - **§91.4**: Sierra $\tau$-bench 2.0 Airline Seat Restoration on Cancellation (`#362`), `CONTEXT_WINDOW_EXCEEDED` Non-Retry Classification (`#360`), Reasoning `temperature` Drop (`#358`), and Cost-per-Resolution (`#364`).
+- **§92 (Stage 93 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`FS-01..FS-16`)**: `lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.33 ms` vs. `4.71 ms`, `14.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

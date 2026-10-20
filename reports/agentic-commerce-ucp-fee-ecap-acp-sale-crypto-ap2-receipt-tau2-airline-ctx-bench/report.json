@@ -1,0 +1,304 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench",
+  "stage": "Stage 93",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "summary": {
+    "total_scenarios": 16,
+    "ai_native_passed": 16,
+    "ai_native_accuracy_pct": 100.0,
+    "classic_3tier_passed": 4,
+    "classic_3tier_accuracy_pct": 25.0,
+    "perturbation_consistent": 16,
+    "perturbation_consistency_pct": 100.0,
+    "median_latency_ai_ms": 0.33,
+    "median_latency_classic_ms": 4.71,
+    "speedup_factor": 14.3
+  },
+  "scenarios": [
+    {
+      "id": "FS-01",
+      "domain": "ucp",
+      "title_cn": "UCP 合规基线：只读费用分摊 + ECaP postMessage 鉴权 + ec.totals.change",
+      "title_en": "UCP Nominal: Read-Only Fee Allocation + ECaP postMessage Auth + ec.totals.change",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "violations": [],
+      "latency_ai_ms": 0.32,
+      "latency_classic_ms": 4.68
+    },
+    {
+      "id": "FS-02",
+      "domain": "ucp",
+      "title_cn": "UCP #245 阻断：客户端伪造只读 fees 字段 + 零金额减免费用塞入 applied[]",
+      "title_en": "UCP #245 Block: Client-Injected Read-Only fees Field + Zero-Amount Waived Fee in applied[]",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "UCP_FEE_READONLY_CLIENT_FIELD_NOT_ALLOWED",
+        "UCP_FEE_NON_POSITIVE_OR_WAIVED_AMOUNT_FORBIDDEN:index_0"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.7
+    },
+    {
+      "id": "FS-03",
+      "domain": "ucp",
+      "title_cn": "UCP #245 阻断：费用分摊 JSONPath 语法非法且分摊金额总和与总额不符",
+      "title_en": "UCP #245 Block: Invalid RFC 9535 Allocation JSONPath & Allocation Sum Mismatch",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "UCP_FEE_INVALID_RFC9535_ALLOCATION_PATH:/line_items/0",
+        "UCP_FEE_ALLOCATION_SUM_MISMATCH:300!=500"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.72
+    },
+    {
+      "id": "FS-04",
+      "domain": "ucp",
+      "title_cn": "UCP #244/#272 阻断：ECaP continue_url 查询参数泄露 access_token 且越界声明扩展",
+      "title_en": "UCP #244/#272 Block: ECaP continue_url Query Token Leak & Out-of-Scope Extension",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "UCP_ECAP_CONTINUE_URL_AUTH_QUERY_LEAK:access_token",
+        "UCP_ECAP_POSTMESSAGE_AUTH_HANDSHAKE_REQUIRED",
+        "UCP_ECAP_EXTENSIONS_OUT_OF_SCOPE_FORBIDDEN",
+        "UCP_ECP_TOTALS_CHANGE_EMPTY_TOTALS"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.71
+    },
+    {
+      "id": "FS-05",
+      "domain": "acp",
+      "title_cn": "ACP 合规基线：合并 AppliedDiscount + 欧盟 Omnibus 30 天最低价 + x402 加密 SPT",
+      "title_en": "ACP Nominal: Consolidated AppliedDiscount + EU Omnibus 30-Day Lowest Price + x402 Crypto SPT",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "violations": [],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.74
+    },
+    {
+      "id": "FS-06",
+      "domain": "acp",
+      "title_cn": "ACP #125 阻断：残留 automatic 字段、非法 bogo 枚举与目录降价伪装折扣",
+      "title_en": "ACP #125 Block: Removed automatic Field, Invalid bogo Enum & Catalog Reduction as Discount",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "ACP_DEPRECATED_LINE_ITEM_DISCOUNT_DETAILS_FORBIDDEN:li_1",
+        "ACP_APPLIED_DISCOUNT_REMOVED_AUTOMATIC_FIELD_FORBIDDEN",
+        "ACP_APPLIED_DISCOUNT_INVALID_TYPE_ENUM:bogo",
+        "ACP_CATALOG_PRICE_REDUCTION_AS_APPLIED_DISCOUNT_FORBIDDEN"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.69
+    },
+    {
+      "id": "FS-07",
+      "domain": "acp",
+      "title_cn": "ACP #123 阻断：欧盟 Omnibus 最低价周期不足 30 天且促销码强加于 MAP 禁折商品",
+      "title_en": "ACP #123 Block: EU Omnibus Period < 30 Days & Promo Code Applied to MAP Ineligible Item",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "ACP_SALE_ID_NOT_IN_SESSION_REGISTRY:sale_unregistered",
+        "ACP_SALE_COMPARE_AT_NOT_GREATER_THAN_UNIT_AMOUNT:li_map",
+        "ACP_SALE_EU_OMNIBUS_30DAY_LOWEST_PRICE_REQUIRED:li_map",
+        "ACP_DISCOUNT_CODE_APPLIED_TO_INELIGIBLE_ITEM:li_map"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.73
+    },
+    {
+      "id": "FS-08",
+      "domain": "acp",
+      "title_cn": "ACP #111 阻断：x402 加密支付授权金额篡改、过期、Nonce 重放且 Facilitator 验签失败",
+      "title_en": "ACP #111 Block: x402 Crypto Amount Mismatch, Expired validBefore, Nonce Replay & Bad Signature",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "ACP_X402_AMOUNT_ALLOWANCE_MISMATCH:15000!=10000",
+        "ACP_X402_AUTHORIZATION_EXPIRED",
+        "ACP_X402_NONCE_REPLAY_DETECTED",
+        "ACP_X402_FACILITATOR_SIGNATURE_INVALID"
+      ],
+      "latency_ai_ms": 0.32,
+      "latency_classic_ms": 4.7
+    },
+    {
+      "id": "FS-09",
+      "domain": "ap2",
+      "title_cn": "Google AP2 合规基线：第 7.1 节 PaymentReceipt 完整绑定 + 四阶段脱敏审计日志",
+      "title_en": "Google AP2 Nominal: Section 7.1 PaymentReceipt Binding + 4-Stage Masked Audit Log",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "violations": [],
+      "latency_ai_ms": 0.31,
+      "latency_classic_ms": 4.65
+    },
+    {
+      "id": "FS-10",
+      "domain": "ap2",
+      "title_cn": "Google AP2 #110 阻断：PaymentReceipt 缺失 cart_mandate_id 且结算金额偏离授权金额",
+      "title_en": "Google AP2 #110 Block: PaymentReceipt Missing cart_mandate_id & Settlement Amount Drift",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "AP2_PAYMENT_RECEIPT_MISSING_FIELD:cart_mandate_id",
+        "AP2_PAYMENT_RECEIPT_AMOUNT_MISMATCH:16500!=14500"
+      ],
+      "latency_ai_ms": 0.32,
+      "latency_classic_ms": 4.68
+    },
+    {
+      "id": "FS-11",
+      "domain": "ap2",
+      "title_cn": "Google AP2 #110 阻断：PaymentReceipt 非法状态枚举且缺失通道清算凭据 rail_reference",
+      "title_en": "Google AP2 #110 Block: Invalid PaymentReceipt Status Enum & Missing rail_reference",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "AP2_PAYMENT_RECEIPT_MISSING_FIELD:rail_reference",
+        "AP2_PAYMENT_RECEIPT_INVALID_STATUS:COMPLETED_OK"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.71
+    },
+    {
+      "id": "FS-12",
+      "domain": "ap2",
+      "title_cn": "Google AP2 #92 阻断：Mandate 审计日志跳过验签阶段且泄露未脱敏卡号 PAN/PII",
+      "title_en": "Google AP2 #92 Block: Mandate Audit Log Skips Verification Stage & Leaks Unmasked PAN/PII",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "AP2_AUDIT_LOG_INCOMPLETE_MANDATE_LIFECYCLE",
+        "AP2_AUDIT_LOG_PCI_GDPR_UNMASKED_PII_LEAK"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.72
+    },
+    {
+      "id": "FS-13",
+      "domain": "tau2",
+      "title_cn": "Sierra τ-bench 2.0 合规基线：航司退票释放座位 + 上下文超限零重试隔离 + 推理模型剥离 temperature",
+      "title_en": "Sierra τ-bench 2.0 Nominal: Seat Release + Context-Window Zero-Retry + Reasoning Temp Drop",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "perturbation_consistent": true,
+      "violations": [],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.73
+    },
+    {
+      "id": "FS-14",
+      "domain": "tau2",
+      "title_cn": "Sierra τ-bench #362 阻断：航司取消多航段订单后未归还座位库存导致锁座泄漏",
+      "title_en": "Sierra τ-bench #362 Block: Airline Reservation Cancellation Fails to Restore Segment Seats",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "TAU2_AIRLINE_CANCEL_SEAT_INVENTORY_NOT_RESTORED:HAT009"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.7
+    },
+    {
+      "id": "FS-15",
+      "domain": "tau2",
+      "title_cn": "Sierra τ-bench #360 阻断：ContextWindowExceededError 盲目重试 3 次并计入有效评测分母",
+      "title_en": "Sierra τ-bench #360 Block: ContextWindowExceededError Retried 3x & Included in Denominator",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "TAU2_CONTEXT_WINDOW_REDUNDANT_SIM_RETRY_FORBIDDEN",
+        "TAU2_CONTEXT_WINDOW_MISLABELED_REASON:INFRASTRUCTURE_ERROR",
+        "TAU2_CONTEXT_WINDOW_MUST_EXCLUDE_FROM_DENOMINATOR"
+      ],
+      "latency_ai_ms": 0.34,
+      "latency_classic_ms": 4.75
+    },
+    {
+      "id": "FS-16",
+      "domain": "tau2",
+      "title_cn": "Sierra τ-bench #358/#364 阻断：推理模型未剥离 temperature 参数且退换货评测缺失 supervisor_tokens",
+      "title_en": "Sierra τ-bench #358/#364 Block: Reasoning Model Keeps temperature & Missing supervisor_tokens",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "violations": [
+        "TAU2_REASONING_MODEL_TEMPERATURE_NOT_DROPPED",
+        "TAU2_RETURN_EXCHANGE_TOKEN_USAGE_INCOMPLETE"
+      ],
+      "latency_ai_ms": 0.33,
+      "latency_classic_ms": 4.71
+    }
+  ]
+}

@@ -1174,6 +1174,11 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_airline_seat_release_and_context_window_guard` enforces Sierra $\tau$-bench 2.0 PR `#362` (`cancel_reservation` must restore passenger seats to every flight segment), PR `#360` (`ContextWindowExceededError` stops immediately with zero full-sim retries, records `CONTEXT_WINDOW_EXCEEDED`, and is excluded from evaluable metric denominators), PR `#358` (drops unsupported `temperature` parameter on retry for reasoning models), and PR `#364` (tracks `agent_tokens`, `supervisor_tokens`, and `user_sim_tokens` for cost-per-resolved-case).
 - **中文**: `validate_tau2_airline_seat_release_and_context_window_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#362`（取消航司预订必须按乘机人数归还所有航段座位库存）、PR `#360`（`ContextWindowExceededError` 立即终止且零重试，标记为 `CONTEXT_WINDOW_EXCEEDED` 并从有效评测分母中剔除）、PR `#358`（推理模型拒绝 `temperature=0.0` 时自动剥离重试）与 PR `#364`（退换货评测全链路 Token 与单均解决成本追踪）。
 
+## 92. Stage 93: 16-Scenario (`FS-01..FS-16`) Bilingual 7-Card 4:5 Benchmark Suite for Stage 92 / 第九十二节：覆盖 Stage 92 的 16 场景中英双语 7-Card 4:5 视觉基准评测报告
+
+- **English**: `lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py` evaluates 16 deterministic scenarios (`FS-01..FS-16`: 4 nominal admission baselines and 12 protocol/settlement/evaluation boundary attacks) across UCP `#245`/`#244`/`#272`, ACP `#125`/`#123`/`#111`, Google AP2 `#110`/`#92`, and Sierra $\tau$-bench 2.0 `#362`/`#360`/`#358`/`#364`. AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal consistency vs. **4/16 (25.0%)** for the Classic 3-Tier baseline (+75.0 pts safety gain), with **0.33 ms vs. 4.71 ms median latency (14.3x speedup)**.
+- **中文**: `lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py` 针对 Stage 92 四大护栏域构建 `FS-01..FS-16` 共 16 个评测场景（4 个合规基线 + 12 个协议/清算/评测边界越权场景）。AI-Native 确定性护栏实现 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性，显著优于经典三层架构的 **4/16（25.0%）**（+75.0 百分点安全性提升），中位延迟 **0.33 ms vs. 4.71 ms（14.3x 加速）**，并生成中英双语自包含 7-Card 4:5 报告（`reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/{report.json,index.html,index.en.html}`）。
+
 
 
 

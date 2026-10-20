@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 93 · UCP 费用/ECaP、ACP 促销/x402 加密 SPT、AP2 收据与 τ-bench 退票/上下文分类 7-Card 基准报告</title>
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1440px; margin: 0 auto; }
+.card { aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
+h1, h2, h3 { margin: 0 0 8px 0; }
+.tag { font-size: 12px; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th, td { border-bottom: 1px solid #334155; padding: 4px; text-align: left; }
+pre { background: #0F172A; padding: 10px; border-radius: 8px; font-size: 11px; overflow: auto; }
+.bar-row { margin: 6px 0; }
+.bar { height: 12px; background: #3B82F6; border-radius: 4px; }
+.bar-base { height: 12px; background: #CBD5E1; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="tag">1 / 7 · HANDS-ON · AGENT COMMERCE PROTOCOL GUARDRAILS</div>
+      <h2>Stage 93 · UCP 费用/ECaP、ACP 促销/x402 加密 SPT、AP2 收据与 τ-bench 退票/上下文分类 7-Card 基准报告</h2>
+      <p>16/16 (100.0%) AI-Native Guardrail Accuracy vs. 4/16 (25.0%) Classic 3-Tier Web (+75.0 pts)</p>
+    </div>
+    <pre>{
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_accuracy_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_accuracy_pct": 25.0,
+  "perturbation_consistent": 16,
+  "perturbation_consistency_pct": 100.0,
+  "median_latency_ai_ms": 0.33,
+  "median_latency_classic_ms": 4.71,
+  "speedup_factor": 14.3
+}</pre>
+    <div>Provenance: measured deterministic verifier (agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench)</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">2 / 7 · SCENARIO: FS-08 (ACP #111 x402 CRYPTO SPT)</div>
+      <h2>x402 Crypto SPT Rejects Amount Drift, Expired validBefore & Nonce Replay in 0.32 ms</h2>
+      <p>Task type: choice · Action: Send to a human / Fail-closed block</p>
+    </div>
+    <pre>{
+  "id": "FS-08",
+  "domain": "acp",
+  "title_cn": "ACP #111 阻断：x402 加密支付授权金额篡改、过期、Nonce 重放且 Facilitator 验签失败",
+  "title_en": "ACP #111 Block: x402 Crypto Amount Mismatch, Expired validBefore, Nonce Replay & Bad Signature",
+  "expected_allowed": false,
+  "ai_native_allowed": false,
+  "ai_native_passed": true,
+  "classic_3tier_allowed": true,
+  "classic_3tier_passed": false,
+  "perturbation_consistent": true,
+  "violations": [
+    "ACP_X402_AMOUNT_ALLOWANCE_MISMATCH:15000!=10000",
+    "ACP_X402_AUTHORIZATION_EXPIRED",
+    "ACP_X402_NONCE_REPLAY_DETECTED",
+    "ACP_X402_FACILITATOR_SIGNATURE_INVALID"
+  ],
+  "latency_ai_ms": 0.32,
+  "latency_classic_ms": 4.7
+}</pre>
+    <div>Confidence: 1.00 · Deterministic cryptographic & schema verification</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">3 / 7 · WHAT I TESTED</div>
+      <h2>16-Scenario Evaluation Matrix (FS-01..FS-16): 16/16 AI-Native vs. 4/16 Classic (12 ✕ Misses)</h2>
+    </div>
+    <table>
+      <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+      <tbody><tr><td><code>FS-01</code></td><td>UCP 合规基线：只读费用分摊 + ECaP postMessage 鉴权 + ec.totals.change</td><td>Admit</td><td>PASS</td></tr>
+<tr><td><code>FS-02</code></td><td>UCP #245 阻断：客户端伪造只读 fees 字段 + 零金额减免费用塞入 applied[]</td><td>Block (UCP_FEE_READONLY_CLIENT_FIELD_NOT_ALLOWED)</td><td>PASS</td></tr>
+<tr><td><code>FS-03</code></td><td>UCP #245 阻断：费用分摊 JSONPath 语法非法且分摊金额总和与总额不符</td><td>Block (UCP_FEE_INVALID_RFC9535_ALLOCATION_PATH:/line_items/0)</td><td>PASS</td></tr>
+<tr><td><code>FS-04</code></td><td>UCP #244/#272 阻断：ECaP continue_url 查询参数泄露 access_token 且越界声明扩展</td><td>Block (UCP_ECAP_CONTINUE_URL_AUTH_QUERY_LEAK:access_token)</td><td>PASS</td></tr>
+<tr><td><code>FS-05</code></td><td>ACP 合规基线：合并 AppliedDiscount + 欧盟 Omnibus 30 天最低价 + x402 加密 SPT</td><td>Admit</td><td>PASS</td></tr>
+<tr><td><code>FS-06</code></td><td>ACP #125 阻断：残留 automatic 字段、非法 bogo 枚举与目录降价伪装折扣</td><td>Block (ACP_DEPRECATED_LINE_ITEM_DISCOUNT_DETAILS_FORBIDDEN:li_1)</td><td>PASS</td></tr>
+<tr><td><code>FS-07</code></td><td>ACP #123 阻断：欧盟 Omnibus 最低价周期不足 30 天且促销码强加于 MAP 禁折商品</td><td>Block (ACP_SALE_ID_NOT_IN_SESSION_REGISTRY:sale_unregistered)</td><td>PASS</td></tr>
+<tr><td><code>FS-08</code></td><td>ACP #111 阻断：x402 加密支付授权金额篡改、过期、Nonce 重放且 Facilitator 验签失败</td><td>Block (ACP_X402_AMOUNT_ALLOWANCE_MISMATCH:15000!=10000)</td><td>PASS</td></tr>
+<tr><td><code>FS-09</code></td><td>Google AP2 合规基线：第 7.1 节 PaymentReceipt 完整绑定 + 四阶段脱敏审计日志</td><td>Admit</td><td>PASS</td></tr>
+<tr><td><code>FS-10</code></td><td>Google AP2 #110 阻断：PaymentReceipt 缺失 cart_mandate_id 且结算金额偏离授权金额</td><td>Block (AP2_PAYMENT_RECEIPT_MISSING_FIELD:cart_mandate_id)</td><td>PASS</td></tr>
+<tr><td><code>FS-11</code></td><td>Google AP2 #110 阻断：PaymentReceipt 非法状态枚举且缺失通道清算凭据 rail_reference</td><td>Block (AP2_PAYMENT_RECEIPT_MISSING_FIELD:rail_reference)</td><td>PASS</td></tr>
+<tr><td><code>FS-12</code></td><td>Google AP2 #92 阻断：Mandate 审计日志跳过验签阶段且泄露未脱敏卡号 PAN/PII</td><td>Block (AP2_AUDIT_LOG_INCOMPLETE_MANDATE_LIFECYCLE)</td><td>PASS</td></tr>
+<tr><td><code>FS-13</code></td><td>Sierra τ-bench 2.0 合规基线：航司退票释放座位 + 上下文超限零重试隔离 + 推理模型剥离 temperature</td><td>Admit</td><td>PASS</td></tr>
+<tr><td><code>FS-14</code></td><td>Sierra τ-bench #362 阻断：航司取消多航段订单后未归还座位库存导致锁座泄漏</td><td>Block (TAU2_AIRLINE_CANCEL_SEAT_INVENTORY_NOT_RESTORED:HAT009)</td><td>PASS</td></tr>
+<tr><td><code>FS-15</code></td><td>Sierra τ-bench #360 阻断：ContextWindowExceededError 盲目重试 3 次并计入有效评测分母</td><td>Block (TAU2_CONTEXT_WINDOW_REDUNDANT_SIM_RETRY_FORBIDDEN)</td><td>PASS</td></tr>
+<tr><td><code>FS-16</code></td><td>Sierra τ-bench #358/#364 阻断：推理模型未剥离 temperature 参数且退换货评测缺失 supervisor_tokens</td><td>Block (TAU2_REASONING_MODEL_TEMPERATURE_NOT_DROPPED)</td><td>PASS</td></tr></tbody>
+    </table>
+    <div>Threshold gating: 100% deterministic policy compliance required</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">4 / 7 · UNDER THE HOOD</div>
+      <h2>Structured Protocol Input ↓ Deterministic Multi-Spec Verifier (&lt;answer&gt;)</h2>
+    </div>
+    <pre>Input: UCP #245/#244/#272 + ACP #125/#123/#111 + AP2 #110/#92 + tau2 #362/#360/#358/#364</pre>
+    <pre>&lt;answer&gt;allowed=True only when all 4 protocol plane invariants hold&lt;/answer&gt;</pre>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16/16 (100.0%) Key-Order Reversal Perturbation Consistency (0.0 pts Change)</h2>
+    </div>
+    <pre>Original: 16/16 (100.0%) | Reversed Dict Keys: 16/16 (100.0%) | Delta: 0.0 pts</pre>
+    <div>Zero sensitivity to JSON field ordering across all 16 scenarios</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">6 / 7 · LATENCY</div>
+      <h2>0.33 ms Median AI-Native Guardrail vs. 4.71 ms Classic 3-Tier (14.3x Speedup)</h2>
+      <div class="bar-row">AI-Native (0.33 ms)<div class="bar" style="width: 7%"></div></div>
+      <div class="bar-row">Classic 3-Tier (4.71 ms)<div class="bar-base" style="width: 100%"></div></div>
+    </div>
+    <div>Single-pass in-memory verification avoids multi-hop ORM/RPC roundtrips</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="tag">7 / 7 · MY TAKE</div>
+      <h2>✅ Good Fit: Inline Protocol Gateways vs. ⛔ Not For: Unstructured Prompt-Only Checks</h2>
+    </div>
+    <pre>✅ Good fit: UCP Fee/ECaP, ACP EU Omnibus Sale & x402 SPT, AP2 Receipt, tau2 Eval
+⛔ Not for: Replacing on-chain finality or HSM hardware signing</pre>
+    <div>Readiness: 504/504 unit tests passing · Bilingual CN/EN</div>
+  </section>
+</div>
+</body>
+</html>
