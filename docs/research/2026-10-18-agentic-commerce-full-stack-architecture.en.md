@@ -196,6 +196,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§99.2**: ACP Affiliate Attribution Write-Only Transport (`#57`), Merchant 3DS Execution (`#66`), and Hotel Rate Hydration (`#45`).
   - **§99.3**: Google AP2 `open_mandate_hash` RFC 8785 JCS Vectors (`#279`) & High-Entropy `checkout_hash` (`#278`), plus Coinbase `x402` Independent Fact Attestation (`#225`) & Public Facilitator Mainnet Guard (`#206`).
   - **§99.4**: Sierra $\tau$-bench 2.0 Banking Write-Critic & Nested JSON Args (`#513`), `close_bank_account_7392` Fixed-Set Reason (`#484`), Pydantic Kwarg Coercion (`#516`), and `llm_agent_solo_gt` Detection (`#508`).
+- **§100 (Stage 101 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EG-01..EG-16`)**: `lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.30 ms` vs. `4.58 ms`, `15.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

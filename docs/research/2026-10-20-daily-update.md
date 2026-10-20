@@ -605,6 +605,15 @@
   - 单元测试：[`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py)（全仓库 **542/542** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§99)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 101：16 场景（`EG-01..EG-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 100）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py`](../../lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py)（全仓库 **544/544** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/report.json)
+
 
 
 

@@ -605,6 +605,15 @@
   - Unit Tests: [`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py) (**542/542** total unit tests passing)
   - Bilingual Architecture Reference (§99): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 101: 16-Scenario (`EG-01..EG-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 100)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py`](../../lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py)
+  - Unit Tests: [`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_bench.py) (**544/544** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench/report.json)
+
 
 
 

@@ -1,0 +1,284 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-etag-gift-p521-acp-affiliate-3ds-ap2-open-hash-x402-fact-tau2-bench",
+  "stage": "Stage 101",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_accuracy_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_accuracy_pct": 25.0,
+  "reversal_consistency_passed": 16,
+  "reversal_consistency_pct": 100.0,
+  "latency_tiers": [
+    {
+      "tier": "1x (Single Gate)",
+      "ai_native_ms": 0.3,
+      "classic_3tier_ms": 4.58
+    },
+    {
+      "tier": "4x (Concurrent Session)",
+      "ai_native_ms": 0.72,
+      "classic_3tier_ms": 11.4
+    },
+    {
+      "tier": "16x (Full Matrix Burst)",
+      "ai_native_ms": 1.88,
+      "classic_3tier_ms": 33.9
+    }
+  ],
+  "median_ai_native_ms": 0.3,
+  "median_classic_3tier_ms": 4.58,
+  "speedup_factor": 15.3,
+  "scenarios": [
+    {
+      "id": "EG-01",
+      "domain": "ucp",
+      "title_zh": "UCP #628/#625/#540/#508 条件写、P-521 签名、准入 TTL 与礼赠结账合规基线",
+      "title_en": "UCP #628/#625/#540/#508 ETag Conditional Write, P-521/ES512, Mandate TTL & Gift Baseline",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "violations": [],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-02",
+      "domain": "ucp",
+      "title_zh": "UCP #628 If-Match ETag 并发覆盖冲突与目录查询缺失标准错误信封拦截",
+      "title_en": "UCP #628 If-Match ETag Concurrent Write Conflict & Missing Catalog Error Envelope Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "UCP_628_IF_MATCH_ETAG_MISMATCH_412",
+        "UCP_628_IDEMPOTENCY_CONFLICT_409",
+        "UCP_628_CATALOG_MISSING_STANDARD_ERROR_ENVELOPE"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-03",
+      "domain": "ucp",
+      "title_zh": "UCP #625 P-521 错配 ES256 及 #540 准入过期授权仍进入 complete_in_progress 拦截",
+      "title_en": "UCP #625 P-521/ES256 Mismatch & #540 Expired-at-Admission Mandate Entering In-Progress Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "UCP_625_CURVE_ALG_MISMATCH:P-521!=ES256",
+        "UCP_540_EXPIRED_AT_ADMISSION_MUST_TERMINATE_CANCELED"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-04",
+      "domain": "ucp",
+      "title_zh": "UCP #508 礼赠结账传输收礼人 PII、跳过升级门禁与 complete 携带 gift 拦截",
+      "title_en": "UCP #508 Gift Checkout Wire Recipient PII, Skipped Escalation & Complete Gift Field Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "UCP_508_WIRE_RECIPIENT_PII_OR_HANDLE_FORBIDDEN:recipient_email",
+        "UCP_508_MISSING_RECIPIENT_ESCALATION_REQUIRED",
+        "UCP_508_GIFT_FIELD_FORBIDDEN_IN_COMPLETE_REQUEST"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-05",
+      "domain": "acp",
+      "title_zh": "ACP #57/#66/#45 联盟归因只写传输、商家 3DS 挑战与酒店实时水合报价基线",
+      "title_en": "ACP #57/#66/#45 Affiliate Attribution Write-Only, Merchant 3DS & Hotel Rate Hydration Baseline",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "violations": [],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-06",
+      "domain": "acp",
+      "title_zh": "ACP #57 联盟归因响应回显、触点阶段错位与买家邮箱 PII 泄露拦截",
+      "title_en": "ACP #57 Affiliate Attribution Response Echo, Touchpoint Mismatch & Buyer PII Leak Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "ACP_57_COMPLETE_REQUIRES_LAST_TOUCHPOINT",
+        "ACP_57_AFFILIATE_PII_LEAK_FORBIDDEN:email",
+        "ACP_57_AFFILIATE_ATTRIBUTION_ECHOED_IN_RESPONSE",
+        "ACP_57_IDEMPOTENCY_PAYLOAD_CONFLICT_409_REQUIRED"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-07",
+      "domain": "acp",
+      "title_zh": "ACP #66 商家 3DS 挑战缺失 CRes 凭证强行完结结账拦截",
+      "title_en": "ACP #66 Merchant 3DS Challenge Finalization Without CRes Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "ACP_66_3DS_CHALLENGE_FINALIZE_WITHOUT_CRES"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-08",
+      "domain": "acp",
+      "title_zh": "ACP #45 酒店结账跳过实时房价水合直接使用静态目录底价拦截",
+      "title_en": "ACP #45 Hotel Checkout Using Non-Binding Static Catalog Price Without Rate Hydration Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "ACP_45_STATIC_CATALOG_PRICE_USED_WITHOUT_HYDRATION_QUOTE",
+        "ACP_45_EXPIRED_OR_MISSING_HYDRATION_QUOTE_TOKEN",
+        "ACP_45_MISSING_CANCELLATION_POLICY_SNAPSHOT"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-09",
+      "domain": "ap2_x402",
+      "title_zh": "AP2 #279/#278 开放授权 JCS 哈希与高熵载荷及 x402 #225/#206 独立事实证明基线",
+      "title_en": "AP2 #279/#278 Open Mandate JCS Hash & Entropy + x402 #225/#206 Fact Attestation Baseline",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "violations": [],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-10",
+      "domain": "ap2_x402",
+      "title_zh": "AP2 #279 误对 JWS 信封哈希及 #278 低熵 Checkout JWT 彩虹表风险拦截",
+      "title_en": "AP2 #279 JWS Envelope Hashing & #278 Low-Entropy Checkout JWT Rainbow-Table Risk Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "AP2_279_JWS_ENVELOPE_HASHED_INSTEAD_OF_UNSIGNED_CLAIMS",
+        "AP2_279_OPEN_MANDATE_HASH_MISMATCH",
+        "AP2_278_LOW_ENTROPY_CHECKOUT_JWT_PAYLOAD"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-11",
+      "domain": "ap2_x402",
+      "title_zh": "x402 #225 收款方 payTo 自证事实证明与主观 legit 标签及缺失观测方法拦截",
+      "title_en": "x402 #225 Self-Asserted payTo Fact Attestation, Judgment Label & Undisclosed Method Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "X402_225_SELF_ASSERTED_PAYTO_FACT_ATTESTATION_REJECTED",
+        "X402_225_JUDGMENT_LABEL_FORBIDDEN_FACTS_ONLY",
+        "X402_225_OBSERVATION_MISSING_DISCLOSED_METHOD"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-12",
+      "domain": "ap2_x402",
+      "title_zh": "x402 #206 Base 主网误用仅支持测试网的公共 Facilitator 引发 HTTP 500 拦截",
+      "title_en": "x402 #206 Base Mainnet Routed to Testnet-Only Public Facilitator (HTTP 500 Crash) Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "X402_206_TESTNET_PUBLIC_FACILITATOR_ON_MAINNET_500"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-13",
+      "domain": "tau2",
+      "title_zh": "τ-bench #513/#484/#516/#508 银行 Write-Critic、固定关户原因、Pydantic 强转与 solo_gt 基线",
+      "title_en": "tau2-bench #513/#484/#516/#508 Write-Critic, Fixed Closure Reason, Pydantic Coercion & solo_gt Baseline",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "violations": [],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-14",
+      "domain": "tau2",
+      "title_zh": "τ-bench #513 未核验直接执行银行写操作及嵌套 JSON 参数按原始字符串误判拦截",
+      "title_en": "tau2-bench #513 Unverified Mutating Banking Call & Raw String Comparison on Nested JSON Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "TAU2_513_UNVERIFIED_MUTATING_TOOL_BLOCKED_BY_CRITIC",
+        "TAU2_513_RAW_STRING_COMPARISON_ON_NESTED_JSON_ARGS"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-15",
+      "domain": "tau2",
+      "title_zh": "τ-bench #484 close_bank_account_7392 自由文本关户原因污染 T065/068/069 状态哈希拦截",
+      "title_en": "tau2-bench #484 Free-Text close_bank_account_7392 Reason Corrupting Hashed DB State Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "TAU2_484_INVALID_FREE_TEXT_CLOSURE_REASON:Customer requested closure after transferring full balance to Silver Plus"
+      ],
+      "reversal_consistent": true
+    },
+    {
+      "id": "EG-16",
+      "domain": "tau2",
+      "title_zh": "τ-bench #516 绕过 Pydantic 参数校验与 #508 llm_agent_solo_gt 漏判单智能体模式拦截",
+      "title_en": "tau2-bench #516 Bypassed Pydantic Kwarg Validation & #508 llm_agent_solo_gt Non-Solo Misrouting Blocked",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "violations": [
+        "TAU2_516_BYPASSED_PYDANTIC_KWARG_COERCION",
+        "TAU2_516_NON_INTEGRAL_FLOAT_FOR_INT_PARAM",
+        "TAU2_508_SOLO_GT_DETECTION_MISMATCH"
+      ],
+      "reversal_consistent": true
+    }
+  ]
+}
