@@ -1300,3 +1300,22 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.30 ms` vs. `4.50 ms`（`15.0x` 加速）**。
 - **技术资产**：[`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py)、[`tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py) 及报告 [`reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/index.html)。
 
+---
+
+## 103. Stage 104 深度防线：UCP `keys[]` 规范 JWK Set 与 Web Bot Auth 双受众签名（`#566`/`#483`）/只读 `ask` 问答（`#538`）/RDNS `schema` 权威绑定（`#530`）/评分桶守恒（`#460`）、ACP 消费者 3DS/混合履约/8 位 IIN/B2B 小数数量（`#53`/`#52`/`#9`/`#3`）、Google AP2 `checkout_hash` 强制复算（`#243`）/跨商户预算（`#252`）/x402 SpendGuard（`#354`）与 Sierra $\tau$-bench 2.0 NL 裁判及配对列表校验（`#584`/`#581`/`#570`/`#569`/`#566`）
+
+### 103.1 UCP `keys[]` 单一规范 JWK Set、WBA 双受众签名、`ask` 只读契约、RDNS 权威绑定与 `Rating` 守恒（`#566` / `#483` / `#538` / `#530` / `#460`）
+- **`keys[]` 规范化与 WBA 互操作（`#566` / `#483`）**：废弃 `signing_keys[]` 并统一为顶层 RFC 7517 `keys[]`；WBA 双受众签名强制 `tag="web-bot-auth"`、覆盖 `ucp-agent` 与 `signature-agent`、且 `keyid` 为 RFC 7638 JWK 指纹。
+- **`dev.ucp.common.ask` 只读自然语言问答（`#538`）**：严禁问答请求修改购物车/订单状态或覆盖结构化能力权威。
+- **RDNS `schema` URL 域名权威绑定（`#530`）**：`schema` URL 主机名必须匹配反向域名权威（或其子域），`spec` URL 仅需满足 `https://`。
+- **`Rating` 分桶与验证购买数守恒（`#460`）**：强制 `verified_count <= count` 且 `sum(distribution.values()) <= count`。
+
+### 103.2 ACP 消费者 3DS（`#53`）、混合购物车履约与收件联系信息（`#52`）、8 位 ISO 7812 IIN（`#9`）与 B2B 小数数量（`#3`）
+- 校验物理配送必填 `name`/`phone`/`email`、混合购物车全行覆盖、完成阶段计税必填收货地址、6–8 位数字 `iin` 与 4 位 `display_last4`，以及 B2B 正小数数量（`quantity > 0`）金额守恒。
+
+### 103.3 Google AP2 验证器强制重算 `checkout_hash`（`#243`）、跨商户累计预算（`#252`）与 Coinbase x402 SpendGuard（`#354`）
+- 拦截跳过 `checkout_hash` 重算或哈希失配、跨商户累计分配超预算上限或重放 `nonce`，以及 x402 单次/滚动窗口 USDC 支出超限。
+
+### 103.4 Sierra $\tau$-bench 2.0 NL 裁判无内容回合剔除（`#584`）、裁决数精确匹配（`#581`）、配对列表同行排序（`#570`）、金标参数并集校验（`#569`）与 KB 排序加载（`#566`）
+- 拦截 `assistant: None` 混入 NL 裁判提示词、拦截空或缺失裁决数组利用 `all([]) == True` 误判满分、保持 `item_ids` 与 `new_item_ids` 成对排序并检查参数键并集、强制 `KnowledgeBase.load` 按路径排序加载（参见 `lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`）。
+

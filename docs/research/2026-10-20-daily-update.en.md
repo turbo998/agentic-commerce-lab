@@ -619,3 +619,6 @@
 
 ### Stage 103: 16-Scenario (`FD-01..FD-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
 - Added [`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py) and [`reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/index.en.html) (`554/554` unit tests passing).
+
+### Stage 104: UCP `#566`/`#483`/`#538`/`#530`/`#460`, ACP `#53`/`#52`/`#9`/`#3`, Google AP2 `#243`/`#252` + x402 `#354`, and Sierra $\tau$-bench 2.0 `#584`/`#581`/`#570`/`#569`/`#566` Guardrails
+- Added [`lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py`](../../lab/ucp_wba_keys_ask_rdns_acp_3ds_decimal_tau2_nl_judge_guard.py) and unit tests (`562/562` total unit tests passing).
