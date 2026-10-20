@@ -638,6 +638,10 @@
 ### Stage 109: 16-Scenario (`PC-01..PC-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
 - Added [`lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py) and [`reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/`](../../reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/index.en.html) (`583/583` total unit tests passing).
 
+### Stage 110: UCP `#659`/`#657`/`#655`/`#653`, ACP `#118`/`#114`/`#99`, Google AP2 `#377`/`#378` + x402 `#317`, and Sierra $\tau$-bench `#651`/`#634`/`#611` Guardrails
+- Added [`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py) and unit tests (`591/591` total unit tests passing).
+
+
 
 
 

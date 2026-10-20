@@ -638,6 +638,10 @@
 ### Stage 109：16 场景（`PC-01..PC-16`）中英双语 7-Card 4:5 视觉基准报告
 - 新增 [`lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py) 与报告 [`reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/`](../../reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/index.html)（`583/583` 单测通过）。
 
+### Stage 110：UCP `#659`/`#657`/`#655`/`#653`、ACP `#118`/`#114`/`#99`、Google AP2 `#377`/`#378` + x402 `#317` 与 Sierra $\tau$-bench `#651`/`#634`/`#611` 护栏
+- 新增 [`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py) 与单测 `tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`（全仓 `591/591` 单测通过）。
+
+
 
 
 

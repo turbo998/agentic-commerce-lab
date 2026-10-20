@@ -226,6 +226,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§107.4**: Sierra $\tau$-bench 2.0 Infrastructure-Error Denominator Exclusion & Live Transcript Gap Classification (`#650`), `v1.0.1` Task Pin (`#623`), and `/{env_id}/set_state` Signature Alignment (`#500`).
 - **§108 (Stage 109 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PC-01..PC-16`)**: `lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py` & `reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.27 ms` vs. `4.21 ms` (`15.6x` speedup).
+- **§109 (Stage 110 — Bilingual Chinese + English)**:
+  - **§109.1**: UCP Order Webhook `webhook-id` & `webhook-timestamp` Signing Gate (`#659`), Ambient `ucp` Namespace with `map_order` & `request_constraints` (`#657`, `#655`), and `quantity_unit` Sale-Basis Steps (`#653`).
+  - **§109.2**: ACP `MessageError.type == "intervention_required"` (`#118`), `dev.acp.seller_backed.*` Payment Handlers (`#114`), and `version_mismatch` `supported_versions` (`#99`).
+  - **§109.3**: Google AP2 ISO 4217 `Decimal` Budget Cap (`#377`), Chronological ISO 8601 `execution_date` Window (`#378`), and Coinbase `x402` `no-wallet` Extension Anti-Lock-In & Shell-Exec Guard (`#317`).
+  - **§109.4**: Sierra $\tau$-bench 2.0 `voice-v2-banking`/`voice-v2-entity` Package Suffix & No-Judge Gate (`#651`), `time_verified` Canonicalization (`#634`), and Active-Line Telecom Refuel Guard (`#611`).
+
 
 
 

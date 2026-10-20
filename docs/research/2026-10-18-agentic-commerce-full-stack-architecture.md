@@ -1378,6 +1378,23 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.27 ms` vs. `4.21 ms`（`15.6x` 加速）**。
 - **技术资产**：[`lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py)、[`tests/test_ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py`](../../tests/test_ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/`](../../reports/agentic-commerce-ucp-permalink-cart-id-acp-20260417-x402-aether-tau2-completeness-bench/index.html)。
 
+---
+
+## 109. Stage 110 深度审计：UCP `#659`/`#657`/`#655`/`#653`、ACP `#118`/`#114`/`#99`、Google AP2 `#377`/`#378` + Coinbase `x402` `#317` 与 Sierra $\tau$-bench 2.0 `#651`/`#634`/`#611`
+
+### 109.1 UCP Webhook 签名头门禁（`#659`）、保留 `ucp` 协议命名空间（`#657`/`#655`）与 `quantity_unit` 步长计价（`#653`）
+- 订单 Webhook 若携带 `Webhook-Id` 或 `Webhook-Timestamp`，必须在 `Signature-Input` 中覆盖 `"webhook-id"` 与 `"webhook-timestamp"`（`#659`）；任意作用域保留 `ucp` 协议命名空间，支持 `map_order` 顺序声明与 `request_constraints`（`required`/`properties`/`enum`/`const`）动态请求约束（`#657`、`#655`）；引入 `quantity_unit`（`unit`、`scale`、`display_text`），禁止 `C62`（`each`）使用非零 `scale`，并按 `round(price * quantity * 10^-scale)` 校验行总价（`#653`）。
+
+### 109.2 ACP `intervention_required`（`#118`）、`dev.acp.seller_backed.*` 卖方托管支付（`#114`）与版本协商（`#99`）
+- 规范 `MessageError.type` 包含 `"intervention_required"`（拦截拼写错误 `"interventioned_required"`，`#118`）；校验 `dev.acp.seller_backed.{saved_card,gift_card,points,store_credit}` 必须声明 `requires_delegate_payment: true`、`requires_pci_compliance: false`、禁止向 Agent 传输原始凭据，且 `points` 要求积分余额 `>=` 交易金额（`#114`）；`version_mismatch` 错误响应必须包含非空 `supported_versions`（`#99`）。
+
+### 109.3 Google AP2 ISO 4217 预算转换（`#377`）、ISO 8601 时间窗（`#378`）与 Coinbase `x402` `no-wallet` 扩展（`#317`）
+- 按 ISO 4217 货币指数（`JPY`/`KRW` 为 `0`，`USD`/`EUR` 为 `2`，`KWD`/`BHD` 为 `3`）与 `Decimal` 转换 `payment.budget.max`（修复 `JPY` 放大 100 倍漏洞及 `19.99 * 100` 浮点截断，`#377`）；按 UTC 时间戳而非字典序比较 `execution_date` 与 `[not_before, not_after]`（`#378`）；校验 `x402` `no-wallet` 扩展必须提供 `requires`、`anyWalletWorks: true`、钱包 `custodial` 布尔标记，并严禁自动执行 402 响应中的 `install` Shell 命令（`#317`）。
+
+### 109.4 Sierra $\tau$-bench 2.0 历史评测包后缀（`#651`）、`time_verified` 规范化（`#634`）与活跃电信线路充值门禁（`#611`）
+- 强制 `voice-v2-banking` 与 `voice-v2-entity` 包名分别以 `_banking`/`_entity` 结尾、拒绝传入 `--judges-root` 并要求全单元格 `condition_fingerprint` 一致（`#651`）；规范化 `log_verification` 的 `time_verified` 等价格式同时拦截伪造时间（`#634`）；强制 `refuel_data` 仅允许 `line_status == "Active"`（`#611`；参见 `lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_guard.py`）。
+
+
 
 
 
