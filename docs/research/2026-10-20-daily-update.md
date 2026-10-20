@@ -616,3 +616,6 @@
 
 ### Stage 102：UCP `#617`/`#609`/`#584`/`#578`/`#577`、ACP `#54`/`#46`、Google AP2 `#253`/`#267` 与 Sierra $\tau$-bench 2.0 `#534`/`#533`/`#520`/`#471` 护栏
 - 新增 [`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py) 与单测 `tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`（全仓 `552/552` 单测通过）。
+
+### Stage 103：16 场景（`FD-01..FD-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py) 与报告 [`reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/index.html)（`554/554` 单测通过）。

@@ -203,4 +203,6 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§101.2**: ACP `IntentTrace` Structured Cancellation Context (`#54`) & Delegated UPI + Razorpay AI Commerce TSP (`#46`).
   - **§101.3**: Google AP2 Raw-JSON RFC 8785 JCS Cart-to-Payment Mandate Binding (`#253`) & TrustBoost Pre-LLM PII Sanitization + Solana x402 Proof Anchor (`#267`).
   - **§101.4**: Sierra $\tau$-bench 2.0 Solo-Mode `DummyUser()` No-Arg Construction (`#534`), Atomic Checkpoint Replacement on Write Failure (`#533`), Result-Safe Hallucination Retries (`#520`), and Empty Text-Mode User-Simulator Retry (`#471`).
+- **§102 (Stage 103 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`FD-01..FD-16`)**: `lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py` & `reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.30 ms` vs. `4.50 ms` (`15.0x` speedup).
 

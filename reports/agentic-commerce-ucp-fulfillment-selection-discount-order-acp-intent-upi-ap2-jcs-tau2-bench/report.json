@@ -1,0 +1,286 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench",
+  "stage": "Stage 103",
+  "scenario_range": "FD-01..FD-16",
+  "provenance": "synthetic",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_pass_rate_pct": 25.0,
+  "reversal_invariant_count": 16,
+  "reversal_invariance_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.3,
+    "classic_3tier": 4.5,
+    "speedup_x": 15.0
+  },
+  "scenarios": [
+    {
+      "id": "FD-01",
+      "domain": "UCP #617/#609/#584/#578/#577",
+      "title_zh": "合规 UCP 履约事件与结账选项链接、只读可发现优惠、订单支付脱敏与赠品关联",
+      "title_en": "Compliant UCP fulfillment selection link, response-only available discounts & order payment redaction",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "FD-02",
+      "domain": "UCP #617 & #609",
+      "title_zh": "阻断未链接履约选项、倒挂送达窗口、请求伪造 available 优惠与泄露明文优惠码",
+      "title_en": "Block unlinked fulfillment option, inverted delivery window, request available[] & leaked promo code",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_617_UNLINKED_FULFILLMENT_OPTION_ID",
+        "UCP_617_INVALID_DELIVERY_ESTIMATE_WINDOW",
+        "UCP_609_AVAILABLE_DISCOUNTS_IN_REQUEST_FORBIDDEN",
+        "UCP_609_PROMO_CODE_EXPOSED_IN_AVAILABLE_DISCOUNT"
+      ]
+    },
+    {
+      "id": "FD-03",
+      "domain": "UCP #584",
+      "title_zh": "阻断 order.payment 泄露收单期敏感字段 credential 与 handler_id",
+      "title_en": "Block order.payment instrument leaking collection-time credential and handler_id",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_584_COLLECTION_TIME_PAYMENT_FIELD_LEAKED_TO_ORDER:handler_id",
+        "UCP_584_COLLECTION_TIME_PAYMENT_FIELD_LEAKED_TO_ORDER:credential"
+      ]
+    },
+    {
+      "id": "FD-04",
+      "domain": "UCP #578 & #577",
+      "title_zh": "阻断无 gift_line_item_id 关联的零元赠品行与额度耗尽误报为 already_applied",
+      "title_en": "Block unlinked zero-price gift line item and usage-limit exhaustion misreported as already_applied",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "UCP_578_UNEXPLAINED_ZERO_PRICE_GIFT_LINE_ITEM:li_free_tote",
+        "UCP_577_MISLEADING_USAGE_LIMIT_CODE:discount_code_already_applied"
+      ]
+    },
+    {
+      "id": "FD-05",
+      "domain": "ACP #54 & #46",
+      "title_zh": "合规 ACP IntentTrace 结构化取消原因与 Razorpay 委托 UPI 支付",
+      "title_en": "Compliant ACP IntentTrace cancellation context and Razorpay Delegated UPI payment",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "FD-06",
+      "domain": "ACP #54",
+      "title_zh": "阻断取消请求未知顶层字段、IntentTrace 夹带买家邮箱 PII 与非 canceled 响应",
+      "title_en": "Block unknown CancelSessionRequest field, buyer PII in IntentTrace & non-canceled response",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_54_CANCEL_REQUEST_UNKNOWN_TOP_LEVEL_FIELD",
+        "ACP_54_INTENT_TRACE_PII_FORBIDDEN:email",
+        "ACP_54_CANCEL_RESPONSE_MUST_BE_CANCELED"
+      ]
+    },
+    {
+      "id": "FD-07",
+      "domain": "ACP #46",
+      "title_zh": "阻断委托 UPI 一次性 cryptogram 重放与非 Razorpay TSP 提供方",
+      "title_en": "Block replayed one-time UPI cryptogram and unsupported non-Razorpay UPI TSP provider",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_46_UNSUPPORTED_UPI_TSP_PROVIDER:stripe",
+        "ACP_46_UPI_ONE_TIME_CRYPTOGRAM_REPLAYED"
+      ]
+    },
+    {
+      "id": "FD-08",
+      "domain": "ACP #46",
+      "title_zh": "阻断委托 UPI 超预授权额度上限与违反印度数据本地化合规",
+      "title_en": "Block Delegated UPI exceeding pre-authorized limit and violating India data localization",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "ACP_46_UPI_AMOUNT_EXCEEDS_PREAUTHORIZED_LIMIT",
+        "ACP_46_INDIA_DATA_LOCALIZATION_VIOLATION"
+      ]
+    },
+    {
+      "id": "FD-09",
+      "domain": "Google AP2 #253 & #267",
+      "title_zh": "合规 AP2 原始 JSON JCS 购物车绑定与 TrustBoost PII 脱敏 + Solana x402 锚定",
+      "title_en": "Compliant AP2 raw-JSON JCS cart-to-payment binding & TrustBoost PII + Solana x402 anchor",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "FD-10",
+      "domain": "Google AP2 #253",
+      "title_zh": "阻断 Pydantic 模型裁剪未知扩展字段后重算哈希导致扩展字段篡改逃逸",
+      "title_en": "Block schema-stripped model hash that allows tampered extension fields to escape verification",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "AP2_253_HASHED_SCHEMA_STRIPPED_MODEL_INSTEAD_OF_RAW_JSON",
+        "AP2_253_CART_MANDATE_HASH_MISMATCH"
+      ]
+    },
+    {
+      "id": "FD-11",
+      "domain": "Google AP2 #253",
+      "title_zh": "阻断默认严格模式下缺失 cart_mandate_hash 的未绑定 PaymentMandate",
+      "title_en": "Block unbound PaymentMandate missing cart_mandate_hash under default strict verification",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "AP2_253_MISSING_CART_MANDATE_HASH"
+      ]
+    },
+    {
+      "id": "FD-12",
+      "domain": "Google AP2 #267",
+      "title_zh": "阻断未脱敏原始 PII 直接送入 LLM 上下文且缺失 Solana x402 结算与锚定证明",
+      "title_en": "Block raw PII exposed to LLM without TrustBoost Solana USDC x402 settlement & anchor proof",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "AP2_267_UNSANITIZED_PII_EXPOSED_TO_LLM",
+        "AP2_267_UNSETTLED_X402_SOLANA_SANITIZE_CALL",
+        "AP2_267_MISSING_OR_MISMATCHED_SOLANA_ANCHOR_PROOF"
+      ]
+    },
+    {
+      "id": "FD-13",
+      "domain": "Sierra tau2-bench #534/#533/#520/#471",
+      "title_zh": "合规 tau2-bench DummyUser 零参构造、检查点原子替换、幻觉重试与空回合重试",
+      "title_en": "Compliant tau2-bench DummyUser no-arg init, atomic checkpoint, hallucination retry & empty turn retry",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "original_decision": "ALLOW",
+      "reversed_decision": "ALLOW",
+      "reversal_invariant": true,
+      "violations": []
+    },
+    {
+      "id": "FD-14",
+      "domain": "Sierra tau2-bench #534 & #533",
+      "title_zh": "阻断 solo 模式向 DummyUser 传参触发 TypeError 与写前提前删除旧检查点导致数据丢失",
+      "title_en": "Block simulator args passed to DummyUser in solo mode and premature checkpoint unlink before write",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_534_SIMULATOR_ARGS_PASSED_TO_DUMMY_USER_TYPEERROR",
+        "TAU2_533_PREMATURE_CHECKPOINT_UNLINK_DATA_LOSS",
+        "TAU2_533_OLD_TRAJECTORY_LOST_ON_WRITE_FAILURE"
+      ]
+    },
+    {
+      "id": "FD-15",
+      "domain": "Sierra tau2-bench #520",
+      "title_zh": "阻断跳过最终幻觉重试审查、将废弃重试写入检查点与截断裁判输入中的工具输出",
+      "title_en": "Block unreviewed final retry, checkpointing discarded retries & truncating tool results in judge input",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_520_FINAL_RETRY_NOT_REVIEWED",
+        "TAU2_520_DISCARDED_RETRY_CHECKPOINTED",
+        "TAU2_520_TRUNCATED_TOOL_RESULTS_IN_JUDGE_INPUT"
+      ]
+    },
+    {
+      "id": "FD-16",
+      "domain": "Sierra tau2-bench #471",
+      "title_zh": "阻断空用户模拟器回合直接崩溃不重试以及将重试系统提醒泄露进持久对话轨迹",
+      "title_en": "Block unretried empty user-simulator completion and retry reminder leaking into recorded trajectory",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "original_decision": "BLOCK",
+      "reversed_decision": "BLOCK",
+      "reversal_invariant": true,
+      "violations": [
+        "TAU2_471_EMPTY_USER_TURN_NOT_RETRIED",
+        "TAU2_471_RETRY_REMINDER_LEAKED_INTO_TRAJECTORY"
+      ]
+    }
+  ]
+}

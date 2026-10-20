@@ -1292,3 +1292,11 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 101.4 Sierra $\tau$-bench 2.0 `DummyUser()` 零参构造（`#534`）、检查点原子替换（`#533`）、幻觉重试（`#520`）与空用户回合重试（`#471`）
 - 校验 solo 模式下 `DummyUser()` 零参构造、新轨迹写入失败时保留旧检查点文件与索引、幻觉重试审查最终重试且不截断裁判工具输出，以及文本模式空用户回合带临时提醒重试且提醒不污染对话历史（参见 `lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_guard.py`）。
 
+---
+
+## 102. Stage 103 基准评测：16 场景（`FD-01..FD-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 102 四大协议域的 16 个场景（`FD-01..FD-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.30 ms` vs. `4.50 ms`（`15.0x` 加速）**。
+- **技术资产**：[`lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../lab/ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py)、[`tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py`](../../tests/test_ucp_fulfillment_selection_discount_order_acp_intent_upi_ap2_jcs_tau2_bench.py) 及报告 [`reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-selection-discount-order-acp-intent-upi-ap2-jcs-tau2-bench/index.html)。
+
