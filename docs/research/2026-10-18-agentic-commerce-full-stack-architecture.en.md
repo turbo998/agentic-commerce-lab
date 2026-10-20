@@ -84,6 +84,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§67.2**: ACP `UpsertProductsResponse` (`#255`), Feed API & Promotions (`#190`, `#192`), `Item.suggested_price` (`#201`), Complete `fulfillment_details` (`#200`), Marketing Consent (`#199`) & Razorpay / Pre-Checkout Cart (`#215`, `#213`, `#188`).
   - **§67.3**: Google AP2 HNP Mandate Security Binding (`#202`, `#189`), W3C `DOMString` Currency Value (`#191`), `IntentMandate.budget` Ceiling (`#198`), Section 7.4 Fiduciary Circuit Breaker (`#187`, `#164`) & UPI Collect (`#139`).
   - **§67.4**: Sierra $\tau$-bench 2.0 Spoken & Chunked Voice Amount Recognition (`#582`), Safe `analyze_reward` Lookup (`#575`), Trajectory `replay_mismatches` (`#573`), Union/Paired Action Matching (`#569`, `#570`) & Retail Reference Integrity (`#571`, `#567`, `#566`).
+- **§68 (Stage 69 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`OA-01..OA-16`)**: `lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

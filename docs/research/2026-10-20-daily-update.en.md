@@ -217,6 +217,23 @@
   - Unit Tests: [`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py) (**382/382** total unit tests passing)
   - Bilingual Architecture Reference (§67): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 69: 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`OA-01..OA-16`: UCP OpenRPC Auth & Catalog Discount Preview / Generic SPT / `price_treatment`, ACP Feed Upsert & Pre-Payment `fulfillment_details` / Marketing Consent / Razorpay, AP2 HNP Mandate Binding & `DOMString` Amount / Fiduciary Circuit Breaker, Sierra $\tau$-bench 2.0 Spoken Amount & Paired Action Matching)
+
+- **16-Scenario Deterministic Evaluation Matrix (`OA-01..OA-16`)**:
+  - `OA-01..OA-04`: UCP `#802` OpenRPC `ec.auth` / `ep.cart.auth` required `type` parameter, `#715` `get_product` `discounts.available[]` preview vs. forbidden `discounts.applied[]`, `#713` opaque `dev.ucp.payment.shared_payment_token` without raw PAN/CVC leakage, `#691` `price_treatment.tax.inclusion="included"` double-tax prevention, `#673` `event_feed` & non-normative `agent_hints[]`, and `#669`/`#661` non-empty `actions` & `policy.applies_to`.
+  - `OA-05..OA-08`: ACP `#255`/`#190`/`#192` `UpsertProductsResponse` `additionalProperties: false` & Feed Promotions, `#201` `Item.suggested_price` `PriceSource.feed_id` provenance, `#200` `CheckoutSessionCompleteRequest.fulfillment_details` applied BEFORE payment processing, `#199` HTTPS `privacy_policy_url` & declared marketing consent channels, and `#215`/`#213`/`#188` `in.razorpay.upi` & pre-checkout `Cart` isolation.
+  - `OA-09..OA-12`: Google AP2 `#191` `PaymentCurrencyAmount.value` `DOMString` string contract, `#198` `IntentMandate.budget` ceiling, `#202`/`#189` `human_not_present` `user_authorization` JWT & `signed_intent_mandate_hash` binding, `#187`/`#164` Section 7.4 `RiskPayload` & Fiduciary Circuit Breaker `FCBState.OPEN` / `TRIPPED` halt, and `#139` 3-section UPI Collect envelope.
+  - `OA-13..OA-16`: Sierra $\tau$-bench 2.0 `#582` spoken word-amount `"five thousand two hundred forty four"` $\rightarrow$ `"5244"` & cross-tick chunk reconstruction, `#575` safe `.get()` lookup in `analyze_reward()`, `#573` `evaluate-trajs` `replay_mismatches` tracking, `#569`/`#570` `Action.compare_with_tool_call` union keys & row-by-row paired scalar list sorting, and `#571`/`#567`/`#566` retail gift-card balance & delivered-order exchange validation.
+- **Quantitative Results**:
+  - **AI-Native 6-Plane Architecture**: **16/16 (100.0%)** accuracy, **100.0%** reversed-order stability, **0.34 ms** median latency.
+  - **Classic 3-Tier Baseline**: **4/16 (25.0%)** accuracy, **4.63 ms** median latency (**13.6x** speedup for AI-Native).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py`](../../lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py)
+  - Unit Tests: [`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py) (**384/384** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/report.json)
+
 
 
 

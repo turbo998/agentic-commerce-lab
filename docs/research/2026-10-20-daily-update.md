@@ -217,6 +217,23 @@
   - 单元测试：[`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_guard.py)（全仓库 **382/382** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§67)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 69：16 场景中英双语 7-Card 4:5 基准评测报告（`OA-01..OA-16`：UCP OpenRPC 鉴权与目录折扣预览/SPT/`price_treatment`、ACP Feed Upsert 与优先履约/营销授权/Razorpay、AP2 HNP 意图哈希绑定与 `DOMString` 金额/受托熔断器、Sierra $\tau$-bench 2.0 语音金额与成对列表匹配）
+
+- **16 场景确定性基准评测（`OA-01..OA-16`）**：
+  - `OA-01..OA-04`：UCP `#802` OpenRPC `ec.auth` / `ep.cart.auth` `type` 参数 `"required": true`、`#715` `get_product` 仅允许返回 `discounts.available[]` 预览（阻断 `discounts.applied[]`）、`#713` `dev.ucp.payment.shared_payment_token` 阻断明文 PAN/CVC 泄露、`#691` `price_treatment.tax.inclusion="included"` 防重复加税、`#673` `event_feed` 与 `agent_hints[]` 非强制提示及 `#669`/`#661` `actions` / `policy.applies_to` 非空校验。
+  - `OA-05..OA-08`：ACP `#255`/`#190`/`#192` `UpsertProductsResponse` `additionalProperties: false` 与促销流、`#201` `Item.suggested_price` 强制 `PriceSource.feed_id` 溯源、`#200` `CheckoutSessionCompleteRequest.fulfillment_details` 先于支付处理应用、`#199` HTTPS `privacy_policy_url` 与勾选营销渠道校验及 `#215`/`#213`/`#188` `in.razorpay.upi` 与预结账 `Cart` 隔离。
+  - `OA-09..OA-12`：Google AP2 `#191` `PaymentCurrencyAmount.value` `DOMString` 字符串类型、`#198` `IntentMandate.budget` 支出上限、`#202`/`#189` `human_not_present` `user_authorization` 与 `signed_intent_mandate_hash` 绑定、`#187`/`#164` Section 7.4 `RiskPayload` 与受托熔断器 `FCBState.OPEN` / `TRIPPED` 阻断及 `#139` UPI Collect 三段式请求信封。
+  - `OA-13..OA-16`：Sierra $\tau$-bench 2.0 `#582` 英语单词金额 `"five thousand two hundred forty four"` $\rightarrow$ `"5244"` 与跨分片重组、`#575` `analyze_reward()` 对缺失组件的安全 `.get()` 查找、`#573` `evaluate-trajs` `replay_mismatches` 追踪、`#569`/`#570` `Action.compare_with_tool_call` 参数键并集与成对标量列表按行对齐排序及 `#571`/`#567`/`#566` 零售礼品卡余额与已交付订单换货校验。
+- **量化评测结果**：
+  - **AI-Native 6-Plane 架构**：**16/16 (100.0%)** 场景准确率，逆序扰动稳定性 **100.0%**，中位延迟 **0.34 ms**。
+  - **经典三层架构基线（Classic 3-Tier）**：**4/16 (25.0%)** 场景准确率，中位延迟 **4.63 ms**（AI-Native 提速 **13.6x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py`](../../lab/ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py)
+  - 单元测试：[`tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py`](../../tests/test_ucp_openrpc_auth_acp_feed_consent_ap2_hnp_fcb_tau2_voice_bench.py)（全仓库 **384/384** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-openrpc-auth-acp-feed-consent-ap2-hnp-fcb-tau2-voice-bench/report.json)
+
 
 
 

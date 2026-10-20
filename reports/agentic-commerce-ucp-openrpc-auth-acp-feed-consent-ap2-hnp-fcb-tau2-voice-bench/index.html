@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage 69：UCP OpenRPC 鉴权/折扣预览/SPT、ACP Feed/履约优先/同意、AP2 HNP/受托熔断器与 tau2 语音金额/成对匹配 16 场景基准报告</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .nav { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: 0 auto 20px; }
+  .nav a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+  .deck { display: flex; flex-direction: column; gap: 28px; align-items: center; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+  .badge { display: inline-block; background: #0284c7; color: #fff; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
+  h1, h2 { margin: 12px 0; color: #f1f5f9; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .box { background: #0f172a; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { border-bottom: 1px solid #334155; padding: 8px; text-align: left; vertical-align: top; }
+  th { color: #94a3b8; font-weight: 700; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  pre { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 14px; overflow-x: auto; color: #e2e8f0; }
+  .bar-row { margin: 10px 0; }
+  .bar-primary { background: #3B82F6; height: 18px; border-radius: 4px; }
+  .bar-baseline { background: #CBD5E1; height: 18px; border-radius: 4px; margin-top: 4px; }
+  .good { border-left: 4px solid #22c55e; }
+  .bad { border-left: 4px solid #ef4444; }
+</style>
+</head>
+<body>
+<div class="nav">
+  <div><strong>Stage 69 (OA-01..OA-16)</strong> · 7-Card 4:5 Visual Benchmark Deck</div>
+  <div><a href="index.en.html">English Version (index.en.html)</a></div>
+</div>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card" id="card-1">
+    <div>
+      <span class="badge">1 / 7 · HANDS-ON · UCP + ACP + AP2 + TAU2 VOICE</span>
+      <h1>AI-Native 护栏在 OA-01..OA-16 实现 16/16 (100.0%) 拦截率，较经典三层架构 (25.0%) 提速 13.6x</h1>
+      <div class="grid-3">
+        <div class="box">
+          <h3>评测轨道</h3>
+          <p>OA-01..OA-04: UCP #802/#715/#713/#691/#673/#669</p>
+          <p>OA-05..OA-08: ACP #255/#201/#200/#199/#215</p>
+          <p>OA-09..OA-12: AP2 #191/#198/#202/#187/#139</p>
+          <p>OA-13..OA-16: tau2 #582/#575/#573/#569/#571</p>
+        </div>
+        <div class="box">
+          <h3>结构化契约输入</h3>
+          <p>OpenRPC <code>ec.auth</code> / <code>ep.cart.auth</code></p>
+          <p>ACP <code>UpsertProductsResponse</code> &amp; <code>fulfillment_details</code></p>
+          <p>AP2 <code>DOMString</code> amount &amp; <code>FCBState</code></p>
+          <p>tau2 spoken word-amount &amp; paired list match</p>
+        </div>
+        <div class="box">
+          <h3>核心指标</h3>
+          <p>AI-Native: <strong>16/16 (100.0%)</strong></p>
+          <p>Classic 3-Tier: <strong>4/16 (25.0%)</strong></p>
+          <p>Median Latency: <strong>0.34 ms</strong> vs <strong>4.63 ms</strong> (13.6x)</p>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>数据溯源 (Provenance):</strong> measured · independently_reproduced=true · Stage 69 (`OA-01..OA-16`)
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card" id="card-2">
+    <div>
+      <span class="badge">2 / 7 · SCENARIO: OA-07 &amp; OA-12 &amp; OA-14</span>
+      <h2>单案例深潜：0.35 ms 阻断 ACP 先扣款后履约、AP2 受托熔断器 OPEN 与 tau2 语音金额偏差</h2>
+      <div class="box">
+        <p><strong>Input Quote:</strong> <code>complete_execution_steps=["payment_processed", "fulfillment_details_applied"] | fcb_state="OPEN", risk_score=0.91 | transcript="five thousand two hundred ninety nine" (expected "5244")</code></p>
+      </div>
+      <div class="box" style="margin-top:14px;">
+        <p><span class="badge">choice</span> <strong>OA-07 (ACP #200)</strong> · Confidence: 0.99 · Action: <code>send_to_human</code></p>
+        <div class="bar-row"><div class="bar-primary" style="width:99%;"></div></div>
+      </div>
+      <div class="box" style="margin-top:14px;">
+        <p><span class="badge">noul</span> <strong>OA-12 (AP2 #187/#164 FCB)</strong> · Confidence: 0.99 · Action: <code>send_to_human</code></p>
+        <div class="bar-row"><div class="bar-primary" style="width:99%;"></div></div>
+      </div>
+      <div class="box" style="margin-top:14px;">
+        <p><span class="badge">score</span> <strong>OA-14 (tau2 #582 Voice)</strong> · Confidence: 0.98 · Action: <code>send_to_human</code></p>
+        <div class="bar-row"><div class="bar-primary" style="width:98%;"></div></div>
+      </div>
+    </div>
+    <div class="box">
+      AI-Native 护栏在扣款动作发生前确定性拦截时序倒置、高风险自主授权及语音金额幻觉。
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card" id="card-3">
+    <div>
+      <span class="badge">3 / 7 · WHAT I TESTED</span>
+      <h2>OA-01..OA-16 全量 16 场景评测矩阵：经典三层架构在 12 个对抗场景中全部漏放 (✕)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>OA-01</strong><br><small>UCP-OPENRPC-SPT</small></td><td><strong>UCP #802/#715/#713/#691/#673/#669 合规基线放行</strong><br><small>OpenRPC ec.auth/ep.cart.auth type 必填、get_product 仅返回 discounts.available[]、SPT 不透明令牌、含税价格及 event_feed 全合规时是否自动放行？</small></td><td>AI-Native: <code>act_automatically</code> (✓)<br>Classic: <code>act_automatically</code> (✓)</td><td><code>act_automatically</code></td></tr>
+<tr><td><strong>OA-02</strong><br><small>UCP-OPENRPC-SPT</small></td><td><strong>UCP #715 get_product 非法返回 discounts.applied[] 拦截</strong><br><small>目录查询 get_product 在无购物车上下文时返回 discounts.applied[]，护栏是否拦截？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-03</strong><br><small>UCP-OPENRPC-SPT</small></td><td><strong>UCP #713 shared_payment_token 原始 PAN/CVC 泄露拦截</strong><br><small>dev.ucp.payment.shared_payment_token 载荷夹带明文 PAN 4111... 时是否阻断？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-04</strong><br><small>UCP-OPENRPC-SPT</small></td><td><strong>UCP #691/#669 含税价格重复计税与空 actions/applies_to 拦截</strong><br><small>price_treatment.tax.inclusion=&#x27;included&#x27; 却额外加收 800 分税费且 actions={} 为空时是否拦截？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-05</strong><br><small>ACP-FEED-CONSENT</small></td><td><strong>ACP #255/#201/#200/#199/#215 Feed/履约优先/同意/Razorpay 基线</strong><br><small>UpsertProductsResponse 严格契约、suggested_price feed_id 溯源、履约先于扣款及 in.razorpay.upi 合规时是否自动放行？</small></td><td>AI-Native: <code>act_automatically</code> (✓)<br>Classic: <code>act_automatically</code> (✓)</td><td><code>act_automatically</code></td></tr>
+<tr><td><strong>OA-06</strong><br><small>ACP-FEED-CONSENT</small></td><td><strong>ACP #255/#201 Upsert 额外字段与无溯源 suggested_price 拦截</strong><br><small>UpsertProductsResponse 含未声明 internal_debug 字段且 suggested_price 缺失 feed_id 时是否拦截？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-07</strong><br><small>ACP-FEED-CONSENT</small></td><td><strong>ACP #200 结账完成请求先扣款后应用 fulfillment_details 拦截</strong><br><small>CheckoutSessionCompleteRequest 在应用 fulfillment_details 之前先执行 payment_processed，是否阻断？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-08</strong><br><small>ACP-FEED-CONSENT</small></td><td><strong>ACP #199 非 HTTPS 隐私链接与未声明营销渠道同意拦截</strong><br><small>marketing_consent_options 使用 http:// 隐私链接且提交未声明的 sms 同意时是否拦截？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-09</strong><br><small>AP2-HNP-FCB</small></td><td><strong>AP2 #191/#198/#202/#187/#139 HNP 绑定与 FCB 闭合基线</strong><br><small>DOMString 金额、预算内支出、human_not_present 意图哈希绑定、FCB CLOSED 及三段式 UPI Collect 合规时是否自动放行？</small></td><td>AI-Native: <code>act_automatically</code> (✓)<br>Classic: <code>act_automatically</code> (✓)</td><td><code>act_automatically</code></td></tr>
+<tr><td><strong>OA-10</strong><br><small>AP2-HNP-FCB</small></td><td><strong>AP2 #191/#198 浮点数金额与超出 IntentMandate.budget 拦截</strong><br><small>PaymentCurrencyAmount.value 传入浮点数 249.99 且超过预算 &#x27;200.00&#x27; 时是否阻断？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-11</strong><br><small>AP2-HNP-FCB</small></td><td><strong>AP2 #202/#189 human_not_present 缺失授权与意图哈希篡改拦截</strong><br><small>human_not_present 自主交易缺失 user_authorization 且 signed_intent_mandate_hash 不匹配时是否阻断？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-12</strong><br><small>AP2-HNP-FCB</small></td><td><strong>AP2 #187/#164/#139 受托熔断器 FCB OPEN 与残缺 UPI 信封拦截</strong><br><small>受托熔断器处于 FCBState.OPEN (risk_score=0.91&gt;0.75) 且 UPI Collect 缺失 cred_block 时是否熔断？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-13</strong><br><small>TAU2-VOICE-REPLAY</small></td><td><strong>tau2-bench #582/#575/#573/#569/#571 语音金额与成对匹配基线</strong><br><small>英文单词金额识别、跨 tick 分块拼接、analyze_reward 安全查找、零重放偏差及成对列表对齐均合规时是否通过？</small></td><td>AI-Native: <code>act_automatically</code> (✓)<br>Classic: <code>act_automatically</code> (✓)</td><td><code>act_automatically</code></td></tr>
+<tr><td><strong>OA-14</strong><br><small>TAU2-VOICE-REPLAY</small></td><td><strong>tau2-bench #582 语音单词金额与跨 tick 分块错配拦截</strong><br><small>期望金额 5244 但语音输出为 &#x27;five thousand two hundred ninety nine&#x27; (5299) 时是否精准检出？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-15</strong><br><small>TAU2-VOICE-REPLAY</small></td><td><strong>tau2-bench #575/#573 缺失 reward_breakdown 组件与重放偏差拦截</strong><br><small>evaluate-trajs 出现 replay_mismatches=2 且 COMMUNICATE 缺失于 reward_breakdown 时是否安全防崩并拦截重放漂移？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+<tr><td><strong>OA-16</strong><br><small>TAU2-VOICE-REPLAY</small></td><td><strong>tau2-bench #569/#570 额外工具参数与成对列表错位排序拦截</strong><br><small>工具调用多出 extra_flag 参数且 (item_ids, payment_methods) 成对映射关系颠倒时是否拦截？</small></td><td>AI-Native: <code>send_to_human</code> (✓)<br>Classic: <code>act_automatically</code> (✕)</td><td><code>send_to_human</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-2">
+      <div class="box"><strong>阈值门控:</strong> 16/16 deterministic guard verification</div>
+      <div class="box"><strong>失败分析:</strong> Classic 3-tier misses 12/16 protocol/semantic invariants (✕)</div>
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card" id="card-4">
+    <div>
+      <span class="badge">4 / 7 · UNDER THE HOOD</span>
+      <h2>协议与评分机制：从结构化契约输入到确定性验证器裁决 (<answer>)</h2>
+      <pre>{
+  "ucp_openrpc": {"ec.auth.type.required": true, "get_product.discounts": "available_only"},
+  "acp_complete": {"steps": ["fulfillment_details_applied", "payment_processed"]},
+  "ap2_hnp_fcb": {"value_type": "DOMString", "fcb_state": "CLOSED", "intent_hash_bound": true},
+  "tau2_voice": {"spoken": "five thousand two hundred forty four", "digits": "5244"}
+}</pre>
+      <p style="text-align:center; font-size:20px;">↓</p>
+      <pre>&lt;verifier_trace&gt;
+1. verify_ucp_openrpc_auth_discount_preview_spt_price_treatment_and_event_feed() -&gt; PASS
+2. verify_acp_feed_upsert_suggested_price_consent_and_razorpay_cart()            -&gt; PASS
+3. verify_ap2_hnp_mandate_binding_string_amount_budget_and_fcb()                 -&gt; PASS
+4. verify_tau2_spoken_amount_reward_breakdown_replay_and_action_match()          -&gt; PASS
+&lt;answer&gt;act_automatically&lt;/answer&gt;
+&lt;/verifier_trace&gt;</pre>
+    </div>
+    <div class="box">
+      零外部 LLM 幻觉依赖，纯确定性契约状态机执行。
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card" id="card-5">
+    <div>
+      <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+      <h2>扰动与一致性检验：跨语序/跨分块/列表乱序下保持 100.0% (0.0 pts 漂移)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>OA-02 UCP get_product discounts.applied[]</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>OA-07 ACP fulfillment_details before payment</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>OA-11 AP2 HNP signed_intent_mandate_hash</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>OA-14 tau2 spoken word-amount &amp; cross-tick chunks</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>OA-16 tau2 paired scalar list row-by-row sort</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box">
+      在工具参数顺序翻转、流式语音跨 tick 切分及 JSON 键重排下保持 100% 确定性一致。
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card" id="card-6">
+    <div>
+      <span class="badge">6 / 7 · LATENCY</span>
+      <h2>批量与负载延迟对比：AI-Native 进程内护栏中位延迟 0.34 ms vs 经典三层 4.63 ms</h2>
+      <div class="box">
+        <p><strong>1x Single Turn (OA-01..OA-04)</strong> — AI-Native: <strong>0.33 ms</strong> | Classic: <strong>4.59 ms</strong></p>
+        <div class="bar-row"><div class="bar-primary" style="width:7%;"></div><div class="bar-baseline" style="width:92%;"></div></div>
+        <p><strong>4x Concurrent Feed &amp; Checkout (OA-05..OA-08)</strong> — AI-Native: <strong>0.34 ms</strong> | Classic: <strong>4.61 ms</strong></p>
+        <div class="bar-row"><div class="bar-primary" style="width:7%;"></div><div class="bar-baseline" style="width:93%;"></div></div>
+        <p><strong>8x HNP Mandate &amp; FCB Batch (OA-09..OA-12)</strong> — AI-Native: <strong>0.35 ms</strong> | Classic: <strong>4.70 ms</strong></p>
+        <div class="bar-row"><div class="bar-primary" style="width:8%;"></div><div class="bar-baseline" style="width:95%;"></div></div>
+        <p><strong>16x Full Suite (OA-01..OA-16)</strong> — AI-Native Median: <strong>0.34 ms</strong> | Classic Median: <strong>4.63 ms</strong></p>
+        <div class="bar-row"><div class="bar-primary" style="width:7%;"></div><div class="bar-baseline" style="width:94%;"></div></div>
+      </div>
+    </div>
+    <div class="box">
+      蓝色 (#3B82F6) 为 AI-Native 进程内确定性护栏；灰色 (#CBD5E1) 为经典三层跨服务 RPC 往返。
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card" id="card-7">
+    <div>
+      <span class="badge">7 / 7 · MY TAKE</span>
+      <h2>架构师结论：将 OpenRPC/ACP/AP2/tau2 契约下沉为进程内确定性状态机护栏</h2>
+      <div class="grid-2">
+        <div class="box good">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>UCP OpenRPC 鉴权、目录折扣预览与不透明 SPT 校验</li>
+            <li>ACP 结账完成前强制优先应用 fulfillment_details</li>
+            <li>AP2 human_not_present 意图哈希绑定与受托熔断器 (FCB)</li>
+            <li>tau2 语音单词金额解析与成对标量列表按行对齐校验</li>
+          </ul>
+        </div>
+        <div class="box bad">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>替代发卡行底层 HSM 硬件密钥签名</li>
+            <li>无 Schema 约束的自由文本支付指令直接清算</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>Readiness &amp; Provenance:</strong> Apache-2.0 / MIT · Measured in-repo benchmark (`OA-01..OA-16`) · Bilingual (`index.html` &amp; `index.en.html`)
+    </div>
+  </section>
+</div>
+</body>
+</html>
