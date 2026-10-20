@@ -142,6 +142,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§83.4**: Sierra $\tau$-bench 2.0 Banking Duplicate Transaction `posting_sequence` Disambiguation (`#380`) & Multi-Card Confirmed Fraud Remediation (`#413`).
 - **§84 (Stage 85 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`OD-01..OD-16`)**: `lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.76 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§85 (Stage 86 — Bilingual Chinese + English)**:
+  - **§85.1**: UCP `schema.org/PropertyValue` Product/Variant Attribute Inheritance (`#401`) & RFC 9535 `message.path` Error Recovery (`#397`, `#380`).
+  - **§85.2**: ACP `RejectedDiscount` / `DiscountErrorCode` (`#101`) & `Message.resolution` / `Error` vs `MessageError` Separation (`#100`, `#115`).
+  - **§85.3**: Coinbase x402 `no-wallet` Extension (`#317`) & `ERC-8021` Builder Code Attribution (`#31`).
+  - **§85.4**: Sierra $\tau$-bench 2.0 Buffered Full-Duplex Audio Drain (`#363`) & `hospitality` Domain Reservation Policy (`#355`).
 
 
 

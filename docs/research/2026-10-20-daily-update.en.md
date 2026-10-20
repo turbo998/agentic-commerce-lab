@@ -462,6 +462,20 @@
   - Unit Tests: [`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py) (**464/464** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/report.json)
 
+---
+
+## Stage 86: UCP `schema.org/PropertyValue` Attribute Inheritance & RFC 9535 `message.path` (`#401`/`#397`/`#380`), ACP `RejectedDiscount` & `Message.resolution` Separation (`#101`/`#100`/`#115`), Coinbase x402 `no-wallet` Extension & `ERC-8021` Builder Code Attribution (`#317`/`#31`), and Sierra $\tau$-bench 2.0 Buffered Audio Drain & `hospitality` Policy (`#363`/`#355`) Deterministic Guardrails
+
+- **Primary-Source Protocol & Repository Audit Highlights**:
+  1. **UCP (`#401`, `#397`, `#380`)**: Enforces `shopping/types/attribute.json` (`schema.org/PropertyValue` shape with required `name`/`value`, optional `key`/`numeric_value`/`unit`), Product-to-Variant attribute inheritance and override matched by `key` or case-insensitive `name`, RFC 9535 JSONPath validation on `messages[].path` (rejecting legacy `$.items[...]`), targeted `recoverable` field remediation, and `unrecoverable` auto-retry blocking.
+  2. **ACP (`#101`, `#100`, `#115`)**: Enforces `DiscountsObject.rejected[]` `RejectedDiscount` (`code` + 8-value `DiscountErrorCode` `reason`) and `AppliedDiscount.allocations` sum conservation, blocks autonomous retry/order placement on `Message.resolution in {"requires_buyer_input", "requires_buyer_review"}`, and separates `2xx` in-session `MessageError` from `4xx/5xx` top-level `Error`.
+  3. **Coinbase x402 (`#317`, `#31`)**: Enforces `extensions["no-wallet"].info` (`anyWalletWorks: true`, `requires.{asset, network, amount}` matching `PaymentRequirements`, `wallets[] <= 8` with `https://` `docs` and boolean `custodial`, blocking auto-execution of untrusted `wallets[].install` commands and blocking wallet install when the shortfall is funds rather than signer software) and `ERC-8021` `[builderCode UTF-8 hex][01][8021000000000000000000008021]` calldata attribution suffix.
+  4. **Sierra $\tau$-bench 2.0 (`#363`, `#355`)**: Enforces `_drain_buffered_agent_audio()` during full-duplex `_finalize()` into `ticks[-1].agent_chunk` with `contains_speech = True`, plus `hospitality` Hotel Vltava rules (single tool call per turn without simultaneous guest reply, confirmation number + guest name verification, party size `<= room_capacity` including children, human transfer for `> 4` rooms, and `RP_SAVER` vs. `RP_FLEX` modification/cancellation rules).
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py)
+  - Unit Tests: [`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py) (**472/472** total unit tests passing)
+  - Bilingual Architecture Reference (§85): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

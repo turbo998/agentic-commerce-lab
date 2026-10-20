@@ -462,6 +462,20 @@
   - 单元测试：[`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py)（全仓库 **464/464** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/report.json)
 
+---
+
+## Stage 86：UCP `schema.org/PropertyValue` 商品属性继承与 RFC 9535 `message.path`（`#401`/`#397`/`#380`）、ACP `RejectedDiscount` 拒绝码与 `Message.resolution` 升级隔离（`#101`/`#100`/`#115`）、Coinbase x402 `no-wallet` 扩展与 `ERC-8021` 构建者归因（`#317`/`#31`）及 Sierra $\tau$-bench 2.0 全双工语音缓冲排空与 `hospitality` 酒店预订域策略（`#363`/`#355`）确定性护栏
+
+- **一手协议与代码审计要点**：
+  1. **UCP (`#401`, `#397`, `#380`)**：`shopping/types/attribute.json` 对齐 `schema.org/PropertyValue`（必填 `name`/`value`，可选 `key`/`numeric_value`/`unit`），强制 `Variant.attributes` 按 `key` 或不区分大小写 `name` 覆盖并继承 `Product.attributes`；`messages[].path` 必须符合 RFC 9535 JSONPath 语法（禁用旧版 `$.items[...]`）、`recoverable` 错误精确修复目标字段且 `unrecoverable` 错误禁止自动重试。
+  2. **ACP (`#101`, `#100`, `#115`)**：`DiscountsObject.rejected[]` 必填 `code` 与 8 值 `DiscountErrorCode` 枚举 `reason` 并校验 `AppliedDiscount.allocations` 分摊守恒；`Message.resolution` 在 `requires_buyer_input` 或 `requires_buyer_review` 时阻断无买家参与的自动重试/下单；严格隔离 `2xx` 会话内 `MessageError` 与 `4xx/5xx` 顶层 `Error`。
+  3. **Coinbase x402 (`#317`, `#31`)**：`extensions["no-wallet"].info` 校验 `anyWalletWorks: true`、`requires.{asset, network, amount}` 与顶层 `PaymentRequirements` 一致、拦截自动执行不可信 `wallets[].install` Shell 命令、阻断余额不足但已有签名器时盲目安装钱包，并校验 `ERC-8021` `[builderCode UTF-8 hex][01][8021000000000000000000008021]` 归因后缀。
+  4. **Sierra $\tau$-bench 2.0 (`#363`, `#355`)**：全双工 `_finalize()` 停止前调用 `_drain_buffered_agent_audio()` 将残余语音并入末个 tick 并标记 `contains_speech=True`；`hospitality` 域强制单轮单工具调用且不与回复同轮、核验确认号+姓名后才可读写预订、总人数（含儿童）不超房型容量、超 4 间房转人工，以及执行 `RP_SAVER` 禁退改/禁退订重订绕过与 `RP_FLEX` 退费精算。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py)
+  - 单元测试：[`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py)（全仓库 **472/472** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§85)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
