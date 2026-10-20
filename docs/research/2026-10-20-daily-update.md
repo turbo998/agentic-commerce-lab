@@ -542,6 +542,15 @@
   - 单元测试：[`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py)（全仓库 **504/504** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/report.json)
 
+---
+
+## Stage 94：UCP 钱包身份证明与资格证明/不适用折扣码/订单币种/链接委托（`#280`/`#264`/`#250`/`#271`/`#283`/`#247`）、ACP 虚拟卡标识与客户引用对齐（`#132`/`#133`/`#128`）、Coinbase x402 MCP+SIWX 权益复用与见证收据（`#27`/`#50`/`#46`）及 Sierra $\tau$-bench 2.0 嵌套 JSON/数值种子归一化与批量评测隔离（`#401`/`#397`/`#393`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py)
+  - 单元测试：[`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py)（全仓库 **512/512** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§93)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

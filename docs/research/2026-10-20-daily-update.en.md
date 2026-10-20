@@ -542,6 +542,15 @@
   - Unit Tests: [`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py) (**504/504** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fee-ecap-acp-sale-crypto-ap2-receipt-tau2-airline-ctx-bench/report.json)
 
+---
+
+## Stage 94: UCP Wallet Attestation & Eligibility Attestations/Inapplicable Discounts/Order Currency/Link Delegation (`#280`/`#264`/`#250`/`#271`/`#283`/`#247`), ACP Card `virtual` & `client_reference_id` Alignment (`#132`/`#133`/`#128`), Coinbase x402 MCP + SIWX Reuse & Witness SAR (`#27`/`#50`/`#46`), and Sierra $\tau$-bench 2.0 Nested JSON / Numeric Seed Normalization & Batch Evaluator Guard (`#401`/`#397`/`#393`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../lab/ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py)
+  - Unit Tests: [`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_guard.py) (**512/512** total unit tests passing)
+  - Bilingual Architecture Reference (§93): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

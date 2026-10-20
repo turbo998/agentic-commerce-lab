@@ -170,6 +170,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§91.4**: Sierra $\tau$-bench 2.0 Airline Seat Restoration on Cancellation (`#362`), `CONTEXT_WINDOW_EXCEEDED` Non-Retry Classification (`#360`), Reasoning `temperature` Drop (`#358`), and Cost-per-Resolution (`#364`).
 - **§92 (Stage 93 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`FS-01..FS-16`)**: `lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.33 ms` vs. `4.71 ms`, `14.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§93 (Stage 94 — Bilingual Chinese + English)**:
+  - **§93.1**: UCP `wallet_attestation` Identity (`#280`), Eligibility Attestations (`#264`/`#250`), `discounts.inapplicable[]` (`#271`), Required `Order.currency` (`#283`), and `ec_delegate=link.open` (`#247`).
+  - **§93.2**: ACP `PaymentMethodCard.virtual` Required (`#132`), `PaymentHandler.display_order` (`#133`), and `Order.client_reference_id` Reconciliation (`#128`).
+  - **§93.3**: Coinbase x402 MCP + SIWX Reuse Entitlement Path (`#27`) & DefaultVerifier Settlement Witness SAR (`#50`, `#46`).
+  - **§93.4**: Sierra $\tau$-bench 2.0 Nested JSON-String Grader (`#401`), `banking_knowledge` Numeric Seed Normalization (`#397`), and Batch Evaluator Guard (`#393`).
 
 
 
