@@ -596,6 +596,15 @@
   - 单元测试：[`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py)（全仓库 **534/534** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/report.json)
 
+---
+
+## Stage 100：UCP 条件写 `ETag` 与目录错误信封/`P-521` ↔ `ES512`/AP2 授权准入 TTL/礼赠结账（`#628`/`#625`/`#540`/`#508`）、ACP 联盟归因只写传输与商家 3DS/酒店水合报价（`#57`/`#66`/`#45`）、Google AP2 `open_mandate_hash` 与高熵 `checkout_hash`（`#279`/`#278`）、Coinbase `x402` 独立事实证明与主网 Facilitator 门禁（`#225`/`#206`）及 Sierra $\tau$-bench 2.0 银行 Write-Critic/固定关户原因/Pydantic 强转/`llm_agent_solo_gt`（`#513`/`#484`/`#516`/`#508`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py)（全仓库 **542/542** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§99)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

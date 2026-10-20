@@ -191,6 +191,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§97.4**: Sierra $\tau$-bench 2.0 Silent `GoAway` Deadline Reconnect (`#461`), Banking T082/T074/T083-084 Multi-Card Fraud & Duplicate Tie-Breaker (`#382`, `#381`, `#380`), and User Tool-Call Preservation (`#361`).
 - **§98 (Stage 99 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`DR-01..DR-16`)**: `lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.31 ms` vs. `4.66 ms`, `15.0x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§99 (Stage 100 — Bilingual Chinese + English)**:
+  - **§99.1**: UCP Conditional Writes `ETag` & Typed Errors (`#628`), `P-521` ↔ `ES512` Key Pairing (`#625`), AP2 Mandate Admission TTL (`#540`), and Recipient-Required Gift Checkout (`#508`).
+  - **§99.2**: ACP Affiliate Attribution Write-Only Transport (`#57`), Merchant 3DS Execution (`#66`), and Hotel Rate Hydration (`#45`).
+  - **§99.3**: Google AP2 `open_mandate_hash` RFC 8785 JCS Vectors (`#279`) & High-Entropy `checkout_hash` (`#278`), plus Coinbase `x402` Independent Fact Attestation (`#225`) & Public Facilitator Mainnet Guard (`#206`).
+  - **§99.4**: Sierra $\tau$-bench 2.0 Banking Write-Critic & Nested JSON Args (`#513`), `close_bank_account_7392` Fixed-Set Reason (`#484`), Pydantic Kwarg Coercion (`#516`), and `llm_agent_solo_gt` Detection (`#508`).
 
 
 

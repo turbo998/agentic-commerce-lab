@@ -596,6 +596,15 @@
   - Unit Tests: [`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py) (**534/534** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/report.json)
 
+---
+
+## Stage 100: UCP Conditional Writes `ETag` & Typed Errors (`#628`)/`P-521` ↔ `ES512` (`#625`)/AP2 Mandate Admission TTL (`#540`)/Gift Checkout (`#508`), ACP Affiliate Attribution (`#57`)/Merchant 3DS (`#66`)/Hotel Rate Hydration (`#45`), Google AP2 `open_mandate_hash` (`#279`)/High-Entropy `checkout_hash` (`#278`), Coinbase `x402` Fact Attestation (`#225`)/Mainnet Facilitator (`#206`), and Sierra $\tau$-bench 2.0 Banking Write-Critic (`#513`)/`close_bank_account_7392` (`#484`)/Pydantic Coercion (`#516`)/`llm_agent_solo_gt` (`#508`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../lab/ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py)
+  - Unit Tests: [`tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py`](../../tests/test_ucp_etag_gift_p521_acp_affiliate_3ds_ap2_open_hash_x402_fact_tau2_guard.py) (**542/542** total unit tests passing)
+  - Bilingual Architecture Reference (§99): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
