@@ -126,6 +126,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§79.2**: ACP Consumer 3DS (`#53`), Mixed-Cart Fulfillment & Contact (`#52`, `#51`), Return Policy Link (`#49`), TLS 1.3 (`#32`), 6–8 Digit Card IIN (`#9`), Exact 4-Digit `display_last4` (`#1`) & B2B Decimal Quantities (`#3`).
   - **§79.3**: Google AP2 RFC 8785 JCS Cart-to-Payment Mandate Binding (`#251`, `#370`), DID + STARK Settlement (`#257`), Typed `PaymentDetailsModifier` (`#48`), VDC Terminology (`#20`) & Visa TAP RFC 9421 Merchant-Backend Signature Verifier (`#21`).
   - **§79.4**: Sierra $\tau$-bench 2.0 Full-Duplex Voice Rescoring (`#399`), Banking Reverse-Chronological Ordering (`#403`), Lost/Stolen Discoverable Read Calls (`#402`), Nested JSON/Numeric Normalization (`#401`, `#397`), Batch Replay Isolation (`#393`), Platinum 10% Cash-Back Doc (`#388`) & Airline/LLM Execution Fixes (`#362`, `#361`, `#360`, `#358`).
+- **§80 (Stage 81 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`AC-01..AC-16`)**: `lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.72 ms`, `13.5x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

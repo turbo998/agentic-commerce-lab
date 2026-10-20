@@ -397,6 +397,17 @@
   - 单元测试：[`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py)（全仓库 **442/442** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§79)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 81：16 场景（`AC-01..AC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 80 四大护栏域）
+
+- **核心量化发现（Headline-as-Finding）**：
+  - 在覆盖 UCP 命名空间权威绑定/买家同意/权益核验/Mandate TTL/原始签名（`#530`/`#451`/`#250`/`#540`/`#590`）、ACP 3DS/混合履约/8 位 IIN/B2B 小数数量（`#52`/`#51`/`#49`/`#9`/`#3`）、Google AP2 RFC 8785 JCS 绑定/DID+STARK 与 Visa TAP RFC 9421 验签（`#251`/`#257`/TAP `#21`）及 Sierra $\tau$-bench 2.0 全双工语音重评分/银行倒序交易/可发现工具调用（`#399`/`#403`/`#402`/`#397`/`#358`）的 **16 个确定性场景（`AC-01..AC-16`）** 中，AI-Native 护栏取得 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 键序翻转一致性，而经典三层 Web 架构基线仅为 **4/16（25.0%）**；中位延迟 **0.35 ms vs. 4.72 ms（13.5x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py)
+  - 单元测试：[`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py)（全仓库 **444/444** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/report.json)
+
 
 
 

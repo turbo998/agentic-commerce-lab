@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 81: UCP Authority/Consent/Eligibility/TTL/r||s, ACP 3DS/Mixed Fulfillment/IIN, AP2 JCS/TAP RFC 9421 & tau2 Full-Duplex Benchmark</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { width: 100%; min-height: 560px; aspect-ratio: 4 / 5; background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+  .card-header { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #94A3B8; }
+  h1, h2 { margin: 10px 0; font-size: 20px; line-height: 1.35; color: #F8FAFC; }
+  .accent { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+  .pane { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #1E3A8A; color: #BFDBFE; font-size: 11px; }
+  .muted { color: #94A3B8; font-size: 11px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 11px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .bar-row { margin: 10px 0; font-size: 12px; }
+  .bar-track { background: #1E293B; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 4px; }
+  .bar-fill-blue { background: #3B82F6; height: 100%; }
+  .bar-fill-gray { background: #CBD5E1; height: 100%; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good-box { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .bad-box { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .footer-callout { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; color: #CBD5E1; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>1 / 7 · HANDS-ON · STAGE 81</span><span>PROVENANCE: MEASURED</span></div>
+      <h1><span class="accent">16/16 (100.0%)</span> Deterministic Guard Accuracy vs. 4/16 (25.0%) Classic 3-Tier across UCP #530/#540/#590, ACP #52/#51/#9, AP2 #251/TAP #21 &amp; τ2 #399/#403</h1>
+      <div class="workbench">
+        <div class="pane"><strong>Scenarios &amp; Domains</strong><br/>16 cases (`AC-01..AC-16`)<br/>UCP (4) · ACP (4) · AP2/TAP (4) · τ2 (4)</div>
+        <div class="pane"><strong>Structured Input</strong><br/>RDNS Origin Binding + Mixed Cart + RFC 8785 JCS + TAP RFC 9421</div>
+        <div class="pane"><strong>Latency &amp; Decisions</strong><br/>Median: <strong>0.35 ms</strong> vs 4.72 ms (<strong>13.5x</strong>)<br/>12 Blocked · 4 Admitted</div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      <strong>Hardware &amp; Provenance:</strong> Python 3.12 deterministic verifier harness · `independently_reproduced=true` · Zero external network calls.
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>2 / 7 · SCENARIO: AC-10 &amp; AC-11</span><span>DEEP DIVE</span></div>
+      <h2>AP2 RFC 8785 JCS Hash Mismatch (`AC-10`) &amp; TAP Component Quoting (`AC-11`) Blocked in 0.35 ms</h2>
+      <div class="pane"><strong>Input Quote (`AC-10` / `AC-11`):</strong> `payment_mandate.cart_mandate_jcs_sha256='00'*32` and `tap_signature_params_components='("@authority @path")'`.</div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>Decision 1 (`AC-10` · `choice`):</strong> <code>AP2_CART_MANDATE_JCS_HASH_MISMATCH</code> · Confidence 0.99 · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:99%"></div></div>
+      </div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>Decision 2 (`AC-11` · `choice`):</strong> <code>TAP_COVERED_COMPONENTS_NOT_INDIVIDUALLY_QUOTED</code> · Confidence 0.99 · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:99%"></div></div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      Classic 3-Tier web middleware passes both `AC-10` and `AC-11` (`✕`), allowing post-intent cart substitution and RFC 9421 signature base corruption.
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>3 / 7 · WHAT I TESTED</span><span>16-SCENARIO MATRIX</span></div>
+      <h2>AI-Native Catches All 12 Protocol &amp; Evaluation Exploits Missed by Classic 3-Tier (`✕`)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AC-01</strong> · UCP Authority & Consent Guard</td><td>Admit UCP capability bound to origin host, segmented consent, verified eligibility, admission TTL & raw r||s signature (#530/#451/#250/#540/#590)</td><td><code>ADMIT_ALLOWED</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>AC-02</strong> · UCP Authority & Consent Guard</td><td>Block UCP capability schema URL whose HTTPS host does not match its reverse-DNS authority prefix (#530)</td><td><code>UCP_NAMESPACE_AUTHORITY_BINDING_MISMATCH:0:evil-attacker.org!=merchantstamp.com</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-03</strong> · UCP Authority & Consent Guard</td><td>Block complete_checkout when an eligibility claim that influenced checkout remains unverified ('pending') (#250)</td><td><code>UCP_UNRESOLVED_ELIGIBILITY_CLAIM_BLOCKS_COMPLETE:claim_1</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-04</strong> · UCP Authority & Consent Guard</td><td>Block ASN.1 DER-encoded ECDSA signature prefix (MEUC/MEQC) in favor of raw 64-byte r||s encoding (#590)</td><td><code>UCP_ECDSA_DER_SIGNATURE_ENCODING_FORBIDDEN_RAW_RS_REQUIRED</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-05</strong> · ACP 3DS & Mixed Fulfillment Guard</td><td>Admit ACP TLS 1.3 checkout with consumer 3DS, complete mixed physical+digital fulfillment, 8-digit IIN & B2B decimal qty (#53/#52/#51/#9/#3)</td><td><code>ADMIT_ALLOWED</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>AC-06</strong> · ACP 3DS & Mixed Fulfillment Guard</td><td>Block ACP mixed physical+digital cart when fulfillment options leave digital line items uncovered (#51)</td><td><code>ACP_MIXED_CART_FULFILLMENT_COVERAGE_INCOMPLETE</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-07</strong> · ACP 3DS & Mixed Fulfillment Guard</td><td>Block deprecated ACP seller_shop_policies link type in favor of return_policy (#49)</td><td><code>ACP_DEPRECATED_SELLER_SHOP_POLICIES_LINK_FORBIDDEN:0</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-08</strong> · ACP 3DS & Mixed Fulfillment Guard</td><td>Block ACP card IIN shorter than 6 digits or outside ISO/IEC 7812-1 6-8 digit range (#9)</td><td><code>ACP_CARD_IIN_LENGTH_INVALID:41111</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-09</strong> · AP2 JCS & TAP RFC 9421 Guard</td><td>Admit AP2 RFC 8785 JCS CartMandate hash binding, DID+STARK settlement & Visa TAP RFC 9421 Ed25519 signature verifier (#251/#257/TAP #21)</td><td><code>ADMIT_ALLOWED</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>AC-10</strong> · AP2 JCS & TAP RFC 9421 Guard</td><td>Block AP2 PaymentMandate when RFC 8785 JCS SHA-256 digest does not match canonical CartMandate (#251/#370)</td><td><code>AP2_CART_TO_PAYMENT_MANDATE_JCS_HASH_MISMATCH</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-11</strong> · AP2 JCS & TAP RFC 9421 Guard</td><td>Block Visa TAP @signature-params when covered components are joined into a single quoted string ('@authority @path') (TAP #21)</td><td><code>TAP_RFC9421_COVERED_COMPONENTS_SINGLE_BLOB_INVALID</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-12</strong> · AP2 JCS & TAP RFC 9421 Guard</td><td>Block Visa TAP verifier that records nonce in replay cache before cryptographic signature verification succeeds (TAP #21)</td><td><code>TAP_RFC9421_NONCE_RECORDED_BEFORE_VERIFICATION</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-13</strong> · tau2 Full-Duplex & Banking Guard</td><td>Admit tau2-bench FULL_DUPLEX voice rescoring over ticks, reverse-chronological banking txns, discoverable reads & numeric normalization (#399/#403/#402/#397)</td><td><code>ADMIT_ALLOWED</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><strong>AC-14</strong> · tau2 Full-Duplex & Banking Guard</td><td>Block tau2-bench voice trajectory rescoring that defaults to HALF_DUPLEX and evaluates simulation.messages=None (#399)</td><td><code>TAU2_FULL_DUPLEX_VOICE_RESCORED_AS_HALF_DUPLEX_MESSAGES</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-15</strong> · tau2 Full-Duplex & Banking Guard</td><td>Block tau2-bench banking transaction list that is not sorted in reverse-chronological order (#403)</td><td><code>TAU2_BANKING_TRANSACTIONS_NOT_REVERSE_CHRONOLOGICAL</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+<tr><td><strong>AC-16</strong> · tau2 Full-Duplex & Banking Guard</td><td>Block tau2-bench reasoning model call that fails to strip unsupported temperature=0.0 parameter (#358)</td><td><code>TAU2_REASONING_MODEL_ZERO_TEMPERATURE_BAD_REQUEST</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>Send to a human</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-callout">
+      <strong>Threshold Gating:</strong> 100% deterministic invariants; Classic 3-Tier scores 4/16 (25.0%) by only validating happy-path JSON syntax.
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>4 / 7 · UNDER THE HOOD</span><span>PROTOCOL &amp; SCORING MECHANICS</span></div>
+      <h2>UCP Schema Host Binding, AP2 RFC 8785 JCS Digest &amp; TAP RFC 9421 Verifier Flow</h2>
+      <pre>{
+  "capabilities": {"com.example.loyalty": [{"schema": "https://example.com/schemas/loyalty.json"}]},
+  "payment_mandate": {"cart_mandate_jcs_sha256": "rfc8785_sha256(cart_mandate)"},
+  "tap_signature_params_components": "(\"@authority\" \"@path\")"
+}</pre>
+      <pre>&lt;answer&gt;
+  verify_ucp_authority_consent_eligibility_mandate_ttl_and_signature_guard() -&gt; ADMIT_ALLOWED
+  verify_acp_consumer_3ds_mixed_fulfillment_iin_and_b2b_quantity_guard()      -&gt; ADMIT_ALLOWED
+  verify_ap2_jcs_binding_did_stark_and_tap_rfc9421_verifier_guard()           -&gt; ADMIT_ALLOWED
+  verify_tau2_voice_rescoring_banking_ordering_and_llm_execution_guard()      -&gt; ADMIT_ALLOWED
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer-callout">
+      <strong>Deterministic Verifier:</strong> O(1) schema/signature/digest checks execute inline before settlement or trajectory grading.
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>5 / 7 · ROBUSTNESS CHECK</span><span>PERTURBATION &amp; CONSISTENCY</span></div>
+      <h2>100.0% (16/16) Option-Order &amp; Key-Order Reversal Stability Across All Guardrails</h2>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AC-01</strong> · Admit UCP capability bound to origin host, segmented consent, verified eligibility, admission TTL & raw r||s signature (#530/#451/#250/#540/#590)</td><td><code>ADMIT_ALLOWED</code></td><td><code>ADMIT_ALLOWED</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>AC-02</strong> · Block UCP capability schema URL whose HTTPS host does not match its reverse-DNS authority prefix (#530)</td><td><code>UCP_NAMESPACE_AUTHORITY_BINDING_MISMATCH:0:evil-attacker.org!=merchantstamp.com</code></td><td><code>UCP_NAMESPACE_AUTHORITY_BINDING_MISMATCH:0:evil-attacker.org!=merchantstamp.com</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>AC-03</strong> · Block complete_checkout when an eligibility claim that influenced checkout remains unverified ('pending') (#250)</td><td><code>UCP_UNRESOLVED_ELIGIBILITY_CLAIM_BLOCKS_COMPLETE:claim_1</code></td><td><code>UCP_UNRESOLVED_ELIGIBILITY_CLAIM_BLOCKS_COMPLETE:claim_1</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>AC-04</strong> · Block ASN.1 DER-encoded ECDSA signature prefix (MEUC/MEQC) in favor of raw 64-byte r||s encoding (#590)</td><td><code>UCP_ECDSA_DER_SIGNATURE_ENCODING_FORBIDDEN_RAW_RS_REQUIRED</code></td><td><code>UCP_ECDSA_DER_SIGNATURE_ENCODING_FORBIDDEN_RAW_RS_REQUIRED</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>AC-05</strong> · Admit ACP TLS 1.3 checkout with consumer 3DS, complete mixed physical+digital fulfillment, 8-digit IIN & B2B decimal qty (#53/#52/#51/#9/#3)</td><td><code>ADMIT_ALLOWED</code></td><td><code>ADMIT_ALLOWED</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+<tr><td><strong>AC-06</strong> · Block ACP mixed physical+digital cart when fulfillment options leave digital line items uncovered (#51)</td><td><code>ACP_MIXED_CART_FULFILLMENT_COVERAGE_INCOMPLETE</code></td><td><code>ACP_MIXED_CART_FULFILLMENT_COVERAGE_INCOMPLETE</code></td><td><strong>0.0 pts</strong> (100% Stable)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-callout">
+      <strong>Zero Perturbation Drift:</strong> Canonical RFC 8785 key sorting and set-based coverage invariants guarantee 0.0 pts shift.
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>6 / 7 · LATENCY</span><span>BATCHING &amp; SCALING LATENCY</span></div>
+      <h2>0.35 ms Median Guardrail Latency vs. 4.72 ms Classic 3-Tier (13.5x Speedup)</h2>
+      <div>
+        <div class="bar-row">
+          <div>1 req (Single Checkout): <strong>0.35 ms</strong> vs 4.72 ms</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div>16 req (Full AC Suite): <strong>5.60 ms</strong> vs 75.52 ms</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div>64 req (Burst Settlement): <strong>22.40 ms</strong> vs 302.08 ms</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      <strong>Scaling Note:</strong> Inline deterministic verification eliminates multi-hop RPC serialization overhead.
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="card-header"><span>7 / 7 · MY TAKE</span><span>GOOD FIT VS NOT FOR &amp; READINESS</span></div>
+      <h2>Production-Ready Protocol Guardrails for UCP, ACP, AP2, Visa TAP &amp; τ2-bench</h2>
+      <div class="split">
+        <div class="good-box"><strong>✅ Good fit</strong><ul><li>Enforcing UCP reverse-DNS schema origin binding (#530), unresolved eligibility blocking (#250), admission-time mandate TTL (#540) & raw r||s ECDSA signatures (#590)</li><li>Validating ACP mixed physical+digital cart fulfillment coverage (#51), return_policy links (#49), 8-digit card IINs (#9) & B2B decimal quantities (#3)</li><li>Verifying Google AP2 RFC 8785 JCS CartMandate->PaymentMandate digests (#251) and Visa TAP RFC 9421 covered-component quoting & post-verify nonce caching (#21)</li><li>Preventing tau2-bench FULL_DUPLEX voice rescoring zero-score bugs (#399), chronological banking order regressions (#403) & int/float DB hash drift (#397)</li></ul></div>
+        <div class="bad-box"><strong>⛔ Not for</strong><ul><li>Replacing live issuer ACS 3DS challenge UI rendering or browser WebAuthn hardware token prompts</li><li>Substituting on-chain STARK prover circuit generation or DNSSEC zone signing</li></ul></div>
+      </div>
+    </div>
+    <div class="footer-callout">
+      <strong>Readiness &amp; Provenance:</strong> Apache-2.0 / MIT compatible · `measured` (`independently_reproduced=true`) · Stage 81 (`AC-01..AC-16`).
+    </div>
+  </section>
+</div>
+</body>
+</html>

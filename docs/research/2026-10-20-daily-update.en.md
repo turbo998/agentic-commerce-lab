@@ -397,6 +397,17 @@
   - Unit Tests: [`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py) (**442/442** total unit tests passing)
   - Bilingual Architecture Reference (§79): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 81: 16-Scenario (`AC-01..AC-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 80 Guardrails)
+
+- **Headline Quantitative Finding**:
+  - Across **16 deterministic scenarios (`AC-01..AC-16`)** spanning UCP namespace authority binding/consent/eligibility/mandate TTL/raw `r||s` signatures (`#530`/`#451`/`#250`/`#540`/`#590`), ACP 3DS/mixed fulfillment/8-digit IIN/B2B quantities (`#52`/`#51`/`#49`/`#9`/`#3`), Google AP2 RFC 8785 JCS binding/DID+STARK & Visa TAP RFC 9421 verifier (`#251`/`#257`/TAP `#21`), and Sierra $\tau$-bench 2.0 full-duplex voice rescoring/banking ordering/discoverable reads (`#399`/`#403`/`#402`/`#397`/`#358`), AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal stability vs. **4/16 (25.0%)** for the Classic 3-Tier baseline at **0.35 ms vs. 4.72 ms median latency (13.5x speedup)**.
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Runner: [`lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py)
+  - Unit Tests: [`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py) (**444/444** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/report.json)
+
 
 
 
