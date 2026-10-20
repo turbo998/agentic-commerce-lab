@@ -330,6 +330,20 @@
   - 单元测试：[`tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py`](../../tests/test_ucp_lodging_token_binding_acp_idempotency_wellknown_ap2_jcs_sdjwt_x402_tau2_gemini_bench.py)（全仓库 **414/414** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-lodging-token-binding-acp-idempotency-wellknown-ap2-jcs-sdjwt-x402-tau2-gemini-bench/report.json)
 
+---
+
+## Stage 76：UCP 付款账期协商/确定性营业时间/核心政策披露、ACP 订单售后全生命周期/消息解决责任/版本协商、Google AP2 多跳委托链/支付证据帧 (`PEF`)/Coinbase x402 护栏与 Sierra $\tau$-bench 2.0 语音角色翻转/Qwen 嵌套工具/并行租约护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 付款账期协商与简化（`#741`/`#736`/`#712`/`#692`/`#603`）、Location 确定性营业时间（`#687`/`#589`）、核心 `policies[]` 披露联动（`#572`）、履约目的地方法级作者边界（`#689`/`#688`/`#671`）与多模态媒体（`#690`）**：账期通过 `payment.selected_term_id` 选定、标量 `schedules[].amount` 替代单元素 `totals[]`、禁与 `split_payments` 组合并在商家改期时强制发出 `payment_term_changed` 告警；营业时间强制商家 IANA `timezone`、成对 `opens`/`closes`（禁 `00:00`–`00:00`）、闭区间 `valid_from`/`valid_through` 禁非全等重叠并以带偏移 `open_at` 替代 `open_now`；核心 `policies[]` 的 `final_sale` 强制绑定 `presentation: "disclosure"` 告警。
+  2. **ACP 原生订单售后生命周期（`#106`）、`Message.resolution` 与 `intervention_required` vs `requires_3ds`（`#100`/`#143`/`#118`/`#115`）及 `supported_versions[]` 版本协商（`#99`/`#117`）**：校验 `Order.line_items[].quantity`（`shipped <= ordered`）、`fulfillments[]` 与 `adjustments[]`；校验 `Message.resolution` 闭集枚举、区分能力不匹配 `intervention_required` 与缺失认证结果 `requires_3ds`，并要求版本错误返回 `supported_versions[]`。
+  3. **Google AP2 多跳 `~~` SD-JWT 解码与状态序列化（`#350`/`#371`/`#159`）、支付证据帧 `PEF`/合规/结算/信任信封与会话限额（`#274`/`#272`/`#271`/`#269`/`#276`）及 Coinbase x402 Bazaar 格式/公共 Facilitator/多链 USDC/对手方证明（`#283`/`#206`/`#244`/`#180`/`#225`/`#136`）**：先按 `~~` 再按 `~` 切分多跳委托链；校验 `PEF` 五态 `claim_type` 与 JCS SHA-256 `frame_id`/`receipt_hash` 及 `402 agent_spend_cap_exceeded`；拦截测试网公共 Facilitator 误配 Base 主网 `eip155:8453`，并校验 Celo/Arbitrum USDC 与第三方 DID Ed25519 事实证明。
+  4. **Sierra $\tau$-bench 2.0 语音角色翻转空白轮次过滤（`#440`）、三态实时用户生成（`#526`/`#523`/`#521`）、Qwen `qwen3.5-omni-plus-realtime` 嵌套工具（`#449`/`#450`）与用量计费/并发上限/并行租约（`#454`/`#456`/`#455`/`#483`/`#535`）**：双向翻转丢弃无工具调用的空白轮次；Qwen 强制升级 3.5 模型并使用嵌套 `function` 工具格式；`UsageRecord` 区分增量与累计最后值胜出且未知模型返回 `cost = None`；强制语音并发上限与控制器单写检查点。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py`](../../lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py)
+  - 单元测试：[`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py)（全仓库 **422/422** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§75)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
