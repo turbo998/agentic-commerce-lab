@@ -560,6 +560,15 @@
   - Unit Tests: [`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py) (**514/514** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/report.json)
 
+---
+
+## Stage 96: UCP `ucp.status` Error Envelope & Payment Qualifiers/Available Instruments (`#216`/`#223`/`#214`/`#187`), ACP Webhook Replay & Extensible Error Enums (`#160`/`#161`/`#143`), Coinbase x402 EIP-3009 Error Mapping & Bazaar Metadata Sanitizer (`#70`/`#156`/`#150`), and Sierra $\tau$-bench 2.0 Canonical Account Closure, All-Infra `pass^k` Denominator & Kwarg Coercion (`#484`/`#498`/`#516`/`#520`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py)
+  - Unit Tests: [`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py) (**522/522** total unit tests passing)
+  - Bilingual Architecture Reference (§95): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

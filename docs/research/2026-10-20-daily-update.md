@@ -560,6 +560,15 @@
   - 单元测试：[`tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py`](../../tests/test_ucp_wallet_attest_discount_acp_virtual_x402_siwx_tau2_json_norm_bench.py)（全仓库 **514/514** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-wallet-attest-discount-acp-virtual-x402-siwx-tau2-json-norm-bench/report.json)
 
+---
+
+## Stage 96：UCP 业务错误信封与支付限定符/可用工具约束（`#216`/`#223`/`#214`/`#187`）、ACP Webhook 防重放与可扩展错误枚举（`#160`/`#161`/`#143`）、Coinbase x402 EIP-3009 错误映射与 Bazaar 元数据净化（`#70`/`#156`/`#150`）及 Sierra $\tau$-bench 2.0 销户原因枚举、`pass^k` 分母保留与参数强转（`#484`/`#498`/`#516`/`#520`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py)
+  - 单元测试：[`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py)（全仓库 **522/522** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§95)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
