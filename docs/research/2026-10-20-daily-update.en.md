@@ -587,6 +587,15 @@
   - Unit Tests: [`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py) (**532/532** total unit tests passing)
   - Bilingual Architecture Reference (§97): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 99: 16-Scenario (`DR-01..DR-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 98)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py)
+  - Unit Tests: [`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py) (**534/534** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/report.json)
+
 
 
 

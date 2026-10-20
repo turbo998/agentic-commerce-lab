@@ -189,6 +189,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§97.2**: ACP Delegated Authentication 3DS Lifecycle (`#93`), `Error.supported_versions` Negotiation (`#99`), and `PaymentHandler.display_name` (`#130`).
   - **§97.3**: Google AP2 HNP `SessionAuthorization` & `SpendingRuleSet` (`#77`) and A2A Micropayment Channel State Machine (`#83`).
   - **§97.4**: Sierra $\tau$-bench 2.0 Silent `GoAway` Deadline Reconnect (`#461`), Banking T082/T074/T083-084 Multi-Card Fraud & Duplicate Tie-Breaker (`#382`, `#381`, `#380`), and User Tool-Call Preservation (`#361`).
+- **§98 (Stage 99 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`DR-01..DR-16`)**: `lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.31 ms` vs. `4.66 ms`, `15.0x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

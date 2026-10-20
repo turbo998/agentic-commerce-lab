@@ -587,6 +587,15 @@
   - 单元测试：[`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py)（全仓库 **532/532** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§97)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 99：16 场景（`DR-01..DR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 98）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py)
+  - 单元测试：[`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_bench.py)（全仓库 **534/534** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench/report.json)
+
 
 
 

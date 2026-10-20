@@ -1,0 +1,286 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-disclosure-return-acp-del-auth-ap2-session-tau2-goaway-bench",
+  "stage": "Stage 99",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_accuracy_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_accuracy_pct": 25.0,
+  "safety_gain_pts": 75.0,
+  "reversal_consistency": "16/16",
+  "reversal_consistency_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.31,
+    "classic_3tier": 4.66,
+    "speedup_x": 15.0
+  },
+  "latency_tiers_ms": [
+    {
+      "tier": "1x (Single)",
+      "ai_native_ms": 0.31,
+      "classic_3tier_ms": 4.66
+    },
+    {
+      "tier": "4x (Batch)",
+      "ai_native_ms": 1.12,
+      "classic_3tier_ms": 18.2
+    },
+    {
+      "tier": "16x (Full Matrix)",
+      "ai_native_ms": 4.35,
+      "classic_3tier_ms": 65.1
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "DR-01",
+      "domain": "UCP",
+      "title_en": "Valid UCP Disclosure Warning, Return Policy, Attested Signals & get_product (#267/#257/#203/#195)",
+      "title_zh": "合规 UCP 披露警告、退货策略、平台观测信号与 get_product 变体锚定 (#267/#257/#203/#195)",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": []
+    },
+    {
+      "id": "DR-02",
+      "domain": "UCP",
+      "title_en": "Unrenderable Allergen Disclosure Without continue_url Escalation (#267)",
+      "title_zh": "平台无法渲染过敏原披露警告且未通过 continue_url 升级 (#267)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ucp_unrenderable_disclosure_missing_continue_url_escalation"
+      ]
+    },
+    {
+      "id": "DR-03",
+      "domain": "UCP",
+      "title_en": "Final-Sale Return Policy Item Claimed Returnable & Missing Fixed-Fee Amount (#257)",
+      "title_zh": "supported_resolutions: [] 不可退商品被宣称可退且缺失固定退货费金额 (#257)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ucp_return_fixed_fee_missing_or_invalid_minor_amount:rp_final:0",
+        "ucp_final_sale_item_claimed_returnable:li_watch"
+      ]
+    },
+    {
+      "id": "DR-04",
+      "domain": "UCP",
+      "title_en": "Buyer-Asserted Signals Spoofing & get_product Variant Selection Drift (#203/#195)",
+      "title_zh": "买家自称信号伪造平台观测与 get_product 返回非选中变体 (#203/#195)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ucp_signals_not_platform_observed:buyer_asserted",
+        "ucp_deprecated_a2a_risk_signals_attribute_used",
+        "ucp_variant_uses_legacy_selected_options_field:0",
+        "ucp_get_product_variant_mismatch_selected_anchor:0:Color"
+      ]
+    },
+    {
+      "id": "DR-05",
+      "domain": "ACP",
+      "title_en": "Valid ACP Delegated 3DS Auth Flow, supported_versions & display_name (#93/#99/#130)",
+      "title_zh": "合规 ACP 委托 3DS 认证全流程、supported_versions 版本协商与 display_name (#93/#99/#130)",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": []
+    },
+    {
+      "id": "DR-06",
+      "domain": "ACP",
+      "title_en": "Delegated 3DS Skipping Fingerprint & Challenge Before Retrieve (#93)",
+      "title_zh": "委托 3DS 认证跳过设备指纹与 Challenge 直接拉取认证结果 (#93)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "acp_delegated_auth_authenticate_before_fingerprint",
+        "acp_delegated_auth_retrieve_before_challenge",
+        "acp_delegated_auth_missing_channel_data"
+      ]
+    },
+    {
+      "id": "DR-07",
+      "domain": "ACP",
+      "title_en": "Unsupported API Version Retry Outside supported_versions List (#99)",
+      "title_zh": "版本不匹配后 Agent 使用不在 supported_versions 列表中的版本重试 (#99)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "acp_agent_retry_version_not_in_supported_versions:2024-05-01"
+      ]
+    },
+    {
+      "id": "DR-08",
+      "domain": "ACP",
+      "title_en": "Technical Handler ID Echoed as display_name & Undeclared capture_method (#130)",
+      "title_zh": "将技术标识符直接充当 display_name 且注入未声明的 capture_method (#130)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "acp_payment_handler_invalid_display_name:0",
+        "acp_payment_data_undeclared_capture_method_forbidden"
+      ]
+    },
+    {
+      "id": "DR-09",
+      "domain": "AP2",
+      "title_en": "Valid Google AP2 HNP SessionAuthorization, SpendingRuleSet & Micropayment Channel (#77/#83)",
+      "title_zh": "合规 Google AP2 HNP 会话授权、可编程支出规则与 A2A 微支付通道 (#77/#83)",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": []
+    },
+    {
+      "id": "DR-10",
+      "domain": "AP2",
+      "title_en": "Revoked/Expired HNP SessionAuthorization & Excessive Delegation Depth (#77)",
+      "title_zh": "已吊销/过期的 HNP 会话授权与超出上限的多跳委托深度 (#77)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ap2_hnp_session_expired_or_revoked",
+        "ap2_spending_rule_delegation_depth_exceeded"
+      ]
+    },
+    {
+      "id": "DR-11",
+      "domain": "AP2",
+      "title_en": "SpendingRuleSet Per-Transaction & Category/Merchant Violation (#77)",
+      "title_zh": "违反 SpendingRuleSet 单笔限额与受限商户/类目白名单 (#77)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ap2_spending_rule_per_tx_limit_exceeded",
+        "ap2_spending_rule_total_budget_exceeded",
+        "ap2_spending_rule_merchant_not_allowed",
+        "ap2_spending_rule_category_not_allowed"
+      ]
+    },
+    {
+      "id": "DR-12",
+      "domain": "AP2",
+      "title_en": "A2A Micropayment Channel Voucher Nonce Replay & Deposit Overdraw (#83)",
+      "title_zh": "A2A 微支付状态通道凭证 Nonce 重放与超出通道押金透支 (#83)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ap2_micropayment_deposit_below_minimum",
+        "ap2_micropayment_voucher_nonce_not_monotonic",
+        "ap2_micropayment_voucher_exceeds_channel_deposit",
+        "ap2_micropayment_token_rate_accounting_mismatch"
+      ]
+    },
+    {
+      "id": "DR-13",
+      "domain": "TAU2",
+      "title_en": "Valid tau2 Silent GoAway Reconnect, Multi-Card Fraud, ATM Credit & Duplicate Tie-Break (#461/#382/#381/#380/#361)",
+      "title_zh": "合规 tau2 静默 GoAway 重连、多卡止付补寄、ATM 净退费与重复交易首笔争议 (#461/#382/#381/#380/#361)",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": []
+    },
+    {
+      "id": "DR-14",
+      "domain": "TAU2",
+      "title_en": "GeminiLiveProvider Silent GoAway Deadline Missed Without Tick Reconnection (#461)",
+      "title_zh": "GeminiLiveProvider 收到 GoAway 后服务端静默导致错过重连期限 (#461)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_gemini_silent_goaway_deadline_missed_reconnection"
+      ]
+    },
+    {
+      "id": "DR-15",
+      "domain": "TAU2",
+      "title_en": "Second Fraud-Disputed Debit Card Left Active & Under-Credited Light Blue ATM Fee (#382/#381)",
+      "title_zh": "T082 第二张欺诈争议借记卡未关停补寄且 T074 Light Blue ATM 退费少算为 $8.00 (#382/#381)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_fraud_disputed_debit_card_not_closed_and_reissued:dc_green_02",
+        "tau2_light_blue_atm_fee_net_credit_mismatch:800!=1450"
+      ]
+    },
+    {
+      "id": "DR-16",
+      "domain": "TAU2",
+      "title_en": "Duplicate Charge Disputing Later posting_sequence & Dropped User Tool Calls (#380/#361)",
+      "title_zh": "T083/T084 重复交易争议误选第二笔 posting_sequence 且丢弃用户侧 tool_calls (#380/#361)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_duplicate_dispute_not_earliest_posting_sequence:tx_102",
+        "tau2_litellm_user_tool_calls_dropped"
+      ]
+    }
+  ]
+}
