@@ -37,3 +37,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§53.4**: Sierra $\tau$-bench 2.0.0 (`#642`, `989d328`) Outbound `intake` (`τ-entity`) Policy & Visa TAP `x402` USDC on Solana/Base Checkout (`#11`).
 - **§54 (Stage 55 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SD-01..SD-16`)**: `lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.2%` Classic 3-Tier, `0.41 ms` vs. `2.09 ms`, `5.1x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§55 (Stage 56 — Bilingual Chinese + English)**:
+  - **§55.1**: UCP RFC 9728/8414 Multi-Entry Identity Discovery (`#891`), Fulfillment `options[].totals` Array (`#573`) & Checkout Status Lifecycle (`#672`).
+  - **§55.2**: UCP Mercado Pago Pix Out-of-Band `render_artifact` Action (`#635`) & Razorpay Magic `hosted_checkout` Instrument/Credential (`#316`).
+  - **§55.3**: ACP Delegate Authentication `Signature` Requirement (`#287`), `CheckoutSessionCreateRequest` Conformance (`#289`) & Unwrapped `delegate_payment` Error Envelope (`#266`/`#243`).
+  - **§55.4**: Sierra $\tau$-bench 2.0 Boréal Finance `loan_servicing` (`en`/`fr`, `#638`) Policy & `banking_knowledge` `canonicalize_time_verified` (`#634`).

@@ -4,7 +4,7 @@
 
 From a Solutions Architect perspective, **Agentic Commerce Lab** investigates technical architectures, protocol standards, and enterprise agent use cases for Personal & Delegated AI Agents—focusing on **Visa** (`Intelligent Commerce`, `Trusted Agent Protocol`, `MCP Server & Acceptance Toolkit`), **Stripe** (`ACP`, `UCP`, `Agentic Commerce Suite`, `Shared Payment Tokens`, `Link Agent Wallet`, `Machine Payments Protocol / Tempo`, `x402`, `MCP`), **Google AP2** (`Agent Payments Protocol` `SD-JWT+kb`), and **Sierra** (`Agent OS`, `Personal Agent Protocol / Poppy v0.2`, `τ-bench 2.0.0`).
 
-Every capability in `lab/` is a deterministic, zero-secret, offline-runnable Python reference verifier or benchmark suite backed by `unittest` (`316+` unit tests) and self-contained **7-Card 4:5 Visual Benchmark Reports**.
+Every capability in `lab/` is a deterministic, zero-secret, offline-runnable Python reference verifier or benchmark suite backed by `unittest` (`322+` unit tests) and self-contained **7-Card 4:5 Visual Benchmark Reports**.
 
 ---
 
@@ -26,9 +26,9 @@ Classic **3-Tier Web Architectures (Presentation → Stateless App → Database)
 | Resource | Chinese (中文) | English | Highlights |
 |---|---|---|---|
 | **Repository Overview** | [`README.md`](README.md) | [`README.en.md`](README.en.md) | Full index of protocols, architecture blueprints, `lab/` guards, and 7-Card benchmarks |
-| **2026-10-20 Daily Research** | [`research/daily/2026-10-20.md`](research/daily/2026-10-20.md) | [`research/daily/2026-10-20.en.md`](research/daily/2026-10-20.en.md) | 50-source audit, Stripe MCP 41-day countdown (`2026-11-30`), UCP `#982`/`#962`, ACP `#310`/`#290`/`#284`/`#275`, AP2 `#369`/`#385`/`#384`, Poppy `#71`, Sierra $\tau$-bench `2.0.0` (`#642`), Visa TAP `x402` (`#11`) |
-| **2026-10-20 Technical Update Index** | [`docs/research/2026-10-20-daily-update.md`](docs/research/2026-10-20-daily-update.md) | [`docs/research/2026-10-20-daily-update.en.md`](docs/research/2026-10-20-daily-update.en.md) | Stage-by-stage technical asset & test verification log for `2026-10-20` |
-| **Full-Stack Reference Architecture (§1–§53)** | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md) | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md) | Master 53-section architecture blueprint and English executive reference |
+| **2026-10-20 Daily Research** | [`research/daily/2026-10-20.md`](research/daily/2026-10-20.md) | [`research/daily/2026-10-20.en.md`](research/daily/2026-10-20.en.md) | 50-source audit, Stripe MCP 41-day countdown (`2026-11-30`), UCP `#982`/`#962`/`#891`/`#635`/`#316`/`#573`/`#672`, ACP `#310`/`#290`/`#284`/`#275`/`#287`/`#289`/`#266`, AP2 `#369`/`#385`/`#384`, Poppy `#71`, Sierra $\tau$-bench `2.0.0` (`#642`, `#638` `loan_servicing`, `#634`), Visa TAP `x402` (`#11`) |
+| **2026-10-20 Technical Update Index** | [`docs/research/2026-10-20-daily-update.md`](docs/research/2026-10-20-daily-update.md) | [`docs/research/2026-10-20-daily-update.en.md`](docs/research/2026-10-20-daily-update.en.md) | Stage-by-stage technical asset & test verification log for `2026-10-20` (Stages 54–56+) |
+| **Full-Stack Reference Architecture (§1–§55)** | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md) | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md) | Master 55-section architecture blueprint and English executive reference |
 | **2026-10-19 Daily Research & Update Index** | [`research/daily/2026-10-19.md`](research/daily/2026-10-19.md) | [`docs/research/2026-10-19-daily-update.md`](docs/research/2026-10-19-daily-update.md) | Stages 1–53 protocol guards, vertical domain clearing, and 7-Card benchmark suites |
 | **Foundational Protocol & Architecture Docs** | [`research/protocols.md`](research/protocols.md) / [`research/architecture.md`](research/architecture.md) | [`research/use-cases.md`](research/use-cases.md) / [`research/sources.json`](research/sources.json) | 50-source registry (`sources.json`), protocol taxonomy, trust boundaries, and agent use cases |
 

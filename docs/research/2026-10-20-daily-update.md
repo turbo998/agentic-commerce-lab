@@ -27,3 +27,17 @@
   - 基准生成器：[`lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py`](../../lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py)
   - 单元测试：[`tests/test_ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py`](../../tests/test_ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py)（全仓库 **318/318** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/report.json)
+
+---
+
+## Stage 56：UCP RFC 9728/8414 多发证方身份发现与履约/状态机契约、Mercado Pago Pix 带外展示构件 & Razorpay Magic 托管结账、ACP Delegate Auth `Signature` 必填与解包错误信封、以及 Sierra $\tau$-bench 2.0 `loan_servicing`（英/法）与时间戳规范化护栏（中英双语）
+
+- **一手协议与上游代码审计**：
+  1. **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**：PR `#891`（RFC 9728 `authorization_servers` 与 RFC 8414 §3.3 字节级 `issuer` 精确匹配、严禁去尾斜杠归一化、仅 HTTP `404` 允许回退 OIDC Discovery、多候选顺序优选并显式记录丢弃项）、PR `#573`（履约选项 `options[].totals` 非空数组且 `description` 不得重复标题/价格）、PR `#672`（恢复 `ready_for_complete -> requires_escalation` 与 `ready_for_complete <-> incomplete` 生命周期转换）、PR `#635`（`com.mercadopago.payment.render_artifact` Pix 带外展示构件：禁 `continue_url` 重定向、禁实例 `required` 字段、到期时间不越界、同源说明页防自动提交与零敏感凭证）及 PR `#316`（`com.razorpay.magic_checkout` `hosted_checkout` 支付工具与凭证：禁平台拉取凭证、`return_url != continue_url` 与取消重定向后权威轮询）。
+  2. **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#287`（`openapi.delegate_authentication.yaml` 将 `Signature` 头标为 `required: true`）、PR `#289`（`CheckoutSessionCreateRequest` 要求 `line_items`/`currency`/`capabilities`，拦截旧版 `items`/`product_id`）及 PR `#266`/`#243`（移除已发布 `delegate_payment` OpenAPI 示例中的 `{ "error": { ... } }` 包装层，对齐顶层 `Error` Schema）。
+  3. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#638`（Boréal Finance 英/法消费贷款服务域 `loan_servicing` / `loan_servicing_fr`：三要素核身、两次失败转人工 `failed_verification`、授权第三方只读范围、每项写操作需先获 `"yes"` 确认且禁与消息同轮调用、同通话申请豁免与还款时必须先豁免滞纳金后扣款、改邮箱后同会话禁发文档）与 PR `#634`（`banking_knowledge` `canonicalize_time_verified` 将等价的 `2025-11-14 03:40:00 EST` 变体规范化，同时保留伪造时间或错误时区 `Z`/`+00:00`/`PST` 以便评分拦截）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py`](../../lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py)
+  - 单元测试：[`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard.py)（全仓库 **322/322** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§55)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+

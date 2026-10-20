@@ -225,6 +225,17 @@ from lab.ucp_schema_acp_drift_ap2_aud_tau2_intake_bench import (
     run_ucp_schema_acp_drift_ap2_aud_tau2_intake_benchmark,
     write_ucp_schema_acp_drift_ap2_aud_tau2_intake_report,
 )
+from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard import (
+    AcpDelegateAuthAndErrorEnvelopeGuardResult,
+    Tau2LoanServicingAndTimeGuardResult,
+    UcpRenderArtifactHostedCheckoutGuardResult,
+    UcpRfc9728CheckoutLifecycleGuardResult,
+    canonicalize_tau2_banking_time_verified,
+    verify_acp_delegate_auth_signature_and_error_envelope,
+    verify_tau2_loan_servicing_and_time_canonicalization,
+    verify_ucp_render_artifact_and_hosted_checkout_guard,
+    verify_ucp_rfc9728_identity_linking_and_checkout_lifecycle,
+)
 
 
 @dataclass(frozen=True)
