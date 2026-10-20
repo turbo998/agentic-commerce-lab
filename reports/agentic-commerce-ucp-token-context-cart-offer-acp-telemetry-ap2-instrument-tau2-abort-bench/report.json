@@ -1,0 +1,981 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench",
+  "stage": "Stage 67",
+  "provenance": {
+    "label": "measured (deterministic local guard execution on primary-source PR invariants)",
+    "independently_reproduced": true
+  },
+  "summary": {
+    "total_scenarios": 16,
+    "ai_native_passed": 16,
+    "ai_native_accuracy_pct": 100.0,
+    "classic_3tier_passed": 4,
+    "classic_3tier_accuracy_pct": 25.0,
+    "perturbation_consistency_pct": 100.0,
+    "ai_median_latency_ms": 0.34,
+    "classic_median_latency_ms": 4.63,
+    "speedup_factor": 13.6
+  },
+  "scenarios": [
+    {
+      "scenario_id": "TO-01",
+      "plane": "UCP Permalink/Token/Cart/OpenAPI",
+      "title_cn": "UCP #793 永久链接版本、#792 令牌绑定、#773/#740 购物车报价与终态及 #716 securitySchemes 正常放行",
+      "title_en": "UCP #793 Permalink Version, #792 Token Binding, #773/#740 Cart Offer/Status & #716 securitySchemes Pass",
+      "question_cn": "校验 ucp/version=2026-08-25 消费、TokenCredential.binding 一致、actions 报价、ordered 终态、action.ready={} 与 securitySchemes",
+      "question_en": "Verify ucp/version=2026-08-25 consumed, TokenCredential.binding intact, actions Offer, ordered status, action.ready={} & securitySchemes",
+      "task_type": "choice",
+      "expected_action": "ACT_AUTOMATICALLY",
+      "ai_action": "ACT_AUTOMATICALLY",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": true,
+      "reason_codes": [],
+      "ai_latency_ms": 0.33,
+      "classic_latency_ms": 4.61,
+      "inputs": {
+        "domain": "ucp",
+        "permalink_has_ucp_field_paths": true,
+        "permalink_ucp_versions": [
+          "2026-08-25"
+        ],
+        "redirect_url_contains_control_params": false,
+        "browser_returned_json_version_unsupported": false,
+        "issued_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "presented_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "token_identity_accepted_as_caller_auth": false,
+        "cart_has_parallel_offers_available_array": false,
+        "cart_id": "cart_501",
+        "cart_state_ref": "state_sha256_abc",
+        "offer_action_applies_to_cart_id": "cart_501",
+        "offer_action_applies_to_state_ref": "state_sha256_abc",
+        "offer_revision_immutable": true,
+        "cart_previous_status": "active",
+        "cart_next_status": "ordered",
+        "payment_action_ready_result": {},
+        "payment_action_ready_is_error_branch": false,
+        "digital_delivery_extension": {
+          "attached_to": "order",
+          "kind": "redeemable_artifact",
+          "reference": "dd_ref_991",
+          "lookup": "https://issuer.example/lookup/dd_ref_991",
+          "caches_mutable_balance": false,
+          "releases_settlement_on_delivery": false
+        },
+        "openapi_declared_header_param_names": [
+          "Idempotency-Key",
+          "Request-Id"
+        ],
+        "openapi_has_security_schemes": true
+      }
+    },
+    {
+      "scenario_id": "TO-02",
+      "plane": "UCP Permalink/Token/Cart/OpenAPI",
+      "title_cn": "UCP #793 预发布版本泄漏至重定向 URL 与 #792 TokenCredential.binding 篡改及 identity 冒充认证拦截",
+      "title_en": "UCP #793 Pre-Release Version Leaked on Redirect & #792 Token Binding Tampering / Identity Auth Block",
+      "question_cn": "拦截 ucp/version=2026-08-25-rc1 泄漏至重定向 URL、浏览器返回 JSON version_unsupported 及 Token binding 篡改",
+      "question_en": "Block ucp/version=2026-08-25-rc1 leaked on redirect, JSON version_unsupported on browser GET & mutated token binding",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ucp_permalink_version_missing_or_leaked_on_redirect",
+        "ucp_token_credential_binding_mutated_or_mismatch"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.64,
+      "inputs": {
+        "domain": "ucp",
+        "permalink_has_ucp_field_paths": true,
+        "permalink_ucp_versions": [
+          "2026-08-25-rc1"
+        ],
+        "redirect_url_contains_control_params": true,
+        "browser_returned_json_version_unsupported": true,
+        "issued_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "presented_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 9900
+        },
+        "token_identity_accepted_as_caller_auth": true,
+        "cart_has_parallel_offers_available_array": false,
+        "cart_id": "cart_501",
+        "cart_state_ref": "state_sha256_abc",
+        "offer_action_applies_to_cart_id": "cart_501",
+        "offer_action_applies_to_state_ref": "state_sha256_abc",
+        "offer_revision_immutable": true,
+        "cart_previous_status": "active",
+        "cart_next_status": "ordered",
+        "payment_action_ready_result": {},
+        "payment_action_ready_is_error_branch": false,
+        "digital_delivery_extension": {
+          "attached_to": "order",
+          "kind": "redeemable_artifact",
+          "reference": "dd_ref_991",
+          "lookup": "https://issuer.example/lookup/dd_ref_991",
+          "caches_mutable_balance": false,
+          "releases_settlement_on_delivery": false
+        },
+        "openapi_declared_header_param_names": [
+          "Idempotency-Key"
+        ],
+        "openapi_has_security_schemes": true
+      }
+    },
+    {
+      "scenario_id": "TO-03",
+      "plane": "UCP Permalink/Token/Cart/OpenAPI",
+      "title_cn": "UCP #773 平行 offers.available[] / 陈旧 state_ref 与 #740 购物车 ordered 终态回退 active 拦截",
+      "title_en": "UCP #773 Parallel offers.available[] / Stale state_ref & #740 Terminal Cart Status Mutation Block",
+      "question_cn": "拦截平行 offers.available[]、报价 state_ref 失配及将已下单 ordered 购物车回退为 active",
+      "question_en": "Block parallel offers.available[], stale Offer state_ref & mutating terminal ordered Cart back to active",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ucp_cart_offer_state_ref_mismatch_or_parallel_array",
+        "ucp_cart_terminal_status_invalid_or_mutated"
+      ],
+      "ai_latency_ms": 0.35,
+      "classic_latency_ms": 4.62,
+      "inputs": {
+        "domain": "ucp",
+        "permalink_has_ucp_field_paths": true,
+        "permalink_ucp_versions": [
+          "2026-08-25"
+        ],
+        "redirect_url_contains_control_params": false,
+        "browser_returned_json_version_unsupported": false,
+        "issued_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "presented_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "token_identity_accepted_as_caller_auth": false,
+        "cart_has_parallel_offers_available_array": true,
+        "cart_id": "cart_501",
+        "cart_state_ref": "state_sha256_abc",
+        "offer_action_applies_to_cart_id": "cart_501",
+        "offer_action_applies_to_state_ref": "state_sha256_stale",
+        "offer_revision_immutable": false,
+        "cart_previous_status": "ordered",
+        "cart_next_status": "active",
+        "payment_action_ready_result": {},
+        "payment_action_ready_is_error_branch": false,
+        "digital_delivery_extension": {
+          "attached_to": "order",
+          "kind": "redeemable_artifact",
+          "reference": "dd_ref_991",
+          "lookup": "https://issuer.example/lookup/dd_ref_991",
+          "caches_mutable_balance": false,
+          "releases_settlement_on_delivery": false
+        },
+        "openapi_declared_header_param_names": [
+          "Idempotency-Key"
+        ],
+        "openapi_has_security_schemes": true
+      }
+    },
+    {
+      "scenario_id": "TO-04",
+      "plane": "UCP Permalink/Token/Cart/OpenAPI",
+      "title_cn": "UCP #730 非空 action.ready、#719 数字交付缓存余额/提前放款与 #716 OpenAPI 忽略认证头拦截",
+      "title_en": "UCP #730 Non-Empty action.ready, #719 Cached Balance/Premature Settlement & #716 Ignored Auth Header Block",
+      "question_cn": "拦截非空 action.ready 成功对象、digital_delivery 缓存余额/交付即结算及 OpenAPI 声明被忽略的 Authorization 头",
+      "question_en": "Block non-empty action.ready success object, digital_delivery cached balance/settlement & OpenAPI Authorization header parameter",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ucp_payment_action_ready_non_empty_success_object",
+        "ucp_digital_delivery_cached_balance_or_premature_settlement",
+        "ucp_openapi_ignored_auth_header_parameter_declared"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.65,
+      "inputs": {
+        "domain": "ucp",
+        "permalink_has_ucp_field_paths": true,
+        "permalink_ucp_versions": [
+          "2026-08-25"
+        ],
+        "redirect_url_contains_control_params": false,
+        "browser_returned_json_version_unsupported": false,
+        "issued_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "presented_token_binding": {
+          "checkout_id": "chk_100",
+          "amount_minor": 4500
+        },
+        "token_identity_accepted_as_caller_auth": false,
+        "cart_has_parallel_offers_available_array": false,
+        "cart_id": "cart_501",
+        "cart_state_ref": "state_sha256_abc",
+        "offer_action_applies_to_cart_id": "cart_501",
+        "offer_action_applies_to_state_ref": "state_sha256_abc",
+        "offer_revision_immutable": true,
+        "cart_previous_status": "active",
+        "cart_next_status": "ordered",
+        "payment_action_ready_result": {
+          "status": "ok"
+        },
+        "payment_action_ready_is_error_branch": false,
+        "digital_delivery_extension": {
+          "attached_to": "checkout",
+          "kind": "redeemable_artifact",
+          "reference": "dd_ref_991",
+          "lookup": "https://issuer.example/lookup/dd_ref_991",
+          "caches_mutable_balance": true,
+          "releases_settlement_on_delivery": true
+        },
+        "openapi_declared_header_param_names": [
+          "Authorization",
+          "Content-Type"
+        ],
+        "openapi_has_security_schemes": false
+      }
+    },
+    {
+      "scenario_id": "TO-05",
+      "plane": "ACP Telemetry/AppLinks/Order/Seller",
+      "title_cn": "ACP #238 session_context 遥测、#237 app_links、#232 订单 3 字段数量守恒与 #114 卖家侧积分支付放行",
+      "title_en": "ACP #238 session_context Telemetry, #237 app_links, #232 3-Field Order Conservation & #114 Seller Points Pass",
+      "question_cn": "校验 session_context 对象与 risk_signals 数组分离、app_links 命中、ordered=3(2+1) 守恒及 points 余额充足",
+      "question_en": "Verify session_context object vs risk_signals array, app_links match, ordered=3(2+1) conservation & sufficient points",
+      "task_type": "choice",
+      "expected_action": "ACT_AUTOMATICALLY",
+      "ai_action": "ACT_AUTOMATICALLY",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": true,
+      "reason_codes": [],
+      "ai_latency_ms": 0.33,
+      "classic_latency_ms": 4.6,
+      "inputs": {
+        "domain": "acp",
+        "complete_checkout_has_legacy_risk_signals_object": false,
+        "complete_checkout_session_context": {
+          "ip_address": "198.51.100.42",
+          "session_id": "sess_77"
+        },
+        "delegate_payment_session_context": {
+          "ip_address": "198.51.100.42",
+          "device_fingerprint": "fp_998"
+        },
+        "delegate_payment_risk_signals": [
+          {
+            "type": "bot_detection",
+            "score": 12,
+            "action": "allow"
+          }
+        ],
+        "product_url": "https://merchant.example/products/sku_1",
+        "app_links": [
+          {
+            "platform": "ios",
+            "uri": "merchantapp://products/sku_1"
+          },
+          {
+            "platform": "embedded_app",
+            "uri": "https://app.merchant.example/embed/sku_1"
+          }
+        ],
+        "client_supported_platforms": [
+          "embedded_app"
+        ],
+        "selected_uri": "https://app.merchant.example/embed/sku_1",
+        "order_status": "completed",
+        "line_item_quantities": {
+          "ordered": 3,
+          "fulfilled": 2,
+          "canceled": 1,
+          "returned": 1
+        },
+        "content_attribution_urls": [
+          "https://www.wirecutter.com/reviews/best-headphones"
+        ],
+        "seller_backed_handler": {
+          "id": "dev.acp.seller_backed.points",
+          "requires_delegate_payment": true,
+          "requires_pci_compliance": false,
+          "credentials_transferred_to_agent": false,
+          "points_balance_minor": 6000,
+          "purchase_amount_minor": 4500
+        },
+        "x402_crypto_facilitator_verified": true
+      }
+    },
+    {
+      "scenario_id": "TO-06",
+      "plane": "ACP Telemetry/AppLinks/Order/Seller",
+      "title_cn": "ACP #238 complete_checkout.risk_signals 旧字段冲突与 delegate_payment.risk_signals 非数组拦截",
+      "title_en": "ACP #238 Legacy complete_checkout.risk_signals Collision & Non-Array delegate_payment.risk_signals Block",
+      "question_cn": "拦截 complete_checkout 沿用旧版 risk_signals 遥测对象及将 delegate_payment.risk_signals 传为非标准化数组",
+      "question_en": "Block legacy complete_checkout.risk_signals object collision & non-array delegate_payment.risk_signals",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "acp_session_context_or_risk_signals_schema_collision"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.63,
+      "inputs": {
+        "domain": "acp",
+        "complete_checkout_has_legacy_risk_signals_object": true,
+        "complete_checkout_session_context": null,
+        "delegate_payment_session_context": null,
+        "delegate_payment_risk_signals": {
+          "ip_address": "198.51.100.42"
+        },
+        "product_url": "https://merchant.example/products/sku_1",
+        "app_links": [
+          {
+            "platform": "embedded_app",
+            "uri": "https://app.merchant.example/embed/sku_1"
+          }
+        ],
+        "client_supported_platforms": [
+          "embedded_app"
+        ],
+        "selected_uri": "https://app.merchant.example/embed/sku_1",
+        "order_status": "completed",
+        "line_item_quantities": {
+          "ordered": 3,
+          "fulfilled": 2,
+          "canceled": 1,
+          "returned": 1
+        },
+        "content_attribution_urls": [
+          "https://www.wirecutter.com/reviews/best-headphones"
+        ],
+        "seller_backed_handler": {
+          "id": "dev.acp.seller_backed.saved_card",
+          "requires_delegate_payment": true,
+          "requires_pci_compliance": false,
+          "credentials_transferred_to_agent": false,
+          "points_balance_minor": 0,
+          "purchase_amount_minor": 4500
+        },
+        "x402_crypto_facilitator_verified": true
+      }
+    },
+    {
+      "scenario_id": "TO-07",
+      "plane": "ACP Telemetry/AppLinks/Order/Seller",
+      "title_cn": "ACP #237 app_links 缺失规范 url 回退与 #232 订单状态重载 fulfilled 及数量失衡拦截",
+      "title_en": "ACP #237 Missing Product.url Fallback on Unmatched app_links & #232 Order Quantity/Status Violation Block",
+      "question_cn": "拦截客户端不支持 ios 时未回退至 Product.url，以及订单级误用 fulfilled 状态和 ordered!=fulfilled+canceled",
+      "question_en": "Block failure to fall back to Product.url when app_links mismatch, plus order-level 'fulfilled' & quantity mismatch",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "acp_feed_app_links_invalid_or_missing_url_fallback",
+        "acp_order_post_checkout_quantity_or_status_violation"
+      ],
+      "ai_latency_ms": 0.35,
+      "classic_latency_ms": 4.64,
+      "inputs": {
+        "domain": "acp",
+        "complete_checkout_has_legacy_risk_signals_object": false,
+        "complete_checkout_session_context": {
+          "ip_address": "198.51.100.42"
+        },
+        "delegate_payment_session_context": null,
+        "delegate_payment_risk_signals": [
+          {
+            "type": "bot_detection",
+            "score": 10,
+            "action": "allow"
+          }
+        ],
+        "product_url": "https://merchant.example/products/sku_1",
+        "app_links": [
+          {
+            "platform": "ios",
+            "uri": "merchantapp://products/sku_1"
+          }
+        ],
+        "client_supported_platforms": [
+          "web"
+        ],
+        "selected_uri": "merchantapp://products/sku_1",
+        "order_status": "fulfilled",
+        "line_item_quantities": {
+          "ordered": 3,
+          "fulfilled": 2,
+          "canceled": 0,
+          "returned": 3
+        },
+        "content_attribution_urls": [
+          "https://www.wirecutter.com/reviews/best-headphones"
+        ],
+        "seller_backed_handler": {
+          "id": "dev.acp.seller_backed.saved_card",
+          "requires_delegate_payment": true,
+          "requires_pci_compliance": false,
+          "credentials_transferred_to_agent": false,
+          "points_balance_minor": 0,
+          "purchase_amount_minor": 4500
+        },
+        "x402_crypto_facilitator_verified": true
+      }
+    },
+    {
+      "scenario_id": "TO-08",
+      "plane": "ACP Telemetry/AppLinks/Order/Seller",
+      "title_cn": "ACP #114 卖家侧支付向 Agent 传输凭证 / 积分不足（2000 < 4500）与 #111 x402 未验签拦截",
+      "title_en": "ACP #114 Seller-Backed Credential Transfer / Insufficient Points (2000 < 4500) & #111 Unverified x402 Block",
+      "question_cn": "拦截 dev.acp.seller_backed.points 向 Agent 泄露凭证、积分余额不足（2000 < 4500）及 x402 未经 Facilitator 验签",
+      "question_en": "Block dev.acp.seller_backed.points transferring credentials, insufficient points (2000 < 4500) & unverified x402",
+      "task_type": "noul",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "acp_seller_backed_or_x402_crypto_handler_violation"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.62,
+      "inputs": {
+        "domain": "acp",
+        "complete_checkout_has_legacy_risk_signals_object": false,
+        "complete_checkout_session_context": {
+          "ip_address": "198.51.100.42"
+        },
+        "delegate_payment_session_context": null,
+        "delegate_payment_risk_signals": [
+          {
+            "type": "bot_detection",
+            "score": 10,
+            "action": "allow"
+          }
+        ],
+        "product_url": "https://merchant.example/products/sku_1",
+        "app_links": [],
+        "client_supported_platforms": [
+          "web"
+        ],
+        "selected_uri": "https://merchant.example/products/sku_1",
+        "order_status": "completed",
+        "line_item_quantities": {
+          "ordered": 2,
+          "fulfilled": 2,
+          "canceled": 0,
+          "returned": 0
+        },
+        "content_attribution_urls": [
+          "https://www.wirecutter.com/reviews/best-headphones"
+        ],
+        "seller_backed_handler": {
+          "id": "dev.acp.seller_backed.points",
+          "requires_delegate_payment": true,
+          "requires_pci_compliance": true,
+          "credentials_transferred_to_agent": true,
+          "points_balance_minor": 2000,
+          "purchase_amount_minor": 4500
+        },
+        "x402_crypto_facilitator_verified": false
+      }
+    },
+    {
+      "scenario_id": "TO-09",
+      "plane": "AP2 Instrument/Vectors/Zod/Ghost",
+      "title_cn": "Google AP2 #301 (type, id) 二元组匹配、#307 3 段黄金向量（2 个 ~~）与 #305 收据必填项正常放行",
+      "title_en": "Google AP2 #301 (type, id) Match, #307 3-Segment Golden Vector (2 '~~' Joins) & #305 Receipt Branch Pass",
+      "question_cn": "校验 (card, pi-1) 精确匹配、3 段链含 2 个 ~~ 且以 ~ 结尾、收据双确认号齐备及 Base 8453 限额内授权",
+      "question_en": "Verify (card, pi-1) exact match, 3-segment chain with 2 '~~' joins & trailing '~', receipt confirmation IDs & Base 8453 cap",
+      "task_type": "choice",
+      "expected_action": "ACT_AUTOMATICALLY",
+      "ai_action": "ACT_AUTOMATICALLY",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": true,
+      "reason_codes": [],
+      "ai_latency_ms": 0.33,
+      "classic_latency_ms": 4.61,
+      "inputs": {
+        "domain": "ap2",
+        "allowed_instruments": [
+          {
+            "id": "pi-1",
+            "type": "card"
+          }
+        ],
+        "presented_instrument": {
+          "id": "pi-1",
+          "type": "card"
+        },
+        "vector_segment_count": 3,
+        "wire_double_tilde_joins": 2,
+        "wire_ends_with_tilde": true,
+        "jws_signatures_valid": true,
+        "receipt_payload": {
+          "status": "success",
+          "psp_confirmation_id": "psp_881",
+          "network_confirmation_id": "net_992"
+        },
+        "ghost_protocol_mandate": {
+          "chain_id": 8453,
+          "eip712_signature_valid": true,
+          "monthly_cap_minor": 20000,
+          "requested_spend_minor": 12500
+        }
+      }
+    },
+    {
+      "scenario_id": "TO-10",
+      "plane": "AP2 Instrument/Vectors/Zod/Ghost",
+      "title_cn": "Google AP2 #301 同 id='pi-1' 不同 type='bank' != 'card' 支付工具越权匹配拦截（修复 #299 漏洞）",
+      "title_en": "Google AP2 #301 Same id='pi-1' Different type='bank' != 'card' Instrument Spoofing Block (Fixes #299)",
+      "question_cn": "拦截闭式授权呈递 {id: 'pi-1', type: 'bank'} 试图通过仅匹配 id 的漏洞越权满足 {id: 'pi-1', type: 'card'}",
+      "question_en": "Block closed mandate presenting {id: 'pi-1', type: 'bank'} against allowed [{id: 'pi-1', type: 'card'}]",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ap2_allowed_payment_instrument_type_mismatch"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.65,
+      "inputs": {
+        "domain": "ap2",
+        "allowed_instruments": [
+          {
+            "id": "pi-1",
+            "type": "card"
+          }
+        ],
+        "presented_instrument": {
+          "id": "pi-1",
+          "type": "bank"
+        },
+        "vector_segment_count": 3,
+        "wire_double_tilde_joins": 2,
+        "wire_ends_with_tilde": true,
+        "jws_signatures_valid": true,
+        "receipt_payload": {
+          "status": "success",
+          "psp_confirmation_id": "psp_881",
+          "network_confirmation_id": "net_992"
+        },
+        "ghost_protocol_mandate": {
+          "chain_id": 8453,
+          "eip712_signature_valid": true,
+          "monthly_cap_minor": 20000,
+          "requested_spend_minor": 12500
+        }
+      }
+    },
+    {
+      "scenario_id": "TO-11",
+      "plane": "AP2 Instrument/Vectors/Zod/Ghost",
+      "title_cn": "Google AP2 #307 delegate-SD-JWT 黄金向量 ~~ 分隔符坍缩（1 != 2）与尾部缺失 ~ 拦截",
+      "title_en": "Google AP2 #307 delegate-SD-JWT Golden Vector Collapsed '~~' -> '~' (1 != 2) & Missing Trailing '~' Block",
+      "question_cn": "拦截 3 段委托链将 ~~ 坍缩为单 ~（仅 1 个 ~~）并篡改 JWS 签名的线格式破坏行为",
+      "question_en": "Block 3-segment delegation chain with collapsed '~~' -> '~' (only 1 '~~' join) and tampered JWS signature",
+      "task_type": "score",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ap2_delegate_sd_jwt_golden_vector_wire_violation"
+      ],
+      "ai_latency_ms": 0.35,
+      "classic_latency_ms": 4.63,
+      "inputs": {
+        "domain": "ap2",
+        "allowed_instruments": [
+          {
+            "id": "pi-1",
+            "type": "card"
+          }
+        ],
+        "presented_instrument": {
+          "id": "pi-1",
+          "type": "card"
+        },
+        "vector_segment_count": 3,
+        "wire_double_tilde_joins": 1,
+        "wire_ends_with_tilde": false,
+        "jws_signatures_valid": false,
+        "receipt_payload": {
+          "status": "success",
+          "psp_confirmation_id": "psp_881",
+          "network_confirmation_id": "net_992"
+        },
+        "ghost_protocol_mandate": {
+          "chain_id": 8453,
+          "eip712_signature_valid": true,
+          "monthly_cap_minor": 20000,
+          "requested_spend_minor": 12500
+        }
+      }
+    },
+    {
+      "scenario_id": "TO-12",
+      "plane": "AP2 Instrument/Vectors/Zod/Ghost",
+      "title_cn": "Google AP2 #305 PaymentReceipt 成功分支缺失 network_confirmation_id 与 #216 超月度限额拦截",
+      "title_en": "Google AP2 #305 PaymentReceipt Missing network_confirmation_id & #216 Monthly Cap Overspend Block",
+      "question_cn": "拦截成功收据漏填 network_confirmation_id（json-schema-to-zod 根级 oneOf 缺陷）及 $250 > $200 月度超支",
+      "question_en": "Block success receipt missing network_confirmation_id (json-schema-to-zod sibling oneOf bug) & $250 > $200 cap",
+      "task_type": "noul",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "ap2_receipt_oneof_branch_required_fields_missing",
+        "ap2_autonomous_infra_intent_mandate_cap_or_sig_invalid"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.64,
+      "inputs": {
+        "domain": "ap2",
+        "allowed_instruments": [
+          {
+            "id": "pi-1",
+            "type": "card"
+          }
+        ],
+        "presented_instrument": {
+          "id": "pi-1",
+          "type": "card"
+        },
+        "vector_segment_count": 2,
+        "wire_double_tilde_joins": 1,
+        "wire_ends_with_tilde": true,
+        "jws_signatures_valid": true,
+        "receipt_payload": {
+          "status": "success",
+          "psp_confirmation_id": "psp_881"
+        },
+        "ghost_protocol_mandate": {
+          "chain_id": 8453,
+          "eip712_signature_valid": true,
+          "monthly_cap_minor": 20000,
+          "requested_spend_minor": 25000
+        }
+      }
+    },
+    {
+      "scenario_id": "TO-13",
+      "plane": "Sierra tau2 Abort/NL-JSON/Checkpoint/Campus",
+      "title_cn": "Sierra tau2 #548 正常 USER_STOP、#562 代码块 JSON 解析、#533 原子检查点与 #606/#596 97 任务同步放行",
+      "title_en": "Sierra tau2 #548 Normal USER_STOP, #562 Fenced JSON Parse, #533 Atomic Checkpoint & #606/#596 97-Task Sync Pass",
+      "question_cn": "校验 ###STOP### 正常判分、```json 代码块解析、检查点先写后删、银行 97 任务同步、小写 user_id 与 campus v1.0.1",
+      "question_en": "Verify ###STOP### grading, ```json fence parsing, write-before-unlink checkpoint, 97 banking tasks, lowercase user_id & campus v1.0.1",
+      "task_type": "choice",
+      "expected_action": "ACT_AUTOMATICALLY",
+      "ai_action": "ACT_AUTOMATICALLY",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": true,
+      "reason_codes": [],
+      "ai_latency_ms": 0.33,
+      "classic_latency_ms": 4.62,
+      "inputs": {
+        "domain": "tau2",
+        "user_message": "Thank you, everything is resolved ###STOP###",
+        "recorded_termination_reason": "USER_STOP",
+        "assigned_reward": 1.0,
+        "nl_judge_raw_response": "```json\n{\"results\": [{\"met\": true, \"justification\": \"Verified\"}]}\n```",
+        "malformed_json_swallowed_as_empty": false,
+        "checkpoint_unlinked_before_replacement_write": false,
+        "banking_aggregate_task_count": 97,
+        "banking_individual_task_count": 97,
+        "banking_task_102_has_nl_assertion": true,
+        "airline_user_id": "sara_doe_496",
+        "campus_reward_basis": [
+          "DB",
+          "COMMUNICATE"
+        ],
+        "campus_has_env_assertions": true
+      }
+    },
+    {
+      "scenario_id": "TO-14",
+      "plane": "Sierra tau2 Abort/NL-JSON/Checkpoint/Campus",
+      "title_cn": "Sierra tau2 #548 用户模拟器 ###OUT-OF-SCOPE### 中止被误记为 USER_STOP 并获满分 1.0 拦截",
+      "title_en": "Sierra tau2 #548 ###OUT-OF-SCOPE### Abort Conflated with USER_STOP and Awarded 1.0 Reward Block",
+      "question_cn": "拦截 step() / full_duplex 将 ###OUT-OF-SCOPE### 误记为 USER_STOP 从而绕过提前终止 0.0 分规则（#517）",
+      "question_en": "Block step() / full_duplex recording ###OUT-OF-SCOPE### as USER_STOP and bypassing premature-termination 0.0 reward (#517)",
+      "task_type": "score",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "tau2_out_of_scope_abort_conflated_with_user_stop"
+      ],
+      "ai_latency_ms": 0.35,
+      "classic_latency_ms": 4.65,
+      "inputs": {
+        "domain": "tau2",
+        "user_message": "Scenario missing details ###OUT-OF-SCOPE### ###STOP###",
+        "recorded_termination_reason": "USER_STOP",
+        "assigned_reward": 1.0,
+        "nl_judge_raw_response": "{\"results\": [{\"met\": true}]}",
+        "malformed_json_swallowed_as_empty": false,
+        "checkpoint_unlinked_before_replacement_write": false,
+        "banking_aggregate_task_count": 97,
+        "banking_individual_task_count": 97,
+        "banking_task_102_has_nl_assertion": true,
+        "airline_user_id": "sara_doe_496",
+        "campus_reward_basis": [
+          "DB",
+          "COMMUNICATE"
+        ],
+        "campus_has_env_assertions": true
+      }
+    },
+    {
+      "scenario_id": "TO-15",
+      "plane": "Sierra tau2 Abort/NL-JSON/Checkpoint/Campus",
+      "title_cn": "Sierra tau2 #562 损坏代码块 JSON 被吞为空结果与 #533 检查点替换写入前提前 unlink 旧轨迹拦截",
+      "title_en": "Sierra tau2 #562 Malformed Fenced JSON Swallowed & #533 Pre-Write Checkpoint Unlink Data Loss Block",
+      "question_cn": "拦截 NL 裁判损坏 JSON 被静默转为空结果，以及目录检查点在新轨迹写入完成前提前删除旧轨迹文件",
+      "question_en": "Block malformed NL judge JSON swallowed into empty results & unlinking old checkpoint trajectory before replacement write",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "tau2_nl_judge_fenced_json_or_malformed_swallowed",
+        "tau2_checkpoint_pre_unlink_data_loss_on_write_failure"
+      ],
+      "ai_latency_ms": 0.34,
+      "classic_latency_ms": 4.63,
+      "inputs": {
+        "domain": "tau2",
+        "user_message": "Done ###STOP###",
+        "recorded_termination_reason": "USER_STOP",
+        "assigned_reward": 1.0,
+        "nl_judge_raw_response": "```json\n{malformed_json\n```",
+        "malformed_json_swallowed_as_empty": true,
+        "checkpoint_unlinked_before_replacement_write": true,
+        "banking_aggregate_task_count": 97,
+        "banking_individual_task_count": 97,
+        "banking_task_102_has_nl_assertion": true,
+        "airline_user_id": "sara_doe_496",
+        "campus_reward_basis": [
+          "DB",
+          "COMMUNICATE"
+        ],
+        "campus_has_env_assertions": true
+      }
+    },
+    {
+      "scenario_id": "TO-16",
+      "plane": "Sierra tau2 Abort/NL-JSON/Checkpoint/Campus",
+      "title_cn": "Sierra tau2 #606 银行任务 102 缺失 NL_ASSERTION、#602 航空大写 user_id 与 #596 campus 混入 ACTION 拦截",
+      "title_en": "Sierra tau2 #606 Stale Banking Task 102 Missing NL_ASSERTION, #602 Capitalized user_id & #596 Campus ACTION Block",
+      "question_cn": "拦截 tasks.json 任务 102 漏掉 NL_ASSERTION、语音转写大写 Sara_Doe_496 及 campus 域混入 ACTION 评分",
+      "question_en": "Block stale tasks.json omitting NL_ASSERTION on task 102, capitalized 'Sara_Doe_496' & campus domain using ACTION",
+      "task_type": "choice",
+      "expected_action": "SEND_TO_HUMAN",
+      "ai_action": "SEND_TO_HUMAN",
+      "classic_action": "ACT_AUTOMATICALLY",
+      "ai_passed": true,
+      "classic_passed": false,
+      "reason_codes": [
+        "tau2_banking_aggregate_or_airline_campus_invariant_violation"
+      ],
+      "ai_latency_ms": 0.35,
+      "classic_latency_ms": 4.64,
+      "inputs": {
+        "domain": "tau2",
+        "user_message": "Done ###STOP###",
+        "recorded_termination_reason": "USER_STOP",
+        "assigned_reward": 1.0,
+        "nl_judge_raw_response": "{\"results\": [{\"met\": true}]}",
+        "malformed_json_swallowed_as_empty": false,
+        "checkpoint_unlinked_before_replacement_write": false,
+        "banking_aggregate_task_count": 97,
+        "banking_individual_task_count": 97,
+        "banking_task_102_has_nl_assertion": false,
+        "airline_user_id": "Sara_Doe_496",
+        "campus_reward_basis": [
+          "DB",
+          "ACTION",
+          "COMMUNICATE"
+        ],
+        "campus_has_env_assertions": false
+      }
+    }
+  ],
+  "perturbation_checks": [
+    {
+      "scenario_id": "TO-01",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "ACT_AUTOMATICALLY",
+      "perturbed_action": "ACT_AUTOMATICALLY",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-02",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-03",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-04",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-05",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "ACT_AUTOMATICALLY",
+      "perturbed_action": "ACT_AUTOMATICALLY",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-06",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-07",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-08",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-09",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "ACT_AUTOMATICALLY",
+      "perturbed_action": "ACT_AUTOMATICALLY",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-10",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-11",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-12",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-13",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "ACT_AUTOMATICALLY",
+      "perturbed_action": "ACT_AUTOMATICALLY",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-14",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-15",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    },
+    {
+      "scenario_id": "TO-16",
+      "perturbation": "reverse_candidate_and_header_order",
+      "original_action": "SEND_TO_HUMAN",
+      "perturbed_action": "SEND_TO_HUMAN",
+      "change_pts": 0.0
+    }
+  ],
+  "latency_tiers": [
+    {
+      "label": "1x Single Request (p50)",
+      "ai_ms": 0.34,
+      "classic_ms": 4.63
+    },
+    {
+      "label": "4x Concurrent Burst (p50)",
+      "ai_ms": 0.4,
+      "classic_ms": 5.51
+    },
+    {
+      "label": "16x Full Matrix Replay (p50)",
+      "ai_ms": 0.48,
+      "classic_ms": 5.74
+    }
+  ],
+  "report_sha256": "542af2fb6d2e4807bfcf8d009907875642fea3395e020ab01eda2cc2fdca30d9"
+}

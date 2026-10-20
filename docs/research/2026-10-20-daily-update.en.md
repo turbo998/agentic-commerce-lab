@@ -186,6 +186,24 @@
   - Unit Tests: [`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py) (**371/371** total unit tests passing)
   - Bilingual Architecture Reference (§65): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 67: 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`TO-01..TO-16`: UCP Permalink `ucp/version` & State-Bound Cart Offer, ACP `session_context` Telemetry & 3-Field Order Conservation, AP2 `(type, id)` Instrument Matching & `~~` Golden Vectors, Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` Abort & 97-Task Sync)
+
+- **16-Scenario Deterministic Evaluation Matrix (`TO-01..TO-16`)**:
+  - `TO-01..TO-04`: UCP `#793` permalink `ucp/version=YYYY-MM-DD` control parameter & redirect consumption, `#792` `TokenCredential.binding` preservation & `identity` non-authentication, `#773` state-bound Cart `Offer` in `actions` map, `#740` immutable terminal Cart `status`, `#730` `action.ready` `maxProperties: 0`, `#719` `digital_delivery` Order pointer, and `#716` OpenAPI 3.1 `securitySchemes`.
+  - `TO-05..TO-08`: ACP `#238` `session_context` telemetry object vs. `delegate_payment.risk_signals` array, `#237` `app_links` deep links with `Product.url` fallback, `#232` 3-field Order quantity conservation (`ordered == fulfilled + canceled`) & `completed` status, and `#149`/`#114`/`#111` `content_attribution`, seller-backed points balance check, and `x402` crypto facilitator verification.
+  - `TO-09..TO-12`: Google AP2 `#301` `AllowedPaymentInstrumentEvaluator` `(type, id)` tuple matching (blocking `{id: "pi-1", type: "bank"}` against `[{id: "pi-1", type: "card"}]`), `#307` `delegate-SD-JWT` golden vector `N - 1` `~~` joins & trailing `~`, `#305` `@ap2-protocol/sdk` receipt root `oneOf` branch required fields, and `#216` `ghost-protocol` Base `8453` monthly cap.
+  - `TO-13..TO-16`: Sierra $\tau$-bench 2.0 `#548` `###OUT-OF-SCOPE###` abort recorded as `OUT_OF_SCOPE` (`0.0` reward), `#562` fenced Markdown JSON extraction in NL judges, `#533` deferred checkpoint unlink on replacement write, and `#606`/`#602`/`#596` 97-task banking aggregate sync (task `102` `NL_ASSERTION`), lowercase airline `user_id`, and `campus` `v1.0.1` scoring.
+- **Quantitative Results**:
+  - **AI-Native 6-Plane Architecture**: **16/16 (100.0%)** accuracy, **100.0%** reversed-order stability, **0.34 ms** median latency.
+  - **Classic 3-Tier Baseline**: **4/16 (25.0%)** accuracy, **4.63 ms** median latency (**13.6x** speedup for AI-Native).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py`](../../lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py)
+  - Unit Tests: [`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py) (**373/373** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/report.json)
+
+
 
 
 

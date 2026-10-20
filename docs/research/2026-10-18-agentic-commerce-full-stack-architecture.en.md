@@ -77,6 +77,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§65.2**: ACP `session_context` Telemetry Unification (`#238`), Embedded `app_links` Deep Links (`#237`), Post-Checkout 3-Field Order Alignment (`#232`) & Seller-Backed / `x402` Crypto Handlers (`#149`, `#114`, `#111`).
   - **§65.3**: Google AP2 `(type, id)` Allowed Payment Instrument Matching (`#301`), Versioned `delegate-SD-JWT` Golden Vectors (`#307`) & TypeScript/Zod Receipt `oneOf` Branch Invariants (`#305`, `#216`).
   - **§65.4**: Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` Abort Classification (`#548`), Fenced Markdown JSON NL-Judge Parsing (`#562`), Deferred Checkpoint Unlink (`#533`) & Banking `tasks.json` / Airline `user_id` / `campus` Domain Invariants (`#606`, `#602`, `#596`).
+- **§66 (Stage 67 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`TO-01..TO-16`)**: `lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+
 
 
 

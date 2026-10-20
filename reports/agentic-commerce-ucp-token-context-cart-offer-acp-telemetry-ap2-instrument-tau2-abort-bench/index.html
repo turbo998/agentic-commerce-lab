@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage 67 · UCP 永久链接版本/购物车报价、ACP 遥测/订单、AP2 (type,id) 匹配与 τ-bench 中止护栏 7-Card 基准报告</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 24px; max-width: 1520px; margin: 0 auto; }
+  .card { background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 22px; min-height: 560px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #38BDF8; text-transform: uppercase; }
+  h2 { font-size: 18px; line-height: 1.35; margin: 10px 0 14px; color: #F1F5F9; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+  .wb-col { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .quote { background: #0F172A; border-left: 3px solid #3B82F6; padding: 10px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 5px 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .pill.pass { background: #064E3B; color: #6EE7B7; }
+  .pill.fail { background: #7F1D1D; color: #FCA5A5; }
+  .muted { color: #94A3B8; font-size: 10px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .callout { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 11px; color: #CBD5E1; margin-top: 10px; }
+  .bar-group { margin: 8px 0; }
+  .bar-label { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .bar-track { background: #1E293B; height: 18px; border-radius: 6px; position: relative; margin: 4px 0; overflow: hidden; }
+  .bar-fill-ai { background: #3B82F6; height: 100%; }
+  .bar-fill-cl { background: #CBD5E1; height: 100%; }
+  .bar-val { position: absolute; right: 8px; top: 1px; font-size: 10px; color: #0F172A; font-weight: 700; background: rgba(248,250,252,0.85); padding: 0 4px; border-radius: 4px; }
+  .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fit-box.good { background: #064E3B; border: 1px solid #059669; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .fit-box.bad { background: #450A0A; border: 1px solid #DC2626; border-radius: 10px; padding: 12px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENT PROTOCOL GUARDRAILS (STAGE 67)</div>
+      <h2>AI-Native 确定性护栏在 16 个跨协议场景中达 16/16 (100.0%)，中位延迟 0.34 ms（提速 13.6x）</h2>
+      <div class="workbench">
+        <div class="wb-col">
+          <strong>场景与阈值分档</strong>
+          <p><code>TO-01..TO-16</code> (4 Planes)<br>Act Automatically: 1.00<br>Send to Human: 0.00</p>
+        </div>
+        <div class="wb-col">
+          <strong>结构化协议输入</strong>
+          <p>UCP #793/#792/#773/#740/#730/#719/#716<br>ACP #238/#237/#232/#114<br>AP2 #301/#307/#305 · τ-bench #548/#562/#533/#606</p>
+        </div>
+        <div class="wb-col">
+          <strong>延迟与决策分布</strong>
+          <p>AI Median: 0.34 ms<br>Classic Median: 4.63 ms<br>4 Act / 12 Human Gate</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Provenance:</strong> measured (deterministic local guard execution on primary-source PR invariants) · SHA-256: <code>542af2fb6d2e4807bfcf8d00...</code>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: TO-10 (AP2 #301 INSTRUMENT MATCHING)</div>
+      <h2>Google AP2 #301 强制 (type, id) 二元组匹配，0.34 ms 拦截同 id 不同 type 越权支付</h2>
+      <div class="quote">
+        Input: <code>allowed=[{"id":"pi-1","type":"card"}]</code> vs <code>presented={"id":"pi-1","type":"bank"}</code>
+      </div>
+      <div class="callout">
+        <span class="pill pass">Task: choice</span>
+        <span class="pill pass">Action: SEND_TO_HUMAN</span>
+        <p>Reason Code: <code>ap2_allowed_payment_instrument_type_mismatch</code> · Confidence: 100.0%</p>
+      </div>
+    </div>
+    <div class="callout">
+      Classic 3-Tier Answer: <code>ACT_AUTOMATICALLY</code> (✕ Miss — matched on <code>allowed.id == instrument.id</code> alone per #299 item 2)
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED (16-SCENARIO MATRIX)</div>
+      <h2>全量 16 场景评测矩阵：AI-Native 16/16 (100.0%) 对比 经典三层基线 4/16 (25.0%)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION / REASON</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>TO-01</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #793 永久链接版本、#792 令牌绑定、#773/#740 购物车报价与终态及 #716 securitySchemes 正常放行<br><span class='muted'>校验 ucp/version=2026-08-25 消费、TokenCredential.binding 一致、actions 报价、ordered 终态、action.ready={} 与 securitySchemes</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-02</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #793 预发布版本泄漏至重定向 URL 与 #792 TokenCredential.binding 篡改及 identity 冒充认证拦截<br><span class='muted'>拦截 ucp/version=2026-08-25-rc1 泄漏至重定向 URL、浏览器返回 JSON version_unsupported 及 Token binding 篡改</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_permalink_version_missing_or_leaked_on_redirect, ucp_token_credential_binding_mutated_or_mismatch</code></td></tr><tr><td><code>TO-03</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #773 平行 offers.available[] / 陈旧 state_ref 与 #740 购物车 ordered 终态回退 active 拦截<br><span class='muted'>拦截平行 offers.available[]、报价 state_ref 失配及将已下单 ordered 购物车回退为 active</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_cart_offer_state_ref_mismatch_or_parallel_array, ucp_cart_terminal_status_invalid_or_mutated</code></td></tr><tr><td><code>TO-04</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #730 非空 action.ready、#719 数字交付缓存余额/提前放款与 #716 OpenAPI 忽略认证头拦截<br><span class='muted'>拦截非空 action.ready 成功对象、digital_delivery 缓存余额/交付即结算及 OpenAPI 声明被忽略的 Authorization 头</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_payment_action_ready_non_empty_success_object, ucp_digital_delivery_cached_balance_or_premature_settlement, ucp_openapi_ignored_auth_header_parameter_declared</code></td></tr><tr><td><code>TO-05</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #238 session_context 遥测、#237 app_links、#232 订单 3 字段数量守恒与 #114 卖家侧积分支付放行<br><span class='muted'>校验 session_context 对象与 risk_signals 数组分离、app_links 命中、ordered=3(2+1) 守恒及 points 余额充足</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-06</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #238 complete_checkout.risk_signals 旧字段冲突与 delegate_payment.risk_signals 非数组拦截<br><span class='muted'>拦截 complete_checkout 沿用旧版 risk_signals 遥测对象及将 delegate_payment.risk_signals 传为非标准化数组</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_session_context_or_risk_signals_schema_collision</code></td></tr><tr><td><code>TO-07</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #237 app_links 缺失规范 url 回退与 #232 订单状态重载 fulfilled 及数量失衡拦截<br><span class='muted'>拦截客户端不支持 ios 时未回退至 Product.url，以及订单级误用 fulfilled 状态和 ordered!=fulfilled+canceled</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_feed_app_links_invalid_or_missing_url_fallback, acp_order_post_checkout_quantity_or_status_violation</code></td></tr><tr><td><code>TO-08</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #114 卖家侧支付向 Agent 传输凭证 / 积分不足（2000 &lt; 4500）与 #111 x402 未验签拦截<br><span class='muted'>拦截 dev.acp.seller_backed.points 向 Agent 泄露凭证、积分余额不足（2000 &lt; 4500）及 x402 未经 Facilitator 验签</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_seller_backed_or_x402_crypto_handler_violation</code></td></tr><tr><td><code>TO-09</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #301 (type, id) 二元组匹配、#307 3 段黄金向量（2 个 ~~）与 #305 收据必填项正常放行<br><span class='muted'>校验 (card, pi-1) 精确匹配、3 段链含 2 个 ~~ 且以 ~ 结尾、收据双确认号齐备及 Base 8453 限额内授权</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-10</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #301 同 id=&#x27;pi-1&#x27; 不同 type=&#x27;bank&#x27; != &#x27;card&#x27; 支付工具越权匹配拦截（修复 #299 漏洞）<br><span class='muted'>拦截闭式授权呈递 {id: &#x27;pi-1&#x27;, type: &#x27;bank&#x27;} 试图通过仅匹配 id 的漏洞越权满足 {id: &#x27;pi-1&#x27;, type: &#x27;card&#x27;}</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_allowed_payment_instrument_type_mismatch</code></td></tr><tr><td><code>TO-11</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #307 delegate-SD-JWT 黄金向量 ~~ 分隔符坍缩（1 != 2）与尾部缺失 ~ 拦截<br><span class='muted'>拦截 3 段委托链将 ~~ 坍缩为单 ~（仅 1 个 ~~）并篡改 JWS 签名的线格式破坏行为</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_delegate_sd_jwt_golden_vector_wire_violation</code></td></tr><tr><td><code>TO-12</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #305 PaymentReceipt 成功分支缺失 network_confirmation_id 与 #216 超月度限额拦截<br><span class='muted'>拦截成功收据漏填 network_confirmation_id（json-schema-to-zod 根级 oneOf 缺陷）及 $250 &gt; $200 月度超支</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_receipt_oneof_branch_required_fields_missing, ap2_autonomous_infra_intent_mandate_cap_or_sig_invalid</code></td></tr><tr><td><code>TO-13</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #548 正常 USER_STOP、#562 代码块 JSON 解析、#533 原子检查点与 #606/#596 97 任务同步放行<br><span class='muted'>校验 ###STOP### 正常判分、```json 代码块解析、检查点先写后删、银行 97 任务同步、小写 user_id 与 campus v1.0.1</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-14</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #548 用户模拟器 ###OUT-OF-SCOPE### 中止被误记为 USER_STOP 并获满分 1.0 拦截<br><span class='muted'>拦截 step() / full_duplex 将 ###OUT-OF-SCOPE### 误记为 USER_STOP 从而绕过提前终止 0.0 分规则（#517）</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_out_of_scope_abort_conflated_with_user_stop</code></td></tr><tr><td><code>TO-15</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #562 损坏代码块 JSON 被吞为空结果与 #533 检查点替换写入前提前 unlink 旧轨迹拦截<br><span class='muted'>拦截 NL 裁判损坏 JSON 被静默转为空结果，以及目录检查点在新轨迹写入完成前提前删除旧轨迹文件</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_nl_judge_fenced_json_or_malformed_swallowed, tau2_checkpoint_pre_unlink_data_loss_on_write_failure</code></td></tr><tr><td><code>TO-16</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #606 银行任务 102 缺失 NL_ASSERTION、#602 航空大写 user_id 与 #596 campus 混入 ACTION 拦截<br><span class='muted'>拦截 tasks.json 任务 102 漏掉 NL_ASSERTION、语音转写大写 Sara_Doe_496 及 campus 域混入 ACTION 评分</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_banking_aggregate_or_airline_campus_invariant_violation</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      阈值门禁：任何违反 UCP/ACP/AP2/τ-bench 确定性契约的载荷立即触发 SEND_TO_HUMAN（零假阳性放行）。
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD (PROTOCOL & SCORING MECHANICS)</div>
+      <h2>从结构化协议载荷到确定性护栏裁决的零信任内联校验流</h2>
+      <pre>{
+  &quot;domain&quot;: &quot;ap2&quot;,
+  &quot;allowed_instruments&quot;: [
+    {
+      &quot;id&quot;: &quot;pi-1&quot;,
+      &quot;type&quot;: &quot;card&quot;
+    }
+  ],
+  &quot;presented_instrument&quot;: {
+    &quot;id&quot;: &quot;pi-1&quot;,
+    &quot;type&quot;: &quot;bank&quot;
+  },
+  &quot;vector_segment_count&quot;: 3,
+  &quot;wire_double_tilde_joins&quot;: 2,
+  &quot;wire_ends_with_tilde&quot;: true,
+  &quot;jws_signatures_valid&quot;: true,
+  &quot;receipt_payload&quot;: {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;psp_confirmation_id&quot;: &quot;psp_881&quot;,
+    &quot;network_confirmation_id&quot;: &quot;net_992&quot;
+  },
+  &quot;ghost_protocol_mandate&quot;: {
+    &quot;chain_id&quot;: 8453,
+    &quot;eip712_signature_valid&quot;: true,
+    &quot;monthly_cap_minor&quot;: 20000,
+    &quot;requested_spend_minor&quot;: 12500
+  }
+}</pre>
+      <div style="text-align:center;font-weight:700;color:#38BDF8;">↓ verify_ap2_instrument_type_id_golden_vectors_and_zod_sdk ↓</div>
+      <pre>&lt;answer&gt;
+action: SEND_TO_HUMAN
+reason_codes: [&quot;ap2_allowed_payment_instrument_type_mismatch&quot;]
+matched_instrument_pair: null
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="callout">
+      确定性复杂度 O(1)，零外部 LLM 裁判调用，完全杜绝幻觉放行。
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK (PERTURBATION & CONSISTENCY)</div>
+      <h2>选项/允许列表/深链/奖励基线逆序扰动下保持 100.0% 一致性（0.0 pts 漂移）</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>TO-01</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-02</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-03</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-04</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-05</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-06</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-07</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-08</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-09</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-10</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-11</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-12</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-13</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-14</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-15</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-16</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      在全部 16 个场景的列表顺序反转与白名单重排测试中，AI-Native 护栏输出保持 100.0% 恒等。
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY (BATCHING & SCALING LATENCY)</div>
+      <h2>内联护栏中位延迟 0.34 ms，相比经典三层反序列化管线（4.63 ms）提速 13.6x</h2>
+      <div class='bar-group'><div class='bar-label'>1x Single Request (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:5.7%'></div><span class='bar-val'>AI-Native: 0.34 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:77.2%'></div><span class='bar-val'>Classic 3-Tier: 4.63 ms</span></div></div><div class='bar-group'><div class='bar-label'>4x Concurrent Burst (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:6.7%'></div><span class='bar-val'>AI-Native: 0.40 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:91.8%'></div><span class='bar-val'>Classic 3-Tier: 5.51 ms</span></div></div><div class='bar-group'><div class='bar-label'>16x Full Matrix Replay (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:8.0%'></div><span class='bar-val'>AI-Native: 0.48 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:95.7%'></div><span class='bar-val'>Classic 3-Tier: 5.74 ms</span></div></div>
+    </div>
+    <div class="callout">
+      蓝色（#3B82F6）为 AI-Native 6-Plane 内联护栏，灰色（#CBD5E1）为经典三层 Web 架构基线。
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE (GOOD FIT VS NOT FOR & READINESS)</div>
+      <h2>适用边界：高保障多跳委托结账与双控基准评测的必备确定性门禁</h2>
+      <div class="fit-grid">
+        <div class="fit-box good">
+          <strong>✅ 适用场景 (Good fit)</strong>
+          <ul>
+            <li>UCP 永久链接 ucp/version 锁定、TokenCredential 绑定透传与 Cart actions 报价</li>
+            <li>ACP session_context 遥测分离、app_links 深链与 3 字段订单数量守恒</li>
+            <li>Google AP2 (type,id) 支付工具匹配、~~ 黄金向量与 τ-bench OUT_OF_SCOPE 判分</li>
+          </ul>
+        </div>
+        <div class="fit-box bad">
+          <strong>⛔ 不适用场景 (Not for)</strong>
+          <ul>
+            <li>依赖仅比对 id 的松散支付工具授权或允许未验签 x402 结算的旧管线</li>
+            <li>在 OpenAPI 3.1 中通过 parameters[] 声明 Authorization 头的非标准服务</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Readiness & Provenance:</strong> Deterministic local benchmark (`independently_reproduced=true`, `measured` on Stage 66 guard suite, Apache-2.0 / MIT compatible).
+    </div>
+  </section>
+</div>
+</body>
+</html>

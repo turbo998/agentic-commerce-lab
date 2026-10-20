@@ -186,6 +186,24 @@
   - 单元测试：[`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_guard.py)（全仓库 **371/371** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§65)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 67：16 场景中英双语 7-Card 4:5 基准评测报告（`TO-01..TO-16`：UCP 永久链接 `ucp/version` 与状态绑定 Cart `Offer`、ACP `session_context` 遥测与 3 字段订单守恒、AP2 `(type, id)` 支付工具二元组匹配与 `~~` 黄金向量、Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` 中止归类与 97 任务同步）
+
+- **16 场景确定性基准评测（`TO-01..TO-16`）**：
+  - `TO-01..TO-04`：UCP `#793` 永久链接 `ucp/version=YYYY-MM-DD` 控制参数消费与重定向脱敏、`#792` `TokenCredential.binding` 透传与 `identity` 禁充当认证、`#773` Cart `actions` 状态绑定 `Offer`（禁平行 `offers.available[]`）、`#740` 购物车 `ordered` 终态不可变、`#730` `action.ready` `maxProperties: 0`、`#719` `digital_delivery` 指针与 `#716` OpenAPI 3.1 `securitySchemes`。
+  - `TO-05..TO-08`：ACP `#238` `session_context` 遥测对象与 `delegate_payment.risk_signals` 欺诈评估数组分离、`#237` `app_links` 优先级深链与 `Product.url` 回退、`#232` 结账后订单 3 字段数量守恒（`ordered == fulfilled + canceled`）与 `completed` 状态，以及 `#149`/`#114`/`#111` `content_attribution`、卖家侧托管支付积分余额校验与 `x402` 加密货币 Facilitator 验签。
+  - `TO-09..TO-12`：Google AP2 `#301` `AllowedPaymentInstrumentEvaluator` `(type, id)` 二元组匹配（拦截同 `id="pi-1"` 不同 `type="bank" != "card"`）、`#307` `delegate-SD-JWT` 黄金向量 $N-1$ 个 `~~` 分隔符与尾部 `~`、`#305` `@ap2-protocol/sdk` 收据根级 `oneOf` 分支必填项与 `#216` `ghost-protocol` Base `8453` 月度限额。
+  - `TO-13..TO-16`：Sierra $\tau$-bench 2.0 `#548` `###OUT-OF-SCOPE###` 优先于 `###STOP###` 归类为 `OUT_OF_SCOPE` 并判 `0.0` 分、`#562` NL 裁判代码块 JSON 解析与损坏 JSON 抛错、`#533` 目录检查点先写后删原子替换与 `#606`/`#602`/`#596` 银行 97 任务同步（含任务 `102` `NL_ASSERTION`）、小写航空 `user_id` 及 `campus` 双控域 `v1.0.1` 评分。
+- **量化评测结果**：
+  - **AI-Native 6-Plane 架构**：**16/16 (100.0%)** 场景准确率，逆序扰动稳定性 **100.0%**，中位延迟 **0.34 ms**。
+  - **经典三层架构基线（Classic 3-Tier）**：**4/16 (25.0%)** 场景准确率，中位延迟 **4.63 ms**（AI-Native 提速 **13.6x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py`](../../lab/ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py)
+  - 单元测试：[`tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py`](../../tests/test_ucp_token_context_cart_offer_acp_telemetry_ap2_instrument_tau2_abort_bench.py)（全仓库 **373/373** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-token-context-cart-offer-acp-telemetry-ap2-instrument-tau2-abort-bench/report.json)
+
+
 
 
 

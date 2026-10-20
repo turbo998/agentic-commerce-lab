@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage 67 · UCP Permalink/Offer, ACP Telemetry/Order, AP2 (type,id) &amp; τ-bench Abort 7-Card Benchmark</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 24px; max-width: 1520px; margin: 0 auto; }
+  .card { background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 22px; min-height: 560px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #38BDF8; text-transform: uppercase; }
+  h2 { font-size: 18px; line-height: 1.35; margin: 10px 0 14px; color: #F1F5F9; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+  .wb-col { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .quote { background: #0F172A; border-left: 3px solid #3B82F6; padding: 10px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 5px 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .pill.pass { background: #064E3B; color: #6EE7B7; }
+  .pill.fail { background: #7F1D1D; color: #FCA5A5; }
+  .muted { color: #94A3B8; font-size: 10px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .callout { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 11px; color: #CBD5E1; margin-top: 10px; }
+  .bar-group { margin: 8px 0; }
+  .bar-label { font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+  .bar-track { background: #1E293B; height: 18px; border-radius: 6px; position: relative; margin: 4px 0; overflow: hidden; }
+  .bar-fill-ai { background: #3B82F6; height: 100%; }
+  .bar-fill-cl { background: #CBD5E1; height: 100%; }
+  .bar-val { position: absolute; right: 8px; top: 1px; font-size: 10px; color: #0F172A; font-weight: 700; background: rgba(248,250,252,0.85); padding: 0 4px; border-radius: 4px; }
+  .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fit-box.good { background: #064E3B; border: 1px solid #059669; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .fit-box.bad { background: #450A0A; border: 1px solid #DC2626; border-radius: 10px; padding: 12px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENT PROTOCOL GUARDRAILS (STAGE 67)</div>
+      <h2>AI-Native Guards Achieve 16/16 (100.0%) vs 4/16 (25.0%) Baseline at 0.34 ms (13.6x Faster)</h2>
+      <div class="workbench">
+        <div class="wb-col">
+          <strong>Scenarios & Thresholds</strong>
+          <p><code>TO-01..TO-16</code> (4 Planes)<br>Act Automatically: 1.00<br>Send to Human: 0.00</p>
+        </div>
+        <div class="wb-col">
+          <strong>Structured Protocol Input</strong>
+          <p>UCP #793/#792/#773/#740/#730/#719/#716<br>ACP #238/#237/#232/#114<br>AP2 #301/#307/#305 · τ-bench #548/#562/#533/#606</p>
+        </div>
+        <div class="wb-col">
+          <strong>Latency & Decisions</strong>
+          <p>AI Median: 0.34 ms<br>Classic Median: 4.63 ms<br>4 Act / 12 Human Gate</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Provenance:</strong> measured (deterministic local guard execution on primary-source PR invariants) · SHA-256: <code>542af2fb6d2e4807bfcf8d00...</code>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: TO-10 (AP2 #301 INSTRUMENT MATCHING)</div>
+      <h2>Google AP2 #301 Enforces (type, id) Tuple Matching in 0.34 ms, Blocking Same-ID Different-Type Spoofing</h2>
+      <div class="quote">
+        Input: <code>allowed=[{"id":"pi-1","type":"card"}]</code> vs <code>presented={"id":"pi-1","type":"bank"}</code>
+      </div>
+      <div class="callout">
+        <span class="pill pass">Task: choice</span>
+        <span class="pill pass">Action: SEND_TO_HUMAN</span>
+        <p>Reason Code: <code>ap2_allowed_payment_instrument_type_mismatch</code> · Confidence: 100.0%</p>
+      </div>
+    </div>
+    <div class="callout">
+      Classic 3-Tier Answer: <code>ACT_AUTOMATICALLY</code> (✕ Miss — matched on <code>allowed.id == instrument.id</code> alone per #299 item 2)
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED (16-SCENARIO MATRIX)</div>
+      <h2>Full 16-Scenario Matrix: AI-Native 16/16 (100.0%) vs Classic 3-Tier Baseline 4/16 (25.0%)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION / REASON</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>TO-01</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #793 Permalink Version, #792 Token Binding, #773/#740 Cart Offer/Status &amp; #716 securitySchemes Pass<br><span class='muted'>Verify ucp/version=2026-08-25 consumed, TokenCredential.binding intact, actions Offer, ordered status, action.ready={} &amp; securitySchemes</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-02</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #793 Pre-Release Version Leaked on Redirect &amp; #792 Token Binding Tampering / Identity Auth Block<br><span class='muted'>Block ucp/version=2026-08-25-rc1 leaked on redirect, JSON version_unsupported on browser GET &amp; mutated token binding</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_permalink_version_missing_or_leaked_on_redirect, ucp_token_credential_binding_mutated_or_mismatch</code></td></tr><tr><td><code>TO-03</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #773 Parallel offers.available[] / Stale state_ref &amp; #740 Terminal Cart Status Mutation Block<br><span class='muted'>Block parallel offers.available[], stale Offer state_ref &amp; mutating terminal ordered Cart back to active</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_cart_offer_state_ref_mismatch_or_parallel_array, ucp_cart_terminal_status_invalid_or_mutated</code></td></tr><tr><td><code>TO-04</code> · UCP Permalink/Token/Cart/OpenAPI</td><td>UCP #730 Non-Empty action.ready, #719 Cached Balance/Premature Settlement &amp; #716 Ignored Auth Header Block<br><span class='muted'>Block non-empty action.ready success object, digital_delivery cached balance/settlement &amp; OpenAPI Authorization header parameter</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ucp_payment_action_ready_non_empty_success_object, ucp_digital_delivery_cached_balance_or_premature_settlement, ucp_openapi_ignored_auth_header_parameter_declared</code></td></tr><tr><td><code>TO-05</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #238 session_context Telemetry, #237 app_links, #232 3-Field Order Conservation &amp; #114 Seller Points Pass<br><span class='muted'>Verify session_context object vs risk_signals array, app_links match, ordered=3(2+1) conservation &amp; sufficient points</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-06</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #238 Legacy complete_checkout.risk_signals Collision &amp; Non-Array delegate_payment.risk_signals Block<br><span class='muted'>Block legacy complete_checkout.risk_signals object collision &amp; non-array delegate_payment.risk_signals</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_session_context_or_risk_signals_schema_collision</code></td></tr><tr><td><code>TO-07</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #237 Missing Product.url Fallback on Unmatched app_links &amp; #232 Order Quantity/Status Violation Block<br><span class='muted'>Block failure to fall back to Product.url when app_links mismatch, plus order-level &#x27;fulfilled&#x27; &amp; quantity mismatch</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_feed_app_links_invalid_or_missing_url_fallback, acp_order_post_checkout_quantity_or_status_violation</code></td></tr><tr><td><code>TO-08</code> · ACP Telemetry/AppLinks/Order/Seller</td><td>ACP #114 Seller-Backed Credential Transfer / Insufficient Points (2000 &lt; 4500) &amp; #111 Unverified x402 Block<br><span class='muted'>Block dev.acp.seller_backed.points transferring credentials, insufficient points (2000 &lt; 4500) &amp; unverified x402</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>acp_seller_backed_or_x402_crypto_handler_violation</code></td></tr><tr><td><code>TO-09</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #301 (type, id) Match, #307 3-Segment Golden Vector (2 &#x27;~~&#x27; Joins) &amp; #305 Receipt Branch Pass<br><span class='muted'>Verify (card, pi-1) exact match, 3-segment chain with 2 &#x27;~~&#x27; joins &amp; trailing &#x27;~&#x27;, receipt confirmation IDs &amp; Base 8453 cap</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-10</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #301 Same id=&#x27;pi-1&#x27; Different type=&#x27;bank&#x27; != &#x27;card&#x27; Instrument Spoofing Block (Fixes #299)<br><span class='muted'>Block closed mandate presenting {id: &#x27;pi-1&#x27;, type: &#x27;bank&#x27;} against allowed [{id: &#x27;pi-1&#x27;, type: &#x27;card&#x27;}]</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_allowed_payment_instrument_type_mismatch</code></td></tr><tr><td><code>TO-11</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #307 delegate-SD-JWT Golden Vector Collapsed &#x27;~~&#x27; -&gt; &#x27;~&#x27; (1 != 2) &amp; Missing Trailing &#x27;~&#x27; Block<br><span class='muted'>Block 3-segment delegation chain with collapsed &#x27;~~&#x27; -&gt; &#x27;~&#x27; (only 1 &#x27;~~&#x27; join) and tampered JWS signature</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_delegate_sd_jwt_golden_vector_wire_violation</code></td></tr><tr><td><code>TO-12</code> · AP2 Instrument/Vectors/Zod/Ghost</td><td>Google AP2 #305 PaymentReceipt Missing network_confirmation_id &amp; #216 Monthly Cap Overspend Block<br><span class='muted'>Block success receipt missing network_confirmation_id (json-schema-to-zod sibling oneOf bug) &amp; $250 &gt; $200 cap</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>ap2_receipt_oneof_branch_required_fields_missing, ap2_autonomous_infra_intent_mandate_cap_or_sig_invalid</code></td></tr><tr><td><code>TO-13</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #548 Normal USER_STOP, #562 Fenced JSON Parse, #533 Atomic Checkpoint &amp; #606/#596 97-Task Sync Pass<br><span class='muted'>Verify ###STOP### grading, ```json fence parsing, write-before-unlink checkpoint, 97 banking tasks, lowercase user_id &amp; campus v1.0.1</span></td><td><span class='pill pass'>AI: ACT_AUTOMATICALLY (✓)</span><br><span class='pill pass'>Classic: ACT_AUTOMATICALLY (✓)</span></td><td><code>PASS_ALL_GUARDS</code></td></tr><tr><td><code>TO-14</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #548 ###OUT-OF-SCOPE### Abort Conflated with USER_STOP and Awarded 1.0 Reward Block<br><span class='muted'>Block step() / full_duplex recording ###OUT-OF-SCOPE### as USER_STOP and bypassing premature-termination 0.0 reward (#517)</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_out_of_scope_abort_conflated_with_user_stop</code></td></tr><tr><td><code>TO-15</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #562 Malformed Fenced JSON Swallowed &amp; #533 Pre-Write Checkpoint Unlink Data Loss Block<br><span class='muted'>Block malformed NL judge JSON swallowed into empty results &amp; unlinking old checkpoint trajectory before replacement write</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_nl_judge_fenced_json_or_malformed_swallowed, tau2_checkpoint_pre_unlink_data_loss_on_write_failure</code></td></tr><tr><td><code>TO-16</code> · Sierra tau2 Abort/NL-JSON/Checkpoint/Campus</td><td>Sierra tau2 #606 Stale Banking Task 102 Missing NL_ASSERTION, #602 Capitalized user_id &amp; #596 Campus ACTION Block<br><span class='muted'>Block stale tasks.json omitting NL_ASSERTION on task 102, capitalized &#x27;Sara_Doe_496&#x27; &amp; campus domain using ACTION</span></td><td><span class='pill pass'>AI: SEND_TO_HUMAN (✓)</span><br><span class='pill fail'>Classic: ACT_AUTOMATICALLY (✕)</span></td><td><code>tau2_banking_aggregate_or_airline_campus_invariant_violation</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      Threshold Gating: Any payload violating UCP/ACP/AP2/τ-bench invariants immediately routes to SEND_TO_HUMAN.
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD (PROTOCOL & SCORING MECHANICS)</div>
+      <h2>Zero-Trust Inline Verification Flow from Structured Payload to Deterministic Verdict</h2>
+      <pre>{
+  &quot;domain&quot;: &quot;ap2&quot;,
+  &quot;allowed_instruments&quot;: [
+    {
+      &quot;id&quot;: &quot;pi-1&quot;,
+      &quot;type&quot;: &quot;card&quot;
+    }
+  ],
+  &quot;presented_instrument&quot;: {
+    &quot;id&quot;: &quot;pi-1&quot;,
+    &quot;type&quot;: &quot;bank&quot;
+  },
+  &quot;vector_segment_count&quot;: 3,
+  &quot;wire_double_tilde_joins&quot;: 2,
+  &quot;wire_ends_with_tilde&quot;: true,
+  &quot;jws_signatures_valid&quot;: true,
+  &quot;receipt_payload&quot;: {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;psp_confirmation_id&quot;: &quot;psp_881&quot;,
+    &quot;network_confirmation_id&quot;: &quot;net_992&quot;
+  },
+  &quot;ghost_protocol_mandate&quot;: {
+    &quot;chain_id&quot;: 8453,
+    &quot;eip712_signature_valid&quot;: true,
+    &quot;monthly_cap_minor&quot;: 20000,
+    &quot;requested_spend_minor&quot;: 12500
+  }
+}</pre>
+      <div style="text-align:center;font-weight:700;color:#38BDF8;">↓ verify_ap2_instrument_type_id_golden_vectors_and_zod_sdk ↓</div>
+      <pre>&lt;answer&gt;
+action: SEND_TO_HUMAN
+reason_codes: [&quot;ap2_allowed_payment_instrument_type_mismatch&quot;]
+matched_instrument_pair: null
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="callout">
+      O(1) deterministic verification with zero external LLM judge calls and zero hallucinated approvals.
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK (PERTURBATION & CONSISTENCY)</div>
+      <h2>100.0% Consistency Across Option, Instrument, AppLink & Reward-Basis Reversals (0.0 pts Drift)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>TO-01</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-02</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-03</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-04</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-05</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-06</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-07</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-08</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-09</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-10</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-11</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-12</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-13</code> (reverse_candidate_and_header_order)</td><td><code>ACT_AUTOMATICALLY</code></td><td><code>ACT_AUTOMATICALLY</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-14</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-15</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><code>TO-16</code> (reverse_candidate_and_header_order)</td><td><code>SEND_TO_HUMAN</code></td><td><code>SEND_TO_HUMAN</code></td><td><strong>0.0 pts</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      Across all 16 scenarios, reversing list order and header order yields 0.0 pts drift.
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY (BATCHING & SCALING LATENCY)</div>
+      <h2>Inline Guards Achieve 0.34 ms Median Latency — 13.6x Faster Than Classic 3-Tier Pipeline (4.63 ms)</h2>
+      <div class='bar-group'><div class='bar-label'>1x Single Request (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:5.7%'></div><span class='bar-val'>AI-Native: 0.34 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:77.2%'></div><span class='bar-val'>Classic 3-Tier: 4.63 ms</span></div></div><div class='bar-group'><div class='bar-label'>4x Concurrent Burst (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:6.7%'></div><span class='bar-val'>AI-Native: 0.40 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:91.8%'></div><span class='bar-val'>Classic 3-Tier: 5.51 ms</span></div></div><div class='bar-group'><div class='bar-label'>16x Full Matrix Replay (p50)</div><div class='bar-track'><div class='bar-fill-ai' style='width:8.0%'></div><span class='bar-val'>AI-Native: 0.48 ms</span></div><div class='bar-track'><div class='bar-fill-cl' style='width:95.7%'></div><span class='bar-val'>Classic 3-Tier: 5.74 ms</span></div></div>
+    </div>
+    <div class="callout">
+      Blue (#3B82F6) shows AI-Native inline guards; slate (#CBD5E1) shows Classic 3-Tier baseline.
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE (GOOD FIT VS NOT FOR & READINESS)</div>
+      <h2>Readiness Verdict: Mandatory Deterministic Gate for Multi-Hop Delegated Checkout & Dual-Control Benchmarks</h2>
+      <div class="fit-grid">
+        <div class="fit-box good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>UCP permalink ucp/version pinning, TokenCredential binding & Cart actions Offers</li>
+            <li>ACP session_context telemetry separation, app_links & 3-field Order conservation</li>
+            <li>AP2 (type,id) instrument matching, ~~ golden vectors & τ-bench OUT_OF_SCOPE grading</li>
+          </ul>
+        </div>
+        <div class="fit-box bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Legacy pipelines matching payment instruments by id alone or skipping x402 verification</li>
+            <li>Non-standard OpenAPI 3.1 specs declaring Authorization as a header parameter</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Readiness & Provenance:</strong> Deterministic local benchmark (`independently_reproduced=true`, `measured` on Stage 66 guard suite, Apache-2.0 / MIT compatible).
+    </div>
+  </section>
+</div>
+</body>
+</html>
