@@ -124,6 +124,24 @@
   - 单元测试：[`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py)（全仓库 **351/351** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§61)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 63：覆盖 Stage 62 四大协议域的 16 场景（`CC-01..CC-16`）中英双语 7-Card 4:5 视觉基准评测报告（中英双语）
+
+- **16 场景确定性基准评测（`CC-01..CC-16`）**：
+  - `CC-01..CC-04`：UCP `#910`/`#911` 购物车转结账 `line_items` 必填与 `complete: omit`、`#907` `UCP-Agent` 签名覆盖集、`#906` OpenRPC `ec.auth`/`ep.cart.auth` `type` 必填、`#883` MCP `complete_checkout` 扩展暴露及 `#853` 259 条 `REQ-*` 规范条款目录。
+  - `CC-05..CC-08`：ACP `#230` 可选 `allowance.checkout_session_id`、`#171` BOPIS `store_id` 严禁在 `complete` 阶段篡改、`#165` 行级 `LineItem.valid_until` 与 `offer_expired` vs. `quote_expired`、`#162` 纯数字订单禁 `shipped` 及 `#161` 错误前向兼容。
+  - `CC-09..CC-12`：Google AP2 `#330` 闭式支付授权 `transaction_id` 结账绑定、`#310` x402 PSP 公钥缺失故障闭合、`#300` x402 严禁回退硬编码 `1250` 美分与 `#267` TrustBoost 拉美 `CPF`/`CUIT`/`RFC` 脱敏及 Solana 锚定。
+  - `CC-13..CC-16`：Sierra $\tau$-bench 2.0 `#611` 电信活跃线路 `refuel_data` 状态校验、`#609`/`#610` 实时环境 DB 哈希评分与 `ToolFault` 超时注入、`#615` 语言包替换任务核验及 `#621` GPT-5 Responses 桥接 `tool_choice` 保留。
+- **量化评测结果**：
+  - **AI-Native 6-Plane 架构**：**16/16 (100.0%)** 场景准确率，逆序扰动稳定性 **100.0%**，中位延迟 **0.35 ms**。
+  - **经典三层架构基线（Classic 3-Tier）**：**1/16 (6.25%)** 场景准确率，中位延迟 **4.605 ms**（AI-Native 提速 **13.2x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py`](../../lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py)
+  - 单元测试：[`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py)（全仓库 **353/353** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/report.json)
+
+
 
 
 

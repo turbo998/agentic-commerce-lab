@@ -63,3 +63,6 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§61.2**: ACP Delegate Payment Optional `checkout_session_id` (`#230`), Forward-Compatible Error Enums (`#161`), Store BOPIS Extension (`#171`), Time-Bound Line-Item Offer Expiry (`#165`) & Digital vs. Physical Order Status Semantics (`#162`).
   - **§61.3**: Google AP2 Closed Checkout Binding in `PaymentMandateChain.verify()` (`#330`), x402 PSP Missing Key Fail-Closed (`#310`), x402 Verified Mandate Amount Authorization (`#300`) & TrustBoost PII Sanitization (`#267`).
   - **§61.4**: Sierra $\tau$-bench 2.0 Active Telecom Line `refuel_data` Guard (`#611`), Live-DB Grading & `ToolFault` Injection (`#609`/`#610`), Language-Binding Task Replacement Verification (`#615`) & Bridged GPT-5 `tool_choice` Preservation (`#621`).
+- **§62 (Stage 63 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`CC-01..CC-16`)**: `lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.25%` Classic 3-Tier, `0.35 ms` vs. `4.605 ms`, `13.2x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+

@@ -124,6 +124,24 @@
   - Unit Tests: [`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py) (**351/351** total unit tests passing)
   - Bilingual Architecture Reference (§61): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 63: 16-Scenario Bilingual (CN/EN) 7-Card 4:5 Benchmark Suite (`CC-01..CC-16`) across Stage 62 Protocol Guards
+
+- **16-Scenario Deterministic Evaluation Matrix (`CC-01..CC-16`)**:
+  - `CC-01..CC-04`: UCP `#910`/`#911` cart-to-checkout `line_items` requirement & `complete: omit`, `#907` `UCP-Agent` signature coverage, `#906` OpenRPC `ec.auth`/`ep.cart.auth` `type.required`, `#883` MCP `complete_checkout` extensions, and `#853` 259-clause `REQ-*` catalog digests.
+  - `CC-05..CC-08`: ACP `#230` optional `allowance.checkout_session_id`, `#171` BOPIS `store_id` forbidden on `complete`, `#165` per-line `LineItem.valid_until` & `offer_expired` vs. `quote_expired`, `#162` digital-only orders forbidding `shipped`, and `#161` forward-compatible error enums.
+  - `CC-09..CC-12`: Google AP2 `#330` closed Payment Mandate `transaction_id` checkout binding, `#310` x402 PSP missing-key fail-closed, `#300` x402 blocking hardcoded `1250`-cent fallback, and `#267` TrustBoost LATAM `CPF`/`CUIT`/`RFC` PII sanitization & Solana anchor proof.
+  - `CC-13..CC-16`: Sierra $\tau$-bench 2.0 `#611` active telecom line `refuel_data` check, `#609`/`#610` live-DB hash grading & `ToolFault` injection, `#615` language-pack task replacement verification, and `#621` bridged GPT-5 Responses `tool_choice` preservation.
+- **Quantitative Results**:
+  - **AI-Native 6-Plane Architecture**: **16/16 (100.0%)** accuracy, **100.0%** reversed-order stability, **0.35 ms** median latency.
+  - **Classic 3-Tier Baseline**: **1/16 (6.25%)** accuracy, **4.605 ms** median latency (**13.2x** speedup for AI-Native).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py`](../../lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py)
+  - Unit Tests: [`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_bench.py) (**353/353** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-cart-complete-acp-store-offer-ap2-x402-tau2-telecom-bench/report.json)
+
+
 
 
 
