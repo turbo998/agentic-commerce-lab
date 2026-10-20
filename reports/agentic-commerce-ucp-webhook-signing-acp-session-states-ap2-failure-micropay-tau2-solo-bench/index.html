@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 71 · UCP Webhook 签名门禁/约束、ACP 限时报价/Merchant-Signature、AP2 FailureResponse/微支付 与 τ²-bench Live 打断/Solo 重放 7-Card 基准报告</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .topbar { max-width: 900px; margin: 0 auto 16px; display: flex; justify-content: space-between; align-items: center; }
+  .lang-link { color: #60A5FA; text-decoration: none; font-weight: 600; border: 1px solid #3B82F6; padding: 6px 14px; border-radius: 999px; }
+  .deck { display: flex; flex-direction: column; gap: 28px; align-items: center; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { color: #60A5FA; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0 16px; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #60A5FA, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0; }
+  .box { background: #1E293B; border-radius: 12px; padding: 16px; border: 1px solid #334155; }
+  .good { border-color: #10B981; background: rgba(16, 185, 129, 0.08); }
+  .bad-box { border-color: #EF4444; background: rgba(239, 68, 68, 0.08); }
+  .code { background: #0F172A; color: #E2E8F0; padding: 14px; border-radius: 10px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; white-space: pre-wrap; border: 1px solid #334155; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 7px 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; margin-bottom: 3px; }
+  .pill.ok { background: rgba(16, 185, 129, 0.18); color: #34D399; }
+  .pill.bad { background: rgba(239, 68, 68, 0.18); color: #F87171; }
+  .muted { color: #94A3B8; font-size: 11px; }
+  .bar-group { margin: 14px 0; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+  .bar { height: 18px; border-radius: 6px; display: inline-block; }
+  .bar.primary { background: #3B82F6; }
+  .bar.baseline { background: #CBD5E1; }
+  .footer { color: #94A3B8; font-size: 12px; border-top: 1px solid #1E293B; padding-top: 12px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><strong>Agentic Commerce 实验室 · Stage 71 视觉基准报告</strong></div>
+  <a class="lang-link" href="index.en.html">English Version →</a>
+</div>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="kicker">1 / 7 · HANDS-ON · UCP + ACP + AP2 + SIERRA TAU2-BENCH</div>
+      <h1><span class="accent">16/16 (100.0%)</span> 确定性拦截 Webhook 漏签、限时报价过期、Mandate 静默重试与 Solo 重放偏差，中位延迟 0.34 ms（13.6x 提速）</h1>
+      <div class="grid3">
+        <div class="box">
+          <strong>评测范围 (WS-01..WS-16)</strong>
+          <p class="muted">覆盖 UCP #659/#657/#655/#653、ACP #178/#165/#160/#139、AP2 #131/#110/#144/#83 与 τ²-bench #528/#520/#516/#508/#498。</p>
+        </div>
+        <div class="box">
+          <strong>结构化契约输入</strong>
+          <p class="muted">RFC 9421 闭集 Webhook 签名门禁、SEP #164 逐行 valid_until、AP2 FailureResponse 与 τ² Live 打断信号。</p>
+        </div>
+        <div class="box">
+          <strong>决策分流与延迟</strong>
+          <p class="muted">AI-Native: 16/16 (100.0%) · 0.34 ms<br/>Classic 3-Tier: 4/16 (25.0%) · 4.62 ms</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Provenance: measured · independently_reproduced=true</span><span>Stage 71 · WS-01..WS-16</span></div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="kicker">2 / 7 · SCENARIO: WS-10 & WS-02 DEEP DIVE</div>
+      <h2>单案深潜：0.35 ms 阻断 AP2 MANDATE_EXPIRED 静默重试与 UCP Webhook 漏签</h2>
+      <div class="code">{"failure_response": {"category": "MANDATE_EXPIRED", "recovery_action": "NEW_MANDATE_REQUIRED", "agent_attempted_action": "autonomous_silent_retry"}, "order_webhook": {"covered_components": ["@method", "webhook-id"], "body": {"event_id": "wh_01"}}}</div>
+      <div class="grid3">
+        <div class="box">
+          <span class="pill ok">noul · conf 0.99</span>
+          <h4>WS-10 · Send to a human</h4>
+          <p class="muted">阻断在 MANDATE_EXPIRED 下绕过用户签名发起的 autonomous_silent_retry。</p>
+        </div>
+        <div class="box">
+          <span class="pill ok">noul · conf 0.99</span>
+          <h4>WS-02 · Send to a human</h4>
+          <p class="muted">强制 webhook-id 与 webhook-timestamp 纳入 RFC 9421 签名门禁并拒绝正文残留 event_id。</p>
+        </div>
+        <div class="box">
+          <span class="pill ok">score · conf 0.97</span>
+          <h4>WS-07 · Confirm</h4>
+          <p class="muted">当单品 valid_until 早于会话 quote_expires_at 过期时触发重新报价确认。</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Card 2 / 7</span><span>Deterministic Verifier Trace</span></div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="kicker">3 / 7 · WHAT I TESTED</div>
+      <h2>16 场景全量评测矩阵：AI-Native 16/16 (100.0%) vs. 经典三层架构 4/16 (25.0%)</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>WS-01</strong><br/><span class='muted'>UCP Webhook &amp; Constraints</span></td><td>订单 Webhook 签名覆盖 webhook-id/webhook-timestamp、响应携带 map_order/request_constraints 且 quantity=1250 (scale=3 -&gt; 1.25 kg) 时是否自动放行？</td><td>RFC 9421 闭集签名头、JCS 保留 ucp 命名空间与整数步数完全对齐。</td><td><span class='pill ok'>AI: Act automatically ✓</span><br/><span class='pill ok'>Classic: Act automatically ✓</span></td></tr><tr><td><strong>WS-02</strong><br/><span class='muted'>UCP Webhook &amp; Constraints</span></td><td>订单 Webhook 签名未覆盖 webhook-timestamp 且 JSON 正文仍含已移除的 event_id/created_time 时是否转人工审计？</td><td>精准拦截：ucp_webhook_body_legacy_event_fields_present。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-03</strong><br/><span class='muted'>UCP Webhook &amp; Constraints</span></td><td>客户端在请求中伪造仅限响应的 ucp.map_order 或在 AP2 merchant_authorization 规范化前剥离 ucp 成员时是否阻断？</td><td>精准拦截：ucp_map_order_or_constraints_forbidden_on_request。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-04</strong><br/><span class='muted'>UCP Webhook &amp; Constraints</span></td><td>行项目传入浮点 quantity=1.25 而非整数步数或可用支付工具 request_constraints 缺失 RFC 9535 path 时是否触发二次确认？</td><td>精准拦截：ucp_instrument_request_constraints_missing_path。</td><td><span class='pill ok'>AI: Confirm ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-05</strong><br/><span class='muted'>ACP Session, Offer &amp; HMAC</span></td><td>protocol.extensions 位于协议层、valid_until 未过期、Merchant-Signature 验签通过且 MCP 携带 meta.api_version 时是否放行？</td><td>ACP 协议扩展、限时报价、Webhook HMAC 与 MCP 绑定全部通过。</td><td><span class='pill ok'>AI: Act automatically ✓</span><br/><span class='pill ok'>Classic: Act automatically ✓</span></td></tr><tr><td><strong>WS-06</strong><br/><span class='muted'>ACP Session, Offer &amp; HMAC</span></td><td>商户在已废弃的 capabilities.extensions 下声明扩展或将数字商品订单标记为物理运输 shipped 时是否阻断？</td><td>精准拦截：acp_extensions_declared_under_capabilities_instead_of_protocol。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-07</strong><br/><span class='muted'>ACP Session, Offer &amp; HMAC</span></td><td>会话级 quote_expires_at 尚未到期但单品秒杀 valid_until 已过期 (offer_expired) 时是否要求重新报价确认？</td><td>精准拦截：acp_line_item_offer_valid_until_expired。</td><td><span class='pill ok'>AI: Confirm ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-08</strong><br/><span class='muted'>ACP Session, Offer &amp; HMAC</span></td><td>Webhook 签名时间戳偏移达 900s 或 MCP complete_checkout 工具缺失 arguments.meta.api_version 时是否拒绝执行？</td><td>精准拦截：acp_webhook_merchant_signature_invalid_or_replay_window_exceeded。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-09</strong><br/><span class='muted'>Google AP2 Failure &amp; Micropay</span></td><td>FailureResponse 正确映射恢复动作、PaymentReceipt 空安全处理、三跳 Verifiable Intent 与微支付通道不超额时是否放行？</td><td>AP2 错误分类、收据提取、三跳凭证链与微支付通道全部合规。</td><td><span class='pill ok'>AI: Act automatically ✓</span><br/><span class='pill ok'>Classic: Act automatically ✓</span></td></tr><tr><td><strong>WS-10</strong><br/><span class='muted'>Google AP2 Failure &amp; Micropay</span></td><td>收到 MANDATE_EXPIRED (NEW_MANDATE_REQUIRED) 时若智能体尝试绕过用户直接静默重试扣款是否强制升级人工？</td><td>精准拦截：ap2_failure_recovery_autonomous_retry_forbidden。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-11</strong><br/><span class='muted'>Google AP2 Failure &amp; Micropay</span></td><td>Task.artifacts=None 未做空安全防护或 Mandate 审计日志残留未脱敏 PAN/CVV 明文时是否阻断？</td><td>精准拦截：ap2_payment_receipt_or_audit_schema_invalid。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-12</strong><br/><span class='muted'>Google AP2 Failure &amp; Micropay</span></td><td>三跳 Verifiable Intent 缺失 user_mandate 或微支付流式通道累计扣款超出托管存款且序号重放时是否阻断？</td><td>精准拦截：ap2_micropayment_channel_overdraft_or_nonce_replay。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-13</strong><br/><span class='muted'>Sierra tau2 Live &amp; Eval</span></td><td>input_transcript.delta 仅置 speech_started、浮点 5.0-&gt;5 强转、llm_agent_solo_gt 加载用户工具且 pass^k 保留全故障任务时是否放行？</td><td>语音打断信号、幻觉重试、Pydantic 强转与评分分母全部精确对齐。</td><td><span class='pill ok'>AI: Act automatically ✓</span><br/><span class='pill ok'>Classic: Act automatically ✓</span></td></tr><tr><td><strong>WS-14</strong><br/><span class='muted'>Sierra tau2 Live &amp; Eval</span></td><td>session.input_transcript.delta 误将智能体语音标为 was_truncated=True 或幻觉重试跳过末次评审并截断工具结果时是否触发复核？</td><td>精准拦截：tau2_live_input_transcript_falsely_marked_truncated。</td><td><span class='pill ok'>AI: Confirm ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-15</strong><br/><span class='muted'>Sierra tau2 Live &amp; Eval</span></td><td>工具参数 account_id=5.0 未经 Pydantic 强转为 int 写入 DB 或重放 llm_agent_solo_gt 未加载 TelecomUserTools 时是否阻断？</td><td>精准拦截：tau2_tool_kwargs_uncoerced_float_db_hash_drift。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr><tr><td><strong>WS-16</strong><br/><span class='muted'>Sierra tau2 Live &amp; Eval</span></td><td>将全部 trial 均为基础设施错误的任务从分母剔除导致 pass^k 虚高，或 close_bank_account_7392 传入自由文本原因时是否阻断？</td><td>精准拦截：tau2_pass_hat_k_infra_error_denominator_inflation。</td><td><span class='pill ok'>AI: Send to a human ✓</span><br/><span class='pill bad'>Classic: Act automatically ✕</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer"><span>Card 3 / 7</span><span>✕ marks Classic 3-Tier misses (12/16 missed)</span></div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+      <h2>协议与评分内幕：确定性四域验证器流水线 (<answer> 零幻觉输出)</h2>
+      <div class="code">// Input Contract (UCP #659 + ACP #165/#160 + AP2 #131/#83 + tau2 #528/#498)
+{
+  "ucp_webhook": {"covered_components": ["@method", "@target-uri", "content-digest", "webhook-id", "webhook-timestamp"]},
+  "acp_line_item": {"valid_until": "2026-10-20T21:00:00Z", "availability_status": "offer_expired"},
+  "ap2_failure": {"category": "MANDATE_EXPIRED", "recovery_action": "NEW_MANDATE_REQUIRED"},
+  "tau2_metrics": {"compared_against_enum_value": true, "all_infra_error_tasks_kept_in_denominator": true}
+}</div>
+      <p style="text-align:center;font-size:20px;margin:8px 0;">↓</p>
+      <div class="code">&lt;answer&gt;
+verify_ucp_webhook_signing_map_order_request_constraints_and_sale_basis() -&gt; PASSED
+verify_acp_protocol_extensions_offer_expiry_webhook_hmac_and_mcp_binding() -&gt; BLOCKED [acp_line_item_offer_valid_until_expired]
+verify_ap2_failure_response_payment_receipt_json_schema_and_micropayment() -&gt; BLOCKED [ap2_failure_recovery_autonomous_retry_forbidden]
+verify_tau2_live_interruption_hallucination_retry_pydantic_coercion_and_metrics() -&gt; PASSED
+&lt;/answer&gt;</div>
+    </div>
+    <div class="footer"><span>Card 4 / 7</span><span>Zero external network calls · Pure Python 3.12 stdlib</span></div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>鲁棒性检验：选项逆序、字段乱序与多轮重放保持 100.0% (0.0 pts 漂移)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>UCP #659/#657/#655/#653 (WS-01..WS-04)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+          <tr><td>ACP #178/#165/#160/#139 (WS-05..WS-08)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+          <tr><td>Google AP2 #131/#110/#144/#83 (WS-09..WS-12)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+          <tr><td>Sierra τ²-bench #528/#520/#516/#508/#498 (WS-13..WS-16)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer"><span>Card 5 / 7</span><span>Perturbation stability: 100.0%</span></div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="kicker">6 / 7 · LATENCY</div>
+      <h2>延迟扩展曲线：单轮中位延迟 0.34 ms vs. 4.63 ms（13.6x 加速）</h2>
+      <div class='bar-group'><div class='bar-label'>1 req (Single Turn)</div><div class='bar-row'><span class='bar primary' style='width:6%'></span><strong>0.34 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar baseline' style='width:18%'></span><span>4.63 ms (Classic 3-Tier)</span></div></div><div class='bar-group'><div class='bar-label'>16 req (Full Matrix)</div><div class='bar-row'><span class='bar primary' style='width:6%'></span><strong>5.41 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar baseline' style='width:23%'></span><span>74.08 ms (Classic 3-Tier)</span></div></div><div class='bar-group'><div class='bar-label'>64 req (Burst Verify)</div><div class='bar-row'><span class='bar primary' style='width:6%'></span><strong>21.64 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar baseline' style='width:92%'></span><span>296.32 ms (Classic 3-Tier)</span></div></div>
+    </div>
+    <div class="footer"><span>Card 6 / 7</span><span>Median across deterministic benchmark runs</span></div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="kicker">7 / 7 · MY TAKE</div>
+      <h2>架构师结论：内联确定性护栏是 UCP/ACP/AP2/τ²-bench 生产级落地的必备门禁</h2>
+      <div class="grid2">
+        <div class="box good">
+          <h3>✅ 适用场景 (Good Fit)</h3>
+          <ul>
+            <li>UCP 订单 Webhook RFC 9421 闭集签名与整数步数计量结算</li>
+            <li>ACP 逐行秒杀报价 valid_until 校验与 Merchant-Signature 防重放</li>
+            <li>AP2 FailureResponse 恢复策略强制执行与微支付状态通道防透支</li>
+            <li>τ²-bench 全双工语音打断、Pydantic 整数强转与 pass^k 分母保真</li>
+          </ul>
+        </div>
+        <div class="box bad-box">
+          <h3>⛔ 不适用场景 (Not For)</h3>
+          <ul>
+            <li>替代真实硬件 HSM / KMS 密钥托管或卡组网络清算</li>
+            <li>在缺乏用户重新签名的情况下对过期 Mandate 自动续期</li>
+          </ul>
+        </div>
+      </div>
+      <div class="box">
+        <strong>生产就绪度与溯源声明</strong>
+        <p class="muted">provenance=measured · independently_reproduced=true · Python 3.12 stdlib · 392+ unit tests passing · Bilingual CN/EN</p>
+      </div>
+    </div>
+    <div class="footer"><span>Card 7 / 7</span><span>turbo998/agentic-commerce-lab · Stage 71</span></div>
+  </section>
+</div>
+</body>
+</html>

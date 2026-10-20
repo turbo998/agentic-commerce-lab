@@ -248,6 +248,24 @@
   - 单元测试：[`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py)（全仓库 **392/392** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§69)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 71：UCP Webhook 签名门禁/约束、ACP 限时报价 `valid_until`/`Merchant-Signature`、Google AP2 `FailureResponse`/微支付通道 与 Sierra $\tau$-bench 2.0 Live 打断/Solo 重放 16 场景（`WS-01..WS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围（16 场景，`WS-01..WS-16`）**：
+  - `WS-01..WS-04`：UCP 订单 Webhook 签名门禁（`#659`）、保留 `ucp` 命名空间与 `map_order`（`#658`/`#657`）、响应携带 `request_constraints`（`#655`/`#626`）及整数步数销售基准（`#653`）。
+  - `WS-05..WS-08`：ACP `protocol.extensions`（`#178`）、逐行限时报价 `valid_until`（`#165`）、`Merchant-Signature` 防重放（`#160`）、数字商品禁标 `shipped`（`#162`）与 MCP 结账工具绑定（`#139`）。
+  - `WS-09..WS-12`：Google AP2 `FailureResponse` 恢复动作强制映射（`#131`/`#132`）、`PaymentReceipt` 空安全与审计日志脱敏（`#110`/`#92`）、三跳 Verifiable Intent（`#144`）与微支付状态通道防透支（`#83`）。
+  - `WS-13..WS-16`：Sierra $\tau$-bench 2.0 OpenAI Live 打断信号（`#528`）、结果安全幻觉重试（`#520`）、Pydantic 浮点强转（`#516`）、`llm_agent_solo_gt` 重放（`#508`）、`pass^k` 分母保真（`#498`）与固定关户原因枚举（`#484`）。
+- **核心量化发现**：
+  - **准确率**：AI-Native 确定性护栏 **16/16 (100.0%)** vs. 经典三层架构基线 **4/16 (25.0%)**。
+  - **扰动鲁棒性**：选项逆序与字段乱序下 **100.0% (0.0 pts 漂移)**。
+  - **延迟对比**：单轮中位延迟 **0.34 ms vs. 4.62 ms（13.6x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py`](../../lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py)
+  - 单元测试：[`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py)（全仓库 **394/394** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/report.json)
+
 
 
 

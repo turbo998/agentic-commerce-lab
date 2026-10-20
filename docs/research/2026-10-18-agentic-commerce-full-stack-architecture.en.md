@@ -91,6 +91,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§69.2**: ACP `protocol.extensions` Relocation (`#178`), Per-Line-Item `valid_until` Offer Expiry (`#165`), `Merchant-Signature` Replay Protection (`#160`), 11 Session States & Digital Order Status (`#144`, `#162`, `#161`) & MCP Transport Binding (`#139`, `#130`, `#125`).
   - **§69.3**: Google AP2 `FailureResponse` Taxonomy (`#131`, `#132`), Section 7.1 `PaymentReceipt` & Mandate JSON Schemas (`#110`, `#128`, `#92`), Verifiable Intent 3-Hop Chain (`#144`) & Micropayment Channels (`#83`).
   - **§69.4**: Sierra $\tau$-bench 2.0 OpenAI Live Interruption Signals (`#528`), Result-Safe Hallucination Retries (`#520`), Pydantic Tool Kwargs Coercion (`#516`, `#513`), `llm_agent_solo_gt` Replay (`#508`), `pass^k` Infra-Error Denominator (`#498`) & Fixed Closure Reasons (`#484`).
+- **§70 (Stage 71 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WS-01..WS-16`)**: `lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.62 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

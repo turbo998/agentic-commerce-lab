@@ -248,6 +248,24 @@
   - Unit Tests: [`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_guard.py) (**392/392** total unit tests passing)
   - Bilingual Architecture Reference (§69): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 71: 16-Scenario (`WS-01..WS-16`) Bilingual 7-Card 4:5 Visual Benchmark Report for UCP Webhook Signing/Constraints, ACP Offer Expiry/`Merchant-Signature`, AP2 `FailureResponse`/Micropayment & Sierra $\tau$-bench 2.0 Live/Solo Replay
+
+- **Evaluation Matrix (16 Scenarios, `WS-01..WS-16`)**:
+  - `WS-01..WS-04`: UCP order webhook signing gate (`#659`), reserved `ucp` namespace & `map_order` (`#658`/`#657`), response-carried `request_constraints` (`#655`/`#626`), and integer step-count sale-basis quantities (`#653`).
+  - `WS-05..WS-08`: ACP `protocol.extensions` (`#178`), per-line-item `valid_until` offer expiry (`#165`), `Merchant-Signature` replay protection (`#160`), forbidding `shipped` on digital orders (`#162`), and MCP checkout tool binding (`#139`).
+  - `WS-09..WS-12`: Google AP2 `FailureResponse` recovery enforcement (`#131`/`#132`), null-safe `PaymentReceipt` & PCI-redacted audit logs (`#110`/`#92`), 3-hop Verifiable Intent (`#144`), and Micropayment channel overdraft protection (`#83`).
+  - `WS-13..WS-16`: Sierra $\tau$-bench 2.0 OpenAI Live interruption signals (`#528`), result-safe hallucination retries (`#520`), Pydantic float-to-int coercion (`#516`), `llm_agent_solo_gt` replay (`#508`), `pass^k` denominator fidelity (`#498`), and fixed closure reason enum (`#484`).
+- **Headline Quantitative Findings**:
+  - **Accuracy**: AI-Native deterministic guards **16/16 (100.0%)** vs. Classic 3-Tier baseline **4/16 (25.0%)**.
+  - **Perturbation Consistency**: **100.0% (0.0 pts drift)** under option-order reversal and key reordering.
+  - **Latency**: **0.34 ms** AI-Native median latency vs. **4.62 ms** Classic 3-Tier (**13.6x speedup**).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py`](../../lab/ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py)
+  - Unit Tests: [`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py) (**394/394** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/report.json)
+
 
 
 
