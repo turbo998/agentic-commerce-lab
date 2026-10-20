@@ -578,6 +578,15 @@
   - Unit Tests: [`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py) (**524/524** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/report.json)
 
+---
+
+## Stage 98: UCP Disclosure Warning, Return Extension, Attested Signals & `get_product` (`#267`/`#257`/`#203`/`#195`), ACP Delegated 3DS Auth, `supported_versions` & `display_name` (`#93`/`#99`/`#130`), Google AP2 HNP `SessionAuthorization`/`SpendingRuleSet` & Micropayment Channels (`#77`/`#83`), and Sierra $\tau$-bench 2.0 Silent `GoAway` Reconnect & Banking Fraud/ATM/Duplicate Guards (`#461`/`#382`/`#381`/`#380`/`#361`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py)
+  - Unit Tests: [`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py) (**532/532** total unit tests passing)
+  - Bilingual Architecture Reference (§97): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

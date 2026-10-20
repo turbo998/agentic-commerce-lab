@@ -578,6 +578,15 @@
   - 单元测试：[`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py)（全仓库 **524/524** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/report.json)
 
+---
+
+## Stage 98：UCP 披露警告与退货扩展/平台观测信号/`get_product`（`#267`/`#257`/`#203`/`#195`）、ACP 委托 3DS 认证与版本协商（`#93`/`#99`/`#130`）、Google AP2 会话支出规则与微支付通道（`#77`/`#83`）及 Sierra $\tau$-bench 2.0 静默 `GoAway` 重连与银行多卡止付/ATM 退费/重复交易消歧（`#461`/`#382`/`#381`/`#380`/`#361`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../lab/ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py)
+  - 单元测试：[`tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py`](../../tests/test_ucp_disclosure_return_acp_del_auth_ap2_session_tau2_goaway_guard.py)（全仓库 **532/532** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§97)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

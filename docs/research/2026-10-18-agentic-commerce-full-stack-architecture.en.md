@@ -184,6 +184,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§95.4**: Sierra $\tau$-bench 2.0 `close_bank_account_7392` Canonical Reason (`#484`), All-Infra `pass^k` Denominator (`#498`), Pydantic Kwarg Coercion (`#516`), and Result-Safe Retries (`#520`).
 - **§96 (Stage 97 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EQ-01..EQ-16`)**: `lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.31 ms` vs. `4.62 ms`, `14.9x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§97 (Stage 98 — Bilingual Chinese + English)**:
+  - **§97.1**: UCP `message_warning` Disclosure Contract (`#267`), Return Extension (`#257`), Platform-Attested `signals` (`#203`), and `get_product` Variant Narrowing (`#195`).
+  - **§97.2**: ACP Delegated Authentication 3DS Lifecycle (`#93`), `Error.supported_versions` Negotiation (`#99`), and `PaymentHandler.display_name` (`#130`).
+  - **§97.3**: Google AP2 HNP `SessionAuthorization` & `SpendingRuleSet` (`#77`) and A2A Micropayment Channel State Machine (`#83`).
+  - **§97.4**: Sierra $\tau$-bench 2.0 Silent `GoAway` Deadline Reconnect (`#461`), Banking T082/T074/T083-084 Multi-Card Fraud & Duplicate Tie-Breaker (`#382`, `#381`, `#380`), and User Tool-Call Preservation (`#361`).
 
 
 
