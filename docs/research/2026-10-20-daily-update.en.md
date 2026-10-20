@@ -476,6 +476,18 @@
   - Unit Tests: [`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py) (**472/472** total unit tests passing)
   - Bilingual Architecture Reference (§85): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 87: 16-Scenario (`AP-01..AP-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
+
+- **Evaluation Matrix & Key Quantitative Findings**:
+  - Evaluates 16 synthetic scenarios (`AP-01..AP-16`: 4 compliant admit cases + 12 adversarial protocol breach cases) across Stage 86 UCP, ACP, x402, and $\tau$-bench 2.0 guardrails.
+  - **AI-Native Guardrails**: **16/16 (100.0%)** vs. **Classic 3-Tier Web Baseline**: **4/16 (25.0%)** (**+75.0 pts**); **16/16 (100.0%, 0.0 pts drift)** guard-order reversal consistency; **0.35 ms** vs. **4.76 ms** median latency (**13.6x** speedup).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py)
+  - Unit Tests: [`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py) (**474/474** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/report.json)
+
 
 
 

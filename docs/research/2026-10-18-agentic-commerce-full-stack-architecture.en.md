@@ -147,6 +147,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§85.2**: ACP `RejectedDiscount` / `DiscountErrorCode` (`#101`) & `Message.resolution` / `Error` vs `MessageError` Separation (`#100`, `#115`).
   - **§85.3**: Coinbase x402 `no-wallet` Extension (`#317`) & `ERC-8021` Builder Code Attribution (`#31`).
   - **§85.4**: Sierra $\tau$-bench 2.0 Buffered Full-Duplex Audio Drain (`#363`) & `hospitality` Domain Reservation Policy (`#355`).
+- **§86 (Stage 87 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`AP-01..AP-16`)**: `lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.76 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

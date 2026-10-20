@@ -1097,6 +1097,13 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_buffered_audio_drain_and_hospitality_guard` enforces Sierra $\tau$-bench 2.0 PR `#363` (`_drain_buffered_agent_audio()` during full-duplex `_finalize()` appending remaining `_buffered_agent_audio` bytes into `ticks[-1].agent_chunk` with `contains_speech = True` and clearing the buffer before `agent.stop()`) and PR `#355` (`hospitality` Hotel Vltava policy: single tool call per turn without simultaneous guest reply, confirmation number + guest name verification before reservation read/write, party size including children `<= room_capacity`, transferring group bookings `> 4` rooms to human agents, forbidding date changes or cancel-and-rebook workarounds on `RP_SAVER`, and enforcing exact `RP_SAVER` vs. `RP_FLEX` cancellation refund calculation).
 - **中文**: `validate_tau2_buffered_audio_drain_and_hospitality_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#363`（全双工语音编排器在 `_finalize()` 停止前调用 `_drain_buffered_agent_audio()` 将残余语音缓冲并入 `ticks[-1].agent_chunk`、标记 `contains_speech = True` 并清空缓冲）与 PR `#355`（`hospitality` 酒店预订域策略：单轮最多一次工具调用且严禁与客人回复同轮混合、读写预订前必须核验确认号与住客姓名、含儿童总人数不得超过房型容量、超 4 间房团队预订必须转接人工、特惠价 `RP_SAVER` 不可退款/不可改期/严禁退订重订绕过，以及灵活价 `RP_FLEX` 入住前 `>= 2` 天全退与 `< 2` 天扣除首晚房费精算）。
 
+---
+
+## 86. Stage 87: 16-Scenario (`AP-01..AP-16`) Bilingual 7-Card 4:5 Benchmark Suite / 第八十六节：Stage 87 16 场景（`AP-01..AP-16`）中英双语 7-Card 4:5 基准评测
+
+- **English**: `lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py` and `tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py` evaluate 16 synthetic scenarios (`AP-01..AP-16`) across Stage 86 UCP, ACP, x402, and $\tau$-bench 2.0 guardrails. AI-Native guardrails achieve **16/16 (100.0%)** vs. **4/16 (25.0%)** Classic 3-Tier baseline (**+75.0 pts**), **16/16 (100.0%)** guard-order reversal consistency (`0.0 pts` drift), and **0.35 ms** vs. **4.76 ms** median latency (**13.6x** speedup), generating bilingual 7-Card 4:5 visual decks (`reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/{report.json,index.html,index.en.html}`).
+- **中文**: `lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py` 与 `tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py` 构建了 16 个合成场景（`AP-01..AP-16`），AI-Native 确定性护栏取得 **16/16 (100.0%)** vs 经典三层基线 **4/16 (25.0%)**（提升 **+75.0 pts**）、评估顺序逆序零漂移（**16/16, 100.0%**）及中位延迟 **0.35 ms** vs **4.76 ms**（**13.6x** 加速），生成中英双语 7-Card 4:5 报告 `reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/{report.json,index.html,index.en.html}`。
+
 
 
 

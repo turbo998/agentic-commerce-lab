@@ -476,6 +476,18 @@
   - 单元测试：[`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_guard.py)（全仓库 **472/472** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§85)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 87：16 场景（`AP-01..AP-16`）中英双语 7-Card 4:5 视觉基准评测报告
+
+- **评测矩阵与核心量化结论**：
+  - 针对 Stage 86 四大协议域构建 16 场景合成基准（`AP-01..AP-16`：4 个合规放行场景 + 12 个协议层高危违约阻断场景）。
+  - **AI-Native 确定性护栏**：**16/16 (100.0%)** 准确判定 vs **经典三层 Web 基线**：**4/16 (25.0%)**（提升 **+75.0 pts**）；逆序评估扰动一致性 **16/16 (100.0%, 0.0 pts 漂移)**；中位延迟 **0.35 ms** vs **4.76 ms**（**13.6x** 加速）。
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../lab/ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py)
+  - 单元测试：[`tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py`](../../tests/test_ucp_attr_path_acp_discount_res_x402_nowallet_erc8021_tau2_hospitality_bench.py)（全仓库 **474/474** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench/report.json)
+
 
 
 

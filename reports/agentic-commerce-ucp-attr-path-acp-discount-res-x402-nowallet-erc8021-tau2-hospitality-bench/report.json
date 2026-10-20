@@ -1,0 +1,318 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-attr-path-acp-discount-res-x402-nowallet-erc8021-tau2-hospitality-bench",
+  "stage": "Stage 87",
+  "provenance": "synthetic",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_pass_rate_pct": 25.0,
+  "reversal_consistency_passed": 16,
+  "reversal_consistency_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.35,
+    "classic_3tier": 4.76,
+    "speedup_x": 13.6
+  },
+  "scenarios": [
+    {
+      "id": "AP-01",
+      "scenario": "AP-01",
+      "title_cn": "UCP PropertyValue 属性继承覆盖与 RFC 9535 恢复合规放行",
+      "title_en": "UCP PropertyValue attribute inheritance & RFC 9535 path valid admit",
+      "question_cn": "UCP PropertyValue 属性继承覆盖与 RFC 9535 恢复合规放行",
+      "question_en": "UCP PropertyValue attribute inheritance & RFC 9535 path valid admit",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": [],
+      "action": "Act automatically",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-02",
+      "scenario": "AP-02",
+      "title_cn": "UCP 变体属性未覆盖父商品同名属性阻断 (#401)",
+      "title_en": "UCP Variant attribute fails to override Product attribute blocked (#401)",
+      "question_cn": "UCP 变体属性未覆盖父商品同名属性阻断 (#401)",
+      "question_en": "UCP Variant attribute fails to override Product attribute blocked (#401)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "ucp_attribute_override_mismatch:key:weight"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-03",
+      "scenario": "AP-03",
+      "title_cn": "UCP 结账错误消息使用废弃 $.items[1] JSONPath 阻断 (#397)",
+      "title_en": "UCP checkout message using legacy $.items[1] JSONPath blocked (#397)",
+      "question_cn": "UCP 结账错误消息使用废弃 $.items[1] JSONPath 阻断 (#397)",
+      "question_en": "UCP checkout message using legacy $.items[1] JSONPath blocked (#397)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "message_0_legacy_items_jsonpath_forbidden",
+        "recoverable_error_remediation_path_mismatch"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-04",
+      "scenario": "AP-04",
+      "title_cn": "UCP unrecoverable 错误触发自动重试 Update Checkout 阻断 (#380)",
+      "title_en": "UCP unrecoverable error triggering auto-retry Update Checkout blocked (#380)",
+      "question_cn": "UCP unrecoverable 错误触发自动重试 Update Checkout 阻断 (#380)",
+      "question_en": "UCP unrecoverable error triggering auto-retry Update Checkout blocked (#380)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "unrecoverable_error_auto_retry_forbidden"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-05",
+      "scenario": "AP-05",
+      "title_cn": "ACP 优惠券分摊守恒、RejectedDiscount 与 recoverable 消息合规放行",
+      "title_en": "ACP discount allocations, RejectedDiscount & recoverable message admit",
+      "question_cn": "ACP 优惠券分摊守恒、RejectedDiscount 与 recoverable 消息合规放行",
+      "question_en": "ACP discount allocations, RejectedDiscount & recoverable message admit",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": [],
+      "action": "Act automatically",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-06",
+      "scenario": "AP-06",
+      "title_cn": "ACP RejectedDiscount 非法拒绝原因码阻断 (#101)",
+      "title_en": "ACP RejectedDiscount invalid DiscountErrorCode reason blocked (#101)",
+      "question_cn": "ACP RejectedDiscount 非法拒绝原因码阻断 (#101)",
+      "question_en": "ACP RejectedDiscount invalid DiscountErrorCode reason blocked (#101)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "rejected_discount_0_invalid_error_code"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-07",
+      "scenario": "AP-07",
+      "title_cn": "ACP requires_buyer_review 消息被 Agent 自动重试下单阻断 (#100)",
+      "title_en": "ACP requires_buyer_review autonomous retry/order placement blocked (#100)",
+      "question_cn": "ACP requires_buyer_review 消息被 Agent 自动重试下单阻断 (#100)",
+      "question_en": "ACP requires_buyer_review autonomous retry/order placement blocked (#100)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "acp_message_0_requires_buyer_review_blocks_autonomous_retry_or_order"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-08",
+      "scenario": "AP-08",
+      "title_cn": "ACP 200 OK 会话响应混用顶层协议 Error 对象阻断 (#115)",
+      "title_en": "ACP 200 OK CheckoutSession mixing top-level protocol Error blocked (#115)",
+      "question_cn": "ACP 200 OK 会话响应混用顶层协议 Error 对象阻断 (#115)",
+      "question_en": "ACP 200 OK CheckoutSession mixing top-level protocol Error blocked (#115)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "acp_2xx_response_cannot_use_top_level_protocol_error"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-09",
+      "scenario": "AP-09",
+      "title_cn": "x402 no-wallet 扩展与 ERC-8021 构建者归因后缀合规放行",
+      "title_en": "x402 no-wallet extension & ERC-8021 builder code suffix valid admit",
+      "question_cn": "x402 no-wallet 扩展与 ERC-8021 构建者归因后缀合规放行",
+      "question_en": "x402 no-wallet extension & ERC-8021 builder code suffix valid admit",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": [],
+      "action": "Act automatically",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-10",
+      "scenario": "AP-10",
+      "title_cn": "x402 no-wallet.requires.amount 与 PaymentRequirements 不一致阻断 (#317)",
+      "title_en": "x402 no-wallet.requires.amount mismatch with PaymentRequirements blocked (#317)",
+      "question_cn": "x402 no-wallet.requires.amount 与 PaymentRequirements 不一致阻断 (#317)",
+      "question_en": "x402 no-wallet.requires.amount mismatch with PaymentRequirements blocked (#317)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "x402_no_wallet_requires_amount_mismatch_with_payment_requirements"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-11",
+      "scenario": "AP-11",
+      "title_cn": "x402 自动执行攻击者可控 wallets[].install 命令阻断 (#317)",
+      "title_en": "x402 auto-executing untrusted wallets[].install shell command blocked (#317)",
+      "question_cn": "x402 自动执行攻击者可控 wallets[].install 命令阻断 (#317)",
+      "question_en": "x402 auto-executing untrusted wallets[].install shell command blocked (#317)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "x402_no_wallet_untrusted_install_auto_exec_forbidden"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-12",
+      "scenario": "AP-12",
+      "title_cn": "x402 EVM 结算交易缺失或伪造 ERC-8021 归因后缀阻断 (#31)",
+      "title_en": "x402 EVM settlement missing or forged ERC-8021 suffix blocked (#31)",
+      "question_cn": "x402 EVM 结算交易缺失或伪造 ERC-8021 归因后缀阻断 (#31)",
+      "question_en": "x402 EVM settlement missing or forged ERC-8021 suffix blocked (#31)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "erc8021_calldata_suffix_mismatch"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-13",
+      "scenario": "AP-13",
+      "title_cn": "tau2 全双工语音尾帧排空与 Hotel Vltava 灵活价退订合规放行",
+      "title_en": "tau2 full-duplex audio drain & Hotel Vltava RP_FLEX cancellation admit",
+      "question_cn": "tau2 全双工语音尾帧排空与 Hotel Vltava 灵活价退订合规放行",
+      "question_en": "tau2 full-duplex audio drain & Hotel Vltava RP_FLEX cancellation admit",
+      "expected_allowed": true,
+      "ai_native_allowed": true,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": true,
+      "reversal_consistent": true,
+      "violations": [],
+      "action": "Act automatically",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-14",
+      "scenario": "AP-14",
+      "title_cn": "tau2 全双工 _finalize() 未排空残余语音缓冲阻断 (#363)",
+      "title_en": "tau2 full-duplex _finalize() leaving undrained buffered audio blocked (#363)",
+      "question_cn": "tau2 全双工 _finalize() 未排空残余语音缓冲阻断 (#363)",
+      "question_en": "tau2 full-duplex _finalize() leaving undrained buffered audio blocked (#363)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_buffered_agent_audio_not_drained_to_final_tick"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-15",
+      "scenario": "AP-15",
+      "title_cn": "tau2 Hospitality 特惠价 RP_SAVER 改期或退订重订绕过阻断 (#355)",
+      "title_en": "tau2 Hospitality RP_SAVER date modification / cancel-rebook workaround blocked (#355)",
+      "question_cn": "tau2 Hospitality 特惠价 RP_SAVER 改期或退订重订绕过阻断 (#355)",
+      "question_en": "tau2 Hospitality RP_SAVER date modification / cancel-rebook workaround blocked (#355)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_hospitality_saver_rate_date_change_forbidden",
+        "tau2_hospitality_saver_cancel_rebook_workaround_forbidden"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    },
+    {
+      "id": "AP-16",
+      "scenario": "AP-16",
+      "title_cn": "tau2 Hospitality 超 4 间房团队预订未转接人工坐席阻断 (#355)",
+      "title_en": "tau2 Hospitality >4 rooms group booking without human transfer blocked (#355)",
+      "question_cn": "tau2 Hospitality 超 4 间房团队预订未转接人工坐席阻断 (#355)",
+      "question_en": "tau2 Hospitality >4 rooms group booking without human transfer blocked (#355)",
+      "expected_allowed": false,
+      "ai_native_allowed": false,
+      "ai_native_passed": true,
+      "classic_3tier_allowed": true,
+      "classic_3tier_passed": false,
+      "reversal_consistent": true,
+      "violations": [
+        "tau2_hospitality_group_booking_over_4_rooms_requires_transfer"
+      ],
+      "action": "Send to a human",
+      "confidence": 0.99
+    }
+  ]
+}
