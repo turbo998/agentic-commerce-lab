@@ -344,6 +344,19 @@
   - Unit Tests: [`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py) (**422/422** total unit tests passing)
   - Bilingual Architecture Reference (§75): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 77: 16-Scenario (`PT-01..PT-16`) Bilingual 7-Card 4:5 Benchmark Suite
+
+- **Benchmark Results**:
+  - Evaluates 16 deterministic scenarios (`PT-01..PT-16`: 4 nominal admission cases + 12 real-world protocol/crypto/voice fault-injection cases) across all four Stage 76 guardrail domains.
+  - **AI-Native Guardrail Accuracy**: **16/16 (100.0%)** vs. **Classic 3-Tier Baseline**: **4/16 (25.0%)** (missed all 12 fault-injection cases).
+  - **Option-Reversal Consistency**: **100.0% (16/16)**; **Median Latency**: **0.35 ms vs. 4.68 ms (13.4x speedup)**.
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Runner: [`lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py)
+  - Unit Tests: [`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py) (**424/424** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/report.json)
+
 
 
 

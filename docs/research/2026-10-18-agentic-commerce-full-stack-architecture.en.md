@@ -112,6 +112,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§75.2**: ACP Native Order Post-Purchase Lifecycle (`#106`), `Message.resolution` & `intervention_required` vs `requires_3ds` (`#100`, `#143`, `#118`, `#115`), and `supported_versions[]` Negotiation / Session Total Parity (`#99`, `#117`, `#245`, `#101`).
   - **§75.3**: Google AP2 Multi-Hop `~~` SD-JWT Delegation Chain (`#350`, `#371`, `#159`), Payment Evidence Frame (`PEF`) / Compliance / Settlement / Trust Envelopes & Spend Cap (`#274`, `#272`, `#271`, `#269`, `#276`) & Coinbase x402 Bazaar Format / Public Facilitator / Celo & Arbitrum USDC / Counterparty Attestation (`#317`, `#312`, `#283`, `#244`, `#225`, `#206`, `#180`, `#136`, `#135`).
   - **§75.4**: Sierra $\tau$-bench 2.0 Voice Role-Flip Whitespace Guard (`#440`), Tri-State Realtime User Generation (`#526`, `#523`, `#521`), Qwen `qwen3.5-omni-plus-realtime` Nested Tools (`#449`, `#450`), Audio-Native Usage/Cost & Concurrency Caps (`#454`, `#456`), Parallel `WorkQueue` Leases (`#455`) & $\tau$-Voice Boundary (`#483`, `#546`, `#538`, `#535`).
+- **§76 (Stage 77 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PT-01..PT-16`)**: `lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.68 ms`, `13.4x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

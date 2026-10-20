@@ -344,6 +344,19 @@
   - 单元测试：[`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_guard.py)（全仓库 **422/422** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§75)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 77：16 场景（`PT-01..PT-16`）中英双语 7-Card 4:5 基准评测套件
+
+- **基准评测结果**：
+  - 覆盖 Stage 76 四大协议域的 16 个确定性场景（`PT-01..PT-16`，含 4 个标称准入场景与 12 个真实规范违例故障注入场景）。
+  - **AI-Native 护栏准确率**：**16/16 (100.0%)**；**经典三层基线准确率**：**4/16 (25.0%)**（漏放全部 12 个协议/加密/语音故障场景）。
+  - **逆序扰动一致性**：**100.0% (16/16)**；**中位延迟**：**0.35 ms vs. 4.68 ms（13.4x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../lab/ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py)
+  - 单元测试：[`tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py`](../../tests/test_ucp_payment_terms_hours_policies_acp_order_lifecycle_ap2_pef_x402_tau2_voice_bench.py)（全仓库 **424/424** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-payment-terms-hours-policies-acp-order-lifecycle-ap2-pef-x402-tau2-voice-bench/report.json)
+
 
 
 

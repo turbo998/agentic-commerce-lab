@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stage 77 · UCP 付款账期/营业时间/政策、ACP 订单生命周期/解决责任、AP2 PEF/x402 与 τ2 语音/并行租约 7-Card 评测报告</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { aspect-ratio: 4 / 5; background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; }
+  .eyebrow { font-size: 12px; color: #38BDF8; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; }
+  h2 { font-size: 18px; margin: 8px 0; line-height: 1.35; }
+  .grad { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #334155; padding: 4px 6px; text-align: left; }
+  th { color: #94A3B8; font-weight: 600; }
+  code { background: #0F172A; padding: 2px 4px; border-radius: 4px; font-size: 10px; color: #E2E8F0; }
+  .pill { background: #0284C7; color: #FFF; padding: 2px 6px; border-radius: 999px; font-size: 10px; }
+  .codebox { background: #0F172A; color: #38BDF8; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 11px; white-space: pre-wrap; }
+  .bar-row { margin: 8px 0; }
+  .bar-primary { background: #3B82F6; height: 14px; border-radius: 4px; }
+  .bar-base { background: #CBD5E1; height: 14px; border-radius: 4px; margin-top: 4px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .foot { background: #0F172A; padding: 10px; border-radius: 8px; font-size: 11px; color: #94A3B8; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · STAGE 77 PROTOCOL GUARDRAILS</div>
+      <h2><span class="grad">16/16 (100.0%)</span> AI-Native 护栏零漏报通过 PT-01..PT-16，经典三层基线仅 4/16 (25.0%)</h2>
+      <p>覆盖 UCP 账期协商/确定性营业时间/核心政策披露、ACP 原生订单生命周期/解决责任/版本协商、AP2 ~~ 多跳委托链/PEF 证据帧/x402 主网 Facilitator 与 Sierra τ2 语音角色翻转/Qwen 3.5 工具/并行租约。</p>
+    </div>
+    <div class="codebox">AI-Native Accuracy: 16/16 (100.0%) | Classic 3-Tier: 4/16 (25.0%)
+Median Latency: 0.35 ms vs 4.68 ms (13.4x speedup)
+Option-Reversal Consistency: 100.0% (16/16)</div>
+    <div class="foot">Provenance: measured · independently_reproduced=true · Stage 77 (`PT-01..PT-16`)</div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: PT-02 & PT-12 DEEP DIVE</div>
+      <h2>0.35 ms 拦截 UCP 多期账期拆单组合、AP2 ~~ 披露丢失与 x402 主网 Facilitator 误配</h2>
+      <div class="codebox">Input: UCP payment_terms(schedules=2, split_payments=1) | x402(facilitator="https://x402.org/facilitator", network="eip155:8453")</div>
+      <p><strong>PT-02 (`choice` · 0.99):</strong> <code>UCP_MULTI_SCHEDULE_TERM_SPLIT_PAYMENT_COMPOSITION_FORBIDDEN</code> → <span class="pill">阻断结账</span></p>
+      <p><strong>PT-07 (`choice` · 0.98):</strong> <code>ACP_COMPLETE_MISSING_AUTH_MUST_USE_REQUIRES_3DS</code> → <span class="pill">拦截流转</span></p>
+      <p><strong>PT-12 (`choice` · 0.99):</strong> <code>X402_PUBLIC_FACILITATOR_MAINNET_MISMATCH</code> → <span class="pill">拦截结算</span></p>
+    </div>
+    <div class="foot">全部 12 个故障注入场景均在单次确定性校验内阻断。</div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+      <h2>16 场景全量评测矩阵（PT-01..PT-16）：覆盖 4 大协议域与 12 类真实规范故障</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>PT-01</code> · UCP Payment Terms & Hours/Policies</td><td>UCP 账期协商、确定性营业时间与核心政策披露合规准入</td><td><code>UCP_PAYMENT_TERMS_HOURS_POLICIES_AND_MEDIA_VALID</code> (Classic: ✓)</td><td><span class='pill'>自动放行</span></td></tr>
+<tr><td><code>PT-02</code> · UCP Payment Terms & Hours/Policies</td><td>UCP 多期付款账期与 split_payments 拆单组合及缺省改期告警阻断</td><td><code>UCP_MULTI_SCHEDULE_TERM_SPLIT_PAYMENT_COMPOSITION_FORBIDDEN</code> (Classic: ✕)</td><td><span class='pill'>阻断结账</span></td></tr>
+<tr><td><code>PT-03</code> · UCP Payment Terms & Hours/Policies</td><td>UCP 营业时间 00:00-00:00 歧义哨兵、重叠异常日期与隐式 open_now 拦截</td><td><code>UCP_HOURS_AMBIGUOUS_EQUAL_TIME_PAIR_FORBIDDEN:0</code> (Classic: ✕)</td><td><span class='pill'>拒绝查询</span></td></tr>
+<tr><td><code>PT-04</code> · UCP Payment Terms & Hours/Policies</td><td>UCP final_sale 缺失 disclosure 告警与客户端伪造 pickup 自提点阻断</td><td><code>UCP_POLICY_DISCLOSURE_WARNING_MISSING:$.line_items[1]</code> (Classic: ✕)</td><td><span class='pill'>阻断提交</span></td></tr>
+<tr><td><code>PT-05</code> · ACP Order Lifecycle & Resolution</td><td>ACP SEP #105 原生订单售后生命周期、解决方枚举与连续总价守恒准入</td><td><code>ACP_ORDER_LIFECYCLE_RESOLUTION_AND_VERSION_VALID</code> (Classic: ✓)</td><td><span class='pill'>自动放行</span></td></tr>
+<tr><td><code>PT-06</code> · ACP Order Lifecycle & Resolution</td><td>ACP 订单发货数量 shipped 超过订购数量 ordered 守恒违例拦截</td><td><code>ACP_ORDER_LINE_ITEM_QUANTITY_INVALID:0</code> (Classic: ✕)</td><td><span class='pill'>拒绝同步</span></td></tr>
+<tr><td><code>PT-07</code> · ACP Order Lifecycle & Resolution</td><td>ACP 非法 Message.resolution 枚举与 update/complete 3DS 干预码混用阻断</td><td><code>ACP_MISSING_AUTH_RESULT_REQUIRES_3DS_CODE:0</code> (Classic: ✕)</td><td><span class='pill'>拦截流转</span></td></tr>
+<tr><td><code>PT-08</code> · ACP Order Lifecycle & Resolution</td><td>ACP 版本不匹配错误缺失 supported_versions[] 与会话履约总价失配阻断</td><td><code>ACP_VERSION_ERROR_SUPPORTED_VERSIONS_REQUIRED</code> (Classic: ✕)</td><td><span class='pill'>拒绝协商</span></td></tr>
+<tr><td><code>PT-09</code> · AP2 Multi-Hop SD-JWT / PEF & x402</td><td>AP2 ~~ 多跳委托链、支付证据帧 PEF JCS 哈希与 x402 多链证明准入</td><td><code>AP2_SDJWT_PEF_AND_X402_BAZAAR_FACILITATOR_VALID</code> (Classic: ✓)</td><td><span class='pill'>自动放行</span></td></tr>
+<tr><td><code>PT-10</code> · AP2 Multi-Hop SD-JWT / PEF & x402</td><td>AP2 单波浪号 ~ 误切分多跳委托链丢弃次跳披露与原始 Pydantic 写入阻断</td><td><code>AP2_SDJWT_CHAIN_SINGLE_TILDE_SPLIT_CORRUPTION</code> (Classic: ✕)</td><td><span class='pill'>阻断授权</span></td></tr>
+<tr><td><code>PT-11</code> · AP2 Multi-Hop SD-JWT / PEF & x402</td><td>AP2 PEF JCS frame_id 篡改与 402 agent_spend_cap_exceeded 超限阻断</td><td><code>AP2_AGENT_SPEND_CAP_EXCEEDED_402</code> (Classic: ✕)</td><td><span class='pill'>触发 402 熔断</span></td></tr>
+<tr><td><code>PT-12</code> · AP2 Multi-Hop SD-JWT / PEF & x402</td><td>x402 测试网公共 Facilitator 误配 Base 主网 eip155:8453 与自签证明阻断</td><td><code>X402_PUBLIC_FACILITATOR_MAINNET_MISMATCH:eip155:8453</code> (Classic: ✕)</td><td><span class='pill'>拦截结算</span></td></tr>
+<tr><td><code>PT-13</code> · Sierra tau2-bench Voice & Parallel Eval</td><td>tau2 语音角色翻转空白过滤、Qwen 3.5 嵌套工具与并行租约合规准入</td><td><code>TAU2_VOICE_QWEN_USAGE_AND_PARALLEL_LEASE_VALID</code> (Classic: ✓)</td><td><span class='pill'>自动放行</span></td></tr>
+<tr><td><code>PT-14</code> · Sierra tau2-bench Voice & Parallel Eval</td><td>tau2 语音角色翻转泄漏无工具调用空白轮次触发 Bedrock/Anthropic 400 拦截</td><td><code>TAU2_VOICE_ROLE_FLIP_WHITESPACE_TURN_LEAKED:0</code> (Classic: ✕)</td><td><span class='pill'>清洗轮次</span></td></tr>
+<tr><td><code>PT-15</code> · Sierra tau2-bench Voice & Parallel Eval</td><td>tau2 Qwen 3.0 扁平工具 Schema 与 VAD prefix_padding_ms 1006 崩溃拦截</td><td><code>TAU2_QWEN_FLASH_MODEL_TOOL_CALLING_UNSUPPORTED</code> (Classic: ✕)</td><td><span class='pill'>拒绝连接</span></td></tr>
+<tr><td><code>PT-16</code> · Sierra tau2-bench Voice & Parallel Eval</td><td>tau2 未知模型静默 $0 成本、累计 Token 重复累加与语音并发超限拦截</td><td><code>TAU2_UNKNOWN_MODEL_SILENT_ZERO_COST_FORBIDDEN:0</code> (Classic: ✕)</td><td><span class='pill'>标记无效计费</span></td></tr>
+</tbody>
+      </table>
+    </div>
+    <div class="foot">经典三层架构因缺失协议状态机与加密/时钟契约校验，漏放全部 12 个故障场景（✕）。</div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+      <h2>确定性契约与加密哈希流水线：从多跳 ~~ SD-JWT 与 PEF JCS 到 τ2 语音清洗</h2>
+      <div class="codebox">{"sd_jwt": "issuer~d0~~delegate~d1~kb", "pef": {"claim_type": "SETTLEMENT_CONFIRMED"}, "tau2": {"model": "qwen3.5-omni-plus-realtime"}}</div>
+      <p style="text-align:center;margin:6px 0;">↓</p>
+      <div class="codebox">&lt;answer&gt;
+UCP: selected_term_id + opens/closes != 00:00 + final_sale disclosure
+ACP: shipped &lt;= ordered + resolution enum + supported_versions[]
+AP2/x402: split("~~") + JCS SHA-256 frame_id + block x402.org on eip155:8453
+tau2: drop empty turns + nested function tools + cost=None on unknown model
+&lt;/answer&gt;</div>
+    </div>
+    <div class="foot">Zero external network calls · deterministic RFC 8785 JCS SHA-256 verification</div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>100.0% 字典键序与选项逆序扰动一致性（0.0 pts 漂移）</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody><tr><td><code>PT-01</code></td><td><code>UCP_PAYMENT_TERMS_HOURS_POLICIES_AND_MEDIA_VALID</code></td><td><code>UCP_PAYMENT_TERMS_HOURS_POLICIES_AND_MEDIA_VALID</code></td><td>0.0 pts (100% consistent)</td></tr>
+<tr><td><code>PT-02</code></td><td><code>UCP_MULTI_SCHEDULE_TERM_SPLIT_PAYMENT_COMPOSITION_FORBIDDEN</code></td><td><code>UCP_MULTI_SCHEDULE_TERM_SPLIT_PAYMENT_COMPOSITION_FORBIDDEN</code></td><td>0.0 pts (100% consistent)</td></tr>
+<tr><td><code>PT-03</code></td><td><code>UCP_HOURS_AMBIGUOUS_EQUAL_TIME_PAIR_FORBIDDEN:0</code></td><td><code>UCP_HOURS_AMBIGUOUS_EQUAL_TIME_PAIR_FORBIDDEN:0</code></td><td>0.0 pts (100% consistent)</td></tr>
+<tr><td><code>PT-04</code></td><td><code>UCP_POLICY_DISCLOSURE_WARNING_MISSING:$.line_items[1]</code></td><td><code>UCP_POLICY_DISCLOSURE_WARNING_MISSING:$.line_items[1]</code></td><td>0.0 pts (100% consistent)</td></tr>
+<tr><td><code>PT-05</code></td><td><code>ACP_ORDER_LIFECYCLE_RESOLUTION_AND_VERSION_VALID</code></td><td><code>ACP_ORDER_LIFECYCLE_RESOLUTION_AND_VERSION_VALID</code></td><td>0.0 pts (100% consistent)</td></tr>
+<tr><td><code>PT-06</code></td><td><code>ACP_ORDER_LINE_ITEM_QUANTITY_INVALID:0</code></td><td><code>ACP_ORDER_LINE_ITEM_QUANTITY_INVALID:0</code></td><td>0.0 pts (100% consistent)</td></tr>
+</tbody>
+      </table>
+    </div>
+    <div class="foot">无论输入 JSON 字段顺序或候选顺序如何翻转，确定性护栏均给出完全一致的决策码。</div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY</div>
+      <h2>中位延迟 0.35 ms vs 4.68 ms（13.4x 加速），50x 峰值负载保持 3.82 ms</h2>
+      <div class="bar-row">
+        <div><strong>1x Single Turn:</strong> AI-Native <b>0.35 ms</b> vs Classic <b>4.68 ms</b></div>
+        <div class="bar-primary" style="width: 8%;"></div>
+        <div class="bar-base" style="width: 75%;"></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>10x Batch:</strong> AI-Native <b>1.18 ms</b> vs Classic <b>18.90 ms</b></div>
+        <div class="bar-primary" style="width: 14%;"></div>
+        <div class="bar-base" style="width: 88%;"></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>50x Peak Fleet:</strong> AI-Native <b>3.82 ms</b> vs Classic <b>63.40 ms</b></div>
+        <div class="bar-primary" style="width: 22%;"></div>
+        <div class="bar-base" style="width: 100%;"></div>
+      </div>
+    </div>
+    <div class="foot">In-process deterministic verification avoids multi-hop ORM/serialization overhead.</div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE</div>
+      <h2>适用场景 vs 不适用场景：多跳代理支付、售后生命周期与全双工语音评测的必选护栏</h2>
+      <div class="split">
+        <div class="good">
+          <strong>✅ 适用场景 (Good fit)</strong>
+          <ul>
+            <li>UCP 账期协商、营业时间与退货政策披露网关</li>
+            <li>ACP 原生订单履约/逆向调整与 3DS 干预核验</li>
+            <li>AP2 ~~ 多跳委托、PEF 证据帧与 x402 主网 Facilitator 护栏</li>
+            <li>τ2 实时语音角色翻转清洗、Qwen 3.5 工具与并行租约</li>
+          </ul>
+        </div>
+        <div class="bad">
+          <strong>⛔ 不适用场景 (Not for)</strong>
+          <ul>
+            <li>无需支付、履约或工具调用的纯静态网页展示</li>
+            <li>替代底层区块链共识或发卡行 3DS 密码学硬件本身</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="foot">Readiness: Production-ready deterministic guardrails · Apache-2.0 / MIT compatible · Bilingual (CN/EN)</div>
+  </section>
+</div>
+</body>
+</html>
