@@ -408,6 +408,20 @@
   - 单元测试：[`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py)（全仓库 **444/444** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/report.json)
 
+---
+
+## Stage 82：UCP 多变体媒体/方法级目的地/对象根 `totals.json`/MCP 幂等契约/A2A 写冻结/脱敏 `order.payment`/礼品与只读 `ask`、ACP 默认配送项/委托支付错误枚举/内容引用归因/MCP 绑定、Coinbase x402 签名前代码级限额策略/请求指纹绑定/`attestseal` 证明/`SAR` 交付绑定/`ERC-7710` 与 Sierra $\tau$-bench 2.0 关户原因枚举/空完成重试/评测溯源/TTS 并发上限护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 多变体媒体（`#690`/`#675`）、方法级目的地类型（`#689`）、对象根 `totals.json`（`#684`）、MCP `idempotency-key` 冲突返回 `409`/`-32000` 与 A2A `complete_in_progress` 写冻结（`#679`/`#670`）、`context.location` 非目的地语义（`#671`）、脱敏 `order.payment`（`#584`）、赠品行 `gift_line_item_id` 与折扣拒绝码（`#578`/`#577`）、单一规范 `keys[]` JWKS（`#566`）、只读 `ask`（`#538`）及礼品结账 `recipient_required`（`#508`）**。
+  2. **ACP 创建结账默认配送项预选（`#198`）、委托支付 `PaymentMethodCard.virtual` 必填与 `401/500/503` 错误枚举（`#161`/`#132`）、`content_attribution` 引用归因（`#149`）、MCP JSON-RPC 2.0 传输绑定（`#139`）、`PaymentHandler.display_name` 与 `authorize`/`capture`（`#130`）及统一 `AppliedDiscount`（`#125`）**。
+  3. **Coinbase x402 签名前代码层 `onPaymentRequested` 策略（`#166`）、支付标识符绑定规范化请求指纹（`#165`）、`attestseal-trust-attestation` 独立权威 DID Ed25519 证明（`#136`）、结算证明收据 `SAR` 交付摘要绑定（`#46`）、`ERC-7710` `redeemDelegations` 预模拟（`#22`）及 Facilitator 钩子异常隔离与 `crypto/rand` CSPRNG 费率支付方（`#13`）**。
+  4. **Sierra $\tau$-bench 2.0 银行 `close_bank_account_7392` 固定关户原因枚举（`#484`）、T091 `persona` 键修正（`#478`）、文本用户模拟器空完成自动重试（`#471`）、评测器溯源元数据（`#467`）、多客户电信 `DB` 奖励基准（`#462`）及 ElevenLabs TTS 并发上限（`#457`）**。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py)
+  - 单元测试：[`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py)（全仓库 **452/452** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§81)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

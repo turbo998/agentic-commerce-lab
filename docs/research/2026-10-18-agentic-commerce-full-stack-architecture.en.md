@@ -128,6 +128,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§79.4**: Sierra $\tau$-bench 2.0 Full-Duplex Voice Rescoring (`#399`), Banking Reverse-Chronological Ordering (`#403`), Lost/Stolen Discoverable Read Calls (`#402`), Nested JSON/Numeric Normalization (`#401`, `#397`), Batch Replay Isolation (`#393`), Platinum 10% Cash-Back Doc (`#388`) & Airline/LLM Execution Fixes (`#362`, `#361`, `#360`, `#358`).
 - **§80 (Stage 81 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`AC-01..AC-16`)**: `lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.72 ms`, `13.5x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§81 (Stage 82 — Bilingual Chinese + English)**:
+  - **§81.1**: UCP Multi-Rendition Media (`#690`, `#675`), Method-Level Destination Discrimination (`#689`), Object-Root `totals.json` (`#684`), MCP Idempotency Contract & A2A Freeze (`#679`, `#670`), Provisional `context.location` (`#671`), Sanitized `order.payment` (`#584`), Gift Line-Item & Rejection Codes (`#578`, `#577`), Canonical `keys[]` JWKS (`#566`), Read-Only `ask` (`#538`) & Recipient-Required Gift Checkout (`#508`).
+  - **§81.2**: ACP Default Delivery Option Pre-Selection (`#198`), Delegate Payment `401/500/503` & `virtual` Card (`#161`, `#132`), Content Citation Attribution (`#149`), MCP Transport Binding (`#139`), PaymentHandler `display_name` & Intent (`#130`) & Consolidated `AppliedDiscount` (`#125`).
+  - **§81.3**: Coinbase x402 Pre-Sign `onPaymentRequested` Spend Policy (`#166`), Request-Bound Payment Identifier (`#165`), `attestseal` Ed25519 DID Attestation (`#136`), Settlement Attestation Receipt `SAR` (`#46`), `ERC-7710` Delegation Simulation (`#22`) & Facilitator Hook Isolation / CSPRNG Fee-Payer (`#13`).
+  - **§81.4**: Sierra $\tau$-bench 2.0 Banking `close_bank_account_7392` Fixed Reason Enum (`#484`), Task 091 `persona` Key (`#478`), Empty Text-Simulator Retry (`#471`), Evaluator Provenance (`#467`), Multi-Customer Telecom DB-Safe Grading (`#462`) & Voice TTS Concurrency Bound (`#457`).
 
 
 

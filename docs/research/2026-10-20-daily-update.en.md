@@ -408,6 +408,20 @@
   - Unit Tests: [`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_bench.py) (**444/444** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-authority-consent-eligibility-acp-3ds-fulfillment-ap2-jcs-tap-rfc9421-tau2-duplex-bench/report.json)
 
+---
+
+## Stage 82: UCP Multi-Rendition Media/Destinations/Totals/MCP Idempotency/A2A Freeze/Order Payment/Gift/Ask, ACP Default Delivery/Delegate Errors/Citation/MCP Binding, Coinbase x402 Spend Policy/Request-Bound ID/AttestSeal/SAR/ERC-7710 & Sierra $\tau$-bench 2.0 Close-Account Enum/Empty-Sim Retry/Provenance/TTS Concurrency Guardrails
+
+- **Primary-Source Protocol & Benchmark Evidence**:
+  1. **UCP Multi-Rendition Media (`#690`/`#675`), Method-Level Destinations (`#689`), Object-Root `totals.json` (`#684`), MCP `idempotency-key` Conflict `409`/`-32000` & A2A `complete_in_progress` Freeze (`#679`/`#670`), Provisional `context.location` (`#671`), Sanitized `order.payment` (`#584`), `gift_line_item_id` & Rejection Codes (`#578`/`#577`), Canonical `keys[]` JWKS (`#566`), Read-Only `ask` (`#538`) & Recipient-Required Gift Checkout (`#508`)**.
+  2. **ACP Default Delivery Option Selection (`#198`), Delegate Payment `PaymentMethodCard.virtual` & `401/500/503` Errors (`#161`/`#132`), `content_attribution` Citations (`#149`), MCP JSON-RPC 2.0 Transport (`#139`), `PaymentHandler.display_name` & `authorize`/`capture` (`#130`) & Consolidated `AppliedDiscount` (`#125`)**.
+  3. **Coinbase x402 Code-Level `onPaymentRequested` Policy (`#166`), Request-Fingerprint Payment Identifier (`#165`), `attestseal-trust-attestation` Ed25519 DID Authority (`#136`), Settlement Attestation Receipt `SAR` Delivery Binding (`#46`), `ERC-7710` `redeemDelegations` Simulation (`#22`) & Facilitator Hook Isolation / CSPRNG Fee-Payer (`#13`)**.
+  4. **Sierra $\tau$-bench 2.0 Banking `close_bank_account_7392` Fixed Reason Enum (`#484`), Task 091 `persona` Key Fix (`#478`), Empty Text-Simulator Completion Retry (`#471`), Evaluator Provenance Metadata (`#467`), Multi-Customer Telecom DB-Safe Grading (`#462`) & Voice TTS Concurrency Bound (`#457`)**.
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py)
+  - Unit Tests: [`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py) (**452/452** total unit tests passing)
+  - Bilingual Architecture Reference (§81): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
