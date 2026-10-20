@@ -210,6 +210,16 @@ from lab.ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard
     evaluate_ucp_ap2_token_issuance_and_content_digest_guard,
     evaluate_ucp_catalog_search_purpose_and_reference_ids_guard,
 )
+from lab.ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard import (
+    AcpSchemaOpenApiDriftGuardResult,
+    Ap2KbAudCnfPoppyDpopGuardResult,
+    Tau2IntakeAndTapX402GuardResult,
+    UcpSchemaBundleSellerLogoGuardResult,
+    verify_acp_schema_openapi_property_drift,
+    verify_ap2_kb_aud_cnf_and_poppy_dpop_rules,
+    verify_tau2_intake_and_tap_x402_checkout,
+    verify_ucp_schema_bundle_and_seller_logo,
+)
 
 
 @dataclass(frozen=True)

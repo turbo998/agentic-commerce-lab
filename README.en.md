@@ -1,0 +1,70 @@
+# Agentic Commerce Lab (English Edition)
+
+🌐 **Language / 语言导航**: **[中文 (`README.md`)](README.md)** | **English (Current)** | **[2026-10-20 Daily Research (EN)](research/daily/2026-10-20.en.md)** | **[2026-10-20 每日研究 (中文)](research/daily/2026-10-20.md)** | **[Full-Stack Reference Architecture (EN Guide)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md)** | **[Full-Stack Master Blueprint (§1–§53)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md)**
+
+From a Solutions Architect perspective, **Agentic Commerce Lab** investigates technical architectures, protocol standards, and enterprise agent use cases for Personal & Delegated AI Agents—focusing on **Visa** (`Intelligent Commerce`, `Trusted Agent Protocol`, `MCP Server & Acceptance Toolkit`), **Stripe** (`ACP`, `UCP`, `Agentic Commerce Suite`, `Shared Payment Tokens`, `Link Agent Wallet`, `Machine Payments Protocol / Tempo`, `x402`, `MCP`), **Google AP2** (`Agent Payments Protocol` `SD-JWT+kb`), and **Sierra** (`Agent OS`, `Personal Agent Protocol / Poppy v0.2`, `τ-bench 2.0.0`).
+
+Every capability in `lab/` is a deterministic, zero-secret, offline-runnable Python reference verifier or benchmark suite backed by `unittest` (`316+` unit tests) and self-contained **7-Card 4:5 Visual Benchmark Reports**.
+
+---
+
+## 1. Core Architectural Thesis: AI-Native Workload Design vs. Cloud Well-Architected / Classic 3-Tier Web
+
+Classic **3-Tier Web Architectures (Presentation → Stateless App → Database)** and cloud hyperscaler **Well-Architected Frameworks (WAF)** assume a human user visually inspects a browser DOM and clicks "Pay" over a first-party session cookie. In Agentic Commerce, non-deterministic LLM agents act across organizational boundaries under delegated authority, requiring a **6-Plane AI-Native Architecture**:
+
+1. **Plane 1 — Edge & Cryptographic Agent Identity**: RFC 9421 HTTP Message Signatures (`@signature-params`), `<= 60s` replay windows, verify-before-recording nonce caches, Visa TAP Hybrid Post-Quantum (`ed25519-ml-dsa-65`), and Principal DID anti-scalping quotas (`lab/agent_identity_attestation_guard.py`).
+2. **Plane 2 — Catalog & Discovery Integrity**: RFC 9530 raw-byte `Content-Digest` barriers, `dev.ucp.common.feed` shard verification, relational `purpose`/`reference_ids` self-exclusion, `ucp-schema 2.0.0` bundled `$ref` restoration, and `seller.logo` non-authority isolation (`lab/ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard.py`).
+3. **Plane 3 — Fiduciary Policy Broker & Declarative UI Isolation**: Out-of-band `summary == terms` verification (`Poppy v0.2`), declarative A2UI surfaces stripped from LLM `content[]` (`UCP #899`), host-side `mcpToolGate` (`ACP #314`), and Sierra $\tau$-bench `2.0.0` `intake` consent & turn-separation state machines.
+4. **Plane 4 — Cryptographic Mandates & Scoped Tokenization**: Google AP2 `SD-JWT+kb` delegation chains (enforcing `expected_aud` on `kb+sd-jwt+kb` terminal hops per `AP2 #369`, RFC 8785 JCS `open_mandate_hash`, and `>= 128-bit` `checkout_hash` entropy), UCP `/tokenize` non-reversible tokens (`#916`), and single-use Stripe SPT resolution.
+5. **Plane 5 — Multi-Rail Atomic Settlement & FinOps Circuit Breaker**: Multi-seller Stripe Connect split conservation, two-phase Booking Hold Saga (`HOLD_ALL -> VERIFY -> ATOMIC_CAPTURE_OR_REVERSE`), `x402` USDC on Solana/Base (`HTTP 402`), `MPP Tempo` streaming sessions, Razorpay UPI Circle (`INR 15,000` ceiling), and AP2 `COST_ENVELOPE_EXCEEDED` token-burn circuit breakers.
+6. **Plane 6 — Cryptographic Dispute Non-Repudiation & Lifecycle Governance**: ACP `ATDRP-0.1` (`#316`) 17-gateway CE 3.0 evidence compiler, UCP cancel-first `lookup` + atomic `fence` tombstones (`#945`), merchant consultation `proposal_digest` (`#946`), and GDPR Art. 17 CEK crypto-shredding.
+
+---
+
+## 2. Bilingual Research & Architecture Entry Points
+
+| Resource | Chinese (中文) | English | Highlights |
+|---|---|---|---|
+| **Repository Overview** | [`README.md`](README.md) | [`README.en.md`](README.en.md) | Full index of protocols, architecture blueprints, `lab/` guards, and 7-Card benchmarks |
+| **2026-10-20 Daily Research** | [`research/daily/2026-10-20.md`](research/daily/2026-10-20.md) | [`research/daily/2026-10-20.en.md`](research/daily/2026-10-20.en.md) | 50-source audit, Stripe MCP 41-day countdown (`2026-11-30`), UCP `#982`/`#962`, ACP `#310`/`#290`/`#284`/`#275`, AP2 `#369`/`#385`/`#384`, Poppy `#71`, Sierra $\tau$-bench `2.0.0` (`#642`), Visa TAP `x402` (`#11`) |
+| **2026-10-20 Technical Update Index** | [`docs/research/2026-10-20-daily-update.md`](docs/research/2026-10-20-daily-update.md) | [`docs/research/2026-10-20-daily-update.en.md`](docs/research/2026-10-20-daily-update.en.md) | Stage-by-stage technical asset & test verification log for `2026-10-20` |
+| **Full-Stack Reference Architecture (§1–§53)** | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md) | [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md) | Master 53-section architecture blueprint and English executive reference |
+| **2026-10-19 Daily Research & Update Index** | [`research/daily/2026-10-19.md`](research/daily/2026-10-19.md) | [`docs/research/2026-10-19-daily-update.md`](docs/research/2026-10-19-daily-update.md) | Stages 1–53 protocol guards, vertical domain clearing, and 7-Card benchmark suites |
+| **Foundational Protocol & Architecture Docs** | [`research/protocols.md`](research/protocols.md) / [`research/architecture.md`](research/architecture.md) | [`research/use-cases.md`](research/use-cases.md) / [`research/sources.json`](research/sources.json) | 50-source registry (`sources.json`), protocol taxonomy, trust boundaries, and agent use cases |
+
+---
+
+## 3. Self-Contained 7-Card 4:5 Visual Benchmark Reports (`reports/`)
+
+Every benchmark report adheres to the **7-Card 4:5 Visual Report Standard** (`CSP: default-src 'none'; style-src 'unsafe-inline'`, zero external dependencies, backed by deterministic `report.json` data):
+
+| Stage | Benchmark Suite & CLI Runner | 7-Card HTML Deck & Sealed JSON | Core Evaluation Scope (AI-Native vs. Classic 3-Tier) |
+|---|---|---|---|
+| **Stage 53** | `python -m lab.ucp_ap2_token_catalog_purpose_acp_upi_circle_tap_bench` | [`index.html`](reports/agentic-commerce-ucp-ap2-token-catalog-purpose-acp-upi-circle-tap-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-ap2-token-catalog-purpose-acp-upi-circle-tap-bench/report.json) | `TI-01..TI-16` (16/16 100.0% vs 1/16 6.2%): UCP `#916` `/tokenize` AP2 mandate verification, `#917` RFC 9530 raw-byte `Content-Digest`, `#902` `purpose`/`reference_ids`, ACP `#223` Feed extensions, `#216` Razorpay UPI Circle, AP2 `#279`/`#278`, Visa TAP `#21` |
+| **Stage 51** | `python -m lab.ucp_address_webhooks_quote_acp_feed_bench` | [`index.html`](reports/agentic-commerce-ucp-address-webhooks-quote-acp-feed-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-address-webhooks-quote-acp-feed-bench/report.json) | `AW-01..AW-16` (16/16 100.0% vs 1/16 6.2%): UCP `#981` address line components, `#980` Identity-Linking selection, `#938` capability webhooks, `#930`/`#915` quotes & `declared_fields`, ACP `#314` `mcpToolGate`, `#273` `Server-Timing`, `#260` `feed_update_id` |
+| **Stage 49** | `python -m lab.ucp_fulfillment_similarity_nano_acp_atdrp_tap_pq_bench` | [`index.html`](reports/agentic-commerce-ucp-fulfillment-similarity-nano-acp-atdrp-tap-pq-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-fulfillment-similarity-nano-acp-atdrp-tap-pq-bench/report.json) | `FN-01..FN-16` (16/16 100.0% vs 1/16 6.2%): UCP `#979` fulfillment events, `#977` catalog similarity, `#862` Nano `XNO` binding, `#868` credential non-echo, ACP `#316` ATDRP-0.1, Visa TAP `#18` Hybrid PQ `ed25519-ml-dsa-65` |
+| **Stage 46** | `python -m lab.ucp_correlation_idempotency_wallet_modification_ap2_bench` | [`index.html`](reports/agentic-commerce-ucp-correlation-idempotency-wallet-modification-ap2-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-correlation-idempotency-wallet-modification-ap2-bench/report.json) | `CI-01..CI-16` (16/16 100.0% vs 1/16 6.2%): UCP `#839` `platform_reference`, `#782`/`#628` `ETag`/`If-Match`, `#945` `lookup`+`fence`, `#946` consultation `proposal_digest`, AP2 `#466`/`#496`/`#610`/`#625` |
+| **Stage 43** | `python -m lab.ucp_bundle_finality_ap2_acp_bench` | [`index.html`](reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/report.json) | `BF-01..BF-16`: UCP `#976` nested bundles, `#816` payment finality, `#848` guest order credentials, `#699` RFC 9421 `;req`, AP2 `#368`/`#377` ISO 4217 exponents, ACP `#217`/`#218` India UPI/CoFT |
+| **Stage 40** | `python -m lab.ucp_return_webhook_food_lodging_bench` | [`index.html`](reports/agentic-commerce-ucp-return-webhook-food-lodging-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-return-webhook-food-lodging-bench/report.json) | `RW-01..RW-16`: UCP `#966` return eligibility/deadlines, `#890` subscription `amount: 0` card retention, `#897` food single-kitchen & modifier math, `#861` lodging `[start, end)` cancellation |
+| **Stage 37** | `python -m lab.ucp_post_order_ui_quote_bench` | [`index.html`](reports/agentic-commerce-ucp-post-order-ui-quote-bench/index.html) · [`report.json`](reports/agentic-commerce-ucp-post-order-ui-quote-bench/report.json) | `PQ-01..PQ-16`: UCP `#964` per-allergen fail-closed, `#974` substitutes vs `like` search, `#899` A2UI context stripping, `#918` offer decision integrity, `#893` split payment non-echo |
+| **Stage 34** | `python -m lab.protocol_v02_sovereign_cbdc_bench` | [`index.html`](reports/agentic-commerce-protocol-v02-cbdc-bench/index.html) · [`report.json`](reports/agentic-commerce-protocol-v02-cbdc-bench/report.json) | `CB-01..CB-16`: mBridge wholesale CBDC PvP, LBMA allocated bullion ultrasonic audit, Sentinel-2 + MODIS NDVI crop insurance, Poppy `v0.2` DPoP, AP2 `#369` `SD-JWT+KB` |
+| **Stages 2–32** | [`lab/workload_arch_bench.py`](lab/workload_arch_bench.py), [`lab/unified_checkout_pipeline.py`](lab/unified_checkout_pipeline.py), etc. | [`6plane-bench`](reports/agentic-commerce-6plane-bench/index.html) · [`resilience-bench`](reports/agentic-commerce-resilience-bench/index.html) · [`b2b-settlement-bench`](reports/agentic-commerce-b2b-settlement-bench/index.html) · [`workbench`](reports/agentic-commerce-workbench/index.html) | 6-Plane architecture benchmark, 7-Gate chaos resilience benchmark, 17-gateway CE 3.0 dispute replay, and enterprise readiness workbench |
+
+---
+
+## 4. Quick Start & Offline Verification
+
+Requires Python 3.12+ (standard library only; zero network calls, zero API keys, zero payment accounts required):
+
+```powershell
+# Run full unit test suite (316+ unit tests across Stages 1–54)
+python -m unittest discover -s tests -q
+
+# Run offline checkout demo & Stripe MCP 2026-11-30 cutover inventory check
+python -m lab.demo
+python -m lab.mcp_migration --as-of 2026-10-20
+python -m lab.mcp_migration --as-of 2026-11-30
+
+# Run public 50-source monitor (requires internet; writes research/daily/YYYY-MM-DD-sources.json)
+python -m scripts.source_monitor
+```
