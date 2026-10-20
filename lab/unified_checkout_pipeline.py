@@ -266,6 +266,11 @@ from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard impor
     verify_tau2_voice_design_scale_and_text_matrix_inline,
     verify_ucp_root_array_order_annotations_and_auth_state,
 )
+from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench import (
+    Stage61ScenarioResult,
+    generate_stage61_benchmark_report,
+    run_stage61_benchmark_scenarios,
+)
 
 
 @dataclass(frozen=True)

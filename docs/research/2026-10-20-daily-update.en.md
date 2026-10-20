@@ -93,6 +93,24 @@
   - Unit Tests: [`tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard.py`](../../tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard.py) (**340/340** total unit tests passing)
   - Bilingual Architecture Reference (§59): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 61: 16-Scenario Bilingual (CN/EN) 7-Card 4:5 Benchmark Suite (`RA-01..RA-16`) across Stage 60 Protocol Guards
+
+- **16-Scenario Deterministic Evaluation Matrix (`RA-01..RA-16`)**:
+  - `RA-01..RA-04`: UCP `#948` root-array schema prohibition, `#903` Order directional annotation hygiene, `#882` vendor namespace self-hosting, `#869` auth-gated stored user state, and `#900` conformance corpus export.
+  - `RA-05..RA-08`: ACP `#270` checkout request `LineItem` reference alignment, `#261` flat `DelegateAuthenticationSessionWithResult` schema, and `#254`/`#252` embedded/inline example validators.
+  - `RA-09..RA-12`: Google AP2 `#349` exact versioned `.1` VCT constants, `#333`/`#329` `PaymentInstrument` x402 extension preservation, `#351` `~~`-first multi-hop dSD-JWT chain decoder, `#365` EC/JWK receipt verification, and `#364` sensitive payment log redaction.
+  - `RA-13..RA-16`: Sierra $\tau$-bench 2.0 `#636` ElevenLabs Voice Design API units (`guidance_scale=5` vs. UI `38%`), `#619` unpinned 6-language `voice_design/<lang>.yaml`, `#616` inline text-matrix `results.json` trial counting, and `#645`/`#632` telecom `RewardType.ACTION` ground truth & bounded repair.
+- **Quantitative Results**:
+  - **AI-Native 6-Plane Architecture**: **16/16 (100.0%)** accuracy, **100.0%** reversed-order stability, **0.35 ms** median latency.
+  - **Classic 3-Tier Baseline**: **1/16 (6.25%)** accuracy, **4.595 ms** median latency (**13.1x** speedup for AI-Native).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py`](../../lab/ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py)
+  - Unit Tests: [`tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py`](../../tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py) (**342/342** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/report.json)
+
+
 
 
 

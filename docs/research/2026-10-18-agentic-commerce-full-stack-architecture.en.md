@@ -56,3 +56,5 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§59.2**: ACP Checkout Request `LineItem` Reference Alignment (`#270`), Flat `DelegateAuthenticationSessionWithResult` Schema (`#261`) & Inline/Embedded Example Validators (`#254`, `#252`).
   - **§59.3**: Google AP2 Exact Versioned `.1` VCT Constants (`#349`), `PaymentInstrument` Extension Preservation (`#333`/`#329`), `~~` Multi-Hop dSD-JWT Chain Decoder (`#351`), EC/JWK Receipt Verification (`#365`) & Payment Log Redaction (`#364`).
   - **§59.4**: Sierra $\tau$-bench 2.0 Voice Design API Units (`guidance_scale=5`, `#636`), Unpinned `voice_design/<lang>.yaml` (`#619`), Inline Text-Matrix `results.json` Trial Counting (`#616`) & Telecom `RewardType.ACTION` Ground Truth / Bounded Repair (`#645`, `#632`).
+- **§60 (Stage 61 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`RA-01..RA-16`)**: `lab/ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.25%` Classic 3-Tier, `0.35 ms` vs. `4.595 ms`, `13.1x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).

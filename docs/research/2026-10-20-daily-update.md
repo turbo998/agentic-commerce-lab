@@ -93,6 +93,24 @@
   - 单元测试：[`tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard.py`](../../tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard.py)（全仓库 **340/340** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§59)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 61：覆盖 Stage 60 四大协议域的 16 场景（`RA-01..RA-16`）中英双语 7-Card 4:5 视觉基准评测报告（中英双语）
+
+- **16 场景确定性基准评测（`RA-01..RA-16`）**：
+  - `RA-01..RA-04`：UCP `#948` 根数组 Schema 反模式拦截、`#903` Order 快照与 `order_event_webhook` 方向注解净化、`#882` 厂商自定义命名空间自托管边界、`#869` 商家回填用户存储态强制认证门禁与 `#900` 合规语料库导出。
+  - `RA-05..RA-08`：ACP `#270` 结账请求 `LineItem` 引用对齐、`#261` `DelegateAuthenticationSessionWithResult` 扁平 Schema 与 `#254`/`#252` 内嵌/内联示例校验。
+  - `RA-09..RA-12`：Google AP2 `#349` `.1` 精确版本化 VCT 常量、`#333`/`#329` `PaymentInstrument` x402 扩展字段签名保留、`#351` `~~` 优先多跳委托链解码、`#365` EC/JWK 收据验签与 `#364` 敏感支付日志脱敏。
+  - `RA-13..RA-16`：Sierra $\tau$-bench 2.0 `#636` ElevenLabs Voice Design API 单位（`guidance_scale=5` vs UI `38%`）、`#619` 六语种非锁定 `voice_design/<lang>.yaml`、`#616` 文本矩阵 `results.json` 内联仿真计数与 `#645`/`#632` Telecom `ACTION` 奖励基准及单次有界修复。
+- **量化评测结果**：
+  - **AI-Native 6-Plane 架构**：**16/16 (100.0%)** 场景准确率，逆序扰动稳定性 **100.0%**，中位延迟 **0.35 ms**。
+  - **经典三层架构基线（Classic 3-Tier）**：**1/16 (6.25%)** 场景准确率，中位延迟 **4.595 ms**（AI-Native 提速 **13.1x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py`](../../lab/ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py)
+  - 单元测试：[`tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py`](../../tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py)（全仓库 **342/342** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/report.json)
+
+
 
 
 

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UCP 根数组与 Order 注解、ACP LineItem 与扁平认证、AP2 VCT 与 ~~ 链解码及 τ-bench 语音设计 16 场景评测</title>
+<style>
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #0B1120;
+    color: #0F172A;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .deck {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+  }
+  .card {
+    width: 900px;
+    min-height: 1125px;
+    box-sizing: border-box;
+    background: #F8FAFC;
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #475569;
+    text-transform: uppercase;
+  }
+  h1, h2 {
+    margin: 12px 0;
+    line-height: 1.22;
+    color: #0F172A;
+  }
+  .accent {
+    background: linear-gradient(90deg, #2563EB, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .workbench {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .panel {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 13px;
+  }
+  .code-dark {
+    background: #0F172A;
+    color: #E2E8F0;
+    border-radius: 12px;
+    padding: 18px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    border-bottom: 1px solid #E2E8F0;
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #F1F5F9;
+    font-weight: 700;
+    color: #334155;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .muted {
+    color: #64748B;
+    font-size: 11px;
+  }
+  .callout-dark {
+    background: #0F172A;
+    color: #F8FAFC;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 13px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .good-card {
+    background: #ECFDF5;
+    border: 1px solid #10B981;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .bad-card {
+    background: #FEF2F2;
+    border: 1px solid #EF4444;
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .lat-row {
+    margin: 12px 0;
+  }
+  .lat-label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .bar-ai {
+    background: #3B82F6;
+    color: #FFFFFF;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .bar-cl {
+    background: #CBD5E1;
+    color: #0F172A;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card" id="card-1">
+    <div>
+      <div class="card-header"><span>1 / 7</span><span>HANDS-ON · STAGE 61 PROTOCOL &amp; BENCHMARK GUARDRAILS</span></div>
+      <h1><span class="accent">AI-Native 6-Plane 达成 16/16 (100.0%) 确定性拦截，经典三层仅 1/16 (6.25%)</span></h1>
+      <div class="workbench">
+        <div class="panel">
+          <strong>Scenarios &amp; Domains</strong>
+          <ul>
+            <li>RA-01..RA-04: UCP #948/#903/#900/#882/#869</li>
+            <li>RA-05..RA-08: ACP #270/#261/#254/#252</li>
+            <li>RA-09..RA-12: AP2 #349/#333/#329/#351/#365/#364</li>
+            <li>RA-13..RA-16: τ-bench #636/#619/#616/#645/#632</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <strong>Structured Contract Input</strong>
+          <p>Order webhook schema resolution, ACP request <code>LineItem</code>, AP2 <code>~~</code> dSD-JWT chains, and ElevenLabs <code>guidance_scale=5</code>.</p>
+        </div>
+        <div class="panel">
+          <strong>Top Decisions &amp; Latency</strong>
+          <p><span class="pill">Median 0.35 ms</span> <span class="pill">13.1x Speedup</span></p>
+          <p>AI-Native: 16/16 (100.0%)<br/>Classic 3-Tier: 1/16 (6.25%)</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Provenance: <code>measured</code> deterministic protocol verifier execution in <code>turbo998/agentic-commerce-lab</code> (Stage 61, 2026-10-20). Zero external network calls or credentials.
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card" id="card-2">
+    <div>
+      <div class="card-header"><span>2 / 7</span><span>SCENARIO: RA-03 / RA-11 / RA-14</span></div>
+      <h2>单案例深潜（RA-03 / RA-11 / RA-14）：0.35 ms 拦截 Order 注解剥离、~~ 委托链吞噬与 Voice Design 38% 滑块误传</h2>
+      <div class="panel">
+        <strong>Input Quote Box</strong>
+        <p><code>order.json</code> with stray <code>"ucp_request": "omit"</code> on <code>currency/policies/attribution</code>; 2-hop dSD-JWT split on single <code>~</code>; <code>setup_voices(guidance_scale=38.0)</code>.</p>
+      </div>
+      <div class="panel" style="margin-top:12px;">
+        <strong>RA-03 · <span class="pill">noul</span> · Confidence 0.98 · <span class="pill">Confirm</span></strong>
+        <p>Decision: <code>UCP_ORDER_STRAY_DIRECTIONAL_ANNOTATION_FORBIDDEN</code> (blocks OpenAPI 3.1 webhook stripping).</p>
+      </div>
+      <div class="panel" style="margin-top:12px;">
+        <strong>RA-11 · <span class="pill">noul</span> · Confidence 0.99 · <span class="pill">Confirm</span></strong>
+        <p>Decision: <code>AP2_DSDJWT_CHAIN_SINGLE_TILDE_SPLIT_CORRUPTION</code> (splits on <code>~~</code> before single <code>~</code>).</p>
+      </div>
+      <div class="panel" style="margin-top:12px;">
+        <strong>RA-14 · <span class="pill">choice</span> · Confidence 0.99 · <span class="pill">Send to a human</span></strong>
+        <p>Decision: <code>TAU2_VOICE_DESIGN_UI_PERCENTAGE_SENT_AS_API_SCALE</code> (enforces API unit <code>guidance_scale=5</code>).</p>
+      </div>
+    </div>
+    <div class="callout-dark">
+      All 3 representative failure modes are silently admitted by a classic 3-tier JSON gateway but deterministically intercepted in &lt;0.38 ms.
+    </div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card" id="card-3">
+    <div>
+      <div class="card-header"><span>3 / 7</span><span>WHAT I TESTED</span></div>
+      <h2>16 场景全量评测矩阵（RA-01..RA-16）：4 大上游仓库 19 项 PR 规范零漏报</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>RA-01</strong><br/><span class='muted'>UCP #948/#903/#900/#882/#869</span></td><td>合规 UCP 根对象 Schema、净化的 Order 注解、已认证存储态与完整语料库</td><td><code>UCP_ROOT_ARRAY_ORDER_AND_AUTH_STATE_VERIFIED</code> (✓ AI / ✓ 3-Tier)</td><td><span class='pill'>Act automatically</span></td></tr><tr><td><strong>RA-02</strong><br/><span class='muted'>UCP #948 Root-Array Anti-Pattern</span></td><td>能力或操作载荷根级声明 type=array 阻断扩展组合与 ucp 成员承载</td><td><code>UCP_ROOT_ARRAY_SCHEMA_FORBIDDEN</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-03</strong><br/><span class='muted'>UCP #903 Order Annotation Hygiene</span></td><td>order.json 残留 ucp_request=omit 导致 order_event_webhook 剥离 currency/policies</td><td><code>UCP_ORDER_STRAY_DIRECTIONAL_ANNOTATION_FORBIDDEN</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Confirm</span></td></tr><tr><td><strong>RA-04</strong><br/><span class='muted'>UCP #869 Auth-Gated Stored State</span></td><td>未认证请求仅凭 config.scopes 回填商家存储的 buyer/payment/loyalty 敏感态</td><td><code>UCP_UNAUTHENTICATED_STORED_USER_STATE_LEAK_FORBIDDEN</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-05</strong><br/><span class='muted'>ACP #270/#261/#254/#252</span></td><td>合规 ACP 结账请求 LineItem 引用、扁平委托认证结果 Schema 与全量示例校验</td><td><code>ACP_CHECKOUT_LINE_ITEM_AND_DELEGATE_AUTH_RESULT_VERIFIED</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Act automatically</span></td></tr><tr><td><strong>RA-06</strong><br/><span class='muted'>ACP #270 Request LineItem Alignment</span></td><td>CheckoutSessionCreateRequest.line_items 错误引用裸 Item 丢失 quantity/totals</td><td><code>ACP_CHECKOUT_REQUEST_LINE_ITEM_SCHEMA_MISMATCH</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-07</strong><br/><span class='muted'>ACP #261 Flat Delegate Auth Result</span></td><td>DelegateAuthenticationSessionWithResult 使用不可满足 allOf + additionalProperties:false</td><td><code>ACP_DELEGATE_AUTH_RESULT_SCHEMA_UNSATISFIABLE_OR_INVALID</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Confirm</span></td></tr><tr><td><strong>RA-08</strong><br/><span class='muted'>ACP #254/#252 Example Validation</span></td><td>跳过 $defs/components.schemas 内嵌示例或 OpenAPI requestBody 内联 $ref 示例校验</td><td><code>ACP_UNVALIDATED_INLINE_OR_EMBEDDED_SCHEMA_EXAMPLE</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-09</strong><br/><span class='muted'>AP2 #349/#333/#329/#351/#365/#364</span></td><td>合规 AP2 .1 版本化 VCT、PaymentInstrument 扩展保留、~~ 链解码与脱敏日志</td><td><code>AP2_VCT_INSTRUMENT_EXTENSIONS_AND_CHAIN_DECODER_VERIFIED</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Act automatically</span></td></tr><tr><td><strong>RA-10</strong><br/><span class='muted'>AP2 #333/#329 Instrument Extensions</span></td><td>PaymentInstrument 序列化丢失 x402 payee_address/facilitator 扩展字段后签名</td><td><code>AP2_PAYMENT_INSTRUMENT_EXTENSION_FIELDS_DROPPED</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-11</strong><br/><span class='muted'>AP2 #351 Multi-Hop ~~ Decoder</span></td><td>sdJwtDecoder 直接按单 ~ 切分多跳委托链吞噬第 2 跳披露项</td><td><code>AP2_DSDJWT_CHAIN_SINGLE_TILDE_SPLIT_CORRUPTION</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Confirm</span></td></tr><tr><td><strong>RA-12</strong><br/><span class='muted'>AP2 #364 Sensitive Log Redaction</span></td><td>MCP 开启 include_payloads=True 或日志泄露支付令牌与 risk_data</td><td><code>AP2_SENSITIVE_PAYMENT_ARTIFACT_LOG_LEAK</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-13</strong><br/><span class='muted'>Tau2 #636/#619/#616/#645/#632</span></td><td>合规 tau2 guidance_scale=5、非锁定六语种 voice_design 与内联 text-v1 计数</td><td><code>TAU2_VOICE_DESIGN_SCALE_AND_TEXT_MATRIX_VERIFIED</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Act automatically</span></td></tr><tr><td><strong>RA-14</strong><br/><span class='muted'>Tau2 #636 Voice Design API Units</span></td><td>将 ElevenLabs UI 滑块 38% 误作 guidance_scale=38 发送导致语音迟缓与 10% 评分漂移</td><td><code>TAU2_VOICE_DESIGN_UI_PERCENTAGE_SENT_AS_API_SCALE</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr><tr><td><strong>RA-15</strong><br/><span class='muted'>Tau2 #616 Text Matrix Inline Trials</span></td><td>export_submission 传入单元格目录而非 results.json 导致内联 text-v1 仿真归零</td><td><code>TAU2_TEXT_MATRIX_DIRECTORY_PATH_DROPS_INLINE_TRIALS</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Confirm</span></td></tr><tr><td><strong>RA-16</strong><br/><span class='muted'>Tau2 #645/#632 ACTION Basis &amp; Repair</span></td><td>伪报 telecom ACTION 任务数为 0（实际 32）或执行无界 factory_draft_repair 循环</td><td><code>TAU2_REWARD_BASIS_OR_UNBOUNDED_REPAIR_INVALID</code> (✓ AI / ✕ 3-Tier)</td><td><span class='pill'>Send to a human</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-2">
+      <div class="panel"><strong>Threshold Gating</strong>: 12 violation scenarios routed to <code>Confirm</code> / <code>Send to a human</code>; 4 compliant baselines admitted via <code>Act automatically</code>.</div>
+      <div class="panel"><strong>Failure Analysis</strong>: Classic 3-tier misses 15/16 scenarios (✕) because schema composition, <code>~~</code> chain delimiters, and voice API units are invisible to HTTP status checks.</div>
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card" id="card-4">
+    <div>
+      <div class="card-header"><span>4 / 7</span><span>UNDER THE HOOD</span></div>
+      <h2>协议内幕：UCP #948/#903 方向注解、AP2 #351 双波浪号 ~~ 拆链与 τ-bench #636 guidance_scale=5 确定性核验</h2>
+      <div class="code-dark">{
+  "ucp_root_type": "object",
+  "order_annotations": {},
+  "acp_line_items_ref": "#/components/schemas/LineItem",
+  "ap2_vct": "mandate.checkout.open.1",
+  "ap2_chain": "eyJ_hop0~disc0~~eyJ_hop1~disc1~kb_jwt",
+  "tau2_voice_design": {"guidance_scale": 5, "model": "eleven_ttv_v3"}
+}</div>
+      <p style="text-align:center;font-weight:700;">↓ Deterministic 4-Domain Protocol Guard Verifier ↓</p>
+      <div class="code-dark">&lt;answer&gt;
+  RA-01: UCP_ROOT_ARRAY_ORDER_AND_AUTH_STATE_VERIFIED (allowed=True)
+  RA-05: ACP_CHECKOUT_LINE_ITEM_AND_DELEGATE_AUTH_RESULT_VERIFIED (allowed=True)
+  RA-09: AP2_VCT_INSTRUMENT_EXTENSIONS_AND_CHAIN_DECODER_VERIFIED (allowed=True)
+  RA-13: TAU2_VOICE_DESIGN_SCALE_AND_TEXT_MATRIX_VERIFIED (allowed=True)
+&lt;/answer&gt;</div>
+    </div>
+    <div class="callout-dark">
+      Zero LLM token nondeterminism on wire-level schema, cryptographic VCT/dSD-JWT, and benchmark submission invariants.
+    </div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card" id="card-5">
+    <div>
+      <div class="card-header"><span>5 / 7</span><span>ROBUSTNESS CHECK</span></div>
+      <h2>鲁棒性核验：正向 vs 逆序全量扰动 16/16 (100.0%) 零漂移（0.0 pts 变化）</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>RA-01</strong> · 合规 UCP 根对象 Schema、净化的 Order 注解、已认证存储态与完整语料库</td><td><code>UCP_ROOT_ARRAY_ORDER_AND_AUTH_STATE_VERIFIED</code></td><td><code>UCP_ROOT_ARRAY_ORDER_AND_AUTH_STATE_VERIFIED</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-02</strong> · 能力或操作载荷根级声明 type=array 阻断扩展组合与 ucp 成员承载</td><td><code>UCP_ROOT_ARRAY_SCHEMA_FORBIDDEN</code></td><td><code>UCP_ROOT_ARRAY_SCHEMA_FORBIDDEN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-03</strong> · order.json 残留 ucp_request=omit 导致 order_event_webhook 剥离 currency/policies</td><td><code>UCP_ORDER_STRAY_DIRECTIONAL_ANNOTATION_FORBIDDEN</code></td><td><code>UCP_ORDER_STRAY_DIRECTIONAL_ANNOTATION_FORBIDDEN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-04</strong> · 未认证请求仅凭 config.scopes 回填商家存储的 buyer/payment/loyalty 敏感态</td><td><code>UCP_UNAUTHENTICATED_STORED_USER_STATE_LEAK_FORBIDDEN</code></td><td><code>UCP_UNAUTHENTICATED_STORED_USER_STATE_LEAK_FORBIDDEN</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-05</strong> · 合规 ACP 结账请求 LineItem 引用、扁平委托认证结果 Schema 与全量示例校验</td><td><code>ACP_CHECKOUT_LINE_ITEM_AND_DELEGATE_AUTH_RESULT_VERIFIED</code></td><td><code>ACP_CHECKOUT_LINE_ITEM_AND_DELEGATE_AUTH_RESULT_VERIFIED</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-06</strong> · CheckoutSessionCreateRequest.line_items 错误引用裸 Item 丢失 quantity/totals</td><td><code>ACP_CHECKOUT_REQUEST_LINE_ITEM_SCHEMA_MISMATCH</code></td><td><code>ACP_CHECKOUT_REQUEST_LINE_ITEM_SCHEMA_MISMATCH</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-07</strong> · DelegateAuthenticationSessionWithResult 使用不可满足 allOf + additionalProperties:false</td><td><code>ACP_DELEGATE_AUTH_RESULT_SCHEMA_UNSATISFIABLE_OR_INVALID</code></td><td><code>ACP_DELEGATE_AUTH_RESULT_SCHEMA_UNSATISFIABLE_OR_INVALID</code></td><td><strong>0.0 pts</strong></td></tr><tr><td><strong>RA-08</strong> · 跳过 $defs/components.schemas 内嵌示例或 OpenAPI requestBody 内联 $ref 示例校验</td><td><code>ACP_UNVALIDATED_INLINE_OR_EMBEDDED_SCHEMA_EXAMPLE</code></td><td><code>ACP_UNVALIDATED_INLINE_OR_EMBEDDED_SCHEMA_EXAMPLE</code></td><td><strong>0.0 pts</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout-dark">
+      16/16 scenarios produce identical decision codes and actions under forward (`RA-01..RA-16`) and reversed (`RA-16..RA-01`) execution order.
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card" id="card-6">
+    <div>
+      <div class="card-header"><span>6 / 7</span><span>LATENCY</span></div>
+      <h2>延迟对比：AI-Native 中位 0.35 ms 较经典三层 4.595 ms 提速 13.1x</h2>
+      <div>
+        <div class='lat-row'><div class='lat-label'>1x 单次结账/委托/语音校验</div><div class='lat-bars'><div class='bar-ai' style='width:6%'>AI-Native 0.35 ms</div><div class='bar-cl' style='width:38%'>Classic 3-Tier 4.59 ms</div></div></div><div class='lat-row'><div class='lat-label'>4x 四域联合流水线（UCP+ACP+AP2+τ2）</div><div class='lat-bars'><div class='bar-ai' style='width:6%'>AI-Native 0.73 ms</div><div class='bar-cl' style='width:80%'>Classic 3-Tier 9.65 ms</div></div></div><div class='lat-row'><div class='lat-label'>16x 全矩阵并发扫描（RA-01..RA-16）</div><div class='lat-bars'><div class='bar-ai' style='width:12%'>AI-Native 1.40 ms</div><div class='bar-cl' style='width:100%'>Classic 3-Tier 18.36 ms</div></div></div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Median inline verification latency: <strong>0.35 ms</strong> (AI-Native 6-Plane) vs. <strong>4.595 ms</strong> (Classic 3-Tier baseline) across 5 deterministic repeats.
+    </div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card" id="card-7">
+    <div>
+      <div class="card-header"><span>7 / 7</span><span>MY TAKE</span></div>
+      <h2>架构师结论：将 Schema 演化、多跳密码学与评测器不变量下沉为毫秒级确定性护栏</h2>
+      <div class="grid-2">
+        <div class="good-card">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>Enforcing UCP root-object schemas (#948), Order webhook field preservation (#903), and auth-gated stored user state (#869).</li>
+            <li>Validating ACP request <code>LineItem</code> (#270) and flat <code>DelegateAuthenticationSessionWithResult</code> (#261).</li>
+            <li>Preserving AP2 x402 <code>PaymentInstrument</code> extensions (#333/#329) and <code>~~</code> multi-hop dSD-JWT disclosures (#351).</li>
+            <li>Auditing τ-bench 2.0 Voice Design <code>guidance_scale=5</code> (#636) and inline <code>text-v1</code> trial counts (#616).</li>
+          </ul>
+        </div>
+        <div class="bad-card">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Replacing issuer 3DS/FIDO2 cryptographic hardware verification with schema checks alone.</li>
+            <li>Treating unauthenticated <code>config.scopes</code> declarations as authorization to return stored PII or payment instruments.</li>
+            <li>Using ElevenLabs UI slider percentages (0..100%) directly as raw API <code>guidance_scale</code> parameters.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout-dark">
+      Readiness: <strong>100% (16/16 scenarios verified)</strong> · Provenance: <code>measured</code> · License: MIT · Bilingual CN/EN Deck (Stage 61).
+    </div>
+  </section>
+</div>
+</body>
+</html>
