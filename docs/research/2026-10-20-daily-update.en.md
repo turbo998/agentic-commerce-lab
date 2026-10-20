@@ -506,6 +506,15 @@
   - Unit Tests: [`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py) (**484/484** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/report.json)
 
+---
+
+## Stage 90: UCP Per-Checkout ECP Delegations & Output-Only `currency`/`context` (`#80`/`#62`/`#58`/`#86`), ACP Recurring `Allowance`, Split Address & Lodging Hydration (`#73`/`#10`/`#45`), Coinbase x402 v1.2 Cooperative Withdraw (`#44`), and Sierra $\tau$-bench 2.0 A2A Isolation & Gemini 3 `thought_signature` (`#83`/`#93`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py)
+  - Unit Tests: [`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py) (**492/492** total unit tests passing)
+  - Bilingual Architecture Reference (§89): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

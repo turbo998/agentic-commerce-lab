@@ -506,6 +506,15 @@
   - 单元测试：[`tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py`](../../tests/test_ucp_identity_oauth_acp_ext_x402_eip712_base_tau2_multilingual_bench.py)（全仓库 **484/484** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-identity-oauth-acp-ext-x402-eip712-base-tau2-multilingual-bench/report.json)
 
+---
+
+## Stage 90：UCP 单会话 ECP 委托确认与只读 `currency`/`context`（`#80`/`#62`/`#58`/`#86`）、ACP 周期授权 `Allowance`/账单履约地址拆分与酒店实时询价（`#73`/`#10`/`#45`）、Coinbase x402 v1.2 协同提现（`#44`）及 Sierra $\tau$-bench 2.0 A2A 隔离与 Gemini 3 `thought_signature`（`#83`/`#93`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py)
+  - 单元测试：[`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_guard.py)（全仓库 **492/492** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§89)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
