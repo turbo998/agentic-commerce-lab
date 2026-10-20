@@ -98,6 +98,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§71.2**: ACP 3DS `AuthenticationMetadata` `channel` Removal (`#85`), `authentication_provider` (`#80`), Recurring/Subscription `Allowance` (`#73`), Write-Only `AffiliateAttribution` (`#57`), Cancellation `IntentTrace` (`#54`) & Lodging `quote_token` Hydration (`#45`).
   - **§71.3**: Google AP2 `AP2-Haggle` Multi-Round Negotiation (`#229`), Solana Pay Single-Use `reference` & Algorand `av:` Mandate Binding (`#228`, `#218`), Credential Sanitization (`#212`) & ADK State `.model_dump()` (`#188`).
   - **§71.4**: Sierra $\tau$-bench 2.0 Banking Read-Log Allowlist (`#329`), Multi-Item Retail Variant Pricing (`#322`), Telecom VPN `deepcopy` Isolation (`#301`) & Replay Hallucination No-Op / Interleaved Thinking (`#273`, `#264`).
+- **§72 (Stage 73 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`CR-01..CR-16`)**: `lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

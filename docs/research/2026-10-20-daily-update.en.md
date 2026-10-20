@@ -280,6 +280,24 @@
   - Unit Tests: [`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py) (**402/402** total unit tests passing)
   - Bilingual Architecture Reference (§71): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 73: 16-Scenario (`CR-01..CR-16`) Bilingual 7-Card 4:5 Visual Benchmark Report for UCP Consent/Return Policy/ETag, ACP Recurring/Affiliate/IntentTrace, AP2 Haggle/Solana/Algorand & Sierra $\tau$-bench 2.0 Read-Allowlist/VPN
+
+- **Evaluation Matrix (16 Scenarios, `CR-01..CR-16`)**:
+  - `CR-01..CR-04`: UCP `buyer.consent` full-replacement exemption (`#660`), `dev.ucp.shopping.policy.return` extension (`#634`), `ETag`/`If-Match` conditional writes (`#628`), and `P-521` $\leftrightarrow$ `ES512` JWK pairing (`#625`).
+  - `CR-05..CR-08`: ACP 3DS `AuthenticationMetadata` `channel` removal (`#85`), `subscription` allowance `billing_cycle`/`amount_per_cycle` (`#73`), write-only `affiliate_attribution` leak protection (`#57`), and cancellation `intent_trace` (`#54`).
+  - `CR-09..CR-12`: Google AP2 `AP2-Haggle` signed `CartMandate` outcome (`#229`), Solana Pay single-use `reference` & Algorand `av:{token[:20]}` binding (`#228`/`#218`), and `payer == token_owner` + credential sanitization (`#212`).
+  - `CR-13..CR-16`: Sierra $\tau$-bench 2.0 `banking_knowledge` read-log allowlist (`#329`), retail multi-item replacement variant pricing (`#322`), telecom `_connect_vpn` `deepcopy` isolation (`#301`), and replay hallucinated tool no-op (`#273`).
+- **Headline Quantitative Findings**:
+  - **Accuracy**: AI-Native deterministic guards **16/16 (100.0%)** vs. Classic 3-Tier baseline **4/16 (25.0%)**.
+  - **Perturbation Consistency**: **100.0% (0.0 pts drift)** under option-order reversal and key reordering.
+  - **Latency**: **0.34 ms** AI-Native median latency vs. **4.63 ms** Classic 3-Tier (**13.6x speedup**).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py`](../../lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py)
+  - Unit Tests: [`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py) (**404/404** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/report.json)
+
 
 
 

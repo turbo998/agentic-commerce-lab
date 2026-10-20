@@ -280,6 +280,24 @@
   - 单元测试：[`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py)（全仓库 **402/402** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§71)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 73：UCP 同意持久化/退货政策/ETag、ACP 周期额度/仅写联盟归因/取消追踪、Google AP2 `AP2-Haggle`/Solana/Algorand 与 Sierra $\tau$-bench 2.0 银行读白名单/多商品改单/VPN 深拷贝 16 场景（`CR-01..CR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围（16 场景，`CR-01..CR-16`）**：
+  - `CR-01..CR-04`：UCP `buyer.consent` 全量替换豁免（`#660`）、`dev.ucp.shopping.policy.return` 退货政策扩展（`#634`）、`ETag`/`If-Match` 条件写（`#628`）与 `P-521` $\leftrightarrow$ `ES512` 密钥配对（`#625`）。
+  - `CR-05..CR-08`：ACP 3DS `AuthenticationMetadata` 移除废弃 `channel`（`#85`）、`subscription` 委托额度 `billing_cycle`/`amount_per_cycle`（`#73`）、仅写联盟归因 `affiliate_attribution` 防泄露（`#57`）与取消追踪 `intent_trace`（`#54`）。
+  - `CR-09..CR-12`：Google AP2 `AP2-Haggle` 成交签名 `CartMandate`（`#229`）、Solana Pay 单次 `reference` 与 Algorand `av:{token[:20]}` 链上绑定（`#228`/`#218`）及付款人 `payer == token_owner` 与凭据脱敏（`#212`）。
+  - `CR-13..CR-16`：Sierra $\tau$-bench 2.0 `banking_knowledge` 读日志白名单（`#329`）、零售多商品改单独立替换变体计价（`#322`）、电信 `_connect_vpn` `deepcopy` 并发隔离（`#301`）与重放跳过幻觉工具（`#273`）。
+- **核心量化发现**：
+  - **准确率**：AI-Native 确定性护栏 **16/16 (100.0%)** vs. 经典三层架构基线 **4/16 (25.0%)**。
+  - **扰动鲁棒性**：选项逆序与字段乱序下 **100.0% (0.0 pts 漂移)**。
+  - **延迟对比**：单轮中位延迟 **0.34 ms vs. 4.63 ms（13.6x 加速）**。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py`](../../lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py)
+  - 单元测试：[`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_bench.py)（全仓库 **404/404** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-consent-return-etag-acp-affiliate-trace-ap2-haggle-solana-tau2-vpn-bench/report.json)
+
 
 
 
