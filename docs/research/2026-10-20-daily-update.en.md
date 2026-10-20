@@ -650,6 +650,10 @@
 ### Stage 113: 16-Scenario (`LR-01..LR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
 - Added [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) and [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.en.html) (`601/601` total unit tests passing).
 
+### Stage 114: UCP `#736`/`#735`/`#725`, ACP `#129`/`#117`, Google AP2 `#270`/`#269`, and Sierra $\tau$-bench `#571`/`#567` Guardrails
+- Added [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py) and unit tests (`609/609` total unit tests passing).
+
+
 
 
 

@@ -240,6 +240,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§111.4**: Sierra $\tau$-bench 2.0 `tau2 factory` 4-Word Brevity & Bounded Repair (`#632`), Lowercase Airline `user_id` (`#602`), and `check_status_bar` Telecom Grounding (`#600`).
 - **§112 (Stage 113 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`LR-01..LR-16`)**: `lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py` & `reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.25 ms` vs. `4.15 ms` (`16.6x` speedup).
+- **§113 (Stage 114 — Bilingual Chinese + English)**:
+  - **§113.1**: UCP `common/types` Primitive Migration (`#736`), Identity-Linked Saved Destination Selection Privacy (`#735`), and 1:1 Operation-to-MCP-Tool Mapping (`#725`).
+  - **§113.2**: ACP `DiscountsResponse.rejected` & 3DS Frictionless Schema Alignment (`#129`) and Complete/Cancel Fulfillment Option Reference (`#117`).
+  - **§113.3**: Google AP2 PSD2 Articles 64 & 89 Cancellation/Refund Attestation Envelopes (`#270`) and Admission-Time `ComplianceReceipt` (`#269`).
+  - **§113.4**: Sierra $\tau$-bench 2.0 Retail Delivered-Order Exchange & Gift-Card Price-Difference Balance Check (`#571`) and Dropped `--seed` Parameter Warning (`#567`).
+
 
 
 

@@ -1426,6 +1426,23 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.25 ms` vs. `4.15 ms`（`16.6x` 加速）**。
 - **技术资产**：[`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py)、[`tests/test_ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../tests/test_ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.html)。
 
+---
+
+## 113. Stage 114 深度审计：UCP `#736`/`#735`/`#725`、ACP `#129`/`#117`、Google AP2 `#270`/`#269` 与 Sierra $\tau$-bench 2.0 `#571`/`#567`
+
+### 113.1 UCP `common/types` 原语迁移（`#736`）、身份链接地址隐私（`#735`）与 MCP 操作映射（`#725`）
+- 7 个公共原语（`context.json`、`signals.json`、`totals.json`、`total.json`、`policy.json`、`price_filter.json`、`price_range.json`）迁移至 `common/types/`，拦截遗留 `shopping/types/` 引用（`#736`）；明确身份链接的 `buyer.{email,phone,name}` 为标量且在显式选定履约目的地前禁止主动披露精确保存地址（`#735`）；修正 UCP 能力可暴露多个操作且每个操作 `1:1` 映射为一个 MCP 工具（`#725`）。
+
+### 113.2 ACP `DiscountsResponse.rejected` 与 3DS 无感认证对齐（`#129`）及结账履约引用校验（`#117`）
+- 对齐 JSON Schema 与 OpenAPI：`DiscountsResponse` 必须同时包含 `applied` 与 `rejected` 数组，且 3DS Frictionless 结果必须包含 `2.x` 版本号、`directory_server_transaction_id` 与 `trans_status == "Y"`（`#129`）；`complete`/`cancel` 结账响应的 `selected_fulfillment_option_id` 必须引用已声明的 `fulfillment_options[].id`（`#117`）。
+
+### 113.3 Google AP2 PSD2 第 64/89 条生命周期收据（`#270`）与准入 `ComplianceReceipt`（`#269`）
+- 强制 PSD2 第 64 条 `CancellationReceipt` 使用闭集 4 值 `cancellation_reason` 枚举，PSD2 第 89 条 `RefundReceipt` 使用闭集 3 值 `refund_result` 枚举且 `refund_amount_minor <= settled_amount_minor`（`#270`）；准入阶段 `ComplianceReceipt` 必须绑定 `mandate_id` 与 `mandate_hash` 且 `verdict == "ADMITTED"`（`#269`）。
+
+### 113.4 Sierra $\tau$-bench 2.0 零售换货前置与礼品卡差价校验（`#571`）及 `--seed` 静默丢弃告警（`#567`）
+- 拦截对 `pending` 订单调用 `exchange_delivered_order_items`（`#571` `task_64`）以及礼品卡余额不足以支付换货正差价（`#571` `task_105`）；当 `litellm.drop_params` 为不支持 Provider 丢弃 `--seed` 参数时强制触发显式告警（`#567`；参见 `lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`）。
+
+
 
 
 

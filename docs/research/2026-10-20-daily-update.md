@@ -650,6 +650,10 @@
 ### Stage 113：16 场景（`LR-01..LR-16`）中英双语 7-Card 4:5 视觉基准报告
 - 新增 [`lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py`](../../lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_bench.py) 与报告 [`reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/`](../../reports/agentic-commerce-ucp-location-render-rate-limit-acp-crypto-spt-ap2-receipt-tau2-bench/index.html)（`601/601` 单测通过）。
 
+### Stage 114：UCP `#736`/`#735`/`#725`、ACP `#129`/`#117`、Google AP2 `#270`/`#269` 与 Sierra $\tau$-bench `#571`/`#567` 护栏
+- 新增 [`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py) 与单测 `tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_guard.py`（全仓 `609/609` 单测通过）。
+
+
 
 
 
