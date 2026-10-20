@@ -15,3 +15,15 @@
   - Guard Module: [`lab/ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard.py`](../../lab/ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard.py)
   - Unit Tests: [`tests/test_ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard.py`](../../tests/test_ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard.py) (**316/316** total unit tests passing)
   - Bilingual Documentation: [`README.md`](../../README.md) ⇄ [`README.en.md`](../../README.en.md), [`research/daily/2026-10-20.md`](../../research/daily/2026-10-20.md) ⇄ [`research/daily/2026-10-20.en.md`](../../research/daily/2026-10-20.en.md), [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§53)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 55: 16-Scenario Bilingual (CN/EN) 7-Card 4:5 Visual Benchmark Suite (`SD-01..SD-16`)
+
+- **Evaluation Scope (`SD-01..SD-16`)**:
+  - Benchmarks the AI-Native 6-Plane verifier pipeline against a Classic 3-Tier Web middleware baseline across UCP `#982` bundled `$ref` restoration, `#962` `seller.logo` authority isolation, ACP `#310`/`#290`/`#284`/`#275` property drift and `allOf` sibling starvation, Google AP2 `#369` `kb+sd-jwt+kb` terminal-hop `expected_aud` enforcement, `#385`/`#384` `cnf.jwk` JSON enum and receipt verification, Poppy `v0.2` `#71` DPoP, Sierra $\tau$-bench 2.0.0 `#642` `intake` voice consent/turn-separation gates, and Visa TAP `#11` `x402` USDC checkout.
+  - **Results**: AI-Native pass rate **16/16 (100.0%)** vs. Classic 3-Tier **1/16 (6.2%)**, **100.0%** key-order perturbation stability, mean latency **0.41 ms** vs. **2.09 ms** (**5.1x** speedup).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Runner: [`lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py`](../../lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py)
+  - Unit Tests: [`tests/test_ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py`](../../tests/test_ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py) (**318/318** total unit tests passing)
+  - Bilingual 7-Card 4:5 Visual Decks: [`reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/report.json)

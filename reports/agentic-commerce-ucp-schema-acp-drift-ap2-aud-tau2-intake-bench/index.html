@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 55 基准报告（中文）— UCP Schema 2.0、ACP 字段漂移、AP2 受众校验与 τ-bench 2.0 Intake 护栏</title>
+<style>
+  body { margin: 0; padding: 24px; background: #0B1020; color: #F8FAFC; font-family: system-ui, -apple-system, sans-serif; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(900px, 1fr)); gap: 28px; max-width: 1900px; margin: 0 auto; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #38BDF8; font-weight: 700; }
+  h1, h2 { margin: 10px 0 14px 0; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0; }
+  .box { background: #0F172A; border: 1px solid #1E293B; border-radius: 12px; padding: 16px; }
+  .good { border-color: #10B981; background: rgba(16, 185, 129, 0.08); }
+  .bad { border-color: #EF4444; background: rgba(239, 68, 68, 0.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 7px 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 14px; overflow-x: auto; font-size: 12px; color: #E2E8F0; }
+  .bar-row { margin: 10px 0; }
+  .bar-track { background: #1E293B; height: 18px; border-radius: 9px; overflow: hidden; }
+  .bar-fill-primary { background: #3B82F6; height: 100%; }
+  .bar-fill-base { background: #CBD5E1; height: 100%; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #1E293B; color: #38BDF8; }
+</style>
+</head>
+<body>
+<div style="max-width:1900px;margin:0 auto 16px auto;padding:10px 18px;background:#111827;border:1px solid #1E293B;border-radius:12px;display:flex;justify-content:space-between;align-items:center;"><span><strong>🌐 Language / 语言切换：</strong> <strong>中文 (当前)</strong> · <a href="index.en.html" style="color:#38BDF8;text-decoration:none;">English Version (index.en.html)</a></span><span style="color:#94A3B8;font-size:13px;">Stage 55 · 7-Card 4:5 Visual Benchmark Deck</span></div>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · UCP 2.0 / ACP DRIFT / AP2 AUD / TAU2 INTAKE &amp; TAP X402</div>
+      <h1><span class="accent">AI-Native 6-Plane 护栏达到 100.0% (16/16)</span> 对比经典三层架构 6.2% (1/16)（Stage 54–55）</h1>
+      <div class="grid3">
+        <div class="box">
+          <h3>UCP 2.0 &amp; ACP 契约漂移</h3>
+          <p>覆盖 UCP PR #982 <code>ucp-schema 2.0.0</code> bundled <code>$ref</code> 恢复、PR #962 <code>seller.logo</code> 授权隔离，以及 ACP PR #310 23 项双向漂移白名单与 PR #290/#275 <code>allOf</code> 饥饿防护。</p>
+        </div>
+        <div class="box">
+          <h3>AP2 终端跳受众 &amp; Poppy v0.2</h3>
+          <p>封堵 AP2 PR #369 <code>poc_aud_not_enforced.py</code> 终端跳 <code>expected_aud</code> 漏检漏洞、PR #385 <code>cnf.jwk</code> JSON 枚举序列化与 Poppy v0.2 (#71) <code>ES256</code> 128-bit <code>jti</code> DPoP 证明。</p>
+        </div>
+        <div class="box">
+          <h3>τ-bench 2.0 Intake &amp; TAP x402</h3>
+          <p>执行 Sierra τ-bench 2.0.0 (#642) <code>intake</code> 同意门禁、<code>log_capture</code> 顺序与同轮次挂机隔离，及 Visa TAP #11 <code>x402</code> USDC (Solana/Base) 链上微支付验签。</p>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>数据溯源 (Provenance):</strong> synthetic · <code>independently_reproduced=true</code> · 平均延迟: <strong>0.41 ms</strong>（较经典三层架构 2.09 ms 提速 5.1x）。
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: SD-09 &amp; SD-14 · AP2 AUD BYPASS &amp; TAU2 INTAKE</div>
+      <h2>单点深度剖析：0.44 ms 拦截 AP2 <code>kb+sd-jwt+kb</code> 终端跳受众漏检与 τ-bench 2.0 未授权采集</h2>
+      <div class="box">
+        <strong>输入攻击载荷 (Input Case):</strong> 攻击者重放发往其他商户的 <code>kb+sd-jwt+kb</code> 令牌（利用 AP2 #369 <code>poc_aud_not_enforced.py</code> 披露的终端跳未校验 <code>expected_aud</code> 缺陷），并在语音通话未获同意时直接采集 <code>national_id</code>。
+      </div>
+      <div class="box good" style="margin-top:14px;">
+        <span class="pill">choice · 100% 确定性拦截</span>
+        <h3>SD-09 / SD-10 · AP2 终端跳受众绑定 (#369)</h3>
+        <p>强制要求终端跳必须提供非空 <code>expected_aud</code> 且与 <code>token_aud</code> 精确匹配，输出 <code>AP2_KB_EXPECTED_AUD_OMITTED</code> / <code>AP2_KB_AUD_MISMATCH</code>。</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%;"></div></div>
+      </div>
+      <div class="box good" style="margin-top:14px;">
+        <span class="pill">choice · 100% 确定性拦截</span>
+        <h3>SD-14 / SD-15 · Sierra τ-bench 2.0 Intake 语音守卫 (#642)</h3>
+        <p>强制同意门禁、<code>missing_fields</code> 最小化采集、<code>log_capture</code> 先于 <code>submit_fields</code> 及禁止同轮次合并调用 <code>end_call</code>。</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%;"></div></div>
+      </div>
+    </div>
+    <div class="box"><strong>动作路由 (Action):</strong> <code>Block &amp; Emit Deterministic Reason Code</code>（零静默放行）。</div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED · 16-SCENARIO EVALUATION MATRIX</div>
+      <h2>全量 16 场景评测矩阵：AI-Native 16/16 (100.0%) vs Classic 3-Tier 1/16 (6.2%)</h2>
+      <table>
+        <thead>
+          <tr><th>场景 / 类别</th><th>测试任务 (Question / Task)</th><th>AI-Native 判定</th><th>经典三层基线</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SD-01</strong> · 合规基线</td><td>合规全链路：UCP 2.0.0 Bundle + ACP 契约对齐 + AP2 终端跳 aud + Poppy DPoP + τ2 Intake + TAP x402 结账</td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code> (✓ PASS)</td><td>Classic: ✓ PASS</td></tr>
+<tr><td><strong>SD-02</strong> · UCP Schema 打包引用 (#982)</td><td>UCP ucp-schema 2.0.0 剥离 bundled $ref 导致跨文件类型链接丢失 (#982)</td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-03</strong> · UCP 卖家 Logo 媒体契约 (#962)</td><td>UCP variant.json seller.logo 使用非 HTTPS URL 或缺失 alt_text (#962)</td><td><code>INVALID_SELLER_LOGO_URL</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-04</strong> · UCP 卖家 Logo 授权隔离 (#962)</td><td>UCP variant.json 将展示态 seller.logo 误作登记商户/KYB 信任凭证 (#962)</td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-05</strong> · ACP 双向字段漂移 (#310)</td><td>ACP 引入未列入 known-property-drift.txt 的 JSON Schema / OpenAPI 新增字段漂移 (#310)</td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-06</strong> · ACP 漂移白名单防陈旧 (#310)</td><td>ACP 修复漂移后未清理 known-property-drift.txt 残留陈旧白名单条目 (#310)</td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-07</strong> · ACP allOf 派生字段饥饿 (#290/#275)</td><td>ACP CheckoutSessionWithOrder 使用 allOf + additionalProperties: false 吞噬 order 字段 (#290/#275)</td><td><code>ALLOF_ADDITIONAL_PROPERTIES_SIBLING_STARVATION:CheckoutSessionWithOrder:order</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-08</strong> · ACP display_order 缩进契约 (#284)</td><td>ACP PaymentHandler.display_order 缩进越界至 properties: 外部导致校验失效 (#284)</td><td><code>PAYMENT_HANDLER_DISPLAY_ORDER_MISINDENTED:PaymentHandler</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-09</strong> · AP2 终端跳受众强制校验 (#369)</td><td>AP2 kb+sd-jwt+kb 委托令牌在终端跳漏检 expected_aud (#369 poc_aud_not_enforced.py)</td><td><code>AP2_KB_SD_JWT_AUD_MISMATCH</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-10</strong> · AP2 跨商户受众重放拦截 (#369)</td><td>AP2 kb+sd-jwt+kb 终端跳跨商户重放：token aud 与 expected_aud 不匹配 (#369)</td><td><code>AP2_KB_SD_JWT_AUD_MISMATCH</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-11</strong> · AP2 cnf.jwk 枚举 JSON 序列化 (#385)</td><td>AP2 ParsedToken.cnf_jwk 导出 Python 枚举对象而非 JSON 字符串 'sig' (#385/#383)</td><td><code>AP2_CNF_JWK_ENUM_NOT_JSON_SERIALIZED:use</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-12</strong> · AP2 回执引用存储校验 (#384)</td><td>AP2 verify_receipt 阻断未在存储中登记的回执引用 (#384)</td><td><code>AP2_RECEIPT_REFERENCE_NOT_IN_STORE</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-13</strong> · Poppy v0.2 DPoP 签名与幂等 (#71)</td><td>Poppy v0.2 DPoP 误用 HS256 算法或 jti 熵低于 128-bit (#71 39b35bd)</td><td><code>POPPY_INVALID_DPOP_ALG:HS256</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-14</strong> · τ-bench 2.0 语音同意门禁 (#642)</td><td>Sierra τ-bench 2.0 intake 在获得用户明确同意前违规采集敏感字段 (#642 989d328)</td><td><code>TAU2_INTAKE_MISSING_CONSENT_BEFORE_COLLECTION</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-15</strong> · τ-bench 2.0 提交与挂机轮次隔离 (#642)</td><td>Sierra τ-bench 2.0 intake 在同一助手轮次合并调用 submit_fields 与 end_call (#642 989d328)</td><td><code>SUBMIT_AND_END_CALL_SAME_TURN_BLOCKED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-16</strong> · Visa TAP x402 链上微支付 (#11)</td><td>Visa TAP x402 Mode B 未经 Facilitator 验签结算或缺失 PAYMENT-RESPONSE 即放行 (#11)</td><td><code>TAP_X402_FACILITATOR_SETTLEMENT_FAILED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box good"><strong>门禁汇总:</strong> 15 个真实协议漂移/越权/重放攻击场景被 100% 阻断，1 个合规全链路场景 <code>SD-01</code> 正常放行。</div>
+      <div class="box bad"><strong>经典三层失效分析:</strong> 缺乏 Schema/OpenAPI 双向漂移校验、SD-JWT+KB 受众绑定与语音轮次状态机，在 SD-02..SD-16 全部误放行 (✕ MISS)。</div>
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD · DETERMINISTIC VERIFIER MECHANICS</div>
+      <h2>底层机制：从协议输入契约到确定性护栏裁决状态机</h2>
+      <pre>{
+  "token_type": "kb+sd-jwt+kb",
+  "is_terminal_hop": true,
+  "expected_aud": "https://merchant.example.com/ap2/checkout",
+  "token_aud": "https://evil-verifier.example/ap2/checkout",
+  "poppy_dpop_alg": "ES256",
+  "poppy_dpop_jti_entropy_bits": 128,
+  "tap_x402_mode": "payment_submitted",
+  "tap_network": "solana:devnet"
+}</pre>
+      <div style="text-align:center;font-size:20px;color:#38BDF8;margin:8px 0;">↓ Deterministic 6-Plane Verifier Pipeline ↓</div>
+      <pre>&lt;answer&gt;
+  stage54.ucp_schema_bundle    = UCP_SCHEMA_BUNDLE_AND_SELLER_LOGO_OK
+  stage54.acp_property_drift   = ACP_SCHEMA_OPENAPI_PARITY_OK (23/23 tracked)
+  stage54.ap2_kb_terminal_aud  = BLOCK (AP2_KB_AUD_MISMATCH)
+  verdict                      = REJECTED (0.43 ms)
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="box"><strong>零外部依赖:</strong> 纯 Python 标准库确定性验证，支持离线 CI 与多智能体网关内联执行。</div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK · PERTURBATION &amp; ORDER CONSISTENCY</div>
+      <h2>稳健性检验：字典键序反转与载荷扰动下达到 100.0% (16/16) 一致性</h2>
+      <table>
+        <thead>
+          <tr><th>场景 ID</th><th>原始输入裁决码 (Original)</th><th>键序反转裁决码 (Reversed)</th><th>变化幅度 (Change)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SD-01</strong></td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code></td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-02</strong></td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code></td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-03</strong></td><td><code>INVALID_SELLER_LOGO_URL</code></td><td><code>INVALID_SELLER_LOGO_URL</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-04</strong></td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code></td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-05</strong></td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code></td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-06</strong></td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code></td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code></td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box good">
+      <strong>结论:</strong> 所有 16 个场景在输入顺序翻转与字段排列扰动下均保持 <code>0.0 pts</code> 偏差（100.0% 确定性复现）。
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY · INLINE GUARD VS CLASSIC 3-TIER MIDDLEWARE</div>
+      <h2>延迟对比：内联 6-Plane 护栏平均 0.41 ms（提速 5.1x）</h2>
+      <div class="bar-row">
+        <div><strong>SD-01 合规全链路 (Happy Path)</strong> — AI-Native 0.41 ms vs Classic 2.15 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 19%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 94%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-09 AP2 终端跳受众校验 (#369)</strong> — AI-Native 0.44 ms vs Classic 2.18 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 20%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 95%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-14 τ-bench 2.0 语音同意门禁 (#642)</strong> — AI-Native 0.45 ms vs Classic 2.24 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 21%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 98%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-16 Visa TAP x402 链上微支付 (#11)</strong> — AI-Native 0.46 ms vs Classic 2.28 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 21%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 100%;"></div></div>
+      </div>
+    </div>
+    <div class="box"><strong>性能基线:</strong> 所有测量数据均来自密封评估快照 <code>report.json</code>（无外部网络调用）。</div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE · GOOD FIT VS NOT FOR &amp; PRODUCTION READINESS</div>
+      <h2>架构师结论：适用场景边界与双语生产就绪度评估</h2>
+      <div class="grid2">
+        <div class="box good">
+          <h3>✅ 适用场景 (Good Fit)</h3>
+          <ul>
+            <li>UCP <code>ucp-schema 2.0.0</code> 多文档 <code>$ref</code> 捆绑发布与商品目录卖家 Logo 展示隔离</li>
+            <li>ACP JSON Schema 与 OpenAPI 双向契约 CI 门禁（23 项已知漂移锁死）</li>
+            <li>AP2 <code>kb+sd-jwt+kb</code> 终端跳受众绑定与 Poppy v0.2 <code>ES256</code> DPoP 证明</li>
+            <li>Sierra τ-bench 2.0 多语种语音表单采集与 Visa TAP <code>x402</code> USDC 结算网关</li>
+          </ul>
+        </div>
+        <div class="box bad">
+          <h3>⛔ 不适用场景 (Not For)</h3>
+          <ul>
+            <li>替代真实链上 Solana / Base RPC 节点共识或硬件 HSM 密钥保管</li>
+            <li>对未声明扩展契约的遗留自由文本爬虫直接授予免验证支付权限</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>Readiness &amp; Provenance:</strong> Stage 55 (<code>2026-10-20-stage55</code>) · 中英双语同步发布 (<code>index.html</code> ⇄ <code>index.en.html</code>) · Apache-2.0 / MIT 兼容实验资产。
+    </div>
+  </section>
+</div>
+</body>
+</html>

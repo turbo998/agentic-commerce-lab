@@ -225,6 +225,13 @@ python -m lab.ucp_bundle_finality_ap2_acp_bench
 运行覆盖 Stages 41–43 的 16 个确定性评测场景（UCP `#976` 嵌套组合包行项目守恒与防双倍计费、UCP `#916` 凭证提供方 `/tokenize` 阶段 `ap2_payment_mandate` + `checkout_jwt` 关联校验、Google AP2 `#368`/`#377`/`#378`/`#352` ISO 4217 小数位指数预算转换与 ISO 8601 执行时间窗、UCP `#902` 目录 `purpose` 锚点自排除、UCP `#816` 结账金额最终性 `provisional` vs `final` 与订单支付工具脱敏、UCP `#848` 访客订单单单访问凭证与认领吊销、UCP `#699` RFC 9421 `;req` 签名响应防重放、UCP `#660` 全量替换更新 `buyer.consent` 豁免、UCP `#836`/`#837` `Correspondence` 与三轴调整归因，以及 ACP `#217`/`#218`/`#223` 印度 Razorpay UPI Intent / RBI CoFT S2S 卡与 Feed 扩展框架），输出 [`reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/report.json`](reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/report.json) 与自包含 7-Card 4:5 视觉基准报告 [`reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/index.html`](reports/agentic-commerce-ucp-bundle-finality-ap2-acp-bench/index.html)。
 
 
+```powershell
+python -m lab.ucp_schema_acp_drift_ap2_aud_tau2_intake_bench
+```
+
+运行覆盖 Stages 54–55 的 16 个确定性评测场景（`SD-01..SD-16`：UCP `#982` `ucp-schema 2.0.0` 打包 `$ref` 恢复与缓存键规范化、UCP `#962` 变体 `seller.logo` 媒体校验与非发现权威边界、ACP `#310` JSON Schema ↔ OpenAPI 23 项已知属性漂移反陈旧门禁、ACP `#290`/`#275` `allOf` + `additionalProperties: false` 兄弟属性饥饿拦截、ACP `#284` `PaymentHandler.display_order` 缩进护栏、Google AP2 `#369` `kb+sd-jwt+kb` 终端跳 `expected_aud` 强制校验、AP2 `#385`/`#383` `ParsedToken.cnf_jwk` JSON 枚举序列化、AP2 `#384` `verify_receipt` 引用存储核验、Poppy `v0.2` `#71` `ES256` 128-bit `jti` DPoP 与写请求 `Idempotency-Key`、Sierra $\tau$-bench 2.0.0 `#642` `intake` 外呼同意门禁与 `submit_fields`/`end_call` 跨轮次隔离，以及 Visa TAP `#11` `x402` Solana/Base USDC 结算护栏），输出 [`reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/report.json`](reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/report.json) 与中英双语自包含 7-Card 4:5 视觉基准报告 [`index.html`（中文）](reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.html) / [`index.en.html`（English）](reports/agentic-commerce-ucp-schema-acp-drift-ap2-aud-tau2-intake-bench/index.en.html)。
+
+
 ## 每日研究
 
 已有 Copilot App 自动化每日 22:00 执行研究，已补充官方来源核验、检查未合并分支、按日期增量研究、相关测试、提交推送与 PR 的要求。日更依赖本机 App/执行主机可用；GitHub Actions 目前仅执行 CI，不负责生成研究。

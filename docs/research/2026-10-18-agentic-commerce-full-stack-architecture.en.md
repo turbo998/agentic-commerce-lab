@@ -35,3 +35,5 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§53.2**: ACP JSON Schema ↔ OpenAPI Property Drift Detector (`#310`) & `allOf` + `additionalProperties: false` Sibling Starvation Guard (`#290`, `#284`, `#275`).
   - **§53.3**: Google AP2 `kb+sd-jwt+kb` Terminal Audience Enforcement (`#369`), `cnf.jwk` JSON-Mode Serialization (`#385`/`#383`), `verify_receipt` Callback Safety (`#384`) & Poppy `v0.2` (`#71`, `39b35bd`).
   - **§53.4**: Sierra $\tau$-bench 2.0.0 (`#642`, `989d328`) Outbound `intake` (`τ-entity`) Policy & Visa TAP `x402` USDC on Solana/Base Checkout (`#11`).
+- **§54 (Stage 55 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SD-01..SD-16`)**: `lab/ucp_schema_acp_drift_ap2_aud_tau2_intake_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.2%` Classic 3-Tier, `0.41 ms` vs. `2.09 ms`, `5.1x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).

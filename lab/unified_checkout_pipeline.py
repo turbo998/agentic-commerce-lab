@@ -220,6 +220,11 @@ from lab.ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard import (
     verify_tau2_intake_and_tap_x402_checkout,
     verify_ucp_schema_bundle_and_seller_logo,
 )
+from lab.ucp_schema_acp_drift_ap2_aud_tau2_intake_bench import (
+    SchemaDriftAudIntakeScenarioResult,
+    run_ucp_schema_acp_drift_ap2_aud_tau2_intake_benchmark,
+    write_ucp_schema_acp_drift_ap2_aud_tau2_intake_report,
+)
 
 
 @dataclass(frozen=True)

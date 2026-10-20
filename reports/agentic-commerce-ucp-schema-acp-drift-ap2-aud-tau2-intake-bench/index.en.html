@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 55 Benchmark (English) — UCP Schema 2.0, ACP Drift, AP2 Audience &amp; tau2-bench 2.0 Intake Guards</title>
+<style>
+  body { margin: 0; padding: 24px; background: #0B1020; color: #F8FAFC; font-family: system-ui, -apple-system, sans-serif; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(900px, 1fr)); gap: 28px; max-width: 1900px; margin: 0 auto; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #111827; border: 1px solid #1E293B; border-radius: 20px; padding: 36px; display: flex; flex-direction: column; justify-content: space-between; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #38BDF8; font-weight: 700; }
+  h1, h2 { margin: 10px 0 14px 0; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0; }
+  .box { background: #0F172A; border: 1px solid #1E293B; border-radius: 12px; padding: 16px; }
+  .good { border-color: #10B981; background: rgba(16, 185, 129, 0.08); }
+  .bad { border-color: #EF4444; background: rgba(239, 68, 68, 0.08); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 7px 6px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 14px; overflow-x: auto; font-size: 12px; color: #E2E8F0; }
+  .bar-row { margin: 10px 0; }
+  .bar-track { background: #1E293B; height: 18px; border-radius: 9px; overflow: hidden; }
+  .bar-fill-primary { background: #3B82F6; height: 100%; }
+  .bar-fill-base { background: #CBD5E1; height: 100%; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #1E293B; color: #38BDF8; }
+</style>
+</head>
+<body>
+<div style="max-width:1900px;margin:0 auto 16px auto;padding:10px 18px;background:#111827;border:1px solid #1E293B;border-radius:12px;display:flex;justify-content:space-between;align-items:center;"><span><strong>🌐 Language / 语言切换：</strong> <a href="index.html" style="color:#38BDF8;text-decoration:none;">中文版 (index.html)</a> · <strong>English (Current)</strong></span><span style="color:#94A3B8;font-size:13px;">Stage 55 · 7-Card 4:5 Visual Benchmark Deck</span></div>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · UCP 2.0 / ACP DRIFT / AP2 AUD / TAU2 INTAKE &amp; TAP X402</div>
+      <h1><span class="accent">AI-Native 6-Plane Guards Hit 100.0% (16/16)</span> vs 6.2% (1/16) on Classic 3-Tier (Stages 54–55)</h1>
+      <div class="grid3">
+        <div class="box">
+          <h3>UCP 2.0 &amp; ACP Drift Parity</h3>
+          <p>Enforces UCP PR #982 <code>ucp-schema 2.0.0</code> bundled <code>$ref</code> restoration, PR #962 <code>seller.logo</code> authority isolation, ACP PR #310 23-entry property drift allowlist, and PRs #290/#275 <code>allOf</code> sibling starvation guards.</p>
+        </div>
+        <div class="box">
+          <h3>AP2 Terminal Aud &amp; Poppy v0.2</h3>
+          <p>Closes the AP2 PR #369 <code>poc_aud_not_enforced.py</code> terminal-hop <code>expected_aud</code> bypass, PR #385 <code>cnf.jwk</code> JSON enum serialization, and Poppy v0.2 (#71) <code>ES256</code> 128-bit <code>jti</code> DPoP proof rules.</p>
+        </div>
+        <div class="box">
+          <h3>tau2-bench 2.0 &amp; TAP x402</h3>
+          <p>Enforces Sierra τ-bench 2.0.0 (#642) <code>intake</code> consent gating, <code>log_capture</code> ordering, and turn separation from <code>end_call</code>, plus Visa TAP #11 <code>x402</code> USDC on Solana/Base checkout.</p>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>Provenance:</strong> synthetic · <code>independently_reproduced=true</code> · Mean Latency: <strong>0.41 ms</strong> (5.1x faster than 2.09 ms baseline).
+    </div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: SD-09 &amp; SD-14 · AP2 AUD BYPASS &amp; TAU2 INTAKE</div>
+      <h2>Single-Case Deep Dive: Blocking AP2 <code>kb+sd-jwt+kb</code> Audience Bypass &amp; Unconsented Voice Intake in 0.44 ms</h2>
+      <div class="box">
+        <strong>Input Quote / Attack Vector:</strong> Adversary replays a cross-merchant <code>kb+sd-jwt+kb</code> delegation token exploiting AP2 #369 (<code>poc_aud_not_enforced.py</code>), while a voice intake agent attempts to collect <code>national_id</code> prior to caller consent.
+      </div>
+      <div class="box good" style="margin-top:14px;">
+        <span class="pill">choice · 100% deterministic block</span>
+        <h3>SD-09 / SD-10 · AP2 Terminal-Hop Audience Enforcement (#369)</h3>
+        <p>Requires non-empty <code>expected_aud</code> on every terminal <code>kb+sd-jwt+kb</code> hop and exact match with <code>token_aud</code>, emitting <code>AP2_KB_EXPECTED_AUD_OMITTED</code> / <code>AP2_KB_AUD_MISMATCH</code>.</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%;"></div></div>
+      </div>
+      <div class="box good" style="margin-top:14px;">
+        <span class="pill">choice · 100% deterministic block</span>
+        <h3>SD-14 / SD-15 · Sierra τ-bench 2.0 Intake Voice Guard (#642)</h3>
+        <p>Requires explicit caller consent prior to field collection, <code>log_capture</code> prior to <code>submit_fields</code>, and turn separation between <code>submit_fields</code> and <code>end_call</code>.</p>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%;"></div></div>
+      </div>
+    </div>
+    <div class="box"><strong>Action Pill:</strong> <code>Block &amp; Emit Deterministic Reason Code</code> (Zero silent pass-through).</div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED · 16-SCENARIO EVALUATION MATRIX</div>
+      <h2>Full 16-Scenario Scorecard: AI-Native 16/16 (100.0%) vs Classic 3-Tier 1/16 (6.2%)</h2>
+      <table>
+        <thead>
+          <tr><th>Scenario / Category</th><th>Question / Task</th><th>AI-Native Answer</th><th>Classic 3-Tier</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SD-01</strong> · Happy Path</td><td>Compliant UCP ucp-schema 2.0.0 bundle + ACP parity + AP2 kb+sd-jwt+kb aud + Poppy DPoP + tau2 intake + TAP x402 flow</td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code> (✓ PASS)</td><td>Classic: ✓ PASS</td></tr>
+<tr><td><strong>SD-02</strong> · UCP Bundled $ref (#982)</td><td>UCP ucp-schema 2.0.0 strips bundled $ref to inline object without restoring cross-file type link (#982)</td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-03</strong> · UCP Seller Logo Media (#962)</td><td>UCP variant.json seller.logo uses non-HTTPS URL or omits alt_text (#962)</td><td><code>INVALID_SELLER_LOGO_URL</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-04</strong> · UCP Seller Logo Authority (#962)</td><td>UCP variant.json seller.logo treated as Merchant of Record / KYB trust authority (#962)</td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-05</strong> · ACP Property Drift (#310)</td><td>ACP introduces unlisted JSON Schema / OpenAPI property drift outside known-property-drift.txt (#310)</td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-06</strong> · ACP Stale Allowlist (#310)</td><td>ACP retains stale allowlist entry in known-property-drift.txt after schema drift is resolved (#310)</td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-07</strong> · ACP allOf Starvation (#290/#275)</td><td>ACP CheckoutSessionWithOrder uses allOf + additionalProperties: false starving sibling order (#290/#275)</td><td><code>ALLOF_ADDITIONAL_PROPERTIES_SIBLING_STARVATION:CheckoutSessionWithOrder:order</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-08</strong> · ACP display_order (#284)</td><td>ACP PaymentHandler.display_order indented at schema root outside properties: (#284)</td><td><code>PAYMENT_HANDLER_DISPLAY_ORDER_MISINDENTED:PaymentHandler</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-09</strong> · AP2 Terminal aud (#369)</td><td>AP2 kb+sd-jwt+kb delegation token omits expected_aud on terminal hop (#369 poc_aud_not_enforced.py)</td><td><code>AP2_KB_SD_JWT_AUD_MISMATCH</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-10</strong> · AP2 Cross-Merchant Replay (#369)</td><td>AP2 kb+sd-jwt+kb terminal hop presents cross-merchant aud mismatch against expected_aud (#369)</td><td><code>AP2_KB_SD_JWT_AUD_MISMATCH</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-11</strong> · AP2 cnf.jwk JSON Enum (#385)</td><td>AP2 ParsedToken.cnf_jwk serializes Python enum object instead of JSON string 'sig' (#385/#383)</td><td><code>AP2_CNF_JWK_ENUM_NOT_JSON_SERIALIZED:use</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-12</strong> · AP2 Receipt Store Check (#384)</td><td>AP2 verify_receipt rejects unverified receipt_reference when store callback returns False (#384)</td><td><code>AP2_RECEIPT_REFERENCE_NOT_IN_STORE</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-13</strong> · Poppy v0.2 DPoP (#71)</td><td>Poppy v0.2 DPoP uses HS256 instead of ES256 or <128-bit jti entropy on API write (#71 39b35bd)</td><td><code>POPPY_INVALID_DPOP_ALG:HS256</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-14</strong> · tau2-bench 2.0 Consent (#642)</td><td>Sierra tau2-bench 2.0 intake collects fields before explicit user consent (#642 989d328)</td><td><code>TAU2_INTAKE_MISSING_CONSENT_BEFORE_COLLECTION</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-15</strong> · tau2-bench 2.0 Turn Separation (#642)</td><td>Sierra tau2-bench 2.0 intake bundles submit_fields and end_call in the same assistant turn (#642 989d328)</td><td><code>SUBMIT_AND_END_CALL_SAME_TURN_BLOCKED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+<tr><td><strong>SD-16</strong> · Visa TAP x402 USDC (#11)</td><td>Visa TAP x402 Mode B settles USDC on Solana/Base without facilitator verification or PAYMENT-RESPONSE (#11)</td><td><code>TAP_X402_FACILITATOR_SETTLEMENT_FAILED</code> (✓ PASS)</td><td>Classic: ✕ MISS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box good"><strong>Threshold Gating:</strong> All 15 protocol-drift, audience-bypass, and voice-intake violations are deterministically blocked; happy path <code>SD-01</code> is admitted.</div>
+      <div class="box bad"><strong>Failure Analysis:</strong> Classic 3-tier web middleware lacks schema-OpenAPI drift locks, SD-JWT+KB terminal audience checks, and voice turn state machines, missing SD-02..SD-16 (✕ MISS).</div>
+    </div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD · DETERMINISTIC VERIFIER MECHANICS</div>
+      <h2>Protocol &amp; Scoring Mechanics: Structured Contract Input to Deterministic Verdict</h2>
+      <pre>{
+  "token_type": "kb+sd-jwt+kb",
+  "is_terminal_hop": true,
+  "expected_aud": "https://merchant.example.com/ap2/checkout",
+  "token_aud": "https://evil-verifier.example/ap2/checkout",
+  "poppy_dpop_alg": "ES256",
+  "poppy_dpop_jti_entropy_bits": 128,
+  "tap_x402_mode": "payment_submitted",
+  "tap_network": "solana:devnet"
+}</pre>
+      <div style="text-align:center;font-size:20px;color:#38BDF8;margin:8px 0;">↓ Deterministic 6-Plane Verifier Pipeline ↓</div>
+      <pre>&lt;answer&gt;
+  stage54.ucp_schema_bundle    = UCP_SCHEMA_BUNDLE_AND_SELLER_LOGO_OK
+  stage54.acp_property_drift   = ACP_SCHEMA_OPENAPI_PARITY_OK (23/23 tracked)
+  stage54.ap2_kb_terminal_aud  = BLOCK (AP2_KB_AUD_MISMATCH)
+  verdict                      = REJECTED (0.43 ms)
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="box"><strong>Zero External Dependencies:</strong> Pure Python standard-library verifiers suitable for inline CI gates and edge agent gateways.</div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK · PERTURBATION &amp; ORDER CONSISTENCY</div>
+      <h2>Perturbation &amp; Consistency: 100.0% (16/16) Stability Across Key-Order Reversal</h2>
+      <table>
+        <thead>
+          <tr><th>Scenario</th><th>Original Verdict</th><th>Reversed / Perturbed</th><th>Change (pts)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>SD-01</strong></td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code></td><td><code>ALL_4_STAGE54_PROTOCOL_GUARDS_ADMITTED</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-02</strong></td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code></td><td><code>UNRESTORED_BUNDLED_CROSS_FILE_REF:pagination</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-03</strong></td><td><code>INVALID_SELLER_LOGO_URL</code></td><td><code>INVALID_SELLER_LOGO_URL</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-04</strong></td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code></td><td><code>SELLER_LOGO_AUTHORITY_CONFUSION_BLOCKED</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-05</strong></td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code></td><td><code>UNLISTED_SCHEMA_OPENAPI_PROPERTY_DRIFT:2026-04-17/agentic_checkout/Order/client_reference_id json-only</code></td><td>0.0 pts</td></tr>
+<tr><td><strong>SD-06</strong></td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code></td><td><code>STALE_KNOWN_DRIFT_ENTRY:2026-04-17/agentic_checkout/Address/company json-only</code></td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box good">
+      <strong>Finding:</strong> 100.0% of scenarios produce identical reason codes and admission decisions (`0.0 pts` delta) under payload key-order reversal.
+    </div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY · INLINE GUARD VS CLASSIC 3-TIER MIDDLEWARE</div>
+      <h2>Scaling Latency: 0.41 ms Mean Inline Guard vs 2.09 ms Baseline (5.1x Speedup)</h2>
+      <div class="bar-row">
+        <div><strong>SD-01 Compliant Full Flow</strong> — AI-Native 0.41 ms vs Classic 2.15 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 19%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 94%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-09 AP2 Terminal Aud (#369)</strong> — AI-Native 0.44 ms vs Classic 2.18 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 20%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 95%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-14 tau2-bench 2.0 Consent (#642)</strong> — AI-Native 0.45 ms vs Classic 2.24 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 21%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 98%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><strong>SD-16 Visa TAP x402 USDC (#11)</strong> — AI-Native 0.46 ms vs Classic 2.28 ms</div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 21%;"></div></div>
+        <div class="bar-track" style="margin-top:4px;"><div class="bar-fill-base" style="width: 100%;"></div></div>
+      </div>
+    </div>
+    <div class="box"><strong>Sealed Metrics:</strong> All bar coordinates and latency figures are rendered directly from <code>report.json</code>.</div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE · GOOD FIT VS NOT FOR &amp; PRODUCTION READINESS</div>
+      <h2>Architect's Verdict: Good Fit vs Not For &amp; Bilingual Readiness</h2>
+      <div class="grid2">
+        <div class="box good">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>UCP <code>ucp-schema 2.0.0</code> multi-schema <code>$ref</code> bundling and catalog <code>seller.logo</code> trust isolation</li>
+            <li>ACP JSON Schema ⇄ OpenAPI CI drift gating (23 tracked mismatches locked)</li>
+            <li>AP2 <code>kb+sd-jwt+kb</code> terminal-hop audience enforcement and Poppy v0.2 <code>ES256</code> DPoP proofs</li>
+            <li>Sierra τ-bench 2.0 multilingual voice intake and Visa TAP <code>x402</code> USDC settlement gateways</li>
+          </ul>
+        </div>
+        <div class="box bad">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Replacing on-chain Solana / Base RPC finality verification or hardware HSM key custody</li>
+            <li>Granting unverified autonomous payment authority to legacy scraping agents</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <strong>Readiness &amp; Provenance:</strong> Stage 55 (<code>2026-10-20-stage55</code>) · Published in Chinese (<code>index.html</code>) &amp; English (<code>index.en.html</code>).
+    </div>
+  </section>
+</div>
+</body>
+</html>
