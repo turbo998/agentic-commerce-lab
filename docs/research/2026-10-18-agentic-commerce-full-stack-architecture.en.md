@@ -44,3 +44,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§55.4**: Sierra $\tau$-bench 2.0 Boréal Finance `loan_servicing` (`en`/`fr`, `#638`) Policy & `banking_knowledge` `canonicalize_time_verified` (`#634`).
 - **§56 (Stage 57 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`RP-01..RP-16`)**: `lab/ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py` (`16/16 100.0%` AI-Native vs. `1/16 6.2%` Classic 3-Tier, `0.38 ms` vs. `2.06 ms`, `5.4x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§57 (Stage 58 — Bilingual Chinese + English)**:
+  - **§57.1**: UCP Purchase Options Extension (`#901`), Per-Seller Catalog `offers[]` Attribution (`#811`), HTTP `304 Not Modified` Conditional Cache (`#933`) & MCP `$defs/agent` (`#831`).
+  - **§57.2**: ACP Checkout `Item.url` Cross-Brand Disambiguation (`#281`), Agent-Hosted Feed Origin & `minItems: 1` Bounds (`#256`) & `UpsertProductsResponse` (`#241`).
+  - **§57.3**: Google AP2 Multi-Hop `~~` `MandateClient.present()` Isolation (`#363`), Mandatory `checkout_hash` Derivation (`#359`) & Atomic Consume-Once Reservation (`#347`).
+  - **§57.4**: Sierra $\tau$-bench 2.0 6-Language `voice-v2-banking` / `voice-v2-entity` (`#637`), Crossed Pass³ `voice-v2-rcs-v3` Seeds (`#639`) & Judged Submission Gate (`#620`).

@@ -53,4 +53,19 @@
   - 单元测试：[`tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py`](../../tests/test_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench.py)（全仓库 **324/324** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9728-pix-razorpay-acp-envelope-tau2-loan-bench/report.json)
 
+---
+
+## Stage 58：UCP 购买选项扩展（`#901`）与多卖家目录变体 `offers[]` 归因（`#811`/`#933`/`#831`）、ACP 结账行 `Item.url` 跨品牌去歧义与 Feed 边界（`#281`/`#256`/`#241`）、Google AP2 多跳 `~~` 委托链末跳脱敏与原子单次消费预留锁（`#363`/`#359`/`#347`）、以及 Sierra $\tau$-bench 2.0 六语种语音基准与 Crossed Pass³ 评审指纹门禁（`#637`/`#639`/`#620`）（中英双语）
+
+- **一手协议与上游代码审计**：
+  1. **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**：PR `#901`（`dev.ucp.shopping.purchase_options` 购买选项扩展：`purchase_options[]` 仅限响应下发、`selected_purchase_option_id` 共现约束与 `complete` 省略、失效选择回退默认项并强制发出 `purchase_option_changed` 警告、免费试用禁填 `price: 0`、以及订单行 `purchase_option` `{id, title}` 快照固化）、PR `#811`（多卖家目录变体 `offers[]` 归因：`offers[].seller.domain` 裸域名标记 Merchant of Record、结账必须传 `offers[].item_id` 且严禁传 `variant.id`、`offers[].price` 优先于展示价 `variant.price`）、PR `#933`（Profile/JWKS/CIMD 条件请求 `304 Not Modified` 允许命中缓存 vs 严禁 `301`/`302`/`303`/`307`/`308` 重定向）与 PR `#831`（MCP 工具调用 Schema 将 `$defs/ucp_agent` 重命名为 `$defs/agent` 以规避 `ucp_` 保留前缀 `W007` 告警）。
+  2. **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#281`（SEP `#280` 结账请求 `Item.url` 规范商品页 URL，消除单卖家账户下跨品牌/多店面共享 SKU 的归属歧义）、PR `#256`（Product Feed API 服务源对齐为代理端托管 `https://agent.example.com`，并在 `Product.variants` 与 `UpsertProductsRequest.products` 强制 `minItems: 1`）与 PR `#241`（在 Feed JSON Schema 打包文件中补齐 `UpsertProductsResponse` `{id, accepted}`）。
+  3. **Google Agent Payments Protocol (`google-agentic-commerce/AP2`)**：PR `#363`（`MandateClient.present()` 通过 `rpartition("~~")` 隔离末跳 `SD-JWT`，仅对末跳执行选择性披露脱敏与 `sd_hash` 绑定，原样保留前置跳并拦截前置跳披露篡改）、PR `#359`（`CheckoutMandateChain.verify()` 即使调用方省略 `expected_checkout_hash` 也强制从所呈递 `checkout_jwt` 实时计算 `compute_sha256_b64url` 并比对 `closed_mandate.checkout_hash`）与 PR `#347`（凭证提供方与商户支付处理器采用 SQLite `BEGIN IMMEDIATE` + `synchronous=FULL` 原子预留闭式付款授权哈希与结账事务 ID，联合校验旧版 token-store 并在状态损坏时以 `replay_state_unavailable` 故障闭合，重放返回 `mandate_already_used`）。
+  4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#637`（发布跨 `en/es/pt/hi/zh/ko` 六语种的 `voice-v2-banking` `banking_knowledge_97` 共 `582` 通电话与 `voice-v2-entity` `intake_200` 共 `1,200` 通电话及 `240s` 时长上限，校验证据包每语种 `binding_revision` 锁定哈希）、PR `#639`（Crossed Pass³ 迁移至 `voice-v2-rcs-v3` 全局种子 `42/401/16319`、支持只读复用已验证的 seed-42 `--regular-results`、并要求 Gemini 3.8 扩展思考模式下 `google-genai >= 2.26`）与 PR `#620`（`tau2 submit prepare/validate` 强制 `voice-v2` 矩阵零缺失/错误/未评分记录且全部适用裁判指标均具存盘裁决，随包生成并重算校验 `benchmark-diagnostics.json` 内容指纹）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../lab/ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)
+  - 单元测试：[`tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py`](../../tests/test_ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard.py)（全仓库 **328/328** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§57)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+
 

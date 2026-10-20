@@ -241,6 +241,16 @@ from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench import (
     run_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_benchmark,
     write_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_report,
 )
+from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard import (
+    AcpItemUrlAndFeedUpsertGuardResult,
+    Ap2MultihopAndAtomicConsumptionGuardResult,
+    Tau2VoiceV2SubmissionAndPass3GuardResult,
+    UcpPurchaseOptionsAndOffersGuardResult,
+    verify_acp_item_url_and_feed_upsert_guard,
+    verify_ap2_multihop_present_and_atomic_consumption_guard,
+    verify_tau2_voice_v2_banking_entity_and_crossed_pass3_guard,
+    verify_ucp_purchase_options_and_seller_offers_guard,
+)
 
 
 @dataclass(frozen=True)
