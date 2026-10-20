@@ -1043,6 +1043,14 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `verify_tau2_banking_close_reason_persona_empty_retry_provenance_and_tts_guard` enforces Sierra $\tau$-bench 2.0 PR `#484` (constraining `close_bank_account_7392` `reason` to a fixed enum set to unblock tasks 065/068/069), PR `#478` (fixing the `persoca` key typo in banking task 091), PR `#471` (retrying empty text-mode user-simulator completions after tracking-only user tool calls instead of crashing as `infrastructure_error`), PR `#467` (recording evaluator provenance `evaluation_mode` and `state_source`), PR `#462` (requiring `DB` in multi-customer Telecom `C1001`/`C1002` reward bases so unrelated writes fail grading), and PR `#457` (bounding concurrent `synthesize_voice` TTS calls to the subscription cap to prevent ElevenLabs `429` dropped caller utterances).
 - **中文**: `verify_tau2_banking_close_reason_persona_empty_retry_provenance_and_tts_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#484`（将 `close_bank_account_7392` 关户原因约束为固定枚举集合，解决 T065/T068/T069 自由文本 0% 通过率缺陷）、PR `#478`（修复银行 T091 `persoca` 键名拼写错误）、PR `#471`（文本用户模拟器在触发仅跟踪工具后返回空消息时自动重试而非报错崩溃）、PR `#467`（记录评测器溯源元数据区分实时评测与参考回放）、PR `#462`（多客户电信任务强制包含 `DB` 奖励基准防止无关写库拿满分）以及 PR `#457`（限制 `synthesize_voice` 并发合成上限防止触发 ElevenLabs `429` 丢失语音轮次）。
 
+---
+
+## 82. Stage 83 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`MD-01..MD-16`)
+
+- **English**: `lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py` evaluates 16 deterministic scenarios (`MD-01..MD-16`) across the four Stage 82 guardrail domains: AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **100.0%** guard evaluation-order reversal stability vs. **4/16 (25.0%)** for the Classic 3-Tier baseline at **0.35 ms vs. 4.76 ms** median latency (**13.6x speedup**), generating self-contained bilingual 7-Card 4:5 visual decks [`index.html` (Chinese)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) and [`index.en.html` (English)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html).
+- **中文**: `lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py` 构建覆盖 Stage 82 四大护栏域的 16 个确定性评测场景（`MD-01..MD-16`）：AI-Native 护栏实现 **16/16 (100.0%)** 准确率与 **100.0%** 评估逆序扰动稳定性（对比经典三层架构基线 **4/16, 25.0%**），中位延迟 **0.35 ms vs. 4.76 ms（13.6x 加速）**，并生成中英双语自包含 7-Card 4:5 视觉评测报告 [`index.html`（中文）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) 与 [`index.en.html`（English）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html)。
+
+
 
 
 

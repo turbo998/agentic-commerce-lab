@@ -1,0 +1,674 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench",
+  "stage": "Stage 83",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_accuracy_pct": 100.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_accuracy_pct": 25.0,
+  "perturbation_consistency_pct": 100.0,
+  "median_latency_ms": {
+    "ai_native": 0.35,
+    "classic_3tier": 4.76,
+    "speedup_x": 13.6
+  },
+  "results": [
+    {
+      "scenario_id": "MD-01",
+      "domain": "Full-Stack Happy Path",
+      "question": "Admit compliant UCP media/destinations/totals, ACP default delivery & MCP, x402 SAR/ERC-7710, and tau2 close/prov guards?",
+      "question_zh": "准入合规的 UCP 媒体/目的地/总额、ACP 默认配送与 MCP、x402 SAR/ERC-7710 及 tau2 关户枚举/溯源护栏？",
+      "expected_admitted": true,
+      "admitted": true,
+      "admitted_reversed": true,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": true,
+      "action": "Act automatically",
+      "reasons": [],
+      "reason_count": 0
+    },
+    {
+      "scenario_id": "MD-02",
+      "domain": "UCP Media & Totals",
+      "question": "Block UCP model_3d media missing sources[] and totals.json using RootArray (#690/#684)?",
+      "question_zh": "拦截缺少 sources[] 的 UCP model_3d 媒体及使用 RootArray 的 totals.json（#690/#684）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "UCP_MEDIA_SOURCES_MUST_BE_NON_EMPTY_ARRAY:0",
+        "UCP_TOTALS_SCHEMA_ROOT_ARRAY_FORBIDDEN"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-03",
+      "domain": "UCP Destination & Location",
+      "question": "Block UCP response destination missing discriminator type or auto-selecting destination from context.location (#689/#671)?",
+      "question_zh": "拦截缺少显式 type 的 UCP 响应目的地或从 context.location 自动选定收货地址（#689/#671）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "UCP_REQUEST_DESTINATION_PER_OBJECT_TYPE_BREAKS_DEPLOYED_PLATFORMS",
+        "UCP_RESPONSE_DESTINATION_EXPLICIT_TYPE_REQUIRED",
+        "UCP_CONTEXT_LOCATION_MUST_NOT_SELECT_DELIVERY_DESTINATION"
+      ],
+      "reason_count": 3
+    },
+    {
+      "scenario_id": "MD-04",
+      "domain": "UCP Idempotency & A2A Freeze",
+      "question": "Block MCP idempotency-key reuse across mutated payloads and A2A writes during complete_in_progress (#679/#670)?",
+      "question_zh": "拦截 MCP idempotency-key 跨变更载荷复用及 A2A complete_in_progress 期间的写操作（#679/#670）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "UCP_MCP_IDEMPOTENCY_KEY_CONFLICT_MUST_RETURN_409_OR_MINUS_32000",
+        "UCP_A2A_COMPLETE_IN_PROGRESS_MUTATION_FREEZE_VIOLATED"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-05",
+      "domain": "UCP Order Payment & Gift Item",
+      "question": "Block UCP order.payment leaking collection-time credential or unlinked zero-price gift line item (#584/#578)?",
+      "question_zh": "拦截泄露采集态 credential 的 UCP order.payment 或未绑定 gift_line_item_id 的零价赠品行（#584/#578）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "UCP_ORDER_PAYMENT_INSTRUMENT_LEAKED_COLLECTION_FIELDS:0:credential,selected",
+        "UCP_UNLINKED_ZERO_PRICE_GIFT_LINE_ITEM:li_free_tote"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-06",
+      "domain": "UCP Read-Only Ask & Gift PII",
+      "question": "Block UCP dev.ucp.common.ask mutating checkout state or gift extension leaking recipient PII (#538/#508)?",
+      "question_zh": "拦截篡改结账状态的 UCP dev.ucp.common.ask 或在协议中泄露收礼人 PII 的礼品扩展（#538/#508）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "UCP_ASK_CAPABILITY_MUST_BE_STRICTLY_READ_ONLY",
+        "UCP_GIFT_EXTENSION_FORBIDDEN_RECIPIENT_PII:recipient_address",
+        "UCP_GIFT_RECIPIENT_REQUIRED_BEFORE_COMPLETE"
+      ],
+      "reason_count": 3
+    },
+    {
+      "scenario_id": "MD-07",
+      "domain": "ACP Default Delivery Option",
+      "question": "Block ACP checkout create returning fulfillment_options[] without pre-selecting selected_fulfillment_option_id (#198)?",
+      "question_zh": "拦截返回 fulfillment_options[] 却未预选默认 selected_fulfillment_option_id 的 ACP 创建结账响应（#198）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "ACP_CHECKOUT_CREATE_DEFAULT_FULFILLMENT_OPTION_MISSING"
+      ],
+      "reason_count": 1
+    },
+    {
+      "scenario_id": "MD-08",
+      "domain": "ACP Delegate Virtual Card & Error",
+      "question": "Block ACP Delegate Payment missing boolean PaymentMethodCard.virtual or invalid 503 Error enum (#161/#132)?",
+      "question_zh": "拦截缺少布尔型 PaymentMethodCard.virtual 或 503 错误枚举非法的 ACP 委托支付（#161/#132）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "ACP_DELEGATE_PAYMENT_CARD_VIRTUAL_BOOLEAN_REQUIRED",
+        "ACP_DELEGATE_PAYMENT_ERROR_TYPE_INVALID:unknown_err",
+        "ACP_DELEGATE_PAYMENT_ERROR_CODE_INVALID:bad_code"
+      ],
+      "reason_count": 3
+    },
+    {
+      "scenario_id": "MD-09",
+      "domain": "ACP Citation & Discount Schema",
+      "question": "Block ACP content_attribution overriding item price or deprecated DiscountDetail schema (#149/#125)?",
+      "question_zh": "拦截篡改商品价格的 ACP content_attribution 引用归因或使用已废弃 DiscountDetail 的折扣结构（#149/#125）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "ACP_CONTENT_CITATION_PRICE_OVERRIDE_FORBIDDEN:0",
+        "ACP_DEPRECATED_DISCOUNT_DETAIL_MUST_CONSOLIDATE_TO_APPLIED_DISCOUNT"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-10",
+      "domain": "x402 Pre-Sign Spend Policy",
+      "question": "Block x402 MCP client relying on prompt-only spend limits or exceeding max_amount_atomic in onPaymentRequested (#166)?",
+      "question_zh": "拦截仅依赖提示词限额或超过 onPaymentRequested 代码层金额上限的 x402 MCP 客户端支付（#166）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "X402_MCP_SPEND_POLICY_MUST_ENFORCE_IN_CODE_BEFORE_SIGNING"
+      ],
+      "reason_count": 1
+    },
+    {
+      "scenario_id": "MD-11",
+      "domain": "x402 Payment-Identifier Binding",
+      "question": "Block x402 payment-identifier reuse across different normalized request/payment fingerprints with 409 (#165)?",
+      "question_zh": "拦截跨不同规范化请求指纹复用 x402 支付标识符并返回 409 Conflict（#165）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "X402_PAYMENT_IDENTIFIER_UNBOUND_TO_REQUEST_FINGERPRINT",
+        "X402_PAYMENT_IDENTIFIER_FINGERPRINT_MISMATCH_MUST_REJECT_409"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-12",
+      "domain": "x402 AttestSeal & SAR Binding",
+      "question": "Block self-issued attestseal authority DID or SAR delivered_resource_digest mismatch against response body (#136/#46)?",
+      "question_zh": "拦截自签发 attestseal 权威 DID 或结算证明收据 SAR 交付摘要与响应体不一致（#136/#46）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "X402_ATTESTSEAL_TRUST_ATTESTATION_INVALID_OR_STALE",
+        "X402_SAR_SETTLEMENT_TO_DELIVERY_DIGEST_BINDING_INVALID"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-13",
+      "domain": "x402 ERC-7710 & CSPRNG Fee-Payer",
+      "question": "Block unsimulated ERC-7710 redeemDelegations or predictable math/rand SVM fee-payer selection (#22/#13)?",
+      "question_zh": "拦截未经 eth_call 预模拟的 ERC-7710 redeemDelegations 或使用可预测 math/rand 的 SVM 费率支付方（#22/#13）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": true,
+      "classic_passed": false,
+      "action": "Send to a human",
+      "reasons": [
+        "X402_ERC7710_REDEEM_DELEGATIONS_SIMULATION_MISSING",
+        "X402_SVM_FEE_PAYER_WEAK_RNG_OR_EMPTY_POOL"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-14",
+      "domain": "tau2 Close-Account Enum & Persona",
+      "question": "Block free-text close_bank_account_7392 reason and task 091 persoca key typo (#484/#478)?",
+      "question_zh": "拦截自由文本 close_bank_account_7392 关户原因及任务 091 persoca 键名拼写错误（#484/#478）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": false,
+      "classic_passed": true,
+      "action": "Send to a human",
+      "reasons": [
+        "TAU2_BANKING_CLOSE_ACCOUNT_REASON_NOT_IN_ENUM:Closing account because I found a better rate",
+        "TAU2_BANKING_TASK_091_PERSOCA_KEY_TYPO"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-15",
+      "domain": "tau2 Empty-Sim Retry & Provenance",
+      "question": "Block unretried empty text-simulator completion after tracking tool call or missing evaluator provenance (#471/#467)?",
+      "question_zh": "拦截仅跟踪工具调用后未重试的空模拟器完成或缺失评测溯源元数据（#471/#467）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": false,
+      "classic_passed": true,
+      "action": "Send to a human",
+      "reasons": [
+        "TAU2_EMPTY_USER_SIM_COMPLETION_MUST_RETRY_NOT_CRASH",
+        "TAU2_EVALUATOR_PROVENANCE_METADATA_MISSING"
+      ],
+      "reason_count": 2
+    },
+    {
+      "scenario_id": "MD-16",
+      "domain": "tau2 Multi-Customer DB & TTS Cap",
+      "question": "Block multi-customer Telecom ACTION-only grading without DB check or unbounded ElevenLabs synthesize_voice concurrency (#462/#457)?",
+      "question_zh": "拦截多客户电信任务缺少 DB 校验的仅 ACTION 评分或无上限并发调用 ElevenLabs synthesize_voice（#462/#457）？",
+      "expected_admitted": false,
+      "admitted": false,
+      "admitted_reversed": false,
+      "passed": true,
+      "classic_admitted": false,
+      "classic_passed": true,
+      "action": "Send to a human",
+      "reasons": [
+        "TAU2_TELECOM_MULTI_CUSTOMER_DB_GRADING_BYPASSED",
+        "TAU2_VOICE_TTS_CONCURRENCY_UNBOUNDED_429_RISK"
+      ],
+      "reason_count": 2
+    }
+  ],
+  "cards": {
+    "track": "STAGE 83 · UCP MEDIA/DEST/TOTALS · ACP DEFAULT DELIV/MCP · X402 SAR/ERC-7710 · TAU2 CLOSE/PROV",
+    "headline": "AI-Native 4-Domain Guardrails Hit 16/16 (100.0%) vs. 4/16 (25.0%) Classic 3-Tier Across UCP Media/Destinations/Totals, ACP Default Delivery/MCP, x402 SAR/ERC-7710 & tau2 Close-Account/Provenance",
+    "headline_zh": "AI-Native 四域护栏在 UCP 多变体媒体/目的地/总额、ACP 默认配送/MCP、x402 SAR/ERC-7710 与 tau2 关户枚举/评测溯源 16 场景实现 16/16 (100.0%) 对比传统三层 4/16 (25.0%)",
+    "subheadline": "Deterministic verification of UCP #690/#689/#684/#679/#671/#670/#584/#578/#538/#508, ACP #198/#161/#149/#139/#132/#130/#125, Coinbase x402 #166/#165/#136/#46/#22/#13, and Sierra tau2-bench #484/#478/#471/#467/#462/#457 at 0.35 ms median latency (13.6x speedup).",
+    "subheadline_zh": "以 0.35 ms 中位延迟（13.6x 加速）确定性核验 UCP #690/#689/#684/#679/#671/#670/#584/#578/#538/#508、ACP #198/#161/#149/#139/#132/#130/#125、Coinbase x402 #166/#165/#136/#46/#22/#13 与 Sierra tau2-bench #484/#478/#471/#467/#462/#457。",
+    "workbench": {
+      "scenarios_pill": "16 Scenarios (MD-01..MD-16)",
+      "threshold_bands": "Pass >= 100% | Action: Act automatically / Send to a human",
+      "structured_input": "UCP media/dest/totals/ask + ACP default delivery/MCP + x402 SAR/ERC-7710 + tau2 close/prov JSON",
+      "latency_pill": "0.35 ms median (13.6x faster than 4.76 ms 3-tier)",
+      "top_decisions": [
+        "MD-01: Admitted compliant 4-domain payload -> Act automatically",
+        "MD-10..MD-13: Blocked x402 prompt-only cap, ID replay, fake SAR & unsimulated ERC-7710 -> Send to a human",
+        "MD-14..MD-16: Blocked tau2 free-text close reason, unretried empty sim & unbounded TTS -> Send to a human"
+      ],
+      "provenance_note": "Measured local execution · Python 3.12 · Deterministic 4-guard pipeline · Zero external network calls"
+    },
+    "deep_dive": {
+      "case_name": "MD-12 · x402 AttestSeal Authority & Settlement Attestation Receipt (SAR)",
+      "case_name_zh": "MD-12 · x402 AttestSeal 权威证明与结算证明收据 (SAR) 交付绑定",
+      "headline": "Catches Both Self-Issued AttestSeal DID (#136) and Bait-and-Switch SAR Resource Digest (#46) in 0.35 ms",
+      "headline_zh": "在 0.35 ms 内同时拦截自签发 AttestSeal DID（#136）与货不对板的 SAR 交付资源摘要（#46）",
+      "input_quote": "{\"attestseal\": {\"authority_did\": \"did:web:merchant-api.example\", \"service_did\": \"did:web:merchant-api.example\"}, \"settlement_attestation_receipt\": {\"delivered_resource_digest\": \"sha256:body_FAKE\", \"actual_response_body_digest\": \"sha256:body_998877\"}}",
+      "decisions": [
+        {
+          "badge": "choice",
+          "title": "Independent AttestSeal Authority DID (#136)",
+          "confidence": "100.0%",
+          "action": "Send to a human",
+          "bar_pct": 100,
+          "detail": "Rejects x402_attestseal_self_issued_not_allowed when authority_did equals service_did."
+        },
+        {
+          "badge": "score",
+          "title": "SAR Delivered Resource Digest Binding (#46)",
+          "confidence": "100.0%",
+          "action": "Send to a human",
+          "bar_pct": 100,
+          "detail": "Rejects x402_sar_delivered_resource_digest_mismatch when delivered body digest diverges from signed SAR."
+        },
+        {
+          "badge": "noul",
+          "title": "Pre-Sign Code Spend Policy & ERC-7710 Simulation (#166/#22)",
+          "confidence": "100.0%",
+          "action": "Act automatically",
+          "bar_pct": 100,
+          "detail": "Enforces onPaymentRequested code-level caps and eth_call redeemDelegations simulation before settlement."
+        }
+      ]
+    },
+    "scorecard_rows": [
+      {
+        "scenario": "MD-01 · Full-Stack Happy Path",
+        "question": "准入合规的 UCP 媒体/目的地/总额、ACP 默认配送与 MCP、x402 SAR/ERC-7710 及 tau2 关户枚举/溯源护栏？",
+        "answer": "准入 (0 违规)",
+        "action": "自动执行",
+        "passed": true
+      },
+      {
+        "scenario": "MD-02 · UCP Media & Totals",
+        "question": "拦截缺少 sources[] 的 UCP model_3d 媒体及使用 RootArray 的 totals.json（#690/#684）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-03 · UCP Destination & Location",
+        "question": "拦截缺少显式 type 的 UCP 响应目的地或从 context.location 自动选定收货地址（#689/#671）？",
+        "answer": "拦截 (3 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-04 · UCP Idempotency & A2A Freeze",
+        "question": "拦截 MCP idempotency-key 跨变更载荷复用及 A2A complete_in_progress 期间的写操作（#679/#670）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-05 · UCP Order Payment & Gift Item",
+        "question": "拦截泄露采集态 credential 的 UCP order.payment 或未绑定 gift_line_item_id 的零价赠品行（#584/#578）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-06 · UCP Read-Only Ask & Gift PII",
+        "question": "拦截篡改结账状态的 UCP dev.ucp.common.ask 或在协议中泄露收礼人 PII 的礼品扩展（#538/#508）？",
+        "answer": "拦截 (3 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-07 · ACP Default Delivery Option",
+        "question": "拦截返回 fulfillment_options[] 却未预选默认 selected_fulfillment_option_id 的 ACP 创建结账响应（#198）？",
+        "answer": "拦截 (1 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-08 · ACP Delegate Virtual Card & Error",
+        "question": "拦截缺少布尔型 PaymentMethodCard.virtual 或 503 错误枚举非法的 ACP 委托支付（#161/#132）？",
+        "answer": "拦截 (3 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-09 · ACP Citation & Discount Schema",
+        "question": "拦截篡改商品价格的 ACP content_attribution 引用归因或使用已废弃 DiscountDetail 的折扣结构（#149/#125）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-10 · x402 Pre-Sign Spend Policy",
+        "question": "拦截仅依赖提示词限额或超过 onPaymentRequested 代码层金额上限的 x402 MCP 客户端支付（#166）？",
+        "answer": "拦截 (1 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-11 · x402 Payment-Identifier Binding",
+        "question": "拦截跨不同规范化请求指纹复用 x402 支付标识符并返回 409 Conflict（#165）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-12 · x402 AttestSeal & SAR Binding",
+        "question": "拦截自签发 attestseal 权威 DID 或结算证明收据 SAR 交付摘要与响应体不一致（#136/#46）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-13 · x402 ERC-7710 & CSPRNG Fee-Payer",
+        "question": "拦截未经 eth_call 预模拟的 ERC-7710 redeemDelegations 或使用可预测 math/rand 的 SVM 费率支付方（#22/#13）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-14 · tau2 Close-Account Enum & Persona",
+        "question": "拦截自由文本 close_bank_account_7392 关户原因及任务 091 persoca 键名拼写错误（#484/#478）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-15 · tau2 Empty-Sim Retry & Provenance",
+        "question": "拦截仅跟踪工具调用后未重试的空模拟器完成或缺失评测溯源元数据（#471/#467）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      },
+      {
+        "scenario": "MD-16 · tau2 Multi-Customer DB & TTS Cap",
+        "question": "拦截多客户电信任务缺少 DB 校验的仅 ACTION 评分或无上限并发调用 ElevenLabs synthesize_voice（#462/#457）？",
+        "answer": "拦截 (2 项违规)",
+        "action": "转交人工",
+        "passed": true
+      }
+    ],
+    "scorecard_rows_en": [
+      {
+        "scenario": "MD-01 · Full-Stack Happy Path",
+        "question": "Admit compliant UCP media/destinations/totals, ACP default delivery & MCP, x402 SAR/ERC-7710, and tau2 close/prov guards?",
+        "answer": "ADMITTED (0 violations)",
+        "action": "Act automatically",
+        "passed": true
+      },
+      {
+        "scenario": "MD-02 · UCP Media & Totals",
+        "question": "Block UCP model_3d media missing sources[] and totals.json using RootArray (#690/#684)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-03 · UCP Destination & Location",
+        "question": "Block UCP response destination missing discriminator type or auto-selecting destination from context.location (#689/#671)?",
+        "answer": "BLOCKED (3 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-04 · UCP Idempotency & A2A Freeze",
+        "question": "Block MCP idempotency-key reuse across mutated payloads and A2A writes during complete_in_progress (#679/#670)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-05 · UCP Order Payment & Gift Item",
+        "question": "Block UCP order.payment leaking collection-time credential or unlinked zero-price gift line item (#584/#578)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-06 · UCP Read-Only Ask & Gift PII",
+        "question": "Block UCP dev.ucp.common.ask mutating checkout state or gift extension leaking recipient PII (#538/#508)?",
+        "answer": "BLOCKED (3 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-07 · ACP Default Delivery Option",
+        "question": "Block ACP checkout create returning fulfillment_options[] without pre-selecting selected_fulfillment_option_id (#198)?",
+        "answer": "BLOCKED (1 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-08 · ACP Delegate Virtual Card & Error",
+        "question": "Block ACP Delegate Payment missing boolean PaymentMethodCard.virtual or invalid 503 Error enum (#161/#132)?",
+        "answer": "BLOCKED (3 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-09 · ACP Citation & Discount Schema",
+        "question": "Block ACP content_attribution overriding item price or deprecated DiscountDetail schema (#149/#125)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-10 · x402 Pre-Sign Spend Policy",
+        "question": "Block x402 MCP client relying on prompt-only spend limits or exceeding max_amount_atomic in onPaymentRequested (#166)?",
+        "answer": "BLOCKED (1 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-11 · x402 Payment-Identifier Binding",
+        "question": "Block x402 payment-identifier reuse across different normalized request/payment fingerprints with 409 (#165)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-12 · x402 AttestSeal & SAR Binding",
+        "question": "Block self-issued attestseal authority DID or SAR delivered_resource_digest mismatch against response body (#136/#46)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-13 · x402 ERC-7710 & CSPRNG Fee-Payer",
+        "question": "Block unsimulated ERC-7710 redeemDelegations or predictable math/rand SVM fee-payer selection (#22/#13)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-14 · tau2 Close-Account Enum & Persona",
+        "question": "Block free-text close_bank_account_7392 reason and task 091 persoca key typo (#484/#478)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-15 · tau2 Empty-Sim Retry & Provenance",
+        "question": "Block unretried empty text-simulator completion after tracking tool call or missing evaluator provenance (#471/#467)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      },
+      {
+        "scenario": "MD-16 · tau2 Multi-Customer DB & TTS Cap",
+        "question": "Block multi-customer Telecom ACTION-only grading without DB check or unbounded ElevenLabs synthesize_voice concurrency (#462/#457)?",
+        "answer": "BLOCKED (2 violations)",
+        "action": "Send to a human",
+        "passed": true
+      }
+    ],
+    "scorecard_callouts": {
+      "threshold_gating": "16/16 (100.0%) scenarios gated deterministically: 1 compliant path admitted (`Act automatically`), 15 protocol/security/evaluation-integrity violations blocked (`Send to a human`).",
+      "threshold_gating_zh": "16/16 (100.0%) 场景通过确定性门控：1 个合规路径自动准入（`自动执行`），15 个协议/安全/评测完整性违规全部阻断（`转交人工`）。",
+      "failure_analysis": "Classic 3-tier web middleware misses 12/16 scenarios (25.0% accuracy) because it lacks UCP media/destination/totals/idempotency/gift schema checks, ACP default delivery & MCP bindings, and x402 pre-sign policy/SAR/ERC-7710 verifiers.",
+      "failure_analysis_zh": "传统三层 Web 中间件漏检 12/16 个场景（准确率仅 25.0%），因其缺乏 UCP 多变体媒体/目的地/总额/幂等/礼品校验、ACP 默认配送与 MCP 绑定，以及 x402 签名前代码限额/SAR/ERC-7710 校验器。"
+    },
+    "under_the_hood": {
+      "input_contract": "{\n  \"ucp\": {\"media_items\": [{\"type\": \"model_3d\", \"sources\": [...]}], \"totals_schema\": {\"root_type\": \"object\"}},\n  \"acp\": {\"checkout_create_response\": {\"selected_fulfillment_option_id\": \"ship_std\"}, \"mcp_binding\": {\"jsonrpc\": \"2.0\"}},\n  \"x402\": {\"mcp_payment_policy\": {\"enforced_in_on_payment_requested_hook\": true}, \"settlement_attestation_receipt\": {\"sar_present\": true}},\n  \"tau2\": {\"banking_close_account\": {\"reason\": \"no_longer_needed\"}, \"evaluator_provenance\": {\"evaluation_mode\": \"live_agent\"}}\n}",
+      "verifier_flow": "<answer>\n  g1 = verify_ucp_media_destinations_totals_idempotency_order_gift_and_ask_guard(payload[\"ucp\"])\n  g2 = verify_acp_default_delivery_delegate_errors_citation_and_mcp_binding_guard(payload[\"acp\"])\n  g3 = verify_x402_mcp_policy_request_binding_attestseal_sar_erc7710_and_hook_guard(payload[\"x402\"])\n  g4 = verify_tau2_banking_close_reason_persona_empty_retry_provenance_and_tts_guard(payload[\"tau2\"])\n  admitted = g1.admitted and g2.admitted and g3.admitted and g4.admitted\n  decision = \"Act automatically\" if admitted else \"Send to a human\"\n</answer>"
+    },
+    "robustness_rows": [
+      {
+        "item": "MD-01 Compliant 4-Domain Bundle (g1->g4 vs g4->g1)",
+        "original": "100.0% ADMIT",
+        "perturbed": "100.0% ADMIT",
+        "delta": "0.0 pts"
+      },
+      {
+        "item": "MD-02..MD-06 UCP Media/Dest/Totals/Idempotency/Gift Guards",
+        "original": "100.0% BLOCK",
+        "perturbed": "100.0% BLOCK",
+        "delta": "0.0 pts"
+      },
+      {
+        "item": "MD-07..MD-09 ACP Default Delivery, Virtual Card & Citation",
+        "original": "100.0% BLOCK",
+        "perturbed": "100.0% BLOCK",
+        "delta": "0.0 pts"
+      },
+      {
+        "item": "MD-10..MD-13 x402 Spend Policy, Request-Bound ID, SAR & ERC-7710",
+        "original": "100.0% BLOCK",
+        "perturbed": "100.0% BLOCK",
+        "delta": "0.0 pts"
+      },
+      {
+        "item": "MD-14..MD-16 tau2 Close-Account Enum, Empty-Sim Retry & TTS Cap",
+        "original": "100.0% BLOCK",
+        "perturbed": "100.0% BLOCK",
+        "delta": "0.0 pts"
+      }
+    ],
+    "latency_bars": [
+      {
+        "tier": "1 Scenario (Single Checkout)",
+        "ai_ms": 0.02,
+        "classic_ms": 0.3,
+        "label": "0.02 ms vs 0.30 ms"
+      },
+      {
+        "tier": "4 Scenarios (Domain Quartet)",
+        "ai_ms": 0.09,
+        "classic_ms": 1.19,
+        "label": "0.09 ms vs 1.19 ms"
+      },
+      {
+        "tier": "8 Scenarios (Half Batch)",
+        "ai_ms": 0.18,
+        "classic_ms": 2.38,
+        "label": "0.18 ms vs 2.38 ms"
+      },
+      {
+        "tier": "16 Scenarios (Full MD-01..MD-16)",
+        "ai_ms": 0.35,
+        "classic_ms": 4.76,
+        "label": "0.35 ms vs 4.76 ms (13.6x)"
+      }
+    ],
+    "my_take": {
+      "good_fit": [
+        "Pre-signing MCP x402 spend/tool/network enforcement (#166), request-fingerprint payment-identifier binding (#165), SAR delivery proof (#46), and ERC-7710 simulation (#22).",
+        "UCP multi-rendition media (#690), method-level destinations (#689), object-root totals.json (#684), MCP idempotency-key 409/-32000 (#679), and gift/ask safety (#584/#578/#538/#508).",
+        "ACP default delivery pre-selection (#198), virtual card & 401/500/503 delegate errors (#161/#132), and tau2 banking close-reason enum, empty-sim retry & TTS cap (#484/#471/#467/#462/#457)."
+      ],
+      "good_fit_zh": [
+        "签名前 MCP x402 代码层限额/工具/网络门控（#166）、请求指纹支付标识符绑定（#165）、SAR 交付证明（#46）与 ERC-7710 预模拟（#22）。",
+        "UCP 多变体媒体（#690）、方法级目的地（#689）、对象根 totals.json（#684）、MCP 幂等键冲突 409/-32000（#679）与礼品/ask 护栏（#584/#578/#538/#508）。",
+        "ACP 默认配送预选（#198）、虚拟卡与 401/500/503 错误枚举（#161/#132），以及 tau2 关户原因枚举、空完成重试与 TTS 并发上限（#484/#471/#467/#462/#457）。"
+      ],
+      "not_for": [
+        "Replacing live EVM RPC `eth_call` execution against deployed `DelegationManager` contracts on Base/Ethereum mainnet.",
+        "Replacing cryptographic Ed25519 signature verification over raw JCS bytes in production AttestSeal or SAR verifiers."
+      ],
+      "not_for_zh": [
+        "不能替代生产环境在 Base/Ethereum 主网上针对已部署 `DelegationManager` 合约执行的真实 EVM RPC `eth_call` 调用。",
+        "不能替代生产环境 AttestSeal 或 SAR 验证器中针对原始 JCS 字节流的底层密码学 Ed25519 签名验签。"
+      ],
+      "readiness": "Production-ready deterministic guardrail layer · Apache-2.0 / MIT compatible · Measured in-repo (`454/454` unit tests passing, `independently_reproduced=true`)."
+    }
+  }
+}

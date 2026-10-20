@@ -422,6 +422,19 @@
   - 单元测试：[`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py)（全仓库 **452/452** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§81)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 83：覆盖 Stage 82 的 16 场景中英双语 7-Card 4:5 基准评测报告（`MD-01..MD-16`）
+
+- **量化评测结果**：
+  - **AI-Native 确定性护栏**：`16/16 (100.0%)` 准确拦截/放行（对比经典三层 Web 基线 `4/16 (25.0%)`）；
+  - **逆序扰动一致性**：`16/16 (100.0%)` 零漂移；
+  - **中位延迟**：`0.35 ms` vs. `4.76 ms`（**13.6x 加速**）。
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py)
+  - 单元测试：[`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py)（全仓库 **454/454** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/report.json)
+
 
 
 

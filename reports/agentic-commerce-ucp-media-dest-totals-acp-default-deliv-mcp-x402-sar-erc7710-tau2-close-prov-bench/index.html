@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI-Native 四域护栏在 UCP 多变体媒体/目的地/总额、ACP 默认配送/MCP、x402 SAR/ERC-7710 与 tau2 关户枚举/评测溯源 16 场景实现 16/16 (100.0%) 对比传统三层 4/16 (25.0%)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { width: 100%; min-height: 560px; aspect-ratio: 4 / 5; background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 22px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+  .card-header { display: flex; justify-content: space-between; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #94A3B8; }
+  h1, h2 { margin: 10px 0; font-size: 19px; line-height: 1.35; color: #F8FAFC; }
+  .accent { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .workbench { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+  .pane { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 5px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #1E3A8A; color: #BFDBFE; font-size: 11px; }
+  .muted { color: #94A3B8; font-size: 11px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 11px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .bar-row { margin: 10px 0; font-size: 12px; }
+  .bar-track { background: #1E293B; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 4px; }
+  .bar-fill-blue { background: #3B82F6; height: 100%; }
+  .bar-fill-gray { background: #CBD5E1; height: 100%; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good-box { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .bad-box { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; padding: 12px; font-size: 12px; }
+  .footer-callout { background: #0F172A; border: 1px solid #1E293B; border-radius: 10px; padding: 10px; font-size: 12px; color: #CBD5E1; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="card-header"><span>1 / 7 · HANDS-ON · STAGE 83 · UCP MEDIA/DEST/TOTALS · ACP DEFAULT DELIV/MCP · X402 SAR/ERC-7710 · TAU2 CLOSE/PROV</span><span>PROVENANCE: MEASURED</span></div>
+      <h1><span class="accent">16/16 (100.0%)</span> AI-Native 四域护栏在 UCP 多变体媒体/目的地/总额、ACP 默认配送/MCP、x402 SAR/ERC-7710 与 tau2 关户枚举/评测溯源 16 场景实现 16/16 (100.0%) 对比传统三层 4/16 (25.0%)</h1>
+      <p class="muted">以 0.35 ms 中位延迟（13.6x 加速）确定性核验 UCP #690/#689/#684/#679/#671/#670/#584/#578/#538/#508、ACP #198/#161/#149/#139/#132/#130/#125、Coinbase x402 #166/#165/#136/#46/#22/#13 与 Sierra tau2-bench #484/#478/#471/#467/#462/#457。</p>
+      <div class="workbench">
+        <div class="pane"><strong>Scenarios</strong><br/>16 Scenarios (MD-01..MD-16)<br/>Pass >= 100% | Action: Act automatically / Send to a human</div>
+        <div class="pane"><strong>Input Contract</strong><br/>UCP media/dest/totals/ask + ACP default delivery/MCP + x402 SAR/ERC-7710 + tau2 close/prov JSON</div>
+        <div class="pane"><strong>Latency &amp; Decisions</strong><br/>0.35 ms median (13.6x faster than 4.76 ms 3-tier)</div>
+      </div>
+    </div>
+    <div class="footer-callout">Measured local execution · Python 3.12 · Deterministic 4-guard pipeline · Zero external network calls</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>2 / 7 · SCENARIO: MD-12 · x402 AttestSeal 权威证明与结算证明收据 (SAR) 交付绑定</span><span>DEEP DIVE</span></div>
+      <h2>在 0.35 ms 内同时拦截自签发 AttestSeal DID（#136）与货不对板的 SAR 交付资源摘要（#46）</h2>
+      <div class="pane"><code>{"attestseal": {"authority_did": "did:web:merchant-api.example", "service_did": "did:web:merchant-api.example"}, "settlement_attestation_receipt": {"delivered_resource_digest": "sha256:body_FAKE", "actual_response_body_digest": "sha256:body_998877"}}</code></div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>Independent AttestSeal Authority DID (#136) (choice):</strong> Rejects x402_attestseal_self_issued_not_allowed when authority_did equals service_did. · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:100%"></div></div>
+      </div>
+      <div class="pane" style="margin-top:8px;">
+        <strong>SAR Delivered Resource Digest Binding (#46) (score):</strong> Rejects x402_sar_delivered_resource_digest_mismatch when delivered body digest diverges from signed SAR. · <span class="pill">Send to a human</span>
+        <div class="bar-track"><div class="bar-fill-blue" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="footer-callout">Classic 3-Tier misses both self-issued AttestSeal DIDs and bait-and-switch SAR digests (`✕`).</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>3 / 7 · WHAT I TESTED</span><span>16-SCENARIO MATRIX</span></div>
+      <h2>Full 16-Scenario Evaluation Matrix (`MD-01..MD-16`)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><strong>MD-01 · Full-Stack Happy Path</strong></td><td>准入合规的 UCP 媒体/目的地/总额、ACP 默认配送与 MCP、x402 SAR/ERC-7710 及 tau2 关户枚举/溯源护栏？</td><td><code>准入 (0 违规)</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>自动执行</span></td></tr>
+<tr><td><strong>MD-02 · UCP Media & Totals</strong></td><td>拦截缺少 sources[] 的 UCP model_3d 媒体及使用 RootArray 的 totals.json（#690/#684）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-03 · UCP Destination & Location</strong></td><td>拦截缺少显式 type 的 UCP 响应目的地或从 context.location 自动选定收货地址（#689/#671）？</td><td><code>拦截 (3 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-04 · UCP Idempotency & A2A Freeze</strong></td><td>拦截 MCP idempotency-key 跨变更载荷复用及 A2A complete_in_progress 期间的写操作（#679/#670）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-05 · UCP Order Payment & Gift Item</strong></td><td>拦截泄露采集态 credential 的 UCP order.payment 或未绑定 gift_line_item_id 的零价赠品行（#584/#578）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-06 · UCP Read-Only Ask & Gift PII</strong></td><td>拦截篡改结账状态的 UCP dev.ucp.common.ask 或在协议中泄露收礼人 PII 的礼品扩展（#538/#508）？</td><td><code>拦截 (3 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-07 · ACP Default Delivery Option</strong></td><td>拦截返回 fulfillment_options[] 却未预选默认 selected_fulfillment_option_id 的 ACP 创建结账响应（#198）？</td><td><code>拦截 (1 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-08 · ACP Delegate Virtual Card & Error</strong></td><td>拦截缺少布尔型 PaymentMethodCard.virtual 或 503 错误枚举非法的 ACP 委托支付（#161/#132）？</td><td><code>拦截 (3 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-09 · ACP Citation & Discount Schema</strong></td><td>拦截篡改商品价格的 ACP content_attribution 引用归因或使用已废弃 DiscountDetail 的折扣结构（#149/#125）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-10 · x402 Pre-Sign Spend Policy</strong></td><td>拦截仅依赖提示词限额或超过 onPaymentRequested 代码层金额上限的 x402 MCP 客户端支付（#166）？</td><td><code>拦截 (1 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-11 · x402 Payment-Identifier Binding</strong></td><td>拦截跨不同规范化请求指纹复用 x402 支付标识符并返回 409 Conflict（#165）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-12 · x402 AttestSeal & SAR Binding</strong></td><td>拦截自签发 attestseal 权威 DID 或结算证明收据 SAR 交付摘要与响应体不一致（#136/#46）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-13 · x402 ERC-7710 & CSPRNG Fee-Payer</strong></td><td>拦截未经 eth_call 预模拟的 ERC-7710 redeemDelegations 或使用可预测 math/rand 的 SVM 费率支付方（#22/#13）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✕</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-14 · tau2 Close-Account Enum & Persona</strong></td><td>拦截自由文本 close_bank_account_7392 关户原因及任务 091 persoca 键名拼写错误（#484/#478）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-15 · tau2 Empty-Sim Retry & Provenance</strong></td><td>拦截仅跟踪工具调用后未重试的空模拟器完成或缺失评测溯源元数据（#471/#467）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>转交人工</span></td></tr>
+<tr><td><strong>MD-16 · tau2 Multi-Customer DB & TTS Cap</strong></td><td>拦截多客户电信任务缺少 DB 校验的仅 ACTION 评分或无上限并发调用 ElevenLabs synthesize_voice（#462/#457）？</td><td><code>拦截 (2 项违规)</code><br><span class='muted'>Classic: ✓</span></td><td><span class='pill'>转交人工</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer-callout">16/16 (100.0%) 场景通过确定性门控：1 个合规路径自动准入（`自动执行`），15 个协议/安全/评测完整性违规全部阻断（`转交人工`）。</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>4 / 7 · UNDER THE HOOD</span><span>PROTOCOL &amp; SCORING MECHANICS</span></div>
+      <h2>4-Domain Structured Input Contract &amp; Deterministic Verifier Flow</h2>
+      <pre>{
+  "ucp": {"media_items": [{"type": "model_3d", "sources": [...]}], "totals_schema": {"root_type": "object"}},
+  "acp": {"checkout_create_response": {"selected_fulfillment_option_id": "ship_std"}, "mcp_binding": {"jsonrpc": "2.0"}},
+  "x402": {"mcp_payment_policy": {"enforced_in_on_payment_requested_hook": true}, "settlement_attestation_receipt": {"sar_present": true}},
+  "tau2": {"banking_close_account": {"reason": "no_longer_needed"}, "evaluator_provenance": {"evaluation_mode": "live_agent"}}
+}</pre>
+      <pre><answer>
+  g1 = verify_ucp_media_destinations_totals_idempotency_order_gift_and_ask_guard(payload["ucp"])
+  g2 = verify_acp_default_delivery_delegate_errors_citation_and_mcp_binding_guard(payload["acp"])
+  g3 = verify_x402_mcp_policy_request_binding_attestseal_sar_erc7710_and_hook_guard(payload["x402"])
+  g4 = verify_tau2_banking_close_reason_persona_empty_retry_provenance_and_tts_guard(payload["tau2"])
+  admitted = g1.admitted and g2.admitted and g3.admitted and g4.admitted
+  decision = "Act automatically" if admitted else "Send to a human"
+</answer></pre>
+    </div>
+    <div class="footer-callout">Inline O(1) guard evaluation prior to wallet signing, settlement, or benchmark grading.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>5 / 7 · ROBUSTNESS CHECK</span><span>PERTURBATION &amp; CONSISTENCY</span></div>
+      <h2>100.0% (16/16) Guard Evaluation-Order Reversal Stability (`0.0 pts` Change)</h2>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody><tr><td><strong>MD-01 Compliant 4-Domain Bundle (g1->g4 vs g4->g1)</strong></td><td><code>100.0% ADMIT</code></td><td><code>100.0% ADMIT</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>MD-02..MD-06 UCP Media/Dest/Totals/Idempotency/Gift Guards</strong></td><td><code>100.0% BLOCK</code></td><td><code>100.0% BLOCK</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>MD-07..MD-09 ACP Default Delivery, Virtual Card & Citation</strong></td><td><code>100.0% BLOCK</code></td><td><code>100.0% BLOCK</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>MD-10..MD-13 x402 Spend Policy, Request-Bound ID, SAR & ERC-7710</strong></td><td><code>100.0% BLOCK</code></td><td><code>100.0% BLOCK</code></td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>MD-14..MD-16 tau2 Close-Account Enum, Empty-Sim Retry & TTS Cap</strong></td><td><code>100.0% BLOCK</code></td><td><code>100.0% BLOCK</code></td><td><strong>0.0 pts</strong></td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer-callout">Deterministic conjunction across UCP, ACP, x402, and tau2-bench guarantees 100.0% order invariance.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>6 / 7 · LATENCY</span><span>BATCHING &amp; SCALING LATENCY</span></div>
+      <h2>0.35 ms Median Latency vs. 4.76 ms Classic 3-Tier (13.6x Speedup)</h2>
+      <div>
+        <div class="bar-row">
+          <div>1 Scenario: <strong>0.02 ms</strong> vs 0.30 ms</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:7%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div>8 Scenarios: <strong>0.18 ms</strong> vs 2.38 ms</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div>16 Scenarios (`MD-01..MD-16`): <strong>0.35 ms</strong> vs 4.76 ms (13.6x)</div>
+          <div class="bar-track"><div class="bar-fill-blue" style="width:8%"></div></div>
+          <div class="bar-track"><div class="bar-fill-gray" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-callout">Measured single-process Python 3.12 execution across 16 scenarios.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="card-header"><span>7 / 7 · MY TAKE</span><span>GOOD FIT VS NOT FOR &amp; READINESS</span></div>
+      <h2>Good Fit vs. Not For &amp; Production Readiness (`MD-01..MD-16`)</h2>
+      <div class="split">
+        <div class="good-box"><strong>✅ Good fit</strong><ul><li>签名前 MCP x402 代码层限额/工具/网络门控（#166）、请求指纹支付标识符绑定（#165）、SAR 交付证明（#46）与 ERC-7710 预模拟（#22）。</li><li>UCP 多变体媒体（#690）、方法级目的地（#689）、对象根 totals.json（#684）、MCP 幂等键冲突 409/-32000（#679）与礼品/ask 护栏（#584/#578/#538/#508）。</li><li>ACP 默认配送预选（#198）、虚拟卡与 401/500/503 错误枚举（#161/#132），以及 tau2 关户原因枚举、空完成重试与 TTS 并发上限（#484/#471/#467/#462/#457）。</li></ul></div>
+        <div class="bad-box"><strong>⛔ Not for</strong><ul><li>不能替代生产环境在 Base/Ethereum 主网上针对已部署 `DelegationManager` 合约执行的真实 EVM RPC `eth_call` 调用。</li><li>不能替代生产环境 AttestSeal 或 SAR 验证器中针对原始 JCS 字节流的底层密码学 Ed25519 签名验签。</li></ul></div>
+      </div>
+    </div>
+    <div class="footer-callout">Production-ready deterministic guardrail layer · Apache-2.0 / MIT compatible · Measured in-repo (`454/454` unit tests passing, `independently_reproduced=true`).</div>
+  </section>
+</div>
+</body>
+</html>

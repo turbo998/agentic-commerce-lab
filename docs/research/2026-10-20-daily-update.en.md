@@ -422,6 +422,19 @@
   - Unit Tests: [`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_guard.py) (**452/452** total unit tests passing)
   - Bilingual Architecture Reference (§81): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 83: 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite Covering Stage 82 (`MD-01..MD-16`)
+
+- **Quantitative Benchmark Results**:
+  - **AI-Native Deterministic Guardrails**: `16/16 (100.0%)` accuracy vs. `4/16 (25.0%)` Classic 3-Tier Web baseline;
+  - **Evaluation-Order Reversal Consistency**: `16/16 (100.0%)` (`0.0 pts` drift);
+  - **Median Latency**: `0.35 ms` vs. `4.76 ms` (**13.6x speedup**).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py)
+  - Unit Tests: [`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py) (**454/454** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/report.json)
+
 
 
 
