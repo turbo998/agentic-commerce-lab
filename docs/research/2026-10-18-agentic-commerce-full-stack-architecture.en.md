@@ -182,6 +182,8 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§95.2**: ACP `Merchant-Signature` Webhook Replay Protection (`#160`) & Extensible `DelegatePayment` Error Enums (`#161`, `#143`).
   - **§95.3**: Coinbase x402 EIP-3009 Simulation/Settlement Error Mapping (`#70`) & Bazaar Service-Metadata Sanitizer (`#156`, `#150`).
   - **§95.4**: Sierra $\tau$-bench 2.0 `close_bank_account_7392` Canonical Reason (`#484`), All-Infra `pass^k` Denominator (`#498`), Pydantic Kwarg Coercion (`#516`), and Result-Safe Retries (`#520`).
+- **§96 (Stage 97 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EQ-01..EQ-16`)**: `lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.31 ms` vs. `4.62 ms`, `14.9x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
 
 
 

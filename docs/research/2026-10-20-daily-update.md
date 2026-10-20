@@ -569,6 +569,15 @@
   - 单元测试：[`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py)（全仓库 **522/522** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§95)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 97：16 场景（`EQ-01..EQ-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 96）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py)
+  - 单元测试：[`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py)（全仓库 **524/524** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/report.json)
+
 
 
 

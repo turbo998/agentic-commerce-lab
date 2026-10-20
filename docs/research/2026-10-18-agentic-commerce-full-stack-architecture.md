@@ -1220,6 +1220,11 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_closure_reason_passk_and_coercion_guard` enforces Sierra $\tau$-bench 2.0 PR `#484` (validating `close_bank_account_7392` `reason` against the 6-value canonical set so free-text wording does not corrupt golden DB hashes in tasks 065/068/069), PR `#498` (comparing `termination_reason` via `.value` for pandas 3 compatibility and keeping all-infra-error tasks in the `pass^k` denominator with `0.0`), PR `#516` (Pydantic schema coercion of wire-format floats like `2.0` to integer `2`), and PR `#520` (reviewing the final hallucination retry and checkpointing only the selected result).
 - **中文**: `validate_tau2_closure_reason_passk_and_coercion_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#484`（校验 `close_bank_account_7392` 销户原因必须属于 6 个标准枚举值，防止自由文本污染任务 065/068/069 的数据库哈希）、PR `#498`（使用枚举 `.value` 兼容 pandas 3 并将全基础设施故障任务保留在 `pass^k` 分母中计为 `0.0`）、PR `#516`（工具入参按 Pydantic Schema 将浮点 `2.0` 强转为整数 `2`）与 PR `#520`（幻觉重试结果安全审查与单选落盘）。
 
+## 96. Stage 97: 16-Scenario (`EQ-01..EQ-16`) Bilingual 7-Card 4:5 Benchmark Suite for Stage 96 / 第九十六节：覆盖 Stage 96 的 16 场景中英双语 7-Card 4:5 视觉基准评测报告
+
+- **English**: `lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py` evaluates 16 deterministic scenarios (`EQ-01..EQ-16`: 4 nominal admission baselines and 12 protocol/settlement/evaluation boundary attacks) across UCP `#216`/`#223`/`#214`/`#187`, ACP `#160`/`#161`/`#143`, Coinbase x402 `#70`/`#156`/`#150`, and Sierra $\tau$-bench 2.0 `#484`/`#498`/`#516`/`#520`. AI-Native guardrails achieve **16/16 (100.0%)** accuracy and **16/16 (100.0%)** key-order reversal consistency vs. **4/16 (25.0%)** for the Classic 3-Tier baseline (+75.0 pts safety gain), with **0.31 ms vs. 4.62 ms median latency (14.9x speedup)**.
+- **中文**: `lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py` 针对 Stage 96 四大护栏域构建 `EQ-01..EQ-16` 共 16 个评测场景（4 个合规基线 + 12 个协议/结算/评测边界越权场景）。AI-Native 确定性护栏实现 **16/16（100.0%）** 准确率与 **16/16（100.0%）** 逆序扰动一致性，显著优于经典三层架构的 **4/16（25.0%）**（+75.0 百分点安全性提升），中位延迟 **0.31 ms vs. 4.62 ms（14.9x 加速）**，并生成中英双语自包含 7-Card 4:5 报告（`reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/{report.json,index.html,index.en.html}`）。
+
 
 
 

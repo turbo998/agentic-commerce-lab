@@ -569,6 +569,15 @@
   - Unit Tests: [`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_guard.py) (**522/522** total unit tests passing)
   - Bilingual Architecture Reference (§95): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 97: 16-Scenario (`EQ-01..EQ-16`) Bilingual 7-Card 4:5 Benchmark Suite (Covering Stage 96)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../lab/ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py)
+  - Unit Tests: [`tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py`](../../tests/test_ucp_error_qualifiers_acp_webhook_x402_bazaar_tau2_closure_passk_bench.py) (**524/524** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-error-qualifiers-acp-webhook-x402-bazaar-tau2-closure-passk-bench/report.json)
+
 
 
 
