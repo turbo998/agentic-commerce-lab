@@ -449,6 +449,20 @@
   - 单元测试：[`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py)（全仓库 **462/462** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§83)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 85：覆盖 Stage 84 的 16 场景中英双语 7-Card 4:5 基准评测报告（`OD-01..OD-16`）
+
+- **量化评测结果**：
+  - **AI-Native 确定性护栏**：`16/16 (100.0%)` 准确拦截/放行（对比经典三层 Web 基线 `4/16 (25.0%)`）；
+  - **逆序扰动一致性**：`16/16 (100.0%)` 零漂移；
+  - **中位延迟**：`0.35 ms` vs. `4.76 ms`（**13.6x 加速**）。
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py)
+  - 单元测试：[`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py)（全仓库 **464/464** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/report.json)
+
+
 
 
 

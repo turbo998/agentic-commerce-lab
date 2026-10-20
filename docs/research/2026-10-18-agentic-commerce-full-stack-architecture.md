@@ -1070,6 +1070,14 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **English**: `validate_tau2_duplicate_posting_seq_and_multicard_fraud_guard` enforces Sierra $\tau$-bench 2.0 PR `#380` (requiring unique positive integer `posting_sequence` values across duplicate posted debit-card transactions in `task_083`/`task_084` and requiring the agent to dispute the earliest transaction with `posting_sequence == 1`) and PR `#413` (requiring `close_debit_card_4721(..., reason="fraud_suspected")` across every fraud-confirmed card in multi-card dispute trajectories such as `task_082`'s Green Fee-Free card `dbc_mc47a2b9e1_gff` so zero confirmed-fraud cards remain `ACTIVE`).
 - **中文**: `validate_tau2_duplicate_posting_seq_and_multicard_fraud_guard` 强制执行 Sierra $\tau$-bench 2.0 PR `#380`（在 `task_083`/`task_084` 重复入账借记卡交易组中强制提供唯一正整数 `posting_sequence`，并要求争议最早入账的 `posting_sequence == 1` 交易）与 PR `#413`（在 `task_082` 等跨卡复合欺诈争议中，要求对所有确认欺诈的借记卡如绿卡 `dbc_mc47a2b9e1_gff` 执行 `close_debit_card_4721(..., reason="fraud_suspected")`，严禁遗留任何确认欺诈卡片处于 `ACTIVE` 状态）。
 
+---
+
+## §84. Stage 85 — 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`OD-01..OD-16`) / 覆盖 Stage 84 的 16 场景中英双语 7-Card 4:5 基准评测报告
+
+- **English**: `lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py` evaluates 16 scenarios (`OD-01..OD-16`) across Stage 84 guardrails (`UCP #435/#444`, `ACP #30/#78`, `x402 #70 & AP2 #74`, and `tau2 #380/#413`). AI-Native guardrails achieve **16/16 (100.0%)** accuracy vs. **4/16 (25.0%)** for the Classic 3-Tier baseline, **16/16 (100.0%)** evaluation-order reversal consistency, and **0.35 ms vs. 4.76 ms** median latency (**13.6x speedup**), generating self-contained bilingual 7-Card 4:5 HTML decks (`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/{index.html,index.en.html,report.json}`).
+- **中文**: `lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py` 对覆盖 Stage 84 四大协议域的 16 个评测场景（`OD-01..OD-16`）进行基准验证：AI-Native 确定性护栏实现 **16/16 (100.0%)** 准确率（对比经典三层 Web 基线 **4/16 (25.0%)**），评估顺序逆序扰动一致性达 **16/16 (100.0%)**，中位延迟 **0.35 ms vs. 4.76 ms**（**13.6x 加速**），并输出自包含中英双语 7-Card 4:5 报告（`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/{index.html,index.en.html,report.json}`）。
+
+
 
 
 

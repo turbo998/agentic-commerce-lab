@@ -1,0 +1,228 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench",
+  "stage": "Stage 85",
+  "provenance": "synthetic",
+  "independently_reproduced": true,
+  "summary": {
+    "total_scenarios": 16,
+    "ai_native_passed": 16,
+    "ai_native_accuracy_pct": 100.0,
+    "classic_3tier_passed": 4,
+    "classic_3tier_accuracy_pct": 25.0,
+    "perturbation_consistency_pct": 100.0,
+    "ai_native_median_latency_ms": 0.35,
+    "classic_3tier_median_latency_ms": 4.76,
+    "speedup_factor": 13.6
+  },
+  "scenarios": [
+    {
+      "id": "OD-01",
+      "title": "UCP #435/#444 Compliant One-Time Gift Destination & MCP Macro Binding",
+      "expected_allow": true,
+      "ai_native_allow": true,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": true,
+      "violations": [],
+      "action": "Act automatically"
+    },
+    {
+      "id": "OD-02",
+      "title": "UCP #435 One-Time Gift Destination Saved to Buyer Address Book",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "one_time_use=true shipping destination must not be persisted to buyer's saved address book"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-03",
+      "title": "UCP #435 One-Time Destination Profile Enrichment & Missing Echo",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "response_shipping_destination must echo one_time_use=true so platform can verify hint preservation",
+        "one_time_use=true shipping destination must not enrich recommendations, audiences, or marketing profiles (even when buyer_consent.marketing=true)"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-04",
+      "title": "UCP #444 MCP Inline Schema Drift, Duplicate Meta & Missing Errors Doc",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "checkout-mcp.md and order-mcp.md must render schemas via {{ schema_fields(...) }} macro instead of hand-maintained inline lists",
+        "MCP per-operation Input Schemas must not duplicate top-level meta field (documented once in Request Metadata)",
+        "order-mcp.md must include standard protocol-errors envelope documentation"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-05",
+      "title": "ACP #30 A2A Push Transfer Premature Fulfillment While Pending",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "checkout_session_status must be 'complete_in_progress' while bank_transfer_confirmation.status is 'pending'",
+        "fulfillment must not be released while A2A bank_transfer_confirmation.status is 'pending'"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-06",
+      "title": "ACP #30 A2A Transfer Received After Bank Instructions Expiry Window",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "bank_transfer_confirmation.received_at exceeds bank_instructions.expires_at window"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-07",
+      "title": "ACP #78 3DS Denied Authentication Outcome Proceeding to Settlement",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "authentication_result with outcome='denied' must not proceed to payment settlement"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-08",
+      "title": "ACP #78 3DS Frictionless Attempt Acknowledged Missing Cryptogram/ECI",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "frictionless outcome='attempt_acknowledged' requires non-empty three_ds_cryptogram",
+        "frictionless outcome='attempt_acknowledged' requires valid electronic_commerce_indicator in ['01', '02', '05', '06', '07']"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-09",
+      "title": "x402 #70 verifyEIP3009 Simulation Failure Misclassified as InvalidPayload",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "verifyEIP3009 simulation RPC failure must map to 'ErrEip3009SimulationFailed', got 'ErrInvalidPayload'"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-10",
+      "title": "x402 #70 settleEIP3009 Nonce-Used Revert Masked by Blanket Error",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "settleEIP3009 revert 'ERC20: authorization is used (AuthorizationAlreadyUsed)' must map to 'ErrNonceAlreadyUsed', got 'ErrFailedToExecuteTransfer'"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-11",
+      "title": "AP2 #74 HNP Expired SessionAuthorization & FrequencyConstraint Breach",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "SessionAuthorization.status must be 'active' for HNP execution",
+        "SessionAuthorization is expired or missing expires_at",
+        "SessionAuthorization requires cryptographic session_public_key",
+        "SpendingRuleSet evaluation failed under evaluation_mode='all'"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-12",
+      "title": "tau2 #380 Duplicate Charge Disputing posting_sequence=2 Instead of 1",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "Disputed transaction 'btxn_c843f1209a3e' is not the earliest duplicate charge ('btxn_d937eaa1d21d' with posting_sequence=1)"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-13",
+      "title": "tau2 #413 T082 Multi-Card Fraud Leaving Green Fee-Free Card ACTIVE",
+      "expected_allow": false,
+      "ai_native_allow": false,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": false,
+      "violations": [
+        "Fraud-affected card 'dbc_mc47a2b9e1_gff' (category='card_not_present_fraud', card_action='close_and_reissue') was not closed via close_debit_card_4721",
+        "Fraud-confirmed card 'dbc_mc47a2b9e1_gff' must not remain ACTIVE after dispute filing"
+      ],
+      "action": "Send to a human"
+    },
+    {
+      "id": "OD-14",
+      "title": "ACP #30/#78 Compliant A2A Push Transfer Complete-In-Progress Lifecycle",
+      "expected_allow": true,
+      "ai_native_allow": true,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": true,
+      "violations": [],
+      "action": "Act automatically"
+    },
+    {
+      "id": "OD-15",
+      "title": "x402 #70 & AP2 #74 Compliant EIP-3009 Mapping & Active HNP Session Rules",
+      "expected_allow": true,
+      "ai_native_allow": true,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": true,
+      "violations": [],
+      "action": "Act automatically"
+    },
+    {
+      "id": "OD-16",
+      "title": "tau2 #380/#413 Compliant Earliest posting_sequence=1 & Multi-Card Closure",
+      "expected_allow": true,
+      "ai_native_allow": true,
+      "ai_native_correct": true,
+      "classic_3tier_allow": true,
+      "classic_3tier_correct": true,
+      "violations": [],
+      "action": "Act automatically"
+    }
+  ]
+}

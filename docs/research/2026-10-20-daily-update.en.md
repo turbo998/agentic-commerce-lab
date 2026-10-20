@@ -449,6 +449,20 @@
   - Unit Tests: [`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py) (**462/462** total unit tests passing)
   - Bilingual Architecture Reference (§83): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 85: 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite Covering Stage 84 (`OD-01..OD-16`)
+
+- **Quantitative Benchmark Results**:
+  - **AI-Native Deterministic Guardrails**: `16/16 (100.0%)` accuracy vs. `4/16 (25.0%)` Classic 3-Tier Web baseline;
+  - **Evaluation-Order Reversal Consistency**: `16/16 (100.0%)` (`0.0 pts` drift);
+  - **Median Latency**: `0.35 ms` vs. `4.76 ms` (**13.6x speedup**).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Suite: [`lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py)
+  - Unit Tests: [`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_bench.py) (**464/464** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-onetime-dest-mcp-acp-a2a-3ds-x402-eip3009-ap2-hnp-tau2-dup-bench/report.json)
+
+
 
 
 
