@@ -435,6 +435,20 @@
   - 单元测试：[`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py)（全仓库 **454/454** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/report.json)
 
+---
+
+## Stage 84：UCP 单次使用配送地址隐私与 MCP 宏对齐、ACP A2A 推式银行转账与 3DS 认证结果、Coinbase x402 EIP-3009 回滚错误映射与 Google AP2 HNP 会话授权及 Sierra $\tau$-bench 2.0 重复交易 `posting_sequence` 与跨卡欺诈关停护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 单次使用配送地址 `one_time_use` 隐私提示（`#435`）与 `checkout-mcp.md`/`order-mcp.md` `{{ schema_fields(...) }}` 宏及错误信封对齐（`#444`）**。
+  2. **ACP `dev.acp.account_to_account` 推式银行转账指令与确认生命周期（`#30`）及 3DS 认证结果（`denied` vs `attempt_acknowledged`）（`#78`）**。
+  3. **Coinbase x402 `verifyEIP3009` 模拟失败隔离与 `parseEIP3009TransferError` 合约回滚码映射（`#70`）及 Google AP2 人不在场 `SessionAuthorization` 与 `SpendingRuleSet`（`#74`）**。
+  4. **Sierra $\tau$-bench 2.0 银行重复交易 `posting_sequence` 去歧义（`#380`）与 `task_082` 跨卡确认欺诈全量 `close_debit_card_4721` 关停（`#413`）**。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py)
+  - 单元测试：[`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py)（全仓库 **462/462** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§83)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

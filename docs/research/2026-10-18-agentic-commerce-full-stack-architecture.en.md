@@ -135,6 +135,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§81.4**: Sierra $\tau$-bench 2.0 Banking `close_bank_account_7392` Fixed Reason Enum (`#484`), Task 091 `persona` Key (`#478`), Empty Text-Simulator Retry (`#471`), Evaluator Provenance (`#467`), Multi-Customer Telecom DB-Safe Grading (`#462`) & Voice TTS Concurrency Bound (`#457`).
 - **§82 (Stage 83 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`MD-01..MD-16`)**: `lab/ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.35 ms` vs. `4.76 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§83 (Stage 84 — Bilingual Chinese + English)**:
+  - **§83.1**: UCP One-Time Use Shipping Destinations (`#435`) & MCP Schema Macro / Order Error Envelope Contract (`#444`).
+  - **§83.2**: ACP Account-to-Account (`dev.acp.account_to_account`) Push Payment Lifecycle (`#30`) & 3DS Authentication Outcomes (`#78`).
+  - **§83.3**: Coinbase x402 EIP-3009 Simulation vs. Revert Error Mapping (`#70`) & Google AP2 Human-Not-Present `SessionAuthorization` / `SpendingRuleSet` (`#74`).
+  - **§83.4**: Sierra $\tau$-bench 2.0 Banking Duplicate Transaction `posting_sequence` Disambiguation (`#380`) & Multi-Card Confirmed Fraud Remediation (`#413`).
 
 
 

@@ -435,6 +435,20 @@
   - Unit Tests: [`tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py`](../../tests/test_ucp_media_dest_totals_acp_default_deliv_mcp_x402_sar_erc7710_tau2_close_prov_bench.py) (**454/454** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-media-dest-totals-acp-default-deliv-mcp-x402-sar-erc7710-tau2-close-prov-bench/report.json)
 
+---
+
+## Stage 84: UCP One-Time Destination Privacy & MCP Macro Alignment, ACP A2A Push Payments & 3DS Outcomes, Coinbase x402 EIP-3009 Error Mapping & Google AP2 HNP `SessionAuthorization`, and Sierra $\tau$-bench 2.0 Duplicate `posting_sequence` & Multi-Card Fraud Closure Guardrails
+
+- **Primary-Source Protocol & Benchmark Evidence**:
+  1. **UCP One-Time Use Shipping Destinations (`#435`) & `checkout-mcp.md`/`order-mcp.md` `{{ schema_fields(...) }}` Macro & Protocol-Errors Alignment (`#444`)**.
+  2. **ACP `dev.acp.account_to_account` Push Bank Transfer Instructions & Confirmation Lifecycle (`#30`) & 3DS Authentication Outcomes (`denied` vs. `attempt_acknowledged`) (`#78`)**.
+  3. **Coinbase x402 `verifyEIP3009` Simulation Failure Separation & `parseEIP3009TransferError` Contract Revert Mapping (`#70`) & Google AP2 Human-Not-Present `SessionAuthorization` & `SpendingRuleSet` (`#74`)**.
+  4. **Sierra $\tau$-bench 2.0 Banking Duplicate Transaction `posting_sequence` Disambiguation (`#380`) & `task_082` Multi-Card Confirmed Fraud `close_debit_card_4721` Completeness (`#413`)**.
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../lab/ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py)
+  - Unit Tests: [`tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py`](../../tests/test_ucp_onetime_dest_mcp_acp_a2a_3ds_x402_eip3009_ap2_hnp_tau2_dup_guard.py) (**462/462** total unit tests passing)
+  - Bilingual Architecture Reference (§83): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
