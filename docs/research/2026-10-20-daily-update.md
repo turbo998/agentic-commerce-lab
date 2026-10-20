@@ -110,6 +110,20 @@
   - 单元测试：[`tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py`](../../tests/test_ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench.py)（全仓库 **342/342** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-root-array-order-acp-lineitem-ap2-vct-tau2-voice-design-bench/report.json)
 
+---
+
+## Stage 62：UCP 购物车结账完成 `cart_id` 剥离（`#911`/`#910`）与 `UCP-Agent` 签名覆盖（`#907`/`#906`/`#883`/`#853`）、ACP BOPIS 门店扩展（`#171`）与逐行限时报价（`#165`/`#162`/`#230`/`#161`）、Google AP2 闭式结账绑定（`#330`）与 x402 密钥/金额故障闭合及 TrustBoost 隐私脱敏（`#310`/`#300`/`#267`）、以及 Sierra $\tau$-bench 2.0 活跃电信线路充值（`#611`）与实时环境 DB 评分 / 故障注入 / GPT-5 `tool_choice` 保留（`#609`/`#610`/`#615`/`#621`）（中英双语）
+
+- **一手协议与上游代码审计**：
+  1. **Universal Commerce Protocol (`Universal-Commerce-Protocol/ucp`)**：PR `#911`/`#871`（在 `shopping/cart.json#/$defs/checkout` 为 `cart_id.ucp_request` 补充 `"complete": "omit"` 并拦截 `complete_checkout` 请求携带 `cart_id`）、PR `#910`（明确通过 `cart_id` 创建结账时因 `allOf` 单调继承仍须传入 `"line_items": []`）、PR `#907`（当结账签名请求携带 `UCP-Agent` 头时，`Signature-Input` 覆盖集必须包含 `"ucp-agent"`）、PR `#906`（OpenRPC `ec.auth` 与 `ep.cart.auth` 的 `type` 参数标记为 `"required": true`）、PR `#883`（MCP `complete_checkout` 暴露 `buyer_consent` 与 `ap2_mandate` 扩展）与 PR `#853`（规范条款提取器 `REQ-*` ID、10 位 SHA-256 `content_digest` 与 `207 + 29 + 23 = 259` 守恒对账）。
+  2. **Agentic Commerce Protocol (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#230`（`delegate_payment` 中 `allowance.checkout_session_id` 设为可选）、PR `#161`（扩展 `401`/`500`/`503` 错误枚举并规定未知错误码前向兼容回退）、PR `#171`（BOPIS 门店扩展：允许在创建/更新结账时传入 `store_id`，但严禁在 `CheckoutSessionCompleteRequest` 中传入 `store_id`）、PR `#165`（逐行 `LineItem.valid_until` 与 `offer_valid`/`offer_expired` 状态及 `offer_expired` vs `quote_expired` 错误码）与 PR `#162`（纯数字商品订单严禁使用物理物流专属的 `shipped` 状态）。
+  3. **Google Agent Payments Protocol (`google-agentic-commerce/AP2`)**：PR `#330`（`PaymentMandateChain.verify()` 默认强制校验闭式支付授权 `transaction_id` 与目标 Checkout JWT 的绑定）、PR `#310`（x402 PSP `settle_payment` 在缺失 `agent_provider_pub` 时立即返回 `agent_provider_key_missing` 故障闭合）、PR `#300`（x402 凭证提供方严格按已验签 `closed_mandate.payment_amount.amount` 授权，严禁回退至硬编码 `1250` 美分）与 PR `#267`（TrustBoost 多语种/拉美 `CPF`/`CUIT`/`RFC` 脱敏与 Solana `anchor_tx` 存证）。
+  4. **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#611`（`refuel_data` 在修改流量与账单前强制校验电信线路状态为 `"active"`）、PR `#609`/`#610`（以实时环境哈希 `live_db_hash` 决定奖励评分、记录 `replay_divergence` 并支持 `timeout_before_commit` / `timeout_after_commit` 确定性故障注入）、PR `#615`（按记录语言包校验 50 个替换任务）与 PR `#621`（桥接 GPT-5 Responses 调用传入 `allowed_openai_params=["tool_choice"]` 防止 `tool_choice="required"` 被丢弃为 `None`）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py`](../../lab/ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py)
+  - 单元测试：[`tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py`](../../tests/test_ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard.py)（全仓库 **351/351** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§61)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

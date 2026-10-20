@@ -271,6 +271,17 @@ from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench impor
     generate_stage61_benchmark_report,
     run_stage61_benchmark_scenarios,
 )
+from lab.ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard import (
+    AcpStoreOfferOrderDelegateGuardResult,
+    Ap2ClosedBindingX402TrustBoostGuardResult,
+    Tau2TelecomLiveDbFaultCliGuardResult,
+    UcpCartCompleteAuthRequirementsGuardResult,
+    compute_ucp_requirement_digest,
+    validate_acp_store_offer_order_delegate_guard,
+    validate_ap2_closed_binding_x402_trustboost_guard,
+    validate_tau2_telecom_livedb_fault_cli_guard,
+    validate_ucp_cart_complete_auth_requirements_guard,
+)
 
 
 @dataclass(frozen=True)
