@@ -383,6 +383,20 @@
   - Unit Tests: [`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py) (**434/434** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/report.json)
 
+---
+
+## Stage 80: UCP Namespace Authority/Buyer Consent/Eligibility/Admission Mandate TTL/Raw `r||s` Signatures, ACP Mixed Fulfillment/TLS 1.3/8-Digit IIN/B2B Quantities, Google AP2 RFC 8785 JCS Binding/DID+STARK & Visa TAP RFC 9421 Verifier & Sierra $\tau$-bench 2.0 Full-Duplex Rescoring/Banking Ordering/Discoverable Reads Guardrails
+
+- **Primary-Source Protocol & Benchmark Evidence**:
+  1. **UCP Namespace Authority Binding (`#530`), Per-Segment Buyer Consent (`#451`), Eligibility Verification Contract (`#250`), Admission-Time AP2 Mandate TTL (`#540`), Raw `r||s` ECDSA Signatures (`#590`) & Embedded `params.error`/Link Delegation/Cart Discount Continuity (`#494`/`#247`/`#246`)**: Binds capability reverse-DNS prefixes to `schema` HTTPS origins; blocks unresolved eligibility claims at `complete_checkout` without mutating checkout state; evaluates mandate TTL once at admission; and rejects ASN.1 DER `MEUC`/`MEQC` ECDSA signatures.
+  2. **ACP Mixed-Cart Fulfillment & Contact (`#52`/`#51`), `return_policy` Link (`#49`), `TLSv1.3` (`#32`), 6–8 Digit Card IIN (`#9`), Exact 4-Digit `display_last4` (`#1`) & B2B Positive Decimal Quantities (`#3`)**: Enforces integer minor-unit fulfillment amounts, complete physical+digital cart coverage, and ISO/IEC 7812-1 8-digit IINs.
+  3. **Google AP2 RFC 8785 JCS Mandate Binding (`#251`/`#370`), DID + STARK Settlement (`#257`), Typed `PaymentDetailsModifier` (`#48`) & Visa TAP RFC 9421 Merchant-Backend Signature Verifier (`#21`)**: Prevents post-intent cart substitution via RFC 8785 JCS SHA-256 digests and enforces RFC 9421 `"@signature-params"`, individually quoted components, `alg`/key-type matching, and post-verification nonce recording.
+  4. **Sierra $\tau$-bench 2.0 Full-Duplex Voice Rescoring (`#399`), Banking Reverse-Chronological Ordering (`#403`), Lost/Stolen Discoverable Read Calls (`#402`), Nested JSON/Numeric Normalization (`#401`/`#397`), Batch Replay Isolation (`#393`), Platinum 10% Cash-Back Doc (`#388`) & Airline/LLM Execution Fixes (`#362`/`#361`/`#360`/`#358`)**: Prevents rescoring full-duplex voice runs as `HALF_DUPLEX` (`messages=None`) and eliminates int/float DB hash drift.
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py)
+  - Unit Tests: [`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py) (**442/442** total unit tests passing)
+  - Bilingual Architecture Reference (§79): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

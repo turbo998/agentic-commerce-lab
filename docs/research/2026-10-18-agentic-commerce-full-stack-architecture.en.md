@@ -121,6 +121,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§77.4**: Sierra $\tau$-bench 2.0 `gptlive` Full-Duplex Provider (`#409`), Transient Transcription Retry (`#418`), Viewer Truncation (`#434`), Active Reward Gates (`#411`) & Banking Answer-Key Leak Scrubbing (`#429`, `#414`, `#412`, `#408`).
 - **§78 (Stage 79 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SB-01..SB-16`)**: `lab/ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.36 ms` vs. `4.74 ms`, `13.2x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§79 (Stage 80 — Bilingual Chinese + English)**:
+  - **§79.1**: UCP Namespace Authority Binding (`#530`), Per-Segment Buyer Consent (`#451`), Eligibility Verification Contract (`#250`), Admission-Time AP2 Mandate TTL (`#540`) & Raw `r||s` ECDSA Signatures / Embedded `params.error` / Link & Cart Continuity (`#590`, `#494`, `#247`, `#246`).
+  - **§79.2**: ACP Consumer 3DS (`#53`), Mixed-Cart Fulfillment & Contact (`#52`, `#51`), Return Policy Link (`#49`), TLS 1.3 (`#32`), 6–8 Digit Card IIN (`#9`), Exact 4-Digit `display_last4` (`#1`) & B2B Decimal Quantities (`#3`).
+  - **§79.3**: Google AP2 RFC 8785 JCS Cart-to-Payment Mandate Binding (`#251`, `#370`), DID + STARK Settlement (`#257`), Typed `PaymentDetailsModifier` (`#48`), VDC Terminology (`#20`) & Visa TAP RFC 9421 Merchant-Backend Signature Verifier (`#21`).
+  - **§79.4**: Sierra $\tau$-bench 2.0 Full-Duplex Voice Rescoring (`#399`), Banking Reverse-Chronological Ordering (`#403`), Lost/Stolen Discoverable Read Calls (`#402`), Nested JSON/Numeric Normalization (`#401`, `#397`), Batch Replay Isolation (`#393`), Platinum 10% Cash-Back Doc (`#388`) & Airline/LLM Execution Fixes (`#362`, `#361`, `#360`, `#358`).
 
 
 

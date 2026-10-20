@@ -383,6 +383,20 @@
   - 单元测试：[`tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py`](../../tests/test_ucp_sale_basis_loyalty_actions_acp_delegated_auth_handlers_ap2_budget_pii_tau2_gptlive_bench.py)（全仓库 **434/434** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-sale-basis-loyalty-actions-acp-delegated-auth-handlers-ap2-budget-pii-tau2-gptlive-bench/report.json)
 
+---
+
+## Stage 80：UCP 命名空间权威绑定/分层买家同意/权益核验/准入期 Mandate TTL/原始 `r||s` 签名、ACP 混合履约/TLS 1.3/8 位 IIN/B2B 小数数量、Google AP2 RFC 8785 JCS 绑定/DID+STARK 结算与 Visa TAP RFC 9421 验签及 Sierra $\tau$-bench 2.0 全双工语音重评分/银行倒序交易/可发现工具调用护栏
+
+- **一手协议与基准演进证据**：
+  1. **UCP 命名空间权威绑定（`#530`）、按细分维度买家同意（`#451`）、`context.eligibility` 权益核验契约（`#250`）、`complete_checkout` 准入期 AP2 Mandate TTL（`#540`）、ECDSA 原始 `r||s` 签名编码（`#590`）及嵌入式错误包裹/链接委托/购物车折扣连续性（`#494`/`#247`/`#246`）**：强制反向域名能力前缀与 `schema` HTTPS 源站域名一致；校验未解决权益声明阻断结账完成且失败不篡改订单；准入后进入 `complete_in_progress` 的授权过期不得中断结算；拦截 ASN.1 DER `MEUC`/`MEQC` 签名编码。
+  2. **ACP 混合购物车履约覆盖与联系信息（`#52`/`#51`）、`return_policy` 链接（`#49`）、`TLSv1.3`（`#32`）、6–8 位卡 IIN（`#9`）、严格 4 位 `display_last4`（`#1`）及 B2B 正小数数量（`#3`）**：强制配送选项金额为整数次单位、混合实物+数字商品全覆盖、禁用废弃 `seller_shop_policies` 链接。
+  3. **Google AP2 RFC 8785 JCS `CartMandate`→`PaymentMandate` 绑定（`#251`/`#370`）、DID + STARK 结算承诺（`#257`）、Vertex AI 强类型修饰器（`#48`）及 Visa TAP RFC 9421 商户后端验签（`#21`）**：通过 RFC 8785 JCS 规范化哈希防止跨语言购物车替换；强制 Visa TAP 签名基串以 `"@signature-params"` 结尾、逐项引号包裹组件、校验 `alg` 与公钥类型一致并在验签通过后才记录 `nonce`。
+  4. **Sierra $\tau$-bench 2.0 全双工语音轨迹重评分（`#399`）、银行交易时间倒序与最早重复争议（`#403`）、挂失卡可发现读取工具调用（`#402`）、嵌套 JSON/数值参数归一化（`#401`/`#397`）、单题回放故障隔离（`#393`）、白金卡 10% 标题修正（`#388`）及航司退座/LiteLLM/推理模型温度修复（`#362`/`#361`/`#360`/`#358`）**：阻断全双工轨迹按半双工 `messages=None` 误判 0 分、消除 `33` 与 `33.0` 导致的 DB 哈希漂移。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../lab/ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py)
+  - 单元测试：[`tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py`](../../tests/test_ucp_authority_consent_eligibility_acp_3ds_fulfillment_ap2_jcs_tap_rfc9421_tau2_duplex_guard.py)（全仓库 **442/442** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§79)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
