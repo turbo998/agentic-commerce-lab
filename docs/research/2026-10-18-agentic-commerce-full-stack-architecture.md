@@ -1352,6 +1352,25 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.28 ms` vs. `4.34 ms`（`15.5x` 加速）**。
 - **技术资产**：[`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py)、[`tests/test_ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../tests/test_ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/`](../../reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/index.html)。
 
+---
+
+## 107. Stage 108 深度防线：UCP Permalink `303` 安全头与路由回退（`#968`/`#913`）/购物车更新请求剔除冗余 `id`（`#763`/`#633`）/订单 Webhook 必签 `ucp-agent`（`#568`）、ACP `2026-04-17` 发布快照（`#227`）/Webhook 退费整型最小货币单位（`#219`）/`seller` 发现术语与履约引用修复（`#176`/`#102`）、Google AP2 授权时间戳与银行直付绑定（`#157`/`#148`/`#122`）/Coinbase `x402` Aether 可付性审计与 `burn-once` 机密库（`#367`/`#343`）及 Sierra $\tau$-bench 2.0 完整性分母剔除基础设施故障与 `set_state` 端点修复（`#650`/`#623`/`#500`）
+
+### 107.1 UCP Permalink `303` 响应头、购物车更新禁传 `id` 与订单 Webhook `ucp-agent` 签名（`#968` / `#913` / `#763` / `#633` / `#568`）
+- **Permalink `303` 强制安全头与安全回退（`#968`/`#913`）**：解析购物永久链接的 `303 See Other` 响应必须同时携带 `Cache-Control: no-store` 与 `Referrer-Policy: no-referrer`，阻断永久链接 URL 经 Referer 泄露给第三方，且必须路由至合法 `continue_to` 或安全回退页。
+- **购物车更新请求体剔除 `id` 与清理废弃 `transition` 注解（`#763`/`#633`）**：`cart` 更新请求已通过传输层路径 `/carts/{cart_id}` 或 MCP 工具参数绑定目标购物车，请求体严禁携带冗余 `id` 字段。
+- **订单 Webhook 强制签名 `ucp-agent`（`#568`）**：携带 `UCP-Agent` 头的订单 Webhook 请求必须在 `Signature-Input` 中包含 `"ucp-agent"`，防止调用方身份与签名载荷解耦。
+
+### 107.2 ACP `2026-04-17` 发布快照（`#227`）、Webhook 退费整型最小单位（`#219`）与 `seller` 发现术语 / `SelectedFulfillmentOption` 引用（`#176` / `#102`）
+- 强制 `supported_versions` 包含 `"2026-04-17"`；强制 `order_updated` Webhook 中 `Refund.amount` 为非负整数最小货币单位（阻断 `"1.00"` 字符串小数格式）；强制发现文档使用 `"seller"` 术语并确保 `#/$defs/SelectedFulfillmentOption` Schema 引用完整。
+
+### 107.3 Google AP2 授权 JWT 时间戳与 `pay-by-bank` 绑定（`#157`/`#148`/`#122`）及 Coinbase `x402` Aether 可付性预检与单次读取机密库（`#367`/`#343`）
+- 校验 AP2 授权 JWT `iat < exp` 整型时间戳、`_validate_shopping_agent` 校验结果及 `pay_by_bank` 银行账户委托绑定；执行 `Aether x402 Audit` 预检（HTTP `402`、`PAYMENT-REQUIRED` 解码、CAIP-2 网络与官方 USDC 合约地址严格映射防主网/测试网混用、`payTo` EIP-55 校验和与 EIP-712 域）并阻断 `burn-once-secret-vault` 重复读取。
+
+### 107.4 Sierra $\tau$-bench 2.0 完整性分母规则与 Live 转录缺口分类（`#650`）、`v1.0.1` 基准锁定（`#623`）及 `/{env_id}/set_state` 签名对齐（`#500`）
+- 落地 `#650` 2.0 完整性规则：基础设施报错（`error_trials`）从单元格得分分母中剔除（需满足 `scored_calls >= 1` 且 `unscored_missing_calls == 0` 且 `scored_calls + error_trials == owed_calls`），全部报错或存在漏评仍阻断提交；Live 语音转录缺失记入 `VerdictFingerprint.input_error_units` 与 `input_excluded_calls`；锁定 1.x 任务基线为 `v1.0.1`（`#623`），并要求 `POST /{env_id}/set_state` 向 `set_environment_state` 完整传入 `initialization_data` 等 4 个参数（`#500`；参见 `lab/ucp_permalink_cart_id_acp_20260417_x402_aether_tau2_completeness_guard.py`）。
+
+
 
 
 
