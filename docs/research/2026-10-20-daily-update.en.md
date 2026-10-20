@@ -524,6 +524,15 @@
   - Unit Tests: [`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py) (**494/494** total unit tests passing)
   - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/report.json)
 
+---
+
+## Stage 92: UCP Fee Extension & Embedded Cart ECaP/`ec.totals.change` (`#245`/`#244`/`#272`), ACP Consolidated `AppliedDiscount`, `sale` EU Omnibus & x402 Crypto SPT (`#125`/`#123`/`#111`), Google AP2 `PaymentReceipt` & Audit Log (`#110`/`#92`), and Sierra $\tau$-bench 2.0 Airline Seat Restoration & Context-Window Classification (`#362`/`#360`/`#358`/`#364`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard Module: [`lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py`](../../lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py)
+  - Unit Tests: [`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py) (**502/502** total unit tests passing)
+  - Bilingual Architecture Reference (§91): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 

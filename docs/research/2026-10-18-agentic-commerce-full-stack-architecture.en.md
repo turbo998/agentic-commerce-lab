@@ -163,6 +163,11 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§89.4**: Sierra $\tau$-bench 2.0 A2A Green/White Agent Isolation (`#83`) & Gemini 3 Pro `thought_signature` Preservation (`#93`).
 - **§90 (Stage 91 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EC-01..EC-16`)**: `lab/ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.33 ms` vs. `4.71 ms`, `14.3x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+- **§91 (Stage 92 — Bilingual Chinese + English)**:
+  - **§91.1**: UCP Fee Extension (`dev.ucp.shopping.fee`, `#245`), Embedded Cart Protocol ECaP (`#244`), and `ec.totals.change` (`#272`).
+  - **§91.2**: ACP Consolidated `AppliedDiscount` (`#125`), `sale` Extension EU Omnibus (`#123`), and x402-Backed Crypto SPT (`#111`).
+  - **§91.3**: Google AP2 Section 7.1 `PaymentReceipt` (`#110`) & Mandate Lifecycle Audit Log (`#92`).
+  - **§91.4**: Sierra $\tau$-bench 2.0 Airline Seat Restoration on Cancellation (`#362`), `CONTEXT_WINDOW_EXCEEDED` Non-Retry Classification (`#360`), Reasoning `temperature` Drop (`#358`), and Cost-per-Resolution (`#364`).
 
 
 

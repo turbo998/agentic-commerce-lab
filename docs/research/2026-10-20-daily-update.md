@@ -524,6 +524,15 @@
   - 单元测试：[`tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py`](../../tests/test_ucp_ecp_context_acp_recurring_address_x402_coop_tau2_a2a_bench.py)（全仓库 **494/494** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ecp-context-acp-recurring-address-x402-coop-tau2-a2a-bench/report.json)
 
+---
+
+## Stage 92：UCP 费用扩展与嵌入式购物车 ECaP/`ec.totals.change`（`#245`/`#244`/`#272`）、ACP 合并折扣与欧盟 Omnibus 促销及 x402 加密 SPT（`#125`/`#123`/`#111`）、Google AP2 `PaymentReceipt` 与审计日志（`#110`/`#92`）及 Sierra $\tau$-bench 2.0 航司退票座位释放与上下文超限分类（`#362`/`#360`/`#358`/`#364`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py`](../../lab/ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py)
+  - 单元测试：[`tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py`](../../tests/test_ucp_fee_ecap_acp_sale_crypto_ap2_receipt_tau2_airline_ctx_guard.py)（全仓库 **502/502** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§91)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
