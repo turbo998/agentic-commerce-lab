@@ -1402,6 +1402,23 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.26 ms` vs. `4.18 ms`（`16.1x` 加速）**。
 - **技术资产**：[`lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py`](../../lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py)、[`tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py`](../../tests/test_ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/`](../../reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/index.html)。
 
+---
+
+## 111. Stage 112 深度审计：UCP `#642`/`#635`/`#622`、ACP `#116`/`#111`、Google AP2 `#385`/`#365` + Coinbase `x402` `#324` 与 Sierra $\tau$-bench 2.0 `#632`/`#602`/`#600`
+
+### 111.1 UCP `context.location` 优先级（`#642`）、MercadoPago `render_artifact` 契约（`#635`）与 MCP `-32004` 限流码（`#622`）
+- 规范 `context.location` 作为门店/分店提示，必须被更具权威性的 `filters.fulfills_to` 或 `fulfillment.pickup_location_id` 覆盖（`#642`）；`com.mercadopago.payment.render_artifact` 实例禁止携带 `required` 字段、禁止包含 PAN/OTP/凭据、禁止 `continue_url` 跳转且 `instructions_url` 必须匹配白名单 `https://` 源（`#635`）；MCP Shopping 13 个方法统一声明 `-32004`（`rate_limit_exceeded`，`#622`）。
+
+### 111.2 ACP 8 位 IIN 扩展（`#116`）与 `PaymentMethodCrypto`（`x402` SPT 延迟结算，`#111`）
+- 升级 `PaymentMethodCard.iin` 为 6–8 位数字（ISO/IEC 7812-1，`#116`）；校验 `PaymentMethodCrypto`（`type: "crypto"`）的 CAIP-2 网络、签名与未重放 Nonce、`validBefore > current_unix` 以及 `x402` 金额与 `delegate_payment` 授权额度严格一致（`#111`）。
+
+### 111.3 Google AP2 `cnf.jwk` JSON 序列化（`#385`）、收据验签时序（`#365`）与 Coinbase `x402` EIP-3009 域映射（`#324`）
+- 强制 `ParsedToken.cnf_jwk` 使用 `mode="json"` 将枚举序列化为纯字符串（`#385`）；`ReceiptClient.verify_receipt` 支持 `pyca` EC 公钥与 JWK，且必须在调用 `has_reference_in_store_cb` 前完成签名校验（`#365`）；强制 EIP-3009 `TransferWithAuthorization` 的 EIP-712 域精确映射 `(extra.name, extra.version, network chainId, asset)`（`#324`）。
+
+### 111.4 Sierra $\tau$-bench 2.0 `tau2 factory` 4 词预算与单次修复（`#632`）、航司小写 `user_id`（`#602`）与 `check_status_bar` 接地（`#600`）
+- 强制非英语语言包提供 `language_directive.origin`（英语省略）、`non_directed_phrases` 每条 `<= 4` 词且 `repair_attempts <= 1`（`#632`）；强制航司工具 `user_id` 全小写（`#602`）；将电信用户模拟器指令接地至真实工具 `check_status_bar`（拦截 `get_status_bar`，`#600`；参见 `lab/ucp_location_render_rate_limit_acp_crypto_spt_ap2_receipt_tau2_guard.py`）。
+
+
 
 
 

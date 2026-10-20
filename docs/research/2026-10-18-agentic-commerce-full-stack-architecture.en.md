@@ -233,6 +233,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§109.4**: Sierra $\tau$-bench 2.0 `voice-v2-banking`/`voice-v2-entity` Package Suffix & No-Judge Gate (`#651`), `time_verified` Canonicalization (`#634`), and Active-Line Telecom Refuel Guard (`#611`).
 - **§110 (Stage 111 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`WN-01..WN-16`)**: `lab/ucp_webhook_sig_namespace_acp_seller_backed_ap2_budget_x402_nowallet_tau2_bench.py` & `reports/agentic-commerce-ucp-webhook-sig-namespace-acp-seller-backed-ap2-budget-x402-nowallet-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.26 ms` vs. `4.18 ms` (`16.1x` speedup).
+- **§111 (Stage 112 — Bilingual Chinese + English)**:
+  - **§111.1**: UCP `context.location` Override Precedence (`#642`), `com.mercadopago.payment.render_artifact` Inert Trust Contract (`#635`), and MCP Shopping `-32004` `rate_limit_exceeded` (`#622`).
+  - **§111.2**: ACP ISO/IEC 7812-1 6–8 Digit `PaymentMethodCard.iin` (`#116`) and `PaymentMethodCrypto` (`x402`-Backed SPT Deferred Settlement, `#111`).
+  - **§111.3**: Google AP2 `cnf.jwk` JSON-Mode Enum Serialization (`#385`), `verify_receipt` Signature-Before-Callback Ordering (`#365`), and Coinbase `x402` EIP-3009 4-Field EIP-712 Domain Mapping (`#324`).
+  - **§111.4**: Sierra $\tau$-bench 2.0 `tau2 factory` 4-Word Brevity & Bounded Repair (`#632`), Lowercase Airline `user_id` (`#602`), and `check_status_bar` Telecom Grounding (`#600`).
+
 
 
 
