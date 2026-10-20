@@ -266,6 +266,20 @@
   - 单元测试：[`tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py`](../../tests/test_ucp_webhook_signing_acp_session_states_ap2_failure_micropay_tau2_solo_bench.py)（全仓库 **394/394** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-webhook-signing-acp-session-states-ap2-failure-micropay-tau2-solo-bench/report.json)
 
+---
+
+## Stage 72：UCP `buyer.consent` 全量替换豁免与退货政策扩展/`ETag` 条件写/`P-521` 密钥配对、ACP 周期性委托额度与仅写联盟归因/取消意图追踪/3DS `channel` 移除、Google AP2 `AP2-Haggle` 实时议价与 Solana/Algorand 链上授权绑定/凭据脱敏、以及 Sierra $\tau$-bench 2.0 银行读日志白名单与多商品改单独立变体计价/VPN 深拷贝/重放幻觉容错护栏
+
+- **一手协议与基准源审计（24 个新 PR/规范）**：
+  - **UCP (`Universal-Commerce-Protocol/ucp`)**：PR `#660`（`buyer.consent` 豁免于购物车与结账的全量替换规则：更新请求省略 `buyer.consent` 时必须保留买家既有同意/拒收偏好而非重置为默认勾选）、PR `#634`（新增 `dev.ucp.shopping.policy.return` 结构化退货政策扩展：`final_sale: true` 时严禁携带 `window`/`supported_resolutions`/`methods`/`restocking_fee`；`window` 必须同时包含正整数 `days` 与显式 `anchor`；未声明费用严禁按免费展示）、PR `#628`（结账写操作支持 RFC 9110 `ETag` / `If-Match` 乐观并发控制，失配返回 `412 Precondition Failed`、缺失必填头返回 `428 Precondition Required`）、PR `#627`/`#625`（权威绑定兼容 `name == authority_prefix` 精确匹配，`profile.json` 中 `crv: "P-521"` 仅允许配对 `alg: "ES512"`）以及 PR `#617`/`#605`（履约事件关联送达时间窗与库存信号）。
+  - **ACP (`agentic-commerce-protocol/agentic-commerce-protocol`)**：PR `#85`/`#80`（从 3DS `AuthenticationMetadata` 移除废弃 `channel` 字段，`PaymentProvider` 新增必填 `merchant_id` 与 `authentication_provider`）、PR `#73`（`SEP #12`：委托支付 `Allowance.reason` 扩展 `"recurring"` 与 `"subscription"`，要求必填 `billing_cycle` 与 `amount_per_cycle`）、PR `#57`（`SEP` 联盟归因 `affiliate_attribution` 仅写不读严禁在查询/Webhook 回显，并执行幂等冲突 `409` 与禁传 PII）及 PR `#54`/`#45`（结账取消 `intent_trace` 扁平标量 `metadata` 与酒店垂直域 `quote_token` 边界重核验）。
+  - **Google AP2 (`google-agentic-commerce/AP2`)**：PR `#229`（`AP2-Haggle` 多轮实时议价扩展：中间 `Offer` 不签名、受最大轮次/买家底价/商户成本底线约束，成交 `NegotiationOutcome` 产出商户签名 `CartMandate`）、PR `#228`/`#218`（Solana Pay 单次 `reference` 公钥绑定与 Algorand USDC ASA `av:{token[:20]}` 备注前缀对 `PaymentMandate` 的链上绑定）及 PR `#212`/`#188`（凭据响应脱敏为不透明 `credential_reference`、校验 `payment_mandate_payer == token_owner` 与 ADK 会话状态 `.model_dump()` 序列化）。
+  - **Sierra $\tau$-bench 2.0 (`sierra-research/tau2-bench`)**：PR `#329`（`banking_knowledge` 仅在写操作或命中 `read_log_allowlist` 时记录 `agent_discoverable_tools`，避免知识库额外读调用污染 DB 哈希）、PR `#322`（零售 `modify_pending_order_items` 多商品改单按各自替换变体独立赋价与选项）、PR `#301`（`_connect_vpn()` 对 `default_vpn_details` 执行 `copy.deepcopy` 阻断跨并发仿真状态污染）及 PR `#273`/`#264`（重放时对未知幻觉工具执行空操作跳过并保留交错思考 `raw_data`）。
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py`](../../lab/ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py)
+  - 单元测试：[`tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py`](../../tests/test_ucp_consent_return_etag_acp_affiliate_trace_ap2_haggle_solana_tau2_vpn_guard.py)（全仓库 **402/402** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§71)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
 
 
 
