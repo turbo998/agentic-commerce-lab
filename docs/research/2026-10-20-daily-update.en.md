@@ -155,6 +155,24 @@
   - Unit Tests: [`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py) (**361/361** total unit tests passing)
   - Bilingual Architecture Reference (§63): [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md`](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 65: 16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SL-01..SL-16`: UCP Service `schema` Polymorphism & Permalink CSRF Guard, ACP Stripe Link Wallet & 11-State Checkout, AP2 Cross-Merchant Budget Authority & `AP2-Haggle`, Sierra $\tau$-bench 2.0 Incomplete Gold DB Withdrawal & NL Judge Gates)
+
+- **16-Scenario Deterministic Evaluation Matrix (`SL-01..SL-16`)**:
+  - `SL-01..SL-04`: UCP `#833` service `schema` transport polymorphism (`rest` OpenAPI 3.1 vs. `mcp`/`embedded` OpenRPC 1.3.2), `#831` `W007` `$defs/agent` naming, `#791` `identity.access_token` non-authentication binding rule, `#789` permalink CSRF cart-merge buyer confirmation, and `#785` WBA `signature-agent` coverage.
+  - `SL-05..SL-08`: ACP `#156` Stripe Link (`com.stripe.link`) email+OTP wallet delegation without raw PAN/CVC exposure, `#150` `redirect`/`webview`/`otp` intervention flows, `#144` `complete_in_progress` duplicate `complete` blocking & 11-state checkout lifecycle, `#166` single-use on-chain token discount allocation conservation, and `#151` `intent_trace.reason_code`.
+  - `SL-09..SL-12`: Google AP2 `#252` cross-merchant atomic Budget Authority (blocking `$120 > $100` concurrent overspend), `#228` Solana Pay single-use read-only `reference` pubkey binding, and `#229` `AP2-Haggle` multi-round negotiation & merchant-signed `CartMandate`.
+  - `SL-13..SL-16`: Sierra $\tau$-bench 2.0 `#580` incomplete gold DB state withdrawal (`db_check=None` on gift-card replay failure), `#581` NL-judge empty-verdict false full-credit block, `#584` stripping `"assistant: None"` turns, `#593` separate `evaluator_cost` persistence, `#600` `check_status_bar` grounding, and `#588` `SIGTERM` sandbox cleanup.
+- **Quantitative Results**:
+  - **AI-Native 6-Plane Architecture**: **16/16 (100.0%)** accuracy, **100.0%** reversed-order stability, **0.34 ms** median latency.
+  - **Classic 3-Tier Baseline**: **4/16 (25.0%)** accuracy, **4.63 ms** median latency (**13.6x** speedup for AI-Native).
+- **New Code & Bilingual Report Assets**:
+  - Benchmark Generator: [`lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py`](../../lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py)
+  - Unit Tests: [`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py) (**363/363** total unit tests passing)
+  - Bilingual 7-Card 4:5 Reports: [`reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/report.json)
+
+
 
 
 

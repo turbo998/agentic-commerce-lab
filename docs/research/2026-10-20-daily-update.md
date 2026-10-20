@@ -155,6 +155,24 @@
   - 单元测试：[`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_guard.py)（全仓库 **361/361** 单测通过）
   - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§63)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md`](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
 
+---
+
+## Stage 65：16 场景中英双语 7-Card 4:5 基准评测报告（`SL-01..SL-16`：UCP 服务 `schema` 多态与永久链接防 CSRF 合并、ACP Stripe Link 钱包与 11 态结账、AP2 跨商户预算权威与 `AP2-Haggle`、Sierra $\tau$-bench 2.0 残缺黄金 DB 状态撤回认证与 NL 裁判门禁）
+
+- **16 场景确定性基准评测（`SL-01..SL-16`）**：
+  - `SL-01..SL-04`：UCP `#833` 服务 `schema` 传输定义多态（`rest` OpenAPI 3.1 vs `mcp`/`embedded` OpenRPC 1.3.2）、`#831` `W007` `$defs/agent` 命名规范、`#791` `identity.access_token` 禁充当调用方认证、`#789` 永久链接合并显式买家确认与 `#785` WBA `signature-agent` 签名覆盖。
+  - `SL-05..SL-08`：ACP `#156` Stripe Link（`com.stripe.link`）邮箱+OTP 钱包委托与原始卡号 PAN/CVC 隔离、`#150` 钱包认证干预流（`redirect`/`webview`/`otp`）、`#144` `complete_in_progress` 并发阻断与 11 态会话生命周期、`#166` 链上持币单次折扣分摊守恒与 `#151` `intent_trace.reason_code`。
+  - `SL-09..SL-12`：Google AP2 `#252` 跨商户原子预算权威（防多 Agent 并发超支 `$120 > $100`）、`#228` Solana Pay 单次只读 `reference` 公钥绑定与 `#229` `AP2-Haggle` 实时多轮议价及商户签名 `CartMandate`。
+  - `SL-13..SL-16`：Sierra $\tau$-bench 2.0 `#580` 礼品卡余额不足重放异常撤回黄金 DB 认证（`db_check=None`）、`#581` NL 裁判空结果假满分拦截、`#584` 过滤 `"assistant: None"` 空轮次、`#593` `evaluator_cost` 独立持久化、`#600` `check_status_bar` 接地与 `#588` 沙箱 `SIGTERM` 清理。
+- **量化评测结果**：
+  - **AI-Native 6-Plane 架构**：**16/16 (100.0%)** 场景准确率，逆序扰动稳定性 **100.0%**，中位延迟 **0.34 ms**。
+  - **经典三层架构基线（Classic 3-Tier）**：**4/16 (25.0%)** 场景准确率，中位延迟 **4.63 ms**（AI-Native 提速 **13.6x**）。
+- **新增代码与双语报告资产**：
+  - 基准生成器：[`lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py`](../../lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py)
+  - 单元测试：[`tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py`](../../tests/test_ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py)（全仓库 **363/363** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-service-schema-acp-link-intervention-ap2-budget-tau2-nl-bench/report.json)
+
+
 
 
 

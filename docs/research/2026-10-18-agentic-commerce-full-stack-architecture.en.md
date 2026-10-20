@@ -70,4 +70,7 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§63.2**: ACP Stripe Link Accelerated Wallet Handler (`com.stripe.link`, `#156`), Wallet Intervention Flows (`redirect`/`webview`/`otp`, `#150`), All 11 Session States (`#144`), On-Chain Eligibility Discount (`#166`) & Intent Traces (`#151`).
   - **§63.3**: Google AP2 Cross-Merchant Atomic Budget Authority (`#252`), Solana Pay Single-Use Reference Pubkey Binding (`#228`) & AP2-Haggle Multi-Round Negotiation (`#229`).
   - **§63.4**: Sierra $\tau$-bench 2.0 Incomplete Gold DB State Withdrawal (`#580`), NL-Judge Verdict Count & Contentless Turn Filtering (`#581`/`#584`), Separate `evaluator_cost` Accounting (`#593`), Telecom `check_status_bar` Grounding (`#600`) & Sandbox `srt` `SIGTERM` Cleanup (`#588`).
+- **§64 (Stage 65 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SL-01..SL-16`)**: `lab/ucp_service_schema_acp_link_intervention_ap2_budget_tau2_nl_bench.py` (`16/16 100.0%` AI-Native vs. `4/16 25.0%` Classic 3-Tier, `0.34 ms` vs. `4.63 ms`, `13.6x` speedup, published as `index.html` [CN] and `index.en.html` [EN]).
+
 
