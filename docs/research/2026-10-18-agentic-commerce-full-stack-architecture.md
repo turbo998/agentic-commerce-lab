@@ -1344,5 +1344,14 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ### 105.4 Sierra $\tau$-bench 2.0 电信 `DB` 奖励基准（`#462`）、`custom` 架构分类（`#444`）与轨迹成本/耗时分解（`#443`）
 - 强制多客户电信任务将 `DB` 纳入 `reward_basis` 并保持完整 4,538 任务生成；严禁未修改系统架构的基线运行伪报 `submission_type="custom"`；强制 `cost + user_cost == total_cost` 与 `agent_time_seconds + user_time_seconds + tool_time_seconds <= duration_seconds`（参见 `lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`）。
 
+---
+
+## 106. Stage 107 基准评测：16 场景（`EP-01..EP-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 106 四大协议域的 16 个场景（`EP-01..EP-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.28 ms` vs. `4.34 ms`（`15.5x` 加速）**。
+- **技术资产**：[`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py)、[`tests/test_ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../tests/test_ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/`](../../reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/index.html)。
+
+
 
 

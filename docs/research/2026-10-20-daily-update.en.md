@@ -629,4 +629,8 @@
 ### Stage 106: UCP `#325`/`#340`/`#326`/`#324`, ACP `#35`/`#32`/`#28`/`#18`/`#17`, Google AP2 `#64`/`#216` + x402 `#88`/`#135`, and Sierra $\tau$-bench 2.0 `#462`/`#444`/`#443` Guardrails
 - Added [`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py) and unit tests (`572/572` total unit tests passing).
 
+### Stage 107: 16-Scenario (`EP-01..EP-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite
+- Added [`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py) and [`reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/`](../../reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/index.en.html) (`574/574` total unit tests passing).
+
+
 

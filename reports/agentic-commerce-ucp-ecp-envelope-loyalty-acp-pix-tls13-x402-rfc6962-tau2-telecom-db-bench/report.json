@@ -1,0 +1,220 @@
+{
+  "benchmark_id": "agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench",
+  "stage": "Stage 107",
+  "provenance": "synthetic_deterministic_guard_evaluation (independently_reproduced=true)",
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_passed": 4,
+  "classic_3tier_pass_rate": 0.25,
+  "reversal_invariance_passed": 16,
+  "reversal_invariance_rate": 1.0,
+  "latency_ms": {
+    "ai_native_median_ms": 0.28,
+    "classic_3tier_median_ms": 4.34,
+    "speedup_factor": 15.5,
+    "tiers": [
+      {
+        "tier": "1x (Single Request)",
+        "ai_ms": 0.28,
+        "classic_ms": 4.34
+      },
+      {
+        "tier": "8x (Concurrent Batch)",
+        "ai_ms": 0.89,
+        "classic_ms": 13.78
+      },
+      {
+        "tier": "32x (Burst Pipeline)",
+        "ai_ms": 2.98,
+        "classic_ms": 46.2
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "EP-01",
+      "domain": "UCP",
+      "task": "ECP result.ucp.status envelope + loyalty forecast + order.label (#325/#340/#326/#324)",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": []
+    },
+    {
+      "id": "EP-02",
+      "domain": "UCP",
+      "task": "Block ECP delegation error stuffed into JSON-RPC top-level error (#325)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "UCP_325_DELEGATION_ERROR_IN_JSONRPC_ERROR_FIELD_FORBIDDEN"
+      ]
+    },
+    {
+      "id": "EP-03",
+      "domain": "UCP",
+      "task": "Block ec.ready handshake error without host session teardown (#325)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "UCP_325_EC_READY_ERROR_REQUIRES_HOST_TEARDOWN"
+      ]
+    },
+    {
+      "id": "EP-04",
+      "domain": "UCP",
+      "task": "Block non-date 'draft' protocol version in public discovery (#324)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "UCP_324_NON_DATE_DRAFT_VERSION_IN_PUBLIC_DISCOVERY_FORBIDDEN"
+      ]
+    },
+    {
+      "id": "EP-05",
+      "domain": "ACP",
+      "task": "PIX BRL payment + TLS 1.3 + constant-time webhook + integer pickup (#35/#32/#28/#18/#17)",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": []
+    },
+    {
+      "id": "EP-06",
+      "domain": "ACP",
+      "task": "Block Brazilian PIX settlement in non-BRL currency (#35)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "ACP_35_PIX_REQUIRES_BRL_CURRENCY"
+      ]
+    },
+    {
+      "id": "EP-07",
+      "domain": "ACP",
+      "task": "Block legacy TLS 1.2 downgrade on checkout/webhook transport (#32)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "ACP_32_TLS_1_3_REQUIRED"
+      ]
+    },
+    {
+      "id": "EP-08",
+      "domain": "ACP",
+      "task": "Block float monetary amount on FulfillmentOption (#18)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "ACP_18_FULFILLMENT_MONETARY_FIELD_MUST_BE_NON_NEGATIVE_INTEGER"
+      ]
+    },
+    {
+      "id": "EP-09",
+      "domain": "AP2+x402",
+      "task": "AP2 field-path validation + monthly cap + x402 RFC 6962 STH & Tenzro SVM (#64/#216/#88/#135)",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": []
+    },
+    {
+      "id": "EP-10",
+      "domain": "AP2+x402",
+      "task": "Block AP2 validation error missing structured code or field_path (#64)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "AP2_64_VALIDATION_ERROR_MISSING_CODE_OR_FIELD_PATH"
+      ]
+    },
+    {
+      "id": "EP-11",
+      "domain": "AP2+x402",
+      "task": "Block x402 settlement with invalid RFC 6962 Signed Tree Head signature (#88)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "X402_88_RFC6962_STH_OR_INCLUSION_PROOF_INVALID"
+      ]
+    },
+    {
+      "id": "EP-12",
+      "domain": "AP2+x402",
+      "task": "Block Tenzro Canton facade missing CIP-56 holding-transfer verification (#135)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "X402_135_TENZRO_CANTON_CIP56_HOLDING_TRANSFER_INVALID"
+      ]
+    },
+    {
+      "id": "EP-13",
+      "domain": "tau2",
+      "task": "Telecom DB reward basis + 4538 tasks + standard arch + cost/time conservation (#462/#444/#443)",
+      "expected": "ALLOW",
+      "actual": "ALLOW",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": []
+    },
+    {
+      "id": "EP-14",
+      "domain": "tau2",
+      "task": "Block Telecom task missing DB in reward_basis (#462)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "TAU2_462_TELECOM_REWARD_BASIS_MISSING_DB"
+      ]
+    },
+    {
+      "id": "EP-15",
+      "domain": "tau2",
+      "task": "Block stock scaffold run misclassified as submission_type='custom' (#444)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "TAU2_444_SUBMISSION_TYPE_ARCHITECTURE_MISMATCH"
+      ]
+    },
+    {
+      "id": "EP-16",
+      "domain": "tau2",
+      "task": "Block leaderboard submission where cost + user_cost != total_cost (#443)",
+      "expected": "BLOCK",
+      "actual": "BLOCK",
+      "passed": true,
+      "reversal_stable": true,
+      "violations": [
+        "TAU2_443_TOTAL_COST_BREAKDOWN_MISMATCH"
+      ]
+    }
+  ]
+}

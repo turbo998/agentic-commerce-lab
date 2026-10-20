@@ -629,4 +629,8 @@
 ### Stage 106：UCP `#325`/`#340`/`#326`/`#324`、ACP `#35`/`#32`/`#28`/`#18`/`#17`、Google AP2 `#64`/`#216` + x402 `#88`/`#135` 与 Sierra $\tau$-bench 2.0 `#462`/`#444`/`#443` 护栏
 - 新增 [`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py) 与单测 `tests/test_ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_guard.py`（全仓 `572/572` 单测通过）。
 
+### Stage 107：16 场景（`EP-01..EP-16`）中英双语 7-Card 4:5 视觉基准报告
+- 新增 [`lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py`](../../lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py) 与报告 [`reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/`](../../reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/index.html)（`574/574` 单测通过）。
+
+
 

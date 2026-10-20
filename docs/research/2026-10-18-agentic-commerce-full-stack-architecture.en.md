@@ -217,6 +217,9 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§105.2**: ACP Brazilian PIX Payment (`#35`), Mandatory `TLSv1.3` & Constant-Time Webhook Verification (`#32`/`#28`), and Integer Minor-Unit Fulfillment & Pickup Options (`#18`/`#17`).
   - **§105.3**: Google AP2 Field-Path Validation Error (`#64`) & Non-Custodial Monthly Cap (`#216`), plus Coinbase `x402` RFC 6962 Merkle Audit Proofs (`#88`) & Tenzro Multi-VM (`evm`/`svm`/`canton`) Dispatch (`#135`).
   - **§105.4**: Sierra $\tau$-bench 2.0 Multi-Customer Telecom `DB` Reward Basis & 4,538-Task Completeness (`#462`), Leaderboard `"custom"` Architecture Classification (`#444`), and Cost/Time Breakdown Conservation (`#443`).
+- **§106 (Stage 107 — Bilingual Chinese + English)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`EP-01..EP-16`)**: `lab/ucp_ecp_envelope_loyalty_acp_pix_tls13_x402_rfc6962_tau2_telecom_db_bench.py` & `reports/agentic-commerce-ucp-ecp-envelope-loyalty-acp-pix-tls13-x402-rfc6962-tau2-telecom-db-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.28 ms` vs. `4.34 ms` (`15.5x` speedup).
+
 
 
 
