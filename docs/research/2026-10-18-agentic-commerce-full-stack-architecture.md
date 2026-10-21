@@ -1646,6 +1646,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.40 ms` vs. `15.25 ms`（`38.1x` 加速）**。
 - **技术资产**：[`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)、[`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py) 及双语报告 [`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html)。
 
+---
+
+## 133. Stage 134 架构深潜：x402 EVM `AuthCaptureEscrow` 两阶段托管/SVM Phantom Lighthouse 断言指令分类/协作关通道 `settlement_pending`、UCP 委托身份提供方 (Delegated IdP) RFC 8693 令牌交换/能力 `operations[]` 映射/营销与凑单优惠及 MCP `SEP-3221` 安全参数隔离/`SEP-3193` 跨服务数据流策略与 $\tau$-bench v1.0.1 护栏
+
+### 133.1 x402 EVM `AuthCaptureEscrow` 两阶段预授权/请款/作废与零费率算子约束（`#3622`）、SVM Phantom Lighthouse 前后置守卫指令程序 ID 分类（`#3615`）、批量协作关通道 `onDistributionConfirmed` 回调失败 `settlement_pending` 与 `payment-identifier` 恢复（`#3606`/`#3605`/`#3603`/`#3601`）及买方交付声明与 Xahau/FastAPI/Fastify 护栏（`#3604`/`#3613`/`#3612`/`#3610`/`#3607`/`#3600`/`#3599`）
+- 实现基于 `AuthCaptureEscrow` 合约的 `authorize -> capture | void` 两阶段托管（`#3622`），强制资源服务端签名生命周期指令、禁止超额请款或二次终态转移，并在零费率（`fee_bps == 0`）时强制 `fee_recipient` 为零地址且 `min_fee == max_fee == 0`；按顶层指令程序 ID 对 Solana `exact` 交易进行分类，允许 Phantom 钱包在 `SPL_TransferChecked` 之前或之后插入 Lighthouse 断言守卫指令，同时阻断任何未知第三方程序（`#3615`）；在批量结算协作关通道（`seal` 与 `refund`）时强制触发 `onDistributionConfirmed` 记账回调，若链上已落账但回调异常则返回 `settlement_pending` 以防重试触发重复上链（`#3606`），并在服务端批量模式丢失响应恢复时强制绑定 `(channel_id, payer_pubkey, payment_id)` 且連同 `SettlementResponse` 凭证一并返回以推进客户端水位线（`#3605`）；支持买方签名交付声明（`delivered: yes|no|partial` + 证据哈希，`#3604`）、Xahau（`xahau:21337`/`21338`）签名 `NetworkID` 与 Hook 费用上限（`#3612`/`#3610`）、FastAPI 异步事件循环外重试 `/supported`（`#3613`）及 Fastify `preValidation` 阶段暴露解析后请求体（`#3607`）。
+
+### 133.2 UCP 委托身份提供方 (`delegated_idps[]`) 与加速 RFC 8693/7523 令牌交换（`#423`/`#431`）、自描述能力 `operations[]` 交集映射与内嵌 Schema `required[]` 保留（`#438`/`#501`）、分渠道营销同意与 `"compliance"` 展示模式（`#407`/`#428`）及临近凑单优惠与 `return_url` 会话状态核验（`#406`/`#405`/`#398`）
+- 允许商户声明受信 `delegated_idps[]`，平台通过 RFC 8693 + RFC 7523 后端令牌交换免重定向完成身份绑定，但最终访问令牌必须由商户自身权威（`issued_access_token_issuer == business_issuer`）签发（`#423`/`#431`）；从平台与商户能力交集的 `operations[]` 动态推导允许调用的传输操作集合（`#438`）并保留内嵌 Schema `required` 字段（`#501`）；在 `buyer_consent` 中强制校验分渠道 `marketing_consent_options` 与买家显式授权决策（拦截默认预勾选，`#407`），将监管披露消息模式统一命名为 `"compliance"`（`#428`）；校验 `approaching_discounts` 凑单差额且严禁在达标前提前扣减应付总额（`#406`），并对 `return_url` 执行白名单同源校验与独立 Checkout Session API 状态核验（`#398`）。
+
+### 133.3 MCP `SEP-3221` `secureInputSchema`/`secureArguments` 混淆代理隔离（`#3221`）、`SEP-3193` 跨服务 `flowOrigin`/`flowPolicy`（`#3193`）、`SEP-3239` 委托终端用户上下文窄化（`#3239`）、`oneOf` 根属性类型校验（`#3185`）、Stripe Connect Accounts v2（`#292`/`#235`/`#234`/`#222`）及 Sierra $\tau$-bench 2.0 `banking_knowledge` v1.0.1 `$105 days` 修复与语音/用户模拟器护栏（`#410`/`#407`/`#396`/`#395`/`#392`/`#391`）
+- 将 `tenant_id`/`project_id` 等基础设施坐标隔离至 `secureInputSchema` 并由宿主注入 `secureArguments`，阻断模型在 `arguments` 中注入租户坐标的混淆代理攻击（`#3221`）；校验宿主附加的 `flowOrigin[]` 数据来源标签是否符合目标服务的 `flowPolicy`（`#3193`）；在多用户共享连接下强制 `delegated-end-user-context` 客户端只可收窄（不可扩张）服务端范围策略且 `verified` 级别必须附带签名 JWT（`#3239`）；将属性类型检查提升至 Schema 根部以封堵 `oneOf` 非激活分支类型绕过漏洞（`#3185`）；强制新平台使用 Stripe Connect Accounts v2 API（`POST /v2/core/accounts`）与无尾斜杠 `https://mcp.stripe.com`（`#292`/`#234`/`#222`）；并在 $\tau$-bench 2.0 中自动清除 `banking_knowledge` $\ge 105$ 天数的伪 `$` 前缀（`$105 days` $\to$ `105 days`，`#410`/`#407`），校验 97 任务语音银行赛道与 $\tau$-voice 交互指标对齐（`#396`/`#395`），并将转人工停止条件迁移至 Agent 侧以消除用户模拟器抢先 `##TRANSFER##` 造成的 25.7% 误判（`#392`/`#391`；参见 `lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py`）。
+
+---
+
+## 134. Stage 135 基准评测：16 场景（`AC-01..AC-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 134 三大护栏域的 16 个场景（`AC-01..AC-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.15 ms` vs. `1.44 ms`（`9.6x` 加速）**。
+- **技术资产**：[`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)、[`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py) 及双语报告 [`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html)。
+
+
 
 
 

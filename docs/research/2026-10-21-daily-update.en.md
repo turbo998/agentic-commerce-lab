@@ -164,4 +164,23 @@
   - Unit tests: [`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py) (**661/661** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/report.json)
 
+---
+
+## Stage 134: Deterministic Guardrails for x402 EVM `AuthCaptureEscrow`/SVM Phantom Lighthouse/Seal `settlement_pending`/Buyer Delivery Claim (`#3622`/`#3615`/`#3613`/`#3612`/`#3610`/`#3607`/`#3606`/`#3605`/`#3604`/`#3603`/`#3601`/`#3600`/`#3599`), UCP Delegated IdP RFC 8693/Capability `operations[]`/Per-Channel Marketing/Approaching Discounts (`#501`/`#438`/`#431`/`#428`/`#424`/`#423`/`#421`/`#407`/`#406`/`#405`/`#398`), and MCP `SEP-3221` Secure Params/`SEP-3193` FlowOrigin/`SEP-3239` User Narrowing/Stripe Connect v2 + Sierra $\tau$-bench 2.0 `banking_knowledge` v1.0.1 (`#3239`/`#3235`/`#3221`/`#3208`/`#3193`/`#3191`/`#3185`/`#3182`/`#3173`/`#3172`/`#3171`/`#292`/`#235`/`#234`/`#222`/`#410`/`#407`/`#396`/`#395`/`#392`/`#391`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py)
+  - Unit tests: [`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py) (**664/664** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§133)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§133)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 135: 16-Scenario (`AC-01..AC-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 134)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)
+  - Unit tests: [`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py) (**665/665** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/report.json)
+
+
 

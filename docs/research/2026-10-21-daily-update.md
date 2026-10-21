@@ -164,4 +164,23 @@
   - 单元测试：[`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)（全仓库 **661/661** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html`（中文）](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/report.json)
 
+---
+
+## Stage 134：x402 EVM `AuthCaptureEscrow` 两阶段托管/SVM Phantom Lighthouse 守卫分类/关通道 `settlement_pending`/买方交付声明与 Xahau/FastAPI/Fastify（`#3622`/`#3615`/`#3613`/`#3612`/`#3610`/`#3607`/`#3606`/`#3605`/`#3604`/`#3603`/`#3601`/`#3600`/`#3599`）、UCP 委托 IdP RFC 8693 令牌交换/能力 `operations[]` 映射/分渠道营销授权/临近凑单优惠与 `return_url` 核验（`#501`/`#438`/`#431`/`#428`/`#424`/`#423`/`#421`/`#407`/`#406`/`#405`/`#398`）及 MCP `SEP-3221` 安全参数隔离/`SEP-3193` 跨服务数据流/`SEP-3239` 委托用户窄化/Stripe Connect v2 与 Sierra $\tau$-bench 2.0 `banking_knowledge` v1.0.1 护栏（`#3239`/`#3235`/`#3221`/`#3208`/`#3193`/`#3191`/`#3185`/`#3182`/`#3173`/`#3172`/`#3171`/`#292`/`#235`/`#234`/`#222`/`#410`/`#407`/`#396`/`#395`/`#392`/`#391`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py)
+  - 单元测试：[`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_guard.py)（全仓库 **664/664** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§133)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§133)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 135：16 场景（`AC-01..AC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 134）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)
+  - 单元测试：[`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)（全仓库 **665/665** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html`（中文）](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/report.json)
+
+
 
