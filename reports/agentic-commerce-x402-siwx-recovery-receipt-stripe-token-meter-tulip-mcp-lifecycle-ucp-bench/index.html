@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 121 基准报告：x402 SIWX 服务端路径/Recovery v0.3/Receipt v2、Stripe 累积流式 Token/Tulip 门禁与 MCP SEP-3392/UCP 零 any 护栏</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; max-width: 1480px; margin: 0 auto; }
+  .card { aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .badge { font-size: 12px; color: #38bdf8; font-weight: 700; letter-spacing: 0.06em; }
+  h1, h2 { margin: 8px 0; font-size: 18px; line-height: 1.35; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  pre { background: #0f172a; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
+  .bar-blue { background: #3B82F6; height: 10px; border-radius: 4px; }
+  .bar-slate { background: #CBD5E1; height: 10px; border-radius: 4px; }
+  .good { border-left: 4px solid #22c55e; padding-left: 10px; }
+  .bad { border-left: 4px solid #ef4444; padding-left: 10px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="badge">1 / 7 · HANDS-ON · X402 SIWX/RECOVERY + STRIPE TOKEN-METER/TULIP + MCP/UCP</div>
+      <h1>Stage 121 基准报告：x402 SIWX 服务端路径/Recovery v0.3/Receipt v2、Stripe 累积流式 Token/Tulip 门禁与 MCP SEP-3392/UCP 零 any 护栏</h1>
+      <p>Deterministic Pass Rate: <strong>16/16 (100.0%)</strong> · Total Latency: <strong>0.0976 ms</strong></p>
+    </div>
+    <pre>{
+  "suite": "x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench",
+  "checked_on": "2026-10-21",
+  "provenance": "measured"
+}</pre>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">2 / 7 · SCENARIO: SR-04 &amp; SR-08 DEEP DIVE</div>
+      <h2>x402 SIWX Server-Path Entitlement (#3840) &amp; Stripe Streaming Cumulative input_tokens (25 vs 10,682, #519)</h2>
+      <p>Task type: <code>choice</code> · Action: <code>Send to a human</code> · Confidence: <code>1.00</code></p>
+      <div class="bar-blue" style="width: 100%"></div>
+    </div>
+    <pre>{"message_start": 25, "message_delta_stream": [4120, 10682], "reported_billed": 25}
+-&gt; STRIPE_TOKEN_METER_NON_CUMULATIVE_INPUT_UNDERBILLING</pre>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">3 / 7 · WHAT I TESTED (SR-01..SR-16)</div>
+      <h2>16/16 Baseline &amp; Adversarial Scenarios Across x402, Stripe AI, MCP &amp; UCP</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>SR-01</code> · x402_siwx_recovery_receipt</td><td>x402 SIWX 服务端请求路径记录 + Recovery v0.3 结算确认晋升 + Receipt v2 盐化承诺</td><td><code>X402_SIWX_RECOVERY_AND_RECEIPT_VALID</code> (✓)</td><td>Act automatically</td></tr>
+<tr><td><code>SR-02</code> · x402_siwx_recovery_receipt</td><td>x402 HEAD 请求触发付费结算（#3813 RFC 9110 §9.3.2 无响应体禁止结算）</td><td><code>X402_HEAD_REQUEST_CANNOT_SETTLE_PAYMENT</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-03</code> · x402_siwx_recovery_receipt</td><td>x402 Permit2 验签 RPC 故障被误报为伪造签名（#3843）</td><td><code>X402_PERMIT2_RPC_FAILURE_MISREPORTED_AS_BAD_SIGNATURE</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-04</code> · x402_siwx_recovery_receipt</td><td>x402 SIWX 客户端伪造 PaymentPayload.resource.url 越权解锁高价路由（#3840）</td><td><code>X402_SIWX_SERVER_PATH_ENTITLEMENT_MISMATCH</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-05</code> · x402_siwx_recovery_receipt</td><td>x402 构造 402 响应时原地篡改 extensions 引用抹除 includeTxHash（#3826）</td><td><code>X402_EXTENSIONS_OBJECT_MUTATED_DURING_402_ENRICHMENT</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-06</code> · x402_siwx_recovery_receipt</td><td>x402 Recovery 扩展在未确认结算或跨操作哈希碰撞时尝试免费重放（#3848）</td><td><code>X402_RECOVERY_FAIL_CLOSED_UNPROMOTED</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-07</code> · stripe_token_meter_tulip</td><td>Stripe AI 累积流式 input_tokens 计量 + Tulip 单向升级门禁 + 点号模型 ID 映射</td><td><code>STRIPE_TOKEN_METER_AND_TULIP_GATE_VALID</code> (✓)</td><td>Act automatically</td></tr>
+<tr><td><code>SR-08</code> · stripe_token_meter_tulip</td><td>Stripe token-meter 仅读取 message_start (25) 漏计服务端工具调用 token (10682)（#519）</td><td><code>STRIPE_TOKEN_METER_NON_CUMULATIVE_INPUT_UNDERBILLING</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-09</code> · stripe_token_meter_tulip</td><td>Stripe Tulip 门禁尝试用 AI Advisory 降级高风险规则或跳过人工确认（#482）</td><td><code>STRIPE_TULIP_HIGH_RISK_TOOL_CALL_DENIED</code> (✓)</td><td>Confirm</td></tr>
+<tr><td><code>SR-10</code> · stripe_token_meter_tulip</td><td>Stripe Tulip 审计哈希链断裂（#482）</td><td><code>STRIPE_TULIP_AUDIT_CHAIN_BROKEN</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-11</code> · stripe_token_meter_tulip</td><td>Stripe AI 未收录 Claude 模型回退至 4096 maxTokens 截断长输出（#464）</td><td><code>STRIPE_LANGUAGE_MODEL_NORMALIZED_DOT_ID_FALLBACK_4096</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-12</code> · stripe_token_meter_tulip</td><td>SynapticChain 256-lane HTTP 402 微钱包越界通道或缺失 Merkle 证明（#506）</td><td><code>STRIPE_SYNAPTIC_402_LANE_OR_MERKLE_PROOF_INVALID</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-13</code> · mcp_lifecycle_ucp_tables</td><td>MCP SEP-3392 Stable 扩展合规 + SEP-3405 Tier 1 100% 一致性 + UCP 零 any 表格</td><td><code>MCP_LIFECYCLE_AND_UCP_SCHEMA_TABLES_VALID</code> (✓)</td><td>Act automatically</td></tr>
+<tr><td><code>SR-14</code> · mcp_lifecycle_ucp_tables</td><td>MCP SEP-3392 Stable 扩展在未发布新核心协议版本下引入破坏性变更（#3392）</td><td><code>MCP_STABLE_EXTENSION_BREAKING_CHANGE_WITHOUT_CORE_REVISION</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-15</code> · mcp_lifecycle_ucp_tables</td><td>MCP SEP-3405 SDK 一致性测试通过率仅 85% 却虚报 Tier 1（#3405）</td><td><code>MCP_SDK_TIER_INFLATED_BEYOND_CONFORMANCE</code> (✓)</td><td>Send to a human</td></tr>
+<tr><td><code>SR-16</code> · mcp_lifecycle_ucp_tables</td><td>UCP 打包 Schema 渲染存在残留早期 allOf 分支导致表格退化为 any（#894/#919）</td><td><code>UCP_OBSOLETE_ALLOF_BRANCH_SHADOWS_BUNDLED_TYPE_RECOVERY</code> (✓)</td><td>Send to a human</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">4 / 7 · UNDER THE HOOD</div>
+      <h2>SIWX Server-Path Binding, Recovery v0.3 Fail-Closed Promotion &amp; Tulip One-Way Escalation</h2>
+      <pre>// Input: SIWX settle + Recovery v0.3 + Stripe streaming token-meter
+{"server_path": "/api/cheap/ping", "client_url": "/api/premium/report",
+ "message_start_tokens": 25, "message_delta_tokens": [null, 4120, 10682]}</pre>
+      <pre>// Deterministic Verifier (&lt;answer&gt;)
+1. x402 #3840/#3813: record server_request_path (never client URL); reject HEAD settle
+2. x402 #3848/#3826/#3827: clone extensions; promote only settled (op_id, settlement_ref)
+3. Stripe #519/#482/#464: bill latest non-null delta (10,682); one-way Tulip escalation</pre>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16/16 (100.0%) Perturbation &amp; Option-Reversal Consistency</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>SIWX Server Path vs Client URL (SR-01 vs SR-04)</td><td>Allow (/api/premium/report)</td><td>Block (Entitlement Mismatch)</td><td>0.0 pts</td></tr>
+          <tr><td>Streaming input_tokens null frames (SR-07 vs SR-08)</td><td>Allow (10,682 billed)</td><td>Block (25 under-billed)</td><td>0.0 pts</td></tr>
+          <tr><td>Tulip High-Risk Rule Softening (SR-07 vs SR-09)</td><td>Escalate &amp; Confirm</td><td>Deny unconfirmed softening</td><td>0.0 pts</td></tr>
+          <tr><td>UCP Bundled Schema allOf Recovery (SR-13 vs SR-16)</td><td>0 'any' cells</td><td>Block (80 'any' cells)</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">6 / 7 · LATENCY</div>
+      <h2>0.19 ms AI-Native Inline Guard vs. 1.54 ms Classic 3-Tier Inspection (8.1x Speedup)</h2>
+      <p>Primary AI-Native Path (#3B82F6): <strong>0.19 ms</strong></p>
+      <div class="bar-blue" style="width: 12%"></div>
+      <p>Baseline Classic 3-Tier Path (#CBD5E1): <strong>1.54 ms</strong></p>
+      <div class="bar-slate" style="width: 100%"></div>
+    </div>
+    <p>Sub-millisecond validation prevents unpromoted replay leaks and streaming token under-billing before settlement commits.</p>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="badge">7 / 7 · MY TAKE</div>
+      <h2>Readiness Verdict: Production-Ready for x402 SIWX/Recovery, Stripe Token-Meter/Tulip &amp; MCP/UCP</h2>
+      <div class="good">
+        <strong>✅ Good fit</strong>: x402 SIWX paid route gateways, Recovery v0.3 fail-closed replay promotion, Stripe Anthropic streaming billing &amp; Tulip tool admission, MCP SEP-3392/3405 &amp; UCP schema builds.
+      </div>
+      <div class="bad">
+        <strong>⛔ Not for</strong>: Replacing live L1/L2 consensus finality or financial-grade HSM key custody infrastructure.
+      </div>
+    </div>
+    <pre>License: MIT · Provenance: measured · Stripe MCP Cutover: 2026-11-30 (40 days remaining)</pre>
+  </section>
+</div>
+</body>
+</html>

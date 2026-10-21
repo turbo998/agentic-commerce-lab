@@ -261,6 +261,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§117.4**: MCP SEP-3415 `io.modelcontextprotocol/events` Subscription/Cursor Guard (`#3415`), RFC 8252 Loopback IP Literal `redirect_uris` (`#3384`), and Sierra $\tau$-bench 2.0 `ava_zero_pipecat` WebRTC/RTVI, Reward Breakdown, and Lazy `__getattr__` Voice Import Guard (`#631`/`#583`/`#563`).
 - **§118 (Stage 119 — Bilingual Chinese + English, `2026-10-21`)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SU-01..SU-16`)**: `lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py` & `reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.23 ms` vs. `4.09 ms` (`17.8x` speedup).
+- **§119 (Stage 120 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§119.1**: x402 Foundation SIWX Server-Request-Path Entitlement Recording (`#3840`), Recovery v0.3 Settled-Only Fail-Closed Promotion (`#3848`), Offer-Receipt v2 Salted `authorizationCommitment` & `extensions` Clone (`#3827`/`#3830`/`#3826`), Permit2 RPC Error Distinction (`#3843`), EIP-3009 `v` Normalization (`#3822`), and `HEAD` Non-Settlement Guard (`#3813`).
+  - **§119.2**: Stripe AI Cumulative Anthropic Streaming `input_tokens` Meter (`#519`), Tulip `ToolkitCore.run_tool()` One-Way Escalation Admission Gate (`#482`), Dot/Dash Normalized Model `maxTokens` Lookup (`#464`), and SynapticChain 256-Lane HTTP 402 Merkle Invoice Consolidation (`#506`).
+  - **§119.3**: MCP SEP-3392 Extension Lifecycle Maturity Gate (`#3392`), SEP-3405 Conformance-Driven SDK Tiers (`#3405`), and UCP Zero-`any` Bundled Schema Table Recovery (`#894`/`#919`).
+- **§120 (Stage 121 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SR-01..SR-16`)**: `lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py` & `reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.19 ms` vs. `1.54 ms` (`8.1x` speedup).
 
 
 

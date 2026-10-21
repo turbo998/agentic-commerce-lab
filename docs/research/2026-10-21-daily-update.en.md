@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–119)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–121)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -37,4 +37,22 @@
   - Benchmark suite: [`lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py)
   - Unit tests: [`tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py) (**631/631** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/report.json)
+
+---
+
+## Stage 120: Deterministic Guardrails for x402 SIWX Server-Path Entitlement, Recovery v0.3 Settled Promotion & Receipt v2 Salted Commitment (`#3840`/`#3848`/`#3843`/`#3830`/`#3827`/`#3826`/`#3822`/`#3813`), Stripe AI Cumulative Streaming Token-Meter & Tulip Gate (`#519`/`#482`/`#464`/`#506`), and MCP SEP-3392/3405 Lifecycle + UCP Zero-`any` Tables (`#3392`/`#3405`/`#894`/`#919`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_guard.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_guard.py)
+  - Unit tests: [`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_guard.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_guard.py) (**635/635** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§119)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§119)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 121: 16-Scenario (`SR-01..SR-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 120)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)
+  - Unit tests: [`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py) (**636/636** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/report.json)
 

@@ -1498,6 +1498,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.23 ms` vs. `4.09 ms`（`17.8x` 加速）**。
 - **技术资产**：[`lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py)、[`tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/`](../../reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/index.html)。
 
+---
+
+## 119. Stage 120 深度审计：x402 SIWX 服务端请求路径记录、Recovery v0.3 Fail-Closed 晋升与 Receipt v2 盐化承诺（`#3840`/`#3848`/`#3843`/`#3830`/`#3827`/`#3826`/`#3822`/`#3813`）、Stripe AI 累积流式 Token 计量与 Tulip 准入门禁（`#519`/`#482`/`#464`/`#506`）及 MCP SEP-3392/3405 扩展生命周期与 UCP 零 `any` 打包表格护栏（`#3392`/`#3405`/`#894`/`#919`）
+
+### 119.1 x402 SIWX 服务端路径绑定（`#3840`）、Recovery v0.3 结算确认晋升（`#3848`）、Receipt v2 盐化承诺与 `extensions` 克隆（`#3827`/`#3830`/`#3826`）及 Permit2 RPC / EIP-3009 `v` / `HEAD` 防结算护栏（`#3843`/`#3822`/`#3813`）
+- SIWX 结算钩子强制以服务端实际结算的 HTTP 请求路径登记已付凭证，防止客户端在 `PaymentPayload.resource.url` 填入高价路由而仅支付低价路由越权解锁（`#3840`）；Recovery v0.3 强制仅当 `(server_operation_id, confirmed_settlement_ref)` 结算确认且投影哈希匹配时才晋升为免费重放（`#3848`）；在构造 402 响应前克隆 `extensions` 保留 `includeTxHash`（`#3826`），并为 Receipt v2 生成支持 `eip3009` 与 `svm-memo`（SHA-256）的盐化 `authorizationCommitment`（`#3827`/`#3830`）；将 Permit2 RPC 故障与伪造签名区分上报为 `invalid_permit2_failed_to_verify_signature`（`#3843`），将 EIP-3009 `yParity` `0/1` 归一化为 `27/28`（`#3822`），并禁止无响应体的 `HEAD` 请求触发付款结算（`#3813`）。
+
+### 119.2 Stripe AI Anthropic 累积流式 `input_tokens` 计量（`#519`）、Tulip `ToolkitCore.run_tool()` 确定性准入门禁（`#482`）、点号/连字符模型 ID 映射（`#464`）与 256 通道 402 微钱包 Merkle 对账（`#506`）
+- 读取流式事件中最新的非空 `message_delta.usage.input_tokens` 累积值（为空或省略时保留前值，显式 `0` 有效），消除服务端工具调用将输入从 `25` 增至 `10,682` 时的严重漏计费（`#519`）；通过 `GovernedToolkitMixin` 在 `ToolkitCore.run_tool()` 实施哈希链审计与单向风险升级（AI Advisory 仅可将低风险升级为需确认的高风险，严禁软化高风险规则，异常时 Fail-Safe 阻断，`#482`）；同时匹配连字符与点号归一化的 Claude 模型 ID（`64000`/`8192`）防止回退至 `4096`（`#464`），并校验 256 通道 HTTP 402 微钱包的 Merkle Root 汇总发票证明（`#506`）。
+
+### 119.3 MCP SEP-3392 扩展成熟度门禁（`#3392`）、SEP-3405 一致性测试驱动 SDK 分级（`#3405`）与 UCP 打包 Schema 零 `any` 表格恢复（`#894`/`#919`）
+- 强制校验 `experimental-ext-*`、`beta-ext-*`、`ext-*`（Stable）与 Core 的演进条件，禁止 Stable 扩展在未发布新核心协议版本时引入破坏性变更（`#3392`）；完全按自动化一致性套件通过率评定 SDK Tier 1/2/3（`#3405`）；移除遮蔽打包类型恢复的早期 `allOf` 分支，确保 UCP 全部 21 页文档表格实现 `0` 个 `any` 单元格（`#894`/`#919`；参见 `lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_guard.py`）。
+
+---
+
+## 120. Stage 121 基准评测：16 场景（`SR-01..SR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 120 三大护栏域的 16 个场景（`SR-01..SR-16`，3 个合规基线 + 13 个对抗性故障与越权注入）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.19 ms` vs. `1.54 ms`（`8.1x` 加速）**。
+- **技术资产**：[`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)、[`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py) 及双语报告 [`reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/`](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html)。
+
 
 
 
