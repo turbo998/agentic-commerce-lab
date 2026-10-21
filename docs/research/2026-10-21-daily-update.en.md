@@ -326,5 +326,24 @@
   - Unit tests: [`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py) (**697/697** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/report.json)
 
+---
+
+## Stage 152: Deterministic Guardrails for x402 Unresolved Settlement Obligation & Pact-Escrow Gate/5-Pass Fixed-Point `routeTemplate` Unescape & Dotless CAIP-2/MCP Timeout Sizing & 1MiB-4MiB Streaming Caps (`#3437`/`#3448`/`#3401`/`#3441`/`#3436`/`#3432`/`#3443`/`#3442`/`#3430`/`#3431`/`#3427`/`#3369`/`#3368`/`#3363`/`#3362`/`#3423`), UCP Lodging Add-Ons & Booker Minimum Age/Computable `checkout_jwt` Binding/Order Contingencies & `price_on_request` Gate/Order Webhook Signing & Sale-Basis Steps (`#960`/`#959`/`#958`/`#954`/`#953`/`#905`/`#952`/`#904`/`#872`/`#896`/`#877`/`#865`/`#659`/`#657`/`#655`/`#653`), ACP Push-Rail (Pix/A2A) & Appointment Slots/Per-Delegation Attribution (`#282`/`#242`/`#153`/`#141`/`#231`/`#165`/`#162`/`#160`), AP2 Register-Backed Merchant Identity & 7-Year Dispute Archive/`acceptable_items` Wildcard Block (`#375`/`#338`/`#224`/`#298`/`#268`/`#211`), and MCP Pre-Dispatch Sync Gate/Stripe $O(N+M)$ Product Map/Visa TAP Temporal Authority/$\tau$-bench Sandbox Escape Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py`](../../lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py) (**700/700** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§151)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§151)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 153: 16-Scenario (`UN-01..UN-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 152)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py) (**701/701** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/report.json)
+
+
 
 

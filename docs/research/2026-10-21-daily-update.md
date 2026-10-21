@@ -326,5 +326,24 @@
   - 单元测试：[`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py)（全仓库 **697/697** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/report.json)
 
+---
+
+## Stage 152：x402 未决结算接收方义务与 Pact-Escrow 门控/`routeTemplate` 5 轮不动点解码与 CAIP-2 无点号语法/MCP 动态超时与 1MiB-4MiB 流式响应上限（`#3437`/`#3448`/`#3401`/`#3441`/`#3436`/`#3432`/`#3443`/`#3442`/`#3430`/`#3431`/`#3427`/`#3369`/`#3368`/`#3363`/`#3362`/`#3423`）、UCP 住宿预订附加项与签约人法定年龄/可计算 `checkout_jwt` 绑定/买家履约应急策略与 `price_on_request` 门控/Order Webhook 签名门控与销售步长（`#960`/`#959`/`#958`/`#954`/`#953`/`#905`/`#952`/`#904`/`#872`/`#896`/`#877`/`#865`/`#659`/`#657`/`#655`/`#653`）、ACP 推送式支付（Pix/A2A）与预约时段/逐次委托归因（`#282`/`#242`/`#153`/`#141`/`#231`/`#165`/`#162`/`#160`）、AP2 注册表商户核验与 7 年自包含争议归档/`acceptable_items` 通配符阻断（`#375`/`#338`/`#224`/`#298`/`#268`/`#211`）及 MCP 派发前同步护栏/Stripe $O(N+M)$ 索引/Visa TAP 时序权限/$\tau$-bench 沙箱防逃逸护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py`](../../lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_guard.py)（全仓库 **700/700** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§151)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§151)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 153：16 场景（`UN-01..UN-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 152）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../lab/x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py)（全仓库 **701/701** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/report.json)
+
+
 
 
