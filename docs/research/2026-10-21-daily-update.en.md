@@ -200,5 +200,23 @@
   - Unit tests: [`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py) (**669/669** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/report.json)
 
+---
+
+## Stage 138: Deterministic Guardrails for x402 Escaped/Decoded Route Matching/Strict CAIP-2 Chain ID/Non-Terminal `settlement_pending` Reconciliation/Fastify Buffered Raw Drain/JWS `jwk` Binding/Arbitrum `USDC` Priority (`#3565`/`#3563`/`#3561`/`#3551`/`#3549`/`#3548`/`#3546`/`#3545`/`#3543`/`#3542`/`#3538`/`#3523`/`#3521`/`#3519`/`#3514`/`#3508`), UCP Itemized Fees/Top-Level `Order.currency`/Checkout Update `id` Omission (`#220`/`#210`/`#184`/`#154`/`#147`/`#145`/`#109`/`#96`), and MCP `SEP-3004` Audit Hash Chain/`SEP-2664` Streaming Authority + Sierra $\tau$-bench `NL_ASSERTION`/LiveKit/Barge-In Guards (`#3109`/`#3100`/`#3094`/`#3071`/`#3006`/`#3005`/`#3004`/`#3002`/`#3000`/`#2998`/`#248`/`#240`/`#239`/`#236`/`#226`/`#221`/`#210`/`#208`/`#177`/`#170`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py)
+  - Unit tests: [`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py) (**672/672** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§137)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§137)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 139: 16-Scenario (`EP-01..EP-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 138)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)
+  - Unit tests: [`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py) (**673/673** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/report.json)
+
 
 

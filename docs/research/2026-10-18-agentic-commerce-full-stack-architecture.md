@@ -1688,6 +1688,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.44 ms` vs. `4.38 ms`（`9.9x` 加速）**。
 - **技术资产**：[`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)、[`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py) 及双语报告 [`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html)。
 
+---
+
+## 137. Stage 138 护栏：x402 编码/解码路径双重路由匹配、严格 CAIP-2 链 ID 与非终态 `settlement_pending` 对账，UCP 分项费用、顶层订单币种与更新省略 `id`，以及 MCP `SEP-3004` 防篡改审计哈希链与 `SEP-2664`/`2998` 流式工具权威性护栏
+
+### 137.1 x402 Foundation 编码/解码路径双重匹配防免付绕过（`#3543`/`#3542`）、严格 `^eip155:[1-9][0-9]*$` CAIP-2 链 ID 校验（`#3521`）、非终态 `settlement_pending` 链上对账与防误判 `settle_failed`（`#3545`/`#3561`）、Fastify 缓冲原始响应消费清空（`#3548`）、Offer/Receipt JWS 头部 `jwk`/`kid` 绑定（`#3519`）、Arbitrum One 裸美元 `USDC` 优先于 Sperax `USDs` (`permit2`)（`#3514`）及 Python MCP 付费工具单次纠正重试（`#3508`/`#3565`/`#3551`）
+- 在 Go/TS/Python HTTP 资源服务端同时对原始 `path` 与 URL 解码路径 `decoded_path` 执行受保护路由匹配，拦截 `/api%2Fpremium` 免付穿透及 `%252e%252e` 双重编码点段穿越（`#3543`/`#3542`）；以严格正则 `^eip155:([1-9][0-9]*)$` 替代宽松 `parseInt(idStr, 10)`，拒绝 `eip155:8453abc` 或 `eip155:01` 畸形网络标识（`#3521`）；将 `settlement_pending` 视为非终态，强制通过 `PendingSettlementStore` 在链上对账前禁止重试扣款或被客户端误映射为终态 `settle_failed`（`#3545`/`#3561`）；在 Fastify 受保护原始响应重建后清空缓冲调用防错误分支重放私有响应体（`#3548`）；校验 Offer/Receipt JWS 头部可选 `jwk` 严禁含私钥字段且与注册表 `kid` 公钥一致（`#3519`）；确保 Arbitrum One 裸美元报价优先解析为 `USDC` (`eip3009`) 而非 Sperax `USDs` (`permit2`)（`#3514`），并校验 Python MCP `handle_payment_response` 单次 402 纠正重试、EIP-6492 工厂白名单与 Gas 赞助 RPC 能力（`#3508`/`#3565`/`#3551`）。
+
+### 137.2 UCP 分项附加费守恒与防负额伪装折扣（`#220`）、顶层 `Order.currency` 强制一致（`#210`）、结账更新请求省略 `id`（`deprecated_required_to_omit`，`#145`）与一等错误分类/多父级确定性 Schema 解析（`#147`/`#96`/`#109`/`#184`）
+- 校验 UCP 结账与购物车分项费用（`service`/`handling`/`recycling`）非负且总和严格等于 `declared_fees_total_minor`（`#220`）；强制顶层 `Order.currency` 为合法 ISO 4217 三字母大写币种且与所有行项目币种一致（`#210`）；在结账更新请求（`PATCH`/`PUT`）中强制省略已标记为 `deprecated_required_to_omit` 的请求体 `id` 字段（`#145`）；校验一等错误严重度分类与多父级 `$defs` 扩展无重复冲突（`#147`/`#96`）。
+
+### 137.3 MCP `SEP-3004` 防篡改审计记录 SHA-256 哈希链（`#3004`）、`SEP-2243` `HeaderMismatch` `-32020` 错误码（`#3005`）、`SEP-2664`/`SEP-2998` 流式工具分片非权威性（`#3000`/`#2998`）、无 `inputSchema` 禁构造 `Mcp-Param-*` 头（`#3071`）与 Sierra $\tau$-bench 2.0 `EvaluationType.ALL` `NL_ASSERTION`、LiveKit 非阻塞队列及 Barge-In 让渡护栏（`#226`/`#248`/`#221`/`#177`/`#170`）
+- 对 MCP 工具调用执行 `SEP-3004` 规范化字节序列 + 只追加 SHA-256 哈希链（`prev_hash:canonical_payload`）校验（`#3004`）；强制 `SEP-2243` `HeaderMismatch` 使用 `-32020` 错误码（`#3005`）；在 `SEP-2664`/`SEP-2998` 流式工具进度/部分结果传输期间严禁触发不可逆扣款副作用，仅以最终 `CallToolResult` 为唯一权威响应（`#3000`/`#2998`）；未获取工具 `inputSchema` 前禁止构造 `Mcp-Param-*` 头（`#3071`）；在 $\tau$-bench 2.0 中当任务 `reward_basis` 含 `NL_ASSERTION` 时强制 `EvaluationType.ALL` 执行自然语言断言评测器（修复 112/114 零售任务崩溃，`#226`），并确保 LiveKit 适配器非阻塞后台事件队列（`#248`）与用户打断（Barge-In）时 Agent 立即停止音频输出（`#221`；参见 `lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py`）。
+
+---
+
+## 138. Stage 139 基准评测：16 场景（`EP-01..EP-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 138 三大护栏域的 16 个场景（`EP-01..EP-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.37 ms` vs. `3.70 ms`（`10.0x` 加速）**。
+- **技术资产**：[`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)、[`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py) 及双语报告 [`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html)。
+
 
 
 

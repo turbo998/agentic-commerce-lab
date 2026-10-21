@@ -104,10 +104,10 @@ Every benchmark report adheres to the **7-Card 4:5 Visual Report Standard** (`CS
 Requires Python 3.12+ (standard library only; zero network calls, zero API keys, zero payment accounts required):
 
 ```powershell
-# Run full unit test suite (669 unit tests across Stages 1–137)
+# Run full unit test suite (673 unit tests across Stages 1–139)
 python -m unittest discover -s tests -q
 
-# Run offline checkout demo, Stage 117–137 benchmarks & Stripe MCP 2026-11-30 cutover inventory check
+# Run offline checkout demo, Stage 117–139 benchmarks & Stripe MCP 2026-11-30 cutover inventory check
 python -m lab.demo
 python -m lab.acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench
 python -m lab.x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench
@@ -120,6 +120,7 @@ python -m lab.x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra
 python -m lab.x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench
 python -m lab.x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench
 python -m lab.x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench
+python -m lab.x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench
 python -m lab.mcp_migration --as-of 2026-10-21
 python -m lab.mcp_migration --as-of 2026-11-30
 

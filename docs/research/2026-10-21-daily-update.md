@@ -200,5 +200,23 @@
   - 单元测试：[`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)（全仓库 **669/669** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html`（中文）](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/report.json)
 
+---
+
+## Stage 138：x402 编码/解码路径双重路由匹配/严格 CAIP-2 链 ID/非终态 `settlement_pending` 对账/Fastify 原始缓冲消费/JWS `jwk` 绑定/Arbitrum `USDC` 优先（`#3565`/`#3563`/`#3561`/`#3551`/`#3549`/`#3548`/`#3546`/`#3545`/`#3543`/`#3542`/`#3538`/`#3523`/`#3521`/`#3519`/`#3514`/`#3508`）、UCP 分项附加费/顶层 `Order.currency`/结账更新省略 `id`（`#220`/`#210`/`#184`/`#154`/`#147`/`#145`/`#109`/`#96`）及 MCP `SEP-3004` 防篡改审计哈希链/`SEP-2664` 流式工具权威性与 Sierra $\tau$-bench `NL_ASSERTION`/LiveKit/Barge-In 护栏（`#3109`/`#3100`/`#3094`/`#3071`/`#3006`/`#3005`/`#3004`/`#3002`/`#3000`/`#2998`/`#248`/`#240`/`#239`/`#236`/`#226`/`#221`/`#210`/`#208`/`#177`/`#170`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py)
+  - 单元测试：[`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_guard.py)（全仓库 **672/672** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§137)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§137)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 139：16 场景（`EP-01..EP-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 138）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)
+  - 单元测试：[`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)（全仓库 **673/673** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html`（中文）](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/report.json)
+
 
 
