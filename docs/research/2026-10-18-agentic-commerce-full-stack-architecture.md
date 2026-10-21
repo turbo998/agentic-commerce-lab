@@ -1961,6 +1961,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.09 ms` vs. `12.54 ms`（`11.5x` 加速）**。
 - **技术资产**：[`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py)、[`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/`](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html)。
 
+---
+
+## 163. Stage 164 架构演进：x402 Cardano eUTxO 原生代币 `minUTxO` 保护与 L3 自定义 Gas/Facilitator ZK 偿付能力证明/SSE 流式按 Token 计费、UCP 订阅暂停零扣款与按日折算守恒/ZK 年龄门禁/延保序列号级联、ACP 3DS 解耦认证（`transStatus='D'`）与商户即时提现准备金门禁、AP2 FIDO2 生物识别 `UV` 位与跨组织 SPIFFE 联邦委托及 MCP Roots 软链接沙箱/Stripe Connect/Visa TAP 推送发卡/$\tau$-bench 确定性护栏
+
+### 163.1 x402 Foundation Cardano (`cardano:mainnet`) eUTxO 原生代币 `minUTxO` Lovelace 保护与 Plutus 抵押品防抽干（`#3724`/`#3719`/`#3714`）、L3 自定义 Gas 代币费率标量上限与未上链 Sequencer 软确认阻断（`#3732`/`#3728`/`#3721`）、Facilitator 零知识偿付能力（ZK Proof of Solvency）与 `>=100%` 准备金证明（`#3740`/`#3736`/`#3730`）及 `@x402/fetch` SSE 流式按 Token 计量防幽灵扣费（`#3748`/`#3744`/`#3738`）
+- 在 Cardano eUTxO 多资产结算中强制校验 56 字符 `policy_id`、`asset_name_hex`、`output_lovelace >= min_utxo_lovelace >= 1_000_000` 及槽位 TTL 窗口（`<=600` slots），并拦截未授权 Plutus datum 或抵押品抽干（`#3724`/`#3719`/`#3714`）；在 Arbitrum Orbit / Superchain L3 结算中限制 `rollup_fee_scalar_bps <= 12000`、合并 L1 DA Blob 费用占比 `<= 25%`，并对高价值交易拒绝仅依赖未提交 L1 批次的 Sequencer 软确认（`#3732`/`#3728`/`#3721`）；在 Facilitator 托管结算中强制校验零知识偿付能力证明（ZK-SNARK）、Merkle 根新鲜度（`<=3600s`）及 `attested_reserves >= total_liabilities + pending_settlement`（`#3740`/`#3736`/`#3730`）；在 `@x402/fetch` 流式 SSE 计费中强制校验严格递增 `chunk_seq`、载荷 SHA-256 收据一致及 `billed_tokens <= delivered_tokens`（`#3748`/`#3744`/`#3738`）。
+
+### 163.2 Google UCP 订阅暂停期零扣费与未使用天数折算抵扣守恒（`#828`/`#824`/`#819`/`#815`）、年龄限制商品零知识年龄证明与成人签收门禁（`#836`/`#832`/`#826`）、延保服务（Protection Plan）主硬件存活与序列号哈希绑定（`#844`/`#840`/`#834`）及 OpenAI/Stripe ACP 3DS 解耦认证（`transStatus='D'`）带外完成门禁与商户即时提现（Instant Payout）准备金护栏（`#262`/`#258`/`#254`/`#250`/`#270`/`#266`/`#260`）
+- 在 UCP 订阅暂停中限制单次暂停 `<=90d`、严禁 `PAUSED` 态产生周期扣费、强制校验 `reported_proration_credit_minor == (cycle_price * unused_days) // cycle_total_days` 及自动恢复提前 `>=24h` 通知（`#828`/`#824`/`#819`/`#815`）；在受管制/年龄限制 SKU 中拒绝客户端布尔自声明，强制校验受信任签发方零知识年龄证明与收货成人签名要求（`#836`/`#832`/`#826`）；在延保/AppleCare 类附件中阻断主硬件已取消的孤儿延保计费，并校验硬件价格档位匹配、序列号 SHA-256 绑定与保障起算时间不早于物理签收（`#844`/`#840`/`#834`）；在 ACP EMV 3DS 解耦认证（`transStatus='D'`）中严禁在带外挑战完成前提前请款，强制校验 `<=900s` 窗口、有效 `CAVV` + `ECI ('05'/'02')` 与 `checkout_session_id` 绑定（`#262`/`#258`/`#254`/`#250`）；在商户即时提现中要求账户账龄达标、已确认妥投或具备 `>=100%` 担保准备金覆盖且不超日累计提现上限（`#270`/`#266`/`#260`）。
+
+### 163.3 Google AP2 WebAuthn/FIDO2 生物识别 `UV` 位与 `signCount` 防克隆（`#332`/`#328`/`#324`/`#320`）及跨组织 SPIFFE 联邦工作负载委托链（`#340`/`#336`/`#330`）、MCP Roots 工作区软链接防逃逸（`#3350`/`#3345`/`#3340`）、Stripe Connect Destination Charge 跨区与抽成上限（`#482`/`#478`/`#472`）、Visa TAP 推送入包（Push-to-Wallet）设备安全芯片绑定（`#28`/`#25`/`#21`）及 Sierra $\tau$-bench 2.0 零售价保核验与常旅客里程防重复恢复护栏（`#575`/`#570`/`#566`/`#584`/`#580`/`#576`）
+- 在 Google AP2 高敏感授权中强制校验 FIDO2 `authenticatorData` 同时置位 `UP (0x01)` 与 `UV (0x04)`、硬件通行密钥背书、`rpIdHash` 匹配及 `signCount` 严格单调递增（`#332`/`#328`/`#324`/`#320`）；在跨企业联邦采购中校验 `spiffe://<trust_domain>/ns/<ns>/sa/<sa>` 信任域白名单、RFC 8693 `act` 链深度 `<=2`、目标受众匹配及权限子集衰减（`#340`/`#336`/`#330`）；在 MCP `roots/list` 沙箱中解码双重 URL 编码并校验请求路径及软链接解析目标均严格位于声明的根路径内（`#3350`/`#3345`/`#3340`）；在 Stripe Connect Destination Charge 中校验关联账户 `transfers` 能力激活、`on_behalf_of` 国家一致、平台抽成 `<=30%` 且商户净结算额为正（`#482`/`#478`/`#472`）；在 Visa TAP 推送发卡中校验发卡行密文、TRID 白名单、防重放 Nonce 与目标设备 SE/TEE 哈希绑定（`#28`/`#25`/`#21`）；在 Sierra $\tau$-bench 2.0 中校验零售买后退差价（白名单竞对域名、同款现货、非清仓闪购、`<=14d` 窗口）与航司/酒店过期里程恢复（合作伙伴加密证明、手续费已付、`reinstatement_tx_id` 幂等防双倍入账，`#575`/`#570`/`#566`/`#584`/`#580`/`#576`；参见 `lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_guard.py`）。
+
+---
+
+## 164. Stage 165 基准评测：16 场景（`CD-01..CD-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 164 全部 16 项协议护栏（`CD-01..CD-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.08 ms` vs. `12.45 ms`（`11.5x` 加速）**。
+- **技术资产**：[`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)、[`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/`](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html)。
+
 
 
 

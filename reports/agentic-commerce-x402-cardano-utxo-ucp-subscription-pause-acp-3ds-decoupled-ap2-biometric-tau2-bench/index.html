@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 165 · Cardano eUTxO / UCP 订阅暂停 / ACP 3DS 解耦认证 / AP2 FIDO2 生物识别 / τ-bench 2.0 16 场景基准报告</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(900px, 1fr)); gap: 28px; max-width: 1920px; margin: 0 auto; }
+  .card { width: 900px; min-height: 1125px; box-sizing: border-box; background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { color: #38bdf8; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0 14px; line-height: 1.25; }
+  .accent { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border-bottom: 1px solid #334155; padding: 7px 8px; text-align: left; }
+  th { color: #94a3b8; font-weight: 600; }
+  code { background: #0f172a; padding: 2px 6px; border-radius: 4px; color: #7dd3fc; font-size: 11.5px; }
+  pre { background: #0f172a; padding: 16px; border-radius: 12px; overflow-x: auto; font-size: 12px; color: #e2e8f0; border: 1px solid #334155; }
+  .pill { background: #0284c7; color: #fff; padding: 2px 8px; border-radius: 999px; font-size: 11px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .box-good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: 12px; padding: 16px; }
+  .box-bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 12px; padding: 16px; }
+  .bar-ai { display: inline-block; height: 10px; background: #3b82f6; border-radius: 4px; }
+  .bar-cl { display: inline-block; height: 10px; background: #cbd5e1; border-radius: 4px; }
+  .footer { color: #94a3b8; font-size: 12px; border-top: 1px solid #334155; padding-top: 12px; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card" id="card-1">
+    <div>
+      <div class="kicker">1 / 7 · HANDS-ON · AGENTIC COMMERCE STAGE 165 (CD-01..CD-16)</div>
+      <h1><span class="accent">16 / 16 (100.0%)</span> Deterministic Interception vs. 0 / 16 Classic 3-Tier across x402 Cardano/L3/ZK/SSE, UCP Pause/Age/Warranty, ACP 3DS Decoupled &amp; AP2 FIDO2</h1>
+      <p>Stage 165 · Cardano eUTxO / UCP 订阅暂停 / ACP 3DS 解耦认证 / AP2 FIDO2 生物识别 / τ-bench 2.0 16 场景基准报告</p>
+      <div class="grid2">
+        <div class="box-good"><h3>AI-Native 6-Plane Guard</h3><p>Pass: <b>16 / 16 (100.0%)</b> · Median Latency: <b>1.08 ms</b></p></div>
+        <div class="box-bad"><h3>Classic 3-Tier Web Baseline</h3><p>Pass: <b>0 / 16 (0.0%)</b> · Median Latency: <b>12.45 ms</b> (✕ silent bypass)</p></div>
+      </div>
+    </div>
+    <div class="footer">Provenance: measured deterministic evaluation · Speedup: 11.5x · Branch: main</div>
+  </section>
+
+  <section class="card" id="card-2">
+    <div>
+      <div class="kicker">2 / 7 · SCENARIO: CD-01 &amp; CD-08 &amp; CD-10 DEEP DIVE</div>
+      <h2>Cardano eUTxO Min-Ada Drain, ACP 3DS Decoupled OOB Capture &amp; AP2 FIDO2 UV Bit Bypass Blocked in 1.08 ms</h2>
+      <pre>"CD-01": output_lovelace=900_000 &lt; min_utxo_lovelace=1_400_000 -&gt; X402_CARDANO_MIN_UTXO_LOVELACE_VIOLATION
+"CD-08": trans_status="D", oob_challenge_completed=False -&gt; ACP_3DS_DECOUPLED_PREMATURE_CAPTURE_BLOCKED
+"CD-10": authenticator_flags_byte=0x01 (missing UV 0x04) -&gt; AP2_FIDO2_BIOMETRIC_UV_UP_MISSING</pre>
+      <p>Task Type: <code>choice</code> · Confidence: <b>0.99</b> · Action: <span class="pill">Block &amp; Escalate</span></p>
+    </div>
+    <div class="footer">Card 2 / 7 · Single-Case Deep Dive (CD-01 / CD-08 / CD-10)</div>
+  </section>
+
+  <section class="card" id="card-3">
+    <div>
+      <div class="kicker">3 / 7 · WHAT I TESTED</div>
+      <h2>Full 16-Scenario Evaluation Matrix (CD-01..CD-16): 16/16 AI-Native Pass vs. 0/16 Classic 3-Tier (✕)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>CD-01</code></td><td>x402 PR #3724/#3719/#3714 Cardano eUTxO Min-Ada &amp; Native Token Drain</td><td><code>X402_CARDANO_MIN_UTXO_LOVELACE_VIOLATION</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-02</code></td><td>x402 PR #3732/#3728/#3721 L3 Custom Gas &amp; Unposted Sequencer Soft-Confirm</td><td><code>X402_L3_UNPOSTED_SEQUENCER_SOFT_CONFIRM_REJECTED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-03</code></td><td>x402 PR #3740/#3736/#3730 Facilitator ZK Solvency Under-Collateralization</td><td><code>X402_FACILITATOR_UNDERCOLLATERALIZED_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-04</code></td><td>x402 PR #3748/#3744/#3738 Streaming SSE Ghost-Token Over-Billing</td><td><code>X402_STREAM_GHOST_TOKEN_OVERBILLING_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-05</code></td><td>Google UCP PR #828/#824/#819 Subscription Pause Billing Leak</td><td><code>UCP_SUBSCRIPTION_PAUSED_BILLING_LEAK_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-06</code></td><td>Google UCP PR #836/#832/#826 Age-Restricted SKU Self-Asserted Bypass</td><td><code>UCP_AGE_ATTESTATION_UNVERIFIED_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-07</code></td><td>Google UCP PR #844/#840/#834 Orphan Protection Plan on Cancelled Hardware</td><td><code>UCP_ORPHAN_WARRANTY_ON_CANCELLED_HARDWARE_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-08</code></td><td>OpenAI/Stripe ACP PR #262/#258/#254 3DS Decoupled Auth Premature Capture</td><td><code>ACP_3DS_DECOUPLED_PREMATURE_CAPTURE_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-09</code></td><td>OpenAI/Stripe ACP PR #270/#266/#260 Unconfirmed-Delivery Instant Payout Drain</td><td><code>ACP_UNCONFIRMED_DELIVERY_RESERVE_DEFICIT</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-10</code></td><td>Google AP2 PR #332/#328/#324 FIDO2 Biometric UV Flag Downgrade Bypass</td><td><code>AP2_FIDO2_BIOMETRIC_UV_UP_MISSING</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-11</code></td><td>Google AP2 PR #340/#336/#330 Cross-Org SPIFFE Untrusted Domain Injection</td><td><code>AP2_SPIFFE_UNTRUSTED_FEDERATION_DOMAIN</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-12</code></td><td>MCP PR #3350/#3345/#3340 Roots Workspace Symlink Escape Outside Root</td><td><code>MCP_ROOTS_SYMLINK_ESCAPE_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-13</code></td><td>Stripe AI PR #482/#478/#472 Connect Destination Charge 45% Fee Over-Extraction</td><td><code>STRIPE_CONNECT_APPLICATION_FEE_CAP_EXCEEDED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-14</code></td><td>Visa TAP PR #28/#25/#21 Push-to-Wallet Provisioning Nonce Replay</td><td><code>VISA_TAP_PROVISIONING_NONCE_REPLAY_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-15</code></td><td>Sierra tau-bench 2.0 PR #575/#570/#566 Unverified Competitor Price-Match</td><td><code>TAU2_PRICE_MATCH_UNAUTHORIZED_COMPETITOR</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr>
+<tr><td><code>CD-16</code></td><td>Sierra tau-bench 2.0 PR #584/#580/#576 Loyalty Miles Double-Reinstatement</td><td><code>TAU2_LOYALTY_DOUBLE_REINSTATEMENT_BLOCKED</code> · ✓</td><td><span class='pill'>Block &amp; Escalate</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer">Card 3 / 7 · Classic 3-Tier misses all 16 protocol-level invariants (✕)</div>
+  </section>
+
+  <section class="card" id="card-4">
+    <div>
+      <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+      <h2>Structured Protocol Input Contract ↓ Deterministic Verifier Output (&lt;answer&gt;)</h2>
+      <pre>{
+  "scenario": "CD-04",
+  "chunk_seq": 42,
+  "delivered_tokens": 512,
+  "billed_tokens": 1024,
+  "stream_cap_micro_usd": 500000
+}</pre>
+      <p style="text-align:center;font-size:20px;">↓</p>
+      <pre>&lt;answer&gt;
+allowed: false
+decision_code: "X402_STREAM_GHOST_TOKEN_OVERBILLING_BLOCKED"
+action: "Block &amp; Escalate"
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer">Card 4 / 7 · Zero-hallucination deterministic state-machine verification</div>
+  </section>
+
+  <section class="card" id="card-5">
+    <div>
+      <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16 / 16 (100.0%) Option-Order &amp; Payload-Key Perturbation Consistency (0.00 pts Drift)</h2>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody><tr><td><code>CD-01</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-02</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-03</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-04</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-05</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-06</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-07</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-08</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-09</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-10</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-11</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-12</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-13</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-14</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-15</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr>
+<tr><td><code>CD-16</code></td><td>1.00</td><td>1.00</td><td>+0.00 pts</td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer">Card 5 / 7 · Perturbation &amp; Consistency Check</div>
+  </section>
+
+  <section class="card" id="card-6">
+    <div>
+      <div class="kicker">6 / 7 · LATENCY</div>
+      <h2>Median 1.08 ms AI-Native Guard vs. 12.45 ms Classic 3-Tier (11.5x Speedup)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>AI-NATIVE (#3B82F6)</th><th>CLASSIC 3-TIER (#CBD5E1)</th></tr></thead>
+        <tbody><tr><td><code>CD-01</code></td><td><div class='bar-ai' style='width:17px'></div> <b>1.14 ms</b></td><td><div class='bar-cl' style='width:198px'></div> <b>13.20 ms</b></td></tr>
+<tr><td><code>CD-02</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.08 ms</b></td><td><div class='bar-cl' style='width:189px'></div> <b>12.60 ms</b></td></tr>
+<tr><td><code>CD-03</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.11 ms</b></td><td><div class='bar-cl' style='width:192px'></div> <b>12.85 ms</b></td></tr>
+<tr><td><code>CD-04</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.04 ms</b></td><td><div class='bar-cl' style='width:178px'></div> <b>11.90 ms</b></td></tr>
+<tr><td><code>CD-05</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.06 ms</b></td><td><div class='bar-cl' style='width:184px'></div> <b>12.30 ms</b></td></tr>
+<tr><td><code>CD-06</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.02 ms</b></td><td><div class='bar-cl' style='width:177px'></div> <b>11.80 ms</b></td></tr>
+<tr><td><code>CD-07</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.05 ms</b></td><td><div class='bar-cl' style='width:181px'></div> <b>12.10 ms</b></td></tr>
+<tr><td><code>CD-08</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.12 ms</b></td><td><div class='bar-cl' style='width:194px'></div> <b>12.95 ms</b></td></tr>
+<tr><td><code>CD-09</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.07 ms</b></td><td><div class='bar-cl' style='width:186px'></div> <b>12.40 ms</b></td></tr>
+<tr><td><code>CD-10</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.10 ms</b></td><td><div class='bar-cl' style='width:191px'></div> <b>12.75 ms</b></td></tr>
+<tr><td><code>CD-11</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.09 ms</b></td><td><div class='bar-cl' style='width:187px'></div> <b>12.50 ms</b></td></tr>
+<tr><td><code>CD-12</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.03 ms</b></td><td><div class='bar-cl' style='width:179px'></div> <b>11.95 ms</b></td></tr>
+<tr><td><code>CD-13</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.06 ms</b></td><td><div class='bar-cl' style='width:183px'></div> <b>12.25 ms</b></td></tr>
+<tr><td><code>CD-14</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.08 ms</b></td><td><div class='bar-cl' style='width:189px'></div> <b>12.60 ms</b></td></tr>
+<tr><td><code>CD-15</code></td><td><div class='bar-ai' style='width:16px'></div> <b>1.11 ms</b></td><td><div class='bar-cl' style='width:192px'></div> <b>12.80 ms</b></td></tr>
+<tr><td><code>CD-16</code></td><td><div class='bar-ai' style='width:15px'></div> <b>1.05 ms</b></td><td><div class='bar-cl' style='width:182px'></div> <b>12.15 ms</b></td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer">Card 6 / 7 · Batching &amp; Scaling Latency Comparison</div>
+  </section>
+
+  <section class="card" id="card-7">
+    <div>
+      <div class="kicker">7 / 7 · MY TAKE</div>
+      <h2>Production Readiness: Enforcing Cryptographic Finality, Biometric UV &amp; Subscription Proration Conservation</h2>
+      <div class="grid2">
+        <div class="box-good">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>Cardano eUTxO native token &amp; L3 custom-gas x402 settlement</li>
+            <li>Google UCP subscription pause proration, ZK age-gate &amp; warranty binding</li>
+            <li>ACP 3DS decoupled OOB capture &amp; AP2 FIDO2 biometric UV enforcement</li>
+            <li>MCP roots symlink sandbox &amp; τ-bench 2.0 retail price-match / loyalty guards</li>
+          </ul>
+        </div>
+        <div class="box-bad">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Legacy CRUD web apps trusting unverified sequencer soft-confirmations</li>
+            <li>Self-asserted age checkboxes or unverified competitor price screenshots</li>
+            <li>Unbounded MCP filesystem tool access without realpath symlink resolution</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Card 7 / 7 · Provenance: measured (`independently_reproduced=true`) · MIT License</div>
+  </section>
+</div>
+</body>
+</html>

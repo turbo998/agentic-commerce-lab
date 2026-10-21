@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–163)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–165)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -433,6 +433,24 @@
   - Benchmark suite: [`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py)
   - Unit tests: [`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py) (**721/721** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/report.json)
+
+---
+
+## Stage 164: Deterministic Guardrails for x402 Cardano eUTxO `minUTxO` & L3 Custom Gas/Facilitator ZK Solvency/Streaming SSE Metering (`#3724`/`#3719`/`#3714`/`#3732`/`#3728`/`#3721`/`#3740`/`#3736`/`#3730`/`#3748`/`#3744`/`#3738`), UCP Subscription Pause Proration & ZK Age-Gate/Warranty Serial Binding (`#828`/`#824`/`#819`/`#815`/`#836`/`#832`/`#826`/`#844`/`#840`/`#834`), ACP 3DS Decoupled (`transStatus='D'`) & Instant Payout Reserve (`#262`/`#258`/`#254`/`#250`/`#270`/`#266`/`#260`), AP2 FIDO2 Biometric `UV` & Federated SPIFFE Trust (`#332`/`#328`/`#324`/`#320`/`#340`/`#336`/`#330`), and MCP Roots Sandbox/Stripe Connect/Visa TAP Push-Provisioning/$\tau$-bench Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_guard.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_guard.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_guard.py) (**724/724** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§163)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§163)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 165: 16-Scenario (`CD-01..CD-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 164)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py) (**725/725** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/report.json)
 
 
 
