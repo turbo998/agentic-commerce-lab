@@ -1751,6 +1751,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.41 ms` vs. `4.26 ms`（`10.4x` 加速）**。
 - **技术资产**：[`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)、[`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html)。
 
+---
+
+## 143. Stage 144 架构演进：x402 Java 先解码防 `%2e%2e` 穿越、Stellar 资产发射器校验、Facilitator 1MiB/4MiB 流式限流与 90s 超时/`minDeposit` 钳位、UCP 商业影响跨阶段溯源、浏览器购物车续接、`invoice`/`sepa_debit` 支付工具与酒店到店本地币种、ACP 3DS `terms_digest` 绑定与 MCP 变更幂等、AP2 闭式授权单次消费/通道收据/`(id, type)` 工具绑定/PSP 公钥与令牌回滚及 MCP/Stripe/Visa TAP/$\tau$-bench 护栏（`2026-10-21`）
+
+### 143.1 x402 Foundation Java `normalizePath()` 先解码后消解点段与根 `..` 钳位（`#3864`）、Stellar Soroban 支付资产合约发射器与单次转账校验（`#3399`）、TypeScript `HTTPFacilitatorClient` 1 MiB / Bazaar 4 MiB 分层流式响应体上限（`#3400`）及 Go/Python 90s 默认超时与 `extra.minDeposit` 支出上限钳位（`#3410`/`#3409`/`#3408`）
+- 修复 Java `normalizePath()` 在未解码路径上调用 `URI.normalize()` 导致 `/public/%2e%2e/private` 绕过 402 过滤器被 Tomcat 免费放行的漏洞，强制先解码 `%2e%2e` 与 `%2F` 再移除 `.` 与应用 `..` 并将根部 `..` 钳位（`#3864`）；在 Stellar Soroban 仿真验签中拒绝缺失 `emitter_id` 的事件，允许外部智能账户发出自定义通知事件，同时对 `requirements.asset` 合约严格要求恰好一笔匹配 `(sender, recipient, amount)` 的 `transfer` 并封禁 `mint`/`burn`/`clawback`（`#3399`）；对 `verify`/`settle`/`supported` 控制面响应流式限制 `1 MiB`、对 Bazaar 发现页限制 `4 MiB`（`#3400`）；将 Go/Python `HTTPFacilitatorClient` 默认超时对齐至 `90s` 并将 `extra.minDeposit` 存款额度钳位至 `spendCap × DepositMultiplier`（`#3410`/`#3409`/`#3408`）。
+
+### 143.2 UCP 跨阶段商业影响溯源连续性（`#973`）、浏览器购物车向 UCP 续接校验（`#967`）、无凭证 `invoice` 与授权绑定 `sepa_debit` 支付工具（`#957`/`#956`）、酒店 `at_property` 到店本地币种双金额完整性（`#955`）及 ACP 3DS `AuthenticationResult.terms_digest` 绑定与 MCP 变更工具必填 `idempotency_key`/默认配送选项（`#308`/`#295`/`#194`）
+- 强制商业干预断言（`io.github.arjun2075.shopping.commercial_influence`）在 `catalog -> offer -> cart -> checkout -> handoff` 五阶段保持 `subject_id` 与干预元数据零丢失绑定（`#973`）；在浏览器购物车续接中要求验证器绑定证明并严禁由 Agent 商品列表重建购物车或转发原始 Cookie（`#967`）；校验 `invoice` 工具零完成扣款且禁夹带支付凭证、校验 `sepa_debit` 工具 IBAN 与受托授权文本接受（`#957`/`#956`）；要求住宿预订 `at_property` 费用同时携带酒店本地币种固定金额与预订币种折算金额且禁止并入线上扣款（`#955`）；在 ACP `AuthenticationResult` 中强制校验绑定结账条款的 `terms_digest`（`#308`），并在全部变更型 MCP 结账工具上强制 `meta.idempotency_key` 与默认配送选项运费计入 `totals[]`（`#295`/`#194`）。
+
+### 143.3 Google AP2 闭式 `PaymentMandate` 单次消费防重放、支付通道结算背书 `PaymentReceipt` 与规范 `status`（`#346`/`#327`/`#374`）、`(id, type)` 支付工具绑定、PSP `agent_provider_pub` 故障闭合与结算失败令牌回滚（`#320`/`#309`/`#308`）、MCP `-32020 HeaderMismatch` 与自报 `clientInfo` 隔离（`#3092`/`#3002`/`#2992`）、Stripe `resources/templates/list` 与点号模型 `max_tokens`（`#436`/`#432`/`#320`）、Visa TAP 商户签名收据（`#16`/`#15`/`#8`）及 $\tau$-bench 思维签名/种子/无序列表哈希护栏（`#559`/`#558`/`#557`/`#514`）
+- 在 AP2 验证器侧对已接受的闭式 `PaymentMandate` 哈希执行原子单次消费登记防二次兑换（`#346`），要求签发 `PaymentReceipt(status="Success")` 前具备真实支付通道结算证据而非随机 UUID 占位符（`#327`/`#374`），强制 `AllowedPaymentInstrumentEvaluator` 同时匹配 `(id, type)`（`#320`），在 `x402_psp_mcp` 缺失 `agent_provider_pub` 时故障闭合拒绝（`#309`），并在 PSP 结算失败时回滚 `token_data["used"] = False`（`#308`）；在无状态 MCP 中强制 `-32020 HeaderMismatch` 并禁止将自报 `clientInfo`/`serverInfo` 用于安全授权（`#3092`/`#3002`/`#2992`）；在 `mcp.stripe.com` 声明 `resources` 能力时为 `resources/templates/list` 返回空数组并修复 `claude-3.7-sonnet` 点号模型 `64000` `max_tokens` 解析（`#436`/`#432`/`#320`）；要求 Visa TAP 商户签发绑定提交态经济哈希的交易收据（`#16`/`#15`/`#8`）；并在 $\tau$-bench 2.0 中保留 Gemini `thought_signature`、拦截静默丢弃 `--seed` 并对 `ACTION` 参数与 `payment_history` 列表执行无序规范化哈希（`#559`/`#558`/`#557`/`#514`；参见 `lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py`）。
+
+---
+
+## 144. Stage 145 基准评测：16 场景（`JS-01..JS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 144 全部 16 项协议护栏（`JS-01..JS-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **1/16 (6.25%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.34 ms` vs. `3.58 ms`（`10.5x` 加速）**。
+- **技术资产**：[`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)、[`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py) 及双语报告 [`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html)。
+
 
 
 

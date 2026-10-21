@@ -254,5 +254,23 @@
   - Unit tests: [`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py) (**681/681** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/report.json)
 
+---
+
+## Stage 144: Deterministic Guardrails for x402 Java Decode-Before-Dot/Stellar Asset Emitter/Facilitator 1MiB-4MiB Body Limit/90s Timeout & `minDeposit` Clamping (`#3864`/`#3399`/`#3400`/`#3410`/`#3409`/`#3408`), UCP Commercial Influence Provenance/Browser Cart Continuation/`invoice` & `sepa_debit` Instruments/Lodging `at_property` Local Currency (`#973`/`#967`/`#957`/`#956`/`#955`), ACP 3DS `terms_digest` & MCP Mutating Idempotency/Default Delivery (`#308`/`#295`/`#194`), AP2 Single-Use Closed Mandate/Rail-Backed Receipt/`(id,type)` Binding/PSP Key & Token Rollback (`#346`/`#327`/`#374`/`#320`/`#309`/`#308`), and MCP `-32020`/Stripe `resourceTemplates`/Visa TAP Signed Receipt/$\tau$-bench Thought-Signature & Order-Invariant Hash Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py)
+  - Unit tests: [`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py) (**684/684** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§143)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§143)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 145: 16-Scenario (`JS-01..JS-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 144)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)
+  - Unit tests: [`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py) (**685/685** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/report.json)
+
 
 

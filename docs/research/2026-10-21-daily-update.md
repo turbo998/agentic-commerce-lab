@@ -254,5 +254,23 @@
   - 单元测试：[`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)（全仓库 **681/681** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/report.json)
 
+---
+
+## Stage 144：x402 Java 路径先解码防 `%2e%2e` 穿越/Stellar 资产发射器校验/Facilitator 1MiB-4MiB 流式限流/90s 超时与 `minDeposit` 钳位（`#3864`/`#3399`/`#3400`/`#3410`/`#3409`/`#3408`）、UCP 商业影响跨阶段溯源/浏览器购物车续接/`invoice` 与 `sepa_debit` 工具/酒店 `at_property` 本地币种（`#973`/`#967`/`#957`/`#956`/`#955`）、ACP 3DS `terms_digest` 与 MCP 变更幂等/默认配送（`#308`/`#295`/`#194`）、AP2 闭式授权单次消费/通道收据/`(id,type)` 绑定/PSP 公钥与令牌回滚（`#346`/`#327`/`#374`/`#320`/`#309`/`#308`）及 MCP `-32020`/Stripe `resourceTemplates`/Visa TAP 签名收据/$\tau$-bench 思维签名与无序哈希护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py)
+  - 单元测试：[`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_guard.py)（全仓库 **684/684** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§143)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§143)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 145：16 场景（`JS-01..JS-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 144）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)
+  - 单元测试：[`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)（全仓库 **685/685** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html`（中文）](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/report.json)
+
 
 

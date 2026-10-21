@@ -1,0 +1,220 @@
+{
+  "benchmark_id": "agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench",
+  "stage": "Stage 145",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 1,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_pass_rate": 0.0625,
+  "speedup_factor": 10.5,
+  "latency_tiers_ms": {
+    "1x": {
+      "ai_native_ms": 0.34,
+      "classic_3tier_ms": 3.58
+    },
+    "8x": {
+      "ai_native_ms": 1.54,
+      "classic_3tier_ms": 16.18
+    },
+    "32x": {
+      "ai_native_ms": 4.92,
+      "classic_3tier_ms": 51.66
+    }
+  },
+  "scenarios": [
+    {
+      "id": "JS-01",
+      "scenario": "x402 #3864 Java normalizePath() Decode-Before-Dot",
+      "task": "Decode %2e%2e before resolving .. & root clamp",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_JAVA_ENCODED_DOT_SEGMENT_PAYWALL_BYPASS_BLOCKED",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-02",
+      "scenario": "x402 #3399 Stellar Soroban Asset Emitter Guard",
+      "task": "Allow foreign info events; block asset clawback/mint",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_STELLAR_ASSET_FORBIDDEN_SUPPLY_OR_CLAWBACK_EVENT",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-03",
+      "scenario": "x402 #3400 Facilitator 1MiB/4MiB Body Limit",
+      "task": "Cancel chunked verify stream exceeding 1 MiB cap",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_FACILITATOR_RESPONSE_BODY_LIMIT_EXCEEDED",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-04",
+      "scenario": "x402 #3410/#3409/#3408 90s Timeout & minDeposit",
+      "task": "Clamp deposit to spendCap*10 & block under-minDeposit",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_MIN_DEPOSIT_EXCEEDS_CLAMPED_SPEND_CAP",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-05",
+      "scenario": "UCP #973 Commercial Influence Provenance",
+      "task": "Block subject_id drift across catalog..handoff stages",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "UCP_COMMERCIAL_INFLUENCE_PROVENANCE_BROKEN",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-06",
+      "scenario": "UCP #967 Browser-to-UCP Cart Continuation",
+      "task": "Forbid rebuilding cart from unverified agent item list",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "UCP_BROWSER_CART_CONTINUATION_UNVERIFIED_REBUILD_OR_COOKIE_LEAK",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-07",
+      "scenario": "UCP #957 & #956 Invoice & SEPA Debit Instruments",
+      "task": "Reject credential on invoice & require SEPA mandate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "UCP_INVOICE_INSTRUMENT_FORBIDS_PAYMENT_CREDENTIAL",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-08",
+      "scenario": "UCP #955 Lodging at_property Local Currency",
+      "task": "Block online capture of at_property JPY tax in EUR",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "UCP_AT_PROPERTY_CHARGE_CAPTURED_ONLINE",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-09",
+      "scenario": "ACP #308 3DS AuthenticationResult.terms_digest",
+      "task": "Bind 3DS result to canonical checkout terms digest",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "ACP_3DS_TERMS_DIGEST_MISSING_OR_MISMATCH",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-10",
+      "scenario": "ACP #295 & #194 MCP Idempotency & Default Delivery",
+      "task": "Require meta.idempotency_key & default shipping total",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "ACP_MCP_IDEMPOTENCY_OR_DEFAULT_DELIVERY_MISSING",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-11",
+      "scenario": "AP2 #346/#327/#374 Closed Mandate Single-Use",
+      "task": "Block second redemption of closed PaymentMandate hash",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "AP2_CLOSED_MANDATE_REPLAY_DETECTED",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-12",
+      "scenario": "AP2 #320/#309/#308 (id,type) & Token Rollback",
+      "task": "Bind instrument (id,type), require PSP key & rollback",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "AP2_PAYMENT_INSTRUMENT_ID_TYPE_MISMATCH",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-13",
+      "scenario": "MCP #3092/#3002/#2992 -32020 & Self-Reported Info",
+      "task": "Enforce -32020 HeaderMismatch & untrusted clientInfo",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_SEP2243_STALE_HEADER_MISMATCH_ERROR_CODE",
+      "confidence": 0.98,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-14",
+      "scenario": "Stripe #436/#432/#320 Resource Templates & Spend",
+      "task": "Return empty resourceTemplates & 64k dot-model tokens",
+      "ai_native_passed": true,
+      "classic_3tier_passed": true,
+      "decision_code": "OK",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-15",
+      "scenario": "Visa TAP #16/#15/#8 Signed Receipt & Commit State",
+      "task": "Bind merchant receipt signature to commit state hash",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "VISA_TAP_UNSIGNED_RECEIPT_OR_UNBOUND_COMMIT_STATE",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    },
+    {
+      "id": "JS-16",
+      "scenario": "tau2-bench #559/#558/#557/#514 Seed & Order Hash",
+      "task": "Block silent Gemini seed drop & canonicalize list hash",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "TAU2_UNSUPPORTED_PROVIDER_SEED_DROPPED",
+      "confidence": 0.99,
+      "action": "Act automatically",
+      "task_type": "choice",
+      "perturbation_delta_pts": 0.0
+    }
+  ]
+}
