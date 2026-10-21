@@ -182,5 +182,23 @@
   - Unit tests: [`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py) (**665/665** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/report.json)
 
+---
+
+## Stage 136: Deterministic Guardrails for x402 Fastify Absolute-Form URI Path-Bypass Block/`onPaymentRequired` Retry Latest-402 Re-Parse/EVM ECDSA Recovery Byte/Python Path-Keyed `create_headers`/Bazaar Merge (`#3591`/`#3590`/`#3587`/`#3585`/`#3583`/`#3581`/`#3580`/`#3577`/`#3576`/`#3575`/`#3574`/`#3572`/`#3571`/`#3570`/`#3567`), UCP `signing_key` Public-Key Hardening/`identity_management`/ACP & AP2 Cashu NUT-24 (`#387`/`#356`/`#341`/`#337`/`#193`/`#167`/`#72`/`#14`/`#95`/`#79`/`#24`/`#19`), and MCP `SEP-3149` CIMD/`SEP-3140` Signed Capabilities + Sierra $\tau$-bench 2.0 Reasoning/Passenger Anchor/PII Hygiene (`#3158`/`#3149`/`#3140`/`#3139`/`#3119`/`#3118`/`#3116`/`#167`/`#158`/`#389`/`#357`/`#356`/`#328`/`#302`/`#259`/`#258`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py)
+  - Unit tests: [`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py) (**668/668** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§135)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§135)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 137: 16-Scenario (`FP-01..FP-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 136)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)
+  - Unit tests: [`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py) (**669/669** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/report.json)
+
 
 

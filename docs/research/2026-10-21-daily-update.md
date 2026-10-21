@@ -182,5 +182,23 @@
   - 单元测试：[`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)（全仓库 **665/665** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html`（中文）](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/report.json)
 
+---
+
+## Stage 136：x402 Fastify 绝对 URI 路径绕过阻断/`onPaymentRequired` 重试最新 402 重解析/EVM ECDSA 恢复字节归一化/Python 分路径 `create_headers`/Bazaar 扩展合并（`#3591`/`#3590`/`#3587`/`#3585`/`#3583`/`#3581`/`#3580`/`#3577`/`#3576`/`#3575`/`#3574`/`#3572`/`#3571`/`#3570`/`#3567`）、UCP `signing_key` 严禁私钥字段/`identity_management`/ACP & AP2 Cashu NUT-24（`#387`/`#356`/`#341`/`#337`/`#193`/`#167`/`#72`/`#14`/`#95`/`#79`/`#24`/`#19`）及 MCP `SEP-3149` CIMD/`SEP-3140` 签名能力声明与 Sierra $\tau$-bench 2.0 思考链/单人锚定/防 `user_id` 泄露护栏（`#3158`/`#3149`/`#3140`/`#3139`/`#3119`/`#3118`/`#3116`/`#167`/`#158`/`#389`/`#357`/`#356`/`#328`/`#302`/`#259`/`#258`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py)
+  - 单元测试：[`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py)（全仓库 **668/668** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§135)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§135)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 137：16 场景（`FP-01..FP-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 136）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)
+  - 单元测试：[`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)（全仓库 **669/669** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html`（中文）](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/report.json)
+
 
 

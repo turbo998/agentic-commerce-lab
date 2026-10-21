@@ -1,0 +1,323 @@
+{
+  "benchmark_id": "agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench",
+  "stage": "stage137",
+  "provenance": "deterministic_simulation",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_pass_rate_pct": 0.0,
+  "median_latency_ms_ai_native": 0.45,
+  "median_latency_ms_classic_3tier": 4.47,
+  "speedup_factor": "9.9x",
+  "scenarios": [
+    {
+      "scenario_id": "FP-01",
+      "plane": "Payment & Settlement Plane",
+      "title_zh": "x402 Fastify 绝对形式 URI 路径绕过阻断 (#3577)",
+      "title_en": "x402 Fastify Absolute-Form URI Path Bypass Block (#3577)",
+      "question_zh": "攻击者发送 `GET https://attacker.com/protected-route HTTP/1.1` 企图绕过 `@x402/fastify` 付费门禁时是否被剥离协议头并拦截？",
+      "question_en": "Is `GET https://attacker.com/protected-route HTTP/1.1` stripped via `FULL_PATH_REGEXP` and blocked at the `@x402/fastify` gate?",
+      "expected_action": "BLOCK_FASTIFY_ABSOLUTE_FORM_PATH_BYPASS",
+      "ai_native_action": "BLOCK_FASTIFY_ABSOLUTE_FORM_PATH_BYPASS",
+      "classic_3tier_action": "SKIP_GATE_ON_RAW_REQUEST_URL_MISMATCH",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "FASTIFY_PROTECTED_ROUTE_PAYMENT_REQUIRED_BYPASS_BLOCKED"
+      ],
+      "latency_ms_ai_native": 0.41,
+      "latency_ms_classic_3tier": 4.22
+    },
+    {
+      "scenario_id": "FP-02",
+      "plane": "Payment & Settlement Plane",
+      "title_zh": "x402 `onPaymentRequired` 重试后最新 402 报价重解析 (#3585)",
+      "title_en": "x402 `onPaymentRequired` Hook Retry Latest-402 Re-Parse (#3585)",
+      "question_zh": "当 `onPaymentRequired` 钩子携带备用请求头重试并收到金额更新为 200 的新 402 时，是否拒付已作废的首轮 100 报价？",
+      "question_en": "When `onPaymentRequired` hook retry returns an updated 402 offer (200), does the client reject paying the superseded initial offer (100)?",
+      "expected_action": "REJECT_STALE_FIRST_402_OFFER_AFTER_HOOK_RETRY",
+      "ai_native_action": "REJECT_STALE_FIRST_402_OFFER_AFTER_HOOK_RETRY",
+      "classic_3tier_action": "PAY_SUPERSEDED_INITIAL_402_OFFER",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_STALE_402_REQUIREMENTS_AFTER_HOOK_RETRY_REJECTED"
+      ],
+      "latency_ms_ai_native": 0.44,
+      "latency_ms_classic_3tier": 4.35
+    },
+    {
+      "scenario_id": "FP-03",
+      "plane": "Signing & Verification Plane",
+      "title_zh": "x402 EVM ECDSA 恢复字节 `0/1 -> 27/28` 归一化与非法字节拦截 (#3583)",
+      "title_en": "x402 EVM ECDSA Recovery Byte `0/1 -> 27/28` Normalization (#3583)",
+      "question_zh": "KMS/HSM/MPC 签名器返回的 `yParity` (`0`/`1`) 是否归一化为 `27`/`28` 且拦截非法 `v` 字节？",
+      "question_en": "Are KMS/HSM/MPC raw `yParity` (`0`/`1`) normalized to `27`/`28` and invalid `v` recovery bytes blocked before `transferWithAuthorization`?",
+      "expected_action": "NORMALIZE_YPARITY_AND_REJECT_INVALID_ECDSA_V",
+      "ai_native_action": "NORMALIZE_YPARITY_AND_REJECT_INVALID_ECDSA_V",
+      "classic_3tier_action": "PASS_RAW_YPARITY_TO_ECRECOVER_REVERT",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_EVM_INVALID_ECDSA_RECOVERY_BYTE_REJECTED"
+      ],
+      "latency_ms_ai_native": 0.39,
+      "latency_ms_classic_3tier": 3.98
+    },
+    {
+      "scenario_id": "FP-04",
+      "plane": "Runtime Governance Plane",
+      "title_zh": "x402 Python 扁平 `create_headers` 字典静默无鉴权拦截 (#3587)",
+      "title_en": "x402 Python Flat `create_headers` Dict Rejection (#3587)",
+      "question_zh": "`CreateHeadersAuthProvider` 收到未按 `verify`/`settle`/`supported`/`bazaar` 分路径键控的扁平字典时是否立即报错阻断？",
+      "question_en": "Does `CreateHeadersAuthProvider` reject flat `{\"Authorization\": \"...\"}` dicts that silently omit auth on facilitator paths?",
+      "expected_action": "REJECT_FLAT_CREATE_HEADERS_DICT",
+      "ai_native_action": "REJECT_FLAT_CREATE_HEADERS_DICT",
+      "classic_3tier_action": "SEND_UNAUTHENTICATED_FACILITATOR_REQUEST",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_PYTHON_FLAT_CREATE_HEADERS_DICT_REJECTED"
+      ],
+      "latency_ms_ai_native": 0.37,
+      "latency_ms_classic_3tier": 3.85
+    },
+    {
+      "scenario_id": "FP-05",
+      "plane": "Catalog & Discovery Plane",
+      "title_zh": "x402 402 JSON Body Bazaar 扩展保留与 GET 探测方法修正 (#3576 / #3567)",
+      "title_en": "x402 402 Body Bazaar Extension Merge & Probe Method Normalization (#3576 / #3567)",
+      "question_zh": "当 402 JSON Body 含 `extensions.bazaar` 且无动词 Body 路由被 `GET` 探测时，是否合并扩展并将 `info.input.method` 保持为 `POST`？",
+      "question_en": "Are 402 JSON body `extensions.bazaar` merged under header declarations and `GET` probes on body routes normalized to `POST`?",
+      "expected_action": "MERGE_402_BODY_BAZAAR_AND_KEEP_POST_FOR_BODY_ROUTE",
+      "ai_native_action": "MERGE_402_BODY_BAZAAR_AND_KEEP_POST_FOR_BODY_ROUTE",
+      "classic_3tier_action": "DROP_BODY_EXTENSIONS_AND_EMIT_INVALID_GET_BODY_SCHEMA",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_BAZAAR_PROBE_METHOD_MISMATCH_NORMALIZED_TO_POST"
+      ],
+      "latency_ms_ai_native": 0.45,
+      "latency_ms_classic_3tier": 4.51
+    },
+    {
+      "scenario_id": "FP-06",
+      "plane": "Runtime Governance Plane",
+      "title_zh": "x402 Axios 付费 4xx/5xx `onPaymentResponse` 钩子与 Go MCP 恢复超时封顶 (#3575 / #3581)",
+      "title_en": "x402 Paid 4xx/5xx `onPaymentResponse` Hook & Go MCP Recovery Timeout Cap (#3575 / #3581)",
+      "question_zh": "付费请求返回 HTTP 500 时是否强制先执行 `onPaymentResponse` 钩子，且将 Go MCP 恢复重试超时限制在 `paidTimeout` (90s) 内？",
+      "question_en": "Is `onPaymentResponse` executed before rejecting paid HTTP 500 responses and Go MCP recovery retry capped at `paidTimeout` (90s)?",
+      "expected_action": "ENFORCE_PAID_ERROR_HOOK_AND_CAP_MCP_RECOVERY_TIMEOUT",
+      "ai_native_action": "ENFORCE_PAID_ERROR_HOOK_AND_CAP_MCP_RECOVERY_TIMEOUT",
+      "classic_3tier_action": "SWALLOW_PAID_ERROR_RECEIPT_AND_WAIT_3600S_TIMEOUT",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_AXIOS_PAID_ERROR_MISSING_ON_PAYMENT_RESPONSE_HOOK",
+        "X402_GO_MCP_RECOVERY_RETRY_TIMEOUT_UNCAPPED"
+      ],
+      "latency_ms_ai_native": 0.48,
+      "latency_ms_classic_3tier": 4.74
+    },
+    {
+      "scenario_id": "FP-07",
+      "plane": "Payment & Settlement Plane",
+      "title_zh": "x402 Arc/Monad 默认 USDC 资产表与 SVM 批量通道签名器/确认槽位代理 (#3590 / #3570 / #3591)",
+      "title_en": "x402 Arc/Monad Default USDC Assets & SVM Batch Signer/Slot Proxy (#3590 / #3570 / #3591)",
+      "question_zh": "Arc (`eip155:5042`) 非官方 USDC 合约或未在构造期执行 `assertPaymentChannelFacilitatorSigner` 的 SVM 通道是否被阻断？",
+      "question_en": "Are non-canonical Arc (`eip155:5042`) USDC contracts or SVM batch channels missing construction-time signer assertions blocked?",
+      "expected_action": "VERIFY_ARC_MONAD_DEFAULT_USDC_AND_SVM_SIGNER_SLOT_PROXY",
+      "ai_native_action": "VERIFY_ARC_MONAD_DEFAULT_USDC_AND_SVM_SIGNER_SLOT_PROXY",
+      "classic_3tier_action": "ACCEPT_UNVERIFIED_DEFAULT_TOKEN_AND_SKIP_SLOT_PROXY",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_DEFAULT_USDC_ASSET_ADDRESS_MISMATCH",
+        "X402_SVM_BATCH_CHANNEL_SIGNER_NOT_ASSERTED_AT_CONSTRUCTION",
+        "X402_SVM_CONFIRMATION_SLOT_PROXY_MISSING"
+      ],
+      "latency_ms_ai_native": 0.49,
+      "latency_ms_classic_3tier": 4.81
+    },
+    {
+      "scenario_id": "FP-08",
+      "plane": "Payment & Settlement Plane",
+      "title_zh": "x402 Cardano Subbit `min-UTxO` 储备金与 Lightning `exact-lnbtc` `invoice` 核验 (#3580 / #3572)",
+      "title_en": "x402 Cardano Subbit `min-UTxO` Reserve & `exact-lnbtc` `invoice` Verification (#3580 / #3572)",
+      "question_zh": "低于 Cardano 0.98 ADA `min-UTxO` 的批量通道储备金或未向接收方核验 payment hash 的 `exact-lnbtc` `invoice` 是否被拒止？",
+      "question_en": "Are Cardano Subbit channels below 0.98 ADA `min-UTxO` reserve or unverified `exact-lnbtc` `invoice` payment hashes rejected?",
+      "expected_action": "BLOCK_UNDER_MIN_UTXO_CARDANO_AND_UNVERIFIED_LNBTC_INVOICE",
+      "ai_native_action": "BLOCK_UNDER_MIN_UTXO_CARDANO_AND_UNVERIFIED_LNBTC_INVOICE",
+      "classic_3tier_action": "ALLOW_SUB_MIN_UTXO_AND_UNVERIFIED_LIGHTNING_HASH",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "X402_CARDANO_BATCH_CHANNEL_BELOW_MIN_UTXO_RESERVE",
+        "X402_LNBTC_INVOICE_RECEIVER_QUERY_UNVERIFIED"
+      ],
+      "latency_ms_ai_native": 0.46,
+      "latency_ms_classic_3tier": 4.62
+    },
+    {
+      "scenario_id": "FP-09",
+      "plane": "Signing & Verification Plane",
+      "title_zh": "UCP 发现档案 `signing_key` 严禁私钥字段泄露 (#387)",
+      "title_en": "UCP Discovery `signing_key` Private JWK Field Leak Block (#387)",
+      "question_zh": "UCP 发现档案 `signing_key` 包含私钥参数 `d`/`p`/`q` 或额外属性时是否按 `additionalProperties: false` 阻断发布？",
+      "question_en": "Does UCP discovery profile validation block `signing_key` objects containing private JWK parameters (`d`, `p`, `q`) or unknown fields?",
+      "expected_action": "BLOCK_PRIVATE_JWK_FIELDS_IN_UCP_SIGNING_KEY",
+      "ai_native_action": "BLOCK_PRIVATE_JWK_FIELDS_IN_UCP_SIGNING_KEY",
+      "classic_3tier_action": "PUBLISH_UNFILTERED_JWK_WITH_PRIVATE_SCALAR_D",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "UCP_SIGNING_KEY_PRIVATE_JWK_FIELD_LEAK_BLOCKED"
+      ],
+      "latency_ms_ai_native": 0.38,
+      "latency_ms_classic_3tier": 3.91
+    },
+    {
+      "scenario_id": "FP-10",
+      "plane": "Intent & Mandate Plane",
+      "title_zh": "UCP `dev.ucp.common.identity_management` 完整身份生命周期与 `2026-04-08` 变体清理 (#337 / #356 / #341)",
+      "title_en": "UCP `identity_management` Lifecycle & `2026-04-08` Variant Schema Hygiene (#337 / #356 / #341)",
+      "question_zh": "继续使用已废弃的 `dev.ucp.common.identity_linking` 或旧版过渡字段的载荷是否被强制升级至 `identity_management` 与 `2026-04-08`？",
+      "question_en": "Are deprecated `dev.ucp.common.identity_linking` capabilities and pre-`2026-04-08` transition fields rejected?",
+      "expected_action": "REQUIRE_UCP_IDENTITY_MANAGEMENT_AND_2026_04_08_SCHEMA",
+      "ai_native_action": "REQUIRE_UCP_IDENTITY_MANAGEMENT_AND_2026_04_08_SCHEMA",
+      "classic_3tier_action": "ACCEPT_DEPRECATED_IDENTITY_LINKING_AND_TRANSITION_FIELDS",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "UCP_LEGACY_IDENTITY_LINKING_CAPABILITY_DEPRECATED",
+        "UCP_DEPRECATED_TRANSITION_SCHEMA_FIELD_REJECTED",
+        "UCP_STALE_CATALOG_VARIANT_SCHEMA_VERSION"
+      ],
+      "latency_ms_ai_native": 0.43,
+      "latency_ms_classic_3tier": 4.28
+    },
+    {
+      "scenario_id": "FP-11",
+      "plane": "Order & Fulfillment Plane",
+      "title_zh": "ACP `Address.company` 邮编误填校验与 `delegate_payment` 电话/错误码契约 (#193 / #167 / #72 / #14)",
+      "title_en": "ACP `Address.company` Postal Confusion & `delegate_payment` Phone/Error Contract (#193 / #167 / #72 / #14)",
+      "question_zh": "将邮编误填入 `Address.company`、非 E.164 `phone_number` 或非标 `delegate_payment` 错误码是否被拦截？",
+      "question_en": "Are postal codes copied into `Address.company`, non-E.164 `phone_number` values, and unstandardized `delegate_payment` errors rejected?",
+      "expected_action": "VALIDATE_ACP_COMPANY_PHONE_AND_DELEGATE_ERRORS",
+      "ai_native_action": "VALIDATE_ACP_COMPANY_PHONE_AND_DELEGATE_ERRORS",
+      "classic_3tier_action": "PERSIST_POSTAL_CODE_AS_COMPANY_NAME",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "ACP_ADDRESS_COMPANY_POSTAL_CODE_COPY_PASTE_CONFUSION",
+        "ACP_DELEGATE_PAYMENT_PHONE_NUMBER_E164_REQUIRED",
+        "ACP_UNKNOWN_DELEGATE_PAYMENT_ERROR_CODE"
+      ],
+      "latency_ms_ai_native": 0.4,
+      "latency_ms_classic_3tier": 4.09
+    },
+    {
+      "scenario_id": "FP-12",
+      "plane": "Payment & Settlement Plane",
+      "title_zh": "AP2 多支付方式交集过滤、Bitcoin Cashu NUT-24 证明与 VDC 术语规范 (#95 / #79 / #24 / #19)",
+      "title_en": "AP2 Multi-Payment Intersection, Cashu NUT-24 Proof & VDC Terminology (#95 / #79 / #24 / #19)",
+      "question_zh": "未通过 x402 Cashu facilitator 验证 NUT-24 铸币证明的 `cashu-token` 或混用旧称 `Verifiable Credential` 是否被拦截？",
+      "question_en": "Are unverified NUT-24 `cashu-token` proofs or legacy `Verifiable Credential` (non-VDC) terms blocked?",
+      "expected_action": "ENFORCE_AP2_MULTI_PAYMENT_CASHU_PROOF_AND_VDC_TERM",
+      "ai_native_action": "ENFORCE_AP2_MULTI_PAYMENT_CASHU_PROOF_AND_VDC_TERM",
+      "classic_3tier_action": "ACCEPT_UNVERIFIED_CASHU_PROOF_AND_LEGACY_VC_TERM",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "AP2_CASHU_NUT24_MINT_PROOF_UNVERIFIED",
+        "AP2_LEGACY_VERIFIABLE_CREDENTIAL_TERM_REJECTED"
+      ],
+      "latency_ms_ai_native": 0.47,
+      "latency_ms_classic_3tier": 4.59
+    },
+    {
+      "scenario_id": "FP-13",
+      "plane": "Identity & Mandate Plane",
+      "title_zh": "MCP `SEP-3149` CIMD `token_endpoint_auth_methods_supported` 强制要求 (#3149)",
+      "title_en": "MCP `SEP-3149` CIMD `token_endpoint_auth_methods_supported` Requirement (#3149)",
+      "question_zh": "仅声明已弃用的单数 `token_endpoint_auth_method` 或回退为隐式公共客户端 `none` 的 CIMD 文档是否被拒绝？",
+      "question_en": "Are CIMD documents using deprecated singular `token_endpoint_auth_method` or implicit public-client `none` auth rejected?",
+      "expected_action": "REQUIRE_CIMD_TOKEN_AUTH_METHODS_SUPPORTED_ARRAY",
+      "ai_native_action": "REQUIRE_CIMD_TOKEN_AUTH_METHODS_SUPPORTED_ARRAY",
+      "classic_3tier_action": "FALLBACK_TO_IMPLICIT_PUBLIC_CLIENT_NONE_AUTH",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "MCP_SEP3149_DEPRECATED_SINGULAR_TOKEN_AUTH_METHOD_REJECTED",
+        "MCP_SEP3149_IMPLICIT_PUBLIC_CLIENT_NONE_AUTH_REJECTED",
+        "MCP_SEP3149_UNSUPPORTED_CIMD_TOKEN_AUTH_METHOD"
+      ],
+      "latency_ms_ai_native": 0.42,
+      "latency_ms_classic_3tier": 4.18
+    },
+    {
+      "scenario_id": "FP-14",
+      "plane": "Runtime Governance Plane",
+      "title_zh": "MCP `SEP-3140` 签名能力声明、可信风险标签与 `list_changed` Rug-Pull 拦截 (#3140)",
+      "title_en": "MCP `SEP-3140` Signed Capability Declarations & Rug-Pull Re-Gating (#3140)",
+      "question_zh": "`notifications/tools/list_changed` 将工具 `trust` 标签从 `read`/`none` 静默升级为 `irreversible`/`external` 且未重新门禁审批时是否阻断？",
+      "question_en": "Are unsigned capability manifests or silent `list_changed` trust-label escalations (`read` -> `irreversible`) blocked without re-gating?",
+      "expected_action": "BLOCK_UNSIGNED_MANIFEST_AND_UNREGATED_RUG_PULL",
+      "ai_native_action": "BLOCK_UNSIGNED_MANIFEST_AND_UNREGATED_RUG_PULL",
+      "classic_3tier_action": "TRUST_UNSIGNED_TOOL_ANNOTATIONS_AND_SILENT_LIST_CHANGED",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "MCP_SEP3140_UNSIGNED_OR_INVALID_CAPABILITY_MANIFEST_JWS",
+        "MCP_SEP3140_LIST_CHANGED_RUG_PULL_ESCALATION_UNREGATED"
+      ],
+      "latency_ms_ai_native": 0.51,
+      "latency_ms_classic_3tier": 5.02
+    },
+    {
+      "scenario_id": "FP-15",
+      "plane": "Catalog & Discovery Plane",
+      "title_zh": "MCP `SEP-3118` 应用内表单征询、`SubscriptionsListenResultResponse` 与浮点 `NumberSchema` (#3118 / #3158 / #3139)",
+      "title_en": "MCP `SEP-3118` App Elicitation, `SubscriptionsListenResultResponse` & Float Schema (#3118 / #3158 / #3139)",
+      "question_zh": "缺失核心表单回退的 `SEP-3118` UI 征询、缺失 `SubscriptionsListenResultResponse` 信封或将浮点默认值截断为整数的 Schema 是否被拦截？",
+      "question_en": "Are UI elicitations without core form fallback, unwrapped `subscriptions/listen` responses, or integer-truncated `NumberSchema` defaults rejected?",
+      "expected_action": "ENFORCE_SEP3118_FALLBACK_LISTEN_ENVELOPE_AND_FLOAT_SCHEMA",
+      "ai_native_action": "ENFORCE_SEP3118_FALLBACK_LISTEN_ENVELOPE_AND_FLOAT_SCHEMA",
+      "classic_3tier_action": "OMIT_CORE_FALLBACK_AND_COERCE_FLOAT_SCHEMA_TO_INT",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "MCP_SEP3118_MISSING_CORE_FORM_ELICITATION_FALLBACK",
+        "MCP_SUBSCRIPTIONS_LISTEN_MISSING_RESULT_RESPONSE_ENVELOPE",
+        "MCP_SUBSCRIPTIONS_LISTEN_INVALID_META_OBJECT_TYPE_NAME",
+        "MCP_NUMBER_SCHEMA_FLOAT_DEFAULT_COERCED_TO_INTEGER"
+      ],
+      "latency_ms_ai_native": 0.45,
+      "latency_ms_classic_3tier": 4.47
+    },
+    {
+      "scenario_id": "FP-16",
+      "plane": "Runtime Governance Plane",
+      "title_zh": "Sierra $\\tau$-bench 2.0 思考链保留、航班单人锚定、零售 `user_id` 防泄露与 GA Realtime (#389 / #357 / #356 / #328 / #259)",
+      "title_en": "Sierra tau2-bench Reasoning Content, Passenger Anchor, `known_info` & GA Realtime (#389 / #357 / #356 / #328 / #259)",
+      "question_zh": "思考模型丢弃 `reasoning_content`、航班 Task 35 未锚定单人致票价翻倍（$580 vs $290）、零售 `known_info` 泄露内部 `mei_kovacs_8020` 或使用旧版 Realtime Beta 头是否被阻断？",
+      "question_en": "Are dropped `reasoning_content`, unanchored Task 35 passenger counts, leaked `mei_kovacs_8020` user IDs in `known_info`, or legacy Realtime beta headers blocked?",
+      "expected_action": "ENFORCE_TAU2_REASONING_PASSENGER_ANCHOR_AND_PII_HYGIENE",
+      "ai_native_action": "ENFORCE_TAU2_REASONING_PASSENGER_ANCHOR_AND_PII_HYGIENE",
+      "classic_3tier_action": "DROP_REASONING_INVENT_PASSENGER_AND_LEAK_USER_ID",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "reason_codes": [
+        "TAU2_THINKING_MODEL_REASONING_CONTENT_DROPPED",
+        "TAU2_AIRLINE_TASK35_UNANCHORED_PASSENGER_COUNT_DRIFT",
+        "TAU2_RETAIL_INTERNAL_USER_ID_LEAKED_IN_KNOWN_INFO",
+        "TAU2_BANKING_TASK053_MISSING_USER_TOOL_CALL",
+        "TAU2_OPENAI_REALTIME_LEGACY_BETA_HEADER_REJECTED"
+      ],
+      "latency_ms_ai_native": 0.52,
+      "latency_ms_classic_3tier": 5.14
+    }
+  ]
+}

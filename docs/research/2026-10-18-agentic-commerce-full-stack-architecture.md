@@ -1667,6 +1667,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.15 ms` vs. `1.44 ms`（`9.6x` 加速）**。
 - **技术资产**：[`lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../lab/x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py)、[`tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py`](../../tests/test_x402_evm_auth_capture_svm_lighthouse_ucp_delegated_idp_mcp_secure_params_bench.py) 及双语报告 [`reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/`](../../reports/agentic-commerce-x402-evm-auth-capture-svm-lighthouse-ucp-delegated-idp-mcp-secure-params-bench/index.html)。
 
+---
+
+## 135. Stage 136 架构深潜：x402 Fastify 绝对 URI 路径绕过阻断/`onPaymentRequired` 重试最新 402 重解析/EVM ECDSA 恢复字节归一化、UCP `signing_key` 严禁私钥字段/完整 `identity_management` 生命周期、ACP/AP2 多支付方式与 Cashu NUT-24 及 MCP `SEP-3149` CIMD 认证数组/`SEP-3140` 签名能力声明与 $\tau$-bench 2.0 护栏
+
+### 135.1 x402 Fastify `FULL_PATH_REGEXP` 绝对 URI 路径绕过阻断（`#3577`）、`onPaymentRequired` 重试最新 402 报价重解析（`#3585`）、EVM ECDSA `0/1 -> 27/28` 恢复字节归一化（`#3583`）、Python 分路径键控 `create_headers` 校验（`#3587`）、402 JSON Body Bazaar 扩展保留与探测方法一致性（`#3576`/`#3567`）及付费 4xx/5xx 钩子、Go MCP 超时封顶、Arc/Monad 默认 USDC、SVM 确认槽位代理与 Cardano/Lightning 护栏（`#3575`/`#3574`/`#3581`/`#3590`/`#3570`/`#3591`/`#3580`/`#3572`/`#3571`）
+- 在 `@x402/fastify` 门禁中逐字节对齐 `find-my-way` 路由的 `FULL_PATH_REGEXP = /^https?:\/\/.*?\//` 正则剥离请求行中的协议+主机头（拒绝 WHATWG `new URL()` 折叠反斜杠），封堵 `GET https://attacker.com/protected-route HTTP/1.1` 绕过付费门禁漏洞（`#3577`）；当 `onPaymentRequired` 钩子重试收到更新后的 402 响应时重新解析最新 `paymentRequired` 要求而非按作废的首轮报价付款（`#3585`）；在调用 `transferWithAuthorization` / `permit2` 前将 KMS/HSM/MPC 签名器返回的 `yParity` (`0`/`1`) 归一化为 `27`/`28`（`#3583`）；在 Python `CreateHeadersAuthProvider` 中拒绝未按 `verify`/`settle`/`supported`/`list`/`bazaar` 键控的扁平字典（`#3587`）；合并 402 JSON Body 中的 `extensions.bazaar`（Header 冲突优先，`#3576`）并保持无动词 Body 路由在 `GET` 探测下的 `POST` 方法一致性（`#3567`）；在 Axios 拒绝付费 HTTP 4xx/5xx 前先执行 `onPaymentResponse`（`#3575`/`#3574`），将 Go MCP 恢复重试超时封顶于 `paidTimeout`（`#3581`），注册 Arc 主网/测试网（`eip155:5042`/`5042002`）与 Monad 测试网（`eip155:10143`）默认 USDC 资产（`#3590`/`#3570`），并在 SVM 批量通道构造期执行 `assertPaymentChannelFacilitatorSigner` 与 `confirmTransaction` 槽位代理（`#3591`）、Cardano Subbit `>= 0.98 ADA` `min-UTxO` 储备金（`#3580`）及 Lightning `exact-lnbtc` `bolt11`/`invoice` 双模式核验（`#3572`/`#3571`）。
+
+### 135.2 UCP 发现档案 `signing_key` 私钥字段防泄露（`#387`）、完整 `dev.ucp.common.identity_management` 身份生命周期与 `2026-04-08` 变体清理（`#337`/`#356`/`#341`）、ACP `Address.company` 邮编误填与 `delegate_payment` 电话/错误码契约（`#193`/`#167`/`#72`/`#14`）及 AP2 多支付方式、Cashu NUT-24 与 VDC 规范（`#95`/`#79`/`#24`/`#19`）
+- 对 UCP 发现档案 `signing_key` 强制 `additionalProperties: false`，严禁泄露 `d`/`p`/`q` 等私钥 JWK 参数（`#387`）；以 `dev.ucp.common.identity_management` 完整 CRUD+链接能力替代已废弃的 `identity_linking`（`#337`）并清理 `2026-04-08` 过渡字段（`#356`/`#341`）；拦截 ACP `Address.company` 误填邮政编码（`#193`）、校验 `delegate_payment` 地址可选 E.164 `phone_number` 与标准错误码（`#167`/`#72`/`#14`），并在 AP2 中校验 `CARD`/`BANK_ACCOUNT`/`DIGITAL_WALLET`/`cashu-token` NUT-24 铸币证明及 `Verifiable Digital Credential (VDC)` 标准术语（`#95`/`#79`/`#24`/`#19`）。
+
+### 135.3 MCP `SEP-3149` CIMD `token_endpoint_auth_methods_supported` 数组强制要求（`#3149`）、`SEP-3140` JWS 签名能力声明与 `list_changed` Rug-Pull 重门禁（`#3140`）、`SEP-3118` 应用内征询与 `SubscriptionsListenResultResponse`/浮点 `NumberSchema`（`#3118`/`#3158`/`#3139`/`#3116`）及 Sierra $\tau$-bench 2.0 思考链保留、航班单人锚定与零售 `user_id` 防泄露（`#389`/`#357`/`#356`/`#328`/`#302`/`#259`/`#258`）
+- 在 MCP 客户端 ID 元数据文档（CIMD）中强制要求非空 `token_endpoint_auth_methods_supported` 数组，拒绝已弃用的单数 `token_endpoint_auth_method` 与隐式公共客户端 `none` 回退（`#3149`）；通过 JWS 签名能力清单、内容哈希与 `trust` 风险标签（`effect`/`egress`/`dataSensitivity`/`reversibility`）保护工具声明，并在 `notifications/*/list_changed` 发生风险等级上调（Rug-Pull）时强制客户端重新门禁审批（`#3140`）；支持保留核心表单回退的 `SEP-3118` `ui.resourceUri` 应用内征询（`#3118`）、`SubscriptionsListenResultResponse` 信封（`#3158`）与浮点 `NumberSchema` 默认值（`#3139`）；在 $\tau$-bench 2.0 中保留思考模型 `reasoning_content`（`#389`）、锚定航班 Task 35 单人预订（`"only for yourself"`，消除模拟器虚构第 2 名乘客导致 $580 vs $290 全军覆没，`#357`）、阻断零售 `known_info` 泄露内部 `mei_kovacs_8020` `user_id`（`#356`）、补齐 `task_053` 用户工具调用（`#328`）并升级至 Pipecat `QueueTransport` 与 OpenAI GA Realtime API（`#302`/`#259`/`#258`；参见 `lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_guard.py`）。
+
+---
+
+## 136. Stage 137 基准评测：16 场景（`FP-01..FP-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 136 三大护栏域的 16 个场景（`FP-01..FP-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.44 ms` vs. `4.38 ms`（`9.9x` 加速）**。
+- **技术资产**：[`lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../lab/x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py)、[`tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py`](../../tests/test_x402_fastify_path_retry_402_ucp_signing_key_id_mgmt_mcp_cimd_signed_caps_bench.py) 及双语报告 [`reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/`](../../reports/agentic-commerce-x402-fastify-path-retry-402-ucp-signing-key-id-mgmt-mcp-cimd-signed-caps-bench/index.html)。
+
 
 
 
