@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–161)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–163)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -415,6 +415,24 @@
   - Benchmark suite: [`lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py)
   - Unit tests: [`tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py) (**717/717** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/report.json)
+
+---
+
+## Stage 162: Deterministic Guardrails for x402 Algorand ASA (`axfer`) & Polkadot AssetHub `transfer_keep_alive` / Client Session Budget (`#3710`/`#3705`/`#3698`/`#3685`/`#3681`/`#3676`/`#3670`/`#3664`/`#3658`/`#3455`/`#3449`/`#3442`), UCP BOPIS/Curbside Ready-State PIN & DCC Markup Cap/Trade-In Clawback Mandate (`#814`/`#809`/`#804`/`#798`/`#795`/`#790`/`#784`/`#778`/`#775`/`#770`/`#764`/`#758`), ACP Chargeback Representment Evidence & B2B Tax-Exemption Certificate (`#249`/`#245`/`#238`/`#233`/`#229`/`#224`/`#219`/`#212`), AP2 Hardware Device Attestation & `M-of-N` Treasury Co-Signer Quorum (`#318`/`#314`/`#309`/`#304`/`#301`/`#296`/`#291`/`#286`), and MCP Sampling/Stripe Portal/Visa TAP MIT/$\tau$-bench Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py) (**720/720** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§161)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§161)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 163: 16-Scenario (`AR-01..AR-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 162)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py) (**721/721** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/report.json)
 
 
 

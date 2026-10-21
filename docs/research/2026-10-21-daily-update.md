@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–161）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–163）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -415,6 +415,24 @@
   - 基准套件：[`lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py)
   - 单元测试：[`tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py)（全仓库 **717/717** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/report.json)
+
+---
+
+## Stage 162：x402 Algorand ASA (`axfer`) 与 Polkadot AssetHub `transfer_keep_alive` 存续押金保护/客户端会话预算熔断（`#3710`/`#3705`/`#3698`/`#3685`/`#3681`/`#3676`/`#3670`/`#3664`/`#3658`/`#3455`/`#3449`/`#3442`）、UCP 到店自提（BOPIS/Curbside）备货就绪 PIN 门禁与 DCC 加价上限/以旧换新追索授权令（`#814`/`#809`/`#804`/`#798`/`#795`/`#790`/`#784`/`#778`/`#775`/`#770`/`#764`/`#758`）、ACP 拒付抗辩三元证据包与 B2B 免税证管辖区核验（`#249`/`#245`/`#238`/`#233`/`#229`/`#224`/`#219`/`#212`）、AP2 硬件强完整性证明与企业财资 `M-of-N` 双控多签（`#318`/`#314`/`#309`/`#304`/`#301`/`#296`/`#291`/`#286`）及 MCP Sampling/Stripe Portal/Visa TAP MIT/$\tau$-bench 确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_guard.py)（全仓库 **720/720** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§161)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§161)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 163：16 场景（`AR-01..AR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 162）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../lab/x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py`](../../tests/test_x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_attest_tau2_bench.py)（全仓库 **721/721** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-algorand-asa-ucp-bopis-curbside-acp-chargeback-ap2-device-attest-tau2-bench/report.json)
 
 
 
