@@ -290,5 +290,23 @@
   - Unit tests: [`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py) (**689/689** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/report.json)
 
+---
+
+## Stage 148: Deterministic Guardrails for x402 `SettleResponse` 6-State Vocabulary/Evidence Anchor & `response-provenance` JCS Fixed-Point Hash/Server-Only Sidechannel Isolation/Settlement Override Ceiling/`near-intents` `upfront` & v2 Builder-Code Attribution (`#3325`/`#3304`/`#3306`/`#3338`/`#3372`/`#3370`/`#3320`/`#3318`/`#3340`), UCP `Correspondence` Record-Chain Continuity/Checkout `amount_finality` & `maximum_amount` Ceiling/Variant `offers[]` Multi-Seller MoR & Permalink Explicit Merge (`#836`/`#835`/`#816`/`#811`/`#831`/`#802`/`#801`/`#793`/`#789`/`#785`), ACP Store BOPIS/Line-Item `valid_until`/`com.stripe.link` & Delegate Payment 401/500/503 Error Enums (`#171`/`#165`/`#162`/`#161`/`#156`/`#150`), AP2 Atomic External Budget Authority 4-Verb Gate & `AP2-Haggle`/Solana Pay Reference Binding (`#252`/`#229`/`#228`), and MCP Extension Lifecycle/Stripe/Visa TAP/$\tau$-bench Active Telecom Refuel & Live-DB Grading Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py`](../../lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py)
+  - Unit tests: [`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py) (**692/692** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§147)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§147)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 149: 16-Scenario (`SP-01..SP-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 148)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py)
+  - Unit tests: [`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py) (**693/693** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/report.json)
+
 
 

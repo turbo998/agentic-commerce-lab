@@ -290,5 +290,23 @@
   - 单元测试：[`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py)（全仓库 **689/689** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html`（中文）](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/report.json)
 
+---
+
+## Stage 148：x402 `SettleResponse` 六态结算词汇表/证据锚点与 `response-provenance` JCS 固定点哈希及服务端专属旁路隔离/结算覆盖上限/`near-intents` `upfront` 与 v2 `builder-code` 归因（`#3325`/`#3304`/`#3306`/`#3338`/`#3372`/`#3370`/`#3320`/`#3318`/`#3340`）、UCP `Correspondence` 记录链连续性/结账 `amount_finality` 与 `maximum_amount` 上限/目录变体 `offers[]` 多卖家 MoR 归属与 Permalink 防 CSRF 合并（`#836`/`#835`/`#816`/`#811`/`#831`/`#802`/`#801`/`#793`/`#789`/`#785`）、ACP Store BOPIS/行项目 `valid_until`/`com.stripe.link` 与 Delegate Payment 401/500/503 错误枚举（`#171`/`#165`/`#162`/`#161`/`#156`/`#150`）、AP2 跨商户外部预算权威四动词原子门禁与 `AP2-Haggle`/Solana Pay 单次公钥绑定（`#252`/`#229`/`#228`）及 MCP 扩展生命周期/Stripe/Visa TAP/$\tau$-bench 电信活跃线路与 Live-DB 判分护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py`](../../lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py)
+  - 单元测试：[`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_guard.py)（全仓库 **692/692** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§147)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§147)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 149：16 场景（`SP-01..SP-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 148）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../lab/x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py)
+  - 单元测试：[`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py)（全仓库 **693/693** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html`（中文）](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/report.json)
+
 
 
