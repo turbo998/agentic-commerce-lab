@@ -272,5 +272,23 @@
   - Unit tests: [`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py) (**685/685** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/report.json)
 
+---
+
+## Stage 146: Deterministic Guardrails for x402 `durable-evidence`/`authorization-evidence`/ERC-6492 Classification Reuse/Detached `validatePaidResponse`/SVM Delegated `receiverAuthorizer` & Stellar `feeBumpSigner` (`#3377`/`#3376`/`#3366`/`#3365`/`#3367`/`#3342`/`#3349`/`#3331`/`#3347`/`#3346`/`#3336`), UCP DNS-Delegated Authoritative Email IdP/Conditional Idempotency & Credential Non-Echo/Lodging Deterministic Schedule & Guest Order Credential/3-Axis `Adjustment.cause` (`#876`/`#869`/`#868`/`#861`/`#870`/`#848`/`#843`/`#839`/`#837`), ACP Feed Deep Links/Suggested Pricing Floor/Razorpay Delegated Handlers (`#237`/`#223`/`#218`/`#217`/`#216`/`#201`/`#200`), AP2 Verified Mandate Amount Blocking `1250` Fallback & RFC 8785 JCS Cart Binding (`#300`/`#278`/`#279`/`#253`), and MCP Lowercase `=?base64?`/Stripe `x402` Batch & Per-Tool Auth/Visa TAP Continuity Proof/$\tau$-bench Gold DB & Union-Key Argument Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py`](../../lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py)
+  - Unit tests: [`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py) (**688/688** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§145)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§145)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 147: 16-Scenario (`DE-01..DE-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 146)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py)
+  - Unit tests: [`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py) (**689/689** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/report.json)
+
 
 

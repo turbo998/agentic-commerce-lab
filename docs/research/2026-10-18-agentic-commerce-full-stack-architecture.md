@@ -1772,6 +1772,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **1/16 (6.25%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.34 ms` vs. `3.58 ms`（`10.5x` 加速）**。
 - **技术资产**：[`lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../lab/x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)、[`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py) 及双语报告 [`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html)。
 
+---
+
+## 145. Stage 146 架构演进：x402 `durable-evidence`/`authorization-evidence` 门禁、ERC-6492 部署分类复用、隔离视图 `validatePaidResponse`、SVM 委托 `receiverAuthorizer` 与 Stellar `feeBumpSigner` 安全检查、UCP DNS 权威邮箱身份绑定、条件化幂等与敏感凭证禁回显、酒店退订时间表与游客订单凭证、三轴 `Adjustment.cause`（严分 `abuse` 与 `fraud`）、ACP 商品 Feed 深度链接与 Razorpay 委托支付处理器、AP2 验证授权金额防 `1250` 回退与 JCS 购物车哈希绑定及 MCP/Stripe/Visa TAP/$\tau$-bench 护栏（`2026-10-21`）
+
+### 145.1 x402 Foundation `durable-evidence` 加密交付证据与 `authorization-evidence` 预验签挑战门禁（`#3377`/`#3376`）、ERC-6492 `code_deployed` 分类复用与 SVM `upto` 线性退避（`#3366`/`#3365`/`#3367`）、`validatePaidResponse` 隔离视图免重付校验（`#3342`/`#3349`/`#3331`）及 SVM 委托 `receiverAuthorizer` 与 Stellar `feeBumpSigner` 安全纳入（`#3347`/`#3346`/`#3336`）
+- 在 `onBeforeVerify` 阶段校验 HMAC 签名的 `authorization-evidence` 挑战、防重放状态、收款方覆盖与外部验证器（External Verifier Contract v1）准入，并在买家通过 `accepts` 选择 `durable-evidence` 时强制 `SettlementResponse.extensions` 包含加密交付摘要与 Facilitator EIP-712 收据签名（`#3377`/`#3376`）；在 v2 `exact` 结算阶段直接复用 `verify_universal_signature` 记录的 `ERC6492SignatureData.code_deployed`，消除第二次 `eth_getCode` 在 RPC 延迟下与验签结论分歧的漏洞，并对 SVM `upto` 通道重读实施有界线性退避（`#3366`/`#3365`/`#3367`）；在深拷贝隔离视图上执行 `validatePaidResponse`，校验失败时抛出 `PaidResponseValidationError` 保留原始结果与结算收据且绝不触发二次扣款（`#3342`/`#3349`/`#3331`）；在 SVM `upto` 委托 `receiverAuthorizer` 时强制 `claim` 调用方身份与 `deposit` 绑定身份一致，并将 Stellar `feeBumpSigner` 纳入 `signingAddresses` 防止客户端交易占用 Facilitator 代付签名地址（`#3347`/`#3346`/`#3336`）。
+
+### 145.2 UCP DNS 权威邮箱发行方关联（`#876`）与认证门控业务值（`#869`）、五项不可逆操作强制 `Idempotency-Key` 与非 `/detokenize` 响应禁回显敏感凭证（`#868`）、酒店退订确定性 `schedule`/`stay_dates.nights` 与游客订单访问凭证（`#861`/`#870`/`#848`）、标准 `Adjustment` 类型与三轴 `cause`（`#843`/`#837`/`#839`）及 ACP 深度链接/建议价底线/Razorpay 委托处理器（`#237`/`#223`/`#218`/`#217`/`#216`/`#201`/`#200`）
+- 仅当 `email_verified=true` 且 `_email-verification.<domain>` DNS TXT 记录显式授权该 IdP `iss` 时允许 Accelerated IdP 按邮箱自动关联账户，并将商家私有响应值门控于认证完成之后（`#876`/`#869`）；对 5 项不可逆写操作强制要求 `Idempotency-Key`，且严禁在 `/detokenize` 以外的实体响应或 Webhook 中回显 `number`/`cvc`/`cryptogram`/`token_requestor_id`（`#868`）；校验住宿预订 `stay_dates.nights` 天数差、按 `evaluation_epoch` 确定性匹配退订罚金档位，并为游客订单操作强制校验结账完成签发的订单绑定凭证（`#861`/`#870`/`#848`）；标准化 6 类 `Adjustment.type` 并将 `Adjustment.cause` 解耦为 `category`/`attributed_to`/`nature` 三轴（强制 `nature="fraud"` 必须存在虚假身份/资格/事实陈述，否则归类为规则利用 `abuse`）同时保持 `platform_reference` 关联（`#843`/`#837`/`#839`）；在 ACP 中校验商品 Feed 深度链接域名/Scheme 白名单、建单 `suggested_pricing` 商户底线、完单履约选项总额守恒以及 Razorpay `s2s_cards`/`upi_intent`/`upi_circle` 三类委托支付处理器契约（`#237`/`#223`/`#218`/`#217`/`#216`/`#201`/`#200`）。
+
+### 145.3 Google AP2 `x402` 凭证提供方验证金额提取防 `1250` 硬编码回退（`#300`）、高熵 `checkout_hash` 防彩虹表与 RFC 8785 JCS 购物车-支付授权绑定（`#278`/`#279`/`#253`）、MCP 小写 `=?base64?` 哨兵与权威 DNS 引导（`#2937`/`#2934`/`#2931`）、Stripe AI `x402` 批量支付与逐工具身份授权（`#434`/`#453`/`#457`）、Visa TAP 浏览器向 Agent 续接证明（`#26`/`#25`/`#23`/`#16`）及 $\tau$-bench 黄金 DB/裁判数量/礼品卡与并集参数护栏（`#580`/`#581`/`#571`/`#569`）
+- 修复 AP2 `x402_credentials_provider_mcp` 因访问不存在的 `payment_instrument.payee_address` 触发 `AttributeError` 而静默回退至硬编码 `amount_cents = 1250` 的高危漏洞，强制直接提取已验证 `ClosedPaymentMandate.payment_amount.amount`（`#300`）；要求 Checkout JWT 携带 `>= 128-bit` 高熵 `jti`/`nonce` 声明并在 `PaymentMandateContents` 中绑定 `cart_mandate_hash = hex(sha256(jcs(cart_mandate_contents)))`（`#278`/`#279`/`#253`）；在 MCP 中强制 `SEP-2243` 小写 `=?base64?` 哨兵、`SEP-2127` 权威域名 HTTPS DNS 引导与 Schema 自描述 `$id`（`#2937`/`#2934`/`#2931`）；在 Stripe AI 中强制 MCP `x402` 批量支付总额守恒、Agent 逐工具授权与 `stripe-projects` 预检门禁（`#434`/`#453`/`#457`）；在 Visa TAP 中校验浏览器会话向 Agent 密钥续接证明与跨跳授权摘要一致性（`#26`/`#25`/`#23`/`#16`）；并在 $\tau$-bench 2.0 中拒绝未完成黄金写操作的 DB 认证、校验 NL 裁判返回条数、核对零售换货已送达状态与礼品卡余额，以及按参数键并集比对工具调用以防漏传黄金参数（`#580`/`#581`/`#571`/`#569`；参见 `lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py`）。
+
+---
+
+## 146. Stage 147 基准评测：16 场景（`DE-01..DE-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 146 全部 16 项协议护栏（`DE-01..DE-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **1/16 (6.25%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.33 ms` vs. `3.53 ms`（`10.7x` 加速）**。
+- **技术资产**：[`lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py)、[`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py) 及双语报告 [`reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/`](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html)。
+
 
 
 

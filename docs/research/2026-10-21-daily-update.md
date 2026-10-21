@@ -272,5 +272,23 @@
   - 单元测试：[`tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py`](../../tests/test_x402_java_dot_stellar_events_ucp_influence_acp_terms_ap2_consume_bench.py)（全仓库 **685/685** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html`（中文）](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-java-dot-stellar-events-ucp-influence-acp-terms-ap2-consume-bench/report.json)
 
+---
+
+## Stage 146：x402 `durable-evidence`/`authorization-evidence` 门禁/ERC-6492 部署分类复用/隔离视图 `validatePaidResponse`/SVM 委托 `receiverAuthorizer` 与 Stellar `feeBumpSigner`（`#3377`/`#3376`/`#3366`/`#3365`/`#3367`/`#3342`/`#3349`/`#3331`/`#3347`/`#3346`/`#3336`）、UCP DNS 权威邮箱身份绑定/条件化幂等与敏感凭证禁回显/酒店确定性退订与游客订单凭证/三轴 `Adjustment.cause`（`#876`/`#869`/`#868`/`#861`/`#870`/`#848`/`#843`/`#839`/`#837`）、ACP 深度链接/建议价底线/Razorpay 委托处理器（`#237`/`#223`/`#218`/`#217`/`#216`/`#201`/`#200`）、AP2 验证授权金额防 `1250` 回退与 JCS 购物车哈希绑定（`#300`/`#278`/`#279`/`#253`）及 MCP 小写 `=?base64?`/Stripe `x402` 批量支付与逐工具授权/Visa TAP 续接证明/$\tau$-bench 黄金 DB 与并集参数护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py`](../../lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py)
+  - 单元测试：[`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_guard.py)（全仓库 **688/688** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§145)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§145)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 147：16 场景（`DE-01..DE-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 146）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../lab/x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py)
+  - 单元测试：[`tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py`](../../tests/test_x402_durable_evidence_erc6492_ucp_dns_idp_ap2_amount_jcs_bench.py)（全仓库 **689/689** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html`（中文）](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-durable-evidence-erc6492-ucp-dns-idp-ap2-amount-jcs-bench/report.json)
+
 
 
