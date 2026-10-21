@@ -380,6 +380,24 @@
   - Unit tests: [`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py) (**709/709** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/report.json)
 
+---
+
+## Stage 158: Deterministic Guardrails for x402 Aptos Fungible Asset Metadata Allowlist & ERC-4337 EntryPoint v0.7/Edge Streaming Completion Gate (`#3780`/`#3778`/`#3772`/`#3765`/`#3761`/`#3758`/`#3749`/`#3746`/`#3742`/`#3492`/`#3489`/`#3484`), UCP Subscription Pause/Skip & Split-Shipment Capture/Hazmat Air-Ban (`#971`/`#968`/`#965`/`#944`/`#942`/`#937`/`#928`/`#925`/`#841`/`#838`/`#833`/`#829`), ACP Raw-Body Webhook HMAC/Terminal-State Lock & B2B Tax-Exemption Nexus (`#306`/`#305`/`#303`/`#301`/`#272`/`#269`/`#267`/`#264`), AP2 Step-Up WebAuthn Biometric UV & Corporate M-of-N Separation of Duties (`#366`/`#362`/`#360`/`#356`/`#345`/`#342`/`#340`/`#336`), and MCP OAuth 2.1 Passthrough Block/Stripe Connect Fee Conservation/Visa TAP Passkey Anti-Clone/$\tau$-bench Pharmacy & SaaS Seat Lock Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py`](../../lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py`](../../tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py) (**712/712** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§157)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§157)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 159: 16-Scenario (`AD-01..AD-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 158)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py) (**713/713** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/report.json)
+
 
 
 

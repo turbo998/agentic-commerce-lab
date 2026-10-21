@@ -380,6 +380,24 @@
   - 单元测试：[`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py)（全仓库 **709/709** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/report.json)
 
+---
+
+## Stage 158：x402 Aptos Fungible Asset 元数据对象白名单与 ERC-4337 EntryPoint v0.7/边缘流式完成结算门禁（`#3780`/`#3778`/`#3772`/`#3765`/`#3761`/`#3758`/`#3749`/`#3746`/`#3742`/`#3492`/`#3489`/`#3484`）、UCP 订阅暂停/跳期与拆单分批请款/危化品航空禁运（`#971`/`#968`/`#965`/`#944`/`#942`/`#937`/`#928`/`#925`/`#841`/`#838`/`#833`/`#829`）、ACP Webhook 原始字节 HMAC/终态锁定与 B2B 免税证管辖区 Nexus（`#306`/`#305`/`#303`/`#301`/`#272`/`#269`/`#267`/`#264`）、AP2 Step-Up WebAuthn 生物核验与企业多签职责分离（SoD，`#366`/`#362`/`#360`/`#356`/`#345`/`#342`/`#340`/`#336`）及 MCP OAuth 2.1 防透传/Stripe Connect 分账守恒/Visa TAP Passkey 防克隆/$\tau$-bench 处方药与 SaaS 保底席位确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py`](../../lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py`](../../tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_guard.py)（全仓库 **712/712** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§157)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§157)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 159：16 场景（`AD-01..AD-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 158）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py)（全仓库 **713/713** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/report.json)
+
 
 
 
