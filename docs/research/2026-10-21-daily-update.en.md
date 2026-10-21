@@ -362,6 +362,24 @@
   - Unit tests: [`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py) (**705/705** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/report.json)
 
+---
+
+## Stage 156: Deterministic Guardrails for x402 Sui Sponsored PTB Coin Equivocation & Permit2 Batch Array Parity/Solana Token-2022 Net-Received Conservation & Multi-Facilitator Failover Gate (`#3825`/`#3821`/`#3818`/`#3812`/`#3809`/`#3804`/`#3798`/`#3791`/`#3785`/`#3509`/`#3506`/`#3502`/`#3498`), UCP BOPIS Store Inventory Lock & Multi-Currency FX Lock/Trade-In 15-Digit IMEI Escrow (`#980`/`#978`/`#975`/`#972`/`#962`/`#961`/`#950`/`#947`/`#859`/`#855`/`#849`/`#845`), ACP `Idempotency-Key` JCS SHA-256 Fingerprint Conflict (`409`) & In-Flight Lock (`425`)/SPT Cryptogram ECI & 23-Digit ARN Refund Trace (`#312`/`#311`/`#309`/`#307`/`#279`/`#278`/`#276`/`#274`), AP2 Parent-Child Mandate Temporal Inheritance & Cross-Border 24h De-Minimis Split-Consignment Aggregation (`#379`/`#378`/`#377`/`#367`/`#358`/`#355`/`#352`/`#348`), and MCP `realpath` Symlink Escape Block/Stripe Radar EFW Refund Halt/Visa TAP BIN Network Routing/$\tau$-bench Airline & Retail Price-Match Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py`](../../lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py) (**708/708** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§155)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§155)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 157: 16-Scenario (`SB-01..SB-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 156)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py) (**709/709** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/report.json)
+
 
 
 

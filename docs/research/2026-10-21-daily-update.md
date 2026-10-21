@@ -362,6 +362,24 @@
   - 单元测试：[`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py)（全仓库 **705/705** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/report.json)
 
+---
+
+## Stage 156：x402 Sui 赞助 PTB 防双花锁死与 Permit2 批量数组对齐/Solana Token-2022 净到账守恒与多 Facilitator 故障切换门禁（`#3825`/`#3821`/`#3818`/`#3812`/`#3809`/`#3804`/`#3798`/`#3791`/`#3785`/`#3509`/`#3506`/`#3502`/`#3498`）、UCP BOPIS 门店库存锁与多币种锁汇/以旧换新（Trade-In）15 位 IMEI 托管（`#980`/`#978`/`#975`/`#972`/`#962`/`#961`/`#950`/`#947`/`#859`/`#855`/`#849`/`#845`）、ACP `Idempotency-Key` JCS SHA-256 指纹冲突（`409`）与在途锁（`425`）/SPT 网络密文 ECI 与 23 位 ARN 退款溯源（`#312`/`#311`/`#309`/`#307`/`#279`/`#278`/`#276`/`#274`）、AP2 父子授权令时间窗继承与跨境 24h 免税额拆单聚合（`#379`/`#378`/`#377`/`#367`/`#358`/`#355`/`#352`/`#348`）及 MCP `realpath` 软链接防逃逸/Stripe Radar EFW 退款熔断/Visa TAP BIN 卡组路由/$\tau$-bench 航司与零售价保确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py`](../../lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_guard.py)（全仓库 **708/708** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§155)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§155)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 157：16 场景（`SB-01..SB-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 156）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../lab/x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py`](../../tests/test_x402_sui_sponsor_ucp_bopis_lock_acp_idempotency_ap2_mandate_exp_tau2_bench.py)（全仓库 **709/709** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-sui-sponsor-ucp-bopis-lock-acp-idempotency-ap2-mandate-exp-tau2-bench/report.json)
+
 
 
 
