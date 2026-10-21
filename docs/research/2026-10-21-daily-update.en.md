@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–129)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–161)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -397,6 +397,24 @@
   - Benchmark suite: [`lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../lab/x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py)
   - Unit tests: [`tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py`](../../tests/test_x402_aptos_fa_ucp_sub_pause_acp_webhook_sig_ap2_biometric_tau2_bench.py) (**713/713** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-aptos-fa-ucp-sub-pause-acp-webhook-sig-ap2-biometric-tau2-bench/report.json)
+
+---
+
+## Stage 160: Deterministic Guardrails for x402 TON TIP-3 Jetton Master Derivation & Cosmos Noble IBC Allowlist/Cross-Origin 3xx Strip (`#3740`/`#3736`/`#3729`/`#3722`/`#3719`/`#3714`/`#3695`/`#3692`/`#3689`/`#3469`/`#3464`/`#3460`), UCP Closed-Loop Gift Card Anti-Loop & Pre-Order Hold/Warranty Parent Parity (`#941`/`#936`/`#927`/`#923`/`#921`/`#913`/`#909`/`#895`/`#828`/`#825`/`#821`/`#817`), ACP BNPL Disclosure Conservation & Digital Fulfillment Post-Capture Gate (`#299`/`#298`/`#283`/`#277`/`#265`/`#263`/`#258`/`#254`), AP2 Sub-Agent Delegation Attenuation & Revocation Status List Freshness (`#354`/`#350`/`#344`/`#337`/`#334`/`#329`/`#325`/`#322`), and MCP/Stripe Issuing/Visa VIC/$\tau$-bench Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_guard.py`](../../lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_guard.py`](../../tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_guard.py) (**716/716** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§159)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§159)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 161: 16-Scenario (`TN-01..TN-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 160)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../lab/x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py`](../../tests/test_x402_ton_jetton_ucp_gift_card_acp_bnpl_ap2_sub_delegate_tau2_bench.py) (**717/717** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench/report.json)
 
 
 

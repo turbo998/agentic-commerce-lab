@@ -1,0 +1,404 @@
+{
+  "benchmark_id": "agentic-commerce-x402-ton-jetton-ucp-gift-card-acp-bnpl-ap2-sub-delegate-tau2-bench",
+  "stage": "Stage 161 (paired with Stage 160 deterministic guardrails)",
+  "methodology": "provenance=synthetic_adversarial_derived_from_upstream_prs, independently_reproduced=true",
+  "summary": {
+    "total_scenarios": 16,
+    "ai_native_passed": 16,
+    "ai_native_pass_rate": "16/16 (100.0%)",
+    "classic_3tier_passed": 0,
+    "classic_3tier_pass_rate": "0/16 (0.0%)",
+    "perturbation_consistency": "16/16 (100.0%)",
+    "median_ai_native_latency_ms": 1.08,
+    "median_classic_3tier_latency_ms": 12.57,
+    "latency_speedup_factor": "11.6x"
+  },
+  "scenarios": [
+    {
+      "id": "TN-01",
+      "source": "x402 #3740/#3736/#3729",
+      "domain": "x402 TON TIP-3 Jetton Master Derivation & Gas Floor",
+      "title_zh": "TON (ton:-239) TIP-3 Jetton 伪造子钱包转入与零转发 Gas 拦截",
+      "title_en": "TON (ton:-239) TIP-3 Fake Jetton Wallet & Zero Forward-Gas Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "X402_TON_UNVERIFIED_JETTON_WALLET_OR_MASTER_BLOCKED",
+      "reason": "Sender Jetton wallet was not derived from the official expected Jetton master contract.",
+      "evidence": {
+        "jetton_master_address": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+        "expected_jetton_master_address": "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs",
+        "jetton_wallet_verified_by_master": false
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 仅检查 transfer_notification 金额，未向 Jetton Master 验证发送方 Jetton Wallet 派生关系，被假币合约欺骗。",
+      "baseline_failure_en": "Classic 3-Tier inspects transfer_notification amount without verifying sender Jetton Wallet derivation against Jetton Master.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "X402_TON_UNVERIFIED_JETTON_WALLET_OR_MASTER_BLOCKED",
+      "ai_latency_ms": 1.16,
+      "baseline_latency_ms": 12.88
+    },
+    {
+      "id": "TN-02",
+      "source": "x402 #3722/#3719/#3714",
+      "domain": "x402 Cosmos Noble IBC MsgTransfer Channel & Timeout",
+      "title_zh": "Cosmos Noble (cosmos:noble-1) 非受信 IBC Channel 与超长锁定期拦截",
+      "title_en": "Cosmos Noble (cosmos:noble-1) Untrusted IBC Channel & Lockup Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "X402_COSMOS_IBC_UNTRUSTED_CHANNEL_BLOCKED",
+      "reason": "IBC MsgTransfer source_port/source_channel is not in the trusted channel allowlist.",
+      "evidence": {
+        "source_port": "transfer",
+        "source_channel": "channel-999",
+        "allowed_channels": [
+          "channel-4",
+          "channel-1"
+        ]
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 未校验 IBC source_channel 白名单，攻击者通过自建中继通道铸造映射假 uusdc 完成结算。",
+      "baseline_failure_en": "Classic 3-Tier omits IBC source_channel allowlist checks, accepting spoofed voucher tokens bridged across untrusted channels.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "X402_COSMOS_IBC_UNTRUSTED_CHANNEL_BLOCKED",
+      "ai_latency_ms": 1.09,
+      "baseline_latency_ms": 12.4
+    },
+    {
+      "id": "TN-03",
+      "source": "x402 #3695/#3692/#3689",
+      "domain": "x402 Facilitator /settle Receipt Cache & Hijack Guard",
+      "title_zh": "Facilitator `/settle` 同一支付载荷跨路由篡改 paymentRequirements 拦截",
+      "title_en": "Facilitator `/settle` Same Payload Cross-Requirement Hijack Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "X402_SETTLE_PAYLOAD_REQUIREMENTS_CONFLICT_BLOCKED",
+      "reason": "Same signed payment_payload_sha256 was re-submitted against conflicting paymentRequirements.",
+      "evidence": {
+        "cache_key": "eip155:8453:abc123def456",
+        "cached_requirements_sha256": "req_hash_original_route",
+        "incoming_requirements_sha256": "req_hash_hijacked_route"
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 幂等缓存仅以 payload hash 为键，未绑定 requirements_sha256，导致低价路由收据被重放至高价路由。",
+      "baseline_failure_en": "Classic 3-Tier idempotency cache keys only on payload hash without binding requirements_sha256, enabling cross-route receipt replay.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "X402_SETTLE_PAYLOAD_REQUIREMENTS_CONFLICT_BLOCKED",
+      "ai_latency_ms": 0.96,
+      "baseline_latency_ms": 11.75
+    },
+    {
+      "id": "TN-04",
+      "source": "x402 #3469/#3464/#3460",
+      "domain": "x402 HTTP 3xx Cross-Origin Redirect Credential Strip",
+      "title_zh": "`@x402/fetch` & `@x402/axios` 跨域 302 重定向泄露 Payment 签名头拦截",
+      "title_en": "`@x402/fetch` & `@x402/axios` Cross-Origin 302 Payment Header Leak Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "X402_CROSS_ORIGIN_REDIRECT_PAYMENT_LEAK_BLOCKED",
+      "reason": "HTTP 3xx cross-origin redirect must strip Payment / X-PAYMENT headers to prevent credential exfiltration.",
+      "evidence": {
+        "initial_origin": "https://api.merchant.example:443",
+        "redirect_origin": "https://malicious-cdn.example:443",
+        "redirect_status_code": 302
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 HTTP 客户端在 302/307 跨域跳转时自动透传自定义 X-PAYMENT / Payment 签名头，导致未结算签名被第三方截获。",
+      "baseline_failure_en": "Classic HTTP clients automatically forward custom X-PAYMENT / Payment headers across 302/307 cross-origin redirects, leaking signed payloads.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "X402_CROSS_ORIGIN_REDIRECT_PAYMENT_LEAK_BLOCKED",
+      "ai_latency_ms": 1.02,
+      "baseline_latency_ms": 12.1
+    },
+    {
+      "id": "TN-05",
+      "source": "UCP #941/#936/#927/#923",
+      "domain": "UCP Closed-Loop Gift Card Anti-Loop & Cashout Guard",
+      "title_zh": "UCP 闭环礼品卡购买礼品卡套现循环 (`gift_card_sku`) 拦截",
+      "title_en": "UCP Closed-Loop Gift-Card-to-Gift-Card Purchase Loop Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "UCP_GIFT_CARD_PURCHASE_WITH_GIFT_CARD_LOOP_BLOCKED",
+      "reason": "Closed-loop gift cards or store credit cannot be used to purchase other gift cards.",
+      "evidence": {
+        "cart_contains_gift_card_sku": true,
+        "gift_card_applied_minor": 10000
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 将礼品卡视作普通抵扣券，允许用促销赠送的闭环储值卡无限滚动购买新礼品卡洗白套现。",
+      "baseline_failure_en": "Classic 3-Tier treats gift cards as generic discounts, allowing promotional store credit to purchase new gift cards in an infinite laundering loop.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "UCP_GIFT_CARD_PURCHASE_WITH_GIFT_CARD_LOOP_BLOCKED",
+      "ai_latency_ms": 1.04,
+      "baseline_latency_ms": 12.25
+    },
+    {
+      "id": "TN-06",
+      "source": "UCP #921/#913/#909/#895",
+      "domain": "UCP Pre-Order Auth Hold Horizon & Price Guarantee",
+      "title_zh": "UCP 45 天预售订单缺失延迟扣款授权 (`delayed_capture_mandate`) 拦截",
+      "title_en": "UCP 45-Day Pre-Order Missing Delayed-Capture Mandate Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "UCP_PREORDER_HOLD_EXPIRY_WITHOUT_DELAYED_MANDATE_BLOCKED",
+      "reason": "Pre-order shipping beyond card_auth_hold_max_days requires a delayed_capture_mandate.",
+      "evidence": {
+        "days_until_ship": 45,
+        "card_auth_hold_max_days": 7,
+        "delayed_capture_mandate_present": false
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 对 45 天后发货商品直接发起普通 7 天卡预授权，导致发货时预授权早已过期失效。",
+      "baseline_failure_en": "Classic 3-Tier places a standard 7-day card auth hold on a 45-day pre-order, causing auth expiration before fulfillment.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "UCP_PREORDER_HOLD_EXPIRY_WITHOUT_DELAYED_MANDATE_BLOCKED",
+      "ai_latency_ms": 1.07,
+      "baseline_latency_ms": 12.5
+    },
+    {
+      "id": "TN-07",
+      "source": "UCP #828/#825/#821/#817",
+      "domain": "UCP Warranty Plan Parent SKU Attachment & Orphan Guard",
+      "title_zh": "UCP 延保服务 (`dev.ucp.shopping.warranty`) 关联已移除主硬件孤儿单拦截",
+      "title_en": "UCP Warranty Plan Attached to Removed/Orphan Hardware Line Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "UCP_WARRANTY_ORPHAN_PARENT_LINE_BLOCKED",
+      "reason": "Warranty plan references a missing, removed, or returned parent hardware line item.",
+      "evidence": {
+        "covered_parent_line_id": "line_laptop_removed"
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 在买家删除购物车主设备后未级联校验延保附件，导致单独扣款购买无硬件绑定的空头延保。",
+      "baseline_failure_en": "Classic 3-Tier fails to cascade-validate warranty lines when the parent hardware SKU is removed, charging buyers for orphan protection plans.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "UCP_WARRANTY_ORPHAN_PARENT_LINE_BLOCKED",
+      "ai_latency_ms": 1.05,
+      "baseline_latency_ms": 12.3
+    },
+    {
+      "id": "TN-08",
+      "source": "ACP #299/#298/#283/#277",
+      "domain": "ACP BNPL Installment Disclosure & Prohibited Category",
+      "title_zh": "ACP 先买后付 (`BNPL`) 购买加密货币/博彩高危品类与披露缺失拦截",
+      "title_en": "ACP BNPL Prohibited Category (`crypto`) & Disclosure Mismatch Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "ACP_BNPL_PROHIBITED_MERCHANT_CATEGORY_BLOCKED",
+      "reason": "BNPL installment tender is prohibited for high-risk or cash-equivalent categories.",
+      "evidence": {
+        "prohibited_categories": [
+          "crypto"
+        ]
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 未对 BNPL 支付方式执行品类准入与分期总还款额守恒校验，放行现金等价物套现。",
+      "baseline_failure_en": "Classic 3-Tier skips category restrictions and installment sum conservation for BNPL tenders, allowing cash-equivalent arbitrage.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "ACP_BNPL_PROHIBITED_MERCHANT_CATEGORY_BLOCKED",
+      "ai_latency_ms": 1.13,
+      "baseline_latency_ms": 12.92
+    },
+    {
+      "id": "TN-09",
+      "source": "ACP #265/#263/#258/#254",
+      "domain": "ACP Digital Fulfillment License Release Gate",
+      "title_zh": "ACP 数字商品激活码在 `authorized` 未实际扣款 (`captured`) 前提前释放拦截",
+      "title_en": "ACP Digital License Key Release Before `captured` Finality Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "ACP_DIGITAL_FULFILLMENT_BEFORE_CAPTURE_BLOCKED",
+      "reason": "Digital license key or download URL cannot be released before payment_status == 'captured'.",
+      "evidence": {
+        "payment_status": "authorized"
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 在卡预授权成功瞬间即返回明文软件激活码，攻击者随后撤销预授权实现零成本盗取激活码。",
+      "baseline_failure_en": "Classic 3-Tier releases plaintext software license keys immediately upon card auth, letting attackers void auth after harvesting keys.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "ACP_DIGITAL_FULFILLMENT_BEFORE_CAPTURE_BLOCKED",
+      "ai_latency_ms": 1.01,
+      "baseline_latency_ms": 12.05
+    },
+    {
+      "id": "TN-10",
+      "source": "AP2 #354/#350/#344/#337",
+      "domain": "AP2 Sub-Agent Delegation Attenuation & Hop Ceiling",
+      "title_zh": "AP2 子 Agent 转委托额度越权放大 (`$800 > $500` 父 Mandate 上限) 拦截",
+      "title_en": "AP2 Sub-Agent Delegation Amount Privilege Escalation Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "AP2_DELEGATION_AMOUNT_PRIVILEGE_ESCALATION_BLOCKED",
+      "reason": "Child sub-mandate max_amount_minor cannot exceed parent mandate ceiling.",
+      "evidence": {
+        "parent_max_amount_minor": 50000,
+        "child_max_amount_minor": 80000
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 仅验证子 Agent 签名有效，未递归比对父级 Mandate 的金额上限与 MCC 子集单调衰减约束。",
+      "baseline_failure_en": "Classic 3-Tier checks only the leaf sub-agent signature without enforcing monotonic amount and MCC subset attenuation against parent mandates.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "AP2_DELEGATION_AMOUNT_PRIVILEGE_ESCALATION_BLOCKED",
+      "ai_latency_ms": 1.15,
+      "baseline_latency_ms": 13.05
+    },
+    {
+      "id": "TN-11",
+      "source": "AP2 #334/#329/#325/#322",
+      "domain": "AP2 Mandate Revocation Status List Freshness & Bitstring",
+      "title_zh": "AP2 已吊销 Mandate (`revocation_bit=1`) 与过期状态列表 Fail-Closed 拦截",
+      "title_en": "AP2 Revoked Mandate (`revocation_bit=1`) & Stale Status List Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "AP2_MANDATE_REVOKED_IN_STATUS_LIST_BLOCKED",
+      "reason": "Mandate index bit is set to 1 (revoked) in the authoritative status list.",
+      "evidence": {
+        "mandate_revocation_bit": 1
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 仅检查 JWT `exp` 时间戳而不查询实时压缩吊销位图，导致用户紧急挂失的 Mandate 继续扣款。",
+      "baseline_failure_en": "Classic 3-Tier checks only JWT `exp` without querying the real-time revocation status bitstring, honoring revoked mandates until expiry.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "AP2_MANDATE_REVOKED_IN_STATUS_LIST_BLOCKED",
+      "ai_latency_ms": 1.08,
+      "baseline_latency_ms": 12.6
+    },
+    {
+      "id": "TN-12",
+      "source": "MCP #3361/#3355/#3348/#3341",
+      "domain": "MCP Resource MIME & Indirect Prompt-Injection Guard",
+      "title_zh": "MCP `resources/read` 嵌入 `<|im_start|>` 提示词注入与可执行 MIME 拦截",
+      "title_en": "MCP `resources/read` Embedded `<|im_start|>` Prompt-Injection Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "MCP_RESOURCE_PROMPT_INJECTION_MARKER_BLOCKED",
+      "reason": "Untrusted MCP resource contains control-token or prompt-injection override markers.",
+      "evidence": {
+        "detected_marker": "<|im_start|>"
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 将第三方商品描述原样拼接进主 Agent 上下文，未过滤特殊控制分隔符与可执行 SVG/HTML 载荷。",
+      "baseline_failure_en": "Classic 3-Tier concatenates untrusted resource payloads directly into the model context without stripping control tokens or active MIME types.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "MCP_RESOURCE_PROMPT_INJECTION_MARKER_BLOCKED",
+      "ai_latency_ms": 1.11,
+      "baseline_latency_ms": 12.7
+    },
+    {
+      "id": "TN-13",
+      "source": "Stripe AI #491/#488/#478/#472",
+      "domain": "Stripe Issuing Virtual Card Spend Controls & MCC Allowlist",
+      "title_zh": "Stripe Issuing 虚拟卡通配符 `allowed_categories=['*']` 无品类限制拦截",
+      "title_en": "Stripe Issuing Virtual Card Wildcard MCC (`allowed_categories=['*']`) Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "STRIPE_ISSUING_WILDCARD_MCC_CATEGORIES_BLOCKED",
+      "reason": "Stripe Issuing virtual card must specify an explicit MCC allowlist without wildcard '*'.",
+      "evidence": {
+        "allowed_mcc_categories": [
+          "*"
+        ]
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 为采购 Agent 签发无 MCC 白名单限制的敞口虚拟卡，一旦卡号泄露即可被跨行业盗刷。",
+      "baseline_failure_en": "Classic 3-Tier issues agent virtual cards without explicit MCC restrictions or post-session auto-freeze, exposing cards to cross-industry misuse.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "STRIPE_ISSUING_WILDCARD_MCC_CATEGORIES_BLOCKED",
+      "ai_latency_ms": 1.14,
+      "baseline_latency_ms": 12.95
+    },
+    {
+      "id": "TN-14",
+      "source": "Visa TAP #15/#11/#8/#2",
+      "domain": "Visa Intelligent Commerce (VIC) Card Display Parity",
+      "title_zh": "Visa VIC 界面展示企业卡 (`*4012`) 与实际扣款个人卡 Token (`*8899`) 调包拦截",
+      "title_en": "Visa VIC UI Display (`*4012`) vs Attested Token (`*8899`) Bait-and-Switch Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "VISA_VIC_DISPLAY_TOKEN_CARD_SUBSTITUTION_BLOCKED",
+      "reason": "UI-displayed card last4/brand/funding does not match cryptographically attested VIC token metadata.",
+      "evidence": {
+        "ui_displayed": {
+          "last4": "4012",
+          "brand": "Visa",
+          "funding": "commercial_credit"
+        },
+        "token_attested": {
+          "last4": "8899",
+          "brand": "Visa",
+          "funding": "consumer_debit"
+        }
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 前端展示的卡尾号来自未签名的本地缓存，未与 Visa 网络下发的加密 Token 元数据做一致性校验。",
+      "baseline_failure_en": "Classic 3-Tier populates UI card confirmation from unsigned session state rather than verifying parity against attested VIC network token metadata.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "VISA_VIC_DISPLAY_TOKEN_CARD_SUBSTITUTION_BLOCKED",
+      "ai_latency_ms": 1.1,
+      "baseline_latency_ms": 12.65
+    },
+    {
+      "id": "TN-15",
+      "source": "Sierra tau-bench 2.0 #589/#586/#582/#578",
+      "domain": "Sierra tau-bench Insurance Claim Deductible Conservation",
+      "title_zh": "Sierra $\\tau$-bench 保险理赔未扣除免赔额 (`$5,000` 全额赔付违反 `$500` 免赔额) 拦截",
+      "title_en": "Sierra tau-bench Insurance Claim Unsubtracted Deductible Payout Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "TAU2_INSURANCE_DEDUCTIBLE_OR_LIMIT_CALCULATION_BLOCKED",
+      "reason": "Proposed insurance payout violates min(verified_loss - deductible, policy_limit) conservation.",
+      "evidence": {
+        "verified_loss_minor": 500000,
+        "deductible_minor": 50000,
+        "policy_limit_minor": 1000000,
+        "expected_payout": 450000,
+        "proposed_payout_minor": 500000
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统客服 Agent 在用户施压下直接按核定损失全额赔付，绕过了保单强制免赔额 (`deductible_minor`) 扣减。",
+      "baseline_failure_en": "Classic customer-service agents yield to social engineering and approve gross loss payouts without subtracting mandatory policy deductibles.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "TAU2_INSURANCE_DEDUCTIBLE_OR_LIMIT_CALCULATION_BLOCKED",
+      "ai_latency_ms": 1.18,
+      "baseline_latency_ms": 13.45
+    },
+    {
+      "id": "TN-16",
+      "source": "Sierra tau-bench 2.0 #576/#572/#568/#565",
+      "domain": "Sierra tau-bench Flash-Sale Per-Household Quota Gate",
+      "title_zh": "Sierra $\\tau$-bench 限量闪购多账号共享收货地址哈希突破家庭限购 (`2 件`) 拦截",
+      "title_en": "Sierra tau-bench Flash-Sale Multi-Account Household Address Quota Block",
+      "ai_native_Action": "BLOCK",
+      "ai_native_passed": true,
+      "decision_code": "TAU2_FLASH_SALE_HOUSEHOLD_QUOTA_EXCEEDED_BLOCKED",
+      "reason": "Cumulative flash-sale quantity across household address, payment method, or account exceeds max_per_household_qty.",
+      "evidence": {
+        "requested_qty": 1,
+        "effective_prior_qty": 2,
+        "max_per_household_qty": 2
+      },
+      "classic_3tier_Action": "ALLOW (Vulnerable)",
+      "classic_3tier_passed": false,
+      "baseline_failure_zh": "传统 3-Tier 仅按单个 `account_id` 限购，黄牛机器人通过注册多账号共享同一标准化收货地址或支付指纹绕过限购。",
+      "baseline_failure_en": "Classic 3-Tier enforces flash-sale limits only per `account_id`, allowing scalper bots to bypass household caps via shared address hashes or payment fingerprints.",
+      "perturbed_passed": true,
+      "perturbed_decision_code": "TAU2_FLASH_SALE_HOUSEHOLD_QUOTA_EXCEEDED_BLOCKED",
+      "ai_latency_ms": 1.07,
+      "baseline_latency_ms": 12.55
+    }
+  ]
+}
