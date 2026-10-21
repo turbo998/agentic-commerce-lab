@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–121）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–123）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -55,4 +55,22 @@
   - 基准套件：[`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)
   - 单元测试：[`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)（全仓库 **636/636** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html`（中文）](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/report.json)
+
+---
+
+## Stage 122：x402 浏览器 CORS 暴露三头/16KB 上限与 Axios 中间流释放（`#3809`/`#3805`/`#3817`/`#3818`/`#3802`/`#3795`/`#3799`/`#3804`/`#3806`）、UCP 品牌身份/定宽裸 `r||s` ECDSA/递延账期空 `payment`（`#939`/`#934`/`#912`/`#908`）及 Stripe AI Python 依赖/废弃流与 $\tau$-Authority 越权护栏（`#540`/`#541`/`#525`/`#509`/`#629`/`#627`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py)
+  - 单元测试：[`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py)（全仓库 **639/639** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§121)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§121)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 123：16 场景（`BC-01..BC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 122）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)
+  - 单元测试：[`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)（全仓库 **640/640** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html`（中文）](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/report.json)
 

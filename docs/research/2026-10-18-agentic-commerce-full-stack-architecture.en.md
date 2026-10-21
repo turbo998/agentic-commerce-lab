@@ -267,6 +267,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§119.3**: MCP SEP-3392 Extension Lifecycle Maturity Gate (`#3392`), SEP-3405 Conformance-Driven SDK Tiers (`#3405`), and UCP Zero-`any` Bundled Schema Table Recovery (`#894`/`#919`).
 - **§120 (Stage 121 — Bilingual Chinese + English, `2026-10-21`)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SR-01..SR-16`)**: `lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py` & `reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.19 ms` vs. `1.54 ms` (`8.1x` speedup).
+- **§121 (Stage 122 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§121.1**: x402 Foundation Browser Cross-Origin CORS 3-Header Expose/Preflight (`#3809`), `PAYMENT-REQUIRED` 8KB/16KB Header Ceiling (`#3805`), Axios Intermediate Stream Release & Internal 402 Loop Prevention (`#3817`/`#3818`), and Facilitator Error Preservation, Sui CAIP-2 Registry, Pre-Sign Listing Check & Async SVM Non-Blocking RPC (`#3802`/`#3795`/`#3799`/`#3804`/`#3806`).
+  - **§121.2**: UCP `dev.ucp.common.business` Brand Identity (`#939`), Fixed-Width Raw `r||s` ECDSA Signature Encoding (`#934`), `requires_escalation` Mandatory `continue_url` (`#912`), and Deferred Payment-Terms Empty `payment: {}` on Complete (`#908`).
+  - **§121.3**: Stripe AI Python Dependency Hygiene (`mcp<2` & `strands-agents`/`openai-agents`, `#540`/`#541`), Ignored `Configuration.actions` Privilege-Escalation Guard (`#525`), Inline Single-Stream Token Meter Cleanup (`#509`), and Sierra $\tau$-bench 2.0 `tau-Authority` Pre-Mutation Customer Ownership Verification (`#629`/`#627`).
+- **§122 (Stage 123 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`BC-01..BC-16`)**: `lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py` & `reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.18 ms` vs. `1.51 ms` (`8.4x` speedup).
 
 
 

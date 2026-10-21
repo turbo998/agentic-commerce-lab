@@ -1519,6 +1519,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.19 ms` vs. `1.54 ms`（`8.1x` 加速）**。
 - **技术资产**：[`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)、[`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py) 及双语报告 [`reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/`](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html)。
 
+---
+
+## 121. Stage 122 深度审计：x402 浏览器 CORS 暴露三头、16KB 头部上限与 Axios 中间流释放（`#3809`/`#3805`/`#3817`/`#3818`/`#3802`/`#3795`/`#3799`/`#3804`/`#3806`）、UCP 品牌身份、定宽裸 `r||s` ECDSA 签名与递延账期空 `payment`（`#939`/`#934`/`#912`/`#908`）及 Stripe AI Python 依赖/废弃流与 $\tau$-Authority 越权护栏（`#540`/`#541`/`#525`/`#509`/`#629`/`#627`）
+
+### 121.1 x402 浏览器跨域 CORS 暴露与预检（`#3809`）、`PAYMENT-REQUIRED` 8KB/16KB 上限（`#3805`）、Axios 中间流释放与内部 402 防重入（`#3817`/`#3818`）及 Facilitator 错误保留/Sui/SVM 异步护栏（`#3802`/`#3795`/`#3799`/`#3804`/`#3806`）
+- 跨域浏览器 `fetch()` 强制要求 `Access-Control-Expose-Headers` 暴露 `PAYMENT-REQUIRED` 与 `PAYMENT-RESPONSE` 且预检允许 `PAYMENT-SIGNATURE`（`#3809`）；当 `PAYMENT-REQUIRED` 超过 `8,190` 字节告警、超过 `16,384` 字节阻断（防 Node `undici` `UND_ERR_HEADERS_OVERFLOW`，`#3805`）；重试前关闭中间响应流并防止内部认证/恢复 402 重启初始支付流（`#3817`/`#3818`）；保留 Facilitator `settlement_pending` 单次幂等重试并在非浏览器 402 JSON 体返回拒绝原因（`#3802`/`#3795`），支持 `sui:mainnet`/`sui:testnet`/`sui:devnet` 签名前挂牌价格核对（`#3804`/`#3799`）并禁止 Python SVM 异步流同步阻塞事件循环（`#3806`）。
+
+### 121.2 UCP `dev.ucp.common.business` 品牌身份（`#939`）、定宽裸 `r||s` ECDSA 签名（`#934`）、`requires_escalation` 强制 `continue_url`（`#912`）与递延账期空 `payment: {}`（`#908`）
+- 为纯线上与多门店品牌提供 `dev.ucp.common.business` 品牌级身份声明（`#939`）；强制 P-256（`64B`）与 P-384（`96B`）使用定宽裸 `r||s` ECDSA 编码并拦截 `0x30` ASN.1 DER 序列（`#934`）；在 `checkout.json` 中强制 `status == "requires_escalation"` 时必含 `continue_url`（`#912`）；对递延账期（货到付款/延期开票）在 `complete_checkout` 要求发送空对象 `"payment": {}` 且禁止重传 `selected_term_id`（`#908`）。
+
+### 121.3 Stripe AI Python 依赖约束（`#540`/`#541`）、旧版 `configuration.actions` 静默提权拦截（`#525`）、单流内联 Token 计量（`#509`）与 $\tau$-bench 2.0 `tau-Authority` 变更前权属核验（`#629`/`#627`）
+- 强制 `mcp < 2`（防 `streamablehttp_client` 移除）并使用 `strands-agents`/`openai-agents`（`#540`/`#541`）；拦截在 v0.7.x 被静默丢弃的旧版 `configuration.actions` 过滤键以防全量 API Key 工具暴露（`#525`）；移除后台 `tee()` 并在调用方提前 `break` 时立即关闭源流迭代器（`#509`）；在执行退费/取消/改址前通过零 LLM 的 `tau-Authority` 校验对话客户是否为目标资源所有者（100% 拦截 1,223 个越权注入且零误杀 164 个参考解，`#629`/`#627`；参见 `lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py`）。
+
+---
+
+## 122. Stage 123 基准评测：16 场景（`BC-01..BC-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 122 三大护栏域的 16 个场景（`BC-01..BC-16`，3 个合规基线 + 13 个对抗性故障与越权注入）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.18 ms` vs. `1.51 ms`（`8.4x` 加速）**。
+- **技术资产**：[`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)、[`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py) 及双语报告 [`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html)。
+
 
 
 

@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–121)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–123)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -55,4 +55,22 @@
   - Benchmark suite: [`lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../lab/x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py)
   - Unit tests: [`tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py`](../../tests/test_x402_siwx_recovery_receipt_stripe_token_meter_tulip_mcp_lifecycle_ucp_bench.py) (**636/636** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-siwx-recovery-receipt-stripe-token-meter-tulip-mcp-lifecycle-ucp-bench/report.json)
+
+---
+
+## Stage 122: Deterministic Guardrails for x402 Browser CORS 3-Header Expose/16KB Cap & Axios Stream Release (`#3809`/`#3805`/`#3817`/`#3818`/`#3802`/`#3795`/`#3799`/`#3804`/`#3806`), UCP Business Identity/Raw `r||s` ECDSA/Deferred Terms (`#939`/`#934`/`#912`/`#908`), and Stripe AI Deps/Stream Cleanup + $\tau$-Authority (`#540`/`#541`/`#525`/`#509`/`#629`/`#627`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py)
+  - Unit tests: [`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_guard.py) (**639/639** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§121)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§121)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 123: 16-Scenario (`BC-01..BC-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 122)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)
+  - Unit tests: [`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py) (**640/640** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/report.json)
 
