@@ -1625,6 +1625,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.47 ms`（`9.2x` 加速）**。
 - **技术资产**：[`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)、[`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html)。
 
+---
+
+## 131. Stage 132 架构深潜：x402 链上 `totalClaimed` 基线/MCP 双表示防篡改/Bazaar 无 eval 兜底、UCP 住宿退订确定性时间表/含税 VAT 毛总额守恒/Profile `304` 重验证及 MCP Provenance 委托链权限交集与 $\tau$-bench Pine Voice 分母护栏
+
+### 131.1 x402 批量结算链上 `totalClaimed` 基线与最小推进额（`#3655`/`#3661`）、SVM 确认态分类与重启退款恢复（`#3653`/`#3637`/`#3639`）、MCP 双表示一致性与 `spendControls.maxTimeoutSeconds`（`#3643`/`#3631`/`#3630`/`#3651`）及 AVM/Bazaar/GalaChain/BCH 护栏（`#3652`/`#3648`/`#3635`/`#3632`/`#3663`/`#3662`/`#3656`/`#3654`/`#3642`/`#3640`）
+- 当服务端因重启或全额退费缺失本地通道记录时，严禁信任客户端凭证自报基线，必须以 Facilitator 验证的链上 `totalClaimed` 为唯一计费基线，并在 EVM/SVM 批量 `verify` 与充值阶段强制 `maxClaimableAmount >= totalClaimed + requestedAmount`（`#3655`/`#3661`）；仅将 `confirmed`/`finalized` 的 `TransactionOnchainFailureError` 判为终态失败，将 `processed`、超时或畸形响应路由至 Pending Store（`#3653`），并在重启后优先查询持久化存储恢复服务端签名 SVM 通道退款（`#3637`）；当 MCP `structuredContent` 与 `content[0].text` 同时解码为 `PaymentRequired` 且核心条款不一致时抛出 `PaymentRequiredMismatchError` 拒绝自动支付（容忍 `2` vs `2.0` 数值格式差异，`#3643`/`#3631`），强制执行客户端 `spendControls.maxTimeoutSeconds` 上限（`#3630`）与 `OnAfterPaymentCreation` 钩子错误上抛（`#3651`）；支持 Algorand 已知旧版全哈希网络等价映射（`#3652`）、无 `eval` 运行时跳过 Bazaar 动态代码生成（`#3648`）、GalaChain 付款人自付链上费（禁 `extra.feePayer`，`#3635`）与 BCH UTXO 来源输出核验（`#3632`）。
+
+### 131.2 UCP Profile 条件 `304 Not Modified` 重验证（`#932`）、`ucp-schema 1.4.1` 嵌套 `$id` 保留（`#950`）、住宿预订确定性退订 `schedule`（`#808`）、含税地区多税率 VAT 毛总额守恒（`#680`）及 `options[].totals` 数组与 `get_order` 签名头（`#561`/`#503`/`#752`/`#710`/`#709`/`#705`/`#685`/`#613`/`#595`/`#585`）
+- 明确带 `ETag`/`Last-Modified` 条件请求的 `304 Not Modified` 属于合法缓存重验证而非被禁的 `3xx` 重定向（`#932`），固定 `ucp-schema 1.4.1` 防止 `2.0.0` 剥离打包嵌套 `$id`（`#950`）；按预订取消时刻评估 `schedule` 有序相对截点以确定免责、首晚罚金或比例扣款（`#808`）；在含税（Tax-Inclusive）VAT 司法管辖区强制 `order.total == items_gross + shipping_gross`，严禁将多税率展示明细重复累加（`#680`）；强制 `fulfillment_option` 使用整数 `totals[]` 数组（`#561`）并在 `GET /orders/{id}` 200 响应声明 `Signature`/`Signature-Input`/`Content-Digest`（`#503`）。
+
+### 131.3 MCP `io.noescalation/provenance` 委托链权限交集限制（`#3246`）、`org.oma3/mpas` 多方独立审批法定人数（`#3263`）、Stripe MCP 本地代理延迟 `clientInfo` `User-Agent` 与 Hono SSE 防注入（`#304`/`#294`/`#345`）及 Sierra $\tau$-bench 2.0 Pine Voice 114 任务分母与 `--judge-llm` 覆盖（`#481`/`#479`/`#469`/`#473`/`#448`）
+- 在多跳工具调用 `_meta["io.noescalation/provenance"]` 上对每一跳允许仓库集合取交集、对最大支出取最小值，任何越出交集边界的调用立即阻断（`#3246`），同时校验 `_meta["org.oma3/mpas"]` 独立审批人法定人数（`#3263`）、`fast-uri` 反斜杠主机混淆防护与 Node `>=24` 基线（`#3245`/`#3244`）；在 `stripe-mcp-local` 首个 stdio `initialize` 消息到达后再创建 HTTP 传输以注入 `stripe-mcp-local/0.3.1 (<client>)`（`#304`）并拦截 Hono `streamSSE()` 控制字段 CRLF 注入（`#294`）；在 $\tau$-bench 2.0 语音榜单强制使用完整 114 任务分母（将基础设施故障计入未通过，`#481`），向下透传 `--judge-llm` CLI 覆盖与异常安全评分（`#479`/`#469`）及多语种转写 `WER` 门禁（`#448`；参见 `lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py`）。
+
+---
+
+## 132. Stage 133 基准评测：16 场景（`TC-01..TC-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 132 三大护栏域的 16 个场景（`TC-01..TC-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.40 ms` vs. `15.25 ms`（`38.1x` 加速）**。
+- **技术资产**：[`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)、[`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py) 及双语报告 [`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html)。
+
+
 
 
 

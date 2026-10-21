@@ -146,3 +146,22 @@
   - 单元测试：[`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)（全仓库 **657/657** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html`（中文）](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/report.json)
 
+---
+
+## Stage 132：x402 链上 `totalClaimed` 基线/MCP 双表示防篡改/`spendControls` 超时上限/Bazaar 无 eval 兜底（`#3663`/`#3662`/`#3661`/`#3656`/`#3655`/`#3654`/`#3653`/`#3652`/`#3651`/`#3648`/`#3643`/`#3642`/`#3640`/`#3639`/`#3637`/`#3635`/`#3632`/`#3631`/`#3630`）、UCP 住宿退订确定性 `schedule`/含税多税率 VAT/Profile `304` 重验证（`#950`/`#932`/`#808`/`#752`/`#710`/`#709`/`#705`/`#685`/`#680`/`#613`/`#595`/`#585`/`#561`/`#503`）及 Stripe 延迟 `clientInfo` UA/MCP Provenance 委托链权限交集/`mpas` 法定人数与 Sierra $\tau$-bench 2.0 Pine Voice 分母护栏（`#304`/`#294`/`#345`/`#3246`/`#3263`/`#3245`/`#3244`/`#481`/`#479`/`#469`/`#448`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py)
+  - 单元测试：[`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py)（全仓库 **660/660** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§131)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§131)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 133：16 场景（`TC-01..TC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 132）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)
+  - 单元测试：[`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)（全仓库 **661/661** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html`（中文）](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/report.json)
+
+

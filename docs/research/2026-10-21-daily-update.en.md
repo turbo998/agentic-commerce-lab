@@ -146,3 +146,22 @@
   - Unit tests: [`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py) (**657/657** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/report.json)
 
+---
+
+## Stage 132: Deterministic Guardrails for x402 On-Chain `totalClaimed` Baseline/MCP Dual-Object Mismatch/`spendControls` Ceiling/Bazaar No-Eval (`#3663`/`#3662`/`#3661`/`#3656`/`#3655`/`#3654`/`#3653`/`#3652`/`#3651`/`#3648`/`#3643`/`#3642`/`#3640`/`#3639`/`#3637`/`#3635`/`#3632`/`#3631`/`#3630`), UCP Deterministic Lodging `schedule`/Tax-Inclusive VAT/Profile `304` Revalidation (`#950`/`#932`/`#808`/`#752`/`#710`/`#709`/`#705`/`#685`/`#680`/`#613`/`#595`/`#585`/`#561`/`#503`), and Stripe Deferred `clientInfo` UA/MCP Provenance Authority Confinement/`mpas` Quorum + Sierra $\tau$-bench 2.0 Pine Voice Denominator (`#304`/`#294`/`#345`/`#3246`/`#3263`/`#3245`/`#3244`/`#481`/`#479`/`#469`/`#448`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py)
+  - Unit tests: [`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_guard.py) (**660/660** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§131)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§131)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 133: 16-Scenario (`TC-01..TC-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 132)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../lab/x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py)
+  - Unit tests: [`tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py`](../../tests/test_x402_batch_total_claimed_mcp_mismatch_ucp_lodging_vat_mcp_provenance_bench.py) (**661/661** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-batch-total-claimed-mcp-mismatch-ucp-lodging-vat-mcp-provenance-bench/report.json)
+
+
