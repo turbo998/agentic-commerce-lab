@@ -279,6 +279,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§123.3**: MCP Inspector v2.10.0 Security Threat Model (`#3418`), SEP-3398 Release Cycle & SEP-3440 Tasks/Events WG (`#3398`/`#3440`), and Sierra $\tau$-bench 2.0 Policy Harness (`+7.74 pts Pass¹`, `#607`), Ampup Scoped BM25 Memory (`#604`) & Salesforce Launa v1 Voice Tick Adapter (`#601`).
 - **§124 (Stage 125 — Bilingual Chinese + English, `2026-10-21`)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PG-01..PG-16`)**: `lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py` & `reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.17 ms` vs. `1.49 ms` (`8.8x` speedup).
+- **§125 (Stage 126 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§125.1**: x402 Foundation Signed `delivery-receipt` Extension (`<=1KB` Reference Mode, `#3783`), Single-Ingress Payment Identity Derivation (`#3776`), Discriminated `PaymentCall` Validation, `ResourceInfo` Paid HTTP Method & `OPTIONS` Preflight Bypass (`#3775`/`#3741`/`#3738`), and SVM Confirmed Terminal Error, EVM `upto` `simulationAmount`, Quoted `Cache-Control` `private` & Multi-Chain Exact Schemes (`#3784`/`#3769`/`#3757`/`#3788`/`#3770`/`#3754`/`#3752`/`#3737`).
+  - **§125.2**: UCP Canonical `dev.ucp.common.payment.terms` Capability ID (`#818`), Lockfile Non-Public Registry Blocking (`#806`), Checkout REST `ucp-agent` Signature Coverage (`#795`), and Location REST Required `Request-Id` + `UCP-Agent` Headers (`#784`).
+  - **§125.3**: Stripe AI Multi-Agent Identity Attribution & Per-Tool Authorization (`#453`), Cross-Invocation Retry Idempotency Guard + `starting_after` Pagination (`#419`), Normalized Anthropic `max_tokens` (`#433`), and MCP SEP-3371 Order-Independent SDK Extension Points & `2025-11-25` Handshake Negotiation (`#3371`/`#3364`).
+- **§126 (Stage 127 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`DR-01..DR-16`)**: `lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py` & `reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.16 ms` vs. `1.48 ms` (`9.2x` speedup).
 
 
 

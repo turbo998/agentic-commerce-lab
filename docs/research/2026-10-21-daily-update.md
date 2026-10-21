@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–125）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–127）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -91,4 +91,22 @@
   - 基准套件：[`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)
   - 单元测试：[`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)（全仓库 **644/644** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html`（中文）](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/report.json)
+
+---
+
+## Stage 126：x402 签名交付收据 `delivery-receipt`/单次入口身份/多链结算（`#3783`/`#3776`/`#3775`/`#3741`/`#3738`/`#3784`/`#3769`/`#3757`/`#3788`/`#3770`/`#3754`/`#3752`/`#3737`）、UCP `payment.terms`/公网 Lockfile 源/签名 `ucp-agent` 覆盖（`#818`/`#806`/`#795`/`#784`）及 Stripe 跨调用幂等键与 MCP SEP-3371 扩展点护栏（`#453`/`#419`/`#433`/`#3371`/`#3364`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py)
+  - 单元测试：[`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py)（全仓库 **647/647** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§125)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§125)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 127：16 场景（`DR-01..DR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 126）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)
+  - 单元测试：[`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)（全仓库 **648/648** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html`（中文）](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/report.json)
 

@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–125)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–127)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -91,4 +91,22 @@
   - Benchmark suite: [`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)
   - Unit tests: [`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py) (**644/644** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/report.json)
+
+---
+
+## Stage 126: Deterministic Guardrails for x402 `delivery-receipt`/Single-Ingress ID/Multi-Chain (`#3783`/`#3776`/`#3775`/`#3741`/`#3738`/`#3784`/`#3769`/`#3757`/`#3788`/`#3770`/`#3754`/`#3752`/`#3737`), UCP `payment.terms`/Public Lockfiles/Signed `ucp-agent` (`#818`/`#806`/`#795`/`#784`), and Stripe Retry Idempotency + MCP SEP-3371 (`#453`/`#419`/`#433`/`#3371`/`#3364`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py)
+  - Unit tests: [`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py) (**647/647** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§125)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§125)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 127: 16-Scenario (`DR-01..DR-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 126)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)
+  - Unit tests: [`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py) (**648/648** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/report.json)
 

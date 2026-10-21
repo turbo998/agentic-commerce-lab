@@ -1562,6 +1562,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.17 ms` vs. `1.49 ms`（`8.8x` 加速）**。
 - **技术资产**：[`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)、[`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py) 及双语报告 [`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html)。
 
+---
+
+## 125. Stage 126 深度审计：x402 签名交付收据 `delivery-receipt`、单次入口身份、SVM/EVM 结算状态机与多链扩展（`#3783`/`#3776`/`#3775`/`#3741`/`#3738`/`#3784`/`#3769`/`#3757`/`#3788`/`#3770`/`#3754`/`#3752`/`#3737`）、UCP `payment.terms` 规范 ID/公网 Lockfile 源/签名 `ucp-agent` 覆盖（`#818`/`#806`/`#795`/`#784`）及 Stripe 跨调用幂等键与 MCP SEP-3371 扩展点护栏（`#453`/`#419`/`#433`/`#3371`/`#3364`）
+
+### 125.1 x402 `delivery-receipt` 签名交付收据（`#3783`）、入口身份单次派生（`#3776`）、`PaymentCall`/`ResourceInfo`/`OPTIONS` 预检豁免（`#3775`/`#3741`/`#3738`）及 SVM 终态/EVM `upto` 模拟/引号 `Cache-Control` 与多链护栏（`#3784`/`#3769`/`#3757`/`#3788`/`#3770`/`#3754`/`#3752`/`#3737`）
+- `delivery-receipt` 对 `"x402-delivery-receipt/1\n" || SHA-256(JCS(payload))` 签名并默认以引用模式将 `PAYMENT-RESPONSE` 成员控制在 `<=1 KB`（`#3783`）；关联 `/settle`、拒绝、重放查询与挑战报价的身份标识必须在请求入口单次派生且严禁下游重算（`#3776`）；签名前 fail-closed 校验判别式 `PaymentCall`（`http` 或 `mcp`，`#3775`），核验 `ResourceInfo` 声明的付费 HTTP 方法（`#3741`）并禁止通配符路由对 `OPTIONS` 预检返回 402（`#3738`）；将链上已确认带 `status.Err` 的 SVM 交易标为终态失败而非 `settlement_pending`（`#3784`），以实际 `settlementAmount` 而非上限执行 `settleUptoPermit2` 模拟（`#3769`），仅在双引号外拆分 `Cache-Control` 追加 `private`（`#3757`），并覆盖 Cosmos `MsgSend`（`#3788`）、Robinhood Chain `eip155:4663` USDG（`#3770`）、Cardano 请求承诺（`#3754`）、Hedera Go 原始 `BodyBytes` 共签（`#3752`）与 Bitcoin `bip122` 确认深度（`#3737`）。
+
+### 125.2 UCP `dev.ucp.common.payment.terms` 规范能力 ID（`#818`）、Lockfile 拦截企业私有源（`#806`）与 Checkout/Location REST 头部及签名覆盖（`#795`/`#784`）
+- 强制账期能力 ID 为 `dev.ucp.common.payment.terms`（拦截错误别名 `.payment_terms`，`#818`）；拦截 `package-lock.json` 与 `uv.lock` 中的非公网企业源（CodeArtifact、Azure Artifacts、GAR、Shopify，`#806`）；当存在 `UCP-Agent` 头时强制 RFC 9421 签名覆盖 `"ucp-agent"` 组件（`#795`），并在 Location REST（`search_locations`/`lookup_locations`）强制携带 `Request-Id` 与 `UCP-Agent`（`#784`）。
+
+### 125.3 Stripe AI 多 Agent 身份与工具级鉴权（`#453`）、跨调用重试幂等键与 `starting_after` 分页（`#419`）、归一化 Anthropic `max_tokens`（`#433`）及 MCP SEP-3371 扩展点与 `2025-11-25` 协商护栏（`#3371`/`#3364`）
+- 在多 Agent 共享 API Key 场景下强制验证 `agent_id` 与工具级权限矩阵（`#453`）；对跨会话/跨调用重试派生确定性内容哈希幂等键以防重复扣款并强制列表工具支持 `starting_after` 游标分页（`#419`）；修复归一化 Anthropic 模型 ID 的默认 `max_tokens`（`#433`）；验证 MCP SEP-3371 顺序无关的三大 SDK 扩展点及 `2025-11-25` 基于 `initialize` 握手的扩展协商（`#3371`/`#3364`；参见 `lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_guard.py`）。
+
+---
+
+## 126. Stage 127 基准评测：16 场景（`DR-01..DR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 126 三大护栏域的 16 个场景（`DR-01..DR-16`，3 个合规基线 + 13 个对抗性故障与安全违规）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.48 ms`（`9.2x` 加速）**。
+- **技术资产**：[`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)、[`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py) 及双语报告 [`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html)。
+
 
 
 

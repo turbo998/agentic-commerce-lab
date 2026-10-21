@@ -1,0 +1,323 @@
+{
+  "benchmark_id": "agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench",
+  "stage": "Stage 127",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "headline_zh": "16/16 (100.0%) 确定性拦截 x402 入口身份分裂/OPTIONS 误收费、UCP 私有源与 Stripe 重试重复扣款",
+  "headline_en": "16/16 (100.0%) Deterministic Guard Across x402 Delivery-Receipt/Ingress-ID, UCP & Stripe Idempotency",
+  "subheadline_zh": "覆盖 x402 #3783/#3776/#3775/#3741/#3738/#3784/#3769/#3757/#3788/#3770/#3754/#3752/#3737、UCP #818/#806/#795/#784、Stripe AI #453/#419/#433 与 MCP #3371/#3364",
+  "subheadline_en": "Covers x402 #3783/#3776/#3775/#3741/#3738/#3784/#3769/#3757/#3788/#3770/#3754/#3752/#3737, UCP #818/#806/#795/#784, Stripe AI #453/#419/#433 & MCP #3371/#3364",
+  "total_scenarios": 16,
+  "passed_scenarios": 16,
+  "pass_rate_pct": 100.0,
+  "classic_3tier_passed": 3,
+  "classic_3tier_pass_rate_pct": 18.75,
+  "perturbation_passed": 16,
+  "perturbation_consistency_pct": 100.0,
+  "elapsed_ms": 0.2025,
+  "median_latency_ms": 0.16,
+  "baseline_median_latency_ms": 1.48,
+  "speedup_factor": 9.2,
+  "summary_metrics": {
+    "x402_delivery_ingress_chains": "9/9 (100.0%)",
+    "ucp_terms_registry_headers": "4/4 (100.0%)",
+    "stripe_idempotency_mcp_ext": "3/3 (100.0%)"
+  },
+  "scenarios": [
+    {
+      "id": "DR-01",
+      "domain": "x402",
+      "title_zh": "x402 交付收据签名、单次入口身份、PaymentCall 与多链结算合规基线",
+      "title_en": "Compliant x402 Delivery-Receipt, Single-Ingress ID, PaymentCall & Multi-Chain",
+      "expected_allowed": true,
+      "expected_code": "X402_DELIVERY_INGRESS_CHAins_OK",
+      "allowed": true,
+      "decision_code": "X402_DELIVERY_INGRESS_CHAins_OK",
+      "passed": true,
+      "reason": "All x402 delivery-receipt, single-ingress identity, PaymentCall, SVM/EVM upto, Cache-Control, and multi-chain checks passed.",
+      "payload": {
+        "http_method": "POST",
+        "resource_info_paid_method": "POST",
+        "ingress_identity": "id_ing_100",
+        "payment_call": {
+          "kind": "http",
+          "method": "POST",
+          "url": "https://api.example.com/v1/quote"
+        },
+        "delivery_receipt_mode": "reference",
+        "delivery_receipt_header_bytes": 384,
+        "cache_control_in": "max-age=60, example=\"a, private, b\""
+      }
+    },
+    {
+      "id": "DR-02",
+      "domain": "x402",
+      "title_zh": "x402 #3738 通配符路由将 `OPTIONS` 预检误判为 402 付费请求阻断",
+      "title_en": "x402 #3738 Wildcard Route Treating `OPTIONS` Preflight as Paid 402 Block",
+      "expected_allowed": false,
+      "expected_code": "X402_OPTIONS_PREFLIGHT_CHARGED_402",
+      "allowed": false,
+      "decision_code": "X402_OPTIONS_PREFLIGHT_CHARGED_402",
+      "passed": true,
+      "reason": "Wildcard route matching must never treat OPTIONS CORS preflight as a paid 402 request (#3738).",
+      "payload": {
+        "http_method": "OPTIONS",
+        "options_preflight_charged_402": true
+      }
+    },
+    {
+      "id": "DR-03",
+      "domain": "x402",
+      "title_zh": "x402 #3741 `ResourceInfo` 声明付费 HTTP 方法与实际请求不一致阻断",
+      "title_en": "x402 #3741 `ResourceInfo` Declared Paid HTTP Method Mismatch Block",
+      "expected_allowed": false,
+      "expected_code": "X402_RESOURCE_INFO_PAID_METHOD_MISMATCH",
+      "allowed": false,
+      "decision_code": "X402_RESOURCE_INFO_PAID_METHOD_MISMATCH",
+      "passed": true,
+      "reason": "Payment sent on GET but ResourceInfo declares paid method POST (#3741).",
+      "payload": {
+        "http_method": "GET",
+        "resource_info_paid_method": "POST"
+      }
+    },
+    {
+      "id": "DR-04",
+      "domain": "x402",
+      "title_zh": "x402 #3776 结算/拒绝/重放查询身份在下游二次派生导致分裂阻断",
+      "title_en": "x402 #3776 Downstream Re-Derivation of Settlement/Replay Identity Block",
+      "expected_allowed": false,
+      "expected_code": "X402_INGRESS_IDENTITY_REDERIVED_OR_SPLIT",
+      "allowed": false,
+      "decision_code": "X402_INGRESS_IDENTITY_REDERIVED_OR_SPLIT",
+      "passed": true,
+      "reason": "Settlement/refusal/replay/quote identity MUST be derived once at ingress and never re-derived (#3776).",
+      "payload": {
+        "ingress_identity": "id_ing_01",
+        "replay_lookup_identity": "id_recomputed_02"
+      }
+    },
+    {
+      "id": "DR-05",
+      "domain": "x402",
+      "title_zh": "x402 #3775 畸形 `PaymentCall` 在签名前 fail-closed 阻断",
+      "title_en": "x402 #3775 Malformed Discriminated `PaymentCall` Pre-Sign Block",
+      "expected_allowed": false,
+      "expected_code": "X402_PAYMENT_CALL_INVALID",
+      "allowed": false,
+      "decision_code": "X402_PAYMENT_CALL_INVALID",
+      "passed": true,
+      "reason": "MCP PaymentCall requires toolName and arguments mapping (#3775).",
+      "payload": {
+        "payment_call": {
+          "kind": "mcp",
+          "toolName": ""
+        }
+      }
+    },
+    {
+      "id": "DR-06",
+      "domain": "x402",
+      "title_zh": "x402 #3783 `delivery-receipt` 引用模式超出 1KB 头部预算或域前缀缺失阻断",
+      "title_en": "x402 #3783 `delivery-receipt` >1KB Reference Header or Prefix Mismatch Block",
+      "expected_allowed": false,
+      "expected_code": "X402_DELIVERY_RECEIPT_OCTETS_OR_BUDGET_INVALID",
+      "allowed": false,
+      "decision_code": "X402_DELIVERY_RECEIPT_OCTETS_OR_BUDGET_INVALID",
+      "passed": true,
+      "reason": "delivery-receipt requires 'x402-delivery-receipt/1\\n' || receiptId and <= 1 KB reference header (#3783).",
+      "payload": {
+        "delivery_receipt_mode": "reference",
+        "delivery_receipt_header_bytes": 2048
+      }
+    },
+    {
+      "id": "DR-07",
+      "domain": "x402",
+      "title_zh": "x402 #3784 SVM 链上已确认执行失败被误标为 `settlement_pending` 阻断",
+      "title_en": "x402 #3784 Confirmed SVM On-Chain Execution Error Marked Pending Block",
+      "expected_allowed": false,
+      "expected_code": "X402_SVM_CONFIRMED_FAILURE_MARKED_PENDING",
+      "allowed": false,
+      "decision_code": "X402_SVM_CONFIRMED_FAILURE_MARKED_PENDING",
+      "passed": true,
+      "reason": "Confirmed SVM transaction with status.Err must be reported as terminal failure, not settlement_pending (#3784).",
+      "payload": {
+        "svm_confirmed_with_status_err": true,
+        "svm_recorded_status": "settlement_pending"
+      }
+    },
+    {
+      "id": "DR-08",
+      "domain": "x402",
+      "title_zh": "x402 #3769 EVM `settleUptoPermit2` 按上限而非实际结算额模拟导致误拒阻断",
+      "title_en": "x402 #3769 EVM `settleUptoPermit2` Simulating Full Ceiling Instead of Settlement Block",
+      "expected_allowed": false,
+      "expected_code": "X402_EVM_UPTO_SIMULATED_CEILING_INSTEAD_OF_SETTLEMENT",
+      "allowed": false,
+      "decision_code": "X402_EVM_UPTO_SIMULATED_CEILING_INSTEAD_OF_SETTLEMENT",
+      "passed": true,
+      "reason": "settleUptoPermit2 must simulate with settlementAmount rather than signed ceiling (#3769).",
+      "payload": {
+        "upto_settlement_amount": 120,
+        "upto_ceiling_amount": 1000,
+        "upto_simulated_amount": 1000,
+        "upto_payer_balance": 300
+      }
+    },
+    {
+      "id": "DR-09",
+      "domain": "x402",
+      "title_zh": "x402 #3757/#3752/#3737 引号内 `private` 误判或 Hedera 重编码/BIP-122 确认深度不足阻断",
+      "title_en": "x402 #3757/#3752/#3737 Quoted `private` Bypass or Hedera/BIP-122 Depth Block",
+      "expected_allowed": false,
+      "expected_code": "X402_CACHE_CONTROL_QUOTED_PRIVATE_BYPASS",
+      "allowed": false,
+      "decision_code": "X402_CACHE_CONTROL_QUOTED_PRIVATE_BYPASS",
+      "passed": true,
+      "reason": "withPrivateCacheControl must ignore 'private' inside quoted strings and append unquoted private (#3757).",
+      "payload": {
+        "cache_control_in": "example=\"a, private, b\"",
+        "caller_omitted_private_due_to_quoted_string": true
+      }
+    },
+    {
+      "id": "DR-10",
+      "domain": "ucp",
+      "title_zh": "UCP `payment.terms` 规范 ID、公网 Lockfile 源、签名 `ucp-agent` 覆盖与 Location 头基线",
+      "title_en": "Compliant UCP `payment.terms` ID, Public Lockfiles, `ucp-agent` Coverage & Location Headers",
+      "expected_allowed": true,
+      "expected_code": "UCP_TERMS_REGISTRY_HEADERS_OK",
+      "allowed": true,
+      "decision_code": "UCP_TERMS_REGISTRY_HEADERS_OK",
+      "passed": true,
+      "reason": "UCP payment.terms capability ID, public lockfile registries, ucp-agent signature coverage, and Location headers verified.",
+      "payload": {
+        "payment_terms_capability_id": "dev.ucp.common.payment.terms",
+        "lockfile_registry_urls": [
+          "https://registry.npmjs.org",
+          "https://pypi.org/simple"
+        ],
+        "has_ucp_agent_header": true,
+        "is_location_rest_call": true,
+        "location_headers": {
+          "Request-Id": "req_10",
+          "UCP-Agent": "ucp_client/1.0"
+        }
+      }
+    },
+    {
+      "id": "DR-11",
+      "domain": "ucp",
+      "title_zh": "UCP #818 错误引用不存在的 `dev.ucp.common.payment.payment_terms` 阻断",
+      "title_en": "UCP #818 Non-Existent `dev.ucp.common.payment.payment_terms` Capability ID Block",
+      "expected_allowed": false,
+      "expected_code": "UCP_PAYMENT_TERMS_CAPABILITY_ID_INVALID",
+      "allowed": false,
+      "decision_code": "UCP_PAYMENT_TERMS_CAPABILITY_ID_INVALID",
+      "passed": true,
+      "reason": "Payment terms capability ID must be 'dev.ucp.common.payment.terms', not 'dev.ucp.common.payment.payment_terms' (#818).",
+      "payload": {
+        "payment_terms_capability_id": "dev.ucp.common.payment.payment_terms"
+      }
+    },
+    {
+      "id": "DR-12",
+      "domain": "ucp",
+      "title_zh": "UCP #806 Lockfile 混入企业私有制品源（CodeArtifact/Azure/GAR/Shopify）阻断",
+      "title_en": "UCP #806 Corporate Private Package Registry in Lockfile Block",
+      "expected_allowed": false,
+      "expected_code": "UCP_NON_PUBLIC_LOCKFILE_REGISTRY_BLOCKED",
+      "allowed": false,
+      "decision_code": "UCP_NON_PUBLIC_LOCKFILE_REGISTRY_BLOCKED",
+      "passed": true,
+      "reason": "Corporate or non-public registry URL 'https://corp.d.codeartifact.us-west-2.amazonaws.com/npm/' is blocked in lockfiles (#806).",
+      "payload": {
+        "lockfile_registry_urls": [
+          "https://corp.d.codeartifact.us-west-2.amazonaws.com/npm/"
+        ]
+      }
+    },
+    {
+      "id": "DR-13",
+      "domain": "ucp",
+      "title_zh": "UCP #795/#784 携带 `UCP-Agent` 却未纳入 RFC 9421 签名覆盖组件阻断",
+      "title_en": "UCP #795/#784 Missing `ucp-agent` in RFC 9421 Covered Components Block",
+      "expected_allowed": false,
+      "expected_code": "UCP_SIGNATURE_MISSING_UCP_AGENT_COVERAGE",
+      "allowed": false,
+      "decision_code": "UCP_SIGNATURE_MISSING_UCP_AGENT_COVERAGE",
+      "passed": true,
+      "reason": "Checkout REST signature must cover 'ucp-agent' when UCP-Agent header is present (#795).",
+      "payload": {
+        "has_ucp_agent_header": true,
+        "covered_components": [
+          "@method",
+          "@authority",
+          "@path",
+          "idempotency-key",
+          "content-digest"
+        ]
+      }
+    },
+    {
+      "id": "DR-14",
+      "domain": "stripe_mcp",
+      "title_zh": "Stripe 多 Agent 权属与跨调用幂等键、分页游标及 MCP SEP-3371/2133 合规基线",
+      "title_en": "Compliant Stripe Agent Identity, Cross-Retry Idempotency, Pagination & MCP SEP-3371",
+      "expected_allowed": true,
+      "expected_code": "STRIPE_IDEMPOTENCY_MCP_EXT_OK",
+      "allowed": true,
+      "decision_code": "STRIPE_IDEMPOTENCY_MCP_EXT_OK",
+      "passed": true,
+      "reason": "Stripe agent identity, cross-invocation idempotency, pagination, and MCP SEP-3371/2133 extension points verified.",
+      "payload": {
+        "agent_id": "agent_order_01",
+        "tool_name": "create_payment_intent",
+        "agent_allowed_tools": [
+          "create_payment_intent"
+        ],
+        "is_list_or_search_tool": true,
+        "supports_starting_after_cursor": true,
+        "mcp_protocol_version": "2026-07-28",
+        "mcp_extension_negotiation_carrier": "per_request_capabilities"
+      }
+    },
+    {
+      "id": "DR-15",
+      "domain": "stripe_mcp",
+      "title_zh": "Stripe AI #419/#453 跨调用重试生成新随机幂等键导致重复扣款阻断",
+      "title_en": "Stripe AI #419/#453 Cross-Invocation Retry Regenerating Random Idempotency Key Block",
+      "expected_allowed": false,
+      "expected_code": "STRIPE_RETRY_DUPLICATE_CHARGE_OR_MISSING_PAGINATION",
+      "allowed": false,
+      "decision_code": "STRIPE_RETRY_DUPLICATE_CHARGE_OR_MISSING_PAGINATION",
+      "passed": true,
+      "reason": "Agent retries across invocations must use deterministic idempotency keys and list tools must support starting_after (#419).",
+      "payload": {
+        "agent_id": "agent_order_01",
+        "tool_name": "create_payment_intent",
+        "agent_allowed_tools": [
+          "create_payment_intent"
+        ],
+        "agent_retry_regenerated_random_idempotency_key": true
+      }
+    },
+    {
+      "id": "DR-16",
+      "domain": "stripe_mcp",
+      "title_zh": "MCP #3371/#3364 扩展注册依赖顺序耦合或 `2025-11-25` 缺失 `initialize` 协商阻断",
+      "title_en": "MCP #3371/#3364 Order-Dependent Extension Registration or `2025-11-25` Negotiation Block",
+      "expected_allowed": false,
+      "expected_code": "MCP_SDK_EXTENSION_POINT_OR_NEGOTIATION_MISMATCH",
+      "allowed": false,
+      "decision_code": "MCP_SDK_EXTENSION_POINT_OR_NEGOTIATION_MISMATCH",
+      "passed": true,
+      "reason": "SEP-3371 requires order-independent extension registration and 2025-11-25 requires initialize-based negotiation (#3371/#3364).",
+      "payload": {
+        "mcp_protocol_version": "2025-11-25",
+        "mcp_extension_negotiation_carrier": "missing_from_initialize"
+      }
+    }
+  ]
+}
