@@ -1583,6 +1583,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.48 ms`（`9.2x` 加速）**。
 - **技术资产**：[`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)、[`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py) 及双语报告 [`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html)。
 
+---
+
+## 127. Stage 128 深度审计：x402 Python MCP 重试审批/Facilitator 批量凭证托管/`skipHandler` 前置结算与多方案扩展（`#3735`/`#3733`/`#3731`/`#3728`/`#3726`/`#3725`/`#3723`/`#3718`/`#3717`/`#3715`/`#3711`/`#3710`/`#3707`/`#3702`/`#3700`/`#3699`）、UCP 状态绑定 Cart Offer/解牌 Rule 1 分离/Location 空间关系（`#774`/`#773`/`#767`/`#766`/`#765`/`#762`/`#757`/`#753`）及 Stripe/MCP `ToolFailure`/会话句柄与 Sierra $\tau$-bench 2.0 越界中止护栏（`#412`/`#3313`/`#3312`/`#3318`/`#562`/`#548`/`#533`/`#528`/`#525`）
+
+### 127.1 x402 Python MCP 审批/结算分离（`#3735`）、Facilitator 托管凭证与 `m` 元数据（`#3726`/`#3725`/`#3723`）、`skipHandler` 前置结算与门禁 Fail-Closed（`#3718`/`#3702`/`#3700`）及传输/方案门禁（`#3733`/`#3731`/`#3728`/`#3717`/`#3715`/`#3710`/`#3707`/`#3699`）
+- Python MCP 支付重试必须重新执行审批，用量计费失败须尝试取消而非按 `maxAmount` 扣款，且收据处理异常不得丢弃工具输出（`#3735`）；EVM 批量结算支持 `extra.voucherManager="facilitator"` 且处理器失败时必须触发 `SettleOnCancel`（`#3725`/`#3726`），忽略客户端提交的 ERC-8021 `m` 元数据并限制 CBOR `<= 65,535` 字节（`#3723`/`#3711`）；`onAfterVerify` 返回 `skipHandler` 在 `upfront` 流程中仍须执行前置结算（`#3718`）；`beforeVerify`/`beforeSettle` 钩子抛异常必须以 `extension_hook_error` 故障闭合（`#3702`）；`offer-receipt` 严格遵循 RFC 8785 JCS（`#3700`）；并覆盖 Next.js `204/205/304` 空体保留（`#3733`）、Axios `Cookie` 数组（`#3728`）、Python 请求端剔除 `Access-Control-Expose-Headers`（`#3717`）、HTTP 服务端以 `402` 拒绝 V1 载荷（`#3715`）、SVM `upto` 拦截客户端 v1 交易（`#3710`）、`knos-order` 裁判签名验收（`#3731`）、卡 `auth-capture` 预授权冻结（`#3707`）与共享节点 `lnbtc` 服务端已签发 `payment_hash` 注册表核验（`#3699`）。
+
+### 127.2 UCP 状态绑定 Cart Offer（`#773`）、资源绑定与参与方鉴权分离（`#762`）、Location 可用性/自描述设施/根级空间关系（`#766`/`#765`/`#753`）及示例校验器整词 `skip`（`#767`/`#774`）
+- Cart Offer 必须位于 Cart `actions` 映射并绑定当前 `(cart_id, state_ref)`，禁止平行 `offers.available[]` 载体（`#773`）；解牌 Rule 1 仅比对资源 `(type, id)` 相等，不得因商户直连省略 `identity` 而拒绝，参与方身份由 Rule 2 独立鉴权（`#762`）；Location 以 `filters.items` 替代旧版 `filters.inventory`（`#766`），强制自定义设施具备业务描述与展示标签（`#765`），将 `distance`/`serves` 提升为根级空间关系并在批量 Lookup 强制返回 `inputs[]` 关联（`#753`）；示例校验器强制整词匹配 `skip` 与非空 `reason`（`#767`）及方括号引号 JSONPath（`#774`）。
+
+### 127.3 Stripe `registerPaidTool` 移除（`#412`）、MCP 结构化 `ToolFailure` 与序列会话句柄（`#3313`/`#3312`/`#3318`）及 Sierra $\tau$-bench 2.0 `###OUT-OF-SCOPE###` 零分裁决与 Checkpoint 原子替换（`#562`/`#548`/`#533`/`#528`/`#525`）
+- 拦截已移除的 `registerPaidTool` / `experimental_PaidMcpAgent`（`#412`）；验证 `CallToolResult._meta["io.modelcontextprotocol/toolFailure"]`（`#3312`/`#3313`）及单调递增 `seq` + 边缘 MAC 会话句柄（`#3318`）；将模拟器 `###OUT-OF-SCOPE###` 记为独立中止原因并按 Rule 5 判 0 分（拦截误判为 `USER_STOP`，`#548`），在新轨迹文件完成写入与 `os.replace` 前严禁提前删除旧 Checkpoint（`#533`），支持提取 Markdown 代码块包裹的 NL-Judge JSON（`#562`），并区分语音 `speech_started` 与 `was_truncated`（`#528`/`#525`；参见 `lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py`）。
+
+---
+
+## 128. Stage 129 基准评测：16 场景（`MV-01..MV-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 128 三大护栏域的 16 个场景（`MV-01..MV-16`，3 个合规基线 + 13 个对抗性故障与安全违规）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.46 ms`（`9.1x` 加速）**。
+- **技术资产**：[`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)、[`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html)。
+
 
 
 

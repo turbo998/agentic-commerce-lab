@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–127)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–129)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -109,4 +109,22 @@
   - Benchmark suite: [`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)
   - Unit tests: [`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py) (**648/648** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/report.json)
+
+---
+
+## Stage 128: Deterministic Guardrails for x402 Python MCP Approval/Voucher Custody/`skipHandler` (`#3735`/`#3733`/`#3731`/`#3728`/`#3726`/`#3725`/`#3723`/`#3718`/`#3717`/`#3715`/`#3711`/`#3710`/`#3707`/`#3702`/`#3700`/`#3699`), UCP State-Bound Cart Offer/Binding Rule 1/Location Spatial (`#774`/`#773`/`#767`/`#766`/`#765`/`#762`/`#757`/`#753`), and Stripe/MCP `ToolFailure` + Sierra $\tau$-bench 2.0 Abort (`#412`/`#3313`/`#3312`/`#3318`/`#562`/`#548`/`#533`/`#528`/`#525`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py)
+  - Unit tests: [`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py) (**652/652** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§127)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§127)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 129: 16-Scenario (`MV-01..MV-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 128)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)
+  - Unit tests: [`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py) (**653/653** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/report.json)
 

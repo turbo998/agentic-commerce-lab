@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–127）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–129）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -109,4 +109,22 @@
   - 基准套件：[`lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../lab/x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)
   - 单元测试：[`tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py`](../../tests/test_x402_delivery_receipt_ingress_id_ucp_registries_headers_stripe_idempotency_mcp_ext_bench.py)（全仓库 **648/648** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html`（中文）](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-delivery-receipt-ingress-id-ucp-registries-headers-stripe-idempotency-mcp-ext-bench/report.json)
+
+---
+
+## Stage 128：x402 Python MCP 重试审批/Facilitator 凭证托管/`skipHandler` 前置结算（`#3735`/`#3733`/`#3731`/`#3728`/`#3726`/`#3725`/`#3723`/`#3718`/`#3717`/`#3715`/`#3711`/`#3710`/`#3707`/`#3702`/`#3700`/`#3699`）、UCP 状态绑定 Cart Offer/解牌 Rule 1 分离/Location 空间关系（`#774`/`#773`/`#767`/`#766`/`#765`/`#762`/`#757`/`#753`）及 Stripe/MCP `ToolFailure`/会话句柄与 Sierra $\tau$-bench 2.0 越界中止护栏（`#412`/`#3313`/`#3312`/`#3318`/`#562`/`#548`/`#533`/`#528`/`#525`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py)
+  - 单元测试：[`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_guard.py)（全仓库 **652/652** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§127)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§127)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 129：16 场景（`MV-01..MV-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 128）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)
+  - 单元测试：[`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)（全仓库 **653/653** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/report.json)
 

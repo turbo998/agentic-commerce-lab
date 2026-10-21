@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>Stage 129 · x402 MCP 重试审批/Facilitator 凭证托管/skipHandler 结算、UCP 状态绑定 Offer/解牌分离与 MCP ToolFailure/τ-bench 越界中止 7-Card 基准报告</title>
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; max-width: 1480px; margin: 0 auto; }
+.card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 20px; box-sizing: border-box; }
+.card h2 { margin-top: 0; font-size: 1.15rem; color: #38bdf8; }
+.kicker { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+th, td { border-bottom: 1px solid #334155; padding: 6px 8px; text-align: left; vertical-align: top; }
+code, pre { background: #0f172a; color: #e2e8f0; padding: 2px 5px; border-radius: 4px; font-size: 0.78rem; }
+pre { padding: 10px; overflow-x: auto; }
+.bar-row { margin: 8px 0; }
+.bar-primary { background: #3B82F6; height: 14px; border-radius: 4px; display: inline-block; }
+.bar-base { background: #CBD5E1; height: 14px; border-radius: 4px; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card" id="card-1">
+    <div class="kicker">1 / 7 · HANDS-ON · AGENTIC COMMERCE STAGE 129</div>
+    <h2>Stage 129 · x402 MCP 重试审批/Facilitator 凭证托管/skipHandler 结算、UCP 状态绑定 Offer/解牌分离与 MCP ToolFailure/τ-bench 越界中止 7-Card 基准报告 — 16/16 (100.0%) Deterministic Guardrail Match</h2>
+    <p>覆盖 x402 Foundation (#3735/#3726/#3725/#3723/#3718/#3715/#3710/#3702/#3700/#3699)、UCP (#774/#773/#767/#766/#765/#762/#753) 与 Stripe AI (#412) + MCP (#3313/#3312/#3318) + Sierra τ-bench 2.0 (#562/#548/#533/#528/#525)。</p>
+    <p><strong>Pass Rate:</strong> 16/16 (100.0%) · <strong>Total Elapsed:</strong> 0.178 ms</p>
+  </section>
+
+  <section class="card" id="card-2">
+    <div class="kicker">2 / 7 · SCENARIO: MV-04 &amp; MV-15 DEEP DIVE</div>
+    <h2>x402 `skipHandler` Settle Enforcement &amp; τ-bench `###OUT-OF-SCOPE###` 0-Reward Grading</h2>
+    <p><strong>choice</strong> · confidence <code>0.99</code> · Action: <code>Send to a human</code></p>
+    <p>MV-04 blocks `onAfterVerify` `skipHandler` paths that skip before-handler settlement on `upfront` flows (#3718); MV-15 blocks grading `###OUT-OF-SCOPE###` simulator aborts as `USER_STOP` with positive reward (#548).</p>
+  </section>
+
+  <section class="card" id="card-3" style="grid-column: 1 / -1;">
+    <div class="kicker">3 / 7 · WHAT I TESTED</div>
+    <h2>16-Scenario Full Evaluation Matrix (MV-01..MV-16) — 16/16 (100.0%)</h2>
+    <table>
+      <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+      <tbody><tr><td><strong>MV-01</strong><br><small>x402 Python MCP 重试二次审批、计费失败取消、Facilitator 凭证托管与 skipHandler 前置结算合规基线</small></td><td>Python MCP 支付重试重新执行审批，用量计费失败尝试取消并保留工具输出，且 Facilitator 托管凭证与 skipHandler 前置结算均正常执行时，护栏是否放行？</td><td><code>X402_VOUCHER_SKIP_GATE_AND_JCS_VERIFIED</code> (✅ PASS)</td><td>Act automatically · 自动放行</td></tr>
+<tr><td><strong>MV-02</strong><br><small>x402 Python MCP 支付重试跳过审批或用量计算失败默认按上限扣款（#3735）</small></td><td>当 Python MCP 支付重试绕过二次审批，或用量计费失败时未取消而是默认按 `maxAmount` 扣款时，是否阻断？</td><td><code>X402_MCP_CALC_FAILURE_MAX_CHARGE_FALLBACK_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 阻断上限乱扣款</td></tr>
+<tr><td><strong>MV-03</strong><br><small>x402 处理器失败时跳过 Facilitator 凭证 `SettleOnCancel` 或接受客户端 `m` 元数据（#3726/#3723）</small></td><td>当客户端载荷伪造 ERC-8021 `m` 结算元数据被采信，或 `SettleOnCancel` 未触发时，是否阻断？</td><td><code>X402_BUILDER_CODE_CLIENT_METADATA_M_ACCEPTED_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 忽略客户端 m 元数据</td></tr>
+<tr><td><strong>MV-04</strong><br><small>x402 `onAfterVerify` 返回 `skipHandler` 绕过前置结算直接返回 200（#3718）</small></td><td>在 `upfront` 前置结算流程中，`onAfterVerify` 返回 `skipHandler` 时若跳过前置结算白送响应，是否阻断？</td><td><code>X402_SKIP_HANDLER_BYPASSED_BEFORE_HANDLER_SETTLE_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 阻断未结算放行</td></tr>
+<tr><td><strong>MV-05</strong><br><small>x402 `beforeVerify`/`beforeSettle` 门禁钩子抛异常时 Fail-Open 或 `offer-receipt` 违反 RFC 8785（#3702/#3700）</small></td><td>当 `beforeVerify` 门禁钩子抛出异常仅记录日志继续放行（fail-open），是否必须以 `extension_hook_error` 阻断？</td><td><code>X402_GATE_HOOK_THROW_FAILED_OPEN_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 门禁异常故障闭合</td></tr>
+<tr><td><strong>MV-06</strong><br><small>x402 Next.js 204 空体破坏、Axios Cookie 数组逗号拼接、Python V1 500 崩溃或客户端伪造 SVM v1 交易（#3733/#3728/#3715/#3710）</small></td><td>当不可信客户端在 SVM `upto` 开通道提交 v1 交易（而非 legacy/v0）或 V1 载荷触发 500 崩溃时，是否阻断？</td><td><code>X402_SVM_UPTO_CLIENT_V1_TRANSACTION_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 拦截客户端 v1 交易</td></tr>
+<tr><td><strong>MV-07</strong><br><small>x402 共享节点 `lnbtc` 未核对服务端签发 `payment_hash` 注册表即调用 `/settle`（#3699）</small></td><td>当共享托管节点上的同租户伪造发票并在未匹配资源服务端已登记 `(payment_hash, network, amount, request_hash)` 的情况下请求结算时，是否阻断？</td><td><code>X402_LNBTC_SHARED_NODE_UNISSUED_INVOICE_HASH_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 阻断同租户伪造发票</td></tr>
+<tr><td><strong>MV-08</strong><br><small>UCP 状态绑定 Cart Offer、资源绑定与参与方鉴权分离及 Location 可用性/空间关系合规基线（#773/#762/#766/#765/#753）</small></td><td>当 Cart Offer 位于 `actions` 映射并绑定 `(cart_id, state_ref)`、Rule 1 仅比对 `(type, id)` 且 Location 具备自描述设施与根级空间关系时，是否放行？</td><td><code>UCP_OFFER_BINDING_LOCATION_AND_VALIDATOR_VERIFIED</code> (✅ PASS)</td><td>Act automatically · 自动放行</td></tr>
+<tr><td><strong>MV-09</strong><br><small>UCP Cart Offer 使用平行 `offers.available[]` 载体或 `applies_to.state_ref` 失配（#773）</small></td><td>当 Cart Offer 未复用 `actions` 原语而是引入平行 `offers.available[]` 或绑定过期购物车状态时，是否阻断？</td><td><code>UCP_CART_OFFER_PARALLEL_CARRIER_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 阻断平行 Offer 载体</td></tr>
+<tr><td><strong>MV-10</strong><br><small>UCP 解牌 Rule 1 将 `binding.identity` 混入重放相等比对导致商户直连解牌失败（#762）</small></td><td>当解牌 Rule 1 错误要求比对 `identity`（而非仅比对资源 `type` 与 `id`），导致直接调用的商户因省略 `identity` 被拒时，是否拦截该错误规则？</td><td><code>UCP_BINDING_RULE1_CONFLATED_WITH_IDENTITY_BLOCKED</code> (✅ PASS)</td><td>Confirm · 分离资源绑定与参与方鉴权</td></tr>
+<tr><td><strong>MV-11</strong><br><small>UCP Location 使用旧版 `filters.inventory`、自定义设施缺少描述或将 `distance`/`serves` 塞入 `filters.geo`（#766/#765/#753）</small></td><td>当 Location 检索把 `distance`/`serves` 塞进 `filters.geo` 或 Lookup 响应缺失 `inputs[]` 关联时，是否阻断？</td><td><code>UCP_LOCATION_SPATIAL_RELATION_OR_LOOKUP_CORRELATION_BLOCKED</code> (✅ PASS)</td><td>Confirm · 强制根级空间关系与 inputs[]</td></tr>
+<tr><td><strong>MV-12</strong><br><small>UCP 示例注解拼写错误 `skiped` 静默跳过校验或缺少非空 `reason`（#767/#774）</small></td><td>当文档示例注解因前缀匹配将 `skiped` 静默当成跳过校验或未提供非空 `reason` 时，是否阻断？</td><td><code>UCP_EXAMPLE_ANNOTATION_SKIP_TYPO_OR_EMPTY_REASON_BLOCKED</code> (✅ PASS)</td><td>Confirm · 拦截静默跳过注解</td></tr>
+<tr><td><strong>MV-13</strong><br><small>Stripe 付费工具清理、MCP `ToolFailure` + 序列会话句柄与 $\tau$-bench 2.0 护栏合规基线（#412/#3312/#3318/#548/#533/#562）</small></td><td>当移除废弃 `registerPaidTool`、携带合规 `CallToolResult._meta.toolFailure` 与单调 `seq` 会话句柄、且 $\tau$-bench 正确处理越界中止与围栏 JSON 时，是否放行？</td><td><code>STRIPE_MCP_TOOL_FAILURE_AND_TAU2_ABORT_VERIFIED</code> (✅ PASS)</td><td>Act automatically · 自动放行</td></tr>
+<tr><td><strong>MV-14</strong><br><small>Stripe AI 调用已废弃 `registerPaidTool` 或 MCP `ToolFailure` 缺失 `correlationId`（#412/#3312/#3313）</small></td><td>当代码仍引用已移除的 `registerPaidTool` / `experimental_PaidMcpAgent` 或 `ToolFailure` 缺少 `correlationId` 时，是否阻断？</td><td><code>STRIPE_DEPRECATED_REGISTER_PAID_TOOL_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 拦截废弃付费工具接口</td></tr>
+<tr><td><strong>MV-15</strong><br><small>MCP 会话句柄 `seq` 回退重放或 Sierra $\tau$-bench `###OUT-OF-SCOPE###` 中止被误记为 `USER_STOP` 获得非零奖励（#3318/#548）</small></td><td>当用户模拟器发出 `###OUT-OF-SCOPE###` 放弃仿真却被记为正常 `USER_STOP` 并获得正奖励时，是否阻断？</td><td><code>TAU2_OUT_OF_SCOPE_ABORT_GRADED_AS_USER_STOP_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 越界中止强制零分</td></tr>
+<tr><td><strong>MV-16</strong><br><small>Sierra $\tau$-bench 替换轨迹写入完成前提前删除旧 Checkpoint 导致数据丢失，或将语音 `speech_started` 误标为 `was_truncated`（#533/#528）</small></td><td>当 Checkpoint 替换在新文件完成序列化与 `os.replace` 前就删除旧轨迹文件，或把语音 `speech_started` 误标为 `was_truncated` 时，是否阻断？</td><td><code>TAU2_CHECKPOINT_PREMATURE_UNLINK_DATA_LOSS_BLOCKED</code> (✅ PASS)</td><td>Send to a human · 保护旧 Checkpoint 轨迹</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="card" id="card-4">
+    <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+    <h2>Protocol &amp; Verification Mechanics</h2>
+    <pre>{"x402": {"voucherManager": "facilitator", "skipHandlerSettle": true}, "ucp": {"offerCarrier": "cart.actions", "bindingRule1": ["type", "id"]}, "mcp": {"meta": "io.modelcontextprotocol/toolFailure"}}
+↓
+&lt;answer&gt;X402_VOUCHER_SKIP_GATE_AND_JCS_VERIFIED&lt;/answer&gt;</pre>
+  </section>
+
+  <section class="card" id="card-5">
+    <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+    <h2>Option-Order Reversal &amp; Perturbation Invariance — 16/16 (0.0 pts Drift)</h2>
+    <table>
+      <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+      <tbody>
+        <tr><td>MV-01..MV-07 (x402 MCP &amp; Voucher/Schemes)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>MV-08..MV-12 (UCP Offer/Binding/Location)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>MV-13..MV-16 (Stripe/MCP &amp; tau2-bench)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card" id="card-6">
+    <div class="kicker">6 / 7 · LATENCY</div>
+    <h2>Deterministic Guardrails (0.16 ms) vs. 3-Tier Re-Query Baseline (1.46 ms) — 9.1x Speedup</h2>
+    <div class="bar-row">AI-Native Guard (16 cases): <span class="bar-primary" style="width: 36px;"></span> <strong>0.16 ms</strong></div>
+    <div class="bar-row">Classic 3-Tier Baseline (16 cases): <span class="bar-base" style="width: 220px;"></span> <strong>1.46 ms</strong></div>
+  </section>
+
+  <section class="card" id="card-7">
+    <div class="kicker">7 / 7 · MY TAKE</div>
+    <h2>Good Fit vs. Not For &amp; Provenance</h2>
+    <p>✅ <strong>Good fit:</strong> Deterministic pre-settle/post-verify x402 hooks, UCP Cart `actions` Offer binding &amp; Rule 1 `(type, id)` replay check, MCP `ToolFailure` classification, and tau2-bench abort/checkpoint integrity.</p>
+    <p>⛔ <strong>Not for:</strong> Live on-chain Solana/EVM RPC broadcasting or real card network authorization holds (simulated offline in-memory).</p>
+    <p><small>Provenance: synthetic offline deterministic evaluation (`independently_reproduced=true`, zero secrets/funds).</small></p>
+  </section>
+</div>
+</body>
+</html>
