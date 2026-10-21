@@ -273,6 +273,12 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§121.3**: Stripe AI Python Dependency Hygiene (`mcp<2` & `strands-agents`/`openai-agents`, `#540`/`#541`), Ignored `Configuration.actions` Privilege-Escalation Guard (`#525`), Inline Single-Stream Token Meter Cleanup (`#509`), and Sierra $\tau$-bench 2.0 `tau-Authority` Pre-Mutation Customer Ownership Verification (`#629`/`#627`).
 - **§122 (Stage 123 — Bilingual Chinese + English, `2026-10-21`)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`BC-01..BC-16`)**: `lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py` & `reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.18 ms` vs. `1.51 ms` (`8.4x` speedup).
+- **§123 (Stage 124 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§123.1**: x402 Foundation Pre-Sign Multi-Layer Pay Guard (`Factline` `#3851`, `anchor-x402-safe-pay` `#3845`, `Tanilo` `#3816`, `UTA Trust Kit` `ATC/1.0` `#3815`), Python Async Bazaar Discovery (`#3842`), Fastify Raw Non-JSON Settlement Failure Body (`#3834`), and Scheme-Specific v2 Amounts, Go `*x402.SettleError` HTTP 200 Preservation & Cardano CIP-30 Paywall (`#3828`/`#3825`/`#3790`).
+  - **§123.2**: Stripe AI `@stripe/mcp` DXT Manifest 6 Money-Moving Tool Safety Notes (`#480`), Claude Lifecycle Hooks & Metronome Mention Pattern (`#515`/`#543`/`#552`), and Full 51-Test `pytest-asyncio` Discovery Guard (`#560`/`#550`).
+  - **§123.3**: MCP Inspector v2.10.0 Security Threat Model (`#3418`), SEP-3398 Release Cycle & SEP-3440 Tasks/Events WG (`#3398`/`#3440`), and Sierra $\tau$-bench 2.0 Policy Harness (`+7.74 pts Pass¹`, `#607`), Ampup Scoped BM25 Memory (`#604`) & Salesforce Launa v1 Voice Tick Adapter (`#601`).
+- **§124 (Stage 125 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`PG-01..PG-16`)**: `lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py` & `reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) deterministic pass rate, 16/16 (100.0%) perturbation invariance, `0.17 ms` vs. `1.49 ms` (`8.8x` speedup).
 
 
 

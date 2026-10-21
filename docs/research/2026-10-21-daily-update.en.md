@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–123)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–125)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -73,4 +73,22 @@
   - Benchmark suite: [`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)
   - Unit tests: [`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py) (**640/640** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/report.json)
+
+---
+
+## Stage 124: Deterministic Guardrails for x402 Pre-Sign Pay Guard/Async Bazaar/Fastify Raw Body/Cardano CIP-30 (`#3851`/`#3845`/`#3816`/`#3815`/`#3842`/`#3834`/`#3828`/`#3825`/`#3790`), Stripe AI DXT Safety Notes/51-Test Discovery (`#480`/`#515`/`#543`/`#552`/`#560`/`#550`), and MCP Inspector v2.10.0 + $\tau$-bench Policy Harness (`#3418`/`#3398`/`#3440`/`#607`/`#604`/`#601`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py)
+  - Unit tests: [`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py) (**643/643** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§123)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§123)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 125: 16-Scenario (`PG-01..PG-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 124)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)
+  - Unit tests: [`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py) (**644/644** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/report.json)
 

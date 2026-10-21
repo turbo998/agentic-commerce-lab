@@ -1540,6 +1540,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.18 ms` vs. `1.51 ms`（`8.4x` 加速）**。
 - **技术资产**：[`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)、[`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py) 及双语报告 [`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html)。
 
+---
+
+## 123. Stage 124 深度审计：x402 签名前三层 Pay Guard、异步 Bazaar、Fastify 原始错误体与 Cardano CIP-30 Paywall（`#3851`/`#3845`/`#3816`/`#3815`/`#3842`/`#3834`/`#3828`/`#3825`/`#3790`/`#3820`）、Stripe AI DXT 资金变更安全说明与 51 单测发现（`#480`/`#515`/`#543`/`#552`/`#560`/`#550`）及 MCP Inspector v2.10.0 威胁模型与 $\tau$-bench Policy Harness 护栏（`#3418`/`#3398`/`#3440`/`#607`/`#604`/`#601`）
+
+### 123.1 x402 签名前三层 Pay Guard（`#3851`/`#3845`/`#3816`/`#3815`）、Python 异步 Bazaar 发现（`#3842`）、Fastify 非 JSON 原始文本返回（`#3834`）与 v2 金额/Go 结算错误/Cardano CIP-30 Paywall（`#3828`/`#3825`/`#3790`）
+- 签名前 `onBeforePaymentCreation` 三层拦截：Factline（`#3851`）与 `anchor-x402-safe-pay`（`#3845`）对 `payTo` 实施 OFAC SDN 制裁与钓鱼/盗币/混币地址声誉筛查（未知/失败一律 fail-closed）；Tanilo Guard（`#3816`）执行 `contract-price-match/v0.1` 与 `spend-cap/v0.1` 价格与支出上限规则；UTA Trust Kit（`#3815`）校验买方 Agent 的 Ed25519 `ATC/1.0` 信任卡与偿付能力。
+- Python `HTTPFacilitatorClient` 绑定异步 `_get_async_client()` 执行 Bazaar `list_resources`/`search` 并在 HTTP 前拦截空查询（`#3842`）；Fastify `onSend` 仅对 `/json` 或 `+json` 序列化，保持 `text/plain` 结算失败响应原样输出（`#3834`）；严禁客户端对 v2 原子整数金额四舍五入或重缩放（`#3828`），保留 Go 包装 `*x402.SettleError` 的 HTTP 200 交易哈希（`#3825`），并在 Cardano CIP-30 Paywall 中仅允许 `ADA`/`USDM` 默认转账而拦截 `script`/`masumi`（`#3790`）。
+
+### 123.2 Stripe AI `@stripe/mcp` DXT 清单资金变更安全警示（`#480`）、Claude 生命周期钩子与 Metronome 计量匹配（`#515`/`#543`/`#552`）及 Python 51 测试全量发现（`#560`/`#550`）
+- 强制 `@stripe/mcp` DXT 本地清单 23 个工具均包含 `description`，且 6 个移动真实资金或修改客户账单状态的工具（`create_payment_link`、`finalize_invoice`、`create_refund`、`cancel_subscription`、`update_subscription`、`update_dispute`）必须声明显式安全提示（`#480`）；生命周期钩子匹配 `/stripe|metronome/i` 并强制工作流 Action 锁定 40 位 SHA（`#515`/`#543`/`#552`）；使用 `pytest` + `pytest-asyncio` 消除 `unittest discover` 静默跳过 48/51 测试的盲区（`#560`/`#550`）。
+
+### 123.3 MCP Inspector v2.10.0 安全威胁模型（`#3418`）、SEP-3398/3440 发布周期与工作组治理（`#3398`/`#3440`）及 Sierra $\tau$-bench 2.0 Policy Harness / Ampup 范围受限记忆护栏（`#607`/`#604`/`#601`/`#597`）
+- 拦截 MCP Inspector `DANGEROUSLY_OMIT_AUTH`、无令牌 `0.0.0.0` 监听及 `GET /` 令牌泄露（`#3418`）；核验 SEP-3398 3 月/9 月双发 8 个月重叠周期与 SEP-3440 Tasks & Events WG（`#3398`/`#3440`）；验证 $\tau$-bench `banking_knowledge` Policy Harness 增益（`+7.74 pts Pass¹`，`#607`）并拦截宽松重放评分或越界读取未打开页面的 BM25 检索（`#604`/`#601`；参见 `lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py`）。
+
+---
+
+## 124. Stage 125 基准评测：16 场景（`PG-01..PG-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 124 三大护栏域的 16 个场景（`PG-01..PG-16`，3 个合规基线 + 13 个对抗性故障与安全违规）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.17 ms` vs. `1.49 ms`（`8.8x` 加速）**。
+- **技术资产**：[`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)、[`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py) 及双语报告 [`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html)。
+
 
 
 

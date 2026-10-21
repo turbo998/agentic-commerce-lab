@@ -1,0 +1,409 @@
+{
+  "benchmark_id": "agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench",
+  "stage": "Stage 125",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "headline_zh": "16/16 (100.0%) 确定性拦截 x402 签名前制裁/超支、Stripe DXT 无警示工具与 MCP Inspector 暴露",
+  "headline_en": "16/16 (100.0%) Deterministic Guard Across x402 Pre-Sign Pay Guard, Stripe DXT & MCP Inspector",
+  "subheadline_zh": "覆盖 x402 #3851/#3845/#3816/#3815/#3842/#3834/#3828/#3825/#3790、Stripe AI #480/#515/#543/#552/#560、MCP #3418/#3398/#3440 与 Sierra τ-bench #607/#604/#601",
+  "subheadline_en": "Covers x402 #3851/#3845/#3816/#3815/#3842/#3834/#3828/#3825/#3790, Stripe AI #480/#515/#543/#552/#560, MCP #3418/#3398/#3440 & Sierra τ-bench #607/#604/#601",
+  "total_scenarios": 16,
+  "passed_scenarios": 16,
+  "pass_rate_pct": 100.0,
+  "classic_3tier_passed": 3,
+  "classic_3tier_pass_rate_pct": 18.75,
+  "perturbation_passed": 16,
+  "perturbation_consistency_pct": 100.0,
+  "elapsed_ms": 0.1104,
+  "median_latency_ms": 0.17,
+  "baseline_median_latency_ms": 1.49,
+  "speedup_factor": 8.8,
+  "summary_metrics": {
+    "x402_pay_guard_bazaar_fastify": "9/9 (100.0%)",
+    "stripe_dxt_hooks_pytest": "4/4 (100.0%)",
+    "mcp_inspector_release_tau2_memory": "3/3 (100.0%)"
+  },
+  "scenarios": [
+    {
+      "id": "PG-01",
+      "domain": "x402",
+      "title_zh": "x402 签名前三层 Pay Guard、异步 Bazaar、Fastify 原始文本与 Cardano CIP-30 合规基线",
+      "title_en": "Compliant x402 Pre-Sign Pay Guard, Async Bazaar, Fastify Raw Body & Cardano CIP-30",
+      "expected_allowed": true,
+      "expected_code": "X402_PAY_GUARD_BAZAAR_FASTIFY_OK",
+      "allowed": true,
+      "decision_code": "X402_PAY_GUARD_BAZAAR_FASTIFY_OK",
+      "passed": true,
+      "reason": "All x402 pre-sign pay guards, async Bazaar, Fastify raw body, v2 amount, and Cardano CIP-30 checks passed.",
+      "payload": {
+        "safe_pay_verdict": "allow",
+        "reputation_tags": [],
+        "seller_uptime_pct": 99.9,
+        "required_amount_minor": 100,
+        "contract_price_minor": 100,
+        "spend_cap_minor": 500,
+        "tanilo_eval_state": "evaluated_ok",
+        "require_atc_card": true,
+        "atc_ed25519_verified": true,
+        "atc_version": "ATC/1.0",
+        "agent_solvent": true,
+        "bazaar_client_mode": "async_get_async_client",
+        "bazaar_search_query": "weather",
+        "settlement_failure_content_type": "text/plain; charset=utf-8",
+        "amount_network_scheme": "xrpl_iou_decimal",
+        "amount_value_str": "25.50",
+        "network_family": "cardano",
+        "cardano_transfer_method": "default",
+        "cardano_token": "USDM"
+      }
+    },
+    {
+      "id": "PG-02",
+      "domain": "x402",
+      "title_zh": "x402 #3851/#3845 OFAC 制裁或钓鱼/盗币地址签名前阻断",
+      "title_en": "x402 #3851/#3845 Pre-Sign OFAC SDN & Drainer/Phishing Address Block",
+      "expected_allowed": false,
+      "expected_code": "X402_SAFE_PAY_SANCTIONS_OR_REPUTATION_BLOCKED",
+      "allowed": false,
+      "decision_code": "X402_SAFE_PAY_SANCTIONS_OR_REPUTATION_BLOCKED",
+      "passed": true,
+      "reason": "Pre-sign pay guard blocked signing due to OFAC/drainer/phishing verdict or fail-closed screen (#3851/#3845).",
+      "payload": {
+        "safe_pay_verdict": "block",
+        "reputation_tags": [
+          "ofac_sdn",
+          "drainer"
+        ]
+      }
+    },
+    {
+      "id": "PG-03",
+      "domain": "x402",
+      "title_zh": "x402 #3816 Tanilo 合同价格矛盾或超出支出上限阻断",
+      "title_en": "x402 #3816 Tanilo Contract Price Mismatch or Spend Cap Breach Block",
+      "expected_allowed": false,
+      "expected_code": "X402_TANILO_PRICE_CAP_OR_INDETERMINATE_BLOCKED",
+      "allowed": false,
+      "decision_code": "X402_TANILO_PRICE_CAP_OR_INDETERMINATE_BLOCKED",
+      "passed": true,
+      "reason": "Tanilo pre-sign guard rejected contradicted contract price, spend cap, or indeterminate receipt (#3816).",
+      "payload": {
+        "required_amount_minor": 750,
+        "contract_price_minor": 500,
+        "spend_cap_minor": 500
+      }
+    },
+    {
+      "id": "PG-04",
+      "domain": "x402",
+      "title_zh": "x402 #3815 UTA Trust Kit 未验签 ATC/1.0 信任卡或无偿付能力阻断",
+      "title_en": "x402 #3815 UTA Trust Kit Unverified ATC/1.0 Card or Insolvent Agent Block",
+      "expected_allowed": false,
+      "expected_code": "X402_UTA_AGENT_TRUST_CARD_REJECTED",
+      "allowed": false,
+      "decision_code": "X402_UTA_AGENT_TRUST_CARD_REJECTED",
+      "passed": true,
+      "reason": "UTA Trust Kit rejected caller without Ed25519-verified ATC/1.0 card and solvency proof (#3815).",
+      "payload": {
+        "require_atc_card": true,
+        "atc_ed25519_verified": false,
+        "atc_version": "ATC/1.0"
+      }
+    },
+    {
+      "id": "PG-05",
+      "domain": "x402",
+      "title_zh": "x402 #3842 Python Bazaar 误调同步 `_get_client()` 或空查询阻断",
+      "title_en": "x402 #3842 Python Bazaar Sync `_get_client()` AttributeError or Empty Query Block",
+      "expected_allowed": false,
+      "expected_code": "X402_BAZAAR_ASYNC_CLIENT_OR_EMPTY_QUERY_ERROR",
+      "allowed": false,
+      "decision_code": "X402_BAZAAR_ASYNC_CLIENT_OR_EMPTY_QUERY_ERROR",
+      "passed": true,
+      "reason": "Bazaar discovery requires async _get_async_client() and non-empty search query before HTTP (#3842).",
+      "payload": {
+        "bazaar_client_mode": "sync_missing_get_client",
+        "bazaar_search_query": ""
+      }
+    },
+    {
+      "id": "PG-06",
+      "domain": "x402",
+      "title_zh": "x402 #3834 Fastify `text/plain` 结算失败响应被二次 JSON 序列化阻断",
+      "title_en": "x402 #3834 Fastify `text/plain` Settlement Failure Double JSON-Encoding Block",
+      "expected_allowed": false,
+      "expected_code": "X402_FASTIFY_NON_JSON_STRING_DOUBLE_ENCODED",
+      "allowed": false,
+      "decision_code": "X402_FASTIFY_NON_JSON_STRING_DOUBLE_ENCODED",
+      "passed": true,
+      "reason": "Fastify onSend must send non-JSON string settlement-failure bodies as-is without JSON quoting (#3834).",
+      "payload": {
+        "settlement_failure_content_type": "text/plain; charset=utf-8",
+        "double_json_encoded_plain_string": true
+      }
+    },
+    {
+      "id": "PG-07",
+      "domain": "x402",
+      "title_zh": "x402 #3828 客户端对非整数原子单位金额擅自四舍五入/缩放阻断",
+      "title_en": "x402 #3828 Client-Side Rounding/Rescaling of Invalid Atomic Amount Block",
+      "expected_allowed": false,
+      "expected_code": "X402_V2_AMOUNT_CLIENT_RESCALE_FORBIDDEN",
+      "allowed": false,
+      "decision_code": "X402_V2_AMOUNT_CLIENT_RESCALE_FORBIDDEN",
+      "passed": true,
+      "reason": "x402 v2 clients must validate scheme-specific amount representations rather than round or rescale (#3828).",
+      "payload": {
+        "amount_network_scheme": "atomic_uint",
+        "amount_value_str": "100.5",
+        "client_rounded_or_rescaled": true
+      }
+    },
+    {
+      "id": "PG-08",
+      "domain": "x402",
+      "title_zh": "x402 #3825 Go 包装 `*x402.SettleError` 丢失交易哈希或退化为 500 阻断",
+      "title_en": "x402 #3825 Go Wrapped `*x402.SettleError` HTTP 500 or Lost Tx Hash Block",
+      "expected_allowed": false,
+      "expected_code": "X402_GO_WRAPPED_SETTLE_ERROR_LOST",
+      "allowed": false,
+      "decision_code": "X402_GO_WRAPPED_SETTLE_ERROR_LOST",
+      "passed": true,
+      "reason": "Wrapped *x402.SettleError must map to HTTP 200 SettleResponse preserving transaction hash (#3825).",
+      "payload": {
+        "is_wrapped_settle_error": true,
+        "settle_error_http_status": 500,
+        "settle_error_tx_hash_preserved": false
+      }
+    },
+    {
+      "id": "PG-09",
+      "domain": "x402",
+      "title_zh": "x402 #3790 Cardano CIP-30 Paywall 使用不受支持的 `script`/`masumi` 方式阻断",
+      "title_en": "x402 #3790 Cardano CIP-30 Paywall Unsupported `script`/`masumi` Method Block",
+      "expected_allowed": false,
+      "expected_code": "X402_CARDANO_CIP30_PAYWALL_VIOLATION",
+      "allowed": false,
+      "decision_code": "X402_CARDANO_CIP30_PAYWALL_VIOLATION",
+      "passed": true,
+      "reason": "Cardano CIP-30 paywall only supports exact default transfer in ADA/USDM with min-UTxO & tab lock (#3790).",
+      "payload": {
+        "network_family": "cardano",
+        "cardano_transfer_method": "masumi"
+      }
+    },
+    {
+      "id": "PG-10",
+      "domain": "stripe",
+      "title_zh": "Stripe AI DXT 23 工具安全说明、SHA 锁定、Metronome 钩子与 51 单测发现基线",
+      "title_en": "Compliant Stripe DXT Safety Notes, SHA Pinning, Metronome Hooks & 51-Test Pytest",
+      "expected_allowed": true,
+      "expected_code": "STRIPE_DXT_HOOKS_PYTEST_OK",
+      "allowed": true,
+      "decision_code": "STRIPE_DXT_HOOKS_PYTEST_OK",
+      "passed": true,
+      "reason": "Stripe DXT manifest safety notes, SHA-pinned workflows, Metronome hooks, and pytest discovery verified.",
+      "payload": {
+        "dxt_manifest_tools": [
+          {
+            "name": "cancel_subscription",
+            "description": "Executes cancel_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_payment_link",
+            "description": "Executes create_payment_link. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_refund",
+            "description": "Executes create_refund. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "finalize_invoice",
+            "description": "Executes finalize_invoice. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_dispute",
+            "description": "Executes update_dispute. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_subscription",
+            "description": "Executes update_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          }
+        ],
+        "workflow_action_refs": [
+          "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        ],
+        "transcript_text": "Meter usage with Metronome and bill via Stripe",
+        "require_metronome_nudge": true,
+        "python_test_runner": "pytest",
+        "has_pytest_asyncio": true,
+        "discovered_tests": 51
+      }
+    },
+    {
+      "id": "PG-11",
+      "domain": "stripe",
+      "title_zh": "Stripe AI #480 `@stripe/mcp` DXT 清单资金变更工具缺失安全警示阻断",
+      "title_en": "Stripe AI #480 `@stripe/mcp` DXT Money-Moving Tool Missing Safety Note Block",
+      "expected_allowed": false,
+      "expected_code": "STRIPE_DXT_MONEY_TOOL_SAFETY_NOTE_MISSING",
+      "allowed": false,
+      "decision_code": "STRIPE_DXT_MONEY_TOOL_SAFETY_NOTE_MISSING",
+      "passed": true,
+      "reason": "Money-moving tool 'create_refund' lacks an explicit billing/money safety note in DXT manifest (#480).",
+      "payload": {
+        "dxt_manifest_tools": [
+          {
+            "name": "create_refund",
+            "description": "Creates a refund in Stripe."
+          }
+        ]
+      }
+    },
+    {
+      "id": "PG-12",
+      "domain": "stripe",
+      "title_zh": "Stripe AI #552 `sync-agent-plugin` 工作流使用可变版本标签而非 40 位 SHA 阻断",
+      "title_en": "Stripe AI #552 `sync-agent-plugin` Mutable Tag Instead of 40-Hex Commit SHA Block",
+      "expected_allowed": false,
+      "expected_code": "STRIPE_WORKFLOW_ACTION_MUTABLE_TAG_REJECTED",
+      "allowed": false,
+      "decision_code": "STRIPE_WORKFLOW_ACTION_MUTABLE_TAG_REJECTED",
+      "passed": true,
+      "reason": "sync-agent-plugin workflow must pin actions to 40-hex commit SHAs per SAT-31061 (#552).",
+      "payload": {
+        "dxt_manifest_tools": [
+          {
+            "name": "cancel_subscription",
+            "description": "Executes cancel_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_payment_link",
+            "description": "Executes create_payment_link. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_refund",
+            "description": "Executes create_refund. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "finalize_invoice",
+            "description": "Executes finalize_invoice. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_dispute",
+            "description": "Executes update_dispute. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_subscription",
+            "description": "Executes update_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          }
+        ],
+        "workflow_action_refs": [
+          "actions/checkout@v4"
+        ]
+      }
+    },
+    {
+      "id": "PG-13",
+      "domain": "stripe",
+      "title_zh": "Stripe AI #560/#550 `unittest discover` 静默跳过 48 个 Pytest/异步测试阻断",
+      "title_en": "Stripe AI #560/#550 `unittest discover` Silently Skipping 48 of 51 Tests Block",
+      "expected_allowed": false,
+      "expected_code": "STRIPE_PYTHON_SILENT_TEST_SKIP_BLOCKED",
+      "allowed": false,
+      "decision_code": "STRIPE_PYTHON_SILENT_TEST_SKIP_BLOCKED",
+      "passed": true,
+      "reason": "Python toolkit must run pytest with pytest-asyncio so all 51 tests execute without silent skip (#560/#550).",
+      "payload": {
+        "dxt_manifest_tools": [
+          {
+            "name": "cancel_subscription",
+            "description": "Executes cancel_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_payment_link",
+            "description": "Executes create_payment_link. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "create_refund",
+            "description": "Executes create_refund. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "finalize_invoice",
+            "description": "Executes finalize_invoice. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_dispute",
+            "description": "Executes update_dispute. Safety note: moves real money or mutates customer-visible billing state."
+          },
+          {
+            "name": "update_subscription",
+            "description": "Executes update_subscription. Safety note: moves real money or mutates customer-visible billing state."
+          }
+        ],
+        "python_test_runner": "unittest_discover",
+        "discovered_tests": 3
+      }
+    },
+    {
+      "id": "PG-14",
+      "domain": "mcp_tau2",
+      "title_zh": "MCP Inspector v2.10.0 安全威胁模型、SEP-3398/3440 与 τ-bench Policy Harness 合规基线",
+      "title_en": "Compliant MCP Inspector v2.10.0 Security, SEP-3398/3440 & τ-bench Policy Harness",
+      "expected_allowed": true,
+      "expected_code": "MCP_INSPECTOR_RELEASE_TAU2_MEMORY_OK",
+      "allowed": true,
+      "decision_code": "MCP_INSPECTOR_RELEASE_TAU2_MEMORY_OK",
+      "passed": true,
+      "reason": "MCP Inspector v2.10.0 threat model, SEP-3398/3440 governance, and tau2-bench Policy Harness/Ampup memory verified.",
+      "payload": {
+        "inspector_dangerously_omit_auth": false,
+        "inspector_bind_host": "127.0.0.1",
+        "inspector_api_token_present": true,
+        "sep3398_release_months": [
+          3,
+          9
+        ],
+        "sep3398_cycle_duration_months": 8,
+        "sep3440_tasks_events_wg_unified": true,
+        "tau2_standard_pass1": 49.48,
+        "tau2_policy_harness_pass1": 57.22,
+        "tau2_permissive_replay_grades": false,
+        "ampup_bm25_scoped_to_opened_links": true
+      }
+    },
+    {
+      "id": "PG-15",
+      "domain": "mcp_tau2",
+      "title_zh": "MCP #3418 Inspector 开启 `DANGEROUSLY_OMIT_AUTH` 或 `0.0.0.0` 无令牌暴露阻断",
+      "title_en": "MCP #3418 Inspector `DANGEROUSLY_OMIT_AUTH` or Unauthenticated `0.0.0.0` Exposure Block",
+      "expected_allowed": false,
+      "expected_code": "MCP_INSPECTOR_SECURITY_THREAT_BLOCKED",
+      "allowed": false,
+      "decision_code": "MCP_INSPECTOR_SECURITY_THREAT_BLOCKED",
+      "passed": true,
+      "reason": "MCP Inspector v2.10.0 forbids DANGEROUSLY_OMIT_AUTH, unauthenticated 0.0.0.0 binding, or GET / token leak (#3418).",
+      "payload": {
+        "inspector_dangerously_omit_auth": true,
+        "inspector_bind_host": "0.0.0.0",
+        "inspector_api_token_present": false
+      }
+    },
+    {
+      "id": "PG-16",
+      "domain": "mcp_tau2",
+      "title_zh": "Sierra τ-bench #604/#607 提交宽松重放评分或越界读取未打开页面链接阻断",
+      "title_en": "Sierra τ-bench #604/#607 Permissive Replay Grades or Unscoped Memory Search Block",
+      "expected_allowed": false,
+      "expected_code": "TAU2_MEMORY_REPLAY_OR_VOICE_TICK_VIOLATION",
+      "allowed": false,
+      "decision_code": "TAU2_MEMORY_REPLAY_OR_VOICE_TICK_VIOLATION",
+      "passed": true,
+      "reason": "tau2-bench rejects permissive replay grades, unscoped BM25 memory search, or desynced voice tick adapters (#607/#604/#601).",
+      "payload": {
+        "tau2_permissive_replay_grades": true,
+        "ampup_bm25_scoped_to_opened_links": false
+      }
+    }
+  ]
+}

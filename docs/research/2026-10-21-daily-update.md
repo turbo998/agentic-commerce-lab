@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–123）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–125）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -73,4 +73,22 @@
   - 基准套件：[`lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../lab/x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)
   - 单元测试：[`tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py`](../../tests/test_x402_cors_streams_ucp_business_ecdsa_stripe_deps_streams_tau2_authority_bench.py)（全仓库 **640/640** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html`（中文）](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cors-streams-ucp-business-ecdsa-stripe-deps-streams-tau2-authority-bench/report.json)
+
+---
+
+## Stage 124：x402 签名前三层 Pay Guard/异步 Bazaar/Fastify 原始文本/Cardano CIP-30（`#3851`/`#3845`/`#3816`/`#3815`/`#3842`/`#3834`/`#3828`/`#3825`/`#3790`）、Stripe AI DXT 资金安全警示/51 单测发现（`#480`/`#515`/`#543`/`#552`/`#560`/`#550`）与 MCP Inspector v2.10.0/$\tau$-bench Policy Harness 护栏（`#3418`/`#3398`/`#3440`/`#607`/`#604`/`#601`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py)
+  - 单元测试：[`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_guard.py)（全仓库 **643/643** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§123)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§123)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 125：16 场景（`PG-01..PG-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 124）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../lab/x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)
+  - 单元测试：[`tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py`](../../tests/test_x402_pay_guard_bazaar_fastify_stripe_dxt_mcp_inspector_tau2_memory_bench.py)（全仓库 **644/644** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html`（中文）](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-pay-guard-bazaar-fastify-stripe-dxt-mcp-inspector-tau2-memory-bench/report.json)
 
