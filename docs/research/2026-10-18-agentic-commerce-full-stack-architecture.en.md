@@ -247,6 +247,14 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§113.4**: Sierra $\tau$-bench 2.0 Retail Delivered-Order Exchange & Gift-Card Price-Difference Balance Check (`#571`) and Dropped `--seed` Parameter Warning (`#567`).
 - **§114 (Stage 115 — Bilingual Chinese + English)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`CP-01..CP-16`)**: `lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py` & `reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.24 ms` vs. `4.12 ms` (`17.2x` speedup).
+- **§115 (Stage 116 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§115.1**: ACP `UserApproval` & `approval_digest` RFC 8785 JCS SHA-256 Checkout Binding and Section 7.4 Rule 4 Intent-Conflict Platform Attribution (`#316` / SEP `#303`, commit `2b2f2dd`).
+  - **§115.2**: UCP Admission-Only AP2 Mandate TTL & `/.well-known/ucp` `keys[]` Discovery (`#540` commit `207314b`), Explicit Return Policy `eligibility`/`expires_at`/`fees[]` (`#966`), and `dev.ucp.common.quote` Complete Checkout Projection (`#930`).
+  - **§115.3**: x402 Foundation `response-provenance` 5-Member Fixed-Point JCS SHA-256 Digest & No-Collapse Verifier Self-Proof (`#3304`), Paywall Script-Safe `<` Escaping (`#3855`), Encoded Path Separator `%2F`/`%5C` Paywall Bypass Guard (`#3857`), and Batch-Settlement Refund/Flush `pendingSettle` Propagation (`#3858`).
+  - **§115.4**: Sierra $\tau$-bench 2.0 Knowledge Sandbox Minimal Environment & Secret Scrubbing (`#653` commit `57e5414`), Root-Walk `denyRead` Allowlist Emulation (`#655`), `voice-v2` Call-Level Quality Gates (`#640`), and Offline `Bayes@N` Beta Cohort Integrity (`#652`).
+- **§116 (Stage 117 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`UA-01..UA-16`)**: `lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py` & `reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.23 ms` vs. `4.10 ms` (`17.8x` speedup).
+
 
 
 

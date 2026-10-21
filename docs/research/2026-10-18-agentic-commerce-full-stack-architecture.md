@@ -1448,7 +1448,32 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 
 - **评测范围**：覆盖 Stage 114 四大协议域的 16 个场景（`CP-01..CP-16`，4 个合规基线 + 12 个对抗性突变）。
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.24 ms` vs. `4.12 ms`（`17.2x` 加速）**。
-- **技术资产**：[`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py)、[`tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/`](../../reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/index.html)。
+- **技术资产**：[`lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../lab/ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py)、[`tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py`](../../tests/test_ucp_common_types_dest_privacy_acp_discounts_3ds_ap2_psd2_tau2_retail_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-retail-bench/`](../../reports/agentic-commerce-ucp-common-types-dest-privacy-acp-discounts-3ds-ap2-psd2-tau2-retail-bench/index.html)。
+
+---
+
+## 115. Stage 116 深度审计（2026-10-21）：ACP `#316`（SEP `#303` `UserApproval` 与 `approval_digest`）、UCP `#540`（`207314b`）/`#966`/`#930`、x402 Foundation `#3304`/`#3855`/`#3857`/`#3858` 与 Sierra $\tau$-bench 2.0 `#653`（`57e5414`）/`#655`/`#640`/`#652`
+
+### 115.1 ACP `UserApproval` 与 `approval_digest` 结账绑定及 Section 7.4 Rule 4 意图冲突归责（`#316` / SEP `#303`）
+- 对 `{items, approved_at}` 执行 RFC 8785 JCS 规范化并计算小写十六进制 SHA-256 摘要，要求争议记录中的 `user_approval.approval_digest` 同时匹配重算摘要与 `CheckoutSessionCompleteRequest.dispute_resolution.approval_digest`（Section 4.4a）；当可采信 `UserApproval` 与争议订单行的 `sku`、`variant` 或 `quantity` 冲突时，记录为针对 `agent_platform` 的 `intent` 冲突且不撤销商家收款（`merchant_charge_reversed == False`，Rule 4）。
+
+### 115.2 UCP 准入单次 AP2 授权 TTL（`#540` `207314b`）、显式退货政策（`#966`）与报价扩展（`#930`）
+- `com.merchantstamp.mandate-evaluation` 通过 `/.well-known/ucp` 的 `keys[]` 发现 JWK（废除单独 `signing_keys[]` 表述），并在 `Complete Checkout` 准入时单次评估 `evaluated_at <= mandate_exp`（一旦准入通过则冻结授权，严禁因后续耗时超期中途终止 `complete_in_progress`）；`dev.ucp.shopping.policy.return` 强制显式 `eligibility`（`window` | `unlimited` | `not_accepted`）、商家直报 `expires_at`（禁止平台按 `duration`+`anchor` 推算）及实收退货费不超声明上限；`dev.ucp.common.quote` 在结账完成时省略冗余 `accepted_id` 并映射单一 `totals[type="quote"]`。
+
+### 115.3 x402 Foundation `response-provenance` 五元组固定点摘要（`#3304`）、Paywall 反射型 XSS（`#3855`）、编码路径绕过（`#3857`）与批量结算冲刷（`#3858`）
+- 对闭集五元组 `{endpoint, inputs, result, method, dataVintage}` 计算 `sha256(jcs(fixedPoint))`，强制三态不坍缩规则（缺省为 `no_claim` 而非 `contradicted`）与黄金向量自证前置；拦截内联脚本未转义 `<`（`#3855`）、拦截 `%2F`/`%5C` 参数化路由免付绕过（`#3857`）并确保退款索赔置位 `pendingSettle` 及 `stop({flush: true})` 调用 `settle()`（`#3858`）。
+
+### 115.4 Sierra $\tau$-bench 2.0 知识库沙箱最小环境（`#653`）、根遍历 `denyRead` 白名单模拟（`#655`）、`voice-v2` 通话质量门禁（`#640`）与离线 `Bayes@N`（`#652`）
+- 限制沙箱环境变量为最小白名单、将 `HOME` 指向每沙箱目录、展开 `denyRead` 中的 `~` 并脱敏输出中的宿主密钥（`#653`）；通过 `_compute_read_denies` 封禁 `data_dir`、`repo_root`、`/tmp` 与 `/etc/passwd` 防止 `python3 -c` 逃逸读取 `tasks.json`/`db.json`（`#655`）；强制 `voice-v2` 通话级交互/体验质量门禁（`#640`）与 `Bayes@N` 队列完整性校验（`#652`；参见 `lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_guard.py`）。
+
+---
+
+## 116. Stage 117 基准评测：16 场景（`UA-01..UA-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 116 四大协议域的 16 个场景（`UA-01..UA-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.23 ms` vs. `4.10 ms`（`17.8x` 加速）**。
+- **技术资产**：[`lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py`](../../lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py)、[`tests/test_acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py`](../../tests/test_acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py) 及双语报告 [`reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/`](../../reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/index.html)。
+
 
 
 
