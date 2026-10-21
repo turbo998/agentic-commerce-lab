@@ -254,6 +254,14 @@ All 53 sections in [`docs/research/2026-10-18-agentic-commerce-full-stack-archit
   - **§115.4**: Sierra $\tau$-bench 2.0 Knowledge Sandbox Minimal Environment & Secret Scrubbing (`#653` commit `57e5414`), Root-Walk `denyRead` Allowlist Emulation (`#655`), `voice-v2` Call-Level Quality Gates (`#640`), and Offline `Bayes@N` Beta Cohort Integrity (`#652`).
 - **§116 (Stage 117 — Bilingual Chinese + English, `2026-10-21`)**:
   - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`UA-01..UA-16`)**: `lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py` & `reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.23 ms` vs. `4.10 ms` (`17.8x` speedup).
+- **§117 (Stage 118 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **§117.1**: x402 Foundation Stellar `upto` Soroban Settlement Contract (`#3859`), Contract-Account `C...` `authorizeEntry` Override (`#3860`), Wildcard Scheme Lookup (`#3862`), and SVM Post-Commit Batch Operation Completion (`#3854`).
+  - **§117.2**: UCP Open `Media` Variants & Sandboxed `external_video` Isolation (`#690`/`#941`/`#935`), Checkout Extension Composed `$defs/<capability>` Validation (`#898`), and OpenAPI 3.1 `securitySchemes` + Content-Map Header Synthesis (`#914`).
+  - **§117.3**: Stripe AI OpenAI Agent Plugin Metadata (`#579`), Hermes Catalog Skill Hardening & Current-Turn Write Confirmation (`#532`), and `@stripe/mcp` Stdio Forwarding JSON-RPC `-32603` Error Reply (`#542`).
+  - **§117.4**: MCP SEP-3415 `io.modelcontextprotocol/events` Subscription/Cursor Guard (`#3415`), RFC 8252 Loopback IP Literal `redirect_uris` (`#3384`), and Sierra $\tau$-bench 2.0 `ava_zero_pipecat` WebRTC/RTVI, Reward Breakdown, and Lazy `__getattr__` Voice Import Guard (`#631`/`#583`/`#563`).
+- **§118 (Stage 119 — Bilingual Chinese + English, `2026-10-21`)**:
+  - **16-Scenario Bilingual 7-Card 4:5 Benchmark Suite (`SU-01..SU-16`)**: `lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py` & `reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/{report.json,index.html,index.en.html}` — 16/16 (100.0%) AI-Native vs. 4/16 (25.0%) Classic 3-Tier, 16/16 (100.0%) reversal invariance, `0.23 ms` vs. `4.09 ms` (`17.8x` speedup).
+
 
 
 

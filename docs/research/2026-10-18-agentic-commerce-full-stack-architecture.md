@@ -1474,6 +1474,31 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.23 ms` vs. `4.10 ms`（`17.8x` 加速）**。
 - **技术资产**：[`lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py`](../../lab/acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py)、[`tests/test_acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py`](../../tests/test_acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench.py) 及双语报告 [`reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/`](../../reports/agentic-commerce-acp-user-approval-ucp-mandate-ttl-return-x402-provenance-tau2-sandbox-bench/index.html)。
 
+---
+
+## 117. Stage 118 深度审计：x402 Stellar `upto` Soroban 结算合约与 SVM 落盘后完成（`#3859`/`#3860`/`#3862`/`#3854`）、UCP Media 变体沙箱与安全头合成（`#690`/`#898`/`#914`）、Stripe AI 插件当前轮写确认与 `@stripe/mcp` `-32603` 错误转发（`#579`/`#532`/`#542`）及 MCP SEP-3415 事件与 $\tau$-bench 2.0 语音/奖励护栏（`#3415`/`#3384`/`#631`/`#583`/`#563`）
+
+### 117.1 x402 Stellar `upto` Soroban 结算合约（`#3859`）、`C...` 合约账户授权签名（`#3860`）、通配符网络匹配（`#3862`）与 SVM 通道落盘后完成（`#3854`）
+- 校验 Stellar `upto` 合约地址与 WASM 哈希常量（`CBTVKCHLSGQ3WSV3NKSU6FZR4FZMC6ENMDMXUS5XQ66HYVUUHYE3TU7U` / `cc2d2fef...`）、`0 <= amount <= max_amount`、手续费上限（`<= 500,000` stroops）、`15..300s` 超时窗口与重复结算同额幂等（异额拒绝）；支持 `C...` 合约账户通过 `authorizeEntry` 覆盖签写授权项并拒绝信封签名（`#3860`）；按精确键优先、通配符 `stellar:*`/`eip155:*` 次之解析方案并执行 `BeforeVerify` 钩子（`#3862`）；强制 SVM 批量结算仅在 `ChannelStore.update` 持久化提交成功后调用 `operationStore.complete`（`#3854`）。
+
+### 117.2 UCP Media 变体与 `external_video` 无凭证沙箱隔离（`#690`）、扩展组合模式校验（`#898`）及 OpenAPI 3.1 安全/内容头合成（`#914`）
+- 校验 `Media` 的 `sources[]`/`preview`/`name`/`duration`，对 `external_video` 强制无凭证沙箱隔离（`sandbox_isolated=True`、`allow_top_navigation=False`）且保持未知 `type` 开放不拒单（`#690`）；对 `fulfillment`/`ap2` 顶层扩展字段执行 `$defs/<capability>` 组合校验（拒绝字符串型 `description` 或更新缺失 `line_item_ids`，`#898`）；从 `securitySchemes` 与请求/响应内容映射合成 `Authorization`、`X-API-Key`、`Content-Type`（非 GET）与 `Accept`（`#914`）。
+
+### 117.3 Stripe AI OpenAI 插件元数据（`#579`）、Hermes 目录技能加固与当前轮写操作确认（`#532`）及 `@stripe/mcp` `-32603` 转发错误响应（`#542`）
+- 强制技能 frontmatter 中 `allowed-tools` 为逗号分隔字符串（防止 YAML 列表被 Hermes 静默丢弃），要求资金划拨与客户写操作具备绑定精确 `(operation, amount_minor, currency, target_id)` 的**当前轮次用户显式确认**，拦截未授权 `--accept-tos` 与自动 `stripe feedback`（`#532`）；当 `@stripe/mcp` stdio 转发失败时立即返回带相同 `id` 的 JSON-RPC `-32603` 错误而非静默超时（`#542`）。
+
+### 117.4 MCP SEP-3415 事件扩展（`#3415`）、RFC 8252 环回 IP 字面量（`#3384`）与 Sierra $\tau$-bench 2.0 `ava_zero_pipecat` / 懒加载语音护栏（`#631`/`#583`/`#563`）
+- 校验 `io.modelcontextprotocol/events` 的 `poll`/`push`/`webhook` 投递模式、Standard Webhooks 签名/TTL 与 `truncated: true` 游标截断确认（`#3415`），强制 CIMD `redirect_uris` 使用 `127.0.0.1`/`[::1]` 而非 `localhost`（`#3384`）；校验 `ava_zero_pipecat` 未篡改领域策略与 RTVI 通道（`#631`）、将诊断检查与计分奖励解耦（`#583`）并通过 `__getattr__` 保持核心导入与语音依赖隔离（`#563`；参见 `lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_guard.py`）。
+
+---
+
+## 118. Stage 119 基准评测：16 场景（`SU-01..SU-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 118 四大协议域的 16 个场景（`SU-01..SU-16`，4 个合规基线 + 12 个对抗性突变）。
+- **核心结果**：AI-Native 护栏通过率 **16/16 (100.0%)** vs. 经典三层 Web 架构 **4/16 (25.0%)**；字典键序与选项逆序不变性 **16/16 (100.0%)**；中位延迟 **`0.23 ms` vs. `4.09 ms`（`17.8x` 加速）**。
+- **技术资产**：[`lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../lab/x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py)、[`tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py`](../../tests/test_x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/`](../../reports/agentic-commerce-x402-stellar-upto-ucp-media-headers-stripe-plugin-mcp-events-tau2-bench/index.html)。
+
+
 
 
 
