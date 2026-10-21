@@ -308,5 +308,23 @@
   - 单元测试：[`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py)（全仓库 **693/693** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html`（中文）](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/report.json)
 
+---
+
+## Stage 150：x402 `onAfterVerify` 并发授权重放拦截与 `HEAD` 付费绕过防护/SVM 批量通道持久化提交后完成操作顺序/`lnbtc` BOLT11 描述哈希绑定与 BTC 2-of-3 PSBT 门禁/服务端专属 `builder-code` `m` 与 CORS 暴露头（`#3865`/`#3796`/`#3853`/`#3734`/`#3688`/`#3727`/`#3544`/`#3666`/`#3794`/`#3774`/`#3686`/`#3669`）、UCP 持久化订单数字交付与方法级目的地类型推断/A2A 完成期冻结对齐与省略索引偏移（`#719`/`#871`/`#763`/`#689`/`#688`/`#671`/`#670`/`#883`/`#741`/`#686`/`#662`）、ACP 消息 Schema/整型分单位退费/卖家托管凭证隔离与链上资格折扣（`#262`/`#249`/`#219`/`#214`/`#144`/`#114`/`#111`/`#133`/`#130`/`#125`/`#123`/`#166`/`#151`/`#149`）、AP2 结算证明三态锚定与多签发方信任裁决及 `did:tenzro:` STARK 结算承诺（`#271`/`#272`/`#276`/`#257`/`#144`/`#110`）与 MCP IEEE-754 安全整数/Stripe 空 `choices` 与技能路由/Visa TAP 混合后量子双腿验签/$\tau$-bench 一对一动作匹配护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py`](../../lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py)（全仓库 **696/696** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§149)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§149)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 151：16 场景（`RL-01..RL-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 150）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py)（全仓库 **697/697** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/report.json)
+
 
 

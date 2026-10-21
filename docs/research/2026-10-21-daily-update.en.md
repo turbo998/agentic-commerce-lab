@@ -308,5 +308,23 @@
   - Unit tests: [`tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py`](../../tests/test_x402_settle_status_provenance_ucp_correspondence_finality_ap2_budget_bench.py) (**693/693** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-settle-status-provenance-ucp-correspondence-finality-ap2-budget-bench/report.json)
 
+---
+
+## Stage 150: Deterministic Guardrails for x402 `onAfterVerify` Replay-Guard & `HEAD` Bypass Prevention/SVM Batch Post-Channel-Commit Ordering/`lnbtc` BOLT11 Request Binding & BTC 2-of-3 PSBT/Facilitator `builder-code` `m` & CORS Expose (`#3865`/`#3796`/`#3853`/`#3734`/`#3688`/`#3727`/`#3544`/`#3666`/`#3794`/`#3774`/`#3686`/`#3669`), UCP Durable Order Digital Delivery & Method-Level Destination Discrimination/A2A Freeze Parity & Array Elision Index Alignment (`#719`/`#871`/`#763`/`#689`/`#688`/`#671`/`#670`/`#883`/`#741`/`#686`/`#662`), ACP Message Schema/Integer Refund Minor Units/Seller-Backed Isolation & On-Chain Discount (`#262`/`#249`/`#219`/`#214`/`#144`/`#114`/`#111`/`#133`/`#130`/`#125`/`#123`/`#166`/`#151`/`#149`), AP2 3-State `SettlementAttestation` & Multi-Issuer `TrustQuery` + `did:tenzro:` STARK Commitment (`#271`/`#272`/`#276`/`#257`/`#144`/`#110`), and MCP IEEE-754 Safe Integer/Stripe Empty-Choices & Skill Routing/Visa TAP Hybrid PQC Dual-Leg/$\tau$-bench 1-to-1 Action Matching Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py`](../../lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_guard.py) (**696/696** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§149)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§149)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 151: 16-Scenario (`RL-01..RL-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 150)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../lab/x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py`](../../tests/test_x402_replay_lnbtc_ucp_digital_dest_acp_seller_ap2_trust_tau2_bench.py) (**697/697** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-replay-lnbtc-ucp-digital-dest-acp-seller-ap2-trust-tau2-bench/report.json)
+
 
 
