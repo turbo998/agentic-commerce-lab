@@ -1982,6 +1982,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.08 ms` vs. `12.45 ms`（`11.5x` 加速）**。
 - **技术资产**：[`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)、[`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/`](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html)。
 
+---
+
+## 165. Stage 166 架构演进：x402 Stellar Soroban SAC 基准准备金与 XRPL `tfPartialPayment` 防伪/Facilitator MEV 结余返还/多跳子调用分账守恒、UCP 预售保价与组合包部分退货折算/冷链生鲜温控门禁、ACP 网络令牌密文（TAVV）与多币种退款锁汇、AP2 前向安全会话密钥轮换与 MCC 时段滑窗限速及 MCP Schema 防投毒/Stripe Issuing 实时授权/Visa TAP 新设备冷静期/$\tau$-bench 确定性护栏
+
+### 165.1 x402 Foundation Stellar (`stellar:pubnet`) Soroban SAC 合约与 `>=1.0 XLM` 基准准备金（`#3756`/`#3752`/`#3746`）、XRPL (`xrpl:mainnet`) `tfPartialPayment` (`0x00020000`) 差额攻击阻断与 `DestinationTag` 绑定（`#3764`/`#3760`/`#3754`）、Facilitator 私有 MEV 通道与正滑点结余返还（`#3772`/`#3768`/`#3762`）及多跳 Agent API 子调用分账守恒（`#3780`/`#3776`/`#3770`）
+- 在 Stellar Soroban 资产合约（SAC）结算中强制校验 56 字符 `C...` 合约 ID、`memo_id == payment_nonce`、剩余 XLM 余额 `>= 10_000_000` stroops（`1.0 XLM`）基准准备金及 `time_bounds` 窗口（`<=300s`，`#3756`/`#3752`/`#3746`）；在 XRPL 结算中阻断开启 `tfPartialPayment` (`0x00020000`) 且 `meta.delivered_amount < invoice_amount` 的部分支付假充值攻击，并强制校验 `DestinationTag` 与 `LastLedgerSequence <= +20`（`#3764`/`#3760`/`#3754`）；在 Facilitator 代币兑换结算中要求走私有防夹通道（`flashbots_protect` / `mev_blocker`）并将正滑点 MEV 结余全额返还买方（`#3772`/`#3768`/`#3762`）；在多跳 Agent 级联子调用中禁止主控 DID 自买自卖循环套利，强制校验签名收据及 `sum(downstream_splits) + orchestrator_margin == buyer_total_paid`（`#3780`/`#3776`/`#3770`）。
+
+### 165.2 Google UCP 预售定金上限与发售日最低价保障（`#852`/`#848`/`#842`/`#838`）、促销组合包部分退货折算扣回（`#860`/`#856`/`#850`）、冷链生鲜温控偏移自动退费与保质期底线（`#868`/`#864`/`#858`）及 OpenAI/Stripe ACP 网络令牌密文（TAVV）禁回退明文卡号与多币种退款原汇率平价护栏（`#278`/`#274`/`#268`/`#264`/`#286`/`#282`/`#276`）
+- 在 UCP 预售订单中限制定金 `<=25%`、严禁承运商揽收扫描前扣收尾款，并强制执行 `final_capture == min(preorder_msrp, release_price) - deposit_paid` 最低价保障（`#852`/`#848`/`#842`/`#838`）；在促销组合包部分退货中防止仅退主商品套取单品原价退款，强制按保留商品单品价值扣回组合优惠（`#860`/`#856`/`#850`）；在生鲜冷链履约中强制校验全程温度 `<=4.0°C`、签收剩余保质期 `>=5d`，且温控超标变质商品禁止要求消费者寄回实物（`#868`/`#864`/`#858`）；在 ACP 网络令牌支付中阻断静默降级至明文 FPAN，强制校验 8 位 IIN、单次有效 TAVV 密文与 `merchant_domain_hash` 绑定（`#278`/`#274`/`#268`/`#264`）；在多币种结算中限制汇率点差 `<=150 bps`，并在退款时强制锁定原扣款汇率防止汇率波动损益转嫁（`#286`/`#282`/`#276`）。
+
+### 165.3 Google AP2 前向安全会话密钥 Epoch 轮换（`#348`/`#344`/`#338`/`#334`）与 MCC/UTC 营业时段滑窗限速（`#356`/`#352`/`#346`）、MCP 工具 Schema 隐藏提示词注入净化与 Lockfile 锁定（`#3365`/`#3360`/`#3355`）、Stripe Issuing 虚拟卡实时授权 Webhook 门禁（`#490`/`#486`/`#480`）、Visa TAP 新设备 24h 冷静期（`#32`/`#29`/`#26`）及 Sierra $\tau$-bench 2.0 保险报案（FNOL）免赔额核算与 B2B SaaS 合约最低席位锁定护栏（`#592`/`#588`/`#585`/`#600`/`#596`/`#593`）
+- 在 Google AP2 会话密钥管理中拦截已撤销/过期 `key_epoch`，强制校验 HKDF 棘轮连续性及 `<=3600s` 或 `<=50` 次签名轮换上限（`#348`/`#344`/`#338`/`#334`）；在企业采购策略中执行 MCC 白名单、UTC 营业时段窗口、亚分钟防拆单突发限流与小时级滑动窗口限额（`#356`/`#352`/`#346`）；在 MCP 工具注册中拦截 `description` 夹带隐藏提示词注入指令或不可见 Unicode 标签字符并校验 Schema SHA-256 Lockfile 指纹（`#3365`/`#3360`/`#3355`）；在 Stripe Issuing 实时授权 Webhook 中强制 `<2000ms` 故障闭合 SLA、拦截准现金/博彩 MCC（`6010`/`6011`/`6051`/`7995`）并计入未决预授权冻结额（`#490`/`#486`/`#480`）；在 Visa TAP 中阻断降级至短信 OTP 并对新绑定设备 24 小时内超额交易强制要求发卡行带外核身（`#32`/`#29`/`#26`）；在 Sierra $\tau$-bench 2.0 中核验保险报案出险时间处于保单有效期内及免赔额/保额上限算术，并阻断 B2B SaaS 合同期内立即削减承诺最低席位或未生成 64 位数据导出归档哈希即销毁工作区（`#592`/`#588`/`#585`/`#600`/`#596`/`#593`；参见 `lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py`）。
+
+---
+
+## 166. Stage 167 基准评测：16 场景（`ST-01..ST-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 166 全部 16 项协议护栏（`ST-01..ST-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.07 ms` vs. `12.38 ms`（`11.6x` 加速）**。
+- **技术资产**：[`lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py)、[`tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/`](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.html)。
+
 
 
 

@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–165）
+# 2026-10-21 Agentic Commerce 每日技术资产与架构更新索引（Stages 116–167）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-21-daily-update.en.md`)](2026-10-21-daily-update.en.md)** | **[2026-10-21 每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -451,6 +451,24 @@
   - 基准套件：[`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)
   - 单元测试：[`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)（全仓库 **725/725** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/report.json)
+
+---
+
+## Stage 166：x402 Stellar Soroban SAC 基准准备金与 XRPL `tfPartialPayment` 防伪/Facilitator MEV 结余返还/多跳子调用分账守恒（`#3756`/`#3752`/`#3746`/`#3764`/`#3760`/`#3754`/`#3772`/`#3768`/`#3762`/`#3780`/`#3776`/`#3770`）、UCP 预售保价与组合包部分退货折算/冷链生鲜温控门禁（`#852`/`#848`/`#842`/`#838`/`#860`/`#856`/`#850`/`#868`/`#864`/`#858`）、ACP 网络令牌密文（TAVV）与多币种退款锁汇（`#278`/`#274`/`#268`/`#264`/`#286`/`#282`/`#276`）、AP2 前向安全会话密钥轮换与 MCC 时段滑窗限速（`#348`/`#344`/`#338`/`#334`/`#356`/`#352`/`#346`）及 MCP Schema 防投毒/Stripe Issuing 实时授权/Visa TAP 新设备冷静期/$\tau$-bench 确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py`](../../lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py`](../../tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py)（全仓库 **728/728** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§165)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§165)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 167：16 场景（`ST-01..ST-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 166）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py)（全仓库 **729/729** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/report.json)
 
 
 

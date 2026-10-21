@@ -1,4 +1,4 @@
-# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–165)
+# 2026-10-21 Agentic Commerce Daily Technical Assets & Architecture Update Index (Stages 116–167)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-21-daily-update.md`)](2026-10-21-daily-update.md)** | **English Version (Current)** | **[中文每日深度研究主报告 (`research/daily/2026-10-21.md`)](../../research/daily/2026-10-21.md)** | **[English Daily Report (`research/daily/2026-10-21.en.md`)](../../research/daily/2026-10-21.en.md)**
 
@@ -451,6 +451,24 @@
   - Benchmark suite: [`lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../lab/x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py)
   - Unit tests: [`tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py`](../../tests/test_x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench.py) (**725/725** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-cardano-utxo-ucp-subscription-pause-acp-3ds-decoupled-ap2-biometric-tau2-bench/report.json)
+
+---
+
+## Stage 166: Deterministic Guardrails for x402 Stellar Soroban SAC & XRPL `tfPartialPayment`/MEV Surplus Rebate/Sub-Call Split (`#3756`/`#3752`/`#3746`/`#3764`/`#3760`/`#3754`/`#3772`/`#3768`/`#3762`/`#3780`/`#3776`/`#3770`), UCP Pre-Order Price-Drop Guarantee & Bundle Return Clawback/Perishable Cold-Chain (`#852`/`#848`/`#842`/`#838`/`#860`/`#856`/`#850`/`#868`/`#864`/`#858`), ACP Network Token Cryptogram & Multi-Currency FX Parity (`#278`/`#274`/`#268`/`#264`/`#286`/`#282`/`#276`), AP2 Ephemeral Key Epoch Rotation & MCC Time-of-Day Velocity (`#348`/`#344`/`#338`/`#334`/`#356`/`#352`/`#346`), and MCP Schema Poisoning/Stripe Issuing Real-Time Auth/Visa TAP Device Cooldown/$\tau$-bench Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py`](../../lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py`](../../tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_guard.py) (**728/728** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§165)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§165)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 167: 16-Scenario (`ST-01..ST-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 166)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../lab/x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py`](../../tests/test_x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench.py) (**729/729** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-stellar-soroban-ucp-preorder-bundle-acp-network-token-ap2-ephemeral-tau2-bench/report.json)
 
 
 
