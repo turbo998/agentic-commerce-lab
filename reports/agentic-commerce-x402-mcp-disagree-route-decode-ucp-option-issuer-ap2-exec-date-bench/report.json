@@ -1,0 +1,322 @@
+{
+  "stage": 143,
+  "suite": "x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench",
+  "provenance": "synthetic",
+  "independently_reproduced": true,
+  "summary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "pass_rate_pct": 100.0
+  },
+  "latency": {
+    "primary_ms": 0.41,
+    "baseline_ms": 4.26,
+    "speedup_x": 10.4
+  },
+  "scenarios": [
+    {
+      "id": "MD-01",
+      "track": "x402 #3643/#3631",
+      "title_zh": "MCP 自动支付 `structuredContent` 与 `content[0].text` 金额分歧阻断",
+      "title_en": "MCP Auto-Pay Disagreement Refusal Between structuredContent and text",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "x402_mcp_payment_required_mismatch",
+      "actual_reason": "x402_mcp_payment_required_mismatch",
+      "passed": true,
+      "violations": [
+        "x402_mcp_payment_required_mismatch"
+      ],
+      "metadata": {
+        "decoded_route_template": "/api/v1/weather",
+        "channel_state_skipped": false,
+        "canonical_discovery_url": "mcp://tool/get_weather"
+      }
+    },
+    {
+      "id": "MD-02",
+      "track": "x402 #3422",
+      "title_zh": "`isValidRouteTemplate` 双重/三重 URL 编码路径穿越阻断",
+      "title_en": "Iterative Decode-Until-Stable Route Template Traversal Rejection",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "x402_route_template_traversal_or_scheme_injection",
+      "actual_reason": "x402_route_template_traversal_or_scheme_injection",
+      "passed": true,
+      "violations": [
+        "x402_route_template_traversal_or_scheme_injection"
+      ],
+      "metadata": {
+        "decoded_route_template": "/foo/../secret",
+        "channel_state_skipped": false,
+        "canonical_discovery_url": "mcp://tool/get_weather"
+      }
+    },
+    {
+      "id": "MD-03",
+      "track": "x402 #3419",
+      "title_zh": "`settlePayment` 结算金额覆盖超出授权上限阻断",
+      "title_en": "settlePayment Settlement Override Ceiling Enforcement",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "x402_settlement_override_exceeds_ceiling",
+      "actual_reason": "x402_settlement_override_exceeds_ceiling",
+      "passed": true,
+      "violations": [
+        "x402_settlement_override_exceeds_ceiling"
+      ],
+      "metadata": {
+        "decoded_route_template": "/api/v1/weather",
+        "channel_state_skipped": false,
+        "canonical_discovery_url": "mcp://tool/get_weather"
+      }
+    },
+    {
+      "id": "MD-04",
+      "track": "x402 #3421",
+      "title_zh": "EVM `processPaymentResponse` 通道状态非数字 `BigInt` 崩溃防护",
+      "title_en": "EVM Channel State Non-Digit BigInt Conversion Guard",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "x402_evm_malformed_channel_state_cumulative_amount",
+      "actual_reason": "x402_evm_malformed_channel_state_cumulative_amount",
+      "passed": true,
+      "violations": [
+        "x402_evm_malformed_channel_state_cumulative_amount"
+      ],
+      "metadata": {
+        "decoded_route_template": "/api/v1/weather",
+        "channel_state_skipped": true,
+        "canonical_discovery_url": "mcp://tool/get_weather"
+      }
+    },
+    {
+      "id": "MD-05",
+      "track": "x402 #3417/#3411",
+      "title_zh": "MCP `mcp://tool/*` 规范 URL 保留与 SDK 2.x `.meta` 优先解析放行",
+      "title_en": "MCP mcp:// Canonical Discovery URL & SDK 2.x .meta Priority Pass",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "expected_reason": "x402_mcp_route_and_settlement_valid",
+      "actual_reason": "x402_mcp_route_and_settlement_valid",
+      "passed": true,
+      "violations": [],
+      "metadata": {
+        "decoded_route_template": "/api/v1/weather",
+        "channel_state_skipped": false,
+        "canonical_discovery_url": "mcp://tool/get_weather",
+        "resolved_meta_source": "meta"
+      }
+    },
+    {
+      "id": "MD-06",
+      "track": "UCP #879",
+      "title_zh": "`get_product` 重复 `selected` 选项名称且标签冲突（`-32602`）阻断",
+      "title_en": "UCP get_product Conflicting Duplicate selected Option Name Rejection",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "ucp_duplicate_selected_option_conflict",
+      "actual_reason": "ucp_duplicate_selected_option_conflict",
+      "passed": true,
+      "violations": [
+        "ucp_duplicate_selected_option_conflict"
+      ],
+      "metadata": {
+        "deduplicated_options": [
+          {
+            "name": "Color",
+            "label": "Red"
+          },
+          {
+            "name": "Size",
+            "label": "M"
+          }
+        ]
+      }
+    },
+    {
+      "id": "MD-07",
+      "track": "UCP #850",
+      "title_zh": "Identity Linking 非授信或尾斜杠伪造 `auth_url` 阻断 `subject_token` 泄露",
+      "title_en": "UCP Identity-Linking Unrecognized/Trailing-Slash Issuer Token Exfiltration Block",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "ucp_identity_linking_unrecognized_issuer_auth_url",
+      "actual_reason": "ucp_identity_linking_unrecognized_issuer_auth_url",
+      "passed": true,
+      "violations": [
+        "ucp_identity_linking_unrecognized_issuer_auth_url"
+      ],
+      "metadata": {
+        "deduplicated_options": [
+          {
+            "name": "Color",
+            "label": "Red"
+          }
+        ]
+      }
+    },
+    {
+      "id": "MD-08",
+      "track": "UCP #879/#850",
+      "title_zh": "相同选项幂等去重与精确字符锚定 Issuer 校验放行",
+      "title_en": "UCP Identical Option Deduplication & Exact Recognized Issuer Pass",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "expected_reason": "ucp_option_and_issuer_anchor_valid",
+      "actual_reason": "ucp_option_and_issuer_anchor_valid",
+      "passed": true,
+      "violations": [],
+      "metadata": {
+        "deduplicated_options": [
+          {
+            "name": "Color",
+            "label": "Red"
+          },
+          {
+            "name": "Size",
+            "label": "M"
+          }
+        ],
+        "anchored_issuer": "https://idp.trusted.example"
+      }
+    },
+    {
+      "id": "MD-09",
+      "track": "ACP #238/#243",
+      "title_zh": "`complete_checkout` 废弃 `risk_signals` 遥测字段与嵌套 `error` 信封阻断",
+      "title_en": "ACP Deprecated complete_checkout risk_signals & Wrapped Error Envelope Block",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "acp_complete_checkout_deprecated_risk_signals_field",
+      "actual_reason": "acp_complete_checkout_deprecated_risk_signals_field",
+      "passed": true,
+      "violations": [
+        "acp_complete_checkout_deprecated_risk_signals_field",
+        "acp_error_response_wrapped_envelope_forbidden",
+        "acp_error_response_missing_flat_required_fields"
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "MD-10",
+      "track": "ACP #238/#243",
+      "title_zh": "`delegate_payment` 统一 `session_context` 遥测与顶层扁平 `Error` 放行",
+      "title_en": "ACP Unified delegate_payment session_context & Flat Top-Level Error Pass",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "expected_reason": "acp_session_context_and_error_schema_valid",
+      "actual_reason": "acp_session_context_and_error_schema_valid",
+      "passed": true,
+      "violations": [],
+      "metadata": {}
+    },
+    {
+      "id": "MD-11",
+      "track": "AP2 #317",
+      "title_zh": "闭合 Mandate 省略 `execution_date` 时真实执行时间越界阻断",
+      "title_en": "AP2 Closed Mandate Omitted execution_date Effective-Time Window Violation",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "ap2_execution_date_outside_authorized_window",
+      "actual_reason": "ap2_execution_date_outside_authorized_window",
+      "passed": true,
+      "violations": [
+        "ap2_execution_date_outside_authorized_window"
+      ],
+      "metadata": {
+        "evaluated_execution_time": 2500
+      }
+    },
+    {
+      "id": "MD-12",
+      "track": "AP2 #316/#315",
+      "title_zh": "Credential Provider 未绑定 Token 跨用户串用与空 `merchant.id` 阻断",
+      "title_en": "AP2 Unbound Token Cross-User Swap & Empty merchant.id Display Fallback Block",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "ap2_credential_token_unbound_or_mandate_mismatch",
+      "actual_reason": "ap2_credential_token_unbound_or_mandate_mismatch",
+      "passed": true,
+      "violations": [
+        "ap2_credential_token_unbound_or_mandate_mismatch",
+        "ap2_merchant_id_empty_display_fallback_forbidden"
+      ],
+      "metadata": {
+        "evaluated_execution_time": 1500
+      }
+    },
+    {
+      "id": "MD-13",
+      "track": "AP2 #313",
+      "title_zh": "KB-SD-JWT 中间跳（`kb+sd-jwt+kb`）`expected_aud`/`nonce` 失配阻断",
+      "title_en": "AP2 Intermediate KB-SD-JWT Hop aud/nonce Mismatch Rejection",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "ap2_intermediate_kb_hop_0_aud_or_nonce_mismatch",
+      "actual_reason": "ap2_intermediate_kb_hop_0_aud_or_nonce_mismatch",
+      "passed": true,
+      "violations": [
+        "ap2_intermediate_kb_hop_0_aud_or_nonce_mismatch"
+      ],
+      "metadata": {
+        "evaluated_execution_time": 1500
+      }
+    },
+    {
+      "id": "MD-14",
+      "track": "MCP #3140/#3149",
+      "title_zh": "MCP `list_changed` 未重授权 Rug-Pull 篡改与 CIMD 缺失认证方法阻断",
+      "title_en": "MCP SEP-3140 Unapproved list_changed Rug-Pull & SEP-3149 Missing CIMD Auth Block",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "mcp_sep3140_rug_pull_unapproved_content_hash_change",
+      "actual_reason": "mcp_sep3140_rug_pull_unapproved_content_hash_change",
+      "passed": true,
+      "violations": [
+        "mcp_sep3140_rug_pull_unapproved_content_hash_change",
+        "mcp_sep3149_cimd_missing_auth_methods_supported"
+      ],
+      "metadata": {
+        "cumulative_input_tokens": 10682,
+        "replay_divergence": false
+      }
+    },
+    {
+      "id": "MD-15",
+      "track": "Stripe #508 & tau2 #611",
+      "title_zh": "Stripe v0.7.x 废弃 `actions` 策略 Fail-Open 与 $\\tau$-bench 非激活号码充值阻断",
+      "title_en": "Stripe Toolkit Removed actions Policy Fail-Open & tau2 Inactive Line Refuel Block",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "expected_reason": "stripe_toolkit_deprecated_actions_policy_fail_open_blocked",
+      "actual_reason": "stripe_toolkit_deprecated_actions_policy_fail_open_blocked",
+      "passed": true,
+      "violations": [
+        "stripe_toolkit_deprecated_actions_policy_fail_open_blocked",
+        "tau2_telecom_refuel_requires_active_line"
+      ],
+      "metadata": {
+        "cumulative_input_tokens": 10682,
+        "replay_divergence": false
+      }
+    },
+    {
+      "id": "MD-16",
+      "track": "Stripe #519 & tau2 #609/#608",
+      "title_zh": "Anthropic 累积 Token 计量（10,682）与 $\\tau$-bench `live_db_hash` 真实状态评分放行",
+      "title_en": "Anthropic Cumulative Input Token Metering & tau2 Live-DB Hash Grading Pass",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "expected_reason": "mcp_stripe_tau2_all_guards_valid",
+      "actual_reason": "mcp_stripe_tau2_all_guards_valid",
+      "passed": true,
+      "violations": [],
+      "metadata": {
+        "cumulative_input_tokens": 10682,
+        "replay_divergence": true
+      }
+    }
+  ]
+}

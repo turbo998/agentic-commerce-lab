@@ -1730,6 +1730,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **3/16 (18.75%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.36 ms` vs. `3.60 ms`（`10.0x` 加速）**。
 - **技术资产**：[`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)、[`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html)。
 
+---
+
+## 141. Stage 142 架构演进：x402 MCP 金额分歧拒付、路由模板迭代解码至稳定、结算覆盖上限与 `mcp://`/`.meta` 兼容、UCP 选项冲突与精确 Issuer 锚定、ACP `session_context` 与扁平 `Error`、AP2 省略 `execution_date` 窗口校验与中间跳 `aud`/`nonce` 及 Stripe/$\tau$-bench 护栏（`2026-10-21`）
+
+### 141.1 x402 Foundation MCP 自动支付 `structuredContent` 与 `content[0].text` 分歧拒付（`#3643`/`#3631`）、`isValidRouteTemplate` 迭代解码防多级编码穿越（`#3422`）、`settlePayment` 结算金额覆盖上限（`#3419`）、EVM `processPaymentResponse` 数字形态防护（`#3421`）及 `mcp://` 规范发现 URL 保留与 MCP SDK 2.x `.meta` 优先解析（`#3417`/`#3411`）
+- 强制 Python/Go MCP 客户端在触发自动支付前比对 `structuredContent` 与 `content[0].text` 中的 `PaymentRequired` 对象，任何字段分歧（如结构化金额 `999999` vs 文本金额 `1000`）立即抛出 `PaymentRequiredMismatchError` 阻断签名（`#3643`/`#3631`）；在 `isValidRouteTemplate` 中循环执行 `unquote` 直至字符串不再变化，彻底阻断 `%252e%252e` 双重/三重编码路径穿越与 `://` 协议注入（`#3422`）；在 `settlePayment` 中强制核验 `settlementOverrides.amount <= PaymentRequirements.amount`（`#3419`）；在 EVM 通道状态更新前校验 `chargedAmount` 与 `chargedCumulativeAmount` 为纯数字字符串（`#3421`）；在 `extractDiscoveryInfo` 中保留 `mcp://tool/{toolName}` 原始规范 URL 跳过 `new URL()` 解析（`#3417`），并在 `convert_mcp_result` 中优先读取 Pydantic 2.x 的 `result.meta` 属性（`#3411`）。
+
+### 141.2 UCP `get_product` 重复 `selected` 选项冲突阻断（`#879`）、Identity Linking 精确字符级授信 Issuer 锚定（`#850`）、ACP `session_context` 遥测统一与顶层扁平 `Error` 信封（`#238`/`#243`）及 Google AP2 省略 `execution_date` 有效时间窗口校验、显式 Token-Mandate 绑定、非空 `merchant.id` 与中间 KB-SD-JWT 跳 `aud`/`nonce` 校验（`#317`/`#316`/`#315`/`#313`）
+- 对 UCP `get_product` 请求中的 `selected` 数组执行相同 `{name, label}` 幂等去重，若同一选项名出现冲突标签（如 `Color: Red` 与 `Color: Blue`）立即以 `-32602` 拒绝而非静默降级丢失其余有效选项（`#879`）；强制平台在 Identity Linking 中仅当业务端声明的 `auth_url` 与平台独立建立信任关系的已知 Issuer 字符串完全相等（禁止尾斜杠归一化或按 `provider_key` 匹配）时方才发送 `subject_token`（`#850`）；在 ACP 中将 `complete_checkout` 与 `delegate_payment` 的买方设备遥测统一为 `session_context` 对象，保留 `delegate_payment.risk_signals` 为欺诈裁决数组，并移除错误响应的外层 `{"error": ...}` 包装（`#238`/`#243`）；在 Google AP2 中当闭合 Mandate 省略 `execution_date` 时强制以可信当前执行时间比对 `[not_before, not_after]` 窗口（`#317`），强制 Credential Provider 显式绑定 `token -> payment_mandate_id` 防跨用户串用（`#316`），禁止 `merchant.id == ""` 回退匹配可变展示字段 `name + website`（`#315`），并在每个中间跳 `kb+sd-jwt+kb` 强制校验 `expected_aud` 与 `expected_nonce`（`#313`）。
+
+### 141.3 MCP `SEP-3140` 签名能力声明防 Rug-Pull 与 `SEP-3149` CIMD 认证方法要求（`#3140`/`#3149`）、Stripe Toolkit v0.7.x 废弃 `actions` 策略 Fail-Open 拦截与 Anthropic 累积输入 Token 计量（`#508`/`#519`/`#509`）及 Sierra $\tau$-bench 2.0 激活电信线路充值门禁与 `live_db_hash` 实时库评分（`#611`/`#609`/`#608`）
+- 在 MCP 客户端强制校验 JWS 签名能力清单与 `notifications/tools/list_changed` 哈希变更重授权（`#3140`）以及 CIMD `token_endpoint_auth_methods_supported` 非空声明（`#3149`）；拦截向 `stripe-agent-toolkit` v0.7.x 传入已移除的 v0.6.x `configuration.actions` 策略防工具集静默全开（`#508`），提取 Anthropic `message_delta.usage.input_tokens` 最新非空累积值防少计费并在流提前终止时立即关闭源迭代器（`#519`/`#509`）；在 $\tau$-bench 2.0 电信域 `refuel_data` 中恢复 `line.status == "active"` 前置校验（`#611`），并以运行结束时记录的 `live_db_hash` 替代故障重放裁决最终得分（`#609`/`#608`；参见 `lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py`）。
+
+---
+
+## 142. Stage 143 基准评测：16 场景（`MD-01..MD-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 142 三大护栏域的 16 个场景（`MD-01..MD-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.41 ms` vs. `4.26 ms`（`10.4x` 加速）**。
+- **技术资产**：[`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)、[`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html)。
+
 
 
 

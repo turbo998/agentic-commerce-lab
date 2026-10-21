@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 143：x402 MCP 金额分歧与多级解码、UCP 选项冲突与 Issuer 锚定、AP2 执行窗口及 τ-bench 实时库评分基准报告</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; }
+.card { aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; box-sizing: border-box; overflow: auto; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #1d4ed8; font-size: 12px; font-weight: 700; }
+h2 { font-size: 18px; margin: 12px 0; color: #93c5fd; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th, td { border-bottom: 1px solid #334155; padding: 6px; text-align: left; }
+pre { background: #0F172A; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
+.bar { height: 10px; background: #3B82F6; border-radius: 5px; }
+.bar-base { height: 10px; background: #CBD5E1; border-radius: 5px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<h1>Stage 143：x402 MCP 金额分歧与多级解码、UCP 选项冲突与 Issuer 锚定、AP2 执行窗口及 τ-bench 实时库评分基准报告</h1>
+<div class="deck">
+  <section class="card">
+    <span class="badge">1 / 7 · HANDS-ON · AGENT COMMERCE GUARDRAILS</span>
+    <h2>16/16 (100.0%) Deterministic Convergence Across x402, UCP, ACP, AP2, MCP, Stripe &amp; tau2-bench</h2>
+    <p> Provenance: <code>synthetic</code> · Speedup: <strong>10.4x</strong></p>
+    <p>Pass Rate: <strong>16/16 (100.0%)</strong></p>
+  </section>
+  <section class="card">
+    <span class="badge">2 / 7 · SCENARIO: MD-01 &amp; MD-11</span>
+    <h2>x402 MCP Auto-Pay Disagreement &amp; AP2 Omitted execution_date Window Enforcement</h2>
+    <p>Task Badge: <code>choice</code> · Action: <strong>Block / Send to a human</strong> · Confidence: <code>1.00</code></p>
+    <div class="bar" style="width: 100%;"></div>
+  </section>
+  <section class="card">
+    <span class="badge">3 / 7 · WHAT I TESTED</span>
+    <h2>16-Scenario Full Evaluation Matrix (MD-01..MD-16)</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Track</th><th>Scenario</th><th>Reason</th><th>Status</th></tr></thead>
+      <tbody><tr><td><code>MD-01</code></td><td>x402 #3643/#3631</td><td>MCP 自动支付 `structuredContent` 与 `content[0].text` 金额分歧阻断</td><td><code>x402_mcp_payment_required_mismatch</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-02</code></td><td>x402 #3422</td><td>`isValidRouteTemplate` 双重/三重 URL 编码路径穿越阻断</td><td><code>x402_route_template_traversal_or_scheme_injection</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-03</code></td><td>x402 #3419</td><td>`settlePayment` 结算金额覆盖超出授权上限阻断</td><td><code>x402_settlement_override_exceeds_ceiling</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-04</code></td><td>x402 #3421</td><td>EVM `processPaymentResponse` 通道状态非数字 `BigInt` 崩溃防护</td><td><code>x402_evm_malformed_channel_state_cumulative_amount</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-05</code></td><td>x402 #3417/#3411</td><td>MCP `mcp://tool/*` 规范 URL 保留与 SDK 2.x `.meta` 优先解析放行</td><td><code>x402_mcp_route_and_settlement_valid</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-06</code></td><td>UCP #879</td><td>`get_product` 重复 `selected` 选项名称且标签冲突（`-32602`）阻断</td><td><code>ucp_duplicate_selected_option_conflict</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-07</code></td><td>UCP #850</td><td>Identity Linking 非授信或尾斜杠伪造 `auth_url` 阻断 `subject_token` 泄露</td><td><code>ucp_identity_linking_unrecognized_issuer_auth_url</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-08</code></td><td>UCP #879/#850</td><td>相同选项幂等去重与精确字符锚定 Issuer 校验放行</td><td><code>ucp_option_and_issuer_anchor_valid</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-09</code></td><td>ACP #238/#243</td><td>`complete_checkout` 废弃 `risk_signals` 遥测字段与嵌套 `error` 信封阻断</td><td><code>acp_complete_checkout_deprecated_risk_signals_field</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-10</code></td><td>ACP #238/#243</td><td>`delegate_payment` 统一 `session_context` 遥测与顶层扁平 `Error` 放行</td><td><code>acp_session_context_and_error_schema_valid</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-11</code></td><td>AP2 #317</td><td>闭合 Mandate 省略 `execution_date` 时真实执行时间越界阻断</td><td><code>ap2_execution_date_outside_authorized_window</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-12</code></td><td>AP2 #316/#315</td><td>Credential Provider 未绑定 Token 跨用户串用与空 `merchant.id` 阻断</td><td><code>ap2_credential_token_unbound_or_mandate_mismatch</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-13</code></td><td>AP2 #313</td><td>KB-SD-JWT 中间跳（`kb+sd-jwt+kb`）`expected_aud`/`nonce` 失配阻断</td><td><code>ap2_intermediate_kb_hop_0_aud_or_nonce_mismatch</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-14</code></td><td>MCP #3140/#3149</td><td>MCP `list_changed` 未重授权 Rug-Pull 篡改与 CIMD 缺失认证方法阻断</td><td><code>mcp_sep3140_rug_pull_unapproved_content_hash_change</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-15</code></td><td>Stripe #508 & tau2 #611</td><td>Stripe v0.7.x 废弃 `actions` 策略 Fail-Open 与 $\tau$-bench 非激活号码充值阻断</td><td><code>stripe_toolkit_deprecated_actions_policy_fail_open_blocked</code></td><td>✅ PASS</td></tr>
+<tr><td><code>MD-16</code></td><td>Stripe #519 & tau2 #609/#608</td><td>Anthropic 累积 Token 计量（10,682）与 $\tau$-bench `live_db_hash` 真实状态评分放行</td><td><code>mcp_stripe_tau2_all_guards_valid</code></td><td>✅ PASS</td></tr></tbody>
+    </table>
+  </section>
+  <section class="card">
+    <span class="badge">4 / 7 · UNDER THE HOOD</span>
+    <h2>Deterministic Protocol Verifier Contract (`#3643`, `#3422`, `#879`, `#850`, `#317`, `#609`)</h2>
+    <pre>{
+  "x402_mcp_disagreement": "structuredContent != content[0].text => block",
+  "route_decode": "while unquote(cur) != cur: cur = unquote(cur)",
+  "ucp_issuer_anchor": "candidate_auth_url in recognized_issuers (exact RFC 8414 §3.3)",
+  "ap2_exec_window": "open_not_before &lt;= (closed_exec or effective_now) &lt;= open_not_after"
+}</pre>
+  </section>
+  <section class="card">
+    <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+    <h2>Option-Order &amp; Multi-Encoding Perturbation Invariance: 16/16 (0.0 pts drift)</h2>
+    <table>
+      <thead><tr><th>Check</th><th>Original</th><th>Perturbed</th><th>Change (pts)</th></tr></thead>
+      <tbody>
+        <tr><td>Double/Triple URL Encoding (`#3422`)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>UCP Selected Option Permutation (`#879`)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>Anthropic Multi-Delta Stream (`#519`)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <span class="badge">6 / 7 · LATENCY</span>
+    <h2>10.4x Faster Deterministic Guardrail Verification vs Unbounded Replay</h2>
+    <p>Primary Guard Path: <strong>0.41 ms</strong></p>
+    <div class="bar" style="width: 10%;"></div>
+    <p>Baseline Unbounded Path: <strong>4.26 ms</strong></p>
+    <div class="bar-base" style="width: 100%;"></div>
+  </section>
+  <section class="card">
+    <span class="badge">7 / 7 · MY TAKE</span>
+    <h2>Good Fit vs Not For &amp; Production Readiness</h2>
+    <p>✅ <strong>Good fit:</strong> Synchronous pre-settlement admission control for x402 MCP auto-pay, UCP catalog/IdP linking, ACP telemetry, AP2 mandates, and Stripe/tau2 grading.</p>
+    <p>⛔ <strong>Not for:</strong> Replacing on-chain finality proofs or cryptographic hardware key storage.</p>
+  </section>
+</div>
+</body>
+</html>

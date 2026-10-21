@@ -236,5 +236,23 @@
   - Unit tests: [`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py) (**677/677** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/report.json)
 
+---
+
+## Stage 142: Deterministic Guardrails for x402 MCP Auto-Pay Disagreement Refusal/Iterative Route Decode/Settlement Override Ceiling/`mcp://` & `.meta` Compatibility (`#3643`/`#3631`/`#3422`/`#3421`/`#3419`/`#3417`/`#3411`), UCP Conflicting Duplicate `selected` Option/Exact Recognized Issuer Anchor/ACP `session_context` & Flat `Error`/AP2 Omitted `execution_date` Effective-Time Window/Token-Mandate Binding/Non-Empty `merchant.id`/Intermediate KB-SD-JWT Hop `aud`/`nonce` (`#879`/`#850`/`#238`/`#243`/`#317`/`#316`/`#315`/`#313`), and MCP `SEP-3140`/`SEP-3149`, Stripe Toolkit `actions` Fail-Open Block + Sierra $\tau$-bench Active Telecom Refuel/`live_db_hash` Grading Guards (`#3140`/`#3149`/`#508`/`#519`/`#509`/`#611`/`#609`/`#608`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py)
+  - Unit tests: [`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py) (**680/680** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§141)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§141)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 143: 16-Scenario (`MD-01..MD-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 142)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)
+  - Unit tests: [`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py) (**681/681** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/report.json)
+
 
 

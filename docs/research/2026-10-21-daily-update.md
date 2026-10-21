@@ -236,5 +236,23 @@
   - 单元测试：[`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)（全仓库 **677/677** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/report.json)
 
+---
+
+## Stage 142：x402 MCP 自动支付分歧拒付/`isValidRouteTemplate` 迭代解码/结算覆盖上限/`mcp://` 与 `.meta` 兼容（`#3643`/`#3631`/`#3422`/`#3421`/`#3419`/`#3417`/`#3411`）、UCP 重复 `selected` 选项冲突/精确 Issuer 锚定/ACP `session_context` 与扁平 `Error`/AP2 省略 `execution_date` 窗口校验/Token-Mandate 绑定/非空 `merchant.id`/中间跳 `aud`/`nonce`（`#879`/`#850`/`#238`/`#243`/`#317`/`#316`/`#315`/`#313`）及 MCP `SEP-3140`/`SEP-3149`、Stripe Toolkit `actions` Fail-Open 拦截与 Sierra $\tau$-bench 激活线路充值/`live_db_hash` 评分护栏（`#3140`/`#3149`/`#508`/`#519`/`#509`/`#611`/`#609`/`#608`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py)
+  - 单元测试：[`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_guard.py)（全仓库 **680/680** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§141)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§141)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 143：16 场景（`MD-01..MD-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 142）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../lab/x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)
+  - 单元测试：[`tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py`](../../tests/test_x402_mcp_disagree_route_decode_ucp_option_issuer_ap2_exec_date_bench.py)（全仓库 **681/681** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-disagree-route-decode-ucp-option-issuer-ap2-exec-date-bench/report.json)
+
 
 
