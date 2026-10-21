@@ -128,3 +128,21 @@
   - Unit tests: [`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py) (**653/653** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/report.json)
 
+---
+
+## Stage 130: Deterministic Guardrails for x402 SVM Batch `afterVerify` Fail-Closed/Raw MCP `tools/call`/TEE & Refund (`#3698`/`#3697`/`#3696`/`#3691`/`#3690`/`#3687`/`#3683`/`#3682`/`#3681`/`#3676`/`#3674`/`#3671`/`#3668`/`#3664`), UCP `status: 'success'`/Binding/`action.ready` `{}`/Generic SPT (`#747`/`#746`/`#744`/`#740`/`#730`/`#725`/`#722`/`#716`/`#715`/`#713`), and Stripe User-Agent CRLF/MCP Credential Injection + Sierra $\tau$-bench 2.0 `pass^k`/Pydantic (`#382`/`#379`/`#378`/`#377`/`#3306`/`#3304`/`#3285`/`#3279`/`#520`/`#516`/`#513`/`#511`/`#510`/`#508`/`#498`/`#484`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py)
+  - Unit tests: [`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py) (**656/656** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§129)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§129)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 131: 16-Scenario (`SB-01..SB-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 130)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)
+  - Unit tests: [`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py) (**657/657** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/report.json)
+

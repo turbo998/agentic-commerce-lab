@@ -1604,6 +1604,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.46 ms`（`9.1x` 加速）**。
 - **技术资产**：[`lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../lab/x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)、[`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html)。
 
+---
+
+## 129. Stage 130 深度审计：x402 SVM 批量 `afterVerify` 故障闭合/原始 MCP `tools/call` 绑定/TEE 与退款扩展（`#3698`/`#3697`/`#3696`/`#3691`/`#3690`/`#3687`/`#3683`/`#3682`/`#3681`/`#3676`/`#3674`/`#3671`/`#3668`/`#3664`）、UCP 资源 `status: success`/跨垂直令牌绑定/`action.ready` 空对象与通用 SPT 处理器（`#747`/`#746`/`#744`/`#740`/`#730`/`#725`/`#722`/`#716`/`#715`/`#713`）及 Stripe User-Agent CRLF/MCP 防凭证注入与 Sierra $\tau$-bench 2.0 `pass^k`/Pydantic 护栏（`#382`/`#379`/`#378`/`#377`/`#3306`/`#3304`/`#3285`/`#3279`/`#520`/`#516`/`#513`/`#511`/`#510`/`#508`/`#498`/`#484`）
+
+### 129.1 x402 SVM 批量 `afterVerify` 存储故障闭合（`#3697`）、重复请求 ID 改价区分（`#3696`）、原始 MCP `tools/call` 绑定（`#3691`）、EVM `eth_getCode` 分类与 Cardano 原生 CBOR（`#3690`/`#3674`）及 `hardware-attestation`/`execution-evidence`/`refund` 扩展（`#3683`/`#3682`/`#3681`/`#3676`/`#3698`/`#3687`/`#3668`/`#3671`/`#3664`）
+- SVM 批量校验中记录请求 ID 与扣减额度的 `afterVerify` 存储失败时必须故障闭合拒绝请求（严禁免费放行，`#3697`），重复请求 ID 携带新价格上限时须返回专用错误而非通用 `transaction_failed`（`#3696`），并在重启后正确恢复服务端签名通道退款（`#3664`）；请求绑定型 MCP 方案必须在 SDK Schema 默认值填充前读取原始 `tools/call`（`#3691`），EVM `eth_getCode` 失败须报 `invalid_exact_evm_failed_to_verify_signature` 且复用单次字节码查询（`#3690`），Cardano 必须原样广播客户端签名 CBOR 而不重序列化注入 Tag 258（`#3674`）；同时验证 TEE `hardware-attestation`（`#3683`）、`execution-evidence`（`#3682`）、服务端出资且不超已付余额的 `refund` 扩展（`#3681`）、EIP-712 收据缺字段前置校验（`#3676`）、`lnbtc` 严格 BOLT11 解码（`#3698`）、Hono/Express `text/plain` 保留（`#3687`/`#3668`）与 Python 异步线程卸载（`#3671`）。
+
+### 129.2 UCP 资源响应 `ucp.status == "success"` 约束（`#747`）、跨垂直领域令牌绑定（`#746`）、外层 `path` 请求约束与 Cart 终态（`#744`/`#740`）、`action.ready` 空对象消歧（`#730`）及 Schema 根缓存隔离/OpenAPI `securitySchemes`/Catalog 折扣预览/通用 SPT（`#722`/`#716`/`#715`/`#713`）
+- 正常 Checkout/Cart/Order/Catalog 资源响应必须将 `ucp.status` 约束为 `"success"`（`#747`）；将令牌 `binding` 迁入 `common/types` 使非购物能力无需伪造 `checkout_id`（`#746`）；支持外层 `path` 请求约束（`#744`）、Cart 终态（`#740`）及 `action.ready` 成功分支 `maxProperties: 0`（`{}`）以消除与 `error_response` 的 `oneOf` 歧义（`#730`）；在校验器缓存键中包含归一化 `schema_base`（`#722`），通过 `components.securitySchemes` 声明 REST 鉴权（`#716`），仅在 Catalog `get_product` 暴露 `discounts.available`（`#715`），并规范化不暴露明文 PAN/CVC 的 `dev.ucp.payment.shared_payment_token`（`#713`）。
+
+### 129.3 Stripe `clientName` CRLF 注入防护与分块 Base64（`#379`/`#382`/`#378`/`#377`）、MCP `-32023` 限流与防凭证目标域注入（`#3304`/`#3285`/`#3279`/`#3306`）及 Sierra $\tau$-bench 2.0 `pass^k` 分母/Pydantic 转型/`llm_agent_solo_gt`/固定销户原因枚举（`#498`/`#516`/`#513`/`#508`/`#520`/`#484`/`#511`/`#510`）
+- 拦截 `buildUserAgent` 中含 CR/LF 的 `clientName` 头注入（`#379`）并使用 `Buffer`/分块 Base64 消除大文件栈溢出（`#382`）；拦截将服务端凭证发往工具参数所控外部主机的 Credential Destination Injection（`#3285`）并标准化 `-32023` `RateLimited`（`#3304`）；修复 $\tau$-bench 在 pandas 3.x 下枚举字符串比较失效并保留全基础设施错误任务于 `pass^k` 分母（`#498`），通过 Pydantic 强转浮点工具参数（`2.0 -> 2`，`#516`），以解析后 JSON 比较嵌套参数并增设银行 Write-Critic（`#513`），识别 `llm_agent_solo_gt` 独奏回放（`#508`），校验 `close_bank_account_7392` 固定原因枚举（修复题 065/068/069，`#484`），并配置 Gemini 8kHz `START_SENSITIVITY_HIGH` 与 `SlidingWindow`（`#511`/`#510`；参见 `lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py`）。
+
+---
+
+## 130. Stage 131 基准评测：16 场景（`SB-01..SB-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 130 三大护栏域的 16 个场景（`SB-01..SB-16`，3 个合规基线 + 13 个对抗性故障与安全违规）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)**；选项逆序与扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.16 ms` vs. `1.47 ms`（`9.2x` 加速）**。
+- **技术资产**：[`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)、[`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html)。
+
 
 
 

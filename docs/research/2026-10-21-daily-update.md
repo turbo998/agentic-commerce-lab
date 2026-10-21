@@ -128,3 +128,21 @@
   - 单元测试：[`tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py`](../../tests/test_x402_mcp_approval_voucher_skip_ucp_offer_location_mcp_failure_tau2_abort_bench.py)（全仓库 **653/653** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-approval-voucher-skip-ucp-offer-location-mcp-failure-tau2-abort-bench/report.json)
 
+---
+
+## Stage 130：x402 SVM 批量 `afterVerify` 故障闭合/原始 MCP `tools/call` 绑定/TEE 与退款扩展（`#3698`/`#3697`/`#3696`/`#3691`/`#3690`/`#3687`/`#3683`/`#3682`/`#3681`/`#3676`/`#3674`/`#3671`/`#3668`/`#3664`）、UCP 资源 `status: success`/跨垂直令牌绑定/`action.ready` 空对象与通用 SPT（`#747`/`#746`/`#744`/`#740`/`#730`/`#725`/`#722`/`#716`/`#715`/`#713`）及 Stripe User-Agent CRLF/MCP 防凭证注入与 Sierra $\tau$-bench 2.0 `pass^k`/Pydantic 护栏（`#382`/`#379`/`#378`/`#377`/`#3306`/`#3304`/`#3285`/`#3279`/`#520`/`#516`/`#513`/`#511`/`#510`/`#508`/`#498`/`#484`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py)
+  - 单元测试：[`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_guard.py)（全仓库 **656/656** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§129)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§129)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 131：16 场景（`SB-01..SB-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 130）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../lab/x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)
+  - 单元测试：[`tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py`](../../tests/test_x402_svm_batch_mcp_raw_ucp_status_constraints_stripe_ua_tau2_infra_bench.py)（全仓库 **657/657** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html`（中文）](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-batch-mcp-raw-ucp-status-constraints-stripe-ua-tau2-infra-bench/report.json)
+
