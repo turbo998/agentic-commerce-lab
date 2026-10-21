@@ -218,5 +218,23 @@
   - 单元测试：[`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)（全仓库 **673/673** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html`（中文）](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/report.json)
 
+---
+
+## Stage 140：x402 MCP `accepts` 快照/裸 `InvalidReason`/`paymentResponse` 核验/SVM `extra.transactionVersions` 协商/`2xx` 结算门禁（`#3507`/`#3503`/`#3502`/`#3499`/`#3496`/`#3495`/`#3494`/`#3486`/`#3482`/`#3481`/`#3480`/`#3478`/`#3477`/`#3475`/`#3474`/`#3473`/`#3471`/`#3466`/`#3459`/`#3457`）、UCP 命名空间隔离/`price_on_request`/`ready_for_complete`/ACP 非 Bearer 数字权益/AP2 隐藏 Disclosure 故障闭合/Visa TAP 吊销后指令失效（`#983`/`#973`/`#969`/`#967`/`#957`/`#956`/`#949`/`#293`/`#291`/`#286`/`#376`/`#374`/`#372`/`#339`/`#331`/`#26`/`#25`/`#23`）及 MCP `stdio` 同权边界/Stripe 支出策略前置与 Sierra $\tau$-bench 已执飞航段护栏（`#2973`/`#2972`/`#2924`/`#2907`/`#531`/`#487`/`#436`/`#82`/`#163`/`#155`/`#142`/`#138`/`#39`/`#26`）
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py)
+  - 单元测试：[`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py)（全仓库 **676/676** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§139)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§139)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 141：16 场景（`AS-01..AS-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 140）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)
+  - 单元测试：[`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)（全仓库 **677/677** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html`（中文）](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/report.json)
+
 
 

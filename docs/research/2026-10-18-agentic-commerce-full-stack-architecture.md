@@ -1709,6 +1709,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.37 ms` vs. `3.70 ms`（`10.0x` 加速）**。
 - **技术资产**：[`lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../lab/x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py)、[`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py) 及双语报告 [`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html)。
 
+---
+
+## 139. Stage 140 护栏：x402 MCP `accepts` 快照、裸 `InvalidReason`、SVM `extra.transactionVersions` 协商与 `2xx` 结算门禁，UCP 命名空间隔离、`price_on_request`、`ready_for_complete`、ACP 非 Bearer 数字权益、AP2 隐藏 Disclosure 故障闭合与 Visa TAP 吊销后指令失效，以及 MCP `stdio` 同权边界、Stripe 支出策略前置与 $\tau$-bench 已执飞航段护栏
+
+### 139.1 x402 Foundation MCP 402 `accepts` 快照防 Enricher 原地污染（`#3496`/`#3495`）、FastMCP 402 裸 `InvalidReason` 恢复码（`#3494`）、`paymentResponse` 结算核验（`#3499`/`#3482`）、10m 工具调用超时封顶与客户端重试剔除 `Access-Control-*` 响应头（`#3481`/`#3486`/`#3478`）、SVM `extra.transactionVersions` 交易版本协商（`#3474`/`#3473`/`#3475`）、仅 `2xx` 触发结算门禁（`#3471`）、Gas Sponsoring 客户端 `rpcUrl` 链上可读校验（`#3459`）与 Stellar 可配置 `inclusionFeeStroops`（`#3503`/`#3507`）
+- 在构建纠正性 MCP `402` 响应前对 `config.accepts` 创建深拷贝快照，防止 `batch-settlement` 等方案 Enricher 原地写入 `extra.channelState` 污染后续 `findMatchingRequirements` 匹配基线（`#3496`/`#3495`）；在 Python FastMCP 付费工具 `402` 响应中直接暴露裸协议错误码 `InvalidReason`（禁止拼接 `"Payment verification failed: "` 前缀破坏恢复状态机，`#3494`）；要求客户端必须核验 `paymentResponse`（`x402/payment-response`）并触发 `HandlePaymentResponse` 后方可记录结算完成（不能仅凭 `paymentMade == true`，`#3499`/`#3482`）；将 MCP 工具调用超时封顶于 `600s`（`#3481`/`#3486`），在客户端重试请求中剥离 `Access-Control-*` 响应专用头（`#3478`），按 Facilitator 广播的 `extra.transactionVersions` 协商 SVM `v0`/`v1` 交易版本（`#3474`/`#3473`），禁止对 `3xx`/`304 Not Modified` 等非 `2xx` 响应触发链上扣款（`#3471`），拦截未配置 `rpcUrl` 的 Gas Sponsoring 客户端静默降级（`#3459`），并支持 Stellar `inclusionFeeStroops >= 100` 可配置主网费率（`#3503`/`#3507`）。
+
+### 139.2 UCP 第三方实体扩展 Reverse-DNS 命名空间隔离（`#983`）、询价变体 `price_on_request` 防伪造 `0` 价格（`#969`）、`Complete Checkout` 强制前置 `ready_for_complete` 状态（`#949`）、ACP 买家绑定数字履约权益与采购单（PO）账户所有者审批（`#293`/`#291`/`#286`）、AP2 隐藏 SD-JWT 约束 Disclosure 故障闭合与调用方独立 `expected_checkout_hash`（`#339`/`#331`/`#376`/`#372`）及 Visa TAP 发起方吊销后在途指令失效与支付前 `ACTION` 证明（`#26`/`#25`/`#23`）
+- 强制 UCP 第三方实体扩展隔离于厂商 Reverse-DNS 命名空间（禁止侵占 `dev.ucp.*` 或无点号顶层键，`#983`）；要求需人工报价的目录变体显式声明 `price_on_request` 定价状态而非伪造 `0` 售价（`#969`）；强制 `Complete Checkout` 仅在 `status == "ready_for_complete"` 时可执行（`#949`）；要求 ACP 数字履约（`access_url`/`license_key`）绑定至买方账户/受众而非可转让 Bearer 链接（`#293`），且纯采购单（`po_number`）结账必须经账户所有者审批（`#291`）；在 Google AP2 中对隐藏的 SD-JWT 约束 Disclosure（如 `budget.max`/`acceptable_items`）执行故障闭合拒绝（`#339`），要求 `CheckoutMandateChain.verify()` 传入调用方独立计算的 `expected_checkout_hash`（`#331`）并校验 `agent_recurrence` 执行窗口与字符串 `cnf.jwk["use"]`（`#376`/`#372`）；在 Visa TAP 中拦截已被吊销的发起方 Agent 的在途支付指令（`#26`）并要求支付前完成宿主侧 `ACTION` 证明（`#25`）。
+
+### 139.3 MCP `stdio` 同权信任边界沙箱（`#2973`）、`ttlMs: 0` 与 `Mcp-Param-*` 头发射解耦（`#2972`）、审批后工具 Schema 漂移 Rug-Pull 拦截（`#2924`）、Stripe MCP 前置支出策略校验与防误绑客户（`#531`/`#82`）及 Sierra $\tau$-bench 2.0 已执飞航段禁改退、全或无预算约束与默认 `ACTION` 奖励基护栏（`#26`/`#39`/`#138`/`#155`）
+- 鉴于本地 `stdio` MCP 子进程天然拥有宿主用户同等权限，强制对非受信 `stdio` 对端启用沙箱隔离（`#2973`）；将 `Mcp-Param-*` HTTP 头构造与 `ttlMs: 0` 缓存策略解耦（只要已获取 `inputSchema` 即可发射，无 `inputSchema` 则严禁发射，`#2972`）；拦截会话准入审批后服务端篡改工具定义的 Rug-Pull 漂移（`#2924`）；在调用 Stripe MCP 支付工具前强制执行第三方支出/策略检查并阻断 Checkout Session 误绑非预期客户（`#531`/`#82`）；在 $\tau$-bench 2.0 航司域中严禁对已有任何航段执飞的订单执行改签或退票（`#26`），并在默认 `reward_basis` 中包含 `RewardType.ACTION` 与榜单提交 `modified_prompts` 校验（`#138`/`#155`；参见 `lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py`）。
+
+---
+
+## 140. Stage 141 基准评测：16 场景（`AS-01..AS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 140 三大护栏域的 16 个场景（`AS-01..AS-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs 经典三层 Web **3/16 (18.75%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.36 ms` vs. `3.60 ms`（`10.0x` 加速）**。
+- **技术资产**：[`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)、[`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py) 及双语报告 [`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html)。
+
 
 
 

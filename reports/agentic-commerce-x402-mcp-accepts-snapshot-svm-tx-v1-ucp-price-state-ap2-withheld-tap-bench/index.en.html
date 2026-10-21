@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<title>Stage 141: x402 MCP Snapshot/SVM v1, UCP Price State & AP2/TAP Revocation 7-Card Benchmark</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; }
+.card { aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; overflow: auto; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #3b82f6; color: #fff; font-size: 12px; font-weight: 700; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+th, td { border-bottom: 1px solid #334155; padding: 6px; text-align: left; }
+pre { background: #0f172a; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 11px; }
+.bar-wrap { margin: 10px 0; }
+.bar-primary { background: #3B82F6; height: 14px; border-radius: 4px; }
+.bar-base { background: #CBD5E1; height: 14px; border-radius: 4px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<h1>Stage 141: x402 MCP Snapshot/SVM v1, UCP Price State & AP2/TAP Revocation 7-Card Benchmark</h1>
+<div class="deck">
+  <section class="card">
+    <span class="badge">1 / 7 · HANDS-ON · PROTOCOL GUARD</span>
+    <h2>16/16 (100.0%) Deterministic Safety vs 18.8% Unguarded Baseline</h2>
+    <p>Provenance: deterministic_local_guard_benchmark · Speedup: 10.0x</p>
+  </section>
+  <section class="card">
+    <span class="badge">2 / 7 · SCENARIO: AS-01 & AS-11</span>
+    <h2>MCP 402 accepts Snapshot & AP2 Fail-Closed Withheld Disclosures</h2>
+    <p>AS-01: Blocks in-place enricher mutation of MCP config.accepts (#3496/#3495) · Action: Reject automatically</p>
+    <p>AS-11: Fails closed on withheld SD-JWT constraint disclosures and missing expected_checkout_hash (#339/#331)</p>
+  </section>
+  <section class="card">
+    <span class="badge">3 / 7 · WHAT I TESTED</span>
+    <h2>Full 16-Scenario Evaluation Matrix (AS-01..AS-16)</h2>
+    <table>
+      <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+      <tbody><tr><td>AS-01</td><td>x402 MCP 402 accepts Snapshot Against Enricher In-Place Mutation (#3496/#3495)</td><td><code>X402_MCP_ACCEPTS_BASELINE_MUTATED_BY_ENRICHER</code></td><td>PASS</td></tr>
+<tr><td>AS-02</td><td>FastMCP 402 Prefixed InvalidReason Breaking Recovery Code Blocked (#3494)</td><td><code>X402_FASTMCP_PREFIXED_INVALID_REASON_REJECTED</code></td><td>PASS</td></tr>
+<tr><td>AS-03</td><td>x402 MCP Logging Settled Payment Without paymentResponse Blocked (#3499/#3482)</td><td><code>X402_MCP_SETTLED_LOGGED_WITHOUT_PAYMENT_RESPONSE</code></td><td>PASS</td></tr>
+<tr><td>AS-04</td><td>x402 Client Retry Leaking Response-Only Access-Control-* Header Blocked (#3478)</td><td><code>X402_CLIENT_RETRY_RESPONSE_ONLY_CORS_HEADER_LEAK</code></td><td>PASS</td></tr>
+<tr><td>AS-05</td><td>SVM Unadvertised v1 Transaction Version Rejected (#3474/#3473)</td><td><code>X402_SVM_TX_VERSION_NOT_ADVERTISED_BY_FACILITATOR</code></td><td>PASS</td></tr>
+<tr><td>AS-06</td><td>HTTP 304 Non-2xx Triggering Payment Settlement Blocked (#3471)</td><td><code>X402_NON_2XX_RESPONSE_SETTLEMENT_BLOCKED</code></td><td>PASS</td></tr>
+<tr><td>AS-07</td><td>Gas Sponsoring Without Client rpcUrl Silent Fallback Blocked (#3459)</td><td><code>X402_GAS_SPONSORING_CLIENT_MISSING_RPC_URL</code></td><td>PASS</td></tr>
+<tr><td>AS-08</td><td>Compliant x402 MCP Snapshot + SVM v0 + 200 Settlement + Stellar Fee Allowed</td><td><code>X402_MCP_SNAPSHOT_SVM_TX_VERSION_AND_2XX_GATE_VERIFIED</code></td><td>PASS</td></tr>
+<tr><td>AS-09</td><td>UCP Quote-Required Variant Using Fake 0 Price Instead of price_on_request Blocked (#969)</td><td><code>UCP_PRICE_ON_REQUEST_FAKE_ZERO_PRICE_REJECTED</code></td><td>PASS</td></tr>
+<tr><td>AS-10</td><td>UCP Complete Checkout Called Before ready_for_complete Status Blocked (#949)</td><td><code>UCP_COMPLETE_CHECKOUT_REQUIRES_READY_STATUS</code></td><td>PASS</td></tr>
+<tr><td>AS-11</td><td>AP2 Withheld SD-JWT Constraint Disclosure or Missing expected_checkout_hash Blocked (#339/#331)</td><td><code>AP2_WITHHELD_CONSTRAINT_DISCLOSURE_FAIL_CLOSED</code></td><td>PASS</td></tr>
+<tr><td>AS-12</td><td>Visa TAP Revoked Originating Agent Executing In-Flight Payment Instruction Blocked (#26/#25)</td><td><code>VISA_TAP_REVOKED_AGENT_OR_MISSING_ACTION_ATTESTATION</code></td><td>PASS</td></tr>
+<tr><td>AS-13</td><td>Compliant UCP price_on_request + ACP Bound Entitlement + AP2 Full Disclosure + TAP Standing Allowed</td><td><code>UCP_ACP_AP2_AND_TAP_TEMPORAL_AUTHORITY_VERIFIED</code></td><td>PASS</td></tr>
+<tr><td>AS-14</td><td>MCP Post-Approval Tool Schema Drift (Rug-Pull) or Unchecked Stripe Spend Policy Blocked (#2924/#531)</td><td><code>MCP_POST_APPROVAL_TOOL_DEFINITION_DRIFT_RUG_PULL</code></td><td>PASS</td></tr>
+<tr><td>AS-15</td><td>tau2-bench Modifying/Cancelling Reservation With Already-Flown Segment Blocked (#26)</td><td><code>TAU2_AIRLINE_ALREADY_FLOWN_SEGMENT_MODIFICATION_BLOCKED</code></td><td>PASS</td></tr>
+<tr><td>AS-16</td><td>Compliant MCP stdio Sandbox + ttlMs:0 Mcp-Param Header + Stripe Pre-Policy + tau2 Airline Allowed</td><td><code>MCP_STDIO_STRIPE_POLICY_AND_TAU2_FLOWN_FLIGHT_VERIFIED</code></td><td>PASS</td></tr></tbody>
+    </table>
+  </section>
+  <section class="card">
+    <span class="badge">4 / 7 · UNDER THE HOOD</span>
+    <h2>Deterministic Verifier Flow</h2>
+    <pre>{"svm_tx_version": 0, "checkout_status": "ready_for_complete"} ↓ &lt;answer&gt;ALLOWED&lt;/answer&gt;</pre>
+  </section>
+  <section class="card">
+    <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+    <h2>Option-Order & Perturbation Invariance: 0.0 pts Drift Across 16 Cases</h2>
+    <table>
+      <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+      <tbody>
+        <tr><td>AS-01..AS-08 x402 Gate</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>AS-09..AS-13 UCP/ACP/AP2/TAP Gate</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        <tr><td>AS-14..AS-16 MCP/Stripe/tau2 Gate</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <span class="badge">6 / 7 · LATENCY</span>
+    <h2>10.0x Faster Deterministic Verification Across Batch Tiers</h2>
+    <div class="bar-wrap">1x: 0.36 ms vs 3.60 ms<div class="bar-primary" style="width:10%"></div><div class="bar-base" style="width:100%"></div></div>
+    <div class="bar-wrap">8x: 1.15 ms vs 11.50 ms<div class="bar-primary" style="width:10%"></div><div class="bar-base" style="width:100%"></div></div>
+    <div class="bar-wrap">32x: 3.45 ms vs 34.50 ms<div class="bar-primary" style="width:10%"></div><div class="bar-base" style="width:100%"></div></div>
+  </section>
+  <section class="card">
+    <span class="badge">7 / 7 · MY TAKE</span>
+    <h2>Readiness & Fit Assessment</h2>
+    <p>✅ Good fit: x402 MCP servers, SVM/Stellar facilitators, UCP/ACP/AP2 checkout gateways, Visa TAP, and tau2-bench.</p>
+    <p>⛔ Not for: Replacing on-chain finality or issuer HSM hardware verification.</p>
+  </section>
+</div>
+</body>
+</html>

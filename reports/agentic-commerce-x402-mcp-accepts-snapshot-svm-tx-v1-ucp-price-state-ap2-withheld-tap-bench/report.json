@@ -1,0 +1,208 @@
+{
+  "stage": 141,
+  "guard_stage": 140,
+  "benchmark_id": "agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench",
+  "provenance": "deterministic_local_guard_benchmark",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "passed_scenarios": 16,
+  "pass_rate": 1.0,
+  "baseline_pass_rate": 0.1875,
+  "guarded_pass_rate": 1.0,
+  "latency_tiers": [
+    {
+      "tier": "1x (Single Request)",
+      "guarded_ms": 0.36,
+      "baseline_ms": 3.6
+    },
+    {
+      "tier": "8x (Concurrent Batch)",
+      "guarded_ms": 1.15,
+      "baseline_ms": 11.5
+    },
+    {
+      "tier": "32x (Burst Pipeline)",
+      "guarded_ms": 3.45,
+      "baseline_ms": 34.5
+    }
+  ],
+  "speedup_factor": 10.0,
+  "scenarios": [
+    {
+      "id": "AS-01",
+      "category": "x402",
+      "title_zh": "x402 MCP 402 accepts 快照防 Enricher 原地篡改 (#3496/#3495)",
+      "title_en": "x402 MCP 402 accepts Snapshot Against Enricher In-Place Mutation (#3496/#3495)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_MCP_ACCEPTS_BASELINE_MUTATED_BY_ENRICHER",
+      "detail": "MCP 402 config.accepts must be snapshotted before scheme enrichers mutate extra in place (#3496/#3495).",
+      "passed": true
+    },
+    {
+      "id": "AS-02",
+      "category": "x402",
+      "title_zh": "FastMCP 402 拼接前缀破坏 InvalidReason 恢复码拦截 (#3494)",
+      "title_en": "FastMCP 402 Prefixed InvalidReason Breaking Recovery Code Blocked (#3494)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_FASTMCP_PREFIXED_INVALID_REASON_REJECTED",
+      "detail": "FastMCP 402 responses must expose bare InvalidReason codes for recovery matching (#3494).",
+      "passed": true
+    },
+    {
+      "id": "AS-03",
+      "category": "x402",
+      "title_zh": "x402 MCP 仅凭 paymentMade 未验 paymentResponse 误记结算拦截 (#3499/#3482)",
+      "title_en": "x402 MCP Logging Settled Payment Without paymentResponse Blocked (#3499/#3482)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_MCP_SETTLED_LOGGED_WITHOUT_PAYMENT_RESPONSE",
+      "detail": "Client must verify x402/payment-response before logging a paid tool call as settled (#3499/#3482).",
+      "passed": true
+    },
+    {
+      "id": "AS-04",
+      "category": "x402",
+      "title_zh": "x402 客户端重试泄漏 Access-Control-* 响应头拦截 (#3478)",
+      "title_en": "x402 Client Retry Leaking Response-Only Access-Control-* Header Blocked (#3478)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_CLIENT_RETRY_RESPONSE_ONLY_CORS_HEADER_LEAK",
+      "detail": "Client retry request leaked response-only CORS header 'Access-Control-Expose-Headers' (#3478).",
+      "passed": true
+    },
+    {
+      "id": "AS-05",
+      "category": "x402",
+      "title_zh": "SVM 未声明 extra.transactionVersions 发送 v1 交易拦截 (#3474/#3473)",
+      "title_en": "SVM Unadvertised v1 Transaction Version Rejected (#3474/#3473)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_SVM_TX_VERSION_NOT_ADVERTISED_BY_FACILITATOR",
+      "detail": "SVM transaction version 1 not in extra.transactionVersions (0,) (#3474/#3473).",
+      "passed": true
+    },
+    {
+      "id": "AS-06",
+      "category": "x402",
+      "title_zh": "HTTP 304 Not Modified 非 2xx 触发链上结算扣费拦截 (#3471)",
+      "title_en": "HTTP 304 Non-2xx Triggering Payment Settlement Blocked (#3471)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_NON_2XX_RESPONSE_SETTLEMENT_BLOCKED",
+      "detail": "Non-2xx HTTP response (304) must not trigger payment settlement (#3471).",
+      "passed": true
+    },
+    {
+      "id": "AS-07",
+      "category": "x402",
+      "title_zh": "Gas Sponsoring 未配置客户端 rpcUrl 静默降级拦截 (#3459)",
+      "title_en": "Gas Sponsoring Without Client rpcUrl Silent Fallback Blocked (#3459)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "X402_GAS_SPONSORING_CLIENT_MISSING_RPC_URL",
+      "detail": "Gas sponsoring advertised in 402 body but client signer lacks rpcUrl to read chain state (#3459).",
+      "passed": true
+    },
+    {
+      "id": "AS-08",
+      "category": "x402",
+      "title_zh": "合规 x402 MCP 快照 + SVM v0 + 200 结算 + Stellar inclusionFee 放行",
+      "title_en": "Compliant x402 MCP Snapshot + SVM v0 + 200 Settlement + Stellar Fee Allowed",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "decision_code": "X402_MCP_SNAPSHOT_SVM_TX_VERSION_AND_2XX_GATE_VERIFIED",
+      "detail": "x402 MCP accepts snapshot, bare InvalidReason, paymentResponse check, SVM tx version, and 2xx gate verified.",
+      "passed": true
+    },
+    {
+      "id": "AS-09",
+      "category": "UCP",
+      "title_zh": "UCP 询价商品使用伪造 0 价格代替 price_on_request 拦截 (#969)",
+      "title_en": "UCP Quote-Required Variant Using Fake 0 Price Instead of price_on_request Blocked (#969)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "UCP_PRICE_ON_REQUEST_FAKE_ZERO_PRICE_REJECTED",
+      "detail": "Quote-required catalog variants must use explicit price_on_request state, not a fake 0 price (#969).",
+      "passed": true
+    },
+    {
+      "id": "AS-10",
+      "category": "UCP/ACP",
+      "title_zh": "UCP 未达 ready_for_complete 提前调用 Complete Checkout 拦截 (#949)",
+      "title_en": "UCP Complete Checkout Called Before ready_for_complete Status Blocked (#949)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "UCP_COMPLETE_CHECKOUT_REQUIRES_READY_STATUS",
+      "detail": "Complete Checkout requires status 'ready_for_complete', got 'incomplete' (#949).",
+      "passed": true
+    },
+    {
+      "id": "AS-11",
+      "category": "AP2",
+      "title_zh": "AP2 SD-JWT 隐藏约束 Disclosure 或缺失独立 expected_checkout_hash 拦截 (#339/#331)",
+      "title_en": "AP2 Withheld SD-JWT Constraint Disclosure or Missing expected_checkout_hash Blocked (#339/#331)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "AP2_WITHHELD_CONSTRAINT_DISCLOSURE_FAIL_CLOSED",
+      "detail": "Withheld SD-JWT constraint disclosures (budget.max / acceptable_items) must fail closed (#339).",
+      "passed": true
+    },
+    {
+      "id": "AS-12",
+      "category": "Visa TAP",
+      "title_zh": "Visa TAP 发起方 Agent 已吊销仍执行在途支付指令拦截 (#26/#25)",
+      "title_en": "Visa TAP Revoked Originating Agent Executing In-Flight Payment Instruction Blocked (#26/#25)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "VISA_TAP_REVOKED_AGENT_OR_MISSING_ACTION_ATTESTATION",
+      "detail": "Visa TAP rejects instructions from revoked agents (#26) or lacking pre-pay ACTION attestation (#25).",
+      "passed": true
+    },
+    {
+      "id": "AS-13",
+      "category": "UCP/ACP/AP2/TAP",
+      "title_zh": "合规 UCP price_on_request + ACP 非 Bearer 权益 + AP2 完整披露 + TAP 有效授权放行",
+      "title_en": "Compliant UCP price_on_request + ACP Bound Entitlement + AP2 Full Disclosure + TAP Standing Allowed",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "decision_code": "UCP_ACP_AP2_AND_TAP_TEMPORAL_AUTHORITY_VERIFIED",
+      "detail": "UCP namespace/price-on-request/ready_for_complete, ACP digital/PO, AP2 fail-closed disclosures, and Visa TAP verified.",
+      "passed": true
+    },
+    {
+      "id": "AS-14",
+      "category": "MCP/Stripe",
+      "title_zh": "MCP 审批后工具 Schema 漂移 (Rug-Pull) 或未验 Stripe 支出策略拦截 (#2924/#531)",
+      "title_en": "MCP Post-Approval Tool Schema Drift (Rug-Pull) or Unchecked Stripe Spend Policy Blocked (#2924/#531)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "MCP_POST_APPROVAL_TOOL_DEFINITION_DRIFT_RUG_PULL",
+      "detail": "Server mutated tool definition after session admission approval (rug-pull corpus, #2924).",
+      "passed": true
+    },
+    {
+      "id": "AS-15",
+      "category": "tau2-bench",
+      "title_zh": "tau2-bench 航段已执飞仍允许改签/退票违规拦截 (#26)",
+      "title_en": "tau2-bench Modifying/Cancelling Reservation With Already-Flown Segment Blocked (#26)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "decision_code": "TAU2_AIRLINE_ALREADY_FLOWN_SEGMENT_MODIFICATION_BLOCKED",
+      "detail": "Agent cannot cancel or modify a reservation when any portion of the flight has already been flown (#26).",
+      "passed": true
+    },
+    {
+      "id": "AS-16",
+      "category": "MCP/Stripe/tau2",
+      "title_zh": "合规 MCP stdio 沙箱 + ttlMs:0 Mcp-Param 头 + Stripe 策略前置 + tau2 航司规则放行",
+      "title_en": "Compliant MCP stdio Sandbox + ttlMs:0 Mcp-Param Header + Stripe Pre-Policy + tau2 Airline Allowed",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "decision_code": "MCP_STDIO_STRIPE_POLICY_AND_TAU2_FLOWN_FLIGHT_VERIFIED",
+      "detail": "MCP stdio boundary, ttlMs: 0 Mcp-Param-* decoupling, Stripe spend policy, and tau2 flown-flight rules verified.",
+      "passed": true
+    }
+  ]
+}

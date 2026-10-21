@@ -218,5 +218,23 @@
   - Unit tests: [`tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py`](../../tests/test_x402_escaped_path_caip2_pending_ucp_fees_order_currency_mcp_audit_streaming_bench.py) (**673/673** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-escaped-path-caip2-pending-ucp-fees-order-currency-mcp-audit-streaming-bench/report.json)
 
+---
+
+## Stage 140: Deterministic Guardrails for x402 MCP `accepts` Snapshot/Bare `InvalidReason`/`paymentResponse` Check/SVM `extra.transactionVersions` Negotiation/`2xx` Settlement Gate (`#3507`/`#3503`/`#3502`/`#3499`/`#3496`/`#3495`/`#3494`/`#3486`/`#3482`/`#3481`/`#3480`/`#3478`/`#3477`/`#3475`/`#3474`/`#3473`/`#3471`/`#3466`/`#3459`/`#3457`), UCP Namespace Isolation/`price_on_request`/`ready_for_complete`/ACP Non-Bearer Digital Entitlement/AP2 Fail-Closed Withheld Disclosures/Visa TAP Revocation (`#983`/`#973`/`#969`/`#967`/`#957`/`#956`/`#949`/`#293`/`#291`/`#286`/`#376`/`#374`/`#372`/`#339`/`#331`/`#26`/`#25`/`#23`), and MCP `stdio` Boundary/Stripe Pre-Tool Spend Policy + Sierra $\tau$-bench Already-Flown Segment Guards (`#2973`/`#2972`/`#2924`/`#2907`/`#531`/`#487`/`#436`/`#82`/`#163`/`#155`/`#142`/`#138`/`#39`/`#26`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py)
+  - Unit tests: [`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_guard.py) (**676/676** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§139)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§139)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 141: 16-Scenario (`AS-01..AS-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 140)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../lab/x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py)
+  - Unit tests: [`tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py`](../../tests/test_x402_mcp_accepts_snapshot_svm_tx_v1_ucp_price_state_ap2_withheld_tap_bench.py) (**677/677** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-mcp-accepts-snapshot-svm-tx-v1-ucp-price-state-ap2-withheld-tap-bench/report.json)
+
 
 
