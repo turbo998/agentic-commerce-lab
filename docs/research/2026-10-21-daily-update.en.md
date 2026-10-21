@@ -344,6 +344,24 @@
   - Unit tests: [`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py) (**701/701** repository unit tests passing)
   - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/report.json)
 
+---
+
+## Stage 154: Deterministic Guardrails for x402 `@x402/fetch` Per-Call Cap & XRPL Offline Multisig/Parameterised Route & SIWX Canonical URL Entitlement/Fail-Closed Retry Recovery & Stellar Smart-Account Fee Ceiling (`#3866`/`#3861`/`#3856`/`#3850`/`#3849`/`#3847`/`#3838`/`#3837`/`#3829`/`#3547`/`#3529`/`#3527`/`#3515`), UCP Address Line Components & Nested Bundle (`parent_id`) Atomicity/Food Allergen Safety Gate & ECDSA Raw `r||s`/Root-Object Schema & Nano (`XNO`) Instrument/Payment Terms Empty `payment: {}` Guard & Accelerated IdP Attestation (`#981`/`#979`/`#977`/`#976`/`#974`/`#964`/`#963`/`#951`/`#948`/`#862`/`#857`/`#852`/`#846`/`#824`), ACP Ephemeral Identity & Host-Side Auth + OpenAPI 6-Field Parity/3DS Final-Terms Binding (`#315`/`#314`/`#297`/`#296`/`#294`/`#292`/`#288`/`#287`/`#285`/`#280`), AP2 Delivery Destination Lock & ISO 4217 Exact `Decimal` Budget Cap (Fixing 100x JPY Inflation) + Multi-Hop `~~` Isolation (`#384`/`#381`/`#380`/`#368`/`#365`/`#364`/`#363`/`#359`/`#319`), and MCP Supply-Chain Pinning/Stripe Worker-Thread Event Loop/Visa TAP mTLS & Passport/$\tau$-bench Layover Upgrade Filter & Anti-Minting Guards
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py`](../../lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py)
+  - Unit tests: [`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py) (**704/704** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§153)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§153)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 155: 16-Scenario (`FX-01..FX-16`) Bilingual 7-Card 4:5 Visual Benchmark Report (Covering Stage 154)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py)
+  - Unit tests: [`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py) (**705/705** repository unit tests passing)
+  - Bilingual 7-Card 4:5 visual decks: [`reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/report.json)
+
 
 
 

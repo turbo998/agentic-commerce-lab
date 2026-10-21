@@ -344,6 +344,24 @@
   - 单元测试：[`tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py`](../../tests/test_x402_unresolved_caip2_ucp_lodging_jwt_acp_push_ap2_archive_tau2_bench.py)（全仓库 **701/701** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-unresolved-caip2-ucp-lodging-jwt-acp-push-ap2-archive-tau2-bench/report.json)
 
+---
+
+## Stage 154：x402 `@x402/fetch` 单次调用上限与 XRPL 离线多签/参数化路由与 SIWX 权威 URL 权益绑定/Fail-Closed 重试恢复与 Stellar 智能账户动态费率（`#3866`/`#3861`/`#3856`/`#3850`/`#3849`/`#3847`/`#3838`/`#3837`/`#3829`/`#3547`/`#3529`/`#3527`/`#3515`）、UCP 地址行组件与嵌套捆绑（`parent_id`）原子性/餐饮逐过敏原安全门与 ECDSA Raw `r||s`/根对象 Schema 与 Nano（`XNO`）支付工具/Payment Terms 空 `payment: {}` 拦截与加速 IdP 证明（`#981`/`#979`/`#977`/`#976`/`#974`/`#964`/`#963`/`#951`/`#948`/`#862`/`#857`/`#852`/`#846`/`#824`）、ACP 临时身份与宿主侧授权及 OpenAPI 6 字段对齐/3DS 最终条款绑定（`#315`/`#314`/`#297`/`#296`/`#294`/`#292`/`#288`/`#287`/`#285`/`#280`）、AP2 收货地址锁定与 ISO 4217 精确 `Decimal` 预算上限（修复日元 100 倍放大）及多跳 `~~` 隔离（`#384`/`#381`/`#380`/`#368`/`#365`/`#364`/`#363`/`#359`/`#319`）与 MCP 供应链锁定/Stripe 工作线程安全循环/Visa TAP mTLS 与 Passport/$\tau$-bench 含经停升舱过滤与防刷分护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py`](../../lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py)
+  - 单元测试：[`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_guard.py)（全仓库 **704/704** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§153)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§153)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 155：16 场景（`FX-01..FX-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 154）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../lab/x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py)
+  - 单元测试：[`tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py`](../../tests/test_x402_fetch_cap_xrpl_ucp_bundle_allergen_acp_term_bind_ap2_jpy_tau2_bench.py)（全仓库 **705/705** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-fetch-cap-xrpl-ucp-bundle-allergen-acp-term-bind-ap2-jpy-tau2-bench/report.json)
+
 
 
 
