@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-21",
+  "checked_on": "2026-10-22",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -33,7 +33,7 @@
       "monitor_url": "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
       "published_on": null,
       "api_version_observed": "2026-09-30.preview",
-      "evidence": "Oct 21: seller variant oscillated between US and UK English locale rendering (behaviour/programmes, en-ca/guides/pci-compliance) with unchanged protocol facts: API version 2026-09-30.preview, 34 country codes (AT..US), profile-scoped limits/expiry, link-cli spend-request create live testing, SPT Resolve API (fpan/network_token/agentic_token/dpan with RSA encryption_block_fields + PaymentRecord report_payment), Payment Element sellerDetails.networkBusinessProfile, and Affirm buyer-navigation rules."
+      "evidence": "Oct 22: seller variant (cf14fd45f193) added official Recurring SPT rules: sellers reuse the granted SPT directly in each PaymentIntent when usage_limits.recurring_interval (e.g. 'month') is set; Stripe rejects setup_future_usage and payment_method_options[card][setup_future_usage] when creating or confirming a PaymentIntent with an SPT (including a recurring SPT); off_session is validated separately against the SPT's permissions. Retains API version 2026-09-30.preview, 34 country codes (AT..US), SPT Resolve API, Payment Element sellerDetails.networkBusinessProfile, and Affirm buyer-navigation rules."
     },
     {
       "id": "stripe-spt-connect",
@@ -48,7 +48,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Verified unchanged on Oct 21 with policy_change='unchanged' and deadline='2026-11-30' (40 calendar days remaining as of 2026-10-21; originally 2026-10-31). Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Verified unchanged on Oct 22 with policy_change='unchanged' and deadline='2026-11-30' (39 calendar days remaining as of 2026-10-22; originally 2026-10-31). Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -99,19 +99,19 @@
       "id": "visa-vic",
       "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
       "published_on": null,
-      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14–Oct 21 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403 Akamai WAF); current developer body and availability not reverified."
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14–Oct 22 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403 Akamai WAF); current developer body and availability not reverified."
     },
     {
       "id": "visa-tap",
       "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
       "published_on": null,
-      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Getting-started text now points to merchant specifications; route/content change has no independently verified deployment or release date. Historical detailed claims retained as historical evidence, not revalidated by the short introduction."
+      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Oct 22 hash change (fee64a668018) verified as an Angular/Prism.manual portal shell fix (bca825d / TLVDPIA-207) with unchanged TAP getting-started text and no protocol change."
     },
     {
       "id": "visa-tap-specs",
       "url": "https://developer.visa.com/docs/trusted-agent-protocol/trusted-agent-protocol-specifications",
       "published_on": null,
-      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. No explicit protocol version or first-publication date obtained; not a full cryptographic conformance review."
+      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. Oct 22 hash change (de9758b4e3cf) verified as the same Angular/Prism.manual portal shell fix (bca825d / TLVDPIA-207) with zero specification change."
     },
     {
       "id": "visa-tap-announcement",
@@ -136,19 +136,19 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "f2626c2d73f330f22fb93a05963be7fd620f48fa",
-      "commit_committed_at": "2026-10-20T15:44:18Z",
-      "evidence": "Oct 21 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged'). Official repository Universal-Commerce-Protocol/ucp main advanced to f2626c2d73f3 (#891 RFC 9728 authorization_servers issuer rules & multi-entry discovery, #975 docs sync, #978 discovery fix), while Oct 21 PR commits updated #540 (207314b: com.merchantstamp.mandate-evaluation AP2 admission-only TTL & /.well-known/ucp keys[] discovery) and #966 (dev.ucp.shopping.policy.return explicit eligibility, business-stated expires_at, and typed fees[])."
+      "revision_observed": "2bbae244f2233d12fd61602a8146b7fa33769000",
+      "commit_committed_at": "2026-10-21T20:28:53Z",
+      "evidence": "Oct 22 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged'). Official repository Universal-Commerce-Protocol/ucp main advanced to 2bbae244f223 (#940: cart-only checkout creation via anyOf line_items or cart_id, Cart authority when both present, and mandatory rejection of cart_id when dev.ucp.shopping.cart is not negotiated; #966 / 4aa3127: dev.ucp.shopping.policy.return explicit eligibility.type, business-stated expires_at, and typed fees[]; #977 catalog similarity; #980 identity-linking selection; #981 address_line_components; #982 ucp-schema 2.0.0; #983 site lint), alongside open PR #985 (client registration model agnosticism)."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "1bcd18a39181a0841aa2107ce5b654ff28bfec41",
-      "commit_committed_at": "2026-10-21T00:45:30Z",
-      "plugin_version_observed": "8.0.3",
-      "evidence": "Official Oct 21 sync-skills commit reviewed (1bcd18a39181): bumps agent-plugins to 8.0.3 (following #579 OpenAI Agent Plugin extensions metadata at 8.0.0), Claude to 0.11.25, Cursor/Grok to 0.9.25, Codex to 5.8.25, and updates upgrade-stripe snapshot date to 2026-10-21 while keeping fallback API version 2026-09-30.endive."
+      "revision_observed": "326ea8bf64f8a4b25cd8ccbe4b2b10862e391b93",
+      "commit_committed_at": "2026-10-22T00:50:19Z",
+      "plugin_version_observed": "8.0.4",
+      "evidence": "Official Oct 22 sync-skills commit reviewed (326ea8bf64f8): bumps agent-plugins to 8.0.4, Claude to 0.11.26, Cursor/Grok to 0.9.26, Codex to 5.8.26, updates upgrade-stripe snapshot date to 2026-10-22 while keeping fallback API version 2026-09-30.endive, and aligns with PR #581 (fixing StripeTool._run via asyncio.get_running_loop() + asyncio.run(...) in worker threads)."
     },
     {
       "id": "ap2",
@@ -196,7 +196,7 @@
       "published_on": null,
       "handler_version_observed": "2026-06-25",
       "ucp_example_version_observed": "2026-04-08",
-      "evidence": "Current handler supports card/Apple Pay completion; advertised link is not accepted by current complete endpoint. Google Pay uses com.google.pay; tokenize requires same environment and confirmed commerce relationship. Example versions are not universal latest-version claims."
+      "evidence": "Oct 22 (cf6014bea229): documents com.stripe.payments (2026-06-25) and com.google.pay (2026-01-23). Card and Apple Pay completion supported; link can appear in com.stripe.payments config but Link payment completion is unsupported by this handler. POST https://commerce.stripe.com/api/ucp/tokenize requires same environment, confirmed commerce relationship, and defaults omitted expires_at to 1 hour."
     },
     {
       "id": "stripe-agent-keys",
@@ -311,16 +311,16 @@
       "published_on": null,
       "release_tag_observed": "2.0.0",
       "release_published_at": "2026-10-19T22:55:49Z",
-      "revision_observed": "57e5414140d02f9ca12113a3f03923eb2aa3144d",
-      "commit_committed_at": "2026-10-21T00:00:02Z",
-      "evidence": "Official Sierra Research tau2-bench (tau-bench 2.0) repository. Oct 21 main advanced to 57e5414140d0 (#653: run sandboxed shell in knowledge domain with a minimal environment allowlist, expand ~ in denyRead before overriding HOME, and redact parent secret env values >=8 chars from stdout/stderr), alongside open PRs #655 (root-walk read allowlist emulation via _compute_read_denies), #640 (voice-v2 call-level interaction & experience quality), and #652 (offline Bayes@N Beta posterior analysis)."
+      "revision_observed": "05736c2d3f9fa1b3cb35622a47a5b3233dc9b450",
+      "commit_committed_at": "2026-10-21T20:26:52Z",
+      "evidence": "Official Sierra Research tau2-bench (tau-bench 2.0) repository. Oct 22 main advanced to 05736c2d3f9f (#640: voice-v2 call-level interaction & experience quality gates merged, README hash 716bf2c60eb6), alongside Oct 22 PRs #667 (8bc5273: retail exchange_delivered_order_items rejects item_id == new_item_id), #666 (c195592: telecom can_send_mms rejects empty mmsc_url), #671 (0100728: .gitattributes eol=lf for frozen benchmark hashes on Windows), and #670 (8dce42b: Phonic mulaw_8000 voice provider playback gating)."
     },
     {
       "id": "sierra-tau2-retail-policy",
       "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/data/tau2/domains/retail/policy.md",
       "published_on": null,
-      "revision_observed": "57e5414140d02f9ca12113a3f03923eb2aa3144d",
-      "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product variant-only item swap, and original-payment/gift-card refund constraints."
+      "revision_observed": "05736c2d3f9fa1b3cb35622a47a5b3233dc9b450",
+      "evidence": "Official retail domain policy and CHANGELOG (26 retail task fixes informed by SABER arXiv:2512.07850 plus #667 same-item exchange rejection): enforces mandatory user authentication, one-user-per-conversation isolation, explicit confirmation of action details before mutating DB calls, one-time-only pending item modification lock, same-product distinct-variant item swap (item_id != new_item_id), and original-payment/gift-card refund constraints."
     },
     {
       "id": "stripe-webmcp",

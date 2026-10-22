@@ -180,4 +180,15 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
 - **Stripe MPP Tempo 流式微支付会话、Token 计费与 `stripe/ai 0.5.23`**：[MPP Sessions（`2026-07-29.preview`）](https://docs.stripe.com/payments/machine/mpp/sessions.md) 支持 `0.000001 USDC` 最小计价精度，但向 Stripe Balance 仅按整美分（$\ge \$0.01$）结算，**会话关闭或非整美分倍数结算周期产生的亚美分尾差将被直接没收（forfeited）**；[Token Billing](https://docs.stripe.com/billing/token-billing.md) 基于 Metronome 提供按输入/输出/缓存 Token 计量与 AI Credit Packs；`stripe/ai` 升至 [`2f68b6e13cea`](https://github.com/stripe/ai/commit/2f68b6e13cea1a0745d5594ef901b957557a939a)（`0.5.23`，新增澳大利亚 GST 税务指南）。
 - **上游开放规范草案（Google AP2 `#165`/`#369`/`#385`、UCP `#866`、ACP `#316` Appendix C `b998b915638a`）**：AP2 PR `#165` 定义四态受托熔断器（`CLOSED` $\rightarrow$ `OPEN` $\rightarrow$ `HALF_OPEN` $\rightarrow$ `TERMINATED`），PR `#369` 定义多跳委托链终端 `SD-JWT+KB`（`typ: "kb+jwt"`）；UCP PR `#866` 定义 `dev.ucp.common.feed` RFC 9530 分片摘要校验与残缺分片零删除保证；ACP PR `#316` Appendix C（`b998b915638a` 更新 Nuvei Chargeback DMN 关联）确认 **7/17** 家网关支持争议关联原支付、**2/17** 家记录支付侧 Agent 信号、**0/17 家网关具备发卡行侧结构化 Mandate 字段**。
 
+## 2026-10-22 增量核验
+
+完整证据、50 个来源监控状态与 Stage 168–169 技术资产见 [10-22 日研（中文）](daily/2026-10-22.md) / [English (`2026-10-22.en.md`)](daily/2026-10-22.en.md)。
+
+- **来源监控（`49/50` `status="ok"`）与 Stripe MCP 39 日窗口**：`stripe-mcp` 保持 `policy_change="unchanged"`，迁移截止日仍为 **`2026-11-30`**（距 `2026-10-22` 剩余 **39 个日历日**，距原定 `2026-10-31` 节点 9 天）。`visa-vic` 仍返回 HTTP 403（Akamai WAF）；`visa-tap` 与 `visa-tap-specs` 的哈希变化经核验为 Visa 开发者门户前端 `Prism.manual` 壳层提交（`bca825d` / `TLVDPIA-207`），TAP 规范正文零改动。
+- **Stripe 周期性 Shared Payment Token（Recurring SPT）官方新规（`cf14fd45f193`）与 UCP Handler（`cf6014bea229`）**：当 SPT 包含 `usage_limits.recurring_interval`（如 `"month"`）时，卖家在后续周期扣款中直接复用同一授权 SPT 创建 `PaymentIntent`；**在使用 SPT（含周期性 SPT）创建或确认 `PaymentIntent` 时，Stripe 显式拒绝 `setup_future_usage` 与 `payment_method_options[card][setup_future_usage]`**，并独立校验 `off_session` 是否获该 SPT 授权。`stripe-ucp-handler` 明确 `POST https://commerce.stripe.com/api/ucp/tokenize` 省略 `expires_at` 时默认有效期为 1 小时，且当前 handler 不支持完成 `link` 支付。
+- **x402 Foundation、UCP、`stripe/ai` 与 Sierra $\tau$-bench 2.0 当日合入**：
+  - `x402-foundation/x402` 合入 `#3285`（`3ca54cb` 严格 V2 CAIP-2 正则 `^[-a-z0-9]{3,8}:[-_a-zA-Z0-9]{1,32}$`）、`#3400`（`76f2f28` Facilitator 控制面 1 MiB / 发现面 4 MiB 流式响应体上限）、`#3826`（`bc31d3e` `createPaymentRequiredResponse` `extensions` 浅拷贝）、`#3567`/`#3715`（Bazaar HTTP 动词与输入 Schema 对齐、V1 载荷返回 HTTP 402）、`#3674`（`d8e1e7b` Cardano 原始 CBOR 字节保真防 Conway Tag-258 见证失效）与 `#3125`/`#3293`（`332f65d` Stellar `TRY_AGAIN_LATER` 可重试结算分类）。
+  - `Universal-Commerce-Protocol/ucp` 合入 `#940`（`2bbae24` 支持仅传 `cart_id` 创建 Checkout、同传时以 Cart 为权威、未协商 `dev.ucp.shopping.cart` 时传 `cart_id` 强制报错）与 `#966`（`4aa3127` 显式 `eligibility.type`、商家声明退货截止期与分类 `fees[]`）。
+  - `stripe/ai` 升至 `8.0.4`（`326ea8b`）并在 PR `#581` 修复工作线程 `StripeTool._run` 事件循环回退；`sierra-research/tau2-bench` 合入 `#640`（`05736c2` `voice-v2`）并推进 `#667`（阻断零售 `item_id == new_item_id` 自换）、`#666`（阻断电信空白 `mmsc_url`）、`#671`（`.gitattributes` `eol=lf` 保护冻结基准哈希）与 `#670`（Phonic `mulaw_8000` 语音发言窗口门禁）。
+
 

@@ -158,5 +158,14 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
    - **MCP 通道原生 `DPoP` 升级与 `401 invalid_token` 一步刷新（Poppy `v0.2` `#64`, `#69`）**：当 MCP 服务器在 RFC 9728 元数据中声明支持 `dpop` 时，直接复用 `DPoP` 会话令牌而非降级为 `Bearer`，且严禁将 `DPoP` 令牌放入 `Bearer` 头；令牌过期时资源服务器直接返回 `401 invalid_token` 一步触发刷新。
    - **延期付款总额守恒与多跳委托终端 `SD-JWT+KB` 绑定（UCP `#881`, `#755` & AP2 `#369`）**：B2B 账期/定金/分期结账强制校验 `due_now + sum(deferred) == total`；Identity Linking 彻底禁用 `client_credentials` 防平台越权代绑；多跳 Agent 委托链末端强制校验 RFC 9901 `kb+jwt` 终端持有者证明与 `sd_hash` 完整性。对应 16 场景基准报告见 [`reports/agentic-commerce-protocol-v02-cbdc-bench/index.html`](../reports/agentic-commerce-protocol-v02-cbdc-bench/index.html)（**AI-Native `16/16` vs 经典三层 `1/16`**）。
 
+## 2026-10-22 增量：网络层代币化周期委托复用、有界控制面流式解析与字节保真链上广播
+
+[今日研究](daily/2026-10-22.md)（[English](daily/2026-10-22.en.md)）结合 Stripe 周期性 SPT 新规（`cf14fd45`）、x402 Foundation 当日合入（`#3285`/`#3400`/`#3826`/`#3674`/`#3125`）、UCP `#940`/`#966` 与 Sierra $\tau$-bench 2.0（`#640`/`#667`/`#666`/`#671`/`#670`），进一步明确 AI-Native 架构区别于经典三层 Web 架构的四项设计要求（已落地于 [`lab/x402_caip2_body_cap_ucp_cart_only_stripe_recurring_spt_tau2_phonic_guard.py`](../lab/x402_caip2_body_cap_ucp_cart_only_stripe_recurring_spt_tau2_phonic_guard.py) 与 [Stage 169 `CB-01..CB-16` 双语 7-Card 报告](../reports/agentic-commerce-x402-caip2-body-cap-ucp-cart-only-stripe-recurring-spt-tau2-phonic-bench/index.html)）：
+
+1. **网络层周期性 SPT 复用 vs. 商户侧 `setup_future_usage` 存卡禁令（Stripe SPT `cf14fd45`）**：经典三层电商在首次结账时通过 `setup_future_usage="off_session"` 将卡凭证存入商户自有 Customer Vault；AI-Native 架构将周期频率与额度上限编码在 `usage_limits.recurring_interval` 中，卖家在每期续费时直接复用同一受限 SPT，任何夹带 `setup_future_usage` 或 `payment_method_options[card][setup_future_usage]` 的请求在确定性预检层即被拦截，防止商户私自沉淀长效可复用卡凭据。
+2. **有界流式响应体解析（1 MiB / 4 MiB）与不可变挑战模板（x402 `#3400`, `#3826`, `#3285`）**：AI-Native 支付网关与客户端对 Facilitator 控制面响应强制实施 `1 MiB` 流式硬上限、对 Bazaar 发现响应实施 `4 MiB` 硬上限，在生成 `402 Payment Required` 时对 `extensions` 执行浅拷贝隔离，并用严格正则 `^[-a-z0-9]{3,8}:[-_a-zA-Z0-9]{1,32}$` 锁定 CAIP-2 链标识。
+3. **原始字节保真广播与幂等瞬态重试（x402 `#3674`, `#3125`/`#3293`）**：针对 Cardano 等对 CBOR 编码敏感的账本，Facilitator 直接透传客户端签名原始字节，严禁经 ORM/SDK 反序列化再序列化触发 Conway Tag-258 见证失效；针对 Stellar RPC `TRY_AGAIN_LATER`，显式标记为可重试瞬态错误并复用原签名交易，杜绝盲目重签引发的双重扣款。
+4. **服务端 Cart 权威转换与工具参数语义不变量（UCP `#940` & $\tau$-bench `#667`/`#666`/`#670`/`#671`）**：在 `create_checkout` 中禁止未协商 `dev.ucp.shopping.cart` 时静默忽略 `cart_id`，同传时强制以服务端 Cart 为唯一权威；在工具执行边界强制阻断零售 `item_id == new_item_id` 自换与电信空白 `mmsc_url`，在全双工语音通道按发言生命周期门控 `mulaw_8000` 音频回放，并通过 `.gitattributes` `eol=lf` 锁定跨平台评测基准哈希。
+
 
 
