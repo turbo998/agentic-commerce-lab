@@ -488,6 +488,24 @@
   - 单元测试：[`tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py)（全仓库 **860/860** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html`（中文）](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/report.json)
 
+---
+
+## Stage 224（225 阶段里程碑冲刺！）：UCP Conformance `ready_for_complete` 完结前状态断言 + 严苛 `4xx` 状态转移门禁与移除 `409` 逃生舱（`conformance#117`/`#111`）、AP2 能力交集协商与 `mandate_required` 拒付门禁 + Mock Agent 5 项购物能力宣告（`conformance#115`/`#109`）、商户独占 `ucp_request: omit` 字段剥离 + Discovery URL 强校验与规范地址字段（`conformance#112`/`#98`/`#97`）、UCP `payment.terms` 7 项跨字段报文不变量（`conformance#89`）、UCP JS SDK `<Union>Base` `not.enum` 致命守卫 + 开放对象 `.catchall(z.any())` 保留凭证与 `{id,type}` `Binding` 拆分（`js-sdk#87`/`#84`/`#83`）、非空洞 `dependentRequired` 注入 + 按请求变体投影履约模型与带 `title` 的 JWK `crv`/`x`/`y` 条件规则（`js-sdk#80`/`#79`/`#74`）、`business_schema` 发现注册表 + 共享整数 vs 单价小数 `Measure` + `LocationServes` `maxProperties: 1` 与 Warning URI 校验（`js-sdk#73`/`#71`/`#69`/`#63`/`#59`/`#58`）、MCP C# SDK Stdio EOF 自动取消 `subscriptions/listen` 与非字符串路由名 `-32020 HeaderMismatch`（`csharp-sdk#1933`/`#1932`）、`DelegatingMcpServerTool` 旧版 `outputSchema` 转换 + 可空 `ServerInfo` + 多变量 URI 模板逗号切分与子进程树退出等待（`csharp-sdk#1928`/`#1903`/`#1900`/`#1895`）、ASP.NET Core 非 DCR OAuth 2.1 代理双 S256 PKCE + 服务端上游令牌隔离与刷新令牌重放家族吊销（`csharp-sdk#1905`）、MCP Kotlin SDK `16 MiB` WebSocket 帧上限与不中断读取 + `callTool` 空 `_meta` 省略与未知工具 `-32602` 协议错误（`kotlin-sdk#1129`/`#1122`/`#1120`）、同步发送失败单次上报 + SEP-2243/2663 仅请求携带 `Mcp-Method`/`Mcp-Name` 与空 URI/空模板捕获拦截（`kotlin-sdk#1119`/`#1118`/`#1117`）、MCP Swift SDK 有状态 HTTP `DELETE` 后恢复与废弃会话 `404` 及无状态 HTTP 取消隔离与关停 `503`（`swift-sdk#307`/`#298`）、`WWW-Authenticate` `quoted-pair` 反转义 + PKCE `197` 无偏阈值 + RFC 6749 `client_secret_basic` 百分号编码与 Issuer 校验（`swift-sdk#305`/`#303`/`#300`/`#293`）、独立 GET SSE 重连 ID 隔离 + `data:` URL 文本保留 + 结构化 `error.data` 保留与 SEP-2243 Base64 `Mcp-Name`（`swift-sdk#296`/`#295`/`#291`/`#288`）、以及 Stdio `O_NONBLOCK` 描述符还原 + 解码失败保留原始响应 + `CacheableResult` 与服务端 `experimental`/`extensions` 能力（`swift-sdk#297`/`#292`/`#290`/`#289`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_guards.py`](../../lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_guards.py)
+  - 单元测试：[`tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_guards.py`](../../tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_guards.py)（全仓库 **863/863** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§223)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§223)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 225（225 阶段里程碑达成 · 864/864 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 224）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py`](../../lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py)
+  - 单元测试：[`tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py`](../../tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py)（全仓库 **864/864** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/report.json)
+
 
 
 
