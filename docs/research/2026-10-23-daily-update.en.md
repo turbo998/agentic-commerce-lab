@@ -236,6 +236,24 @@
   - Unit tests: [`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py) (**800/800** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/report.json)
 
+---
+
+## Stage 196: x402 Go `auth-capture` EIP-712 `EIP712Domain` & Legacy Algorand 44-Char Base64 Genesis Hash Compatibility (PR `#3893`), EVM `x402UptoERC3009Proxy` Atomic Pull-Pay-Refund (PR `#3867`), Stellar Soroban `UptoProxy.settle_upto` (PR `#3781`) & Casper CEP-3009 `exact` Scheme (PR `#3885`), Facilitator 1MiB/4MiB Response Body Limits (PR `#3874`) & MCP Recovery-Retry Timeout Cap (PR `#3869`), UCP Identity Linking `subject_token` PKCE Prerequisite & Consent Models (PR `#783`), and MCP `SEP-2817` AI Invocation Audit Context (PR `#2817`), `SEP-2809` Attested Tool-Server Admission (PR `#2809`), `SEP-2793` Tool Risk Metadata (PR `#2793`) & `SEP-2752` RFC 9421 HTTP Message Signing (PR `#2752`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py)
+  - Unit tests: [`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py) (**804/804** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§195)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§195)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 197: 16-Scenario (`UC-01..UC-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 196)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py)
+  - Unit tests: [`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py) (**806/806** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/report.json)
+
 
 
 

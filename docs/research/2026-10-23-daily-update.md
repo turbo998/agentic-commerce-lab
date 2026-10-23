@@ -236,6 +236,24 @@
   - 单元测试：[`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)（全仓库 **800/800** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/report.json)
 
+---
+
+## Stage 196：x402 Go `auth-capture` EIP-712 `EIP712Domain` 与旧版 Algorand 44 字符 Base64 创世哈希兼容（PR `#3893`）、EVM `x402UptoERC3009Proxy` 原子扣付退差（PR `#3867`）、Stellar Soroban `UptoProxy.settle_upto`（PR `#3781`）与 Casper CEP-3009 `exact` 方案（PR `#3885`）、Facilitator 响应体 1MiB/4MiB 上限（PR `#3874`）与 MCP 恢复重试超时上限（PR `#3869`）、UCP 加速身份链 `subject_token` PKCE 前置与同意模型（PR `#783`）及 MCP `SEP-2817` AI 调用审计上下文（PR `#2817`）、`SEP-2809` ATSA 工具服证明准入（PR `#2809`）、`SEP-2793` 分级风险元数据（PR `#2793`）与 `SEP-2752` RFC 9421 签名（PR `#2752`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py)
+  - 单元测试：[`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_guard.py)（全仓库 **804/804** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§195)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§195)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 197：16 场景（`UC-01..UC-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 196）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py)
+  - 单元测试：[`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py)（全仓库 **806/806** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html`（中文）](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/report.json)
+
 
 
 

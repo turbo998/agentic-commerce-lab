@@ -2312,6 +2312,31 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)、[`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html)）。
 
+---
+
+## 195. Stage 196 架构深潜（`2026-10-23`）：x402 Go `auth-capture` EIP-712 `EIP712Domain` 与旧版 Algorand 44 字符 Base64 创世哈希兼容（PR `#3893`）、EVM `x402UptoERC3009Proxy` 原子扣付退差（PR `#3867`）、Stellar Soroban `UptoProxy.settle_upto`（PR `#3781`）与 Casper CEP-3009 `exact` 方案（PR `#3885`）、Facilitator 1MiB/4MiB 响应体上限（PR `#3874`）与 MCP 恢复重试超时上限（PR `#3869`）、UCP 加速身份链 `subject_token` PKCE 前置与同意模型（PR `#783`）及 MCP `SEP-2817` AI 调用审计上下文（PR `#2817`）、`SEP-2809` ATSA 工具服证明准入（PR `#2809`）、`SEP-2793` 分级风险元数据（PR `#2793`）与 `SEP-2752` RFC 9421 签名（PR `#2752`）
+
+1. **x402 SDK 合并后回归修复（PR `#3893` 合入 `2026-10-22T19:30:32Z`）与 EVM `x402UptoERC3009Proxy` 原子扣付退差（PR `#3867`）**：
+   - `PR #3893` 修复 4 项合并后回归：在 Go `auth-capture` 全部 6 组操作员签名类型表（`CaptureTypesV1_0`/`V1_1`、`ChargeTypesV1_0`/`V1_1`、`VoidTypes`、`RefundTypes`）中显式包含 `"EIP712Domain": evm.EIP712DomainTypesWithVersion`（`name`、`version`、`chainId`、`verifyingContract`）；在 V2 网络 Schema 中兼容旧版 Algorand 44 字符 Base64 创世哈希（`^algorand:[A-Za-z0-9+/]{43}=$`）同时阻断非 `algorand:` 命名空间伪造；EVM 退款必须携带 `Refunded` 事件且零金额退款 Fail-Closed。
+   - `PR #3867` 引入无状态、无管理员、CREATE2 固定地址（`0x40208Cd083acD9559Ce44742c4BcD9Cf04850006`）的 `x402UptoERC3009Proxy`：付款方对 `to == Proxy` 签署 `ReceiveWithAuthorization` 最大金额，其 `nonce` 通过类型化哈希承诺绑定 `(payTo, settler, salt)`；仅绑定的 `settler` 可调用 `settle(0 < actualAmount <= maxAmount)`，单笔交易内拉取最大金额、向 `payTo` 支付实际用量并将差额退回付款方，代理合约残余增量为 `0` 且不消耗历史捐赠余额。
+2. **x402 Stellar Soroban `UptoProxy.settle_upto`（PR `#3781`）、Casper CEP-3009 `exact` 方案（PR `#3885`）、Facilitator 响应体上限（PR `#3874`）与 MCP 恢复重试超时上限（PR `#3869`）**：
+   - `PR #3781` 定义 Stellar `upto` 方案（规范合约 `CAL7SBTOECJ6HXXO3ST43LM2HJJFSZ3ZDEEZBIWHJPB7DRF5MXS5V2VC`）：客户端签署单棵 `SorobanAuthorizationEntry`（根调用 `UptoProxy.settle_upto` + 子调用 `token.approve`），强制 `extra.areFeesSponsored == true`、`signatureExpirationLedger == allowance_expiration_ledger`、`allowance_ledgers_ahead <= 17,280`（`86,400s`），且预检仿真必须以 `facilitatorAddress` 为源账户并核对返回授权树以阻断恶意 RPC 替换为 `token.transfer`。
+   - `PR #3885` 为 Go SDK 新增 Casper `exact` 方案（`casper:casper`、`casper:casper-test`，仅支持 `exact`，阻断 `upto` 与批量结算，校验 `ed25519` 或 Low-s `secp256k1` 与严格 `validAfter < now < validBefore` 窗口）；`PR #3874` 强制控制面响应体 `<= 1 MiB`、Bazaar 发现响应体 `<= 4 MiB`（超限抛出 `ResponseBodyTooLargeError`）；`PR #3869` 将 `maxRequestTimeoutSeconds`（默认 `600s`）扩展至恢复重试（`recovery_retry`）阶段并保留更严格的调用方截止时间。
+3. **UCP 加速身份链（Accelerated IdP Flow）`subject_token` 获取前置与同意模型（PR `#783`）**：
+   - 平台发起加速 IdP 令牌交换前必须已完成针对 IdP 的 OAuth 2.0 Authorization Code + PKCE 初始连接（缺失时必须回退至商户域直接 OAuth）；所选 `subject_token` 必须严格绑定当前认证平台用户（防跨用户串号绑定），携带 `openid` 及覆盖商户 `required_claims` 的作用域，并满足平台级同意（覆盖目标商户）或逐商户首次交互同意，签发单值 URI `aud` 与唯一 `jti` 的 `urn:ietf:params:oauth:token-type:jwt`。
+4. **MCP `SEP-2817` AI 调用审计上下文（PR `#2817`）、`SEP-2809` 工具服证明准入 ATSA（PR `#2809`）、`SEP-2793` 分级工具风险元数据（PR `#2793`）与 `SEP-2752` RFC 9421 客户端消息签名（PR `#2752`）**：
+   - `SEP-2817` 定义 `_meta["io.modelcontextprotocol/aiInvocation"]`（`invocationReason`、`model`、`userIntent`、`turnId`），严禁作为授权依据，且响应 `_meta` 仅允许回显 `turnId`。
+   - `SEP-2809`（ATSA）在工具派发前校验 `/.well-known/mcp-attestation` 发布的离线签名 Server Attestation Document（SAD `v == 1`、固定信任根 `signerKeyId`、`netAllowedHosts` 源绑定），执行每服闭合 `tool_allowlist_scope`（字典序空格分隔）并阻断跨服同名工具遮蔽（`/tool-name-shadow`）与动态 Schema 漂移（`/tool-schema-drift`），同时将 `admission-control` 的 `clearance_decision` 与 `outcome` 强绑定。
+   - `SEP-2793` 为 `ToolAnnotations` 增加分级 `riskLevel`、`category`、`blastRadius`、`reversibility`、`approvalRecommendation` 与 `minTrustLevel (1..5)`，缺失时按 Fail-Closed 归入 `critical`/`multi` 并拦截 `readOnlyHint=True` 与变更/不可逆类别的自相矛盾；`SEP-2752` 定义覆盖 `(@method, @target-uri, content-digest, mcp-session-id, mcp-protocol-version)` 的 RFC 9421 签名，严禁 `alg` 参数，强制 `keyid == JWK Thumbprint (RFC 7638)`、持久客户端 `tag` 与 `660s` `(tag, nonce)` 防重放窗口。
+
+---
+
+## 196. Stage 197 基准评测（`2026-10-23`）：16 场景（`UC-01..UC-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 196 全部 16 项 `2026-10-23` 一手协议与安全护栏（`UC-01..UC-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py)、[`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py) 及双语报告 [`reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.en.html)）。
+
 
 
 
