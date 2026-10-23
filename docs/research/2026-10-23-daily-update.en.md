@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–171)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–173)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -19,3 +19,22 @@
   - Benchmark suite: [`lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_bench.py`](../../lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_bench.py)
   - Unit tests: [`tests/test_x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_bench.py`](../../tests/test_x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_bench.py) (**741/741** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/report.json)
+
+---
+
+## Stage 172: x402 Algorand Canonical 32-Char CAIP-2 (`#3894`), EVM Retryable Signature Lookup Errors (`#3886`), SVM Opt-In Readable Batch Proofs (`#3905`), Python `x402MCPClientSync` `PaymentRequiredError` (`#3907`) & Bazaar Resource-Contract Input (`#3906`), UCP Split-Payment Profile `capabilities` Object Map & `schema` Validation (`#658`) & Registration-Agnostic CIMD / `cart-mcp` Envelope (`#985`/`#444`), and MCP `SEP-2076` Agent Skills Primitive, `SEP-1932` DPoP Profile & `SEP-2848` Asynchronous Tool Approval (`#2076`/`#1932`/`#2848`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_guard.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_guard.py)
+  - Unit tests: [`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_guard.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_guard.py) (**744/744** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§171)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§171)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 173: 16-Scenario (`AS-01..AS-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 172)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)
+  - Unit tests: [`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py) (**746/746** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/report.json)
+

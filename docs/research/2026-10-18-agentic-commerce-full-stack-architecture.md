@@ -2042,8 +2042,30 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 ## 170. Stage 171 基准评测（`2026-10-23`）：16 场景（`XP-01..XP-16`）中英双语 7-Card 4:5 视觉基准报告
 
 - **评测范围**：覆盖 Stage 170 全部 16 项 `2026-10-23` 一手协议与基准护栏（`XP-01..XP-16`）。
-- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.01 ms` vs. `12.04 ms`（`11.9x` 加速）**。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.01 ms` vs. `12.12 ms`（`12.0x` 加速）**。
 - **技术资产**：[`lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_bench.py`](../../lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_bench.py)、[`tests/test_x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_bench.py`](../../tests/test_x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_bench.py) 及双语报告 [`reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/`](../../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.en.html)）。
+
+---
+
+## 171. Stage 172 架构演进（`2026-10-23`）：x402 Algorand 32 字符 CAIP-2 规范化（`#3894`）与 EVM 验签 RPC 传输错误可重试分类（`#3886`）及 SVM 可读批量证明/Python `x402MCPClientSync` 未付 402 抛错/Bazaar 资源契约输入（`#3905`/`#3907`/`#3906`）、UCP 分单支付 Profile `capabilities` 反向域名对象映射与 `schema` 强校验（`#658`）及 CIMD 免注册身份绑定/MCP 统一信封（`#985`/`#444`）、MCP `SEP-2076` Agent Skills 原语与 `SEP-1932` DPoP 发送方约束及 `SEP-2848` 异步工具审批（`#2076`/`#1932`/`#2848`）
+
+### 171.1 x402 Foundation Algorand 规范 32 字符 CAIP-2 标识（PR `#3894`）、EVM 验签 RPC 传输错误与密码学拒绝分离（PR `#3886`）、SVM 可读批量证明客户端-服务器双向协商与浏览器签名人校验（PR `#3905`）、Python `x402MCPClientSync` 未付 402 显式抛错（PR `#3907`）及 Bazaar `info.input` 描述真实资源契约而非发现探测（PR `#3906`）
+- 在 `x402` Algorand AVM 模块（PR `#3894`）中强制要求规范 32 字符 CAIP-2 创世哈希前缀（主网 `algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k`、测试网 `algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=` 截断前 32 字符 `algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDe`），阻断超 32 字符未截断 Base64 或 `algorand:mainnet` 非规范别名。在 EVM Permit2 / EIP-3009 / EIP-1271 验签（PR `#3886`）中将底层 RPC 传输/超时异常归类为可重试 `failed_to_verify_signature`（`retryable=True`），与确定性密码学签名伪造 `invalid_*_signature`（`retryable=False`）严格隔离。在 SVM 批量证明（PR `#3905`）中要求 `PaymentRequirements.extra.readableBatchProof` 与客户端 `client_opted_in` 双向显式开启且校验浏览器钱包返回公钥等于期望 `payer`。在 Python `x402MCPClientSync`（PR `#3907`）中，当 `auto_payment=False`（或钩子中止）且工具返回未付 402 时显式抛出 `PaymentRequiredError`（对齐异步客户端契约，消除误当成功结果的静默穿透）。在 Bazaar 发现扩展（PR `#3906`）中强制 `info.input` 描述受保护资源的真实请求方法与负载契约，严禁将无负载 `GET` 探测覆盖到 `POST` 资源契约上。
+
+### 171.2 Google UCP 分单支付 Profile `capabilities` 反向域名对象映射与必填 `schema` 校验（PR `#658`）、免注册客户端元数据文档（CIMD）与 `private_key_jwt` 身份绑定（PR `#985`）及 `cart-mcp` 统一参数信封（PR `#444`）
+- 在 `Universal-Commerce-Protocol/ucp` 分单支付指南与发现规范（PR `#658`）中，强制 `ucp.capabilities` 采用以反向域名（如 `dev.ucp.shopping.checkout`）为键的对象映射（严禁旧版数组列表格式），且每个能力声明条目必须包含非空 `version` 与 `schema` URL。在 Identity Linking 规范（PR `#985`）中解耦客户端注册机制，同时支持 OAuth 2.0 DCR（RFC 7591）、OAuth Client ID Metadata Documents（CIMD，`client_id` 为 HTTPS URL 且与元数据文档 `client_id` 严格一致）及带外注册，并在高价值委托中校验 `private_key_jwt` 断言与 `identity_token_subject == token_credential_subject`。在 `cart-mcp` OpenRPC 规范（PR `#444`）中强制 `create_cart`/`get_cart`/`update_cart`/`cancel_cart` 统一包含 `meta` 信封且写/查改操作具备顶层 `id` 参数。
+
+### 171.3 Model Context Protocol `SEP-2076` Agent Skills 一等原语（PR `#2076`）、`SEP-1932` OAuth 2.0 DPoP 发送方约束令牌规范（PR `#1932`）及 `SEP-2848` 异步带外工具调用审批生命周期（PR `#2848`）
+- 在 MCP `SEP-2076`（PR `#2076`）中引入一等 `skills` 能力（`skills/list`、`skills/get`、`skills/list_changed`），强制校验 `SKILL.md` YAML frontmatter、非空正文、子资源相对路径防遍历（阻断 `..` 与绝对路径）以及二进制内容 `mimeType` + Base64 编码。在 MCP `SEP-1932`（PR `#1932`，RFC 9449 DPoP Profile）中强制校验 `typ == "dpop+jwt"`、非对称算法（禁止 `none`/`HS*`）、`htm`/`htu` 精确匹配、访问令牌 `ath` SHA-256 哈希绑定、`cnf.jkt` 密钥指纹绑定、单次 `jti` 防重放及 `dpop_nonce` 轮转。在 MCP `SEP-2848`（PR `#2848`）中为高风险写工具建立异步带外审批状态机（`pending_approval` -> `approved`/`denied`/`expired`），强制 `approval_id` 审批摘要与工具名及 RFC 8785 规范化参数 SHA-256 严格一致（参见 `lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_guard.py`）。
+
+---
+
+## 172. Stage 173 基准评测（`2026-10-23`）：16 场景（`AS-01..AS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 172 全部 16 项 `2026-10-23` 一手协议与基准护栏（`AS-01..AS-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.02 ms` vs. `12.18 ms`（`11.9x` 加速）**。
+- **技术资产**：[`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)、[`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py) 及双语报告 [`reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.en.html)）。
+
 
 
 
