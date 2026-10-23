@@ -191,4 +191,16 @@ API/data 服务提供商：优先比较 MPP/card 与 stablecoin、x402 的区域
   - `Universal-Commerce-Protocol/ucp` 合入 `#940`（`2bbae24` 支持仅传 `cart_id` 创建 Checkout、同传时以 Cart 为权威、未协商 `dev.ucp.shopping.cart` 时传 `cart_id` 强制报错）与 `#966`（`4aa3127` 显式 `eligibility.type`、商家声明退货截止期与分类 `fees[]`）。
   - `stripe/ai` 升至 `8.0.4`（`326ea8b`）并在 PR `#581` 修复工作线程 `StripeTool._run` 事件循环回退；`sierra-research/tau2-bench` 合入 `#640`（`05736c2` `voice-v2`）并推进 `#667`（阻断零售 `item_id == new_item_id` 自换）、`#666`（阻断电信空白 `mmsc_url`）、`#671`（`.gitattributes` `eol=lf` 保护冻结基准哈希）与 `#670`（Phonic `mulaw_8000` 语音发言窗口门禁）。
 
+## 2026-10-23 增量核验
+
+完整证据、50 个来源监控状态与 Stage 170–171 技术资产见 [10-23 日研（中文）](daily/2026-10-23.md) / [English (`2026-10-23.en.md`)](daily/2026-10-23.en.md)。
+
+- **来源监控（`49/50` `status="ok"`）与 Stripe MCP 38 日窗口**：`stripe-mcp` 保持 `policy_change="unchanged"`，迁移截止日仍为 **`2026-11-30`**（距 `2026-10-23` 剩余 **38 个日历日**，距原定 `2026-10-31` 节点 8 天）。`visa-vic` 仍返回 HTTP 403（Akamai WAF）；`stripe-spt` 哈希变化经核验为英式拼写渲染与沙箱动态示例 `expires_at` 跳变，昨日新增的周期性 SPT（Recurring SPT）规范正文未变；6 个 `sierra-*` 博客页哈希变化仅因页脚“Related Articles”推荐卡片轮播。
+- **x402 Foundation、UCP、`stripe/ai` / MCP 与 Sierra $\tau$-bench 2.0 当日推进**：
+  - `x402-foundation/x402` 合入 `#3023`（`2b06a54` XRPL `upto` 支付通道规范：`xrpl:0`/`1`/`2` 数字 CAIP-2、链下 `CLM\0` 索赔签名、`/verify` 禁带 `settlementTransaction` 与 `Balance == 0` 及 `20s` 着陆裕度、`/settle` `maxAmount` 上界替换与零增量裸 `tfClose` 及 `(network, channelId)` 并发互斥）、`#3738`/`#3809`（`3bd3c1d`/`58a5d7d` 无方法通配路由跳过 `OPTIONS` 预检并暴露浏览器 CORS 头）、`#3096`（`470419d` 批量结算退款缺 `Refunded` 事件 Fail-Closed）、`#3459`/`#3889`（EVM 燃气代付强制 `readContract` 或 `rpcUrl`）、`#3855`（`a9772e5` Paywall HTML 配置 XSS 转义）及 PR `#3910`（`payer != payTo` 反自付刷量洗钱）。
+  - `Universal-Commerce-Protocol/ucp` 合入 `#672`（`5410813` 对齐 Checkout 状态机图，`ready_for_complete` 四出边覆盖 `complete_in_progress`/`completed`/`incomplete`/`requires_escalation`），并推进 PR `#890`（`dev.ucp.shopping.purchase_options` 远期订阅 `schedules[]` 当期结账应付为 `0`）、PR `#699`（签名 REST 响应绑定请求 `@method`/`@target-uri` 防旧价重放）与 PR `#782`（分操作类别幂等键语义与签名 MCP 请求 HTTP `Idempotency-Key` 头权威优先）。
+  - `stripe/ai` 升至 `8.0.5`（`8a8818e` 指引在沙箱创建受限密钥 RAK），推进 PR `#584`（`@stripe/mcp` 代理通过 `registerTool` 保留 `destructiveHint`/`readOnlyHint` 注解）、PR `#542`（`buildForwardingErrorResponse` 在转发 JSON-RPC 请求失败时立即返回错误避免 60s 挂起）与 PR `#540`（`mcp>=1.8.0,<2`），配合 MCP PR `#3415`（`SEP-3415` Events 扩展 `events/poll` 截断标志与 Standard Webhooks 订阅验签）。
+  - `sierra-research/tau2-bench` 合入 `#675`/`#676`/`#670`（`cc1df47` Avartha `Ava Zero` 与 Phonic `phonic-1`），并推进 PR `#674`（畸形工具参数与空白回复按 `AGENT_ERROR` `0.0` 分计入分母）与 PR `#677`（剥离零售 `known_info` 中的内部主键 `mei_kovacs_8020`）。
+
+
 

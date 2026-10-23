@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>16/16 (100.0%) 确定性拦截 x402 XRPL Upto/CORS 预检/自付款刷量、UCP 订阅总额污染/未绑定签名重放、Stripe MCP 代理元数据丢失/挂起与 τ-bench 分母逃逸</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.card { max-width: 900px; min-height: 540px; margin: 0 auto 24px; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; }
+.kicker { color: #38bdf8; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; }
+h1, h2 { margin: 8px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid #334155; padding: 8px; text-align: left; }
+code { color: #93c5fd; }
+.bar-primary { background: #3B82F6; height: 18px; width: 8.3%; border-radius: 4px; }
+.bar-base { background: #CBD5E1; height: 18px; width: 100%; border-radius: 4px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.good { background: #064e3b; padding: 16px; border-radius: 12px; }
+.bad { background: #7f1d1d; padding: 16px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="kicker">1 / 7 · HANDS-ON · PROTOCOL & POLICY GUARDRAILS · STAGE 171</div>
+  <h1>16/16 (100.0%) 确定性拦截 x402 XRPL Upto/CORS 预检/自付款刷量、UCP 订阅总额污染/未绑定签名重放、Stripe MCP 代理元数据丢失/挂起与 τ-bench 分母逃逸</h1>
+  <p>Provenance: <code>measured</code> · Scenarios: <b>16/16 (100.0%)</b> · Speedup: <b>12.0x (1.01 ms vs 12.12 ms)</b> · Stripe MCP Deadline: <code>2026-11-30</code> (38 days remaining)</p>
+</section>
+<section class="card">
+  <div class="kicker">2 / 7 · SCENARIO: XP-03 &amp; XP-15</div>
+  <h2>x402 XRPL Upto Pre-Delivered Bare Close (#3023) &amp; τ-bench Malformed Tool Call AGENT_ERROR (#674) Enforced in 1.01 ms</h2>
+  <p>Task type: <code>choice</code> · Action: <code>Send to a human / Deterministic Block</code> · Confidence: <code>1.00</code></p>
+</section>
+<section class="card">
+  <div class="kicker">3 / 7 · WHAT I TESTED</div>
+  <h2>16/16 (100.0%) Evaluation Matrix Across x402 XRPL Upto/CORS, UCP #672/#890/#699/#782, Stripe AI #584/#542 &amp; τ-bench #674/#677</h2>
+  <table>
+    <thead><tr><th>SCENARIO</th><th>DOMAIN</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th><th>RESULT</th></tr></thead>
+    <tbody>
+<tr><td><code>XP-01</code></td><td>x402 Foundation (#3023 / #3738 / #3809)</td><td>校验 `xrpl:1` 通道 `CLM\0` 签名、`CancelAfter/SettleDelay >= maxTimeout+20s`、`OPTIONS` 204 预检与双向 CORS 头</td><td><code>X402_XRPL_UPTO_CORS_AND_ANTI_WASH_OK</code></td><td>自动放行 (Act automatically)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-02</code></td><td>x402 Foundation (#3023)</td><td>拦截客户端在 `PAYMENT-SIGNATURE` 中注入仅限服务端 `/settle` 签发的 `settlementTransaction` (`#3023`)</td><td><code>X402_XRPL_UPTO_UNEXPECTED_SETTLEMENT_TX_AT_VERIFY</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-03</code></td><td>x402 Foundation (#3023)</td><td>拦截当 `channelBalance >= settleAmount` 或零结算时仍携带 `Balance/Amount/Signature` 而非裸 `tfClose` (`#3023`)</td><td><code>X402_XRPL_UPTO_BARE_CLOSE_MUST_OMIT_CLAIM_FIELDS</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-04</code></td><td>x402 Foundation (#3738 / #3809)</td><td>拦截通配路由 `* /path` 对浏览器 `OPTIONS` 预检返回 HTTP `402` 导致真实付费请求无法发出 (`#3738`)</td><td><code>X402_OPTIONS_PREFLIGHT_TREATED_AS_PAID</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-05</code></td><td>x402 Foundation (PR #3910)</td><td>拦截 `payer` 与 `payTo` 相同（零净经济价值转移）的自结算刷量与目录自索引滥用 (`PR #3910`)</td><td><code>X402_SELF_PAYMENT_PROHIBITED</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-06</code></td><td>x402 Foundation (#3096 / #3459 / #3855)</td><td>拦截链上回执未发出匹配 `channelId` 的 `Refunded` 金额事件却报告退款成功 (`#3096`)</td><td><code>X402_BATCH_REFUND_MISSING_EVENT</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-07</code></td><td>UCP (#672 / #890 / #699 / #782)</td><td>校验 `ready_for_complete -> requires_escalation`、未来周期订单零计入结账 `totals`、签名绑定请求及幂等键一致</td><td><code>UCP_LIFECYCLE_PURCHASE_OPTIONS_AND_BINDING_OK</code></td><td>自动放行 (Act automatically)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-08</code></td><td>UCP (PR #890)</td><td>拦截将后续由商家代下的周期性订阅订单金额计入当次结账 `totals` (`PR #890`)</td><td><code>UCP_RECURRING_SCHEDULE_OWED_AT_CHECKOUT_FORBIDDEN</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-09</code></td><td>UCP (PR #699)</td><td>拦截仅签名 `@status`/`content-digest` 而未绑定原请求，防止网关重放提价前的 `$40.00` 旧签名 `200` 响应 (`PR #699`)</td><td><code>UCP_SIGNED_RESPONSE_NOT_BOUND_TO_REQUEST</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-10</code></td><td>UCP (PR #782)</td><td>拦截将绑定 `chk_123` 的 `cancel_checkout` 幂等键复用于 `chk_999` 而不报错 (`PR #782`)</td><td><code>UCP_IDEMPOTENCY_TARGET_MISMATCH</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-11</code></td><td>Stripe AI (`8.0.5`, #584/#542/#540) & MCP (#3415)</td><td>校验 `registerTool` 保留 `title/annotations`、401 转发失败立即回传 JSON-RPC 错误、`mcp<2` 及 `SEP-3415` 游标</td><td><code>STRIPE_MCP_PROXY_TOOLKIT_AND_EVENTS_OK</code></td><td>自动放行 (Act automatically)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-12</code></td><td>Stripe AI (PR #584)</td><td>拦截本地代理使用旧 `this.tool(...)` 导致 `create_refund` 等工具丢失 `destructiveHint`/`readOnlyHint` (`PR #584`)</td><td><code>STRIPE_MCP_PROXY_METADATA_DROPPED</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-13</code></td><td>Stripe AI (PR #542)</td><td>拦截 `httpTransport.send()` 抛出 HTTP 401 等异常时仅写 stderr 而不向客户端回传 JSON-RPC Error (`PR #542`)</td><td><code>STRIPE_MCP_FORWARDING_REQUEST_DROPPED</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-14</code></td><td>Sierra tau2-bench 2.0 (#674 / #677 / #675 / #676)</td><td>校验非 JSON 对象工具参数判为 `AGENT_ERROR`（保留分母）、`Mei Kovacs` 自然姓名与 `Ava Zero`/`phonic-1` 发布日期</td><td><code>TAU2_MALFORMED_TOOL_SCORING_AND_RETAIL_PII_OK</code></td><td>自动放行 (Act automatically)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-15</code></td><td>Sierra tau2-bench 2.0 (PR #674)</td><td>拦截模型输出非对象 JSON 参数或空回复时逃逸为 `INFRASTRUCTURE_ERROR` 从而被从 2.0 得分分母中剔除 (`PR #674`)</td><td><code>TAU2_AGENT_FAULT_MISCLASSIFIED_AS_INFRA_ERROR</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+<tr><td><code>XP-16</code></td><td>Sierra tau2-bench 2.0 (PR #677)</td><td>拦截在要求调用 `find_user_id_by_name_zip` 的零售任务提示中直接向 Agent 暴露内部 ID `mei_kovacs_8020` (`PR #677`)</td><td><code>TAU2_KNOWN_INFO_INTERNAL_USER_ID_LEAK</code></td><td>确定性阻断 (Send to a human / Block)</td><td>✅ PASS</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+  <h2>Protocol &amp; Scoring Mechanics (Deterministic Verifier Flow &lt;answer&gt;)</h2>
+  <pre style="background:#0F172A;padding:16px;border-radius:8px;overflow:auto;">Structured Contract Input (XP-01..XP-16) ↓ Deterministic Policy Verifier ↓ &lt;answer&gt; Sealed Decision Code</pre>
+</section>
+<section class="card">
+  <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+  <h2>16/16 (100.0%) Key-Order Perturbation Invariance (0.0 pts Drift)</h2>
+  <table>
+    <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+    <tbody>
+<tr><td><code>XP-01</code></td><td><code>X402_XRPL_UPTO_CORS_AND_ANTI_WASH_OK</code></td><td><code>X402_XRPL_UPTO_CORS_AND_ANTI_WASH_OK</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-02</code></td><td><code>X402_XRPL_UPTO_UNEXPECTED_SETTLEMENT_TX_AT_VERIFY</code></td><td><code>X402_XRPL_UPTO_UNEXPECTED_SETTLEMENT_TX_AT_VERIFY</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-03</code></td><td><code>X402_XRPL_UPTO_BARE_CLOSE_MUST_OMIT_CLAIM_FIELDS</code></td><td><code>X402_XRPL_UPTO_BARE_CLOSE_MUST_OMIT_CLAIM_FIELDS</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-04</code></td><td><code>X402_OPTIONS_PREFLIGHT_TREATED_AS_PAID</code></td><td><code>X402_OPTIONS_PREFLIGHT_TREATED_AS_PAID</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-05</code></td><td><code>X402_SELF_PAYMENT_PROHIBITED</code></td><td><code>X402_SELF_PAYMENT_PROHIBITED</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-06</code></td><td><code>X402_BATCH_REFUND_MISSING_EVENT</code></td><td><code>X402_BATCH_REFUND_MISSING_EVENT</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-07</code></td><td><code>UCP_LIFECYCLE_PURCHASE_OPTIONS_AND_BINDING_OK</code></td><td><code>UCP_LIFECYCLE_PURCHASE_OPTIONS_AND_BINDING_OK</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-08</code></td><td><code>UCP_RECURRING_SCHEDULE_OWED_AT_CHECKOUT_FORBIDDEN</code></td><td><code>UCP_RECURRING_SCHEDULE_OWED_AT_CHECKOUT_FORBIDDEN</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-09</code></td><td><code>UCP_SIGNED_RESPONSE_NOT_BOUND_TO_REQUEST</code></td><td><code>UCP_SIGNED_RESPONSE_NOT_BOUND_TO_REQUEST</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-10</code></td><td><code>UCP_IDEMPOTENCY_TARGET_MISMATCH</code></td><td><code>UCP_IDEMPOTENCY_TARGET_MISMATCH</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-11</code></td><td><code>STRIPE_MCP_PROXY_TOOLKIT_AND_EVENTS_OK</code></td><td><code>STRIPE_MCP_PROXY_TOOLKIT_AND_EVENTS_OK</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-12</code></td><td><code>STRIPE_MCP_PROXY_METADATA_DROPPED</code></td><td><code>STRIPE_MCP_PROXY_METADATA_DROPPED</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-13</code></td><td><code>STRIPE_MCP_FORWARDING_REQUEST_DROPPED</code></td><td><code>STRIPE_MCP_FORWARDING_REQUEST_DROPPED</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-14</code></td><td><code>TAU2_MALFORMED_TOOL_SCORING_AND_RETAIL_PII_OK</code></td><td><code>TAU2_MALFORMED_TOOL_SCORING_AND_RETAIL_PII_OK</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-15</code></td><td><code>TAU2_AGENT_FAULT_MISCLASSIFIED_AS_INFRA_ERROR</code></td><td><code>TAU2_AGENT_FAULT_MISCLASSIFIED_AS_INFRA_ERROR</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>XP-16</code></td><td><code>TAU2_KNOWN_INFO_INTERNAL_USER_ID_LEAK</code></td><td><code>TAU2_KNOWN_INFO_INTERNAL_USER_ID_LEAK</code></td><td><b>0.0 pts</b></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">6 / 7 · LATENCY</div>
+  <h2>1.01 ms Median Guard Latency vs. 12.12 ms Baseline (12.0x Speedup)</h2>
+  <p>Primary Deterministic Guard (<code>1.01 ms</code>)</p><div class="bar-primary"></div>
+  <p>Baseline Cross-Service / LLM Judge (<code>12.12 ms</code>)</p><div class="bar-base"></div>
+</section>
+<section class="card">
+  <div class="kicker">7 / 7 · MY TAKE</div>
+  <h2>Good Fit vs. Not For &amp; Production Readiness</h2>
+  <div class="grid">
+    <div class="good"><h3>✅ Good fit</h3><p>x402 XRPL upto PaymentChannel verification/settlement (#3023) &amp; CORS preflight/header rules (#3738/#3809), UCP #672 checkout lifecycle &amp; #890 purchase_options, Stripe MCP proxy metadata/error guards (#584/#542), and τ-bench #674/#677 verifiers.</p></div>
+    <div class="bad"><h3>⛔ Not for</h3><p>Replacing live rippled validator consensus, TLS termination hardware, or live Stripe API issuer settlement networks.</p></div>
+  </div>
+</section>
+</body>
+</html>

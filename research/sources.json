@@ -1,5 +1,5 @@
 {
-  "checked_on": "2026-10-22",
+  "checked_on": "2026-10-23",
   "policy": "Primary-source facts only. Null dates mean unverified, not unpublished. Hashes are change signals, not release claims.",
   "sources": [
     {
@@ -48,7 +48,7 @@
       "url": "https://docs.stripe.com/mcp",
       "monitor_url": "https://docs.stripe.com/mcp.md",
       "published_on": null,
-      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Verified unchanged on Oct 22 with policy_change='unchanged' and deadline='2026-11-30' (39 calendar days remaining as of 2026-10-22; originally 2026-10-31). Cutoff time/timezone remain unspecified."
+      "evidence": "OAuth/Agent Keys; Oct 16 official notice updated from '31 October 2026' to 'November 30, 2026' ('Migrate by November 30, 2026. Starting in December, Stripe MCP will stop accepting full-access secret keys and restricted API keys without the Agent tag.'). Verified unchanged on Oct 23 with policy_change='unchanged' and deadline='2026-11-30' (38 calendar days remaining as of 2026-10-23; originally 2026-10-31, 8 days away). Cutoff time/timezone remain unspecified."
     },
     {
       "id": "stripe-mpp",
@@ -99,19 +99,19 @@
       "id": "visa-vic",
       "url": "https://developer.visa.com/capabilities/visa-intelligent-commerce/overview",
       "published_on": null,
-      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14–Oct 22 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403 Akamai WAF); current developer body and availability not reverified."
+      "evidence": "Last successful body review Oct 13: onboarding, agent tokens, passkey-authenticated instructions, VisaNet controls. Oct 14–Oct 23 monitor runs returned HTTP 403 (redirecting via 301 to /docs/visa-intelligent-commerce -> 403 Akamai WAF); current developer body and availability not reverified."
     },
     {
       "id": "visa-tap",
       "url": "https://developer.visa.com/capabilities/trusted-agent-protocol/overview",
       "published_on": null,
-      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Oct 22 hash change (fee64a668018) verified as an Angular/Prism.manual portal shell fix (bca825d / TLVDPIA-207) with unchanged TAP getting-started text and no protocol change."
+      "evidence": "Oct 14 original capability URL redirects to /docs/trusted-agent-protocol. Oct 22–23 hash changes (fee64a668018 / 98ea201cf36b) verified as Angular/Prism.manual portal shell navigation updates with unchanged TAP getting-started text and no protocol change."
     },
     {
       "id": "visa-tap-specs",
       "url": "https://developer.visa.com/docs/trusted-agent-protocol/trusted-agent-protocol-specifications",
       "published_on": null,
-      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. Oct 22 hash change (de9758b4e3cf) verified as the same Angular/Prism.manual portal shell fix (bca825d / TLVDPIA-207) with zero specification change."
+      "evidence": "Oct 14 reviewed scope introduction: browsing and payment interactions, consumer recognition, optional payment information, HTTP/web/API/MCP/ACP transport compatibility. Oct 22–23 hash changes (de9758b4e3cf / d1dbbdfbbb9e) verified as the same portal shell navigation updates with zero specification change."
     },
     {
       "id": "visa-tap-announcement",
@@ -136,19 +136,19 @@
       "id": "ucp",
       "url": "https://ucp.dev/latest/specification/overview/",
       "published_on": null,
-      "revision_observed": "2bbae244f2233d12fd61602a8146b7fa33769000",
-      "commit_committed_at": "2026-10-21T20:28:53Z",
-      "evidence": "Oct 22 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged'). Official repository Universal-Commerce-Protocol/ucp main advanced to 2bbae244f223 (#940: cart-only checkout creation via anyOf line_items or cart_id, Cart authority when both present, and mandatory rejection of cart_id when dev.ucp.shopping.cart is not negotiated; #966 / 4aa3127: dev.ucp.shopping.policy.return explicit eligibility.type, business-stated expires_at, and typed fees[]; #977 catalog similarity; #980 identity-linking selection; #981 address_line_components; #982 ucp-schema 2.0.0; #983 site lint), alongside open PR #985 (client registration model agnosticism)."
+      "revision_observed": "54108135379e65cb29a9779fc1d5c555bf7e70ee",
+      "commit_committed_at": "2026-10-23T09:55:29Z",
+      "evidence": "Oct 23 ucp.dev overview returned HTTP 200 (status='ok', change='unchanged'). Official repository Universal-Commerce-Protocol/ucp main advanced to 54108135379e (#672: aligns Checkout Status Lifecycle state diagram so ready_for_complete transitions to complete_in_progress, completed, incomplete, and requires_escalation), alongside open PRs #890 (purchase_options & policy.subscription where recurring order schedules owe 0 at checkout), #699 (signed REST response request-context binding), and #782 (per-operation-class idempotency identity & HTTP header authority)."
     },
     {
       "id": "stripe-ai-skills",
       "url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "monitor_url": "https://raw.githubusercontent.com/stripe/ai/main/README.md",
       "published_on": null,
-      "revision_observed": "326ea8bf64f8a4b25cd8ccbe4b2b10862e391b93",
-      "commit_committed_at": "2026-10-22T00:50:19Z",
-      "plugin_version_observed": "8.0.4",
-      "evidence": "Official Oct 22 sync-skills commit reviewed (326ea8bf64f8): bumps agent-plugins to 8.0.4, Claude to 0.11.26, Cursor/Grok to 0.9.26, Codex to 5.8.26, updates upgrade-stripe snapshot date to 2026-10-22 while keeping fallback API version 2026-09-30.endive, and aligns with PR #581 (fixing StripeTool._run via asyncio.get_running_loop() + asyncio.run(...) in worker threads)."
+      "revision_observed": "8a8818ed1d5bd15ebfa33834a6267d6a7c8333bc",
+      "commit_committed_at": "2026-10-23T00:47:27Z",
+      "plugin_version_observed": "8.0.5",
+      "evidence": "Official Oct 23 sync-skills commit reviewed (8a8818ed1d5b): bumps agent-plugins to 8.0.5, Claude to 0.11.27, Cursor/Grok to 0.9.27, updates security.md to recommend creating restricted API keys (RAKs) in a sandbox, alongside PR #584 (registerTool preserving remote tool annotations), PR #542 (buildForwardingErrorResponse fast JSON-RPC error on forwarding failure), and PR #540 (mcp>=1.8.0,<2)."
     },
     {
       "id": "ap2",
@@ -311,9 +311,9 @@
       "published_on": null,
       "release_tag_observed": "2.0.0",
       "release_published_at": "2026-10-19T22:55:49Z",
-      "revision_observed": "05736c2d3f9fa1b3cb35622a47a5b3233dc9b450",
-      "commit_committed_at": "2026-10-21T20:26:52Z",
-      "evidence": "Official Sierra Research tau2-bench (tau-bench 2.0) repository. Oct 22 main advanced to 05736c2d3f9f (#640: voice-v2 call-level interaction & experience quality gates merged, README hash 716bf2c60eb6), alongside Oct 22 PRs #667 (8bc5273: retail exchange_delivered_order_items rejects item_id == new_item_id), #666 (c195592: telecom can_send_mms rejects empty mmsc_url), #671 (0100728: .gitattributes eol=lf for frozen benchmark hashes on Windows), and #670 (8dce42b: Phonic mulaw_8000 voice provider playback gating)."
+      "revision_observed": "cc1df471b2467948d7a10697a872094be4e5dd30",
+      "commit_committed_at": "2026-10-23T01:41:06Z",
+      "evidence": "Official Sierra Research tau2-bench (tau-bench 2.0) repository. Oct 23 main advanced to cc1df471b246 (#675 Avartha Ava Zero, #676 2026-10-22 release dates, #670 Phonic phonic-1 merged to main), alongside Oct 23 PRs #674 (malformed tool-call arguments and empty replies scored as AGENT_ERROR 0.0 in denominator rather than INFRASTRUCTURE_ERROR) and #677 (removes leaked internal user_id mei_kovacs_8020 from retail known_info)."
     },
     {
       "id": "sierra-tau2-retail-policy",

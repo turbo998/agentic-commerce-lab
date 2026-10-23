@@ -1,6 +1,6 @@
 # Agentic Commerce Lab (English Edition)
 
-🌐 **Language / 语言导航**: **[中文 (`README.md`)](README.md)** | **English (Current)** | **[2026-10-22 Daily Research (EN)](research/daily/2026-10-22.en.md)** | **[2026-10-22 每日研究 (中文)](research/daily/2026-10-22.md)** | **[Full-Stack Reference Architecture (EN Guide)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md)** | **[Full-Stack Master Blueprint (§1–§168)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md)**
+🌐 **Language / 语言导航**: **[中文 (`README.md`)](README.md)** | **English (Current)** | **[2026-10-23 Daily Research (EN)](research/daily/2026-10-23.en.md)** | **[2026-10-23 每日研究 (中文)](research/daily/2026-10-23.md)** | **[Full-Stack Reference Architecture (EN Guide)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md)** | **[Full-Stack Master Blueprint (§1–§170)](docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md)**
 
 From a Solutions Architect perspective, **Agentic Commerce Lab** investigates technical architectures, protocol standards, and enterprise agent use cases for Personal & Delegated AI Agents—focusing on **Visa** (`Intelligent Commerce`, `Trusted Agent Protocol`, `MCP Server & Acceptance Toolkit`), **Stripe** (`ACP`, `UCP`, `Agentic Commerce Suite`, `Shared Payment Tokens`, `Link Agent Wallet`, `Machine Payments Protocol / Tempo`, `x402`, `MCP`), **Google AP2** (`Agent Payments Protocol` `SD-JWT+kb`), and **Sierra** (`Agent OS`, `Personal Agent Protocol / Poppy v0.2`, `τ-bench 2.0.0`).
 
@@ -26,6 +26,8 @@ Classic **3-Tier Web Architectures (Presentation → Stateless App → Database)
 | Resource | Chinese (中文) | English | Highlights |
 |---|---|---|---|
 | **Repository Overview** | [`README.md`](README.md) | [`README.en.md`](README.en.md) | Full index of protocols, architecture blueprints, `lab/` guards, and 7-Card benchmarks |
+| **2026-10-23 Daily Research** | [`research/daily/2026-10-23.md`](research/daily/2026-10-23.md) | [`research/daily/2026-10-23.en.md`](research/daily/2026-10-23.en.md) | 50-source audit (`49/50 ok`), Stripe MCP 38-day countdown (`2026-11-30`, 8 days to original `2026-10-31`), x402 Foundation `#3023` (`2b06a54` XRPL `upto` scheme: `xrpl:0`/`1`/`2`, `CLM\0` claim signature, `/verify` `settlementTransaction` prohibition, `Balance == 0`, `20s` landing margin, bare `tfClose` on zero delta, and `(network, channelId)` mutex) / `#3738` & `#3809` (wildcard `OPTIONS` preflight bypass & browser CORS headers) / `#3096` (batch refund receipt fail-closed) / `#3459` & `#3889` (EVM gas sponsoring RPC requirement) / `#3855` (paywall HTML XSS escaping) / PR `#3910` (`payer != payTo`), UCP `#672` (`5410813` Checkout lifecycle state diagram alignment) / PR `#890` (`purchase_options` zero-due recurring `schedules[]`) / PR `#699` (signed REST response request binding) / PR `#782` (per-operation-class idempotency & HTTP header authority), Stripe AI `8.0.5` (`8a8818e` sandbox RAKs) / PR `#584` (`@stripe/mcp` `registerTool` annotations) / PR `#542` (`buildForwardingErrorResponse` fast JSON-RPC error) / PR `#540` & MCP `SEP-3415` (`#3415` Events extension), Sierra $\tau$-bench 2.0 `#674` (`AGENT_ERROR` denominator integrity) / `#677` (retail `known_info` internal key removal) / `#675` `Ava Zero` & `#670` `phonic-1` |
+| **2026-10-23 Technical Update Index** | [`docs/research/2026-10-23-daily-update.md`](docs/research/2026-10-23-daily-update.md) | [`docs/research/2026-10-23-daily-update.en.md`](docs/research/2026-10-23-daily-update.en.md) | Stage-by-stage technical asset & test verification log for `2026-10-23` (Stages 170–171, `741/741` unit tests) |
 | **2026-10-22 Daily Research** | [`research/daily/2026-10-22.md`](research/daily/2026-10-22.md) | [`research/daily/2026-10-22.en.md`](research/daily/2026-10-22.en.md) | 50-source audit (`49/50 ok`), Stripe MCP 39-day countdown (`2026-11-30`), Stripe Recurring SPT (`cf14fd45` direct reuse & `setup_future_usage` prohibition) & UCP Handler (`cf6014be`), x402 Foundation `#3285` (strict CAIP-2 regex) / `#3400` (1 MiB/4 MiB body caps) / `#3826` (`extensions` shallow copy) / `#3567` & `#3715` (Bazaar HTTP verb schema & V1 HTTP 402) / `#3674` (Cardano raw-CBOR byte preservation) / `#3125` & `#3293` (Stellar `TRY_AGAIN_LATER` retryable), UCP `#940` (`2bbae24` cart-only checkout & Cart authority) / `#966` (`4aa3127` explicit return policy) / `#985`, Stripe AI `8.0.4` (`326ea8b` & PR `#581` `StripeTool._run` loop fix), Sierra $\tau$-bench 2.0 `#640` (`05736c2` `voice-v2`) / `#667` / `#666` / `#671` / `#670` |
 | **2026-10-22 Technical Update Index** | [`docs/research/2026-10-22-daily-update.md`](docs/research/2026-10-22-daily-update.md) | [`docs/research/2026-10-22-daily-update.en.md`](docs/research/2026-10-22-daily-update.en.md) | Stage-by-stage technical asset & test verification log for `2026-10-22` (Stages 168–169, `735/735` unit tests) |
 | **2026-10-21 Daily Research** | [`research/daily/2026-10-21.md`](research/daily/2026-10-21.md) | [`research/daily/2026-10-21.en.md`](research/daily/2026-10-21.en.md) | 50-source audit, Stripe MCP 40-day countdown (`2026-11-30`), ACP `#316` (SEP `#303` `UserApproval` & `approval_digest` + Rule 4 intent attribution), UCP `#540` (`207314b` admission-only AP2 mandate TTL & `keys[]` discovery) / `#966` (explicit return policy) / `#930` (quote), x402 Foundation `#3304` (`response-provenance`) / `#3855` / `#3857` / `#3858`, Sierra $\tau$-bench 2.0 `#653` (`57e5414` minimal sandbox env) / `#655` (root-walk `denyRead`) / `#640` / `#652`, Stripe AI `8.0.3` (`1bcd18a`), MCP `#3440` |
@@ -122,10 +124,10 @@ Every benchmark report adheres to the **7-Card 4:5 Visual Report Standard** (`CS
 Requires Python 3.12+ (standard library only; zero network calls, zero API keys, zero payment accounts required):
 
 ```powershell
-# Run full unit test suite (735 unit tests across Stages 1–169)
+# Run full unit test suite (741 unit tests across Stages 1–171)
 python -m unittest discover -s tests -q
 
-# Run offline checkout demo, Stage 117–169 benchmarks & Stripe MCP 2026-11-30 cutover inventory check
+# Run offline checkout demo, Stage 117–171 benchmarks & Stripe MCP 2026-11-30 cutover inventory check
 python -m lab.demo
 python -m lab.acp_user_approval_ucp_mandate_ttl_return_x402_provenance_tau2_sandbox_bench
 python -m lab.x402_stellar_upto_ucp_media_headers_stripe_plugin_mcp_events_tau2_bench
@@ -154,7 +156,8 @@ python -m lab.x402_algorand_asa_ucp_bopis_curbside_acp_chargeback_ap2_device_att
 python -m lab.x402_cardano_utxo_ucp_subscription_pause_acp_3ds_decoupled_ap2_biometric_tau2_bench
 python -m lab.x402_stellar_soroban_ucp_preorder_bundle_acp_network_token_ap2_ephemeral_tau2_bench
 python -m lab.x402_caip2_body_cap_ucp_cart_only_stripe_recurring_spt_tau2_phonic_bench
-python -m lab.mcp_migration --as-of 2026-10-22
+python -m lab.x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_bench
+python -m lab.mcp_migration --as-of 2026-10-23
 python -m lab.mcp_migration --as-of 2026-11-30
 
 # Run public 50-source monitor (requires internet; writes research/daily/YYYY-MM-DD-sources.json)

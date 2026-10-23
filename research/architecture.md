@@ -167,5 +167,15 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 3. **原始字节保真广播与幂等瞬态重试（x402 `#3674`, `#3125`/`#3293`）**：针对 Cardano 等对 CBOR 编码敏感的账本，Facilitator 直接透传客户端签名原始字节，严禁经 ORM/SDK 反序列化再序列化触发 Conway Tag-258 见证失效；针对 Stellar RPC `TRY_AGAIN_LATER`，显式标记为可重试瞬态错误并复用原签名交易，杜绝盲目重签引发的双重扣款。
 4. **服务端 Cart 权威转换与工具参数语义不变量（UCP `#940` & $\tau$-bench `#667`/`#666`/`#670`/`#671`）**：在 `create_checkout` 中禁止未协商 `dev.ucp.shopping.cart` 时静默忽略 `cart_id`，同传时强制以服务端 Cart 为唯一权威；在工具执行边界强制阻断零售 `item_id == new_item_id` 自换与电信空白 `mmsc_url`，在全双工语音通道按发言生命周期门控 `mulaw_8000` 音频回放，并通过 `.gitattributes` `eol=lf` 锁定跨平台评测基准哈希。
 
+## 2026-10-23 增量：链下支付通道着陆裕度、结账状态机可恢复回退与本地 MCP 代理安全注解透传
+
+[今日研究](daily/2026-10-23.md)（[English](daily/2026-10-23.en.md)）结合 x402 Foundation 当日合入（`#3023` `2b06a54`、`#3738`、`#3809`、`#3096`、`#3459`、`#3855`、PR `#3910`）、UCP `#672`（`5410813`）及开放 PR `#890`/`#699`/`#782`、Stripe AI `8.0.5`（`8a8818e`）及 PR `#584`/`#542`/`#540` 与 Sierra $\tau$-bench 2.0（`#674`/`#677`），进一步明确 AI-Native 架构区别于经典三层 Web 架构的四项设计要求（已落地于 [`lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_guard.py`](../lab/x402_xrpl_upto_cors_ucp_lifecycle_purchase_options_stripe_mcp_proxy_tau2_guard.py) 与 [Stage 171 `XP-01..XP-16` 双语 7-Card 报告](../reports/agentic-commerce-x402-xrpl-upto-cors-ucp-lifecycle-purchase-options-stripe-mcp-proxy-tau2-bench/index.html)）：
+
+1. **链下支付通道时间漂移裕度、裸 `tfClose` 释放与通配路由 CORS 预检隔离（x402 `#3023`, `#3738`, `#3809`, `#3910`）**：经典三层架构假设本地数据库事务无账本关账时间漂移且通配符鉴权拦截一切动词；AI-Native 支付层对 XRPL `upto` 支付通道强制 `/verify` 禁带 `settlementTransaction`、`Balance == 0`、`CancelAfter`/`SettleDelay` 预留 `20s` 着陆裕度、零使用关通道省略 `Balance/Amount/Signature/PublicKey` 仅发裸 `tfClose`，并在无方法通配路由自动放行 `OPTIONS` 预检、阻断 `payer == payTo` 自付洗钱。
+2. **结账状态机可恢复回退、远期订阅零当期计费与签名响应请求上下文绑定（UCP `#672`, `#890`, `#699`, `#782`）**：AI-Native 结账状态机允许 `ready_for_complete` 在提交校验时回退至 `incomplete` 或升级至 `requires_escalation`，强制远期订阅 `schedules[]` 当期结账应付为 `0`（严禁计入 `totals`），并通过 RFC 9421 `req` 参数将签名 REST 响应绑定至原请求 `@method`/`@target-uri` 防御 CDN 旧价重放。
+3. **本地 MCP 代理安全注解透传与请求级快速失败（Stripe AI `8a8818e`, `#584`, `#542` & MCP `SEP-3415`）**：本地 `@stripe/mcp` 代理通过 `registerTool` 原样透传远端工具的 `destructiveHint`/`readOnlyHint` 等安全注解，并在转发 JSON-RPC Request 失败时立即合成 JSON-RPC Error 响应免除 60 秒超时挂起。
+4. **Agent 评测分母反作弊与零内部主键泄露（Sierra $\tau$-bench 2.0 `#674`, `#677`）**：将模型生成的畸形工具参数与空白回复按 `AGENT_ERROR`（`0.0` 分）计入总样本分母而非作为 `INFRASTRUCTURE_ERROR` 剔除，并从用户模拟器提示词中彻底剥离内部数据库主键。
+
+
 
 
