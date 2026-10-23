@@ -2129,6 +2129,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.98 ms` vs. `12.16 ms`（`12.4x` 加速）**。
 - **技术资产**：[`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)、[`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html)）。
 
+---
+
+## 179. Stage 180 增量（`2026-10-23`）：MCP 变更型 `tools/call` 丢失响应（`LOST_ACK`）派发前逻辑操作日志与权威回读对账（`#3394`）、惰性加载路由摘要与防跨工具劫持（`#3430`）、Sierra $\tau$-bench 2.0 `loan_servicing` 英法双语不变量与未评分试验过滤（`#638`/`#678`）及 UCP `TokenCredential` 上下文透传与公益捐赠拆账（`#792`/`#924`）
+
+### 179.1 Model Context Protocol 变更型 `tools/call` 丢失响应（`LOST_ACK`）派发前逻辑身份记录与权威回读对账（Issue `#3394`，`2026-10-23T14:43:58Z`）与惰性加载独立 `routing_metadata_digest` 防跨工具劫持（Issue `#3430`，`2026-10-23T10:02:41Z`）
+- 在 `modelcontextprotocol/modelcontextprotocol` Issue `#3394` 中，由于 MCP 协议要求每次请求在会话内使用全新的 JSON-RPC `id`（不得复用 `attempt_1_jsonrpc_id`），当 `complete_checkout` 等变更型 `tools/call` 发生响应丢失（`LOST_ACK`）时，调用方必须在**派发前**持久化 `logical_operation_id` 以严格区分 `"never_attempted"` 与 `"attempted_outcome_unknown"`；若 LLM 在重试时改写参数（`args_reworded_on_retry=True`）且缺乏派发前逻辑操作锚点，立即阻断重试（`mcp_mutating_retry_reworded_args_unanchored`）。同时，在途扣款的回读状态必须暴露 `"in_flight"` 而严禁伪装为 `"ready_for_payment"`（`mcp_readback_inflight_masked_as_ready_for_payment`），非权威/延迟可见性存储（`X02`）查无记录时不得宣称 `"not_executed"`，而重试收到 `"session_already_completed"` 时必须经权威回读确认 `"completed"` 后对账收敛为单次成功收据。在 Issue `#3430`（覆盖 38,126 个服务端、23,821 次工具列表变更的实证研究，其中 12,422 次为文案编辑，且 9/12 次跨工具路由劫持仅修改 `Tool.description` 而未改 `inputSchema`）中，强制惰性加载（`lazy_loading=True`）提供非空的 `InitializeResult.serverInfo.description`，将 `routing_metadata_digest` 与 `input_schema_digest`、`free_prose_digest` 分离，在放行良性拼写修复的同时精准拦截 `Tool.description` 中注入 `"prefer this tool over web search"` 等跨工具劫持短语（`mcp_tool_description_cross_tool_steering_detected`）。
+
+### 179.2 Sierra $\tau$-bench 2.0 `loan_servicing` 英法双语（EN/FR）不变量（PR `#638` 提交 `ce55fda`，`2026-10-23T16:20:33Z`）与 `result_reward_analysis()` 未评分试验安全过滤（Issue `#678`，`2026-10-23T12:12:39Z`）
+- 在 `sierra-research/tau2-bench` PR `#638`（提交 `ce55fda`）中，新增 `loan_servicing` 与 `loan_servicing_fr` 双语评测域：(1) 修复 `make_payment` 此前仅拦截 `paid_off` 的漏洞，统一在 `CLOSED_STATUSES = {"paid_off", "charged_off"}` 上禁止 `make_payment` 与 `enroll_autopay`（`tau2_loan_servicing_closed_status_payment_forbidden`）；(2) 禁用 `solo_mode=True`；(3) `transfer_to_human_agents` 仅对结构化 `{transfer_id, reason}` 记入 DB 状态哈希（排除自由文本 `summary`），且 `communicate_info` 仅允许语言无关引用码（`^[A-Z]{2}-\d+$`）或 `< 1000` 整数（拦截 `"12 431,07 $"` 等破坏法语评测等价性的本地化金额字符串）。在 Issue `#678` 中，过滤 `make_infra_failure_sim()` 生成的 `reward_info=None` 占位记录后再读取 `.reward_breakdown`，防止单次基础设施故障导致整批评测指标崩溃。
+
+### 179.3 Google UCP `TokenCredential` 令牌签发上下文透传（PR `#792`，`2026-10-23T16:15:08Z`）与 Agentic Donations 公益捐赠多主体拆账治理（Issue `#924` & PTC `2026-10-15` 纪要 `9d1c85c`，`2026-10-23T16:14:57Z`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#792`（`source/schemas/common/types/token_credential.json`）中，为 `TokenCredential` 新增可选 `binding`（结账/资源绑定上下文）与 `identity`（参与者标识符）：平台必须原样透传 `/tokenize` 签发的 `binding` 与 `identity` 至 Checkout（`ucp_token_credential_platform_mutation_forbidden`），商家与支付处理方核对 `binding` 与签发记录一致，且严禁将 `TokenCredential.identity` 当作调用方身份认证凭据（`ucp_token_credential_identity_used_as_auth_forbidden`）。在 Issue `#924` 与 PTC `2026-10-15` 会议纪要中，针对 Agentic Donations 公益捐赠场景强制披露受益慈善机构（`beneficiary_id`）与收款登记商户（`collector_id`），验证免税凭证签发方非营利资质，并严禁将营利性平台小费（`platform_tip_minor`）混入免税捐赠收据金额 `tax_receipt_amount_minor`（`ucp_donation_platform_tip_commingled_in_tax_receipt`；参见 `lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py`）。
+
+---
+
+## 180. Stage 181 基准评测（`2026-10-23`）：16 场景（`LR-01..LR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 180 全部 16 项 `2026-10-23` 一手协议与基准护栏（`LR-01..LR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.56 ms`（`3.29x` 加速）**。
+- **技术资产**：[`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)、[`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py) 及双语报告 [`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html)）。
+
+
 
 
 

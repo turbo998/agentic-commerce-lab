@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–177）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–181）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -91,6 +91,25 @@
   - 基准套件：[`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)
   - 单元测试：[`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)（全仓库 **758/758** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/report.json)
+
+---
+
+## Stage 180：MCP 变更型 `tools/call` 丢失响应（`LOST_ACK`）派发前逻辑操作日志与权威回读对账（Issue `#3394`）、惰性加载服务端路由描述与独立 `routing_metadata_digest` 防跨工具劫持（Issue `#3430`）、Sierra $\tau$-bench 2.0 `loan_servicing` 英法双语不变量与未评分试验过滤（PR `#638` `ce55fda` & Issue `#678`）及 UCP `TokenCredential` 上下文透传与公益捐赠多主体拆账（PR `#792` & Issue `#924`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py)
+  - 单元测试：[`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py)（全仓库 **762/762** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§179)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§179)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 181：16 场景（`LR-01..LR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 180）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)
+  - 单元测试：[`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)（全仓库 **763/763** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html`（中文）](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/report.json)
+
 
 
 

@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–177)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–181)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -91,6 +91,25 @@
   - Benchmark suite: [`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)
   - Unit tests: [`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py) (**758/758** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/report.json)
+
+---
+
+## Stage 180: MCP Mutating `tools/call` Lost-Response (`LOST_ACK`) Pre-Dispatch Intent Log & Authoritative Read-Back Reconciliation (Issue `#3394`), Lazy-Loading Server Routing Description & Separate `routing_metadata_digest` Anti-Steering Pin (Issue `#3430`), Sierra $\tau$-bench 2.0 `loan_servicing` EN/FR Parity & Unscored Trial Filtering (PR `#638` `ce55fda` & Issue `#678`), and UCP `TokenCredential` Context Preservation & Agentic Donations Multi-Entity Split (PR `#792` & Issue `#924`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py)
+  - Unit tests: [`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_guard.py) (**762/762** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§179)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§179)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 181: 16-Scenario (`LR-01..LR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 180)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)
+  - Unit tests: [`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py) (**763/763** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html` (Chinese)](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/report.json)
+
 
 
 
