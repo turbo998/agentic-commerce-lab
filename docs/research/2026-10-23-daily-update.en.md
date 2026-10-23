@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–175)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–177)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -55,5 +55,24 @@
   - Benchmark suite: [`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)
   - Unit tests: [`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py) (**750/750** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/report.json)
+
+---
+
+## Stage 176: UCP Catalog Similarity Search & Substitute Discovery (PR `#974`), Food Checkout & Fulfillment Single-Establishment & Singular Destination (PR `#897`), Location-Independent Business Identity (`dev.ucp.common.business`, PR `#939`) & Bracket-Quoted JSONPath (PR `#774`), and AP2 Post-Checkout Action Record Checkpoint Cadence Ceiling & `window_anchor="uncertified"` Bypass Block (Issue `#290` `trail-head-ref-v1.md`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py)
+  - Unit tests: [`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py) (**753/753** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§175)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§175)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 177: 16-Scenario (`CF-01..CF-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 176)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)
+  - Unit tests: [`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py) (**754/754** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/report.json)
+
 
 

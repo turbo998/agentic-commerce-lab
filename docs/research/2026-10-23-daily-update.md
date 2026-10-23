@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–175）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–177）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -55,5 +55,24 @@
   - 基准套件：[`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)
   - 单元测试：[`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)（全仓库 **750/750** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/report.json)
+
+---
+
+## Stage 176：UCP 目录相似检索（`like[]` 锚点自排除与全未解析空集阻断）及替品发现（`include: ["substitutes"]` 缺省即未提供、禁含被替换变体自身，PR `#974`）、餐饮单店结账与履约（`dev.ucp.food.checkout` 单店作用域、单数 `destination`、菜品加料 `quantity >= 1` 与小费守恒，PR `#897`）、位置无关企业身份（`dev.ucp.common.business`，PR `#939`）与方括号 JSONPath（PR `#774`）、以及 AP2 结账后行为记录检查点周期上限与 `window_anchor="uncertified"` 防盲视绕过（Issue `#290` `trail-head-ref-v1.md`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py)
+  - 单元测试：[`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py)（全仓库 **753/753** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§175)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§175)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 177：16 场景（`CF-01..CF-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 176）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)
+  - 单元测试：[`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)（全仓库 **754/754** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/report.json)
+
 
 

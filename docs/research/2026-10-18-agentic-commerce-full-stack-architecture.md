@@ -2087,6 +2087,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.00 ms` vs. `12.15 ms`（`12.2x` 加速）**。
 - **技术资产**：[`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)、[`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html)）。
 
+---
+
+## 175. Stage 176 架构演进（`2026-10-23`）：UCP 目录相似检索（`like[]`）与替品发现（`include: ["substitutes"]` PR `#974`）、餐饮单店结账与小费（PR `#897`）、位置无关企业身份（`dev.ucp.common.business` PR `#939`）与方括号 JSONPath（PR `#774`）、以及 AP2 结账后行为记录检查点周期上限与 `window_anchor="uncertified"` 防盲视绕过（Issue `#290` `trail-head-ref-v1.md`）
+
+### 175.1 Google UCP 目录相似检索（`search_catalog.like[]`）与替品/推荐发现（`lookup_catalog`/`get_product` `include[]`，PR `#974`，`2026-10-23T12:18:09Z`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#974` 中，将开放式发现（`search_catalog`）与实体级替品决策（`lookup_catalog` / `get_product`）解耦：`search_catalog` 新增 `like[]` 锚点列表，与 `query` 文本协同排序，产品级锚点自动排除该产品模型，变体级锚点仅排除该变体；当所有 `like[]` 锚点均无法解析时必须返回空集（`ucp_catalog_search_all_anchors_unresolved_empty`），严禁静默降级为无约束泛搜；超出锚点数量上限时按请求顺序截断并发出 `batch_limit_applied`。`lookup_catalog` / `get_product` 新增 `include: ["substitutes", "recommendations"]`：不支持 `substitutes` 的商家直接省略该键（缺省即“未提供”而非“无替品”）；`substitutes` 条目允许包含同一商品的合格兄弟变体（如 `size10w` 替换缺货 `size10`），但严禁包含被替换变体自身（`ucp_catalog_substitute_contains_self_variant`）。
+
+### 175.2 Google UCP 餐饮单店结账能力（`dev.ucp.food.checkout`）与履约扩展（`dev.ucp.food.fulfillment`，PR `#897`，`2026-10-23T05:53:53Z`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#897`（提交 `3e621b3` / `1e2818c`）中，确立餐饮结账三大硬性不变量：(1) 单店订单作用域（`food_establishment.id`），拦截跨门店混单结账（`ucp_food_multi_establishment_forbidden`）；(2) `source/schemas/food/types/fulfillment_method.json` 的 `allOf` `if/then` 与 `dependentRequired` 指向单数 `destination`（拦截旧版复数 `destinations[]`）；(3) `source/schemas/food/types/modification.json` 要求 `quantity` 为 `>= 1` 的整数（默认 `1`），REST 端点统一对齐至 `/checkout-sessions*`，并强制核算菜品 + 加料 + 税费 + 配送费 + 一等公民小费（`gratuity`）总额守恒。
+
+### 175.3 Google UCP 位置无关企业身份（`dev.ucp.common.business`，PR `#939`）与方括号引号 JSONPath 解析（PR `#774`，`2026-10-23T14:15:06Z`）及 AP2 结账后行为记录检查点周期上限与 `window_anchor` 核验（Issue `#290` `trail-head-ref-v1.md`，`2026-10-23T14:26:59Z`）
+- 在 UCP PR `#939` 中新增 `dev.ucp.common.business` 能力（共享 `business_summary.json` 与 `contact.json`），将品牌/企业级身份与物理门店（`dev.ucp.common.location.*`）解耦并拦截顶层 `profile.business` 未校验字段；在 UCP PR `#774` 中统一 `split_path()` 支持 `['dev.ucp.common.identity_linking']` 与 `['com.example.attestor']` 等带点号/冒号键名的方括号引号寻址及 RFC 6901 JSON Pointer 转换。在 `google-agentic-commerce/AP2` Issue `#290`（`trail-head-ref-v1.md` `2026-10-23T14:26:59Z` 更新）中，强制消费方核验检查点最大周期上限（`period_exceeds_declared_maximum`）与空周期封条，并显式阻断 `verdict="continuity_only"` 且 `window_anchor="uncertified"`（向量 `thw-006`/`thw-003`/`thw-007`）的锚点盲视绕过及 `terminal=False` 非终态收据冒充（参见 `lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_guard.py`）。
+
+---
+
+## 176. Stage 177 基准评测（`2026-10-23`）：16 场景（`CF-01..CF-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 176 全部 16 项 `2026-10-23` 一手协议与基准护栏（`CF-01..CF-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.99 ms` vs. `12.14 ms`（`12.3x` 加速）**。
+- **技术资产**：[`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)、[`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html)）。
+
+
 
 
 
