@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–181）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–183）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -109,6 +109,25 @@
   - 基准套件：[`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)
   - 单元测试：[`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)（全仓库 **763/763** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html`（中文）](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/report.json)
+
+---
+
+## Stage 182：Google AP2 自包含拒付证据包与密钥来源分类及 OpenTimestamps 重建窗口（Issue `#338`）、UCP 本地服务预约 TTL 锁位与支付可观测原子契约及担保扣款（Issue `#922` / PTC `#53` / STC `#51`）、Permalink 显式买家合并动作防 CSRF（PR `#789`）及反向域名风险信号与 B2B 采购审批（Issue `#630` & `#947`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py)
+  - 单元测试：[`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py)（全仓库 **766/766** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§181)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§181)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 183：16 场景（`DS-01..DS-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 182）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)
+  - 单元测试：[`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)（全仓库 **767/767** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html`（中文）](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/report.json)
+
 
 
 

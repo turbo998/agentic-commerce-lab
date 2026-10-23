@@ -2150,6 +2150,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.56 ms`（`3.29x` 加速）**。
 - **技术资产**：[`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)、[`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py) 及双语报告 [`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html)）。
 
+---
+
+## 181. Stage 182 增量（`2026-10-23`）：Google AP2 自包含拒付证据包与密钥来源分类及 OpenTimestamps 重建窗口（`#338`）、UCP 本地服务预约 TTL 锁位与支付可观测原子契约及担保扣款（`#922` / PTC `#53` / STC `#51`）、Permalink 显式买家合并动作防 CSRF（`#789`）及反向域名风险信号与 B2B 采购审批（`#630` & `#947`）
+
+### 181.1 Google AP2 自包含拒付证据包（`ap2-dispute-evidence-pack/v1`）、四类密钥来源非扁平化归档与 OpenTimestamps 比特币区块 `972227` 锚定后重建窗口隔离（Issue `#338`，`2026-10-23T14:42:26Z`）
+- 在 `google-agentic-commerce/AP2` Issue `#338`（`Dispute-time evidence: self-contained storage format for mandates + issuer key material`）中，针对 Visa / Mastercard 120 天拒付抗辩窗口远超发卡行 JWKS 密钥轮换周期（30–90 天）及 JWT `exp` 的架构痛点，强制要求归档包保留完整原始紧凑 `SD-JWT+kb` 密文（严禁丢弃签名仅存解码后 JSON claim），并将签名验证密钥材料严格区分为四类非扁平化来源（`key_provenance_class in {"x5c_chain", "header_jwk", "caller_supplied", "jwks_tls_snapshot"}`，拒绝 `"flattened_json"`：`ap2_dispute_pack_key_provenance_missing_or_flattened`）。离线仲裁器基于原始紧凑串重算跨授权书 SHA-256 哈希链（`CartMandate.intent_mandate_hash == sha256(intent_mandate_compact)` 与 `PaymentMandate.cart_mandate_hash == sha256(cart_mandate_compact)`：`ap2_dispute_pack_cross_mandate_hash_mismatch`），校验 `kb+jwt` 持有者签名与 `cnf.jwk` 绑定，并核验 OpenTimestamps（如比特币区块 `972227` 锚定 127 个文件、34 行、`40,338` 字节前缀摘要 `f046ca25...c57c`）或 RFC 3161 时间锚定前缀，同时严禁将锚定后重建窗口新增行（如第 `35..42` 行）单独作为争议时间抗辩依据（`ap2_dispute_pack_unanchored_rebuild_window_time_claim_forbidden`）。
+
+### 181.2 Google UCP 本地服务预约（`[DTC Charter]: Local Services` Issue `#922`、PTC `2026-10-15` `#53` 与 STC `2026-10-16` `#51`）TTL 锁位、支付×预约可观测原子契约与 Phase 2 担保违约金上限
+- 在 `Universal-Commerce-Protocol/ucp` Issue `#922` 与 `Universal-Commerce-Protocol/meeting-minutes` PTC `2026-10-15`（`#53`）/ STC `2026-10-16`（`#51`）中，针对多步骤或高耗时支付（如银行转账、3DS 强认证）期间预约时段被并发抢占导致“扣款成功但预约失败”的核心风险，强制执行 `dev.ucp.shopping.checkout` 上的支付与预约可观测原子契约：(1) 扣款前重验 `slot_hold_expires_at_epoch > checkout_timestamp_epoch`（`ucp_services_slot_hold_expired_before_charge`）；(2) 拦截同一 `(resource_id, slot_id)` 的并发双订（`ucp_services_concurrent_slot_double_booking`）；(3) 严禁出现已扣款（`payment_captured=True`）但预约未确认（`booking_status != "confirmed"`）且未自动退款/重分配的悬挂扣款状态（`ucp_services_unmatched_charge_without_confirmed_booking`）；(4) 严禁在支付失败时产出已确认预约（`ucp_services_confirmed_booking_on_failed_payment`）；(5) 对 Phase 2 信用卡担保（`card_hold_guarantee` / `conditional_capture`）强制免费取消窗口内释放预授权（`requested_capture_minor == 0`），且爽约/迟到取消扣款严禁突破 `penalty_cap_minor`（`ucp_services_conditional_capture_exceeds_penalty_cap`）。
+
+### 181.3 Google UCP Permalink 显式买家合并动作防 CSRF（PR `#789` / `#666`）、反向域名风险信号扩展与云端 Agent IP 证明（Issue `#630`）及 B2B 采购超限审批权限校验（Issue `#947` / STC `2026-10-16` `#51`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#789`（修复 Issue `#666`）中，除要求 Permalink `GET` 加载不触发下单/付款等不可逆副作用外，强制已登录买家会话存在既有购物车时，必须获得显式买家确认动作（`explicit_buyer_merge_action=True`）后方可合并或覆盖购物车，阻断跨站诱导链接静默污染购物车（`ucp_permalink_authenticated_cart_silent_merge_csrf`）。在 Issue `#630` 中，要求 `signals` 扩展键遵循反向域名命名规范（`^[a-z0-9]+(\.[a-z0-9_-]+){2,}$`），并在 `buyer_ip` 位于云厂商数据中心网段时强制附带加密 Agent 身份证明（`agent_attestation_verified=True`：`ucp_risk_signals_unattested_cloud_agent_ip`）。在 Issue `#947` 与 STC `2026-10-16`（`#51`）中，要求超过 `auto_approval_limit_minor` 的 B2B 采购订单必须具备非空 `organization_id`、`cost_center_id` 且通过审批权限核验（`approval_authority_verified=True`：`ucp_b2b_procurement_approval_authority_required`；参见 `lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py`）。
+
+---
+
+## 182. Stage 183 基准评测（`2026-10-23`）：16 场景（`DS-01..DS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 182 全部 16 项 `2026-10-23` 一手协议与治理护栏（`DS-01..DS-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.55 ms`（`3.24x` 加速）**。
+- **技术资产**：[`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)、[`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py) 及双语报告 [`reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.en.html)）。
+
+
 
 
 

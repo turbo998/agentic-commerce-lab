@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–181)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–183)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -109,6 +109,25 @@
   - Benchmark suite: [`lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../lab/mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py)
   - Unit tests: [`tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py`](../../tests/test_mcp_lost_response_retry_routing_digest_tau2_loan_servicing_ucp_token_context_donations_bench.py) (**763/763** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html` (Chinese)](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-lost-response-retry-routing-digest-tau2-loan-servicing-ucp-token-context-donations-bench/report.json)
+
+---
+
+## Stage 182: Google AP2 Self-Contained Dispute Evidence Pack & OpenTimestamps Rebuild Window (Issue `#338`), UCP Local Services Atomic Slot-Hold + Payment Contract & Conditional Guarantees (Issue `#922` / PTC `#53` / STC `#51`), Permalink Explicit Buyer Merge Action Anti-CSRF (PR `#789`), and Reverse-Domain Risk Signals & B2B Procurement Governance (Issues `#630` & `#947`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py)
+  - Unit tests: [`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_guard.py) (**766/766** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§181)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§181)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 183: 16-Scenario (`DS-01..DS-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 182)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)
+  - Unit tests: [`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py) (**767/767** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html` (Chinese)](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/report.json)
+
 
 
 
