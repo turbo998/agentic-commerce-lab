@@ -2448,6 +2448,36 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)、[`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.en.html)）。
 
+---
+
+## 205. Stage 206 深度剖析（`2026-10-23`）：UCP 五类标准履约事件与未知类型描述兜底（`#729`/`#728`）、履约目的地与账单地址 `AddressConstraint` 强类型字段约束（`#564`）、核心版本 `D` 原子发布契约与 `Server-Timing: ucp;dur=<ms>` 响应头（`#614`/`#547`）、授权与结账执行加密绑定（EU AI Act Art. 12）及分词器非机密路由参与者 ID（`#417`/`#394`）、ACP 发现归因扩展（`discovery_attribution`）与单一 `AppliedDiscount` 折扣合并（`#152`/`#124`）、幂等键 `max(session.expires_at+24h, first_use+24h)` 响应头与 `intervention_required` 终态阻断（`#97`/`#98`）、x402 `proof-of-done` 工作量哈希账本绑定与 `resolution-lineage` RLP-1 状态推导（`#3379`/`#3291`）、EVM `exact` 清算方规范性 MUST 核验清单与 `SupportedKind.capabilities` 变体匹配（`#2725`/`#2498`）、SVM 收款 ATA 存在性与 Token Program 归属预检及 Python 异步非阻塞 RPC（`#2802`/`#3649`）、Stellar Soroban 诊断事件精确映射（`#2975`/`#2761`）、Cloudflare Workers 免编译 Bazaar 校验与 Go MCP 恢复重试 `MaxRequestTimeout` 上限（`#3556`/`#3560`）、Python `create_headers` 路径分键认证字典与 `onUncertainSettlement` 钩子隔离（`#3586`/`#2368`）、MCP MRTR `url` 模式仅状态 `InputRequiredResult` 非阻塞轮询与工具级 `securitySchemes`（`#2920`/`#1488`）、SEP-1913 信任/敏感度单调升级防外泄与 `/.well-known/ai-catalog.json` 服务卡发现（`#1913`/`#2127`）及 Sierra $\tau$-bench 2.0 航司 `pass^4` 复现清单锁定与 `OUT_OF_SCOPE` 终止保护（`#647`/`#624`/`#549`/`#678`）
+
+### 205.1 UCP 履约事件规范、强类型 `AddressConstraint`、原子版本快照与 ACP 归因/幂等/干预契约（`UCP #729/#728/#564/#614/#547/#417/#394`、`ACP #152/#124/#97/#98`）
+
+1. **UCP 五类标准履约事件（`#729`/`#728`）、强类型 `AddressConstraint`（`#564`）、原子发布快照 `D` 与 `Server-Timing`（`#614`/`#547`）及授权-执行加密绑定与路由参与者 ID（`#417`/`#394`）**：
+   - `#729/#728`：标准化 `fulfillment.events[].type` 五个熟知值（`processing`、`shipped`、`in_transit`、`delivered`、`canceled`），禁止使用 `in-transit` 等私有同义词；非标事件必须提供非空 `description`，且平台不得因未知事件类型拒单。
+   - `#564`：基于 `constraint.json` 与 `address_constraint.json` 对 `fulfillment.available_methods[].constraints.destination.required_fields`（如 `["postal_code", "address_country"]`）与 `available_instruments[].constraints`（`required_fields: ["billing_address"]`）进行强类型字段级校验。
+   - `#614/#547`：选定发布版本 `D` 后，`ucp.version` 与所有 UCP 官方服务、能力、扩展必须同时携带 `D`（`requires.*` 仅验证而不替换版本），并校验 `Server-Timing: ucp;dur=<ms>`。
+   - `#417/#394`：将用户授权（商品、最高金额、币种、商户）通过签名摘要与结账执行绑定以满足 EU AI Act 第 12 条可审计性；同时明确 `binding.identity` 参与者标识符为已认证调用方下的非机密路由值，严禁当作无认证 Bearer 密钥。
+2. **ACP `discovery_attribution` 扩展与 `AppliedDiscount` 合并（`#152`/`#124`）及 24h+ 幂等键生命周期头与 `intervention_required` 终态错误码（`#97`/`#98`）**：
+   - `#152/#124`：校验 `discovery_attribution.discovery_context`（8 类 `method`、4 类 `session_type`、100 字符 `query_category`、`alternatives_considered` 与 `rank_position`），并废弃 `LineItem.discount_details[]` 及冗余布尔字段 `automatic`，统一收敛至含 `type` 与 `description` 的 `AppliedDiscount`。
+   - `#97/#98`：强制服务端保存幂等键映射至少 `max(session.expires_at + 24h, first_use + 24h)` 并输出一致的 `Idempotency-Key-Expires` 与 `Idempotency-Key-TTL`；当 `capabilities.interventions.required` 超出智能体支持集时必须返回终态 `intervention_required` 并停止重试，仅在智能体支持 3DS 时返回可行动的 `requires_3ds`。
+
+### 205.2 x402 工作量账本、EVM/SVM/Stellar/Workers/MCP 边界、MCP SEP-1913 信任晶格与 Sierra $\tau$-bench 2.0 复现性（`x402 #3379/#3291/#2725/#2498/#2802/#3649/#2975/#2761/#3556/#3560/#3586/#2368`、`MCP #2920/#1488/#1913/#2127`、`tau2-bench #647/#624/#549/#678`）
+
+1. **x402 `proof-of-done` 工作量账本与 RLP-1 决议血统（`#3379`/`#3291`）、EVM 规范性 MUST 清单与 `SupportedKind.capabilities`（`#2725`/`#2498`）、SVM 收款 ATA 预检与异步 RPC（`#2802`/`#3649`）、Stellar 强类型模拟错误（`#2975`/`#2761`）、Workers 免编译校验与 Go MCP 恢复超时上限（`#3556`/`#3560`）及 Python 分键认证头与 `onUncertainSettlement` 钩子（`#3586`/`#2368`）**：
+   - 核验 `tamga-ledger-v1` 64 位十六进制 `receiptHash` 与计量记录一致，并从必检项推导 RLP-1 状态（任一 `FAIL -> FAILED`，严禁伪造 `SURVIVED`）；强制 EVM `exact` 清算方执行 EIP-712 域、Low-s、时间窗、防重放及 `SupportedKind.capabilities`（如 `assetTransferMethod`）匹配；在签名前检查 SVM 收款 ATA 存在且 `owner == tokenProgramAddress` 并禁止同步 RPC 阻塞 Python 异步事件循环；将 Stellar Soroban 诊断事件精确映射至 `TrustlineMissingError` / `InsufficientBalanceError` / `SimulationFailedError`；在 Cloudflare Workers 中禁用运行时 `ajv.compile()` 并将 Go MCP 恢复重试超时限制在 `min(MaxTimeoutSeconds, MaxRequestTimeout)`；强制 Python `create_headers()` 返回 `{verify, settle, supported}` 分键字典并在未恢复结算失败时触发异常隔离的 `onUncertainSettlement`。
+2. **MCP MRTR `url` 模式仅状态轮询与工具级 `securitySchemes`（`#2920`/`#1488`）、SEP-1913 敏感度单调升级与 `/.well-known/ai-catalog.json` 服务卡（`#1913`/`#2127`）及 Sierra $\tau$-bench 2.0 复现清单与 `OUT_OF_SCOPE` 保护（`#647`/`#624`/`#549`/`#678`）**：
+   - 规范 MRTR `url` 模式轮询返回同 `requestState` 且空 `inputRequests` 的非阻塞 `InputRequiredResult`，校验 SEP-1488 `noauth`/`oauth2` 工具级权限；强制 SEP-1913 `sensitiveHint`（`low -> medium -> high`）与 `privateHint` 单调升级并阻断向 `openWorldHint` 外发敏感数据，校验 SEP-2127 服务卡；锁定 $\tau$-bench `pass^4` 模型快照/种子清单、消除无 `.env` 时的导入期 `stderr` 告警，并支持 `TerminationReason.OUT_OF_SCOPE` 与 `reward_info=None` 空安全聚合。
+
+---
+
+## 206. Stage 207 基准评测（`2026-10-23` · 828 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 206 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)、[`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.en.html)）。
+
 
 
 

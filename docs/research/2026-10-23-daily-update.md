@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–205 · 205 阶段里程碑！）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–207 · 828 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -325,6 +325,24 @@
   - 基准套件：[`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)
   - 单元测试：[`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)（全仓库 **824/824** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/report.json)
+
+---
+
+## Stage 206：UCP 五类标准履约事件与未知类型描述兜底（`#729`/`#728`）、履约目的地与账单地址 `AddressConstraint` 强类型字段约束（`#564`）、核心版本 `D` 原子发布契约与 `Server-Timing: ucp;dur=<ms>` 响应头（`#614`/`#547`）、授权与结账执行加密绑定（EU AI Act Art. 12）及分词器非机密路由参与者 ID（`#417`/`#394`）、ACP 发现归因扩展（`discovery_attribution`）与单一 `AppliedDiscount` 折扣合并（`#152`/`#124`）、幂等键 `max(session.expires_at+24h, first_use+24h)` 响应头与 `intervention_required` 终态阻断（`#97`/`#98`）、x402 `proof-of-done` 工作量哈希账本绑定与 `resolution-lineage` RLP-1 状态推导（`#3379`/`#3291`）、EVM `exact` 清算方规范性 MUST 核验清单与 `SupportedKind.capabilities` 变体匹配（`#2725`/`#2498`）、SVM 收款 ATA 存在性与 Token Program 归属预检及 Python 异步非阻塞 RPC（`#2802`/`#3649`）、Stellar Soroban 诊断事件精确映射（`#2975`/`#2761`）、Cloudflare Workers 免编译 Bazaar 校验与 Go MCP 恢复重试 `MaxRequestTimeout` 上限（`#3556`/`#3560`）、Python `create_headers` 路径分键认证字典与 `onUncertainSettlement` 钩子隔离（`#3586`/`#2368`）、MCP MRTR `url` 模式仅状态 `InputRequiredResult` 非阻塞轮询与工具级 `securitySchemes`（`#2920`/`#1488`）、SEP-1913 信任/敏感度单调升级防外泄与 `/.well-known/ai-catalog.json` 服务卡发现（`#1913`/`#2127`）、以及 Sierra $\tau$-bench 2.0 航司 `pass^4` 复现清单锁定/无 `.env` 静默导入与 `OUT_OF_SCOPE` 终止枚举/未评分结果防崩溃（`#647`/`#624`/`#549`/`#678`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_guard.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_guard.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_guard.py)（全仓库 **827/827** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§205)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§205)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 207（828 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 206）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)（全仓库 **828/828** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/report.json)
 
 
 
