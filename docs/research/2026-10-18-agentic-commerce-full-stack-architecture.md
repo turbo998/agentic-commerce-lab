@@ -2561,6 +2561,22 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)、[`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.en.html)）。
 
+---
+
+## 213. Stage 214 深度防护（`2026-10-23`）：UCP 自定义 Totals/Lodging/BYOPB、ACP AJV `$id`/`$ref`、AP2 RFC 8785 JCS/DID STARK、x402 SVM Transaction v1 (4096B)/Bazaar/Go 归因及 MCP 签名执行记录/$\tau$-bench 2.0 配对 A/B 护栏
+
+- **核心架构增量**：
+  1. **UCP & ACP & AP2（`PR-01..PR-05`）**：强制校验自定义 Totals `type` 的非空 `display_text` 与 `--reuse-model` 能力扩展模型去重（`python-sdk#75`/`#56`）；`dev.ucp.lodging.booking` 入离店日期顺序/入住人数上限与 BYOPB 动作绑定及 `payment_instrument` 网关原始响应剥离（`ucp#875`/`#103`/`#94`）；ACP AJV `$id`/`$ref` 跨 Schema 解析与多版本示例一致性（`acp#119`/`#126`）；AP2 RFC 8785 JCS `cart_mandate_id` + `cart_mandate_hash` SHA-256 绑定（拦截 `"fake_cart_mandate_hash_*"` 占位符，`AP2#241`/`#211`）以及 `did:tenzro:` STARK 结算承诺与 ADK `.model_dump()` SQLite 会话状态序列化（`AP2#256`/`#188`）。
+  2. **x402 & MCP & Stripe & Sierra $\tau$-bench 2.0（`PR-06..PR-16`）**：在 SVM v2 `exact` 通道支持 Solana Transaction v1（SIMD-0385/0296 `4096` 字节上限）并封死 v1 legacy 路径版本门禁及 Pi Network `exact` 绑定（`x402#3317`/`#3329`）；防止 Next.js `withX402` 将 `"*"` 塌缩为 `:var1` 并执行 Bazaar 空匹配过滤器规范（`x402#3309`/`#3298`）；Go `builder-code` 归因校验与 `EXTENSION-RESPONSES` `json:"-"` 旁路隔离（`x402#3302`/`#3301`）；Facilitator `self_send_not_allowed` 防自付门禁与 Go EIP-3009 `maxTimeoutSeconds` `validBefore`（`x402#3295`/`#3282`）；`auth-capture` v1.1 捕获上限与 Solana `upto` 结算上限（`x402#3283`/`#3323`）；MCP `SEP-2828` 服务端签名执行记录与 `SEP-2787` 工具调用证明（`mcp#2828`/`#2787`）、`SEP-2822` 客户端会话 ID/错误分类学/`structuredContent` 去重（`mcp#2822`/`#2841`/`#2847`）、Python SDK RFC 8707 资源指示器/孤立代理项隔离/字节 Base64（`python-sdk#3739`/`#3708`/`#3667`）、Stripe DXT 受限密钥 `rk_*` 与 `pmc_*`/订阅元数据（`agent-toolkit#119`/`#103`/`#87`），以及 Sierra $\tau$-bench 2.0 配对 A/B 评分器 + 密钥脱敏 + TTFT 门禁与 `threading.Lock` 检查点锁（`tau2#505`/`#503`/`#524`/`#501`）。
+
+---
+
+## 214. Stage 215 基准评测（`2026-10-23` · 215 阶段里程碑 & 844 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 214 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`**。
+- **技术资产**：[`lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py)、[`tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.en.html)）。
+
 
 
 

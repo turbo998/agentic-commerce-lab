@@ -1,0 +1,154 @@
+{
+  "stage": "stage215-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench",
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "median_latency_ms": 0.17,
+  "provenance": "measured",
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title": "UCP Custom Totals display_text & --reuse-model (python-sdk#75/#56)",
+      "passed": true,
+      "ai_native_code": "UCP_CUSTOM_TOTALS_AND_MODEL_REUSE_VERIFIED",
+      "blocked_attack_code": "UCP_CUSTOM_TOTAL_DISPLAY_TEXT_REQUIRED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-02",
+      "title": "UCP Lodging Booking & BYOPB Payment Cleanup (ucp#875/#103/#94)",
+      "passed": true,
+      "ai_native_code": "UCP_LODGING_AND_BYOPB_CLEANUP_VERIFIED",
+      "blocked_attack_code": "UCP_PAYMENT_INSTRUMENT_RAW_RESPONSE_LEAK",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-03",
+      "title": "ACP AJV $id/$ref Schema Resolution & Example Conformance (acp#119/#126)",
+      "passed": true,
+      "ai_native_code": "ACP_AJV_SCHEMA_AND_EXAMPLE_CONFORMANCE_VERIFIED",
+      "blocked_attack_code": "ACP_AJV_SCHEMA_REF_UNRESOLVED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-04",
+      "title": "AP2 RFC 8785 JCS Cart-to-Payment Mandate Binding (AP2#241/#211)",
+      "passed": true,
+      "ai_native_code": "AP2_JCS_CART_TO_PAYMENT_MANDATE_VERIFIED",
+      "blocked_attack_code": "AP2_PLACEHOLDER_CART_MANDATE_HASH_REJECTED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-05",
+      "title": "AP2 did:tenzro STARK Settlement & ADK model_dump() (AP2#256/#188)",
+      "passed": true,
+      "ai_native_code": "AP2_DID_STARK_AND_SESSION_SERIALIZATION_VERIFIED",
+      "blocked_attack_code": "AP2_ADK_SESSION_UNSERIALIZED_PYDANTIC_MODEL",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-06",
+      "title": "x402 SVM Transaction v1 (4096B) Gate & Pi Network Exact (x402#3317/#3329)",
+      "passed": true,
+      "ai_native_code": "X402_SVM_TX_V1_AND_PINET_VERIFIED",
+      "blocked_attack_code": "X402_SVM_LEGACY_PATH_V1_TX_REJECTED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-07",
+      "title": "x402 Bazaar withX402 Route Template & Empty Filter (x402#3309/#3298)",
+      "passed": true,
+      "ai_native_code": "X402_BAZAAR_ROUTE_TEMPLATE_AND_FILTER_VERIFIED",
+      "blocked_attack_code": "X402_BAZAAR_WILDCARD_ROUTE_TEMPLATE_INVALID",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-08",
+      "title": "x402 Go Builder-Code Attribution & EXTENSION-RESPONSES Sidechannel (x402#3302/#3301)",
+      "passed": true,
+      "ai_native_code": "X402_BUILDER_CODE_AND_EXTENSION_SIDECHANNEL_VERIFIED",
+      "blocked_attack_code": "X402_BUILDER_CODE_ROOT_NESTED_CONFLICT",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-09",
+      "title": "x402 Facilitator Self-Send Guard & EIP-3009 maxTimeoutSeconds (x402#3295/#3282)",
+      "passed": true,
+      "ai_native_code": "X402_SELF_SEND_AND_EIP3009_TIMEOUT_VERIFIED",
+      "blocked_attack_code": "X402_FACILITATOR_SELF_SEND_NOT_ALLOWED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-10",
+      "title": "x402 auth-capture v1.1 Client Bounds & Solana upto Ceiling (x402#3283/#3323)",
+      "passed": true,
+      "ai_native_code": "X402_AUTH_CAPTURE_V1_1_AND_SOLANA_UPTO_VERIFIED",
+      "blocked_attack_code": "X402_AUTH_CAPTURE_V1_1_BOUND_VIOLATION",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-11",
+      "title": "MCP SEP-2828 Signed Execution Record & SEP-2787 Tool Attestation (mcp#2828/#2787)",
+      "passed": true,
+      "ai_native_code": "MCP_SIGNED_EXECUTION_RECORD_AND_ATTESTATION_VERIFIED",
+      "blocked_attack_code": "MCP_SEP2787_TOOL_ATTESTATION_INCOMPLETE",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-12",
+      "title": "MCP SEP-2822 Client Session ID, #2841 Error Taxonomy & #2847 structuredContent",
+      "passed": true,
+      "ai_native_code": "MCP_CLIENT_SESSION_ERROR_TAXONOMY_AND_STRUCTURED_CONTENT_VERIFIED",
+      "blocked_attack_code": "MCP_STRUCTURED_CONTENT_DUPLICATION_VIOLATION",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-13",
+      "title": "MCP Python SDK RFC 8707 Token Exchange & UTF-16 Surrogate Guard (python-sdk#3739/#3708/#3667)",
+      "passed": true,
+      "ai_native_code": "MCP_PYTHON_SDK_TOKEN_EXCHANGE_AND_TRANSPORT_VERIFIED",
+      "blocked_attack_code": "MCP_TRANSPORT_LONE_SURROGATE_CONTAINED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-14",
+      "title": "Stripe Agent Toolkit DXT Manifest RAK, PMC & Subscription Checkout (agent-toolkit#119/#103/#87)",
+      "passed": true,
+      "ai_native_code": "STRIPE_DXT_PMC_AND_SUBSCRIPTION_CHECKOUT_VERIFIED",
+      "blocked_attack_code": "STRIPE_DXT_RESTRICTED_KEY_REQUIRED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-15",
+      "title": "Sierra tau2-bench Paired A/B Scorer, Secret Redaction & Token Cache TTFT (tau2#505/#503)",
+      "passed": true,
+      "ai_native_code": "TAU2_PAIRED_AB_AND_TOKEN_CACHE_VERIFIED",
+      "blocked_attack_code": "TAU2_UNPAIRED_AB_TASK_SET_REJECTED",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-16",
+      "title": "Sierra tau2-bench Batch Worker Interleaving & threading.Lock Checkpointing (tau2#524/#501)",
+      "passed": true,
+      "ai_native_code": "TAU2_BATCH_INTERLEAVING_AND_THREADING_LOCK_VERIFIED",
+      "blocked_attack_code": "TAU2_BATCH_SCHEDULING_OR_LOG_HANDLE_INVALID",
+      "ai_native_latency_ms": 0.17,
+      "classic_3tier_passed": false
+    }
+  ]
+}

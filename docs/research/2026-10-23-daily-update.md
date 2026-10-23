@@ -398,6 +398,24 @@
   - 单元测试：[`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)（全仓库 **840/840** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/report.json)
 
+---
+
+## Stage 214：UCP Python SDK 自定义 Totals `display_text` 强制校验与 `--reuse-model` 能力模型去重（`python-sdk#75`/`#56`）、UCP 住宿预订 `dev.ucp.lodging.booking` 入离店/入住人数约束与 BYOPB 内嵌结账动作绑定及网关原始响应剔除（`ucp#875`/`#103`/`#94`）、ACP AJV `$id`/`$ref` 跨 Schema 解析与多版本示例一致性校验（`acp#119`/`#126`）、AP2 RFC 8785 JCS `cart_mandate_id`/`cart_mandate_hash` 加密绑定（`AP2#241`/`#211`）、`did:tenzro:` TDIP 身份层 STARK 结算承诺与 ADK `.model_dump()` 会话状态序列化（`AP2#256`/`#188`）、x402 Solana Transaction v1（4096B SIMD-0385/0296）版本门禁与 Pi Network `exact` 方案（`x402#3317`/`#3329`）、Next.js `withX402` 具体路由模板与 Bazaar 空匹配过滤器规范（`x402#3309`/`#3298`）、Go 资源服 `builder-code` 归因校验与 `EXTENSION-RESPONSES` `json:"-"` 旁路隔离（`x402#3302`/`#3301`）、Facilitator `self_send_not_allowed` 防自付门禁与 Go EIP-3009 `maxTimeoutSeconds` `validBefore`（`x402#3295`/`#3282`）、`auth-capture` v1.1 捕获上限与 Solana `upto` 结算上限（`x402#3283`/`#3323`）、MCP `SEP-2828` 服务端签名执行记录与 `SEP-2787` 工具调用证明信封（`mcp#2828`/`#2787`）、`SEP-2822` 客户端会话 ID 与跨 SDK 错误分类学及 `structuredContent` 去重（`mcp#2822`/`#2841`/`#2847`）、MCP Python SDK RFC 8707 令牌交换资源指示器与孤立代理项隔离及非 UTF-8 字节 Base64 编码（`python-sdk#3739`/`#3708`/`#3667`）、Stripe Agent Toolkit DXT 清单受限密钥 `rk_*` 与 `payment_method_configuration` 及订阅结账元数据（`agent-toolkit#119`/`#103`/`#87`）、以及 Sierra $\tau$-bench 2.0 配对 A/B 评分器（防 429/`max_steps` 幸存者偏差）+ 密钥脱敏与前缀缓存 TTFT 门禁（`tau2#505`/`#503`）及批量 Worker 跨运行交错调度与 `threading.Lock` 进程内检查点锁（`tau2#524`/`#501`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_guard.py`](../../lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_guard.py)
+  - 单元测试：[`tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_guard.py`](../../tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_guard.py)（全仓库 **843/843** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§213)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§213)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 215（215 阶段里程碑 · 844 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 214）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py)
+  - 单元测试：[`tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py)（全仓库 **844/844** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/report.json)
+
 
 
 
