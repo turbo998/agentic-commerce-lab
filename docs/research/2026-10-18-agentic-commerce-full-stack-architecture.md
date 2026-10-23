@@ -2337,6 +2337,34 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../lab/x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py)、[`tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py`](../../tests/test_x402_upto_erc3009_stellar_casper_body_limit_ucp_idp_mcp_atsa_signing_bench.py) 及双语报告 [`reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-upto-erc3009-stellar-casper-body-limit-ucp-idp-mcp-atsa-signing-bench/index.en.html)）。
 
+---
+
+## 197. Stage 198 架构深潜（`2026-10-23`）：x402 Go V2 CAIP-2 网络语法校验（PR `#3884`）、非浏览器 402 JSON 拒绝原因与 `settlement_failed` 透传（PR `#3882`）、Bazaar 声明输入形态方法消解与枚举收窄（PR `#3879`）、Go Gas 赞助签名器能力检查与 Stellar 预签名仿真类型化错误及 Rust SDK EIP-3009 原语（PR `#3871`/`#3870`/`#3787`）、UCP `request_constraints` 非空 `anyOf` 分支与鉴别器 `required` 绑定（PR `#760`）及 MCP `SEP-2694` 可恢复任务事件流（PR `#2694`）、`SEP-2624` 信任边界拦截器（PR `#2624`）、`SEP-2343` 远端 Elicitation 授权绑定（PR `#2343`）与 `SEP-1933` 工作负载身份联邦（PR `#1933`）
+
+1. **x402 Go V2 CAIP-2 网络标识语法强校验（PR `#3884`）、非浏览器 402 JSON 拒绝原因透传（PR `#3882`）与 Bazaar 声明输入形态方法消解（PR `#3879`）**：
+   - `PR #3884` 在 Go `types/v2.go` 中对 `x402Version == 2` 的 `PaymentRequirements.network`、`PaymentPayload.accepted.network`（且 `accepted` 必填）与 `PaymentRequired.accepts[i].network` 强制执行 `^[-a-z0-9]{3,8}:[-_a-zA-Z0-9]{1,32}$`（拦截 `"ethereum"`、`"base-sepolia"`、`"eip155:84532:extra"`），同时显式豁免 `x402Version == 1` 以保持旧版 V1 信封兼容。
+   - `PR #3882` 修复 Go `http/server.go` 非浏览器 402 响应返回空 `{}` 的问题：在无支付头或验证失败且未配置自定义 `UnpaidResponseBody` 时返回 `{"error": paymentRequired.Error}`（默认 `"Payment required"`），在结算失败时返回 `{"error": "settlement_failed"}` 并附带 `PAYMENT-RESPONSE` 与 `Cache-Control: no-store`。
+   - `PR #3879` 在 Go Bazaar `EnrichDeclaration` 中引入 `resolveDeclaredMethod`：仅当探测 HTTP 动词与声明输入形态兼容时保留探测动词（`BodyInput`: `POST`/`PUT`/`PATCH`，否则回退 `"POST"`；`QueryInput`: `GET`/`HEAD`/`DELETE`，否则回退 `"GET"`），并将 `schema.properties.input.properties.method.enum` 收窄为单元素 `[resolvedMethod]`。
+2. **x402 Go Gas 赞助签名器能力检查（PR `#3871`）、Stellar 预签名仿真类型化错误（PR `#3870`）与 Rust SDK V1/V2 EIP-3009 原语（PR `#3787`）**：
+   - `PR #3871` 要求 Go `eip2612GasSponsoring` 签名器具备合约读取能力（`readContract`）、`erc20ApprovalGasSponsoring` 具备 `signTransaction` 能力，能力缺失时每网络仅输出一次告警并跳过扩展。
+   - `PR #3870` 为 `@x402/stellar` 新增继承自 `SimulationFailedError` 的 `TrustlineMissingError` 与 `InsufficientBalanceError`（携带 `account` 与 `asset` 字段），在客户端签名前拦截资产信任线缺失与余额不足。
+   - `PR #3787` 新增 Rust `x402` crate：使用 `URL_SAFE_NO_PAD` Base64 编码 `X402Header`，并实现 EIP-3009 `TransferWithAuthorization`（`validAfter = now - 60`、`validBefore = now + validFor`、`65` 字节 `0x` 十六进制签名）。
+3. **UCP `request_constraints` 非空 `anyOf` 分支与鉴别器 `required` 闭合绑定（PR `#760`）**：
+   - 为 `constraint_expression.json` 与 `request_constraints.json` 中的 `anyOf.items` 添加 `minProperties: 1`（防止空对象 `{}` 分支使整个 `anyOf` 退化为永真），并要求按鉴别器约束的 `anyOf` 分支将鉴别器字段（如 `"card_number_type"`）列入各分支 `required`（`fpan` 要求 `["card_number_type", "cvc"]`，`network_token` 要求 `["card_number_type", "cryptogram", "eci_value"]`），从而闭合阻断未列举的 `dpan` 或省略鉴别器的凭证绕过。
+4. **MCP `SEP-2694` 可恢复任务事件流（PR `#2694`）、`SEP-2624` 信任边界拦截器（PR `#2624`）、`SEP-2343` 远端 Elicitation 授权绑定（PR `#2343`）与 `SEP-1933` 工作负载身份联邦（PR `#1933`）**：
+   - `SEP-2694` 定义 `tasks/stream`（`after` 非负整数游标、单连接每任务最多一个活跃流否则返回 `-32602`）与 `notifications/tasks/event`（从 `0` 起严格连续递增 `seq`、反向域名厂商前缀 `type`、`_meta["io.modelcontextprotocol/related-task"].taskId == params.taskId`，以及当 `after` 早于最早保留事件时返回 `-32010` `events_gone` + `earliestSeq`）。
+   - `SEP-2624` 定义信任边界感知拦截器流水线（发送端 `Mutate -> Validate -> Send`，接收端先验后改 `Validate -> Mutate -> Process`）：Mutator 按 `(priorityHint, name)` 顺序原子执行（任一阻断则丢弃全部部分变更），Validator 并行执行且仅 `severity: "error"` 阻断，`mode: "audit"` 永不阻断，超时且 `failOpen == false` 时返回 `-32000`。
+   - `SEP-2343` 要求远端 MCP 服务端发起 `elicitation/create` 时必须通过 MCP Authorization 认证用户并将请求与响应绑定至 `(client_id, user sub)`（严禁单凭 `mcp-session-id` 绑定）；`SEP-1933` 规范 RFC 7523 `jwt-bearer` 无密钥工作负载身份联邦（HTTPS OIDC Discovery `jwks_uri`、受信 `issuer` 白名单、`TTL <= 3600s`、多租户密钥/声明隔离与目标 MCP Server `resource` 受众绑定）。
+
+---
+
+## 198. Stage 199 基准评测（`2026-10-23`）：16 场景（`GI-01..GI-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 198 全部 16 项 `2026-10-23` 一手协议与安全护栏（`GI-01..GI-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py`](../../lab/x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py)、[`tests/test_x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py`](../../tests/test_x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py) 及双语报告 [`reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/`](../../reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/index.en.html)）。
+
+
 
 
 
