@@ -290,6 +290,24 @@
   - 单元测试：[`tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py`](../../tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py)（全仓库 **816/816** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/report.json)
 
+---
+
+## Stage 202：UCP RFC 9421 §2.4 签名 REST 响应绑定请求 `;req` 与 300s 新鲜度窗（`#698`）、目录变体多卖家 `offers[]` MoR 路由（`#810`）、`complete_checkout` 买家身份锁定（`#769`）、支付工具 `payer.identification`（`#742`）、购物车终态 `status`（`#739`）、状态绑定商家 `Offer`（`#738`）、平台贴现返还对账（`#727`）、结账行快照与 6 项反欺诈环境信号（`#751`/`#750`/`#797`）、Google AP2 选择性披露日志脱敏（`#321`）、x402 Go `verifyEIP3009` 三元组与 `@x402/next` 402 JSON 体（`#3875`/`#3887`/`#3801`）及 Sierra $\tau$-bench 2.0 标题+正文 BM25 检索/航司多航段范围/完整 `pass^k` 分母/电信画像-DB 对齐与 `cash_back_disputes` 读写语义（`#545`/`#495`/`#493`/`#497`/`#492`/`#487`/`#470`/`#439`/`#463`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_guard.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_guard.py)
+  - 单元测试：[`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_guard.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_guard.py)（全仓库 **819/819** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§201)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§201)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 203（820 单测里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 202）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)
+  - 单元测试：[`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)（全仓库 **820/820** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/report.json)
+
 
 
 

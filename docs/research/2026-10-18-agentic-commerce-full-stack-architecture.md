@@ -2388,6 +2388,36 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py`](../../lab/x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py)、[`tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py`](../../tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/`](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.en.html)）。
 
+---
+
+## 201. Stage 202 深度剖析（`2026-10-23`）：UCP RFC 9421 §2.4 签名 REST 响应绑定请求 `;req`（`#698`）、目录变体多卖家 `offers[]` MoR 路由（`#810`）、`complete_checkout` 买家身份锁定（`#769`）、支付工具 `payer.identification`（`#742`）、购物车终态 `status`（`#739`）、状态绑定商家 `Offer`（`#738`）、平台贴现返还对账（`#727`）、结账行快照与 6 项反欺诈环境信号（`#751`/`#750`/`#797`）、Google AP2 选择性披露日志脱敏（`#321`）、x402 Go `verifyEIP3009` 三元组与 `@x402/next` 402 JSON 体（`#3875`/`#3887`/`#3801`）及 Sierra $\tau$-bench 2.0 标题+正文 BM25 检索与评测保真（`#545`/`#495`/`#493`/`#497`/`#492`/`#487`/`#470`/`#439`/`#463`）
+
+### 201.1 UCP RFC 9421 §2.4 签名 REST 响应请求上下文绑定与生命周期不变量（`#698`、`#810`、`#769`、`#742`、`#739`、`#738`、`#727`、`#751`、`#750`、`#797`）
+
+1. **签名 REST 响应强制绑定 `;req` 组件与 300s 新鲜度窗（`Issue #698`）**：
+   - 验证方必须从**自己发送的原始请求**重建 `@authority;req`、`@method;req`、`@path;req` 及条件 `@query;req` / `content-digest;req`（严禁从响应头回显自证），同时强制 `@status`、`content-digest`、`content-type` 与 `created` 在 `[-30s, +300s]` 窗口内，阻断 `$40 -> $60` 旧结账回滚重放与 `GET /checkout-sessions/chk_123 -> chk_999` 跨会话调包。
+2. **多卖家变体 `offers[]` MoR 路由、完成结账买家锁定、出资方 `payer.identification`、购物车终态 `status`、状态绑定 `Offer`、平台贴现返还与下漏斗快照/反欺诈信号（`#810`、`#769`、`#742`、`#739`、`#738`、`#727`、`#751`、`#750`、`#797`）**：
+   - `#810`：当 `variant.offers[]` 存在时，必须按所选 `offers[].seller.domain`（裸主机名 + `/.well-known/ucp` 校验）路由并使用 `offers[].item_id` 与 `offers[].price`，严禁将聚合器 `variant.id` 发给第三方商家。
+   - `#769`：共享 `types/buyer.json` 在 `complete_checkout` 上对 `first_name`、`last_name`、`email`、`phone_number` 固定 `ucp_request.complete: "omit"`，即使加载 `buyer_consent` 也仅放开 `buyer.consent`。
+   - `#742`：核心 `payment_instrument.payer.identification`（`{type, number}`）建模实际出资方税务/身份标识（`CPF`/`CNPJ`/`CUIT`/`RUT`），解耦买家与出资人并禁止塞入厂商私有命名空间。
+   - `#739` & `#738`：响应只读 Cart `status`（`active | ordered | canceled | expired`）区分 `continue_url` 单向结账完成与 `not_found`，严禁重建或催单 `ordered` 购物车；商家签名 `Offer` 绑定 `applies_to.state_ref`，当购物车从 `S0` 变为 `S1` 时立即失效。
+   - `#727` & `#751/#750/#797`：平台贴现返还上限锁定为 `order_applied_discount_minor - refunded_or_canceled_subsidy_minor`；行项目快照强制只读 `item.list_price` 与完整 `item.options` 并校验 6 项客户端反欺诈环境信号。
+
+### 201.2 AP2 日志脱敏、x402 `verifyEIP3009` 三元组与 Sierra $\tau$-bench 2.0 评测完整性（`AP2 #321`、`x402 #3875/#3887/#3801`、`tau2-bench #545/#495/#493/#497/#492/#487/#470/#439/#463`）
+
+1. **AP2 选择性披露日志脱敏（`#321`）与 x402 Go `verifyEIP3009` 三元组 / `@x402/next` 402 JSON 体（`#3875`/`#3887`/`#3801`）**：
+   - 拦截任何在日志中明文打印 `payment_token`、`mandates`、`receipts` 或 `risk_data` 的行为；强制 Go `verifyEIP3009` 返回 `(*VerifyResponse, *EIP3009SignatureClassification, error)` 三元组（保留 `ErrInvalidSignatureS`）且 `@x402/next` 未付 402 返回 `{"error": "Payment required"}`。
+2. **Sierra $\tau$-bench 2.0 检索与评分护栏（`#545`/`#495`/`#493`/`#497`/`#492`/`#487`/`#470`/`#439`/`#463`）**：
+   - BM25 与 grep 必须索引 `title + "\n\n" + content`（修复 `#545` 中 5/9 篇核心文档标题词零命中问题）；航司 Task 7 `"other upcoming flights"` 必须覆盖全部 3 段未来航班（`$708` vs 单航段 `$1,628`）；`pass^k` 严禁将 `INFRASTRUCTURE_ERROR` 从分母剔除而虚增至 `1.0`；电信画像年龄必须与 DB `dob` 一致且 Solo Gemini 首轮必须含 `role="user"`；银行 `cash_back_disputes` 必须暴露只读查询工具并按最终 DB 状态而非单一写路径评分。
+
+---
+
+## 202. Stage 203 基准评测（`2026-10-23` · 820 单测里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 202 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)、[`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.en.html)）。
+
 
 
 
