@@ -218,6 +218,24 @@
   - Unit tests: [`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py) (**794/794** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/report.json)
 
+---
+
+## Stage 194: UCP Required `ap2.merchant_authorization` (PR `#466`) & Extensible `declared_fields` / `config` / `required_declared_fields` (PR `#915`) & Deferred-Term Empty `payment: {}` (PR `#881`), x402 Python Strict V2 CAIP-2 Validation (PR `#3878`), Bazaar Opaque-Origin Canonical URL Reconstruction (PR `#3138`), Per-Namespace Facilitator Wildcard Derivation (PR `#3215`) & `x402-fetch` `accepts[]` Filtering (PR `#2730`), x402 Correctness & Dispute Extension — Bonded Verdicts (PR `#3868`), and MCP `SEP-2792` Per-Request User Language Preference (PR `#2792`), `SEP-2778` Schema Security Type Constraints (PR `#2778`) & `SEP-2633` Client `mcp.json` Configuration (PR `#2633`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py)
+  - Unit tests: [`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py) (**798/798** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§193)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§193)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 195: 16-Scenario (`CD-01..CD-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 194, 800-Test Milestone!)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)
+  - Unit tests: [`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py) (**800/800** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/report.json)
+
 
 
 

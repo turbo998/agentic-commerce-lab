@@ -2287,6 +2287,31 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)、[`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html)）。
 
+---
+
+## 193. Stage 194 增量深度研究（`2026-10-23`）：UCP AP2 响应强制 `ap2.merchant_authorization`（PR `#466`）与可扩展 `declared_fields`（PR `#915`）及延期账期 `payment: {}`（PR `#881`）、x402 严格 V2 CAIP-2 校验（PR `#3878`）与 Bazaar 不透明源规范化 URL（PR `#3138`）及按命名空间通配符派生（PR `#3215`）、x402 正确性与争议扩展保证金裁决（PR `#3868`）及 MCP `SEP-2792`/`SEP-2778`/`SEP-2633` 护栏
+
+1. **UCP AP2 激活结账响应强制 `ap2.merchant_authorization`（PR `#466`）、可扩展 `declared_fields` / `config` / `required_declared_fields`（PR `#915`）与完全延期付款条款 `payment: {}`（PR `#881`）**：
+   - **`ap2_with_merchant_authorization` 必填约束（PR `#466`）**：当结账会话协商启用 AP2 扩展时，商户结账响应中的 `ap2` 对象必须包含非空分离式 JWS `merchant_authorization`（`required: ["merchant_authorization"]`），在响应边界即时拦截缺失或格式非法的商户签名。
+   - **作用域绑定的 `declared_fields` 与 Complete 省略规则（PR `#915` & PR `#881`）**：响应只读 `checkout.config` 以反向域名（`^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$`）映射标准 JSON Schema，`checkout.required_declared_fields` 与 `line_items[].required_declared_fields`（`uniqueItems: true`）将键显式绑定至结账级或行项目级作用域；平台在 `create`/`update` 提交对应作用域的 `declared_fields`（严禁跨作用域隐式迁移或引用未声明键），未满足必填 Schema 前严禁返回 `ready_for_complete`；`complete` 请求必须完全省略 `config`/`required_declared_fields`/`declared_fields`，且当所选付款条件为无需预付捕获或担保工具的完全延期条款时，平台必须在 `complete` 请求中发送空对象 `"payment": {}`（PR `#881`）。
+2. **x402 Python 严格 V2 CAIP-2 校验（PR `#3878`，`2026-10-23T16:22:28Z` 合入）、Bazaar 不透明源规范化 URL 重构（PR `#3138`）、按命名空间独立派生通配符（PR `#3215`）与 `x402-fetch` 容错过滤（PR `#2730`）**：
+   - Python SDK `NetworkV2` 对 V2 `PaymentRequirements.network` 强制执行 `^[-a-z0-9]{3,8}:[-_a-zA-Z0-9]{1,32}$`（拒绝 `a:b`、`eip155:`、`eip155:84532:extra`），同时保留 V1 兼容标识符。
+   - Bazaar `extractDiscoveryInfo` 针对非 WHATWG 特殊协议（如 `mcp://tool/financial_analysis?session=abc#frag`，其 `url.origin === "null"`）通过 `${url.protocol}//${url.host}${routeTemplate ?? url.pathname}` 重构规范化 URL，剥离 `?query` 与 `#fragment` 且消除 `"null/..."` 损坏与会话参数导致的目录重复。
+   - `x402Facilitator._registerScheme` 按 CAIP-2 命名空间分组注册，为每个命名空间独立派生 `namespace:*` 通配符，防止跨命名空间注册（如 `["stellar:testnet", "stellar:futurenet", "eip155:8453"]`）坍缩为单一字面量。
+3. **x402 正确性与争议扩展——链上保证金裁决（Bonded Verdicts，PR `#3868`）**：
+   - 在结算下游定义由独立仲裁者（Adjudicator）针对具名 `resolver_id`/`resolver_version` 与预约定 `criterion_id`/`evidence_digest` 签发的哈希链 Ed25519 裁决（`CONFIRMED | REFUTED | PARTIAL | INSUFFICIENT_DATA`）：严格区分“哈希/签名归属验证”与“独立重跑 `criterion_id` 的工作正确性验证”；`INSUFFICIENT_DATA` 严禁作为错误工作汇总或触发罚没（Slash）；`per_verdict_max` 不得超过扣除在途预留后的可用链上抵押余额除以未决义务数；严禁自裁（`adjudicator_id != payee_id`），且争议记录必须绑定 `(payer, payee, operation)` 与已验证 `receipt_digest`（禁止单凭 `payment_identifier` 绑定）。
+4. **MCP `SEP-2792` 逐请求用户语言偏好（PR `#2792`）、`SEP-2778` Schema 安全类型约束（PR `#2778`）与 `SEP-2633` 客户端 `mcp.json` 标准配置（PR `#2633`）**：
+   - `SEP-2792` 定义请求 `_meta["io.modelcontextprotocol/acceptLanguage"]` 与响应 `_meta["io.modelcontextprotocol/contentLanguage"]`：严格请求级作用域（严禁写入会话状态或推断货币/时区/格式），Streamable HTTP 要求与 `Accept-Language` 头逐字符精确一致（大小写、空格或 `q` 精度差异均返回 HTTP 400 / JSON-RPC `-32020 HeaderMismatch`），且严禁翻译 `BaseMetadata.name` 等机器标识符。
+   - `SEP-2778` 强制限制 URI Scheme（`Icon.src` 阻断 `javascript:`、`Root.uri` 要求 `file://`、`ElicitRequestURLParams.url` 要求 `https://` 与必填 `elicitationId`）、标识符长度（`<= 256`）、游标长度（`<= 8192`）与 `ttlMs <= 86400000`；`SEP-2633` 规范 `mcp.json` 顶层 `mcpServers`、传输类型互斥字段、`oauth` 与 `headers.Authorization` 互斥、stdio 版本固定及 RFC 3986 密钥插值。
+
+---
+
+## 194. Stage 195 基准评测（`2026-10-23`）：16 场景（`CD-01..CD-16`）中英双语 7-Card 4:5 视觉基准报告（800 单测里程碑！）
+
+- **评测范围**：覆盖 Stage 194 全部 16 项 `2026-10-23` 一手协议与安全护栏（`CD-01..CD-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)、[`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html)）。
+
 
 
 

@@ -218,6 +218,24 @@
   - 单元测试：[`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)（全仓库 **794/794** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html`（中文）](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/report.json)
 
+---
+
+## Stage 194：UCP AP2 响应强制 `ap2.merchant_authorization`（PR `#466`）与可扩展 `declared_fields` / `config` / `required_declared_fields`（PR `#915`）及延期账期 `payment: {}`（PR `#881`）、x402 Python 严格 V2 CAIP-2 校验（PR `#3878`）与 Bazaar 不透明源规范化 URL（PR `#3138`）及按命名空间通配符派生（PR `#3215`）与 `accepts[]` 容错过滤（PR `#2730`）、x402 正确性与争议扩展保证金裁决（PR `#3868`）及 MCP `SEP-2792` 逐请求语言协商（PR `#2792`）、`SEP-2778` 类型安全约束（PR `#2778`）与 `SEP-2633` `mcp.json`（PR `#2633`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py)
+  - 单元测试：[`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_guard.py)（全仓库 **798/798** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§193)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§193)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 195：16 场景（`CD-01..CD-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 194）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../lab/ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)
+  - 单元测试：[`tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py`](../../tests/test_ucp_ap2_merchant_auth_declared_fields_x402_caip2_bazaar_bond_mcp_lang_bench.py)（全仓库 **800/800** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-merchant-auth-declared-fields-x402-caip2-bazaar-bond-mcp-lang-bench/report.json)
+
 
 
 
