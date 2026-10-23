@@ -2364,6 +2364,31 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py`](../../lab/x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py)、[`tests/test_x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py`](../../tests/test_x402_go_v2_caip2_402_body_bazaar_method_ucp_anyof_mcp_tasks_stream_interceptors_bench.py) 及双语报告 [`reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/`](../../reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-go-v2-caip2-402-body-bazaar-method-ucp-anyof-mcp-tasks-stream-interceptors-bench/index.en.html)）。
 
+---
+
+## 199. Stage 200 架构深潜（`2026-10-23` · 200 阶段里程碑！）：x402 Python 支付头非对象 JSON 解码门禁（`#3908`）、卖家签发 32 字节 EIP-3009 资源查询绑定 Nonce（`#3873`）、Bazaar Cloudflare `530`/`1033` 死源站摘除与单参数唯一主名规范化及 `offer-receipt` 路由 `includeTxHash` 防覆盖保留（`#3844`/`#3841`/`#3824`）、UCP 跨边界载体投影契约（`#827`）、结账 `amount_finality` 与 `payment.maximum_amount` 及订单工具摘要分离（`#815`）、支付处理策略/不可变审批上限/仅追加分录（`#820`）、住宿退订确定性时间表与等价截止期去重（`#807`）、请求期能力交集强制校验与住宿 DTC 签名报价（`#805`/`#986`）、MCP 可验证工具结果证明/逐次发送通道策略回执/`browser-automation` 安全不变量（`#3354`/`#3337`/`#3305`）及 Sierra $\tau$-bench 2.0 电信无关客户停机写操作阻断与航司最小可用礼品卡余额确定性选择（`#459`/`#664`）
+
+1. **x402 Python 非对象 JSON 支付头解码门禁（`#3908`）、卖家签发 32 字节 EIP-3009 资源绑定 Nonce（`#3873`）与 Bazaar 死源站摘除/单键示例/`offer-receipt` `includeTxHash` 保留（`#3844`/`#3841`/`#3824`）**：
+   - `Issue #3908`：修复 `decode_payment_signature_header` 与 `decode_payment_required_header` 在 `json.loads(decoded_bytes)` 返回 `[]`、`"s"`、`1`、`null` 时调用 `.get("x402Version", 2)` 触发未捕获 `AttributeError`（导致 HTTP 500 违反一致性套件 `R24`）的缺陷，强制 `isinstance(decoded, dict)` 类型门禁并干净返回 HTTP `402`/`400`。
+   - `Issue #3873`：针对 EIP-3009 签名天然不绑定 HTTP 方法、URL 与查询串导致 `?target=A` 支付签名可重放至 `?target=B` 的漏洞，通过协商式 32 字节 `0x` 十六进制卖家签发 Nonce（HMAC-SHA256 绑定 `method, canonical_path_query, resource_id, network, asset, pay_to, amount, offer_id, challenge, expires_at`）实现零链上合约改动的请求级防重放。
+   - `Issues #3844 / #3841 / #3824`：自动摘除返回 Cloudflare `530`（`error code: 1033`，如 `market.datapackvibe.com` 污染的 `19,783` 条死目录记录）或连续 `>= 3` 次非 402 的源站；在 Bazaar `info.input` 示例中禁止同一逻辑参数同时填写多个别名键（如 `q`/`query`/`text`）；并在 `ResourceServer.enrichExtensions` 合并路由声明时保留 `includeTxHash: True`，确保 `signedReceipt.transaction` 写入链上交易哈希。
+2. **UCP 跨能力边界载体投影（`#827`）、结账 `amount_finality` 与 `payment.maximum_amount`（`#815`）、支付处理账本（`#820`）、住宿确定性退订时间表（`#807`）与请求期能力校验/DTC 签名报价（`#805`/`#986`）**：
+   - `Issue #827`：跨 `Cart -> Checkout` 边界的持久敏感载体必须显式声明 `projection: {identity, preserves, drops, on_unpreserved, reattest}`，缺失且 `on_unpreserved == "fail_closed"` 或 `reattest == "required"` 未重验时立即阻断。
+   - `Issues #815 & #820`：仅 `totals[].type == "total"` 允许携带 `amount_finality`（`"provisional"` 要求 `payment.maximum_amount >= total.amount`；`"final"` 严禁携带 `payment.maximum_amount`）；订单工具摘要仅暴露 `authorized_amount` 与总 `captured_amount`，严禁通过减法推导剩余可捕获额度；`Complete Checkout` 请求省略 `capture_policy`，`approvals[]` 记录授权上限而非增量，待定分录通过 `resolves_entry_id` 追加结算，裁剪历史必须标记 `entries_complete: False`。
+   - `Issues #807 / #805 / #986`：`dev.ucp.lodging.policy.cancellation.schedule` 强制 `(anchor, tiers[], after_last_tier)` 原子共现、RFC 3339 显式时区且禁 `:60` 闰秒、`1D == 86400` POSIX 秒下严格递减且禁止 `P1D` 与 `PT24H` 等价重复截止期、按 `at < anchor - until` 半开区间求值；请求期缺少必需能力交集即返回 `capabilities_incompatible`；DTC 源站签发 `stay.id` 报价必须经商户 `keys[]` 签名且未过期。
+3. **MCP 可验证工具结果（`#3354`）、逐次发送通道策略回执（`#3337`）、`browser-automation` 安全不变量（`#3305`）及 Sierra $\tau$-bench 2.0 无关客户写隔离与最小可用礼品卡选择（`#459`/`#664`）**：
+   - `Issues #3354 / #3337 / #3305`：校验 `_meta["io.modelcontextprotocol/verifiable-result"]` 的 `(program_digest, input_digest, output_digest, freshness_nonce)`；强制每次外发消息具备绑定 `body_sha256` 的通道策略回执；强制 `browser-automation` 声明全部 6 项安全不变量且变更动作具备前后状态证据。
+   - `Issues #459 & #664`：在 $\tau$-bench 电信评测中若 `suspend_line` 等写工具误伤无关客户（如 `C1001/L1001`）立即强制 `reward = 0.0`；在航司改签单工具支付中将“最小余额礼品卡”解析为**余额足以覆盖应付金额的最小礼品卡**（如 `$59` 改签费在 `$157, $113, $6` 中确定性选择 `$113` `gift_card_6276644` 而非不足额的 `$6`）。
+
+---
+
+## 200. Stage 201 基准评测（`2026-10-23` · 200 阶段里程碑！）：16 场景（`PM-01..PM-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 200 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PM-01..PM-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py`](../../lab/x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py)、[`tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py`](../../tests/test_x402_header_json_nonce_bazaar_ucp_projection_payment_max_lodging_cancel_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/`](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-header-json-nonce-bazaar-ucp-projection-payment-max-lodging-cancel-tau2-bench/index.en.html)）。
+
+
 
 
 
