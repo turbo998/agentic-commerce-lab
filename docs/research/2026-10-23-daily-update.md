@@ -416,6 +416,24 @@
   - 单元测试：[`tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py)（全仓库 **844/844** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/report.json)
 
+---
+
+## Stage 216：UCP JS SDK `PriceSchema` 整数/非负/ISO-4217 约束与发现配置 JWK 完整性校验（`js-sdk#34`/`conformance#34`）、UCP 购物车转换幂等/折扣继承与 `supports_multi_group=false` 单履约组收敛（`conformance#108`/`samples#181`）、UCP 订单 Webhook RFC 9421 签名（RFC 7638 `kid`）与 `5xx` 重试/`4xx` 禁重试及纯 `order` 请求体（`samples#179`/`#175`/`#146`）、UCP 标准错误信封与发现页 `Cache-Control` + `payment_handlers` 及 A2A 活跃 `taskId` 保留（`samples#174`/`#173`/`#168`）、x402 RFC 8785 JCS Ed25519 离线收据与后量子 `ML-DSA-65`（FIPS 204）纪元密钥链见证（`x402#3897`/`#3759`）、Covenant Facilitator（`$0.001` 下限/USDC/禁自付/500日限额）与 XRPL `upto` 支付通道上限（`x402#3891`/`#3890`）、`mcpdoctor` 只读预检（防私有头掩盖 402 文档）与 Python `builder-code` CBOR `uint64` 边界（`x402#3766`/`#3753`）、MCP Python SDK `/token` 与 `/revoke` RFC 6749 错误码分类及客户端 RFC 9449 `ES256` DPoP 证明（`python-sdk#3743`/`#3672`）、`ClientSessionGroup` 重注册旧工具驱逐与 MCP Apps UI 桥接父窗口来源校验（`python-sdk#3716`/`#3679`）、`stdio_client` $O(N)$ 分块列表缓冲与 SSE 响应头列表独立拷贝（`python-sdk#3706`/`#3704`）、出站空 `_meta`/`params` 省略/HeaderMismatch 单次重试/显式 `null` 输出校验与 OTel 错误记录（`python-sdk#3629`/`#3628`/`#3627`/`#3621`）、MCP TS SDK `scopeForRefresh` 显式 opt-in 与根 `$ref` 对象 `outputSchema` 免双重包装（`typescript-sdk#3085`/`#3081`）、`ResponseCacheStore` 挂起读取代次重检（含重连代次）与 `initialized` 握手超时上限（`typescript-sdk#3072`/`#3079`）、`sampling.context` 能力门禁与 `Mcp-Param`/`Mcp-Name` ASCII 校验及未读 POST 响应免阻塞（`typescript-sdk#3064`/`#3063`/`#3082`）、以及 Sierra $\tau^3$-bench 语音用户模拟器版本标签解耦（`voice-user-sim-v1.0`）与金融知识检索溯源（`tau2-bench#179`/`#175`）及 6 维扩展指标（零环境损坏率/自定义模型定价映射）与 TTS/Telecom 冒烟门禁（`tau2-bench#183`/`#446`/`#441`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_guard.py`](../../lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_guard.py)
+  - 单元测试：[`tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_guard.py`](../../tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_guard.py)（全仓库 **847/847** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§215)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§215)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 217（848 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 216）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py)
+  - 单元测试：[`tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py)（全仓库 **848/848** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/report.json)
+
 
 
 

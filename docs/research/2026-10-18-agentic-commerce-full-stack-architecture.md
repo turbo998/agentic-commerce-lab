@@ -2577,6 +2577,22 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`**。
 - **技术资产**：[`lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../lab/ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py)、[`tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py`](../../tests/test_ucp_totals_lodging_acp_ajv_ap2_jcs_did_x402_svm_v1_bazaar_mcp_attestation_tau2_paired_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-totals-lodging-acp-ajv-ap2-jcs-did-x402-svm-v1-bazaar-mcp-attestation-tau2-paired-bench/index.en.html)）。
 
+---
+
+## 215. Stage 216 深度防护（`2026-10-23`）：UCP JS SDK Zod 值约束/购物车/Webhook 签名、x402 JCS/后量子 ML-DSA-65 收据与 Covenant/XRPL 通道、MCP Python/TS SDK DPoP/缓存代次与 $\tau^3$-bench 语音版本护栏
+
+- **核心架构增量**：
+  1. **UCP 生态（`PR-01..PR-04`）**：强制执行 `PriceSchema` 整数/非负/`^[A-Z]{3}$` 约束与发现配置 `signing_keys[]` JWK 完整性及 Schema URL 可达性（`js-sdk#34`/`conformance#34`）；`dev.ucp.shopping.cart` 购物车优先覆盖、二次转换幂等返回未完成结账、折扣码自动继承与 `supports_multi_group=false` 单履约组收敛（`conformance#108`/`samples#181`）；订单 Webhook RFC 9421 签名（RFC 7638 JWK 指纹 `kid`）、`5xx` 指数退避重试/`4xx` 禁重试与纯 `order` 请求体（`samples#179`/`#175`/`#146`）；以及标准错误信封、发现页 `Cache-Control: public, max-age>=60` + `payment_handlers` 与 A2A 活跃 `taskId` `.includes()` 保留（`samples#174`/`#173`/`#168`）。
+  2. **x402 & MCP SDKs & Sierra $\tau^3$-bench（`PR-05..PR-16`）**：执行 RFC 8785 JCS Ed25519 离线收据与后量子 `ML-DSA-65`（FIPS 204）纪元密钥链见证（`x402#3897`/`#3759`）；Covenant Facilitator（`$0.001` 下限/USDC/禁自付/500日限额）与 XRPL `upto` 支付通道上限（`x402#3891`/`#3890`）；`mcpdoctor` 只读预检与 Python `builder-code` CBOR `uint64` 边界（`x402#3766`/`#3753`）；MCP Python SDK `/token` 与 `/revoke` RFC 6749 错误码分类及客户端 RFC 9449 `ES256` DPoP 证明（`python-sdk#3743`/`#3672`）；`ClientSessionGroup` 重注册旧工具驱逐与 UI 桥接父窗口来源校验（`python-sdk#3716`/`#3679`）；`stdio_client` $O(N)$ 分块列表缓冲与 SSE 响应头列表独立拷贝（`python-sdk#3706`/`#3704`）；出站空 `_meta`/`params` 省略/HeaderMismatch 单次重试/显式 `null` 输出校验与 OTel 错误记录（`python-sdk#3629`/`#3628`/`#3627`/`#3621`）；MCP TS SDK `scopeForRefresh` 显式 opt-in 与根 `$ref` 对象 `outputSchema` 免双重包装（`typescript-sdk#3085`/`#3081`）；`ResponseCacheStore` 挂起读取代次重检与 `initialized` 握手超时上限（`typescript-sdk#3072`/`#3079`）；`sampling.context` 能力门禁与 `Mcp-Param`/`Mcp-Name` ASCII 校验（`typescript-sdk#3064`/`#3063`/`#3082`）；以及 $\tau^3$-bench 语音模拟器版本解耦（`voice-user-sim-v1.0`）、金融知识检索溯源与 6 维扩展指标/冒烟门禁（`tau2-bench#179`/`#175`/`#183`/`#446`/`#441`）。
+
+---
+
+## 216. Stage 217 基准评测（`2026-10-23` · 848 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 216 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py)、[`tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.en.html)）。
+
 
 
 
