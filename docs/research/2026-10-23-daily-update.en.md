@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–173)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–175)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -37,4 +37,23 @@
   - Benchmark suite: [`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)
   - Unit tests: [`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py) (**746/746** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/report.json)
+
+---
+
+## Stage 174: UCP Split Payments Across Payment-Term Schedules (PR `#987`), ACP ATDRP §7.4a Requirement 5 Ledger Time-Anchor & Post-Anchor Unanchored Boundary (PR `#316` `8802ebe`), and x402 Pre-Signing Multi-Transaction Group Sponsorship (§10.3 `#3910`), Payment Creation Hook Correlation (`#3898`), SVM Failed Local Charge Reservation Release (`#3892`) & Header Overflow / `text/plain` / Stellar SDK `16.4.1` Guards (`#3899`/`#3901`/`#3904`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Guard module: [`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py)
+  - Unit tests: [`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py) (**749/749** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§173)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§173)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 175: 16-Scenario (`SP-01..SP-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 174)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)
+  - Unit tests: [`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py) (**750/750** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/report.json)
+
 

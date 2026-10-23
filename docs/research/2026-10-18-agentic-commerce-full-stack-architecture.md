@@ -2066,6 +2066,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.02 ms` vs. `12.18 ms`（`11.9x` 加速）**。
 - **技术资产**：[`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)、[`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py) 及双语报告 [`reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.en.html)）。
 
+---
+
+## 173. Stage 174 架构演进（`2026-10-23`）：UCP 分单支付跨付款条件账期分配（PR `#987` `instrument_group.schedule_type="immediate"` 与逐结账 `allowed_combinations` 收窄）、ACP ATDRP §7.4a Req 5 账本证据包时间锚定与锚后 `unanchored` 记录边界（PR `#316` `8802ebe`）、x402 签名前多笔交易代付组四项不变量（`#3910` §10.3）与 `createPaymentPayload` 钩子关联/SVM 失败预留释放/响应头溢出诊断（`#3898`/`#3892`/`#3899`/`#3901`/`#3904`）
+
+### 173.1 Google UCP 分单支付跨付款条件账期分配与逐结账 `allowed_combinations` 收窄（PR `#987`，`2026-10-23T14:53:46Z`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#987`（`docs/specification/payment/extensions/split-payments.md`、`terms.md`、`source/schemas/common/payment_split_payments.json`、`instrument_group.json`）中，新增 `instrument_group.schedule_type`（当前唯一规范值为 `"immediate"`）：分配至 `"immediate"` 组的支付工具（如无余额预授权能力的礼品卡或代金券）仅用于支付**结账完成时应付金额**（`sum(immediate schedules)`），结账完成后绝不再对该工具发起任何扣款；若该工具指定的 `amount` 超过前序工具抵扣后的剩余当期应付金额，商家必须返回 `payment_failed`（`immediate_group_amount_exceeds_due_at_completion`）。同时，`dev.ucp.common.payment.split_payments` 新增 `response_schema.config.allowed_combinations`，允许商家按当前结账动态解析分单组合（必须为商户 Profile `allowed_combinations` 的子集收窄，且在存在远期账期时强制包含至少一个非 `immediate` 组工具），出站 `instrument.amount` 报告该工具在所选付款条件全部账期上的总贡献额（已作废或未尝试扣款的工具必须省略 `amount`）。
+
+### 173.2 Stripe / OpenAI ACP ATDRP §7.4a Requirement 5 账本证据包外部时间锚定与锚后 `unanchored` 记录边界（PR `#316` 提交 `8802ebe`，`2026-10-23T14:24:59Z`）
+- 在 `agentic-commerce-protocol/agentic-commerce-protocol` PR `#316`（SEP `#303` ATDRP 争议解决扩展，提交 `8802ebe`）Section 7.4a Requirement 5 中明确：基于生命周期账本构建的证据包仅能证明内部序列一致性（`AP2#290`），无法自证记录何时存在；边界内序列完整性与边界外部时间锚定（`AP2#338`）属于两项独立要求并分别判定失败。账本证据包必须携带 `anchored_digest`、`mechanism`（`"rfc3161"` 或 `"opentimestamps"`）、`proof_bytes` 与 `recompute_location`；提供方重算摘要并独立核验 RFC 3161 TSA 根证书或区块链头证明。时间锚定仅证明集合不晚于锚定时刻存在（而非证明记录内容为真）；在最后一次锚定之后写入的记录均视为 `unanchored`，**严禁**单独作为时间类争议理由的唯一依据（`acp_unanchored_records_sole_time_ground_forbidden`）。
+
+### 173.3 x402 Foundation 签名前多笔交易代付组四项不变量（PR `#3910` §10.3）、`createPaymentPayload` 钩子上下文关联与中止清理（PR `#3898`）、SVM 本地扣款失败释放批量预留（PR `#3892`）及响应头溢出诊断/`text/plain` 原始错误体/`@stellar/stellar-sdk 16.4.1`（PR `#3899`/`#3901`/`#3902`/`#3903`/`#3904`）
+- 在 `x402-foundation/x402` PR `#3910`（`x402-specification-v2.md §10.3` 与 `scheme_exact.md`）中，强制 Facilitator 在对任何多笔原子交易组执行私钥签名前核验四项不变量：(a) 每笔内部交易内嵌网络/创世标识匹配 `paymentRequirements.network`；(b) 每笔交易携带非空且等于有序交易组规范哈希的 `group_digest`（阻断 `null == null` 未绑定单笔交易签名套取）；(c) 组内最多包含 1 笔未签名 Facilitator 代付交易且代付总费不超过上限；(d) 支付交易省略 `assetSender`/`asnd`/`closeRemainderTo`/`assetCloseTo`。在 PR `#3898` 中强制 `createPaymentPayload` 的 `before`/`after`/`failure` 钩子共享单次调用上下文对象，当 `before` 钩子中止或抛错时执行 `failure` 清理钩子、严禁 `recovery` 返回值覆盖拒绝且不启动载荷创建。在 PR `#3892` 中确保 SVM `beforeSettle` 本地扣款失败时立即释放该请求的通道预留额度（避免死锁合作关闭）并保留兄弟预留与已消费 `request_id`。在 PR `#3899`/`#3901`/`#3902`/`#3904` 中穿透识别 `UND_ERR_HEADERS_OVERFLOW`/`HPE_HEADER_OVERFLOW` 并保留原始 `cause` 且禁自动重试、保持 `text/plain` 402 响应体为原始文本，并将 `@stellar/stellar-sdk` 下限提升至 `^16.4.1`（内置 `axios 1.20.0`；参见 `lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py`）。
+
+---
+
+## 174. Stage 175 基准评测（`2026-10-23`）：16 场景（`SP-01..SP-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 174 全部 16 项 `2026-10-23` 一手协议与基准护栏（`SP-01..SP-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`1.00 ms` vs. `12.15 ms`（`12.2x` 加速）**。
+- **技术资产**：[`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)、[`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html)）。
+
+
 
 
 

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>16/16 (100.0%) 确定性守护 UCP #987 分单跨账期分配、ACP #316 (`8802ebe`) 账本时间锚定与 x402 #3910/#3898/#3892 签名前代付组及钩子清理</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.card { max-width: 900px; min-height: 540px; margin: 0 auto 24px; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; }
+.kicker { color: #38bdf8; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; }
+h1, h2 { margin: 8px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid #334155; padding: 8px; text-align: left; }
+code { color: #93c5fd; }
+.bar-primary { background: #3B82F6; height: 18px; width: 8.2%; border-radius: 4px; }
+.bar-base { background: #CBD5E1; height: 18px; width: 100%; border-radius: 4px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.good { background: #064e3b; padding: 16px; border-radius: 12px; }
+.bad { background: #7f1d1d; padding: 16px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="kicker">1 / 7 · HANDS-ON · PROTOCOL &amp; POLICY GUARDRAILS · STAGE 175</div>
+  <h1>16/16 (100.0%) 确定性守护 UCP #987 分单跨账期分配、ACP #316 (`8802ebe`) 账本时间锚定与 x402 #3910/#3898/#3892 签名前代付组及钩子清理</h1>
+  <p>Provenance: <code>synthetic_deterministic_verifier</code> · Scenarios: <b>16/16 (100.0%)</b> · Speedup: <b>12.2x (1.0 ms vs 12.15 ms)</b></p>
+</section>
+<section class="card">
+  <div class="kicker">2 / 7 · SCENARIO: SP-04 &amp; SP-08</div>
+  <h2>UCP #987 Immediate Gift Card Deposit ($25) + Deferred Card ($75) &amp; ACP #316 (`8802ebe`) Post-Anchor Unanchored Ground Block in 1.00 ms</h2>
+  <p>Task type: <code>choice</code> · Action: <code>Act automatically / Send to a human</code> · Confidence: <code>1.00</code></p>
+</section>
+<section class="card">
+  <div class="kicker">3 / 7 · WHAT I TESTED</div>
+  <h2>16/16 (100.0%) Evaluation Matrix Across UCP #987 Split-Payment Schedules, ACP #316 (`8802ebe`) Ledger Time Anchor &amp; x402 #3910/#3898/#3892/#3899</h2>
+  <table>
+    <thead><tr><th>SCENARIO</th><th>DOMAIN</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th><th>RESULT</th></tr></thead>
+    <tbody>
+<tr><td><code>SP-01</code></td><td>UCP #987 Per-Checkout Split Combinations</td><td>结账响应将 allowed_combinations 收窄为礼品卡 immediate + 1 张卡时是否放行？</td><td><code>ucp_per_checkout_split_combinations_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-02</code></td><td>UCP #987 Checkout Combination Widening Block</td><td>结账响应 allowed_combinations 超出商户 Profile 上界时是否阻断？</td><td><code>ucp_checkout_combination_widens_profile</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-03</code></td><td>UCP #987 Deferred Term Requires Non-Immediate Group</td><td>含远期账期的结账若仅包含 immediate 组且无远期可扣款工具时是否阻断？</td><td><code>ucp_deferred_term_missing_deferred_capable_group</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-04</code></td><td>UCP #987 Deposit Now ($25 GC) + Balance Later ($75 Card)</td><td>$25 礼品卡支付当期押金、信用卡承担 $75 入住尾款并报告全周期贡献时是否放行？</td><td><code>ucp_split_schedule_allocation_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-05</code></td><td>UCP #987 Immediate Group Over-Contribution Block</td><td>immediate 组的礼品卡指定金额（$50）超过当期应付押金（$25）时是否返回 payment_failed？</td><td><code>immediate_group_amount_exceeds_due_at_completion</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-06</code></td><td>UCP #987 Voided Instrument Outbound Amount Leak</td><td>已作废或未尝试扣款的支付工具在结账响应中仍携带 amount 字段时是否阻断？</td><td><code>ucp_voided_instrument_must_omit_amount</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-07</code></td><td>ACP #316 (`8802ebe`) §7.4a Req 5 RFC 3161 Ledger Time Anchor</td><td>具备完整序列、匹配摘要、RFC 3161 时间戳证明与重算位置的账本证据包是否放行？</td><td><code>acp_ledger_time_anchor_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-08</code></td><td>ACP #316 (`8802ebe`) Post-Anchor Unanchored Records Ground Block</td><td>最后一次时间锚定之后写入的 unanchored 记录作为时间类争议唯一依据时是否阻断？</td><td><code>acp_unanchored_records_sole_time_ground_forbidden</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-09</code></td><td>ACP #316 (`8802ebe`) Anchor Existence vs. Truth Conflation Block</td><td>将时间锚定（仅证明集合在锚定时刻前存在）误当作记录内容真实性证明时是否阻断？</td><td><code>acp_ledger_anchor_attests_existence_not_truth</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-10</code></td><td>x402 #3910 §10.3 Pre-Signing Group Sponsorship Valid</td><td>多笔原子交易组具备一致创世网络、非空规范 group_digest、单笔代付且无抽干字段时是否放行？</td><td><code>x402_presigning_group_sponsorship_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-11</code></td><td>x402 #3910 §10.3 Unbound null==null Group Digest Block</td><td>多笔交易组中 group_digest 为空（企图诱导 Facilitator 单独签名未绑定交易）时是否签名前阻断？</td><td><code>x402_group_digest_missing_or_mismatch</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-12</code></td><td>x402 #3898 Payment Creation Hook Correlation & Cleanup</td><td>createPaymentPayload 共享单次调用上下文且 before 钩子中止时执行清理并不启动签名是否放行？</td><td><code>x402_payment_creation_hooks_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-13</code></td><td>x402 #3898 Recovery Override on Before-Hook Abort Block</td><td>before 钩子拒绝后若 failure 钩子的 recovery 返回值企图强行覆盖拒绝并继续创建载荷时是否阻断？</td><td><code>x402_recovery_cannot_override_before_abort</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-14</code></td><td>x402 #3892 SVM Failed Local Charge Reservation Release</td><td>SVM 本地批量扣款在 beforeSettle 失败时是否释放预留额度并保留兄弟预留与已消费 ID？</td><td><code>x402_svm_batch_reservation_cleanup_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-15</code></td><td>x402 #3892 SVM Leaked Reservation Blocking Close</td><td>SVM 本地扣款失败后未释放 4000 单位预留额度（导致通道合作关闭被死锁）时是否阻断？</td><td><code>x402_svm_failed_charge_reservation_leaked</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>SP-16</code></td><td>x402 #3899/#3901/#3904 Header Overflow, Raw Text & Stellar 16.4.1</td><td>识别 UND_ERR_HEADERS_OVERFLOW 保留 cause 且不自动重试、text/plain 原样输出及 stellar-sdk>=16.4.1 是否放行？</td><td><code>x402_http_diagnostics_and_stellar_floor_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+  <h2>Protocol &amp; Scoring Mechanics (Deterministic Verifier Flow &lt;answer&gt;)</h2>
+  <pre style="background:#0F172A;padding:16px;border-radius:8px;overflow:auto;">Structured Contract Input (SP-01..SP-16) ↓ Deterministic Policy Verifier ↓ &lt;answer&gt; Sealed Decision Code</pre>
+</section>
+<section class="card">
+  <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+  <h2>16/16 (100.0%) Key-Order Perturbation Invariance (0.0 pts Drift)</h2>
+  <table>
+    <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+    <tbody>
+<tr><td><code>SP-01</code></td><td><code>ucp_per_checkout_split_combinations_ok</code></td><td><code>ucp_per_checkout_split_combinations_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-02</code></td><td><code>ucp_checkout_combination_widens_profile</code></td><td><code>ucp_checkout_combination_widens_profile</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-03</code></td><td><code>ucp_deferred_term_missing_deferred_capable_group</code></td><td><code>ucp_deferred_term_missing_deferred_capable_group</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-04</code></td><td><code>ucp_split_schedule_allocation_ok</code></td><td><code>ucp_split_schedule_allocation_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-05</code></td><td><code>immediate_group_amount_exceeds_due_at_completion</code></td><td><code>immediate_group_amount_exceeds_due_at_completion</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-06</code></td><td><code>ucp_voided_instrument_must_omit_amount</code></td><td><code>ucp_voided_instrument_must_omit_amount</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-07</code></td><td><code>acp_ledger_time_anchor_ok</code></td><td><code>acp_ledger_time_anchor_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-08</code></td><td><code>acp_unanchored_records_sole_time_ground_forbidden</code></td><td><code>acp_unanchored_records_sole_time_ground_forbidden</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-09</code></td><td><code>acp_ledger_anchor_attests_existence_not_truth</code></td><td><code>acp_ledger_anchor_attests_existence_not_truth</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-10</code></td><td><code>x402_presigning_group_sponsorship_ok</code></td><td><code>x402_presigning_group_sponsorship_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-11</code></td><td><code>x402_group_digest_missing_or_mismatch</code></td><td><code>x402_group_digest_missing_or_mismatch</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-12</code></td><td><code>x402_payment_creation_hooks_ok</code></td><td><code>x402_payment_creation_hooks_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-13</code></td><td><code>x402_recovery_cannot_override_before_abort</code></td><td><code>x402_recovery_cannot_override_before_abort</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-14</code></td><td><code>x402_svm_batch_reservation_cleanup_ok</code></td><td><code>x402_svm_batch_reservation_cleanup_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-15</code></td><td><code>x402_svm_failed_charge_reservation_leaked</code></td><td><code>x402_svm_failed_charge_reservation_leaked</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>SP-16</code></td><td><code>x402_http_diagnostics_and_stellar_floor_ok</code></td><td><code>x402_http_diagnostics_and_stellar_floor_ok</code></td><td><b>0.0 pts</b></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">6 / 7 · LATENCY</div>
+  <h2>1.0 ms Median Guard Latency vs. 12.15 ms Baseline (12.2x Speedup)</h2>
+  <p>Primary Deterministic Guard (<code>1.0 ms</code>)</p><div class="bar-primary"></div>
+  <p>Baseline Cross-Service / LLM Judge (<code>12.15 ms</code>)</p><div class="bar-base"></div>
+</section>
+<section class="card">
+  <div class="kicker">7 / 7 · MY TAKE</div>
+  <h2>Good Fit vs. Not For &amp; Production Readiness</h2>
+  <div class="grid">
+    <div class="good"><h3>✅ Good fit</h3><p>UCP PR #987 split-payment schedule allocation &amp; per-checkout combination narrowing, ACP PR #316 (`8802ebe`) ATDRP §7.4a Req 5 ledger time anchor verification, and x402 PRs #3910/#3898/#3892/#3899/#3901/#3904 pre-signing group sponsorship &amp; hook cleanup guards.</p></div>
+    <div class="bad"><h3>⛔ Not for</h3><p>Replacing live RFC 3161 TSA hardware HSM signing, Bitcoin OpenTimestamps full-node P2P sync, or live Algorand/Solana validator consensus.</p></div>
+  </div>
+</section>
+</body>
+</html>

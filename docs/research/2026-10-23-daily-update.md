@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–173）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–175）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -37,4 +37,23 @@
   - 基准套件：[`lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../lab/x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)
   - 单元测试：[`tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py`](../../tests/test_x402_avm_svm_mcp_sync_ucp_split_profile_cimd_mcp_skills_dpop_bench.py)（全仓库 **746/746** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html`（中文）](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-avm-svm-mcp-sync-ucp-split-profile-cimd-mcp-skills-dpop-bench/report.json)
+
+---
+
+## Stage 174：UCP 分单支付跨付款条件账期分配（PR `#987` `instrument_group.schedule_type="immediate"` 与逐结账 `allowed_combinations` 收窄）、ACP ATDRP §7.4a Req 5 账本证据包时间锚定与锚后 `unanchored` 记录禁作时间类争议唯一依据（PR `#316` `8802ebe`）、x402 签名前多笔交易代付组四项不变量（`#3910` §10.3）与 `createPaymentPayload` 钩子上下文关联/SVM 失败预留释放/响应头溢出诊断（`#3898`/`#3892`/`#3899`/`#3901`/`#3904`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 护栏模块：[`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py)
+  - 单元测试：[`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_guard.py)（全仓库 **749/749** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§173)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§173)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 175：16 场景（`SP-01..SP-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 174）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../lab/ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)
+  - 单元测试：[`tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py`](../../tests/test_ucp_split_schedules_acp_ledger_anchor_x402_group_sponsor_hooks_bench.py)（全仓库 **750/750** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-split-schedules-acp-ledger-anchor-x402-group-sponsor-hooks-bench/report.json)
+
 
