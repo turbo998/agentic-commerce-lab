@@ -434,6 +434,24 @@
   - 单元测试：[`tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py)（全仓库 **848/848** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/report.json)
 
+---
+
+## Stage 218：UCP CI 40位 Commit SHA 锁定/`fast-uri>=3.1.6`/`.git-blame-ignore-revs`（`ucp#880`/`#803`/`#847`）、x402 买方 `Agent Safe`/`Rein` Origin 收款人绑定/单次与会话支出上限/熔断器（`x402#3909`/`#3709`）、World Chain（`eip155:480`）默认 USDC 与 INAM `withInamX402Gate` 收款人/收据历史评分门禁（`x402#3833`/`#3713`）、四链（EVM/Solana/Algorand/XRPL）预签名 OFAC SDN 制裁筛查与多 SDK Apache-2.0 `LICENSE`+`NOTICE`（`x402#3872`/`#3751`）、MCP Python SDK `Content-Type` 大小写无关解析与非请求体 `-32600 INVALID_REQUEST`（`python-sdk#3675`/`#3558`）、静态目录 `subscriptions/listen` 退订（防按时长计费挂起）与泛型 `Context[AppState]` 请求上下文保留（`python-sdk#3626`/`#3624`）、`DirectDispatcher` 进度回调异常捕获与单次 POST `TransportError` 会话保活（`python-sdk#3623`/`#3584`）、`stdio_server` 对端未关 `stdin` 优雅退出与 Windows `safe_join` NTFS Junction 逃逸拦截（`python-sdk#3595`/`#3609`）、`Image`/`Audio` 注册 IANA MIME 规范化与逗号/空格 OAuth Scope 并集去重（`python-sdk#3593`/`#3568`）、MCP TS SDK 显式 `tools.listChanged: false` 保留与字面量静态 Resource URI 查找（`typescript-sdk#3076`/`#3074`）、`StdioClientTransport` 单 `drain` 监听器复用与无 DOM `normalizeHeaders`（`typescript-sdk#3073`/`#3069`）、SEP-2640 Skills `{ id, setup(ctx) }` 契约与重复扩展 ID 拦截（`typescript-sdk#3066`/`#3065`）、RFC 9728 §3.1 路径尾部斜杠保留与 `AjvJsonSchemaValidator` 自定义选项 `$schema` 方言分发（`typescript-sdk#3062`/`#3059`）、`ServerEventBus` `_meta` 透传/权威 URI 过滤与未知规范参数剥离（`typescript-sdk#3057`/`#3087`）、RFC 6570 多变量与非展开列表 URI 模板精确展开（`typescript-sdk#3050`）、以及 Sierra $\tau$-bench OpenAI Live 标准语音模板与 $\tau$-Elicitation 证据/图表确定性（`tau2-bench#527`/`#536`/`#537`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_guard.py`](../../lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_guard.py)
+  - 单元测试：[`tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_guard.py`](../../tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_guard.py)（全仓库 **851/851** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§217)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§217)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 219（850+ 单测里程碑 · 852/852 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 218）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py)
+  - 单元测试：[`tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py)（全仓库 **852/852** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/report.json)
+
 
 
 

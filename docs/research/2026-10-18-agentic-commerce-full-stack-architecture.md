@@ -2593,6 +2593,38 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../lab/ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py)、[`tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py`](../../tests/test_ucp_zod_cart_webhook_x402_pqc_covenant_mcp_dpop_ts_cache_tau2_voice_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-zod-cart-webhook-x402-pqc-covenant-mcp-dpop-ts-cache-tau2-voice-bench/index.en.html)）。
 
+---
+
+## 217. Stage 218 架构增量（`2026-10-23`）：UCP CI SHA 锁定/`fast-uri`、x402 Agent Safe/World Chain/INAM/四链 OFAC、MCP Python/TS SDK 传输/MIME/RFC 9728/RFC 6570 与 Sierra $\tau$-bench OpenAI Live 护栏
+
+### 217.1 UCP 供应链治理与 x402 买方策略/World Chain/INAM/四链 OFAC 护栏（`PR-01..PR-04`）
+1. **UCP CI 40 位 Commit SHA 锁定、`fast-uri >= 3.1.6` 与 `.git-blame-ignore-revs`（`ucp#880`/`#803`/`#847`，`PR-01`）**：强制 GitHub Actions 工作流引用 40 位不可变 Commit SHA、`persist-credentials: false`、`contents: read` 最小权限，且 `fast-uri >= 3.1.6`。
+2. **x402 `Agent Safe` / `Rein` 买方预签名策略（`x402#3909`/`#3709`，`PR-02`）**：签名前强制校验 `challenge_pay_to == origin_pinned_payee`、单次与会话累计支出上限、最大授权时间窗与非托管熔断开关。
+3. **x402 World Chain（`eip155:480`）默认 USDC 与 INAM `withInamX402Gate`（`x402#3833`/`#3713`，`PR-03`）**：绑定 World Chain 主网 Circle USDC（`0x79A02482A880bCE3F13e09Da970dC34db4CD24d1`，6 位小数，EIP-712 `USDC` v2）及 INAM 关联地址 == `payTo` 与收据历史最低评分校验。
+4. **x402 四链预签名 OFAC SDN 筛查与多 SDK Apache-2.0 `LICENSE`+`NOTICE`（`x402#3872`/`#3751`，`PR-04`）**：覆盖 EVM、Solana、Algorand、XRPL 四链付款方/收款方制裁名单筛查，并校验 Python/TS/Go SDK 发布包同时包含 `LICENSE` 与 `NOTICE`。
+
+### 217.2 MCP Python / TypeScript SDK 与 Sierra $\tau$-bench 护栏（`PR-05..PR-16`）
+5. **MCP Python SDK `Content-Type` 大小写无关解析与 `-32600 INVALID_REQUEST`（`python-sdk#3675`/`#3558`，`PR-05`）**：接受 `Application/JSON; Charset=UTF-8`，对非 Request JSON 体返回 `-32600` 而非 `-32602`。
+6. **MCP Python SDK 静态目录 `subscriptions/listen` 退订与泛型 `Context[AppState]` 保留（`python-sdk#3626`/`#3624`，`PR-06`）**：静态工具目录可关闭 `subscriptions/listen` 避免按时长计费宿主挂起计费，并在泛型 `Context[AppState]` 校验后保留实时 `request_context`。
+7. **MCP Python SDK `DirectDispatcher` 进度回调异常隔离与单次 POST `TransportError` 会话保活（`python-sdk#3623`/`#3584`，`PR-07`）**：捕获 `on_progress` 抛错保障工具正常返回，单次 POST 传输错误仅失败当前请求而保持会话存活。
+8. **MCP Python SDK `stdio_server` 对端未关 `stdin` 优雅退出与 Windows `safe_join` NTFS Junction 防逃逸（`python-sdk#3595`/`#3609`，`PR-08`）**：防止退出时阻塞于非守护线程 `stdin.readline()`，并在 `WinError 1314` 下通过 NTFS Junction 验证 `safe_join` 路径逃逸拦截。
+9. **MCP Python SDK `Image`/`Audio` 注册 IANA MIME 规范化与逗号/空格 OAuth Scope 去重（`python-sdk#3593`/`#3568`，`PR-09`）**：将 `jpg`/`mp3`/`m4a` 规范化为 `image/jpeg`/`audio/mpeg`/`audio/mp4`，并按空格+逗号拆分 OAuth `scope` 实现 SEP-2350 升权去重。
+10. **MCP TS SDK 显式 `tools.listChanged: false` 保留与字面量静态 Resource URI 查找（`typescript-sdk#3076`/`#3074`，`PR-10`）**：禁止 `setToolRequestHandlers()` 覆盖显式 `false`，并按注册字面量 URI 查找资源防止 `new URL().toString()` 尾部斜杠失配。
+11. **MCP TS SDK `StdioClientTransport` 单 `drain` 监听复用与无 DOM `normalizeHeaders`（`typescript-sdk#3073`/`#3069`，`PR-11`）**：背压下最多挂载 1 个共享 `drain` 监听器并在关闭时清理，避免 `MaxListenersExceededWarning`。
+12. **MCP TS SDK SEP-2640 Skills `{ id, setup(ctx) }` 契约与重复扩展 ID 拦截（`typescript-sdk#3066`/`#3065`，`PR-12`）**：通过 `extensions: [skills]` 注册并拒绝旧版 `.attach()` 与重复扩展 ID。
+13. **MCP TS SDK RFC 9728 §3.1 路径尾部斜杠保留与 `AjvJsonSchemaValidator` 方言分发（`typescript-sdk#3062`/`#3059`，`PR-13`）**：保留 `/resource/` 尾部斜杠生成 `/.well-known/oauth-protected-resource/resource/`，且自定义 AJV 选项保留 `$schema` 方言路由。
+14. **MCP TS SDK `ServerEventBus` `_meta` 透传/权威 URI 过滤与未知参数剥离（`typescript-sdk#3057`/`#3087`，`PR-14`）**：保留转发通知 `_meta`、按权威资源 URI 过滤，并在调用规范处理器前剥离未声明参数。
+15. **MCP TS SDK RFC 6570 多变量与非展开列表 URI 模板展开（`typescript-sdk#3050`，`PR-15`）**：精确实现 `%25` 二次编码、`{/who,dub}`、`{.who,who}` 与 `X{.list}`（`X.red,green,blue`）非展开列表逗号拼接。
+16. **Sierra $\tau$-bench OpenAI Live 标准语音提示词模板与 $\tau$-Elicitation 证据/图表完整性（`tau2-bench#527`/`#536`/`#537`，`PR-16`）**：强制绑定版本化 `openai-live-default-v*` 模板与可达证据链接。
+
+---
+
+## 218. Stage 219 基准评测（`2026-10-23` · 852 单测里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 218 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py)、[`tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.en.html)）。
+
 
 
 
