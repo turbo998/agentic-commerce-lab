@@ -380,6 +380,24 @@
   - Unit tests: [`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py) (**836/836** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/report.json)
 
+---
+
+## Stage 212: UCP Standardized IR Strategy & `Cart -> Checkout` Extension State Projection (`#800`/`#788`), `keys[]`/`signing_keys[]` Dual-Key Migration Window & Checkout `ETag`/`If-Match` Concurrency (`#676`/`#113`), Normative Extension Ratification Governance Gate & JSON Schema Formatting Lint (`#701`/`#732`), ACP Idempotency Payload Digest Equivalence (`409 Conflict`) & `merchant_defined_data` Validation (`#120`/`#60`), Surcharging Cap/Debit Prohibition & Schema Description/Example Gate (`#38`/`#140`), AP2 Anonymous VDC `IntentMandate` & Checkout Agent Bridge Role Separation (`#120`/`#36`), Enterprise B2B Procurement Mandate & Brazilian PIX Instant Rail (`#65`/`#33`), x402 Pooled Escrow Agent-Crew Policy & Client `SpendControls.maxTimeoutSeconds` Cap (`#3620`/`#3614`), `onPaymentRequired` Retry Updated Requirements Re-Evaluation & Paid `4xx`/`5xx` `onPaymentResponse` Execution (`#3582`/`#3564`), `@x402/fetch` `extensions.bazaar` Preservation & Atomic Integer `amount` Constraint (`#3557`/`#3510`), Non-USD Default Asset FX Spend Cap & Arc (`eip155:5042`) Native Gas Client-Broadcast EIP-3009 (`#3505`/`#3504`), `presign-guard` Pre-Sign OFAC Screening & `knos-order` Third-Party Arbiter Acceptance (`#3782`/`#3720`), MCP Native Token Metering / Session Budget & Client-Side `x402` Paid Tool Flow (`#3229`/`#3393`), Confidential Prompt `hidden: true` Isolation & `CacheableResult` `ttlMs`/`cacheScope` Enforcement (`#3232`/`#3044`), and Sierra $\tau$-bench 2.0 Lazy Optional Voice Dependency Import & Retail `calculate` Optionality (`#390`/`#65`) + Full Trajectory Export & `agent_msg.validate()` Exception Recovery (`#204`/`#42`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py)
+  - Unit tests: [`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py) (**839/839** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§211)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§211)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 213 (840-Test Milestone!): 16-Scenario (`PR-01..PR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 212)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)
+  - Unit tests: [`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py) (**840/840** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/report.json)
+
 
 
 

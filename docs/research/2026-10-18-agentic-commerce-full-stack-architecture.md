@@ -2531,6 +2531,36 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py)、[`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.en.html)）。
 
+---
+
+## 211. Stage 212 架构深潜（`2026-10-23`）：UCP 标准化中间表示 IR 与并发 ETag、ACP 幂等摘要与附加费上限、AP2 匿名 VDC 与巴西 PIX、x402 共享托管池/Bazaar/Arc 原生 Gas 与 MCP/$\tau$-bench 2.0 确定性护栏
+
+- **211.1 UCP 中间表示 IR、双轨密钥迁移与扩展规范化治理 + ACP 幂等与附加费 + AP2 匿名 VDC 与 PIX（`PR-01..PR-07`）**：
+  - `Universal-Commerce-Protocol/ucp#800` & `#788`：强制多语言 SDK 代码生成的中间表示（IR）零未解析 `$ref` 且具备确定性 AST，同时要求 `Cart -> Checkout` 跨能力转换无损保留扩展状态。
+  - `Universal-Commerce-Protocol/ucp#676` & `#113`：在混合版本生态迁移窗口内同时发布 `keys[]` 并兼容 `signing_keys[]` 回退，结账并发更新强制要求 `ETag` / `If-Match` 乐观并发前提校验。
+  - `Universal-Commerce-Protocol/ucp#701` & `#732`：晋升至 `dev.ucp.*` 规范命名空间的独立扩展必须通过 DTC 批准且具备 `>= 2` 个独立实现，并在 CI 中启用 JSON Schema 规范格式化校验。
+  - `agentic-commerce-protocol/agentic-commerce-protocol#120` & `#60`：复用同一 `Idempotency-Key` 但请求载荷 SHA-256 摘要发生突变时必须拒绝（`409 Conflict`），且 `merchant_defined_data` 限制为 `1..32` 个长度 `<= 256` 的有界字符串键值。
+  - `agentic-commerce-protocol/agentic-commerce-protocol#38` & `#140`：阻断借记卡/预付卡附加费、超过 `400 bps`（4%）网络上限或未明示披露行项目的违规附加费，并要求 OpenAPI/JSON Schema 属性描述与示例零缺失。
+  - `google-agentic-commerce/AP2#120` & `#36`：验证匿名可验证数据凭证（Anonymous VDC）ZKP/BBS+ 证明、零 PII 泄露与 Nonce 绑定，并通过 `Checkout Agent` 桥接角色隔离 Shopping Agent 与原始支付凭证。
+  - `google-agentic-commerce/AP2#65` & `#33`：企业级 B2B 授权强制绑定采购订单（PO）、成本中心签字人审批与额度上限，巴西央行 PIX 结算强制绑定 `br.gov.bcb.pix` 轨道、`26..35` 字符 `txid` 与 BACEN DICT 密钥核验。
+- **211.2 x402 共享托管池 Agent Crew、重试报价重绑定、非美元汇率与 Arc 原生 Gas + MCP 会话预算/机密提示词 + $\tau$-bench 2.0（`PR-08..PR-16`）**：
+  - `x402-foundation/x402#3620` & `#3614`：强制校验 Agent Crew 共享托管池（Pooled Escrow）单次调用上限与累计池上限，并用客户端 `SpendControls.maxTimeoutSeconds` 截断服务端过长 `validBefore` 窗口。
+  - `x402-foundation/x402#3582` & `#3564`：Fetch/Axios 在 `onPaymentRequired` 重试后必须重新绑定最新 402 `PaymentRequirements`，且在已付款请求返回 HTTP `4xx`/`5xx` 并携带 `PAYMENT-RESPONSE` 时仍触发 `onPaymentResponse` 钩子。
+  - `x402-foundation/x402#3557` & `#3510`：`@x402/fetch` 在构造支付载荷与结算全流程中保留 `extensions.bazaar`，且 `PaymentRequirements.amount` 必须为正整数原子单位十进制字符串（拒绝 `"0.111"` 等小数）。
+  - `x402-foundation/x402#3505` & `#3504`：非美元计价默认资产必须通过显式汇率预言机折算支出上限（严禁假定 1:1 美元平价），Arc（`eip155:5042`）原生 Gas 资产结算要求确认 `client-broadcast-eip3009` 交易回执。
+  - `x402-foundation/x402#3782` & `#3720`：`presign-guard` 签名前执行 OFAC 制裁筛查与交易预模拟，`knos-order` 工作托管仅在独立第三方仲裁者签名验收后释放。
+  - `modelcontextprotocol/modelcontextprotocol#3229` & `#3393` & `#3232` & `#3044`：强制 MCP 会话级原生 Token 预算上限与客户端 `x402` 付费工具收据核验，隔离 `hidden: true` 机密提示词并禁止含用户私有数据的 `CacheableResult` 使用 `global` 缓存域。
+  - `sierra-research/tau2-bench#390` & `#65` & `#204` & `#42`：基础文本评测惰性加载语音依赖，零售算术正确时不强制要求调用 `calculate` 工具，导出完整多轮对话与工具轨迹并将 `agent_msg.validate()` 异常隔离在单任务内。
+- **技术资产**：[`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py) 与 [`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py)。
+
+---
+
+## 212. Stage 213 基准评测（`2026-10-23` · 840 单测里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 212 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)、[`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.en.html)）。
+
 
 
 

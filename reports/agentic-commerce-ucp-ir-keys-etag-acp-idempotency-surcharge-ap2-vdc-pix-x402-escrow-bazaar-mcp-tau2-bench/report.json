@@ -1,0 +1,191 @@
+{
+  "benchmark_id": "stage-213-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench",
+  "stage": "Stage 213",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "perturbation_invariant_count": 16,
+  "median_batch_latency_ms": 0.17,
+  "baseline_serial_latency_ms": 0.57,
+  "speedup_factor": 3.35,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_zh": "UCP 标准化中间表示 IR 与 Cart->Checkout 跨能力扩展状态无损投影 (#800 / #788)",
+      "title_en": "UCP Standardized IR Strategy & Cart->Checkout Extension State Projection (#800 / #788)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#800 & #788",
+      "admitted": false,
+      "decision_code": "UCP_IR_INVALID_OR_EXTENSION_PROJECTION_DROPPED_BLOCKED",
+      "perturbed_decision_code": "UCP_IR_INVALID_OR_EXTENSION_PROJECTION_DROPPED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_zh": "UCP keys[]/signing_keys[] 双轨迁移窗口与结账并发更新 ETag/If-Match (#676 / #113)",
+      "title_en": "UCP keys[]/signing_keys[] Dual-Key Window & Checkout ETag/If-Match (#676 / #113)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#676 & #113",
+      "admitted": false,
+      "decision_code": "UCP_SIGNING_KEYS_MIGRATION_BREAK_OR_ETAG_CONFLICT_BLOCKED",
+      "perturbed_decision_code": "UCP_SIGNING_KEYS_MIGRATION_BREAK_OR_ETAG_CONFLICT_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_zh": "UCP 独立扩展规范化批准治理门禁与 JSON Schema 自动格式化检查 (#701 / #732)",
+      "title_en": "UCP Normative Extension Ratification Gate & JSON Schema Formatting Lint (#701 / #732)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#701 & #732",
+      "admitted": false,
+      "decision_code": "UCP_UNRATIFIED_NORMATIVE_EXTENSION_OR_UNFORMATTED_SCHEMA_BLOCKED",
+      "perturbed_decision_code": "UCP_UNRATIFIED_NORMATIVE_EXTENSION_OR_UNFORMATTED_SCHEMA_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_zh": "ACP 幂等键载荷摘要一致性（409 Conflict）与商户自定义数据字段校验 (#120 / #60)",
+      "title_en": "ACP Idempotency Payload Digest Equivalence & Merchant-Defined Data Fields (#120 / #60)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#120 & #60",
+      "admitted": false,
+      "decision_code": "ACP_IDEMPOTENCY_PAYLOAD_CONFLICT_OR_INVALID_MERCHANT_DATA_BLOCKED",
+      "perturbed_decision_code": "ACP_IDEMPOTENCY_PAYLOAD_CONFLICT_OR_INVALID_MERCHANT_DATA_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_zh": "ACP 信用卡附加费合规上限/借记卡禁收与 Schema 描述/示例一致性校验 (#38 / #140)",
+      "title_en": "ACP Surcharging Cap/Debit Prohibition & Schema Description/Example Gate (#38 / #140)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#38 & #140",
+      "admitted": false,
+      "decision_code": "ACP_ILLEGAL_SURCHARGE_OR_MISSING_SCHEMA_EXAMPLES_BLOCKED",
+      "perturbed_decision_code": "ACP_ILLEGAL_SURCHARGE_OR_MISSING_SCHEMA_EXAMPLES_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_zh": "AP2 匿名可验证数据凭证（Anonymous VDC）隐私授权与 Checkout Agent 角色隔离 (#120 / #36)",
+      "title_en": "AP2 Anonymous VDC IntentMandate & Checkout Agent Bridge Role Isolation (#120 / #36)",
+      "upstream_ref": "google-agentic-commerce/AP2#120 & #36",
+      "admitted": false,
+      "decision_code": "AP2_ANONYMOUS_VDC_PII_LEAK_OR_CHECKOUT_AGENT_BYPASS_BLOCKED",
+      "perturbed_decision_code": "AP2_ANONYMOUS_VDC_PII_LEAK_OR_CHECKOUT_AGENT_BYPASS_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_zh": "AP2 企业级 B2B 采购订单/成本中心授权与巴西央行 PIX 实时支付轨道绑定 (#65 / #33)",
+      "title_en": "AP2 Enterprise B2B Procurement Mandate & Brazilian PIX Instant Rail (#65 / #33)",
+      "upstream_ref": "google-agentic-commerce/AP2#65 & #33",
+      "admitted": false,
+      "decision_code": "AP2_B2B_MANDATE_UNAUTHORIZED_OR_PIX_BINDING_INVALID_BLOCKED",
+      "perturbed_decision_code": "AP2_B2B_MANDATE_UNAUTHORIZED_OR_PIX_BINDING_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_zh": "x402 批量结算共享托管池 Agent Crew 支出策略与 SpendControls maxTimeoutSeconds 上限 (#3620 / #3614)",
+      "title_en": "x402 Pooled Escrow Agent Crew Policy & SpendControls maxTimeoutSeconds Cap (#3620 / #3614)",
+      "upstream_ref": "x402-foundation/x402#3620 & #3614",
+      "admitted": false,
+      "decision_code": "X402_POOLED_ESCROW_POLICY_BREACH_OR_TIMEOUT_WINDOW_EXCESSIVE_BLOCKED",
+      "perturbed_decision_code": "X402_POOLED_ESCROW_POLICY_BREACH_OR_TIMEOUT_WINDOW_EXCESSIVE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_zh": "x402 Fetch/Axios 重试更新报价重绑定与付费 4xx/5xx 响应钩子必达 (#3582 / #3564)",
+      "title_en": "x402 Retry Updated PaymentRequirements Rebind & Paid 4xx/5xx Hook Execution (#3582 / #3564)",
+      "upstream_ref": "x402-foundation/x402#3582 & #3564",
+      "admitted": false,
+      "decision_code": "X402_STALE_RETRY_REQUIREMENTS_OR_SKIPPED_ERROR_RESPONSE_HOOK_BLOCKED",
+      "perturbed_decision_code": "X402_STALE_RETRY_REQUIREMENTS_OR_SKIPPED_ERROR_RESPONSE_HOOK_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_zh": "x402 @x402/fetch 保留 extensions.bazaar 与 amount 原子整数单位强约束 (#3557 / #3510)",
+      "title_en": "x402 @x402/fetch extensions.bazaar Preservation & Atomic Integer amount (#3557 / #3510)",
+      "upstream_ref": "x402-foundation/x402#3557 & #3510",
+      "admitted": false,
+      "decision_code": "X402_FETCH_DROPPED_BAZAAR_EXT_OR_NON_INTEGRAL_ATOMIC_AMOUNT_BLOCKED",
+      "perturbed_decision_code": "X402_FETCH_DROPPED_BAZAAR_EXT_OR_NON_INTEGRAL_ATOMIC_AMOUNT_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_zh": "x402 非美元默认资产汇率折算支出上限与 Arc 原生 Gas 资产客户端广播 EIP-3009 (#3505 / #3504)",
+      "title_en": "x402 Non-USD Default Asset FX Spend Cap & Arc Native Gas Client-Broadcast EIP-3009 (#3505 / #3504)",
+      "upstream_ref": "x402-foundation/x402#3505 & #3504",
+      "admitted": false,
+      "decision_code": "X402_UNCONVERTED_NON_USD_SPEND_CAP_OR_ARC_GAS_TRANSFER_INVALID_BLOCKED",
+      "perturbed_decision_code": "X402_UNCONVERTED_NON_USD_SPEND_CAP_OR_ARC_GAS_TRANSFER_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_zh": "x402 presign-guard 签名前 OFAC 制裁筛查与 knos-order 第三方签名验收释放托管 (#3782 / #3720)",
+      "title_en": "x402 presign-guard OFAC Pre-Sign Screen & knos-order Third-Party Acceptance (#3782 / #3720)",
+      "upstream_ref": "x402-foundation/x402#3782 & #3720",
+      "admitted": false,
+      "decision_code": "X402_OFAC_SANCTIONED_PAYEE_OR_UNATTESTED_KNOS_ORDER_RELEASE_BLOCKED",
+      "perturbed_decision_code": "X402_OFAC_SANCTIONED_PAYEE_OR_UNATTESTED_KNOS_ORDER_RELEASE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_zh": "MCP 原生 Token 计量/会话预算硬上限与客户端 x402 付费工具标准流 (#3229 / #3393)",
+      "title_en": "MCP Native Token Metering / Session Budget & Client-Side x402 Paid Tool Flow (#3229 / #3393)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#3229 & #3393",
+      "admitted": false,
+      "decision_code": "MCP_SESSION_TOKEN_BUDGET_EXCEEDED_OR_UNPAID_X402_TOOL_CALL_BLOCKED",
+      "perturbed_decision_code": "MCP_SESSION_TOKEN_BUDGET_EXCEEDED_OR_UNPAID_X402_TOOL_CALL_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_zh": "MCP 机密提示词 hidden:true 视图隔离与 CacheableResult ttlMs/cacheScope 防串租户 (#3232 / #3044)",
+      "title_en": "MCP Confidential Prompt hidden:true Isolation & CacheableResult cacheScope (#3232 / #3044)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#3232 & #3044",
+      "admitted": false,
+      "decision_code": "MCP_HIDDEN_PROMPT_EXPOSED_OR_CROSS_SESSION_CACHE_LEAK_BLOCKED",
+      "perturbed_decision_code": "MCP_HIDDEN_PROMPT_EXPOSED_OR_CROSS_SESSION_CACHE_LEAK_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_zh": "Sierra τ2-bench 文本运行器可选语音依赖惰性加载与零售 calculate 工具非强制判定 (#390 / #65)",
+      "title_en": "Sierra τ2-bench Lazy Voice Dependency Import & Retail calculate Optionality (#390 / #65)",
+      "upstream_ref": "sierra-research/tau2-bench#390 & #65",
+      "admitted": false,
+      "decision_code": "TAU2_EAGER_VOICE_IMPORT_CRASH_OR_FALSE_CALCULATE_PENALTY_BLOCKED",
+      "perturbed_decision_code": "TAU2_EAGER_VOICE_IMPORT_CRASH_OR_FALSE_CALCULATE_PENALTY_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_zh": "Sierra τ2-bench 完整多轮对话轨迹导出与编排器 agent_msg.validate 异常隔离 (#204 / #42)",
+      "title_en": "Sierra τ2-bench Full Conversation Trajectory Export & validate() Isolation (#204 / #42)",
+      "upstream_ref": "sierra-research/tau2-bench#204 & #42",
+      "admitted": false,
+      "decision_code": "TAU2_SUMMARY_ONLY_EXPORT_OR_UNCAUGHT_VALIDATE_SHUTDOWN_BLOCKED",
+      "perturbed_decision_code": "TAU2_SUMMARY_ONLY_EXPORT_OR_UNCAUGHT_VALIDATE_SHUTDOWN_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    }
+  ]
+}

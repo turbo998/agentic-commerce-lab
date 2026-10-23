@@ -380,6 +380,24 @@
   - 单元测试：[`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py)（全仓库 **836/836** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/report.json)
 
+---
+
+## Stage 212：UCP 标准化中间表示 IR 与 `Cart -> Checkout` 跨能力扩展状态无损投影（`#800`/`#788`）、`keys[]`/`signing_keys[]` 双轨迁移窗口与结账并发更新 `ETag`/`If-Match`（`#676`/`#113`）、独立扩展规范化批准治理门禁与 JSON Schema 自动格式化检查（`#701`/`#732`）、ACP 幂等键载荷摘要一致性（`409 Conflict`）与商户自定义数据字段校验（`#120`/`#60`）、信用卡附加费合规上限/借记卡禁收与 Schema 描述/示例一致性校验（`#38`/`#140`）、AP2 匿名可验证数据凭证（Anonymous VDC）隐私授权与 Checkout Agent 桥接角色隔离（`#120`/`#36`）、企业级 B2B 采购订单/成本中心授权与巴西央行 PIX 实时支付轨道绑定（`#65`/`#33`）、x402 批量结算共享托管池 Agent Crew 支出策略与客户端 `SpendControls.maxTimeoutSeconds` 上限（`#3620`/`#3614`）、Fetch/Axios `onPaymentRequired` 重试更新报价重绑定与付费 `4xx`/`5xx` 响应钩子必达（`#3582`/`#3564`）、`@x402/fetch` 保留 `extensions.bazaar` 与 `amount` 原子整数单位强约束（`#3557`/`#3510`）、非美元默认资产汇率折算支出上限与 Arc 原生 Gas 资产客户端广播 EIP-3009（`#3505`/`#3504`）、`presign-guard` 签名前 OFAC 制裁筛查与 `knos-order` 第三方签名验收释放托管（`#3782`/`#3720`）、MCP 原生 Token 计量/会话预算硬上限与客户端 `x402` 付费工具标准流（`#3229`/`#3393`）、机密提示词 `hidden: true` 视图隔离与 `CacheableResult` `ttlMs`/`cacheScope` 防串租户（`#3232`/`#3044`）、以及 Sierra $\tau$-bench 2.0 文本运行器可选语音依赖惰性加载与零售 `calculate` 工具非强制判定（`#390`/`#65`）及完整多轮对话轨迹导出与编排器 `agent_msg.validate()` 异常隔离（`#204`/`#42`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_guard.py)（全仓库 **839/839** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§211)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§211)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 213（840 单测里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 212）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../lab/ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_ir_keys_etag_acp_idempotency_surcharge_ap2_vdc_pix_x402_escrow_bazaar_mcp_tau2_bench.py)（全仓库 **840/840** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ir-keys-etag-acp-idempotency-surcharge-ap2-vdc-pix-x402-escrow-bazaar-mcp-tau2-bench/report.json)
+
 
 
 
