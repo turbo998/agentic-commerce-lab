@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage 223 评测报告：MCP Inspector、Registry 与 Go/Rust/C#/Java SDK 确定性安全护栏 (16/16)</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { width: 100%; aspect-ratio: 4 / 5; background: #111827; border: 1px solid #1E293B; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; color: #38BDF8; letter-spacing: 0.06em; text-transform: uppercase; }
+  h2 { font-size: 18px; margin: 8px 0; color: #F1F5F9; line-height: 1.35; }
+  .gradient { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #1E293B; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #E2E8F0; font-size: 10.5px; }
+  pre { background: #0F172A; border: 1px solid #1E293B; border-radius: 8px; padding: 10px; font-size: 10.5px; overflow-x: auto; color: #E2E8F0; margin: 6px 0; }
+  .pill-ok { background: rgba(16, 185, 129, 0.18); color: #34D399; padding: 2px 6px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+  .bar-row { margin: 8px 0; font-size: 12px; }
+  .bar-track { background: #1E293B; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 4px; }
+  .bar-fill-primary { background: #3B82F6; height: 100%; }
+  .bar-fill-base { background: #CBD5E1; height: 100%; }
+  .callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .fit-good { background: rgba(16, 185, 129, 0.12); border: 1px solid #059669; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .fit-bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #DC2626; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .footer-note { font-size: 11px; color: #94A3B8; border-top: 1px solid #1E293B; padding-top: 8px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <span class="badge">1 / 7 · HANDS-ON · STAGE 223</span>
+      <h2><span class="gradient">16/16 (100.0%) 拦截与放行：MCP Inspector、Registry 与 Go/Rust/C#/Java SDK 护栏</span></h2>
+      <p>覆盖 34 个最新上游 PR（PR-01..PR-16），在 0.17 ms 批处理延迟内完成确定性协议与安全不变量核验。</p>
+      <div class="callout-grid">
+        <div class="fit-good"><strong>通过率</strong><br>16/16 (100.0%)</div>
+        <div class="fit-good"><strong>批处理延迟</strong><br>0.17 ms</div>
+      </div>
+    </div>
+    <div class="footer-note">Provenance: measured · independently_reproduced=true · Verified 2026-10-23</div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <span class="badge">2 / 7 · SCENARIO: PR-01 &amp; PR-03 &amp; PR-14</span>
+      <h2>单案例深潜：Inspector 64-Hex Flow PKCE 隔离与 C# -32700/递归扩展合并</h2>
+      <pre>"pkce_key_mode": "flow_auth_id", "auth_id": "a1b2...8f90", "returned_jsonrpc_error_code": -32700</pre>
+      <div class="bar-row">
+        <div><code>choice</code> · PR-03 Flow-Keyed PKCE + Store Stamp · 100% · <span class="pill-ok">Act automatically</span></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div><code>score</code> · PR-14 C# -32700 ParseError &amp; Recursive Meta Merge · 100% · <span class="pill-ok">Act automatically</span></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 100%"></div></div>
+      </div>
+    </div>
+    <div class="footer-note">modelcontextprotocol/inspector#2742,#2739 &amp; csharp-sdk#1922,#1921,#1917</div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <span class="badge">3 / 7 · WHAT I TESTED</span>
+      <h2>16 项上游 PR 场景全矩阵（100% 故障阻断 + 补丁放行，0 漏报 ✕）</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code></td><td>MCP Inspector 请求 POST HTTP 拒绝保活与超大错误中继剥离分帧头守卫<br><small>modelcontextprotocol/inspector#2777 &amp; #2774</small></td><td><code>INSPECTOR_REQUEST_REFUSAL_DROPPED_CONNECTION</code> → <code>INSPECTOR_REFUSAL_AND_OVERSIZE_RELAY_SAFE</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-02</code></td><td>MCP Inspector mcpdo 目录读取 URI/Cursor、TLS Handoff 协议与现代 CacheableResult 守卫<br><small>modelcontextprotocol/inspector#2775, #2773, &amp; #2747</small></td><td><code>INSPECTOR_PRINT_HANDOFF_TLS_SCHEME_MISMATCH</code> → <code>INSPECTOR_MCPDO_TLS_HANDOFF_AND_SKILLS_CACHE_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-03</code></td><td>MCP Inspector 64-Hex Flow PKCE 隔离存储与客户端密钥 Store Stamp 归属守卫<br><small>modelcontextprotocol/inspector#2742 &amp; #2739</small></td><td><code>INSPECTOR_PKCE_SHARED_SERVER_URL_SLOT_COLLISION</code> → <code>INSPECTOR_PKCE_FLOW_AND_SECRET_STAMP_SAFE</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-04</code></td><td>MCP Inspector 403 insufficient_scope 过期令牌刷新、HTTP 429 Retry-After 与 EMA 公共客户端守卫<br><small>modelcontextprotocol/inspector#2738, #2737, &amp; #2736</small></td><td><code>INSPECTOR_EXPIRED_TOKEN_REPLAYED_ON_INSUFFICIENT_SCOPE</code> → <code>INSPECTOR_INSUFFICIENT_SCOPE_429_AND_EMA_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-05</code></td><td>MCP Registry pg_trgm GIN 索引、可验证 pg_dump/Restic 备份与嵌套 **/server.json 拦截守卫<br><small>modelcontextprotocol/registry#1730, #1726, &amp; #1702</small></td><td><code>REGISTRY_TRIGRAM_INDEX_INVALID_OR_UNREADY</code> → <code>REGISTRY_TRIGRAM_BACKUP_AND_PUBLISH_GUARD_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-06</code></td><td>MCP Go SDK SSEClientTransport 非 message 事件跳过与 WHATWG 单前导空格解析守卫<br><small>modelcontextprotocol/go-sdk#1439 &amp; #1412</small></td><td><code>GO_SDK_SSE_NON_MESSAGE_OR_EMPTY_EVENT_FORWARDED</code> → <code>GO_SDK_SSE_EVENT_FILTER_AND_SPACING_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-07</code></td><td>MCP Go SDK RFC 7591 jwks 对象/字符串编解码与 ResourceNotFoundError JSON 转义守卫<br><small>modelcontextprotocol/go-sdk#1435 &amp; #1427</small></td><td><code>GO_SDK_DCR_JWKS_METADATA_CODEC_MISMATCH</code> → <code>GO_SDK_DCR_JWKS_AND_RESOURCE_ERROR_JSON_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-08</code></td><td>MCP Go SDK extauth TokenSource 独立生命周期、按 Issuer 复用 DCR 客户端与无刷新令牌重授权守卫<br><small>modelcontextprotocol/go-sdk#1432, #1419, &amp; #1418</small></td><td><code>GO_SDK_EXTAUTH_TOKEN_SOURCE_CTX_OR_RACE_FAULT</code> → <code>GO_SDK_TOKEN_SOURCE_DCR_REUSE_AND_REAUTH_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-09</code></td><td>MCP Go SDK 导出 ClientSession.Discover 与 Streamable HTTP 单次 getServer 调用守卫<br><small>modelcontextprotocol/go-sdk#1428 &amp; #1414</small></td><td><code>GO_SDK_CLIENT_SESSION_DISCOVER_MISSING</code> → <code>GO_SDK_DISCOVER_AND_SINGLE_GET_SERVER_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-10</code></td><td>MCP Rust SDK 无请求体 HttpStatusError (Retry-After&lt;=128B) 与 SSE 永久性 GET 错误终止重连守卫<br><small>modelcontextprotocol/rust-sdk#1386 &amp; #1363</small></td><td><code>RUST_SDK_HTTP_STATUS_ERROR_METADATA_VIOLATION</code> → <code>RUST_SDK_HTTP_STATUS_AND_SSE_RECONNECT_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-11</code></td><td>MCP Rust SDK 同源 307/308 重定向策略 (阻断 301/302/303 与跨源) 与嵌套 x-mcp-header 提取守卫<br><small>modelcontextprotocol/rust-sdk#1367 &amp; #1359</small></td><td><code>RUST_SDK_REDIRECT_POLICY_VIOLATION</code> → <code>RUST_SDK_REDIRECT_AND_NESTED_MCP_HEADER_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-12</code></td><td>MCP Rust SDK initialize 握手期响应服务端 ping 与 SSE/重初始化错误终止守卫<br><small>modelcontextprotocol/rust-sdk#1366 &amp; #1361</small></td><td><code>RUST_SDK_HANDSHAKE_PING_BEHAVIOR_MISMATCH</code> → <code>RUST_SDK_INIT_PING_AND_ERROR_HANDLING_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-13</code></td><td>MCP C# SDK 增补 Unicode 标量 (Rune) URI 模板展开、结构化输出必填 null 保留与注册顺序枚举守卫<br><small>modelcontextprotocol/csharp-sdk#1931, #1929, &amp; #1924</small></td><td><code>CSHARP_SDK_SURROGATE_PAIR_URI_TEMPLATE_CORRUPTION</code> → <code>CSHARP_SDK_RUNE_URI_NULL_SCHEMA_AND_ORDER_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-14</code></td><td>MCP C# SDK Streamable HTTP -32700 ParseError 拆分、_meta 递归合并与 notifications/cancelled 送达守卫<br><small>modelcontextprotocol/csharp-sdk#1922, #1921, &amp; #1917</small></td><td><code>CSHARP_SDK_STREAMABLE_HTTP_PARSE_ERROR_CODE_MISMATCH</code> → <code>CSHARP_SDK_PARSE_ERROR_META_MERGE_AND_CANCEL_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-15</code></td><td>MCP Java SDK 工具列表过滤器无竞态组合与现代服务端 SEP-2640 SkillsFeature 守卫<br><small>modelcontextprotocol/java-sdk#1260 &amp; #1214</small></td><td><code>JAVA_SDK_TOOLS_LIST_FILTER_RACE_CONDITION</code> → <code>JAVA_SDK_FILTER_AND_MODERN_SKILLS_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+<tr><td><code>PR-16</code></td><td>MCP Java SDK 旧版 initialize 返回支持协议列表、subscriptions/listen 必填 notifications 与 Servlet 415 守卫<br><small>modelcontextprotocol/java-sdk#1209, #1208, &amp; #1207</small></td><td><code>JAVA_SDK_LEGACY_INITIALIZE_MISSING_SUPPORTED_VERSIONS</code> → <code>JAVA_SDK_LEGACY_INIT_LISTEN_AND_415_VALID</code></td><td><span class='pill-ok'>拦截+放行 ✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-note">Threshold gate: 16/16 passed · 0 false positives · 0 false negatives (✕ = 0)</div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <span class="badge">4 / 7 · UNDER THE HOOD</span>
+      <h2>确定性协议与安全契约核验流水线</h2>
+      <pre>{
+  "pr_id": "PR-11",
+  "redirect_status": 307,
+  "same_origin": true,
+  "extracted_headers": {"X-Tenant-Id": "t_acme"}
+}</pre>
+      <div style="text-align:center; font-weight:700; color:#38BDF8;">↓ evaluate_stage_222_guard(pr_id, payload) ↓</div>
+      <pre>&lt;answer&gt;
+{
+  "passed": true,
+  "action": "allow",
+  "reason_code": "RUST_SDK_REDIRECT_AND_NESTED_MCP_HEADER_VALID"
+}
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer-note">Zero external network calls · deterministic AST/schema/wire-contract evaluators</div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+      <h2>键序反转扰动与跨轮次一致性：16/16 场景 0.0 pts 漂移</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code> (modelcontextprotocol/inspector#2777 &amp; #2774)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-02</code> (modelcontextprotocol/inspector#2775, #2773, &amp; #2747)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-03</code> (modelcontextprotocol/inspector#2742 &amp; #2739)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-04</code> (modelcontextprotocol/inspector#2738, #2737, &amp; #2736)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-05</code> (modelcontextprotocol/registry#1730, #1726, &amp; #1702)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-06</code> (modelcontextprotocol/go-sdk#1439 &amp; #1412)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-07</code> (modelcontextprotocol/go-sdk#1435 &amp; #1427)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+<tr><td><code>PR-08</code> (modelcontextprotocol/go-sdk#1432, #1419, &amp; #1418)</td><td>100.0%</td><td>100.0%</td><td>0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer-note">Perturbation consistency: 100.0% across all 16 evaluators</div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <span class="badge">6 / 7 · LATENCY</span>
+      <h2>批处理缩放延迟：单批次 16 评估器 0.17 ms vs 逐跳基线 2.96 ms</h2>
+      <div class="bar-row">
+        <div>Primary Batch Path (16 guards in-memory) · <strong>0.17 ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-primary" style="width: 12%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div>Baseline Unbatched Path (16 sequential subprocess hops) · <strong>2.96 ms</strong></div>
+        <div class="bar-track"><div class="bar-fill-base" style="width: 100%"></div></div>
+      </div>
+    </div>
+    <div class="footer-note">17.4x latency reduction via single-pass deterministic guard evaluation</div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <span class="badge">7 / 7 · MY TAKE</span>
+      <h2>适用场景 vs 不适用场景与生产就绪度</h2>
+      <div class="callout-grid">
+        <div class="fit-good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>MCP Inspector OAuth PKCE 流级隔离、403 过期令牌刷新与 429 Retry-After 解析</li>
+            <li>MCP Go/Rust/C#/Java SDK 传输层与 SEP-2640 Skills 确定性契约门禁</li>
+          </ul>
+        </div>
+        <div class="fit-bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>替代真实清算网关 TLS/HSM 硬件签名验证</li>
+            <li>未经 Schema 契约校验的开放式生成回复</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-note">Readiness: Production CI/CD Gate · License: MIT · Provenance: measured (Stage 223)</div>
+  </section>
+</div>
+</body>
+</html>

@@ -470,6 +470,24 @@
   - Unit tests: [`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py) (**856/856** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/report.json)
 
+---
+
+## Stage 222 (860-Test Milestone Sprint!): MCP Inspector Request POST Refusal Session Survival & Oversize Error Relay Framing Strip (`inspector#2777`/`#2774`), `mcpdo resources/directory/read` URI+Cursor Pagination, TLS `--print-handoff` `https` Scheme & Modern `CacheableResult` (`ttlMs`/`cacheScope`, `inspector#2775`/`#2773`/`#2747`), 64-Hex Flow-Keyed PKCE Store & Client Credential Store-Stamp Ownership (`inspector#2742`/`#2739`), `403 insufficient_scope` Expired-Token Refresh, HTTP 429 `Retry-After` Parsing & EMA Leg-3 Public Client (`inspector#2738`/`#2737`/`#2736`), MCP Registry `pg_trgm` GIN Substring Index Validity, Verifiable `pg_dump --compress=0`/SHA-256/Restic Backup & Nested `**/server.json` Publish Guard (`registry#1730`/`#1726`/`#1702`), MCP Go SDK `SSEClientTransport` Non-Message/Empty Event Skip & WHATWG Single-Leading-Space SSE Field Parsing (`go-sdk#1439`/`#1412`), RFC 7591 `jwks` Object/String Codec & `ResourceNotFoundError` `json.Marshal` DEL/Emoji Safe Escaping (`go-sdk#1435`/`#1427`), Detached `extauth` `TokenSource` Context + Mutex, Issuer-Keyed DCR Client Reuse & Refreshless `StaticTokenSource` Re-Authorization (`go-sdk#1432`/`#1419`/`#1418`), Exported `ClientSession.Discover` & Single `getServer` Invocation per POST (`go-sdk#1428`/`#1414`), MCP Rust SDK Body-Free `HttpStatusError` (`Retry-After <= 128B`) & Terminal SSE GET Reconnect Classification (`401`/`403`/`405`, `rust-sdk#1386`/`#1363`), Same-Origin `307`/`308` Redirect Policy (`<= 10` Hops, Blocking `301`/`302`/`303` & Cross-Origin) & Nested `x-mcp-header` Properties Chain Extraction (`rust-sdk#1367`/`#1359`), Server `ping` Reply During `initialize` Handshake & SSE/Re-Initialize Error Termination (`rust-sdk#1366`/`#1361`), MCP C# SDK Supplementary `Rune` URI Template Expansion, Structured Output Required `null` Preservation & Registration-Order Primitive Listing (`csharp-sdk#1931`/`#1929`/`#1924`), Streamable HTTP POST `-32700 ParseError` vs. `-32600 InvalidRequest` Split, Recursive `_meta.clientCapabilities.extensions` Merge & Active `notifications/cancelled` Delivery (`csharp-sdk#1922`/`#1921`/`#1917`), MCP Java SDK Non-Cancelling `McpAsyncListFilter` Composition & Modern Server SEP-2640 `SkillsFeature` (`java-sdk#1260`/`#1214`), and Legacy `initialize` `supported` Protocol Versions List, Required `subscriptions/listen` `notifications` & Pre-Body Servlet `415 Unsupported Media Type` Gate (`java-sdk#1209`/`#1208`/`#1207`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/mcp_inspector_registry_go_rust_csharp_java_guards.py`](../../lab/mcp_inspector_registry_go_rust_csharp_java_guards.py)
+  - Unit tests: [`tests/test_mcp_inspector_registry_go_rust_csharp_java_guards.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_guards.py) (**859/859** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§221)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§221)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 223 (860/860 Unit Tests Milestone Achieved!): 16-Scenario (`PR-01..PR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 222)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../lab/mcp_inspector_registry_go_rust_csharp_java_bench.py)
+  - Unit tests: [`tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py) (**860/860** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html` (Chinese)](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/report.json)
+
 
 
 

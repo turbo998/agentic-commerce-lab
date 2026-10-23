@@ -2657,6 +2657,38 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py)、[`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.en.html)）。
 
+---
+
+## 221. Stage 222 架构深潜（`2026-10-23` · 860 单测里程碑冲刺！）：MCP Inspector 流级 PKCE/403 令牌刷新/中继分帧头剥离、MCP Registry `pg_trgm`/可验证备份与 MCP Go/Rust/C#/Java 四大 SDK 深度协议护栏
+
+### 221.1 MCP Inspector 与 MCP Registry 安全、分页、TLS Handoff 与备份可验证性护栏（`PR-01..PR-05`）
+1. **MCP Inspector 请求 POST 拒绝会话保活与超大错误中继剥离分帧头（`inspector#2777`/`#2774`，`PR-01`）**：当单次请求 POST（如连接期 `subscriptions/listen` 403）被服务端拒绝时，`baseTransport.onerror` 保持会话处于 `connected` 状态；当 `/api/fetch` 丢弃超大错误响应体时，中继响应自动剥离 `content-length`、`transfer-encoding` 与 `content-encoding`。
+2. **MCP Inspector `mcpdo resources/directory/read` URI/Cursor 分页、TLS `--print-handoff` 协议与现代 `CacheableResult`（`inspector#2775`/`#2773`/`#2747`，`PR-02`）**：为 `mcpdo resources/directory/read` 注册必填 `uri` 与 `--cursor` 选项；仅当 `INSPECTOR_TLS_KEY_PATH` 与 `INSPECTOR_TLS_CERT_PATH` 同时非空时生成 `https://` Handoff 链接；现代（`2026-07-28+`）目录读取结果强制要求非负整数 `ttlMs` 与 `cacheScope`。
+3. **MCP Inspector 64-Hex Flow `authId` PKCE 隔离存储与客户端凭证 Store Stamp 归属校验（`inspector#2742`/`#2739`，`PR-03`）**：将进行中的 PKCE `codeVerifier` 按 64 位十六进制 OAuth 流 `authId` 隔离在标签页 `sessionStorage` 中防止并发覆盖，且跨命名空间继承客户端密钥时强制校验密钥存储的客户端归属印章。
+4. **MCP Inspector `403 insufficient_scope` 过期令牌刷新、HTTP 429 `Retry-After` 解析与 EMA Leg 3 公共客户端支持（`inspector#2738`/`#2737`/`#2736`，`PR-04`）**：`403 insufficient_scope` 同时检查令牌未过期以触发过期 JWT 刷新；HTTP 429 解析 `Retry-After` 并拦截负数年份误解析；EMA Leg 3 允许空 `resourceClientSecret` 以支持 `token_endpoint_auth_method: "none"` 公共客户端。
+5. **MCP Registry `pg_trgm` GIN 子串索引、可验证 `pg_dump --compress=0`/SHA-256/Restic 备份与嵌套 `**/server.json` 发布拦截（`registry#1730`/`#1726`/`#1702`，`PR-05`）**：校验 `idx_servers_name_trgm` 处于 `indisvalid && indisready` 状态，备份作业强制执行无压缩 `pg_dump` + SHA-256 + `restic check --read-data`（保留 28 天快照），并自动拦截任意层级 `**/server.json` 的误发布 PR。
+
+### 221.2 MCP Go、Rust、C# 与 Java 四大官方 SDK 传输层、OAuth 生命周期与 Schema 确定性护栏（`PR-06..PR-16`）
+6. **MCP Go SDK `SSEClientTransport` 非 `message` 事件跳过与 WHATWG 单前导空格解析（`go-sdk#1439`/`#1412`，`PR-06`）**：跳过 `event: ping` 或空 `data` 事件防止 JSON-RPC 解码断连，且 SSE 字段解析仅剥离冒号后最多一个前导 `U+0020` 空格。
+7. **MCP Go SDK RFC 7591 `jwks` 对象/字符串双编解码与 `ResourceNotFoundError` `json.Marshal` 安全转义（`go-sdk#1435`/`#1427`，`PR-07`）**：支持 `ClientRegistrationMetadata.JWKS` 对象与字符串双向编解码，并使用 `json.Marshal` 构造 `ResourceNotFoundError.Data` 防止 DEL（`\x7f`）或旗帜 Emoji 标签字符破坏会话。
+8. **MCP Go SDK `extauth` `TokenSource` 独立上下文与互斥锁、按 `issuer` 复用 DCR 客户端与无刷新令牌 `StaticTokenSource` 重授权（`go-sdk#1432`/`#1419`/`#1418`，`PR-08`）**：将 `TokenSource` 绑定至后台长生命周期上下文并加互斥锁，按 `issuer` 缓存动态注册客户端防止孤儿客户端激增，且在无 `refresh_token` 时使用 `StaticTokenSource` 使过期令牌触发服务端 `401` 重授权。
+9. **MCP Go SDK 导出 `ClientSession.Discover` 与 Streamable HTTP 单次 `getServer` 回调复用（`go-sdk#1428`/`#1414`，`PR-09`）**：导出 `ClientSession.Discover` 发送 `server/discover`，并在创建新会话时复用协议版本校验阶段选定的 `Server` 实例。
+10. **MCP Rust SDK 无请求体 `HttpStatusError`（`Retry-After <= 128B`）与永久性 SSE GET 错误终止重连（`rust-sdk#1386`/`#1363`，`PR-10`）**：暴露保留最多 128 字节 UTF-8 `Retry-After` 且不含请求体/凭证的 `HttpStatusError`（保留 JSON 5xx RPC 错误透传），并将 `405`/`401`/`403` 归类为 SSE GET 终态错误立即停止无限重连。
+11. **MCP Rust SDK 同源 `307`/`308` 重定向策略与嵌套 `x-mcp-header` 属性链提取（`rust-sdk#1367`/`#1359`，`PR-11`）**：默认 Streamable HTTP 客户端仅跟随同源 `307`/`308` 重定向（最多 10 跳，阻断会将 POST 变 GET 的 `301`/`302`/`303` 及跨源重定向），并递归沿 `properties` 链校验和提取嵌套 `x-mcp-header`。
+12. **MCP Rust SDK `initialize` 握手期响应服务端 `ping` 与 SSE/重初始化错误终止（`rust-sdk#1366`/`#1361`，`PR-12`）**：客户端在等待 `initialize` 响应期间以 `{}` 响应服务端 `ping`（`server/discover` 阶段不响应），且在收到 SSE `initialize` 错误或重初始化错误时立即停止流排空并中止发送 `notifications/initialized`。
+13. **MCP C# SDK 增补 Unicode 标量（`Rune`）URI 模板展开、结构化输出必填 `null` 保留与注册顺序枚举（`csharp-sdk#1931`/`#1929`/`#1924`，`PR-13`）**：`{+var}`/`{#var}` 展开按完整 `Rune` 编码代理对，结构化工具输出保留 `outputSchema` 要求的显式 `null` 字段，且 `McpServerPrimitiveCollection` 按确定性注册顺序返回列表。
+14. **MCP C# SDK Streamable HTTP POST `-32700 ParseError` 拆分、递归合并 `_meta.clientCapabilities.extensions` 与取消通知必达（`csharp-sdk#1922`/`#1921`/`#1917`，`PR-14`）**：畸形 JSON 返回 `-32700 ParseError` 而信封校验失败返回 `-32600 InvalidRequest`；`InjectRequestMeta` 递归合并能力扩展保留逐请求 `io.modelcontextprotocol/tasks`；且在释放回调注册前确保发送 `notifications/cancelled`。
+15. **MCP Java SDK 工具列表过滤器无竞态组合与现代服务端 SEP-2640 `SkillsFeature`（`java-sdk#1260`/`#1214`，`PR-15`）**：消除多 `McpAsyncListFilter` 组合时的 `.all()` 提前取消竞态，并在现代服务端实现 `SkillsSchema`/`SkillsFeature`（拒绝重复技能名、按需启用 `directoryRead`）。
+16. **MCP Java SDK 旧版 `initialize` 返回 `supported` 版本列表、`subscriptions/listen` 必填 `notifications` 与 Servlet `415` 门禁（`java-sdk#1209`/`#1208`/`#1207`，`PR-16`）**：拒绝旧版 `initialize` 时返回包含 `data.supported` 的 `-32602` 错误，拦截缺失或 `null` `notifications` 的 `subscriptions/listen` 请求（`-32602`），并在读取请求体前对缺失或非 JSON `Content-Type` 返回 HTTP `415`。
+
+---
+
+## 222. Stage 223 基准评测（`2026-10-23` · 860/860 单测里程碑达成！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 222 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../lab/mcp_inspector_registry_go_rust_csharp_java_bench.py)、[`tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py) 及双语报告 [`reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/`](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.en.html)）。
+
 
 
 

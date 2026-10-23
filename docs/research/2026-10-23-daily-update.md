@@ -470,6 +470,24 @@
   - 单元测试：[`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py)（全仓库 **856/856** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/report.json)
 
+---
+
+## Stage 222（860 单测里程碑冲刺！）：MCP Inspector 请求 POST 拒绝会话保活与超大错误中继剥离分帧头（`inspector#2777`/`#2774`）、`mcpdo resources/directory/read` URI/Cursor 分页 + TLS `--print-handoff` `https` 协议与现代 `CacheableResult`（`ttlMs`/`cacheScope`，`inspector#2775`/`#2773`/`#2747`）、64-Hex Flow `authId` PKCE 隔离存储与客户端凭证 Store Stamp 归属校验（`inspector#2742`/`#2739`）、`403 insufficient_scope` 过期令牌刷新 + HTTP 429 `Retry-After` 解析与 EMA Leg 3 公共客户端 `none` 认证（`inspector#2738`/`#2737`/`#2736`）、MCP Registry `pg_trgm` GIN 子串索引有效性 + `pg_dump --compress=0`/SHA-256/Restic 可验证备份与嵌套 `**/server.json` 发布拦截（`registry#1730`/`#1726`/`#1702`）、MCP Go SDK `SSEClientTransport` 非 `message`/空数据事件跳过与 WHATWG 单前导空格解析（`go-sdk#1439`/`#1412`）、RFC 7591 `jwks` 对象/字符串双编解码与 `ResourceNotFoundError` `json.Marshal` DEL/Emoji 安全转义（`go-sdk#1435`/`#1427`）、`extauth` `TokenSource` 独立上下文与互斥锁/按 `issuer` 复用 DCR 客户端与无 `refresh_token` `StaticTokenSource` 重授权（`go-sdk#1432`/`#1419`/`#1418`）、导出 `ClientSession.Discover` 与单次 `getServer` 回调复用（`go-sdk#1428`/`#1414`）、MCP Rust SDK 无请求体 `HttpStatusError`（`Retry-After <= 128B`）与永久性 SSE GET 错误（`401`/`403`/`405`）终止重连（`rust-sdk#1386`/`#1363`）、同源 `307`/`308` 重定向策略（`<= 10` 跳，阻断 `301`/`302`/`303` 与跨源）与嵌套 `x-mcp-header` 属性链提取（`rust-sdk#1367`/`#1359`）、`initialize` 握手期响应服务端 `ping` 与 SSE/重初始化错误终止（`rust-sdk#1366`/`#1361`）、MCP C# SDK 增补 Unicode 标量（`Rune`）URI 模板展开/结构化输出必填 `null` 保留与注册顺序枚举（`csharp-sdk#1931`/`#1929`/`#1924`）、Streamable HTTP POST `-32700 ParseError` vs `-32600 InvalidRequest` 拆分/递归合并 `_meta.clientCapabilities.extensions` 与取消通知必达（`csharp-sdk#1922`/`#1921`/`#1917`）、MCP Java SDK 工具列表过滤器无竞态组合与现代服务端 SEP-2640 `SkillsFeature`（`java-sdk#1260`/`#1214`）、以及旧版 `initialize` 拒绝返回 `supported` 协议版本列表/`subscriptions/listen` 必填 `notifications` 与 Servlet 预读前 `415 Unsupported Media Type` 门禁（`java-sdk#1209`/`#1208`/`#1207`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/mcp_inspector_registry_go_rust_csharp_java_guards.py`](../../lab/mcp_inspector_registry_go_rust_csharp_java_guards.py)
+  - 单元测试：[`tests/test_mcp_inspector_registry_go_rust_csharp_java_guards.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_guards.py)（全仓库 **859/859** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§221)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§221)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 223（860/860 单测里程碑达成！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 222）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../lab/mcp_inspector_registry_go_rust_csharp_java_bench.py)
+  - 单元测试：[`tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py`](../../tests/test_mcp_inspector_registry_go_rust_csharp_java_bench.py)（全仓库 **860/860** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html`（中文）](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-mcp-inspector-registry-go-rust-csharp-java-bench/report.json)
+
 
 
 
