@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>x402 SVM Multi-Payee Splits + Gas Read Gate/Paywall + MCP SEP-2643/2419 + tau2 Bipartite Match (16/16 · 100%)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; max-width: 1440px; margin: 0 auto; }
+  .card { width: 100%; aspect-ratio: 4 / 5; background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #38BDF8; font-weight: 700; }
+  h1, h2 { margin: 8px 0; font-size: 18px; line-height: 1.35; }
+  .grad { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  pre { background: #0F172A; color: #E2E8F0; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
+  .pill { background: #065F46; color: #A7F3D0; padding: 2px 8px; border-radius: 999px; font-size: 10px; white-space: nowrap; }
+  .bar-row { margin: 8px 0; }
+  .bar-track { background: #0F172A; height: 14px; border-radius: 7px; overflow: hidden; }
+  .bar-primary { background: #3B82F6; height: 100%; }
+  .bar-base { background: #CBD5E1; height: 100%; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .box-good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .box-bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; font-size: 12px; padding: 10px; }
+  .callout { background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 10px; font-size: 11px; color: #CBD5E1; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENT COMMERCE PROTOCOL GUARD</div>
+      <h1><span class="grad">x402 SVM Multi-Payee Splits + Gas Read Gate/Paywall + MCP SEP-2643/2419 + tau2 Bipartite Match (16/16 · 100%)</span></h1>
+      <p>x402 PR #3221/#3903/#3600/#3895 + MCP SEP-2643/2419 + Sierra tau2-bench PR #665</p>
+      <table>
+        <tr><th>Metric</th><th>Measured Value</th></tr>
+        <tr><td>Scenarios Passed</td><td>16 / 16 (100.0%)</td></tr>
+        <tr><td>Total Guard Latency</td><td>0.17 ms (vs 0.57 ms baseline, 3.35x)</td></tr>
+        <tr><td>Perturbation Stability</td><td>100.0% (0.0 pts drift)</td></tr>
+      </table>
+    </div>
+    <div class="callout">Provenance: <code>measured</code> · <code>independently_reproduced=true</code> · Stage 193</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: MS-01, MS-10 &amp; MS-16 DEEP DIVE</div>
+      <h2>3 Deterministic Decisions in 0.033 ms: SVM Multi-Payee Splits, SEP-2643 Single-Use RAR, &amp; tau2 Bipartite</h2>
+      <div class="callout">"Primary leg tolerates >= remainder while split legs require == split.amount; SEP-2643 single-use RAR omits authorization_reference; tau2 matches gold actions 1-to-1."</div>
+      <table>
+        <tr><th>Task</th><th>Type</th><th>Confidence</th><th>Action</th></tr>
+        <tr><td>MS-01 SVM Multi-Payee Splits &amp; CreateIdempotent</td><td><code>choice</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+        <tr><td>MS-10 MCP SEP-2643 Single-Use RAR &amp; SEP-2419</td><td><code>choice</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+        <tr><td>MS-16 tau2-bench Augmenting-Path Bipartite Match</td><td><code>score</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+      </table>
+    </div>
+    <div class="callout">Zero false accepts across 11 adversarial attack vectors and 5 compliant baselines.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+      <h2>16/16 Scenarios (100.0%) Pass Across x402 SVM Splits, Gas/Paywall, MCP SEP-2643/2419, and tau2 Bipartite</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>MS-01</code> · x402 SVM Splits (#3221)</td><td>Approve 2-split SVM exact charge with primary overpayment tolerance (>= primary), exact split legs (==), and CreateIdempotent ATA?</td><td><code>ALLOW</code> (svm_multi_payee_splits_verified)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-02</code> · x402 SVM Splits (#3221)</td><td>Reject SVM split transaction when sum(splits[].amount) >= total amount leaving primary remainder <= 0 (split_remainder_not_positive)?</td><td><code>BLOCK</code> (split_remainder_not_positive)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-03</code> · x402 SVM Splits (#3221)</td><td>Reject SVM split leg overpayment (50001 != 50000) because only the primary leg tolerates smart-wallet rounding overpayment?</td><td><code>BLOCK</code> (split_leg_unmatched)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-04</code> · x402 SVM Splits (#3221)</td><td>Reject SVM splits when sponsor omits maxSplits (default 0 -> split_count_exceeded)?</td><td><code>BLOCK</code> (split_count_exceeded)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-05</code> · x402 SVM ATA Rent (#3221)</td><td>Reject feePayer-funded ATA creation when instruction is non-idempotent Create or recipient is unmarked (split_ata_creation_not_authorized)?</td><td><code>BLOCK</code> (split_ata_creation_not_authorized)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-06</code> · x402 SVM Consent (#3221)</td><td>Reject wallet UI that displays splits[].memo in place of splits[].payTo address (split_memo_replaced_recipient_address)?</td><td><code>BLOCK</code> (split_memo_replaced_recipient_address)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-07</code> · x402 Gas Read Gate (#3903)</td><td>Warn exactly once per network and skip __extensions when gas sponsoring is advertised but signer lacks read_contract?</td><td><code>ALLOW</code> (gas_read_paywall_headers_verified)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-08</code> · x402 Paywall accepts[0] (#3600)</td><td>Fall back to static HTML when accepts[0] is upto even if accepts[1] is exact EVM, while accepting MappingProxyType in create_headers (#3895)?</td><td><code>ALLOW</code> (gas_read_paywall_headers_verified)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-09</code> · x402 create_headers (#3895)</td><td>Reject flat dictionary {'Authorization': 'Bearer ...'} returned by create_headers lacking verify/settle/supported keys?</td><td><code>BLOCK</code> (create_headers_flat_dict_rejected)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-10</code> · MCP SEP-2643 & SEP-2419 (#2643/#2419)</td><td>Allow stdio RAR authorization_remediation for single-use payment (no authorization_reference) and strip cache_hint='no-cache' from downstream _meta?</td><td><code>ALLOW</code> (mcp_sep2643_and_sep2419_verified)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-11</code> · MCP SEP-2643 Partial (#2643)</td><td>Reject attaching SEP-2643 authorization denial envelope when tool execution partially succeeded?</td><td><code>BLOCK</code> (mcp_sep2643_envelope_on_partial_execution_forbidden)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-12</code> · MCP SEP-2643 Capabilities (#2643)</td><td>Reject marking remediation='unavailable' (instead of 'undisclosed') when server has URL/task remedy but client declared neither capability?</td><td><code>BLOCK</code> (mcp_sep2643_capability_gated_remedy_marked_unavailable)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-13</code> · MCP SEP-2643 Single-Use RAR (#2643)</td><td>Reject single-use payment RAR authorization_remediation hint that includes reusable authorization_reference?</td><td><code>BLOCK</code> (mcp_sep2643_single_use_rar_must_omit_reference)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-14</code> · MCP SEP-2643 Context Handle (#2643)</td><td>Reject server that treats authorizationContextId as sufficient authorization or rejects retry solely for omitting it?</td><td><code>BLOCK</code> (mcp_sep2643_context_id_treated_as_authorization)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-15</code> · Sierra tau2-bench Bipartite (#665)</td><td>Reject 1 predicted request_human_agent_transfer call against 3 repeated gold actions in banking_knowledge task_032?</td><td><code>BLOCK</code> (tau2_bipartite_unmatched_gold_action)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>MS-16</code> · Sierra tau2-bench Augmenting Path (#665)</td><td>Match both gold actions when specific lookup(id='b') precedes generic lookup(id='z') and unconstrained gold action precedes constrained gold action?</td><td><code>ALLOW</code> (tau2_bipartite_all_gold_actions_matched)</td><td><span class='pill'>Act automatically</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="callout">0 misses (<code>✕</code> = 0) · Deterministic guard gating</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+      <h2>SVM Split Remainder + Gas Read Gate + SEP-2643 Denial Envelope + tau2 Augmenting Path</h2>
+      <pre>{
+  "svm_splits": "primary = amount - sum(splits) &gt; 0; ix in [3+N+K, 7+N+K]",
+  "gas_sponsor": "isinstance(signer, ClientEvmSignerWithReadContract)",
+  "mcp_sep2643": "_meta['io.modelcontextprotocol/authorization']"
+}</pre>
+      <pre>↓ &lt;answer&gt;
+if call_idx not in owner or assign(owner[call_idx], seen):
+    owner[call_idx] = gold_idx  # 1-to-1 maximum bipartite matching
+forwarded_meta = {k: v for k, v in meta.items() if k != "cache_hint"}</pre>
+    </div>
+    <div class="callout">Asymmetric overpayment tolerance on SVM primary vs. split legs and non-propagating _meta.cache_hint.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>100.0% Consistency Across Split Leg Permutations, Repeated Sponsor Warnings, and Gold Action Orderings</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>SVM Split TransferChecked Order</td><td>100.0% (Matched)</td><td>100.0% (Permuted)</td><td>0.0</td></tr>
+          <tr><td>Repeated Gas Sponsor Warning</td><td>100.0% (1 Warn/Net)</td><td>100.0% (1 Warn/Net)</td><td>0.0</td></tr>
+          <tr><td>SEP-2419 Unknown cache_hint Value</td><td>100.0% (Ignored)</td><td>100.0% (Ignored)</td><td>0.0</td></tr>
+          <tr><td>tau2 Constrained vs Unconstrained Order</td><td>100.0% (Both Matched)</td><td>100.0% (Both Matched)</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">Zero option-order or call-order drift across 4 perturbation axes.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY</div>
+      <h2>0.17 ms Guard Suite Latency vs. 0.57 ms Legacy Multi-Pass Baseline (3.35x Faster)</h2>
+      <div class="bar-row">
+        <div>Stage 192–193 Deterministic Guard (16 scenarios): <strong>0.17 ms</strong></div>
+        <div class="bar-track"><div class="bar-primary" style="width: 30%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div>Legacy Ad-Hoc Regex / Greedy Matcher Baseline: <strong>0.57 ms</strong></div>
+        <div class="bar-track"><div class="bar-base" style="width: 100%;"></div></div>
+      </div>
+      <table>
+        <tr><th>Tier</th><th>Stage 192–193 Guard</th><th>Legacy Baseline</th></tr>
+        <tr><td>Single Scenario Median</td><td>0.011 ms</td><td>0.036 ms</td></tr>
+        <tr><td>Full 16-Scenario Batch</td><td>0.17 ms</td><td>0.57 ms</td></tr>
+      </table>
+    </div>
+    <div class="callout">Sub-millisecond verification suitable for inline x402 facilitator, MCP gateway, and tau2 evaluator loops.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE</div>
+      <h2>Production Readiness: Marketplace Split Settlement, Safe Gas Sponsoring, &amp; Structured Authz</h2>
+      <div class="split">
+        <div class="box-good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>x402 SVM marketplaces &amp; API aggregators with 1..8 atomic split legs and opt-in CreateIdempotent ATA rent sponsorship</li>
+            <li>Python EVM clients gating EIP-2612/ERC-20 gas sponsoring on chain-read capability</li>
+            <li>MCP servers returning SEP-2643 RAR/elicitation/task denials and SEP-2419 cache_hint</li>
+          </ul>
+        </div>
+        <div class="box-bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Percentage/basis-point split specs that trigger floating-point rounding disputes</li>
+            <li>Treating authorizationContextId as an authorization token on retry</li>
+            <li>Greedy many-to-one action evaluation on repeated tool-call benchmarks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout">License: MIT · Self-contained CSP (<code>default-src 'none'; style-src 'unsafe-inline'</code>) · Zero external assets.</div>
+  </section>
+</div>
+</body>
+</html>

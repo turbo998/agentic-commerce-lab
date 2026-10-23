@@ -200,6 +200,24 @@
   - 单元测试：[`tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py`](../../tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py)（全仓库 **788/788** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.html`（中文）](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/report.json)
 
+---
+
+## Stage 192：x402 SVM `exact` §5 多收款方分账与 `CreateIdempotent` ATA 租金代付（PR `#3221`）、Python Gas 代付链读门禁（PR `#3903`）与 `@x402/paywall` `accepts[0]` 自动检测（PR `#3600`）及 `create_headers` `Mapping` 支持（PR `#3895`）、MCP `SEP-2643` 结构化授权拒绝（PR `#2643`）与 `SEP-2419` `cache_hint`（PR `#2419`）及 Sierra $\tau$-bench 2.0 最大二分图一对一动作匹配（PR `#665`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py)
+  - 单元测试：[`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py)（全仓库 **792/792** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§191)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§191)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 193：16 场景（`MS-01..MS-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 192）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)
+  - 单元测试：[`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)（全仓库 **794/794** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html`（中文）](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/report.json)
+
 
 
 

@@ -2261,6 +2261,32 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.56 ms`（`3.29x` 加速）**。
 - **技术资产**：[`lab/x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py`](../../lab/x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py)、[`tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py`](../../tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py) 及双语报告 [`reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/`](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.en.html)）。
 
+---
+
+## 191. Stage 192 架构深潜（`2026-10-23`）：x402 SVM `exact` §5 多收款方分账与 `CreateIdempotent` ATA 代付、Python Gas 代付链读门禁与 Paywall `accepts[0]` 检测、MCP `SEP-2643` 结构化授权拒绝与 `SEP-2419` `cache_hint`、以及 Sierra $\tau$-bench 2.0 最大二分图一对一动作匹配
+
+1. **x402 `exact` on SVM §5 多收款方分账与 `CreateIdempotent` ATA 租金代付（`x402-foundation/x402` PR `#3221`）**：
+   - `PaymentRequirements.extra.splits` 支持 `1..8` 条最小单位正整数分账项（`[1, 2^64-1]`），要求主收款方剩余金额 `primary = amount - sum(splits[].amount) > 0`（违反时返回 `split_remainder_not_positive`），且主收款方与各分账方 `payTo` 地址互不相同。
+   - **非对称超额支付容忍与逐腿独立匹配（§5.3）**：每条腿必须匹配一条独立的 `TransferChecked`（`split_leg_unmatched` / `split_unexpected_transfer`）；仅主收款腿容忍智能钱包取整超付（`>= primary`），所有分账腿必须严格相等（`== split.amount`）。
+   - **对称显式 `CreateIdempotent` ATA 创建与广义静态布局（§5.4–§5.7）**：Sponsor 在 `/supported` 披露 `maxSplits`（缺省 `0`）与 `ataCreationSponsored`（缺省 `false`）；仅当 `ataCreationSponsored == true`、对应收款方标记 `ataCreationRequired == true` 且使用幂等指令 `CreateIdempotent` 时允许 `feePayer` 代付 ATA 租金（`split_ata_creation_not_authorized`），Path 1 指令数界限推广为 `[3 + N + K, 7 + N + K]`；钱包同意界面必须将 `splits[].memo` 与 `payTo` 并列展示，禁止用 `memo` 替代地址。
+2. **x402 Python Gas 代付链读门禁（PR `#3903`）、`@x402/paywall` `accepts[0]` 自动检测（PR `#3600`）与 `create_headers` `Mapping` 支持（PR `#3895`）**：
+   - Python 客户端在 `exact`/`upto`/`batch_settlement` 签署 `eip2612GasSponsoring` 或 `erc20ApprovalGasSponsoring` 前检查 `isinstance(signer, ClientEvmSignerWithReadContract)`；若缺少 `read_contract`，按网络去重告警一次并跳过扩展签名；若具备 `read_contract` 但缺少 `sign_transaction`，则静默跳过 `erc20ApprovalGasSponsoring` 而不误报链读告警。
+   - `x402HTTPResourceServer` 仅依据 `accepts[0]` 自动选择内置 `@x402/paywall` 处理器（要求 `accepts[0].scheme == "exact"` 且网络前缀受支持），当 `accepts[0]` 为 `upto` 时即使 `accepts[1]` 为 `exact` EVM 也回退至静态 HTML。
+   - `HTTPFacilitatorClient.get_auth_headers` 支持任意 `collections.abc.Mapping`（如 `MappingProxyType`），同时拒绝缺少 `verify`/`settle`/`supported` 键的扁平字典。
+3. **MCP `SEP-2643` 结构化授权拒绝（PR `#2643`）与 `SEP-2419` `cache_hint`（PR `#2419`）**：
+   - `_meta["io.modelcontextprotocol/authorization"]` 禁止附加于已部分执行的操作；`remediation` 为 `"unavailable"` 或 `"undisclosed"` 时禁止携带 `remediationHints`；当服务端存在交互/任务补救路径但客户端未声明 `elicitation.url` 与 `tasks` 能力时必须返回 `"undisclosed"`（严禁误标 `"unavailable"`）；单次使用的 RAR 凭证必须省略 `authorization_reference`；`authorizationContextId` 仅作关联句柄，绝不构成授权凭据。
+   - `CallToolResult._meta.cache_hint` 支持 `"no-cache"` 与 `"cache"`，向模型或下游转发前必须剥离 `cache_hint`，且不可覆盖客户端敏感数据不缓存策略。
+4. **Sierra $\tau$-bench 2.0 `ActionEvaluator` 最大二分图一对一动作匹配（PR `#665`）**：
+   - `_match_actions` 采用增广路最大二分图匹配，确保单次预测工具调用最多满足 1 条黄金动作（重复 $N$ 次的黄金动作需 $N$ 次独立调用），且具体受限黄金动作（`compare_args=["id"]`）可通过增广路从排在前面的无约束黄金动作（`compare_args=[]`）中重分配匹配的调用。
+
+---
+
+## 192. Stage 193 基准评测（`2026-10-23`）：16 场景（`MS-01..MS-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 192 全部 16 项 `2026-10-23` 一手协议与基准护栏（`MS-01..MS-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)、[`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html)）。
+
 
 
 

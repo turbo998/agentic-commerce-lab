@@ -200,6 +200,24 @@
   - Unit tests: [`tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py`](../../tests/test_x402_eoa_high_s_upto_sim_tron_exact_svm_seal_callback_mcp_requirements_meta_bench.py) (**788/788** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-eoa-high-s-upto-sim-tron-exact-svm-seal-callback-mcp-requirements-meta-bench/report.json)
 
+---
+
+## Stage 192: x402 SVM `exact` §5 Multi-Payee Splits & `CreateIdempotent` ATA Rent Sponsorship (PR `#3221`), Python Gas Sponsoring Chain-Read Gate (PR `#3903`) & `@x402/paywall` `accepts[0]` Auto-Detection (PR `#3600`) & `create_headers` `Mapping` Support (PR `#3895`), MCP `SEP-2643` Structured Authorization Denials (PR `#2643`) & `SEP-2419` `cache_hint` (PR `#2419`), and Sierra $\tau$-bench 2.0 Maximum Bipartite One-to-One Action Matching (PR `#665`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py)
+  - Unit tests: [`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_guard.py) (**792/792** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§191)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§191)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 193: 16-Scenario (`MS-01..MS-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 192)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../lab/x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py)
+  - Unit tests: [`tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py`](../../tests/test_x402_svm_splits_gas_read_paywall_mcp_authz_denials_cache_hint_tau2_bipartite_bench.py) (**794/794** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-svm-splits-gas-read-paywall-mcp-authz-denials-cache-hint-tau2-bipartite-bench/report.json)
+
 
 
 
