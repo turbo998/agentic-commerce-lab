@@ -2625,6 +2625,38 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../lab/ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py)、[`tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.en.html)）。
 
+---
+
+## 219. Stage 220 架构深潜（`2026-10-23` · 220 阶段里程碑！）：UCP 单 SQLite 事务完成/REST 异常规范化/共享履约就绪门禁与 Python SDK 代码生成、Stripe MCP 本地代理安全注解/即时错误转发与 Agent Toolkit 线程事件循环、以及 MCP Go/Rust/C#/Java 四大官方 SDK 前沿护栏
+
+### 219.1 UCP Complete Checkout 原子事务与已删商品回滚、REST 异常规范化、共享 `hasFulfillmentSelection` 与 Python SDK Schema 代码生成（`PR-01..PR-04`）
+1. **UCP Complete Checkout 单 SQLite 事务与已删商品 `400 INVALID_REQUEST` 回滚（`samples#258`/`#248`，`PR-01`）**：将库存预占、`saveOrder` 与 `saveCheckout` 封装进单一 `better-sqlite3` 事务并在事务外触发异步 Webhook；若结账行引用已删商品，立即回滚扣减库存并返回 `400 INVALID_REQUEST`（不持久化孤儿订单或幂等记录）。
+2. **UCP REST Python 5 项客户端可达异常规范化与 `simulate-shipping` 剩余数量同步（`samples#257`/`#247`，`PR-02`）**：创建结账禁传 `platform`/`ap2`、`UcpConfig(HttpUrl)` 校验 Webhook URL、非字符串卡号返回 `400 INVALID_REQUEST`、复用 `destination.id` 原地更新返回 `200 OK`；同时 `simulate-shipping` 仅按本次发货增量更新 `fulfilled` 并保留 `quantity.total == 0` 行（标记 `status: "removed"`）。
+3. **UCP 共享 `hasFulfillmentSelection` 就绪门禁、A2A `a2a.ucp.checkout.payment` 与单支付工具完成约束（`samples#254`/`#253`/`#249`/`#246`，`PR-03`）**：要求全部履约方法选定地址且全部履约组选定选项方可进入 `ready_for_complete`；A2A 支付载荷统一使用 `a2a.ucp.checkout.payment` 键，且 Complete Checkout 遇到 `len(instruments) > 1` 拒绝执行并返回 `402 payment_failed`。
+4. **UCP Python SDK `ucp-schema generate-types`、移除 `datetime` 冗余 `pattern` 与 `dependentRequired` 校验（`python-sdk#102`/`#101`/`#100`/`#96`，`PR-04`）**：通过 `ucp-schema generate-types` 生成 Pydantic v2 模型、移除 `datetime` 字段上的字符串正则 `pattern` 并在 `@model_validator` 中强制执行 `dependentRequired`。
+
+### 219.2 Stripe MCP 本地代理与 Agent Toolkit 护栏及 MCP Go/Rust/C#/Java 四大 SDK 安全与互操作护栏（`PR-05..PR-16`）
+5. **Stripe MCP 本地代理远端工具 `title`/`annotations` 保留与请求级立即 `-32603` 转发错误响应（`stripe/ai#584`/`#542`，`PR-05`）**：`@stripe/mcp` 本地代理使用 `server.registerTool()` 完整透传 `title` 与 `readOnlyHint`/`destructiveHint`/`idempotentHint`/`openWorldHint`，并在远端 `httpClient.send()` 抛错时对 JSON-RPC 请求立即返回 `-32603`（对通知/响应不回包）。
+6. **Stripe Agent Toolkit 工作线程同步执行与废弃 v0.6.x `actions` Fail-Open 拦截（`stripe/ai#581`/`#559`，`PR-06`）**：无运行事件循环的工作线程回退至 `asyncio.run()`，并显式拦截已废弃的 `configuration.actions` 字典防止全权限裸奔。
+7. **MCP Go SDK Windows 盘符 `file://` URI 转换与严格 `int64` JSON-RPC ID 校验（`go-sdk#1443`/`#1441`，`PR-07`）**：遵循 RFC 8089 E.2 将 `/C:/path` 转为 `C:\path`，并拒绝小数、越界整数或 `NaN`/`Inf` 的 JSON-RPC ID（返回 `-32700 ErrParse`）。
+8. **MCP Go SDK `PerformOIDCLogin` RFC 9207 `iss` 防混淆与 `id-jag` 令牌类型校验（`go-sdk#1442`/`#1438`，`PR-08`）**：强制校验授权回调 `iss` 与发现文档 `issuer` 完全一致，且 `EnterpriseHandler.Authorize` 仅接受 `urn:ietf:params:oauth:token-type:id-jag`。
+9. **MCP Go SDK 同源 HTTP 重定向限制、`server/discover` 单次授权失败终止与 `403` `insufficient_scope` 质询头（`go-sdk#1440`/`#1425`/`#1421`，`PR-09`）**：拦截跨源重定向防止 Bearer Token 泄露、自动发现授权失败后不再由 `initialize` 重复拉起二次授权，且 `403 StatusForbidden` 附带 `WWW-Authenticate: Bearer error="insufficient_scope"`。
+10. **MCP Go SDK `jsonrpc2` 响应排队保序与重入同步调用（`activeSyncReleaser`）防死锁直通（`go-sdk#1411`，`PR-10`）**：将外部响应释放排入 `handlerQueue` 保证前置通知先执行，而对活跃同步处理器发起的嵌套重入调用直接绕过队列防自死锁。
+11. **MCP Rust SDK SEP-2640 `io.modelcontextprotocol/skills` 与 OIDC `id_token` 企业交换（`rust-sdk#1392`/`#1385`，`PR-11`）**：支持 `skills/list`、`skills/get`、`resources/directory/read`（路径防逃逸）及 `EmaExchangeRequest::new_with_id_token`（`urn:ietf:params:oauth:token-type:id_token`）。
+12. **MCP Rust SDK 精确响应媒体类型匹配与 RFC 9110 `Accept` `q=0` 权重解析（`rust-sdk#1390`/`#1382`，`PR-12`）**：按 `;` 拆分后精确比对媒体类型并保留 JSON 503 诊断信息，同时拒绝 `q=0` 禁用的媒体类型。
+13. **MCP Rust SDK URL 征询可选 `elicitationId`、无会话非 `initialize` POST `400` 与按方法分发 `-32602 INVALID_PARAMS`（`rust-sdk#1383`/`#1377`/`#1375`，`PR-13`）**：允许 URL 模式省略 `elicitationId`、拦截 stateful 模式下缺失 `Mcp-Session-Id` 的非 `initialize` POST 请求（`400 Bad Request`），并对已知方法参数畸形返回 `-32602`。
+14. **MCP Rust & Java SDK 有界子进程优雅关闭（`rust-sdk#1379`/`java-sdk#1257`，`PR-14`）**：执行 `stdin` EOF -> 有界等待 -> `SIGTERM`/`destroy()` -> 超时后 `SIGKILL`/`destroyForcibly()` 并保留 `ChildWithCleanup` 守卫。
+15. **MCP C# SDK RFC 9728 `resource_indicators_supported`、默认关闭 Legacy OAuth 回退与 `S256`/精确 `issuer` 校验（`csharp-sdk#1953`/`#1952`/`#1949`，`PR-15`）**：当受保护资源声明 `resource_indicators_supported: false` 时省略 RFC 8707 `resource` 参数、默认禁用 RFC 8414 Legacy 根路径回退，并强制要求 `S256` PKCE 与精确 `issuer` 匹配。
+16. **MCP C# SDK 大小写敏感 `ProtocolOptions`、`FunctionResultContent.Result` 解包序列化与 Java SDK `removeResourceTemplate` 条件通知（`csharp-sdk#1945`/`#1934`/`java-sdk#1266`，`PR-16`）**：对 MCP 协议信封强制区分大小写（同时保持用户工具参数大小写不敏感）、直接序列化 `FunctionResultContent.Result` 内部值，且仅当 `removeResourceTemplate` 实际移除已存在模板时发送 `notifications/resources/list_changed`。
+
+---
+
+## 220. Stage 221 基准评测（`2026-10-23` · 220 阶段里程碑 & 856/856 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 220 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py)、[`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.en.html)）。
+
 
 
 

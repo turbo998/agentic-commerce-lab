@@ -452,6 +452,24 @@
   - 单元测试：[`tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py`](../../tests/test_ucp_ci_x402_agentsafe_worldchain_mcp_content_type_stdio_rfc9728_rfc6570_tau2_live_bench.py)（全仓库 **852/852** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ci-x402-agentsafe-worldchain-mcp-content-type-stdio-rfc9728-rfc6570-tau2-live-bench/report.json)
 
+---
+
+## Stage 220（220 阶段里程碑！）：UCP Complete Checkout 单 SQLite 事务原子库存预占与已删商品 `400 INVALID_REQUEST` 回滚（`samples#258`/`#248`）、UCP REST Python 5 项客户端可达异常规范化（创建禁传 `platform`/`ap2`、`UcpConfig(HttpUrl)`、非字符串卡号 `400`、复用 `destination.id` `200 OK`）与 `simulate-shipping` 剩余数量同步（`samples#257`/`#247`）、UCP 共享 `hasFulfillmentSelection` 就绪门禁 + A2A `a2a.ucp.checkout.payment` 规范 DataPart 与单支付工具完成约束（`samples#254`/`#253`/`#249`/`#246`）、UCP Python SDK `ucp-schema generate-types` 与 `datetime` 去除冗余 `pattern` 及 `dependentRequired` 联动校验（`python-sdk#102`/`#101`/`#100`/`#96`）、Stripe MCP 本地代理保留远端 `title`/`annotations` 与请求级立即 `-32603` 转发错误响应（`stripe/ai#584`/`#542`）、Stripe Agent Toolkit 工作线程同步执行（`get_running_loop()` vs `asyncio.run()`）与拦截废弃 v0.6.x `actions` Fail-Open 配置（`stripe/ai#581`/`#559`）、MCP Go SDK Windows 盘符 `file://` URI 转换（RFC 8089 E.2）与严格 `int64` JSON-RPC ID 校验（`go-sdk#1443`/`#1441`）、`PerformOIDCLogin` RFC 9207 `iss` 防混淆与 `id-jag` 令牌类型校验（`go-sdk#1442`/`#1438`）、同源 HTTP 重定向限制/`server/discover` 单次授权失败终止与 `403` `insufficient_scope` 质询头（`go-sdk#1440`/`#1425`/`#1421`）、`jsonrpc2` 响应在前置通知后排队与重入同步调用（`activeSyncReleaser`）防死锁直通（`go-sdk#1411`）、MCP Rust SDK SEP-2640 `io.modelcontextprotocol/skills` 与 OIDC `id_token` 企业交换（`rust-sdk#1392`/`#1385`）、精确响应媒体类型匹配与 RFC 9110 `Accept` `q=0` 权重解析（`rust-sdk#1390`/`#1382`）、URL 征询可选 `elicitationId`/无会话非 `initialize` POST `400` 与按方法分发 `-32602 INVALID_PARAMS`（`rust-sdk#1383`/`#1377`/`#1375`）、MCP Rust & Java SDK 有界子进程优雅关闭（`stdin` EOF -> `SIGTERM`/`destroy()` -> 超时 `SIGKILL`/`destroyForcibly()`，`rust-sdk#1379`/`java-sdk#1257`）、MCP C# SDK RFC 9728 `resource_indicators_supported` 与默认关闭 Legacy OAuth 回退及 `S256`/精确 `issuer` 校验（`csharp-sdk#1953`/`#1952`/`#1949`）、以及 MCP C# SDK 大小写敏感 `ProtocolOptions` 与 `FunctionResultContent.Result` 解包序列化及 Java SDK `removeResourceTemplate` 条件通知（`csharp-sdk#1945`/`#1934`/`java-sdk#1266`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_guards.py`](../../lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_guards.py)
+  - 单元测试：[`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_guards.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_guards.py)（全仓库 **855/855** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§219)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§219)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 221（220 阶段里程碑 · 856/856 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 220）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../lab/ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py)
+  - 单元测试：[`tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py`](../../tests/test_ucp_tx_ready_stripe_proxy_mcp_go_rust_csharp_java_bench.py)（全仓库 **856/856** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-tx-ready-stripe-proxy-mcp-go-rust-csharp-java-bench/report.json)
+
 
 
 
