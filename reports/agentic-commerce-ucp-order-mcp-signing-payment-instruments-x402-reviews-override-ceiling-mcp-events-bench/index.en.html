@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>16/16 (100.0%) Deterministic Defense Across UCP #988/#584/#791 Order MCP Signing & Payment Instruments, x402 #3656/#3881/#2728/#3508 Reviews & Override/Low-s Guards, and MCP SEP-3415 Events</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.card { max-width: 900px; min-height: 540px; margin: 0 auto 24px; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; }
+.kicker { color: #38bdf8; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; }
+h1, h2 { margin: 8px 0 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid #334155; padding: 8px; text-align: left; }
+code { color: #93c5fd; }
+.bar-primary { background: #3B82F6; height: 18px; width: 8.1%; border-radius: 4px; }
+.bar-base { background: #CBD5E1; height: 18px; width: 100%; border-radius: 4px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.good { background: #064e3b; padding: 16px; border-radius: 12px; }
+.bad { background: #7f1d1d; padding: 16px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<section class="card">
+  <div class="kicker">1 / 7 · HANDS-ON · PROTOCOL &amp; POLICY GUARDRAILS · STAGE 179</div>
+  <h1>16/16 (100.0%) Deterministic Defense Across UCP #988/#584/#791 Order MCP Signing & Payment Instruments, x402 #3656/#3881/#2728/#3508 Reviews & Override/Low-s Guards, and MCP SEP-3415 Events</h1>
+  <p>Provenance: <code>measured</code> · Scenarios: <b>16/16 (100.0%)</b> · Speedup: <b>12.4x (0.98 ms vs 12.16 ms)</b></p>
+</section>
+<section class="card">
+  <div class="kicker">2 / 7 · SCENARIO: OM-10 &amp; OM-11</div>
+  <h2>x402 #3881/#3877 500% Settlement Override Ceiling Block &amp; #2728 High-s EIP-3009 Signature Rejection in 0.98 ms</h2>
+  <p>Task type: <code>choice</code> · Action: <code>Act automatically / Send to a human</code> · Confidence: <code>1.00</code></p>
+</section>
+<section class="card">
+  <div class="kicker">3 / 7 · WHAT I TESTED</div>
+  <h2>16/16 (100.0%) Evaluation Matrix Across UCP #988/#584/#791, x402 #3656/#3881/#2728/#3508 &amp; MCP SEP-3415</h2>
+  <table>
+    <thead><tr><th>SCENARIO</th><th>DOMAIN</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th><th>RESULT</th></tr></thead>
+    <tbody>
+<tr><td><code>OM-01</code></td><td>UCP_ORDER_MCP_AND_PAYMENT_INSTRUMENTS</td><td>UCP #988 `get_order` MCP signing, #584 `order_payment_instrument` subset & #791 `business_id` verified</td><td><code>ucp_order_mcp_and_payment_instruments_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-02</code></td><td>UCP_ORDER_MCP_AND_PAYMENT_INSTRUMENTS</td><td>UCP #988 rejects `get_order` over MCP when request signature is invalid</td><td><code>ucp_order_mcp_request_signature_invalid</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-03</code></td><td>UCP_ORDER_MCP_AND_PAYMENT_INSTRUMENTS</td><td>UCP #584 blocks `order_payment_instrument` leaking checkout collection-time `credential` field</td><td><code>ucp_order_payment_collection_field_leaked</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-04</code></td><td>UCP_ORDER_MCP_AND_PAYMENT_INSTRUMENTS</td><td>UCP #791 rejects Tokenizer accepting `identity.access_token` participant ID as authentication</td><td><code>ucp_tokenizer_identity_access_token_auth_forbidden</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-05</code></td><td>X402_REVIEWS_EXTENSION</td><td>x402 #3656 402 `extensions.reviews.providers[]` with host-matched `read` link and no inline rating verified</td><td><code>x402_reviews_extension_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-06</code></td><td>X402_REVIEWS_EXTENSION</td><td>x402 #3656 rejects server self-claimed inline `rating`/`count` in `extensions.reviews`</td><td><code>x402_reviews_self_claimed_rating_forbidden</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-07</code></td><td>X402_REVIEWS_EXTENSION</td><td>x402 #3656 rejects `extensions.reviews` entry when `provider` host != link URL host</td><td><code>x402_reviews_provider_host_mismatch</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-08</code></td><td>X402_REVIEWS_EXTENSION</td><td>x402 #3656 rejects payment-backed review self-dealing (`payer == payTo`)</td><td><code>x402_reviews_self_dealing_payer_equals_payto</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-09</code></td><td>X402_SETTLEMENT_OVERRIDE_LOW_S_AND_MCP</td><td>x402 #3881/#3877 50% partial override, #2728 canonical low-s ECDSA, #3883 402 JSON error & #3508 MCP callback verified</td><td><code>x402_settlement_override_low_s_and_mcp_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-10</code></td><td>X402_SETTLEMENT_OVERRIDE_LOW_S_AND_MCP</td><td>x402 #3881/#3877 rejects `500%` override exceeding `PaymentRequirements.amount` (`invalid_settlement_override`)</td><td><code>invalid_settlement_override</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-11</code></td><td>X402_SETTLEMENT_OVERRIDE_LOW_S_AND_MCP</td><td>x402 #2728 rejects non-canonical high-s 65-byte EIP-3009 ECDSA signature pre-broadcast</td><td><code>invalid_exact_evm_non_canonical_signature</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-12</code></td><td>X402_SETTLEMENT_OVERRIDE_LOW_S_AND_MCP</td><td>x402 #3508 rejects Python MCP paid tool response bypassing `handle_payment_response`</td><td><code>x402_mcp_paid_response_handler_bypassed</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-13</code></td><td>MCP_SEP3415_EVENTS_EXTENSION</td><td>MCP SEP-3415 (`b0efd11`) delivers one upstream `eventId` matching two distinct subscriptions (`sub_A`/`sub_B`) with `Mcp-Name` header</td><td><code>mcp_sep3415_events_ok</code></td><td>Act automatically</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-14</code></td><td>MCP_SEP3415_EVENTS_EXTENSION</td><td>MCP SEP-3415 (`2ec39b9`) rejects Streamable HTTP `events/subscribe` missing `Mcp-Name` header</td><td><code>mcp_events_mcp_name_header_missing</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-15</code></td><td>MCP_SEP3415_EVENTS_EXTENSION</td><td>MCP SEP-3415 (`b0efd11`) deduplicates duplicate `eventId` within the same `subscriptionId` across `webhook-id` retries</td><td><code>mcp_events_within_subscription_duplicate_dropped</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+<tr><td><code>OM-16</code></td><td>MCP_SEP3415_EVENTS_EXTENSION</td><td>MCP SEP-3415 (`b0efd11`) rejects `notifications/events/*` message missing echoed `subscription_id`</td><td><code>mcp_events_subscription_or_ids_missing</code></td><td>Send to a human</td><td>✅ PASS</td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">4 / 7 · UNDER THE HOOD</div>
+  <h2>Protocol &amp; Scoring Mechanics (Deterministic Verifier Flow &lt;answer&gt;)</h2>
+  <pre style="background:#0F172A;padding:16px;border-radius:8px;overflow:auto;">Structured Contract Input (OM-01..OM-16) ↓ Deterministic Policy Verifier ↓ &lt;answer&gt; Sealed Decision Code</pre>
+</section>
+<section class="card">
+  <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
+  <h2>16/16 (100.0%) Key-Order Perturbation Invariance (0.0 pts Drift)</h2>
+  <table>
+    <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+    <tbody>
+<tr><td><code>OM-01</code></td><td><code>ucp_order_mcp_and_payment_instruments_ok</code></td><td><code>ucp_order_mcp_and_payment_instruments_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-02</code></td><td><code>ucp_order_mcp_request_signature_invalid</code></td><td><code>ucp_order_mcp_request_signature_invalid</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-03</code></td><td><code>ucp_order_payment_collection_field_leaked</code></td><td><code>ucp_order_payment_collection_field_leaked</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-04</code></td><td><code>ucp_tokenizer_identity_access_token_auth_forbidden</code></td><td><code>ucp_tokenizer_identity_access_token_auth_forbidden</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-05</code></td><td><code>x402_reviews_extension_ok</code></td><td><code>x402_reviews_extension_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-06</code></td><td><code>x402_reviews_self_claimed_rating_forbidden</code></td><td><code>x402_reviews_self_claimed_rating_forbidden</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-07</code></td><td><code>x402_reviews_provider_host_mismatch</code></td><td><code>x402_reviews_provider_host_mismatch</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-08</code></td><td><code>x402_reviews_self_dealing_payer_equals_payto</code></td><td><code>x402_reviews_self_dealing_payer_equals_payto</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-09</code></td><td><code>x402_settlement_override_low_s_and_mcp_ok</code></td><td><code>x402_settlement_override_low_s_and_mcp_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-10</code></td><td><code>invalid_settlement_override</code></td><td><code>invalid_settlement_override</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-11</code></td><td><code>invalid_exact_evm_non_canonical_signature</code></td><td><code>invalid_exact_evm_non_canonical_signature</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-12</code></td><td><code>x402_mcp_paid_response_handler_bypassed</code></td><td><code>x402_mcp_paid_response_handler_bypassed</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-13</code></td><td><code>mcp_sep3415_events_ok</code></td><td><code>mcp_sep3415_events_ok</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-14</code></td><td><code>mcp_events_mcp_name_header_missing</code></td><td><code>mcp_events_mcp_name_header_missing</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-15</code></td><td><code>mcp_events_within_subscription_duplicate_dropped</code></td><td><code>mcp_events_within_subscription_duplicate_dropped</code></td><td><b>0.0 pts</b></td></tr>
+<tr><td><code>OM-16</code></td><td><code>mcp_events_subscription_or_ids_missing</code></td><td><code>mcp_events_subscription_or_ids_missing</code></td><td><b>0.0 pts</b></td></tr>
+    </tbody>
+  </table>
+</section>
+<section class="card">
+  <div class="kicker">6 / 7 · LATENCY</div>
+  <h2>0.98 ms Median Guard Latency vs. 12.16 ms Baseline (12.4x Speedup)</h2>
+  <p>Primary Deterministic Guard (<code>0.98 ms</code>)</p><div class="bar-primary"></div>
+  <p>Baseline Cross-Service / LLM Judge (<code>12.16 ms</code>)</p><div class="bar-base"></div>
+</section>
+<section class="card">
+  <div class="kicker">7 / 7 · MY TAKE</div>
+  <h2>Good Fit vs. Not For &amp; Production Readiness</h2>
+  <div class="grid">
+    <div class="good"><h3>✅ Good fit</h3><p>UCP PR #988/#584/#791 Order MCP signing, `order_payment_instrument` read-only subset &amp; Tokenizer participant ID guards, x402 PR #3656 `extensions.reviews` host/self-dealing checks, x402 PR #3881/#3877/#2728/#3508 override ceiling &amp; low-s EIP-3009 verification, and MCP SEP-3415 `Mcp-Name` &amp; per-subscription `eventId` deduplication.</p></div>
+    <div class="bad"><h3>⛔ Not for</h3><p>Replacing live secp256k1 hardware enclave key generation or external review provider reputation databases.</p></div>
+  </div>
+</section>
+</body>
+</html>

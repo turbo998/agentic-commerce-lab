@@ -74,5 +74,24 @@
   - 单元测试：[`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)（全仓库 **754/754** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/report.json)
 
+---
+
+## Stage 178：UCP 订单 MCP 绑定签名（PR `#988`）、订单支付工具只读子集（PR `#584`）与参与者标识符澄清（PR `#791`）、x402 评价扩展（PR `#3656`）、结算覆盖上限（PR `#3881`/`#3877`）、EIP-3009 Low-s 验签（PR `#2728`）、402 JSON 错误体与 Python MCP 付费响应回调（PR `#3883`/`#3508`）及 MCP `SEP-3415` 事件扩展 `Mcp-Name` 与每订阅 `eventId` 去重护栏（`b0efd11`/`2ec39b9`）
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py)
+  - 单元测试：[`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py)（全仓库 **757/757** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§177)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§177)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 179：16 场景（`OM-01..OM-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 178）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)
+  - 单元测试：[`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)（全仓库 **758/758** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/report.json)
+
+
 
 

@@ -2108,6 +2108,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.99 ms` vs. `12.14 ms`（`12.3x` 加速）**。
 - **技术资产**：[`lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../lab/ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py)、[`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html)）。
 
+---
+
+## 177. Stage 178 架构演进（`2026-10-23`）：UCP 订单 MCP 绑定签名（PR `#988`）、订单支付工具只读子集（PR `#584`）与支付处理器参与者标识符澄清（PR `#791`）、x402 评价扩展（`extensions.reviews` PR `#3656`）、结算覆盖金额上限（PR `#3881`/`#3877`）、EIP-3009 Low-s 验签（PR `#2728`）、402 JSON 错误体与 Python MCP 付费响应回调（PR `#3883`/`#3508`）及 MCP `SEP-3415` 事件扩展 `Mcp-Name` 与每订阅 `eventId` 去重（`b0efd11`/`2ec39b9`）
+
+### 177.1 Google UCP 订单 MCP 绑定消息签名（PR `#988`）、`order_payment_instrument` 只读子集（PR `#584`）与支付处理器参与者标识符澄清（PR `#791`，`2026-10-23T16:15Z..16:49Z`）
+- 在 `Universal-Commerce-Protocol/ucp` PR `#988`（`docs/specification/order.md`）中，将 MCP 消息签名规则从 Catalog/Cart/Checkout 扩展至 Order 能力（`get_order` 工具请求必须携带有效签名，商家签名响应供平台验签防篡改）。在 PR `#584`（`source/schemas/shopping/order.json`）中，为订单新增 `order.payment.instruments[]`（定义专用只读子类型 `order_payment_instrument`），仅保留订单快照字段（`id`、`type`、`amount`、`display`、`billing_address`、`status`），**显式剥离结账期敏感采集字段（`credential`、`handler_id`、`selected`）**，防止订单查询或推送 webhook 泄露支付凭据令牌。在 PR `#791` 中，明确商家/平台支付处理器示例中的 `identity.access_token` 为**参与者标识符（Participant Identifier）**而非 OAuth 访问令牌（对应 `processor-tokenizer` 的 `config.business_id` 及 `platform-tokenizer` 的平台标识符），并依据 Binding Rule 4 严禁 Tokenizer 将 `identity.access_token` 当作调用方身份认证凭据（`ucp_tokenizer_identity_access_token_auth_forbidden`）。
+
+### 177.2 x402 Foundation 评价扩展（`extensions.reviews` PR `#3656`）、结算覆盖金额上限（PR `#3881`/`#3877` `invalid_settlement_override`）、EIP-3009 Low-s 规范签名（PR `#2728`）、HTTP 402 JSON 错误体（PR `#3883`）与 Python MCP 付费工具回调（PR `#3508`/`#3911`，`2026-10-23T16:13Z..16:58Z`）
+- 在 `x402-foundation/x402` PR `#3656`（`specs/extensions/reviews.md`）中，定义 `extensions.reviews` 发现指针：服务端仅在 402 响应声明 `1..4` 个第三方评价提供方 `read` 链接、在付费成功后回传 `write` 链接，**严禁在协议头中自称 `rating` 或 `count`**（`x402_reviews_self_claimed_rating_forbidden`），强制 `provider` 域名与 `read`/`write` HTTPS URL 主机名完全一致，并在支付背书评价中强制 `payer != payTo` 阻断自买自评刷单。在合入 PR `#3881`（Go）与 `#3877`（Python）中，`resolve_settlement_override_amount` 强制部分结算覆盖金额（无论是原子单位、`"$0.05"` 美元字符串还是 `"50%"` 百分比）必须在 `[0, PaymentRequirements.amount]` 闭区间内，阻断 `"500%"` 等超额覆盖提前以 `invalid_settlement_override` 失败。在 PR `#2728` 中，对普通 65 字节 EIP-3009 ECDSA 签名在广播前强制 `1 <= s <= secp256k1_n / 2`（拒绝 OpenZeppelin `ECDSA.recover` 会回滚的高 `s` 非规范签名 `invalid_exact_evm_non_canonical_signature`，同时放行 ERC-1271/ERC-6492 长签名）。在合入 PR `#3883` 与 PR `#3508`/`#3911` 中，确保 HTTP 402 响应返回 JSON `{"error": ...}` 体，且 Python MCP 客户端付费工具结果统一流经 `handle_payment_response` 回调并限制单次恢复性 402 重试上限为 `1`。
+
+### 177.3 Model Context Protocol `SEP-3415: Events Extension` Streamable HTTP `Mcp-Name` 路由头与每订阅 `(subscriptionId, eventId)` 去重（PR `#3415` 提交 `b0efd11` & `2ec39b9`，`2026-10-23T14:59:13Z`）
+- 在 `modelcontextprotocol/modelcontextprotocol` PR `#3415` 最新提交 `2ec39b9` 与 `b0efd11` 中：(1) Streamable HTTP 传输上的所有 `events/*` 请求必须携带 `Mcp-Name` HTTP 头以便网关按事件通道限流与路由（`mcp_events_mcp_name_header_missing`）；(2) 将传输层 Standard Webhooks 的 `webhook-id`（单次投递/重试幂等标识）与领域层 `eventId` 解耦：当同一上游事件匹配同一端点的两个不同订阅（`sub_A` 与 `sub_B`）时，允许使用不同 `webhook-id` 分别投递两次；回显在 `notifications/events/*` 中的 `subscriptionId` 使接收方严格按 `(subscriptionId, eventId)` 元组执行订阅内幂等去重（参见 `lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py`）。
+
+---
+
+## 178. Stage 179 基准评测（`2026-10-23`）：16 场景（`OM-01..OM-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 178 全部 16 项 `2026-10-23` 一手协议与基准护栏（`OM-01..OM-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位延迟 **`0.98 ms` vs. `12.16 ms`（`12.4x` 加速）**。
+- **技术资产**：[`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)、[`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html)）。
+
+
 
 
 

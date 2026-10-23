@@ -74,5 +74,24 @@
   - Unit tests: [`tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py`](../../tests/test_ucp_catalog_similarity_food_checkout_business_id_ap2_trail_head_bench.py) (**754/754** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-similarity-food-checkout-business-id-ap2-trail-head-bench/report.json)
 
+---
+
+## Stage 178: UCP Order MCP Signing (PR `#988`), Order Payment Instruments Read-Only Subset (PR `#584`) & Participant Identifier Clarification (PR `#791`), x402 Reviews Extension (PR `#3656`), Settlement Override Ceiling (PR `#3881`/`#3877`), EIP-3009 Canonical Low-s Verification (PR `#2728`), HTTP 402 JSON Rejection Body & Python MCP Paid Tool Callback (PR `#3883`/`#3508`), and MCP `SEP-3415` Events Extension `Mcp-Name` & Per-Subscription `eventId` Deduplication (`b0efd11`/`2ec39b9`)
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py)
+  - Unit tests: [`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_guard.py) (**757/757** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§177)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§177)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 179: 16-Scenario (`OM-01..OM-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 178)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../lab/ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py)
+  - Unit tests: [`tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py`](../../tests/test_ucp_order_mcp_signing_payment_instruments_x402_reviews_override_ceiling_mcp_events_bench.py) (**758/758** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-order-mcp-signing-payment-instruments-x402-reviews-override-ceiling-mcp-events-bench/report.json)
+
+
 
 
