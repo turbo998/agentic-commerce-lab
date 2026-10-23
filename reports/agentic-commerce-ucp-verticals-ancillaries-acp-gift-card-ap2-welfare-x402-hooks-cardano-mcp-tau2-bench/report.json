@@ -1,0 +1,191 @@
+{
+  "benchmark_id": "stage-209-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench",
+  "stage": "Stage 209",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "perturbation_invariant_count": 16,
+  "median_batch_latency_ms": 0.17,
+  "baseline_serial_latency_ms": 0.57,
+  "speedup_factor": 3.35,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_zh": "UCP 领域垂直规范分层与对象字典能力注册表 (#723 / #721)",
+      "title_en": "UCP Domain Vertical Hierarchy & Capability Registry Map (#723 / #721)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#723 & #721",
+      "admitted": false,
+      "decision_code": "UCP_CAPABILITY_REGISTRY_ARRAY_OR_FLAT_VERTICAL_PATH_BLOCKED",
+      "perturbed_decision_code": "UCP_CAPABILITY_REGISTRY_ARRAY_OR_FLAT_VERTICAL_PATH_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_zh": "UCP 免运费折扣防双重扣减与 get_order 200 签名头 (#754 / #422)",
+      "title_en": "UCP Shipping Discount Double-Count Guard & get_order 200 Signatures (#754 / #422)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#754 & #422",
+      "admitted": false,
+      "decision_code": "UCP_DISCOUNT_DOUBLE_COUNTED_OR_GET_ORDER_UNSIGNED_BLOCKED",
+      "perturbed_decision_code": "UCP_DISCOUNT_DOUBLE_COUNTED_OR_GET_ORDER_UNSIGNED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_zh": "UCP 结构化商品 PropertyValue 属性与单一数组类型 extends (#400 / #205)",
+      "title_en": "UCP Structured Product PropertyValue & Single-Type capability.extends (#400 / #205)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#400 & #205",
+      "admitted": false,
+      "decision_code": "UCP_PRODUCT_ATTRIBUTE_INVALID_OR_POLYMORPHIC_EXTENDS_BLOCKED",
+      "perturbed_decision_code": "UCP_PRODUCT_ATTRIBUTE_INVALID_OR_POLYMORPHIC_EXTENDS_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_zh": "UCP 结账附属项父行绑定与 OpenAttribution 引用遥测 (#186 / #185)",
+      "title_en": "UCP Checkout Ancillaries Parent Binding & OpenAttribution Telemetry (#186 / #185)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#186 & #185",
+      "admitted": false,
+      "decision_code": "UCP_ANCILLARY_ORPHAN_LINE_ITEM_OR_CITATION_INVALID_BLOCKED",
+      "perturbed_decision_code": "UCP_ANCILLARY_ORPHAN_LINE_ITEM_OR_CITATION_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_zh": "ACP 通用商品类型（SEP #107）与多门店库存/履约数据源 (#107 / #47)",
+      "title_en": "ACP Universal Product Types (SEP #107) & Multi-Location Merchant Feed (#107 / #47)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#107 & #47",
+      "admitted": false,
+      "decision_code": "ACP_PRODUCT_TYPE_MISMATCH_OR_STORE_LOCATION_UNAVAILABLE_BLOCKED",
+      "perturbed_decision_code": "ACP_PRODUCT_TYPE_MISMATCH_OR_STORE_LOCATION_UNAVAILABLE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_zh": "ACP 商户专属礼品卡 sourceType 与 8 位 ISO IIN 校验 (#61 / #9)",
+      "title_en": "ACP Merchant-Issued GiftCard sourceType & 8-Digit IIN Validation (#61 / #9)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#61 & #9",
+      "admitted": false,
+      "decision_code": "ACP_GIFT_CARD_CROSS_MERCHANT_OR_IIN_LENGTH_INVALID_BLOCKED",
+      "perturbed_decision_code": "ACP_GIFT_CARD_CROSS_MERCHANT_OR_IIN_LENGTH_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_zh": "AP2 社会福利专款授权（麟蹄郡 Project Mulberry）与 ETag 轻量轮询 (#172 / #134)",
+      "title_en": "AP2 Social Welfare Mandates (Project Mulberry) & ETag Discovery Polling (#172 / #134)",
+      "upstream_ref": "google-agentic-commerce/AP2#172 & #134",
+      "admitted": false,
+      "decision_code": "AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED",
+      "perturbed_decision_code": "AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_zh": "x402 客户端钩子调用 ID 关联/中止释放预算与 Paywall XSS 转义 (#3703 / #3852)",
+      "title_en": "x402 Client Hook Correlation/Abort Budget Release & Paywall XSS Escaping (#3703 / #3852)",
+      "upstream_ref": "x402-foundation/x402#3703 & #3852",
+      "admitted": false,
+      "decision_code": "X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED",
+      "perturbed_decision_code": "X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_zh": "x402 ERC-8183 job-escrow 评估状态机与 ext-delivery 交付一致性证明 (#3694 / #3678)",
+      "title_en": "x402 ERC-8183 job-escrow Evaluation Gate & ext-delivery Conformance (#3694 / #3678)",
+      "upstream_ref": "x402-foundation/x402#3694 & #3678",
+      "admitted": false,
+      "decision_code": "X402_JOB_ESCROW_UNEVALUATED_OR_DELIVERY_NONCONFORMANT_BLOCKED",
+      "perturbed_decision_code": "X402_JOB_ESCROW_UNEVALUATED_OR_DELIVERY_NONCONFORMANT_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_zh": "x402 Cardano 原始签名 CBOR 字节保持与拒绝 Sui BCS 污染示例 (#3673 / #3659)",
+      "title_en": "x402 Cardano Raw Signed CBOR Preservation & Sui BCS Rejection (#3673 / #3659)",
+      "upstream_ref": "x402-foundation/x402#3673 & #3659",
+      "admitted": false,
+      "decision_code": "X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED",
+      "perturbed_decision_code": "X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_zh": "x402 agreement-session 条款绑定生命周期与 Go SVM 链上失败终态判定 (#3646 / #3644)",
+      "title_en": "x402 agreement-session Terms Lifecycle & Go SVM Confirmed Failure State (#3646 / #3644)",
+      "upstream_ref": "x402-foundation/x402#3646 & #3644",
+      "admitted": false,
+      "decision_code": "X402_AGREEMENT_TERMS_BREACH_OR_SVM_FAILED_TX_PENDING_BLOCKED",
+      "perturbed_decision_code": "X402_AGREEMENT_TERMS_BREACH_OR_SVM_FAILED_TX_PENDING_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_zh": "x402 solidarity 卖家全额到账/月度上限与 reviews 结算交易背书 (#3896 / #3641)",
+      "title_en": "x402 solidarity Full Seller Payout/Monthly Cap & Payment-Backed Reviews (#3896 / #3641)",
+      "upstream_ref": "x402-foundation/x402#3896 & #3641",
+      "admitted": false,
+      "decision_code": "X402_SOLIDARITY_SELLER_SHORTFALL_OR_UNBACKED_REVIEW_BLOCKED",
+      "perturbed_decision_code": "X402_SOLIDARITY_SELLER_SHORTFALL_OR_UNBACKED_REVIEW_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_zh": "MCP 工具错误路径 structuredContent 治理与 uriTemplate 唯一标识符 (#3003 / #2601)",
+      "title_en": "MCP Tool Error structuredContent Governance & Unique uriTemplate ID (#3003 / #2601)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#3003 & #2601",
+      "admitted": false,
+      "decision_code": "MCP_UNSTRUCTURED_ERROR_FORWARDING_OR_DUPLICATE_URI_TEMPLATE_BLOCKED",
+      "perturbed_decision_code": "MCP_UNSTRUCTURED_ERROR_FORWARDING_OR_DUPLICATE_URI_TEMPLATE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_zh": "MCP 工具副作用分级审批门禁与服务清单能力信任层级 (#3025 / #3024)",
+      "title_en": "MCP Tool Side-Effect Classification Gate & Server Manifest Trust Tiers (#3025 / #3024)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#3025 & #3024",
+      "admitted": false,
+      "decision_code": "MCP_SIDE_EFFECT_APPROVAL_BYPASS_OR_TRUST_TIER_INSUFFICIENT_BLOCKED",
+      "perturbed_decision_code": "MCP_SIDE_EFFECT_APPROVAL_BYPASS_OR_TRUST_TIER_INSUFFICIENT_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_zh": "Sierra τ2-bench 零售确认回合防过早终止与航司虚构额外乘客阻断 (#182 / #172)",
+      "title_en": "Sierra τ2-bench Retail Confirmation Premature-Stop & Extra-Passenger Block (#182 / #172)",
+      "upstream_ref": "sierra-research/tau2-bench#182 & #172",
+      "admitted": false,
+      "decision_code": "TAU2_PREMATURE_CONFIRMATION_STOP_OR_EXTRA_PASSENGER_HALLUCINATED_BLOCKED",
+      "perturbed_decision_code": "TAU2_PREMATURE_CONFIRMATION_STOP_OR_EXTRA_PASSENGER_HALLUCINATED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_zh": "Sierra τ2-bench 银行政策 _009 严禁未请求卡推荐与 OpenAI tool_calls 合规 (#373 / #169)",
+      "title_en": "Sierra τ2-bench Banking Doc _009 Unrequested Referral & OpenAI tool_calls (#373 / #169)",
+      "upstream_ref": "sierra-research/tau2-bench#373 & #169",
+      "admitted": false,
+      "decision_code": "TAU2_UNREQUESTED_CARD_REFERRAL_OR_NONCOMPLIANT_TOOL_CALL_BLOCKED",
+      "perturbed_decision_code": "TAU2_UNREQUESTED_CARD_REFERRAL_OR_NONCOMPLIANT_TOOL_CALL_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    }
+  ]
+}

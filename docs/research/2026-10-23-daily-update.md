@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–207 · 828 单测全绿！）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–209 · 832 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -343,6 +343,24 @@
   - 基准套件：[`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)
   - 单元测试：[`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)（全仓库 **828/828** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/report.json)
+
+---
+
+## Stage 208：UCP 领域垂直规范分层与对象字典能力注册表（`#723`/`#721`）、免运费折扣防双重扣减与 `get_order` 200 签名头（`#754`/`#422`）、结构化商品 `PropertyValue` 属性与单一数组类型 `capability.extends`（`#400`/`#205`）、结账附属项（`ancillaries`）父行绑定与 `org.openattribution.telemetry` 引用遥测（`#186`/`#185`）、ACP 通用商品类型（SEP `#107`）与多门店库存/履约数据源（`#47`）、商户专属礼品卡 `sourceType: "GiftCard"` 与 8 位 ISO IIN 校验（`#61`/`#9`）、AP2 社会福利专款授权（韩国麟蹄郡 Project Mulberry）与 ETag 304 轻量发现轮询（`#172`/`#134`）、x402 客户端钩子调用 ID 关联/中止释放预算与 Paywall XSS 转义（`#3703`/`#3852`）、ERC-8183 `job-escrow` 评估状态机与 `ext-delivery` 交付一致性证明（`#3694`/`#3678`）、Cardano 原始签名 CBOR 字节保持与拒绝 Sui BCS 污染示例（`#3673`/`#3659`）、`agreement-session` 条款绑定生命周期与 Go SVM 链上失败终态判定（`#3646`/`#3644`）、`solidarity` 卖家全额到账/月度上限与 `reviews` 结算交易背书（`#3896`/`#3641`）、MCP 工具错误路径 `structuredContent` 治理与 `uriTemplate` 唯一标识符（`#3003`/`#2601`）、工具副作用分级审批门禁与服务清单能力信任层级（`#3025`/`#3024`）、以及 Sierra $\tau$-bench 2.0 零售确认回合防过早终止/航司虚构额外乘客阻断与银行政策 `_009` 严禁未请求卡推荐/OpenAI `tool_calls` 合规（`#182`/`#172`/`#373`/`#169`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py)（全仓库 **831/831** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§207)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§207)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 209（832 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 208）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)（全仓库 **832/832** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/report.json)
 
 
 

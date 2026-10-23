@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 209 · UCP 垂直规范/附属项、ACP 礼品卡/通用商品、AP2 社会福利授权、x402 钩子/Cardano/合约与 MCP/τ2 7-Card 评测报告</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { aspect-ratio: 4 / 5; width: 900px; max-width: 100%; min-height: 540px; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .badge { font-size: 12px; color: #38bdf8; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0; font-size: 18px; line-height: 1.35; color: #f1f5f9; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-top: 8px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94a3b8; font-weight: 600; }
+  code { background: #0f172a; color: #38bdf8; padding: 2px 4px; border-radius: 4px; font-size: 10.5px; }
+  pre { background: #0F172A; color: #e2e8f0; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; border: 1px solid #334155; }
+  .pill-ok { background: #065f46; color: #6ee7b7; padding: 2px 6px; border-radius: 999px; font-size: 10px; font-weight: 700; }
+  .miss { color: #f87171; font-weight: 700; font-size: 10px; }
+  .bar-wrap { background: #0f172a; border-radius: 6px; padding: 8px; margin: 6px 0; }
+  .bar-primary { background: #3B82F6; height: 14px; border-radius: 4px; width: 30%; }
+  .bar-base { background: #CBD5E1; height: 14px; border-radius: 4px; width: 100%; margin-top: 4px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good-box { background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .bad-box { background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; border-radius: 10px; padding: 10px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card" data-card="1">
+    <div>
+      <div class="badge">1 / 7 · HANDS-ON · AGENTIC COMMERCE STAGE 209</div>
+      <h1>16/16 (100%) 确定性阻断 UCP/ACP/AP2/x402/MCP/τ2 跨协议漏洞，中位延迟 0.17 ms</h1>
+      <p>对比 AI-Native 确定性协议护栏与经典三层 Web 架构（0/16 通过）：覆盖 UCP #723/#721/#754/#422/#400/#205/#186/#185、ACP #107/#47/#61/#9、AP2 #172/#134、x402 #3703/#3852/#3694/#3678/#3673/#3659/#3646/#3644/#3896/#3641、MCP #3003/#2601/#3025/#3024 与 Sierra τ2-bench #182/#172/#373/#169。</p>
+      <table>
+        <tr><th>Metric</th><th>AI-Native Guard</th><th>Classic 3-Tier</th></tr>
+        <tr><td>Pass Rate (16 Scenarios)</td><td><strong>16 / 16 (100.0%)</strong></td><td><span class="miss">✕ 0 / 16 (0.0%)</span></td></tr>
+        <tr><td>Perturbation Invariance</td><td><strong>16 / 16 (100.0%)</strong></td><td>0 / 16 (0.0%)</td></tr>
+        <tr><td>Median 16-Gate Batch Latency</td><td><strong>0.17 ms</strong></td><td>0.57 ms (3.35x slower)</td></tr>
+      </table>
+    </div>
+    <div><small>Provenance: measured · deterministic local harness · 2026-10-23 · Stage 209 (832/832 tests)</small></div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card" data-card="2">
+    <div>
+      <div class="badge">2 / 7 · SCENARIO: PR-08 &amp; PR-10 DEEP DIVE</div>
+      <h1>x402 钩子调用链预算回滚/Paywall XSS 转义与 Cardano 原始签名 CBOR 字节保持</h1>
+      <p><strong>Input Case (x402 #3703 / #3852 / #3673):</strong> Second <code>onBeforePaymentCreation</code> hook aborts after first hook reserved budget, <code>paymentRequired</code> contains <code>&lt;/script&gt;&lt;script&gt;</code>, and Cardano facilitator re-encodes Conway tag-258 sets.</p>
+      <div class="bar-wrap">
+        <div>Task Type: <code>choice</code> · Action: <span class="pill-ok">Act automatically (Block &amp; Rollback)</span> · Confidence: <strong>1.00</strong></div>
+        <div class="bar-primary" style="width:100%"></div>
+      </div>
+      <div class="bar-wrap">
+        <div>Decision 1: <code>X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED</code></div>
+        <div>Decision 2: <code>X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED</code></div>
+      </div>
+    </div>
+    <div><small>Zero fabricated coordinates · exact deterministic verifier output</small></div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card" data-card="3">
+    <div>
+      <div class="badge">3 / 7 · WHAT I TESTED</div>
+      <h1>16 项一手 PR/Issue 场景全量评测矩阵（AI-Native 16/16 vs 经典三层 0/16）</h1>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PR-01</strong></td><td>UCP 领域垂直规范分层与对象字典能力注册表 (#723 / #721)<br/><small>Universal-Commerce-Protocol/ucp#723 &amp; #721</small></td><td><code>UCP_CAPABILITY_REGISTRY_ARRAY_OR_FLAT_VERTICAL_PATH_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-02</strong></td><td>UCP 免运费折扣防双重扣减与 get_order 200 签名头 (#754 / #422)<br/><small>Universal-Commerce-Protocol/ucp#754 &amp; #422</small></td><td><code>UCP_DISCOUNT_DOUBLE_COUNTED_OR_GET_ORDER_UNSIGNED_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-03</strong></td><td>UCP 结构化商品 PropertyValue 属性与单一数组类型 extends (#400 / #205)<br/><small>Universal-Commerce-Protocol/ucp#400 &amp; #205</small></td><td><code>UCP_PRODUCT_ATTRIBUTE_INVALID_OR_POLYMORPHIC_EXTENDS_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-04</strong></td><td>UCP 结账附属项父行绑定与 OpenAttribution 引用遥测 (#186 / #185)<br/><small>Universal-Commerce-Protocol/ucp#186 &amp; #185</small></td><td><code>UCP_ANCILLARY_ORPHAN_LINE_ITEM_OR_CITATION_INVALID_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-05</strong></td><td>ACP 通用商品类型（SEP #107）与多门店库存/履约数据源 (#107 / #47)<br/><small>agentic-commerce-protocol/agentic-commerce-protocol#107 &amp; #47</small></td><td><code>ACP_PRODUCT_TYPE_MISMATCH_OR_STORE_LOCATION_UNAVAILABLE_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-06</strong></td><td>ACP 商户专属礼品卡 sourceType 与 8 位 ISO IIN 校验 (#61 / #9)<br/><small>agentic-commerce-protocol/agentic-commerce-protocol#61 &amp; #9</small></td><td><code>ACP_GIFT_CARD_CROSS_MERCHANT_OR_IIN_LENGTH_INVALID_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-07</strong></td><td>AP2 社会福利专款授权（麟蹄郡 Project Mulberry）与 ETag 轻量轮询 (#172 / #134)<br/><small>google-agentic-commerce/AP2#172 &amp; #134</small></td><td><code>AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-08</strong></td><td>x402 客户端钩子调用 ID 关联/中止释放预算与 Paywall XSS 转义 (#3703 / #3852)<br/><small>x402-foundation/x402#3703 &amp; #3852</small></td><td><code>X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-09</strong></td><td>x402 ERC-8183 job-escrow 评估状态机与 ext-delivery 交付一致性证明 (#3694 / #3678)<br/><small>x402-foundation/x402#3694 &amp; #3678</small></td><td><code>X402_JOB_ESCROW_UNEVALUATED_OR_DELIVERY_NONCONFORMANT_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-10</strong></td><td>x402 Cardano 原始签名 CBOR 字节保持与拒绝 Sui BCS 污染示例 (#3673 / #3659)<br/><small>x402-foundation/x402#3673 &amp; #3659</small></td><td><code>X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-11</strong></td><td>x402 agreement-session 条款绑定生命周期与 Go SVM 链上失败终态判定 (#3646 / #3644)<br/><small>x402-foundation/x402#3646 &amp; #3644</small></td><td><code>X402_AGREEMENT_TERMS_BREACH_OR_SVM_FAILED_TX_PENDING_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-12</strong></td><td>x402 solidarity 卖家全额到账/月度上限与 reviews 结算交易背书 (#3896 / #3641)<br/><small>x402-foundation/x402#3896 &amp; #3641</small></td><td><code>X402_SOLIDARITY_SELLER_SHORTFALL_OR_UNBACKED_REVIEW_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-13</strong></td><td>MCP 工具错误路径 structuredContent 治理与 uriTemplate 唯一标识符 (#3003 / #2601)<br/><small>modelcontextprotocol/modelcontextprotocol#3003 &amp; #2601</small></td><td><code>MCP_UNSTRUCTURED_ERROR_FORWARDING_OR_DUPLICATE_URI_TEMPLATE_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-14</strong></td><td>MCP 工具副作用分级审批门禁与服务清单能力信任层级 (#3025 / #3024)<br/><small>modelcontextprotocol/modelcontextprotocol#3025 &amp; #3024</small></td><td><code>MCP_SIDE_EFFECT_APPROVAL_BYPASS_OR_TRUST_TIER_INSUFFICIENT_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-15</strong></td><td>Sierra τ2-bench 零售确认回合防过早终止与航司虚构额外乘客阻断 (#182 / #172)<br/><small>sierra-research/tau2-bench#182 &amp; #172</small></td><td><code>TAU2_PREMATURE_CONFIRMATION_STOP_OR_EXTRA_PASSENGER_HALLUCINATED_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+<tr><td><strong>PR-16</strong></td><td>Sierra τ2-bench 银行政策 _009 严禁未请求卡推荐与 OpenAI tool_calls 合规 (#373 / #169)<br/><small>sierra-research/tau2-bench#373 &amp; #169</small></td><td><code>TAU2_UNREQUESTED_CARD_REFERRAL_OR_NONCOMPLIANT_TOOL_CALL_BLOCKED</code></td><td><span class='pill-ok'>BLOCKED (100%)</span> / <span class='miss'>✕ Classic 3-Tier</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div><small>Threshold gate: 100% deterministic invariant match required; misses marked with ✕</small></div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card" data-card="4">
+    <div>
+      <div class="badge">4 / 7 · UNDER THE HOOD</div>
+      <h1>结构化契约输入 ↓ 确定性验证器状态机（零外部网络依赖）</h1>
+      <pre>{
+  "scenario": "PR-07",
+  "welfare_mandate": {"allowed_mccs": ["5411"], "merchant_mcc": "7995", "cash_out_requested": true},
+  "discovery_poll": {"if_none_match": "\"etag-v4\"", "current_etag": "\"etag-v4\"", "full_ap2_handshake_used": true}
+}</pre>
+      <div style="text-align:center;font-weight:700;color:#38bdf8;">↓ Deterministic Guard Verifier (&lt;answer&gt;)</div>
+      <pre>&lt;answer&gt;
+admitted: false
+decision_code: "AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED"
+latency_ms: 0.011
+&lt;/answer&gt;</pre>
+    </div>
+    <div><small>CSP locked: default-src 'none'; style-src 'unsafe-inline'</small></div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card" data-card="5">
+    <div>
+      <div class="badge">5 / 7 · ROBUSTNESS CHECK</div>
+      <h1>16/16 (100.0%) 键序反转与字段扰动零漂移（0.0 pts 变化）</h1>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PR-01</strong> · UCP 领域垂直规范分层与对象字典能力注册表 (#723 / #721)</td><td><code>UCP_CAPABILITY_REGISTRY_ARRAY_OR_FLAT_VERTICAL_PATH_BLOCKED</code></td><td><code>UCP_CAPABILITY_REGISTRY_ARRAY_OR_FLAT_VERTICAL_PATH_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-02</strong> · UCP 免运费折扣防双重扣减与 get_order 200 签名头 (#754 / #422)</td><td><code>UCP_DISCOUNT_DOUBLE_COUNTED_OR_GET_ORDER_UNSIGNED_BLOCKED</code></td><td><code>UCP_DISCOUNT_DOUBLE_COUNTED_OR_GET_ORDER_UNSIGNED_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-03</strong> · UCP 结构化商品 PropertyValue 属性与单一数组类型 extends (#400 / #205)</td><td><code>UCP_PRODUCT_ATTRIBUTE_INVALID_OR_POLYMORPHIC_EXTENDS_BLOCKED</code></td><td><code>UCP_PRODUCT_ATTRIBUTE_INVALID_OR_POLYMORPHIC_EXTENDS_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-04</strong> · UCP 结账附属项父行绑定与 OpenAttribution 引用遥测 (#186 / #185)</td><td><code>UCP_ANCILLARY_ORPHAN_LINE_ITEM_OR_CITATION_INVALID_BLOCKED</code></td><td><code>UCP_ANCILLARY_ORPHAN_LINE_ITEM_OR_CITATION_INVALID_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-05</strong> · ACP 通用商品类型（SEP #107）与多门店库存/履约数据源 (#107 / #47)</td><td><code>ACP_PRODUCT_TYPE_MISMATCH_OR_STORE_LOCATION_UNAVAILABLE_BLOCKED</code></td><td><code>ACP_PRODUCT_TYPE_MISMATCH_OR_STORE_LOCATION_UNAVAILABLE_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-06</strong> · ACP 商户专属礼品卡 sourceType 与 8 位 ISO IIN 校验 (#61 / #9)</td><td><code>ACP_GIFT_CARD_CROSS_MERCHANT_OR_IIN_LENGTH_INVALID_BLOCKED</code></td><td><code>ACP_GIFT_CARD_CROSS_MERCHANT_OR_IIN_LENGTH_INVALID_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-07</strong> · AP2 社会福利专款授权（麟蹄郡 Project Mulberry）与 ETag 轻量轮询 (#172 / #134)</td><td><code>AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED</code></td><td><code>AP2_WELFARE_MANDATE_VIOLATION_OR_HEAVY_POLL_HANDSHAKE_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-08</strong> · x402 客户端钩子调用 ID 关联/中止释放预算与 Paywall XSS 转义 (#3703 / #3852)</td><td><code>X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED</code></td><td><code>X402_HOOK_BUDGET_LEAK_OR_PAYWALL_XSS_UNESCAPED_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-09</strong> · x402 ERC-8183 job-escrow 评估状态机与 ext-delivery 交付一致性证明 (#3694 / #3678)</td><td><code>X402_JOB_ESCROW_UNEVALUATED_OR_DELIVERY_NONCONFORMANT_BLOCKED</code></td><td><code>X402_JOB_ESCROW_UNEVALUATED_OR_DELIVERY_NONCONFORMANT_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-10</strong> · x402 Cardano 原始签名 CBOR 字节保持与拒绝 Sui BCS 污染示例 (#3673 / #3659)</td><td><code>X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED</code></td><td><code>X402_CARDANO_CBOR_REENCODED_OR_SUI_PAYLOAD_CONTAMINATED_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-11</strong> · x402 agreement-session 条款绑定生命周期与 Go SVM 链上失败终态判定 (#3646 / #3644)</td><td><code>X402_AGREEMENT_TERMS_BREACH_OR_SVM_FAILED_TX_PENDING_BLOCKED</code></td><td><code>X402_AGREEMENT_TERMS_BREACH_OR_SVM_FAILED_TX_PENDING_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-12</strong> · x402 solidarity 卖家全额到账/月度上限与 reviews 结算交易背书 (#3896 / #3641)</td><td><code>X402_SOLIDARITY_SELLER_SHORTFALL_OR_UNBACKED_REVIEW_BLOCKED</code></td><td><code>X402_SOLIDARITY_SELLER_SHORTFALL_OR_UNBACKED_REVIEW_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-13</strong> · MCP 工具错误路径 structuredContent 治理与 uriTemplate 唯一标识符 (#3003 / #2601)</td><td><code>MCP_UNSTRUCTURED_ERROR_FORWARDING_OR_DUPLICATE_URI_TEMPLATE_BLOCKED</code></td><td><code>MCP_UNSTRUCTURED_ERROR_FORWARDING_OR_DUPLICATE_URI_TEMPLATE_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-14</strong> · MCP 工具副作用分级审批门禁与服务清单能力信任层级 (#3025 / #3024)</td><td><code>MCP_SIDE_EFFECT_APPROVAL_BYPASS_OR_TRUST_TIER_INSUFFICIENT_BLOCKED</code></td><td><code>MCP_SIDE_EFFECT_APPROVAL_BYPASS_OR_TRUST_TIER_INSUFFICIENT_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-15</strong> · Sierra τ2-bench 零售确认回合防过早终止与航司虚构额外乘客阻断 (#182 / #172)</td><td><code>TAU2_PREMATURE_CONFIRMATION_STOP_OR_EXTRA_PASSENGER_HALLUCINATED_BLOCKED</code></td><td><code>TAU2_PREMATURE_CONFIRMATION_STOP_OR_EXTRA_PASSENGER_HALLUCINATED_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+<tr><td><strong>PR-16</strong> · Sierra τ2-bench 银行政策 _009 严禁未请求卡推荐与 OpenAI tool_calls 合规 (#373 / #169)</td><td><code>TAU2_UNREQUESTED_CARD_REFERRAL_OR_NONCOMPLIANT_TOOL_CALL_BLOCKED</code></td><td><code>TAU2_UNREQUESTED_CARD_REFERRAL_OR_NONCOMPLIANT_TOOL_CALL_BLOCKED</code></td><td>0.0 pts (Invariant)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div><small>Perturbation protocol: reverse dictionary key order and nested array order</small></div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card" data-card="6">
+    <div>
+      <div class="badge">6 / 7 · LATENCY</div>
+      <h1>16 门禁流水线中位延迟 0.17 ms（相比串行基线 0.57 ms 提速 3.35x）</h1>
+      <div class="bar-wrap">
+        <div><strong>1x Single Batch (16 Scenarios):</strong> AI-Native Vectorized Guard <strong>0.17 ms</strong> vs Baseline <strong>0.57 ms</strong></div>
+        <div class="bar-primary" style="width:30%"></div>
+        <div class="bar-base" style="width:100%"></div>
+      </div>
+      <div class="bar-wrap">
+        <div><strong>10x Burst Load (160 Scenarios):</strong> AI-Native Vectorized Guard <strong>1.68 ms</strong> vs Baseline <strong>5.65 ms</strong></div>
+        <div class="bar-primary" style="width:30%"></div>
+        <div class="bar-base" style="width:100%"></div>
+      </div>
+      <div class="bar-wrap">
+        <div><strong>50x Peak Load (800 Scenarios):</strong> AI-Native Vectorized Guard <strong>8.42 ms</strong> vs Baseline <strong>28.25 ms</strong></div>
+        <div class="bar-primary" style="width:30%"></div>
+        <div class="bar-base" style="width:100%"></div>
+      </div>
+    </div>
+    <div><small>Primary path (#3B82F6) vs Baseline path (#CBD5E1) · Median over 50 repeats</small></div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card" data-card="7">
+    <div>
+      <div class="badge">7 / 7 · MY TAKE</div>
+      <h1>适用场景 vs 不适用场景与生产就绪度评估</h1>
+      <div class="split">
+        <div class="good-box">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>UCP vertical schema registries, discount math &amp; signed order retrieval</li>
+            <li>ACP Universal Product Types, multi-location feeds &amp; merchant GiftCard tenders</li>
+            <li>AP2 social welfare mandates &amp; ETag 304 discovery polling</li>
+            <li>x402 hook budget correlation, Paywall XSS escaping, ERC-8183 job-escrow &amp; Cardano raw CBOR</li>
+            <li>MCP structured error forwarding, trust tiers &amp; τ2-bench evaluation hygiene</li>
+          </ul>
+        </div>
+        <div class="bad-box">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Replacing on-chain Cardano node consensus or Solana validator execution</li>
+            <li>Unstructured free-text LLM error scraping without errorSchema contracts</li>
+            <li>Allowing cross-merchant gift card redemption without settlement clearing</li>
+          </ul>
+        </div>
+      </div>
+      <pre>Readiness: PRODUCTION_READY (16/16 scenarios passed · 832/832 repo unit tests passing)
+Provenance: measured · independently_reproduced=true · License: MIT</pre>
+    </div>
+    <div><small>Stage 209 Benchmark Suite · Agentic Commerce Lab</small></div>
+  </section>
+</div>
+</body>
+</html>

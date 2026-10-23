@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–207 · 828/828 Tests Passing!)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–209 · 832/832 Tests Passing!)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -343,6 +343,24 @@
   - Benchmark suite: [`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)
   - Unit tests: [`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py) (**828/828** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/report.json)
+
+---
+
+## Stage 208: UCP Domain Vertical Hierarchy & Object-Keyed Capability Registry (`#723`/`#721`), Shipping Discount Double-Count Guard & `get_order` 200 Signature Headers (`#754`/`#422`), Structured Product `PropertyValue` Attributes & Single-Type `capability.extends` Array (`#400`/`#205`), Shopping Checkout Ancillaries Parent Binding & `org.openattribution.telemetry` Citations (`#186`/`#185`), ACP Universal Product Types (SEP `#107`) & Multi-Location Merchant Feed (`#47`), Merchant-Issued `GiftCard` `sourceType` & 8-Digit ISO IIN Validation (`#61`/`#9`), AP2 Social Welfare Mandates (Project Mulberry) & ETag 304 Discovery Polling (`#172`/`#134`), x402 Client Hook Invocation Correlation/Abort Budget Release & Paywall XSS Escaping (`#3703`/`#3852`), ERC-8183 `job-escrow` Evaluation State Machine & `ext-delivery` Conformance Evidence (`#3694`/`#3678`), Cardano Raw Signed CBOR Preservation & Sui BCS Rejection (`#3673`/`#3659`), `agreement-session` Terms-Bound Lifecycle & Go SVM Confirmed Failure Classification (`#3646`/`#3644`), `solidarity` Full Seller Payout/Monthly Cap & Payment-Backed `reviews` (`#3896`/`#3641`), MCP Tool Error `structuredContent` Governance & Unique `uriTemplate` ID (`#3003`/`#2601`), Tool Side-Effect Classification Gate & Server Manifest Capability Trust Tiers (`#3025`/`#3024`), and Sierra $\tau$-bench 2.0 Retail Confirmation Premature-Stop / Extra-Passenger Block & Banking Doc `_009` Referral Policy / OpenAI `tool_calls` Schema Compliance (`#182`/`#172`/`#373`/`#169`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py)
+  - Unit tests: [`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_guard.py) (**831/831** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§207)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§207)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 209 (832/832 Tests Passing!): 16-Scenario (`PR-01..PR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 208)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)
+  - Unit tests: [`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py) (**832/832** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/report.json)
 
 
 

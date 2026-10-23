@@ -2478,6 +2478,36 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../lab/ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py)、[`tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py`](../../tests/test_ucp_fulfillment_events_constraints_acp_attribution_ttl_x402_pod_ata_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-fulfillment-events-constraints-acp-attribution-ttl-x402-pod-ata-mcp-tau2-bench/index.en.html)）。
 
+---
+
+## 207. Stage 208 深度剖析（`2026-10-23`）：UCP 领域垂直规范分层与对象字典能力注册表（`#723`/`#721`）、免运费折扣防双重扣减与 `get_order` 200 签名头（`#754`/`#422`）、结构化商品 `PropertyValue` 属性与单一数组类型 `capability.extends`（`#400`/`#205`）、结账附属项父行绑定与 `org.openattribution.telemetry` 引用遥测（`#186`/`#185`）、ACP 通用商品类型（SEP `#107`）与多门店库存/履约数据源（`#47`）、商户专属礼品卡 `sourceType: "GiftCard"` 与 8 位 ISO IIN 校验（`#61`/`#9`）、AP2 社会福利专款授权（韩国麟蹄郡 Project Mulberry）与 ETag 304 轻量发现轮询（`#172`/`#134`）、x402 客户端钩子调用 ID 关联/中止释放预算与 Paywall XSS 转义（`#3703`/`#3852`）、ERC-8183 `job-escrow` 评估状态机与 `ext-delivery` 交付一致性证明（`#3694`/`#3678`）、Cardano 原始签名 CBOR 字节保持与拒绝 Sui BCS 污染示例（`#3673`/`#3659`）、`agreement-session` 条款绑定生命周期与 Go SVM 链上失败终态判定（`#3646`/`#3644`）、`solidarity` 卖家全额到账/月度上限与 `reviews` 结算交易背书（`#3896`/`#3641`）、MCP 工具错误路径 `structuredContent` 治理与 `uriTemplate` 唯一标识符（`#3003`/`#2601`）、工具副作用分级审批门禁与服务清单能力信任层级（`#3025`/`#3024`）及 Sierra $\tau$-bench 2.0 零售确认防过早终止/额外乘客阻断与银行政策 `_009` / OpenAI `tool_calls` 合规（`#182`/`#172`/`#373`/`#169`）
+
+### 207.1 UCP 垂直规范分层、免运费折扣守恒、附属项/归因遥测、ACP 通用商品/多门店/礼品卡与 AP2 社会福利授权（`UCP #723/#721/#754/#422/#400/#205/#186/#185`、`ACP #107/#47/#61/#9`、`AP2 #172/#134`）
+
+1. **UCP 领域垂直规范分层与对象字典能力注册表（`#723`/`#721`）、免运费折扣防双重扣减与 `get_order` 签名响应头（`#754`/`#422`）、结构化商品 `PropertyValue` 与单一数组类型 `extends`（`#400`/`#205`）及结账附属项与 `org.openattribution.telemetry`（`#186`/`#185`）**：
+   - `#723/#721`：将规范树按 `shopping/`、`payment/`、`common/` 垂直领域组织，并强制 `ucp.capabilities` 采用以反向域名为键的对象字典（而非旧数组格式）。
+   - `#754/#422`：当免运费折扣 `-D` 已计入 `discount` 时，`fulfillment` 总额必须保留原运费 `D` 以防双重扣减，并强制 `GET /orders/{id}` 200 响应包含 `Signature`、`Signature-Input`、`Content-Digest`。
+   - `#400/#205`：校验 `Product/Variant.attributes[]`（含 `numeric_value` 时必须提供 `unit`），并将 `capability.extends` 固定为单一字符串数组类型。
+   - `#186/#185`：强制结账附属项绑定有效的 `parent_line_item_id` 且必选 `regulatory_fee` 不可取消；校验 `org.openattribution.telemetry` 引用记录。
+2. **ACP 通用商品类型与多门店库存数据源（`#107`/`#47`）、商户专属礼品卡与 8 位 IIN（`#61`/`#9`）及 AP2 麟蹄郡社会福利授权与 ETag 轻量发现轮询（`#172`/`#134`）**：
+   - 校验 ACP SEP `#107` 通用商品类型与门店级库存/营业状态（`#47`）、SEP `#61` 商户专属 `GiftCard` 不可跨商户核销及 ISO/IEC 7812-1 6~8 位数字 `iin`（`#9`）。
+   - 执行 AP2 Project Mulberry（韩国麟蹄郡）社会福利专款授权（MCC 白名单、`kr-inje-gun` 地理围栏、禁提现、到期自动收回）及 `If-None-Match` -> `304 Not Modified` 轻量库存轮询（`#134`）。
+
+### 207.2 x402 钩子关联/Paywall XSS、ERC-8183 任务托管、Cardano 原始 CBOR、MCP 错误治理/信任层级与 Sierra $\tau$-bench 2.0 评测卫生（`x402 #3703/#3852/#3694/#3678/#3673/#3659/#3646/#3644/#3896/#3641`、`MCP #3003/#2601/#3025/#3024`、`tau2-bench #182/#172/#373/#169`）
+
+1. **x402 钩子调用关联/中止预算释放与 Paywall XSS 转义（`#3703`/`#3852`）、ERC-8183 `job-escrow` 与 `ext-delivery`（`#3694`/`#3678`）、Cardano 原始 CBOR 保持（`#3673`/`#3659`）、`agreement-session` 与 Go SVM 失败终态（`#3646`/`#3644`）及 `solidarity` 与 `reviews` 扩展（`#3896`/`#3641`）**：
+   - 为单次 `createPaymentPayload` 提供统一的 `invocationId` 并在后续 `before` 钩子中止时触发失败钩子释放已预留预算，对 `x402-paywall` 序列化 JSON 转义 `<`/`>`/`/` 防反射型 XSS；强制 `job-escrow`（ERC-8183）按评估结论放款/退款并核验 `ext-delivery` 哈希；禁止 Cardano 清算方解码重编码破坏 Conway tag-258 签名并拒绝 Sui BCS 示例；强制 `agreement-session` 条款哈希/累计上限并将 Go SVM `status.Err != nil` 的已确认交易标为 `settlement_failed`；保障 `solidarity` 卖家 100% 全额收款且 `reviews` 绑定真实结算交易哈希。
+2. **MCP 错误路径 `structuredContent` 与 `uriTemplate` 唯一键（`#3003`/`#2601`）、工具副作用分级与服务清单信任层级（`#3025`/`#3024`）及 Sierra $\tau$-bench 2.0 零售/航司/银行评测修复（`#182`/`#172`/`#373`/`#169`）**：
+   - 强制 `isError: true` 包含受模式约束的 `structuredContent` 且 `uriTemplate` 唯一；对不可逆写/外部执行工具实施信任层级与人工审批门禁；阻断 $\tau$-bench 零售模拟器在确认回合过早发送 `###STOP###`、阻断航司模拟器凭空编造额外乘客、禁止银行任务违反 `_009` 推荐未请求信用卡，并移除 `to_litellm_messages` 顶层非法 `name` 字段。
+
+---
+
+## 208. Stage 209 基准评测（`2026-10-23` · 832 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 208 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)、[`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.en.html)）。
+
 
 
 
