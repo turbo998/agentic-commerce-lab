@@ -2508,6 +2508,29 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)、[`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.en.html)）。
 
+---
+
+## 209. Stage 210 增量演进（`2026-10-23` · 210 阶段里程碑！）：UCP 批量目录发现/3DS2/行项目 ID、ACP 单数履约/x402、AP2 SEDI 监护、x402 Stellar/Bazaar/Kaspa 与 MCP/$\tau$-bench 2.0 确定性护栏
+
+### 209.1 UCP 批量目录发现与搜索/精确查找能力（`#682`/`#55`）、非对称签名与宿主委派 3DS2（`#591`/`#420`）、行项目 ID 分离与订单总额枚举（`#112`/`#63`）、ACP 废弃促销清理/版本快照（`#84`/`#81`）、3DS2 与 `x402` 支付方式（`#55`/`#40`）及 AP2 可验证凭证 Schema 与 SEDI/KERI 未成年监护（`#127`/`#43`）
+1. **UCP 批量商品目录发现与 `catalog.search`/`catalog.lookup`（`#682`/`#55`）**：校验 `dev.ucp.shopping.catalog.search`（非空 `query`、`1 <= page_size <= 250`）、`dev.ucp.shopping.catalog.lookup`（非空 `ids`）与 DWG 批量快照 `snapshot_id`，严禁回退至无结构网页爬虫（`web_scraping_fallback`）。
+2. **UCP 非对称密钥签名与宿主委派 3DS2 挑战流（`#591`/`#420`）**：拒绝 `HS256` 等对称共享密钥，强制要求 `ES256`/`ES384`/`ES512`/`EdDSA`/`RS256` + `jwks_kid`；强制 3DS2 挑战由 AI 宿主委派渲染（`delegated_to_host == True`），阻断商户注入式 iframe（`merchant_injected_iframe == False`）。
+3. **UCP 结账行 ID 与商品 ID 分离及订单 `TotalResponse.type` 枚举（`#112`/`#63`）**：强制 `line_item.id != line_item.item.id` 且各结账行 ID 唯一；强制订单总额 `type` 严格属于规范枚举（`items_discount`/`subtotal`/`discount`/`fulfillment`/`tax`/`fee`/`total`）。
+4. **ACP 单数 `SelectedFulfillmentOption` 命名与 `YYYY-MM-DD` 快照版本隔离（`#84`/`#81`）及 3DS2 / `x402` 支付方式（`#55`/`#40`）**：拦截已移除的 `AvailablePromotion` 和复数 `SelectedFulfillmentOptions`，禁止修改已封存 `YYYY-MM-DD` 版本目录；核验 ACP 3DS 2.x 挑战元数据及 `x402` 支付方式（`exact`/`upto`、CAIP-2 `network`、正整数 `max_amount_minor`）。
+5. **AP2 授权 VC JSON Schema 与 SEDI/KERI 未成年监护限额（`#127`/`#43`）**：强制 `IntentMandateCredential`/`CartMandateCredential` 携带 HTTPS `credentialSchema.id`，并校验监护人 KERI AID KEL 事件日志及 `ward_spend_minor <= guardian_cap_minor`。
+
+### 209.2 x402 结算覆盖上限/Axios 校验钩子（`#3334`/`#3330`）、Stellar 智能账户事件/赞助费/feeBumpSigner（`#3352`/`#3333`/`#3332`/`#3351`）、Switchboard SCITT/一致性配置（`#3381`/`#3396`）、Bazaar 索引预检（`#3677`/`#3638`）、Kaspa/BCH UTXO 守恒（`#3645`/`#3633`）及 MCP/$\tau$-bench 2.0 护栏
+1. **x402 结算覆盖上限、Stellar 智能账户与 Bazaar/UTXO 护栏**：强制 `settlePayment()` 动态覆盖金额 `<= authorized_max_amount_minor` 并启用 `@x402/axios` `validatePaidResponse`；强制 Stellar `areFeesSponsored: true`、兼容智能账户自定义事件并将 `feeBumpSigner` 纳入 `signingAddresses` 防自转耗尽；校验 `x402.agent-switchboard/v0` SCITT 透明回执、Bazaar 索引四要素预检及 Kaspa Sompi / BCH Satoshi UTXO 守恒。
+2. **MCP `SEP-2243` `-32020` / `subscriptions/listen` 信封（`#2991`/`#2989`）、`SEP-2188`/`2166`（`#2188`/`#2166`）及 Sierra $\tau$-bench 2.0 电信/航司评测修复（`#104`/`#81`/`#84`/`#43`）**：强制 `HeaderMismatch` 使用 `-32020` 并包裹 `SubscriptionsListenResultResponse`；校验 `notifications/elicitation/pending` 超时顺延与带外 HTTPS `httpUrl` 有效期；修正 $\tau$-bench 电信 `<= 2.0 GB` 加油上限语义、默认包含 `ACTION` 奖励基准、拦截航司 Task 7 不符合政策资格的退票预期并捕获 `agent_msg.validate()` 异常。
+
+---
+
+## 210. Stage 211 基准评测（`2026-10-23` · 210 阶段里程碑 & 836 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 210 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py)、[`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.en.html)）。
+
 
 
 

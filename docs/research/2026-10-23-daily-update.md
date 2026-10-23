@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–209 · 832 单测全绿！）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–211 · 210 阶段里程碑 & 836 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -361,6 +361,24 @@
   - 基准套件：[`lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../lab/ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)
   - 单元测试：[`tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py`](../../tests/test_ucp_verticals_ancillaries_acp_gift_card_ap2_welfare_x402_hooks_cardano_mcp_tau2_bench.py)（全仓库 **832/832** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-verticals-ancillaries-acp-gift-card-ap2-welfare-x402-hooks-cardano-mcp-tau2-bench/report.json)
+
+---
+
+## Stage 210（210 阶段里程碑！）：UCP 批量商品目录发现 DWG 与 `catalog.search`/`catalog.lookup` 能力（`#682`/`#55`）、非对称公私钥签名验证与宿主委派 3DS2 挑战流（`#591`/`#420`）、结账行项目 ID 与商品目录 ID 分离及订单 `TotalResponse.type` 枚举对齐（`#112`/`#63`）、ACP 废弃促销模式清理/单数 `SelectedFulfillmentOption` 与 `YYYY-MM-DD` 日期版本快照（`#84`/`#81`）、3DS 2.x 认证挑战流契约与 `x402` 支付方式绑定（`#55`/`#40`）、AP2 授权可验证凭证 JSON Schema 与 SEDI/KERI 未成年监护限额（`#127`/`#43`）、x402 `settlePayment()` 结算覆盖上限核验与 `@x402/axios` 付费响应校验钩子（`#3334`/`#3330`）、Stellar 智能账户限额诊断事件兼容与强制手续费赞助（`#3352`/`#3333`）、Stellar `feeBumpSigner` 安全集合保护与 SVM 算力单元上限策略（`#3332`/`#3351`）、`x402.agent-switchboard/v0` SCITT 透明回执与声明式端点一致性配置（`#3381`/`#3396`）、CDP Bazaar 静默索引阻断项预检（`#3677`/`#3638`）、Kaspa BlockDAG 与 Bitcoin Cash UTXO `exact` 结算守恒（`#3645`/`#3633`）、MCP `SEP-2243` `HeaderMismatch` `-32020` 错误码与 `subscriptions/listen` 响应信封（`#2991`/`#2989`）、`SEP-2188` 征询待定超时协调通知与 `SEP-2166` 带外 HTTPS 资源访问（`#2188`/`#2166`）、以及 Sierra $\tau$-bench 2.0 电信 `<= 2.0 GB` 流量加油上限语义与默认 `ACTION` 奖励基准（`#104`/`#81`）及航司 Task 7 退票政策资格校验与 `agent_msg.validate()` 异常捕获（`#84`/`#43`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_guard.py`](../../lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_guard.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_guard.py)（全仓库 **835/835** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§209)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§209)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 211（836 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 210 · 210 阶段里程碑！）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../lab/ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py`](../../tests/test_ucp_catalog_3ds2_acp_x402_ap2_sedi_x402_stellar_bazaar_mcp_tau2_bench.py)（全仓库 **836/836** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench/report.json)
 
 
 

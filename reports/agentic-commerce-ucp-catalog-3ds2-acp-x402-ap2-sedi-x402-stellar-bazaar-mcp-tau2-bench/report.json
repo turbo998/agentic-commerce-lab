@@ -1,0 +1,191 @@
+{
+  "benchmark_id": "stage-211-ucp-catalog-3ds2-acp-x402-ap2-sedi-x402-stellar-bazaar-mcp-tau2-bench",
+  "stage": "Stage 211",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "perturbation_invariant_count": 16,
+  "median_batch_latency_ms": 0.17,
+  "baseline_serial_latency_ms": 0.57,
+  "speedup_factor": 3.35,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_zh": "UCP 批量商品目录发现 DWG 与 catalog.search / lookup 能力 (#682 / #55)",
+      "title_en": "UCP Bulk Product Discovery DWG & catalog.search / lookup Capabilities (#682 / #55)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#682 & #55",
+      "admitted": false,
+      "decision_code": "UCP_CATALOG_DISCOVERY_OR_SEARCH_LOOKUP_INVALID_BLOCKED",
+      "perturbed_decision_code": "UCP_CATALOG_DISCOVERY_OR_SEARCH_LOOKUP_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_zh": "UCP 非对称公私钥签名验证与宿主委派 3DS2 挑战流 (#591 / #420)",
+      "title_en": "UCP Asymmetric Key Signature & Host-Delegated 3DS2 Challenge (#591 / #420)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#591 & #420",
+      "admitted": false,
+      "decision_code": "UCP_SYMMETRIC_KEY_OR_MERCHANT_IFRAME_3DS2_BLOCKED",
+      "perturbed_decision_code": "UCP_SYMMETRIC_KEY_OR_MERCHANT_IFRAME_3DS2_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_zh": "UCP 结账行 ID 与商品 ID 分离及订单 TotalResponse.type 枚举 (#112 / #63)",
+      "title_en": "UCP Line Item ID vs Catalog Item ID & Order TotalResponse.type Enum (#112 / #63)",
+      "upstream_ref": "Universal-Commerce-Protocol/ucp#112 & #63",
+      "admitted": false,
+      "decision_code": "UCP_LINE_ITEM_ID_COLLISION_OR_TOTAL_ENUM_MISMATCH_BLOCKED",
+      "perturbed_decision_code": "UCP_LINE_ITEM_ID_COLLISION_OR_TOTAL_ENUM_MISMATCH_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_zh": "ACP 废弃促销模式清理/单数 SelectedFulfillmentOption 与日期快照 (#84 / #81)",
+      "title_en": "ACP SelectedFulfillmentOption Naming Cleanup & YYYY-MM-DD Snapshot (#84 / #81)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#84 & #81",
+      "admitted": false,
+      "decision_code": "ACP_DEPRECATED_PROMOTION_PLURAL_SCHEMA_OR_VERSION_DIR_INVALID_BLOCKED",
+      "perturbed_decision_code": "ACP_DEPRECATED_PROMOTION_PLURAL_SCHEMA_OR_VERSION_DIR_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_zh": "ACP 3DS 2.x 认证流契约与 x402 支付方式绑定 (#55 / #40)",
+      "title_en": "ACP 3DS 2.x Authentication Flow & x402 Payment Method Support (#55 / #40)",
+      "upstream_ref": "agentic-commerce-protocol/agentic-commerce-protocol#55 & #40",
+      "admitted": false,
+      "decision_code": "ACP_3DS2_FLOW_INCOMPLETE_OR_X402_PAYMENT_INVALID_BLOCKED",
+      "perturbed_decision_code": "ACP_3DS2_FLOW_INCOMPLETE_OR_X402_PAYMENT_INVALID_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_zh": "AP2 授权可验证凭证 JSON Schema 与 SEDI/KERI 未成年监护限额 (#127 / #43)",
+      "title_en": "AP2 Mandate VC JSON Schema & SEDI/KERI Guardianship Spend Cap (#127 / #43)",
+      "upstream_ref": "google-agentic-commerce/AP2#127 & #43",
+      "admitted": false,
+      "decision_code": "AP2_MANDATE_VC_SCHEMA_MISSING_OR_GUARDIAN_CAP_EXCEEDED_BLOCKED",
+      "perturbed_decision_code": "AP2_MANDATE_VC_SCHEMA_MISSING_OR_GUARDIAN_CAP_EXCEEDED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_zh": "x402 settlePayment 结算覆盖上限核验与 Axios 付费响应校验钩子 (#3334 / #3330)",
+      "title_en": "x402 settlePayment Override Ceiling <= Max & Axios Paid-Response Hook (#3334 / #3330)",
+      "upstream_ref": "x402-foundation/x402#3334 & #3330",
+      "admitted": false,
+      "decision_code": "X402_SETTLEMENT_OVERRIDE_EXCEEDS_MAX_OR_AXIOS_RESPONSE_UNVALIDATED_BLOCKED",
+      "perturbed_decision_code": "X402_SETTLEMENT_OVERRIDE_EXCEEDS_MAX_OR_AXIOS_RESPONSE_UNVALIDATED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_zh": "x402 Stellar 智能账户限额诊断事件兼容与强制手续费赞助 (#3352 / #3333)",
+      "title_en": "x402 Stellar Smart-Account Events Tolerance & Mandatory Fee Sponsorship (#3352 / #3333)",
+      "upstream_ref": "x402-foundation/x402#3352 & #3333",
+      "admitted": false,
+      "decision_code": "X402_STELLAR_UNSPONSORED_FEES_OR_SMART_ACCOUNT_EVENT_REJECTED_BLOCKED",
+      "perturbed_decision_code": "X402_STELLAR_UNSPONSORED_FEES_OR_SMART_ACCOUNT_EVENT_REJECTED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_zh": "x402 Stellar feeBumpSigner 安全集合纳入与 SVM 算力单元策略 (#3332 / #3351)",
+      "title_en": "x402 Stellar feeBumpSigner Safety Check & SVM Compute-Unit Policy (#3332 / #3351)",
+      "upstream_ref": "x402-foundation/x402#3332 & #3351",
+      "admitted": false,
+      "decision_code": "X402_STELLAR_FEE_BUMP_SIGNER_UNPROTECTED_OR_SVM_CU_EXCEEDED_BLOCKED",
+      "perturbed_decision_code": "X402_STELLAR_FEE_BUMP_SIGNER_UNPROTECTED_OR_SVM_CU_EXCEEDED_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_zh": "x402.agent-switchboard/v0 SCITT 透明回执与声明式端点一致性配置 (#3381 / #3396)",
+      "title_en": "x402.agent-switchboard/v0 SCITT Relay & Declarative Conformance Profiles (#3381 / #3396)",
+      "upstream_ref": "x402-foundation/x402#3381 & #3396",
+      "admitted": false,
+      "decision_code": "X402_SWITCHBOARD_SCITT_UNATTESTED_OR_ENDPOINT_NONCONFORMANT_BLOCKED",
+      "perturbed_decision_code": "X402_SWITCHBOARD_SCITT_UNATTESTED_OR_ENDPOINT_NONCONFORMANT_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_zh": "x402 CDP Bazaar 发现目录静默索引阻断项预检 (#3677 / #3638)",
+      "title_en": "x402 CDP Bazaar Discovery Silent Indexing Blocker Preflight (#3677 / #3638)",
+      "upstream_ref": "x402-foundation/x402#3677 & #3638",
+      "admitted": false,
+      "decision_code": "X402_BAZAAR_SILENT_INDEXING_BLOCKER_DETECTED",
+      "perturbed_decision_code": "X402_BAZAAR_SILENT_INDEXING_BLOCKER_DETECTED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_zh": "x402 Kaspa BlockDAG 与 Bitcoin Cash UTXO exact 结算守恒 (#3645 / #3633)",
+      "title_en": "x402 Kaspa BlockDAG & Bitcoin Cash UTXO exact Settlement Conservation (#3645 / #3633)",
+      "upstream_ref": "x402-foundation/x402#3645 & #3633",
+      "admitted": false,
+      "decision_code": "X402_KASPA_OR_BCH_UTXO_CONSERVATION_VIOLATION_BLOCKED",
+      "perturbed_decision_code": "X402_KASPA_OR_BCH_UTXO_CONSERVATION_VIOLATION_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_zh": "MCP SEP-2243 HeaderMismatch -32020 错误码与 subscriptions/listen 响应信封 (#2991 / #2989)",
+      "title_en": "MCP SEP-2243 HeaderMismatch -32020 & subscriptions/listen Envelope (#2991 / #2989)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#2991 & #2989",
+      "admitted": false,
+      "decision_code": "MCP_STALE_HEADER_MISMATCH_32001_OR_MISSING_LISTEN_ENVELOPE_BLOCKED",
+      "perturbed_decision_code": "MCP_STALE_HEADER_MISMATCH_32001_OR_MISSING_LISTEN_ENVELOPE_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_zh": "MCP SEP-2188 征询待定超时协调通知与 SEP-2166 带外 HTTPS 资源访问 (#2188 / #2166)",
+      "title_en": "MCP SEP-2188 Elicitation Pending Timeout & SEP-2166 OOB HTTPS Resource (#2188 / #2166)",
+      "upstream_ref": "modelcontextprotocol/modelcontextprotocol#2188 & #2166",
+      "admitted": false,
+      "decision_code": "MCP_ELICITATION_TIMEOUT_UNCOORDINATED_OR_INSECURE_HTTP_URL_BLOCKED",
+      "perturbed_decision_code": "MCP_ELICITATION_TIMEOUT_UNCOORDINATED_OR_INSECURE_HTTP_URL_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_zh": "Sierra τ2-bench 电信 <=2GB 流量加油上限语义与默认 ACTION 奖励基准 (#104 / #81)",
+      "title_en": "Sierra τ2-bench Telecom <=2GB Refuel Upper Bound & Default ACTION Reward Basis (#104 / #81)",
+      "upstream_ref": "sierra-research/tau2-bench#104 & #81",
+      "admitted": false,
+      "decision_code": "TAU2_HARDCODED_2GB_REFUEL_OR_MISSING_ACTION_REWARD_BASIS_BLOCKED",
+      "perturbed_decision_code": "TAU2_HARDCODED_2GB_REFUEL_OR_MISSING_ACTION_REWARD_BASIS_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_zh": "Sierra τ2-bench 航司 Task 7 退票政策资格校验与 agent_msg.validate 异常捕获 (#84 / #43)",
+      "title_en": "Sierra τ2-bench Airline Task 7 Cancellation Eligibility & agent_msg.validate Catch (#84 / #43)",
+      "upstream_ref": "sierra-research/tau2-bench#84 & #43",
+      "admitted": false,
+      "decision_code": "TAU2_IMPOSSIBLE_CANCELLATION_EXPECTATION_OR_VALIDATE_CRASH_BLOCKED",
+      "perturbed_decision_code": "TAU2_IMPOSSIBLE_CANCELLATION_EXPECTATION_OR_VALIDATE_CRASH_BLOCKED",
+      "passed": true,
+      "perturbation_invariant": true
+    }
+  ]
+}
