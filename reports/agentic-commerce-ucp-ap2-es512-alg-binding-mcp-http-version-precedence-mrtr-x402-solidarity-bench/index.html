@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 185 · UCP AP2 ES512 签名绑定、MCP HTTP 版本错误优先级与 MRTR 及 x402 Solidarity 7-Card 评测报告</title>
+<style>
+body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+.deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1440px; margin: 0 auto; }
+.card { width: 100%; aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+.badge { font-size: 12px; color: #38bdf8; font-weight: 700; letter-spacing: 0.06em; }
+h2 { font-size: 18px; margin: 8px 0; color: #f1f5f9; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th, td { border-bottom: 1px solid #334155; padding: 4px 6px; text-align: left; }
+pre { background: #0f172a; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; color: #e2e8f0; }
+.bar { height: 10px; background: #3b82f6; border-radius: 5px; }
+.bar-base { height: 10px; background: #cbd5e1; border-radius: 5px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; padding: 10px; border-radius: 8px; font-size: 12px; }
+.bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; padding: 10px; border-radius: 8px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="badge">1 / 7 · HANDS-ON · PROTOCOL &amp; SOLIDARITY GUARDRAILS</div>
+      <h2>16/16 (100.0%) Deterministic Pass Across UCP #618, MCP #3449/#2919/#1766 &amp; x402 #419</h2>
+      <p>AI-Native deterministic guardrails achieve 16/16 (100.0%) vs. 0/16 (0.0%) on Classic 3-Tier Web across ES-01..ES-16.</p>
+    </div>
+    <div>Provenance: measured · Date: 2026-10-23 · Median batch latency: 0.17 ms</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">2 / 7 · SCENARIO: ES-01 &amp; ES-08 &amp; ES-14</div>
+      <h2>ES512/P-521 132B Raw R||S, MCP -32022 Version Precedence &amp; RFC 6962 Root</h2>
+      <p>choice · confidence 1.00 · Act automatically</p>
+      <div class="bar" style="width: 100%"></div>
+    </div>
+    <div>RFC 6962 8-leaf reference root: <code>5dc9da79a70659a9ad559cb701ded9a2ab9d823aad2f4960cfe370eff4604328</code></div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">3 / 7 · WHAT I TESTED</div>
+      <h2>16-Scenario Evaluation Matrix (ES-01..ES-16): 16/16 AI-Native vs 0/16 Classic</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>ES-01</code> · UCP AP2 ES512/P-521 结账签名绑定与 HTTP 回退</td><td>PR #618 ES512/P-521 132B raw R||S + HTTP P-256 fallback</td><td><code>ok</code></td><td>Admit / Settle</td></tr>
+<tr><td><code>ES-02</code> · UCP AP2 ES384/P-384 缺省 JWK alg 曲线绑定通过</td><td>PR #618 missing JWK alg valid when crv==P-384 & 96B R||S</td><td><code>ok</code></td><td>Admit / Settle</td></tr>
+<tr><td><code>ES-03</code> · UCP AP2 ES512 引用 P-256 密钥曲线错配拦截</td><td>PR #618 assert_alg_bound_to_key rejects ES512 on P-256</td><td><code>ucp_ap2_jws_alg_curve_or_jwk_alg_mismatch</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-04</code> · UCP AP2 v0.2 结账 JWS 伪造 EdDSA 算法阻断</td><td>PR #618 AP2 v0.2 Checkout JWS permits only ES256/ES384/ES512</td><td><code>ucp_ap2_jws_alg_not_permitted_by_ap2_v02</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-05</code> · UCP AP2 校验器独立算法策略未启用 ES512 拒绝</td><td>PR #618 verifier_allowed_algorithms excludes ES512</td><td><code>ucp_ap2_jws_alg_not_in_verifier_policy</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-06</code> · UCP AP2 ES512 ASN.1 DER 编码或非 132B 签名拒绝</td><td>PR #618 RFC 7518 §3.4 requires 132-byte raw R||S, not DER</td><td><code>ucp_ap2_jws_signature_der_or_length_invalid</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-07</code> · MCP HTTP 版本一致、MRTR 命名空间与 JCS 工具固定通过</td><td>#3449/#2919/#1766 valid HTTP headers, MRTR & JCS tool pin</td><td><code>ok</code></td><td>Admit / Settle</td></tr>
+<tr><td><code>ES-08</code> · MCP HTTP 不支持版本且缺 Mcp-Method 优先返回 -32022</td><td>#3449 version-first rule returns -32022 with data.supported</td><td><code>mcp_http_unsupported_version_precedence_32022</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-09</code> · MCP HTTP 版本头与请求体 _meta 冲突返回 -32020</td><td>#3449 mismatch exception returns -32020 HeaderMismatch</td><td><code>mcp_http_header_body_version_mismatch_32020</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-10</code> · MCP HTTP 受支持版本缺失 Mcp-Method 返回 -32020</td><td>#3449 supported version missing Mcp-Method returns -32020</td><td><code>mcp_http_missing_required_header_on_supported_version_32020</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-11</code> · MCP MRTR 未声明客户端能力的反向域名方法拦截</td><td>#2919 server emits ai.nimblebrain/* without client capability</td><td><code>mcp_mrtr_unadvertised_namespace_emitted</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-12</code> · MCP MRTR 审批超时过期伪装人工批准阻断</td><td>#2919 outcome=='expired' must record decided_by=='expiry'</td><td><code>mcp_mrtr_expiry_masquerading_as_human_approval</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-13</code> · MCP 客户端 RFC 8785 JCS 工具定义摘要漂移拦截</td><td>#1766 SHA-256 over JCS(Tool without _meta) detects drift</td><td><code>mcp_tool_jcs_digest_pin_mismatch</code></td><td>Block (Fail-Closed)</td></tr>
+<tr><td><code>ES-14</code> · x402 solidarity 份额结算与 RFC 6962 8 叶子向量校验</td><td>PR #419 0.1% share + RFC 6962 root 5dc9da79...04328</td><td><code>ok</code></td><td>Admit / Settle</td></tr>
+<tr><td><code>ES-15</code> · x402 solidarity 超 1% 费率跳过份额且不影响主交易</td><td>PR #419 rate > 0.01 skipped ('over-rate'), purchase settles</td><td><code>over-rate</code></td><td>Admit / Settle</td></tr>
+<tr><td><code>ES-16</code> · x402 solidarity 份额失败阻断主交易违规拦截</td><td>PR #419 share failure must never block or alter purchase</td><td><code>x402_solidarity_failure_must_not_block_purchase</code></td><td>Block (Fail-Closed)</td></tr></tbody>
+      </table>
+    </div>
+    <div>All 12 adversarial / drifted / unadvertised cases blocked fail-closed; all 4 valid flows admitted.</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">4 / 7 · UNDER THE HOOD</div>
+      <h2>Deterministic Verifier Flow (&lt;answer&gt;)</h2>
+      <pre>{"jws_alg": "ES512", "crv": "P-521", "raw_len": 132, "mcp_ver": "2025-11-25"}
+↓
+&lt;answer&gt;assert_alg_bound_to_key(P-521, ES512) &amp;&amp; mcp_version_first(-32022) &amp;&amp; rfc6962_merkle()&lt;/answer&gt;</pre>
+    </div>
+    <div>Zero external network calls · deterministic Python standard library verifier</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16/16 (100.0%) Perturbation Invariance Under Key &amp; Leaf Order Reversal</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>ES-01..ES-06 (UCP PR #618 ES512)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>ES-07..ES-13 (MCP #3449/#2919/#1766)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>ES-14..ES-16 (x402 PR #419 Solidarity)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>0.0 pts drift across key-array reordering and JSON key shuffling.</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">6 / 7 · LATENCY</div>
+      <h2>0.17 ms Batch Guardrail Latency vs 0.56 ms Serial Baseline (3.29x Speedup)</h2>
+      <p>Primary Batch Path (0.17 ms)</p>
+      <div class="bar" style="width: 30%"></div>
+      <p>Baseline Serial Path (0.56 ms)</p>
+      <div class="bar-base" style="width: 100%"></div>
+    </div>
+    <div>Measured across 16 scenarios (ES-01..ES-16) on Python 3.13.</div>
+  </section>
+  <section class="card">
+    <div>
+      <div class="badge">7 / 7 · MY TAKE</div>
+      <h2>Production Readiness: Mandatory for AP2 ES512, MCP HTTP 2026-07-28 &amp; x402 v2</h2>
+      <div class="grid2">
+        <div class="good">✅ Good fit: UCP AP2 ES256/ES384/ES512 verifiers, MCP 2026-07-28 HTTP gateways, and x402 facilitators.</div>
+        <div class="bad">⛔ Not for: Replacing HSM key storage or live on-chain transaction broadcasting.</div>
+      </div>
+    </div>
+    <div>Provenance: measured · CSP: default-src 'none'; style-src 'unsafe-inline'</div>
+  </section>
+</div>
+</body>
+</html>

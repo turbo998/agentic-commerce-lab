@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–183)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–185)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -127,6 +127,25 @@
   - Benchmark suite: [`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)
   - Unit tests: [`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py) (**767/767** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html` (Chinese)](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/report.json)
+
+---
+
+## Stage 184: Google UCP AP2 `ES512`/`P-521` Checkout JWS Algorithm Binding & HTTP Fallback (PR `#618`), MCP Streamable HTTP Version-First Error Precedence (`#3449`), MRTR Namespaced `inputRequests` (`#2919`) & Client-Side RFC 8785 Tool Definition Pinning (`#1766`), and x402 `solidarity` Extension & RFC 6962 Merkle Batching (PR `#419`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py`](../../lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py)
+  - Unit tests: [`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py) (**770/770** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§183)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§183)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 185: 16-Scenario (`ES-01..ES-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 184)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py)
+  - Unit tests: [`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py) (**771/771** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/report.json)
+
 
 
 

@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–183）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–185）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -127,6 +127,25 @@
   - 基准套件：[`lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../lab/ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)
   - 单元测试：[`tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py`](../../tests/test_ap2_dispute_evidence_pack_ucp_local_services_permalink_csrf_risk_signals_b2b_bench.py)（全仓库 **767/767** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html`（中文）](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ap2-dispute-evidence-pack-ucp-local-services-permalink-csrf-risk-signals-b2b-bench/report.json)
+
+---
+
+## Stage 184：Google UCP AP2 `ES512`/`P-521` 结账 JWS 算法绑定与 HTTP 签名回退（PR `#618`）、MCP Streamable HTTP 版本优先错误优先级（`#3449`）与 MRTR 反向域名扩展（`#2919`）及客户端 RFC 8785 工具定义摘要固定（`#1766`）、以及 x402 `solidarity` 人道主义份额扩展与 RFC 6962 默克尔树批次证明（PR `#419`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py`](../../lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py)
+  - 单元测试：[`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_guard.py)（全仓库 **770/770** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§183)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§183)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 185：16 场景（`ES-01..ES-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 184）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../lab/ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py)
+  - 单元测试：[`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py)（全仓库 **771/771** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/report.json)
+
 
 
 
