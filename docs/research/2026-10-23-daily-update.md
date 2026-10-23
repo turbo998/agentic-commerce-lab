@@ -146,6 +146,24 @@
   - 单元测试：[`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py)（全仓库 **771/771** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/report.json)
 
+---
+
+## Stage 186：Google UCP 退货策略扩展（PR `#634` 合入 `ba9795a6`）与采购选项/订阅分单支付留存（PR `#890` `185a04a8`）、Google AP2 交易后非欺诈争议仲裁器（PR `#352` `ATDRP-0.1`）与开放授权 `cnf` 吊销（Issue `#386`）、以及 MCP 任务级日志流（Issue `#3237`）与单受众 Scope 回退（Issue `#1614`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py`](../../lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py)
+  - 单元测试：[`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py)（全仓库 **775/775** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§185)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§185)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 187：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 186）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py)
+  - 单元测试：[`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py)（全仓库 **777/777** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/report.json)
+
 
 
 

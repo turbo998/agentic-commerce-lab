@@ -146,6 +146,24 @@
   - Unit tests: [`tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py`](../../tests/test_ucp_ap2_es512_alg_binding_mcp_http_version_precedence_mrtr_x402_solidarity_bench.py) (**771/771** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-ap2-es512-alg-binding-mcp-http-version-precedence-mrtr-x402-solidarity-bench/report.json)
 
+---
+
+## Stage 186: Google UCP Return Policy Extension (PR `#634` Merged `ba9795a6`) & Purchase Options / Subscription Split-Payment Retention (PR `#890` `185a04a8`), Google AP2 Post-Transaction Non-Fraud Dispute Resolver (PR `#352` `ATDRP-0.1`) & Open Mandate `cnf` Revocation (Issue `#386`), and MCP Task-Scoped Log Streaming (Issue `#3237`) & Single-Audience Scope Fallback (Issue `#1614`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py`](../../lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py)
+  - Unit tests: [`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_guard.py) (**775/775** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§185)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§185)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 187: 16-Scenario (`PR-01..PR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 186)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py)
+  - Unit tests: [`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py) (**777/777** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/report.json)
+
 
 
 

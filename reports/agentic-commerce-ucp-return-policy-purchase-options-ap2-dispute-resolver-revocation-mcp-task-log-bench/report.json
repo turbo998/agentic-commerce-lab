@@ -1,0 +1,374 @@
+{
+  "stage": 187,
+  "suite": "ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench",
+  "measured_at": "2026-10-23T18:10:00Z",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "passed_scenarios": 16,
+  "pass_rate_pct": 100.0,
+  "median_latency_ms": 0.17,
+  "baseline_median_latency_ms": 0.55,
+  "speedup_factor": 3.24,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "track": "UCP Return Policy (PR #634)",
+      "title": "Valid by_mail return fee cap (3 units @ 15% capped at 5000 + 500 shipping + 100 eco = 9600 minor)",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "passed": true,
+      "reason_code": "ok",
+      "action": "Act automatically",
+      "confidence": 0.99,
+      "latency_ms": 0.15,
+      "baseline_latency_ms": 0.51,
+      "details": {
+        "allowed": true,
+        "reason_code": "ok",
+        "non_returnable": false,
+        "channel_free": false,
+        "estimated_max_fee_minor": 9600,
+        "violation_Rule": null
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "track": "UCP Return Policy (PR #634)",
+      "title": "Valid in_store channel-specific untyped amount:0 override (0 fee despite channel-wide restocking)",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "passed": true,
+      "reason_code": "ok",
+      "action": "Act automatically",
+      "confidence": 0.99,
+      "latency_ms": 0.16,
+      "baseline_latency_ms": 0.53,
+      "details": {
+        "allowed": true,
+        "reason_code": "ok",
+        "non_returnable": false,
+        "channel_free": true,
+        "estimated_max_fee_minor": 0,
+        "violation_Rule": null
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "track": "UCP Return Policy (PR #634)",
+      "title": "Reject IKEA-style documentary anchor ('proof_of_purchase') on window eligibility",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_return_policy_missing_or_documentary_anchor",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.17,
+      "baseline_latency_ms": 0.55,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_return_policy_missing_or_documentary_anchor",
+        "non_returnable": false,
+        "channel_free": false,
+        "estimated_max_fee_minor": null,
+        "violation_Rule": "PR #634 §Window and anchor (IKEA field note)"
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "track": "UCP Return Policy (PR #634)",
+      "title": "Reject platform inferring non-returnability from elapsed window (Bombas 30d/60d floor rule)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_return_policy_false_non_returnable_inference",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.18,
+      "baseline_latency_ms": 0.57,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_return_policy_false_non_returnable_inference",
+        "non_returnable": false,
+        "channel_free": false,
+        "estimated_max_fee_minor": null,
+        "violation_Rule": "PR #634 §Eligibility & §Window and anchor"
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "track": "UCP Return Policy (PR #634)",
+      "title": "Reject not_accepted final-sale policy carrying methods/fees or omitted fees claimed as free",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_return_policy_not_accepted_carries_return_terms",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.19,
+      "baseline_latency_ms": 0.59,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_return_policy_not_accepted_carries_return_terms",
+        "non_returnable": true,
+        "channel_free": false,
+        "estimated_max_fee_minor": null,
+        "violation_Rule": "PR #634 return_body if/then false"
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "track": "UCP Purchase Options (PR #890)",
+      "title": "Valid subscription checkout with Split Payments retaining open-ended card while gift card is immediate",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "passed": true,
+      "reason_code": "ok",
+      "action": "Act automatically",
+      "confidence": 0.99,
+      "latency_ms": 0.15,
+      "baseline_latency_ms": 0.51,
+      "details": {
+        "allowed": true,
+        "reason_code": "ok",
+        "retained_instrument_ids": [
+          "inst_card"
+        ],
+        "checkout_status": "ready_for_complete",
+        "emitted_warnings": [],
+        "emitted_errors": []
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "track": "UCP Purchase Options (PR #890)",
+      "title": "Reject subscription checkout where default (first) option has schedules despite one-time option present",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_purchase_options_default_must_be_onetime_when_present",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.16,
+      "baseline_latency_ms": 0.53,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_purchase_options_default_must_be_onetime_when_present",
+        "retained_instrument_ids": [],
+        "checkout_status": "incomplete",
+        "emitted_warnings": [],
+        "emitted_errors": [
+          "default_option_enrolled_subscription"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "track": "UCP Purchase Options (PR #890)",
+      "title": "Reject subscription checkout retaining zero open-ended non-immediate instruments under Split Payments",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_purchase_options_no_retained_recurring_instrument",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.17,
+      "baseline_latency_ms": 0.55,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_purchase_options_no_retained_recurring_instrument",
+        "retained_instrument_ids": [],
+        "checkout_status": "incomplete",
+        "emitted_warnings": [],
+        "emitted_errors": [
+          "payment_failed"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "track": "UCP Purchase Options (PR #890)",
+      "title": "Reject unresolved subscription selection silently substituting another subscription option",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ucp_purchase_options_unresolved_subscription_requires_buyer_selection",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.18,
+      "baseline_latency_ms": 0.57,
+      "details": {
+        "allowed": false,
+        "reason_code": "ucp_purchase_options_unresolved_subscription_requires_buyer_selection",
+        "retained_instrument_ids": [],
+        "checkout_status": "incomplete",
+        "emitted_warnings": [
+          "purchase_option_changed"
+        ],
+        "emitted_errors": [
+          "purchase_option_unavailable"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "track": "AP2 Dispute & Revocation (#352/#386)",
+      "title": "Valid ATDRP-0.1 non-fraud dispute resolution: 3 of 4 units unfulfilled past delivery -> overturn 7500 minor",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "passed": true,
+      "reason_code": "ap2_dispute_unfulfilled_after_estimated_delivery",
+      "action": "Act automatically",
+      "confidence": 0.99,
+      "latency_ms": 0.19,
+      "baseline_latency_ms": 0.59,
+      "details": {
+        "eligible": true,
+        "outcome": "overturn",
+        "overturn_amount_minor": 7500,
+        "fee_paid_by": "merchant",
+        "liability_target": "merchant",
+        "reason_code": "ap2_dispute_unfulfilled_after_estimated_delivery",
+        "route": null,
+        "receipt_status": "Success"
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "track": "AP2 Dispute & Revocation (#352/#386)",
+      "title": "Reject broken AP2 authorization chain (payment_mandate.transaction_id != checkout_hash) -> route to fraud",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ap2_dispute_authorization_chain_broken",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.15,
+      "baseline_latency_ms": 0.51,
+      "details": {
+        "eligible": false,
+        "outcome": "not_eligible",
+        "overturn_amount_minor": 0,
+        "fee_paid_by": null,
+        "liability_target": "network_fraud_process",
+        "reason_code": "ap2_dispute_authorization_chain_broken",
+        "route": "network fraud process",
+        "receipt_status": "Success"
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "track": "AP2 Dispute & Revocation (#352/#386)",
+      "title": "Reject closed Mandate backed by revoked Open Mandate cnf key on SD-JWT VC Status List (receipt=revoked)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ap2_open_mandate_cnf_authority_revoked",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.16,
+      "baseline_latency_ms": 0.53,
+      "details": {
+        "eligible": false,
+        "outcome": "revoked",
+        "overturn_amount_minor": 0,
+        "fee_paid_by": "merchant",
+        "liability_target": "shopping_agent",
+        "reason_code": "ap2_open_mandate_cnf_authority_revoked",
+        "route": null,
+        "receipt_status": "revoked"
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "track": "AP2 Dispute & Revocation (#352/#386)",
+      "title": "Reject HNP Open Mandate with missing/unbounded exp or unreachable Status List (fail-closed)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "ap2_open_mandate_missing_or_unbounded_exp",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.17,
+      "baseline_latency_ms": 0.55,
+      "details": {
+        "eligible": false,
+        "outcome": "rejected",
+        "overturn_amount_minor": 0,
+        "fee_paid_by": "merchant",
+        "liability_target": "verifier",
+        "reason_code": "ap2_open_mandate_missing_or_unbounded_exp",
+        "route": null,
+        "receipt_status": "Failed"
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "track": "MCP Task-Log & OAuth (#3237/#1614)",
+      "title": "Valid task-log://{taskId} monotonic seq resume (last_seen_seq=1 -> [2,3]) + single-audience scope fallback",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "passed": true,
+      "reason_code": "ok",
+      "action": "Act automatically",
+      "confidence": 0.99,
+      "latency_ms": 0.18,
+      "baseline_latency_ms": 0.57,
+      "details": {
+        "allowed": true,
+        "reason_code": "ok",
+        "resumed_sequences": [
+          2,
+          3
+        ],
+        "requires_final_tasks_get": true
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "track": "MCP Task-Log & OAuth (#3237/#1614)",
+      "title": "Reject task-log://{taskId} sequence gap or client skipping final tasks/get when terminal result independent",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "mcp_task_log_cannot_replace_terminal_tasks_get",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.19,
+      "baseline_latency_ms": 0.59,
+      "details": {
+        "allowed": false,
+        "reason_code": "mcp_task_log_cannot_replace_terminal_tasks_get",
+        "resumed_sequences": [
+          1,
+          2,
+          3
+        ],
+        "requires_final_tasks_get": true
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "track": "MCP Task-Log & OAuth (#3237/#1614)",
+      "title": "Reject multi-audience OAuth scope fallback when AS omits RFC 8707 resource parameter (token confusion)",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "passed": true,
+      "reason_code": "mcp_oauth_multi_audience_scope_fallback_forbidden",
+      "action": "Send to a human",
+      "confidence": 0.99,
+      "latency_ms": 0.15,
+      "baseline_latency_ms": 0.51,
+      "details": {
+        "allowed": false,
+        "reason_code": "mcp_oauth_multi_audience_scope_fallback_forbidden",
+        "resumed_sequences": [
+          1,
+          2,
+          3
+        ],
+        "requires_final_tasks_get": true
+      }
+    }
+  ]
+}
