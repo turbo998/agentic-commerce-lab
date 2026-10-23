@@ -1,0 +1,330 @@
+{
+  "stage": "204-205",
+  "benchmark_date": "2026-10-23",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_passed": 0,
+  "classic_3tier_pass_rate": 0.0,
+  "perturbation_consistent_count": 16,
+  "perturbation_consistency_rate": 1.0,
+  "median_latency_ms": 0.17,
+  "baseline_latency_ms": 0.57,
+  "speedup_factor": 3.35,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_en": "UCP #794 Checkout REST Signed Request ucp-agent Covered-Component Gate",
+      "title_zh": "UCP #794 结账 REST 签名请求 ucp-agent 签名覆盖组件门禁",
+      "expected_decision_code": "UCP_SIGNED_REQUEST_OMITS_REQUIRED_COVERED_HEADER_BLOCKED",
+      "actual_decision_code": "UCP_SIGNED_REQUEST_OMITS_REQUIRED_COVERED_HEADER_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Signed UCP REST request omits mandatory covered components: base=[], conditional_headers=['ucp-agent'].",
+      "evidence": {
+        "missing_base_components": [],
+        "missing_conditional_headers": [
+          "ucp-agent"
+        ],
+        "covered_components": [
+          "@method",
+          "@authority",
+          "@path",
+          "idempotency-key",
+          "content-digest",
+          "content-type"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_en": "UCP #641 Out-of-Session Payment Collection (Order render_artifact + collection_status) Gate",
+      "title_zh": "UCP #641 会话外支付归集（订单 render_artifact 与 collection_status）门禁",
+      "expected_decision_code": "UCP_ORDER_OUT_OF_SESSION_COLLECTION_VIOLATION_BLOCKED",
+      "actual_decision_code": "UCP_ORDER_OUT_OF_SESSION_COLLECTION_VIOLATION_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Instrument awaiting_payment requires a non-expired dev.ucp.common.payment.render_artifact action on Order.",
+      "evidence": {
+        "instrument_id": "pi_boleto_641",
+        "actions_count": 0
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_en": "UCP #489 Variable-Yield Catch-Weight Tolerance & Programmable Authorization Hold Gate",
+      "title_zh": "UCP #489 非定重商品（Catch-Weight）公差与可编程预授权冻结门禁",
+      "expected_decision_code": "UCP_CATCH_WEIGHT_TOLERANCE_OR_HOLD_VIOLATION_BLOCKED",
+      "actual_decision_code": "UCP_CATCH_WEIGHT_TOLERANCE_OR_HOLD_VIOLATION_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Catch-weight invariant violated: weight_ok=False, amount_ok=False, hold_ok=False.",
+      "evidence": {
+        "actual_weight": 6.2,
+        "allowed_weight_range": [
+          4.0,
+          5.75
+        ],
+        "capture_amount_minor": 9300,
+        "max_allowed_capture_minor": 8625,
+        "authorization_hold_days": 7,
+        "required_hold_time_days": 10,
+        "elapsed_fulfillment_days": 8
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_en": "UCP #668/#649 OpenAPI 3.1.0 securitySchemes & update_checkout checkout.id Omit Gate",
+      "title_zh": "UCP #668/#649 OpenAPI 3.1.0 securitySchemes 与 update_checkout 请求体 id 剔除门禁",
+      "expected_decision_code": "UCP_OPENAPI_AUTH_HEADER_OR_UPDATE_ID_EXPOSED_BLOCKED",
+      "actual_decision_code": "UCP_OPENAPI_AUTH_HEADER_OR_UPDATE_ID_EXPOSED_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "OpenAPI 3.1.0 prohibits 'in: header, name: Authorization' (must use securitySchemes) and update_checkout must omit/readOnly checkout.id in requestBody.",
+      "evidence": {
+        "illegal_auth_header": true,
+        "has_security_schemes": false,
+        "update_checkout_schema_exposes_writable_id": true,
+        "body_has_id": true,
+        "body_id_mismatch": true
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_en": "x402 #3810/#3657 HEAD Payment Settlement Prohibition & HTTP Method Eligibility Gate",
+      "title_zh": "x402 #3810/#3657 HEAD 请求扣款结算禁止与 HTTP 方法支付资格一致性门禁",
+      "expected_decision_code": "X402_HEAD_SETTLEMENT_OR_METHOD_MISMATCH_BLOCKED",
+      "actual_decision_code": "X402_HEAD_SETTLEMENT_OR_METHOD_MISMATCH_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "RFC 9110 §9.3.2 HEAD responses cannot carry a body; settling a payment on HEAD charges the buyer for zero content (#3810).",
+      "evidence": {
+        "http_method": "HEAD",
+        "has_payment_signature": true
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_en": "x402 #3803 PAYMENT-REQUIRED Base64 Header Budget Gate (aiohttp 8 KB / Undici 16 KB)",
+      "title_zh": "x402 #3803 PAYMENT-REQUIRED 响应头大小预算（aiohttp 8KB / Undici 16KB）门禁",
+      "expected_decision_code": "X402_PAYMENT_REQUIRED_HEADER_BUDGET_EXCEEDED_BLOCKED",
+      "actual_decision_code": "X402_PAYMENT_REQUIRED_HEADER_BUDGET_EXCEEDED_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "PAYMENT-REQUIRED header is 12188 bytes (exceeds 7168-byte budget; aiohttp limit=8190, Node undici limit=16384).",
+      "evidence": {
+        "encoded_header_bytes": 12188,
+        "max_header_bytes": 7168,
+        "exceeds_aiohttp_8kb": true,
+        "exceeds_node_16kb": false
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_en": "x402 #3814 Axios Streaming 402 Intermediate Body Drain & Socket Deadlock Gate",
+      "title_zh": "x402 #3814 Axios 流式响应中间 402 响应体排空与连接池死锁阻断门禁",
+      "expected_decision_code": "X402_STREAM_INTERMEDIATE_402_UNDRAINED_DEADLOCK_BLOCKED",
+      "actual_decision_code": "X402_STREAM_INTERMEDIATE_402_UNDRAINED_DEADLOCK_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Unconsumed intermediate 402 stream with responseType='stream' (maxSockets=1) blocks keep-alive socket reuse and queues paid retry indefinitely (#3814).",
+      "evidence": {
+        "response_type": "stream",
+        "keep_alive_max_sockets": 1,
+        "intermediate_402_stream_drained": false
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_en": "x402 #3747 RFC 9111 Quote-Aware Cache-Control: private Directive Parser Gate",
+      "title_zh": "x402 #3747 RFC 9111 引号感知 Cache-Control: private 指令解析门禁",
+      "expected_decision_code": "X402_CACHE_CONTROL_QUOTED_PRIVATE_CONFUSION_BLOCKED",
+      "actual_decision_code": "X402_CACHE_CONTROL_QUOTED_PRIVATE_CONFUSION_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Cache-Control header lacks an unquoted top-level 'private' directive or retains 'public': parsed_directives=['public', 'max-age=60', 'example=\"a, private, b\"'].",
+      "evidence": {
+        "parsed_directives": [
+          "public",
+          "max-age=60",
+          "example=\"a, private, b\""
+        ],
+        "has_top_level_private": false,
+        "has_top_level_public": true
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_en": "x402 #3755 payee-name Extension Owner-Signed ENS Origin & Multi-Chain payTo Binding Gate",
+      "title_zh": "x402 #3755 payee-name 扩展 ENS 签名源站与多链 payTo 绑定门禁",
+      "expected_decision_code": "X402_PAYEE_NAME_ENS_ORIGIN_OR_PAYTO_UNBOUND_BLOCKED",
+      "actual_decision_code": "X402_PAYEE_NAME_ENS_ORIGIN_OR_PAYTO_UNBOUND_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Request origin 'https://spoof-weather.example.com' is not listed in ENS org.x402.origins for 'weather.example.eth'.",
+      "evidence": {
+        "payee_ens_name": "weather.example.eth",
+        "request_origin": "https://spoof-weather.example.com"
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_en": "x402 #3693 ext-delegation Principal-Signed JWS Agent Spend Grant & Scope Gate",
+      "title_zh": "x402 #3693 ext-delegation 委托人签名 JWS 智能体支出授权与范围门禁",
+      "expected_decision_code": "X402_EXT_DELEGATION_SCOPE_OR_SIGNER_VIOLATION_BLOCKED",
+      "actual_decision_code": "X402_EXT_DELEGATION_SCOPE_OR_SIGNER_VIOLATION_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "ext-delegation grant check failed: jws=True, signer_ok=False, audience_ok=True, asset_ok=True, amount_ok=False, fresh_ok=True.",
+      "evidence": {
+        "principal": "did:pkh:eip155:8453:0xPrincipal01",
+        "grant_agent": "0xagent01",
+        "authorization_from": "0xrogueagent99",
+        "payment_amount_minor": 800000,
+        "max_amount_minor": 500000,
+        "aggregate_budget_minor": 2000000,
+        "cumulative_spent_minor": 1500000
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_en": "x402 #3792/#3779 Python Async Bazaar _get_async_client() & Non-200 Error Body Gate",
+      "title_zh": "x402 #3792/#3779 Python 异步 Bazaar _get_async_client() 与非 200 错误体保留门禁",
+      "expected_decision_code": "X402_PYTHON_ASYNC_CLIENT_OR_NON200_BODY_DROP_BLOCKED",
+      "actual_decision_code": "X402_PYTHON_ASYNC_CLIENT_OR_NON200_BODY_DROP_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Python x402 facilitator violation: wrong_client_getter=True (#3792), dropped_non200_body=True (#3779).",
+      "evidence": {
+        "is_async_facilitator_client": true,
+        "bazaar_called_method": "_get_client",
+        "facilitator_http_status": 422,
+        "preserved_error_reason": "insufficient_funds"
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_en": "x402 #3650/#3680/#3811 Go Hook Error Propagation, Paid HTTP Status & Fastify Plain Body Gate",
+      "title_zh": "x402 #3650/#3680/#3811 Go 钩子错误传递、付费响应状态码与 Fastify 纯文本响应门禁",
+      "expected_decision_code": "X402_HOOK_ERROR_SWALLOWED_STATUS_OMITTED_OR_PLAIN_JSON_ENCODED_BLOCKED",
+      "actual_decision_code": "X402_HOOK_ERROR_SWALLOWED_STATUS_OMITTED_OR_PLAIN_JSON_ENCODED_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "x402 lifecycle bug detected: hook_swallowed=True (#3650), upfront_blind_5xx=True (#3680), plain_json_encoded=True (#3811).",
+      "evidence": {
+        "hook_swallowed": true,
+        "upfront_blind_5xx": true,
+        "plain_json_encoded": true,
+        "paid_http_status": 500
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_en": "x402 #3750/#3660 Per-Call PaymentPayloadContext.request & Non-Vacuous Multi-Rail Amount Law",
+      "title_zh": "x402 #3750/#3660 逐调用 PaymentPayloadContext.request 绑定与多链非零金额法则门禁",
+      "expected_decision_code": "X402_CONCURRENT_REQUEST_CONTEXT_OR_ZERO_RAIL_AMOUNT_BLOCKED",
+      "actual_decision_code": "X402_CONCURRENT_REQUEST_CONTEXT_OR_ZERO_RAIL_AMOUNT_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "Per-call request binding or multi-rail amount law violated: context_mismatch=True (#3750), invalid_rails=[{'network': 'solana:mainnet', 'maxAmountRequired': 0, 'usdEquivalentMinor': 0, 'drift_bps': 10000}] (#3660).",
+      "evidence": {
+        "in_flight_request_id": "req_concurrent_2",
+        "payload_context_request_id": "req_concurrent_1",
+        "uses_shared_constructor_request": true,
+        "invalid_rails": [
+          {
+            "network": "solana:mainnet",
+            "maxAmountRequired": 0,
+            "usdEquivalentMinor": 0,
+            "drift_bps": 10000
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_en": "MCP #3238/#3226 Dialect-Agnostic inputSchema vs Form requestedSchema & Template list_changed Gate",
+      "title_zh": "MCP #3238/#3226 inputSchema 方言解耦、requestedSchema 表单锁定与模板变更通知门禁",
+      "expected_decision_code": "MCP_SCHEMA_DIALECT_LAYER_OR_TEMPLATE_LIST_CHANGED_BLOCKED",
+      "actual_decision_code": "MCP_SCHEMA_DIALECT_LAYER_OR_TEMPLATE_LIST_CHANGED_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "MCP schema/notification invariant violated: unsupported_input_dialect=True, requested_has_dialect_override=True, requested_has_nested_non_primitive=True (#3238), template_sync_broken=True (#3226).",
+      "evidence": {
+        "declared_input_dialect": "https://example.com/unsupported-dialect",
+        "requested_has_dialect_override": true,
+        "requested_has_nested_non_primitive": true,
+        "template_sync_broken": true
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_en": "tau2-bench #654/#477 Content-Addressed Target DB Hash Cache & user_scenario.persona Typo Gate",
+      "title_zh": "tau2-bench #654/#477 内容寻址目标库哈希缓存与 user_scenario.persona 拼写校验门禁",
+      "expected_decision_code": "TAU2_STALE_TARGET_DB_CACHE_OR_PERSOCA_TYPO_BLOCKED",
+      "actual_decision_code": "TAU2_STALE_TARGET_DB_CACHE_OR_PERSOCA_TYPO_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "tau2-bench target DB cache or user_scenario schema violation: stale_cache_hit=True (#654), unknown_keys=['persoca'], missing_persona=True (#477).",
+      "evidence": {
+        "task_id": "banking_knowledge_task_091",
+        "stale_cache_hit": true,
+        "unknown_user_scenario_keys": [
+          "persoca"
+        ],
+        "missing_persona": true
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_en": "tau2-bench #154/#474/#430 Concurrent default_vpn_details Deep-Copy, Judge LLM & Str-Num Gate",
+      "title_zh": "tau2-bench #154/#474/#430 并发 VPN 状态深拷贝、评测模型预检与数值字符串强转门禁",
+      "expected_decision_code": "TAU2_SHARED_VPN_STATE_JUDGE_FALLBACK_OR_STR_NUM_ERROR_BLOCKED",
+      "actual_decision_code": "TAU2_SHARED_VPN_STATE_JUDGE_FALLBACK_OR_STR_NUM_ERROR_BLOCKED",
+      "ai_native_blocked": true,
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "perturbation_consistent": true,
+      "detail": "tau2-bench reliability violation: shares_class_level_mutable_ref=True (#154), unsafe_judge_config=True (#474), inconsistent_str_num_rejection=True (#430).",
+      "evidence": {
+        "shares_class_level_mutable_ref": true,
+        "judge_llm_model": "gpt-4.1-2025-04-14",
+        "judge_api_key_is_placeholder": true,
+        "trajectories_saved_before_judge_eval": false,
+        "inconsistent_str_num_rejection": true
+      }
+    }
+  ]
+}

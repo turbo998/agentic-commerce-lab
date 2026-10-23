@@ -2418,6 +2418,36 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
 - **技术资产**：[`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)、[`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.en.html)）。
 
+---
+
+## 203. Stage 204 深度剖析（`2026-10-23`）：UCP 结账 REST 签名请求 `ucp-agent` 签名覆盖（`#794`）、会话外支付归集 `order.actions[]` `render_artifact` 与 `collection_status`（`#641`）、非定重商品 `catch_weight` 公差与可编程预授权冻结期（`#489`）、OpenAPI 3.1.0 `securitySchemes` 与 `update_checkout` 请求体 `id` 剔除（`#668`/`#649`）、x402 `HEAD` 扣款禁止与 HTTP 方法资格（`#3810`/`#3657`）、`PAYMENT-REQUIRED` 响应头大小预算（`#3803`）、Axios 流式响应中间 402 排空（`#3814`）、RFC 9111 引号感知 `Cache-Control: private` 解析（`#3747`）、`payee-name` 扩展 ENS 签名源站与 `payTo` 绑定（`#3755`）、`ext-delegation` 委托人签名 JWS 智能体授权范围（`#3693`）、Python 异步 Bazaar `_get_async_client()` 与非 200 错误体保留（`#3792`/`#3779`）、Go 钩子错误传递/付费状态码/Fastify 纯文本体（`#3650`/`#3680`/`#3811`）、逐调用 `PaymentPayloadContext.request` 与多链非零金额法则（`#3750`/`#3660`）、MCP `inputSchema` 方言解耦与 `requestedSchema` 表单锁定及模板变更通知（`#3238`/`#3226`）及 Sierra $\tau$-bench 2.0 目标库哈希缓存与并发隔离（`#654`/`#477`/`#154`/`#474`/`#430`）
+
+### 203.1 UCP 结账签名覆盖、会话外支付归集、非定重预授权与 OpenAPI 3.1.0 契约（`#794`、`#641`、`#489`、`#668`、`#649`）
+
+1. **结账 REST 签名请求强制覆盖 `ucp-agent`、`signature-agent` 与 `idempotency-key`（`Issue #794`）**：
+   - 依据 UCP 身份解析算法第 5 步（`docs/specification/overview/index.md`），只要请求中存在 `UCP-Agent`、`Signature-Agent` 或 `Idempotency-Key` 头，RFC 9421 `Signature-Input` 覆盖集就必须包含该头（修复 `#794` 中结账 REST 示例遗漏 `"ucp-agent"` 导致合规验证器直接跳过签名的漏洞）。
+2. **会话外支付归集（`Issue #641`）、非定重商品可编程预授权（`Issue #489`）与 OpenAPI 3.1.0 规范（`Issues #668 / #649`）**：
+   - `#641`：针对 Boleto、带到期日 Pix、OXXO、Multibanco、Konbini、Khipu 等超出 6 小时结账生命周期的线下/跨日付款方式，在持久 `Order` 上引入 `order.actions[]`（承载未过期 `dev.ucp.common.payment.render_artifact`）与逐支付工具 `collection_status`（`awaiting_payment | paid | expired | canceled`），严禁在 `awaiting_payment` 期间提前放行发货或将已终态 `expired`/`canceled` 工具翻转为 `paid`。
+   - `#489`：`dev.ucp.shopping.catch_weight` 强制实际出库重量落入 `[target * (1 - min_underage_tolerance), target * (1 + max_overage_tolerance)]`、结算扣款不超过 `round(estimated * (1 + max_overage_tolerance))` 且预授权冻结天数 `authorization_hold_days >= required_hold_time_days`。
+   - `#668 & #649`：依据 OpenAPI 3.1.0 §4.8.12.1 禁止将 `Authorization` 声明为普通 `in: "header"` 参数（必须使用 `securitySchemes`），并在 `PUT /checkout-sessions/{id}`（`update_checkout`）中严格执行 `checkout.id` 的 `ucp_request: "omit"`，阻断请求体伪造 `id`。
+
+### 203.2 x402 传输边界、ENS 身份绑定、委托授权范围、MCP 模式方言与 Sierra $\tau$-bench 2.0 并发隔离（`x402 #3810/#3657/#3803/#3814/#3747/#3755/#3693/#3792/#3779/#3650/#3680/#3811/#3750/#3660`、`MCP #3238/#3226`、`tau2-bench #654/#477/#154/#474/#430`）
+
+1. **x402 `HEAD` 止付、`PAYMENT-REQUIRED` 8 KB/16 KB 预算、Axios 流式 402 排空与引号感知 `Cache-Control: private`（`#3810`、`#3657`、`#3803`、`#3814`、`#3747`）**：
+   - 严禁在 `HEAD` 请求上执行 `PAYMENT-SIGNATURE` 链上结算（因 RFC 9110 §9.3.2 禁止 `HEAD` 返回响应体，结算将导致买家白付钱拿不到内容，`#3810`）并强制校验 `allowed_payment_methods`（`#3657`）；限制 Base64 `PAYMENT-REQUIRED` 头不超过 `7,168` 字节以防触发 Python `aiohttp` `8,190` 字节及 Node `undici` `16,384` 字节溢出（`#3803`）；在 `responseType: "stream"` 下重试前强制排空中间 402 响应流防止单连接池死锁（`#3814`）；使用忽略双引号内逗号的 RFC 9111 扫描器识别 `example="a, private, b"` 伪私有指令（`#3747`）。
+2. **x402 `payee-name` ENS 绑定（`#3755`）、`ext-delegation` 委托授权（`#3693`）、跨语言 SDK 守恒（`#3792`/`#3779`/`#3650`/`#3680`/`#3811`）及逐调用请求绑定与非零金额法则（`#3750`/`#3660`）**：
+   - 核验 ENS 所有者签名的 `org.x402.origins` 与多链 `(network, payTo)` 映射（`#3755`）；核验委托人签名 JWS 中 `grant.agent == authorization.from`、`audience`、`maxAmount`、`aggregateBudget` 与 `expiresAt`（`#3693`）；强制 Python 异步 `BazaarExtension` 调用 `_get_async_client()` 并保留非 200 `/verify`/`/settle` JSON 错误体（`#3792`/`#3779`）；向上传播 Go `OnAfterPaymentCreation` 错误、向 `onPaymentResponse` 注入付费 HTTP 状态码以防 `upfront` 结算后 500 假成功记账、保留 Fastify `text/plain` 原始换行（`#3650`/`#3680`/`#3811`）；按单次调用绑定 `PaymentPayloadContext.request` 并拦截任何 `maxAmountRequired <= 0` 的空头多链报价（`#3750`/`#3660`）。
+3. **MCP 模式方言解耦与模板变更通知（`#3238`/`#3226`）及 Sierra $\tau$-bench 2.0 缓存与并发隔离（`#654`/`#477`/`#154`/`#474`/`#430`）**：
+   - 解耦 `inputSchema` 方言声明与固定表单形态 `requestedSchema`（禁止 `requestedSchema` 注入 `$schema` 或嵌套对象，`#3238`），并在资源模板变更时要求同时刷新 `resources/list` 与 `resources/templates/list`（`#3226`）；在 $\tau$-bench 2.0 中按 `(task_id, actions_sha256, initial_db_sha256, env_version)` 校验目标库哈希缓存并拦截 `task_091.json` 的 `"persoca"` 拼写错误（`#654`/`#477`），深拷贝并发 `default_vpn_details`、预检裁判模型密钥并在保存轨迹后评测、统一强转银行工具数值字符串参数（`#154`/`#474`/`#430`）。
+
+---
+
+## 204. Stage 205 基准评测（`2026-10-23` · 205 阶段里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 204 全部 16 项 `2026-10-23` 一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.57 ms`（`3.35x` 加速）**。
+- **技术资产**：[`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)、[`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.en.html)）。
+
 
 
 

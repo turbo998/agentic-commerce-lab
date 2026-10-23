@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–201 · 200 阶段里程碑！）
+# 2026-10-23 Agentic Commerce 每日技术资产与架构更新索引（Stages 170–205 · 205 阶段里程碑！）
 
 🌐 **Language / 语言导航**: **中文索引 (当前)** | **[English Version (`2026-10-23-daily-update.en.md`)](2026-10-23-daily-update.en.md)** | **[2026-10-23 每日深度研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)** | **[English Daily Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)**
 
@@ -307,6 +307,24 @@
   - 基准套件：[`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)
   - 单元测试：[`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)（全仓库 **820/820** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/report.json)
+
+---
+
+## Stage 204：UCP 结账 REST 签名请求 `ucp-agent` 签名覆盖（`#794`）、会话外支付归集 `order.actions[]` `render_artifact` 与 `collection_status`（`#641`）、非定重商品 `catch_weight` 公差与可编程预授权冻结期（`#489`）、OpenAPI 3.1.0 `securitySchemes` 与 `update_checkout` 请求体 `id` 剔除（`#668`/`#649`）、x402 `HEAD` 请求扣款禁止与 HTTP 方法资格（`#3810`/`#3657`）、`PAYMENT-REQUIRED` 响应头大小预算（`#3803`）、Axios 流式响应中间 402 排空（`#3814`）、RFC 9111 引号感知 `Cache-Control: private` 解析（`#3747`）、`payee-name` 扩展 ENS 签名源站与 `payTo` 绑定（`#3755`）、`ext-delegation` 委托人签名 JWS 智能体授权范围（`#3693`）、Python 异步 Bazaar `_get_async_client()` 与非 200 错误体保留（`#3792`/`#3779`）、Go 钩子错误传递/付费状态码/Fastify 纯文本体（`#3650`/`#3680`/`#3811`）、逐调用 `PaymentPayloadContext.request` 与多链非零金额法则（`#3750`/`#3660`）、MCP `inputSchema` 方言解耦与 `requestedSchema` 表单锁定及模板变更通知（`#3238`/`#3226`）、以及 Sierra $\tau$-bench 2.0 内容寻址目标库哈希缓存/`persoca` 拼写校验与并发 `default_vpn_details` 深拷贝/评测模型预检/数值字符串强转（`#654`/`#477`/`#154`/`#474`/`#430`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py)
+  - 单元测试：[`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py)（全仓库 **823/823** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§203)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§203)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 205（205 阶段里程碑！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 204）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)
+  - 单元测试：[`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)（全仓库 **824/824** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/report.json)
 
 
 

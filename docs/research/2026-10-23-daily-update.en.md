@@ -1,4 +1,4 @@
-# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–201 · 200-Stage Milestone!)
+# 2026-10-23 Agentic Commerce Daily Technical Asset & Architecture Update Index (Stages 170–205 · 205-Stage Milestone!)
 
 🌐 **Language / 语言导航**: **[中文索引 (`2026-10-23-daily-update.md`)](2026-10-23-daily-update.md)** | **English Index (Current)** | **[2026-10-23 Daily Deep-Dive Report (`research/daily/2026-10-23.en.md`)](../../research/daily/2026-10-23.en.md)** | **[中文每日研究主报告 (`research/daily/2026-10-23.md`)](../../research/daily/2026-10-23.md)**
 
@@ -307,6 +307,24 @@
   - Benchmark suite: [`lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../lab/ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py)
   - Unit tests: [`tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py`](../../tests/test_ucp_rfc9421_response_offers_cart_status_buyer_lock_ap2_log_tau2_bm25_bench.py) (**820/820** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-rfc9421-response-offers-cart-status-buyer-lock-ap2-log-tau2-bm25-bench/report.json)
+
+---
+
+## Stage 204: UCP Checkout REST Signed Request `ucp-agent` Covered-Component Gate (`#794`), Out-of-Session Payment Collection (`order.actions[]` `render_artifact` + `collection_status`, `#641`), Variable-Yield `catch_weight` Tolerance & Programmable Authorization Hold (`#489`), OpenAPI 3.1.0 `securitySchemes` & `update_checkout` `checkout.id` Omit (`#668`/`#649`), x402 `HEAD` Settlement Prohibition & HTTP Method Eligibility (`#3810`/`#3657`), `PAYMENT-REQUIRED` Header Budget (`#3803`), Axios Streaming 402 Drain (`#3814`), RFC 9111 Quote-Aware `Cache-Control: private` Parser (`#3747`), `payee-name` ENS Origin & `payTo` Binding (`#3755`), `ext-delegation` Principal-Signed JWS Spend Grant (`#3693`), Python Async `BazaarExtension` `_get_async_client()` & Non-200 Body Preservation (`#3792`/`#3779`), Go Hook Error Propagation / Paid HTTP Status / Fastify Plain Body (`#3650`/`#3680`/`#3811`), Per-Call `PaymentPayloadContext.request` & Multi-Rail Non-Zero Amount Law (`#3750`/`#3660`), MCP `inputSchema` Dialect Separation & `requestedSchema` Form Pinning + Template `list_changed` (`#3238`/`#3226`), and Sierra $\tau$-bench 2.0 Content-Addressed Target DB Cache / `persoca` Typo & Concurrent `default_vpn_details` Deep-Copy / Judge Preflight / Numeric String Coercion (`#654`/`#477`/`#154`/`#474`/`#430`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py)
+  - Unit tests: [`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_guard.py) (**823/823** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§203)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§203)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 205 (205-Stage Milestone!): 16-Scenario (`PR-01..PR-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 204)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../lab/ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py)
+  - Unit tests: [`tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py`](../../tests/test_ucp_signed_headers_oos_catch_weight_x402_head_budget_ens_delegation_tau2_bench.py) (**824/824** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-signed-headers-oos-catch-weight-x402-head-budget-ens-delegation-tau2-bench/report.json)
 
 
 
