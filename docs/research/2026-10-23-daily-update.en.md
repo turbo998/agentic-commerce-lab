@@ -164,6 +164,25 @@
   - Unit tests: [`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py) (**777/777** repository unit tests passing)
   - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html` (Chinese)](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/report.json)
 
+---
+
+## Stage 188: x402 §5.5 Single-Ingress Settlement & Refusal Identity Invariant (PR `#3776` / `#3772`), HTTP 402 `text/plain` Body Preservation (PR `#3901`/`#3902`), Bazaar Input-Shape Method Resolution (PR `#3880`) & `stellar-sdk 16.4.1` Floor (PR `#3904`), and Sierra $\tau$-bench 2.0 `voice-v1` Canonical Task Reload (PR `#673`), Atomic Checkpoint Replacement (PR `#533`) & Whole-Response Fenced JSON Judge Parsing (PR `#562`) Deterministic Guardrails
+
+- **New Code & Bilingual Documentation Assets**:
+  - Deterministic guard module: [`lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py`](../../lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py)
+  - Unit tests: [`tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py`](../../tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py) (**780/780** repository unit tests passing)
+  - Bilingual architecture sections: [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§187)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§187)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 189: 16-Scenario (`XI-01..XI-16`) Bilingual 7-Card 4:5 Visual Benchmark Suite (Covering Stage 188)
+
+- **New Code & Bilingual Report Assets**:
+  - Benchmark suite: [`lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py)
+  - Unit tests: [`tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py) (**782/782** repository unit tests passing)
+  - Bilingual 7-Card 4:5 report: [`reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.html` (Chinese)](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.html) ⇄ [`index.en.html` (English)](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/report.json)
+
+
 
 
 

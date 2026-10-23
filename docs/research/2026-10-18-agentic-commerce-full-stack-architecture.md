@@ -2215,6 +2215,28 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.55 ms`（`3.24x` 加速）**。
 - **技术资产**：[`lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../lab/ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py)、[`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.en.html)）。
 
+---
+
+## 187. Stage 188 深度研究（`2026-10-23`）：x402 §5.5 入口唯一结算与拒绝身份不变量（PR `#3776` / `#3772`）、402 `text/plain` 原始错误体（PR `#3901`/`#3902`）、Bazaar 输入形态方法解析（PR `#3880`）与 `stellar-sdk 16.4.1` 安全下限（PR `#3904`）、以及 Sierra $\tau$-bench 2.0 `voice-v1` 规范任务集重载（PR `#673`）、原子检查点替换（PR `#533`）与整块围栏 JSON 解析（PR `#562`）
+
+### 187.1 x402 Foundation §5.5 入口唯一结算与拒绝身份不变量（PR `#3776` 实现 `#3772`，`2026-10-23T17:52:07Z`）
+- 在 `x402-foundation/x402` PR `#3776`（`specs/x402-specification-v2.md §5.5`）中，确立 **Settlement and Refusal Identity Invariant**：任何跨 `/settle`、§9 拒绝处理、重放查表与报价挑战关联请求的工件（`attempt_id`、`Idempotency-Key`、幂等作用域）**必须在入口处（at ingress）仅从不可变快照派生一次**，涵盖 9 项具名解码后字段（`method`、`path`、规范 `query`、解码后 `body`、已解析的 `payTo`、`asset`、`network`、`amount`、`scheme`），对 JSON 键序与空白不敏感且严禁基于原始线路字节（wire bytes）计算（`x402_ingress_identity_wire_encoding_dependent`）。`network` 必须规范化为 CAIP-2、EVM 地址转为小写、时间戳为 RFC 3339 `Z`、缺省成员必须从哈希集合中完全省略而严禁强制转换为 `null`/`""`/`0`（`x402_ingress_identity_destroyed_or_null_coerced_member`）。当对手方执行副署核验时，必须严格区分值不匹配（`refused_value_mismatch`）与缺少观测字节导致无法比对（`refused_comparison_impossible`，即 **Absence is not difference**，`x402_countersignature_absence_collapsed_into_mismatch`）；严格区分三类签名工件标识符（`operation_identity`、`captured_artifact_digest`、`signed_content_identifier`），且执行后产生的计量/交付结果属于结果层（Outcome Layer），严禁折入入口请求身份（`x402_ingress_identity_outcome_layer_folded`）。
+
+### 187.2 x402 HTTP 402 `text/plain` 原始错误体保留（PR `#3901`/`#3902` 合入）、Bazaar 输入形态方法解析（PR `#3880` 合入）与 `stellar-sdk 16.4.1` / `axios 1.20.0` 安全下限（PR `#3904` 合入，`2026-10-23T16:16Z..16:21Z`）
+- 在合入 PR `#3901`（Python FastAPI/Flask）与 PR `#3902`（Go Gin/net-http）中，当 `HTTPResponseInstructions` 声明 `Content-Type: text/plain`（含 `; charset=utf-8` 参数）且 `body` 为字符串时，中间件必须直接发送原始 UTF-8 字节（保留换行符），严禁调用 `json.dumps` 将其二次编码为带引号的 JSON 字符串（`x402_text_plain_402_body_json_encoded`）。在合入 PR `#3880`（`python/x402/extensions/bazaar/server.py`）中，新增 `_resolve_declared_method(input_data, probe_method)`：当路由声明含请求体（`bodyType != None`）但被客户端以 `GET` 探测触发 402 时，Bazaar 发现扩展必须将其广告方法解析为 `POST`（限定于 `{"POST", "PUT", "PATCH"}`）并将 `schema.properties.input.properties.method.enum` 收窄为 `["POST"]`；当查询参数路由（`bodyType == None`）被以 `POST` 探测时解析为 `GET`（`x402_bazaar_probe_method_mismatches_declared_input_shape`），同时保持 `input.type == "mcp"` 原样不变。在合入 PR `#3904` 中强制 `@stellar/stellar-sdk >= 16.4.1` 与传递依赖 `axios >= 1.20.0`。
+
+### 187.3 Sierra $\tau$-bench 2.0 `voice-v1` 规范任务集重载（PR `#673` 合入）、原子检查点替换防轨迹丢失（PR `#533`）与 NL 断言裁判整块围栏 JSON 解析（PR `#562`，`2026-10-22T17:26Z..19:41Z`）
+- 在 `sierra-research/tau2-bench` 合入 PR `#673`（`src/tau2/voice/utils/Headless.py`、`Submission.py`、`run.py`）中，新增 `uses_canonical_tasks(benchmark)` 与 `reload_recorded_call(..., canonical_tasks=...)`：`voice-v1` 绑定注册表规范任务集（`canonical_tasks=True`），跳过英语语言包在 `retail` 与 `telecom` 上的修订任务替换文件，并在单次通话重载与导出复评时双重校验 `loaded.artifact_pins == context.artifact_pins` 与 `task_digest(task) == context.task_sha256`（`tau2_voice_v1_canonical_task_reload_flag_mismatch`）。在 PR `#533`（`checkpoint.py`）中，修复 `_replace_dir` 在写入新轨迹前提前 `unlink` 旧文件的数据丢失漏洞：必须先通过 `tempfile.mkstemp` 写入并在 `os.replace(tmp_path, sim_path)` 原子替换成功后，才在 `old_sim_id != simulation.id` 时清理旧文件（`tau2_checkpoint_replacement_deleted_before_atomic_write`）。在 PR `#562`（`evaluate_nl_assertions`）中，仅当裁判响应首尾行整体构成 ```` ```json ... ``` ```` 或 ```` ``` ... ``` ```` 围栏（`len(lines) >= 3`）时剥离外层围栏（保留 JSON 字符串值内部的反引号），对前置说明文本、多段围栏或 ` ```python ` 标签严格抛出 `JSONDecodeError` 而非静默吞掉报错判定通过（参见 `lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py`）。
+
+---
+
+## 188. Stage 189 基准评测（`2026-10-23`）：16 场景（`XI-01..XI-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 188 全部 16 项 `2026-10-23` 一手协议与基准护栏（`XI-01..XI-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位批量延迟 **`0.17 ms` vs. 串行 `0.56 ms`（`3.29x` 加速）**。
+- **技术资产**：[`lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py)、[`tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py) 及双语报告 [`reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/`](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.en.html)）。
+
+
 
 
 

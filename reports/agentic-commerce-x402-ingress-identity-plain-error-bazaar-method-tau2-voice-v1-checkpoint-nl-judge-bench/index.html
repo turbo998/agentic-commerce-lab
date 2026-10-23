@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>x402 §5.5 入口唯一结算/拒绝身份 + 402 纯文本/Bazaar 方法修正 + τ-bench voice-v1 规范重载与原子检查点评测 (16/16 · 100%)</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; max-width: 1440px; margin: 0 auto; }
+  .card { width: 100%; aspect-ratio: 4 / 5; background: #1E293B; border: 1px solid #334155; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: #38BDF8; font-weight: 700; }
+  h1, h2 { margin: 8px 0; font-size: 18px; line-height: 1.35; }
+  .grad { background: linear-gradient(90deg, #38BDF8, #818CF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94A3B8; font-weight: 600; }
+  pre { background: #0F172A; color: #E2E8F0; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
+  .pill { background: #065F46; color: #A7F3D0; padding: 2px 8px; border-radius: 999px; font-size: 10px; white-space: nowrap; }
+  .bar-row { margin: 8px 0; }
+  .bar-track { background: #0F172A; height: 14px; border-radius: 7px; overflow: hidden; }
+  .bar-primary { background: #3B82F6; height: 100%; }
+  .bar-base { background: #CBD5E1; height: 100%; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .box-good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10B981; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .box-bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 10px; padding: 10px; font-size: 12px; }
+  .callout { background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 10px; font-size: 11px; color: #CBD5E1; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENT COMMERCE PROTOCOL GUARD</div>
+      <h1><span class="grad">x402 §5.5 入口唯一结算/拒绝身份 + 402 纯文本/Bazaar 方法修正 + τ-bench voice-v1 规范重载与原子检查点评测 (16/16 · 100%)</span></h1>
+      <p>x402 PR #3776 (#3772) + PR #3901/#3902/#3880/#3904 + Sierra τ-bench PR #673/#533/#562</p>
+      <table>
+        <tr><th>Metric</th><th>Measured Value</th></tr>
+        <tr><td>Scenarios Passed</td><td>16 / 16 (100.0%)</td></tr>
+        <tr><td>Total Guard Latency</td><td>0.17 ms (vs 0.56 ms baseline, 3.29x)</td></tr>
+        <tr><td>Perturbation Stability</td><td>100.0% (0.0 pts drift)</td></tr>
+      </table>
+    </div>
+    <div class="callout">Provenance: <code>measured</code> · <code>independently_reproduced=true</code> · Stage 189</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: XI-07 &amp; XI-11 DEEP DIVE</div>
+      <h2>3 Deterministic Decisions in 0.033 ms: Absence != Difference &amp; Bazaar Input-Shape Method</h2>
+      <div class="callout">"Absence is not difference: a counterparty missing observed bytes MUST report refused_comparison_impossible, never refused_value_mismatch."</div>
+      <table>
+        <tr><th>Task</th><th>Type</th><th>Confidence</th><th>Action</th></tr>
+        <tr><td>XI-07 x402 §5.5 Countersignature Absence</td><td><code>choice</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+        <tr><td>XI-11 x402 Bazaar GET Probe on Body Route</td><td><code>choice</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+        <tr><td>XI-14 τ-bench voice-v1 Canonical Task Reload</td><td><code>score</code></td><td>99.0%</td><td><span class="pill">Act automatically</span></td></tr>
+      </table>
+    </div>
+    <div class="callout">Zero false accepts across 13 adversarial attack vectors and 3 compliant baselines.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+      <h2>16/16 Scenarios (100.0%) Pass Across x402 §5.5, Middleware/Bazaar, and τ-bench voice-v1</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><code>XI-01</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Derive operation_identity once at ingress over 9 named decoded fields with CAIP-2 & lowercased EVM normalization?</td><td><code>ALLOW</code> (ok)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-02</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Reject identity derived over raw wire bytes sensitive to JSON key order or whitespace?</td><td><code>BLOCK</code> (x402_ingress_identity_wire_encoding_dependent)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-03</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Reject ingress snapshot when an absent member is coerced to null/empty/0 or its name was destroyed?</td><td><code>BLOCK</code> (x402_ingress_identity_destroyed_or_null_coerced_member)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-04</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Reject ingress snapshot missing a required non-absent field (e.g., payTo or scheme)?</td><td><code>BLOCK</code> (x402_ingress_identity_incomplete_snapshot)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-05</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Reject downstream /settle or §9 refusal path that re-derives a divergent operation_identity mid-attempt?</td><td><code>BLOCK</code> (x402_ingress_identity_downstream_divergence_prohibited)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-06</code> · x402 §5.5 Ingress Identity (#3776)</td><td>Reject folding post-execution outcome-layer metering or partial-delivery readings into ingress identity?</td><td><code>BLOCK</code> (x402_ingress_identity_outcome_layer_folded)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-07</code> · x402 §5.5 Countersignature (#3776)</td><td>Enforce 'Absence is not difference': refuse countersignature and report refused_comparison_impossible when bytes unobserved?</td><td><code>BLOCK</code> (x402_countersignature_absence_collapsed_into_mismatch)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-08</code> · x402 §5.5 Artifact Triplet (#3776)</td><td>Reject collapsing operation_identity, captured_artifact_digest, and signed_content_identifier into one hash?</td><td><code>BLOCK</code> (x402_signed_artifact_three_identifiers_collapsed)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-09</code> · x402 Middleware & Bazaar (#3901/#3880)</td><td>Preserve raw UTF-8 text/plain 402 body and resolve Bazaar body route probed with GET to POST?</td><td><code>ALLOW</code> (ok)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-10</code> · x402 Middleware (#3901/#3902)</td><td>Reject FastAPI/Flask/Go middleware that json.dumps-encodes a declared text/plain 402 payment-error string body?</td><td><code>BLOCK</code> (x402_text_plain_402_body_json_encoded)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-11</code> · x402 Bazaar Discovery (#3880)</td><td>Reject Bazaar discovery extension that copies probe method GET onto a bodyType=json route instead of POST?</td><td><code>BLOCK</code> (x402_bazaar_probe_method_mismatches_declared_input_shape)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-12</code> · x402 Stellar Floor (#3904)</td><td>Reject stellar-sdk < 16.4.1 or transitive axios < 1.20.0 below security dependency floor?</td><td><code>BLOCK</code> (x402_stellar_sdk_or_axios_below_security_floor)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-13</code> · tau2-bench voice-v1 (#673/#533/#562)</td><td>Accept voice-v1 canonical_tasks=True reload with matching artifact_pins, atomic checkpoint replace, and fenced JSON judge?</td><td><code>ALLOW</code> (ok)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-14</code> · tau2-bench voice-v1 (#673)</td><td>Reject reloading voice-v1 recorded call or export with canonical_tasks=False (reviewed English pack task overrides)?</td><td><code>BLOCK</code> (tau2_voice_v1_canonical_task_reload_flag_mismatch)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-15</code> · tau2-bench Checkpoint (#533)</td><td>Reject _replace_dir unlinking old trajectory file before tempfile + os.replace completes?</td><td><code>BLOCK</code> (tau2_checkpoint_replacement_deleted_before_atomic_write)</td><td><span class='pill'>Act automatically</span></td></tr>
+<tr><td><code>XI-16</code> · tau2-bench NL Judge (#562)</td><td>Reject NL assertion judge response with leading prose or non-JSON fence tag instead of silently passing?</td><td><code>BLOCK</code> (tau2_nl_judge_malformed_or_non_whole_response_fence)</td><td><span class='pill'>Act automatically</span></td></tr></tbody>
+      </table>
+    </div>
+    <div class="callout">0 misses (<code>✕</code> = 0) · Deterministic O(1) guard gating</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+      <h2>Single Ingress Snapshot Identity vs. Atomic Checkpoint &amp; Whole-Response Fence</h2>
+      <pre>{
+  "ingress_snapshot": ["method","path","query","body","payTo","asset","network","amount","scheme"],
+  "identifiers": ["operation_identity", "captured_artifact_digest", "signed_content_identifier"],
+  "bazaar_resolve": "bodyType != None ? POST/PUT/PATCH : GET/HEAD/DELETE"
+}</pre>
+      <pre>↓ &lt;answer&gt;
+if counterparty_missing_observed_bytes:
+    return "refused_comparison_impossible"  # never collapse into refused_value_mismatch
+if benchmark_version == "voice-v1":
+    assert reload_used_canonical_tasks and reloaded_pins == recorded_pins</pre>
+    </div>
+    <div class="callout">Strict separation between Request Layer (ingress identity) and Outcome Layer (metering).</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>100.0% Consistency Across JSON Key Reordering, Case Perturbation, and Embedded Backticks</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>x402 §5.5 Mixed-Case vs Lowercase EVM Address</td><td>ALLOW (same op_id)</td><td>ALLOW (same op_id)</td><td>0.0</td></tr>
+          <tr><td>x402 §5.5 Wire Whitespace/Key Order Variance</td><td>same op_id, distinct cap_digest</td><td>same op_id, distinct cap_digest</td><td>0.0</td></tr>
+          <tr><td>x402 Bazaar Body Route Probed with GET vs POST</td><td>resolved=POST</td><td>resolved=POST</td><td>0.0</td></tr>
+          <tr><td>τ-bench NL Judge JSON with Embedded ``` Backticks</td><td>ALLOW (1 check)</td><td>ALLOW (1 check)</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">Named decoded field hashing guarantees wire-serialization invariance while preserving byte-level audit digests.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY</div>
+      <h2>0.17 ms Total Guard Suite Latency (3.29x Faster Than 0.56 ms Regex/AST Baseline)</h2>
+      <div class="bar-row">
+        <div>Primary O(1) Guard (16 scenarios): <strong>0.17 ms</strong></div>
+        <div class="bar-track"><div class="bar-primary" style="width: 30%;"></div></div>
+      </div>
+      <div class="bar-row">
+        <div>Baseline Multi-Pass Parser (16 scenarios): <strong>0.56 ms</strong></div>
+        <div class="bar-track"><div class="bar-base" style="width: 100%;"></div></div>
+      </div>
+    </div>
+    <div class="callout">Sub-millisecond inline enforcement suitable for x402 API gateways and τ-bench evaluation loops.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE</div>
+      <h2>Deploy Single-Ingress Identity &amp; Atomic Checkpoint Guards at Every Payment/Eval Boundary</h2>
+      <div class="split">
+        <div class="box-good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>x402 gateways enforcing single ingress identity across /settle &amp; §9 refusals</li>
+            <li>FastAPI/Flask/Go 402 text/plain error handlers &amp; Bazaar discovery servers</li>
+            <li>τ-bench voice-v1 evaluation &amp; checkpoint resumption pipelines</li>
+          </ul>
+        </div>
+        <div class="box-bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Replacing cryptographic EIP-712 / Ed25519 signature verification</li>
+            <li>Folding post-execution metering into request idempotency keys</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout">Readiness: Production-ready · License: MIT · Provenance: <code>measured</code> (`e33a2a5`+)</div>
+  </section>
+</div>
+</body>
+</html>

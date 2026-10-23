@@ -164,6 +164,25 @@
   - 单元测试：[`tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py`](../../tests/test_ucp_return_policy_purchase_options_ap2_dispute_resolver_revocation_mcp_task_log_bench.py)（全仓库 **777/777** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-return-policy-purchase-options-ap2-dispute-resolver-revocation-mcp-task-log-bench/report.json)
 
+---
+
+## Stage 188：x402 §5.5 入口唯一结算与拒绝身份不变量（PR `#3776` / `#3772`）、402 `text/plain` 原始错误体（PR `#3901`/`#3902`）、Bazaar 输入形态方法解析（PR `#3880`）与 `stellar-sdk 16.4.1` 安全下限（PR `#3904`）、以及 Sierra $\tau$-bench 2.0 `voice-v1` 规范任务集重载（PR `#673`）、原子检查点替换（PR `#533`）与整块围栏 JSON 解析（PR `#562`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py`](../../lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py)
+  - 单元测试：[`tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py`](../../tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_guard.py)（全仓库 **780/780** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§187)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§187)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 189：16 场景（`XI-01..XI-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 188）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../lab/x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py)
+  - 单元测试：[`tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py`](../../tests/test_x402_ingress_identity_text_plain_bazaar_method_tau2_voice_v1_checkpoint_fence_bench.py)（全仓库 **782/782** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.html`（中文）](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-x402-ingress-identity-plain-error-bazaar-method-tau2-voice-v1-checkpoint-nl-judge-bench/report.json)
+
+
 
 
 
