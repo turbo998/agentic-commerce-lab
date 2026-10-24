@@ -506,6 +506,24 @@
   - 单元测试：[`tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py`](../../tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py)（全仓库 **864/864** 单测通过）
   - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/report.json)
 
+---
+
+## Stage 226：UCP Schema `generate-openapi` 配置驱动 OpenAPI 3.1 服务绑定与可达性剪枝（`ucp-schema#89`）、开放判别器联合降级（`<Union>Base`）与跨文件去中心化子类型发现（`OU-1..OU-4`，`ucp-schema#88`/`#87`）、`.well-known/ucp` 配置文件作用域与孤立扩展剪枝及切片前后 AST 规范化器（`ucp-schema#86`/`#85`）、实例关键字同名属性 Lint 遍历 + 非字符串数组 `required` 保留与定向切片对齐（`ucp-schema#91`/`#83`/`#82`/`#81`/`#78`）、MCP Apps Iframe `allow` 分号分隔与 `clipboard-write` 及 `ui/initialize` / `ui/resource-teardown` / `connect-src 'none'` 规范对齐（`ext-apps#823`/`#822`）、多视图共享 `AppBridge` 列表变更分发器与清理时取消待执行动画帧（`ext-apps#818`/`#815`）、Windows `file:///C:/` 根路径解析 + 点目录 `sandbox.html` 托管与宿主前缀工具名解析（`ext-apps#816`/`#812`/`#809`）、MCP DPoP 服务端规范（SEP-1932）Bearer 降级拦截 + `invalid_dpop_proof` 区分 + `dpop_jkt` 绑定与 SEP-3392 实验目录（`ext-auth#40`/`#38`/`#37`/`#35`/`#33`）、MCP Conformance 源 POST SSE 流关联（`extra.sendRequest`）与 SEP-1036 URL 模式问询全量一致性（`conformance#561`/`#558`）、SEP-2640 目录读取缓存属性 + SEP-9998 Agent 发现 + SEP-2243 `-32020` 与 SEP-2164 `-32602` 强校验（`conformance#559`/`#556`/`#555`/`#554`）、SEP-2322 仅 `requestState` 重试回显 + Runner 异常落盘 `checks.json` 与全拒服务端假绿阻断（`conformance#548`/`#538`/`#537`）、MCP Ruby SDK 不可编码缓冲通知丢弃 + 不可编码响应逐项 `-32603` 降级与 Stdio 服务端保活（`ruby-sdk#630`/`#629`/`#623`）、字节级 Stdio 帧裁剪 + 非法 UTF-8 键 `-32700` + 不可编码 Ping 跳过与无状态能力剥离（`ruby-sdk#628`/`#627`/`#625`/`#624`/`#622`/`#620`/`#616`/`#615`）、MCP PHP SDK 数组形状内可空/联合键保留 + 自定义注册表 `publishesListChanges` 与 `InputRequiredResult` 指引（`php-sdk#613`/`#608`/`#606`）、会话锁不可用 `-32603` 对齐 + 排队通知转 SSE 流投递与纯通知/响应 POST 返回 `202` 空体（`php-sdk#603`/`#602`/`#597`）、以及 Stdio 响应前刷新通知 + `{main}` 协程事件循环发送 HTTP 请求与恢复后会话增量持久化（`php-sdk#601`/`#599`/`#598`）确定性护栏
+
+- **新增代码与双语文档资产**：
+  - 确定性护栏模块：[`lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_guards.py`](../../lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_guards.py)
+  - 单元测试：[`tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_guards.py`](../../tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_guards.py)（全仓库 **867/867** 单测通过）
+  - 双语架构章节：[`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.md` (§225)](2026-10-18-agentic-commerce-full-stack-architecture.md) ⇄ [`docs/research/2026-10-18-agentic-commerce-full-stack-architecture.en.md` (§225)](2026-10-18-agentic-commerce-full-stack-architecture.en.md)
+
+---
+
+## Stage 227（868/868 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准评测报告（覆盖 Stage 226）
+
+- **新增代码与双语报告资产**：
+  - 基准套件：[`lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py)
+  - 单元测试：[`tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py)（全仓库 **868/868** 单测通过）
+  - 双语 7-Card 4:5 报告：[`reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.html`（中文）](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.html) ⇄ [`index.en.html`（English）](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.en.html) ⇄ [`report.json`](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/report.json)
+
 
 
 

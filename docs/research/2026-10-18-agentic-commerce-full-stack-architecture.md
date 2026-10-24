@@ -2721,6 +2721,38 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py`](../../lab/ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py)、[`tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py`](../../tests/test_ucp_conformance_js_sdk_mcp_csharp_kotlin_swift_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/`](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-conformance-js-sdk-mcp-csharp-kotlin-swift-bench/index.en.html)）。
 
+---
+
+## 225. Stage 226 架构深潜（`2026-10-23`）：UCP Schema OpenAPI 3.1/Codegen 编译器与 MCP Apps、Ext-Auth、Conformance、Ruby 及 PHP SDK 确定性护栏
+
+### 225.1 UCP Schema 双层类型编译器与 OpenAPI 3.1 服务绑定护栏（`PR-01..PR-04`）
+1. **UCP Schema `generate-openapi` 配置驱动 OpenAPI 3.1 服务绑定与可达性剪枝（`ucp-schema#89`，`PR-01`）**：校验 `jsonSchemaDialect` 为 `https://spec.openapis.org/oas/3.1/dialect/base`；对无 REST 绑定或缺失 `schema` 的配置以退出码 `2` 拒绝；彻底移除 `components.schemas` 中的 `snake_case` 模板包装器并将 `#/$defs/<Name>` 重写为 `#/components/schemas/<Name>`；按路由可达闭包剪枝组件且不输出任何 `discriminator` 关键字。
+2. **UCP Schema 开放字符串判别器联合降级（`<Union>Base`）与跨文件去中心化子类型发现（`OU-1..OU-4`，`ucp-schema#88`/`#87`，`PR-02`）**：（`OU-1`）在 `<ParentUnion>.anyOf` 中将全部已知变体及跨文件发现的去中心化子类型置于末尾 `<ParentUnion>Base` 兜底分支之前；（`OU-2`）将所有已知与发现子类型的判别器标签写入 `<ParentUnion>Base.properties.<disc>.not.enum`；（`OU-3`）禁用 OpenAPI `discriminator`；（`OU-4`）剥离变体与基类判别器属性的 `default` 并移除子类型 `allOf` 中的父联合 `$ref`。
+3. **UCP Schema `.well-known/ucp` 配置文件作用域、孤立扩展剪枝与切片前后 AST 规范化器（`ucp-schema#86`/`#85`，`PR-03`）**：强制 `--profile` 与 `--schema-dir`/`--capability`/`--extension` 互斥，远程加载发送 `ucp-schema/<version>` `User-Agent`，迭代剪枝父能力未激活的孤立扩展；切片前提升内联条件变体（`ShippingMethod`/`PickupMethod`/`Oauth2Provider`）；切片后剥离 `Totals.allOf` `contains`、将 `oneOf` 标量/数组重写为 `anyOf`，并将 `Location.timezone` 存在性条件降级为 `dependentRequired`。
+4. **UCP Schema 实例关键字同名属性 Lint 遍历、非字符串数组 `required` 保留与定向切片对齐（`ucp-schema#91`/`#83`/`#82`/`#81`/`#78`，`PR-04`）**：`check_refs` 与 `check_annotations` 遍历 `properties`/`$defs` 中名为 `default`/`const`/`examples`/`enum` 的属性子模式（`#91`）；保留非字符串数组的 `required`（如 OpenAPI 参数的布尔 `required: true` 或畸形字符串，防止静默改写为 `[]`，`#78`）；对齐定向请求切片引用 `#/$defs/<Target><Suffix>`。
+
+### 225.2 MCP Apps、Ext-Auth（DPoP）、Conformance 与 Ruby / PHP 官方 SDK 护栏（`PR-05..PR-16`）
+5. **MCP Apps Iframe `allow` 分号分隔与 `clipboard-write` 及 `ui/initialize` / `ui/resource-teardown` / `connect-src 'none'` 规范对齐（`ext-apps#823`/`#822`，`PR-05`）**：使用 `"; "` 分隔 Permissions Policy 指令并包含 `clipboard-write`（阻断空格分隔导致 Chromium 同时拒绝摄像头与麦克风）；握手强制发送 `ui/initialize`（携带 `appInfo`/`appCapabilities`/`protocolVersion`），`ui/resource-teardown` 作为带 `id` 的请求，未声明 CSP 时 `connect-src` 默认回退为 `'none'`。
+6. **MCP Apps 多视图共享 `AppBridge` 列表变更分发器与清理时取消待执行动画帧（`ext-apps#818`/`#815`，`PR-06`）**：同一 MCP `Client` 上的多个 `AppBridge` 视图共享单一定阅分发器，仅向已完成握手的活跃视图转发列表变更并保护调用方自定义处理器；`setupSizeChangedNotifications()` 清理函数取消待执行 `requestAnimationFrame`（含 ID `0`），杜绝清理后泄漏 `ui/notifications/size-changed`。
+7. **MCP Apps Windows `file:///C:/` 根路径解析、点目录 `sandbox.html` 托管与宿主前缀工具名解析（`ext-apps#816`/`#812`/`#809`，`PR-07`）**：Windows 下移除盘符前斜杠（避免解析为 `C:\C:\...`）且保留未编码 `#`/`?`；通过 `res.sendFile("sandbox.html", { root: DIRECTORY })` 确保 `.runs/`/`.worktrees/` 等点目录下返回 `200`；通过 `resolveToolName` 将入口工具前缀（如 `pdf-server-`）复用到后续自调用工具。
+8. **MCP DPoP 服务端规范（SEP-1932）Bearer 降级拦截、`invalid_dpop_proof` 区分、`dpop_jkt` 绑定与 SEP-3392 实验目录（`ext-auth#40`/`#38`/`#37`/`#35`/`#33`，`PR-08`）**：严禁接受以 `Bearer` 方案提交的 DPoP 绑定令牌（返回 `401`）；区分 `invalid_dpop_proof` 与 `invalid_token`；受保护资源元数据宣告非空非对称 `dpop_signing_alg_values_supported`；授权请求绑定 `dpop_jkt`；并将 DPoP 与 WIF 置于 `specification/experimental/`。
+9. **MCP Conformance 源 POST SSE 流关联（`extra.sendRequest`）与 SEP-1036 URL 模式问询全量一致性（`conformance#561`/`#558`，`PR-09`）**：使用 `extra.sendRequest()` 将 `elicitation/create` 绑定至源 `tools/call` POST SSE 响应流；客户端每轮回显最新 `requestState`、将缺失 `mode` 视为表单模式、严禁预取被拒 URL；服务端对未声明 `elicitation.url` 的客户端返回 HTTP `400` + `-32021`（指名 `elicitation.url`）并禁用已废弃的 `-32042`。
+10. **MCP Conformance SEP-2640 目录读取缓存属性、SEP-9998 Agent 发现、SEP-2243 `-32020` 与 SEP-2164 `-32602` 强校验（`conformance#559`/`#556`/`#555`/`#554`，`PR-10`）**：校验 `resources/directory/read` 与 `agents/list`/`agents/get` 的 `ttlMs`/`cacheScope`；确保隐藏 Agent 与未知 Agent 不可区分（统一返回 `agent_not_found`）；将标准头不匹配 `-32020` 与资源不存在 `-32602`（禁用 `-32002`）升级为 MUST 级别 `FAILURE`。
+11. **MCP Conformance SEP-2322 仅 `requestState` 重试回显、Runner 异常落盘 `checks.json` 与全拒服务端假绿阻断（`conformance#548`/`#538`/`#537`，`PR-11`）**：校验无 `inputRequests` 的 `requestState` 原样回显重试；服务端场景抛错时持久化 `FAILURE` 到 `checks.json` 并在 `finally` 清理定时器；对所有请求返回 `-32000` 的服务端通过前置正例探针阻断假绿。
+12. **MCP Ruby SDK 不可编码缓冲通知丢弃、不可编码响应逐项 `-32603` 降级与 Stdio 服务端保活（`ruby-sdk#630`/`#629`/`#623`，`PR-12`）**：缓冲通知时立即校验 JSON 生成，丢弃含非法 UTF-8 的通知而不中断响应（杜绝 HTTP `500`）；不可编码响应返回携带请求 `id` 的 `-32603`（批处理中仅替换失败项）并保持 Stdio 服务端持续运行。
+13. **MCP Ruby SDK 字节级 Stdio 帧裁剪、非法 UTF-8 键 `-32700`、不可编码 Ping 跳过与无状态能力剥离（`ruby-sdk#628`/`#627`/`#625`/`#624`/`#622`/`#620`/`#616`/`#615`，`PR-13`）**：按字节裁剪客户端与服务端 Stdio 帧；非法 UTF-8 JSON 对象键捕获 `EncodingError` 并返回 HTTP `400` + `-32700 Parse error`；跳过 `id` 不可编码（非法 UTF-8 或 `1e400`）的 Stdio `ping`；请求 `id` 不可读时错误响应省略 `id`；无状态 HTTP `initialize` 剥离 `listChanged` 与 `subscribe`。
+14. **MCP PHP SDK 数组形状内可空/联合键保留、自定义注册表 `publishesListChanges` 与 `InputRequiredResult` 指引（`php-sdk#613`/`#608`/`#606`，`PR-14`）**：仅在顶层分支含 `null` 时将外层参数设为可空，保留 `array{name: string, nickname: string|null, code: int|string}` 内部属性联合类型；通过 `RegistryInterface::publishesListChanges()` 为自定义/装饰注册表宣告 `listChanged`；`2026-07-28` 下引导 `ClientGateway` 调用方使用 `InputRequiredResult`。
+15. **MCP PHP SDK 会话锁不可用 `-32603` 对齐、排队通知转 SSE 流投递与纯通知/响应 POST 返回 `202` 空体（`php-sdk#603`/`#602`/`#597`，`PR-15`）**：会话锁不可用统一返回 HTTP `503` + `-32603 "Session lock is unavailable."`；禁止将排队通知与请求响应打包为 JSON 数组，改为通过 `text/event-stream` SSE 先发通知再发响应；仅含通知或响应的 POST 返回 `202 Accepted` 空响应体且不清空排队消息。
+16. **MCP PHP SDK Stdio 响应前刷新通知、`{main}` 协程事件循环发送 HTTP 请求与恢复后会话增量持久化（`php-sdk#601`/`#599`/`#598`，`PR-16`）**：`handleFiberTermination()` 在写出最终响应前先刷新待发通知队列；请求 Fiber 内调用 `HttpTransport::send()` 时先挂起并由 `{main}` 的 `tick()->processSends()` 执行发送；挂起恢复的处理器结束时仅在会话锁下合并写入恢复后变更的会话键。
+
+---
+
+## 226. Stage 227 基准评测（`2026-10-23` · 868/868 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 226 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py)、[`tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/`](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.en.html)）。
+
 
 
 
