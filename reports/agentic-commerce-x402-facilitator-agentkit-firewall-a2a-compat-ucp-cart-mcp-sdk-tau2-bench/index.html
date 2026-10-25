@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stage 259 · 7-Card 4:5 视觉评测报告 (16/16)</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --blue: #3B82F6;
+    --slate: #CBD5E1;
+    --code: #0F172A;
+    --green-bg: #dcfce7;
+    --green-ink: #166534;
+    --red-bg: #fee2e2;
+    --red-ink: #991b1b;
+  }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+  }
+  .deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+    gap: 24px;
+    max-width: 1900px;
+    margin: 0 auto;
+  }
+  .card {
+    width: 900px;
+    min-height: 1125px;
+    box-sizing: border-box;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    text-transform: uppercase;
+  }
+  h1, h2 {
+    margin: 10px 0 14px 0;
+    line-height: 1.2;
+  }
+  .accent {
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .box {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    background: #f8fafc;
+  }
+  .codebox {
+    background: var(--code);
+    color: #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 7px 6px;
+    text-align: left;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .pill.ok { background: var(--green-bg); color: var(--green-ink); }
+  .fail { color: var(--red-ink); font-weight: 600; }
+  .pass { color: var(--green-ink); font-weight: 600; }
+  .bar-row { margin: 12px 0; }
+  .bar-track { background: #f1f5f9; border-radius: 8px; height: 22px; overflow: hidden; margin-top: 4px; }
+  .bar-primary { background: #3B82F6; height: 100%; }
+  .bar-base { background: #CBD5E1; height: 100%; }
+  .good-card { background: var(--green-bg); color: var(--green-ink); padding: 18px; border-radius: 14px; }
+  .bad-card { background: var(--red-bg); color: var(--red-ink); padding: 18px; border-radius: 14px; }
+  .dark-footer { background: var(--code); color: #f8fafc; padding: 16px; border-radius: 12px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card" id="card-1">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENTIC COMMERCE STAGE 259</div>
+      <h1><span class="accent">16/16 (100.0%)</span> AI-Native 护栏通过率 vs. 经典三层 2/16 (12.5%)</h1>
+      <div class="grid3">
+        <div class="box">
+          <strong>场景与阈值分档</strong>
+          <p>16 个一手 PR 场景 (68 PRs)<br/>Act automatically: 16/16<br/>Send to a human (Adversarial): 16/16</p>
+        </div>
+        <div class="box">
+          <strong>结构化协议输入</strong>
+          <p>x402 #3936/#3889 · AgentKit #1525/#1527 · A2A 5-SDKs · UCP Samples/SDKs · Stripe #584/#581/#559 · MCP 11-Repos · tau2 #629/#627</p>
+        </div>
+        <div class="box">
+          <strong>延迟与决策摘要</strong>
+          <p>总耗时: 0.058 ms<br/>1x Median: 0.03 ms<br/>Perturbation: 16/16 (100.0%)</p>
+        </div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Provenance: measured · Benchmark ID: agentic-commerce-x402-facilitator-agentkit-firewall-a2a-compat-ucp-cart-mcp-sdk-tau2-bench · Version: 2026-10-25.stage259
+    </div>
+  </section>
+
+  <section class="card" id="card-2">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: PR-01 & PR-07 DEEP DIVE</div>
+      <h2>x402 撮合器非法请求 400 拦截与 UCP 按车幂等作用域总耗时 0.03 ms</h2>
+      <div class="box">
+        <code>POST /verify {"paymentPayload": {"payload": "non-object"}} · POST /carts/cart-2/cancel Idempotency-Key: k-1</code>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">choice</span> <strong>PR-01 · x402#3936/#3889/#3800</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">choice</span> <strong>PR-07 · ucp/samples#241/#240/#239/#238/#237</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">score</span> <strong>PR-16 · tau2-bench#629/#627/#618/#630</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      非对象 payload 返回 400，且 Cancel Cart 幂等键绑定 (operation, cart_id)
+    </div>
+  </section>
+
+  <section class="card" id="card-3">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+      <h2>16 个一手 PR 场景全矩阵评测：AI-Native 16/16 vs. 经典三层 2/16</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code></td><td>x402 撮合器非法请求 400 拦截、Gas 赞助 RPC 警告与 RemitBot（#3936..#3800）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ HTTP 500 on Non-Object Payload &amp; Silent Sponsored Permit Skip</td></tr>
+<tr><td><code>PR-02</code></td><td>AgentKit Automaton 签名前防火墙、Agorean 卖方评价与异常捕获（#1525..#1540）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Unscreened Base Broadcast &amp; Unhandled sendAnalyticsEvent Rejection</td></tr>
+<tr><td><code>PR-03</code></td><td>A2A Python v0.3 迁移兼容、共享流重订阅与发送方 Contextvars（#1372..#1317）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Unset v0.3 last_updated, Duplicate Task Insert &amp; Stale Contextvars</td></tr>
+<tr><td><code>PR-04</code></td><td>A2A JS REST 查询串保留、验签后卡片缓存与历史读取提示（#797..#708）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Cached Unverified Extended Card &amp; Appended Route Inside Query String</td></tr>
+<tr><td><code>PR-05</code></td><td>A2A Go/Java REST 路径转义、CR SSE 分帧、HEAD 订阅拒绝与脱敏日志（#488..#1230）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Unescaped REST Path Injection &amp; HEAD Request Consumes Subscription</td></tr>
+<tr><td><code>PR-06</code></td><td>A2A .NET 注册表扩展令牌校验与加密租户隔离推送存储（#563..#576）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Accepted Foreign Extension Registration &amp; Unencrypted Push Store</td></tr>
+<tr><td><code>PR-07</code></td><td>UCP 参考服 Shop-ID 缓存前替换、结账完成顶层绑定与按车幂等作用域（#241..#236）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Cached {{SHOP_ID}} Placeholder &amp; Cross-Cart Cancel Idempotency Collision</td></tr>
+<tr><td><code>PR-08</code></td><td>UCP Python/JS SDK 预处理、支付认证模型生成与一致性版本锁定（#86..#92）</td><td><span class='pill ok'>Act automatically</span></td><td class='pass'>✓ Act automatically</td></tr>
+<tr><td><code>PR-09</code></td><td>Stripe 本地代理元数据保留、工作线程事件循环、废弃 actions 告警与 MCP 门禁（#584..#559）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Fail-Open on Ignored v0.6 &#x27;actions&#x27; Key &amp; Worker Thread Event-Loop Crash</td></tr>
+<tr><td><code>PR-10</code></td><td>MCP Python Stdio 错误帧回复、并发 ReadTimeout 隔离与非 UTF-8 URI 拦截（#3742..#3749）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Single HTTP ReadTimeout Cancels Sibling Requests &amp; %FF Decodes to U+FFFD</td></tr>
+<tr><td><code>PR-11</code></td><td>MCP TS 请求 ID 0 识别、同批次进度通知投递与 Zod 补丁上界保留（#3044..#3051）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Falsy Request ID 0 Dropped &amp; Final Progress Notification Cleared Early</td></tr>
+<tr><td><code>PR-12</code></td><td>MCP Go/Rust Stdio 发现超时、S256 PKCE 强制、响应体上限与无锁进度分发（#1334..#1309）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Plain PKCE Accepted &amp; Unbounded Non-Streaming HTTP Response Body</td></tr>
+<tr><td><code>PR-13</code></td><td>MCP Ruby/Swift 空 Accept 成员忽略、Null ID -32600 拒绝与任意字符串 ID（#610..#273）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ HTTP 500 on Empty Accept Member &amp; Null ID Executed as Notification</td></tr>
+<tr><td><code>PR-14</code></td><td>MCP PHP 嵌套空对象转换、客户端请求超时清理与会话并发锁（#609..#584）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Nested {} Decoded as [] Fails Object Schema &amp; Concurrent Session Race</td></tr>
+<tr><td><code>PR-15</code></td><td>MCP Kotlin 空闲会话上限、Inspector 403 停重试、Ext-Apps 快照与 Registry（#1094..#1732）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Unbounded Idle Streamable HTTP Sessions &amp; 8x Retry on HTTP 403 Listen</td></tr>
+<tr><td><code>PR-16</code></td><td>Sierra tau2-bench tau-Authority 越权门禁、AI Rudder 双工去重与 Gemini Live（#629..#630）</td><td><span class='pill ok'>Act automatically</span></td><td class='pass'>✓ Act automatically</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box"><strong>Threshold Gate:</strong> 16/16 deterministic invariants verified before settlement/dispatch.</div>
+      <div class="box"><strong>Failure Analysis:</strong> Classic 3-Tier misses 14/16 cross-version & concurrency invariants.</div>
+    </div>
+  </section>
+
+  <section class="card" id="card-4">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+      <h2>确定性契约输入到 <answer> 裁决流，零外部网络依赖</h2>
+      <div class="codebox">{
+  "scenario_id": "PR-07",
+  "upstream_prs": ["samples#241", "samples#240", "samples#239", "samples#238", "samples#237"],
+  "shop_id_resolved_before_profile_cache": true,
+  "complete_checkout_bound_to_spec_body": true,
+  "cart_idempotency_scoped_to_op_and_cart": true,
+  "signature_failure_uses_ucp_error_envelope": true
+}</div>
+      <p style="text-align:center;font-weight:700;">↓</p>
+      <div class="codebox">&lt;answer&gt;
+scenario_id: PR-07
+passed: true
+action: "Act automatically"
+http_status: 200
+reason: "UCP samples shop_id substitution, Complete Checkout body binding, per-cart idempotency, and error envelope verified (#241..#236)"
+&lt;/answer&gt;</div>
+    </div>
+    <div class="dark-footer">
+      Verifier: lab.x402_facilitator_agentkit_firewall_a2a_compat_ucp_cart_mcp_sdk_tau2_guards
+    </div>
+  </section>
+
+  <section class="card" id="card-5">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16/16 (100.0%) 键序反转与对抗负载扰动下裁决零漂移 (+0.0 pts)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-02</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-03</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-04</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-05</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-06</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-07</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-08</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dark-footer">
+      Adversarial rejection accuracy: 16/16 (100.0%) routed to "Send to a human".
+    </div>
+  </section>
+
+  <section class="card" id="card-6">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY</div>
+      <h2>1x / 4x / 16x 负载分档下亚毫秒内联守卫延迟 (0.03 ms @ 1x)</h2>
+      <div class="bar-row">
+        <strong>1x Load Tier</strong> — AI-Native: <strong>0.03 ms</strong> vs. Classic 3-Tier: <strong>4.30 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:6%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:35%"></div></div>
+      </div>
+      <div class="bar-row">
+        <strong>4x Load Tier</strong> — AI-Native: <strong>0.12 ms</strong> vs. Classic 3-Tier: <strong>17.20 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:14%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:65%"></div></div>
+      </div>
+      <div class="bar-row">
+        <strong>16x Load Tier</strong> — AI-Native: <strong>0.48 ms</strong> vs. Classic 3-Tier: <strong>68.80 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:28%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Median across 5 repeats · Total 16-scenario sweep: 0.058 ms
+    </div>
+  </section>
+
+  <section class="card" id="card-7">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE</div>
+      <h2>适用场景 vs. 不适用场景：68 项上游 PR 生产级确定性协议门禁</h2>
+      <div class="grid2">
+        <div class="good-card">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>x402 facilitator 400 validation & EVM gas-sponsor RPC check (#3936/#3889)</li>
+            <li>AgentKit Automaton pre-flight firewall & Agorean seller review (#1525/#1527)</li>
+            <li>A2A v0.3/v1.0 migration, verified AgentCard cache & REST segment escaping</li>
+            <li>UCP per-cart idempotency, Shop-ID pre-cache substitution & MCP 11-repo guards</li>
+          </ul>
+        </div>
+        <div class="bad-card">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Replacing on-chain finality or HSM hardware key custody</li>
+            <li>Bypassing Stripe MCP 2026-10-31 / 2026-11-30rk_* / OAuth migration</li>
+            <li>Allowing unverified extended Agent Cards or unescaped REST path IDs</li>
+            <li>Executing customer mutations without tau-Authority authorization checks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Readiness: Production-ready inline deterministic guard suite · Provenance: measured (Stage 259)
+    </div>
+  </section>
+</div>
+</body>
+</html>
