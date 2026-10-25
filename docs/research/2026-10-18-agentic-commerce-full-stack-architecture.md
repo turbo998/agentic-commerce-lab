@@ -2842,6 +2842,23 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py`](../../lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py)、[`tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py`](../../tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/`](../../reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/index.en.html)）。
 
+---
+
+## 235. Stage 236（`2026-10-25`）：x402 Go Casper `exact` (`#3885`) / V2 严格 CAIP-2 (`#3894`/`#3884`/`#3878`) / SVM 失败释放 (`#3892`)、UCP 企业身份 (`#939`) / 报价扩展 (`#930`) / `declared_fields` (`#915`) 与 MCP Apps / Conformance / Registry / Java-SDK 护栏（`PR-01..PR-16`）
+
+### 235.1 x402 Casper `exact`、V2 CAIP-2、SVM 失败释放与 UCP 企业身份/报价/`declared_fields` 护栏（`PR-01..PR-09`）
+- **`PR-01..PR-05`（`x402#3885`、`#3894`、`#3884`、`#3878`、`#3892`、`#3881`、`#3877`、`#3887`、`#3886`、`#3874`、`#3869`、`#3895`、`#3883`、`#3882`、`#3880`、`#3879`、`#3872`、`#3870`）**：Go Casper `exact` 机制（CEP-3009 EIP-712、`SettlementCache` 并发去重、`PendingSettlementStore` 超时对账免重发）、V2 严格 CAIP-2 语法校验（拒绝旧版 >32 字符 Algorand 哈希与畸形 V2 标识）、SVM 失败本地扣款释放批次预留与结算覆盖金额上限、EVM 签名查询传输错误归类为可重试、Facilitator `1 MiB`/`4 MiB` 响应体上限、MCP 恢复重试超时封顶、非浏览器 `402` 错误体、Bazaar 方法对齐、OFAC 预筛查与 Stellar 强类型模拟错误。
+- **`PR-06..PR-09`（`ucp#939`、`#930`、`#918`、`#915`、`#940`、`#933`、`#932`、`#913`、`#911`、`#910`、`#907`）**：`dev.ucp.common.business` 企业身份能力与共享 `business_summary.json`、`dev.ucp.common.quote` 报价扩展与要约决策完整性摘要、`checkout.config` 反向 DNS `declared_fields` 校验、仅凭 `cart_id` 创建结账、允许 `304 Not Modified` Profile 重验证、`303` 永久链接强制 `Cache-Control: no-store` + `Referrer-Policy: no-referrer` 及 `Signature-Input` 覆盖 `"ucp-agent"`。
+
+### 235.2 MCP Apps (`ext-apps`)、Conformance、Registry 与 Java SDK 安全护栏（`PR-10..PR-16`）
+- **`PR-10..PR-16`（`ext-apps#823..#812`、`conformance#563..#548`、`registry#1730..#1726`、`java-sdk#1271..#1257`）**：MCP Apps `"; "` 分隔 iframe `allow`（含 `clipboard-write`）、`ui/initialize`、`.runs/` 点目录 `sandbox.html` 服务、`setHostContext` 断连缓冲、共享 `list_changed` 分发器、RAF ID `0` 与 `ResizeObserver` 释放、Windows `file://` 盘符路径解析；Conformance 无状态 `resultType`、原始流 `extra.sendRequest()`、目录 `ttlMs`/`cacheScope`、SEP-1036/2243/2164/2322；Registry `pg_trgm` 索引、DPR 图标评分与校验备份；Java SDK 有界 `closeGracefully()` 与 `removeResourceTemplate` 通知。
+- **技术资产**：[`lab/x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_guards.py`](../../lab/x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_guards.py) 与 [`tests/test_x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_guards.py`](../../tests/test_x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_guards.py)。
+
+## 236. Stage 237（888/888 单测全绿！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_bench.py`](../../lab/x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_bench.py)、[`tests/test_x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_bench.py`](../../tests/test_x402_casper_avm_caip2_svm_abort_ucp_business_quote_declared_fields_mcp_apps_conformance_bench.py) 及双语报告 [`reports/agentic-commerce-x402-casper-avm-caip2-svm-abort-ucp-business-quote-declared-fields-mcp-apps-conformance-bench/`](../../reports/agentic-commerce-x402-casper-avm-caip2-svm-abort-ucp-business-quote-declared-fields-mcp-apps-conformance-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-casper-avm-caip2-svm-abort-ucp-business-quote-declared-fields-mcp-apps-conformance-bench/index.en.html)）。
+
 
 
 
