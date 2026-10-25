@@ -1,6 +1,28 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–279+ · 全仓 `972/972` 单测全绿！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–281+ · 达成 280 阶段里程碑 & 全仓 `976/976` 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 280–281（达成 280 阶段里程碑 & 全仓 `976/976` 单测全绿 · 40 仓库 293 项零重叠一手 PR 覆盖！）：Coinbase x402 流式请求克隆与 AgentKit CDP `idempotencyKey`、AP2 dSD-JWT 终端绑定与 Visa TAP `Ed25519+ML-DSA-65` 后量子混合验签、UCP `304 Not Modified` Profile 缓存命中与 `requires_escalation` `continue_url`、ACP OpenAPI 内联 `$ref` 校验与整数最小单位退单、A2A 推送故障隔离与多端流式路由、Stripe `tulip` 准入门禁与七端 SDK 账户作用域、Sierra $\tau$-bench 2.0 知识库沙箱与双射动作匹配，以及 MCP 十一语言 SDK / Conformance / Inspector / Registry 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（40 个上游仓库 293 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`coinbase/x402#312`、`#306`、`#297`、`#283`、`#277`、`#257`、`#412`、`#408`、`#391`、`#390` & `coinbase/agentkit#1530`、`#1507`、`#1468`、`#1469`、`#1545`、`#1552`、`#1554`、`#1491`）：`x402-fetch` 在 `402` 重试前克隆流式请求体、跳过不可解析的 `accepts[]` 条目、EVM 签名器缺失地址快速失败、AgentKit CDP 资金操作透传 `idempotencyKey`、大小写无关 EVM 地址比对与 x402 报价/结算身份及自动付款限额绑定。
+  - `PR-02`（`google-agentic-commerce/AP2#384`、`#383`、`#378`、`#377`、`#368`、`#365`、`#363`、`#359`、`#351`、`#347`、`#342`、`#335`、`#330`、`#326`、`#324`、`#318` & `visa/trusted-agent-protocol#18`、`#9`）：`verify_receipt` 回调判空、JSON 模式序列化 `cnf.jwk`、ISO 8601 执行日期窗口、JPY 等零小数位币种预算上限、dSD-JWT 终端跳 `aud`/`nonce`、闭合结账绑定与授权令原子单次消耗，以及 Visa TAP DID `key_id` 解析、`Ed25519+ML-DSA-65` 后量子混合签名与 mTLS 客户端证书鉴权。
+  - `PR-03`（`Universal-Commerce-Protocol/ucp#939`..`#908`）：Profile 拉取将 HTTP `304 Not Modified` 视为缓存命中而非重定向错误、`requires_escalation` 状态强制 `continue_url`、`complete_checkout` 移除 `cart_id`、递延账期允许空 `payment: {}` 对象，以及凭据提供商签发 PSP 令牌前验签 AP2 授权令。
+  - `PR-04`（`Universal-Commerce-Protocol/python-sdk#98`..`#52`）：声明类作用域 `uniqueItems` 校验器、生成数组字段 `uniqueItems` 与 `contains`/`minContains`/`maxContains`、对象 `minProperties` 及从 `$defs` 推导含 `catalog` 的 `UcpMetadata` 联合类型。
+  - `PR-05`（`Universal-Commerce-Protocol/conformance#93`..`#73` & `samples#243`..`#214`）：通过发现端点路由 `invalid_input` 订单探测、结账创建兼容 `200`/`201`、行项目数量 $>0$ 校验、移除未设置可选订单字段的 `null` 填充，以及缺失订单返回标准 UCP 错误信封。
+  - `PR-06`（`agentic-commerce-protocol/agentic-commerce-protocol#309`..`#219`）：OpenAPI 内联 `example` 针对 `$ref` Schema 校验、解包 `delegate_payment` 错误示例冗余外层包装、强制正整数最小货币单位退款金额与 `session_context` 遥测字段。
+  - `PR-07`（`a2aproject/A2A#2384..#2285` & `a2a-python#1348..#1287`）：推送通知失败与任务生命周期隔离、直接 `Message` 响应后释放 `ActiveTask`、执行器重发当前任务保留后续消息、畸形 JSON-RPC 静默 stderr 与非 `google.rpc.Status` REST 错误处理。
+  - `PR-08`（`a2a-js#764..#744`、`a2a-go#467..#437`、`a2a-java#1199..#1184`、`a2a-dotnet#572..#568` & `a2a-inspector#213`）：JS JSON-RPC 错误 HTTP `200`、`defaultInputModes` 媒体类型校验与拒绝未应用迁移降级；Go 流式错误透传与保留含下划线任务 ID 的分页令牌；Java 终态入队恢复与多租户路由器；.NET 回环推送目标显式开启门禁。
+  - `PR-09`（`stripe/agent-toolkit#560..#464`、`stripe-cli#2149..#2082` & 七语言 SDK）：四大框架适配器 `run_tool()` 接入 `tulip` 准入门禁、`getDefaultMaxTokens` 支持点号与连字符模型 ID、CLI 仅允许已知插件后端自动安装、Python/Java/PHP 事件处理器透传账户作用域与 PHP 忽略畸形 Webhook 签名头分段。
+  - `PR-10`（`sierra-research/tau2-bench#677..#632`）：拒绝知识库根目录外沙箱读取、最小环境变量运行沙箱 Shell、黄金动作与工具调用 1 对 1 双射匹配、零售域拒绝同商品换货与电信域空 `mmsc_url` 判未配置。
+  - `PR-11..PR-16`（MCP TS/Python/Go/Rust/C#/Java/Kotlin/Swift/Ruby/PHP/Conformance/Inspector/Registry）：TS URI 模板排除 `#` 片段与重启前清空陈旧 stdio 帧 + Python RFC 9449 DPoP 证明、`bytes` Base64 输出与补全分页（`>100`）；Go `initialize` 前请求返回 `-32600`、ID 复用前取消绑定与元数据凭据脱敏 + Rust `2026-07-28` 会话禁服务端下行请求與拒绝多行密钥；C# `ID-JAG` 发现 Issuer 受众绑定 + Java 裸 `\r` 防截断 + Kotlin RFC 3986 SSE 端点解析；Swift PKCE 模偏差字节剔除、保留省略的刷新令牌、头部 Base64 识别与无状态在途 ID 冲突拦截；Ruby 传输错误脱敏 `Authorization` 与非 UTF-8 键 `-32700` + PHP 并行 Elicitation 隔离与不可达会话存储 `503`；以及 Conformance SEP-2243 (`-32020`)、SEP-1932 DPoP 绑定与防降级、全拒绝服务端防虚高绿灯、Inspector 剥离 `npm_config_allow_scripts` 与目录读取缓存作用域及 Registry 可验证数据库备份。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp_guards.py`](../../lab/x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp_guards.py)
+  - 基准生成器：[`lab/x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp_bench.py`](../../lab/x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp.py`](../../tests/test_x402_stream_clone_ap2_sdjwt_ucp_304_acp_openapi_a2a_stripe_tau2_mcp.py)（全仓 **`976/976` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-stream-clone-ap2-sdjwt-ucp-304-acp-openapi-a2a-stripe-tau2-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-stream-clone-ap2-sdjwt-ucp-304-acp-openapi-a2a-stripe-tau2-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-stream-clone-ap2-sdjwt-ucp-304-acp-openapi-a2a-stripe-tau2-mcp-bench/report.json)
 
 ---
 
