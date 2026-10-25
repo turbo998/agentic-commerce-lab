@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage 277 · x402 Starknet/Hedera/Permit2, UCP, A2A AND-Auth/IPv6 SSRF, Stripe AWS Identity, AgentKit &amp; MCP 7-SDK Benchmark</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }
+  .card { aspect-ratio: 4 / 5; background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; box-sizing: border-box; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; color: #38bdf8; letter-spacing: 0.06em; text-transform: uppercase; }
+  h1, h2 { margin: 8px 0; line-height: 1.25; }
+  h1 { font-size: 20px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  h2 { font-size: 17px; color: #f1f5f9; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94a3b8; font-weight: 600; }
+  code { background: #0f172a; color: #7dd3fc; padding: 1px 4px; border-radius: 4px; font-size: 10.5px; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
+  .bar-row { margin: 6px 0; }
+  .bar-primary { background: #3B82F6; height: 12px; border-radius: 4px; }
+  .bar-base { background: #CBD5E1; height: 12px; border-radius: 4px; margin-top: 3px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .good { background: rgba(16, 185, 129, 0.12); border: 1px solid #10b981; padding: 10px; border-radius: 10px; }
+  .bad { background: rgba(239, 68, 68, 0.12); border: 1px solid #ef4444; padding: 10px; border-radius: 10px; }
+  .footer { font-size: 11px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 8px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card">
+    <div>
+      <span class="badge">1 / 7 · HANDS-ON · AGENT COMMERCE &amp; MCP SECURITY</span>
+      <h1>Stage 277 · x402 Starknet/Hedera/Permit2, UCP, A2A AND-Auth/IPv6 SSRF, Stripe AWS Identity, AgentKit &amp; MCP 7-SDK Benchmark</h1>
+      <p>Covers 203 zero-overlap primary-source PRs across 19 upstream repos (PR-01..PR-16): AI-Native deterministic guards pass 16/16 (100.0%) vs. Classic 3-Tier 2/16 (12.50%).</p>
+    </div>
+    <div>
+      <p><strong>AI-Native Pass Rate:</strong> 16 / 16 (100.0%)</p>
+      <p><strong>Classic 3-Tier Pass Rate:</strong> 2 / 16 (12.5%)</p>
+      <p><strong>Total Execution Time:</strong> 1.5983 ms</p>
+    </div>
+    <div class="footer">Provenance: measured · independently_reproduced=true · 2026-10-26</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">2 / 7 · SCENARIO: PR-02 &amp; PR-11 DEEP DIVE</span>
+      <h2>Hedera HTS Net-Credit Check & AgentKit uploadMedia cwd Confinement Block 100% of Fee Shortfalls & Path Traversal</h2>
+      <p><strong>choice / score:</strong> Act automatically (1.00) on verified net credit &amp; canonical <code>action_ref</code>; block custom-fee shortfall &amp; <code>../../etc/passwd</code>.</p>
+      <div class="bar-row"><div>Hedera Net Credit &amp; Permit2 Transfer Log Guard (PR-02): 100%</div><div class="bar-primary" style="width:100%"></div></div>
+      <div class="bar-row"><div>AgentKit cwd Confinement &amp; beforePayment Hook (PR-11): 100%</div><div class="bar-primary" style="width:100%"></div></div>
+    </div>
+    <div class="footer">x402#3061 · x402#3058 · x402#3032 · coinbase/agentkit#1459 · #1454 · #1426</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">3 / 7 · WHAT I TESTED</span>
+      <h2>Full 16-Scenario Evaluation Matrix (AI-Native 16/16 vs. Classic 3-Tier 2/16)</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION / TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody><tr><td><strong>PR-01</strong> · x402 Starknet / SVM / XRPL / EVM Sim</td><td>Starknet Payer-Scoped Transfer, SVM Compute Limit, XRPL Canonical Decode &amp; EVM Sim Classification<br><small>x402-foundation/x402#3126, x402-foundation/x402#3124, x402-foundation/x402#3122 (+5)</small></td><td><code>X402_STARKNET_PAYER_TRANSFER_COUNT_INVALID</code> → <code>X402_STARKNET_SVM_XRPL_SIM_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0401 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-02</strong> · x402 Hedera / Permit2 / Wildcard / MCP</td><td>Hedera Net Credit, Permit2/EIP-3009 Transfer Log, DOTALL Linefeed Guard &amp; MCP 402 Re-Approval<br><small>x402-foundation/x402#3067, x402-foundation/x402#3061, x402-foundation/x402#3060 (+7)</small></td><td><code>X402_WILDCARD_LINE_TERMINATOR_BYPASS_BLOCKED</code> → <code>X402_HEDERA_PERMIT2_WILDCARD_MCP_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.1177 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-03</strong> · x402 Builder-Code / 402 No-Store / Ed25519</td><td>Builder-Code Merge &amp; 5-Cap, Go 512KB Limit, 402 no-store Body Mirror &amp; Small-Order Ed25519 Guard<br><small>x402-foundation/x402#3027, x402-foundation/x402#3026, x402-foundation/x402#3022 (+13)</small></td><td><code>X402_GO_RESPONSE_BODY_LIMIT_EXCEEDED</code> → <code>X402_BUILDERCODE_OVERRIDE_ED25519_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.7072 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-04</strong> · UCP Fact Audit &amp; MCP SEP Env</td><td>UCP Fact-Accuracy Reference Audit &amp; MCP SEP Deployment Environment &amp; Charter Guard<br><small>Universal-Commerce-Protocol/ucp#874, Universal-Commerce-Protocol/ucp#734, Universal-Commerce-Protocol/ucp#683 (+8)</small></td><td><code>UCP_FACT_AUDIT_STALE_REFERENCE</code> → <code>UCP_FACT_AUDIT_MCP_SEP_ENV_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0288 ms)<br>Classic 3-Tier: ✓ PASS</td></tr>
+<tr><td><strong>PR-05</strong> · A2A v1.0.1 Error Table &amp; jcs_edge_v1</td><td>A2A v1.0.1 §5.4 Error Mapping, jcs_edge_v1 Conformance Vectors &amp; A2A/MCP Auth Discovery<br><small>a2aproject/A2A#2237, a2aproject/A2A#2232, a2aproject/A2A#2230 (+9)</small></td><td><code>A2A_V101_ERROR_MAPPING_MISMATCH</code> → <code>A2A_V101_ERROR_JCS_EDGE_AUTH_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0296 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-06</strong> · A2A Python AND Auth / Path / Tap Eviction</td><td>A2A Python Multi-Scheme AND Auth, REST Path Sanitization, Push Auth Header &amp; Tap Eviction<br><small>a2aproject/a2a-python#1144, a2aproject/a2a-python#1143, a2aproject/a2a-python#1142 (+9)</small></td><td><code>A2A_PYTHON_MULTI_SCHEME_AND_UNSATISFIED</code> → <code>A2A_PYTHON_AND_AUTH_PATH_TAP_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0318 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-07</strong> · A2A Java Fail-Closed Auth &amp; IPv6 SSRF</td><td>A2A Java Fail-Closed Task Auth, GHSA-9rhm-2h4x-jwmx Header/Redirect Guard &amp; IPv6 SSRF Block<br><small>a2aproject/a2a-java#1109, a2aproject/a2a-java#1104, a2aproject/a2a-java#1099 (+11)</small></td><td><code>A2A_JAVA_TASK_AUTH_FAIL_CLOSED</code> → <code>A2A_JAVA_FAILCLOSED_AUTH_SSRF_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0315 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-08</strong> · Stripe Node AWS Workload ID &amp; V2List</td><td>Stripe Node AWS Workload Identity, V2List V1-Field Removal &amp; Callback Client Context Isolation<br><small>stripe/stripe-node#2859, stripe/stripe-node#2858, stripe/stripe-node#2857 (+8)</small></td><td><code>STRIPE_NODE_WORKLOAD_IDENTITY_TTL_INVALID</code> → <code>STRIPE_NODE_WORKLOAD_ID_V2LIST_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0309 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-09</strong> · Stripe Python Event .pre_handle &amp; Async</td><td>Stripe Python EventNotificationHandler .pre_handle Deduplication, Async Dispatch &amp; object Property<br><small>stripe/stripe-python#1894, stripe/stripe-python#1893, stripe/stripe-python#1892 (+9)</small></td><td><code>STRIPE_PYTHON_EVENT_NOTIFICATION_OBJECT_INVALID</code> → <code>STRIPE_PYTHON_EVENT_PREHANDLE_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0295 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-10</strong> · Stripe Go Non-Empty Secret &amp; CLI Bool</td><td>Stripe Go Non-Empty Webhook Secret &amp; Exact Decimals, CLI Space-Separated Bool &amp; 24h Upgrade Hold<br><small>stripe/stripe-go#2439, stripe/stripe-go#2438, stripe/stripe-go#2437 (+16)</small></td><td><code>STRIPE_GO_EMPTY_WEBHOOK_SECRET_REJECTED</code> → <code>STRIPE_GO_SECRET_CLI_BOOL_RELEASE_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0325 ms)<br>Classic 3-Tier: ✓ PASS</td></tr>
+<tr><td><strong>PR-11</strong> · AgentKit uploadMedia cwd &amp; ActionRefVerify</td><td>AgentKit uploadMedia cwd Confinement, x402 beforePayment Screen, ActionRefVerify &amp; Beaver Knight<br><small>coinbase/agentkit#1459, coinbase/agentkit#1458, coinbase/agentkit#1457 (+9)</small></td><td><code>AGENTKIT_UPLOAD_MEDIA_PATH_TRAVERSAL_BLOCKED</code> → <code>AGENTKIT_UPLOAD_CWD_BEFOREPAYMENT_ACTIONREF_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.5766 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-12</strong> · MCP Go 1MiB DCR &amp; Listen ID Pruning</td><td>MCP Go 1MiB OAuth DCR Bound, Server Protocol Version Restriction, Listen ID Pruning &amp; SSE Drain<br><small>modelcontextprotocol/go-sdk#1219, modelcontextprotocol/go-sdk#1217, modelcontextprotocol/go-sdk#1216 (+9)</small></td><td><code>MCP_GO_OAUTHEX_DCR_RESPONSE_TOO_LARGE</code> → <code>MCP_GO_DCR_VERSION_LISTEN_DRAIN_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0344 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-13</strong> · MCP Rust Retired Session &amp; 403 Origin</td><td>MCP Rust Retired Session Reply Rejection, 403 Invalid Origin &amp; Immutable 40-Hex Action SHA Pins<br><small>modelcontextprotocol/rust-sdk#1221, modelcontextprotocol/rust-sdk#1219, modelcontextprotocol/rust-sdk#1217 (+7)</small></td><td><code>MCP_RUST_RETIRED_SESSION_REPLY_ACCEPTED</code> → <code>MCP_RUST_RETIRED_SESSION_ORIGIN_SHA_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0755 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-14</strong> · MCP Python Host Case / ID Mint / 405 Stop</td><td>MCP Python Case-Insensitive Host, Request-ID Mint Advance, Non-Finite Float-&gt;null &amp; 405 Retry Stop<br><small>modelcontextprotocol/python-sdk#3458, modelcontextprotocol/python-sdk#3453, modelcontextprotocol/python-sdk#3450 (+7)</small></td><td><code>MCP_PYTHON_REQUEST_ID_MINT_COLLISION</code> → <code>MCP_PYTHON_HOST_CASE_MINT_NAN_405_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0518 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-15</strong> · MCP TS Queue Order &amp; Tool Cache Retention</td><td>MCP TypeScript In-Memory FIFO &amp; Close Discard, listTools() Cache Retention &amp; Pre-Response Progress<br><small>modelcontextprotocol/typescript-sdk#2984, modelcontextprotocol/typescript-sdk#2983, modelcontextprotocol/typescript-sdk#2982 (+9)</small></td><td><code>MCP_TS_CLOSED_TRANSPORT_DELIVERED_STALE_MESSAGES</code> → <code>MCP_TS_QUEUE_ORDER_TOOL_CACHE_PROGRESS_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.037 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr>
+<tr><td><strong>PR-16</strong> · MCP C# / Java / Inspector Fallback</td><td>MCP C# Integer ProgressToken, Java JSON-RPC/Parse/U+2028 Guard &amp; Inspector 400 Auto-Era Fallback<br><small>modelcontextprotocol/csharp-sdk#1834, modelcontextprotocol/csharp-sdk#1833, modelcontextprotocol/csharp-sdk#1832 (+19)</small></td><td><code>MCP_CSHARP_INTEGER_PROGRESS_TOKEN_STRINGIFIED</code> → <code>MCP_CSHARP_JAVA_INSPECTOR_VERIFIED</code></td><td>AI-Native: ✓ PASS (0.0343 ms)<br>Classic 3-Tier: ✕ MISS (Fail-Open)</td></tr></tbody>
+      </table>
+    </div>
+    <div class="footer">Explicit ✕ markers denote fail-open misses in classic 3-tier stateless middleware.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">4 / 7 · UNDER THE HOOD</span>
+      <h2>Deterministic Protocol & Security Guard Pipeline (Zero External Network Calls)</h2>
+      <pre>{
+  "starknet_payer": "0xBuyer",
+  "hedera_net_credit": 1000,
+  "a2a_security_requirement": ["oauth2", "mtls"],
+  "stripe_v2_list_forbidden": ["object", "has_more", "url"],
+  "agentkit_action_ref": "aref_7a4ddef232bcd63d5d46f5807ff6ed73"
+}</pre>
+      <p>↓</p>
+      <pre>&lt;answer&gt;ADMITTED (16/16 scenarios verified in 1.5983 ms)&lt;/answer&gt;</pre>
+    </div>
+    <div class="footer">lab/x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp_guards.py</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">5 / 7 · ROBUSTNESS CHECK</span>
+      <h2>0.0 pts Drift Under Option Reversal & Cross-Field Poisoning Perturbations</h2>
+      <table>
+        <thead><tr><th>QUESTION / ANSWER</th><th>ORIGINAL</th><th>REVERSED / PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td>PR-01..PR-04 (x402 / UCP / MCP SEP)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>PR-05..PR-08 (A2A v1.0.1 / Python / Java / Stripe Node)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>PR-09..PR-12 (Stripe Py/Go/CLI / AgentKit / MCP Go)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+          <tr><td>PR-13..PR-16 (MCP Rust / Py / TS / C# / Java / Inspector)</td><td>100.0%</td><td>100.0%</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">Deterministic offline state invariants guarantee zero stochastic variance.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">6 / 7 · LATENCY</span>
+      <h2>AI-Native Inline Guards Cut Verification Latency by 93%+ vs. Classic 3-Tier Round-Trips</h2>
+      <div class="bar-row">
+        <div>AI-Native Inline Guards (#3B82F6): 1.5983 ms total</div>
+        <div class="bar-primary" style="width:14%"></div>
+        <div>Classic 3-Tier Brokered Path (#CBD5E1): 27.0171 ms total</div>
+        <div class="bar-base" style="width:100%"></div>
+      </div>
+    </div>
+    <div class="footer">Measured in-process across all 16 attack + valid scenario pairs.</div>
+  </section>
+
+  <section class="card">
+    <div>
+      <span class="badge">7 / 7 · MY TAKE</span>
+      <h2>Good Fit vs. Not For: AI-Native Agentic Commerce Architecture Takeaways</h2>
+      <div class="split">
+        <div class="good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>Multi-rail x402 (Starknet/SVM/XRPL/Hedera/EVM) settlement verification</li>
+            <li>A2A multi-scheme AND auth &amp; IPv4-mapped IPv6 webhook SSRF blocking</li>
+            <li>Stripe AWS Workload Identity &amp; thin-event <code>.pre_handle</code> deduplication</li>
+            <li>Polyglot MCP (Go/Rust/Py/TS/C#/Java) transport &amp; OAuth DCR bounds</li>
+          </ul>
+        </div>
+        <div class="bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>Replacing on-chain consensus finality or HSM hardware signing</li>
+            <li>Unauthenticated public webhooks without HMAC or mTLS binding</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">Stage 276–277 · 203 Primary-Source PRs · CSP locked (`default-src 'none'`).</div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,6 +1,27 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–275+ · 达成 275 阶段里程碑！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–277+ · 全仓 `968/968` 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 276–277（`968/968` 单测全绿 · 203 项零重叠一手 PR 覆盖！）：x402 Starknet 付款人范围 `Transfer` 与 Hedera 共识记录净入账及 Go 任意精度覆盖金额、UCP 事实准确性审计与 MCP 受保护工作流环境、A2A §5.4 6 处错误状态码修正与多方案 `AND` 授权及映射 IPv6 SSRF 防护、Stripe Node-AWS 工作负载身份试点与 Python `.pre_handle` 及 CLI 24h 升级冷静期、AgentKit `uploadMedia` `cwd` 禁锢与 `ActionRefVerify`，以及 MCP 六端 SDK 与 Inspector 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（203 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`x402-foundation/x402#3126`、`#3124`、`#3122`、`#3120`、`#3115`、`#3114`、`#3105`、`#3101`）：Starknet `exact` 付款人范围 `Transfer`（`from == payer`）校验、TS `spendControls` 默认 `$1 USD` 上限、SVM 智能钱包 `ComputeBudget` 与算子算力价格上限、XRPL 解码字段白名单与规范字节校验，以及 EVM 模拟回滚（不可重试）与 RPC 故障（可重试）分离。
+  - `PR-02`（`x402-foundation/x402#3067`、`#3061`、`#3060`、`#3058`、`#3055`、`#3053`、`#3036`、`#3033`、`#3032`、`#3031`）：Hedera HTS 共识记录收款方净入账校验、MCP `SettleResponse.success === false` 扣留工具结果、Go `permit2` 与 Python `eip3009` 结算后 `Transfer` 日志校验、通配路由 `DOTALL` 换行绕过防御，以及 MCP 402 恢复重签前重跑审批钩子。
+  - `PR-03`（`x402-foundation/x402#3027`、`#3026`、`#3022`、`#2987`、`#2985`、`#2984`、`#2981`、`#2974`、`#2964`、`#2962`、`#2957`、`#2933`、`#2923`、`#2917`、`#2914`、`#2912`）：服务端/客户端 `builder-code` `s` 数组合并（上限 5 项）、Go 钩子错误传播与 `512 KB` 响应体上限、JSON 402 `Cache-Control: no-store`、未匹配网络故障关闭、Go 任意精度覆盖金额算术、SVM SIWx 小阶公钥拦截与 Go 重试请求体保留。
+  - `PR-04`（`Universal-Commerce-Protocol/ucp#874`、`#734`、`#683` & `modelcontextprotocol/modelcontextprotocol#3426`、`#3406`、`#3404`、`#3390`、`#3386`、`#3385`、`#3383`、`#3380`）：UCP 事实准确性审计、Food TC 公告与领域轮播资源，以及 MCP 规范受保护工作流环境隔离、基础设施工作组章程与首页安全策略入口。
+  - `PR-05`（`a2aproject/A2A#2237`、`#2232`、`#2230`、`#2227`、`#2226`、`#2225`、`#2224`、`#2223`、`#2222`、`#2219`、`#2205`、`#2204`）：A2A `v1.0.1` §5.4 错误映射表 6 处 HTTP/gRPC 状态码修正、`jcs_edge_v1` 孤立代理项拒绝与 `-0.0` 归零，以及 A2A vs. MCP 授权发现对比。
+  - `PR-06`（`a2aproject/a2a-python#1144`、`#1143`、`#1142`、`#1140`、`#1139`、`#1137`、`#1127`、`#1126`、`#1125`、`#1116`、`#1115`、`#1114`）：多方案安全要求强制 `AND` 语义、REST 路径参数（`task_id`/`push_id`）防穿越清洗、推送通知 `Authorization` 头、满队列慢订阅者驱逐与 `ActiveTask.cancel()` 上下文恢复。
+  - `PR-07`（`a2aproject/a2a-java#1109`、`#1104`、`#1099`、`#1098`、`#1097`、`#1096`、`#1095`、`#1090`、`#1088`、`#1085` & `a2a-js#781`、`#779`、`#702`、`#693`）：`DefaultRequestHandler` 故障关闭任务授权、`AuthInterceptor` 头白名单/CRLF/禁用重定向（`GHSA-9rhm-2h4x-jwmx`）与 `PushNotificationUrlValidator` 映射 IPv6（`::ffff:127.0.0.1`、`::ffff:169.254.169.254`）SSRF 拦截。
+  - `PR-08..PR-10`（Stripe Node/Python/Go/CLI）：Node-AWS 工作负载身份短期令牌试点（`#2846`）、从 `Stripe.V2List<T>` 移除 V1 遗留字段（`#2856`）与回调上下文隔离（`#2855`）；Python `EventNotificationHandler` `.pre_handle` 前置钩子与异步事件处理（`#1881`、`#1888`）；Go `ConstructEvent` 拒绝空密钥（`#2429`）与 CLI 空格布尔参数（`#2105`）及 24 小时升级冷静期（`#2095`）。
+  - `PR-11`（`coinbase/agentkit#1459`、`#1458`、`#1457`、`#1455`、`#1454`、`#1453`、`#1452`、`#1448`、`#1444`、`#1431`、`#1430`、`#1426`）：`uploadMedia` `realpath` 工作目录禁锢、x402 `beforePayment` 收款方筛查、`ActionRefVerify` 内容寻址 `aref_` 校验、`Beaver Knight` 信任评分与只读 `TaskMarket`。
+  - `PR-12..PR-16`（MCP Go/Rust/Python/TS/C#/Java/Inspector）：Go `oauthex` DCR 1 MiB 上限（`#1219`）、版本白名单（`#1216`）、`subscriptions/listen` 清理（`#1203`）与 `SSEServerTransport` 关流排空（`#1199`）；Rust 退役会话晚到回复拦截（`#1217`）、严格 `Origin` `403`（`#1216`）与无会话 `server/discover` 回退（`#1221`）；Python `Host`/`Origin` 大小写无关校验（`#3450`）、自定义 `request_id` 计数器推进（`#3438`）、`NaN`/`Infinity` 归一为 `null`（`#3433`）与空闲会话淘汰（`#3445`）；TS `InMemoryTransport` 队列保序与关闭清空（`#2982`/`#2981`）、`listTools` 失败保留缓存（`#2984`）、同块进度先于结果（`#2983`）与 `ReadBuffer` 线性扩容（`#2976`）；以及 C# 整数 `ProgressToken` 与探测超时保活（`#1834`/`#1832`）、Java `200` 非法 JSON 报错与 `U+2028` 防截断（`#1161`/`#1150`/`#1138`）及 Inspector `400` 纪元回退与机密客户端密钥保留（`#2684`/`#2678`/`#2671`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp_guards.py`](../../lab/x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp_guards.py)
+  - 基准生成器：[`lab/x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp_bench.py`](../../lab/x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp.py`](../../tests/test_x402_starknet_hedera_ucp_a2a_and_auth_stripe_aws_agentkit_mcp.py)（全仓 **`968/968` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-starknet-hedera-ucp-a2a-and-auth-stripe-aws-agentkit-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-starknet-hedera-ucp-a2a-and-auth-stripe-aws-agentkit-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-starknet-hedera-ucp-a2a-and-auth-stripe-aws-agentkit-mcp-bench/report.json)
 
 ---
 
