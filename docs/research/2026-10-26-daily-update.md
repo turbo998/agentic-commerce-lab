@@ -1,6 +1,28 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–273+）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–275+ · 达成 275 阶段里程碑！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 274–275（达成 275 阶段里程碑 · `964/964` 单测全绿！）：x402 SVM `TransferChecked` 鉴别器与 Go `spendControls` 及 `offer-receipt` v2 交付证明哈希、UCP 站外链接识别与 `gh-pages` 串行超时、A2A Webhook SSRF 防护与终态逃逸拦截及 Java 默认禁重定向、Stripe Python `APIRequestor` 恶意 URL 防护、AgentKit ERC-20 提示词注入清洗与 x402 报价绑定，以及 MCP 七端 SDK 与 Inspector `SEP-2663` 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（137 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`x402-foundation/x402#3132`、`#3133`、`#3153`、`#3180`）：TS SVM `exact` 强制 `data[0] === 12`（`TransferChecked` 鉴别器）、TS SIWX 客户端挑战绑定 402 响应 Origin、Monad USDC v1 EIP-712 `domain.name = "USDC"`，以及缺失/空 `accepted` 返回稳定协议错误而非抛出 `TypeError`。
+  - `PR-02`（`x402-foundation/x402#3156`、`#3155`、`#3164`、`#3183`、`#3190`）：Go SDK 买方 `spendControls`（单次上限、累计上限、收款白名单）、TS SVM `upto` `ComputeBudget` 指令、SVM `batch-settlement` 方案与注入式 RPC 客户端。
+  - `PR-03`（`x402-foundation/x402#3186`、`#3131`、`#3241`、`#3255`、`#3274`、`#3315`）：`offer-receipt` v2 交付证明 `responseHash` 绑定、实验性 `shared-payment-token` (`spt`) 固定价格方案、多语言默认资产对齐与 `builder-code` `a` 字段校验。
+  - `PR-04`（`Universal-Commerce-Protocol/ucp#889`、`#888`、`#886`、`#885`、`#878`、`#851`、`#772`、`#704`、`#700`）：`check_links.py` 站外/协议相对链接识别、`gh-pages` 部署并发串行与超时、通过 `uv` 运行 pre-commit 校验器与最新规范链接对齐。
+  - `PR-05`（`a2aproject/A2A#2322`、`#2319`、`#2310`、`#2270`、`#2246`、`#2240`）：`SendMessageRequest` 客户端写入 `artifacts`、`TASK_STATE_INPUT_REQUIRED`/`AUTH_REQUIRED` 非终态中断语义、`jcs_depth_v1` 128 层嵌套上限与 `Message.sender` 归属。
+  - `PR-06`（`a2aproject/a2a-python#1164`、`#1218`、`#1220`、`#1222`、`#1225`、`#1243`）：推送通知派发前 Webhook URL SSRF 拦截（阻断 `169.254.169.254`/内网/回环）、内存推送配置深拷贝防外部篡改、越界 `datetime` 任务排序防护、SSE 关闭宽限期与 `A2A-Version` 次版本校验。
+  - `PR-07`（`a2aproject/a2a-python#1183`、`#1182`、`#1180`、`#1177`、`#1176`、`#1167`、`#1165`、`#1158`、`#1153`）：拦截终态任务回退至 `WORKING`、JSON-RPC/gRPC 内部异常脱敏、`history_length` 上限、任务 ID 长度与消息内容非空校验，以及 TCK `Task` 先于状态更新入队。
+  - `PR-08`（`a2aproject/a2a-java#1141`、`#1148`、`#1149`、`#1156`、`#1163`、`#1124`、`#1112` & `a2aproject/a2a-js#743`）：`PostBuilder.followRedirects` 默认 `false` 防跨域凭据泄露、`SSEParserConfig` 1 MB 单行上限、单任务推送保序与未知租户公共 AgentCard 返回 `404`。
+  - `PR-09..PR-11`（Stripe Node/Python/Go/CLI）：Node 移除顶层 `constructEventWithoutVerification`（`#2862`）与 `ErrorType` 导出（`#2865`）并要求 Node $\ge 20$（`#2871`）；Python `APIRequestor` 拦截恶意跨站/穿越资源 URL 防止 `fetch_related_object()` 泄露 API Key（`#1896`）并移除 `StripeObject.request`（`#1914`）；Go 精确十进制字符串类型（`#2442`/`#2455`）、动态 Map（`#2440`/`#2451`）、Go $\ge 1.24$（`#2453`）与 CLI 自定义安装目录保留（`#2111`）。
+  - `PR-12`（`coinbase/agentkit#1480`、`#1468`、`#1481`、`#1479`、`#1474`、`#1473`、`#1464`、`#1462`）：ERC-20 代币元数据间接提示词注入清洗、x402 一次性报价与结算身份及 `maxPaymentUsdc` 绑定、`merona` 卖方预检、`TruthBear`、`DefiLlama` 与 `Taskmarket`。
+  - `PR-13..PR-16`（MCP Go/Rust/Python/TS/C#/Java/Kotlin/Inspector）：Go 旧版传输请求体大小限制（`#1224`）、CORS 禁 `OPTIONS`（`#1223`）、`json.Number` 精度保留（`#1244`）与 Rust SSE 重连指数退避饱和封顶防溢出 panic（`#1231`）；Python 逐字节保留无路径 OAuth `resource` 标识符（`#3462`）与回放缓冲（`#3541`）+ TS 多 `Set-Cookie` 数组独立转发（`#2990`）与重启清空残留 stdio 帧（`#2993`）；C# `SseClientSessionTransport` 释放 POST 响应（`#1841`）与 CIMD `none` 认证（`#1845`）+ Java 非法请求体返回 `400`（`#1168`）+ Kotlin `SEP-986` 工具名校验（`#695`）；以及 Inspector 在 `2026-07-28` 连接隐藏 `'Run as task'`（`#2687`）、全模式 `--version`（`#2695`）与 TUI `Esc` 清除过滤词（`#2693`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp_guards.py`](../../lab/x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp_guards.py)
+  - 基准生成器：[`lab/x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp_bench.py`](../../lab/x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp.py`](../../tests/test_x402_transfer_checked_ucp_a2a_ssrf_stripe_requestor_agentkit_mcp.py)（全仓 **`964/964` 单测通过，达成 275 阶段里程碑！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-transfer-checked-ucp-a2a-ssrf-stripe-requestor-agentkit-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-transfer-checked-ucp-a2a-ssrf-stripe-requestor-agentkit-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-transfer-checked-ucp-a2a-ssrf-stripe-requestor-agentkit-mcp-bench/report.json)
 
 ---
 
