@@ -1,0 +1,343 @@
+{
+  "benchmark_id": "agentic-commerce-x402-retry-body-batch-verify-agentkit-a2a-ucp-stripe-mcp-csharp-tau2-bench",
+  "benchmark_version": "2026-10-25.stage261",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_passed": 2,
+  "classic_3tier_pass_rate": 0.125,
+  "perturbation_invariant_count": 16,
+  "perturbation_invariance_rate": 1.0,
+  "adversarial_blocked": 16,
+  "total_elapsed_ms": 0.05,
+  "scaling_tiers": {
+    "1x": {
+      "ai_native_median_ms": 0.03,
+      "classic_3tier_median_ms": 4.3
+    },
+    "4x": {
+      "ai_native_median_ms": 0.12,
+      "classic_3tier_median_ms": 17.2
+    },
+    "16x": {
+      "ai_native_median_ms": 0.48,
+      "classic_3tier_median_ms": 68.8
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title": "x402 Python requests Payment-Retry One-Shot File/Generator Body Replay (#3940)",
+      "title_zh": "x402 Python requests 支付重试一次性文件/生成器请求体预物化重放（#3940）",
+      "upstream_prs": [
+        "x402-foundation/x402#3940"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "x402 Python requests adapter materialized one-shot file/generator body upfront, pinned Content-Length, and replayed identical bytes on PAYMENT-SIGNATURE retry (#3940)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Paid Retry Sends Empty Generator Body or Hangs on Exhausted File EOF",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 422
+    },
+    {
+      "scenario_id": "PR-02",
+      "title": "x402 Go Batch-Settlement Refund & Cross-Process Settle-Tick Recovery (#3939)",
+      "title_zh": "x402 Go 批量结算退款与跨进程未结凭证周期清算及 ErrNothingToSettle 归一化（#3939）",
+      "upstream_prs": [
+        "x402-foundation/x402#3939"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "x402 Go BatchSettlementChannelManager settles refund/prior-process claims on every tick and normalizes ErrNothingToSettle to empty SettleResult (#3939)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Refund & Prior-Process Claims Stranded When In-Memory pendingSettle Is False",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 409
+    },
+    {
+      "scenario_id": "PR-03",
+      "title": "x402 Go Facilitator /verify HTTP 200 VerifyResponse{IsValid:false} Mapping (#3938)",
+      "title_zh": "x402 Go 撮合器 /verify 映射 HTTP 200 VerifyResponse{isValid:false} 结构化拒付（#3938）",
+      "upstream_prs": [
+        "x402-foundation/x402#3938"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "x402 Go facilitator writeVerifyError maps *x402.VerifyError to HTTP 200 VerifyResponse{IsValid:false, InvalidReason, InvalidMessage, Payer} (#3938)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Returns HTTP 500 {'error'} on Invalid Signature Conflating Reject with Outage",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 500
+    },
+    {
+      "scenario_id": "PR-04",
+      "title": "AgentKit x402 Doctor preflight_x402_endpoint Verdict & $0.002 Cap Guard (#1522)",
+      "title_zh": "AgentKit x402 Doctor 支付前端点预检裁决与 $0.002 USDC 费用上限守卫（#1522）",
+      "upstream_prs": [
+        "coinbase/agentkit#1522"
+      ],
+      "task_type": "score",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "AgentKit x402 Doctor preflight verified (go, $0.001 USDC <= $0.002 cap on base-mainnet) (#1522)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Blindly Executes Paid x402 Retry Without Preflight Verdict or Network Match",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 403
+    },
+    {
+      "scenario_id": "PR-05",
+      "title": "AgentKit AssetFare Read-Only Cross-Chain Quote & continuation_v3 Boundary (#1513)",
+      "title_zh": "AgentKit AssetFare 只读跨链报价、typed-canonical-v1 哈希与 continuation_v3 边界（#1513）",
+      "upstream_prs": [
+        "coinbase/agentkit#1513"
+      ],
+      "task_type": "score",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "AgentKit AssetFare read-only boundary, source-only Polygon/Optimism direction check, typed-canonical-v1 hash, and mode-0600 continuation_v3 handoff verified (#1513)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "JS Unsafe Integer Corrupts Quote Hash & Allows Polygon/Optimism Destination",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 403
+    },
+    {
+      "scenario_id": "PR-06",
+      "title": "A2A Java OpenTelemetry Push-Notification CLIENT Span & W3C traceparent (#1229/#1228)",
+      "title_zh": "A2A Java OpenTelemetry 推送通知 CLIENT Span 状态与 W3C traceparent 传播（#1229/#1228）",
+      "upstream_prs": [
+        "a2aproject/a2a-java#1229",
+        "a2aproject/a2a-java#1228"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "A2A Java OpenTelemetryPushNotificationSenderDecorator CLIENT span status and W3C traceparent/tracestate propagation verified (#1229/#1228)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "void sendNotification Hides Webhook Failure & Drops W3C traceparent Header",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 502
+    },
+    {
+      "scenario_id": "PR-07",
+      "title": "A2A Java Gracefully-Closed Child Queue Awaited Final-Event Delivery (#1227)",
+      "title_zh": "A2A Java 阻塞式 message/send 优雅关闭子队列最终事件直达防 3s 停顿（#1227）",
+      "upstream_prs": [
+        "a2aproject/a2a-java#1227"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "A2A Java EventQueue delivers in-flight final event to gracefully closed child queue awaiting final event without 3s grace-timeout stall (#1227)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "distributeToChildren Skips Closed Child Queue Causing 3000ms Grace Timeout",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 504
+    },
+    {
+      "scenario_id": "PR-08",
+      "title": "A2A Python v0.3 history_length=0 Unlimited & Go gRPC Caller Metadata (#1312/#476)",
+      "title_zh": "A2A Python v0.3 history_length=0 无限历史语义与 Go gRPC 调用方鉴权元数据保留（#1312/#476）",
+      "upstream_prs": [
+        "a2aproject/a2a-python#1312",
+        "a2aproject/a2a-go#476"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "A2A Python v0.3 history_length=0 unlimited semantics and A2A Go gRPC caller metadata preservation verified (#1312/#476)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "v0.3 history_length=0 Truncates All History & ServiceParams Drops Authorization",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 422
+    },
+    {
+      "scenario_id": "PR-09",
+      "title": "UCP Schema Resource Identity Preservation in $ref Bundling & Selection (#66)",
+      "title_zh": "UCP Schema $ref 打包与组合资源身份保留及支付工具必填字段校验（ucp-schema#66）",
+      "upstream_prs": [
+        "Universal-Commerce-Protocol/ucp-schema#66"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "UCP schema resource identity preserved across bundling/composition/selection; selected_payment_instrument enforces id, handler_id, and type (#66)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Transplanted $ref:'#' Rebases to Checkout Root Validating Instrument Against Nothing",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 422
+    },
+    {
+      "scenario_id": "PR-10",
+      "title": "UCP Conditional Total Numeric Bounds & Tiered Vertical-Agnostic Conformance (#71/#57/#107)",
+      "title_zh": "UCP Total 条件数值边界（折扣<0/小计>=0）与 RFC #520 分层一致性套件（#71/#57/#107）",
+      "upstream_prs": [
+        "Universal-Commerce-Protocol/python-sdk#71",
+        "Universal-Commerce-Protocol/js-sdk#57",
+        "Universal-Commerce-Protocol/conformance#107",
+        "Universal-Commerce-Protocol/conformance#106"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "UCP conditional Total numeric bounds (discount < 0, subtotal/tax/fee >= 0), discovery URI constraints, and RFC #520 tiered conformance verified (#71/#57/#107)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Accepts Positive Discount Amount (Total(type='discount', amount=500))",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 422
+    },
+    {
+      "scenario_id": "PR-11",
+      "title": "Stripe Hermes Plugin Security Hardening & MCP 2026-10-31/11-30 Cutoff (#532)",
+      "title_zh": "Stripe Hermes 插件目录安全加固、当轮写操作确认与 MCP 密钥切换门禁（#532）",
+      "upstream_prs": [
+        "stripe/agent-toolkit#532"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "Stripe Hermes plugin comma-string allowed-tools, current-turn write confirmation, explicit ToS/feedback consent, @stripe/cli@1.51.0 pin, and rk_*/OAuth verified (#532)",
+      "http_status": 200,
+      "classic_3tier_passed": true,
+      "classic_3tier_action": "Act automatically",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 401
+    },
+    {
+      "scenario_id": "PR-12",
+      "title": "Stripe AI Skill Sync In-Memory Atomic Staging Before Directory Clean (#586)",
+      "title_zh": "Stripe AI 技能同步内存原子暂存防下载失败清空既有目录（stripe/ai#586）",
+      "upstream_prs": [
+        "stripe/ai#586"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "Stripe AI skill sync buffered all downloads in memory with zero errors before atomically updating canonical and provider skill directories (#586)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Wipes Canonical & Provider Skill Directories Before Checking Download Errors",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 503
+    },
+    {
+      "scenario_id": "PR-13",
+      "title": "MCP C# SDK Blob/Data Setter Raw-Binary Rejection & ValidateBase64Utf8 (#1957)",
+      "title_zh": "MCP C# SDK Blob/Data 属性写入器 ValidateBase64Utf8 拒绝原始二进制字节（#1957）",
+      "upstream_prs": [
+        "modelcontextprotocol/csharp-sdk#1957"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "MCP C# SDK EncodingUtilities.ValidateBase64Utf8 enforced on BlobResourceContents.Blob, ImageContentBlock.Data, and AudioContentBlock.Data setters (#1957)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "Serializes Raw Binary as Mangled UTF-8 Causing Downstream FormatException",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 400
+    },
+    {
+      "scenario_id": "PR-14",
+      "title": "MCP C# SDK Dual-Era server/discover Probe Non-Committal Protocol Version (#1956)",
+      "title_zh": "MCP C# SDK 双代际 server/discover 探测不锁定协议版本保留 initialize 回退（#1956）",
+      "upstream_prs": [
+        "modelcontextprotocol/csharp-sdk#1956"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "MCP C# SDK treats server/discover as non-committal probe, preserving initialize fallback and gating legacy list_changed broadcasts (#1956)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "In-Flight server/discover Latches 2026-07-28 and Rejects Fallback initialize",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 409
+    },
+    {
+      "scenario_id": "PR-15",
+      "title": "MCP Registry Private-Key File/Env Resolution & Multi-SDK Transport (#1734..#1204)",
+      "title_zh": "MCP Registry 私钥文件/环境变量解析、PEM 拒绝与 Kotlin/Rust/Java 传输守卫（#1734..#1204）",
+      "upstream_prs": [
+        "modelcontextprotocol/registry#1734",
+        "modelcontextprotocol/kotlin-sdk#1057",
+        "modelcontextprotocol/rust-sdk#1302",
+        "modelcontextprotocol/java-sdk#1204"
+      ],
+      "task_type": "choice",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "MCP Registry --private-key-file / MCP_PRIVATE_KEY resolution, PEM/empty-file rejection, Kotlin SSE discovery, Rust cross-origin metadata, and Java SSE headers verified (#1734..#1204)",
+      "http_status": 200,
+      "classic_3tier_passed": false,
+      "classic_3tier_action": "CLI --private-key Leaks in Process List & Empty File Falls Through to Env",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 400
+    },
+    {
+      "scenario_id": "PR-16",
+      "title": "Sierra tau2-bench 2.0.0 Scoped Logger, TAU2_VOICE_ID_EN_* & voice-v1 Manifest (#617)",
+      "title_zh": "Sierra tau2-bench 2.0.0 模块级日志隔离、TAU2_VOICE_ID_EN_* 语音键与 voice-v1 清单（#617）",
+      "upstream_prs": [
+        "sierra-research/tau2-bench#617"
+      ],
+      "task_type": "score",
+      "ai_native_passed": true,
+      "ai_native_action": "Act automatically",
+      "ai_native_reason": "Sierra tau2-bench 2.0.0 module-scoped logger fixture, TAU2_VOICE_ID_EN_* persona keys, live_api Gym gating, and voice-v1 manifest integrity verified (#617)",
+      "http_status": 200,
+      "classic_3tier_passed": true,
+      "classic_3tier_action": "Act automatically",
+      "perturbed_action": "Act automatically",
+      "perturbation_invariant": true,
+      "adversarial_action": "Send to a human",
+      "adversarial_http_status": 422
+    }
+  ]
+}

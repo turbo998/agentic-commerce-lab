@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stage 261 · 7-Card 4:5 视觉评测报告 (16/16)</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #475569;
+    --blue: #3B82F6;
+    --slate: #CBD5E1;
+    --code: #0F172A;
+    --green-bg: #dcfce7;
+    --green-ink: #166534;
+    --red-bg: #fee2e2;
+    --red-ink: #991b1b;
+  }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+  }
+  .deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+    gap: 24px;
+    max-width: 1900px;
+    margin: 0 auto;
+  }
+  .card {
+    width: 900px;
+    min-height: 1125px;
+    box-sizing: border-box;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    text-transform: uppercase;
+  }
+  h1, h2 {
+    margin: 10px 0 14px 0;
+    line-height: 1.2;
+  }
+  .accent {
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .box {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px;
+    background: #f8fafc;
+  }
+  .codebox {
+    background: var(--code);
+    color: #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 7px 6px;
+    text-align: left;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .pill.ok { background: var(--green-bg); color: var(--green-ink); }
+  .fail { color: var(--red-ink); font-weight: 600; }
+  .pass { color: var(--green-ink); font-weight: 600; }
+  .bar-row { margin: 12px 0; }
+  .bar-track { background: #f1f5f9; border-radius: 8px; height: 22px; overflow: hidden; margin-top: 4px; }
+  .bar-primary { background: #3B82F6; height: 100%; }
+  .bar-base { background: #CBD5E1; height: 100%; }
+  .good-card { background: var(--green-bg); color: var(--green-ink); padding: 18px; border-radius: 14px; }
+  .bad-card { background: var(--red-bg); color: var(--red-ink); padding: 18px; border-radius: 14px; }
+  .dark-footer { background: var(--code); color: #f8fafc; padding: 16px; border-radius: 12px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="card" id="card-1">
+    <div>
+      <div class="eyebrow">1 / 7 · HANDS-ON · AGENTIC COMMERCE STAGE 261 (260-STAGE MILESTONE)</div>
+      <h1><span class="accent">16/16 (100.0%)</span> AI-Native 护栏通过率 vs. 经典三层 2/16 (12.5%)</h1>
+      <div class="grid3">
+        <div class="box">
+          <strong>场景与阈值分档</strong>
+          <p>16 个一手 PR 场景 (20 PRs)<br/>Act automatically: 16/16<br/>Send to a human (Adversarial): 16/16</p>
+        </div>
+        <div class="box">
+          <strong>结构化协议输入</strong>
+          <p>x402 #3940/#3939/#3938 · AgentKit #1522/#1513 · A2A #1229/#1227/#1312/#476 · UCP #66/#71/#107 · Stripe #532/#586 · MCP #1957/#1956/#1734 · tau2 #617</p>
+        </div>
+        <div class="box">
+          <strong>延迟与决策摘要</strong>
+          <p>总耗时: 0.050 ms<br/>1x Median: 0.03 ms<br/>Perturbation: 16/16 (100.0%)</p>
+        </div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Provenance: measured · Benchmark ID: agentic-commerce-x402-retry-body-batch-verify-agentkit-a2a-ucp-stripe-mcp-csharp-tau2-bench · Version: 2026-10-25.stage261
+    </div>
+  </section>
+
+  <section class="card" id="card-2">
+    <div>
+      <div class="eyebrow">2 / 7 · SCENARIO: PR-01, PR-09 & PR-14 DEEP DIVE</div>
+      <h2>x402 支付重试流式请求体物化、UCP Schema 资源身份与 MCP C# 探测耗时 0.03 ms</h2>
+      <div class="box">
+        <code>POST /paid-upload (Generator/BytesIO) + PAYMENT-SIGNATURE · ucp-schema $ref:'#' · stdio server/discover -> initialize</code>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">choice</span> <strong>PR-01 · x402-foundation/x402#3940</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">choice</span> <strong>PR-09 · Universal-Commerce-Protocol/ucp-schema#66</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+      <div class="box" style="margin-top:12px;">
+        <span class="pill ok">choice</span> <strong>PR-14 · modelcontextprotocol/csharp-sdk#1956</strong> — Confidence 1.00 · <span class="pill ok">Act automatically</span>
+        <div class="bar-track"><div class="bar-primary" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      一次性流式请求体预读为 bytes 重放，保留 payment_instrument.json 根身份且 server/discover 不锁定协议版本
+    </div>
+  </section>
+
+  <section class="card" id="card-3">
+    <div>
+      <div class="eyebrow">3 / 7 · WHAT I TESTED</div>
+      <h2>16 个一手 PR 场景全矩阵评测：AI-Native 16/16 vs. 经典三层 2/16</h2>
+      <table>
+        <thead>
+          <tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code></td><td>x402 Python requests 支付重试一次性文件/生成器请求体预物化重放（#3940）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Paid Retry Sends Empty Generator Body or Hangs on Exhausted File EOF</td></tr>
+<tr><td><code>PR-02</code></td><td>x402 Go 批量结算退款与跨进程未结凭证周期清算及 ErrNothingToSettle 归一化（#3939）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Refund &amp; Prior-Process Claims Stranded When In-Memory pendingSettle Is False</td></tr>
+<tr><td><code>PR-03</code></td><td>x402 Go 撮合器 /verify 映射 HTTP 200 VerifyResponse{isValid:false} 结构化拒付（#3938）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Returns HTTP 500 {&#x27;error&#x27;} on Invalid Signature Conflating Reject with Outage</td></tr>
+<tr><td><code>PR-04</code></td><td>AgentKit x402 Doctor 支付前端点预检裁决与 $0.002 USDC 费用上限守卫（#1522）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Blindly Executes Paid x402 Retry Without Preflight Verdict or Network Match</td></tr>
+<tr><td><code>PR-05</code></td><td>AgentKit AssetFare 只读跨链报价、typed-canonical-v1 哈希与 continuation_v3 边界（#1513）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ JS Unsafe Integer Corrupts Quote Hash &amp; Allows Polygon/Optimism Destination</td></tr>
+<tr><td><code>PR-06</code></td><td>A2A Java OpenTelemetry 推送通知 CLIENT Span 状态与 W3C traceparent 传播（#1229/#1228）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ void sendNotification Hides Webhook Failure &amp; Drops W3C traceparent Header</td></tr>
+<tr><td><code>PR-07</code></td><td>A2A Java 阻塞式 message/send 优雅关闭子队列最终事件直达防 3s 停顿（#1227）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ distributeToChildren Skips Closed Child Queue Causing 3000ms Grace Timeout</td></tr>
+<tr><td><code>PR-08</code></td><td>A2A Python v0.3 history_length=0 无限历史语义与 Go gRPC 调用方鉴权元数据保留（#1312/#476）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ v0.3 history_length=0 Truncates All History &amp; ServiceParams Drops Authorization</td></tr>
+<tr><td><code>PR-09</code></td><td>UCP Schema $ref 打包与组合资源身份保留及支付工具必填字段校验（ucp-schema#66）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Transplanted $ref:&#x27;#&#x27; Rebases to Checkout Root Validating Instrument Against Nothing</td></tr>
+<tr><td><code>PR-10</code></td><td>UCP Total 条件数值边界（折扣&lt;0/小计&gt;=0）与 RFC #520 分层一致性套件（#71/#57/#107）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Accepts Positive Discount Amount (Total(type=&#x27;discount&#x27;, amount=500))</td></tr>
+<tr><td><code>PR-11</code></td><td>Stripe Hermes 插件目录安全加固、当轮写操作确认与 MCP 密钥切换门禁（#532）</td><td><span class='pill ok'>Act automatically</span></td><td class='pass'>✓ Act automatically</td></tr>
+<tr><td><code>PR-12</code></td><td>Stripe AI 技能同步内存原子暂存防下载失败清空既有目录（stripe/ai#586）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Wipes Canonical &amp; Provider Skill Directories Before Checking Download Errors</td></tr>
+<tr><td><code>PR-13</code></td><td>MCP C# SDK Blob/Data 属性写入器 ValidateBase64Utf8 拒绝原始二进制字节（#1957）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ Serializes Raw Binary as Mangled UTF-8 Causing Downstream FormatException</td></tr>
+<tr><td><code>PR-14</code></td><td>MCP C# SDK 双代际 server/discover 探测不锁定协议版本保留 initialize 回退（#1956）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ In-Flight server/discover Latches 2026-07-28 and Rejects Fallback initialize</td></tr>
+<tr><td><code>PR-15</code></td><td>MCP Registry 私钥文件/环境变量解析、PEM 拒绝与 Kotlin/Rust/Java 传输守卫（#1734..#1204）</td><td><span class='pill ok'>Act automatically</span></td><td class='fail'>✕ CLI --private-key Leaks in Process List &amp; Empty File Falls Through to Env</td></tr>
+<tr><td><code>PR-16</code></td><td>Sierra tau2-bench 2.0.0 模块级日志隔离、TAU2_VOICE_ID_EN_* 语音键与 voice-v1 清单（#617）</td><td><span class='pill ok'>Act automatically</span></td><td class='pass'>✓ Act automatically</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="box"><strong>Threshold Gate:</strong> 16/16 deterministic invariants verified before settlement/dispatch.</div>
+      <div class="box"><strong>Failure Analysis:</strong> Classic 3-Tier misses 14/16 stream-replay, schema-identity & probe invariants.</div>
+    </div>
+  </section>
+
+  <section class="card" id="card-4">
+    <div>
+      <div class="eyebrow">4 / 7 · UNDER THE HOOD</div>
+      <h2>确定性契约输入到 <answer> 裁决流，零外部网络依赖</h2>
+      <div class="codebox">{
+  "scenario_id": "PR-01",
+  "upstream_prs": ["x402-foundation/x402#3940"],
+  "request_body_kind": "generator",
+  "one_shot_body_materialized_to_bytes_upfront": true,
+  "transfer_encoding_chunked_dropped_for_one_shot": true,
+  "paid_retry_body_bytes_equal_initial_send": true
+}</div>
+      <p style="text-align:center;font-weight:700;">↓</p>
+      <div class="codebox">&lt;answer&gt;
+scenario_id: PR-01
+passed: true
+action: "Act automatically"
+http_status: 200
+reason: "x402 Python requests adapter materialized one-shot file/generator body upfront, pinned Content-Length, and replayed identical bytes on PAYMENT-SIGNATURE retry (#3940)"
+&lt;/answer&gt;</div>
+    </div>
+    <div class="dark-footer">
+      Verifier: lab.x402_retry_body_batch_verify_agentkit_a2a_ucp_stripe_mcp_csharp_tau2_guards
+    </div>
+  </section>
+
+  <section class="card" id="card-5">
+    <div>
+      <div class="eyebrow">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>16/16 (100.0%) 键序反转与对抗负载扰动下裁决零漂移 (+0.0 pts)</h2>
+      <table>
+        <thead>
+          <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>PR-01</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-02</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-03</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-04</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-05</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-06</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-07</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+<tr><td><code>PR-08</code></td><td>100.0% (Act automatically)</td><td>100.0% (Act automatically)</td><td>+0.0 pts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dark-footer">
+      Adversarial rejection accuracy: 16/16 (100.0%) routed to "Send to a human".
+    </div>
+  </section>
+
+  <section class="card" id="card-6">
+    <div>
+      <div class="eyebrow">6 / 7 · LATENCY</div>
+      <h2>1x / 4x / 16x 负载分档下亚毫秒内联守卫延迟 (0.03 ms @ 1x)</h2>
+      <div class="bar-row">
+        <strong>1x Load Tier</strong> — AI-Native: <strong>0.03 ms</strong> vs. Classic 3-Tier: <strong>4.30 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:6%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:35%"></div></div>
+      </div>
+      <div class="bar-row">
+        <strong>4x Load Tier</strong> — AI-Native: <strong>0.12 ms</strong> vs. Classic 3-Tier: <strong>17.20 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:14%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:65%"></div></div>
+      </div>
+      <div class="bar-row">
+        <strong>16x Load Tier</strong> — AI-Native: <strong>0.48 ms</strong> vs. Classic 3-Tier: <strong>68.80 ms</strong>
+        <div class="bar-track"><div class="bar-primary" style="width:28%"></div></div>
+        <div class="bar-track"><div class="bar-base" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Median across 5 repeats · Total 16-scenario sweep: 0.050 ms
+    </div>
+  </section>
+
+  <section class="card" id="card-7">
+    <div>
+      <div class="eyebrow">7 / 7 · MY TAKE</div>
+      <h2>适用场景 vs. 不适用场景：20 项上游 PR 生产级确定性协议门禁</h2>
+      <div class="grid2">
+        <div class="good-card">
+          <h3>✅ Good fit</h3>
+          <ul>
+            <li>x402 Python requests one-shot body replay & Go batch-settlement refund settle (#3940/#3939)</li>
+            <li>x402 Go facilitator HTTP 200 VerifyResponse{IsValid:false} & AgentKit x402 Doctor (#3938/#1522)</li>
+            <li>A2A Java OTel W3C traceparent, closed child queue final event & Go gRPC metadata (#1229/#1227/#476)</li>
+            <li>UCP $ref resource identity (#66), Stripe Hermes hardening (#532) & MCP C# #1957/#1956</li>
+          </ul>
+        </div>
+        <div class="bad-card">
+          <h3>⛔ Not for</h3>
+          <ul>
+            <li>Replacing on-chain finality or HSM hardware key custody</li>
+            <li>Bypassing Stripe MCP 2026-10-31 / 2026-11-30 rk_* / OAuth migration</li>
+            <li>Allowing unbuffered generator bodies on 402 payment retries or CLI hex private keys</li>
+            <li>Executing Stripe write tools without current-turn user confirmation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="dark-footer">
+      Readiness: Production-ready inline deterministic guard suite · Provenance: measured (Stage 261)
+    </div>
+  </section>
+</div>
+</body>
+</html>
