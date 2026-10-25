@@ -2920,6 +2920,21 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；总内联延迟 **`0.25 ms`**。
 - **技术资产**：[`lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py`](../../lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py)、[`tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py`](../../tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py) 及双语报告 [`reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/`](../../reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/index.en.html)）。
 
+## 245. Stage 246（`2026-10-25`）：MCP Inspector OAuth SSRF 与重定向护栏 / `scopeOnRefresh` / SEP-2640 Skills / 压测阈值退出码 `10` 与 Swift / Ruby / PHP / Kotlin 四大 SDK 确定性护栏
+
+### 245.1 MCP Inspector OAuth SSRF、重定向与压测门禁护栏（`PR-01..PR-06`）
+- **`PR-01..PR-06`（`inspector#2809`、`#2808`、`#2801`、`#2798`、`#2796`、`#2795`、`#2794`、`#2793`、`#2792`、`#2791`、`#2790`、`#2788`、`#2787`、`#2785`）**：可选 `scopeOnRefresh`（`BaseOAuthClientProvider.scopeForRefresh`）解决 Entra ID `AADSTS90009`（`tokens.scope` -> 剥离 `offline_access` 的请求 scope -> 配置 scope）并经 `EmaTransportOAuthProvider` 透传；合入 SEP-2640 Skills SDK 常量/Schema（`SKILL_LIMITS` 512 文件 / 16 MiB、`SKILL_DIGEST_PATTERN`、`ReadResourceDirectoryResultSchema`、`DirectoryResourceSchema`）与 Inspector 宽容 `SkillEntrySchema`、动态资源告警及纯 HTTP LAN SHA-256 回退；对全部 OAuth HTTP 客户端强制执行目标 SSRF 预检（拦截 `169.254.0.0/16` 含 `::ffff:a9fe:a9fe`、`fe80::/10`、`fd00:ec2::254`）、最多 5 跳手动重定向重验（跨源剥离凭据并阻断跨源敏感体 `307`/`308`）及 `connect.lookup` DNS 钉死；静态客户端 `saveTokens` 回写 SEP-2352 `issuer` 戳记至 `preregistered` 并校验 DCR 钥匙串 `client_secret` 归属（`joinClientInformation`）；CLI HTTP `429` `rate_limited` 计时信封、拒绝 stdio `--load-connections > 1` 与压测阈值退出码 `10`（`LOAD_THRESHOLD_EXCEEDED`）；以及 `ServerCard` 失败原因保留、`compareToolsByLabel` 自然排序、非回环监听告警与 `os.tmpdir()` `HOME` 隔离。
+
+### 245.2 MCP Swift / Ruby / PHP / Kotlin 四大官方 SDK 护栏（`PR-07..PR-16`）
+- **`PR-07..PR-16`（`swift-sdk#311..#294`、`ruby-sdk#632..#612`、`php-sdk#614..#593`、`kotlin-sdk#1134..#1128`）**：Swift RFC 2397 `data:` URL 仅头部切片检测 `;base64` 与直接原始字节 `%XX` 解码（防非 UTF-8 损坏）、`NetworkTransport` 心跳断连重连验证、OAuth 临时端口竞态说明、`Server` JSON 编解码器复用及带类型工具 `inputSchema.properties`；Ruby `2026-07-28` `subscriptions/listen` 逐 URI `resources_subscribe_handler` 过滤与 `configuration.exception_reporter`、`"id": null` 拒绝执行并返回 `-32600`（现代 `400` / 旧版 `200`）、无 `id` 协议请求方法按通知丢弃、接受任意字符串请求 ID、对 `Accept: text/event-stream` 的 `initialize` POST 立即返回响应，以及 `allowed_hosts` DNS 重绑定防护；PHP `Client::connect()` 重连关闭旧传输并在消失流超过 `timeout + 60s` 后清理挂起请求、逐请求 `ClientGateway::progress()` 进度令牌隔离、`initialize` 通过 `ServerCapabilities::withoutListChanged()` 将列表变更收敛至 `subscriptions/listen`、支持仅含 `structuredContent` 的工具结果及独立 `FileSessionStore::gc()`；Kotlin 冷惰性分页 `Flow`（`toolsFlow`/`promptsFlow`/`resourcesFlow`/`resourceTemplatesFlow`）与 `seenCursors` 环路检测（`IllegalStateException`），以及 `0.16.0` SEP-2596 废弃独立 SSE 与旧符号迁移至 `ERROR`/`HIDDEN`。
+- **技术资产**：[`lab/mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_guards.py`](../../lab/mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_guards.py) 与 [`tests/test_mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_guards.py`](../../tests/test_mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_guards.py)。
+
+## 246. Stage 247（908/908 单测全绿！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **3/16 (18.75%)**；扰动一致性 **16/16 (100.0%)**；总内联延迟 **`0.29 ms`**。
+- **技术资产**：[`lab/mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_bench.py`](../../lab/mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_bench.py)、[`tests/test_mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_bench.py`](../../tests/test_mcp_inspector_oauth_ssrf_load_swift_ruby_php_kotlin_bench.py) 及双语报告 [`reports/agentic-commerce-mcp-inspector-oauth-ssrf-load-swift-ruby-php-kotlin-bench/`](../../reports/agentic-commerce-mcp-inspector-oauth-ssrf-load-swift-ruby-php-kotlin-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-mcp-inspector-oauth-ssrf-load-swift-ruby-php-kotlin-bench/index.en.html)）。
+
+
 
 
 
