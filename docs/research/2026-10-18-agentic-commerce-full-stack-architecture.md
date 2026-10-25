@@ -2806,6 +2806,24 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py`](../../lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py)、[`tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py`](../../tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py) 及双语报告 [`reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/`](../../reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/index.en.html)）。
 
+---
+
+## 231. Stage 232（880 单测里程碑！`2026-10-25`）：x402 EVM `exact` 规范化相等 / `offer-receipt` v2 盐化承诺 / Neo NEP-17、UCP Checkout MCP 幂等与 Python SDK / Conformance、MCP SEP-2778 类型约束及 Python/TS/Go/Rust/C# SDK 确定性护栏（`PR-01..PR-16`）
+
+### 231.1 x402 EVM/Neo/offer-receipt v2 与 UCP Checkout MCP 幂等、Python SDK 及 Conformance 护栏（`PR-01..PR-06`）
+- **`PR-01..PR-03`（`x402#3925`、`#3927`、`#3827`、`#3271`、`#3926`）**：EIP-3009 `authorization.value == required_amount` 与 Permit2 `permit2Authorization.permitted.amount == required_amount` 规范化全等校验、`@trustscoreagent/x402` 签名前收款人核验、`offer-receipt` v2 32 字节 CSPRNG `authorizationSalt`（签名载荷外返回）与 `authorizationCommitment`、AlgoVoi 跨链 Facilitator 路由，以及 `neo:*` CAIP-2 单笔 NEP-17 转账 `upfront` 结算。
+- **`PR-04..PR-06`（`ucp#679`、`#783`、`python-sdk#102`/`#101`/`#100`/`#96`、`conformance#117`/`#89`/`#115`/`#112`）**：Checkout MCP `meta["idempotency-key"]` 服务端契约（冲突返回 `-32000`）与 Accelerated IdP `subject_token` 同意绑定；Python SDK 5 类媒体变体模块、`ucp-schema generate-types` 编译、移除 `datetime` 正则 `pattern` 及 `TimeInterval`/`ExceptionHour` `dependentRequired` 共现校验；Conformance `ready_for_complete` 断言、`payment_terms` 唯一性、`/profiles/shopping-agent-ap2.json` AP2 协商及 `ucp_request: omit` 仅响应字段拦截。
+
+### 231.2 MCP SEP-2778 类型安全约束与 Python/TS/Go/Rust/C# SDK 纵深加固护栏（`PR-07..PR-16`）
+- **`PR-07..PR-10`（`modelcontextprotocol#2778`、`python-sdk#3754`/`#3753`/`#3750`、`typescript-sdk#3076`/`#3079`/`#3024`/`#3003`/`#3062`/`#3034`）**：SEP-2778 30+ 项类型安全约束；Python SDK 工具描述首次见到时 SHA-256 固定防 `tools/list_changed` Rug-Pull（`CWE-345`）、提示词注入扫描（`CWE-20`）、默认开启 DNS 重绑定防护、串行排空 `progress_callback` 与拒绝非 UTF-8 `%XX` URI；TS SDK 保留显式 `listChanged=false`、`notifications/initialized` 独立超时、`onMessageProcessed` 准入额度归还、RFC 6570 `:N` 前缀修饰符、RFC 9728 路径尾斜杠保留及 RFC 8414 `client_credentials` 省略 `authorization_endpoint`。
+- **`PR-11..PR-16`（`go-sdk#1411`/`#1443`/`#1441`/`#1442`/`#1438`、`rust-sdk#1197`/`#1282`/`#1392`/`#1363`/`#1328`/`#1390`、`csharp-sdk#1952`/`#1949`/`#1953`/`#1895`/`#1934`/`#1929`）**：Go SDK `*Response` 经 `handlerQueue` 投递、Windows `file:///C:/...` 盘符根路径、严格整数 JSON-RPC `id`、`PerformOIDCLogin` RFC 9207 `iss` 校验与 `id-jag` 令牌类型强制；Rust SDK `CustomResult` 保留 `_meta` 扩展字段、RFC 6454 默认端口 `Origin` 匹配、SEP-2640 Skills 扩展、`401`/`403`/`405` 停止 SSE GET 重连、断连 `notifications/cancelled` Drop Guard 与大小写无关 `Content-Type` 本质类型匹配；C# SDK 默认禁用无元数据 OAuth 回退、PKCE/Issuer 校验、`resource_indicators_supported: false`、stdio `DisposeAsync` 等待整棵子进程树退出、大小写敏感协议属性名与 `structuredContent` 显式 `null` 保留。
+- **技术资产**：[`lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_guards.py`](../../lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_guards.py) 与 [`tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_guards.py`](../../tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_guards.py)。
+
+## 232. Stage 233（880/880 单测里程碑达成！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py`](../../lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py)、[`tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py`](../../tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py) 及双语报告 [`reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/`](../../reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/index.en.html)）。
+
 
 
 
