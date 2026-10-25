@@ -1,6 +1,29 @@
-# 2026-10-26 Technical Assets & Architecture Update Index (Stages 266–267+)
+# 2026-10-26 Technical Assets & Architecture Update Index (Stages 266–269+)
 
 🌐 **Language / 语言导航**: **[中文更新索引 (`2026-10-26-daily-update.md`)](2026-10-26-daily-update.md)** | **English Update Index (Current)** | **[2026-10-26 Daily Research (EN)](../../research/daily/2026-10-26.en.md)** | **[2026-10-26 每日研究 (中文)](../../research/daily/2026-10-26.md)**
+
+---
+
+## Stages 268–269 (950+ Unit Test Milestone Achieved · `952/952` Unit Tests Passing!): `@x402/next` Leading Empty Query & `req.clone().json()` / `@x402/axios` `getUri` & Post-Signature Timeout Guard, A2A AgentCard Signature-Stripped Weak `ETag` (`W/"..."`) / Pre-Execution `contextId` Binding & Terminal Task Gate / `validate_input_modes` & Java REST `%d` + `id:null`, Stripe Node Blank Webhook Secret & Nullish Tolerance / Stripe Python Event Context Isolation / Stripe CLI Path Escaping & Explicit `HookBaseURLs`, AgentKit `dexter` / `WalletForge` / `HCRB`, and MCP Go/Rust/Java/C#/Inspector Deterministic Guards & 7-Card Benchmark Report
+
+- **Primary-Source Protocol Coverage (29 Zero-Overlap Upstream PRs, `PR-01..PR-16`)**:
+  - `PR-01` (`x402-foundation/x402#3456`, `#3451`): `@x402/next` preserves leading empty query values via `if (existing !== undefined)` and clones requests (`this.req.clone().json()`) before parsing JSON bodies.
+  - `PR-02` (`x402-foundation/x402#3454`, `#3387`): `@x402/axios` resolves full URLs via `new URL(axiosInstance.getUri(config)).href` and forbids automatic re-payment on post-`PAYMENT-SIGNATURE` timeouts or `settlement_pending`.
+  - `PR-03` (`a2aproject/a2a-python#1272`): Strips `signatures` before hashing AgentCard weak `ETag` (`W/"<sha256>"`) and evaluates RFC 9110 §8.2.2 weak `If-None-Match` (`304 Not Modified`).
+  - `PR-04` (`a2aproject/a2a-python#1270`, `#1268`): Rejects `message.context_id != task.context_id` with `InvalidParamsError` before `executor.execute` runs, and raises `UnsupportedOperationError` (`TaskNotCancelableError` on cancel) on terminal tasks.
+  - `PR-05` (`a2aproject/a2a-python#1269` & `a2a-java#1200`, `#1198`): Enforces `default_input_modes ∪ skill.input_modes` via `@validate_input_modes`, fixes `/tasks/%s?historyLength=%d` in Java REST, and forces `setSerializeNulls(true)` in `JsonUtil.writeJsonRpcId` for `"id": null`.
+  - `PR-06` (`stripe/stripe-node#2885`, `#2876`): Rejects ASCII-whitespace-only webhook secrets (`isBlankWebhookSecret`) and uses `tolerance ?? Webhook.DEFAULT_TOLERANCE` in `verifyHeader`/`verifyHeaderAsync`.
+  - `PR-07` (`stripe/stripe-python#1920`, `#1911`): Omits parent `stripe_account` when creating `parse_event_notification` callback clients and enforces positional-only (`/`) path parameters.
+  - `PR-08` (`stripe/stripe-cli#2134`, `#2125`, `#2124`): Rejects `""`, `"."`, and `".."` in `EscapePathSegment`, applies `url.PathEscape` to positional IDs in `formatURL`, and forwards only explicit `HookBaseURLs` during plugin `Install`/`Upgrade`.
+  - `PR-09` (`coinbase/agentkit#1487`, `#1491`, `#1492`): Adds `dexter` (`https://x402.dexter.cash`) to `KNOWN_FACILITATORS`, enforces `WalletForgeActionProvider` Base USDC caps (`0.05`/`0.01`), and restricts `HcrbActionProvider` to Base (`8453`/`84532`).
+  - `PR-10..PR-11` (`modelcontextprotocol/go-sdk#1289`, `#1283`, `#1277`, `#1268`): Distinguishes present-empty `Mcp-Param-*` headers from absent headers, tags `ClientSession.resourceSubs` with monotonic `gen uint64`, tracks only `req.IsCall()` in stdio batches, and checks `_meta.protocolVersion` membership in `SupportedProtocolVersions()`.
+  - `PR-12..PR-13` (`modelcontextprotocol/rust-sdk#1270`, `#1263`, `#1262`): Normalizes omitted `Origin` ports to scheme defaults (`80`/`443`), seeds `batch_messages` with `initial_messages` inside `serve_inner`, and routes `notifications/cancelled` via `is_subscription`.
+  - `PR-14..PR-16` (MCP Java/C#/Inspector): `java-sdk#1185`/`#1184` (evicts idle streamless sessions on `sessionSweepInterval` and strips aggregate cause chains from `JSONRPCError.data`), `csharp-sdk#1860`/`#1856` (cancels `_serverLifetimeCts` before sweeping `_mrtrContinuations` with publish-then-recheck, and rejects doc symlinks), and `inspector#2701`/`#2699` (rejects conflicting CLI target/URL/stdio flags and auto-routes `taskSupport == "required"` tools via `callToolStream`).
+- **New Code, Unit Tests & Visual Reports**:
+  - Guard module: [`lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_guards.py`](../../lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_guards.py)
+  - Benchmark generator: [`lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_bench.py`](../../lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_bench.py)
+  - Unit tests: [`tests/test_x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep.py`](../../tests/test_x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep.py) (**`952/952` unit tests passing**)
+  - 7-Card 4:5 Visual Benchmark Report: [`index.html` (ZH)](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/index.html) · [`index.en.html` (EN)](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/report.json)
 
 ---
 

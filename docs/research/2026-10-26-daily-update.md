@@ -1,6 +1,29 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–267+）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–269+）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 268–269（突破 950+ 单测里程碑 · `952/952` 单测全绿！）：`@x402/next` 空查询保留与 `req.clone().json()` / `@x402/axios` `getUri` 与签后超时对账、A2A AgentCard 剥离签名弱 `ETag` (`W/"..."`) / 执行前 `contextId` 绑定与终态任务拦截 / `validate_input_modes` 与 Java REST `%d` 及 `id:null`、Stripe Node 空白 Webhook 密钥与空值合并容差 / Stripe Python 事件上下文隔离 / Stripe CLI 路径段转义与显式 `HookBaseURLs`、AgentKit `dexter` / `WalletForge` / `HCRB`，以及 MCP Go/Rust/Java/C#/Inspector 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（29 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`x402-foundation/x402#3456`、`#3451`）：`@x402/next` 使用 `if (existing !== undefined)` 保留 `?tag=&tag=b` 前导空字符串，并通过 `this.req.clone().json()` 读取请求体防止吞噬下游路由请求流。
+  - `PR-02`（`x402-foundation/x402#3454`、`#3387`）：`@x402/axios` 使用 `new URL(axiosInstance.getUri(config)).href` 保留 `baseURL` 路径段与 `params`，并在 `PAYMENT-SIGNATURE` 发出后遇超时或 `settlement_pending` 时禁止盲目自动重付。
+  - `PR-03`（`a2aproject/a2a-python#1272`）：AgentCard 弱 `ETag` (`W/"<sha256>"`) 计算前剔除 `signatures` 字段，消除随机 `ECDSA_SHA_256` 签名导致的缓存失效并支持 RFC 9110 §8.2.2 `304 Not Modified`。
+  - `PR-04`（`a2aproject/a2a-python#1270`、`#1268`）：在 `executor.execute` 启动前校验 `message.context_id == task.context_id`（不匹配抛 `InvalidParamsError`），并对终态任务操作抛出 `UnsupportedOperationError`（取消抛 `TaskNotCancelableError`）。
+  - `PR-05`（`a2aproject/a2a-python#1269` & `a2a-java#1200`、`#1198`）：`@validate_input_modes` 校验 `default_input_modes ∪ skill.input_modes`、Java REST `/tasks/%s?historyLength=%d` 消除 `%2d` 空格，以及 `JsonUtil.writeJsonRpcId` 强制输出 `"id": null`。
+  - `PR-06`（`stripe/stripe-node#2885`、`#2876`）：`isBlankWebhookSecret` 拦截全空白 Webhook 密钥，且 `verifyHeader`/`verifyHeaderAsync` 使用 `tolerance ?? Webhook.DEFAULT_TOLERANCE`（默认 300s，`0` 显式跳过）。
+  - `PR-07`（`stripe/stripe-python#1920`、`#1911`）：`StripeClient.with_stripe_context` 在 `parse_event_notification` 回调中不继承父级 `stripe_account`，且服务路径参数强制仅限位置传入（`/`）。
+  - `PR-08`（`stripe/stripe-cli#2134`、`#2125`、`#2124`）：`EscapePathSegment` 拒绝 `""`/`.`/`..`、`formatURL` 对位置 ID 执行 `url.PathEscape`，且插件 `Install`/`Upgrade` 仅转发显式 `HookBaseURLs`。
+  - `PR-09`（`coinbase/agentkit#1487`、`#1491`、`#1492`）：`KNOWN_FACILITATORS` 新增 `dexter`（`https://x402.dexter.cash`）、`WalletForgeActionProvider` Base USDC 限价（`$0.05`/`$0.01`）与 `HcrbActionProvider` Base 链 ID 门禁（`8453`/`84532`）。
+  - `PR-10..PR-11`（`modelcontextprotocol/go-sdk#1289`、`#1283`、`#1277`、`#1268`）：区分存在但为空的 `Mcp-Param-*` 头与缺失头、`ClientSession.resourceSubs` 单调代次 `gen uint64`、Stdio 批处理仅追踪 `req.IsCall()`，以及 `_meta.protocolVersion` 集合成员校验。
+  - `PR-12..PR-13`（`modelcontextprotocol/rust-sdk#1270`、`#1263`、`#1262`）：`AllowedPort::Exact` 归一化 `Origin` 默认端口（`80`/`443`）、免握手会话首包进入 `serve_inner` `batch_messages` 防死锁，以及 `notifications/cancelled` 按 `is_subscription` 路由。
+  - `PR-14..PR-16`（MCP Java/C#/Inspector）：`java-sdk#1185`/`#1184`（按 `sessionSweepInterval` 清扫闲置无流会话并剥离 `JSONRPCError.data` 内部异常链）、`csharp-sdk#1860`/`#1856`（`_serverLifetimeCts` 先取消 + 发布后复检消除 MRTR 释放竞态，以及拒绝文档软链）、`inspector#2701`/`#2699`（拦截位置目标/`--server-url`/`stdio` 冲突并自动路由 `taskSupport == "required"` 至任务流）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_guards.py`](../../lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_guards.py)
+  - 基准生成器：[`lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_bench.py`](../../lab/x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep_bench.py)
+  - 单元测试：[`tests/test_x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep.py`](../../tests/test_x402_next_axios_a2a_etag_stripe_webhook_agentkit_mcp_sweep.py)（全仓 **`952/952` 单测通过**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench/report.json)
 
 ---
 

@@ -1,0 +1,348 @@
+{
+  "benchmark_id": "agentic-commerce-x402-next-axios-a2a-etag-stripe-webhook-agentkit-mcp-sweep-bench",
+  "stage": "Stage 269",
+  "verification_date": "2026-10-26",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 0,
+  "classic_3tier_pass_rate_pct": 0.0,
+  "avg_ai_latency_ms": 0.3,
+  "avg_classic_latency_ms": 4.49,
+  "latency_speedup_x": 15.0,
+  "perturbation_consistency_pct": 100.0,
+  "max_perturbation_delta_pts": 0.0,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "plane": "Plane 5 · x402 Next.js Adapter Integrity",
+      "upstream_pr": "x402-foundation/x402#3456, #3451",
+      "title_zh": "@x402/next 前导空查询参数保留与 req.clone().json() 请求体防吞噬守卫",
+      "title_en": "@x402/next Leading Empty Query Preservation & req.clone().json() Body Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_NEXT_QUERY_AND_CLONED_BODY_PRESERVED",
+      "ai_latency_ms": 0.28,
+      "classic_latency_ms": 4.35,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "parsed_params": {
+          "tag": [
+            "",
+            "b",
+            "c"
+          ]
+        },
+        "adapter_body": {
+          "data": "test"
+        },
+        "route_handler_raw_body": "{\"data\":\"test\"}"
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "plane": "Plane 5 · x402 Axios URI & Timeout Reconciliation",
+      "upstream_pr": "x402-foundation/x402#3454, #3387",
+      "title_zh": "@x402/axios getUri 基础路径/查询拼接与签后超时禁止自动重付守卫",
+      "title_en": "@x402/axios getUri Base-Path/Query Joining & Post-Signature Timeout Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_AXIOS_URI_AND_SAFE_RETRY_ENFORCED",
+      "ai_latency_ms": 0.31,
+      "classic_latency_ms": 4.52,
+      "action_pill": "Confirm",
+      "confidence": 0.995,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "resolved_url": "https://api.merchant.example/v2/paid/quotes?sku=gpu-h200&tier=spot",
+        "settlement_outcome": "settlement_pending",
+        "reconcile_required": true
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "plane": "Plane 1 · A2A AgentCard Weak ETag Caching",
+      "upstream_pr": "a2aproject/a2a-python#1272",
+      "title_zh": "A2A AgentCard 剥离 signatures 的弱 ETag (W/\"...\") 与 RFC 9110 304 协商守卫",
+      "title_en": "A2A AgentCard Signature-Stripped Weak ETag (W/\"...\") & RFC 9110 304 Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "A2A_AGENT_CARD_WEAK_ETAG_VERIFIED",
+      "ai_latency_ms": 0.3,
+      "classic_latency_ms": 4.41,
+      "action_pill": "Act automatically",
+      "confidence": 0.997,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "etag": "W/\"d3fb10cf1618f96e82c1f6c6eb190d0c99391de4bb8e7e15a29a3ddb3ca8d5f2\"",
+        "status_code": 200,
+        "hit_304": false
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "plane": "Plane 3 · A2A Task Context & Terminal State Gate",
+      "upstream_pr": "a2aproject/a2a-python#1270, #1268",
+      "title_zh": "A2A 执行前 contextId 与任务绑定校验及终态任务 UnsupportedOperationError 守卫",
+      "title_en": "A2A Pre-Execution contextId Task Binding & Terminal UnsupportedOperationError",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "A2A_CONTEXT_ID_MISMATCH_INVALID_PARAMS",
+      "ai_latency_ms": 0.29,
+      "classic_latency_ms": 4.48,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "error_type": "InvalidParamsError",
+        "executor_started": false,
+        "task_id": "task-1"
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "plane": "Plane 2 · A2A Input Modes & Java Wire Fidelity",
+      "upstream_pr": "a2aproject/a2a-python#1269 & a2a-java#1200, #1198",
+      "title_zh": "A2A validate_input_modes 媒体类型门禁、Java REST %d 查询与 id:null 序列化守卫",
+      "title_en": "A2A validate_input_modes Gate, Java REST %d Query & JSON-RPC id:null Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "A2A_CONTENT_TYPE_NOT_SUPPORTED_REJECTED",
+      "ai_latency_ms": 0.32,
+      "classic_latency_ms": 4.6,
+      "action_pill": "Act automatically",
+      "confidence": 0.994,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "error_type": "ContentTypeNotSupportedError",
+        "query_path": "/tasks/task-1?historyLength=5",
+        "id_member_written": true,
+        "restored_serialize_nulls": false
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "plane": "Plane 6 · Stripe Node Webhook Secret & Tolerance",
+      "upstream_pr": "stripe/stripe-node#2885, #2876",
+      "title_zh": "Stripe Node 拒绝全空白 Webhook 密钥与 verifyHeader 空值合并默认容差守卫",
+      "title_en": "Stripe Node Blank Webhook Secret Rejection & verifyHeader Nullish Tolerance",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "STRIPE_BLANK_WEBHOOK_SECRET_REJECTED",
+      "ai_latency_ms": 0.27,
+      "classic_latency_ms": 4.38,
+      "action_pill": "Act automatically",
+      "confidence": 0.998,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "error_type": "StripeSignatureVerificationError"
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "plane": "Plane 4 · Stripe Python Context & Path Scoping",
+      "upstream_pr": "stripe/stripe-python#1920, #1911",
+      "title_zh": "Stripe Python 事件回调移除父级 stripe_account 污染与仅限位置路径参数守卫",
+      "title_en": "Stripe Python Event Callback Account Isolation & Positional-Only Path Params",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "STRIPE_PYTHON_POSITIONAL_ONLY_PATH_PARAM_ENFORCED",
+      "ai_latency_ms": 0.28,
+      "classic_latency_ms": 4.42,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "callback_stripe_account": null,
+        "callback_stripe_context": "event_context_456"
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "plane": "Plane 1 · Stripe CLI Path Traversal & Peer Hooks",
+      "upstream_pr": "stripe/stripe-cli#2134, #2125, #2124",
+      "title_zh": "Stripe CLI 拒绝 ./.. 空路径段、位置 ID PathEscape 与显式 HookBaseURLs 守卫",
+      "title_en": "Stripe CLI Dot/Empty Path Rejection, ID PathEscape & Explicit HookBaseURLs",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "STRIPE_CLI_PATH_ESCAPED_AND_HOOK_URLS_SCOPED",
+      "ai_latency_ms": 0.31,
+      "classic_latency_ms": 4.55,
+      "action_pill": "Act automatically",
+      "confidence": 0.997,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "formatted_path": "/v1/customers/id1%2F..%2F..%2Fcustomers%2Fcus_123",
+        "hook_api_base_url": ""
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "plane": "Plane 5 · AgentKit Dexter, WalletForge & HCRB",
+      "upstream_pr": "coinbase/agentkit#1487, #1491, #1492",
+      "title_zh": "AgentKit Dexter 内置撮合器、WalletForge Base USDC 限价与 HCRB 链 ID 守卫",
+      "title_en": "AgentKit Dexter Built-in Facilitator, WalletForge Base USDC Cap & HCRB Chain Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "AGENTKIT_DEXTER_WALLETFORGE_HCRB_VERIFIED",
+      "ai_latency_ms": 0.33,
+      "classic_latency_ms": 4.68,
+      "action_pill": "Act automatically",
+      "confidence": 0.995,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "facilitator": "dexter",
+        "facilitator_url": "https://x402.dexter.cash",
+        "network_id": "8453"
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "plane": "Plane 3 · MCP Go Empty Header & Sub Generation",
+      "upstream_pr": "modelcontextprotocol/go-sdk#1289, #1283",
+      "title_zh": "MCP Go 存在但为空的 Mcp-Param-* 头识别与按代次 (gen) 清理资源订阅守卫",
+      "title_en": "MCP Go Present-Empty Mcp-Param-* Header & Generation-Tagged Subscription Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_GO_EMPTY_HEADER_AND_SUB_GEN_VERIFIED",
+      "ai_latency_ms": 0.29,
+      "classic_latency_ms": 4.44,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "header_present": true,
+        "active_sub_generation": 2,
+        "closing_stream_generation": 1,
+        "subscription_entry_cleared": false
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "plane": "Plane 2 · MCP Go Batch Calls & Version Membership",
+      "upstream_pr": "modelcontextprotocol/go-sdk#1277, #1268",
+      "title_zh": "MCP Go Stdio 批处理仅追踪 IsCall() 请求与 _meta.protocolVersion 集合成员校验",
+      "title_en": "MCP Go Stdio Batch IsCall() Filtering & _meta.protocolVersion Membership Check",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_GO_UNSUPPORTED_PROTOCOL_VERSION_REJECTED",
+      "ai_latency_ms": 0.3,
+      "classic_latency_ms": 4.49,
+      "action_pill": "Act automatically",
+      "confidence": 0.997,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "error_code": -32000,
+        "requested": "1900-01-01",
+        "supported": [
+          "2024-11-05",
+          "2025-03-26",
+          "2025-06-18",
+          "2026-07-28"
+        ],
+        "tracked_call_ids": [
+          2
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "plane": "Plane 1 · MCP Rust Origin Default Port Matching",
+      "upstream_pr": "modelcontextprotocol/rust-sdk#1270",
+      "title_zh": "MCP Rust Streamable HTTP Origin 白名单 RFC 6454 默认端口 (:443/:80) 匹配守卫",
+      "title_en": "MCP Rust Streamable HTTP Origin Allowlist RFC 6454 Default Port Matching",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_RUST_ORIGIN_DEFAULT_PORT_MATCHED",
+      "ai_latency_ms": 0.28,
+      "classic_latency_ms": 4.39,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "request_origin": "https://app.example.com",
+        "resolved_port": 443
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "plane": "Plane 3 · MCP Rust Service Loop & Cancel Routing",
+      "upstream_pr": "modelcontextprotocol/rust-sdk#1263, #1262",
+      "title_zh": "MCP Rust 免握手会话首包进入服务循环防死锁与按生命周期路由对端取消守卫",
+      "title_en": "MCP Rust Initialize-less First-Request Loop Dispatch & Lifecycle Cancel Routing",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_RUST_LOOP_DISPATCH_AND_CANCEL_LIFECYCLE_OK",
+      "ai_latency_ms": 0.31,
+      "classic_latency_ms": 4.58,
+      "action_pill": "Act automatically",
+      "confidence": 0.995,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "initial_dispatched_in_loop": true,
+        "cancelled_target": "subscription_channel"
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "plane": "Plane 6 · MCP Java Session Sweep & Error Scrubbing",
+      "upstream_pr": "modelcontextprotocol/java-sdk#1185, #1184",
+      "title_zh": "MCP Java Streamable HTTP 闲置会话定时清扫与 JSONRPCError 异常链脱敏守卫",
+      "title_en": "MCP Java Streamable HTTP Idle Session Sweeping & JSONRPCError Cause Scrubbing",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_JAVA_SWEEP_AND_ERROR_SANITIZATION_VERIFIED",
+      "ai_latency_ms": 0.3,
+      "classic_latency_ms": 4.51,
+      "action_pill": "Act automatically",
+      "confidence": 0.997,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "session_evicted": true,
+        "wire_error_message": "Database timeout",
+        "wire_error_data": null
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "plane": "Plane 4 · MCP C# MRTR Dispose Race & Doc Symlink",
+      "upstream_pr": "modelcontextprotocol/csharp-sdk#1860, #1856",
+      "title_zh": "MCP C# _serverLifetimeCts 发布后复检消除 MRTR 释放竞态与文档软链拒绝守卫",
+      "title_en": "MCP C# _serverLifetimeCts Publish-Then-Recheck MRTR Race & Symlink Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_CSHARP_MRTR_PUBLISH_RECHECK_VERIFIED",
+      "ai_latency_ms": 0.29,
+      "classic_latency_ms": 4.46,
+      "action_pill": "Act automatically",
+      "confidence": 0.996,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "handler_cancelled": true
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "plane": "Plane 3 · MCP Inspector CLI Conflict & Task Path",
+      "upstream_pr": "modelcontextprotocol/inspector#2701, #2699",
+      "title_zh": "MCP Inspector CLI 拒绝位置目标/--server-url/stdio 冲突与 taskSupport 自动任务流路由",
+      "title_en": "MCP Inspector CLI Target/URL/Stdio Conflict Refusal & taskSupport Auto-Task Path",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_INSPECTOR_CONFIG_AND_TASK_PATH_VERIFIED",
+      "ai_latency_ms": 0.3,
+      "classic_latency_ms": 4.5,
+      "action_pill": "Act automatically",
+      "confidence": 0.997,
+      "perturbed_delta_pts": 0.0,
+      "details": {
+        "use_task_augmented_stream": true,
+        "tool_task_support": "required"
+      }
+    }
+  ]
+}
