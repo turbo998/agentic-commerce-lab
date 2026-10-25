@@ -2891,6 +2891,21 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.18 ms`）**。
 - **技术资产**：[`lab/x402_correctness_dispute_upto_eip3009_ucp_root_array_mcp_py_ts_swift_bench.py`](../../lab/x402_correctness_dispute_upto_eip3009_ucp_root_array_mcp_py_ts_swift_bench.py)、[`tests/test_x402_correctness_dispute_upto_eip3009_ucp_root_array_mcp_py_ts_swift_bench.py`](../../tests/test_x402_correctness_dispute_upto_eip3009_ucp_root_array_mcp_py_ts_swift_bench.py) 及双语报告 [`reports/agentic-commerce-x402-correctness-dispute-upto-eip3009-ucp-root-array-mcp-py-ts-swift-bench/`](../../reports/agentic-commerce-x402-correctness-dispute-upto-eip3009-ucp-root-array-mcp-py-ts-swift-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-correctness-dispute-upto-eip3009-ucp-root-array-mcp-py-ts-swift-bench/index.en.html)）。
 
+## 241. Stage 242（900 单测里程碑！`2026-10-25`）：x402 SVM 批量提交后完成 / Recovery Fail-Closed / Permit2 RPC 故障区分 / SIWX 服务端路径绑定、UCP 订单快照纯度 / `purchase_options` / RFC 9728 精确 Issuer、MCP Python SDK 与 Sierra $\tau$-bench 2.0 确定性护栏
+
+### 241.1 x402 SVM/Recovery/Permit2/SIWX 与 UCP 订单/目录/`purchase_options`/RFC 9728 护栏（`PR-01..PR-10`）
+- **`PR-01..PR-06`（`x402-foundation/x402#3854`、`#3848`、`#3843`、`#3840`、`#3834`、`#3828`、`#3826`、`#3825`）**：SVM 批量结算仅在通道扣款提交后且脱离 `ChannelStore.update` 回调后才标记操作完成；`recovery` 扩展强制执行 Fail-Closed 核心规则（仅 `settlement_status == "confirmed"` 且请求/响应哈希匹配时允许免费重放）；Permit2 验签 RPC 故障报告为 `invalid_permit2_failed_to_verify_signature`；SIWX 支付严格按服务端路径 `server_request_path` 记录与核验；Fastify `onSend` 保持非 JSON 字符串结算错误体原样输出且 `createPaymentRequiredResponse` 浅拷贝 `extensions`；V2 原子单位金额强制纯数字 ASCII 字符串且 Go Facilitator 将包装的 `*x402.SettleError` 映射为 HTTP 200 `SettleResponse`。
+- **`PR-07..PR-10`（`Universal-Commerce-Protocol/ucp#903`、`#902`、`#901`、`#900`、`#897`、`#891`、`#883`、`#882`、`#876`）**：剥离只读订单快照 `order.json` 的客户端方向性注解；目录检索扩展 `purpose`（`recommendation`/`swap`）与非空 `reference_ids`；`dev.ucp.shopping.purchase_options` 购买选项从变体/购物车/结账到订单行的端到端保留与餐饮结账履约时段校验；RFC 9728 `authorization_servers` 与 RFC 8414 `issuer` 精确匹配及 DNS 委派权威邮箱自动关联门禁；导出可执行文档示例合规语料库、补齐 MCP `complete_checkout` `extensions` 块并要求厂商扩展自托管。
+
+### 241.2 MCP Python SDK 与 Sierra $\tau$-bench 2.0 生产护栏（`PR-11..PR-16`）
+- **`PR-11..PR-16`（`python-sdk#3742..#3719`、`tau2-bench#673..#653`）**：未解析 stdio 行立即返回 JSON-RPC 错误帧、StreamableHTTP `ReadTimeout` 隔离至单请求任务并返回 `-32001`、遮蔽 `ArgModelBase` 属性的工具参数前缀多重防撞、OAuth 令牌交换保留 RFC 8707 `resource` 指示符、同步提示词回调返回协程/Future 显式 `await`、按 RFC 7519 §4.1.4 执行严格 `<` 过期判定、每响应独立复制 `_SSE_HEADERS`、`UriTemplate.match()` 使用 `surrogateescape` 保留非 UTF-8 字节、`resources/directory/read` 缓存字段施加 `2026-07-28`+ 门禁；$\tau$-bench 零售拒绝同款换货、电信空字符串 `mmsc_url` 视为未配置、黄金动作 1 对 1 不放回匹配、知识库沙箱最小环境变量与目录读取边界，以及 `voice-v1` 重载保留 `canonical_tasks=True`。
+- **技术资产**：[`lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_guards.py`](../../lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_guards.py) 与 [`tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_guards.py`](../../tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_guards.py)。
+
+## 242. Stage 243（900/900 单测里程碑达成！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；总内联延迟 **`0.12 ms`**。
+- **技术资产**：[`lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py`](../../lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py)、[`tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py`](../../tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/`](../../reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/index.en.html)）。
+
 
 
 
