@@ -1,0 +1,350 @@
+{
+  "stage": "Stages 248-249",
+  "benchmark": "agentic-commerce-mcp-ext-apps-conformance-dpop-registry-bench",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "matched_scenarios": 16,
+  "accuracy_pct": 100.0,
+  "perturbation_consistent": 16,
+  "perturbation_total": 16,
+  "total_latency_ms": 0.35,
+  "latency_tiers": [
+    {
+      "tier": "1x (16 scenarios)",
+      "optimized_ms": 0.35,
+      "baseline_ms": 1.57
+    },
+    {
+      "tier": "4x (64 scenarios)",
+      "optimized_ms": 1.08,
+      "baseline_ms": 6.12
+    },
+    {
+      "tier": "16x (256 scenarios)",
+      "optimized_ms": 3.92,
+      "baseline_ms": 23.8
+    }
+  ],
+  "results": [
+    {
+      "id": "PR-01",
+      "title": "ext-apps#820 Dual-Surface get_current_pdf & 64MB JSON Limit",
+      "category": "ext_apps_pdf_export",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.015,
+      "reasons": []
+    },
+    {
+      "id": "PR-02",
+      "title": "ext-apps#813 registerAppTool McpUiAppToolConfig Icons Support",
+      "category": "ext_apps_tool_icons",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0082,
+      "reasons": []
+    },
+    {
+      "id": "PR-03",
+      "title": "ext-apps#810 View-to-Host ui/initialize Handshake & appInfo",
+      "category": "ext_apps_handshake",
+      "expected_passed": false,
+      "actual_passed": false,
+      "expected_action": "send_to_human",
+      "actual_action": "send_to_human",
+      "matched": true,
+      "latency_ms": 0.0025,
+      "reasons": [
+        "invalid_view_handshake_method:initialize",
+        "missing_appInfo_or_used_mcp_clientInfo",
+        "missing_appCapabilities_or_used_mcp_capabilities",
+        "missing_ui_notifications_initialized",
+        "host_sent_payload_before_initialized_notification"
+      ]
+    },
+    {
+      "id": "PR-04",
+      "title": "ext-apps#808/#803 PostMessageTransport logLevel Message Privacy",
+      "category": "ext_apps_transport_privacy",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0015,
+      "reasons": []
+    },
+    {
+      "id": "PR-05",
+      "title": "ext-apps#807 Resolve Host-Qualified Tool Names in callServerTool",
+      "category": "ext_apps_tool_resolution",
+      "expected_passed": false,
+      "actual_passed": false,
+      "expected_action": "send_to_human",
+      "actual_action": "send_to_human",
+      "matched": true,
+      "latency_ms": 0.0032,
+      "reasons": [
+        "unqualified_or_mismatched_tool_call:expected=quickstart-server__get-time,got=get-time"
+      ]
+    },
+    {
+      "id": "PR-06",
+      "title": "ext-apps#805 Preserve CLI-Arg Directories Across Roots Refreshes",
+      "category": "ext_apps_roots_provenance",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0087,
+      "reasons": []
+    },
+    {
+      "id": "PR-07",
+      "title": "ext-apps#801/#799/#795 Browser CORS, Open Permissions & Cesium Sandbox",
+      "category": "ext_apps_cors_permissions",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0177,
+      "reasons": []
+    },
+    {
+      "id": "PR-08",
+      "title": "conformance#563 Stamp resultType on Stateless Hand-Written Tool Results",
+      "category": "conformance_stateless_result_type",
+      "expected_passed": false,
+      "actual_passed": false,
+      "expected_action": "send_to_human",
+      "actual_action": "send_to_human",
+      "matched": true,
+      "latency_ms": 0.0019,
+      "reasons": [
+        "missing_or_invalid_stateless_resultType"
+      ]
+    },
+    {
+      "id": "PR-09",
+      "title": "conformance#560 Empty Custom-Header Presence Mismatches (-32020)",
+      "category": "conformance_custom_header_presence",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0018,
+      "reasons": []
+    },
+    {
+      "id": "PR-10",
+      "title": "conformance#545/#534 Tasks Extension & state-ok Request-State Completion",
+      "category": "conformance_tasks_request_state",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0464,
+      "reasons": []
+    },
+    {
+      "id": "PR-11",
+      "title": "conformance#533/#532 Runner Session Sweep & Post-Header Stream Timer",
+      "category": "conformance_runner_lifecycle",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0025,
+      "reasons": []
+    },
+    {
+      "id": "PR-12",
+      "title": "conformance#528/#527 SEP-1932 DPoP Error Codes & Bearer-Downgrade 401",
+      "category": "conformance_dpop_server",
+      "expected_passed": false,
+      "actual_passed": false,
+      "expected_action": "send_to_human",
+      "actual_action": "send_to_human",
+      "matched": true,
+      "latency_ms": 0.0093,
+      "reasons": [
+        "expected_http_401_got_500",
+        "missing_bearer_or_dpop_www_authenticate_challenge"
+      ]
+    },
+    {
+      "id": "PR-13",
+      "title": "conformance#525/#524/#523 SEP-1932 AS Nonce, Sticky Refresh & dpop_jkt",
+      "category": "conformance_dpop_as_client",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0022,
+      "reasons": []
+    },
+    {
+      "id": "PR-14",
+      "title": "registry#1730/#1728 GIN Trigram Substring Index & DPR Icon Scoring",
+      "category": "registry_trigram_dpr",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.128,
+      "reasons": []
+    },
+    {
+      "id": "PR-15",
+      "title": "registry#1727/#1726 Retired K8up Removal & Prod pg_dump/Restic Backups",
+      "category": "registry_prod_backups",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.002,
+      "reasons": []
+    },
+    {
+      "id": "PR-16",
+      "title": "registry#1702/#1690/#1687 Nested server.json Auto-Close & Remote Ownership",
+      "category": "registry_publish_hygiene",
+      "expected_passed": true,
+      "actual_passed": true,
+      "expected_action": "act_automatically",
+      "actual_action": "act_automatically",
+      "matched": true,
+      "latency_ms": 0.0054,
+      "reasons": []
+    }
+  ],
+  "perturbation_rows": [
+    {
+      "id": "PR-01",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-02",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-03",
+      "original_action": "send_to_human",
+      "perturbed_action": "send_to_human",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-04",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-05",
+      "original_action": "send_to_human",
+      "perturbed_action": "send_to_human",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-06",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-07",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-08",
+      "original_action": "send_to_human",
+      "perturbed_action": "send_to_human",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-09",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-10",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-11",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-12",
+      "original_action": "send_to_human",
+      "perturbed_action": "send_to_human",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-13",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-14",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-15",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    },
+    {
+      "id": "PR-16",
+      "original_action": "act_automatically",
+      "perturbed_action": "act_automatically",
+      "change_pts": 0.0,
+      "consistent": true
+    }
+  ]
+}

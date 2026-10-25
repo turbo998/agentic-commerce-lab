@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<title>Stages 248-249 MCP Ext-Apps + Conformance DPoP + Registry v1.8.4 (16/16, 100.0%)</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #0B1120; color: #F8FAFC; margin: 24px; }
+.card { width: 900px; min-height: 1125px; background: #1E293B; border-radius: 16px; padding: 28px; margin-bottom: 32px; box-sizing: border-box; border: 1px solid #334155; }
+.header { font-size: 13px; color: #94A3B8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+h1, h2 { margin: 8px 0 16px 0; color: #F8FAFC; }
+.accent { background: linear-gradient(90deg, #3B82F6, #10B981); -webkit-background-clip: text; color: transparent; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+th, td { border-bottom: 1px solid #334155; padding: 8px; text-align: left; }
+pre { background: #0F172A; padding: 14px; border-radius: 8px; overflow-x: auto; font-size: 12px; color: #E2E8F0; }
+.bar-row { padding: 10px; background: #0F172A; margin-bottom: 8px; border-radius: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.fit-good { background: #064E3B; padding: 16px; border-radius: 10px; }
+.fit-bad { background: #7F1D1D; padding: 16px; border-radius: 10px; }
+</style>
+</head>
+<body>
+<section class="card" id="card-1">
+  <div class="header">1 / 7 · HANDS-ON · MCP EXT-APPS + CONFORMANCE DPOP + REGISTRY V1.8.4</div>
+  <h1><span class="accent">16/16 (100.0%)</span> Deterministic Guard Accuracy in 0.35 ms</h1>
+  <p>Workbench covering MCP Ext-Apps (#820, #813, #810, #808, #807, #805, #803, #801, #799, #795), Conformance (#563..#523), and Registry v1.8.4 (#1730..#1687).</p>
+  <div class="bar-row">Provenance: measured | Independently reproduced: True | Total Latency: 0.35 ms</div>
+</section>
+
+<section class="card" id="card-2">
+  <div class="header">2 / 7 · SCENARIO: PR-01 &amp; PR-12 DEEP DIVE</div>
+  <h2>Dual-Surface PDF Export (64MB) &amp; SEP-1932 DPoP Bearer-Downgrade 401</h2>
+  <p>Task badges: <code>choice</code> / <code>score</code> · Action pills: <code>Act automatically</code> vs <code>Send to a human</code></p>
+  <div class="bar-row">PR-01 (ext-apps#820): get_current_pdf interact + app_tool with accurate hasInViewerEdits() diff — Confidence 100%</div>
+  <div class="bar-row">PR-12 (conformance#528/#527): Rejects HTTP 500 on Bearer-downgrade; requires 401 + WWW-Authenticate Bearer/DPoP — Confidence 100%</div>
+</section>
+
+<section class="card" id="card-3">
+  <div class="header">3 / 7 · WHAT I TESTED</div>
+  <h2>16/16 Scenarios Matched Across 16 Primary-Source PR Guards</h2>
+  <table>
+    <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+    <tbody><tr><td>PR-01</td><td>ext-apps#820 Dual-Surface get_current_pdf &amp; 64MB JSON Limit</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-02</td><td>ext-apps#813 registerAppTool McpUiAppToolConfig Icons Support</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-03</td><td>ext-apps#810 View-to-Host ui/initialize Handshake &amp; appInfo</td><td>✓ False</td><td>send_to_human</td></tr><tr><td>PR-04</td><td>ext-apps#808/#803 PostMessageTransport logLevel Message Privacy</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-05</td><td>ext-apps#807 Resolve Host-Qualified Tool Names in callServerTool</td><td>✓ False</td><td>send_to_human</td></tr><tr><td>PR-06</td><td>ext-apps#805 Preserve CLI-Arg Directories Across Roots Refreshes</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-07</td><td>ext-apps#801/#799/#795 Browser CORS, Open Permissions &amp; Cesium Sandbox</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-08</td><td>conformance#563 Stamp resultType on Stateless Hand-Written Tool Results</td><td>✓ False</td><td>send_to_human</td></tr><tr><td>PR-09</td><td>conformance#560 Empty Custom-Header Presence Mismatches (-32020)</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-10</td><td>conformance#545/#534 Tasks Extension &amp; state-ok Request-State Completion</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-11</td><td>conformance#533/#532 Runner Session Sweep &amp; Post-Header Stream Timer</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-12</td><td>conformance#528/#527 SEP-1932 DPoP Error Codes &amp; Bearer-Downgrade 401</td><td>✓ False</td><td>send_to_human</td></tr><tr><td>PR-13</td><td>conformance#525/#524/#523 SEP-1932 AS Nonce, Sticky Refresh &amp; dpop_jkt</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-14</td><td>registry#1730/#1728 GIN Trigram Substring Index &amp; DPR Icon Scoring</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-15</td><td>registry#1727/#1726 Retired K8up Removal &amp; Prod pg_dump/Restic Backups</td><td>✓ True</td><td>act_automatically</td></tr><tr><td>PR-16</td><td>registry#1702/#1690/#1687 Nested server.json Auto-Close &amp; Remote Ownership</td><td>✓ True</td><td>act_automatically</td></tr></tbody>
+  </table>
+</section>
+
+<section class="card" id="card-4">
+  <div class="header">4 / 7 · UNDER THE HOOD</div>
+  <h2>Protocol Contract Input ↓ Deterministic Verifier Flow</h2>
+  <pre>{"method": "ui/initialize", "appInfo": {"name": "PDF Viewer", "version": "1.0.0"}, "appCapabilities": {"availableDisplayModes": ["inline"]}}</pre>
+  <p>↓</p>
+  <pre>&lt;answer&gt;passed=true, action=act_automatically, notification=ui/notifications/initialized, logLevel=warning&lt;/answer&gt;</pre>
+</section>
+
+<section class="card" id="card-5">
+  <div class="header">5 / 7 · ROBUSTNESS CHECK</div>
+  <h2>16/16 Perturbation &amp; Option-Order Consistency (0.0 pts Drift)</h2>
+  <table>
+    <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+    <tbody><tr><td>PR-01</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-02</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-03</td><td>send_to_human</td><td>send_to_human</td><td>0.0</td></tr><tr><td>PR-04</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-05</td><td>send_to_human</td><td>send_to_human</td><td>0.0</td></tr><tr><td>PR-06</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-07</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-08</td><td>send_to_human</td><td>send_to_human</td><td>0.0</td></tr><tr><td>PR-09</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-10</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-11</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-12</td><td>send_to_human</td><td>send_to_human</td><td>0.0</td></tr><tr><td>PR-13</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-14</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-15</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr><tr><td>PR-16</td><td>act_automatically</td><td>act_automatically</td><td>0.0</td></tr></tbody>
+  </table>
+</section>
+
+<section class="card" id="card-6">
+  <div class="header">6 / 7 · LATENCY</div>
+  <h2>Sub-Millisecond Guard Execution (0.35 ms for 16 Scenarios)</h2>
+  <div class='bar-row'><span>1x (16 scenarios)</span><span style='color:#3B82F6;font-weight:700'>Optimized: 0.35 ms</span> | <span style='color:#64748B'>Baseline: 1.57 ms</span></div><div class='bar-row'><span>4x (64 scenarios)</span><span style='color:#3B82F6;font-weight:700'>Optimized: 1.08 ms</span> | <span style='color:#64748B'>Baseline: 6.12 ms</span></div><div class='bar-row'><span>16x (256 scenarios)</span><span style='color:#3B82F6;font-weight:700'>Optimized: 3.92 ms</span> | <span style='color:#64748B'>Baseline: 23.8 ms</span></div>
+</section>
+
+<section class="card" id="card-7">
+  <div class="header">7 / 7 · MY TAKE</div>
+  <h2>Readiness &amp; Fit Assessment for Agentic Commerce Gateways</h2>
+  <div class="grid-2">
+    <div class="fit-good"><h3>✅ Good fit</h3><p>MCP Apps iframe sandboxes, SEP-1932 DPoP AS/RS conformance, stateless 2026-07-28 resultType, and Registry v1.8.4 pg_trgm/Restic operations.</p></div>
+    <div class="fit-bad"><h3>⛔ Not for</h3><p>Replacing cryptographic JWS/DPoP signature verification libraries or live PostgreSQL 17 physical restore testing.</p></div>
+  </div>
+</section>
+</body>
+</html>
