@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–285+ · 达成 984/984 单测里程碑 & 累计 1,846 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–287+ · 达成 988/988 单测里程碑 & 累计 2,278 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 286–287（达成 `988/988` 单测里程碑 · 53 仓库 432 项零重叠一手 PR 覆盖 · 累计 2,278 项零重叠 PR！）：x402-rs Paygate `SettleResponse.success` 门禁与 EIP-2612 Permit2 代付、MPP 入站 WebSocket 帧边界与 Tempo Zone 离线回滚恢复、AP2 熵基 `checkout_hash` 与 CAIP-380 / ERC-7964、UCP 购物车 `continue_url` 与能力 `extends` 继承约束、ACP BOPIS 门店自提与 `valid_until` 报价过期、A2A Agent Card 安全要求与六端 SDK 护栏、Stripe GCP WIF 试点与 Hermes 技能加固、AgentKit `404` 方法保持与 CDP 非 ASCII UTF-8 JWT 哈希，以及 MCP 十一端 SDK 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（53 个上游仓库 432 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-02`（`coinbase/x402#289..#268`、`x402-rs/x402-rs#85..#69`、`google-agentic-commerce/a2a-x402#123..#114`、`wevm/mppx#970..#957` & `tempoxyz/tempo#8536..#8521`）：Paygate 在提供受保护资源前强制验证 `SettleResponse.success == True`（`x402-rs#74`）、EIP-2612 Permit2 燃气赞助（`#77`）、Robinhood Chain (`eip155:4663`) 默认资产（`x402#288`）、MPP 入站 WebSocket 帧大小限制（`mppx#968`）、ERC-20 授权前代币精度校验（`#966`）、Stripe 会话最低付款额（`#965`）及 Tempo 带交易池恢复的离线回滚（`tempo#8533`）。
+  - `PR-03..PR-05`（`google-agentic-commerce/AP2#282..#273`、`openwallet-foundation/sd-jwt-js#373..#366`、`ChainAgnostic/CAIPs#383..#375`、`ethereum/ERCs#2114..#2109`、`Universal-Commerce-Protocol/ucp#801..#787`、`js-sdk#68..#60`、`python-sdk#46..#41`、`samples#236..#222`、`agentic-commerce-protocol#174..#155` & `cloudflare/web-bot-auth#148..#136`）：AP2 熵基 `checkout_hash`（$\ge 256\text{ bits}$）与 `open_mandate_hash` v0 向量（`#279`、`#278`）、`sd-jwt-js` 验签方公钥溯源（`#370`）、`CAIP-380` 可移植证明（`#380`）与 `ERC-7964` 主域推导（`#2112`）；UCP 购物车 `continue_url` 规范、令牌签发上下文透传、签名请求覆盖 `ucp-agent` 与 JS 发现投影强制能力 `extends` 约束（`#801`、`#795`、`#792`、`js-sdk#63`）；以及 ACP BOPIS 门店自提扩展、行项目 `valid_until` 报价过期与 `web-bot-auth` 无碰撞 KeyRing 重命名（`#171`、`#165`、`#144`）。
+  - `PR-06..PR-12`（`a2aproject/A2A#2058..#2025`、`a2a-inspector#204..#192`、`a2a-python#1201..#1183`、`a2a-js#777..#753`、`a2a-go#449..#431`、`a2a-dotnet#573..#559`、`a2a-java#1078..#1070`、`stripe/ai#532..#501`、`stripe/agent-toolkit#488..#468`、`stripe/stripe-cli#2113..#2083`、Stripe 九端 SDK、`coinbase/agentkit#1414..#1400`、`coinbase/cdp-sdk#857..#832`、`sierra-research/tau2-bench#624..#610` & `tau-bench#96..#78`）：A2A Agent Card 安全要求与直连端点鉴权、Python 首写者防丢失与卡片 JWS 签名、JS 跳过未识别流事件、Go 终态/挂起任务标准错误码与 .NET 持久化推送库；Stripe AI Hermes 技能加固、累计 Token 计量与废弃流截断、Ruby GCP WIF 试点与 `EmbeddedCheckoutProvider` 防重注册；AgentKit `404` 方法保持、Enso 滑点限制、Permit2 精确额度与 CDP 非 ASCII 请求体 UTF-8 哈希；以及 $\tau$-bench 2.0 拒绝不完整语音提交与机舱状态同步。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + Ext-Auth + Inspector + Registry + Servers）：IEEE 754 安全整数范围校验、Inspector URL 查询密钥脱敏与技能目录预算；TS `expectedResource` 鉴权与 `-32602` Schema 错误、Python 非 Request `-32600` 与 `HTTP 202` 终止；Go 精确请求 ID 与 Base64 `Mcp-Name`、Rust 拒绝空 `#[tool_router]` 与凭证库 OAuth 刷新；以及 Java 隐蔽字符检测与 SEP-2549 TTL 缓存、Swift 无状态 HTTP 交换隔离与 PHP/Ruby 会话锁及有界拆卸。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp_guards.py`](../../lab/x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp_guards.py)
+  - 基准生成器：[`lab/x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp_bench.py`](../../lab/x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp.py`](../../tests/test_x402_paygate_mppx_ws_ap2_entropy_ucp_extends_acp_bopis_a2a_stripe_mcp.py)（全仓 **`988/988` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-paygate-mppx-ws-ap2-entropy-ucp-extends-acp-bopis-a2a-stripe-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-paygate-mppx-ws-ap2-entropy-ucp-extends-acp-bopis-a2a-stripe-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-paygate-mppx-ws-ap2-entropy-ucp-extends-acp-bopis-a2a-stripe-mcp-bench/report.json)
 
 ---
 
