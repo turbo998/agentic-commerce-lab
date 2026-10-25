@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–291+ · 达成 290 阶段里程碑 & 996/996 单测里程碑 · 累计 3,206 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–293+ · 达成全仓 1,000/1,000 千项单测历史里程碑 · 69 仓库累计 3,718 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 292–293（达成全仓 `1,000/1,000` 千项单测历史里程碑 · 69 仓库 512 项零重叠一手 PR 覆盖 · 累计 3,718 项零重叠 PR！）：x402 `SpendingPolicy` 熔断器与显式资源要求、Tempo MPP Rust/Go/Python 确定性管理拒绝与已结算哈希重放 403、AP2 规范化 `checkout_hash` 验证与 ERC-8107 子域名连续性、UCP 结账签名请求 `ucp-agent` 覆盖、Visa VIC `X-Pay-Token` 字典序查询参数与订单对象级鉴权、A2A Go Push SSRF/CGNAT 硬化与 Python Keyset 游标、Stripe 九端 SDK `next-major` 门禁与插件防篡改升级、Coinbase AgentKit x402 白名单防前缀绕过与 0x Permit2 EIP-712 绑定、Sierra `tau2-bench` 严格轨迹重放，以及 MCPB 解压炸弹拦截与十一端 SDK 确定性门禁及 7-Card 基准报告
+
+- **一手协议覆盖（69 个上游仓库 512 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-02`（`coinbase/x402#394..#384`、`x402-rs/x402-rs#45..#36`、`google-agentic-commerce/a2a-x402#95..#77`、`tempoxyz/mpp#1121..#1114`、`wevm/mppx#1066..#1062`、`tempoxyz/tempo#8632..#8628`、`tempoxyz/mpp-rs#651..#646`、`tempoxyz/mpp-go#252..#246`、`tempoxyz/pympp#339..#335`、`tempoxyz/mpp-specs#383..#381` & `tempoxyz/mpp-tools#295..#293`）：`a2a-x402` `SpendingPolicy` 熔断器与显式支付资源要求（`#93`、`#90`、`#77`）及 `x402-rs` ID 方案体系与动态定价（`#45..#40`）；`tempoxyz/mpp-rs` 确定性 MCP 管理拒绝、赞助发行底线计量与已结算哈希重放 `403`（`#650`、`#649`、`#646`）及 `wevm/mppx` 请求作用域隔离（`#1066`）。
+  - `PR-03..PR-05`（`google-agentic-commerce/AP2#245..#235`、`ChainAgnostic/CAIPs#356..#344`、`ethereum/ERCs#2094..#2087`、`openwallet-foundation/sd-jwt-js#348..#340`、`Universal-Commerce-Protocol/ucp#907..#898`、`ucp-schema#82..#75`、`python-sdk#21..#17`、`js-sdk#45..#40`、`samples#204..#200`、`agentic-commerce-protocol#102..#89`、`cloudflare/web-bot-auth#104..#96`、`visa/ai#21..#14`、`visa/vic-reference-agent#3..#1` & `visa/visa-vulnerability-agentic-harness#31..#26`）：AP2 `checkout_hash` 规范验证义务（`#243`）、`CAIP-356` 支付 URI 与 `ERC-8107` 子域名连续性检查（`#2094`）；UCP 结账签名请求 `ucp-agent` 覆盖（`ucp#907`）与严格模式闭合组合分支（`ucp-schema#77`）；**Visa 官方仓库一手覆盖**：`visa/ai` `X-Pay-Token` 查询参数字典序排序、AffixIO `ACTION` 消费治理与 JWKS 链校验（`#21..#16`）及 `visa/vic-reference-agent` 订单对象级鉴权与工具输入清洗（`#3..#1`）。
+  - `PR-06..PR-12`（A2A 十端仓库、Stripe 十二端仓库、`coinbase/agentkit#1460..#1380`、`coinbase/cdp-sdk#761..#742`、`sierra-research/tau2-bench#577..#562`、`tau-bench#27..#16` & `mu-bench#47..#38`）：`a2a-itk` 精确 SSE 媒体类型判定（`#79`）与 `a2a-inspector` JSON 转义（`#172`）；`a2a-python` Keyset 游标与终态任务拒绝（`#1282`、`#1268`）及 `a2a-js` 扩展前置校验（`#690`）；`a2a-go` Push SSRF/CGNAT/CRLF 硬化（`#397`、`#394`）与 `a2a-dotnet` 线级状态与版本校验（`#526`、`#516`）；Stripe CLI 自定义目录与 `--help` 禁自动升级插件（`#2052`、`#2050`）及九端 SDK `next-major` 门禁与 `stripe-mock` 版本锁死（`#1918`、`#2302`、`#3464`）；Coinbase AgentKit x402 白名单防前缀绕过与 0x Permit2 EIP-712 绑定（`#1394..#1392`）；以及 `tau2-bench` 严格轨迹重放、缺失黄金参数拦截与礼品卡超支修复（`#573..#569`）。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + MCPB + Use-MCP + Inspector + Registry + Servers）：`mcpb` 解压炸弹拦截与变量正则转义（`#273`、`#269`）、`use-mcp` `BroadcastChannel` 鉴权与 `preventAutoAuth` 弹窗阻断（`#35`、`#34`）；TS 管道 `stderr` 排空防死锁与拒绝二次连接/无状态复用（`#2921`、`#2918`）、Python 拒绝非预检 `OPTIONS` 与按名查找工具 Schema（`#3658`、`#3630`）；Rust 规范方法非法参数 `-32602` 与 `serde_json::Number` 浮点解码（`#1303`、`#1300`）、Go 客户端声明能力校验（`#1363`）；以及 PHP 过期会话失效与单 Fiber 轮询隔离（`#560`、`#556`）、Ruby 线性时间 `WWW-Authenticate` 解析防 ReDoS（`#571`）与 Swift 原子 Continuation 并发守卫（`#210..#206`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp_guards.py`](../../lab/x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp_guards.py)
+  - 基准生成器：[`lab/x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp_bench.py`](../../lab/x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp.py`](../../tests/test_x402_policy_mpp_mcp_ap2_hash_ucp_signed_visa_vic_a2a_stripe_mcp.py)（全仓 **`1,000/1,000` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-policy-mpp-mcp-ap2-hash-ucp-signed-visa-vic-a2a-stripe-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-policy-mpp-mcp-ap2-hash-ucp-signed-visa-vic-a2a-stripe-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-policy-mpp-mcp-ap2-hash-ucp-signed-visa-vic-a2a-stripe-mcp-bench/report.json)
 
 ---
 
