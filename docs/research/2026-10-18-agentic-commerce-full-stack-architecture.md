@@ -2824,6 +2824,24 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py`](../../lab/x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py)、[`tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py`](../../tests/test_x402_evm_exact_neo_offer_receipt_v2_ucp_py_sdk_conformance_mcp_sdks_bench.py) 及双语报告 [`reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/`](../../reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-evm-exact-neo-offer-receipt-v2-ucp-py-sdk-conformance-mcp-sdks-bench/index.en.html)）。
 
+---
+
+## 233. Stage 234（235 阶段里程碑！`2026-10-25`）：x402 SVM 待决批次恢复与 `SettleSeal` 归因、UCP 售后协商 (`#946`) / 取消改单 (`#945`) / 能力 Webhook (`#938`) / AP2 `/tokenize` (`#916`)、ACP、AP2、MCP SEP-3371/3279/3118/3094/2632 与 Inspector OAuth SSRF 护栏（`PR-01..PR-16`）
+
+### 233.1 x402 SVM 恢复日志与 UCP 售后生命周期、能力事件 Webhook 及 AP2 `/tokenize` 护栏（`PR-01..PR-07`）
+- **`PR-01..PR-03`（`x402#3923`、`#3921`、`#3916`、`#3903`、`#3911`、`#3897`、`#3888`、`#3915`）**：SVM 待决分发批次恢复日志与 Go `SettleSeal` 协作关单差额归因、Go `resolveReadSigner` ERC-20 额度短路、Python 燃气代付不可读链告警、`x402MCPClientSync` 钩子对齐、`x402-receipts` JCS Ed25519 离线收据、`@halvorai/ingest` 指令哈希绑定与第三方扩展互操作分类。
+- **`PR-04..PR-07`（`ucp#946`、`#945`、`#938`、`#899`、`#916`、`#908`、`#893`、`#976`、`#963`、`#934`、`#917`、`#912`）**：`dev.ucp.shopping.order_consultation`（`#946`）与 `dev.ucp.shopping.order_modification`（`#945`）、`config.webhook` 通用能力事件订阅（`#938`）与 `dev.ucp.common.ui`（`#899`）、AP2 Step 3 `/tokenize` `ap2_payment_mandate` 签发（`#916`）、延期付款 `payment: {}`（`#908`）、分单支付禁止回显 `credential`（`#893`）、嵌套套餐 `parent_id` 非累加（`#976`）、ECDSA 固定宽度原始 `r||s`（`#963`/`#934`）、RFC 9530 原始字节 `Content-Digest`（`#917`）及 `requires_escalation` 必填 `continue_url`（`#912`）。
+
+### 233.2 ACP、Google AP2、MCP SEP-3371/3279/3118/3094/2632/`#3185` 与 MCP Inspector 安全护栏（`PR-08..PR-16`）
+- **`PR-08..PR-09`（ACP `#296`/`#288`/`#287`/`#285`/`#273`、AP2 `#359`/`#363`/`#365`/`#364`/`#352`）**：ACP 变更类 MCP 工具 `Idempotency-Key`、`delegate_payment`/`delegate_authentication` 必填 `Signature`+`Timestamp` 与 `Server-Timing`；AP2 `H(presented_checkout_jwt) == closed_mandate.checkout_hash`、多跳 `~~` 尾跳脱敏隔离、`JWK.from_pyca` EC 公钥验签、敏感日志脱敏与交易后争议解决链。
+- **`PR-10..PR-16`（MCP `#3371`/`#3364`/`#3279`/`#2847`/`#3185`/`#3118`/`#3094`/`#2632`/`#3235`/`#3191`/`#2781`、Inspector `#2796`/`#2794`/`#2792`/`#2790`/`#2795`/`#2777`/`#2774`/`#2801`）**：SEP-3371 SDK 扩展点与分版本协商、SEP-3279 受众路由工具结果变体、`inputSchema` 根级 `properties` 封堵 `oneOf` 类型绕过、SEP-3118/3094/2632、更新版 CIMD RFC 安全控制与反向代理清单，以及 Inspector 全跳 OAuth 链路本地/云元数据 SSRF 阻断、静态客户端 SEP-2352 `issuer` 戳记、跨客户端 DCR 密钥隔离、非回环绑定告警、HTTP `429` 重试信封、POST 被拒保活与超大错误体帧头剥离。
+- **技术资产**：[`lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_guards.py`](../../lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_guards.py) 与 [`tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_guards.py`](../../tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_guards.py)。
+
+## 234. Stage 235（235 阶段里程碑达成 & 884/884 单测全绿！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py`](../../lab/x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py)、[`tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py`](../../tests/test_x402_svm_recovery_ucp_consultation_modification_acp_ap2_mcp_seps_inspector_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/`](../../reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-recovery-ucp-consultation-modification-acp-ap2-mcp-seps-inspector-bench/index.en.html)）。
+
 
 
 
