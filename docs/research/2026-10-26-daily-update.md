@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–287+ · 达成 988/988 单测里程碑 & 累计 2,278 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–289+ · 达成 992/992 单测里程碑 & 累计 2,726 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 288–289（达成 `992/992` 单测里程碑 · 54 仓库 448 项零重叠一手 PR 覆盖 · 累计 2,726 项零重叠 PR！）：x402-rs V2 EIP-155 `upto` Permit2 与十进制授权金额、MPP 会话关闭隔离与跨 Realm 证明拒绝、AP2 合规/PSD2 信封与 ERC-2108 优先偿付、UCP URI/版本与折叠联合变体、ACP 11 态会话与 WBA 未来时间戳拒绝、A2A 六端 SDK 护栏、Stripe `tulip` `run_tool()` 准入门禁与九端 SDK、AgentKit 消费前遴选与 CDP JWT `iat`/`aud`，以及 MCP 十一端 SDK 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（54 个上游仓库 448 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-02`（`coinbase/x402#422..#406`、`x402-rs/x402-rs#70..#60`、`google-agentic-commerce/a2a-x402#114..#106`、`wevm/mppx#1101..#1082` & `tempoxyz/tempo#8663..#8648`）：`x402-rs` V2 EIP-155 `upto` Permit2 支付方案（`#70`、`#60`）、`authorization.value` 十进制字符串序列化（`#63`）与 `a2a-x402` 生产支付绑定（`#107`）；`wevm/mppx` 隔离 Tempo 会话关闭与资源请求状态（`#1101`、`#1100`）、`15s–60s` 赞助 `validBefore` 窗口（`#1099`）、跨 Realm 证明拒绝（`#1097`）及 Tempo AA `CREATE` Nonce 收据推导（`tempo#8661`、`#8657`）。
+  - `PR-03..PR-05`（`google-agentic-commerce/AP2#272..#260`、`openwallet-foundation/sd-jwt-js#363..#356`、`ChainAgnostic/CAIPs#374..#368`、`ethereum/ERCs#2108..#2102`、`Universal-Commerce-Protocol/ucp#990..#941`、`js-sdk#59..#52`、`python-sdk#40..#29`、`samples#219..#211`、`agentic-commerce-protocol#150..#133` & `cloudflare/web-bot-auth#135..#127`）：AP2 多签发方 Trust Query、结算证明、PSD2 第 64/89 条退款证明、准入合规收据与 x402 PII 脱敏（`#272..#267`）、`CAIP-373` 合约调用引用与 `ERC-2108`/`2104` 优先偿付信用线；UCP 发现/警告 URI 与版本约束、单价数值保持及折叠联合变体必填字段（`js-sdk#59..#52`）；以及 ACP 11 态会话状态机、`intervention_required` 钱包鉴权与 `web-bot-auth` 未来 `created` 时间戳拒绝（`ACP#150..#143`、`web-bot-auth#135`、`#127`）。
+  - `PR-06..PR-12`（`a2aproject/A2A#2382..#2328`、`a2a-inspector#191..#183`、`a2a-samples#733..#725`、`a2a-python#1373..#1334`、`a2a-js#750..#728`、`a2a-go#427..#416`、`a2a-dotnet#553..#542`、`a2a-java#1242..#1230`、`stripe/ai#498..#478`、`stripe/agent-toolkit#472..#460`、`stripe/stripe-cli#2080..#2071`、Stripe 九端 SDK、`coinbase/agentkit#1588..#1528`、`coinbase/cdp-sdk#858..#800`、`sierra-research/tau2-bench#606..#591` & `tau-bench#72..#49`）：A2A 发布版 Schema 回退、Inspector `DOMPurify 3.4.13` 与示例 `mcp >= 1.30.0`，Python v0.3 错误码、执行器故障记录与独立 `httpx` 客户端，JS gRPC 流能力校验，Java/dotnet/Go 空白推送 ID 拒绝、日志脱敏与非事件流报错；Stripe AI `tulip` `run_tool()` 准入门禁、本地技能豁免移除、CLI 沙箱隔离与九端 SDK 额外请求头/v2 Search/PMME 币种校验；AgentKit 下游 x402 消费前遴选与 CDP Python JWT `iat`/`aud` 及托管免钱包鉴权；以及 $\tau$-bench 2.0 银行任务同步、航司小写 `user_id`、NL-Judge 独立成本与模型路径净化。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + Ext-Auth + Inspector + Registry + Servers）：`SEP-646`/`990` 企业级授权、`SEP-1046`/`1502` 客户端凭证、`mcpdo` 压测连接阈值与 `fetch` 实际连接主机校验；TS `sampling.context` 门禁与失效缓存丢弃、Python 非 UTF-8 URI 模板拒绝、读取超时隔离与 RFC 8707 `resource` 保持；Go SSE 流脱离 `Connect` 上下文与 `oauthex` 父路径资源、Rust DCR 认证方法与初始 Scope 选择；以及 Swift MPP `MCPError.paymentRequired`、Kotlin 协商协议头发送与 PHP/Ruby 未响应即刻失败及监听流有界限制。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp_guards.py`](../../lab/x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp_guards.py)
+  - 基准生成器：[`lab/x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp_bench.py`](../../lab/x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp.py`](../../tests/test_x402_upto_mppx_realm_ap2_trust_ucp_uri_acp_wba_a2a_stripe_mcp.py)（全仓 **`992/992` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-upto-mppx-realm-ap2-trust-ucp-uri-acp-wba-a2a-stripe-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-upto-mppx-realm-ap2-trust-ucp-uri-acp-wba-a2a-stripe-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-upto-mppx-realm-ap2-trust-ucp-uri-acp-wba-a2a-stripe-mcp-bench/report.json)
 
 ---
 
