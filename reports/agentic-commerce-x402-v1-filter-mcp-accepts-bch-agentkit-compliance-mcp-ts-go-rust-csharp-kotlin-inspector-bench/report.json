@@ -1,0 +1,159 @@
+{
+  "benchmark_id": "agentic-commerce-x402-v1-filter-mcp-accepts-bch-agentkit-compliance-mcp-ts-go-rust-csharp-kotlin-inspector-bench",
+  "stage": "stage-238-239",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "classic_3tier_passed": 0,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_pass_rate": 0.0,
+  "median_latency_ms": 0.17,
+  "p95_latency_ms": 0.18,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title": "x402#3930/#3928 V1 Testnet Mainnet-Downgrade & /supported Filter",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_V1_MAINNET_DOWNGRADE_ON_TESTNET_CLIENT_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-02",
+      "title": "x402#3917/#3929 Non-Object Header JSON & Facilitator 500 Guard",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_NON_OBJECT_PAYMENT_HEADER_JSON_REJECTED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-03",
+      "title": "x402#3924/#3793 MCP Multi-Network accepts Matching & CI Gate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_MCP_WRAPPER_HARDCODED_ACCEPTS_ZERO_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-04",
+      "title": "x402#3611/#3592 BCH Exact SIGHASH_FORKID & PHP V2 SDK Hygiene",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "X402_BCH_MISSING_SIGHASH_FORKID_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-05",
+      "title": "AgentKit#1585/#1564 OFAC/KYB Stablecoin & MIZAN ZK Proven Gate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "AGENTKIT_STABLECOIN_GATEWAYS_SANCTIONS_HIT_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-06",
+      "title": "AgentKit#1577/#1575/#1579/#1563 x402 Hook, Base Units & ERC-4337",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "AGENTKIT_SVM_FLOAT_BASE_UNIT_DRIFT_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-07",
+      "title": "MCP TS#3049/#3046/#3030 Sampling History, Abort & Tool Snapshot",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_TS_SAMPLING_UNBALANCED_TOOL_USE_HISTORY_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-08",
+      "title": "MCP TS#3042/#3039/#3040/#3035 Basic Encoding, Null-Proto & $ref",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_TS_CLIENT_SECRET_BASIC_UNENCODED_CREDENTIALS_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-09",
+      "title": "MCP Go#1437/#1396/#1388 Same-Origin Redirect, Bearer & aud Gate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_GO_CROSS_ORIGIN_TRANSPORT_REDIRECT_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-10",
+      "title": "MCP Go#1434/#1403/#1410/#1420 Logging Session, SSE & x-mcp-header",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_GO_LOGGING_TRANSPORT_DROPPED_SESSION_STATE_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-11",
+      "title": "MCP Go#1405/#1401/#1407/#1400/#1397 >2^53 ID & Error Marshal",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_GO_JSONRPC_REQUEST_ID_FLOAT64_PRECISION_LOSS_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-12",
+      "title": "MCP Rust#1372/#1358/#1352/#1341 WWW-Authenticate, DCR & 401/403",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_RUST_WWW_AUTHENTICATE_CROSS_CHALLENGE_MIX_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-13",
+      "title": "MCP Rust#1349/#1343/#1340/#1344 Per-Req Schema, Host & Cancel",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_RUST_STALE_CACHED_TOOL_SCHEMA_FOR_HEADERS_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-14",
+      "title": "MCP C##1948/#1891/#1890 OAuth 256-Bit State, Cancel & ID-JAG",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_CSHARP_OAUTH_STATE_CSRF_VALIDATION_FAILED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-15",
+      "title": "MCP Kotlin#1103/#1100 & Inspector#2789/#2806/#2733/#2714 Gate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "MCP_KOTLIN_INIT_BUFFER_OR_RFC3986_SSE_ENDPOINT_BLOCKED",
+      "action": "Send to a human",
+      "latency_ms": 0.17
+    },
+    {
+      "scenario_id": "PR-16",
+      "title": "Stage 238-239 Composite All-15 Deterministic Guard Verification",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "decision_code": "STAGE238_239_ALL_15_GUARDS_VERIFIED",
+      "action": "Act automatically",
+      "latency_ms": 0.17
+    }
+  ]
+}

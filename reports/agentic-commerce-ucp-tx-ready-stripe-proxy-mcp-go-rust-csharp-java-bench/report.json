@@ -9,8 +9,8 @@
     "guarded_passed": 16,
     "pass_rate_pct": 100.0,
     "fault_interception_rate_pct": 100.0,
-    "avg_latency_ms": 0.0129,
-    "batch_16_latency_ms": 0.2062
+    "avg_latency_ms": 0.019,
+    "batch_16_latency_ms": 0.3047
   },
   "scenarios": [
     {
@@ -24,7 +24,7 @@
       "patched_allowed": true,
       "patched_code": "ucp_complete_checkout_atomic_tx_and_product_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0073
+      "latency_ms": 0.0041
     },
     {
       "id": "PR-02",
@@ -37,7 +37,7 @@
       "patched_allowed": true,
       "patched_code": "ucp_reachable_faults_and_shipment_sync_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0113
+      "latency_ms": 0.0065
     },
     {
       "id": "PR-03",
@@ -50,7 +50,7 @@
       "patched_allowed": true,
       "patched_code": "ucp_readiness_a2a_and_single_instrument_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0067
+      "latency_ms": 0.0036
     },
     {
       "id": "PR-04",
@@ -63,7 +63,7 @@
       "patched_allowed": true,
       "patched_code": "ucp_python_sdk_codegen_and_constraints_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0062
+      "latency_ms": 0.0033
     },
     {
       "id": "PR-05",
@@ -76,7 +76,7 @@
       "patched_allowed": true,
       "patched_code": "stripe_mcp_proxy_metadata_and_forwarding_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0082
+      "latency_ms": 0.0051
     },
     {
       "id": "PR-06",
@@ -89,7 +89,7 @@
       "patched_allowed": true,
       "patched_code": "stripe_toolkit_loop_and_config_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0061
+      "latency_ms": 0.0033
     },
     {
       "id": "PR-07",
@@ -102,7 +102,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_go_windows_root_and_int64_id_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0182
+      "latency_ms": 0.0115
     },
     {
       "id": "PR-08",
@@ -115,7 +115,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_go_oidc_rfc9207_and_id_jag_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0059
+      "latency_ms": 0.0029
     },
     {
       "id": "PR-09",
@@ -128,7 +128,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_go_redirect_discover_and_403_scope_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0141
+      "latency_ms": 0.0073
     },
     {
       "id": "PR-10",
@@ -141,7 +141,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_go_jsonrpc_notification_ordering_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0052
+      "latency_ms": 0.0027
     },
     {
       "id": "PR-11",
@@ -154,7 +154,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_rust_skills_and_ema_id_token_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0397
+      "latency_ms": 0.0028
     },
     {
       "id": "PR-12",
@@ -167,7 +167,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_rust_media_type_and_accept_q_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.1032
+      "latency_ms": 0.0904
     },
     {
       "id": "PR-13",
@@ -180,7 +180,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_rust_elicitation_sessionless_400_and_32602_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0065
+      "latency_ms": 0.009
     },
     {
       "id": "PR-14",
@@ -193,7 +193,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_rust_java_bounded_child_shutdown_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0058
+      "latency_ms": 0.0061
     },
     {
       "id": "PR-15",
@@ -206,7 +206,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_csharp_resource_indicators_and_oauth_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.006
+      "latency_ms": 0.0076
     },
     {
       "id": "PR-16",
@@ -219,7 +219,7 @@
       "patched_allowed": true,
       "patched_code": "mcp_csharp_protocol_case_and_java_template_notify_verified",
       "patched_action": "Act automatically",
-      "latency_ms": 0.0067
+      "latency_ms": 0.0094
     }
   ]
 }
