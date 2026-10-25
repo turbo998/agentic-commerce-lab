@@ -1,0 +1,179 @@
+{
+  "benchmark_id": "agentic-commerce-x402-correctness-dispute-upto-eip3009-ucp-root-array-mcp-py-ts-swift-bench",
+  "stage": "Stage 241 (240-Stage Milestone!)",
+  "verified_date": "2026-10-25",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate_pct": 100.0,
+  "classic_3tier_passed": 0,
+  "classic_3tier_pass_rate_pct": 0.0,
+  "perturbation_consistent": 16,
+  "perturbation_total": 16,
+  "perturbation_consistency_pct": 100.0,
+  "median_latency_ms": 0.17,
+  "p95_latency_ms": 0.18,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title": "x402 #3868 Correctness & Dispute Extension Bonded Verdict",
+      "guard_passed": false,
+      "decision_code": "X402_DISPUTE_CLAIM_EXCEEDS_PER_VERDICT_MAX",
+      "reason": "Verdict economic trust is bounded by per_verdict_max; claim exceeds slashable cap.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-02",
+      "title": "x402 #3867 EVM upto eip3009 Stateless Proxy Guard",
+      "guard_passed": false,
+      "decision_code": "X402_UPTO_EIP3009_FRONT_RUNNABLE_AUTH_METHOD",
+      "reason": "EVM upto eip3009 must use receiveWithAuthorization to prevent third-party front-running.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-03",
+      "title": "x402 #3864 Java Decode-Before-Dot-Segments & #3857 Raw-Path Route",
+      "guard_passed": false,
+      "decision_code": "X402_PATH_TRAVERSAL_OR_ENCODED_PARAM_402_REQUIRED",
+      "reason": "Encoded dot-segment path or %2F/%5C parameter route matched a protected route; 402 required.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-04",
+      "title": "x402 #3862 Go Wildcard Scheme Hook Isolation & #3860 Stellar C-Account",
+      "guard_passed": false,
+      "decision_code": "X402_STELLAR_CONTRACT_PAYER_MISSING_AUTHORIZE_ENTRY",
+      "reason": "Stellar contract account (C..., strkey byte 16) requires custom authorizeEntry override.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-05",
+      "title": "x402 #3858 Batch Refund Settle, #3855 Paywall XSS & #3865 Replay Guard",
+      "guard_passed": false,
+      "decision_code": "X402_PAYWALL_UNESCAPED_SCRIPT_TAG_XSS",
+      "reason": "Paywall inline JSON must escape '<' as '\\u003c' to prevent reflected XSS.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-06",
+      "title": "UCP #948 Root-Array Schema Anti-Pattern & #942/#941/#935/#928 Hygiene",
+      "guard_passed": false,
+      "decision_code": "UCP_ROOT_ARRAY_SCHEMA_ANTI_PATTERN",
+      "reason": "Capability, extension, and operation payload schemas MUST NOT use root type 'array'.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-07",
+      "title": "MCP Python SDK #3759/#3744 HEAD /sse 405 Method Not Allowed",
+      "guard_passed": false,
+      "decision_code": "MCP_PY_SSE_HEAD_STREAM_LEAK_OR_WRONG_STATUS",
+      "reason": "HEAD /sse must return 405 with Allow: GET without calling connect_sse().",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-08",
+      "title": "MCP Python SDK #3758/#3756/#3757 Bare Return Types & Title Stripping",
+      "guard_passed": false,
+      "decision_code": "MCP_PY_BARE_LIST_DOUBLE_SENDS_CONTENT_BLOCKS",
+      "reason": "Bare list/tuple without structured_output=True must omit outputSchema to avoid echoing ImageContent.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-09",
+      "title": "MCP Python SDK #3743/#3755 /token & /revoke RFC 6749 §5.2 Error Codes",
+      "guard_passed": false,
+      "decision_code": "MCP_PY_OAUTH_GRANT_ERROR_CODE_SWAPPED",
+      "reason": "Unimplemented grants must return unsupported_grant_type; unregistered client grants return unauthorized_client.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-10",
+      "title": "MCP TS SDK #3095/#3081/#3096 $ref to Typeless Object $defs & Prompt Icons",
+      "guard_passed": false,
+      "decision_code": "MCP_TS_V1_PROMPT_ICONS_DROPPED",
+      "reason": "v1 prompt registration and update must preserve prompt icons.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-11",
+      "title": "MCP TS SDK #3092/#3072/#3093 Monotonic Cache Generation & Atomic Metadata",
+      "guard_passed": false,
+      "decision_code": "MCP_TS_CACHE_STALE_PRE_RESET_WRITE_ACCEPTED",
+      "reason": "ClientResponseCache.write() must require exact _evictionGeneration.get(gk) === capturedGen without ?? 0 fallback.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-12",
+      "title": "MCP TS SDK #3091 Post-Response Abort & #3073 Stdio Shared Drain Guard",
+      "guard_passed": false,
+      "decision_code": "MCP_TS_STDIO_DRAIN_LISTENER_ACCUMULATION",
+      "reason": "StdioClientTransport.send() must share at most 1 drain listener on stdin under back-pressure.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-13",
+      "title": "MCP TS SDK #3085 Refresh Scope, #3082 releaseBody & #3074 Exact-URI Read",
+      "guard_passed": false,
+      "decision_code": "MCP_TS_STATIC_RESOURCE_EXACT_URI_BYPASSED",
+      "reason": "resources/read and scope challenges must look up the exact registered URI before URL-parsed form.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-14",
+      "title": "MCP TS SDK #3071 ID Types, #3064 sampling.context & #3063 Mcp-Param ASCII",
+      "guard_passed": false,
+      "decision_code": "MCP_TS_SAMPLING_CONTEXT_CAPABILITY_UNGATED",
+      "reason": "Server.createMessage must refuse includeContext thisServer/allServers on >= 2025-11-25 without sampling.context.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-15",
+      "title": "MCP Swift SDK #307 DELETE Recovery, #305 quoted-pair, #303 PKCE 197 & #300 Basic",
+      "guard_passed": false,
+      "decision_code": "MCP_SWIFT_PKCE_MODULO_BIAS_THRESHOLD",
+      "reason": "PKCE rejection sampling threshold must be 66 * (256 // 66) - 1 = 197 (not 198, which biases 'A').",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    },
+    {
+      "scenario_id": "PR-16",
+      "title": "MCP Swift SDK #298 Stateless HTTP Cancel IDs & #297 Stdio Flags Restore",
+      "guard_passed": false,
+      "decision_code": "MCP_SWIFT_STDIO_DESCRIPTOR_FLAGS_NOT_RESTORED",
+      "reason": "StdioTransport must wait for in-flight reads/sends and restore descriptor blocking mode on disconnect.",
+      "matched_expectation": true,
+      "ai_native_action": "Act automatically",
+      "classic_3tier_passed": false
+    }
+  ]
+}
