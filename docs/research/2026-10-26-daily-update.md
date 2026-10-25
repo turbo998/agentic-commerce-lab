@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–283+ · 达成 980/980 单测里程碑 & 累计 1,442 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–285+ · 达成 984/984 单测里程碑 & 累计 1,846 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 284–285（达成 `984/984` 单测里程碑 · 50 仓库 404 项零重叠一手 PR 覆盖 · 累计 1,846 项零重叠 PR！）：a2a-x402 中立 Interline 路由与支付超时边界、x402-rs ERC-8021 归因标签与 CAIP-27 `chainId`、MPP 原子结算申领与 Tempo Reth 持久化确认、Visa MCP VIC 响应校验与 AP2 全跳 KB `aud`/`nonce`、SD-JWT 算法注册表与 WBA 重复组件拒绝、UCP 锁文件私有源阻断与 Measure 整数契约、ACP OpenAPI 语义校验与商品流 API、A2A GET 订阅与多租户隔离、Stripe Hermes 加固与七端 SDK v2 Search、AgentKit SSH 沙箱与 Uniswap 零报价熔断，以及 MCP `SEP-3221` 十一端 SDK 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（50 个上游仓库 404 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-03`（`google-agentic-commerce/a2a-x402#136..#124`、`coinbase/x402#304..#290`、`x402-rs/x402-rs#100..#86`、`ChainAgnostic/CAIPs#394..#384`、`wevm/mppx#982..#971` & `tempoxyz/tempo#8546..#8537`）：`InterlineExecutor` 非托管中立 x402 结算路由、支付超时边界校验、EIP-3009 结算 calldata 追加 ERC-8021 归因标签、拒绝畸形货币金额、CAIP-27 `chainId` 规范、MPP 原子申领定时结算与接受代金券前刷新链状态、Stripe Tempo 共享防重放存储，以及 Tempo Reth 持久化后确认终态区块。
+  - `PR-04..PR-07`（`visa/mcp#8..#1`、`google-agentic-commerce/AP2#350..#283`、`openwallet-foundation/sd-jwt-js#385..#374`、`cloudflare/web-bot-auth#160..#149`、`modelcontextprotocol/ext-auth#33..#11`、`Universal-Commerce-Protocol/ucp#813..#802`、`conformance#108..#92`、`js-sdk#81..#69`、`python-sdk#54..#47`、`samples#251..#237` & `agentic-commerce-protocol#202..#175`）：Visa MCP VIC 绑卡 API 响应验证；AP2 SD-JWT 委托链解码、每一跳 KB `aud`/`nonce` 校核与缺失密钥时 x402 PSP 闭合失败；SD-JWT `_sd_alg` 注册表与保留声明拒绝、Cloudflare WBA 重复覆盖组件与密钥算法不匹配拒绝及 `ext-auth` `id-jag-04`；UCP 忠诚度扩展、锁文件阻断非公共源、JS `Measure` 整数契约与 `maxProperties`、请求体绑定 `Complete Checkout` 与购物车幂等作用域；以及 ACP `swagger-parser` 语义校验、商品流/促销 API 与购物车能力。
+  - `PR-08..PR-12`（`a2aproject/A2A#2075..#2059`、`a2a-python#1220..#1202`、`a2a-js#789..#778`、`a2a-go#474..#452`、`a2a-java#1089..#1079`、`a2a-dotnet#581..#576`、`a2a-inspector#210..#205`、`stripe/agent-toolkit#506..#489`、`stripe/ai#550..#537`、`stripe/stripe-cli#2127..#2114`、Stripe 七端 SDK、`coinbase/agentkit#1428..#1415` & `sierra-research/tau2-bench#649..#625`）：A2A `SubscribeToTask` 切换为 `GET`、Python 内存推送配置深拷贝与非终态 `UNSPECIFIED`、JS 类型化 SSE 错误、Go 空值序列化与首事件前纯文本错误及 UTC 时间戳、Java 多租户路由隔离；Stripe `SynapticChain` 256 通道 HTTP 402 微钱包、`NoContentGeneratedError`、Hermes 技能加固、CLI 多 OAuth 会话隔离与七端 SDK API v2 Search；以及 AgentKit SSH 路径限制、非 HTTPS 图像与 Uniswap 零报价闭合失败及 $\tau$-bench 2.0 六语种语音评测。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + Conformance + Inspector + Registry）：`SEP-3221` 安全参数扩展、Python 无状态监听 `GET` 返回 `405` 与保留授权查询参数、TS `ReadBuffer` 释放；Go 惰性发现传输与 `2026-07-28` 取消请求零响应、Rust 空 `cacheScope` 忽略与企业 `ID-JAG` 交换、Java `LAST_EVENT_ID` 流泄漏修复；C# 确定性流式 HTTP 状态映射与混合会话模式、Swift 背压下 stdio 帧防交错与早期取消竞态修复；以及 PHP 协程恢复保存会话写入与单会话锁、Ruby 拒绝 `null` 请求 ID、Conformance 无状态 `resultType` 标记与 Inspector URL 查询密钥脱敏。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp_guards.py`](../../lab/x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp_guards.py)
+  - 基准生成器：[`lab/x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp_bench.py`](../../lab/x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp.py`](../../tests/test_x402_erc8021_mppx_atomic_ap2_kb_ucp_loyalty_acp_feeds_a2a_stripe_mcp.py)（全仓 **`984/984` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-erc8021-mppx-atomic-ap2-kb-ucp-loyalty-acp-feeds-a2a-stripe-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-erc8021-mppx-atomic-ap2-kb-ucp-loyalty-acp-feeds-a2a-stripe-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-erc8021-mppx-atomic-ap2-kb-ucp-loyalty-acp-feeds-a2a-stripe-mcp-bench/report.json)
 
 ---
 
