@@ -1,0 +1,274 @@
+{
+  "benchmark_id": "agentic-commerce-x402-cashu-mpp-authbound-ap2-hnp-ucp-rfc9421-acp-link-a2a-stripe-mcp-bench",
+  "stage": "Stage 302-303",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "attack_blocked": 16,
+  "remediated_passed": 16,
+  "perturbation_stable": 16,
+  "unique_pr_count": 512,
+  "unique_repo_count": 95,
+  "cumulative_unique_prs": 6278,
+  "fast_path_median_ms": 0.12,
+  "baseline_median_ms": 0.55,
+  "speedup_factor": 4.6,
+  "scenarios": [
+    {
+      "id": "PR-01",
+      "title_en": "a2a-x402 Cashu Mint Proof, Tempo Confirmed Limit Receipt & Machine-Fetch Policy Guard",
+      "title_zh": "a2a-x402 Cashu 铸币证明、Tempo 访问密钥限额确认回执与 Machine-Fetch 策略守卫",
+      "attack_blocked": true,
+      "attack_code": "X402_CASHU_OR_TEMPO_RECEIPT_POLICY_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "X402_CASHU_AND_TEMPO_RECEIPT_POLICY_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/x402#326",
+        "google-agentic-commerce/a2a-x402#20",
+        "tempoxyz/mpp#1087",
+        "tempoxyz/accounts#920"
+      ]
+    },
+    {
+      "id": "PR-02",
+      "title_en": "wevm/mppx Auth Header Size Bound, Exact Expiry Reject & Shared Replay Store Guard",
+      "title_zh": "wevm/mppx 认证头长度上限、精确过期拒绝与 Tempo 共享重放存储守卫",
+      "attack_blocked": true,
+      "attack_code": "MPPX_AUTH_HEADER_OR_REPLAY_STORE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MPPX_AUTH_HEADER_AND_REPLAY_STORE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "wevm/mppx#1036",
+        "wevm/viem#5293",
+        "wevm/ox#523",
+        "tempoxyz/mpp-rs#624"
+      ]
+    },
+    {
+      "id": "PR-03",
+      "title_en": "AP2 HNP Mandate Alignment, CAIP-300 JSON-RPC, Askar DB Close Timeout & Multipaz BLE Guard",
+      "title_zh": "AP2 HNP 授权类型对齐、CAIP-300 方法、Askar 连接关闭超时与 Multipaz 近场传输守卫",
+      "attack_blocked": true,
+      "attack_code": "AP2_HNP_MANDATE_OR_ASKAR_TIMEOUT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "AP2_HNP_MANDATE_AND_ASKAR_TIMEOUT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "google-agentic-commerce/AP2#205",
+        "ChainAgnostic/CAIPs#300",
+        "ethereum/ERCs#2061",
+        "openwallet-foundation/credo-ts#3093"
+      ]
+    },
+    {
+      "id": "PR-04",
+      "title_en": "UCP Reserved Prefix Isolation, Payload-Scoped Idempotency & RFC 9421 Signed Order Webhooks Guard",
+      "title_zh": "UCP 保留前缀隔离、按操作载荷幂等身份与 RFC 9421 订单事件 Webhook 签名守卫",
+      "attack_blocked": true,
+      "attack_code": "UCP_RESERVED_PREFIX_OR_RFC9421_WEBHOOK_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "UCP_RESERVED_PREFIX_AND_RFC9421_WEBHOOK_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "Universal-Commerce-Protocol/ucp#831",
+        "Universal-Commerce-Protocol/ucp-schema#47",
+        "Universal-Commerce-Protocol/conformance#62",
+        "Universal-Commerce-Protocol/samples#170"
+      ]
+    },
+    {
+      "id": "PR-05",
+      "title_en": "ACP B2B Decimal Quantity, Stripe Link CLI Post-Approval MPP Header & Smokescreen ACLv2 Guard",
+      "title_zh": "ACP B2B 小数数量、Stripe Link CLI 审批后 MPP 头部修复与 Smokescreen ACLv2 零突发防护守卫",
+      "attack_blocked": true,
+      "attack_code": "ACP_DECIMAL_QTY_OR_LINK_CLI_MPP_HEADER_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "ACP_DECIMAL_QTY_AND_LINK_CLI_MPP_HEADER_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "agentic-commerce-protocol/agentic-commerce-protocol#6",
+        "visa/visa-chart-components#130",
+        "visa/nova-angular#3",
+        "stripe/link-cli#485"
+      ]
+    },
+    {
+      "id": "PR-06",
+      "title_en": "A2A Canonical TaskState, JCS Rule-1 Field Vectors, GetTask historyLength & SLIMRPC Plugin Guard",
+      "title_zh": "A2A 规范 TaskState 枚举、JCS Rule-1 字段向量、GetTask historyLength 与 SLIMRPC 协作插件守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_JCS_RULE1_OR_HISTORY_LENGTH_PARAM_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_JCS_RULE1_AND_HISTORY_LENGTH_PARAM_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/A2A#2156",
+        "a2aproject/a2a-tck#245",
+        "a2aproject/a2a-rs#346",
+        "a2aproject/a2a-samples#691"
+      ]
+    },
+    {
+      "id": "PR-07",
+      "title_en": "a2a-js Push Webhook SSRF Validation, Bounded Client SSE Frame & Unified A2AError Hierarchy Guard",
+      "title_zh": "a2a-js 推送 Webhook SSRF 校验、客户端 SSE 事件大小上限与统一 A2AError 层级守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_JS_WEBHOOK_SSRF_OR_UNBOUNDED_SSE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_JS_WEBHOOK_SSRF_AND_BOUNDED_SSE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-python#1099",
+        "a2aproject/a2a-js#587",
+        "a2aproject/a2a-python#1098",
+        "a2aproject/a2a-js#586"
+      ]
+    },
+    {
+      "id": "PR-08",
+      "title_en": "a2a-java Unknown Tenant 404 Isolation & a2a-go JSON-RPC Event-Stream Content-Type Guard",
+      "title_zh": "a2a-java 未知租户公开 AgentCard 404 隔离与 a2a-go JSON-RPC Event-Stream 类型守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_TENANT_ISOLATION_OR_SSE_CONTENT_TYPE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_TENANT_ISOLATION_AND_SSE_CONTENT_TYPE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-java#1115",
+        "a2aproject/a2a-go#333",
+        "a2aproject/a2a-dotnet#458",
+        "a2aproject/a2a-java#1114"
+      ]
+    },
+    {
+      "id": "PR-09",
+      "title_en": "Stripe Agent-Toolkit File-Part Base64 Stack-Safe Conversion, User-Agent Sanitization & Schema Policy Order Guard",
+      "title_zh": "Stripe Agent-Toolkit 文件分块安全 Base64 转换、User-Agent 净化与 pg-schema-diff 策略排序守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_TOOLKIT_STACK_OR_USER_AGENT_INJECTION_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_TOOLKIT_STACK_AND_USER_AGENT_SANITIZATION_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/agent-toolkit#382",
+        "stripe/ai#405",
+        "stripe/stripe-cli#2007",
+        "stripe/stripe-js#975"
+      ]
+    },
+    {
+      "id": "PR-10",
+      "title_en": "Stripe Ruby/Dotnet Non-Empty Webhook Secret, Singleton EventNotification & Go PreHandle Guard",
+      "title_zh": "Stripe Ruby/Dotnet 非空 Webhook 密钥校验、单例关联对象通知与 Go PreHandle 守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_SDK_EMPTY_WEBHOOK_SECRET_OR_CONTEXT_KEY_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_SDK_NONEMPTY_WEBHOOK_SECRET_AND_PREHANDLE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/stripe-python#1884",
+        "stripe/stripe-node#2839",
+        "stripe/stripe-go#2417",
+        "stripe/stripe-java#2281"
+      ]
+    },
+    {
+      "id": "PR-11",
+      "title_en": "Coinbase cb-mpc Paillier-DL ZK Range Bound, Advanced-Py WSS TLS Verification & Wallet SDK Surface Guard",
+      "title_zh": "Coinbase cb-mpc Paillier-DL 零知识证明范围边界、Advanced-Py WSS TLS 证书校验与 Wallet SDK 守卫",
+      "attack_blocked": true,
+      "attack_code": "COINBASE_MPC_ZK_RANGE_OR_WSS_TLS_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "COINBASE_MPC_ZK_RANGE_AND_WSS_TLS_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/agentkit#1315",
+        "coinbase/cdp-sdk#683",
+        "coinbase/onchainkit#2660",
+        "coinbase/coinbase-wallet-sdk#1927"
+      ]
+    },
+    {
+      "id": "PR-12",
+      "title_en": "Sierra tau2-bench Tool Result Truncation Bound & Banking Knowledge Numeric Tool-Arg Type Guard",
+      "title_zh": "Sierra tau2-bench 超长工具输出截断上限与金融知识库数值型工具参数防字符串注入守卫",
+      "attack_blocked": true,
+      "attack_code": "TAU2_UNTRUNCATED_TOOL_OUTPUT_OR_STRING_NUMERIC_ARG_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "TAU2_TRUNCATED_TOOL_OUTPUT_AND_NUMERIC_ARG_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "sierra-research/tau2-bench#434",
+        "sierra-research/mu-bench#4",
+        "sierra-research/tau2-bench#433",
+        "sierra-research/mu-bench#3"
+      ]
+    },
+    {
+      "id": "PR-13",
+      "title_en": "MCPB Enterprise HSM Detached Signing, Conformance Scenario Session Cleanup & Tasks -32021 Error Code Guard",
+      "title_zh": "MCPB 企业级 HSM 离线签名、一致性测试残留会话终止与 Tasks -32021 缺失客户端能力错误码守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_HSM_SIGNING_OR_SCENARIO_LEAK_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_HSM_SIGNING_AND_SCENARIO_CLEANUP_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/modelcontextprotocol#3366",
+        "modelcontextprotocol/registry#1617",
+        "modelcontextprotocol/servers#5124",
+        "modelcontextprotocol/inspector#2665"
+      ]
+    },
+    {
+      "id": "PR-14",
+      "title_en": "MCP TypeScript Progress Timeout Reset, SEP-2640 Skills Extension & Python Outbound Empty _meta Omission Guard",
+      "title_zh": "MCP TS 进度通知超时重置、SEP-2640 技能扩展与 Python 出站空 _meta 省略及结构化别名归一化守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_TS_PROGRESS_TIMEOUT_OR_PY_EMPTY_META_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_TS_PROGRESS_TIMEOUT_AND_PY_META_NORMALIZATION_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/typescript-sdk#2820",
+        "modelcontextprotocol/python-sdk#3474",
+        "modelcontextprotocol/use-mcp#9",
+        "modelcontextprotocol/typescript-sdk#2819"
+      ]
+    },
+    {
+      "id": "PR-15",
+      "title_en": "MCP Java Pre-Event SSE Response Commit, Go StreamKeepAlive & C# AutoDetect Provisional SSE Channel Guard",
+      "title_zh": "MCP Java 首事件前提交 SSE 响应、Go StreamKeepAlive 保活与 C# AutoDetect 临时 SSE 通道保持守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_SSE_PRECOMMIT_OR_AUTODETECT_CLOSE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_SSE_PRECOMMIT_AND_AUTODETECT_KEEPOPEN_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/rust-sdk#1214",
+        "modelcontextprotocol/go-sdk#1237",
+        "modelcontextprotocol/java-sdk#1194",
+        "modelcontextprotocol/csharp-sdk#1771"
+      ]
+    },
+    {
+      "id": "PR-16",
+      "title_en": "MCP Ruby Legacy SSE Modern Version Block & Invalid Params Prompt Check + PHP Deferred Capability Registry Guard",
+      "title_zh": "MCP Ruby 阻止旧版 SSE 协商现代协议版本、未知 Prompt 返回 Invalid Params 与 PHP 延迟能力注册守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_RUBY_LEGACY_SSE_VERSION_OR_PROMPT_PARAMS_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_RUBY_LEGACY_SSE_BLOCK_AND_PROMPT_PARAMS_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/kotlin-sdk#979",
+        "modelcontextprotocol/swift-sdk#141",
+        "modelcontextprotocol/php-sdk#497",
+        "modelcontextprotocol/ruby-sdk#518"
+      ]
+    }
+  ]
+}
