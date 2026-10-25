@@ -313,3 +313,32 @@
   - 报告产物：`reports/agentic-commerce-x402-mandate-mpp-escrow-ap2-erc8107-ucp-idp-visa-vic-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`（攻击阻断率 `16/16 = 100%`，修复放行率 `16/16 = 100%`，快速路径中位延迟 `0.33 ms` vs 基线 `1.35 ms`，加速比 `4.1x`）
   - 单元测试：`tests/test_x402_mandate_mpp_escrow_ap2_erc8107_ucp_idp_visa_vic_a2a_stripe_mcp.py`（全仓 **`1,008/1,008`** 单测全绿）
 
+---
+
+## Stage 298–299 增补：突破 80 仓与 5,000+ 零重叠一手 PR 双里程碑（单批次 80 仓 512 项 PR，累计 5,254 项零重叠 PR & 1,012/1,012 单测全绿）
+
+- **突破 80 官方上游仓库 & 5,000+ 零重叠 PR 双历史里程碑（单批次覆盖 80 个官方上游仓库、512 项零重叠 PR，历史累计达 `5,254` 项零重叠 PR）**：
+  - 新增 `openwallet-foundation/askar`、`coinbase/onchainkit`、`sierra-research/hyper-tau-bench`、`stripe/stripe-mock`、`stripe/pg-schema-diff`、`visa/mpos.sdk.ios.pods`，并深度挖掘 `coinbase/agentkit` 等多页历史 PR，与历史 4,742 项 PR 保持严格零交集。
+- **16 组确定性守卫场景（`PR-01`..`PR-16`，每组 32 项 PR，共 512 项零重叠 PR）**：
+  - `PR-01` (`x402-rs#12/#11/#9`, `a2a-x402#33/#29`, `tempoxyz/mpp#1096`)：`x402-rs` 商户异常状态响应禁结算与 Solana 动态优先费、`a2a-x402` EigenDAV2 Sepolia 支持与 `network` 字段迁移至 `caip2`、以及 `tempoxyz/mpp` MACH 服务发现守卫。
+  - `PR-02` (`wevm/mppx#1050/#1045/#1043`, `mpp-rs#631/#630/#629`, `mpp-go#235`, `pympp#323/#321`)：`wevm/mppx` 付费重试返回 `5xx` 时报告未知支付状态、流式响应克隆及时释放、`mpp-rs` `validBefore` 封顶于挑战过期后 1 秒、`mpp-go` 拒绝裸 `.` 金额、以及 `pympp` 拒绝非十六进制 `transferWithMemo` 守卫。
+  - `PR-03` (`AP2#218/#216`, `CAIPs#319`, `ethereum/ERCs#2073/#2068`, `credo-ts#3102/#3100`, `askar#502/#500`)：`AP2` Ghost-Protocol 自治基础设施结算意图授权、`ERC-8107` ENS 过期与控制者权威生命周期、`credo-ts` 仅在落盘成功后写入缓存、以及 `askar` 可选 `ML-DSA` (FIPS 204) `AKP` JWK 编码守卫。
+  - `PR-04` (`ucp#869/#868/#850/#848`, `conformance#69`, `samples#180`)：`UCP` 身份绑定锚定受信任签发方、鉴权门禁商户填充返回值、访客购后订单访问凭证、以及 `samples` 按服务端分配 ID 完成 Webhook 结账守卫。
+  - `PR-05` (`agentic-commerce-protocol#57/#54/#53`, `web-bot-auth#63/#61`, `visa/mpos.sdk.ios.pods#4/#3`)：`ACP` 联盟归因传输、意图追踪（Intent Traces）与消费者 3DS 鉴权、`web-bot-auth` `sf-dictionary` `Signature-Agent` 解析、以及 `visa/mpos.sdk.ios.pods` 第三方废弃 Podspec 移除与 `:sha256` 完整性锚定守卫。
+  - `PR-06` (`A2A#2203/#2188`, `a2a-tck#258/#256/#254/#252`, `a2a-cli#63`)：`A2A` 将 `workflow_dispatch` 版本绑定至 `env` 防注入、`a2a-tck` 发送所选 `AgentInterface` 声明租户与完整 SSE 事件解析后再解码 JSON、以及 `a2a-cli` AgentCard 请求附带 `--svc-param` 头守卫。
+  - `PR-07` (`a2a-python#1162/#1153/#1134`, `a2a-js#630/#629/#628/#625`)：`a2a-python` 内存单例使用 `threading.RLock` 与事件队列 Sink 幂等移除、以及 `a2a-js` 拒绝空 `taskId`（`RequestMalformedError`）、`tasks/resubscribe` 快照裁剪 `historyLength` 与缺失推送配置返回 `404`/`-32001` 守卫。
+  - `PR-08` (`a2a-go#365/#360/#359/#357`, `a2a-dotnet#476/#475/#474`)：`a2a-go` 任务与推送配置存储跨租户鉴权、跨 Agent 任务委托审计链、以及 `a2a-dotnet` 流前错误作为 JSON-RPC 响应返回与时间戳强制 UTC `Z` 后缀守卫。
+  - `PR-09` (`stripe/ai#419/#412`, `stripe-cli#2023/#2017`, `stripe-mock#1644`, `pg-schema-diff#317/#313`)：`stripe/ai` Agent 重试幂等守卫与移除 `register-paid-tool`、`stripe-cli` `keys permissions`/`sandbox create` 凭证解析、`stripe-mock` 收紧 `zizmor` 引用例外、以及 `pg-schema-diff` 先删引用索引再删列与策略函数排序守卫。
+  - `PR-10` (`stripe-go#2427/#2424`, `stripe-java#2286`, `stripe-php#2142`, `stripe-ruby#1969`, `stripe-node#2848`)：`stripe-go` API 请求器加固防御恶意 URL、`stripe-java` 与 `stripe-php` 非空 Webhook 密钥校验、`stripe-ruby` 事件处理器账户作用域修复、以及 `stripe-node` 保留 `endpointFetch` 响应头守卫。
+  - `PR-11` (`agentkit#1335/#1333`, `cdp-sdk#704`, `onchainkit#2678/#2673`)：`agentkit` `WalletPrintActionProvider` 行为交易风险评分与 `BasePay` 免 Gas USDC/托管、`cdp-sdk` `SendEndUserOperationRule`/`SignEndUserTransactionRule`、以及 `onchainkit` `--manifest` WebSocket 防御 CSWSH 与代码注入守卫。
+  - `PR-12` (`tau2-bench#501/#498/#484/#471`, `mu-bench#20/#17`, `hyper-tau-bench#2`)：`tau2-bench` 在 `pass^k` 分母中保留全基础设施错误任务、`close_bank_account_7392` 销户原因固定集合校验、`mu-bench` 语料级（`sum/sum`）WER 聚合与固定裁判模型、以及 `hyper-tau-bench` 固定 Prime Agent 安装脚本与版本守卫。
+  - `PR-13` (`modelcontextprotocol#3392/#3384`, `servers#5143/#5141`, `inspector#2699`, `mcpb#231`, `ext-apps#819/#815`)：`SEP-3392` 扩展生命周期、`servers` `win-shell-args` 引号前双反斜杠转义、`mcpb` AppleScript `JSON.stringify` 插值、`inspector` `taskSupport: required` 强制走任务路径、以及 `ext-apps` 断连清理挂起尺寸通知与观察器守卫。
+  - `PR-14` (`typescript-sdk#2875/#2869/#2853`, `python-sdk#3525/#3523/#3509/#3506`)：`typescript-sdk` `withOAuth` 附加 Bearer Token 前校验目标 Origin、以及 `python-sdk` 关闭被拒绝 `connect_to_server` 打开的传输、按 RFC 6749 §3.1 合并 `authorization_endpoint` 查询参数与防止过早 `response.aclose()` 丢弃 TCP 连接守卫。
+  - `PR-15` (`rust-sdk#1275/#1262`, `go-sdk#1308/#1307/#1302`, `csharp-sdk#1841/#1837`)：`rust-sdk` 拒绝与 `initialize` 请求体矛盾的 `Mcp-Method` 头、`go-sdk` 引号结尾反斜杠后保持 OAuth 挑战独立且保留 `> 2^53` 整数、以及 `csharp-sdk` 释放 `SseClientSessionTransport` POST 响应防连接泄漏与 `SEP-2575` 确定性状态映射守卫。
+  - `PR-16` (`php-sdk#520/#518/#515`, `ruby-sdk#535/#533/#532`, `swift-sdk#156`)：`php-sdk` 校验工具输出 `outputSchema` 与支持协作取消/单次调用期限、`ruby-sdk` 仅在确认后投递 `subscriptions/listen` 通知并串行化写入、以及 `swift-sdk` SSE 传输保留端点 URL 查询参数守卫。
+- **交付资产与基准测试指标**：
+  - 确定性守卫：`lab/x402_nosettle_mpp_5xx_ap2_askar_ucp_issuer_acp_3ds_a2a_stripe_mcp_guards.py`
+  - 7-Card 4:5 双语视觉基准生成器：`lab/x402_nosettle_mpp_5xx_ap2_askar_ucp_issuer_acp_3ds_a2a_stripe_mcp_bench.py`
+  - 报告产物：`reports/agentic-commerce-x402-nosettle-mpp-5xx-ap2-askar-ucp-issuer-acp-3ds-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`（攻击阻断率 `16/16 = 100%`，修复放行率 `16/16 = 100%`，快速路径中位延迟 `0.33 ms` vs 基线 `1.36 ms`，加速比 `4.1x`）
+  - 单元测试：`tests/test_x402_nosettle_mpp_5xx_ap2_askar_ucp_issuer_acp_3ds_a2a_stripe_mcp.py`（全仓 **`1,012/1,012`** 单测全绿）
+
