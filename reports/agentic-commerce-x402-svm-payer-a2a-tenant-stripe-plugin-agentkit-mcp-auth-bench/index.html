@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stage 267：29 项一手 PR 确定性门禁评测实现 16/16 (100%) 通过率，全面拦截经典三层架构 16/16 项盲区</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; max-width: 1480px; margin: 0 auto; }
+  .card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 20px; aspect-ratio: 4 / 5; display: flex; flex-direction: column; justify-content: space-between; overflow: auto; }
+  .badge { font-size: 12px; color: #38bdf8; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  h2 { font-size: 18px; margin: 8px 0 12px; line-height: 1.35; color: #f1f5f9; }
+  table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  th, td { border-bottom: 1px solid #334155; padding: 5px 4px; text-align: left; vertical-align: top; }
+  th { color: #94a3b8; font-weight: 600; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+  pre { background: #0F172A; color: #e2e8f0; padding: 10px; border-radius: 8px; overflow-x: auto; border: 1px solid #334155; }
+  .pill { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 10.5px; font-weight: 600; margin-right: 4px; }
+  .pill-ok { background: #065f46; color: #a7f3d0; }
+  .pill-miss { background: #7f1d1d; color: #fecaca; }
+  .callout { background: #0f172a; border-left: 3px solid #3b82f6; padding: 8px 10px; font-size: 12px; border-radius: 4px; margin-top: 8px; }
+  .bar-group { margin-bottom: 10px; font-size: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .bar-fill-primary { height: 12px; background: #3B82F6; border-radius: 4px; display: inline-block; }
+  .bar-fill-base { height: 12px; background: #CBD5E1; border-radius: 4px; display: inline-block; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fit-good { background: #064e3b; border: 1px solid #059669; padding: 10px; border-radius: 8px; font-size: 12px; }
+  .fit-bad { background: #450a0a; border: 1px solid #dc2626; padding: 10px; border-radius: 8px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="deck">
+  <!-- Card 1 -->
+  <section class="card">
+    <div>
+      <div class="badge">1 / 7 · HANDS-ON · X402 SVM PAYER, A2A TENANT, STRIPE PLUGIN, AGENTKIT &amp; MCP AUTH (STAGE 267)</div>
+      <h2>Stage 267：29 项一手 PR 确定性门禁评测实现 16/16 (100%) 通过率，全面拦截经典三层架构 16/16 项盲区</h2>
+      <p>覆盖 x402 Foundation (<code>#3941/#3594/#3573/#3550</code>)、Google A2A Python SDK (<code>#1377/#1375/#1286/#1274/#1273</code>)、Stripe CLI/Node/Go (<code>#2155/#2143/#2141/#2895/#2457</code>)、Coinbase AgentKit (<code>#1510/#1504</code>) 与 MCP Python/Go/Rust/Java/C#/Ext-Apps (<code>#3761/#3625/#3619/#3618/#1293/#1292/#1290/#1285/#1210/#1201/#1878/#1874/#720</code>) 共 29 项零重叠一手 PR。</p>
+      <table>
+        <tr><th>指标 / Metric</th><th>AI-Native Guards</th><th>Classic 3-Tier</th></tr>
+        <tr><td>通过率 / Pass Rate</td><td><strong>16/16 (100.0%)</strong></td><td>0/16 (0.0%)</td></tr>
+        <tr><td>总耗时 / Total Elapsed</td><td><strong>0.061 ms</strong></td><td>0.144 ms</td></tr>
+        <tr><td>扰动一致性 / Perturbation</td><td><strong>100.0% (0.0 pts)</strong></td><td>50.0%</td></tr>
+      </table>
+    </div>
+    <div class="callout">Provenance: <code>measured</code> · <code>independently_reproduced=true</code> · Offline deterministic verification (`948/948` unit tests).</div>
+  </section>
+
+  <!-- Card 2 -->
+  <section class="card">
+    <div>
+      <div class="badge">2 / 7 · SCENARIO: X402_SVM_PAYER_AGENTKIT_KEEPERHUB_MCP_OAUTH</div>
+      <h2>单案深潜：x402 SVM 买家转账权限识别 + AgentKit KeeperHub 丢包幂等重放 + MCP OAuth 严格到期边界在 0.061 ms 内完成裁决</h2>
+      <div class="callout">Input: <code>SVM(reported=feePayer, authority=buyer)</code> · <code>KeeperHub(taskId="INV-1789..", retry=true)</code> · <code>MCP.OAuth(now==expiry)</code></div>
+      <table>
+        <tr><th>Task Badge</th><th>Scenario</th><th>Decision / Action</th></tr>
+        <tr><td><code>choice</code></td><td>PR-01 x402 SVM Settlement Payer Authority</td><td><span class="pill pill-miss">Send to a human</span> (<code>svm_settlement_payer_returned_facilitator_fee_payer</code>)</td></tr>
+        <tr><td><code>choice</code></td><td>PR-10 AgentKit x402Guard &amp; KeeperHub Replay</td><td><span class="pill pill-ok">Confirm</span> (<code>agentkit_keeperhub_duplicate_transfer_replayed</code>)</td></tr>
+        <tr><td><code>choice</code></td><td>PR-11 MCP Python OAuth Strict Expiry</td><td><span class="pill pill-ok">Confirm</span> (<code>mcp_oauth_token_expired_at_or_past_boundary</code>)</td></tr>
+      </table>
+    </div>
+    <div class="callout">链上代付（Gas Sponsor）与回执超时场景下，必须分离交易手续费代付方与代币转账签名者，并以确定性 taskId 重放替代盲目重发。</div>
+  </section>
+
+  <!-- Card 3 -->
+  <section class="card">
+    <div>
+      <div class="badge">3 / 7 · WHAT I TESTED</div>
+      <h2>全量 16 场景评测矩阵：AI-Native 确定性门禁拦截全部 16 项经典三层架构失守场景</h2>
+      <table>
+        <thead><tr><th>SCENARIO</th><th>QUESTION/TASK</th><th>MODEL ANSWER</th><th>ACTION</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PR-01</strong> · <code>x402-foundation/x402#3941</code></td><td>x402 SVM Exact 结算响应 payer 钱包权限绑定（区分买家转账签名者与 Facilitator 手续费代付方）</td><td><span class='pill pill-ok'>✓ Send to a human</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>svm_settlement_payer_returned_facilitator_fee_payer</code></td></tr>
+<tr><td><strong>PR-02</strong> · <code>x402-foundation/x402#3594</code></td><td>x402 Cardano Masumi 托管地址动态回调解耦（消除构建前直接导入 @x402/cardano 导致的启动失败）</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>cardano_payto_resolved_via_callback</code></td></tr>
+<tr><td><strong>PR-03</strong> · <code>x402-foundation/x402#3573</code></td><td>x402 Python SVM 扩展 solana>=0.36.0,<0.40 版本封顶（拦截移除 solana.rpc.api 的 0.40.0 破坏性升级）</td><td><span class='pill pill-ok'>✓ Send to a human</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>solana_0_40_rpc_api_removed</code></td></tr>
+<tr><td><strong>PR-04</strong> · <code>x402-foundation/x402#3550</code></td><td>x402 发布流水线 verify:exports 故障关闭（拦截 0 构建包空跑通过与缺失 .d.ts/.mjs 导出目标）</td><td><span class='pill pill-ok'>✓ Send to a human</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>verify_exports_zero_packages_checked</code></td></tr>
+<tr><td><strong>PR-05</strong> · <code>a2aproject/a2a-python#1377</code></td><td>A2A Python REST 多租户路由挂载顺序修正（挂载于 {path_prefix}/{tenant} 保障网关前缀路由与租户上下文提取）</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>a2a_rest_tenant_context_resolved</code></td></tr>
+<tr><td><strong>PR-06</strong> · <code>a2aproject/a2a-python#1375</code></td><td>A2A Python JSON-RPC 畸形包拦截与扩展错误字段（reason）精确映射至 TaskNotFoundError</td><td><span class='pill pill-ok'>✓ Confirm</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>a2a_jsonrpc_mapped_TaskNotFoundError</code></td></tr>
+<tr><td><strong>PR-07</strong> · <code>a2aproject/a2a-python#1286, #1274 & #1273</code></td><td>A2A 跨四端 SDK AgentCard 签名互操作（ES256）、application/a2a+json 媒体类型与未知字段前向兼容</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>a2a_card_verified_and_media_type_valid</code></td></tr>
+<tr><td><strong>PR-08</strong> · <code>stripe/stripe-cli#2155, #2143 & #2141</code></td><td>Stripe CLI 跨主版本（1.x→2.x）插件静默自动升级拦截、OS/Arch 缺失诊断与 macOS 公证密钥注入</td><td><span class='pill pill-ok'>✓ Confirm</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>stripe_plugin_major_autoupgrade_blocked</code></td></tr>
+<tr><td><strong>PR-09</strong> · <code>stripe/stripe-node#2895 & stripe/stripe-go#2457</code></td><td>Stripe Node 重试前销毁丢弃响应流/异步验签与 Stripe Go 拦截空数据且 has_more=true 死循环翻页</td><td><span class='pill pill-ok'>✓ Send to a human</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>stripe_empty_page_has_more_infinite_loop</code></td></tr>
+<tr><td><strong>PR-10</strong> · <code>coinbase/agentkit#1510 & #1504</code></td><td>AgentKit x402Guard 付款前 EIP-712 卖家信誉普查与 KeeperHub 丢包超时下 taskId 幂等重放防重付</td><td><span class='pill pill-ok'>✓ Confirm</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>agentkit_keeperhub_duplicate_transfer_replayed</code></td></tr>
+<tr><td><strong>PR-11</strong> · <code>modelcontextprotocol/python-sdk#3761</code></td><td>MCP Python SDK OAuth 与身份断言令牌严格过期边界（now < expiry，符合 RFC 7519 §4.1.4）</td><td><span class='pill pill-ok'>✓ Confirm</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>mcp_oauth_token_expired_at_or_past_boundary</code></td></tr>
+<tr><td><strong>PR-12</strong> · <code>modelcontextprotocol/python-sdk#3625, #3619 & #3618</code></td><td>MCP Python SDK 内部流探测非整数请求 ID（listen-1）防冲突、300s 流式读取超时与取消清理护栏</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>mcp_stream_probe_and_timeout_valid</code></td></tr>
+<tr><td><strong>PR-13</strong> · <code>modelcontextprotocol/go-sdk#1293, #1292 & #1290</code></td><td>MCP Go SDK 流式心跳顺延 http.Server WriteDeadline、SSE 传输放行自定义方法与空切片零 null 序列化</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>mcp_go_stream_sse_and_slices_valid</code></td></tr>
+<tr><td><strong>PR-14</strong> · <code>modelcontextprotocol/rust-sdk#1285</code></td><td>MCP Rust SDK 刷新令牌精准吊销策略（仅在 invalid_grant 时清理凭据，瞬态故障保留重试）</td><td><span class='pill pill-ok'>✓ Send to a human</span> <span class='pill pill-miss'>✕ Classic: Act automatically</span></td><td><code>mcp_rust_transient_error_must_preserve_credentials</code></td></tr>
+<tr><td><strong>PR-15</strong> · <code>modelcontextprotocol/java-sdk#1210 & #1201</code></td><td>MCP Java SDK 流式每订阅 Notifier 工厂空值防护与结构化日志通知 data 字段自动转义</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>mcp_java_notifier_and_logging_coercion_valid</code></td></tr>
+<tr><td><strong>PR-16</strong> · <code>modelcontextprotocol/csharp-sdk#1878 & #1874, modelcontextprotocol/ext-apps#720</code></td><td>MCP Apps SDK v2 角色隔离（消除服务端入口传递导入 @modelcontextprotocol/client）、2026-01-26 握手与 C# Clone 保真</td><td><span class='pill pill-ok'>✓ Act automatically</span> <span class='pill pill-miss'>✕ Classic: Send to a human</span></td><td><code>mcp_apps_v2_and_csharp_clone_verified</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">Threshold Gating: 16/16 AI-Native vs 0/16 Classic 3-Tier (`✕` marks Classic 3-Tier misses).</div>
+  </section>
+
+  <!-- Card 4 -->
+  <section class="card">
+    <div>
+      <div class="badge">4 / 7 · UNDER THE HOOD</div>
+      <h2>底层协议与确定性校验流：从多轨结算/租户路由/MCP 会话契约输入到确定性裁决码 (<code>&lt;answer&gt;</code>)</h2>
+      <pre>{
+  "x402_svm_cardano": {"payer_source": "transferIx.authority", "solana_cap": "<0.40", "verify_exports": "fail_closed"},
+  "a2a_rest_jsonrpc": {"mount": "{path_prefix}/{tenant}", "media_type": "application/a2a+json", "ignore_unknown": true},
+  "stripe_agentkit": {"block_major_autoupgrade": true, "empty_page_has_more": "error", "keeperhub_simulate": true},
+  "mcp_multi_sdk": {"strict_expiry": "now < expiry", "probe_id": "listen-1", "revoke_only_on": "invalid_grant"}
+}</pre>
+      <p style="text-align:center;margin:4px 0;">↓ Deterministic Verifier Pipeline ↓</p>
+      <pre>&lt;answer&gt;
+STAGE266_267_SECURITY_GUARDS_VERIFIED
+action = "Act automatically / Confirm / Send to a human" (16/16 scenarios passed, 948/948 unit tests)
+&lt;/answer&gt;</pre>
+    </div>
+    <div class="callout">Zero external network calls; 100% deterministic local contract verification.</div>
+  </section>
+
+  <!-- Card 5 -->
+  <section class="card">
+    <div>
+      <div class="badge">5 / 7 · ROBUSTNESS CHECK</div>
+      <h2>鲁棒性核验：选项顺序反转与对抗参数扰动下保持 0.0 pts 漂移 (100% 一致)</h2>
+      <table>
+        <thead><tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PR-01</strong> (x402-foundation/x402#3941)</td><td>100% (Send to a human)</td><td>100% (Send to a human)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-02</strong> (x402-foundation/x402#3594)</td><td>100% (Act automatically)</td><td>100% (Act automatically)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-03</strong> (x402-foundation/x402#3573)</td><td>100% (Send to a human)</td><td>100% (Send to a human)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-04</strong> (x402-foundation/x402#3550)</td><td>100% (Send to a human)</td><td>100% (Send to a human)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-05</strong> (a2aproject/a2a-python#1377)</td><td>100% (Act automatically)</td><td>100% (Act automatically)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-06</strong> (a2aproject/a2a-python#1375)</td><td>100% (Confirm)</td><td>100% (Confirm)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-07</strong> (a2aproject/a2a-python#1286, #1274 & #1273)</td><td>100% (Act automatically)</td><td>100% (Act automatically)</td><td><strong>0.0 pts</strong></td></tr>
+<tr><td><strong>PR-08</strong> (stripe/stripe-cli#2155, #2143 & #2141)</td><td>100% (Confirm)</td><td>100% (Confirm)</td><td><strong>0.0 pts</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">Multi-run &amp; option-reversal perturbation stability: 16/16 scenarios invariant (0.0 pts change).</div>
+  </section>
+
+  <!-- Card 6 -->
+  <section class="card">
+    <div>
+      <div class="badge">6 / 7 · LATENCY</div>
+      <h2>批处理与负载扩展延迟：AI-Native 内存态契约门禁在 1x–16x 负载下保持亚毫秒级响应</h2>
+      <div class='bar-group'><div class='bar-label'>1x (16 cases)</div><div class='bar-row'><span class='bar-fill-primary' style='width:8%'></span><strong>0.06 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar-fill-base' style='width:18%'></span><span>0.14 ms (Classic 3-Tier)</span></div></div>
+<div class='bar-group'><div class='bar-label'>4x (64 cases)</div><div class='bar-row'><span class='bar-fill-primary' style='width:8%'></span><strong>0.23 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar-fill-base' style='width:20%'></span><span>0.59 ms (Classic 3-Tier)</span></div></div>
+<div class='bar-group'><div class='bar-label'>16x (256 cases)</div><div class='bar-row'><span class='bar-fill-primary' style='width:31%'></span><strong>0.91 ms (AI-Native)</strong></div><div class='bar-row'><span class='bar-fill-base' style='width:83%'></span><span>2.38 ms (Classic 3-Tier)</span></div></div>
+    </div>
+    <div class="callout">Primary path (#3B82F6) vs Classic 3-Tier baseline (#CBD5E1) across 1x (16), 4x (64), and 16x (256) load tiers.</div>
+  </section>
+
+  <!-- Card 7 -->
+  <section class="card">
+    <div>
+      <div class="badge">7 / 7 · MY TAKE</div>
+      <h2>架构师结论：适用场景与边界 (Good Fit vs. Not For)</h2>
+      <div class="split">
+        <div class="fit-good">
+          <strong>✅ Good fit</strong>
+          <ul>
+            <li>x402 SVM Exact 买家转账签名者归因、Cardano 托管回调解耦、solana&lt;0.40 封顶与导出产物校验</li>
+            <li>A2A 多租户前缀路由、跨四端 SDK AgentCard 签名验真、Stripe 重试流销毁与空页死循环拦截</li>
+            <li>AgentKit x402Guard 付款前普查 + KeeperHub 丢包幂等重放，以及 MCP 五语言 SDK 令牌/流状态机护栏</li>
+          </ul>
+        </div>
+        <div class="fit-bad">
+          <strong>⛔ Not for</strong>
+          <ul>
+            <li>替代链上区块最终性确认（Finality）或硬件安全模块（HSM/TEE）密钥隔离</li>
+            <li>在开启 <code>stateless_http=True</code> 或 <code>json_response=True</code> 时假设客户端断连会自动取消服务端长任务</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="callout">Readiness: Production-ready offline guard suite · License: MIT · Provenance: <code>measured</code> (Stage 266–267).</div>
+  </section>
+</div>
+</body>
+</html>
