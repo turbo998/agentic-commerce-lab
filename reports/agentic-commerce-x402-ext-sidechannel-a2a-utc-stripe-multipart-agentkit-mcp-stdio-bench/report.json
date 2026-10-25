@@ -1,0 +1,359 @@
+{
+  "stage": "Stage 270-271",
+  "milestone": "270-Stage Milestone · 956/956 Unit Tests",
+  "verified_date": "2026-10-26",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "scenario_count": 16,
+  "upstream_pr_count": 53,
+  "unpatched_interception_count": 16,
+  "unpatched_interception_rate_pct": 100.0,
+  "patched_pass_count": 16,
+  "patched_pass_rate_pct": 100.0,
+  "average_scenario_latency_ms": 0.009,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_zh": "x402 EXTENSION-RESPONSES 内部侧信道剥离与 Upto Permit2 CREATE2 代理恢复",
+      "title_en": "x402 EXTENSION-RESPONSES Sidechannel Stripping & Upto Permit2 CREATE2 Proxy Restore",
+      "upstream_prs": [
+        "x402-foundation/x402#3278",
+        "x402-foundation/x402#3275"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "X402_NON_CANONICAL_UPTO_PERMIT2_PROXY_REJECTED",
+      "patched_code": "X402_EXTENSION_SIDECHANNEL_AND_UPTO_PROXY_VERIFIED",
+      "latency_ms": 0.0136,
+      "details": {
+        "server_extension_responses": {
+          "facilitatorReceipt": "internal-only"
+        },
+        "buyer_payment_response_has_sidechannel": false,
+        "canonical_upto_proxy": "0x4020A4f3b7b90ccA423B9fabCc0CE57C6C240002"
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_zh": "x402 Batch-Settlement 客户端本地通道派生与 Upfront Exact 免 402 流程",
+      "title_en": "x402 Batch-Settlement Client Local Channel Derivation & Upfront Exact Flow",
+      "upstream_prs": [
+        "x402-foundation/x402#3251",
+        "x402-foundation/x402#3240"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "X402_UNTRUSTED_SERVER_CHANNEL_STATE_COPY_BLOCKED",
+      "patched_code": "X402_BATCH_LOCAL_TRUTH_AND_UPFRONT_FLOW_VERIFIED",
+      "latency_ms": 0.0044,
+      "details": {
+        "expected_next_cumulative": 1700,
+        "response_charged_cumulative_amount": 1700,
+        "state_written": true,
+        "applied_refund": 300,
+        "upfront_payment_accepted_without_402": true
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_zh": "A2A Go Accept Media-Type 协商、UTC 毫秒时间戳与终态 ErrUnsupportedOperation",
+      "title_en": "A2A Go Accept Media-Type Negotiation, UTC .sssZ Timestamps & Terminal ErrUnsupportedOperation",
+      "upstream_prs": [
+        "a2aproject/a2a-go#465",
+        "a2aproject/a2a-go#452",
+        "a2aproject/a2a-go#442"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_GO_TERMINAL_TASK_WRONG_ERROR_CODE",
+      "patched_code": "A2A_GO_ACCEPT_UTC_AND_TERMINAL_SPEC_ERROR_VERIFIED",
+      "latency_ms": 0.0348,
+      "details": {
+        "response_content_type": "application/a2a+json",
+        "utc_timestamp": "2026-10-26T00:00:00.123Z",
+        "terminal_error": "ErrUnsupportedOperation"
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_zh": "A2A Java SSE 原子单次终态回调、空字符串 ID 归一化与 RFC 3986 重定向解析",
+      "title_en": "A2A Java Atomic Single Terminal SSE Callback, Blank ID Normalization & RFC 3986 Redirects",
+      "upstream_prs": [
+        "a2aproject/a2a-java#1181",
+        "a2aproject/a2a-java#1179",
+        "a2aproject/a2a-java#1174",
+        "a2aproject/a2a-java#1173",
+        "a2aproject/a2a-java#1172",
+        "a2aproject/a2a-java#1162"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_JAVA_DUPLICATE_TERMINAL_SSE_CALLBACK",
+      "patched_code": "A2A_JAVA_ATOMIC_SSE_BLANK_IDS_AND_REDIRECT_VERIFIED",
+      "latency_ms": 0.0312,
+      "details": {
+        "terminal_callbacks": 1,
+        "normalized_task_id": null,
+        "normalized_context_id": null,
+        "creates_new_task": true,
+        "resolved_redirect_uri": "https://agent.example.com/collect"
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_zh": "A2A .NET JSON-RPC 解析错误脱敏、JS v0.3 推送兼容与 Python 整数纳秒排序",
+      "title_en": "A2A .NET JSON-RPC Parse Error Sanitization, JS v0.3 Push Compat & Python Integer Nanos Sort",
+      "upstream_prs": [
+        "a2aproject/a2a-dotnet#452",
+        "a2aproject/a2a-js#737",
+        "a2aproject/a2a-js#726",
+        "a2aproject/a2a-python#1233"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_DOTNET_PARSE_ERROR_DETAIL_LEAKED",
+      "patched_code": "A2A_CROSS_SDK_PARSE_SANITIZE_AND_NANOS_ORDER_VERIFIED",
+      "latency_ms": 0.0042,
+      "details": {
+        "wire_parse_error_message": "Invalid JSON payload",
+        "sorted_desc_ns": [
+          1792972800000000900,
+          1792972800000000100
+        ],
+        "custom_table_name": "tenant_a2a_tasks"
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_zh": "Stripe Node 截断响应体归类 StripeConnectionError、Interceptor 免挂起与 ESM 构造导出",
+      "title_en": "Stripe Node Truncated Body StripeConnectionError, Interceptor Immediate Write & Constructable ESM",
+      "upstream_prs": [
+        "stripe/stripe-node#2888",
+        "stripe/stripe-node#2868",
+        "stripe/stripe-node#2867"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_NODE_SOCKET_EVENT_WAIT_HANGS_INTERCEPTORS",
+      "patched_code": "STRIPE_NODE_INCOMPLETE_BODY_CONNECTION_ERROR_VERIFIED",
+      "latency_ms": 0.002,
+      "details": {
+        "classified_error": "StripeConnectionError",
+        "interceptor_compatible": true,
+        "esm_constructable": true
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_zh": "Stripe Python 30 字节 CSPRNG Multipart Boundary、Header 转义与 Singleton 事件对象",
+      "title_en": "Stripe Python 30-Byte CSPRNG Multipart Boundary, Header Escaping & Singleton Event RelatedObject",
+      "upstream_prs": [
+        "stripe/stripe-python#1904",
+        "stripe/stripe-python#1902",
+        "stripe/stripe-python#1898"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_PYTHON_PREDICTABLE_MULTIPART_BOUNDARY_REJECTED",
+      "patched_code": "STRIPE_PYTHON_CSPRNG_MULTIPART_AND_SINGLETON_VERIFIED",
+      "latency_ms": 0.004,
+      "details": {
+        "boundary_len": 60,
+        "escaped_name": "purpose%22; filename=%22evil.sh%22  X-Injected: 1",
+        "escaped_filename": "receipt%22  .pdf",
+        "related_object_class": "SingletonRelatedObject",
+        "related_object_id": null
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_zh": "Stripe CLI `-p` Profile 与 OAuth Active Context 同步及 Windows 更新重命名重试",
+      "title_en": "Stripe CLI `-p` Profile OAuth Active Context Sync & Windows Binary Rename Retry",
+      "upstream_prs": [
+        "stripe/stripe-cli#2128",
+        "stripe/stripe-cli#2126",
+        "stripe/stripe-cli#2116"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_CLI_PROFILE_OAUTH_ACCOUNT_MISMATCH",
+      "patched_code": "STRIPE_CLI_PROFILE_SYNC_AND_RENAME_RETRY_VERIFIED",
+      "latency_ms": 0.0028,
+      "details": {
+        "selected_profile": "merchant-staging",
+        "effective_account": "acct_staging_222",
+        "rename_attempts": 3
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_zh": "Coinbase AgentKit x402Scraper 双轨结算、Sapien Vault Base ERC-4626 与 Solana 延迟加载",
+      "title_en": "Coinbase AgentKit x402Scraper Dual-Rail Settlement, Sapien Vault Base ERC-4626 & Lazy Solana Import",
+      "upstream_prs": [
+        "coinbase/agentkit#1495",
+        "coinbase/agentkit#1493",
+        "coinbase/agentkit#1490"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "AGENTKIT_EAGER_SOLANA_IMPORT_BREAKS_EVM_USERS",
+      "patched_code": "AGENTKIT_SCRAPER_SAPIEN_AND_LAZY_SOLANA_VERIFIED",
+      "latency_ms": 0.0019,
+      "details": {
+        "network_id": "8453",
+        "sapien_vault_address": "0x60Bf63729f688287a450299962b36Cef0aFfaa42",
+        "scraper_settlement_mode": "eip712_transfer_with_authorization",
+        "lazy_import_solana_deps": true
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_zh": "MCP Go SDK Localhost 大小写无关回环校验、Discovery 延迟代理与 2026-07-28 Stdio 取消静默",
+      "title_en": "MCP Go SDK Case-Insensitive Localhost Loopback, Lazy Discovery Proxy & 2026-07-28 Stdio Cancel Silence",
+      "upstream_prs": [
+        "modelcontextprotocol/go-sdk#1316",
+        "modelcontextprotocol/go-sdk#1278",
+        "modelcontextprotocol/go-sdk#1267"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_GO_STDIO_CANCELLED_REQUEST_SENT_RESPONSE",
+      "patched_code": "MCP_GO_LOOPBACK_LAZY_PROXY_AND_STDIO_CANCEL_VERIFIED",
+      "latency_ms": 0.0033,
+      "details": {
+        "is_loopback": true,
+        "should_send_response": false,
+        "lazy_discovery_transport": true
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_zh": "MCP Go SDK 取消原因 Context Cause 传递、`Mcp-Name` Base64 编码与 Issuer 尾斜杠归一化",
+      "title_en": "MCP Go SDK Cancel Reason Context Cause, `Mcp-Name` Base64 Header Encoding & Issuer Trailing-Slash Trim",
+      "upstream_prs": [
+        "modelcontextprotocol/go-sdk#1255",
+        "modelcontextprotocol/go-sdk#1246",
+        "modelcontextprotocol/go-sdk#1245"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_GO_CANCEL_REASON_DROPPED_FROM_CONTEXT_CAUSE",
+      "patched_code": "MCP_GO_CANCEL_CAUSE_NAME_B64_AND_ISSUER_URLS_VERIFIED",
+      "latency_ms": 0.0214,
+      "details": {
+        "context_cancel_cause": "budget_exceeded",
+        "encoded_mcp_name": "=?base64?Q29tbWVyY2UgQ2hlY2tvdXQgQWdlbnQgKHYyKQ==?=",
+        "metadata_urls": [
+          "https://auth.merchant.example/.well-known/oauth-authorization-server/tenant",
+          "https://auth.merchant.example/.well-known/openid-configuration/tenant",
+          "https://auth.merchant.example/tenant/.well-known/openid-configuration"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_zh": "MCP Rust SDK `.well-known` 401 元数据指针 `WellKnownGuess` 降级与 `server/discover` 生命周期中立",
+      "title_en": "MCP Rust SDK `.well-known` 401 Metadata Pointer `WellKnownGuess` Fallback & Bootstrap-Neutral `server/discover`",
+      "upstream_prs": [
+        "modelcontextprotocol/rust-sdk#1318",
+        "modelcontextprotocol/rust-sdk#1264",
+        "modelcontextprotocol/rust-sdk#1248"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_RUST_WELL_KNOWN_POINTER_ABORTED_DISCOVERY_EARLY",
+      "patched_code": "MCP_RUST_DISCOVERY_ORIGIN_AND_BOOTSTRAP_NEUTRAL_VERIFIED",
+      "latency_ms": 0.0019,
+      "details": {
+        "fallback_to_remaining_candidates": true,
+        "selected_lifecycle": "classic_initialized"
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_zh": "MCP Java SDK 可空 `listChanged` 空安全拆箱与 `listXyz` `Mono.defer` 重复订阅隔离",
+      "title_en": "MCP Java SDK Nullable `listChanged` Null-Safe Unboxing & `listXyz` `Mono.defer` Resubscription Isolation",
+      "upstream_prs": [
+        "modelcontextprotocol/java-sdk#1179",
+        "modelcontextprotocol/java-sdk#1178",
+        "modelcontextprotocol/java-sdk#1175"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_JAVA_NULL_LIST_CHANGED_UNBOXING_NPE",
+      "patched_code": "MCP_JAVA_NULL_SAFE_CAPABILITIES_AND_RESUBSCRIBABLE_MONO_VERIFIED",
+      "latency_ms": 0.0018,
+      "details": {
+        "notify_list_changed": false,
+        "observed_size_on_second_subscribe": 2
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_zh": "MCP C# SDK AutoDetect 400/404 跳过 SSE 回退、旧版会话忽略新 `_meta` 与 400 解析详情",
+      "title_en": "MCP C# SDK AutoDetect 400/404 Skip SSE Fallback, Legacy Session Ignore Future `_meta` & 400 Parse Detail",
+      "upstream_prs": [
+        "modelcontextprotocol/csharp-sdk#1855",
+        "modelcontextprotocol/csharp-sdk#1852",
+        "modelcontextprotocol/csharp-sdk#1844"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_CSHARP_SPURIOUS_SSE_FALLBACK_ON_400_404",
+      "patched_code": "MCP_CSHARP_AUTODETECT_LEGACY_META_AND_PARSE_DETAIL_VERIFIED",
+      "latency_ms": 0.002,
+      "details": {
+        "sse_fallback_attempted": false,
+        "legacy_request_accepted": true,
+        "surfaced_parse_detail": "LineNumber: 1 | BytePositionInLine: 9"
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_zh": "MCP Kotlin SDK `pluginOrNull(SSE)` 幂等安装、`Task.ttl` 显式 `null` 与 PHP 可变参数逐元素强转",
+      "title_en": "MCP Kotlin SDK `pluginOrNull(SSE)` Idempotent Install, Explicit `null` `Task.ttl` & PHP Variadic Cast",
+      "upstream_prs": [
+        "modelcontextprotocol/kotlin-sdk#1092",
+        "modelcontextprotocol/kotlin-sdk#1089",
+        "modelcontextprotocol/php-sdk#465",
+        "modelcontextprotocol/conformance#447",
+        "modelcontextprotocol/conformance#442"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_KOTLIN_DUPLICATE_SSE_PLUGIN_EXCEPTION",
+      "patched_code": "MCP_KOTLIN_SSE_NULL_TTL_AND_PHP_VARIADIC_VERIFIED",
+      "latency_ms": 0.0118,
+      "details": {
+        "serialized_task_json": "{\"taskId\": \"task-1\", \"ttl\": null}",
+        "cast_variadic_ints": [
+          10,
+          20,
+          30
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_zh": "MCP Inspector OAuth 新锁竞争恢复、无 `WWW-Authenticate` 403 非挑战识别与 TUI 临时文件清理",
+      "title_en": "MCP Inspector Fresh OAuth Lock Restore on Lost Steal, Bare-403 Non-Challenge & TUI Temp File Cleanup",
+      "upstream_prs": [
+        "modelcontextprotocol/inspector#2696",
+        "modelcontextprotocol/inspector#2692",
+        "modelcontextprotocol/inspector#2691",
+        "modelcontextprotocol/inspector#2690"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_INSPECTOR_FRESH_OAUTH_LOCK_DELETED_ON_LOST_STEAL",
+      "patched_code": "MCP_INSPECTOR_LOCK_RESTORE_403_AND_CLEANUP_VERIFIED",
+      "latency_ms": 0.0022,
+      "details": {
+        "lock_preserved": true,
+        "is_oauth_challenge": false,
+        "effective_token_endpoint": "https://custom-auth.example/oauth/token",
+        "temp_files_cleaned_on_exit": true
+      }
+    }
+  ]
+}

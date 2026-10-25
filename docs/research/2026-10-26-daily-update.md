@@ -1,6 +1,29 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–269+）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–271+）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 270–271（达成 270 阶段里程碑 · `956/956` 单测全绿！）：x402 `EXTENSION-RESPONSES` 内部侧信道剥离与 Upto Permit2 CREATE2 恢复 / Batch-Settlement 客户端本地通道派生与 Upfront Exact 免 402 流程、A2A Go `Accept` 协商与 UTC `.sssZ` 及终态 `ErrUnsupportedOperation` / Java 原子单次终态 SSE 与空 ID 归一化及 RFC 3986 重定向 / .NET 解析脱敏与 Python 纳秒整数排序、Stripe Node 截断响应体归类与 ESM 构造导出 / Python 30 字节 CSPRNG Multipart 与 Header 转义 / CLI Profile OAuth 同步与 Windows 重命名重试、AgentKit `x402Scraper` / `SapienVault` / Solana 延迟加载，以及 MCP 八端 SDK 与 Inspector 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（53 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`x402-foundation/x402#3278`、`#3275`）：`@x402/core` 将 Facilitator `EXTENSION-RESPONSES` 解码至服务端专属 `extensionResponses` 侧信道并在编码买方 `PAYMENT-RESPONSE` 前剥离；恢复 `x402UptoPermit2Proxy` 规范 CREATE2 地址 `0x4020A4f3b7b90ccA423B9fabCc0CE57C6C240002`。
+  - `PR-02`（`x402-foundation/x402#3251`、`#3240`）：Batch-Settlement 客户端从本地状态派生 `local_cumulative + min(chargedAmount, maxAllowed) + clientSignedDeposit`，服务端 `chargedCumulativeAmount` 不匹配时拒绝覆写本地存储，退款封顶于本地可退余额，并支持 Upfront Exact 免 402 流程。
+  - `PR-03`（`a2aproject/a2a-go#465`、`#452`、`#442`）：按 `Accept` 协商 `application/a2a+json`、`TaskStatus.Timestamp` 统一格式化为 UTC `.sssZ` 毫秒精度，且对已落盘终态任务返回 `ErrUnsupportedOperation`。
+  - `PR-04`（`a2aproject/a2a-java#1181`、`#1179`、`#1174`、`#1173`、`#1172`、`#1162`）：`AbstractSSEEventListener` 共享 `AtomicBoolean` 保证单次终态回调、空字符串 `taskId`/`contextId` 归一化为 `null`、`URI.create(url).resolve(location)` 解析相对重定向、`A2ACardResolver` 回退 URL 与 gRPC 显式 JSON `null`。
+  - `PR-05`（`a2aproject/a2a-dotnet#452`、`a2a-js#737`/`#726`、`a2a-python#1233`）：`A2AJsonRpcProcessor` 解析错误脱敏为 `"Invalid JSON payload"`（`CWE-209`）、v0.3 推送转 v1.0 `StreamResponse` 与自定义 SQL 表名校验，以及 `InMemoryTaskStore.list()` 改用 `ToNanoseconds()` 整数排序。
+  - `PR-06`（`stripe/stripe-node#2888`、`#2868`、`#2867`）：中途截断响应体归类为可重试 `StripeConnectionError`、`NodeHttpClient` 立即 `write`/`end` 避免 Nock 14 / MSW 挂起，并导出可构造 ESM `Stripe` 类。
+  - `PR-07`（`stripe/stripe-python#1904`、`#1902`、`#1898`）：`secrets.token_hex(30)` 240-bit CSPRNG Multipart boundary、`Content-Disposition` `"`/`\r`/`\n` 转义防参数注入、支持 `id=None` 的 v2 单例 `RelatedObject` 与非空 Webhook 密钥校验。
+  - `PR-08`（`stripe/stripe-cli#2128`、`#2126`、`#2116`）：同步 `-p / --project-name` Profile 与 OAuth 活跃上下文，以及 Windows `replaceBinary` 文件共享冲突重试。
+  - `PR-09`（`coinbase/agentkit#1495`、`#1493`、`#1490`）：`CdpSolanaWalletProvider` 延迟导入 Solana 依赖、`SapienVaultActionProvider` Base 主网（`8453`）金库校验与 `x402ScraperActionProvider` 双轨 Base USDC 结算。
+  - `PR-10..PR-11`（`modelcontextprotocol/go-sdk#1316`、`#1278`、`#1267`、`#1255`、`#1246`、`#1245`）：`IsLoopback` 大小写无关匹配 `"localhost"`、延迟构建 `defaultDiscoveryTransport` 尊重 `HTTPS_PROXY`、`2026-07-28` Stdio 已取消请求静默不回包、取消原因注入 `context.Cause`、非安全 `Mcp-Name` Base64 编码与 OAuth Issuer 尾斜杠剥离。
+  - `PR-12`（`modelcontextprotocol/rust-sdk#1318`、`#1264`、`#1248`）：`.well-known` 401 中的 `resource_metadata` 指针归类为 `WellKnownGuess` 保留候选回退、`server/discover` 保持引导中立，以及免 `macros` 导出 `object!`。
+  - `PR-13..PR-16`（MCP Java/C#/Kotlin/PHP/Conformance/Inspector）：`java-sdk#1179`/`#1178`/`#1175`（`Boolean.TRUE.equals(listChanged)` 空安全与 `listXyz` `Mono.defer` 订阅隔离）、`csharp-sdk#1855`/`#1852`/`#1844`（`server/discover` 400/404 跳过 SSE 回退、旧版会话忽略新 `_meta` 与 400 解析详情）、`kotlin-sdk#1092`/`#1089` & `php-sdk#465` & `conformance#447`/`#442`（`pluginOrNull(SSE)`、`Task.ttl` 显式 `null` 与 PHP 可变参数逐元素强转），以及 `inspector#2696`/`#2692`/`#2691`/`#2690`（OAuth 新锁竞争 `renameSync` 恢复、无 `WWW-Authenticate` 403 非挑战识别、无元数据端点覆盖与 TUI 临时令牌文件退出清理）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio_guards.py`](../../lab/x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio_guards.py)
+  - 基准生成器：[`lab/x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio_bench.py`](../../lab/x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio_bench.py)
+  - 单元测试：[`tests/test_x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio.py`](../../tests/test_x402_ext_sidechannel_a2a_utc_stripe_multipart_agentkit_mcp_stdio.py)（全仓 **`956/956` 单测通过**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-ext-sidechannel-a2a-utc-stripe-multipart-agentkit-mcp-stdio-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-ext-sidechannel-a2a-utc-stripe-multipart-agentkit-mcp-stdio-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-ext-sidechannel-a2a-utc-stripe-multipart-agentkit-mcp-stdio-bench/report.json)
 
 ---
 
