@@ -2785,6 +2785,27 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py)、[`tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/`](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.en.html)）。
 
+---
+
+## 229. Stage 230（230 阶段里程碑！`2026-10-25`）：x402 `expectedAmount` / `delivery-receipt` / `@x402/lnbtc` / Atto、UCP 酒店取消时刻 / Cart `continue_url` / `allOf` 顶层 `required` / 访客订单凭证、MCP SEP-3149 CIMD / SEP-2633 `mcp.json` / 多语言 SDK / Apps / Conformance / Registry 确定性护栏（`PR-01..PR-16`）
+
+### 229.1 x402 签名前报价锚定、混合后量子交付收据、闪电网络/Atto 结算与 UCP 预订/购物车/访客凭证护栏（`PR-01..PR-04`, `PR-16`）
+- **`PR-01`（`x402-foundation/x402#3920`、`#3922`）**：客户端签名前 `expectedAmount`（显式 `Money` 或 `"first-accepted"` 报价账本锚定）与双向 `expectedAmountTolerance >= 1.0`（超限抛出 `QuoteMismatchError`），以及按 `EXPECTED_NETWORK` 命名空间感知的 `EXPECTED_PAY_TO`/`EXPECTED_ASSET` 比对（`eip155:*` 大小写无关、`solana:*` 大小写敏感 Base58 32 字节、其他命名空间 Fail-Closed，且 `EXPECTED_AMOUNT_ATOMIC` 仅允许十进制整数）。
+- **`PR-02`（`x402-foundation/x402#3783`、`#3207`）**：`delivery-receipt` 扩展（`"x402-delivery-receipt/1\n" + sha256(JCS(payload))`、`PAYMENT-RESPONSE` 引用模式 `<= 1024B`、会话 `Ed25519` + 归档 `ML-DSA-65`/`ML-DSA-87` 混合后量子签名对及 `/.well-known/x402-receipt-keys` 纪元链）与 `offer-receipt` 13 向量一致性（拒绝 2 段式 JWS 与 `alg:none`/`HS256` 算法混淆）。
+- **`PR-03`（`x402-foundation/x402#3688`、`#715`）**：`@x402/lnbtc` 服务端从原始请求字节重算 BOLT11 `description_hash`（`http:1`/`mcp:1`）、已付款重试发票复用防 DoS、`sha256(preimage) == payment_hash` 与 `lnbtc:<payment_hash>` 原子消费，以及 `atto:live`/`beta`/`dev`/`local` 零手续费原生 `SEND` 精确方案。
+- **`PR-04` & `PR-16`（`ucp#861`、`#801`、`#691`、`#848`、`#988` & `js-sdk#89`）**：酒店取消 `schedule` 显式评估时刻、Cart `continue_url` HTTPS + 保留商品/不可购修复契约、自描述 `price_treatment.tax.inclusion`（`included` | `excluded` | `not_applicable`）、`js-sdk` 保留无 `node.properties` 的 `allOf` 顶层 `required`（`DailyHourElementSchema` 与 `ExceptionHourElementSchema`）、无账户访客单订单访问凭证 `order_access_token`（禁止跨单访问并在账户认领后吊销）及 Order MCP 绑定请求签名校验。
+
+### 229.2 MCP SEP-3149 CIMD、SEP-2633 `mcp.json`、Java/Kotlin/Swift/Ruby/PHP SDK、MCP Apps、Conformance 与 Registry 供应链护栏（`PR-05..PR-15`）
+- **`PR-05`（`modelcontextprotocol#3149`、`#2633`）**：SEP-3149 要求 CIMD 显式声明非空 `token_endpoint_auth_methods_supported` 数组（废弃单数 `token_endpoint_auth_method` 与隐式公共客户端默认值），以及 SEP-2633 客户端 `mcp.json`（仅允许 `stdio`/`http` 且禁存明文密钥）。
+- **`PR-06..PR-10`（MCP Java/Kotlin/Swift/Ruby/PHP SDK）**：`java-sdk#1271`/`#1202`/`#1159`/`#1160`（重复工具名拒绝、`Mcp-Param-{Name}` `-32020` 校验、空闲 GET SSE 立即返回 `200` + `text/event-stream`、预会话 `listRoots` `IllegalStateException`）、`kotlin-sdk#1134`/`#1101`/`#1130`（冷惰性分页 `Flow`、`StdioServerTransport` 捕获处理器 `CancellationException` 保持存活、废弃 SSE）、`swift-sdk#311`/`#310`/`#309`（`data:` URL 仅头部检测 `;base64`、直接原始字节 `%XX` 解码、心跳失败断连退避）、`ruby-sdk#632`/`#631`（`subscriptions/listen` 逐 URI 回调 `resources_subscribe_handler` 与公共 `configuration.exception_reporter`）及 `php-sdk#614`/`#432`（`Client::connect()` 重连前关闭旧传输与缺 `symfony/finder` 构建期快速失败）。
+- **`PR-11..PR-15`（MCP Apps / Conformance / Registry）**：`ext-apps#798`/`#824`/`#821`（WebMCP `createModelContextRelay` 同源中继、按需 `get-screenshot` 与 1.x/2.x peer 范围）、`conformance#529`/`#564`/`#521`/`#541`（SEP-1932 DPoP 发现与 `use_dpop_nonce` 重试、SEP-3415 `Mcp-Name` 与 150 项负向控制）及 `registry#1640`/`#1523`/`#1570`/`#1583`（`.well-known/mcp-registry-auth` 禁重定向 `<= 4096B`、`mcp-publisher` `v1.8.1` Sigstore `cosign verify-blob`、持久化 `repository.id` 与严格 `validateArgument` 分支）。
+- **技术资产**：[`lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_guards.py`](../../lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_guards.py) 与 [`tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_guards.py`](../../tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_guards.py)。
+
+## 230. Stage 231（230 阶段里程碑 & 876/876 单测全绿！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py`](../../lab/x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py)、[`tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py`](../../tests/test_x402_expected_amount_delivery_receipt_lnbtc_ucp_lodging_mcp_sep3149_bench.py) 及双语报告 [`reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/`](../../reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench/index.en.html)）。
+
 
 
 

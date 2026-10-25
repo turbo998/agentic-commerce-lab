@@ -1,0 +1,333 @@
+{
+  "benchmark_id": "agentic-commerce-x402-expected-amount-delivery-receipt-lnbtc-ucp-lodging-mcp-sep3149-bench",
+  "stage": "Stage 231",
+  "milestone": "230-Stage Milestone",
+  "date": "2026-10-25",
+  "provenance": "deterministic_offline_simulation",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "ai_native_passed": 16,
+  "ai_native_pass_rate": 1.0,
+  "classic_3tier_passed": 0,
+  "classic_3tier_pass_rate": 0.0,
+  "perturbation_invariance_rate": 1.0,
+  "median_ai_latency_ms": 0.17,
+  "p95_ai_latency_ms": 0.18,
+  "median_classic_latency_ms": 4.72,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title": "x402#3920 & #3922 Expected-Amount & Pinned Recipient",
+      "question": "Enforce expectedAmount ('first-accepted'/Money), bidirectional tolerance & case-exact Solana/EVM target pinning",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "X402_EXPECTED_AMOUNT_AND_PINNED_TARGET_VERIFIED",
+      "negative_decision_code": "X402_QUOTE_MISMATCH_ERROR_PRE_SIGN",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.85,
+      "perturbation_consistent": true,
+      "details": {
+        "quoteKey": "GET:https://api.example.com/v1/Alpha",
+        "offered": 10000,
+        "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "title": "x402#3783 & #3207 Delivery-Receipt & Offer Vectors",
+      "question": "Verify 'x402-delivery-receipt/1\\n'+SHA256(JCS), Ed25519+ML-DSA-65, <=1KB ref & reject HS256/alg:none",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "X402_DELIVERY_RECEIPT_AND_OFFER_VECTOR_VERIFIED",
+      "negative_decision_code": "X402_OFFER_RECEIPT_ALG_CONFUSION_REJECTED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.18,
+      "classic_latency_ms": 4.92,
+      "perturbation_consistent": true,
+      "details": {
+        "receipt_id": "19a2084b512d01ab8db6de0e1a5bbb7f2a9ec194b481d5b7411f361494e26142",
+        "archival_sig_alg": "ML-DSA-65"
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "title": "x402#3688 & #715 @x402/lnbtc & Atto Exact SEND",
+      "question": "Enforce server-derived BOLT11 description hash, paid-retry invoice reuse, preimage replay & Atto SEND",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "X402_LNBTC_AND_ATTO_EXACT_VERIFIED",
+      "negative_decision_code": "X402_LNBTC_CLIENT_ECHO_OR_PARSED_BODY_REJECTED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.81,
+      "perturbation_consistent": true,
+      "details": {
+        "replay_key": "lnbtc:02d449a31fbb267c8f352e9968a79e3e5fc95c1bbeaa502fd6454ebde5a4bedc",
+        "atto_network": "atto:live"
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "title": "ucp#861/#801/#691 & js-sdk#89 Lodging/Cart/Price/allOf",
+      "question": "Evaluate lodging cancellation schedule, HTTPS item-preserving continue_url, price_treatment & allOf required",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "UCP_LODGING_CART_PRICE_AND_ALLOF_REQUIRED_VERIFIED",
+      "negative_decision_code": "UCP_LODGING_CANCELLATION_SCHEDULE_MISMATCH",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.75,
+      "perturbation_consistent": true,
+      "details": {
+        "matched_tier": "tier_free",
+        "normalized_tax_inclusion": "included",
+        "projected_required": [
+          "day",
+          "opens",
+          "closes"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "title": "MCP SEP-3149 CIMD Auth Array & SEP-2633 mcp.json",
+      "question": "Require token_endpoint_auth_methods_supported array in CIMD & validate standard client mcp.json",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_SEP3149_CIMD_AND_SEP2633_MCP_JSON_VERIFIED",
+      "negative_decision_code": "MCP_SEP3149_CIMD_AUTH_METHODS_ARRAY_REQUIRED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.69,
+      "perturbation_consistent": true,
+      "details": {
+        "negotiated_auth_method": "private_key_jwt",
+        "server_count": 1
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "title": "MCP Java SDK #1271/#1202/#1159/#1160 Server Guards",
+      "question": "Validate McpServerTool shortcuts, SEP-2243 Mcp-Param-{Name} (-32020), idle GET flush & listRoots gate",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_JAVA_PARAM_HEADER_FLUSH_AND_ROOTS_VERIFIED",
+      "negative_decision_code": "MCP_JAVA_DUPLICATE_SERVER_TOOL_NAME_REJECTED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.72,
+      "perturbation_consistent": true,
+      "details": {
+        "tool_count": 2,
+        "checked_params": [
+          "Region"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "title": "MCP Kotlin SDK #1134/#1101/#1130 Flow & Stdio Cancel",
+      "question": "Enforce cold/lazy pagination Flows, StdioServerTransport handler cancellation survival & SSE deprecation",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_KOTLIN_FLOW_STDIO_CANCEL_AND_SSE_VERIFIED",
+      "negative_decision_code": "MCP_KOTLIN_PAGINATION_FLOW_NOT_COLD_OR_LAZY",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.64,
+      "perturbation_consistent": true,
+      "details": {
+        "stdio_read_loop_kept_running": true
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "title": "MCP Swift SDK #311/#310/#309 Data URL & Heartbeat",
+      "question": "Detect ;base64 strictly in data: header, decode %FF%00 raw bytes without UTF-8 round-trip & verify heartbeat",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_SWIFT_DATA_URL_AND_HEARTBEAT_VERIFIED",
+      "negative_decision_code": "MCP_SWIFT_PAYLOAD_BASE64_MARKER_CONFUSION",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.68,
+      "perturbation_consistent": true,
+      "details": {
+        "is_base64": false,
+        "decoded_len": 2
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "title": "MCP Ruby SDK #632 & #631 Listen Auth & Notify Rescue",
+      "question": "Consult resources_subscribe_handler for subscriptions/listen URIs & rescue via configuration.exception_reporter",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_RUBY_LISTEN_AUTH_AND_NOTIFY_RESCUE_VERIFIED",
+      "negative_decision_code": "MCP_RUBY_LISTEN_BYPASSED_SUBSCRIBE_HANDLER",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.65,
+      "perturbation_consistent": true,
+      "details": {
+        "authorized_uris": [
+          "file:///public/a.txt",
+          "file:///public/b.txt"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "title": "MCP PHP SDK #614 & #432 Reconnect Close & Finder",
+      "question": "Close previous client transport on reconnect & fail fast when symfony/finder is missing for file discovery",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_PHP_RECONNECT_CLOSE_AND_FINDER_GUARD_VERIFIED",
+      "negative_decision_code": "MCP_PHP_RECONNECT_PREVIOUS_TRANSPORT_LEAKED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.62,
+      "perturbation_consistent": true,
+      "details": {
+        "previous_transport_closed_on_reconnect": true
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "title": "MCP Apps #798/#824/#821 WebMCP, Screenshot & Peer Line",
+      "question": "Route View tools via document.modelContext sandbox relay, expose get-screenshot & match v1/v2 peer line",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_APPS_WEBMCP_SCREENSHOT_AND_PEER_LINE_VERIFIED",
+      "negative_decision_code": "MCP_APPS_WEBMCP_RELAY_ORIGIN_VIOLATION",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.7,
+      "perturbation_consistent": true,
+      "details": {
+        "selected_ext_apps_major": 1
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "title": "MCP Conformance #529 & #564 SEP-1932 DPoP Discovery",
+      "question": "Grade WWW-Authenticate DPoP + dpop_signing_alg_values_supported & token-request proof/iat/nonce retry",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_CONFORMANCE_SEP1932_DPOP_DISCOVERY_VERIFIED",
+      "negative_decision_code": "MCP_CONFORMANCE_SEP1932_DPOP_DISCOVERY_MISSING",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.74,
+      "perturbation_consistent": true,
+      "details": {
+        "prm_dpop_algs_supported": [
+          "ES256"
+        ]
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "title": "MCP Conformance #521 & #541 SEP-3415 Events Suite",
+      "question": "Verify SEP-3415 events/list, subscriptions/listen Mcp-Name, 150 negative controls, eventId dedup & cursor",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_CONFORMANCE_SEP3415_EVENTS_SUITE_VERIFIED",
+      "negative_decision_code": "MCP_CONFORMANCE_SEP3415_EVENTS_CHECK_FAILED",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.18,
+      "classic_latency_ms": 4.79,
+      "perturbation_consistent": true,
+      "details": {
+        "negative_controls_rejected_count": 150
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "title": "MCP Registry #1640 & #1523 HTTP Auth & Sigstore Pin",
+      "question": "Enforce 200 OK (no 3xx, <=4096B, <=10s) on /.well-known/mcp-registry-auth & v1.8.1 cosign verify-blob",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_REGISTRY_HTTP_AUTH_AND_SIGSTORE_VERIFIED",
+      "negative_decision_code": "MCP_REGISTRY_HTTP_VERIFICATION_CONTRACT_VIOLATION",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.76,
+      "perturbation_consistent": true,
+      "details": {
+        "installer_version_tag": "v1.8.1",
+        "proof_body_bytes": 512
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "title": "MCP Registry #1570 & #1583 Repo ID & Argument Validator",
+      "question": "Record immutable forge repository.id at init & reject invalid argument types or bare positional args",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "MCP_REGISTRY_REPO_ID_AND_ARGUMENTS_VERIFIED",
+      "negative_decision_code": "MCP_REGISTRY_MISSING_IMMUTABLE_REPOSITORY_ID",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.16,
+      "classic_latency_ms": 4.67,
+      "perturbation_consistent": true,
+      "details": {
+        "repository_id": "R_kgDO123456",
+        "argument_count": 2
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "title": "UCP #848 & #988 Guest Order Token & Order MCP Signing",
+      "question": "Scope guest order token to single order_id (revoke on account claim) & verify Order MCP message signature",
+      "ai_native_passed": true,
+      "classic_3tier_passed": false,
+      "positive_decision_code": "UCP_GUEST_ORDER_CREDENTIALS_AND_MCP_SIGNING_VERIFIED",
+      "negative_decision_code": "UCP_GUEST_ORDER_TOKEN_CROSS_ORDER_OR_SCOPE_ESCALATION",
+      "action": "Act automatically",
+      "negative_action": "Send to a human",
+      "confidence": 0.99,
+      "ai_latency_ms": 0.17,
+      "classic_latency_ms": 4.8,
+      "perturbation_consistent": true,
+      "details": {
+        "order_id": "ord_9001",
+        "scopes": [
+          "order:read",
+          "order:return_initiate"
+        ]
+      }
+    }
+  ]
+}
