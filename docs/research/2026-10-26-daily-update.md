@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–289+ · 达成 992/992 单测里程碑 & 累计 2,726 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–291+ · 达成 290 阶段里程碑 & 996/996 单测里程碑 · 累计 3,206 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 290–291（达成 290 阶段里程碑 & `996/996` 单测里程碑 · 60 仓库 480 项零重叠一手 PR 覆盖 · 突破 3,000+ PR 里程碑达 3,206 项零重叠 PR！）：x402-rs Aptos Facilitator 与泛型 `ChainProvider`、mppx 支付授权边界与 Pending Key 上限及 Tempo `evm2` JIT、AP2 RFC 8785 JCS 购物车-支付绑定与跨商户预算、UCP Profile 驱动 OpenAPI 3.1 Schema 生成与 `date-time` 校验、ACP 强制幂等与 WBA 端口归一化、A2A Rust 有界 AgentCard 抓取与七端 SDK 护栏、Stripe CLI 有界签名更新与 Go Decimal 精度、CDP 100 条策略上限与 WalletForge Markdown 归一化，以及 MCPB 签名包/符号链接环与十一端 SDK 确定性门禁及 7-Card 基准报告
+
+- **一手协议覆盖（60 个上游仓库 480 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-02`（`coinbase/x402#405..#396`、`x402-rs/x402-rs#58..#49`、`google-agentic-commerce/a2a-x402#105..#96`、`wevm/mppx#1081..#1067`、`tempoxyz/tempo#8647..#8634` & `circlefin/x402-batching#11..#1`）：`x402-rs` Aptos 撮合器支持与泛型 `ChainProvider`（`#58..#56`）；`wevm/mppx` 强制支付授权边界与挂起密钥上限（`#1078`）及 Tempo `evm2` JIT 确定性执行（`tempo#8647`）。
+  - `PR-03..PR-05`（`google-agentic-commerce/AP2#257..#242`、`ChainAgnostic/CAIPs#367..#358`、`ethereum/ERCs#2101..#2095`、`openwallet-foundation/sd-jwt-js#355..#348`、`Universal-Commerce-Protocol/ucp#935..#914`、`ucp-schema#92..#87`、`python-sdk#28..#23`、`js-sdk#51..#46`、`conformance#91..#87`、`samples#210..#206`、`agentic-commerce-protocol#126..#105` & `cloudflare/web-bot-auth#120..#109`）：AP2 RFC 8785 JCS 购物车-支付绑定、跨商户预算控制与 Tenzro DID 结算（`#257`、`#253`、`#252`）及 `ERC-8107` 协调器全量检查（`#2101`）；UCP Profile 驱动 OpenAPI 3.1 服务与 Schema 生成（`ucp-schema#89`）、引用注解校验（`#91`）与 JS `date-time` 格式强制（`js-sdk#51`）；ACP 折扣合并、促销定价上下文与强制幂等保证（`ACP#125..#118`）及 `web-bot-auth` RFC 9421 端口归一化（`#120`）。
+  - `PR-06..PR-12`（`a2aproject/A2A#2325..#2312`、`a2a-rs#379..#375`、`a2a-itk#86..#82`、`a2a-cli#97..#93`、`a2a-inspector#182..#179`、`a2a-tck#185..#182`、`a2a-samples#723..#720`、`a2a-python#1320..#1291`、`a2a-js#727..#705`、`a2a-java#1225..#1205`、`a2a-dotnet#538..#528`、`a2a-go#415..#405`、`stripe/ai#477..#468`、`stripe/agent-toolkit#459..#450`、`stripe/stripe-cli#2070..#2061`、Stripe 九端 SDK、`coinbase/agentkit#1520..#1450`、`coinbase/cdp-sdk#799..#774`、`sierra-research/tau2-bench#590..#576`、`tau-bench#47..#38` & `mu-bench#57..#48`）：`a2a-rs` 客户端 AgentCard 抓取超时/大小/禁跨域重定向（`#379`）与 `a2a-cli` 卡片解析超时（`#94`）；`a2a-js` 调用方配置不可变性与 `HeadersInit` 保留（`#725`、`#721`）；`a2a-go` EventQueue 防慢订阅者卡死 Broker（`#414`）与 `a2a-dotnet` gRPC 接口地址规范（`#538`）；Stripe CLI 有界签名更新下载（`#2070`）、`stripe-go` Decimal 精度保持（`#2455`）与 `react-stripe-js` SSO 令牌校验（`#719`）；CDP 100 条策略规则上限（`#796`）与 WalletForge Markdown 归一化（`#1492`）；以及 `tau2-bench` 沙箱超时 `SIGTERM` 清理（`#588`）与 `mu-bench` 合并后计分发布（`#54`）。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + MCPB + Use-MCP + Ext-Apps + Conformance + Inspector + Registry + Servers）：`mcpb` 签名包校验与损坏/循环符号链接跳过（`#303`、`#293`、`#286`）、`mcp-server-fetch` 地址分类与 `robots.txt` 硬化（`#5239`、`#5238`）及 Inspector 压测阈值退出码（`#2787`）；TS 日志能力门禁与 Opt-In 原始参数（`#3052`、`#3038`）、Python 现代 SSE 独立响应头列表（`#3704`）；Rust 浮点形式整数请求 ID 解析（`#1346`）与 Go `ID.Raw()` 及 `computeURIFilepath` 违规路径报错（`#1382`、`#1381`）；以及 PHP 断开停止握手 SSE 循环与禁止在途请求复活已删会话（`#569..#567`）、Ruby 过期挂起授权清理（`#580`）与 Swift 流 EOF 100% CPU 空转修复（`#221`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb_guards.py`](../../lab/x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb_guards.py)
+  - 基准生成器：[`lab/x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb_bench.py`](../../lab/x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb_bench.py)
+  - 单元测试：[`tests/test_x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb.py`](../../tests/test_x402_aptos_mppx_evm2_ap2_did_ucp_openapi_acp_wba_a2a_rs_stripe_mcpb.py)（全仓 **`996/996` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-aptos-mppx-evm2-ap2-did-ucp-openapi-acp-wba-a2a-rs-stripe-mcpb-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-aptos-mppx-evm2-ap2-did-ucp-openapi-acp-wba-a2a-rs-stripe-mcpb-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-aptos-mppx-evm2-ap2-did-ucp-openapi-acp-wba-a2a-rs-stripe-mcpb-bench/report.json)
 
 ---
 
