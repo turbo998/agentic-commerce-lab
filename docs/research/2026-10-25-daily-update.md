@@ -1,0 +1,24 @@
+# 2026-10-25 技术资产与架构更新索引（Stages 228–229+）
+
+🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-25-daily-update.en.md`)](2026-10-25-daily-update.en.md)** | **[2026-10-25 每日研究 (`research/daily/2026-10-25.md`)](../../research/daily/2026-10-25.md)** | **[English Daily Research (`research/daily/2026-10-25.en.md`)](../../research/daily/2026-10-25.en.md)**
+
+---
+
+## Stage 228–229（`872/872` 单测全绿！）：Visa TAP RFC 9421 / Hybrid PQ `ed25519-ml-dsa-65`、Stripe Agent Toolkit / MCP `2026-10-31` 门禁、ACP 争议解决扩展、UCP CIMD / `ucp-schema` 2.0.0、AP2 SD-JWT / ISO 4217、A2A-x402 Celo / CSPRNG Nonce、Coinbase AgentKit `token_verdict` / `BotsRated` / `SelfPaid`、MCP 多语言 SDK / Inspector 与 Sierra $\tau$-bench 2.0 确定性护栏及 7-Card 基准报告
+
+- **一手协议覆盖（48 项上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`visa/trusted-agent-protocol#21`、`#18`、`#11`）：商户后端 RFC 9421 §2.5 `@signature-params` 末行重构与逐组件独立引号、任意标签/参数顺序验签、`ed25519-ml-dsa-65` 混合后量子双签名强制共验（缺失 `liboqs-python` 时以 HTTP `503` Fail-Closed 拒绝）及 `x402` Solana ATA 预检与 Base CDN 日志。
+  - `PR-02`（`stripe/agent-toolkit#586`、`#579`、`#569`、`#567` & Stripe MCP `2026-10-31` 截止门禁）：`sync_stripe_skills` 全内存原子拉取（任一下载失败保留本地既有技能）、OpenAI Agent Plugin 标准 `extensions` 元数据（移除推测性 `codex` 目录）、`shared-provider-scripts/provider-hooks`、Claude 启动检查 `STRIPE_CLI_TELEMETRY_OPTOUT=1`（保留 `report_usage`），以及 Stripe MCP `2026-10-31`（6 天倒计时）/ `2026-11-30`（36 天倒计时）停用全权限 `sk_live_*` 与无标签 `rk_live_*`（返回 HTTP `401` + OAuth Discovery 质询）。
+  - `PR-03`（`agentic-commerce-protocol#316`、`#314`、`#310`）：ACP SEP `#303` 争议解决扩展（`dispute_resolution` ATDRP-0.1）四元 AP2 授权/收据与 `Order` 交叉哈希绑定、宿主结账确认门禁（`complete_checkout_session`/`delegate_payment`）及 JSON Schema `$defs` ↔ OpenAPI `components.schemas` 漂移检测。
+  - `PR-04`（`Universal-Commerce-Protocol/ucp#985`、`#982`、`#981`）：注册模型中立 Identity Linking（CIMD 与机密平台禁用 `client_secret`，强制 RFC 7523 `private_key_jwt` 或 PKCE）、`ucp-schema` 2.0.0 打包整文件 `$ref` 恢复，以及 `dev.shopify.common.address_line_components` 细粒度地址行组件与独立 `address_code`。
+  - `PR-05`（`google-agentic-commerce/AP2#385`、`#384`、`#383`、`#378`、`#377`）：SD-JWT `ParsedToken.cnf_jwk` `model_dump(mode="json", exclude_none=True)` 字符串枚举序列化、`ReceiptClient.verify_receipt` `has_reference_in_store_cb is not None` 判空、ISO 8601 `execution_date` 真实时序比较与 ISO 4217 货币指数 `Decimal` 预算换算。
+  - `PR-06`（`google-agentic-commerce/a2a-x402#191`、`#190`、`#186`）：直接使用 `PaymentRequirements.extra` 中的 EIP-712 `name`/`version` 签名（避免调用 Celo Tether 回滚的 `version()`）、`os.urandom(32)` 随机 32 字节 EIP-3009 Nonce，以及在 `settle_payment()` 完成后才发送 A2A `completed` 状态。
+  - `PR-07`（`coinbase/agentkit#1599`、`#1598`、`#1597`）：`token_verdict` x402 签名前风控门禁（Base `eip155:8453` USDC `<= $0.02` / `20000` 原子单位上限与 6 项链上信号）及 Python `ERC20ActionProvider` 整数收据 `status == 1` 校验。
+  - `PR-08`（`coinbase/agentkit#1596`、`#1593`、`#1591`）：`BotsRated` 零付费只读信誉预检（未显式开启 `paid_check_opt_in` 严禁付费）与 `SelfPaid` 零锁仓（`lockup_days == 0`）Base 主网 USDC Aave V3 / Morpho 收益抵押。
+  - `PR-09..PR-14`（MCP Python/TS/Go/Rust/C# SDK 与 Inspector）：`python-sdk#3759`/`#3758`/`#3757`/`#3756`（`HEAD /sse` `405` + `Allow: GET`、裸 `dict` 未包装对象 `outputSchema`、剥离自动生成 `title`）、`typescript-sdk#3096`/`#3095`/`#3093`/`#3092`/`#3091`（Prompt `icons`、顶层 `$ref` 对象解析、原子 `cacheToolMetadata`、单调重连代际计数器、移除 `abort` 监听器）、`go-sdk#1449`/`#1447`/`#1446`（包装 `ErrConnectionClosed`、`oneOf`/`anyOf` `nil` 枚举项返回 `-32602`、自定义 `slog.Level` 向下映射）、`rust-sdk#1393` & `csharp-sdk#1955`（同源 IPv6 ULA `fc00::/7` OAuth Issuer 与非完成取消令牌 Task）、以及 `inspector#2795`/`#2794`/`#2793`/`#2792`/`#2791`/`#2790`（CLI HTTP `429` `rate_limited`、静态客户端 SEP-2352 `issuer` 戳记持久化与跨 `client_id` DCR 密钥隔离、`--load-connections <n>`、非回环监听告警与 `os.tmpdir()` 隔离）。
+  - `PR-15..PR-16`（`sierra-research/tau2-bench#680`、`#679`、`#677`、`#676`、`#675`、`#674`）：`LLMSoloAgent` 私有 `done` 工具列表浅拷贝隔离、零售 `known_info` 剥离内部主键 `mei_kovacs_8020`、非对象工具参数与空回复归类为 `AGENT_ERROR`（保留在 `2.0` 分母中计 `0` 分）及榜单元数据卫生。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_guards.py`](../../lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_guards.py)
+  - 基准生成器：[`lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py)
+  - 单元测试：[`tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_guards.py`](../../tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_guards.py)、[`tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py)（全仓 **`872/872` 单测通过**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/report.json)

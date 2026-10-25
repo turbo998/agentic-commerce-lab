@@ -2753,6 +2753,39 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
 - **技术资产**：[`lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../lab/ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py)、[`tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py`](../../tests/test_ucp_schema_openapi_mcp_apps_auth_conformance_ruby_php_bench.py) 及双语报告 [`reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/`](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-ucp-schema-openapi-mcp-apps-auth-conformance-ruby-php-bench/index.en.html)）。
 
+---
+
+## 227. Stage 228 架构深潜（`2026-10-25`）：Visa TAP 混合后量子与 RFC 9421、Stripe MCP `2026-10-31` 门禁、ACP 争议解决、UCP CIMD、AP2 SD-JWT/ISO 4217、A2A-x402、Coinbase AgentKit、MCP 多语言 SDK/Inspector 与 Sierra $\tau$-bench 2.0 确定性护栏
+
+### 227.1 支付网络、协议授权与链上微支付结算护栏（`PR-01..PR-08`）
+1. **Visa TAP 商户后端 RFC 9421 §2.5 `@signature-params` 末行重构、`ed25519-ml-dsa-65` 混合后量子双签名共验与 `x402` USDC 结账（`visa/trusted-agent-protocol#21`/`#18`/`#11`，`PR-01`）**：从解析后的覆盖组件列表（逐个加引号 `"@authority" "@path"`）与原始参数顺序重建 `@signature-params` 末行并支持任意标签名；新增 `ed25519-ml-dsa-65`（Ed25519 + NIST FIPS 204 ML-DSA-65）与 `did:web:` / 可选 `did:tenzro:` DID 解析，强制经典与后量子双签名同时通过且在缺失 `liboqs-python` 时以 HTTP `503` Fail-Closed 拒绝；Solana `x402` 广播前预检收款方 USDC ATA 并在 Base 下记录 CDN 头。
+2. **Stripe Agent Toolkit 技能全内存原子拉取、OpenAI Agent Plugin `extensions`、Claude 启动 `STRIPE_CLI_TELEMETRY_OPTOUT=1` 与 Stripe MCP `2026-10-31` 密钥停用门禁（`stripe/agent-toolkit#586`/`#579`/`#569`/`#567`，`PR-02`）**：全内存下载完成后才替换本地技能目录；对齐标准 `extensions` 键并移除推测性 `codex` 目录；仅在 `stripe --version`/`whoami` 启动预检子进程设置 `STRIPE_CLI_TELEMETRY_OPTOUT=1` 并保留 `report_usage`；对 `sk_live_*`/`sk_test_*` 及无 Agent 标签的 `rk_*` 返回 HTTP `401` + OAuth Discovery 质询。
+3. **ACP 争议解决扩展（SEP `#303` / `#316`）、宿主结账确认门禁（`#314`）与 JSON Schema ↔ OpenAPI 漂移检测（`#310`，`PR-03`）**：将 AP2 `checkout_mandate`、`payment_mandate`、`checkout_receipt`、`payment_receipt` 与 ACP `Order` 交叉哈希绑定为带签名的 `Order.adjustment`（`type: "dispute"`）；调用 `complete_checkout_session`/`delegate_payment` 前强制校验绑定 `(session_id, total_minor, currency)` 的用户确认；自动检测 `$defs` 与 `components.schemas` 属性漂移。
+4. **UCP 注册模型中立 Identity Linking（`#985`）、`ucp-schema` 2.0.0 打包整文件 `$ref` 恢复（`#982`）与细粒度地址行组件（`#981`，`PR-04`）**：支持 OAuth CIMD 并在 CIMD 与机密平台上禁用 `client_secret`（强制 RFC 7523 `private_key_jwt` 或公共客户端 PKCE）；剥离非根 `$id` 后将整文件引用重写为 `#/$defs/<Key>`；校验 `dev.shopify.common.address_line_components` 与独立于门牌号的 `address_code`。
+5. **Google AP2 SD-JWT `ParsedToken.cnf_jwk` JSON 模式序列化（`#385`/`#383`）、`verify_receipt` 判空（`#384`）、ISO 8601 时序比较（`#378`）与 ISO 4217 预算换算（`#377`，`PR-05`）**：使用 `model_dump(mode="json", exclude_none=True)` 将 `JWK.use="sig"` 序列化为纯字符串；显式校验 `has_reference_in_store_cb is not None`；将含偏移/小数秒/纯日期的 `execution_date` 解析为 UTC 时间点比较；按 ISO 4217 货币指数（`0/2/3/4`）通过 `Decimal` 精确换算 `payment.budget`。
+6. **Google A2A x402 `PaymentRequirements.extra` EIP-712 域签名（`#191`）、`os.urandom(32)` EIP-3009 Nonce（`#190`）与结算后发送 `completed`（`#186`，`PR-06`）**：直接使用 `PaymentRequirements.extra` 中的 EIP-712 `name`/`version` 签名而不再调用 Celo Tether 上会回滚的 `version()`；使用 `os.urandom(32)` 生成 32 字节随机 EIP-3009 Nonce；在 `settle_payment()` 完成并挂载结算收据后才发送 A2A `completed` 状态。
+7. **Coinbase AgentKit `token_verdict` x402 签名前风控门禁与 Python ERC-20 整数收据状态校验（`agentkit#1599`/`#1598`/`#1597`，`PR-07`）**：强制 Base 主网（`eip155:8453`）单次 x402 微支付 `<= $0.02`（`20000` 原子单位 USDC）硬上限及 6 项链上风险信号，并在 Python `ERC20ActionProvider` 中统一按整数 `receipt["status"] == 1` 判定成功。
+8. **Coinbase AgentKit `BotsRated` 零付费只读信誉预检与 `SelfPaid` 零锁仓收益抵押（`agentkit#1596`/`#1593`/`#1591`，`PR-08`）**：`BotsRated` 在 `paid_check_opt_in=False` 时严禁触发付费查询；`SelfPaid` 仅允许零锁仓（`lockup_days == 0`）Base 主网 USDC Aave V3 / Morpho 收益金库抵扣 x402 费用。
+
+### 227.2 MCP 多语言 SDK、Inspector 与 Sierra $\tau$-bench 2.0 评测分母完整性护栏（`PR-09..PR-16`）
+9. **MCP Python SDK `HEAD /sse` `405` + `Allow: GET`、裸 `dict` 未包装对象 `outputSchema` 与自动生成 `title` 剥离（`python-sdk#3759`/`#3758`/`#3757`/`#3756`，`PR-09`）**：`HEAD /sse` 立即返回 `405` 而不建立流；`-> dict` 与 `-> dict[str, X]` 对齐为未包装对象 Schema；递归剥离自动生成的 `title` 并保留显式 `Field(title=...)`。
+10. **MCP TypeScript SDK Prompt `icons` 保留、顶层 `$ref` 对象解析、原子 `cacheToolMetadata`、重连代际计数器与 `abort` 监听器清理（`typescript-sdk#3096`/`#3095`/`#3093`/`#3092`/`#3091`，`PR-10`）**：保留 Prompt `icons`；解析指向对象型 `$defs` 的顶层 `$ref`；局部构建后原子替换工具缓存；重连代际计数器丢弃跨重连陈旧响应；响应到达后移除 `abort` 监听器。
+11. **MCP Go SDK 通知与中断请求包装 `ErrConnectionClosed`、`oneOf`/`anyOf` `nil` 枚举项返回 `-32602` 与自定义 `slog.Level` 向下映射（`go-sdk#1449`/`#1447`/`#1446`，`PR-11`）**：统一包装 `ErrConnectionClosed` 并保留 `cause`；拒绝标题枚举中的 `nil` 项避免 Panic；将自定义 `slog.Level` 向下映射至最近的标准 MCP 日志级别。
+12. **MCP Rust SDK 同源 IPv6 ULA（`fc00::/7`）OAuth Issuer 放行与 C# SDK 非完成取消令牌 Task（`rust-sdk#1393`/`csharp-sdk#1955`，`PR-12`）**：允许与 MCP 服务端同源的 IPv6 ULA 私有网段 OAuth Issuer，并在 C# SDK 取消测试中使用基于 `CancellationToken` 的非完成 Task。
+13. **MCP Inspector CLI HTTP `429` `rate_limited` 信封、静态客户端 SEP-2352 `issuer` 戳记持久化与跨 `client_id` DCR 密钥隔离（`inspector#2795`/`#2794`/`#2792`，`PR-13`）**：将 HTTP `429` 格式化为含 `retryAfter`/`retryAfterMs` 的 `rate_limited` 错误；在 `preregistered` 槽位持久化 `issuer` 戳记；忽略属于其他 `client_id` 的 DCR 密钥。
+14. **MCP Inspector `--load-connections <n>` 并发会话压测、非回环监听安全告警与 `os.tmpdir()` 测试目录隔离（`inspector#2793`/`#2791`/`#2790`，`PR-14`）**：支持多连接压测（拒绝 `stdio`）、对非回环监听输出安全警告，并将测试目录隔离至 `os.tmpdir()`。
+15. **Sierra $\tau$-bench 2.0 `LLMSoloAgent` 私有 `done` 工具列表浅拷贝隔离与零售 `known_info` 内部 ID 剥离（`tau2-bench#680`/`#677`，`PR-15`）**：浅拷贝 `tools = list(tools)` 防止污染调用方共享列表，并将 `mei_kovacs_8020` 修正为 `Mei Kovacs`。
+16. **Sierra $\tau$-bench 2.0 畸形非对象工具参数与空回复计入 `AGENT_ERROR` 分母及榜单元数据卫生（`tau2-bench#674`/`#679`/`#676`/`#675`，`PR-16`）**：非 JSON 对象工具参数与空回复归类为 `AGENT_ERROR`（保留在 `2.0` 分母中计 `0` 分，严禁归为 `INFRASTRUCTURE_ERROR` 剔除失败样本），并确保 `Ava Zero` 日期补全与 `phonic-1` 下线。
+
+---
+
+## 228. Stage 229 基准评测（`2026-10-25` · 872/872 单测全绿！）：16 场景（`PR-01..PR-16`）中英双语 7-Card 4:5 视觉基准报告
+
+- **评测范围**：覆盖 Stage 228 全部 16 项一手协议与安全护栏（`PR-01..PR-16`）。
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；中位内联延迟 **`0.17 ms`（p95 `0.21 ms`）**。
+- **技术资产**：[`lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../lab/visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py)、[`tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py`](../../tests/test_visa_tap_stripe_acp_ucp_ap2_x402_agentkit_mcp_tau2_bench.py) 及双语报告 [`reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/`](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-visa-tap-stripe-acp-ucp-ap2-x402-agentkit-mcp-tau2-bench/index.en.html)）。
+
+
 
 
 
