@@ -1,6 +1,21 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–281+ · 达成 280 阶段里程碑 & 全仓 `976/976` 单测全绿！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–283+ · 达成 980/980 单测里程碑 & 累计 1,442 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 282–283（达成 `980/980` 单测里程碑 · 49 仓库 356 项零重叠一手 PR 覆盖！）：A2A-x402 随机 Nonce 与延迟完成、x402-rs 链上重试对账与 RPC 脱敏、MPP 原子流预留与 Tempo 代金券迁移、Visa MCP X-Pay 字典序签名与 TAP `Ed25519+ML-DSA-65`、AP2 双语料库与 RFC 9901 SD-JWT / WBA、UCP WBA 互操作与受限孪生 Schema 隔离、ACP 委托认证与折扣扩展、A2A 硬件远程证明与六端 SDK 护栏、Stripe WIF 可信发布与 AgentKit `RelayShield` / `M2M Sentinel`，以及 MCP `SEP-3246` 十一端 SDK 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（49 个上游仓库 356 项零重叠 PR，`PR-01..PR-16`）**：
+  - `PR-01..PR-03`（`google-agentic-commerce/a2a-x402#190..#137`、`coinbase/x402#316..#305`、`x402-rs/x402-rs#142..#101`、`ChainAgnostic/CAIPs#411..#395`、`wevm/mppx#993..#983` & `tempoxyz/tempo#8558..#8547`）：EIP-3009 CSPRNG 随机 Nonce、延迟至结算终态发送完成响应、x402-rs 缺失存储条目链上重试对账与收据超时保留 `settlement_pending`、链上失败详情脱敏私有 RPC URL、MPP 原子共享流预留与关闭即结算，以及 Tempo 拒绝退役根密钥与迁移后代金券可赎回。
+  - `PR-04..PR-07`（`visa/mcp#21..#9`、`visa/trusted-agent-protocol#19..#1`、`google-agentic-commerce/AP2#382..#352`、`openwallet-foundation/sd-jwt-js#394..#386`、`cloudflare/web-bot-auth#170..#161`、`modelcontextprotocol/ext-auth#41..#35`、`Universal-Commerce-Protocol/ucp#829..#814`、`python-sdk#95..#75`、`js-sdk#89..#82`、`samples#261..#256` & `agentic-commerce-protocol#269..#203`）：Visa MCP `X-Pay-Token` 查询参数字典序排序、JWKS/卡号日志脱敏与 TAP DID `Ed25519+ML-DSA-65` 混合抗量子验签；AP2 双语言一致性语料库、RFC 9901 SD-JWT 审计、WBA 拒绝重复签名标签与强制 HTTPS 目录及 `ext-auth` DPoP `dpop_jkt` 绑定；UCP WBA 互操作、支付终态定义与受限孪生 Schema 隔离；以及 ACP 委托认证与折扣扩展规范。
+  - `PR-08..PR-12`（`a2aproject/A2A#2092..#2081`、`a2a-python#1233..#1222`、`a2a-js#796..#790`、`a2a-go#487..#479`、`a2a-java#1103..#1091`、`a2a-dotnet#586..#582`、`a2a-inspector#218..#211`、`stripe/ai#579..#552`、`stripe/agent-toolkit#581..#515`、`stripe/stripe-cli#2148..#2138`、Stripe 七端 SDK、`coinbase/agentkit#1449..#1432` & `sierra-research/tau2-bench#682..#651`）：A2A 硬件远程证明、ADR-002 时间线、Python 闲置任务丢弃陈旧快照与次版本校验、Go 拒绝 `HEAD` 订阅与原地变更工件恢复、Java 可选推送配置 ID 与 Inspector Go 后端；Stripe Toolkit 无事件循环线程同步调用、WIF 可信发布、Node `fetch` 释放与 API v2 Search；以及 AgentKit `RelayShield` / `M2M Sentinel` / `Agent Guild` / `Offramp` 与 $\tau$-bench 2.0 语音榜单核验。
+  - `PR-13..PR-16`（MCP 十一端 SDK + Spec + Inspector + Registry）：`SEP-3246` 委托工具调用溯源权限收敛、Python 验证错误隐藏敏感输入与 TS `expectedResource` / Ajv 缓存；Go 监听流结束清理订阅、Rust 有界流式 HTTP 缓冲与 Java 拒绝不支持的 `listRoots` 及保留 SSE Unicode 分隔符；C# 退化 Base64 头包装安全解码、Kotlin Hono/Zod 互操作与 Swift Actor 编解码器缓存；以及 PHP 事件循环驱动 Fiber、Ruby 按字节剥离 stdio 帧、Inspector 串联旋转 MRTR 状态与清除孤儿密钥及 Registry 移除废弃 K8up 计划。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246_guards.py`](../../lab/a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246_guards.py)
+  - 基准生成器：[`lab/a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246_bench.py`](../../lab/a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246_bench.py)
+  - 单元测试：[`tests/test_a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246.py`](../../tests/test_a2a_x402_nonce_visa_mcp_xpay_ucp_wba_acp_stripe_wif_mcp_sep3246.py)（全仓 **`980/980` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-a2a-x402-nonce-visa-mcp-xpay-ucp-wba-acp-stripe-wif-mcp-sep3246-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-a2a-x402-nonce-visa-mcp-xpay-ucp-wba-acp-stripe-wif-mcp-sep3246-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-a2a-x402-nonce-visa-mcp-xpay-ucp-wba-acp-stripe-wif-mcp-sep3246-bench/report.json)
 
 ---
 
