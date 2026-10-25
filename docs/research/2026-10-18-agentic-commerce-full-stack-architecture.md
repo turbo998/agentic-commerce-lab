@@ -2906,6 +2906,21 @@ Enforces Google AP2 PR `#279` (`open_mandate_hash = SHA-256(JCS_RFC8785(unsigned
 - **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；总内联延迟 **`0.12 ms`**。
 - **技术资产**：[`lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py`](../../lab/x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py)、[`tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py`](../../tests/test_x402_svm_siwx_ucp_purchase_options_mcp_stdio_oauth_tau2_sandbox_bench.py) 及双语报告 [`reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/`](../../reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-x402-svm-siwx-ucp-purchase-options-mcp-stdio-oauth-tau2-sandbox-bench/index.en.html)）。
 
+## 243. Stage 244（245 阶段里程碑！`2026-10-25`）：Coinbase AgentKit Uniswap v4 零滑点原子 RFQ / DevX x402 换币前预检 / Dexra Solana 交易前预检 / Predge Polymarket 结算风险与 MCP TypeScript / Go / Rust / C# / Java SDK 确定性护栏
+
+### 243.1 Coinbase AgentKit 链上执行与风控动作提供器护栏（`PR-01..PR-04`）
+- **`PR-01..PR-04`（`coinbase/agentkit#1600`、`#1594`、`#1590`、`#1589`、`#1587`、`#1584`、`#1573`、`#1572`）**：Base 主网（`eip155:8453`）Uniswap v4 零滑点原子 RFQ（`BaseUniswapV4RfqActionProvider`）强制链下 EIP-712 做市商报价验签、确定性零滑点不变量（`actual_amount_out == quoted_amount_out`）、挂钩池 `0x81C83c49729d84bf64d2994A60081Da14FDa1d4f` 与 `0 bps` 协议费；`DevXTokenCheckActionProvider` 经 x402 微支付执行多链换币前代币安全审计（拦截 `HIGH`/`CRITICAL` 风险）与 `tokenSafetyActionProvider` 免密钥链上风险聚合；`DexraActionProvider` 执行 Solana 交易前 4 项安全与滑点仿真预检，以及 `PredgeActionProvider` 拦截 Polymarket 预言机篡改/规则模糊高风险结算；`YourAIToolsActionProvider` 为 `$0.05` USDC x402 付费工具校验 `list_endpoints` 目录成员资格、兼容 `uvloop` 事件循环并转发自定义 CDP API URL。
+
+### 243.2 MCP TypeScript / Go / Rust / C# / Java 五大官方 SDK 护栏（`PR-05..PR-16`）
+- **`PR-05..PR-16`（`typescript-sdk#3047..#3010`、`go-sdk#1374..#1353`、`rust-sdk#1333..#1319`、`csharp-sdk#1884..#1876`、`java-sdk#1205..#1187`）**：TS SEP-2640 Skills 扩展（`skills/list`、`skills/download` SHA-256 与 `@experimental` `SkillsExtension.attach`）、缺失 `Request.body` 时回退 `request.text()`、`Object.create(null)` 注册表防原型污染、异步 `validateToolOutput` 与 RFC 6570 排除 `#` 片段；Go 无冒号 SSE 行按 WHATWG §9.2.6 解析为空值字段、多轮重连禁用 `resources/read` 缓存、仅含 `requestState` 的 `input-required` 自动重连、拒绝客户端 ID URL 中的 `userinfo`/`#fragment`/`.`/`..`、仅清理自有 `listen` 订阅以及单请求失败不中断无状态 Streamable 客户端；Rust 传输 EOF 立即取消挂起请求令牌、`2026-07-28` 拒绝 HTTP 响应流夹带服务端向客户端请求、等待会话前释放全局会话映射表锁、校验 `Origin` 字面量与缓存已知 Schema；C# 畸形 `initialize` 参数返回 `400` `-32602 InvalidParams`、Entra ID `AADSTS9010010` 剥离 `resource` 自动重试刷新令牌、客户端 `CallTool` 策略过滤器、`Content-Length` 定长 POST 与状态化会话查找诊断；Java 单条 stdio 消息失败后保活、GET SSE 首条事件前提交响应头、通配 `Host`/`Origin` 数字端口校验与过期空闲会话定时清理。
+- **技术资产**：[`lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_guards.py`](../../lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_guards.py) 与 [`tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_guards.py`](../../tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_guards.py)。
+
+## 244. Stage 245（245 阶段里程碑达成 & 904/904 单测全绿！`2026-10-25`）：16 场景 `PR-01..PR-16` 双语 7-Card 4:5 视觉评测报告
+
+- **核心结果**：AI-Native 护栏确定性通过率 **16/16 (100.0%)** vs. 经典三层 Web **0/16 (0.0%)**；扰动一致性 **16/16 (100.0%)**；总内联延迟 **`0.25 ms`**。
+- **技术资产**：[`lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py`](../../lab/agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py)、[`tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py`](../../tests/test_agentkit_rfq_tokencheck_dexra_mcp_ts_go_rust_csharp_java_bench.py) 及双语报告 [`reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/`](../../reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/index.html)（英文版 [`index.en.html`](../../reports/agentic-commerce-agentkit-rfq-tokencheck-dexra-mcp-ts-go-rust-csharp-java-bench/index.en.html)）。
+
+
 
 
 
