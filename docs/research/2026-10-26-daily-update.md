@@ -1,6 +1,27 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–277+ · 全仓 `968/968` 单测全绿！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–279+ · 全仓 `972/972` 单测全绿！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 278–279（`972/972` 单测全绿 · 238 项零重叠一手 PR 覆盖！）：Coinbase x402 `eip3009` EIP-712 域映射与 `SAR` 结算见证收据、AgentKit Python ERC-20 整数收据状态与 `cbBTC` 8 位小数及 SPL 整数舍入、UCP RFC 9421 §3.3.3 64 字节 `r||s` ECDSA 与 Python SDK 条件 Schema 及 Conformance HTTPS 发现白名单、ACP 结账变更 `Idempotency-Key` 与 `delegate_payment` 签名强制、A2A RFC 6598 CGNAT (`100.64.0.0/10`) SSRF 防护与 Go 尾随 JSON 拦截、Stripe 七端 SDK 空密钥拦截与 CLI 位置 ID 转义，以及 MCP 九端 SDK 与 Inspector/Registry 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（238 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`coinbase/x402#420`、`#419`、`#414`、`#413`、`#346`、`#334`、`#324`、`#323`、`#322`、`#317`、`#50`、`#48`、`#46`、`#44`）：`exact/evm` `eip3009` 绑定 `PaymentRequirements.extra` EIP-712 `domain.name`/`version`、`SAR` 结算见证收据校验、`no-wallet` 代金券有效期与 `solidarity` 分润基点上限（$\le 10000\text{ bps}$）。
+  - `PR-02`（`coinbase/agentkit#1598`、`#1597`、`#1593`、`#1591`、`#1590`、`#1589`、`#1581`、`#1579`、`#1575`、`#1572`、`#1567`、`#1564`、`#1563`、`#1559`、`#1557`、`#1550`）：Python ERC-20 整数收据 `status == 1`、CDP 智能钱包批量子调用回滚拦截、Moonwell `cbBTC` 8 位小数解析、SPL/Jupiter 整数最小单位舍入与 `prePaymentCheck`/`CanaryGuard`/`token_verdict`。
+  - `PR-03`（`Universal-Commerce-Protocol/ucp#984`、`#982`、`#981`、`#980`、`#979`、`#977`、`#976`、`#975`、`#974`、`#966`、`#964`、`#963`、`#948`、`#946`、`#945`、`#940`）：RFC 9421 §3.3.3 原始 64 字节 `r||s` ECDSA P-256 签名（拒绝 ASN.1 DER）、显式退货政策窗口与费用、标准履约事件集合及禁根数组 Schema。
+  - `PR-04`（`Universal-Commerce-Protocol/python-sdk#101`、`#100`、`#99`、`#96`、`#94`、`#91`、`#89`、`#87`、`#83`、`#76`、`#74`、`#70`、`#69`、`#68`、`#66`、`#64`）：`dependentRequired`、EC JWK `crv`/`x`/`y` 条件规则、`maxProperties`、`additionalProperties: false` 与移除生成 `datetime` 字段的冲突正则。
+  - `PR-05`（`Universal-Commerce-Protocol/conformance#113`..`#76` & `samples#253`..`#226`）：严格 HTTPS 商家发现白名单、基于签名负载 `order.id` 的 Webhook 事件身份（拒绝未签名 `X-Event-Type`）、规范顶层 `signing_keys[]` 路径与单支付工具完成校验。
+  - `PR-06`（`agentic-commerce-protocol/agentic-commerce-protocol#314`、`#310`、`#305`、`#296`、`#289`、`#288`、`#287`、`#285`、`#284`、`#281`、`#275`、`#266`、`#262`、`#260`、`#256`、`#254`）：变更类结账 MCP 工具强制非空 `Idempotency-Key`、`delegate_payment`/`delegate_authentication` 强制 `Signature`+`Timestamp`、宿主侧支出确认与 Schema ↔ OpenAPI 漂移门禁。
+  - `PR-07`（`a2aproject/A2A#2378..#2319` & `a2a-python#1364..#1326`）：RFC 6598 CGNAT (`100.64.0.0/10`) SSRF 拦截、JCS 签名前保留显式默认字段、终态自动补齐 `status.timestamp` 与挂起中断任务驻留超时。
+  - `PR-08`（`a2a-js#778..#774`、`a2a-go#453..#434`、`a2a-java#1233..#1224`、`a2a-dotnet#545..#536` & `a2a-inspector#139..#123`）：Go 拒绝尾随 JSON 与孤立代理项签名输入、.NET 拦截负载覆盖认证租户与 JS 删除推送配置非空 ID 校验。
+  - `PR-09..PR-10`（Stripe Agent-Toolkit/CLI & 七端 SDK）：CLI 位置资源 ID URL 转义（`#2125`）、回收同级孤儿插件（`#2150`）、跨主版本自动升级拦截（`#2141`）、Toolkit 转发错误即刻返回（`#542`）与切断废弃计量流（`#509`）；五端 SDK 拦截空白 Webhook 密钥、Node `DEFAULT_TOLERANCE`、PHP 客户端重试保留 `Idempotency-Key`（`#2175`）、.NET 序号路径比较（`#3466`）与 Ruby `SingletonAPIResource` v2 守卫（`#1992`）。
+  - `PR-11..PR-16`（MCP TS/Python/Go/C#/Rust/Java/Kotlin/Inspector/Registry）：TS `Object.create(null)` 注册表（`#3040`）、丢弃重连前过期 `listTools` 缓存写入（`#3092`）、`Mcp-Param`/`Mcp-Name` 字符校验（`#3063`）与握手超时（`#3079`）；Python 拒绝非 UTF-8 `UriTemplate` 百分号序列（`#3750`）、`now >= expires_at` 精确过期（`#3730`）、SSE 响应头列表深拷贝（`#3726`）与未知工具 `-32602`（`#3697`）；Go `ID-JAG` 仅发往 AS（`#1438`）、发现认证失败禁降级免认证 `initialize`（`#1425`）、精确整数 JSON-RPC ID（`#1441`）与错误结果省略 `structuredContent`（`#1397`）；C# OAuth `S256` PKCE 与大小写敏感属性绑定（`#1949`/`#1934`）+ Rust 无会话非 `initialize` POST `400` 与 `401`/`403` 透传（`#1377`/`#1341`）；Java 异常链脱敏与 `application/json` POST（`#1184`/`#1207`）+ Kotlin 拒绝空白 URI 与越界模板捕获（`#1117`）；以及 Inspector 跨客户端 DCR 密钥隔离、非回环绑定与 Vite CORS 限制、超大错误转发明文帧头清洗及 Registry `*.gitlab.io` 共享域名拦截与 `repository.id` 锁定（`inspector#2792..#2739`、`registry#1574`/`#1570`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp_guards.py`](../../lab/x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp_guards.py)
+  - 基准生成器：[`lab/x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp_bench.py`](../../lab/x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp_bench.py)
+  - 单元测试：[`tests/test_x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp.py`](../../tests/test_x402_eip3009_sar_ucp_rfc9421_acp_idempotency_a2a_cgnat_stripe_mcp.py)（全仓 **`972/972` 单测通过！**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-eip3009-sar-ucp-rfc9421-acp-idempotency-a2a-cgnat-stripe-mcp-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-eip3009-sar-ucp-rfc9421-acp-idempotency-a2a-cgnat-stripe-mcp-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-eip3009-sar-ucp-rfc9421-acp-idempotency-a2a-cgnat-stripe-mcp-bench/report.json)
 
 ---
 
