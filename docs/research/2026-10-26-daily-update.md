@@ -1,6 +1,28 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–271+）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–273+）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
+
+---
+
+## Stage 272–273（`960/960` 单测全绿！）：x402 离线 `authority` 支出授权令与请求指纹绑定 `payment-identifier` (409) 及 Bazaar 不动点 URL 解码、UCP 购物扩展嵌套目录与 `#fragment` 链接保留、A2A Python/Go/JS/Java/.NET 五端流式与状态恢复防线、Stripe API v2 Search POST 分页重放与 Agent Toolkit 256 通道 402 微钱包、AgentKit `x402receipts` 与 `RsoftBank` 借贷，以及 MCP 六端 SDK 与 Inspector Skills 确定性门禁与 7-Card 基准报告
+
+- **一手协议覆盖（86 项零重叠上游 PR，`PR-01..PR-16`）**：
+  - `PR-01`（`x402-foundation/x402#3220`、`#3218`、`#3192`）：离线可验证 `authority` 支出授权令（委托人身份与金额上限校验）、`payment-identifier` 缓存绑定 HTTP 请求指纹（篡改或并发冲突返回 `409 Conflict`）与 Python SIWX 挑战绑定请求 `Origin`。
+  - `PR-02`（`x402-foundation/x402#3213`、`#3214`、`#3205`）：Bazaar `routeTemplate` 循环不动点 `decodeURIComponent` 解码阻断 `%252e%252e` 穿越、已广播超时交易 `settlement_pending` 自动恢复保留 `txHash`，以及 Hedera `transferExecutor` 授权校验。
+  - `PR-03`（`x402-foundation/x402#3233`、`#3228`、`#3227`、`#3203`、`#3197`）：Python `FacilitatorWeb3Signer` 可配置 `gas_limit`、按 `--families` 派生 EVM/SVM 签名器、Sei 主网/测试网默认原生 USDC，以及 `auth-capture` v1.1 预授权与部分捕获。
+  - `PR-04`（`Universal-Commerce-Protocol/ucp#761`、`#759`、`#726`、`#720`、`#607`、`#465`）：购物扩展归入 `shopping/extensions/`、根规范链接保留 `#fragment`、`build_local.sh` 缺失 `ucp-schema` 快速失败、`llms.txt` 索引分单支付与术语表、`line_item.note`（$\le 500$ 字符）与参考页渲染 `response_catalog_schema`。
+  - `PR-05`（`a2aproject/a2a-python#1365`、`#1362`、`#1360`、`#1358`、`#1357`）：`TaskUpdater` 状态事件校验通过前不锁死终态、v0.3 未设置 `status.update`/`provider` 保持 `None`、AgentCard JCS 签名前保留显式默认字段、每客户端独立 `httpx` 实例与集群表惰性创建。
+  - `PR-06`（`a2aproject/a2a-go#480`、`#479`、`#474`、`#471`、`#468`、`#463`）：REST 端点保留自带查询参数、`ServiceParams` 键统一小写、`Typed.MarshalJSON` 空 Map 防 panic、非 A2A 网关错误按状态码映射、`application/a2a+json` 协商与流式首包前错误直接返回。
+  - `PR-07`（`a2aproject/a2a-js#791`、`#788`、`#787`、`#770` & `a2a-java#1209`、`#1202`）：gRPC 首包事件后发送含动态扩展的响应元数据、SSE 错误事件直接抛出类型化错误、亚毫秒 `statusTimestampAfter` 精度保留、跳过未知流负载，以及 Java REST SSE 正常完成回调与 `close()` 取消在途 Future。
+  - `PR-08`（`a2aproject/a2a-dotnet#554`、`#553`、`#552`、`#548`、`#546`）：`ContinueTaskAsync` 主动续跑、统一上下文感知 `IA2ARequestHandler`、非 `text/event-stream` 流式响应报错、注册表扩展协商与 JSON-RPC 重复键递归拒绝。
+  - `PR-09..PR-11`（Stripe Node/Python/Go/CLI/Agent Toolkit）：API v2 Search POST 原始请求体分页重放（`stripe-node#2884`、`stripe-go#2464`）、`V2SearchResult` CJS 导出（`#2900`）、异步通知验签与 Fetch 未读流释放（`#2896`）、`OPENAPI_VERSION` 锁定 `stripe-mock`（`stripe-python#1927`、`stripe-go#2452`）、Python 仅位置重载路径参数（`#1924`）、CLI 插件 `AdditionalInfo` 版本（`#2133`）与 `install.ps1` 版本固定（`#2127`）及文档遥测状态码区分（`#2123`）、Agent Toolkit 未知配置键告警（`#525`）、空 `choices` `NoContentGeneratedError`（`#500`）、Agent Plugins 1.0（`#487`）、Claude 钩子（`#515`）与 256 通道 402 微钱包（`#506`）。
+  - `PR-12`（`coinbase/agentkit#1523`、`#1501`、`#1489`、`#1488`、`#1482`）：`x402receipts` 可审计支出对账、CDP `sendTransaction`/`sendUserOperation` `idempotencyKey` 透传、只读 `AssetFare` 报价、`RsoftBankActionProvider` Base USDC 借贷与 `solana>=0.36.6,<0.37`。
+  - `PR-13..PR-16`（MCP Go/Rust/Python/TS/C#/Inspector）：Go `Tool.Execution.TaskSupport` 与 `Task` 类型保真（`go-sdk#1336`/`#1335`）、Rust 重复 `SEP-2243` 头拒绝与旧版服务器拒绝 `server/discover` 及传输关闭取消（`rust-sdk#1365`/`#1324`/`#1286`/`#1280`/`#1274`/`#1269`/`#1267`）、Python Skills `%2e%2e` 穿越解码与 RFC 6749/7009 错误码对齐及 `stdio_client` O(N) 分块读取（`python-sdk#3733`/`#3731`/`#3722`/`#3705`/`#3703`）、TS 资源标题实时更新与无状态 405 `Allow: POST` 及按需编译输出校验器 + C# 端点授权与 Native AOT `List<object>`（`typescript-sdk#3006`/`#3005`/`#3002`/`#2998`、`csharp-sdk#1880`/`#1872`/`#1870`），以及 Inspector `skills/get` 实时重读文件、按客户端表面预算提示、`-q` 静默 `--output` 与 `--completion` `EPIPE` 防护（`inspector#2708`/`#2706`/`#2702`/`#2700`/`#2698`/`#2694`）。
+- **新增代码、单测与报告**：
+  - 守卫模块：[`lab/x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills_guards.py`](../../lab/x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills_guards.py)
+  - 基准生成器：[`lab/x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills_bench.py`](../../lab/x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills_bench.py)
+  - 单元测试：[`tests/test_x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills.py`](../../tests/test_x402_authority_ucp_a2a_rest_stripe_v2_search_agentkit_mcp_skills.py)（全仓 **`960/960` 单测通过**）
+  - 7-Card 4:5 视觉基准报告：[`index.html`（中文）](../../reports/agentic-commerce-x402-authority-ucp-a2a-rest-stripe-v2-search-agentkit-mcp-skills-bench/index.html) · [`index.en.html`（EN）](../../reports/agentic-commerce-x402-authority-ucp-a2a-rest-stripe-v2-search-agentkit-mcp-skills-bench/index.en.html) · [`report.json`](../../reports/agentic-commerce-x402-authority-ucp-a2a-rest-stripe-v2-search-agentkit-mcp-skills-bench/report.json)
 
 ---
 

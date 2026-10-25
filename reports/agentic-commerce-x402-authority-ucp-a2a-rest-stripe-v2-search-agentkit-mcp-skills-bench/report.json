@@ -1,0 +1,392 @@
+{
+  "stage": "Stage 272-273",
+  "milestone": "Stage 272-273 · 960/960 Unit Tests",
+  "verified_date": "2026-10-26",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "scenario_count": 16,
+  "upstream_pr_count": 86,
+  "unpatched_interception_count": 16,
+  "unpatched_interception_rate_pct": 100.0,
+  "patched_pass_count": 16,
+  "patched_pass_rate_pct": 100.0,
+  "average_scenario_latency_ms": 0.0178,
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "title_zh": "x402 离线可验证 `authority` 支出授权令、请求指纹绑定 `payment-identifier` (409) 与 SIWX Origin 绑定",
+      "title_en": "x402 Offline-Verifiable `authority` Mandate, Request-Bound `payment-identifier` (409) & SIWX Origin Binding",
+      "upstream_prs": [
+        "x402-foundation/x402#3220",
+        "x402-foundation/x402#3218",
+        "x402-foundation/x402#3192"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "X402_PAYMENT_IDENTIFIER_FINGERPRINT_MISMATCH_409",
+      "patched_code": "X402_AUTHORITY_MANDATE_PAYMENT_ID_AND_SIWX_ORIGIN_VERIFIED",
+      "latency_ms": 0.0106,
+      "details": {
+        "payment_identifier": "pay_id_99",
+        "fingerprint_bound": "POST:/v1/order:sha256_item_A",
+        "siwx_origin": "https://api.merchant.example",
+        "remaining_mandate_budget": 500
+      }
+    },
+    {
+      "scenario_id": "PR-02",
+      "title_zh": "x402 Bazaar `routeTemplate` 不动点 URL 解码防穿越、`settlement_pending` 自动恢复与 Hedera `transferExecutor`",
+      "title_en": "x402 Bazaar `routeTemplate` Fixed-Point Decode, `settlement_pending` Auto-Recovery & Hedera `transferExecutor`",
+      "upstream_prs": [
+        "x402-foundation/x402#3213",
+        "x402-foundation/x402#3214",
+        "x402-foundation/x402#3205"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "X402_BAZAAR_ROUTE_TEMPLATE_TRAVERSAL_OR_SCHEME_INJECTION",
+      "patched_code": "X402_BAZAAR_DECODE_SETTLEMENT_PENDING_AND_HEDERA_VERIFIED",
+      "latency_ms": 0.1306,
+      "details": {
+        "decoded_route_template": "/api/v1/items/:itemId",
+        "settlement_state": "settlement_pending",
+        "retained_tx_hash": "0xabc123",
+        "hedera_transfer_method": "transferExecutor"
+      }
+    },
+    {
+      "scenario_id": "PR-03",
+      "title_zh": "x402 Python Facilitator 可配置 `gas_limit`、按族派生 EVM/SVM 签名器、Sei 默认稳定币与 `auth-capture` v1.1",
+      "title_en": "x402 Python Facilitator Configurable `gas_limit`, Family-Scoped Signers, Sei USDC & `auth-capture` v1.1",
+      "upstream_prs": [
+        "x402-foundation/x402#3233",
+        "x402-foundation/x402#3228",
+        "x402-foundation/x402#3227",
+        "x402-foundation/x402#3203",
+        "x402-foundation/x402#3197"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "X402_FACILITATOR_FIXED_GAS_LIMIT_EXCEEDED",
+      "patched_code": "X402_GAS_LIMIT_FAMILY_SCOPE_SEI_AND_AUTH_CAPTURE_VERIFIED",
+      "latency_ms": 0.0054,
+      "details": {
+        "effective_gas_limit": 600000,
+        "derived_families": [
+          "evm"
+        ],
+        "sei_chain_id": "eip155:1329",
+        "auth_capture_released_hold": 250
+      }
+    },
+    {
+      "scenario_id": "PR-04",
+      "title_zh": "UCP 购物扩展嵌套目录重定向、根规范链接 `#fragment` 保留、`ucp-schema` 缺失快速失败与 `line_item.note`",
+      "title_en": "UCP Nested Shopping Extensions, Root Link `#fragment` Preservation, `ucp-schema` Fail-Fast & `line_item.note`",
+      "upstream_prs": [
+        "Universal-Commerce-Protocol/ucp#761",
+        "Universal-Commerce-Protocol/ucp#759",
+        "Universal-Commerce-Protocol/ucp#726",
+        "Universal-Commerce-Protocol/ucp#720",
+        "Universal-Commerce-Protocol/ucp#607",
+        "Universal-Commerce-Protocol/ucp#465"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "UCP_UNNESTED_SHOPPING_EXTENSION_PATH_REJECTED",
+      "patched_code": "UCP_NESTED_EXT_FRAGMENT_FAILFAST_AND_LINE_NOTE_VERIFIED",
+      "latency_ms": 0.0074,
+      "details": {
+        "extension_doc_path": "docs/specification/shopping/extensions/discount.md",
+        "rewritten_overview_link": "/specification/overview/#capabilities",
+        "note_length": 45,
+        "catalog_envelope_rendered": true
+      }
+    },
+    {
+      "scenario_id": "PR-05",
+      "title_zh": "A2A Python `TaskUpdater` 校验失败恢复、v0.3 未设置字段保持 `None`、Agent Card JCS 签名保真与独立 `httpx`",
+      "title_en": "A2A Python `TaskUpdater` Validation Recovery, v0.3 Unset `None`, AgentCard JCS Signing & Per-Client `httpx`",
+      "upstream_prs": [
+        "a2aproject/a2a-python#1365",
+        "a2aproject/a2a-python#1362",
+        "a2aproject/a2a-python#1360",
+        "a2aproject/a2a-python#1358",
+        "a2aproject/a2a-python#1357"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_PY_TASK_UPDATER_LOCKED_TERMINAL_ON_VALIDATION_ERROR",
+      "patched_code": "A2A_PY_RECOVERY_V03_NONE_SIGNING_AND_HTTPX_ISOLATION_VERIFIED",
+      "latency_ms": 0.0026,
+      "details": {
+        "recoverable_after_validation_error": true,
+        "v03_unset_status_message": null,
+        "per_client_httpx_isolated": true,
+        "cluster_tables_lazy_initialized": true
+      }
+    },
+    {
+      "scenario_id": "PR-06",
+      "title_zh": "A2A Go REST 端点查询参数保留、`ServiceParams` 小写归一、`Typed.MarshalJSON` 空 Map 防护与流式首包前错误",
+      "title_en": "A2A Go REST Endpoint Query Preservation, Lowercase `ServiceParams`, Nil `Typed.MarshalJSON` & Pre-Stream Error",
+      "upstream_prs": [
+        "a2aproject/a2a-go#480",
+        "a2aproject/a2a-go#479",
+        "a2aproject/a2a-go#474",
+        "a2aproject/a2a-go#471",
+        "a2aproject/a2a-go#468",
+        "a2aproject/a2a-go#463"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_GO_REST_ENDPOINT_QUERY_PARAMS_OVERWRITTEN",
+      "patched_code": "A2A_GO_REST_QUERY_PARAMS_TYPED_NIL_AND_STREAM_ERROR_VERIFIED",
+      "latency_ms": 0.066,
+      "details": {
+        "final_url": "https://agent.example.com/a2a?api_key=secret_token&historyLength=5",
+        "normalized_service_keys": [
+          "a2a-version",
+          "authorization"
+        ],
+        "response_content_type": "application/a2a+json",
+        "mapped_gateway_status": 401
+      }
+    },
+    {
+      "scenario_id": "PR-07",
+      "title_zh": "A2A JS gRPC 首包扩展元数据、SSE 类型化错误、亚毫秒 `statusTimestampAfter` 与 Java REST SSE 关闭取消",
+      "title_en": "A2A JS gRPC First-Event Extensions, Typed SSE Errors, Sub-ms `statusTimestampAfter` & Java REST SSE Close",
+      "upstream_prs": [
+        "a2aproject/a2a-js#791",
+        "a2aproject/a2a-js#788",
+        "a2aproject/a2a-js#787",
+        "a2aproject/a2a-js#770",
+        "a2aproject/a2a-java#1209",
+        "a2aproject/a2a-java#1202"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_JS_EARLY_GRPC_METADATA_OR_GENERIC_SSE_ERROR_WRAP",
+      "patched_code": "A2A_JS_GRPC_SUBMS_AND_JAVA_REST_SSE_LIFECYCLE_VERIFIED",
+      "latency_ms": 0.0028,
+      "details": {
+        "sub_millisecond_match": true,
+        "grpc_first_event_extensions_included": true,
+        "java_rest_sse_clean_close": true
+      }
+    },
+    {
+      "scenario_id": "PR-08",
+      "title_zh": "A2A .NET 主动 `ContinueTaskAsync`、JSON-RPC 重复键递归拒绝、非 `text/event-stream` 异常与注册表扩展协商",
+      "title_en": "A2A .NET Proactive `ContinueTaskAsync`, Duplicate JSON Key Rejection, Stream Content-Type & Extension Registry",
+      "upstream_prs": [
+        "a2aproject/a2a-dotnet#554",
+        "a2aproject/a2a-dotnet#553",
+        "a2aproject/a2a-dotnet#552",
+        "a2aproject/a2a-dotnet#548",
+        "a2aproject/a2a-dotnet#546"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "A2A_DOTNET_DUPLICATE_JSONRPC_PROPERTY_ACCEPTED",
+      "patched_code": "A2A_DOTNET_CONTINUATION_INGRESS_AND_EXTENSION_NEGOTIATION_VERIFIED",
+      "latency_ms": 0.0034,
+      "details": {
+        "duplicate_keys_rejected": true,
+        "negotiated_extensions": [
+          "urn:a2a:ext:payments:v1"
+        ],
+        "proactive_continuation": true
+      }
+    },
+    {
+      "scenario_id": "PR-09",
+      "title_zh": "Stripe API v2 Search POST 原始请求体分页重放、`V2SearchResult` 导出、异步通知验签与 Fetch 流释放",
+      "title_en": "Stripe API v2 Search POST Body Pagination Replay, `V2SearchResult` Export, Async Notification & Fetch Dispose",
+      "upstream_prs": [
+        "stripe/stripe-node#2900",
+        "stripe/stripe-node#2896",
+        "stripe/stripe-node#2884",
+        "stripe/stripe-go#2464"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_V2_SEARCH_PAGINATION_METHOD_OR_BODY_LOST",
+      "patched_code": "STRIPE_V2_SEARCH_POST_PAGINATION_AND_FETCH_DISPOSE_VERIFIED",
+      "latency_ms": 0.0029,
+      "details": {
+        "pagination_method": "POST",
+        "replayed_search_body": true,
+        "async_signature_verified": true,
+        "unread_stream_disposed": true
+      }
+    },
+    {
+      "scenario_id": "PR-10",
+      "title_zh": "Stripe SDK `OPENAPI_VERSION` 锁定 `stripe-mock`、Python 仅位置重载路径参数与 CLI 插件 `AdditionalInfo` 版本握手",
+      "title_en": "Stripe SDK `OPENAPI_VERSION` `stripe-mock` Pin, Python Positional-Only Path Args & CLI Plugin Version Handshake",
+      "upstream_prs": [
+        "stripe/stripe-python#1927",
+        "stripe/stripe-python#1924",
+        "stripe/stripe-go#2452",
+        "stripe/stripe-cli#2133",
+        "stripe/stripe-cli#2127",
+        "stripe/stripe-cli#2123"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_MOCK_OPENAPI_VERSION_DRIFT_REJECTED",
+      "patched_code": "STRIPE_OPENAPI_MOCK_PIN_POSITIONAL_AND_CLI_PLUGIN_VERIFIED",
+      "latency_ms": 0.0023,
+      "details": {
+        "pinned_openapi_version": "2026-09-30.acacia",
+        "positional_only_enforced": true,
+        "plugin_additional_info_cli_version": true
+      }
+    },
+    {
+      "scenario_id": "PR-11",
+      "title_zh": "Stripe Agent Toolkit 未知配置键告警、空 `choices` `NoContentGeneratedError`、Agent Plugins 1.0 与 256 通道 402 微钱包",
+      "title_en": "Stripe Agent Toolkit Unknown Config Warning, Empty `choices` Error, Agent Plugins 1.0 & 256-Lane 402 Wallet",
+      "upstream_prs": [
+        "stripe/agent-toolkit#525",
+        "stripe/agent-toolkit#515",
+        "stripe/agent-toolkit#506",
+        "stripe/agent-toolkit#500",
+        "stripe/agent-toolkit#487"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "STRIPE_AGENT_TOOLKIT_SILENT_UNKNOWN_CONFIG_KEYS",
+      "patched_code": "STRIPE_AGENT_TOOLKIT_CONFIG_CHOICES_AND_402_LANES_VERIFIED",
+      "latency_ms": 0.0035,
+      "details": {
+        "warned_unknown_keys": [
+          "actions"
+        ],
+        "empty_choices_error": "NoContentGeneratedError",
+        "micro_wallet_lane": 42
+      }
+    },
+    {
+      "scenario_id": "PR-12",
+      "title_zh": "Coinbase AgentKit `x402receipts` 可审计对账、CDP 交易 `idempotencyKey` 透传、只读 `AssetFare` 与 `RsoftBank` 借贷防护",
+      "title_en": "Coinbase AgentKit `x402receipts` Reconciliation, CDP `idempotencyKey`, Read-Only `AssetFare` & `RsoftBank` Guard",
+      "upstream_prs": [
+        "coinbase/agentkit#1523",
+        "coinbase/agentkit#1501",
+        "coinbase/agentkit#1489",
+        "coinbase/agentkit#1488",
+        "coinbase/agentkit#1482"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "AGENTKIT_X402RECEIPTS_SETTLEMENT_HASH_MISMATCH",
+      "patched_code": "AGENTKIT_X402RECEIPTS_IDEMPOTENCY_ASSETFARE_AND_RSOFT_VERIFIED",
+      "latency_ms": 0.0317,
+      "details": {
+        "reconciled_payment_hash": "0xsettled_hash_01",
+        "cdp_idempotency_key": "8e4f5e45a1cbfcabc2a0a60f868219a9",
+        "assetfare_mode": "read_only",
+        "solana_version": "0.36.6"
+      }
+    },
+    {
+      "scenario_id": "PR-13",
+      "title_zh": "MCP Go SDK `Tool.Execution.TaskSupport` 代理保真与 Rust SDK 重复 `SEP-2243` 头拒绝、旧版 `server/discover` 拦截",
+      "title_en": "MCP Go SDK `Tool.Execution.TaskSupport` Proxy Fidelity & Rust Duplicate `SEP-2243` / Legacy `server/discover` Guard",
+      "upstream_prs": [
+        "modelcontextprotocol/go-sdk#1336",
+        "modelcontextprotocol/go-sdk#1335",
+        "modelcontextprotocol/rust-sdk#1365",
+        "modelcontextprotocol/rust-sdk#1324",
+        "modelcontextprotocol/rust-sdk#1286",
+        "modelcontextprotocol/rust-sdk#1280",
+        "modelcontextprotocol/rust-sdk#1274",
+        "modelcontextprotocol/rust-sdk#1269",
+        "modelcontextprotocol/rust-sdk#1267"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_GO_PROXY_LOST_TOOL_EXECUTION_TASK_SUPPORT",
+      "patched_code": "MCP_GO_TASK_SUPPORT_AND_RUST_SEP2243_DISCOVER_VERIFIED",
+      "latency_ms": 0.0031,
+      "details": {
+        "preserved_task_support": "required",
+        "duplicate_sep2243_rejected": true,
+        "legacy_discover_fallback": "initialize"
+      }
+    },
+    {
+      "scenario_id": "PR-14",
+      "title_zh": "MCP Python SDK Skills 百分号编码路径穿越解码、RFC 6749/7009 错误码对齐与 `stdio_client` O(N) 分块缓冲",
+      "title_en": "MCP Python SDK Skills Percent-Encoded URI Traversal Unquoting, RFC 6749/7009 Error Alignment & O(N) Stdio Reader",
+      "upstream_prs": [
+        "modelcontextprotocol/python-sdk#3733",
+        "modelcontextprotocol/python-sdk#3731",
+        "modelcontextprotocol/python-sdk#3722",
+        "modelcontextprotocol/python-sdk#3705",
+        "modelcontextprotocol/python-sdk#3703"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_PY_SKILLS_PERCENT_ENCODED_DOT_SEGMENT_TRAVERSAL",
+      "patched_code": "MCP_PY_SKILLS_UNQUOTE_OAUTH_RFC_AND_LINEAR_STDIO_VERIFIED",
+      "latency_ms": 0.0059,
+      "details": {
+        "validated_skill_uri": "skill://payments/docs/SKILL.md",
+        "oauth_error_code": "unauthorized_client",
+        "stdio_buffering_complexity": "O(N)"
+      }
+    },
+    {
+      "scenario_id": "PR-15",
+      "title_zh": "MCP TypeScript SDK 资源标题实时同步、无状态 405 `Allow: POST`、按需输出校验编译与 C# Native AOT `List<object>`",
+      "title_en": "MCP TypeScript SDK Live Resource Title, Stateless 405 `Allow: POST`, Lazy Validator & C# Native AOT `List<object>`",
+      "upstream_prs": [
+        "modelcontextprotocol/typescript-sdk#3006",
+        "modelcontextprotocol/typescript-sdk#3005",
+        "modelcontextprotocol/typescript-sdk#3002",
+        "modelcontextprotocol/typescript-sdk#2998",
+        "modelcontextprotocol/csharp-sdk#1880",
+        "modelcontextprotocol/csharp-sdk#1872",
+        "modelcontextprotocol/csharp-sdk#1870"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_TS_STALE_RESOURCE_TITLE_IN_LIST_RESPONSE",
+      "patched_code": "MCP_TS_LIVE_TITLE_405_ALLOW_LAZY_VALIDATOR_AND_CSHARP_AOT_VERIFIED",
+      "latency_ms": 0.0029,
+      "details": {
+        "listed_resource_title": "Finalized Invoice #402",
+        "allow_header": "POST",
+        "compiled_validators": 1,
+        "csharp_native_aot_list_object": true
+      }
+    },
+    {
+      "scenario_id": "PR-16",
+      "title_zh": "MCP Inspector `skills/get` 实时重读文件、按客户端表面定制预算提示、`-q` 静默 `--output` 与 `EPIPE` 退出防护",
+      "title_en": "MCP Inspector Live `skills/get` Re-Read, Per-Client Budget Remedy, `-q` Quiet `--output` & `EPIPE` Exit Guard",
+      "upstream_prs": [
+        "modelcontextprotocol/inspector#2708",
+        "modelcontextprotocol/inspector#2706",
+        "modelcontextprotocol/inspector#2702",
+        "modelcontextprotocol/inspector#2700",
+        "modelcontextprotocol/inspector#2698",
+        "modelcontextprotocol/inspector#2694"
+      ],
+      "unpatched_passed": false,
+      "patched_passed": true,
+      "unpatched_code": "MCP_INSPECTOR_STALE_SKILL_FILE_ON_SKILLS_GET",
+      "patched_code": "MCP_INSPECTOR_SKILL_REREAD_REMEDY_QUIET_AND_EPIPE_VERIFIED",
+      "latency_ms": 0.0036,
+      "details": {
+        "client_surface": "cli",
+        "quiet_stderr_clean": true,
+        "tui_header_height_rows": 2
+      }
+    }
+  ]
+}
