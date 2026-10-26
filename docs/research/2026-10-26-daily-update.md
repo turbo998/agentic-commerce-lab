@@ -896,3 +896,23 @@
   - 基准评测与 7-Card 报告生成：`lab/x402_erc3643_mpp_passkey_ap2_portalocker_ucp_codegen_a2a_cache_stripe_mcp_bench.py`
   - 双语 7-Card 视觉报告：`reports/agentic-commerce-x402-erc3643-mpp-passkey-ap2-portalocker-ucp-codegen-a2a-cache-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
   - 单元测试：`tests/test_x402_erc3643_mpp_passkey_ap2_portalocker_ucp_codegen_a2a_cache_stripe_mcp.py`（全仓 `1,108/1,108` 测试通过）。
+
+
+---
+
+## Stage 348–349 增量研究：330 仓历史里程碑 & 累计 18,054 项零重叠一手 PR（全仓 1,112/1,112 单测全绿）
+
+- **330 仓里程碑与零重叠 PR 批次**：在保持零重叠前提下，扩容 `stripe/stripe-dotnet`（+500 项 PR）并新接入 `Shopify/ruby-lsp`、`Shopify/remote-dom`、`Shopify/hydrogen-redirect-theme`、`Shopify/flash-list`、`Shopify/toxiproxy`、`Shopify/ucp-proxy`、`Shopify/promise-kotlin`、`Shopify/polaris-react-archive`、`Shopify/product-taxonomy`、`Shopify/dashing`、`Shopify/liquid`、`Shopify/draggable`、`Shopify/go-lua`、`Shopify/kubeaudit` 共 14 个官方仓库，跨越 **330 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 330 仓全覆盖，Stages 266–348 累计覆盖 **18,054 项零重叠一手 PR**，突破 **330 仓 & 18,000+ PR 双重里程碑**）。
+- **核心代表性一手 PR 证据**：
+  - `PR-01..PR-02`（x402 / EIP-7979 / ERC-7962 / CAIPs）：`ethereum/EIPs#12578`（EIP-7979 五内核对齐）、`coinbase/x402#227`（x402stats 生态接入）、`ethereum/ERCs#2013`（ERC-7962 隐私安全边界澄清）、`ChainAgnostic/CAIPs#198`。
+  - `PR-03..PR-04`（Tempo MPP / Accounts / Benchmarkoor）：`tempoxyz/accounts#864`（钱包弹窗与回调延迟性能游乐场）、`tempoxyz/docs#1036`（恢复缺失支付任务归档）、`tempoxyz/benchmarkoor-replay#13`。
+  - `PR-05..PR-06`（AP2 / OpenWallet Foundation）：`google-agentic-commerce/AP2#135`（2026 年 1 月规范更新日志）、`openwallet-foundation/acapy-endorser-service#280`、`openwallet-foundation/acapy#4186`。
+  - `PR-07..PR-08`（UCP Proxy / Shopify Remote-DOM / Product Taxonomy）：`Shopify/ucp-proxy`、`Shopify/remote-dom`、`Shopify/product-taxonomy`、`Shopify/go-lua#149`（保留负数操作数 Lua 取模语义）。
+  - `PR-09..PR-10`（A2A LF Package Prefix / Race Detector / Inspector）：`a2aproject/A2A#1474`（规范包名增加 LF 前缀）、`a2aproject/a2a-go#44`（修复队列关闭竞态检测）、`a2aproject/a2a-inspector#26`。
+  - `PR-11..PR-14`（Stripe Toolkit / Billing Extensions & Coinbase MagicSpend / AgentKit）：`stripe/agent-toolkit#322`、`stripe/billing-extensions#1`、`coinbase/MagicSpend#14`（MagicSpend 100% 测试覆盖率）、`coinbase/agentic-wallet-skills#38`。
+  - `PR-15..PR-16`（MCP Lazy-Auth-Server / SEP-2575 Conformance）：`modelcontextprotocol/ext-apps#679`（lazy-auth-server 示例）、`modelcontextprotocol/conformance#410`（SEP-2575 schema-valid `serverInfo` 精确校验）。
+- **交付技术资产与基准验证**：
+  - 确定性守卫：`lab/x402_eip7979_mpp_guide_ap2_endorser_ucp_proxy_a2a_lf_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准生成器：`lab/x402_eip7979_mpp_guide_ap2_endorser_ucp_proxy_a2a_lf_stripe_mcp_bench.py`
+  - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/report.json`
+  - 单元测试：`tests/test_x402_eip7979_mpp_guide_ap2_endorser_ucp_proxy_a2a_lf_stripe_mcp.py`（全仓 **1,112/1,112** 单测 100% 通过）
