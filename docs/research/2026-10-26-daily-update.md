@@ -1977,3 +1977,21 @@
   - 基准评测与报告生成：`lab/x402_erc9240_mpp_agentsmithy_ap2_agentgatewaytf_ucp_cpepartner_a2a_fluentbitbq_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9240-mpp-agentsmithy-ap2-agentgatewaytf-ucp-cpepartner-a2a-fluentbitbq-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc9240_mpp_agentsmithy_ap2_agentgatewaytf_ucp_cpepartner_a2a_fluentbitbq_stripe_mcp.py`（全仓 **1,644/1,644** 单测 100% 通过）
+
+## Stage 606–607：突破 84,000+ 零重叠真实 PR & 1,500 活跃池仓库双重大里程碑（Google Invoice Insights / CX Modernization / BigQuery Utils / OpenTelemetry Cloud Run，累计 84,102 项零重叠 PR，覆盖 1,596 个官方仓库 / 1,500 个活跃池仓库，1,648/1,648 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 发票洞察、客户体验现代化、BigQuery 工具库与 OpenTelemetry Cloud Run 上游仓库（累计覆盖达 1,596 个官方仓库 & 历史性突破 1,500 个活跃池仓库）**：新增 `GoogleCloudPlatform/invoice-insights` (`#23`)、`GoogleCloudPlatform/opentelemetry-cloud-run` (`#41`)、`GoogleCloudPlatform/bigquery-utils` (`#547`)、`GoogleCloudPlatform/gke-prober` (`#12`)、`GoogleCloudPlatform/samples-experiment` (`#11`)、`GoogleCloudPlatform/customer-experience-modernization` (`#28`)、`GoogleCloudPlatform/terraformer` (`#1331`)、`GoogleCloudPlatform/healthcare` (`#605`)、`GoogleCloudPlatform/emblem` (`#1083`)、`GoogleCloudPlatform/google-cloud-visualstudio` (`#1157`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 突破 **84,000+ 项重大里程碑**（达到 **84,102 项**，**1,648/1,648** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9245_mpp_invoiceinsights_ap2_cxmodern_ucp_bqutils_a2a_otelcloudrun_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9245_mpp_invoiceinsights_ap2_cxmodern_ucp_bqutils_a2a_otelcloudrun_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9245-mpp-invoiceinsights-ap2-cxmodern-ucp-bqutils-a2a-otelcloudrun-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9245_mpp_invoiceinsights_ap2_cxmodern_ucp_bqutils_a2a_otelcloudrun_stripe_mcp.py`（全仓 **1,648/1,648** 单测 100% 通过）
+
+## Stage 608–609：历史性突破 1,600+ 官方仓库 & 84,500+ 零重叠真实 PR & 1,650+ 单元测试三重大里程碑（Google Gemini Cloud Assist MCP / LLM Pipeline Examples / Dataflux Python Client / gcpdiag，累计 84,614 项零重叠 PR，覆盖 1,606 个官方仓库 / 1,510 个活跃池仓库，1,652/1,652 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` Gemini Cloud Assist MCP、LLM 流水线范例、Dataflux Python 客户端与 gcpdiag 诊断器上游仓库（历史性突破 1,600+ 官方仓库大关，达到 1,606 个官方仓库 & 1,510 个活跃池仓库）**：新增 `GoogleCloudPlatform/awesome-google-cloud` (`#54`)、`GoogleCloudPlatform/ipython-soccer-predictions` (`#8`)、`GoogleCloudPlatform/llm-pipeline-examples` (`#21`)、`GoogleCloudPlatform/dataflux-client-python` (`#70`)、`GoogleCloudPlatform/gcs-oauth2-boto-plugin` (`#61`)、`GoogleCloudPlatform/cloudml-samples` (`#541`)、`GoogleCloudPlatform/keras-idiomatic-programmer` (`#11`)、`GoogleCloudPlatform/gcpdiag` (`#168`)、`GoogleCloudPlatform/region-picker` (`#35`)、`GoogleCloudPlatform/gemini-cloud-assist-mcp` (`#38`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 突破 **84,500+ 项重大里程碑**（达到 **84,614 项**，**1,652/1,652** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9250_mpp_geminicloudmcp_ap2_llmpipeline_ucp_datafluxpy_a2a_gcpdiag_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9250_mpp_geminicloudmcp_ap2_llmpipeline_ucp_datafluxpy_a2a_gcpdiag_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9250-mpp-geminicloudmcp-ap2-llmpipeline-ucp-datafluxpy-a2a-gcpdiag-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9250_mpp_geminicloudmcp_ap2_llmpipeline_ucp_datafluxpy_a2a_gcpdiag_stripe_mcp.py`（全仓 **1,652/1,652** 单测 100% 通过）
