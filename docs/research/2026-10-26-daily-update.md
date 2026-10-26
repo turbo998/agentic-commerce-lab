@@ -916,3 +916,23 @@
   - 16 场景 7-Card 4:5 基准生成器：`lab/x402_eip7979_mpp_guide_ap2_endorser_ucp_proxy_a2a_lf_stripe_mcp_bench.py`
   - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-eip7979-mpp-guide-ap2-endorser-ucp-proxy-a2a-lf-stripe-mcp-bench/report.json`
   - 单元测试：`tests/test_x402_eip7979_mpp_guide_ap2_endorser_ucp_proxy_a2a_lf_stripe_mcp.py`（全仓 **1,112/1,112** 单测 100% 通过）
+
+
+---
+
+## Stage 350–351 增量研究：350 阶段 & 340 仓双重历史里程碑（累计 18,566 项零重叠一手 PR · 全仓 1,116/1,116 单测全绿）
+
+- **350 阶段 & 340 仓里程碑与零重叠 PR 批次**：在保持零重叠前提下，扩容 `tempoxyz/tempo`（+466 项 PR）、`ethereum/ERCs`（+499 项 PR）并新接入 `Shopify/prettier-plugin-liquid`、`Shopify/rubocop-sorbet`、`Shopify/starter-theme`、`Shopify/identity_cache`、`Shopify/horizon`、`Shopify/ejson`、`Shopify/job-iteration`、`Shopify/krane`、`Shopify/skeleton-theme`、`Shopify/javascript-utilities`、`Shopify/hydrogen`、`Shopify/themekit`、`Shopify/ghostferry`、`Shopify/nixpkgs-ruby`、`Shopify/theme-tools`、`Shopify/rails` 共 16 个官方仓库，跨越 **340 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 340 仓全覆盖，Stages 266–350 累计覆盖 **18,566 项零重叠一手 PR**，突破 **350 阶段 & 340 仓双重历史里程碑**）。
+- **核心代表性一手 PR 证据**：
+  - `PR-01..PR-02`（x402 / ERC-2012 KYA 了解你的智能体框架 / CACAOv3）：`ethereum/ERCs#2012`（Know-Your-Agent KYA 框架 ERC 提案）、`ChainAgnostic/CAIPs#196`（CACAOv3）、`coinbase/x402#226`（链上代币安全服务接入）、`ethereum/EIPs#12576`。
+  - `PR-03..PR-04`（Tempo MPP / 目标代币存款 / Benchmarkoor）：`tempoxyz/accounts#861`（钱包存款支持目标代币）、`tempoxyz/docs#1034`（统一支付提供商任务指南）、`tempoxyz/changelogs#157`。
+  - `PR-05..PR-06`（AP2 标准失败响应类型 / WebVH Witnessing）：`google-agentic-commerce/AP2#131`（新增 AP2 标准失败响应类型）、`openwallet-foundation/acapy-endorser-service#278`（WebVH 见证插件 API 路径与日志条目处理）。
+  - `PR-07..PR-08`（UCP / Shopify Hydrogen / EJSON / IdentityCache）：`Shopify/hydrogen`、`Shopify/ejson#262`、`Shopify/flash-list#2545`、`Shopify/draggable#678`。
+  - `PR-09..PR-10`（A2A `ListTasksRequest.tenant` 字段编号修正 / Go JSON 编解码）：`a2aproject/A2A#1470`（调整 `ListTasksRequest.tenant` 字段编号防止冲突）、`a2aproject/a2a-go#42`（核心类型 JSON 编解码器）、`a2aproject/a2a-dotnet#220`。
+  - `PR-11..PR-14`（Stripe Toolkit / Connect-JS & Coinbase AgentKit x402 Survival Check）：`stripe/agent-toolkit#321`、`stripe/connect-js#302`、`coinbase/agentkit#1255`（Base 链上 x402 预付费收银生存检查示例）、`coinbase/agentic-wallet-skills#36`。
+  - `PR-15..PR-16`（MCP SEP-1865 Conformance Probe / C# SDK SSE 流释放）：`modelcontextprotocol/ext-apps#675`（App 侧桥接与宿主 SEP-1865 一致性探针）、`modelcontextprotocol/csharp-sdk#1519`（GET 结束时释放 SSE 响应流引用）。
+- **交付技术资产与基准验证**：
+  - 确定性守卫：`lab/x402_kya_mpp_dest_ap2_failures_ucp_hydrogen_a2a_tenant_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准生成器：`lab/x402_kya_mpp_dest_ap2_failures_ucp_hydrogen_a2a_tenant_stripe_mcp_bench.py`
+  - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/report.json`
+  - 单元测试：`tests/test_x402_kya_mpp_dest_ap2_failures_ucp_hydrogen_a2a_tenant_stripe_mcp.py`（全仓 **1,116/1,116** 单测 100% 通过）
