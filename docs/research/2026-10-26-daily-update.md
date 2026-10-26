@@ -976,3 +976,23 @@
   - 16 场景 7-Card 4:5 基准生成器：`lab/x402_erc8286_mpp_dex_ap2_webvh_ucp_intents_a2a_mtls_stripe_mcp_bench.py`
   - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-erc8286-mpp-dex-ap2-webvh-ucp-intents-a2a-mtls-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-erc8286-mpp-dex-ap2-webvh-ucp-intents-a2a-mtls-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-erc8286-mpp-dex-ap2-webvh-ucp-intents-a2a-mtls-stripe-mcp-bench/report.json`
   - 单元测试：`tests/test_x402_erc8286_mpp_dex_ap2_webvh_ucp_intents_a2a_mtls_stripe_mcp.py`（全仓 **1,124/1,124** 单测 100% 通过）
+
+
+---
+
+## Stage 356–357 增量研究：370 仓 & 20,000+ 零重叠 PR 历史性双重里程碑（累计 20,102 项零重叠一手 PR · 全仓 1,142/1,142 单测全绿）
+
+- **370 仓 & 20,000+ PR 历史性双重里程碑**：在保持零重叠前提下，新接入 `Shopify/worldwide`、`Shopify/shopify-api-ruby`、`Shopify/roundhouse`、`Shopify/maintenance_tasks`、`Shopify/shopify-app-js`、`Shopify/lighthouse-ci-action`、`Shopify/Timber`、`Shopify/hydrogen-v1`、`Shopify/github-workflows`、`Shopify/spoom`、`Shopify/active_utils`、`Shopify/string_view`、`Shopify/grpc`、`Shopify/ucp-cli`、`Shopify/ruby`、`Shopify/pitchfork`、`Shopify/mruby-engine` 共 17 个官方仓库，跨越 **370 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 370 仓全覆盖，Stages 266–356 累计覆盖 **20,102 项零重叠一手 PR**，正式突破 **370 仓 & 20,000+ 零重叠一手 PR 历史性双重里程碑**！）。
+- **核心代表性一手 PR 证据**：
+  - `PR-01..PR-02`（x402 / CAIP-25 会话属性必选可选拆分 / ERC-2006 / EIP-7723）：`ChainAgnostic/CAIPs#187`（CAIP-25 必选/可选与会话属性拆分草案）、`ethereum/ERCs#2006`（NFT 异步寄存器投影）、`ethereum/EIPs#12570`（EIP-7723 允许 ACDT SFI 决策）、`coinbase/x402#223`。
+  - `PR-03..PR-04`（Tempo MPP / Wata 0.4.2 / Dwellir RPC 节点提供商）：`tempoxyz/accounts#855`（升级 `wata` 至 0.4.2）、`tempoxyz/docs#1028`（新增 Dwellir RPC 节点提供商）、`tempoxyz/benchmarkoor-replay#8`。
+  - `PR-05..PR-06`（AP2 Pay by Bank 银行直连支付 / ACA-Py Endorser 重处理挂起交易）：`google-agentic-commerce/AP2#122`（Pay by bank 银行直连支付流程）、`openwallet-foundation/acapy-endorser-service#271`（重处理挂起交易并支持单文件上传）。
+  - `PR-07..PR-08`（UCP CLI / Shopify ActiveUtils eMudhra CA 根证书修复 / Shopify-App-JS）：`Shopify/ucp-cli`（UCP 命令行工具接入）、`Shopify/active_utils#169`（更新内置 CA 证书包修复 eMudhra 信任问题）、`Shopify/Shopify-AI-Toolkit#65`。
+  - `PR-09..PR-10`（A2A 流式示例修复 / Go 任务执行器与结果聚合 / Inspector 服务端保留上下文）：`a2aproject/A2A#1458`（修复流式规范示例）、`a2aproject/a2a-go#36`（任务执行器与结果聚合）、`a2aproject/a2a-inspector#16`（允许服务端保留会话上下文）。
+  - `PR-11..PR-14`（Stripe Terminal `capture_method` 参数 & Coinbase MagicSpend `postOp()` 重入回滚防护）：`stripe/example-terminal-backend#40`（`/capture_payment_intent` 支持可选 `capture_method`）、`coinbase/MagicSpend#10`（重构 `postOp()` 强制转账并在二次调用时回滚）、`coinbase/agentic-wallet-skills#32`（新增 `defi-dapp-search` 技能）。
+  - `PR-15..PR-16`（MCP DPoP 客户端一致性验证 / C# SDK 无状态 HTTP `listChanged` 修复）：`modelcontextprotocol/conformance#400`（客户端 DPoP 评审后续修复）、`modelcontextprotocol/csharp-sdk#1509`（修复无状态 HTTP 传输错误广播 `listChanged` 能力）。
+- **交付技术资产与基准验证**：
+  - 确定性守卫：`lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准生成器：`lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_bench.py`
+  - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/report.json`
+  - 单元测试：`tests/test_x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp.py`（全仓 **1,142/1,142** 单测 100% 通过）
