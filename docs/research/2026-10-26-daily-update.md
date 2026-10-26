@@ -705,3 +705,19 @@
   - 中英双语 7-Card 4:5 视觉报告：`reports/agentic-commerce-x402-eltociear-mpp-stream-ap2-erc7730-ucp-rest-sig-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试套件：`tests/test_x402_eltociear_mpp_stream_ap2_erc7730_ucp_rest_sig_a2a_stripe_mcp.py`（全仓 **`Ran 1068 tests in 14.751s - OK`**）
 
+---
+
+## Stage 328–329 增量更新（突破 230 个官方上游仓库历史里程碑 · 累计 12,934 项零重叠 PR · 全仓 1,072/1,072 单测全绿）
+
+- **验证时间**：2026-10-26（北京时间）
+- **新增覆盖范围**：新增纳入 13 个 Coinbase 官方链上智能体、Payments-MCP、Paymaster Bundler 与 SDK 仓库（`coinbase/coinbase-sdk-ai-agent-sample`、`coinbase/onchain-agent-demo`、`coinbase/onchain-app-template`、`coinbase/cbpay-js`、`coinbase/core-go`、`coinbase/prime-sdk-ts`、`coinbase/mongobetween`、`coinbase/prime_sdk_rs`、`coinbase/paymaster-bundler-examples`、`coinbase/payments-mcp`、`coinbase/coinbase-sdk-nodejs`、`coinbase/cdpcurl`、`coinbase/wallet-mobile-sdk`）并扩容 `modelcontextprotocol/typescript-sdk` 与 `modelcontextprotocol/registry` 历史页，将活跃无重叠上游仓库池扩展至 **230 个官方仓库**，单阶段精选 **512 项全新零重叠上游 PR**，全仓累计覆盖达 **12,934 项零重叠一手 PR**。
+- **核心协议与安全发现**：
+  1. **x402 Countersign 生态、MPP 首笔预付通道预热与 mppx 组合凭证隔离（PR-01..PR-02）**：基于 `coinbase/x402#243`、`tempoxyz/mpp-rs#597`、`tempoxyz/mpp-go#198`、`wevm/mppx#954`、`wevm/viem#5247` 与 `wevm/wagmi#5227`，强制限制服务端组合凭证（Composed Credentials）越权、预热首笔预付流式通道、上报验证器异常并清理并发监听器。
+  2. **AP2 Pydantic 序列化、ERC-7573 TokenLocked 事件与 UCP 一致性测试 / CAIP-211 重构（PR-03..PR-05）**：结合 `google-agentic-commerce/AP2#159`、`ethereum/ERCs#2029`、`Universal-Commerce-Protocol/conformance#2`、`ChainAgnostic/CAIPs#237` 与 `stripe/sync-engine#307`，阻断未序列化的 Pydantic 负载、强制 ERC-7573 跨链原子锁定事件验证，并守护 **Stripe MCP 2026-10-31 旧版密钥停用红线**。
+  3. **A2A JSON-RPC ID 失配异常、Coinbase Payments-MCP / Paymaster Bundler 与 MCP 十语言 SDK 硬化（PR-06..PR-16）**：涵盖 `a2aproject/a2a-inspector#59`、`a2aproject/a2a-js#318`、`stripe/agent-toolkit#339`、`stripe/stripe-cli#1962`、`coinbase/cdp-sdk#633`、`modelcontextprotocol/modelcontextprotocol#3287`、`modelcontextprotocol/inspector#2535`、`modelcontextprotocol/python-sdk#3182`、`modelcontextprotocol/rust-sdk#1050` 与 `modelcontextprotocol/ruby-sdk#395`，拦截 JSON-RPC 响应 ID 失配、OAuth 孤儿会话与 RFC 8414 Well-Known 后缀篡改。
+- **新增技术资产**：
+  - 确定性离线守卫模块：`lab/x402_countersign_mpp_prepaid_ap2_pydantic_ucp_conformance_a2a_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准测试器：`lab/x402_countersign_mpp_prepaid_ap2_pydantic_ucp_conformance_a2a_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 视觉报告：`reports/agentic-commerce-x402-countersign-mpp-prepaid-ap2-pydantic-ucp-conformance-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试套件：`tests/test_x402_countersign_mpp_prepaid_ap2_pydantic_ucp_conformance_a2a_stripe_mcp.py`（全仓 **`Ran 1072 tests in 11.817s - OK`**）
+
