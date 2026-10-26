@@ -845,3 +845,18 @@
   - Benchmark & 7-card generator: `lab/x402_eip8141_mpp_bench_ap2_uvlock_ucp_freeze_a2a_task_stripe_mcp_bench.py`
   - Bilingual 7-Card visual reports: `reports/agentic-commerce-x402-eip8141-mpp-bench-ap2-uvlock-ucp-freeze-a2a-task-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
   - Unit tests: `tests/test_x402_eip8141_mpp_bench_ap2_uvlock_ucp_freeze_a2a_task_stripe_mcp.py` (`1,096/1,096` unit tests passing across the repository).
+
+
+### Stages 342–343: 300-Repository & 1,100-Test Historic Milestones (`1,100/1,100` Unit Tests Passing, 512 Zero-Overlap PRs Across 300 Repos, `16,518` Cumulative PRs)
+
+- **300 Official Upstream Repositories Milestone**: Refilled `stripe/stripe-php` (+400 PRs) and `modelcontextprotocol/servers` (+400 PRs), and onboarded 18 official repositories (`ethereum/trinity`, `ethereum/py-evm`, `ethereum/eth-hash`, `ethereum/eth-rlp`, `ethereum/eth-tester`, `ethereum/hexbytes`, `ethereum/pyrlp`, `ethereum/lahja`, `ethereum/ddht`, `ethereum/blake2b-py`, `ethereum/beacon-APIs`, `ethereum/consensus-spec-tests`, `ethereum/tests`, `ethereum/retesteth`, `ethereum/aleth`, `ethereum/yellowpaper`, `ethereum/eipw`, `ethereum/stateless-ethereum-specs`), reaching **300 active official upstream repositories** and **512 zero-overlap first-party PRs** (`16,518` cumulative unique PRs, `1,100/1,100` unit tests passing).
+- **Key Upstream Evidence & Guard Invariants**:
+  - `PR-01..PR-02`: `ChainAgnostic/CAIPs#217` (decoupling `CAIP-27` from `CAIP-25` authorization scopes), `ethereum/EIPs#12585` (EIP-8425 recovery scope & account access rules), `coinbase/x402#230` (ForgeMesh x402 Ads), and `ethereum/ERCs#2016` (ERC-8048 `metadata_contract` plain EVM address).
+  - `PR-03..PR-06`: `tempoxyz/accounts#871` (Cyclops warden audit gate), `tempoxyz/benchmarkoor-replay#19` (action cooldown buffer), `google-agentic-commerce/AP2#142` (`AGENT.md`), and `openwallet-foundation/acapy#4194` (default `write_ledger` fallback).
+  - `PR-07..PR-10`: `Universal-Commerce-Protocol/ucp#661` (non-empty `applies_to` policy enforcement), `a2aproject/a2a-go#51` (client interceptor invocations), and `a2aproject/a2a-inspector#35`.
+  - `PR-11..PR-16`: `stripe/agent-toolkit#325`, `coinbase/MagicSpend#17` (concurrent withdraw revert guard), `coinbase/agentkit#1260` (`langchain-mainstreet-trust-gate` reputation threshold payment refusal), `coinbase/agentic-wallet-skills#41` (`secure-payments` hardening reference), `modelcontextprotocol/example-remote-server#2` (Streamable HTTP with Redis session management), `modelcontextprotocol/conformance#417` (Tier-1 `KNOWN_SDKS` expansion), and `modelcontextprotocol/csharp-sdk#1531` (stateless mode `IdleTrackingBackgroundService` bypass).
+- **Delivered Technical Assets**:
+  - Deterministic guards: `lab/x402_caip217_mpp_warden_ap2_ledger_ucp_appliesto_a2a_interceptor_stripe_mcp_guards.py`
+  - Benchmark & 7-card generator: `lab/x402_caip217_mpp_warden_ap2_ledger_ucp_appliesto_a2a_interceptor_stripe_mcp_bench.py`
+  - Bilingual 7-Card visual reports: `reports/agentic-commerce-x402-caip217-mpp-warden-ap2-ledger-ucp-appliesto-a2a-interceptor-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
+  - Unit tests: `tests/test_x402_caip217_mpp_warden_ap2_ledger_ucp_appliesto_a2a_interceptor_stripe_mcp.py` (`1,100/1,100` unit tests passing across the repository).
