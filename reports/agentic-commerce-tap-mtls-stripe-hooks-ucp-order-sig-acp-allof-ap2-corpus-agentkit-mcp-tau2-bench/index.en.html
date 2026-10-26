@@ -237,7 +237,7 @@
         </div>
         <div class="panel">
           <b>Latency & Top Decisions</b>
-          <p><span class="pill pill-badge">Total: 0.54 ms</span> <span class="pill pill-act">0 Tokens</span></p>
+          <p><span class="pill pill-badge">Total: 0.87 ms</span> <span class="pill pill-act">0 Tokens</span></p>
           <p>• PR-01 Visa TAP mTLS: <b>Block</b></p>
           <p>• PR-04 UCP Order MCP Sig: <b>Block</b></p>
           <p>• PR-08 AP2 <code>~~</code> Chain &amp; Hash: <b>Block</b></p>
@@ -406,13 +406,13 @@ assert bipartite_one_to_one and distinct_predicted_matches >= repeated_gold_acti
         <span>BATCHING &amp; SCALING LATENCY (1X / 4X / 16X)</span>
       </div>
       <h2>
-        Scaling Latency: 16-Guard Suite Completes in 0.04 ms Median (>20x Faster Than Baseline)
+        Scaling Latency: 16-Guard Suite Completes in 0.08 ms Median (>20x Faster Than Baseline)
       </h2>
       <p class="muted">
         Paired horizontal bars comparing Primary In-Process Guards (#3B82F6) vs. Baseline External Check Path (#CBD5E1) across 1x/4x/16x load tiers (median of 5 runs).
       </p>
       <div>
-        <div class='bar-group'><div class='bar-label'><b>1x (16 guards)</b> <span>AI-Native: <b>0.04 ms</b> vs Classic: <b>4.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:8.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>4x (64 guards)</b> <span>AI-Native: <b>0.14 ms</b> vs Classic: <b>17.60 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:25.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>16x (256 guards)</b> <span>AI-Native: <b>0.80 ms</b> vs Classic: <b>70.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:100.0%'></div></div></div>
+        <div class='bar-group'><div class='bar-label'><b>1x (16 guards)</b> <span>AI-Native: <b>0.08 ms</b> vs Classic: <b>4.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:8.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>4x (64 guards)</b> <span>AI-Native: <b>0.33 ms</b> vs Classic: <b>17.60 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:25.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>16x (256 guards)</b> <span>AI-Native: <b>0.73 ms</b> vs Classic: <b>70.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:100.0%'></div></div></div>
       </div>
       <div class="quote-box">
         <b>Latency Note:</b> All 16 guards execute in-memory via O(1) hash, set, and schema-tree checks with zero network round-trips.
