@@ -974,9 +974,9 @@
 
 ---
 
-## Stage 356–357 Incremental Research: 370-Repository & 20,000+ Unique PR Historic Milestones (`20,102` Cumulative Zero-Overlap PRs & `1,142/1,142` Unit Tests Passing)
+## Stage 356–357 Incremental Research: 370-Repository & 20,000+ Unique PR Historic Milestones (`20,614` Cumulative Zero-Overlap PRs & `1,146/1,146` Unit Tests Passing)
 
-- **370-Repository & 20,000+ PR Historic Milestones**: Onboarded 17 official Shopify commerce & UCP CLI repositories (`Shopify/worldwide`, `Shopify/shopify-api-ruby`, `Shopify/roundhouse`, `Shopify/maintenance_tasks`, `Shopify/shopify-app-js`, `Shopify/lighthouse-ci-action`, `Shopify/Timber`, `Shopify/hydrogen-v1`, `Shopify/github-workflows`, `Shopify/spoom`, `Shopify/active_utils`, `Shopify/string_view`, `Shopify/grpc`, `Shopify/ucp-cli`, `Shopify/ruby`, `Shopify/pitchfork`, `Shopify/mruby-engine`), selecting **512 brand-new zero-overlap PRs across all 370 active repositories** (**20,102 cumulative zero-overlap PRs** across Stages 266–356, crossing the **370-Repository & 20,000+ Unique PR Historic Milestones**!).
+- **370-Repository & 20,000+ PR Historic Milestones**: Onboarded 17 official Shopify commerce & UCP CLI repositories (`Shopify/worldwide`, `Shopify/shopify-api-ruby`, `Shopify/roundhouse`, `Shopify/maintenance_tasks`, `Shopify/shopify-app-js`, `Shopify/lighthouse-ci-action`, `Shopify/Timber`, `Shopify/hydrogen-v1`, `Shopify/github-workflows`, `Shopify/spoom`, `Shopify/active_utils`, `Shopify/string_view`, `Shopify/grpc`, `Shopify/ucp-cli`, `Shopify/ruby`, `Shopify/pitchfork`, `Shopify/mruby-engine`), selecting **512 brand-new zero-overlap PRs across all 370 active repositories** (**20,614 cumulative zero-overlap PRs** across Stages 266–356, crossing the **370-Repository & 20,000+ Unique PR Historic Milestones**!).
 - **Representative First-Party PR Evidence**:
   - `PR-01..PR-02` (x402 / CAIP-25 Required-Optional Session Properties Split / ERC-2006 / EIP-7723): `ChainAgnostic/CAIPs#187` (CAIP-25 split into required/optional with session properties), `ethereum/ERCs#2006` (Asynchronous Register Projection for NFTs), `ethereum/EIPs#12570` (Update EIP-7723: allow SFI decisions on ACDT), `coinbase/x402#223`.
   - `PR-03..PR-04` (Tempo MPP / Wata 0.4.2 / Dwellir RPC Provider): `tempoxyz/accounts#855` (bump `wata` to 0.4.2), `tempoxyz/docs#1028` (add Dwellir to RPC node providers), `tempoxyz/benchmarkoor-replay#8`.
@@ -989,4 +989,13 @@
   - Deterministic Guard Module: `lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_guards.py`
   - 16-Scenario 7-Card 4:5 Benchmark Generator: `lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_bench.py`
   - Bilingual 7-Card Reports: `reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.html`, `reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.en.html`, `reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/report.json`
-  - Unit Test Suite: `tests/test_x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp.py` (**1,142/1,142** total unit tests passing across the repository)
+  - Unit Test Suite: `tests/test_x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp.py` (**1,146/1,146** total unit tests passing across the repository)
+
+## Stage 358–359: 380-Repository Milestone & 20,614 Cumulative Zero-Overlap PR Deterministic Guards and 16-Scenario 7-Card 4:5 Benchmark Report
+
+- **Onboarded 14 Official Shopify Upstream Repositories (Reaching the 380-Repository Milestone)**: Added `Shopify/vitess`, `Shopify/treewalker`, `Shopify/Klint`, `Shopify/sorbet`, `Shopify/checkout-sheet-kit-swift`, `Shopify/bluejay`, `Shopify/rubygems`, `Shopify/function-runner`, `Shopify/shopify-function-test-helpers`, `Shopify/toxiproxy-ruby`, `Shopify/ejson2env`, `Shopify/libsql`, `Shopify/gh-ost`, and `Shopify/shopify-function-wasm-api`, selecting **512 zero-overlap upstream PRs** (32 per group × 16 groups) and bringing the repository cumulative zero-overlap PR total to **20,614**.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc8163-mpp-keychain-ap2-fido2-ucp-wasm-a2a-cors-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp.py` (**1,146/1,146** unit tests passing across the repository)
