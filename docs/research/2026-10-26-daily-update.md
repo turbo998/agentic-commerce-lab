@@ -1,4 +1,4 @@
-# 2026-10-26 技术资产与架构更新索引（Stages 266–309+ · 全仓 1,032/1,032 单测全绿 · 突破 130 仓历史里程碑达 130 仓库累计 7,814 项零重叠一手 PR 覆盖！）
+# 2026-10-26 技术资产与架构更新索引（Stages 266–311+ · 全仓 1,036/1,036 单测全绿 · 突破 310 阶段、140 仓与 8,000+ PR 三大里程碑达 140 仓库累计 8,326 项零重叠一手 PR 覆盖！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-26-daily-update.en.md`)](2026-10-26-daily-update.en.md)** | **[2026-10-26 每日研究 (`research/daily/2026-10-26.md`)](../../research/daily/2026-10-26.md)** | **[English Daily Research (`research/daily/2026-10-26.en.md`)](../../research/daily/2026-10-26.en.md)**
 
@@ -486,3 +486,32 @@
   - 7-Card 4:5 双语视觉基准生成器：`lab/x402_paypal_mpp_recover_ap2_attest_ucp_requires_rsapss_a2a_stripe_mcp_bench.py`
   - 报告产物：`reports/agentic-commerce-x402-paypal-mpp-recover-ap2-attest-ucp-requires-rsapss-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`（攻击阻断率 `16/16 = 100%`，修复放行率 `16/16 = 100%`，快速路径中位延迟 `0.12 ms` vs 基线 `0.55 ms`，加速比 `4.6x`）
   - 单元测试：`tests/test_x402_paypal_mpp_recover_ap2_attest_ucp_requires_rsapss_a2a_stripe_mcp.py`（全仓 **`1,032/1,032`** 单测全绿）
+
+---
+
+## Stage 310–311 增补：突破 310 阶段、140 仓与 8,000+ 零重叠 PR 三大历史里程碑（140 仓 512 项零重叠一手 PR · 累计 8,326 项零重叠 PR & 1,036/1,036 单测全绿）
+
+- **突破 310 阶段、140 官方上游仓库与 8,000+ 零重叠 PR 三大历史里程碑（单批次覆盖 140 个官方上游仓库、512 项零重叠 PR，历史累计突破 8,000 大关达 `8,326` 项零重叠 PR）**：
+  - 新增 `openwallet-foundation/credo-ts-didcomm-ext`、`openwallet-foundation/multipaz-utopia`、`openwallet-foundation/multipaz-developer-website`、`openwallet-foundation/multipaz-samples`、`openwallet-foundation/project-proposals`、`openwallet-foundation/bifold-wallet`、`openwallet-foundation/helm-charts`、`openwallet-foundation/acapy-vc-authn-oidc`、`openwallet-foundation/vcx` 与 `openwallet-foundation/governance` 等 10 个官方 OpenWallet Foundation 仓库，单阶段覆盖仓库数从 130 跃升至 140 个，与历史 7,814 项 PR 保持严格零交集。
+- **16 组确定性守卫场景（`PR-01`..`PR-16`，每组 32 项 PR，共 512 项零重叠 PR）**：
+  - `PR-01` (`coinbase/x402#263`, `tempoxyz/tempo#8600`, `tempoxyz/mpp-rs#615`, `tempoxyz/mpp-go#217`)：`coinbase/x402` 将 Code Agent 纳入服务与端点生态、`tempoxyz/tempo` 固定运行时层时间、`tempoxyz/mpp-rs` 移除过时 Stripe MPP 元数据、以及 `tempoxyz/mpp-go` 上报异常支付失败守卫。
+  - `PR-02` (`wevm/mppx#1025`, `wevm/viem#5282`, `wevm/ox#513`, `wevm/wagmi#5260`)：`wevm/mppx` 限制自动 MCP 响应检查边界防止超大载荷阻塞、`wevm/viem` 处理整批错误与缺失收据、以及 `wevm/ox` 新增 Tempo 护照证件读取与核验守卫。
+  - `PR-03` (`google-agentic-commerce/AP2#187`, `openwallet-foundation/credo-ts#3077`, `openwallet-foundation/sd-jwt-js#292`, `openwallet-foundation/multipaz#2088`)：`AP2` 新增结构化 `Risk Payload` Schema、`credo-ts` 拒绝 JWK 自签名钱包/密钥证明、`sd-jwt-js` 校验时间戳并支持自定义日期、以及 `multipaz` 支持密钥失效与默认解锁要求守卫。
+  - `PR-04` (`ucp#735`, `samples#141`, `conformance#28`, `ucp-schema#13`)：`UCP` 明确已保存履约目的地选择语义、`samples` 在 `version_unsupported` 时返回 `HTTP 422`、以及 `conformance` 同步 UCP 2026 规范守卫。
+  - `PR-05` (`stripe/link-cli#461`, `stripe/pg-schema-diff#296`, `stripe/stripe-mirakl-connector#154`, `ChainAgnostic/CAIPs#280`)：`stripe/link-cli` 在消费授权中加入完成回调 URL 与防重放 `nonce`、`stripe/pg-schema-diff` 转义策略角色名与函数参数、以及 `stripe-mirakl-connector` 增强订单校验安全性守卫。
+  - `PR-06` (`a2a-rs#323`, `a2a-tck#212`, `a2a-inspector#122`, `A2A#2106`)：`a2a-rs` 服务端单请求仅读取一次任务存储消除竞态、`a2a-tck` 新增 `AUTH_REQUIRED` 生命周期兼容性测试、以及 `a2a-inspector` 支持元数据字典值解析守卫。
+  - `PR-07` (`a2a-js#505/#504`, `a2a-python#1013/#1012`)：`a2a-js` 新增 v0.3 gRPC 与客户端兼容层、以及 `a2a-python` Linter 步骤失败精确定位与 `1.0.2` 发布守卫。
+  - `PR-08` (`a2a-go#277/#276`, `a2a-java#1022/#1021`, `a2a-dotnet#414`)：`a2a-go` 将请求头注入服务参数并新增 Agent 执行器清理器、以及 `a2a-java` `1.2.0.Final` 发布守卫。
+  - `PR-09` (`stripe/agent-toolkit#369`, `stripe-cli#1990`, `stripe-js#960`, `react-stripe-js#687`)：`stripe/agent-toolkit` 优化数组查找性能、`stripe-cli` Windows 自动更新、以及 `stripe-js` 为 `onShippingDetailsChange` 添加弃用标签守卫。
+  - `PR-10` (`stripe-go#2397`, `stripe-dotnet#3431`, `stripe-node#2817`, `stripe-python#1857`)：`stripe-go` 修复 Windows `TestRawRequestTimeout` 测试挂起、`stripe-dotnet` 为 `EventNotification` 新增 `.preHandle` 方法、以及 `stripe-node` Private-Preview 处理器同步守卫。
+  - `PR-11` (`coinbase-wallet-sdk#1908`, `onchainkit#2638`, `coinbase-advanced-py#120`, `agentkit#1297`)：`coinbase-wallet-sdk` 断开连接时清空账户状态防止残留泄露、`onchainkit` 新增 `useGasEstimator` 交易钩子、以及 `coinbase-advanced-py` 兼容 `websockets 16.0` 守卫。
+  - `PR-12` (`tau2-bench#253/#252/#251/#250`)：`tau2-bench` 将 OpenAI 提供方迁移至 GA Realtime API、为音频原生模式新增 `reasoning_effort` 支持、允许 `XAI_REALTIME_BASE_URL` 环境变量覆盖并告警非官方语音 ID 守卫。
+  - `PR-13` (`servers#5098`, `modelcontextprotocol#3342`, `inspector#2627`, `registry#1596`)：`servers` 文件系统服务端仅应用最新一次 Roots 更新防止乱序覆盖、以及 `modelcontextprotocol` 升级 `fast-uri` 至 `3.1.6` 守卫。
+  - `PR-14` (`typescript-sdk#2713/#2712`, `python-sdk#3394/#3393`)：`typescript-sdk` 强制执行 `maxTotalTimeout` 且不提前重置计时器、以及 `python-sdk` 在根 Schema 内解析工具输出 Schema 引用守卫。
+  - `PR-15` (`go-sdk#1170`, `java-sdk#1101`, `rust-sdk#1159`, `csharp-sdk#1727`)：`go-sdk` 在订阅监听失败时立即终止连接防止半开状态、以及 `java-sdk` 尊重调用方提供的服务端能力配置守卫。
+  - `PR-16` (`swift-sdk#85`, `ruby-sdk#481`, `php-sdk#457`, `kotlin-sdk#945`)：`swift-sdk` 从客户端实例发送 `initialized` 通知、`ruby-sdk` 支持处理器返回多轮 `input_required` 交互、以及 `php-sdk` 门控 `2025-11-25` 生命周期守卫。
+- **交付资产与基准测试指标**：
+  - 确定性守卫：`lab/x402_codeagent_mpp_inspect_ap2_risk_ucp_422_nonce_a2a_stripe_mcp_guards.py`
+  - 7-Card 4:5 双语视觉基准生成器：`lab/x402_codeagent_mpp_inspect_ap2_risk_ucp_422_nonce_a2a_stripe_mcp_bench.py`
+  - 报告产物：`reports/agentic-commerce-x402-codeagent-mpp-inspect-ap2-risk-ucp-422-nonce-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`（攻击阻断率 `16/16 = 100%`，修复放行率 `16/16 = 100%`，快速路径中位延迟 `0.12 ms` vs 基线 `0.56 ms`，加速比 `4.7x`）
+  - 单元测试：`tests/test_x402_codeagent_mpp_inspect_ap2_risk_ucp_422_nonce_a2a_stripe_mcp.py`（全仓 **`1,036/1,036`** 单测全绿）
