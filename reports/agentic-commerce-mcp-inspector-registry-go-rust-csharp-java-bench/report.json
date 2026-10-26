@@ -12,7 +12,7 @@
   "fault_intercept_rate_pct": 100.0,
   "perturbation_consistency_pct": 100.0,
   "batch_latency_ms": 0.17,
-  "total_elapsed_ms": 0.44,
+  "total_elapsed_ms": 0.46,
   "baseline_unbatched_ms": 2.96,
   "batch_all_passed": true,
   "scenarios": [
@@ -26,7 +26,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_REFUSAL_AND_OVERSIZE_RELAY_SAFE",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.021,
+      "latency_ms": 0.023,
       "passed": true
     },
     {
@@ -39,7 +39,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_MCPDO_TLS_HANDOFF_AND_SKILLS_CACHE_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.027,
+      "latency_ms": 0.029,
       "passed": true
     },
     {
@@ -65,7 +65,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_INSUFFICIENT_SCOPE_429_AND_EMA_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.073,
+      "latency_ms": 0.078,
       "passed": true
     },
     {
@@ -104,7 +104,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_DCR_JWKS_AND_RESOURCE_ERROR_JSON_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.015,
+      "latency_ms": 0.018,
       "passed": true
     },
     {
@@ -156,7 +156,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_REDIRECT_AND_NESTED_MCP_HEADER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.045,
+      "latency_ms": 0.046,
       "passed": true
     },
     {
