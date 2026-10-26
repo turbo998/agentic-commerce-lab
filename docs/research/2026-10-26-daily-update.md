@@ -670,3 +670,22 @@
   - 密封数据：`reports/agentic-commerce-x402-brazilmcp-mpp-coop-close-ap2-ecdh-ucp-escalation-a2a-stripe-mcp-bench/report.json`
 - **单元测试**：`tests/test_x402_brazilmcp_mpp_coop_close_ap2_ecdh_ucp_escalation_a2a_stripe_mcp.py`（全量 `1,060/1,060` 测试 100% 通过）。
 
+---
+
+## Stage 324–325 增量更新：x402 Agentcard 生态 / Tempo MPP Gin 收据头保留 / wevm mppx 随机挑战 / AP2 受信熔断器 FCB / A2A OID4VP 任务内鉴权与 MCP 210 仓 512 PR 守卫（突破 210 仓历史里程碑 & 累计 11,910 项零重叠 PR · 1,064/1,064 单测）
+
+### 1. 新增零重叠一手上游 PR 批次（512 项，覆盖 210 个官方仓库，累计 11,910 项零重叠 PR）
+- **新增 15 个官方 Coinbase Agentic Wallet Skills 与 Stripe 工具链仓库（活跃仓库总数达 210 仓，突破 210 仓历史里程碑！）**：新增 `coinbase/agentic-wallet-skills`（官方 Agent 钱包技能库）、`coinbase/mesh-ethereum`、`coinbase/temporal-ruby`、`coinbase/mesh-cli`、`stripe/ios-dashboard-ui`、`stripe/dagon`、`stripe/carbon-removal-source-materials`、`stripe/.github`、`stripe/poncho`、`stripe/vscode-endsmart`、`stripe/memlink`、`stripe/stripe-connect-custom-rocketdeliveries`、`stripe/checkout-sales-demo`、`stripe/unilog` 与 `stripe/ssf-ruby`。
+- **PR-01..PR-04（x402 / Tempo / wevm / AP2 / OWF / UCP）**：涵盖 `coinbase/x402#247`（Agentcard 生态集成）、`tempoxyz/mpp-go#203`（Gin 中间件保留 `Payment-Receipt` 响应头）、`wevm/mppx#996`（服务端随机化支付 Challenge 防重放）、`google-agentic-commerce/AP2#164`（新增受托熔断器 `Fiduciary Circuit Breaker` 类型原语）、`ethereum/ERCs#2033`（ERC-8410 Agent 动机说明澄清）、`openwallet-foundation/credo-ts#3060`（KMS 多接收方加密支持）与 `Universal-Commerce-Protocol/samples#113`（Python 服务端 MCP 发现端点规范化）。
+- **PR-05..PR-12（Stripe / ACP / A2A / AgentKit / Sierra）**：涵盖 `ChainAgnostic/CAIPs#245`（CAIP-25 会话授权剔除 `undefined` 属性）、`stripe/link-cli#443`（支持带卡凭证的网络 ID）、`a2aproject/a2a-samples#629`（OID4VP 任务内可验证凭证鉴权扩展演示）、`a2aproject/a2a-rs#266`（`a2a-pb` 拒绝越界时间戳）、`a2aproject/a2a-python#894`（处理流式开始后的 SSE 异常）、`a2aproject/a2a-js#364`（新增 `ServerCallContext` 状态包）与 `stripe/agent-toolkit#343`（MCP `User-Agent` 版本同步）。
+- **PR-13..PR-16（MCP 规范与 11 语言 SDK 家族）**：涵盖 `modelcontextprotocol/inspector#2556`（按存储前缀隔离 Secret-Store 密钥条目）、`modelcontextprotocol/registry#1555`（验证器拒绝不完整的仓库元数据）、`modelcontextprotocol/python-sdk#3236`（资源处理器保留强类型 `Context`）与 `modelcontextprotocol/go-sdk#1077`（严格校验必填 `params` 参数字段）。
+
+### 2. 新增研发资产与 7-Card 4:5 双语基准报告
+- **确定性守卫模块**：`lab/x402_agentcard_mpp_receipt_ap2_fcb_ucp_mcp_a2a_oid4vp_stripe_mcp_guards.py`
+- **基准评测与报告生成器**：`lab/x402_agentcard_mpp_receipt_ap2_fcb_ucp_mcp_a2a_oid4vp_stripe_mcp_bench.py`
+- **7-Card 4:5 双语视觉报告**：
+  - 中文版：`reports/agentic-commerce-x402-agentcard-mpp-receipt-ap2-fcb-ucp-mcp-a2a-oid4vp-stripe-mcp-bench/index.html`
+  - 英文版：`reports/agentic-commerce-x402-agentcard-mpp-receipt-ap2-fcb-ucp-mcp-a2a-oid4vp-stripe-mcp-bench/index.en.html`
+  - 密封数据：`reports/agentic-commerce-x402-agentcard-mpp-receipt-ap2-fcb-ucp-mcp-a2a-oid4vp-stripe-mcp-bench/report.json`
+- **单元测试**：`tests/test_x402_agentcard_mpp_receipt_ap2_fcb_ucp_mcp_a2a_oid4vp_stripe_mcp.py`（全量 `1,064/1,064` 测试 100% 通过）。
+
