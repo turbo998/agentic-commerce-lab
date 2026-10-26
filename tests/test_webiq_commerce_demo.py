@@ -12,11 +12,13 @@ from lab.webiq_commerce_demo import (
     WebIQClientConfig,
     WebIQHTTPError,
     WebIQValidationError,
+    build_webiq_live_demo_payload,
     clamp_auto_max_response_length,
     evaluate_replenishment_with_webiq_recall_guard,
     evaluate_webiq_search_finops,
     main,
     normalize_webiq_response,
+    render_webiq_live_demo_html,
     render_webiq_seven_card_html,
     run_grounded_discovery_and_checkout,
     run_webiq_commerce_benchmark_suite,
@@ -341,6 +343,45 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             self.assertTrue((out_dir / "report.json").is_file())
             self.assertTrue((out_dir / "index.html").is_file())
             self.assertTrue((out_dir / "index.en.html").is_file())
+            self.assertTrue((out_dir / "live-demo.html").is_file())
+            self.assertTrue((out_dir / "live-demo.en.html").is_file())
+
+    def test_h5_live_demo_payload_and_html_generation(self) -> None:
+        suite = run_webiq_commerce_benchmark_suite()
+        payload = build_webiq_live_demo_payload(suite)
+        self.assertEqual(len(payload["scenarios"]), 4)
+        self.assertEqual(len(payload["subcases_map"]), 12)
+        for idx in range(1, 13):
+            w_code = f"W{idx:02d}"
+            self.assertIn(w_code, payload["subcases_map"])
+            mapping = payload["subcases_map"][w_code]
+            scen = payload["scenarios"][mapping["scenarioIdx"]]
+            mode_ids = {m["id"] for m in scen["modes"]}
+            self.assertIn(mapping["modeId"], mode_ids)
+            for m in scen["modes"]:
+                self.assertEqual(len(m["planes"]), 4)
+
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        demo_en = render_webiq_live_demo_html(suite, lang="en")
+        expected_csp = (
+            "default-src 'none'; style-src 'unsafe-inline'; "
+            "script-src 'unsafe-inline'; img-src data:;"
+        )
+        self.assertIn(expected_csp, demo_zh)
+        self.assertIn(expected_csp, demo_en)
+        self.assertIn('<html lang="zh">', demo_zh)
+        self.assertIn('<html lang="en">', demo_en)
+        self.assertIn("window.__WEBIQ_LIVE_DEMO_DATA__", demo_zh)
+        self.assertIn("finops-query-slider", demo_zh)
+        self.assertIn("playStepByStep()", demo_zh)
+        self.assertIn("toggleLanguage()", demo_zh)
+
+        with TemporaryDirectory(prefix="webiq-h5-cli-") as tmpdir:
+            demo_path = Path(tmpdir) / "custom-demo.html"
+            rc = main(["--live-demo-html", str(demo_path)])
+            self.assertEqual(rc, 0)
+            self.assertTrue(demo_path.is_file())
+            self.assertTrue((Path(tmpdir) / "custom-demo.en.html").is_file())
 
 
 if __name__ == "__main__":

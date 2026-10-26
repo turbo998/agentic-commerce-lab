@@ -1,10 +1,11 @@
 # Microsoft Web IQ × Agentic Commerce Demo & Business Scenario Design
 
-🌐 **Language / 语言导航**: **[中文 (`2026-10-26-webiq-agentic-commerce-demo.md`)](2026-10-26-webiq-agentic-commerce-demo.md)** | **English (Current)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)**
+🌐 **Language / 语言导航**: **[中文 (`2026-10-26-webiq-agentic-commerce-demo.md`)](2026-10-26-webiq-agentic-commerce-demo.md)** | **English (Current)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)**
 
 > **Deliverables At a Glance**:
-> - **Runnable Module**: [`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py) (Pure Python 3.11+ standard library; deterministic offline simulation by default, with optional `--live` + `WEBIQ_API_KEY` HTTPS support)
-> - **Unit Test Suite**: [`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py) (14 unit tests covering REST/MCP wire contracts, field omission rules, and all 4 commerce scenarios)
+> - **Interactive H5 Live Demo Web App**: [`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html) (English default with instant ZH/EN toggle) and [`live-demo.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html) (Chinese default), featuring Mobile H5 Portrait preview (`390px–430px`) & Desktop 3-Column Presenter Workbench, live fault/attack injectors across all 4 scenarios (`W01..W12`), 4-plane step-by-step animated execution player, and live FinOps calculator
+> - **Runnable Module**: [`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py) (Pure Python 3.11+ standard library; deterministic offline simulation by default, `--serve <port>` local HTTP hosting, and optional `--live` + `WEBIQ_API_KEY` HTTPS support)
+> - **Unit Test Suite**: [`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py) (15 unit tests covering REST/MCP wire contracts, field omission rules, all 4 commerce scenarios, and H5 Live Demo generation)
 > - **7-Card 4:5 Visual Benchmark Report**: [`reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html) / [`report.json`](../../reports/agentic-commerce-webiq-grounding-demo-bench/report.json) (`12 / 12` guarded scenarios passing vs `0 / 12` ungrounded baseline)
 
 ---
@@ -118,9 +119,12 @@ Our implementation faithfully models the official [Microsoft Web IQ Overview (`l
 # 1. Run the offline demo and print the JSON evaluation summary
 python -m lab.webiq_commerce_demo --json
 
-# 2. Generate the bilingual 7-Card 4:5 HTML benchmark report and report.json
+# 2. Generate the bilingual H5 Live Demo (live-demo.html / live-demo.en.html), 7-Card 4:5 HTML report, and report.json
 python -m lab.webiq_commerce_demo --output-dir reports/agentic-commerce-webiq-grounding-demo-bench
 
-# 3. Run the unit test suite
+# 3. Serve the interactive H5 Live Demo locally at http://127.0.0.1:8080/live-demo.en.html
+python -m lab.webiq_commerce_demo --output-dir reports/agentic-commerce-webiq-grounding-demo-bench --serve 8080
+
+# 4. Run the unit test suite (15/15 passing)
 python -m unittest tests.test_webiq_commerce_demo -v
 ```

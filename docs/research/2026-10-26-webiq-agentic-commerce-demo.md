@@ -1,10 +1,11 @@
 # Microsoft Web IQ × Agentic Commerce 智能体演示方案与业务场景设计
 
-🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)**
+🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)**
 
 > **交付资产速览**：
-> - **可运行模块**：[`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py)（纯 Python 3.11+ 标准库，默认离线确定性模拟，支持通过 `--live` + `WEBIQ_API_KEY` 切换真实 HTTPS 调用）
-> - **单元测试**：[`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py)（14 项单元测试 100% 覆盖 REST/MCP 协议契约、字段省略规则与 4 大商业场景）
+> - **H5 实时交互演示应用（Live Demo Web App）**：[`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)（中文默认 + 页内中英实时切换）与 [`live-demo.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)（英文默认），支持手机端 H5 竖屏模式（`390px–430px`）与桌面三栏演示台（故障/攻击实时注入开关、4 平面分步动画播放器、FinOps 滑块计算器）
+> - **可运行模块**：[`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py)（纯 Python 3.11+ 标准库，默认离线确定性模拟，支持 `--serve <port>` 本地托管 H5 演示与 `--live` + `WEBIQ_API_KEY` 切换真实 HTTPS 调用）
+> - **单元测试**：[`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py)（15 项单元测试 100% 覆盖 REST/MCP 协议契约、字段省略规则、4 大商业场景与 H5 Live Demo 生成）
 > - **7-Card 4:5 视觉基准报告**：[`reports/agentic-commerce-webiq-grounding-demo-bench/index.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html) / [`report.json`](../../reports/agentic-commerce-webiq-grounding-demo-bench/report.json)（`12 / 12` 护栏全绿 vs 无护栏基线 `0 / 12`）
 
 ---
@@ -114,15 +115,18 @@ flowchart TB
 
 ## 5. 快速运行与验证指南
 
-### 5.1 运行离线演示与生成 7-Card 报告
+### 5.1 运行离线演示、生成 H5 Live Demo 与 7-Card 报告
 ```bash
 # 1. 运行默认 JSON 报告输出（零外部依赖、零网络调用）
 python -m lab.webiq_commerce_demo --json
 
-# 2. 生成中英双语 7-Card 4:5 视觉基准报告与 report.json
+# 2. 生成中英双语 H5 实时交互演示页 (live-demo.html / live-demo.en.html)、7-Card 视觉报告与 report.json
 python -m lab.webiq_commerce_demo --output-dir reports/agentic-commerce-webiq-grounding-demo-bench
 
-# 3. 运行单元测试套件
+# 3. 本地一键启动 HTTP 服务托管 H5 Live Demo（访问 http://127.0.0.1:8080/live-demo.html）
+python -m lab.webiq_commerce_demo --output-dir reports/agentic-commerce-webiq-grounding-demo-bench --serve 8080
+
+# 4. 运行单元测试套件（15/15 全绿）
 python -m unittest tests.test_webiq_commerce_demo -v
 ```
 
