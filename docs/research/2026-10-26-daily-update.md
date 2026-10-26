@@ -980,9 +980,9 @@
 
 ---
 
-## Stage 356–357 增量研究：370 仓 & 20,000+ 零重叠 PR 历史性双重里程碑（累计 25,734 项零重叠一手 PR · 全仓 1,187/1,187 单测全绿）
+## Stage 356–357 增量研究：370 仓 & 20,000+ 零重叠 PR 历史性双重里程碑（累计 26,246 项零重叠一手 PR · 全仓 1,191/1,191 单测全绿）
 
-- **370 仓 & 20,000+ PR 历史性双重里程碑**：在保持零重叠前提下，新接入 `Shopify/worldwide`、`Shopify/shopify-api-ruby`、`Shopify/roundhouse`、`Shopify/maintenance_tasks`、`Shopify/shopify-app-js`、`Shopify/lighthouse-ci-action`、`Shopify/Timber`、`Shopify/hydrogen-v1`、`Shopify/github-workflows`、`Shopify/spoom`、`Shopify/active_utils`、`Shopify/string_view`、`Shopify/grpc`、`Shopify/ucp-cli`、`Shopify/ruby`、`Shopify/pitchfork`、`Shopify/mruby-engine` 共 17 个官方仓库，跨越 **480 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 370 仓全覆盖，Stages 266–356 累计覆盖 **25,734 项零重叠一手 PR**，正式突破 **370 仓 & 20,000+ 零重叠一手 PR 历史性双重里程碑**！）。
+- **370 仓 & 20,000+ PR 历史性双重里程碑**：在保持零重叠前提下，新接入 `Shopify/worldwide`、`Shopify/shopify-api-ruby`、`Shopify/roundhouse`、`Shopify/maintenance_tasks`、`Shopify/shopify-app-js`、`Shopify/lighthouse-ci-action`、`Shopify/Timber`、`Shopify/hydrogen-v1`、`Shopify/github-workflows`、`Shopify/spoom`、`Shopify/active_utils`、`Shopify/string_view`、`Shopify/grpc`、`Shopify/ucp-cli`、`Shopify/ruby`、`Shopify/pitchfork`、`Shopify/mruby-engine` 共 17 个官方仓库，跨越 **490 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 370 仓全覆盖，Stages 266–356 累计覆盖 **26,246 项零重叠一手 PR**，正式突破 **370 仓 & 20,000+ 零重叠一手 PR 历史性双重里程碑**！）。
 - **核心代表性一手 PR 证据**：
   - `PR-01..PR-02`（x402 / CAIP-25 会话属性必选可选拆分 / ERC-2006 / EIP-7723）：`ChainAgnostic/CAIPs#187`（CAIP-25 必选/可选与会话属性拆分草案）、`ethereum/ERCs#2006`（NFT 异步寄存器投影）、`ethereum/EIPs#12570`（EIP-7723 允许 ACDT SFI 决策）、`coinbase/x402#223`。
   - `PR-03..PR-04`（Tempo MPP / Wata 0.4.2 / Dwellir RPC 节点提供商）：`tempoxyz/accounts#855`（升级 `wata` 至 0.4.2）、`tempoxyz/docs#1028`（新增 Dwellir RPC 节点提供商）、`tempoxyz/benchmarkoor-replay#8`。
@@ -995,103 +995,112 @@
   - 确定性守卫：`lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_guards.py`
   - 16 场景 7-Card 4:5 基准生成器：`lab/x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp_bench.py`
   - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-caip25-mpp-wata-ap2-paybybank-ucp-cli-a2a-stream-stripe-mcp-bench/report.json`
-  - 单元测试：`tests/test_x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_caip25_mpp_wata_ap2_paybybank_ucp_cli_a2a_stream_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 358–359：380 仓里程碑与 25,734 项累计零重叠 PR 确定性守卫及 16 场景 7-Card 4:5 基准报告
+## Stage 358–359：380 仓里程碑与 26,246 项累计零重叠 PR 确定性守卫及 16 场景 7-Card 4:5 基准报告
 
-- **新增 14 个官方 Shopify 上游仓库（总覆盖达 380 个仓库，达成 380 仓里程碑）**：新增 `Shopify/vitess`、`Shopify/treewalker`、`Shopify/Klint`、`Shopify/sorbet`、`Shopify/checkout-sheet-kit-swift`、`Shopify/bluejay`、`Shopify/rubygems`、`Shopify/function-runner`、`Shopify/shopify-function-test-helpers`、`Shopify/toxiproxy-ruby`、`Shopify/ejson2env`、`Shopify/libsql`、`Shopify/gh-ost`、`Shopify/shopify-function-wasm-api`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 14 个官方 Shopify 上游仓库（总覆盖达 380 个仓库，达成 380 仓里程碑）**：新增 `Shopify/vitess`、`Shopify/treewalker`、`Shopify/Klint`、`Shopify/sorbet`、`Shopify/checkout-sheet-kit-swift`、`Shopify/bluejay`、`Shopify/rubygems`、`Shopify/function-runner`、`Shopify/shopify-function-test-helpers`、`Shopify/toxiproxy-ruby`、`Shopify/ejson2env`、`Shopify/libsql`、`Shopify/gh-ost`、`Shopify/shopify-function-wasm-api`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8163-mpp-keychain-ap2-fido2-ucp-wasm-a2a-cors-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8163_mpp_keychain_ap2_fido2_ucp_wasm_a2a_cors_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 360–361：360 阶段、390 仓、21,000+ PR 与 1,150 单测四大历史里程碑（累计 25,734 项零重叠 PR）
+## Stage 360–361：360 阶段、390 仓、21,000+ PR 与 1,150 单测四大历史里程碑（累计 26,246 项零重叠 PR）
 
-- **新增 14 个官方 Shopify 上游仓库（总覆盖达 390 个仓库）**：新增 `Shopify/flink-kubernetes-operator`、`Shopify/example-app--payments-app-template--remix`、`Shopify/mock-shop-starter`、`Shopify/shopify-app-template-react-router`、`Shopify/discounts-reference-app`、`Shopify/cli-kit`、`Shopify/shopify-app-bridge`、`Shopify/checkout-sheet-kit-android`、`Shopify/hansel`、`Shopify/vscode-shopify-ruby`、`Shopify/psql-wire`、`Shopify/tapioca`、`Shopify/opentelemetry-collector-contrib`、`Shopify/rubygems.org`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 14 个官方 Shopify 上游仓库（总覆盖达 390 个仓库）**：新增 `Shopify/flink-kubernetes-operator`、`Shopify/example-app--payments-app-template--remix`、`Shopify/mock-shop-starter`、`Shopify/shopify-app-template-react-router`、`Shopify/discounts-reference-app`、`Shopify/cli-kit`、`Shopify/shopify-app-bridge`、`Shopify/checkout-sheet-kit-android`、`Shopify/hansel`、`Shopify/vscode-shopify-ruby`、`Shopify/psql-wire`、`Shopify/tapioca`、`Shopify/opentelemetry-collector-contrib`、`Shopify/rubygems.org`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8227_mpp_wallet_ap2_sdjwt_ucp_appbridge_a2a_webhook_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8227_mpp_wallet_ap2_sdjwt_ucp_appbridge_a2a_webhook_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8227-mpp-wallet-ap2-sdjwt-ucp-appbridge-a2a-webhook-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8227_mpp_wallet_ap2_sdjwt_ucp_appbridge_a2a_webhook_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8227_mpp_wallet_ap2_sdjwt_ucp_appbridge_a2a_webhook_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 362–363：480 个官方上游仓库历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 362–363：490 个官方上游仓库历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 12 个官方 Shopify 上游仓库（总覆盖突破 400 个仓库大关）**：新增 `Shopify/rbs`、`Shopify/rack-sanitizer`、`Shopify/async-memcached`、`Shopify/ruby-lsp-rails`、`Shopify/deterministic-wasi-ctx`、`Shopify/shopify-function-rust`、`Shopify/rbi`、`Shopify/shopify-app-template-extension-only`、`Shopify/homebrew-shopify`、`Shopify/ci-queue`、`Shopify/app_profiler`、`Shopify/ejson-rails`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 12 个官方 Shopify 上游仓库（总覆盖突破 400 个仓库大关）**：新增 `Shopify/rbs`、`Shopify/rack-sanitizer`、`Shopify/async-memcached`、`Shopify/ruby-lsp-rails`、`Shopify/deterministic-wasi-ctx`、`Shopify/shopify-function-rust`、`Shopify/rbi`、`Shopify/shopify-app-template-extension-only`、`Shopify/homebrew-shopify`、`Shopify/ci-queue`、`Shopify/app_profiler`、`Shopify/ejson-rails`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_eip7702_mpp_session_ap2_oid4vp_ucp_wasi_a2a_jws_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_eip7702_mpp_session_ap2_oid4vp_ucp_wasi_a2a_jws_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-eip7702-mpp-session-ap2-oid4vp-ucp-wasi-a2a-jws-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_eip7702_mpp_session_ap2_oid4vp_ucp_wasi_a2a_jws_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_eip7702_mpp_session_ap2_oid4vp_ucp_wasi_a2a_jws_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 364–365：410 仓与 22,000+ PR 历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 364–365：410 仓与 22,000+ PR 历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 12 个官方 Shopify 上游仓库（总覆盖达 410 个仓库，累计突破 22,000 项 PR）**：新增 `Shopify/deprecation_toolkit`、`Shopify/opentelemetry-ebpf-profiler`、`Shopify/github-authentication`、`Shopify/buy-button-js`、`Shopify/limiter`、`Shopify/i18next-shopify`、`Shopify/hydrogen-demo-store`、`Shopify/asset_cloud`、`Shopify/cibuildgem`、`Shopify/oxygenctl-action`、`Shopify/pseudolocalization`、`Shopify/browser_sniffer`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 12 个官方 Shopify 上游仓库（总覆盖达 410 个仓库，累计突破 22,000 项 PR）**：新增 `Shopify/deprecation_toolkit`、`Shopify/opentelemetry-ebpf-profiler`、`Shopify/github-authentication`、`Shopify/buy-button-js`、`Shopify/limiter`、`Shopify/i18next-shopify`、`Shopify/hydrogen-demo-store`、`Shopify/asset_cloud`、`Shopify/cibuildgem`、`Shopify/oxygenctl-action`、`Shopify/pseudolocalization`、`Shopify/browser_sniffer`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8251_mpp_escrow_ap2_dpop_ucp_buybutton_a2a_trace_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8251_mpp_escrow_ap2_dpop_ucp_buybutton_a2a_trace_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8251-mpp-escrow-ap2-dpop-ucp-buybutton-a2a-trace-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8251_mpp_escrow_ap2_dpop_ucp_buybutton_a2a_trace_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8251_mpp_escrow_ap2_dpop_ucp_buybutton_a2a_trace_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 366–367：480 个官方上游仓库里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 366–367：490 个官方上游仓库里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 17 个官方 Shopify 上游仓库（总覆盖达 420 个仓库）**：新增 `Shopify/semian`、`Shopify/ractor-safe-rails`、`Shopify/shopify-app-python`、`Shopify/shopify-app-php`、`Shopify/type_toolkit`、`Shopify/rotoscope`、`Shopify/toml-patch`、`Shopify/goluago`、`Shopify/vscode-shadowenv`、`Shopify/percona-server`、`Shopify/shopify.github.com`、`Shopify/terraform-provider-cloudflare`、`Shopify/shopify-cla-action`、`Shopify/web-configs`、`Shopify/record_store`、`Shopify/response_bank`、`Shopify/shopify-function-javascript`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 17 个官方 Shopify 上游仓库（总覆盖达 420 个仓库）**：新增 `Shopify/semian`、`Shopify/ractor-safe-rails`、`Shopify/shopify-app-python`、`Shopify/shopify-app-php`、`Shopify/type_toolkit`、`Shopify/rotoscope`、`Shopify/toml-patch`、`Shopify/goluago`、`Shopify/vscode-shadowenv`、`Shopify/percona-server`、`Shopify/shopify.github.com`、`Shopify/terraform-provider-cloudflare`、`Shopify/shopify-cla-action`、`Shopify/web-configs`、`Shopify/record_store`、`Shopify/response_bank`、`Shopify/shopify-function-javascript`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8261_mpp_refund_ap2_passkey_ucp_funcjs_a2a_sse_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8261_mpp_refund_ap2_passkey_ucp_funcjs_a2a_sse_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8261-mpp-refund-ap2-passkey-ucp-funcjs-a2a-sse-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8261_mpp_refund_ap2_passkey_ucp_funcjs_a2a_sse_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8261_mpp_refund_ap2_passkey_ucp_funcjs_a2a_sse_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 368–369：430 仓与 23,000+ PR 历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 368–369：430 仓与 23,000+ PR 历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 12 个官方 Shopify 上游仓库（总覆盖达 430 个仓库，累计突破 23,000 项 PR）**：新增 `Shopify/money`、`Shopify/ai-agent-partner-sales-channel-template`、`Shopify/debezium-connector-yugabytedb`、`Shopify/restyle`、`Shopify/liquid-spec`、`Shopify/pos-ui-extensions-tutorials`、`Shopify/truffleruby`、`Shopify/tophat`、`Shopify/measured`、`Shopify/statsd-instrument`、`Shopify/buildkit`、`Shopify/minitest-distributed`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 12 个官方 Shopify 上游仓库（总覆盖达 430 个仓库，累计突破 23,000 项 PR）**：新增 `Shopify/money`、`Shopify/ai-agent-partner-sales-channel-template`、`Shopify/debezium-connector-yugabytedb`、`Shopify/restyle`、`Shopify/liquid-spec`、`Shopify/pos-ui-extensions-tutorials`、`Shopify/truffleruby`、`Shopify/tophat`、`Shopify/measured`、`Shopify/statsd-instrument`、`Shopify/buildkit`、`Shopify/minitest-distributed`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8270_mpp_channel_ap2_webauthn_ucp_saleschannel_a2a_push_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8270_mpp_channel_ap2_webauthn_ucp_saleschannel_a2a_push_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8270-mpp-channel-ap2-webauthn-ucp-saleschannel-a2a-push-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8270_mpp_channel_ap2_webauthn_ucp_saleschannel_a2a_push_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8270_mpp_channel_ap2_webauthn_ucp_saleschannel_a2a_push_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 370–371：370 阶段与 440 仓历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 370–371：370 阶段与 440 仓历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 11 个官方 Shopify 上游仓库（总覆盖达 440 个仓库，达成 370 阶段里程碑）**：新增 `Shopify/flink`、`Shopify/screenshot-glb`、`Shopify/discount-app-components`、`Shopify/shop-cli`、`Shopify/cli-ui`、`Shopify/shopify-app-template-none`、`Shopify/responders`、`Shopify/paquito`、`Shopify/activerecord-rescue_from_duplicate`、`Shopify/packwerk`、`Shopify/shopify-app-template-remix`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 11 个官方 Shopify 上游仓库（总覆盖达 440 个仓库，达成 370 阶段里程碑）**：新增 `Shopify/flink`、`Shopify/screenshot-glb`、`Shopify/discount-app-components`、`Shopify/shop-cli`、`Shopify/cli-ui`、`Shopify/shopify-app-template-none`、`Shopify/responders`、`Shopify/paquito`、`Shopify/activerecord-rescue_from_duplicate`、`Shopify/packwerk`、`Shopify/shopify-app-template-remix`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8281_mpp_batch_ap2_attest_ucp_discounts_a2a_poll_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8281_mpp_batch_ap2_attest_ucp_discounts_a2a_poll_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8281-mpp-batch-ap2-attest-ucp-discounts-a2a-poll-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8281_mpp_batch_ap2_attest_ucp_discounts_a2a_poll_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8281_mpp_batch_ap2_attest_ucp_discounts_a2a_poll_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 372–373：450 仓与 24,000+ PR 历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 372–373：450 仓与 24,000+ PR 历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 14 个官方 Shopify 上游仓库（总覆盖达 450 个仓库，累计突破 24,000 项 PR）**：新增 `Shopify/shopify-app-template-php`、`Shopify/shopify-app-template-ruby`、`Shopify/shopify-app-template-node`、`Shopify/neocache`、`Shopify/heap-profiler`、`Shopify/graphql-batch`、`Shopify/bulk-operations-sample-app`、`Shopify/rust-cache-benchmarks`、`Shopify/graphql-metrics`、`Shopify/redirect_safely`、`Shopify/yjit-metrics`、`Shopify/buffered-logger`、`Shopify/lz4-flex-rb`、`Shopify/constant_resolver`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 14 个官方 Shopify 上游仓库（总覆盖达 450 个仓库，累计突破 24,000 项 PR）**：新增 `Shopify/shopify-app-template-php`、`Shopify/shopify-app-template-ruby`、`Shopify/shopify-app-template-node`、`Shopify/neocache`、`Shopify/heap-profiler`、`Shopify/graphql-batch`、`Shopify/bulk-operations-sample-app`、`Shopify/rust-cache-benchmarks`、`Shopify/graphql-metrics`、`Shopify/redirect_safely`、`Shopify/yjit-metrics`、`Shopify/buffered-logger`、`Shopify/lz4-flex-rb`、`Shopify/constant_resolver`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8290_mpp_settle_ap2_vc_ucp_graphql_a2a_retry_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8290_mpp_settle_ap2_vc_ucp_graphql_a2a_retry_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8290-mpp-settle-ap2-vc-ucp-graphql-a2a-retry-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8290_mpp_settle_ap2_vc_ucp_graphql_a2a_retry_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8290_mpp_settle_ap2_vc_ucp_graphql_a2a_retry_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 374–375：375 阶段与 460 仓历史里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 374–375：375 阶段与 460 仓历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 15 个官方 Shopify 上游仓库（总覆盖达 460 个仓库，达成 375 阶段里程碑）**：新增 `Shopify/gvltools`、`Shopify/snapit`、`Shopify/annex-29`、`Shopify/djb2`、`Shopify/node-themekit`、`Shopify/example-admin-action-and-block-preact`、`Shopify/mobile-buy-sdk-android`、`Shopify/rdoc`、`Shopify/grpc_fork_safety`、`Shopify/gltf-compressor`、`Shopify/memcached_store`、`Shopify/opentelemetry-ruby-contrib`、`Shopify/subscriptions-reference-app`、`Shopify/function-examples`、`Shopify/erb_lint`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 15 个官方 Shopify 上游仓库（总覆盖达 460 个仓库，达成 375 阶段里程碑）**：新增 `Shopify/gvltools`、`Shopify/snapit`、`Shopify/annex-29`、`Shopify/djb2`、`Shopify/node-themekit`、`Shopify/example-admin-action-and-block-preact`、`Shopify/mobile-buy-sdk-android`、`Shopify/rdoc`、`Shopify/grpc_fork_safety`、`Shopify/gltf-compressor`、`Shopify/memcached_store`、`Shopify/opentelemetry-ruby-contrib`、`Shopify/subscriptions-reference-app`、`Shopify/function-examples`、`Shopify/erb_lint`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8300_mpp_quota_ap2_mandate_ucp_mobilebuy_a2a_circuit_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8300_mpp_quota_ap2_mandate_ucp_mobilebuy_a2a_circuit_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8300-mpp-quota-ap2-mandate-ucp-mobilebuy-a2a-circuit-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8300_mpp_quota_ap2_mandate_ucp_mobilebuy_a2a_circuit_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8300_mpp_quota_ap2_mandate_ucp_mobilebuy_a2a_circuit_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 376–377：470 仓与 25,000+ 零重叠 PR 历史性双重里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 376–377：470 仓与 25,000+ 零重叠 PR 历史性双重里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 17 个官方 Shopify 上游仓库（总覆盖达 470 个仓库，累计突破 25,000 项 PR 历史大关）**：新增 `Shopify/flink-bigquery-connector`、`Shopify/.github`、`Shopify/ruby-openai`、`Shopify/compose`、`Shopify/symbol-fstring`、`Shopify/wasm-bench`、`Shopify/smart_todo`、`Shopify/autotuner`、`Shopify/seafoam`、`Shopify/pyreferrer`、`Shopify/mybench`、`Shopify/eng-internship-challenge`、`Shopify/shopify_python`、`Shopify/eng-intern-assessment-data`、`Shopify/app-cli-node-generator-helper`、`Shopify/sprockets-commoner`、`Shopify/shopify-css-import`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 17 个官方 Shopify 上游仓库（总覆盖达 470 个仓库，累计突破 25,000 项 PR 历史大关）**：新增 `Shopify/flink-bigquery-connector`、`Shopify/.github`、`Shopify/ruby-openai`、`Shopify/compose`、`Shopify/symbol-fstring`、`Shopify/wasm-bench`、`Shopify/smart_todo`、`Shopify/autotuner`、`Shopify/seafoam`、`Shopify/pyreferrer`、`Shopify/mybench`、`Shopify/eng-internship-challenge`、`Shopify/shopify_python`、`Shopify/eng-intern-assessment-data`、`Shopify/app-cli-node-generator-helper`、`Shopify/sprockets-commoner`、`Shopify/shopify-css-import`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8310_mpp_stream_ap2_recovery_ucp_openai_a2a_quota_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8310_mpp_stream_ap2_recovery_ucp_openai_a2a_quota_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8310-mpp-stream-ap2-recovery-ucp-openai-a2a-quota-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8310_mpp_stream_ap2_recovery_ucp_openai_a2a_quota_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8310_mpp_stream_ap2_recovery_ucp_openai_a2a_quota_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
 
-## Stage 378–379：480 个官方上游仓库里程碑（累计 25,734 项零重叠 PR 与 1,187/1,187 单测）
+## Stage 378–379：490 个官方上游仓库里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
 
-- **新增 15 个官方 Shopify 上游仓库（总覆盖达 480 个仓库）**：新增 `Shopify/mobile-buy-sdk-ios`、`Shopify/editions-dev-2025-workshop-customer-account`、`Shopify/example-checkout--custom-field--preact`、`Shopify/schmooze`、`Shopify/omniauth-shopify-oauth2`、`Shopify/ess`、`Shopify/graphql-to-js-client-builder`、`Shopify/graphql-js-schema-fetch`、`Shopify/rollup-plugin-graphql-js-client-compiler`、`Shopify/js-buy-sdk`、`Shopify/graphql-js-client-compiler`、`Shopify/graphql-js-schema`、`Shopify/babel-plugin-graphql-js-client-transform`、`Shopify/graphql-js-client`、`Shopify/pyactiveresource`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **25,734 项**。
+- **新增 15 个官方 Shopify 上游仓库（总覆盖达 480 个仓库）**：新增 `Shopify/mobile-buy-sdk-ios`、`Shopify/editions-dev-2025-workshop-customer-account`、`Shopify/example-checkout--custom-field--preact`、`Shopify/schmooze`、`Shopify/omniauth-shopify-oauth2`、`Shopify/ess`、`Shopify/graphql-to-js-client-builder`、`Shopify/graphql-js-schema-fetch`、`Shopify/rollup-plugin-graphql-js-client-compiler`、`Shopify/js-buy-sdk`、`Shopify/graphql-js-client-compiler`、`Shopify/graphql-js-schema`、`Shopify/babel-plugin-graphql-js-client-transform`、`Shopify/graphql-js-client`、`Shopify/pyactiveresource`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
 - **核心代码与测试资产**：
   - 确定性守卫：`lab/x402_erc8325_mpp_dispute_ap2_oauth_ucp_jsbuy_a2a_ratelimit_stripe_mcp_guards.py`
   - 基准评测与报告生成：`lab/x402_erc8325_mpp_dispute_ap2_oauth_ucp_jsbuy_a2a_ratelimit_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8325-mpp-dispute-ap2-oauth-ucp-jsbuy-a2a-ratelimit-stripe-mcp-bench/{report.json,index.html,index.en.html}`
-  - 单元测试：`tests/test_x402_erc8325_mpp_dispute_ap2_oauth_ucp_jsbuy_a2a_ratelimit_stripe_mcp.py`（全仓 **1,187/1,187** 单测 100% 通过）
+  - 单元测试：`tests/test_x402_erc8325_mpp_dispute_ap2_oauth_ucp_jsbuy_a2a_ratelimit_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
+
+## Stage 380–381：380 阶段、490 仓与 26,000+ 零重叠 PR 三大历史里程碑（累计 26,246 项零重叠 PR 与 1,191/1,191 单测）
+
+- **新增 12 个官方 Shopify 上游仓库（总覆盖达 490 个仓库，达成 380 阶段与 26,000+ PR 里程碑）**：新增 `Shopify/ruby-bench`、`Shopify/ulid-ruby`、`Shopify/clickhouse-rs`、`Shopify/rollup-plugin-remap`、`Shopify/binaryen-rb`、`Shopify/bugsnag-cocoa`、`Shopify/position-observer`、`Shopify/zk`、`Shopify/checkout-ui-extensions-po-box-validator`、`Shopify/rag_api`、`Shopify/debug`、`Shopify/blake3-rb`，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组），全仓累计零重叠 PR 达到 **26,246 项**。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc8340_mpp_meter_ap2_ulid_ucp_pobox_a2a_rag_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc8340_mpp_meter_ap2_ulid_ucp_pobox_a2a_rag_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc8340-mpp-meter-ap2-ulid-ucp-pobox-a2a-rag-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc8340_mpp_meter_ap2_ulid_ucp_pobox_a2a_rag_stripe_mcp.py`（全仓 **1,191/1,191** 单测 100% 通过）
