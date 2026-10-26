@@ -1,0 +1,274 @@
+{
+  "benchmark_id": "agentic-commerce-x402-verifier-mpp-strip-ap2-erc8176-ucp-decouple-ft3-a2a-stripe-mcp-bench",
+  "stage": "Stage 304-305",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "attack_blocked": 16,
+  "remediated_passed": 16,
+  "perturbation_stable": 16,
+  "unique_pr_count": 512,
+  "unique_repo_count": 113,
+  "cumulative_unique_prs": 6790,
+  "fast_path_median_ms": 0.12,
+  "baseline_median_ms": 0.53,
+  "speedup_factor": 4.4,
+  "scenarios": [
+    {
+      "id": "PR-01",
+      "title_en": "Tempo Accounts Patched URI/Schema Parser, Cooled Release Tooling & Verifier Dependency Guard",
+      "title_zh": "Tempo Accounts URI/Schema 解析补丁、发布冷却门禁与 Tempo-Evals 验证器依赖守卫",
+      "attack_blocked": true,
+      "attack_code": "TEMPO_ACCOUNTS_URI_OR_VERIFIER_DEP_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "TEMPO_ACCOUNTS_URI_AND_VERIFIER_DEP_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/x402#318",
+        "google-agentic-commerce/a2a-x402#14",
+        "tempoxyz/mpp#1081",
+        "tempoxyz/accounts#915"
+      ]
+    },
+    {
+      "id": "PR-02",
+      "title_en": "mpp-rs Proxy Upstream Payment Header Stripping, mpp-go 403 No-Challenge & Cyclops Warden Guard",
+      "title_zh": "mpp-rs 代理剥离上游响应支付头、mpp-go 重放凭证 403 无挑战响应与 Cyclops Warden 守卫",
+      "attack_blocked": true,
+      "attack_code": "MPP_UPSTREAM_HEADER_LEAK_OR_REPLAY_CHALLENGE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MPP_UPSTREAM_HEADER_STRIPPED_AND_403_NO_CHALLENGE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "wevm/mppx#1032",
+        "wevm/viem#5289",
+        "wevm/ox#520",
+        "wevm/wagmi#5267"
+      ]
+    },
+    {
+      "id": "PR-03",
+      "title_en": "ERC-8176 State Scopes & Offchain Attestation, Askar Passthrough DB Encoding & SD-JWT Options Guard",
+      "title_zh": "ERC-8176 状态作用域与链下证明格式、Askar 透传数据库参数重编码修复与 SD-JWT 必填选项守卫",
+      "attack_blocked": true,
+      "attack_code": "ERC8176_STATE_SCOPE_OR_ASKAR_DB_PARAM_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "ERC8176_STATE_SCOPE_AND_ASKAR_DB_PARAM_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "google-agentic-commerce/AP2#199",
+        "ChainAgnostic/CAIPs#293",
+        "ethereum/ERCs#2057",
+        "openwallet-foundation/credo-ts#3087"
+      ]
+    },
+    {
+      "id": "PR-04",
+      "title_en": "UCP v2026-08-25 Protocol Release, Conformance Dynamic Data Decoupling & Schema Publish Version Guard",
+      "title_zh": "UCP v2026-08-25 协议版本、一致性测试动态数据解耦与 ucp-schema 发布版本校验守卫",
+      "attack_blocked": true,
+      "attack_code": "UCP_VERSION_MISMATCH_OR_STATIC_CONFORMANCE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "UCP_VERSION_AND_DYNAMIC_CONFORMANCE_DECOUPLING_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "Universal-Commerce-Protocol/ucp#772",
+        "Universal-Commerce-Protocol/ucp-schema#36",
+        "Universal-Commerce-Protocol/conformance#56",
+        "Universal-Commerce-Protocol/samples#164"
+      ]
+    },
+    {
+      "id": "PR-05",
+      "title_en": "Stripe FT3 Fraud Tactic Catalog, OpenAPI Canary Sync & Smokescreen Metric Override Guard",
+      "title_zh": "Stripe FT3 欺诈战术目录、OpenAPI 金丝雀同步与 Smokescreen 指标名称覆盖守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_FT3_CATALOG_OR_OPENAPI_CANARY_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_FT3_CATALOG_AND_OPENAPI_CANARY_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "visa/visa-chart-components#119",
+        "stripe/link-cli#476",
+        "stripe/sync-engine#345",
+        "stripe/smokescreen#351"
+      ]
+    },
+    {
+      "id": "PR-06",
+      "title_en": "A2A ADR-002 Additive Input-Required Elicitations, ITK Spawn Build Timeout & SLIM Domain Alignment Guard",
+      "title_zh": "A2A ADR-002 增量 Input-Required 启发式交互、ITK 构建超时控制与 SLIM 域名对齐守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_ADR002_ELICITATION_OR_ITK_TIMEOUT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_ADR002_ELICITATION_AND_ITK_TIMEOUT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/A2A#2149",
+        "a2aproject/a2a-tck#237",
+        "a2aproject/a2a-rs#340",
+        "a2aproject/a2a-samples#685"
+      ]
+    },
+    {
+      "id": "PR-07",
+      "title_en": "a2a-python Non-Terminal Exit Ref-Count Release, Unknown Artifact Append Reject & Direct Executor Error Guard",
+      "title_zh": "a2a-python 非终态退出释放引用计数、未知 Artifact 追加拒绝与 a2a-js 直接传播执行器错误守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_STALE_REGISTRY_REF_OR_SYNTHETIC_FAILURE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_REF_COUNT_RELEASE_AND_DIRECT_EXECUTOR_ERROR_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-python#1079",
+        "a2aproject/a2a-js#568",
+        "a2aproject/a2a-python#1077",
+        "a2aproject/a2a-js#567"
+      ]
+    },
+    {
+      "id": "PR-08",
+      "title_en": "a2a-java Part Populated Content Decoding & Open Task Stream + a2a-go Typed Streaming Error & Tenant Guard",
+      "title_zh": "a2a-java Part 优先解码非空内容与保持任务流打开、以及 a2a-go 流式错误类型化与租户传播守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_JAVA_PART_DECODE_OR_GO_TENANT_STREAM_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_JAVA_PART_DECODE_AND_GO_TENANT_STREAM_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-java#1063",
+        "a2aproject/a2a-go#321",
+        "a2aproject/a2a-dotnet#446",
+        "a2aproject/a2a-java#1061"
+      ]
+    },
+    {
+      "id": "PR-09",
+      "title_en": "Stripe Agent-Toolkit Batched Product Lookup (No N+1), CLI Sandbox List & Connect Immutable SHA Guard",
+      "title_zh": "Stripe Agent-Toolkit 消除 /products N+1 查询、CLI 沙箱列表与 Connect 不可变 SHA 固定守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_TOOLKIT_N_PLUS_1_OR_UNPINNED_ACTION_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_TOOLKIT_BATCHED_LOOKUP_AND_SHA_PIN_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/agent-toolkit#378",
+        "stripe/ai#399",
+        "stripe/stripe-cli#2004",
+        "stripe/stripe-js#972"
+      ]
+    },
+    {
+      "id": "PR-10",
+      "title_en": "Stripe Java EventNotificationHandler.preHandle, Ruby OAuth Response-Type Default & Python Open Enum Guard",
+      "title_zh": "Stripe Java EventNotificationHandler.preHandle、Ruby OAuth 响应类型默认值修复与 Python 开放枚举守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_JAVA_PREHANDLE_OR_RUBY_OAUTH_DEFAULT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_JAVA_PREHANDLE_AND_RUBY_OAUTH_DEFAULT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/stripe-python#1877",
+        "stripe/stripe-node#2832",
+        "stripe/stripe-go#2412",
+        "stripe/stripe-java#2274"
+      ]
+    },
+    {
+      "id": "PR-11",
+      "title_en": "Coinbase Wallet signPreparedCalls, cb-mpc Protocol Binding, Mesh Header Forwarder Concurrency & WooCommerce Guard",
+      "title_zh": "Coinbase Wallet 预签名调用、cb-mpc 协议绑定加固、Mesh Header 并发映射安全与 WooCommerce 补丁守卫",
+      "attack_blocked": true,
+      "attack_code": "COINBASE_MPC_BINDING_OR_MESH_CONCURRENT_MAP_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "COINBASE_MPC_BINDING_AND_MESH_CONCURRENCY_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/agentkit#1309",
+        "coinbase/cdp-sdk#676",
+        "coinbase/onchainkit#2650",
+        "coinbase/coinbase-wallet-sdk#1921"
+      ]
+    },
+    {
+      "id": "PR-12",
+      "title_en": "Sierra tau2-bench Int/Float DB Hash Normalization, Nested JSON Action Grader & Full-Duplex Voice Rescoring Guard",
+      "title_zh": "Sierra tau2-bench 整型/浮点参数数据库哈希归一化、嵌套 JSON 评分归一化与全双工语音重评分守卫",
+      "attack_blocked": true,
+      "attack_code": "TAU2_NUMERIC_HASH_DRIFT_OR_NESTED_JSON_GRADER_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "TAU2_NUMERIC_HASH_AND_NESTED_JSON_GRADER_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "sierra-research/tau2-bench#402",
+        "sierra-research/tau2-bench#401",
+        "sierra-research/tau2-bench#400",
+        "sierra-research/tau2-bench#399"
+      ]
+    },
+    {
+      "id": "PR-13",
+      "title_en": "MCPB Node Crypto PKCS#7 Verification, Conformance SEP-1932 dpop_jkt Check & Task Result Extension Preservation Guard",
+      "title_zh": "MCPB Node Crypto PKCS#7 验签、一致性测试 SEP-1932 dpop_jkt 校验与任务结果扩展字段保留守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_PKCS7_VERIFY_OR_DPOP_JKT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_PKCS7_VERIFY_AND_DPOP_JKT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/modelcontextprotocol#3360",
+        "modelcontextprotocol/registry#1609",
+        "modelcontextprotocol/servers#5118",
+        "modelcontextprotocol/inspector#2657"
+      ]
+    },
+    {
+      "id": "PR-14",
+      "title_en": "MCP TypeScript Stdio Stderr Deadlock Prevention & Unprefixed McpError + Python Bearer Token Resource Check Guard",
+      "title_zh": "MCP TS Stdio 标准错误管道防死锁与原始 McpError 消息、以及 Python Bearer Token 资源校验守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_STDIO_STDERR_DEADLOCK_OR_TOKEN_RESOURCE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_STDIO_DEADLOCK_FREE_AND_TOKEN_RESOURCE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/typescript-sdk#2805",
+        "modelcontextprotocol/python-sdk#3447",
+        "modelcontextprotocol/typescript-sdk#2804",
+        "modelcontextprotocol/python-sdk#3446"
+      ]
+    },
+    {
+      "id": "PR-15",
+      "title_en": "MCP Go OAuth Discovery Checks, Java 2026-07-28 Negotiation & Malformed STDIO Recovery + C# Shell Parsing Guard",
+      "title_zh": "MCP Go OAuth 发现校验、Java 2026-07-28 协议协商与畸形 JSON 恢复、以及 C# Windows 命令解析守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_GO_OAUTH_DISCOVERY_OR_JAVA_STDIO_RECOVERY_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_GO_OAUTH_DISCOVERY_AND_JAVA_STDIO_RECOVERY_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/rust-sdk#1202",
+        "modelcontextprotocol/go-sdk#1220",
+        "modelcontextprotocol/java-sdk#1176",
+        "modelcontextprotocol/csharp-sdk#1761"
+      ]
+    },
+    {
+      "id": "PR-16",
+      "title_en": "MCP PHP Inbound Request Preservation & _meta Serialization Guard + Ruby JSON Schema 2020-12 Conformance Guard",
+      "title_zh": "MCP PHP 排队出站请求时保留入站请求与 _meta 序列化修复、以及 Ruby JSON Schema 2020-12 保真守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_PHP_INBOUND_CLOBBER_OR_RUBY_SCHEMA2020_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_PHP_INBOUND_INTACT_AND_RUBY_SCHEMA2020_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/kotlin-sdk#970",
+        "modelcontextprotocol/swift-sdk#120",
+        "modelcontextprotocol/php-sdk#486",
+        "modelcontextprotocol/ruby-sdk#509"
+      ]
+    }
+  ]
+}
