@@ -11,8 +11,8 @@
   "pass_rate_pct": 100.0,
   "fault_intercept_rate_pct": 100.0,
   "perturbation_consistency_pct": 100.0,
-  "batch_latency_ms": 0.19,
-  "total_elapsed_ms": 1.07,
+  "batch_latency_ms": 0.18,
+  "total_elapsed_ms": 1.08,
   "baseline_unbatched_ms": 2.96,
   "batch_all_passed": true,
   "scenarios": [
@@ -26,7 +26,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_REFUSAL_AND_OVERSIZE_RELAY_SAFE",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.051,
+      "latency_ms": 0.048,
       "passed": true
     },
     {
@@ -52,7 +52,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_PKCE_FLOW_AND_SECRET_STAMP_SAFE",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.028,
+      "latency_ms": 0.03,
       "passed": true
     },
     {
@@ -65,7 +65,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_INSUFFICIENT_SCOPE_429_AND_EMA_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.158,
+      "latency_ms": 0.169,
       "passed": true
     },
     {
@@ -78,7 +78,7 @@
       "patched_allowed": true,
       "patched_reason_code": "REGISTRY_TRIGRAM_BACKUP_AND_PUBLISH_GUARD_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.027,
+      "latency_ms": 0.028,
       "passed": true
     },
     {
@@ -104,7 +104,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_DCR_JWKS_AND_RESOURCE_ERROR_JSON_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.035,
+      "latency_ms": 0.036,
       "passed": true
     },
     {
@@ -143,7 +143,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_HTTP_STATUS_AND_SSE_RECONNECT_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.013,
+      "latency_ms": 0.014,
       "passed": true
     },
     {
@@ -156,7 +156,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_REDIRECT_AND_NESTED_MCP_HEADER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.118,
+      "latency_ms": 0.133,
       "passed": true
     },
     {
@@ -169,7 +169,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_INIT_PING_AND_ERROR_HANDLING_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.013,
+      "latency_ms": 0.012,
       "passed": true
     },
     {
@@ -182,7 +182,7 @@
       "patched_allowed": true,
       "patched_reason_code": "CSHARP_SDK_RUNE_URI_NULL_SCHEMA_AND_ORDER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.076,
+      "latency_ms": 0.075,
       "passed": true
     },
     {
@@ -195,7 +195,7 @@
       "patched_allowed": true,
       "patched_reason_code": "CSHARP_SDK_PARSE_ERROR_META_MERGE_AND_CANCEL_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.121,
+      "latency_ms": 0.12,
       "passed": true
     },
     {
@@ -208,7 +208,7 @@
       "patched_allowed": true,
       "patched_reason_code": "JAVA_SDK_FILTER_AND_MODERN_SKILLS_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.025,
+      "latency_ms": 0.024,
       "passed": true
     },
     {
@@ -221,7 +221,7 @@
       "patched_allowed": true,
       "patched_reason_code": "JAVA_SDK_LEGACY_INIT_LISTEN_AND_415_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.022,
+      "latency_ms": 0.021,
       "passed": true
     }
   ]
