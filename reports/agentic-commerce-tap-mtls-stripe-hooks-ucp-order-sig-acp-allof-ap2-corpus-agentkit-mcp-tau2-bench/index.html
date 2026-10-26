@@ -237,7 +237,7 @@
         </div>
         <div class="panel">
           <b>延迟与决策概览</b>
-          <p><span class="pill pill-badge">Total: 1.16 ms</span> <span class="pill pill-act">0 Tokens</span></p>
+          <p><span class="pill pill-badge">Total: 0.93 ms</span> <span class="pill pill-act">0 Tokens</span></p>
           <p>• PR-01 Visa TAP mTLS: <b>Block</b></p>
           <p>• PR-04 UCP Order MCP Sig: <b>Block</b></p>
           <p>• PR-08 AP2 <code>~~</code> Chain &amp; Hash: <b>Block</b></p>
@@ -406,13 +406,13 @@ assert bipartite_one_to_one and distinct_predicted_matches >= repeated_gold_acti
         <span>BATCHING &amp; SCALING LATENCY (1X / 4X / 16X)</span>
       </div>
       <h2>
-        扩展延迟对比：16 护栏全量执行中位耗时仅 0.09 ms（较外部网关基线快 >20 倍）
+        扩展延迟对比：16 护栏全量执行中位耗时仅 0.08 ms（较外部网关基线快 >20 倍）
       </h2>
       <p class="muted">
         对比蓝条 (#3B82F6，进程内确定性护栏) 与灰条 (#CBD5E1，经典外部 RPC 校验基线)，在 1x / 4x / 16x 负载下取 5 次运行中位数。
       </p>
       <div>
-        <div class='bar-group'><div class='bar-label'><b>1x (16 guards)</b> <span>AI-Native: <b>0.09 ms</b> vs Classic: <b>4.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:8.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>4x (64 guards)</b> <span>AI-Native: <b>0.29 ms</b> vs Classic: <b>17.60 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:25.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>16x (256 guards)</b> <span>AI-Native: <b>1.23 ms</b> vs Classic: <b>70.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:100.0%'></div></div></div>
+        <div class='bar-group'><div class='bar-label'><b>1x (16 guards)</b> <span>AI-Native: <b>0.08 ms</b> vs Classic: <b>4.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:8.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>4x (64 guards)</b> <span>AI-Native: <b>0.32 ms</b> vs Classic: <b>17.60 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:25.0%'></div></div></div><div class='bar-group'><div class='bar-label'><b>16x (256 guards)</b> <span>AI-Native: <b>0.81 ms</b> vs Classic: <b>70.40 ms</b></span></div><div class='bar-track'><div class='bar-fill-primary' style='width:4.0%'></div></div><div class='bar-track'><div class='bar-fill-baseline' style='width:100.0%'></div></div></div>
       </div>
       <div class="quote-box">
         <b>Latency Note:</b> 所有 16 个护栏均在单进程内存内以 O(1) 哈希/集合/树遍历完成验证，无需外部数据库或网络往返。
