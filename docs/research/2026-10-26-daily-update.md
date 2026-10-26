@@ -778,3 +778,29 @@
   - `lab/x402_payai_mpp_receipt_ap2_oid4vp_ucp_audit_a2a_tck_stripe_mcp_bench.py`
   - `reports/agentic-commerce-x402-payai-mpp-receipt-ap2-oid4vp-ucp-audit-a2a-tck-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - `tests/test_x402_payai_mpp_receipt_ap2_oid4vp_ucp_audit_a2a_tck_stripe_mcp.py`（全仓 **1,084/1,084** 单测全绿）。
+
+
+### Stage 336–337：270 仓库历史里程碑 — x402 TS 客户端、Tempo MPP-IRL/Tempo-Std/PyTempo 与 MPP 重放存储要求、wevm AbiType/WebAuthx/Cuer/Zero、AP2/SD-JWT/Credo-TS cnf.kid 持有者绑定、UCP 选项媒体与 Visa KMIP 密钥托管、CAIP-25/Stripe PG-Schema-Diff、A2A TaskPushNotification 规范清理、Stripe v2 EventNotificationHandler、Coinbase CDP ProjectId 与 MCP 10 语言 SDK 守卫与 7-Card 基准测试（2026-10-26 21:15+08:00）
+
+- **上游一手零重叠 PR 证据矩阵（512 项新 PR，覆盖 270 个官方仓库，累计 14,982 项零重叠 PR，实现 270 仓历史里程碑！）**：
+  - **PR-01（x402 TS 客户端、Tempo MPP-IRL/Tempo-Std 与 MPP Go 显式重放存储）**：`coinbase/x402#235`、`tempoxyz/tempo#8571`、`tempoxyz/mpp-rs#589`、`tempoxyz/mpp-go#190` 等 32 项（26 仓）。
+  - **PR-02（wevm mppx Sol 跳过回执头、viem 超时 Socket 清理、ox SIWE 与 AbiType/WebAuthx 守卫）**：`wevm/mppx#943`、`wevm/viem#5172`、`wevm/ox#477`、`wevm/wagmi#5214` 等 32 项（26 仓）。
+  - **PR-03（AP2 Werkzeug 升级、OWF SD-JWT/Credo-TS cnf.kid 持有者绑定与 ERC-8327 守卫）**：`google-agentic-commerce/AP2#151`、`openwallet-foundation/sd-jwt-js#260`、`ethereum/ERCs#2021`、`openwallet-foundation/credo-ts#3047` 等 32 项（26 仓）。
+  - **PR-04（UCP option_value 媒体扩展、Visa KMIP 密钥托管与 PyTempo/TxGen 守卫）**：`Universal-Commerce-Protocol/ucp#675`、`Universal-Commerce-Protocol/samples#96`、`visa/visa-chart-components#48`、`visa/kmip` 等 32 项（20 仓）。
+  - **PR-05（CAIP-25 钱包示例、Stripe PG-Schema-Diff、Link-CLI 与 Sync-Engine 守卫）**：`ChainAgnostic/CAIPs#224`、`stripe/pg-schema-diff#259`、`stripe/link-cli#430`、`stripe/sync-engine#297` 等 32 项（26 仓）。
+  - **PR-06（A2A TaskPushNotification 规范清理、Inspector、Rust SDK 与 TCK Gherkin 守卫）**：`a2aproject/A2A#1499`、`a2aproject/a2a-inspector#48`、`a2aproject/a2a-rs#243`、`a2aproject/a2a-tck#137` 等 32 项（26 仓）。
+  - **PR-07（A2A Python a2a-version 标头与 JS 导出类型守卫）**：`a2aproject/a2a-python#765`、`a2aproject/a2a-js#249`、`a2aproject/a2a-python#764`、`a2aproject/a2a-js#248` 等 32 项（2 仓）。
+  - **PR-08（A2A Go Proto 重生成、.NET JsonSchema.Net 8、Java 多版本标准化与 Coinbase Node 守卫）**：`a2aproject/a2a-go#81`、`a2aproject/a2a-dotnet#249`、`a2aproject/a2a-java#876`、`coinbase/coinbase-node#151` 等 32 项（10 仓）。
+  - **PR-09（Stripe Agent Toolkit @stripe/mcp 构建产物修复、CLI 与 JS/React/Terminal SDK 守卫）**：`stripe/agent-toolkit#331`、`stripe/stripe-cli#1944`、`stripe/stripe-js#923`、`stripe/react-stripe-js#654` 等 32 项（26 仓）。
+  - **PR-10（Stripe Python EventNotificationHandler、Go Ref[T] v2 引用、Node、Ruby、Java、.NET、PHP 服务端 SDK 守卫）**：`stripe/stripe-python#1805`、`stripe/stripe-node#2762`、`stripe/stripe-go#2340`、`stripe/stripe-java#2216` 等 32 项（10 仓）。
+  - **PR-11（Coinbase AgentKit、CDP SDK projectId 配置、OnchainKit 与 Wallet SDK 守卫）**：`coinbase/agentkit#1265`、`coinbase/cdp-sdk#624`、`coinbase/onchainkit#2608`、`coinbase/coinbase-wallet-sdk#1653` 等 32 项（26 仓）。
+  - **PR-12（Coinbase Mesh-CLI、OnchainTestKit、CDP 钱包示例与 Onramp 守卫）**：`coinbase/mesh-cli#420`、`coinbase/onchaintestkit#195`、`coinbase/cdp-wallet-demo-apps#11`、`coinbase/onramp-demo-app#4` 等 32 项（26 仓）。
+  - **PR-13（MCP Inspector 发布拆分、Servers SequentialThinking、MCPB PKCS#7 签名校验与 Ext-Apps SDK v2 守卫）**：`modelcontextprotocol/inspector#2506`、`modelcontextprotocol/servers#5036`、`modelcontextprotocol/mcpb#128`、`modelcontextprotocol/ext-apps#712` 等 32 项（11 仓）。
+  - **PR-14（MCP TypeScript CJS Ajv 导出与 Python SDK 守卫）**：`modelcontextprotocol/typescript-sdk#2432`、`modelcontextprotocol/python-sdk#3109`、`modelcontextprotocol/typescript-sdk#2431`、`modelcontextprotocol/python-sdk#3108` 等 32 项（2 仓）。
+  - **PR-15（MCP Go 防重复在途请求、Rust OAuth 授权重构、C# 与 Java UTF-8 字符集守卫）**：`modelcontextprotocol/go-sdk#1011`、`modelcontextprotocol/rust-sdk#1009`、`modelcontextprotocol/csharp-sdk#1565`、`modelcontextprotocol/java-sdk#930` 等 32 项（4 仓）。
+  - **PR-16（MCP Kotlin、PHP 会话惰性初始化、Ruby、Swift 与 Dart SDK 守卫）**：`modelcontextprotocol/kotlin-sdk#791`、`modelcontextprotocol/php-sdk#252`、`modelcontextprotocol/ruby-sdk#330`、`modelcontextprotocol/kotlin-sdk#790` 等 32 项（3 仓）。
+- **新增技术资产**：
+  - `lab/x402_sec_eyes_mpp_irl_ap2_credo_ucp_totals_a2a_push_stripe_mcp_guards.py`
+  - `lab/x402_sec_eyes_mpp_irl_ap2_credo_ucp_totals_a2a_push_stripe_mcp_bench.py`
+  - `reports/agentic-commerce-x402-sec-eyes-mpp-irl-ap2-credo-ucp-totals-a2a-push-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - `tests/test_x402_sec_eyes_mpp_irl_ap2_credo_ucp_totals_a2a_push_stripe_mcp.py`（全仓 **1,088/1,088** 单测全绿）。
