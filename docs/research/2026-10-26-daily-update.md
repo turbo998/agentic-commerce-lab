@@ -830,3 +830,21 @@
   - `lab/x402_ts_client_mpp_replay_ap2_cnfkid_ucp_media_a2a_v1_stripe_mcp_bench.py`
   - `reports/agentic-commerce-x402-ts-client-mpp-replay-ap2-cnfkid-ucp-media-a2a-v1-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - `tests/test_x402_ts_client_mpp_replay_ap2_cnfkid_ucp_media_a2a_v1_stripe_mcp.py`（全仓 **1,092/1,092** 单测全绿）。
+
+
+### Stages 340–341：突破 340 阶段、290 仓与 16,000+ 零重叠 PR 三大历史里程碑（`1,096/1,096` 单测全绿，290 仓 512 项零重叠 PR，累计 `16,006` 项 PR）
+
+- **新增 20+ 官方上游仓库（总覆盖达 290 个独立上游仓库）**：新增 `ethereum/EIPs`、`ethereum/execution-apis`、`ethereum/web3.py`、`ethereum/eth-account`、`ethereum/eth-abi`、`ethereum/eth-utils`、`ethereum/eth-keys`、`ethereum/eth-typing`、`ethereum/solidity`、`ethereum/go-ethereum`、`ethereum/consensus-specs`、`ethereum/pm`、`ethereum/remix-project`、`ethereum/sourcify`、`ethereum/fe`、`ethereum/act`、`ethereum/hevm`、`ethereum/evmone`、`ethereum/execution-specs`、`ethereum/execution-spec-tests`、`ethereum/hive`、`ethereum/kohaku-rs`、`ethereum/kohaku`、`ethereum/EthLib`、`ethereum/discv4-dns-lists`、`ethereum/ethereum-org-website`、`ethereum/forkcast`、`ethereum/moica-revocation-smt`、`coinbase/aave-v3-crosschain-listing-template` 与 `openwallet-foundation/owl`，本阶段精确纳入 **512 项零重叠一手上游 PR**，全仓累计覆盖 **16,006 项零重叠 PR**。
+- **核心上游证据与架构防线**：
+  - `PR-01..PR-02`（`ethereum/EIPs#12588` EIP-8141 执行 Gas 计费与 `ChainAgnostic/CAIPs#220` 区块寻址模型、`coinbase/x402#231` ForgeMesh x402 服务与 `ethereum/ERCs#2017` ERC-7730 `tokenAmount` 阈值约束）。
+  - `PR-03..PR-04`（`tempoxyz/docs#1045` 与 `tempoxyz/benchmarkoor-replay#21` SHA 锁定、`tempoxyz/changelogs#167`）。
+  - `PR-05..PR-06`（`google-agentic-commerce/AP2#146` 注册表锁定与 `openwallet-foundation/acapy#4197`）。
+  - `PR-07..PR-08`（`Universal-Commerce-Protocol/samples#92` Goofre ACO 参考实现与 `Universal-Commerce-Protocol/ucp#670` `complete_in_progress` 结账状态冻结与跨传输一致性、`wevm/zero#32` 重放变更结果上报）。
+  - `PR-09..PR-10`（`a2aproject/A2A#1492` `result.task` 包装规范、`a2aproject/a2a-go#59` `GetTask` 实现与 `a2aproject/a2a-inspector#40`）。
+  - `PR-11..PR-14`（`stripe/agent-toolkit#326`、`stripe/billing-extensions#5`、`coinbase/MagicSpend#18` Code4rena 审计优化、`coinbase/aave-v3-crosschain-listing-template#2` 治理转发器执行限制与 `coinbase/agentic-wallet-skills#45` `awal` 2.12.1 登出命令）。
+  - `PR-15..PR-16`（`modelcontextprotocol/example-remote-server#4` `WWW-Authenticate` PRM 元数据与 `modelcontextprotocol/conformance#421` 线级归属校验修复及 `2025-06-18` Schema 勘误）。
+- **交付技术资产**：
+  - 确定性守卫：`lab/x402_eip8141_mpp_bench_ap2_uvlock_ucp_freeze_a2a_task_stripe_mcp_guards.py`
+  - 基准评测与 7-Card 报告生成：`lab/x402_eip8141_mpp_bench_ap2_uvlock_ucp_freeze_a2a_task_stripe_mcp_bench.py`
+  - 双语 7-Card 视觉报告：`reports/agentic-commerce-x402-eip8141-mpp-bench-ap2-uvlock-ucp-freeze-a2a-task-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
+  - 单元测试：`tests/test_x402_eip8141_mpp_bench_ap2_uvlock_ucp_freeze_a2a_task_stripe_mcp.py`（全仓 `1,096/1,096` 测试通过）。
