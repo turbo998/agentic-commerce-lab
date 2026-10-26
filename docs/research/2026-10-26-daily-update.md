@@ -936,3 +936,23 @@
   - 16 场景 7-Card 4:5 基准生成器：`lab/x402_kya_mpp_dest_ap2_failures_ucp_hydrogen_a2a_tenant_stripe_mcp_bench.py`
   - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-kya-mpp-dest-ap2-failures-ucp-hydrogen-a2a-tenant-stripe-mcp-bench/report.json`
   - 单元测试：`tests/test_x402_kya_mpp_dest_ap2_failures_ucp_hydrogen_a2a_tenant_stripe_mcp.py`（全仓 **1,116/1,116** 单测 100% 通过）
+
+
+---
+
+## Stage 352–353 增量研究：350 仓历史里程碑 & 累计 19,078 项零重叠一手 PR（全仓 1,120/1,120 单测全绿）
+
+- **350 仓里程碑与零重叠 PR 批次**：在保持零重叠前提下，扩容 `stripe/stripe-terminal-android`（+91 项 PR）并新接入 `Shopify/shopify_app`、`Shopify/dalli`、`Shopify/rubydex`、`Shopify/yugabyte-db`、`Shopify/shadowenv`、`Shopify/ui-extensions`、`Shopify/theme-liquid-docs`、`Shopify/checkout-kit`、`Shopify/Shopify-AI-Toolkit`、`Shopify/cli`、`Shopify/ruby-definitions`、`Shopify/example-app--qr-code--remix`、`Shopify/ar_transaction_changes`、`Shopify/product-reviews-sample-app`、`Shopify/shopify-cli` 共 15 个官方仓库，跨越 **350 个官方上游仓库**精选 **512 项全新零重叠 PR**（单阶段 350 仓全覆盖，Stages 266–352 累计覆盖 **19,078 项零重叠一手 PR**，突破 **350 仓 & 19,000+ PR 双重历史里程碑**）。
+- **核心代表性一手 PR 证据**：
+  - `PR-01..PR-02`（x402 Fact Attestation 扩展规范 / ERC-2010 / EIP-7732）：`coinbase/x402#225`（Fact Attestation 扩展规范文档）、`ethereum/ERCs#2010`（Itemized Non-Fungible Token）、`ethereum/EIPs#12574`（EIP-7732 分叉选择平局决胜修正）、`ChainAgnostic/CAIPs#194`。
+  - `PR-03..PR-04`（Tempo MPP / MACH 资金入口 / Benchmarkoor）：`tempoxyz/accounts#859`（跨钱包传输层新增 MACH 资金入金入口）、`tempoxyz/docs#1032`、`tempoxyz/benchmarkoor-replay#10`。
+  - `PR-05..PR-06`（AP2 Mandate JSON Schema 定义 / ACA-Py 撤销激活修复）：`google-agentic-commerce/AP2#128`（新增 AP2 授权令类型 JSON Schema 定义）、`openwallet-foundation/acapy#4182`（修复激活已发布撤销注册表时挂起问题）。
+  - `PR-07..PR-08`（UCP / Shopify-AI-Toolkit / Checkout-Kit / CLI 未声明源告警）：`Shopify/Shopify-AI-Toolkit#68`、`Shopify/cli#9004`（主题应用扩展访问未声明 origin 时告警）、`Shopify/checkout-kit#1012`。
+  - `PR-09..PR-10`（A2A Go 并发任务执行器结果聚合 / Inspector DOMPurify 防护）：`a2aproject/a2a-go#40`（并发任务执行器结果聚合 Part 3）、`a2aproject/a2a-inspector#19`（使用 `marked` + `DOMPurify` 替换自定义 Markdown 解析器防止 XSS）。
+  - `PR-11..PR-14`（Stripe Toolkit / Terminal 取消支付意图 & Coinbase AgentKit LogicNodes 合规）：`stripe/agent-toolkit#319`、`stripe/example-terminal-backend#42`、`coinbase/agentkit#1253`（AgentKit LogicNodes 链上合规集成示例）、`coinbase/agentic-wallet-skills#35`。
+  - `PR-15..PR-16`（MCP SEP-2575 `result._meta.serverInfo` 对齐 / Filesystems WG）：`modelcontextprotocol/conformance#403`（对齐 SEP-2575 与 spec PR #3002 `result._meta.serverInfo` 校验）、`modelcontextprotocol/access#171`。
+- **交付技术资产与基准验证**：
+  - 确定性守卫：`lab/x402_fact_mpp_mach_ap2_mandates_ucp_checkoutkit_a2a_dompurify_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准生成器：`lab/x402_fact_mpp_mach_ap2_mandates_ucp_checkoutkit_a2a_dompurify_stripe_mcp_bench.py`
+  - 中英双语 7-Card 视觉报告：`reports/agentic-commerce-x402-fact-mpp-mach-ap2-mandates-ucp-checkoutkit-a2a-dompurify-stripe-mcp-bench/index.html`、`reports/agentic-commerce-x402-fact-mpp-mach-ap2-mandates-ucp-checkoutkit-a2a-dompurify-stripe-mcp-bench/index.en.html`、`reports/agentic-commerce-x402-fact-mpp-mach-ap2-mandates-ucp-checkoutkit-a2a-dompurify-stripe-mcp-bench/report.json`
+  - 单元测试：`tests/test_x402_fact_mpp_mach_ap2_mandates_ucp_checkoutkit_a2a_dompurify_stripe_mcp.py`（全仓 **1,120/1,120** 单测 100% 通过）
