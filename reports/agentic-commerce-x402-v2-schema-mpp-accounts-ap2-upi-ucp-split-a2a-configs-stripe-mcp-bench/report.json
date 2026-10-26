@@ -1,0 +1,1642 @@
+{
+  "stage": "338-339",
+  "benchmark_id": "agentic-commerce-x402-v2-schema-mpp-accounts-ap2-upi-ucp-split-a2a-configs-stripe-mcp-bench",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "total_prs_covered": 512,
+  "unique_repos_covered": 310,
+  "cumulative_zero_overlap_prs": 15494,
+  "pass_rate_pct": 100.0,
+  "adversarial_intercept_rate_pct": 100.0,
+  "max_perturbation_delta_pts": 0.0,
+  "median_latency_ms": 0.435,
+  "scenarios": [
+    {
+      "id": "PR-01",
+      "slug": "x402_ts_client_tempo_tipbot_scfuzzbench_mpp_replay_guard",
+      "title": "x402 TS Client, Tempo Tip.Bot/ScFuzzBench & MPP Explicit Replay Storage Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 15,
+      "sample_prs": [
+        "ChainAgnostic/CAIPs#211",
+        "ethereum/EIPs#12582",
+        "ethereum/eipw#184",
+        "ethereum/eth-abi#267",
+        "ethereum/eth-account#341",
+        "ethereum/eth-hash#64"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-01",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "ChainAgnostic/CAIPs#211",
+          "ethereum/EIPs#12582",
+          "ethereum/eipw#184",
+          "ethereum/eth-abi#267",
+          "ethereum/eth-account#341",
+          "ethereum/eth-hash#64"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-01",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "ChainAgnostic/CAIPs#211",
+          "ethereum/EIPs#12582",
+          "ethereum/eipw#184",
+          "ethereum/eth-abi#267",
+          "ethereum/eth-account#341",
+          "ethereum/eth-hash#64"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-01",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "ChainAgnostic/CAIPs#211",
+          "ethereum/EIPs#12582",
+          "ethereum/eipw#184",
+          "ethereum/eth-abi#267",
+          "ethereum/eth-account#341",
+          "ethereum/eth-hash#64"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.315,
+      "baseline_latency_ms": 1.386
+    },
+    {
+      "id": "PR-02",
+      "slug": "mppx_zyzz_wata_monoshot_viem_ox_siwe_guard",
+      "title": "mppx Sol Receipt, Zyzz/Wata/Monoshot & Viem/Ox SIWE Resource Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 30,
+      "sample_prs": [
+        "coinbase/x402#229",
+        "ethereum/ERCs#2015",
+        "ethereum/EthLib#51",
+        "ethereum/act#235",
+        "ethereum/aleth#5921",
+        "ethereum/anon-rpc#15"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-02",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/x402#229",
+          "ethereum/ERCs#2015",
+          "ethereum/EthLib#51",
+          "ethereum/act#235",
+          "ethereum/aleth#5921",
+          "ethereum/anon-rpc#15"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-02",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/x402#229",
+          "ethereum/ERCs#2015",
+          "ethereum/EthLib#51",
+          "ethereum/act#235",
+          "ethereum/aleth#5921",
+          "ethereum/anon-rpc#15"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-02",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/x402#229",
+          "ethereum/ERCs#2015",
+          "ethereum/EthLib#51",
+          "ethereum/act#235",
+          "ethereum/aleth#5921",
+          "ethereum/anon-rpc#15"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.33,
+      "baseline_latency_ms": 1.452
+    },
+    {
+      "id": "PR-03",
+      "slug": "ap2_werkzeug_sdjwt_metadata_credo_cnfkid_erc_guard",
+      "title": "AP2 Werkzeug, SD-JWT Type Metadata, Credo-TS cnf.kid & ERC-8327 Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 15,
+      "sample_prs": [
+        "tempoxyz/accounts#868",
+        "tempoxyz/docs#1041",
+        "tempoxyz/hermes-mpp#9",
+        "tempoxyz/mpp#1036",
+        "tempoxyz/mpp-go#177",
+        "tempoxyz/mpp-rs#581"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-03",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "tempoxyz/accounts#868",
+          "tempoxyz/docs#1041",
+          "tempoxyz/hermes-mpp#9",
+          "tempoxyz/mpp#1036",
+          "tempoxyz/mpp-go#177",
+          "tempoxyz/mpp-rs#581"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-03",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "tempoxyz/accounts#868",
+          "tempoxyz/docs#1041",
+          "tempoxyz/hermes-mpp#9",
+          "tempoxyz/mpp#1036",
+          "tempoxyz/mpp-go#177",
+          "tempoxyz/mpp-rs#581"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-03",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "tempoxyz/accounts#868",
+          "tempoxyz/docs#1041",
+          "tempoxyz/hermes-mpp#9",
+          "tempoxyz/mpp#1036",
+          "tempoxyz/mpp-go#177",
+          "tempoxyz/mpp-rs#581"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.345,
+      "baseline_latency_ms": 1.518
+    },
+    {
+      "id": "PR-04",
+      "slug": "ucp_option_media_visa_chart_benchmarkoor_replay_guard",
+      "title": "UCP Option Media, Visa Components & Tempo Benchmarkoor Replay Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "tempoxyz/benchmarkoor-replay#17",
+        "tempoxyz/changelogs#163",
+        "tempoxyz/earn#5",
+        "tempoxyz/gh-actions#363",
+        "tempoxyz/mpp-irl#24",
+        "tempoxyz/mpp-specs#313"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-04",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "tempoxyz/benchmarkoor-replay#17",
+          "tempoxyz/changelogs#163",
+          "tempoxyz/earn#5",
+          "tempoxyz/gh-actions#363",
+          "tempoxyz/mpp-irl#24",
+          "tempoxyz/mpp-specs#313"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-04",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "tempoxyz/benchmarkoor-replay#17",
+          "tempoxyz/changelogs#163",
+          "tempoxyz/earn#5",
+          "tempoxyz/gh-actions#363",
+          "tempoxyz/mpp-irl#24",
+          "tempoxyz/mpp-specs#313"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-04",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "tempoxyz/benchmarkoor-replay#17",
+          "tempoxyz/changelogs#163",
+          "tempoxyz/earn#5",
+          "tempoxyz/gh-actions#363",
+          "tempoxyz/mpp-irl#24",
+          "tempoxyz/mpp-specs#313"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.36,
+      "baseline_latency_ms": 1.584
+    },
+    {
+      "id": "PR-05",
+      "slug": "caip25_wallet_stripe_salesforce_ai_terminal_oracle_guard",
+      "title": "CAIP-25 Wallet Session, Stripe Salesforce AI Context & Terminal Oracle Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 19,
+      "sample_prs": [
+        "google-agentic-commerce/AP2#139",
+        "openwallet-foundation/acapy-endorser-service#284",
+        "openwallet-foundation/acapy-plugins#3601",
+        "openwallet-foundation/askar#434",
+        "openwallet-foundation/bifold-wallet#1887",
+        "openwallet-foundation/credo-ts-didcomm-ext#173"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-05",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 19,
+        "sample_prs": [
+          "google-agentic-commerce/AP2#139",
+          "openwallet-foundation/acapy-endorser-service#284",
+          "openwallet-foundation/acapy-plugins#3601",
+          "openwallet-foundation/askar#434",
+          "openwallet-foundation/bifold-wallet#1887",
+          "openwallet-foundation/credo-ts-didcomm-ext#173"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-05",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 19,
+        "sample_prs": [
+          "google-agentic-commerce/AP2#139",
+          "openwallet-foundation/acapy-endorser-service#284",
+          "openwallet-foundation/acapy-plugins#3601",
+          "openwallet-foundation/askar#434",
+          "openwallet-foundation/bifold-wallet#1887",
+          "openwallet-foundation/credo-ts-didcomm-ext#173"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-05",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 19,
+        "sample_prs": [
+          "google-agentic-commerce/AP2#139",
+          "openwallet-foundation/acapy-endorser-service#284",
+          "openwallet-foundation/acapy-plugins#3601",
+          "openwallet-foundation/askar#434",
+          "openwallet-foundation/bifold-wallet#1887",
+          "openwallet-foundation/credo-ts-didcomm-ext#173"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.375,
+      "baseline_latency_ms": 1.65
+    },
+    {
+      "id": "PR-06",
+      "slug": "a2a_task_push_spec_tck_gherkin_inspector_rs_guard",
+      "title": "A2A TaskPushNotification Spec, TCK Gherkin & Inspector/Rust Guard",
+      "task_type": "noul",
+      "pr_count": 32,
+      "repo_count": 15,
+      "sample_prs": [
+        "openwallet-foundation/acapy#4191",
+        "openwallet-foundation/acapy-controllers#150",
+        "openwallet-foundation/acapy-minimal-example#199",
+        "openwallet-foundation/acapy-tools#76",
+        "openwallet-foundation/acapy-vc-authn-oidc#1107",
+        "openwallet-foundation/architecture-sig#20"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-06",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "openwallet-foundation/acapy#4191",
+          "openwallet-foundation/acapy-controllers#150",
+          "openwallet-foundation/acapy-minimal-example#199",
+          "openwallet-foundation/acapy-tools#76",
+          "openwallet-foundation/acapy-vc-authn-oidc#1107",
+          "openwallet-foundation/architecture-sig#20"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-06",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "openwallet-foundation/acapy#4191",
+          "openwallet-foundation/acapy-controllers#150",
+          "openwallet-foundation/acapy-minimal-example#199",
+          "openwallet-foundation/acapy-tools#76",
+          "openwallet-foundation/acapy-vc-authn-oidc#1107",
+          "openwallet-foundation/architecture-sig#20"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-06",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 15,
+        "sample_prs": [
+          "openwallet-foundation/acapy#4191",
+          "openwallet-foundation/acapy-controllers#150",
+          "openwallet-foundation/acapy-minimal-example#199",
+          "openwallet-foundation/acapy-tools#76",
+          "openwallet-foundation/acapy-vc-authn-oidc#1107",
+          "openwallet-foundation/architecture-sig#20"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.39,
+      "baseline_latency_ms": 1.716
+    },
+    {
+      "id": "PR-07",
+      "slug": "a2a_py_v1_rest_version_header_js_export_guard",
+      "title": "A2A Python HTTP+REST Path & Version Header + JS Export Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "Universal-Commerce-Protocol/samples#84",
+        "wevm/zyzz#504",
+        "wevm/webauthx#2",
+        "wevm/wagmi#5204",
+        "wevm/viem#5162",
+        "wevm/ox#418"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-07",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/samples#84",
+          "wevm/zyzz#504",
+          "wevm/webauthx#2",
+          "wevm/wagmi#5204",
+          "wevm/viem#5162",
+          "wevm/ox#418"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-07",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/samples#84",
+          "wevm/zyzz#504",
+          "wevm/webauthx#2",
+          "wevm/wagmi#5204",
+          "wevm/viem#5162",
+          "wevm/ox#418"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-07",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/samples#84",
+          "wevm/zyzz#504",
+          "wevm/webauthx#2",
+          "wevm/wagmi#5204",
+          "wevm/viem#5162",
+          "wevm/ox#418"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.405,
+      "baseline_latency_ms": 1.782
+    },
+    {
+      "id": "PR-08",
+      "slug": "a2a_go_proto_java_multiversion_dotnet_schema_guard",
+      "title": "A2A Go Proto, Java Multi-Version & .NET JsonSchema.Net 8 Guard",
+      "task_type": "score",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "Universal-Commerce-Protocol/ucp#658",
+        "wevm/zero#27",
+        "wevm/wata#54",
+        "wevm/vocs#617",
+        "wevm/tips.sh#3",
+        "wevm/ondine#1"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-08",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/ucp#658",
+          "wevm/zero#27",
+          "wevm/wata#54",
+          "wevm/vocs#617",
+          "wevm/tips.sh#3",
+          "wevm/ondine#1"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-08",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/ucp#658",
+          "wevm/zero#27",
+          "wevm/wata#54",
+          "wevm/vocs#617",
+          "wevm/tips.sh#3",
+          "wevm/ondine#1"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-08",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "Universal-Commerce-Protocol/ucp#658",
+          "wevm/zero#27",
+          "wevm/wata#54",
+          "wevm/vocs#617",
+          "wevm/tips.sh#3",
+          "wevm/ondine#1"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.42,
+      "baseline_latency_ms": 1.848
+    },
+    {
+      "id": "PR-09",
+      "slug": "stripe_toolkit_mcp_dist_cli_js_react_terminal_guard",
+      "title": "Stripe Agent Toolkit @stripe/mcp Dist, CLI & JS/React/Terminal Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "a2aproject/A2A#1486",
+        "a2aproject/a2a-go#49",
+        "a2aproject/a2a-java#852",
+        "a2aproject/a2a-samples#603",
+        "wevm/prool#62",
+        "wevm/mppx#933"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-09",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/A2A#1486",
+          "a2aproject/a2a-go#49",
+          "a2aproject/a2a-java#852",
+          "a2aproject/a2a-samples#603",
+          "wevm/prool#62",
+          "wevm/mppx#933"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-09",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/A2A#1486",
+          "a2aproject/a2a-go#49",
+          "a2aproject/a2a-java#852",
+          "a2aproject/a2a-samples#603",
+          "wevm/prool#62",
+          "wevm/mppx#933"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-09",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/A2A#1486",
+          "a2aproject/a2a-go#49",
+          "a2aproject/a2a-java#852",
+          "a2aproject/a2a-samples#603",
+          "wevm/prool#62",
+          "wevm/mppx#933"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.435,
+      "baseline_latency_ms": 1.914
+    },
+    {
+      "id": "PR-10",
+      "slug": "stripe_event_notification_go_reft_java_ruby_node_guard",
+      "title": "Stripe EventNotificationHandler, Go Ref[T] & Server SDK Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "a2aproject/a2a-dotnet#228",
+        "a2aproject/a2a-inspector#30",
+        "a2aproject/a2a-js#204",
+        "a2aproject/a2a-python#716",
+        "a2aproject/a2a-rs#231",
+        "a2aproject/a2a-tck#125"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-10",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/a2a-dotnet#228",
+          "a2aproject/a2a-inspector#30",
+          "a2aproject/a2a-js#204",
+          "a2aproject/a2a-python#716",
+          "a2aproject/a2a-rs#231",
+          "a2aproject/a2a-tck#125"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-10",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/a2a-dotnet#228",
+          "a2aproject/a2a-inspector#30",
+          "a2aproject/a2a-js#204",
+          "a2aproject/a2a-python#716",
+          "a2aproject/a2a-rs#231",
+          "a2aproject/a2a-tck#125"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-10",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "a2aproject/a2a-dotnet#228",
+          "a2aproject/a2a-inspector#30",
+          "a2aproject/a2a-js#204",
+          "a2aproject/a2a-python#716",
+          "a2aproject/a2a-rs#231",
+          "a2aproject/a2a-tck#125"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.45,
+      "baseline_latency_ms": 1.98
+    },
+    {
+      "id": "PR-11",
+      "slug": "coinbase_agentkit_cdp_projectid_agentcore_onchainkit_guard",
+      "title": "Coinbase AgentKit, CDP ProjectId, AgentCore Template & OnchainKit Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 28,
+      "sample_prs": [
+        "stripe/agent-toolkit#324",
+        "stripe/dagon#132",
+        "stripe/elements-examples#43",
+        "stripe/goproxy#28",
+        "stripe/mpp-java#22",
+        "stripe/mpp-rb#56"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-11",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 28,
+        "sample_prs": [
+          "stripe/agent-toolkit#324",
+          "stripe/dagon#132",
+          "stripe/elements-examples#43",
+          "stripe/goproxy#28",
+          "stripe/mpp-java#22",
+          "stripe/mpp-rb#56"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-11",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 28,
+        "sample_prs": [
+          "stripe/agent-toolkit#324",
+          "stripe/dagon#132",
+          "stripe/elements-examples#43",
+          "stripe/goproxy#28",
+          "stripe/mpp-java#22",
+          "stripe/mpp-rb#56"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-11",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 28,
+        "sample_prs": [
+          "stripe/agent-toolkit#324",
+          "stripe/dagon#132",
+          "stripe/elements-examples#43",
+          "stripe/goproxy#28",
+          "stripe/mpp-java#22",
+          "stripe/mpp-rb#56"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.465,
+      "baseline_latency_ms": 2.046
+    },
+    {
+      "id": "PR-12",
+      "slug": "coinbase_mesh_onchaintestkit_cdpcurl_onramp_guard",
+      "title": "Coinbase Mesh-CLI, OnchainTestKit, Homebrew-CDPCurl & Onramp Guard",
+      "task_type": "noul",
+      "pr_count": 32,
+      "repo_count": 30,
+      "sample_prs": [
+        "stripe/billing-extensions#3",
+        "stripe/bonsai#2",
+        "stripe/connect-js#305",
+        "stripe/example-terminal-backend#47",
+        "stripe/link-cli#423",
+        "stripe/open-banking-v2-docs#9"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-12",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "stripe/billing-extensions#3",
+          "stripe/bonsai#2",
+          "stripe/connect-js#305",
+          "stripe/example-terminal-backend#47",
+          "stripe/link-cli#423",
+          "stripe/open-banking-v2-docs#9"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-12",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "stripe/billing-extensions#3",
+          "stripe/bonsai#2",
+          "stripe/connect-js#305",
+          "stripe/example-terminal-backend#47",
+          "stripe/link-cli#423",
+          "stripe/open-banking-v2-docs#9"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-12",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "stripe/billing-extensions#3",
+          "stripe/bonsai#2",
+          "stripe/connect-js#305",
+          "stripe/example-terminal-backend#47",
+          "stripe/link-cli#423",
+          "stripe/open-banking-v2-docs#9"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.48,
+      "baseline_latency_ms": 2.112
+    },
+    {
+      "id": "PR-13",
+      "slug": "mcp_spec_inspector_pkcs7_mcpb_ext_apps_v2_guard",
+      "title": "MCP Spec, Inspector, MCPB PKCS#7 Signature & Ext-Apps v2 Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 30,
+      "sample_prs": [
+        "coinbase/MagicSpend#16",
+        "coinbase/agentkit#1258",
+        "coinbase/baseca#15",
+        "coinbase/build-onchain-apps#529",
+        "coinbase/cbpay-js#316",
+        "coinbase/cdp-swift#14"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-13",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/MagicSpend#16",
+          "coinbase/agentkit#1258",
+          "coinbase/baseca#15",
+          "coinbase/build-onchain-apps#529",
+          "coinbase/cbpay-js#316",
+          "coinbase/cdp-swift#14"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-13",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/MagicSpend#16",
+          "coinbase/agentkit#1258",
+          "coinbase/baseca#15",
+          "coinbase/build-onchain-apps#529",
+          "coinbase/cbpay-js#316",
+          "coinbase/cdp-swift#14"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-13",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/MagicSpend#16",
+          "coinbase/agentkit#1258",
+          "coinbase/baseca#15",
+          "coinbase/build-onchain-apps#529",
+          "coinbase/cbpay-js#316",
+          "coinbase/cdp-swift#14"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.495,
+      "baseline_latency_ms": 2.178
+    },
+    {
+      "id": "PR-14",
+      "slug": "mcp_ts_cjs_ajv_packaging_py_urllib3_media_guard",
+      "title": "MCP TypeScript CJS Ajv Exposure & Python SDK Packaging Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 30,
+      "sample_prs": [
+        "coinbase/agentic-wallet-skills#40",
+        "coinbase/assume-role#48",
+        "coinbase/cadence-ruby#89",
+        "coinbase/cb-mpc#65",
+        "coinbase/cdp-sdk#617",
+        "coinbase/cdp-sdk-python#113"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-14",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/agentic-wallet-skills#40",
+          "coinbase/assume-role#48",
+          "coinbase/cadence-ruby#89",
+          "coinbase/cb-mpc#65",
+          "coinbase/cdp-sdk#617",
+          "coinbase/cdp-sdk-python#113"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-14",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/agentic-wallet-skills#40",
+          "coinbase/assume-role#48",
+          "coinbase/cadence-ruby#89",
+          "coinbase/cb-mpc#65",
+          "coinbase/cdp-sdk#617",
+          "coinbase/cdp-sdk-python#113"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-14",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 30,
+        "sample_prs": [
+          "coinbase/agentic-wallet-skills#40",
+          "coinbase/assume-role#48",
+          "coinbase/cadence-ruby#89",
+          "coinbase/cb-mpc#65",
+          "coinbase/cdp-sdk#617",
+          "coinbase/cdp-sdk-python#113"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.51,
+      "baseline_latency_ms": 2.244
+    },
+    {
+      "id": "PR-15",
+      "slug": "mcp_go_inflight_dedup_rust_oauth_java_utf8_csharp_guard",
+      "title": "MCP Go Duplicate In-Flight Prevention, Rust OAuth & Java UTF-8 Guard",
+      "task_type": "score",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "modelcontextprotocol/access#179",
+        "modelcontextprotocol/ext-apps#685",
+        "modelcontextprotocol/ext-skills#84",
+        "modelcontextprotocol/go-sdk#980",
+        "modelcontextprotocol/kotlin-sdk#759",
+        "modelcontextprotocol/php-sdk#218"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-15",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/access#179",
+          "modelcontextprotocol/ext-apps#685",
+          "modelcontextprotocol/ext-skills#84",
+          "modelcontextprotocol/go-sdk#980",
+          "modelcontextprotocol/kotlin-sdk#759",
+          "modelcontextprotocol/php-sdk#218"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-15",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/access#179",
+          "modelcontextprotocol/ext-apps#685",
+          "modelcontextprotocol/ext-skills#84",
+          "modelcontextprotocol/go-sdk#980",
+          "modelcontextprotocol/kotlin-sdk#759",
+          "modelcontextprotocol/php-sdk#218"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-15",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "ox_siwe_resource_uri_or_sdjwt_type_metadata_ssrf"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/access#179",
+          "modelcontextprotocol/ext-apps#685",
+          "modelcontextprotocol/ext-skills#84",
+          "modelcontextprotocol/go-sdk#980",
+          "modelcontextprotocol/kotlin-sdk#759",
+          "modelcontextprotocol/php-sdk#218"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.525,
+      "baseline_latency_ms": 2.31
+    },
+    {
+      "id": "PR-16",
+      "slug": "mcp_kotlin_php_lazy_session_ruby_swift_dart_guard",
+      "title": "MCP Kotlin, PHP Lazy Session Init, Ruby, Swift & Dart SDK Guard",
+      "task_type": "choice",
+      "pr_count": 32,
+      "repo_count": 14,
+      "sample_prs": [
+        "modelcontextprotocol/conformance#415",
+        "modelcontextprotocol/csharp-sdk#1528",
+        "modelcontextprotocol/inspector#2492",
+        "modelcontextprotocol/java-sdk#900",
+        "modelcontextprotocol/mcpb#108",
+        "modelcontextprotocol/modelcontextprotocol#3172"
+      ],
+      "normal_result": {
+        "scenario_id": "PR-16",
+        "accepted": true,
+        "action": "Act automatically",
+        "confidence": 0.96,
+        "reasons": [
+          "all_stage344_deterministic_guards_passed"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/conformance#415",
+          "modelcontextprotocol/csharp-sdk#1528",
+          "modelcontextprotocol/inspector#2492",
+          "modelcontextprotocol/java-sdk#900",
+          "modelcontextprotocol/mcpb#108",
+          "modelcontextprotocol/modelcontextprotocol#3172"
+        ]
+      },
+      "adversarial_result": {
+        "scenario_id": "PR-16",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/conformance#415",
+          "modelcontextprotocol/csharp-sdk#1528",
+          "modelcontextprotocol/inspector#2492",
+          "modelcontextprotocol/java-sdk#900",
+          "modelcontextprotocol/mcpb#108",
+          "modelcontextprotocol/modelcontextprotocol#3172"
+        ]
+      },
+      "perturbed_result": {
+        "scenario_id": "PR-16",
+        "accepted": false,
+        "action": "Send to a human",
+        "confidence": 0.98,
+        "reasons": [
+          "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing",
+          "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+          "caip25_session_or_a2a_dotnet_jsonschema8_violation",
+          "stripe_salesforce_ai_context_or_cdp_projectid_tenant_leak"
+        ],
+        "pr_count": 32,
+        "repo_count": 14,
+        "sample_prs": [
+          "modelcontextprotocol/conformance#415",
+          "modelcontextprotocol/csharp-sdk#1528",
+          "modelcontextprotocol/inspector#2492",
+          "modelcontextprotocol/java-sdk#900",
+          "modelcontextprotocol/mcpb#108",
+          "modelcontextprotocol/modelcontextprotocol#3172"
+        ]
+      },
+      "perturbation_delta_pts": 0.0,
+      "latency_ms": 0.54,
+      "baseline_latency_ms": 2.376
+    }
+  ],
+  "repositories": [
+    "ChainAgnostic/CAIPs",
+    "Universal-Commerce-Protocol/samples",
+    "Universal-Commerce-Protocol/ucp",
+    "a2aproject/A2A",
+    "a2aproject/a2a-dotnet",
+    "a2aproject/a2a-go",
+    "a2aproject/a2a-inspector",
+    "a2aproject/a2a-java",
+    "a2aproject/a2a-js",
+    "a2aproject/a2a-python",
+    "a2aproject/a2a-rs",
+    "a2aproject/a2a-samples",
+    "a2aproject/a2a-tck",
+    "coinbase/MagicSpend",
+    "coinbase/agentic-wallet-skills",
+    "coinbase/agentkit",
+    "coinbase/assume-role",
+    "coinbase/baseca",
+    "coinbase/build-onchain-apps",
+    "coinbase/cadence-ruby",
+    "coinbase/cb-mpc",
+    "coinbase/cbpay-js",
+    "coinbase/cdp-sdk",
+    "coinbase/cdp-sdk-python",
+    "coinbase/cdp-swift",
+    "coinbase/cdp-wallet-demo-apps",
+    "coinbase/cdpcurl",
+    "coinbase/cds",
+    "coinbase/chainstorage",
+    "coinbase/coinbase-advanced-py",
+    "coinbase/coinbase-business-whmcs",
+    "coinbase/coinbase-business-woocommerce",
+    "coinbase/coinbase-commerce-php",
+    "coinbase/coinbase-commerce-ruby",
+    "coinbase/coinbase-node",
+    "coinbase/coinbase-php",
+    "coinbase/coinbase-pro-node",
+    "coinbase/coinbase-pro-trading-toolkit",
+    "coinbase/coinbase-python",
+    "coinbase/coinbase-sdk-ai-agent-sample",
+    "coinbase/coinbase-sdk-go",
+    "coinbase/coinbase-sdk-nodejs",
+    "coinbase/coinbase-sdk-ruby",
+    "coinbase/coinbase-wallet-sdk",
+    "coinbase/commerce-onchain-payment-protocol",
+    "coinbase/custom-stablecoin",
+    "coinbase/dexter",
+    "coinbase/eip-token-upgrade",
+    "coinbase/extended-optimism-mintable-token",
+    "coinbase/geoengineer",
+    "coinbase/kryptology",
+    "coinbase/mesh-bitcoin",
+    "coinbase/mesh-cli",
+    "coinbase/mesh-ecosystem",
+    "coinbase/mesh-ethereum",
+    "coinbase/mesh-geth-sdk",
+    "coinbase/mesh-sdk-go",
+    "coinbase/mesh-specifications",
+    "coinbase/mkr-vote-proxy",
+    "coinbase/mongobetween",
+    "coinbase/multisig-tool",
+    "coinbase/nft-dapp-starter-kit",
+    "coinbase/onchain-agent-demo",
+    "coinbase/onchain-agent-demo-backend",
+    "coinbase/onchain-app-template",
+    "coinbase/onchain-commerce-template",
+    "coinbase/onchainkit",
+    "coinbase/onchaintestkit",
+    "coinbase/onramp-demo-application",
+    "coinbase/onramp-v2-mobile-demo",
+    "coinbase/paymaster-bundler-examples",
+    "coinbase/payments-mcp",
+    "coinbase/prime-sdk-ts",
+    "coinbase/pwnbot",
+    "coinbase/rules_ruby",
+    "coinbase/salus",
+    "coinbase/smart-wallet",
+    "coinbase/smart-wallet-docs",
+    "coinbase/smart-wallet-permissions",
+    "coinbase/solidity-style-guide",
+    "coinbase/spend-permissions",
+    "coinbase/stable-swapper",
+    "coinbase/staking-client-library-go",
+    "coinbase/step",
+    "coinbase/step-hello-world",
+    "coinbase/temporal-ruby",
+    "coinbase/terraform-landscape",
+    "coinbase/tg-trading-bot",
+    "coinbase/verifying-paymaster",
+    "coinbase/waas-sdk-react-native",
+    "coinbase/wrapped-tokens-os",
+    "coinbase/x402",
+    "ethereum/EIPs",
+    "ethereum/ERCs",
+    "ethereum/EthLib",
+    "ethereum/act",
+    "ethereum/aleth",
+    "ethereum/anon-rpc",
+    "ethereum/beacon-APIs",
+    "ethereum/blake2b-py",
+    "ethereum/consensus-spec-tests",
+    "ethereum/consensus-specs",
+    "ethereum/ddht",
+    "ethereum/discv4-dns-lists",
+    "ethereum/eipw",
+    "ethereum/eth-abi",
+    "ethereum/eth-account",
+    "ethereum/eth-hash",
+    "ethereum/eth-keys",
+    "ethereum/eth-rlp",
+    "ethereum/eth-tester",
+    "ethereum/eth-typing",
+    "ethereum/eth-utils",
+    "ethereum/ethereum-app",
+    "ethereum/ethereum-org-website",
+    "ethereum/ethereumj",
+    "ethereum/ethspecify",
+    "ethereum/evmone",
+    "ethereum/execution-apis",
+    "ethereum/execution-spec-tests",
+    "ethereum/execution-specs",
+    "ethereum/fe",
+    "ethereum/forkcast",
+    "ethereum/go-ethereum",
+    "ethereum/hevm",
+    "ethereum/hexbytes",
+    "ethereum/hive",
+    "ethereum/kohaku",
+    "ethereum/kohaku-rs",
+    "ethereum/lahja",
+    "ethereum/mist",
+    "ethereum/moica-revocation-smt",
+    "ethereum/pm",
+    "ethereum/portal-network-specs",
+    "ethereum/py-evm",
+    "ethereum/py_ecc",
+    "ethereum/pyrlp",
+    "ethereum/remix-project",
+    "ethereum/retesteth",
+    "ethereum/solidity",
+    "ethereum/sourcify",
+    "ethereum/spec-viewer",
+    "ethereum/stateless-ethereum-specs",
+    "ethereum/tests",
+    "ethereum/tor-js",
+    "ethereum/trinity",
+    "ethereum/web3.py",
+    "ethereum/webtor-rs",
+    "ethereum/yellowpaper",
+    "ethereum/zkapi",
+    "ethereum/zkevm-website",
+    "google-agentic-commerce/AP2",
+    "modelcontextprotocol/access",
+    "modelcontextprotocol/conformance",
+    "modelcontextprotocol/csharp-sdk",
+    "modelcontextprotocol/ext-apps",
+    "modelcontextprotocol/ext-skills",
+    "modelcontextprotocol/go-sdk",
+    "modelcontextprotocol/inspector",
+    "modelcontextprotocol/java-sdk",
+    "modelcontextprotocol/kotlin-sdk",
+    "modelcontextprotocol/mcpb",
+    "modelcontextprotocol/modelcontextprotocol",
+    "modelcontextprotocol/php-sdk",
+    "modelcontextprotocol/python-sdk",
+    "modelcontextprotocol/quickstart-resources",
+    "modelcontextprotocol/registry",
+    "modelcontextprotocol/ruby-sdk",
+    "modelcontextprotocol/rust-sdk",
+    "modelcontextprotocol/servers",
+    "modelcontextprotocol/typescript-sdk",
+    "openwallet-foundation/acapy",
+    "openwallet-foundation/acapy-controllers",
+    "openwallet-foundation/acapy-endorser-service",
+    "openwallet-foundation/acapy-minimal-example",
+    "openwallet-foundation/acapy-plugins",
+    "openwallet-foundation/acapy-tools",
+    "openwallet-foundation/acapy-vc-authn-oidc",
+    "openwallet-foundation/architecture-sig",
+    "openwallet-foundation/askar",
+    "openwallet-foundation/askar-wrapper-javascript",
+    "openwallet-foundation/bifold-wallet",
+    "openwallet-foundation/credo-ts",
+    "openwallet-foundation/credo-ts-didcomm-ext",
+    "openwallet-foundation/credo-ts-docs",
+    "openwallet-foundation/credo-ts-ext",
+    "openwallet-foundation/didcomm-mediator-credo",
+    "openwallet-foundation/didcomm-mediator-service",
+    "openwallet-foundation/digital-wallet-and-agent-overviews-sig",
+    "openwallet-foundation/governance",
+    "openwallet-foundation/helm-charts",
+    "openwallet-foundation/multipaz",
+    "openwallet-foundation/multipaz-developer-website",
+    "openwallet-foundation/multipaz-samples",
+    "openwallet-foundation/multipaz-utopia",
+    "openwallet-foundation/multipaz-wallet",
+    "openwallet-foundation/owl-agent-test-harness",
+    "openwallet-foundation/owl-akrida",
+    "openwallet-foundation/owl-mobile-wallet-test-harness",
+    "openwallet-foundation/project-proposals",
+    "openwallet-foundation/safe-wallet-sig",
+    "openwallet-foundation/sd-jwt-js",
+    "openwallet-foundation/tac",
+    "openwallet-foundation/vcx",
+    "stripe/agent-toolkit",
+    "stripe/billing-extensions",
+    "stripe/bonsai",
+    "stripe/connect-js",
+    "stripe/dagon",
+    "stripe/elements-examples",
+    "stripe/example-terminal-backend",
+    "stripe/goproxy",
+    "stripe/link-cli",
+    "stripe/mpp-java",
+    "stripe/mpp-rb",
+    "stripe/open-banking-v2-docs",
+    "stripe/openapi",
+    "stripe/pg-schema-diff",
+    "stripe/projects-template-registry",
+    "stripe/purl",
+    "stripe/rainier",
+    "stripe/react-connect-js",
+    "stripe/react-stripe-js",
+    "stripe/skycfg",
+    "stripe/smokescreen",
+    "stripe/ssf-ruby",
+    "stripe/stripe-android",
+    "stripe/stripe-apps",
+    "stripe/stripe-billing-typographic",
+    "stripe/stripe-cli",
+    "stripe/stripe-commercetools-checkout-app",
+    "stripe/stripe-commercetools-connect-app",
+    "stripe/stripe-connect-furever-demo",
+    "stripe/stripe-connect-rocketrides",
+    "stripe/stripe-dotnet",
+    "stripe/stripe-go",
+    "stripe/stripe-identity-react-native",
+    "stripe/stripe-ios",
+    "stripe/stripe-java",
+    "stripe/stripe-js",
+    "stripe/stripe-magento2-releases",
+    "stripe/stripe-mirakl-connector",
+    "stripe/stripe-mock",
+    "stripe/stripe-node",
+    "stripe/stripe-php",
+    "stripe/stripe-postman",
+    "stripe/stripe-python",
+    "stripe/stripe-react-native",
+    "stripe/stripe-ruby",
+    "stripe/stripe-sfcc-b2c-connector",
+    "stripe/stripe-terminal-android",
+    "stripe/stripe-terminal-ios",
+    "stripe/stripe-terminal-js-demo",
+    "stripe/stripe-terminal-react-native",
+    "stripe/stripe.github.io",
+    "stripe/subprocess",
+    "stripe/sync-engine",
+    "stripe/sync-engine-fork",
+    "stripe/terminal-js",
+    "stripe/terraform-provider-stripe",
+    "stripe/unilog",
+    "stripe/vscode-stripe",
+    "tempoxyz/accounts",
+    "tempoxyz/benchmarkoor-replay",
+    "tempoxyz/changelogs",
+    "tempoxyz/docs",
+    "tempoxyz/earn",
+    "tempoxyz/gh-actions",
+    "tempoxyz/hermes-mpp",
+    "tempoxyz/mpp",
+    "tempoxyz/mpp-go",
+    "tempoxyz/mpp-irl",
+    "tempoxyz/mpp-rs",
+    "tempoxyz/mpp-specs",
+    "tempoxyz/mpp-tools",
+    "tempoxyz/openclaw-mpp",
+    "tempoxyz/plugins",
+    "tempoxyz/pympp",
+    "tempoxyz/pytempo",
+    "tempoxyz/rpc-tester",
+    "tempoxyz/scfuzzbench",
+    "tempoxyz/tempo",
+    "tempoxyz/tempo-apps",
+    "tempoxyz/tempo-evals",
+    "tempoxyz/tempo-go",
+    "tempoxyz/tempo-std",
+    "tempoxyz/tempoup",
+    "tempoxyz/tidx",
+    "tempoxyz/tip.bot",
+    "tempoxyz/txgen",
+    "tempoxyz/wallet-cli",
+    "visa/visa-chart-components",
+    "wevm/abitype",
+    "wevm/cuer",
+    "wevm/curl.md",
+    "wevm/frog",
+    "wevm/incur",
+    "wevm/monoshot",
+    "wevm/mppx",
+    "wevm/ondine",
+    "wevm/ox",
+    "wevm/prool",
+    "wevm/tips.sh",
+    "wevm/viem",
+    "wevm/vocs",
+    "wevm/wagmi",
+    "wevm/wata",
+    "wevm/webauthx",
+    "wevm/zero",
+    "wevm/zyzz"
+  ]
+}

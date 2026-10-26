@@ -864,3 +864,19 @@
   - 基准评测与 7-Card 报告生成：`lab/x402_caip217_mpp_warden_ap2_ledger_ucp_appliesto_a2a_interceptor_stripe_mcp_bench.py`
   - 双语 7-Card 视觉报告：`reports/agentic-commerce-x402-caip217-mpp-warden-ap2-ledger-ucp-appliesto-a2a-interceptor-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
   - 单元测试：`tests/test_x402_caip217_mpp_warden_ap2_ledger_ucp_appliesto_a2a_interceptor_stripe_mcp.py`（全仓 `1,100/1,100` 测试通过）。
+
+
+### Stages 344–345：突破 310 仓与 17,000+ 零重叠 PR 双历史里程碑（`1,104/1,104` 单测全绿，310 仓 512 项零重叠 PR，累计 `17,030` 项 PR）
+
+- **达成 310 个官方独立上游仓库与 17,000+ 零重叠 PR 里程碑**：回填 `a2aproject/a2a-python`（+99 PRs），新增 12 个官方上游仓库（`ethereum/portal-network-specs`、`ethereum/ethereumj`、`ethereum/zkevm-website`、`ethereum/mist`、`ethereum/py_ecc`、`ethereum/webtor-rs`、`ethereum/ethereum-app`、`ethereum/anon-rpc`、`ethereum/tor-js`、`ethereum/zkapi`、`ethereum/spec-viewer`、`ethereum/ethspecify`），实现 **310 个活跃独立上游仓库**全覆盖，单阶段纳入 **512 项零重叠一手 PR**，全仓累计覆盖 **17,030 项零重叠 PR**，全仓单测达 **1,104/1,104** 全绿。
+- **核心上游证据与架构防线**：
+  - `PR-01..PR-02`（`ChainAgnostic/CAIPs#211` `CAIP-25` RPC 权限协商扩展、`ethereum/EIPs#12582` EIP-2780 调用帧状态 Gas 额度、`coinbase/x402#229` v2 核心消息机器可读 JSON Schema 与 `ethereum/ERCs#2015` ERC-8048 Base 链标识符校验）。
+  - `PR-03..PR-06`（`tempoxyz/accounts#868`、`tempoxyz/benchmarkoor-replay#17` 间接 Cargo 依赖治理、`google-agentic-commerce/AP2#139` UPI Collect 支付支持与核心支付同步、`openwallet-foundation/acapy#4191` `sqlcipher3-wheels` 二进制轮强制门禁）。
+  - `PR-07..PR-10`（`Universal-Commerce-Protocol/ucp#658` 分单支付 `allowed_combinations` Profile 校验、`a2aproject/A2A#1486` `ListTaskPushNotificationConfigs` `configs` 复数化规范与 `a2aproject/a2a-inspector#30` 后端校验器单测）。
+  - `PR-11..PR-14`（`stripe/billing-extensions#3` 自定义周期按比例计费清单注册、`coinbase/MagicSpend#16` 待处理提款追踪、`coinbase/agentkit#1258` TypeScript `tokenSafety` Action Provider 与 `coinbase/agentic-wallet-skills#40` `awal` 外部付款方集成示例）。
+  - `PR-15..PR-16`（`modelcontextprotocol/conformance#415` `server-sse-multiple-streams` 协商协议版本强制校验与 `modelcontextprotocol/csharp-sdk#1528` HTTP `Content-Type: application/json` 移除冗余 `charset=utf-8`）。
+- **交付技术资产**：
+  - 确定性守卫：`lab/x402_v2_schema_mpp_accounts_ap2_upi_ucp_split_a2a_configs_stripe_mcp_guards.py`
+  - 基准评测与 7-Card 报告生成：`lab/x402_v2_schema_mpp_accounts_ap2_upi_ucp_split_a2a_configs_stripe_mcp_bench.py`
+  - 双语 7-Card 视觉报告：`reports/agentic-commerce-x402-v2-schema-mpp-accounts-ap2-upi-ucp-split-a2a-configs-stripe-mcp-bench/index.html` / `index.en.html` / `report.json`
+  - 单元测试：`tests/test_x402_v2_schema_mpp_accounts_ap2_upi_ucp_split_a2a_configs_stripe_mcp.py`（全仓 `1,104/1,104` 测试通过）。
