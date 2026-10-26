@@ -689,3 +689,19 @@
   - 密封数据：`reports/agentic-commerce-x402-agentcard-mpp-receipt-ap2-fcb-ucp-mcp-a2a-oid4vp-stripe-mcp-bench/report.json`
 - **单元测试**：`tests/test_x402_agentcard_mpp_receipt_ap2_fcb_ucp_mcp_a2a_oid4vp_stripe_mcp.py`（全量 `1,064/1,064` 测试 100% 通过）。
 
+---
+
+## Stage 326–327 增量更新（突破 220 个官方上游仓库与累计 12,000+（12,422）项零重叠 PR 双里程碑 · 全仓 1,068/1,068 单测全绿）
+
+- **验证时间**：2026-10-26（北京时间）
+- **新增覆盖范围**：新增纳入 15 个 Coinbase 官方链上测试、钱包演示、法币入金、加密曲线、机构级 Prime SDK 与 Mesh 规范仓库（`coinbase/onchaintestkit`、`coinbase/cdp-wallet-demo-apps`、`coinbase/onramp-demo-app`、`coinbase/secp256k1`、`coinbase/dexter`、`coinbase/coinbase-sdk-go`、`coinbase/mesh-specifications`、`coinbase/chainstorage`、`coinbase/mesh-bitcoin`、`coinbase/prime-sdk-go`、`coinbase/prime-sdk-py`、`coinbase/prime-sdk-java`、`coinbase/MagicSpend`、`coinbase/nft-dapp-starter-kit`、`coinbase/prime-sdk-dotnet`），将活跃无重叠上游仓库池扩展至 **220 个官方仓库**，单阶段精选 **512 项全新零重叠上游 PR**，全仓累计覆盖达 **12,422 项零重叠一手 PR**（突破 12,000+ PR 大关）。
+- **核心协议与安全发现**：
+  1. **x402 Eltociear 安全 API 与 Tempo Zones 脱敏 RPC 模拟 / MPP 流式会话追踪（PR-01..PR-02）**：基于 `coinbase/x402#245`、`tempoxyz/tempo#8581`、`tempoxyz/mpp-rs#599`、`tempoxyz/mpp-go#201`、`wevm/mppx#956` 与 `wevm/ox#489`，强制执行流式会话跟进、赞助交易按发送者预留、CLI 凭证重试绑定以及带密钥帧随机数（Keyed Frame Nonces）防重放校验。
+  2. **AP2 Klarna 合作伙伴注册、ERC-7730 强制意图（Mandatory Intent）与 UCP 签名 REST 响应绑定（PR-03..PR-05）**：结合 `google-agentic-commerce/AP2#161`、`ethereum/ERCs#2031`、`Universal-Commerce-Protocol/ucp#699`、`ChainAgnostic/CAIPs#241` 与 `stripe/link-cli#441`，强制 ERC-7730 交易意图字段必填、UCP 签名 REST 响应与请求上下文密码学绑定，并守护 Stripe Link CLI Agent 身份邮箱/手机号最小化暴露与 **Stripe MCP 2026-10-31 旧版 API 密钥停用红线**。
+  3. **A2A 多轮对话检查器、Python 存在性校验与 Stripe/Coinbase/MCP 十语言 SDK 硬化（PR-06..PR-16）**：涵盖 `a2aproject/A2A#1588`、`a2aproject/a2a-inspector#65`、`a2aproject/a2a-python#870`、`a2aproject/a2a-go#151`、`stripe/agent-toolkit#341`、`stripe/stripe-python#1818`、`coinbase/agentkit#1275`、`modelcontextprotocol/modelcontextprotocol#3291`、`modelcontextprotocol/typescript-sdk#2520`、`modelcontextprotocol/go-sdk#1063`、`modelcontextprotocol/kotlin-sdk#870` 与 `modelcontextprotocol/php-sdk#383`，实现 Content-Type 严格校验、ResumptionToken 线程传递与 JSON-RPC 输入解析硬化。
+- **新增技术资产**：
+  - 确定性离线守卫模块：`lab/x402_eltociear_mpp_stream_ap2_erc7730_ucp_rest_sig_a2a_stripe_mcp_guards.py`
+  - 16 场景 7-Card 4:5 基准测试器：`lab/x402_eltociear_mpp_stream_ap2_erc7730_ucp_rest_sig_a2a_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 视觉报告：`reports/agentic-commerce-x402-eltociear-mpp-stream-ap2-erc7730-ucp-rest-sig-a2a-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试套件：`tests/test_x402_eltociear_mpp_stream_ap2_erc7730_ucp_rest_sig_a2a_stripe_mcp.py`（全仓 **`Ran 1068 tests in 14.751s - OK`**）
+
