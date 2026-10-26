@@ -12,7 +12,7 @@
   "fault_intercept_rate_pct": 100.0,
   "perturbation_consistency_pct": 100.0,
   "batch_latency_ms": 0.19,
-  "total_elapsed_ms": 5.44,
+  "total_elapsed_ms": 1.16,
   "baseline_unbatched_ms": 2.96,
   "batch_all_passed": true,
   "scenarios": [
@@ -26,7 +26,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_REFUSAL_AND_OVERSIZE_RELAY_SAFE",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.024,
+      "latency_ms": 0.067,
       "passed": true
     },
     {
@@ -39,7 +39,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_MCPDO_TLS_HANDOFF_AND_SKILLS_CACHE_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.091,
+      "latency_ms": 0.085,
       "passed": true
     },
     {
@@ -52,7 +52,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_PKCE_FLOW_AND_SECRET_STAMP_SAFE",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.029,
+      "latency_ms": 0.031,
       "passed": true
     },
     {
@@ -65,7 +65,7 @@
       "patched_allowed": true,
       "patched_reason_code": "INSPECTOR_INSUFFICIENT_SCOPE_429_AND_EMA_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.116,
+      "latency_ms": 0.18,
       "passed": true
     },
     {
@@ -78,7 +78,7 @@
       "patched_allowed": true,
       "patched_reason_code": "REGISTRY_TRIGRAM_BACKUP_AND_PUBLISH_GUARD_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.018,
+      "latency_ms": 0.031,
       "passed": true
     },
     {
@@ -91,7 +91,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_SSE_EVENT_FILTER_AND_SPACING_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.012,
+      "latency_ms": 0.025,
       "passed": true
     },
     {
@@ -104,7 +104,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_DCR_JWKS_AND_RESOURCE_ERROR_JSON_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.023,
+      "latency_ms": 0.039,
       "passed": true
     },
     {
@@ -117,7 +117,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_TOKEN_SOURCE_DCR_REUSE_AND_REAUTH_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.01,
+      "latency_ms": 0.013,
       "passed": true
     },
     {
@@ -130,7 +130,7 @@
       "patched_allowed": true,
       "patched_reason_code": "GO_SDK_DISCOVER_AND_SINGLE_GET_SERVER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.01,
+      "latency_ms": 0.011,
       "passed": true
     },
     {
@@ -143,7 +143,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_HTTP_STATUS_AND_SSE_RECONNECT_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.01,
+      "latency_ms": 0.014,
       "passed": true
     },
     {
@@ -156,7 +156,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_REDIRECT_AND_NESTED_MCP_HEADER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.056,
+      "latency_ms": 0.126,
       "passed": true
     },
     {
@@ -169,7 +169,7 @@
       "patched_allowed": true,
       "patched_reason_code": "RUST_SDK_INIT_PING_AND_ERROR_HANDLING_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.01,
+      "latency_ms": 0.013,
       "passed": true
     },
     {
@@ -182,7 +182,7 @@
       "patched_allowed": true,
       "patched_reason_code": "CSHARP_SDK_RUNE_URI_NULL_SCHEMA_AND_ORDER_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.042,
+      "latency_ms": 0.082,
       "passed": true
     },
     {
@@ -195,7 +195,7 @@
       "patched_allowed": true,
       "patched_reason_code": "CSHARP_SDK_PARSE_ERROR_META_MERGE_AND_CANCEL_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.111,
+      "latency_ms": 0.128,
       "passed": true
     },
     {
@@ -208,7 +208,7 @@
       "patched_allowed": true,
       "patched_reason_code": "JAVA_SDK_FILTER_AND_MODERN_SKILLS_VALID",
       "order_perturbation_consistent": true,
-      "latency_ms": 0.027,
+      "latency_ms": 0.026,
       "passed": true
     },
     {
