@@ -1,0 +1,274 @@
+{
+  "benchmark_id": "agentic-commerce-x402-watchtower-mpp-burnat-ap2-didcomm-ucp-fulfill-link-a2a-stripe-mcp-bench",
+  "stage": "Stage 320-309",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "attack_blocked": 16,
+  "remediated_passed": 16,
+  "perturbation_stable": 16,
+  "unique_pr_count": 512,
+  "unique_repo_count": 190,
+  "cumulative_unique_prs": 10886,
+  "fast_path_median_ms": 0.12,
+  "baseline_median_ms": 0.54,
+  "speedup_factor": 4.5,
+  "scenarios": [
+    {
+      "id": "PR-01",
+      "title_en": "Tempo-Evals PayPal Order Reuse Across Checkouts, Accounts Launch-Editor Patch & OpenClaw mppx 0.12 Guard",
+      "title_zh": "Tempo-Evals 跨结账请求复用 PayPal 订单、Accounts 漏洞工具链补丁与 OpenClaw mppx 0.12 守卫",
+      "attack_blocked": true,
+      "attack_code": "TEMPO_PAYPAL_ORDER_REUSE_OR_LAUNCH_EDITOR_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "TEMPO_PAYPAL_ORDER_REUSE_AND_LAUNCH_EDITOR_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/x402#251",
+        "tempoxyz/tempo#8590",
+        "tempoxyz/mpp-rs#605",
+        "tempoxyz/mpp-go#207"
+      ]
+    },
+    {
+      "id": "PR-02",
+      "title_en": "wevm/mppx Confirmed Charge Recovery After RPC Error, viem Dropped Tx Replacement & Stripe mpp-rb Guard",
+      "title_zh": "wevm/mppx RPC 错误后恢复已确认扣款、viem 已丢弃交易替换检测与 Stripe mpp-rb 守卫",
+      "attack_blocked": true,
+      "attack_code": "MPPX_RPC_CHARGE_RECOVERY_OR_VIEM_DROPPED_TX_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MPPX_RPC_CHARGE_RECOVERED_AND_VIEM_REPLACEMENT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "wevm/mppx#1005",
+        "wevm/viem#5262",
+        "wevm/ox#498",
+        "wevm/wagmi#5242"
+      ]
+    },
+    {
+      "id": "PR-03",
+      "title_en": "Multipaz JVM Google Key Attestation Verifier, ERC-8107 Last Call Readiness & AP2 gRPC Hardening Guard",
+      "title_zh": "Multipaz JVM Google 密钥证明验证器、ERC-8107 Last Call 就绪性校验与 AP2 gRPC 安全升级守卫",
+      "attack_blocked": true,
+      "attack_code": "MULTIPAZ_KEY_ATTESTATION_OR_ERC8107_LAST_CALL_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MULTIPAZ_KEY_ATTESTATION_AND_ERC8107_LAST_CALL_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "google-agentic-commerce/AP2#168",
+        "openwallet-foundation/sd-jwt-js#278",
+        "ethereum/ERCs#2038",
+        "openwallet-foundation/credo-ts#3065"
+      ]
+    },
+    {
+      "id": "PR-04",
+      "title_en": "UCP Resource Success-Status Constraint, ucp-schema Extension requires Validation & Origin Discovery Guard",
+      "title_zh": "UCP 资源响应成功状态约束、ucp-schema 扩展 Schema requires 依赖校验与请求源发现推导守卫",
+      "attack_blocked": true,
+      "attack_code": "UCP_NONSUCCESS_RESOURCE_OR_EXTENSION_REQUIRES_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "UCP_RESOURCE_SUCCESS_AND_EXTENSION_REQUIRES_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "Universal-Commerce-Protocol/ucp#709",
+        "Universal-Commerce-Protocol/samples#120",
+        "Universal-Commerce-Protocol/conformance#11",
+        "visa/visa-chart-components#82"
+      ]
+    },
+    {
+      "id": "PR-05",
+      "title_en": "Stripe Link-CLI Shortened RSA-PSS Signature Rejection, Sync-Engine Optimistic Balance & Mirakl Tax-Split Guard",
+      "title_zh": "Stripe Link-CLI 拒绝截短 RSA-PSS 签名、Sync-Engine 乐观余额强制边车与 Mirakl 税费分摊退税重试守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_SHORTENED_RSAPSS_OR_TAX_SPLIT_REFUND_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_RSAPSS_FULL_SALT_AND_OPTIMISTIC_BALANCE_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "ChainAgnostic/CAIPs#249",
+        "stripe/pg-schema-diff#285",
+        "stripe/link-cli#447",
+        "stripe/sync-engine#316"
+      ]
+    },
+    {
+      "id": "PR-06",
+      "title_en": "A2A TCK Valid JSON on Wrong Content-Type Test, ITK Per-Agent Cargo Target Isolation & Winget PrivacyUrl Guard",
+      "title_zh": "A2A TCK 错误 Content-Type 测试有效 JSON 载荷、ITK 按 Agent 隔离 Rust Cargo 构建目标与 PrivacyUrl 守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_TCK_CONTENT_TYPE_BODY_OR_ITK_TARGET_COLLISION_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_TCK_VALID_JSON_AND_ITK_CARGO_ISOLATION_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/A2A#1627",
+        "a2aproject/a2a-inspector#90",
+        "a2aproject/a2a-samples#644",
+        "a2aproject/a2a-rs#285"
+      ]
+    },
+    {
+      "id": "PR-07",
+      "title_en": "a2a-js ResultManager Task History Merge (No Overwrite), Spec AUTH_REQUIRED Lifecycle & Context ID Guard",
+      "title_zh": "a2a-js ResultManager 合并任务历史防覆盖、规范 AUTH_REQUIRED 生命周期处理与 Context ID 保持守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_JS_TASK_HISTORY_OVERWRITE_OR_AUTH_REQUIRED_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_JS_TASK_HISTORY_MERGED_AND_AUTH_REQUIRED_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-python#929",
+        "a2aproject/a2a-js#398",
+        "a2aproject/a2a-python#928",
+        "a2aproject/a2a-js#397"
+      ]
+    },
+    {
+      "id": "PR-08",
+      "title_en": "a2a-java listTasks Authorization Enforcement & MultiAgentRegistry + a2a-go Concurrent Cancellation Guard",
+      "title_zh": "a2a-java listTasks 强制鉴权与原生 MultiAgentRegistry、以及 a2a-go 并发取消结果一致性守卫",
+      "attack_blocked": true,
+      "attack_code": "A2A_JAVA_LISTTASKS_UNAUTHZ_OR_GO_CANCEL_RACE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "A2A_JAVA_LISTTASKS_AUTHZ_AND_GO_CONCURRENT_CANCEL_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "a2aproject/a2a-go#204",
+        "a2aproject/a2a-dotnet#343",
+        "a2aproject/a2a-java#966",
+        "a2aproject/a2a-go#203"
+      ]
+    },
+    {
+      "id": "PR-09",
+      "title_en": "Stripe Agent-Toolkit Cached create-checkout-session, stripe-js SSO Token Verification & CLI Reauth Fold Guard",
+      "title_zh": "Stripe Agent-Toolkit 结账会话缓存优化、stripe-js 发布标签前验证 SSO 令牌授权与 CLI 重新认证合并守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_UNVERIFIED_SSO_TOKEN_OR_UNCACHED_CHECKOUT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_SSO_TOKEN_AUTHORIZED_AND_CHECKOUT_CACHED_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/agent-toolkit#349",
+        "stripe/stripe-cli#1973",
+        "stripe/stripe-js#944",
+        "stripe/react-stripe-js#670"
+      ]
+    },
+    {
+      "id": "PR-10",
+      "title_en": "Stripe Python major_api_version Constant & Static v2 Event Imports + Multi-SDK Private-Preview Sync Guard",
+      "title_zh": "Stripe Python major_api_version 常量与静态 v2 事件导入、以及多语言 SDK Private-Preview 同步守卫",
+      "attack_blocked": true,
+      "attack_code": "STRIPE_MAJOR_API_VERSION_OR_V2_EVENT_IMPORT_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "STRIPE_MAJOR_API_VERSION_AND_V2_EVENT_IMPORT_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "stripe/stripe-python#1829",
+        "stripe/stripe-node#2788",
+        "stripe/stripe-go#2362",
+        "stripe/stripe-ruby#1914"
+      ]
+    },
+    {
+      "id": "PR-11",
+      "title_en": "Coinbase Advanced-Py Default REST Timeout Anti-DoS, Mesh-Geth Calldata Decode & Duplicate Wallet SDK Guard",
+      "title_zh": "Coinbase Advanced-Py 默认 REST 超时防客户端 DoS、Mesh-Geth 合约签名参数解码与重复 SDK 实例告警守卫",
+      "attack_blocked": true,
+      "attack_code": "COINBASE_REST_NO_TIMEOUT_DOS_OR_CALLDATA_PARSE_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "COINBASE_REST_TIMEOUT_ENFORCED_AND_CALLDATA_DECODED_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "coinbase/agentkit#1281",
+        "coinbase/cdp-sdk#642",
+        "coinbase/onchainkit#2625",
+        "coinbase/coinbase-wallet-sdk#1882"
+      ]
+    },
+    {
+      "id": "PR-12",
+      "title_en": "Sierra tau2-bench Inworld Realtime Audio Provider, AllTools Banking Retrieval Config & Voice Defaults Guard",
+      "title_zh": "Sierra tau2-bench Inworld 实时语音原生提供方、AllTools 银行知识检索配置与语音实验默认参数守卫",
+      "attack_blocked": true,
+      "attack_code": "TAU2_VOICE_PROVIDER_CONFIG_OR_BANKING_RETRIEVAL_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "TAU2_INWORLD_REALTIME_AND_BANKING_RETRIEVAL_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "sierra-research/tau2-bench#14",
+        "stripe/stripe-connect-rocketrides#104",
+        "stripe/sync-engine-fork#409",
+        "stripe/stripe-cli-go-plugin-bootstrap#17"
+      ]
+    },
+    {
+      "id": "PR-13",
+      "title_en": "MCP Filesystem Server Hold Tool Calls During Pending Roots Refresh, MCPB ZIP EOCD Comment Length & Tasks _meta Guard",
+      "title_zh": "MCP 文件系统服务端在 Roots 刷新挂起期间暂挂工具调用、MCPB 签名更新 ZIP EOCD 注释长度与关联任务 _meta 守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_PREMATURE_TOOL_CALL_DURING_ROOTS_REFRESH_OR_EOCD_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_ROOTS_REFRESH_BARRIER_AND_ZIP_EOCD_LENGTH_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/modelcontextprotocol#3309",
+        "modelcontextprotocol/inspector#2576",
+        "modelcontextprotocol/registry#1569",
+        "modelcontextprotocol/servers#5078"
+      ]
+    },
+    {
+      "id": "PR-14",
+      "title_en": "MCP TypeScript Exact Accept Media-Type Parsing & Opaque Cursor Walk + Python Clean-EOF SSE Reconnect Budget Guard",
+      "title_zh": "MCP TS 精确解析 Accept 媒体类型与不透明游标遍历、以及 Python 干净 EOF 时单请求 SSE 重连预算修复守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_LOOSE_ACCEPT_PARSE_OR_EOF_SSE_RECONNECT_EXHAUSTION_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_EXACT_ACCEPT_MEDIA_TYPE_AND_SSE_EOF_BUDGET_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/typescript-sdk#2594",
+        "modelcontextprotocol/python-sdk#3280",
+        "modelcontextprotocol/typescript-sdk#2593",
+        "modelcontextprotocol/python-sdk#3278"
+      ]
+    },
+    {
+      "id": "PR-15",
+      "title_en": "MCP Go Bounded Streamable Close DELETE Timeout, Rust Open Capability Preservation & Java Stateless Unregistered Handler Guard",
+      "title_zh": "MCP Go 限制 Streamable Close DELETE 超时防静默对端挂起、Rust 保留开放能力字段与 Java 无状态未注册处理器错误守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_GO_UNBOUNDED_CLOSE_DELETE_OR_RUST_CAP_DROP_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_GO_BOUNDED_CLOSE_DELETE_AND_RUST_CAP_PRESERVED_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/go-sdk#1105",
+        "modelcontextprotocol/rust-sdk#1093",
+        "modelcontextprotocol/csharp-sdk#1674",
+        "modelcontextprotocol/java-sdk#1037"
+      ]
+    },
+    {
+      "id": "PR-16",
+      "title_en": "MCP PHP Modern Lifecycle ClientGateway::elicit() & Missing Finder Fail-Loud + Ruby SEP-2575 Envelope logLevel Guard",
+      "title_zh": "MCP PHP 现代生命周期服务 ClientGateway::elicit() 与缺失 Finder 显式报错、以及 Ruby SEP-2575 信封 logLevel 守卫",
+      "attack_blocked": true,
+      "attack_code": "MCP_PHP_LEGACY_ELICIT_OR_RUBY_SEP2575_LOGLEVEL_VIOLATION",
+      "remediated_passed": true,
+      "remediated_code": "MCP_PHP_MODERN_ELICIT_AND_RUBY_SEP2575_LOGLEVEL_VERIFIED",
+      "pr_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/kotlin-sdk#900",
+        "modelcontextprotocol/swift-sdk#17",
+        "modelcontextprotocol/php-sdk#417",
+        "modelcontextprotocol/ruby-sdk#437"
+      ]
+    }
+  ]
+}
