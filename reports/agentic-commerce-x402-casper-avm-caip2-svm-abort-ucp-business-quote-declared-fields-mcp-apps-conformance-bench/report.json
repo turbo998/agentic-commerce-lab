@@ -187,7 +187,7 @@
       "valid_code": "STAGE236_COMPOSITE_ALL_16_GUARDS_PASSED",
       "attack_blocked_code": "STAGE236_COMPOSITE_BLOCKED_PR-10_MCP_APPS_IFRAME_ALLOW_POLICY_MALFORMED",
       "perturbation_invariant": true,
-      "latency_ms": 0.2,
+      "latency_ms": 0.32,
       "action": "Act automatically (enforce all 16 guards)"
     }
   ]
