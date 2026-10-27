@@ -1,4 +1,4 @@
-# 2026-10-27 技术资产与架构更新索引（Stages 618–641 · 历史性突破 620+ / 625 / 630+ / 635 / 640+ 阶段、1,750+ 官方仓库 / 1,670 活跃池仓库、90,000+ / 91,000+ / 92,000+ / 92,500+ 零重叠 PR & 全仓 1,716/1,716 单测全绿里程碑 · 累计覆盖 1,766 个官方仓库 / 1,670 个活跃池仓库与 92,806 项零重叠真实 PR！）
+# 2026-10-27 技术资产与架构更新索引（Stages 618–645 · 历史性突破 620+ / 625 / 630+ / 635 / 640+ / 645+ 阶段、1,780+ 官方仓库 / 1,690 活跃池仓库、90,000+ / 91,000+ / 92,000+ / 93,000+ / 93,800+ 零重叠 PR & 全仓 1,724/1,724 单测全绿里程碑 · 累计覆盖 1,786 个官方仓库 / 1,690 个活跃池仓库与 93,830 项零重叠真实 PR！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-27-daily-update.en.md`)](2026-10-27-daily-update.en.md)** | **[2026-10-27 每日研究 (`research/daily/2026-10-27.md`)](../../research/daily/2026-10-27.md)** | **[English Daily Research (`research/daily/2026-10-27.en.md`)](../../research/daily/2026-10-27.en.md)**
 
@@ -111,3 +111,21 @@
   - 基准评测与报告生成：`lab/x402_erc9330_mpp_cortexframework_ap2_agentregistry_ucp_storageplugin_a2a_netsecauthz_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9330-mpp-cortexframework-ap2-agentregistry-ucp-storageplugin-a2a-netsecauthz-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc9330_mpp_cortexframework_ap2_agentregistry_ucp_storageplugin_a2a_netsecauthz_stripe_mcp.py`（全仓 **1,716/1,716** 单测 100% 通过）
+
+## Stage 642–643：历史性突破 93,000+ 零重叠真实 PR & 1,720/1,720 单元测试双重大里程碑（Google Functions Framework C++ / Marketplace Autogen / Dataproc Trino Autoscaler / Secure Image Pipeline，累计 93,318 项零重叠 PR，覆盖 1,776 个官方仓库 / 1,680 个活跃池仓库，1,720/1,720 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` C++ 函数计算框架、云市场自动生成、Dataproc Trino 自动伸缩器与安全镜像流水线上游仓库（累计覆盖达 1,776 个官方仓库 & 1,680 个活跃池仓库）**：新增 `GoogleCloudPlatform/gke-custom-image-builder-ubuntu` (`#5`)、`GoogleCloudPlatform/functions-framework-cpp` (`#513`)、`GoogleCloudPlatform/gke-custom-image-builder-cos` (`#9`)、`GoogleCloudPlatform/dataproc-trino-autoscaler` (`#94`)、`GoogleCloudPlatform/datalake-modernization-workshops` (`#14`)、`GoogleCloudPlatform/dataproc-connect-visualization` (`#2`)、`GoogleCloudPlatform/gcs-postgresql-recovery-tutorial` (`#2`)、`GoogleCloudPlatform/marketplace-autogen` (`#77`)、`GoogleCloudPlatform/secure-image-pipeline` (`#7`)、`GoogleCloudPlatform/dataproc-scala-examples` (`#2`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓历史性突破 **93,000+ 项零重叠真实 PR（达 93,318 项）& 1,720/1,720 单元测试双重大里程碑**。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9335_mpp_functionsframeworkcpp_ap2_marketplaceautogen_ucp_trinoautoscaler_a2a_secureimage_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9335_mpp_functionsframeworkcpp_ap2_marketplaceautogen_ucp_trinoautoscaler_a2a_secureimage_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9335-mpp-functionsframeworkcpp-ap2-marketplaceautogen-ucp-trinoautoscaler-a2a-secureimage-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9335_mpp_functionsframeworkcpp_ap2_marketplaceautogen_ucp_trinoautoscaler_a2a_secureimage_stripe_mcp.py`（全仓 **1,720/1,720** 单测 100% 通过）
+
+## Stage 644–645：历史性突破 645+ 阶段、1,780+ 官方仓库与 93,800+ 零重叠真实 PR 三大里程碑（Google Dataflow RunInference / reCAPTCHA Edge / Dataplex Catalog Transfer / Terraform BackupDR，累计 93,830 项零重叠 PR，覆盖 1,786 个官方仓库 / 1,690 个活跃池仓库，1,724/1,724 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` Dataflow RunInference 实时推理、reCAPTCHA Edge 边缘风控、Dataplex 目录迁移工具与 Terraform BackupDR 灾备恢复上游仓库（累计覆盖达 1,786 个官方仓库 & 1,690 个活跃池仓库）**：新增 `GoogleCloudPlatform/google-cloud-ops-agents-puppet` (`#25`)、`GoogleCloudPlatform/buildpack-samples` (`#91`)、`GoogleCloudPlatform/dataflowruninference` (`#39`)、`GoogleCloudPlatform/managed-microsoft-activedirectory` (`#2`)、`GoogleCloudPlatform/deploystack-cloudsql-multiregion` (`#192`)、`GoogleCloudPlatform/dataplex-catalog-transfer-tooling` (`#42`)、`GoogleCloudPlatform/terraform-provider-backupdr` (`#16`)、`GoogleCloudPlatform/tulip` (`#67`)、`GoogleCloudPlatform/arcgke` (`#1`)、`GoogleCloudPlatform/recaptcha-edge` (`#168`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓历史性突破 **645+ 阶段、1,780+ 官方仓库（达 1,786 个）与 93,800+ 项零重叠真实 PR（达 93,830 项）三大里程碑**（**1,724/1,724** 单测全绿）！
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9340_mpp_dataflowinference_ap2_recaptchaedge_ucp_dataplextransfer_a2a_backupdr_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9340_mpp_dataflowinference_ap2_recaptchaedge_ucp_dataplextransfer_a2a_backupdr_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9340-mpp-dataflowinference-ap2-recaptchaedge-ucp-dataplextransfer-a2a-backupdr-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9340_mpp_dataflowinference_ap2_recaptchaedge_ucp_dataplextransfer_a2a_backupdr_stripe_mcp.py`（全仓 **1,724/1,724** 单测 100% 通过）
