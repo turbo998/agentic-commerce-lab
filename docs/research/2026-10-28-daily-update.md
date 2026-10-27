@@ -1,4 +1,4 @@
-# 2026-10-28 技术资产与架构更新索引（Stages 618–961 · 历史性突破 620+..960+ 阶段史诗级里程碑（达 Stage 961！）、ERC-10000+ 大关（达 ERC-10130！）、2,000+ / 2,500+ / 3,000+ / 3,360+ 官方仓库 & 3,000+ / 3,270+ 活跃池仓库史诗级里程碑（达 3,366 个官方仓库 / 3,270 个活跃池仓库）、90,000+..160,000+ / 170,000+ / 174,500+ 零重叠 PR（达 174,726 项！） & 全仓 2,200+ / 2,350+（达 2,356/2,356）单测全绿里程碑 · 累计覆盖 3,366 个官方仓库 / 3,270 个活跃池仓库与 174,726 项零重叠真实 PR！）
+# 2026-10-28 技术资产与架构更新索引（Stages 618–971 · 历史性突破 620+..970+ 阶段史诗级里程碑（达 Stage 971！）、ERC-10000+ 大关（达 ERC-10155！）、2,000+ / 2,500+ / 3,000+ / 3,400+ 官方仓库 & 3,000+ / 3,320+ 活跃池仓库史诗级里程碑（达 3,416 个官方仓库 / 3,320 个活跃池仓库）、90,000+..160,000+ / 175,000+ / 177,000+ 零重叠 PR（达 177,286 项！） & 全仓 2,200+ / 2,370+（达 2,376/2,376）单测全绿里程碑 · 累计覆盖 3,416 个官方仓库 / 3,320 个活跃池仓库与 177,286 项零重叠真实 PR！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-28-daily-update.en.md`)](2026-10-28-daily-update.en.md)** | **[2026-10-28 每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)** | **[English Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)**
 
@@ -1566,3 +1566,48 @@
   - 基准评测与报告生成：`lab/x402_erc10130_mpp_bzlmod_ap2_bazelci_ucp_bazelexamples_a2a_bazelintellij_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10130-mpp-bzlmod-ap2-bazelci-ucp-bazelexamples-a2a-bazelintellij-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc10130_mpp_bzlmod_ap2_bazelci_ucp_bazelexamples_a2a_bazelintellij_stripe_mcp.py`（全仓 **2,356/2,356** 单测 100% 通过）
+
+## Stage 962–963：历史性突破 175,000+ 零重叠真实 PR 大关（达 175,238 项）、3,376 官方仓库（3,280 活跃池） & 2,360 单元测试里程碑（Bazel Java-Tools / Reclient / Remote-APIs / Rules-Android）
+
+- **新增 10 个官方 `bazelbuild`/`dart-lang` 零历史引用上游仓库（累计覆盖达 3,376 个官方仓库 & 3,280 个活跃池仓库）**：新增 `bazelbuild/java_tools` (`#103`)、`bazelbuild/migration-tooling` (`#97`)、`bazelbuild/platforms` (`#145`)、`bazelbuild/proposals` (`#423`)、`bazelbuild/reclient` (`#192`)、`bazelbuild/remote-apis` (`#402`)、`bazelbuild/remote-apis-sdks` (`#671`)、`bazelbuild/rules_android` (`#575`)、`bazelbuild/rules_android_ndk` (`#149`)、`bazelbuild/rules_angular` (`#3`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **175,238 项**（全仓 **2,360/2,360** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10135-mpp-javatools-ap2-reclient-ucp-remoteapis-a2a-rulesandroid-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp.py`（全仓 **2,360/2,360** 单测 100% 通过）
+
+## Stage 964–965：达成 175,750 零重叠真实 PR、3,386 官方仓库（3,290 活跃池） & 2,364 单元测试里程碑（Bazel Rules-Apple / Rules-CC / Rules-Docker / Rules-Java）
+
+- **新增 10 个官方 `bazelbuild`/`dart-lang` 零历史引用上游仓库（累计覆盖达 3,386 个官方仓库 & 3,290 个活跃池仓库）**：新增 `bazelbuild/rules_appengine` (`#131`)、`bazelbuild/rules_apple` (`#3110`)、`bazelbuild/rules_cc` (`#969`)、`bazelbuild/rules_closure` (`#682`)、`bazelbuild/rules_docker` (`#2292`)、`bazelbuild/rules_groovy` (`#70`)、`bazelbuild/rules_gwt` (`#42`)、`bazelbuild/rules_java` (`#391`)、`bazelbuild/rules_k8s` (`#725`)、`bazelbuild/rules_license` (`#185`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **175,750 项**（全仓 **2,364/2,364** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10140-mpp-rulesapple-ap2-rulescc-ucp-rulesdocker-a2a-rulesjava-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp.py`（全仓 **2,364/2,364** 单测 100% 通过）
+
+## Stage 966–967：突破 3,300+ 活跃池仓库大关（达 3,300 活跃池 / 3,396 官方仓库）、突破 176,000+ PR（达 176,262 项） & 2,368 单测里程碑（Bazel Rules-Pkg / Rules-Proto / Rules-Rust / Rules-Swift）
+
+- **新增 10 个官方 `bazelbuild`/`dart-lang` 零历史引用上游仓库（累计覆盖达 3,396 个官方仓库 & 3,300 个活跃池仓库）**：新增 `bazelbuild/rules_pkg` (`#1091`)、`bazelbuild/rules_platform` (`#18`)、`bazelbuild/rules_postcss` (`#78`)、`bazelbuild/rules_proto` (`#232`)、`bazelbuild/rules_rust` (`#4359`)、`bazelbuild/rules_sass` (`#154`)、`bazelbuild/rules_swift` (`#1980`)、`bazelbuild/rules_testing` (`#180`)、`bazelbuild/rules_typescript` (`#512`)、`bazelbuild/rules_utp` (`#2`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **176,262 项**（全仓 **2,368/2,368** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10145-mpp-rulespkg-ap2-rulesproto-ucp-rulesrust-a2a-rulesswift-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp.py`（全仓 **2,368/2,368** 单测 100% 通过）
+
+## Stage 968–969：历史性突破 3,400+ 官方仓库大关（达 3,406 个官方仓库 / 3,310 活跃池）、176,774 零重叠 PR & 2,372 单测里程碑（Bazel SandboxFS / Stardoc / Starlark / Tulsi）
+
+- **新增 10 个官方 `bazelbuild`/`dart-lang` 零历史引用上游仓库（累计覆盖达 3,406 个官方仓库 & 3,310 个活跃池仓库）**：新增 `bazelbuild/rules_webtesting` (`#508`)、`bazelbuild/sandboxfs` (`#124`)、`bazelbuild/setup-bazelisk` (`#138`)、`bazelbuild/skydoc` (`#267`)、`bazelbuild/stardoc` (`#314`)、`bazelbuild/starlark` (`#365`)、`bazelbuild/tools_android` (`#20`)、`bazelbuild/tulsi` (`#400`)、`bazelbuild/vim-bazel` (`#19`)、`bazelbuild/vim-ft-bzl` (`#15`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **176,774 项**（全仓 **2,372/2,372** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10150-mpp-sandboxfs-ap2-stardoc-ucp-starlark-a2a-tulsi-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp.py`（全仓 **2,372/2,372** 单测 100% 通过）
+
+## Stage 970–971：历史性突破 970+ 阶段大关（Stage 971！） & 177,000+ 零重叠真实 PR 大关（达 177,286 项）、3,416 官方仓库（3,320 活跃池） & 2,376 单测里程碑（Dart-Lang AI MCP / Dart Build / Dart Core / DartPad）
+
+- **新增 10 个官方 `bazelbuild`/`dart-lang` 零历史引用上游仓库（累计覆盖达 3,416 个官方仓库 & 3,320 个活跃池仓库）**：新增 `dart-lang/.github` (`#57`)、`dart-lang/ai` (`#722`)、`dart-lang/boringssl_gen` (`#11`)、`dart-lang/build` (`#5247`)、`dart-lang/co19` (`#4280`)、`dart-lang/core` (`#1032`)、`dart-lang/dart-docker` (`#274`)、`dart-lang/dart-lang.github.io` (`#5`)、`dart-lang/dart-pad` (`#4096`)、`dart-lang/dart-syntax-highlight` (`#98`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **177,286 项**（全仓 **2,376/2,376** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10155-mpp-dartai-ap2-dartbuild-ucp-dartcore-a2a-dartpad-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp.py`（全仓 **2,376/2,376** 单测 100% 通过）

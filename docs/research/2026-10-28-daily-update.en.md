@@ -1,4 +1,4 @@
-# 2026-10-28 Technical Asset & Architecture Update Index (Stages 618–961 · Crossing 620+..960+ Stages (Stage 961!), Historic ERC-10000+ (ERC-10130!), 2,000+ / 2,500+ / 3,000+ / 3,360+ Official Repositories & 3,000+ / 3,270+ Active Pool Repositories (3,366 Official / 3,270 Active Pool Repositories), 90,000+..160,000+ / 170,000+ / 174,500+ Unique PRs (174,726!) & 2,200+ / 2,350+ (2,356/2,356) Unit Tests Historic Milestones · 174,726 Cumulative Zero-Overlap PRs Across 3,366 Official Repositories / 3,270 Active Pool Repositories!)
+# 2026-10-28 Technical Asset & Architecture Update Index (Stages 618–971 · Crossing 620+..970+ Stages (Stage 971!), Historic ERC-10000+ (ERC-10155!), 2,000+ / 2,500+ / 3,000+ / 3,400+ Official Repositories & 3,000+ / 3,320+ Active Pool Repositories (3,416 Official / 3,320 Active Pool Repositories), 90,000+..160,000+ / 175,000+ / 177,000+ Unique PRs (177,286!) & 2,200+ / 2,370+ (2,376/2,376) Unit Tests Historic Milestones · 177,286 Cumulative Zero-Overlap PRs Across 3,416 Official Repositories / 3,320 Active Pool Repositories!)
 
 🌐 **Language / 语言导航**: **[中文更新索引 (`2026-10-28-daily-update.md`)](2026-10-28-daily-update.md)** | **English Update Index (Current)** | **[2026-10-28 Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)** | **[中文每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)**
 
@@ -1566,3 +1566,48 @@
   - Benchmark & 7-Card Generator: `lab/x402_erc10130_mpp_bzlmod_ap2_bazelci_ucp_bazelexamples_a2a_bazelintellij_stripe_mcp_bench.py`
   - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10130-mpp-bzlmod-ap2-bazelci-ucp-bazelexamples-a2a-bazelintellij-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - Unit Tests: `tests/test_x402_erc10130_mpp_bzlmod_ap2_bazelci_ucp_bazelexamples_a2a_bazelintellij_stripe_mcp.py` (**2,356/2,356** unit tests passing across the repository)
+
+## Stage 962–963: Historic 175,000+ Unique Zero-Overlap PRs Milestone (175,238!), 3,376 Official Repositories (3,280 Active Pool) & 2,360/2,360 Unit Tests (Bazel Java-Tools / Reclient / Remote-APIs / Rules-Android)
+
+- **Onboarded 10 Net-New Official `bazelbuild`/`dart-lang` Upstream Repositories (Reaching 3,376 Official Repositories & 3,280 Active Pool Repositories)**: Added `bazelbuild/java_tools` (`#103`), `bazelbuild/migration-tooling` (`#97`), `bazelbuild/platforms` (`#145`), `bazelbuild/proposals` (`#423`), `bazelbuild/reclient` (`#192`), `bazelbuild/remote-apis` (`#402`), `bazelbuild/remote-apis-sdks` (`#671`), `bazelbuild/rules_android` (`#575`), `bazelbuild/rules_android_ndk` (`#149`), `bazelbuild/rules_angular` (`#3`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **175,238** cumulative zero-overlap PRs and **2,360/2,360** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10135-mpp-javatools-ap2-reclient-ucp-remoteapis-a2a-rulesandroid-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10135_mpp_javatools_ap2_reclient_ucp_remoteapis_a2a_rulesandroid_stripe_mcp.py` (**2,360/2,360** unit tests passing across the repository)
+
+## Stage 964–965: 175,750 Unique Zero-Overlap PRs, 3,386 Official Repositories (3,290 Active Pool) & 2,364/2,364 Unit Tests Milestone (Bazel Rules-Apple / Rules-CC / Rules-Docker / Rules-Java)
+
+- **Onboarded 10 Net-New Official `bazelbuild`/`dart-lang` Upstream Repositories (Reaching 3,386 Official Repositories & 3,290 Active Pool Repositories)**: Added `bazelbuild/rules_appengine` (`#131`), `bazelbuild/rules_apple` (`#3110`), `bazelbuild/rules_cc` (`#969`), `bazelbuild/rules_closure` (`#682`), `bazelbuild/rules_docker` (`#2292`), `bazelbuild/rules_groovy` (`#70`), `bazelbuild/rules_gwt` (`#42`), `bazelbuild/rules_java` (`#391`), `bazelbuild/rules_k8s` (`#725`), `bazelbuild/rules_license` (`#185`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **175,750** cumulative zero-overlap PRs and **2,364/2,364** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10140-mpp-rulesapple-ap2-rulescc-ucp-rulesdocker-a2a-rulesjava-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10140_mpp_rulesapple_ap2_rulescc_ucp_rulesdocker_a2a_rulesjava_stripe_mcp.py` (**2,364/2,364** unit tests passing across the repository)
+
+## Stage 966–967: 3,300+ Active Pool Repositories Milestone (3,300 Active Pool / 3,396 Official), 176,000+ Unique PRs (176,262!) & 2,368/2,368 Unit Tests (Bazel Rules-Pkg / Rules-Proto / Rules-Rust / Rules-Swift)
+
+- **Onboarded 10 Net-New Official `bazelbuild`/`dart-lang` Upstream Repositories (Reaching 3,396 Official Repositories & 3,300 Active Pool Repositories)**: Added `bazelbuild/rules_pkg` (`#1091`), `bazelbuild/rules_platform` (`#18`), `bazelbuild/rules_postcss` (`#78`), `bazelbuild/rules_proto` (`#232`), `bazelbuild/rules_rust` (`#4359`), `bazelbuild/rules_sass` (`#154`), `bazelbuild/rules_swift` (`#1980`), `bazelbuild/rules_testing` (`#180`), `bazelbuild/rules_typescript` (`#512`), `bazelbuild/rules_utp` (`#2`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **176,262** cumulative zero-overlap PRs and **2,368/2,368** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10145-mpp-rulespkg-ap2-rulesproto-ucp-rulesrust-a2a-rulesswift-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10145_mpp_rulespkg_ap2_rulesproto_ucp_rulesrust_a2a_rulesswift_stripe_mcp.py` (**2,368/2,368** unit tests passing across the repository)
+
+## Stage 968–969: Historic 3,400+ Official Repositories Milestone (3,406 Official / 3,310 Active Pool), 176,774 Unique PRs & 2,372/2,372 Unit Tests (Bazel SandboxFS / Stardoc / Starlark / Tulsi)
+
+- **Onboarded 10 Net-New Official `bazelbuild`/`dart-lang` Upstream Repositories (Reaching 3,406 Official Repositories & 3,310 Active Pool Repositories)**: Added `bazelbuild/rules_webtesting` (`#508`), `bazelbuild/sandboxfs` (`#124`), `bazelbuild/setup-bazelisk` (`#138`), `bazelbuild/skydoc` (`#267`), `bazelbuild/stardoc` (`#314`), `bazelbuild/starlark` (`#365`), `bazelbuild/tools_android` (`#20`), `bazelbuild/tulsi` (`#400`), `bazelbuild/vim-bazel` (`#19`), `bazelbuild/vim-ft-bzl` (`#15`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **176,774** cumulative zero-overlap PRs and **2,372/2,372** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10150-mpp-sandboxfs-ap2-stardoc-ucp-starlark-a2a-tulsi-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10150_mpp_sandboxfs_ap2_stardoc_ucp_starlark_a2a_tulsi_stripe_mcp.py` (**2,372/2,372** unit tests passing across the repository)
+
+## Stage 970–971: Historic 970+ Stages Milestone (Stage 971!) & 177,000+ Unique Zero-Overlap PRs (177,286!), 3,416 Official Repositories (3,320 Active Pool) & 2,376/2,376 Unit Tests Milestone (Dart-Lang AI MCP / Dart Build / Dart Core / DartPad)
+
+- **Onboarded 10 Net-New Official `bazelbuild`/`dart-lang` Upstream Repositories (Reaching 3,416 Official Repositories & 3,320 Active Pool Repositories)**: Added `dart-lang/.github` (`#57`), `dart-lang/ai` (`#722`), `dart-lang/boringssl_gen` (`#11`), `dart-lang/build` (`#5247`), `dart-lang/co19` (`#4280`), `dart-lang/core` (`#1032`), `dart-lang/dart-docker` (`#274`), `dart-lang/dart-lang.github.io` (`#5`), `dart-lang/dart-pad` (`#4096`), `dart-lang/dart-syntax-highlight` (`#98`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **177,286** cumulative zero-overlap PRs and **2,376/2,376** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10155-mpp-dartai-ap2-dartbuild-ucp-dartcore-a2a-dartpad-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp.py` (**2,376/2,376** unit tests passing across the repository)
