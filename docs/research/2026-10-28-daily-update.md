@@ -1,4 +1,4 @@
-# 2026-10-28 技术资产与架构更新索引（Stages 618–971 · 历史性突破 620+..970+ 阶段史诗级里程碑（达 Stage 971！）、ERC-10000+ 大关（达 ERC-10155！）、2,000+ / 2,500+ / 3,000+ / 3,400+ 官方仓库 & 3,000+ / 3,320+ 活跃池仓库史诗级里程碑（达 3,416 个官方仓库 / 3,320 个活跃池仓库）、90,000+..160,000+ / 175,000+ / 177,000+ 零重叠 PR（达 177,286 项！） & 全仓 2,200+ / 2,370+（达 2,376/2,376）单测全绿里程碑 · 累计覆盖 3,416 个官方仓库 / 3,320 个活跃池仓库与 177,286 项零重叠真实 PR！）
+# 2026-10-28 技术资产与架构更新索引（Stages 618–981 · 历史性突破 620+..980+ 阶段史诗级里程碑（达 Stage 981！）、ERC-10000+ 大关（达 ERC-10180！）、2,000+ / 2,500+ / 3,000+ / 3,460+ 官方仓库 & 3,000+ / 3,370+ 活跃池仓库史诗级里程碑（达 3,466 个官方仓库 / 3,370 个活跃池仓库）、90,000+..160,000+ / 175,000+ / 179,500+ 零重叠 PR（达 179,846 项！） & 全仓 2,200+ / 2,390+（达 2,396/2,396）单测全绿里程碑 · 累计覆盖 3,466 个官方仓库 / 3,370 个活跃池仓库与 179,846 项零重叠真实 PR！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-28-daily-update.en.md`)](2026-10-28-daily-update.en.md)** | **[2026-10-28 每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)** | **[English Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)**
 
@@ -1611,3 +1611,48 @@
   - 基准评测与报告生成：`lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10155-mpp-dartai-ap2-dartbuild-ucp-dartcore-a2a-dartpad-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp.py`（全仓 **2,376/2,376** 单测 100% 通过）
+
+## Stage 972–973：达成 177,798 零重叠真实 PR、3,426 官方仓库（3,330 活跃池） & 2,380 单元测试里程碑（Dart-Style / DartDoc / Dart Ecosystem / Dart HTTP）
+
+- **新增 10 个官方 `dart-lang`/`firebase` 零历史引用上游仓库（累计覆盖达 3,426 个官方仓库 & 3,330 个活跃池仓库）**：新增 `dart-lang/dart-vim-plugin` (`#154`)、`dart-lang/dart_ci` (`#217`)、`dart-lang/dart_style` (`#1913`)、`dart-lang/dartbug.com` (`#125`)、`dart-lang/dartdoc` (`#4306`)、`dart-lang/ecosystem` (`#475`)、`dart-lang/flute` (`#33`)、`dart-lang/grpc_cronet` (`#46`)、`dart-lang/homebrew-dart` (`#258`)、`dart-lang/http` (`#2040`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **177,798 项**（全仓 **2,380/2,380** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10160-mpp-dartstyle-ap2-dartdoc-ucp-dartecosystem-a2a-darthttp-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp.py`（全仓 **2,380/2,380** 单测 100% 通过）
+
+## Stage 974–975：突破 178,000+ 零重叠真实 PR 大关（达 178,310 项）、3,436 官方仓库（3,340 活跃池） & 2,384 单元测试里程碑（Dart Language / Dart Native / Dart Pub / Pub-Dev）
+
+- **新增 10 个官方 `dart-lang`/`firebase` 零历史引用上游仓库（累计覆盖达 3,436 个官方仓库 & 3,340 个活跃池仓库）**：新增 `dart-lang/i18n` (`#1113`)、`dart-lang/labs` (`#383`)、`dart-lang/language` (`#4823`)、`dart-lang/leak_tracker` (`#288`)、`dart-lang/native` (`#3767`)、`dart-lang/pana` (`#1642`)、`dart-lang/pub` (`#4946`)、`dart-lang/pub-dev` (`#9744`)、`dart-lang/sample-pop_pop_win` (`#123`)、`dart-lang/samples` (`#253`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **178,310 项**（全仓 **2,384/2,384** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10165-mpp-dartlang-ap2-dartnative-ucp-dartpub-a2a-dartpubdev-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp.py`（全仓 **2,384/2,384** 单测 100% 通过）
+
+## Stage 976–977：达成 178,822 零重叠真实 PR、3,350 活跃池仓库（3,446 官方仓库） & 2,388 单元测试里程碑（Dart SDK / Dart Skills / Dart Test / Dart Web）
+
+- **新增 10 个官方 `dart-lang`/`firebase` 零历史引用上游仓库（累计覆盖达 3,446 个官方仓库 & 3,350 个活跃池仓库）**：新增 `dart-lang/sdk` (`#64742`)、`dart-lang/setup-dart` (`#205`)、`dart-lang/shelf` (`#551`)、`dart-lang/site-www` (`#7581`)、`dart-lang/skills` (`#54`)、`dart-lang/source_gen` (`#826`)、`dart-lang/test` (`#2808`)、`dart-lang/tools` (`#2732`)、`dart-lang/web` (`#606`)、`dart-lang/webdev` (`#2882`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **178,822 项**（全仓 **2,388/2,388** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10170-mpp-dartsdk-ap2-dartskills-ucp-darttest-a2a-dartweb-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp.py`（全仓 **2,388/2,388** 单测 100% 通过）
+
+## Stage 978–979：突破 179,000+ 零重叠真实 PR 大关（达 179,334 项）、3,456 官方仓库（3,360 活跃池） & 2,392 单测里程碑（Firebase Agent-Skills / AppHosting-Adapters / BoringSSL-SwiftPM / Data-Connect）
+
+- **新增 10 个官方 `dart-lang`/`firebase` 零历史引用上游仓库（累计覆盖达 3,456 个官方仓库 & 3,360 个活跃池仓库）**：新增 `firebase/.github` (`#20`)、`firebase/abseil-cpp-SwiftPM` (`#33`)、`firebase/agent-skills` (`#240`)、`firebase/apphosting-adapters` (`#701`)、`firebase/appquality-codelab-ios` (`#87`)、`firebase/boringSSL-SwiftPM` (`#35`)、`firebase/codelab-friendlychat-android` (`#387`)、`firebase/codelab-friendlychat-ios` (`#248`)、`firebase/codelab-friendlychat-web` (`#940`)、`firebase/data-connect-ios-sdk` (`#126`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **179,334 项**（全仓 **2,392/2,392** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10175-mpp-firebaseagentskills-ap2-apphosting-ucp-boringsslswift-a2a-dataconnect-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp.py`（全仓 **2,392/2,392** 单测 100% 通过）
+
+## Stage 980–981：历史性突破 980+ 阶段大关（Stage 981！）、179,846 零重叠真实 PR、3,466 官方仓库（3,370 活跃池） & 2,396 单元测试里程碑（Firebase Extensions / Firebase Admin Dart / Go / Python）
+
+- **新增 10 个官方 `dart-lang`/`firebase` 零历史引用上游仓库（累计覆盖达 3,466 个官方仓库 & 3,370 个活跃池仓库）**：新增 `firebase/emulators-codelab` (`#29`)、`firebase/eslint-tools` (`#12`)、`firebase/extensions` (`#3308`)、`firebase/fastlane-plugin-firebase_app_distribution` (`#404`)、`firebase/firebase-admin-dart` (`#344`)、`firebase/firebase-admin-dotnet` (`#586`)、`firebase/firebase-admin-go` (`#797`)、`firebase/firebase-admin-java` (`#1256`)、`firebase/firebase-admin-node` (`#3293`)、`firebase/firebase-admin-python` (`#999`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**，`pair_overlap = 0`），全仓累计零重叠 PR 达到 **179,846 项**（全仓 **2,396/2,396** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc10180-mpp-firebaseext-ap2-admin-dart-ucp-admin-go-a2a-admin-python-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp.py`（全仓 **2,396/2,396** 单测 100% 通过）

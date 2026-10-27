@@ -1,4 +1,4 @@
-# 2026-10-28 Technical Asset & Architecture Update Index (Stages 618–971 · Crossing 620+..970+ Stages (Stage 971!), Historic ERC-10000+ (ERC-10155!), 2,000+ / 2,500+ / 3,000+ / 3,400+ Official Repositories & 3,000+ / 3,320+ Active Pool Repositories (3,416 Official / 3,320 Active Pool Repositories), 90,000+..160,000+ / 175,000+ / 177,000+ Unique PRs (177,286!) & 2,200+ / 2,370+ (2,376/2,376) Unit Tests Historic Milestones · 177,286 Cumulative Zero-Overlap PRs Across 3,416 Official Repositories / 3,320 Active Pool Repositories!)
+# 2026-10-28 Technical Asset & Architecture Update Index (Stages 618–981 · Crossing 620+..980+ Stages (Stage 981!), Historic ERC-10000+ (ERC-10180!), 2,000+ / 2,500+ / 3,000+ / 3,460+ Official Repositories & 3,000+ / 3,370+ Active Pool Repositories (3,466 Official / 3,370 Active Pool Repositories), 90,000+..160,000+ / 175,000+ / 179,500+ Unique PRs (179,846!) & 2,200+ / 2,390+ (2,396/2,396) Unit Tests Historic Milestones · 179,846 Cumulative Zero-Overlap PRs Across 3,466 Official Repositories / 3,370 Active Pool Repositories!)
 
 🌐 **Language / 语言导航**: **[中文更新索引 (`2026-10-28-daily-update.md`)](2026-10-28-daily-update.md)** | **English Update Index (Current)** | **[2026-10-28 Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)** | **[中文每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)**
 
@@ -1611,3 +1611,48 @@
   - Benchmark & 7-Card Generator: `lab/x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp_bench.py`
   - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10155-mpp-dartai-ap2-dartbuild-ucp-dartcore-a2a-dartpad-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - Unit Tests: `tests/test_x402_erc10155_mpp_dartai_ap2_dartbuild_ucp_dartcore_a2a_dartpad_stripe_mcp.py` (**2,376/2,376** unit tests passing across the repository)
+
+## Stage 972–973: 177,798 Unique Zero-Overlap PRs, 3,426 Official Repositories (3,330 Active Pool) & 2,380/2,380 Unit Tests Milestone (Dart-Style / DartDoc / Dart Ecosystem / Dart HTTP)
+
+- **Onboarded 10 Net-New Official `dart-lang`/`firebase` Upstream Repositories (Reaching 3,426 Official Repositories & 3,330 Active Pool Repositories)**: Added `dart-lang/dart-vim-plugin` (`#154`), `dart-lang/dart_ci` (`#217`), `dart-lang/dart_style` (`#1913`), `dart-lang/dartbug.com` (`#125`), `dart-lang/dartdoc` (`#4306`), `dart-lang/ecosystem` (`#475`), `dart-lang/flute` (`#33`), `dart-lang/grpc_cronet` (`#46`), `dart-lang/homebrew-dart` (`#258`), `dart-lang/http` (`#2040`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **177,798** cumulative zero-overlap PRs and **2,380/2,380** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10160-mpp-dartstyle-ap2-dartdoc-ucp-dartecosystem-a2a-darthttp-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10160_mpp_dartstyle_ap2_dartdoc_ucp_dartecosystem_a2a_darthttp_stripe_mcp.py` (**2,380/2,380** unit tests passing across the repository)
+
+## Stage 974–975: 178,000+ Unique Zero-Overlap PRs Milestone (178,310!), 3,436 Official Repositories (3,340 Active Pool) & 2,384/2,384 Unit Tests (Dart Language / Dart Native / Dart Pub / Pub-Dev)
+
+- **Onboarded 10 Net-New Official `dart-lang`/`firebase` Upstream Repositories (Reaching 3,436 Official Repositories & 3,340 Active Pool Repositories)**: Added `dart-lang/i18n` (`#1113`), `dart-lang/labs` (`#383`), `dart-lang/language` (`#4823`), `dart-lang/leak_tracker` (`#288`), `dart-lang/native` (`#3767`), `dart-lang/pana` (`#1642`), `dart-lang/pub` (`#4946`), `dart-lang/pub-dev` (`#9744`), `dart-lang/sample-pop_pop_win` (`#123`), `dart-lang/samples` (`#253`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **178,310** cumulative zero-overlap PRs and **2,384/2,384** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10165-mpp-dartlang-ap2-dartnative-ucp-dartpub-a2a-dartpubdev-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10165_mpp_dartlang_ap2_dartnative_ucp_dartpub_a2a_dartpubdev_stripe_mcp.py` (**2,384/2,384** unit tests passing across the repository)
+
+## Stage 976–977: 178,822 Unique Zero-Overlap PRs, 3,350 Active Pool Repositories (3,446 Official) & 2,388/2,388 Unit Tests Milestone (Dart SDK / Dart Skills / Dart Test / Dart Web)
+
+- **Onboarded 10 Net-New Official `dart-lang`/`firebase` Upstream Repositories (Reaching 3,446 Official Repositories & 3,350 Active Pool Repositories)**: Added `dart-lang/sdk` (`#64742`), `dart-lang/setup-dart` (`#205`), `dart-lang/shelf` (`#551`), `dart-lang/site-www` (`#7581`), `dart-lang/skills` (`#54`), `dart-lang/source_gen` (`#826`), `dart-lang/test` (`#2808`), `dart-lang/tools` (`#2732`), `dart-lang/web` (`#606`), `dart-lang/webdev` (`#2882`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **178,822** cumulative zero-overlap PRs and **2,388/2,388** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10170-mpp-dartsdk-ap2-dartskills-ucp-darttest-a2a-dartweb-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10170_mpp_dartsdk_ap2_dartskills_ucp_darttest_a2a_dartweb_stripe_mcp.py` (**2,388/2,388** unit tests passing across the repository)
+
+## Stage 978–979: 179,000+ Unique Zero-Overlap PRs Milestone (179,334!), 3,456 Official Repositories (3,360 Active Pool) & 2,392/2,392 Unit Tests (Firebase Agent-Skills / AppHosting-Adapters / BoringSSL-SwiftPM / Data-Connect)
+
+- **Onboarded 10 Net-New Official `dart-lang`/`firebase` Upstream Repositories (Reaching 3,456 Official Repositories & 3,360 Active Pool Repositories)**: Added `firebase/.github` (`#20`), `firebase/abseil-cpp-SwiftPM` (`#33`), `firebase/agent-skills` (`#240`), `firebase/apphosting-adapters` (`#701`), `firebase/appquality-codelab-ios` (`#87`), `firebase/boringSSL-SwiftPM` (`#35`), `firebase/codelab-friendlychat-android` (`#387`), `firebase/codelab-friendlychat-ios` (`#248`), `firebase/codelab-friendlychat-web` (`#940`), `firebase/data-connect-ios-sdk` (`#126`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **179,334** cumulative zero-overlap PRs and **2,392/2,392** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10175-mpp-firebaseagentskills-ap2-apphosting-ucp-boringsslswift-a2a-dataconnect-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10175_mpp_firebaseagentskills_ap2_apphosting_ucp_boringsslswift_a2a_dataconnect_stripe_mcp.py` (**2,392/2,392** unit tests passing across the repository)
+
+## Stage 980–981: Historic 980+ Stages Milestone (Stage 981!), 179,846 Unique Zero-Overlap PRs, 3,466 Official Repositories (3,370 Active Pool) & 2,396/2,396 Unit Tests (Firebase Extensions / Firebase Admin Dart / Go / Python)
+
+- **Onboarded 10 Net-New Official `dart-lang`/`firebase` Upstream Repositories (Reaching 3,466 Official Repositories & 3,370 Active Pool Repositories)**: Added `firebase/emulators-codelab` (`#29`), `firebase/eslint-tools` (`#12`), `firebase/extensions` (`#3308`), `firebase/fastlane-plugin-firebase_app_distribution` (`#404`), `firebase/firebase-admin-dart` (`#344`), `firebase/firebase-admin-dotnet` (`#586`), `firebase/firebase-admin-go` (`#797`), `firebase/firebase-admin-java` (`#1256`), `firebase/firebase-admin-node` (`#3293`), `firebase/firebase-admin-python` (`#999`), selecting **512 zero-overlap upstream PRs** across **512 distinct official repositories** (`pair_overlap = 0`) and reaching **179,846** cumulative zero-overlap PRs and **2,396/2,396** passing unit tests.
+- **Core Code & Verification Assets**:
+  - Deterministic Guards: `lab/x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp_guards.py`
+  - Benchmark & 7-Card Generator: `lab/x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp_bench.py`
+  - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc10180-mpp-firebaseext-ap2-admin-dart-ucp-admin-go-a2a-admin-python-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - Unit Tests: `tests/test_x402_erc10180_mpp_firebaseext_ap2_admin_dart_ucp_admin_go_a2a_admin_python_stripe_mcp.py` (**2,396/2,396** unit tests passing across the repository)
