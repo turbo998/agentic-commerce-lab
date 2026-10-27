@@ -37,16 +37,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.47,
+      "latency_ms": 0.453,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/gke-os-image-certification-suite#9",
-        "GoogleCloudPlatform/gcve-iac-foundations#120",
-        "googleapis/python-data-fusion#217",
-        "googleapis/java-video-intelligence#1143",
-        "googleapis/nodejs-automl#839",
-        "googleapis/nodejs-gke-hub#221"
+        "GoogleCloudPlatform/observability-analytics-samples#22",
+        "GoogleCloudPlatform/gcve-iac-foundations#121",
+        "googleapis/python-data-fusion#218",
+        "googleapis/java-video-intelligence#1144",
+        "googleapis/nodejs-automl#840",
+        "googleapis/nodejs-gke-hub#222"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -64,16 +64,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.45,
+      "latency_ms": 0.433,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/architecture-center-samples#120",
-        "GoogleCloudPlatform/redis-dataflow-realtime-analytics#59",
-        "googleapis/nodejs-data-fusion#120",
-        "googleapis/python-talent#383",
-        "googleapis/nodejs-security-private-ca#254",
-        "googleapis/java-gkehub#397"
+        "GoogleCloudPlatform/composer-utilities#143",
+        "GoogleCloudPlatform/redis-dataflow-realtime-analytics#60",
+        "googleapis/nodejs-data-fusion#121",
+        "googleapis/python-talent#384",
+        "googleapis/nodejs-security-private-ca#255",
+        "googleapis/java-gkehub#398"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -91,16 +91,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.447,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/alloydb-python-connector#585",
-        "GoogleCloudPlatform/google-cloud-eclipse#3777",
-        "modelcontextprotocol/go-sdk#1103",
-        "googleapis/nodejs-talent#504",
-        "googleapis/java-security-private-ca#564",
-        "googleapis/python-dns#422"
+        "GoogleCloudPlatform/dagify#211",
+        "GoogleCloudPlatform/google-cloud-eclipse#3778",
+        "modelcontextprotocol/go-sdk#1104",
+        "googleapis/nodejs-talent#505",
+        "googleapis/java-security-private-ca#565",
+        "googleapis/python-dns#423"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -118,16 +118,16 @@
       "confidence": 0.91,
       "reversed_confidence": 0.91,
       "delta_pts": 0.0,
-      "latency_ms": 0.448,
+      "latency_ms": 0.434,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/alloydb-go-connector#822",
-        "GoogleCloudPlatform/isolator#22",
-        "googleapis/python-iot#551",
-        "googleapis/java-talent#960",
-        "googleapis/python-iap#216",
-        "googleapis/nodejs-dns#606"
+        "GoogleCloudPlatform/cluster-director-mcp#256",
+        "GoogleCloudPlatform/isolator#23",
+        "googleapis/python-iot#552",
+        "googleapis/java-talent#961",
+        "googleapis/python-iap#217",
+        "googleapis/nodejs-dns#607"
       ],
       "reasons": [
         "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing"
@@ -145,16 +145,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.446,
+      "latency_ms": 0.431,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/serverless-exec-ruby#63",
-        "GoogleCloudPlatform/marketplace-tools#134",
-        "googleapis/nodejs-iot#645",
-        "googleapis/python-language#482",
-        "googleapis/python-access-context-manager#286",
-        "googleapis/java-dns#822"
+        "GoogleCloudPlatform/compute-archlinux-image-builder#55",
+        "GoogleCloudPlatform/marketplace-tools#135",
+        "googleapis/nodejs-iot#646",
+        "googleapis/python-language#483",
+        "googleapis/python-access-context-manager#287",
+        "googleapis/java-dns#823"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -172,16 +172,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/retail-data-model#74",
-        "modelcontextprotocol/registry#1592",
-        "googleapis/java-iot#887",
-        "googleapis/nodejs-language#751",
-        "googleapis/java-accesscontextmanager#495",
-        "googleapis/python-domains#249"
+        "GoogleCloudPlatform/zetasql-toolkit#143",
+        "modelcontextprotocol/registry#1593",
+        "googleapis/java-iot#888",
+        "googleapis/nodejs-language#752",
+        "googleapis/java-accesscontextmanager#496",
+        "googleapis/python-domains#250"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -199,16 +199,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/bigquery-samples#1",
-        "modelcontextprotocol/java-sdk#1027",
-        "googleapis/python-trace#380",
-        "googleapis/java-language#1017",
-        "a2aproject/a2a-java#966",
-        "googleapis/nodejs-domains#198"
+        "GoogleCloudPlatform/bigquery-geo-viz#141",
+        "modelcontextprotocol/java-sdk#1028",
+        "googleapis/python-trace#381",
+        "googleapis/java-language#1018",
+        "a2aproject/a2a-java#967",
+        "googleapis/nodejs-domains#199"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -226,16 +226,16 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.431,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/osconfig#1061",
-        "modelcontextprotocol/ruby-sdk#446",
-        "googleapis/java-trace#997",
-        "googleapis/python-retail#480",
-        "googleapis/python-compute#487",
-        "googleapis/java-domains#387"
+        "GoogleCloudPlatform/repository-gardener#206",
+        "modelcontextprotocol/ruby-sdk#447",
+        "googleapis/java-trace#998",
+        "googleapis/python-retail#481",
+        "googleapis/python-compute#488",
+        "googleapis/java-domains#388"
       ],
       "reasons": [
         "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
@@ -254,16 +254,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.449,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/cloud-opensource-java#2477",
-        "modelcontextprotocol/csharp-sdk#1679",
-        "googleapis/python-error-reporting#768",
-        "googleapis/nodejs-retail#275",
-        "googleapis/nodejs-compute#917",
-        "coinbase/coinbase-wallet-sdk#1913"
+        "GoogleCloudPlatform/pubsec-declarative-toolkit#1001",
+        "modelcontextprotocol/csharp-sdk#1680",
+        "googleapis/python-error-reporting#769",
+        "googleapis/nodejs-retail#276",
+        "googleapis/nodejs-compute#918",
+        "coinbase/coinbase-wallet-sdk#1914"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -281,16 +281,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.444,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/localllm#27",
-        "modelcontextprotocol/kotlin-sdk#910",
-        "googleapis/nodejs-error-reporting#843",
-        "googleapis/java-retail#672",
-        "googleapis/java-compute#844",
-        "googleapis/java-redis#816"
+        "GoogleCloudPlatform/eda-examples#42",
+        "modelcontextprotocol/kotlin-sdk#911",
+        "googleapis/nodejs-error-reporting#844",
+        "googleapis/java-retail#673",
+        "googleapis/java-compute#845",
+        "googleapis/java-redis#817"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -308,16 +308,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "stripe/stripe-dotnet#3442",
-        "modelcontextprotocol/rust-sdk#1098",
-        "googleapis/java-errorreporting#1096",
-        "googleapis/python-recommendations-ai#270",
-        "googleapis/python-ids#152",
-        "googleapis/python-memcache#298"
+        "stripe/stripe-dotnet#3443",
+        "modelcontextprotocol/rust-sdk#1099",
+        "googleapis/java-errorreporting#1097",
+        "googleapis/python-recommendations-ai#271",
+        "googleapis/python-ids#153",
+        "googleapis/python-memcache#299"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -335,16 +335,16 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "ethereum/ERCs#2071",
-        "googleapis/nodejs-bigquery-reservation#218",
-        "googleapis/java-profiler#415",
-        "googleapis/java-recommendations-ai#684",
-        "googleapis/java-ids#255",
-        "googleapis/nodejs-memcache#263"
+        "ethereum/ERCs#2072",
+        "googleapis/nodejs-bigquery-reservation#219",
+        "googleapis/java-profiler#416",
+        "googleapis/java-recommendations-ai#685",
+        "googleapis/java-ids#256",
+        "googleapis/nodejs-memcache#264"
       ],
       "reasons": [
         "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
@@ -363,16 +363,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.444,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "tempoxyz/tempo#8621",
-        "googleapis/java-bigqueryreservation#838",
-        "googleapis/python-debugger-client#206",
-        "googleapis/python-contact-center-insights#348",
-        "googleapis/python-network-security#214",
-        "googleapis/java-memcache#776"
+        "tempoxyz/tempo#8622",
+        "googleapis/java-bigqueryreservation#839",
+        "googleapis/python-debugger-client#207",
+        "googleapis/python-contact-center-insights#349",
+        "googleapis/python-network-security#215",
+        "googleapis/java-memcache#777"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -390,16 +390,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "stripe/stripe-php#2126",
-        "googleapis/python-bigquery-datatransfer#543",
-        "googleapis/java-automl#1382",
-        "googleapis/nodejs-contact-center-insights#219",
-        "googleapis/java-network-security#319",
-        "googleapis/python-batch#163"
+        "stripe/stripe-php#2127",
+        "googleapis/python-bigquery-datatransfer#544",
+        "googleapis/java-automl#1383",
+        "googleapis/nodejs-contact-center-insights#220",
+        "googleapis/java-network-security#320",
+        "googleapis/python-batch#164"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
@@ -417,16 +417,16 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.446,
+      "latency_ms": 0.431,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "modelcontextprotocol/servers#5093",
-        "googleapis/nodejs-bigquery-data-transfer#615",
-        "googleapis/python-videointelligence#496",
-        "googleapis/java-contact-center-insights#456",
-        "googleapis/python-security-private-ca#391",
-        "googleapis/java-batch#165"
+        "modelcontextprotocol/servers#5094",
+        "googleapis/nodejs-bigquery-data-transfer#616",
+        "googleapis/python-videointelligence#497",
+        "googleapis/java-contact-center-insights#457",
+        "googleapis/python-security-private-ca#392",
+        "googleapis/java-batch#166"
       ],
       "reasons": [
         "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
@@ -445,16 +445,16 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.445,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "stripe/stripe-ruby#1944",
-        "googleapis/python-bigquery-connection#387",
-        "googleapis/nodejs-video-intelligence#813",
-        "googleapis/python-automl#560",
-        "googleapis/python-gke-hub#302",
-        "googleapis/python-container#457"
+        "stripe/stripe-ruby#1945",
+        "googleapis/python-bigquery-connection#388",
+        "googleapis/nodejs-video-intelligence#814",
+        "googleapis/python-automl#561",
+        "googleapis/python-gke-hub#303",
+        "googleapis/python-container#458"
       ],
       "reasons": [
         "all_stage618_deterministic_guards_passed"
