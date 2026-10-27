@@ -1,4 +1,4 @@
-# 2026-10-28 技术资产与架构更新索引（Stages 618–751 · 历史性突破 620+..750+ 阶段史诗级里程碑（达 Stage 751！）、2,000+ / 2,100+ / 2,300+ 官方仓库史诗级里程碑（达 2,316 个 / 2,220 个活跃池仓库）、90,000+..120,000+ 零重叠 PR（达 120,966 项！） & 全仓 1,930+（达 1,936/1,936）单测全绿里程碑 · 累计覆盖 2,316 个官方仓库 / 2,220 个活跃池仓库与 120,966 项零重叠真实 PR！）
+# 2026-10-28 技术资产与架构更新索引（Stages 618–761 · 历史性突破 620+..760+ 阶段史诗级里程碑（达 Stage 761！）、2,000+ / 2,100+ / 2,360+ 官方仓库史诗级里程碑（达 2,366 个 / 2,270 个活跃池仓库）、90,000+..123,500+ 零重叠 PR（达 123,526 项！） & 全仓 1,950+（达 1,956/1,956）单测全绿里程碑 · 累计覆盖 2,366 个官方仓库 / 2,270 个活跃池仓库与 123,526 项零重叠真实 PR！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-28-daily-update.en.md`)](2026-10-28-daily-update.en.md)** | **[2026-10-28 每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)** | **[English Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)**
 
@@ -618,3 +618,51 @@
   - 基准评测与报告生成：`lab/x402_erc9605_mpp_dlpdataflow_ap2_docaifraud_ucp_esdocker_a2a_endpointsgradle_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9605-mpp-dlpdataflow-ap2-docaifraud-ucp-esdocker-a2a-endpointsgradle-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc9605_mpp_dlpdataflow_ap2_docaifraud_ucp_esdocker_a2a_endpointsgradle_stripe_mcp.py`（全仓 **1,936/1,936** 单测 100% 通过）
+## Stage 752–753：Google Endpoints Developer Portal / Envoy Processor Examples / Etcd Docker / FDA MyStudies 确定性守卫与基准评测（ERC-9610，累计 121,478 项零重叠 PR，覆盖 2,326 个官方仓库 / 2,230 个活跃池仓库，1,940/1,940 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 零历史引用上游仓库（累计覆盖达 2,326 个官方仓库 & 2,230 个活跃池仓库）**：新增 `GoogleCloudPlatform/endpoints-developer-portal-sample-content` (`#9`)、`GoogleCloudPlatform/endpoints-framework-maven-plugin` (`#70`)、`GoogleCloudPlatform/endpoints-grpcrest-python` (`#2`)、`GoogleCloudPlatform/endpoints-quickstart` (`#10`)、`GoogleCloudPlatform/envoy-processor-examples` (`#14`)、`GoogleCloudPlatform/eos-block-producer` (`#2`)、`GoogleCloudPlatform/err-stackdriver` (`#2`)、`GoogleCloudPlatform/etcd-docker` (`#26`)、`GoogleCloudPlatform/fda-mystudies` (`#5198`)、`GoogleCloudPlatform/firebase-android-client` (`#30`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **121,478 项**（**1,940/1,940** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9610_mpp_endpointsportal_ap2_envoyprocessor_ucp_etcddocker_a2a_fdamystudies_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9610_mpp_endpointsportal_ap2_envoyprocessor_ucp_etcddocker_a2a_fdamystudies_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9610-mpp-endpointsportal-ap2-envoyprocessor-ucp-etcddocker-a2a-fdamystudies-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9610_mpp_endpointsportal_ap2_envoyprocessor_ucp_etcddocker_a2a_fdamystudies_stripe_mcp.py`（全仓 **1,940/1,940** 单测 100% 通过）
+
+
+## Stage 754–755：Google Firebase AppEngine Backend / Firestore Gorilla Sessions / Flaky Service / Flink on K8s Operator 确定性守卫与基准评测（ERC-9615，累计 121,990 项零重叠 PR，覆盖 2,336 个官方仓库 / 2,240 个活跃池仓库，1,944/1,944 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 零历史引用上游仓库（累计覆盖达 2,336 个官方仓库 & 2,240 个活跃池仓库）**：新增 `GoogleCloudPlatform/firebase-appengine-backend` (`#30`)、`GoogleCloudPlatform/firebase-ios-samples` (`#3`)、`GoogleCloudPlatform/firestore-gorilla-sessions` (`#3`)、`GoogleCloudPlatform/firestore-migration-tooling` (`#2`)、`GoogleCloudPlatform/flaky-service` (`#283`)、`GoogleCloudPlatform/flask-talisman` (`#83`)、`GoogleCloudPlatform/flink-on-k8s-operator` (`#492`)、`GoogleCloudPlatform/fluent-plugin-detect-exceptions` (`#104`)、`GoogleCloudPlatform/fluent-plugin-iis` (`#1`)、`GoogleCloudPlatform/fluentd-catch-all-config` (`#35`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **121,990 项**（**1,944/1,944** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9615_mpp_firebaseappengine_ap2_firestoregorilla_ucp_flakyservice_a2a_flinkk8sop_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9615_mpp_firebaseappengine_ap2_firestoregorilla_ucp_flakyservice_a2a_flinkk8sop_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9615-mpp-firebaseappengine-ap2-firestoregorilla-ucp-flakyservice-a2a-flinkk8sop-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9615_mpp_firebaseappengine_ap2_firestoregorilla_ucp_flakyservice_a2a_flinkk8sop_stripe_mcp.py`（全仓 **1,944/1,944** 单测 100% 通过）
+
+
+## Stage 756–757：Google Fluentd Docker / Gatekeeper SecurityCenter / GCE License Tracker / GCloud Maven Plugin 确定性守卫与基准评测（ERC-9620，累计 122,502 项零重叠 PR，覆盖 2,346 个官方仓库 / 2,250 个活跃池仓库，1,948/1,948 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 零历史引用上游仓库（累计覆盖达 2,346 个官方仓库 & 2,250 个活跃池仓库）**：新增 `GoogleCloudPlatform/fluentd-docker` (`#52`)、`GoogleCloudPlatform/friendly-cicd-helper` (`#4`)、`GoogleCloudPlatform/gatekeeper-securitycenter` (`#25`)、`GoogleCloudPlatform/gce-cloud-sql-recommendation-tool` (`#4`)、`GoogleCloudPlatform/gce-license-tracker` (`#27`)、`GoogleCloudPlatform/gce-oreilly` (`#2`)、`GoogleCloudPlatform/gcf-automated-resource-cleanup` (`#15`)、`GoogleCloudPlatform/gcloud-java-examples` (`#7`)、`GoogleCloudPlatform/gcloud-maven-plugin` (`#101`)、`GoogleCloudPlatform/gcloud-python-wheels` (`#5`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **122,502 项**（**1,948/1,948** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9620_mpp_fluentddocker_ap2_gatekeeperseccenter_ucp_gcelicensetracker_a2a_gcloudmaven_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9620_mpp_fluentddocker_ap2_gatekeeperseccenter_ucp_gcelicensetracker_a2a_gcloudmaven_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9620-mpp-fluentddocker-ap2-gatekeeperseccenter-ucp-gcelicensetracker-a2a-gcloudmaven-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9620_mpp_fluentddocker_ap2_gatekeeperseccenter_ucp_gcelicensetracker_a2a_gcloudmaven_stripe_mcp.py`（全仓 **1,948/1,948** 单测 100% 通过）
+
+
+## Stage 758–759：Google GCP CA Service OCSP / GCP FedRAMP Quickstart / GCP Service Broker / GKE Application Security Demo 确定性守卫与基准评测（ERC-9625，累计 123,014 项零重叠 PR，覆盖 2,356 个官方仓库 / 2,260 个活跃池仓库，1,952/1,952 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 零历史引用上游仓库（累计覆盖达 2,356 个官方仓库 & 2,260 个活跃池仓库）**：新增 `GoogleCloudPlatform/gcp-ca-service-ocsp` (`#2`)、`GoogleCloudPlatform/gcp-fedramp-quickstart` (`#3`)、`GoogleCloudPlatform/gcp-plugin-core-java` (`#14`)、`GoogleCloudPlatform/gcp-service-broker` (`#573`)、`GoogleCloudPlatform/gcs-uploader` (`#3`)、`GoogleCloudPlatform/getting-started-django` (`#2`)、`GoogleCloudPlatform/gifinator` (`#2`)、`GoogleCloudPlatform/git-gerrit-subcommand` (`#16`)、`GoogleCloudPlatform/gke-anthos-holistic-demo` (`#15`)、`GoogleCloudPlatform/gke-application-security-demo` (`#35`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **123,014 项**（**1,952/1,952** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9625_mpp_gcpcaservocsp_ap2_gcpfedramp_ucp_gcpservicebroker_a2a_gkeappsecdemo_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9625_mpp_gcpcaservocsp_ap2_gcpfedramp_ucp_gcpservicebroker_a2a_gkeappsecdemo_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9625-mpp-gcpcaservocsp-ap2-gcpfedramp-ucp-gcpservicebroker-a2a-gkeappsecdemo-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9625_mpp_gcpcaservocsp_ap2_gcpfedramp_ucp_gcpservicebroker_a2a_gkeappsecdemo_stripe_mcp.py`（全仓 **1,952/1,952** 单测 100% 通过）
+
+
+## Stage 760–761：Google GKE Binary Auth Tools / GKE Cost Optimization / GKE Enterprise Demo / GKE FQDN Network Policies 确定性守卫与基准评测（ERC-9630，累计 123,526 项零重叠 PR，覆盖 2,366 个官方仓库 / 2,270 个活跃池仓库，1,956/1,956 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` 零历史引用上游仓库（累计覆盖达 2,366 个官方仓库 & 2,270 个活跃池仓库）**：新增 `GoogleCloudPlatform/gke-aspnet-gmsa` (`#1`)、`GoogleCloudPlatform/gke-binary-auth-tools` (`#11`)、`GoogleCloudPlatform/gke-cloud-sql-postgres-demo` (`#26`)、`GoogleCloudPlatform/gke-cost-optimization-monitoring` (`#11`)、`GoogleCloudPlatform/gke-datadog-demo` (`#22`)、`GoogleCloudPlatform/gke-deployment-testing-strategies` (`#6`)、`GoogleCloudPlatform/gke-enterprise-demo` (`#86`)、`GoogleCloudPlatform/gke-fqdnnetworkpolicies-golang` (`#52`)、`GoogleCloudPlatform/gke-gitops-tutorial-cloudbuild` (`#16`)、`GoogleCloudPlatform/gke-gobang-app-example` (`#3`)，本阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **123,526 项**（**1,956/1,956** 单测全绿）。
+- **核心代码与测试资产**：
+  - 确定性守卫：`lab/x402_erc9630_mpp_gkebinauth_ap2_gkecostopt_ucp_gkeenterprisedemo_a2a_gkefqdnnetpol_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9630_mpp_gkebinauth_ap2_gkecostopt_ucp_gkeenterprisedemo_a2a_gkefqdnnetpol_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9630-mpp-gkebinauth-ap2-gkecostopt-ucp-gkeenterprisedemo-a2a-gkefqdnnetpol-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9630_mpp_gkebinauth_ap2_gkecostopt_ucp_gkeenterprisedemo_a2a_gkefqdnnetpol_stripe_mcp.py`（全仓 **1,956/1,956** 单测 100% 通过）
