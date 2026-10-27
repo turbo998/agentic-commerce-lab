@@ -284,7 +284,7 @@ def write_stage715_artifacts(output_dir: str | Path) -> dict[str, Path]:
 REPORT_DIR = (
     Path(__file__).resolve().parent.parent
     / "reports"
-    / "agentic-commerce-x402-erc9515-mpp-serverlessjava-ap2-cloudarmor-ucp-otlpk8s-a2a-genaikb-stripe-mcp-bench"
+    / "agentic-commerce-x402-erc9515-mpp-guestlogging-ap2-automlops-ucp-reliableapps-a2a-cloudrunpy-stripe-mcp-bench"
 )
 
 

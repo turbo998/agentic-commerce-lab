@@ -1,5 +1,5 @@
 {
-  "stage": "720-721",
+  "stage": "714-715",
   "date": "2026-10-27",
   "provenance": "measured",
   "independently_reproduced": true,
@@ -37,11 +37,11 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.451,
+      "latency_ms": 0.458,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/anthos-samples#229",
+        "GoogleCloudPlatform/guest-logging-go#229",
         "GoogleCloudPlatform/gcve-iac-foundations#148",
         "googleapis/python-data-fusion#245",
         "googleapis/java-video-intelligence#1171",
@@ -49,7 +49,7 @@
         "googleapis/nodejs-gke-hub#249"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -68,7 +68,7 @@
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/data-beans#210",
+        "GoogleCloudPlatform/cloud-builders-community#210",
         "GoogleCloudPlatform/redis-dataflow-realtime-analytics#87",
         "googleapis/nodejs-data-fusion#148",
         "googleapis/python-talent#411",
@@ -76,7 +76,7 @@
         "googleapis/java-gkehub#425"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -91,11 +91,11 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.43,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/chocolate-ai#11",
+        "GoogleCloudPlatform/automlops#11",
         "GoogleCloudPlatform/google-cloud-eclipse#3805",
         "modelcontextprotocol/go-sdk#1142",
         "googleapis/nodejs-talent#532",
@@ -103,7 +103,7 @@
         "googleapis/python-dns#450"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -118,11 +118,11 @@
       "confidence": 0.91,
       "reversed_confidence": 0.91,
       "delta_pts": 0.0,
-      "latency_ms": 0.429,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/cloud-run-microservice-template-java#208",
+        "GoogleCloudPlatform/migrate-webapp-heroku-to-cloudrun-node#208",
         "GoogleCloudPlatform/isolator#50",
         "googleapis/python-iot#579",
         "googleapis/java-talent#988",
@@ -149,7 +149,7 @@
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/dlp-pdf-redaction#88",
+        "GoogleCloudPlatform/vertex-ai-spark-ml-serving#88",
         "GoogleCloudPlatform/marketplace-tools#162",
         "googleapis/nodejs-iot#673",
         "googleapis/python-language#510",
@@ -157,7 +157,7 @@
         "googleapis/java-dns#850"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -172,11 +172,11 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.427,
+      "latency_ms": 0.428,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/fraudfinder#7",
+        "GoogleCloudPlatform/EZ-WSI-DICOMweb#7",
         "modelcontextprotocol/registry#1629",
         "googleapis/java-iot#915",
         "googleapis/nodejs-language#779",
@@ -184,7 +184,7 @@
         "googleapis/python-domains#277"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -199,11 +199,11 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.427,
+      "latency_ms": 0.428,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/serverless-store-demo#19",
+        "GoogleCloudPlatform/pastures-poc-toolkit#19",
         "modelcontextprotocol/java-sdk#1071",
         "googleapis/python-trace#408",
         "googleapis/java-language#1045",
@@ -211,7 +211,7 @@
         "googleapis/nodejs-domains#226"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -230,7 +230,7 @@
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/t5x-on-vertex-ai#70",
+        "GoogleCloudPlatform/reliable-app-platforms#70",
         "modelcontextprotocol/ruby-sdk#513",
         "googleapis/java-trace#1025",
         "googleapis/python-retail#508",
@@ -258,7 +258,7 @@
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/workload-manager#382",
+        "GoogleCloudPlatform/tf-estimator-tutorials#382",
         "modelcontextprotocol/csharp-sdk#1727",
         "googleapis/python-error-reporting#796",
         "googleapis/nodejs-retail#303",
@@ -266,7 +266,7 @@
         "coinbase/coinbase-wallet-sdk#1946"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -285,7 +285,7 @@
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
-        "GoogleCloudPlatform/applied-ai-engineering-samples#95",
+        "GoogleCloudPlatform/cloud-run-microservice-template-python#95",
         "modelcontextprotocol/kotlin-sdk#1008",
         "googleapis/nodejs-error-reporting#871",
         "googleapis/java-retail#700",
@@ -293,7 +293,7 @@
         "googleapis/java-redis#844"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -308,7 +308,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.426,
+      "latency_ms": 0.427,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -320,7 +320,7 @@
         "googleapis/python-memcache#326"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -335,7 +335,7 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.427,
+      "latency_ms": 0.428,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -363,7 +363,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.426,
+      "latency_ms": 0.427,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -375,7 +375,7 @@
         "googleapis/java-memcache#804"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -402,7 +402,7 @@
         "googleapis/python-batch#191"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     },
     {
@@ -417,7 +417,7 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.427,
+      "latency_ms": 0.428,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -445,7 +445,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.427,
+      "latency_ms": 0.428,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -457,7 +457,7 @@
         "googleapis/python-container#485"
       ],
       "reasons": [
-        "all_stage720_deterministic_guards_passed"
+        "all_stage714_deterministic_guards_passed"
       ]
     }
   ]
