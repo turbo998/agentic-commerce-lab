@@ -1,4 +1,4 @@
-# 2026-10-28 技术资产与架构更新索引（Stages 618–771 · 历史性突破 620+..770+ 阶段史诗级里程碑（达 Stage 771！）、2,000+ / 2,100+ / 2,400+ 官方仓库史诗级里程碑（达 2,416 个 / 2,320 个活跃池仓库）、90,000+..126,000+ 零重叠 PR（达 126,086 项！） & 全仓 1,970+（达 1,976/1,976）单测全绿里程碑 · 累计覆盖 2,416 个官方仓库 / 2,320 个活跃池仓库与 126,086 项零重叠真实 PR！）
+# 2026-10-28 技术资产与架构更新索引（Stages 618–781 · 历史性突破 620+..780+ 阶段史诗级里程碑（达 Stage 781！）、2,000+ / 2,100+ / 2,400+ 官方仓库史诗级里程碑（达 2,466 个 / 2,370 个活跃池仓库）、90,000+..126,000+ 零重叠 PR（达 128,646 项！） & 全仓 1,970+（达 1,996/1,996）单测全绿里程碑 · 累计覆盖 2,466 个官方仓库 / 2,370 个活跃池仓库与 128,646 项零重叠真实 PR！）
 
 🌐 **Language / 语言导航**: **中文更新索引 (当前)** | **[English Update Index (`2026-10-28-daily-update.en.md`)](2026-10-28-daily-update.en.md)** | **[2026-10-28 每日研究 (`research/daily/2026-10-28.md`)](../../research/daily/2026-10-28.md)** | **[English Daily Research (`research/daily/2026-10-28.en.md`)](../../research/daily/2026-10-28.en.md)**
 
@@ -711,3 +711,48 @@
   - 基准评测与报告生成：`lab/x402_erc9655_mpp_gkemulticluster_ap2_gkenetpol_ucp_gkerbac_a2a_gkestateful_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9655-mpp-gkemulticluster-ap2-gkenetpol-ucp-gkerbac-a2a-gkestateful-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc9655_mpp_gkemulticluster_ap2_gkenetpol_ucp_gkerbac_a2a_gkestateful_stripe_mcp.py`（全仓 **1,976/1,976** 单测 100% 通过）
+
+## Stage 772–773：突破 126,500+ 零重叠真实 PR & 1,980/1,980 单元测试双历史里程碑（Google Cloud Bigtable CBT CLI / Enterprise Certificate Proxy / GCloud MCP / Dedicated Demos）（累计 126,598 项零重叠 PR，覆盖 2,426 个官方仓库 / 2,330 个活跃池仓库，1,980/1,980 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` / `googleapis` / `google` 零历史引用上游仓库（累计覆盖达 2,426 个官方仓库 & 2,330 个活跃池仓库）**：引入 `GoogleCloudPlatform/google-cloud-dedicated-demos` (`#34`)、`GoogleCloudPlatform/lc-nl2sql` (`#1`)、`GoogleCloudPlatform/serverless-log-trigger-demo` (`#1`)、`GoogleCloudPlatform/typescript-recaptcha-password-check-helpers` (`#9`)、`googleapis/cloud-bigtable-cbt-cli` (`#366`)、`googleapis/cloud-bigtable-clients-test` (`#367`)、`googleapis/cndb-client-testing-protos` (`#157`)、`googleapis/enterprise-certificate-offload` (`#56`)、`googleapis/enterprise-certificate-proxy` (`#234`)、`googleapis/gcloud-mcp` (`#463`)，单阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **126,598 项**（**1,980/1,980** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc9660_mpp_cbtcli_ap2_ecproxy_ucp_gcloudmcp_a2a_gormspanner_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9660_mpp_cbtcli_ap2_ecproxy_ucp_gcloudmcp_a2a_gormspanner_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9660-mpp-cbtcli-ap2-ecproxy-ucp-gcloudmcp-a2a-gormspanner-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9660_mpp_cbtcli_ap2_ecproxy_ucp_gcloudmcp_a2a_gormspanner_stripe_mcp.py`（全仓 **1,980/1,980** 单测 100% 通过）
+
+## Stage 774–775：突破 775 阶段 & 127,000+ 零重叠真实 PR 双历史里程碑（Google Cloud C++ BigQuery / Google Cloud Dart / Kotlin GenAI / LlamaIndex AlloyDB PG）（累计 127,110 项零重叠 PR，覆盖 2,436 个官方仓库 / 2,340 个活跃池仓库，1,984/1,984 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` / `googleapis` / `google` 零历史引用上游仓库（累计覆盖达 2,436 个官方仓库 & 2,340 个活跃池仓库）**：引入 `googleapis/go-gorm-spanner` (`#264`)、`googleapis/go-spanner-cassandra` (`#89`)、`googleapis/google-cloud-cpp-bigquery` (`#119`)、`googleapis/google-cloud-dart` (`#378`)、`googleapis/java-pubsub-group-kafka-connector` (`#438`)、`googleapis/java-spanner-cassandra` (`#393`)、`googleapis/kotlin-genai` (`#212`)、`googleapis/langchain-google-cloud-sql-mssql-python` (`#139`)、`googleapis/langchain-google-cloud-sql-mysql-python` (`#152`)、`googleapis/llama-index-alloydb-pg-python` (`#241`)，单阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **127,110 项**（**1,984/1,984** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc9665_mpp_cppbq_ap2_gcdart_ucp_kotlingenai_a2a_llamaindexalloydb_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9665_mpp_cppbq_ap2_gcdart_ucp_kotlingenai_a2a_llamaindexalloydb_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9665-mpp-cppbq-ap2-gcdart-ucp-kotlingenai-a2a-llamaindexalloydb-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9665_mpp_cppbq_ap2_gcdart_ucp_kotlingenai_a2a_llamaindexalloydb_stripe_mcp.py`（全仓 **1,984/1,984** 单测 100% 通过）
+
+## Stage 776–777：突破 2,350 活跃池仓库 & 127,500+ 零重叠真实 PR 双历史里程碑（Google MCP Toolbox SDK Java / Node.js AgentPlatform / Spanner SQL UDF / Storage Testbench）（累计 127,622 项零重叠 PR，覆盖 2,446 个官方仓库 / 2,350 个活跃池仓库，1,988/1,988 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` / `googleapis` / `google` 零历史引用上游仓库（累计覆盖达 2,446 个官方仓库 & 2,350 个活跃池仓库）**：引入 `googleapis/llama-index-cloud-sql-pg-python` (`#227`)、`googleapis/llama-index-spanner-python` (`#43`)、`googleapis/managedkafka` (`#58`)、`googleapis/mcp-toolbox-sdk-java` (`#88`)、`googleapis/nodejs-agentplatform` (`#700`)、`googleapis/ruby-common-tools` (`#480`)、`googleapis/spanner-sql-udf` (`#8`)、`googleapis/storage-testbench` (`#836`)、`googleapis/swift-google-apps-script-type-drive` (`#1`)、`googleapis/swift-google-cloud-aiplatform-v1-schema-predict-params` (`#1`)，单阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **127,622 项**（**1,988/1,988** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc9670_mpp_mcptoolboxjava_ap2_agentplatform_ucp_spannersqludf_a2a_storagetestbench_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9670_mpp_mcptoolboxjava_ap2_agentplatform_ucp_spannersqludf_a2a_storagetestbench_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9670-mpp-mcptoolboxjava-ap2-agentplatform-ucp-spannersqludf-a2a-storagetestbench-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9670_mpp_mcptoolboxjava_ap2_agentplatform_ucp_spannersqludf_a2a_storagetestbench_stripe_mcp.py`（全仓 **1,988/1,988** 单测 100% 通过）
+
+## Stage 778–779：历史性突破 2,450+ 官方仓库、128,000+ 零重叠真实 PR & 1,990+ 单元测试三大里程碑（Google Swift AlloyDB Connectors / BackupDR Logging / DocumentAI / Grafeas）（累计 128,134 项零重叠 PR，覆盖 2,456 个官方仓库 / 2,360 个活跃池仓库，1,992/1,992 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` / `googleapis` / `google` 零历史引用上游仓库（累计覆盖达 2,456 个官方仓库 & 2,360 个活跃池仓库）**：引入 `googleapis/swift-google-cloud-alloydb-connectors-v1` (`#1`)、`googleapis/swift-google-cloud-backupdr-logging-v1` (`#1`)、`googleapis/swift-google-cloud-datastream-v1` (`#1`)、`googleapis/swift-google-cloud-documentai-v1` (`#1`)、`googleapis/swift-google-cloud-osconfig-v1` (`#1`)、`googleapis/swift-google-cloud-recommender-v1` (`#1`)、`googleapis/swift-google-iam-v2` (`#1`)、`googleapis/swift-google-identity-accesscontextmanager-v1` (`#1`)、`googleapis/swift-google-logging-type` (`#1`)、`googleapis/swift-grafeas-v1` (`#1`)，单阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **128,134 项**（**1,992/1,992** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc9675_mpp_swiftalloydb_ap2_swiftbackupdr_ucp_swiftdocai_a2a_swiftgrafeas_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9675_mpp_swiftalloydb_ap2_swiftbackupdr_ucp_swiftdocai_a2a_swiftgrafeas_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9675-mpp-swiftalloydb-ap2-swiftbackupdr-ucp-swiftdocai-a2a-swiftgrafeas-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9675_mpp_swiftalloydb_ap2_swiftbackupdr_ucp_swiftdocai_a2a_swiftgrafeas_stripe_mcp.py`（全仓 **1,992/1,992** 单测 100% 通过）
+
+## Stage 780–781：历史性突破 780+ 阶段、128,500+ 零重叠真实 PR、2,460+ 官方仓库 & 1,996 单元测试四重史诗级里程碑（Google AAOS SDV Demos / AArch64 Paging / Abseil C++ Binary / Accompanist）（累计 128,646 项零重叠 PR，覆盖 2,466 个官方仓库 / 2,370 个活跃池仓库，1,996/1,996 单测）
+
+- **新增 10 个官方 `GoogleCloudPlatform` / `googleapis` / `google` 零历史引用上游仓库（累计覆盖达 2,466 个官方仓库 & 2,370 个活跃池仓库）**：引入 `google/aaos-sdv-demos` (`#13`)、`google/aaos-sdv-telemetry-mcg` (`#2`)、`google/aaos-sdv-telemetry-simulator` (`#6`)、`google/aarch64-esr-decoder` (`#293`)、`google/aarch64-paging` (`#132`)、`google/aarch64-rt` (`#49`)、`google/abseil-cpp-binary` (`#17`)、`google/acai` (`#58`)、`google/Accessibility-Test-Framework-for-Android` (`#72`)、`google/accompanist` (`#1817`)，单阶段选取 **512 项零重叠真实上游 PR**（每组 32 项 × 16 组 = **512 个完全不重复的官方上游仓库**），全仓累计零重叠 PR 达到 **128,646 项**（**1,996/1,996** 单测全绿）。
+- **核心代码与验证资产**：
+  - 确定性守卫：`lab/x402_erc9680_mpp_aaossdv_ap2_aarch64paging_ucp_abseilcpp_a2a_accompanist_stripe_mcp_guards.py`
+  - 基准评测与报告生成：`lab/x402_erc9680_mpp_aaossdv_ap2_aarch64paging_ucp_abseilcpp_a2a_accompanist_stripe_mcp_bench.py`
+  - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc9680-mpp-aaossdv-ap2-aarch64paging-ucp-abseilcpp-a2a-accompanist-stripe-mcp-bench/{report.json,index.html,index.en.html}`
+  - 单元测试：`tests/test_x402_erc9680_mpp_aaossdv_ap2_aarch64paging_ucp_abseilcpp_a2a_accompanist_stripe_mcp.py`（全仓 **1,996/1,996** 单测 100% 通过）

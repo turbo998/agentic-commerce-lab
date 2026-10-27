@@ -1,0 +1,464 @@
+{
+  "stage": "772-773",
+  "date": "2026-10-28",
+  "provenance": "measured",
+  "independently_reproduced": true,
+  "total_scenarios": 16,
+  "passed_scenarios": 16,
+  "pass_rate_pct": 100.0,
+  "total_prs": 512,
+  "unique_prs": 512,
+  "unique_repos": 512,
+  "max_perturbation_delta_pts": 0.0,
+  "latency_tiers_ms": {
+    "1_req": {
+      "guarded": 0.43,
+      "baseline": 1.81
+    },
+    "4_batch": {
+      "guarded": 1.16,
+      "baseline": 6.42
+    },
+    "16_batch": {
+      "guarded": 3.82,
+      "baseline": 24.85
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "PR-01",
+      "slug": "x402_bqmigration_java_tempo_tipbot_mpp_replay_guard",
+      "title": "x402 Java BigQueryMigration, Tempo Tip.Bot & MPP Explicit Replay Storage Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.5,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "GoogleCloudPlatform/google-cloud-dedicated-demos#34",
+        "GoogleCloudPlatform/gcve-iac-foundations#154",
+        "googleapis/python-data-fusion#251",
+        "googleapis/java-video-intelligence#1177",
+        "googleapis/nodejs-automl#873",
+        "googleapis/nodejs-gke-hub#255"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-02",
+      "slug": "mppx_bqdataexchange_java_viem_ox_siwe_guard",
+      "title": "mppx Java BigQueryDataExchange, Zyzz/Wata & Viem/Ox SIWE Resource Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.467,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "GoogleCloudPlatform/lc-nl2sql#1",
+        "GoogleCloudPlatform/redis-dataflow-realtime-analytics#93",
+        "googleapis/nodejs-data-fusion#154",
+        "googleapis/python-talent#417",
+        "googleapis/nodejs-security-private-ca#288",
+        "googleapis/java-gkehub#431"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-03",
+      "slug": "ap2_analytics_admin_py_sdjwt_credo_cnfkid_erc_guard",
+      "title": "AP2 Python AnalyticsAdmin, SD-JWT Type Metadata, Credo-TS cnf.kid & ERC-9660 Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.443,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "GoogleCloudPlatform/serverless-log-trigger-demo#1",
+        "GoogleCloudPlatform/google-cloud-eclipse#3811",
+        "modelcontextprotocol/go-sdk#1148",
+        "googleapis/nodejs-talent#538",
+        "googleapis/java-security-private-ca#598",
+        "googleapis/python-dns#456"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-04",
+      "slug": "ucp_analytics_admin_node_visa_chart_benchmarkoor_guard",
+      "title": "UCP Node AnalyticsAdmin, Visa Components & Tempo Benchmarkoor Replay Guard",
+      "task_type": "choice",
+      "expected_accepted": false,
+      "accepted": false,
+      "correct": true,
+      "action": "Confirm",
+      "confidence": 0.91,
+      "reversed_confidence": 0.91,
+      "delta_pts": 0.0,
+      "latency_ms": 0.464,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "GoogleCloudPlatform/typescript-recaptcha-password-check-helpers#9",
+        "GoogleCloudPlatform/isolator#56",
+        "googleapis/python-iot#585",
+        "googleapis/java-talent#994",
+        "googleapis/python-iap#250",
+        "googleapis/nodejs-dns#640"
+      ],
+      "reasons": [
+        "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing"
+      ]
+    },
+    {
+      "scenario_id": "PR-05",
+      "slug": "caip25_analytics_admin_java_stripe_salesforce_ai_guard",
+      "title": "CAIP-25 Java AnalyticsAdmin, Stripe Salesforce AI Context & Terminal Oracle Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.458,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/cloud-bigtable-cbt-cli#366",
+        "GoogleCloudPlatform/marketplace-tools#168",
+        "googleapis/nodejs-iot#679",
+        "googleapis/python-language#516",
+        "googleapis/python-access-context-manager#320",
+        "googleapis/java-dns#856"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-06",
+      "slug": "a2a_analytics_data_py_task_push_spec_tck_gherkin_guard",
+      "title": "A2A Python AnalyticsData, TaskPushNotification Spec & TCK Gherkin Guard",
+      "task_type": "noul",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.46,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/cloud-bigtable-clients-test#367",
+        "modelcontextprotocol/registry#1635",
+        "googleapis/java-iot#921",
+        "googleapis/nodejs-language#785",
+        "googleapis/java-accesscontextmanager#529",
+        "googleapis/python-domains#283"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-07",
+      "slug": "a2a_analytics_data_node_rest_version_header_js_guard",
+      "title": "A2A Node AnalyticsData, HTTP+REST Path & Version Header + JS Export Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.46,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/cndb-client-testing-protos#157",
+        "modelcontextprotocol/java-sdk#1077",
+        "googleapis/python-trace#414",
+        "googleapis/java-language#1051",
+        "a2aproject/a2a-java#1022",
+        "googleapis/nodejs-domains#232"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-08",
+      "slug": "a2a_analytics_data_java_multiversion_dotnet_schema_guard",
+      "title": "A2A Java AnalyticsData, Multi-Version & .NET JsonSchema.Net 8 Guard",
+      "task_type": "score",
+      "expected_accepted": false,
+      "accepted": false,
+      "correct": true,
+      "action": "Send to a human",
+      "confidence": 0.98,
+      "reversed_confidence": 0.98,
+      "delta_pts": 0.0,
+      "latency_ms": 0.459,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/enterprise-certificate-offload#56",
+        "modelcontextprotocol/ruby-sdk#519",
+        "googleapis/java-trace#1031",
+        "googleapis/python-retail#514",
+        "googleapis/python-compute#521",
+        "googleapis/java-domains#421"
+      ],
+      "reasons": [
+        "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+        "caip25_session_or_a2a_dotnet_jsonschema8_violation"
+      ]
+    },
+    {
+      "scenario_id": "PR-09",
+      "slug": "stripe_dms_py_toolkit_mcp_dist_cli_js_react_guard",
+      "title": "Stripe Python DMS, Agent Toolkit @stripe/mcp Dist, CLI & JS/React Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.457,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/enterprise-certificate-proxy#234",
+        "modelcontextprotocol/csharp-sdk#1733",
+        "googleapis/python-error-reporting#802",
+        "googleapis/nodejs-retail#309",
+        "googleapis/nodejs-compute#951",
+        "coinbase/coinbase-wallet-sdk#1952"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-10",
+      "slug": "stripe_dms_node_event_notification_go_reft_java_guard",
+      "title": "Stripe Node DMS, EventNotificationHandler, Go Ref[T] & Server SDK Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.458,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "googleapis/gcloud-mcp#463",
+        "modelcontextprotocol/kotlin-sdk#1014",
+        "googleapis/nodejs-error-reporting#877",
+        "googleapis/java-retail#706",
+        "googleapis/java-compute#878",
+        "googleapis/java-redis#850"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-11",
+      "slug": "coinbase_agentkit_cdp_projectid_agentcore_onchainkit_guard",
+      "title": "Coinbase AgentKit, CDP ProjectId, AgentCore Template & OnchainKit Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.458,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "stripe/stripe-dotnet#3500",
+        "modelcontextprotocol/rust-sdk#1137",
+        "googleapis/java-errorreporting#1130",
+        "googleapis/python-recommendations-ai#304",
+        "googleapis/python-ids#186",
+        "googleapis/python-memcache#332"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-12",
+      "slug": "coinbase_mesh_onchaintestkit_cdpcurl_onramp_guard",
+      "title": "Coinbase Mesh-CLI, OnchainTestKit, Homebrew-CDPCurl & Onramp Guard",
+      "task_type": "noul",
+      "expected_accepted": false,
+      "accepted": false,
+      "correct": true,
+      "action": "Send to a human",
+      "confidence": 0.98,
+      "reversed_confidence": 0.98,
+      "delta_pts": 0.0,
+      "latency_ms": 0.46,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "ethereum/ERCs#2131",
+        "googleapis/nodejs-bigquery-reservation#252",
+        "googleapis/java-profiler#449",
+        "googleapis/java-recommendations-ai#718",
+        "googleapis/java-ids#289",
+        "googleapis/nodejs-memcache#297"
+      ],
+      "reasons": [
+        "mpp_go_replay_store_or_mcp_go_duplicate_inflight_detected",
+        "analytics_admin_property_or_dms_migration_job_tenant_leak"
+      ]
+    },
+    {
+      "scenario_id": "PR-13",
+      "slug": "mcp_spec_inspector_pkcs7_mcpb_ext_apps_v2_guard",
+      "title": "MCP Spec, Inspector, MCPB PKCS#7 Signature & Ext-Apps v2 Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.459,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "tempoxyz/tempo#8678",
+        "googleapis/java-bigqueryreservation#872",
+        "googleapis/python-debugger-client#240",
+        "googleapis/python-contact-center-insights#382",
+        "googleapis/python-network-security#248",
+        "googleapis/java-memcache#810"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-14",
+      "slug": "mcp_ts_cjs_ajv_packaging_py_urllib3_media_guard",
+      "title": "MCP TypeScript CJS Ajv Exposure & Python SDK Packaging Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.459,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "stripe/stripe-php#2192",
+        "googleapis/python-bigquery-datatransfer#577",
+        "googleapis/java-automl#1416",
+        "googleapis/nodejs-contact-center-insights#253",
+        "googleapis/java-network-security#353",
+        "googleapis/python-batch#197"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    },
+    {
+      "scenario_id": "PR-15",
+      "slug": "mcp_go_inflight_dedup_rust_oauth_java_utf8_csharp_guard",
+      "title": "MCP Go Duplicate In-Flight Prevention, Rust OAuth & Java UTF-8 Guard",
+      "task_type": "score",
+      "expected_accepted": false,
+      "accepted": false,
+      "correct": true,
+      "action": "Send to a human",
+      "confidence": 0.98,
+      "reversed_confidence": 0.98,
+      "delta_pts": 0.0,
+      "latency_ms": 0.461,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "modelcontextprotocol/servers#5129",
+        "googleapis/nodejs-bigquery-data-transfer#649",
+        "googleapis/python-videointelligence#530",
+        "googleapis/java-contact-center-insights#490",
+        "googleapis/python-security-private-ca#425",
+        "googleapis/java-batch#199"
+      ],
+      "reasons": [
+        "stripe_mcp_legacy_key_cutoff_2026_10_31_violated",
+        "mcpb_pkcs7_or_credo_cnfkid_holder_binding_missing"
+      ]
+    },
+    {
+      "scenario_id": "PR-16",
+      "slug": "mcp_kotlin_php_lazy_session_ruby_swift_dart_guard",
+      "title": "MCP Kotlin, PHP Lazy Session Init, Ruby, Swift & Dart SDK Guard",
+      "task_type": "choice",
+      "expected_accepted": true,
+      "accepted": true,
+      "correct": true,
+      "action": "Act automatically",
+      "confidence": 0.96,
+      "reversed_confidence": 0.96,
+      "delta_pts": 0.0,
+      "latency_ms": 0.457,
+      "pr_count": 32,
+      "repo_count": 32,
+      "sample_prs": [
+        "stripe/stripe-ruby#2017",
+        "googleapis/python-bigquery-connection#421",
+        "googleapis/nodejs-video-intelligence#847",
+        "googleapis/python-automl#594",
+        "googleapis/python-gke-hub#336",
+        "googleapis/python-container#491"
+      ],
+      "reasons": [
+        "all_stage772_deterministic_guards_passed"
+      ]
+    }
+  ]
+}

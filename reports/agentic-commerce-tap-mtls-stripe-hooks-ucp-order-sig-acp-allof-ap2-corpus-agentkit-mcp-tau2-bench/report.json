@@ -12,7 +12,7 @@
   "classic_rate_pct": 12.5,
   "perturbation_invariant_count": 16,
   "perturbation_rate_pct": 100.0,
-  "total_latency_ms": 0.473,
+  "total_latency_ms": 1.182,
   "scenarios": [
     {
       "id": "PR-01",
@@ -30,7 +30,7 @@
       "adversarial_blocked": true,
       "reason": "TAP populate_sample_data.py error message port (9000) must match BASE_URL port 9002 (trusted-agent-protocol#20).",
       "remediation": "Align error diagnostic port with BASE_URL port 9002 and deduplicate CORS origins.",
-      "latency_ms": 0.0235
+      "latency_ms": 0.0351
     },
     {
       "id": "PR-02",
@@ -48,7 +48,7 @@
       "adversarial_blocked": true,
       "reason": "Cursor plugin must register PostToolUse, PostToolUseFailure, SessionStart, and beforeSubmitPrompt hooks (agent-toolkit#576).",
       "remediation": "Register all 4 Cursor lifecycle hooks for feedback injection, skill telemetry, and CLI guidance.",
-      "latency_ms": 0.0148
+      "latency_ms": 0.0275
     },
     {
       "id": "PR-03",
@@ -66,7 +66,7 @@
       "adversarial_blocked": true,
       "reason": "sync-agent-plugin workflow must pin GitHub Actions to 40-hex commit SHAs per SAT-31061 (agent-toolkit#552).",
       "remediation": "Replace mutable version tags with full 40-character commit SHAs in workflow files.",
-      "latency_ms": 0.0185
+      "latency_ms": 0.0404
     },
     {
       "id": "PR-04",
@@ -84,7 +84,7 @@
       "adversarial_blocked": true,
       "reason": "UCP Order MCP binding (get_order) must sign requests and business responses with JSON-RPC id/params binding matching Order REST (ucp#988).",
       "remediation": "Attach Detached JWS / RFC 9421 signature metadata on Order MCP get_order requests and responses.",
-      "latency_ms": 0.0179
+      "latency_ms": 0.0291
     },
     {
       "id": "PR-05",
@@ -102,7 +102,7 @@
       "adversarial_blocked": true,
       "reason": "Instrument 'pi_giftcard' is declared charge_timing='completion_only' and cannot fund a deferred payment schedule (ucp#987).",
       "remediation": "Assign completion_only instruments exclusively to immediate completion charges and fund deferred schedules with schedule-capable instruments.",
-      "latency_ms": 0.0138
+      "latency_ms": 0.0141
     },
     {
       "id": "PR-06",
@@ -120,7 +120,7 @@
       "adversarial_blocked": true,
       "reason": "CheckoutSessionWithOrder must allow the sibling 'order' field without CheckoutSessionBase additionalProperties: false rejecting it (acp#290).",
       "remediation": "Use unevaluatedProperties: false or explicit order property allowance on CheckoutSessionWithOrder.",
-      "latency_ms": 0.0053
+      "latency_ms": 0.0063
     },
     {
       "id": "PR-07",
@@ -138,7 +138,7 @@
       "adversarial_blocked": true,
       "reason": "Hardcoded FakeJWT or unsigned placeholder mandate tokens are forbidden (AP2#371, #369).",
       "remediation": "Sign mandates with sd_jwt.create / kb_sd_jwt.create and verify against contrib/mandate-corpus/ fixtures.",
-      "latency_ms": 0.0049
+      "latency_ms": 0.0073
     },
     {
       "id": "PR-08",
@@ -156,7 +156,7 @@
       "adversarial_blocked": true,
       "reason": "AP2 servers and processors must not log sensitive payment payloads, tokens, mandates, or risk_data (AP2#364).",
       "remediation": "Disable include_payloads=True on FastMCP LoggingMiddleware and log only body-free status/count diagnostics.",
-      "latency_ms": 0.0144
+      "latency_ms": 0.0196
     },
     {
       "id": "PR-09",
@@ -174,7 +174,7 @@
       "adversarial_blocked": true,
       "reason": "delegate_claims_from_model() must use model_dump(mode='json') so Frequency enums serialize as strings instead of raising TypeError (AP2#355).",
       "remediation": "Dump Pydantic mandate claim models with mode='json' before SD-JWT disclosure hashing.",
-      "latency_ms": 0.0051
+      "latency_ms": 0.0053
     },
     {
       "id": "PR-10",
@@ -192,7 +192,7 @@
       "adversarial_blocked": true,
       "reason": "scheme_exact_mist batch settlement requires operator escrow bond >= epoch net total and >= 6-hour challenge window before bond release (a2a-x402#172).",
       "remediation": "Enforce operator bond collateralization and a minimum 6-hour challenge window on Base batch epochs.",
-      "latency_ms": 0.005
+      "latency_ms": 0.0049
     },
     {
       "id": "PR-11",
@@ -210,7 +210,7 @@
       "adversarial_blocked": true,
       "reason": "SwapChan quote action must rank between 1 and 5 routes by net output (agentkit#1586).",
       "remediation": "Bound get_swap_quote_from_swapchan to 1..5 net-output-ranked routes.",
-      "latency_ms": 0.0047
+      "latency_ms": 0.0052
     },
     {
       "id": "PR-12",
@@ -228,7 +228,7 @@
       "adversarial_blocked": true,
       "reason": "Python AgentKit MCP extension must enforce explicit action allowlisting, input schema validation, and sanitized error responses (agentkit#1583).",
       "remediation": "Reject non-allowlisted AgentKit actions over MCP, validate tool inputs, and scrub raw tracebacks from error responses.",
-      "latency_ms": 0.0048
+      "latency_ms": 0.0053
     },
     {
       "id": "PR-13",
@@ -246,7 +246,7 @@
       "adversarial_blocked": true,
       "reason": "tapLabsActionProvider requires pre-trade check_token_safety (<= $0.01 USDC), check_transaction Wallet Firewall (<= $0.02 USDC), and OFAC/scam clearance before execution (agentkit#1580).",
       "remediation": "Run TAP Labs Safety Check and Wallet Firewall before signing trades and block OFAC/honeypot targets.",
-      "latency_ms": 0.0061
+      "latency_ms": 0.006
     },
     {
       "id": "PR-14",
@@ -264,7 +264,7 @@
       "adversarial_blocked": true,
       "reason": "Triqee get_leadlag_divergence x402 fee must be <= $0.001 USDC on Base and simulate_flashflow must run before routing (agentkit#1571).",
       "remediation": "Cap Triqee lead-lag x402 micropayment at $0.001 USDC and require FlashFlow pre-trade simulation.",
-      "latency_ms": 0.0049
+      "latency_ms": 0.0059
     },
     {
       "id": "PR-15",
@@ -282,7 +282,7 @@
       "adversarial_blocked": true,
       "reason": "voice-v1 reload_call_language (in run_simulation and tau2 evaluate-trajs) must pass canonical_tasks=True so English retail/telecom pins match canonical registry tasks (tau2-bench#673).",
       "remediation": "Pass canonical_tasks=True when reloading voice-v1 language bindings and exports.",
-      "latency_ms": 0.0046
+      "latency_ms": 0.0075
     },
     {
       "id": "PR-16",
@@ -300,7 +300,7 @@
       "adversarial_blocked": true,
       "reason": "exchange_delivered_order_items must reject new_item_id == item_id with 'The new item id should be different from the old item id' (tau2-bench#667).",
       "remediation": "Reject same-item exchanges in exchange_delivered_order_items matching modify_pending_order_items.",
-      "latency_ms": 0.0105
+      "latency_ms": 0.0055
     }
   ],
   "perturbation_checks": [
@@ -421,19 +421,19 @@
     {
       "tier": "1x (16 guards)",
       "multiplier": 1,
-      "ai_native_median_ms": 0.083,
+      "ai_native_median_ms": 0.03,
       "classic_baseline_ms": 4.4
     },
     {
       "tier": "4x (64 guards)",
       "multiplier": 4,
-      "ai_native_median_ms": 0.208,
+      "ai_native_median_ms": 0.12,
       "classic_baseline_ms": 17.6
     },
     {
       "tier": "16x (256 guards)",
       "multiplier": 16,
-      "ai_native_median_ms": 0.48,
+      "ai_native_median_ms": 0.693,
       "classic_baseline_ms": 70.4
     }
   ]
