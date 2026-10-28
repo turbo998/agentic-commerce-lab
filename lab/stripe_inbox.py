@@ -148,9 +148,13 @@ class StripeEventInbox:
 
     def record(
         self, scope: StripeInboxScope, body: bytes, signature_header: str,
-        endpoint_secret: str, *, now: int, tolerance: int = 300,
+        endpoint_secret: str | tuple[str, ...], *, now: int, tolerance: int = 300,
     ) -> InboxDecision:
-        """Verify and commit before returning, without interpreting a payment outcome."""
+        """Verify and commit without interpreting a payment outcome.
+
+        A secret tuple is a trusted active-key snapshot for this scope, never a
+        header-selected keyring. Rotation does not change receipt identity.
+        """
         if not isinstance(scope, StripeInboxScope):
             raise StripeInboxError("A trusted StripeInboxScope is required.")
         verified = verify_stripe_delivery(

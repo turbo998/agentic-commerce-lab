@@ -20,21 +20,25 @@ class VerifiedDelivery:
 def verify_stripe_delivery(
     body: bytes,
     signature_header: str,
-    endpoint_secret: str,
+    endpoint_secret: str | tuple[str, ...],
     *,
     now: int,
     tolerance: int = 300,
 ) -> VerifiedDelivery:
-    """Verify exact bytes with an externally selected endpoint secret and clock.
+    """Verify exact bytes with trusted endpoint secrets and a clock.
 
     Positive tolerance, canonical/unique timestamps and symmetric past/future
     bounds are stricter local policy, not full SDK compatibility. This neither
     parses events nor deduplicates deliveries or modifies payment state.
+    A nonempty tuple expresses overlap for the same endpoint/account/mode only.
+    Callers own secret selection and retirement; no remote expiry is inferred.
     """
     if not isinstance(body, bytes):
         raise StripeDeliveryError("The unmodified request body must be bytes.")
-    if not isinstance(endpoint_secret, str) or not endpoint_secret.strip():
-        raise StripeDeliveryError("A nonblank endpoint secret is required.")
+    secrets = (endpoint_secret,) if isinstance(endpoint_secret, str) else endpoint_secret
+    if (not isinstance(secrets, tuple) or not secrets
+            or any(not isinstance(secret, str) or not secret.strip() for secret in secrets)):
+        raise StripeDeliveryError("A nonblank endpoint secret or nonempty tuple of secrets is required.")
     if not isinstance(signature_header, str) or not signature_header:
         raise StripeDeliveryError("A Stripe-Signature header is required.")
     if type(now) is not int or not 0 <= now <= 2**63 - 1:
@@ -63,10 +67,12 @@ def verify_stripe_delivery(
         raise StripeDeliveryError("At least one v1 signature is required.")
 
     signed_bytes = timestamps[0].encode("ascii") + b"." + body
-    expected = hmac.new(
-        endpoint_secret.encode("utf-8"), signed_bytes, hashlib.sha256
-    ).hexdigest()
-    if not any(hmac.compare_digest(expected, candidate) for candidate in signatures):
+    expected_signatures = (
+        hmac.new(secret.encode("utf-8"), signed_bytes, hashlib.sha256).hexdigest()
+        for secret in secrets
+    )
+    if not any(hmac.compare_digest(expected, candidate)
+               for expected in expected_signatures for candidate in signatures):
         raise StripeDeliveryError("Delivery signature mismatch.")
     if abs(now - timestamp) > tolerance:
         raise StripeDeliveryError("Delivery timestamp is outside the local tolerance window.")

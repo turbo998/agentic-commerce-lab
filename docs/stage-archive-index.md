@@ -68,6 +68,11 @@ association stays unknown and never infers consent, new dispatch or payment succ
 Required-clock opt-in admission shares the existing replay history, rejecting
 assertions expired while queued; no JWT verification, token issuance or purchase authority.
 
+**Stage 1665 / 2026-10-29:** [Trusted webhook secret overlap (EN)](research/2026-10-29-stripe-secret-rotation.en.md)
+| [Webhook 可信密钥重叠与退役边界（中文）](research/2026-10-29-stripe-secret-rotation.md).
+Additive same-endpoint active-secret tuples share existing verification and receipt
+identity; no automatic retirement, new payment authority or provider outcome.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
