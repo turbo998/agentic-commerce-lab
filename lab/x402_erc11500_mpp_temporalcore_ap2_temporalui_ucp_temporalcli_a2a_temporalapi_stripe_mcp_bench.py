@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from lab.x402_erc11508_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_guards import (
+from lab.x402_erc11500_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_guards import (
     STAGE1508_ALL_PRS,
     STAGE1508_PR_GROUPS,
     STAGE1508_PR_REFS,

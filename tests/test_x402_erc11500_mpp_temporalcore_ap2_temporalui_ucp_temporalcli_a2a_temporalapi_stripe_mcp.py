@@ -6,12 +6,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lab.x402_erc11508_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_bench import (
+from lab.x402_erc11500_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_bench import (
     render_stage1211_cards_html,
     run_stage1211_benchmark,
     write_stage1211_artifacts,
 )
-from lab.x402_erc11508_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_guards import (
+from lab.x402_erc11500_mpp_temporalcore_ap2_temporalui_ucp_temporalcli_a2a_temporalapi_stripe_mcp_guards import (
     STAGE1508_ALL_PRS,
     STAGE1508_PR_GROUPS,
     STAGE1508_PR_REFS,
