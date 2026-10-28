@@ -78,6 +78,11 @@ identity; no automatic retirement, new payment authority or provider outcome.
 Opt-in scoped local signer permission shares approval/reservation transaction;
 no cryptographic verification, signer provenance, remote revocation or payment send.
 
+**Stage 1667 / 2026-10-29:** [Shared post-lock signature time (EN)](research/2026-10-29-merchant-signature-time.en.md)
+| [签名窗口与 approval 共用锁后时间（中文）](research/2026-10-29-merchant-signature-time.md).
+Opt-in same-signature time metadata shares one clock sample with approval/reservation;
+no crypto, nonce consumption, time provenance or commit/send deadline is implied.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

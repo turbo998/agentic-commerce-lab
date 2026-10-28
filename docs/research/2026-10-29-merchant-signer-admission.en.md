@@ -5,6 +5,10 @@
 [Approval core](../../lab/payment_approvals.py) |
 [Tests](../../tests/test_merchant_signers.py)
 
+> Follow-up [Stage 1667](2026-10-29-merchant-signature-time.en.md) adds opt-in timed
+> snapshots. The absent signature-expiry recheck described below refers to this
+> Stage 1666 / original bare-snapshot path; revocation ordering and test results stand.
+
 ## Finding and primary evidence
 
 Cryptographically verified ingress and current merchant permission are different

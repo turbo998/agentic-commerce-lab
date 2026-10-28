@@ -5,6 +5,10 @@
 [Approval 核心](../../lab/payment_approvals.py) |
 [测试](../../tests/test_merchant_signers.py)
 
+> 后续 [Stage 1667](2026-10-29-merchant-signature-time.md) 新增可选 timed snapshot。
+> 下文缺少 signature-expiry 重查的描述指本 Stage 1666 / 原 bare snapshot 路径；
+> 原撤销顺序和测试结果保持不变。
+
 ## 结论与一手证据
 
 入口密码学验证与当前商户权限是不同事实。排队前验证的 snapshot，不能单独证明

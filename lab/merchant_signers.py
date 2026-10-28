@@ -9,7 +9,9 @@ from pathlib import Path
 from lab.checkout_admission import validate_signed_checkout
 from lab.payment_approvals import PaymentApprovalStore
 from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
-from lab.request_binding import RequestSignatureSnapshot
+from lab.request_binding import (
+    RequestSignatureSnapshot, TimedRequestSignatureSnapshot, require_signature_time,
+)
 
 
 class MerchantSignerError(ValueError):
@@ -108,27 +110,32 @@ class MerchantSignerStore:
     def admit(
         self, scope: MerchantSignerScope, approvals: PaymentApprovalStore,
         journal: PaymentAttemptJournal, operation: PaymentOperation,
-        signature: RequestSignatureSnapshot, *, clock: Callable[[], int],
+        signature: RequestSignatureSnapshot | TimedRequestSignatureSnapshot, *,
+        clock: Callable[[], int],
         method: str, target_uri: str, content_type: str, content_digest: str,
         content_encoding: str | None, body: bytes,
     ) -> DispatchDecision:
         """Fence local signer permission and approval/reservation in one transaction.
 
         The adapter has already verified the full signature and stable keyid/key
-        provenance. This does not recheck signature expiry, consume a nonce or
-        authenticate local policy. Approval history does not prove signer admission.
+        provenance. Timed input checks its window at the same post-lock sample as
+        approval; bare input retains no signature-time check. No nonce is consumed
+        or local policy authenticated. Approval history proves neither signer nor
+        timed-signature admission.
         """
         self._require_scope(scope)
+        timed = signature if isinstance(signature, TimedRequestSignatureSnapshot) else None
+        snapshot = timed.signature if timed is not None else signature
         if (not isinstance(approvals, PaymentApprovalStore)
                 or not isinstance(journal, PaymentAttemptJournal)
                 or not isinstance(operation, PaymentOperation)
-                or not isinstance(signature, RequestSignatureSnapshot) or not callable(clock)):
+                or not isinstance(snapshot, RequestSignatureSnapshot) or not callable(clock)):
             raise MerchantSignerError("Trusted stores, operation, signature and clock are required.")
         if (scope.tenant_id != operation.tenant_id or scope.merchant != operation.checkout.merchant
-                or scope.key_id != signature.key_id):
+                or scope.key_id != snapshot.key_id):
             raise MerchantSignerError("Signer scope differs from operation or verified key ID.")
         validate_signed_checkout(
-            operation, signature, expected_target_uri=scope.target_uri, method=method,
+            operation, snapshot, expected_target_uri=scope.target_uri, method=method,
             target_uri=target_uri, content_type=content_type, content_digest=content_digest,
             content_encoding=content_encoding, body=body,
         )
@@ -139,5 +146,12 @@ class MerchantSignerStore:
             db.execute("BEGIN IMMEDIATE")
             if self._permission(db, scope)["revoked"] != 0:
                 raise MerchantSignerError("Signer permission is revoked.")
-            decision = approvals._admit_in_transaction(db, journal, operation, clock=clock)
+            admission_clock = clock
+            if timed is not None:
+                def checked_clock() -> int:
+                    now = clock()
+                    require_signature_time(timed, now=now)
+                    return now
+                admission_clock = checked_clock
+            decision = approvals._admit_in_transaction(db, journal, operation, clock=admission_clock)
         return decision

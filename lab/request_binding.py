@@ -9,6 +9,7 @@ from lab.agent_identity_attestation_guard import compute_rfc9530_content_digest
 
 MAX_BODY_BYTES = 1024 * 1024
 MUTATION_COMPONENTS = ("@method", "@target-uri", "content-type", "content-digest")
+MAX_SIGNATURE_TIMESTAMP = 999_999_999_999_999
 
 
 class RequestBindingError(ValueError):
@@ -26,6 +27,35 @@ class RequestSignatureSnapshot:
     target_uri: str
     content_type: str
     content_digest: str
+
+
+@dataclass(frozen=True)
+class TimedRequestSignatureSnapshot:
+    """Same verified signature's snapshot and authenticated signature parameters.
+
+    The adapter must supply created/expires from that signature, not another label
+    or unsigned input. Construction is not cryptographic or provenance verification.
+    """
+
+    signature: RequestSignatureSnapshot
+    created: int
+    expires: int
+
+
+def require_signature_time(signature: TimedRequestSignatureSnapshot, *, now: int) -> None:
+    """Apply a zero-skew local window to preverified metadata, not verify a signature."""
+    if (not isinstance(signature, TimedRequestSignatureSnapshot)
+            or not isinstance(signature.signature, RequestSignatureSnapshot)):
+        raise RequestBindingError("One trusted timed signature snapshot is required.")
+    if type(now) is not int or not 0 <= now <= 2**63 - 1:
+        raise RequestBindingError("Signature clock must be a nonnegative signed-64-bit integer.")
+    if any(type(value) is not int or not 0 <= value <= MAX_SIGNATURE_TIMESTAMP
+           for value in (signature.created, signature.expires)):
+        raise RequestBindingError("Signature timestamps must be nonnegative Structured Field Integers.")
+    if not signature.created < signature.expires:
+        raise RequestBindingError("Signature creation must precede expiry.")
+    if not signature.created <= now < signature.expires:
+        raise RequestBindingError("Signature is outside the local admission time window.")
 
 
 def _ascii_text(value: object, name: str) -> str:
