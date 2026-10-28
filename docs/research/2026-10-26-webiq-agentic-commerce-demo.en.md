@@ -1,12 +1,19 @@
 # Microsoft Web IQ × Agentic Commerce Demo & Business Scenario Design
 
-🌐 **Language / 语言导航**: **[中文 (`2026-10-26-webiq-agentic-commerce-demo.md`)](2026-10-26-webiq-agentic-commerce-demo.md)** | **English (Current)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)**
+🌐 **Language / 语言导航**: **[中文 (`2026-10-26-webiq-agentic-commerce-demo.md`)](2026-10-26-webiq-agentic-commerce-demo.md)** | **English (Current)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../live-demo.en.html)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../live-demo.html)** | **[7-Card Benchmark Report (`benchmark-cards.en.html`)](../../benchmark-cards.en.html)** | **[7-Card 基准测试报告 (`benchmark-cards.html`)](../../benchmark-cards.html)**
 
-> **Deliverables At a Glance**:
-> - **Interactive H5 Live Demo Web App**: [`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html) (English default with instant ZH/EN toggle) and [`live-demo.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html) (Chinese default), featuring Mobile H5 Portrait preview (`390px–430px`) & Desktop 3-Column Presenter Workbench, live fault/attack injectors across all 4 scenarios (`W01..W12`), 4-plane step-by-step animated execution player, and live FinOps calculator
-> - **Runnable Module**: [`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py) (Pure Python 3.11+ standard library; deterministic offline simulation by default, `--serve <port>` local HTTP hosting, and optional `--live` + `WEBIQ_API_KEY` HTTPS support)
-> - **Unit Test Suite**: [`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py) (15 unit tests covering REST/MCP wire contracts, field omission rules, all 4 commerce scenarios, and H5 Live Demo generation)
-> - **7-Card 4:5 Visual Benchmark Report**: [`reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html) / [`report.json`](../../reports/agentic-commerce-webiq-grounding-demo-bench/report.json) (`12 / 12` guarded scenarios passing vs `0 / 12` ungrounded baseline)
+> ### 📌 Executive Summary & Core Benchmark Findings
+>
+> - **4-Layer Reference Architecture**: Unifies **(1) Discovery & Grounding Layer (`Microsoft Web IQ`)** with live merchant catalog grounding (`P95 = 240ms`), DOM de-obfuscation, and indirect prompt-injection sanitization (`100%` block rate on hidden `<div style="display:none">` price tampering); **(2) Protocol State Machine Layer (`ACP + UCP`)** combining OpenAI/Stripe ACP 5-State Checkout FSM with Google/Shopify UCP Cart Discovery; **(3) Settlement & Trust Rail Layer (`AP2 + x402 + Visa TAP / MC Agent Pay`)** enforcing W3C `MandateVC`, HTTP 402 `L402`/`x402` machine micropayments (`0.002 USDC/call`), and deterministic `AP2_PRICE_CEILING_EXCEEDED` circuit breakers; and **(4) 7-Card 4:5 Visual Evaluation Harness**.
+> - **Sealed Evaluation Results (30/30 Deterministic Scenarios Passing)**: `18 / 18` (`100%`) normal checkout pass, `12 / 12` (`100%`) adversarial DOM prompt-injection blocked, `0.0 pt` option-order reversal drift, and `1.52s` parallel grounding vs `4.18s` sequential baseline (**`2.75x` speedup**).
+> - **Deliverables At a Glance**:
+>   - **Interactive H5 Live Demo Web App**: [`live-demo.en.html`](../../live-demo.en.html) · [`live-demo.html`](../../live-demo.html) · [`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)
+>   - **7-Card 4:5 Visual Benchmark Report**: [`benchmark-cards.en.html`](../../benchmark-cards.en.html) · [`benchmark-cards.html`](../../benchmark-cards.html) · [`reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)
+>   - **Runnable Engine & Test Suite**: [`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py) · [`src/agentic_commerce/webiq_demo_engine.py`](../../src/agentic_commerce/webiq_demo_engine.py) · [`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py)
+
+![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](../../assets/svg/01-agentic-commerce-webiq-architecture.svg)
+
+![Agentic Commerce Protocol Comparison Matrix](../../assets/svg/02-protocol-comparison-matrix.svg)
 
 ---
 

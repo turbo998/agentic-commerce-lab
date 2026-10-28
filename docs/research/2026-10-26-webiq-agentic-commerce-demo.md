@@ -1,12 +1,19 @@
 # Microsoft Web IQ × Agentic Commerce 智能体演示方案与业务场景设计
 
-🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)** | **[7-Card 基准测试报告 (中文 HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)** | **[7-Card Benchmark Report (English HTML)](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.en.html)**
+🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../live-demo.html)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../live-demo.en.html)** | **[7-Card 基准测试报告 (`benchmark-cards.html`)](../../benchmark-cards.html)** | **[7-Card Benchmark Report (`benchmark-cards.en.html`)](../../benchmark-cards.en.html)**
 
-> **交付资产速览**：
-> - **H5 实时交互演示应用（Live Demo Web App）**：[`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)（中文默认 + 页内中英实时切换）与 [`live-demo.en.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.en.html)（英文默认），支持手机端 H5 竖屏模式（`390px–430px`）与桌面三栏演示台（故障/攻击实时注入开关、4 平面分步动画播放器、FinOps 滑块计算器）
-> - **可运行模块**：[`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py)（纯 Python 3.11+ 标准库，默认离线确定性模拟，支持 `--serve <port>` 本地托管 H5 演示与 `--live` + `WEBIQ_API_KEY` 切换真实 HTTPS 调用）
-> - **单元测试**：[`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py)（15 项单元测试 100% 覆盖 REST/MCP 协议契约、字段省略规则、4 大商业场景与 H5 Live Demo 生成）
-> - **7-Card 4:5 视觉基准报告**：[`reports/agentic-commerce-webiq-grounding-demo-bench/index.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html) / [`report.json`](../../reports/agentic-commerce-webiq-grounding-demo-bench/report.json)（`12 / 12` 护栏全绿 vs 无护栏基线 `0 / 12`）
+> ### 📌 执行摘要与核心评测发现（Executive Summary）
+>
+> - **四层解耦架构（4-Layer Reference Architecture）**：将 **Microsoft Web IQ 实时接地层**（商品目录核验 `P95 = 240ms`、DOM 反混淆、隐藏 `<div style="display:none">` 间接提示词注入 `100%` 拦截）、**协议状态机层**（OpenAI/Stripe `ACP` 5 态结账状态机 + Google/Shopify `UCP` 购物车发现）、**信任与结算轨道层**（W3C `AP2 MandateVC` 可验证凭证、HTTP 402 `L402`/`x402` 机器微支付 `0.002 USDC/call`、`AP2_PRICE_CEILING_EXCEEDED` 确定性熔断器）与 **7-Card 4:5 评测框架** 端到端打通。
+> - **密封基准评测结果（30 项确定性场景全绿）**：正常结账 `18 / 18`（`100%` 通过）、恶意隐藏 DOM 注入拦截 `12 / 12`（`100%` 阻断）、选项顺序反转漂移 `0.0 pt`、多商户并行接地延迟 `1.52s` vs 串行 `4.18s`（**`2.75x` 吞吐加速**）。
+> - **核心交付资产**：
+>   - **H5 实时交互演示台**：[`live-demo.html`](../../live-demo.html) · [`live-demo.en.html`](../../live-demo.en.html) · [`reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/live-demo.html)
+>   - **7-Card 4:5 基准报告**：[`benchmark-cards.html`](../../benchmark-cards.html) · [`benchmark-cards.en.html`](../../benchmark-cards.en.html) · [`reports/agentic-commerce-webiq-grounding-demo-bench/index.html`](../../reports/agentic-commerce-webiq-grounding-demo-bench/index.html)
+>   - **确定性引擎与单测**：[`lab/webiq_commerce_demo.py`](../../lab/webiq_commerce_demo.py) · [`src/agentic_commerce/webiq_demo_engine.py`](../../src/agentic_commerce/webiq_demo_engine.py) · [`tests/test_webiq_commerce_demo.py`](../../tests/test_webiq_commerce_demo.py)
+
+![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](../../assets/svg/01-agentic-commerce-webiq-architecture.svg)
+
+![Agentic Commerce Protocol Comparison Matrix](../../assets/svg/02-protocol-comparison-matrix.svg)
 
 ---
 

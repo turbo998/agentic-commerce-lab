@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" role="img" aria-label="Agentic Commerce Protocol Lifecycle Comparison Matrix">
+  <defs>
+    <linearGradient id="bgMat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="420" rx="14" fill="url(#bgMat)" stroke="#334155" stroke-width="1.5"/>
+  <rect x="0" y="0" width="960" height="5" rx="3" fill="url(#topBar)"/>
+
+  <!-- Title -->
+  <text x="26" y="34" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="17" font-weight="700" fill="#F8FAFC">
+    Agentic Commerce Protocol Comparison Matrix Across Transaction Lifecycle
+  </text>
+  <text x="26" y="53" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="12" fill="#94A3B8">
+    Complementary Roles: Search/Grounding → Cart/Checkout → Cryptographic Authorization → Settlement Rail
+  </text>
+
+  <!-- Column Headers -->
+  <rect x="24" y="68" width="196" height="36" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="122" y="90" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">Protocol / Standard</text>
+
+  <rect x="226" y="68" width="174" height="36" rx="6" fill="#1E3A8A" stroke="#3B82F6" stroke-width="1"/>
+  <text x="313" y="90" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#93C5FD">1. Search / Grounding</text>
+
+  <rect x="406" y="68" width="174" height="36" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="493" y="90" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">2. Cart / Checkout</text>
+
+  <rect x="586" y="68" width="174" height="36" rx="6" fill="#4C1D95" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="673" y="90" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">3. Authorization</text>
+
+  <rect x="766" y="68" width="170" height="36" rx="6" fill="#7C2D12" stroke="#F97316" stroke-width="1"/>
+  <text x="851" y="90" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#FDBA74">4. Settlement Rail</text>
+
+  <!-- Row 1: Microsoft Web IQ -->
+  <rect x="24" y="110" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="131" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#38BDF8">Microsoft Web IQ</text>
+  <text x="36" y="147" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Grounding &amp; DOM Sanitizer</text>
+  <rect x="232" y="116" width="162" height="34" rx="5" fill="#1E3A8A" fill-opacity="0.65" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="313" y="131" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#E0F2FE">PRIMARY (P95 240ms)</text>
+  <text x="313" y="144" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#7DD3FC">DOM Sanitizer (100%)</text>
+  <text x="493" y="137" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#94A3B8">SKU / Price Pre-Check</text>
+  <text x="673" y="137" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#94A3B8">Prompt-Injection Guard</text>
+  <text x="851" y="137" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#64748B">Delegates to ACP/x402</text>
+
+  <!-- Row 2: ACP (OpenAI/Stripe) -->
+  <rect x="24" y="160" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="181" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#34D399">ACP (OpenAI / Stripe)</text>
+  <text x="36" y="197" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Agentic Commerce Protocol</text>
+  <text x="313" y="187" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#94A3B8">Product Feed Ingestion</text>
+  <rect x="412" y="166" width="162" height="34" rx="5" fill="#064E3B" fill-opacity="0.7" stroke="#10B981" stroke-width="1.2"/>
+  <text x="493" y="181" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#D1FAE5">PRIMARY (5-State FSM)</text>
+  <text x="493" y="194" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#6EE7B7">REST Checkout &amp; Webhooks</text>
+  <text x="673" y="187" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Shared Payment Token</text>
+  <text x="851" y="187" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Stripe SPT / Card Rails</text>
+
+  <!-- Row 3: UCP (Google/Shopify) -->
+  <rect x="24" y="210" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="231" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#10B981">UCP (Google / Shopify)</text>
+  <text x="36" y="247" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Universal Commerce Protocol</text>
+  <rect x="232" y="216" width="162" height="34" rx="5" fill="#1E3A8A" fill-opacity="0.45" stroke="#60A5FA" stroke-width="1"/>
+  <text x="313" y="231" text-anchor="middle" font-family="Consolas, monospace" font-size="10" font-weight="700" fill="#DBEAFE">/.well-known/ucp</text>
+  <text x="313" y="244" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#93C5FD">Capability Discovery</text>
+  <rect x="412" y="216" width="162" height="34" rx="5" fill="#064E3B" fill-opacity="0.7" stroke="#10B981" stroke-width="1.2"/>
+  <text x="493" y="231" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#D1FAE5">PRIMARY (Cart Schema)</text>
+  <text x="493" y="244" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#6EE7B7">Multi-Handler Negotiation</text>
+  <text x="673" y="237" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">RFC 9421 + AP2 Binding</text>
+  <text x="851" y="237" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#94A3B8">Handler-Agnostic Pay</text>
+
+  <!-- Row 4: AP2 (MandateVC) -->
+  <rect x="24" y="260" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="281" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#C4B5FD">AP2 (MandateVC)</text>
+  <text x="36" y="297" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Agent Payments Protocol</text>
+  <text x="313" y="287" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#64748B">Intent Constraint Scope</text>
+  <text x="493" y="287" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Cart Digest Pinning</text>
+  <rect x="592" y="266" width="162" height="34" rx="5" fill="#4C1D95" fill-opacity="0.75" stroke="#A78BFA" stroke-width="1.2"/>
+  <text x="673" y="281" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#EDE9FE">PRIMARY (MandateVC)</text>
+  <text x="673" y="294" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#C4B5FD">W3C VC + Budget Ceiling</text>
+  <text x="851" y="287" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Dispute Evidence Pack</text>
+
+  <!-- Row 5: x402 (Coinbase/Cloudflare) -->
+  <rect x="24" y="310" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="331" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#FB923C">x402 (Coinbase / CF)</text>
+  <text x="36" y="347" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">HTTP 402 Machine Pay</text>
+  <text x="313" y="337" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Bazaar API Discovery</text>
+  <text x="493" y="337" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">402 PaymentRequired</text>
+  <text x="673" y="337" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">EIP-3009 / Permit2 Sig</text>
+  <rect x="772" y="316" width="158" height="34" rx="5" fill="#7C2D12" fill-opacity="0.75" stroke="#F97316" stroke-width="1.2"/>
+  <text x="851" y="331" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#FFEDD5">PRIMARY (0.002 USDC)</text>
+  <text x="851" y="344" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#FDBA74">Instant On-Chain / L402</text>
+
+  <!-- Row 6: Visa TAP / MC Agent Pay -->
+  <rect x="24" y="360" width="912" height="46" rx="6" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="36" y="381" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700" fill="#FBBF24">Visa TAP / MC Agent Pay</text>
+  <text x="36" y="397" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Card Network Agent Rails</text>
+  <text x="313" y="387" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#94A3B8">Known-Agent Attestation</text>
+  <text x="493" y="387" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="10.5" fill="#94A3B8">Merchant Bot Bypass</text>
+  <rect x="592" y="366" width="162" height="34" rx="5" fill="#4C1D95" fill-opacity="0.55" stroke="#A78BFA" stroke-width="1"/>
+  <text x="673" y="381" text-anchor="middle" font-family="Consolas, monospace" font-size="10" font-weight="700" fill="#EDE9FE">RFC 9421 Agent Sig</text>
+  <text x="673" y="394" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#C4B5FD">Passkey / FIDO2 Binding</text>
+  <rect x="772" y="366" width="158" height="34" rx="5" fill="#7C2D12" fill-opacity="0.75" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="851" y="381" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="700" fill="#FEF3C7">PRIMARY (EMVCo Token)</text>
+  <text x="851" y="394" text-anchor="middle" font-family="Consolas, monospace" font-size="9.5" fill="#FDE68A">Network Token + 3DS2</text>
+</svg>

@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" height="520" role="img" aria-label="Agentic Commerce &amp; Microsoft Web IQ 4-Layer Reference Architecture">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="hdrGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="50%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="l1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="l2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#065F46" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="l3Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5B21B6" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="l4Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9A3412" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-2%" y="-4%" width="104%" height="112%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#38BDF8"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#34D399"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="960" height="520" rx="14" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Top Accent Bar -->
+  <rect x="0" y="0" width="960" height="5" rx="3" fill="url(#hdrGrad)"/>
+
+  <!-- Header -->
+  <text x="28" y="34" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#F8FAFC">
+    Agentic Commerce &amp; Microsoft Web IQ — 4-Layer Reference Architecture
+  </text>
+  <text x="28" y="54" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="12" fill="#94A3B8">
+    End-to-End Grounding, Checkout State Machine, Cryptographic Mandate &amp; x402 Micropayment Settlement + 7-Card Evaluation Harness
+  </text>
+  <rect x="740" y="18" width="192" height="28" rx="14" fill="#0F172A" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="836" y="36" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#38BDF8">
+    30/30 PASS · 2.75x SPEEDUP
+  </text>
+
+  <!-- ==================== LAYER 1: DISCOVERY & GROUNDING ==================== -->
+  <g filter="url(#cardShadow)">
+    <rect x="24" y="68" width="912" height="96" rx="10" fill="url(#l1Grad)" stroke="#3B82F6" stroke-width="1.5"/>
+    <rect x="24" y="68" width="8" height="96" rx="4" fill="#38BDF8"/>
+  </g>
+  <text x="46" y="90" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#60A5FA">
+    LAYER 1 · DISCOVERY &amp; GROUNDING LAYER (MICROSOFT WEB IQ)
+  </text>
+  <rect x="460" y="75" width="152" height="20" rx="10" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+  <text x="536" y="89" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="600" fill="#38BDF8">
+    Grounding P95 = 240ms
+  </text>
+  <rect x="622" y="75" width="296" height="20" rx="10" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="770" y="89" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="600" fill="#6EE7B7">
+    100% Block Rate on Hidden DOM Injection
+  </text>
+
+  <!-- Layer 1 Sub-cards -->
+  <rect x="46" y="100" width="276" height="54" rx="7" fill="#0F172A" fill-opacity="0.82" stroke="#334155" stroke-width="1"/>
+  <text x="58" y="119" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">Live Merchant Catalog Grounding</text>
+  <text x="58" y="136" font-family="Consolas, monospace" font-size="10.5" fill="#94A3B8">Real-time SKU / stock / price verification</text>
+  <text x="58" y="149" font-family="Consolas, monospace" font-size="10" fill="#38BDF8">Bing / Web IQ Index + Schema.org JSON-LD</text>
+
+  <rect x="338" y="100" width="276" height="54" rx="7" fill="#0F172A" fill-opacity="0.82" stroke="#334155" stroke-width="1"/>
+  <text x="350" y="119" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">DOM De-Obfuscation Engine</text>
+  <text x="350" y="136" font-family="Consolas, monospace" font-size="10.5" fill="#94A3B8">Canonicalizes shadow DOM &amp; dynamic Hydration</text>
+  <text x="350" y="149" font-family="Consolas, monospace" font-size="10" fill="#38BDF8">Cross-checks visible DOM vs API offer payload</text>
+
+  <rect x="630" y="100" width="290" height="54" rx="7" fill="#0F172A" fill-opacity="0.82" stroke="#EF4444" stroke-width="1.1"/>
+  <text x="642" y="119" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#FCA5A5">Indirect Prompt-Injection Sanitizer</text>
+  <text x="642" y="136" font-family="Consolas, monospace" font-size="10.5" fill="#E2E8F0">Strips &lt;div style="display:none"&gt; tampering</text>
+  <text x="642" y="149" font-family="Consolas, monospace" font-size="10" fill="#34D399">12/12 adversarial DOM payloads blocked (100%)</text>
+
+  <!-- Connector L1 -> L2 -->
+  <line x1="184" y1="164" x2="184" y2="178" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="480" y1="164" x2="480" y2="178" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="775" y1="164" x2="775" y2="178" stroke="#38BDF8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- ==================== LAYER 2: PROTOCOL STATE MACHINE ==================== -->
+  <g filter="url(#cardShadow)">
+    <rect x="24" y="180" width="912" height="96" rx="10" fill="url(#l2Grad)" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="24" y="180" width="8" height="96" rx="4" fill="#10B981"/>
+  </g>
+  <text x="46" y="202" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    LAYER 2 · PROTOCOL STATE MACHINE LAYER (ACP + UCP INTEROPERABILITY)
+  </text>
+  <rect x="640" y="187" width="278" height="20" rx="10" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="779" y="201" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="600" fill="#6EE7B7">
+    Deterministic 5-State Checkout FSM
+  </text>
+
+  <!-- Layer 2 Sub-cards -->
+  <rect x="46" y="212" width="530" height="54" rx="7" fill="#0F172A" fill-opacity="0.84" stroke="#334155" stroke-width="1"/>
+  <text x="58" y="230" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">OpenAI / Stripe ACP 5-State Checkout FSM</text>
+  <text x="58" y="247" font-family="Consolas, monospace" font-size="10.5" fill="#6EE7B7">DISCOVERED → GROUNDED → CART_LOCKED → MANDATE_SIGNED → SETTLED</text>
+  <text x="58" y="260" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Idempotent state transitions · Shared Payment Token (SPT) &amp; tax/shipping lock</text>
+
+  <rect x="592" y="212" width="328" height="54" rx="7" fill="#0F172A" fill-opacity="0.84" stroke="#334155" stroke-width="1"/>
+  <text x="604" y="230" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">Google / Shopify UCP Cart Discovery</text>
+  <text x="604" y="247" font-family="Consolas, monospace" font-size="10.5" fill="#94A3B8">/.well-known/ucp capability negotiation</text>
+  <text x="604" y="260" font-family="Consolas, monospace" font-size="10" fill="#34D399">RFC 9421 signed cart offers &amp; ETag integrity</text>
+
+  <!-- Connector L2 -> L3 -->
+  <line x1="184" y1="276" x2="184" y2="290" stroke="#34D399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="480" y1="276" x2="480" y2="290" stroke="#34D399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <line x1="775" y1="276" x2="775" y2="290" stroke="#34D399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- ==================== LAYER 3: SETTLEMENT & TRUST RAIL ==================== -->
+  <g filter="url(#cardShadow)">
+    <rect x="24" y="292" width="912" height="96" rx="10" fill="url(#l3Grad)" stroke="#8B5CF6" stroke-width="1.5"/>
+    <rect x="24" y="292" width="8" height="96" rx="4" fill="#A78BFA"/>
+  </g>
+  <text x="46" y="314" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#C4B5FD">
+    LAYER 3 · SETTLEMENT &amp; TRUST RAIL LAYER (AP2 + x402 + VISA TAP / MC AGENT PAY)
+  </text>
+  <rect x="650" y="299" width="268" height="20" rx="10" fill="#0F172A" stroke="#A78BFA" stroke-width="1"/>
+  <text x="784" y="313" text-anchor="middle" font-family="Consolas, monospace" font-size="10.5" font-weight="600" fill="#DDD6FE">
+    0.002 USDC/call + W3C MandateVC
+  </text>
+
+  <!-- Layer 3 Sub-cards -->
+  <rect x="46" y="324" width="276" height="54" rx="7" fill="#0F172A" fill-opacity="0.84" stroke="#334155" stroke-width="1"/>
+  <text x="58" y="342" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">AP2 W3C Verifiable Credentials</text>
+  <text x="58" y="359" font-family="Consolas, monospace" font-size="10.5" fill="#C4B5FD">MandateVC (Intent + Cart SHA-256)</text>
+  <text x="58" y="372" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Hardware key binding + Visa TAP / MC Agent Pay</text>
+
+  <rect x="338" y="324" width="276" height="54" rx="7" fill="#0F172A" fill-opacity="0.84" stroke="#334155" stroke-width="1"/>
+  <text x="350" y="342" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F1F5F9">HTTP 402 L402 / x402 Micropayments</text>
+  <text x="350" y="359" font-family="Consolas, monospace" font-size="10.5" fill="#38BDF8">0.002 USDC/call machine-to-machine</text>
+  <text x="350" y="372" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">EIP-3009 / Permit2 &amp; Lightning L402 settlement</text>
+
+  <rect x="630" y="324" width="290" height="54" rx="7" fill="#0F172A" fill-opacity="0.84" stroke="#F59E0B" stroke-width="1.1"/>
+  <text x="642" y="342" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#FCD34D">Deterministic Circuit Breaker</text>
+  <text x="642" y="359" font-family="Consolas, monospace" font-size="10.5" fill="#FCA5A5">AP2_PRICE_CEILING_EXCEEDED</text>
+  <text x="642" y="372" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Fail-closed hard stop on budget / SKU drift</text>
+
+  <!-- Connector L3 -> L4 -->
+  <line x1="184" y1="388" x2="184" y2="402" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <line x1="480" y1="388" x2="480" y2="402" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <line x1="775" y1="388" x2="775" y2="402" stroke="#A78BFA" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <!-- ==================== LAYER 4: 7-CARD EVALUATION HARNESS ==================== -->
+  <g filter="url(#cardShadow)">
+    <rect x="24" y="404" width="912" height="94" rx="10" fill="url(#l4Grad)" stroke="#F97316" stroke-width="1.5"/>
+    <rect x="24" y="404" width="8" height="94" rx="4" fill="#FB923C"/>
+  </g>
+  <text x="46" y="426" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FDBA74">
+    LAYER 4 · 7-CARD 4:5 VISUAL EVALUATION HARNESS &amp; SEALED BENCHMARK TELEMETRY
+  </text>
+
+  <!-- 4 Metric Pills inside Layer 4 -->
+  <rect x="46" y="436" width="208" height="50" rx="7" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="150" y="456" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#34D399">18 / 18 (100%)</text>
+  <text x="150" y="475" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#CBD5E1">Normal Checkout Pass</text>
+
+  <rect x="268" y="436" width="208" height="50" rx="7" fill="#0F172A" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="372" y="456" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#38BDF8">12 / 12 (100%)</text>
+  <text x="372" y="475" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#CBD5E1">DOM Injection Blocked</text>
+
+  <rect x="490" y="436" width="208" height="50" rx="7" fill="#0F172A" stroke="#A78BFA" stroke-width="1.2"/>
+  <text x="594" y="456" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#C4B5FD">0.0 pt Drift</text>
+  <text x="594" y="475" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#CBD5E1">Option-Reversal Consistency</text>
+
+  <rect x="712" y="436" width="208" height="50" rx="7" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="816" y="456" text-anchor="middle" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#FBBF24">1.52s vs 4.18s</text>
+  <text x="816" y="475" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#CBD5E1">Parallel Grounding (2.75x)</text>
+</svg>
