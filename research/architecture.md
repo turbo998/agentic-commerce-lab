@@ -12,6 +12,10 @@
 （[English](../docs/research/2026-10-28-stripe-observation.en.md)）
 增加离线 provider 语义 gate：同一对象/账号/模式/金额才能对账，中间态不关闭 unknown。
 
+**2026-10-29 / Stage 1654：** [原始字节验签与回读边界](../docs/research/2026-10-29-stripe-delivery.md)
+（[English](../docs/research/2026-10-29-stripe-delivery.en.md)）。
+HMAC 只确认传输证据，不写支付状态；窗口内重放、持久 inbox 与权威回读仍独立处理。
+
 ## Personal Agent Commerce Architecture
 
 ```mermaid
@@ -185,5 +189,4 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 2. **结账状态机可恢复回退、远期订阅零当期计费与签名响应请求上下文绑定（UCP `#672`, `#890`, `#699`, `#782`）**：AI-Native 结账状态机允许 `ready_for_complete` 在提交校验时回退至 `incomplete` 或升级至 `requires_escalation`，强制远期订阅 `schedules[]` 当期结账应付为 `0`（严禁计入 `totals`），并通过 RFC 9421 `req` 参数将签名 REST 响应绑定至原请求 `@method`/`@target-uri` 防御 CDN 旧价重放。
 3. **本地 MCP 代理安全注解透传与请求级快速失败（Stripe AI `8a8818e`, `#584`, `#542` & MCP `SEP-3415`）**：本地 `@stripe/mcp` 代理通过 `registerTool` 原样透传远端工具的 `destructiveHint`/`readOnlyHint` 等安全注解，并在转发 JSON-RPC Request 失败时立即合成 JSON-RPC Error 响应免除 60 秒超时挂起。
 4. **Agent 评测分母反作弊与零内部主键泄露（Sierra $\tau$-bench 2.0 `#674`, `#677`）**：将模型生成的畸形工具参数与空白回复按 `AGENT_ERROR`（`0.0` 分）计入总样本分母而非作为 `INFRASTRUCTURE_ERROR` 剔除，并从用户模拟器提示词中彻底剥离内部数据库主键。
-
 

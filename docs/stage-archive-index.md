@@ -16,6 +16,10 @@ Offline payment-attempt journal; no change to the README/SVG executive overview.
 | [PaymentIntent 观察绑定（中文）](research/2026-10-28-stripe-observation.md).
 Offline provider-semantic readback gate; intermediate states retain unknown.
 
+**Stage 1654 / 2026-10-29:** [Raw-byte webhook verification (EN)](research/2026-10-29-stripe-delivery.en.md)
+| [原始字节验签与回读边界（中文）](research/2026-10-29-stripe-delivery.md).
+Offline HMAC transport evidence; signed events never directly close unknown payments.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
