@@ -58,6 +58,11 @@ transaction; no consent proof, remote cancellation or payment send is implied.
 First-gate history commits with a new reservation; retries/legacy attempts never
 backfill consent history. No authenticated consent, signed receipt or payment proof.
 
+**Stage 1663 / 2026-10-29:** [Validated first PaymentIntent association (EN)](research/2026-10-29-stripe-association.en.md)
+| [首次 PaymentIntent 关联前校验（中文）](research/2026-10-29-stripe-association.md).
+Opt-in full readback validation before persisting a separately trusted reference;
+association stays unknown and never infers consent, new dispatch or payment success.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

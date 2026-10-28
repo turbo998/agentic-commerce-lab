@@ -1,8 +1,12 @@
 """Offline direct-account PaymentIntent readback policy, not a Stripe client."""
 
+import re
 from collections.abc import Mapping
+from contextlib import closing
 
-from lab.payment_attempts import Observation, PaymentAttempt, PaymentAttemptJournal, PaymentOperation
+from lab.payment_attempts import (
+    AttemptConflict, Observation, PaymentAttempt, PaymentAttemptJournal, PaymentOperation,
+)
 
 
 PENDING_STATUSES = frozenset({
@@ -13,6 +17,42 @@ PENDING_STATUSES = frozenset({
 
 class StripeObservationError(ValueError):
     """A provider readback is incomplete, inconsistent, or outside this policy."""
+
+
+def associate_stripe_intent(
+    journal: PaymentAttemptJournal, operation: PaymentOperation, *,
+    retrieved_account: str, expected_reference: str, intent: Mapping[str, object],
+) -> PaymentAttempt:
+    """Validate before binding a separately trusted first PaymentIntent reference.
+
+    The adapter authenticates retrieval, freshness and operation-to-reference
+    correlation independently of the payload. This never reserves, sends or
+    infers a payment outcome; identical retries preserve existing terminal state.
+    """
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise StripeObservationError("A trusted journal and PaymentOperation are required.")
+    if (not isinstance(expected_reference, str)
+            or re.fullmatch(r"pi_[A-Za-z0-9_]+", expected_reference) is None):
+        raise StripeObservationError("A separately trusted PaymentIntent reference is required.")
+    with closing(journal._connect()) as db, db:
+        db.execute("BEGIN IMMEDIATE")
+        row = journal._find(db, operation)
+        if row is None:
+            raise AttemptConflict("Operation was never reserved.")
+        previous = journal._attempt(row)
+        validate_stripe_intent(
+            operation, PaymentAttempt("unknown", expected_reference),
+            retrieved_account=retrieved_account, intent=intent,
+        )
+        if previous.provider_reference not in (None, expected_reference):
+            raise AttemptConflict("Provider reference changed; investigate the conflict.")
+        if previous.provider_reference == expected_reference:
+            return previous
+        if previous.outcome != "unknown":
+            raise AttemptConflict("An unassociated terminal attempt cannot be rebound.")
+        return journal._reconcile_in_transaction(
+            db, operation, observation="pending", provider_reference=expected_reference,
+        )
 
 
 def reconcile_stripe_intent(
