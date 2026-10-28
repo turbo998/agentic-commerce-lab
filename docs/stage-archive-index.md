@@ -83,6 +83,11 @@ no cryptographic verification, signer provenance, remote revocation or payment s
 Opt-in same-signature time metadata shares one clock sample with approval/reservation;
 no crypto, nonce consumption, time provenance or commit/send deadline is implied.
 
+**Stage 1668 / 2026-10-29:** [First timed signer history (EN)](research/2026-10-29-timed-signer-history.en.md)
+| [首次 timed signer 准入历史（中文）](research/2026-10-29-timed-signer-history.md).
+New timed reservations commit a distinct first-branch record with attempt/approval;
+no retry/legacy backfill, cryptographic proof, current authority or nonce consumption.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -378,7 +378,7 @@ class MerchantSignatureTimeTests(unittest.TestCase):
             clock.assert_called_once_with()
         self.assertIn(self.approvals.read_admission(self.operation).admitted_at, (NOW, NOW + 1))
 
-    def test_no_new_time_schema_or_time_provenance_record(self):
+    def test_admission_preserves_initialized_schema_and_distinct_approval_history(self):
         with closing(sqlite3.connect(self.path)) as db:
             before = list(db.execute("SELECT name,sql FROM sqlite_master ORDER BY name"))
         self.admit()

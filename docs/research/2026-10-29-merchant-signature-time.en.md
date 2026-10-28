@@ -6,6 +6,11 @@
 [Tests](../../tests/test_merchant_signature_time.py) |
 [Previous local revocation](2026-10-29-merchant-signer-admission.en.md)
 
+> Follow-up [Stage 1668](2026-10-29-timed-signer-history.en.md) adds separate first
+> timed-branch execution history. The no-new-history-schema descriptions below
+> refer to the Stage 1667 baseline. Approval history is still not signer proof,
+> and the new local record is not independently verifiable signature evidence.
+
 ## Finding and primary evidence
 
 Valid signature time at ingress does not imply validity after waiting for a merchant

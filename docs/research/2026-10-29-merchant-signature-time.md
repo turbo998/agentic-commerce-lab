@@ -6,6 +6,10 @@
 [测试](../../tests/test_merchant_signature_time.py) |
 [前序本地撤销](2026-10-29-merchant-signer-admission.md)
 
+> 后续 [Stage 1668](2026-10-29-timed-signer-history.md) 新增独立的首次 timed 分支执行历史。
+> 下文未新增 history schema 的描述指 Stage 1667 基线；approval 历史仍不等于
+> signer 证明，新本地记录也不是可独立验签的凭证。
+
 ## 结论与一手证据
 
 入口验签时有效，不代表排队取得商户写锁后仍未到期。本轮新增可选

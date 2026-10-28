@@ -1,5 +1,6 @@
 """Opt-in local signer permission fencing, not Visa or signature verification."""
 
+import re
 import sqlite3
 from collections.abc import Callable
 from contextlib import closing
@@ -10,7 +11,8 @@ from lab.checkout_admission import validate_signed_checkout
 from lab.payment_approvals import PaymentApprovalStore
 from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
 from lab.request_binding import (
-    RequestSignatureSnapshot, TimedRequestSignatureSnapshot, require_signature_time,
+    MAX_SIGNATURE_TIMESTAMP, RequestSignatureSnapshot, TimedRequestSignatureSnapshot,
+    require_signature_time,
 )
 
 
@@ -40,6 +42,18 @@ class MerchantSignerScope:
         return self.tenant_id, self.merchant, self.target_uri, self.key_id
 
 
+@dataclass(frozen=True)
+class TimedSignerAdmission:
+    """Local timed-branch execution history, not signature proof or current permission."""
+
+    fingerprint: str
+    scope: MerchantSignerScope
+    signature_label: str
+    created: int
+    expires: int
+    admitted_at: int
+
+
 class MerchantSignerStore:
     """Trusted-operator allow/revoke metadata; never an agent tool or key directory.
 
@@ -60,6 +74,20 @@ class MerchantSignerStore:
                     key_id TEXT NOT NULL,
                     revoked INTEGER NOT NULL CHECK(revoked IN (0,1)),
                     PRIMARY KEY (tenant_id,merchant,target_uri,key_id)
+                )
+            """)
+            db.execute("""
+                CREATE TABLE IF NOT EXISTS merchant_timed_admissions (
+                    tenant_id TEXT NOT NULL,
+                    operation_id TEXT NOT NULL,
+                    fingerprint TEXT NOT NULL,
+                    target_uri TEXT NOT NULL,
+                    key_id TEXT NOT NULL,
+                    signature_label TEXT NOT NULL,
+                    created INTEGER NOT NULL CHECK(created>=0),
+                    expires INTEGER NOT NULL CHECK(expires>created AND expires<=999999999999999),
+                    admitted_at INTEGER NOT NULL CHECK(admitted_at>=created AND admitted_at<expires),
+                    PRIMARY KEY (tenant_id,operation_id)
                 )
             """)
 
@@ -107,6 +135,31 @@ class MerchantSignerStore:
                 " WHERE tenant_id=? AND merchant=? AND target_uri=? AND key_id=?", scope.key,
             )
 
+    def read_timed_admission(self, operation: PaymentOperation) -> TimedSignerAdmission:
+        """Read first timed-branch history without checking or granting current authority."""
+        if not isinstance(operation, PaymentOperation):
+            raise MerchantSignerError("A trusted PaymentOperation is required.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT * FROM merchant_timed_admissions WHERE tenant_id=? AND operation_id=?",
+                (operation.tenant_id, operation.operation_id),
+            ).fetchone()
+        if row is None:
+            raise MerchantSignerError("No first timed-admission record exists for this operation.")
+        if row["fingerprint"] != operation.fingerprint:
+            raise MerchantSignerError("Timed-admission record differs from the bound operation.")
+        scope = MerchantSignerScope(
+            operation.tenant_id, operation.checkout.merchant, row["target_uri"], row["key_id"],
+        )
+        label = row["signature_label"]
+        if not isinstance(label, str) or re.fullmatch(r"[a-z*][a-z0-9_.*-]*", label) is None:
+            raise MerchantSignerError("Stored timed-admission signature label is invalid.")
+        created, expires, admitted_at = row["created"], row["expires"], row["admitted_at"]
+        if (any(type(value) is not int for value in (created, expires, admitted_at))
+                or not 0 <= created <= admitted_at < expires <= MAX_SIGNATURE_TIMESTAMP):
+            raise MerchantSignerError("Stored timed-admission times are invalid.")
+        return TimedSignerAdmission(operation.fingerprint, scope, label, created, expires, admitted_at)
+
     def admit(
         self, scope: MerchantSignerScope, approvals: PaymentApprovalStore,
         journal: PaymentAttemptJournal, operation: PaymentOperation,
@@ -121,7 +174,8 @@ class MerchantSignerStore:
         provenance. Timed input checks its window at the same post-lock sample as
         approval; bare input retains no signature-time check. No nonce is consumed
         or local policy authenticated. Approval history proves neither signer nor
-        timed-signature admission.
+        timed-signature admission. Only a new timed reservation records local timed
+        history; retries and legacy attempts are never backfilled.
         """
         self._require_scope(scope)
         timed = signature if isinstance(signature, TimedRequestSignatureSnapshot) else None
@@ -147,11 +201,25 @@ class MerchantSignerStore:
             if self._permission(db, scope)["revoked"] != 0:
                 raise MerchantSignerError("Signer permission is revoked.")
             admission_clock = clock
+            admitted_at: int | None = None
             if timed is not None:
                 def checked_clock() -> int:
+                    nonlocal admitted_at
                     now = clock()
                     require_signature_time(timed, now=now)
+                    admitted_at = now
                     return now
                 admission_clock = checked_clock
             decision = approvals._admit_in_transaction(db, journal, operation, clock=admission_clock)
+            if timed is not None and decision.dispatch_allowed:
+                if admitted_at is None:
+                    raise MerchantSignerError("Timed admission did not sample its trusted clock.")
+                db.execute(
+                    "INSERT INTO merchant_timed_admissions"
+                    " (tenant_id,operation_id,fingerprint,target_uri,key_id,signature_label,"
+                    " created,expires,admitted_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                    (operation.tenant_id, operation.operation_id, operation.fingerprint,
+                     scope.target_uri, scope.key_id, snapshot.signature_label,
+                     timed.created, timed.expires, admitted_at),
+                )
         return decision
