@@ -29,6 +29,20 @@ def reconcile_stripe_intent(
     Provider namespaces stripe:test/stripe:live are local policy conventions.
     Only direct-account, exact-full-amount payments are supported.
     """
+    _require_context(operation, retrieved_account, intent)
+    previous = journal.read(operation)
+    observation = validate_stripe_intent(
+        operation, previous, retrieved_account=retrieved_account, intent=intent,
+    )
+    assert previous.provider_reference is not None
+    return journal.reconcile(
+        operation, observation=observation, provider_reference=previous.provider_reference,
+    )
+
+
+def _require_context(
+    operation: PaymentOperation, retrieved_account: str, intent: Mapping[str, object],
+) -> None:
     if operation.provider not in ("stripe:test", "stripe:live"):
         raise StripeObservationError("An explicit Stripe test/live provider binding is required.")
     if retrieved_account != operation.provider_account:
@@ -36,7 +50,13 @@ def reconcile_stripe_intent(
     if not isinstance(intent, Mapping):
         raise StripeObservationError("PaymentIntent readback must be a mapping.")
 
-    previous = journal.read(operation)
+
+def validate_stripe_intent(
+    operation: PaymentOperation, previous: PaymentAttempt, *,
+    retrieved_account: str, intent: Mapping[str, object],
+) -> Observation:
+    """Map a trusted readback against persisted state, without writing or retrieving."""
+    _require_context(operation, retrieved_account, intent)
     if previous.provider_reference is None or not previous.provider_reference.startswith("pi_"):
         raise StripeObservationError("A trusted PaymentIntent association must be persisted first.")
     if intent.get("object") != "payment_intent":
@@ -72,6 +92,4 @@ def reconcile_stripe_intent(
         observation = "pending"
     else:
         raise StripeObservationError("Unknown or missing PaymentIntent status; investigate.")
-    return journal.reconcile(
-        operation, observation=observation, provider_reference=previous.provider_reference
-    )
+    return observation

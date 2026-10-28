@@ -28,6 +28,11 @@ Verified SQLite receipt dedup; no worker completion or payment-effect guarantee.
 | [回读工作交接与旧 generation 拒绝（中文）](research/2026-10-29-stripe-readback.md).
 Local ownership generations only; no automatic lease or external payment-effect fencing.
 
+**Stage 1657 / 2026-10-29:** [Atomic local readback acceptance (EN)](research/2026-10-29-stripe-atomic-readback.en.md)
+| [同库回读接纳与支付写入门禁（中文）](research/2026-10-29-stripe-atomic-readback.md).
+Opt-in shared transaction for active-claim validation, journal update and hint completion;
+no provider freshness, new payment authority or remote atomicity.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -167,33 +167,44 @@ class PaymentAttemptJournal:
         'succeeded' is the adapter's payment result, not settlement finality,
         fulfilled inventory, or the end of the refund/dispute lifecycle.
         """
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            return self._reconcile_in_transaction(
+                db, operation, observation=observation, provider_reference=provider_reference,
+            )
+
+    def _reconcile_in_transaction(
+        self, db: sqlite3.Connection, operation: PaymentOperation, *,
+        observation: Observation, provider_reference: str,
+    ) -> PaymentAttempt:
+        """Participate in a caller-owned transaction without committing it."""
+        if not db.in_transaction:
+            raise AttemptConflict("Reconciliation requires an active transaction.")
         if observation not in ("pending", "succeeded", "failed"):
             raise ValueError("Observation must be pending, succeeded, or failed.")
         _require_text("provider_reference", provider_reference)
         outcome: Outcome = "unknown" if observation == "pending" else observation
-        with closing(self._connect()) as db, db:
-            db.execute("BEGIN IMMEDIATE")
-            row = self._find(db, operation)
-            if row is None:
-                raise AttemptConflict("Operation was never reserved.")
-            previous = self._attempt(row)
-            if previous.provider_reference not in (None, provider_reference):
-                raise AttemptConflict("Provider reference changed; investigate the conflict.")
-            if previous.outcome != "unknown" and previous.outcome != outcome:
-                raise AttemptConflict("Terminal outcome cannot be overwritten.")
-            if db.execute(
-                "SELECT 1 FROM payment_attempts WHERE provider=? AND provider_account=?"
-                " AND provider_reference=? AND NOT (tenant_id=? AND operation_id=?)",
-                (operation.provider, operation.provider_account, provider_reference,
-                 operation.tenant_id, operation.operation_id),
-            ).fetchone():
-                raise AttemptConflict("Provider reference already bound to another operation.")
-            db.execute(
-                "UPDATE payment_attempts SET outcome=?,provider_reference=?"
-                " WHERE tenant_id=? AND operation_id=?",
-                (outcome, provider_reference, operation.tenant_id, operation.operation_id),
-            )
-            return PaymentAttempt(outcome, provider_reference)
+        row = self._find(db, operation)
+        if row is None:
+            raise AttemptConflict("Operation was never reserved.")
+        previous = self._attempt(row)
+        if previous.provider_reference not in (None, provider_reference):
+            raise AttemptConflict("Provider reference changed; investigate the conflict.")
+        if previous.outcome != "unknown" and previous.outcome != outcome:
+            raise AttemptConflict("Terminal outcome cannot be overwritten.")
+        if db.execute(
+            "SELECT 1 FROM payment_attempts WHERE provider=? AND provider_account=?"
+            " AND provider_reference=? AND NOT (tenant_id=? AND operation_id=?)",
+            (operation.provider, operation.provider_account, provider_reference,
+             operation.tenant_id, operation.operation_id),
+        ).fetchone():
+            raise AttemptConflict("Provider reference already bound to another operation.")
+        db.execute(
+            "UPDATE payment_attempts SET outcome=?,provider_reference=?"
+            " WHERE tenant_id=? AND operation_id=?",
+            (outcome, provider_reference, operation.tenant_id, operation.operation_id),
+        )
+        return PaymentAttempt(outcome, provider_reference)
 
 
 def main() -> None:

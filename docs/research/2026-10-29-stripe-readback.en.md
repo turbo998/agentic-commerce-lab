@@ -8,6 +8,10 @@ This is a `synthetic` offline engineering reference, not a model benchmark,
 distributed lock service or real payment worker. No new Visa/Sierra release
 verification was performed.
 
+**Later compatibility note:** [Stage 1657](2026-10-29-stripe-atomic-readback.en.md)
+adds an opt-in same-database transaction coupling journal reconciliation to claim
+completion. The standalone ownership API below still fences only its local marker.
+
 ## 1. Primary evidence supports not building an automatic lease here
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks) recommends async handling

@@ -291,15 +291,21 @@ class StripeEventInbox:
         """Record trusted local hint handling, not authenticated provider/payment facts."""
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
-            row = self._current_claim(db, claim)
-            if row["state"] == "handled":
-                return
-            db.execute(
-                "UPDATE stripe_readback_claims SET state='handled'"
-                " WHERE tenant_id=? AND endpoint_id=? AND provider_account=?"
-                " AND livemode=? AND event_id=?",
-                (*claim.scope.key, claim.receipt.event_id),
-            )
+            self._finish_in_transaction(db, claim)
+
+    def _finish_in_transaction(self, db: sqlite3.Connection, claim: ReadbackClaim) -> None:
+        """Participate in a caller-owned transaction without committing it."""
+        if not db.in_transaction:
+            raise StripeInboxError("Completion requires an active transaction.")
+        row = self._current_claim(db, claim)
+        if row["state"] == "handled":
+            return
+        db.execute(
+            "UPDATE stripe_readback_claims SET state='handled'"
+            " WHERE tenant_id=? AND endpoint_id=? AND provider_account=?"
+            " AND livemode=? AND event_id=?",
+            (*claim.scope.key, claim.receipt.event_id),
+        )
 
     def active_claims(
         self, scope: StripeInboxScope, *, limit: int = 100,

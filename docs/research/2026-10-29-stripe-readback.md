@@ -7,6 +7,10 @@
 这是 `synthetic` 离线工程参考，不是模型 benchmark、分布式锁服务或真实支付 worker。
 本轮没有新的 Visa/Sierra 产品发布核验。
 
+**后续兼容说明：**[Stage 1657](2026-10-29-stripe-atomic-readback.md)
+增加显式选择的同库事务入口，将账本更新与 claim 完成耦合。
+下文原有独立工作权 API 仍只保护本地提示标记。
+
 ## 1. 一手证据让本阶段选择“不造自动租约”
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks) 建议异步处理，且重复/乱序送达不能假设消失。
