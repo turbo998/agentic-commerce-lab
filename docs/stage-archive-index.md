@@ -88,6 +88,11 @@ no crypto, nonce consumption, time provenance or commit/send deadline is implied
 New timed reservations commit a distinct first-branch record with attempt/approval;
 no retry/legacy backfill, cryptographic proof, current authority or nonce consumption.
 
+**Stage 1669 / 2026-10-29:** [Stripe receipt time boundaries (EN)](research/2026-10-29-stripe-receipt-clock.en.md)
+| [Stripe receipt 入口与锁后时钟（中文）](research/2026-10-29-stripe-receipt-clock.md).
+Opt-in two-sample admission rechecks signed delivery time after the writer lock;
+old ingress-only API persists, without worker expiry, secret refresh or payment authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

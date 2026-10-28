@@ -3,12 +3,13 @@
 import json
 import re
 import sqlite3
+from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import NoReturn
 
-from lab.stripe_delivery import verify_stripe_delivery
+from lab.stripe_delivery import _require_delivery_time, verify_stripe_delivery
 
 
 class StripeInboxError(ValueError):
@@ -154,7 +155,36 @@ class StripeEventInbox:
 
         A secret tuple is a trusted active-key snapshot for this scope, never a
         header-selected keyring. Rotation does not change receipt identity.
+        Fixed now checks ingress only, not time after waiting for the writer.
         """
+        return self._record(
+            scope, body, signature_header, endpoint_secret, now=now,
+            tolerance=tolerance, admission_clock=None,
+        )
+
+    def record_with_clock(
+        self, scope: StripeInboxScope, body: bytes, signature_header: str,
+        endpoint_secret: str | tuple[str, ...], *,
+        clock: Callable[[], int], tolerance: int = 300,
+    ) -> InboxDecision:
+        """Check ingress, then recheck the signed timestamp after the write lock.
+
+        Successful/duplicate paths sample twice; HMAC and JSON run only at ingress.
+        The callback must return fresh trusted time at each boundary. This does
+        not expire durable work, refresh secret configuration or prove a payment.
+        """
+        if not isinstance(scope, StripeInboxScope) or not callable(clock):
+            raise StripeInboxError("A trusted scope and clock callable are required.")
+        return self._record(
+            scope, body, signature_header, endpoint_secret, now=clock(),
+            tolerance=tolerance, admission_clock=clock,
+        )
+
+    def _record(
+        self, scope: StripeInboxScope, body: bytes, signature_header: str,
+        endpoint_secret: str | tuple[str, ...], *, now: int, tolerance: int,
+        admission_clock: Callable[[], int] | None,
+    ) -> InboxDecision:
         if not isinstance(scope, StripeInboxScope):
             raise StripeInboxError("A trusted StripeInboxScope is required.")
         verified = verify_stripe_delivery(
@@ -193,6 +223,8 @@ class StripeEventInbox:
 
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
+            if admission_clock is not None:
+                _require_delivery_time(verified.timestamp, now=admission_clock(), tolerance=tolerance)
             previous = db.execute(
                 "SELECT * FROM stripe_event_inbox WHERE tenant_id=? AND endpoint_id=?"
                 " AND provider_account=? AND livemode=? AND event_id=?",

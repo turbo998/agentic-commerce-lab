@@ -11,6 +11,10 @@
 [Stage 1656](2026-10-29-stripe-readback.md) 后续新增 opt-in 本地工作交接方法，
 保留原 `pending()` 与接收去重行为；不把工作完成标记变成支付事实。
 
+后续 [Stage 1669](2026-10-29-stripe-receipt-clock.md) 新增可选 `record_with_clock`，
+在入口与取得 writer lock 后分别采样；原 `record(now=...)` 接口及此处 ingress-only
+时间语义保留，不给已持久化 task 新增送达过期规则。
+
 ## 1. 重复事件、重复送达与业务动作有三个不同的身份
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks#event-delivery-behaviours)

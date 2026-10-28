@@ -13,6 +13,11 @@ Stripe/SQLite-specific; no new Visa or Sierra release is asserted.
 handoff methods while preserving receipt dedup and `pending()` behavior;
 handled work is still not a payment fact.
 
+Follow-up [Stage 1669](2026-10-29-stripe-receipt-clock.en.md) adds optional
+`record_with_clock`, sampling at ingress and after acquiring the writer lock.
+Original `record(now=...)` and its ingress-only time semantics remain unchanged;
+durable tasks gain no delivery-expiry rule.
+
 ## 1. Delivery, Event and business operation have different identities
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks#event-delivery-behaviours)

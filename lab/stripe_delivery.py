@@ -17,6 +17,19 @@ class VerifiedDelivery:
     requires_readback: bool = True
 
 
+def _require_delivery_clock(now: int, tolerance: int) -> None:
+    if type(now) is not int or not 0 <= now <= 2**63 - 1:
+        raise StripeDeliveryError("A trusted nonnegative integer clock is required.")
+    if type(tolerance) is not int or not 0 < tolerance <= 2**63 - 1:
+        raise StripeDeliveryError("Tolerance must be a positive integer; zero cannot disable it.")
+
+
+def _require_delivery_time(timestamp: int, *, now: int, tolerance: int) -> None:
+    _require_delivery_clock(now, tolerance)
+    if abs(now - timestamp) > tolerance:
+        raise StripeDeliveryError("Delivery timestamp is outside the local tolerance window.")
+
+
 def verify_stripe_delivery(
     body: bytes,
     signature_header: str,
@@ -41,10 +54,7 @@ def verify_stripe_delivery(
         raise StripeDeliveryError("A nonblank endpoint secret or nonempty tuple of secrets is required.")
     if not isinstance(signature_header, str) or not signature_header:
         raise StripeDeliveryError("A Stripe-Signature header is required.")
-    if type(now) is not int or not 0 <= now <= 2**63 - 1:
-        raise StripeDeliveryError("A trusted nonnegative integer clock is required.")
-    if type(tolerance) is not int or not 0 < tolerance <= 2**63 - 1:
-        raise StripeDeliveryError("Tolerance must be a positive integer; zero cannot disable it.")
+    _require_delivery_clock(now, tolerance)
 
     timestamps: list[str] = []
     signatures: list[str] = []
@@ -74,6 +84,5 @@ def verify_stripe_delivery(
     if not any(hmac.compare_digest(expected, candidate)
                for expected in expected_signatures for candidate in signatures):
         raise StripeDeliveryError("Delivery signature mismatch.")
-    if abs(now - timestamp) > tolerance:
-        raise StripeDeliveryError("Delivery timestamp is outside the local tolerance window.")
+    _require_delivery_time(timestamp, now=now, tolerance=tolerance)
     return VerifiedDelivery(timestamp, hashlib.sha256(body).hexdigest())
