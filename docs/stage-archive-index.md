@@ -73,6 +73,11 @@ assertions expired while queued; no JWT verification, token issuance or purchase
 Additive same-endpoint active-secret tuples share existing verification and receipt
 identity; no automatic retirement, new payment authority or provider outcome.
 
+**Stage 1666 / 2026-10-29:** [Local merchant signer admission (EN)](research/2026-10-29-merchant-signer-admission.en.md)
+| [商户 signer 撤销与同库准入（中文）](research/2026-10-29-merchant-signer-admission.md).
+Opt-in scoped local signer permission shares approval/reservation transaction;
+no cryptographic verification, signer provenance, remote revocation or payment send.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

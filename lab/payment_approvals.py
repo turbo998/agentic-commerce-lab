@@ -163,24 +163,34 @@ class PaymentApprovalStore:
             raise PaymentApprovalError("Atomic admission requires the same resolved SQLite file.")
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
-            row = self._bound_approval(db, operation)
-            if row["revoked"] != 0:
-                raise PaymentApprovalError("Approval is revoked.")
-            expires_at = row["expires_at"]
-            if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
-                raise PaymentApprovalError("Stored approval expiry is invalid.")
-            now = clock()
-            if type(now) is not int or not 0 <= now <= 2**63 - 1:
-                raise PaymentApprovalError("Clock must return a nonnegative signed-64-bit integer.")
-            if now >= expires_at:
-                raise PaymentApprovalError("Approval is expired.")
-            decision = journal._reserve_in_transaction(db, operation)
-            if decision.dispatch_allowed:
-                db.execute(
-                    "INSERT INTO payment_admissions"
-                    " (tenant_id,operation_id,fingerprint,admitted_at,expires_at)"
-                    " VALUES (?,?,?,?,?)",
-                    (operation.tenant_id, operation.operation_id, operation.fingerprint,
-                     now, expires_at),
-                )
+            decision = self._admit_in_transaction(db, journal, operation, clock=clock)
+        return decision
+
+    def _admit_in_transaction(
+        self, db: sqlite3.Connection, journal: PaymentAttemptJournal,
+        operation: PaymentOperation, *, clock: Callable[[], int],
+    ) -> DispatchDecision:
+        """Participate in a caller-owned transaction after signed input validation."""
+        if not db.in_transaction:
+            raise PaymentApprovalError("Approval admission requires an active transaction.")
+        row = self._bound_approval(db, operation)
+        if row["revoked"] != 0:
+            raise PaymentApprovalError("Approval is revoked.")
+        expires_at = row["expires_at"]
+        if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        now = clock()
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise PaymentApprovalError("Clock must return a nonnegative signed-64-bit integer.")
+        if now >= expires_at:
+            raise PaymentApprovalError("Approval is expired.")
+        decision = journal._reserve_in_transaction(db, operation)
+        if decision.dispatch_allowed:
+            db.execute(
+                "INSERT INTO payment_admissions"
+                " (tenant_id,operation_id,fingerprint,admitted_at,expires_at)"
+                " VALUES (?,?,?,?,?)",
+                (operation.tenant_id, operation.operation_id, operation.fingerprint,
+                 now, expires_at),
+            )
         return decision
