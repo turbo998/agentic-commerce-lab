@@ -38,6 +38,11 @@ no provider freshness, new payment authority or remote atomicity.
 Published-0.2 Session assertion replay history survives restart; no JWT/DPoP
 verification, token issuance or purchase authority is implied.
 
+**Stage 1659 / 2026-10-29:** [Exact merchant request binding (EN)](research/2026-10-29-request-binding.en.md)
+| [商户请求签名覆盖与原始字节绑定（中文）](research/2026-10-29-request-binding.md).
+Opt-in one-signature snapshot/body binding; no RFC signature verification,
+consumer authorization, replay consumption or economic mutation is implied.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
