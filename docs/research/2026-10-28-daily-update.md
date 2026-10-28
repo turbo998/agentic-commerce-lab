@@ -3321,3 +3321,13 @@
   - 基准评测与报告生成：`lab/x402_erc11855_mpp_flutter_pkg_ap2_flutter_samp_ucp_flutter_web_a2a_alphafold3_stripe_mcp_bench.py`
   - 中英双语 7-Card 4:5 报告：`reports/agentic-commerce-x402-erc11855-mpp-flutter-pkg-ap2-flutter-samp-ucp-flutter-web-a2a-alphafold3-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - 单元测试：`tests/test_x402_erc11855_mpp_flutter_pkg_ap2_flutter_samp_ucp_flutter_web_a2a_alphafold3_stripe_mcp.py`（全仓 **3,736/3,736** 单测 100% 通过）
+
+## Stage 1652：夜间一手资料核验与支付未知结果恢复（非模型 benchmark）
+
+[中文研究](2026-10-28-authority-recovery.md) /
+[English](2026-10-28-authority-recovery.en.md)；
+[`PaymentAttemptJournal`](../../lab/payment_attempts.py) /
+[测试](../../tests/test_payment_attempts.py)。
+区分 Visa TAP 身份/意图、Poppy 账户同意、Stripe MCP 运营权限、SPT 凭据范围
+与实际支付结果；0.3 仍是工作草案。新增 19 项恢复与并发测试，
+全仓 3,755 项 unittest 通过。README/SVG 未修改；不新增历史累计量或性能结论。

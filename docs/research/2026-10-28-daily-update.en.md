@@ -3321,3 +3321,14 @@
   - Benchmark & 7-Card Generator: `lab/x402_erc11855_mpp_flutter_pkg_ap2_flutter_samp_ucp_flutter_web_a2a_alphafold3_stripe_mcp_bench.py`
   - Bilingual 7-Card 4:5 Reports: `reports/agentic-commerce-x402-erc11855-mpp-flutter-pkg-ap2-flutter-samp-ucp-flutter-web-a2a-alphafold3-stripe-mcp-bench/{report.json,index.html,index.en.html}`
   - Unit Tests: `tests/test_x402_erc11855_mpp_flutter_pkg_ap2_flutter_samp_ucp_flutter_web_a2a_alphafold3_stripe_mcp.py` (**3,736/3,736** unit tests passing across the repository)
+
+## Stage 1652: Nightly primary-source verification and unknown payment recovery (not a model benchmark)
+
+[English research](2026-10-28-authority-recovery.en.md) /
+[中文](2026-10-28-authority-recovery.md);
+[`PaymentAttemptJournal`](../../lab/payment_attempts.py) /
+[tests](../../tests/test_payment_attempts.py).
+Separates Visa TAP identity/intent, Poppy account consent, Stripe MCP operational
+authority, SPT credential scope, and actual payment outcomes. Poppy 0.3 remains a
+working draft. Adds 19 recovery/concurrency tests; 3,755 repository unittest tests
+passed. README/SVG unchanged; no new cumulative-volume or performance claims.

@@ -6,6 +6,12 @@
 
 ---
 
+## Nightly research increments (not model benchmarks)
+
+**Stage 1652 / 2026-10-28:** [Authority boundaries and durable recovery (EN)](research/2026-10-28-authority-recovery.en.md)
+| [权限边界与持久化恢复（中文）](research/2026-10-28-authority-recovery.md).
+Offline payment-attempt journal; no change to the README/SVG executive overview.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

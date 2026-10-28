@@ -2,6 +2,12 @@
 
 日期：2026-10-11。**方案设计，不是已部署基础设施或已获供应商认证的实现。** 图使用 Mermaid（适合 GitHub 内联预览）；默认云无关，避免在未确认区域、预算与数据驻留前指定云产品。
 
+**2026-10-28 / Stage 1652 增量：**
+[权限证明分离与支付未知结果恢复](../docs/research/2026-10-28-authority-recovery.md)
+（[English](../docs/research/2026-10-28-authority-recovery.en.md)）。
+新增离线持久化 `PaymentAttemptJournal`，把下文 `unknown` 不许重新扣款的
+建议落实为可重启、并发互斥的本地参考资产；不替代真实支付授权或 provider 对账。
+
 ## Personal Agent Commerce Architecture
 
 ```mermaid
@@ -175,7 +181,6 @@ AI Native 的核心区别是**模型可变的行动空间与不可随意扩大�
 2. **结账状态机可恢复回退、远期订阅零当期计费与签名响应请求上下文绑定（UCP `#672`, `#890`, `#699`, `#782`）**：AI-Native 结账状态机允许 `ready_for_complete` 在提交校验时回退至 `incomplete` 或升级至 `requires_escalation`，强制远期订阅 `schedules[]` 当期结账应付为 `0`（严禁计入 `totals`），并通过 RFC 9421 `req` 参数将签名 REST 响应绑定至原请求 `@method`/`@target-uri` 防御 CDN 旧价重放。
 3. **本地 MCP 代理安全注解透传与请求级快速失败（Stripe AI `8a8818e`, `#584`, `#542` & MCP `SEP-3415`）**：本地 `@stripe/mcp` 代理通过 `registerTool` 原样透传远端工具的 `destructiveHint`/`readOnlyHint` 等安全注解，并在转发 JSON-RPC Request 失败时立即合成 JSON-RPC Error 响应免除 60 秒超时挂起。
 4. **Agent 评测分母反作弊与零内部主键泄露（Sierra $\tau$-bench 2.0 `#674`, `#677`）**：将模型生成的畸形工具参数与空白回复按 `AGENT_ERROR`（`0.0` 分）计入总样本分母而非作为 `INFRASTRUCTURE_ERROR` 剔除，并从用户模拟器提示词中彻底剥离内部数据库主键。
-
 
 
 
