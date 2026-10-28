@@ -3331,3 +3331,13 @@
 区分 Visa TAP 身份/意图、Poppy 账户同意、Stripe MCP 运营权限、SPT 凭据范围
 与实际支付结果；0.3 仍是工作草案。新增 19 项恢复与并发测试，
 全仓 3,755 项 unittest 通过。README/SVG 未修改；不新增历史累计量或性能结论。
+
+## Stage 1653：PaymentIntent 非终态与同一笔操作绑定
+
+[中文研究](2026-10-28-stripe-observation.md) /
+[English](2026-10-28-stripe-observation.en.md)；
+[离线观察 gate](../../lab/stripe_observation.py) /
+[测试](../../tests/test_stripe_observation.py)。
+五个中间态不关闭 unknown；ID、账号、test/live、金额与币种必须匹配，
+完整收款才确认 succeeded。新增 16 项测试，全仓 3,771 项 unittest 通过。
+不接入真实支付、不新增模型 benchmark，用户 README/assets 零改动。

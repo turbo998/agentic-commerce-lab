@@ -3332,3 +3332,14 @@ Separates Visa TAP identity/intent, Poppy account consent, Stripe MCP operationa
 authority, SPT credential scope, and actual payment outcomes. Poppy 0.3 remains a
 working draft. Adds 19 recovery/concurrency tests; 3,755 repository unittest tests
 passed. README/SVG unchanged; no new cumulative-volume or performance claims.
+
+## Stage 1653: PaymentIntent nonterminal states and same-operation binding
+
+[English research](2026-10-28-stripe-observation.en.md) /
+[中文](2026-10-28-stripe-observation.md);
+[offline observation gate](../../lab/stripe_observation.py) /
+[tests](../../tests/test_stripe_observation.py).
+Five intermediate states do not close unknown. ID, account, test/live, amount
+and currency must match; succeeded requires full collection. Adds 16 tests;
+3,771 repository unittest tests passed. No live payments, new model benchmark,
+or changes to the user's README/assets.

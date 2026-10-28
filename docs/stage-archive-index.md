@@ -12,6 +12,10 @@
 | [权限边界与持久化恢复（中文）](research/2026-10-28-authority-recovery.md).
 Offline payment-attempt journal; no change to the README/SVG executive overview.
 
+**Stage 1653 / 2026-10-28:** [PaymentIntent observation binding (EN)](research/2026-10-28-stripe-observation.en.md)
+| [PaymentIntent 观察绑定（中文）](research/2026-10-28-stripe-observation.md).
+Offline provider-semantic readback gate; intermediate states retain unknown.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
