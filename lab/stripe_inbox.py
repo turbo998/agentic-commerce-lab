@@ -248,6 +248,24 @@ class StripeEventInbox:
                 True, True,
             )
 
+    def read_receipt(self, scope: StripeInboxScope, event_id: str) -> InboxReceipt | None:
+        """Read original scoped history, not authenticate or admit a delivery.
+
+        Absence is not a payment result. Presence grants no ACK, worker or payment
+        authority and never substitutes for the ingress verification pipeline.
+        """
+        if not isinstance(scope, StripeInboxScope):
+            raise StripeInboxError("A trusted StripeInboxScope is required.")
+        if not isinstance(event_id, str) or re.fullmatch(r"evt_[A-Za-z0-9_]+", event_id) is None:
+            raise StripeInboxError("A snapshot Event ID is required.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT * FROM stripe_event_inbox WHERE tenant_id=? AND endpoint_id=?"
+                " AND provider_account=? AND livemode=? AND event_id=?",
+                (*scope.key, event_id),
+            ).fetchone()
+            return None if row is None else self._receipt(row)
+
     def pending(self, scope: StripeInboxScope, *, limit: int = 100) -> tuple[InboxReceipt, ...]:
         """Enumerate all receipts, regardless of claim state, in local receipt order."""
         if not isinstance(scope, StripeInboxScope):

@@ -93,6 +93,11 @@ no retry/legacy backfill, cryptographic proof, current authority or nonce consum
 Opt-in two-sample admission rechecks signed delivery time after the writer lock;
 old ingress-only API persists, without worker expiry, secret refresh or payment authority.
 
+**Stage 1670 / 2026-10-29:** [Scoped receipt reader (EN)](research/2026-10-29-stripe-receipt-read.en.md)
+| [五维 receipt 历史查询（中文）](research/2026-10-29-stripe-receipt-read.md).
+Direct original-history lookup beyond bounded enumeration; no current-delivery,
+ACK, worker or payment authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
