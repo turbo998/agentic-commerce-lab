@@ -25,6 +25,16 @@ Plan details identify code, tests, bilingual documentation, navigation,
 protected paths, and integrated-tree validation. No dependency changes.
 Vendor verification remains required before public documentation is final.
 
+Final evidence: vendor verification completed; bilingual sources distinguish
+Poppy working draft from release, MCP-only key migration, TAP mock payments,
+SPT recurring versus single-use Resolve, and provider outcomes versus settlement.
+Thirty new/changed local links passed. Integrated origin/main tree at
+`ffbd410` passed 3,755 tests, compileall, original demo and recovery demo.
+Protected paths match the user's baseline. Historical test-generated report
+changes were restored and content-equivalent index flags refreshed.
+Canonical main checkout synchronization remains a controller-owned release
+action, outside this worktree's filesystem access boundary.
+
 ## Implementation Paths Considered
 
 Selected: separate journal reusing Checkout; no change to local receipt logic.

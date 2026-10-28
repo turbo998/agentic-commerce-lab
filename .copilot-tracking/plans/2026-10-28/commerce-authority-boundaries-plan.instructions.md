@@ -23,8 +23,12 @@ executable behavior rather than add more boolean-only protocol checks.
 
 - [x] Durable recovery illustration and focused tests. Details: (Lines 9-22).
 - [x] Bilingual primary-source synthesis and navigation. Details: (Lines 24-33).
-- [ ] Full project validation, fixes, cleanup, integration, and synchronization.
+- [x] Full project validation, fixes, cleanup, and origin/main integration.
   Details: (Lines 35-48).
+
+Canonical-checkout synchronization is a controller-owned release gate; its
+confirmation belongs to the final task handoff. This session never accesses
+the canonical checkout.
 
 ## Risks and mitigations
 

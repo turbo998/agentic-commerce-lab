@@ -18,4 +18,9 @@ README and SVG paths are untouched. No new model benchmark was produced.
 Baseline: 3,736 tests passed. New implementation: 19 tests added, 30 focused
 journal/checkout tests passed, full suite 3,755 tests passed. Compilation and
 both demos passed. Only test-generated historical report changes were cleaned.
-Final link checks, commit, main integration and canonical checkout sync pending.
+Thirty new/changed local Markdown links passed. Protected README/SVG content
+matches `1d9273d`. Asset commit `ffbd410` fast-forwarded origin/main.
+The integrated tree passed all 3,755 tests again, compileall and both demos.
+No historical report change remains. Canonical-checkout synchronization is
+controller-owned and confirmed in the final runtime handoff, not performed by
+this session. No new automation, live payments, or model evaluation was started.
