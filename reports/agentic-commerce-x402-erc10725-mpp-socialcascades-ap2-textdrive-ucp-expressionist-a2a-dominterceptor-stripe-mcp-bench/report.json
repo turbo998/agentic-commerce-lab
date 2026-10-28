@@ -37,7 +37,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.457,
+      "latency_ms": 0.449,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -64,7 +64,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.436,
+      "latency_ms": 0.434,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -91,7 +91,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.434,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -118,7 +118,7 @@
       "confidence": 0.91,
       "reversed_confidence": 0.91,
       "delta_pts": 0.0,
-      "latency_ms": 0.435,
+      "latency_ms": 0.431,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -145,7 +145,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.433,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -172,7 +172,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.432,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -199,7 +199,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.433,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -226,7 +226,7 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.434,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -254,7 +254,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.432,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -281,7 +281,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.432,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -308,7 +308,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.432,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -335,7 +335,7 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.433,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -363,7 +363,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.432,
+      "latency_ms": 0.431,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -390,7 +390,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.433,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -417,7 +417,7 @@
       "confidence": 0.98,
       "reversed_confidence": 0.98,
       "delta_pts": 0.0,
-      "latency_ms": 0.434,
+      "latency_ms": 0.43,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
@@ -445,7 +445,7 @@
       "confidence": 0.96,
       "reversed_confidence": 0.96,
       "delta_pts": 0.0,
-      "latency_ms": 0.433,
+      "latency_ms": 0.429,
       "pr_count": 32,
       "repo_count": 32,
       "sample_prs": [
