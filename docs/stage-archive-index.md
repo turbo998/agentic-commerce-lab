@@ -43,6 +43,11 @@ verification, token issuance or purchase authority is implied.
 Opt-in one-signature snapshot/body binding; no RFC signature verification,
 consumer authorization, replay consumption or economic mutation is implied.
 
+**Stage 1660 / 2026-10-29:** [Signed checkout admission (EN)](research/2026-10-29-checkout-admission.en.md)
+| [签名正文、可信报价与支付尝试接纳（中文）](research/2026-10-29-checkout-admission.md).
+Opt-in strict JSON/trusted-quote matching before existing durable reservation;
+no client-price authority, consent service or provider request is added.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

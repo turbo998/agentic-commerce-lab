@@ -9,6 +9,11 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 
+if __package__:
+    from .json_members import unique_members
+else:
+    from json_members import unique_members
+
 PREVIOUS_DEADLINE = date(2026, 10, 31)
 DEADLINE = date(2026, 11, 30)
 ENFORCEMENT_STARTS = date(2026, 12, 1)
@@ -48,16 +53,6 @@ class Finding:
     auth_method: str
     status: str
     action: str
-
-
-def unique_members(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    """Reject ambiguous JSON without echoing input values."""
-    result: dict[str, object] = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError("Duplicate JSON member; use one value per field.")
-        result[key] = value
-    return result
 
 
 def load_inventory(path: Path) -> list[Client]:
