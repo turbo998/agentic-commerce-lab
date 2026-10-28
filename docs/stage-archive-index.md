@@ -48,6 +48,11 @@ consumer authorization, replay consumption or economic mutation is implied.
 Opt-in strict JSON/trusted-quote matching before existing durable reservation;
 no client-price authority, consent service or provider request is added.
 
+**Stage 1661 / 2026-10-29:** [Atomic local approval admission (EN)](research/2026-10-29-approval-admission.en.md)
+| [同库审批撤销与 reservation 门禁（中文）](research/2026-10-29-approval-admission.md).
+Opt-in immutable approval/expiry/revocation checks and reservation in one local
+transaction; no consent proof, remote cancellation or payment send is implied.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

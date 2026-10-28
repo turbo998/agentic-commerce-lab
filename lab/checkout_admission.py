@@ -30,8 +30,7 @@ def _reject_fraction_or_constant(value: str) -> NoReturn:
     raise CheckoutAdmissionError("Only integer JSON numbers are supported.")
 
 
-def reserve_signed_checkout(
-    journal: PaymentAttemptJournal,
+def validate_signed_checkout(
     operation: PaymentOperation,
     signature: RequestSignatureSnapshot,
     *,
@@ -42,15 +41,15 @@ def reserve_signed_checkout(
     content_digest: str,
     content_encoding: str | None,
     body: bytes,
-) -> DispatchDecision:
-    """Bind ingress, match an already-approved quote, then reserve one dispatch.
+) -> None:
+    """Bind ingress and match a trusted quote without reserving or authorizing.
 
     The caller owns signature provenance, route/operation lookup, pricing, consent,
     expiry and revocation. None of those trusted inputs may come from agent JSON.
-    No provider request is sent, and a reservation still has an unknown outcome.
+    No journal state, approval, nonce or provider is changed.
     """
-    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
-        raise CheckoutAdmissionError("A trusted journal and PaymentOperation are required.")
+    if not isinstance(operation, PaymentOperation):
+        raise CheckoutAdmissionError("A trusted PaymentOperation is required.")
     if (
         not isinstance(expected_target_uri, str) or not expected_target_uri
         or target_uri != expected_target_uri
@@ -87,4 +86,27 @@ def reserve_signed_checkout(
             raise CheckoutAdmissionError(f"Checkout {field} must be an integer, not boolean.")
     if payload != asdict(operation.checkout):
         raise CheckoutAdmissionError("Request differs from the trusted checkout.")
+
+
+def reserve_signed_checkout(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    signature: RequestSignatureSnapshot,
+    *,
+    expected_target_uri: str,
+    method: str,
+    target_uri: str,
+    content_type: str,
+    content_digest: str,
+    content_encoding: str | None,
+    body: bytes,
+) -> DispatchDecision:
+    """Bind/match then reserve; caller still checks consent, expiry and revocation."""
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise CheckoutAdmissionError("A trusted journal and PaymentOperation are required.")
+    validate_signed_checkout(
+        operation, signature, expected_target_uri=expected_target_uri, method=method,
+        target_uri=target_uri, content_type=content_type, content_digest=content_digest,
+        content_encoding=content_encoding, body=body,
+    )
     return journal.reserve(operation)

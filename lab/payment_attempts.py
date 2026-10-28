@@ -126,29 +126,37 @@ class PaymentAttemptJournal:
         """Commit before dispatch; a repeated reservation never authorizes a send."""
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
-            previous = self._find(db, operation)
-            if previous is not None:
-                return DispatchDecision(self._attempt(previous), False)
-            if db.execute(
-                "SELECT 1 FROM payment_attempts WHERE tenant_id=? AND approval_id=?",
-                (operation.tenant_id, operation.approval_id),
-            ).fetchone():
-                raise AttemptConflict("Approval already reserved by another operation.")
-            if db.execute(
-                "SELECT 1 FROM payment_attempts WHERE provider=? AND provider_account=?"
-                " AND idempotency_key=?",
-                (operation.provider, operation.provider_account, operation.idempotency_key),
-            ).fetchone():
-                raise AttemptConflict("Provider idempotency key already bound.")
-            db.execute(
-                "INSERT INTO payment_attempts "
-                "(tenant_id,operation_id,approval_id,provider,provider_account,"
-                "idempotency_key,fingerprint,outcome) VALUES (?,?,?,?,?,?,?,'unknown')",
-                (operation.tenant_id, operation.operation_id, operation.approval_id,
-                 operation.provider, operation.provider_account, operation.idempotency_key,
-                 operation.fingerprint),
-            )
-            return DispatchDecision(PaymentAttempt("unknown", None), True)
+            return self._reserve_in_transaction(db, operation)
+
+    def _reserve_in_transaction(
+        self, db: sqlite3.Connection, operation: PaymentOperation,
+    ) -> DispatchDecision:
+        """Participate in a caller-owned transaction without committing it."""
+        if not db.in_transaction:
+            raise AttemptConflict("Reservation requires an active transaction.")
+        previous = self._find(db, operation)
+        if previous is not None:
+            return DispatchDecision(self._attempt(previous), False)
+        if db.execute(
+            "SELECT 1 FROM payment_attempts WHERE tenant_id=? AND approval_id=?",
+            (operation.tenant_id, operation.approval_id),
+        ).fetchone():
+            raise AttemptConflict("Approval already reserved by another operation.")
+        if db.execute(
+            "SELECT 1 FROM payment_attempts WHERE provider=? AND provider_account=?"
+            " AND idempotency_key=?",
+            (operation.provider, operation.provider_account, operation.idempotency_key),
+        ).fetchone():
+            raise AttemptConflict("Provider idempotency key already bound.")
+        db.execute(
+            "INSERT INTO payment_attempts "
+            "(tenant_id,operation_id,approval_id,provider,provider_account,"
+            "idempotency_key,fingerprint,outcome) VALUES (?,?,?,?,?,?,?,'unknown')",
+            (operation.tenant_id, operation.operation_id, operation.approval_id,
+             operation.provider, operation.provider_account, operation.idempotency_key,
+             operation.fingerprint),
+        )
+        return DispatchDecision(PaymentAttempt("unknown", None), True)
 
     def read(self, operation: PaymentOperation) -> PaymentAttempt:
         """Read a bound attempt without creating authority or changing its state."""
