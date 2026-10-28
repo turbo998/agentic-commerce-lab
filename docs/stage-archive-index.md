@@ -20,6 +20,10 @@ Offline provider-semantic readback gate; intermediate states retain unknown.
 | [原始字节验签与回读边界（中文）](research/2026-10-29-stripe-delivery.md).
 Offline HMAC transport evidence; signed events never directly close unknown payments.
 
+**Stage 1655 / 2026-10-29:** [Scoped durable event receipt (EN)](research/2026-10-29-stripe-inbox.en.md)
+| [持久事件接收与业务幂等边界（中文）](research/2026-10-29-stripe-inbox.md).
+Verified SQLite receipt dedup; no worker completion or payment-effect guarantee.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
