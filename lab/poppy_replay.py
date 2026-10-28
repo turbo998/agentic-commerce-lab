@@ -2,6 +2,7 @@
 
 import hashlib
 import sqlite3
+from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
@@ -63,7 +64,35 @@ class PoppyAssertionJournal:
     def consume(
         self, scope: PoppyReplayScope, assertion: SessionAssertionClaims, *, now: int,
     ) -> None:
-        """Commit before return; replay/storage failure never becomes success."""
+        """Use a fixed caller time snapshot; commit before return.
+
+        For fresh admission time after waiting on a writer, use consume_with_clock.
+        """
+        key = self._validated_key(scope, assertion, now=now)
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            self._consume_in_transaction(db, key)
+
+    def consume_with_clock(
+        self, scope: PoppyReplayScope, assertion: SessionAssertionClaims, *,
+        clock: Callable[[], int],
+    ) -> None:
+        """Sample fresh trusted time after the write lock, not before waiting.
+
+        The callback must read trusted time when invoked. This checks expiry at
+        that sample, not a physical commit/issuance deadline, and issues no token.
+        """
+        if not callable(clock):
+            raise PoppyReplayError("A trusted clock callable is required.")
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            key = self._validated_key(scope, assertion, now=clock())
+            self._consume_in_transaction(db, key)
+
+    @staticmethod
+    def _validated_key(
+        scope: PoppyReplayScope, assertion: SessionAssertionClaims, *, now: int,
+    ) -> tuple[str, str, str]:
         if not isinstance(scope, PoppyReplayScope) or not isinstance(assertion, SessionAssertionClaims):
             raise PoppyReplayError("A trusted scope and decoded Session assertion are required.")
         if assertion.typ != "poppy-session+jwt" or assertion.iss != scope.client_id:
@@ -79,15 +108,20 @@ class PoppyAssertionJournal:
         if not URL_SAFE_BASE64_ID_RE.fullmatch(assertion.jti):
             raise PoppyReplayError("Local jti policy requires 22-256 base64url characters.")
         digest = hashlib.sha256(assertion.jti.encode("ascii")).hexdigest()
-        key = scope.auth_issuer, scope.client_id, digest
-        with closing(self._connect()) as db, db:
-            db.execute("BEGIN IMMEDIATE")
-            if db.execute(
-                "SELECT 1 FROM poppy_assertion_replays"
-                " WHERE auth_issuer=? AND client_id=? AND jti_sha256=?", key,
-            ).fetchone():
-                raise PoppyReplayDetected("Session assertion ID already consumed.")
-            db.execute(
-                "INSERT INTO poppy_assertion_replays"
-                " (auth_issuer,client_id,jti_sha256) VALUES (?,?,?)", key,
-            )
+        return scope.auth_issuer, scope.client_id, digest
+
+    @staticmethod
+    def _consume_in_transaction(
+        db: sqlite3.Connection, key: tuple[str, str, str],
+    ) -> None:
+        if not db.in_transaction:
+            raise PoppyReplayError("Assertion consumption requires an active transaction.")
+        if db.execute(
+            "SELECT 1 FROM poppy_assertion_replays"
+            " WHERE auth_issuer=? AND client_id=? AND jti_sha256=?", key,
+        ).fetchone():
+            raise PoppyReplayDetected("Session assertion ID already consumed.")
+        db.execute(
+            "INSERT INTO poppy_assertion_replays"
+            " (auth_issuer,client_id,jti_sha256) VALUES (?,?,?)", key,
+        )

@@ -63,6 +63,11 @@ backfill consent history. No authenticated consent, signed receipt or payment pr
 Opt-in full readback validation before persisting a separately trusted reference;
 association stays unknown and never infers consent, new dispatch or payment success.
 
+**Stage 1664 / 2026-10-29:** [Post-lock Poppy assertion time (EN)](research/2026-10-29-poppy-admission-clock.en.md)
+| [Poppy assertion 锁后时间采样（中文）](research/2026-10-29-poppy-admission-clock.md).
+Required-clock opt-in admission shares the existing replay history, rejecting
+assertions expired while queued; no JWT verification, token issuance or purchase authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
