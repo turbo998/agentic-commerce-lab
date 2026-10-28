@@ -53,6 +53,11 @@ no client-price authority, consent service or provider request is added.
 Opt-in immutable approval/expiry/revocation checks and reservation in one local
 transaction; no consent proof, remote cancellation or payment send is implied.
 
+**Stage 1662 / 2026-10-29:** [First-admission provenance (EN)](research/2026-10-29-admission-provenance.en.md)
+| [首次准入历史与禁止回填（中文）](research/2026-10-29-admission-provenance.md).
+First-gate history commits with a new reservation; retries/legacy attempts never
+backfill consent history. No authenticated consent, signed receipt or payment proof.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

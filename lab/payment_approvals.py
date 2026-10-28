@@ -3,6 +3,7 @@
 import sqlite3
 from collections.abc import Callable
 from contextlib import closing
+from dataclasses import dataclass
 from pathlib import Path
 
 from lab.checkout_admission import validate_signed_checkout
@@ -12,6 +13,15 @@ from lab.request_binding import RequestSignatureSnapshot
 
 class PaymentApprovalError(ValueError):
     """An approval, configured store or clock cannot admit the bound operation."""
+
+
+@dataclass(frozen=True)
+class ApprovalAdmission:
+    """Local first-gate history, not authenticated consent or a payment receipt."""
+
+    fingerprint: str
+    admitted_at: int
+    expires_at: int
 
 
 class PaymentApprovalStore:
@@ -35,6 +45,18 @@ class PaymentApprovalStore:
                     expires_at INTEGER NOT NULL CHECK(expires_at>0),
                     revoked INTEGER NOT NULL CHECK(revoked IN (0,1)),
                     PRIMARY KEY (tenant_id,approval_id)
+                )
+                """
+            )
+            db.execute(
+                """
+                CREATE TABLE IF NOT EXISTS payment_admissions (
+                    tenant_id TEXT NOT NULL,
+                    operation_id TEXT NOT NULL,
+                    fingerprint TEXT NOT NULL,
+                    admitted_at INTEGER NOT NULL CHECK(admitted_at>=0),
+                    expires_at INTEGER NOT NULL CHECK(expires_at>admitted_at),
+                    PRIMARY KEY (tenant_id,operation_id)
                 )
                 """
             )
@@ -90,6 +112,24 @@ class PaymentApprovalStore:
                 (operation.tenant_id, operation.approval_id),
             )
 
+    def read_admission(self, operation: PaymentOperation) -> ApprovalAdmission:
+        """Read first-gate history even after revocation, without new authority."""
+        self._require_operation(operation)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT * FROM payment_admissions WHERE tenant_id=? AND operation_id=?",
+                (operation.tenant_id, operation.operation_id),
+            ).fetchone()
+        if row is None:
+            raise PaymentApprovalError("No first-admission record exists for this operation.")
+        if row["fingerprint"] != operation.fingerprint:
+            raise PaymentApprovalError("Admission record differs from the bound operation.")
+        admitted_at, expires_at = row["admitted_at"], row["expires_at"]
+        if (type(admitted_at) is not int or type(expires_at) is not int
+                or not 0 <= admitted_at < expires_at <= 2**63 - 1):
+            raise PaymentApprovalError("Stored admission times are invalid.")
+        return ApprovalAdmission(row["fingerprint"], admitted_at, expires_at)
+
     def admit(
         self,
         journal: PaymentAttemptJournal,
@@ -109,7 +149,8 @@ class PaymentApprovalStore:
 
         A trusted fresh clock is sampled after the write lock is acquired. Even
         non-dispatch retries require active approval; use journal.read for recovery
-        after revocation/expiry. No payment is sent or previous decision undone.
+        after revocation/expiry. First-gate history commits with a new reservation;
+        existing reservations are never backfilled. No payment is sent or undone.
         """
         if not isinstance(journal, PaymentAttemptJournal) or not callable(clock):
             raise PaymentApprovalError("A trusted journal and clock callable are required.")
@@ -134,4 +175,12 @@ class PaymentApprovalStore:
             if now >= expires_at:
                 raise PaymentApprovalError("Approval is expired.")
             decision = journal._reserve_in_transaction(db, operation)
+            if decision.dispatch_allowed:
+                db.execute(
+                    "INSERT INTO payment_admissions"
+                    " (tenant_id,operation_id,fingerprint,admitted_at,expires_at)"
+                    " VALUES (?,?,?,?,?)",
+                    (operation.tenant_id, operation.operation_id, operation.fingerprint,
+                     now, expires_at),
+                )
         return decision
