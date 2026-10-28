@@ -8,6 +8,11 @@ This is a `synthetic` offline engineering asset, not a model benchmark, Stripe
 SDK, production queue or live payment integration. New primary evidence is
 Stripe/SQLite-specific; no new Visa or Sierra release is asserted.
 
+**Historical scope:** "No claim/completion API" below describes Stage 1655.
+[Stage 1656](2026-10-29-stripe-readback.en.md) subsequently adds opt-in local
+handoff methods while preserving receipt dedup and `pending()` behavior;
+handled work is still not a payment fact.
+
 ## 1. Delivery, Event and business operation have different identities
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks#event-delivery-behaviours)

@@ -1,4 +1,4 @@
-"""Offline verified snapshot receipt; not a payment or completed-work queue."""
+"""Offline verified receipts and local readback claims, never payment authority."""
 
 import json
 import re
@@ -52,6 +52,28 @@ class InboxDecision:
     body_matches_first: bool
 
 
+def _require_worker_id(worker_id: str) -> None:
+    if not isinstance(worker_id, str) or not worker_id.strip():
+        raise StripeInboxError("A trusted nonblank worker ID is required.")
+
+
+@dataclass(frozen=True)
+class ReadbackClaim:
+    """Local coordination handle, not worker authentication or payment permission."""
+
+    scope: StripeInboxScope
+    receipt: InboxReceipt
+    worker_id: str
+    generation: int
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, StripeInboxScope) or not isinstance(self.receipt, InboxReceipt):
+            raise StripeInboxError("A claim needs a trusted scope and persisted receipt.")
+        _require_worker_id(self.worker_id)
+        if type(self.generation) is not int or not 1 <= self.generation <= 2**63 - 1:
+            raise StripeInboxError("Generation must be a positive signed-64-bit integer.")
+
+
 def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
     result: dict[str, object] = {}
     for key, value in pairs:
@@ -66,10 +88,10 @@ def _reject_constant(value: str) -> NoReturn:
 
 
 class StripeEventInbox:
-    """Commit a minimal verified receipt; every stored row still needs readback.
+    """Persist verified hints and fence local claim completion, not payment results.
 
-    Callers own endpoint-secret/account mapping and eventual worker/ACK policy.
-    No claim, processed flag, payment association or downstream effect is granted.
+    Callers own endpoint mapping, authenticated workers, explicit recovery,
+    actual readback and ACK policy. No remote request or economic effect is fenced.
     """
 
     def __init__(self, path: Path) -> None:
@@ -91,11 +113,30 @@ class StripeEventInbox:
                 )
                 """
             )
+            db.execute(
+                """
+                CREATE TABLE IF NOT EXISTS stripe_readback_claims (
+                    tenant_id TEXT NOT NULL,
+                    endpoint_id TEXT NOT NULL,
+                    provider_account TEXT NOT NULL,
+                    livemode INTEGER NOT NULL CHECK(livemode IN (0,1)),
+                    event_id TEXT NOT NULL,
+                    worker_id TEXT NOT NULL,
+                    generation INTEGER NOT NULL CHECK(generation>0),
+                    state TEXT NOT NULL CHECK(state IN ('active','handled')),
+                    PRIMARY KEY (tenant_id,endpoint_id,provider_account,livemode,event_id),
+                    FOREIGN KEY (tenant_id,endpoint_id,provider_account,livemode,event_id)
+                        REFERENCES stripe_event_inbox
+                        (tenant_id,endpoint_id,provider_account,livemode,event_id)
+                )
+                """
+            )
 
     def _connect(self) -> sqlite3.Connection:
         db = sqlite3.connect(self.path, timeout=10)
         db.row_factory = sqlite3.Row
         db.execute("PRAGMA synchronous=FULL")
+        db.execute("PRAGMA foreign_keys=ON")
         return db
 
     @staticmethod
@@ -172,7 +213,7 @@ class StripeEventInbox:
             )
 
     def pending(self, scope: StripeInboxScope, *, limit: int = 100) -> tuple[InboxReceipt, ...]:
-        """Enumerate readback hints in local receipt order, not provider event order."""
+        """Enumerate all receipts, regardless of claim state, in local receipt order."""
         if not isinstance(scope, StripeInboxScope):
             raise StripeInboxError("A trusted StripeInboxScope is required.")
         if type(limit) is not int or not 1 <= limit <= 1000:
@@ -184,3 +225,100 @@ class StripeEventInbox:
                 (*scope.key, limit),
             ).fetchall()
             return tuple(self._receipt(row) for row in rows)
+
+    def claim_next(self, scope: StripeInboxScope, worker_id: str) -> ReadbackClaim | None:
+        """Claim one never-claimed hint; None means no available work, not an error."""
+        if not isinstance(scope, StripeInboxScope):
+            raise StripeInboxError("A trusted StripeInboxScope is required.")
+        _require_worker_id(worker_id)
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT i.* FROM stripe_event_inbox i LEFT JOIN stripe_readback_claims c"
+                " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
+                " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
+                " AND i.livemode=? AND c.event_id IS NULL ORDER BY i.rowid LIMIT 1",
+                scope.key,
+            ).fetchone()
+            if row is None:
+                return None
+            db.execute(
+                "INSERT INTO stripe_readback_claims"
+                " (tenant_id,endpoint_id,provider_account,livemode,event_id,"
+                "worker_id,generation,state) VALUES (?,?,?,?,?,?,1,'active')",
+                (*scope.key, row["event_id"], worker_id),
+            )
+            return ReadbackClaim(scope, self._receipt(row), worker_id, 1)
+
+    def _current_claim(self, db: sqlite3.Connection, claim: ReadbackClaim) -> sqlite3.Row:
+        if not isinstance(claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
+        row = db.execute(
+            "SELECT i.*,c.worker_id,c.generation,c.state FROM stripe_event_inbox i"
+            " JOIN stripe_readback_claims c"
+            " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
+            " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
+            " AND i.livemode=? AND i.event_id=?",
+            (*claim.scope.key, claim.receipt.event_id),
+        ).fetchone()
+        if (
+            row is None or row["worker_id"] != claim.worker_id
+            or row["generation"] != claim.generation or self._receipt(row) != claim.receipt
+        ):
+            raise StripeInboxError("Readback claim binding is stale or invalid.")
+        return row
+
+    def handoff(self, claim: ReadbackClaim, worker_id: str) -> ReadbackClaim:
+        """Apply a trusted controller's recovery decision; never infer expiry."""
+        _require_worker_id(worker_id)
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            row = self._current_claim(db, claim)
+            if row["state"] != "active":
+                raise StripeInboxError("Handled hints cannot be handed off.")
+            if claim.generation == 2**63 - 1:
+                raise StripeInboxError("Readback generation is exhausted.")
+            generation = claim.generation + 1
+            db.execute(
+                "UPDATE stripe_readback_claims SET worker_id=?,generation=?"
+                " WHERE tenant_id=? AND endpoint_id=? AND provider_account=?"
+                " AND livemode=? AND event_id=?",
+                (worker_id, generation, *claim.scope.key, claim.receipt.event_id),
+            )
+            return ReadbackClaim(claim.scope, claim.receipt, worker_id, generation)
+
+    def finish_readback(self, claim: ReadbackClaim) -> None:
+        """Record trusted local hint handling, not authenticated provider/payment facts."""
+        with closing(self._connect()) as db, db:
+            db.execute("BEGIN IMMEDIATE")
+            row = self._current_claim(db, claim)
+            if row["state"] == "handled":
+                return
+            db.execute(
+                "UPDATE stripe_readback_claims SET state='handled'"
+                " WHERE tenant_id=? AND endpoint_id=? AND provider_account=?"
+                " AND livemode=? AND event_id=?",
+                (*claim.scope.key, claim.receipt.event_id),
+            )
+
+    def active_claims(
+        self, scope: StripeInboxScope, *, limit: int = 100,
+    ) -> tuple[ReadbackClaim, ...]:
+        """List recovery hints, not live lease validity or permission to write externally."""
+        if not isinstance(scope, StripeInboxScope):
+            raise StripeInboxError("A trusted StripeInboxScope is required.")
+        if type(limit) is not int or not 1 <= limit <= 1000:
+            raise StripeInboxError("Active-claim limit must be an integer from 1 to 1000.")
+        with closing(self._connect()) as db:
+            rows = db.execute(
+                "SELECT i.*,c.worker_id,c.generation FROM stripe_event_inbox i"
+                " JOIN stripe_readback_claims c"
+                " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
+                " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
+                " AND i.livemode=? AND c.state='active' ORDER BY i.rowid LIMIT ?",
+                (*scope.key, limit),
+            ).fetchall()
+            return tuple(
+                ReadbackClaim(scope, self._receipt(row), row["worker_id"], row["generation"])
+                for row in rows
+            )

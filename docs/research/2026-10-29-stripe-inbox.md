@@ -7,6 +7,10 @@
 这是 `synthetic` 离线工程资产，不是模型 benchmark、Stripe SDK、生产队列或真实支付接入。
 本轮只新增 Stripe/SQLite 一手证据；不声称 Visa 或 Sierra 有新的产品发布。
 
+**历史范围说明：** 下文“没有 claim/完成 API”描述 Stage 1655 时点。
+[Stage 1656](2026-10-29-stripe-readback.md) 后续新增 opt-in 本地工作交接方法，
+保留原 `pending()` 与接收去重行为；不把工作完成标记变成支付事实。
+
 ## 1. 重复事件、重复送达与业务动作有三个不同的身份
 
 [Stripe Webhooks](https://docs.stripe.com/webhooks#event-delivery-behaviours)

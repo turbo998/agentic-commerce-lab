@@ -24,6 +24,10 @@ Offline HMAC transport evidence; signed events never directly close unknown paym
 | [持久事件接收与业务幂等边界（中文）](research/2026-10-29-stripe-inbox.md).
 Verified SQLite receipt dedup; no worker completion or payment-effect guarantee.
 
+**Stage 1656 / 2026-10-29:** [Explicit readback handoff fencing (EN)](research/2026-10-29-stripe-readback.en.md)
+| [回读工作交接与旧 generation 拒绝（中文）](research/2026-10-29-stripe-readback.md).
+Local ownership generations only; no automatic lease or external payment-effect fencing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
