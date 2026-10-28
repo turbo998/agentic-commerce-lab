@@ -33,6 +33,11 @@ Local ownership generations only; no automatic lease or external payment-effect 
 Opt-in shared transaction for active-claim validation, journal update and hint completion;
 no provider freshness, new payment authority or remote atomicity.
 
+**Stage 1658 / 2026-10-29:** [Durable Poppy assertion replay admission (EN)](research/2026-10-29-poppy-replay.en.md)
+| [Poppy assertion 持久化重放接纳（中文）](research/2026-10-29-poppy-replay.md).
+Published-0.2 Session assertion replay history survives restart; no JWT/DPoP
+verification, token issuance or purchase authority is implied.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -2296,6 +2296,21 @@ def verify_poppy_v02_network_and_redirect_safety(
     return TokenCheckResult(True, None, 200)
 
 
+def verify_poppy_v02_assertion_metadata(
+    assertion: SessionAssertionClaims, *, auth_issuer: str, now: int,
+) -> TokenCheckResult:
+    """Check decoded v0.2 audience, lifetime and jti, not signatures or replay."""
+    aud_check = verify_poppy_assertion_audience(assertion.aud, auth_issuer=auth_issuer)
+    if not aud_check.allowed:
+        return TokenCheckResult(False, "invalid_client_or_session_assertion_aud", 400)
+    lifetime = assertion.exp - assertion.iat
+    if lifetime <= 0 or lifetime > 300 or not (assertion.iat <= now < assertion.exp):
+        return TokenCheckResult(False, "assertion_lifetime_exceeds_300s", 400)
+    if not isinstance(assertion.jti, str) or len(assertion.jti) < 22:
+        return TokenCheckResult(False, "invalid_grant", 400)
+    return TokenCheckResult(True, None, 200)
+
+
 def verify_poppy_v02_assertion_and_user_dpop_isolation(
     *,
     assertion: SessionAssertionClaims,
@@ -2318,16 +2333,11 @@ def verify_poppy_v02_assertion_and_user_dpop_isolation(
     3. For anonymous browsing (#62), the Personal Agent generates an ephemeral `user_id` + DPoP
        key pair that is never signed in and never reuses a signed-in `user_id` (`anonymous_browsing_user_id_reuse_forbidden`).
     """
-    aud_check = verify_poppy_assertion_audience(assertion.aud, auth_issuer=auth_issuer)
-    if not aud_check.allowed:
-        return TokenCheckResult(False, "invalid_client_or_session_assertion_aud", 400)
-
-    lifetime = assertion.exp - assertion.iat
-    if lifetime <= 0 or lifetime > 300 or not (assertion.iat <= now < assertion.exp):
-        return TokenCheckResult(False, "assertion_lifetime_exceeds_300s", 400)
-
-    if not isinstance(assertion.jti, str) or len(assertion.jti) < 22:
-        return TokenCheckResult(False, "invalid_grant", 400)
+    metadata_check = verify_poppy_v02_assertion_metadata(
+        assertion, auth_issuer=auth_issuer, now=now,
+    )
+    if not metadata_check.allowed:
+        return metadata_check
     replay_key = (assertion.iss, assertion.jti)
     if replay_key in seen_jti_by_client:
         return TokenCheckResult(False, "invalid_grant", 400)
