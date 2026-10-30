@@ -193,6 +193,11 @@ for deterministic source-fetch health and drift-shape monitoring.
 Adds report-level `observation_partitions` grouping source IDs by `ok/error` and
 `baseline/unchanged/changed/unknown` to support deterministic alert routing without raw-array scans.
 
+**Stage 1690 / 2026-10-31:** [Source monitor gate-health source IDs telemetry (EN)](research/2026-10-31-source-monitor-gate-health-source-ids.en.md)
+| [source-monitor gate_health 源 ID 信号（中文）](research/2026-10-31-source-monitor-gate-health-source-ids.md).
+Extends `gate_health` with `observation_error_sources` and `policy_error_sources` so source-level blockers
+are directly consumable without per-observation joins.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
