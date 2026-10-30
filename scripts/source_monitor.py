@@ -591,6 +591,7 @@ def summarize_gate_health(
     policy_errors = len(policy_error_sources)
     cross_source_mismatch = int(cross_source_summary.get("mismatch", 0))
     cross_source_blocking_checks = list(cross_source_partitions.get("mismatch", []))
+    blocking_sources = list(dict.fromkeys(observation_error_sources + policy_error_sources))
     blocking_reasons = [
         reason for reason, count in (
             ("observation_errors", observation_errors),
@@ -607,6 +608,7 @@ def summarize_gate_health(
     return {
         "observation_errors": observation_errors,
         "observation_error_sources": observation_error_sources,
+        "blocking_sources": blocking_sources,
         "policy_errors": policy_errors,
         "policy_error_sources": policy_error_sources,
         "cross_source_mismatch": cross_source_mismatch,

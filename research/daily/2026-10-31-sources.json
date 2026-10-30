@@ -1,6 +1,6 @@
 {
   "schema_version": "source-monitor-report-v1",
-  "checked_at": "2026-10-31T05:07:46.968827+08:00",
+  "checked_at": "2026-10-31T05:18:05.303736+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
   "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
@@ -166,6 +166,7 @@
   "gate_health": {
     "observation_errors": 0,
     "observation_error_sources": [],
+    "blocking_sources": [],
     "policy_errors": 0,
     "policy_error_sources": [],
     "cross_source_mismatch": 0,
