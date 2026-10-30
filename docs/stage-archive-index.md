@@ -178,6 +178,11 @@ for direct blocker routing without scanning raw check objects.
 Adds `gate_health.cross_source_blocking_checks` so blocking check IDs are available directly in the
 run-level gate object without cross-field joins.
 
+**Stage 1687 / 2026-10-31:** [Source monitor report schema versioning (EN)](research/2026-10-31-source-monitor-schema-version.en.md)
+| [source-monitor 报告 schema 版本标识（中文）](research/2026-10-31-source-monitor-schema-version.md).
+Adds explicit `schema_version` to each daily report for deterministic consumer compatibility checks
+as report fields continue to evolve.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

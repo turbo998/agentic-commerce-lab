@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 from urllib.error import URLError
 
 from scripts.source_monitor import (
-    MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
+    MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
     index_cross_source_statuses,
@@ -261,6 +261,7 @@ class MonitorTests(unittest.TestCase):
             reports = list(root.glob("*-sources.json"))
             self.assertEqual(len(reports), 1)
             report = json.loads(reports[0].read_text(encoding="utf-8"))
+            self.assertEqual(report["schema_version"], REPORT_SCHEMA_VERSION)
             self.assertTrue(report["checked_at"].endswith("+08:00"))
             self.assertEqual(report["observations"][0]["change"], "unknown")
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
@@ -616,6 +617,9 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertEqual(gate_health["cross_source_blocking_checks"], ["b", "d"])
         self.assertTrue(gate_health["blocking"])
+
+    def test_report_schema_version_is_stable(self) -> None:
+        self.assertEqual(REPORT_SCHEMA_VERSION, "source-monitor-report-v1")
 
 
 if __name__ == "__main__":

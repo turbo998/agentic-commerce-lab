@@ -18,6 +18,7 @@ from urllib.request import Request, urlopen
 
 BEIJING = timezone(timedelta(hours=8))
 MAX_BYTES = 4 * 1024 * 1024
+REPORT_SCHEMA_VERSION = "source-monitor-report-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -617,6 +618,7 @@ def main() -> int:
         observations, cross_source_summary, cross_source_partitions,
     )
     report = {
+        "schema_version": REPORT_SCHEMA_VERSION,
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
