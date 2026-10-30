@@ -113,6 +113,11 @@ handoff completion, worker liveness proof or payment authority.
 Source-specific normalization redacts volatile `expires_at` sample timestamps before hashing;
 preserves substantive text drift detection without treating second-level example jitter as release evidence.
 
+**Stage 1674 / 2026-10-31:** [Stripe SPT selected-facts extraction in source monitor (EN)](research/2026-10-31-stripe-spt-facts.en.md)
+| [source-monitor 的 Stripe SPT 稳定事实提取（中文）](research/2026-10-31-stripe-spt-facts.md).
+Adds parser-backed Stripe SPT selected facts (preview API version, country-list cardinality/hash,
+event markers) to distinguish stable contract signals from markdown hash drift.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

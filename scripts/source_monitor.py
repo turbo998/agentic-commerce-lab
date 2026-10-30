@@ -115,6 +115,37 @@ def mcp_policy_facts(body: bytes) -> dict[str, object]:
     }
 
 
+def stripe_spt_facts(body: bytes) -> dict[str, object]:
+    """Extract stable Stripe SPT contract facts, excluding volatile sample timestamps."""
+    text = body.decode("utf-8")
+    versions = set(re.findall(r"Stripe-Version:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}\.preview)", text))
+    if len(versions) != 1:
+        raise ValueError("Expected one Stripe-Version preview marker in Stripe SPT docs.")
+    version = next(iter(versions))
+    countries_block = re.search(
+        r"(?ms)^### View all supported countries\s*\n(?P<items>(?:- [A-Z]{2}\s*\n)+)",
+        text,
+    )
+    if countries_block is None:
+        raise ValueError("Stripe SPT docs missing supported-country list block.")
+    country_codes = re.findall(r"(?m)^- ([A-Z]{2})\s*$", countries_block.group("items"))
+    if not country_codes:
+        raise ValueError("Stripe SPT docs supported-country list is empty.")
+    countries_digest = hashlib.sha256(",".join(country_codes).encode("ascii")).hexdigest()
+    return {
+        "parser_version": "stripe-spt-facts-v1",
+        "api_version": version,
+        "supported_country_count": len(country_codes),
+        "supported_country_codes_sha256": countries_digest,
+        "has_recurring_interval": "recurring_interval" in text,
+        "forbids_setup_future_usage": (
+            "setup_future_usage" in text
+            and "are not allowed with shared payment tokens" in text
+        ),
+        "has_deactivated_webhook_event": "shared_payment.granted_token.deactivated" in text,
+    }
+
+
 def _parse_reviewed_date(raw: str) -> date:
     """Parse human-reviewed US ('%B %d, %Y') or UK ('%d %B %Y') calendar dates."""
     for fmt in ("%B %d, %Y", "%d %B %Y"):
@@ -264,6 +295,17 @@ def observe(
         except ValueError as error:
             policy_change = "unknown"
             policy_error = str(error)
+    if source.id == "stripe-spt":
+        try:
+            if fetched_url != source.monitor_url:
+                raise ValueError("Stripe SPT fact extraction requires the reviewed seller Markdown URL.")
+            facts = stripe_spt_facts(body)
+            policy_change = "baseline" if previous_policy is None else (
+                "unchanged" if facts == previous_policy else "changed"
+            )
+        except ValueError as error:
+            policy_change = "unknown"
+            policy_error = str(error)
     return Observation(
         source.id, source.url, fetched_url, "ok", digest, change,
         policy_facts=facts, policy_change=policy_change, policy_error=policy_error,
@@ -300,6 +342,16 @@ def previous_hashes(directory: Path, *, before_date: str | None = None) -> dict[
 
 def previous_policy_facts(directory: Path, *, before_date: str) -> dict[str, object] | None:
     """Use the last successful fact observation, not today's rerun or a failed parse."""
+    return previous_source_facts(
+        directory, before_date=before_date,
+        source_id="stripe-mcp", parser_version="stripe-mcp-auth-notice-v1",
+    )
+
+
+def previous_source_facts(
+    directory: Path, *, before_date: str, source_id: str, parser_version: str,
+) -> dict[str, object] | None:
+    """Return the latest successful selected facts for one source/parser pair."""
     for path in sorted(directory.glob("*-sources.json"), reverse=True):
         if path.name[:10] >= before_date:
             continue
@@ -307,9 +359,9 @@ def previous_policy_facts(directory: Path, *, before_date: str) -> dict[str, obj
         for item in report["observations"]:
             facts = item.get("policy_facts")
             if (
-                item["id"] == "stripe-mcp" and item["status"] == "ok"
+                item["id"] == source_id and item["status"] == "ok"
                 and not item.get("policy_error") and isinstance(facts, dict)
-                and facts.get("parser_version") == "stripe-mcp-auth-notice-v1"
+                and facts.get("parser_version") == parser_version
             ):
                 return facts
     return None
@@ -325,10 +377,21 @@ def main() -> int:
     sources = load_sources(args.registry)
     now = datetime.now(BEIJING)
     previous = previous_hashes(args.output_dir, before_date=str(now.date()))
-    policy = previous_policy_facts(args.output_dir, before_date=str(now.date()))
+    previous_facts = {
+        "stripe-mcp": previous_policy_facts(args.output_dir, before_date=str(now.date())),
+        "stripe-spt": previous_source_facts(
+            args.output_dir, before_date=str(now.date()),
+            source_id="stripe-spt", parser_version="stripe-spt-facts-v1",
+        ),
+    }
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
-            executor.map(lambda source: observe(source, previous.get(source.id), policy), sources)
+            executor.map(
+                lambda source: observe(
+                    source, previous.get(source.id), previous_facts.get(source.id),
+                ),
+                sources,
+            )
         )
     target = args.output_dir / f"{now.date()}-sources.json"
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -336,7 +399,7 @@ def main() -> int:
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
-        "policy_scope": "Selected Stripe MCP auth notice facts only; not live access or a release claim.",
+        "policy_scope": "Selected Stripe MCP auth notice facts and Stripe SPT stable contract facts only; not live access or a release claim.",
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")

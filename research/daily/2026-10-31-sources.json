@@ -1,8 +1,8 @@
 {
-  "checked_at": "2026-10-31T00:43:45.999810+08:00",
+  "checked_at": "2026-10-31T01:07:03.433540+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
-  "policy_scope": "Selected Stripe MCP auth notice facts only; not live access or a release claim.",
+  "policy_scope": "Selected Stripe MCP auth notice facts and Stripe SPT stable contract facts only; not live access or a release claim.",
   "observations": [
     {
       "id": "stripe-acp-launch",
@@ -60,8 +60,16 @@
       "sha256": "67896ed6a9dd77d40ffce4444c644539bd137ddfacaf5da423280c796f4790c9",
       "change": "changed",
       "error": null,
-      "policy_facts": null,
-      "policy_change": null,
+      "policy_facts": {
+        "parser_version": "stripe-spt-facts-v1",
+        "api_version": "2026-09-30.preview",
+        "supported_country_count": 34,
+        "supported_country_codes_sha256": "6ae0a50843813fd3e961b54bdea093ae7e74b6ddc61c2720b2c4aefc58054133",
+        "has_recurring_interval": true,
+        "forbids_setup_future_usage": false,
+        "has_deactivated_webhook_event": true
+      },
+      "policy_change": "baseline",
       "policy_error": null
     },
     {

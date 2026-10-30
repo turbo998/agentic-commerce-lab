@@ -9,7 +9,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
-    previous_hashes, validate_url,
+    previous_hashes, previous_source_facts, stripe_spt_facts, validate_url,
 )
 
 
@@ -120,6 +120,66 @@ class MonitorTests(unittest.TestCase):
             followup = observe(source, baseline.sha256)
         self.assertEqual(followup.status, "ok")
         self.assertEqual(followup.change, "unchanged")
+
+    def test_stripe_spt_facts_extract_stable_contract_fields(self) -> None:
+        body = (
+            "# Shared payment tokens\n\n"
+            "SPTs are available to agents, customers, and sellers in the US, Canada, and select European countries.\n\n"
+            "### View all supported countries\n\n"
+            "- AT\n- CA\n- US\n\n"
+            "Use Stripe-Version: 2026-09-30.preview for these endpoints.\n"
+            "The recurring_interval field controls recurring shared grants.\n"
+            "setup_future_usage and payment_method_options[card][setup_future_usage] are not allowed with shared payment tokens.\n"
+            "Listen for shared_payment.granted_token.deactivated webhook events.\n"
+        ).encode("utf-8")
+        facts = stripe_spt_facts(body)
+        self.assertEqual(facts["parser_version"], "stripe-spt-facts-v1")
+        self.assertEqual(facts["api_version"], "2026-09-30.preview")
+        self.assertEqual(facts["supported_country_count"], 3)
+        self.assertEqual(len(facts["supported_country_codes_sha256"]), 64)
+        self.assertTrue(facts["has_recurring_interval"])
+        self.assertTrue(facts["forbids_setup_future_usage"])
+        self.assertTrue(facts["has_deactivated_webhook_event"])
+
+    def test_stripe_spt_facts_require_version_and_countries(self) -> None:
+        with self.assertRaises(ValueError):
+            stripe_spt_facts(b"# Shared payment tokens\nStripe-Version: 2026-09-30.preview\n")
+        with self.assertRaises(ValueError):
+            stripe_spt_facts(
+                b"# Shared payment tokens\n### View all supported countries\n- US\n"
+            )
+        with self.assertRaises(ValueError):
+            stripe_spt_facts(
+                b"# Shared payment tokens\nStripe-Version: 2026-09-30.preview\n"
+                b"Stripe-Version: 2026-10-28.preview\n### View all supported countries\n- US\n"
+            )
+
+    def test_previous_source_facts_matches_source_and_parser(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            rows = [
+                ("2026-10-10", {"id": "stripe-spt", "status": "ok",
+                                "policy_facts": {"parser_version": "stripe-spt-facts-v1", "api_version": "2026-09-30.preview"}}),
+                ("2026-10-11", {"id": "stripe-spt", "status": "ok",
+                                "policy_facts": {"parser_version": "other-parser-v1", "api_version": "x"}}),
+                ("2026-10-12", {"id": "stripe-spt", "status": "ok",
+                                "policy_error": "needs review", "policy_facts": None}),
+                ("2026-10-13", {"id": "stripe-mcp", "status": "ok",
+                                "policy_facts": {"parser_version": "stripe-mcp-auth-notice-v1"}}),
+            ]
+            for day, item in rows:
+                (root / f"{day}-sources.json").write_text(
+                    json.dumps({"observations": [item]}), encoding="utf-8"
+                )
+            facts = previous_source_facts(
+                root, before_date="2026-10-14",
+                source_id="stripe-spt", parser_version="stripe-spt-facts-v1",
+            )
+            self.assertEqual(facts["api_version"], "2026-09-30.preview")
+            self.assertIsNone(previous_source_facts(
+                root, before_date="2026-10-10",
+                source_id="stripe-spt", parser_version="stripe-spt-facts-v1",
+            ))
 
     def test_main_records_failure_and_returns_nonzero(self) -> None:
         failure = Observation(
