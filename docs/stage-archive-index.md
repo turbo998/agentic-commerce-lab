@@ -183,6 +183,11 @@ run-level gate object without cross-field joins.
 Adds explicit `schema_version` to each daily report for deterministic consumer compatibility checks
 as report fields continue to evolve.
 
+**Stage 1688 / 2026-10-31:** [Source monitor observation summary telemetry (EN)](research/2026-10-31-source-monitor-observation-summary.en.md)
+| [source-monitor 来源观察摘要信号（中文）](research/2026-10-31-source-monitor-observation-summary.md).
+Adds report-level `observation_summary` counters (`ok/error` and `baseline/unchanged/changed/unknown`)
+for deterministic source-fetch health and drift-shape monitoring.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

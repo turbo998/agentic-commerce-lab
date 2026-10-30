@@ -515,6 +515,26 @@ def summarize_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, 
     return {**summary, "blocking": summary["mismatch"] > 0}
 
 
+def summarize_observation_changes(observations: list[Observation]) -> dict[str, int]:
+    """Summarize fetch outcomes and change classes for stable run-level telemetry."""
+    summary = {
+        "total": 0,
+        "ok": 0,
+        "error": 0,
+        "baseline": 0,
+        "unchanged": 0,
+        "changed": 0,
+        "unknown": 0,
+    }
+    for observation in observations:
+        summary["total"] += 1
+        if observation.status in {"ok", "error"}:
+            summary[observation.status] += 1
+        if observation.change in {"baseline", "unchanged", "changed", "unknown"}:
+            summary[observation.change] += 1
+    return summary
+
+
 def index_cross_source_statuses(checks: list[dict[str, object]]) -> dict[str, str]:
     """Build a stable check_id -> status map for machine consumers."""
     statuses: dict[str, str] = {}
@@ -614,6 +634,7 @@ def main() -> int:
     cross_source_statuses = index_cross_source_statuses(cross_source_checks)
     cross_source_partitions = partition_cross_source_checks(cross_source_checks)
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
+    observation_summary = summarize_observation_changes(observations)
     gate_health = summarize_gate_health(
         observations, cross_source_summary, cross_source_partitions,
     )
@@ -623,6 +644,7 @@ def main() -> int:
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
+        "observation_summary": observation_summary,
         "cross_source_checks": cross_source_checks,
         "cross_source_statuses": cross_source_statuses,
         "cross_source_partitions": cross_source_partitions,
