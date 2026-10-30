@@ -12,6 +12,7 @@ from scripts.source_monitor import (
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
     index_cross_source_statuses,
+    partition_observations,
     partition_cross_source_checks,
     summarize_observation_changes,
     summarize_gate_health,
@@ -267,6 +268,8 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["observation_summary"]["total"], 1)
             self.assertEqual(report["observation_summary"]["error"], 1)
             self.assertEqual(report["observation_summary"]["unknown"], 1)
+            self.assertEqual(report["observation_partitions"]["error"], [self.source.id])
+            self.assertEqual(report["observation_partitions"]["unknown"], [self.source.id])
             self.assertEqual(report["observations"][0]["change"], "unknown")
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
             self.assertEqual(
@@ -580,6 +583,21 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(summary["unchanged"], 1)
         self.assertEqual(summary["changed"], 1)
         self.assertEqual(summary["unknown"], 1)
+
+    def test_partition_observations_groups_source_ids(self) -> None:
+        observations = [
+            Observation("a", "u", "fu", "ok", "sha", "baseline"),
+            Observation("b", "u", "fu", "ok", "sha", "unchanged"),
+            Observation("c", "u", "fu", "error", None, "unknown", "offline"),
+            Observation("d", "u", "fu", "ok", "sha", "changed"),
+        ]
+        partitions = partition_observations(observations)
+        self.assertEqual(partitions["ok"], ["a", "b", "d"])
+        self.assertEqual(partitions["error"], ["c"])
+        self.assertEqual(partitions["baseline"], ["a"])
+        self.assertEqual(partitions["unchanged"], ["b"])
+        self.assertEqual(partitions["changed"], ["d"])
+        self.assertEqual(partitions["unknown"], ["c"])
 
     def test_index_cross_source_statuses_returns_stable_map(self) -> None:
         statuses = index_cross_source_statuses([

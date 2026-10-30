@@ -535,6 +535,24 @@ def summarize_observation_changes(observations: list[Observation]) -> dict[str, 
     return summary
 
 
+def partition_observations(observations: list[Observation]) -> dict[str, list[str]]:
+    """Group source IDs by fetch status and change class for deterministic routing."""
+    partitions = {
+        "ok": [],
+        "error": [],
+        "baseline": [],
+        "unchanged": [],
+        "changed": [],
+        "unknown": [],
+    }
+    for observation in observations:
+        if observation.status in {"ok", "error"}:
+            partitions[observation.status].append(observation.id)
+        if observation.change in {"baseline", "unchanged", "changed", "unknown"}:
+            partitions[observation.change].append(observation.id)
+    return partitions
+
+
 def index_cross_source_statuses(checks: list[dict[str, object]]) -> dict[str, str]:
     """Build a stable check_id -> status map for machine consumers."""
     statuses: dict[str, str] = {}
@@ -635,6 +653,7 @@ def main() -> int:
     cross_source_partitions = partition_cross_source_checks(cross_source_checks)
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
     observation_summary = summarize_observation_changes(observations)
+    observation_partitions = partition_observations(observations)
     gate_health = summarize_gate_health(
         observations, cross_source_summary, cross_source_partitions,
     )
@@ -645,6 +664,7 @@ def main() -> int:
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "observation_summary": observation_summary,
+        "observation_partitions": observation_partitions,
         "cross_source_checks": cross_source_checks,
         "cross_source_statuses": cross_source_statuses,
         "cross_source_partitions": cross_source_partitions,
