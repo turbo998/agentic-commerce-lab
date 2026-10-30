@@ -527,6 +527,19 @@ def index_cross_source_statuses(checks: list[dict[str, object]]) -> dict[str, st
     return statuses
 
 
+def partition_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, list[str]]:
+    """Group check IDs by status to avoid repeated consumer-side array scans."""
+    partitions = {"consistent": [], "mismatch": [], "unavailable": []}
+    for check in checks:
+        if not isinstance(check, dict):
+            continue
+        check_id = check.get("check_id")
+        status = check.get("status")
+        if isinstance(check_id, str) and status in partitions:
+            partitions[status].append(check_id)
+    return partitions
+
+
 def summarize_gate_health(
     observations: list[Observation], cross_source_summary: dict[str, int | bool],
 ) -> dict[str, int | bool | list[str]]:
@@ -594,6 +607,7 @@ def main() -> int:
         spt_parser_version_check(observations),
     ]
     cross_source_statuses = index_cross_source_statuses(cross_source_checks)
+    cross_source_partitions = partition_cross_source_checks(cross_source_checks)
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
     gate_health = summarize_gate_health(observations, cross_source_summary)
     report = {
@@ -603,6 +617,7 @@ def main() -> int:
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "cross_source_checks": cross_source_checks,
         "cross_source_statuses": cross_source_statuses,
+        "cross_source_partitions": cross_source_partitions,
         "cross_source_summary": cross_source_summary,
         "gate_health": gate_health,
         "observations": [asdict(observation) for observation in observations],

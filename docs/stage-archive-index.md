@@ -168,6 +168,11 @@ without re-scanning per-observation details.
 Adds report-level `cross_source_statuses` (`check_id -> status`) for deterministic machine parsing
 without scanning the full `cross_source_checks` array.
 
+**Stage 1685 / 2026-10-31:** [Source monitor cross-source status partitions (EN)](research/2026-10-31-source-monitor-cross-source-partitions.en.md)
+| [source-monitor 跨来源检查状态分组（中文）](research/2026-10-31-source-monitor-cross-source-partitions.md).
+Adds report-level `cross_source_partitions` to group check IDs by `consistent/mismatch/unavailable`
+for direct blocker routing without scanning raw check objects.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

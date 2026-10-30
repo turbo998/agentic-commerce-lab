@@ -12,6 +12,7 @@ from scripts.source_monitor import (
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
     index_cross_source_statuses,
+    partition_cross_source_checks,
     summarize_gate_health,
     stripe_spt_facts, validate_url,
 )
@@ -266,6 +267,10 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(
                 report["cross_source_statuses"]["stripe-spt-country-list-parity"], "unavailable"
             )
+            self.assertIn(
+                "stripe-spt-country-list-parity",
+                report["cross_source_partitions"]["unavailable"],
+            )
             self.assertIn("cross_source_summary", report)
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertIn("gate_health", report)
@@ -316,6 +321,10 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_checks"][0]["status"], "mismatch")
             self.assertEqual(
                 report["cross_source_statuses"]["stripe-spt-country-list-parity"], "mismatch"
+            )
+            self.assertIn(
+                "stripe-spt-country-list-parity",
+                report["cross_source_partitions"]["mismatch"],
             )
 
     def test_spt_country_list_check_consistent(self) -> None:
@@ -559,6 +568,20 @@ class MonitorTests(unittest.TestCase):
             statuses,
             {"a": "consistent", "b": "mismatch", "c": "unavailable"},
         )
+
+    def test_partition_cross_source_checks_groups_check_ids(self) -> None:
+        partitions = partition_cross_source_checks([
+            {"check_id": "a", "status": "consistent"},
+            {"check_id": "b", "status": "mismatch"},
+            {"check_id": "c", "status": "unavailable"},
+            {"check_id": "d", "status": "mismatch"},
+            {"check_id": "e", "status": "unknown"},
+            {"status": "consistent"},
+            "invalid",
+        ])
+        self.assertEqual(partitions["consistent"], ["a"])
+        self.assertEqual(partitions["mismatch"], ["b", "d"])
+        self.assertEqual(partitions["unavailable"], ["c"])
 
     def test_summarize_gate_health_counts_and_blocking(self) -> None:
         observations = [
