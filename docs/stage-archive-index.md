@@ -153,6 +153,11 @@ failing fast when selected facts drift onto unreviewed parser grammars.
 Adds report-level `cross_source_summary` counters (`total/consistent/mismatch/unavailable/blocking`)
 to simplify machine and human interpretation of current SPT gate health.
 
+**Stage 1682 / 2026-10-31:** [Source monitor gate-health summary telemetry (EN)](research/2026-10-31-source-monitor-gate-health-summary.en.md)
+| [source-monitor 运行门禁健康摘要信号（中文）](research/2026-10-31-source-monitor-gate-health-summary.md).
+Adds report-level `gate_health` counters that combine fetch errors, policy parse errors, and
+cross-source mismatches into one explicit blocking signal for deterministic automation gating.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

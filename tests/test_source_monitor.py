@@ -11,6 +11,7 @@ from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
+    summarize_gate_health,
     stripe_spt_facts, validate_url,
 )
 
@@ -263,6 +264,9 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
             self.assertIn("cross_source_summary", report)
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
+            self.assertIn("gate_health", report)
+            self.assertEqual(report["gate_health"]["observation_errors"], 1)
+            self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
 
     def test_main_returns_nonzero_on_cross_source_mismatch(self) -> None:
@@ -516,6 +520,8 @@ class MonitorTests(unittest.TestCase):
             )
             self.assertEqual(parser_check["status"], "mismatch")
             self.assertGreaterEqual(report["cross_source_summary"]["mismatch"], 1)
+            self.assertGreaterEqual(report["gate_health"]["cross_source_mismatch"], 1)
+            self.assertTrue(report["gate_health"]["blocking"])
 
     def test_summarize_cross_source_checks_counts_and_blocking(self) -> None:
         summary = summarize_cross_source_checks([
@@ -530,6 +536,21 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(summary["mismatch"], 1)
         self.assertEqual(summary["unavailable"], 1)
         self.assertTrue(summary["blocking"])
+
+    def test_summarize_gate_health_counts_and_blocking(self) -> None:
+        observations = [
+            Observation("a", "u", "fu", "ok", "sha", "unchanged"),
+            Observation("b", "u", "fu", "error", None, "unknown", "offline"),
+            Observation("c", "u", "fu", "ok", "sha", "changed", policy_error="facts unavailable"),
+        ]
+        gate_health = summarize_gate_health(
+            observations,
+            {"total": 3, "consistent": 2, "mismatch": 0, "unavailable": 1, "blocking": False},
+        )
+        self.assertEqual(gate_health["observation_errors"], 1)
+        self.assertEqual(gate_health["policy_errors"], 1)
+        self.assertEqual(gate_health["cross_source_mismatch"], 0)
+        self.assertTrue(gate_health["blocking"])
 
 
 if __name__ == "__main__":

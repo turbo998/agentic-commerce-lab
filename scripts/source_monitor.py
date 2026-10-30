@@ -514,6 +514,26 @@ def summarize_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, 
     return {**summary, "blocking": summary["mismatch"] > 0}
 
 
+def summarize_gate_health(
+    observations: list[Observation], cross_source_summary: dict[str, int | bool],
+) -> dict[str, int | bool]:
+    """Expose one machine-readable run gate that combines fetch/policy/check failures."""
+    observation_errors = sum(item.status == "error" for item in observations)
+    policy_errors = sum(bool(item.policy_error) for item in observations)
+    cross_source_mismatch = int(cross_source_summary.get("mismatch", 0))
+    blocking = bool(
+        observation_errors
+        or policy_errors
+        or cross_source_summary.get("blocking")
+    )
+    return {
+        "observation_errors": observation_errors,
+        "policy_errors": policy_errors,
+        "cross_source_mismatch": cross_source_mismatch,
+        "blocking": blocking,
+    }
+
+
 def main() -> int:
     """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -552,6 +572,7 @@ def main() -> int:
         spt_parser_version_check(observations),
     ]
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
+    gate_health = summarize_gate_health(observations, cross_source_summary)
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
@@ -559,6 +580,7 @@ def main() -> int:
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "cross_source_checks": cross_source_checks,
         "cross_source_summary": cross_source_summary,
+        "gate_health": gate_health,
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
@@ -566,10 +588,7 @@ def main() -> int:
     temporary.replace(target)
     for observation in observations:
         logging.info(json.dumps(asdict(observation), ensure_ascii=False))
-    return int(
-        any(observation.status == "error" or observation.policy_error for observation in observations)
-        or bool(cross_source_summary["blocking"])
-    )
+    return int(gate_health["blocking"])
 
 
 if __name__ == "__main__":
