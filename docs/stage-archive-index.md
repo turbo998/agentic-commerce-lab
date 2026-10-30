@@ -188,6 +188,11 @@ as report fields continue to evolve.
 Adds report-level `observation_summary` counters (`ok/error` and `baseline/unchanged/changed/unknown`)
 for deterministic source-fetch health and drift-shape monitoring.
 
+**Stage 1689 / 2026-10-31:** [Source monitor observation partitions telemetry (EN)](research/2026-10-31-source-monitor-observation-partitions.en.md)
+| [source-monitor 来源观察分组信号（中文）](research/2026-10-31-source-monitor-observation-partitions.md).
+Adds report-level `observation_partitions` grouping source IDs by `ok/error` and
+`baseline/unchanged/changed/unknown` to support deterministic alert routing without raw-array scans.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
