@@ -128,6 +128,11 @@ simulate migration/block boundaries against that observed deadline without addin
 Adds parser-backed selected facts for the Connect-tab SPT markdown and records facts-level drift
 separately from hash changes, while preserving offline-only monitoring boundaries.
 
+**Stage 1677 / 2026-10-31:** [SPT seller/connect parity cross-check in source monitor (EN)](research/2026-10-31-spt-parity-cross-check.en.md)
+| [source-monitor 的 SPT seller/connect 一致性检查（中文）](research/2026-10-31-spt-parity-cross-check.md).
+Adds report-level `cross_source_checks` parity validation for seller/connect SPT country-list facts
+to highlight selected-fact consistency without claiming a product release.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

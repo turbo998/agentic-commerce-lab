@@ -9,7 +9,8 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
-    previous_hashes, previous_source_facts, stripe_spt_connect_facts, stripe_spt_facts, validate_url,
+    previous_hashes, previous_source_facts, spt_country_list_check, stripe_spt_connect_facts,
+    stripe_spt_facts, validate_url,
 )
 
 
@@ -258,7 +259,53 @@ class MonitorTests(unittest.TestCase):
             report = json.loads(reports[0].read_text(encoding="utf-8"))
             self.assertTrue(report["checked_at"].endswith("+08:00"))
             self.assertEqual(report["observations"][0]["change"], "unknown")
+            self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
             self.assertFalse(list(root.glob("*.tmp")))
+
+    def test_spt_country_list_check_consistent(self) -> None:
+        seller = Observation(
+            "stripe-spt", "seller-url", "seller-fetch", "ok", "seller-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-facts-v1",
+                "supported_country_count": 34,
+                "supported_country_codes_sha256": "abc",
+            },
+        )
+        connect = Observation(
+            "stripe-spt-connect", "connect-url", "connect-fetch", "ok", "connect-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-connect-facts-v1",
+                "supported_country_count": 34,
+                "supported_country_codes_sha256": "abc",
+            },
+        )
+        check = spt_country_list_check([seller, connect])
+        self.assertEqual(check["check_id"], "stripe-spt-country-list-parity")
+        self.assertEqual(check["status"], "consistent")
+        self.assertEqual(check["supported_country_count"], 34)
+
+    def test_spt_country_list_check_mismatch_and_unavailable(self) -> None:
+        mismatch = spt_country_list_check([
+            Observation(
+                "stripe-spt", "seller-url", "seller-fetch", "ok", "seller-hash", "unchanged",
+                policy_facts={
+                    "supported_country_count": 34,
+                    "supported_country_codes_sha256": "aaa",
+                },
+            ),
+            Observation(
+                "stripe-spt-connect", "connect-url", "connect-fetch", "ok", "connect-hash", "unchanged",
+                policy_facts={
+                    "supported_country_count": 33,
+                    "supported_country_codes_sha256": "bbb",
+                },
+            ),
+        ])
+        self.assertEqual(mismatch["status"], "mismatch")
+        unavailable = spt_country_list_check([
+            Observation("stripe-spt", "seller-url", "seller-fetch", "error", None, "unknown", "offline"),
+        ])
+        self.assertEqual(unavailable["status"], "unavailable")
 
 
 if __name__ == "__main__":

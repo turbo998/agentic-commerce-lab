@@ -408,6 +408,44 @@ def previous_source_facts(
     return None
 
 
+def spt_country_list_check(observations: list[Observation]) -> dict[str, object]:
+    """Compare seller/connect SPT country-list facts without asserting release conclusions."""
+    by_id = {item.id: item for item in observations}
+    seller = by_id.get("stripe-spt")
+    connect = by_id.get("stripe-spt-connect")
+    base = {"check_id": "stripe-spt-country-list-parity"}
+    if seller is None or connect is None:
+        return {**base, "status": "unavailable", "reason": "seller_or_connect_source_missing"}
+    if (
+        seller.status != "ok" or connect.status != "ok"
+        or seller.policy_error or connect.policy_error
+        or not isinstance(seller.policy_facts, dict)
+        or not isinstance(connect.policy_facts, dict)
+    ):
+        return {**base, "status": "unavailable", "reason": "required_selected_facts_unavailable"}
+    seller_count = seller.policy_facts.get("supported_country_count")
+    connect_count = connect.policy_facts.get("supported_country_count")
+    seller_hash = seller.policy_facts.get("supported_country_codes_sha256")
+    connect_hash = connect.policy_facts.get("supported_country_codes_sha256")
+    if None in {seller_count, connect_count, seller_hash, connect_hash}:
+        return {**base, "status": "unavailable", "reason": "required_country_fields_missing"}
+    if seller_count == connect_count and seller_hash == connect_hash:
+        return {
+            **base,
+            "status": "consistent",
+            "supported_country_count": int(seller_count),
+            "supported_country_codes_sha256": str(seller_hash),
+        }
+    return {
+        **base,
+        "status": "mismatch",
+        "seller_supported_country_count": int(seller_count),
+        "connect_supported_country_count": int(connect_count),
+        "seller_supported_country_codes_sha256": str(seller_hash),
+        "connect_supported_country_codes_sha256": str(connect_hash),
+    }
+
+
 def main() -> int:
     """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -445,6 +483,7 @@ def main() -> int:
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
+        "cross_source_checks": [spt_country_list_check(observations)],
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
