@@ -262,6 +262,47 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
             self.assertFalse(list(root.glob("*.tmp")))
 
+    def test_main_returns_nonzero_on_cross_source_mismatch(self) -> None:
+        seller = Source(
+            "stripe-spt",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+        )
+        connect = Source(
+            "stripe-spt-connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens?agent-seller=connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect",
+        )
+        seller_observation = Observation(
+            seller.id, seller.url, seller.monitor_url, "ok", "seller-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-facts-v1",
+                "supported_country_count": 34,
+                "supported_country_codes_sha256": "aaa",
+            },
+            policy_change="unchanged",
+        )
+        connect_observation = Observation(
+            connect.id, connect.url, connect.monitor_url, "ok", "connect-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-connect-facts-v1",
+                "supported_country_count": 33,
+                "supported_country_codes_sha256": "bbb",
+            },
+            policy_change="unchanged",
+        )
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch("sys.argv", ["monitor", "--output-dir", str(root)]),
+                patch("scripts.source_monitor.load_sources", return_value=[seller, connect]),
+                patch("scripts.source_monitor.observe", side_effect=[seller_observation, connect_observation]),
+                self.assertLogs(level="INFO"),
+            ):
+                self.assertEqual(main(), 1)
+            report = json.loads(next(root.glob("*-sources.json")).read_text(encoding="utf-8"))
+            self.assertEqual(report["cross_source_checks"][0]["status"], "mismatch")
+
     def test_spt_country_list_check_consistent(self) -> None:
         seller = Observation(
             "stripe-spt", "seller-url", "seller-fetch", "ok", "seller-hash", "unchanged",

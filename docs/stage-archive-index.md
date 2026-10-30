@@ -133,6 +133,11 @@ separately from hash changes, while preserving offline-only monitoring boundarie
 Adds report-level `cross_source_checks` parity validation for seller/connect SPT country-list facts
 to highlight selected-fact consistency without claiming a product release.
 
+**Stage 1678 / 2026-10-31:** [SPT parity mismatch fail-fast gate (EN)](research/2026-10-31-spt-parity-mismatch-gate.en.md)
+| [SPT 一致性不匹配显式失败门禁（中文）](research/2026-10-31-spt-parity-mismatch-gate.md).
+Escalates `cross_source_checks` parity mismatches to a nonzero monitor exit code so seller/connect
+fact divergence is surfaced as a blocking review signal rather than a silent warning.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -491,10 +491,14 @@ def main() -> int:
     temporary.replace(target)
     for observation in observations:
         logging.info(json.dumps(asdict(observation), ensure_ascii=False))
-    return int(any(
-        observation.status == "error" or observation.policy_error
-        for observation in observations
-    ))
+    return int(
+        any(observation.status == "error" or observation.policy_error for observation in observations)
+        or any(
+            check.get("status") == "mismatch"
+            for check in report["cross_source_checks"]
+            if isinstance(check, dict)
+        )
+    )
 
 
 if __name__ == "__main__":
