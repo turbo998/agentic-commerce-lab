@@ -89,6 +89,30 @@ class PoppyAssertionJournal:
             key = self._validated_key(scope, assertion, now=clock())
             self._consume_in_transaction(db, key)
 
+    def is_consumed(self, scope: PoppyReplayScope, jti: str) -> bool:
+        """Read scoped replay history without consuming an ID or granting authority.
+
+        Presence means only that this local journal previously burned the ID in
+        this Company/client scope, not that a token was issued or delivered.
+        Absence never substitutes for atomic consume or consume_with_clock.
+        """
+        key = self._jti_key(scope, jti)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT 1 FROM poppy_assertion_replays"
+                " WHERE auth_issuer=? AND client_id=? AND jti_sha256=?", key,
+            ).fetchone()
+            return row is not None
+
+    @staticmethod
+    def _jti_key(scope: PoppyReplayScope, jti: str) -> tuple[str, str, str]:
+        if not isinstance(scope, PoppyReplayScope):
+            raise PoppyReplayError("A trusted PoppyReplayScope is required.")
+        if not isinstance(jti, str) or len(jti) < 22 or not URL_SAFE_BASE64_ID_RE.fullmatch(jti):
+            raise PoppyReplayError("Local jti policy requires 22-256 base64url characters.")
+        digest = hashlib.sha256(jti.encode("ascii")).hexdigest()
+        return scope.auth_issuer, scope.client_id, digest
+
     @staticmethod
     def _validated_key(
         scope: PoppyReplayScope, assertion: SessionAssertionClaims, *, now: int,
@@ -105,10 +129,7 @@ class PoppyAssertionJournal:
         )
         if not metadata.allowed:
             raise PoppyReplayError(f"Assertion metadata rejected: {metadata.error}.")
-        if not URL_SAFE_BASE64_ID_RE.fullmatch(assertion.jti):
-            raise PoppyReplayError("Local jti policy requires 22-256 base64url characters.")
-        digest = hashlib.sha256(assertion.jti.encode("ascii")).hexdigest()
-        return scope.auth_issuer, scope.client_id, digest
+        return PoppyAssertionJournal._jti_key(scope, assertion.jti)
 
     @staticmethod
     def _consume_in_transaction(

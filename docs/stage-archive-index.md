@@ -98,6 +98,11 @@ old ingress-only API persists, without worker expiry, secret refresh or payment 
 Direct original-history lookup beyond bounded enumeration; no current-delivery,
 ACK, worker or payment authority.
 
+**Stage 1671 / 2026-10-30:** [Scoped Poppy replay history lookup (EN)](research/2026-10-30-poppy-replay-read.en.md)
+| [Poppy assertion 作用域重放历史查询（中文）](research/2026-10-30-poppy-replay-read.md).
+Read-only three-column PK lookup anchored to published 0.2 while contrasting Draft 0.3;
+no pre-check admission, token-issuance proof or payment authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
