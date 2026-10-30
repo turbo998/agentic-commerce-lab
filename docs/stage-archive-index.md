@@ -163,6 +163,11 @@ cross-source mismatches into one explicit blocking signal for deterministic auto
 Extends `gate_health` with ordered `blocking_reasons` so automation can classify why a run blocked
 without re-scanning per-observation details.
 
+**Stage 1684 / 2026-10-31:** [Source monitor cross-source status index (EN)](research/2026-10-31-source-monitor-cross-source-status-index.en.md)
+| [source-monitor 跨来源检查状态索引（中文）](research/2026-10-31-source-monitor-cross-source-status-index.md).
+Adds report-level `cross_source_statuses` (`check_id -> status`) for deterministic machine parsing
+without scanning the full `cross_source_checks` array.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

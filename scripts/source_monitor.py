@@ -514,6 +514,19 @@ def summarize_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, 
     return {**summary, "blocking": summary["mismatch"] > 0}
 
 
+def index_cross_source_statuses(checks: list[dict[str, object]]) -> dict[str, str]:
+    """Build a stable check_id -> status map for machine consumers."""
+    statuses: dict[str, str] = {}
+    for check in checks:
+        if not isinstance(check, dict):
+            continue
+        check_id = check.get("check_id")
+        status = check.get("status")
+        if isinstance(check_id, str) and isinstance(status, str):
+            statuses[check_id] = status
+    return statuses
+
+
 def summarize_gate_health(
     observations: list[Observation], cross_source_summary: dict[str, int | bool],
 ) -> dict[str, int | bool | list[str]]:
@@ -580,6 +593,7 @@ def main() -> int:
         spt_connect_marker_check(observations),
         spt_parser_version_check(observations),
     ]
+    cross_source_statuses = index_cross_source_statuses(cross_source_checks)
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
     gate_health = summarize_gate_health(observations, cross_source_summary)
     report = {
@@ -588,6 +602,7 @@ def main() -> int:
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "cross_source_checks": cross_source_checks,
+        "cross_source_statuses": cross_source_statuses,
         "cross_source_summary": cross_source_summary,
         "gate_health": gate_health,
         "observations": [asdict(observation) for observation in observations],

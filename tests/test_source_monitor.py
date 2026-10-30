@@ -11,6 +11,7 @@ from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
+    index_cross_source_statuses,
     summarize_gate_health,
     stripe_spt_facts, validate_url,
 )
@@ -262,6 +263,9 @@ class MonitorTests(unittest.TestCase):
             self.assertTrue(report["checked_at"].endswith("+08:00"))
             self.assertEqual(report["observations"][0]["change"], "unknown")
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
+            self.assertEqual(
+                report["cross_source_statuses"]["stripe-spt-country-list-parity"], "unavailable"
+            )
             self.assertIn("cross_source_summary", report)
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertIn("gate_health", report)
@@ -310,6 +314,9 @@ class MonitorTests(unittest.TestCase):
                 self.assertEqual(main(), 1)
             report = json.loads(next(root.glob("*-sources.json")).read_text(encoding="utf-8"))
             self.assertEqual(report["cross_source_checks"][0]["status"], "mismatch")
+            self.assertEqual(
+                report["cross_source_statuses"]["stripe-spt-country-list-parity"], "mismatch"
+            )
 
     def test_spt_country_list_check_consistent(self) -> None:
         seller = Observation(
@@ -538,6 +545,20 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(summary["mismatch"], 1)
         self.assertEqual(summary["unavailable"], 1)
         self.assertTrue(summary["blocking"])
+
+    def test_index_cross_source_statuses_returns_stable_map(self) -> None:
+        statuses = index_cross_source_statuses([
+            {"check_id": "a", "status": "consistent"},
+            {"check_id": "b", "status": "mismatch"},
+            {"check_id": "c", "status": "unavailable", "reason": "missing"},
+            {"check_id": "d"},
+            {"status": "consistent"},
+            "invalid",
+        ])
+        self.assertEqual(
+            statuses,
+            {"a": "consistent", "b": "mismatch", "c": "unavailable"},
+        )
 
     def test_summarize_gate_health_counts_and_blocking(self) -> None:
         observations = [
