@@ -266,6 +266,7 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertIn("gate_health", report)
             self.assertEqual(report["gate_health"]["observation_errors"], 1)
+            self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
 
@@ -521,6 +522,7 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(parser_check["status"], "mismatch")
             self.assertGreaterEqual(report["cross_source_summary"]["mismatch"], 1)
             self.assertGreaterEqual(report["gate_health"]["cross_source_mismatch"], 1)
+            self.assertIn("cross_source_mismatch", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
 
     def test_summarize_cross_source_checks_counts_and_blocking(self) -> None:
@@ -550,6 +552,9 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(gate_health["observation_errors"], 1)
         self.assertEqual(gate_health["policy_errors"], 1)
         self.assertEqual(gate_health["cross_source_mismatch"], 0)
+        self.assertEqual(
+            gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
+        )
         self.assertTrue(gate_health["blocking"])
 
 

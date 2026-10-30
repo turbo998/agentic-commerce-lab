@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-31T03:58:24.847457+08:00",
+  "checked_at": "2026-10-31T04:21:18.294148+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
   "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
@@ -30,6 +30,7 @@
     "observation_errors": 0,
     "policy_errors": 0,
     "cross_source_mismatch": 0,
+    "blocking_reasons": [],
     "blocking": false
   },
   "observations": [
@@ -186,8 +187,8 @@
       "url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet",
       "fetched_url": "https://docs.stripe.com/agentic-commerce/agents/link-agent-wallet.md",
       "status": "ok",
-      "sha256": "9791e5588f83e900fbced03f2282e2c7c0ecf26eda2b76f438879dcc42ff5dc3",
-      "change": "unchanged",
+      "sha256": "e4130b93797ec1d87ec65b9fdc0f3f7abd814edf2f00ad583214af7b4e433b7b",
+      "change": "changed",
       "error": null,
       "policy_facts": null,
       "policy_change": null,

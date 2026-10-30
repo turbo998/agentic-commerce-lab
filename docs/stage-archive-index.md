@@ -158,6 +158,11 @@ to simplify machine and human interpretation of current SPT gate health.
 Adds report-level `gate_health` counters that combine fetch errors, policy parse errors, and
 cross-source mismatches into one explicit blocking signal for deterministic automation gating.
 
+**Stage 1683 / 2026-10-31:** [Source monitor gate-health blocking reasons (EN)](research/2026-10-31-source-monitor-gate-health-reasons.en.md)
+| [source-monitor 运行门禁阻塞原因信号（中文）](research/2026-10-31-source-monitor-gate-health-reasons.md).
+Extends `gate_health` with ordered `blocking_reasons` so automation can classify why a run blocked
+without re-scanning per-observation details.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

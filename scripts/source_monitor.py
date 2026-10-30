@@ -516,11 +516,19 @@ def summarize_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, 
 
 def summarize_gate_health(
     observations: list[Observation], cross_source_summary: dict[str, int | bool],
-) -> dict[str, int | bool]:
+) -> dict[str, int | bool | list[str]]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_errors = sum(item.status == "error" for item in observations)
     policy_errors = sum(bool(item.policy_error) for item in observations)
     cross_source_mismatch = int(cross_source_summary.get("mismatch", 0))
+    blocking_reasons = [
+        reason for reason, count in (
+            ("observation_errors", observation_errors),
+            ("policy_errors", policy_errors),
+            ("cross_source_mismatch", cross_source_mismatch),
+        )
+        if count > 0
+    ]
     blocking = bool(
         observation_errors
         or policy_errors
@@ -530,6 +538,7 @@ def summarize_gate_health(
         "observation_errors": observation_errors,
         "policy_errors": policy_errors,
         "cross_source_mismatch": cross_source_mismatch,
+        "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
 
