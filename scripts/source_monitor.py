@@ -473,6 +473,34 @@ def spt_connect_marker_check(observations: list[Observation]) -> dict[str, objec
     return {**base, "status": "consistent"}
 
 
+def spt_parser_version_check(observations: list[Observation]) -> dict[str, object]:
+    """Ensure seller/connect selected-facts parser versions stay on reviewed grammars."""
+    by_id = {item.id: item for item in observations}
+    seller = by_id.get("stripe-spt")
+    connect = by_id.get("stripe-spt-connect")
+    base = {"check_id": "stripe-spt-parser-version-parity"}
+    if seller is None or connect is None:
+        return {**base, "status": "unavailable", "reason": "seller_or_connect_source_missing"}
+    if (
+        seller.status != "ok" or connect.status != "ok"
+        or seller.policy_error or connect.policy_error
+        or not isinstance(seller.policy_facts, dict)
+        or not isinstance(connect.policy_facts, dict)
+    ):
+        return {**base, "status": "unavailable", "reason": "required_selected_facts_unavailable"}
+    expected = {
+        "stripe-spt": "stripe-spt-facts-v1",
+        "stripe-spt-connect": "stripe-spt-connect-facts-v1",
+    }
+    actual = {
+        "stripe-spt": seller.policy_facts.get("parser_version"),
+        "stripe-spt-connect": connect.policy_facts.get("parser_version"),
+    }
+    if actual != expected:
+        return {**base, "status": "mismatch", "expected": expected, "actual": actual}
+    return {**base, "status": "consistent"}
+
+
 def main() -> int:
     """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -508,6 +536,7 @@ def main() -> int:
     cross_source_checks = [
         spt_country_list_check(observations),
         spt_connect_marker_check(observations),
+        spt_parser_version_check(observations),
     ]
     report = {
         "checked_at": now.isoformat(),

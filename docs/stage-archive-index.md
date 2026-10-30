@@ -143,6 +143,11 @@ fact divergence is surfaced as a blocking review signal rather than a silent war
 Adds a second `cross_source_checks` gate that verifies required Connect-tab SPT markers remain present
 and fails fast when any marker disappears from selected facts.
 
+**Stage 1680 / 2026-10-31:** [SPT parser-version parity gate (EN)](research/2026-10-31-spt-parser-version-parity.en.md)
+| [SPT 解析器版本一致性门禁（中文）](research/2026-10-31-spt-parser-version-parity.md).
+Adds a third `cross_source_checks` gate enforcing reviewed seller/connect parser-version pairs and
+failing fast when selected facts drift onto unreviewed parser grammars.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
