@@ -123,6 +123,11 @@ event markers) to distinguish stable contract signals from markdown hash drift.
 `lab.mcp_migration` can now load Stripe MCP selected facts from a daily source-monitor snapshot and
 simulate migration/block boundaries against that observed deadline without adding live account checks.
 
+**Stage 1676 / 2026-10-31:** [Stripe SPT Connect selected-facts extraction (EN)](research/2026-10-31-stripe-spt-connect-facts.en.md)
+| [source-monitor 的 Stripe SPT Connect 稳定事实提取（中文）](research/2026-10-31-stripe-spt-connect-facts.md).
+Adds parser-backed selected facts for the Connect-tab SPT markdown and records facts-level drift
+separately from hash changes, while preserving offline-only monitoring boundaries.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

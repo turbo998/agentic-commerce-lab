@@ -1,8 +1,8 @@
 {
-  "checked_at": "2026-10-31T01:34:05.898057+08:00",
+  "checked_at": "2026-10-31T02:07:43.239151+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
-  "policy_scope": "Selected Stripe MCP auth notice facts and Stripe SPT stable contract facts only; not live access or a release claim.",
+  "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
   "observations": [
     {
       "id": "stripe-acp-launch",
@@ -80,8 +80,17 @@
       "sha256": "ab36e48a748443473642b11fbfd298b0db5170b29995e489c2caf6671f3f666f",
       "change": "unchanged",
       "error": null,
-      "policy_facts": null,
-      "policy_change": null,
+      "policy_facts": {
+        "parser_version": "stripe-spt-connect-facts-v1",
+        "supported_country_count": 34,
+        "supported_country_codes_sha256": "6ae0a50843813fd3e961b54bdea093ae7e74b6ddc61c2720b2c4aefc58054133",
+        "has_connect_platforms_section": true,
+        "has_network_business_profile": true,
+        "has_shared_payment_granted_token": true,
+        "has_stripe_account_header": true,
+        "covers_direct_destination_separate_charges": true
+      },
+      "policy_change": "baseline",
       "policy_error": null
     },
     {

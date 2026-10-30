@@ -9,7 +9,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
-    previous_hashes, previous_source_facts, stripe_spt_facts, validate_url,
+    previous_hashes, previous_source_facts, stripe_spt_connect_facts, stripe_spt_facts, validate_url,
 )
 
 
@@ -153,6 +153,63 @@ class MonitorTests(unittest.TestCase):
                 b"# Shared payment tokens\nStripe-Version: 2026-09-30.preview\n"
                 b"Stripe-Version: 2026-10-28.preview\n### View all supported countries\n- US\n"
             )
+
+    def test_stripe_spt_connect_facts_extracts_connect_contract_markers(self) -> None:
+        body = (
+            "# Shared payment tokens\n\n"
+            "### View all supported countries\n\n"
+            "- CA\n- US\n\n"
+            "# Connect platforms\n\n"
+            "The network ID maps to seller_details[network_business_profile].\n"
+            "Pass payment_method_data[shared_payment_granted_token] in PaymentIntent create.\n"
+            "Use the Stripe-Account header for connected-account retrieval.\n"
+            "- **Direct charge**: ...\n"
+            "- **Destination charge**: ...\n"
+            "- **Separate charges and transfers**: ...\n"
+        ).encode("utf-8")
+        facts = stripe_spt_connect_facts(body)
+        self.assertEqual(facts["parser_version"], "stripe-spt-connect-facts-v1")
+        self.assertEqual(facts["supported_country_count"], 2)
+        self.assertEqual(len(facts["supported_country_codes_sha256"]), 64)
+        self.assertTrue(facts["has_connect_platforms_section"])
+        self.assertTrue(facts["has_network_business_profile"])
+        self.assertTrue(facts["has_shared_payment_granted_token"])
+        self.assertTrue(facts["has_stripe_account_header"])
+        self.assertTrue(facts["covers_direct_destination_separate_charges"])
+
+    def test_stripe_spt_connect_facts_require_countries(self) -> None:
+        with self.assertRaises(ValueError):
+            stripe_spt_connect_facts(
+                b"# Shared payment tokens\n# Connect platforms\nNo country block.\n"
+            )
+
+    def test_observe_stripe_spt_connect_extracts_policy_facts(self) -> None:
+        source = Source(
+            "stripe-spt-connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens?agent-seller=connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect",
+        )
+        response = MagicMock()
+        response.geturl.return_value = source.monitor_url
+        response.headers.get.return_value = "text/markdown"
+        response.__enter__.return_value = response
+        response.read.return_value = (
+            "# Shared payment tokens\n\n"
+            "### View all supported countries\n\n- CA\n- US\n\n"
+            "# Connect platforms\n\n"
+            "seller_details[network_business_profile]\n"
+            "payment_method_data[shared_payment_granted_token]\n"
+            "Stripe-Account\n"
+            "Direct charge\nDestination charge\nSeparate charges and transfers\n"
+        ).encode("utf-8")
+        with patch("scripts.source_monitor.urlopen", return_value=response):
+            baseline = observe(source, None)
+        self.assertEqual(baseline.status, "ok")
+        self.assertEqual(baseline.policy_change, "baseline")
+        self.assertIsNone(baseline.policy_error)
+        self.assertEqual(
+            baseline.policy_facts["parser_version"], "stripe-spt-connect-facts-v1",
+        )
 
     def test_previous_source_facts_matches_source_and_parser(self) -> None:
         with TemporaryDirectory() as directory:

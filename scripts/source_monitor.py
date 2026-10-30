@@ -122,15 +122,7 @@ def stripe_spt_facts(body: bytes) -> dict[str, object]:
     if len(versions) != 1:
         raise ValueError("Expected one Stripe-Version preview marker in Stripe SPT docs.")
     version = next(iter(versions))
-    countries_block = re.search(
-        r"(?ms)^### View all supported countries\s*\n(?P<items>(?:- [A-Z]{2}\s*\n)+)",
-        text,
-    )
-    if countries_block is None:
-        raise ValueError("Stripe SPT docs missing supported-country list block.")
-    country_codes = re.findall(r"(?m)^- ([A-Z]{2})\s*$", countries_block.group("items"))
-    if not country_codes:
-        raise ValueError("Stripe SPT docs supported-country list is empty.")
+    country_codes = _extract_supported_country_codes(text)
     countries_digest = hashlib.sha256(",".join(country_codes).encode("ascii")).hexdigest()
     return {
         "parser_version": "stripe-spt-facts-v1",
@@ -143,6 +135,44 @@ def stripe_spt_facts(body: bytes) -> dict[str, object]:
             and "are not allowed with shared payment tokens" in text
         ),
         "has_deactivated_webhook_event": "shared_payment.granted_token.deactivated" in text,
+    }
+
+
+def _extract_supported_country_codes(text: str) -> list[str]:
+    """Read the published country list block and return its ordered alpha-2 codes."""
+    countries_block = re.search(
+        r"(?ms)^### View all supported countries\s*\n(?P<items>(?:- [A-Z]{2}\s*\n)+)",
+        text,
+    )
+    if countries_block is None:
+        raise ValueError("Stripe SPT docs missing supported-country list block.")
+    country_codes = re.findall(r"(?m)^- ([A-Z]{2})\s*$", countries_block.group("items"))
+    if not country_codes:
+        raise ValueError("Stripe SPT docs supported-country list is empty.")
+    return country_codes
+
+
+def stripe_spt_connect_facts(body: bytes) -> dict[str, object]:
+    """Extract stable Connect-tab SPT contract facts without inferring account state."""
+    text = body.decode("utf-8")
+    country_codes = _extract_supported_country_codes(text)
+    countries_digest = hashlib.sha256(",".join(country_codes).encode("ascii")).hexdigest()
+    return {
+        "parser_version": "stripe-spt-connect-facts-v1",
+        "supported_country_count": len(country_codes),
+        "supported_country_codes_sha256": countries_digest,
+        "has_connect_platforms_section": "# Connect platforms" in text,
+        "has_network_business_profile": "seller_details[network_business_profile]" in text,
+        "has_shared_payment_granted_token": "payment_method_data[shared_payment_granted_token]" in text,
+        "has_stripe_account_header": "Stripe-Account" in text,
+        "covers_direct_destination_separate_charges": all(
+            marker in text
+            for marker in (
+                "Direct charge",
+                "Destination charge",
+                "Separate charges and transfers",
+            )
+        ),
     }
 
 
@@ -306,6 +336,17 @@ def observe(
         except ValueError as error:
             policy_change = "unknown"
             policy_error = str(error)
+    if source.id == "stripe-spt-connect":
+        try:
+            if fetched_url != source.monitor_url:
+                raise ValueError("Stripe SPT Connect fact extraction requires the reviewed connect Markdown URL.")
+            facts = stripe_spt_connect_facts(body)
+            policy_change = "baseline" if previous_policy is None else (
+                "unchanged" if facts == previous_policy else "changed"
+            )
+        except ValueError as error:
+            policy_change = "unknown"
+            policy_error = str(error)
     return Observation(
         source.id, source.url, fetched_url, "ok", digest, change,
         policy_facts=facts, policy_change=policy_change, policy_error=policy_error,
@@ -383,6 +424,10 @@ def main() -> int:
             args.output_dir, before_date=str(now.date()),
             source_id="stripe-spt", parser_version="stripe-spt-facts-v1",
         ),
+        "stripe-spt-connect": previous_source_facts(
+            args.output_dir, before_date=str(now.date()),
+            source_id="stripe-spt-connect", parser_version="stripe-spt-connect-facts-v1",
+        ),
     }
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
@@ -399,7 +444,7 @@ def main() -> int:
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
-        "policy_scope": "Selected Stripe MCP auth notice facts and Stripe SPT stable contract facts only; not live access or a release claim.",
+        "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
