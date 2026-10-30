@@ -10,7 +10,7 @@ from urllib.error import URLError
 from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
-    spt_parser_version_check, stripe_spt_connect_facts,
+    spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
     stripe_spt_facts, validate_url,
 )
 
@@ -261,6 +261,8 @@ class MonitorTests(unittest.TestCase):
             self.assertTrue(report["checked_at"].endswith("+08:00"))
             self.assertEqual(report["observations"][0]["change"], "unknown")
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
+            self.assertIn("cross_source_summary", report)
+            self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertFalse(list(root.glob("*.tmp")))
 
     def test_main_returns_nonzero_on_cross_source_mismatch(self) -> None:
@@ -513,6 +515,21 @@ class MonitorTests(unittest.TestCase):
                 if check["check_id"] == "stripe-spt-parser-version-parity"
             )
             self.assertEqual(parser_check["status"], "mismatch")
+            self.assertGreaterEqual(report["cross_source_summary"]["mismatch"], 1)
+
+    def test_summarize_cross_source_checks_counts_and_blocking(self) -> None:
+        summary = summarize_cross_source_checks([
+            {"check_id": "a", "status": "consistent"},
+            {"check_id": "b", "status": "mismatch"},
+            {"check_id": "c", "status": "unavailable"},
+            {"check_id": "d", "status": "consistent"},
+            {"check_id": "e", "status": "unknown"},
+        ])
+        self.assertEqual(summary["total"], 4)
+        self.assertEqual(summary["consistent"], 2)
+        self.assertEqual(summary["mismatch"], 1)
+        self.assertEqual(summary["unavailable"], 1)
+        self.assertTrue(summary["blocking"])
 
 
 if __name__ == "__main__":

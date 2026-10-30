@@ -501,6 +501,19 @@ def spt_parser_version_check(observations: list[Observation]) -> dict[str, objec
     return {**base, "status": "consistent"}
 
 
+def summarize_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, int | bool]:
+    """Count check outcomes and expose whether any mismatch currently blocks the run."""
+    summary = {"total": 0, "consistent": 0, "mismatch": 0, "unavailable": 0}
+    for check in checks:
+        if not isinstance(check, dict):
+            continue
+        status = check.get("status")
+        if status in summary:
+            summary[status] += 1
+            summary["total"] += 1
+    return {**summary, "blocking": summary["mismatch"] > 0}
+
+
 def main() -> int:
     """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -538,12 +551,14 @@ def main() -> int:
         spt_connect_marker_check(observations),
         spt_parser_version_check(observations),
     ]
+    cross_source_summary = summarize_cross_source_checks(cross_source_checks)
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
         "cross_source_checks": cross_source_checks,
+        "cross_source_summary": cross_source_summary,
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
@@ -553,11 +568,7 @@ def main() -> int:
         logging.info(json.dumps(asdict(observation), ensure_ascii=False))
     return int(
         any(observation.status == "error" or observation.policy_error for observation in observations)
-        or any(
-            check.get("status") == "mismatch"
-            for check in report["cross_source_checks"]
-            if isinstance(check, dict)
-        )
+        or bool(cross_source_summary["blocking"])
     )
 
 

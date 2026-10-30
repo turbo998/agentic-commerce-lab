@@ -148,6 +148,11 @@ and fails fast when any marker disappears from selected facts.
 Adds a third `cross_source_checks` gate enforcing reviewed seller/connect parser-version pairs and
 failing fast when selected facts drift onto unreviewed parser grammars.
 
+**Stage 1681 / 2026-10-31:** [Cross-source summary telemetry for SPT checks (EN)](research/2026-10-31-spt-cross-source-summary.en.md)
+| [SPT 跨来源检查摘要信号（中文）](research/2026-10-31-spt-cross-source-summary.md).
+Adds report-level `cross_source_summary` counters (`total/consistent/mismatch/unavailable/blocking`)
+to simplify machine and human interpretation of current SPT gate health.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-31T03:42:06.083179+08:00",
+  "checked_at": "2026-10-31T03:45:59.910880+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
   "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
@@ -19,6 +19,13 @@
       "status": "consistent"
     }
   ],
+  "cross_source_summary": {
+    "total": 3,
+    "consistent": 3,
+    "mismatch": 0,
+    "unavailable": 0,
+    "blocking": false
+  },
   "observations": [
     {
       "id": "stripe-acp-launch",
