@@ -90,6 +90,36 @@ class MonitorTests(unittest.TestCase):
         first = fingerprint(b'{"expires_at": 1794406247}', "text/plain")
         second = fingerprint(b'{"expires_at": 1794406248}', "text/plain")
         self.assertNotEqual(first, second)
+        first_spt = fingerprint(
+            b'{"expires_at": 1794406247}', "text/plain", source_id="stripe-spt",
+        )
+        second_spt = fingerprint(
+            b'{"expires_at": 1794406248}', "text/plain", source_id="stripe-spt",
+        )
+        self.assertEqual(first_spt, second_spt)
+
+    def test_observe_stripe_spt_ignores_dynamic_expiry_noise(self) -> None:
+        source = Source(
+            "stripe-spt",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+        )
+        response = MagicMock()
+        response.geturl.return_value = source.monitor_url
+        response.headers.get.return_value = "text/markdown"
+        response.__enter__.return_value = response
+        first = b'{"expires_at": 1794406247, "status": "active"}'
+        second = b'{"expires_at": 1794406248, "status": "active"}'
+        with patch("scripts.source_monitor.urlopen", return_value=response):
+            response.read.return_value = first
+            baseline = observe(source, None)
+        self.assertEqual(baseline.status, "ok")
+        self.assertEqual(baseline.change, "baseline")
+        with patch("scripts.source_monitor.urlopen", return_value=response):
+            response.read.return_value = second
+            followup = observe(source, baseline.sha256)
+        self.assertEqual(followup.status, "ok")
+        self.assertEqual(followup.change, "unchanged")
 
     def test_main_records_failure_and_returns_nonzero(self) -> None:
         failure = Observation(

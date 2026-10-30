@@ -177,13 +177,25 @@ def validate_url(url: str) -> None:
         raise ValueError(f"Source URL is not an allowed public HTTPS endpoint: {url!r}")
 
 
-def fingerprint(body: bytes, content_type: str) -> str:
+def _normalize_source_noise(source_id: str | None, text: str) -> str:
+    """Remove source-known volatile examples while preserving semantic content."""
+    if source_id == "stripe-spt":
+        text = re.sub(
+            r'("expires_at"\s*:\s*)\d{10,13}',
+            r'\1<dynamic-unix-timestamp>',
+            text,
+        )
+    return text
+
+
+def fingerprint(body: bytes, content_type: str, *, source_id: str | None = None) -> str:
     """Hash normalized source text, not a claim about a new product release."""
     text = body.decode("utf-8")
     if "html" in content_type:
         parser = VisibleText()
         parser.feed(text)
         text = " ".join(parser.fragments)
+    text = _normalize_source_noise(source_id, text)
     text = re.sub(r"\s+", " ", text).strip()
     if not text:
         raise ValueError("Fetched source contains no usable text; check its monitor URL.")
@@ -215,7 +227,10 @@ def observe(
                 body = response.read(MAX_BYTES + 1)
                 if len(body) > MAX_BYTES:
                     raise ValueError("Source exceeds the 4 MiB research fetch limit.")
-                digest = fingerprint(body, response.headers.get("Content-Type", "text/plain"))
+                digest = fingerprint(
+                    body, response.headers.get("Content-Type", "text/plain"),
+                    source_id=source.id,
+                )
                 last_error = None
                 break
         except (URLError, HTTPException, OSError, UnicodeError, ValueError) as error:
@@ -320,7 +335,7 @@ def main() -> int:
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
-        "normalization": "utf8-visible-html-text-or-markdown-whitespace-v1",
+        "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts only; not live access or a release claim.",
         "observations": [asdict(observation) for observation in observations],
     }

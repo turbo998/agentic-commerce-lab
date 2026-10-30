@@ -108,6 +108,11 @@ no pre-check admission, token-issuance proof or payment authority.
 Read-only claim-state lookup by five-dimensional receipt scope and Event ID; no claim creation,
 handoff completion, worker liveness proof or payment authority.
 
+**Stage 1673 / 2026-10-31:** [Source-monitor Stripe SPT noise filter (EN)](research/2026-10-31-source-monitor-noise-filter.en.md)
+| [source-monitor 的 Stripe SPT 抖动降噪（中文）](research/2026-10-31-source-monitor-noise-filter.md).
+Source-specific normalization redacts volatile `expires_at` sample timestamps before hashing;
+preserves substantive text drift detection without treating second-level example jitter as release evidence.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
