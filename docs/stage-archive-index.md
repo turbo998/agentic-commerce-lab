@@ -138,6 +138,11 @@ to highlight selected-fact consistency without claiming a product release.
 Escalates `cross_source_checks` parity mismatches to a nonzero monitor exit code so seller/connect
 fact divergence is surfaced as a blocking review signal rather than a silent warning.
 
+**Stage 1679 / 2026-10-31:** [SPT Connect required-markers cross-check (EN)](research/2026-10-31-spt-connect-marker-check.en.md)
+| [SPT Connect 必需标记互证检查（中文）](research/2026-10-31-spt-connect-marker-check.md).
+Adds a second `cross_source_checks` gate that verifies required Connect-tab SPT markers remain present
+and fails fast when any marker disappears from selected facts.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

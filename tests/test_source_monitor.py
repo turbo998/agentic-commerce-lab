@@ -9,7 +9,8 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     MAX_BYTES, Observation, Source, fingerprint, load_sources, main, observe,
-    previous_hashes, previous_source_facts, spt_country_list_check, stripe_spt_connect_facts,
+    previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
+    stripe_spt_connect_facts,
     stripe_spt_facts, validate_url,
 )
 
@@ -347,6 +348,92 @@ class MonitorTests(unittest.TestCase):
             Observation("stripe-spt", "seller-url", "seller-fetch", "error", None, "unknown", "offline"),
         ])
         self.assertEqual(unavailable["status"], "unavailable")
+
+    def test_spt_connect_marker_check_consistent_mismatch_and_unavailable(self) -> None:
+        consistent = spt_connect_marker_check([
+            Observation(
+                "stripe-spt-connect", "connect-url", "connect-fetch", "ok", "connect-hash", "unchanged",
+                policy_facts={
+                    "has_connect_platforms_section": True,
+                    "has_network_business_profile": True,
+                    "has_shared_payment_granted_token": True,
+                    "has_stripe_account_header": True,
+                    "covers_direct_destination_separate_charges": True,
+                },
+            )
+        ])
+        self.assertEqual(consistent["status"], "consistent")
+        mismatch = spt_connect_marker_check([
+            Observation(
+                "stripe-spt-connect", "connect-url", "connect-fetch", "ok", "connect-hash", "unchanged",
+                policy_facts={
+                    "has_connect_platforms_section": True,
+                    "has_network_business_profile": False,
+                    "has_shared_payment_granted_token": True,
+                    "has_stripe_account_header": True,
+                    "covers_direct_destination_separate_charges": True,
+                },
+            )
+        ])
+        self.assertEqual(mismatch["status"], "mismatch")
+        self.assertIn("has_network_business_profile", mismatch["missing_markers"])
+        unavailable = spt_connect_marker_check([
+            Observation(
+                "stripe-spt-connect", "connect-url", "connect-fetch", "error",
+                None, "unknown", "offline",
+            )
+        ])
+        self.assertEqual(unavailable["status"], "unavailable")
+
+    def test_main_returns_nonzero_on_connect_marker_mismatch(self) -> None:
+        seller = Source(
+            "stripe-spt",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=seller",
+        )
+        connect = Source(
+            "stripe-spt-connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens?agent-seller=connect",
+            "https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md?agent-seller=connect",
+        )
+        seller_observation = Observation(
+            seller.id, seller.url, seller.monitor_url, "ok", "seller-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-facts-v1",
+                "supported_country_count": 34,
+                "supported_country_codes_sha256": "same",
+            },
+            policy_change="unchanged",
+        )
+        connect_observation = Observation(
+            connect.id, connect.url, connect.monitor_url, "ok", "connect-hash", "unchanged",
+            policy_facts={
+                "parser_version": "stripe-spt-connect-facts-v1",
+                "supported_country_count": 34,
+                "supported_country_codes_sha256": "same",
+                "has_connect_platforms_section": True,
+                "has_network_business_profile": False,
+                "has_shared_payment_granted_token": True,
+                "has_stripe_account_header": True,
+                "covers_direct_destination_separate_charges": True,
+            },
+            policy_change="unchanged",
+        )
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch("sys.argv", ["monitor", "--output-dir", str(root)]),
+                patch("scripts.source_monitor.load_sources", return_value=[seller, connect]),
+                patch("scripts.source_monitor.observe", side_effect=[seller_observation, connect_observation]),
+                self.assertLogs(level="INFO"),
+            ):
+                self.assertEqual(main(), 1)
+            report = json.loads(next(root.glob("*-sources.json")).read_text(encoding="utf-8"))
+            marker_check = next(
+                check for check in report["cross_source_checks"]
+                if check["check_id"] == "stripe-spt-connect-required-markers"
+            )
+            self.assertEqual(marker_check["status"], "mismatch")
 
 
 if __name__ == "__main__":

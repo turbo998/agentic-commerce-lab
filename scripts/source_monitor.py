@@ -446,6 +446,33 @@ def spt_country_list_check(observations: list[Observation]) -> dict[str, object]
     }
 
 
+def spt_connect_marker_check(observations: list[Observation]) -> dict[str, object]:
+    """Verify Connect-tab required SPT markers are present in selected facts."""
+    connect = next((item for item in observations if item.id == "stripe-spt-connect"), None)
+    base = {"check_id": "stripe-spt-connect-required-markers"}
+    if connect is None:
+        return {**base, "status": "unavailable", "reason": "connect_source_missing"}
+    if (
+        connect.status != "ok" or connect.policy_error
+        or not isinstance(connect.policy_facts, dict)
+    ):
+        return {**base, "status": "unavailable", "reason": "connect_selected_facts_unavailable"}
+    expected_true_markers = (
+        "has_connect_platforms_section",
+        "has_network_business_profile",
+        "has_shared_payment_granted_token",
+        "has_stripe_account_header",
+        "covers_direct_destination_separate_charges",
+    )
+    missing = [
+        marker for marker in expected_true_markers
+        if connect.policy_facts.get(marker) is not True
+    ]
+    if missing:
+        return {**base, "status": "mismatch", "missing_markers": missing}
+    return {**base, "status": "consistent"}
+
+
 def main() -> int:
     """Write a dated report; return nonzero on fetch or selected-fact parse failure."""
     parser = argparse.ArgumentParser(description=__doc__)
@@ -478,12 +505,16 @@ def main() -> int:
         )
     target = args.output_dir / f"{now.date()}-sources.json"
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    cross_source_checks = [
+        spt_country_list_check(observations),
+        spt_connect_marker_check(observations),
+    ]
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",
         "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
         "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
-        "cross_source_checks": [spt_country_list_check(observations)],
+        "cross_source_checks": cross_source_checks,
         "observations": [asdict(observation) for observation in observations],
     }
     temporary = target.with_suffix(".tmp")
