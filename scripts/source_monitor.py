@@ -585,8 +585,10 @@ def summarize_gate_health(
     cross_source_partitions: dict[str, list[str]],
 ) -> dict[str, int | bool | list[str]]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
-    observation_errors = sum(item.status == "error" for item in observations)
-    policy_errors = sum(bool(item.policy_error) for item in observations)
+    observation_error_sources = [item.id for item in observations if item.status == "error"]
+    policy_error_sources = [item.id for item in observations if item.policy_error]
+    observation_errors = len(observation_error_sources)
+    policy_errors = len(policy_error_sources)
     cross_source_mismatch = int(cross_source_summary.get("mismatch", 0))
     cross_source_blocking_checks = list(cross_source_partitions.get("mismatch", []))
     blocking_reasons = [
@@ -604,7 +606,9 @@ def summarize_gate_health(
     )
     return {
         "observation_errors": observation_errors,
+        "observation_error_sources": observation_error_sources,
         "policy_errors": policy_errors,
+        "policy_error_sources": policy_error_sources,
         "cross_source_mismatch": cross_source_mismatch,
         "cross_source_blocking_checks": cross_source_blocking_checks,
         "blocking_reasons": blocking_reasons,

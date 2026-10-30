@@ -283,6 +283,8 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertIn("gate_health", report)
             self.assertEqual(report["gate_health"]["observation_errors"], 1)
+            self.assertEqual(report["gate_health"]["observation_error_sources"], [self.source.id])
+            self.assertEqual(report["gate_health"]["policy_error_sources"], [])
             self.assertEqual(report["gate_health"]["cross_source_blocking_checks"], [])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
@@ -639,7 +641,9 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": [], "unavailable": ["c"]},
         )
         self.assertEqual(gate_health["observation_errors"], 1)
+        self.assertEqual(gate_health["observation_error_sources"], ["b"])
         self.assertEqual(gate_health["policy_errors"], 1)
+        self.assertEqual(gate_health["policy_error_sources"], ["c"])
         self.assertEqual(gate_health["cross_source_mismatch"], 0)
         self.assertEqual(gate_health["cross_source_blocking_checks"], [])
         self.assertEqual(
