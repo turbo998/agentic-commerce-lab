@@ -13,6 +13,7 @@ from scripts.source_monitor import (
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
     index_cross_source_statuses,
     partition_cross_source_checks,
+    summarize_observation_changes,
     summarize_gate_health,
     stripe_spt_facts, validate_url,
 )
@@ -263,6 +264,9 @@ class MonitorTests(unittest.TestCase):
             report = json.loads(reports[0].read_text(encoding="utf-8"))
             self.assertEqual(report["schema_version"], REPORT_SCHEMA_VERSION)
             self.assertTrue(report["checked_at"].endswith("+08:00"))
+            self.assertEqual(report["observation_summary"]["total"], 1)
+            self.assertEqual(report["observation_summary"]["error"], 1)
+            self.assertEqual(report["observation_summary"]["unknown"], 1)
             self.assertEqual(report["observations"][0]["change"], "unknown")
             self.assertEqual(report["cross_source_checks"][0]["status"], "unavailable")
             self.assertEqual(
@@ -560,6 +564,22 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(summary["mismatch"], 1)
         self.assertEqual(summary["unavailable"], 1)
         self.assertTrue(summary["blocking"])
+
+    def test_summarize_observation_changes_counts(self) -> None:
+        observations = [
+            Observation("a", "u", "fu", "ok", "sha", "baseline"),
+            Observation("b", "u", "fu", "ok", "sha", "unchanged"),
+            Observation("c", "u", "fu", "ok", "sha", "changed"),
+            Observation("d", "u", "fu", "error", None, "unknown", "offline"),
+        ]
+        summary = summarize_observation_changes(observations)
+        self.assertEqual(summary["total"], 4)
+        self.assertEqual(summary["ok"], 3)
+        self.assertEqual(summary["error"], 1)
+        self.assertEqual(summary["baseline"], 1)
+        self.assertEqual(summary["unchanged"], 1)
+        self.assertEqual(summary["changed"], 1)
+        self.assertEqual(summary["unknown"], 1)
 
     def test_index_cross_source_statuses_returns_stable_map(self) -> None:
         statuses = index_cross_source_statuses([
