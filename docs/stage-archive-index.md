@@ -198,6 +198,10 @@ Adds report-level `observation_partitions` grouping source IDs by `ok/error` and
 Extends `gate_health` with `observation_error_sources` and `policy_error_sources` so source-level blockers
 are directly consumable without per-observation joins.
 
+**Stage 1691 / 2026-10-31:** [Source monitor gate-health blocking sources telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-sources.en.md)
+| [source-monitor gate_health 阻塞源集合信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-sources.md).
+Adds `gate_health.blocking_sources` as a deduplicated union of source-level error IDs for direct blocker routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
