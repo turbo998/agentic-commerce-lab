@@ -7,9 +7,11 @@ from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
-from typing import NoReturn
+from typing import Literal, NoReturn
 
 from lab.stripe_delivery import _require_delivery_time, verify_stripe_delivery
+
+ClaimState = Literal["active", "handled"]
 
 
 class StripeInboxError(ValueError):
@@ -73,6 +75,20 @@ class ReadbackClaim:
         _require_worker_id(self.worker_id)
         if type(self.generation) is not int or not 1 <= self.generation <= 2**63 - 1:
             raise StripeInboxError("Generation must be a positive signed-64-bit integer.")
+
+
+@dataclass(frozen=True)
+class ReadbackClaimStatus:
+    """Persisted local claim state, not worker liveness or a payment outcome."""
+
+    claim: ReadbackClaim
+    state: ClaimState
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
+        if not isinstance(self.state, str) or self.state not in ("active", "handled"):
+            raise StripeInboxError("Claim state must be active or handled.")
 
 
 def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -248,23 +264,56 @@ class StripeEventInbox:
                 True, True,
             )
 
+    @staticmethod
+    def _require_event_lookup(
+        scope: StripeInboxScope, event_id: str,
+    ) -> tuple[str, str, str, int, str]:
+        if not isinstance(scope, StripeInboxScope):
+            raise StripeInboxError("A trusted StripeInboxScope is required.")
+        if not isinstance(event_id, str) or re.fullmatch(r"evt_[A-Za-z0-9_]+", event_id) is None:
+            raise StripeInboxError("A snapshot Event ID is required.")
+        return (*scope.key, event_id)
+
     def read_receipt(self, scope: StripeInboxScope, event_id: str) -> InboxReceipt | None:
         """Read original scoped history, not authenticate or admit a delivery.
 
         Absence is not a payment result. Presence grants no ACK, worker or payment
         authority and never substitutes for the ingress verification pipeline.
         """
-        if not isinstance(scope, StripeInboxScope):
-            raise StripeInboxError("A trusted StripeInboxScope is required.")
-        if not isinstance(event_id, str) or re.fullmatch(r"evt_[A-Za-z0-9_]+", event_id) is None:
-            raise StripeInboxError("A snapshot Event ID is required.")
+        key = self._require_event_lookup(scope, event_id)
         with closing(self._connect()) as db:
             row = db.execute(
                 "SELECT * FROM stripe_event_inbox WHERE tenant_id=? AND endpoint_id=?"
                 " AND provider_account=? AND livemode=? AND event_id=?",
-                (*scope.key, event_id),
+                key,
             ).fetchone()
             return None if row is None else self._receipt(row)
+
+    def read_claim(
+        self, scope: StripeInboxScope, event_id: str,
+    ) -> ReadbackClaimStatus | None:
+        """Read scoped local claim state without claiming, handing off or completing.
+
+        Absence means only that no claim row exists for this scoped Event ID.
+        An active or handled record is local coordination history, not worker
+        liveness, authenticated provider readback or a payment outcome.
+        """
+        key = self._require_event_lookup(scope, event_id)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT i.*,c.worker_id,c.generation,c.state FROM stripe_event_inbox i"
+                " JOIN stripe_readback_claims c"
+                " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
+                " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
+                " AND i.livemode=? AND i.event_id=?",
+                key,
+            ).fetchone()
+            if row is None:
+                return None
+            claim = ReadbackClaim(
+                scope, self._receipt(row), row["worker_id"], row["generation"],
+            )
+            return ReadbackClaimStatus(claim, row["state"])
 
     def pending(self, scope: StripeInboxScope, *, limit: int = 100) -> tuple[InboxReceipt, ...]:
         """Enumerate all receipts, regardless of claim state, in local receipt order."""

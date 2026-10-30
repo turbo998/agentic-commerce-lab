@@ -103,6 +103,11 @@ ACK, worker or payment authority.
 Read-only three-column PK lookup anchored to published 0.2 while contrasting Draft 0.3;
 no pre-check admission, token-issuance proof or payment authority.
 
+**Stage 1672 / 2026-10-31:** [Scoped Stripe readback claim state lookup (EN)](research/2026-10-31-stripe-claim-read.en.md)
+| [Stripe readback claim 作用域状态查询（中文）](research/2026-10-31-stripe-claim-read.md).
+Read-only claim-state lookup by five-dimensional receipt scope and Event ID; no claim creation,
+handoff completion, worker liveness proof or payment authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
