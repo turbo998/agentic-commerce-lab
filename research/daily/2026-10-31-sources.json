@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-31T01:07:03.433540+08:00",
+  "checked_at": "2026-10-31T01:34:05.898057+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
   "policy_scope": "Selected Stripe MCP auth notice facts and Stripe SPT stable contract facts only; not live access or a release claim.",

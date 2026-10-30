@@ -118,6 +118,11 @@ preserves substantive text drift detection without treating second-level example
 Adds parser-backed Stripe SPT selected facts (preview API version, country-list cardinality/hash,
 event markers) to distinguish stable contract signals from markdown hash drift.
 
+**Stage 1675 / 2026-10-31:** [Source-fact-driven Stripe MCP deadline simulation (EN)](research/2026-10-31-mcp-deadline-source-facts.en.md)
+| [基于 source facts 的 Stripe MCP 截止日仿真（中文）](research/2026-10-31-mcp-deadline-source-facts.md).
+`lab.mcp_migration` can now load Stripe MCP selected facts from a daily source-monitor snapshot and
+simulate migration/block boundaries against that observed deadline without adding live account checks.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

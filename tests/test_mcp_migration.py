@@ -17,6 +17,7 @@ class MigrationTests(unittest.TestCase):
         self.directory = TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.path = Path(self.directory.name) / "inventory.json"
+        self.source_report = Path(self.directory.name) / "source-report.json"
 
     def write_inventory(self, rows: object) -> None:
         self.path.write_text(json.dumps({"clients": rows}), encoding="utf-8")
@@ -24,10 +25,35 @@ class MigrationTests(unittest.TestCase):
     def row(self, auth: str = "oauth", environment: str = "sandbox") -> dict[str, str]:
         return {"client_id": "synthetic-client", "environment": environment, "auth_method": auth}
 
-    def run_cli(self, as_of: str = "2026-10-12") -> tuple[int, str, str]:
+    def write_source_report(
+        self,
+        *,
+        deadline: str = "2026-11-30",
+        checked_at: str = "2026-10-31T01:34:05+08:00",
+        parser_version: str = "stripe-mcp-auth-notice-v1",
+    ) -> None:
+        self.source_report.write_text(json.dumps({
+            "checked_at": checked_at,
+            "observations": [
+                {
+                    "id": "stripe-mcp",
+                    "status": "ok",
+                    "policy_error": None,
+                    "policy_facts": {
+                        "parser_version": parser_version,
+                        "deadline": deadline,
+                    },
+                }
+            ],
+        }), encoding="utf-8")
+
+    def run_cli(self, as_of: str = "2026-10-12", source_report: Path | None = None) -> tuple[int, str, str]:
         output, errors = io.StringIO(), io.StringIO()
+        argv = ["migration", "--inventory", str(self.path), "--as-of", as_of]
+        if source_report is not None:
+            argv.extend(["--source-report", str(source_report)])
         with (
-            patch("sys.argv", ["migration", "--inventory", str(self.path), "--as-of", as_of]),
+            patch("sys.argv", argv),
             redirect_stdout(output), redirect_stderr(errors),
         ):
             code = main()
@@ -96,6 +122,41 @@ class MigrationTests(unittest.TestCase):
         code, output, errors = self.run_cli()
         self.assertEqual((code, errors), (0, ""))
         self.assertEqual(json.loads(output)["kind"], "offline-metadata-only")
+        self.assertEqual(json.loads(output)["deadline_source"], "hardcoded-reviewed-baseline")
+        self.assertIsNone(json.loads(output)["deadline_parser_version"])
+
+    def test_source_report_deadline_override_changes_boundary_status(self) -> None:
+        self.write_inventory([self.row("full_access_secret")])
+        self.write_source_report(deadline="2026-10-31")
+        code, output, errors = self.run_cli("2026-10-31")
+        self.assertEqual((code, errors), (1, ""))
+        self.assertEqual(json.loads(output)["findings"][0]["status"], "migration_required")
+        code, output, errors = self.run_cli("2026-10-31", source_report=self.source_report)
+        self.assertEqual((code, errors), (1, ""))
+        report = json.loads(output)
+        self.assertEqual(report["findings"][0]["status"], "blocked_by_documented_policy")
+        self.assertEqual(report["deadline"], "2026-10-31")
+        self.assertEqual(report["calendar_days_until_deadline"], 0)
+        self.assertEqual(report["policy_checked_on"], "2026-10-31")
+        self.assertEqual(report["deadline_source"], "source-monitor-selected-facts")
+        self.assertEqual(report["deadline_parser_version"], "stripe-mcp-auth-notice-v1")
+
+    def test_source_report_requires_one_valid_stripe_mcp_fact_row(self) -> None:
+        self.write_inventory([self.row("full_access_secret")])
+        self.source_report.write_text(json.dumps({
+            "checked_at": "2026-10-31T01:34:05+08:00",
+            "observations": [
+                {
+                    "id": "stripe-mcp",
+                    "status": "ok",
+                    "policy_error": None,
+                    "policy_facts": {"parser_version": "other-parser-v1", "deadline": "2026-10-31"},
+                }
+            ],
+        }), encoding="utf-8")
+        code, output, errors = self.run_cli("2026-10-31", source_report=self.source_report)
+        self.assertEqual((code, output), (2, ""))
+        self.assertEqual(json.loads(errors)["status"], "invalid_inventory")
 
     def test_invalid_rows_and_unknown_auth_are_rejected(self) -> None:
         for rows in [

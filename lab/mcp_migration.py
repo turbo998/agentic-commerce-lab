@@ -20,6 +20,8 @@ ENFORCEMENT_STARTS = date(2026, 12, 1)
 POLICY_CHECKED_ON = date(2026, 10, 23)
 SOURCE_URL = "https://docs.stripe.com/mcp"
 MAX_BYTES = 64 * 1024
+SOURCE_REPORT_MAX_BYTES = 4 * 1024 * 1024
+MCP_FACTS_PARSER_VERSION = "stripe-mcp-auth-notice-v1"
 AuthMethod = Literal[
     "oauth", "agent_key", "full_access_secret", "restricted_without_agent_tag"
 ]
@@ -81,15 +83,57 @@ def load_inventory(path: Path) -> list[Client]:
     return clients
 
 
-def assess(client: Client, *, as_of: date) -> Finding:
+def load_deadline_from_source_report(path: Path) -> tuple[date, date, str]:
+    """Load Stripe MCP selected-facts deadline from a source-monitor daily report."""
+    with path.open("rb") as stream:
+        body = stream.read(SOURCE_REPORT_MAX_BYTES + 1)
+    if len(body) > SOURCE_REPORT_MAX_BYTES:
+        raise ValueError("Source report exceeds the 4 MiB metadata limit.")
+    payload = json.loads(body.decode("utf-8"), object_pairs_hook=unique_members)
+    if not isinstance(payload, dict):
+        raise ValueError("Source report must be a JSON object.")
+    checked_at_raw = payload.get("checked_at")
+    try:
+        checked_on = datetime.fromisoformat(checked_at_raw).date()
+    except (TypeError, ValueError) as error:
+        raise ValueError("Source report checked_at must be an ISO datetime string.") from error
+    observations = payload.get("observations")
+    if not isinstance(observations, list):
+        raise ValueError("Source report observations must be an array.")
+    matching: list[dict[str, object]] = []
+    for row in observations:
+        if not isinstance(row, dict):
+            continue
+        facts = row.get("policy_facts")
+        if (
+            row.get("id") == "stripe-mcp"
+            and row.get("status") == "ok"
+            and not row.get("policy_error")
+            and isinstance(facts, dict)
+            and facts.get("parser_version") == MCP_FACTS_PARSER_VERSION
+        ):
+            matching.append(facts)
+    if len(matching) != 1:
+        raise ValueError("Source report must contain one successful stripe-mcp selected-facts row.")
+    deadline_raw = matching[0].get("deadline")
+    try:
+        deadline = date.fromisoformat(deadline_raw)
+    except (TypeError, ValueError) as error:
+        raise ValueError("Stripe MCP selected-facts deadline must be ISO yyyy-mm-dd.") from error
+    return deadline, checked_on, MCP_FACTS_PARSER_VERSION
+
+
+def assess(client: Client, *, as_of: date, deadline: date = DEADLINE) -> Finding:
     """Apply the documented date boundary, not a live authentication check."""
     if type(as_of) is not date:
         raise ValueError("as_of must be a calendar date, not a timestamp.")
+    if type(deadline) is not date:
+        raise ValueError("deadline must be a calendar date.")
     if client.auth_method in SUPPORTED_AUTH:
         status = "recorded_supported_unverified"
         action = "Verify permissions, approval rules and environment-scoped revocation separately."
     else:
-        status = "migration_required" if as_of < DEADLINE else "blocked_by_documented_policy"
+        status = "migration_required" if as_of < deadline else "blocked_by_documented_policy"
         action = "Use OAuth or a new least-privilege Agent Key; sandbox-test before expiring old keys."
     return Finding(client.client_id, client.environment, client.auth_method, status, action)
 
@@ -105,9 +149,25 @@ def main() -> int:
         default=datetime.now(timezone(timedelta(hours=8))).date(),
         help="Calendar-date simulation; default is today's Beijing date, not Stripe's cutoff time.",
     )
+    parser.add_argument(
+        "--source-report", type=Path, default=None,
+        help="Optional source-monitor daily JSON to override deadline from selected Stripe MCP facts.",
+    )
     args = parser.parse_args()
     try:
-        findings = [assess(client, as_of=args.as_of) for client in load_inventory(args.inventory)]
+        deadline = DEADLINE
+        policy_checked_on = POLICY_CHECKED_ON
+        deadline_source = "hardcoded-reviewed-baseline"
+        deadline_parser_version = None
+        if args.source_report is not None:
+            deadline, policy_checked_on, deadline_parser_version = load_deadline_from_source_report(
+                args.source_report
+            )
+            deadline_source = "source-monitor-selected-facts"
+        findings = [
+            assess(client, as_of=args.as_of, deadline=deadline)
+            for client in load_inventory(args.inventory)
+        ]
     except (OSError, UnicodeError, ValueError) as error:
         message = str(error) if isinstance(error, ValueError) and not isinstance(
             error, (json.JSONDecodeError, UnicodeError)
@@ -118,12 +178,14 @@ def main() -> int:
     print(json.dumps({
         "kind": "offline-metadata-only",
         "as_of": args.as_of.isoformat(),
-        "policy_checked_on": POLICY_CHECKED_ON.isoformat(),
+        "policy_checked_on": policy_checked_on.isoformat(),
         "policy_source": SOURCE_URL,
-        "deadline": DEADLINE.isoformat(),
+        "deadline": deadline.isoformat(),
+        "deadline_source": deadline_source,
+        "deadline_parser_version": deadline_parser_version,
         "previous_deadline": PREVIOUS_DEADLINE.isoformat(),
         "enforcement_starts": ENFORCEMENT_STARTS.isoformat(),
-        "calendar_days_until_deadline": (DEADLINE - args.as_of).days,
+        "calendar_days_until_deadline": (deadline - args.as_of).days,
         "cutoff_time": "not specified in the reviewed documentation",
         "account_verification": "not_performed",
         "migration_count": migration_count,
