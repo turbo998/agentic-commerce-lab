@@ -541,12 +541,15 @@ def partition_cross_source_checks(checks: list[dict[str, object]]) -> dict[str, 
 
 
 def summarize_gate_health(
-    observations: list[Observation], cross_source_summary: dict[str, int | bool],
+    observations: list[Observation],
+    cross_source_summary: dict[str, int | bool],
+    cross_source_partitions: dict[str, list[str]],
 ) -> dict[str, int | bool | list[str]]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_errors = sum(item.status == "error" for item in observations)
     policy_errors = sum(bool(item.policy_error) for item in observations)
     cross_source_mismatch = int(cross_source_summary.get("mismatch", 0))
+    cross_source_blocking_checks = list(cross_source_partitions.get("mismatch", []))
     blocking_reasons = [
         reason for reason, count in (
             ("observation_errors", observation_errors),
@@ -564,6 +567,7 @@ def summarize_gate_health(
         "observation_errors": observation_errors,
         "policy_errors": policy_errors,
         "cross_source_mismatch": cross_source_mismatch,
+        "cross_source_blocking_checks": cross_source_blocking_checks,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
@@ -609,7 +613,9 @@ def main() -> int:
     cross_source_statuses = index_cross_source_statuses(cross_source_checks)
     cross_source_partitions = partition_cross_source_checks(cross_source_checks)
     cross_source_summary = summarize_cross_source_checks(cross_source_checks)
-    gate_health = summarize_gate_health(observations, cross_source_summary)
+    gate_health = summarize_gate_health(
+        observations, cross_source_summary, cross_source_partitions,
+    )
     report = {
         "checked_at": now.isoformat(),
         "kind": "source-fingerprint-monitor-not-research-conclusions",

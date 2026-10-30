@@ -275,6 +275,7 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["cross_source_summary"]["mismatch"], 0)
             self.assertIn("gate_health", report)
             self.assertEqual(report["gate_health"]["observation_errors"], 1)
+            self.assertEqual(report["gate_health"]["cross_source_blocking_checks"], [])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -538,6 +539,10 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(parser_check["status"], "mismatch")
             self.assertGreaterEqual(report["cross_source_summary"]["mismatch"], 1)
             self.assertGreaterEqual(report["gate_health"]["cross_source_mismatch"], 1)
+            self.assertIn(
+                "stripe-spt-parser-version-parity",
+                report["gate_health"]["cross_source_blocking_checks"],
+            )
             self.assertIn("cross_source_mismatch", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
 
@@ -592,13 +597,24 @@ class MonitorTests(unittest.TestCase):
         gate_health = summarize_gate_health(
             observations,
             {"total": 3, "consistent": 2, "mismatch": 0, "unavailable": 1, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": ["c"]},
         )
         self.assertEqual(gate_health["observation_errors"], 1)
         self.assertEqual(gate_health["policy_errors"], 1)
         self.assertEqual(gate_health["cross_source_mismatch"], 0)
+        self.assertEqual(gate_health["cross_source_blocking_checks"], [])
         self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
+        self.assertTrue(gate_health["blocking"])
+
+    def test_summarize_gate_health_includes_cross_source_blocking_checks(self) -> None:
+        gate_health = summarize_gate_health(
+            [],
+            {"total": 3, "consistent": 1, "mismatch": 2, "unavailable": 0, "blocking": True},
+            {"consistent": ["a"], "mismatch": ["b", "d"], "unavailable": ["c"]},
+        )
+        self.assertEqual(gate_health["cross_source_blocking_checks"], ["b", "d"])
         self.assertTrue(gate_health["blocking"])
 
 

@@ -173,6 +173,11 @@ without scanning the full `cross_source_checks` array.
 Adds report-level `cross_source_partitions` to group check IDs by `consistent/mismatch/unavailable`
 for direct blocker routing without scanning raw check objects.
 
+**Stage 1686 / 2026-10-31:** [Source monitor blocking check IDs in gate health (EN)](research/2026-10-31-source-monitor-gate-health-blocking-checks.en.md)
+| [source-monitor gate_health 阻塞检查 ID 信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-checks.md).
+Adds `gate_health.cross_source_blocking_checks` so blocking check IDs are available directly in the
+run-level gate object without cross-field joins.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

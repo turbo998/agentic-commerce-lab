@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-31T04:30:49.459650+08:00",
+  "checked_at": "2026-10-31T04:35:17.915198+08:00",
   "kind": "source-fingerprint-monitor-not-research-conclusions",
   "normalization": "utf8-visible-html-text-or-markdown-whitespace-v2-with-source-noise-filters",
   "policy_scope": "Selected Stripe MCP auth notice facts plus Stripe SPT seller/connect stable contract facts only; not live access or a release claim.",
@@ -44,6 +44,7 @@
     "observation_errors": 0,
     "policy_errors": 0,
     "cross_source_mismatch": 0,
+    "cross_source_blocking_checks": [],
     "blocking_reasons": [],
     "blocking": false
   },
@@ -345,7 +346,7 @@
       "url": "https://modelcontextprotocol.io/specification/2025-11-25",
       "fetched_url": "https://modelcontextprotocol.io/specification/2025-11-25",
       "status": "ok",
-      "sha256": "8be1e2914a2a77f2f0aa01eb26e57e9f3a5ad9a0bfb1f58b3baa3a96de64451e",
+      "sha256": "9d55275cc39198891da1aecddd425cda2921d7a7924072141dcba46a38198409",
       "change": "changed",
       "error": null,
       "policy_facts": null,
@@ -417,7 +418,7 @@
       "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
       "fetched_url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization",
       "status": "ok",
-      "sha256": "43ca8396e6c5304f4f31cc2a26b3fb4a673cf5599936df7f5eb2d2fcdc399fa4",
+      "sha256": "9cb872d25b0cedfb37c88059825b9134290be06c7d6250bc5842e6a373fa2a34",
       "change": "changed",
       "error": null,
       "policy_facts": null,
