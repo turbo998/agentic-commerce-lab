@@ -361,6 +361,11 @@ as canonical-payload SHA-256 for single-value comparison.
 Adds `gate_health.blocking_reasons_delta_change_state_payload_fingerprint_version`
 as fixed version metadata for fingerprint compatibility branching.
 
+**Stage 1724 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta change-state payload fingerprint identifier (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-payload-fingerprint-id.en.md)
+| [source-monitor gate_health 阻塞原因增量变化状态载荷指纹标识符（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-payload-fingerprint-id.md).
+Adds `gate_health.blocking_reasons_delta_change_state_payload_fingerprint_id`
+as versioned `<fingerprint_version>:<fingerprint>` key.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
