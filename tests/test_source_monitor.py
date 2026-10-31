@@ -1,5 +1,6 @@
 """Offline tests for source provenance and visible fetch failures."""
 
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -295,6 +296,7 @@ class MonitorTests(unittest.TestCase):
                     "cross_source_mismatch": [],
                 },
             )
+            self.assertEqual(len(report["gate_health"]["blocking_fingerprint"]), 64)
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -664,6 +666,21 @@ class MonitorTests(unittest.TestCase):
                 "cross_source_mismatch": [],
             },
         )
+        expected_fingerprint = hashlib.sha256(
+            json.dumps(
+                {
+                    "blocking_dimensions": {
+                        "observation_errors": ["b"],
+                        "policy_errors": ["c"],
+                        "cross_source_mismatch": [],
+                    },
+                    "blocking_reasons": ["observation_errors", "policy_errors"],
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+        self.assertEqual(gate_health["blocking_fingerprint"], expected_fingerprint)
         self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
@@ -685,6 +702,19 @@ class MonitorTests(unittest.TestCase):
             },
         )
         self.assertTrue(gate_health["blocking"])
+
+    def test_summarize_gate_health_blocking_fingerprint_changes_with_reasons(self) -> None:
+        first = summarize_gate_health(
+            [],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+        )
+        second = summarize_gate_health(
+            [Observation("x", "u", "f", "error", None, "unknown", "offline")],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+        )
+        self.assertNotEqual(first["blocking_fingerprint"], second["blocking_fingerprint"])
 
     def test_report_schema_version_is_stable(self) -> None:
         self.assertEqual(REPORT_SCHEMA_VERSION, "source-monitor-report-v1")
