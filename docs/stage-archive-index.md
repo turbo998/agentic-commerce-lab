@@ -495,6 +495,11 @@ and `StripeObservationPreview.previous_phase` / `next_phase`.
 Adds `MandateRevocationPreview` (`CheckoutStore.preview_revoke()`), `ApprovalRevocationPreview` (`PaymentApprovalStore.preview_revoke()`),
 and `SignerRevocationPreview` (`MerchantSignerStore.preview_revoke()`).
 
+**Stage 1751 / 2026-11-01:** [Checkout mandate, payment approval, and merchant signer provisioning lock-free single-SELECT dry-run previews (EN)](research/2026-11-01-mandate-approval-and-signer-grant-dry-run-preview.en.md)
+| [结账授权、支付审批与商户签名签发的无锁单 SELECT 预检（MandateGrantPreview / ApprovalGrantPreview / SignerGrantPreview）（中文）](research/2026-11-01-mandate-approval-and-signer-grant-dry-run-preview.md).
+Adds `MandateGrantPreview` (`CheckoutStore.preview_approve()`), `ApprovalGrantPreview` (`PaymentApprovalStore.preview_approve()`),
+and `SignerGrantPreview` (`MerchantSignerStore.preview_allow()`).
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

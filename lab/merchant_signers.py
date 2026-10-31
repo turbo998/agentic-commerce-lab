@@ -384,6 +384,28 @@ class SignerRevocationPreview:
             )
 
 
+@dataclass(frozen=True)
+class SignerGrantPreview:
+    """Single-SELECT read-only dry-run preview of MerchantSignerStore.allow()."""
+
+    scope: MerchantSignerScope
+    projected_status: MerchantSignerPermissionStatus
+    would_record: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, MerchantSignerScope):
+            raise MerchantSignerError("A trusted MerchantSignerScope is required.")
+        expected_projected = MerchantSignerPermissionStatus(self.scope, "active")
+        if self.projected_status != expected_projected:
+            raise MerchantSignerError(
+                "projected_status must match active MerchantSignerPermissionStatus for scope."
+            )
+        if type(self.would_record) is not bool or not self.would_record:
+            raise MerchantSignerError(
+                "would_record must be True for a valid SignerGrantPreview."
+            )
+
+
 class MerchantSignerStore:
     """Trusted-operator allow/revoke metadata; never an agent tool or key directory.
 
@@ -461,6 +483,25 @@ class MerchantSignerStore:
             ).fetchone():
                 raise MerchantSignerError("Signer permission already recorded; replacement is forbidden.")
             db.execute("INSERT INTO merchant_signer_permissions VALUES (?,?,?,?,0)", scope.key)
+
+    def preview_allow(self, scope: MerchantSignerScope) -> SignerGrantPreview:
+        """Preview allow() in one lock-free SELECT without mutating merchant_signer_permissions."""
+        self._require_scope(scope)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT 1 FROM merchant_signer_permissions"
+                " WHERE tenant_id=? AND merchant=? AND target_uri=? AND key_id=?",
+                scope.key,
+            ).fetchone()
+        if row is not None:
+            raise MerchantSignerError(
+                "Signer permission already recorded; replacement is forbidden."
+            )
+        return SignerGrantPreview(
+            scope=scope,
+            projected_status=MerchantSignerPermissionStatus(scope, "active"),
+            would_record=True,
+        )
 
     def revoke(self, scope: MerchantSignerScope) -> None:
         """Irreversibly revoke an existing scope; repeated revocation is idempotent."""

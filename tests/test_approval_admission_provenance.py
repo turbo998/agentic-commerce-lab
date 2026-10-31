@@ -20,6 +20,7 @@ from lab.merchant_signers import (
     MerchantSignerScope,
     MerchantSignerStore,
     SignerAdmissionPreview,
+    SignerGrantPreview,
     SignerRevocationPreview,
     TimedSignerAdmission,
 )
@@ -27,6 +28,7 @@ from lab.payment_approvals import (
     ApprovalAdmission,
     ApprovalAdmissionPreview,
     ApprovalAdmissionProvenance,
+    ApprovalGrantPreview,
     ApprovalRevocationPreview,
     PaymentApprovalError,
     PaymentApprovalStatus,
@@ -1163,6 +1165,91 @@ class ApprovalAdmissionProvenanceTests(unittest.TestCase):
             with self.subTest(bad_sig_kwargs=bad_sig_kwargs):
                 with self.assertRaises(MerchantSignerError):
                     replace(sig_rev, **bad_sig_kwargs)  # type: ignore[arg-type]
+
+        # 3. PaymentApprovalStore.preview_approve() and MerchantSignerStore.preview_allow()
+        fresh_op = replace(self.operation, approval_id="fresh-approval", operation_id="fresh-op")
+        fresh_scope = replace(scope, key_id="fresh-key-2026-11")
+
+        grant_app_stmts: list[str] = []
+
+        def traced_grant_app_connect() -> sqlite3.Connection:
+            db = orig_app_connect()
+            db.set_trace_callback(grant_app_stmts.append)
+            return db
+
+        with patch.object(self.approvals, "_connect", side_effect=traced_grant_app_connect):
+            app_grant = self.approvals.preview_approve(fresh_op, expires_at=APPROVAL_EXPIRY)
+        sql_grant_app = [
+            s.strip().upper()
+            for s in grant_app_stmts
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_grant_app), 1)
+        self.assertTrue(sql_grant_app[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_grant_app[0])
+
+        self.assertTrue(app_grant.would_record)
+        self.assertEqual(
+            app_grant.projected_status,
+            PaymentApprovalStatus(fresh_op.fingerprint, APPROVAL_EXPIRY, "active"),
+        )
+        self.assertIsNone(self.approvals.read_approval(fresh_op))
+
+        # Duplicate approval fails closed in preview_approve()
+        with self.assertRaisesRegex(PaymentApprovalError, "already recorded"):
+            self.approvals.preview_approve(self.operation, expires_at=APPROVAL_EXPIRY)
+
+        for bad_grant_app_kwargs in (
+            {"operation": "bad"},
+            {"expires_at": 0},
+            {"projected_status": app_rev.projected_status},
+            {"would_record": False},
+            {"would_record": 1},
+        ):
+            with self.subTest(bad_grant_app_kwargs=bad_grant_app_kwargs):
+                with self.assertRaises(PaymentApprovalError):
+                    replace(app_grant, **bad_grant_app_kwargs)  # type: ignore[arg-type]
+
+        grant_sig_stmts: list[str] = []
+
+        def traced_grant_sig_connect() -> sqlite3.Connection:
+            db = orig_sig_connect()
+            db.set_trace_callback(grant_sig_stmts.append)
+            return db
+
+        with patch.object(signers, "_connect", side_effect=traced_grant_sig_connect):
+            sig_grant = signers.preview_allow(fresh_scope)
+        sql_grant_sig = [
+            s.strip().upper()
+            for s in grant_sig_stmts
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_grant_sig), 1)
+        self.assertTrue(sql_grant_sig[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_grant_sig[0])
+
+        self.assertTrue(sig_grant.would_record)
+        self.assertEqual(
+            sig_grant.projected_status,
+            MerchantSignerPermissionStatus(fresh_scope, "active"),
+        )
+        self.assertIsNone(signers.read_permission(fresh_scope))
+
+        # Duplicate signer scope fails closed in preview_allow()
+        with self.assertRaisesRegex(MerchantSignerError, "already recorded"):
+            signers.preview_allow(scope)
+
+        for bad_grant_sig_kwargs in (
+            {"scope": "bad"},
+            {"projected_status": sig_rev.projected_status},
+            {"would_record": False},
+            {"would_record": 1},
+        ):
+            with self.subTest(bad_grant_sig_kwargs=bad_grant_sig_kwargs):
+                with self.assertRaises(MerchantSignerError):
+                    replace(sig_grant, **bad_grant_sig_kwargs)  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":
