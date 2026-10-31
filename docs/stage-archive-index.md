@@ -286,6 +286,11 @@ Adds `gate_health.blocking_reasons_delta_fingerprint` with version
 Adds `gate_health.blocking_reasons_delta_event` so downstream routers can quickly branch on whether
 reason-level deltas are present, without inspecting delta arrays.
 
+**Stage 1709 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta payload telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload.en.md)
+| [source-monitor gate_health 阻塞原因增量载荷信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload.md).
+Adds `gate_health.blocking_reasons_delta_payload` to bundle reason-delta event state, prior/current sets,
+set differences, and deduplication fingerprint in one object for single-read downstream routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
