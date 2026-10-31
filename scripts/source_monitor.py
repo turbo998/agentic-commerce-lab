@@ -410,6 +410,20 @@ def previous_source_facts(
     return None
 
 
+def previous_blocking_state_id(directory: Path, *, before_date: str) -> str | None:
+    """Return the latest gate-health blocking state id before the target date."""
+    for path in sorted(directory.glob("*-sources.json"), reverse=True):
+        if path.name[:10] >= before_date:
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        gate_health = report.get("gate_health")
+        if isinstance(gate_health, dict):
+            state_id = gate_health.get("blocking_state_id")
+            if isinstance(state_id, str) and state_id:
+                return state_id
+    return None
+
+
 def spt_country_list_check(observations: list[Observation]) -> dict[str, object]:
     """Compare seller/connect SPT country-list facts without asserting release conclusions."""
     by_id = {item.id: item for item in observations}
@@ -584,6 +598,7 @@ def summarize_gate_health(
     observations: list[Observation],
     cross_source_summary: dict[str, int | bool],
     cross_source_partitions: dict[str, list[str]],
+    previous_blocking_state_id: str | None = None,
 ) -> dict[str, int | bool | list[str]]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_error_sources = [item.id for item in observations if item.status == "error"]
@@ -617,6 +632,11 @@ def summarize_gate_health(
         ).encode("utf-8")
     ).hexdigest()
     blocking_state_id = f"{BLOCKING_FINGERPRINT_VERSION}:{blocking_fingerprint}"
+    blocking_state_transition = (
+        "baseline" if previous_blocking_state_id is None else (
+            "unchanged" if previous_blocking_state_id == blocking_state_id else "changed"
+        )
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -634,6 +654,8 @@ def summarize_gate_health(
         "blocking_fingerprint_version": BLOCKING_FINGERPRINT_VERSION,
         "blocking_fingerprint": blocking_fingerprint,
         "blocking_state_id": blocking_state_id,
+        "blocking_state_previous": previous_blocking_state_id,
+        "blocking_state_transition": blocking_state_transition,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
@@ -660,6 +682,9 @@ def main() -> int:
             source_id="stripe-spt-connect", parser_version="stripe-spt-connect-facts-v1",
         ),
     }
+    previous_gate_blocking_state_id = previous_blocking_state_id(
+        args.output_dir, before_date=str(now.date()),
+    )
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
             executor.map(
@@ -682,7 +707,10 @@ def main() -> int:
     observation_summary = summarize_observation_changes(observations)
     observation_partitions = partition_observations(observations)
     gate_health = summarize_gate_health(
-        observations, cross_source_summary, cross_source_partitions,
+        observations,
+        cross_source_summary,
+        cross_source_partitions,
+        previous_blocking_state_id=previous_gate_blocking_state_id,
     )
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,
