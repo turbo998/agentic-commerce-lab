@@ -302,6 +302,13 @@ class MonitorTests(unittest.TestCase):
                 BLOCKING_FINGERPRINT_VERSION,
             )
             self.assertEqual(len(report["gate_health"]["blocking_fingerprint"]), 64)
+            self.assertEqual(
+                report["gate_health"]["blocking_state_id"],
+                (
+                    f"{BLOCKING_FINGERPRINT_VERSION}:"
+                    f"{report['gate_health']['blocking_fingerprint']}"
+                ),
+            )
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -691,6 +698,10 @@ class MonitorTests(unittest.TestCase):
         ).hexdigest()
         self.assertEqual(gate_health["blocking_fingerprint"], expected_fingerprint)
         self.assertEqual(
+            gate_health["blocking_state_id"],
+            f"{BLOCKING_FINGERPRINT_VERSION}:{expected_fingerprint}",
+        )
+        self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
         self.assertTrue(gate_health["blocking"])
@@ -724,9 +735,20 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": [], "unavailable": []},
         )
         self.assertNotEqual(first["blocking_fingerprint"], second["blocking_fingerprint"])
+        self.assertNotEqual(first["blocking_state_id"], second["blocking_state_id"])
 
     def test_blocking_fingerprint_version_is_stable(self) -> None:
         self.assertEqual(BLOCKING_FINGERPRINT_VERSION, "sha256-json-v1")
+
+    def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:
+        gate_health = summarize_gate_health(
+            [],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+        )
+        self.assertTrue(
+            gate_health["blocking_state_id"].startswith(f"{BLOCKING_FINGERPRINT_VERSION}:")
+        )
 
     def test_report_schema_version_is_stable(self) -> None:
         self.assertEqual(REPORT_SCHEMA_VERSION, "source-monitor-report-v1")
