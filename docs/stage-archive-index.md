@@ -301,6 +301,11 @@ consumers can bind reason-delta payload parsing to an explicit versioned contrac
 Adds `gate_health.blocking_reasons_delta_payload_id` as a version-prefixed single-value identifier
 (`${payload_version}:${delta_fingerprint}`) for downstream idempotent routing and deduplication.
 
+**Stage 1712 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta counts telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-counts.en.md)
+| [source-monitor gate_health 阻塞原因增量计数信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-counts.md).
+Adds `gate_health.blocking_reasons_delta_counts` with `{previous,current,added,removed}` counts
+for low-overhead downstream aggregation without expanding full reason arrays.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
