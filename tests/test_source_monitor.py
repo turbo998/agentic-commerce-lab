@@ -11,6 +11,7 @@ from urllib.error import URLError
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
     BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
+    BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_FINGERPRINT_VERSION,
     MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
@@ -816,6 +817,10 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         )
         self.assertIsNone(gate_health["blocking_reasons_delta_fingerprint"])
+        self.assertEqual(
+            gate_health["blocking_reasons_delta_payload_version"],
+            BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
+        )
         self.assertIsNone(gate_health["blocking_reasons_delta_payload"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
@@ -910,6 +915,10 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
         self.assertEqual(
+            second["blocking_reasons_delta_payload_version"],
+            BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
+        )
+        self.assertEqual(
             second["blocking_reasons_delta_payload"],
             {
                 "event": True,
@@ -962,6 +971,10 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
         self.assertEqual(
+            second["blocking_reasons_delta_payload_version"],
+            BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
+        )
+        self.assertEqual(
             second["blocking_reasons_delta_payload"],
             {
                 "event": False,
@@ -1013,6 +1026,11 @@ class MonitorTests(unittest.TestCase):
     def test_blocking_reasons_delta_fingerprint_version_is_stable(self) -> None:
         self.assertEqual(
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION, "sha256-reasons-delta-v1",
+        )
+
+    def test_blocking_reasons_delta_payload_version_is_stable(self) -> None:
+        self.assertEqual(
+            BLOCKING_REASONS_DELTA_PAYLOAD_VERSION, "reasons-delta-payload-v1",
         )
 
     def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:

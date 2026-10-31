@@ -291,6 +291,11 @@ reason-level deltas are present, without inspecting delta arrays.
 Adds `gate_health.blocking_reasons_delta_payload` to bundle reason-delta event state, prior/current sets,
 set differences, and deduplication fingerprint in one object for single-read downstream routing.
 
+**Stage 1710 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta payload-version telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload-version.en.md)
+| [source-monitor gate_health 阻塞原因增量载荷版本信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload-version.md).
+Adds `gate_health.blocking_reasons_delta_payload_version` (`reasons-delta-payload-v1`) so downstream
+consumers can bind reason-delta payload parsing to an explicit versioned contract.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
