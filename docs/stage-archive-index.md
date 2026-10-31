@@ -221,6 +221,11 @@ bind comparison logic to an explicit digest-contract version.
 Adds `gate_health.blocking_state_id` as `<blocking_fingerprint_version>:<blocking_fingerprint>`
 for single-field, version-aware gate-state comparisons.
 
+**Stage 1696 / 2026-10-31:** [Source monitor gate-health blocking state transition telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-state-transition.en.md)
+| [source-monitor gate_health 阻塞状态迁移信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-state-transition.md).
+Adds `gate_health.blocking_state_previous` and `gate_health.blocking_state_transition`
+(`baseline`/`unchanged`/`changed`) to express state drift against the latest prior daily snapshot.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
