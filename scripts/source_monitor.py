@@ -420,7 +420,7 @@ def previous_blocking_state_id(directory: Path, *, before_date: str) -> str | No
 
 def previous_blocking_state_snapshot(
     directory: Path, *, before_date: str,
-) -> dict[str, str] | None:
+) -> dict[str, str | list[str]] | None:
     """Return the latest prior blocking-state id plus checked_at timestamp."""
     for path in sorted(directory.glob("*-sources.json"), reverse=True):
         if path.name[:10] >= before_date:
@@ -434,11 +434,18 @@ def previous_blocking_state_snapshot(
                 isinstance(state_id, str) and state_id
                 and isinstance(checked_at, str) and checked_at
             ):
-                return {
+                snapshot: dict[str, str | list[str]] = {
                     "state_id": state_id,
                     "checked_at": checked_at,
                     "report_date": path.name[:10],
                 }
+                prior_reasons = gate_health.get("blocking_reasons")
+                if (
+                    isinstance(prior_reasons, list)
+                    and all(isinstance(item, str) for item in prior_reasons)
+                ):
+                    snapshot["blocking_reasons"] = list(prior_reasons)
+                return snapshot
     return None
 
 
@@ -619,6 +626,7 @@ def summarize_gate_health(
     previous_blocking_state_id: str | None = None,
     previous_blocking_checked_at: str | None = None,
     previous_blocking_report_date: str | None = None,
+    previous_blocking_reasons: list[str] | None = None,
 ) -> dict[str, int | bool | list[str] | str | None]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_error_sources = [item.id for item in observations if item.status == "error"]
@@ -698,6 +706,14 @@ def summarize_gate_health(
             "reason": blocking_state_transition_reason,
         }
     )
+    blocking_reasons_added = (
+        None if previous_blocking_reasons is None
+        else [reason for reason in blocking_reasons if reason not in previous_blocking_reasons]
+    )
+    blocking_reasons_removed = (
+        None if previous_blocking_reasons is None
+        else [reason for reason in previous_blocking_reasons if reason not in blocking_reasons]
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -727,6 +743,9 @@ def summarize_gate_health(
         "blocking_transition_event_payload": blocking_transition_event_payload,
         "blocking_transition_fingerprint_version": BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         "blocking_transition_fingerprint": blocking_transition_fingerprint,
+        "blocking_reasons_previous": previous_blocking_reasons,
+        "blocking_reasons_added": blocking_reasons_added,
+        "blocking_reasons_removed": blocking_reasons_removed,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
@@ -765,6 +784,9 @@ def main() -> int:
     previous_gate_blocking_report_date = (
         None if previous_gate_state is None else previous_gate_state["report_date"]
     )
+    previous_gate_blocking_reasons = (
+        None if previous_gate_state is None else previous_gate_state.get("blocking_reasons")
+    )
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
             executor.map(
@@ -793,6 +815,11 @@ def main() -> int:
         previous_blocking_state_id=previous_gate_blocking_state_id,
         previous_blocking_checked_at=previous_gate_blocking_checked_at,
         previous_blocking_report_date=previous_gate_blocking_report_date,
+        previous_blocking_reasons=(
+            previous_gate_blocking_reasons
+            if isinstance(previous_gate_blocking_reasons, list)
+            else None
+        ),
     )
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,

@@ -140,6 +140,29 @@ class MonitorTests(unittest.TestCase):
                 },
             )
 
+    def test_previous_blocking_state_snapshot_includes_blocking_reasons(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "2026-10-11-sources.json").write_text(
+                json.dumps({
+                    "checked_at": "2026-10-11T01:00:00+08:00",
+                    "gate_health": {
+                        "blocking_state_id": "sha256-json-v1:bbb",
+                        "blocking_reasons": ["policy_errors"],
+                    },
+                }),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                previous_blocking_state_snapshot(root, before_date="2026-10-12"),
+                {
+                    "state_id": "sha256-json-v1:bbb",
+                    "checked_at": "2026-10-11T01:00:00+08:00",
+                    "report_date": "2026-10-11",
+                    "blocking_reasons": ["policy_errors"],
+                },
+            )
+
     def test_checked_registry_loads(self) -> None:
         sources = load_sources(Path("research") / "sources.json")
         self.assertGreaterEqual(len(sources), 10)
@@ -783,6 +806,9 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
         )
         self.assertIsNone(gate_health["blocking_transition_event_payload"])
+        self.assertIsNone(gate_health["blocking_reasons_previous"])
+        self.assertIsNone(gate_health["blocking_reasons_added"])
+        self.assertIsNone(gate_health["blocking_reasons_removed"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -823,6 +849,7 @@ class MonitorTests(unittest.TestCase):
             previous_blocking_state_id=first["blocking_state_id"],
             previous_blocking_checked_at="2026-10-30T23:00:00+08:00",
             previous_blocking_report_date="2026-10-30",
+            previous_blocking_reasons=first["blocking_reasons"],
         )
         self.assertNotEqual(first["blocking_fingerprint"], second["blocking_fingerprint"])
         self.assertNotEqual(first["blocking_state_id"], second["blocking_state_id"])
@@ -865,6 +892,9 @@ class MonitorTests(unittest.TestCase):
             second["blocking_transition_event_payload_version"],
             BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
         )
+        self.assertEqual(second["blocking_reasons_previous"], [])
+        self.assertEqual(second["blocking_reasons_added"], ["observation_errors"])
+        self.assertEqual(second["blocking_reasons_removed"], [])
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -880,6 +910,7 @@ class MonitorTests(unittest.TestCase):
             previous_blocking_state_id=first["blocking_state_id"],
             previous_blocking_checked_at="2026-10-30T23:00:00+08:00",
             previous_blocking_report_date="2026-10-30",
+            previous_blocking_reasons=first["blocking_reasons"],
         )
         self.assertEqual(second["blocking_state_previous"], first["blocking_state_id"])
         self.assertEqual(
@@ -896,6 +927,9 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
         )
         self.assertIsNone(second["blocking_transition_event_payload"])
+        self.assertEqual(second["blocking_reasons_previous"], [])
+        self.assertEqual(second["blocking_reasons_added"], [])
+        self.assertEqual(second["blocking_reasons_removed"], [])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
