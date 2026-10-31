@@ -47,12 +47,39 @@ class InboxReceipt:
     payload_sha256: str
     requires_readback: bool = True
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.event_id, str) or re.fullmatch(r"evt_[A-Za-z0-9_]+", self.event_id) is None:
+            raise StripeInboxError("Stored receipt Event ID is invalid.")
+        if (
+            not isinstance(self.event_type, str)
+            or self.event_type not in ("payment_intent.succeeded", "payment_intent.payment_failed")
+        ):
+            raise StripeInboxError("Stored receipt event type is invalid.")
+        if (
+            not isinstance(self.provider_reference, str)
+            or re.fullmatch(r"pi_[A-Za-z0-9_]+", self.provider_reference) is None
+        ):
+            raise StripeInboxError("Stored receipt object reference is invalid.")
+        if (
+            not isinstance(self.payload_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.payload_sha256) is None
+        ):
+            raise StripeInboxError("Stored receipt payload digest is invalid.")
+        if type(self.requires_readback) is not bool:
+            raise StripeInboxError("Receipt requires_readback flag must be boolean.")
+
 
 @dataclass(frozen=True)
 class InboxDecision:
     receipt: InboxReceipt
     first_seen: bool
     body_matches_first: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.receipt, InboxReceipt):
+            raise StripeInboxError("An inbox decision requires a persisted receipt.")
+        if type(self.first_seen) is not bool or type(self.body_matches_first) is not bool:
+            raise StripeInboxError("Inbox decision flags must be boolean.")
 
 
 def _require_worker_id(worker_id: str) -> None:
@@ -301,11 +328,12 @@ class StripeEventInbox:
         key = self._require_event_lookup(scope, event_id)
         with closing(self._connect()) as db:
             row = db.execute(
-                "SELECT i.*,c.worker_id,c.generation,c.state FROM stripe_event_inbox i"
-                " JOIN stripe_readback_claims c"
+                "SELECT c.event_id,i.event_type,i.provider_reference,i.payload_sha256,"
+                "c.worker_id,c.generation,c.state FROM stripe_readback_claims c"
+                " LEFT JOIN stripe_event_inbox i"
                 " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
-                " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
-                " AND i.livemode=? AND i.event_id=?",
+                " WHERE c.tenant_id=? AND c.endpoint_id=? AND c.provider_account=?"
+                " AND c.livemode=? AND c.event_id=?",
                 key,
             ).fetchone()
             if row is None:
@@ -345,13 +373,14 @@ class StripeEventInbox:
             ).fetchone()
             if row is None:
                 return None
+            receipt = self._receipt(row)
             db.execute(
                 "INSERT INTO stripe_readback_claims"
                 " (tenant_id,endpoint_id,provider_account,livemode,event_id,"
                 "worker_id,generation,state) VALUES (?,?,?,?,?,?,1,'active')",
-                (*scope.key, row["event_id"], worker_id),
+                (*scope.key, receipt.event_id, worker_id),
             )
-            return ReadbackClaim(scope, self._receipt(row), worker_id, 1)
+            return ReadbackClaim(scope, receipt, worker_id, 1)
 
     def _current_claim(self, db: sqlite3.Connection, claim: ReadbackClaim) -> sqlite3.Row:
         if not isinstance(claim, ReadbackClaim):
@@ -369,6 +398,8 @@ class StripeEventInbox:
             or row["generation"] != claim.generation or self._receipt(row) != claim.receipt
         ):
             raise StripeInboxError("Readback claim binding is stale or invalid.")
+        if row["state"] not in ("active", "handled"):
+            raise StripeInboxError("Stored readback claim state is invalid.")
         return row
 
     def handoff(self, claim: ReadbackClaim, worker_id: str) -> ReadbackClaim:
@@ -420,11 +451,12 @@ class StripeEventInbox:
             raise StripeInboxError("Active-claim limit must be an integer from 1 to 1000.")
         with closing(self._connect()) as db:
             rows = db.execute(
-                "SELECT i.*,c.worker_id,c.generation FROM stripe_event_inbox i"
-                " JOIN stripe_readback_claims c"
+                "SELECT c.event_id,i.event_type,i.provider_reference,i.payload_sha256,"
+                "c.worker_id,c.generation FROM stripe_readback_claims c"
+                " LEFT JOIN stripe_event_inbox i"
                 " USING(tenant_id,endpoint_id,provider_account,livemode,event_id)"
-                " WHERE i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?"
-                " AND i.livemode=? AND c.state='active' ORDER BY i.rowid LIMIT ?",
+                " WHERE c.tenant_id=? AND c.endpoint_id=? AND c.provider_account=?"
+                " AND c.livemode=? AND c.state='active' ORDER BY i.rowid, c.rowid LIMIT ?",
                 (*scope.key, limit),
             ).fetchall()
             return tuple(
