@@ -246,6 +246,11 @@ Adds `gate_health.blocking_state_transition_reason`
 Adds `gate_health.blocking_transition_fingerprint` with version
 `gate_health.blocking_transition_fingerprint_version` (`sha256-transition-v1`) for edge-level transition deduplication.
 
+**Stage 1701 / 2026-10-31:** [Source monitor gate-health transition event telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-event.en.md)
+| [source-monitor gate_health 迁移事件信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-event.md).
+Adds `gate_health.blocking_transition_event` as a direct boolean event flag
+(`true` when transition is `changed`) for alert routing without string parsing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
