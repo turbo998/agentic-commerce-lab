@@ -287,6 +287,14 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(report["gate_health"]["blocking_sources"], [self.source.id])
             self.assertEqual(report["gate_health"]["policy_error_sources"], [])
             self.assertEqual(report["gate_health"]["cross_source_blocking_checks"], [])
+            self.assertEqual(
+                report["gate_health"]["blocking_dimensions"],
+                {
+                    "observation_errors": [self.source.id],
+                    "policy_errors": [],
+                    "cross_source_mismatch": [],
+                },
+            )
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -649,6 +657,14 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(gate_health["cross_source_mismatch"], 0)
         self.assertEqual(gate_health["cross_source_blocking_checks"], [])
         self.assertEqual(
+            gate_health["blocking_dimensions"],
+            {
+                "observation_errors": ["b"],
+                "policy_errors": ["c"],
+                "cross_source_mismatch": [],
+            },
+        )
+        self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
         self.assertTrue(gate_health["blocking"])
@@ -660,6 +676,14 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": ["b", "d"], "unavailable": ["c"]},
         )
         self.assertEqual(gate_health["cross_source_blocking_checks"], ["b", "d"])
+        self.assertEqual(
+            gate_health["blocking_dimensions"],
+            {
+                "observation_errors": [],
+                "policy_errors": [],
+                "cross_source_mismatch": ["b", "d"],
+            },
+        )
         self.assertTrue(gate_health["blocking"])
 
     def test_report_schema_version_is_stable(self) -> None:

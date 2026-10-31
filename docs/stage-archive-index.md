@@ -202,6 +202,11 @@ are directly consumable without per-observation joins.
 | [source-monitor gate_health 阻塞源集合信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-sources.md).
 Adds `gate_health.blocking_sources` as a deduplicated union of source-level error IDs for direct blocker routing.
 
+**Stage 1692 / 2026-10-31:** [Source monitor gate-health blocking dimensions telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-dimensions.en.md)
+| [source-monitor gate_health 阻塞维度分组信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-dimensions.md).
+Adds `gate_health.blocking_dimensions` with per-dimension blocker lists
+(`observation_errors`/`policy_errors`/`cross_source_mismatch`) for deterministic routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
