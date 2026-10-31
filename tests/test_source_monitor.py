@@ -10,6 +10,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
+    BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
     BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_FINGERPRINT_VERSION,
     MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
@@ -810,6 +811,11 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_added"])
         self.assertIsNone(gate_health["blocking_reasons_removed"])
         self.assertEqual(
+            gate_health["blocking_reasons_delta_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
+        )
+        self.assertIsNone(gate_health["blocking_reasons_delta_fingerprint"])
+        self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         )
@@ -895,6 +901,11 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_previous"], [])
         self.assertEqual(second["blocking_reasons_added"], ["observation_errors"])
         self.assertEqual(second["blocking_reasons_removed"], [])
+        self.assertEqual(
+            second["blocking_reasons_delta_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
+        )
+        self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -930,6 +941,11 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_previous"], [])
         self.assertEqual(second["blocking_reasons_added"], [])
         self.assertEqual(second["blocking_reasons_removed"], [])
+        self.assertEqual(
+            second["blocking_reasons_delta_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
+        )
+        self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -967,6 +983,11 @@ class MonitorTests(unittest.TestCase):
 
     def test_blocking_transition_event_payload_version_is_stable(self) -> None:
         self.assertEqual(BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION, "event-payload-v1")
+
+    def test_blocking_reasons_delta_fingerprint_version_is_stable(self) -> None:
+        self.assertEqual(
+            BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION, "sha256-reasons-delta-v1",
+        )
 
     def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:
         gate_health = summarize_gate_health(

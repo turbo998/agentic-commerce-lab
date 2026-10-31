@@ -276,6 +276,11 @@ consumers can bind payload-schema parsing to an explicit version contract.
 Adds `gate_health.blocking_reasons_previous/added/removed` so downstream pipelines can consume
 reason-level changes directly without reconstructing diffs across snapshots.
 
+**Stage 1707 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta fingerprint telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-fingerprint.en.md)
+| [source-monitor gate_health 阻塞原因增量指纹信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-fingerprint.md).
+Adds `gate_health.blocking_reasons_delta_fingerprint` with version
+`gate_health.blocking_reasons_delta_fingerprint_version` (`sha256-reasons-delta-v1`) for reason-delta deduplication.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
