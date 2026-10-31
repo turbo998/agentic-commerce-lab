@@ -21,13 +21,21 @@ from lab.payment_approvals import (
     PaymentApprovalStatus,
     PaymentApprovalStore,
 )
-from lab.payment_attempts import AttemptConflict, PaymentAttempt, PaymentAttemptJournal, PaymentOperation
+from lab.payment_attempts import (
+    AttemptConflict,
+    AttemptPhase,
+    Observation,
+    PaymentAttempt,
+    PaymentAttemptJournal,
+    PaymentOperation,
+)
 from lab.stripe_inbox import (
     InboxEventPhase,
     InboxReceipt,
     ReadbackClaim,
     ReadbackClaimStatus,
     StripeEventInbox,
+    StripeInboxError,
     StripeInboxScope,
 )
 from lab.stripe_observation import validate_stripe_intent
@@ -116,6 +124,10 @@ class StripeReadbackProvenance:
             raise StripeReadbackError(
                 "Handled readback claim requires a PaymentIntent-associated attempt."
             )
+
+    @property
+    def attempt_phase(self) -> AttemptPhase | None:
+        return None if self.attempt is None else self.attempt.phase
 
     @property
     def event_phase(self) -> InboxEventPhase | None:
@@ -445,6 +457,10 @@ class StripeLifecycleProvenance:
         if self.approval_admission is not None:
             return "approval_admission"
         return "direct_reservation"
+
+    @property
+    def attempt_phase(self) -> AttemptPhase | None:
+        return None if self.attempt is None else self.attempt.phase
 
     @property
     def event_phase(self) -> InboxEventPhase | None:
@@ -861,3 +877,245 @@ def accept_stripe_readback(
         )
         inbox._finish_in_transaction(db, claim)
     return result
+
+
+@dataclass(frozen=True)
+class StripeReadbackAcceptancePreview:
+    """Single-SELECT read-only dry-run preview of accept_stripe_readback()."""
+
+    operation: PaymentOperation
+    claim: ReadbackClaim
+    previous_attempt: PaymentAttempt
+    observation: Observation
+    projected_attempt: PaymentAttempt
+    projected_claim_status: ReadbackClaimStatus
+    would_mutate_attempt: bool
+    would_mark_claim_handled: bool
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.operation, PaymentOperation)
+            or not isinstance(self.claim, ReadbackClaim)
+        ):
+            raise StripeReadbackError(
+                "Trusted inbox, journal, readback claim and payment operation are required."
+            )
+        if (
+            self.claim.scope.tenant_id != self.operation.tenant_id
+            or self.claim.scope.provider_account != self.operation.provider_account
+            or self.operation.provider
+            != ("stripe:live" if self.claim.scope.livemode else "stripe:test")
+        ):
+            raise StripeReadbackError(
+                "Claim scope differs from the bound payment operation."
+            )
+        if not isinstance(self.previous_attempt, PaymentAttempt):
+            raise StripeReadbackError("previous_attempt must be a PaymentAttempt.")
+        _ = self.previous_attempt.phase
+        if self.previous_attempt.provider_reference != self.claim.receipt.provider_reference:
+            raise StripeReadbackError(
+                "Receipt differs from the trusted PaymentIntent association."
+            )
+        if (
+            not isinstance(self.observation, str)
+            or self.observation not in ("pending", "succeeded", "failed")
+        ):
+            raise ValueError("Observation must be pending, succeeded, or failed.")
+        if not isinstance(self.projected_attempt, PaymentAttempt):
+            raise StripeReadbackError("projected_attempt must be a PaymentAttempt.")
+        _ = self.projected_attempt.phase
+        target_outcome = "unknown" if self.observation == "pending" else self.observation
+        if self.previous_attempt.outcome in ("succeeded", "failed") and (
+            target_outcome != self.previous_attempt.outcome
+        ):
+            raise AttemptConflict("Conflicting terminal payment observation.")
+        expected_attempt = PaymentAttempt(
+            target_outcome, self.claim.receipt.provider_reference
+        )
+        if self.projected_attempt != expected_attempt:
+            raise StripeReadbackError(
+                "projected_attempt does not match the reconciled observation."
+            )
+        expected_claim_status = ReadbackClaimStatus(self.claim, "handled")
+        if self.projected_claim_status != expected_claim_status:
+            raise StripeReadbackError(
+                "projected_claim_status must mark the active claim as handled."
+            )
+        if (
+            type(self.would_mutate_attempt) is not bool
+            or type(self.would_mark_claim_handled) is not bool
+        ):
+            raise StripeReadbackError("Preview mutation flags must be booleans.")
+        if self.would_mutate_attempt != (self.projected_attempt != self.previous_attempt):
+            raise StripeReadbackError(
+                "would_mutate_attempt does not match attempt state transition."
+            )
+        if not self.would_mark_claim_handled:
+            raise StripeReadbackError(
+                "Active readback acceptance preview always marks the claim handled."
+            )
+
+    @property
+    def previous_phase(self) -> AttemptPhase:
+        return self.previous_attempt.phase
+
+    @property
+    def projected_phase(self) -> AttemptPhase:
+        return self.projected_attempt.phase
+
+    @property
+    def projected_readback_phase(self) -> StripeReadbackPhase:
+        if self.projected_attempt.is_terminal:
+            return "terminal_reconciled"
+        return "handled_pending_outcome"
+
+    def to_readback_provenance(self) -> StripeReadbackProvenance:
+        return StripeReadbackProvenance(
+            scope=self.claim.scope,
+            event_id=self.claim.receipt.event_id,
+            fingerprint=self.operation.fingerprint,
+            attempt=self.projected_attempt,
+            receipt=self.claim.receipt,
+            claim_status=self.projected_claim_status,
+        )
+
+
+def preview_accept_stripe_readback(
+    inbox: StripeEventInbox,
+    journal: PaymentAttemptJournal,
+    claim: ReadbackClaim,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    intent: Mapping[str, object],
+) -> StripeReadbackAcceptancePreview:
+    """Preview accept_stripe_readback() in one lock-free SELECT without mutating state."""
+    if (
+        not isinstance(inbox, StripeEventInbox)
+        or not isinstance(journal, PaymentAttemptJournal)
+        or not isinstance(claim, ReadbackClaim)
+        or not isinstance(operation, PaymentOperation)
+    ):
+        raise StripeReadbackError(
+            "Trusted inbox, journal, readback claim and payment operation are required."
+        )
+    if inbox.path.resolve(strict=True) != journal.path.resolve(strict=True):
+        raise StripeReadbackError("Atomic acceptance requires the same resolved SQLite file.")
+    key = (*claim.scope.key, claim.receipt.event_id)
+    with closing(inbox._connect()) as db:
+        row = db.execute(
+            """SELECT
+                i.event_id AS i_event_id,
+                i.event_type AS i_event_type,
+                i.provider_reference AS i_provider_reference,
+                i.payload_sha256 AS i_payload_sha256,
+                c.event_id AS c_event_id,
+                c.worker_id AS c_worker_id,
+                c.generation AS c_generation,
+                c.state AS c_state,
+                att.tenant_id AS att_tenant_id,
+                att.operation_id AS att_operation_id,
+                att.approval_id AS att_approval_id,
+                att.provider AS att_provider,
+                att.provider_account AS att_provider_account,
+                att.idempotency_key AS att_idempotency_key,
+                att.fingerprint AS att_fingerprint,
+                att.outcome AS att_outcome,
+                att.provider_reference AS att_provider_reference,
+                EXISTS(
+                    SELECT 1 FROM payment_attempts
+                    WHERE provider = ? AND provider_account = ? AND provider_reference = ?
+                      AND NOT (tenant_id = ? AND operation_id = ?)
+                ) AS reference_conflict
+            FROM (SELECT 1)
+            LEFT JOIN stripe_event_inbox AS i
+                ON i.tenant_id = ? AND i.endpoint_id = ?
+               AND i.provider_account = ? AND i.livemode = ? AND i.event_id = ?
+            LEFT JOIN stripe_readback_claims AS c
+                ON c.tenant_id = ? AND c.endpoint_id = ?
+               AND c.provider_account = ? AND c.livemode = ? AND c.event_id = ?
+            LEFT JOIN payment_attempts AS att
+                ON att.tenant_id = ? AND att.operation_id = ?""",
+            (
+                operation.provider,
+                operation.provider_account,
+                claim.receipt.provider_reference,
+                operation.tenant_id,
+                operation.operation_id,
+                *key,
+                *key,
+                operation.tenant_id,
+                operation.operation_id,
+            ),
+        ).fetchone()
+    assert row is not None
+    if row["c_event_id"] is None or row["i_event_id"] is None:
+        raise StripeInboxError("Readback claim is not active.")
+    stored_receipt = inbox._receipt(
+        {
+            "event_id": row["i_event_id"],
+            "event_type": row["i_event_type"],
+            "provider_reference": row["i_provider_reference"],
+            "payload_sha256": row["i_payload_sha256"],
+        }
+    )
+    c_worker, c_gen, c_state = row["c_worker_id"], row["c_generation"], row["c_state"]
+    if not isinstance(c_worker, str) or not c_worker.strip():
+        raise StripeInboxError("Stored readback claim worker is invalid.")
+    if type(c_gen) is not int or not 0 < c_gen <= 2**63 - 1:
+        raise StripeInboxError("Stored readback claim generation is invalid.")
+    if not isinstance(c_state, str) or c_state not in ("active", "handled"):
+        raise StripeInboxError("Stored readback claim state is invalid.")
+    if stored_receipt != claim.receipt:
+        raise StripeInboxError(
+            "Readback claim receipt does not match stored inbox receipt."
+        )
+    if c_worker != claim.worker_id or c_gen != claim.generation:
+        raise StripeInboxError("Stale or foreign readback claim cannot finish.")
+    if c_state != "active":
+        raise StripeReadbackError("Already-handled hints cannot authorize acceptance.")
+    if (
+        claim.scope.tenant_id != operation.tenant_id
+        or claim.scope.provider_account != operation.provider_account
+        or operation.provider != ("stripe:live" if claim.scope.livemode else "stripe:test")
+    ):
+        raise StripeReadbackError("Claim scope differs from the bound payment operation.")
+    if row["att_tenant_id"] is None:
+        raise AttemptConflict("Operation was never reserved.")
+    att_row = {
+        "fingerprint": row["att_fingerprint"],
+        "approval_id": row["att_approval_id"],
+        "provider": row["att_provider"],
+        "provider_account": row["att_provider_account"],
+        "idempotency_key": row["att_idempotency_key"],
+        "outcome": row["att_outcome"],
+        "provider_reference": row["att_provider_reference"],
+    }
+    journal._verify_row_binding(att_row, operation)
+    previous = journal._attempt(att_row)
+    if previous.provider_reference != claim.receipt.provider_reference:
+        raise StripeReadbackError(
+            "Receipt differs from the trusted PaymentIntent association."
+        )
+    observation = validate_stripe_intent(
+        operation, previous, retrieved_account=retrieved_account, intent=intent
+    )
+    if row["reference_conflict"]:
+        raise AttemptConflict("Provider reference already bound.")
+    target_outcome = "unknown" if observation == "pending" else observation
+    if previous.outcome in ("succeeded", "failed") and target_outcome != previous.outcome:
+        raise AttemptConflict("Conflicting terminal payment observation.")
+    projected_attempt = PaymentAttempt(
+        target_outcome, claim.receipt.provider_reference
+    )
+    return StripeReadbackAcceptancePreview(
+        operation=operation,
+        claim=claim,
+        previous_attempt=previous,
+        observation=observation,
+        projected_attempt=projected_attempt,
+        projected_claim_status=ReadbackClaimStatus(claim, "handled"),
+        would_mutate_attempt=projected_attempt != previous,
+        would_mark_claim_handled=True,
+    )
+

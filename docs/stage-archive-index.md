@@ -476,6 +476,10 @@ Adds `AttemptPhase`, `PaymentAttempt.phase` / `is_terminal`, `AttemptReservation
 Adds `PaymentApprovalStatus.state_at()`, `ApprovalAdmissionProvenance.path` / `attempt_phase`, `OperationAdmissionProvenance.attempt_phase`,
 `ApprovalAdmissionPreview` (`PaymentApprovalStore.preview_admit()`), and `SignerAdmissionPreview` (`MerchantSignerStore.preview_admit()`).
 
+**Stage 1747 / 2026-11-01:** [Stripe readback acceptance lock-free single-SELECT dry-run preview and cross-plane provenance phase alignment (EN)](research/2026-11-01-stripe-readback-acceptance-dry-run-preview.en.md)
+| [Stripe 回读验收无锁单 SELECT 预检（StripeReadbackAcceptancePreview）与跨平面 Provenance 相位对齐（中文）](research/2026-11-01-stripe-readback-acceptance-dry-run-preview.md).
+Adds `StripeReadbackProvenance.attempt_phase`, `StripeLifecycleProvenance.attempt_phase`, `StripeReadbackAcceptancePreview`, and `preview_accept_stripe_readback()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
