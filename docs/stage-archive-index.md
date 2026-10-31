@@ -431,6 +431,11 @@ and adds pre-connection type guards to `StripeEventInbox.handoff()` / `finish_re
 Adds `MandateStatus`, `CheckoutProvenance`, `CheckoutStore.read_mandate()`, `read_receipt()`, `find_provenance()`, and `read_provenance()`,
 and enforces fail-closed stored-row and parent-mandate invariants across `Receipt`, `revoke()`, and `execute()`.
 
+**Stage 1738 / 2026-11-01:** [Single-snapshot cross-plane Stripe lifecycle provenance inspector (EN)](research/2026-11-01-stripe-lifecycle-provenance.en.md)
+| [跨平面全生命周期（5 表 / 7 表）准入至回读单快照只读溯源审计（中文）](research/2026-11-01-stripe-lifecycle-provenance.md).
+Adds `StripeLifecycleProvenance`, `find_stripe_lifecycle_provenance()`, and `read_stripe_lifecycle_provenance()`
+to inspect 5-table (`signers=None`) or 7-table (`signers` supplied) admission-through-readback state in one lock-free `SELECT` snapshot.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
