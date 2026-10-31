@@ -828,6 +828,7 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
         )
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state"])
+        self.assertIsNone(gate_health["blocking_reasons_delta_change_state_id"])
         self.assertIsNone(gate_health["blocking_reasons_delta_direction"])
         self.assertEqual(
             gate_health["blocking_reasons_delta_payload_version"],
@@ -940,6 +941,10 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
         )
         self.assertEqual(second["blocking_reasons_delta_change_state"], "changed")
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_id"],
+            f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION}:changed",
+        )
         self.assertEqual(second["blocking_reasons_delta_direction"], "increase")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
@@ -1017,6 +1022,10 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
         )
         self.assertEqual(second["blocking_reasons_delta_change_state"], "unchanged")
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_id"],
+            f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION}:unchanged",
+        )
         self.assertEqual(second["blocking_reasons_delta_direction"], "none")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],

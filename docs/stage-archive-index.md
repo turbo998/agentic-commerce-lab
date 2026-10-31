@@ -341,6 +341,11 @@ Adds `gate_health.blocking_reasons_delta_change_state` enum
 Adds `gate_health.blocking_reasons_delta_change_state_version` as fixed
 `reasons-delta-change-state-v1` contract metadata for version-aware consumers.
 
+**Stage 1720 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta change-state identifier (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-id.en.md)
+| [source-monitor gate_health 阻塞原因增量变化状态标识符（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-id.md).
+Adds `gate_health.blocking_reasons_delta_change_state_id` as versioned
+`<change_state_version>:<change_state>` identifier for idempotent routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
