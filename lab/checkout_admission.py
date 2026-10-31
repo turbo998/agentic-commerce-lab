@@ -5,7 +5,12 @@ from dataclasses import asdict
 from typing import NoReturn
 
 from lab.json_members import unique_members
-from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
+from lab.payment_attempts import (
+    AttemptReservationPreview,
+    DispatchDecision,
+    PaymentAttemptJournal,
+    PaymentOperation,
+)
 from lab.request_binding import RequestSignatureSnapshot, require_bound_json_mutation
 
 
@@ -110,3 +115,27 @@ def reserve_signed_checkout(
         content_encoding=content_encoding, body=body,
     )
     return journal.reserve(operation)
+
+
+def preview_signed_checkout(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    signature: RequestSignatureSnapshot,
+    *,
+    expected_target_uri: str,
+    method: str,
+    target_uri: str,
+    content_type: str,
+    content_digest: str,
+    content_encoding: str | None,
+    body: bytes,
+) -> AttemptReservationPreview:
+    """Bind/match then preview reservation in one lock-free SELECT without mutating state."""
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise CheckoutAdmissionError("A trusted journal and PaymentOperation are required.")
+    validate_signed_checkout(
+        operation, signature, expected_target_uri=expected_target_uri, method=method,
+        target_uri=target_uri, content_type=content_type, content_digest=content_digest,
+        content_encoding=content_encoding, body=body,
+    )
+    return journal.preview_reserve(operation)

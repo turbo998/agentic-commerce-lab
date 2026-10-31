@@ -13,6 +13,9 @@ from unittest.mock import patch
 from lab.checkout import Checkout
 from lab.payment_attempts import (
     AttemptConflict,
+    AttemptReconciliationPreview,
+    AttemptReservationPreview,
+    DispatchDecision,
     PaymentAttempt,
     PaymentAttemptJournal,
     PaymentOperation,
@@ -254,6 +257,184 @@ class PaymentAttemptReadTests(unittest.TestCase):
         self.assertEqual(len(select_stmts), 2)
         self.assertTrue(all(stmt.startswith("SELECT ") for stmt in select_stmts))
         self.assertFalse(any("BEGIN IMMEDIATE" in stmt for stmt in statements))
+
+    def test_attempt_phase_and_preview_dataclasses_enforce_invariants(self) -> None:
+        reserved = PaymentAttempt("unknown", None)
+        pending = PaymentAttempt("unknown", "pi_001")
+        succeeded = PaymentAttempt("succeeded", "pi_001")
+        failed = PaymentAttempt("failed", "pi_001")
+        self.assertEqual(reserved.phase, "reserved_unassociated")
+        self.assertFalse(reserved.is_terminal)
+        self.assertEqual(pending.phase, "pending_associated")
+        self.assertFalse(pending.is_terminal)
+        self.assertEqual(succeeded.phase, "succeeded_terminal")
+        self.assertTrue(succeeded.is_terminal)
+        self.assertEqual(failed.phase, "failed_terminal")
+        self.assertTrue(failed.is_terminal)
+
+        for corrupted in (PaymentAttempt("succeeded", None), PaymentAttempt("failed", None)):
+            with self.subTest(corrupted=corrupted):
+                with self.assertRaisesRegex(
+                    AttemptConflict, "Stored provider reference is invalid"
+                ):
+                    _ = corrupted.phase
+                with self.assertRaisesRegex(
+                    AttemptConflict, "Stored provider reference is invalid"
+                ):
+                    _ = corrupted.is_terminal
+
+        with self.assertRaises(AttemptConflict):
+            AttemptReservationPreview(
+                operation=self.operation,
+                existing_attempt=None,
+                decision=DispatchDecision(reserved, False),
+                would_insert=True,
+            )
+        with self.assertRaises(AttemptConflict):
+            AttemptReservationPreview(
+                operation=self.operation,
+                existing_attempt=reserved,
+                decision=DispatchDecision(reserved, False),
+                would_insert=True,
+            )
+        with self.assertRaises(AttemptConflict):
+            AttemptReservationPreview(
+                operation=self.operation,
+                existing_attempt=PaymentAttempt("succeeded", None),
+                decision=DispatchDecision(PaymentAttempt("succeeded", None), False),
+                would_insert=False,
+            )
+        with self.assertRaises(AttemptConflict):
+            AttemptReconciliationPreview(
+                operation=self.operation,
+                observation="succeeded",
+                previous_attempt=reserved,
+                resulting_attempt=succeeded,
+                state_changed=False,
+            )
+        with self.assertRaises(AttemptConflict):
+            AttemptReconciliationPreview(
+                operation=self.operation,
+                observation="succeeded",
+                previous_attempt=PaymentAttempt("succeeded", None),
+                resulting_attempt=succeeded,
+                state_changed=True,
+            )
+
+    def test_preview_reserve_and_preview_reconcile_are_lock_free_single_selects(self) -> None:
+        statements: list[str] = []
+        connect = self.journal._connect
+
+        def traced():
+            db = connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            reserve_preview = self.journal.preview_reserve(self.operation)
+            with self.assertRaisesRegex(AttemptConflict, "never reserved"):
+                self.journal.preview_reconcile(
+                    self.operation,
+                    observation="pending",
+                    provider_reference="pi_001",
+                )
+        self.assertIsNone(reserve_preview.existing_attempt)
+        self.assertTrue(reserve_preview.would_insert)
+        self.assertTrue(reserve_preview.dispatch_allowed)
+        self.assertEqual(reserve_preview.phase, "reserved_unassociated")
+        self.assertEqual(self.attempt_count(), 0)
+
+        self.journal.reserve(self.operation)
+        statements.clear()
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            existing_preview = self.journal.preview_reserve(self.operation)
+            pending_preview = self.journal.preview_reconcile(
+                self.operation,
+                observation="pending",
+                provider_reference="pi_001",
+            )
+        self.assertEqual(existing_preview.existing_attempt, PaymentAttempt("unknown", None))
+        self.assertFalse(existing_preview.would_insert)
+        self.assertFalse(existing_preview.dispatch_allowed)
+        self.assertEqual(existing_preview.phase, "reserved_unassociated")
+        self.assertEqual(pending_preview.previous_phase, "reserved_unassociated")
+        self.assertEqual(pending_preview.resulting_phase, "pending_associated")
+        self.assertTrue(pending_preview.state_changed)
+
+        select_stmts = [stmt for stmt in statements if "FROM payment_attempts" in stmt]
+        self.assertEqual(len(select_stmts), 2)
+        self.assertTrue(all(stmt.startswith("SELECT") for stmt in select_stmts))
+        self.assertFalse(any("BEGIN IMMEDIATE" in stmt for stmt in statements))
+
+        # Verify conflicts in preview_reserve and preview_reconcile
+        with self.assertRaisesRegex(AttemptConflict, "Approval already reserved"):
+            self.journal.preview_reserve(
+                replace(self.operation, operation_id="op-b", idempotency_key="key-b")
+            )
+        with self.assertRaisesRegex(AttemptConflict, "idempotency key already bound"):
+            self.journal.preview_reserve(
+                replace(
+                    self.operation,
+                    tenant_id="tenant-b",
+                    operation_id="op-b",
+                    approval_id="approval-b",
+                )
+            )
+        self.journal.reconcile(
+            self.operation,
+            observation="succeeded",
+            provider_reference="pi_001",
+        )
+        same_terminal = self.journal.preview_reconcile(
+            self.operation,
+            observation="succeeded",
+            provider_reference="pi_001",
+        )
+        self.assertFalse(same_terminal.state_changed)
+        self.assertEqual(same_terminal.previous_phase, "succeeded_terminal")
+        self.assertEqual(same_terminal.resulting_phase, "succeeded_terminal")
+        with self.assertRaisesRegex(AttemptConflict, "Terminal outcome"):
+            self.journal.preview_reconcile(
+                self.operation,
+                observation="failed",
+                provider_reference="pi_001",
+            )
+        with self.assertRaisesRegex(AttemptConflict, "Provider reference changed"):
+            self.journal.preview_reconcile(
+                self.operation,
+                observation="succeeded",
+                provider_reference="pi_002",
+            )
+
+        other_op = replace(
+            self.operation,
+            operation_id="op-other",
+            approval_id="approval-other",
+            idempotency_key="key-other",
+        )
+        self.journal.reserve(other_op)
+        with self.assertRaisesRegex(AttemptConflict, "reference already bound"):
+            self.journal.preview_reconcile(
+                other_op,
+                observation="succeeded",
+                provider_reference="pi_001",
+            )
+
+        # Unassociated terminal corruption fails closed across reserve and preview_reserve
+        with closing(sqlite3.connect(self.path)) as db, db:
+            db.execute(
+                "UPDATE payment_attempts SET outcome='succeeded', provider_reference=NULL "
+                "WHERE tenant_id=? AND operation_id=?",
+                (other_op.tenant_id, other_op.operation_id),
+            )
+        with self.assertRaisesRegex(
+            AttemptConflict, "Stored provider reference is invalid"
+        ):
+            self.journal.preview_reserve(other_op)
+        with self.assertRaisesRegex(
+            AttemptConflict, "Stored provider reference is invalid"
+        ):
+            self.journal.reserve(other_op)
 
 
 if __name__ == "__main__":

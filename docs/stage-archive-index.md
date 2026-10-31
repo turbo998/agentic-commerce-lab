@@ -466,6 +466,11 @@ and rejects unassociated terminal attempts, non-`pi_` attempt references, and pr
 Adds `CheckoutPhase`, `CheckoutTimedPhase`, `CheckoutExecutionPreview`, and `CheckoutStore.find_execution_preview()` / `preview_execute()`,
 verifies canonical SHA-256 fingerprint binding in `CheckoutProvenance.__post_init__()`, and detects orphan receipts across all `execute()` idempotency keys.
 
+**Stage 1745 / 2026-11-01:** [Payment attempt phase classification and single-SELECT reservation/reconciliation previews (EN)](research/2026-11-01-payment-attempt-phase-and-dry-run-preview.en.md)
+| [支付尝试生命周期阶段分类（AttemptPhase）与单条无锁预留/对账预演（中文）](research/2026-11-01-payment-attempt-phase-and-dry-run-preview.md).
+Adds `AttemptPhase`, `PaymentAttempt.phase` / `is_terminal`, `AttemptReservationPreview`, `AttemptReconciliationPreview`,
+`PaymentAttemptJournal.preview_reserve()` / `preview_reconcile()`, and `preview_signed_checkout()`, while rejecting unassociated terminal rows in `reserve()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
