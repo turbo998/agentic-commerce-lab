@@ -60,11 +60,37 @@ class PaymentAttempt:
     outcome: Outcome
     provider_reference: str | None
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.outcome, str) or self.outcome not in (
+            "unknown",
+            "succeeded",
+            "failed",
+        ):
+            raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
+        if self.provider_reference is not None and (
+            not isinstance(self.provider_reference, str) or not self.provider_reference.strip()
+        ):
+            raise AttemptConflict(
+                "Stored provider reference is invalid; reconciliation required."
+            )
+
 
 @dataclass(frozen=True)
 class DispatchDecision:
     attempt: PaymentAttempt
     dispatch_allowed: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.attempt, PaymentAttempt):
+            raise AttemptConflict("DispatchDecision attempt must be a PaymentAttempt.")
+        if type(self.dispatch_allowed) is not bool:
+            raise AttemptConflict("DispatchDecision dispatch_allowed must be a bool.")
+        if self.dispatch_allowed and (
+            self.attempt.outcome != "unknown" or self.attempt.provider_reference is not None
+        ):
+            raise AttemptConflict(
+                "DispatchDecision cannot allow dispatch for a settled or referenced attempt."
+            )
 
 
 class PaymentAttemptJournal:
@@ -133,10 +159,7 @@ class PaymentAttemptJournal:
 
     @staticmethod
     def _attempt(row: sqlite3.Row) -> PaymentAttempt:
-        outcome = row["outcome"]
-        if outcome not in ("unknown", "succeeded", "failed"):
-            raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
-        return PaymentAttempt(outcome, row["provider_reference"])
+        return PaymentAttempt(row["outcome"], row["provider_reference"])
 
     def read_attempt(self, operation: PaymentOperation) -> PaymentAttempt | None:
         """Read a bound attempt or return None if unreserved, without granting authority."""
@@ -145,16 +168,10 @@ class PaymentAttemptJournal:
             row = self._find(db, operation)
         if row is None:
             return None
-        outcome = row["outcome"]
-        if not isinstance(outcome, str) or outcome not in ("unknown", "succeeded", "failed"):
-            raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
-        provider_reference = row["provider_reference"]
-        if provider_reference is None:
-            if outcome != "unknown":
-                raise AttemptConflict("Stored provider reference is invalid; reconciliation required.")
-        elif not isinstance(provider_reference, str) or not provider_reference.strip():
+        attempt = self._attempt(row)
+        if attempt.provider_reference is None and attempt.outcome != "unknown":
             raise AttemptConflict("Stored provider reference is invalid; reconciliation required.")
-        return PaymentAttempt(outcome, provider_reference)
+        return attempt
 
     def reserve(self, operation: PaymentOperation) -> DispatchDecision:
         """Commit before dispatch; a repeated reservation never authorizes a send."""
@@ -232,6 +249,8 @@ class PaymentAttemptJournal:
         previous = self._attempt(row)
         if previous.provider_reference not in (None, provider_reference):
             raise AttemptConflict("Provider reference changed; investigate the conflict.")
+        if previous.provider_reference is None and previous.outcome != "unknown":
+            raise AttemptConflict("An unassociated terminal attempt cannot be rebound.")
         if previous.outcome != "unknown" and previous.outcome != outcome:
             raise AttemptConflict("Terminal outcome cannot be overwritten.")
         if db.execute(
