@@ -306,6 +306,11 @@ Adds `gate_health.blocking_reasons_delta_payload_id` as a version-prefixed singl
 Adds `gate_health.blocking_reasons_delta_counts` with `{previous,current,added,removed}` counts
 for low-overhead downstream aggregation without expanding full reason arrays.
 
+**Stage 1713 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta total-changes telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-total-changes.en.md)
+| [source-monitor gate_health 阻塞原因增量总变化数信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-total-changes.md).
+Adds `gate_health.blocking_reasons_delta_total_changes` as a single-value `added + removed`
+change-magnitude signal for threshold-based downstream routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
