@@ -371,6 +371,7 @@ class MonitorTests(unittest.TestCase):
             )
             self.assertIsNone(report["gate_health"]["blocking_transition_event_id"])
             self.assertIsNone(report["gate_health"]["blocking_transition_event_state"])
+            self.assertIsNone(report["gate_health"]["blocking_transition_event_payload"])
             self.assertIsNone(report["gate_health"]["blocking_transition_fingerprint"])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
@@ -772,6 +773,7 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(gate_health["blocking_transition_event"])
         self.assertIsNone(gate_health["blocking_transition_event_id"])
         self.assertIsNone(gate_health["blocking_transition_event_state"])
+        self.assertIsNone(gate_health["blocking_transition_event_payload"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -841,6 +843,15 @@ class MonitorTests(unittest.TestCase):
                 "to_state_id": second["blocking_state_id"],
             },
         )
+        self.assertEqual(
+            second["blocking_transition_event_payload"],
+            {
+                "event_id": second["blocking_transition_event_id"],
+                "from_state_id": first["blocking_state_id"],
+                "to_state_id": second["blocking_state_id"],
+                "reason": "state_changed",
+            },
+        )
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -867,6 +878,7 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(second["blocking_transition_event"])
         self.assertIsNone(second["blocking_transition_event_id"])
         self.assertIsNone(second["blocking_transition_event_state"])
+        self.assertIsNone(second["blocking_transition_event_payload"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,

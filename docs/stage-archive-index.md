@@ -261,6 +261,11 @@ event identifier (`sha256-transition-v1:<transition_fingerprint>`) for idempoten
 Adds `gate_health.blocking_transition_event_state` so changed transitions expose a direct
 `from_state_id/to_state_id` pair without downstream cross-field reconstruction.
 
+**Stage 1704 / 2026-10-31:** [Source monitor gate-health transition event payload telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-event-payload.en.md)
+| [source-monitor gate_health 迁移事件载荷信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-event-payload.md).
+Adds `gate_health.blocking_transition_event_payload` to bundle `event_id/from_state_id/to_state_id/reason`
+for changed transitions in one object, with `null` on baseline/unchanged runs.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
