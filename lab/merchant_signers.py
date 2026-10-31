@@ -9,8 +9,15 @@ from pathlib import Path
 from typing import Literal
 
 from lab.checkout_admission import validate_signed_checkout
-from lab.payment_approvals import ApprovalAdmission, PaymentApprovalStore
+from lab.payment_approvals import (
+    ApprovalAdmission,
+    PaymentApprovalError,
+    PaymentApprovalStatus,
+    PaymentApprovalStore,
+)
 from lab.payment_attempts import (
+    AttemptConflict,
+    AttemptPhase,
     DispatchDecision,
     PaymentAttempt,
     PaymentAttemptJournal,
@@ -163,6 +170,181 @@ class OperationAdmissionProvenance:
         if self.timed_signer_admission is not None:
             return "timed_signer_admission"
         if self.approval_admission is not None:
+            return "approval_admission"
+        return "direct_reservation"
+
+    @property
+    def attempt_phase(self) -> AttemptPhase:
+        return self.attempt.phase
+
+
+@dataclass(frozen=True)
+class SignerAdmissionPreview:
+    """Single-SELECT read-only dry-run preview of MerchantSignerStore.admit()."""
+
+    operation: PaymentOperation
+    scope: MerchantSignerScope
+    now: int
+    permission_status: MerchantSignerPermissionStatus
+    approval_status: PaymentApprovalStatus
+    existing_attempt: PaymentAttempt | None
+    existing_approval_admission: ApprovalAdmission | None
+    existing_timed_admission: TimedSignerAdmission | None
+    decision: DispatchDecision
+    projected_approval_admission: ApprovalAdmission | None
+    projected_timed_admission: TimedSignerAdmission | None
+    would_record_approval_admission: bool
+    would_record_timed_admission: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise MerchantSignerError("A trusted PaymentOperation is required.")
+        if not isinstance(self.scope, MerchantSignerScope):
+            raise MerchantSignerError("A trusted MerchantSignerScope is required.")
+        if (
+            self.scope.tenant_id != self.operation.tenant_id
+            or self.scope.merchant != self.operation.checkout.merchant
+        ):
+            raise MerchantSignerError(
+                "Signer scope differs from operation or verified key ID."
+            )
+        if type(self.now) is not int or not 0 <= self.now <= 2**63 - 1:
+            raise PaymentApprovalError(
+                "Clock must return a nonnegative signed-64-bit integer."
+            )
+        if (
+            not isinstance(self.permission_status, MerchantSignerPermissionStatus)
+            or self.permission_status.scope != self.scope
+        ):
+            raise MerchantSignerError(
+                "permission_status must match the bound MerchantSignerScope."
+            )
+        if self.permission_status.state != "active":
+            raise MerchantSignerError("Signer permission is revoked.")
+        if not isinstance(self.approval_status, PaymentApprovalStatus):
+            raise PaymentApprovalError(
+                "approval_status must be a PaymentApprovalStatus."
+            )
+        if self.approval_status.fingerprint != self.operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        if self.approval_status.state != "active":
+            raise PaymentApprovalError("Approval is revoked.")
+        if self.now >= self.approval_status.expires_at:
+            raise PaymentApprovalError("Approval is expired.")
+        if self.existing_attempt is not None:
+            if not isinstance(self.existing_attempt, PaymentAttempt):
+                raise MerchantSignerError(
+                    "existing_attempt must be a PaymentAttempt or None."
+                )
+            _ = self.existing_attempt.phase
+        if self.existing_approval_admission is not None:
+            if not isinstance(self.existing_approval_admission, ApprovalAdmission):
+                raise MerchantSignerError(
+                    "existing_approval_admission must be ApprovalAdmission or None."
+                )
+            if self.existing_approval_admission.fingerprint != self.operation.fingerprint:
+                raise MerchantSignerError(
+                    "Admission record differs from the bound operation."
+                )
+            if self.existing_attempt is None:
+                raise MerchantSignerError(
+                    "Orphan admission record exists without a reserved payment attempt."
+                )
+            if (
+                self.existing_approval_admission.expires_at
+                != self.approval_status.expires_at
+            ):
+                raise MerchantSignerError(
+                    "Approval admission expiry differs from recorded approval."
+                )
+        if self.existing_timed_admission is not None:
+            if not isinstance(self.existing_timed_admission, TimedSignerAdmission):
+                raise MerchantSignerError(
+                    "existing_timed_admission must be TimedSignerAdmission or None."
+                )
+            if self.existing_approval_admission is None:
+                raise MerchantSignerError(
+                    "Orphan timed-admission record exists without an approval admission."
+                )
+            if self.existing_timed_admission.fingerprint != self.operation.fingerprint:
+                raise MerchantSignerError(
+                    "Timed-admission record differs from the bound operation."
+                )
+            if (
+                self.existing_timed_admission.admitted_at
+                != self.existing_approval_admission.admitted_at
+            ):
+                raise MerchantSignerError(
+                    "Timed-admission clock sample differs from approval admission."
+                )
+            if not (
+                0
+                <= self.existing_timed_admission.admitted_at
+                < self.existing_approval_admission.expires_at
+            ):
+                raise MerchantSignerError(
+                    "Timed-admission clock sample is outside approval admission expiry."
+                )
+        if not isinstance(self.decision, DispatchDecision):
+            raise MerchantSignerError("decision must be a DispatchDecision.")
+        if (
+            type(self.would_record_approval_admission) is not bool
+            or type(self.would_record_timed_admission) is not bool
+        ):
+            raise MerchantSignerError("Admission recording flags must be booleans.")
+        if self.existing_attempt is None:
+            expected_adm = ApprovalAdmission(
+                self.operation.fingerprint, self.now, self.approval_status.expires_at
+            )
+            if (
+                not self.would_record_approval_admission
+                or self.decision
+                != DispatchDecision(PaymentAttempt("unknown", None), True)
+                or self.projected_approval_admission != expected_adm
+            ):
+                raise MerchantSignerError(
+                    "Unreserved signer preview must allow dispatch and project approval admission."
+                )
+            if self.would_record_timed_admission:
+                if (
+                    not isinstance(self.projected_timed_admission, TimedSignerAdmission)
+                    or self.projected_timed_admission.fingerprint
+                    != self.operation.fingerprint
+                    or self.projected_timed_admission.scope != self.scope
+                    or self.projected_timed_admission.admitted_at != self.now
+                ):
+                    raise MerchantSignerError(
+                        "Timed signer preview must project a matching TimedSignerAdmission at now."
+                    )
+            elif self.projected_timed_admission is not None:
+                raise MerchantSignerError(
+                    "Bare signer preview must not project a TimedSignerAdmission."
+                )
+        else:
+            if (
+                self.would_record_approval_admission
+                or self.would_record_timed_admission
+                or self.decision != DispatchDecision(self.existing_attempt, False)
+                or self.projected_approval_admission != self.existing_approval_admission
+                or self.projected_timed_admission != self.existing_timed_admission
+            ):
+                raise MerchantSignerError(
+                    "Existing attempt signer preview must deny dispatch and never backfill admission."
+                )
+
+    @property
+    def dispatch_allowed(self) -> bool:
+        return self.decision.dispatch_allowed
+
+    @property
+    def attempt_phase(self) -> AttemptPhase:
+        return self.decision.attempt.phase
+
+    @property
+    def projected_path(self) -> AdmissionProvenancePath:
+        if self.projected_timed_admission is not None:
+            return "timed_signer_admission"
+        if self.projected_approval_admission is not None:
             return "approval_admission"
         return "direct_reservation"
 
@@ -494,6 +676,310 @@ class MerchantSignerStore:
                 "No reservation or admission record exists for this operation."
             )
         return provenance
+
+    def preview_admit(
+        self,
+        scope: MerchantSignerScope,
+        approvals: PaymentApprovalStore,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+        signature: RequestSignatureSnapshot | TimedRequestSignatureSnapshot,
+        *,
+        now: int,
+        method: str,
+        target_uri: str,
+        content_type: str,
+        content_digest: str,
+        content_encoding: str | None,
+        body: bytes,
+    ) -> SignerAdmissionPreview:
+        """Preview admit() in one lock-free SELECT without mutating state."""
+        self._require_scope(scope)
+        timed = signature if isinstance(signature, TimedRequestSignatureSnapshot) else None
+        snapshot = timed.signature if timed is not None else signature
+        if (
+            not isinstance(approvals, PaymentApprovalStore)
+            or not isinstance(journal, PaymentAttemptJournal)
+            or not isinstance(operation, PaymentOperation)
+            or not isinstance(snapshot, RequestSignatureSnapshot)
+        ):
+            raise MerchantSignerError("Trusted stores, operation, signature and clock are required.")
+        if (
+            scope.tenant_id != operation.tenant_id
+            or scope.merchant != operation.checkout.merchant
+            or scope.key_id != snapshot.key_id
+        ):
+            raise MerchantSignerError("Signer scope differs from operation or verified key ID.")
+        validate_signed_checkout(
+            operation,
+            snapshot,
+            expected_target_uri=scope.target_uri,
+            method=method,
+            target_uri=target_uri,
+            content_type=content_type,
+            content_digest=content_digest,
+            content_encoding=content_encoding,
+            body=body,
+        )
+        if not (
+            self.path.resolve(strict=True)
+            == approvals.path.resolve(strict=True)
+            == journal.path.resolve(strict=True)
+        ):
+            raise MerchantSignerError(
+                "Atomic signer admission requires the same resolved SQLite file."
+            )
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    perm.revoked AS perm_revoked,
+                    app.fingerprint AS app_fingerprint,
+                    app.expires_at AS app_expires_at,
+                    app.revoked AS app_revoked,
+                    att.tenant_id AS att_tenant_id,
+                    att.operation_id AS att_operation_id,
+                    att.approval_id AS att_approval_id,
+                    att.provider AS att_provider,
+                    att.provider_account AS att_provider_account,
+                    att.idempotency_key AS att_idempotency_key,
+                    att.fingerprint AS att_fingerprint,
+                    att.outcome AS att_outcome,
+                    att.provider_reference AS att_provider_reference,
+                    adm.fingerprint AS adm_fingerprint,
+                    adm.admitted_at AS adm_admitted_at,
+                    adm.expires_at AS adm_expires_at,
+                    tmd.fingerprint AS tmd_fingerprint,
+                    tmd.target_uri AS tmd_target_uri,
+                    tmd.key_id AS tmd_key_id,
+                    tmd.signature_label AS tmd_signature_label,
+                    tmd.created AS tmd_created,
+                    tmd.expires AS tmd_expires,
+                    tmd.admitted_at AS tmd_admitted_at,
+                    tmd_perm.revoked AS tmd_perm_revoked,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE tenant_id = ? AND approval_id = ? AND operation_id != ?
+                    ) AS approval_conflict,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE provider = ? AND provider_account = ? AND idempotency_key = ?
+                          AND NOT (tenant_id = ? AND operation_id = ?)
+                    ) AS idempotency_conflict
+                FROM (SELECT 1)
+                LEFT JOIN merchant_signer_permissions AS perm
+                    ON perm.tenant_id = ? AND perm.merchant = ?
+                   AND perm.target_uri = ? AND perm.key_id = ?
+                LEFT JOIN payment_approvals AS app
+                    ON app.tenant_id = ? AND app.approval_id = ?
+                LEFT JOIN payment_attempts AS att
+                    ON att.tenant_id = ? AND att.operation_id = ?
+                LEFT JOIN payment_admissions AS adm
+                    ON adm.tenant_id = ? AND adm.operation_id = ?
+                LEFT JOIN merchant_timed_admissions AS tmd
+                    ON tmd.tenant_id = ? AND tmd.operation_id = ?
+                LEFT JOIN merchant_signer_permissions AS tmd_perm
+                    ON tmd_perm.tenant_id = ?
+                   AND tmd_perm.merchant = ?
+                   AND tmd_perm.target_uri = tmd.target_uri
+                   AND tmd_perm.key_id = tmd.key_id""",
+                (
+                    operation.tenant_id,
+                    operation.approval_id,
+                    operation.operation_id,
+                    operation.provider,
+                    operation.provider_account,
+                    operation.idempotency_key,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    scope.tenant_id,
+                    scope.merchant,
+                    scope.target_uri,
+                    scope.key_id,
+                    operation.tenant_id,
+                    operation.approval_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.checkout.merchant,
+                ),
+            ).fetchone()
+        assert row is not None
+        perm_revoked = row["perm_revoked"]
+        if perm_revoked is None:
+            raise MerchantSignerError("No recorded signer permission exists for this scope.")
+        if type(perm_revoked) is not int or perm_revoked not in (0, 1):
+            raise MerchantSignerError("Stored signer permission revocation state is invalid.")
+        if perm_revoked != 0:
+            raise MerchantSignerError("Signer permission is revoked.")
+        permission_status = MerchantSignerPermissionStatus(scope, "active")
+
+        if row["app_fingerprint"] is None:
+            raise PaymentApprovalError("No recorded approval exists for this scope.")
+        if row["app_fingerprint"] != operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        app_expires_at, app_revoked = row["app_expires_at"], row["app_revoked"]
+        if type(app_expires_at) is not int or not 0 < app_expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        if type(app_revoked) is not int or app_revoked not in (0, 1):
+            raise PaymentApprovalError("Stored approval revocation state is invalid.")
+        if app_revoked != 0:
+            raise PaymentApprovalError("Approval is revoked.")
+        if timed is not None:
+            require_signature_time(timed, now=now)
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise PaymentApprovalError("Clock must return a nonnegative signed-64-bit integer.")
+        if now >= app_expires_at:
+            raise PaymentApprovalError("Approval is expired.")
+        approval_status = PaymentApprovalStatus(
+            operation.fingerprint, app_expires_at, "active"
+        )
+
+        existing_approval_admission: ApprovalAdmission | None = None
+        if row["adm_fingerprint"] is not None:
+            if row["adm_fingerprint"] != operation.fingerprint:
+                raise MerchantSignerError("Admission record differs from the bound operation.")
+            adm_at, adm_exp = row["adm_admitted_at"], row["adm_expires_at"]
+            if (
+                type(adm_at) is not int
+                or type(adm_exp) is not int
+                or not 0 <= adm_at < adm_exp <= 2**63 - 1
+            ):
+                raise MerchantSignerError("Stored approval admission times are invalid.")
+            if row["att_tenant_id"] is None:
+                raise MerchantSignerError(
+                    "Orphan admission record exists without a reserved payment attempt."
+                )
+            if adm_exp != app_expires_at:
+                raise MerchantSignerError(
+                    "Approval admission expiry differs from recorded approval."
+                )
+            existing_approval_admission = ApprovalAdmission(
+                operation.fingerprint, adm_at, adm_exp
+            )
+
+        existing_timed_admission: TimedSignerAdmission | None = None
+        if row["tmd_fingerprint"] is not None:
+            if row["tmd_fingerprint"] != operation.fingerprint:
+                raise MerchantSignerError(
+                    "Timed-admission record differs from the bound operation."
+                )
+            if existing_approval_admission is None:
+                raise MerchantSignerError(
+                    "Orphan timed-admission record exists without an approval admission."
+                )
+            tmd_scope = MerchantSignerScope(
+                operation.tenant_id,
+                operation.checkout.merchant,
+                row["tmd_target_uri"],
+                row["tmd_key_id"],
+            )
+            sig_label = row["tmd_signature_label"]
+            if (
+                not isinstance(sig_label, str)
+                or re.fullmatch(r"[a-z*][a-z0-9_.*-]*", sig_label) is None
+            ):
+                raise MerchantSignerError("Stored timed-admission signature label is invalid.")
+            created, expires, tmd_at = (
+                row["tmd_created"],
+                row["tmd_expires"],
+                row["tmd_admitted_at"],
+            )
+            if (
+                any(type(value) is not int for value in (created, expires, tmd_at))
+                or not 0 <= created <= tmd_at < expires <= MAX_SIGNATURE_TIMESTAMP
+            ):
+                raise MerchantSignerError("Stored timed-admission times are invalid.")
+            tmd_perm_revoked = row["tmd_perm_revoked"]
+            if tmd_perm_revoked is None:
+                raise MerchantSignerError(
+                    "Orphan timed-admission record exists without a recorded signer permission."
+                )
+            if type(tmd_perm_revoked) is not int or tmd_perm_revoked not in (0, 1):
+                raise MerchantSignerError(
+                    "Stored signer permission revocation state is invalid."
+                )
+            existing_timed_admission = TimedSignerAdmission(
+                operation.fingerprint,
+                tmd_scope,
+                sig_label,
+                created,
+                expires,
+                tmd_at,
+            )
+
+        if row["att_tenant_id"] is not None:
+            att_row = {
+                "fingerprint": row["att_fingerprint"],
+                "approval_id": row["att_approval_id"],
+                "provider": row["att_provider"],
+                "provider_account": row["att_provider_account"],
+                "idempotency_key": row["att_idempotency_key"],
+                "outcome": row["att_outcome"],
+                "provider_reference": row["att_provider_reference"],
+            }
+            journal._verify_row_binding(att_row, operation)
+            existing_attempt = journal._attempt(att_row)
+            if (
+                existing_attempt.provider_reference is None
+                and existing_attempt.outcome != "unknown"
+            ):
+                raise AttemptConflict(
+                    "Stored provider reference is invalid; reconciliation required."
+                )
+            return SignerAdmissionPreview(
+                operation=operation,
+                scope=scope,
+                now=now,
+                permission_status=permission_status,
+                approval_status=approval_status,
+                existing_attempt=existing_attempt,
+                existing_approval_admission=existing_approval_admission,
+                existing_timed_admission=existing_timed_admission,
+                decision=DispatchDecision(existing_attempt, False),
+                projected_approval_admission=existing_approval_admission,
+                projected_timed_admission=existing_timed_admission,
+                would_record_approval_admission=False,
+                would_record_timed_admission=False,
+            )
+
+        if row["approval_conflict"]:
+            raise AttemptConflict("Approval already reserved by another operation.")
+        if row["idempotency_conflict"]:
+            raise AttemptConflict("Provider idempotency key already bound.")
+        projected_approval = ApprovalAdmission(
+            operation.fingerprint, now, app_expires_at
+        )
+        projected_timed = (
+            TimedSignerAdmission(
+                operation.fingerprint,
+                scope,
+                snapshot.signature_label,
+                timed.created,
+                timed.expires,
+                now,
+            )
+            if timed is not None
+            else None
+        )
+        return SignerAdmissionPreview(
+            operation=operation,
+            scope=scope,
+            now=now,
+            permission_status=permission_status,
+            approval_status=approval_status,
+            existing_attempt=None,
+            existing_approval_admission=None,
+            existing_timed_admission=None,
+            decision=DispatchDecision(PaymentAttempt("unknown", None), True),
+            projected_approval_admission=projected_approval,
+            projected_timed_admission=projected_timed,
+            would_record_approval_admission=True,
+            would_record_timed_admission=timed is not None,
+        )
 
     def admit(
         self, scope: MerchantSignerScope, approvals: PaymentApprovalStore,

@@ -471,6 +471,11 @@ verifies canonical SHA-256 fingerprint binding in `CheckoutProvenance.__post_ini
 Adds `AttemptPhase`, `PaymentAttempt.phase` / `is_terminal`, `AttemptReservationPreview`, `AttemptReconciliationPreview`,
 `PaymentAttemptJournal.preview_reserve()` / `preview_reconcile()`, and `preview_signed_checkout()`, while rejecting unassociated terminal rows in `reserve()`.
 
+**Stage 1746 / 2026-11-01:** [Payment approval and merchant signer lock-free single-SELECT dry-run previews and provenance phase alignment (EN)](research/2026-11-01-approval-and-signer-admission-dry-run-preview.en.md)
+| [支付审批与商户签名准入无锁单 SELECT 预检及 Provenance 生命周期相位对齐（中文）](research/2026-11-01-approval-and-signer-admission-dry-run-preview.md).
+Adds `PaymentApprovalStatus.state_at()`, `ApprovalAdmissionProvenance.path` / `attempt_phase`, `OperationAdmissionProvenance.attempt_phase`,
+`ApprovalAdmissionPreview` (`PaymentApprovalStore.preview_admit()`), and `SignerAdmissionPreview` (`MerchantSignerStore.preview_admit()`).
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

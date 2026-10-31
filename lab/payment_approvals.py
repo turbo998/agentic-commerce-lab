@@ -11,6 +11,7 @@ from typing import Literal
 from lab.checkout_admission import validate_signed_checkout
 from lab.payment_attempts import (
     AttemptConflict,
+    AttemptPhase,
     DispatchDecision,
     PaymentAttempt,
     PaymentAttemptJournal,
@@ -19,6 +20,8 @@ from lab.payment_attempts import (
 from lab.request_binding import RequestSignatureSnapshot
 
 ApprovalState = Literal["active", "revoked"]
+ApprovalTimedState = Literal["active", "expired", "revoked"]
+TwoStoreAdmissionPath = Literal["direct_reservation", "approval_admission"]
 
 
 class PaymentApprovalError(ValueError):
@@ -45,6 +48,18 @@ class PaymentApprovalStatus:
             raise PaymentApprovalError("Stored approval expiry is invalid.")
         if not isinstance(self.state, str) or self.state not in ("active", "revoked"):
             raise PaymentApprovalError("Stored approval revocation state is invalid.")
+
+    def state_at(self, now: int) -> ApprovalTimedState:
+        """Evaluate approval status against a trusted nonnegative signed-64-bit clock."""
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise PaymentApprovalError(
+                "Clock must return a nonnegative signed-64-bit integer."
+            )
+        if self.state == "revoked":
+            return "revoked"
+        if now >= self.expires_at:
+            return "expired"
+        return "active"
 
 
 @dataclass(frozen=True)
@@ -116,6 +131,105 @@ class ApprovalAdmissionProvenance:
                 raise PaymentApprovalError(
                     "Stored admission expiry differs from the recorded approval expiry."
                 )
+
+    @property
+    def path(self) -> TwoStoreAdmissionPath:
+        if self.approval_admission is not None:
+            return "approval_admission"
+        return "direct_reservation"
+
+    @property
+    def attempt_phase(self) -> AttemptPhase:
+        return self.attempt.phase
+
+
+@dataclass(frozen=True)
+class ApprovalAdmissionPreview:
+    """Single-SELECT read-only dry-run preview of PaymentApprovalStore.admit()."""
+
+    operation: PaymentOperation
+    now: int
+    approval_status: PaymentApprovalStatus
+    existing_attempt: PaymentAttempt | None
+    existing_admission: ApprovalAdmission | None
+    decision: DispatchDecision
+    projected_admission: ApprovalAdmission | None
+    would_record_admission: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise PaymentApprovalError("A trusted PaymentOperation is required.")
+        if type(self.now) is not int or not 0 <= self.now <= 2**63 - 1:
+            raise PaymentApprovalError(
+                "Clock must return a nonnegative signed-64-bit integer."
+            )
+        if not isinstance(self.approval_status, PaymentApprovalStatus):
+            raise PaymentApprovalError(
+                "approval_status must be a PaymentApprovalStatus."
+            )
+        if self.approval_status.fingerprint != self.operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        if self.approval_status.state != "active":
+            raise PaymentApprovalError("Approval is revoked.")
+        if self.now >= self.approval_status.expires_at:
+            raise PaymentApprovalError("Approval is expired.")
+        if self.existing_attempt is not None:
+            if not isinstance(self.existing_attempt, PaymentAttempt):
+                raise PaymentApprovalError(
+                    "existing_attempt must be a PaymentAttempt or None."
+                )
+            _ = self.existing_attempt.phase
+        if self.existing_admission is not None:
+            if not isinstance(self.existing_admission, ApprovalAdmission):
+                raise PaymentApprovalError(
+                    "existing_admission must be an ApprovalAdmission or None."
+                )
+            if self.existing_admission.fingerprint != self.operation.fingerprint:
+                raise PaymentApprovalError(
+                    "Admission record differs from the bound operation."
+                )
+            if self.existing_attempt is None:
+                raise PaymentApprovalError(
+                    "Orphan admission record exists without a payment reservation."
+                )
+            if self.existing_admission.expires_at != self.approval_status.expires_at:
+                raise PaymentApprovalError(
+                    "Stored admission expiry differs from the recorded approval expiry."
+                )
+        if not isinstance(self.decision, DispatchDecision):
+            raise PaymentApprovalError("decision must be a DispatchDecision.")
+        if type(self.would_record_admission) is not bool:
+            raise PaymentApprovalError("would_record_admission must be a bool.")
+        if self.existing_attempt is None:
+            expected_admission = ApprovalAdmission(
+                self.operation.fingerprint, self.now, self.approval_status.expires_at
+            )
+            if (
+                not self.would_record_admission
+                or self.decision
+                != DispatchDecision(PaymentAttempt("unknown", None), True)
+                or self.projected_admission != expected_admission
+            ):
+                raise PaymentApprovalError(
+                    "Unreserved approval preview must allow dispatch and project a new admission."
+                )
+        else:
+            if (
+                self.would_record_admission
+                or self.decision != DispatchDecision(self.existing_attempt, False)
+                or self.projected_admission != self.existing_admission
+            ):
+                raise PaymentApprovalError(
+                    "Existing attempt approval preview must deny dispatch and never backfill admission."
+                )
+
+    @property
+    def dispatch_allowed(self) -> bool:
+        return self.decision.dispatch_allowed
+
+    @property
+    def attempt_phase(self) -> AttemptPhase:
+        return self.decision.attempt.phase
 
 
 class PaymentApprovalStore:
@@ -385,6 +499,166 @@ class PaymentApprovalStore:
                 "No reservation or admission record exists for this operation."
             )
         return provenance
+
+    def preview_admit(
+        self,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+        signature: RequestSignatureSnapshot,
+        *,
+        now: int,
+        expected_target_uri: str,
+        method: str,
+        target_uri: str,
+        content_type: str,
+        content_digest: str,
+        content_encoding: str | None,
+        body: bytes,
+    ) -> ApprovalAdmissionPreview:
+        """Preview admit() in one lock-free SELECT without mutating state."""
+        if not isinstance(journal, PaymentAttemptJournal):
+            raise PaymentApprovalError("A trusted journal and clock callable are required.")
+        validate_signed_checkout(
+            operation, signature, expected_target_uri=expected_target_uri, method=method,
+            target_uri=target_uri, content_type=content_type, content_digest=content_digest,
+            content_encoding=content_encoding, body=body,
+        )
+        if self.path.resolve(strict=True) != journal.path.resolve(strict=True):
+            raise PaymentApprovalError("Atomic admission requires the same resolved SQLite file.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    app.fingerprint AS app_fingerprint,
+                    app.expires_at AS app_expires_at,
+                    app.revoked AS app_revoked,
+                    att.tenant_id AS att_tenant_id,
+                    att.operation_id AS att_operation_id,
+                    att.approval_id AS att_approval_id,
+                    att.provider AS att_provider,
+                    att.provider_account AS att_provider_account,
+                    att.idempotency_key AS att_idempotency_key,
+                    att.fingerprint AS att_fingerprint,
+                    att.outcome AS att_outcome,
+                    att.provider_reference AS att_provider_reference,
+                    adm.fingerprint AS adm_fingerprint,
+                    adm.admitted_at AS adm_admitted_at,
+                    adm.expires_at AS adm_expires_at,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE tenant_id = ? AND approval_id = ? AND operation_id != ?
+                    ) AS approval_conflict,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE provider = ? AND provider_account = ? AND idempotency_key = ?
+                          AND NOT (tenant_id = ? AND operation_id = ?)
+                    ) AS idempotency_conflict
+                FROM (SELECT 1)
+                LEFT JOIN payment_approvals AS app
+                    ON app.tenant_id = ? AND app.approval_id = ?
+                LEFT JOIN payment_attempts AS att
+                    ON att.tenant_id = ? AND att.operation_id = ?
+                LEFT JOIN payment_admissions AS adm
+                    ON adm.tenant_id = ? AND adm.operation_id = ?""",
+                (
+                    operation.tenant_id,
+                    operation.approval_id,
+                    operation.operation_id,
+                    operation.provider,
+                    operation.provider_account,
+                    operation.idempotency_key,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.approval_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                ),
+            ).fetchone()
+        assert row is not None
+        if row["app_fingerprint"] is None:
+            raise PaymentApprovalError("No recorded approval exists for this scope.")
+        if row["app_fingerprint"] != operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        app_expires_at, app_revoked = row["app_expires_at"], row["app_revoked"]
+        if type(app_expires_at) is not int or not 0 < app_expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        if type(app_revoked) is not int or app_revoked not in (0, 1):
+            raise PaymentApprovalError("Stored approval revocation state is invalid.")
+        if app_revoked != 0:
+            raise PaymentApprovalError("Approval is revoked.")
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise PaymentApprovalError("Clock must return a nonnegative signed-64-bit integer.")
+        if now >= app_expires_at:
+            raise PaymentApprovalError("Approval is expired.")
+        approval_status = PaymentApprovalStatus(
+            operation.fingerprint, app_expires_at, "active"
+        )
+
+        existing_admission: ApprovalAdmission | None = None
+        if row["adm_fingerprint"] is not None:
+            if row["adm_fingerprint"] != operation.fingerprint:
+                raise PaymentApprovalError("Admission record differs from the bound operation.")
+            adm_at, adm_exp = row["adm_admitted_at"], row["adm_expires_at"]
+            if (
+                type(adm_at) is not int
+                or type(adm_exp) is not int
+                or not 0 <= adm_at < adm_exp <= 2**63 - 1
+            ):
+                raise PaymentApprovalError("Stored admission times are invalid.")
+            if row["att_tenant_id"] is None:
+                raise PaymentApprovalError(
+                    "Orphan admission record exists without a payment reservation."
+                )
+            if adm_exp != app_expires_at:
+                raise PaymentApprovalError(
+                    "Stored admission expiry differs from the recorded approval expiry."
+                )
+            existing_admission = ApprovalAdmission(operation.fingerprint, adm_at, adm_exp)
+
+        if row["att_tenant_id"] is not None:
+            att_row = {
+                "fingerprint": row["att_fingerprint"],
+                "approval_id": row["att_approval_id"],
+                "provider": row["att_provider"],
+                "provider_account": row["att_provider_account"],
+                "idempotency_key": row["att_idempotency_key"],
+                "outcome": row["att_outcome"],
+                "provider_reference": row["att_provider_reference"],
+            }
+            journal._verify_row_binding(att_row, operation)
+            existing_attempt = journal._attempt(att_row)
+            if existing_attempt.provider_reference is None and existing_attempt.outcome != "unknown":
+                raise AttemptConflict(
+                    "Stored provider reference is invalid; reconciliation required."
+                )
+            return ApprovalAdmissionPreview(
+                operation=operation,
+                now=now,
+                approval_status=approval_status,
+                existing_attempt=existing_attempt,
+                existing_admission=existing_admission,
+                decision=DispatchDecision(existing_attempt, False),
+                projected_admission=existing_admission,
+                would_record_admission=False,
+            )
+
+        if row["approval_conflict"]:
+            raise AttemptConflict("Approval already reserved by another operation.")
+        if row["idempotency_conflict"]:
+            raise AttemptConflict("Provider idempotency key already bound.")
+        projected = ApprovalAdmission(operation.fingerprint, now, app_expires_at)
+        return ApprovalAdmissionPreview(
+            operation=operation,
+            now=now,
+            approval_status=approval_status,
+            existing_attempt=None,
+            existing_admission=None,
+            decision=DispatchDecision(PaymentAttempt("unknown", None), True),
+            projected_admission=projected,
+            would_record_admission=True,
+        )
 
     def admit(
         self,
