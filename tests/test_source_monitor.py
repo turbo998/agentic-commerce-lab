@@ -841,6 +841,9 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(
             gate_health["blocking_reasons_delta_change_state_payload_fingerprint_id"]
         )
+        self.assertIsNone(
+            gate_health["blocking_reasons_delta_change_state_payload_fingerprint_payload"]
+        )
         self.assertIsNone(gate_health["blocking_reasons_delta_direction"])
         self.assertEqual(
             gate_health["blocking_reasons_delta_payload_version"],
@@ -986,6 +989,16 @@ class MonitorTests(unittest.TestCase):
                 f"{second['blocking_reasons_delta_change_state_payload_fingerprint']}"
             ),
         )
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint_payload"],
+            {
+                "version": BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
+                "fingerprint": second[
+                    "blocking_reasons_delta_change_state_payload_fingerprint"
+                ],
+                "id": second["blocking_reasons_delta_change_state_payload_fingerprint_id"],
+            },
+        )
         self.assertEqual(second["blocking_reasons_delta_direction"], "increase")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
@@ -1095,6 +1108,16 @@ class MonitorTests(unittest.TestCase):
                 f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION}:"
                 f"{second['blocking_reasons_delta_change_state_payload_fingerprint']}"
             ),
+        )
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint_payload"],
+            {
+                "version": BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
+                "fingerprint": second[
+                    "blocking_reasons_delta_change_state_payload_fingerprint"
+                ],
+                "id": second["blocking_reasons_delta_change_state_payload_fingerprint_id"],
+            },
         )
         self.assertEqual(second["blocking_reasons_delta_direction"], "none")
         self.assertEqual(

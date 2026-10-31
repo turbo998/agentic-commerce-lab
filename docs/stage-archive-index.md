@@ -366,6 +366,11 @@ as fixed version metadata for fingerprint compatibility branching.
 Adds `gate_health.blocking_reasons_delta_change_state_payload_fingerprint_id`
 as versioned `<fingerprint_version>:<fingerprint>` key.
 
+**Stage 1725 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta change-state payload fingerprint structured payload (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-payload-fingerprint-payload.en.md)
+| [source-monitor gate_health 阻塞原因增量变化状态载荷指纹结构化载荷（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-payload-fingerprint-payload.md).
+Adds `gate_health.blocking_reasons_delta_change_state_payload_fingerprint_payload`
+to aggregate `{version,fingerprint,id}` into one direct-consumption object.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
