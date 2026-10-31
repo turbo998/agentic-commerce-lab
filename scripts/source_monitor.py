@@ -744,6 +744,13 @@ def summarize_gate_health(
             "fingerprint": blocking_reasons_delta_fingerprint,
         }
     )
+    blocking_reasons_delta_payload_id = (
+        None if blocking_reasons_delta_fingerprint is None
+        else (
+            f"{BLOCKING_REASONS_DELTA_PAYLOAD_VERSION}:"
+            f"{blocking_reasons_delta_fingerprint}"
+        )
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -780,6 +787,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_fingerprint_version": BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         "blocking_reasons_delta_fingerprint": blocking_reasons_delta_fingerprint,
         "blocking_reasons_delta_payload_version": BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
+        "blocking_reasons_delta_payload_id": blocking_reasons_delta_payload_id,
         "blocking_reasons_delta_payload": blocking_reasons_delta_payload,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,

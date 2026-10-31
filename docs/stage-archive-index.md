@@ -296,6 +296,11 @@ set differences, and deduplication fingerprint in one object for single-read dow
 Adds `gate_health.blocking_reasons_delta_payload_version` (`reasons-delta-payload-v1`) so downstream
 consumers can bind reason-delta payload parsing to an explicit versioned contract.
 
+**Stage 1711 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta payload-id telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload-id.en.md)
+| [source-monitor gate_health 阻塞原因增量载荷 ID 信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-payload-id.md).
+Adds `gate_health.blocking_reasons_delta_payload_id` as a version-prefixed single-value identifier
+(`${payload_version}:${delta_fingerprint}`) for downstream idempotent routing and deduplication.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
