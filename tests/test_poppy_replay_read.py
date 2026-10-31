@@ -15,6 +15,7 @@ from lab.poppy_guard import SessionAssertionClaims
 from lab.poppy_replay import (
     PoppyAssertionJournal,
     PoppyConsumedAssertion,
+    PoppyConsumptionPreview,
     PoppyReplayDetected,
     PoppyReplayError,
     PoppyReplayScope,
@@ -267,6 +268,112 @@ class PoppyReplayReadTests(unittest.TestCase):
                             method(scope, assertion)  # type: ignore[arg-type]
             connect.assert_not_called()
 
+    def test_preview_consume_single_select_dry_run_and_invariants(self) -> None:
+        digest = hashlib.sha256(JTI.encode("ascii")).hexdigest()
+        expected = PoppyConsumedAssertion(self.scope, digest)
+        statements: list[str] = []
+        connect = self.journal._connect
+
+        def traced():
+            db = connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            fresh = self.journal.preview_consume(self.scope, self.assertion, now=NOW)
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT "))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        self.assertEqual(
+            fresh,
+            PoppyConsumptionPreview(
+                scope=self.scope,
+                jti_sha256=digest,
+                now=NOW,
+                existing_consumption=None,
+                projected_consumption=expected,
+                would_consume=True,
+            ),
+        )
+        self.assertTrue(fresh.would_consume)
+        self.assertFalse(fresh.is_replay)
+        self.assertFalse(self.journal.is_consumed(self.scope, JTI))
+
+        # Consume assertion, then preview_consume reports replay without mutating
+        self.journal.consume(self.scope, self.assertion, now=NOW)
+        statements.clear()
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            replay = self.journal.preview_consume(self.scope, self.assertion, now=NOW)
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT "))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        self.assertEqual(
+            replay,
+            PoppyConsumptionPreview(
+                scope=self.scope,
+                jti_sha256=digest,
+                now=NOW,
+                existing_consumption=expected,
+                projected_consumption=expected,
+                would_consume=False,
+            ),
+        )
+        self.assertFalse(replay.would_consume)
+        self.assertTrue(replay.is_replay)
+        with self.assertRaises(FrozenInstanceError):
+            replay.would_consume = True  # type: ignore[misc]
+
+        # Expired or not-yet-valid assertions fail before opening SQLite connection
+        with patch.object(self.journal, "_connect") as mock_connect:
+            for bad_now in (NOW - 31, NOW + 60, -1, True):
+                with self.subTest(bad_now=bad_now), self.assertRaises(PoppyReplayError):
+                    self.journal.preview_consume(self.scope, self.assertion, now=bad_now)  # type: ignore[arg-type]
+            mock_connect.assert_not_called()
+
+        # PoppyConsumptionPreview constructor invariants
+        other_scope = PoppyReplayScope("https://auth.other.example", CLIENT)
+        for kwargs, pattern in (
+            ({"scope": "bad"}, "PoppyReplayScope is required"),
+            ({"jti_sha256": "bad"}, "64-char lowercase hex SHA-256"),
+            ({"now": -1}, "nonnegative signed-64-bit integers"),
+            ({"now": True}, "nonnegative signed-64-bit integers"),
+            ({"projected_consumption": "bad"}, "PoppyConsumedAssertion"),
+            (
+                {"projected_consumption": PoppyConsumedAssertion(other_scope, digest)},
+                "projected_consumption does not match",
+            ),
+            ({"would_consume": 1}, "would_consume must be a boolean"),
+            (
+                {"existing_consumption": None, "would_consume": False},
+                "Unconsumed assertion preview must set would_consume=True",
+            ),
+            (
+                {"existing_consumption": "bad", "would_consume": False},
+                "existing_consumption must be a PoppyConsumedAssertion or None",
+            ),
+            (
+                {"existing_consumption": expected, "would_consume": True},
+                "Consumed assertion preview must match scope/digest and set would_consume=False",
+            ),
+            (
+                {
+                    "existing_consumption": PoppyConsumedAssertion(other_scope, digest),
+                    "would_consume": False,
+                },
+                "Consumed assertion preview must match scope/digest and set would_consume=False",
+            ),
+        ):
+            params = {
+                "scope": self.scope,
+                "jti_sha256": digest,
+                "now": NOW,
+                "existing_consumption": None,
+                "projected_consumption": expected,
+                "would_consume": True,
+                **kwargs,
+            }
+            with self.subTest(kwargs=kwargs), self.assertRaisesRegex(PoppyReplayError, pattern):
+                PoppyConsumptionPreview(**params)  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

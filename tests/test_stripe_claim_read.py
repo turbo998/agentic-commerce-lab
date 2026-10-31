@@ -14,7 +14,12 @@ from unittest.mock import patch
 from lab.checkout import Checkout
 from lab.payment_attempts import PaymentAttempt, PaymentAttemptJournal, PaymentOperation
 from lab.stripe_inbox import (
+    ClaimTransitionPreview,
+    InboxDecision,
     InboxEventProvenance,
+    InboxReceipt,
+    InboxRecordPreview,
+    ReadbackClaim,
     ReadbackClaimStatus,
     StripeEventInbox,
     StripeInboxError,
@@ -432,6 +437,233 @@ class StripeClaimReadTests(unittest.TestCase):
         self.assertEqual(len(statements), 1)
         self.assertTrue(statements[0].strip().startswith("SELECT"))
         self.assertNotIn("BEGIN", " ".join(statements).upper())
+
+    def test_preview_record_handoff_and_finish_readback_single_select_dry_runs(self) -> None:
+        statements: list[str] = []
+        connect = self.inbox._connect
+
+        def traced() -> sqlite3.Connection:
+            db = connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        body = event_body("evt_preview")
+        sig = header(body)
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            first_preview = self.inbox.preview_record(
+                self.scope, body, sig, SECRET, now=NOW,
+            )
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        self.assertIsNone(first_preview.existing_receipt)
+        self.assertIsNone(first_preview.existing_claim_status)
+        self.assertTrue(first_preview.would_insert_receipt)
+        self.assertTrue(first_preview.decision.first_seen)
+        self.assertTrue(first_preview.decision.body_matches_first)
+        self.assertEqual(first_preview.event_phase, "unclaimed")
+        self.assertIsNone(self.inbox.read_receipt(self.scope, "evt_preview"))
+
+        actual = self.inbox.record(self.scope, body, sig, SECRET, now=NOW)
+        self.assertEqual(actual, first_preview.decision)
+
+        # Duplicate preview with identical body vs mutated body
+        statements.clear()
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            dup_preview = self.inbox.preview_record(
+                self.scope, body, sig, SECRET, now=NOW,
+            )
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertEqual(dup_preview.existing_receipt, actual.receipt)
+        self.assertIsNone(dup_preview.existing_claim_status)
+        self.assertFalse(dup_preview.would_insert_receipt)
+        self.assertFalse(dup_preview.decision.first_seen)
+        self.assertTrue(dup_preview.decision.body_matches_first)
+        self.assertEqual(dup_preview.event_phase, "unclaimed")
+
+        mutated_event = json.loads(body)
+        mutated_event["created"] = NOW + 1
+        mutated_body = json.dumps(mutated_event).encode()
+        dup_mismatch = self.inbox.preview_record(
+            self.scope, mutated_body, header(mutated_body), SECRET, now=NOW,
+        )
+        self.assertFalse(dup_mismatch.would_insert_receipt)
+        self.assertFalse(dup_mismatch.decision.first_seen)
+        self.assertFalse(dup_mismatch.decision.body_matches_first)
+
+        # Conflicting event_type or provider_reference rejected by preview_record
+        conflict_event = json.loads(body)
+        conflict_event["type"] = "payment_intent.payment_failed"
+        conflict_body = json.dumps(conflict_event).encode()
+        with self.assertRaisesRegex(StripeInboxError, "conflicting type or object bindings"):
+            self.inbox.preview_record(
+                self.scope, conflict_body, header(conflict_body), SECRET, now=NOW,
+            )
+
+        # Claim and preview handoff / finish_readback
+        claim = self.inbox.claim_next(self.scope, "worker-a")
+        assert claim is not None
+        active_record_preview = self.inbox.preview_record(
+            self.scope, body, sig, SECRET, now=NOW,
+        )
+        self.assertEqual(active_record_preview.event_phase, "active")
+        self.assertEqual(
+            active_record_preview.existing_claim_status,
+            ReadbackClaimStatus(claim, "active"),
+        )
+
+        statements.clear()
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            handoff_preview = self.inbox.preview_handoff(claim, "worker-b")
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        expected_next_claim = ReadbackClaim(self.scope, actual.receipt, "worker-b", 2)
+        self.assertEqual(
+            handoff_preview,
+            ClaimTransitionPreview(
+                existing_claim_status=ReadbackClaimStatus(claim, "active"),
+                projected_claim_status=ReadbackClaimStatus(expected_next_claim, "active"),
+                would_write=True,
+            ),
+        )
+        self.assertEqual(
+            self.inbox.read_claim(self.scope, "evt_preview"),
+            ReadbackClaimStatus(claim, "active"),
+        )
+
+        handed = self.inbox.handoff(claim, "worker-b")
+        self.assertEqual(handed, expected_next_claim)
+
+        statements.clear()
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            finish_preview = self.inbox.preview_finish_readback(handed)
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertEqual(
+            finish_preview,
+            ClaimTransitionPreview(
+                existing_claim_status=ReadbackClaimStatus(handed, "active"),
+                projected_claim_status=ReadbackClaimStatus(handed, "handled"),
+                would_write=True,
+            ),
+        )
+
+        self.inbox.finish_readback(handed)
+        statements.clear()
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            idempotent_finish = self.inbox.preview_finish_readback(handed)
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertEqual(
+            idempotent_finish,
+            ClaimTransitionPreview(
+                existing_claim_status=ReadbackClaimStatus(handed, "handled"),
+                projected_claim_status=ReadbackClaimStatus(handed, "handled"),
+                would_write=False,
+            ),
+        )
+        with self.assertRaisesRegex(StripeInboxError, "Handled hints cannot be handed off"):
+            self.inbox.preview_handoff(handed, "worker-c")
+
+        # Constructor invariants for InboxRecordPreview and ClaimTransitionPreview
+        other_scope = replace(self.scope, tenant_id="other")
+        other_receipt = InboxReceipt("evt_other", "payment_intent.succeeded", "pi_synthetic", "0" * 64)
+        for bad_kwargs, pattern in (
+            ({"scope": "bad"}, "StripeInboxScope is required"),
+            ({"decision": "bad"}, "decision must be an InboxDecision"),
+            ({"would_insert_receipt": 1}, "would_insert_receipt must be a boolean"),
+            (
+                {
+                    "existing_receipt": None,
+                    "existing_claim_status": ReadbackClaimStatus(handed, "handled"),
+                },
+                "Orphan readback claim",
+            ),
+            (
+                {"existing_receipt": None, "would_insert_receipt": False},
+                "First-seen inbox preview must set",
+            ),
+            (
+                {
+                    "existing_receipt": actual.receipt,
+                    "decision": InboxDecision(actual.receipt, False, True),
+                    "would_insert_receipt": True,
+                },
+                "Duplicate inbox preview must match",
+            ),
+            (
+                {
+                    "existing_receipt": actual.receipt,
+                    "existing_claim_status": ReadbackClaimStatus(
+                        ReadbackClaim(other_scope, actual.receipt, "worker-a", 1),
+                        "active",
+                    ),
+                    "decision": InboxDecision(actual.receipt, False, True),
+                    "would_insert_receipt": False,
+                },
+                "scope or receipt differs",
+            ),
+        ):
+            params = {
+                "scope": self.scope,
+                "existing_receipt": None,
+                "existing_claim_status": None,
+                "decision": InboxDecision(actual.receipt, True, True),
+                "would_insert_receipt": True,
+                **bad_kwargs,
+            }
+            with self.subTest(bad_kwargs=bad_kwargs), self.assertRaisesRegex(StripeInboxError, pattern):
+                InboxRecordPreview(**params)  # type: ignore[arg-type]
+
+        for bad_transition, pattern in (
+            (
+                {"existing_claim_status": "bad"},
+                "ReadbackClaimStatus instances",
+            ),
+            (
+                {
+                    "projected_claim_status": ReadbackClaimStatus(
+                        ReadbackClaim(other_scope, actual.receipt, "worker-b", 2),
+                        "active",
+                    ),
+                },
+                "scope or receipt differs",
+            ),
+            (
+                {
+                    "projected_claim_status": ReadbackClaimStatus(
+                        ReadbackClaim(self.scope, other_receipt, "worker-b", 2),
+                        "active",
+                    ),
+                },
+                "scope or receipt differs",
+            ),
+            ({"would_write": 1}, "would_write must be a boolean"),
+            (
+                {"would_write": False},
+                "valid active handoff or finish_readback transition",
+            ),
+            (
+                {
+                    "existing_claim_status": ReadbackClaimStatus(claim, "handled"),
+                    "projected_claim_status": ReadbackClaimStatus(expected_next_claim, "active"),
+                    "would_write": True,
+                },
+                "valid active handoff or finish_readback transition",
+            ),
+        ):
+            params = {
+                "existing_claim_status": ReadbackClaimStatus(claim, "active"),
+                "projected_claim_status": ReadbackClaimStatus(expected_next_claim, "active"),
+                "would_write": True,
+                **bad_transition,
+            }
+            with self.subTest(bad_transition=bad_transition), self.assertRaisesRegex(
+                StripeInboxError, pattern,
+            ):
+                ClaimTransitionPreview(**params)  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

@@ -150,6 +150,115 @@ class InboxEventProvenance:
         return self.claim_status.state
 
 
+@dataclass(frozen=True)
+class InboxRecordPreview:
+    """Single-SELECT read-only dry-run preview of StripeEventInbox.record()."""
+
+    scope: StripeInboxScope
+    existing_receipt: InboxReceipt | None
+    existing_claim_status: ReadbackClaimStatus | None
+    decision: InboxDecision
+    would_insert_receipt: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, StripeInboxScope):
+            raise StripeInboxError("A trusted StripeInboxScope is required.")
+        if not isinstance(self.decision, InboxDecision):
+            raise StripeInboxError("decision must be an InboxDecision.")
+        if type(self.would_insert_receipt) is not bool:
+            raise StripeInboxError("would_insert_receipt must be a boolean.")
+        if self.existing_receipt is None:
+            if self.existing_claim_status is not None:
+                raise StripeInboxError(
+                    "Orphan readback claim exists without an inbox receipt."
+                )
+            if (
+                not self.would_insert_receipt
+                or not self.decision.first_seen
+                or not self.decision.body_matches_first
+            ):
+                raise StripeInboxError(
+                    "First-seen inbox preview must set would_insert_receipt=True,"
+                    " first_seen=True, and body_matches_first=True."
+                )
+        else:
+            if not isinstance(self.existing_receipt, InboxReceipt):
+                raise StripeInboxError(
+                    "existing_receipt must be an InboxReceipt or None."
+                )
+            if (
+                self.would_insert_receipt
+                or self.decision.first_seen
+                or self.decision.receipt != self.existing_receipt
+            ):
+                raise StripeInboxError(
+                    "Duplicate inbox preview must match existing_receipt and set"
+                    " would_insert_receipt=False and first_seen=False."
+                )
+            if self.existing_claim_status is not None:
+                if not isinstance(self.existing_claim_status, ReadbackClaimStatus):
+                    raise StripeInboxError(
+                        "existing_claim_status must be a ReadbackClaimStatus or None."
+                    )
+                if (
+                    self.existing_claim_status.claim.scope != self.scope
+                    or self.existing_claim_status.claim.receipt != self.existing_receipt
+                ):
+                    raise StripeInboxError(
+                        "existing_claim_status scope or receipt differs from the bound event."
+                    )
+
+    @property
+    def event_phase(self) -> InboxEventPhase:
+        if self.existing_claim_status is None:
+            return "unclaimed"
+        return self.existing_claim_status.state
+
+
+@dataclass(frozen=True)
+class ClaimTransitionPreview:
+    """Single-SELECT read-only dry-run preview of handoff() or finish_readback()."""
+
+    existing_claim_status: ReadbackClaimStatus
+    projected_claim_status: ReadbackClaimStatus
+    would_write: bool
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.existing_claim_status, ReadbackClaimStatus)
+            or not isinstance(self.projected_claim_status, ReadbackClaimStatus)
+        ):
+            raise StripeInboxError(
+                "existing_claim_status and projected_claim_status must be ReadbackClaimStatus instances."
+            )
+        if (
+            self.existing_claim_status.claim.scope != self.projected_claim_status.claim.scope
+            or self.existing_claim_status.claim.receipt != self.projected_claim_status.claim.receipt
+        ):
+            raise StripeInboxError(
+                "Claim transition preview scope or receipt differs between existing and projected states."
+            )
+        if type(self.would_write) is not bool:
+            raise StripeInboxError("would_write must be a boolean.")
+        existing_claim = self.existing_claim_status.claim
+        projected_claim = self.projected_claim_status.claim
+        is_valid_handoff = (
+            self.existing_claim_status.state == "active"
+            and self.projected_claim_status.state == "active"
+            and projected_claim.generation == existing_claim.generation + 1
+            and self.would_write is True
+        )
+        is_valid_finish = (
+            self.projected_claim_status.state == "handled"
+            and projected_claim == existing_claim
+            and self.would_write == (self.existing_claim_status.state == "active")
+        )
+        if not (is_valid_handoff or is_valid_finish):
+            raise StripeInboxError(
+                "ClaimTransitionPreview must represent a valid active handoff or finish_readback transition."
+            )
+
+
 def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
     result: dict[str, object] = {}
     for key, value in pairs:
@@ -255,11 +364,10 @@ class StripeEventInbox:
             tolerance=tolerance, admission_clock=clock,
         )
 
-    def _record(
+    def _parse_verified_event(
         self, scope: StripeInboxScope, body: bytes, signature_header: str,
         endpoint_secret: str | tuple[str, ...], *, now: int, tolerance: int,
-        admission_clock: Callable[[], int] | None,
-    ) -> InboxDecision:
+    ) -> tuple[int, str, str, str, str]:
         if not isinstance(scope, StripeInboxScope):
             raise StripeInboxError("A trusted StripeInboxScope is required.")
         verified = verify_stripe_delivery(
@@ -295,11 +403,88 @@ class StripeEventInbox:
             or re.fullmatch(r"pi_[A-Za-z0-9_]+", reference) is None
         ):
             raise StripeInboxError("Snapshot object reference or mode is invalid.")
+        return verified.timestamp, verified.payload_sha256, event_id, event_type, reference
+
+    def preview_record(
+        self, scope: StripeInboxScope, body: bytes, signature_header: str,
+        endpoint_secret: str | tuple[str, ...], *, now: int, tolerance: int = 300,
+    ) -> InboxRecordPreview:
+        """Preview record() in one lock-free SELECT without writing to the inbox."""
+        _, payload_sha256, event_id, event_type, reference = self._parse_verified_event(
+            scope, body, signature_header, endpoint_secret, now=now, tolerance=tolerance,
+        )
+        key = (*scope.key, event_id)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    i.event_id AS i_event_id,
+                    i.event_type AS i_event_type,
+                    i.provider_reference AS i_provider_reference,
+                    i.payload_sha256 AS i_payload_sha256,
+                    c.event_id AS c_event_id,
+                    c.worker_id AS c_worker_id,
+                    c.generation AS c_generation,
+                    c.state AS c_state
+                FROM (SELECT 1)
+                LEFT JOIN stripe_event_inbox i
+                    ON i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?
+                    AND i.livemode=? AND i.event_id=?
+                LEFT JOIN stripe_readback_claims c
+                    ON c.tenant_id=? AND c.endpoint_id=? AND c.provider_account=?
+                    AND c.livemode=? AND c.event_id=?
+                """,
+                (*key, *key),
+            ).fetchone()
+        if row is not None and row["i_event_id"] is None and row["c_event_id"] is not None:
+            raise StripeInboxError(
+                "Orphan readback claim exists without an inbox receipt."
+            )
+        if row is not None and row["i_event_id"] is not None:
+            stored_receipt = InboxReceipt(
+                row["i_event_id"],
+                row["i_event_type"],
+                row["i_provider_reference"],
+                row["i_payload_sha256"],
+            )
+            claim_status: ReadbackClaimStatus | None = None
+            if row["c_event_id"] is not None:
+                claim_status = ReadbackClaimStatus(
+                    ReadbackClaim(scope, stored_receipt, row["c_worker_id"], row["c_generation"]),
+                    row["c_state"],
+                )
+            if stored_receipt.event_type != event_type or stored_receipt.provider_reference != reference:
+                raise StripeInboxError("Event ID has conflicting type or object bindings.")
+            return InboxRecordPreview(
+                scope=scope,
+                existing_receipt=stored_receipt,
+                existing_claim_status=claim_status,
+                decision=InboxDecision(
+                    stored_receipt, False, stored_receipt.payload_sha256 == payload_sha256,
+                ),
+                would_insert_receipt=False,
+            )
+        projected_receipt = InboxReceipt(event_id, event_type, reference, payload_sha256)
+        return InboxRecordPreview(
+            scope=scope,
+            existing_receipt=None,
+            existing_claim_status=None,
+            decision=InboxDecision(projected_receipt, True, True),
+            would_insert_receipt=True,
+        )
+
+    def _record(
+        self, scope: StripeInboxScope, body: bytes, signature_header: str,
+        endpoint_secret: str | tuple[str, ...], *, now: int, tolerance: int,
+        admission_clock: Callable[[], int] | None,
+    ) -> InboxDecision:
+        timestamp, payload_sha256, event_id, event_type, reference = self._parse_verified_event(
+            scope, body, signature_header, endpoint_secret, now=now, tolerance=tolerance,
+        )
 
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
             if admission_clock is not None:
-                _require_delivery_time(verified.timestamp, now=admission_clock(), tolerance=tolerance)
+                _require_delivery_time(timestamp, now=admission_clock(), tolerance=tolerance)
             previous = db.execute(
                 "SELECT * FROM stripe_event_inbox WHERE tenant_id=? AND endpoint_id=?"
                 " AND provider_account=? AND livemode=? AND event_id=?",
@@ -310,16 +495,16 @@ class StripeEventInbox:
                 if receipt.event_type != event_type or receipt.provider_reference != reference:
                     raise StripeInboxError("Event ID has conflicting type or object bindings.")
                 return InboxDecision(
-                    receipt, False, receipt.payload_sha256 == verified.payload_sha256,
+                    receipt, False, receipt.payload_sha256 == payload_sha256,
                 )
             db.execute(
                 "INSERT INTO stripe_event_inbox "
                 "(tenant_id,endpoint_id,provider_account,livemode,event_id,"
                 "event_type,provider_reference,payload_sha256) VALUES (?,?,?,?,?,?,?,?)",
-                (*scope.key, event_id, event_type, reference, verified.payload_sha256),
+                (*scope.key, event_id, event_type, reference, payload_sha256),
             )
             return InboxDecision(
-                InboxReceipt(event_id, event_type, reference, verified.payload_sha256),
+                InboxReceipt(event_id, event_type, reference, payload_sha256),
                 True, True,
             )
 
@@ -493,6 +678,28 @@ class StripeEventInbox:
             raise StripeInboxError("Stored readback claim state is invalid.")
         return row
 
+    def preview_handoff(
+        self, claim: ReadbackClaim, worker_id: str,
+    ) -> ClaimTransitionPreview:
+        """Preview handoff() in one lock-free SELECT without advancing generation."""
+        if not isinstance(claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
+        _require_worker_id(worker_id)
+        with closing(self._connect()) as db:
+            row = self._current_claim(db, claim)
+        if row["state"] != "active":
+            raise StripeInboxError("Handled hints cannot be handed off.")
+        if claim.generation == 2**63 - 1:
+            raise StripeInboxError("Readback generation is exhausted.")
+        projected_claim = ReadbackClaim(
+            claim.scope, claim.receipt, worker_id, claim.generation + 1,
+        )
+        return ClaimTransitionPreview(
+            existing_claim_status=ReadbackClaimStatus(claim, "active"),
+            projected_claim_status=ReadbackClaimStatus(projected_claim, "active"),
+            would_write=True,
+        )
+
     def handoff(self, claim: ReadbackClaim, worker_id: str) -> ReadbackClaim:
         """Apply a trusted controller's recovery decision; never infer expiry."""
         if not isinstance(claim, ReadbackClaim):
@@ -513,6 +720,21 @@ class StripeEventInbox:
                 (worker_id, generation, *claim.scope.key, claim.receipt.event_id),
             )
             return ReadbackClaim(claim.scope, claim.receipt, worker_id, generation)
+
+    def preview_finish_readback(
+        self, claim: ReadbackClaim,
+    ) -> ClaimTransitionPreview:
+        """Preview finish_readback() in one lock-free SELECT without marking handled."""
+        if not isinstance(claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
+        with closing(self._connect()) as db:
+            row = self._current_claim(db, claim)
+        existing_state: ClaimState = row["state"]
+        return ClaimTransitionPreview(
+            existing_claim_status=ReadbackClaimStatus(claim, existing_state),
+            projected_claim_status=ReadbackClaimStatus(claim, "handled"),
+            would_write=existing_state == "active",
+        )
 
     def finish_readback(self, claim: ReadbackClaim) -> None:
         """Record trusted local hint handling, not authenticated provider/payment facts."""

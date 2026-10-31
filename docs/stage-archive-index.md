@@ -480,6 +480,11 @@ Adds `PaymentApprovalStatus.state_at()`, `ApprovalAdmissionProvenance.path` / `a
 | [Stripe 回读验收无锁单 SELECT 预检（StripeReadbackAcceptancePreview）与跨平面 Provenance 相位对齐（中文）](research/2026-11-01-stripe-readback-acceptance-dry-run-preview.md).
 Adds `StripeReadbackProvenance.attempt_phase`, `StripeLifecycleProvenance.attempt_phase`, `StripeReadbackAcceptancePreview`, and `preview_accept_stripe_readback()`.
 
+**Stage 1748 / 2026-11-01:** [Poppy session assertion consumption and Stripe inbox/claim transition lock-free single-SELECT dry-run previews (EN)](research/2026-11-01-poppy-replay-and-stripe-inbox-dry-run-preview.en.md)
+| [Poppy 会话断言消费与 Stripe Webhook 收件箱/认领跃迁的无锁单 SELECT 预检（中文）](research/2026-11-01-poppy-replay-and-stripe-inbox-dry-run-preview.md).
+Adds `PoppyConsumptionPreview` (`PoppyAssertionJournal.preview_consume()`), `InboxRecordPreview` (`StripeEventInbox.preview_record()`),
+and `ClaimTransitionPreview` (`StripeEventInbox.preview_handoff()` / `preview_finish_readback()`).
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

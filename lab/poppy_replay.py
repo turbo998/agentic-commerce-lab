@@ -68,6 +68,62 @@ def _row_to_consumed_assertion(
     return record
 
 
+@dataclass(frozen=True)
+class PoppyConsumptionPreview:
+    """Single-SELECT read-only dry-run preview of PoppyAssertionJournal.consume()."""
+
+    scope: PoppyReplayScope
+    jti_sha256: str
+    now: int
+    existing_consumption: PoppyConsumedAssertion | None
+    projected_consumption: PoppyConsumedAssertion
+    would_consume: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, PoppyReplayScope):
+            raise PoppyReplayError("A trusted PoppyReplayScope is required.")
+        if (
+            not isinstance(self.jti_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.jti_sha256) is None
+        ):
+            raise PoppyReplayError(
+                "Consumed assertion digest must be a 64-char lowercase hex SHA-256 string."
+            )
+        if type(self.now) is not int or not 0 <= self.now <= 2**63 - 1:
+            raise PoppyReplayError(
+                "Assertion times must be nonnegative signed-64-bit integers."
+            )
+        expected = PoppyConsumedAssertion(self.scope, self.jti_sha256)
+        if not isinstance(self.projected_consumption, PoppyConsumedAssertion):
+            raise PoppyReplayError(
+                "projected_consumption must be a PoppyConsumedAssertion."
+            )
+        if self.projected_consumption != expected:
+            raise PoppyReplayError(
+                "projected_consumption does not match scope and jti_sha256."
+            )
+        if type(self.would_consume) is not bool:
+            raise PoppyReplayError("would_consume must be a boolean.")
+        if self.existing_consumption is None:
+            if not self.would_consume:
+                raise PoppyReplayError(
+                    "Unconsumed assertion preview must set would_consume=True."
+                )
+        else:
+            if not isinstance(self.existing_consumption, PoppyConsumedAssertion):
+                raise PoppyReplayError(
+                    "existing_consumption must be a PoppyConsumedAssertion or None."
+                )
+            if self.existing_consumption != expected or self.would_consume:
+                raise PoppyReplayError(
+                    "Consumed assertion preview must match scope/digest and set would_consume=False."
+                )
+
+    @property
+    def is_replay(self) -> bool:
+        return not self.would_consume
+
+
 class PoppyAssertionJournal:
     """Consume authenticated Session assertion IDs once in a shared local file.
 
@@ -174,6 +230,26 @@ class PoppyAssertionJournal:
     ) -> bool:
         """Validate structural/scope claims and check whether the assertion ID was consumed."""
         return self.find_assertion_consumption(scope, assertion) is not None
+
+    def preview_consume(
+        self, scope: PoppyReplayScope, assertion: SessionAssertionClaims, *, now: int,
+    ) -> PoppyConsumptionPreview:
+        """Preview consume() in one lock-free SELECT without burning the assertion ID."""
+        key = self._validated_key(scope, assertion, now=now)
+        existing = self._lookup_consumed_key(scope, key)
+        projected = (
+            existing
+            if existing is not None
+            else PoppyConsumedAssertion(scope, key[2])
+        )
+        return PoppyConsumptionPreview(
+            scope=scope,
+            jti_sha256=key[2],
+            now=now,
+            existing_consumption=existing,
+            projected_consumption=projected,
+            would_consume=existing is None,
+        )
 
     def _lookup_consumed_key(
         self, scope: PoppyReplayScope, key: tuple[str, str, str],
