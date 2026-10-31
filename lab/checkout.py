@@ -2,10 +2,14 @@
 
 import hashlib
 import json
+import re
 import sqlite3
 from contextlib import closing
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Literal
+
+MandateState = Literal["active", "revoked"]
 
 
 class AuthorizationError(ValueError):
@@ -23,9 +27,19 @@ class Checkout:
     amount: int
 
     def __post_init__(self) -> None:
-        if not self.merchant or not self.sku:
+        if (
+            not isinstance(self.merchant, str)
+            or not self.merchant
+            or not isinstance(self.sku, str)
+            or not self.sku
+        ):
             raise ValueError("Checkout requires a merchant and a nonempty SKU.")
-        if len(self.currency) != 3 or not self.currency.isascii() or not self.currency.isupper():
+        if (
+            not isinstance(self.currency, str)
+            or len(self.currency) != 3
+            or not self.currency.isascii()
+            or not self.currency.isupper()
+        ):
             raise ValueError("Currency must be a three-letter uppercase ASCII code.")
         if not self.currency.isalpha():
             raise ValueError("Currency must contain only letters.")
@@ -42,6 +56,46 @@ class Checkout:
 
 
 @dataclass(frozen=True)
+class MandateStatus:
+    """Persisted local mandate record state, not live validity or settlement authority."""
+
+    mandate_id: str
+    merchant: str
+    currency: str
+    cart_digest: str
+    max_amount: int
+    expires_at: int
+    state: MandateState
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.mandate_id, str) or not self.mandate_id:
+            raise AuthorizationError("Stored mandate ID is invalid.")
+        if not isinstance(self.merchant, str) or not self.merchant:
+            raise AuthorizationError("Stored mandate merchant is invalid.")
+        if (
+            not isinstance(self.currency, str)
+            or len(self.currency) != 3
+            or not self.currency.isascii()
+            or not self.currency.isupper()
+            or not self.currency.isalpha()
+        ):
+            raise AuthorizationError("Stored mandate currency is invalid.")
+        if (
+            not isinstance(self.cart_digest, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.cart_digest) is None
+        ):
+            raise AuthorizationError(
+                "Stored mandate cart_digest must be a 64-char hex SHA-256 digest."
+            )
+        if type(self.max_amount) is not int or not 0 < self.max_amount <= 2**63 - 1:
+            raise AuthorizationError("Stored mandate max_amount is invalid.")
+        if type(self.expires_at) is not int or not 0 < self.expires_at <= 2**63 - 1:
+            raise AuthorizationError("Stored mandate expiry is invalid.")
+        if not isinstance(self.state, str) or self.state not in ("active", "revoked"):
+            raise AuthorizationError("Stored mandate revocation state is invalid.")
+
+
+@dataclass(frozen=True)
 class Receipt:
     """A persisted local outcome with no card or payment token information."""
 
@@ -49,6 +103,159 @@ class Receipt:
     amount: int
     currency: str
     status: str = "simulated"
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.order_id, str)
+            or re.fullmatch(r"sim_[0-9a-f]{24}", self.order_id) is None
+        ):
+            raise AuthorizationError("Receipt order_id must be a sim_<24-hex> identifier.")
+        if type(self.amount) is not int or not 0 < self.amount <= 2**63 - 1:
+            raise AuthorizationError(
+                "Receipt amount must be a positive signed 64-bit integer."
+            )
+        if (
+            not isinstance(self.currency, str)
+            or len(self.currency) != 3
+            or not self.currency.isascii()
+            or not self.currency.isupper()
+            or not self.currency.isalpha()
+        ):
+            raise AuthorizationError("Currency must be a three-letter uppercase ASCII code.")
+        if not isinstance(self.status, str) or self.status != "simulated":
+            raise AuthorizationError("Receipt status must be 'simulated'.")
+
+
+@dataclass(frozen=True)
+class CheckoutProvenance:
+    """Local coupled mandate-status and idempotency-receipt snapshot, not settlement proof."""
+
+    mandate_id: str
+    fingerprint: str
+    mandate_status: MandateStatus | None
+    request_key: str | None
+    receipt: Receipt | None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.mandate_id, str) or not self.mandate_id:
+            raise AuthorizationError("Mandate ID must be a nonempty string.")
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise AuthorizationError(
+                "Execution fingerprint must be a 64-char hex SHA-256 digest."
+            )
+        if self.mandate_status is not None:
+            if not isinstance(self.mandate_status, MandateStatus):
+                raise AuthorizationError("mandate_status must be a MandateStatus or None.")
+            if self.mandate_status.mandate_id != self.mandate_id:
+                raise AuthorizationError("Mandate status differs from the bound mandate.")
+        if self.request_key is not None and (
+            not isinstance(self.request_key, str) or not self.request_key
+        ):
+            raise AuthorizationError("Idempotency request_key must be a nonempty string.")
+        if self.receipt is None:
+            if self.request_key is not None:
+                raise AuthorizationError(
+                    "request_key cannot be set when no receipt is recorded."
+                )
+        else:
+            if not isinstance(self.receipt, Receipt):
+                raise AuthorizationError("receipt must be a Receipt or None.")
+            if self.request_key is None:
+                raise AuthorizationError(
+                    "request_key is required when a receipt is recorded."
+                )
+            if self.receipt.order_id != f"sim_{self.fingerprint[:24]}":
+                raise AuthorizationError(
+                    "Stored receipt order_id differs from the bound execution fingerprint."
+                )
+            if self.mandate_status is None:
+                raise AuthorizationError(
+                    "Orphan receipt exists without a recorded mandate."
+                )
+            if self.receipt.currency != self.mandate_status.currency:
+                raise AuthorizationError(
+                    "Stored receipt currency differs from the recorded mandate."
+                )
+            if self.receipt.amount > self.mandate_status.max_amount:
+                raise AuthorizationError(
+                    "Stored receipt amount exceeds the recorded mandate ceiling."
+                )
+
+
+def _execution_fingerprint(mandate_id: str, checkout: Checkout) -> str:
+    return hashlib.sha256(
+        json.dumps([mandate_id, checkout.digest], separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _parse_mandate_row(
+    row: sqlite3.Row, *, expected_mandate_id: str, prefix: str = ""
+) -> MandateStatus:
+    mandate_id = row[f"{prefix}id"]
+    if not isinstance(mandate_id, str) or mandate_id != expected_mandate_id:
+        raise AuthorizationError("Stored mandate ID is invalid.")
+    revoked = row[f"{prefix}revoked"]
+    if type(revoked) is not int or revoked not in (0, 1):
+        raise AuthorizationError("Stored mandate revocation state is invalid.")
+    return MandateStatus(
+        mandate_id=mandate_id,
+        merchant=row[f"{prefix}merchant"],
+        currency=row[f"{prefix}currency"],
+        cart_digest=row[f"{prefix}cart_digest"],
+        max_amount=row[f"{prefix}max_amount"],
+        expires_at=row[f"{prefix}expires_at"],
+        state="revoked" if revoked else "active",
+    )
+
+
+def _verify_mandate_binding(status: MandateStatus, checkout: Checkout) -> None:
+    if checkout.merchant != status.merchant or checkout.currency != status.currency:
+        raise AuthorizationError("Merchant or currency differs from the trusted approval.")
+    if checkout.amount > status.max_amount:
+        raise AuthorizationError("Checkout exceeds the approved spending limit.")
+    if checkout.digest != status.cart_digest:
+        raise AuthorizationError("Cart changed after approval; obtain new approval.")
+
+
+def _parse_receipt_row(
+    row: sqlite3.Row,
+    *,
+    expected_request_key: str | None,
+    expected_mandate_id: str,
+    expected_fingerprint: str,
+    checkout: Checkout,
+    prefix: str = "",
+) -> tuple[str, Receipt]:
+    request_key = row[f"{prefix}request_key"]
+    if not isinstance(request_key, str) or not request_key:
+        raise AuthorizationError("Stored receipt request_key is invalid.")
+    if expected_request_key is not None and request_key != expected_request_key:
+        raise AuthorizationError("Stored receipt request_key is invalid.")
+    fingerprint = row[f"{prefix}fingerprint"]
+    if not isinstance(fingerprint, str) or re.fullmatch(r"[0-9a-f]{64}", fingerprint) is None:
+        raise AuthorizationError("Stored receipt fingerprint is invalid.")
+    if fingerprint != expected_fingerprint:
+        raise AuthorizationError("Idempotency key conflicts with an earlier checkout.")
+    mandate_id = row[f"{prefix}mandate_id"]
+    if not isinstance(mandate_id, str) or not mandate_id:
+        raise AuthorizationError("Stored receipt mandate_id is invalid.")
+    if mandate_id != expected_mandate_id:
+        raise AuthorizationError("Stored receipt mandate_id differs from the bound mandate.")
+    receipt = Receipt(
+        order_id=row[f"{prefix}order_id"],
+        amount=row[f"{prefix}amount"],
+        currency=row[f"{prefix}currency"],
+    )
+    if receipt.order_id != f"sim_{expected_fingerprint[:24]}":
+        raise AuthorizationError(
+            "Stored receipt order_id differs from the bound execution fingerprint."
+        )
+    if receipt.amount != checkout.amount or receipt.currency != checkout.currency:
+        raise AuthorizationError("Stored receipt differs from the bound checkout.")
+    return request_key, receipt
 
 
 class CheckoutStore:
@@ -86,12 +293,21 @@ class CheckoutStore:
         db.execute("PRAGMA foreign_keys = ON")
         return db
 
+    @staticmethod
+    def _require_scope(mandate_id: str, checkout: Checkout) -> None:
+        if not isinstance(mandate_id, str) or not mandate_id:
+            raise ValueError("Checkout requires a nonempty mandate ID.")
+        if not isinstance(checkout, Checkout):
+            raise ValueError("Checkout requires a validated Checkout.")
+
     def approve(
         self, mandate_id: str, checkout: Checkout, *, max_amount: int, expires_at: int
     ) -> None:
         """Trusted operator entry point, not an agent tool or consent UI."""
-        if not mandate_id:
+        if not isinstance(mandate_id, str) or not mandate_id:
             raise ValueError("Approval requires a nonempty mandate ID.")
+        if not isinstance(checkout, Checkout):
+            raise ValueError("Approval requires a validated Checkout.")
         if type(max_amount) is not int or not checkout.amount <= max_amount <= 2**63 - 1:
             raise ValueError("Approval limit must cover the quote in signed 64-bit minor units.")
         if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
@@ -106,47 +322,236 @@ class CheckoutStore:
 
     def revoke(self, mandate_id: str) -> None:
         """Revoke unspent authority without erasing completed receipts."""
+        if not isinstance(mandate_id, str) or not mandate_id:
+            raise ValueError("Revocation requires a nonempty mandate ID.")
         with closing(self._connect()) as db, db:
-            cursor = db.execute("UPDATE mandates SET revoked=1 WHERE id=?", (mandate_id,))
-            if cursor.rowcount != 1:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT * FROM mandates WHERE id=?", (mandate_id,)).fetchone()
+            if row is None:
                 raise AuthorizationError(f"Cannot revoke unknown mandate {mandate_id!r}.")
+            _parse_mandate_row(row, expected_mandate_id=mandate_id)
+            db.execute("UPDATE mandates SET revoked=1 WHERE id=?", (mandate_id,))
+
+    def read_mandate(self, mandate_id: str, checkout: Checkout) -> MandateStatus | None:
+        """Read local mandate record state without clock sampling or mutation."""
+        self._require_scope(mandate_id, checkout)
+        with closing(self._connect()) as db:
+            row = db.execute("SELECT * FROM mandates WHERE id=?", (mandate_id,)).fetchone()
+        if row is None:
+            return None
+        status = _parse_mandate_row(row, expected_mandate_id=mandate_id)
+        _verify_mandate_binding(status, checkout)
+        return status
+
+    def read_receipt(
+        self, mandate_id: str, checkout: Checkout, *, request_key: str
+    ) -> Receipt | None:
+        """Read local idempotency receipt coupled to its parent mandate without mutation."""
+        self._require_scope(mandate_id, checkout)
+        if not isinstance(request_key, str) or not request_key:
+            raise ValueError("Checkout requires a nonempty idempotency key.")
+        fingerprint = _execution_fingerprint(mandate_id, checkout)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """
+                SELECT
+                    r.request_key AS r_request_key,
+                    r.fingerprint AS r_fingerprint,
+                    r.mandate_id AS r_mandate_id,
+                    r.order_id AS r_order_id,
+                    r.amount AS r_amount,
+                    r.currency AS r_currency,
+                    m.id AS m_id,
+                    m.merchant AS m_merchant,
+                    m.currency AS m_currency,
+                    m.cart_digest AS m_cart_digest,
+                    m.max_amount AS m_max_amount,
+                    m.expires_at AS m_expires_at,
+                    m.revoked AS m_revoked
+                FROM receipts r
+                LEFT JOIN mandates m ON m.id = r.mandate_id
+                WHERE r.request_key = ?
+                """,
+                (request_key,),
+            ).fetchone()
+        if row is None:
+            return None
+        _, receipt = _parse_receipt_row(
+            row,
+            expected_request_key=request_key,
+            expected_mandate_id=mandate_id,
+            expected_fingerprint=fingerprint,
+            checkout=checkout,
+            prefix="r_",
+        )
+        if row["m_id"] is None:
+            raise AuthorizationError("Orphan receipt exists without a recorded mandate.")
+        status = _parse_mandate_row(row, expected_mandate_id=mandate_id, prefix="m_")
+        _verify_mandate_binding(status, checkout)
+        return receipt
+
+    def find_provenance(
+        self,
+        mandate_id: str,
+        checkout: Checkout,
+        *,
+        request_key: str | None = None,
+    ) -> CheckoutProvenance | None:
+        """Read coupled mandate and receipt provenance in one read-only SQLite query."""
+        self._require_scope(mandate_id, checkout)
+        if request_key is not None and (not isinstance(request_key, str) or not request_key):
+            raise ValueError("Checkout requires a nonempty idempotency key.")
+        fingerprint = _execution_fingerprint(mandate_id, checkout)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """
+                SELECT
+                    m.id AS m_id,
+                    m.merchant AS m_merchant,
+                    m.currency AS m_currency,
+                    m.cart_digest AS m_cart_digest,
+                    m.max_amount AS m_max_amount,
+                    m.expires_at AS m_expires_at,
+                    m.revoked AS m_revoked,
+                    rm.request_key AS rm_request_key,
+                    rm.fingerprint AS rm_fingerprint,
+                    rm.mandate_id AS rm_mandate_id,
+                    rm.order_id AS rm_order_id,
+                    rm.amount AS rm_amount,
+                    rm.currency AS rm_currency,
+                    rk.request_key AS rk_request_key,
+                    rk.fingerprint AS rk_fingerprint,
+                    rk.mandate_id AS rk_mandate_id,
+                    rk.order_id AS rk_order_id,
+                    rk.amount AS rk_amount,
+                    rk.currency AS rk_currency
+                FROM (SELECT 1)
+                LEFT JOIN mandates m ON m.id = ?
+                LEFT JOIN receipts rm ON rm.mandate_id = ?
+                LEFT JOIN receipts rk ON ? IS NOT NULL AND rk.request_key = ?
+                """,
+                (mandate_id, mandate_id, request_key, request_key),
+            ).fetchone()
+        assert row is not None
+        if (
+            row["m_id"] is None
+            and row["rm_request_key"] is None
+            and row["rk_request_key"] is None
+        ):
+            return None
+        if row["rk_request_key"] is not None and row["rk_mandate_id"] != mandate_id:
+            _parse_receipt_row(
+                row,
+                expected_request_key=request_key,
+                expected_mandate_id=mandate_id,
+                expected_fingerprint=fingerprint,
+                checkout=checkout,
+                prefix="rk_",
+            )
+        status: MandateStatus | None = None
+        if row["m_id"] is not None:
+            status = _parse_mandate_row(row, expected_mandate_id=mandate_id, prefix="m_")
+            _verify_mandate_binding(status, checkout)
+        if row["rk_request_key"] is not None:
+            _parse_receipt_row(
+                row,
+                expected_request_key=request_key,
+                expected_mandate_id=mandate_id,
+                expected_fingerprint=fingerprint,
+                checkout=checkout,
+                prefix="rk_",
+            )
+        recorded_key: str | None = None
+        receipt: Receipt | None = None
+        if row["rm_request_key"] is not None:
+            recorded_key, receipt = _parse_receipt_row(
+                row,
+                expected_request_key=None,
+                expected_mandate_id=mandate_id,
+                expected_fingerprint=fingerprint,
+                checkout=checkout,
+                prefix="rm_",
+            )
+            if request_key is not None and recorded_key != request_key:
+                raise AuthorizationError(
+                    "Mandate already consumed; retry with the original key."
+                )
+        if status is None:
+            raise AuthorizationError("Orphan receipt exists without a recorded mandate.")
+        return CheckoutProvenance(
+            mandate_id=mandate_id,
+            fingerprint=fingerprint,
+            mandate_status=status,
+            request_key=recorded_key,
+            receipt=receipt,
+        )
+
+    def read_provenance(
+        self,
+        mandate_id: str,
+        checkout: Checkout,
+        *,
+        request_key: str | None = None,
+    ) -> CheckoutProvenance:
+        """Read coupled mandate and receipt provenance, failing closed when absent."""
+        provenance = self.find_provenance(mandate_id, checkout, request_key=request_key)
+        if provenance is None:
+            raise AuthorizationError("No trusted approval exists for this mandate.")
+        return provenance
 
     def execute(
         self, mandate_id: str, checkout: Checkout, *, request_key: str, now: int
     ) -> Receipt:
         """Atomically consume one approval; identical retries return the same receipt."""
-        if not request_key:
+        self._require_scope(mandate_id, checkout)
+        if not isinstance(request_key, str) or not request_key:
             raise ValueError("Checkout requires a nonempty idempotency key.")
         if type(now) is not int or not 0 <= now <= 2**63 - 1:
             raise ValueError("The trusted clock must provide a nonnegative Unix timestamp.")
-        fingerprint = hashlib.sha256(
-            json.dumps([mandate_id, checkout.digest], separators=(",", ":")).encode()
-        ).hexdigest()
+        fingerprint = _execution_fingerprint(mandate_id, checkout)
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
             previous = db.execute(
                 "SELECT * FROM receipts WHERE request_key=?", (request_key,)
             ).fetchone()
             if previous:
-                if previous["fingerprint"] != fingerprint:
-                    raise AuthorizationError("Idempotency key conflicts with an earlier checkout.")
-                return Receipt(previous["order_id"], previous["amount"], previous["currency"])
+                _, receipt = _parse_receipt_row(
+                    previous,
+                    expected_request_key=request_key,
+                    expected_mandate_id=mandate_id,
+                    expected_fingerprint=fingerprint,
+                    checkout=checkout,
+                )
+                mandate = db.execute(
+                    "SELECT * FROM mandates WHERE id=?", (mandate_id,)
+                ).fetchone()
+                if mandate is None:
+                    raise AuthorizationError(
+                        "Orphan receipt exists without a recorded mandate."
+                    )
+                status = _parse_mandate_row(mandate, expected_mandate_id=mandate_id)
+                _verify_mandate_binding(status, checkout)
+                return receipt
             mandate = db.execute(
                 "SELECT * FROM mandates WHERE id=?", (mandate_id,)
             ).fetchone()
             if mandate is None:
                 raise AuthorizationError("No trusted approval exists for this mandate.")
-            if mandate["revoked"] or now >= mandate["expires_at"]:
+            status = _parse_mandate_row(mandate, expected_mandate_id=mandate_id)
+            if status.state == "revoked" or now >= status.expires_at:
                 raise AuthorizationError("Mandate is revoked or expired; obtain new approval.")
-            if checkout.merchant != mandate["merchant"] or checkout.currency != mandate["currency"]:
-                raise AuthorizationError("Merchant or currency differs from the trusted approval.")
-            if checkout.amount > mandate["max_amount"]:
-                raise AuthorizationError("Checkout exceeds the approved spending limit.")
-            if checkout.digest != mandate["cart_digest"]:
-                raise AuthorizationError("Cart changed after approval; obtain new approval.")
-            if db.execute(
-                "SELECT 1 FROM receipts WHERE mandate_id=?", (mandate_id,)
-            ).fetchone():
+            _verify_mandate_binding(status, checkout)
+            consumed = db.execute(
+                "SELECT * FROM receipts WHERE mandate_id=?", (mandate_id,)
+            ).fetchone()
+            if consumed is not None:
+                _parse_receipt_row(
+                    consumed,
+                    expected_request_key=None,
+                    expected_mandate_id=mandate_id,
+                    expected_fingerprint=fingerprint,
+                    checkout=checkout,
+                )
                 raise AuthorizationError("Mandate already consumed; retry with the original key.")
             receipt = Receipt(f"sim_{fingerprint[:24]}", checkout.amount, checkout.currency)
             db.execute(

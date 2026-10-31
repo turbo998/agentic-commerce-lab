@@ -426,6 +426,11 @@ and hardens `PaymentApprovalStore._bound_approval()`, `MerchantSignerStore._perm
 Adds `StripeReadbackProvenance`, `find_stripe_readback_provenance()`, and `read_stripe_readback_provenance()` to inspect `payment_attempts`, `stripe_event_inbox`, and `stripe_readback_claims` in one lock-free `SELECT` snapshot,
 and adds pre-connection type guards to `StripeEventInbox.handoff()` / `finish_readback()` and `stripe_observation`.
 
+**Stage 1737 / 2026-11-01:** [Coupled local checkout mandate and idempotency receipt provenance model (EN)](research/2026-11-01-checkout-provenance.en.md)
+| [本地结账授权与幂等收据耦合溯源只读读取模型与存储行不变量（中文）](research/2026-11-01-checkout-provenance.md).
+Adds `MandateStatus`, `CheckoutProvenance`, `CheckoutStore.read_mandate()`, `read_receipt()`, `find_provenance()`, and `read_provenance()`,
+and enforces fail-closed stored-row and parent-mandate invariants across `Receipt`, `revoke()`, and `execute()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
