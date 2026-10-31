@@ -12,6 +12,7 @@ from typing import Literal, NoReturn
 from lab.stripe_delivery import _require_delivery_time, verify_stripe_delivery
 
 ClaimState = Literal["active", "handled"]
+InboxEventPhase = Literal["unclaimed", "active", "handled"]
 
 
 class StripeInboxError(ValueError):
@@ -116,6 +117,37 @@ class ReadbackClaimStatus:
             raise StripeInboxError("A persisted ReadbackClaim is required.")
         if not isinstance(self.state, str) or self.state not in ("active", "handled"):
             raise StripeInboxError("Claim state must be active or handled.")
+
+
+@dataclass(frozen=True)
+class InboxEventProvenance:
+    """Single-snapshot local receipt and claim-state record, not payment authority."""
+
+    scope: StripeInboxScope
+    receipt: InboxReceipt
+    claim_status: ReadbackClaimStatus | None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, StripeInboxScope) or not isinstance(self.receipt, InboxReceipt):
+            raise StripeInboxError("Inbox provenance needs a trusted scope and persisted receipt.")
+        if self.claim_status is not None:
+            if not isinstance(self.claim_status, ReadbackClaimStatus):
+                raise StripeInboxError(
+                    "Inbox provenance claim_status must be a ReadbackClaimStatus or None."
+                )
+            if (
+                self.claim_status.claim.scope != self.scope
+                or self.claim_status.claim.receipt != self.receipt
+            ):
+                raise StripeInboxError(
+                    "Inbox provenance claim_status scope or receipt differs from the bound event."
+                )
+
+    @property
+    def phase(self) -> InboxEventPhase:
+        if self.claim_status is None:
+            return "unclaimed"
+        return self.claim_status.state
 
 
 def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -343,6 +375,64 @@ class StripeEventInbox:
             )
             return ReadbackClaimStatus(claim, row["state"])
 
+    def find_provenance(
+        self, scope: StripeInboxScope, event_id: str,
+    ) -> InboxEventProvenance | None:
+        """Read coupled inbox receipt and claim state in one lock-free snapshot."""
+        key = self._require_event_lookup(scope, event_id)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """
+                SELECT
+                    i.event_id AS i_event_id,
+                    i.event_type AS i_event_type,
+                    i.provider_reference AS i_provider_reference,
+                    i.payload_sha256 AS i_payload_sha256,
+                    c.event_id AS c_event_id,
+                    c.worker_id AS c_worker_id,
+                    c.generation AS c_generation,
+                    c.state AS c_state
+                FROM (SELECT 1)
+                LEFT JOIN stripe_event_inbox i
+                    ON i.tenant_id=? AND i.endpoint_id=? AND i.provider_account=?
+                    AND i.livemode=? AND i.event_id=?
+                LEFT JOIN stripe_readback_claims c
+                    ON c.tenant_id=? AND c.endpoint_id=? AND c.provider_account=?
+                    AND c.livemode=? AND c.event_id=?
+                """,
+                (*key, *key),
+            ).fetchone()
+        if row is None or (row["i_event_id"] is None and row["c_event_id"] is None):
+            return None
+        if row["i_event_id"] is None:
+            raise StripeInboxError(
+                "Orphan readback claim exists without an inbox receipt."
+            )
+        receipt = InboxReceipt(
+            row["i_event_id"],
+            row["i_event_type"],
+            row["i_provider_reference"],
+            row["i_payload_sha256"],
+        )
+        claim_status: ReadbackClaimStatus | None = None
+        if row["c_event_id"] is not None:
+            claim = ReadbackClaim(
+                scope, receipt, row["c_worker_id"], row["c_generation"],
+            )
+            claim_status = ReadbackClaimStatus(claim, row["c_state"])
+        return InboxEventProvenance(scope, receipt, claim_status)
+
+    def read_provenance(
+        self, scope: StripeInboxScope, event_id: str,
+    ) -> InboxEventProvenance:
+        """Read coupled inbox receipt and claim state or raise if never received."""
+        provenance = self.find_provenance(scope, event_id)
+        if provenance is None:
+            raise StripeInboxError(
+                "No inbox receipt exists for this scoped Event ID."
+            )
+        return provenance
+
     def pending(self, scope: StripeInboxScope, *, limit: int = 100) -> tuple[InboxReceipt, ...]:
         """Enumerate all receipts, regardless of claim state, in local receipt order."""
         if not isinstance(scope, StripeInboxScope):
@@ -395,10 +485,11 @@ class StripeEventInbox:
         ).fetchone()
         if (
             row is None or row["worker_id"] != claim.worker_id
+            or type(row["generation"]) is not int
             or row["generation"] != claim.generation or self._receipt(row) != claim.receipt
         ):
             raise StripeInboxError("Readback claim binding is stale or invalid.")
-        if row["state"] not in ("active", "handled"):
+        if not isinstance(row["state"], str) or row["state"] not in ("active", "handled"):
             raise StripeInboxError("Stored readback claim state is invalid.")
         return row
 

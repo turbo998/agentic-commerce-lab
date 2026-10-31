@@ -14,6 +14,7 @@ from unittest.mock import patch
 from lab.checkout import Checkout
 from lab.payment_attempts import PaymentAttempt, PaymentAttemptJournal, PaymentOperation
 from lab.stripe_inbox import (
+    InboxEventProvenance,
     ReadbackClaimStatus,
     StripeEventInbox,
     StripeInboxError,
@@ -307,6 +308,129 @@ class StripeClaimReadTests(unittest.TestCase):
             )
         self.assertEqual(len(statements), 1)
         self.assertTrue(statements[0].startswith("SELECT "))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+
+    def test_inbox_event_provenance_tracks_unreceived_unclaimed_active_and_handled_phases(self) -> None:
+        self.assertIsNone(self.inbox.find_provenance(self.scope, "evt_absent"))
+        with self.assertRaisesRegex(StripeInboxError, "No inbox receipt exists"):
+            self.inbox.read_provenance(self.scope, "evt_absent")
+
+        receipt = self.record("evt_lifecycle")
+        unclaimed = self.inbox.read_provenance(self.scope, "evt_lifecycle")
+        self.assertEqual(
+            unclaimed,
+            InboxEventProvenance(self.scope, receipt, None),
+        )
+        self.assertEqual(unclaimed.phase, "unclaimed")
+        self.assertEqual(self.inbox.find_provenance(self.scope, "evt_lifecycle"), unclaimed)
+
+        claim = self.inbox.claim_next(self.scope, "worker-a")
+        active = self.inbox.read_provenance(self.scope, "evt_lifecycle")
+        self.assertEqual(
+            active,
+            InboxEventProvenance(
+                self.scope,
+                receipt,
+                ReadbackClaimStatus(claim, "active"),
+            ),
+        )
+        self.assertEqual(active.phase, "active")
+
+        handed_off = self.inbox.handoff(claim, "worker-b")
+        active_two = self.inbox.read_provenance(self.scope, "evt_lifecycle")
+        self.assertEqual(
+            active_two,
+            InboxEventProvenance(
+                self.scope,
+                receipt,
+                ReadbackClaimStatus(handed_off, "active"),
+            ),
+        )
+        self.assertEqual(active_two.phase, "active")
+
+        self.inbox.finish_readback(handed_off)
+        handled = self.inbox.read_provenance(self.scope, "evt_lifecycle")
+        self.assertEqual(
+            handled,
+            InboxEventProvenance(
+                self.scope,
+                receipt,
+                ReadbackClaimStatus(handed_off, "handled"),
+            ),
+        )
+        self.assertEqual(handled.phase, "handled")
+        with self.assertRaises(FrozenInstanceError):
+            handled.claim_status = None  # type: ignore[misc]
+
+    def test_inbox_event_provenance_detects_orphan_claim_and_enforces_invariants(self) -> None:
+        receipt = self.record("evt_orphan")
+        claim = self.inbox.claim_next(self.scope, "worker-a")
+        status = ReadbackClaimStatus(claim, "active")
+
+        other_scope = replace(self.scope, tenant_id="other")
+        other_receipt = self.record("evt_other")
+        with self.assertRaisesRegex(StripeInboxError, "trusted scope and persisted receipt"):
+            InboxEventProvenance("bad", receipt, None)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(StripeInboxError, "trusted scope and persisted receipt"):
+            InboxEventProvenance(self.scope, "bad", None)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(StripeInboxError, "ReadbackClaimStatus or None"):
+            InboxEventProvenance(self.scope, receipt, "bad")  # type: ignore[arg-type]
+        with self.assertRaisesRegex(StripeInboxError, "scope or receipt differs"):
+            InboxEventProvenance(other_scope, receipt, status)
+        with self.assertRaisesRegex(StripeInboxError, "scope or receipt differs"):
+            InboxEventProvenance(self.scope, other_receipt, status)
+
+        with closing(sqlite3.connect(self.path)) as db:
+            db.execute("PRAGMA foreign_keys = OFF")
+            with db:
+                db.execute(
+                    "DELETE FROM stripe_event_inbox WHERE event_id = 'evt_orphan'"
+                )
+        with self.assertRaisesRegex(StripeInboxError, "Orphan readback claim"):
+            self.inbox.find_provenance(self.scope, "evt_orphan")
+        with self.assertRaisesRegex(StripeInboxError, "Orphan readback claim"):
+            self.inbox.read_provenance(self.scope, "evt_orphan")
+
+    def test_corrupted_claim_columns_rejected_by_provenance_and_write_transitions(self) -> None:
+        self.record("evt_bad_claim")
+        claim = self.inbox.claim_next(self.scope, "worker-a")
+        with closing(sqlite3.connect(self.path)) as db, db:
+            db.execute(
+                "UPDATE stripe_readback_claims SET generation='not-an-int' WHERE event_id='evt_bad_claim'"
+            )
+        with self.assertRaisesRegex(StripeInboxError, "Readback claim binding is stale or invalid"):
+            self.inbox.handoff(claim, "worker-b")
+        with self.assertRaisesRegex(StripeInboxError, "Readback claim binding is stale or invalid"):
+            self.inbox.finish_readback(claim)
+        with self.assertRaisesRegex(StripeInboxError, "positive signed-64-bit integer"):
+            self.inbox.find_provenance(self.scope, "evt_bad_claim")
+        with self.assertRaisesRegex(StripeInboxError, "positive signed-64-bit integer"):
+            self.inbox.read_provenance(self.scope, "evt_bad_claim")
+
+        with closing(sqlite3.connect(self.path)) as db:
+            db.execute("PRAGMA ignore_check_constraints = ON")
+            with db:
+                db.execute(
+                    "UPDATE stripe_readback_claims SET generation=1, state='corrupted' WHERE event_id='evt_bad_claim'"
+                )
+        with self.assertRaisesRegex(StripeInboxError, "Claim state must be active or handled"):
+            self.inbox.find_provenance(self.scope, "evt_bad_claim")
+
+        self.record("evt_trace")
+        self.inbox.claim_next(self.scope, "worker-a")
+        statements: list[str] = []
+        connect = self.inbox._connect
+
+        def traced() -> sqlite3.Connection:
+            db = connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(self.inbox, "_connect", side_effect=traced):
+            prov = self.inbox.read_provenance(self.scope, "evt_trace")
+        self.assertEqual(prov.phase, "active")
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].strip().startswith("SELECT"))
         self.assertNotIn("BEGIN", " ".join(statements).upper())
 
 

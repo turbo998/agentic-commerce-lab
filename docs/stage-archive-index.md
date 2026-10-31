@@ -441,6 +441,11 @@ to inspect 5-table (`signers=None`) or 7-table (`signers` supplied) admission-th
 Adds `PoppyConsumedAssertion` and `PoppyAssertionJournal.find_consumed()` / `read_consumed()` / `find_assertion_consumption()` / `read_assertion_consumption()` / `is_assertion_consumed()`
 for lock-free, clock-independent post-expiry replay auditing that enforces full Poppy v0.2 session-assertion claim binding before lookup.
 
+**Stage 1740 / 2026-11-01:** [Stripe webhook inbox single-snapshot event provenance (EN)](research/2026-11-01-stripe-inbox-event-provenance.en.md)
+| [Stripe Webhook 收件箱单快照事件溯源（中文）](research/2026-11-01-stripe-inbox-event-provenance.md).
+Adds `InboxEventProvenance`, `StripeEventInbox.find_provenance()`, and `StripeEventInbox.read_provenance()`
+to inspect coupled receipt and claim state in one lock-free `SELECT` snapshot while detecting orphan claim rows and enforcing strict integer generation checks in `_current_claim()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
