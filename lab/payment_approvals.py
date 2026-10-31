@@ -269,6 +269,37 @@ class ApprovalRevocationPreview:
             )
 
 
+@dataclass(frozen=True)
+class ApprovalGrantPreview:
+    """Single-SELECT read-only dry-run preview of PaymentApprovalStore.approve()."""
+
+    operation: PaymentOperation
+    expires_at: int
+    projected_status: PaymentApprovalStatus
+    would_record: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise PaymentApprovalError("A trusted PaymentOperation is required.")
+        if type(self.expires_at) is not int or not 0 < self.expires_at <= 2**63 - 1:
+            raise PaymentApprovalError(
+                "Approval expiry must be a positive signed-64-bit integer."
+            )
+        expected_projected = PaymentApprovalStatus(
+            self.operation.fingerprint,
+            self.expires_at,
+            "active",
+        )
+        if self.projected_status != expected_projected:
+            raise PaymentApprovalError(
+                "projected_status must match active PaymentApprovalStatus for the operation."
+            )
+        if type(self.would_record) is not bool or not self.would_record:
+            raise PaymentApprovalError(
+                "would_record must be True for a valid ApprovalGrantPreview."
+            )
+
+
 class PaymentApprovalStore:
     """Opt-in trusted-operator metadata, not an agent tool or consent service.
 
@@ -350,6 +381,29 @@ class PaymentApprovalStore:
                 "INSERT INTO payment_approvals VALUES (?,?,?,?,0)",
                 (operation.tenant_id, operation.approval_id, operation.fingerprint, expires_at),
             )
+
+    def preview_approve(
+        self, operation: PaymentOperation, *, expires_at: int
+    ) -> ApprovalGrantPreview:
+        """Preview approve() in one lock-free SELECT without mutating payment_approvals."""
+        self._require_operation(operation)
+        if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Approval expiry must be a positive signed-64-bit integer.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT 1 FROM payment_approvals WHERE tenant_id=? AND approval_id=?",
+                (operation.tenant_id, operation.approval_id),
+            ).fetchone()
+        if row is not None:
+            raise PaymentApprovalError("Approval already recorded; replacement is forbidden.")
+        return ApprovalGrantPreview(
+            operation=operation,
+            expires_at=expires_at,
+            projected_status=PaymentApprovalStatus(
+                operation.fingerprint, expires_at, "active"
+            ),
+            would_record=True,
+        )
 
     def revoke(self, operation: PaymentOperation) -> None:
         """Revoke the exact recorded binding; repeated revocation is idempotent."""

@@ -13,6 +13,7 @@ from lab.checkout import (
     CheckoutExecutionPreview,
     CheckoutProvenance,
     CheckoutStore,
+    MandateGrantPreview,
     MandateRevocationPreview,
     MandateStatus,
     Receipt,
@@ -510,6 +511,65 @@ class CheckoutProvenanceTests(unittest.TestCase):
                     replace(rev_preview, **bad_rev_kwargs)  # type: ignore[arg-type]
         with self.assertRaises(ValueError):
             replace(rev_preview, mandate_id="")
+
+        # 7. MandateGrantPreview and CheckoutStore.preview_approve()
+        statements_grant: list[str] = []
+        orig_connect_grant = self.store._connect
+
+        def traced_connect_grant() -> sqlite3.Connection:
+            db = orig_connect_grant()
+            db.set_trace_callback(statements_grant.append)
+            return db
+
+        self.store._connect = traced_connect_grant  # type: ignore[method-assign]
+        try:
+            grant_preview = self.store.preview_approve(
+                "grant-preview-mandate", self.quote, max_amount=1200, expires_at=200
+            )
+        finally:
+            self.store._connect = orig_connect_grant  # type: ignore[method-assign]
+        sql_grant = [
+            stmt.strip().upper()
+            for stmt in statements_grant
+            if not stmt.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_grant), 1)
+        self.assertTrue(sql_grant[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_grant[0])
+
+        self.assertTrue(grant_preview.would_record)
+        self.assertEqual(grant_preview.projected_status.state, "active")
+        self.assertEqual(grant_preview.projected_status.max_amount, 1200)
+        self.assertIsNone(self.store.read_mandate("grant-preview-mandate", self.quote))
+
+        # After real approve(), preview_approve() rejects replacement
+        self.store.approve(
+            "grant-preview-mandate", self.quote, max_amount=1200, expires_at=200
+        )
+        with self.assertRaisesRegex(AuthorizationError, "already recorded"):
+            self.store.preview_approve(
+                "grant-preview-mandate", self.quote, max_amount=1200, expires_at=200
+            )
+
+        # MandateGrantPreview dataclass invariants fail closed
+        for bad_grant_kwargs in (
+            {"projected_status": rev_preview.projected_status},
+            {"would_record": False},
+            {"would_record": 1},
+        ):
+            with self.subTest(bad_grant_kwargs=bad_grant_kwargs):
+                with self.assertRaises(AuthorizationError):
+                    replace(grant_preview, **bad_grant_kwargs)  # type: ignore[arg-type]
+        for bad_val_kwargs in (
+            {"mandate_id": ""},
+            {"checkout": "bad"},
+            {"max_amount": 999},
+            {"expires_at": 0},
+        ):
+            with self.subTest(bad_val_kwargs=bad_val_kwargs):
+                with self.assertRaises(ValueError):
+                    replace(grant_preview, **bad_val_kwargs)  # type: ignore[arg-type]
         with self.assertRaisesRegex(AuthorizationError, "already consumed"):
             replace(preview_replay_active, request_key="other-key")
         with self.assertRaisesRegex(AuthorizationError, "must match the recorded receipt"):

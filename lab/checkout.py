@@ -404,6 +404,52 @@ class MandateRevocationPreview:
         return "consumed_revoked" if self.has_consumed_receipt else "revoked_unspent"
 
 
+@dataclass(frozen=True)
+class MandateGrantPreview:
+    """Single-SELECT read-only dry-run preview of CheckoutStore.approve()."""
+
+    mandate_id: str
+    checkout: Checkout
+    max_amount: int
+    expires_at: int
+    projected_status: MandateStatus
+    would_record: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.mandate_id, str) or not self.mandate_id:
+            raise ValueError("Approval requires a nonempty mandate ID.")
+        if not isinstance(self.checkout, Checkout):
+            raise ValueError("Approval requires a validated Checkout.")
+        if (
+            type(self.max_amount) is not int
+            or not self.checkout.amount <= self.max_amount <= 2**63 - 1
+        ):
+            raise ValueError(
+                "Approval limit must cover the quote in signed 64-bit minor units."
+            )
+        if type(self.expires_at) is not int or not 0 < self.expires_at <= 2**63 - 1:
+            raise ValueError(
+                "Approval expiry must be a positive signed 64-bit Unix timestamp."
+            )
+        expected_projected = MandateStatus(
+            mandate_id=self.mandate_id,
+            merchant=self.checkout.merchant,
+            currency=self.checkout.currency,
+            cart_digest=self.checkout.digest,
+            max_amount=self.max_amount,
+            expires_at=self.expires_at,
+            state="active",
+        )
+        if self.projected_status != expected_projected:
+            raise AuthorizationError(
+                "projected_status must match active MandateStatus for the bound checkout."
+            )
+        if type(self.would_record) is not bool or not self.would_record:
+            raise AuthorizationError(
+                "would_record must be True for a valid MandateGrantPreview."
+            )
+
+
 def _parse_mandate_row(
     row: sqlite3.Row, *, expected_mandate_id: str, prefix: str = ""
 ) -> MandateStatus:
@@ -532,6 +578,45 @@ class CheckoutStore:
                 (mandate_id, checkout.merchant, checkout.currency, checkout.digest,
                  max_amount, expires_at),
             )
+
+    def preview_approve(
+        self, mandate_id: str, checkout: Checkout, *, max_amount: int, expires_at: int
+    ) -> MandateGrantPreview:
+        """Preview approve() in one lock-free SELECT without mutating mandates."""
+        if not isinstance(mandate_id, str) or not mandate_id:
+            raise ValueError("Approval requires a nonempty mandate ID.")
+        if not isinstance(checkout, Checkout):
+            raise ValueError("Approval requires a validated Checkout.")
+        if type(max_amount) is not int or not checkout.amount <= max_amount <= 2**63 - 1:
+            raise ValueError("Approval limit must cover the quote in signed 64-bit minor units.")
+        if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
+            raise ValueError("Approval expiry must be a positive signed 64-bit Unix timestamp.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT 1 FROM mandates WHERE id=?",
+                (mandate_id,),
+            ).fetchone()
+        if row is not None:
+            raise AuthorizationError(
+                f"Mandate {mandate_id!r} already recorded; replacement is forbidden."
+            )
+        projected_status = MandateStatus(
+            mandate_id=mandate_id,
+            merchant=checkout.merchant,
+            currency=checkout.currency,
+            cart_digest=checkout.digest,
+            max_amount=max_amount,
+            expires_at=expires_at,
+            state="active",
+        )
+        return MandateGrantPreview(
+            mandate_id=mandate_id,
+            checkout=checkout,
+            max_amount=max_amount,
+            expires_at=expires_at,
+            projected_status=projected_status,
+            would_record=True,
+        )
 
     def revoke(self, mandate_id: str) -> None:
         """Revoke unspent authority without erasing completed receipts."""
