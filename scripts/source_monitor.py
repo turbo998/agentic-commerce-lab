@@ -744,6 +744,14 @@ def summarize_gate_health(
             "fingerprint": blocking_reasons_delta_fingerprint,
         }
     )
+    blocking_reasons_delta_counts = (
+        None if previous_blocking_reasons is None else {
+            "previous": len(previous_blocking_reasons),
+            "current": len(blocking_reasons),
+            "added": len(blocking_reasons_added or []),
+            "removed": len(blocking_reasons_removed or []),
+        }
+    )
     blocking_reasons_delta_payload_id = (
         None if blocking_reasons_delta_fingerprint is None
         else (
@@ -786,6 +794,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_event": blocking_reasons_delta_event,
         "blocking_reasons_delta_fingerprint_version": BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         "blocking_reasons_delta_fingerprint": blocking_reasons_delta_fingerprint,
+        "blocking_reasons_delta_counts": blocking_reasons_delta_counts,
         "blocking_reasons_delta_payload_version": BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
         "blocking_reasons_delta_payload_id": blocking_reasons_delta_payload_id,
         "blocking_reasons_delta_payload": blocking_reasons_delta_payload,
