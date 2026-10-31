@@ -311,6 +311,11 @@ for low-overhead downstream aggregation without expanding full reason arrays.
 Adds `gate_health.blocking_reasons_delta_total_changes` as a single-value `added + removed`
 change-magnitude signal for threshold-based downstream routing.
 
+**Stage 1714 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta direction telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-direction.en.md)
+| [source-monitor gate_health 阻塞原因增量方向信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-direction.md).
+Adds `gate_health.blocking_reasons_delta_direction` with stable enums
+(`increase`/`decrease`/`mixed`/`none`) for direct downstream routing by change direction.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
