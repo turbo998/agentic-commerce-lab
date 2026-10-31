@@ -19,6 +19,7 @@ from urllib.request import Request, urlopen
 BEIJING = timezone(timedelta(hours=8))
 MAX_BYTES = 4 * 1024 * 1024
 REPORT_SCHEMA_VERSION = "source-monitor-report-v1"
+BLOCKING_FINGERPRINT_VERSION = "sha256-json-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -629,6 +630,7 @@ def summarize_gate_health(
         "cross_source_mismatch": cross_source_mismatch,
         "cross_source_blocking_checks": cross_source_blocking_checks,
         "blocking_dimensions": blocking_dimensions,
+        "blocking_fingerprint_version": BLOCKING_FINGERPRINT_VERSION,
         "blocking_fingerprint": blocking_fingerprint,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,

@@ -211,6 +211,11 @@ Adds `gate_health.blocking_dimensions` with per-dimension blocker lists
 | [source-monitor gate_health 阻塞指纹信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-fingerprint.md).
 Adds `gate_health.blocking_fingerprint` (SHA-256 of blocking dimensions + reasons) for stable gate-state change detection.
 
+**Stage 1694 / 2026-10-31:** [Source monitor gate-health fingerprint version telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-fingerprint-version.en.md)
+| [source-monitor gate_health 阻塞指纹版本信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-fingerprint-version.md).
+Adds `gate_health.blocking_fingerprint_version` (`sha256-json-v1`) so downstream consumers can
+bind comparison logic to an explicit digest-contract version.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

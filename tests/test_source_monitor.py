@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, patch
 from urllib.error import URLError
 
 from scripts.source_monitor import (
+    BLOCKING_FINGERPRINT_VERSION,
     MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
     previous_hashes, previous_source_facts, spt_connect_marker_check, spt_country_list_check,
     spt_parser_version_check, stripe_spt_connect_facts, summarize_cross_source_checks,
@@ -295,6 +296,10 @@ class MonitorTests(unittest.TestCase):
                     "policy_errors": [],
                     "cross_source_mismatch": [],
                 },
+            )
+            self.assertEqual(
+                report["gate_health"]["blocking_fingerprint_version"],
+                BLOCKING_FINGERPRINT_VERSION,
             )
             self.assertEqual(len(report["gate_health"]["blocking_fingerprint"]), 64)
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
@@ -666,6 +671,10 @@ class MonitorTests(unittest.TestCase):
                 "cross_source_mismatch": [],
             },
         )
+        self.assertEqual(
+            gate_health["blocking_fingerprint_version"],
+            BLOCKING_FINGERPRINT_VERSION,
+        )
         expected_fingerprint = hashlib.sha256(
             json.dumps(
                 {
@@ -715,6 +724,9 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": [], "unavailable": []},
         )
         self.assertNotEqual(first["blocking_fingerprint"], second["blocking_fingerprint"])
+
+    def test_blocking_fingerprint_version_is_stable(self) -> None:
+        self.assertEqual(BLOCKING_FINGERPRINT_VERSION, "sha256-json-v1")
 
     def test_report_schema_version_is_stable(self) -> None:
         self.assertEqual(REPORT_SCHEMA_VERSION, "source-monitor-report-v1")
