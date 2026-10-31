@@ -316,6 +316,11 @@ change-magnitude signal for threshold-based downstream routing.
 Adds `gate_health.blocking_reasons_delta_direction` with stable enums
 (`increase`/`decrease`/`mixed`/`none`) for direct downstream routing by change direction.
 
+**Stage 1715 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta net-change telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-net-change.en.md)
+| [source-monitor gate_health 阻塞原因增量净变化信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-net-change.md).
+Adds `gate_health.blocking_reasons_delta_net_change` as signed
+`len(current)-len(previous)` telemetry for threshold-based downstream routing.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

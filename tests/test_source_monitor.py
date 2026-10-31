@@ -819,6 +819,7 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_delta_fingerprint"])
         self.assertIsNone(gate_health["blocking_reasons_delta_counts"])
         self.assertIsNone(gate_health["blocking_reasons_delta_total_changes"])
+        self.assertIsNone(gate_health["blocking_reasons_delta_net_change"])
         self.assertIsNone(gate_health["blocking_reasons_delta_direction"])
         self.assertEqual(
             gate_health["blocking_reasons_delta_payload_version"],
@@ -923,6 +924,7 @@ class MonitorTests(unittest.TestCase):
             {"previous": 0, "current": 1, "added": 1, "removed": 0},
         )
         self.assertEqual(second["blocking_reasons_delta_total_changes"], 1)
+        self.assertEqual(second["blocking_reasons_delta_net_change"], 1)
         self.assertEqual(second["blocking_reasons_delta_direction"], "increase")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
@@ -992,6 +994,7 @@ class MonitorTests(unittest.TestCase):
             {"previous": 0, "current": 0, "added": 0, "removed": 0},
         )
         self.assertEqual(second["blocking_reasons_delta_total_changes"], 0)
+        self.assertEqual(second["blocking_reasons_delta_net_change"], 0)
         self.assertEqual(second["blocking_reasons_delta_direction"], "none")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
