@@ -256,6 +256,11 @@ Adds `gate_health.blocking_transition_event` as a direct boolean event flag
 Adds `gate_health.blocking_transition_event_id` so changed transitions expose a stable
 event identifier (`sha256-transition-v1:<transition_fingerprint>`) for idempotent downstream routing.
 
+**Stage 1703 / 2026-10-31:** [Source monitor gate-health transition event-state telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-event-state.en.md)
+| [source-monitor gate_health 迁移事件状态对信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-event-state.md).
+Adds `gate_health.blocking_transition_event_state` so changed transitions expose a direct
+`from_state_id/to_state_id` pair without downstream cross-field reconstruction.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

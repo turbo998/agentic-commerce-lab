@@ -370,6 +370,7 @@ class MonitorTests(unittest.TestCase):
                 BLOCKING_TRANSITION_FINGERPRINT_VERSION,
             )
             self.assertIsNone(report["gate_health"]["blocking_transition_event_id"])
+            self.assertIsNone(report["gate_health"]["blocking_transition_event_state"])
             self.assertIsNone(report["gate_health"]["blocking_transition_fingerprint"])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
@@ -770,6 +771,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(gate_health["blocking_state_transition_reason"], "no_prior_state")
         self.assertFalse(gate_health["blocking_transition_event"])
         self.assertIsNone(gate_health["blocking_transition_event_id"])
+        self.assertIsNone(gate_health["blocking_transition_event_state"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -832,6 +834,13 @@ class MonitorTests(unittest.TestCase):
                 f"{second['blocking_transition_fingerprint']}"
             ),
         )
+        self.assertEqual(
+            second["blocking_transition_event_state"],
+            {
+                "from_state_id": first["blocking_state_id"],
+                "to_state_id": second["blocking_state_id"],
+            },
+        )
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -857,6 +866,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_transition_reason"], "state_unchanged")
         self.assertFalse(second["blocking_transition_event"])
         self.assertIsNone(second["blocking_transition_event_id"])
+        self.assertIsNone(second["blocking_transition_event_state"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
