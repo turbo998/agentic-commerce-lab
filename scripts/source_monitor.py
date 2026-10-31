@@ -22,6 +22,7 @@ REPORT_SCHEMA_VERSION = "source-monitor-report-v1"
 BLOCKING_FINGERPRINT_VERSION = "sha256-json-v1"
 BLOCKING_TRANSITION_FINGERPRINT_VERSION = "sha256-transition-v1"
 BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION = "event-payload-v1"
+BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION = "sha256-reasons-delta-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -714,6 +715,20 @@ def summarize_gate_health(
         None if previous_blocking_reasons is None
         else [reason for reason in previous_blocking_reasons if reason not in blocking_reasons]
     )
+    blocking_reasons_delta_fingerprint = (
+        None if previous_blocking_reasons is None else hashlib.sha256(
+            json.dumps(
+                {
+                    "previous": previous_blocking_reasons,
+                    "current": blocking_reasons,
+                    "added": blocking_reasons_added,
+                    "removed": blocking_reasons_removed,
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -746,6 +761,8 @@ def summarize_gate_health(
         "blocking_reasons_previous": previous_blocking_reasons,
         "blocking_reasons_added": blocking_reasons_added,
         "blocking_reasons_removed": blocking_reasons_removed,
+        "blocking_reasons_delta_fingerprint_version": BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
+        "blocking_reasons_delta_fingerprint": blocking_reasons_delta_fingerprint,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
