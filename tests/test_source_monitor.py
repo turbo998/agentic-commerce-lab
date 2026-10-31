@@ -821,6 +821,7 @@ class MonitorTests(unittest.TestCase):
             gate_health["blocking_reasons_delta_payload_version"],
             BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
         )
+        self.assertIsNone(gate_health["blocking_reasons_delta_payload_id"])
         self.assertIsNone(gate_health["blocking_reasons_delta_payload"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
@@ -919,6 +920,13 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
         )
         self.assertEqual(
+            second["blocking_reasons_delta_payload_id"],
+            (
+                f"{BLOCKING_REASONS_DELTA_PAYLOAD_VERSION}:"
+                f"{second['blocking_reasons_delta_fingerprint']}"
+            ),
+        )
+        self.assertEqual(
             second["blocking_reasons_delta_payload"],
             {
                 "event": True,
@@ -973,6 +981,13 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
             BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
+        )
+        self.assertEqual(
+            second["blocking_reasons_delta_payload_id"],
+            (
+                f"{BLOCKING_REASONS_DELTA_PAYLOAD_VERSION}:"
+                f"{second['blocking_reasons_delta_fingerprint']}"
+            ),
         )
         self.assertEqual(
             second["blocking_reasons_delta_payload"],
@@ -1031,6 +1046,19 @@ class MonitorTests(unittest.TestCase):
     def test_blocking_reasons_delta_payload_version_is_stable(self) -> None:
         self.assertEqual(
             BLOCKING_REASONS_DELTA_PAYLOAD_VERSION, "reasons-delta-payload-v1",
+        )
+
+    def test_blocking_reasons_delta_payload_id_prefixes_version(self) -> None:
+        second = summarize_gate_health(
+            [Observation("x", "u", "f", "error", None, "unknown", "offline")],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+            previous_blocking_reasons=[],
+        )
+        self.assertTrue(
+            second["blocking_reasons_delta_payload_id"].startswith(
+                f"{BLOCKING_REASONS_DELTA_PAYLOAD_VERSION}:"
+            )
         )
 
     def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:
