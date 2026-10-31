@@ -810,6 +810,7 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_previous"])
         self.assertIsNone(gate_health["blocking_reasons_added"])
         self.assertIsNone(gate_health["blocking_reasons_removed"])
+        self.assertIsNone(gate_health["blocking_reasons_delta_event"])
         self.assertEqual(
             gate_health["blocking_reasons_delta_fingerprint_version"],
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
@@ -901,6 +902,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_previous"], [])
         self.assertEqual(second["blocking_reasons_added"], ["observation_errors"])
         self.assertEqual(second["blocking_reasons_removed"], [])
+        self.assertTrue(second["blocking_reasons_delta_event"])
         self.assertEqual(
             second["blocking_reasons_delta_fingerprint_version"],
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
@@ -941,6 +943,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_previous"], [])
         self.assertEqual(second["blocking_reasons_added"], [])
         self.assertEqual(second["blocking_reasons_removed"], [])
+        self.assertFalse(second["blocking_reasons_delta_event"])
         self.assertEqual(
             second["blocking_reasons_delta_fingerprint_version"],
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,

@@ -715,6 +715,10 @@ def summarize_gate_health(
         None if previous_blocking_reasons is None
         else [reason for reason in previous_blocking_reasons if reason not in blocking_reasons]
     )
+    blocking_reasons_delta_event = (
+        None if previous_blocking_reasons is None
+        else bool(blocking_reasons_added or blocking_reasons_removed)
+    )
     blocking_reasons_delta_fingerprint = (
         None if previous_blocking_reasons is None else hashlib.sha256(
             json.dumps(
@@ -761,6 +765,7 @@ def summarize_gate_health(
         "blocking_reasons_previous": previous_blocking_reasons,
         "blocking_reasons_added": blocking_reasons_added,
         "blocking_reasons_removed": blocking_reasons_removed,
+        "blocking_reasons_delta_event": blocking_reasons_delta_event,
         "blocking_reasons_delta_fingerprint_version": BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         "blocking_reasons_delta_fingerprint": blocking_reasons_delta_fingerprint,
         "blocking_reasons": blocking_reasons,
