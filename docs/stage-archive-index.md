@@ -326,6 +326,11 @@ Adds `gate_health.blocking_reasons_delta_net_change` as signed
 Adds `gate_health.blocking_reasons_delta_net_change_magnitude` as
 `abs(len(current)-len(previous))` telemetry for sign-independent threshold routing.
 
+**Stage 1717 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta has-change telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-has-change.en.md)
+| [source-monitor gate_health 阻塞原因增量是否变化布尔信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-has-change.md).
+Adds `gate_health.blocking_reasons_delta_has_change` as boolean
+`blocking_reasons_delta_total_changes > 0` telemetry for direct change gating.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
