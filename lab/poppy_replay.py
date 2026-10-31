@@ -1,6 +1,7 @@
 """Offline durable Session assertion admission, not JWT or OAuth verification."""
 
 import hashlib
+import re
 import sqlite3
 from collections.abc import Callable
 from contextlib import closing
@@ -33,6 +34,38 @@ class PoppyReplayScope:
         for value in (self.auth_issuer, self.client_id):
             if not isinstance(value, str) or not value or value != value.strip():
                 raise PoppyReplayError("Canonical trusted issuer and client strings are required.")
+
+
+@dataclass(frozen=True)
+class PoppyConsumedAssertion:
+    """One persisted scoped jti digest from poppy_assertion_replays; not token proof."""
+
+    scope: PoppyReplayScope
+    jti_sha256: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, PoppyReplayScope):
+            raise PoppyReplayError("A trusted PoppyReplayScope is required.")
+        if (
+            not isinstance(self.jti_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.jti_sha256) is None
+        ):
+            raise PoppyReplayError(
+                "Consumed assertion digest must be a 64-char lowercase hex SHA-256 string."
+            )
+
+
+def _row_to_consumed_assertion(
+    scope: PoppyReplayScope, expected_digest: str, row: tuple[object, ...],
+) -> PoppyConsumedAssertion:
+    auth_issuer, client_id, jti_sha256 = row
+    record = PoppyConsumedAssertion(
+        scope=PoppyReplayScope(auth_issuer, client_id),
+        jti_sha256=jti_sha256,
+    )
+    if record.scope != scope or record.jti_sha256 != expected_digest:
+        raise PoppyReplayError("Stored replay record does not match the lookup key.")
+    return record
 
 
 class PoppyAssertionJournal:
@@ -104,6 +137,58 @@ class PoppyAssertionJournal:
             ).fetchone()
             return row is not None
 
+    def find_consumed(
+        self, scope: PoppyReplayScope, jti: str,
+    ) -> PoppyConsumedAssertion | None:
+        """Return the persisted scoped digest record if consumed, or None."""
+        key = self._jti_key(scope, jti)
+        return self._lookup_consumed_key(scope, key)
+
+    def read_consumed(
+        self, scope: PoppyReplayScope, jti: str,
+    ) -> PoppyConsumedAssertion:
+        """Return the persisted scoped digest record or raise PoppyReplayError."""
+        record = self.find_consumed(scope, jti)
+        if record is None:
+            raise PoppyReplayError("Session assertion ID has not been consumed.")
+        return record
+
+    def find_assertion_consumption(
+        self, scope: PoppyReplayScope, assertion: SessionAssertionClaims,
+    ) -> PoppyConsumedAssertion | None:
+        """Validate structural/scope claims (clock-independent) and look up consumption."""
+        key = self._validated_assertion_key(scope, assertion)
+        return self._lookup_consumed_key(scope, key)
+
+    def read_assertion_consumption(
+        self, scope: PoppyReplayScope, assertion: SessionAssertionClaims,
+    ) -> PoppyConsumedAssertion:
+        """Validate structural/scope claims and return consumption or raise PoppyReplayError."""
+        record = self.find_assertion_consumption(scope, assertion)
+        if record is None:
+            raise PoppyReplayError("Session assertion ID has not been consumed.")
+        return record
+
+    def is_assertion_consumed(
+        self, scope: PoppyReplayScope, assertion: SessionAssertionClaims,
+    ) -> bool:
+        """Validate structural/scope claims and check whether the assertion ID was consumed."""
+        return self.find_assertion_consumption(scope, assertion) is not None
+
+    def _lookup_consumed_key(
+        self, scope: PoppyReplayScope, key: tuple[str, str, str],
+    ) -> PoppyConsumedAssertion | None:
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT auth_issuer, client_id, jti_sha256"
+                " FROM poppy_assertion_replays"
+                " WHERE auth_issuer=? AND client_id=? AND jti_sha256=?",
+                key,
+            ).fetchone()
+        if row is None:
+            return None
+        return _row_to_consumed_assertion(scope, key[2], row)
+
     @staticmethod
     def _jti_key(scope: PoppyReplayScope, jti: str) -> tuple[str, str, str]:
         if not isinstance(scope, PoppyReplayScope):
@@ -112,6 +197,24 @@ class PoppyAssertionJournal:
             raise PoppyReplayError("Local jti policy requires 22-256 base64url characters.")
         digest = hashlib.sha256(jti.encode("ascii")).hexdigest()
         return scope.auth_issuer, scope.client_id, digest
+
+    @staticmethod
+    def _validated_assertion_key(
+        scope: PoppyReplayScope, assertion: SessionAssertionClaims,
+    ) -> tuple[str, str, str]:
+        if not isinstance(scope, PoppyReplayScope) or not isinstance(assertion, SessionAssertionClaims):
+            raise PoppyReplayError("A trusted scope and decoded Session assertion are required.")
+        if assertion.typ != "poppy-session+jwt" or assertion.iss != scope.client_id:
+            raise PoppyReplayError("Session assertion type or authenticated client differs.")
+        if any(type(value) is not int or not 0 <= value <= 2**63 - 1
+               for value in (assertion.iat, assertion.exp)):
+            raise PoppyReplayError("Assertion times must be nonnegative signed-64-bit integers.")
+        metadata = verify_poppy_v02_assertion_metadata(
+            assertion, auth_issuer=scope.auth_issuer, now=assertion.iat,
+        )
+        if not metadata.allowed:
+            raise PoppyReplayError(f"Assertion metadata rejected: {metadata.error}.")
+        return PoppyAssertionJournal._jti_key(scope, assertion.jti)
 
     @staticmethod
     def _validated_key(

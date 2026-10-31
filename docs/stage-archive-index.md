@@ -436,6 +436,11 @@ and enforces fail-closed stored-row and parent-mandate invariants across `Receip
 Adds `StripeLifecycleProvenance`, `find_stripe_lifecycle_provenance()`, and `read_stripe_lifecycle_provenance()`
 to inspect 5-table (`signers=None`) or 7-table (`signers` supplied) admission-through-readback state in one lock-free `SELECT` snapshot.
 
+**Stage 1739 / 2026-11-01:** [Poppy session assertion replay read-only digest model and post-expiry full-claim audit (EN)](research/2026-11-01-poppy-consumed-assertion-audit.en.md)
+| [Poppy 会话断言重放日志只读摘要读取模型与过期后全声明一致性审计（中文）](research/2026-11-01-poppy-consumed-assertion-audit.md).
+Adds `PoppyConsumedAssertion` and `PoppyAssertionJournal.find_consumed()` / `read_consumed()` / `find_assertion_consumption()` / `read_assertion_consumption()` / `is_assertion_consumed()`
+for lock-free, clock-independent post-expiry replay auditing that enforces full Poppy v0.2 session-assertion claim binding before lookup.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

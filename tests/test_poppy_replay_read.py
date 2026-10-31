@@ -1,18 +1,24 @@
 """Synthetic scoped Poppy assertion replay history lookup, not admission authority."""
 
+import hashlib
 import sqlite3
 import subprocess
 import sys
 import unittest
 from contextlib import closing
-from dataclasses import replace
+from dataclasses import FrozenInstanceError, replace
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from lab.poppy_guard import SessionAssertionClaims
 from lab.poppy_replay import (
-    PoppyAssertionJournal, PoppyReplayDetected, PoppyReplayError, PoppyReplayScope,
+    PoppyAssertionJournal,
+    PoppyConsumedAssertion,
+    PoppyReplayDetected,
+    PoppyReplayError,
+    PoppyReplayScope,
+    _row_to_consumed_assertion,
 )
 
 NOW = 1700000000
@@ -167,6 +173,100 @@ class PoppyReplayReadTests(unittest.TestCase):
         with self.assertRaises(PoppyReplayError):
             self.journal.consume_with_clock(self.scope, self.assertion, clock=lambda: NOW + 60)
         self.assertFalse(self.journal.is_consumed(self.scope, JTI))
+
+    def test_find_and_read_consumed_return_typed_immutable_digest_record(self) -> None:
+        expected_digest = hashlib.sha256(JTI.encode("ascii")).hexdigest()
+        self.assertIsNone(self.journal.find_consumed(self.scope, JTI))
+        with self.assertRaisesRegex(PoppyReplayError, "has not been consumed"):
+            self.journal.read_consumed(self.scope, JTI)
+        self.assertEqual(self.rows(), [])
+
+        self.journal.consume(self.scope, self.assertion, now=NOW)
+        record = self.journal.find_consumed(self.scope, JTI)
+        self.assertEqual(record, PoppyConsumedAssertion(self.scope, expected_digest))
+        self.assertEqual(self.journal.read_consumed(self.scope, JTI), record)
+        with self.assertRaises(FrozenInstanceError):
+            record.jti_sha256 = "0" * 64  # type: ignore[misc]
+
+    def test_consumed_assertion_record_and_row_parity_invariants(self) -> None:
+        digest = hashlib.sha256(JTI.encode("ascii")).hexdigest()
+        for bad_scope in (None, ISSUER, {}):
+            with self.subTest(bad_scope=bad_scope), self.assertRaises(PoppyReplayError):
+                PoppyConsumedAssertion(bad_scope, digest)  # type: ignore[arg-type]
+        for bad_digest in ("", "0" * 63, "0" * 65, "A" * 64, "g" * 64, None, 123):
+            with self.subTest(bad_digest=bad_digest), self.assertRaises(PoppyReplayError):
+                PoppyConsumedAssertion(self.scope, bad_digest)  # type: ignore[arg-type]
+
+        for mismatched_row in (
+            ("https://auth.other.example", CLIENT, digest),
+            (ISSUER, "https://other.example/client.json", digest),
+            (ISSUER, CLIENT, "0" * 64),
+            (" https://auth.company.example", CLIENT, digest),
+            (ISSUER, CLIENT, digest.upper()),
+        ):
+            with self.subTest(mismatched_row=mismatched_row), self.assertRaises(PoppyReplayError):
+                _row_to_consumed_assertion(self.scope, digest, mismatched_row)
+
+    def test_assertion_consumption_audit_is_clock_independent_and_non_consuming(self) -> None:
+        expected = PoppyConsumedAssertion(
+            self.scope, hashlib.sha256(JTI.encode("ascii")).hexdigest(),
+        )
+        self.assertIsNone(self.journal.find_assertion_consumption(self.scope, self.assertion))
+        self.assertFalse(self.journal.is_assertion_consumed(self.scope, self.assertion))
+        with self.assertRaisesRegex(PoppyReplayError, "has not been consumed"):
+            self.journal.read_assertion_consumption(self.scope, self.assertion)
+        self.assertEqual(self.rows(), [])
+
+        self.journal.consume(self.scope, self.assertion, now=NOW)
+        # Historical audit works across valid (iat, exp) windows even after live expiry
+        for iat, exp in ((NOW, NOW + 60), (0, 300), (2**63 - 301, 2**63 - 1)):
+            candidate = replace(self.assertion, iat=iat, exp=exp)
+            with self.subTest(iat=iat, exp=exp):
+                self.assertTrue(self.journal.is_assertion_consumed(self.scope, candidate))
+                self.assertEqual(
+                    self.journal.find_assertion_consumption(self.scope, candidate),
+                    expected,
+                )
+                self.assertEqual(
+                    self.journal.read_assertion_consumption(self.scope, candidate),
+                    expected,
+                )
+
+    def test_assertion_consumption_rejects_mismatched_claims_even_when_jti_was_consumed(self) -> None:
+        self.journal.consume(self.scope, self.assertion, now=NOW)
+        self.assertTrue(self.journal.is_consumed(self.scope, JTI))
+
+        with patch.object(self.journal, "_connect") as connect:
+            for scope, assertion in (
+                (None, self.assertion),
+                (self.scope, None),
+                (self.scope, {}),
+                (self.scope, replace(self.assertion, typ="poppy-browser+jwt")),
+                (self.scope, replace(self.assertion, typ="JWT")),
+                (self.scope, replace(self.assertion, iss="https://evil.example/client.json")),
+                (self.scope, replace(self.assertion, aud="https://auth.other.example")),
+                (self.scope, replace(self.assertion, aud=[ISSUER])),
+                (self.scope, replace(self.assertion, iat=True)),
+                (self.scope, replace(self.assertion, exp=float(NOW + 60))),
+                (self.scope, replace(self.assertion, iat=-1, exp=59)),
+                (self.scope, replace(self.assertion, iat=2**63, exp=2**63 + 60)),
+                (self.scope, replace(self.assertion, exp=NOW)),
+                (self.scope, replace(self.assertion, exp=NOW - 1)),
+                (self.scope, replace(self.assertion, exp=NOW + 301)),
+                (self.scope, replace(self.assertion, jti="short_jti")),
+                (self.scope, replace(self.assertion, jti="a" * 257)),
+                (self.scope, replace(self.assertion, jti="bad jti with spaces 123456")),
+            ):
+                with self.subTest(scope=scope, assertion=assertion):
+                    for method in (
+                        self.journal.find_assertion_consumption,
+                        self.journal.read_assertion_consumption,
+                        self.journal.is_assertion_consumed,
+                    ):
+                        with self.assertRaises(PoppyReplayError):
+                            method(scope, assertion)  # type: ignore[arg-type]
+            connect.assert_not_called()
+
 
 
 if __name__ == "__main__":
