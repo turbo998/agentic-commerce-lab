@@ -207,6 +207,10 @@ Adds `gate_health.blocking_sources` as a deduplicated union of source-level erro
 Adds `gate_health.blocking_dimensions` with per-dimension blocker lists
 (`observation_errors`/`policy_errors`/`cross_source_mismatch`) for deterministic routing.
 
+**Stage 1693 / 2026-10-31:** [Source monitor gate-health blocking fingerprint telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-fingerprint.en.md)
+| [source-monitor gate_health 阻塞指纹信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-fingerprint.md).
+Adds `gate_health.blocking_fingerprint` (SHA-256 of blocking dimensions + reasons) for stable gate-state change detection.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

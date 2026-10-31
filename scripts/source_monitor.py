@@ -605,6 +605,16 @@ def summarize_gate_health(
         )
         if count > 0
     ]
+    blocking_fingerprint = hashlib.sha256(
+        json.dumps(
+            {
+                "blocking_dimensions": blocking_dimensions,
+                "blocking_reasons": blocking_reasons,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
     blocking = bool(
         observation_errors
         or policy_errors
@@ -619,6 +629,7 @@ def summarize_gate_health(
         "cross_source_mismatch": cross_source_mismatch,
         "cross_source_blocking_checks": cross_source_blocking_checks,
         "blocking_dimensions": blocking_dimensions,
+        "blocking_fingerprint": blocking_fingerprint,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
