@@ -9,7 +9,18 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-from lab.mcp_migration import MAX_BYTES, Client, assess, load_inventory, main
+from lab.mcp_migration import (
+    MAX_BYTES,
+    Client,
+    DualDeadlineFinding,
+    Finding,
+    assess,
+    assess_dual_deadline,
+    classify_deadline_window,
+    load_deadline_from_source_report,
+    load_inventory,
+    main,
+)
 
 
 class MigrationTests(unittest.TestCase):
@@ -47,11 +58,19 @@ class MigrationTests(unittest.TestCase):
             ],
         }), encoding="utf-8")
 
-    def run_cli(self, as_of: str = "2026-10-12", source_report: Path | None = None) -> tuple[int, str, str]:
+    def run_cli(
+        self,
+        as_of: str = "2026-10-12",
+        source_report: Path | None = None,
+        *,
+        strict_previous_deadline: bool = False,
+    ) -> tuple[int, str, str]:
         output, errors = io.StringIO(), io.StringIO()
         argv = ["migration", "--inventory", str(self.path), "--as-of", as_of]
         if source_report is not None:
             argv.extend(["--source-report", str(source_report)])
+        if strict_previous_deadline:
+            argv.append("--strict-previous-deadline")
         with (
             patch("sys.argv", argv),
             redirect_stdout(output), redirect_stderr(errors),
@@ -208,6 +227,138 @@ class MigrationTests(unittest.TestCase):
         clients = load_inventory(Path("lab") / "mcp_inventory.example.json")
         self.assertEqual(len(clients), 4)
         self.assertTrue(all(client.client_id.startswith("synthetic-") for client in clients))
+
+    def test_dual_deadline_window_classification_and_contradiction_exposure(self) -> None:
+        for auth in ["full_access_secret", "restricted_without_agent_tag"]:
+            client = Client(**self.row(auth, "live"))
+            for day, expected_phase, expected_primary, expected_strict, expected_contradiction in [
+                (date(2026, 10, 30), "before_previous_deadline", "migration_required", "migration_required", False),
+                (date(2026, 10, 31), "contradiction_window", "migration_required", "blocked_by_documented_policy", True),
+                (date(2026, 11, 1), "contradiction_window", "migration_required", "blocked_by_documented_policy", True),
+                (date(2026, 11, 29), "contradiction_window", "migration_required", "blocked_by_documented_policy", True),
+                (date(2026, 11, 30), "on_or_after_deadline", "blocked_by_documented_policy", "blocked_by_documented_policy", False),
+                (date(2026, 12, 1), "on_or_after_deadline", "blocked_by_documented_policy", "blocked_by_documented_policy", False),
+            ]:
+                with self.subTest(auth=auth, day=day):
+                    self.assertEqual(classify_deadline_window(as_of=day), expected_phase)
+                    dual = assess_dual_deadline(client, as_of=day)
+                    self.assertEqual(dual.window_phase, expected_phase)
+                    self.assertEqual(dual.primary_status, expected_primary)
+                    self.assertEqual(dual.strict_previous_status, expected_strict)
+                    self.assertEqual(dual.contradiction_exposed, expected_contradiction)
+                    if expected_contradiction:
+                        self.assertIn("Earlier 2026-10-31 cutoff has elapsed", dual.action)
+
+        for auth in ["oauth", "agent_key"]:
+            client = Client(**self.row(auth, "sandbox"))
+            for day in [date(2026, 10, 30), date(2026, 10, 31), date(2026, 11, 1), date(2026, 11, 30)]:
+                with self.subTest(auth=auth, day=day):
+                    dual = assess_dual_deadline(client, as_of=day)
+                    self.assertEqual(dual.primary_status, "recorded_supported_unverified")
+                    self.assertEqual(dual.strict_previous_status, "recorded_supported_unverified")
+                    self.assertFalse(dual.contradiction_exposed)
+
+    def test_cli_strict_previous_deadline_blocks_legacy_keys_on_2026_11_01(self) -> None:
+        rows = [
+            {**self.row("oauth"), "client_id": "interactive"},
+            {**self.row("full_access_secret", "live"), "client_id": "legacy"},
+            {**self.row("agent_key"), "client_id": "autonomous"},
+            {**self.row("restricted_without_agent_tag"), "client_id": "untagged"},
+        ]
+        self.write_inventory(rows)
+        code, output, errors = self.run_cli("2026-11-01")
+        self.assertEqual((code, errors), (1, ""))
+        default_report = json.loads(output)
+        self.assertEqual(default_report["deadline"], "2026-11-30")
+        self.assertEqual(default_report["effective_deadline"], "2026-11-30")
+        self.assertFalse(default_report["strict_previous_deadline_enforced"])
+        self.assertTrue(default_report["previous_deadline_elapsed"])
+        self.assertEqual(default_report["calendar_days_until_previous_deadline"], -1)
+        self.assertEqual(default_report["deadline_window_phase"], "contradiction_window")
+        self.assertEqual(default_report["contradiction_exposed_count"], 2)
+        self.assertEqual(default_report["findings"][1]["status"], "migration_required")
+        self.assertEqual(default_report["findings"][3]["status"], "migration_required")
+
+        code, output, errors = self.run_cli("2026-11-01", strict_previous_deadline=True)
+        self.assertEqual((code, errors), (1, ""))
+        strict_report = json.loads(output)
+        self.assertEqual(strict_report["deadline"], "2026-11-30")
+        self.assertEqual(strict_report["effective_deadline"], "2026-10-31")
+        self.assertTrue(strict_report["strict_previous_deadline_enforced"])
+        self.assertEqual(strict_report["findings"][0]["status"], "recorded_supported_unverified")
+        self.assertEqual(strict_report["findings"][1]["status"], "blocked_by_documented_policy")
+        self.assertEqual(strict_report["findings"][2]["status"], "recorded_supported_unverified")
+        self.assertEqual(strict_report["findings"][3]["status"], "blocked_by_documented_policy")
+
+    def test_finding_and_dual_deadline_finding_fail_closed_validation(self) -> None:
+        valid_finding = Finding(
+            client_id="synthetic-client",
+            environment="sandbox",
+            auth_method="oauth",
+            status="recorded_supported_unverified",
+            action="Verify permissions.",
+        )
+        self.assertEqual(valid_finding.status, "recorded_supported_unverified")
+
+        for kwargs in [
+            {"client_id": "BAD_ID"},
+            {"environment": "prod"},
+            {"auth_method": "unknown"},
+            {"status": "unknown_status"},
+            {"action": "   "},
+            {"auth_method": "oauth", "status": "migration_required"},
+            {"auth_method": "full_access_secret", "status": "recorded_supported_unverified"},
+        ]:
+            merged = {
+                "client_id": "synthetic-client",
+                "environment": "sandbox",
+                "auth_method": "oauth",
+                "status": "recorded_supported_unverified",
+                "action": "Verify permissions.",
+                **kwargs,
+            }
+            with self.subTest(finding_kwargs=kwargs):
+                with self.assertRaises(ValueError):
+                    Finding(**merged)  # type: ignore[arg-type]
+
+        base_dual = {
+            "client_id": "synthetic-client",
+            "environment": "live",
+            "auth_method": "full_access_secret",
+            "as_of": date(2026, 11, 1),
+            "previous_deadline": date(2026, 10, 31),
+            "deadline": date(2026, 11, 30),
+            "window_phase": "contradiction_window",
+            "primary_status": "migration_required",
+            "strict_previous_status": "blocked_by_documented_policy",
+            "contradiction_exposed": True,
+            "action": "Immediate migration required.",
+        }
+        self.assertTrue(DualDeadlineFinding(**base_dual).contradiction_exposed)  # type: ignore[arg-type]
+        for dual_kwargs in [
+            {"as_of": datetime(2026, 11, 1)},
+            {"previous_deadline": date(2026, 12, 1)},
+            {"window_phase": "before_previous_deadline"},
+            {"primary_status": "blocked_by_documented_policy"},
+            {"strict_previous_status": "migration_required"},
+            {"contradiction_exposed": False},
+            {"contradiction_exposed": 1},
+            {"action": ""},
+        ]:
+            with self.subTest(dual_kwargs=dual_kwargs):
+                with self.assertRaises(ValueError):
+                    DualDeadlineFinding(**{**base_dual, **dual_kwargs})  # type: ignore[arg-type]
+
+        for bad_client in [None, "client", {"client_id": "a"}]:
+            with self.subTest(bad_client=bad_client):
+                with self.assertRaises(ValueError):
+                    assess(bad_client, as_of=date(2026, 11, 1))  # type: ignore[arg-type]
+                with self.assertRaises(ValueError):
+                    assess_dual_deadline(bad_client, as_of=date(2026, 11, 1))  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            load_inventory("not-a-path")  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            load_deadline_from_source_report("not-a-path")  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

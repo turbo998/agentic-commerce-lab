@@ -451,6 +451,11 @@ to inspect coupled receipt and claim state in one lock-free `SELECT` snapshot wh
 Consolidates `reconcile_stripe_intent()` into a single `BEGIN IMMEDIATE` transaction, enforces strict `pi_[A-Za-z0-9_]+` regex parity in `validate_stripe_intent()`,
 and adds `StripeObservationPreview`, `find_stripe_observation_preview()`, and `read_stripe_observation_preview()` for lock-free single-`SELECT` reconciliation dry runs.
 
+**Stage 1742 / 2026-11-01:** [Stripe MCP dual-deadline contradiction window evaluator and zero-grace CLI gating (EN)](research/2026-11-01-mcp-dual-deadline-contradiction-evaluator.en.md)
+| [Stripe MCP 双截止日矛盾窗口评估模型（2026-10-31 vs 2026-11-30）与零宽限门禁（中文）](research/2026-11-01-mcp-dual-deadline-contradiction-evaluator.md).
+Adds `DeadlineWindowPhase`, `DualDeadlineFinding`, `classify_deadline_window()`, `assess_dual_deadline()`, and `--strict-previous-deadline` to `lab/mcp_migration.py`,
+modeling the `[2026-10-31, 2026-11-30)` contradiction window and enforcing fail-closed `__post_init__` invariants on `Finding` and `DualDeadlineFinding`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
