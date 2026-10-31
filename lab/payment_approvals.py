@@ -1,5 +1,6 @@
 """Trusted local approval records and atomic admission, not proof of consent."""
 
+import re
 import sqlite3
 from collections.abc import Callable
 from contextlib import closing
@@ -26,6 +27,19 @@ class PaymentApprovalStatus:
     expires_at: int
     state: ApprovalState
 
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise PaymentApprovalError(
+                "Approval fingerprint must be a 64-char hex SHA-256 digest."
+            )
+        if type(self.expires_at) is not int or not 0 < self.expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        if not isinstance(self.state, str) or self.state not in ("active", "revoked"):
+            raise PaymentApprovalError("Stored approval revocation state is invalid.")
+
 
 @dataclass(frozen=True)
 class ApprovalAdmission:
@@ -34,6 +48,21 @@ class ApprovalAdmission:
     fingerprint: str
     admitted_at: int
     expires_at: int
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise PaymentApprovalError(
+                "Admission fingerprint must be a 64-char hex SHA-256 digest."
+            )
+        if (
+            type(self.admitted_at) is not int
+            or type(self.expires_at) is not int
+            or not 0 <= self.admitted_at < self.expires_at <= 2**63 - 1
+        ):
+            raise PaymentApprovalError("Stored admission times are invalid.")
 
 
 class PaymentApprovalStore:
