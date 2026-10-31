@@ -106,6 +106,11 @@ class PaymentAttemptJournal:
         return db
 
     @staticmethod
+    def _require_operation(operation: PaymentOperation) -> None:
+        if not isinstance(operation, PaymentOperation):
+            raise AttemptConflict("A trusted PaymentOperation is required.")
+
+    @staticmethod
     def _find(db: sqlite3.Connection, operation: PaymentOperation) -> sqlite3.Row | None:
         row = db.execute(
             "SELECT * FROM payment_attempts WHERE tenant_id=? AND operation_id=?",
@@ -121,6 +126,30 @@ class PaymentAttemptJournal:
         if outcome not in ("unknown", "succeeded", "failed"):
             raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
         return PaymentAttempt(outcome, row["provider_reference"])
+
+    def read_attempt(self, operation: PaymentOperation) -> PaymentAttempt | None:
+        """Read a bound attempt or return None if unreserved, without granting authority."""
+        self._require_operation(operation)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT fingerprint,outcome,provider_reference FROM payment_attempts"
+                " WHERE tenant_id=? AND operation_id=?",
+                (operation.tenant_id, operation.operation_id),
+            ).fetchone()
+        if row is None:
+            return None
+        if row["fingerprint"] != operation.fingerprint:
+            raise AttemptConflict("Operation binding changed; do not dispatch.")
+        outcome = row["outcome"]
+        if not isinstance(outcome, str) or outcome not in ("unknown", "succeeded", "failed"):
+            raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
+        provider_reference = row["provider_reference"]
+        if provider_reference is None:
+            if outcome != "unknown":
+                raise AttemptConflict("Stored provider reference is invalid; reconciliation required.")
+        elif not isinstance(provider_reference, str) or not provider_reference.strip():
+            raise AttemptConflict("Stored provider reference is invalid; reconciliation required.")
+        return PaymentAttempt(outcome, provider_reference)
 
     def reserve(self, operation: PaymentOperation) -> DispatchDecision:
         """Commit before dispatch; a repeated reservation never authorizes a send."""

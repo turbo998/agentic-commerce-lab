@@ -381,6 +381,11 @@ for lock-free local approval metadata inspection without clock sampling or dispa
 Adds `MerchantSignerStore.read_permission(scope)` and `MerchantSignerPermissionStatus`
 for lock-free local merchant signer permission inspection without signature verification or admission authority.
 
+**Stage 1728 / 2026-10-31:** [Scoped read-only payment attempt lookup and unreserved-vs-conflict disambiguation (EN)](research/2026-10-31-payment-attempt-read.en.md)
+| [PaymentAttemptJournal.read_attempt 本地支付尝试状态只读查询与未预留/绑定冲突消歧（中文）](research/2026-10-31-payment-attempt-read.md).
+Adds `PaymentAttemptJournal.read_attempt(operation)` for lock-free local attempt inspection
+that returns `None` when unreserved while raising `AttemptConflict` on fingerprint tampering or corrupted state.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
