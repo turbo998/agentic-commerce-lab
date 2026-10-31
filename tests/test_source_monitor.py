@@ -830,6 +830,9 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state"])
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state_id"])
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state_payload"])
+        self.assertIsNone(
+            gate_health["blocking_reasons_delta_change_state_payload_fingerprint"]
+        )
         self.assertIsNone(gate_health["blocking_reasons_delta_direction"])
         self.assertEqual(
             gate_health["blocking_reasons_delta_payload_version"],
@@ -954,6 +957,16 @@ class MonitorTests(unittest.TestCase):
                 "id": f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION}:changed",
             },
         )
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint"],
+            hashlib.sha256(
+                json.dumps(
+                    second["blocking_reasons_delta_change_state_payload"],
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
+        )
         self.assertEqual(second["blocking_reasons_delta_direction"], "increase")
         self.assertEqual(
             second["blocking_reasons_delta_payload_version"],
@@ -1042,6 +1055,16 @@ class MonitorTests(unittest.TestCase):
                 "state": "unchanged",
                 "id": f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION}:unchanged",
             },
+        )
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint"],
+            hashlib.sha256(
+                json.dumps(
+                    second["blocking_reasons_delta_change_state_payload"],
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
         )
         self.assertEqual(second["blocking_reasons_delta_direction"], "none")
         self.assertEqual(
