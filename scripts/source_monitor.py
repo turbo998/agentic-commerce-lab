@@ -764,6 +764,10 @@ def summarize_gate_health(
         None if blocking_reasons_delta_net_change is None
         else abs(blocking_reasons_delta_net_change)
     )
+    blocking_reasons_delta_has_change = (
+        None if blocking_reasons_delta_total_changes is None
+        else blocking_reasons_delta_total_changes > 0
+    )
     blocking_reasons_delta_direction = (
         None if previous_blocking_reasons is None
         else (
@@ -820,6 +824,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_total_changes": blocking_reasons_delta_total_changes,
         "blocking_reasons_delta_net_change": blocking_reasons_delta_net_change,
         "blocking_reasons_delta_net_change_magnitude": blocking_reasons_delta_net_change_magnitude,
+        "blocking_reasons_delta_has_change": blocking_reasons_delta_has_change,
         "blocking_reasons_delta_direction": blocking_reasons_delta_direction,
         "blocking_reasons_delta_payload_version": BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
         "blocking_reasons_delta_payload_id": blocking_reasons_delta_payload_id,
