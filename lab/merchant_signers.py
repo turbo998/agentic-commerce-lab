@@ -330,28 +330,48 @@ class MerchantSignerStore:
                 " adm.fingerprint AS adm_fingerprint,"
                 " adm.admitted_at AS adm_admitted_at,"
                 " adm.expires_at AS adm_expires_at,"
+                " app.fingerprint AS app_fingerprint,"
+                " app.expires_at AS app_expires_at,"
+                " app.revoked AS app_revoked,"
                 " tmd.fingerprint AS tmd_fingerprint,"
                 " tmd.target_uri AS tmd_target_uri,"
                 " tmd.key_id AS tmd_key_id,"
                 " tmd.signature_label AS tmd_signature_label,"
                 " tmd.created AS tmd_created,"
                 " tmd.expires AS tmd_expires,"
-                " tmd.admitted_at AS tmd_admitted_at"
-                " FROM (SELECT ? AS tenant_id, ? AS operation_id) k"
+                " tmd.admitted_at AS tmd_admitted_at,"
+                " perm.revoked AS perm_revoked"
+                " FROM ("
+                "SELECT ? AS tenant_id, ? AS operation_id, ? AS approval_id, ? AS merchant"
+                ") k"
                 " LEFT JOIN payment_attempts att USING (tenant_id, operation_id)"
                 " LEFT JOIN payment_admissions adm USING (tenant_id, operation_id)"
-                " LEFT JOIN merchant_timed_admissions tmd USING (tenant_id, operation_id)",
-                (operation.tenant_id, operation.operation_id),
+                " LEFT JOIN payment_approvals app"
+                " ON app.tenant_id = k.tenant_id AND app.approval_id = k.approval_id"
+                " LEFT JOIN merchant_timed_admissions tmd USING (tenant_id, operation_id)"
+                " LEFT JOIN merchant_signer_permissions perm"
+                " ON perm.tenant_id = k.tenant_id"
+                " AND perm.merchant = k.merchant"
+                " AND perm.target_uri = tmd.target_uri"
+                " AND perm.key_id = tmd.key_id",
+                (
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.approval_id,
+                    operation.checkout.merchant,
+                ),
             ).fetchone()
         assert row is not None
         att_fp = row["att_fingerprint"]
         adm_fp = row["adm_fingerprint"]
+        app_fp = row["app_fingerprint"]
         tmd_fp = row["tmd_fingerprint"]
         if att_fp is None and adm_fp is None and tmd_fp is None:
             return None
         for fp, label in (
             (att_fp, "Attempt"),
             (adm_fp, "Admission"),
+            (app_fp, "Approval"),
             (tmd_fp, "Timed-admission"),
         ):
             if fp is not None and fp != operation.fingerprint:
@@ -396,6 +416,19 @@ class MerchantSignerStore:
                 or not 0 <= adm_admitted_at < adm_expires_at <= 2**63 - 1
             ):
                 raise MerchantSignerError("Stored approval admission times are invalid.")
+            if app_fp is None:
+                raise MerchantSignerError(
+                    "Orphan approval admission record exists without a recorded approval."
+                )
+            app_expires_at, app_revoked = row["app_expires_at"], row["app_revoked"]
+            if type(app_expires_at) is not int or not 0 < app_expires_at <= 2**63 - 1:
+                raise MerchantSignerError("Stored approval expiry is invalid.")
+            if type(app_revoked) is not int or app_revoked not in (0, 1):
+                raise MerchantSignerError("Stored approval revocation state is invalid.")
+            if adm_expires_at != app_expires_at:
+                raise MerchantSignerError(
+                    "Approval admission expiry differs from recorded approval."
+                )
             approval_admission = ApprovalAdmission(
                 operation.fingerprint, adm_admitted_at, adm_expires_at
             )
@@ -421,6 +454,15 @@ class MerchantSignerStore:
                 or not 0 <= created <= tmd_admitted_at < expires <= MAX_SIGNATURE_TIMESTAMP
             ):
                 raise MerchantSignerError("Stored timed-admission times are invalid.")
+            perm_revoked = row["perm_revoked"]
+            if perm_revoked is None:
+                raise MerchantSignerError(
+                    "Orphan timed-admission record exists without a recorded signer permission."
+                )
+            if type(perm_revoked) is not int or perm_revoked not in (0, 1):
+                raise MerchantSignerError(
+                    "Stored signer permission revocation state is invalid."
+                )
             timed_signer_admission = TimedSignerAdmission(
                 operation.fingerprint, scope, sig_label, created, expires, tmd_admitted_at,
             )

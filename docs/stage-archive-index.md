@@ -411,6 +411,11 @@ to inspect `payment_attempts`, `payment_admissions`, and `merchant_timed_admissi
 Verifies stored `approval_id`, `provider`, `provider_account`, and `idempotency_key` columns alongside `fingerprint` in `PaymentAttemptJournal` and `MerchantSignerStore.find_provenance()`,
 and adds fail-closed `__post_init__` invariants to `PaymentApprovalStatus`, `ApprovalAdmission`, and `TimedSignerAdmission`.
 
+**Stage 1734 / 2026-11-01:** [Five-table provenance parent-policy referential integrity and PaymentAttempt invariants (EN)](research/2026-11-01-provenance-parent-policy-integrity.en.md)
+| [五表准入溯源父级策略参照完整性与支付尝试读模型不变量（中文）](research/2026-11-01-provenance-parent-policy-integrity.md).
+Extends `MerchantSignerStore.find_provenance()` to join `payment_approvals` and `merchant_signer_permissions` in the same single-`SELECT` snapshot (verifying parent policy existence, revocation-flag integrity, and cross-table approval expiry parity `adm.expires_at == app.expires_at`),
+and adds fail-closed `__post_init__` invariants to `PaymentAttempt` and `DispatchDecision`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
