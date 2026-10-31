@@ -240,8 +240,8 @@ class OperationAdmissionProvenanceTests(unittest.TestCase):
             (
                 self.operation.fingerprint,
                 valid_attempt,
-                ApprovalAdmission(self.operation.fingerprint, APPROVAL_EXPIRY, APPROVAL_EXPIRY),
-                replace(valid_tmd, admitted_at=APPROVAL_EXPIRY),
+                ApprovalAdmission(self.operation.fingerprint, NOW, NOW + 1),
+                replace(valid_tmd, admitted_at=NOW + 1),
             ),
         ):
             with self.subTest(fp=fp, att=att, adm=adm, tmd=tmd), self.assertRaises(

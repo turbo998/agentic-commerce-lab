@@ -406,6 +406,11 @@ and detects orphan or state-corrupted `stripe_readback_claims` rows across `read
 Adds `OperationAdmissionProvenance`, `MerchantSignerStore.find_provenance()`, and `MerchantSignerStore.read_provenance()`
 to inspect `payment_attempts`, `payment_admissions`, and `merchant_timed_admissions` in a single lock-free `SELECT` snapshot while failing closed on orphan rows, fingerprint drift, or clock split-brain.
 
+**Stage 1733 / 2026-11-01:** [payment_attempts denormalized uniqueness-column parity and read-model invariants (EN)](research/2026-11-01-attempt-denormalized-binding-integrity.en.md)
+| [payment_attempts 反范式唯一索引列一致性与只读数据类构造期不变量加固（中文）](research/2026-11-01-attempt-denormalized-binding-integrity.md).
+Verifies stored `approval_id`, `provider`, `provider_account`, and `idempotency_key` columns alongside `fingerprint` in `PaymentAttemptJournal` and `MerchantSignerStore.find_provenance()`,
+and adds fail-closed `__post_init__` invariants to `PaymentApprovalStatus`, `ApprovalAdmission`, and `TimedSignerAdmission`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

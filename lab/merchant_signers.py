@@ -78,6 +78,27 @@ class TimedSignerAdmission:
     expires: int
     admitted_at: int
 
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise MerchantSignerError(
+                "Timed-admission fingerprint must be a 64-char hex SHA-256 digest."
+            )
+        if not isinstance(self.scope, MerchantSignerScope):
+            raise MerchantSignerError("A trusted MerchantSignerScope is required.")
+        if (
+            not isinstance(self.signature_label, str)
+            or re.fullmatch(r"[a-z*][a-z0-9_.*-]*", self.signature_label) is None
+        ):
+            raise MerchantSignerError("Stored timed-admission signature label is invalid.")
+        if (
+            any(type(value) is not int for value in (self.created, self.expires, self.admitted_at))
+            or not 0 <= self.created <= self.admitted_at < self.expires <= MAX_SIGNATURE_TIMESTAMP
+        ):
+            raise MerchantSignerError("Stored timed-admission times are invalid.")
+
 
 @dataclass(frozen=True)
 class OperationAdmissionProvenance:
@@ -299,6 +320,10 @@ class MerchantSignerStore:
         with closing(self._connect()) as db:
             row = db.execute(
                 "SELECT"
+                " att.approval_id AS att_approval_id,"
+                " att.provider AS att_provider,"
+                " att.provider_account AS att_provider_account,"
+                " att.idempotency_key AS att_idempotency_key,"
                 " att.fingerprint AS att_fingerprint,"
                 " att.outcome AS att_outcome,"
                 " att.provider_reference AS att_provider_reference,"
@@ -335,6 +360,13 @@ class MerchantSignerStore:
             raise MerchantSignerError(
                 "Orphan admission record exists without a reserved payment attempt."
             )
+        if (
+            row["att_approval_id"] != operation.approval_id
+            or row["att_provider"] != operation.provider
+            or row["att_provider_account"] != operation.provider_account
+            or row["att_idempotency_key"] != operation.idempotency_key
+        ):
+            raise MerchantSignerError("Attempt record differs from the bound operation.")
         if tmd_fp is not None and adm_fp is None:
             raise MerchantSignerError(
                 "Orphan timed-admission record exists without an approval admission."

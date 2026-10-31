@@ -111,13 +111,24 @@ class PaymentAttemptJournal:
             raise AttemptConflict("A trusted PaymentOperation is required.")
 
     @staticmethod
+    def _verify_row_binding(row: sqlite3.Row, operation: PaymentOperation) -> None:
+        if (
+            row["fingerprint"] != operation.fingerprint
+            or row["approval_id"] != operation.approval_id
+            or row["provider"] != operation.provider
+            or row["provider_account"] != operation.provider_account
+            or row["idempotency_key"] != operation.idempotency_key
+        ):
+            raise AttemptConflict("Operation binding changed; do not dispatch.")
+
+    @staticmethod
     def _find(db: sqlite3.Connection, operation: PaymentOperation) -> sqlite3.Row | None:
         row = db.execute(
             "SELECT * FROM payment_attempts WHERE tenant_id=? AND operation_id=?",
             (operation.tenant_id, operation.operation_id),
         ).fetchone()
-        if row is not None and row["fingerprint"] != operation.fingerprint:
-            raise AttemptConflict("Operation binding changed; do not dispatch.")
+        if row is not None:
+            PaymentAttemptJournal._verify_row_binding(row, operation)
         return row
 
     @staticmethod
@@ -131,15 +142,9 @@ class PaymentAttemptJournal:
         """Read a bound attempt or return None if unreserved, without granting authority."""
         self._require_operation(operation)
         with closing(self._connect()) as db:
-            row = db.execute(
-                "SELECT fingerprint,outcome,provider_reference FROM payment_attempts"
-                " WHERE tenant_id=? AND operation_id=?",
-                (operation.tenant_id, operation.operation_id),
-            ).fetchone()
+            row = self._find(db, operation)
         if row is None:
             return None
-        if row["fingerprint"] != operation.fingerprint:
-            raise AttemptConflict("Operation binding changed; do not dispatch.")
         outcome = row["outcome"]
         if not isinstance(outcome, str) or outcome not in ("unknown", "succeeded", "failed"):
             raise AttemptConflict("Stored outcome is invalid; reconciliation required.")
