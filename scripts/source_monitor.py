@@ -802,6 +802,13 @@ def summarize_gate_health(
             ).encode("utf-8")
         ).hexdigest()
     )
+    blocking_reasons_delta_change_state_payload_fingerprint_id = (
+        None if blocking_reasons_delta_change_state_payload_fingerprint is None
+        else (
+            f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION}:"
+            f"{blocking_reasons_delta_change_state_payload_fingerprint}"
+        )
+    )
     blocking_reasons_delta_direction = (
         None if previous_blocking_reasons is None
         else (
@@ -865,6 +872,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_change_state_payload": blocking_reasons_delta_change_state_payload,
         "blocking_reasons_delta_change_state_payload_fingerprint_version": BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
         "blocking_reasons_delta_change_state_payload_fingerprint": blocking_reasons_delta_change_state_payload_fingerprint,
+        "blocking_reasons_delta_change_state_payload_fingerprint_id": blocking_reasons_delta_change_state_payload_fingerprint_id,
         "blocking_reasons_delta_direction": blocking_reasons_delta_direction,
         "blocking_reasons_delta_payload_version": BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
         "blocking_reasons_delta_payload_id": blocking_reasons_delta_payload_id,
