@@ -432,7 +432,11 @@ def previous_blocking_state_snapshot(
                 isinstance(state_id, str) and state_id
                 and isinstance(checked_at, str) and checked_at
             ):
-                return {"state_id": state_id, "checked_at": checked_at}
+                return {
+                    "state_id": state_id,
+                    "checked_at": checked_at,
+                    "report_date": path.name[:10],
+                }
     return None
 
 
@@ -612,6 +616,7 @@ def summarize_gate_health(
     cross_source_partitions: dict[str, list[str]],
     previous_blocking_state_id: str | None = None,
     previous_blocking_checked_at: str | None = None,
+    previous_blocking_report_date: str | None = None,
 ) -> dict[str, int | bool | list[str] | str | None]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_error_sources = [item.id for item in observations if item.status == "error"]
@@ -669,6 +674,7 @@ def summarize_gate_health(
         "blocking_state_id": blocking_state_id,
         "blocking_state_previous": previous_blocking_state_id,
         "blocking_state_previous_checked_at": previous_blocking_checked_at,
+        "blocking_state_previous_report_date": previous_blocking_report_date,
         "blocking_state_transition": blocking_state_transition,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
@@ -705,6 +711,9 @@ def main() -> int:
     previous_gate_blocking_checked_at = (
         None if previous_gate_state is None else previous_gate_state["checked_at"]
     )
+    previous_gate_blocking_report_date = (
+        None if previous_gate_state is None else previous_gate_state["report_date"]
+    )
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
             executor.map(
@@ -732,6 +741,7 @@ def main() -> int:
         cross_source_partitions,
         previous_blocking_state_id=previous_gate_blocking_state_id,
         previous_blocking_checked_at=previous_gate_blocking_checked_at,
+        previous_blocking_report_date=previous_gate_blocking_report_date,
     )
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,

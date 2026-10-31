@@ -231,6 +231,11 @@ Adds `gate_health.blocking_state_previous` and `gate_health.blocking_state_trans
 Adds `gate_health.blocking_state_previous_checked_at` to anchor transition comparisons to
 the exact prior snapshot timestamp used by the monitor.
 
+**Stage 1698 / 2026-10-31:** [Source monitor gate-health previous report-date telemetry (EN)](research/2026-10-31-source-monitor-gate-health-previous-report-date.en.md)
+| [source-monitor gate_health 前态报告日期信号（中文）](research/2026-10-31-source-monitor-gate-health-previous-report-date.md).
+Adds `gate_health.blocking_state_previous_report_date` so transition metadata includes
+the concrete prior daily report date (`YYYY-MM-DD`) in addition to prior `checked_at`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
