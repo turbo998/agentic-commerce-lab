@@ -148,16 +148,17 @@ class PaymentApprovalStore:
             "revoked" if revoked else "active",
         )
 
-    def read_admission(self, operation: PaymentOperation) -> ApprovalAdmission:
-        """Read first-gate history even after revocation, without new authority."""
+    def find_admission(self, operation: PaymentOperation) -> ApprovalAdmission | None:
+        """Read first-gate history or return None if absent, without new authority."""
         self._require_operation(operation)
         with closing(self._connect()) as db:
             row = db.execute(
-                "SELECT * FROM payment_admissions WHERE tenant_id=? AND operation_id=?",
+                "SELECT fingerprint,admitted_at,expires_at FROM payment_admissions"
+                " WHERE tenant_id=? AND operation_id=?",
                 (operation.tenant_id, operation.operation_id),
             ).fetchone()
         if row is None:
-            raise PaymentApprovalError("No first-admission record exists for this operation.")
+            return None
         if row["fingerprint"] != operation.fingerprint:
             raise PaymentApprovalError("Admission record differs from the bound operation.")
         admitted_at, expires_at = row["admitted_at"], row["expires_at"]
@@ -165,6 +166,13 @@ class PaymentApprovalStore:
                 or not 0 <= admitted_at < expires_at <= 2**63 - 1):
             raise PaymentApprovalError("Stored admission times are invalid.")
         return ApprovalAdmission(row["fingerprint"], admitted_at, expires_at)
+
+    def read_admission(self, operation: PaymentOperation) -> ApprovalAdmission:
+        """Read first-gate history even after revocation, without new authority."""
+        admission = self.find_admission(operation)
+        if admission is None:
+            raise PaymentApprovalError("No first-admission record exists for this operation.")
+        return admission
 
     def admit(
         self,

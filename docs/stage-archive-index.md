@@ -386,6 +386,11 @@ for lock-free local merchant signer permission inspection without signature veri
 Adds `PaymentAttemptJournal.read_attempt(operation)` for lock-free local attempt inspection
 that returns `None` when unreserved while raising `AttemptConflict` on fingerprint tampering or corrupted state.
 
+**Stage 1729 / 2026-11-01:** [Optional read-only first-admission history lookup and unadmitted-vs-conflict disambiguation (EN)](research/2026-11-01-payment-admission-find.en.md)
+| [PaymentApprovalStore.find_admission 本地首次审批准入历史可选只读查询与未准入/绑定冲突消歧（中文）](research/2026-11-01-payment-admission-find.md).
+Adds `PaymentApprovalStore.find_admission(operation)` for lock-free first-admission provenance inspection
+that returns `None` when unadmitted while raising `PaymentApprovalError` on fingerprint mismatch or invalid stored timestamps.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
