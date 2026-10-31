@@ -3,9 +3,15 @@
 import re
 from collections.abc import Mapping
 from contextlib import closing
+from dataclasses import dataclass
 
 from lab.payment_attempts import (
-    AttemptConflict, Observation, PaymentAttempt, PaymentAttemptJournal, PaymentOperation,
+    AttemptConflict,
+    Observation,
+    Outcome,
+    PaymentAttempt,
+    PaymentAttemptJournal,
+    PaymentOperation,
 )
 
 
@@ -13,10 +19,61 @@ PENDING_STATUSES = frozenset({
     "requires_payment_method", "requires_confirmation", "requires_action",
     "processing", "requires_capture",
 })
+_PI_RE = re.compile(r"pi_[A-Za-z0-9_]+")
 
 
 class StripeObservationError(ValueError):
     """A provider readback is incomplete, inconsistent, or outside this policy."""
+
+
+@dataclass(frozen=True)
+class StripeObservationPreview:
+    """Read-only reconciliation preview; never mutates payment_attempts or grants authority."""
+
+    operation: PaymentOperation
+    previous: PaymentAttempt
+    observation: Observation
+    next_attempt: PaymentAttempt
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise StripeObservationError("A trusted PaymentOperation is required.")
+        if not isinstance(self.previous, PaymentAttempt) or not isinstance(
+            self.next_attempt, PaymentAttempt
+        ):
+            raise StripeObservationError("Persisted and projected PaymentAttempt instances are required.")
+        if (
+            self.previous.provider_reference is None
+            or _PI_RE.fullmatch(self.previous.provider_reference) is None
+        ):
+            raise StripeObservationError("A trusted PaymentIntent association must be persisted first.")
+        if self.next_attempt.provider_reference != self.previous.provider_reference:
+            raise StripeObservationError(
+                "Projected PaymentAttempt reference differs from persisted association."
+            )
+        if not isinstance(self.observation, str) or self.observation not in (
+            "pending",
+            "succeeded",
+            "failed",
+        ):
+            raise StripeObservationError("Observation must be pending, succeeded, or failed.")
+        expected_outcome: Outcome = (
+            "unknown" if self.observation == "pending" else self.observation
+        )
+        if self.previous.outcome != "unknown" and self.previous.outcome != expected_outcome:
+            raise AttemptConflict("Terminal outcome cannot be overwritten.")
+        if self.next_attempt.outcome != expected_outcome:
+            raise StripeObservationError(
+                "Projected PaymentAttempt outcome does not match observation transition."
+            )
+
+    @property
+    def would_advance(self) -> bool:
+        return self.previous.outcome != self.next_attempt.outcome
+
+    @property
+    def is_terminal(self) -> bool:
+        return self.next_attempt.outcome in ("succeeded", "failed")
 
 
 def associate_stripe_intent(
@@ -31,8 +88,7 @@ def associate_stripe_intent(
     """
     if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
         raise StripeObservationError("A trusted journal and PaymentOperation are required.")
-    if (not isinstance(expected_reference, str)
-            or re.fullmatch(r"pi_[A-Za-z0-9_]+", expected_reference) is None):
+    if not isinstance(expected_reference, str) or _PI_RE.fullmatch(expected_reference) is None:
         raise StripeObservationError("A separately trusted PaymentIntent reference is required.")
     with closing(journal._connect()) as db, db:
         db.execute("BEGIN IMMEDIATE")
@@ -72,14 +128,93 @@ def reconcile_stripe_intent(
     if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
         raise StripeObservationError("A trusted journal and PaymentOperation are required.")
     _require_context(operation, retrieved_account, intent)
-    previous = journal.read(operation)
+    with closing(journal._connect()) as db, db:
+        db.execute("BEGIN IMMEDIATE")
+        row = journal._find(db, operation)
+        if row is None:
+            raise AttemptConflict("Operation was never reserved.")
+        previous = journal._attempt(row)
+        observation = validate_stripe_intent(
+            operation, previous, retrieved_account=retrieved_account, intent=intent,
+        )
+        assert previous.provider_reference is not None
+        return journal._reconcile_in_transaction(
+            db, operation, observation=observation, provider_reference=previous.provider_reference,
+        )
+
+
+def find_stripe_observation_preview(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    intent: Mapping[str, object],
+) -> StripeObservationPreview | None:
+    """Preview PaymentIntent reconciliation in one lock-free SELECT without writing."""
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise StripeObservationError("A trusted journal and PaymentOperation are required.")
+    _require_context(operation, retrieved_account, intent)
+    with closing(journal._connect()) as db:
+        row = db.execute(
+            """
+            SELECT
+                p.*,
+                CASE
+                    WHEN p.provider_reference IS NOT NULL AND EXISTS (
+                        SELECT 1 FROM payment_attempts other
+                        WHERE other.provider = p.provider
+                          AND other.provider_account = p.provider_account
+                          AND other.provider_reference = p.provider_reference
+                          AND NOT (
+                              other.tenant_id = p.tenant_id
+                              AND other.operation_id = p.operation_id
+                          )
+                    ) THEN 1
+                    ELSE 0
+                END AS reference_conflict
+            FROM payment_attempts p
+            WHERE p.tenant_id = ? AND p.operation_id = ?
+            """,
+            (operation.tenant_id, operation.operation_id),
+        ).fetchone()
+    if row is None:
+        return None
+    journal._verify_row_binding(row, operation)
+    previous = journal._attempt(row)
     observation = validate_stripe_intent(
         operation, previous, retrieved_account=retrieved_account, intent=intent,
     )
     assert previous.provider_reference is not None
-    return journal.reconcile(
-        operation, observation=observation, provider_reference=previous.provider_reference,
+    outcome: Outcome = "unknown" if observation == "pending" else observation
+    if previous.outcome != "unknown" and previous.outcome != outcome:
+        raise AttemptConflict("Terminal outcome cannot be overwritten.")
+    if row["reference_conflict"]:
+        raise AttemptConflict("Provider reference already bound to another operation.")
+    return StripeObservationPreview(
+        operation=operation,
+        previous=previous,
+        observation=observation,
+        next_attempt=PaymentAttempt(outcome, previous.provider_reference),
     )
+
+
+def read_stripe_observation_preview(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    intent: Mapping[str, object],
+) -> StripeObservationPreview:
+    """Preview PaymentIntent reconciliation in one lock-free SELECT or raise if unreserved."""
+    preview = find_stripe_observation_preview(
+        journal,
+        operation,
+        retrieved_account=retrieved_account,
+        intent=intent,
+    )
+    if preview is None:
+        raise AttemptConflict("Operation was never reserved.")
+    return preview
 
 
 def _require_context(
@@ -103,7 +238,10 @@ def validate_stripe_intent(
     _require_context(operation, retrieved_account, intent)
     if not isinstance(previous, PaymentAttempt):
         raise StripeObservationError("A persisted PaymentAttempt is required.")
-    if previous.provider_reference is None or not previous.provider_reference.startswith("pi_"):
+    if (
+        previous.provider_reference is None
+        or _PI_RE.fullmatch(previous.provider_reference) is None
+    ):
         raise StripeObservationError("A trusted PaymentIntent association must be persisted first.")
     if intent.get("object") != "payment_intent":
         raise StripeObservationError("Readback must be a PaymentIntent, not an event or SetupIntent.")

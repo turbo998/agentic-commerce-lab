@@ -446,6 +446,11 @@ for lock-free, clock-independent post-expiry replay auditing that enforces full 
 Adds `InboxEventProvenance`, `StripeEventInbox.find_provenance()`, and `StripeEventInbox.read_provenance()`
 to inspect coupled receipt and claim state in one lock-free `SELECT` snapshot while detecting orphan claim rows and enforcing strict integer generation checks in `_current_claim()`.
 
+**Stage 1741 / 2026-11-01:** [Single-transaction Stripe PaymentIntent reconciliation and lock-free observation preview (EN)](research/2026-11-01-stripe-observation-preview-and-atomic-reconcile.en.md)
+| [Stripe PaymentIntent 单事务对账收敛、严格引用正则校验与无写锁对账预演（中文）](research/2026-11-01-stripe-observation-preview-and-atomic-reconcile.md).
+Consolidates `reconcile_stripe_intent()` into a single `BEGIN IMMEDIATE` transaction, enforces strict `pi_[A-Za-z0-9_]+` regex parity in `validate_stripe_intent()`,
+and adds `StripeObservationPreview`, `find_stripe_observation_preview()`, and `read_stripe_observation_preview()` for lock-free single-`SELECT` reconciliation dry runs.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
