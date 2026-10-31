@@ -412,15 +412,27 @@ def previous_source_facts(
 
 def previous_blocking_state_id(directory: Path, *, before_date: str) -> str | None:
     """Return the latest gate-health blocking state id before the target date."""
+    snapshot = previous_blocking_state_snapshot(directory, before_date=before_date)
+    return None if snapshot is None else snapshot["state_id"]
+
+
+def previous_blocking_state_snapshot(
+    directory: Path, *, before_date: str,
+) -> dict[str, str] | None:
+    """Return the latest prior blocking-state id plus checked_at timestamp."""
     for path in sorted(directory.glob("*-sources.json"), reverse=True):
         if path.name[:10] >= before_date:
             continue
         report = json.loads(path.read_text(encoding="utf-8"))
         gate_health = report.get("gate_health")
+        checked_at = report.get("checked_at")
         if isinstance(gate_health, dict):
             state_id = gate_health.get("blocking_state_id")
-            if isinstance(state_id, str) and state_id:
-                return state_id
+            if (
+                isinstance(state_id, str) and state_id
+                and isinstance(checked_at, str) and checked_at
+            ):
+                return {"state_id": state_id, "checked_at": checked_at}
     return None
 
 
@@ -599,7 +611,8 @@ def summarize_gate_health(
     cross_source_summary: dict[str, int | bool],
     cross_source_partitions: dict[str, list[str]],
     previous_blocking_state_id: str | None = None,
-) -> dict[str, int | bool | list[str]]:
+    previous_blocking_checked_at: str | None = None,
+) -> dict[str, int | bool | list[str] | str | None]:
     """Expose one machine-readable run gate that combines fetch/policy/check failures."""
     observation_error_sources = [item.id for item in observations if item.status == "error"]
     policy_error_sources = [item.id for item in observations if item.policy_error]
@@ -655,6 +668,7 @@ def summarize_gate_health(
         "blocking_fingerprint": blocking_fingerprint,
         "blocking_state_id": blocking_state_id,
         "blocking_state_previous": previous_blocking_state_id,
+        "blocking_state_previous_checked_at": previous_blocking_checked_at,
         "blocking_state_transition": blocking_state_transition,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
@@ -682,8 +696,14 @@ def main() -> int:
             source_id="stripe-spt-connect", parser_version="stripe-spt-connect-facts-v1",
         ),
     }
-    previous_gate_blocking_state_id = previous_blocking_state_id(
+    previous_gate_state = previous_blocking_state_snapshot(
         args.output_dir, before_date=str(now.date()),
+    )
+    previous_gate_blocking_state_id = (
+        None if previous_gate_state is None else previous_gate_state["state_id"]
+    )
+    previous_gate_blocking_checked_at = (
+        None if previous_gate_state is None else previous_gate_state["checked_at"]
     )
     with ThreadPoolExecutor(max_workers=min(8, len(sources))) as executor:
         observations = list(
@@ -711,6 +731,7 @@ def main() -> int:
         cross_source_summary,
         cross_source_partitions,
         previous_blocking_state_id=previous_gate_blocking_state_id,
+        previous_blocking_checked_at=previous_gate_blocking_checked_at,
     )
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,

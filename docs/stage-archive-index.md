@@ -226,6 +226,11 @@ for single-field, version-aware gate-state comparisons.
 Adds `gate_health.blocking_state_previous` and `gate_health.blocking_state_transition`
 (`baseline`/`unchanged`/`changed`) to express state drift against the latest prior daily snapshot.
 
+**Stage 1697 / 2026-10-31:** [Source monitor gate-health previous checkpoint telemetry (EN)](research/2026-10-31-source-monitor-gate-health-previous-checkpoint.en.md)
+| [source-monitor gate_health 前态检查点信号（中文）](research/2026-10-31-source-monitor-gate-health-previous-checkpoint.md).
+Adds `gate_health.blocking_state_previous_checked_at` to anchor transition comparisons to
+the exact prior snapshot timestamp used by the monitor.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
