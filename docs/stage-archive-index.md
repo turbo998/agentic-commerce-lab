@@ -281,6 +281,11 @@ reason-level changes directly without reconstructing diffs across snapshots.
 Adds `gate_health.blocking_reasons_delta_fingerprint` with version
 `gate_health.blocking_reasons_delta_fingerprint_version` (`sha256-reasons-delta-v1`) for reason-delta deduplication.
 
+**Stage 1708 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta event telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-event.en.md)
+| [source-monitor gate_health 阻塞原因增量事件信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-event.md).
+Adds `gate_health.blocking_reasons_delta_event` so downstream routers can quickly branch on whether
+reason-level deltas are present, without inspecting delta arrays.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
