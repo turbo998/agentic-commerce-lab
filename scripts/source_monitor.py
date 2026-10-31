@@ -616,6 +616,7 @@ def summarize_gate_health(
             separators=(",", ":"),
         ).encode("utf-8")
     ).hexdigest()
+    blocking_state_id = f"{BLOCKING_FINGERPRINT_VERSION}:{blocking_fingerprint}"
     blocking = bool(
         observation_errors
         or policy_errors
@@ -632,6 +633,7 @@ def summarize_gate_health(
         "blocking_dimensions": blocking_dimensions,
         "blocking_fingerprint_version": BLOCKING_FINGERPRINT_VERSION,
         "blocking_fingerprint": blocking_fingerprint,
+        "blocking_state_id": blocking_state_id,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }
