@@ -9,7 +9,13 @@ from pathlib import Path
 from typing import Literal
 
 from lab.checkout_admission import validate_signed_checkout
-from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
+from lab.payment_attempts import (
+    AttemptConflict,
+    DispatchDecision,
+    PaymentAttempt,
+    PaymentAttemptJournal,
+    PaymentOperation,
+)
 from lab.request_binding import RequestSignatureSnapshot
 
 ApprovalState = Literal["active", "revoked"]
@@ -63,6 +69,53 @@ class ApprovalAdmission:
             or not 0 <= self.admitted_at < self.expires_at <= 2**63 - 1
         ):
             raise PaymentApprovalError("Stored admission times are invalid.")
+
+
+@dataclass(frozen=True)
+class ApprovalAdmissionProvenance:
+    """Local cross-table attempt, approval-status and first-admission snapshot, not authority."""
+
+    fingerprint: str
+    attempt: PaymentAttempt
+    approval_status: PaymentApprovalStatus | None
+    approval_admission: ApprovalAdmission | None
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise PaymentApprovalError(
+                "Provenance fingerprint must be a 64-char hex SHA-256 digest."
+            )
+        if not isinstance(self.attempt, PaymentAttempt):
+            raise PaymentApprovalError("A persisted PaymentAttempt is required.")
+        if self.attempt.provider_reference is None and self.attempt.outcome != "unknown":
+            raise PaymentApprovalError(
+                "Stored attempt outcome and provider reference are inconsistent."
+            )
+        if self.approval_status is not None:
+            if not isinstance(self.approval_status, PaymentApprovalStatus):
+                raise PaymentApprovalError(
+                    "approval_status must be a PaymentApprovalStatus or None."
+                )
+            if self.approval_status.fingerprint != self.fingerprint:
+                raise PaymentApprovalError("Approval differs from the bound operation.")
+        if self.approval_admission is not None:
+            if not isinstance(self.approval_admission, ApprovalAdmission):
+                raise PaymentApprovalError(
+                    "approval_admission must be an ApprovalAdmission or None."
+                )
+            if self.approval_admission.fingerprint != self.fingerprint:
+                raise PaymentApprovalError("Admission record differs from the bound operation.")
+            if self.approval_status is None:
+                raise PaymentApprovalError(
+                    "Orphan admission record exists without a recorded approval."
+                )
+            if self.approval_admission.expires_at != self.approval_status.expires_at:
+                raise PaymentApprovalError(
+                    "Stored admission expiry differs from the recorded approval expiry."
+                )
 
 
 class PaymentApprovalStore:
@@ -123,6 +176,11 @@ class PaymentApprovalStore:
             raise PaymentApprovalError("No recorded approval exists for this scope.")
         if row["fingerprint"] != operation.fingerprint:
             raise PaymentApprovalError("Approval differs from the bound operation.")
+        expires_at, revoked = row["expires_at"], row["revoked"]
+        if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        if type(revoked) is not int or revoked not in (0, 1):
+            raise PaymentApprovalError("Stored approval revocation state is invalid.")
         return row
 
     def approve(self, operation: PaymentOperation, *, expires_at: int) -> None:
@@ -202,6 +260,131 @@ class PaymentApprovalStore:
         if admission is None:
             raise PaymentApprovalError("No first-admission record exists for this operation.")
         return admission
+
+    def find_provenance(
+        self,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+    ) -> ApprovalAdmissionProvenance | None:
+        """Read cross-table attempt, approval-status and first-admission history in one snapshot."""
+        if (
+            not isinstance(journal, PaymentAttemptJournal)
+            or not isinstance(operation, PaymentOperation)
+        ):
+            raise PaymentApprovalError("A trusted journal and PaymentOperation are required.")
+        if self.path.resolve(strict=True) != journal.path.resolve(strict=True):
+            raise PaymentApprovalError(
+                "Cross-table provenance lookup requires the same resolved SQLite file."
+            )
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """
+                SELECT
+                    att.fingerprint AS att_fingerprint,
+                    att.approval_id AS att_approval_id,
+                    att.provider AS att_provider,
+                    att.provider_account AS att_provider_account,
+                    att.idempotency_key AS att_idempotency_key,
+                    att.outcome AS att_outcome,
+                    att.provider_reference AS att_provider_reference,
+                    adm.fingerprint AS adm_fingerprint,
+                    adm.admitted_at AS adm_admitted_at,
+                    adm.expires_at AS adm_expires_at,
+                    app.fingerprint AS app_fingerprint,
+                    app.expires_at AS app_expires_at,
+                    app.revoked AS app_revoked
+                FROM (SELECT 1)
+                LEFT JOIN payment_attempts att
+                    ON att.tenant_id=? AND att.operation_id=?
+                LEFT JOIN payment_admissions adm
+                    ON adm.tenant_id=? AND adm.operation_id=?
+                LEFT JOIN payment_approvals app
+                    ON app.tenant_id=? AND app.approval_id=?
+                """,
+                (
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.approval_id,
+                ),
+            ).fetchone()
+        if row is None or (row["att_fingerprint"] is None and row["adm_fingerprint"] is None):
+            return None
+        if row["att_fingerprint"] is None:
+            raise PaymentApprovalError(
+                "Orphan admission record exists without a payment reservation."
+            )
+        att_row = {
+            "fingerprint": row["att_fingerprint"],
+            "approval_id": row["att_approval_id"],
+            "provider": row["att_provider"],
+            "provider_account": row["att_provider_account"],
+            "idempotency_key": row["att_idempotency_key"],
+            "outcome": row["att_outcome"],
+            "provider_reference": row["att_provider_reference"],
+        }
+        journal._verify_row_binding(att_row, operation)
+        attempt = journal._attempt(att_row)
+        if attempt.provider_reference is None and attempt.outcome != "unknown":
+            raise AttemptConflict("Stored attempt outcome and provider reference are inconsistent.")
+
+        approval_status: PaymentApprovalStatus | None = None
+        if row["app_fingerprint"] is not None:
+            if row["app_fingerprint"] != operation.fingerprint:
+                raise PaymentApprovalError("Approval differs from the bound operation.")
+            app_expires_at, app_revoked = row["app_expires_at"], row["app_revoked"]
+            if type(app_expires_at) is not int or not 0 < app_expires_at <= 2**63 - 1:
+                raise PaymentApprovalError("Stored approval expiry is invalid.")
+            if type(app_revoked) is not int or app_revoked not in (0, 1):
+                raise PaymentApprovalError("Stored approval revocation state is invalid.")
+            approval_status = PaymentApprovalStatus(
+                operation.fingerprint,
+                app_expires_at,
+                "revoked" if app_revoked else "active",
+            )
+
+        approval_admission: ApprovalAdmission | None = None
+        if row["adm_fingerprint"] is not None:
+            if row["adm_fingerprint"] != operation.fingerprint:
+                raise PaymentApprovalError("Admission record differs from the bound operation.")
+            adm_at, adm_exp = row["adm_admitted_at"], row["adm_expires_at"]
+            if (
+                type(adm_at) is not int
+                or type(adm_exp) is not int
+                or not 0 <= adm_at < adm_exp <= 2**63 - 1
+            ):
+                raise PaymentApprovalError("Stored admission times are invalid.")
+            if approval_status is None:
+                raise PaymentApprovalError(
+                    "Orphan admission record exists without a recorded approval."
+                )
+            if adm_exp != approval_status.expires_at:
+                raise PaymentApprovalError(
+                    "Stored admission expiry differs from the recorded approval expiry."
+                )
+            approval_admission = ApprovalAdmission(operation.fingerprint, adm_at, adm_exp)
+
+        return ApprovalAdmissionProvenance(
+            operation.fingerprint,
+            attempt,
+            approval_status,
+            approval_admission,
+        )
+
+    def read_provenance(
+        self,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+    ) -> ApprovalAdmissionProvenance:
+        """Read required cross-table provenance or raise if the operation was never reserved."""
+        provenance = self.find_provenance(journal, operation)
+        if provenance is None:
+            raise PaymentApprovalError(
+                "No reservation or admission record exists for this operation."
+            )
+        return provenance
 
     def admit(
         self,

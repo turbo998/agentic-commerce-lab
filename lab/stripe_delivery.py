@@ -16,6 +16,17 @@ class VerifiedDelivery:
     payload_sha256: str
     requires_readback: bool = True
 
+    def __post_init__(self) -> None:
+        if type(self.timestamp) is not int or not 0 <= self.timestamp <= 2**63 - 1:
+            raise StripeDeliveryError("Timestamp must be a nonnegative signed-64-bit integer.")
+        if (
+            not isinstance(self.payload_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.payload_sha256) is None
+        ):
+            raise StripeDeliveryError("Payload digest must be a 64-char hex SHA-256 string.")
+        if self.requires_readback is not True:
+            raise StripeDeliveryError("VerifiedDelivery requires_readback must be True.")
+
 
 def _require_delivery_clock(now: int, tolerance: int) -> None:
     if type(now) is not int or not 0 <= now <= 2**63 - 1:

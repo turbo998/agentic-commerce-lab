@@ -224,6 +224,9 @@ class MerchantSignerStore:
         ).fetchone()
         if row is None:
             raise MerchantSignerError("No recorded signer permission exists for this scope.")
+        revoked = row["revoked"]
+        if type(revoked) is not int or revoked not in (0, 1):
+            raise MerchantSignerError("Stored signer permission revocation state is invalid.")
         return row
 
     def allow(self, scope: MerchantSignerScope) -> None:
