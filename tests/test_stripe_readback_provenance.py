@@ -31,10 +31,12 @@ from lab.stripe_observation import (
     validate_stripe_intent,
 )
 from lab.stripe_readback import (
+    StripeReadbackAcceptancePreview,
     StripeReadbackError,
     StripeReadbackProvenance,
     accept_stripe_readback,
     find_stripe_readback_provenance,
+    preview_accept_stripe_readback,
     read_stripe_readback_provenance,
 )
 from tests.test_stripe_inbox import NOW, SECRET, event_body, header
@@ -797,6 +799,131 @@ class StripeReadbackProvenanceTests(unittest.TestCase):
         ):
             find_stripe_readback_provenance(
                 self.inbox, self.journal, self.scope, "evt_unseen", self.operation
+            )
+
+    def test_preview_accept_stripe_readback_single_select_and_transitions(
+        self,
+    ) -> None:
+        self.journal.reserve(self.operation)
+        associate_stripe_intent(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            expected_reference="pi_synthetic",
+            intent={**self.intent, "status": "requires_action", "amount_received": 0},
+        )
+        self.record("evt_synthetic")
+        claim = self.inbox.claim_next(self.scope, "worker-1")
+        assert claim is not None
+
+        # Pending observation preview (unknown -> unknown, claim -> handled)
+        pending_intent = {
+            **self.intent,
+            "status": "processing",
+            "amount_received": 0,
+        }
+        statements: list[str] = []
+        orig_connect = self.inbox._connect
+
+        def traced_connect() -> sqlite3.Connection:
+            db = orig_connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(self.inbox, "_connect", side_effect=traced_connect):
+            pending_preview = preview_accept_stripe_readback(
+                self.inbox,
+                self.journal,
+                claim,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                intent=pending_intent,
+            )
+        sql_only = [
+            s.strip().upper()
+            for s in statements
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_only), 1)
+        self.assertTrue(sql_only[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_only[0])
+
+        self.assertEqual(pending_preview.observation, "pending")
+        self.assertEqual(pending_preview.previous_phase, "pending_associated")
+        self.assertEqual(pending_preview.projected_phase, "pending_associated")
+        self.assertEqual(
+            pending_preview.projected_readback_phase, "handled_pending_outcome"
+        )
+        self.assertFalse(pending_preview.would_mutate_attempt)
+        self.assertTrue(pending_preview.would_mark_claim_handled)
+
+        # Succeeded observation preview (unknown -> succeeded, claim -> handled)
+        succeeded_preview = preview_accept_stripe_readback(
+            self.inbox,
+            self.journal,
+            claim,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        self.assertEqual(succeeded_preview.observation, "succeeded")
+        self.assertEqual(succeeded_preview.previous_phase, "pending_associated")
+        self.assertEqual(succeeded_preview.projected_phase, "succeeded_terminal")
+        self.assertEqual(
+            succeeded_preview.projected_readback_phase, "terminal_reconciled"
+        )
+        self.assertTrue(succeeded_preview.would_mutate_attempt)
+        self.assertTrue(succeeded_preview.would_mark_claim_handled)
+
+        # DB state is untouched before accept_stripe_readback()
+        pre_prov = read_stripe_readback_provenance(
+            self.inbox, self.journal, self.scope, "evt_synthetic", self.operation
+        )
+        self.assertEqual(pre_prov.attempt_phase, "pending_associated")
+        self.assertEqual(pre_prov.readback_phase, "claimed_awaiting_acceptance")
+
+        # Real accept_stripe_readback() matches preview and its projected provenance
+        result = accept_stripe_readback(
+            self.inbox,
+            self.journal,
+            claim,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        self.assertEqual(result, succeeded_preview.projected_attempt)
+        post_prov = read_stripe_readback_provenance(
+            self.inbox, self.journal, self.scope, "evt_synthetic", self.operation
+        )
+        self.assertEqual(post_prov, succeeded_preview.to_readback_provenance())
+        self.assertEqual(post_prov.attempt_phase, "succeeded_terminal")
+
+        # Already-handled claim fails closed in preview_accept_stripe_readback()
+        with self.assertRaisesRegex(
+            StripeReadbackError, "Already-handled hints cannot authorize acceptance"
+        ):
+            preview_accept_stripe_readback(
+                self.inbox,
+                self.journal,
+                claim,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                intent=self.intent,
+            )
+
+        # Stale worker/generation fails closed in preview_accept_stripe_readback()
+        stale_claim = ReadbackClaim(self.scope, claim.receipt, "other-worker", 1)
+        with self.assertRaisesRegex(
+            StripeInboxError, "Stale or foreign readback claim"
+        ):
+            preview_accept_stripe_readback(
+                self.inbox,
+                self.journal,
+                stale_claim,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                intent=self.intent,
             )
 
 
