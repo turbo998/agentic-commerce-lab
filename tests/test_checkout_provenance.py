@@ -10,6 +10,7 @@ from tempfile import TemporaryDirectory
 from lab.checkout import (
     AuthorizationError,
     Checkout,
+    CheckoutExecutionPreview,
     CheckoutProvenance,
     CheckoutStore,
     MandateStatus,
@@ -250,10 +251,207 @@ class CheckoutProvenanceTests(unittest.TestCase):
             CheckoutProvenance(
                 mandate_id="approval",
                 fingerprint=self.fingerprint,
-                mandate_status=None,
+                mandate_status=None,  # type: ignore[arg-type]
                 request_key="request",
                 receipt=valid_receipt,
             )
+        with self.assertRaisesRegex(AuthorizationError, "mandate_status must be"):
+            CheckoutProvenance(
+                mandate_id="approval",
+                fingerprint=self.fingerprint,
+                mandate_status=None,  # type: ignore[arg-type]
+                request_key=None,
+                receipt=None,
+            )
+        with self.assertRaisesRegex(
+            AuthorizationError, "Execution fingerprint differs"
+        ):
+            CheckoutProvenance(
+                mandate_id="approval",
+                fingerprint="0" * 64,
+                mandate_status=valid_status,
+                request_key=None,
+                receipt=None,
+            )
+
+    def test_phase_classification_and_execution_preview_lifecycle(self) -> None:
+        # 1. Absent before approval
+        self.assertIsNone(
+            self.store.find_execution_preview(
+                "approval", self.quote, request_key="request", now=100
+            )
+        )
+        with self.assertRaisesRegex(AuthorizationError, "No trusted approval"):
+            self.store.preview_execute(
+                "approval", self.quote, request_key="request", now=100
+            )
+
+        # 2. Active unspent mandate: consume_mandate before expiry, blocked_expired at/after expiry
+        self.store.approve("approval", self.quote, max_amount=1200, expires_at=200)
+        unspent = self.store.read_provenance("approval", self.quote)
+        self.assertEqual(unspent.phase, "active_unspent")
+        self.assertEqual(unspent.phase_at(0), "active_unspent")
+        self.assertEqual(unspent.phase_at(199), "active_unspent")
+        self.assertEqual(unspent.phase_at(200), "expired_unspent")
+        for bad_now in (-1, True, "100", 2**63):
+            with self.subTest(bad_now=bad_now):
+                with self.assertRaises(ValueError):
+                    unspent.phase_at(bad_now)  # type: ignore[arg-type]
+                with self.assertRaises(ValueError):
+                    self.store.find_execution_preview(
+                        "approval", self.quote, request_key="request", now=bad_now  # type: ignore[arg-type]
+                    )
+
+        statements: list[str] = []
+        original_connect = self.store._connect
+
+        def traced_connect() -> sqlite3.Connection:
+            db = original_connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        self.store._connect = traced_connect  # type: ignore[method-assign]
+        try:
+            statements.clear()
+            preview_consume = self.store.preview_execute(
+                "approval", self.quote, request_key="request", now=199
+            )
+            selects = [s for s in statements if s.lstrip().upper().startswith("SELECT")]
+            self.assertEqual(len(selects), 1)
+            self.assertFalse(any("BEGIN IMMEDIATE" in s.upper() for s in statements))
+        finally:
+            self.store._connect = original_connect  # type: ignore[method-assign]
+
+        expected_receipt = Receipt(f"sim_{self.fingerprint[:24]}", 1000, "USD")
+        self.assertEqual(
+            preview_consume,
+            CheckoutExecutionPreview(
+                provenance=unspent,
+                request_key="request",
+                now=199,
+                timed_phase="active_unspent",
+                decision="consume_mandate",
+                execution_allowed=True,
+                will_mutate=True,
+                projected_receipt=expected_receipt,
+            ),
+        )
+        preview_expired = self.store.preview_execute(
+            "approval", self.quote, request_key="request", now=200
+        )
+        self.assertEqual(
+            preview_expired,
+            CheckoutExecutionPreview(
+                provenance=unspent,
+                request_key="request",
+                now=200,
+                timed_phase="expired_unspent",
+                decision="blocked_expired",
+                execution_allowed=False,
+                will_mutate=False,
+                projected_receipt=None,
+            ),
+        )
+
+        # 3. Revoked unspent mandate on a separate approval
+        self.store.approve("revoked-mandate", self.quote, max_amount=1000, expires_at=200)
+        self.store.revoke("revoked-mandate")
+        revoked_unspent = self.store.read_provenance("revoked-mandate", self.quote)
+        self.assertEqual(revoked_unspent.phase, "revoked_unspent")
+        self.assertEqual(revoked_unspent.phase_at(100), "revoked_unspent")
+        self.assertEqual(revoked_unspent.phase_at(250), "revoked_unspent")
+        preview_revoked = self.store.preview_execute(
+            "revoked-mandate", self.quote, request_key="rev-key", now=100
+        )
+        self.assertEqual(
+            preview_revoked,
+            CheckoutExecutionPreview(
+                provenance=revoked_unspent,
+                request_key="rev-key",
+                now=100,
+                timed_phase="revoked_unspent",
+                decision="blocked_revoked",
+                execution_allowed=False,
+                will_mutate=False,
+                projected_receipt=None,
+            ),
+        )
+
+        # 4. Consumed active and consumed revoked mandates replay receipt even after expiry
+        actual_receipt = self.store.execute(
+            "approval", self.quote, request_key="request", now=100
+        )
+        self.assertEqual(actual_receipt, expected_receipt)
+        consumed_active = self.store.read_provenance("approval", self.quote)
+        self.assertEqual(consumed_active.phase, "consumed_active")
+        self.assertEqual(consumed_active.phase_at(250), "consumed_active")
+        preview_replay_active = self.store.preview_execute(
+            "approval", self.quote, request_key="request", now=250
+        )
+        self.assertEqual(
+            preview_replay_active,
+            CheckoutExecutionPreview(
+                provenance=consumed_active,
+                request_key="request",
+                now=250,
+                timed_phase="consumed_active",
+                decision="replay_receipt",
+                execution_allowed=True,
+                will_mutate=False,
+                projected_receipt=actual_receipt,
+            ),
+        )
+        with self.assertRaisesRegex(AuthorizationError, "already consumed"):
+            self.store.preview_execute(
+                "approval", self.quote, request_key="other-key", now=100
+            )
+
+        self.store.revoke("approval")
+        consumed_revoked = self.store.read_provenance("approval", self.quote)
+        self.assertEqual(consumed_revoked.phase, "consumed_revoked")
+        self.assertEqual(consumed_revoked.phase_at(250), "consumed_revoked")
+        preview_replay_revoked = self.store.preview_execute(
+            "approval", self.quote, request_key="request", now=250
+        )
+        self.assertEqual(
+            preview_replay_revoked,
+            CheckoutExecutionPreview(
+                provenance=consumed_revoked,
+                request_key="request",
+                now=250,
+                timed_phase="consumed_revoked",
+                decision="replay_receipt",
+                execution_allowed=True,
+                will_mutate=False,
+                projected_receipt=actual_receipt,
+            ),
+        )
+
+        # 5. CheckoutExecutionPreview dataclass invariants fail closed
+        for bad_preview_kwargs in (
+            {"provenance": "bad"},
+            {"request_key": ""},
+            {"now": -1},
+            {"now": True},
+            {"execution_allowed": 1},
+            {"will_mutate": 0},
+            {"timed_phase": "expired_unspent"},
+            {"decision": "blocked_expired"},
+            {"execution_allowed": False},
+            {"will_mutate": False},
+            {"projected_receipt": None},
+            {"projected_receipt": replace(expected_receipt, amount=1201)},
+            {"projected_receipt": replace(expected_receipt, currency="EUR")},
+        ):
+            with self.subTest(bad_preview_kwargs=bad_preview_kwargs):
+                with self.assertRaises(AuthorizationError):
+                    replace(preview_consume, **bad_preview_kwargs)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(AuthorizationError, "cannot include a projected_receipt"):
+            replace(preview_expired, projected_receipt=expected_receipt)
+        with self.assertRaisesRegex(AuthorizationError, "already consumed"):
+            replace(preview_replay_active, request_key="other-key")
+        with self.assertRaisesRegex(AuthorizationError, "must match the recorded receipt"):
+            replace(preview_replay_active, projected_receipt=None)
 
     def test_corrupted_mandate_and_receipt_rows_fail_closed(self) -> None:
         self.store.approve("approval", self.quote, max_amount=1000, expires_at=200)
@@ -363,8 +561,14 @@ class CheckoutProvenanceTests(unittest.TestCase):
             lambda: self.store.find_provenance(
                 "approval", self.quote, request_key="request"
             ),
+            lambda: self.store.find_execution_preview(
+                "approval", self.quote, request_key="request", now=100
+            ),
             lambda: self.store.execute(
                 "approval", self.quote, request_key="request", now=100
+            ),
+            lambda: self.store.execute(
+                "approval", self.quote, request_key="second-key", now=100
             ),
         ):
             with self.assertRaisesRegex(AuthorizationError, "Orphan receipt"):

@@ -461,6 +461,11 @@ modeling the `[2026-10-31, 2026-11-30)` contradiction window and enforcing fail-
 Adds `StripeReadbackPhase`, `event_phase`, and `readback_phase` to `StripeReadbackProvenance` and `StripeLifecycleProvenance`,
 and rejects unassociated terminal attempts, non-`pi_` attempt references, and prematurely handled readback claims across provenance models and single-snapshot queries.
 
+**Stage 1744 / 2026-11-01:** [Checkout mandate phase classification, fingerprint digest binding, and lock-free execution preview (EN)](research/2026-11-01-checkout-execution-preview-and-phase-integrity.en.md)
+| [结账授权溯源阶段分类（CheckoutPhase / CheckoutTimedPhase）、指纹摘要绑定与无写锁执行预演（中文）](research/2026-11-01-checkout-execution-preview-and-phase-integrity.md).
+Adds `CheckoutPhase`, `CheckoutTimedPhase`, `CheckoutExecutionPreview`, and `CheckoutStore.find_execution_preview()` / `preview_execute()`,
+verifies canonical SHA-256 fingerprint binding in `CheckoutProvenance.__post_init__()`, and detects orphan receipts across all `execute()` idempotency keys.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

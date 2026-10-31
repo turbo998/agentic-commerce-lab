@@ -10,6 +10,25 @@ from pathlib import Path
 from typing import Literal
 
 MandateState = Literal["active", "revoked"]
+CheckoutPhase = Literal[
+    "active_unspent",
+    "revoked_unspent",
+    "consumed_active",
+    "consumed_revoked",
+]
+CheckoutTimedPhase = Literal[
+    "active_unspent",
+    "expired_unspent",
+    "revoked_unspent",
+    "consumed_active",
+    "consumed_revoked",
+]
+CheckoutExecutionDecision = Literal[
+    "consume_mandate",
+    "replay_receipt",
+    "blocked_revoked",
+    "blocked_expired",
+]
 
 
 class AuthorizationError(ValueError):
@@ -126,13 +145,23 @@ class Receipt:
             raise AuthorizationError("Receipt status must be 'simulated'.")
 
 
+def _execution_fingerprint_for_digest(mandate_id: str, cart_digest: str) -> str:
+    return hashlib.sha256(
+        json.dumps([mandate_id, cart_digest], separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _execution_fingerprint(mandate_id: str, checkout: Checkout) -> str:
+    return _execution_fingerprint_for_digest(mandate_id, checkout.digest)
+
+
 @dataclass(frozen=True)
 class CheckoutProvenance:
     """Local coupled mandate-status and idempotency-receipt snapshot, not settlement proof."""
 
     mandate_id: str
     fingerprint: str
-    mandate_status: MandateStatus | None
+    mandate_status: MandateStatus
     request_key: str | None
     receipt: Receipt | None
 
@@ -146,11 +175,23 @@ class CheckoutProvenance:
             raise AuthorizationError(
                 "Execution fingerprint must be a 64-char hex SHA-256 digest."
             )
-        if self.mandate_status is not None:
-            if not isinstance(self.mandate_status, MandateStatus):
-                raise AuthorizationError("mandate_status must be a MandateStatus or None.")
-            if self.mandate_status.mandate_id != self.mandate_id:
-                raise AuthorizationError("Mandate status differs from the bound mandate.")
+        if self.mandate_status is None:
+            if self.receipt is not None:
+                raise AuthorizationError(
+                    "Orphan receipt exists without a recorded mandate."
+                )
+            raise AuthorizationError("mandate_status must be a MandateStatus.")
+        if not isinstance(self.mandate_status, MandateStatus):
+            raise AuthorizationError("mandate_status must be a MandateStatus.")
+        if self.mandate_status.mandate_id != self.mandate_id:
+            raise AuthorizationError("Mandate status differs from the bound mandate.")
+        expected_fingerprint = _execution_fingerprint_for_digest(
+            self.mandate_id, self.mandate_status.cart_digest
+        )
+        if self.fingerprint != expected_fingerprint:
+            raise AuthorizationError(
+                "Execution fingerprint differs from the bound mandate and cart digest."
+            )
         if self.request_key is not None and (
             not isinstance(self.request_key, str) or not self.request_key
         ):
@@ -171,10 +212,6 @@ class CheckoutProvenance:
                 raise AuthorizationError(
                     "Stored receipt order_id differs from the bound execution fingerprint."
                 )
-            if self.mandate_status is None:
-                raise AuthorizationError(
-                    "Orphan receipt exists without a recorded mandate."
-                )
             if self.receipt.currency != self.mandate_status.currency:
                 raise AuthorizationError(
                     "Stored receipt currency differs from the recorded mandate."
@@ -184,11 +221,122 @@ class CheckoutProvenance:
                     "Stored receipt amount exceeds the recorded mandate ceiling."
                 )
 
+    @property
+    def phase(self) -> CheckoutPhase:
+        """Return the clock-independent mandate and receipt lifecycle phase."""
+        if self.receipt is None:
+            if self.mandate_status.state == "revoked":
+                return "revoked_unspent"
+            return "active_unspent"
+        if self.mandate_status.state == "revoked":
+            return "consumed_revoked"
+        return "consumed_active"
 
-def _execution_fingerprint(mandate_id: str, checkout: Checkout) -> str:
-    return hashlib.sha256(
-        json.dumps([mandate_id, checkout.digest], separators=(",", ":")).encode()
-    ).hexdigest()
+    def phase_at(self, now: int) -> CheckoutTimedPhase:
+        """Evaluate the mandate and receipt lifecycle phase at a trusted Unix timestamp."""
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise ValueError("The trusted clock must provide a nonnegative Unix timestamp.")
+        if self.receipt is not None:
+            if self.mandate_status.state == "revoked":
+                return "consumed_revoked"
+            return "consumed_active"
+        if self.mandate_status.state == "revoked":
+            return "revoked_unspent"
+        if now >= self.mandate_status.expires_at:
+            return "expired_unspent"
+        return "active_unspent"
+
+
+@dataclass(frozen=True)
+class CheckoutExecutionPreview:
+    """Lock-free single-snapshot preview of CheckoutStore.execute() at a trusted clock."""
+
+    provenance: CheckoutProvenance
+    request_key: str
+    now: int
+    timed_phase: CheckoutTimedPhase
+    decision: CheckoutExecutionDecision
+    execution_allowed: bool
+    will_mutate: bool
+    projected_receipt: Receipt | None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.provenance, CheckoutProvenance):
+            raise AuthorizationError("provenance must be a CheckoutProvenance.")
+        if not isinstance(self.request_key, str) or not self.request_key:
+            raise AuthorizationError("Idempotency request_key must be a nonempty string.")
+        if type(self.now) is not int or not 0 <= self.now <= 2**63 - 1:
+            raise AuthorizationError(
+                "The trusted clock must provide a nonnegative Unix timestamp."
+            )
+        if type(self.execution_allowed) is not bool:
+            raise AuthorizationError("execution_allowed must be a bool.")
+        if type(self.will_mutate) is not bool:
+            raise AuthorizationError("will_mutate must be a bool.")
+        expected_phase = self.provenance.phase_at(self.now)
+        if self.timed_phase != expected_phase:
+            raise AuthorizationError(
+                "Preview timed_phase does not match provenance at the supplied clock."
+            )
+        if self.provenance.receipt is not None:
+            if self.provenance.request_key != self.request_key:
+                raise AuthorizationError(
+                    "Mandate already consumed; retry with the original key."
+                )
+            expected_decision: CheckoutExecutionDecision = "replay_receipt"
+            expected_allowed = True
+            expected_mutate = False
+        elif expected_phase == "revoked_unspent":
+            expected_decision = "blocked_revoked"
+            expected_allowed = False
+            expected_mutate = False
+        elif expected_phase == "expired_unspent":
+            expected_decision = "blocked_expired"
+            expected_allowed = False
+            expected_mutate = False
+        else:
+            expected_decision = "consume_mandate"
+            expected_allowed = True
+            expected_mutate = True
+        if self.decision != expected_decision:
+            raise AuthorizationError(
+                "Preview decision is inconsistent with provenance and clock."
+            )
+        if self.execution_allowed != expected_allowed:
+            raise AuthorizationError(
+                "Preview execution_allowed is inconsistent with decision."
+            )
+        if self.will_mutate != expected_mutate:
+            raise AuthorizationError(
+                "Preview will_mutate is inconsistent with decision."
+            )
+        if expected_decision == "replay_receipt":
+            if self.projected_receipt != self.provenance.receipt:
+                raise AuthorizationError(
+                    "Replay preview projected_receipt must match the recorded receipt."
+                )
+        elif expected_decision == "consume_mandate":
+            if not isinstance(self.projected_receipt, Receipt):
+                raise AuthorizationError(
+                    "Consume preview requires a projected Receipt."
+                )
+            if self.projected_receipt.order_id != f"sim_{self.provenance.fingerprint[:24]}":
+                raise AuthorizationError(
+                    "Projected receipt order_id differs from the bound execution fingerprint."
+                )
+            if self.projected_receipt.currency != self.provenance.mandate_status.currency:
+                raise AuthorizationError(
+                    "Projected receipt currency differs from the recorded mandate."
+                )
+            if self.projected_receipt.amount > self.provenance.mandate_status.max_amount:
+                raise AuthorizationError(
+                    "Projected receipt amount exceeds the recorded mandate ceiling."
+                )
+        else:
+            if self.projected_receipt is not None:
+                raise AuthorizationError(
+                    "Blocked preview cannot include a projected_receipt."
+                )
 
 
 def _parse_mandate_row(
@@ -499,6 +647,88 @@ class CheckoutStore:
             raise AuthorizationError("No trusted approval exists for this mandate.")
         return provenance
 
+    def find_execution_preview(
+        self,
+        mandate_id: str,
+        checkout: Checkout,
+        *,
+        request_key: str,
+        now: int,
+    ) -> CheckoutExecutionPreview | None:
+        """Preview execute() in one lock-free SELECT query without mutating SQLite."""
+        self._require_scope(mandate_id, checkout)
+        if not isinstance(request_key, str) or not request_key:
+            raise ValueError("Checkout requires a nonempty idempotency key.")
+        if type(now) is not int or not 0 <= now <= 2**63 - 1:
+            raise ValueError("The trusted clock must provide a nonnegative Unix timestamp.")
+        provenance = self.find_provenance(mandate_id, checkout, request_key=request_key)
+        if provenance is None:
+            return None
+        timed_phase = provenance.phase_at(now)
+        if provenance.receipt is not None:
+            return CheckoutExecutionPreview(
+                provenance=provenance,
+                request_key=request_key,
+                now=now,
+                timed_phase=timed_phase,
+                decision="replay_receipt",
+                execution_allowed=True,
+                will_mutate=False,
+                projected_receipt=provenance.receipt,
+            )
+        if timed_phase == "revoked_unspent":
+            return CheckoutExecutionPreview(
+                provenance=provenance,
+                request_key=request_key,
+                now=now,
+                timed_phase=timed_phase,
+                decision="blocked_revoked",
+                execution_allowed=False,
+                will_mutate=False,
+                projected_receipt=None,
+            )
+        if timed_phase == "expired_unspent":
+            return CheckoutExecutionPreview(
+                provenance=provenance,
+                request_key=request_key,
+                now=now,
+                timed_phase=timed_phase,
+                decision="blocked_expired",
+                execution_allowed=False,
+                will_mutate=False,
+                projected_receipt=None,
+            )
+        return CheckoutExecutionPreview(
+            provenance=provenance,
+            request_key=request_key,
+            now=now,
+            timed_phase=timed_phase,
+            decision="consume_mandate",
+            execution_allowed=True,
+            will_mutate=True,
+            projected_receipt=Receipt(
+                f"sim_{provenance.fingerprint[:24]}",
+                checkout.amount,
+                checkout.currency,
+            ),
+        )
+
+    def preview_execute(
+        self,
+        mandate_id: str,
+        checkout: Checkout,
+        *,
+        request_key: str,
+        now: int,
+    ) -> CheckoutExecutionPreview:
+        """Preview execute() in one lock-free SELECT query, failing closed when absent."""
+        preview = self.find_execution_preview(
+            mandate_id, checkout, request_key=request_key, now=now
+        )
+        if preview is None:
+            raise AuthorizationError("No trusted approval exists for this mandate.")
+        return preview
+
     def execute(
         self, mandate_id: str, checkout: Checkout, *, request_key: str, now: int
     ) -> Receipt:
@@ -536,6 +766,12 @@ class CheckoutStore:
                 "SELECT * FROM mandates WHERE id=?", (mandate_id,)
             ).fetchone()
             if mandate is None:
+                if db.execute(
+                    "SELECT 1 FROM receipts WHERE mandate_id=?", (mandate_id,)
+                ).fetchone() is not None:
+                    raise AuthorizationError(
+                        "Orphan receipt exists without a recorded mandate."
+                    )
                 raise AuthorizationError("No trusted approval exists for this mandate.")
             status = _parse_mandate_row(mandate, expected_mandate_id=mandate_id)
             if status.state == "revoked" or now >= status.expires_at:
