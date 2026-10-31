@@ -391,6 +391,11 @@ that returns `None` when unreserved while raising `AttemptConflict` on fingerpri
 Adds `PaymentApprovalStore.find_admission(operation)` for lock-free first-admission provenance inspection
 that returns `None` when unadmitted while raising `PaymentApprovalError` on fingerprint mismatch or invalid stored timestamps.
 
+**Stage 1730 / 2026-11-01:** [Optional read-only timed-signer admission lookup and non-timed path disambiguation (EN)](research/2026-11-01-timed-signer-admission-find.en.md)
+| [MerchantSignerStore.find_timed_admission 计时签名准入历史可选只读查询与非计时路径/绑定冲突消歧（中文）](research/2026-11-01-timed-signer-admission-find.md).
+Adds `MerchantSignerStore.find_timed_admission(operation)` for lock-free timed-signer provenance inspection
+that returns `None` when unadmitted or admitted via a non-timed path while raising `MerchantSignerError` on fingerprint mismatch or corrupted stored metadata.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
