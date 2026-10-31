@@ -120,6 +120,11 @@ class MerchantSignerStore:
             raise MerchantSignerError("A trusted MerchantSignerScope is required.")
 
     @staticmethod
+    def _require_operation(operation: PaymentOperation) -> None:
+        if not isinstance(operation, PaymentOperation):
+            raise MerchantSignerError("A trusted PaymentOperation is required.")
+
+    @staticmethod
     def _permission(db: sqlite3.Connection, scope: MerchantSignerScope) -> sqlite3.Row:
         row = db.execute(
             "SELECT revoked FROM merchant_signer_permissions"
@@ -168,17 +173,16 @@ class MerchantSignerStore:
             raise MerchantSignerError("Stored signer permission revocation state is invalid.")
         return MerchantSignerPermissionStatus(scope, "revoked" if revoked else "active")
 
-    def read_timed_admission(self, operation: PaymentOperation) -> TimedSignerAdmission:
-        """Read first timed-branch history without checking or granting current authority."""
-        if not isinstance(operation, PaymentOperation):
-            raise MerchantSignerError("A trusted PaymentOperation is required.")
+    def find_timed_admission(self, operation: PaymentOperation) -> TimedSignerAdmission | None:
+        """Read first timed-branch history or return None if absent, without new authority."""
+        self._require_operation(operation)
         with closing(self._connect()) as db:
             row = db.execute(
                 "SELECT * FROM merchant_timed_admissions WHERE tenant_id=? AND operation_id=?",
                 (operation.tenant_id, operation.operation_id),
             ).fetchone()
         if row is None:
-            raise MerchantSignerError("No first timed-admission record exists for this operation.")
+            return None
         if row["fingerprint"] != operation.fingerprint:
             raise MerchantSignerError("Timed-admission record differs from the bound operation.")
         scope = MerchantSignerScope(
@@ -192,6 +196,13 @@ class MerchantSignerStore:
                 or not 0 <= created <= admitted_at < expires <= MAX_SIGNATURE_TIMESTAMP):
             raise MerchantSignerError("Stored timed-admission times are invalid.")
         return TimedSignerAdmission(operation.fingerprint, scope, label, created, expires, admitted_at)
+
+    def read_timed_admission(self, operation: PaymentOperation) -> TimedSignerAdmission:
+        """Read first timed-branch history without checking or granting current authority."""
+        admission = self.find_timed_admission(operation)
+        if admission is None:
+            raise MerchantSignerError("No first timed-admission record exists for this operation.")
+        return admission
 
     def admit(
         self, scope: MerchantSignerScope, approvals: PaymentApprovalStore,
