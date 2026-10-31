@@ -396,6 +396,11 @@ that returns `None` when unadmitted while raising `PaymentApprovalError` on fing
 Adds `MerchantSignerStore.find_timed_admission(operation)` for lock-free timed-signer provenance inspection
 that returns `None` when unadmitted or admitted via a non-timed path while raising `MerchantSignerError` on fingerprint mismatch or corrupted stored metadata.
 
+**Stage 1731 / 2026-11-01:** [StripeEventInbox persisted receipt and readback claim integrity validation (EN)](research/2026-11-01-stripe-receipt-integrity.en.md)
+| [StripeEventInbox 持久化收据与回读认领完整性校验（中文）](research/2026-11-01-stripe-receipt-integrity.md).
+Hardens `InboxReceipt` and `InboxDecision` construction invariants, validates hydrated SQLite receipt columns before claiming or reading,
+and detects orphan or state-corrupted `stripe_readback_claims` rows across `read_claim()`, `active_claims()`, `finish_readback()`, and `accept_stripe_readback()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
