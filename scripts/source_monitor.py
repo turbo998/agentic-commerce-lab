@@ -650,11 +650,15 @@ def summarize_gate_health(
         ).encode("utf-8")
     ).hexdigest()
     blocking_state_id = f"{BLOCKING_FINGERPRINT_VERSION}:{blocking_fingerprint}"
-    blocking_state_transition = (
-        "baseline" if previous_blocking_state_id is None else (
-            "unchanged" if previous_blocking_state_id == blocking_state_id else "changed"
-        )
-    )
+    if previous_blocking_state_id is None:
+        blocking_state_transition = "baseline"
+        blocking_state_transition_reason = "no_prior_state"
+    elif previous_blocking_state_id == blocking_state_id:
+        blocking_state_transition = "unchanged"
+        blocking_state_transition_reason = "state_unchanged"
+    else:
+        blocking_state_transition = "changed"
+        blocking_state_transition_reason = "state_changed"
     blocking = bool(
         observation_errors
         or policy_errors
@@ -676,6 +680,7 @@ def summarize_gate_health(
         "blocking_state_previous_checked_at": previous_blocking_checked_at,
         "blocking_state_previous_report_date": previous_blocking_report_date,
         "blocking_state_transition": blocking_state_transition,
+        "blocking_state_transition_reason": blocking_state_transition_reason,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }

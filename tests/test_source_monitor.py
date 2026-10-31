@@ -360,6 +360,9 @@ class MonitorTests(unittest.TestCase):
             self.assertIsNone(report["gate_health"]["blocking_state_previous_checked_at"])
             self.assertIsNone(report["gate_health"]["blocking_state_previous_report_date"])
             self.assertEqual(report["gate_health"]["blocking_state_transition"], "baseline")
+            self.assertEqual(
+                report["gate_health"]["blocking_state_transition_reason"], "no_prior_state"
+            )
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -756,6 +759,7 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_state_previous_checked_at"])
         self.assertIsNone(gate_health["blocking_state_previous_report_date"])
         self.assertEqual(gate_health["blocking_state_transition"], "baseline")
+        self.assertEqual(gate_health["blocking_state_transition_reason"], "no_prior_state")
         self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
@@ -800,6 +804,7 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "changed")
+        self.assertEqual(second["blocking_state_transition_reason"], "state_changed")
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
         first = summarize_gate_health(
@@ -821,6 +826,7 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "unchanged")
+        self.assertEqual(second["blocking_state_transition_reason"], "state_unchanged")
 
     def test_blocking_fingerprint_version_is_stable(self) -> None:
         self.assertEqual(BLOCKING_FINGERPRINT_VERSION, "sha256-json-v1")

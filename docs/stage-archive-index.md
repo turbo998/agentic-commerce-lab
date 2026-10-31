@@ -236,6 +236,11 @@ the exact prior snapshot timestamp used by the monitor.
 Adds `gate_health.blocking_state_previous_report_date` so transition metadata includes
 the concrete prior daily report date (`YYYY-MM-DD`) in addition to prior `checked_at`.
 
+**Stage 1699 / 2026-10-31:** [Source monitor gate-health transition-reason telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-reason.en.md)
+| [source-monitor gate_health 迁移原因信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-reason.md).
+Adds `gate_health.blocking_state_transition_reason`
+(`no_prior_state`/`state_unchanged`/`state_changed`) for deterministic transition interpretation.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
