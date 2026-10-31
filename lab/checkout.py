@@ -339,6 +339,71 @@ class CheckoutExecutionPreview:
                 )
 
 
+@dataclass(frozen=True)
+class MandateRevocationPreview:
+    """Single-SELECT read-only dry-run preview of CheckoutStore.revoke()."""
+
+    mandate_id: str
+    existing_status: MandateStatus
+    projected_status: MandateStatus
+    would_revoke: bool
+    has_consumed_receipt: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.mandate_id, str) or not self.mandate_id:
+            raise ValueError("Revocation requires a nonempty mandate ID.")
+        if not isinstance(self.existing_status, MandateStatus) or not isinstance(
+            self.projected_status, MandateStatus
+        ):
+            raise AuthorizationError(
+                "existing_status and projected_status must be MandateStatus instances."
+            )
+        if self.existing_status.mandate_id != self.mandate_id:
+            raise AuthorizationError("Mandate status differs from the bound mandate.")
+        expected_projected = MandateStatus(
+            mandate_id=self.existing_status.mandate_id,
+            merchant=self.existing_status.merchant,
+            currency=self.existing_status.currency,
+            cart_digest=self.existing_status.cart_digest,
+            max_amount=self.existing_status.max_amount,
+            expires_at=self.existing_status.expires_at,
+            state="revoked",
+        )
+        if self.projected_status != expected_projected:
+            raise AuthorizationError(
+                "projected_status must match existing_status with state='revoked'."
+            )
+        if (
+            type(self.would_revoke) is not bool
+            or type(self.has_consumed_receipt) is not bool
+        ):
+            raise AuthorizationError(
+                "MandateRevocationPreview flags must be booleans."
+            )
+        if self.would_revoke != (self.existing_status.state == "active"):
+            raise AuthorizationError(
+                "would_revoke must be True iff existing_status is active."
+            )
+
+    @property
+    def existing_phase(self) -> CheckoutPhase:
+        if self.has_consumed_receipt:
+            return (
+                "consumed_revoked"
+                if self.existing_status.state == "revoked"
+                else "consumed_active"
+            )
+        return (
+            "revoked_unspent"
+            if self.existing_status.state == "revoked"
+            else "active_unspent"
+        )
+
+    @property
+    def projected_phase(self) -> CheckoutPhase:
+        return "consumed_revoked" if self.has_consumed_receipt else "revoked_unspent"
+
+
 def _parse_mandate_row(
     row: sqlite3.Row, *, expected_mandate_id: str, prefix: str = ""
 ) -> MandateStatus:
@@ -479,6 +544,57 @@ class CheckoutStore:
                 raise AuthorizationError(f"Cannot revoke unknown mandate {mandate_id!r}.")
             _parse_mandate_row(row, expected_mandate_id=mandate_id)
             db.execute("UPDATE mandates SET revoked=1 WHERE id=?", (mandate_id,))
+
+    def preview_revoke(
+        self, mandate_id: str, checkout: Checkout | None = None
+    ) -> MandateRevocationPreview:
+        """Preview revoke() in one lock-free SELECT without mutating mandates."""
+        if not isinstance(mandate_id, str) or not mandate_id:
+            raise ValueError("Revocation requires a nonempty mandate ID.")
+        if checkout is not None and not isinstance(checkout, Checkout):
+            raise ValueError("Checkout requires a validated Checkout.")
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    m.id AS m_id,
+                    m.merchant AS m_merchant,
+                    m.currency AS m_currency,
+                    m.cart_digest AS m_cart_digest,
+                    m.max_amount AS m_max_amount,
+                    m.expires_at AS m_expires_at,
+                    m.revoked AS m_revoked,
+                    r.request_key AS r_request_key
+                FROM (SELECT 1)
+                LEFT JOIN mandates m ON m.id = ?
+                LEFT JOIN receipts r ON r.mandate_id = ?
+                """,
+                (mandate_id, mandate_id),
+            ).fetchone()
+        if row is not None and row["m_id"] is None and row["r_request_key"] is not None:
+            raise AuthorizationError("Orphan receipt exists without a recorded mandate.")
+        if row is None or row["m_id"] is None:
+            raise AuthorizationError(f"Cannot revoke unknown mandate {mandate_id!r}.")
+        existing_status = _parse_mandate_row(
+            row, expected_mandate_id=mandate_id, prefix="m_"
+        )
+        if checkout is not None:
+            _verify_mandate_binding(existing_status, checkout)
+        projected_status = MandateStatus(
+            mandate_id=existing_status.mandate_id,
+            merchant=existing_status.merchant,
+            currency=existing_status.currency,
+            cart_digest=existing_status.cart_digest,
+            max_amount=existing_status.max_amount,
+            expires_at=existing_status.expires_at,
+            state="revoked",
+        )
+        return MandateRevocationPreview(
+            mandate_id=mandate_id,
+            existing_status=existing_status,
+            projected_status=projected_status,
+            would_revoke=existing_status.state == "active",
+            has_consumed_receipt=row["r_request_key"] is not None,
+        )
 
     def read_mandate(self, mandate_id: str, checkout: Checkout) -> MandateStatus | None:
         """Read local mandate record state without clock sampling or mutation."""

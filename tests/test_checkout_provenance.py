@@ -13,6 +13,7 @@ from lab.checkout import (
     CheckoutExecutionPreview,
     CheckoutProvenance,
     CheckoutStore,
+    MandateRevocationPreview,
     MandateStatus,
     Receipt,
     _execution_fingerprint,
@@ -448,6 +449,67 @@ class CheckoutProvenanceTests(unittest.TestCase):
                     replace(preview_consume, **bad_preview_kwargs)  # type: ignore[arg-type]
         with self.assertRaisesRegex(AuthorizationError, "cannot include a projected_receipt"):
             replace(preview_expired, projected_receipt=expected_receipt)
+
+        # 6. MandateRevocationPreview and CheckoutStore.preview_revoke()
+        self.store.approve("revoke-preview-mandate", self.quote, max_amount=1000, expires_at=200)
+        statements_rev: list[str] = []
+        orig_connect_rev = self.store._connect
+
+        def traced_connect_rev() -> sqlite3.Connection:
+            db = orig_connect_rev()
+            db.set_trace_callback(statements_rev.append)
+            return db
+
+        self.store._connect = traced_connect_rev  # type: ignore[method-assign]
+        try:
+            rev_preview = self.store.preview_revoke("revoke-preview-mandate", self.quote)
+        finally:
+            self.store._connect = orig_connect_rev  # type: ignore[method-assign]
+        sql_rev = [
+            stmt.strip().upper()
+            for stmt in statements_rev
+            if not stmt.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_rev), 1)
+        self.assertTrue(sql_rev[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_rev[0])
+
+        self.assertTrue(rev_preview.would_revoke)
+        self.assertFalse(rev_preview.has_consumed_receipt)
+        self.assertEqual(rev_preview.existing_phase, "active_unspent")
+        self.assertEqual(rev_preview.projected_phase, "revoked_unspent")
+        self.assertEqual(rev_preview.existing_status.state, "active")
+        self.assertEqual(rev_preview.projected_status.state, "revoked")
+
+        # Optional quote omitted works identically
+        rev_preview_no_quote = self.store.preview_revoke("revoke-preview-mandate")
+        self.assertEqual(rev_preview_no_quote, rev_preview)
+
+        # After real revoke(), preview_revoke() is idempotent with would_revoke=False
+        self.store.revoke("revoke-preview-mandate")
+        rev_preview_after = self.store.preview_revoke("revoke-preview-mandate", self.quote)
+        self.assertFalse(rev_preview_after.would_revoke)
+        self.assertEqual(rev_preview_after.existing_phase, "revoked_unspent")
+        self.assertEqual(rev_preview_after.projected_phase, "revoked_unspent")
+
+        # Unknown mandate_id raises AuthorizationError
+        with self.assertRaisesRegex(AuthorizationError, "Cannot revoke unknown mandate"):
+            self.store.preview_revoke("missing-mandate", self.quote)
+
+        # MandateRevocationPreview dataclass invariants fail closed
+        for bad_rev_kwargs in (
+            {"existing_status": "bad"},
+            {"projected_status": rev_preview.existing_status},
+            {"would_revoke": 1},
+            {"would_revoke": False},
+            {"has_consumed_receipt": 0},
+        ):
+            with self.subTest(bad_rev_kwargs=bad_rev_kwargs):
+                with self.assertRaises(AuthorizationError):
+                    replace(rev_preview, **bad_rev_kwargs)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            replace(rev_preview, mandate_id="")
         with self.assertRaisesRegex(AuthorizationError, "already consumed"):
             replace(preview_replay_active, request_key="other-key")
         with self.assertRaisesRegex(AuthorizationError, "must match the recorded receipt"):

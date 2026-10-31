@@ -490,6 +490,11 @@ and `ClaimTransitionPreview` (`StripeEventInbox.preview_handoff()` / `preview_fi
 Adds `StripeAssociationPreview`, `find_stripe_association_preview()`, `read_stripe_association_preview()`, `preview_associate_stripe_intent()`,
 and `StripeObservationPreview.previous_phase` / `next_phase`.
 
+**Stage 1750 / 2026-11-01:** [Checkout mandate, payment approval, and merchant signer revocation lock-free single-SELECT dry-run previews (EN)](research/2026-11-01-mandate-approval-and-signer-revocation-dry-run-preview.en.md)
+| [结账授权、支付审批与商户签名撤销的无锁单 SELECT 预检（MandateRevocationPreview / ApprovalRevocationPreview / SignerRevocationPreview）（中文）](research/2026-11-01-mandate-approval-and-signer-revocation-dry-run-preview.md).
+Adds `MandateRevocationPreview` (`CheckoutStore.preview_revoke()`), `ApprovalRevocationPreview` (`PaymentApprovalStore.preview_revoke()`),
+and `SignerRevocationPreview` (`MerchantSignerStore.preview_revoke()`).
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

@@ -20,12 +20,14 @@ from lab.merchant_signers import (
     MerchantSignerScope,
     MerchantSignerStore,
     SignerAdmissionPreview,
+    SignerRevocationPreview,
     TimedSignerAdmission,
 )
 from lab.payment_approvals import (
     ApprovalAdmission,
     ApprovalAdmissionPreview,
     ApprovalAdmissionProvenance,
+    ApprovalRevocationPreview,
     PaymentApprovalError,
     PaymentApprovalStatus,
     PaymentApprovalStore,
@@ -1037,6 +1039,130 @@ class ApprovalAdmissionProvenanceTests(unittest.TestCase):
                 content_encoding=None,
                 body=body,
             )
+
+    def test_approval_and_signer_preview_revoke_single_select_and_invariants(
+        self,
+    ) -> None:
+        signers = MerchantSignerStore(self.path)
+        scope = MerchantSignerScope(
+            "tenant-a", "synthetic-shop", TARGET_URI, "key-2026-11"
+        )
+        self.approvals.approve(self.operation, expires_at=APPROVAL_EXPIRY)
+        signers.allow(scope)
+
+        # 1. PaymentApprovalStore.preview_revoke() executes a single lock-free SELECT
+        app_stmts: list[str] = []
+        orig_app_connect = self.approvals._connect
+
+        def traced_app_connect() -> sqlite3.Connection:
+            db = orig_app_connect()
+            db.set_trace_callback(app_stmts.append)
+            return db
+
+        with patch.object(self.approvals, "_connect", side_effect=traced_app_connect):
+            app_rev = self.approvals.preview_revoke(self.operation)
+        sql_app = [
+            s.strip().upper()
+            for s in app_stmts
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_app), 1)
+        self.assertTrue(sql_app[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_app[0])
+
+        self.assertTrue(app_rev.would_revoke)
+        self.assertEqual(app_rev.existing_status.state, "active")
+        self.assertEqual(app_rev.projected_status.state, "revoked")
+        self.assertEqual(
+            self.approvals.read_approval(self.operation),
+            PaymentApprovalStatus(
+                self.operation.fingerprint, APPROVAL_EXPIRY, "active"
+            ),
+        )
+
+        # After revoke(), preview_revoke() is idempotent with would_revoke=False
+        self.approvals.revoke(self.operation)
+        app_rev_after = self.approvals.preview_revoke(self.operation)
+        self.assertFalse(app_rev_after.would_revoke)
+        self.assertEqual(app_rev_after.existing_status.state, "revoked")
+        self.assertEqual(app_rev_after.projected_status.state, "revoked")
+
+        # Unknown or mismatched operation raises PaymentApprovalError
+        unknown_op = replace(self.operation, approval_id="unknown-app")
+        with self.assertRaisesRegex(PaymentApprovalError, "No recorded approval"):
+            self.approvals.preview_revoke(unknown_op)
+        drift_op = replace(
+            self.operation,
+            checkout=replace(self.operation.checkout, amount=9999),
+        )
+        with self.assertRaisesRegex(PaymentApprovalError, "differs from the bound"):
+            self.approvals.preview_revoke(drift_op)
+
+        # ApprovalRevocationPreview dataclass invariants
+        for bad_app_kwargs in (
+            {"operation": "bad"},
+            {"existing_status": "bad"},
+            {"projected_status": app_rev.existing_status},
+            {"would_revoke": 1},
+            {"would_revoke": False},
+        ):
+            with self.subTest(bad_app_kwargs=bad_app_kwargs):
+                with self.assertRaises(PaymentApprovalError):
+                    replace(app_rev, **bad_app_kwargs)  # type: ignore[arg-type]
+
+        # 2. MerchantSignerStore.preview_revoke() executes a single lock-free SELECT
+        sig_stmts: list[str] = []
+        orig_sig_connect = signers._connect
+
+        def traced_sig_connect() -> sqlite3.Connection:
+            db = orig_sig_connect()
+            db.set_trace_callback(sig_stmts.append)
+            return db
+
+        with patch.object(signers, "_connect", side_effect=traced_sig_connect):
+            sig_rev = signers.preview_revoke(scope)
+        sql_sig = [
+            s.strip().upper()
+            for s in sig_stmts
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_sig), 1)
+        self.assertTrue(sql_sig[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_sig[0])
+
+        self.assertTrue(sig_rev.would_revoke)
+        self.assertEqual(sig_rev.existing_status.state, "active")
+        self.assertEqual(sig_rev.projected_status.state, "revoked")
+        self.assertEqual(
+            signers.read_permission(scope),
+            MerchantSignerPermissionStatus(scope, "active"),
+        )
+
+        # After revoke(), preview_revoke() is idempotent with would_revoke=False
+        signers.revoke(scope)
+        sig_rev_after = signers.preview_revoke(scope)
+        self.assertFalse(sig_rev_after.would_revoke)
+        self.assertEqual(sig_rev_after.existing_status.state, "revoked")
+        self.assertEqual(sig_rev_after.projected_status.state, "revoked")
+
+        # Unknown scope raises MerchantSignerError
+        unknown_scope = replace(scope, key_id="unknown-key")
+        with self.assertRaisesRegex(MerchantSignerError, "No recorded signer"):
+            signers.preview_revoke(unknown_scope)
+
+        # SignerRevocationPreview dataclass invariants
+        for bad_sig_kwargs in (
+            {"scope": "bad"},
+            {"existing_status": "bad"},
+            {"projected_status": sig_rev.existing_status},
+            {"would_revoke": 1},
+            {"would_revoke": False},
+        ):
+            with self.subTest(bad_sig_kwargs=bad_sig_kwargs):
+                with self.assertRaises(MerchantSignerError):
+                    replace(sig_rev, **bad_sig_kwargs)  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

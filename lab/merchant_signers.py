@@ -349,6 +349,41 @@ class SignerAdmissionPreview:
         return "direct_reservation"
 
 
+@dataclass(frozen=True)
+class SignerRevocationPreview:
+    """Single-SELECT read-only dry-run preview of MerchantSignerStore.revoke()."""
+
+    scope: MerchantSignerScope
+    existing_status: MerchantSignerPermissionStatus
+    projected_status: MerchantSignerPermissionStatus
+    would_revoke: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, MerchantSignerScope):
+            raise MerchantSignerError("A trusted MerchantSignerScope is required.")
+        if not isinstance(
+            self.existing_status, MerchantSignerPermissionStatus
+        ) or not isinstance(self.projected_status, MerchantSignerPermissionStatus):
+            raise MerchantSignerError(
+                "existing_status and projected_status must be MerchantSignerPermissionStatus instances."
+            )
+        if self.existing_status.scope != self.scope:
+            raise MerchantSignerError(
+                "existing_status scope differs from the bound MerchantSignerScope."
+            )
+        expected_projected = MerchantSignerPermissionStatus(self.scope, "revoked")
+        if self.projected_status != expected_projected:
+            raise MerchantSignerError(
+                "projected_status must match scope with state='revoked'."
+            )
+        if type(self.would_revoke) is not bool:
+            raise MerchantSignerError("would_revoke must be a boolean.")
+        if self.would_revoke != (self.existing_status.state == "active"):
+            raise MerchantSignerError(
+                "would_revoke must be True iff existing_status is active."
+            )
+
+
 class MerchantSignerStore:
     """Trusted-operator allow/revoke metadata; never an agent tool or key directory.
 
@@ -437,6 +472,24 @@ class MerchantSignerStore:
                 "UPDATE merchant_signer_permissions SET revoked=1"
                 " WHERE tenant_id=? AND merchant=? AND target_uri=? AND key_id=?", scope.key,
             )
+
+    def preview_revoke(
+        self, scope: MerchantSignerScope
+    ) -> SignerRevocationPreview:
+        """Preview revoke() in one lock-free SELECT without mutating merchant_signer_permissions."""
+        self._require_scope(scope)
+        with closing(self._connect()) as db:
+            row = self._permission(db, scope)
+        existing_status = MerchantSignerPermissionStatus(
+            scope, "revoked" if row["revoked"] else "active"
+        )
+        projected_status = MerchantSignerPermissionStatus(scope, "revoked")
+        return SignerRevocationPreview(
+            scope=scope,
+            existing_status=existing_status,
+            projected_status=projected_status,
+            would_revoke=existing_status.state == "active",
+        )
 
     def read_permission(self, scope: MerchantSignerScope) -> MerchantSignerPermissionStatus | None:
         """Read local signer permission state without verifying signatures or granting authority."""
