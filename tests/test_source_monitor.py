@@ -10,6 +10,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
+    BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
     BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
     BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
@@ -822,6 +823,10 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_delta_net_change"])
         self.assertIsNone(gate_health["blocking_reasons_delta_net_change_magnitude"])
         self.assertIsNone(gate_health["blocking_reasons_delta_has_change"])
+        self.assertEqual(
+            gate_health["blocking_reasons_delta_change_state_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
+        )
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state"])
         self.assertIsNone(gate_health["blocking_reasons_delta_direction"])
         self.assertEqual(
@@ -930,6 +935,10 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_delta_net_change"], 1)
         self.assertEqual(second["blocking_reasons_delta_net_change_magnitude"], 1)
         self.assertTrue(second["blocking_reasons_delta_has_change"])
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
+        )
         self.assertEqual(second["blocking_reasons_delta_change_state"], "changed")
         self.assertEqual(second["blocking_reasons_delta_direction"], "increase")
         self.assertEqual(
@@ -1003,6 +1012,10 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_reasons_delta_net_change"], 0)
         self.assertEqual(second["blocking_reasons_delta_net_change_magnitude"], 0)
         self.assertFalse(second["blocking_reasons_delta_has_change"])
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
+        )
         self.assertEqual(second["blocking_reasons_delta_change_state"], "unchanged")
         self.assertEqual(second["blocking_reasons_delta_direction"], "none")
         self.assertEqual(
