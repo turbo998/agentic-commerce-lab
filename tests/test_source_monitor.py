@@ -10,6 +10,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
+    BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_FINGERPRINT_VERSION,
     MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
     previous_blocking_state_id, previous_blocking_state_snapshot, previous_hashes, previous_source_facts,
@@ -371,6 +372,10 @@ class MonitorTests(unittest.TestCase):
             )
             self.assertIsNone(report["gate_health"]["blocking_transition_event_id"])
             self.assertIsNone(report["gate_health"]["blocking_transition_event_state"])
+            self.assertEqual(
+                report["gate_health"]["blocking_transition_event_payload_version"],
+                BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
+            )
             self.assertIsNone(report["gate_health"]["blocking_transition_event_payload"])
             self.assertIsNone(report["gate_health"]["blocking_transition_fingerprint"])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
@@ -773,6 +778,10 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(gate_health["blocking_transition_event"])
         self.assertIsNone(gate_health["blocking_transition_event_id"])
         self.assertIsNone(gate_health["blocking_transition_event_state"])
+        self.assertEqual(
+            gate_health["blocking_transition_event_payload_version"],
+            BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
+        )
         self.assertIsNone(gate_health["blocking_transition_event_payload"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
@@ -852,6 +861,10 @@ class MonitorTests(unittest.TestCase):
                 "reason": "state_changed",
             },
         )
+        self.assertEqual(
+            second["blocking_transition_event_payload_version"],
+            BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
+        )
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -878,6 +891,10 @@ class MonitorTests(unittest.TestCase):
         self.assertFalse(second["blocking_transition_event"])
         self.assertIsNone(second["blocking_transition_event_id"])
         self.assertIsNone(second["blocking_transition_event_state"])
+        self.assertEqual(
+            second["blocking_transition_event_payload_version"],
+            BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
+        )
         self.assertIsNone(second["blocking_transition_event_payload"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
@@ -913,6 +930,9 @@ class MonitorTests(unittest.TestCase):
 
     def test_blocking_transition_fingerprint_version_is_stable(self) -> None:
         self.assertEqual(BLOCKING_TRANSITION_FINGERPRINT_VERSION, "sha256-transition-v1")
+
+    def test_blocking_transition_event_payload_version_is_stable(self) -> None:
+        self.assertEqual(BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION, "event-payload-v1")
 
     def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:
         gate_health = summarize_gate_health(

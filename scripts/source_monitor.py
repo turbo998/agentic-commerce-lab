@@ -21,6 +21,7 @@ MAX_BYTES = 4 * 1024 * 1024
 REPORT_SCHEMA_VERSION = "source-monitor-report-v1"
 BLOCKING_FINGERPRINT_VERSION = "sha256-json-v1"
 BLOCKING_TRANSITION_FINGERPRINT_VERSION = "sha256-transition-v1"
+BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION = "event-payload-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -722,6 +723,7 @@ def summarize_gate_health(
         "blocking_transition_event": blocking_transition_event,
         "blocking_transition_event_id": blocking_transition_event_id,
         "blocking_transition_event_state": blocking_transition_event_state,
+        "blocking_transition_event_payload_version": BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
         "blocking_transition_event_payload": blocking_transition_event_payload,
         "blocking_transition_fingerprint_version": BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         "blocking_transition_fingerprint": blocking_transition_fingerprint,

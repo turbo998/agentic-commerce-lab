@@ -266,6 +266,11 @@ Adds `gate_health.blocking_transition_event_state` so changed transitions expose
 Adds `gate_health.blocking_transition_event_payload` to bundle `event_id/from_state_id/to_state_id/reason`
 for changed transitions in one object, with `null` on baseline/unchanged runs.
 
+**Stage 1705 / 2026-10-31:** [Source monitor gate-health transition event payload version telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-event-payload-version.en.md)
+| [source-monitor gate_health 迁移事件载荷版本信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-event-payload-version.md).
+Adds `gate_health.blocking_transition_event_payload_version` (`event-payload-v1`) so downstream
+consumers can bind payload-schema parsing to an explicit version contract.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
