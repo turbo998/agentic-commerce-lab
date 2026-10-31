@@ -401,6 +401,11 @@ that returns `None` when unadmitted or admitted via a non-timed path while raisi
 Hardens `InboxReceipt` and `InboxDecision` construction invariants, validates hydrated SQLite receipt columns before claiming or reading,
 and detects orphan or state-corrupted `stripe_readback_claims` rows across `read_claim()`, `active_claims()`, `finish_readback()`, and `accept_stripe_readback()`.
 
+**Stage 1732 / 2026-11-01:** [Single-snapshot cross-table admission provenance lookup (EN)](research/2026-11-01-operation-admission-provenance.en.md)
+| [跨表准入溯源单快照只读审计（中文）](research/2026-11-01-operation-admission-provenance.md).
+Adds `OperationAdmissionProvenance`, `MerchantSignerStore.find_provenance()`, and `MerchantSignerStore.read_provenance()`
+to inspect `payment_attempts`, `payment_admissions`, and `merchant_timed_admissions` in a single lock-free `SELECT` snapshot while failing closed on orphan rows, fingerprint drift, or clock split-brain.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

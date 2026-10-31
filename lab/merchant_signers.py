@@ -9,14 +9,22 @@ from pathlib import Path
 from typing import Literal
 
 from lab.checkout_admission import validate_signed_checkout
-from lab.payment_approvals import PaymentApprovalStore
-from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
+from lab.payment_approvals import ApprovalAdmission, PaymentApprovalStore
+from lab.payment_attempts import (
+    DispatchDecision,
+    PaymentAttempt,
+    PaymentAttemptJournal,
+    PaymentOperation,
+)
 from lab.request_binding import (
     MAX_SIGNATURE_TIMESTAMP, RequestSignatureSnapshot, TimedRequestSignatureSnapshot,
     require_signature_time,
 )
 
 SignerPermissionState = Literal["active", "revoked"]
+AdmissionProvenancePath = Literal[
+    "direct_reservation", "approval_admission", "timed_signer_admission",
+]
 
 
 class MerchantSignerError(ValueError):
@@ -69,6 +77,69 @@ class TimedSignerAdmission:
     created: int
     expires: int
     admitted_at: int
+
+
+@dataclass(frozen=True)
+class OperationAdmissionProvenance:
+    """Single-snapshot local execution provenance across attempt, approval, and timed-signer tables."""
+
+    fingerprint: str
+    attempt: PaymentAttempt
+    approval_admission: ApprovalAdmission | None
+    timed_signer_admission: TimedSignerAdmission | None
+
+    def __post_init__(self) -> None:
+        if (
+            not isinstance(self.fingerprint, str)
+            or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None
+        ):
+            raise MerchantSignerError("Provenance fingerprint must be a 64-char hex SHA-256 digest.")
+        if not isinstance(self.attempt, PaymentAttempt):
+            raise MerchantSignerError("Provenance requires a validated PaymentAttempt.")
+        if (
+            self.approval_admission is not None
+            and not isinstance(self.approval_admission, ApprovalAdmission)
+        ):
+            raise MerchantSignerError("Provenance approval_admission must be ApprovalAdmission or None.")
+        if (
+            self.timed_signer_admission is not None
+            and not isinstance(self.timed_signer_admission, TimedSignerAdmission)
+        ):
+            raise MerchantSignerError(
+                "Provenance timed_signer_admission must be TimedSignerAdmission or None."
+            )
+        if (
+            self.approval_admission is not None
+            and self.approval_admission.fingerprint != self.fingerprint
+        ):
+            raise MerchantSignerError(
+                "Approval admission fingerprint differs from provenance fingerprint."
+            )
+        if self.timed_signer_admission is not None:
+            if self.approval_admission is None:
+                raise MerchantSignerError(
+                    "Orphan timed-admission record exists without an approval admission."
+                )
+            if self.timed_signer_admission.fingerprint != self.fingerprint:
+                raise MerchantSignerError(
+                    "Timed-admission fingerprint differs from provenance fingerprint."
+                )
+            if self.timed_signer_admission.admitted_at != self.approval_admission.admitted_at:
+                raise MerchantSignerError(
+                    "Timed-admission clock sample differs from approval admission."
+                )
+            if not 0 <= self.timed_signer_admission.admitted_at < self.approval_admission.expires_at:
+                raise MerchantSignerError(
+                    "Timed-admission clock sample is outside approval admission expiry."
+                )
+
+    @property
+    def path(self) -> AdmissionProvenancePath:
+        if self.timed_signer_admission is not None:
+            return "timed_signer_admission"
+        if self.approval_admission is not None:
+            return "approval_admission"
+        return "direct_reservation"
 
 
 class MerchantSignerStore:
@@ -203,6 +274,145 @@ class MerchantSignerStore:
         if admission is None:
             raise MerchantSignerError("No first timed-admission record exists for this operation.")
         return admission
+
+    def find_provenance(
+        self,
+        approvals: PaymentApprovalStore,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+    ) -> OperationAdmissionProvenance | None:
+        """Read a single-query cross-table provenance snapshot without locks or new authority."""
+        if (
+            not isinstance(approvals, PaymentApprovalStore)
+            or not isinstance(journal, PaymentAttemptJournal)
+            or not isinstance(operation, PaymentOperation)
+        ):
+            raise MerchantSignerError("Trusted stores and PaymentOperation are required.")
+        if not (
+            self.path.resolve(strict=True)
+            == approvals.path.resolve(strict=True)
+            == journal.path.resolve(strict=True)
+        ):
+            raise MerchantSignerError(
+                "Cross-table provenance inspection requires the same resolved SQLite file."
+            )
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT"
+                " att.fingerprint AS att_fingerprint,"
+                " att.outcome AS att_outcome,"
+                " att.provider_reference AS att_provider_reference,"
+                " adm.fingerprint AS adm_fingerprint,"
+                " adm.admitted_at AS adm_admitted_at,"
+                " adm.expires_at AS adm_expires_at,"
+                " tmd.fingerprint AS tmd_fingerprint,"
+                " tmd.target_uri AS tmd_target_uri,"
+                " tmd.key_id AS tmd_key_id,"
+                " tmd.signature_label AS tmd_signature_label,"
+                " tmd.created AS tmd_created,"
+                " tmd.expires AS tmd_expires,"
+                " tmd.admitted_at AS tmd_admitted_at"
+                " FROM (SELECT ? AS tenant_id, ? AS operation_id) k"
+                " LEFT JOIN payment_attempts att USING (tenant_id, operation_id)"
+                " LEFT JOIN payment_admissions adm USING (tenant_id, operation_id)"
+                " LEFT JOIN merchant_timed_admissions tmd USING (tenant_id, operation_id)",
+                (operation.tenant_id, operation.operation_id),
+            ).fetchone()
+        assert row is not None
+        att_fp = row["att_fingerprint"]
+        adm_fp = row["adm_fingerprint"]
+        tmd_fp = row["tmd_fingerprint"]
+        if att_fp is None and adm_fp is None and tmd_fp is None:
+            return None
+        for fp, label in (
+            (att_fp, "Attempt"),
+            (adm_fp, "Admission"),
+            (tmd_fp, "Timed-admission"),
+        ):
+            if fp is not None and fp != operation.fingerprint:
+                raise MerchantSignerError(f"{label} record differs from the bound operation.")
+        if att_fp is None:
+            raise MerchantSignerError(
+                "Orphan admission record exists without a reserved payment attempt."
+            )
+        if tmd_fp is not None and adm_fp is None:
+            raise MerchantSignerError(
+                "Orphan timed-admission record exists without an approval admission."
+            )
+
+        outcome = row["att_outcome"]
+        if not isinstance(outcome, str) or outcome not in ("unknown", "succeeded", "failed"):
+            raise MerchantSignerError("Stored attempt outcome is invalid; reconciliation required.")
+        provider_reference = row["att_provider_reference"]
+        if provider_reference is None:
+            if outcome != "unknown":
+                raise MerchantSignerError(
+                    "Stored attempt provider reference is invalid; reconciliation required."
+                )
+        elif not isinstance(provider_reference, str) or not provider_reference.strip():
+            raise MerchantSignerError(
+                "Stored attempt provider reference is invalid; reconciliation required."
+            )
+        attempt = PaymentAttempt(outcome, provider_reference)
+
+        approval_admission: ApprovalAdmission | None = None
+        if adm_fp is not None:
+            adm_admitted_at, adm_expires_at = row["adm_admitted_at"], row["adm_expires_at"]
+            if (
+                type(adm_admitted_at) is not int
+                or type(adm_expires_at) is not int
+                or not 0 <= adm_admitted_at < adm_expires_at <= 2**63 - 1
+            ):
+                raise MerchantSignerError("Stored approval admission times are invalid.")
+            approval_admission = ApprovalAdmission(
+                operation.fingerprint, adm_admitted_at, adm_expires_at
+            )
+
+        timed_signer_admission: TimedSignerAdmission | None = None
+        if tmd_fp is not None:
+            scope = MerchantSignerScope(
+                operation.tenant_id,
+                operation.checkout.merchant,
+                row["tmd_target_uri"],
+                row["tmd_key_id"],
+            )
+            sig_label = row["tmd_signature_label"]
+            if not isinstance(sig_label, str) or re.fullmatch(r"[a-z*][a-z0-9_.*-]*", sig_label) is None:
+                raise MerchantSignerError("Stored timed-admission signature label is invalid.")
+            created, expires, tmd_admitted_at = (
+                row["tmd_created"],
+                row["tmd_expires"],
+                row["tmd_admitted_at"],
+            )
+            if (
+                any(type(value) is not int for value in (created, expires, tmd_admitted_at))
+                or not 0 <= created <= tmd_admitted_at < expires <= MAX_SIGNATURE_TIMESTAMP
+            ):
+                raise MerchantSignerError("Stored timed-admission times are invalid.")
+            timed_signer_admission = TimedSignerAdmission(
+                operation.fingerprint, scope, sig_label, created, expires, tmd_admitted_at,
+            )
+
+        return OperationAdmissionProvenance(
+            operation.fingerprint,
+            attempt,
+            approval_admission,
+            timed_signer_admission,
+        )
+
+    def read_provenance(
+        self,
+        approvals: PaymentApprovalStore,
+        journal: PaymentAttemptJournal,
+        operation: PaymentOperation,
+    ) -> OperationAdmissionProvenance:
+        """Read required cross-table provenance or raise if the operation was never reserved."""
+        provenance = self.find_provenance(approvals, journal, operation)
+        if provenance is None:
+            raise MerchantSignerError(
+                "No reservation or admission record exists for this operation."
+            )
+        return provenance
 
     def admit(
         self, scope: MerchantSignerScope, approvals: PaymentApprovalStore,
