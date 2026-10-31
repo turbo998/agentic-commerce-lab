@@ -69,6 +69,8 @@ def reconcile_stripe_intent(
     Provider namespaces stripe:test/stripe:live are local policy conventions.
     Only direct-account, exact-full-amount payments are supported.
     """
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise StripeObservationError("A trusted journal and PaymentOperation are required.")
     _require_context(operation, retrieved_account, intent)
     previous = journal.read(operation)
     observation = validate_stripe_intent(
@@ -83,9 +85,11 @@ def reconcile_stripe_intent(
 def _require_context(
     operation: PaymentOperation, retrieved_account: str, intent: Mapping[str, object],
 ) -> None:
+    if not isinstance(operation, PaymentOperation):
+        raise StripeObservationError("A trusted PaymentOperation is required.")
     if operation.provider not in ("stripe:test", "stripe:live"):
         raise StripeObservationError("An explicit Stripe test/live provider binding is required.")
-    if retrieved_account != operation.provider_account:
+    if not isinstance(retrieved_account, str) or retrieved_account != operation.provider_account:
         raise StripeObservationError("Retrieval account differs from the bound provider account.")
     if not isinstance(intent, Mapping):
         raise StripeObservationError("PaymentIntent readback must be a mapping.")
@@ -97,6 +101,8 @@ def validate_stripe_intent(
 ) -> Observation:
     """Map a trusted readback against persisted state, without writing or retrieving."""
     _require_context(operation, retrieved_account, intent)
+    if not isinstance(previous, PaymentAttempt):
+        raise StripeObservationError("A persisted PaymentAttempt is required.")
     if previous.provider_reference is None or not previous.provider_reference.startswith("pi_"):
         raise StripeObservationError("A trusted PaymentIntent association must be persisted first.")
     if intent.get("object") != "payment_intent":

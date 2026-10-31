@@ -421,6 +421,11 @@ and adds fail-closed `__post_init__` invariants to `PaymentAttempt` and `Dispatc
 Adds `ApprovalAdmissionProvenance`, `PaymentApprovalStore.find_provenance(journal, operation)`, and `PaymentApprovalStore.read_provenance(journal, operation)` for three-table single-snapshot auditing in two-store deployments,
 and hardens `PaymentApprovalStore._bound_approval()`, `MerchantSignerStore._permission()`, `accept_stripe_readback()`, and `VerifiedDelivery.__post_init__()`.
 
+**Stage 1736 / 2026-11-01:** [Single-snapshot Stripe readback provenance inspector and cross-table reference parity (EN)](research/2026-11-01-stripe-readback-provenance.en.md)
+| [Stripe 回读对账跨表溯源单快照只读审计与共享数据库引用一致性校验（中文）](research/2026-11-01-stripe-readback-provenance.md).
+Adds `StripeReadbackProvenance`, `find_stripe_readback_provenance()`, and `read_stripe_readback_provenance()` to inspect `payment_attempts`, `stripe_event_inbox`, and `stripe_readback_claims` in one lock-free `SELECT` snapshot,
+and adds pre-connection type guards to `StripeEventInbox.handoff()` / `finish_readback()` and `stripe_observation`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
