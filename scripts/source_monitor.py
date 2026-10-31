@@ -25,6 +25,7 @@ BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION = "event-payload-v1"
 BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION = "sha256-reasons-delta-v1"
 BLOCKING_REASONS_DELTA_PAYLOAD_VERSION = "reasons-delta-payload-v1"
 BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION = "reasons-delta-change-state-v1"
+BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION = "sha256-change-state-payload-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -862,6 +863,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_change_state": blocking_reasons_delta_change_state,
         "blocking_reasons_delta_change_state_id": blocking_reasons_delta_change_state_id,
         "blocking_reasons_delta_change_state_payload": blocking_reasons_delta_change_state_payload,
+        "blocking_reasons_delta_change_state_payload_fingerprint_version": BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
         "blocking_reasons_delta_change_state_payload_fingerprint": blocking_reasons_delta_change_state_payload_fingerprint,
         "blocking_reasons_delta_direction": blocking_reasons_delta_direction,
         "blocking_reasons_delta_payload_version": BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,

@@ -11,6 +11,7 @@ from urllib.error import URLError
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
     BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION,
+    BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
     BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
     BLOCKING_REASONS_DELTA_PAYLOAD_VERSION,
     BLOCKING_TRANSITION_EVENT_PAYLOAD_VERSION,
@@ -830,6 +831,10 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state"])
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state_id"])
         self.assertIsNone(gate_health["blocking_reasons_delta_change_state_payload"])
+        self.assertEqual(
+            gate_health["blocking_reasons_delta_change_state_payload_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
+        )
         self.assertIsNone(
             gate_health["blocking_reasons_delta_change_state_payload_fingerprint"]
         )
@@ -958,6 +963,10 @@ class MonitorTests(unittest.TestCase):
             },
         )
         self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
+        )
+        self.assertEqual(
             second["blocking_reasons_delta_change_state_payload_fingerprint"],
             hashlib.sha256(
                 json.dumps(
@@ -1055,6 +1064,10 @@ class MonitorTests(unittest.TestCase):
                 "state": "unchanged",
                 "id": f"{BLOCKING_REASONS_DELTA_CHANGE_STATE_VERSION}:unchanged",
             },
+        )
+        self.assertEqual(
+            second["blocking_reasons_delta_change_state_payload_fingerprint_version"],
+            BLOCKING_REASONS_DELTA_CHANGE_STATE_PAYLOAD_FINGERPRINT_VERSION,
         )
         self.assertEqual(
             second["blocking_reasons_delta_change_state_payload_fingerprint"],
