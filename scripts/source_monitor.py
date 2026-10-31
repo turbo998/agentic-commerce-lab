@@ -20,6 +20,7 @@ BEIJING = timezone(timedelta(hours=8))
 MAX_BYTES = 4 * 1024 * 1024
 REPORT_SCHEMA_VERSION = "source-monitor-report-v1"
 BLOCKING_FINGERPRINT_VERSION = "sha256-json-v1"
+BLOCKING_TRANSITION_FINGERPRINT_VERSION = "sha256-transition-v1"
 ALLOWED_HOSTS = frozenset({
     "stripe.com", "docs.stripe.com", "developer.visa.com", "corporate.visa.com",
     "raw.githubusercontent.com", "ucp.dev", "ap2-protocol.org", "modelcontextprotocol.io",
@@ -659,6 +660,19 @@ def summarize_gate_health(
     else:
         blocking_state_transition = "changed"
         blocking_state_transition_reason = "state_changed"
+    blocking_transition_fingerprint = (
+        None if previous_blocking_state_id is None else hashlib.sha256(
+            json.dumps(
+                {
+                    "from_state_id": previous_blocking_state_id,
+                    "to_state_id": blocking_state_id,
+                    "transition_reason": blocking_state_transition_reason,
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -681,6 +695,8 @@ def summarize_gate_health(
         "blocking_state_previous_report_date": previous_blocking_report_date,
         "blocking_state_transition": blocking_state_transition,
         "blocking_state_transition_reason": blocking_state_transition_reason,
+        "blocking_transition_fingerprint_version": BLOCKING_TRANSITION_FINGERPRINT_VERSION,
+        "blocking_transition_fingerprint": blocking_transition_fingerprint,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }

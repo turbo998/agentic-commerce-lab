@@ -241,6 +241,11 @@ the concrete prior daily report date (`YYYY-MM-DD`) in addition to prior `checke
 Adds `gate_health.blocking_state_transition_reason`
 (`no_prior_state`/`state_unchanged`/`state_changed`) for deterministic transition interpretation.
 
+**Stage 1700 / 2026-10-31:** [Source monitor gate-health transition fingerprint telemetry (EN)](research/2026-10-31-source-monitor-gate-health-transition-fingerprint.en.md)
+| [source-monitor gate_health 迁移指纹信号（中文）](research/2026-10-31-source-monitor-gate-health-transition-fingerprint.md).
+Adds `gate_health.blocking_transition_fingerprint` with version
+`gate_health.blocking_transition_fingerprint_version` (`sha256-transition-v1`) for edge-level transition deduplication.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
