@@ -336,6 +336,11 @@ Adds `gate_health.blocking_reasons_delta_has_change` as boolean
 Adds `gate_health.blocking_reasons_delta_change_state` enum
 (`changed`/`unchanged`) telemetry for direct state-based policy routing.
 
+**Stage 1719 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta change-state version contract (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-version.en.md)
+| [source-monitor gate_health 阻塞原因增量变化状态版本契约（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta-change-state-version.md).
+Adds `gate_health.blocking_reasons_delta_change_state_version` as fixed
+`reasons-delta-change-state-v1` contract metadata for version-aware consumers.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
