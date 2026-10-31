@@ -674,6 +674,13 @@ def summarize_gate_health(
             ).encode("utf-8")
         ).hexdigest()
     )
+    blocking_transition_event_id = (
+        None if not blocking_transition_event or blocking_transition_fingerprint is None
+        else (
+            f"{BLOCKING_TRANSITION_FINGERPRINT_VERSION}:"
+            f"{blocking_transition_fingerprint}"
+        )
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -697,6 +704,7 @@ def summarize_gate_health(
         "blocking_state_transition": blocking_state_transition,
         "blocking_state_transition_reason": blocking_state_transition_reason,
         "blocking_transition_event": blocking_transition_event,
+        "blocking_transition_event_id": blocking_transition_event_id,
         "blocking_transition_fingerprint_version": BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         "blocking_transition_fingerprint": blocking_transition_fingerprint,
         "blocking_reasons": blocking_reasons,
