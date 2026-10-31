@@ -232,6 +232,43 @@ class ApprovalAdmissionPreview:
         return self.decision.attempt.phase
 
 
+@dataclass(frozen=True)
+class ApprovalRevocationPreview:
+    """Single-SELECT read-only dry-run preview of PaymentApprovalStore.revoke()."""
+
+    operation: PaymentOperation
+    existing_status: PaymentApprovalStatus
+    projected_status: PaymentApprovalStatus
+    would_revoke: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise PaymentApprovalError("A trusted PaymentOperation is required.")
+        if not isinstance(self.existing_status, PaymentApprovalStatus) or not isinstance(
+            self.projected_status, PaymentApprovalStatus
+        ):
+            raise PaymentApprovalError(
+                "existing_status and projected_status must be PaymentApprovalStatus instances."
+            )
+        if self.existing_status.fingerprint != self.operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        expected_projected = PaymentApprovalStatus(
+            self.existing_status.fingerprint,
+            self.existing_status.expires_at,
+            "revoked",
+        )
+        if self.projected_status != expected_projected:
+            raise PaymentApprovalError(
+                "projected_status must match existing_status with state='revoked'."
+            )
+        if type(self.would_revoke) is not bool:
+            raise PaymentApprovalError("would_revoke must be a boolean.")
+        if self.would_revoke != (self.existing_status.state == "active"):
+            raise PaymentApprovalError(
+                "would_revoke must be True iff existing_status is active."
+            )
+
+
 class PaymentApprovalStore:
     """Opt-in trusted-operator metadata, not an agent tool or consent service.
 
@@ -324,6 +361,30 @@ class PaymentApprovalStore:
                 "UPDATE payment_approvals SET revoked=1 WHERE tenant_id=? AND approval_id=?",
                 (operation.tenant_id, operation.approval_id),
             )
+
+    def preview_revoke(
+        self, operation: PaymentOperation
+    ) -> ApprovalRevocationPreview:
+        """Preview revoke() in one lock-free SELECT without mutating payment_approvals."""
+        self._require_operation(operation)
+        with closing(self._connect()) as db:
+            row = self._bound_approval(db, operation)
+        existing_status = PaymentApprovalStatus(
+            row["fingerprint"],
+            row["expires_at"],
+            "revoked" if row["revoked"] else "active",
+        )
+        projected_status = PaymentApprovalStatus(
+            row["fingerprint"],
+            row["expires_at"],
+            "revoked",
+        )
+        return ApprovalRevocationPreview(
+            operation=operation,
+            existing_status=existing_status,
+            projected_status=projected_status,
+            would_revoke=existing_status.state == "active",
+        )
 
     def read_approval(self, operation: PaymentOperation) -> PaymentApprovalStatus | None:
         """Read local approval record state without clock sampling or new authority."""
