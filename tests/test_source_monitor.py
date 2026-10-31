@@ -364,6 +364,7 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(
                 report["gate_health"]["blocking_state_transition_reason"], "no_prior_state"
             )
+            self.assertFalse(report["gate_health"]["blocking_transition_event"])
             self.assertEqual(
                 report["gate_health"]["blocking_transition_fingerprint_version"],
                 BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -766,6 +767,7 @@ class MonitorTests(unittest.TestCase):
         self.assertIsNone(gate_health["blocking_state_previous_report_date"])
         self.assertEqual(gate_health["blocking_state_transition"], "baseline")
         self.assertEqual(gate_health["blocking_state_transition_reason"], "no_prior_state")
+        self.assertFalse(gate_health["blocking_transition_event"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -816,6 +818,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "changed")
         self.assertEqual(second["blocking_state_transition_reason"], "state_changed")
+        self.assertTrue(second["blocking_transition_event"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -843,6 +846,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "unchanged")
         self.assertEqual(second["blocking_state_transition_reason"], "state_unchanged")
+        self.assertFalse(second["blocking_transition_event"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,

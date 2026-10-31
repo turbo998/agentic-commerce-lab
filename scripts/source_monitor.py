@@ -660,6 +660,7 @@ def summarize_gate_health(
     else:
         blocking_state_transition = "changed"
         blocking_state_transition_reason = "state_changed"
+    blocking_transition_event = blocking_state_transition == "changed"
     blocking_transition_fingerprint = (
         None if previous_blocking_state_id is None else hashlib.sha256(
             json.dumps(
@@ -695,6 +696,7 @@ def summarize_gate_health(
         "blocking_state_previous_report_date": previous_blocking_report_date,
         "blocking_state_transition": blocking_state_transition,
         "blocking_state_transition_reason": blocking_state_transition_reason,
+        "blocking_transition_event": blocking_transition_event,
         "blocking_transition_fingerprint_version": BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         "blocking_transition_fingerprint": blocking_transition_fingerprint,
         "blocking_reasons": blocking_reasons,
