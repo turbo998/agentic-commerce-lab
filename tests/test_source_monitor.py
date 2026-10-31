@@ -131,7 +131,11 @@ class MonitorTests(unittest.TestCase):
             )
             self.assertEqual(
                 previous_blocking_state_snapshot(root, before_date="2026-10-12"),
-                {"state_id": "sha256-json-v1:bbb", "checked_at": "2026-10-11T01:00:00+08:00"},
+                {
+                    "state_id": "sha256-json-v1:bbb",
+                    "checked_at": "2026-10-11T01:00:00+08:00",
+                    "report_date": "2026-10-11",
+                },
             )
 
     def test_checked_registry_loads(self) -> None:
@@ -354,6 +358,7 @@ class MonitorTests(unittest.TestCase):
             )
             self.assertIsNone(report["gate_health"]["blocking_state_previous"])
             self.assertIsNone(report["gate_health"]["blocking_state_previous_checked_at"])
+            self.assertIsNone(report["gate_health"]["blocking_state_previous_report_date"])
             self.assertEqual(report["gate_health"]["blocking_state_transition"], "baseline")
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
@@ -749,6 +754,7 @@ class MonitorTests(unittest.TestCase):
         )
         self.assertIsNone(gate_health["blocking_state_previous"])
         self.assertIsNone(gate_health["blocking_state_previous_checked_at"])
+        self.assertIsNone(gate_health["blocking_state_previous_report_date"])
         self.assertEqual(gate_health["blocking_state_transition"], "baseline")
         self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
@@ -784,6 +790,7 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": [], "unavailable": []},
             previous_blocking_state_id=first["blocking_state_id"],
             previous_blocking_checked_at="2026-10-30T23:00:00+08:00",
+            previous_blocking_report_date="2026-10-30",
         )
         self.assertNotEqual(first["blocking_fingerprint"], second["blocking_fingerprint"])
         self.assertNotEqual(first["blocking_state_id"], second["blocking_state_id"])
@@ -791,6 +798,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(
             second["blocking_state_previous_checked_at"], "2026-10-30T23:00:00+08:00"
         )
+        self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "changed")
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -805,11 +813,13 @@ class MonitorTests(unittest.TestCase):
             {"consistent": ["a"], "mismatch": [], "unavailable": []},
             previous_blocking_state_id=first["blocking_state_id"],
             previous_blocking_checked_at="2026-10-30T23:00:00+08:00",
+            previous_blocking_report_date="2026-10-30",
         )
         self.assertEqual(second["blocking_state_previous"], first["blocking_state_id"])
         self.assertEqual(
             second["blocking_state_previous_checked_at"], "2026-10-30T23:00:00+08:00"
         )
+        self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "unchanged")
 
     def test_blocking_fingerprint_version_is_stable(self) -> None:
