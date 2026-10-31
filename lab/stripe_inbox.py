@@ -404,6 +404,8 @@ class StripeEventInbox:
 
     def handoff(self, claim: ReadbackClaim, worker_id: str) -> ReadbackClaim:
         """Apply a trusted controller's recovery decision; never infer expiry."""
+        if not isinstance(claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
         _require_worker_id(worker_id)
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
@@ -423,6 +425,8 @@ class StripeEventInbox:
 
     def finish_readback(self, claim: ReadbackClaim) -> None:
         """Record trusted local hint handling, not authenticated provider/payment facts."""
+        if not isinstance(claim, ReadbackClaim):
+            raise StripeInboxError("A persisted ReadbackClaim is required.")
         with closing(self._connect()) as db, db:
             db.execute("BEGIN IMMEDIATE")
             self._finish_in_transaction(db, claim)
