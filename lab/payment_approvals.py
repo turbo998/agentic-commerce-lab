@@ -5,14 +5,26 @@ from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 from lab.checkout_admission import validate_signed_checkout
 from lab.payment_attempts import DispatchDecision, PaymentAttemptJournal, PaymentOperation
 from lab.request_binding import RequestSignatureSnapshot
 
+ApprovalState = Literal["active", "revoked"]
+
 
 class PaymentApprovalError(ValueError):
     """An approval, configured store or clock cannot admit the bound operation."""
+
+
+@dataclass(frozen=True)
+class PaymentApprovalStatus:
+    """Persisted local approval record state, not live validity or dispatch authority."""
+
+    fingerprint: str
+    expires_at: int
+    state: ApprovalState
 
 
 @dataclass(frozen=True)
@@ -111,6 +123,30 @@ class PaymentApprovalStore:
                 "UPDATE payment_approvals SET revoked=1 WHERE tenant_id=? AND approval_id=?",
                 (operation.tenant_id, operation.approval_id),
             )
+
+    def read_approval(self, operation: PaymentOperation) -> PaymentApprovalStatus | None:
+        """Read local approval record state without clock sampling or new authority."""
+        self._require_operation(operation)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT fingerprint,expires_at,revoked FROM payment_approvals"
+                " WHERE tenant_id=? AND approval_id=?",
+                (operation.tenant_id, operation.approval_id),
+            ).fetchone()
+        if row is None:
+            return None
+        if row["fingerprint"] != operation.fingerprint:
+            raise PaymentApprovalError("Approval differs from the bound operation.")
+        expires_at, revoked = row["expires_at"], row["revoked"]
+        if type(expires_at) is not int or not 0 < expires_at <= 2**63 - 1:
+            raise PaymentApprovalError("Stored approval expiry is invalid.")
+        if type(revoked) is not int or revoked not in (0, 1):
+            raise PaymentApprovalError("Stored approval revocation state is invalid.")
+        return PaymentApprovalStatus(
+            row["fingerprint"],
+            expires_at,
+            "revoked" if revoked else "active",
+        )
 
     def read_admission(self, operation: PaymentOperation) -> ApprovalAdmission:
         """Read first-gate history even after revocation, without new authority."""

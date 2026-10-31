@@ -371,6 +371,11 @@ as versioned `<fingerprint_version>:<fingerprint>` key.
 Adds `gate_health.blocking_reasons_delta_change_state_payload_fingerprint_payload`
 to aggregate `{version,fingerprint,id}` into one direct-consumption object.
 
+**Stage 1726 / 2026-10-31:** [Scoped read-only payment approval status lookup and authority boundary (EN)](research/2026-10-31-payment-approval-read.en.md)
+| [PaymentApprovalStore.read_approval 作用域审批状态只读查询与权限边界（中文）](research/2026-10-31-payment-approval-read.md).
+Adds `PaymentApprovalStore.read_approval(operation)` and `PaymentApprovalStatus`
+for lock-free local approval metadata inspection without clock sampling or dispatch authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
