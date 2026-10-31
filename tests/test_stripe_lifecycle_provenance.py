@@ -592,7 +592,10 @@ class StripeLifecycleProvenanceTests(unittest.TestCase):
             try:
                 with closing(sqlite3.connect(self.path)) as db, db:
                     db.execute("PRAGMA ignore_check_constraints = ON")
-                    db.execute(sql, params)
+                    if ";" in sql and not params:
+                        db.executescript(sql)
+                    else:
+                        db.execute(sql, params)
                 find_stripe_lifecycle_provenance(
                     self.inbox,
                     self.journal,
@@ -695,6 +698,25 @@ class StripeLifecycleProvenanceTests(unittest.TestCase):
                 (),
                 StripeInboxError,
                 "Stored receipt event type is invalid",
+            ),
+            (
+                "UPDATE payment_attempts SET outcome = 'succeeded', provider_reference = NULL WHERE operation_id = 'op-1'",
+                (),
+                StripeReadbackError,
+                "Stored attempt outcome and provider reference are inconsistent",
+            ),
+            (
+                "UPDATE payment_attempts SET provider_reference = 'ch_not_pi' WHERE operation_id = 'op-1'",
+                (),
+                StripeReadbackError,
+                "Stored attempt provider reference must be a Stripe PaymentIntent ID",
+            ),
+            (
+                "UPDATE payment_attempts SET provider_reference = NULL WHERE operation_id = 'op-1'; "
+                "UPDATE stripe_readback_claims SET state = 'handled' WHERE event_id = 'evt_synthetic'",
+                (),
+                StripeReadbackError,
+                "Handled readback claim requires a PaymentIntent-associated attempt",
             ),
         ):
             with self.subTest(sql=sql):
@@ -841,10 +863,57 @@ class StripeLifecycleProvenanceTests(unittest.TestCase):
                 {"attempt": PaymentAttempt("unknown", "pi_other")},
                 "Receipt differs from the trusted PaymentIntent association",
             ),
+            (
+                {"attempt": PaymentAttempt("succeeded", None)},
+                "Stored attempt outcome and provider reference are inconsistent",
+            ),
+            (
+                {"attempt": PaymentAttempt("failed", None)},
+                "Stored attempt outcome and provider reference are inconsistent",
+            ),
+            (
+                {"attempt": PaymentAttempt("unknown", "ch_123"), "receipt": None, "claim_status": None},
+                "Stored attempt provider reference must be a Stripe PaymentIntent ID",
+            ),
+            (
+                {
+                    "attempt": PaymentAttempt("unknown", None),
+                    "claim_status": ReadbackClaimStatus(claim, "handled"),
+                },
+                "Handled readback claim requires a PaymentIntent-associated attempt",
+            ),
+            (
+                {
+                    "attempt": None,
+                    "approval_admission": None,
+                    "signer_permission": None,
+                    "timed_signer_admission": None,
+                    "claim_status": ReadbackClaimStatus(claim, "handled"),
+                },
+                "Handled readback claim requires a PaymentIntent-associated attempt",
+            ),
         ):
             with self.subTest(overrides=overrides):
                 with self.assertRaisesRegex(StripeReadbackError, pattern):
                     StripeLifecycleProvenance(**{**base_kwargs, **overrides})  # type: ignore[arg-type]
+
+        valid_lifecycle = StripeLifecycleProvenance(**base_kwargs)  # type: ignore[arg-type]
+        self.assertEqual(valid_lifecycle.event_phase, "active")
+        self.assertEqual(valid_lifecycle.readback_phase, "claimed_awaiting_acceptance")
+        staged_only = StripeLifecycleProvenance(
+            scope=self.scope,
+            event_id="evt_synthetic",
+            fingerprint=self.operation.fingerprint,
+            attempt=None,
+            approval_status=approval_status,
+            approval_admission=None,
+            signer_permission=None,
+            timed_signer_admission=None,
+            receipt=None,
+            claim_status=None,
+        )
+        self.assertIsNone(staged_only.event_phase)
+        self.assertIsNone(staged_only.readback_phase)
 
 
 if __name__ == "__main__":

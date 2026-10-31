@@ -4,6 +4,7 @@ from collections.abc import Mapping
 from contextlib import closing
 from dataclasses import dataclass
 import re
+from typing import Literal
 
 from lab.merchant_signers import (
     AdmissionProvenancePath,
@@ -22,6 +23,7 @@ from lab.payment_approvals import (
 )
 from lab.payment_attempts import AttemptConflict, PaymentAttempt, PaymentAttemptJournal, PaymentOperation
 from lab.stripe_inbox import (
+    InboxEventPhase,
     InboxReceipt,
     ReadbackClaim,
     ReadbackClaimStatus,
@@ -29,6 +31,19 @@ from lab.stripe_inbox import (
     StripeInboxScope,
 )
 from lab.stripe_observation import validate_stripe_intent
+
+_PI_RE = re.compile(r"pi_[A-Za-z0-9_]+")
+
+StripeReadbackPhase = Literal[
+    "webhook_before_reservation",
+    "reserved_unassociated",
+    "awaiting_intent_association",
+    "associated_awaiting_webhook",
+    "ready_to_claim",
+    "claimed_awaiting_acceptance",
+    "handled_pending_outcome",
+    "terminal_reconciled",
+]
 
 
 class StripeReadbackError(ValueError):
@@ -53,8 +68,20 @@ class StripeReadbackProvenance:
             raise StripeReadbackError("A snapshot Event ID is required.")
         if not isinstance(self.fingerprint, str) or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None:
             raise StripeReadbackError("Provenance operation fingerprint is invalid.")
-        if self.attempt is not None and not isinstance(self.attempt, PaymentAttempt):
-            raise StripeReadbackError("Provenance attempt must be a PaymentAttempt or None.")
+        if self.attempt is not None:
+            if not isinstance(self.attempt, PaymentAttempt):
+                raise StripeReadbackError("Provenance attempt must be a PaymentAttempt or None.")
+            if self.attempt.provider_reference is None and self.attempt.outcome != "unknown":
+                raise StripeReadbackError(
+                    "Stored attempt outcome and provider reference are inconsistent."
+                )
+            if (
+                self.attempt.provider_reference is not None
+                and _PI_RE.fullmatch(self.attempt.provider_reference) is None
+            ):
+                raise StripeReadbackError(
+                    "Stored attempt provider reference must be a Stripe PaymentIntent ID."
+                )
         if self.receipt is not None and not isinstance(self.receipt, InboxReceipt):
             raise StripeReadbackError("Provenance receipt must be an InboxReceipt or None.")
         if self.claim_status is not None and not isinstance(self.claim_status, ReadbackClaimStatus):
@@ -83,6 +110,40 @@ class StripeReadbackProvenance:
             raise StripeReadbackError(
                 "Receipt differs from the trusted PaymentIntent association."
             )
+        if self.claim_status is not None and self.claim_status.state == "handled" and (
+            self.attempt is None or self.attempt.provider_reference is None
+        ):
+            raise StripeReadbackError(
+                "Handled readback claim requires a PaymentIntent-associated attempt."
+            )
+
+    @property
+    def event_phase(self) -> InboxEventPhase | None:
+        if self.receipt is None:
+            return None
+        if self.claim_status is None:
+            return "unclaimed"
+        return self.claim_status.state
+
+    @property
+    def readback_phase(self) -> StripeReadbackPhase:
+        if self.attempt is None:
+            return "webhook_before_reservation"
+        if self.attempt.outcome in ("succeeded", "failed"):
+            return "terminal_reconciled"
+        if self.attempt.provider_reference is None:
+            return (
+                "reserved_unassociated"
+                if self.receipt is None
+                else "awaiting_intent_association"
+            )
+        if self.receipt is None:
+            return "associated_awaiting_webhook"
+        if self.claim_status is None:
+            return "ready_to_claim"
+        if self.claim_status.state == "active":
+            return "claimed_awaiting_acceptance"
+        return "handled_pending_outcome"
 
 
 def find_stripe_readback_provenance(
@@ -238,8 +299,20 @@ class StripeLifecycleProvenance:
             raise StripeReadbackError("A snapshot Event ID is required.")
         if not isinstance(self.fingerprint, str) or re.fullmatch(r"[0-9a-f]{64}", self.fingerprint) is None:
             raise StripeReadbackError("Provenance operation fingerprint is invalid.")
-        if self.attempt is not None and not isinstance(self.attempt, PaymentAttempt):
-            raise StripeReadbackError("Provenance attempt must be a PaymentAttempt or None.")
+        if self.attempt is not None:
+            if not isinstance(self.attempt, PaymentAttempt):
+                raise StripeReadbackError("Provenance attempt must be a PaymentAttempt or None.")
+            if self.attempt.provider_reference is None and self.attempt.outcome != "unknown":
+                raise StripeReadbackError(
+                    "Stored attempt outcome and provider reference are inconsistent."
+                )
+            if (
+                self.attempt.provider_reference is not None
+                and _PI_RE.fullmatch(self.attempt.provider_reference) is None
+            ):
+                raise StripeReadbackError(
+                    "Stored attempt provider reference must be a Stripe PaymentIntent ID."
+                )
         if self.approval_status is not None and not isinstance(
             self.approval_status, PaymentApprovalStatus
         ):
@@ -356,6 +429,12 @@ class StripeLifecycleProvenance:
             raise StripeReadbackError(
                 "Receipt differs from the trusted PaymentIntent association."
             )
+        if self.claim_status is not None and self.claim_status.state == "handled" and (
+            self.attempt is None or self.attempt.provider_reference is None
+        ):
+            raise StripeReadbackError(
+                "Handled readback claim requires a PaymentIntent-associated attempt."
+            )
 
     @property
     def admission_path(self) -> AdmissionProvenancePath | None:
@@ -366,6 +445,16 @@ class StripeLifecycleProvenance:
         if self.approval_admission is not None:
             return "approval_admission"
         return "direct_reservation"
+
+    @property
+    def event_phase(self) -> InboxEventPhase | None:
+        readback = self.readback_provenance
+        return None if readback is None else readback.event_phase
+
+    @property
+    def readback_phase(self) -> StripeReadbackPhase | None:
+        readback = self.readback_provenance
+        return None if readback is None else readback.readback_phase
 
     @property
     def admission_provenance(self) -> OperationAdmissionProvenance | None:
