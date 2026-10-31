@@ -271,6 +271,11 @@ for changed transitions in one object, with `null` on baseline/unchanged runs.
 Adds `gate_health.blocking_transition_event_payload_version` (`event-payload-v1`) so downstream
 consumers can bind payload-schema parsing to an explicit version contract.
 
+**Stage 1706 / 2026-10-31:** [Source monitor gate-health blocking-reasons delta telemetry (EN)](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta.en.md)
+| [source-monitor gate_health 阻塞原因增量信号（中文）](research/2026-10-31-source-monitor-gate-health-blocking-reasons-delta.md).
+Adds `gate_health.blocking_reasons_previous/added/removed` so downstream pipelines can consume
+reason-level changes directly without reconstructing diffs across snapshots.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
