@@ -369,6 +369,7 @@ class MonitorTests(unittest.TestCase):
                 report["gate_health"]["blocking_transition_fingerprint_version"],
                 BLOCKING_TRANSITION_FINGERPRINT_VERSION,
             )
+            self.assertIsNone(report["gate_health"]["blocking_transition_event_id"])
             self.assertIsNone(report["gate_health"]["blocking_transition_fingerprint"])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
@@ -768,6 +769,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(gate_health["blocking_state_transition"], "baseline")
         self.assertEqual(gate_health["blocking_state_transition_reason"], "no_prior_state")
         self.assertFalse(gate_health["blocking_transition_event"])
+        self.assertIsNone(gate_health["blocking_transition_event_id"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -823,6 +825,13 @@ class MonitorTests(unittest.TestCase):
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
         )
+        self.assertEqual(
+            second["blocking_transition_event_id"],
+            (
+                f"{BLOCKING_TRANSITION_FINGERPRINT_VERSION}:"
+                f"{second['blocking_transition_fingerprint']}"
+            ),
+        )
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -847,6 +856,7 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_transition"], "unchanged")
         self.assertEqual(second["blocking_state_transition_reason"], "state_unchanged")
         self.assertFalse(second["blocking_transition_event"])
+        self.assertIsNone(second["blocking_transition_event_id"])
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
