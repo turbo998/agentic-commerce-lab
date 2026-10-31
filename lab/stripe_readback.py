@@ -23,6 +23,15 @@ def accept_stripe_readback(
     retrieval and freshness outside this transaction; a claim is not authority.
     Already-handled acceptance rejects, including a retry after a lost response.
     """
+    if (
+        not isinstance(inbox, StripeEventInbox)
+        or not isinstance(journal, PaymentAttemptJournal)
+        or not isinstance(claim, ReadbackClaim)
+        or not isinstance(operation, PaymentOperation)
+    ):
+        raise StripeReadbackError(
+            "Trusted inbox, journal, readback claim and payment operation are required."
+        )
     if inbox.path.resolve(strict=True) != journal.path.resolve(strict=True):
         raise StripeReadbackError("Atomic acceptance requires the same resolved SQLite file.")
     with closing(inbox._connect()) as db, db:

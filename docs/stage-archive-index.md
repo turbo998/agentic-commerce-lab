@@ -416,6 +416,11 @@ and adds fail-closed `__post_init__` invariants to `PaymentApprovalStatus`, `App
 Extends `MerchantSignerStore.find_provenance()` to join `payment_approvals` and `merchant_signer_permissions` in the same single-`SELECT` snapshot (verifying parent policy existence, revocation-flag integrity, and cross-table approval expiry parity `adm.expires_at == app.expires_at`),
 and adds fail-closed `__post_init__` invariants to `PaymentAttempt` and `DispatchDecision`.
 
+**Stage 1735 / 2026-11-01:** [Two-store approval-admission provenance inspector and policy-row write-path integrity (EN)](research/2026-11-01-approval-admission-provenance.en.md)
+| [双存储审批准入溯源单快照只读审计与策略表写入路径闭锁校验（中文）](research/2026-11-01-approval-admission-provenance.md).
+Adds `ApprovalAdmissionProvenance`, `PaymentApprovalStore.find_provenance(journal, operation)`, and `PaymentApprovalStore.read_provenance(journal, operation)` for three-table single-snapshot auditing in two-store deployments,
+and hardens `PaymentApprovalStore._bound_approval()`, `MerchantSignerStore._permission()`, `accept_stripe_readback()`, and `VerifiedDelivery.__post_init__()`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
