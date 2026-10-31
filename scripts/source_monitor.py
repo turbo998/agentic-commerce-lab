@@ -733,6 +733,16 @@ def summarize_gate_health(
             ).encode("utf-8")
         ).hexdigest()
     )
+    blocking_reasons_delta_payload = (
+        None if previous_blocking_reasons is None else {
+            "event": blocking_reasons_delta_event,
+            "previous": previous_blocking_reasons,
+            "current": blocking_reasons,
+            "added": blocking_reasons_added,
+            "removed": blocking_reasons_removed,
+            "fingerprint": blocking_reasons_delta_fingerprint,
+        }
+    )
     blocking = bool(
         observation_errors
         or policy_errors
@@ -768,6 +778,7 @@ def summarize_gate_health(
         "blocking_reasons_delta_event": blocking_reasons_delta_event,
         "blocking_reasons_delta_fingerprint_version": BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         "blocking_reasons_delta_fingerprint": blocking_reasons_delta_fingerprint,
+        "blocking_reasons_delta_payload": blocking_reasons_delta_payload,
         "blocking_reasons": blocking_reasons,
         "blocking": blocking,
     }

@@ -816,6 +816,7 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         )
         self.assertIsNone(gate_health["blocking_reasons_delta_fingerprint"])
+        self.assertIsNone(gate_health["blocking_reasons_delta_payload"])
         self.assertEqual(
             gate_health["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
@@ -908,6 +909,17 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         )
         self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
+        self.assertEqual(
+            second["blocking_reasons_delta_payload"],
+            {
+                "event": True,
+                "previous": [],
+                "current": ["observation_errors"],
+                "added": ["observation_errors"],
+                "removed": [],
+                "fingerprint": second["blocking_reasons_delta_fingerprint"],
+            },
+        )
         self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
@@ -949,6 +961,17 @@ class MonitorTests(unittest.TestCase):
             BLOCKING_REASONS_DELTA_FINGERPRINT_VERSION,
         )
         self.assertEqual(len(second["blocking_reasons_delta_fingerprint"]), 64)
+        self.assertEqual(
+            second["blocking_reasons_delta_payload"],
+            {
+                "event": False,
+                "previous": [],
+                "current": [],
+                "added": [],
+                "removed": [],
+                "fingerprint": second["blocking_reasons_delta_fingerprint"],
+            },
+        )
         self.assertEqual(
             second["blocking_transition_fingerprint_version"],
             BLOCKING_TRANSITION_FINGERPRINT_VERSION,
