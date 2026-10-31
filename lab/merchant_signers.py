@@ -6,6 +6,7 @@ from collections.abc import Callable
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 from lab.checkout_admission import validate_signed_checkout
 from lab.payment_approvals import PaymentApprovalStore
@@ -14,6 +15,8 @@ from lab.request_binding import (
     MAX_SIGNATURE_TIMESTAMP, RequestSignatureSnapshot, TimedRequestSignatureSnapshot,
     require_signature_time,
 )
+
+SignerPermissionState = Literal["active", "revoked"]
 
 
 class MerchantSignerError(ValueError):
@@ -40,6 +43,20 @@ class MerchantSignerScope:
     @property
     def key(self) -> tuple[str, str, str, str]:
         return self.tenant_id, self.merchant, self.target_uri, self.key_id
+
+
+@dataclass(frozen=True)
+class MerchantSignerPermissionStatus:
+    """Persisted local signer permission state, not signature proof or admission authority."""
+
+    scope: MerchantSignerScope
+    state: SignerPermissionState
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.scope, MerchantSignerScope):
+            raise MerchantSignerError("A trusted MerchantSignerScope is required.")
+        if not isinstance(self.state, str) or self.state not in ("active", "revoked"):
+            raise MerchantSignerError("Signer permission state must be active or revoked.")
 
 
 @dataclass(frozen=True)
@@ -134,6 +151,22 @@ class MerchantSignerStore:
                 "UPDATE merchant_signer_permissions SET revoked=1"
                 " WHERE tenant_id=? AND merchant=? AND target_uri=? AND key_id=?", scope.key,
             )
+
+    def read_permission(self, scope: MerchantSignerScope) -> MerchantSignerPermissionStatus | None:
+        """Read local signer permission state without verifying signatures or granting authority."""
+        self._require_scope(scope)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                "SELECT revoked FROM merchant_signer_permissions"
+                " WHERE tenant_id=? AND merchant=? AND target_uri=? AND key_id=?",
+                scope.key,
+            ).fetchone()
+        if row is None:
+            return None
+        revoked = row["revoked"]
+        if type(revoked) is not int or revoked not in (0, 1):
+            raise MerchantSignerError("Stored signer permission revocation state is invalid.")
+        return MerchantSignerPermissionStatus(scope, "revoked" if revoked else "active")
 
     def read_timed_admission(self, operation: PaymentOperation) -> TimedSignerAdmission:
         """Read first timed-branch history without checking or granting current authority."""
