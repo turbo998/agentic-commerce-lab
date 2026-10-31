@@ -16,11 +16,15 @@ from lab.agent_identity_attestation_guard import compute_rfc9530_content_digest
 from lab.checkout import Checkout
 from lab.merchant_signers import (
     MerchantSignerError,
+    MerchantSignerPermissionStatus,
     MerchantSignerScope,
     MerchantSignerStore,
+    SignerAdmissionPreview,
+    TimedSignerAdmission,
 )
 from lab.payment_approvals import (
     ApprovalAdmission,
+    ApprovalAdmissionPreview,
     ApprovalAdmissionProvenance,
     PaymentApprovalError,
     PaymentApprovalStatus,
@@ -28,12 +32,14 @@ from lab.payment_approvals import (
 )
 from lab.payment_attempts import (
     AttemptConflict,
+    DispatchDecision,
     PaymentAttempt,
     PaymentAttemptJournal,
     PaymentOperation,
 )
 from lab.request_binding import (
     MUTATION_COMPONENTS,
+    RequestBindingError,
     RequestSignatureSnapshot,
     TimedRequestSignatureSnapshot,
 )
@@ -649,6 +655,388 @@ class ApprovalAdmissionProvenanceTests(unittest.TestCase):
                 StripeDeliveryError
             ):
                 VerifiedDelivery(NOW, "a" * 64, bad_flag)  # type: ignore[arg-type]
+
+    def test_approval_status_state_at_and_provenance_properties(self) -> None:
+        active_status = PaymentApprovalStatus(
+            self.operation.fingerprint, APPROVAL_EXPIRY, "active"
+        )
+        revoked_status = PaymentApprovalStatus(
+            self.operation.fingerprint, APPROVAL_EXPIRY, "revoked"
+        )
+        self.assertEqual(active_status.state_at(0), "active")
+        self.assertEqual(active_status.state_at(APPROVAL_EXPIRY - 1), "active")
+        self.assertEqual(active_status.state_at(APPROVAL_EXPIRY), "expired")
+        self.assertEqual(active_status.state_at(APPROVAL_EXPIRY + 10), "expired")
+        self.assertEqual(revoked_status.state_at(0), "revoked")
+        self.assertEqual(revoked_status.state_at(APPROVAL_EXPIRY + 10), "revoked")
+
+        for bad_now in (-1, True, False, 1.5, "1700000000", None, 2**63):
+            with self.subTest(now=bad_now), self.assertRaisesRegex(
+                PaymentApprovalError, "nonnegative signed-64-bit integer"
+            ):
+                active_status.state_at(bad_now)  # type: ignore[arg-type]
+
+        # Direct reservation provenance properties
+        self.journal.reserve(self.operation)
+        direct_prov = self.approvals.read_provenance(self.journal, self.operation)
+        self.assertEqual(direct_prov.path, "direct_reservation")
+        self.assertEqual(direct_prov.attempt_phase, "reserved_unassociated")
+
+        signers = MerchantSignerStore(self.path)
+        op_prov = signers.read_provenance(self.approvals, self.journal, self.operation)
+        self.assertEqual(op_prov.path, "direct_reservation")
+        self.assertEqual(op_prov.attempt_phase, "reserved_unassociated")
+
+        self.journal.reconcile(
+            self.operation, observation="pending", provider_reference="pi_pending"
+        )
+        self.assertEqual(
+            self.approvals.read_provenance(self.journal, self.operation).attempt_phase,
+            "pending_associated",
+        )
+        self.assertEqual(
+            signers.read_provenance(
+                self.approvals, self.journal, self.operation
+            ).attempt_phase,
+            "pending_associated",
+        )
+
+        self.journal.reconcile(
+            self.operation, observation="succeeded", provider_reference="pi_pending"
+        )
+        self.assertEqual(
+            self.approvals.read_provenance(self.journal, self.operation).attempt_phase,
+            "succeeded_terminal",
+        )
+        self.assertEqual(
+            signers.read_provenance(
+                self.approvals, self.journal, self.operation
+            ).attempt_phase,
+            "succeeded_terminal",
+        )
+
+    def test_payment_approval_preview_admit_single_select_and_non_backfill(
+        self,
+    ) -> None:
+        self.approvals.approve(self.operation, expires_at=APPROVAL_EXPIRY)
+        body, digest = self._body_and_digest(self.operation)
+        bare = RequestSignatureSnapshot(
+            "sig1",
+            "key-2026-11",
+            MUTATION_COMPONENTS,
+            "POST",
+            TARGET_URI,
+            "application/json",
+            digest,
+        )
+
+        statements: list[str] = []
+        orig_connect = self.approvals._connect
+
+        def traced_connect() -> sqlite3.Connection:
+            db = orig_connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(self.approvals, "_connect", side_effect=traced_connect):
+            preview = self.approvals.preview_admit(
+                self.journal,
+                self.operation,
+                bare,
+                now=NOW,
+                expected_target_uri=TARGET_URI,
+                method="POST",
+                target_uri=TARGET_URI,
+                content_type="application/json",
+                content_digest=digest,
+                content_encoding=None,
+                body=body,
+            )
+        sql_Only = [
+            s.strip().upper()
+            for s in statements
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_Only), 1)
+        self.assertTrue(sql_Only[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_Only[0])
+
+        self.assertTrue(preview.dispatch_allowed)
+        self.assertTrue(preview.would_record_admission)
+        self.assertEqual(preview.attempt_phase, "reserved_unassociated")
+        self.assertIsNone(preview.existing_attempt)
+        self.assertIsNone(preview.existing_admission)
+        self.assertEqual(
+            preview.projected_admission,
+            ApprovalAdmission(self.operation.fingerprint, NOW, APPROVAL_EXPIRY),
+        )
+        self.assertIsNone(self.journal.read_attempt(self.operation))
+
+        # After real admit(), preview_admit() reports retry denial and preserves existing_admission
+        decision = self.approvals.admit(
+            self.journal,
+            self.operation,
+            bare,
+            clock=lambda: NOW,
+            expected_target_uri=TARGET_URI,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=digest,
+            content_encoding=None,
+            body=body,
+        )
+        self.assertEqual(decision, preview.decision)
+        retry_preview = self.approvals.preview_admit(
+            self.journal,
+            self.operation,
+            bare,
+            now=NOW + 5,
+            expected_target_uri=TARGET_URI,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=digest,
+            content_encoding=None,
+            body=body,
+        )
+        self.assertFalse(retry_preview.dispatch_allowed)
+        self.assertFalse(retry_preview.would_record_admission)
+        self.assertEqual(
+            retry_preview.existing_admission,
+            ApprovalAdmission(self.operation.fingerprint, NOW, APPROVAL_EXPIRY),
+        )
+        self.assertEqual(
+            retry_preview.projected_admission,
+            ApprovalAdmission(self.operation.fingerprint, NOW, APPROVAL_EXPIRY),
+        )
+
+        # Legacy direct reservation does not backfill admission in preview_admit()
+        legacy_op = replace(
+            self.operation,
+            operation_id="op-legacy",
+            approval_id="approval-legacy",
+            idempotency_key="idem-legacy",
+        )
+        self.approvals.approve(legacy_op, expires_at=APPROVAL_EXPIRY)
+        self.journal.reserve(legacy_op)
+        legacy_body, legacy_digest = self._body_and_digest(legacy_op)
+        legacy_sig = replace(bare, content_digest=legacy_digest)
+        legacy_preview = self.approvals.preview_admit(
+            self.journal,
+            legacy_op,
+            legacy_sig,
+            now=NOW,
+            expected_target_uri=TARGET_URI,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=legacy_digest,
+            content_encoding=None,
+            body=legacy_body,
+        )
+        self.assertFalse(legacy_preview.dispatch_allowed)
+        self.assertFalse(legacy_preview.would_record_admission)
+        self.assertIsNone(legacy_preview.existing_admission)
+        self.assertIsNone(legacy_preview.projected_admission)
+
+        # Expiration, revocation, and conflicts in preview_admit()
+        with self.assertRaisesRegex(PaymentApprovalError, "Approval is expired"):
+            self.approvals.preview_admit(
+                self.journal,
+                self.operation,
+                bare,
+                now=APPROVAL_EXPIRY,
+                expected_target_uri=TARGET_URI,
+                method="POST",
+                target_uri=TARGET_URI,
+                content_type="application/json",
+                content_digest=digest,
+                content_encoding=None,
+                body=body,
+            )
+        self.approvals.revoke(self.operation)
+        with self.assertRaisesRegex(PaymentApprovalError, "Approval is revoked"):
+            self.approvals.preview_admit(
+                self.journal,
+                self.operation,
+                bare,
+                now=NOW,
+                expected_target_uri=TARGET_URI,
+                method="POST",
+                target_uri=TARGET_URI,
+                content_type="application/json",
+                content_digest=digest,
+                content_encoding=None,
+                body=body,
+            )
+
+    def test_merchant_signer_preview_admit_single_select_and_paths(self) -> None:
+        signers = MerchantSignerStore(self.path)
+        scope = MerchantSignerScope(
+            "tenant-a", "synthetic-shop", TARGET_URI, "key-2026-11"
+        )
+        self.approvals.approve(self.operation, expires_at=APPROVAL_EXPIRY)
+        signers.allow(scope)
+        body, digest = self._body_and_digest(self.operation)
+        bare = RequestSignatureSnapshot(
+            "sig1",
+            scope.key_id,
+            MUTATION_COMPONENTS,
+            "POST",
+            TARGET_URI,
+            "application/json",
+            digest,
+        )
+        timed = TimedRequestSignatureSnapshot(bare, SIG_CREATED, SIG_EXPIRES)
+
+        # Bare signature preview
+        bare_preview = signers.preview_admit(
+            scope,
+            self.approvals,
+            self.journal,
+            self.operation,
+            bare,
+            now=NOW,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=digest,
+            content_encoding=None,
+            body=body,
+        )
+        self.assertTrue(bare_preview.dispatch_allowed)
+        self.assertTrue(bare_preview.would_record_approval_admission)
+        self.assertFalse(bare_preview.would_record_timed_admission)
+        self.assertIsNone(bare_preview.projected_timed_admission)
+        self.assertEqual(bare_preview.projected_path, "approval_admission")
+
+        # Timed signature preview in single SELECT
+        statements: list[str] = []
+        orig_connect = signers._connect
+
+        def traced_connect() -> sqlite3.Connection:
+            db = orig_connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        with patch.object(signers, "_connect", side_effect=traced_connect):
+            timed_preview = signers.preview_admit(
+                scope,
+                self.approvals,
+                self.journal,
+                self.operation,
+                timed,
+                now=NOW,
+                method="POST",
+                target_uri=TARGET_URI,
+                content_type="application/json",
+                content_digest=digest,
+                content_encoding=None,
+                body=body,
+            )
+        sql_only = [
+            s.strip().upper()
+            for s in statements
+            if not s.strip().upper().startswith("PRAGMA")
+        ]
+        self.assertEqual(len(sql_only), 1)
+        self.assertTrue(sql_only[0].startswith("SELECT"))
+        for kw in ("BEGIN", "INSERT", "UPDATE", "DELETE"):
+            self.assertNotIn(kw, sql_only[0])
+
+        self.assertTrue(timed_preview.dispatch_allowed)
+        self.assertTrue(timed_preview.would_record_approval_admission)
+        self.assertTrue(timed_preview.would_record_timed_admission)
+        self.assertEqual(timed_preview.projected_path, "timed_signer_admission")
+        self.assertEqual(
+            timed_preview.projected_timed_admission,
+            TimedSignerAdmission(
+                self.operation.fingerprint,
+                scope,
+                "sig1",
+                SIG_CREATED,
+                SIG_EXPIRES,
+                NOW,
+            ),
+        )
+        self.assertIsNone(self.journal.read_attempt(self.operation))
+
+        # Timed signature window rejection in preview_admit()
+        for bad_now in (SIG_CREATED - 1, SIG_EXPIRES):
+            with self.subTest(bad_now=bad_now), self.assertRaises(RequestBindingError):
+                signers.preview_admit(
+                    scope,
+                    self.approvals,
+                    self.journal,
+                    self.operation,
+                    timed,
+                    now=bad_now,
+                    method="POST",
+                    target_uri=TARGET_URI,
+                    content_type="application/json",
+                    content_digest=digest,
+                    content_encoding=None,
+                    body=body,
+                )
+
+        # Real timed admit() matches preview, and retry preview never backfills or mutates
+        decision = signers.admit(
+            scope,
+            self.approvals,
+            self.journal,
+            self.operation,
+            timed,
+            clock=lambda: NOW,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=digest,
+            content_encoding=None,
+            body=body,
+        )
+        self.assertEqual(decision, timed_preview.decision)
+        retry_preview = signers.preview_admit(
+            scope,
+            self.approvals,
+            self.journal,
+            self.operation,
+            timed,
+            now=NOW + 5,
+            method="POST",
+            target_uri=TARGET_URI,
+            content_type="application/json",
+            content_digest=digest,
+            content_encoding=None,
+            body=body,
+        )
+        self.assertFalse(retry_preview.dispatch_allowed)
+        self.assertFalse(retry_preview.would_record_approval_admission)
+        self.assertFalse(retry_preview.would_record_timed_admission)
+        self.assertEqual(retry_preview.projected_path, "timed_signer_admission")
+        self.assertEqual(
+            retry_preview.projected_timed_admission,
+            timed_preview.projected_timed_admission,
+        )
+
+        # Revoked signer fails closed in preview_admit()
+        signers.revoke(scope)
+        with self.assertRaisesRegex(MerchantSignerError, "revoked"):
+            signers.preview_admit(
+                scope,
+                self.approvals,
+                self.journal,
+                self.operation,
+                timed,
+                now=NOW,
+                method="POST",
+                target_uri=TARGET_URI,
+                content_type="application/json",
+                content_digest=digest,
+                content_encoding=None,
+                body=body,
+            )
 
 
 if __name__ == "__main__":
