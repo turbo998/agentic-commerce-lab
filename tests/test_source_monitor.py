@@ -10,6 +10,7 @@ from urllib.error import URLError
 
 from scripts.source_monitor import (
     BLOCKING_FINGERPRINT_VERSION,
+    BLOCKING_TRANSITION_FINGERPRINT_VERSION,
     MAX_BYTES, REPORT_SCHEMA_VERSION, Observation, Source, fingerprint, load_sources, main, observe,
     previous_blocking_state_id, previous_blocking_state_snapshot, previous_hashes, previous_source_facts,
     spt_connect_marker_check, spt_country_list_check,
@@ -363,6 +364,11 @@ class MonitorTests(unittest.TestCase):
             self.assertEqual(
                 report["gate_health"]["blocking_state_transition_reason"], "no_prior_state"
             )
+            self.assertEqual(
+                report["gate_health"]["blocking_transition_fingerprint_version"],
+                BLOCKING_TRANSITION_FINGERPRINT_VERSION,
+            )
+            self.assertIsNone(report["gate_health"]["blocking_transition_fingerprint"])
             self.assertIn("observation_errors", report["gate_health"]["blocking_reasons"])
             self.assertTrue(report["gate_health"]["blocking"])
             self.assertFalse(list(root.glob("*.tmp")))
@@ -761,6 +767,11 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(gate_health["blocking_state_transition"], "baseline")
         self.assertEqual(gate_health["blocking_state_transition_reason"], "no_prior_state")
         self.assertEqual(
+            gate_health["blocking_transition_fingerprint_version"],
+            BLOCKING_TRANSITION_FINGERPRINT_VERSION,
+        )
+        self.assertIsNone(gate_health["blocking_transition_fingerprint"])
+        self.assertEqual(
             gate_health["blocking_reasons"], ["observation_errors", "policy_errors"]
         )
         self.assertTrue(gate_health["blocking"])
@@ -805,6 +816,11 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "changed")
         self.assertEqual(second["blocking_state_transition_reason"], "state_changed")
+        self.assertEqual(
+            second["blocking_transition_fingerprint_version"],
+            BLOCKING_TRANSITION_FINGERPRINT_VERSION,
+        )
+        self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
 
     def test_summarize_gate_health_blocking_state_transition_unchanged(self) -> None:
         first = summarize_gate_health(
@@ -827,9 +843,40 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second["blocking_state_previous_report_date"], "2026-10-30")
         self.assertEqual(second["blocking_state_transition"], "unchanged")
         self.assertEqual(second["blocking_state_transition_reason"], "state_unchanged")
+        self.assertEqual(
+            second["blocking_transition_fingerprint_version"],
+            BLOCKING_TRANSITION_FINGERPRINT_VERSION,
+        )
+        self.assertEqual(len(second["blocking_transition_fingerprint"]), 64)
+
+    def test_summarize_gate_health_transition_fingerprint_changes_with_reason(self) -> None:
+        baseline = summarize_gate_health(
+            [],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+        )
+        unchanged = summarize_gate_health(
+            [],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+            previous_blocking_state_id=baseline["blocking_state_id"],
+        )
+        changed = summarize_gate_health(
+            [Observation("x", "u", "f", "error", None, "unknown", "offline")],
+            {"total": 1, "consistent": 1, "mismatch": 0, "unavailable": 0, "blocking": False},
+            {"consistent": ["a"], "mismatch": [], "unavailable": []},
+            previous_blocking_state_id=baseline["blocking_state_id"],
+        )
+        self.assertNotEqual(
+            unchanged["blocking_transition_fingerprint"],
+            changed["blocking_transition_fingerprint"],
+        )
 
     def test_blocking_fingerprint_version_is_stable(self) -> None:
         self.assertEqual(BLOCKING_FINGERPRINT_VERSION, "sha256-json-v1")
+
+    def test_blocking_transition_fingerprint_version_is_stable(self) -> None:
+        self.assertEqual(BLOCKING_TRANSITION_FINGERPRINT_VERSION, "sha256-transition-v1")
 
     def test_summarize_gate_health_blocking_state_id_prefixes_version(self) -> None:
         gate_health = summarize_gate_health(
