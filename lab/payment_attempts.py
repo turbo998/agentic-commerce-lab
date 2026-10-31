@@ -12,6 +12,12 @@ from lab.checkout import Checkout
 
 Outcome = Literal["unknown", "succeeded", "failed"]
 Observation = Literal["pending", "succeeded", "failed"]
+AttemptPhase = Literal[
+    "reserved_unassociated",
+    "pending_associated",
+    "succeeded_terminal",
+    "failed_terminal",
+]
 
 
 class AttemptConflict(ValueError):
@@ -74,6 +80,28 @@ class PaymentAttempt:
                 "Stored provider reference is invalid; reconciliation required."
             )
 
+    @property
+    def phase(self) -> AttemptPhase:
+        if self.outcome == "unknown":
+            return (
+                "reserved_unassociated"
+                if self.provider_reference is None
+                else "pending_associated"
+            )
+        if self.provider_reference is None:
+            raise AttemptConflict(
+                "Stored provider reference is invalid; reconciliation required."
+            )
+        return (
+            "succeeded_terminal"
+            if self.outcome == "succeeded"
+            else "failed_terminal"
+        )
+
+    @property
+    def is_terminal(self) -> bool:
+        return self.phase in ("succeeded_terminal", "failed_terminal")
+
 
 @dataclass(frozen=True)
 class DispatchDecision:
@@ -91,6 +119,127 @@ class DispatchDecision:
             raise AttemptConflict(
                 "DispatchDecision cannot allow dispatch for a settled or referenced attempt."
             )
+
+
+@dataclass(frozen=True)
+class AttemptReservationPreview:
+    """Read-only single-SELECT preview of reserve(operation) without mutating journal state."""
+
+    operation: PaymentOperation
+    existing_attempt: PaymentAttempt | None
+    decision: DispatchDecision
+    would_insert: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise AttemptConflict("A trusted PaymentOperation is required.")
+        if self.existing_attempt is not None:
+            if not isinstance(self.existing_attempt, PaymentAttempt):
+                raise AttemptConflict(
+                    "AttemptReservationPreview existing_attempt must be a PaymentAttempt or None."
+                )
+            _ = self.existing_attempt.phase
+        if not isinstance(self.decision, DispatchDecision):
+            raise AttemptConflict(
+                "AttemptReservationPreview decision must be a DispatchDecision."
+            )
+        if type(self.would_insert) is not bool:
+            raise AttemptConflict(
+                "AttemptReservationPreview would_insert must be a bool."
+            )
+        if self.existing_attempt is None:
+            if not self.would_insert or self.decision != DispatchDecision(
+                PaymentAttempt("unknown", None), True
+            ):
+                raise AttemptConflict(
+                    "Unreserved AttemptReservationPreview must allow first dispatch and insert."
+                )
+        else:
+            if self.would_insert or self.decision != DispatchDecision(
+                self.existing_attempt, False
+            ):
+                raise AttemptConflict(
+                    "Existing AttemptReservationPreview must deny dispatch and not insert."
+                )
+
+    @property
+    def phase(self) -> AttemptPhase:
+        return self.decision.attempt.phase
+
+    @property
+    def dispatch_allowed(self) -> bool:
+        return self.decision.dispatch_allowed
+
+
+@dataclass(frozen=True)
+class AttemptReconciliationPreview:
+    """Read-only single-SELECT preview of reconcile(operation, ...) without mutating journal state."""
+
+    operation: PaymentOperation
+    observation: Observation
+    previous_attempt: PaymentAttempt
+    resulting_attempt: PaymentAttempt
+    state_changed: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise AttemptConflict("A trusted PaymentOperation is required.")
+        if not isinstance(self.observation, str) or self.observation not in (
+            "pending",
+            "succeeded",
+            "failed",
+        ):
+            raise ValueError("Observation must be pending, succeeded, or failed.")
+        if not isinstance(self.previous_attempt, PaymentAttempt):
+            raise AttemptConflict(
+                "AttemptReconciliationPreview previous_attempt must be a PaymentAttempt."
+            )
+        if (
+            self.previous_attempt.provider_reference is None
+            and self.previous_attempt.outcome != "unknown"
+        ):
+            raise AttemptConflict("An unassociated terminal attempt cannot be rebound.")
+        if not isinstance(self.resulting_attempt, PaymentAttempt):
+            raise AttemptConflict(
+                "AttemptReconciliationPreview resulting_attempt must be a PaymentAttempt."
+            )
+        if self.resulting_attempt.provider_reference is None:
+            raise AttemptConflict(
+                "Reconciled attempt must bind a non-null provider_reference."
+            )
+        if type(self.state_changed) is not bool:
+            raise AttemptConflict(
+                "AttemptReconciliationPreview state_changed must be a bool."
+            )
+        expected_outcome: Outcome = (
+            "unknown" if self.observation == "pending" else self.observation
+        )
+        if self.resulting_attempt.outcome != expected_outcome:
+            raise AttemptConflict(
+                "Resulting attempt outcome does not match observation."
+            )
+        if self.previous_attempt.provider_reference not in (
+            None,
+            self.resulting_attempt.provider_reference,
+        ):
+            raise AttemptConflict("Provider reference changed; investigate the conflict.")
+        if (
+            self.previous_attempt.outcome != "unknown"
+            and self.previous_attempt.outcome != self.resulting_attempt.outcome
+        ):
+            raise AttemptConflict("Terminal outcome cannot be overwritten.")
+        if self.state_changed != (self.previous_attempt != self.resulting_attempt):
+            raise AttemptConflict(
+                "state_changed does not match previous_attempt != resulting_attempt."
+            )
+
+    @property
+    def previous_phase(self) -> AttemptPhase:
+        return self.previous_attempt.phase
+
+    @property
+    def resulting_phase(self) -> AttemptPhase:
+        return self.resulting_attempt.phase
 
 
 class PaymentAttemptJournal:
@@ -173,6 +322,140 @@ class PaymentAttemptJournal:
             raise AttemptConflict("Stored provider reference is invalid; reconciliation required.")
         return attempt
 
+    def preview_reserve(
+        self, operation: PaymentOperation,
+    ) -> AttemptReservationPreview:
+        """Preview reserve(operation) in one lock-free SELECT without mutating state."""
+        self._require_operation(operation)
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    current_op.tenant_id AS tenant_id,
+                    current_op.operation_id AS operation_id,
+                    current_op.approval_id AS approval_id,
+                    current_op.provider AS provider,
+                    current_op.provider_account AS provider_account,
+                    current_op.idempotency_key AS idempotency_key,
+                    current_op.fingerprint AS fingerprint,
+                    current_op.outcome AS outcome,
+                    current_op.provider_reference AS provider_reference,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE tenant_id = ? AND approval_id = ? AND operation_id != ?
+                    ) AS approval_conflict,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE provider = ? AND provider_account = ? AND idempotency_key = ?
+                          AND NOT (tenant_id = ? AND operation_id = ?)
+                    ) AS idempotency_conflict
+                FROM (SELECT 1)
+                LEFT JOIN payment_attempts AS current_op
+                    ON current_op.tenant_id = ? AND current_op.operation_id = ?""",
+                (
+                    operation.tenant_id,
+                    operation.approval_id,
+                    operation.operation_id,
+                    operation.provider,
+                    operation.provider_account,
+                    operation.idempotency_key,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                ),
+            ).fetchone()
+        if row["tenant_id"] is not None:
+            self._verify_row_binding(row, operation)
+            existing = self._attempt(row)
+            if existing.provider_reference is None and existing.outcome != "unknown":
+                raise AttemptConflict(
+                    "Stored provider reference is invalid; reconciliation required."
+                )
+            return AttemptReservationPreview(
+                operation=operation,
+                existing_attempt=existing,
+                decision=DispatchDecision(existing, False),
+                would_insert=False,
+            )
+        if row["approval_conflict"]:
+            raise AttemptConflict("Approval already reserved by another operation.")
+        if row["idempotency_conflict"]:
+            raise AttemptConflict("Provider idempotency key already bound.")
+        return AttemptReservationPreview(
+            operation=operation,
+            existing_attempt=None,
+            decision=DispatchDecision(PaymentAttempt("unknown", None), True),
+            would_insert=True,
+        )
+
+    def preview_reconcile(
+        self,
+        operation: PaymentOperation,
+        *,
+        observation: Observation,
+        provider_reference: str,
+    ) -> AttemptReconciliationPreview:
+        """Preview reconcile(operation, ...) in one lock-free SELECT without mutating state."""
+        self._require_operation(operation)
+        if not isinstance(observation, str) or observation not in (
+            "pending",
+            "succeeded",
+            "failed",
+        ):
+            raise ValueError("Observation must be pending, succeeded, or failed.")
+        _require_text("provider_reference", provider_reference)
+        outcome: Outcome = "unknown" if observation == "pending" else observation
+        with closing(self._connect()) as db:
+            row = db.execute(
+                """SELECT
+                    current_op.tenant_id AS tenant_id,
+                    current_op.operation_id AS operation_id,
+                    current_op.approval_id AS approval_id,
+                    current_op.provider AS provider,
+                    current_op.provider_account AS provider_account,
+                    current_op.idempotency_key AS idempotency_key,
+                    current_op.fingerprint AS fingerprint,
+                    current_op.outcome AS outcome,
+                    current_op.provider_reference AS provider_reference,
+                    EXISTS(
+                        SELECT 1 FROM payment_attempts
+                        WHERE provider = ? AND provider_account = ? AND provider_reference = ?
+                          AND NOT (tenant_id = ? AND operation_id = ?)
+                    ) AS reference_conflict
+                FROM (SELECT 1)
+                LEFT JOIN payment_attempts AS current_op
+                    ON current_op.tenant_id = ? AND current_op.operation_id = ?""",
+                (
+                    operation.provider,
+                    operation.provider_account,
+                    provider_reference,
+                    operation.tenant_id,
+                    operation.operation_id,
+                    operation.tenant_id,
+                    operation.operation_id,
+                ),
+            ).fetchone()
+        if row["tenant_id"] is None:
+            raise AttemptConflict("Operation was never reserved.")
+        self._verify_row_binding(row, operation)
+        previous = self._attempt(row)
+        if previous.provider_reference not in (None, provider_reference):
+            raise AttemptConflict("Provider reference changed; investigate the conflict.")
+        if previous.provider_reference is None and previous.outcome != "unknown":
+            raise AttemptConflict("An unassociated terminal attempt cannot be rebound.")
+        if previous.outcome != "unknown" and previous.outcome != outcome:
+            raise AttemptConflict("Terminal outcome cannot be overwritten.")
+        if row["reference_conflict"]:
+            raise AttemptConflict("Provider reference already bound to another operation.")
+        resulting = PaymentAttempt(outcome, provider_reference)
+        return AttemptReconciliationPreview(
+            operation=operation,
+            observation=observation,
+            previous_attempt=previous,
+            resulting_attempt=resulting,
+            state_changed=(previous != resulting),
+        )
+
     def reserve(self, operation: PaymentOperation) -> DispatchDecision:
         """Commit before dispatch; a repeated reservation never authorizes a send."""
         with closing(self._connect()) as db, db:
@@ -187,7 +470,12 @@ class PaymentAttemptJournal:
             raise AttemptConflict("Reservation requires an active transaction.")
         previous = self._find(db, operation)
         if previous is not None:
-            return DispatchDecision(self._attempt(previous), False)
+            attempt = self._attempt(previous)
+            if attempt.provider_reference is None and attempt.outcome != "unknown":
+                raise AttemptConflict(
+                    "Stored provider reference is invalid; reconciliation required."
+                )
+            return DispatchDecision(attempt, False)
         if db.execute(
             "SELECT 1 FROM payment_attempts WHERE tenant_id=? AND approval_id=?",
             (operation.tenant_id, operation.approval_id),

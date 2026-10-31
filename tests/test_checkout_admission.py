@@ -13,7 +13,11 @@ from unittest.mock import patch
 
 from lab.agent_identity_attestation_guard import compute_rfc9530_content_digest
 from lab.checkout import Checkout
-from lab.checkout_admission import CheckoutAdmissionError, reserve_signed_checkout
+from lab.checkout_admission import (
+    CheckoutAdmissionError,
+    preview_signed_checkout,
+    reserve_signed_checkout,
+)
 from lab.json_members import unique_members
 from lab.mcp_migration import unique_members as legacy_unique_members
 from lab.payment_attempts import AttemptConflict, PaymentAttemptJournal, PaymentOperation
@@ -62,11 +66,35 @@ class CheckoutAdmissionTests(unittest.TestCase):
             self.journal.read(self.operation)
 
     def test_valid_admission_returns_existing_unknown_dispatch_decision(self) -> None:
+        digest = compute_rfc9530_content_digest(self.body)
+        snapshot = RequestSignatureSnapshot(
+            "sig1", "synthetic-key", MUTATION_COMPONENTS, "POST", URI,
+            "application/json", digest,
+        )
+        preview = preview_signed_checkout(
+            self.journal, self.operation, snapshot,
+            expected_target_uri=URI, method="POST", target_uri=URI,
+            content_type="application/json", content_digest=digest,
+            content_encoding=None, body=self.body,
+        )
+        self.assertTrue(preview.would_insert)
+        self.assertTrue(preview.dispatch_allowed)
+        self.assertEqual(preview.phase, "reserved_unassociated")
+        self.assert_unreserved()
         decision = self.admit()
         self.assertTrue(decision.dispatch_allowed)
         self.assertEqual(decision.attempt.outcome, "unknown")
         self.assertIsNone(decision.attempt.provider_reference)
         self.assertEqual(self.journal.read(self.operation), decision.attempt)
+        after_preview = preview_signed_checkout(
+            self.journal, self.operation, snapshot,
+            expected_target_uri=URI, method="POST", target_uri=URI,
+            content_type="application/json", content_digest=digest,
+            content_encoding=None, body=self.body,
+        )
+        self.assertFalse(after_preview.would_insert)
+        self.assertFalse(after_preview.dispatch_allowed)
+        self.assertEqual(after_preview.existing_attempt, decision.attempt)
 
     def test_amount_is_total_not_unit_price(self) -> None:
         self.assertEqual(self.operation.checkout.quantity, 2)
