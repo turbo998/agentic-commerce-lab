@@ -376,6 +376,11 @@ to aggregate `{version,fingerprint,id}` into one direct-consumption object.
 Adds `PaymentApprovalStore.read_approval(operation)` and `PaymentApprovalStatus`
 for lock-free local approval metadata inspection without clock sampling or dispatch authority.
 
+**Stage 1727 / 2026-10-31:** [Scoped read-only merchant signer permission lookup and authority boundary (EN)](research/2026-10-31-merchant-signer-permission-read.en.md)
+| [MerchantSignerStore.read_permission 作用域签名密钥权限只读查询与权限边界（中文）](research/2026-10-31-merchant-signer-permission-read.md).
+Adds `MerchantSignerStore.read_permission(scope)` and `MerchantSignerPermissionStatus`
+for lock-free local merchant signer permission inspection without signature verification or admission authority.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
