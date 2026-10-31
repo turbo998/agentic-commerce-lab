@@ -14,9 +14,18 @@ from threading import Barrier
 from unittest.mock import patch
 
 from lab.checkout import Checkout
-from lab.payment_attempts import AttemptConflict, PaymentAttemptJournal, PaymentOperation
+from lab.payment_attempts import AttemptConflict, PaymentAttempt, PaymentAttemptJournal, PaymentOperation
 from lab.stripe_observation import (
-    PENDING_STATUSES, StripeObservationError, associate_stripe_intent, reconcile_stripe_intent,
+    PENDING_STATUSES,
+    StripeAssociationPreview,
+    StripeObservationError,
+    StripeObservationPreview,
+    associate_stripe_intent,
+    find_stripe_association_preview,
+    find_stripe_observation_preview,
+    preview_associate_stripe_intent,
+    read_stripe_association_preview,
+    reconcile_stripe_intent,
 )
 
 
@@ -317,6 +326,199 @@ print(json.dumps({'attempt': asdict(journal.read(operation)),
             "attempt": {"outcome": "unknown", "provider_reference": "pi_synthetic"},
             "dispatch": False,
         })
+
+    def test_preview_associate_stripe_intent_single_select_dry_run_and_invariants(self) -> None:
+        statements: list[str] = []
+        connect = self.journal._connect
+
+        def traced() -> sqlite3.Connection:
+            db = connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        # 1. Unreserved operation: find returns None, read/preview raises AttemptConflict
+        unreserved = replace(
+            self.operation,
+            operation_id="op-unreserved",
+            approval_id="app-unreserved",
+            idempotency_key="key-unreserved",
+        )
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            self.assertIsNone(
+                find_stripe_association_preview(
+                    self.journal,
+                    unreserved,
+                    retrieved_account="acct_synthetic",
+                    expected_reference="pi_synthetic",
+                    intent=self.intent,
+                )
+            )
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        with self.assertRaisesRegex(AttemptConflict, "Operation was never reserved"):
+            preview_associate_stripe_intent(
+                self.journal,
+                unreserved,
+                retrieved_account="acct_synthetic",
+                expected_reference="pi_synthetic",
+                intent=self.intent,
+            )
+
+        # 2. Reserved unassociated operation: would_bind=True, projects pending association
+        statements.clear()
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            first_preview = preview_associate_stripe_intent(
+                self.journal,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                expected_reference="pi_synthetic",
+                intent=self.intent,
+            )
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].startswith("SELECT"))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
+        self.assertEqual(
+            first_preview,
+            StripeAssociationPreview(
+                operation=self.operation,
+                expected_reference="pi_synthetic",
+                observation="succeeded",
+                previous=PaymentAttempt("unknown", None),
+                next_attempt=PaymentAttempt("unknown", "pi_synthetic"),
+                would_bind=True,
+            ),
+        )
+        self.assertTrue(first_preview.would_bind)
+        self.assertFalse(first_preview.is_already_bound)
+        self.assertEqual(first_preview.previous_phase, "reserved_unassociated")
+        self.assertEqual(first_preview.next_phase, "pending_associated")
+        self.assertEqual(self.journal.read(self.operation), self.initial)
+
+        # 3. Bind reference and verify idempotent retry preview (including after terminal settlement)
+        associated = self.associate()
+        self.assertEqual(associated, first_preview.next_attempt)
+
+        statements.clear()
+        with patch.object(self.journal, "_connect", side_effect=traced):
+            retry_preview = read_stripe_association_preview(
+                self.journal,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                expected_reference="pi_synthetic",
+                intent=self.intent,
+            )
+        self.assertEqual(len(statements), 1)
+        self.assertFalse(retry_preview.would_bind)
+        self.assertTrue(retry_preview.is_already_bound)
+        self.assertEqual(retry_preview.previous_phase, "pending_associated")
+        self.assertEqual(retry_preview.next_phase, "pending_associated")
+        self.assertEqual(retry_preview.next_attempt, associated)
+
+        obs_preview = find_stripe_observation_preview(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        assert obs_preview is not None
+        self.assertEqual(obs_preview.previous_phase, "pending_associated")
+        self.assertEqual(obs_preview.next_phase, "succeeded_terminal")
+
+        settled = reconcile_stripe_intent(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        terminal_assoc_preview = preview_associate_stripe_intent(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            expected_reference="pi_synthetic",
+            intent={**self.intent, "status": "processing", "amount_received": 0},
+        )
+        self.assertFalse(terminal_assoc_preview.would_bind)
+        self.assertEqual(terminal_assoc_preview.observation, "pending")
+        self.assertEqual(terminal_assoc_preview.previous_phase, "succeeded_terminal")
+        self.assertEqual(terminal_assoc_preview.next_phase, "succeeded_terminal")
+        self.assertEqual(terminal_assoc_preview.next_attempt, settled)
+
+        # 4. Reference conflict with another operation and changed reference rejected
+        with self.assertRaisesRegex(AttemptConflict, "Provider reference changed"):
+            preview_associate_stripe_intent(
+                self.journal,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                expected_reference="pi_other",
+                intent={**self.intent, "id": "pi_other"},
+            )
+        other_op = replace(
+            self.operation,
+            tenant_id="other",
+            operation_id="other",
+            approval_id="other",
+            idempotency_key="other",
+        )
+        self.journal.reserve(other_op)
+        with self.assertRaisesRegex(AttemptConflict, "already bound to another operation"):
+            preview_associate_stripe_intent(
+                self.journal,
+                other_op,
+                retrieved_account="acct_synthetic",
+                expected_reference="pi_synthetic",
+                intent=self.intent,
+            )
+
+        # 5. Constructor invariants on StripeAssociationPreview
+        for bad_kwargs, exc_type, pattern in (
+            ({"operation": "bad"}, StripeObservationError, "trusted PaymentOperation"),
+            ({"expected_reference": "ch_123"}, StripeObservationError, "PaymentIntent reference"),
+            ({"observation": "invalid"}, StripeObservationError, "Observation must be"),
+            ({"previous": "bad"}, StripeObservationError, "PaymentAttempt instances"),
+            ({"next_attempt": "bad"}, StripeObservationError, "PaymentAttempt instances"),
+            ({"would_bind": 1}, StripeObservationError, "would_bind must be a boolean"),
+            (
+                {"previous": PaymentAttempt("unknown", "pi_other")},
+                AttemptConflict,
+                "Provider reference changed",
+            ),
+            (
+                {"previous": PaymentAttempt("succeeded", None)},
+                AttemptConflict,
+                "unassociated terminal attempt cannot be rebound",
+            ),
+            (
+                {"would_bind": False},
+                StripeObservationError,
+                "First-time association preview must set would_bind=True",
+            ),
+            (
+                {"next_attempt": PaymentAttempt("succeeded", "pi_synthetic")},
+                StripeObservationError,
+                "First-time association preview must set would_bind=True",
+            ),
+            (
+                {
+                    "previous": PaymentAttempt("unknown", "pi_synthetic"),
+                    "next_attempt": PaymentAttempt("unknown", "pi_synthetic"),
+                    "would_bind": True,
+                },
+                StripeObservationError,
+                "Idempotent association preview must set would_bind=False",
+            ),
+        ):
+            params = {
+                "operation": self.operation,
+                "expected_reference": "pi_synthetic",
+                "observation": "succeeded",
+                "previous": PaymentAttempt("unknown", None),
+                "next_attempt": PaymentAttempt("unknown", "pi_synthetic"),
+                "would_bind": True,
+                **bad_kwargs,
+            }
+            with self.subTest(bad_kwargs=bad_kwargs), self.assertRaisesRegex(exc_type, pattern):
+                StripeAssociationPreview(**params)  # type: ignore[arg-type]
 
     def test_free_text_and_secrets_are_not_persisted(self) -> None:
         secret = "SYNTHETIC_CLIENT_SECRET_DO_NOT_PERSIST"

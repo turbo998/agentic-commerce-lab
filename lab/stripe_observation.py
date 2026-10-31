@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 from lab.payment_attempts import (
     AttemptConflict,
+    AttemptPhase,
     Observation,
     Outcome,
     PaymentAttempt,
@@ -75,6 +76,85 @@ class StripeObservationPreview:
     def is_terminal(self) -> bool:
         return self.next_attempt.outcome in ("succeeded", "failed")
 
+    @property
+    def previous_phase(self) -> AttemptPhase:
+        return self.previous.phase
+
+    @property
+    def next_phase(self) -> AttemptPhase:
+        return self.next_attempt.phase
+
+
+@dataclass(frozen=True)
+class StripeAssociationPreview:
+    """Read-only association preview; never mutates payment_attempts or grants authority."""
+
+    operation: PaymentOperation
+    expected_reference: str
+    observation: Observation
+    previous: PaymentAttempt
+    next_attempt: PaymentAttempt
+    would_bind: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation, PaymentOperation):
+            raise StripeObservationError("A trusted PaymentOperation is required.")
+        if (
+            not isinstance(self.expected_reference, str)
+            or _PI_RE.fullmatch(self.expected_reference) is None
+        ):
+            raise StripeObservationError(
+                "A separately trusted PaymentIntent reference is required."
+            )
+        if not isinstance(self.observation, str) or self.observation not in (
+            "pending",
+            "succeeded",
+            "failed",
+        ):
+            raise StripeObservationError(
+                "Observation must be pending, succeeded, or failed."
+            )
+        if not isinstance(self.previous, PaymentAttempt) or not isinstance(
+            self.next_attempt, PaymentAttempt
+        ):
+            raise StripeObservationError(
+                "Persisted and projected PaymentAttempt instances are required."
+            )
+        if type(self.would_bind) is not bool:
+            raise StripeObservationError("would_bind must be a boolean.")
+        if self.previous.provider_reference not in (None, self.expected_reference):
+            raise AttemptConflict(
+                "Provider reference changed; investigate the conflict."
+            )
+        if self.previous.provider_reference is None:
+            if self.previous.outcome != "unknown":
+                raise AttemptConflict(
+                    "An unassociated terminal attempt cannot be rebound."
+                )
+            if not self.would_bind or self.next_attempt != PaymentAttempt(
+                "unknown", self.expected_reference
+            ):
+                raise StripeObservationError(
+                    "First-time association preview must set would_bind=True and project pending association."
+                )
+        else:
+            if self.would_bind or self.next_attempt != self.previous:
+                raise StripeObservationError(
+                    "Idempotent association preview must set would_bind=False and preserve previous attempt."
+                )
+
+    @property
+    def previous_phase(self) -> AttemptPhase:
+        return self.previous.phase
+
+    @property
+    def next_phase(self) -> AttemptPhase:
+        return self.next_attempt.phase
+
+    @property
+    def is_already_bound(self) -> bool:
+        return not self.would_bind
+
 
 def associate_stripe_intent(
     journal: PaymentAttemptJournal, operation: PaymentOperation, *,
@@ -109,6 +189,113 @@ def associate_stripe_intent(
         return journal._reconcile_in_transaction(
             db, operation, observation="pending", provider_reference=expected_reference,
         )
+
+
+def find_stripe_association_preview(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    expected_reference: str,
+    intent: Mapping[str, object],
+) -> StripeAssociationPreview | None:
+    """Preview PaymentIntent association in one lock-free SELECT without writing."""
+    if not isinstance(journal, PaymentAttemptJournal) or not isinstance(operation, PaymentOperation):
+        raise StripeObservationError("A trusted journal and PaymentOperation are required.")
+    if not isinstance(expected_reference, str) or _PI_RE.fullmatch(expected_reference) is None:
+        raise StripeObservationError("A separately trusted PaymentIntent reference is required.")
+    _require_context(operation, retrieved_account, intent)
+    with closing(journal._connect()) as db:
+        row = db.execute(
+            """SELECT
+                p.*,
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM payment_attempts other
+                        WHERE other.provider = p.provider
+                          AND other.provider_account = p.provider_account
+                          AND other.provider_reference = ?
+                          AND NOT (
+                              other.tenant_id = p.tenant_id
+                              AND other.operation_id = p.operation_id
+                          )
+                    ) THEN 1
+                    ELSE 0
+                END AS reference_conflict
+            FROM payment_attempts p
+            WHERE p.tenant_id = ? AND p.operation_id = ?
+            """,
+            (expected_reference, operation.tenant_id, operation.operation_id),
+        ).fetchone()
+    if row is None:
+        return None
+    journal._verify_row_binding(row, operation)
+    previous = journal._attempt(row)
+    observation = validate_stripe_intent(
+        operation,
+        PaymentAttempt("unknown", expected_reference),
+        retrieved_account=retrieved_account,
+        intent=intent,
+    )
+    if previous.provider_reference not in (None, expected_reference):
+        raise AttemptConflict("Provider reference changed; investigate the conflict.")
+    if previous.provider_reference is None and previous.outcome != "unknown":
+        raise AttemptConflict("An unassociated terminal attempt cannot be rebound.")
+    if row["reference_conflict"]:
+        raise AttemptConflict("Provider reference already bound to another operation.")
+    would_bind = previous.provider_reference is None
+    next_attempt = (
+        PaymentAttempt("unknown", expected_reference)
+        if would_bind
+        else previous
+    )
+    return StripeAssociationPreview(
+        operation=operation,
+        expected_reference=expected_reference,
+        observation=observation,
+        previous=previous,
+        next_attempt=next_attempt,
+        would_bind=would_bind,
+    )
+
+
+def read_stripe_association_preview(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    expected_reference: str,
+    intent: Mapping[str, object],
+) -> StripeAssociationPreview:
+    """Preview PaymentIntent association in one lock-free SELECT or raise if unreserved."""
+    preview = find_stripe_association_preview(
+        journal,
+        operation,
+        retrieved_account=retrieved_account,
+        expected_reference=expected_reference,
+        intent=intent,
+    )
+    if preview is None:
+        raise AttemptConflict("Operation was never reserved.")
+    return preview
+
+
+def preview_associate_stripe_intent(
+    journal: PaymentAttemptJournal,
+    operation: PaymentOperation,
+    *,
+    retrieved_account: str,
+    expected_reference: str,
+    intent: Mapping[str, object],
+) -> StripeAssociationPreview:
+    """Preview associate_stripe_intent() in one lock-free SELECT without writing."""
+    return read_stripe_association_preview(
+        journal,
+        operation,
+        retrieved_account=retrieved_account,
+        expected_reference=expected_reference,
+        intent=intent,
+    )
 
 
 def reconcile_stripe_intent(

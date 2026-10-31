@@ -485,6 +485,11 @@ Adds `StripeReadbackProvenance.attempt_phase`, `StripeLifecycleProvenance.attemp
 Adds `PoppyConsumptionPreview` (`PoppyAssertionJournal.preview_consume()`), `InboxRecordPreview` (`StripeEventInbox.preview_record()`),
 and `ClaimTransitionPreview` (`StripeEventInbox.preview_handoff()` / `preview_finish_readback()`).
 
+**Stage 1749 / 2026-11-01:** [Stripe PaymentIntent association lock-free single-SELECT dry-run preview and observation phase alignment (EN)](research/2026-11-01-stripe-intent-association-dry-run-preview.en.md)
+| [Stripe PaymentIntent 首次关联绑定的无锁单 SELECT 预检（StripeAssociationPreview）与对账相位对齐（中文）](research/2026-11-01-stripe-intent-association-dry-run-preview.md).
+Adds `StripeAssociationPreview`, `find_stripe_association_preview()`, `read_stripe_association_preview()`, `preview_associate_stripe_intent()`,
+and `StripeObservationPreview.previous_phase` / `next_phase`.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |
