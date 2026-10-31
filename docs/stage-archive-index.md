@@ -456,6 +456,11 @@ and adds `StripeObservationPreview`, `find_stripe_observation_preview()`, and `r
 Adds `DeadlineWindowPhase`, `DualDeadlineFinding`, `classify_deadline_window()`, `assess_dual_deadline()`, and `--strict-previous-deadline` to `lab/mcp_migration.py`,
 modeling the `[2026-10-31, 2026-11-30)` contradiction window and enforcing fail-closed `__post_init__` invariants on `Finding` and `DualDeadlineFinding`.
 
+**Stage 1743 / 2026-11-01:** [Eight-state Stripe readback phase classification and attempt/handled-claim fail-closed invariants (EN)](research/2026-11-01-stripe-readback-provenance-phase-and-attempt-integrity.en.md)
+| [Stripe 回读与全生命周期溯源的 8 态阶段分类模型与支付尝试/已处理认领闭锁不变量（中文）](research/2026-11-01-stripe-readback-provenance-phase-and-attempt-integrity.md).
+Adds `StripeReadbackPhase`, `event_phase`, and `readback_phase` to `StripeReadbackProvenance` and `StripeLifecycleProvenance`,
+and rejects unassociated terminal attempts, non-`pi_` attempt references, and prematurely handled readback claims across provenance models and single-snapshot queries.
+
 ## 1. Flagship Interactive Deliverables & Core Benchmarks
 
 | Deliverable / Cohort | Primary Entry Points | Key Metrics & Verification |

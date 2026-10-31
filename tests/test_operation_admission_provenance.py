@@ -216,6 +216,8 @@ class OperationAdmissionProvenanceTests(unittest.TestCase):
         for fp, att, adm, tmd in (
             ("not-hex", valid_attempt, None, None),
             (self.operation.fingerprint, "unknown", None, None),
+            (self.operation.fingerprint, PaymentAttempt("succeeded", None), None, None),
+            (self.operation.fingerprint, PaymentAttempt("failed", None), None, None),
             (self.operation.fingerprint, valid_attempt, "bad", None),
             (self.operation.fingerprint, valid_attempt, valid_adm, "bad"),
             (self.operation.fingerprint, valid_attempt, None, valid_tmd),

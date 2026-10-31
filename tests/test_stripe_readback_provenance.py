@@ -595,6 +595,210 @@ class StripeReadbackProvenanceTests(unittest.TestCase):
                 claim_status=claim_status,
             )
 
+        # Unassociated terminal attempt is rejected
+        for terminal_outcome in ("succeeded", "failed"):
+            with self.subTest(terminal_outcome=terminal_outcome):
+                with self.assertRaisesRegex(
+                    StripeReadbackError,
+                    "Stored attempt outcome and provider reference are inconsistent",
+                ):
+                    StripeReadbackProvenance(
+                        scope=self.scope,
+                        event_id="evt_synthetic",
+                        fingerprint=self.operation.fingerprint,
+                        attempt=PaymentAttempt(terminal_outcome, None),  # type: ignore[arg-type]
+                        receipt=receipt,
+                        claim_status=claim_status,
+                    )
+
+        # Non-PaymentIntent attempt reference is rejected even before webhook arrival
+        for bad_pi in ("ch_123", "evt_123", "pi_", " pi_synthetic", "pi_synthetic "):
+            with self.subTest(bad_pi=bad_pi):
+                with self.assertRaisesRegex(
+                    StripeReadbackError,
+                    "Stored attempt provider reference must be a Stripe PaymentIntent ID",
+                ):
+                    StripeReadbackProvenance(
+                        scope=self.scope,
+                        event_id="evt_synthetic",
+                        fingerprint=self.operation.fingerprint,
+                        attempt=PaymentAttempt("unknown", bad_pi),
+                        receipt=None,
+                        claim_status=None,
+                    )
+
+        # Handled claim status requires a PaymentIntent-associated attempt
+        handled_status = ReadbackClaimStatus(claim, "handled")
+        for unassociated_attempt in (None, PaymentAttempt("unknown", None)):
+            with self.subTest(unassociated_attempt=unassociated_attempt):
+                with self.assertRaisesRegex(
+                    StripeReadbackError,
+                    "Handled readback claim requires a PaymentIntent-associated attempt",
+                ):
+                    StripeReadbackProvenance(
+                        scope=self.scope,
+                        event_id="evt_synthetic",
+                        fingerprint=self.operation.fingerprint,
+                        attempt=unassociated_attempt,
+                        receipt=receipt,
+                        claim_status=handled_status,
+                    )
+
+    def test_readback_phase_and_event_phase_cover_all_eight_states_and_reject_premature_finish(
+        self,
+    ) -> None:
+        receipt = InboxReceipt(
+            "evt_synthetic",
+            "payment_intent.succeeded",
+            "pi_synthetic",
+            "a" * 64,
+        )
+        claim = ReadbackClaim(self.scope, receipt, "worker-a", 1)
+        active_claim = ReadbackClaimStatus(claim, "active")
+        handled_claim = ReadbackClaimStatus(claim, "handled")
+
+        cases = (
+            (
+                None,
+                receipt,
+                None,
+                "unclaimed",
+                "webhook_before_reservation",
+            ),
+            (
+                None,
+                receipt,
+                active_claim,
+                "active",
+                "webhook_before_reservation",
+            ),
+            (
+                PaymentAttempt("unknown", None),
+                None,
+                None,
+                None,
+                "reserved_unassociated",
+            ),
+            (
+                PaymentAttempt("unknown", None),
+                receipt,
+                None,
+                "unclaimed",
+                "awaiting_intent_association",
+            ),
+            (
+                PaymentAttempt("unknown", None),
+                receipt,
+                active_claim,
+                "active",
+                "awaiting_intent_association",
+            ),
+            (
+                PaymentAttempt("unknown", "pi_synthetic"),
+                None,
+                None,
+                None,
+                "associated_awaiting_webhook",
+            ),
+            (
+                PaymentAttempt("unknown", "pi_synthetic"),
+                receipt,
+                None,
+                "unclaimed",
+                "ready_to_claim",
+            ),
+            (
+                PaymentAttempt("unknown", "pi_synthetic"),
+                receipt,
+                active_claim,
+                "active",
+                "claimed_awaiting_acceptance",
+            ),
+            (
+                PaymentAttempt("unknown", "pi_synthetic"),
+                receipt,
+                handled_claim,
+                "handled",
+                "handled_pending_outcome",
+            ),
+            (
+                PaymentAttempt("succeeded", "pi_synthetic"),
+                receipt,
+                handled_claim,
+                "handled",
+                "terminal_reconciled",
+            ),
+            (
+                PaymentAttempt("failed", "pi_synthetic"),
+                None,
+                None,
+                None,
+                "terminal_reconciled",
+            ),
+        )
+        for att, rec, clm, expected_event_phase, expected_readback_phase in cases:
+            with self.subTest(
+                att=att,
+                has_receipt=rec is not None,
+                clm=clm.state if clm is not None else None,
+            ):
+                prov = StripeReadbackProvenance(
+                    scope=self.scope,
+                    event_id="evt_synthetic",
+                    fingerprint=self.operation.fingerprint,
+                    attempt=att,
+                    receipt=rec,
+                    claim_status=clm,
+                )
+                self.assertEqual(prov.event_phase, expected_event_phase)
+                self.assertEqual(prov.readback_phase, expected_readback_phase)
+
+        # End-to-end DB check: premature finish_readback before reservation or association fails closed
+        self.record("evt_premature", reference="pi_synthetic")
+        premature_claim = self.inbox.claim_next(self.scope, "worker-premature")
+        assert premature_claim is not None
+        self.inbox.finish_readback(premature_claim)
+        with self.assertRaisesRegex(
+            StripeReadbackError,
+            "Handled readback claim requires a PaymentIntent-associated attempt",
+        ):
+            find_stripe_readback_provenance(
+                self.inbox, self.journal, self.scope, "evt_premature", self.operation
+            )
+
+        self.journal.reserve(self.operation)
+        with self.assertRaisesRegex(
+            StripeReadbackError,
+            "Handled readback claim requires a PaymentIntent-associated attempt",
+        ):
+            find_stripe_readback_provenance(
+                self.inbox, self.journal, self.scope, "evt_premature", self.operation
+            )
+
+        # Corrupted unassociated terminal row or non-pi_ reference in SQLite fails closed
+        with closing(sqlite3.connect(self.path)) as db, db:
+            db.execute(
+                "UPDATE payment_attempts SET outcome='succeeded', provider_reference=NULL WHERE operation_id='op-1'"
+            )
+        with self.assertRaisesRegex(
+            StripeReadbackError,
+            "Stored attempt outcome and provider reference are inconsistent",
+        ):
+            find_stripe_readback_provenance(
+                self.inbox, self.journal, self.scope, "evt_unseen", self.operation
+            )
+        with closing(sqlite3.connect(self.path)) as db, db:
+            db.execute(
+                "UPDATE payment_attempts SET outcome='unknown', provider_reference='ch_not_pi' WHERE operation_id='op-1'"
+            )
+        with self.assertRaisesRegex(
+            StripeReadbackError,
+            "Stored attempt provider reference must be a Stripe PaymentIntent ID",
+        ):
+            find_stripe_readback_provenance(
+                self.inbox, self.journal, self.scope, "evt_unseen", self.operation
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -117,6 +117,10 @@ class OperationAdmissionProvenance:
             raise MerchantSignerError("Provenance fingerprint must be a 64-char hex SHA-256 digest.")
         if not isinstance(self.attempt, PaymentAttempt):
             raise MerchantSignerError("Provenance requires a validated PaymentAttempt.")
+        if self.attempt.provider_reference is None and self.attempt.outcome != "unknown":
+            raise MerchantSignerError(
+                "Stored attempt provider reference is invalid; reconciliation required."
+            )
         if (
             self.approval_admission is not None
             and not isinstance(self.approval_admission, ApprovalAdmission)
