@@ -6,8 +6,21 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from lab.checkout import Checkout
-from lab.payment_attempts import AttemptConflict, PaymentAttemptJournal, PaymentOperation
-from lab.stripe_observation import PENDING_STATUSES, StripeObservationError, reconcile_stripe_intent
+from lab.payment_attempts import (
+    AttemptConflict,
+    PaymentAttempt,
+    PaymentAttemptJournal,
+    PaymentOperation,
+)
+from lab.stripe_observation import (
+    PENDING_STATUSES,
+    StripeObservationError,
+    StripeObservationPreview,
+    find_stripe_observation_preview,
+    read_stripe_observation_preview,
+    reconcile_stripe_intent,
+    validate_stripe_intent,
+)
 
 
 class StripeObservationTests(unittest.TestCase):
@@ -169,6 +182,183 @@ class StripeObservationTests(unittest.TestCase):
         })
         self.assertNotIn(marker, repr(result))
         self.assertNotIn(marker.encode(), self.path.read_bytes())
+
+    def test_validate_and_reconcile_reject_malformed_pi_reference_and_use_single_connection(self) -> None:
+        for bad_ref in ("pi_", "pi_synthetic ", "pi_secret/value", "pi_\u2603"):
+            with self.subTest(bad_ref=bad_ref):
+                with self.assertRaisesRegex(StripeObservationError, "trusted PaymentIntent association"):
+                    validate_stripe_intent(
+                        self.operation,
+                        PaymentAttempt("unknown", bad_ref),
+                        retrieved_account="acct_synthetic",
+                        intent={**self.intent, "id": bad_ref},
+                    )
+                op_bad = replace(
+                    self.operation,
+                    operation_id=f"op-{bad_ref}",
+                    approval_id=f"app-{bad_ref}",
+                    idempotency_key=f"key-{bad_ref}",
+                )
+                self.journal.reserve(op_bad)
+                self.journal.reconcile(op_bad, observation="pending", provider_reference=bad_ref)
+                with self.assertRaisesRegex(StripeObservationError, "trusted PaymentIntent association"):
+                    self.reconcile({**self.intent, "id": bad_ref}, operation=op_bad)
+                with self.assertRaisesRegex(StripeObservationError, "trusted PaymentIntent association"):
+                    find_stripe_observation_preview(
+                        self.journal,
+                        op_bad,
+                        retrieved_account="acct_synthetic",
+                        intent={**self.intent, "id": bad_ref},
+                    )
+
+        connect_calls = 0
+        original_connect = self.journal._connect
+
+        def counting_connect():
+            nonlocal connect_calls
+            connect_calls += 1
+            return original_connect()
+
+        self.journal._connect = counting_connect  # type: ignore[method-assign]
+        try:
+            result = self.reconcile()
+        finally:
+            self.journal._connect = original_connect  # type: ignore[method-assign]
+        self.assertEqual(result, PaymentAttempt("succeeded", "pi_synthetic"))
+        self.assertEqual(connect_calls, 1)
+
+    def test_observation_preview_is_read_only_and_matches_reconcile_transitions(self) -> None:
+        unreserved = replace(
+            self.operation,
+            operation_id="op-unreserved",
+            approval_id="app-unreserved",
+            idempotency_key="key-unreserved",
+        )
+        self.assertIsNone(
+            find_stripe_observation_preview(
+                self.journal,
+                unreserved,
+                retrieved_account="acct_synthetic",
+                intent=self.intent,
+            )
+        )
+        with self.assertRaisesRegex(AttemptConflict, "Operation was never reserved"):
+            read_stripe_observation_preview(
+                self.journal,
+                unreserved,
+                retrieved_account="acct_synthetic",
+                intent=self.intent,
+            )
+
+        pending_preview = read_stripe_observation_preview(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent={**self.intent, "status": "processing", "amount_received": 0},
+        )
+        self.assertEqual(
+            pending_preview,
+            StripeObservationPreview(
+                operation=self.operation,
+                previous=PaymentAttempt("unknown", "pi_synthetic"),
+                observation="pending",
+                next_attempt=PaymentAttempt("unknown", "pi_synthetic"),
+            ),
+        )
+        self.assertFalse(pending_preview.would_advance)
+        self.assertFalse(pending_preview.is_terminal)
+
+        success_preview = read_stripe_observation_preview(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        self.assertEqual(
+            success_preview,
+            StripeObservationPreview(
+                operation=self.operation,
+                previous=PaymentAttempt("unknown", "pi_synthetic"),
+                observation="succeeded",
+                next_attempt=PaymentAttempt("succeeded", "pi_synthetic"),
+            ),
+        )
+        self.assertTrue(success_preview.would_advance)
+        self.assertTrue(success_preview.is_terminal)
+        self.assertEqual(self.journal.read(self.operation), PaymentAttempt("unknown", "pi_synthetic"))
+
+        settled = self.reconcile()
+        self.assertEqual(settled, success_preview.next_attempt)
+
+        idempotent_preview = read_stripe_observation_preview(
+            self.journal,
+            self.operation,
+            retrieved_account="acct_synthetic",
+            intent=self.intent,
+        )
+        self.assertFalse(idempotent_preview.would_advance)
+        self.assertTrue(idempotent_preview.is_terminal)
+        self.assertEqual(idempotent_preview.next_attempt, settled)
+
+        for conflicting_intent in (
+            {**self.intent, "status": "processing", "amount_received": 0},
+            {**self.intent, "status": "canceled", "amount_received": 0},
+        ):
+            with self.subTest(status=conflicting_intent["status"]):
+                with self.assertRaisesRegex(AttemptConflict, "Terminal outcome cannot be overwritten"):
+                    read_stripe_observation_preview(
+                        self.journal,
+                        self.operation,
+                        retrieved_account="acct_synthetic",
+                        intent=conflicting_intent,
+                    )
+
+    def test_observation_preview_invariants_and_single_select_trace(self) -> None:
+        prev = PaymentAttempt("unknown", "pi_synthetic")
+        succ = PaymentAttempt("succeeded", "pi_synthetic")
+        with self.assertRaisesRegex(StripeObservationError, "trusted PaymentOperation"):
+            StripeObservationPreview("bad", prev, "succeeded", succ)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(StripeObservationError, "PaymentAttempt instances"):
+            StripeObservationPreview(self.operation, "bad", "succeeded", succ)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(StripeObservationError, "trusted PaymentIntent association"):
+            StripeObservationPreview(
+                self.operation, PaymentAttempt("unknown", None), "succeeded", succ
+            )
+        with self.assertRaisesRegex(StripeObservationError, "reference differs"):
+            StripeObservationPreview(
+                self.operation, prev, "succeeded", PaymentAttempt("succeeded", "pi_other")
+            )
+        with self.assertRaisesRegex(StripeObservationError, "Observation must be"):
+            StripeObservationPreview(self.operation, prev, "unknown", succ)  # type: ignore[arg-type]
+        with self.assertRaisesRegex(AttemptConflict, "Terminal outcome cannot be overwritten"):
+            StripeObservationPreview(
+                self.operation, succ, "pending", PaymentAttempt("unknown", "pi_synthetic")
+            )
+        with self.assertRaisesRegex(StripeObservationError, "does not match observation transition"):
+            StripeObservationPreview(self.operation, prev, "succeeded", prev)
+
+        statements: list[str] = []
+        original_connect = self.journal._connect
+
+        def traced():
+            db = original_connect()
+            db.set_trace_callback(statements.append)
+            return db
+
+        self.journal._connect = traced  # type: ignore[method-assign]
+        try:
+            preview = read_stripe_observation_preview(
+                self.journal,
+                self.operation,
+                retrieved_account="acct_synthetic",
+                intent=self.intent,
+            )
+        finally:
+            self.journal._connect = original_connect  # type: ignore[method-assign]
+        self.assertTrue(preview.would_advance)
+        self.assertEqual(len(statements), 1)
+        self.assertTrue(statements[0].strip().startswith("SELECT"))
+        self.assertNotIn("BEGIN", " ".join(statements).upper())
 
 
 if __name__ == "__main__":
