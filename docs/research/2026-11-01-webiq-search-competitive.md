@@ -227,6 +227,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | serpstack | Google 结果页 API，月费和年付都印在卡片上 | 直接抓取 [serpstack.com/pricing](https://serpstack.com/pricing)：免费 $0/100 次，仅非商业、仅 JSON。Basic $29.99/月或年付 $26.99/月，5,000 次，超出 $0.023992/次。Business $99.99 或 $87.99，20,000 次，超出 $0.019998/次。Business Pro $199.99 或 $169.99，50,000 次，超出 $0.0159992/次 | API 错误不计入额度。99.9% 是厂商自述，不进延迟图 |
 | Mojeek | 自有索引的网页搜索 API | 官方页源码印的是英镑，不是美元：Startup £2/1,000 次，5 QPS，每天 100,000 次，每次最多 10 条。Business £3/1,000 次，10 QPS，每天 400,000 次，每次最多 40 条。Enterprise 只写 Let's talk，每天不限，每次最多 100 条。价格不含 VAT | 没有把英镑换成美元。Startup 可缓存 1 小时。Business 和 Enterprise 才有无限期存储权。请求参数 `t` 默认 10，标题最长 127，摘要最长 511，包含和排除域名各最多 25 个 |
 | ScraperAPI | 按月 credit 的抓取，Google 和 Bing 是 25 credits | 官方定价页源码：Hobby $49 或年付 $44.10，100,000 credits，20 并发。Startup $149 / $134.10，1,000,000，50。Business $299 / $269.10，3,000,000，100。Scaling $475 / $427.50，5,000,000，200。Professional $975 / $877.50，卡片写 10,500,000，另印 +250K bonus。Advanced $1,975 / $1,777.50，卡片写 21,500,000，另印 +500K bonus。Enterprise 是 Custom，22,000,000+ credits | 年付数字是卡片印出的月均价，不是本仓库折算。bonus 行没有加进或减出 credit 总数。按量的每 credit 美元价没有印出，所以不推导。免费档仍是 1,000 credits、5 并发 |
+| Scrapfly | 按 credit 的抓取 API，简单 HTTP 机房请求是 1 credit | 2026-11-02 官方 [定价页](https://scrapfly.io/pricing)：免费 1,000 credits，无需信用卡，无时限。Discovery $30/月，卡片印 $0.15/1k，200,000 credits，5 并发，没有按量超出。Pro $100/月，$0.10/1k，1,000,000，20 并发，超出 $3.50/10k。Startup $250/月，$0.10/1k，2,500,000，50 并发，超出 $2.00/10k。Enterprise $500/月，$0.09/1k，5,500,000，100 并发，超出 $1.20/10k | Custom 没有美元价。$500 除以 5,500,000 不等于印出的 $0.09，所以两个数字都照印，不互相推导 |
 
 ## 仍未测
 
@@ -263,3 +264,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 05:45 +08：ScraperAPI 定价页源码里的月费卡已写入。Enterprise 仍是 Custom，没有美元价。bonus 行没有并进 credit 总数。按量每 credit 美元价仍未印出。Jina 官方仓库写公开 Reader 可用于生产且免费，但销售页仍没有套餐美元价，所以充值价保持 `not_verified`。仍不推站点。
 
 2026-11-02 05:50 +08：Brave 官方定价页已写入。Search 是 $5/1k，Answers 是 $4/1k 另加 token。每张卡重复的 $5 月度额度没有加总。Serper 首页定价区已写入，`/pricing` 仍是 404。1–2 秒没有入库。Oxylabs 仍然 TLS 失败。仍不推站点。
+
+2026-11-02 05:55 +08：Scrapfly 官方定价卡已写入。Discovery 没有按量超出。Enterprise 印出的 $0.09/1k 与 $500 月费不相除，所以不互相推导。Custom 没有美元价。ZenRows 商店页没有印出套餐美元价，保持未收录。仍不推站点。
