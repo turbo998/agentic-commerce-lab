@@ -125,11 +125,10 @@ OFFICIAL_LIST_PRICE = {
         "note": "One prompt can create more than one billable query. Not a raw SERP price. Not called.",
     },
     "bing_grounding": {
-        "label": "official_list_price",
-        "source": "https://learn.microsoft.com/en-us/azure/foundry-classic/agents/how-to/tools-classic/bing-grounding",
+        "label": "not_verified",
+        "source": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview",
         "verified_on": VERIFIED_ON,
-        "per_1k_transactions_usd": 14.0,
-        "note": "Bing Search APIs retired 2025-08-11. This is not Web IQ. Not called.",
+        "note": "Bing Search APIs retired 2025-08-11. The how-to page fetched here did not show a unit price. Do not copy Google's $14 onto Bing. Not called. Not Web IQ.",
     },
 }
 
@@ -216,8 +215,12 @@ def assert_not_fabricated(report: dict) -> None:
         if row.get("success") in (0, 0.0, "0/0"):
             raise AssertionError("missing success must not be coerced to zero")
     for price in report["official_list_price"].values():
-        if price.get("label") != "official_list_price":
+        if price.get("label") not in ("official_list_price", "not_verified"):
             raise AssertionError("list price must stay labeled")
+        if price.get("label") == "not_verified" and any(
+            key.endswith("_usd") or key.startswith("per_1k") for key in price
+        ):
+            raise AssertionError("an unverified row must not carry a unit price")
         if "latency_ms" in price:
             raise AssertionError("list price must not be stored as latency")
     for route in report.get("scenario_routes", {}).values():
