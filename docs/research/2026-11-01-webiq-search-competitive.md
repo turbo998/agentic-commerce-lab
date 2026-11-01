@@ -95,6 +95,10 @@ Web IQ 不生成最终答案，也不执行页面里的指令。间接提示注�
 
 `liveCrawl=none` 只返回索引；URL 不在索引中则 Browse 404。`fallback` 才会现抓。动态渲染不是默认能力。
 
+2026-11-02 再次抓取 [错误处理](https://learn.microsoft.com/en-us/web-iq/reference/error-handling)、[Browse](https://learn.microsoft.com/en-us/web-iq/reference/browse)、[News](https://learn.microsoft.com/en-us/web-iq/reference/news-search)、[Images](https://learn.microsoft.com/en-us/web-iq/reference/image-search) 和 [Videos](https://learn.microsoft.com/en-us/web-iq/reference/video-search)。字符串枚举不区分大小写。`maxLength` 合法范围是 1 到 500000，越界返回 HTTP 400；没有全文权限时，更大的请求值会被截到 3000，而不是拒绝。相关度选取暂时不可用时，服务返回页首纯文本，响应字段表里没有标记这次回退的字段。MCP 上的 passage 校验失败返回 HTTP 200 且 `result.isError=true`；REST 仍是 400 或 403。旧码 `BrowseApiTooManyOnDemandCrawls` 是 HTTP 430。现行细码 `TooManyOnDemandCrawls` 是 HTTP 429，`retryAfter` 为时间戳。细码默认开启。`DynamicRenderingTimeout`、`FailedNoContent`、`ProcessingTimeout` 都是 HTTP 520，约 5 分钟后再试；动态渲染超时也可以关掉 `renderDynamicPages` 再试。`URLFilteredOutEncumbrance` 是 HTTP 403，约 24 小时，覆盖 robots 和付费墙。`PolitenessCancellation` 是 523，`HostCrawlTimeout` 是 524。`APPID` 查询参数不能和 `x-apikey` 一起送。`X-Augmentations`、`X-DebugOptions`、`X-XapHostOverride` 会被 400 拒绝。
+
+News 的 `maxResults` 默认 10、最大 20。`lastUpdatedAt` 和缩略图都可以缺。Images 的 `maxResults` 默认且最大 30。`aspectRatio` 为 `square` / `wide` / `tall`。`color` 为 `colorOnly` / `monochrome`。`safeSearch` 默认 `strict`，只有 `off` 和 `strict`。`imageSize`：`small` 小于 200×200，`medium` 边长 200–500，`large` 任一边至少 500，`extraLarge` 大于 1024×768。像素约束与 `imageSize` 冲突时，像素约束优先。`caption` 是生成描述。Videos 的 `freshness` 支持 `week` / `month` / `year`，或用 `..` 省略起止的 ISO 区间。`resolution` 是最低分辨率：`360p`、`480p`、`720p`、`1080p`。`duration`：`short` 短于 5 分钟，`medium` 5–20 分钟，`long` 长于 20 分钟。`description` 可能由上传者或模型生成，`summary` 是 AI 摘要。两者都不是出版商证据，不能用来确认召回或价格。
+
 ### 厂商公布的基准，不是本仓库复现
 
 [Learn benchmarks](https://learn.microsoft.com/en-us/web-iq/concepts/benchmarks)（页面更新 2026-10-13）公布：
@@ -243,3 +247,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 01:35 +08：Perplexity Search 总览写一次请求最多 5 个 query，计费仍是 1 次，但限流按每个 query 计 1 个单位。网页 `max_results` 1–20，people 最多 50。`max_tokens` 与 `max_tokens_per_page` 各为 1 到 1,000,000，改的是返回量，不是价格。Bright Data 介绍页的 “under 1 second” 没有入库。Linkup quickstart 确认 `https://api.linkup.so/v1/search`。仍不推站点。
 
 2026-11-02 02:35 +08：Brave Web Search 参考写 `count` 默认 20、最大 20，只作用于网页结果。LLM Context 的 count 上限仍是 50。`offset` 最大 9，翻页结果可以重叠。`extra_snippets` 最多再给 5 段。单价仍未复核。Tavily Extract 一次最多 20 个 URL。basic 是每 5 个成功 URL 1 credit，advanced 是 2。HTTP 200 仍可能带 `failed_results`。Exa quickstart 写默认 10 条，`numResults` 最多 100，搜索不支持翻页。仍不推站点。
+
+2026-11-02 03:35 +08：Web IQ 错误码和图像/视频参数已从 Learn 参考页写入。旧的现抓过多是 HTTP 430，现行细码是 429。MCP passage 校验失败是 HTTP 200 加 `isError`。Jina Reader 页写搜索 JSON 返回 5 条，OCR 是 40 倍 token，不是美元单价。Serper 首页仍无标价。Oxylabs 定价页再次 TLS 失败。仍不推站点。
