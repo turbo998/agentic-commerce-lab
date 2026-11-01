@@ -222,7 +222,10 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Oxylabs | SERP 抓取 | `oxylabs.io` 定价 URL 本次 TLS 失败。没有抄第三方摘录 | 单价保持 `not_verified` |
 | Browserbase | 浏览器基础设施，搜索是转售选项 | 直接抓取 [browserbase.com/pricing](https://www.browserbase.com/pricing)：Free $0 含 1,000 次搜索。Developer $20、Startup $99 也各含 1,000 次，超出默认 $5/1k。对比表另写 Parallel Fast $1、Parallel Advanced $5、Exa Fast $7、Exa Deep $12，都是每 1,000 次。列出的三档搜索 RPS 都是每项目 2 | 这是 Browserbase 页上的转售价，不覆盖 Parallel 与 Exa 自己的标价 |
 | Spider | 按带宽和 CPU 计费的抓取 | 直接抓取 [spider.cloud/pricing](https://spider.cloud/pricing/)：带宽 $1/GB，CPU $0.0001/分钟。失败请求 $0。Unlimited 按并发计，2 并发 $40/月起。Google 搜索不在 Unlimited 里，要走按量 | 没有单次搜索标价。零数据保留是 2.5 倍。10,000 RPM 是限额，不是延迟 |
-| Scale SERP | 现由 Traject Data 托管的月搜索档 | `scaleserp.com/pricing` 跳到 [trajectdata.com 定价](https://trajectdata.com/serp/scale-serp-api/pricing/)。本次看到的是年付视图：1,000 次 $23/月，超出 $0.038/次；10,000 次 $66/月，超出 $0.0118；50,000 次 $199，超出 $0.00796；250,000 次 $599，超出 $0.004792；100 万次 $1,699，超出 $0.003398；500 万次 $4,999，超出 $0.001999。免费档每月 125 次成功搜索 | 月付切换价本次没看到，不要把年付月费当成月付标价。页面写 Traject Data 并入 ScraperAPI |
+| Scale SERP | 现由 Traject Data 托管的月搜索档 | `scaleserp.com/pricing` 跳到 [trajectdata.com 定价](https://trajectdata.com/serp/scale-serp-api/pricing/)。年付卡片：1,000 次 $23/月，超出 $0.038/次；10,000 次 $66/月，超出 $0.0118；50,000 次 $199，超出 $0.00796；250,000 次 $599，超出 $0.004792；100 万次 $1,699，超出 $0.003398；500 万次 $4,999，超出 $0.001999。免费档每月 125 次成功搜索 | 页面脚本只切换两档月付价：1,000 次 $29/月，10,000 次 $83/月。更高档的月付价不在脚本里。超出单价印在年付卡片上，不在切换脚本里。卡片写最多 10,000 个 Batches。FAQ 写一个 Batch 最多排入 15,000 次搜索。两者单位不同 |
+| Value SERP | Traject Data 的另一条 SERP API | `valueserp.com/pricing` 跳到 [产品页](https://trajectdata.com/serp/value-serp-api/)。年付卡片：25,000 credits $50/月，卡片另印 $1.60/1k，实时 250 次/分钟；200,000 credits $240/月、$1.20/1k、1,000 次/分钟；1,000,000 credits $1,000/月、$1.00/1k、1,500 次/分钟 | 脚本只把 25,000 档从年付 $50 改成月付 $56。另外两档的月付标题不在脚本里。$50 除以 25,000 不等于印出的 $1.60，所以不互相推导。同页还写 “from $2.50/1k” 和 “as low as $0.50/1k”，两者彼此不符，也不符卡片，不入库 |
+| serpstack | Google 结果页 API，月费和年付都印在卡片上 | 直接抓取 [serpstack.com/pricing](https://serpstack.com/pricing)：免费 $0/100 次，仅非商业、仅 JSON。Basic $29.99/月或年付 $26.99/月，5,000 次，超出 $0.023992/次。Business $99.99 或 $87.99，20,000 次，超出 $0.019998/次。Business Pro $199.99 或 $169.99，50,000 次，超出 $0.0159992/次 | API 错误不计入额度。99.9% 是厂商自述，不进延迟图 |
+| Mojeek | 自有索引的网页搜索 API | 官方页源码印的是英镑，不是美元：Startup £2/1,000 次，5 QPS，每天 100,000 次，每次最多 10 条。Business £3/1,000 次，10 QPS，每天 400,000 次，每次最多 40 条。Enterprise 只写 Let's talk，每天不限，每次最多 100 条。价格不含 VAT | 没有把英镑换成美元。Startup 可缓存 1 小时。Business 和 Enterprise 才有无限期存储权。请求参数 `t` 默认 10，标题最长 127，摘要最长 511，包含和排除域名各最多 25 个 |
 
 ## 仍未测
 
@@ -253,3 +256,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 03:35 +08：Web IQ 错误码和图像/视频参数已从 Learn 参考页写入。旧的现抓过多是 HTTP 430，现行细码是 429。MCP passage 校验失败是 HTTP 200 加 `isError`。Jina Reader 页写搜索 JSON 返回 5 条，OCR 是 40 倍 token，不是美元单价。Serper 首页仍无标价。Oxylabs 定价页再次 TLS 失败。仍不推站点。
 
 2026-11-02 04:35 +08：Exa Contents、Tavily Crawl 和 Parallel Extract 的官方上限已写入。Crawl 带 instructions 时映射是每 10 个成功页 2 credits。ScraperAPI 只记录了 credit 成本，没有美元单价。Serper 文档页 404。第三方价格没有抄入。仍不推站点。
+
+2026-11-02 05:40 +08：Scale SERP 页面脚本只给出 1,000 次月付 $29 和 10,000 次月付 $83。更高档月付价仍未见。Value SERP、serpstack 和 Mojeek 的官方标价已写入。Mojeek 是英镑，没有换算成美元。Value SERP 页上的 $2.50 和 $0.50 与卡片不符，没有入库。Oxylabs 05:35 重试仍是 TLS 失败。Brave 营销页毫秒表没有入库。仍不推站点。
