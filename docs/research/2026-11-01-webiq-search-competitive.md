@@ -195,7 +195,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 
 | 产品 | 角色 | official_list_price | 商业代理注意 |
 |---|---|---|---|
-| Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次 | Sonar Chat Completions 已于 2026-09-27 停止支持。空 snippet 不能改价 |
+| Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次。Agent 工具另计：web_search $0.0025，fast $0.001，fetch_url $0.0005，sandbox $0.03/会话 | 成功但空结果仍计费。抽取长度不改变 Search API 价格。空 snippet 不能改价 |
 | Brave Search | 自有索引。仪表盘未渲染出价格 | 2026-11-01 再次抓取定价仪表盘仍是空壳。先前的 $5/1k 与 Answers $4/1k 降为 `not_verified` | 不要把研究提取当成标价 |
 | Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
 | Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 2026-11-01 直接抓取 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis)：Search 与 Custom Search 都是 $14/1,000 transactions，150 TPS，每天 100 万次。Learn how-to 页没有单价，链接指向该页。不是从 Google 抄来的 | 这不是 Web IQ。输出不能直接拿去别的程序用 |
@@ -204,9 +204,14 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | SerpAPI | Google 结果页解析，只有月费档 | 直接抓取 [serpapi.com/pricing](https://serpapi.com/pricing)：Free $0/250 次，Starter $25/1,000，Developer $75/5,000，Production $150/15,000，Cloud 1M $3,750/1,000,000。页面继续列出更高 Cloud 月费档。没有单次单价。先前“缓存免费”本次未见 | 不要把月费除以次数当成标价 |
 | Serper | Google 结果页 | `https://serper.dev/pricing` 本次 404。首页抓取没有标价。先前 $1.00/1k 与 $0.30/1k 降为 `not_verified` | 不能当政策页 |
 | Firecrawl | 按 credit 的抓取和搜索，不是原始 SERP 单价 | 直接抓取 [pricing.md](https://www.firecrawl.dev/pricing.md)：Free 1,000 credits/$0；Hobby $19 或年付折合 $16/月；Standard $99 或 $83；Growth $399 或 $333；Scale $749 或 $599。Search 2 credits/10 条；Scrape/Crawl 1 credit/页。定价表写 Interact 2 credits/浏览器分钟，[计费文档](https://docs.firecrawl.dev/billing) 写 2–7，prompt 会话为 7。两页并存，不合并 | 搜索和抓取共用一个 credit 余额。不要把月费除成单次标价 |
+| Google Custom Search JSON API | 可编程搜索的 JSON 网页或图片结果 | 直接抓取 [overview](https://developers.google.com/custom-search/v1/overview)：仅存量客户，2027-01-01 停服。每天 100 次免费，超出 $5/1,000 次，付费上限每天 10,000 次。新客户不可开通 | 不是 Gemini Grounding，也不是原始 SERP |
+| Claude web search | 模型决定何时搜索，调用方拿到带引用的答案 | 直接抓取 [定价页](https://platform.claude.com/docs/en/about-claude/pricing)：Claude API 每 1,000 次搜索 $10，另加 token。无论返回几条都算 1 次。出错不计费。web fetch 没有额外费用，只计 token。Foundry 只支持 `web_search_20250305`，没有 dynamic filtering | 这不是可缓存的原始 passage。不能把模型答案当成结账依据 |
+| Jina Reader / Search | URL 转 Markdown，或搜索后转 Markdown | [contact-sales](https://jina.ai/contact-sales/) 只看到限额：Reader 无密钥 20 RPM，免费/付费 500，Premium 5,000。Search 免费/付费 100 RPM，Premium 1,000。Search 每次至少 10,000 tokens。美元充值价本次页面没有 | 7.9s 与 2.5s 是厂商自述，不进延迟图。单价保持 `not_verified` |
 
 ## 仍未测
 
 门户没有可用的评测密钥，竞品密钥也不在环境里。五家调用状态仍是 `not_measured`。厂商公布的 164 ms、under 1 second、under 5 sec、200 ms–3 s 都不进入本仓库延迟图。7-card 继续暂缓。
 
 2026-11-01 23:50 +08 更正：Bing grounding 的 $14/1k 已在 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis) 看到，不再是未复核。Bright Data SERP 与 Unlocker 的 $1.50/$499 包含量也在官方定价页再次确认。Brave 营销页没有单价，其上的 AIMultiple 毫秒表不进延迟图。个人站发布窗口仍未解除，不改站点。
+
+2026-11-02 00:05 +08：Google Custom Search JSON API 与 Claude web search 的单价已从官方页写入。Jina 只核到 RPM，美元充值价仍是 `not_verified`。`serper.dev/pricing` 再次 404。Brave 文档定价 URL 返回 403，维持未复核。

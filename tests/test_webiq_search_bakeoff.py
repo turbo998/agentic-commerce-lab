@@ -84,6 +84,16 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertEqual(report["official_list_price"]["serpapi"]["plans_usd_per_month"]["starter"], 25.0)
         self.assertEqual(report["official_list_price"]["brave_search"]["label"], "not_verified")
         self.assertEqual(report["official_list_price"]["serper"]["label"], "not_verified")
+        self.assertEqual(report["official_list_price"]["jina_reader"]["label"], "not_verified")
+        self.assertEqual(report["official_list_price"]["jina_reader"]["search_token_floor"], 10000)
+        cse = report["official_list_price"]["google_custom_search"]
+        self.assertEqual(cse["per_1k_queries_usd"], 5.0)
+        self.assertEqual(cse["discontinued_on"], "2027-01-01")
+        self.assertEqual(report["official_list_price"]["anthropic_web_search"]["per_1k_searches_usd"], 10.0)
+        self.assertEqual(
+            report["official_list_price"]["perplexity_search"]["agent_tool_usd_per_invocation"]["web_search"],
+            0.0025,
+        )
         prices = report["official_list_price"]
         self.assertEqual(prices["webiq"]["per_1k_usd"]["browse"], 1.0)
         self.assertEqual(prices["exa"]["per_1k_usd"]["deep_reasoning"], 15.0)
