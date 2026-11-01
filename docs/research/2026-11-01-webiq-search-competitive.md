@@ -29,9 +29,9 @@
 |---|---|---|---|
 | Web IQ | `/web`、`/video`、`/news`、`/images` 每 1,000 次 $7；`/browse` 每 1,000 次 $1。生效日 2026-10-16，页面更新 2026-10-29。 | [定价](https://learn.microsoft.com/en-us/web-iq/resources/pricing) | Auto beta 不计费，不是延迟。 |
 | Bright Data SERP | 每月 5,000 次免费；按量每 1,000 次成功请求 $1.50；Scale $499/月含 380,000 次，超出每 1,000 次 $1.30。页面写明展示价可能是本币估算，USD 为结算价。 | [SERP 定价](https://brightdata.com/pricing/serp) | 「under 1 second」是营销句，不是测量。 |
-| Exa | lite / instant 搜索每 1,000 次 $4，最多 10 条结果；auto / fast 每 1,000 次 $7；contents 每 1,000 页 $1；额外结果每 1,000 条 $1。 | [定价](https://exa.ai/pricing) | 无本次延迟。 |
-| Tavily | basic search 1 credit，advanced search 2 credits；按量 $0.008/credit；每月 1,000 免费 credits。 | [API credits](https://docs.tavily.com/documentation/api-credits) | 无本次延迟。 |
-| Parallel | turbo / fast 每 1,000 次 $1，含 10 条结果；basic / advanced 每 1,000 次 $5；extract 每 1,000 个 URL $1。 | [定价](https://docs.parallel.ai/getting-started/pricing) | 页面上的 200 ms–3 s 标为 `vendor_stated`，不是本仓库测量。 |
+| Exa | lite/instant $4/1k，auto/fast $7/1k，contents 每种内容 $1/1k 页，answer $5/1k，monitors $15/1k。deep-lite/deep $12/1k，deep-reasoning $15/1k。Agent 固定档 $0.012–$1.00/次。免费额度 $10，每月 1 日重置。 | [定价](https://exa.ai/pricing) | 页面上的秒数是厂商自述，不进延迟图。 |
+| Tavily | basic search 1 credit，advanced 2 credits。按量 $0.008/credit。文档表自带单价：Project $0.0075，Bootstrap $0.0067，Startup $0.0058，Growth $0.005。Research pro 15–250 credits，mini 4–110。每月 1,000 免费 credits。 | [API credits](https://docs.tavily.com/documentation/api-credits) | 失败的抽取和 Map 不计费。无本次延迟。 |
+| Parallel | turbo/fast $1/1k，basic/advanced $5/1k，额外结果 $1/1k。extract $1/1k URL。Task lite $5/1k 成功运行，ultra8x $2,400/1k。Responses medium $50/1k。 | [定价](https://docs.parallel.ai/getting-started/pricing) | 页面上的 200 ms–3 s 是 `vendor_stated`。本次抓取没有看到请求默认 mode。 |
 
 ## 离线契约
 
@@ -204,7 +204,6 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | SerpAPI | Google 结果页解析，只有月费档 | 直接抓取 [serpapi.com/pricing](https://serpapi.com/pricing)：Free $0/250 次，Starter $25/1,000，Developer $75/5,000，Production $150/15,000，Cloud 1M $3,750/1,000,000。页面继续列出更高 Cloud 月费档。没有单次单价。先前“缓存免费”本次未见 | 不要把月费除以次数当成标价 |
 | Serper | Google 结果页 | `https://serper.dev/pricing` 本次 404。首页抓取没有标价。先前 $1.00/1k 与 $0.30/1k 降为 `not_verified` | 不能当政策页 |
 | Firecrawl | 按 credit 的抓取和搜索，不是原始 SERP 单价 | 直接抓取 [pricing.md](https://www.firecrawl.dev/pricing.md)：Free 1,000 credits/$0；Hobby $19 或年付折合 $16/月；Standard $99 或 $83；Growth $399 或 $333；Scale $749 或 $599。Search 2 credits/10 条；Scrape/Crawl 1 credit/页。定价表写 Interact 2 credits/浏览器分钟，[计费文档](https://docs.firecrawl.dev/billing) 写 2–7，prompt 会话为 7。两页并存，不合并 | 搜索和抓取共用一个 credit 余额。不要把月费除成单次标价 |
-| Firecrawl | 搜索可选带页面抽取 | 搜索每 10 条结果 2 credits，向上取整。抓取另计。不把 credit 换算成未公布的美元单价 | snippet 不能决定补货或退货期限 |
 
 ## 仍未测
 

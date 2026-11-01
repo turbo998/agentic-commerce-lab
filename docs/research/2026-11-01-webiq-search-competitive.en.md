@@ -29,9 +29,9 @@ Every row is labeled `official_list_price`. Verified 2026-11-01. These numbers a
 |---|---|---|---|
 | Web IQ | `/web`, `/video`, `/news`, `/images` $7 per 1,000; `/browse` $1 per 1,000. Effective 2026-10-16; page updated 2026-10-29. | [Pricing](https://learn.microsoft.com/en-us/web-iq/resources/pricing) | Uncharged Auto beta is not a latency figure. |
 | Bright Data SERP | 5,000 free requests per month; pay as you go $1.50 per 1,000 successful requests; Scale $499/month includes 380,000, then $1.30 per 1,000. The page says displayed prices can be local-currency estimates and USD is binding. | [SERP pricing](https://brightdata.com/pricing/serp) | "Under 1 second" is marketing, not a measurement. |
-| Exa | Lite / instant search $4 per 1,000 for up to 10 results; auto / fast $7 per 1,000; contents $1 per 1,000 pages; extra results $1 per 1,000. | [Pricing](https://exa.ai/pricing) | No latency from this run. |
-| Tavily | Basic search 1 credit, advanced search 2 credits; pay as you go $0.008 per credit; 1,000 free credits per month. | [API credits](https://docs.tavily.com/documentation/api-credits) | No latency from this run. |
-| Parallel | Turbo / fast $1 per 1,000 including 10 results; basic / advanced $5 per 1,000; extract $1 per 1,000 URLs. | [Pricing](https://docs.parallel.ai/getting-started/pricing) | The page's 200 ms–3 s range is `vendor_stated`, not a measurement from this repo. |
+| Exa | Lite/instant $4/1k, auto/fast $7/1k, contents $1/1k pages per content type, answer $5/1k, monitors $15/1k. deep-lite/deep $12/1k, deep-reasoning $15/1k. Fixed Agent effort is $0.012–$1.00 per request. Free credit is $10 and resets on the first of each month. | [Pricing](https://exa.ai/pricing) | Seconds on that page are vendor-stated and stay out of the latency chart. |
+| Tavily | Basic search is 1 credit, advanced is 2. Pay as you go is $0.008/credit. The docs table publishes Project $0.0075, Bootstrap $0.0067, Startup $0.0058, Growth $0.005 per credit. Research pro is 15–250 credits, mini is 4–110. 1,000 free credits per month. | [API credits](https://docs.tavily.com/documentation/api-credits) | Failed extractions and failed map requests are not billed. No latency from this run. |
+| Parallel | Turbo/fast $1/1k, basic/advanced $5/1k, extra results $1/1k. Extract $1/1k URLs. Task lite $5/1k successful runs, ultra8x $2,400/1k. Responses medium $50/1k. | [Pricing](https://docs.parallel.ai/getting-started/pricing) | The page's 200 ms–3 s range is `vendor_stated`. This fetch did not show the request-default mode. |
 
 ## Offline contract
 
@@ -202,7 +202,6 @@ These unit prices come from public pricing pages. This repo did not call them. L
 | SerpAPI | Parsed Google result pages. Monthly plans only | Fetched from [serpapi.com/pricing](https://serpapi.com/pricing): Free $0/250, Starter $25/1,000, Developer $75/5,000, Production $150/15,000, Cloud 1M $3,750/1,000,000. The page continues with higher Cloud monthly tiers. No per-search unit rate. “Cached searches are free” was not on this fetch | Do not divide a monthly plan into a fake unit price |
 | Serper | Google result pages | `https://serper.dev/pricing` returned 404. The homepage fetch showed no list price. The earlier $1.00/1k and $0.30/1k figures are now `not_verified` | Not a policy page |
 | Firecrawl | Credit-metered scrape and search, not a raw SERP unit price | Fetched from [pricing.md](https://www.firecrawl.dev/pricing.md): Free 1,000 credits/$0; Hobby $19 or $16/month billed annually; Standard $99 or $83; Growth $399 or $333; Scale $749 or $599. Search is 2 credits per 10 results; Scrape and Crawl are 1 credit per page. pricing.md says Interact is 2 credits per browser minute; the [billing page](https://docs.firecrawl.dev/billing) says 2–7, with prompt sessions at 7. Both stand | Search and scrape share one credit balance. Do not divide a plan into a per-call list price |
-| Firecrawl | Search with optional page extract | Search is 2 credits per 10 results, rounded up. Scrape credits are extra. Credits are not converted here into an unpublished dollar unit | A snippet cannot decide replenishment or a return window |
 
 ## Still not measured
 
