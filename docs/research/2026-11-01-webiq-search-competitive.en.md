@@ -178,6 +178,22 @@ These are public terms, not measurements from this repo.
 - The published MCP tool list has no Auto tool. Auto is REST beta only.
 - The image reference has no field named `license`. The pricing page's "licensing info" line does not name a published field.
 
+## Peer retrieval APIs, official pages, 2026-11-01
+
+These unit prices come from public pricing pages. This repo did not call them. Latency sentences stay `vendor_stated` and are not plotted.
+
+| Product | Role | official_list_price | Commerce constraint |
+|---|---|---|---|
+| Perplexity Search API | Ranked results plus snippets, not a generated answer | Standard $5/1k successful requests; fast $1/1k. Up to five queries in one request are still one unit | Sonar Chat Completions support ended 2026-09-27. An empty snippet cannot change a price |
+| Brave Search | Own index. Web, LLM Context, images, news, videos | $5/1k requests, with $5 of credits per month. Answers are $4/1k plus tokens | A direct fetch of the pricing dashboard returned a shell. This $5 comes from that official pricing URL and was not re-rendered in this session |
+| Grounding with Google Search | A Gemini tool over the public web, not a raw SERP | 5,000 free Grounding Queries per month, then $14/1k. One prompt can create more than one billable query | Sample `uri` values can be Google Search URLs. That is not the retailer page |
+| Grounding with Bing | The model searches Bing and returns a cited answer. Developers do not receive the raw Bing payload | $14/1k transactions. Bing Search APIs retired 2025-08-11 | This is not Web IQ. The FAQ does not map the two products together |
+| You.com Web Search | Index plus optional full page | Web Search $5/1k for up to 100 results. Full-page live crawl $1/1k pages. Cache hits are free | Cite Contents or `full_page` before a price change. Do not stop at Answer |
+| Linkup | Index retrieval, optional scrape and answer | flash/fast/standard `searchResults` are $0.005 per successful call. Deep `searchResults` is $0.05. Failures are not billed | `sourcedAnswer` is model-written. It is not the decision record |
+| SerpAPI | Parsed Google result pages | Monthly plans. No published per-search unit rate. Do not divide a plan into a fake unit price. Cached searches are free | Use it to find the official URL, then fetch that page |
+| Serper | Google result pages | Prepaid packs from $1.00/1k credits at 50k down to $0.30/1k at 12.5M. The public parameter reference returned 404 | Same limit as SerpAPI. Not a policy page |
+| Firecrawl | Search with optional page extract | Search is 2 credits per 10 results, rounded up. Scrape credits are extra. Credits are not converted here into an unpublished dollar unit | A snippet cannot decide replenishment or a return window |
+
 ## Still not measured
 
 The portal had no eval key that this research is allowed to use for metrics, and competitor keys are not in the environment. All five providers remain `not_measured`. The published 164 ms, under 1 second, under 5 sec, and 200 ms–3 s figures stay out of this repo's latency chart. The 7-card stays withheld.

@@ -116,6 +116,21 @@ OFFICIAL_LIST_PRICE = {
         "per_1k_successful_requests_usd": {"search": 5.0, "search_fast": 1.0},
         "note": "One POST /search with up to five queries is one billing unit. Not called.",
     },
+    "google_grounding": {
+        "label": "official_list_price",
+        "source": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+        "verified_on": VERIFIED_ON,
+        "free_grounding_queries_per_month": 5000,
+        "per_1k_grounding_queries_usd": 14.0,
+        "note": "One prompt can create more than one billable query. Not a raw SERP price. Not called.",
+    },
+    "bing_grounding": {
+        "label": "official_list_price",
+        "source": "https://learn.microsoft.com/en-us/azure/foundry-classic/agents/how-to/tools-classic/bing-grounding",
+        "verified_on": VERIFIED_ON,
+        "per_1k_transactions_usd": 14.0,
+        "note": "Bing Search APIs retired 2025-08-11. This is not Web IQ. Not called.",
+    },
 }
 
 # Architecture guidance only. These routes are not a measured winner.

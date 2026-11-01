@@ -180,6 +180,22 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 - MCP 已公布的工具没有 Auto。Auto 只在 REST beta。
 - 参考里没有名为 `license` 的图片字段。定价页的 “licensing info” 没有对应到已公布字段名。
 
+## 同级检索 API（官方页，2026-11-01）
+
+这些单价来自各家公开定价页，本仓库没有调用。延迟句子仍是 `vendor_stated`，不进图。
+
+| 产品 | 角色 | official_list_price | 商业代理注意 |
+|---|---|---|---|
+| Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次 | Sonar Chat Completions 已于 2026-09-27 停止支持。空 snippet 不能改价 |
+| Brave Search | 自有索引。Web / LLM Context / 图片 / 新闻 / 视频 | $5/1k 请求，每月 $5 额度。Answers 另计 $4/1k 加 token | 直接抓取定价仪表盘得到的是空壳。这个 $5 来自该官方定价 URL 的研究提取，页面未能在本次渲染中复核 |
+| Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
+| Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | $14/1k transactions。Bing Search APIs 已于 2025-08-11 停用 | 这不是 Web IQ。FAQ 没有把两者写成同一产品 |
+| You.com Web Search | 索引加可选全文 | Web Search $5/1k，最多 100 条同价。全文现抓 $1/1k 页。缓存命中不计 | 改价前要 Contents 或 `full_page`，不能只留 Answer |
+| Linkup | 索引检索，可选抓取和答案 | `searchResults` 的 flash/fast/standard 每次 $0.005。deep `searchResults` 每次 $0.05。失败不计费 | `sourcedAnswer` 是模型写的，不能当裁决记录 |
+| SerpAPI | Google 结果页解析 | 月费档，不公布单次单价。不要把套餐除出来当成标价。缓存免费，失败不计 | 只用来发现官方 URL |
+| Serper | Google 结果页 | 预充值：50k 档 $1.00/1k credits，往下到 12.5M 档 $0.30/1k。公开参数表本次 404 | 和 SerpAPI 一样，不能当政策页 |
+| Firecrawl | 搜索可选带页面抽取 | 搜索每 10 条结果 2 credits，向上取整。抓取另计。不把 credit 换算成未公布的美元单价 | snippet 不能决定补货或退货期限 |
+
 ## 仍未测
 
 门户没有可用的评测密钥，竞品密钥也不在环境里。五家调用状态仍是 `not_measured`。厂商公布的 164 ms、under 1 second、under 5 sec、200 ms–3 s 都不进入本仓库延迟图。7-card 继续暂缓。

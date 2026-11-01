@@ -50,6 +50,9 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertEqual(report["official_list_price"]["brightdata_scraper"]["scale_included_records"], 384000)
         self.assertEqual(report["official_list_price"]["brightdata_browser"]["payg_usd_per_gb"], 8.0)
         self.assertEqual(report["official_list_price"]["perplexity_search"]["per_1k_successful_requests_usd"]["search_fast"], 1.0)
+        self.assertEqual(report["official_list_price"]["google_grounding"]["per_1k_grounding_queries_usd"], 14.0)
+        self.assertEqual(report["official_list_price"]["bing_grounding"]["per_1k_transactions_usd"], 14.0)
+        self.assertNotIn("latency_ms", report["official_list_price"]["bing_grounding"])
         for route in routes.values():
             self.assertEqual(route["label"], "architecture_guidance")
             self.assertNotIn("latency_ms", route)
