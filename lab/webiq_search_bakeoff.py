@@ -77,7 +77,98 @@ OFFICIAL_LIST_PRICE = {
         "scale_included_requests": 380000,
         "scale_additional_usd_per_1k": 1.3,
         "free_requests_per_month": 5000,
-        "note": "Page says displayed prices can be local-currency estimates and USD is binding.",
+        "note": "Page says displayed prices can be local-currency estimates and USD is binding. This row is SERP, not Web Unlocker.",
+    },
+    "brightdata_unlocker": {
+        "label": "official_list_price",
+        "source": "https://brightdata.com/pricing/web-unlocker",
+        "verified_on": VERIFIED_ON,
+        "payg_usd_per_1k_successful": 1.5,
+        "scale_usd_per_month": 499,
+        "scale_included_requests": 383000,
+        "scale_additional_usd_per_1k": 1.3,
+        "free_requests_per_month": 5000,
+        "note": "Unlocker Scale includes 383,000 requests. Do not copy SERP's 380,000 onto this row.",
+    },
+    "brightdata_browser": {
+        "label": "official_list_price",
+        "source": "https://brightdata.com/pricing/scraping-browser",
+        "verified_on": VERIFIED_ON,
+        "payg_usd_per_gb": 8.0,
+        "scale_usd_per_month": 499,
+        "scale_included_gb": 71,
+        "note": "Scale overage per GB was not in the static page. Not a request price.",
+    },
+    "brightdata_scraper": {
+        "label": "official_list_price",
+        "source": "https://brightdata.com/pricing/web-scraper",
+        "verified_on": VERIFIED_ON,
+        "payg_usd_per_1k_records": 1.5,
+        "scale_usd_per_month": 499,
+        "scale_included_records": 384000,
+        "scale_additional_usd_per_1k": 1.3,
+        "note": "384,000 included records. Not SERP 380,000 or Unlocker 383,000.",
+    },
+    "perplexity_search": {
+        "label": "official_list_price",
+        "source": "https://docs.perplexity.ai/docs/getting-started/pricing.md",
+        "verified_on": VERIFIED_ON,
+        "per_1k_successful_requests_usd": {"search": 5.0, "search_fast": 1.0},
+        "note": "One POST /search with up to five queries is one billing unit. Not called.",
+    },
+    "google_grounding": {
+        "label": "official_list_price",
+        "source": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+        "verified_on": VERIFIED_ON,
+        "free_grounding_queries_per_month": 5000,
+        "per_1k_grounding_queries_usd": 14.0,
+        "note": "One prompt can create more than one billable query. Not a raw SERP price. Not called.",
+    },
+    "bing_grounding": {
+        "label": "not_verified",
+        "source": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview",
+        "verified_on": VERIFIED_ON,
+        "note": "Bing Search APIs retired 2025-08-11. The how-to page fetched here did not show a unit price. Do not copy Google's $14 onto Bing. Not called. Not Web IQ.",
+    },
+}
+
+# Architecture guidance only. These routes are not a measured winner.
+SCENARIO_ROUTES = {
+    "price_evidence": {
+        "label": "architecture_guidance",
+        "primary": "webiq",
+        "calls": ("POST /v3/search/web contentFormat=passage", "POST /v3/browse on the cited URL"),
+        "do_not": "Do not change an authorized amount from a SERP snippet.",
+    },
+    "return_policy": {
+        "label": "architecture_guidance",
+        "primary": "webiq",
+        "calls": ("POST /v3/browse passage plus non-blank query",),
+        "do_not": "Do not buy a SERP call for one known policy URL.",
+    },
+    "recall_news": {
+        "label": "architecture_guidance",
+        "primary": "webiq",
+        "calls": ("POST /v3/search/news",),
+        "do_not": "Web has no date filter. Do not treat an old web passage as no recall today.",
+    },
+    "serp_monitor": {
+        "label": "architecture_guidance",
+        "primary": "brightdata",
+        "calls": ("SERP API with gl and hl on the engine URL",),
+        "do_not": "Do not treat a result page as the publisher page.",
+    },
+    "blocked_html": {
+        "label": "architecture_guidance",
+        "primary": "brightdata_unlocker",
+        "calls": ("Web Unlocker for raw HTML", "or Exa /contents, Tavily Extract, Parallel Extract for page text"),
+        "do_not": "Unlocker is not a click-through checkout browser.",
+    },
+    "browser_interaction": {
+        "label": "architecture_guidance",
+        "primary": "brightdata",
+        "calls": ("Browser API",),
+        "do_not": "Browse renderDynamicPages only renders when liveCrawl is fallback. It does not submit forms.",
     },
 }
 
@@ -108,6 +199,7 @@ def summarize(env: Mapping[str, str] | None = None) -> dict:
         "queries": [dict(item) for item in SEALED_QUERIES],
         "providers": [provider_row(name, source) for name in ENV_KEYS],
         "official_list_price": OFFICIAL_LIST_PRICE,
+        "scenario_routes": SCENARIO_ROUTES,
         "seven_card": "withheld_until_measured_latency_exists",
     }
     assert_not_fabricated(report)
@@ -123,10 +215,19 @@ def assert_not_fabricated(report: dict) -> None:
         if row.get("success") in (0, 0.0, "0/0"):
             raise AssertionError("missing success must not be coerced to zero")
     for price in report["official_list_price"].values():
-        if price.get("label") != "official_list_price":
+        if price.get("label") not in ("official_list_price", "not_verified"):
             raise AssertionError("list price must stay labeled")
+        if price.get("label") == "not_verified" and any(
+            key.endswith("_usd") or key.startswith("per_1k") for key in price
+        ):
+            raise AssertionError("an unverified row must not carry a unit price")
         if "latency_ms" in price:
             raise AssertionError("list price must not be stored as latency")
+    for route in report.get("scenario_routes", {}).values():
+        if route.get("label") != "architecture_guidance":
+            raise AssertionError("scenario route must stay guidance, not a measured winner")
+        if "latency_ms" in route or route.get("latency") in (0, 0.0):
+            raise AssertionError("scenario route must not invent latency")
 
 
 def grounding_architecture_comparison() -> list[dict]:

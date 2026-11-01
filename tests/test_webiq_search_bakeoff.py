@@ -47,6 +47,28 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertFalse(by_provider["foundry_bing_grounding"]["caller_receives_raw_passages"])
         self.assertFalse(by_provider["foundry_bing_grounding"]["pre_llm_deterministic_sanitization"])
 
+    def test_scenario_routes_are_guidance_not_latency(self):
+        report = summarize({})
+        routes = report["scenario_routes"]
+        self.assertEqual(routes["price_evidence"]["primary"], "webiq")
+        self.assertEqual(routes["recall_news"]["calls"], ("POST /v3/search/news",))
+        self.assertEqual(routes["serp_monitor"]["primary"], "brightdata")
+        self.assertEqual(routes["blocked_html"]["primary"], "brightdata_unlocker")
+        unlocker = report["official_list_price"]["brightdata_unlocker"]
+        serp = report["official_list_price"]["brightdata"]
+        self.assertEqual(unlocker["scale_included_requests"], 383000)
+        self.assertEqual(serp["scale_included_requests"], 380000)
+        self.assertNotEqual(unlocker["scale_included_requests"], serp["scale_included_requests"])
+        self.assertEqual(report["official_list_price"]["brightdata_scraper"]["scale_included_records"], 384000)
+        self.assertEqual(report["official_list_price"]["brightdata_browser"]["payg_usd_per_gb"], 8.0)
+        self.assertEqual(report["official_list_price"]["perplexity_search"]["per_1k_successful_requests_usd"]["search_fast"], 1.0)
+        self.assertEqual(report["official_list_price"]["google_grounding"]["per_1k_grounding_queries_usd"], 14.0)
+        self.assertEqual(report["official_list_price"]["bing_grounding"]["label"], "not_verified")
+        self.assertNotIn("per_1k_transactions_usd", report["official_list_price"]["bing_grounding"])
+        for route in routes.values():
+            self.assertEqual(route["label"], "architecture_guidance")
+            self.assertNotIn("latency_ms", route)
+
 
 if __name__ == "__main__":
     unittest.main()

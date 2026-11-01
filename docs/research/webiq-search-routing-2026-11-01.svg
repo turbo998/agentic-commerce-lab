@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img">
+  <title>Agentic commerce search routing, 2026-11-01. Guidance, not measured latency.</title>
+  <rect width="960" height="520" rx="16" fill="#0F172A"/>
+  <text x="32" y="40" fill="#93C5FD" font-size="14" font-family="Segoe UI,sans-serif">2026-11-01 · ARCHITECTURE GUIDANCE · NOT A LATENCY CHART</text>
+  <text x="32" y="74" fill="#F8FAFC" font-size="26" font-family="Segoe UI,sans-serif">先分产品类，再选调用。不画未测延迟。</text>
+  <text x="32" y="100" fill="#94A3B8" font-size="13" font-family="Segoe UI,sans-serif">Missing latency stays not_measured. Vendor-stated seconds are not bars.</text>
+  <rect x="32" y="124" width="210" height="78" rx="12" fill="#1E293B" stroke="#10B981"/>
+  <rect x="258" y="124" width="210" height="78" rx="12" fill="#1E293B" stroke="#3B82F6"/>
+  <rect x="484" y="124" width="210" height="78" rx="12" fill="#1E293B" stroke="#F59E0B"/>
+  <rect x="710" y="124" width="218" height="78" rx="12" fill="#1E293B" stroke="#EF4444"/>
+  <text x="46" y="152" fill="#6EE7B7" font-size="14" font-family="Segoe UI,sans-serif">索引接地</text>
+  <text x="46" y="176" fill="#CBD5E1" font-size="12" font-family="Segoe UI,sans-serif">Web IQ /web /news</text>
+  <text x="272" y="152" fill="#93C5FD" font-size="14" font-family="Segoe UI,sans-serif">URL 抽取</text>
+  <text x="272" y="176" fill="#CBD5E1" font-size="12" font-family="Segoe UI,sans-serif">Browse · Extract · Contents</text>
+  <text x="498" y="152" fill="#FCD34D" font-size="14" font-family="Segoe UI,sans-serif">SERP 监控</text>
+  <text x="498" y="176" fill="#CBD5E1" font-size="12" font-family="Segoe UI,sans-serif">Bright Data SERP</text>
+  <text x="724" y="152" fill="#FCA5A5" font-size="14" font-family="Segoe UI,sans-serif">浏览器交互</text>
+  <text x="724" y="176" fill="#CBD5E1" font-size="12" font-family="Segoe UI,sans-serif">Browser API only</text>
+  <rect x="32" y="230" width="896" height="248" rx="14" fill="#020617" stroke="#334155"/>
+  <text x="52" y="262" fill="#F8FAFC" font-size="15" font-family="Segoe UI,sans-serif">商业场景</text>
+  <text x="280" y="262" fill="#F8FAFC" font-size="15" font-family="Segoe UI,sans-serif">先调用</text>
+  <text x="620" y="262" fill="#F8FAFC" font-size="15" font-family="Segoe UI,sans-serif">不要</text>
+  <text x="52" y="300" fill="#E2E8F0" font-size="13" font-family="Segoe UI,sans-serif">现价，URL 未知</text>
+  <text x="280" y="300" fill="#6EE7B7" font-size="13" font-family="Segoe UI,sans-serif">/web passage，再 /browse</text>
+  <text x="620" y="300" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">用 SERP 摘要改授权金额</text>
+  <text x="52" y="334" fill="#E2E8F0" font-size="13" font-family="Segoe UI,sans-serif">退货政策，URL 已知</text>
+  <text x="280" y="334" fill="#6EE7B7" font-size="13" font-family="Segoe UI,sans-serif">/browse，$1/1k</text>
+  <text x="620" y="334" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">为一页政策买 SERP</text>
+  <text x="52" y="368" fill="#E2E8F0" font-size="13" font-family="Segoe UI,sans-serif">召回 / 安全新闻</text>
+  <text x="280" y="368" fill="#6EE7B7" font-size="13" font-family="Segoe UI,sans-serif">/news，读 crawledAt</text>
+  <text x="620" y="368" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">Web 没有日期过滤</text>
+  <text x="52" y="402" fill="#E2E8F0" font-size="13" font-family="Segoe UI,sans-serif">某国购物位 / 广告</text>
+  <text x="280" y="402" fill="#FCD34D" font-size="13" font-family="Segoe UI,sans-serif">SERP，gl/hl 在 URL</text>
+  <text x="620" y="402" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">当成出版商全文</text>
+  <text x="52" y="436" fill="#E2E8F0" font-size="13" font-family="Segoe UI,sans-serif">点击、登录、截图</text>
+  <text x="280" y="436" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">Browser API</text>
+  <text x="620" y="436" fill="#FCA5A5" font-size="13" font-family="Segoe UI,sans-serif">Unlocker 不是交互浏览器</text>
+  <text x="32" y="504" fill="#64748B" font-size="12" font-family="Segoe UI,sans-serif">结账金额、退货期限、补货熔断留在 authority 层。evidence 被 ... 截断就不确认期限。</text>
+</svg>
