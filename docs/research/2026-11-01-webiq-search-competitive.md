@@ -226,6 +226,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Value SERP | Traject Data 的另一条 SERP API | `valueserp.com/pricing` 跳到 [产品页](https://trajectdata.com/serp/value-serp-api/)。年付卡片：25,000 credits $50/月，卡片另印 $1.60/1k，实时 250 次/分钟；200,000 credits $240/月、$1.20/1k、1,000 次/分钟；1,000,000 credits $1,000/月、$1.00/1k、1,500 次/分钟 | 脚本只把 25,000 档从年付 $50 改成月付 $56。另外两档的月付标题不在脚本里。$50 除以 25,000 不等于印出的 $1.60，所以不互相推导。同页还写 “from $2.50/1k” 和 “as low as $0.50/1k”，两者彼此不符，也不符卡片，不入库 |
 | serpstack | Google 结果页 API，月费和年付都印在卡片上 | 直接抓取 [serpstack.com/pricing](https://serpstack.com/pricing)：免费 $0/100 次，仅非商业、仅 JSON。Basic $29.99/月或年付 $26.99/月，5,000 次，超出 $0.023992/次。Business $99.99 或 $87.99，20,000 次，超出 $0.019998/次。Business Pro $199.99 或 $169.99，50,000 次，超出 $0.0159992/次 | API 错误不计入额度。99.9% 是厂商自述，不进延迟图 |
 | Mojeek | 自有索引的网页搜索 API | 官方页源码印的是英镑，不是美元：Startup £2/1,000 次，5 QPS，每天 100,000 次，每次最多 10 条。Business £3/1,000 次，10 QPS，每天 400,000 次，每次最多 40 条。Enterprise 只写 Let's talk，每天不限，每次最多 100 条。价格不含 VAT | 没有把英镑换成美元。Startup 可缓存 1 小时。Business 和 Enterprise 才有无限期存储权。请求参数 `t` 默认 10，标题最长 127，摘要最长 511，包含和排除域名各最多 25 个 |
+| ScraperAPI | 按月 credit 的抓取，Google 和 Bing 是 25 credits | 官方定价页源码：Hobby $49 或年付 $44.10，100,000 credits，20 并发。Startup $149 / $134.10，1,000,000，50。Business $299 / $269.10，3,000,000，100。Scaling $475 / $427.50，5,000,000，200。Professional $975 / $877.50，卡片写 10,500,000，另印 +250K bonus。Advanced $1,975 / $1,777.50，卡片写 21,500,000，另印 +500K bonus。Enterprise 是 Custom，22,000,000+ credits | 年付数字是卡片印出的月均价，不是本仓库折算。bonus 行没有加进或减出 credit 总数。按量的每 credit 美元价没有印出，所以不推导。免费档仍是 1,000 credits、5 并发 |
 
 ## 仍未测
 
@@ -258,3 +259,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 04:35 +08：Exa Contents、Tavily Crawl 和 Parallel Extract 的官方上限已写入。Crawl 带 instructions 时映射是每 10 个成功页 2 credits。ScraperAPI 只记录了 credit 成本，没有美元单价。Serper 文档页 404。第三方价格没有抄入。仍不推站点。
 
 2026-11-02 05:40 +08：Scale SERP 页面脚本只给出 1,000 次月付 $29 和 10,000 次月付 $83。更高档月付价仍未见。Value SERP、serpstack 和 Mojeek 的官方标价已写入。Mojeek 是英镑，没有换算成美元。Value SERP 页上的 $2.50 和 $0.50 与卡片不符，没有入库。Oxylabs 05:35 重试仍是 TLS 失败。Brave 营销页毫秒表没有入库。仍不推站点。
+
+2026-11-02 05:45 +08：ScraperAPI 定价页源码里的月费卡已写入。Enterprise 仍是 Custom，没有美元价。bonus 行没有并进 credit 总数。按量每 credit 美元价仍未印出。Jina 官方仓库写公开 Reader 可用于生产且免费，但销售页仍没有套餐美元价，所以充值价保持 `not_verified`。仍不推站点。
