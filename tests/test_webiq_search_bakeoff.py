@@ -94,6 +94,14 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
             report["official_list_price"]["perplexity_search"]["agent_tool_usd_per_invocation"]["web_search"],
             0.0025,
         )
+        openai = report["official_list_price"]["openai_web_search"]
+        self.assertEqual(openai["per_1k_calls_usd"]["web_search"], 10.0)
+        self.assertEqual(openai["per_1k_calls_usd"]["preview_non_reasoning"], 25.0)
+        self.assertNotIn("latency_ms", openai)
+        self.assertEqual(report["official_list_price"]["searchapi"]["published_usd_per_1k"]["developer"], 4.0)
+        self.assertEqual(report["official_list_price"]["dataforseo_google_organic"]["per_1k_serp_usd"]["live"], 2.0)
+        self.assertEqual(report["official_list_price"]["scrapingbee"]["plans_usd_per_month"]["startup"], 99.0)
+        self.assertNotIn("per_call_usd", report["official_list_price"]["scrapingbee"])
         prices = report["official_list_price"]
         self.assertEqual(prices["webiq"]["per_1k_usd"]["browse"], 1.0)
         self.assertEqual(prices["exa"]["per_1k_usd"]["deep_reasoning"], 15.0)

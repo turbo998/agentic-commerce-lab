@@ -207,6 +207,10 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Google Custom Search JSON API | 可编程搜索的 JSON 网页或图片结果 | 直接抓取 [overview](https://developers.google.com/custom-search/v1/overview)：仅存量客户，2027-01-01 停服。每天 100 次免费，超出 $5/1,000 次，付费上限每天 10,000 次。新客户不可开通 | 不是 Gemini Grounding，也不是原始 SERP |
 | Claude web search | 模型决定何时搜索，调用方拿到带引用的答案 | 直接抓取 [定价页](https://platform.claude.com/docs/en/about-claude/pricing)：Claude API 每 1,000 次搜索 $10，另加 token。无论返回几条都算 1 次。出错不计费。web fetch 没有额外费用，只计 token。Foundry 只支持 `web_search_20250305`，没有 dynamic filtering | 这不是可缓存的原始 passage。不能把模型答案当成结账依据 |
 | Jina Reader / Search | URL 转 Markdown，或搜索后转 Markdown | [contact-sales](https://jina.ai/contact-sales/) 只看到限额：Reader 无密钥 20 RPM，免费/付费 500，Premium 5,000。Search 免费/付费 100 RPM，Premium 1,000。Search 每次至少 10,000 tokens。美元充值价本次页面没有 | 7.9s 与 2.5s 是厂商自述，不进延迟图。单价保持 `not_verified` |
+| OpenAI web search | 模型调用搜索后返回带引用的答案 | 直接抓取 [pricing.md](https://developers.openai.com/api/docs/pricing)：全模型 web search 与 image web search 都是 $10/1k calls，另加按模型计费的 search content tokens。preview 在推理模型上 $10/1k；非推理模型 preview $25/1k，且 search content tokens 免费。gpt-4o-mini 与 gpt-4.1-mini 的非 preview 把 search content 固定计为 8,000 input tokens | 这不是可缓存的原始 passage。不能把模型答案当成结账依据 |
+| SearchAPI | Google 等结果页，月费卡上自带每千次单价 | 直接抓取 [searchapi.io/pricing](https://www.searchapi.io/pricing)：注册 100 次免费。Developer $40/10,000 且卡片写 $4/1k；Production $100/35,000、$3/1k；BigData $250/100,000、$2.5/1k；Scale $500/250,000、$2/1k。Octo 500K 到 5M 为 $900/$1.8、$1,500/$1.5、$2,800/$1.4、$5,000/$1。只有 HTTP 200 计费。每小时最多用掉套餐额度的 20% | 卡片上的每千次单价是页面印出的，不是本仓库把月费除出来的。99.9% SLA 不进延迟图 |
+| DataForSEO Google Organic | 按 SERP 计费的 Google 自然结果，不是模型答案 | 直接抓取 [organic 定价](https://dataforseo.com/pricing/google-serp/google-organic-serp-api)：一次 SERP 最多 10 条。Standard $0.0006 / $0.60 per 1k；Priority $0.0012 / $1.20；Live $0.002 / $2.00。每个搜索运算符把基价乘 5。账户最低充值 $50，见 [总定价页](https://dataforseo.com/pricing)，余额不过期 | 页面上的分钟和秒数是厂商自述平均值，不进延迟图 |
+| ScrapingBee | 按月 credit 的抓取，另有 Google SERP 接口 | 直接抓取 [pricing](https://www.scrapingbee.com/pricing/)：1,000 免费 credits。Hobby $19/75,000；Freelance $49/250,000；Startup $99/1,000,000；Business $249/3,000,000；Business+ $599/8,000,000。Enterprise 从 $999/1,400 万到 $5,799/1.2 亿。价格不含 VAT | 本次没有看到一次 Google 搜索扣几个 credit。不要把月费除成单次标价 |
 
 ## 仍未测
 
@@ -215,3 +219,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-01 23:50 +08 更正：Bing grounding 的 $14/1k 已在 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis) 看到，不再是未复核。Bright Data SERP 与 Unlocker 的 $1.50/$499 包含量也在官方定价页再次确认。Brave 营销页没有单价，其上的 AIMultiple 毫秒表不进延迟图。个人站发布窗口仍未解除，不改站点。
 
 2026-11-02 00:05 +08：Google Custom Search JSON API 与 Claude web search 的单价已从官方页写入。Jina 只核到 RPM，美元充值价仍是 `not_verified`。`serper.dev/pricing` 再次 404。Brave 文档定价 URL 返回 403，维持未复核。
+
+2026-11-02 00:12 +08：OpenAI web search、SearchAPI 月费卡单价、DataForSEO Google Organic 三档队列价、ScrapingBee 月费档已从官方页写入。没有把月费除成未公布的单次价。
