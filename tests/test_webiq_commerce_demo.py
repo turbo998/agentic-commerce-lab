@@ -22,6 +22,7 @@ from lab.webiq_commerce_demo import (
     render_webiq_seven_card_html,
     run_grounded_discovery_and_checkout,
     run_webiq_commerce_benchmark_suite,
+    ground_return_policy_passage,
     verify_post_purchase_return_policy,
 )
 
@@ -164,6 +165,34 @@ class WebIQContractTest(unittest.TestCase):
         )
         self.assertEqual(stale["httpStatus"], 200)
         self.assertIs(stale["liveCrawlSucceeded"], False)
+
+    def test_browse_passage_requires_query_and_selects_policy_evidence(self) -> None:
+        policy_url = "https://shop.nordicaudio.example/policies/returns"
+        with self.assertRaises(WebIQValidationError):
+            self.client.browse(policy_url, content_format="passage", query="   ")
+        with self.assertRaises(WebIQValidationError):
+            self.client.browse(policy_url, content_format="markdown", query="x" * 1001)
+
+        passage = self.client.browse(
+            policy_url,
+            content_format="passage",
+            query="restocking fee",
+            max_length=160,
+        )
+        full = self.client.browse(policy_url, content_format="markdown")
+        self.assertEqual(passage["contentFormat"], "passage")
+        self.assertEqual(passage["query"], "restocking fee")
+        self.assertIn("restocking_fee_minor=0", passage["content"])
+        self.assertLess(len(passage["content"]), len(full["content"]))
+        self.assertNotIn("query", full)
+
+        grounded = ground_return_policy_passage(
+            self.client,
+            policy_url=policy_url,
+            query="return window restocking fee",
+        )
+        self.assertTrue(grounded["grounded"])
+        self.assertEqual(grounded["reason"], "passage_contains_merchant_policy")
 
     def test_auto_clamping_and_malformed_evidence_omission(self) -> None:
         self.assertEqual(clamp_auto_max_response_length(500), 1500)

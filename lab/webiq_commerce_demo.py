@@ -11,8 +11,9 @@ Agentic Commerce Lab control planes:
      `"lat:<float>;long:<float>"`, and consumer `site:` operator adult-filter bypass guard).
    - `POST /v3/search/news` (`query` 1..1000 chars, `maxResults` 1..20 default 10, `contentFormat`,
      `maxLength`).
-   - `POST /v3/browse` (HTTPS required -> `410 Gone` on `http://`, `contentFormat` `"html"`/`"text"`/
-     `"markdown"`, `maxLength` default 10000 max 500000, `liveCrawl` `"none"`/`"fallback"`/`"force"`,
+   - `POST /v3/browse` (HTTPS required -> `410 Gone` on `http://`, `contentFormat` `"passage"`
+     requires a non-blank `query` of 1..1000 chars; `"html"`/`"text"`/`"markdown"` remain the
+     full-document formats, `maxLength` default 10000 max 500000, `liveCrawl` `"none"`/`"fallback"`/`"force"`,
      `renderDynamicPages` only valid when `liveCrawl="fallback"`, `202 Accepted` with `retryAfter`
      omitting content/timestamps, and `"liveCrawlSucceeded": false` on stale forced crawl while
      omitted when fresh).
@@ -58,9 +59,14 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
 DEMO_VERSION = "2026-10-26"
+WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
+WEBIQ_ACCOUNT_LOCATION = "global"
+WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
+WEBIQ_ACCOUNT_SKU = "G3"
 
 SEARCH_CONTENT_FORMATS = frozenset({"passage", "text", "html", "markdown"})
-BROWSE_CONTENT_FORMATS = frozenset({"html", "text", "markdown"})
+BROWSE_CONTENT_FORMATS = frozenset({"passage", "html", "text", "markdown"})
+BROWSE_PASSAGE_LIVE_CRAWL = frozenset({"none", "fallback"})
 LIVE_CRAWL_MODES = frozenset({"none", "fallback", "force"})
 SAFE_SEARCH_MODES = frozenset({"strict", "off"})
 AUTO_MODES = frozenset({"fast", "advanced"})
@@ -133,6 +139,88 @@ def clamp_auto_max_response_length(value: int | None) -> int:
     return max(1500, min(500000, value))
 
 
+def _blank_to_none(value: str | None) -> str | None:
+    if value is None:
+        return None
+    stripped = value.strip()
+    return stripped or None
+
+
+def describe_webiq_live_binding() -> dict[str, Any]:
+    """Report whether a live Web IQ call can be made. Never calls the network.
+
+    Missing credentials stay offline. Latency is ``None`` when not measured — never coerced to 0.
+    """
+    api_key = _blank_to_none(os.environ.get("WEBIQ_API_KEY"))
+    access_token = _blank_to_none(os.environ.get("WEBIQ_ACCESS_TOKEN"))
+    endpoint = _blank_to_none(os.environ.get("WEBIQ_ENDPOINT"))
+    credentials_present = bool(api_key or access_token)
+    return {
+        "mode": "live_ready" if credentials_present else "offline_sealed_fixtures",
+        "credentials_present": credentials_present,
+        "api_key_configured": bool(api_key),
+        "access_token_configured": bool(access_token),
+        "endpoint_configured": bool(endpoint),
+        "official_base_url": WEBIQ_BASE_URL,
+        "official_mcp_url": WEBIQ_MCP_URL,
+        "resolved_base_url": endpoint or WEBIQ_BASE_URL,
+        "live_calls_attempted": False,
+        "resource_created": False,
+        "billed": False,
+        "latency_ms": None,
+        "measured": False,
+        "provenance": "not_measured" if not credentials_present else "credentials_present_not_called",
+        "reason": (
+            "credentials_present_call_not_attempted"
+            if credentials_present
+            else "no_webiq_api_key_or_access_token"
+        ),
+    }
+
+
+def build_webiq_account_body() -> dict[str, Any]:
+    """Official ``az resource create --is-full-object`` body. Does not call Azure."""
+    return {
+        "location": WEBIQ_ACCOUNT_LOCATION,
+        "kind": WEBIQ_ACCOUNT_KIND,
+        "sku": {"name": WEBIQ_ACCOUNT_SKU},
+        "properties": {"statisticsEnabled": False},
+    }
+
+
+def render_webiq_deploy_plan(
+    *,
+    account_name: str,
+    resource_group: str,
+    subscription_id: str | None = None,
+) -> dict[str, Any]:
+    """Return a deploy-on-demand plan. This function never calls ``az`` or creates a resource."""
+    if not isinstance(account_name, str) or not account_name.strip():
+        raise WebIQValidationError("account_name is required for a deploy plan and must not be empty.")
+    if not isinstance(resource_group, str) or not resource_group.strip():
+        raise WebIQValidationError("resource_group is required for a deploy plan and must not be empty.")
+    body = build_webiq_account_body()
+    return {
+        "executed": False,
+        "mode": "plan",
+        "provider_registration_attempted": False,
+        "resource_created": False,
+        "billed": False,
+        "subscription_id_recorded": bool(subscription_id and subscription_id.strip()),
+        "apiVersion": WEBIQ_ACCOUNT_API_VERSION,
+        "resourceType": "Microsoft.WebIQ/accounts",
+        "accountName": account_name.strip(),
+        "resourceGroup": resource_group.strip(),
+        "fullObject": body,
+        "notes": [
+            "Deploy-on-demand only. Rendering this plan does not call Azure.",
+            "Web IQ requires a paid Azure subscription. Azure credits do not work.",
+            "Do not target an unauthorized corporate provisioning subscription.",
+            "After a real deployment, create keys in the Web IQ portal. Do not commit keys.",
+        ],
+    }
+
+
 @dataclass(frozen=True)
 class WebIQClientConfig:
     """Client configuration for Microsoft Web IQ REST and MCP calls."""
@@ -144,7 +232,27 @@ class WebIQClientConfig:
     allowed_site_domains: frozenset[str] = frozenset()
     live_mode: bool = False
     api_key: str | None = None
+    access_token: str | None = None
+    entra_app_id: str | None = None
     base_url: str = WEBIQ_BASE_URL
+    mcp_url: str = WEBIQ_MCP_URL
+
+
+def select_browse_passage(content: str, query: str, max_length: int) -> str:
+    """Select an offline passage window around the query. Live Browse does this server-side."""
+    text = content or ""
+    if max_length < 1 or not text:
+        return ""
+    lowered = text.lower()
+    needle = query.strip().lower()
+    idx = lowered.find(needle) if needle else -1
+    if idx < 0:
+        token = next((part for part in needle.split() if len(part) >= 4), "")
+        idx = lowered.find(token) if token else -1
+    if idx < 0:
+        return text[:max_length]
+    start = max(0, idx - 40)
+    return text[start : start + max_length]
 
 
 class WebIQClient:
@@ -158,6 +266,9 @@ class WebIQClient:
     ) -> None:
         self.config = config or WebIQClientConfig()
         self.fixtures = synthetic_fixtures or self._default_fixtures()
+
+    def _credentials_present(self) -> bool:
+        return bool(self.config.api_key or self.config.access_token)
 
     @staticmethod
     def _default_fixtures() -> dict[str, Any]:
@@ -493,8 +604,14 @@ class WebIQClient:
         max_length: int = 10000,
         live_crawl: str = "fallback",
         render_dynamic_pages: bool = False,
+        query: str | None = None,
     ) -> dict[str, Any]:
-        """Execute `POST /v3/browse` with HTTPS enforcement, freshness, and retryAfter semantics."""
+        """Execute `POST /v3/browse` with HTTPS enforcement, freshness, and retryAfter semantics.
+
+        Official Browse (updated 2026-10-30) recommends `contentFormat="passage"` and requires a
+        non-blank `query` of at most 1000 characters for that format. The lab default stays
+        `markdown` so existing full-document fixtures keep working without a query.
+        """
         if not isinstance(url, str) or not url.strip():
             raise WebIQValidationError("url must be a non-empty string.")
         parsed = urllib.parse.urlsplit(url.strip())
@@ -509,10 +626,30 @@ class WebIQClient:
             raise WebIQValidationError("url must be a valid https:// URL.")
         if content_format not in BROWSE_CONTENT_FORMATS:
             raise WebIQValidationError(f"Unsupported browse contentFormat: {content_format!r}.")
+        if query is not None and not isinstance(query, str):
+            raise WebIQValidationError("browse query must be a string.")
+        raw_query = query if isinstance(query, str) else ""
+        normalized_query = raw_query.strip()
+        if len(raw_query) > 1000:
+            raise WebIQValidationError("browse query must be at most 1000 characters.")
+        if content_format == "passage" and not normalized_query:
+            raise WebIQValidationError(
+                "browse contentFormat='passage' requires a non-blank query of 1..1000 characters."
+            )
         if type(max_length) is not int or not (1 <= max_length <= 500000):
             raise WebIQValidationError("browse maxLength must be an integer in [1, 500000].")
         if live_crawl not in LIVE_CRAWL_MODES:
             raise WebIQValidationError(f"Unsupported liveCrawl mode: {live_crawl!r}.")
+        if content_format == "passage" and live_crawl not in BROWSE_PASSAGE_LIVE_CRAWL:
+            raise WebIQHTTPError(
+                400,
+                "HandlerInvalidInput",
+                "Browse contentFormat='passage' requires liveCrawl 'none' or 'fallback'.",
+                trace_id="trc_browse_400_passage_crawl",
+            )
+        effective_max_length = max_length
+        if content_format == "passage" and not self.config.full_document_entitled:
+            effective_max_length = min(max_length, 3000)
         if render_dynamic_pages and live_crawl != "fallback":
             raise WebIQHTTPError(
                 400,
@@ -521,17 +658,17 @@ class WebIQClient:
                 trace_id="trc_browse_400_dyn",
             )
 
-        if self.config.live_mode and self.config.api_key:
-            return self._live_post(
-                "/v3/browse",
-                {
-                    "url": url,
-                    "contentFormat": content_format,
-                    "maxLength": max_length,
-                    "liveCrawl": live_crawl,
-                    "renderDynamicPages": render_dynamic_pages if live_crawl == "fallback" else None,
-                },
-            )
+        if self.config.live_mode and self._credentials_present():
+            live_body: dict[str, Any] = {
+                "url": url,
+                "contentFormat": content_format,
+                "maxLength": effective_max_length,
+                "liveCrawl": live_crawl,
+                "renderDynamicPages": render_dynamic_pages if live_crawl == "fallback" else None,
+            }
+            if normalized_query:
+                live_body["query"] = normalized_query
+            return self._live_post("/v3/browse", live_body)
 
         fixture = self.fixtures["browse"].get(url)
         if fixture is None:
@@ -556,13 +693,20 @@ class WebIQClient:
                 }
             )
 
+        full_content = str(fixture.get("content", ""))
+        selected_content = (
+            select_browse_passage(full_content, normalized_query, effective_max_length)
+            if content_format == "passage"
+            else full_content[:max_length]
+        )
         raw_body: dict[str, Any] = {
             "httpStatus": 200,
             "traceId": trace_id,
             "url": fixture["url"],
             "title": fixture.get("title", ""),
-            "content": str(fixture.get("content", ""))[:max_length],
+            "content": selected_content,
             "contentFormat": content_format,
+            "query": normalized_query or None,
             "contentTier": fixture.get("contentTier", "standard"),
             "riskLevel": fixture.get("riskLevel", "low"),
             "isAdult": fixture.get("isAdult", False),
@@ -1046,6 +1190,40 @@ def verify_post_purchase_return_policy(
         True,
         True,
     )
+
+
+def ground_return_policy_passage(
+    client: WebIQClient,
+    *,
+    policy_url: str,
+    query: str,
+    max_length: int = 180,
+) -> dict[str, Any]:
+    """Ground a return-policy check with Browse ``contentFormat=passage``.
+
+    A missing or pending passage must not be turned into a fabricated return deadline.
+    """
+    browse_res = client.browse(
+        policy_url,
+        content_format="passage",
+        query=query,
+        max_length=max_length,
+        live_crawl="fallback",
+    )
+    content = str(browse_res.get("content", ""))
+    grounded = "return_window_days=30" in content and "restocking_fee_minor=0" in content
+    return {
+        "httpStatus": int(browse_res.get("httpStatus", 200)),
+        "contentFormat": browse_res.get("contentFormat"),
+        "query": browse_res.get("query"),
+        "content": content,
+        "grounded": grounded,
+        "reason": (
+            "passage_contains_merchant_policy"
+            if grounded
+            else "passage_missing_policy_evidence_no_fabrication"
+        ),
+    }
 
 
 # ---------------------------------------------------------------------------

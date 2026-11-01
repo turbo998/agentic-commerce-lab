@@ -1,6 +1,6 @@
 # Microsoft Web IQ × Agentic Commerce 智能体演示方案与业务场景设计
 
-🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../live-demo.html)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../live-demo.en.html)** | **[7-Card 基准测试报告 (`benchmark-cards.html`)](../../benchmark-cards.html)** | **[7-Card Benchmark Report (`benchmark-cards.en.html`)](../../benchmark-cards.en.html)**
+🌐 **Language / 语言导航**: **中文 (当前)** | **[English (`2026-10-26-webiq-agentic-commerce-demo.en.md`)](2026-10-26-webiq-agentic-commerce-demo.en.md)** | **[🚀 H5 实时交互演示台 (`live-demo.html`)](../../live-demo.html)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](../../live-demo.en.html)** | **[7-Card 基准测试报告 (`benchmark-cards.html`)](../../benchmark-cards.html)** | **[7-Card Benchmark Report (`benchmark-cards.en.html`)](../../benchmark-cards.en.html)** | **[2026-11-01 Azure / passage 增补](2026-11-01-webiq-azure-browse-passage.md)**
 
 > ### 📌 执行摘要与核心评测发现（Executive Summary）
 >
