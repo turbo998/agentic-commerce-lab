@@ -71,6 +71,16 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertEqual(you["contents_per_1k_pages_usd"], 1.0)
         self.assertEqual(you["research_per_1k_calls_usd"]["frontier"], 1200.0)
         self.assertNotIn("latency_ms", you)
+        linkup = report["official_list_price"]["linkup"]
+        self.assertEqual(linkup["search_usd"]["deep_search_results"], 0.05)
+        self.assertEqual(linkup["research_usd"]["XL"], 2.50)
+        firecrawl = report["official_list_price"]["firecrawl"]
+        self.assertEqual(firecrawl["monthly_usd"]["scale"], 749.0)
+        self.assertEqual(firecrawl["search_credits_per_10_results"], 2)
+        self.assertNotIn("per_call_usd", firecrawl)
+        self.assertEqual(report["official_list_price"]["serpapi"]["plans_usd_per_month"]["starter"], 25.0)
+        self.assertEqual(report["official_list_price"]["brave_search"]["label"], "not_verified")
+        self.assertEqual(report["official_list_price"]["serper"]["label"], "not_verified")
         for route in routes.values():
             self.assertEqual(route["label"], "architecture_guidance")
             self.assertNotIn("latency_ms", route)

@@ -196,13 +196,14 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | 产品 | 角色 | official_list_price | 商业代理注意 |
 |---|---|---|---|
 | Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次 | Sonar Chat Completions 已于 2026-09-27 停止支持。空 snippet 不能改价 |
-| Brave Search | 自有索引。Web / LLM Context / 图片 / 新闻 / 视频 | $5/1k 请求，每月 $5 额度。Answers 另计 $4/1k 加 token | 直接抓取定价仪表盘得到的是空壳。这个 $5 来自该官方定价 URL 的研究提取，页面未能在本次渲染中复核 |
+| Brave Search | 自有索引。仪表盘未渲染出价格 | 2026-11-01 再次抓取定价仪表盘仍是空壳。先前的 $5/1k 与 Answers $4/1k 降为 `not_verified` | 不要把研究提取当成标价 |
 | Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
 | Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 单价本次未复核。不要把 Google 的 $14 抄到 Bing。Bing Search APIs 已于 2025-08-11 停用 | 这不是 Web IQ。FAQ 没有把两者写成同一产品 |
 | You.com | 索引检索、按页抽取、分层研究，三种计费单位 | 2026-11-01 直接抓取 [you.com/pricing](https://you.com/pricing)：Web Search Standard $5/1k calls；Contents $1/1k pages；免费 MCP 每天 100 次；$10 额度 = 2,000 次搜索。Research Lite/Standard/Deep/Exhaustive/Frontier = $12 / $50 / $100 / $450 / $1,200 per 1k。Finance Deep $110、Exhaustive $500。卡片上的延迟是厂商自述，不进延迟图。先前“缓存命中不计”本次页面未见 | 一次 Web Search 返回 1 条或 100 条都算 1 次。Contents 按返回页计费。研究档不是搜索档 |
-| Linkup | 索引检索，可选抓取和答案 | `searchResults` 的 flash/fast/standard 每次 $0.005。deep `searchResults` 每次 $0.05。失败不计费 | `sourcedAnswer` 是模型写的，不能当裁决记录 |
-| SerpAPI | Google 结果页解析 | 月费档，不公布单次单价。不要把套餐除出来当成标价。缓存免费，失败不计 | 只用来发现官方 URL |
-| Serper | Google 结果页 | 预充值：50k 档 $1.00/1k credits，往下到 12.5M 档 $0.30/1k。公开参数表本次 404 | 和 SerpAPI 一样，不能当政策页 |
+| Linkup | Search / Fetch / Research / Extract，按成功请求扣余额 | 直接抓取 [定价页](https://docs.linkup.so/pages/documentation/platform/pricing)：flash/fast/standard + `searchResults` $0.005，`sourcedAnswer`/`structured` $0.006；deep 为 $0.05 / $0.055。Fetch standard 无 JS $0.001，schema 再加 $0.001。Research S/M/L/XL = $0.25 / $0.50 / $1.50 / $2.50。职业邮箱每月补到 $20。失败不扣费。x402 最低 $0.01/请求 | `sourcedAnswer` 是模型写的。Extract 仍是 closed beta，多数完成任务 $2–10，以返回的 `creditsUsed` 为准 |
+| SerpAPI | Google 结果页解析，只有月费档 | 直接抓取 [serpapi.com/pricing](https://serpapi.com/pricing)：Free $0/250 次，Starter $25/1,000，Developer $75/5,000，Production $150/15,000，Cloud 1M $3,750/1,000,000。页面继续列出更高 Cloud 月费档。没有单次单价。先前“缓存免费”本次未见 | 不要把月费除以次数当成标价 |
+| Serper | Google 结果页 | `https://serper.dev/pricing` 本次 404。首页抓取没有标价。先前 $1.00/1k 与 $0.30/1k 降为 `not_verified` | 不能当政策页 |
+| Firecrawl | 按 credit 的抓取和搜索，不是原始 SERP 单价 | 直接抓取 [pricing.md](https://www.firecrawl.dev/pricing.md)：Free 1,000 credits/$0；Hobby $19 或年付折合 $16/月；Standard $99 或 $83；Growth $399 或 $333；Scale $749 或 $599。Search 2 credits/10 条；Scrape/Crawl 1 credit/页。定价表写 Interact 2 credits/浏览器分钟，[计费文档](https://docs.firecrawl.dev/billing) 写 2–7，prompt 会话为 7。两页并存，不合并 | 搜索和抓取共用一个 credit 余额。不要把月费除成单次标价 |
 | Firecrawl | 搜索可选带页面抽取 | 搜索每 10 条结果 2 credits，向上取整。抓取另计。不把 credit 换算成未公布的美元单价 | snippet 不能决定补货或退货期限 |
 
 ## 仍未测
