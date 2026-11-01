@@ -1,6 +1,10 @@
 import unittest
 
-from lab.webiq_search_bakeoff import assert_not_fabricated, summarize
+from lab.webiq_search_bakeoff import (
+    assert_not_fabricated,
+    grounding_architecture_comparison,
+    summarize,
+)
 
 
 class WebIQSearchBakeoffTests(unittest.TestCase):
@@ -34,6 +38,14 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
     def test_blank_key_is_absent(self):
         report = summarize({"WEBIQ_API_KEY": "   "})
         self.assertEqual(report["providers"][0]["credential"], "absent")
+
+    def test_grounding_architecture_comparison_distinguishes_caller_visible_passages(self):
+        arch = grounding_architecture_comparison()
+        by_provider = {row["provider"]: row for row in arch}
+        self.assertTrue(by_provider["webiq"]["caller_receives_raw_passages"])
+        self.assertTrue(by_provider["webiq"]["pre_llm_deterministic_sanitization"])
+        self.assertFalse(by_provider["foundry_bing_grounding"]["caller_receives_raw_passages"])
+        self.assertFalse(by_provider["foundry_bing_grounding"]["pre_llm_deterministic_sanitization"])
 
 
 if __name__ == "__main__":

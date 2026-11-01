@@ -127,3 +127,28 @@ def assert_not_fabricated(report: dict) -> None:
             raise AssertionError("list price must stay labeled")
         if "latency_ms" in price:
             raise AssertionError("list price must not be stored as latency")
+
+
+def grounding_architecture_comparison() -> list[dict]:
+    """Compare caller-visible evidence visibility and anti-injection boundaries across grounding products."""
+    return [
+        {
+            "provider": "webiq",
+            "caller_receives_raw_passages": True,
+            "pre_llm_deterministic_sanitization": True,
+            "browse_passage_default_3000_chars": True,
+            "dual_format_retry_after": "duration_seconds ('60s') + iso8601_utc_timestamp ('2026-10-30T01:01:00Z')",
+            "source_url": "https://learn.microsoft.com/en-us/web-iq/reference/browse",
+            "verified_on": VERIFIED_ON,
+        },
+        {
+            "provider": "foundry_bing_grounding",
+            "caller_receives_raw_passages": False,
+            "pre_llm_deterministic_sanitization": False,
+            "browse_passage_default_3000_chars": False,
+            "dual_format_retry_after": "managed_inside_foundry_service_boundary",
+            "source_url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview",
+            "verified_on": VERIFIED_ON,
+        },
+    ]
+

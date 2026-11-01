@@ -1,11 +1,22 @@
 {
   "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
-  "benchmark_version": "2026-10-26",
+  "benchmark_version": "2026-11-01.stage1752",
   "provenance": "deterministic_offline_simulation",
   "independently_reproduced": true,
   "total_scenarios": 12,
   "webiq_guarded_passed": 12,
   "ungrounded_baseline_passed": 0,
+  "stage_1752_guards": {
+    "stage": 1752,
+    "all_passed": true,
+    "link_wallet_active_status": "active",
+    "link_secret_key_blocked_reason": "invalid_link_access_token_plane",
+    "mpp_pay_argv_verified": true,
+    "mpp_shell_injection_blocked_reason": "shell_metacharacter_injection_in_pay_argv_blocked",
+    "webiq_429_duration_wait_s": 60,
+    "webiq_429_timestamp_wait_s": 90,
+    "webmcp_consequential_unconfirmed_reason": "webmcp_consequential_hint_requires_human_confirmation"
+  },
   "scenarios": [
     {
       "id": "W01",
@@ -139,6 +150,12 @@
       "check": "Search ContentFormat Perturbation (passage -> markdown without entitlement)",
       "original": "200 OK (680 tokens, 164ms P95)",
       "perturbed": "403 AuthContentFormatForbidden (Zero token waste)",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "Stage 1752 Perturbation (Web IQ 429 '60s' -> 429 TooManyOnDemandCrawls ISO Timestamp & Link _next.pay_argv)",
+      "original": "429 AuthUserThrottled -> 60s wait; mpp pay -t spt_123 argv verified",
+      "perturbed": "429 TooManyOnDemandCrawls -> 90s UTC delta; shell '; curl' & sk_live_ blocked",
       "delta_pts": "0.0 drift"
     }
   ],

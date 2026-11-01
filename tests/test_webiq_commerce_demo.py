@@ -12,17 +12,22 @@ from lab.webiq_commerce_demo import (
     WebIQClientConfig,
     WebIQHTTPError,
     WebIQValidationError,
+    build_mpp_pay_continuation,
     build_webiq_live_demo_payload,
     clamp_auto_max_response_length,
+    classify_webiq_error_response,
     evaluate_replenishment_with_webiq_recall_guard,
     evaluate_webiq_search_finops,
+    evaluate_webmcp_tool_call,
     main,
     normalize_webiq_response,
+    parse_webiq_retry_after,
     render_webiq_live_demo_html,
     render_webiq_seven_card_html,
     run_grounded_discovery_and_checkout,
     run_webiq_commerce_benchmark_suite,
     ground_return_policy_passage,
+    validate_link_spend_request,
     verify_post_purchase_return_policy,
 )
 
@@ -411,6 +416,170 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             self.assertEqual(rc, 0)
             self.assertTrue(demo_path.is_file())
             self.assertTrue((Path(tmpdir) / "custom-demo.en.html").is_file())
+
+    def test_stage_1752_retry_after_link_wallet_mpp_and_webmcp_guards(self) -> None:
+        # 1. Dual-format retryAfter parser & error classifier
+        dur = parse_webiq_retry_after("60s", reference_utc="2026-11-01T00:00:00Z")
+        self.assertEqual(dur["format"], "duration_seconds")
+        self.assertEqual(dur["wait_seconds"], 60)
+
+        ts = parse_webiq_retry_after("2026-11-01T00:01:30Z", reference_utc="2026-11-01T00:00:00Z")
+        self.assertEqual(ts["format"], "iso8601_utc_timestamp")
+        self.assertEqual(ts["wait_seconds"], 90)
+
+        # HTTP 429 AuthUserThrottled requires duration, while 429 TooManyOnDemandCrawls requires UTC timestamp
+        c_throttled = classify_webiq_error_response(429, "AuthUserThrottled", "60s")
+        self.assertEqual(c_throttled["retry_after_format"], "duration_seconds")
+        c_crawls = classify_webiq_error_response(
+            429, "TooManyOnDemandCrawls", "2026-11-01T00:01:30Z", reference_utc="2026-11-01T00:00:00Z"
+        )
+        self.assertEqual(c_crawls["retry_after_format"], "iso8601_utc_timestamp")
+        self.assertEqual(c_crawls["wait_seconds"], 90)
+        with self.assertRaises(WebIQValidationError):
+            classify_webiq_error_response(429, "TooManyOnDemandCrawls", "60s")
+
+        # Non-retryable 403 UrlDisallowed / 410 HttpSchemeGone
+        c_disallowed = classify_webiq_error_response(403, "UrlDisallowed")
+        self.assertFalse(c_disallowed["retryable"])
+        self.assertFalse(c_disallowed["allow_fabricated_fallback"])
+
+        # 2. Stripe Link Agent Wallet (`liwltoken_...`, >=100 char context, mutual-exclusion flags)
+        valid_ctx = (
+            "Purchasing Nordic Audio Pro ANC Headphones ($79.00 USD) approved by principal under "
+            "mandate-webiq-01 after live HTTPS Web IQ Browse price verification."
+        )
+        spt_ok = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="shared_payment_token",
+            context=valid_ctx,
+            amount_minor=7900,
+            network_id="stripe_network",
+        )
+        self.assertTrue(spt_ok.allowed)
+        self.assertEqual(spt_ok.status, "active")
+
+        card_ok = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="card",
+            context=valid_ctx,
+            amount_minor=7900,
+            merchant_name="Nordic Audio Shop",
+            merchant_url="https://shop.nordicaudio.example",
+        )
+        self.assertTrue(card_ok.allowed)
+
+        lpt_ok = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="link_pay_token",
+            context=valid_ctx,
+            amount_minor=7900,
+            merchant_account_id="acct_1NordicAudio",
+        )
+        self.assertTrue(lpt_ok.allowed)
+
+        # Reject merchant secret key leak, short context, flag conflict, or echoed scope escalation
+        sk_leak = validate_link_spend_request(
+            access_token="sk_live_merchant_secret",
+            credential_type="shared_payment_token",
+            context=valid_ctx,
+            amount_minor=7900,
+            network_id="stripe_network",
+        )
+        self.assertFalse(sk_leak.allowed)
+        self.assertEqual(sk_leak.reason, "invalid_link_access_token_plane")
+
+        short_ctx = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="shared_payment_token",
+            context="Buy headphones now",
+            amount_minor=7900,
+            network_id="stripe_network",
+        )
+        self.assertFalse(short_ctx.allowed)
+        self.assertEqual(short_ctx.reason, "context_too_short_min_100_chars")
+
+        conflict = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="shared_payment_token",
+            context=valid_ctx,
+            amount_minor=7900,
+            network_id="stripe_network",
+            merchant_name="Forbidden For SPT",
+        )
+        self.assertFalse(conflict.allowed)
+        self.assertEqual(conflict.reason, "spt_requires_network_id_and_forbids_merchant_fields")
+
+        scope_esc = validate_link_spend_request(
+            access_token="liwltoken_live_abc123",
+            credential_type="shared_payment_token",
+            context=valid_ctx,
+            amount_minor=7900,
+            network_id="stripe_network",
+            requested_scopes=("spend:requests:read",),
+            echoed_scopes=("spend:requests:read", "spend:requests:create"),
+        )
+        self.assertFalse(scope_esc.allowed)
+        self.assertEqual(scope_esc.reason, "oauth_echoed_scope_privilege_escalation")
+
+        # 3. HTTP 402 `mpp pay` continuation (`_next.pay_argv` anti-injection & method=='stripe')
+        mpp_ok = build_mpp_pay_continuation(
+            challenge_method="stripe",
+            next_payload={
+                "pay_argv": {
+                    "command": "mpp",
+                    "args": ["pay", "-t", "spt_live_001", "https://api.merchant.example/v1/search"],
+                }
+            },
+        )
+        self.assertTrue(mpp_ok["allowed"])
+        self.assertEqual(mpp_ok["argv"][0], "mpp")
+
+        mpp_non_stripe = build_mpp_pay_continuation(
+            challenge_method="tempo_custom",
+            next_payload={"pay_argv": {"command": "mpp", "args": ["pay", "-t", "spt_1", "https://a.example"]}},
+        )
+        self.assertFalse(mpp_non_stripe["allowed"])
+        self.assertEqual(mpp_non_stripe["reason"], "unsupported_402_challenge_method_no_card_fallback")
+
+        mpp_inj = build_mpp_pay_continuation(
+            challenge_method="stripe",
+            next_payload={
+                "pay_argv": {
+                    "command": "mpp",
+                    "args": ["pay", "-t", "spt_1; rm -rf /", "https://api.merchant.example"],
+                }
+            },
+        )
+        self.assertFalse(mpp_inj["allowed"])
+        self.assertEqual(mpp_inj["reason"], "shell_metacharacter_injection_in_pay_argv_blocked")
+
+        # 4. WebMCP consequentialHint & tool rediscovery gate
+        webmcp_unconfirmed = evaluate_webmcp_tool_call(
+            {"name": "submit_payment", "annotations": {"consequentialHint": True}},
+            human_confirmed=False,
+        )
+        self.assertFalse(webmcp_unconfirmed["allowed"])
+        self.assertEqual(webmcp_unconfirmed["reason"], "webmcp_consequential_hint_requires_human_confirmation")
+
+        webmcp_stale = evaluate_webmcp_tool_call(
+            {"name": "submit_payment", "annotations": {"consequentialHint": True}},
+            payment_method_changed=True,
+            tools_rediscovered=False,
+            human_confirmed=True,
+        )
+        self.assertFalse(webmcp_stale["allowed"])
+        self.assertEqual(
+            webmcp_stale["reason"],
+            "webmcp_tool_rediscovery_required_after_payment_method_change",
+        )
+
+        webmcp_ok = evaluate_webmcp_tool_call(
+            {"name": "submit_payment", "annotations": {"consequentialHint": True}},
+            payment_method_changed=True,
+            tools_rediscovered=True,
+            human_confirmed=True,
+        )
+        self.assertTrue(webmcp_ok["allowed"])
 
 
 if __name__ == "__main__":

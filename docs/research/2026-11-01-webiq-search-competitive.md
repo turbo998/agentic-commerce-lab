@@ -39,6 +39,15 @@
 
 每日研究任务已加入强制支柱：Web IQ 对比 Bright Data、Exa 与主流网页搜索。夜班检查要核验这一支柱。缺凭证必须保持 `not_measured`。
 
+## 架构边界对比：Microsoft Web IQ 原始 Passage 返回 vs. Foundry Grounding with Bing Search
+
+根据 2026-11-01 核验的 Microsoft Learn 官方文档（[Web IQ Browse Reference](https://learn.microsoft.com/en-us/web-iq/reference/browse)、[Web IQ Error Handling](https://learn.microsoft.com/en-us/web-iq/reference/error-handling) 与 [Foundry Agents Web Grounding Overview](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview)）：
+
+| 维度 | Microsoft Web IQ (`/v3/search/web`, `/v3/browse`) | Microsoft Foundry Grounding with Bing Search | 对 Agentic Commerce 的架构含义 |
+|---|---|---|---|
+| **检索正文对调用方代码可见性** | **直接返回给调用方代码**（`results[].content` / `contentFormat="passage"` 默认 $\le 3000$ 字符） | **不对开发者返回原始检索块**（仅在微软托管边界内把检索结果喂给模型，只向调用方返回最终回答与引用链接） | 高保障商业智能体必须在进入 LLM 前做确定性提示词注入清洗（`PROMPT_INJECTION_RE`）与价格摘要哈希比对（`CheckoutStore`），因此**必须使用 Web IQ** 而非黑盒 Grounding |
+| **`retryAfter` 双格式契约** | `AuthUserThrottled` (429) / `InternalServerError` (500) 返回相对时长 `"60s"`；而 `Browse 202` 与 `TooManyOnDemandCrawls` (**同样是 HTTP 429!**) / `520` / `523` / `524` 返回 ISO-8601 UTC 时间戳 `"2026-10-30T01:01:00Z"` | 托管在 Foundry Agent 服务内部 | 调用方绝不能仅凭 `status == 429` 假设 `retryAfter` 格式；已由 `lab/webiq_commerce_demo.py` 的 `parse_webiq_retry_after()` 与 `classify_webiq_error_response()` 强制校验 |
+
 ## 未测
 
 实时 bake-off 仍被挡住：Web IQ 密钥要在门户绑定；竞品密钥不在环境变量里。在此之前不下发延迟 7-card。

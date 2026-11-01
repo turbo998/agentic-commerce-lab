@@ -39,6 +39,15 @@ Every row is labeled `official_list_price`. Verified 2026-11-01. These numbers a
 
 The daily research task now has a mandatory pillar: Web IQ versus Bright Data, Exa, and mainstream web search. The night-manager check must verify that pillar. Missing credentials stay `not_measured`.
 
+## Architectural boundary: Microsoft Web IQ caller-visible passages vs. Foundry Grounding with Bing Search
+
+Verified on 2026-11-01 against official Microsoft Learn documentation ([Web IQ Browse Reference](https://learn.microsoft.com/en-us/web-iq/reference/browse), [Web IQ Error Handling](https://learn.microsoft.com/en-us/web-iq/reference/error-handling), and [Foundry Agents Web Grounding Overview](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview)):
+
+| Dimension | Microsoft Web IQ (`/v3/search/web`, `/v3/browse`) | Microsoft Foundry Grounding with Bing Search | Agentic Commerce Architectural Impact |
+|---|---|---|---|
+| **Caller visibility of raw retrieved passages** | **Returned directly to caller code** (`results[].content`, `contentFormat="passage"` default $\le 3000$ chars) | **Hidden from caller code** (raw search chunks stay inside the managed Foundry boundary; caller only receives the model synthesis + citation URLs) | Deterministic pre-LLM prompt-injection scrubbing (`PROMPT_INJECTION_RE`) and SHA-256 price digest verification (`CheckoutStore`) require **Web IQ** rather than opaque model-only grounding |
+| **Dual-format `retryAfter` contract** | `AuthUserThrottled` (429) & `InternalServerError` (500) emit duration strings (`"60s"`), whereas `Browse 202` and `TooManyOnDemandCrawls` (**also HTTP 429!**), `520`, `523`, and `524` emit ISO-8601 UTC timestamps (`"2026-10-30T01:01:00Z"`) | Abstracted inside the managed Foundry tool | Callers cannot infer `retryAfter` syntax from `status == 429` alone; enforced by `parse_webiq_retry_after()` and `classify_webiq_error_response()` in `lab/webiq_commerce_demo.py` |
+
 ## Not measured
 
 The live bake-off is still blocked: the Web IQ key has to be bound in the portal, and competitor keys are not in the environment. No latency 7-card is published until then.
