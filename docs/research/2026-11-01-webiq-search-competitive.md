@@ -29,9 +29,9 @@
 |---|---|---|---|
 | Web IQ | `/web`、`/video`、`/news`、`/images` 每 1,000 次 $7；`/browse` 每 1,000 次 $1。生效日 2026-10-16，页面更新 2026-10-29。 | [定价](https://learn.microsoft.com/en-us/web-iq/resources/pricing) | Auto beta 不计费，不是延迟。 |
 | Bright Data SERP | 每月 5,000 次免费；按量每 1,000 次成功请求 $1.50；Scale $499/月含 380,000 次，超出每 1,000 次 $1.30。页面写明展示价可能是本币估算，USD 为结算价。 | [SERP 定价](https://brightdata.com/pricing/serp) | 「under 1 second」是营销句，不是测量。 |
-| Exa | lite/instant $4/1k，auto/fast $7/1k，contents 每种内容 $1/1k 页，answer $5/1k，monitors $15/1k。deep-lite/deep $12/1k，deep-reasoning $15/1k。Agent 固定档 $0.012–$1.00/次。免费额度 $10，每月 1 日重置。 | [定价](https://exa.ai/pricing) | 页面上的秒数是厂商自述，不进延迟图。 |
-| Tavily | basic search 1 credit，advanced 2 credits。按量 $0.008/credit。文档表自带单价：Project $0.0075，Bootstrap $0.0067，Startup $0.0058，Growth $0.005。Research pro 15–250 credits，mini 4–110。每月 1,000 免费 credits。 | [API credits](https://docs.tavily.com/documentation/api-credits) | 失败的抽取和 Map 不计费。无本次延迟。 |
-| Parallel | turbo/fast $1/1k，basic/advanced $5/1k，额外结果 $1/1k。extract $1/1k URL。Task lite $5/1k 成功运行，ultra8x $2,400/1k。Responses medium $50/1k。 | [定价](https://docs.parallel.ai/getting-started/pricing) | 页面上的 200 ms–3 s 是 `vendor_stated`。本次抓取没有看到请求默认 mode。 |
+| Exa | lite/instant $4/1k，auto/fast $7/1k，contents 每种内容 $1/1k 页，answer $5/1k，monitors $15/1k。deep-lite/deep $12/1k，deep-reasoning $15/1k。Agent 固定档 $0.012–$1.00/次。免费额度 $10，每月 1 日重置。 | [定价](https://exa.ai/pricing) | [搜索参考](https://docs.exa.ai/reference/search) 写 include/exclude domains 各最多 1,200 条，用域名过滤，不要在 query 里加 `site:`。页面上的秒数是厂商自述，不进延迟图。 |
+| Tavily | basic、fast、ultra-fast 都是 1 credit，advanced 2 credits。按量 $0.008/credit。文档表自带单价：Project $0.0075，Bootstrap $0.0067，Startup $0.0058，Growth $0.005。Research pro 15–250 credits，mini 4–110。每月 1,000 免费 credits。 | [API credits](https://docs.tavily.com/documentation/api-credits) | [搜索参考](https://docs.tavily.com/documentation/api-reference/endpoint/search) 写 `max_results` 默认 10、最大 20。`chunks_per_source` 1–3。失败的抽取和 Map 不计费。无本次延迟。 |
+| Parallel | turbo/fast $1/1k，basic/advanced $5/1k，额外结果 $1/1k。extract $1/1k URL。Task lite $5/1k 成功运行，ultra8x $2,400/1k。Responses medium $50/1k。 | [定价](https://docs.parallel.ai/getting-started/pricing) | [搜索参考](https://docs.parallel.ai/api-reference/search/search) 写欧盟地址 `https://eu.parallel.ai` 只支持 basic。Image Search 的默认是 advanced，不要当成网页搜索默认值。200 ms–3 s 是 `vendor_stated`。 |
 
 ## 离线契约
 
@@ -235,3 +235,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 00:45 +08：Brave LLM Context 参数已从官方参考页写入。单价仍未复核。营销页延迟表没有入库。仍不推站点。
 
 2026-11-02 00:50 +08：ScrapingBee 的 Google 搜索 credit 已从官方帮助页写入。仍不把月费折成美元单价。Serper 首页仍无标价。Oxylabs 仍是 TLS 失败。仍不推站点。
+
+2026-11-02 00:55 +08：Exa、Tavily、Parallel 的搜索参考参数已写入。Tavily 的 fast 与 ultra-fast 也是 1 credit。仍不推站点。
