@@ -196,7 +196,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | 产品 | 角色 | official_list_price | 商业代理注意 |
 |---|---|---|---|
 | Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次。Agent 工具另计：web_search $0.0025，fast $0.001，fetch_url $0.0005，sandbox $0.03/会话 | 成功但空结果仍计费。抽取长度不改变 Search API 价格。空 snippet 不能改价 |
-| Brave Search | 自有索引。仪表盘未渲染出价格 | 2026-11-01 再次抓取定价仪表盘仍是空壳。先前的 $5/1k 与 Answers $4/1k 降为 `not_verified` | 不要把研究提取当成标价 |
+| Brave Search | 自有索引。Web Search 给人看，LLM Context 给代理 | 单价仍是 `not_verified`。2026-11-02 直接抓取 [LLM Context 参考](https://api-dashboard.search.brave.com/api-reference/ai/llm_context/get)：`GET /v1/llm/context`。`q` 最多 600 字符、75 词。`count` 默认 20、最大 50。`maximum_number_of_tokens` 默认 8192，范围 1024–32768。每 URL 默认 4096、最大 8192。URL 最多 50。Goggles 最多 3 个。`context_threshold_mode` 为 disabled、strict、lenient、balanced。`freshness` 为 pd、pw、pm、py，或 `YYYY-MM-DDtoYYYY-MM-DD`。Web Search 入门页另写 `extra_snippets=true` 时每条最多 5 段摘录 | 定价仪表盘仍是空壳，参考页没有单价。营销页的 AIMultiple 毫秒表不进延迟图。Brave 说 Bing Search API 已停，不能覆盖微软产品页仍列出的 Bing grounding 标价 |
 | Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
 | Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 2026-11-01 直接抓取 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis)：Search 与 Custom Search 都是 $14/1,000 transactions，150 TPS，每天 100 万次。Learn how-to 页没有单价，链接指向该页。不是从 Google 抄来的 | 这不是 Web IQ。输出不能直接拿去别的程序用 |
 | You.com | 索引检索、按页抽取、分层研究，三种计费单位 | 2026-11-01 直接抓取 [you.com/pricing](https://you.com/pricing)：Web Search Standard $5/1k calls；Contents $1/1k pages；免费 MCP 每天 100 次；$10 额度 = 2,000 次搜索。Research Lite/Standard/Deep/Exhaustive/Frontier = $12 / $50 / $100 / $450 / $1,200 per 1k。Finance Deep $110、Exhaustive $500。卡片上的延迟是厂商自述，不进延迟图。先前“缓存命中不计”本次页面未见 | 一次 Web Search 返回 1 条或 100 条都算 1 次。Contents 按返回页计费。研究档不是搜索档 |
@@ -231,3 +231,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 00:35 +08：Kagi 与 Zyte 官方标价已写入。Zyte 的 $0.06 只是承诺档下限。Oxylabs 定价页 TLS 失败，保持 `not_verified`。站点发布窗口已解除，两边 main 都是 `ad980647`。这次仍不推站点。
 
 2026-11-02 00:40 +08：Browserbase、Spider、Scale SERP 年付视图已从官方页写入。Scale SERP 的月付切换价没有看到。仍不推站点。
+
+2026-11-02 00:45 +08：Brave LLM Context 参数已从官方参考页写入。单价仍未复核。营销页延迟表没有入库。仍不推站点。
