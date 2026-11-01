@@ -101,6 +101,8 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertEqual(report["official_list_price"]["searchapi"]["published_usd_per_1k"]["developer"], 4.0)
         self.assertEqual(report["official_list_price"]["dataforseo_google_organic"]["per_1k_serp_usd"]["live"], 2.0)
         self.assertEqual(report["official_list_price"]["scrapingbee"]["plans_usd_per_month"]["startup"], 99.0)
+        self.assertEqual(report["official_list_price"]["scrapingbee"]["google_search_credits"]["normal"], 15)
+        self.assertEqual(report["official_list_price"]["scrapingbee"]["agentic_search_credits"], 3750)
         self.assertNotIn("per_call_usd", report["official_list_price"]["scrapingbee"])
         self.assertEqual(report["official_list_price"]["kagi"]["search_per_1k_requests_usd"], 12.0)
         self.assertEqual(report["official_list_price"]["kagi"]["extract_per_1k_pages_usd"], 4.0)

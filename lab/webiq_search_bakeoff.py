@@ -321,7 +321,12 @@ OFFICIAL_LIST_PRICE = {
             "business": 3000000,
             "business_plus": 8000000,
         },
-        "note": "Prices exclude VAT. Enterprise cards continue from $999 for 14 million credits to $5,799 for 120 million. Do not divide a plan into a per-call price. This fetch did not show credits per Google search. Not called.",
+        "credit_source": "https://help.scrapingbee.com/en/article/credit-system-explained-1h2ackp/",
+        "google_search_credits": {"light": 10, "normal": 15},
+        "fast_search_credits": 10,
+        "agentic_search_credits": 3750,
+        "html_google_url_credits": {"classic_or_premium": 15, "stealth": 75},
+        "note": "Prices exclude VAT. Enterprise cards continue from $999 for 14 million credits to $5,799 for 120 million. Credit costs were fetched 2026-11-02 from the help article updated 2026-08-07. Do not divide a plan into a per-call dollar price. Not called.",
     },
     "kagi": {
         "label": "official_list_price",

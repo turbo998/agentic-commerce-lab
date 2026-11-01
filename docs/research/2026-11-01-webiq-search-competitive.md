@@ -210,7 +210,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | OpenAI web search | 模型调用搜索后返回带引用的答案 | 直接抓取 [pricing.md](https://developers.openai.com/api/docs/pricing)：全模型 web search 与 image web search 都是 $10/1k calls，另加按模型计费的 search content tokens。preview 在推理模型上 $10/1k；非推理模型 preview $25/1k，且 search content tokens 免费。gpt-4o-mini 与 gpt-4.1-mini 的非 preview 把 search content 固定计为 8,000 input tokens | 这不是可缓存的原始 passage。不能把模型答案当成结账依据 |
 | SearchAPI | Google 等结果页，月费卡上自带每千次单价 | 直接抓取 [searchapi.io/pricing](https://www.searchapi.io/pricing)：注册 100 次免费。Developer $40/10,000 且卡片写 $4/1k；Production $100/35,000、$3/1k；BigData $250/100,000、$2.5/1k；Scale $500/250,000、$2/1k。Octo 500K 到 5M 为 $900/$1.8、$1,500/$1.5、$2,800/$1.4、$5,000/$1。只有 HTTP 200 计费。每小时最多用掉套餐额度的 20% | 卡片上的每千次单价是页面印出的，不是本仓库把月费除出来的。99.9% SLA 不进延迟图 |
 | DataForSEO Google Organic | 按 SERP 计费的 Google 自然结果，不是模型答案 | 直接抓取 [organic 定价](https://dataforseo.com/pricing/google-serp/google-organic-serp-api)：一次 SERP 最多 10 条。Standard $0.0006 / $0.60 per 1k；Priority $0.0012 / $1.20；Live $0.002 / $2.00。每个搜索运算符把基价乘 5。账户最低充值 $50，见 [总定价页](https://dataforseo.com/pricing)，余额不过期 | 页面上的分钟和秒数是厂商自述平均值，不进延迟图 |
-| ScrapingBee | 按月 credit 的抓取，另有 Google SERP 接口 | 直接抓取 [pricing](https://www.scrapingbee.com/pricing/)：1,000 免费 credits。Hobby $19/75,000；Freelance $49/250,000；Startup $99/1,000,000；Business $249/3,000,000；Business+ $599/8,000,000。Enterprise 从 $999/1,400 万到 $5,799/1.2 亿。价格不含 VAT | 本次没有看到一次 Google 搜索扣几个 credit。不要把月费除成单次标价 |
+| ScrapingBee | 按月 credit 的抓取，另有 Google SERP 接口 | 直接抓取 [pricing](https://www.scrapingbee.com/pricing/)：1,000 免费 credits。Hobby $19/75,000；Freelance $49/250,000；Startup $99/1,000,000；Business $249/3,000,000；Business+ $599/8,000,000。Enterprise 从 $999/1,400 万到 $5,799/1.2 亿。价格不含 VAT。[credit 说明](https://help.scrapingbee.com/en/article/credit-system-explained-1h2ackp/) 更新于 2026-08-07：Google 与 Walmart 轻量 10 credits，普通 15。Fast search 10。Agentic search 3,750。HTML API 打 Google URL，classic 或 premium 15，stealth 75 | 这是 credit，不是美元单价。不要把月费除成单次标价 |
 | Kagi | 自有索引的搜索和按页抽取 | 直接抓取 [kagi.com/api/pricing](https://kagi.com/api/pricing)：Search $12/1k requests；Extract $4/1k pages，一次最多 10 个 URL。每 30 天或用量到 $100 开票。Enterprise 只报价 | 搜索覆盖 web、图片、新闻、视频和播客。不是结账权威页 |
 | Zyte | 按站点分档的成功响应价，不是单一单价 | 直接抓取 [zyte.com/pricing](https://www.zyte.com/pricing/)：按量 HTTP 五档 $0.13 / $0.23 / $0.44 / $0.70 / $1.27 per 1k。浏览器渲染 $1.01 到 $16.08。页首 “from $0.06” 只是 $500 承诺档的 HTTP 简单档下限。[文档](https://docs.zyte.com/zyte-api/pricing.html) 写只对成功响应计费，标准档 3,000 RPM，按量月花费上限 $100，试用 $5 | 档位取决于目标站。不要把 $0.06 当成所有请求的标价 |
 | Oxylabs | SERP 抓取 | `oxylabs.io` 定价 URL 本次 TLS 失败。没有抄第三方摘录 | 单价保持 `not_verified` |
@@ -233,3 +233,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 00:40 +08：Browserbase、Spider、Scale SERP 年付视图已从官方页写入。Scale SERP 的月付切换价没有看到。仍不推站点。
 
 2026-11-02 00:45 +08：Brave LLM Context 参数已从官方参考页写入。单价仍未复核。营销页延迟表没有入库。仍不推站点。
+
+2026-11-02 00:50 +08：ScrapingBee 的 Google 搜索 credit 已从官方帮助页写入。仍不把月费折成美元单价。Serper 首页仍无标价。Oxylabs 仍是 TLS 失败。仍不推站点。
