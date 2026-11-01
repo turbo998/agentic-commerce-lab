@@ -2,9 +2,11 @@
 
 🌐 **Language / 语言导航**: **[中文](2026-11-01-webiq-azure-browse-passage.md)** | **English (current)** | **[2026-10-26 sealed demo](2026-10-26-webiq-agentic-commerce-demo.en.md)**
 
+> **Status update (same day)**: the lab subscription later created `webiq-qichen2-bench`. The "zero accounts / no resource created" lines below describe only the earlier read-only inventory. That Azure status is superseded by the [Web IQ search competitive matrix](2026-11-01-webiq-search-competitive.en.md). Sealed metrics are unchanged.
+
 ## Finding
 
-The existing Agentic Commerce × Web IQ workbench (`lab/webiq_commerce_demo.py`, sealed 2026-10-26) stays the runnable demo. This note only adds the official Browse contract and a deploy-on-demand template. No Azure resource was created, and the sealed metrics were not re-measured.
+The existing Agentic Commerce × Web IQ workbench (`lab/webiq_commerce_demo.py`, sealed 2026-10-26) stays the runnable demo. This note only adds the official Browse contract and a deploy-on-demand template. No Azure resource had been created when this note was written, and the sealed metrics were not re-measured.
 
 The official [Browse REST API](https://learn.microsoft.com/en-us/web-iq/reference/browse) (docs dated 2026-10-30) recommends `contentFormat=passage` for grounding. A passage request requires a non-blank `query` of 1..1000 characters. `text` / `html` / `markdown` remain full-document formats and need that entitlement. Browse itself is still AppID-gated; self-service access is not generally available.
 

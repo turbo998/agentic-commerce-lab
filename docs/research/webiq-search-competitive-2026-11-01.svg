@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 360" role="img">
+  <title>Web IQ search bake-off status, 2026-11-01. Latency not measured.</title>
+  <rect width="920" height="360" rx="16" fill="#0F172A"/>
+  <text x="32" y="42" fill="#93C5FD" font-size="14" font-family="Segoe UI,sans-serif">2026-11-01 · WEB IQ × WEB SEARCH</text>
+  <text x="32" y="78" fill="#F8FAFC" font-size="28" font-family="Segoe UI,sans-serif">账户已创建。延迟未测。</text>
+  <text x="32" y="108" fill="#94A3B8" font-size="14" font-family="Segoe UI,sans-serif">official_list_price only. No latency bars. Missing values are not zero.</text>
+  <rect x="32" y="132" width="164" height="92" rx="12" fill="#1E293B" stroke="#10B981"/>
+  <rect x="212" y="132" width="164" height="92" rx="12" fill="#1E293B" stroke="#F59E0B"/>
+  <rect x="392" y="132" width="164" height="92" rx="12" fill="#1E293B" stroke="#3B82F6"/>
+  <rect x="572" y="132" width="164" height="92" rx="12" fill="#1E293B" stroke="#8B5CF6"/>
+  <rect x="752" y="132" width="136" height="92" rx="12" fill="#1E293B" stroke="#EF4444"/>
+  <text x="46" y="164" fill="#6EE7B7" font-size="14" font-family="Segoe UI,sans-serif">Web IQ</text>
+  <text x="46" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">/web $7 / 1k</text>
+  <text x="46" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured</text>
+  <text x="226" y="164" fill="#FCD34D" font-size="14" font-family="Segoe UI,sans-serif">Bright Data</text>
+  <text x="226" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">$1.50 / 1k</text>
+  <text x="226" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured</text>
+  <text x="406" y="164" fill="#93C5FD" font-size="14" font-family="Segoe UI,sans-serif">Exa</text>
+  <text x="406" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">lite $4 / 1k</text>
+  <text x="406" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured</text>
+  <text x="586" y="164" fill="#C4B5FD" font-size="14" font-family="Segoe UI,sans-serif">Tavily</text>
+  <text x="586" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">$0.008 / credit</text>
+  <text x="586" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured</text>
+  <text x="766" y="164" fill="#FCA5A5" font-size="14" font-family="Segoe UI,sans-serif">Parallel</text>
+  <text x="766" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">fast $1 / 1k</text>
+  <text x="766" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured</text>
+  <text x="32" y="268" fill="#F8FAFC" font-size="15" font-family="Segoe UI,sans-serif">G3 account webiq-qichen2-bench exists. API key not bound. 7-card withheld.</text>
+  <text x="32" y="298" fill="#94A3B8" font-size="13" font-family="Segoe UI,sans-serif">Daily pillar added to Agentic Commerce research and the night manager.</text>
+  <text x="32" y="328" fill="#64748B" font-size="12" font-family="Segoe UI,sans-serif">Prices verified 2026-11-01 from official pages. Vendor timing is not plotted.</text>
+</svg>

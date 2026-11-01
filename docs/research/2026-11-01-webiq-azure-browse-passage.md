@@ -2,9 +2,11 @@
 
 🌐 **Language / 语言导航**: **中文 (当前)** | **[English](2026-11-01-webiq-azure-browse-passage.en.md)** | **[2026-10-26 密封演示](2026-10-26-webiq-agentic-commerce-demo.md)**
 
+> **状态更新（同日）**：实验室订阅后来创建了 `webiq-qichen2-bench`。本节「0 个账户 / 未创建资源」只描述当时的只读清点，Azure 状态已被 [Web IQ 搜索竞品矩阵](2026-11-01-webiq-search-competitive.md) 取代。密封指标不改。
+
 ## 发现
 
-已有的 Agentic Commerce × Web IQ 演示（`lab/webiq_commerce_demo.py`，密封于 2026-10-26）继续作为可运行工作台。本次只补齐官方 Browse 契约，并给出按需部署模板。没有创建 Azure 资源，也没有重测密封指标。
+已有的 Agentic Commerce × Web IQ 演示（`lab/webiq_commerce_demo.py`，密封于 2026-10-26）继续作为可运行工作台。本笔记只补齐官方 Browse 契约，并给出按需部署模板。写本笔记时没有创建 Azure 资源，也没有重测密封指标。
 
 官方 [Browse REST API](https://learn.microsoft.com/en-us/web-iq/reference/browse)（文档日期 2026-10-30）把 `contentFormat=passage` 定为推荐接地格式。`passage` 必须带 1..1000 字符、非空白的 `query`。`text` / `html` / `markdown` 仍是全文格式，需要全文权限。Browse 本身仍是 AppID 按申请开通，不是自助默认能力。
 
