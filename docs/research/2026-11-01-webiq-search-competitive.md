@@ -171,6 +171,8 @@ Tavily `POST /search`：`search_depth` 为 `ultra-fast`、`fast`、`basic`、`ad
 
 Parallel 新集成必须用 `/v1/search` 和 `/v1/extract`。`mode` 默认是 `advanced`，也就是 $5/1k 那一档，不是 $1 的 `fast`。公开模式 `max_results` 超过 20 会被降到 20。`source_policy` 的包含和排除合计最多 200 个域。`after_date` 只属于 Search。现抓的 `max_age_seconds` 最小 600。欧盟端点 `https://eu.parallel.ai` 只支持 `basic`。`turbo` 只支持英语和日语。模式时间是 `vendor_stated`：`turbo` 约 200 ms，`fast` 约 700 ms，`basic` 约 1 秒，`advanced` 约 3 秒。
 
+2026-11-02 抓取的抽取参考补充了已知 URL 这一步的上限，没有改单价。Exa `POST https://api.exa.ai/contents` 的 `urls` 和 `ids` 各 1–100 条，每条最长 2,048 字符。`text.maxCharacters` 默认且最大 5,000,000。高亮的 `verbosity` 是 beta，必须带请求头 `Exa-Beta: dynamic-highlights-2026-08-28`。余额不足返回 HTTP 402。Tavily `POST https://api.tavily.com/crawl`：`max_depth` 默认 1、最大 5；`max_breadth` 默认 20、最大 500；`limit` 默认 50，schema 只写了最小 1，没有印出最大值。带 `instructions` 时，映射从每 10 个成功页 1 credit 升到 2 credit。`chunks_per_source` 只在有 instructions 时可用，1–5，默认 3，每块约 800 字符。请求超时 10–150 秒，默认 150，这是参数上限，不是测量延迟。Parallel `POST https://api.parallel.ai/v1/extract` 最多 20 个 URL。HTTP 200 仍可带 `errors`。省略高级设置时，默认返回摘录、不返回全文。ScraperAPI 定价页 FAQ 写明：免费 1,000 credits，最多 5 并发；普通页 1 credit；Amazon 5；Google 和 Bing 含子域 25；LinkedIn 30；绕过 Cloudflare、Datadome 或 PerimeterX 再加 10。并发超限返回 429，不计费。静态页没有给出美元单价，所以不折算。Serper 文档地址本次 404。第三方积分包价格没有抄入。Brave 营销页的 AIMultiple 毫秒表仍不入库。
+
 Perplexity Search API，官方定价页 2026-11-01：标准 `POST /search` $5/1k 成功请求；`search_type: "fast"` $1/1k。一次请求里最多 5 个 query 仍算 1 个计费单位。失败和 429 不计费。这是索引结果加 snippet，不是生成答案。Agent API 的 `web_search` 工具是另计：$0.0025/次标准，$0.001/次 Fast Search，再加模型 token。本仓库没有调用。
 
 Brave 营销页引用了第三方 AIMultiple 延迟表。那不是 Brave 标价，也不是本仓库测量，不进入延迟图。官方定价仪表盘本次没有返回可解析的价目表，所以 Brave 单价保持未抄录。
@@ -249,3 +251,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 02:35 +08：Brave Web Search 参考写 `count` 默认 20、最大 20，只作用于网页结果。LLM Context 的 count 上限仍是 50。`offset` 最大 9，翻页结果可以重叠。`extra_snippets` 最多再给 5 段。单价仍未复核。Tavily Extract 一次最多 20 个 URL。basic 是每 5 个成功 URL 1 credit，advanced 是 2。HTTP 200 仍可能带 `failed_results`。Exa quickstart 写默认 10 条，`numResults` 最多 100，搜索不支持翻页。仍不推站点。
 
 2026-11-02 03:35 +08：Web IQ 错误码和图像/视频参数已从 Learn 参考页写入。旧的现抓过多是 HTTP 430，现行细码是 429。MCP passage 校验失败是 HTTP 200 加 `isError`。Jina Reader 页写搜索 JSON 返回 5 条，OCR 是 40 倍 token，不是美元单价。Serper 首页仍无标价。Oxylabs 定价页再次 TLS 失败。仍不推站点。
+
+2026-11-02 04:35 +08：Exa Contents、Tavily Crawl 和 Parallel Extract 的官方上限已写入。Crawl 带 instructions 时映射是每 10 个成功页 2 credits。ScraperAPI 只记录了 credit 成本，没有美元单价。Serper 文档页 404。第三方价格没有抄入。仍不推站点。
