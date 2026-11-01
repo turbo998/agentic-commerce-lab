@@ -227,10 +227,14 @@ OFFICIAL_LIST_PRICE = {
         "note": "Pricing URL returned 404. Homepage fetch did not show a unit price.",
     },
     "bing_grounding": {
-        "label": "not_verified",
-        "source": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview",
+        "label": "official_list_price",
+        "source": "https://www.microsoft.com/en-us/bing/apis",
         "verified_on": VERIFIED_ON,
-        "note": "Bing Search APIs retired 2025-08-11. The how-to page fetched here did not show a unit price. Do not copy Google's $14 onto Bing. Not called. Not Web IQ.",
+        "per_1k_transactions_usd": 14.0,
+        "custom_search_per_1k_transactions_usd": 14.0,
+        "max_transactions_per_second": 150,
+        "max_transactions_per_day": 1000000,
+        "note": "Seen on the product page, not copied from Google. The Learn how-to page does not list this price and links here. Outputs are not directly accessible. Not Web IQ. Not called.",
     },
 }
 

@@ -198,7 +198,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Perplexity Search API | 排序结果加 snippet，不是生成答案 | 标准 $5/1k 成功请求；fast $1/1k。一次最多 5 个 query 仍算 1 次 | Sonar Chat Completions 已于 2026-09-27 停止支持。空 snippet 不能改价 |
 | Brave Search | 自有索引。仪表盘未渲染出价格 | 2026-11-01 再次抓取定价仪表盘仍是空壳。先前的 $5/1k 与 Answers $4/1k 降为 `not_verified` | 不要把研究提取当成标价 |
 | Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
-| Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 单价本次未复核。不要把 Google 的 $14 抄到 Bing。Bing Search APIs 已于 2025-08-11 停用 | 这不是 Web IQ。FAQ 没有把两者写成同一产品 |
+| Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 2026-11-01 直接抓取 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis)：Search 与 Custom Search 都是 $14/1,000 transactions，150 TPS，每天 100 万次。Learn how-to 页没有单价，链接指向该页。不是从 Google 抄来的 | 这不是 Web IQ。输出不能直接拿去别的程序用 |
 | You.com | 索引检索、按页抽取、分层研究，三种计费单位 | 2026-11-01 直接抓取 [you.com/pricing](https://you.com/pricing)：Web Search Standard $5/1k calls；Contents $1/1k pages；免费 MCP 每天 100 次；$10 额度 = 2,000 次搜索。Research Lite/Standard/Deep/Exhaustive/Frontier = $12 / $50 / $100 / $450 / $1,200 per 1k。Finance Deep $110、Exhaustive $500。卡片上的延迟是厂商自述，不进延迟图。先前“缓存命中不计”本次页面未见 | 一次 Web Search 返回 1 条或 100 条都算 1 次。Contents 按返回页计费。研究档不是搜索档 |
 | Linkup | Search / Fetch / Research / Extract，按成功请求扣余额 | 直接抓取 [定价页](https://docs.linkup.so/pages/documentation/platform/pricing)：flash/fast/standard + `searchResults` $0.005，`sourcedAnswer`/`structured` $0.006；deep 为 $0.05 / $0.055。Fetch standard 无 JS $0.001，schema 再加 $0.001。Research S/M/L/XL = $0.25 / $0.50 / $1.50 / $2.50。职业邮箱每月补到 $20。失败不扣费。x402 最低 $0.01/请求 | `sourcedAnswer` 是模型写的。Extract 仍是 closed beta，多数完成任务 $2–10，以返回的 `creditsUsed` 为准 |
 | SerpAPI | Google 结果页解析，只有月费档 | 直接抓取 [serpapi.com/pricing](https://serpapi.com/pricing)：Free $0/250 次，Starter $25/1,000，Developer $75/5,000，Production $150/15,000，Cloud 1M $3,750/1,000,000。页面继续列出更高 Cloud 月费档。没有单次单价。先前“缓存免费”本次未见 | 不要把月费除以次数当成标价 |
@@ -209,4 +209,4 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 
 门户没有可用的评测密钥，竞品密钥也不在环境里。五家调用状态仍是 `not_measured`。厂商公布的 164 ms、under 1 second、under 5 sec、200 ms–3 s 都不进入本仓库延迟图。7-card 继续暂缓。
 
-2026-11-01 23:37 +08 复核：Bing grounding 的 $14 只出现在第三方转述，Learn how-to 页本次抓取没有单价，维持 `not_verified`。个人站 compare 页仍写着 Bing $14/1k，站点发布窗口未解除前不改那两页。
+2026-11-01 23:50 +08 更正：Bing grounding 的 $14/1k 已在 [microsoft.com/en-us/bing/apis](https://www.microsoft.com/en-us/bing/apis) 看到，不再是未复核。Bright Data SERP 与 Unlocker 的 $1.50/$499 包含量也在官方定价页再次确认。Brave 营销页没有单价，其上的 AIMultiple 毫秒表不进延迟图。个人站发布窗口仍未解除，不改站点。
