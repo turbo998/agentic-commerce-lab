@@ -107,6 +107,12 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertEqual(report["official_list_price"]["zyte"]["payg_http_per_1k_usd"]["simple"], 0.13)
         self.assertNotEqual(report["official_list_price"]["zyte"]["payg_http_per_1k_usd"]["advanced"], 0.06)
         self.assertEqual(report["official_list_price"]["oxylabs"]["label"], "not_verified")
+        self.assertEqual(report["official_list_price"]["browserbase"]["default_search_overage_usd_per_1k"], 5.0)
+        self.assertEqual(report["official_list_price"]["browserbase"]["search_options_usd_per_1k"]["exa_deep"], 12.0)
+        self.assertEqual(report["official_list_price"]["spider"]["bandwidth_usd_per_gb"], 1.0)
+        self.assertNotIn("per_search_usd", report["official_list_price"]["spider"])
+        self.assertEqual(report["official_list_price"]["scale_serp"]["billing_view"], "annual")
+        self.assertEqual(report["official_list_price"]["scale_serp"]["overage_usd_per_search"]["searches_10000"], 0.0118)
         prices = report["official_list_price"]
         self.assertEqual(prices["webiq"]["per_1k_usd"]["browse"], 1.0)
         self.assertEqual(prices["exa"]["per_1k_usd"]["deep_reasoning"], 15.0)

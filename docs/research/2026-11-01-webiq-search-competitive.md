@@ -214,6 +214,9 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Kagi | 自有索引的搜索和按页抽取 | 直接抓取 [kagi.com/api/pricing](https://kagi.com/api/pricing)：Search $12/1k requests；Extract $4/1k pages，一次最多 10 个 URL。每 30 天或用量到 $100 开票。Enterprise 只报价 | 搜索覆盖 web、图片、新闻、视频和播客。不是结账权威页 |
 | Zyte | 按站点分档的成功响应价，不是单一单价 | 直接抓取 [zyte.com/pricing](https://www.zyte.com/pricing/)：按量 HTTP 五档 $0.13 / $0.23 / $0.44 / $0.70 / $1.27 per 1k。浏览器渲染 $1.01 到 $16.08。页首 “from $0.06” 只是 $500 承诺档的 HTTP 简单档下限。[文档](https://docs.zyte.com/zyte-api/pricing.html) 写只对成功响应计费，标准档 3,000 RPM，按量月花费上限 $100，试用 $5 | 档位取决于目标站。不要把 $0.06 当成所有请求的标价 |
 | Oxylabs | SERP 抓取 | `oxylabs.io` 定价 URL 本次 TLS 失败。没有抄第三方摘录 | 单价保持 `not_verified` |
+| Browserbase | 浏览器基础设施，搜索是转售选项 | 直接抓取 [browserbase.com/pricing](https://www.browserbase.com/pricing)：Free $0 含 1,000 次搜索。Developer $20、Startup $99 也各含 1,000 次，超出默认 $5/1k。对比表另写 Parallel Fast $1、Parallel Advanced $5、Exa Fast $7、Exa Deep $12，都是每 1,000 次。列出的三档搜索 RPS 都是每项目 2 | 这是 Browserbase 页上的转售价，不覆盖 Parallel 与 Exa 自己的标价 |
+| Spider | 按带宽和 CPU 计费的抓取 | 直接抓取 [spider.cloud/pricing](https://spider.cloud/pricing/)：带宽 $1/GB，CPU $0.0001/分钟。失败请求 $0。Unlimited 按并发计，2 并发 $40/月起。Google 搜索不在 Unlimited 里，要走按量 | 没有单次搜索标价。零数据保留是 2.5 倍。10,000 RPM 是限额，不是延迟 |
+| Scale SERP | 现由 Traject Data 托管的月搜索档 | `scaleserp.com/pricing` 跳到 [trajectdata.com 定价](https://trajectdata.com/serp/scale-serp-api/pricing/)。本次看到的是年付视图：1,000 次 $23/月，超出 $0.038/次；10,000 次 $66/月，超出 $0.0118；50,000 次 $199，超出 $0.00796；250,000 次 $599，超出 $0.004792；100 万次 $1,699，超出 $0.003398；500 万次 $4,999，超出 $0.001999。免费档每月 125 次成功搜索 | 月付切换价本次没看到，不要把年付月费当成月付标价。页面写 Traject Data 并入 ScraperAPI |
 
 ## 仍未测
 
@@ -226,3 +229,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 2026-11-02 00:12 +08：OpenAI web search、SearchAPI 月费卡单价、DataForSEO Google Organic 三档队列价、ScrapingBee 月费档已从官方页写入。没有把月费除成未公布的单次价。
 
 2026-11-02 00:35 +08：Kagi 与 Zyte 官方标价已写入。Zyte 的 $0.06 只是承诺档下限。Oxylabs 定价页 TLS 失败，保持 `not_verified`。站点发布窗口已解除，两边 main 都是 `ad980647`。这次仍不推站点。
+
+2026-11-02 00:40 +08：Browserbase、Spider、Scale SERP 年付视图已从官方页写入。Scale SERP 的月付切换价没有看到。仍不推站点。
