@@ -1,0 +1,284 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 760" width="1120" height="760" role="img" aria-label="Stripe President John Collison: 7 Major Trends of Agentic Commerce &amp; 4-Layer Architecture Mapping">
+  <defs>
+    <linearGradient id="bg7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accentBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="35%" stop-color="#3B82F6"/>
+      <stop offset="70%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardIndigo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="cardBlue7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="cardEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065F46" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="cardAmber7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350F" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="cardRose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7F1D1D" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1120" height="760" rx="16" fill="url(#bg7)" stroke="#334155" stroke-width="1.5"/>
+  <rect x="0" y="0" width="1120" height="6" rx="3" fill="url(#accentBar)"/>
+
+  <!-- Header -->
+  <text x="28" y="36" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="19.5" font-weight="800" fill="#F8FAFC">
+    Stripe President John Collison (@collision) · 7 Major Trends of Agentic Commerce
+  </text>
+  <text x="28" y="56" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="12.5" fill="#94A3B8">
+    Synthesized from X Long-Form Commentary, Sourcery, Browserbase Navigate &amp; Stripe 2026 Keynote · Mapped to 5-Level Autonomy &amp; 4-Layer Lab Stack
+  </text>
+  <rect x="832" y="18" width="262" height="32" rx="16" fill="#0F172A" stroke="#6366F1" stroke-width="1.4"/>
+  <text x="963" y="38" text-anchor="middle" font-family="Consolas, monospace" font-size="11.5" font-weight="700" fill="#A5B4FC">
+    $1.9T BASELINE · ~$9.6B+ STACK
+  </text>
+
+  <!-- Row 1: Trend 1, Trend 2, Trend 3 -->
+  <!-- Trend 1 -->
+  <rect x="24" y="72" width="346" height="172" rx="12" fill="url(#cardIndigo)" stroke="#6366F1" stroke-width="1.3"/>
+  <text x="40" y="96" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#818CF8">
+    TREND 1 · $1.9T SCALE &amp; VERTICAL INFLECTION
+  </text>
+  <text x="40" y="118" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    Biggest Architectural Reset in 17 Years
+  </text>
+  <text x="40" y="138" font-family="Consolas, monospace" font-size="11" fill="#34D399">
+    • 2025 Volume: $1.9 Trillion (+34% YoY)
+  </text>
+  <text x="40" y="156" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    • Sept 2026: Agentic traffic went "vertical"
+  </text>
+  <text x="40" y="176" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    "Instinct is real, Muse is real. All these things are real."
+  </text>
+  <rect x="40" y="192" width="314" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="50" y="208" font-family="Consolas, monospace" font-size="10.5" fill="#93C5FD">
+    Lab Mapping: Layer 2/3 Single-TX Reconcile
+  </text>
+  <text x="50" y="223" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    8-state StripeReadbackPhase · 7-table provenance
+  </text>
+
+  <!-- Trend 2 -->
+  <rect x="386" y="72" width="346" height="172" rx="12" fill="url(#cardBlue7)" stroke="#3B82F6" stroke-width="1.3"/>
+  <text x="402" y="96" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#60A5FA">
+    TREND 2 · AGENTS REPLACE WEB FORMS
+  </text>
+  <text x="402" y="118" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    Computer Use = Backwards Compatibility Layer
+  </text>
+  <text x="402" y="138" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    "Computer use is the ultimate backwards compatibility
+  </text>
+  <text x="402" y="153" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    layer for the real world... Filling out a web form is
+  </text>
+  <text x="402" y="168" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    not a value-add activity for anyone."
+  </text>
+  <text x="402" y="185" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">
+    • Stateful agents (DMV renewal, legacy checkouts)
+  </text>
+  <rect x="402" y="192" width="314" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="412" y="208" font-family="Consolas, monospace" font-size="10.5" fill="#6EE7B7">
+    Lab Mapping: WebMCP + Link Wallet (liwltoken_)
+  </text>
+  <text x="412" y="223" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    Re-discover tools + consequentialHint human gate
+  </text>
+
+  <!-- Trend 3 -->
+  <rect x="748" y="72" width="348" height="172" rx="12" fill="url(#cardEmerald)" stroke="#10B981" stroke-width="1.3"/>
+  <text x="764" y="96" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#34D399">
+    TREND 3 · AI DISCOVERY REWIRES COMMERCE
+  </text>
+  <text x="764" y="118" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    New Aggregation Point &amp; Long-Tail Boom
+  </text>
+  <text x="764" y="138" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    "AI discovery is the new point of aggregation... Keyword
+  </text>
+  <text x="764" y="153" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    search is ridiculous... good story for the long tail."
+  </text>
+  <text x="764" y="172" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">
+    • China Harbinger: Alipay 120M+ weekly agent txns
+  </text>
+  <text x="764" y="186" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">
+    • Commodity (L3-5 auto) vs Taste goods (L1-2 HITL)
+  </text>
+  <rect x="764" y="192" width="316" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="774" y="208" font-family="Consolas, monospace" font-size="10.5" fill="#6EE7B7">
+    Lab Mapping: Microsoft Web IQ Passage Grounding
+  </text>
+  <text x="774" y="223" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    P95=240ms · 2.75x parallel speedup · 0.0pt bias drift
+  </text>
+
+  <!-- Row 2: Trend 4, Trend 5, Trend 6 -->
+  <!-- Trend 4 -->
+  <rect x="24" y="258" width="346" height="172" rx="12" fill="url(#cardRose)" stroke="#F43F5E" stroke-width="1.3"/>
+  <text x="40" y="282" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#FDA4AF">
+    TREND 4 · CYBER RISK &amp; BOT ARMS RACE
+  </text>
+  <text x="40" y="304" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    Next 5 Yrs Breaches &gt; Prior 5 Yrs (Good vs Bad Bot)
+  </text>
+  <text x="40" y="324" font-family="Consolas, monospace" font-size="11" fill="#FECDD3">
+    • 50-yr M&amp;A-patched legacy stacks most exposed
+  </text>
+  <text x="40" y="342" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    • Hidden DOM prompt injection vs buyer agents
+  </text>
+  <text x="40" y="360" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    • Cryptographic agent attestation required
+  </text>
+  <rect x="40" y="376" width="314" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="50" y="392" font-family="Consolas, monospace" font-size="10.5" fill="#FDA4AF">
+    Lab Mapping: Web IQ DOM Scrub + Visa TAP + AP2
+  </text>
+  <text x="50" y="407" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    12/12 display:none blocked · RFC 9421 9-char keyid
+  </text>
+
+  <!-- Trend 5 -->
+  <rect x="386" y="258" width="346" height="172" rx="12" fill="url(#cardAmber7)" stroke="#F59E0B" stroke-width="1.3"/>
+  <text x="402" y="282" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#FCD34D">
+    TREND 5 · SINGULARITY EPOCH &amp; 5X STARTUPS
+  </text>
+  <text x="402" y="304" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    Jan 1, 2026 = "Day One of the Singularity"
+  </text>
+  <text x="402" y="324" font-family="Consolas, monospace" font-size="11" fill="#FDE68A">
+    • 2026 Atlas Cohort: 5x revenue pace vs 2025 class
+  </text>
+  <text x="402" y="342" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    • All-time high firm creation on Stripe Atlas
+  </text>
+  <text x="402" y="360" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    • Recursive self-improvement ("math wars")
+  </text>
+  <rect x="402" y="376" width="314" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="412" y="392" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">
+    Lab Mapping: Lock-Free Single-SELECT Previews
+  </text>
+  <text x="412" y="407" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    Stages 1744-1751 zero-lock dry-run preflight checks
+  </text>
+
+  <!-- Trend 6 -->
+  <rect x="748" y="258" width="348" height="172" rx="12" fill="url(#cardBlue7)" stroke="#38BDF8" stroke-width="1.3"/>
+  <text x="764" y="282" font-family="Segoe UI, sans-serif" font-size="12.5" font-weight="800" fill="#38BDF8">
+    TREND 6 · DX GIVES WAY TO AI ERGONOMICS
+  </text>
+  <text x="764" y="304" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    Rebuilding for Coding &amp; Buying Agents
+  </text>
+  <text x="764" y="322" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    "No one actually really integrates the Stripe API by
+  </text>
+  <text x="764" y="337" font-family="Segoe UI, sans-serif" font-size="11" font-style="italic" fill="#E2E8F0">
+    hand anymore... they send their coding agent to do it."
+  </text>
+  <text x="764" y="356" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">
+    • API version pinning stops LLM version hallucination
+  </text>
+  <text x="764" y="370" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">
+    • OpenAI/Stripe ACP + SPT (2026-09-30.preview)
+  </text>
+  <rect x="764" y="376" width="316" height="38" rx="6" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="774" y="392" font-family="Consolas, monospace" font-size="10.5" fill="#38BDF8">
+    Lab Mapping: Link Spend Guard + MCP Zero-Grace
+  </text>
+  <text x="774" y="407" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">
+    --context &gt;= 100 chars · no setup_future_usage on SPT
+  </text>
+
+  <!-- Row 3 Full-Width: Trend 7 (~$9.6B+ M&A & Protocol Stack) -->
+  <rect x="24" y="444" width="1072" height="148" rx="12" fill="url(#cardIndigo)" stroke="#8B5CF6" stroke-width="1.4"/>
+  <text x="40" y="468" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#C4B5FD">
+    TREND 7 · MULTI-MODEL ROUTING, USAGE BILLING &amp; CRYPTO/STABLECOIN MACHINE RAILS (~$9.6B+ STACK &amp; TEMPO L1)
+  </text>
+  <text x="40" y="488" font-family="Segoe UI, sans-serif" font-size="11.5" font-style="italic" fill="#E2E8F0">
+    "To believe in OpenRouter, you have to believe that more than one model will be used inside a business." — John Collison
+  </text>
+
+  <!-- 5 Stack Pillars inside Trend 7 -->
+  <rect x="40" y="500" width="198" height="76" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="52" y="520" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#60A5FA">1. Bridge ($1.1B)</text>
+  <text x="52" y="538" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">Stablecoin Orchestration</text>
+  <text x="52" y="556" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Cross-border settlement</text>
+
+  <rect x="250" y="500" width="198" height="76" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="262" y="520" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#C4B5FD">2. Privy (Wallet)</text>
+  <text x="262" y="538" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">Programmable Agent Keys</text>
+  <text x="262" y="556" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Policy-scoped signing</text>
+
+  <rect x="460" y="500" width="198" height="76" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="472" y="520" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#34D399">3. Metronome (~$1B)</text>
+  <text x="472" y="538" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">Real-Time Usage Billing</text>
+  <text x="472" y="556" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Token &amp; outcome metering</text>
+
+  <rect x="670" y="500" width="198" height="76" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="682" y="520" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#FCD34D">4. OpenRouter (~$7.5B+)</text>
+  <text x="682" y="538" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">Multi-Model Routing Hub</text>
+  <text x="682" y="556" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Cost/quality arbitration</text>
+
+  <rect x="880" y="500" width="200" height="76" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1.2"/>
+  <text x="892" y="520" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F472B6">5. Tempo L1 + MPP/x402</text>
+  <text x="892" y="538" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">HTTP 402 Micropayments</text>
+  <text x="892" y="556" font-family="Consolas, monospace" font-size="10" fill="#34D399">_next.pay_argv · 0.002 USDC</text>
+
+  <!-- Row 4 Bottom: Stripe 5 Levels of Agentic Commerce Autonomy Progression -->
+  <rect x="24" y="606" width="1072" height="132" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.3"/>
+  <text x="40" y="630" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#6EE7B7">
+    STRIPE 5-LEVEL AGENTIC COMMERCE AUTONOMY FRAMEWORK × LAB DETERMINISTIC GUARDRAILS
+  </text>
+
+  <!-- 5 Level Boxes -->
+  <rect x="40" y="642" width="198" height="80" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="52" y="660" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#94A3B8">L1 · Rule-Based</text>
+  <text x="52" y="678" font-family="Consolas, monospace" font-size="10" fill="#CBD5E1">Static price/stock scripts</text>
+  <text x="52" y="694" font-family="Consolas, monospace" font-size="10" fill="#64748B">Guard: idempotency_key</text>
+  <text x="52" y="710" font-family="Consolas, monospace" font-size="10" fill="#94A3B8">Trend 1 Baseline</text>
+
+  <rect x="250" y="642" width="198" height="80" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1"/>
+  <text x="262" y="660" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#60A5FA">L2 · Assistive Prep</text>
+  <text x="262" y="678" font-family="Consolas, monospace" font-size="10" fill="#CBD5E1">"Taste" goods &amp; web forms</text>
+  <text x="262" y="694" font-family="Consolas, monospace" font-size="10" fill="#93C5FD">Guard: WebMCP confirm</text>
+  <text x="262" y="710" font-family="Consolas, monospace" font-size="10" fill="#60A5FA">Trends 2 &amp; 3</text>
+
+  <rect x="460" y="642" width="198" height="80" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="472" y="660" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#34D399">L3 · Bounded Auto</text>
+  <text x="472" y="678" font-family="Consolas, monospace" font-size="10" fill="#CBD5E1">Mandated commodity buy</text>
+  <text x="472" y="694" font-family="Consolas, monospace" font-size="10" fill="#6EE7B7">Guard: MandateVC + SPT</text>
+  <text x="472" y="710" font-family="Consolas, monospace" font-size="10" fill="#34D399">Trends 4 &amp; 6</text>
+
+  <rect x="670" y="642" width="198" height="80" rx="8" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="682" y="660" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#C4B5FD">L4 · Multi-Agent M2M</text>
+  <text x="682" y="678" font-family="Consolas, monospace" font-size="10" fill="#CBD5E1">Metered API &amp; RFQ calls</text>
+  <text x="682" y="694" font-family="Consolas, monospace" font-size="10" fill="#DDD6FE">Guard: x402 / pay_argv</text>
+  <text x="682" y="710" font-family="Consolas, monospace" font-size="10" fill="#C4B5FD">Trends 5 &amp; 7</text>
+
+  <rect x="880" y="642" width="200" height="80" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="892" y="660" font-family="Segoe UI, sans-serif" font-size="11.5" font-weight="700" fill="#FCD34D">L5 · Self-Healing</text>
+  <text x="892" y="678" font-family="Consolas, monospace" font-size="10" fill="#CBD5E1">Predictive &amp; recall RMA</text>
+  <text x="892" y="694" font-family="Consolas, monospace" font-size="10" fill="#FDE68A">Guard: AP2 §7.4 Breaker</text>
+  <text x="892" y="710" font-family="Consolas, monospace" font-size="10" fill="#FCD34D">Trends 3, 4 &amp; 7</text>
+</svg>
