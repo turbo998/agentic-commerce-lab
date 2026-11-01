@@ -190,7 +190,7 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 | Brave Search | 自有索引。Web / LLM Context / 图片 / 新闻 / 视频 | $5/1k 请求，每月 $5 额度。Answers 另计 $4/1k 加 token | 直接抓取定价仪表盘得到的是空壳。这个 $5 来自该官方定价 URL 的研究提取，页面未能在本次渲染中复核 |
 | Grounding with Google Search | Gemini 的公开网页接地工具，不是原始 SERP | 每月 5,000 次免费，之后 $14/1k Grounding Queries。一次 prompt 可以产生多次计费查询 | 样本里的 `uri` 可以是 Google 搜索 URL。不能当零售商页面 |
 | Grounding with Bing | 模型搜 Bing 后返回带引用的答案。开发者拿不到原始 Bing 载荷 | 单价本次未复核。不要把 Google 的 $14 抄到 Bing。Bing Search APIs 已于 2025-08-11 停用 | 这不是 Web IQ。FAQ 没有把两者写成同一产品 |
-| You.com Web Search | 索引加可选全文 | Web Search $5/1k，最多 100 条同价。全文现抓 $1/1k 页。缓存命中不计 | 改价前要 Contents 或 `full_page`，不能只留 Answer |
+| You.com | 索引检索、按页抽取、分层研究，三种计费单位 | 2026-11-01 直接抓取 [you.com/pricing](https://you.com/pricing)：Web Search Standard $5/1k calls；Contents $1/1k pages；免费 MCP 每天 100 次；$10 额度 = 2,000 次搜索。Research Lite/Standard/Deep/Exhaustive/Frontier = $12 / $50 / $100 / $450 / $1,200 per 1k。Finance Deep $110、Exhaustive $500。卡片上的延迟是厂商自述，不进延迟图。先前“缓存命中不计”本次页面未见 | 一次 Web Search 返回 1 条或 100 条都算 1 次。Contents 按返回页计费。研究档不是搜索档 |
 | Linkup | 索引检索，可选抓取和答案 | `searchResults` 的 flash/fast/standard 每次 $0.005。deep `searchResults` 每次 $0.05。失败不计费 | `sourcedAnswer` 是模型写的，不能当裁决记录 |
 | SerpAPI | Google 结果页解析 | 月费档，不公布单次单价。不要把套餐除出来当成标价。缓存免费，失败不计 | 只用来发现官方 URL |
 | Serper | Google 结果页 | 预充值：50k 档 $1.00/1k credits，往下到 12.5M 档 $0.30/1k。公开参数表本次 404 | 和 SerpAPI 一样，不能当政策页 |
@@ -199,3 +199,5 @@ Learn FAQ 与条款还有几条商业代理必须遵守的边界，标签是公�
 ## 仍未测
 
 门户没有可用的评测密钥，竞品密钥也不在环境里。五家调用状态仍是 `not_measured`。厂商公布的 164 ms、under 1 second、under 5 sec、200 ms–3 s 都不进入本仓库延迟图。7-card 继续暂缓。
+
+2026-11-01 23:37 +08 复核：Bing grounding 的 $14 只出现在第三方转述，Learn how-to 页本次抓取没有单价，维持 `not_verified`。个人站 compare 页仍写着 Bing $14/1k，站点发布窗口未解除前不改那两页。
