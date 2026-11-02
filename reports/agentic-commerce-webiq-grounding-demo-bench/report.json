@@ -1,6 +1,6 @@
 {
   "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
-  "benchmark_version": "2026-11-01.stage1752",
+  "benchmark_version": "2026-11-02.stage1753",
   "provenance": "deterministic_offline_simulation",
   "independently_reproduced": true,
   "total_scenarios": 12,
@@ -16,6 +16,16 @@
     "webiq_429_duration_wait_s": 60,
     "webiq_429_timestamp_wait_s": 90,
     "webmcp_consequential_unconfirmed_reason": "webmcp_consequential_hint_requires_human_confirmation"
+  },
+  "stage_1753_guards": {
+    "stage": 1753,
+    "all_passed": true,
+    "oca_confirmed_state": "confirmed",
+    "oca_asymmetric_reinit_blocked_reason": "oca_reinitiation_locked_to_terminating_party",
+    "sftp_disable_checkout_blocked_reason": "disable_checkout_true_blocks_requested_session_redirect_to_link",
+    "ucp_link_completion_blocked_reason": "ucp_stripe_payments_handler_does_not_support_link_completion",
+    "hook_4s_timeout_status": "declined_timeout_4s",
+    "affirm_webview_automation_blocked_reason": "affirm_webview_automation_or_uncontrolled_device_forbidden"
   },
   "scenarios": [
     {
@@ -156,6 +166,12 @@
       "check": "Stage 1752 Perturbation (Web IQ 429 '60s' -> 429 TooManyOnDemandCrawls ISO Timestamp & Link _next.pay_argv)",
       "original": "429 AuthUserThrottled -> 60s wait; mpp pay -t spt_123 argv verified",
       "perturbed": "429 TooManyOnDemandCrawls -> 90s UTC delta; shell '; curl' & sk_live_ blocked",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "Stage 1753 Perturbation (OCA v2 Re-Initiation Lock, SFTP disable_checkout, UCP Link Trap & 4s Hook SLA)",
+      "original": "OCA confirmed; SFTP manifest verified; UCP card spt_* + 420ms hook approved",
+      "perturbed": "Non-terminating OCA reinit, disable_checkout=true, UCP Link completion & >4s hook blocked",
       "delta_pts": "0.0 drift"
     }
   ],

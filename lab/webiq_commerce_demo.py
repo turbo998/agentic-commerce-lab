@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-11-01.stage1752"
+DEMO_VERSION = "2026-11-02.stage1753"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -1668,6 +1668,519 @@ def evaluate_webmcp_tool_call(
 
 
 # ---------------------------------------------------------------------------
+# Stage 1753: Stripe OCA v2 + SFTP Hybrid Catalog + UCP Handler Split + Hooks
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class OCAAgreementDecision:
+    allowed: bool
+    next_state: Literal["none", "partially_confirmed", "confirmed", "terminated"]
+    reason: str
+    terminated_by: Literal["seller", "agent"] | None
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def evaluate_oca_agreement_transition(
+    *,
+    current_state: Literal["none", "partially_confirmed", "confirmed", "terminated"],
+    actor: Literal["seller", "agent"],
+    action: Literal["initiate", "confirm", "terminate", "reinitiate"],
+    oca_id: str = "orca_live_001",
+    seller_profile_id: str = "profile_nordic_audio",
+    oca_retrieved_v2: bool = True,
+    seller_profile_verified: bool = True,
+    terminated_by: Literal["seller", "agent"] | None = None,
+) -> OCAAgreementDecision:
+    """Enforce Stripe v2 Orchestrated Commerce Agreement (`2026-10-28.preview`) state machine.
+
+    Per ``https://docs.stripe.com/agentic-commerce/agents/embedded.md``:
+    - Only a seller can initiate an OCA (`v2.orchestrated_commerce.agreement.created` ->
+      `partially_confirmed`).
+    - Before calling `POST /v2/orchestrated_commerce/agreements/{OCA_ID}/confirm`, the agent must
+      retrieve `/v2/orchestrated_commerce/agreements/{OCA_ID}` (`orca_...`) and verify the seller
+      via `/v2/network/profiles/{SELLER_PROFILE_ID}` (`profile_...`).
+    - Either party (`seller` or `agent`) can call `/terminate` at any time (`terminated`).
+    - **Asymmetric re-initiation lock**: After termination, ONLY the party that terminated the OCA
+      can initiate a new one.
+    """
+    if not (isinstance(oca_id, str) and oca_id.startswith("orca_")):
+        return OCAAgreementDecision(
+            False, current_state, "invalid_oca_id_prefix_requires_orca", terminated_by, "Send to a human"
+        )
+    if not (isinstance(seller_profile_id, str) and seller_profile_id.startswith("profile_")):
+        return OCAAgreementDecision(
+            False, current_state, "invalid_seller_profile_id_requires_profile", terminated_by, "Send to a human"
+        )
+
+    if action == "initiate":
+        if current_state != "none":
+            return OCAAgreementDecision(
+                False, current_state, "oca_already_exists_use_confirm_or_reinitiate", terminated_by, "Confirm"
+            )
+        if actor != "seller":
+            return OCAAgreementDecision(
+                False, "none", "oca_initiation_requires_seller_actor", None, "Send to a human"
+            )
+        return OCAAgreementDecision(
+            True, "partially_confirmed", "oca_created_and_partially_confirmed_by_seller", None, "Confirm"
+        )
+
+    if action == "confirm":
+        if current_state != "partially_confirmed":
+            return OCAAgreementDecision(
+                False, current_state, "oca_confirm_requires_partially_confirmed_state", terminated_by, "Confirm"
+            )
+        if actor != "agent":
+            return OCAAgreementDecision(
+                False, current_state, "oca_confirm_requires_agent_counterparty", terminated_by, "Send to a human"
+            )
+        if not (oca_retrieved_v2 and seller_profile_verified):
+            return OCAAgreementDecision(
+                False,
+                current_state,
+                "oca_confirm_requires_v2_agreement_and_network_profile_verification",
+                terminated_by,
+                "Confirm",
+            )
+        return OCAAgreementDecision(
+            True, "confirmed", "oca_confirmed_active_for_commerce", None, "Act automatically"
+        )
+
+    if action == "terminate":
+        if current_state not in ("partially_confirmed", "confirmed"):
+            return OCAAgreementDecision(
+                False, current_state, "oca_terminate_requires_active_or_pending_agreement", terminated_by, "Confirm"
+            )
+        return OCAAgreementDecision(
+            True,
+            "terminated",
+            f"oca_terminated_by_{actor}",
+            actor,
+            "Send to a human",
+        )
+
+    if action == "reinitiate":
+        if current_state != "terminated" or terminated_by not in ("seller", "agent"):
+            return OCAAgreementDecision(
+                False, current_state, "oca_reinitiate_requires_prior_terminated_state", terminated_by, "Confirm"
+            )
+        if actor != terminated_by:
+            return OCAAgreementDecision(
+                False,
+                "terminated",
+                "oca_reinitiation_locked_to_terminating_party",
+                terminated_by,
+                "Send to a human",
+            )
+        return OCAAgreementDecision(
+            True,
+            "partially_confirmed",
+            f"oca_reinitiated_by_terminating_party_{actor}",
+            None,
+            "Confirm",
+        )
+
+    return OCAAgreementDecision(False, current_state, "unsupported_oca_action", terminated_by, "Send to a human")
+
+
+@dataclass(frozen=True)
+class SFTPCatalogIngestionAudit:
+    allowed: bool
+    reason: str
+    feed_type: Literal["product_master", "delta"]
+    ingested_sku_ids: tuple[str, ...]
+    deleted_sku_ids: tuple[str, ...]
+    discovery_only_sku_ids: tuple[str, ...]
+    checkout_eligible_sku_ids: tuple[str, ...]
+
+
+def validate_sftp_catalog_batch(
+    *,
+    feed_type: Literal["product_master", "delta"],
+    ssh_key_type: str = "ed25519",
+    ssh_key_age_days: int = 90,
+    password_auth_enabled: bool = False,
+    verification_token_present: bool = True,
+    manifest_present: bool = True,
+    total_shards: int = 1,
+    resolved_shard_paths: tuple[str, ...] = ("catalog/2026-11-02/full_catalog_part_1_of_1.csv.gz",),
+    batch_timestamp: int = 1793664000,
+    stored_batch_timestamp: int = 1793577600,
+    rows: list[dict[str, Any]] | None = None,
+    requested_checkout_sku_id: str | None = None,
+) -> SFTPCatalogIngestionAudit:
+    """Enforce Stripe SFTP Hybrid Catalog Ingestion (`product_master` 24h + `delta` 1h) contract.
+
+    Per ``https://docs.stripe.com/agentic-commerce/concepts/catalog-feed/sftp-catalog-ingestion.md``:
+    - SSH key must be `ed25519` rotated at least every 365 days; password authentication is disabled.
+    - Root `/stripe-verification.txt` challenge token must be verified before syndication begins.
+    - For sharded feeds, Stripe uploads `.csv.gz` shards first and `manifest.json` last; agents must
+      not begin ingestion until `manifest.json` is present and shard paths resolve via `relative_path`
+      or `absolute_path` (never bare `name` alone without directory path).
+    - Records only update when `batch_timestamp > stored_batch_timestamp`.
+    - When `delete=True` in a delta/master row, only `id` and `delete` are read (all other columns ignored).
+    - When `disable_checkout=True`, the product is discovery-only and must never enter `RequestedSession`
+      in-agent checkout (redirect buyer to `link` URL).
+    """
+    if password_auth_enabled or ssh_key_type.lower() != "ed25519" or int(ssh_key_age_days) > 365:
+        return SFTPCatalogIngestionAudit(
+            False, "sftp_requires_ed25519_key_under_365d_and_no_password_auth", feed_type, (), (), (), ()
+        )
+    if not verification_token_present:
+        return SFTPCatalogIngestionAudit(
+            False, "missing_root_stripe_verification_txt_challenge", feed_type, (), (), (), ()
+        )
+    if not manifest_present or int(total_shards) <= 0 or len(resolved_shard_paths) != int(total_shards):
+        return SFTPCatalogIngestionAudit(
+            False, "manifest_json_barrier_incomplete_or_shard_count_mismatch", feed_type, (), (), (), ()
+        )
+    if any("/" not in p.strip("/") for p in resolved_shard_paths):
+        return SFTPCatalogIngestionAudit(
+            False, "shard_path_must_use_relative_or_absolute_path_not_bare_name", feed_type, (), (), (), ()
+        )
+    if int(batch_timestamp) <= int(stored_batch_timestamp):
+        reason = (
+            "idempotent_duplicate_batch_skipped"
+            if int(batch_timestamp) == int(stored_batch_timestamp)
+            else "stale_batch_timestamp_rejected"
+        )
+        return SFTPCatalogIngestionAudit(False, reason, feed_type, (), (), (), ())
+
+    ingested: list[str] = []
+    deleted: list[str] = []
+    discovery_only: list[str] = []
+    checkout_ok: list[str] = []
+
+    for row in rows or []:
+        sku_id = str(row.get("id", "")).strip()
+        if not sku_id:
+            continue
+        is_deleted = str(row.get("delete", "false")).lower() in ("true", "1")
+        if is_deleted:
+            # Explicit delete row: ignore all columns except id and delete
+            deleted.append(sku_id)
+            continue
+        ingested.append(sku_id)
+        disable_chk = str(row.get("disable_checkout", "false")).lower() in ("true", "1")
+        if disable_chk:
+            discovery_only.append(sku_id)
+        else:
+            checkout_ok.append(sku_id)
+
+    if requested_checkout_sku_id is not None:
+        if requested_checkout_sku_id in discovery_only:
+            return SFTPCatalogIngestionAudit(
+                False,
+                "disable_checkout_true_blocks_requested_session_redirect_to_link",
+                feed_type,
+                tuple(ingested),
+                tuple(deleted),
+                tuple(discovery_only),
+                tuple(checkout_ok),
+            )
+        if requested_checkout_sku_id in deleted or requested_checkout_sku_id not in checkout_ok:
+            return SFTPCatalogIngestionAudit(
+                False,
+                "sku_deleted_or_missing_from_catalog",
+                feed_type,
+                tuple(ingested),
+                tuple(deleted),
+                tuple(discovery_only),
+                tuple(checkout_ok),
+            )
+
+    return SFTPCatalogIngestionAudit(
+        True,
+        "sftp_catalog_batch_verified_and_applied",
+        feed_type,
+        tuple(ingested),
+        tuple(deleted),
+        tuple(discovery_only),
+        tuple(checkout_ok),
+    )
+
+
+@dataclass(frozen=True)
+class UCPPaymentCompletionDecision:
+    allowed: bool
+    reason: str
+    handler_name: str
+    instrument_type: str
+    credential_type: str
+    error_code: str | None
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_ucp_payment_completion(
+    *,
+    handler_name: Literal["com.stripe.payments", "com.google.pay"],
+    handler_id: str,
+    instrument_type: Literal["card", "apple_pay", "google_pay", "link"],
+    credential_type: str,
+    credential_token: str,
+    checkout_status: str = "ready_for_complete",
+    buyer_email_present: bool = True,
+    oca_confirmed: bool = True,
+    environment_matches: bool = True,
+    binding_type: str = "dev.ucp.shopping.checkout",
+    binding_id: str = "chk_1234567890",
+    checkout_id: str = "chk_1234567890",
+    identity_access_token: str = "profile_nordic_audio",
+    seller_business_profile: str = "profile_nordic_audio",
+    max_amount_minor: int = 7900,
+    checkout_total_minor: int = 7900,
+    ttl_seconds: int = 3600,
+) -> UCPPaymentCompletionDecision:
+    """Enforce Stripe UCP Payment Handler (`com.stripe.payments` v`2026-06-25` vs `com.google.pay`).
+
+    Per ``https://docs.stripe.com/agentic-commerce/protocols/ucp/stripe-payments-handler.md``:
+    - Checkout must be in ``ready_for_complete`` status with buyer email present (`missing_buyer_info`).
+    - Requires a confirmed OCA in the matching environment (`testmode`/`sandbox` vs `livemode`/`production`).
+    - ``com.stripe.payments`` supports ``card`` (`stripe_payment_token` -> `spt_...`) and ``apple_pay``
+      (`pk_payment_token`). Even though ``link`` can appear in ``available_instruments``,
+      ``com.stripe.payments`` does NOT support Link payment completion!
+    - Google Pay must use the separate ``com.google.pay`` handler (`handler_id="stripe-handler"`,
+      `credential.type="PAYMENT_GATEWAY"`).
+    """
+    if not oca_confirmed or not environment_matches:
+        return UCPPaymentCompletionDecision(
+            False,
+            "oca_unconfirmed_or_environment_mismatch",
+            handler_name,
+            instrument_type,
+            credential_type,
+            "payment_failed",
+            "Send to a human",
+        )
+    if not buyer_email_present:
+        return UCPPaymentCompletionDecision(
+            False,
+            "missing_buyer_info_buyer_email_required",
+            handler_name,
+            instrument_type,
+            credential_type,
+            "missing_buyer_info",
+            "Confirm",
+        )
+    if checkout_status != "ready_for_complete":
+        return UCPPaymentCompletionDecision(
+            False,
+            "checkout_not_ready_for_complete",
+            handler_name,
+            instrument_type,
+            credential_type,
+            "payment_failed",
+            "Confirm",
+        )
+
+    if handler_name == "com.stripe.payments":
+        if instrument_type == "link":
+            return UCPPaymentCompletionDecision(
+                False,
+                "ucp_stripe_payments_handler_does_not_support_link_completion",
+                handler_name,
+                instrument_type,
+                credential_type,
+                "payment_failed",
+                "Send to a human",
+            )
+        if instrument_type == "google_pay":
+            return UCPPaymentCompletionDecision(
+                False,
+                "google_pay_requires_separate_com_google_pay_handler",
+                handler_name,
+                instrument_type,
+                credential_type,
+                "payment_failed",
+                "Send to a human",
+            )
+        if instrument_type == "card":
+            if (
+                credential_type != "stripe_payment_token"
+                or not str(credential_token).startswith("spt_")
+                or binding_type != "dev.ucp.shopping.checkout"
+                or binding_id != checkout_id
+                or identity_access_token != seller_business_profile
+                or int(max_amount_minor) != int(checkout_total_minor)
+                or int(ttl_seconds) <= 0
+                or int(ttl_seconds) > 3600
+            ):
+                return UCPPaymentCompletionDecision(
+                    False,
+                    "invalid_ucp_spt_binding_or_profile_or_ttl",
+                    handler_name,
+                    instrument_type,
+                    credential_type,
+                    "payment_failed",
+                    "Send to a human",
+                )
+            return UCPPaymentCompletionDecision(
+                True,
+                "ucp_stripe_payments_card_spt_verified",
+                handler_name,
+                instrument_type,
+                credential_type,
+                None,
+                "Act automatically",
+            )
+        if instrument_type == "apple_pay":
+            if credential_type != "pk_payment_token" or not str(credential_token).strip():
+                return UCPPaymentCompletionDecision(
+                    False,
+                    "apple_pay_requires_pk_payment_token_credential",
+                    handler_name,
+                    instrument_type,
+                    credential_type,
+                    "payment_failed",
+                    "Send to a human",
+                )
+            return UCPPaymentCompletionDecision(
+                True,
+                "ucp_stripe_payments_apple_pay_verified",
+                handler_name,
+                instrument_type,
+                credential_type,
+                None,
+                "Act automatically",
+            )
+
+    if handler_name == "com.google.pay":
+        if (
+            handler_id != "stripe-handler"
+            or instrument_type not in ("card", "google_pay")
+            or credential_type != "PAYMENT_GATEWAY"
+            or not str(credential_token).strip()
+        ):
+            return UCPPaymentCompletionDecision(
+                False,
+                "google_pay_requires_stripe_handler_and_payment_gateway_credential",
+                handler_name,
+                instrument_type,
+                credential_type,
+                "payment_failed",
+                "Send to a human",
+            )
+        return UCPPaymentCompletionDecision(
+            True,
+            "ucp_google_pay_gateway_token_verified",
+            handler_name,
+            instrument_type,
+            credential_type,
+            None,
+            "Act automatically",
+        )
+
+    return UCPPaymentCompletionDecision(
+        False,
+        "unsupported_ucp_payment_handler",
+        handler_name,
+        instrument_type,
+        credential_type,
+        "payment_failed",
+        "Send to a human",
+    )
+
+
+def evaluate_delegated_checkout_hook(
+    *,
+    hook_type: Literal[
+        "v1.delegated_checkout.finalize_checkout",
+        "v1.delegated_checkout.customize_checkout",
+        "delegated_commerce.product_price_availability",
+    ],
+    seller_http_status: int = 200,
+    hook_latency_ms: int = 420,
+    idempotent_endpoint: bool = True,
+    request_context_merchant_id: str = "acct_nordic_audio",
+    response_merchant_id: str = "acct_nordic_audio",
+    product_deleted: bool = False,
+    availability_included: bool = True,
+    price_included: bool = True,
+    payment_method: str = "card",
+    agent_programmatic_webview_interaction: bool = False,
+    agent_controls_device_navigation: bool = True,
+) -> dict[str, Any]:
+    """Enforce Stripe Seller Checkout Hooks (`hooks.md`) & Delegated Checkout Affirm WebView rules.
+
+    Per ``https://docs.stripe.com/agentic-commerce/sellers/use-cases/retail/checkout/hooks.md`` and
+    ``https://docs.stripe.com/agentic-commerce/agents/embedded.md``:
+    - Order approval hook (`v1.delegated_checkout.finalize_checkout`) enforces a hard 4,000 ms timeout;
+      exceeding 4 seconds declines the payment automatically.
+    - Non-`2xx` seller hook responses return HTTP `424 Failed Dependency` to agents; endpoints must be
+      idempotent before retrying.
+    - In `delegated_commerce.product_price_availability`, `merchant_id` must match `context`, and when
+      `deleted=True`, `availability` and `price` must be omitted.
+    - For Affirm in Delegated Checkout (`RequestedSession`), agents must NEVER programmatically interact
+      with the loan application UI inside the webview and must control device navigation.
+    """
+    if payment_method == "affirm" and (
+        agent_programmatic_webview_interaction or not agent_controls_device_navigation
+    ):
+        return {
+            "allowed": False,
+            "status": "blocked_affirm_policy",
+            "agent_http_status": 403,
+            "retryable": False,
+            "reason": "affirm_webview_automation_or_uncontrolled_device_forbidden",
+            "action": "Send to a human",
+        }
+
+    if hook_type == "v1.delegated_checkout.finalize_checkout" and int(hook_latency_ms) > 4000:
+        return {
+            "allowed": False,
+            "status": "declined_timeout_4s",
+            "agent_http_status": 402,
+            "retryable": False,
+            "reason": "order_approval_hook_exceeded_4000ms_timeout_payment_declined",
+            "action": "Send to a human",
+        }
+
+    if not (200 <= int(seller_http_status) < 300):
+        return {
+            "allowed": False,
+            "status": "failed_dependency_424",
+            "agent_http_status": 424,
+            "retryable": bool(idempotent_endpoint),
+            "reason": (
+                "seller_hook_non_2xx_mapped_to_424_retry_if_idempotent"
+                if idempotent_endpoint
+                else "seller_hook_non_2xx_424_retry_blocked_non_idempotent_endpoint"
+            ),
+            "action": "Confirm" if idempotent_endpoint else "Send to a human",
+        }
+
+    if hook_type == "delegated_commerce.product_price_availability":
+        if response_merchant_id != request_context_merchant_id:
+            return {
+                "allowed": False,
+                "status": "context_mismatch",
+                "agent_http_status": 422,
+                "retryable": False,
+                "reason": "price_availability_merchant_id_must_match_request_context",
+                "action": "Send to a human",
+            }
+        if product_deleted and (availability_included or price_included):
+            return {
+                "allowed": False,
+                "status": "deleted_schema_violation",
+                "agent_http_status": 422,
+                "retryable": False,
+                "reason": "deleted_product_must_omit_availability_and_price",
+                "action": "Send to a human",
+            }
+
+    return {
+        "allowed": True,
+        "status": "approved",
+        "agent_http_status": 200,
+        "retryable": False,
+        "reason": "delegated_checkout_hook_verified",
+        "action": "Act automatically",
+    }
+
+
+# ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
 
@@ -1965,6 +2478,79 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "webmcp_consequential_unconfirmed_reason": s1752_webmcp_block["reason"],
     }
 
+    # Stage 1753 deterministic checks (Stripe OCA v2 + SFTP Hybrid Catalog + UCP Handler Split + Hooks)
+    s1753_oca_ok = evaluate_oca_agreement_transition(
+        current_state="partially_confirmed",
+        actor="agent",
+        action="confirm",
+        oca_id="orca_live_001",
+        seller_profile_id="profile_nordic_audio",
+        oca_retrieved_v2=True,
+        seller_profile_verified=True,
+    )
+    s1753_oca_reinit_block = evaluate_oca_agreement_transition(
+        current_state="terminated",
+        actor="agent",
+        action="reinitiate",
+        terminated_by="seller",
+    )
+    s1753_sftp_ok = validate_sftp_catalog_batch(
+        feed_type="delta",
+        rows=[
+            {"id": "sku_anc_01", "disable_checkout": "false", "delete": "false"},
+            {"id": "sku_custom_bespoke", "disable_checkout": "true", "delete": "false"},
+            {"id": "sku_retired_99", "delete": "true", "title": "ignored"},
+        ],
+        requested_checkout_sku_id="sku_anc_01",
+    )
+    s1753_sftp_disable_block = validate_sftp_catalog_batch(
+        feed_type="delta",
+        rows=[{"id": "sku_custom_bespoke", "disable_checkout": "true", "delete": "false"}],
+        requested_checkout_sku_id="sku_custom_bespoke",
+    )
+    s1753_ucp_spt_ok = validate_ucp_payment_completion(
+        handler_name="com.stripe.payments",
+        handler_id="stripe_payments",
+        instrument_type="card",
+        credential_type="stripe_payment_token",
+        credential_token="spt_live_7900",
+    )
+    s1753_ucp_link_block = validate_ucp_payment_completion(
+        handler_name="com.stripe.payments",
+        handler_id="stripe_payments",
+        instrument_type="link",
+        credential_type="link_pay_token",
+        credential_token="lpt_live_7900",
+    )
+    s1753_hook_timeout = evaluate_delegated_checkout_hook(
+        hook_type="v1.delegated_checkout.finalize_checkout",
+        hook_latency_ms=4250,
+    )
+    s1753_affirm_block = evaluate_delegated_checkout_hook(
+        hook_type="v1.delegated_checkout.finalize_checkout",
+        payment_method="affirm",
+        agent_programmatic_webview_interaction=True,
+    )
+    stage_1753_guards = {
+        "stage": 1753,
+        "all_passed": (
+            s1753_oca_ok.allowed
+            and not s1753_oca_reinit_block.allowed
+            and s1753_sftp_ok.allowed
+            and not s1753_sftp_disable_block.allowed
+            and s1753_ucp_spt_ok.allowed
+            and not s1753_ucp_link_block.allowed
+            and not s1753_hook_timeout["allowed"]
+            and not s1753_affirm_block["allowed"]
+        ),
+        "oca_confirmed_state": s1753_oca_ok.next_state,
+        "oca_asymmetric_reinit_blocked_reason": s1753_oca_reinit_block.reason,
+        "sftp_disable_checkout_blocked_reason": s1753_sftp_disable_block.reason,
+        "ucp_link_completion_blocked_reason": s1753_ucp_link_block.reason,
+        "hook_4s_timeout_status": s1753_hook_timeout["status"],
+        "affirm_webview_automation_blocked_reason": s1753_affirm_block["reason"],
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -1974,6 +2560,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "webiq_guarded_passed": passed_count,
         "ungrounded_baseline_passed": 0,
         "stage_1752_guards": stage_1752_guards,
+        "stage_1753_guards": stage_1753_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -2004,6 +2591,12 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
                 "check": "Stage 1752 Perturbation (Web IQ 429 '60s' -> 429 TooManyOnDemandCrawls ISO Timestamp & Link _next.pay_argv)",
                 "original": "429 AuthUserThrottled -> 60s wait; mpp pay -t spt_123 argv verified",
                 "perturbed": "429 TooManyOnDemandCrawls -> 90s UTC delta; shell '; curl' & sk_live_ blocked",
+                "delta_pts": "0.0 drift",
+            },
+            {
+                "check": "Stage 1753 Perturbation (OCA v2 Re-Initiation Lock, SFTP disable_checkout, UCP Link Trap & 4s Hook SLA)",
+                "original": "OCA confirmed; SFTP manifest verified; UCP card spt_* + 420ms hook approved",
+                "perturbed": "Non-terminating OCA reinit, disable_checkout=true, UCP Link completion & >4s hook blocked",
                 "delta_pts": "0.0 drift",
             },
         ],
@@ -4655,6 +5248,43 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
         <div id="s1752-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
       </div>
+
+      <!-- Interactive Stage 1753 Sandbox: OCA v2 + SFTP Hybrid Catalog + UCP Handler Split + Hooks -->
+      <div class="finops-box" id="stage1753-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-s1753-title">🆕 Stage 1753 · Stripe OCA v2 + SFTP Catalog + UCP Handler + 4s Hooks</span>
+        </div>
+        <div class="control-row">
+          <label><span>OCA (`orca_...`) Handshake &amp; SFTP Feed Gate:</span></label>
+          <select id="s1753-oca-sftp-select" onchange="updateStage1753Sandbox()">
+            <option value="valid">OCA Confirmed + SFTP manifest.json &amp; Ed25519 Verified (Valid)</option>
+            <option value="agent_init">❌ Agent Attempts to Initiate OCA from 'none' (Seller-Only)</option>
+            <option value="reinit_locked">❌ Agent Re-Initiates OCA Terminated by Seller (Asymmetric Lock)</option>
+            <option value="missing_manifest">❌ SFTP Shards Read Before manifest.json Uploaded (Blocked)</option>
+            <option value="disable_checkout">❌ SFTP SKU disable_checkout=true Enters RequestedSession (Redirect to link)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>UCP Payment Handler (`com.stripe.payments` vs `com.google.pay`):</span></label>
+          <select id="s1753-ucp-select" onchange="updateStage1753Sandbox()">
+            <option value="card_spt">com.stripe.payments · card + stripe_payment_token (spt_... Valid)</option>
+            <option value="apple_pay">com.stripe.payments · apple_pay + pk_payment_token (Valid)</option>
+            <option value="google_pay_ok">com.google.pay · stripe-handler + PAYMENT_GATEWAY (Valid)</option>
+            <option value="link_trap">❌ com.stripe.payments · type="link" Completion Attempt (Unsupported!)</option>
+            <option value="gpay_wrong_handler">❌ com.stripe.payments · google_pay Instrument (Wrong Handler!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Seller Checkout Hook (`v1.delegated_checkout.*`) &amp; Affirm Guard:</span></label>
+          <select id="s1753-hook-select" onchange="updateStage1753Sandbox()">
+            <option value="hook_200">finalize_checkout · 200 OK in 420ms (&lt;= 4,000ms SLA)</option>
+            <option value="hook_timeout">❌ finalize_checkout · 4,250ms (&gt; 4s Hard Timeout -&gt; Payment Declined)</option>
+            <option value="hook_424">⚠️ Seller Hook 503 -&gt; Agent Receives HTTP 424 Failed Dependency</option>
+            <option value="affirm_bot">❌ Affirm WebView Programmatic UI Automation Attempt (Forbidden)</option>
+          </select>
+        </div>
+        <div id="s1753-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
     </div>
 
     <!-- Center Column: Step-by-Step 4-Plane Live Execution Pipeline -->
@@ -5060,6 +5690,55 @@ function renderAll() {{
   renderPipelineAndInspector();
   updateFinOpsCalculator();
   updateStage1752Sandbox();
+  updateStage1753Sandbox();
+}}
+
+function updateStage1753Sandbox() {{
+  var ocaEl = document.getElementById("s1753-oca-sftp-select");
+  var ucpEl = document.getElementById("s1753-ucp-select");
+  var hookEl = document.getElementById("s1753-hook-select");
+  var outEl = document.getElementById("s1753-live-readout");
+  if (!ocaEl || !ucpEl || !hookEl || !outEl) return;
+
+  var oca = ocaEl.value;
+  var ucp = ucpEl.value;
+  var hook = hookEl.value;
+
+  var ocaOk = oca === "valid";
+  var ucpOk = ucp === "card_spt" || ucp === "apple_pay" || ucp === "google_pay_ok";
+  var hookOk = hook === "hook_200";
+
+  if (!ocaOk || !ucpOk || !hookOk) {{
+    var reason = !ocaOk
+      ? (oca === "agent_init"
+        ? "🚫 oca_initiation_requires_seller_actor: Only a seller ('profile_...') can initiate a v2 Orchestrated Commerce Agreement ('orca_...')."
+        : (oca === "reinit_locked"
+          ? "🚫 oca_reinitiation_locked_to_terminating_party: After an OCA is terminated, ONLY the party that terminated it can initiate a new one."
+          : (oca === "missing_manifest"
+            ? "🚫 manifest_json_barrier_incomplete_or_shard_count_mismatch: SFTP shards must not be ingested until manifest.json is uploaded last."
+            : "🚫 disable_checkout_true_blocks_requested_session_redirect_to_link: Discovery-only SKU; redirect buyer to product 'link' URL.")))
+      : (!ucpOk
+        ? (ucp === "link_trap"
+          ? "🚫 ucp_stripe_payments_handler_does_not_support_link_completion: 'link' can appear in com.stripe.payments available_instruments, but completion is unsupported!"
+          : "🚫 google_pay_requires_separate_com_google_pay_handler: Use com.google.pay ('stripe-handler' + 'PAYMENT_GATEWAY') for Google Pay.")
+        : (hook === "hook_timeout"
+          ? "🚫 order_approval_hook_exceeded_4000ms_timeout_payment_declined: Seller finalize_checkout hook exceeded 4s SLA; Stripe auto-declined payment."
+          : (hook === "hook_424"
+            ? "⚠️ seller_hook_non_2xx_mapped_to_424_retry_if_idempotent: Seller hook returned 503 -> Stripe surfaced HTTP 424 Failed Dependency."
+            : "🚫 affirm_webview_automation_or_uncontrolled_device_forbidden: Agents must never automate Affirm loan UI inside the webview.")));
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      reason + "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ Stage 1753 All Contracts Verified:</strong><br>" +
+    "• OCA v2 &amp; SFTP: <code>orca_live_001</code> confirmed + Ed25519 &amp; <code>manifest.json</code> barrier passed<br>" +
+    "• UCP Handler: <code>" + ucp + "</code> bound to <code>dev.ucp.shopping.checkout</code> (1h SPT TTL)<br>" +
+    "• Seller Hook: <code>v1.delegated_checkout.finalize_checkout</code> approved in 420ms (&lt;= 4,000ms SLA)" +
+    "</div>";
 }}
 
 function updateStage1752Sandbox() {{

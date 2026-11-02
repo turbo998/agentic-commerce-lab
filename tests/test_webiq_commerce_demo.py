@@ -16,6 +16,8 @@ from lab.webiq_commerce_demo import (
     build_webiq_live_demo_payload,
     clamp_auto_max_response_length,
     classify_webiq_error_response,
+    evaluate_delegated_checkout_hook,
+    evaluate_oca_agreement_transition,
     evaluate_replenishment_with_webiq_recall_guard,
     evaluate_webiq_search_finops,
     evaluate_webmcp_tool_call,
@@ -28,6 +30,8 @@ from lab.webiq_commerce_demo import (
     run_webiq_commerce_benchmark_suite,
     ground_return_policy_passage,
     validate_link_spend_request,
+    validate_sftp_catalog_batch,
+    validate_ucp_payment_completion,
     verify_post_purchase_return_policy,
 )
 
@@ -580,6 +584,188 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             human_confirmed=True,
         )
         self.assertTrue(webmcp_ok["allowed"])
+
+    def test_stage_1753_oca_sftp_ucp_and_hook_guards(self) -> None:
+        # 1. Stripe v2 Orchestrated Commerce Agreements (OCA) state machine & asymmetric termination lock
+        agent_init = evaluate_oca_agreement_transition(
+            current_state="none",
+            actor="agent",
+            action="initiate",
+        )
+        self.assertFalse(agent_init.allowed)
+        self.assertEqual(agent_init.reason, "oca_initiation_requires_seller_actor")
+
+        seller_init = evaluate_oca_agreement_transition(
+            current_state="none",
+            actor="seller",
+            action="initiate",
+        )
+        self.assertTrue(seller_init.allowed)
+        self.assertEqual(seller_init.next_state, "partially_confirmed")
+
+        unverified_confirm = evaluate_oca_agreement_transition(
+            current_state="partially_confirmed",
+            actor="agent",
+            action="confirm",
+            seller_profile_verified=False,
+        )
+        self.assertFalse(unverified_confirm.allowed)
+
+        confirmed = evaluate_oca_agreement_transition(
+            current_state="partially_confirmed",
+            actor="agent",
+            action="confirm",
+        )
+        self.assertTrue(confirmed.allowed)
+        self.assertEqual(confirmed.next_state, "confirmed")
+
+        terminated_by_seller = evaluate_oca_agreement_transition(
+            current_state="confirmed",
+            actor="seller",
+            action="terminate",
+        )
+        self.assertTrue(terminated_by_seller.allowed)
+        self.assertEqual(terminated_by_seller.next_state, "terminated")
+        self.assertEqual(terminated_by_seller.terminated_by, "seller")
+
+        # Non-terminating party (agent) cannot re-initiate
+        agent_reinit = evaluate_oca_agreement_transition(
+            current_state="terminated",
+            actor="agent",
+            action="reinitiate",
+            terminated_by="seller",
+        )
+        self.assertFalse(agent_reinit.allowed)
+        self.assertEqual(agent_reinit.reason, "oca_reinitiation_locked_to_terminating_party")
+
+        seller_reinit = evaluate_oca_agreement_transition(
+            current_state="terminated",
+            actor="seller",
+            action="reinitiate",
+            terminated_by="seller",
+        )
+        self.assertTrue(seller_reinit.allowed)
+        self.assertEqual(seller_reinit.next_state, "partially_confirmed")
+
+        # 2. Stripe SFTP Hybrid Catalog Ingestion (`manifest.json` barrier, `disable_checkout`, `delete=true`)
+        no_manifest = validate_sftp_catalog_batch(
+            feed_type="product_master",
+            manifest_present=False,
+        )
+        self.assertFalse(no_manifest.allowed)
+        self.assertEqual(no_manifest.reason, "manifest_json_barrier_incomplete_or_shard_count_mismatch")
+
+        bare_name = validate_sftp_catalog_batch(
+            feed_type="product_master",
+            resolved_shard_paths=("full_catalog_part_1_of_1.csv.gz",),
+        )
+        self.assertFalse(bare_name.allowed)
+        self.assertEqual(bare_name.reason, "shard_path_must_use_relative_or_absolute_path_not_bare_name")
+
+        sample_rows = [
+            {"id": "sku_active_1", "disable_checkout": "false", "delete": "false"},
+            {"id": "sku_discovery_only", "disable_checkout": "true", "delete": "false"},
+            {"id": "sku_deleted_9", "delete": "true", "price": "9999 USD"},
+        ]
+        disable_block = validate_sftp_catalog_batch(
+            feed_type="delta",
+            rows=sample_rows,
+            requested_checkout_sku_id="sku_discovery_only",
+        )
+        self.assertFalse(disable_block.allowed)
+        self.assertEqual(
+            disable_block.reason,
+            "disable_checkout_true_blocks_requested_session_redirect_to_link",
+        )
+
+        valid_batch = validate_sftp_catalog_batch(
+            feed_type="delta",
+            rows=sample_rows,
+            requested_checkout_sku_id="sku_active_1",
+        )
+        self.assertTrue(valid_batch.allowed)
+        self.assertEqual(valid_batch.deleted_sku_ids, ("sku_deleted_9",))
+        self.assertEqual(valid_batch.discovery_only_sku_ids, ("sku_discovery_only",))
+        self.assertEqual(valid_batch.checkout_eligible_sku_ids, ("sku_active_1",))
+
+        # 3. Stripe UCP Payment Handler Split (`com.stripe.payments` vs `com.google.pay` & Link Trap)
+        ucp_card_ok = validate_ucp_payment_completion(
+            handler_name="com.stripe.payments",
+            handler_id="stripe_payments",
+            instrument_type="card",
+            credential_type="stripe_payment_token",
+            credential_token="spt_live_7900",
+        )
+        self.assertTrue(ucp_card_ok.allowed)
+
+        ucp_link_trap = validate_ucp_payment_completion(
+            handler_name="com.stripe.payments",
+            handler_id="stripe_payments",
+            instrument_type="link",
+            credential_type="link_pay_token",
+            credential_token="lpt_live_7900",
+        )
+        self.assertFalse(ucp_link_trap.allowed)
+        self.assertEqual(
+            ucp_link_trap.reason,
+            "ucp_stripe_payments_handler_does_not_support_link_completion",
+        )
+
+        ucp_gpay_wrong = validate_ucp_payment_completion(
+            handler_name="com.stripe.payments",
+            handler_id="stripe_payments",
+            instrument_type="google_pay",
+            credential_type="PAYMENT_GATEWAY",
+            credential_token="gpay_tok_1",
+        )
+        self.assertFalse(ucp_gpay_wrong.allowed)
+        self.assertEqual(ucp_gpay_wrong.reason, "google_pay_requires_separate_com_google_pay_handler")
+
+        ucp_gpay_ok = validate_ucp_payment_completion(
+            handler_name="com.google.pay",
+            handler_id="stripe-handler",
+            instrument_type="card",
+            credential_type="PAYMENT_GATEWAY",
+            credential_token="gpay_tok_1",
+        )
+        self.assertTrue(ucp_gpay_ok.allowed)
+
+        # 4. Seller Checkout Hooks (4s timeout, HTTP 424 mapping, context match, Affirm webview ban)
+        hook_ok = evaluate_delegated_checkout_hook(
+            hook_type="v1.delegated_checkout.finalize_checkout",
+            hook_latency_ms=420,
+        )
+        self.assertTrue(hook_ok["allowed"])
+
+        hook_timeout = evaluate_delegated_checkout_hook(
+            hook_type="v1.delegated_checkout.finalize_checkout",
+            hook_latency_ms=4100,
+        )
+        self.assertFalse(hook_timeout["allowed"])
+        self.assertEqual(hook_timeout["status"], "declined_timeout_4s")
+
+        hook_424 = evaluate_delegated_checkout_hook(
+            hook_type="v1.delegated_checkout.customize_checkout",
+            seller_http_status=503,
+            idempotent_endpoint=True,
+        )
+        self.assertFalse(hook_424["allowed"])
+        self.assertEqual(hook_424["agent_http_status"], 424)
+        self.assertTrue(hook_424["retryable"])
+
+        affirm_bot = evaluate_delegated_checkout_hook(
+            hook_type="v1.delegated_checkout.finalize_checkout",
+            payment_method="affirm",
+            agent_programmatic_webview_interaction=True,
+        )
+        self.assertFalse(affirm_bot["allowed"])
+        self.assertEqual(
+            affirm_bot["reason"],
+            "affirm_webview_automation_or_uncontrolled_device_forbidden",
+        )
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["stage_1753_guards"]["all_passed"])
 
 
 if __name__ == "__main__":
