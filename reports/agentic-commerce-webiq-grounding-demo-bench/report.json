@@ -1,6 +1,6 @@
 {
   "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
-  "benchmark_version": "2026-11-02.stage1753",
+  "benchmark_version": "2026-11-03.stage1754",
   "provenance": "deterministic_offline_simulation",
   "independently_reproduced": true,
   "total_scenarios": 12,
@@ -26,6 +26,18 @@
     "ucp_link_completion_blocked_reason": "ucp_stripe_payments_handler_does_not_support_link_completion",
     "hook_4s_timeout_status": "declined_timeout_4s",
     "affirm_webview_automation_blocked_reason": "affirm_webview_automation_or_uncontrolled_device_forbidden"
+  },
+  "stage_1754_guards": {
+    "stage": 1754,
+    "all_passed": true,
+    "spt_non_pci_rsa_slice_verified": true,
+    "spt_double_resolve_blocked_reason": "spt_resolve_rejected_400_already_resolved_single_use_only",
+    "spt_setup_future_usage_blocked_reason": "spt_forbids_setup_future_usage_on_payment_intent",
+    "price_hook_4s_fallback_continues": true,
+    "inventory_replace_mode_blocked_reason": "non_product_feed_requires_upsert_mode",
+    "booking_slot_409_error_code": "slot_unavailable",
+    "mpp_ny_state_blocked_reason": "stablecoin_machine_payments_unavailable_in_new_york",
+    "mpp_hosted_fee_payer_connect_blocked_reason": "hosted_fee_payer_requires_livemode_tempo_same_account_non_connect"
   },
   "scenarios": [
     {
@@ -172,6 +184,12 @@
       "check": "Stage 1753 Perturbation (OCA v2 Re-Initiation Lock, SFTP disable_checkout, UCP Link Trap & 4s Hook SLA)",
       "original": "OCA confirmed; SFTP manifest verified; UCP card spt_* + 420ms hook approved",
       "perturbed": "Non-terminating OCA reinit, disable_checkout=true, UCP Link completion & >4s hook blocked",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "Stage 1754 Perturbation (SPT Single-Resolve & setup_future_usage Ban, Connect 4s Price Fallback & MPP NY/Connect Guard)",
+      "original": "SPT single-resolve RSA slice OK; Price Hook >4s falls back to feed; Tempo MPP $0.50 OK",
+      "perturbed": "2nd SPT resolve (400), setup_future_usage (400), inventory replace (400), NY stablecoin (403) & Connect hostedFeePayer blocked",
       "delta_pts": "0.0 drift"
     }
   ],

@@ -16,6 +16,7 @@ from lab.webiq_commerce_demo import (
     build_webiq_live_demo_payload,
     clamp_auto_max_response_length,
     classify_webiq_error_response,
+    evaluate_booking_and_mpp_dual_path_guard,
     evaluate_delegated_checkout_hook,
     evaluate_oca_agreement_transition,
     evaluate_replenishment_with_webiq_recall_guard,
@@ -29,8 +30,10 @@ from lab.webiq_commerce_demo import (
     run_grounded_discovery_and_checkout,
     run_webiq_commerce_benchmark_suite,
     ground_return_policy_passage,
+    validate_connect_catalog_import_and_hooks,
     validate_link_spend_request,
     validate_sftp_catalog_batch,
+    validate_spt_resolution_and_payment_intent,
     validate_ucp_payment_completion,
     verify_post_purchase_return_policy,
 )
@@ -766,6 +769,161 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
 
         suite = run_webiq_commerce_benchmark_suite()
         self.assertTrue(suite["stage_1753_guards"]["all_passed"])
+
+    def test_stage_1754_spt_resolve_connect_catalog_booking_and_mpp_guards(self) -> None:
+        # 1. Stripe SPT Resolve API (single-use, mutual-exclusivity with PaymentIntent, PCI AoC RSA slice)
+        resolve_ok = validate_spt_resolution_and_payment_intent(
+            flow="resolve_api",
+            credential_type="agentic_token",
+            cryptogram_type="TAVV",
+            pci_aoc_on_file=False,
+            encryption_block_fields="number:0:16,cryptogram:16:28",
+        )
+        self.assertTrue(resolve_ok.allowed)
+        self.assertTrue(resolve_ok.encrypted_for_processor)
+
+        resolve_twice = validate_spt_resolution_and_payment_intent(
+            flow="resolve_api",
+            previously_resolved=True,
+        )
+        self.assertFalse(resolve_twice.allowed)
+        self.assertEqual(resolve_twice.http_status, 400)
+        self.assertEqual(resolve_twice.reason, "spt_resolve_rejected_400_already_resolved_single_use_only")
+
+        resolve_after_pi = validate_spt_resolution_and_payment_intent(
+            flow="resolve_api",
+            previously_used_in_payment_intent=True,
+        )
+        self.assertFalse(resolve_after_pi.allowed)
+        self.assertEqual(resolve_after_pi.reason, "spt_resolve_rejected_400_already_used_in_payment_intent")
+
+        # Recurring SPT PaymentIntent forbids setup_future_usage
+        pi_sfu_block = validate_spt_resolution_and_payment_intent(
+            flow="payment_intent",
+            setup_future_usage_set=True,
+            recurring_interval_configured=True,
+        )
+        self.assertFalse(pi_sfu_block.allowed)
+        self.assertEqual(pi_sfu_block.reason, "spt_forbids_setup_future_usage_on_payment_intent")
+
+        pi_off_session_no_interval = validate_spt_resolution_and_payment_intent(
+            flow="payment_intent",
+            off_session=True,
+            recurring_interval_configured=False,
+        )
+        self.assertFalse(pi_off_session_no_interval.allowed)
+        self.assertEqual(pi_off_session_no_interval.reason, "off_session_requires_spt_recurring_interval")
+
+        # Connect direct charge requires connected_account profile + Stripe-Account header
+        connect_direct_bad = validate_spt_resolution_and_payment_intent(
+            flow="payment_intent",
+            connect_charge_type="direct",
+            network_profile_owner="platform",
+            stripe_account_header_present=False,
+        )
+        self.assertFalse(connect_direct_bad.allowed)
+        self.assertEqual(
+            connect_direct_bad.reason,
+            "connect_direct_charge_requires_connected_account_profile_and_stripe_account_header",
+        )
+
+        # 2. Stripe Connect Catalog Imports & Asymmetric 4-Second Hook Timeout
+        import_403 = validate_connect_catalog_import_and_hooks(
+            product_catalog_imports_write_permission=False,
+        )
+        self.assertFalse(import_403.allowed)
+        self.assertEqual(import_403.http_status, 403)
+
+        import_expired_url = validate_connect_catalog_import_and_hooks(
+            upload_elapsed_seconds=301,
+        )
+        self.assertFalse(import_expired_url.allowed)
+        self.assertEqual(import_expired_url.http_status, 410)
+
+        import_inv_replace = validate_connect_catalog_import_and_hooks(
+            feed_type="inventory",
+            mode="replace",
+        )
+        self.assertFalse(import_inv_replace.allowed)
+        self.assertEqual(import_inv_replace.reason, "non_product_feed_requires_upsert_mode")
+
+        # Price hook >4,000 ms falls back to feed and continues checkout!
+        price_hook_fallback = validate_connect_catalog_import_and_hooks(
+            feed_type="pricing",
+            mode="upsert",
+            price_hook_latency_ms=4600,
+            approval_hook_latency_ms=350,
+            finalize_checkout_application_fee_minor=250,
+        )
+        self.assertTrue(price_hook_fallback.allowed)
+        self.assertTrue(price_hook_fallback.price_hook_fallback_to_feed)
+        self.assertTrue(price_hook_fallback.checkout_continues)
+
+        # Platform fee omitted when platform pays Stripe fees -> blocked
+        zero_platform_fee = validate_connect_catalog_import_and_hooks(
+            platform_pays_stripe_fees=True,
+            finalize_checkout_application_fee_minor=0,
+        )
+        self.assertFalse(zero_platform_fee.allowed)
+        self.assertEqual(
+            zero_platform_fee.reason,
+            "missing_finalize_checkout_application_fee_causes_platform_loss",
+        )
+
+        # 3. Service Bookings (180d SPT max, 409 slot_unavailable, 24h Idempotency-Key conflict) & MPP/AP4M
+        booking_181d = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="service_booking",
+            spt_ttl_days=181,
+        )
+        self.assertFalse(booking_181d.allowed)
+        self.assertEqual(booking_181d.reason, "booking_spt_expiry_exceeds_180_days_max")
+
+        booking_slot_taken = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="service_booking",
+            spt_ttl_days=90,
+            slot_already_taken=True,
+        )
+        self.assertFalse(booking_slot_taken.allowed)
+        self.assertEqual(booking_slot_taken.http_status, 409)
+        self.assertEqual(booking_slot_taken.error_code, "slot_unavailable")
+
+        booking_idem_conflict = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="service_booking",
+            idempotency_key_reused=True,
+            payload_matches_original=False,
+        )
+        self.assertFalse(booking_idem_conflict.allowed)
+        self.assertEqual(booking_idem_conflict.http_status, 409)
+
+        # Monetized MCP dual-path & Machine Payment guards
+        browser_redirect = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="monetized_mcp",
+            accept_header="text/html,application/xhtml+xml",
+        )
+        self.assertTrue(browser_redirect.allowed)
+        self.assertEqual(browser_redirect.http_status, 302)
+        self.assertEqual(browser_redirect.route_mode, "browser_redirect_302")
+
+        card_below_min = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="monetized_mcp",
+            payment_rail="card_spt",
+            amount_usd="0.49",
+        )
+        self.assertFalse(card_below_min.allowed)
+        self.assertEqual(card_below_min.reason, "card_spt_below_0_50_usd_minimum")
+
+        ny_stablecoin = evaluate_booking_and_mpp_dual_path_guard(
+            scenario_kind="monetized_mcp",
+            payment_rail="tempo_mpp",
+            amount_usd="0.05",
+            us_state="NY",
+        )
+        self.assertFalse(ny_stablecoin.allowed)
+        self.assertEqual(ny_stablecoin.http_status, 403)
+        self.assertEqual(ny_stablecoin.reason, "stablecoin_machine_payments_unavailable_in_new_york")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["stage_1754_guards"]["all_passed"])
 
 
 if __name__ == "__main__":

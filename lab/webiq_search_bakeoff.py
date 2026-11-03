@@ -11,7 +11,7 @@ import os
 from typing import Mapping
 
 SCHEMA = "webiq-search-bakeoff/v1"
-VERIFIED_ON = "2026-11-02"
+VERIFIED_ON = "2026-11-03"
 
 SEALED_QUERIES = (
     {
@@ -57,7 +57,13 @@ OFFICIAL_LIST_PRICE = {
         "granular_too_many_crawls_http": 429,
         "video_duration_short_under_minutes": 5,
         "video_duration_medium_max_minutes": 20,
-        "note": "Prices re-fetched 2026-11-01 and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated. The 2026-11-02 error reference says string enums are case-insensitive. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430. Granular TooManyOnDemandCrawls is HTTP 429 with a timestamp. MCP passage-validation failures return HTTP 200 with result.isError. Image and video summaries are generated text, not publisher evidence. Not called.",
+        "pricing_updated_at": "2026-11-02T20:34:00Z",
+        "sdk_packages": {"python": "pip install webiq", "typescript": "npm install @microsoft/webiq"},
+        "sdk_runtimes": {"python": "3.11+", "typescript": "Node.js 22+"},
+        "sdk_license": "MIT",
+        "mcp_endpoint": "https://api.microsoft.ai/v3/mcp",
+        "auth_scope": "https://api.microsoft.ai/.default",
+        "note": "Prices re-fetched 2026-11-03 (pricing.md and sdk.md updated_at 2026-11-02T20:34:00Z) and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated. Official SDKs are pip install webiq (Python 3.11+) and npm install @microsoft/webiq (Node.js 22+, MIT). Key-authenticated requests that include the APPID parameter (even empty) return HTTP 401 AuthUnauthorizedEntryId; multi-AppID Entra clients missing APPID return HTTP 400 AuthAppIdSelectionRequired; unbound APPID returns HTTP 403 AuthUnauthorizedAppId. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430; granular TooManyOnDemandCrawls is HTTP 429 with a timestamp. MCP passage-validation failures return HTTP 200 with result.isError. Not called.",
     },
     "exa": {
         "label": "official_list_price",
@@ -897,4 +903,92 @@ def grounding_architecture_comparison() -> list[dict]:
             "verified_on": VERIFIED_ON,
         },
     ]
+
+
+def validate_webiq_auth_appid_routing(
+    *,
+    auth_mode: str,
+    bound_app_ids: tuple[str, ...],
+    requested_app_id: str | None = None,
+) -> dict:
+    """Validate Microsoft Web IQ x-apikey vs Entra ID APPID query parameter routing.
+
+    Contract verified against https://learn.microsoft.com/en-us/web-iq/get-started/authentication:
+    - API keys belong to one AppID and do not take APPID. Any key-authenticated request that
+      includes the APPID parameter, even empty, returns HTTP 401 AuthUnauthorizedEntryId.
+    - Entra ID client bound to 0 AppIDs -> HTTP 401 AuthUnauthorizedEntryId.
+    - Entra ID client bound to 1 AppID -> missing/matching APPID succeeds (200); different APPID
+      returns HTTP 403 AuthUnauthorizedAppId.
+    - Entra ID client bound to several AppIDs -> missing/empty APPID returns HTTP 400
+      AuthAppIdSelectionRequired; bound APPID succeeds (200); other APPID returns HTTP 403
+      AuthUnauthorizedAppId.
+    """
+    normalized_mode = (auth_mode or "").strip().lower()
+    if normalized_mode == "api_key":
+        if requested_app_id is not None:
+            return {
+                "allowed": False,
+                "http_status": 401,
+                "error_code": "AuthUnauthorizedEntryId",
+                "reason": "apikey_rejects_appid_parameter",
+            }
+        if len(bound_app_ids) != 1:
+            return {
+                "allowed": False,
+                "http_status": 401,
+                "error_code": "AuthUnauthorizedEntryId",
+                "reason": "apikey_requires_single_bound_appid",
+            }
+        return {
+            "allowed": True,
+            "http_status": 200,
+            "error_code": None,
+            "resolved_app_id": bound_app_ids[0],
+        }
+
+    if normalized_mode == "entra_id":
+        if len(bound_app_ids) == 0:
+            return {
+                "allowed": False,
+                "http_status": 401,
+                "error_code": "AuthUnauthorizedEntryId",
+                "reason": "no_bound_appid",
+            }
+        if len(bound_app_ids) == 1:
+            if requested_app_id is None or requested_app_id == "" or requested_app_id == bound_app_ids[0]:
+                return {
+                    "allowed": True,
+                    "http_status": 200,
+                    "error_code": None,
+                    "resolved_app_id": bound_app_ids[0],
+                }
+            return {
+                "allowed": False,
+                "http_status": 403,
+                "error_code": "AuthUnauthorizedAppId",
+                "reason": "different_appid",
+            }
+        if requested_app_id is None or requested_app_id.strip() == "":
+            return {
+                "allowed": False,
+                "http_status": 400,
+                "error_code": "AuthAppIdSelectionRequired",
+                "reason": "missing_or_empty_appid_for_multi_bound_client",
+            }
+        if requested_app_id in bound_app_ids:
+            return {
+                "allowed": True,
+                "http_status": 200,
+                "error_code": None,
+                "resolved_app_id": requested_app_id,
+            }
+        return {
+            "allowed": False,
+            "http_status": 403,
+            "error_code": "AuthUnauthorizedAppId",
+            "reason": "unbound_appid",
+        }
+
+    raise ValueError(f"Unsupported Web IQ auth_mode: {auth_mode!r}")
+
 

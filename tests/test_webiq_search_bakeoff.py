@@ -4,6 +4,7 @@ from lab.webiq_search_bakeoff import (
     assert_not_fabricated,
     grounding_architecture_comparison,
     summarize,
+    validate_webiq_auth_appid_routing,
 )
 
 
@@ -46,6 +47,57 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertTrue(by_provider["webiq"]["pre_llm_deterministic_sanitization"])
         self.assertFalse(by_provider["foundry_bing_grounding"]["caller_receives_raw_passages"])
         self.assertFalse(by_provider["foundry_bing_grounding"]["pre_llm_deterministic_sanitization"])
+
+    def test_webiq_auth_appid_routing_matches_official_matrix(self):
+        # API key rejects any APPID parameter, even empty
+        r_key_ok = validate_webiq_auth_appid_routing(
+            auth_mode="api_key", bound_app_ids=("appid-prod",), requested_app_id=None
+        )
+        self.assertTrue(r_key_ok["allowed"])
+        self.assertEqual(r_key_ok["http_status"], 200)
+
+        r_key_empty_appid = validate_webiq_auth_appid_routing(
+            auth_mode="api_key", bound_app_ids=("appid-prod",), requested_app_id=""
+        )
+        self.assertFalse(r_key_empty_appid["allowed"])
+        self.assertEqual(r_key_empty_appid["http_status"], 401)
+        self.assertEqual(r_key_empty_appid["error_code"], "AuthUnauthorizedEntryId")
+
+        # Entra ID bound to 1 AppID
+        r_entra_one_missing = validate_webiq_auth_appid_routing(
+            auth_mode="entra_id", bound_app_ids=("appid-1",), requested_app_id=None
+        )
+        self.assertTrue(r_entra_one_missing["allowed"])
+        self.assertEqual(r_entra_one_missing["resolved_app_id"], "appid-1")
+
+        r_entra_one_wrong = validate_webiq_auth_appid_routing(
+            auth_mode="entra_id", bound_app_ids=("appid-1",), requested_app_id="appid-2"
+        )
+        self.assertFalse(r_entra_one_wrong["allowed"])
+        self.assertEqual(r_entra_one_wrong["http_status"], 403)
+        self.assertEqual(r_entra_one_wrong["error_code"], "AuthUnauthorizedAppId")
+
+        # Entra ID bound to several AppIDs
+        r_entra_multi_missing = validate_webiq_auth_appid_routing(
+            auth_mode="entra_id", bound_app_ids=("appid-1", "appid-2"), requested_app_id=""
+        )
+        self.assertFalse(r_entra_multi_missing["allowed"])
+        self.assertEqual(r_entra_multi_missing["http_status"], 400)
+        self.assertEqual(r_entra_multi_missing["error_code"], "AuthAppIdSelectionRequired")
+
+        r_entra_multi_valid = validate_webiq_auth_appid_routing(
+            auth_mode="entra_id", bound_app_ids=("appid-1", "appid-2"), requested_app_id="appid-2"
+        )
+        self.assertTrue(r_entra_multi_valid["allowed"])
+        self.assertEqual(r_entra_multi_valid["resolved_app_id"], "appid-2")
+
+        # Entra ID bound to 0 AppIDs
+        r_entra_none = validate_webiq_auth_appid_routing(
+            auth_mode="entra_id", bound_app_ids=(), requested_app_id="appid-1"
+        )
+        self.assertFalse(r_entra_none["allowed"])
+        self.assertEqual(r_entra_none["http_status"], 401)
+        self.assertEqual(r_entra_none["error_code"], "AuthUnauthorizedEntryId")
 
     def test_scenario_routes_are_guidance_not_latency(self):
         report = summarize({})

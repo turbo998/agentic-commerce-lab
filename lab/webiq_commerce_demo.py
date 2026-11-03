@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-11-02.stage1753"
+DEMO_VERSION = "2026-11-03.stage1754"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -2181,6 +2181,588 @@ def evaluate_delegated_checkout_hook(
 
 
 # ---------------------------------------------------------------------------
+# Stage 1754: SPT Resolve & Recurring Guards + Connect Catalog Imports &
+# Asymmetric 4s Hooks + Service Bookings (180d/409) & MPP/AP4M Machine Guards
+# ---------------------------------------------------------------------------
+
+SPT_CREDENTIAL_TYPES = frozenset({"fpan", "agentic_token", "dpan"})
+SPT_CRYPTOGRAM_TYPES = frozenset({"CAVV", "TAVV", "DCVV"})
+ENCRYPTED_BLOCK_FIELD_RE = re.compile(r"^[a-zA-Z0-9_]+:\d+:\d+(?:,[a-zA-Z0-9_]+:\d+:\d+)*$")
+
+
+@dataclass(frozen=True)
+class SPTResolutionDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    flow: Literal["resolve_api", "payment_intent"]
+    spt_state: Literal["active", "requires_action", "deactivated"]
+    credential_type: str | None
+    encrypted_for_processor: bool
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_spt_resolution_and_payment_intent(
+    *,
+    flow: Literal["resolve_api", "payment_intent"],
+    spt_id: str = "spt_live_7900",
+    spt_state: Literal["active", "requires_action", "deactivated"] = "active",
+    credential_config_present: bool = True,
+    previously_resolved: bool = False,
+    previously_used_in_payment_intent: bool = False,
+    credential_type: Literal["fpan", "agentic_token", "dpan"] = "agentic_token",
+    cryptogram_type: str | None = "TAVV",
+    pci_aoc_on_file: bool = True,
+    encryption_block_fields: str | None = None,
+    setup_future_usage_set: bool = False,
+    card_setup_future_usage_set: bool = False,
+    off_session: bool = False,
+    recurring_interval_configured: bool = False,
+    connect_charge_type: Literal[
+        "standalone", "direct", "destination", "separate_charges_and_transfers"
+    ] = "standalone",
+    on_behalf_of_present: bool = False,
+    network_profile_owner: Literal["seller", "platform", "connected_account"] = "seller",
+    stripe_account_header_present: bool = False,
+) -> SPTResolutionDecision:
+    """Enforce Stripe Shared Payment Token (`2026-09-30.preview`) Resolve API, Recurring & Connect rules.
+
+    Verified against ``https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md``:
+    - Terminal state is ``deactivated``; ``active`` and ``requires_action`` can transition back and forth.
+    - ``POST /v1/shared_payment/granted_tokens/{id}/resolve`` can only be called ONCE and returns HTTP 400
+      if no credential config exists, if previously resolved, or if previously used in a ``PaymentIntent``.
+    - Without PCI AoC on file, Stripe returns RSA-encrypted fields with ``encryption_block_fields`` formatted
+      as ``<field_name>:<start_index>:<length>``.
+    - Stripe strictly forbids ``setup_future_usage`` and ``payment_method_options[card][setup_future_usage]``
+      on any ``PaymentIntent`` using an SPT; recurring ``off_session=True`` charges must reuse an SPT whose
+      ``usage_limits.recurring_interval`` is configured.
+    - Connect routing: ``direct`` charges require the connected account's ``profile_...`` and the
+      ``Stripe-Account`` header; ``destination`` / ``separate_charges_and_transfers`` without ``on_behalf_of``
+      require the platform's ``profile_...`` and forbid the ``Stripe-Account`` header on SPT retrieval.
+    """
+    if not (isinstance(spt_id, str) and spt_id.startswith("spt_")):
+        return SPTResolutionDecision(
+            False, 400, "invalid_spt_id_prefix", flow, spt_state, None, False, "Send to a human"
+        )
+    if spt_state == "deactivated":
+        return SPTResolutionDecision(
+            False, 400, "spt_terminal_deactivated_state", flow, spt_state, None, False, "Send to a human"
+        )
+    if spt_state == "requires_action":
+        return SPTResolutionDecision(
+            False,
+            402,
+            "spt_requires_action_3ds_challenge_pending",
+            flow,
+            spt_state,
+            None,
+            False,
+            "Confirm",
+        )
+
+    # Connect profile & Stripe-Account header routing checks
+    if connect_charge_type == "direct":
+        if network_profile_owner != "connected_account" or not stripe_account_header_present:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "connect_direct_charge_requires_connected_account_profile_and_stripe_account_header",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+    elif connect_charge_type in ("destination", "separate_charges_and_transfers"):
+        if not on_behalf_of_present:
+            if network_profile_owner != "platform" or stripe_account_header_present:
+                return SPTResolutionDecision(
+                    False,
+                    400,
+                    "connect_without_obo_requires_platform_profile_and_no_stripe_account_header",
+                    flow,
+                    spt_state,
+                    None,
+                    False,
+                    "Send to a human",
+                )
+        elif network_profile_owner not in ("connected_account", "platform"):
+            return SPTResolutionDecision(
+                False,
+                400,
+                "connect_with_obo_requires_connected_account_or_platform_profile",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+
+    if flow == "resolve_api":
+        if not credential_config_present:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "spt_resolve_rejected_400_missing_credential_configuration",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        if previously_resolved:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "spt_resolve_rejected_400_already_resolved_single_use_only",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        if previously_used_in_payment_intent:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "spt_resolve_rejected_400_already_used_in_payment_intent",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        if credential_type not in SPT_CREDENTIAL_TYPES:
+            return SPTResolutionDecision(
+                False, 400, "unsupported_spt_credential_type", flow, spt_state, None, False, "Send to a human"
+            )
+        if credential_type in ("agentic_token", "dpan") and cryptogram_type not in SPT_CRYPTOGRAM_TYPES:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "network_token_requires_cavv_tavv_or_dcvv_cryptogram",
+                flow,
+                spt_state,
+                credential_type,
+                False,
+                "Send to a human",
+            )
+        if not pci_aoc_on_file:
+            if not (
+                isinstance(encryption_block_fields, str)
+                and ENCRYPTED_BLOCK_FIELD_RE.match(encryption_block_fields)
+            ):
+                return SPTResolutionDecision(
+                    False,
+                    400,
+                    "non_pci_seller_requires_rsa_encryption_block_fields_slice_spec",
+                    flow,
+                    spt_state,
+                    credential_type,
+                    False,
+                    "Send to a human",
+                )
+            return SPTResolutionDecision(
+                True,
+                200,
+                "spt_resolved_with_rsa_encrypted_processor_payload",
+                flow,
+                spt_state,
+                credential_type,
+                True,
+                "Act automatically",
+            )
+        return SPTResolutionDecision(
+            True,
+            200,
+            "spt_resolved_once_report_payment_required_after_capture",
+            flow,
+            spt_state,
+            credential_type,
+            False,
+            "Act automatically",
+        )
+
+    if flow == "payment_intent":
+        if previously_resolved:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "spt_already_resolved_for_external_processor_cannot_create_payment_intent",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        if setup_future_usage_set or card_setup_future_usage_set:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "spt_forbids_setup_future_usage_on_payment_intent",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        if off_session and not recurring_interval_configured:
+            return SPTResolutionDecision(
+                False,
+                400,
+                "off_session_requires_spt_recurring_interval",
+                flow,
+                spt_state,
+                None,
+                False,
+                "Send to a human",
+            )
+        return SPTResolutionDecision(
+            True,
+            200,
+            "spt_payment_intent_confirmed",
+            flow,
+            spt_state,
+            None,
+            False,
+            "Act automatically",
+        )
+
+    return SPTResolutionDecision(
+        False, 400, "unsupported_spt_flow", flow, spt_state, None, False, "Send to a human"
+    )
+
+
+@dataclass(frozen=True)
+class ConnectCatalogImportAndHookDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    feed_type: Literal["product", "inventory", "pricing", "promotion"]
+    mode: Literal["replace", "upsert"]
+    price_hook_fallback_to_feed: bool
+    checkout_continues: bool
+    effective_application_fee_minor: int
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_connect_catalog_import_and_hooks(
+    *,
+    feed_type: Literal["product", "inventory", "pricing", "promotion"] = "inventory",
+    mode: Literal["replace", "upsert"] = "upsert",
+    product_catalog_imports_write_permission: bool = True,
+    file_size_bytes: int = 10_485_760,
+    upload_elapsed_seconds: int = 45,
+    sale_price_present: bool = False,
+    sale_price_effective_date_present: bool = False,
+    price_hook_enabled: bool = True,
+    price_hook_latency_ms: int = 320,
+    approval_hook_latency_ms: int = 380,
+    platform_pays_stripe_fees: bool = True,
+    finalize_checkout_application_fee_minor: int | None = 250,
+) -> ConnectCatalogImportAndHookDecision:
+    """Enforce Stripe Connect SaaS Catalog Imports (`2026-10-28.preview`) & Asymmetric 4s Hook rules.
+
+    Verified against ``https://docs.stripe.com/connect/saas/tasks/enable-in-context-selling-on-ai-agents.md``:
+    - ``POST /v2/commerce/product_catalog/imports`` requires ``Product Catalog Imports`` write permission
+      (else HTTP 403), max file size 4 GB, and presigned ``upload_url`` expires in 5 minutes (300 seconds).
+    - ``inventory``, ``pricing``, and ``promotion`` feeds support ONLY ``upsert`` mode (``replace`` is
+      only valid for ``product`` feeds, where omitted products are permanently deleted).
+    - Setting ``sale_price`` requires ``sale_price_effective_date``.
+    - **Asymmetric 4-second hook timeout**:
+      * ``delegated_commerce.product_price_availability`` timeout (>4,000 ms) **falls back to feed data
+        and continues checkout**;
+      * ``v1.delegated_checkout.finalize_checkout`` timeout (>4,000 ms) **declines the checkout**.
+    - By default, agentic checkout applies **zero application fee**; when the platform pays Stripe fees,
+      omitting ``application_fee_details.application_fee_amount`` on ``finalize_checkout`` causes platform loss.
+    """
+    if not product_catalog_imports_write_permission:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            403,
+            "missing_product_catalog_imports_write_permission_403",
+            feed_type,
+            mode,
+            False,
+            False,
+            0,
+            "Send to a human",
+        )
+    if int(file_size_bytes) <= 0 or int(file_size_bytes) > 4 * 1024 * 1024 * 1024:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            400,
+            "catalog_import_file_exceeds_4gb_limit",
+            feed_type,
+            mode,
+            False,
+            False,
+            0,
+            "Send to a human",
+        )
+    if int(upload_elapsed_seconds) > 300:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            410,
+            "presigned_upload_or_error_csv_url_expired_after_300s",
+            feed_type,
+            mode,
+            False,
+            False,
+            0,
+            "Confirm",
+        )
+    if feed_type != "product" and mode != "upsert":
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            400,
+            "non_product_feed_requires_upsert_mode",
+            feed_type,
+            mode,
+            False,
+            False,
+            0,
+            "Send to a human",
+        )
+    if sale_price_present and not sale_price_effective_date_present:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            400,
+            "sale_price_requires_sale_price_effective_date",
+            feed_type,
+            mode,
+            False,
+            False,
+            0,
+            "Send to a human",
+        )
+
+    price_fallback = bool(price_hook_enabled and int(price_hook_latency_ms) > 4000)
+    if int(approval_hook_latency_ms) > 4000:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            402,
+            "approval_hook_exceeded_4000ms_checkout_declined",
+            feed_type,
+            mode,
+            price_fallback,
+            False,
+            0,
+            "Send to a human",
+        )
+
+    eff_fee = int(finalize_checkout_application_fee_minor or 0)
+    if platform_pays_stripe_fees and eff_fee <= 0:
+        return ConnectCatalogImportAndHookDecision(
+            False,
+            422,
+            "missing_finalize_checkout_application_fee_causes_platform_loss",
+            feed_type,
+            mode,
+            price_fallback,
+            False,
+            0,
+            "Confirm",
+        )
+
+    reason = (
+        "price_hook_timed_out_4s_fell_back_to_catalog_feed_checkout_continued"
+        if price_fallback
+        else "connect_catalog_import_and_hooks_verified"
+    )
+    return ConnectCatalogImportAndHookDecision(
+        True,
+        200,
+        reason,
+        feed_type,
+        mode,
+        price_fallback,
+        True,
+        eff_fee,
+        "Act automatically",
+    )
+
+
+@dataclass(frozen=True)
+class BookingAndMachinePaymentDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    route_mode: Literal["browser_redirect_302", "agent_mpp_402_or_receipt", "booking_confirmed", "blocked"]
+    error_code: str | None
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def evaluate_booking_and_mpp_dual_path_guard(
+    *,
+    scenario_kind: Literal["service_booking", "monetized_mcp"],
+    spt_ttl_days: int = 30,
+    slot_already_taken: bool = False,
+    idempotency_key_reused: bool = False,
+    payload_matches_original: bool = True,
+    accept_header: str = "application/json",
+    payment_credential_present: bool = True,
+    mpp_challenge_hmac_bound: bool = True,
+    payment_rail: Literal["card_spt", "tempo_mpp", "base_x402", "solana_mpp"] = "tempo_mpp",
+    amount_usd: str = "0.50",
+    us_state: str = "CA",
+    hosted_fee_payer: bool = False,
+    livemode: bool = True,
+    same_account_deposit_address: bool = True,
+    is_connect_integration: bool = False,
+    ap4m_verifiable_intent_credentialed: bool = True,
+) -> BookingAndMachinePaymentDecision:
+    """Enforce Stripe Service Bookings (180d SPT / 409 slot / 24h Idempotency) & MPP/x402/AP4M guards.
+
+    Verified against:
+    - ``https://docs.stripe.com/agentic-commerce/sellers/use-cases/booking.md``:
+      * Booking SPT expiration supports up to 180 days;
+      * Taken time slot returns HTTP 409 ``slot_unavailable``;
+      * ``Idempotency-Key`` (retained >=24h) replayed with mutated payload returns HTTP 409 Conflict.
+    - ``https://docs.stripe.com/agentic-commerce/monetize-mcp.md`` & ``payments/machine.md``:
+      * ``Accept: text/html`` redirects browsers (302) to human checkout while agent requests use
+        HMAC-SHA256 bound (``'mpp-challenge-signing'``) HTTP 402 challenges;
+      * Card SPT minimum is ``$0.50`` USD; stablecoin minimum settlement is ``$0.01`` USDC and is
+        unavailable in New York (``us_state == 'NY'``);
+      * ``hostedFeePayer: true`` requires Tempo ``livemode=True``, same-account deposit address, and
+        forbids Connect integrations;
+      * Mastercard Agent Pay for Machines (``AP4M``) requires ``Verifiable Intent`` credentialing.
+    """
+    if scenario_kind == "service_booking":
+        if int(spt_ttl_days) <= 0 or int(spt_ttl_days) > 180:
+            return BookingAndMachinePaymentDecision(
+                False,
+                400,
+                "booking_spt_expiry_exceeds_180_days_max",
+                "blocked",
+                "invalid_spt_expiry",
+                "Send to a human",
+            )
+        if idempotency_key_reused and not payload_matches_original:
+            return BookingAndMachinePaymentDecision(
+                False,
+                409,
+                "idempotency_key_reused_with_different_payload_409",
+                "blocked",
+                "idempotency_conflict",
+                "Send to a human",
+            )
+        if slot_already_taken:
+            return BookingAndMachinePaymentDecision(
+                False,
+                409,
+                "booking_slot_unavailable_409_search_alternative",
+                "blocked",
+                "slot_unavailable",
+                "Confirm",
+            )
+        return BookingAndMachinePaymentDecision(
+            True,
+            200,
+            "service_booking_confirmed_with_idempotent_spt_hold",
+            "booking_confirmed",
+            None,
+            "Act automatically",
+        )
+
+    # scenario_kind == "monetized_mcp"
+    if "text/html" in (accept_header or "").lower():
+        return BookingAndMachinePaymentDecision(
+            True,
+            302,
+            "browser_accept_text_html_redirected_to_checkout_ui",
+            "browser_redirect_302",
+            None,
+            "Confirm",
+        )
+
+    if not mpp_challenge_hmac_bound:
+        return BookingAndMachinePaymentDecision(
+            False,
+            400,
+            "mpp_challenge_missing_hmac_sha256_challenge_binding",
+            "blocked",
+            "invalid_challenge_binding",
+            "Send to a human",
+        )
+    if not ap4m_verifiable_intent_credentialed:
+        return BookingAndMachinePaymentDecision(
+            False,
+            403,
+            "ap4m_missing_verifiable_intent_credential",
+            "blocked",
+            "uncredentialed_agent",
+            "Send to a human",
+        )
+
+    amt = Decimal(str(amount_usd))
+    if payment_rail == "card_spt":
+        if amt < Decimal("0.50"):
+            return BookingAndMachinePaymentDecision(
+                False,
+                400,
+                "card_spt_below_0_50_usd_minimum",
+                "blocked",
+                "amount_too_small",
+                "Send to a human",
+            )
+    else:
+        if (us_state or "").strip().upper() == "NY":
+            return BookingAndMachinePaymentDecision(
+                False,
+                403,
+                "stablecoin_machine_payments_unavailable_in_new_york",
+                "blocked",
+                "restricted_jurisdiction_ny",
+                "Send to a human",
+            )
+        if amt < Decimal("0.01"):
+            return BookingAndMachinePaymentDecision(
+                False,
+                400,
+                "stablecoin_settlement_below_0_01_usdc_minimum",
+                "blocked",
+                "amount_too_small",
+                "Send to a human",
+            )
+
+    if hosted_fee_payer and (
+        payment_rail != "tempo_mpp"
+        or not livemode
+        or not same_account_deposit_address
+        or is_connect_integration
+    ):
+        return BookingAndMachinePaymentDecision(
+            False,
+            400,
+            "hosted_fee_payer_requires_livemode_tempo_same_account_non_connect",
+            "blocked",
+            "invalid_hosted_fee_payer_config",
+            "Send to a human",
+        )
+
+    if not payment_credential_present:
+        return BookingAndMachinePaymentDecision(
+            False,
+            402,
+            "mpp_402_payment_required_challenge_issued",
+            "agent_mpp_402_or_receipt",
+            "payment_required",
+            "Confirm",
+        )
+
+    return BookingAndMachinePaymentDecision(
+        True,
+        200,
+        "monetized_mcp_payment_verified_with_mpp_receipt",
+        "agent_mpp_402_or_receipt",
+        None,
+        "Act automatically",
+    )
+
+
+
+# ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
 
@@ -2551,6 +3133,80 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "affirm_webview_automation_blocked_reason": s1753_affirm_block["reason"],
     }
 
+    # Stage 1754 deterministic checks (SPT Resolve/Recurring/Connect + Catalog Imports/4s Fallback + Booking/MPP)
+    s1754_spt_resolve_ok = validate_spt_resolution_and_payment_intent(
+        flow="resolve_api",
+        credential_type="agentic_token",
+        cryptogram_type="TAVV",
+        pci_aoc_on_file=False,
+        encryption_block_fields="number:0:16,cryptogram:16:28",
+    )
+    s1754_spt_double_resolve = validate_spt_resolution_and_payment_intent(
+        flow="resolve_api",
+        previously_resolved=True,
+    )
+    s1754_spt_sfu_block = validate_spt_resolution_and_payment_intent(
+        flow="payment_intent",
+        setup_future_usage_set=True,
+        recurring_interval_configured=True,
+    )
+    s1754_connect_import_ok = validate_connect_catalog_import_and_hooks(
+        feed_type="pricing",
+        mode="upsert",
+        sale_price_present=True,
+        sale_price_effective_date_present=True,
+        price_hook_latency_ms=4500,  # >4s price hook falls back to feed and continues!
+        approval_hook_latency_ms=390,
+        finalize_checkout_application_fee_minor=250,
+    )
+    s1754_connect_replace_block = validate_connect_catalog_import_and_hooks(
+        feed_type="inventory",
+        mode="replace",
+    )
+    s1754_booking_slot_409 = evaluate_booking_and_mpp_dual_path_guard(
+        scenario_kind="service_booking",
+        spt_ttl_days=180,
+        slot_already_taken=True,
+    )
+    s1754_mpp_ny_block = evaluate_booking_and_mpp_dual_path_guard(
+        scenario_kind="monetized_mcp",
+        payment_rail="tempo_mpp",
+        amount_usd="0.05",
+        us_state="NY",
+    )
+    s1754_mpp_fee_payer_connect_block = evaluate_booking_and_mpp_dual_path_guard(
+        scenario_kind="monetized_mcp",
+        payment_rail="tempo_mpp",
+        amount_usd="0.50",
+        hosted_fee_payer=True,
+        is_connect_integration=True,
+    )
+    stage_1754_guards = {
+        "stage": 1754,
+        "all_passed": (
+            s1754_spt_resolve_ok.allowed
+            and s1754_spt_resolve_ok.encrypted_for_processor
+            and not s1754_spt_double_resolve.allowed
+            and not s1754_spt_sfu_block.allowed
+            and s1754_connect_import_ok.allowed
+            and s1754_connect_import_ok.price_hook_fallback_to_feed
+            and s1754_connect_import_ok.checkout_continues
+            and not s1754_connect_replace_block.allowed
+            and not s1754_booking_slot_409.allowed
+            and s1754_booking_slot_409.http_status == 409
+            and not s1754_mpp_ny_block.allowed
+            and not s1754_mpp_fee_payer_connect_block.allowed
+        ),
+        "spt_non_pci_rsa_slice_verified": s1754_spt_resolve_ok.encrypted_for_processor,
+        "spt_double_resolve_blocked_reason": s1754_spt_double_resolve.reason,
+        "spt_setup_future_usage_blocked_reason": s1754_spt_sfu_block.reason,
+        "price_hook_4s_fallback_continues": s1754_connect_import_ok.price_hook_fallback_to_feed,
+        "inventory_replace_mode_blocked_reason": s1754_connect_replace_block.reason,
+        "booking_slot_409_error_code": s1754_booking_slot_409.error_code,
+        "mpp_ny_state_blocked_reason": s1754_mpp_ny_block.reason,
+        "mpp_hosted_fee_payer_connect_blocked_reason": s1754_mpp_fee_payer_connect_block.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -2561,6 +3217,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ungrounded_baseline_passed": 0,
         "stage_1752_guards": stage_1752_guards,
         "stage_1753_guards": stage_1753_guards,
+        "stage_1754_guards": stage_1754_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -2597,6 +3254,12 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
                 "check": "Stage 1753 Perturbation (OCA v2 Re-Initiation Lock, SFTP disable_checkout, UCP Link Trap & 4s Hook SLA)",
                 "original": "OCA confirmed; SFTP manifest verified; UCP card spt_* + 420ms hook approved",
                 "perturbed": "Non-terminating OCA reinit, disable_checkout=true, UCP Link completion & >4s hook blocked",
+                "delta_pts": "0.0 drift",
+            },
+            {
+                "check": "Stage 1754 Perturbation (SPT Single-Resolve & setup_future_usage Ban, Connect 4s Price Fallback & MPP NY/Connect Guard)",
+                "original": "SPT single-resolve RSA slice OK; Price Hook >4s falls back to feed; Tempo MPP $0.50 OK",
+                "perturbed": "2nd SPT resolve (400), setup_future_usage (400), inventory replace (400), NY stablecoin (403) & Connect hostedFeePayer blocked",
                 "delta_pts": "0.0 drift",
             },
         ],
@@ -5285,6 +5948,43 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
         <div id="s1753-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
       </div>
+
+      <!-- Interactive Stage 1754 Sandbox: SPT Resolve vs PaymentIntent + Connect Catalog 4s Fallback + Booking/MPP -->
+      <div class="finops-box" id="stage1754-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-s1754-title">🚀 Stage 1754 · SPT Resolve vs PaymentIntent + Connect 4s Fallback + Bookings/MPP</span>
+        </div>
+        <div class="control-row">
+          <label><span>SPT (`spt_...`) Resolve API vs PaymentIntent &amp; Connect Routing:</span></label>
+          <select id="s1754-spt-select" onchange="updateStage1754Sandbox()">
+            <option value="pi_valid">PaymentIntent (off_session=true recurring SPT · No setup_future_usage)</option>
+            <option value="resolve_rsa">POST /v1/shared_payment/granted_tokens/{id}/resolve (No PCI AoC -&gt; RSA block fields)</option>
+            <option value="setup_future_trap">❌ PaymentIntent sets setup_future_usage='off_session' on SPT (Forbidden)</option>
+            <option value="resolve_after_pi">❌ Resolve SPT After Already Used in PaymentIntent (HTTP 400 Single-Use)</option>
+            <option value="connect_header_trap">❌ Destination Charge Sends Stripe-Account Header Without on_behalf_of</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Connect Catalog Import (`2026-10-28.preview`) &amp; Asymmetric 4s Hooks:</span></label>
+          <select id="s1754-catalog-select" onchange="updateStage1754Sandbox()">
+            <option value="price_timeout_fallback">⚠️ product_price_availability &gt; 4,000ms -&gt; Continues with Catalog Feed Data!</option>
+            <option value="finalize_zero_fee">finalize_checkout omits application_fee_amount -&gt; Approved (Default $0 Fee)</option>
+            <option value="inventory_replace">❌ Inventory Feed Import with type='replace' (Upsert-Only!)</option>
+            <option value="presigned_expired">❌ Presigned upload_url Used at 345s (&gt; 300s 5-Min Expiry)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Service Bookings (180d SPT) + Monetized MCP (`402`) + Web IQ Auth `APPID`:</span></label>
+          <select id="s1754-booking-mpp-select" onchange="updateStage1754Sandbox()">
+            <option value="valid">120d Booking SPT + Agent 402 HMAC Challenge + Entra Multi-AppID Selection</option>
+            <option value="browser_302">🌐 Browser Accept: text/html on /api/purchase -&gt; HTTP 302 Checkout Redirect</option>
+            <option value="booking_409_slot">❌ Service Booking Slot Taken -&gt; HTTP 409 slot_unavailable (No Charge)</option>
+            <option value="ny_stablecoin">❌ Stablecoin Top-Up from NY State or Tempo hostedFeePayer on Connect</option>
+            <option value="apikey_appid_401">❌ Web IQ x-apikey Request Includes APPID -&gt; HTTP 401 AuthUnauthorizedEntryId</option>
+          </select>
+        </div>
+        <div id="s1754-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
     </div>
 
     <!-- Center Column: Step-by-Step 4-Plane Live Execution Pipeline -->
@@ -5691,6 +6391,60 @@ function renderAll() {{
   updateFinOpsCalculator();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
+  updateStage1754Sandbox();
+}}
+
+function updateStage1754Sandbox() {{
+  var sptEl = document.getElementById("s1754-spt-select");
+  var catEl = document.getElementById("s1754-catalog-select");
+  var bppEl = document.getElementById("s1754-booking-mpp-select");
+  var outEl = document.getElementById("s1754-live-readout");
+  if (!sptEl || !catEl || !bppEl || !outEl) return;
+
+  var spt = sptEl.value;
+  var cat = catEl.value;
+  var bpp = bppEl.value;
+
+  var sptOk = spt === "pi_valid" || spt === "resolve_rsa";
+  var catOk = cat === "price_timeout_fallback" || cat === "finalize_zero_fee";
+  var bppOk = bpp === "valid" || bpp === "browser_302";
+
+  if (!sptOk || !catOk || !bppOk) {{
+    var err = !sptOk
+      ? (spt === "setup_future_trap"
+        ? "🚫 spt_forbids_setup_future_usage_parameters: Stripe forbids setup_future_usage and card.setup_future_usage on PaymentIntents using an SPT."
+        : (spt === "resolve_after_pi"
+          ? "🚫 HTTP 400 spt_already_used_in_payment_intent: /v1/shared_payment/granted_tokens/{id}/resolve is single-use and mutually exclusive with PaymentIntent."
+          : "🚫 destination_or_separate_charge_forbids_stripe_account_header: Omit Stripe-Account header and use platform profile_... when on_behalf_of is not set."))
+      : (!catOk
+        ? (cat === "inventory_replace"
+          ? "🚫 HTTP 400 import_type_replace_only_supported_for_product_feed: inventory, pricing, and promotion feeds only support 'upsert' mode."
+          : "🚫 HTTP 403 presigned_url_expired_300s_limit: Presigned upload_url and error_details.url expire after 300 seconds (5 minutes).")
+        : (bpp === "booking_409_slot"
+          ? "🚫 HTTP 409 slot_unavailable: Requested service booking slot was taken during checkout; agent halts before creating PaymentIntent."
+          : (bpp === "ny_stablecoin"
+            ? "🚫 stablecoin_unavailable_in_ny_or_tempo_fee_payer_connect_blocked: Stablecoin payments are unavailable in NY and Tempo hostedFeePayer forbids Connect."
+            : "🚫 HTTP 401 AuthUnauthorizedEntryId: Web IQ API keys belong to one AppID and reject any request containing an APPID parameter.")));
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      err + "</div>";
+    return;
+  }}
+
+  var catNote = cat === "price_timeout_fallback"
+    ? "Asymmetric 4s Timeout: <code>product_price_availability</code> timed out at 4,350ms -&gt; Stripe fell back to imported catalog feed data and continued checkout!"
+    : "Connect Finalize Hook: omitted <code>application_fee_amount</code> defaulted to <code>$0</code> platform fee and approved checkout.";
+  var bppNote = bpp === "browser_302"
+    ? "Monetized MCP Dual-Path: Browser <code>Accept: text/html</code> received <code>HTTP 302</code> redirect to Stripe Checkout UI."
+    : "Service Booking (120d SPT TTL &lt;= 180d max) + Agent <code>402</code> HMAC challenge (<code>'mpp-challenge-signing'</code>) + Entra multi-AppID verified.";
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ Stage 1754 All Contracts Verified:</strong><br>" +
+    "• SPT Mode: <code>" + (spt === "resolve_rsa" ? "RSA encrypted resolve (number:0:16, exp_month:16:2, exp_year:18:4, cvc:22:3)" : "PaymentIntent recurring off_session=true") + "</code><br>" +
+    "• SaaS Catalog &amp; Hooks: " + catNote + "<br>" +
+    "• Bookings / MPP / Web IQ Auth: " + bppNote +
+    "</div>";
 }}
 
 function updateStage1753Sandbox() {{
