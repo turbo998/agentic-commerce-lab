@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 680" width="1080" height="680" role="img" aria-label="2026-11-04 Agentic Commerce Nightly Executive Visual Summary (Stage 1755)">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="hdrGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="cardGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065F46" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="cardPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4C1D95" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.94"/>
+    </linearGradient>
+    <linearGradient id="cardAmber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350F" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.94"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1080" height="680" rx="16" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5"/>
+  <rect x="0" y="0" width="1080" height="6" rx="3" fill="url(#hdrGrad)"/>
+
+  <!-- Header -->
+  <text x="28" y="36" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="19" font-weight="800" fill="#F8FAFC">
+    2026-11-04 Agentic Commerce Executive Visual Summary · Stage 1755
+  </text>
+  <text x="28" y="56" font-family="Segoe UI, Inter, system-ui, sans-serif" font-size="12.5" fill="#94A3B8">
+    Visa VIC VTS + Passkey Binding · MCP OAuth 2.1 RFC 9207 `iss` Matrix · Stripe 180d Agent Keys &amp; Embedded SPT · Web IQ Granular Browse
+  </text>
+  <rect x="810" y="18" width="242" height="30" rx="15" fill="#0F172A" stroke="#10B981" stroke-width="1.3"/>
+  <text x="931" y="37" text-anchor="middle" font-family="Consolas, monospace" font-size="11.5" font-weight="700" fill="#34D399">
+    4,383 TESTS PASS · 12/12 + S1755
+  </text>
+
+  <!-- Row 1 Left: Pillar 0 Primary-Source Breakthroughs -->
+  <rect x="24" y="72" width="506" height="184" rx="12" fill="url(#cardBlue)" stroke="#3B82F6" stroke-width="1.3"/>
+  <text x="40" y="96" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#60A5FA">
+    PILLAR 0 · 6 CHANGED PRIMARY SOURCES (VERIFIED 2026-11-04)
+  </text>
+  <text x="40" y="120" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    1. Visa VIC (`VTS` + `VPP`) Card Enrollment &amp; Device Binding (`developer.visa.com`)
+  </text>
+  <text x="54" y="138" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    CVV2 required for agent requestor · 6 step-up methods · Fail-closed Passkey (no silent retry)
+  </text>
+  <text x="40" y="160" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    2. MCP Authorization (`2026-07-28`) RFC 9207 `iss` Matrix &amp; Step-Up Scope Union
+  </text>
+  <text x="54" y="178" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    RFC 3986 §6.2.1 exact string match · Suppress error_description on mismatch · No offline_access
+  </text>
+  <text x="40" y="200" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    3. Stripe Agent Keys (`rk_...` 180d Payout Lock) &amp; Embedded `RequestedSession`
+  </text>
+  <text x="54" y="218" font-family="Consolas, monospace" font-size="11" fill="#CBD5E1">
+    &gt;180d transfer/payout lock · ASN AND Country AND NoProxy · SPT requires_action -&gt; active
+  </text>
+  <text x="40" y="240" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    4. Web IQ Granular Browse (`429` vs `430`), `400 RequestBlockedHeader` &amp; Citation Ping
+  </text>
+
+  <!-- Row 1 Right: Pillar 1 Dialectical Architecture Comparison -->
+  <rect x="546" y="72" width="510" height="184" rx="12" fill="url(#cardPurple)" stroke="#A855F7" stroke-width="1.3"/>
+  <text x="562" y="96" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#D8B4FE">
+    PILLAR 1 · CLOUD-NATIVE 3-TIER vs AI-NATIVE PASSKEY &amp; OAUTH 2.1 PLANE
+  </text>
+  <rect x="562" y="108" width="232" height="134" rx="8" fill="#0F172A" stroke="#475569" stroke-width="1"/>
+  <text x="574" y="128" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#FCA5A5">
+    Traditional 3-Tier Web App
+  </text>
+  <text x="574" y="148" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • COF token without CVV2 or Passkey bind
+  </text>
+  <text x="574" y="166" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • Case-folded OAuth `iss` &amp; error UI render
+  </text>
+  <text x="574" y="184" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • Long-lived `sk_live_` without 180d lock
+  </text>
+  <text x="574" y="202" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • Skips citation ping when `clickUrl` enabled
+  </text>
+  <text x="574" y="224" font-family="Consolas, monospace" font-size="10.5" fill="#F87171">
+    Result: Mix-Up Attack &amp; Unbound Token Spend
+  </text>
+
+  <rect x="808" y="108" width="232" height="134" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="820" y="128" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Agent-Native Stage 1755 Plane
+  </text>
+  <text x="820" y="148" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • VTS `CVV2` + `deviceBinding` + `fidoBlob`
+  </text>
+  <text x="820" y="166" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • RFC 9207 exact `iss` + `403` scope union
+  </text>
+  <text x="820" y="184" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • `rk_live_` Agent key + 180d payout lock
+  </text>
+  <text x="820" y="202" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    • Web IQ `RequestBlockedHeader` + Citation Ping
+  </text>
+  <text x="820" y="224" font-family="Consolas, monospace" font-size="10.5" fill="#34D399">
+    Result: 12/12 + Stage 1752..1755 All Pass
+  </text>
+
+  <!-- Row 2 Left: Pillar 2 & 3 Interactive H5 Demo & Reproducible 7-Card Benchmark -->
+  <rect x="24" y="272" width="506" height="186" rx="12" fill="url(#cardGreen)" stroke="#10B981" stroke-width="1.3"/>
+  <text x="40" y="296" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#6EE7B7">
+    PILLAR 2 &amp; 3 · STAGE 1755 H5 SANDBOX &amp; 7-CARD 4:5 BENCHMARK
+  </text>
+  <text x="40" y="320" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    • Code Asset: `lab/webiq_commerce_demo.py` (2026-11-04.stage1755) + `live-demo.html`
+  </text>
+  <text x="40" y="342" font-family="Segoe UI, sans-serif" font-size="12" fill="#F8FAFC">
+    • Stage 1755 Sandbox: Visa VIC Passkey + MCP RFC 9207 `iss` + Stripe 180d &amp; Embedded SPT
+  </text>
+  <!-- Mini Bar Chart inside SVG -->
+  <text x="40" y="368" font-family="Consolas, monospace" font-size="11" fill="#93C5FD">
+    Passage Grounding (680 tok / 164ms P95) vs Full-Doc Crawl (4,800 tok / 690ms P95)
+  </text>
+  <rect x="40" y="376" width="110" height="12" rx="6" fill="#3B82F6"/>
+  <text x="158" y="386" font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#6EE7B7">7.1x Token Cut · 4.2x Faster</text>
+  <rect x="40" y="394" width="440" height="12" rx="6" fill="#475569"/>
+  <text x="40" y="426" font-family="Consolas, monospace" font-size="11" fill="#93C5FD">
+    Robustness Perturbations: 8/8 Checks at 0.0 pt Drift (incl. VIC Passkey &amp; RFC 9207 iss)
+  </text>
+  <text x="40" y="444" font-family="Consolas, monospace" font-size="11" fill="#34D399">
+    Guarded Pass Rate: 12/12 Scenarios + Stage 1752/1753/1754/1755 Guards (Baseline: 0/12)
+  </text>
+
+  <!-- Row 2 Right: Pillar 4 Business Scenarios & Playbook -->
+  <rect x="546" y="272" width="510" height="186" rx="12" fill="url(#cardAmber)" stroke="#F59E0B" stroke-width="1.3"/>
+  <text x="562" y="296" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#FCD34D">
+    PILLAR 4 · BUSINESS SCENARIO PLAYBOOKS (GOOD FIT vs NOT FOR)
+  </text>
+  <text x="562" y="320" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    S1 · Consumer Card Agentic Onboarding (`Visa VIC VTS` + `VPP Passkey` Device Binding)
+  </text>
+  <text x="574" y="338" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    Require `CVV2` on `/vts/panEnrollments`; fail-closed before `/vacp/v2/credentials-for-instruction`.
+  </text>
+  <text x="562" y="360" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    S2 · Multi-AS MCP Commerce Tooling (`MCP 2026-07-28` + RFC 9207 `iss` + `403` Scope Union)
+  </text>
+  <text x="574" y="378" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    Exact character-by-character `iss` match; forbid `offline_access` on Protected Resources.
+  </text>
+  <text x="562" y="400" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    S3 · In-Chat Embedded Checkout (`RequestedSession` + `PaymentElement` / Mobile `PaymentSheet`)
+  </text>
+  <text x="574" y="418" font-family="Segoe UI, sans-serif" font-size="11" fill="#CBD5E1">
+    `fields.billingDetails='never'` + Address Elements; handle `requires_action` -&gt; `active` 3DS/Klarna.
+  </text>
+  <text x="562" y="440" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F8FAFC">
+    S4 · Treasury &amp; Payout Governance (`rk_live_` Agent Tag + 180d Lock + ASN/Country/NoProxy)
+  </text>
+
+  <!-- Row 3 Bottom Full-Width: Pillar 5 Mandatory Web IQ vs Competitors Benchmark -->
+  <rect x="24" y="474" width="1032" height="182" rx="12" fill="#0F172A" stroke="#38BDF8" stroke-width="1.4"/>
+  <text x="40" y="498" font-family="Segoe UI, sans-serif" font-size="13" font-weight="800" fill="#38BDF8">
+    PILLAR 5 · MANDATORY DAILY WEB IQ vs BRIGHT DATA / EXA / TAVILY / PARALLEL / FOUNDRY GROUNDING BAKE-OFF
+  </text>
+  <text x="40" y="518" font-family="Segoe UI, sans-serif" font-size="11.5" fill="#CBD5E1">
+    Azure Lab Account `webiq-qichen2-bench` (`rg-webiq-bench`, G3 `WebIQ.Grounding`) = Succeeded. Granular Browse (`429` vs `430`), `400 RequestBlockedHeader` &amp; Citation Ping verified.
+  </text>
+
+  <!-- 6 Provider Pills -->
+  <rect x="40" y="530" width="158" height="84" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="52" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">Microsoft Web IQ</text>
+  <text x="52" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">$7/1k web · $1/1k browse</text>
+  <text x="52" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#93C5FD">Granular 429/403 + Ping</text>
+  <text x="52" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">latency: not_measured</text>
+
+  <rect x="208" y="530" width="158" height="84" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="220" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#FCD34D">Bright Data SERP</text>
+  <text x="220" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">$1.50/1k PAYG · $499/mo</text>
+  <text x="220" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">SERP / Unlocker HTML</text>
+  <text x="220" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">latency: not_measured</text>
+
+  <rect x="376" y="530" width="158" height="84" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="388" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#93C5FD">Exa Search API</text>
+  <text x="388" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">$4/1k lite · $7/1k auto</text>
+  <text x="388" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Contents $1/1k pages</text>
+  <text x="388" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">latency: not_measured</text>
+
+  <rect x="544" y="530" width="158" height="84" rx="8" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.2"/>
+  <text x="556" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#C4B5FD">Tavily Search</text>
+  <text x="556" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">$0.008/credit (1-2 cr)</text>
+  <text x="556" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">1,000 free credits/mo</text>
+  <text x="556" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">latency: not_measured</text>
+
+  <rect x="712" y="530" width="158" height="84" rx="8" fill="#1E293B" stroke="#EC4899" stroke-width="1.2"/>
+  <text x="724" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#F472B6">Parallel Search</text>
+  <text x="724" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#F8FAFC">$1/1k fast · $5/1k adv</text>
+  <text x="724" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#CBD5E1">Extract $1/1k URLs</text>
+  <text x="724" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#FCD34D">latency: not_measured</text>
+
+  <rect x="880" y="530" width="160" height="84" rx="8" fill="#1E293B" stroke="#64748B" stroke-width="1.2"/>
+  <text x="892" y="550" font-family="Segoe UI, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">Foundry Bing Ground</text>
+  <text x="892" y="568" font-family="Consolas, monospace" font-size="10.5" fill="#FCA5A5">Opaque model-only</text>
+  <text x="892" y="584" font-family="Consolas, monospace" font-size="10.5" fill="#FCA5A5">No pre-LLM scrub</text>
+  <text x="892" y="602" font-family="Consolas, monospace" font-size="10.5" fill="#94A3B8">Managed tool boundary</text>
+
+  <text x="40" y="638" font-family="Consolas, monospace" font-size="11" fill="#94A3B8">
+    Provenance: All 37 pricing entries labeled `official_list_price` (verified 2026-11-04). Live bake-off 7-Card latency bars withheld until portal `x-apikey` + competitor keys are bound.
+  </text>
+</svg>

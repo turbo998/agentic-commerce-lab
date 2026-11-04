@@ -32,9 +32,12 @@ from lab.webiq_commerce_demo import (
     ground_return_policy_passage,
     validate_connect_catalog_import_and_hooks,
     validate_link_spend_request,
+    validate_mcp_oauth21_rfc9207_and_stepup,
     validate_sftp_catalog_batch,
     validate_spt_resolution_and_payment_intent,
+    validate_stripe_agent_key_and_embedded_session,
     validate_ucp_payment_completion,
+    validate_visa_vic_vts_passkey_enrollment,
     verify_post_purchase_return_policy,
 )
 
@@ -924,6 +927,162 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
 
         suite = run_webiq_commerce_benchmark_suite()
         self.assertTrue(suite["stage_1754_guards"]["all_passed"])
+
+    def test_stage_1755_visa_vic_mcp_rfc9207_and_stripe_agent_key_guards(self) -> None:
+        # 1. Visa Intelligent Commerce (VIC) VTS Token + VPP Passkey Enrollment & Device Binding
+        vic_no_cvv2 = validate_visa_vic_vts_passkey_enrollment(cvv2_present=False)
+        self.assertFalse(vic_no_cvv2.allowed)
+        self.assertEqual(
+            vic_no_cvv2.reason,
+            "vic_vts_pan_enrollment_requires_cvv2_for_agent_token_requestor",
+        )
+
+        vic_raw_pan = validate_visa_vic_vts_passkey_enrollment(raw_16_digit_token_stored_by_agent=True)
+        self.assertFalse(vic_raw_pan.allowed)
+        self.assertEqual(vic_raw_pan.reason, "vic_forbids_agent_storing_raw_16_digit_token_or_pan")
+
+        # Existing passkey (action='AUTHENTICATE') skips device binding
+        vic_existing = validate_visa_vic_vts_passkey_enrollment(attestation_action="AUTHENTICATE")
+        self.assertTrue(vic_existing.allowed)
+        self.assertEqual(vic_existing.device_binding_status, "SKIPPED")
+        self.assertTrue(vic_existing.can_call_credentials_for_instruction)
+
+        # Device binding CHALLENGE via out-of-band MAP notification
+        vic_oob_ok = validate_visa_vic_vts_passkey_enrollment(
+            attestation_action="REGISTER",
+            device_binding_status="CHALLENGE",
+            step_up_method="APP-TO-APP",
+            map_oob_event="TOKEN_DEVICE_BINDING_APPROVED",
+            map_oob_identifiers_matched=True,
+        )
+        self.assertTrue(vic_oob_ok.allowed)
+
+        vic_oob_mismatch = validate_visa_vic_vts_passkey_enrollment(
+            attestation_action="REGISTER",
+            device_binding_status="CHALLENGE",
+            step_up_method="OUTBOUNDCALL",
+            map_oob_event="CARDHOLDER_STEPUP_APPROVED",
+            map_oob_identifiers_matched=False,
+        )
+        self.assertFalse(vic_oob_mismatch.allowed)
+        self.assertEqual(vic_oob_mismatch.http_status, 401)
+
+        # Fail-closed Passkey setup & ban on silent agent retry
+        vic_silent_retry = validate_visa_vic_vts_passkey_enrollment(
+            passkey_setup_succeeded=False,
+            silent_agent_retry_attempted=True,
+        )
+        self.assertFalse(vic_silent_retry.allowed)
+        self.assertEqual(vic_silent_retry.reason, "vic_forbids_silent_agent_passkey_registration_retry")
+
+        vic_fail_closed = validate_visa_vic_vts_passkey_enrollment(
+            passkey_setup_succeeded=False,
+            approved_without_passkey=False,
+        )
+        self.assertFalse(vic_fail_closed.allowed)
+        self.assertFalse(vic_fail_closed.can_call_credentials_for_instruction)
+
+        # 2. MCP OAuth 2.1 (2026-07-28) RFC 9207 `iss` Matrix & Step-Up Scope Union
+        mcp_query_tok = validate_mcp_oauth21_rfc9207_and_stepup(access_token_in_query_string=True)
+        self.assertFalse(mcp_query_tok.allowed)
+        self.assertEqual(mcp_query_tok.reason, "mcp_forbids_access_token_in_uri_query_string")
+
+        mcp_offline = validate_mcp_oauth21_rfc9207_and_stepup(
+            www_authenticate_scopes=("commerce:checkout", "offline_access"),
+        )
+        self.assertFalse(mcp_offline.allowed)
+        self.assertEqual(mcp_offline.reason, "mcp_protected_resource_forbids_offline_access_scope")
+
+        mcp_missing_iss = validate_mcp_oauth21_rfc9207_and_stepup(
+            as_iss_parameter_supported=True,
+            callback_iss=None,
+            is_error_response=True,
+        )
+        self.assertFalse(mcp_missing_iss.allowed)
+        self.assertTrue(mcp_missing_iss.suppress_error_fields_display)
+
+        # RFC 3986 §6.2.1 simple string comparison forbids case-folding or trailing-slash normalization
+        mcp_case_mismatch = validate_mcp_oauth21_rfc9207_and_stepup(
+            expected_as_issuer="https://auth.merchant.example",
+            as_iss_parameter_supported=False,
+            callback_iss="https://AUTH.merchant.example",
+            is_error_response=True,
+        )
+        self.assertFalse(mcp_case_mismatch.allowed)
+        self.assertTrue(mcp_case_mismatch.suppress_error_fields_display)
+        self.assertEqual(
+            mcp_case_mismatch.reason,
+            "rfc9207_iss_mismatch_simple_string_comparison_failed",
+        )
+
+        mcp_stepup = validate_mcp_oauth21_rfc9207_and_stepup(
+            previous_scopes=("mcp:tools", "commerce:read"),
+            www_authenticate_scopes=("commerce:read", "commerce:checkout"),
+            insufficient_scope_error=True,
+            step_up_retry_count=0,
+        )
+        self.assertTrue(mcp_stepup.allowed)
+        self.assertEqual(mcp_stepup.merged_scopes, ("mcp:tools", "commerce:read", "commerce:checkout"))
+
+        # 3. Stripe Agent Restricted Keys (180d Payout Lock / Approval Rules) & Embedded RequestedSession
+        stripe_180d = validate_stripe_agent_key_and_embedded_session(
+            action_type="payout",
+            days_since_last_transfer_or_payout=181,
+            human_approval_granted=True,
+        )
+        self.assertFalse(stripe_180d.allowed)
+        self.assertEqual(
+            stripe_180d.reason,
+            "stripe_api_key_transfer_payout_locked_after_180_days_inactivity",
+        )
+
+        stripe_no_approval = validate_stripe_agent_key_and_embedded_session(
+            action_type="send_money",
+            human_approval_granted=False,
+        )
+        self.assertFalse(stripe_no_approval.allowed)
+        self.assertEqual(
+            stripe_no_approval.reason,
+            "stripe_agent_key_or_mcp_treasury_requires_human_approval",
+        )
+
+        stripe_proxy = validate_stripe_agent_key_and_embedded_session(
+            source_blocked_proxy_vpn_tor=True,
+        )
+        self.assertFalse(stripe_proxy.allowed)
+        self.assertEqual(
+            stripe_proxy.reason,
+            "stripe_advanced_access_policy_asn_country_or_proxy_blocked",
+        )
+
+        stripe_elem_bad = validate_stripe_agent_key_and_embedded_session(
+            ui_surface="payment_element",
+            payment_element_billing_details="auto",
+        )
+        self.assertFalse(stripe_elem_bad.allowed)
+        self.assertEqual(
+            stripe_elem_bad.reason,
+            "embedded_payment_element_requires_billing_details_never_with_address_elements",
+        )
+
+        stripe_3ds_pending = validate_stripe_agent_key_and_embedded_session(
+            spt_state="requires_action",
+            buyer_completed_redirect_or_3ds=False,
+        )
+        self.assertFalse(stripe_3ds_pending.allowed)
+        self.assertEqual(stripe_3ds_pending.spt_next_state, "requires_action")
+
+        stripe_3ds_done = validate_stripe_agent_key_and_embedded_session(
+            spt_state="requires_action",
+            buyer_completed_redirect_or_3ds=True,
+        )
+        self.assertTrue(stripe_3ds_done.allowed)
+        self.assertEqual(stripe_3ds_done.spt_next_state, "active")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["stage_1755_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("stage1755-sandbox", demo_zh)
 
 
 if __name__ == "__main__":

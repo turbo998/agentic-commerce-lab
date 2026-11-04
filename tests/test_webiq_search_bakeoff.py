@@ -5,6 +5,7 @@ from lab.webiq_search_bakeoff import (
     grounding_architecture_comparison,
     summarize,
     validate_webiq_auth_appid_routing,
+    validate_webiq_granular_browse_and_instrumentation,
 )
 
 
@@ -98,6 +99,50 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         self.assertFalse(r_entra_none["allowed"])
         self.assertEqual(r_entra_none["http_status"], 401)
         self.assertEqual(r_entra_none["error_code"], "AuthUnauthorizedEntryId")
+
+    def test_webiq_granular_browse_headers_and_instrumentation(self):
+        # Blocked debug headers -> 400 RequestBlockedHeader
+        r_hdr = validate_webiq_granular_browse_and_instrumentation(
+            request_headers={"X-DebugOptions": "trace=1"}
+        )
+        self.assertFalse(r_hdr["allowed"])
+        self.assertEqual(r_hdr["http_status"], 400)
+        self.assertEqual(r_hdr["error_code"], "RequestBlockedHeader")
+        self.assertEqual(r_hdr["replacement_query_param"], "?debugoptions=")
+
+        # Granular Browse error codes (429 TooManyOnDemandCrawls vs 430 legacy, 403 Encumbrance, 523 Politeness)
+        r_429 = validate_webiq_granular_browse_and_instrumentation(
+            browse_error_code="TooManyOnDemandCrawls"
+        )
+        self.assertEqual(r_429["http_status"], 429)
+        self.assertEqual(r_429["retry_window"], "iso8601_timestamp")
+
+        r_430 = validate_webiq_granular_browse_and_instrumentation(
+            browse_error_code="BrowseApiTooManyOnDemandCrawls"
+        )
+        self.assertEqual(r_430["http_status"], 430)
+
+        r_403_enc = validate_webiq_granular_browse_and_instrumentation(
+            browse_error_code="URLFilteredOutEncumbrance"
+        )
+        self.assertEqual(r_403_enc["http_status"], 403)
+        self.assertEqual(r_403_enc["retry_window"], "iso8601_24h")
+
+        # Click redirection omits instrumentationClickBase, but LLM citations still require manual ping
+        r_no_cit = validate_webiq_granular_browse_and_instrumentation(
+            click_url_redirection_enabled=True,
+            citation_logged_by_agent=False,
+        )
+        self.assertFalse(r_no_cit["allowed"])
+        self.assertFalse(r_no_cit["instrumentation_click_base_present"])
+        self.assertTrue(r_no_cit["instrumentation_citation_base_present"])
+
+        r_ok = validate_webiq_granular_browse_and_instrumentation(
+            click_url_redirection_enabled=True,
+            citation_logged_by_agent=True,
+        )
+        self.assertTrue(r_ok["allowed"])
+        self.assertEqual(r_ok["http_status"], 200)
 
     def test_scenario_routes_are_guidance_not_latency(self):
         report = summarize({})

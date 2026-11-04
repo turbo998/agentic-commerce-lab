@@ -28,9 +28,9 @@
 
 ## 🏗️ 四层系统参考架构与协议对比矩阵（Architecture & Protocol Matrix）
 
-### 1. Agentic Commerce × Microsoft Web IQ 四层参考架构与 2026-11-03 一图流总结
+### 1. Agentic Commerce × Microsoft Web IQ 四层参考架构与 2026-11-04 一图流总结
 
-![2026-11-03 Agentic Commerce Executive Visual Summary (Stage 1754)](assets/svg/03-agentic-commerce-2026-11-03-visual-summary.svg)
+![2026-11-04 Agentic Commerce Executive Visual Summary (Stage 1755)](assets/svg/03-agentic-commerce-2026-11-04-visual-summary.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

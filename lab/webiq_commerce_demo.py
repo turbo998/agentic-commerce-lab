@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-11-03.stage1754"
+DEMO_VERSION = "2026-11-04.stage1755"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -2761,6 +2761,503 @@ def evaluate_booking_and_mpp_dual_path_guard(
     )
 
 
+VIC_STEP_UP_METHODS = frozenset(
+    {
+        "OTPSMS",
+        "OTPEMAIL",
+        "OTPONLINEBANKING",
+        "APP-TO-APP",
+        "CUSTOMERSERVICE",
+        "OUTBOUNDCALL",
+    }
+)
+VIC_OTP_STEP_UP_METHODS = frozenset({"OTPSMS", "OTPEMAIL", "OTPONLINEBANKING"})
+VIC_OOB_STEP_UP_METHODS = frozenset({"APP-TO-APP", "CUSTOMERSERVICE", "OUTBOUNDCALL"})
+VIC_MAP_OOB_EVENTS = frozenset({"TOKEN_DEVICE_BINDING_APPROVED", "CARDHOLDER_STEPUP_APPROVED"})
+
+
+@dataclass(frozen=True)
+class VisaVICPasskeyEnrollmentDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    attestation_action: Literal["AUTHENTICATE", "REGISTER"]
+    device_binding_status: Literal["APPROVED", "CHALLENGE", "DECLINED", "SKIPPED"]
+    can_call_credentials_for_instruction: bool
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_visa_vic_vts_passkey_enrollment(
+    *,
+    cvv2_present: bool = True,
+    billing_address_present: bool = True,
+    v_provisioned_token_id: str = "vtok_live_987654",
+    raw_16_digit_token_stored_by_agent: bool = False,
+    attestation_action: Literal["AUTHENTICATE", "REGISTER"] = "REGISTER",
+    device_binding_status: Literal["APPROVED", "CHALLENGE", "DECLINED"] = "APPROVED",
+    step_up_method: str | None = None,
+    otp_validated: bool = False,
+    map_oob_event: str | None = None,
+    map_oob_identifiers_matched: bool = True,
+    passkey_setup_succeeded: bool = True,
+    approved_without_passkey: bool = False,
+    silent_agent_retry_attempted: bool = False,
+    fido_blob_persisted: bool = True,
+    assurance_identifier_persisted: bool = True,
+) -> VisaVICPasskeyEnrollmentDecision:
+    """Enforce Visa Intelligent Commerce (VIC) VTS Token + VPP Passkey Enrollment & Device Binding.
+
+    Verified against ``https://developer.visa.com/docs/visa-intelligent-commerce`` (updated 2026-11-04):
+    - ``POST /vts/panEnrollments`` requires ``CVV2`` (mandatory for agent Token Requestors in VIC
+      even though VTS COF tokens do not require CVV2) and billing address.
+    - ``POST /vts/panEnrollments/{vPanEnrollmentID}/provisionedTokens`` returns ``vProvisionedTokenID``;
+      the raw 16-digit token or PAN is never stored by the agent.
+    - ``POST /vts/provisionedTokens/{vProvisionedTokenID}/attestation/options`` (``type='AUTHENTICATE'``,
+      ``reasonCode='PAYMENT'``): if ``action == 'AUTHENTICATE'``, a Passkey already exists and the agent
+      skips device binding and Passkey setup; if ``action == 'REGISTER'``, device binding is required.
+    - ``POST /vts/provisionedTokens/{vProvisionedTokenID}/deviceBinding`` (``intent='FIDO'``):
+      * ``DECLINED`` blocks enrollment;
+      * ``CHALLENGE`` requires step-up across ``OTPSMS``, ``OTPEMAIL``, ``OTPONLINEBANKING`` (validated via
+        ``validateOTP``) or out-of-band ``APP-TO-APP``, ``CUSTOMERSERVICE``, ``OUTBOUNDCALL`` (confirmed via
+        MAP notification ``TOKEN_DEVICE_BINDING_APPROVED`` or ``CARDHOLDER_STEPUP_APPROVED`` matched by
+        ``vProvisionedTokenID`` and ``clientReferenceId``).
+    - **Fail-Closed Rule**: If Passkey setup fails, the agent must not silently re-attempt registration
+      on its own and cannot call ``POST /vacp/v2/credentials-for-instruction`` unless explicitly approved.
+    """
+    if not cvv2_present:
+        return VisaVICPasskeyEnrollmentDecision(
+            False,
+            400,
+            "vic_vts_pan_enrollment_requires_cvv2_for_agent_token_requestor",
+            attestation_action,
+            device_binding_status,
+            False,
+            "Send to a human",
+        )
+    if not billing_address_present:
+        return VisaVICPasskeyEnrollmentDecision(
+            False,
+            400,
+            "vic_vts_pan_enrollment_requires_billing_address",
+            attestation_action,
+            device_binding_status,
+            False,
+            "Send to a human",
+        )
+    if raw_16_digit_token_stored_by_agent or not (v_provisioned_token_id or "").strip():
+        return VisaVICPasskeyEnrollmentDecision(
+            False,
+            400,
+            "vic_forbids_agent_storing_raw_16_digit_token_or_pan",
+            attestation_action,
+            device_binding_status,
+            False,
+            "Send to a human",
+        )
+
+    if attestation_action == "AUTHENTICATE":
+        if not fido_blob_persisted or not assurance_identifier_persisted:
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                400,
+                "vic_authenticate_requires_fido_blob_and_assurance_identifier",
+                attestation_action,
+                "SKIPPED",
+                False,
+                "Confirm",
+            )
+        return VisaVICPasskeyEnrollmentDecision(
+            True,
+            200,
+            "vic_existing_passkey_authenticated_skipped_device_binding",
+            attestation_action,
+            "SKIPPED",
+            True,
+            "Act automatically",
+        )
+
+    # attestation_action == "REGISTER"
+    if device_binding_status == "DECLINED":
+        return VisaVICPasskeyEnrollmentDecision(
+            False,
+            403,
+            "vic_device_binding_declined_cannot_proceed",
+            attestation_action,
+            device_binding_status,
+            False,
+            "Send to a human",
+        )
+
+    if device_binding_status == "CHALLENGE":
+        if step_up_method not in VIC_STEP_UP_METHODS:
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                400,
+                "vic_device_binding_challenge_requires_supported_step_up_method",
+                attestation_action,
+                device_binding_status,
+                False,
+                "Confirm",
+            )
+        if step_up_method in VIC_OTP_STEP_UP_METHODS and not otp_validated:
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                401,
+                "vic_step_up_otp_not_validated",
+                attestation_action,
+                device_binding_status,
+                False,
+                "Confirm",
+            )
+        if step_up_method in VIC_OOB_STEP_UP_METHODS and (
+            map_oob_event not in VIC_MAP_OOB_EVENTS or not map_oob_identifiers_matched
+        ):
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                401,
+                "vic_oob_step_up_requires_matched_map_approval_notification",
+                attestation_action,
+                device_binding_status,
+                False,
+                "Confirm",
+            )
+
+    if not passkey_setup_succeeded:
+        if silent_agent_retry_attempted:
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                400,
+                "vic_forbids_silent_agent_passkey_registration_retry",
+                attestation_action,
+                device_binding_status,
+                False,
+                "Send to a human",
+            )
+        if not approved_without_passkey:
+            return VisaVICPasskeyEnrollmentDecision(
+                False,
+                403,
+                "vic_passkey_setup_failed_blocks_vacp_v2_credentials_for_instruction",
+                attestation_action,
+                device_binding_status,
+                False,
+                "Confirm",
+            )
+        return VisaVICPasskeyEnrollmentDecision(
+            True,
+            200,
+            "vic_approved_fallback_without_passkey_setup",
+            attestation_action,
+            device_binding_status,
+            True,
+            "Confirm",
+        )
+
+    if not fido_blob_persisted or not assurance_identifier_persisted:
+        return VisaVICPasskeyEnrollmentDecision(
+            False,
+            400,
+            "vic_passkey_registration_requires_persisted_fido_blob_and_assurance_id",
+            attestation_action,
+            device_binding_status,
+            False,
+            "Send to a human",
+        )
+
+    return VisaVICPasskeyEnrollmentDecision(
+        True,
+        200,
+        "vic_vts_passkey_enrolled_ready_for_vacp_v2_credentials_for_instruction",
+        attestation_action,
+        device_binding_status,
+        True,
+        "Act automatically",
+    )
+
+
+@dataclass(frozen=True)
+class MCPOAuth21RFC9207AndStepUpDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    iss_validated: bool
+    suppress_error_fields_display: bool
+    merged_scopes: tuple[str, ...]
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_mcp_oauth21_rfc9207_and_stepup(
+    *,
+    expected_as_issuer: str = "https://auth.merchant.example",
+    as_iss_parameter_supported: bool = True,
+    callback_iss: str | None = "https://auth.merchant.example",
+    is_error_response: bool = False,
+    access_token_in_query_string: bool = False,
+    prm_scopes_supported: tuple[str, ...] = ("mcp:tools", "commerce:read"),
+    www_authenticate_scopes: tuple[str, ...] = ("commerce:checkout",),
+    previous_scopes: tuple[str, ...] = ("mcp:tools", "commerce:read"),
+    insufficient_scope_error: bool = False,
+    step_up_retry_count: int = 0,
+    max_step_up_retries: int = 1,
+) -> MCPOAuth21RFC9207AndStepUpDecision:
+    """Enforce MCP Authorization (2026-07-28) RFC 9207 ``iss`` Matrix & Step-Up Scope Union.
+
+    Verified against ``https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization``:
+    - Access tokens MUST NOT be included in the URI query string.
+    - Protected Resources MUST NOT include ``offline_access`` in ``WWW-Authenticate`` or
+      Protected Resource Metadata (``scopes_supported``).
+    - **RFC 9207 Authorization Response Issuer (``iss``) Validation**:
+      * If ``authorization_response_iss_parameter_supported=true`` and ``iss`` is absent -> reject.
+      * If ``iss`` is present (even when ``authorization_response_iss_parameter_supported`` is false/absent) ->
+        compare against expected AS ``issuer`` using **simple string comparison** (RFC 3986 §6.2.1;
+        forbids scheme/host case folding, default-port removal, trailing-slash, or percent-encoding
+        normalization).
+      * On ``iss`` failure in an authorization error response, the client MUST NOT act on or display
+        ``error``, ``error_description``, or ``error_uri`` (``suppress_error_fields_display=True``).
+    - **Runtime ``insufficient_scope`` (HTTP 403) Step-Up**:
+      * Client computes the union of previously requested scopes and newly challenged scopes and
+        enforces a bounded retry limit to prevent infinite authorization loops.
+    """
+    if access_token_in_query_string:
+        return MCPOAuth21RFC9207AndStepUpDecision(
+            False,
+            400,
+            "mcp_forbids_access_token_in_uri_query_string",
+            False,
+            False,
+            previous_scopes,
+            "Send to a human",
+        )
+    if "offline_access" in prm_scopes_supported or "offline_access" in www_authenticate_scopes:
+        return MCPOAuth21RFC9207AndStepUpDecision(
+            False,
+            400,
+            "mcp_protected_resource_forbids_offline_access_scope",
+            False,
+            False,
+            previous_scopes,
+            "Send to a human",
+        )
+
+    if as_iss_parameter_supported and (callback_iss is None or callback_iss == ""):
+        return MCPOAuth21RFC9207AndStepUpDecision(
+            False,
+            400,
+            "rfc9207_missing_iss_parameter_when_as_advertises_support",
+            False,
+            bool(is_error_response),
+            previous_scopes,
+            "Send to a human",
+        )
+
+    if callback_iss is not None and callback_iss != "":
+        # Exact simple string comparison (RFC 3986 Section 6.2.1) - no normalization allowed!
+        if callback_iss != expected_as_issuer:
+            return MCPOAuth21RFC9207AndStepUpDecision(
+                False,
+                400,
+                "rfc9207_iss_mismatch_simple_string_comparison_failed",
+                False,
+                bool(is_error_response),
+                previous_scopes,
+                "Send to a human",
+            )
+
+    if insufficient_scope_error:
+        if int(step_up_retry_count) >= int(max_step_up_retries):
+            return MCPOAuth21RFC9207AndStepUpDecision(
+                False,
+                403,
+                "mcp_step_up_authorization_retry_limit_exceeded",
+                True,
+                False,
+                previous_scopes,
+                "Send to a human",
+            )
+        merged = tuple(dict.fromkeys([*previous_scopes, *www_authenticate_scopes]))
+        return MCPOAuth21RFC9207AndStepUpDecision(
+            True,
+            200,
+            "mcp_rfc9207_verified_and_step_up_scope_union_computed",
+            True,
+            False,
+            merged,
+            "Act automatically",
+        )
+
+    return MCPOAuth21RFC9207AndStepUpDecision(
+        True,
+        200,
+        "mcp_oauth21_rfc9207_and_resource_scopes_verified",
+        True,
+        False,
+        previous_scopes,
+        "Act automatically",
+    )
+
+
+STRIPE_HIGH_RISK_AGENT_ACTIONS = frozenset(
+    {
+        "payout",
+        "refund",
+        "account_config_change",
+        "convert_currency",
+        "send_money",
+        "transfer_money",
+    }
+)
+STRIPE_INACTIVITY_LOCKED_ACTIONS = frozenset({"payout", "transfer", "payout_destination_update"})
+
+
+@dataclass(frozen=True)
+class StripeAgentKeyAndEmbeddedSessionDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    spt_next_state: Literal["active", "requires_action", "deactivated", "blocked"]
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_stripe_agent_key_and_embedded_session(
+    *,
+    api_key: str = "rk_live_agent_987654",
+    agent_tagged_key: bool = True,
+    action_type: str = "requested_session_create",
+    human_approval_granted: bool = False,
+    days_since_last_transfer_or_payout: int = 15,
+    transfer_payout_capability_restored: bool = False,
+    rotation_grace_days: int = 7,
+    asn_allowed: bool = True,
+    country_allowed: bool = True,
+    source_blocked_proxy_vpn_tor: bool = False,
+    ui_surface: Literal["express_checkout_element", "payment_element", "mobile_payment_sheet"] = "payment_element",
+    express_all_contact_and_address_required: bool = True,
+    payment_element_billing_details: str = "never",
+    shipping_phone_always_and_billing_address_elements: bool = True,
+    spt_state: Literal["active", "requires_action", "deactivated"] = "active",
+    buyer_completed_redirect_or_3ds: bool = True,
+    seller_api_status: int = 200,
+) -> StripeAgentKeyAndEmbeddedSessionDecision:
+    """Enforce Stripe Agent Restricted Keys (180d Lock / Approval Rules) & Embedded ``RequestedSession``.
+
+    Verified against ``https://docs.stripe.com/keys.md``, ``https://docs.stripe.com/mcp.md``, and
+    ``https://docs.stripe.com/agentic-commerce/agents/embedded.md`` (``2026-04-22.preview``, updated 2026-11-04):
+    - Agent-tagged restricted keys (``rk_live_*`` / ``rk_test_*`` with ``Agent`` tag) are automatically
+      subject to human approval rules for high-risk actions (payouts, refunds, account configuration,
+      and Stripe MCP Treasury ``convert_currency``, ``send_money``, ``transfer_money``).
+    - API keys unused for transfers, payouts, or payout-destination updates for ``> 180`` days have those
+      capabilities automatically limited until restored in the Dashboard.
+    - Key rotation supports an expiration window up to ``7`` days; Advanced Access Policies combine
+      ``ASNs`` AND ``Countries`` AND blocked ``Sources`` (Anonymous VPNs, Public/Residential proxies, Tor).
+    - Embedded ``RequestedSession`` (``2026-04-22.preview``):
+      * ``ExpressCheckoutElement`` requires ``emailRequired``, ``phoneNumberRequired``,
+        ``billingAddressRequired``, and ``shippingAddressRequired``;
+      * ``PaymentElement`` requires ``fields: { billingDetails: 'never' }`` paired with shipping
+        (``phone: 'always'``) and billing Address Elements;
+      * Redirect methods (Klarna/Affirm) or 3DS put the SPT in ``requires_action`` until buyer completes
+        authentication, then transition to ``active`` -> ``delegated_checkout.requested_session.completed``;
+      * Non-``2xx`` seller responses surface as ``HTTP 424``.
+    """
+    if not (isinstance(api_key, str) and (api_key.startswith("rk_live_") or api_key.startswith("rk_test_"))) or not agent_tagged_key:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            401,
+            "stripe_agent_requires_agent_tagged_restricted_key_rk",
+            "blocked",
+            "Send to a human",
+        )
+    if int(rotation_grace_days) < 0 or int(rotation_grace_days) > 7:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            400,
+            "stripe_key_rotation_grace_window_exceeds_7_days_max",
+            "blocked",
+            "Send to a human",
+        )
+    if not asn_allowed or not country_allowed or source_blocked_proxy_vpn_tor:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            403,
+            "stripe_advanced_access_policy_asn_country_or_proxy_blocked",
+            "blocked",
+            "Send to a human",
+        )
+    if (
+        action_type in STRIPE_INACTIVITY_LOCKED_ACTIONS
+        and int(days_since_last_transfer_or_payout) > 180
+        and not transfer_payout_capability_restored
+    ):
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            403,
+            "stripe_api_key_transfer_payout_locked_after_180_days_inactivity",
+            "blocked",
+            "Send to a human",
+        )
+    if action_type in STRIPE_HIGH_RISK_AGENT_ACTIONS and not human_approval_granted:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            403,
+            "stripe_agent_key_or_mcp_treasury_requires_human_approval",
+            "blocked",
+            "Confirm",
+        )
+
+    if ui_surface == "express_checkout_element" and not express_all_contact_and_address_required:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            400,
+            "embedded_express_checkout_requires_email_phone_billing_and_shipping",
+            "blocked",
+            "Send to a human",
+        )
+    if ui_surface == "payment_element" and (
+        payment_element_billing_details != "never"
+        or not shipping_phone_always_and_billing_address_elements
+    ):
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            400,
+            "embedded_payment_element_requires_billing_details_never_with_address_elements",
+            "blocked",
+            "Send to a human",
+        )
+
+    if int(seller_api_status) < 200 or int(seller_api_status) >= 300:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            424,
+            "requested_session_seller_non_2xx_mapped_to_424_transient_retry",
+            "blocked",
+            "Confirm",
+        )
+    if spt_state == "deactivated":
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            400,
+            "embedded_spt_deactivated_before_completion",
+            "deactivated",
+            "Send to a human",
+        )
+    if spt_state == "requires_action" and not buyer_completed_redirect_or_3ds:
+        return StripeAgentKeyAndEmbeddedSessionDecision(
+            False,
+            402,
+            "embedded_spt_requires_action_awaiting_buyer_3ds_or_redirect",
+            "requires_action",
+            "Confirm",
+        )
+
+    return StripeAgentKeyAndEmbeddedSessionDecision(
+        True,
+        200,
+        "stripe_agent_key_and_embedded_requested_session_completed",
+        "active",
+        "Act automatically",
+    )
+
+
+
 
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
@@ -3207,6 +3704,77 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mpp_hosted_fee_payer_connect_blocked_reason": s1754_mpp_fee_payer_connect_block.reason,
     }
 
+    # Stage 1755 deterministic checks (Visa VIC VTS/Passkey + MCP RFC 9207/Step-Up + Stripe Agent Key/Embedded)
+    s1755_vic_ok = validate_visa_vic_vts_passkey_enrollment(
+        cvv2_present=True,
+        billing_address_present=True,
+        attestation_action="REGISTER",
+        device_binding_status="CHALLENGE",
+        step_up_method="OTPSMS",
+        otp_validated=True,
+        passkey_setup_succeeded=True,
+    )
+    s1755_vic_no_cvv2 = validate_visa_vic_vts_passkey_enrollment(cvv2_present=False)
+    s1755_vic_passkey_fail = validate_visa_vic_vts_passkey_enrollment(
+        passkey_setup_succeeded=False,
+        approved_without_passkey=False,
+    )
+    s1755_mcp_stepup_ok = validate_mcp_oauth21_rfc9207_and_stepup(
+        expected_as_issuer="https://auth.merchant.example",
+        callback_iss="https://auth.merchant.example",
+        previous_scopes=("mcp:tools", "commerce:read"),
+        www_authenticate_scopes=("commerce:checkout",),
+        insufficient_scope_error=True,
+        step_up_retry_count=0,
+    )
+    s1755_mcp_iss_case_mismatch = validate_mcp_oauth21_rfc9207_and_stepup(
+        expected_as_issuer="https://auth.merchant.example",
+        callback_iss="https://AUTH.merchant.example",
+        is_error_response=True,
+    )
+    s1755_mcp_offline_access_ban = validate_mcp_oauth21_rfc9207_and_stepup(
+        www_authenticate_scopes=("commerce:checkout", "offline_access"),
+    )
+    s1755_stripe_embedded_ok = validate_stripe_agent_key_and_embedded_session(
+        api_key="rk_live_agent_987654",
+        agent_tagged_key=True,
+        ui_surface="payment_element",
+        payment_element_billing_details="never",
+        shipping_phone_always_and_billing_address_elements=True,
+        spt_state="requires_action",
+        buyer_completed_redirect_or_3ds=True,
+    )
+    s1755_stripe_180d_lock = validate_stripe_agent_key_and_embedded_session(
+        action_type="payout",
+        days_since_last_transfer_or_payout=185,
+        human_approval_granted=True,
+    )
+    stage_1755_guards = {
+        "stage": 1755,
+        "all_passed": (
+            s1755_vic_ok.allowed
+            and s1755_vic_ok.can_call_credentials_for_instruction
+            and not s1755_vic_no_cvv2.allowed
+            and not s1755_vic_passkey_fail.allowed
+            and s1755_mcp_stepup_ok.allowed
+            and s1755_mcp_stepup_ok.merged_scopes == ("mcp:tools", "commerce:read", "commerce:checkout")
+            and not s1755_mcp_iss_case_mismatch.allowed
+            and s1755_mcp_iss_case_mismatch.suppress_error_fields_display
+            and not s1755_mcp_offline_access_ban.allowed
+            and s1755_stripe_embedded_ok.allowed
+            and s1755_stripe_embedded_ok.spt_next_state == "active"
+            and not s1755_stripe_180d_lock.allowed
+        ),
+        "vic_passkey_enrolled_ready": s1755_vic_ok.can_call_credentials_for_instruction,
+        "vic_missing_cvv2_blocked_reason": s1755_vic_no_cvv2.reason,
+        "vic_passkey_fail_closed_reason": s1755_vic_passkey_fail.reason,
+        "mcp_stepup_merged_scopes": list(s1755_mcp_stepup_ok.merged_scopes),
+        "mcp_rfc9207_case_mismatch_blocked_reason": s1755_mcp_iss_case_mismatch.reason,
+        "mcp_offline_access_blocked_reason": s1755_mcp_offline_access_ban.reason,
+        "stripe_embedded_spt_completed_state": s1755_stripe_embedded_ok.spt_next_state,
+        "stripe_180d_payout_inactivity_blocked_reason": s1755_stripe_180d_lock.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -3218,6 +3786,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stage_1752_guards": stage_1752_guards,
         "stage_1753_guards": stage_1753_guards,
         "stage_1754_guards": stage_1754_guards,
+        "stage_1755_guards": stage_1755_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -3260,6 +3829,12 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
                 "check": "Stage 1754 Perturbation (SPT Single-Resolve & setup_future_usage Ban, Connect 4s Price Fallback & MPP NY/Connect Guard)",
                 "original": "SPT single-resolve RSA slice OK; Price Hook >4s falls back to feed; Tempo MPP $0.50 OK",
                 "perturbed": "2nd SPT resolve (400), setup_future_usage (400), inventory replace (400), NY stablecoin (403) & Connect hostedFeePayer blocked",
+                "delta_pts": "0.0 drift",
+            },
+            {
+                "check": "Stage 1755 Perturbation (Visa VIC VTS CVV2 & Passkey Fail-Closed, MCP RFC 9207 iss String Match & Stripe 180d Payout Lock)",
+                "original": "VIC VTS+Passkey enrolled; MCP iss exact match + 403 scope union; Stripe rk_live_ Embedded SPT active",
+                "perturbed": "VIC missing CVV2/failed Passkey, RFC 9207 case-folded iss / offline_access & >180d payout key locked",
                 "delta_pts": "0.0 drift",
             },
         ],
@@ -5985,6 +6560,44 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
         <div id="s1754-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
       </div>
+
+      <!-- Interactive Stage 1755 Sandbox: Visa VIC VTS/Passkey + MCP RFC 9207/Step-Up + Stripe Agent Key/Embedded -->
+      <div class="finops-box" id="stage1755-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-s1755-title">🔐 Stage 1755 · Visa VIC Passkey + MCP RFC 9207 `iss` + Stripe 180d Key &amp; Embedded SPT</span>
+        </div>
+        <div class="control-row">
+          <label><span>Visa VIC VTS PAN Enrollment (`CVV2`) &amp; Passkey (`VPP`) Device Binding:</span></label>
+          <select id="s1755-vic-select" onchange="updateStage1755Sandbox()">
+            <option value="register_otp_ok">action='REGISTER' + CHALLENGE (OTPSMS validated) + Passkey Setup OK</option>
+            <option value="auth_existing_ok">action='AUTHENTICATE' (Passkey exists -&gt; Skips Device Binding!)</option>
+            <option value="missing_cvv2">❌ VTS panEnrollments Omits CVV2 (Required for VIC Agent Requestors!)</option>
+            <option value="passkey_fail_closed">❌ Passkey Setup Fails -&gt; Blocks /vacp/v2/credentials-for-instruction</option>
+            <option value="silent_retry_ban">❌ Agent Attempts Silent Autonomous Passkey Registration Retry (Forbidden)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>MCP OAuth 2.1 (`2026-07-28`) RFC 9207 `iss` &amp; `403 insufficient_scope`:</span></label>
+          <select id="s1755-mcp-select" onchange="updateStage1755Sandbox()">
+            <option value="stepup_union_ok">Exact RFC 9207 iss Match + HTTP 403 Scope Union (mcp:tools ∪ commerce:checkout)</option>
+            <option value="iss_case_mismatch">❌ Callback iss='https://AUTH.merchant.example' (RFC 3986 §6.2.1 Case Mismatch!)</option>
+            <option value="iss_missing_required">❌ AS Advertises iss Support + Callback Omits iss Parameter (Mix-Up Blocked)</option>
+            <option value="offline_access_ban">❌ Protected Resource WWW-Authenticate Requests 'offline_access' (Forbidden)</option>
+            <option value="query_token_ban">❌ Access Token Sent in URI Query String ?access_token=... (Forbidden)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Stripe Agent Key (`rk_...` 180d Lock) &amp; Embedded `RequestedSession`:</span></label>
+          <select id="s1755-stripe-select" onchange="updateStage1755Sandbox()">
+            <option value="embedded_3ds_ok">rk_live_ (Agent) + PaymentElement (billingDetails:'never') + 3DS requires_action -&gt; active</option>
+            <option value="payout_180d_lock">❌ API Key Unused for Payouts/Transfers &gt; 180 Days (Auto-Limited!)</option>
+            <option value="treasury_no_confirm">❌ Agent Key / MCP Calls send_money Without Human Approval Rule</option>
+            <option value="proxy_tor_blocked">❌ Advanced Access Policy Blocks Anonymous VPN / Residential Proxy / Tor</option>
+            <option value="payment_elem_billing_leak">❌ PaymentElement Omits billingDetails:'never' with Address Elements</option>
+          </select>
+        </div>
+        <div id="s1755-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
     </div>
 
     <!-- Center Column: Step-by-Step 4-Plane Live Execution Pipeline -->
@@ -6392,6 +7005,63 @@ function renderAll() {{
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
+  updateStage1755Sandbox();
+}}
+
+function updateStage1755Sandbox() {{
+  var vicEl = document.getElementById("s1755-vic-select");
+  var mcpEl = document.getElementById("s1755-mcp-select");
+  var strEl = document.getElementById("s1755-stripe-select");
+  var outEl = document.getElementById("s1755-live-readout");
+  if (!vicEl || !mcpEl || !strEl || !outEl) return;
+
+  var vic = vicEl.value;
+  var mcp = mcpEl.value;
+  var str = strEl.value;
+
+  var vicOk = vic === "register_otp_ok" || vic === "auth_existing_ok";
+  var mcpOk = mcp === "stepup_union_ok";
+  var strOk = str === "embedded_3ds_ok";
+
+  if (!vicOk || !mcpOk || !strOk) {{
+    var err = !vicOk
+      ? (vic === "missing_cvv2"
+        ? "🚫 HTTP 400 vic_vts_pan_enrollment_requires_cvv2_for_agent_token_requestor: VTS COF tokens do not require CVV2, but Visa Intelligent Commerce mandates CVV2 when an AI agent acts as Token Requestor."
+        : (vic === "passkey_fail_closed"
+          ? "🚫 HTTP 403 vic_passkey_setup_failed_blocks_vacp_v2_credentials_for_instruction: Failed Passkey setup blocks POST /vacp/v2/credentials-for-instruction unless explicitly approved."
+          : "🚫 HTTP 400 vic_forbids_silent_agent_passkey_registration_retry: Agent must surface Passkey failure to user and re-initiate via Step-Up Authentication."))
+      : (!mcpOk
+        ? (mcp === "iss_case_mismatch"
+          ? "🚫 HTTP 400 rfc9207_iss_mismatch_simple_string_comparison_failed: MCP 2026-07-28 &amp; RFC 9207 require character-by-character simple string comparison (RFC 3986 §6.2.1); error/error_description display suppressed!"
+          : (mcp === "iss_missing_required"
+            ? "🚫 HTTP 400 rfc9207_missing_iss_parameter_when_as_advertises_support: Authorization Server set authorization_response_iss_parameter_supported=true but callback omitted iss."
+            : (mcp === "offline_access_ban"
+              ? "🚫 HTTP 400 mcp_protected_resource_forbids_offline_access_scope: Protected Resources MUST NOT include 'offline_access' in WWW-Authenticate or scopes_supported."
+              : "🚫 HTTP 400 mcp_forbids_access_token_in_uri_query_string: Access tokens MUST NOT appear in URI query strings.")))
+        : (str === "payout_180d_lock"
+          ? "🚫 HTTP 403 stripe_api_key_transfer_payout_locked_after_180_days_inactivity: Keys unused for transfers/payouts for &gt;180 days have payout capabilities automatically limited."
+          : (str === "treasury_no_confirm"
+            ? "🚫 HTTP 403 stripe_agent_key_or_mcp_treasury_requires_human_approval: Agent-tagged keys (rk_...) and MCP Treasury tools (send_money/transfer_money) require human approval."
+            : (str === "proxy_tor_blocked"
+              ? "🚫 HTTP 403 stripe_advanced_access_policy_asn_country_or_proxy_blocked: Advanced Access Policy AND-rule rejected Anonymous VPN / Proxy / Tor source."
+              : "🚫 HTTP 400 embedded_payment_element_requires_billing_details_never_with_address_elements: PaymentElement must set fields.billingDetails='never' when paired with Address Elements."))));
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      err + "</div>";
+    return;
+  }}
+
+  var vicNote = vic === "auth_existing_ok"
+    ? "<code>action='AUTHENTICATE'</code> -&gt; Existing VPP Passkey detected; skipped <code>/deviceBinding</code> &amp; ready for <code>/vacp/v2/credentials-for-instruction</code>"
+    : "<code>vProvisionedTokenID</code> + <code>deviceBinding=CHALLENGE</code> (<code>OTPSMS</code> validated) + <code>fidoBlob</code> persisted";
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ Stage 1755 All Contracts Verified:</strong><br>" +
+    "• Visa VIC VTS + Passkey: " + vicNote + "<br>" +
+    "• MCP OAuth 2.1 (<code>2026-07-28</code>): Exact RFC 9207 <code>iss</code> match + <code>403 insufficient_scope</code> union <code>['mcp:tools','commerce:read','commerce:checkout']</code><br>" +
+    "• Stripe Agent Key &amp; Embedded: <code>rk_live_</code> (ASN+Country+NoProxy) + <code>RequestedSession</code> <code>requires_action -&gt; active</code>" +
+    "</div>";
 }}
 
 function updateStage1754Sandbox() {{

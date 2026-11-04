@@ -11,7 +11,7 @@ import os
 from typing import Mapping
 
 SCHEMA = "webiq-search-bakeoff/v1"
-VERIFIED_ON = "2026-11-03"
+VERIFIED_ON = "2026-11-04"
 
 SEALED_QUERIES = (
     {
@@ -63,7 +63,8 @@ OFFICIAL_LIST_PRICE = {
         "sdk_license": "MIT",
         "mcp_endpoint": "https://api.microsoft.ai/v3/mcp",
         "auth_scope": "https://api.microsoft.ai/.default",
-        "note": "Prices re-fetched 2026-11-03 (pricing.md and sdk.md updated_at 2026-11-02T20:34:00Z) and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated. Official SDKs are pip install webiq (Python 3.11+) and npm install @microsoft/webiq (Node.js 22+, MIT). Key-authenticated requests that include the APPID parameter (even empty) return HTTP 401 AuthUnauthorizedEntryId; multi-AppID Entra clients missing APPID return HTTP 400 AuthAppIdSelectionRequired; unbound APPID returns HTTP 403 AuthUnauthorizedAppId. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430; granular TooManyOnDemandCrawls is HTTP 429 with a timestamp. MCP passage-validation failures return HTTP 200 with result.isError. Not called.",
+        "blocked_debug_headers": ["X-Augmentations", "X-DebugOptions", "X-XapHostOverride"],
+        "note": "Prices re-fetched 2026-11-04 (pricing.md and sdk.md updated_at 2026-11-02T20:34:00Z) and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated. Official SDKs are pip install webiq (Python 3.11+) and npm install @microsoft/webiq (Node.js 22+, MIT). Key-authenticated requests that include the APPID parameter (even empty) return HTTP 401 AuthUnauthorizedEntryId; multi-AppID Entra clients missing APPID return HTTP 400 AuthAppIdSelectionRequired; unbound APPID returns HTTP 403 AuthUnauthorizedAppId. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430; granular TooManyOnDemandCrawls is HTTP 429 with a timestamp; blocklisted debug headers (X-Augmentations, X-DebugOptions, X-XapHostOverride) return HTTP 400 RequestBlockedHeader. MCP passage-validation failures return HTTP 200 with result.isError. Not called.",
     },
     "exa": {
         "label": "official_list_price",
@@ -990,5 +991,87 @@ def validate_webiq_auth_appid_routing(
         }
 
     raise ValueError(f"Unsupported Web IQ auth_mode: {auth_mode!r}")
+
+
+WEBIQ_BLOCKED_DEBUG_HEADERS = {
+    "x-augmentations": "?p1=",
+    "x-debugoptions": "?debugoptions=",
+    "x-xaphostoverride": "?atlahostname=",
+}
+
+WEBIQ_GRANULAR_BROWSE_ERRORS = {
+    "InvalidUrl": {"http_status": 400, "retryable": False, "retry_window": None},
+    "NotSupported": {"http_status": 400, "retryable": False, "retry_window": None},
+    "URLFilteredOutSpamAdult": {"http_status": 403, "retryable": True, "retry_window": "iso8601_24h"},
+    "URLFilteredOutEncumbrance": {"http_status": 403, "retryable": True, "retry_window": "iso8601_24h"},
+    "URLFilteredOutSource403Forbidden": {"http_status": 403, "retryable": True, "retry_window": "iso8601_24h"},
+    "DocNotFound": {"http_status": 404, "retryable": False, "retry_window": None},
+    "TooManyOnDemandCrawls": {"http_status": 429, "retryable": True, "retry_window": "iso8601_timestamp"},
+    "BrowseApiTooManyOnDemandCrawls": {"http_status": 430, "retryable": True, "retry_window": "legacy_430"},
+    "FailedNoContent": {"http_status": 520, "retryable": True, "retry_window": "iso8601_5m"},
+    "DynamicRenderingTimeout": {"http_status": 520, "retryable": True, "retry_window": "iso8601_5m"},
+    "ProcessingTimeout": {"http_status": 520, "retryable": True, "retry_window": "iso8601_5m"},
+    "PolitenessCancellation": {"http_status": 523, "retryable": True, "retry_window": "iso8601_5m"},
+    "HostCrawlTimeout": {"http_status": 524, "retryable": True, "retry_window": "iso8601_5m"},
+}
+
+
+def validate_webiq_granular_browse_and_instrumentation(
+    *,
+    request_headers: Mapping[str, str] | None = None,
+    browse_error_code: str | None = None,
+    click_url_redirection_enabled: bool = True,
+    citation_logged_by_agent: bool = True,
+) -> dict:
+    """Validate Microsoft Web IQ granular Browse errors, blocked debug headers, and telemetry contract.
+
+    Verified against https://learn.microsoft.com/en-us/web-iq/reference/error-handling and
+    https://learn.microsoft.com/en-us/web-iq/guides/instrumentation (2026-11-04):
+    - Blocklisted debug headers (``X-Augmentations``, ``X-DebugOptions``, ``X-XapHostOverride``)
+      return ``HTTP 400 RequestBlockedHeader`` and must use URL query parameters instead.
+    - Granular Browse error codes are enabled by default (e.g., ``URLFilteredOutEncumbrance`` 403 ~24h,
+      ``TooManyOnDemandCrawls`` 429 vs legacy ``BrowseApiTooManyOnDemandCrawls`` 430, ``PolitenessCancellation`` 523 ~5m).
+    - When ``clickUrl`` redirection is enabled, ``instrumentationClickBase`` is omitted (clicks are
+      logged automatically via ``clickUrl``), whereas LLM citations must still be logged manually
+      via ``instrumentationCitationBase``.
+    """
+    for raw_k in (request_headers or {}):
+        norm_k = raw_k.strip().lower()
+        if norm_k in WEBIQ_BLOCKED_DEBUG_HEADERS:
+            return {
+                "allowed": False,
+                "http_status": 400,
+                "error_code": "RequestBlockedHeader",
+                "replacement_query_param": WEBIQ_BLOCKED_DEBUG_HEADERS[norm_k],
+                "reason": "blocked_debug_header_must_use_query_parameter",
+            }
+
+    if browse_error_code is not None:
+        meta = WEBIQ_GRANULAR_BROWSE_ERRORS.get(browse_error_code)
+        if meta is None:
+            raise ValueError(f"Unknown Web IQ Browse error code: {browse_error_code!r}")
+        return {
+            "allowed": False,
+            "http_status": meta["http_status"],
+            "error_code": browse_error_code,
+            "retryable": meta["retryable"],
+            "retry_window": meta["retry_window"],
+            "reason": "granular_browse_error_classified",
+        }
+
+    return {
+        "allowed": bool(citation_logged_by_agent),
+        "http_status": 200 if citation_logged_by_agent else 422,
+        "error_code": None if citation_logged_by_agent else "MissingManualCitationTelemetry",
+        "instrumentation_click_base_present": not click_url_redirection_enabled,
+        "instrumentation_citation_base_present": True,
+        "manual_citation_ping_required": True,
+        "reason": (
+            "webiq_browse_and_instrumentation_verified"
+            if citation_logged_by_agent
+            else "click_url_only_auto_logs_clicks_citations_still_require_manual_ping"
+        ),
+    }
+
 
 

@@ -28,9 +28,9 @@ This repository is a production-grade research and engineering testbed for **Age
 
 ## 🏗️ 4-Layer Reference Architecture & Protocol Comparison Matrix
 
-### 1. Agentic Commerce × Microsoft Web IQ 4-Layer Architecture & 2026-11-03 Executive Visual Summary
+### 1. Agentic Commerce × Microsoft Web IQ 4-Layer Architecture & 2026-11-04 Executive Visual Summary
 
-![2026-11-03 Agentic Commerce Executive Visual Summary (Stage 1754)](assets/svg/03-agentic-commerce-2026-11-03-visual-summary.svg)
+![2026-11-04 Agentic Commerce Executive Visual Summary (Stage 1755)](assets/svg/03-agentic-commerce-2026-11-04-visual-summary.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
