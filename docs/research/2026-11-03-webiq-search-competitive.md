@@ -6,7 +6,7 @@
 
 ## 结论（2026-11-03 核验）
 
-1. **实测状态保持 `not_measured`**：尽管实验室付费订阅（`rg-webiq-bench`）下已创建 G3 账户 `webiq-qichen2-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`），但本机环境未绑定可供自动化调用的 `WEBIQ_API_KEY`，且 `BRIGHTDATA_API_KEY`、`EXA_API_KEY`、`TAVILY_API_KEY`、`PARALLEL_API_KEY` 均缺省（`credential="absent"`）。五家供应商保持 `call="not_called"`、`latency="not_measured"`、`success="not_measured"`、`citation_check="not_measured"`，严禁将未测延迟记为 `0`。跨供应商 7-Card 延迟面板在拥有真实 `summary.json` 前继续保持 `withheld_until_measured_latency_exists`。
+1. **实测状态保持 `not_measured`**：尽管实验室付费订阅（`rg-webiq-bench`）下已创建 G3 账户 `webiq-lab-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`），但本机环境未绑定可供自动化调用的 `WEBIQ_API_KEY`，且 `BRIGHTDATA_API_KEY`、`EXA_API_KEY`、`TAVILY_API_KEY`、`PARALLEL_API_KEY` 均缺省（`credential="absent"`）。五家供应商保持 `call="not_called"`、`latency="not_measured"`、`success="not_measured"`、`citation_check="not_measured"`，严禁将未测延迟记为 `0`。跨供应商 7-Card 延迟面板在拥有真实 `summary.json` 前继续保持 `withheld_until_measured_latency_exists`。
 2. **与密封复放基线严格隔离**：`2026-10-26.stage1746` / `2026-11-03.stage1754` 中的 Web IQ `/v3/search/web` P95 `240ms`、任务成功率 `18/18`、注入拦截 `12/12`、批量并发 `1.52s vs 4.18s` 仅属于确定性密封复放（`sealed_demo`），绝不混入本跨供应商实测对比矩阵。
 3. **2026-11-03 新增官方契约发现（Web IQ SDK / Entra ID `APPID` 互斥路由 × Stripe Connect `POST /v2/commerce/product_catalog/imports` 与 4s 价格可用性 Hook 协同）**：
    - **Web IQ 官方 SDK 与定价文档更新核验（`updated_at: 2026-11-02T20:34:00Z`）**：官方确认 Python SDK（`pip install webiq`，Python 3.11+，MIT）与 TypeScript SDK（`npm install @microsoft/webiq`，Node.js 22+，MIT）统一暴露 `web`、`videos`、`browse`、`news`、`images` 五大命名空间，支持 `WebIQClient` / `WebIQAsyncClient` 及 `DefaultAzureCredential()`。

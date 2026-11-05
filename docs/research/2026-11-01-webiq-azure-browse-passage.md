@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言导航**: **中文 (当前)** | **[English](2026-11-01-webiq-azure-browse-passage.en.md)** | **[2026-10-26 密封演示](2026-10-26-webiq-agentic-commerce-demo.md)**
 
-> **状态更新（同日）**：实验室订阅后来创建了 `webiq-qichen2-bench`。本节「0 个账户 / 未创建资源」只描述当时的只读清点，Azure 状态已被 [Web IQ 搜索竞品矩阵](2026-11-01-webiq-search-competitive.md) 取代。密封指标不改。
+> **状态更新（同日）**：实验室订阅后来创建了 `webiq-lab-bench`。本节「0 个账户 / 未创建资源」只描述当时的只读清点，Azure 状态已被 [Web IQ 搜索竞品矩阵](2026-11-01-webiq-search-competitive.md) 取代。密封指标不改。
 
 ## 发现
 

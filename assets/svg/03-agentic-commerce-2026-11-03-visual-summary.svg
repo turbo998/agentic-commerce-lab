@@ -174,7 +174,7 @@
     PILLAR 5 · MANDATORY DAILY WEB IQ vs BRIGHT DATA / EXA / TAVILY / PARALLEL / FOUNDRY GROUNDING BAKE-OFF
   </text>
   <text x="40" y="518" font-family="Segoe UI, sans-serif" font-size="11.5" fill="#CBD5E1">
-    Azure Lab Account `webiq-qichen2-bench` (`rg-webiq-bench`, G3 `WebIQ.Grounding`) = Succeeded. Official SDKs (`pip install webiq` / `npm install @microsoft/webiq`) + Auth APPID verified.
+    Azure Lab Account `webiq-lab-bench` (`rg-webiq-bench`, G3 `WebIQ.Grounding`) = Succeeded. Official SDKs (`pip install webiq` / `npm install @microsoft/webiq`) + Auth APPID verified.
   </text>
 
   <!-- 6 Provider Pills -->

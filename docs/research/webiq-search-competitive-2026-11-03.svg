@@ -24,7 +24,7 @@
   <text x="766" y="164" fill="#FCA5A5" font-size="14" font-family="Segoe UI,sans-serif">Parallel</text>
   <text x="766" y="188" fill="#F8FAFC" font-size="13" font-family="Segoe UI,sans-serif">fast $1/1k · basic $5/1k</text>
   <text x="766" y="208" fill="#94A3B8" font-size="12" font-family="Segoe UI,sans-serif">not_measured (absent)</text>
-  <text x="32" y="264" fill="#F8FAFC" font-size="14" font-family="Segoe UI,sans-serif">G3 account webiq-qichen2-bench exists (rg-webiq-bench). API key not bound; bake-off 7-card withheld.</text>
+  <text x="32" y="264" fill="#F8FAFC" font-size="14" font-family="Segoe UI,sans-serif">G3 account webiq-lab-bench exists (rg-webiq-bench). API key not bound; bake-off 7-card withheld.</text>
   <text x="32" y="294" fill="#93C5FD" font-size="13" font-family="Segoe UI,sans-serif">Stage 1754 synergy: Web IQ Auth APPID Matrix + Stripe Connect Imports (/v2/commerce/product_catalog/imports) + 4s Price Hook.</text>
   <text x="32" y="324" fill="#94A3B8" font-size="13" font-family="Segoe UI,sans-serif">37 provider/parameter entries + Entra ID / x-apikey APPID routing contract verified on 2026-11-03 in lab/webiq_search_bakeoff.py.</text>
   <text x="32" y="352" fill="#64748B" font-size="12" font-family="Segoe UI,sans-serif">Sealed demo figures (2026-10-26: P95 240ms, 18/18, 12/12) remain separate from live bake-off status.</text>

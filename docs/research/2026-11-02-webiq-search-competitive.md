@@ -6,7 +6,7 @@
 
 ## 发现（2026-11-02 核验）
 
-1. **实测状态严格保持 `not_measured`**：实验室付费订阅下的 G3 账户 `webiq-qichen2-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`）已于 2026-11-01 创建成功，但本机环境仍未绑定生产可自动化调用的 `WEBIQ_API_KEY`，且 `BRIGHTDATA_API_KEY`、`EXA_API_KEY`、`TAVILY_API_KEY`、`PARALLEL_API_KEY` 均不在本机环境变量中（`credential="absent"`）。因此五家供应商全部严格标记为 `call="not_called"`、`latency="not_measured"`、`success="not_measured"`、`citation_check="not_measured"`。缺失延迟绝不写成 `0`。跨厂商实测 7-card 延迟卡在出现真实 `summary.json` 之前继续暂缓（`withheld_until_measured_latency_exists`）。
+1. **实测状态严格保持 `not_measured`**：实验室付费订阅下的 G3 账户 `webiq-lab-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`）已于 2026-11-01 创建成功，但本机环境仍未绑定生产可自动化调用的 `WEBIQ_API_KEY`，且 `BRIGHTDATA_API_KEY`、`EXA_API_KEY`、`TAVILY_API_KEY`、`PARALLEL_API_KEY` 均不在本机环境变量中（`credential="absent"`）。因此五家供应商全部严格标记为 `call="not_called"`、`latency="not_measured"`、`success="not_measured"`、`citation_check="not_measured"`。缺失延迟绝不写成 `0`。跨厂商实测 7-card 延迟卡在出现真实 `summary.json` 之前继续暂缓（`withheld_until_measured_latency_exists`）。
 2. **与密封基线严格区分**：本仓库 `2026-10-26.stage1746` / `2026-11-02.stage1753` 的密封回放数字（Web IQ `/v3/search/web` P95 `240ms`、任务成功率 `18/18`、注入拦截 `12/12`、批量并发 `1.52s vs 4.18s`）仍归属 `sealed_demo` 确定性回放基准，绝不混入本次跨厂商实时 bake-off 表。
 3. **2026-11-02 新增架构耦合洞察（Web IQ Grounding × Stripe SFTP 混合目录流 × Seller Checkout Hooks）**：
    - 今日核验的 Stripe SFTP 混合目录导入契约（`Product Master` 每 24 小时全量 + `Delta` 每 1 小时增量，`manifest.json` 原子屏障，`disable_checkout=true` 仅发现禁内嵌结账）与 Seller Checkout Hooks（`delegated_commerce.product_price_availability` 实时价格/库存回调 + `v1.delegated_checkout.finalize_checkout` **4,000 ms 硬超时**）揭示了企业级商业智能体的**三层接地协同范式**：

@@ -6,7 +6,7 @@
 
 ## 发现
 
-实验室付费订阅已能创建 Web IQ 账户。G3 账户 `webiq-qichen2-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`）在 2026-11-01 创建成功。API 密钥尚未绑定，Bright Data、Exa、Tavily、Parallel 的密钥也不在本机环境里。因此五家供应商全部标记为 `not_measured`。缺失延迟没有写成 0。7-card 延迟卡在出现真实 `summary.json` 之前不下发。
+实验室付费订阅已能创建 Web IQ 账户。G3 账户 `webiq-lab-bench`（`Microsoft.WebIQ/accounts@2026-06-01-preview`，`location=global`，`kind=WebIQ.Grounding`，`statisticsEnabled=false`）在 2026-11-01 创建成功。API 密钥尚未绑定，Bright Data、Exa、Tavily、Parallel 的密钥也不在本机环境里。因此五家供应商全部标记为 `not_measured`。缺失延迟没有写成 0。7-card 延迟卡在出现真实 `summary.json` 之前不下发。
 
 2026-10-26 密封数字（P95 240ms、18/18、12/12、1.52s vs 4.18s）仍是 `sealed_demo`，不是这次 bake-off。
 

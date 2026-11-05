@@ -174,7 +174,7 @@
     PILLAR 5 · MANDATORY DAILY WEB IQ vs BRIGHT DATA / EXA / TAVILY / PARALLEL / FOUNDRY GROUNDING BAKE-OFF
   </text>
   <text x="40" y="518" font-family="Segoe UI, sans-serif" font-size="11.5" fill="#CBD5E1">
-    Azure Lab Account `webiq-qichen2-bench` (`rg-webiq-bench`, G3 `WebIQ.Grounding`) = Succeeded. Granular Browse (`429` vs `430`), `400 RequestBlockedHeader` &amp; Citation Ping verified.
+    Azure Lab Account `webiq-lab-bench` (`rg-webiq-bench`, G3 `WebIQ.Grounding`) = Succeeded. Granular Browse (`429` vs `430`), `400 RequestBlockedHeader` &amp; Citation Ping verified.
   </text>
 
   <!-- 6 Provider Pills -->
