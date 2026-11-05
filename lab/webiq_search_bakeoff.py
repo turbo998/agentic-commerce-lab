@@ -11,7 +11,7 @@ import os
 from typing import Mapping
 
 SCHEMA = "webiq-search-bakeoff/v1"
-VERIFIED_ON = "2026-11-04"
+VERIFIED_ON = "2026-11-05"
 
 SEALED_QUERIES = (
     {
@@ -64,7 +64,15 @@ OFFICIAL_LIST_PRICE = {
         "mcp_endpoint": "https://api.microsoft.ai/v3/mcp",
         "auth_scope": "https://api.microsoft.ai/.default",
         "blocked_debug_headers": ["X-Augmentations", "X-DebugOptions", "X-XapHostOverride"],
-        "note": "Prices re-fetched 2026-11-04 (pricing.md and sdk.md updated_at 2026-11-02T20:34:00Z) and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated. Official SDKs are pip install webiq (Python 3.11+) and npm install @microsoft/webiq (Node.js 22+, MIT). Key-authenticated requests that include the APPID parameter (even empty) return HTTP 401 AuthUnauthorizedEntryId; multi-AppID Entra clients missing APPID return HTTP 400 AuthAppIdSelectionRequired; unbound APPID returns HTTP 403 AuthUnauthorizedAppId. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430; granular TooManyOnDemandCrawls is HTTP 429 with a timestamp; blocklisted debug headers (X-Augmentations, X-DebugOptions, X-XapHostOverride) return HTTP 400 RequestBlockedHeader. MCP passage-validation failures return HTTP 200 with result.isError. Not called.",
+        "arm_resource_type": "Microsoft.CognitiveServices/accounts",
+        "arm_api_version": "2026-06-01-preview",
+        "arm_kind": "WebIQ.Grounding",
+        "arm_sku": "G3",
+        "arm_location": "global",
+        "data_plane_rbac_roles": ["Cognitive Services User", "Cognitive Services WebIQ User"],
+        "vendor_published_benchmark_source": "https://learn.microsoft.com/en-us/web-iq/concepts/benchmarks",
+        "engineering_architecture_source": "https://commandline.microsoft.com/grounding-system-agentic-web-engineering-retrieval/",
+        "note": "Prices re-fetched 2026-11-05 (pricing.md and sdk.md updated_at 2026-11-02T20:34:00Z; whats-new.md ms.date 2026-10-30) and take effect 2026-10-16. Auto is not charged while in beta. Browse is AppID-gated; 2026-10-30 added Browse passages (contentFormat='passage' requires non-blank query 1..1000 chars and returns non-adjacent segments separated by '...'). Provisioned via ARM Microsoft.CognitiveServices/accounts (2026-06-01-preview, kind='WebIQ.Grounding', sku='G3', location='global'); Entra data-plane calls require 'Cognitive Services User' or 'Cognitive Services WebIQ User' RBAC (Owner/Contributor alone do not grant data-plane access). Key-authenticated requests that include the APPID parameter (even empty) return HTTP 401 AuthUnauthorizedEntryId; multi-AppID Entra clients missing APPID return HTTP 400 AuthAppIdSelectionRequired; unbound APPID returns HTTP 403 AuthUnauthorizedAppId. Legacy BrowseApiTooManyOnDemandCrawls is HTTP 430; granular TooManyOnDemandCrawls is HTTP 429 with a timestamp; blocklisted debug headers return HTTP 400 RequestBlockedHeader. Vendor-published Harrier + DiskANN3 figures on concepts/benchmarks are vendor-stated and never stored as our live measurement. Not called.",
     },
     "exa": {
         "label": "official_list_price",
@@ -1072,6 +1080,80 @@ def validate_webiq_granular_browse_and_instrumentation(
             else "click_url_only_auto_logs_clicks_citations_still_require_manual_ping"
         ),
     }
+
+
+def validate_webiq_arm_rbac_and_browse_passage(
+    *,
+    arm_kind: str = "WebIQ.Grounding",
+    arm_sku: str = "G3",
+    arm_location: str = "global",
+    entra_roles: tuple[str, ...] = ("Cognitive Services WebIQ User",),
+    content_format: str = "passage",
+    full_document_entitled: bool = False,
+    query: str | None = "return window policy",
+    live_crawl: str = "fallback",
+    mcp_transport: bool = False,
+) -> dict:
+    """Validate Microsoft Web IQ ARM provisioning, Entra data-plane RBAC, and Browse passage rules.
+
+    Verified on 2026-11-05 against:
+    - https://learn.microsoft.com/en-us/web-iq/get-started/deploy-azure-portal
+    - https://learn.microsoft.com/en-us/web-iq/get-started/authentication
+    - https://learn.microsoft.com/en-us/web-iq/resources/whats-new (2026-10-30 Browse passages)
+    - https://learn.microsoft.com/en-us/web-iq/reference/browse
+    """
+    if arm_kind != "WebIQ.Grounding" or arm_sku != "G3" or arm_location != "global":
+        return {
+            "allowed": False,
+            "http_status": 400,
+            "error_code": "InvalidArmResourceSpec",
+            "mcp_is_error": False,
+            "reason": "arm_requires_webiq_grounding_kind_g3_sku_and_global_location",
+        }
+    if not any(r in ("Cognitive Services User", "Cognitive Services WebIQ User") for r in entra_roles):
+        return {
+            "allowed": False,
+            "http_status": 403,
+            "error_code": "ForbiddenDataPlaneRole",
+            "mcp_is_error": False,
+            "reason": "owner_or_contributor_without_cognitive_services_user_or_webiq_user_blocked",
+        }
+    if content_format != "passage" and not full_document_entitled:
+        return {
+            "allowed": False,
+            "http_status": 403,
+            "error_code": "AuthContentFormatForbidden",
+            "mcp_is_error": False,
+            "reason": "full_document_content_format_requires_appid_entitlement",
+        }
+    if content_format == "passage":
+        q_clean = (query or "").strip()
+        if not q_clean or len(q_clean) > 1000 or live_crawl not in ("none", "fallback"):
+            if mcp_transport:
+                return {
+                    "allowed": False,
+                    "http_status": 200,
+                    "error_code": "InvalidQueryOrLiveCrawl",
+                    "mcp_is_error": True,
+                    "reason": "mcp_browse_passage_error_wrapped_in_http_200_is_error",
+                }
+            return {
+                "allowed": False,
+                "http_status": 400,
+                "error_code": "InvalidQuery",
+                "mcp_is_error": False,
+                "reason": "rest_browse_passage_requires_non_blank_query_and_non_force_livecrawl",
+            }
+    return {
+        "allowed": True,
+        "http_status": 200,
+        "error_code": None,
+        "mcp_is_error": False,
+        "passage_separator": "..." if content_format == "passage" else None,
+        "max_length_default": 3000 if content_format == "passage" else 10000,
+        "reason": "webiq_arm_rbac_and_browse_passage_verified",
+    }
+
 
 
 

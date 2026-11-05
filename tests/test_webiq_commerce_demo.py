@@ -35,6 +35,7 @@ from lab.webiq_commerce_demo import (
     validate_mcp_oauth21_rfc9207_and_stepup,
     validate_sftp_catalog_batch,
     validate_spt_resolution_and_payment_intent,
+    validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt,
     validate_stripe_agent_key_and_embedded_session,
     validate_ucp_payment_completion,
     validate_visa_vic_vts_passkey_enrollment,
@@ -1083,6 +1084,133 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["stage_1755_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("stage1755-sandbox", demo_zh)
+
+    def test_stage_1756_webiq_rbac_stripe_mcp_nov30_and_bnpl_spt_guards(self) -> None:
+        # 1. Azure ARM provisioning & Entra ID data-plane RBAC ("Cognitive Services User" or "Cognitive Services WebIQ User")
+        bad_arm = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            arm_sku="S0",
+        )
+        self.assertFalse(bad_arm.allowed)
+        self.assertEqual(
+            bad_arm.reason,
+            "webiq_arm_requires_grounding_kind_g3_sku_and_global_location",
+        )
+
+        owner_only = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            entra_assigned_roles=("Owner", "Contributor"),
+        )
+        self.assertFalse(owner_only.allowed)
+        self.assertEqual(owner_only.http_status, 403)
+        self.assertEqual(
+            owner_only.reason,
+            "webiq_entra_data_plane_requires_cognitive_services_user_or_webiq_user_role",
+        )
+
+        # 2. Browse passage validation on REST (400) vs MCP (200 + result.isError=True)
+        rest_blank_query = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            browse_content_format="passage",
+            browse_query="   ",
+            mcp_transport=False,
+        )
+        self.assertFalse(rest_blank_query.allowed)
+        self.assertEqual(rest_blank_query.http_status, 400)
+        self.assertFalse(rest_blank_query.mcp_is_error)
+
+        mcp_blank_query = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            browse_content_format="passage",
+            browse_query="",
+            mcp_transport=True,
+        )
+        self.assertFalse(mcp_blank_query.allowed)
+        self.assertEqual(mcp_blank_query.http_status, 200)
+        self.assertTrue(mcp_blank_query.mcp_is_error)
+
+        passage_force_crawl = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            browse_content_format="passage",
+            browse_query="return window",
+            browse_live_crawl="force",
+            mcp_transport=False,
+        )
+        self.assertFalse(passage_force_crawl.allowed)
+        self.assertEqual(passage_force_crawl.http_status, 400)
+
+        # 3. Stripe MCP Nov 30, 2026 Auth Cutoff (OAuth or Agent-tagged rk_* required) & Confirmation Gate
+        mcp_sk_cutoff = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            post_nov30_2026_cutoff=True,
+            stripe_mcp_auth_method="secret_key",
+        )
+        self.assertFalse(mcp_sk_cutoff.allowed)
+        self.assertEqual(mcp_sk_cutoff.http_status, 401)
+        self.assertTrue(mcp_sk_cutoff.oauth_discovery_challenge)
+
+        mcp_untagged_rk = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            post_nov30_2026_cutoff=True,
+            stripe_mcp_auth_method="untagged_restricted_key",
+        )
+        self.assertFalse(mcp_untagged_rk.allowed)
+        self.assertEqual(mcp_untagged_rk.http_status, 401)
+
+        mcp_refund_unconfirmed = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            stripe_mcp_auth_method="oauth",
+            stripe_mcp_tool="create_refund",
+            human_confirmation_granted=False,
+        )
+        self.assertFalse(mcp_refund_unconfirmed.allowed)
+        self.assertEqual(mcp_refund_unconfirmed.http_status, 403)
+        self.assertEqual(
+            mcp_refund_unconfirmed.reason,
+            "stripe_mcp_refund_or_treasury_tool_requires_human_confirmation",
+        )
+
+        # 4. Multi-Rail SPT (Affirm BNPL WebView human navigation & no forwarding payment_intent.requires_action)
+        affirm_bot = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            spt_rail="affirm",
+            agent_programmatic_webview_interaction=True,
+        )
+        self.assertFalse(affirm_bot.allowed)
+        self.assertEqual(affirm_bot.http_status, 403)
+        self.assertEqual(
+            affirm_bot.reason,
+            "affirm_bnpl_forbids_agent_webview_automation_or_uncontrolled_device",
+        )
+
+        affirm_uncontrolled_dev = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            spt_rail="affirm",
+            agent_has_device_navigation_control=False,
+        )
+        self.assertFalse(affirm_uncontrolled_dev.allowed)
+        self.assertEqual(affirm_uncontrolled_dev.http_status, 403)
+
+        forward_pi_action = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            spt_rail="klarna",
+            forward_pi_requires_action_to_agent=True,
+        )
+        self.assertFalse(forward_pi_action.allowed)
+        self.assertEqual(forward_pi_action.http_status, 400)
+        self.assertEqual(
+            forward_pi_action.reason,
+            "spt_forbids_forwarding_payment_intent_requires_action_to_agent",
+        )
+
+        all_ok = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+            entra_assigned_roles=("Cognitive Services User",),
+            browse_content_format="passage",
+            browse_query="Nordic Audio return window",
+            browse_live_crawl="fallback",
+            stripe_mcp_auth_method="agent_restricted_key",
+            stripe_mcp_tool="create_refund",
+            human_confirmation_granted=True,
+            spt_rail="affirm",
+            agent_programmatic_webview_interaction=False,
+            agent_has_device_navigation_control=True,
+        )
+        self.assertTrue(all_ok.allowed)
+        self.assertEqual(all_ok.http_status, 200)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["stage_1756_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("stage1756-sandbox", demo_zh)
 
 
 if __name__ == "__main__":

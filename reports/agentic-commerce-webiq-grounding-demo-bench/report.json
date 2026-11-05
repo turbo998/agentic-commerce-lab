@@ -1,6 +1,6 @@
 {
   "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
-  "benchmark_version": "2026-11-04.stage1755",
+  "benchmark_version": "2026-11-05.stage1756",
   "provenance": "deterministic_offline_simulation",
   "independently_reproduced": true,
   "total_scenarios": 12,
@@ -54,6 +54,15 @@
     "mcp_offline_access_blocked_reason": "mcp_protected_resource_forbids_offline_access_scope",
     "stripe_embedded_spt_completed_state": "active",
     "stripe_180d_payout_inactivity_blocked_reason": "stripe_api_key_transfer_payout_locked_after_180_days_inactivity"
+  },
+  "stage_1756_guards": {
+    "stage": 1756,
+    "all_passed": true,
+    "webiq_rbac_owner_only_blocked_reason": "webiq_entra_data_plane_requires_cognitive_services_user_or_webiq_user_role",
+    "mcp_browse_passage_is_error_envelope": true,
+    "stripe_mcp_nov30_cutoff_blocked_reason": "stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge",
+    "affirm_webview_automation_blocked_reason": "affirm_bnpl_forbids_agent_webview_automation_or_uncontrolled_device",
+    "spt_forward_pi_requires_action_blocked_reason": "spt_forbids_forwarding_payment_intent_requires_action_to_agent"
   },
   "scenarios": [
     {
@@ -212,6 +221,12 @@
       "check": "Stage 1755 Perturbation (Visa VIC VTS CVV2 & Passkey Fail-Closed, MCP RFC 9207 iss String Match & Stripe 180d Payout Lock)",
       "original": "VIC VTS+Passkey enrolled; MCP iss exact match + 403 scope union; Stripe rk_live_ Embedded SPT active",
       "perturbed": "VIC missing CVV2/failed Passkey, RFC 9207 case-folded iss / offline_access & >180d payout key locked",
+      "delta_pts": "0.0 drift"
+    },
+    {
+      "check": "Stage 1756 Perturbation (Web IQ Data-Plane RBAC & Browse Passage Query, Stripe MCP Nov 30 Cutoff & Affirm BNPL WebView Guard)",
+      "original": "WebIQ User RBAC + Browse passage query OK; Stripe MCP OAuth OK; Affirm human-navigated SPT active",
+      "perturbed": "Owner-only RBAC (403), MCP blank passage query (200 isError), post-Nov30 sk_live_ (401) & Affirm bot blocked",
       "delta_pts": "0.0 drift"
     }
   ],

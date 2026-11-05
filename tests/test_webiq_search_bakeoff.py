@@ -4,6 +4,7 @@ from lab.webiq_search_bakeoff import (
     assert_not_fabricated,
     grounding_architecture_comparison,
     summarize,
+    validate_webiq_arm_rbac_and_browse_passage,
     validate_webiq_auth_appid_routing,
     validate_webiq_granular_browse_and_instrumentation,
 )
@@ -301,6 +302,45 @@ class WebIQSearchBakeoffTests(unittest.TestCase):
         for route in routes.values():
             self.assertEqual(route["label"], "architecture_guidance")
             self.assertNotIn("latency_ms", route)
+
+    def test_webiq_arm_rbac_and_browse_passage_contract(self):
+        # Owner/Contributor without Cognitive Services (WebIQ) User role is rejected on data plane
+        r_owner_only = validate_webiq_arm_rbac_and_browse_passage(
+            entra_roles=("Owner", "Contributor")
+        )
+        self.assertFalse(r_owner_only["allowed"])
+        self.assertEqual(r_owner_only["http_status"], 403)
+        self.assertEqual(r_owner_only["error_code"], "ForbiddenDataPlaneRole")
+
+        # Unentitled markdown on Browse -> 403 AuthContentFormatForbidden
+        r_unentitled = validate_webiq_arm_rbac_and_browse_passage(
+            content_format="markdown",
+            full_document_entitled=False,
+        )
+        self.assertFalse(r_unentitled["allowed"])
+        self.assertEqual(r_unentitled["http_status"], 403)
+        self.assertEqual(r_unentitled["error_code"], "AuthContentFormatForbidden")
+
+        # Browse passage with blank query on MCP -> HTTP 200 with mcp_is_error=True
+        r_mcp_blank = validate_webiq_arm_rbac_and_browse_passage(
+            content_format="passage",
+            query="   ",
+            mcp_transport=True,
+        )
+        self.assertFalse(r_mcp_blank["allowed"])
+        self.assertEqual(r_mcp_blank["http_status"], 200)
+        self.assertTrue(r_mcp_blank["mcp_is_error"])
+
+        # Valid Browse passage
+        r_ok = validate_webiq_arm_rbac_and_browse_passage(
+            content_format="passage",
+            query="return window policy",
+            live_crawl="fallback",
+        )
+        self.assertTrue(r_ok["allowed"])
+        self.assertEqual(r_ok["http_status"], 200)
+        self.assertEqual(r_ok["passage_separator"], "...")
+        self.assertEqual(r_ok["max_length_default"], 3000)
 
 
 if __name__ == "__main__":

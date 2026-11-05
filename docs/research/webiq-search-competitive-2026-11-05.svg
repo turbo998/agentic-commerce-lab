@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+    <linearGradient id="webiqCol" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.88"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#bg)" rx="16"/>
+  <rect x="20" y="20" width="1160" height="680" rx="12" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <text x="44" y="56" fill="#38BDF8" font-size="13" font-weight="700" letter-spacing="1.5">STAGE 1756 · 2026-11-05 MANDATORY WEB IQ COMPETITIVE BENCHMARK &amp; ARCHITECTURE BAKEOFF</text>
+  <text x="44" y="86" fill="#F8FAFC" font-size="23" font-weight="800">Microsoft Web IQ (Harrier + DiskANN3 + ARM G3) vs Bright Data vs Exa vs Mainstream Grounding</text>
+  <text x="44" y="110" fill="#94A3B8" font-size="13">Strict Provenance: Uncredentialed vendors marked not_measured (no fabricated P50/P95); vendor-published numbers isolated; official_list_price verified 2026-11-05.</text>
+  <rect x="44" y="122" width="1112" height="3" fill="url(#accent)" rx="1.5"/>
+
+  <!-- Column Headers -->
+  <rect x="44" y="138" width="206" height="44" rx="8" fill="#1E293B" stroke="#334155"/>
+  <text x="58" y="165" fill="#E2E8F0" font-size="13" font-weight="700">DIMENSION / VENDOR</text>
+
+  <rect x="258" y="138" width="250" height="44" rx="8" fill="url(#webiqCol)" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="272" y="158" fill="#38BDF8" font-size="13" font-weight="800">Microsoft Web IQ (GA)</text>
+  <text x="272" y="175" fill="#BAE6FD" font-size="11">/v3/search · /v3/browse · /v3/news · /v3/auto · /v3/mcp</text>
+
+  <rect x="516" y="138" width="212" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="530" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Bright Data (SERP + Browser)</text>
+  <text x="530" y="175" fill="#94A3B8" font-size="11">SERP API · Web Unlocker · Scraping Browser</text>
+
+  <rect x="736" y="138" width="204" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="750" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Exa (Neural Search API)</text>
+  <text x="750" y="175" fill="#94A3B8" font-size="11">/search (auto/fast/deep) · /contents</text>
+
+  <rect x="948" y="138" width="208" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="962" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Tavily / Perplexity / Google / Brave</text>
+  <text x="962" y="175" fill="#94A3B8" font-size="11">Mainstream Agent Grounding APIs</text>
+
+  <!-- Row 1: Retrieval Stack & Architecture -->
+  <rect x="44" y="190" width="206" height="74" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="216" fill="#38BDF8" font-size="12" font-weight="700">1. Retrieval Architecture</text>
+  <text x="58" y="235" fill="#94A3B8" font-size="11">Indexing, Passage Extraction</text>
+  <text x="58" y="251" fill="#94A3B8" font-size="11">&amp; Freshness Model</text>
+
+  <rect x="258" y="190" width="250" height="74" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="212" fill="#F8FAFC" font-size="11" font-weight="700">Harrier (270M/0.6B/27B) + DiskANN3 + L1/L2</text>
+  <text x="270" y="230" fill="#E2E8F0" font-size="11">Search &amp; Browse passage (1..1000 query, '...')</text>
+  <text x="270" y="248" fill="#7DD3FC" font-size="11">liveCrawl: none | fallback | force (+202 retryAfter)</text>
+
+  <rect x="516" y="190" width="212" height="74" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="212" fill="#E2E8F0" font-size="11" font-weight="700">Live Proxy + Unlocker + Chromium</text>
+  <text x="528" y="230" fill="#94A3B8" font-size="11">Real-time DOM/SERP crawl &amp; CAPTCHA solve</text>
+  <text x="528" y="248" fill="#94A3B8" font-size="11">Async Dataset Scraper (46M+ rec/hr)</text>
+
+  <rect x="736" y="190" width="204" height="74" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="212" fill="#E2E8F0" font-size="11" font-weight="700">Neural + Keyword Hybrid Index</text>
+  <text x="748" y="230" fill="#94A3B8" font-size="11">Highlights / text contents per result page</text>
+  <text x="748" y="248" fill="#94A3B8" font-size="11">Deep search mode ($12-$15 / 1k searches)</text>
+
+  <rect x="948" y="190" width="208" height="74" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="212" fill="#E2E8F0" font-size="11" font-weight="700">RAG Chunks / Synthesized Citations</text>
+  <text x="960" y="230" fill="#94A3B8" font-size="11">Tavily (search+extract), Sonar (LLM+search)</text>
+  <text x="960" y="248" fill="#94A3B8" font-size="11">Google Vertex Grounding, Brave Index API</text>
+
+  <!-- Row 2: Provisioning, Auth & Guardrails -->
+  <rect x="44" y="272" width="206" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="298" fill="#38BDF8" font-size="12" font-weight="700">2. Auth, RBAC &amp; Error</text>
+  <text x="58" y="317" fill="#94A3B8" font-size="11">ARM Provisioning, AppID</text>
+  <text x="58" y="333" fill="#94A3B8" font-size="11">&amp; Rate-Limit Semantics</text>
+
+  <rect x="258" y="272" width="250" height="84" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="293" fill="#F8FAFC" font-size="11" font-weight="700">ARM WebIQ.Grounding (sku G3, global)</text>
+  <text x="270" y="310" fill="#E2E8F0" font-size="11">RBAC: Cognitive Services (WebIQ) User required</text>
+  <text x="270" y="327" fill="#FCA5A5" font-size="10.5">Key+APPID-&gt;401; Multi-AppID-&gt;400; 430 vs 429 ISO</text>
+  <text x="270" y="344" fill="#FCD34D" font-size="10.5">MCP passage error -&gt; HTTP 200 + result.isError</text>
+
+  <rect x="516" y="272" width="212" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="294" fill="#E2E8F0" font-size="11" font-weight="700">Bearer Token / Zone Proxy Auth</text>
+  <text x="528" y="313" fill="#94A3B8" font-size="11">Charged per successful request or GB</text>
+  <text x="528" y="332" fill="#94A3B8" font-size="11">Full JS rendering via Playwright/Puppeteer</text>
+
+  <rect x="736" y="272" width="204" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="294" fill="#E2E8F0" font-size="11" font-weight="700">x-api-key Header Auth</text>
+  <text x="748" y="313" fill="#94A3B8" font-size="11">Separate search vs contents page billing</text>
+  <text x="748" y="332" fill="#94A3B8" font-size="11">Custom crawl parameters per domain</text>
+
+  <rect x="948" y="272" width="208" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="294" fill="#E2E8F0" font-size="11" font-weight="700">API Key / GCP IAM (Vertex)</text>
+  <text x="960" y="313" fill="#94A3B8" font-size="11">Tavily credit-based; Sonar request+token</text>
+  <text x="960" y="332" fill="#94A3B8" font-size="11">Brave X-Subscription-Token header</text>
+
+  <!-- Row 3: Official List Price (Verified 2026-11-05) -->
+  <rect x="44" y="364" width="206" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="390" fill="#38BDF8" font-size="12" font-weight="700">3. Official List Price</text>
+  <text x="58" y="409" fill="#94A3B8" font-size="11">official_list_price only</text>
+  <text x="58" y="425" fill="#94A3B8" font-size="11">(Verified 2026-11-05)</text>
+
+  <rect x="258" y="364" width="250" height="84" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="386" fill="#4ADE80" font-size="11" font-weight="700">$7.00 / 1k req (/web, /video, /news, /images)</text>
+  <text x="270" y="404" fill="#BAE6FD" font-size="11">/browse: $1.00 / 1k requests (AppID-gated)</text>
+  <text x="270" y="422" fill="#FCD34D" font-size="11">Auto API: $0 during Beta (unbilled preview)</text>
+  <text x="270" y="438" fill="#94A3B8" font-size="10">Effective 2026-10-16 (learn.microsoft.com/web-iq)</text>
+
+  <rect x="516" y="364" width="212" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="386" fill="#E2E8F0" font-size="11" font-weight="700">PAYG $1.50 / 1k results (SERP/Unlocker)</text>
+  <text x="528" y="404" fill="#94A3B8" font-size="11">$499/mo Growth ($1.30/1k); Browser $8/GB</text>
+  <text x="528" y="422" fill="#94A3B8" font-size="11">Scraper PAYG $1.50/1k ($499/mo = 384k rec)</text>
+
+  <rect x="736" y="364" width="204" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="386" fill="#E2E8F0" font-size="11" font-weight="700">$7.00 / 1k searches (1-25 results)</text>
+  <text x="748" y="404" fill="#94A3B8" font-size="11">Contents text/highlights: +$1.00 / 1k pages</text>
+  <text x="748" y="422" fill="#94A3B8" font-size="11">Deep search: $12 / 1k; Deep Reasoning: $15 / 1k</text>
+
+  <rect x="948" y="364" width="208" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="386" fill="#E2E8F0" font-size="11" font-weight="700">Tavily: $8 / 1k credits (PAYG)</text>
+  <text x="960" y="404" fill="#94A3B8" font-size="11">Sonar: $5/1k req + tok; Brave: $5/1k req</text>
+  <text x="960" y="422" fill="#94A3B8" font-size="11">Vertex Search Grounding: $14-$35 / 1k</text>
+
+  <!-- Row 4: Live Sealed-Query Status vs Vendor-Published Figures -->
+  <rect x="44" y="456" width="206" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="482" fill="#38BDF8" font-size="12" font-weight="700">4. 2026-11-05 Measurement</text>
+  <text x="58" y="501" fill="#94A3B8" font-size="11">Sealed 6-Query Live Run vs</text>
+  <text x="58" y="517" fill="#94A3B8" font-size="11">Vendor-Published Specs</text>
+
+  <rect x="258" y="456" width="250" height="84" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="477" fill="#FCD34D" font-size="11" font-weight="700">Live API: not_measured (WEBIQ_API_KEY unset)</text>
+  <text x="270" y="495" fill="#E2E8F0" font-size="10.5">Vendor-Stated (Learn 2026-09): SimpleQA 83.2%,</text>
+  <text x="270" y="511" fill="#E2E8F0" font-size="10.5">FRAMES 87.3%, BrowseComp 66.2%, P50 473ms</text>
+  <text x="270" y="527" fill="#7DD3FC" font-size="10.5">Offline Contract Suite: 12/12 PASS (164ms sim)</text>
+
+  <rect x="516" y="456" width="212" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="480" fill="#FCD34D" font-size="11" font-weight="700">Live API: not_measured</text>
+  <text x="528" y="498" fill="#94A3B8" font-size="11">BRIGHTDATA_API_KEY not configured</text>
+  <text x="528" y="516" fill="#94A3B8" font-size="10.5">P50/P95 = null (Zero fabricated latency)</text>
+
+  <rect x="736" y="456" width="204" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="480" fill="#FCD34D" font-size="11" font-weight="700">Live API: not_measured</text>
+  <text x="748" y="498" fill="#94A3B8" font-size="11">EXA_API_KEY not configured</text>
+  <text x="748" y="516" fill="#94A3B8" font-size="10.5">P50/P95 = null (Zero fabricated latency)</text>
+
+  <rect x="948" y="456" width="208" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="480" fill="#FCD34D" font-size="11" font-weight="700">Live API: not_measured</text>
+  <text x="960" y="498" fill="#94A3B8" font-size="11">TAVILY / PARALLEL / SERPER unset</text>
+  <text x="960" y="516" fill="#94A3B8" font-size="10.5">P50/P95 = null (Zero fabricated latency)</text>
+
+  <!-- Row 5: SA Fit Matrix -->
+  <rect x="44" y="548" width="1112" height="132" rx="10" fill="#0F172A" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="64" y="574" fill="#38BDF8" font-size="13" font-weight="800">5. AI SOLUTION ARCHITECT SELECTION PLAYBOOK (GOOD FIT VS NOT FOR · STAGE 1756 VERIFIED)</text>
+  <text x="64" y="598" fill="#4ADE80" font-size="12" font-weight="700">✅ Good Fit for Microsoft Web IQ:</text>
+  <text x="275" y="598" fill="#E2E8F0" font-size="11.5">Azure Entra ID zero-secret commerce agents (Cognitive Services WebIQ User RBAC), deterministic pre-checkout price/policy verification</text>
+  <text x="64" y="617" fill="#E2E8F0" font-size="11.5">via Search + Browse passage mode (7.1x context token cut), News + Auto riskLevel='veryHigh' product recall circuit breaking, and native MCP (/v3/mcp).</text>
+  <text x="64" y="642" fill="#F87171" font-size="12" font-weight="700">⛔ Not For Microsoft Web IQ (Pair with Bright Data / Exa):</text>
+  <text x="415" y="642" fill="#E2E8F0" font-size="11.5">Interactive CAPTCHA/anti-bot solving or authenticated multi-step DOM form filling (use Bright Data</text>
+  <text x="64" y="661" fill="#E2E8F0" font-size="11.5">Scraping Browser / Web Unlocker), or deep research similarity graph exploration across 50+ academic/company seed URLs at $7/1k (use Exa Neural Search).</text>
+</svg>

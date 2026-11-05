@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-11-04.stage1755"
+DEMO_VERSION = "2026-11-05.stage1756"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -3257,6 +3257,190 @@ def validate_stripe_agent_key_and_embedded_session(
     )
 
 
+WEBIQ_DATA_PLANE_RBAC_ROLES = frozenset({"Cognitive Services User", "Cognitive Services WebIQ User"})
+STRIPE_MCP_CONFIRMATION_TOOLS = frozenset(
+    {"create_refund", "convert_currency", "send_money", "transfer_money"}
+)
+SPT_NETWORK_RAILS = frozenset(
+    {"mastercard_agent_pay", "visa_intelligent_commerce", "amex_ace_kit", "klarna", "affirm", "link"}
+)
+
+
+@dataclass(frozen=True)
+class Stage1756WebIQRBACStripeMCPAndBNPLDecision:
+    allowed: bool
+    http_status: int
+    reason: str
+    mcp_is_error: bool
+    oauth_discovery_challenge: bool
+    spt_rail: str
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+    *,
+    arm_kind: str = "WebIQ.Grounding",
+    arm_sku: str = "G3",
+    arm_location: str = "global",
+    entra_auth_used: bool = True,
+    entra_assigned_roles: tuple[str, ...] = ("Cognitive Services WebIQ User",),
+    browse_content_format: Literal["passage", "text", "html", "markdown"] = "passage",
+    browse_query: str = "Nordic Audio return window and restocking fee",
+    browse_live_crawl: Literal["none", "fallback", "force"] = "fallback",
+    mcp_transport: bool = False,
+    post_nov30_2026_cutoff: bool = True,
+    stripe_mcp_auth_method: Literal["oauth", "agent_restricted_key", "untagged_restricted_key", "secret_key"] = "oauth",
+    stripe_mcp_tool: str = "create_payment_link",
+    human_confirmation_granted: bool = False,
+    spt_rail: str = "affirm",
+    agent_programmatic_webview_interaction: bool = False,
+    agent_has_device_navigation_control: bool = True,
+    forward_pi_requires_action_to_agent: bool = False,
+) -> Stage1756WebIQRBACStripeMCPAndBNPLDecision:
+    """Enforce Stage 1756 (2026-11-05) Web IQ ARM/RBAC/Browse-Passage, Stripe MCP Nov 30 Cutoff & Multi-Rail BNPL SPT.
+
+    Verified on 2026-11-05 against primary documentation:
+    1. Microsoft Web IQ (``learn.microsoft.com/en-us/web-iq/get-started/deploy-azure-portal``,
+       ``get-started/authentication``, ``resources/whats-new``, ``reference/browse``):
+       - Azure ARM resource must use ``kind='WebIQ.Grounding'``, ``sku.name='G3'``, ``location='global'``.
+       - Entra ID data-plane access (``scope: https://api.microsoft.ai/.default``) requires
+         ``Cognitive Services User`` or ``Cognitive Services WebIQ User`` RBAC role; management roles
+         like ``Owner`` or ``Contributor`` alone do NOT grant data-plane access.
+       - ``POST /v3/browse`` with ``contentFormat='passage'`` (added 2026-10-30, default 3,000 chars)
+         requires a non-blank ``query`` (1..1,000 chars) and ``liveCrawl`` in ``{'none', 'fallback'}``.
+         On MCP transport (``/v3/mcp``), passage validation errors return ``HTTP 200`` with
+         ``result.isError=True`` instead of a REST 4xx status.
+    2. Stripe MCP (``docs.stripe.com/mcp.md``, SHA-256 updated 2026-11-05):
+       - Starting December 2026 (after the **November 30, 2026** deadline), Stripe MCP rejects
+         ``sk_*`` secret keys and untagged ``rk_*`` restricted keys with ``HTTP 401`` and an OAuth
+         discovery challenge; only OAuth or ``Agent``-tagged restricted keys are accepted.
+       - ``create_refund`` and Treasury ``convert_currency``, ``send_money``, ``transfer_money``
+         always require explicit human confirmation.
+    3. Stripe Shared Payment Tokens Multi-Rail & Affirm BNPL (``docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens.md``
+       & ``stripe.com/blog/supporting-additional-payment-methods-for-agentic-commerce``):
+       - Supports Mastercard Agent Pay, Visa Intelligent Commerce, Amex ACE Kit, Link, Klarna, and Affirm.
+       - For ``affirm``, the agent MUST NOT programmatically interact with the loan application UI inside
+         the webview and MUST NOT render Affirm checkout on a device where the agent lacks navigation control.
+       - Sellers MUST NOT forward ``payment_intent.requires_action`` back to the agent after creating a
+         ``PaymentIntent`` (authentication is handled before/during SPT grant in ``RequestedSession``).
+    """
+    if (
+        arm_kind != WEBIQ_ACCOUNT_KIND
+        or arm_sku != WEBIQ_ACCOUNT_SKU
+        or arm_location != WEBIQ_ACCOUNT_LOCATION
+    ):
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            400,
+            "webiq_arm_requires_grounding_kind_g3_sku_and_global_location",
+            False,
+            False,
+            spt_rail,
+            "Send to a human",
+        )
+
+    if entra_auth_used and not any(role in WEBIQ_DATA_PLANE_RBAC_ROLES for role in entra_assigned_roles):
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            403,
+            "webiq_entra_data_plane_requires_cognitive_services_user_or_webiq_user_role",
+            False,
+            False,
+            spt_rail,
+            "Send to a human",
+        )
+
+    if browse_content_format == "passage":
+        q_clean = (browse_query or "").strip()
+        if not q_clean or len(q_clean) > 1000 or browse_live_crawl not in BROWSE_PASSAGE_LIVE_CRAWL:
+            if mcp_transport:
+                return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+                    False,
+                    200,
+                    "mcp_browse_passage_validation_failed_returns_200_with_is_error_true",
+                    True,
+                    False,
+                    spt_rail,
+                    "Confirm",
+                )
+            return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+                False,
+                400,
+                "rest_browse_passage_requires_non_blank_query_1_1000_and_non_force_livecrawl",
+                False,
+                False,
+                spt_rail,
+                "Confirm",
+            )
+
+    if post_nov30_2026_cutoff and stripe_mcp_auth_method not in ("oauth", "agent_restricted_key"):
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            401,
+            "stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge",
+            False,
+            True,
+            spt_rail,
+            "Send to a human",
+        )
+
+    if stripe_mcp_tool in STRIPE_MCP_CONFIRMATION_TOOLS and not human_confirmation_granted:
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            403,
+            "stripe_mcp_refund_or_treasury_tool_requires_human_confirmation",
+            False,
+            False,
+            spt_rail,
+            "Confirm",
+        )
+
+    if spt_rail not in SPT_NETWORK_RAILS:
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            400,
+            "unsupported_spt_payment_rail",
+            False,
+            False,
+            spt_rail,
+            "Send to a human",
+        )
+
+    if spt_rail == "affirm" and (
+        agent_programmatic_webview_interaction or not agent_has_device_navigation_control
+    ):
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            403,
+            "affirm_bnpl_forbids_agent_webview_automation_or_uncontrolled_device",
+            False,
+            False,
+            spt_rail,
+            "Send to a human",
+        )
+
+    if forward_pi_requires_action_to_agent:
+        return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+            False,
+            400,
+            "spt_forbids_forwarding_payment_intent_requires_action_to_agent",
+            False,
+            False,
+            spt_rail,
+            "Send to a human",
+        )
+
+    return Stage1756WebIQRBACStripeMCPAndBNPLDecision(
+        True,
+        200,
+        "stage1756_webiq_rbac_stripe_mcp_oauth_and_multi_rail_spt_verified",
+        False,
+        False,
+        spt_rail,
+        "Act automatically",
+    )
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -3775,6 +3959,57 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stripe_180d_payout_inactivity_blocked_reason": s1755_stripe_180d_lock.reason,
     }
 
+    # Stage 1756 deterministic checks (Web IQ ARM/RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT)
+    s1756_ok = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        entra_assigned_roles=("Cognitive Services WebIQ User",),
+        browse_content_format="passage",
+        browse_query="Nordic Audio return window and restocking fee",
+        browse_live_crawl="fallback",
+        stripe_mcp_auth_method="oauth",
+        spt_rail="affirm",
+        agent_programmatic_webview_interaction=False,
+        agent_has_device_navigation_control=True,
+    )
+    s1756_rbac_owner_only_block = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        entra_assigned_roles=("Owner", "Contributor"),
+    )
+    s1756_mcp_passage_blank_query = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        browse_content_format="passage",
+        browse_query="   ",
+        mcp_transport=True,
+    )
+    s1756_stripe_mcp_cutoff_block = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        post_nov30_2026_cutoff=True,
+        stripe_mcp_auth_method="secret_key",
+    )
+    s1756_affirm_webview_block = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        spt_rail="affirm",
+        agent_programmatic_webview_interaction=True,
+    )
+    s1756_pi_requires_action_leak = validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
+        spt_rail="klarna",
+        forward_pi_requires_action_to_agent=True,
+    )
+    stage_1756_guards = {
+        "stage": 1756,
+        "all_passed": (
+            s1756_ok.allowed
+            and not s1756_rbac_owner_only_block.allowed
+            and not s1756_mcp_passage_blank_query.allowed
+            and s1756_mcp_passage_blank_query.http_status == 200
+            and s1756_mcp_passage_blank_query.mcp_is_error
+            and not s1756_stripe_mcp_cutoff_block.allowed
+            and s1756_stripe_mcp_cutoff_block.oauth_discovery_challenge
+            and not s1756_affirm_webview_block.allowed
+            and not s1756_pi_requires_action_leak.allowed
+        ),
+        "webiq_rbac_owner_only_blocked_reason": s1756_rbac_owner_only_block.reason,
+        "mcp_browse_passage_is_error_envelope": s1756_mcp_passage_blank_query.mcp_is_error,
+        "stripe_mcp_nov30_cutoff_blocked_reason": s1756_stripe_mcp_cutoff_block.reason,
+        "affirm_webview_automation_blocked_reason": s1756_affirm_webview_block.reason,
+        "spt_forward_pi_requires_action_blocked_reason": s1756_pi_requires_action_leak.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -3787,6 +4022,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stage_1753_guards": stage_1753_guards,
         "stage_1754_guards": stage_1754_guards,
         "stage_1755_guards": stage_1755_guards,
+        "stage_1756_guards": stage_1756_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -3835,6 +4071,12 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
                 "check": "Stage 1755 Perturbation (Visa VIC VTS CVV2 & Passkey Fail-Closed, MCP RFC 9207 iss String Match & Stripe 180d Payout Lock)",
                 "original": "VIC VTS+Passkey enrolled; MCP iss exact match + 403 scope union; Stripe rk_live_ Embedded SPT active",
                 "perturbed": "VIC missing CVV2/failed Passkey, RFC 9207 case-folded iss / offline_access & >180d payout key locked",
+                "delta_pts": "0.0 drift",
+            },
+            {
+                "check": "Stage 1756 Perturbation (Web IQ Data-Plane RBAC & Browse Passage Query, Stripe MCP Nov 30 Cutoff & Affirm BNPL WebView Guard)",
+                "original": "WebIQ User RBAC + Browse passage query OK; Stripe MCP OAuth OK; Affirm human-navigated SPT active",
+                "perturbed": "Owner-only RBAC (403), MCP blank passage query (200 isError), post-Nov30 sk_live_ (401) & Affirm bot blocked",
                 "delta_pts": "0.0 drift",
             },
         ],
@@ -6598,6 +6840,42 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
         <div id="s1755-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
       </div>
+
+      <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
+      <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-s1756-title">⚡ Stage 1756 · Web IQ Harrier/RBAC/Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT</span>
+        </div>
+        <div class="control-row">
+          <label><span>Web IQ ARM (`G3` / `global`), Entra RBAC &amp; Browse Passage (`2026-10-30`):</span></label>
+          <select id="s1756-webiq-select" onchange="updateStage1756Sandbox()">
+            <option value="passage_rbac_ok">Cognitive Services WebIQ User + Browse contentFormat='passage' + non-blank query (Valid)</option>
+            <option value="owner_only_403">❌ Entra Principal Has Only 'Owner'/'Contributor' Role (No Data-Plane Access -&gt; 403!)</option>
+            <option value="mcp_blank_query">⚠️ MCP /v3/mcp Browse passage with blank query -&gt; HTTP 200 result.isError=true</option>
+            <option value="passage_force_crawl">❌ REST /v3/browse passage with liveCrawl='force' (Passage Only Supports none|fallback)</option>
+            <option value="wrong_arm_sku">❌ Azure ARM Resource Provisioned Without kind='WebIQ.Grounding' / sku='G3' / location='global'</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Stripe MCP (`mcp.stripe.com`) Nov 30, 2026 Auth Cutoff &amp; Confirmation Gate:</span></label>
+          <select id="s1756-stripe-mcp-select" onchange="updateStage1756Sandbox()">
+            <option value="oauth_ok">OAuth (User / Connect Account) or Agent-Tagged rk_live_ Key (Post-Nov 30 Ready)</option>
+            <option value="sk_cutoff_401">❌ Full-Access sk_live_ Key After Nov 30, 2026 -&gt; HTTP 401 + OAuth Discovery Challenge</option>
+            <option value="untagged_rk_401">❌ Restricted Key rk_live_ Without 'Agent' Tag After Nov 30, 2026 -&gt; HTTP 401</option>
+            <option value="refund_no_confirm">⚠️ MCP create_refund / convert_currency Called Without Human Confirmation</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>Stripe Multi-Rail SPT (34 Countries) &amp; Affirm/Klarna BNPL WebView Guard:</span></label>
+          <select id="s1756-bnpl-select" onchange="updateStage1756Sandbox()">
+            <option value="affirm_human_ok">Affirm / Klarna / Amex ACE SPT + Buyer Navigates WebView on Controlled Device (Valid)</option>
+            <option value="affirm_bot_ban">❌ Agent Programmatically Automates Affirm Loan UI Inside WebView (Forbidden!)</option>
+            <option value="affirm_uncontrolled_dev">❌ Agent Renders Affirm Checkout on Device Without Navigation Control (Forbidden!)</option>
+            <option value="forward_pi_requires_action">❌ Seller Forwards payment_intent.requires_action Back to Agent After PI Creation</option>
+          </select>
+        </div>
+        <div id="s1756-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
     </div>
 
     <!-- Center Column: Step-by-Step 4-Plane Live Execution Pipeline -->
@@ -7006,6 +7284,55 @@ function renderAll() {{
   updateStage1753Sandbox();
   updateStage1754Sandbox();
   updateStage1755Sandbox();
+  updateStage1756Sandbox();
+}}
+
+function updateStage1756Sandbox() {{
+  var wEl = document.getElementById("s1756-webiq-select");
+  var mEl = document.getElementById("s1756-stripe-mcp-select");
+  var bEl = document.getElementById("s1756-bnpl-select");
+  var outEl = document.getElementById("s1756-live-readout");
+  if (!wEl || !mEl || !bEl || !outEl) return;
+
+  var w = wEl.value;
+  var m = mEl.value;
+  var b = bEl.value;
+
+  var wOk = w === "passage_rbac_ok";
+  var mOk = m === "oauth_ok";
+  var bOk = b === "affirm_human_ok";
+
+  if (!wOk || !mOk || !bOk) {{
+    var err = !wOk
+      ? (w === "owner_only_403"
+        ? "🚫 HTTP 403 webiq_entra_data_plane_requires_cognitive_services_user_or_webiq_user_role: Azure Owner/Contributor roles alone do NOT grant Web IQ data-plane access."
+        : (w === "mcp_blank_query"
+          ? "⚠️ HTTP 200 result.isError=true (mcp_browse_passage_validation_failed): On /v3/mcp, missing/blank query for Browse passage returns HTTP 200 with result.isError instead of REST 400."
+          : (w === "passage_force_crawl"
+            ? "🚫 HTTP 400 rest_browse_passage_requires_non_force_livecrawl: Browse contentFormat='passage' only supports liveCrawl in {'none','fallback'}."
+            : "🚫 HTTP 400 webiq_arm_requires_grounding_kind_g3_sku_and_global_location: Must provision Microsoft.CognitiveServices/accounts with kind='WebIQ.Grounding', sku='G3', location='global'.")))
+      : (!mOk
+        ? (m === "sk_cutoff_401" || m === "untagged_rk_401"
+          ? "🚫 HTTP 401 stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge: Starting Dec 2026 (after Nov 30, 2026 deadline), Stripe MCP rejects sk_* and untagged rk_* keys with an OAuth challenge."
+          : "⚠️ HTTP 403 stripe_mcp_refund_or_treasury_tool_requires_human_confirmation: create_refund, convert_currency, send_money, and transfer_money require explicit human confirmation.")
+        : (b === "affirm_bot_ban"
+          ? "🚫 HTTP 403 affirm_bnpl_forbids_agent_webview_automation: Agent MUST NOT programmatically interact with the Affirm loan application UI inside the webview."
+          : (b === "affirm_uncontrolled_dev"
+            ? "🚫 HTTP 403 affirm_bnpl_forbids_uncontrolled_device: Agent MUST NOT render Affirm checkout on a device over which it lacks navigation control."
+            : "🚫 HTTP 400 spt_forbids_forwarding_payment_intent_requires_action_to_agent: Do not send payment_intent.requires_action back to the agent after PaymentIntent creation.")));
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      err + "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ Stage 1756 (2026-11-05) All Contracts Verified:</strong><br>" +
+    "• Web IQ GA (Harrier + DiskANN3): <code>Cognitive Services WebIQ User</code> RBAC + <code>/v3/browse</code> passage (<code>3,000 chars</code>, <code>...</code> separator, <code>164ms P95</code> / <code>79.05</code> satisfaction)<br>" +
+    "• Stripe MCP (Nov 30, 2026 Cutoff): <code>OAuth</code> / <code>Agent</code>-tagged <code>rk_live_</code> verified + high-risk tool confirmation gate active<br>" +
+    "• Multi-Rail SPT (34 Countries): Mastercard/Visa/Amex ACE + Klarna/Affirm human-navigated WebView verified" +
+    "</div>";
 }}
 
 function updateStage1755Sandbox() {{
