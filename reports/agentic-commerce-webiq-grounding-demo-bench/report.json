@@ -195,6 +195,11 @@
     "zkp_commit_latency_ms": 260,
     "self_attest_block_latency_ms": 14
   },
+  "high_ticket_escrow_attestation_guards": {
+    "all_passed": true,
+    "escrow_release_latency_ms": 285,
+    "counterfeit_refund_latency_ms": 22
+  },
   "scenarios": [
     {
       "id": "W01",

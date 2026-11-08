@@ -6421,6 +6421,108 @@ def evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
     )
 
 
+@dataclass(frozen=True)
+class HighTicketEscrowAttestationVerdict:
+    """Round 23 verdict for Milestone Escrow Hold & Dual-Signed Delivery/Authentication Attestation vs Instant Upfront Payout & Counterfeit Rug-Pull Risk."""
+
+    allowed: bool
+    http_status: int
+    escrow_lane: str
+    seller_payout_cents: int
+    buyer_refund_cents: int
+    warranty_vc_minted: bool
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_high_ticket_escrow_and_attestation_policy(
+    *,
+    order_amount_cents: int = 450000,
+    escrow_threshold_cents: int = 50000,
+    escrow_enabled: bool = True,
+    warranty_days_grounded_by_webiq: int = 365,
+    min_mandate_warranty_days: int = 180,
+    authentication_passed: bool = True,
+    carrier_pod_verified: bool = True,
+    inspection_hours_elapsed: int = 72,
+    required_inspection_hours: int = 72,
+    buyer_explicit_accept: bool = True,
+) -> HighTicketEscrowAttestationVerdict:
+    """Evaluate mandatory high-ticket escrow reserve, Web IQ warranty fine-print grounding, neutral lab authentication, 72h inspection hold, and atomic SN-bound warranty minting."""
+
+    # 1. Unescrowed High-Ticket Instant Payout Guard (>= $500 USD requires segregated escrow_hold_...)
+    if order_amount_cents >= escrow_threshold_cents and not escrow_enabled:
+        return HighTicketEscrowAttestationVerdict(
+            False,
+            403,
+            "BLOCKED_UNESCROWED_HIGH_TICKET_INSTANT_PAYOUT",
+            0,
+            0,
+            False,
+            "high_ticket_or_3p_marketplace_order_requires_milestone_escrow_hold",
+            15,
+            "Send to a human",
+        )
+
+    # 2. Microsoft Web IQ /v3/browse Pre-Escrow Warranty & Return Fine-Print Guard
+    if warranty_days_grounded_by_webiq < min_mandate_warranty_days:
+        return HighTicketEscrowAttestationVerdict(
+            False,
+            409,
+            "WARRANTY_TERMS_MISMATCH_CONFIRM_REQUIRED",
+            0,
+            0,
+            False,
+            "webiq_live_terms_detected_as_is_or_warranty_below_mandate_floor",
+            325,
+            "Confirm",
+        )
+
+    # 3. Neutral Authentication Lab Counterfeit / Serial-Number Mismatch Auto-Refund Guard
+    if not authentication_passed:
+        return HighTicketEscrowAttestationVerdict(
+            False,
+            422,
+            "COUNTERFEIT_OR_SN_MISMATCH_ESCROW_REFUNDED",
+            0,
+            order_amount_cents,
+            False,
+            "neutral_authentication_hub_detected_counterfeit_or_sn_mismatch_full_buyer_refund",
+            22,
+            "Send to a human",
+        )
+
+    # 4. Premature Escrow Release Guard (Requires verified carrier POD + either 72h elapsed or explicit buyer acceptance)
+    if not carrier_pod_verified or (
+        inspection_hours_elapsed < required_inspection_hours and not buyer_explicit_accept
+    ):
+        return HighTicketEscrowAttestationVerdict(
+            False,
+            409,
+            "PREMATURE_ESCROW_RELEASE_BLOCKED",
+            0,
+            0,
+            False,
+            "carrier_pod_missing_or_72h_buyer_inspection_window_still_active",
+            16,
+            "Send to a human",
+        )
+
+    # 5. Dual-Signed Escrow Release + Atomic Serial-Bound Warranty VC Activation
+    return HighTicketEscrowAttestationVerdict(
+        True,
+        200,
+        "ESCROW_RELEASED_WARRANTY_ACTIVATED",
+        order_amount_cents,
+        0,
+        True,
+        "dual_oracle_authentication_and_pod_verified_funds_released_and_sn_warranty_minted",
+        285,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8065,6 +8167,39 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "self_attest_block_latency_ms": zkp_self_403.latency_ms,
     }
 
+    escrow_release_ok = evaluate_high_ticket_escrow_and_attestation_policy()
+    escrow_instant_403 = evaluate_high_ticket_escrow_and_attestation_policy(
+        escrow_enabled=False,
+    )
+    escrow_fake_422 = evaluate_high_ticket_escrow_and_attestation_policy(
+        authentication_passed=False,
+    )
+    escrow_premature_409 = evaluate_high_ticket_escrow_and_attestation_policy(
+        inspection_hours_elapsed=12,
+        buyer_explicit_accept=False,
+    )
+    escrow_warranty_409 = evaluate_high_ticket_escrow_and_attestation_policy(
+        warranty_days_grounded_by_webiq=7,
+    )
+    high_ticket_escrow_attestation_guards = {
+        "all_passed": (
+            escrow_release_ok.allowed
+            and escrow_release_ok.seller_payout_cents == 450000
+            and escrow_release_ok.warranty_vc_minted
+            and not escrow_instant_403.allowed
+            and escrow_instant_403.http_status == 403
+            and not escrow_fake_422.allowed
+            and escrow_fake_422.http_status == 422
+            and escrow_fake_422.buyer_refund_cents == 450000
+            and not escrow_premature_409.allowed
+            and escrow_premature_409.http_status == 409
+            and not escrow_warranty_409.allowed
+            and escrow_warranty_409.action_pill == "Confirm"
+        ),
+        "escrow_release_latency_ms": escrow_release_ok.latency_ms,
+        "counterfeit_refund_latency_ms": escrow_fake_422.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8100,6 +8235,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "multi_currency_fx_quote_guards": multi_currency_fx_quote_guards,
         "loyalty_coupon_hybrid_saga_guards": loyalty_coupon_hybrid_saga_guards,
         "regulated_zkp_eligibility_guards": regulated_zkp_eligibility_guards,
+        "high_ticket_escrow_attestation_guards": high_ticket_escrow_attestation_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -11413,6 +11549,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="zkp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive High-Ticket Escrow, Authentication Attestation & Warranty VC Sandbox (Round 23 FAQ Companion) -->
+      <div class="finops-box" id="high-ticket-escrow-attestation-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-escrow-title">💎 高客单价奢品/翻新算力 ($4,500) 托管结算与验真放款架构：里程碑托管 (escrow_hold_...) + 鉴定/物流双签 + SN 质保卡 vs 即时打款假货跑路决策器 (Round 23 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 高客单价交易资金托管、中立仓验真与 72h 拆箱验货场景 (High-Ticket Escrow, Authentication Lab &amp; 72h Inspection Scenario):</span></label>
+          <select id="escrow-select" onchange="updateHighTicketEscrowSandbox()">
+            <option value="escrow_release_ok">⚡ 中立仓验真 (auth_attest_...) + 物流妥投 (pod_sig_...) + 买家验收通过：285ms 划拨 $4,500 货款并原子签发 sn_sha256 电子质保卡! (Act automatically)</option>
+            <option value="escrow_instant_403">🛑 高客单价无托管即时打款拦截：$4,500 第三方集市订单试图走 instant_upfront_payout → 15ms 触发 HTTP 403 硬阻断 ($0 卷款敞口)!</option>
+            <option value="escrow_fake_422">🚨 中立鉴定仓检出改标假卡 / 序列号 SN 不符：实验室返回 authentication_passed=False → 22ms 触发 HTTP 422 将 $4,500 全额原路退回买家!</option>
+            <option value="escrow_premature_409">🛑 72 小时买家验货期内卖家强行提前提现：签收仅过 12h (&lt;72h) 且买家未主动确认 → 16ms 触发 HTTP 409 拦截提前放款!</option>
+            <option value="escrow_warranty_409">🧑‍⚖️ Web IQ 检出折叠条款暗藏“售出不退/仅店保 7 天”：低于买家 Mandate 180 天质保底线 → 325ms 触发 HTTP 409 Confirm 入托前挂起!</option>
+          </select>
+        </div>
+        <div id="escrow-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -11874,6 +12028,7 @@ function renderAll() {{
   updateMultiCurrencyFxSandbox();
   updateLoyaltyCouponSandbox();
   updateRegulatedZkpSandbox();
+  updateHighTicketEscrowSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13223,6 +13378,56 @@ function updateRegulatedZkpSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ W3C ZKP 零知识谓词核验成交 + 成人签收绑定 (ZKP_ELIGIBILITY_VERIFIED_COMMITTED · 260ms · Act automatically):</strong><br>" +
     "• <strong>零隐私暴露合规闭环</strong>：通过权威发证方公钥验签 <code>zkp_vc_live_991a (age_over_21=true, order_nonce=nonce_772a)</code>，全程暴露 <code>0 bytes</code> 姓名/生日/身份证号，并在物流令牌上强制锁定 <code>adult_signature_21_plus=true</code>！" +
+    "</div>";
+}}
+
+function updateHighTicketEscrowSandbox() {{
+  var selEl = document.getElementById("escrow-select");
+  var outEl = document.getElementById("escrow-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "escrow_instant_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOCKED_UNESCROWED_HIGH_TICKET_INSTANT_PAYOUT (15ms · Send to a human · synthetic_policy)：<br>" +
+      "单笔金额 <code>$4,500.00 &gt;= $500.00</code> 强制托管红线！严禁向第三方卖家执行无托管即时不可逆打款，必须走独立托管专户 <code>escrow_hold_live_...</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "escrow_fake_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 COUNTERFEIT_OR_SN_MISMATCH_ESCROW_REFUNDED (22ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "中立鉴定实验室上机检测发现芯片改标假货 / 硬件序列号与挂牌不符！托管网关在 <code>22ms</code> 内自动将锁定的 <code>$4,500.00</code> 全额原路退回买家（卖家实得 <code>$0.00</code>，买家本金零损失）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "escrow_premature_409") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 PREMATURE_ESCROW_RELEASE_BLOCKED (16ms · Send to a human · synthetic_policy)：<br>" +
+      "物流虽已妥投，但当前仅过去 <code>12 小时</code>（未满 <code>72 小时</code> 买家拆箱验货窗口且买家未主动签发确认回执），已拦截卖家提前提现请求！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "escrow_warranty_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 WARRANTY_TERMS_MISMATCH_CONFIRM_REQUIRED (325ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在入托前穿透解析商品折叠条款，发现实际仅提供 <code>7 天店保 / 拆封不退</code>（低于买家 Mandate 要求的 <code>180 天</code> 保修底线），已暂停锁款并转交人类买家确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双预言机验真 + 验收通过：货款划拨与数字质保卡原子激活 (ESCROW_RELEASED_WARRANTY_ACTIVATED · 285ms · Act automatically):</strong><br>" +
+    "• <strong>零假货闭环交割</strong>：凭中立鉴定仓签名 <code>auth_attest_live_881b</code>、承运商加密妥投 <code>pod_sig_live_772c</code> 与买家确认，向卖家释放 <code>$4,500.00</code>，并同步签发绑定唯一硬件序列号 <code>sn_sha256=\"sn_88f1\"</code> 的电子质保卡 <code>warranty_vc_live_365d</code>！" +
     "</div>";
 }}
 
