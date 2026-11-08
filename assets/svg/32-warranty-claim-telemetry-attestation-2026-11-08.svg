@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg32" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A101D" />
+      <stop offset="50%" stop-color="#111C2D" />
+      <stop offset="100%" stop-color="#0F242A" />
+    </linearGradient>
+    <linearGradient id="accent32" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+    <linearGradient id="badCard32" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2A1215" />
+      <stop offset="100%" stop-color="#1A0E14" />
+    </linearGradient>
+    <linearGradient id="goodCard32" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0C2430" />
+      <stop offset="100%" stop-color="#0A2724" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="760" fill="url(#bg32)" />
+  <rect x="24" y="20" width="1232" height="720" rx="18" fill="none" stroke="#1E293B" stroke-width="2" />
+
+  <!-- Top Header Banner -->
+  <rect x="44" y="36" width="1192" height="84" rx="12" fill="#0B1626" stroke="#06B6D4" stroke-width="1.5" />
+  <rect x="44" y="36" width="1192" height="6" rx="3" fill="url(#accent32)" />
+  <text x="68" y="72" fill="#F8FAFC" font-family="Segoe UI, system-ui, sans-serif" font-size="22" font-weight="800">
+    智能售后质保理赔与硬件故障遥测验真架构 (Cryptographic Warranty Telemetry vs. Serial Fraud)
+  </text>
+  <text x="68" y="102" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="14">
+    Round 30 Visual Summary · 设备签名诊断凭证 (warranty_claim_token_...) + 原单串号绑定 + Web IQ 延保/快修接地 vs. 爬取他人串号骗保
+  </text>
+  <rect x="1010" y="54" width="204" height="32" rx="16" fill="#083344" stroke="#06B6D4" stroke-width="1" />
+  <text x="1112" y="75" fill="#A5F3FC" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+    TPM Telemetry &amp; RMA Guard
+  </text>
+
+  <!-- Left Column: Anti-Pattern (Scraped Marketplace Serials & Fake Receipt Uploads) -->
+  <rect x="44" y="138" width="576" height="350" rx="14" fill="url(#badCard32)" stroke="#EF4444" stroke-width="1.5" />
+  <text x="68" y="172" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700">
+    ❌ 传统售后 Agent 陷阱（黑产盗用二手网串号骗保 + 无故障恶意换新）
+  </text>
+
+  <rect x="68" y="192" width="528" height="82" rx="10" fill="#1F1218" stroke="#7F1D1D" stroke-width="1" />
+  <text x="84" y="218" fill="#FECACA" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    1. 二手平台爬取有效序列号“借鸡生蛋”骗保 (Scraped-Serial Fraud)
+  </text>
+  <text x="84" y="242" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    • 黑产从 eBay/闲鱼卖家晒图中批量提取在保序列号 (sn_ebay_scraped_777)
+  </text>
+  <text x="84" y="262" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="600">
+    • 配上 AI 伪造的电子小票截图，诱骗无原单绑定的客服 Agent 免费寄出 $650 新机！
+  </text>
+
+  <rect x="68" y="288" width="528" height="86" rx="10" fill="#1F1218" stroke="#7F1D1D" stroke-width="1" />
+  <text x="84" y="314" fill="#FECACA" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    2. 口头编造故障话术骗取整机换新（No-Fault-Found Refresh Abuse）
+  </text>
+  <text x="84" y="338" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    • 设备完全正常或仅需 $110 更换独立风扇/电源模块，用户却谎称主板烧毁要求换整机
+  </text>
+  <text x="84" y="358" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="600">
+    • 真实故障用户反而被逼翻找一年半前的纸质发票拍照，排队苦等 5 个工作日！
+  </text>
+
+  <rect x="68" y="388" width="528" height="80" rx="10" fill="#3B0D11" stroke="#EF4444" stroke-width="1" />
+  <text x="84" y="416" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    💥 备件库资损与服务摩擦（synthetic_policy 基准算例：$650 先行换新备件）
+  </text>
+  <text x="84" y="444" fill="#FECACA" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    盗用串号骗走 $650 整机 + 过保改期小票骗保 + 错失同城 4h 模块快修立省 $540！
+  </text>
+
+  <!-- Right Column: Recommended Architecture (Order-Bound Serial + Signed Fault Telemetry + Web IQ) -->
+  <rect x="644" y="138" width="592" height="350" rx="14" fill="url(#goodCard32)" stroke="#10B981" stroke-width="1.5" />
+  <text x="668" y="172" fill="#6EE7B7" font-family="Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700">
+    ✅ 原单串号绑定 + 硬件故障遥测签名 + Web IQ 快修套利架构（推荐）
+  </text>
+
+  <rect x="668" y="192" width="544" height="82" rx="10" fill="#091D26" stroke="#06B6D4" stroke-width="1" />
+  <text x="684" y="218" fill="#A5F3FC" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    防线 1：原购买订单串号强绑定（13ms HTTP 403）与芯片遥测验真（16ms HTTP 422）
+  </text>
+  <text x="684" y="242" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    • 校验 claimed_serial == original_order_serial，二手网爬取串号 13ms 直接阻断
+  </text>
+  <text x="684" y="262" fill="#67E8F9" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="600">
+    • 强制要求设备 TPM/安全芯片签名的硬件故障码 (telemetry_fault_verified=True)，16ms 拒无证索赔
+  </text>
+
+  <rect x="668" y="288" width="544" height="86" rx="10" fill="#091D26" stroke="#3B82F6" stroke-width="1" />
+  <text x="684" y="314" fill="#93C5FD" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    防线 2：Microsoft Web IQ 过保与官方质量召回公告复核（310ms HTTP 451）
+  </text>
+  <text x="684" y="338" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    • 购入天数超 730 天标准保修期时，Web IQ /v3/browse 实时核对品牌官网特殊延保批次
+  </text>
+  <text x="684" y="358" fill="#60A5FA" font-family="Segoe UI, system-ui, sans-serif" font-size="13" font-weight="600">
+    • 确认无官方延保覆盖 (webiq_oem_extended_program_active=False) 即刻 310ms HTTP 451 拒赔
+  </text>
+
+  <rect x="668" y="388" width="544" height="80" rx="10" fill="#063229" stroke="#10B981" stroke-width="1.2" />
+  <text x="684" y="416" fill="#A7F3D0" font-family="Segoe UI, system-ui, sans-serif" font-size="14" font-weight="700">
+    防线 3：同城 4h 模块快修立省 $540（315ms HTTP 409）或 265ms 免传小票秒换新
+  </text>
+  <text x="684" y="444" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+    检出同城 $110 换模块即可修复 → 315ms Confirm 省 $540；需换整机则 265ms 自动出库！
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Matrix Table -->
+  <rect x="44" y="504" width="1192" height="220" rx="14" fill="#091521" stroke="#334155" stroke-width="1.5" />
+  <text x="68" y="534" fill="#F8FAFC" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="700">
+    📊 确定性网关实测与选型对比（deterministic_offline_simulation · as of 2026-11-08 · synthetic_policy 基准：$650 备件 / 730天保修期）
+  </text>
+
+  <!-- Table Header -->
+  <rect x="64" y="548" width="1152" height="28" rx="6" fill="#1E293B" />
+  <text x="78" y="567" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700">实测场景 (Scenario)</text>
+  <text x="370" y="567" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700">串号绑定与故障遥测状态</text>
+  <text x="630" y="567" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700">网关确定性裁决状态码与车道</text>
+  <text x="975" y="567" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700">实测延迟 / 动作标签</text>
+
+  <!-- Row 1 -->
+  <text x="78" y="596" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="600">1. 黑产盗用二手网爬取的串号骗保</text>
+  <text x="370" y="596" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">sn_ebay_scraped_777 != sn_oem_bound_101</text>
+  <text x="630" y="596" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="700">HTTP 403 WARRANTY_SERIAL_OWNERSHIP_MISMATCH</text>
+  <text x="975" y="596" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">13 ms · Send to a human</text>
+
+  <!-- Row 2 -->
+  <text x="78" y="622" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="600">2. 口头谎称损坏但无硬件故障遥测</text>
+  <text x="370" y="622" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">telemetry_fault_verified=False</text>
+  <text x="630" y="622" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="700">HTTP 422 MISSING_DEVICE_FAULT_TELEMETRY</text>
+  <text x="975" y="622" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">16 ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <text x="78" y="648" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="600">3. 购入 820 天已过保且无官方延保</text>
+  <text x="370" y="648" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">820d &gt; 730d + !webiq_extended_program</text>
+  <text x="630" y="648" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="700">HTTP 451 WARRANTY_COVERAGE_WINDOW_EXPIRED</text>
+  <text x="975" y="648" fill="#FCA5A5" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">310 ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <text x="78" y="674" fill="#FDE68A" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="600">4. Web IQ 发现同城 4h 模块快修套利</text>
+  <text x="370" y="674" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">$110 换子模块 vs $650 换整机 (省 $540)</text>
+  <text x="630" y="674" fill="#FDE68A" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="700">HTTP 409 SAME_DAY_MODULAR_REPAIR_CONFIRM</text>
+  <text x="975" y="674" fill="#FDE68A" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">315 ms · Confirm (省 $540)</text>
+
+  <!-- Row 5 -->
+  <text x="78" y="700" fill="#6EE7B7" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="600">5. 原单绑定 + 故障遥测验真秒级换新</text>
+  <text x="370" y="700" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">sn_oem_bound_101 + 故障签名 + 在保 320d</text>
+  <text x="630" y="700" fill="#6EE7B7" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" font-weight="700">HTTP 200 VERIFIED_WARRANTY_REPLACEMENT_SENT</text>
+  <text x="975" y="700" fill="#6EE7B7" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5">265 ms · Act automatically</text>
+</svg>

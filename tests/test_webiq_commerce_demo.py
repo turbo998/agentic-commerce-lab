@@ -1594,6 +1594,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.en.md",
             "docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.md",
             "docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.en.md",
+            "docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.md",
+            "docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2850,6 +2852,59 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["price_drop_watchlist_mandate_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("price-drop-watchlist-mandate-sandbox", demo_zh)
+
+    def test_warranty_claim_telemetry_attestation_vs_serial_fraud_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_warranty_claim_telemetry_attestation_policy,
+        )
+
+        # 1. Verified original order serial + signed fault telemetry -> 200 replacement dispatched
+        commit_ok = evaluate_warranty_claim_telemetry_attestation_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.replacement_value_cents, 65000)
+
+        # 2. Scraped marketplace serial mismatch -> 403 blocked in 13ms
+        serial_403 = evaluate_warranty_claim_telemetry_attestation_policy(
+            claimed_serial="sn_ebay_scraped_777",
+        )
+        self.assertFalse(serial_403.allowed)
+        self.assertEqual(serial_403.http_status, 403)
+        self.assertEqual(
+            serial_403.warranty_lane, "WARRANTY_SERIAL_OWNERSHIP_MISMATCH"
+        )
+
+        # 3. Missing signed device fault telemetry (No-Fault-Found abuse) -> 422 blocked in 16ms
+        telem_422 = evaluate_warranty_claim_telemetry_attestation_policy(
+            telemetry_fault_verified=False,
+        )
+        self.assertFalse(telem_422.allowed)
+        self.assertEqual(telem_422.http_status, 422)
+        self.assertEqual(
+            telem_422.warranty_lane, "MISSING_DEVICE_FAULT_TELEMETRY_ATTESTATION"
+        )
+
+        # 4. Out-of-warranty (820d > 730d) & no OEM recall bulletin -> 451 blocked in 310ms
+        exp_451 = evaluate_warranty_claim_telemetry_attestation_policy(
+            days_since_purchase=820,
+            webiq_oem_extended_program_active=False,
+        )
+        self.assertFalse(exp_451.allowed)
+        self.assertEqual(exp_451.http_status, 451)
+
+        # 5. Web IQ same-day modular repair saves $540 ($110 vs $650) -> 409 Confirm in 315ms
+        mod_409 = evaluate_warranty_claim_telemetry_attestation_policy(
+            modular_repair_savings_cents=54000,
+        )
+        self.assertFalse(mod_409.allowed)
+        self.assertEqual(mod_409.http_status, 409)
+        self.assertEqual(mod_409.modular_repair_savings_cents, 54000)
+        self.assertEqual(mod_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["warranty_claim_telemetry_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("warranty-claim-telemetry-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

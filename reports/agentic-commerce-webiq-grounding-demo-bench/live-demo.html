@@ -1332,6 +1332,24 @@
         <div id="pdrop-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Autonomous Warranty Claim & Telemetry Attestation Sandbox (Round 30 FAQ Companion) -->
+      <div class="finops-box" id="warranty-claim-telemetry-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-warr-title">🛠️ 智能售后质保理赔与硬件故障遥测验真架构：设备签名诊断凭证 (warranty_claim_token_... + 原单串号绑定) vs 二手网盗用串号骗保与模块化快修套利决策器 (Round 30 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 质保串号所有权绑定、设备芯片故障码遥测与同城模块化快修场景 (Warranty Telemetry &amp; Anti-Fraud Scenario):</span></label>
+          <select id="warr-select" onchange="updateWarrantyClaimSandbox()">
+            <option value="warr_commit_ok">⚡ 原购买订单 SN 绑定吻合 (sn_oem_bound_101) + TPM 硬件故障遥测验真通过 (在保 320d &lt;= 730d)：免传小票 265ms 秒级派发 $650 先行替换机! (Act automatically)</option>
+            <option value="warr_serial_403">🛑 二手平台爬取串号骗保拦截：提交串号 sn_ebay_scraped_777 与原订单账本 sn_oem_bound_101 不符 → 13ms 触发 HTTP 403 硬阻断!</option>
+            <option value="warr_telem_422">🚨 无故障恶意换新拦截：用户口头谎称主板损坏但缺少设备安全芯片签名的故障遥测码 (telemetry_fault_verified=False) → 16ms 触发 HTTP 422 转远程诊断!</option>
+            <option value="warr_exp_451">🛑 过保伪造小票拦截：设备已购入 820 天 (&gt; 730 天标准保修) 且 Web IQ 核实无官方特殊召回延保公告 → 310ms 触发 HTTP 451 拒赔!</option>
+            <option value="warr_mod_409">🧑‍⚖️ Web IQ 检出同城授权网点支持 4 小时上门更换 $110 独立电源模块 (比寄出 $650 整机立省 $540.00 且当天恢复) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="warr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1800,6 +1818,7 @@ function renderAll() {
   updateB2BNet30Sandbox();
   updateESGCarbonSandbox();
   updatePriceDropWatchlistSandbox();
+  updateWarrantyClaimSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -3499,6 +3518,56 @@ function updatePriceDropWatchlistSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 真实跌破限价红线：条件限价代购已秒杀成交 (VERIFIED_PRICE_DROP_LIMIT_ORDER_EXECUTED · 260ms · Act automatically):</strong><br>" +
     "• <strong>零伪大促套路、零超时踏空</strong>：实付 <code>$820.00 &lt;= $850.00</code> 签名限价上限，且经 Web IQ 核验较 90 天历史基准价（<code>$920.00</code>）真实直降 <code>$100.00</code>，已自动完成锁单并销毁单次限价令牌！" +
+    "</div>";
+}
+
+function updateWarrantyClaimSandbox() {
+  var selEl = document.getElementById("warr-select");
+  var outEl = document.getElementById("warr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "warr_serial_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WARRANTY_SERIAL_OWNERSHIP_MISMATCH (13ms · Send to a human · synthetic_policy)：<br>" +
+      "质保网关检出索赔提交的序列号（<code>sn_ebay_scraped_777</code>）与当前买家加密订单账本绑定的出库序列号（<code>sn_oem_bound_101</code>）不符！已在 <code>13ms</code> 内硬阻断疑似二手平台爬取串号骗保（拦截 <code>$650.00</code> 备件流失）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "warr_telem_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_DEVICE_FAULT_TELEMETRY_ATTESTATION (16ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "理赔请求缺少设备 TPM / 安全芯片签发的硬件故障诊断遥测码（<code>telemetry_fault_verified=False</code>）！已在 <code>16ms</code> 内拦截无故障恶意换新（No-Fault-Found Abuse），并引导运行官方远程硬件自检！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "warr_exp_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WARRANTY_COVERAGE_WINDOW_EXPIRED (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "订单加密时间戳显示设备已购入 <code>820 天</code>（超出 <code>730 天</code> 标准保修期），且 Microsoft Web IQ <code>/v3/browse</code> 实时核实该批次不在任何官方特殊召回或延保计划内，已拒绝免费先行换新！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "warr_mod_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SAME_DAY_MODULAR_REPAIR_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "硬件故障遥测定位为独立电源子模块故障，且 Microsoft Web IQ <code>/v3/browse</code> 检出同城授权网点支持 <code>4 小时上门更换 $110.00 模块</code>（无需寄出 <code>$650.00</code> 整机，单笔立省 <code>$540.00</code> 备件成本），建议一键确认同城模块快修！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 原单串号 + 硬件故障遥测验真通过：先行换新已自动出库 (VERIFIED_WARRANTY_ADVANCE_REPLACEMENT_DISPATCHED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>免传一张纸质发票、零人工排队</strong>：原订单绑定序列号 <code>sn_oem_bound_101</code> 与芯片故障签名双重核验通过（在保第 <code>320/730 天</code>），已自动通知备件仓发出 <code>$650.00</code> 替换机！" +
     "</div>";
 }
 

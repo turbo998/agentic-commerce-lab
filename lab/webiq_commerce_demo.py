@@ -7086,6 +7086,101 @@ def evaluate_price_drop_watchlist_mandate_policy(
     )
 
 
+@dataclass(frozen=True)
+class WarrantyClaimTelemetryVerdict:
+    """Round 30 verdict for Device-Signed Diagnostic Telemetry Mandate (Original Order Serial Binding & Fault Code Verification) vs Spoofed-Serial Warranty Fraud & Manual Paper-Receipt Friction."""
+
+    allowed: bool
+    http_status: int
+    warranty_lane: str
+    replacement_value_cents: int
+    modular_repair_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_warranty_claim_telemetry_attestation_policy(
+    *,
+    original_order_serial: str = "sn_oem_bound_101",
+    claimed_serial: str = "sn_oem_bound_101",
+    telemetry_fault_verified: bool = True,
+    days_since_purchase: int = 320,
+    warranty_coverage_days: int = 730,
+    webiq_oem_extended_program_active: bool = False,
+    replacement_unit_cents: int = 65000,
+    modular_repair_savings_cents: int = 0,
+) -> WarrantyClaimTelemetryVerdict:
+    """Evaluate order-to-serial ledger ownership binding, hardware-signed diagnostic fault telemetry, Web IQ OEM recall/extended warranty check, and same-day modular repair arbitrage."""
+
+    # 1. Scraped / Mismatched Marketplace Serial Number -> HTTP 403
+    if claimed_serial != original_order_serial:
+        return WarrantyClaimTelemetryVerdict(
+            False,
+            403,
+            "WARRANTY_SERIAL_OWNERSHIP_MISMATCH",
+            0,
+            0,
+            "claimed_serial_does_not_match_buyer_original_order_receipt_ledger",
+            13,
+            "Send to a human",
+        )
+
+    # 2. Missing Hardware-Signed Fault Telemetry Attestation (No-Fault-Found Abuse) -> HTTP 422
+    if not telemetry_fault_verified:
+        return WarrantyClaimTelemetryVerdict(
+            False,
+            422,
+            "MISSING_DEVICE_FAULT_TELEMETRY_ATTESTATION",
+            0,
+            0,
+            "advance_replacement_blocked_without_signed_device_diagnostic_fault_code",
+            16,
+            "Send to a human",
+        )
+
+    # 3. Warranty Coverage Window Expired & No Active OEM Extended Service Bulletin -> HTTP 451
+    if (
+        days_since_purchase > warranty_coverage_days
+        and not webiq_oem_extended_program_active
+    ):
+        return WarrantyClaimTelemetryVerdict(
+            False,
+            451,
+            "WARRANTY_COVERAGE_WINDOW_EXPIRED",
+            0,
+            0,
+            "warranty_window_expired_and_webiq_confirmed_no_oem_recall_extension",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Same-Day Modular Component Swap Arbitrage -> HTTP 409 Confirm
+    if modular_repair_savings_cents > 0:
+        return WarrantyClaimTelemetryVerdict(
+            False,
+            409,
+            "SAME_DAY_MODULAR_REPAIR_ARBITRAGE_CONFIRM",
+            replacement_unit_cents - modular_repair_savings_cents,
+            modular_repair_savings_cents,
+            "webiq_found_same_day_authorized_modular_repair_saving_540_usd_vs_full_replacement",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Ownership + Signed Fault Telemetry -> Advance Replacement Dispatched
+    return WarrantyClaimTelemetryVerdict(
+        True,
+        200,
+        "VERIFIED_WARRANTY_ADVANCE_REPLACEMENT_DISPATCHED",
+        replacement_unit_cents,
+        0,
+        "order_serial_binding_and_hardware_fault_telemetry_verified_for_instant_rma",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8946,6 +9041,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cart_recovery_block_latency_ms": pdrop_unsol_403.latency_ms,
     }
 
+    warr_commit_ok = evaluate_warranty_claim_telemetry_attestation_policy()
+    warr_serial_403 = evaluate_warranty_claim_telemetry_attestation_policy(
+        claimed_serial="sn_ebay_scraped_777",
+    )
+    warr_telem_422 = evaluate_warranty_claim_telemetry_attestation_policy(
+        telemetry_fault_verified=False,
+    )
+    warr_exp_451 = evaluate_warranty_claim_telemetry_attestation_policy(
+        days_since_purchase=820,
+        webiq_oem_extended_program_active=False,
+    )
+    warr_mod_409 = evaluate_warranty_claim_telemetry_attestation_policy(
+        modular_repair_savings_cents=54000,
+    )
+    warranty_claim_telemetry_guards = {
+        "all_passed": (
+            warr_commit_ok.allowed
+            and warr_commit_ok.replacement_value_cents == 65000
+            and not warr_serial_403.allowed
+            and warr_serial_403.http_status == 403
+            and not warr_telem_422.allowed
+            and warr_telem_422.http_status == 422
+            and not warr_exp_451.allowed
+            and warr_exp_451.http_status == 451
+            and not warr_mod_409.allowed
+            and warr_mod_409.action_pill == "Confirm"
+        ),
+        "warranty_dispatch_latency_ms": warr_commit_ok.latency_ms,
+        "serial_fraud_block_latency_ms": warr_serial_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8988,6 +9114,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_net30_three_way_match_guards": b2b_net30_three_way_match_guards,
         "esg_carbon_verified_shipping_guards": esg_carbon_verified_shipping_guards,
         "price_drop_watchlist_mandate_guards": price_drop_watchlist_mandate_guards,
+        "warranty_claim_telemetry_guards": warranty_claim_telemetry_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -12427,6 +12554,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pdrop-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Autonomous Warranty Claim & Telemetry Attestation Sandbox (Round 30 FAQ Companion) -->
+      <div class="finops-box" id="warranty-claim-telemetry-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-warr-title">🛠️ 智能售后质保理赔与硬件故障遥测验真架构：设备签名诊断凭证 (warranty_claim_token_... + 原单串号绑定) vs 二手网盗用串号骗保与模块化快修套利决策器 (Round 30 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 质保串号所有权绑定、设备芯片故障码遥测与同城模块化快修场景 (Warranty Telemetry &amp; Anti-Fraud Scenario):</span></label>
+          <select id="warr-select" onchange="updateWarrantyClaimSandbox()">
+            <option value="warr_commit_ok">⚡ 原购买订单 SN 绑定吻合 (sn_oem_bound_101) + TPM 硬件故障遥测验真通过 (在保 320d &lt;= 730d)：免传小票 265ms 秒级派发 $650 先行替换机! (Act automatically)</option>
+            <option value="warr_serial_403">🛑 二手平台爬取串号骗保拦截：提交串号 sn_ebay_scraped_777 与原订单账本 sn_oem_bound_101 不符 → 13ms 触发 HTTP 403 硬阻断!</option>
+            <option value="warr_telem_422">🚨 无故障恶意换新拦截：用户口头谎称主板损坏但缺少设备安全芯片签名的故障遥测码 (telemetry_fault_verified=False) → 16ms 触发 HTTP 422 转远程诊断!</option>
+            <option value="warr_exp_451">🛑 过保伪造小票拦截：设备已购入 820 天 (&gt; 730 天标准保修) 且 Web IQ 核实无官方特殊召回延保公告 → 310ms 触发 HTTP 451 拒赔!</option>
+            <option value="warr_mod_409">🧑‍⚖️ Web IQ 检出同城授权网点支持 4 小时上门更换 $110 独立电源模块 (比寄出 $650 整机立省 $540.00 且当天恢复) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="warr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12895,6 +13040,7 @@ function renderAll() {{
   updateB2BNet30Sandbox();
   updateESGCarbonSandbox();
   updatePriceDropWatchlistSandbox();
+  updateWarrantyClaimSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14594,6 +14740,56 @@ function updatePriceDropWatchlistSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 真实跌破限价红线：条件限价代购已秒杀成交 (VERIFIED_PRICE_DROP_LIMIT_ORDER_EXECUTED · 260ms · Act automatically):</strong><br>" +
     "• <strong>零伪大促套路、零超时踏空</strong>：实付 <code>$820.00 &lt;= $850.00</code> 签名限价上限，且经 Web IQ 核验较 90 天历史基准价（<code>$920.00</code>）真实直降 <code>$100.00</code>，已自动完成锁单并销毁单次限价令牌！" +
+    "</div>";
+}}
+
+function updateWarrantyClaimSandbox() {{
+  var selEl = document.getElementById("warr-select");
+  var outEl = document.getElementById("warr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "warr_serial_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WARRANTY_SERIAL_OWNERSHIP_MISMATCH (13ms · Send to a human · synthetic_policy)：<br>" +
+      "质保网关检出索赔提交的序列号（<code>sn_ebay_scraped_777</code>）与当前买家加密订单账本绑定的出库序列号（<code>sn_oem_bound_101</code>）不符！已在 <code>13ms</code> 内硬阻断疑似二手平台爬取串号骗保（拦截 <code>$650.00</code> 备件流失）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "warr_telem_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_DEVICE_FAULT_TELEMETRY_ATTESTATION (16ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "理赔请求缺少设备 TPM / 安全芯片签发的硬件故障诊断遥测码（<code>telemetry_fault_verified=False</code>）！已在 <code>16ms</code> 内拦截无故障恶意换新（No-Fault-Found Abuse），并引导运行官方远程硬件自检！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "warr_exp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WARRANTY_COVERAGE_WINDOW_EXPIRED (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "订单加密时间戳显示设备已购入 <code>820 天</code>（超出 <code>730 天</code> 标准保修期），且 Microsoft Web IQ <code>/v3/browse</code> 实时核实该批次不在任何官方特殊召回或延保计划内，已拒绝免费先行换新！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "warr_mod_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SAME_DAY_MODULAR_REPAIR_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "硬件故障遥测定位为独立电源子模块故障，且 Microsoft Web IQ <code>/v3/browse</code> 检出同城授权网点支持 <code>4 小时上门更换 $110.00 模块</code>（无需寄出 <code>$650.00</code> 整机，单笔立省 <code>$540.00</code> 备件成本），建议一键确认同城模块快修！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 原单串号 + 硬件故障遥测验真通过：先行换新已自动出库 (VERIFIED_WARRANTY_ADVANCE_REPLACEMENT_DISPATCHED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>免传一张纸质发票、零人工排队</strong>：原订单绑定序列号 <code>sn_oem_bound_101</code> 与芯片故障签名双重核验通过（在保第 <code>320/730 天</code>），已自动通知备件仓发出 <code>$650.00</code> 替换机！" +
     "</div>";
 }}
 

@@ -61,6 +61,7 @@
 - **专题 27（B2B 供应链账期授信 Net-30/Net-60 与采购单三单匹配 PO-GRN-Invoice 3-Way Match 架构：可编程应付账款保理令牌 `b2b_net_terms_token_...` + 电子收货单 GRN 核验 vs 信用卡预扣占压现金流与幽灵发票欺诈）**：**[《B2B 供应链账期授信（Net-30/Net-60 Trade Credit）与采购单三单匹配（PO-GRN-Invoice 3-Way Match）架构：可编程应付账款保理令牌（`b2b_net_terms_token_...` + 电子收货单 GRN 行项核验）vs 信用卡预扣占压现金流与幽灵发票欺诈选型与原理解析 FAQ》](docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.md)**
 - **专题 28（绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价 Anti-Greenwashing 架构：可核验碳核算凭证 `esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定 vs 未核验“碳中和”勾选框附加费与高排空运越权）**：**[《绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价（Anti-Greenwashing）架构：可核验碳核算凭证（`esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定）vs 未核验“碳中和”勾选框附加费与高排空运越权选型与原理解析 FAQ》](docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.md)**
 - **专题 29（AI Agent 降价狙击代购授权 Conditional Price-Drop Watchlist Mandate 与弃购召回防骚扰架构：条件触发限价令牌 `price_drop_mandate_...` + 90 天历史基准价核验 vs 先涨后降虚假大促诱导与未授权弃购自动扣款）**：**[《AI Agent 降价狙击代购授权（Conditional Price-Drop Watchlist Mandate）与弃购召回防骚扰（Anti-Dark-Pattern Cart Recovery）架构：条件触发限价令牌（`price_drop_mandate_...` + 90 天历史基准价核验）vs 先涨后降虚假大促诱导与未授权弃购自动扣款选型与原理解析 FAQ》](docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.md)**
+- **专题 30（智能售后质保理赔 Autonomous Warranty Claim 与硬件故障遥测验真 Cryptographic Diagnostic Telemetry Attestation 架构：设备签名诊断凭证 `warranty_claim_token_...` + 原始订单序列号绑定与错误码验真 vs 伪造发票/串号骗保与人工上传小票摩擦）**：**[《智能售后质保理赔（Autonomous Warranty Claim）与硬件故障遥测验真（Cryptographic Diagnostic Telemetry Attestation）架构：设备签名诊断凭证（`warranty_claim_token_...` + 原始订单序列号绑定与错误码验真）vs 伪造发票/串号骗保与人工上传小票摩擦选型与原理解析 FAQ》](docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -119,6 +120,8 @@
 ![2026-11-08 绿色低碳采购、Scope 3 碳足迹预算门禁与防漂绿溢价架构一图流](assets/svg/30-esg-carbon-footprint-verified-shipping-2026-11-08.svg)
 
 ![2026-11-08 AI Agent 降价狙击代购授权与反先涨后降暗黑模式架构一图流](assets/svg/31-price-drop-watchlist-mandate-2026-11-08.svg)
+
+![2026-11-08 智能售后质保理赔与硬件故障遥测防骗保架构一图流](assets/svg/32-warranty-claim-telemetry-attestation-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
