@@ -1548,10 +1548,93 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/bnpl-webview-handover-vs-headless-agent-faq.en.md",
             "docs/multi-merchant-split-cart-saga-vs-connect-faq.md",
             "docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md",
+            "docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.md",
+            "docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
             self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
+    def test_post_purchase_refund_and_return_policy_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_post_purchase_refund_and_return_policy
+
+        # 1. Compliant read-only return policy grounding & RMA draft -> 200 OK
+        rma_ok = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="return_eligibility_rma_draft",
+            browse_http_status=200,
+            browse_query="return window restocking fee",
+            summary_restocking_fee_usd="0.00",
+            terms_restocking_fee_usd="0.00",
+        )
+        self.assertTrue(rma_ok.allowed)
+        self.assertEqual(rma_ok.http_status, 200)
+        self.assertEqual(rma_ok.lane, "return_rma_draft_verified")
+        self.assertEqual(rma_ok.action, "Act automatically")
+
+        # 2. Browse 202 Accepted async crawl -> 202 Defer (never fabricate return deadline)
+        browse_202 = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="return_eligibility_rma_draft",
+            browse_http_status=202,
+        )
+        self.assertFalse(browse_202.allowed)
+        self.assertEqual(browse_202.http_status, 202)
+        self.assertEqual(browse_202.lane, "defer_browse_202_no_fabricated_deadline")
+
+        # 3. Summary ($0) vs Terms ($15 restocking fee) mismatch -> 409 Conflict
+        fee_mismatch = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="return_eligibility_rma_draft",
+            browse_http_status=200,
+            summary_restocking_fee_usd="0.00",
+            terms_restocking_fee_usd="15.00",
+        )
+        self.assertFalse(fee_mismatch.allowed)
+        self.assertEqual(fee_mismatch.http_status, 409)
+        self.assertEqual(fee_mismatch.lane, "blocked_summary_terms_restocking_fee_mismatch")
+
+        # 4. Unconfirmed create_refund / send_money -> 403 paused for human confirmation
+        refund_paused = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="mcp_refund_or_treasury_write",
+            mcp_tool_name="create_refund",
+            mcp_auth_mode="oauth",
+            human_confirmed=False,
+        )
+        self.assertFalse(refund_paused.allowed)
+        self.assertEqual(refund_paused.http_status, 403)
+        self.assertEqual(refund_paused.lane, "paused_mcp_refund_requires_human_confirmation")
+
+        # 5. Post-Nov 30 sk_live_* or >180d dormant payout key -> 401/403 blocked
+        sk_cutoff = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="mcp_refund_or_treasury_write",
+            mcp_auth_mode="legacy_sk",
+            human_confirmed=True,
+        )
+        self.assertFalse(sk_cutoff.allowed)
+        self.assertEqual(sk_cutoff.http_status, 401)
+
+        dormant_180d = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="mcp_refund_or_treasury_write",
+            mcp_auth_mode="agent_rk",
+            days_since_last_transfer_or_payout=185,
+            human_confirmed=True,
+        )
+        self.assertFalse(dormant_180d.allowed)
+        self.assertEqual(dormant_180d.http_status, 403)
+
+        # 6. Human confirmed refund with active OAuth -> 200 OK
+        refund_ok = evaluate_post_purchase_refund_and_return_policy(
+            operation_lane="mcp_refund_or_treasury_write",
+            mcp_tool_name="create_refund",
+            mcp_auth_mode="oauth",
+            human_confirmed=True,
+        )
+        self.assertTrue(refund_ok.allowed)
+        self.assertEqual(refund_ok.http_status, 200)
+        self.assertEqual(refund_ok.lane, "confirmed_mcp_refund_executed")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["post_purchase_refund_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("post-purchase-refund-selector-sandbox", demo_zh)
 
     def test_multi_merchant_split_cart_saga_vs_connect(self) -> None:
         from lab.webiq_commerce_demo import evaluate_multi_merchant_split_cart_saga

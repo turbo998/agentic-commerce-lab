@@ -110,6 +110,11 @@
     "rollback_released_usd": "1100.00",
     "rollback_settled_loss_usd": "0.00"
   },
+  "post_purchase_refund_guards": {
+    "all_passed": true,
+    "rma_draft_latency_ms": 340,
+    "confirmed_refund_latency_ms": 395
+  },
   "scenarios": [
     {
       "id": "W01",

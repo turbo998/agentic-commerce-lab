@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070E1C"/>
+      <stop offset="55%" stop-color="#0E1C35"/>
+      <stop offset="100%" stop-color="#091324"/>
+    </linearGradient>
+    <linearGradient id="readGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="writeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="haltGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg7)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="14" fill="#111C33" stroke="#334E7B" stroke-width="1.5"/>
+  <rect x="54" y="40" width="236" height="24" rx="12" fill="#065F46"/>
+  <text x="172" y="56" fill="#D1FAE5" font-size="11" font-weight="700" text-anchor="middle">2026-11-08 · ROUND 7 DEEP DIVE</text>
+  <text x="306" y="58" fill="#F8FAFC" font-size="19" font-weight="800">售后逆向退货与资金划拨架构：Web IQ 只读退货核验 vs. Stripe MCP 退款/司库人类确认门禁</text>
+  <text x="54" y="88" fill="#93C5FD" font-size="12.5">Post-Purchase Reverse Logistics &amp; Treasury Architecture: Web IQ Return-Eligibility Grounding vs. Stripe MCP Refund Confirmation Gate</text>
+
+  <!-- Left Card: Pattern A — Read-Only Return Eligibility & RMA Prep -->
+  <rect x="36" y="124" width="548" height="236" rx="14" fill="#092225" stroke="#10B981" stroke-width="1.8"/>
+  <rect x="36" y="124" width="548" height="36" rx="14" fill="url(#readGrad)"/>
+  <text x="54" y="147" fill="#042F2E" font-size="14" font-weight="800">🟢 轨道 A：售后退货资格核验与 RMA 预填单（Agent 全自动 · 零资金外流）</text>
+  <text x="54" y="182" fill="#A7F3D0" font-size="12.5" font-weight="700">适用边界：查询退货期限、核验折旧费（Restocking Fee）、生成退货面单草稿</text>
+  <text x="54" y="206" fill="#E2E8F0" font-size="12">• Web IQ /v3/browse (contentFormat="passage") 必须带非空 query (≤1000 chars)</text>
+  <text x="54" y="228" fill="#E2E8F0" font-size="12">• 零编造铁律：遇 HTTP 202 (retryAfter=60s) 绝不凭记忆瞎编“30天无理由退货”</text>
+  <text x="54" y="250" fill="#E2E8F0" font-size="12">• Poppy 双重比对：交叉核对前端 summary ($0费) 与底层 terms ($15费) 防隐藏扣费</text>
+  <text x="54" y="272" fill="#FDE68A" font-size="12" font-weight="700">• 权限隔离：仅拥有只读订单查询与面单草稿权限，不含资金退款 API 作用域</text>
+  <rect x="54" y="294" width="510" height="48" rx="8" fill="#061619" stroke="#059669"/>
+  <text x="68" y="314" fill="#34D399" font-size="12" font-weight="700">沙盒裁决：200 OK · return_rma_draft_verified（340 ms · Act automatically）</text>
+  <text x="68" y="332" fill="#94A3B8" font-size="11">若 Browse 返回 202 抓取中 → 202 Defer (等待 60s 重试，0% 幻觉率)</text>
+
+  <!-- Right Card: Pattern B — High-Consequence Refund & Treasury Execution -->
+  <rect x="616" y="124" width="548" height="236" rx="14" fill="#23190B" stroke="#F59E0B" stroke-width="1.8"/>
+  <rect x="616" y="124" width="548" height="36" rx="14" fill="url(#writeGrad)"/>
+  <text x="634" y="147" fill="#451A03" font-size="14" font-weight="800">🟡 轨道 B：实际资金退款与司库划拨（Stripe MCP 强制人类确认门禁 · Confirm）</text>
+  <text x="634" y="182" fill="#FDE68A" font-size="12.5" font-weight="700">适用边界：create_refund、convert_currency、send_money、transfer_money</text>
+  <text x="634" y="206" fill="#E2E8F0" font-size="12">• 为什么必须拦：工单提示词注入（“免退货直接退我 $500”）可在数分钟内掏空商户余额</text>
+  <text x="634" y="228" fill="#E2E8F0" font-size="12">• Stripe MCP 官方门禁（official_doc_snapshot）：四大资金写工具强制暂停等待人类点击 Confirm</text>
+  <text x="634" y="250" fill="#E2E8F0" font-size="12">• 2026-11-30 密钥断代：拦截 sk_live_* 与无 Agent 标签的 rk_live_*（返回 HTTP 401）</text>
+  <text x="634" y="272" fill="#FCA5A5" font-size="12" font-weight="700">• 180 天静默冻结铁律：超 180 天未发转账/提现的 API 密钥自动锁定资金划拨权限！</text>
+  <rect x="634" y="294" width="510" height="48" rx="8" fill="#181006" stroke="#D97706"/>
+  <text x="648" y="314" fill="#FBBF24" font-size="12" font-weight="700">沙盒裁决：无确认 403 Blocked ｜ 人类确认后 200 OK (395 ms) ｜ &gt;180d 休眠 403 Locked</text>
+  <text x="648" y="332" fill="#94A3B8" font-size="11">严禁把售后工单系统的自动回复 Agent 直接接通无人值守的全自动退款执行接口！</text>
+
+  <!-- Middle Section: Four-Gate Reverse Logistics & Refund Security Pipeline -->
+  <rect x="36" y="378" width="1128" height="176" rx="14" fill="#101B30" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="406" fill="#F8FAFC" font-size="15" font-weight="800">🛡️ 售后逆向与资金划拨四道确定性安全门禁（4-Gate Post-Purchase &amp; Treasury Security Pipeline）</text>
+
+  <!-- Gate 1 -->
+  <rect x="54" y="422" width="258" height="114" rx="10" fill="#0B192C" stroke="#38BDF8"/>
+  <text x="68" y="444" fill="#38BDF8" font-size="12.5" font-weight="800">门禁 1：Web IQ 202 与非空 Query</text>
+  <text x="68" y="466" fill="#E2E8F0" font-size="11.5">• /v3/browse passage 强校验非空 query</text>
+  <text x="68" y="486" fill="#E2E8F0" font-size="11.5">• 收到 202 retryAfter=60s 立即挂起</text>
+  <text x="68" y="504" fill="#E2E8F0" font-size="11.5">• 严禁幻觉编造 UCP #966 退货截止日</text>
+  <text x="68" y="524" fill="#7DD3FC" font-size="11" font-weight="700">202 Defer · 零幻觉退货政策承诺</text>
+
+  <!-- Gate 2 -->
+  <rect x="330" y="422" width="266" height="114" rx="10" fill="#23180B" stroke="#F59E0B"/>
+  <text x="344" y="444" fill="#FBBF24" font-size="12.5" font-weight="800">门禁 2：Summary vs Terms 折旧费核对</text>
+  <text x="344" y="466" fill="#E2E8F0" font-size="11.5">• 比对前端摘要 ($0 退货费) 与条款细则</text>
+  <text x="344" y="486" fill="#E2E8F0" font-size="11.5">• 检出隐藏 $15 折旧费 (Restocking Fee)</text>
+  <text x="344" y="504" fill="#E2E8F0" font-size="11.5">• 立即阻断自动退货改单并告警买家</text>
+  <text x="344" y="524" fill="#FDE68A" font-size="11" font-weight="700">409 Conflict · 拦截隐性退货扣费刺客</text>
+
+  <!-- Gate 3 -->
+  <rect x="614" y="422" width="268" height="114" rx="10" fill="#0A2226" stroke="#10B981"/>
+  <text x="628" y="444" fill="#34D399" font-size="12.5" font-weight="800">门禁 3：MCP 退款与司库人类 Confirm</text>
+  <text x="628" y="466" fill="#E2E8F0" font-size="11.5">• create_refund / send_money 强制挂起</text>
+  <text x="628" y="486" fill="#E2E8F0" font-size="11.5">• 校验物流妥投回执 (RMA Received) 哈希</text>
+  <text x="628" y="504" fill="#E2E8F0" font-size="11.5">• 财务/客服主管显式点击 Confirm 才放款</text>
+  <text x="628" y="524" fill="#6EE7B7" font-size="11" font-weight="700">100% 免疫售后工单提示词注入骗退</text>
+
+  <!-- Gate 4 -->
+  <rect x="900" y="422" width="246" height="114" rx="10" fill="#2A1215" stroke="#EF4444"/>
+  <text x="914" y="444" fill="#F87171" font-size="12.5" font-weight="800">门禁 4：Nov 30 断代与 180d 休眠锁</text>
+  <text x="914" y="466" fill="#E2E8F0" font-size="11.5">• 2026-11-30 后拦截 sk_live_* (401)</text>
+  <text x="914" y="486" fill="#E2E8F0" font-size="11.5">• 强制 OAuth 或带 Agent 标签的 rk_live_</text>
+  <text x="914" y="504" fill="#E2E8F0" font-size="11.5">• &gt;180 天未动账密钥自动锁死划拨权限</text>
+  <text x="914" y="524" fill="#FCA5A5" font-size="11" font-weight="700">401 / 403 · 消除僵尸密钥盗刷风险</text>
+
+  <!-- Footer Provenance -->
+  <rect x="36" y="570" width="1128" height="80" rx="12" fill="#0B1324" stroke="#1E293B" stroke-width="1.2"/>
+  <text x="54" y="596" fill="#38BDF8" font-size="12.5" font-weight="700">📊 数据来源与诚实口径标签（Provenance Ledger · as_of: 2026-11-08）</text>
+  <text x="54" y="618" fill="#CBD5E1" font-size="11.5">• [official_doc_snapshot] Web IQ /v3/browse passage 非空 query 与 202 retryAfter 规范；Stripe MCP 2026-11-30 密钥断代、create_refund/Treasury 人类确认门禁与 180 天休眠锁。</text>
+  <text x="54" y="638" fill="#94A3B8" font-size="11.5">• [synthetic_policy + deterministic_offline_simulation] Poppy 退货条款比对与 RMA 门禁耗时（340ms/395ms）来自 lab/webiq_commerce_demo.py；第三方物流承运商面单 API 延迟标为 not_measured。</text>
+</svg>

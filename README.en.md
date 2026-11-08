@@ -38,6 +38,7 @@ This repository is a production-grade research and engineering testbed for **Age
 > - **Topic 4 (E-Commerce Agent Identity & WAF)**: **[E-Commerce Anti-Fraud & Verified Agent Identity: RFC 9421 Web Bot Auth / Visa TAP vs. Legacy WAF/CAPTCHA Selection FAQ](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md)**
 > - **Topic 5 (BNPL Controlled WebView Handover)**: **[BNPL Agentic Checkout Architecture: Controlled WebView Redirect Handover vs. Autonomous Tokenized Card Rails (`SPT v2` / `VIC`) Selection FAQ](docs/bnpl-webview-handover-vs-headless-agent-faq.en.md)**
 > - **Topic 6 (Multi-Merchant Split-Cart Saga)**: **[Multi-Merchant Split-Cart Atomic Orchestration: Two-Phase Pre-Auth Hold & Saga Compensation vs. Stripe Connect SPT Marketplace Selection FAQ](docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md)**
+- **Topic 7 (Post-Purchase Return Grounding vs. Refund Gate)**: **[Post-Purchase Reverse Logistics & Treasury Agent Architecture: Autonomous Return-Eligibility Grounding (Web IQ `/v3/browse`) vs. High-Consequence Human Confirmation Gates (Stripe MCP `create_refund` / Treasury) Selection FAQ](docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -50,6 +51,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 BNPL Controlled WebView Redirect Handover vs Autonomous Tokenized Card Rails Visual Summary](assets/svg/07-bnpl-webview-handover-vs-headless-2026-11-08.svg)
 
 ![2026-11-08 Multi-Merchant Split-Cart 2-Phase Pre-Auth Hold & Saga vs Stripe Connect Visual Summary](assets/svg/08-multi-merchant-split-cart-saga-2026-11-08.svg)
+
+![2026-11-08 Post-Purchase Reverse Logistics & Treasury Architecture: Web IQ Return Grounding vs Stripe MCP Refund Confirmation Gate Visual Summary](assets/svg/09-post-purchase-return-vs-refund-gate-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
