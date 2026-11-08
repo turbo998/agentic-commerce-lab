@@ -155,6 +155,11 @@
     "bounded_slippage_latency_ms": 355,
     "price_drop_latency_ms": 320
   },
+  "mcp_oauth_audience_stepup_guards": {
+    "all_passed": true,
+    "stepup_union_latency_ms": 365,
+    "deputy_block_latency_ms": 18
+  },
   "scenarios": [
     {
       "id": "W01",

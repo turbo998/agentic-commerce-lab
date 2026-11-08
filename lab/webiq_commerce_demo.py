@@ -5485,6 +5485,141 @@ def evaluate_dynamic_pricing_quote_lock_and_drift_policy(
     )
 
 
+@dataclass(frozen=True)
+class McpOAuthAudienceStepUpVerdict:
+    """Round 15 verdict for MCP OAuth 2.1 Resource Audience Binding (RFC 8707) & Step-Up Scope Union vs Confused Deputy Replay."""
+
+    allowed: bool
+    http_status: int
+    auth_lane: str
+    merged_scopes: tuple[str, ...]
+    suppress_untrusted_error_display: bool
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_mcp_oauth_audience_and_stepup_policy(
+    *,
+    credential_mode: str = "oauth21_stepup",
+    token_aud: str = "https://checkout.merchant.example/mcp",
+    target_mcp_uri: str = "https://checkout.merchant.example/mcp",
+    expected_issuer: str = "https://auth.merchant.example",
+    callback_iss: str = "https://auth.merchant.example",
+    existing_scopes: tuple[str, ...] = ("mcp:tools", "commerce:read"),
+    required_stepup_scope: str | None = "commerce:checkout",
+    requests_offline_access: bool = False,
+    token_in_uri_query: bool = False,
+    is_high_risk_financial_tool: bool = False,
+    human_confirmed: bool = True,
+) -> McpOAuthAudienceStepUpVerdict:
+    """Evaluate MCP commerce tool authorization: RFC 8707 audience binding, RFC 9207 exact iss match, Scope Union step-up, and Nov 30 key cutoff."""
+
+    # 1. Post-Nov 30, 2026 Stripe MCP static key cutoff (sk_live_ or untagged rk_live_ rejected with 401 OAuth challenge)
+    if credential_mode in ("raw_sk_live", "untagged_rk_live"):
+        return McpOAuthAudienceStepUpVerdict(
+            False,
+            401,
+            "BLOCKED_POST_NOV30_STATIC_KEY_CUTOFF",
+            (),
+            False,
+            "stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge",
+            18,
+            "Confirm",
+        )
+
+    # 2. Controlled backend Agent-tagged restricted key -> enforce human confirmation gate on high-risk tools
+    if credential_mode == "agent_tagged_rk_live":
+        if is_high_risk_financial_tool and not human_confirmed:
+            return McpOAuthAudienceStepUpVerdict(
+                False,
+                403,
+                "BLOCKED_HIGH_RISK_TOOL_NEEDS_HUMAN_CONFIRM",
+                existing_scopes,
+                False,
+                "stripe_mcp_refund_or_treasury_tool_requires_human_confirmation",
+                24,
+                "Confirm",
+            )
+        return McpOAuthAudienceStepUpVerdict(
+            True,
+            200,
+            "AGENT_TAGGED_KEY_AUTHORIZED",
+            existing_scopes,
+            False,
+            "agent_tagged_rk_live_verified_with_human_confirmation_gate",
+            290,
+            "Act automatically",
+        )
+
+    # 3. OAuth 2.1 protocol hygiene: forbid access tokens in URI query strings and forbid offline_access on protected resources
+    if token_in_uri_query or requests_offline_access or "offline_access" in existing_scopes:
+        return McpOAuthAudienceStepUpVerdict(
+            False,
+            400,
+            "BLOCKED_OAUTH_HYGIENE_VIOLATION",
+            (),
+            False,
+            "mcp_oauth21_forbids_uri_query_token_and_protected_resource_offline_access",
+            16,
+            "Send to a human",
+        )
+
+    # 4. RFC 9207 character-by-character simple string comparison (RFC 3986 §6.2.1) for iss parameter
+    if callback_iss != expected_issuer:
+        return McpOAuthAudienceStepUpVerdict(
+            False,
+            400,
+            "BLOCKED_RFC9207_ISS_MISMATCH",
+            (),
+            True,
+            "rfc9207_iss_mismatch_simple_string_comparison_failed_suppress_error_ui",
+            20,
+            "Send to a human",
+        )
+
+    # 5. RFC 8707 Resource Indicator Audience Binding: prevent Confused Deputy cross-MCP token replay
+    if token_aud != target_mcp_uri:
+        return McpOAuthAudienceStepUpVerdict(
+            False,
+            401,
+            "BLOCKED_CONFUSED_DEPUTY_AUD_MISMATCH",
+            (),
+            False,
+            "rfc8707_audience_mismatch_confused_deputy_cross_mcp_replay_blocked",
+            18,
+            "Send to a human",
+        )
+
+    # 6. High-risk financial tool human confirmation check
+    if is_high_risk_financial_tool and not human_confirmed:
+        return McpOAuthAudienceStepUpVerdict(
+            False,
+            403,
+            "BLOCKED_HIGH_RISK_TOOL_NEEDS_HUMAN_CONFIRM",
+            existing_scopes,
+            False,
+            "high_risk_mcp_financial_tool_requires_human_confirmation",
+            24,
+            "Confirm",
+        )
+
+    # 7. Step-Up Scope Union (HTTP 403 insufficient_scope -> merge S_old U S_new without losing existing read scopes)
+    merged = list(existing_scopes)
+    if required_stepup_scope and required_stepup_scope not in merged:
+        merged.append(required_stepup_scope)
+    return McpOAuthAudienceStepUpVerdict(
+        True,
+        200,
+        "STEPUP_SCOPE_UNION_AUTHORIZED",
+        tuple(merged),
+        False,
+        "rfc8707_aud_and_rfc9207_iss_verified_with_scope_union_stepup",
+        365 if required_stepup_scope else 275,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -6806,6 +6941,47 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "price_drop_latency_ms": dp_price_drop_ok.latency_ms,
     }
 
+    mcp_stepup_ok = evaluate_mcp_oauth_audience_and_stepup_policy()
+    mcp_deputy_401 = evaluate_mcp_oauth_audience_and_stepup_policy(
+        token_aud="https://compare.plugin.example/mcp",
+        target_mcp_uri="https://checkout.merchant.example/mcp",
+    )
+    mcp_iss_400 = evaluate_mcp_oauth_audience_and_stepup_policy(
+        expected_issuer="https://auth.merchant.example",
+        callback_iss="HTTPS://auth.merchant.example",
+    )
+    mcp_nov30_401 = evaluate_mcp_oauth_audience_and_stepup_policy(
+        credential_mode="raw_sk_live",
+    )
+    mcp_hygiene_400 = evaluate_mcp_oauth_audience_and_stepup_policy(
+        requests_offline_access=True,
+    )
+    mcp_refund_403 = evaluate_mcp_oauth_audience_and_stepup_policy(
+        credential_mode="agent_tagged_rk_live",
+        is_high_risk_financial_tool=True,
+        human_confirmed=False,
+    )
+    mcp_oauth_audience_stepup_guards = {
+        "all_passed": (
+            mcp_stepup_ok.allowed
+            and mcp_stepup_ok.auth_lane == "STEPUP_SCOPE_UNION_AUTHORIZED"
+            and mcp_stepup_ok.merged_scopes == ("mcp:tools", "commerce:read", "commerce:checkout")
+            and not mcp_deputy_401.allowed
+            and mcp_deputy_401.http_status == 401
+            and not mcp_iss_400.allowed
+            and mcp_iss_400.http_status == 400
+            and mcp_iss_400.suppress_untrusted_error_display
+            and not mcp_nov30_401.allowed
+            and mcp_nov30_401.http_status == 401
+            and not mcp_hygiene_400.allowed
+            and mcp_hygiene_400.http_status == 400
+            and not mcp_refund_403.allowed
+            and mcp_refund_403.http_status == 403
+        ),
+        "stepup_union_latency_ms": mcp_stepup_ok.latency_ms,
+        "deputy_block_latency_ms": mcp_deputy_401.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -6833,6 +7009,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pci_dss_spt_resolve_guards": pci_dss_spt_resolve_guards,
         "chargeback_dispute_evidence_guards": chargeback_dispute_evidence_guards,
         "dynamic_pricing_quote_lock_guards": dynamic_pricing_quote_lock_guards,
+        "mcp_oauth_audience_stepup_guards": mcp_oauth_audience_stepup_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -9995,6 +10172,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dyn-price-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive MCP OAuth 2.1 Audience Binding & Step-Up Scope Union Sandbox (Round 15 FAQ Companion) -->
+      <div class="finops-box" id="mcp-oauth-audience-stepup-sandbox" style="margin-top:12px;border-color:#60A5FA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mcp-stepup-title">🔐 MCP 商业工具安全架构：RFC 8707 受众绑定与 403 并集升权 vs 糊涂侍卫跨服重放决策器 (Round 15 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. MCP 凭证模式、受众声明 (aud) 与渐进式升权状态 (Credential, Audience &amp; Step-Up Posture):</span></label>
+          <select id="mcp-stepup-select" onchange="updateMcpOAuthStepUpSandbox()">
+            <option value="stepup_union_ok">🟢 OAuth 2.1 渐进式并集升权：原持 [mcp:tools, commerce:read] 遇 403 → 并集升级为 [tools, read, checkout] 且 aud 精确绑定 (365ms)</option>
+            <option value="confused_deputy_401">🛡️ 糊涂侍卫跨服重放攻击：恶意比价插件拿 aud="https://compare..." 的 Token 调结账 MCP → 18ms 触发 HTTP 401 阻断!</option>
+            <option value="rfc9207_iss_case_400">🛑 RFC 9207 iss 大小写折叠攻击：回调传入 "HTTPS://auth..." + 钓鱼 error_description → 触发 HTTP 400 并强制屏蔽钓鱼文案渲染! (20ms)</option>
+            <option value="nov30_sk_cutoff_401">🚫 2026-11-30 密钥大限拦截：传入静态 sk_live_... 或未打 Agent 标签 rk_live_... 调 Stripe MCP → 触发 HTTP 401 返回 OAuth 挑战! (18ms)</option>
+            <option value="oauth_hygiene_400">🧹 OAuth 2.1 协议卫生违规：受保护资源请求包含 offline_access 或 URL ?access_token= 传参 → 触发 HTTP 400 阻断! (16ms)</option>
+            <option value="high_risk_refund_403">🙋 高危资金工具门禁：持合法 Agent Key 调用 create_refund / send_money 但未附人类二次确认 → 触发 HTTP 403 挂起审批! (24ms)</option>
+          </select>
+        </div>
+        <div id="mcp-stepup-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -10448,6 +10644,7 @@ function renderAll() {{
   updatePciDssSptResolveSandbox();
   updateChargebackDisputeSandbox();
   updateDynamicPricingSandbox();
+  updateMcpOAuthStepUpSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11333,6 +11530,66 @@ function updateDynamicPricingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔒 合作商户密码学锁价令牌成交 (COMMITTED_QUOTE_LOCK_HONORED · 285ms · Act automatically):</strong><br>" +
     "• <strong>0.0% 价格漂移</strong>：<code>calculate_order</code> 签发的 <code>quote_id</code> 处于有效 TTL 内（剩余 <code>180s</code>），即便外部大盘已涨至 <code>$89.00</code>，仍严格按锁定价 <code>$79.00</code> 原子清算！" +
+    "</div>";
+}}
+
+function updateMcpOAuthStepUpSandbox() {{
+  var selEl = document.getElementById("mcp-stepup-select");
+  var outEl = document.getElementById("mcp-stepup-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "confused_deputy_401") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛡️ HTTP 401 rfc8707_audience_mismatch_confused_deputy_blocked (18ms · Send to a human · official_doc_snapshot)：<br>" +
+      "检测到跨服重放攻击！令牌中的受众声明 <code>aud=\"https://compare.plugin.example/mcp\"</code> 与当前结账服务器规范化 URI 不匹配，100% 阻断第三方恶意比价插件盗用用户 Token 下单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rfc9207_iss_case_400") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 400 rfc9207_iss_mismatch_simple_string_comparison_failed (20ms · Send to a human · official_doc_snapshot)：<br>" +
+      "OAuth 回调传入的 <code>iss=\"HTTPS://auth.merchant.example\"</code> 违反 <code>RFC 3986 §6.2.1</code> 逐字符简单字符串比对规则！网关当场拒绝授权码兑换，并强制静默屏蔽回调中的钓鱼 <code>error_description</code> 渲染（<code>suppress_error_ui=True</code>）。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nov30_sk_cutoff_401") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 401 stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge (18ms · Confirm · official_doc_snapshot)：<br>" +
+      "自 2026 年 11 月 30 日截止期后，Stripe MCP Server 全面拒绝静态全权限 <code>sk_live_...</code> 与未标记的 <code>rk_live_...</code> 密钥，强制返回 OAuth 2.1 挑战或要求显式打上 <code>Agent</code> 标签的最小受限密钥！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "oauth_hygiene_400") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧹 HTTP 400 mcp_oauth21_forbids_uri_query_token_and_protected_resource_offline_access (16ms · Send to a human · official_doc_snapshot)：<br>" +
+      "MCP 受保护资源严禁声明或请求 <code>offline_access</code> 长效刷新权限，且严禁将 Access Token 放入 URL <code>?access_token=</code> 查询字符串（防止网关日志明文泄密）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "high_risk_refund_403") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🙋 HTTP 403 stripe_mcp_refund_or_treasury_tool_requires_human_confirmation (24ms · Confirm · official_doc_snapshot)：<br>" +
+      "即便持有合法的 <code>Agent</code> 标签受限密钥，调用高危资金出账工具（<code>create_refund</code> / <code>send_money</code> / <code>transfer_money</code>）仍必须附带人类显式二次确认（<code>human_confirmed=True</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🟢 OAuth 2.1 受众绑定与并集升权通过 (STEPUP_SCOPE_UNION_AUTHORIZED · 365ms · Act automatically · official_doc_snapshot):</strong><br>" +
+    "• <strong>无损并集升权</strong>：将已有作用域与挑战作用域求并集 <code>[\"mcp:tools\", \"commerce:read\", \"commerce:checkout\"]</code>，不丢失基础只读权限<br>" +
+    "• <strong>双重密码学绑定</strong>：<code>RFC 8707 aud</code> 焊死结账 MCP 规范化 URI + <code>RFC 9207 iss</code> 逐字符精确匹配通过！" +
     "</div>";
 }}
 

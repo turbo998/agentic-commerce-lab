@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg17" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent17" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg17)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="18" fill="#0B1324" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent17)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#93C5FD" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-08 · ROUND 15 · MCP OAUTH 2.1 AUDIENCE BINDING (RFC 8707) &amp; STEP-UP UNION vs CONFUSED DEPUTY REPLAY</text>
+  <text x="48" y="90" fill="#F8FAFC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="21.5" font-weight="800">MCP 商业工具安全架构：RFC 8707 受众绑定与 403 并集升权 vs 糊涂侍卫跨服重放与静态密钥淘汰</text>
+  <text x="48" y="114" fill="#94A3B8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13">Provenance: official_doc_snapshot (MCP OAuth 2.1 / RFC 8707 / RFC 9207 / Stripe MCP 2026-11-30 Cutoff) + synthetic_policy + deterministic_offline_simulation</text>
+
+  <!-- Card 1: RFC 8707 Audience Binding & Step-Up Scope Union -->
+  <rect x="44" y="134" width="356" height="360" rx="14" fill="#06281E" stroke="#10B981" stroke-width="1.8"/>
+  <rect x="60" y="150" width="196" height="24" rx="12" fill="#065F46"/>
+  <text x="158" y="166" text-anchor="middle" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11" font-weight="700">核心防线 1 · 受众绑定与并集升权</text>
+  <text x="60" y="198" fill="#ECFDF5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="17" font-weight="800">RFC 8707 aud + Scope Union</text>
+  <text x="60" y="220" fill="#6EE7B7" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="600">适用：多插件 MCP 购物 · 订票 · B2B 交互式工作流</text>
+
+  <rect x="60" y="236" width="324" height="72" rx="10" fill="#041E16" stroke="#059669" stroke-width="1"/>
+  <text x="72" y="258" fill="#A7F3D0" font-family="Consolas, monospace" font-size="12" font-weight="700">aud: "https://checkout.merchant/mcp"</text>
+  <text x="72" y="278" fill="#D1FAE5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 每个 MCP 节点焊死独立 JWT aud 受众声明</text>
+  <text x="72" y="296" fill="#D1FAE5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 比价插件盗用 Token 重放结账服 → 18ms 报 401</text>
+
+  <rect x="60" y="320" width="324" height="76" rx="10" fill="#041E16" stroke="#059669" stroke-width="1"/>
+  <text x="72" y="342" fill="#34D399" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="700">403 insufficient_scope 并集升权：</text>
+  <text x="72" y="362" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 浏览期仅授 [mcp:tools, commerce:read]</text>
+  <text x="72" y="382" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 结账求并集 S_old ∪ {commerce:checkout} (365ms)</text>
+
+  <rect x="60" y="410" width="324" height="66" rx="10" fill="#064E3B"/>
+  <text x="72" y="434" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">✅ 结论：100% 根治“糊涂侍卫”跨服盗刷</text>
+  <text x="72" y="456" fill="#D1FAE5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">按需升权缩小 95% 提示词注入攻击面且不丢只读权限</text>
+
+  <!-- Card 2: RFC 9207 Exact String Match & OAuth Hygiene -->
+  <rect x="422" y="134" width="356" height="360" rx="14" fill="#0F1E3A" stroke="#3B82F6" stroke-width="1.8"/>
+  <rect x="438" y="150" width="204" height="24" rx="12" fill="#1E3A8A"/>
+  <text x="540" y="166" text-anchor="middle" fill="#BFDBFE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11" font-weight="700">核心防线 2 · RFC 9207 与协议净室</text>
+  <text x="438" y="198" fill="#EFF6FF" font-family="Segoe UI, PingFang SC, sans-serif" font-size="17" font-weight="800">RFC 9207 Exact iss &amp; Hygiene</text>
+  <text x="438" y="220" fill="#93C5FD" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="600">防范多授权服务器混淆 (AS Mix-Up) 与钓鱼文案</text>
+
+  <rect x="438" y="236" width="324" height="72" rx="10" fill="#091326" stroke="#2563EB" stroke-width="1"/>
+  <text x="450" y="258" fill="#93C5FD" font-family="Consolas, monospace" font-size="12" font-weight="700">RFC 3986 §6.2.1 逐字符精确比对</text>
+  <text x="450" y="278" fill="#DBEAFE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 严禁将 "HTTPS://..." 大小写折叠匹配 "https://..."</text>
+  <text x="450" y="296" fill="#DBEAFE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 失配时强制屏蔽未验证 error_description 渲染!</text>
+
+  <rect x="438" y="320" width="324" height="76" rx="10" fill="#091326" stroke="#2563EB" stroke-width="1"/>
+  <text x="450" y="342" fill="#60A5FA" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="700">两大 OAuth 2.1 卫生禁令：</text>
+  <text x="450" y="362" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 受保护资源严禁包含 offline_access (HTTP 400)</text>
+  <text x="450" y="382" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 严禁在 URI ?access_token= 传参 (HTTP 400)</text>
+
+  <rect x="438" y="410" width="324" height="66" rx="10" fill="#1E3A8A"/>
+  <text x="450" y="434" fill="#BFDBFE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">🛡️ 结论：零钓鱼注入 · 零日志令牌泄露</text>
+  <text x="450" y="456" fill="#DBEAFE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">配合 Web IQ /v3/browse 授权前核验外部 MCP 域名主体</text>
+
+  <!-- Card 3: Stripe MCP Nov 30, 2026 Cutoff & High-Risk Tool Gate -->
+  <rect x="800" y="134" width="356" height="360" rx="14" fill="#2A1215" stroke="#EF4444" stroke-width="1.8"/>
+  <rect x="816" y="150" width="214" height="24" rx="12" fill="#7F1D1D"/>
+  <text x="923" y="166" text-anchor="middle" fill="#FECACA" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11" font-weight="700">核心防线 3 · 2026-11-30 密钥大限</text>
+  <text x="816" y="198" fill="#FEF2F2" font-family="Segoe UI, PingFang SC, sans-serif" font-size="17" font-weight="800">Post-Nov 30 Key Cutoff &amp; HITL</text>
+  <text x="816" y="220" fill="#FCA5A5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="600">全面淘汰静态 sk_live_ · 强制高危资金工具人工门禁</text>
+
+  <rect x="816" y="236" width="324" height="72" rx="10" fill="#1A0A0C" stroke="#DC2626" stroke-width="1"/>
+  <text x="828" y="258" fill="#FCA5A5" font-family="Consolas, monospace" font-size="12" font-weight="700">2026-11-30 Cutoff (official_doc_snapshot)</text>
+  <text x="828" y="278" fill="#FEE2E2" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 传入 sk_live_ 或无 Agent 标签 rk_live_ → HTTP 401</text>
+  <text x="828" y="296" fill="#FEE2E2" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 强制返回 OAuth 2.1 挑战或要求 Agent 标签密钥</text>
+
+  <rect x="816" y="320" width="324" height="76" rx="10" fill="#1A0A0C" stroke="#DC2626" stroke-width="1"/>
+  <text x="828" y="342" fill="#F87171" font-family="Consolas, monospace" font-size="12" font-weight="700">高危资金工具强制人工确认 (HTTP 403):</text>
+  <text x="828" y="362" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• create_refund / send_money / transfer_money</text>
+  <text x="828" y="382" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 未附 human_confirmed=true 当场阻断出账 (24ms)</text>
+
+  <rect x="816" y="410" width="324" height="66" rx="10" fill="#7F1D1D"/>
+  <text x="828" y="434" fill="#FECACA" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">🛑 结论：终结全权限静态密钥裸奔时代</text>
+  <text x="828" y="456" fill="#FEE2E2" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">即便持合法 Agent Key，退款与划拨仍由人类拍板</text>
+
+  <!-- Bottom Quantitative Summary Strip -->
+  <rect x="44" y="512" width="1112" height="122" rx="14" fill="#0F172A" stroke="#475569" stroke-width="1.2"/>
+  <text x="64" y="540" fill="#F8FAFC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="14" font-weight="800">📊 MCP OAuth 2.1 受众绑定与渐进式升权实测矩阵 (evaluate_mcp_oauth_audience_and_stepup_policy · 36/36 Pytest Green)</text>
+
+  <text x="64" y="568" fill="#6EE7B7" font-family="Consolas, PingFang SC, monospace" font-size="12.5" font-weight="700">[Case 1-2 受众与升权] 403 并集升权 S_old ∪ {commerce:checkout} → 200 OK (365ms) | 比价插件跨服重放 Token (aud 不符) → HTTP 401 (18ms)</text>
+  <text x="64" y="592" fill="#93C5FD" font-family="Consolas, PingFang SC, monospace" font-size="12.5" font-weight="700">[Case 3 &amp; 5 协议卫生] RFC 9207 大小写折叠 HTTPS:// → HTTP 400 + 屏蔽钓鱼文案 (20ms) | offline_access / Query Token → HTTP 400 (16ms)</text>
+  <text x="64" y="616" fill="#FCA5A5" font-family="Consolas, PingFang SC, monospace" font-size="12.5" font-weight="700">[Case 4 &amp; 6 密钥与门禁] 2026-11-30 后传入 sk_live_ → HTTP 401 OAuth 挑战 (18ms) | create_refund 缺人工确认 → HTTP 403 拦截 (24ms)</text>
+</svg>

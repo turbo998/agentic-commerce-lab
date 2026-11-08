@@ -46,6 +46,7 @@
 - **专题 12（PCI-DSS 合规边界与多网关路由：`PaymentIntent` 免明文消费 vs 外部网关 SPT `Resolve` 接口）**：**[《PCI-DSS 合规边界与多支付网关（Multi-PSP）路由架构：标准 `PaymentIntent` 免明文消费（`SAQ-A`）vs 外部网关 SPT `Resolve` 解密接口（`PCI AoC` + RSA `encryption_block` 字节切片加密与互斥锁）选型与原理解析 FAQ》](docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md)**
 - **专题 13（拒付抗辩与友好欺诈架构：密码学三元组证据包 vs 传统截图申诉与前置小额止损）**：**[《拒付抗辩与“友好欺诈（Friendly Fraud）”智能体架构：密码学三元组证据包（Visa CE 3.0 + FIDO2 `MandateVC` 签名 + Web IQ 条款快照哈希）vs 传统人工截图申诉与前置小额自动止损选型与原理解析 FAQ》](docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.md)**
 - **专题 14（动态定价、航司调价与秒杀闪购架构：密码学锁价令牌 vs 有界滑点容忍与过期缓存价格漂移拦截）**：**[《动态定价、航司调价与秒杀闪购智能体架构：密码学锁价令牌（`quote_id` + `quote_expires_at` TTL）vs 有界滑点容忍授权（Bounded Slippage `max_amount_cents`）与过期缓存价格漂移拦截（`liveCrawlSucceeded=false`）选型与原理解析 FAQ》](docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.md)**
+- **专题 15（MCP 商业工具安全与 OAuth 2.1 受众绑定：`RFC 8707` `aud` 绑定与并集升权 vs “糊涂侍卫”跨服重放与静态密钥淘汰）**：**[《MCP 商业工具安全、OAuth 2.1 受众绑定与渐进式升权架构：资源指示符（`RFC 8707` `aud` 绑定 + `RFC 9207` 精确 `iss` 校验）与 `403 insufficient_scope` 作用域并集升权 vs “糊涂侍卫（Confused Deputy）”令牌重放与静态密钥（2026-11-30 截止）选型与原理解析 FAQ》](docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -74,6 +75,8 @@
 ![2026-11-08 拒付抗辩与友好欺诈智能体架构：密码学三元组证据包 vs 传统人工截图与前置止损一图流](assets/svg/15-chargeback-dispute-cryptographic-evidence-2026-11-08.svg)
 
 ![2026-11-08 动态定价与秒杀闪购智能体架构：密码学锁价令牌 vs 有界滑点容忍与过期缓存拦截一图流](assets/svg/16-dynamic-pricing-quote-lock-vs-drift-2026-11-08.svg)
+
+![2026-11-08 MCP 商业工具安全与 OAuth 2.1 受众绑定：RFC 8707 aud 绑定与渐进式升权 vs 糊涂侍卫重放一图流](assets/svg/17-mcp-oauth-audience-stepup-vs-confused-deputy-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

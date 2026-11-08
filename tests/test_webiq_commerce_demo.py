@@ -1564,6 +1564,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.en.md",
             "docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.md",
             "docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.en.md",
+            "docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.md",
+            "docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2029,6 +2031,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["dynamic_pricing_quote_lock_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("dynamic-pricing-quote-lock-sandbox", demo_zh)
+
+    def test_mcp_oauth_audience_stepup_vs_confused_deputy_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_mcp_oauth_audience_and_stepup_policy
+
+        # 1. Valid OAuth 2.1 step-up scope union with exact RFC 8707 aud & RFC 9207 iss
+        stepup_ok = evaluate_mcp_oauth_audience_and_stepup_policy()
+        self.assertTrue(stepup_ok.allowed)
+        self.assertEqual(stepup_ok.http_status, 200)
+        self.assertEqual(stepup_ok.auth_lane, "STEPUP_SCOPE_UNION_AUTHORIZED")
+        self.assertEqual(stepup_ok.merged_scopes, ("mcp:tools", "commerce:read", "commerce:checkout"))
+
+        # 2. Confused Deputy cross-MCP token replay -> 401 blocked
+        deputy_401 = evaluate_mcp_oauth_audience_and_stepup_policy(
+            token_aud="https://compare.plugin.example/mcp",
+            target_mcp_uri="https://checkout.merchant.example/mcp",
+        )
+        self.assertFalse(deputy_401.allowed)
+        self.assertEqual(deputy_401.http_status, 401)
+        self.assertEqual(deputy_401.auth_lane, "BLOCKED_CONFUSED_DEPUTY_AUD_MISMATCH")
+
+        # 3. RFC 9207 case-folded iss -> 400 blocked + untrusted error UI suppressed
+        iss_400 = evaluate_mcp_oauth_audience_and_stepup_policy(
+            expected_issuer="https://auth.merchant.example",
+            callback_iss="HTTPS://auth.merchant.example",
+        )
+        self.assertFalse(iss_400.allowed)
+        self.assertEqual(iss_400.http_status, 400)
+        self.assertTrue(iss_400.suppress_untrusted_error_display)
+
+        # 4. Post-Nov 30, 2026 raw sk_live_ key -> 401 blocked
+        nov30_401 = evaluate_mcp_oauth_audience_and_stepup_policy(
+            credential_mode="raw_sk_live",
+        )
+        self.assertFalse(nov30_401.allowed)
+        self.assertEqual(nov30_401.http_status, 401)
+
+        # 5. Protected resource requesting offline_access -> 400 blocked
+        hygiene_400 = evaluate_mcp_oauth_audience_and_stepup_policy(
+            requests_offline_access=True,
+        )
+        self.assertFalse(hygiene_400.allowed)
+        self.assertEqual(hygiene_400.http_status, 400)
+
+        # 6. High-risk refund/treasury tool without human confirmation -> 403 blocked
+        refund_403 = evaluate_mcp_oauth_audience_and_stepup_policy(
+            credential_mode="agent_tagged_rk_live",
+            is_high_risk_financial_tool=True,
+            human_confirmed=False,
+        )
+        self.assertFalse(refund_403.allowed)
+        self.assertEqual(refund_403.http_status, 403)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["mcp_oauth_audience_stepup_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("mcp-oauth-audience-stepup-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
