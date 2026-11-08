@@ -52,6 +52,7 @@
 - **专题 18（AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理披露与金库句柄 `ship_tok_...` vs 明文 PII 泄漏与 GDPR 密码学粉碎）**：**[《AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理位置披露与零明文上下文履约令牌（粗粒度税区前缀 `Postal-Prefix` + 隐私金库句柄 `ship_tok_...`）vs 明文 PII 进 Prompt 泄漏与 GDPR 密码学粉碎（Crypto-Shredding）选型与原理解析 FAQ》](docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md)**
 - **专题 19（AI Agent 秒杀抢购、并发锁库与防超卖架构：180s 短租约 `inv_hold_...` 与 `capture_method=manual` 预授权双锁对齐 vs 无锁超卖退费风暴与恶意占库耗尽攻击）**：**[《AI Agent 秒杀抢购、并发锁库与防超卖架构：有界 TTL 软锁库租约与预授权双锁对齐（`inv_hold_...` 180s TTL + `capture_method=manual` 原子提交）vs 乐观无锁超卖退费风暴与恶意 Agent 占库耗尽攻击（Denial-of-Inventory）选型与原理解析 FAQ》](docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.md)**
 - **专题 20（跨境多币种 AI Agent 计价、锁汇与汇率磨损架构：300s 锁汇令牌 `fx_quote_...` 与 ISO 4217 零小数位护栏 vs DCC 暴利加点与跨期退货汇损）**：**[《跨境多币种 AI Agent 计价、锁汇与汇率磨损架构：商户源币种直扣与有界 FX Quote 锁汇令牌（`fx_quote_...` 300s TTL + ISO 4217 零小数位防放大护栏）vs 动态货币转换高息陷阱（DCC `3.5%–6.5%` 隐性加点）与跨期退款汇率敞口选型与原理解析 FAQ》](docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.md)**
+- **专题 21（AI Agent 优惠券寻优、会员积分混合支付与防羊毛党叠加架构：受众核销锁与积分/法币双轨回滚 Saga vs 字典爆破、互斥叠加击穿毛利与吞积分）**：**[《AI Agent 优惠券寻优、会员积分混合支付与防羊毛党叠加架构：受众绑定核销锁与积分/法币双轨原子回滚（`promo_lock_...` + `loyalty_hold_...` Saga + 排他性校验）vs 优惠码穷举爆破、互斥神券叠加击穿毛利与扣分丢单选型与原理解析 FAQ》](docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -92,6 +93,8 @@
 ![2026-11-08 AI Agent 秒杀抢购、并发锁库与防超卖架构一图流](assets/svg/21-inventory-reservation-ttl-hold-vs-oversell-2026-11-08.svg)
 
 ![2026-11-08 跨境多币种 AI Agent 计价、锁汇与防 DCC 陷阱架构一图流](assets/svg/22-multi-currency-fx-rate-lock-vs-dcc-spread-2026-11-08.svg)
+
+![2026-11-08 AI Agent 优惠券寻优、会员积分混合支付与防叠加滥用架构一图流](assets/svg/23-loyalty-coupon-atomic-redemption-vs-stacking-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

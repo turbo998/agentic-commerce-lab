@@ -1576,6 +1576,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.en.md",
             "docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.md",
             "docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.en.md",
+            "docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.md",
+            "docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2395,6 +2397,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["multi_currency_fx_quote_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-currency-fx-quote-sandbox", demo_zh)
+
+    def test_loyalty_coupon_atomic_redemption_vs_stacking_abuse_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_loyalty_coupon_and_hybrid_saga_policy
+
+        # 1. Valid single promo + 10,000 pts + $80 fiat -> 200 committed
+        commit_ok = evaluate_loyalty_coupon_and_hybrid_saga_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.net_points_burned, 10000)
+        self.assertEqual(commit_ok.fiat_charged_cents, 8000)
+
+        # 2. Brute-force coupon enumeration (>3 attempts) -> 429 blocked in 14ms
+        brute_429 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+            promo_attempts_in_session=4,
+        )
+        self.assertFalse(brute_429.allowed)
+        self.assertEqual(brute_429.http_status, 429)
+        self.assertEqual(brute_429.promo_lane, "BLOCKED_COUPON_BRUTE_FORCE_ENUMERATION")
+
+        # 3. Mutually-exclusive coupon stacking or >40% margin breach -> 403 blocked
+        stack_403 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+            has_stacking_conflict=True,
+            total_discount_bps=6000,
+        )
+        self.assertFalse(stack_403.allowed)
+        self.assertEqual(stack_403.http_status, 403)
+        self.assertEqual(stack_403.promo_lane, "BLOCKED_UNAUTHORIZED_COUPON_AUDIENCE_OR_STACKING")
+
+        # 4. Fiat card decline auto-restores soft-held points (0 net points burned)
+        decline_402 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+            fiat_charge_succeeded=False,
+        )
+        self.assertFalse(decline_402.allowed)
+        self.assertEqual(decline_402.http_status, 402)
+        self.assertEqual(decline_402.net_points_burned, 0)
+        self.assertEqual(decline_402.promo_lane, "FIAT_DECLINED_LOYALTY_POINTS_AUTO_RESTORED")
+
+        # 5. Web IQ brand exclusion fine print -> 409 Confirm
+        excl_409 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+            brand_excluded_by_terms=True,
+        )
+        self.assertFalse(excl_409.allowed)
+        self.assertEqual(excl_409.http_status, 409)
+        self.assertEqual(excl_409.action_pill, "Confirm")
+
+        # 6. Partial return pro-rata split refund -> restores 5,000 pts + $40.00
+        ret_200 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+            is_partial_return=True,
+        )
+        self.assertTrue(ret_200.allowed)
+        self.assertEqual(ret_200.net_points_burned, -5000)
+        self.assertEqual(ret_200.fiat_charged_cents, -4000)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["loyalty_coupon_hybrid_saga_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("loyalty-coupon-hybrid-saga-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

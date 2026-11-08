@@ -6214,6 +6214,114 @@ def evaluate_multi_currency_fx_and_dcc_policy(
     )
 
 
+@dataclass(frozen=True)
+class LoyaltyCouponHybridSagaVerdict:
+    """Round 21 verdict for Subject-Bound Promo Lock & Two-Phase Loyalty-Fiat Saga vs Coupon Brute-Forcing, Stacking Abuse & Orphaned Point Burn."""
+
+    allowed: bool
+    http_status: int
+    promo_lane: str
+    net_points_burned: int
+    fiat_charged_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_loyalty_coupon_and_hybrid_saga_policy(
+    *,
+    promo_attempts_in_session: int = 1,
+    max_promo_attempts: int = 3,
+    has_stacking_conflict: bool = False,
+    audience_eligible: bool = True,
+    total_discount_bps: int = 1000,
+    max_allowed_discount_bps: int = 4000,
+    brand_excluded_by_terms: bool = False,
+    fiat_charge_succeeded: bool = True,
+    is_partial_return: bool = False,
+    soft_held_points: int = 10000,
+    fiat_remainder_cents: int = 8000,
+) -> LoyaltyCouponHybridSagaVerdict:
+    """Evaluate agentic coupon anti-abuse, margin floor, brand exclusion grounding, and two-phase loyalty-fiat atomic Saga rollback."""
+
+    # 1. Anti-Brute-Force Coupon Enumeration Guard (<= 3 attempts per checkout session)
+    if promo_attempts_in_session > max_promo_attempts:
+        return LoyaltyCouponHybridSagaVerdict(
+            False,
+            429,
+            "BLOCKED_COUPON_BRUTE_FORCE_ENUMERATION",
+            0,
+            0,
+            "promo_code_probing_exceeded_session_rate_limit_cap",
+            14,
+            "Send to a human",
+        )
+
+    # 2. Mutually-Exclusive Stacking DAG, Subject Audience Binding & 40% Margin Floor Guard
+    if has_stacking_conflict or not audience_eligible or total_discount_bps > max_allowed_discount_bps:
+        return LoyaltyCouponHybridSagaVerdict(
+            False,
+            403,
+            "BLOCKED_UNAUTHORIZED_COUPON_AUDIENCE_OR_STACKING",
+            0,
+            0,
+            "mutually_exclusive_coupon_stacking_or_audience_mismatch_or_margin_floor_breach",
+            17,
+            "Send to a human",
+        )
+
+    # 3. Web IQ /v3/browse Brand Exclusion Fine-Print Guard
+    if brand_excluded_by_terms:
+        return LoyaltyCouponHybridSagaVerdict(
+            False,
+            409,
+            "PROMO_BRAND_EXCLUSION_CONFIRM_REQUIRED",
+            0,
+            0,
+            "webiq_live_terms_detected_excluded_brand_or_limited_drop_sku",
+            310,
+            "Confirm",
+        )
+
+    # 4. Partial Return Pro-Rata Split Refund Path (50% return -> 5,000 pts + $40.00 fiat)
+    if is_partial_return:
+        return LoyaltyCouponHybridSagaVerdict(
+            True,
+            200,
+            "PRO_RATA_HYBRID_REFUND_COMPLETED",
+            -(soft_held_points // 2),
+            -(fiat_remainder_cents // 2),
+            "partial_return_refunded_pro_rata_across_loyalty_points_and_fiat_card",
+            235,
+            "Act automatically",
+        )
+
+    # 5. Two-Phase Loyalty-Fiat Saga Rollback: if fiat card is declined (HTTP 402), auto-release soft-held points
+    if not fiat_charge_succeeded:
+        return LoyaltyCouponHybridSagaVerdict(
+            False,
+            402,
+            "FIAT_DECLINED_LOYALTY_POINTS_AUTO_RESTORED",
+            0,
+            0,
+            "fiat_card_declined_soft_held_loyalty_points_and_single_use_voucher_auto_restored",
+            21,
+            "Send to a human",
+        )
+
+    # 6. Clean Two-Phase Hybrid Loyalty + Fiat Commit
+    return LoyaltyCouponHybridSagaVerdict(
+        True,
+        200,
+        "HYBRID_LOYALTY_FIAT_COMMITTED",
+        soft_held_points,
+        fiat_remainder_cents,
+        "promo_lock_and_loyalty_hold_atomically_committed_with_fiat_settlement",
+        275,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -7790,6 +7898,43 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "zero_decimal_block_latency_ms": fx_100x_422.latency_ms,
     }
 
+    promo_commit_ok = evaluate_loyalty_coupon_and_hybrid_saga_policy()
+    promo_brute_429 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+        promo_attempts_in_session=4,
+    )
+    promo_stack_403 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+        has_stacking_conflict=True,
+        total_discount_bps=6000,
+    )
+    promo_decline_402 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+        fiat_charge_succeeded=False,
+    )
+    promo_excl_409 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+        brand_excluded_by_terms=True,
+    )
+    promo_return_200 = evaluate_loyalty_coupon_and_hybrid_saga_policy(
+        is_partial_return=True,
+    )
+    loyalty_coupon_hybrid_saga_guards = {
+        "all_passed": (
+            promo_commit_ok.allowed
+            and promo_commit_ok.net_points_burned == 10000
+            and not promo_brute_429.allowed
+            and promo_brute_429.http_status == 429
+            and not promo_stack_403.allowed
+            and promo_stack_403.http_status == 403
+            and not promo_decline_402.allowed
+            and promo_decline_402.http_status == 402
+            and promo_decline_402.net_points_burned == 0
+            and not promo_excl_409.allowed
+            and promo_excl_409.action_pill == "Confirm"
+            and promo_return_200.allowed
+            and promo_return_200.net_points_burned == -5000
+        ),
+        "hybrid_commit_latency_ms": promo_commit_ok.latency_ms,
+        "point_restore_latency_ms": promo_decline_402.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -7823,6 +7968,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "privacy_pii_shipping_token_guards": privacy_pii_shipping_token_guards,
         "inventory_reservation_oversell_guards": inventory_reservation_oversell_guards,
         "multi_currency_fx_quote_guards": multi_currency_fx_quote_guards,
+        "loyalty_coupon_hybrid_saga_guards": loyalty_coupon_hybrid_saga_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -11099,6 +11245,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="fx-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Coupon Anti-Stacking & Two-Phase Loyalty-Fiat Saga Sandbox (Round 21 FAQ Companion) -->
+      <div class="finops-box" id="loyalty-coupon-hybrid-saga-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-promo-title">🎟️ AI Agent 优惠券寻优与会员积分混合支付架构：受众核销锁 + 积分/法币双轨回滚 (promo_lock_... + loyalty_hold_...) vs 爆破叠加与吞积分决策器 (Round 21 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 促销码试算、互斥叠加与积分/法币混合支付场景 (Promo Probing, Stacking &amp; Hybrid Loyalty-Fiat Scenario):</span></label>
+          <select id="promo-select" onchange="updateLoyaltyCouponSandbox()">
+            <option value="promo_commit_ok">⚡ 合规单券 ($20) + 10,000 积分 ($100) + 法币 ($80) 双轨原子成交：软冻结转正核销，账实完全一致! (275ms · Act automatically)</option>
+            <option value="promo_brute_429">🛑 优惠码字典穷举爆破拦截：单次结账会话第 4 次循环试探网传优惠码 (attempts=4 &gt; 3 synthetic_policy) → 14ms 触发 HTTP 429 硬阻断!</option>
+            <option value="promo_stack_403">🚨 API 数组注入互斥神券叠加 / 击穿 40% 毛利底线：传入 ["VIP20","EMP50"] (60% OFF) → 17ms 触发 HTTP 403 硬阻断!</option>
+            <option value="promo_decline_402">🔄 法币卡拒付触发积分毫秒级自动归还：剩余 $80.00 刷卡遇 402 拒付 → 21ms 自动释放 loyalty_hold 与单次神券 (净扣 0 积分!)</option>
+            <option value="promo_excl_409">🧑‍⚖️ Web IQ 检出指定品牌不参与满减：/v3/browse 识别限量款显卡在活动排除列表内 → 310ms 触发 HTTP 409 Confirm 提醒买家!</option>
+            <option value="promo_return_200">🛡️ 50% 部分退货等比退分退钱 (Pro-Rata Split Refund)：退回 5,000 积分至积分池 + 退回 $40.00 至原卡 (235ms)，杜绝积分套现!</option>
+          </select>
+        </div>
+        <div id="promo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -11558,6 +11723,7 @@ function renderAll() {{
   updatePrivacyPiiSandbox();
   updateInventoryReservationSandbox();
   updateMultiCurrencyFxSandbox();
+  updateLoyaltyCouponSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12798,6 +12964,65 @@ function updateMultiCurrencyFxSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 源币种 JPY + 300s 批发锁汇正常成交 (FX_QUOTE_LOCKED_PRESENTMENT_COMMITTED · 270ms · Act automatically):</strong><br>" +
     "• <strong>单笔立省 $25.92 USD</strong>：通过 ISO 4217 零小数位校验（<code>amount=70000</code>），拒选 6.5% DCC 陷阱，凭 <code>fx_quote_live_...</code>（<code>80 bps</code> 批发加点）锁定折算价 <code>$458.18 &lt;= $500.00 Mandate</code> 原子成交！" +
+    "</div>";
+}}
+
+function updateLoyaltyCouponSandbox() {{
+  var selEl = document.getElementById("promo-select");
+  var outEl = document.getElementById("promo-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "promo_brute_429") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 429 BLOCKED_COUPON_BRUTE_FORCE_ENUMERATION (14ms · Send to a human · synthetic_policy)：<br>" +
+      "当前结账会话已连续尝试第 4 个优惠码（超过单会话上限 <code>max_promo_attempts=3</code>），疑似省钱 Agent 循环暴力穷举网传神券，已当场冻结试券权限！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "promo_stack_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 403 BLOCKED_UNAUTHORIZED_COUPON_AUDIENCE_OR_STACKING (17ms · Send to a human · synthetic_policy)：<br>" +
+      "后端排他性组（Exclusivity DAG）与毛利护栏检出违规！Agent 试图通过 JSON 数组同时注入互斥券 <code>[\"VIP20\",\"EMP50\"]</code> 导致总折扣达 <code>60%</code>（击穿 <code>40%</code> 毛利红线），已硬阻断（实扣 <code>0</code> 积分 / <code>$0.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "promo_decline_402") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔄 HTTP 402 FIAT_DECLINED_LOYALTY_POINTS_AUTO_RESTORED (21ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "剩余 <code>$80.00</code> 法币卡扣款遭遇发卡行拒付（<code>card_declined</code>）！网关立即触发两阶段 Saga 补偿，在 <code>21ms</code> 内自动解冻归还软冻结的 <code>10,000</code> 会员积分与单次优惠券（<code>net_points_burned = 0</code>，零吞分客诉）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "promo_excl_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PROMO_BRAND_EXCLUSION_CONFIRM_REQUIRED (310ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时解析活动规则折叠小字，发现当前购物车中的限量显卡属于“不参与满减排除品牌”，已剥离无效券并转交人类买家确认是否按原价购买！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "promo_return_200") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🛡️ 50% 部分退货等比拆分回退完成 (PRO_RATA_HYBRID_REFUND_COMPLETED · 235ms · Act automatically):</strong><br>" +
+      "• <strong>防套现对账</strong>：严格按原单抵扣比例原路退还 <code>5,000 积分</code> 至会员账本、退还 <code>$40.00</code> 至信用卡，杜绝将积分抵扣额退成现金！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 合规单券 + 10,000 积分 + $80 法币双轨原子成交 (HYBRID_LOYALTY_FIAT_COMMITTED · 275ms · Act automatically):</strong><br>" +
+    "• <strong>两阶段原子核销</strong>：先软冻结 <code>promo_lock_live_... ($20)</code> 与 <code>loyalty_hold_live_... (10,000 pts)</code>，确认法币 <code>$80.00</code> 扣款成功后同步转正核销！" +
     "</div>";
 }}
 
