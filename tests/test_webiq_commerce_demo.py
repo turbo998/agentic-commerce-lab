@@ -1596,6 +1596,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.en.md",
             "docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.md",
             "docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.en.md",
+            "docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.md",
+            "docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2905,6 +2907,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["warranty_claim_telemetry_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("warranty-claim-telemetry-sandbox", demo_zh)
+
+    def test_b2b_moq_syndicate_escrow_vs_stranded_deposit_shortfall_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_moq_syndicate_escrow_policy,
+        )
+
+        # 1. Verified MOQ reached (1,000 >= 1,000) within 38h <= 72h -> 200 escrow released
+        commit_ok = evaluate_b2b_moq_syndicate_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.buyer_settled_cents, 287500)
+
+        # 2. Premature capture attempt while pledged is 650 < 1,000 MOQ -> 403 blocked in 12ms
+        short_403 = evaluate_b2b_moq_syndicate_escrow_policy(
+            current_pledged_units=650,
+        )
+        self.assertFalse(short_403.allowed)
+        self.assertEqual(short_403.http_status, 403)
+        self.assertEqual(
+            short_403.syndicate_lane, "MOQ_THRESHOLD_NOT_MET_CAPTURE_BLOCKED"
+        )
+
+        # 3. 72h pooling window expired (76h > 72h) below MOQ -> 422 auto-refund in 15ms
+        exp_422 = evaluate_b2b_moq_syndicate_escrow_policy(
+            current_pledged_units=650,
+            elapsed_hours=76,
+        )
+        self.assertFalse(exp_422.allowed)
+        self.assertEqual(exp_422.http_status, 422)
+        self.assertEqual(
+            exp_422.syndicate_lane, "SYNDICATE_WINDOW_EXPIRED_AUTO_REFUND"
+        )
+
+        # 4. Hidden broker markup or unverified factory -> 451 blocked in 310ms
+        unver_451 = evaluate_b2b_moq_syndicate_escrow_policy(
+            webiq_factory_verified=False,
+        )
+        self.assertFalse(unver_451.allowed)
+        self.assertEqual(unver_451.http_status, 451)
+
+        # 5. Web IQ 1,000-unit wholesale tier saves $625.00 on 250 units -> 409 Confirm in 315ms
+        tier_409 = evaluate_b2b_moq_syndicate_escrow_policy(
+            next_tier_savings_cents=62500,
+        )
+        self.assertFalse(tier_409.allowed)
+        self.assertEqual(tier_409.http_status, 409)
+        self.assertEqual(tier_409.tier_savings_cents, 62500)
+        self.assertEqual(tier_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_moq_syndicate_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-moq-syndicate-escrow-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

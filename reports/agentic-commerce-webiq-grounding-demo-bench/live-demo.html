@@ -1350,6 +1350,24 @@
         <div id="warr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B MOQ Syndicate Escrow & Wholesale Tier Grounding Sandbox (Round 31 FAQ Companion) -->
+      <div class="finops-box" id="b2b-moq-syndicate-escrow-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-moq-title">🏭 B2B 跨企业联合拼单起订量聚合与全有或全无智能托管架构：凑单达标条件释放令牌 (moq_syndicate_escrow_... + 72h 超时秒解冻) vs 定金套牢与团长吃差价决策器 (Round 31 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 源头工厂 1,000 件起订量 (MOQ) 联合拼单池进度、72h 窗口与阶梯价核验场景 (B2B MOQ Syndicate Escrow Scenario):</span></label>
+          <select id="moq-select" onchange="updateB2BMOQSyndicateSandbox()">
+            <option value="moq_commit_ok">⚡ 4 家企业采购 Agent 合计凑满 1,000 件 (&gt;= 1,000 MOQ · 38h &lt;= 72h) + Web IQ 工厂底价验真通过：265ms 原子释放 $2,875.00 并签发独立子运单! (Act automatically)</option>
+            <option value="moq_short_403">🛑 未满起订量提前挪用拦截：当前仅凑齐 650 件 (&lt; 1,000 件工厂 MOQ) 团长却试图提前划扣 $2,875.00 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="moq_exp_422">🚨 72 小时凑单超时自动解冻：elapsed=76h (&gt; 72h 窗口) 仍未凑齐 1,000 件 → 15ms 触发 HTTP 422 零手续费原路秒级解冻 $2,875.00!</option>
+            <option value="moq_unver_451">🛑 团长暗箱加价吃回扣 / 失信停产工厂拦截：Web IQ /v3/browse 检出拼单报价高于工厂官方阶梯表或工厂停产 → 310ms 触发 HTTP 451 阻断!</option>
+            <option value="moq_tier_409">🧑‍⚖️ Web IQ 跨阶梯批发价升级套利：联合拼入 1,000 件档位使单价从 $14.00 降至 $11.50 (250 件订单单笔立省 $625.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="moq-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1819,6 +1837,7 @@ function renderAll() {
   updateESGCarbonSandbox();
   updatePriceDropWatchlistSandbox();
   updateWarrantyClaimSandbox();
+  updateB2BMOQSyndicateSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -3568,6 +3587,56 @@ function updateWarrantyClaimSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 原单串号 + 硬件故障遥测验真通过：先行换新已自动出库 (VERIFIED_WARRANTY_ADVANCE_REPLACEMENT_DISPATCHED · 265ms · Act automatically):</strong><br>" +
     "• <strong>免传一张纸质发票、零人工排队</strong>：原订单绑定序列号 <code>sn_oem_bound_101</code> 与芯片故障签名双重核验通过（在保第 <code>320/730 天</code>），已自动通知备件仓发出 <code>$650.00</code> 替换机！" +
+    "</div>";
+}
+
+function updateB2BMOQSyndicateSandbox() {
+  var selEl = document.getElementById("moq-select");
+  var outEl = document.getElementById("moq-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "moq_short_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MOQ_THRESHOLD_NOT_MET_CAPTURE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "当前拼单池累计锁定量仅 <code>650 件</code>（低于源头工厂最小起订量 <code>1,000 件 MOQ</code>）！网关已在 <code>12ms</code> 内硬阻断提前划扣请求，严格保护本方 <code>$2,875.00</code> 托管资金不被挪用！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "moq_exp_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SYNDICATE_WINDOW_EXPIRED_AUTO_REFUND (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "拼单时间窗口已超时（<code>elapsed=76h &gt; 72h TTL</code>）且未能凑满 <code>1,000 件</code> 起订量！网关无需等待团长或工厂审批，已在 <code>15ms</code> 内零手续费自动解冻释放本方 <code>$2,875.00</code> 预授权额度，彻底杜绝定金套牢！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "moq_unver_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNVERIFIED_SYNDICATE_FACTORY_OR_HIDDEN_MARKUP (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时比对源头工厂官方阶梯价目表与工商资信，检出拼单发起人隐瞒真实出厂价暗中抽成或目标工厂已被列入失信停产名单，已在 <code>310ms</code> 内阻断拼单并解冻资金！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "moq_tier_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 NEXT_MOQ_TIER_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出联合跨入 <code>1,000 件</code> 源头批发档位可将单价从零买 <code>$14.00/件</code> 降至 <code>$11.50/件</code>（本方 <code>250 件</code> 订单仅需 <code>$2,875.00</code>，单笔立省 <code>$625.00</code>），建议一键确认锁入该拼单池！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 凑齐 1,000 件 MOQ：多方条件托管已原子清算并签发独立子运单 (VERIFIED_MOQ_SYNDICATE_ESCROW_RELEASED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零定金滞留、零中间商差价、商业机密互不可见</strong>：全池已凑满 <code>1,000 件 &gt;= 1,000 件</code> 工厂起订量（耗时 <code>38h &lt;= 72h</code>），已原子释放本方 <code>$2,875.00</code>（<code>250 件 × $11.50</code>）并向工厂下发加密独立子提货单直发本仓！" +
     "</div>";
 }
 

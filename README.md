@@ -62,6 +62,7 @@
 - **专题 28（绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价 Anti-Greenwashing 架构：可核验碳核算凭证 `esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定 vs 未核验“碳中和”勾选框附加费与高排空运越权）**：**[《绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价（Anti-Greenwashing）架构：可核验碳核算凭证（`esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定）vs 未核验“碳中和”勾选框附加费与高排空运越权选型与原理解析 FAQ》](docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.md)**
 - **专题 29（AI Agent 降价狙击代购授权 Conditional Price-Drop Watchlist Mandate 与弃购召回防骚扰架构：条件触发限价令牌 `price_drop_mandate_...` + 90 天历史基准价核验 vs 先涨后降虚假大促诱导与未授权弃购自动扣款）**：**[《AI Agent 降价狙击代购授权（Conditional Price-Drop Watchlist Mandate）与弃购召回防骚扰（Anti-Dark-Pattern Cart Recovery）架构：条件触发限价令牌（`price_drop_mandate_...` + 90 天历史基准价核验）vs 先涨后降虚假大促诱导与未授权弃购自动扣款选型与原理解析 FAQ》](docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.md)**
 - **专题 30（智能售后质保理赔 Autonomous Warranty Claim 与硬件故障遥测验真 Cryptographic Diagnostic Telemetry Attestation 架构：设备签名诊断凭证 `warranty_claim_token_...` + 原始订单序列号绑定与错误码验真 vs 伪造发票/串号骗保与人工上传小票摩擦）**：**[《智能售后质保理赔（Autonomous Warranty Claim）与硬件故障遥测验真（Cryptographic Diagnostic Telemetry Attestation）架构：设备签名诊断凭证（`warranty_claim_token_...` + 原始订单序列号绑定与错误码验真）vs 伪造发票/串号骗保与人工上传小票摩擦选型与原理解析 FAQ》](docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.md)**
+- **专题 31（B2B 跨企业联合拼单起订量聚合 Autonomous B2B MOQ Syndicate Aggregation 与全有或全无智能托管 All-or-Nothing Conditional Escrow Mandate 架构：凑单达标条件释放令牌 `moq_syndicate_escrow_...` + 到期未达标零手续费自动解冻 vs 传统先交定金被套牢与拼单团长卷款跑路）**：**[《B2B 跨企业联合拼单起订量聚合（Autonomous B2B MOQ Syndicate Aggregation）与全有或全无智能托管（All-or-Nothing Conditional Escrow Mandate）架构：凑单达标条件释放令牌（`moq_syndicate_escrow_...` + 到期未达标零手续费自动解冻）vs 传统先交定金被套牢（Stranded Deposit）与拼单团长卷款跑路选型与原理解析 FAQ》](docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -122,6 +123,8 @@
 ![2026-11-08 AI Agent 降价狙击代购授权与反先涨后降暗黑模式架构一图流](assets/svg/31-price-drop-watchlist-mandate-2026-11-08.svg)
 
 ![2026-11-08 智能售后质保理赔与硬件故障遥测防骗保架构一图流](assets/svg/32-warranty-claim-telemetry-attestation-2026-11-08.svg)
+
+![2026-11-08 B2B 跨企业联合拼单起订量聚合与全有或全无智能托管架构一图流](assets/svg/33-b2b-moq-syndicate-escrow-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

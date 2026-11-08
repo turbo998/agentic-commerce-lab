@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg33" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#111C33"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent33" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg33)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent33)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="350" height="28" rx="14" fill="#0F292E" stroke="#14B8A6" stroke-width="1.2"/>
+  <text x="211" y="42" fill="#5EEAD4" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle">ROUND 31 · B2B MOQ SYNDICATE ESCROW ARCHITECTURE</text>
+  <text x="404" y="42" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">Provenance: deterministic_offline_simulation · synthetic_policy · as of 2026-11-08</text>
+
+  <text x="36" y="82" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">B2B 跨企业联合拼单起订量聚合 (MOQ Syndicate) 与全有或全无智能托管架构</text>
+  <text x="36" y="108" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="14">Threshold-Bound MOQ Escrow (moq_syndicate_escrow_... + 72h TTL Auto-Release) vs. Stranded Deposits &amp; Hidden Broker Markups</text>
+
+  <!-- Left Card: Legacy Deposit Pooling Failure -->
+  <rect x="36" y="128" width="360" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="52" y="144" width="328" height="32" rx="6" fill="#450A0A"/>
+  <text x="216" y="165" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">❌ 传统先打定金拼单群（定金套牢与吃差价）</text>
+
+  <rect x="54" y="192" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="214" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">1. 凑单不足 1,000 件提前挪用 (Premature Capture)</text>
+  <text x="68" y="236" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 拼单池仅凑齐 650 件 (&lt; 1,000 件工厂 MOQ)</text>
+  <text x="68" y="256" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 团长提前划走 $2,875 定金，凑单流产后拖延数周不退</text>
+  <text x="68" y="274" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：12ms 触发 HTTP 403 硬阻断未达标请款！</text>
+
+  <rect x="54" y="298" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="320" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">2. 久凑不齐资金长期冻结 (Stranded Working Capital)</text>
+  <text x="68" y="342" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 超过 72 小时拼单窗口 (elapsed=76h) 仍未成团</text>
+  <text x="68" y="362" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 传统人工退定金流程繁琐，卡死企业紧急采购预算</text>
+  <text x="68" y="380" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：15ms 触发 HTTP 422 零手续费原路秒级解冻！</text>
+
+  <rect x="54" y="404" width="324" height="96" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="426" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">3. 拼单团长伪造出厂价吃差价 (Hidden Markup)</text>
+  <text x="68" y="448" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 团长隐瞒真实阶梯底价抽成，或目标工厂已停产失信</text>
+  <text x="68" y="468" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• Web IQ /v3/browse 310ms 实时核实工厂官方阶梯报价单</text>
+  <text x="68" y="486" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：触发 HTTP 451 阻断虚假源头工厂拼单！</text>
+
+  <!-- Center Card: All-or-Nothing MOQ Escrow Engine -->
+  <rect x="416" y="128" width="368" height="390" rx="12" fill="#0F172A" stroke="#14B8A6" stroke-width="1.8"/>
+  <rect x="432" y="144" width="336" height="32" rx="6" fill="#0F292E"/>
+  <text x="600" y="165" fill="#5EEAD4" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">🛡️ 全有或全无起订量托管凭证 (MOQ Escrow)</text>
+
+  <rect x="434" y="192" width="332" height="106" rx="8" fill="#1E293B" stroke="#14B8A6" stroke-width="1"/>
+  <text x="448" y="214" fill="#5EEAD4" font-family="Consolas, monospace" font-size="12" font-weight="700">moq_syndicate_escrow_2026_11_08</text>
+  <text x="448" y="236" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">syndicate_id: "syn_cnc_bearing_1000"</text>
+  <text x="448" y="254" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">required_moq: 1000 | buyer_units: 250 ($2,875)</text>
+  <text x="448" y="272" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">window_ttl: 72h | joint_liability: FALSE</text>
+  <text x="448" y="290" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">✓ 凑满 1,000 件才放款 · 超时 15ms 自动零损解冻</text>
+
+  <rect x="434" y="312" width="332" height="90" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="448" y="334" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">💡 Web IQ 跨阶梯批发价升级套利 (315ms)</text>
+  <text x="448" y="354" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 零买 250 件单价 $14.00 ($3,500) vs 拼满 1,000 件 $11.50</text>
+  <text x="448" y="374" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 本方 250 件订单仅需 $2,875.00 (单笔立省 $625.00)</text>
+  <text x="448" y="392" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">→ 触发 HTTP 409 Confirm 一键锁入 1,000 件源头档位！</text>
+
+  <rect x="434" y="414" width="332" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="448" y="436" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">⚡ 凑齐 1,000 件原子清算 + 独立子运单 (265ms)</text>
+  <text x="448" y="456" fill="#ECFDF5" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 4 家企业合计凑满 1,000 件 (38h &lt;= 72h 窗口内)</text>
+  <text x="448" y="476" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">• HTTP 200 RELEASED · 签发加密独立分运单直发各仓</text>
+
+  <!-- Right Card: Quantitative Benchmark Scorecard -->
+  <rect x="804" y="128" width="360" height="390" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="820" y="144" width="328" height="32" rx="6" fill="#064E3B"/>
+  <text x="984" y="165" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">📊 5 大联合拼单场景实测 (51/51 Passed)</text>
+
+  <rect x="822" y="192" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="212" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">1. 未满 MOQ 提前请款 (650 &lt; 1,000 件)</text>
+  <text x="834" y="232" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 403 MOQ_NOT_MET · 12ms · 保护 $2,875 托管金</text>
+
+  <rect x="822" y="256" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="276" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">2. 72h 凑单窗口超时 (elapsed = 76h &gt; 72h)</text>
+  <text x="834" y="296" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 422 WINDOW_EXPIRED · 15ms · 零手续费秒解冻</text>
+
+  <rect x="822" y="320" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="340" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">3. 团长隐性加价 / 工厂失信 (verified=False)</text>
+  <text x="834" y="360" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 451 UNVERIFIED_FACTORY · 310ms · 拦截吃回扣</text>
+
+  <rect x="822" y="384" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="404" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">4. Web IQ 1,000 件批发档套利 ($14 → $11.50)</text>
+  <text x="834" y="424" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 409 NEXT_TIER_CONFIRM · 315ms · 立省 $625.00</text>
+
+  <rect x="822" y="448" width="324" height="54" rx="6" fill="#064E3B"/>
+  <text x="834" y="468" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">5. 凑足 1,000 件原子清算 (1,000 &gt;= 1,000 件)</text>
+  <text x="834" y="488" fill="#D1FAE5" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 200 ESCROW_RELEASED · 265ms · 独立分运单直发</text>
+
+  <!-- Bottom Architect Takeaway Bar -->
+  <rect x="36" y="534" width="1128" height="116" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="56" y="562" fill="#5EEAD4" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">🎯 架构师核心选型铁律（Architect Golden Rules · Round 31）</text>
+  <text x="56" y="586" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">1. 凑满起订量才放款：全池锁定量 &lt; 1,000 件 MOQ 时，任何提前划扣请求在 12ms 内触发 HTTP 403 硬阻断；超过 72h 未凑齐则在 15ms 内触发 HTTP 422 自动解冻。</text>
+  <text x="56" y="608" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">2. 穿透中间商核底价：通过 Microsoft Web IQ /v3/browse 实时核对源头工厂官方阶梯价目表（310ms），拦截团长暗吃差价，并解锁 1,000 件批发档立省 $625.00。</text>
+  <text x="56" y="630" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">Repo: github.com/turbo998/agentic-commerce-lab · Docs: docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.md · Sandbox: #b2b-moq-syndicate-escrow-sandbox</text>
+</svg>
