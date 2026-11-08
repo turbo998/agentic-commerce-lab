@@ -55,6 +55,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 21 (AI Agent Coupon Optimization, Loyalty-Fiat Hybrid Checkout & Anti-Stacking: Subject-Bound `promo_lock_...` & `loyalty_hold_...` Saga vs. Brute-Forcing, Stacking Exploits & Orphaned Point Burn)**: **[AI Agent Coupon Optimization, Loyalty-Fiat Hybrid Checkout & Anti-Stacking Architecture: Subject-Bound Promo Lock & Two-Phase Loyalty-Fiat Saga (`promo_lock_...` + `loyalty_hold_...` + Exclusivity Guard) vs. Coupon Brute-Forcing, Margin-Busting Stacking Exploits & Orphaned Point Burn Selection FAQ](docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.en.md)**
 - **Topic 22 (Regulated & Age-Restricted Goods AI Agent Eligibility & Zero-Knowledge Verification: W3C VC & ZKP Predicate Presentation `zkp_vc_live_...` vs. Raw Government ID Uploads & Self-Attested DOB Bypass)**: **[Regulated & Age-Restricted Goods (Alcohol, Rx & B2B Restricted SKUs) AI Agent Eligibility & Zero-Knowledge Verification Architecture: W3C Verifiable Credential & ZKP Predicate Presentation (`order_nonce`-Bound `age_over_21` / Rx Proof) vs. Raw Government ID Uploads & Self-Attested DOB Bypass Selection FAQ](docs/age-verification-zkp-vc-vs-id-upload-compliance-faq.en.md)**
 - **Topic 23 (High-Ticket Luxury, Refurbished Hardware & B2B Capital Goods AI Agent Escrow, Inspection Attestation & Warranty Activation: Milestone `escrow_hold_...` vs. Instant Upfront Payout & Counterfeit Rug-Pull Risk)**: **[High-Ticket Luxury, Refurbished Hardware & B2B Capital Goods AI Agent Escrow, Inspection Attestation & Warranty Activation Architecture: Milestone Escrow Hold & Dual-Signed Delivery/Authentication Attestation (`escrow_hold_...`) vs. Instant Upfront Payout & Counterfeit Rug-Pull Risk Selection FAQ](docs/high-ticket-escrow-delivery-attestation-vs-instant-settlement-faq.en.md)**
+- **Topic 24 (AI Agent Web Comparison-Shopping Indirect Prompt Injection & Review-Section DOM Poisoning Defense: Signed ACP Feed, Instruction-Data Separation & Payee DID Pinning vs. Raw HTML Scraping Hijack)**: **[AI Agent Web Comparison-Shopping Indirect Prompt Injection & Review-Section DOM Poisoning Defense Architecture: Cryptographically Signed ACP Structured Feed & Instruction-Data Separation + Payee DID Pinning vs. Raw HTML Scraping Hijack & Hidden CSS Payee Redirection Selection FAQ](docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -101,6 +102,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Regulated & Age-Restricted AI Agent Zero-Knowledge Eligibility Verification Architecture Visual Summary](assets/svg/24-age-verification-zkp-vc-vs-id-upload-2026-11-08.svg)
 
 ![2026-11-08 High-Ticket AI Agent Milestone Escrow, Authentication Attestation & Warranty Activation Architecture Visual Summary](assets/svg/25-high-ticket-escrow-delivery-attestation-2026-11-08.svg)
+
+![2026-11-08 AI Agent Indirect Prompt Injection & Review-Section DOM Poisoning Defense Architecture Visual Summary](assets/svg/26-indirect-prompt-injection-dom-poisoning-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

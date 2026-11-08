@@ -1582,6 +1582,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/age-verification-zkp-vc-vs-id-upload-compliance-faq.en.md",
             "docs/high-ticket-escrow-delivery-attestation-vs-instant-settlement-faq.md",
             "docs/high-ticket-escrow-delivery-attestation-vs-instant-settlement-faq.en.md",
+            "docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.md",
+            "docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2554,6 +2556,53 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["high_ticket_escrow_attestation_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("high-ticket-escrow-attestation-sandbox", demo_zh)
+
+    def test_indirect_prompt_injection_dom_poisoning_vs_signed_acp_feed_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_indirect_prompt_injection_and_acp_feed_policy
+
+        # 1. Clean sanitized + privilege-separated + payee-pinned checkout -> 200 committed
+        commit_ok = evaluate_indirect_prompt_injection_and_acp_feed_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.unauthorized_drain_cents, 0)
+        self.assertEqual(commit_ok.total_landed_cost_cents, 29800)
+
+        # 2. Hidden CSS / review indirect prompt injection -> 422 blocked in 15ms
+        dom_422 = evaluate_indirect_prompt_injection_and_acp_feed_policy(
+            has_hidden_dom_or_review_injection=True,
+        )
+        self.assertFalse(dom_422.allowed)
+        self.assertEqual(dom_422.http_status, 422)
+        self.assertEqual(dom_422.security_lane, "BLOCKED_INDIRECT_PROMPT_INJECTION_IN_DOM")
+
+        # 3. Hijacked payee DID or SKU category drift to gift card -> 403 blocked in 13ms
+        hijack_403 = evaluate_indirect_prompt_injection_and_acp_feed_policy(
+            payee_matches_pinned_allowlist=False,
+        )
+        self.assertFalse(hijack_403.allowed)
+        self.assertEqual(hijack_403.http_status, 403)
+        self.assertEqual(hijack_403.security_lane, "BLOCKED_HIJACKED_PAYEE_OR_SKU_DRIFT")
+
+        # 4. Unsigned or tampered ACP structured product feed -> 401 blocked in 16ms
+        sig_401 = evaluate_indirect_prompt_injection_and_acp_feed_policy(
+            acp_feed_signature_valid=False,
+        )
+        self.assertFalse(sig_401.allowed)
+        self.assertEqual(sig_401.http_status, 401)
+
+        # 5. "$1.00 item + $499.00 shipping fee" bait-and-switch -> 409 Confirm in 310ms
+        fee_409 = evaluate_indirect_prompt_injection_and_acp_feed_policy(
+            item_price_cents=100,
+            shipping_handling_cents=49900,
+        )
+        self.assertFalse(fee_409.allowed)
+        self.assertEqual(fee_409.http_status, 409)
+        self.assertEqual(fee_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["indirect_prompt_injection_feed_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("indirect-prompt-injection-feed-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

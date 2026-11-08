@@ -200,6 +200,11 @@
     "escrow_release_latency_ms": 285,
     "counterfeit_refund_latency_ms": 22
   },
+  "indirect_prompt_injection_feed_guards": {
+    "all_passed": true,
+    "sanitized_commit_latency_ms": 255,
+    "payee_pin_block_latency_ms": 13
+  },
   "scenarios": [
     {
       "id": "W01",
