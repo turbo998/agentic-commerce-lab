@@ -48,6 +48,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 14 (Dynamic Pricing, Flash-Sale Surge & Quote-Lock TTL: `quote_id` TTL vs. Bounded Slippage & Stale-Cache Guard)**: **[Dynamic Pricing, Flash-Sale Surge & Quote-Lock TTL Architecture: Cryptographic Quote-Lock Token (`quote_id` + `quote_expires_at` TTL) vs. Bounded Slippage Mandate (`max_amount_cents` Ceiling) & Stale-Cache Drift Guard (`liveCrawlSucceeded=false`) Selection FAQ](docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.en.md)**
 - **Topic 15 (MCP Commerce Tool Security & OAuth 2.1 Audience Binding: `RFC 8707` `aud` & Scope Union vs. Confused Deputy Replay)**: **[MCP Commerce Tool Security, OAuth 2.1 Audience Binding & Step-Up Authorization Architecture: Resource Indicators (`RFC 8707` `aud` Binding + `RFC 9207` Exact `iss` Match) & `403 insufficient_scope` Scope-Union Step-Up vs. Confused Deputy Token Replay & Static API Keys (`2026-11-30` Cutoff) Selection FAQ](docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.en.md)**
 - **Topic 16 (Multi-Agent Runaway Spend Circuit Breaker, Recall Tripwire & Velocity Cap: AP2 Financial Breaker vs. Bounded Backoff)**: **[Multi-Agent Runaway Spend Circuit Breaker, Product Recall Tripwire & Velocity Cap Architecture: AP2 Financial Circuit Breaker (`STATE=OPEN` + Consecutive Violation Lockout + Web IQ Recall Guard `W09`) vs. Bounded Exponential Backoff Selection FAQ](docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.en.md)**
+- **Topic 17 (AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention: Intent-Derived Key & Payload SHA-256 vs. In-Flight Lock & Drift Guard)**: **[AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention Architecture: Intent-Derived Idempotency Key & Payload Hash Binding (`Idempotency-Key` + `SHA-256` Fingerprint + 24h State Replay) vs. In-Flight Lock (`HTTP 409`) & Parameter-Drift Guard (`HTTP 422`) Selection FAQ](docs/idempotency-payload-hash-vs-retry-double-charge-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -80,6 +81,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 MCP Commerce Tool Security, OAuth 2.1 Audience Binding & Step-Up Authorization Visual Summary](assets/svg/17-mcp-oauth-audience-stepup-vs-confused-deputy-2026-11-08.svg)
 
 ![2026-11-08 Multi-Agent Runaway Spend Circuit Breaker, Product Recall Tripwire & Velocity Cap Visual Summary](assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
+
+![2026-11-08 AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention Visual Summary](assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

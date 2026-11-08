@@ -165,6 +165,11 @@
     "backoff_recovery_latency_ms": 410,
     "recall_tripwire_latency_ms": 28
   },
+  "idempotency_deduplication_guards": {
+    "all_passed": true,
+    "cached_replay_latency_ms": 15,
+    "parameter_drift_block_latency_ms": 18
+  },
   "scenarios": [
     {
       "id": "W01",

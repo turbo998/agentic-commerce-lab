@@ -1568,6 +1568,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.en.md",
             "docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.md",
             "docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.en.md",
+            "docs/idempotency-payload-hash-vs-retry-double-charge-faq.md",
+            "docs/idempotency-payload-hash-vs-retry-double-charge-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2155,6 +2157,65 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["ap2_circuit_breaker_recall_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ap2-circuit-breaker-recall-sandbox", demo_zh)
+
+    def test_idempotency_payload_hash_vs_retry_double_charge_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_idempotency_and_retry_deduplication_policy
+
+        # 1. First execution commits charge and seals payload hash
+        first_ok = evaluate_idempotency_and_retry_deduplication_policy()
+        self.assertTrue(first_ok.allowed)
+        self.assertEqual(first_ok.http_status, 200)
+        self.assertEqual(first_ok.incremental_charge_cents, 24000)
+        self.assertFalse(first_ok.idempotent_replayed)
+
+        # 2. Post-timeout retry with identical payload -> 200 cached replay with $0 incremental charge
+        replay_ok = evaluate_idempotency_and_retry_deduplication_policy(
+            is_retry=True,
+            stored_state="COMPLETED_200",
+        )
+        self.assertTrue(replay_ok.allowed)
+        self.assertEqual(replay_ok.http_status, 200)
+        self.assertEqual(replay_ok.incremental_charge_cents, 0)
+        self.assertTrue(replay_ok.idempotent_replayed)
+
+        # 3. Concurrent retry while first request is still IN_FLIGHT -> 409 conflict
+        inflight_409 = evaluate_idempotency_and_retry_deduplication_policy(
+            is_retry=True,
+            stored_state="IN_FLIGHT",
+        )
+        self.assertFalse(inflight_409.allowed)
+        self.assertEqual(inflight_409.http_status, 409)
+
+        # 4. LLM parameter drift on retry -> 422 parameter mismatch
+        drift_422 = evaluate_idempotency_and_retry_deduplication_policy(
+            is_retry=True,
+            stored_state="COMPLETED_200",
+            incoming_payload_sha256="mutated_amount_26500_sha256",
+        )
+        self.assertFalse(drift_422.allowed)
+        self.assertEqual(drift_422.http_status, 422)
+
+        # 5. Unbound random per-retry UUID -> 400 blocked
+        random_400 = evaluate_idempotency_and_retry_deduplication_policy(
+            is_retry=True,
+            intent_derived_key=False,
+        )
+        self.assertFalse(random_400.allowed)
+        self.assertEqual(random_400.http_status, 400)
+
+        # 6. Terminal card decline cached replay -> 402 replayed without hitting card rail
+        decline_402 = evaluate_idempotency_and_retry_deduplication_policy(
+            is_retry=True,
+            stored_state="TERMINAL_DECLINED_402",
+        )
+        self.assertFalse(decline_402.allowed)
+        self.assertEqual(decline_402.http_status, 402)
+        self.assertTrue(decline_402.idempotent_replayed)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["idempotency_deduplication_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("idempotency-deduplication-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

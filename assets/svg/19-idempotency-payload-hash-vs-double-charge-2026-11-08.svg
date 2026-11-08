@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg19" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="green19" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="red19" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+    <linearGradient id="blue19" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg19)" rx="16"/>
+
+  <!-- Header -->
+  <rect x="32" y="24" width="1136" height="84" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="52" y="56" font-family="Segoe UI, Inter, sans-serif" font-size="21" font-weight="700" fill="#F8FAFC">
+    Round 17 · AI Agent 超时重试防重扣架构：意图派生幂等键与 SHA-256 载荷指纹 vs 并发锁 (409) 与改参拦截 (422)
+  </text>
+  <text x="52" y="86" font-family="Segoe UI, Inter, sans-serif" font-size="14" fill="#94A3B8">
+    Intent-Derived Idempotency-Key · Canonical Payload SHA-256 Fingerprint (422) · In-Flight Atomic Lock (409) · 24h Receipt Replay (15ms)
+  </text>
+  <rect x="945" y="38" width="205" height="32" rx="16" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="1047" y="59" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0">
+    0.0% DOUBLE CHARGE
+  </text>
+
+  <!-- Column 1: Intent-Derived Key & 24h Cached Replay -->
+  <rect x="32" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="32" y="126" width="364" height="42" rx="12" fill="url(#green19)"/>
+  <text x="214" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    1. 意图派生幂等键与 24h 快照重放
+  </text>
+
+  <rect x="48" y="182" width="332" height="98" rx="8" fill="#064E3B" stroke="#34D399" stroke-width="1"/>
+  <text x="60" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0">
+    🔑 意图确定性派生 (严禁内层随机 uuid4)
+  </text>
+  <text x="60" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • ik = SHA256(mandate_id || cart_hash || step_seq)
+  </text>
+  <text x="60" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • 无论超时重调多少次，同一购物车永远产出同一 Key
+  </text>
+  <text x="60" y="266" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#6EE7B7">
+    • 拦截随机新 UUID 盲目重试 (HTTP 400 · 12 ms)
+  </text>
+
+  <rect x="48" y="292" width="332" height="104" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="60" y="314" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#7DD3FC">
+    ⚡ COMPLETED_200 零扣款快照重放 (15 ms)
+  </text>
+  <text x="60" y="336" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • 首包已扣款 $240.00 但回包超时丢失
+  </text>
+  <text x="60" y="356" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • 重试命中 24h 缓存，15ms 直接返回原 PaymentIntent
+  </text>
+  <text x="60" y="378" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    • Idempotent-Replayed: true · 本次新增扣款 $0.00!
+  </text>
+
+  <rect x="48" y="408" width="332" height="90" rx="8" fill="#1E293B" stroke="#64748B" stroke-width="1"/>
+  <text x="60" y="430" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0">
+    🛡️ 终局硬拒付缓存重放 (HTTP 402 · 16 ms)
+  </text>
+  <text x="60" y="452" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 封存 insufficient_funds 硬拒付结果，免调卡网
+  </text>
+  <text x="60" y="472" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 规避 Visa/Mastercard 高频死卡重试罚金
+  </text>
+
+  <!-- Column 2: Payload SHA-256 Fingerprint & LLM Parameter Drift -->
+  <rect x="418" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="418" y="126" width="364" height="42" rx="12" fill="url(#red19)"/>
+  <text x="600" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    2. 规范化载荷 SHA-256 指纹与改参拦截
+  </text>
+
+  <rect x="434" y="182" width="332" height="106" rx="8" fill="#450A0A" stroke="#F87171" stroke-width="1.2"/>
+  <text x="446" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5">
+    🛑 LLM 重试参数漂移拦截 (18 ms · HTTP 422)
+  </text>
+  <text x="446" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 大模型重生成 Tool Call 时复用同一 ik_m9_c1
+  </text>
+  <text x="446" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 却将金额从 $240 改成 $265 (或篡改 SKU / 运费档位)
+  </text>
+  <text x="446" y="268" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    • incoming_sha256 != stored_sha256 → 422 硬阻断!
+  </text>
+
+  <rect x="434" y="300" width="332" height="96" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="446" y="322" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCD34D">
+    🧬 Canonical JSON 规范化哈希比对
+  </text>
+  <text x="446" y="344" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FDE68A">
+    • 消除 JSON 字典键顺序与空白符差异后计算 SHA-256
+  </text>
+  <text x="446" y="364" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 杜绝“拿旧订单 $240 收据冒充新订单 $265 成交”
+  </text>
+  <text x="446" y="382" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 严格遵循 Stripe API &amp; IETF Idempotency-Key 规范
+  </text>
+
+  <rect x="434" y="408" width="332" height="90" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="446" y="430" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0">
+    🔓 前置 Schema 400 错误不消耗幂等锁
+  </text>
+  <text x="446" y="452" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 未进入支付轨道的本地格式错误自动释放锁
+  </text>
+  <text x="446" y="472" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 确保真实资金状态与幂等键生命周期 1:1 对齐
+  </text>
+
+  <!-- Column 3: In-Flight Distributed Lock (HTTP 409) -->
+  <rect x="804" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <rect x="804" y="126" width="364" height="42" rx="12" fill="url(#blue19)"/>
+  <text x="986" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    3. 飞行中原子并发锁 (STATE=IN_FLIGHT)
+  </text>
+
+  <rect x="820" y="182" width="332" height="104" rx="8" fill="#172554" stroke="#60A5FA" stroke-width="1.2"/>
+  <text x="832" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#93C5FD">
+    ⏳ HTTP 409 Conflict 并发防击穿 (14 ms)
+  </text>
+  <text x="832" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 首包正在发卡行清算途中 (STATE = IN_FLIGHT)
+  </text>
+  <text x="832" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 心急的 Agent 1.5s 后发来同键并发重试
+  </text>
+  <text x="832" y="268" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#60A5FA">
+    • 14ms 立即返回 409 + Retry-After: 2s (0 额外 PSP 连接)
+  </text>
+
+  <rect x="820" y="298" width="332" height="96" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="832" y="320" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0">
+    🔄 三态原子转换闭环
+  </text>
+  <text x="832" y="342" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 1. SET NX EX 30 → IN_FLIGHT (295ms 首包扣款)
+  </text>
+  <text x="832" y="362" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 2. 成功 → COMPLETED_200 (保留 24h 快照)
+  </text>
+  <text x="832" y="380" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 3. 硬拒付 → TERMINAL_DECLINED_402 (保留快照)
+  </text>
+
+  <rect x="820" y="406" width="332" height="92" rx="8" fill="#0F172A" stroke="#64748B" stroke-width="1"/>
+  <text x="832" y="428" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    📊 Provenance 透明溯源声明
+  </text>
+  <text x="832" y="448" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 24h 窗口 / 409 / 422 语义: official_doc_snapshot
+  </text>
+  <text x="832" y="466" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 12ms~295ms 延迟: deterministic_offline_simulation
+  </text>
+  <text x="832" y="484" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 发卡行主机内部 ISO8583 去重窗口: not_measured
+  </text>
+
+  <!-- Bottom Summary Banner -->
+  <rect x="32" y="532" width="1136" height="118" rx="12" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+  <text x="52" y="562" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#38BDF8">
+    🎯 架构师一句话选型口诀（3-Minute Takeaway for AI Solution Architects）：
+  </text>
+  <text x="52" y="590" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    1. 严禁在 Tool 内部每次调用随机生成 uuid4()！必须由 Mandate + 购物车哈希确定性派生 Idempotency-Key，超时重调 15ms 零扣款重放原收据；
+  </text>
+  <text x="52" y="614" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    2. 网关必须校验规范化请求体 SHA-256 指纹：若大模型重试时复用旧 Key 却擅自改了金额或数量，18ms 触发 HTTP 422 阻断，杜绝假收据；
+  </text>
+  <text x="52" y="638" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#6EE7B7">
+    3. 首包尚在 IN_FLIGHT 处理中时，并发重试在 14ms 内返回 HTTP 409 (Retry-After: 2s)；终局硬拒付缓存重放 HTTP 402 (16ms)，免遭卡组重试罚金。
+  </text>
+</svg>
