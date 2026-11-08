@@ -115,6 +115,11 @@
     "rma_draft_latency_ms": 340,
     "confirmed_refund_latency_ms": 395
   },
+  "recurring_replenishment_guards": {
+    "all_passed": true,
+    "off_session_renewal_latency_ms": 388,
+    "recovered_3ds_latency_ms": 410
+  },
   "scenarios": [
     {
       "id": "W01",

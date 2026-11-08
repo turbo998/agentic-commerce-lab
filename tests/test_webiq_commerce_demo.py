@@ -1550,10 +1550,78 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md",
             "docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.md",
             "docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.en.md",
+            "docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.md",
+            "docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
             self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
+    def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
+
+        # 1. Compliant cadence SPT off_session renewal -> 200 OK
+        rec_ok = evaluate_recurring_replenishment_spt_policy(
+            off_session=True,
+            recurring_interval_configured=True,
+            recurring_interval="month",
+            live_renewal_price_usd="58.00",
+            interval_mandate_ceiling_usd="65.00",
+        )
+        self.assertTrue(rec_ok.allowed)
+        self.assertEqual(rec_ok.http_status, 200)
+        self.assertEqual(rec_ok.lane, "cadence_spt_off_session_renewed")
+        self.assertEqual(rec_ok.fcb_state, "CLOSED")
+        self.assertEqual(rec_ok.action, "Act automatically")
+
+        # 2. Forbidden setup_future_usage on SPT -> 400 Bad Request
+        sfu_block = evaluate_recurring_replenishment_spt_policy(
+            setup_future_usage="off_session",
+        )
+        self.assertFalse(sfu_block.allowed)
+        self.assertEqual(sfu_block.http_status, 400)
+        self.assertEqual(sfu_block.lane, "blocked_spt_forbids_setup_future_usage")
+
+        # 3. off_session=True without recurring_interval -> 400 Bad Request
+        no_interval = evaluate_recurring_replenishment_spt_policy(
+            off_session=True,
+            recurring_interval_configured=False,
+        )
+        self.assertFalse(no_interval.allowed)
+        self.assertEqual(no_interval.http_status, 400)
+        self.assertEqual(no_interval.lane, "blocked_off_session_without_recurring_interval")
+
+        # 4. Web IQ safety recall trips FCB CLOSED -> OPEN -> 409 Conflict
+        recall_fcb = evaluate_recurring_replenishment_spt_policy(
+            webiq_recall_risk_level="veryHigh",
+        )
+        self.assertFalse(recall_fcb.allowed)
+        self.assertEqual(recall_fcb.http_status, 409)
+        self.assertEqual(recall_fcb.fcb_state, "OPEN")
+        self.assertEqual(recall_fcb.lane, "fcb_tripped_product_safety_recall_blocked")
+
+        # 5. Silent renewal price hike above interval ceiling -> 422 Unprocessable
+        price_hike = evaluate_recurring_replenishment_spt_policy(
+            live_renewal_price_usd="74.00",
+            interval_mandate_ceiling_usd="65.00",
+        )
+        self.assertFalse(price_hike.allowed)
+        self.assertEqual(price_hike.http_status, 422)
+        self.assertEqual(price_hike.lane, "blocked_renewal_price_exceeds_interval_ceiling")
+
+        # 6. Reversible requires_action -> active after buyer 3DS step-up -> 200 OK
+        recovered = evaluate_recurring_replenishment_spt_policy(
+            spt_state="requires_action",
+            buyer_completed_3ds=True,
+        )
+        self.assertTrue(recovered.allowed)
+        self.assertEqual(recovered.http_status, 200)
+        self.assertEqual(recovered.spt_next_state, "active")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["recurring_replenishment_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("recurring-spt-selector-sandbox", demo_zh)
 
     def test_post_purchase_refund_and_return_policy_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_post_purchase_refund_and_return_policy

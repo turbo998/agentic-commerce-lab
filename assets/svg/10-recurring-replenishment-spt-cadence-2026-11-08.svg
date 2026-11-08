@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg8" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070E1E"/>
+      <stop offset="55%" stop-color="#101E38"/>
+      <stop offset="100%" stop-color="#081224"/>
+    </linearGradient>
+    <linearGradient id="cadenceGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="vaultTrapGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+    <linearGradient id="fcbGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg8)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="14" fill="#111C33" stroke="#334E7B" stroke-width="1.5"/>
+  <rect x="54" y="40" width="236" height="24" rx="12" fill="#1D4ED8"/>
+  <text x="172" y="56" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle">2026-11-08 · ROUND 8 DEEP DIVE</text>
+  <text x="306" y="58" fill="#F8FAFC" font-size="18.5" font-weight="800">周期订阅与自动补货架构：SPT 周期限额令牌 (recurring_interval) vs. 传统绑卡 setup_future_usage 禁令</text>
+  <text x="54" y="88" fill="#93C5FD" font-size="12.5">Recurring Subscription &amp; Auto-Replenishment Architecture: Cadence-Scoped SPT + Web IQ Recall FCB vs. Forbidden setup_future_usage</text>
+
+  <!-- Left Card: Pattern A — Cadence-Scoped SPT + Web IQ Pre-Renewal Recall Guard -->
+  <rect x="36" y="124" width="548" height="236" rx="14" fill="#0B1D36" stroke="#38BDF8" stroke-width="1.8"/>
+  <rect x="36" y="124" width="548" height="36" rx="14" fill="url(#cadenceGrad)"/>
+  <text x="54" y="147" fill="#082F49" font-size="14" font-weight="800">🔵 标准轨道 A：买方钱包主权 SPT 周期限额令牌 (usage_limits.recurring_interval)</text>
+  <text x="54" y="182" fill="#BAE6FD" font-size="12.5" font-weight="700">核心机制：卡号留在买家 Agent Wallet，商户凭同一 spt_... 按约定周期 off_session 扣款</text>
+  <text x="54" y="206" fill="#E2E8F0" font-size="12">• 周期与额度双锁：usage_limits.recurring_interval = 'month' | 'week' + 单期上限 $85.00</text>
+  <text x="54" y="228" fill="#E2E8F0" font-size="12">• 离线扣款条件：PaymentIntent 传 off_session=True，必须绑定已配置 recurring_interval 的 SPT</text>
+  <text x="54" y="250" fill="#E2E8F0" font-size="12">• 扣款前 Web IQ 哨兵：自动调 /v3/search/news + /v3/auto 排查商品召回与涨价漂移</text>
+  <text x="54" y="272" fill="#6EE7B7" font-size="12" font-weight="700">• 一键吊销主权：买家随时可在 Agent Wallet 侧将 spt_state 置为 deactivated 永久断流</text>
+  <rect x="54" y="294" width="510" height="48" rx="8" fill="#071326" stroke="#0284C7"/>
+  <text x="68" y="314" fill="#38BDF8" font-size="12" font-weight="700">沙盒裁决：200 OK · cadence_spt_off_session_renewed（388 ms · Act automatically）</text>
+  <text x="68" y="332" fill="#94A3B8" font-size="11">若遇 CPSC 锂电池召回 → FCB 跳闸 OPEN (409 Conflict · 100% 阻断危险品自动复购)</text>
+
+  <!-- Right Card: Anti-Pattern B — Merchant Card Vaulting via setup_future_usage -->
+  <rect x="616" y="124" width="548" height="236" rx="14" fill="#281117" stroke="#EF4444" stroke-width="1.8"/>
+  <rect x="616" y="124" width="548" height="36" rx="14" fill="url(#vaultTrapGrad)"/>
+  <text x="634" y="147" fill="#450A0A" font-size="14" font-weight="800">⛔ 禁用反模式 B：在 SPT PaymentIntent 上传 setup_future_usage 试图私自绑卡</text>
+  <text x="634" y="182" fill="#FECACA" font-size="12.5" font-weight="700">为什么 Stripe 官方硬性拦截 (HTTP 400 spt_forbids_setup_future_usage)？</text>
+  <text x="634" y="206" fill="#E2E8F0" font-size="12">• 破坏最小权限：若允许商户通过 setup_future_usage 把临时 SPT 转为永久绑卡 (pm_...)，</text>
+  <text x="634" y="226" fill="#E2E8F0" font-size="12">  买家的预算上限、周期频率锁与 Agent Wallet 远程吊销开关将彻底失效！</text>
+  <text x="634" y="248" fill="#E2E8F0" font-size="12">• 双重禁令（official_doc_snapshot）：顶层 setup_future_usage 与嵌套字段</text>
+  <text x="634" y="268" fill="#FCA5A5" font-size="12" font-weight="700">  payment_method_options[card][setup_future_usage] 均被 Stripe 网关直接返回 400 拒绝！</text>
+  <rect x="634" y="294" width="510" height="48" rx="8" fill="#1A0A0E" stroke="#DC2626"/>
+  <text x="648" y="314" fill="#F87171" font-size="12" font-weight="700">沙盒裁决：HTTP 400 · blocked_spt_forbids_setup_future_usage（15 ms · Send to a human）</text>
+  <text x="648" y="332" fill="#94A3B8" font-size="11">同样拦截：拿单次无 recurring_interval 的 SPT 强行发起 off_session=True 扣款 (HTTP 400)</text>
+
+  <!-- Middle Section: 4-Stage Autonomous Replenishment & FCB Circuit Breaker Pipeline -->
+  <rect x="36" y="378" width="1128" height="176" rx="14" fill="#101B30" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="406" fill="#F8FAFC" font-size="15" font-weight="800">🔄 自动补货与周期订阅四阶状态机与召回熔断器（4-Gate Recurring SPT &amp; FCB Pipeline）</text>
+
+  <!-- Step 1 -->
+  <rect x="54" y="422" width="258" height="114" rx="10" fill="#0B192C" stroke="#38BDF8"/>
+  <text x="68" y="444" fill="#38BDF8" font-size="12.5" font-weight="800">Gate 1：禁传 setup_future_usage</text>
+  <text x="68" y="466" fill="#E2E8F0" font-size="11.5">• 拦截顶层与 card 嵌套绑卡参数</text>
+  <text x="68" y="486" fill="#E2E8F0" font-size="11.5">• 校验 recurring_interval 已配置</text>
+  <text x="68" y="504" fill="#E2E8F0" font-size="11.5">• 校验 spt_state != 'deactivated'</text>
+  <text x="68" y="524" fill="#7DD3FC" font-size="11" font-weight="700">400 Bad Request · 杜绝商户私自存卡</text>
+
+  <!-- Step 2 -->
+  <rect x="330" y="422" width="266" height="114" rx="10" fill="#23180B" stroke="#F59E0B"/>
+  <text x="344" y="444" fill="#FBBF24" font-size="12.5" font-weight="800">Gate 2：Web IQ 召回与新闻哨兵</text>
+  <text x="344" y="466" fill="#E2E8F0" font-size="11.5">• 扣款前调 /v3/search/news + /v3/auto</text>
+  <text x="344" y="486" fill="#E2E8F0" font-size="11.5">• maxResponseLength 钳位 [1500,500k]</text>
+  <text x="344" y="504" fill="#E2E8F0" font-size="11.5">• 检出 high/veryHigh 召回立即跳闸 FCB</text>
+  <text x="344" y="524" fill="#FDE68A" font-size="11" font-weight="700">409 Conflict · FCB CLOSED → OPEN</text>
+
+  <!-- Step 3 -->
+  <rect x="614" y="422" width="268" height="114" rx="10" fill="#0A2226" stroke="#10B981"/>
+  <text x="628" y="444" fill="#34D399" font-size="12.5" font-weight="800">Gate 3：单期价格上限与周期频率锁</text>
+  <text x="628" y="466" fill="#E2E8F0" font-size="11.5">• Web IQ /v3/browse 核验当期现价</text>
+  <text x="628" y="486" fill="#E2E8F0" font-size="11.5">• 拦截周期内重复扣款 (Double Charge)</text>
+  <text x="628" y="504" fill="#E2E8F0" font-size="11.5">• 拦截暗中涨价超单期 Mandate 上限</text>
+  <text x="628" y="524" fill="#6EE7B7" font-size="11" font-weight="700">403 / 422 · 防订阅刺客暗中涨价</text>
+
+  <!-- Step 4 -->
+  <rect x="900" y="422" width="246" height="114" rx="10" fill="#171636" stroke="#818CF8"/>
+  <text x="914" y="444" fill="#A5B4FC" font-size="12.5" font-weight="800">Gate 4：requires_action 3DS 恢复</text>
+  <text x="914" y="466" fill="#E2E8F0" font-size="11.5">• 发卡行风控要求重验时转 requires_action</text>
+  <text x="914" y="486" fill="#E2E8F0" font-size="11.5">• 买家完成 3DS/Passkey 后恢复 active</text>
+  <text x="914" y="504" fill="#E2E8F0" font-size="11.5">• deactivated 为终态不可逆复活</text>
+  <text x="914" y="524" fill="#C7D2FE" font-size="11" font-weight="700">200 OK · 388 ms 周期无感续费</text>
+
+  <!-- Footer Provenance -->
+  <rect x="36" y="570" width="1128" height="80" rx="12" fill="#0B1324" stroke="#1E293B" stroke-width="1.2"/>
+  <text x="54" y="596" fill="#38BDF8" font-size="12.5" font-weight="700">📊 数据来源与诚实口径标签（Provenance Ledger · as_of: 2026-11-08）</text>
+  <text x="54" y="618" fill="#CBD5E1" font-size="11.5">• [official_doc_snapshot] Stripe SPT (2026-09-30.preview) 严禁 setup_future_usage 规则、off_session 强制要求 usage_limits.recurring_interval、以及 active/requires_action/deactivated 状态机。</text>
+  <text x="54" y="638" fill="#94A3B8" font-size="11.5">• [synthetic_policy + deterministic_offline_simulation] Web IQ /v3/search/news + /v3/auto 召回熔断 (FCB) 与 388ms 续费延迟来自 lab/webiq_commerce_demo.py；发卡行 MIT 免密通过率标为 not_measured。</text>
+</svg>

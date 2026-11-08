@@ -4493,6 +4493,156 @@ def evaluate_post_purchase_refund_and_return_policy(
     )
 
 
+@dataclass(frozen=True)
+class RecurringReplenishmentSptVerdict:
+    """Round 8 Architect FAQ decision verdict for Cadence-Scoped SPT (`recurring_interval` + Web IQ Recall FCB) vs. `setup_future_usage` Vaulting."""
+
+    allowed: bool
+    http_status: int
+    lane: Literal[
+        "cadence_spt_off_session_renewed",
+        "recovered_requires_action_to_active_renewed",
+        "paused_requires_action_awaiting_buyer_3ds",
+        "blocked_spt_forbids_setup_future_usage",
+        "blocked_off_session_without_recurring_interval",
+        "blocked_deactivated_terminal_spt",
+        "fcb_tripped_product_safety_recall_blocked",
+        "blocked_renewal_price_exceeds_interval_ceiling",
+    ]
+    reason: str
+    spt_next_state: Literal["active", "requires_action", "deactivated"]
+    fcb_state: Literal["CLOSED", "OPEN"]
+    latency_ms: int
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def evaluate_recurring_replenishment_spt_policy(
+    *,
+    off_session: bool = True,
+    recurring_interval_configured: bool = True,
+    recurring_interval: Literal["day", "week", "month", "year"] = "month",
+    setup_future_usage: str | None = None,
+    card_setup_future_usage_set: bool = False,
+    spt_state: Literal["active", "requires_action", "deactivated"] = "active",
+    buyer_completed_3ds: bool = False,
+    webiq_recall_risk_level: Literal["none", "low", "medium", "high", "veryHigh"] = "low",
+    fcb_state: Literal["CLOSED", "OPEN"] = "CLOSED",
+    human_recovery_mandate_signed: bool = False,
+    live_renewal_price_usd: Decimal | str | float = "58.00",
+    interval_mandate_ceiling_usd: Decimal | str | float = "65.00",
+) -> RecurringReplenishmentSptVerdict:
+    """Round 8 Architect FAQ verifier: Cadence-Scoped SPT (`usage_limits.recurring_interval`) vs. `setup_future_usage` Vaulting.
+
+    Enforces:
+    1. Official Stripe SPT (`2026-09-30.preview`) prohibition on `setup_future_usage` and
+       `payment_method_options[card][setup_future_usage]` (`blocked_spt_forbids_setup_future_usage`).
+    2. Official Stripe SPT `off_session=True` requirement for `usage_limits.recurring_interval`
+       (`blocked_off_session_without_recurring_interval`).
+    3. Official SPT 3-state machine (`active` <-> `requires_action` -> `deactivated` terminal).
+    4. Pre-renewal Microsoft Web IQ `/v3/search/news` + `/v3/auto` safety recall Financial Circuit Breaker
+       (`fcb_tripped_product_safety_recall_blocked`) and `/v3/browse` per-interval ceiling check
+       (`blocked_renewal_price_exceeds_interval_ceiling`).
+    """
+    if setup_future_usage is not None or card_setup_future_usage_set:
+        return RecurringReplenishmentSptVerdict(
+            False,
+            400,
+            "blocked_spt_forbids_setup_future_usage",
+            "spt_forbids_setup_future_usage_on_payment_intent",
+            spt_state,
+            fcb_state,
+            15,
+            "Send to a human",
+        )
+
+    if off_session and not recurring_interval_configured:
+        return RecurringReplenishmentSptVerdict(
+            False,
+            400,
+            "blocked_off_session_without_recurring_interval",
+            "off_session_requires_spt_with_recurring_interval_limits",
+            spt_state,
+            fcb_state,
+            15,
+            "Send to a human",
+        )
+
+    if spt_state == "deactivated":
+        return RecurringReplenishmentSptVerdict(
+            False,
+            400,
+            "blocked_deactivated_terminal_spt",
+            "spt_is_deactivated_terminal_state",
+            "deactivated",
+            fcb_state,
+            12,
+            "Send to a human",
+        )
+
+    if (fcb_state == "OPEN" and not human_recovery_mandate_signed) or webiq_recall_risk_level in {
+        "high",
+        "veryHigh",
+    }:
+        return RecurringReplenishmentSptVerdict(
+            False,
+            409,
+            "fcb_tripped_product_safety_recall_blocked",
+            f"webiq_news_auto_detected_{webiq_recall_risk_level}_recall_fcb_open_blocks_renewal",
+            spt_state,
+            "OPEN",
+            29,
+            "Send to a human",
+        )
+
+    price_dec = Decimal(str(live_renewal_price_usd))
+    cap_dec = Decimal(str(interval_mandate_ceiling_usd))
+    if price_dec > cap_dec:
+        return RecurringReplenishmentSptVerdict(
+            False,
+            422,
+            "blocked_renewal_price_exceeds_interval_ceiling",
+            f"live_renewal_price_{price_dec:.2f}_exceeds_{recurring_interval}_ceiling_{cap_dec:.2f}",
+            spt_state,
+            "CLOSED",
+            32,
+            "Confirm",
+        )
+
+    if spt_state == "requires_action":
+        if not buyer_completed_3ds:
+            return RecurringReplenishmentSptVerdict(
+                False,
+                402,
+                "paused_requires_action_awaiting_buyer_3ds",
+                "spt_requires_action_awaiting_buyer_3ds_or_passkey_step_up",
+                "requires_action",
+                "CLOSED",
+                24,
+                "Confirm",
+            )
+        return RecurringReplenishmentSptVerdict(
+            True,
+            200,
+            "recovered_requires_action_to_active_renewed",
+            f"spt_recovered_requires_action_to_active_and_renewed_{recurring_interval}_{price_dec:.2f}_usd",
+            "active",
+            "CLOSED",
+            410,
+            "Confirm",
+        )
+
+    return RecurringReplenishmentSptVerdict(
+        True,
+        200,
+        "cadence_spt_off_session_renewed",
+        f"cadence_spt_{recurring_interval}_off_session_renewed_{price_dec:.2f}_usd_within_{cap_dec:.2f}_cap",
+        "active",
+        "CLOSED",
+        388,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -5412,6 +5562,51 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "confirmed_refund_latency_ms": pp_refund_confirmed.latency_ms,
     }
 
+    rec_ok = evaluate_recurring_replenishment_spt_policy(
+        off_session=True,
+        recurring_interval_configured=True,
+        recurring_interval="month",
+        live_renewal_price_usd="58.00",
+        interval_mandate_ceiling_usd="65.00",
+    )
+    rec_sfu_block = evaluate_recurring_replenishment_spt_policy(
+        setup_future_usage="off_session",
+    )
+    rec_no_interval_block = evaluate_recurring_replenishment_spt_policy(
+        off_session=True,
+        recurring_interval_configured=False,
+    )
+    rec_recall_fcb = evaluate_recurring_replenishment_spt_policy(
+        webiq_recall_risk_level="veryHigh",
+    )
+    rec_price_hike = evaluate_recurring_replenishment_spt_policy(
+        live_renewal_price_usd="74.00",
+        interval_mandate_ceiling_usd="65.00",
+    )
+    rec_3ds_recovered = evaluate_recurring_replenishment_spt_policy(
+        spt_state="requires_action",
+        buyer_completed_3ds=True,
+    )
+    recurring_replenishment_guards = {
+        "all_passed": (
+            rec_ok.allowed
+            and rec_ok.http_status == 200
+            and not rec_sfu_block.allowed
+            and rec_sfu_block.http_status == 400
+            and not rec_no_interval_block.allowed
+            and rec_no_interval_block.http_status == 400
+            and not rec_recall_fcb.allowed
+            and rec_recall_fcb.http_status == 409
+            and rec_recall_fcb.fcb_state == "OPEN"
+            and not rec_price_hike.allowed
+            and rec_price_hike.http_status == 422
+            and rec_3ds_recovered.allowed
+            and rec_3ds_recovered.spt_next_state == "active"
+        ),
+        "off_session_renewal_latency_ms": rec_ok.latency_ms,
+        "recovered_3ds_latency_ms": rec_3ds_recovered.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -5432,6 +5627,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bnpl_webview_handover_guards": bnpl_webview_handover_guards,
         "split_cart_saga_guards": split_cart_saga_guards,
         "post_purchase_refund_guards": post_purchase_refund_guards,
+        "recurring_replenishment_guards": recurring_replenishment_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -8461,6 +8657,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pp-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Recurring Subscription SPT Cadence & Web IQ Recall FCB vs setup_future_usage Selector (Round 8 FAQ Companion) -->
+      <div class="finops-box" id="recurring-spt-selector-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rec-selector-title">🔄 周期性订阅与自动补货：SPT 周期额度令牌 (recurring_interval) vs setup_future_usage 禁令决策器 (Round 8 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 周期扣款模式与召回熔断状态 (Recurring SPT &amp; Recall FCB Scenario):</span></label>
+          <select id="rec-scenario-select" onchange="updateRecurringSptSandbox()">
+            <option value="cadence_ok">🔵 标准轨道 A：买方钱包主权周期 SPT (recurring_interval='month', off_session=True, $58 ≤ $65 上限 · 388ms)</option>
+            <option value="setup_future_trap">⛔ 禁用反模式 B：在 SPT PaymentIntent 上传 setup_future_usage='off_session' 试图私自绑卡 (HTTP 400!)</option>
+            <option value="no_interval_trap">⛔ 协议越权：拿未配置 recurring_interval 的单次 SPT 强行调 off_session=True (HTTP 400!)</option>
+            <option value="recall_fcb_open">🛑 Web IQ 召回熔断：/v3/search/news + /v3/auto 检出 CPSC 锂电池起火召回 (409 · FCB 跳闸 OPEN!)</option>
+            <option value="silent_price_hike">⚠️ 订阅刺客暗中涨价：Web IQ /v3/browse 发现当期续费价涨至 $74.00 &gt; $65.00 单期上限 (HTTP 422!)</option>
+            <option value="requires_action_3ds">🔐 状态机自愈：发卡行触发 requires_action 3DS 重验 -&gt; 买家确认后无缝恢复为 active (410ms)</option>
+          </select>
+        </div>
+        <div id="rec-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -8907,6 +9122,7 @@ function renderAll() {{
   updateBnplHandoverSandbox();
   updateSplitCartSagaSandbox();
   updatePostPurchaseRefundSandbox();
+  updateRecurringSptSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -9368,6 +9584,67 @@ function updatePostPurchaseRefundSandbox() {{
     "<strong>🟢 轨道 A：只读退货政策核验与 RMA 面单草稿生成通过 (return_rma_draft_verified · 340ms · Act automatically):</strong><br>" +
     "• <strong>Web IQ 实时核验</strong>：<code>POST /v3/browse (contentFormat='passage')</code> 验证在 30 天退货期内，且 <code>summary ($0) == terms ($0)</code> 无隐藏折旧费<br>" +
     "• <strong>读写物理隔离</strong>：全自动生成预填 RMA 退货标签草稿，省去客服 85% 查单核对工时，且零资金外流权限！" +
+    "</div>";
+}}
+
+function updateRecurringSptSandbox() {{
+  var selEl = document.getElementById("rec-scenario-select");
+  var outEl = document.getElementById("rec-selector-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "setup_future_trap") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⛔ HTTP 400 blocked_spt_forbids_setup_future_usage (15ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Stripe SPT (<code>2026-09-30.preview</code>) 严禁在 <code>PaymentIntent</code> 上设置顶层 <code>setup_future_usage</code> 或嵌套的 <code>payment_method_options[card][setup_future_usage]</code>！防止商户将买家钱包受控的临时 SPT 偷换为无上限的商户永久绑卡 (<code>pm_...</code>)。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "no_interval_trap") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⛔ HTTP 400 blocked_off_session_without_recurring_interval (15ms · Send to a human · official_doc_snapshot)：<br>" +
+      "买家离线扣款 (<code>off_session=True</code>) 要求该 <code>spt_...</code> 必须预先配置 <code>usage_limits.recurring_interval</code>（如 <code>month</code> / <code>week</code>）；严禁拿单次 SPT 强行发起后台续费！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "recall_fcb_open") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 fcb_tripped_product_safety_recall_blocked (29ms · Send to a human · FCB: CLOSED → OPEN)：<br>" +
+      "扣款前 Microsoft Web IQ <code>/v3/search/news</code> 与 <code>/v3/auto</code> 检出该补货 SKU 存在 <code>veryHigh</code> 级别安全召回（CPSC 锂电池起火召回）！财务熔断器 (FCB) 立即跳闸至 <code>OPEN</code>，100% 阻断危险品自动复购。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "silent_price_hike") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ HTTP 422 blocked_renewal_price_exceeds_interval_ceiling (32ms · Confirm · synthetic_policy)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核验发现商户当期续费价格暗中涨至 <code>$74.00</code>，超出买家单期 Mandate 上限 (<code>$65.00/month</code>)，已自动拦截“订阅刺客”扣款并推送买家确认！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "requires_action_3ds") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔐 状态机可逆自愈：requires_action ⇄ active 验证通过 (recovered_requires_action_to_active_renewed · 410ms · Confirm):</strong><br>" +
+      "• <strong>官方状态机规范</strong>：发卡行触发阶段性 3DS 风控重验时，SPT 进入可逆的 <code>requires_action</code> 状态（非终态销毁 <code>deactivated</code>）<br>" +
+      "• <strong>无缝恢复</strong>：买家完成一次 Passkey / 3DS 验证后，同一张 <code>spt_...</code> 自动恢复为 <code>active</code> 并完成当期 <code>$58.00</code> 续费！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔵 轨道 A：买方钱包主权周期 SPT 离线续费成功 (cadence_spt_off_session_renewed · 388ms · Act automatically):</strong><br>" +
+    "• <strong>周期与上限双锁</strong>：<code>usage_limits.recurring_interval='month'</code> + 当期现价 <code>$58.00 ≤ $65.00</code> + 无 <code>setup_future_usage</code><br>" +
+    "• <strong>扣款前 Web IQ 哨兵</strong>：<code>/v3/search/news</code> + <code>/v3/auto</code> 确认零安全召回 (<code>FCB=CLOSED</code>)，买家随时可在 Agent Wallet 一键置为 <code>deactivated</code> 断流！" +
     "</div>";
 }}
 

@@ -39,6 +39,7 @@
 > - **专题 5（BNPL 先买后付受控跳转接管）**：**[《BNPL 先买后付智能体结账架构：受控 WebView 跳转接管（Redirect Handover）vs 全自动令牌代扣（SPT v2 / VIC）选型与原理解析 FAQ》](docs/bnpl-webview-handover-vs-headless-agent-faq.md)**
 > - **专题 6（跨平台多商户拆单原子编排）**：**[《跨平台多商户拆单原子编排架构：两阶段预授权 Saga 补偿（2-Phase Pre-Auth Hold + Saga）vs 平台撮合统一分账（Stripe Connect SPT）选型与原理解析 FAQ》](docs/multi-merchant-split-cart-saga-vs-connect-faq.md)**
 - **专题 7（售后逆向退货与资金划拨门禁）**：**[《售后逆向退货与资金划拨智能体架构：只读资格核验（Web IQ Return-Policy Grounding）vs 高危写操作人类确认门禁（Stripe MCP `create_refund` / Treasury Gate）选型与原理解析 FAQ》](docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.md)**
+- **专题 8（周期性订阅与自动补货令牌架构）**：**[《周期性订阅与自动补货智能体授权架构：SPT 周期限额令牌（`usage_limits.recurring_interval` + Web IQ 召回熔断）vs 传统绑卡 `setup_future_usage` 禁用边界选型与原理解析 FAQ》](docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -53,6 +54,8 @@
 ![2026-11-08 跨平台多商户拆单原子编排：两阶段预授权 Saga 补偿 vs Stripe Connect 统一分账选型一图流](assets/svg/08-multi-merchant-split-cart-saga-2026-11-08.svg)
 
 ![2026-11-08 售后逆向退货与资金划拨架构：Web IQ 只读退货核验 vs Stripe MCP 退款/司库人类确认门禁一图流](assets/svg/09-post-purchase-return-vs-refund-gate-2026-11-08.svg)
+
+![2026-11-08 周期订阅与自动补货架构：SPT 周期限额令牌 vs 传统绑卡 setup_future_usage 禁令一图流](assets/svg/10-recurring-replenishment-spt-cadence-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
