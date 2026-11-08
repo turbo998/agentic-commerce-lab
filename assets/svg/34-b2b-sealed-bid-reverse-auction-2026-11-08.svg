@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg34" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#151E32"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent34" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg34)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent34)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="365" height="28" rx="14" fill="#1E1B4B" stroke="#6366F1" stroke-width="1.2"/>
+  <text x="218" y="42" fill="#A5B4FC" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle">ROUND 32 · B2B SEALED-BID REVERSE AUCTION ARCHITECTURE</text>
+  <text x="418" y="42" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">Provenance: deterministic_offline_simulation · synthetic_policy · as of 2026-11-08</text>
+
+  <text x="36" y="82" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">B2B 自动询报价暗标逆向拍卖 (Commit-Reveal) 与防围标串标密码学架构</text>
+  <text x="36" y="108" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="14">Two-Phase Sealed-Bid Mandate (rfq_sealed_bid_commit_... + Web IQ UBO Anti-Rigging) vs. Price Signaling &amp; Sybil Cover Bidding</text>
+
+  <!-- Left Card: Legacy Plaintext Three-Quote Vulnerabilities -->
+  <rect x="36" y="128" width="360" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="52" y="144" width="328" height="32" rx="6" fill="#450A0A"/>
+  <text x="216" y="165" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">❌ 传统明文三家比价（刺探底价与马甲围标）</text>
+
+  <rect x="54" y="192" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="214" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">1. 临期篡改报价与诱饵撤标 (Bid Tampering)</text>
+  <text x="68" y="236" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 先用小号低价吓退对手，开标前偷换高价 hash_tampered</text>
+  <text x="68" y="256" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 与封标哈希 hash_sealed_38200 不一致</text>
+  <text x="68" y="274" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：12ms 触发 HTTP 403 硬阻断并罚没保证金！</text>
+
+  <rect x="54" y="298" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="320" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">2. 卖方算法合谋抬价超底线 (Above Reserve Cap)</text>
+  <text x="68" y="342" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 竞标商默契抬价，最低报价达 $48,500.00</text>
+  <text x="68" y="362" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 超出买方加密封存的保留底价红线 ($45,000.00)</text>
+  <text x="68" y="380" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：15ms 触发 HTTP 422 超底价自动流标！</text>
+
+  <rect x="54" y="404" width="324" height="96" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="426" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">3. 同一老板 3 家空壳马甲陪标 (Sybil UBO Rigging)</text>
+  <text x="68" y="448" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 3 家不同名称公司响应 RFQ，背后共享同一实控人 (UBO)</text>
+  <text x="68" y="468" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• Web IQ /v3/browse 310ms 穿透工商股权与实控人图谱</text>
+  <text x="68" y="486" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：触发 HTTP 451 废除关联围标团伙资格！</text>
+
+  <!-- Center Card: Two-Phase Commit-Reveal Engine -->
+  <rect x="416" y="128" width="368" height="390" rx="12" fill="#0F172A" stroke="#6366F1" stroke-width="1.8"/>
+  <rect x="432" y="144" width="336" height="32" rx="6" fill="#1E1B4B"/>
+  <text x="600" y="165" fill="#A5B4FC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">🛡️ 两阶段盲标承诺网关 (Commit-Reveal)</text>
+
+  <rect x="434" y="192" width="332" height="106" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="1"/>
+  <text x="448" y="214" fill="#A5B4FC" font-family="Consolas, monospace" font-size="12" font-weight="700">rfq_sealed_bid_commit_2026_11_08</text>
+  <text x="448" y="236" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">commit_hash: "hash_sealed_38200" (SHA-256)</text>
+  <text x="448" y="254" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">revealed_bid: $38,200 | reserve_cap: $45,000</text>
+  <text x="448" y="272" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">ubo_independent: TRUE | bid_bond: LOCKED</text>
+  <text x="448" y="290" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">✓ 封标期零泄密 · 开标期防篡改 · UBO 股权穿透独立</text>
+
+  <rect x="434" y="312" width="332" height="90" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="448" y="334" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">💡 Web IQ 现货免排期折让套利 (315ms)</text>
+  <text x="448" y="354" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 最低盲标 $38,200 (已比 $45,000 底价省 $6,800)</text>
+  <text x="448" y="374" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• Web IQ 检出中标方现货仓直发可再省 $1,400 排期成本</text>
+  <text x="448" y="392" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">→ 触发 HTTP 409 Confirm 锁定 $36,800.00 净成交价！</text>
+
+  <rect x="434" y="414" width="332" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="448" y="436" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">⚡ 盲标验真通过：265ms 自动授标签约</text>
+  <text x="448" y="456" fill="#ECFDF5" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 哈希承诺吻合 + 3 家竞标商 UBO 完全独立</text>
+  <text x="448" y="476" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">• HTTP 200 AWARDED ($38,200) · 自动解冻未中标保证金</text>
+
+  <!-- Right Card: Quantitative Benchmark Scorecard -->
+  <rect x="804" y="128" width="360" height="390" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="820" y="144" width="328" height="32" rx="6" fill="#064E3B"/>
+  <text x="984" y="165" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">📊 5 大逆向拍卖场景实测 (52/52 Passed)</text>
+
+  <rect x="822" y="192" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="212" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">1. 开标篡改报价哈希 (tampered != sealed)</text>
+  <text x="834" y="232" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 403 HASH_MISMATCH · 12ms · 阻断改标并罚没保证金</text>
+
+  <rect x="822" y="256" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="276" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">2. 最低报价超出保留底价 ($48.5k &gt; $45k)</text>
+  <text x="834" y="296" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 422 EXCEEDS_RESERVE · 15ms · 超预算自动流标</text>
+
+  <rect x="822" y="320" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="340" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">3. 同一实控人马甲围标 (ubo_collusion=True)</text>
+  <text x="834" y="360" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 451 SYBIL_BID_RIGGING · 310ms · 穿透废除围标团伙</text>
+
+  <rect x="822" y="384" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="404" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">4. Web IQ 现货免排期折让 (-$1,400 交付费)</text>
+  <text x="834" y="424" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 409 ARBITRAGE_CONFIRM · 315ms · 净成本 $36,800</text>
+
+  <rect x="822" y="448" width="324" height="54" rx="6" fill="#064E3B"/>
+  <text x="834" y="468" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">5. 盲标哈希 + 独立 UBO 验真通过 ($38,200)</text>
+  <text x="834" y="488" fill="#D1FAE5" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 200 AWARD_EXECUTED · 265ms · 较底价省 $6,800</text>
+
+  <!-- Bottom Architect Takeaway Bar -->
+  <rect x="36" y="534" width="1128" height="116" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="56" y="562" fill="#A5B4FC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">🎯 架构师核心选型铁律（Architect Golden Rules · Round 32）</text>
+  <text x="56" y="586" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">1. 先锁加盐哈希再开标：投标期仅接收 SHA-256 盲标哈希与保证金，开标期篡改分毫即在 12ms 内触发 HTTP 403 硬阻断；超 $45,000 底价 15ms 自动流标 (422)。</text>
+  <text x="56" y="608" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">2. 穿透股权识破假比价：授标前强制调用 Microsoft Web IQ /v3/browse 核验全部竞标商最终受益人 (UBO)，310ms 内触发 HTTP 451 阻断“同一老板三家马甲”围标。</text>
+  <text x="56" y="630" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">Repo: github.com/turbo998/agentic-commerce-lab · Docs: docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.md · Sandbox: #b2b-sealed-bid-auction-sandbox</text>
+</svg>

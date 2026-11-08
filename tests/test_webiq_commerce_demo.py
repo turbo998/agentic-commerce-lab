@@ -1598,6 +1598,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.en.md",
             "docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.md",
             "docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.en.md",
+            "docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.md",
+            "docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2962,6 +2964,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["b2b_moq_syndicate_escrow_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-moq-syndicate-escrow-sandbox", demo_zh)
+
+    def test_b2b_sealed_bid_reverse_auction_vs_price_signaling_collusion_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_sealed_bid_reverse_auction_policy,
+        )
+
+        # 1. Verified commit-reveal hash + within $45,000 reserve + independent UBO -> 200 awarded ($38,200)
+        commit_ok = evaluate_b2b_sealed_bid_reverse_auction_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.awarded_bid_cents, 3820000)
+        self.assertEqual(commit_ok.arbitrage_savings_cents, 680000)
+
+        # 2. Post-commit hash tampering -> 403 blocked in 12ms
+        hash_403 = evaluate_b2b_sealed_bid_reverse_auction_policy(
+            revealed_bid_hash="hash_tampered_44500",
+        )
+        self.assertFalse(hash_403.allowed)
+        self.assertEqual(hash_403.http_status, 403)
+        self.assertEqual(
+            hash_403.auction_lane, "SEALED_BID_COMMIT_HASH_MISMATCH"
+        )
+
+        # 3. Lowest bid ($48,500) exceeds buyer reserve ceiling ($45,000) -> 422 blocked in 15ms
+        res_422 = evaluate_b2b_sealed_bid_reverse_auction_policy(
+            lowest_revealed_bid_cents=4850000,
+        )
+        self.assertFalse(res_422.allowed)
+        self.assertEqual(res_422.http_status, 422)
+        self.assertEqual(
+            res_422.auction_lane, "BID_EXCEEDS_RESERVE_PRICE_CEILING"
+        )
+
+        # 4. Shared UBO Sybil shell-company bid rigging -> 451 blocked in 310ms
+        ubo_451 = evaluate_b2b_sealed_bid_reverse_auction_policy(
+            webiq_ubo_collusion_detected=True,
+        )
+        self.assertFalse(ubo_451.allowed)
+        self.assertEqual(ubo_451.http_status, 451)
+
+        # 5. Web IQ ready-stock dispatch saves extra $1,400 ($36,800 net) -> 409 Confirm in 315ms
+        arb_409 = evaluate_b2b_sealed_bid_reverse_auction_policy(
+            ready_stock_discount_cents=140000,
+        )
+        self.assertFalse(arb_409.allowed)
+        self.assertEqual(arb_409.http_status, 409)
+        self.assertEqual(arb_409.awarded_bid_cents, 3680000)
+        self.assertEqual(arb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_sealed_bid_auction_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-sealed-bid-auction-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
