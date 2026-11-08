@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg24" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="redCard24" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </linearGradient>
+    <linearGradient id="greenCard24" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064E3B"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="blueCard24" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg24)"/>
+
+  <!-- Header -->
+  <rect x="32" y="24" width="1216" height="92" rx="14" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="56" y="58" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">ROUND 22 ARCHITECT SELECTION FAQ · REGULATED &amp; AGE-RESTRICTED COMMERCE · W3C ZKP VC vs. RAW ID UPLOAD &amp; DOB BYPASS</text>
+  <text x="56" y="88" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="21" font-weight="800">受监管商品（21+ 酒类/处方药/B2B 专营）零知识资格核验：W3C ZKP 谓词凭证 (zkp_vc_live_...) vs 自填生日伪造与身份证原件泄露</text>
+  <text x="56" y="108" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">Provenance: deterministic_offline_simulation · Web IQ /v3/browse ($12/1k official_doc_snapshot, as of 2026-11-08) · order_nonce TTL = 180s (synthetic_policy)</text>
+
+  <!-- Left Column: Anti-Patterns -->
+  <rect x="32" y="134" width="586" height="390" rx="14" fill="url(#redCard24)" stroke="#EF4444" stroke-width="1.8"/>
+  <text x="56" y="168" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="16" font-weight="800">❌ 传统高危反模式：Agent 自填出生日期绕过 &amp; 对话框上传身份证/处方原件</text>
+
+  <rect x="52" y="186" width="546" height="98" rx="10" fill="#1F2937" stroke="#F87171" stroke-width="1.2"/>
+  <text x="68" y="212" fill="#FECACA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">1. 自填出生日期 / 勾选“我已满 21 岁”伪造穿透 (Self-Attested DOB Bypass · HTTP 403)</text>
+  <text x="68" y="236" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 目标导向的 AI Agent 为完成“买两瓶威士忌”指令，自动在 API 中填入 birth_date="1990-01-01"。</text>
+  <text x="68" y="258" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 网关防护：14ms 硬阻断无加密签名的自填资格声明 (HTTP 403 BLOCKED_UNVERIFIED_SELF_ATTESTED)！</text>
+
+  <rect x="52" y="298" width="546" height="104" rx="10" fill="#1F2937" stroke="#F87171" stroke-width="1.2"/>
+  <text x="68" y="324" fill="#FECACA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">2. 身份证/驾照/处方单原件发入 LLM 上下文 (Raw Govt ID / Rx Upload · HTTP 422)</text>
+  <text x="68" y="348" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 高清人脸、公民身份号码与医疗病历一旦进入多模态 Prompt，立即触发 GDPR Art.9 / HIPAA 重度违规。</text>
+  <text x="68" y="370" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 网关防护：15ms 前置阻断明文证件照片与身份证号入参 (HTTP 422 · 0 bytes 敏感数据落盘)！</text>
+
+  <rect x="52" y="416" width="546" height="90" rx="10" fill="#1F2937" stroke="#F87171" stroke-width="1.2"/>
+  <text x="68" y="442" fill="#FECACA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">3. 截取他人成年凭证跨单重放 / 借壳代购 (Stale or Borrowed Proof Replay · HTTP 401)</text>
+  <text x="68" y="466" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 未绑定当前订单随机数 order_nonce (180s TTL) 或主体 DID 不匹配的凭证，16ms 触发 HTTP 401 阻断！</text>
+  <text x="68" y="488" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 杜绝未成年人复制粘贴旧证明或借用他人钱包签名买酒买药！</text>
+
+  <!-- Right Column: Production Architecture -->
+  <rect x="642" y="134" width="606" height="390" rx="14" fill="url(#greenCard24)" stroke="#10B981" stroke-width="1.8"/>
+  <text x="666" y="168" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="16" font-weight="800">✅ 生产级受监管合规架构：W3C ZKP 谓词凭证 + Web IQ 属地法规 + 成人签收锁</text>
+
+  <rect x="662" y="186" width="566" height="98" rx="10" fill="#0F172A" stroke="#34D399" stroke-width="1.2"/>
+  <text x="678" y="212" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">1. 本地硬件钱包零知识布尔断言 (zkp_vc_live_... · 0 字节生日/身份证号暴露)</text>
+  <text x="678" y="236" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 权威机构 (DMV mDL / 电子处方网) 预签发凭证；按单绑定 order_nonce 仅输出 age_over_21=true。</text>
+  <text x="678" y="258" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 实测 260ms 完成椭圆曲线公钥验签与授权扣款，Agent 与商户全程零 PII 接触！</text>
+
+  <rect x="662" y="298" width="566" height="104" rx="10" fill="#0F172A" stroke="#34D399" stroke-width="1.2"/>
+  <text x="678" y="324" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">2. Microsoft Web IQ /v3/browse 属地禁售法规实时接地 (315ms · HTTP 451)</text>
+  <text x="678" y="348" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 即便买家年满 21 岁，Web IQ 也会根据 ship_tok_... 的目标州/邮编前缀实时核验属地直邮禁令。</text>
+  <text x="678" y="370" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 检出禁酒县 (Dry County) 或跨州管制药品禁寄区时，315ms 返回 HTTP 451 阻断扣款！</text>
+
+  <rect x="662" y="416" width="566" height="90" rx="10" fill="#0F172A" stroke="#34D399" stroke-width="1.2"/>
+  <text x="678" y="442" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">3. 末端履约面单强制绑定成人当面签收 (adult_signature_21_plus = true)</text>
+  <text x="678" y="466" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 订单放行后自动在盲化物流令牌上锁死“必须年满 21 岁成人持证当面签收”，严禁快递放门口。</text>
+  <text x="678" y="488" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">• 线上 ZKP 验签哈希 + 线下签收回执双重归档，构筑 100% 监管审计免责闭环！</text>
+
+  <!-- Bottom Quantitative Bar -->
+  <rect x="32" y="542" width="1216" height="190" rx="14" fill="url(#blueCard24)" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="56" y="574" fill="#93C5FD" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="800">📊 定量基准实测对比 (Sealed Offline Evaluation · tests/test_webiq_commerce_demo.py · 43 Passed)</text>
+
+  <rect x="56" y="592" width="224" height="118" rx="10" fill="#0F172A" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="72" y="618" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">自填年龄伪造拦截</text>
+  <text x="72" y="652" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="24" font-weight="800">HTTP 403</text>
+  <text x="72" y="678" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">14ms 阻断无签名 is_over_21</text>
+  <text x="72" y="696" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11">Send to a human (synthetic)</text>
+
+  <rect x="292" y="592" width="224" height="118" rx="10" fill="#0F172A" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="308" y="618" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">身份证/处方原件拦截</text>
+  <text x="308" y="652" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="24" font-weight="800">HTTP 422</text>
+  <text x="308" y="678" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">15ms 阻断证件照片入 Prompt</text>
+  <text x="308" y="696" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11">0 bytes 敏感证件落盘</text>
+
+  <rect x="528" y="592" width="224" height="118" rx="10" fill="#0F172A" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="544" y="618" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">跨单重放/借用拦截</text>
+  <text x="544" y="652" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="24" font-weight="800">HTTP 401</text>
+  <text x="544" y="678" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">16ms 阻断过期/篡改 nonce</text>
+  <text x="544" y="696" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11">order_nonce &lt;= 180s</text>
+
+  <rect x="764" y="592" width="224" height="118" rx="10" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="780" y="618" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">Web IQ 属地禁售拦截</text>
+  <text x="780" y="652" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="24" font-weight="800">HTTP 451</text>
+  <text x="780" y="678" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">315ms 检出禁酒县/禁寄州</text>
+  <text x="780" y="696" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="11">Legal Restriction Block</text>
+
+  <rect x="1000" y="592" width="224" height="118" rx="10" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="1016" y="618" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">ZKP 零知识核验成交</text>
+  <text x="1016" y="652" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="24" font-weight="800">0 Bytes PII</text>
+  <text x="1016" y="678" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">260ms 验签放行 + 成人签收锁</text>
+  <text x="1016" y="696" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11">Act automatically (HTTP 200)</text>
+</svg>

@@ -53,6 +53,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 19 (AI Agent Flash-Sale Concurrency, Inventory Lease & Zero-Oversell: Bounded 180s `inv_hold_...` & `capture_method=manual` 2PC vs. Oversell Refund Storms & Cart Hoarding)**: **[AI Agent Flash-Sale Concurrency, Inventory Lease & Zero-Oversell Architecture: Bounded-TTL Soft Inventory Hold & Manual Pre-Auth Two-Phase Commit (`inv_hold_...` 180s TTL + `capture_method=manual`) vs. Optimistic Lockless Oversell Refund Storms & Denial-of-Inventory Cart Hoarding Selection FAQ](docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.en.md)**
 - **Topic 20 (Cross-Border Multi-Currency Pricing, FX Rate Lock & Spread Protection: Bounded 300s `fx_quote_...` & ISO 4217 Zero-Decimal Guard vs. Predatory DCC & Refund FX Slippage)**: **[Cross-Border Multi-Currency AI Agent Pricing, FX Rate Lock & Spread Protection Architecture: Local Presentment Currency Alignment & Bounded FX Quote Token (`fx_quote_...` 300s TTL + ISO 4217 Zero-Decimal Guard) vs. Predatory Dynamic Currency Conversion (DCC `3.5%–6.5%` Markup) & Refund FX Slippage Selection FAQ](docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.en.md)**
 - **Topic 21 (AI Agent Coupon Optimization, Loyalty-Fiat Hybrid Checkout & Anti-Stacking: Subject-Bound `promo_lock_...` & `loyalty_hold_...` Saga vs. Brute-Forcing, Stacking Exploits & Orphaned Point Burn)**: **[AI Agent Coupon Optimization, Loyalty-Fiat Hybrid Checkout & Anti-Stacking Architecture: Subject-Bound Promo Lock & Two-Phase Loyalty-Fiat Saga (`promo_lock_...` + `loyalty_hold_...` + Exclusivity Guard) vs. Coupon Brute-Forcing, Margin-Busting Stacking Exploits & Orphaned Point Burn Selection FAQ](docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.en.md)**
+- **Topic 22 (Regulated & Age-Restricted Goods AI Agent Eligibility & Zero-Knowledge Verification: W3C VC & ZKP Predicate Presentation `zkp_vc_live_...` vs. Raw Government ID Uploads & Self-Attested DOB Bypass)**: **[Regulated & Age-Restricted Goods (Alcohol, Rx & B2B Restricted SKUs) AI Agent Eligibility & Zero-Knowledge Verification Architecture: W3C Verifiable Credential & ZKP Predicate Presentation (`order_nonce`-Bound `age_over_21` / Rx Proof) vs. Raw Government ID Uploads & Self-Attested DOB Bypass Selection FAQ](docs/age-verification-zkp-vc-vs-id-upload-compliance-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -95,6 +96,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Cross-Border Multi-Currency AI Agent Pricing, FX Rate Lock & Anti-DCC Architecture Visual Summary](assets/svg/22-multi-currency-fx-rate-lock-vs-dcc-spread-2026-11-08.svg)
 
 ![2026-11-08 AI Agent Coupon Optimization, Loyalty-Fiat Hybrid Checkout & Anti-Stacking Visual Summary](assets/svg/23-loyalty-coupon-atomic-redemption-vs-stacking-2026-11-08.svg)
+
+![2026-11-08 Regulated & Age-Restricted AI Agent Zero-Knowledge Eligibility Verification Architecture Visual Summary](assets/svg/24-age-verification-zkp-vc-vs-id-upload-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

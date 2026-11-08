@@ -190,6 +190,11 @@
     "hybrid_commit_latency_ms": 275,
     "point_restore_latency_ms": 21
   },
+  "regulated_zkp_eligibility_guards": {
+    "all_passed": true,
+    "zkp_commit_latency_ms": 260,
+    "self_attest_block_latency_ms": 14
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -6322,6 +6322,105 @@ def evaluate_loyalty_coupon_and_hybrid_saga_policy(
     )
 
 
+@dataclass(frozen=True)
+class RegulatedZkpEligibilityVerdict:
+    """Round 22 verdict for W3C Verifiable Credential & ZKP Predicate Presentation vs Raw ID Uploads & Self-Attested DOB Bypass."""
+
+    allowed: bool
+    http_status: int
+    eligibility_lane: str
+    exposed_id_dob_bytes: int
+    adult_signature_locked: bool
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+    *,
+    is_regulated_sku: bool = True,
+    self_attested_only: bool = False,
+    has_raw_id_or_rx_in_payload: bool = False,
+    zkp_vc_token: str = "zkp_vc_live_991a",
+    issuer_trusted: bool = True,
+    nonce_matched: bool = True,
+    nonce_age_seconds: int = 25,
+    max_nonce_ttl_seconds: int = 180,
+    subject_matches_mandate: bool = True,
+    jurisdiction_prohibited_by_webiq: bool = False,
+) -> RegulatedZkpEligibilityVerdict:
+    """Evaluate W3C VC Zero-Knowledge Predicate Proof, raw ID upload prevention, nonce replay binding, and Web IQ shipping jurisdiction compliance."""
+
+    # 1. Raw Government ID / Driver's License / Prescription Image in Agent Payload -> HTTP 422
+    if has_raw_id_or_rx_in_payload:
+        return RegulatedZkpEligibilityVerdict(
+            False,
+            422,
+            "BLOCKED_RAW_GOVT_ID_PII_IN_AGENT_PAYLOAD",
+            0,
+            False,
+            "raw_government_id_biometric_or_rx_document_blocked_at_gateway",
+            15,
+            "Send to a human",
+        )
+
+    # 2. Unverified Self-Attested DOB / Checkbox Bypass Attempt -> HTTP 403
+    if is_regulated_sku and (self_attested_only or not zkp_vc_token.startswith("zkp_vc_live_")):
+        return RegulatedZkpEligibilityVerdict(
+            False,
+            403,
+            "BLOCKED_UNVERIFIED_SELF_ATTESTED_ELIGIBILITY",
+            0,
+            False,
+            "self_attested_birth_date_or_checkbox_rejected_for_regulated_sku",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Stale/Replayed order_nonce, Untrusted Issuer PKI, or Borrowed Credential Subject Mismatch -> HTTP 401
+    if (
+        not issuer_trusted
+        or not nonce_matched
+        or nonce_age_seconds > max_nonce_ttl_seconds
+        or not subject_matches_mandate
+    ):
+        return RegulatedZkpEligibilityVerdict(
+            False,
+            401,
+            "ZKP_NONCE_REPLAY_OR_EXPIRED_BLOCKED",
+            0,
+            False,
+            "zkp_proof_order_nonce_replayed_expired_or_subject_mismatch",
+            16,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ /v3/browse Live Shipping Jurisdiction Restriction (Dry County / Prohibited State) -> HTTP 451
+    if jurisdiction_prohibited_by_webiq:
+        return RegulatedZkpEligibilityVerdict(
+            False,
+            451,
+            "JURISDICTION_SHIPPING_RESTRICTION_BLOCKED",
+            0,
+            False,
+            "webiq_live_shipping_matrix_detected_prohibited_destination_postal_code",
+            315,
+            "Send to a human",
+        )
+
+    # 5. Clean W3C ZKP Predicate Verification + Mandatory Adult Signature Fulfillment Lock
+    return RegulatedZkpEligibilityVerdict(
+        True,
+        200,
+        "ZKP_ELIGIBILITY_VERIFIED_COMMITTED",
+        0,
+        True,
+        "w3c_vc_zkp_predicate_verified_zero_pii_exposed_and_adult_signature_locked",
+        260,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -7935,6 +8034,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "point_restore_latency_ms": promo_decline_402.latency_ms,
     }
 
+    zkp_commit_ok = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy()
+    zkp_self_403 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+        self_attested_only=True,
+    )
+    zkp_raw_id_422 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+        has_raw_id_or_rx_in_payload=True,
+    )
+    zkp_replay_401 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+        nonce_matched=False,
+    )
+    zkp_jurisdiction_451 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+        jurisdiction_prohibited_by_webiq=True,
+    )
+    regulated_zkp_eligibility_guards = {
+        "all_passed": (
+            zkp_commit_ok.allowed
+            and zkp_commit_ok.exposed_id_dob_bytes == 0
+            and zkp_commit_ok.adult_signature_locked
+            and not zkp_self_403.allowed
+            and zkp_self_403.http_status == 403
+            and not zkp_raw_id_422.allowed
+            and zkp_raw_id_422.http_status == 422
+            and not zkp_replay_401.allowed
+            and zkp_replay_401.http_status == 401
+            and not zkp_jurisdiction_451.allowed
+            and zkp_jurisdiction_451.http_status == 451
+        ),
+        "zkp_commit_latency_ms": zkp_commit_ok.latency_ms,
+        "self_attest_block_latency_ms": zkp_self_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -7969,6 +8099,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "inventory_reservation_oversell_guards": inventory_reservation_oversell_guards,
         "multi_currency_fx_quote_guards": multi_currency_fx_quote_guards,
         "loyalty_coupon_hybrid_saga_guards": loyalty_coupon_hybrid_saga_guards,
+        "regulated_zkp_eligibility_guards": regulated_zkp_eligibility_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -11264,6 +11395,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="promo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Regulated & Age-Restricted W3C ZKP Eligibility Sandbox (Round 22 FAQ Companion) -->
+      <div class="finops-box" id="regulated-zkp-eligibility-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-zkp-title">🪪 受监管商品（21+ 酒类/处方药/B2B 专营）零知识核验架构：W3C ZKP 谓词凭证 (zkp_vc_live_... + order_nonce) vs 自填生日伪造与身份证原件泄露决策器 (Round 22 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 法定购买资格核验、证件隐私保护与属地禁售场景 (Regulated SKU Eligibility, ZKP Privacy &amp; Shipping Jurisdiction Scenario):</span></label>
+          <select id="zkp-select" onchange="updateRegulatedZkpSandbox()">
+            <option value="zkp_commit_ok">⚡ W3C ZKP 零知识谓词核验通过 (zkp_vc_live_991a · age_over_21=true)：0 字节生日/身份证号暴露 + 面单绑定 21+ 成人当面签收! (260ms · Act automatically)</option>
+            <option value="zkp_self_403">🛑 Agent 自填出生日期 / 勾选“已满 21 岁”伪造绕过拦截：仅传 is_over_21=true 或 birth_date="1990-01-01" → 14ms 触发 HTTP 403 硬阻断!</option>
+            <option value="zkp_raw_id_422">🚨 对话框上传身份证/驾照/处方单高清原件拦截：检出明文证件照片与公民身份号码 → 15ms 触发 HTTP 422 前置阻断 (0 bytes 落盘)!</option>
+            <option value="zkp_replay_401">🛑 跨单重放旧证明或借用他人成年凭证拦截：zkp_vc_live_... 内部 order_nonce 不匹配或超 180s TTL → 16ms 触发 HTTP 401 硬阻断!</option>
+            <option value="zkp_jurisdiction_451">⚖️ Web IQ 检出收货邮编属禁酒县/跨州禁寄区：买家虽满 21 岁，但 /v3/browse 核验目标州禁止酒精直邮 → 315ms 触发 HTTP 451 法规阻断!</option>
+          </select>
+        </div>
+        <div id="zkp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -11724,6 +11873,7 @@ function renderAll() {{
   updateInventoryReservationSandbox();
   updateMultiCurrencyFxSandbox();
   updateLoyaltyCouponSandbox();
+  updateRegulatedZkpSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13023,6 +13173,56 @@ function updateLoyaltyCouponSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 合规单券 + 10,000 积分 + $80 法币双轨原子成交 (HYBRID_LOYALTY_FIAT_COMMITTED · 275ms · Act automatically):</strong><br>" +
     "• <strong>两阶段原子核销</strong>：先软冻结 <code>promo_lock_live_... ($20)</code> 与 <code>loyalty_hold_live_... (10,000 pts)</code>，确认法币 <code>$80.00</code> 扣款成功后同步转正核销！" +
+    "</div>";
+}}
+
+function updateRegulatedZkpSandbox() {{
+  var selEl = document.getElementById("zkp-select");
+  var outEl = document.getElementById("zkp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "zkp_self_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOCKED_UNVERIFIED_SELF_ATTESTED_ELIGIBILITY (14ms · Send to a human · synthetic_policy)：<br>" +
+      "受监管商品（21+ 酒类/处方药）严禁接受无权威加密签名的自填布尔值 <code>is_over_21=true</code> 或伪造生日字符串！已阻断 AI Agent 目标导向伪造穿透！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "zkp_raw_id_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BLOCKED_RAW_GOVT_ID_PII_IN_AGENT_PAYLOAD (15ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到请求载荷试图上传身份证/驾照/处方原件图像或公民身份号码！已在网关边缘前置剥离并阻断（<code>0 bytes</code> 敏感生物/医疗数据进入 LLM 日志）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "zkp_replay_401") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 401 ZKP_NONCE_REPLAY_OR_EXPIRED_BLOCKED (16ms · Send to a human · synthetic_policy)：<br>" +
+      "零知识证明令牌 <code>zkp_vc_live_...</code> 内部绑定的 <code>order_nonce</code> 与当前订单不匹配或已超过 <code>180s</code> 窗口（疑似跨单重放或借用他人成年凭证），已拒绝放行！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "zkp_jurisdiction_451") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚖️ HTTP 451 JURISDICTION_SHIPPING_RESTRICTION_BLOCKED (315ms · Send to a human · official_doc_snapshot)：<br>" +
+      "虽然买家已通过 21+ 零知识年龄核验，但 Microsoft Web IQ <code>/v3/browse</code> 实时核验收货地址令牌所在州/县属地法规，发现该邮编禁止酒精直邮（Dry County），已在扣款前依法阻断！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ W3C ZKP 零知识谓词核验成交 + 成人签收绑定 (ZKP_ELIGIBILITY_VERIFIED_COMMITTED · 260ms · Act automatically):</strong><br>" +
+    "• <strong>零隐私暴露合规闭环</strong>：通过权威发证方公钥验签 <code>zkp_vc_live_991a (age_over_21=true, order_nonce=nonce_772a)</code>，全程暴露 <code>0 bytes</code> 姓名/生日/身份证号，并在物流令牌上强制锁定 <code>adult_signature_21_plus=true</code>！" +
     "</div>";
 }}
 

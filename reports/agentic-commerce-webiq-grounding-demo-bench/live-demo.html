@@ -1188,6 +1188,24 @@
         <div id="promo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Regulated & Age-Restricted W3C ZKP Eligibility Sandbox (Round 22 FAQ Companion) -->
+      <div class="finops-box" id="regulated-zkp-eligibility-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-zkp-title">🪪 受监管商品（21+ 酒类/处方药/B2B 专营）零知识核验架构：W3C ZKP 谓词凭证 (zkp_vc_live_... + order_nonce) vs 自填生日伪造与身份证原件泄露决策器 (Round 22 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 法定购买资格核验、证件隐私保护与属地禁售场景 (Regulated SKU Eligibility, ZKP Privacy &amp; Shipping Jurisdiction Scenario):</span></label>
+          <select id="zkp-select" onchange="updateRegulatedZkpSandbox()">
+            <option value="zkp_commit_ok">⚡ W3C ZKP 零知识谓词核验通过 (zkp_vc_live_991a · age_over_21=true)：0 字节生日/身份证号暴露 + 面单绑定 21+ 成人当面签收! (260ms · Act automatically)</option>
+            <option value="zkp_self_403">🛑 Agent 自填出生日期 / 勾选“已满 21 岁”伪造绕过拦截：仅传 is_over_21=true 或 birth_date="1990-01-01" → 14ms 触发 HTTP 403 硬阻断!</option>
+            <option value="zkp_raw_id_422">🚨 对话框上传身份证/驾照/处方单高清原件拦截：检出明文证件照片与公民身份号码 → 15ms 触发 HTTP 422 前置阻断 (0 bytes 落盘)!</option>
+            <option value="zkp_replay_401">🛑 跨单重放旧证明或借用他人成年凭证拦截：zkp_vc_live_... 内部 order_nonce 不匹配或超 180s TTL → 16ms 触发 HTTP 401 硬阻断!</option>
+            <option value="zkp_jurisdiction_451">⚖️ Web IQ 检出收货邮编属禁酒县/跨州禁寄区：买家虽满 21 岁，但 /v3/browse 核验目标州禁止酒精直邮 → 315ms 触发 HTTP 451 法规阻断!</option>
+          </select>
+        </div>
+        <div id="zkp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1648,6 +1666,7 @@ function renderAll() {
   updateInventoryReservationSandbox();
   updateMultiCurrencyFxSandbox();
   updateLoyaltyCouponSandbox();
+  updateRegulatedZkpSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -2947,6 +2966,56 @@ function updateLoyaltyCouponSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 合规单券 + 10,000 积分 + $80 法币双轨原子成交 (HYBRID_LOYALTY_FIAT_COMMITTED · 275ms · Act automatically):</strong><br>" +
     "• <strong>两阶段原子核销</strong>：先软冻结 <code>promo_lock_live_... ($20)</code> 与 <code>loyalty_hold_live_... (10,000 pts)</code>，确认法币 <code>$80.00</code> 扣款成功后同步转正核销！" +
+    "</div>";
+}
+
+function updateRegulatedZkpSandbox() {
+  var selEl = document.getElementById("zkp-select");
+  var outEl = document.getElementById("zkp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "zkp_self_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOCKED_UNVERIFIED_SELF_ATTESTED_ELIGIBILITY (14ms · Send to a human · synthetic_policy)：<br>" +
+      "受监管商品（21+ 酒类/处方药）严禁接受无权威加密签名的自填布尔值 <code>is_over_21=true</code> 或伪造生日字符串！已阻断 AI Agent 目标导向伪造穿透！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "zkp_raw_id_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BLOCKED_RAW_GOVT_ID_PII_IN_AGENT_PAYLOAD (15ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到请求载荷试图上传身份证/驾照/处方原件图像或公民身份号码！已在网关边缘前置剥离并阻断（<code>0 bytes</code> 敏感生物/医疗数据进入 LLM 日志）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "zkp_replay_401") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 401 ZKP_NONCE_REPLAY_OR_EXPIRED_BLOCKED (16ms · Send to a human · synthetic_policy)：<br>" +
+      "零知识证明令牌 <code>zkp_vc_live_...</code> 内部绑定的 <code>order_nonce</code> 与当前订单不匹配或已超过 <code>180s</code> 窗口（疑似跨单重放或借用他人成年凭证），已拒绝放行！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "zkp_jurisdiction_451") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚖️ HTTP 451 JURISDICTION_SHIPPING_RESTRICTION_BLOCKED (315ms · Send to a human · official_doc_snapshot)：<br>" +
+      "虽然买家已通过 21+ 零知识年龄核验，但 Microsoft Web IQ <code>/v3/browse</code> 实时核验收货地址令牌所在州/县属地法规，发现该邮编禁止酒精直邮（Dry County），已在扣款前依法阻断！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ W3C ZKP 零知识谓词核验成交 + 成人签收绑定 (ZKP_ELIGIBILITY_VERIFIED_COMMITTED · 260ms · Act automatically):</strong><br>" +
+    "• <strong>零隐私暴露合规闭环</strong>：通过权威发证方公钥验签 <code>zkp_vc_live_991a (age_over_21=true, order_nonce=nonce_772a)</code>，全程暴露 <code>0 bytes</code> 姓名/生日/身份证号，并在物流令牌上强制锁定 <code>adult_signature_21_plus=true</code>！" +
     "</div>";
 }
 

@@ -1578,6 +1578,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.en.md",
             "docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.md",
             "docs/loyalty-coupon-atomic-redemption-vs-stacking-abuse-faq.en.md",
+            "docs/age-verification-zkp-vc-vs-id-upload-compliance-faq.md",
+            "docs/age-verification-zkp-vc-vs-id-upload-compliance-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2454,6 +2456,53 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["loyalty_coupon_hybrid_saga_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("loyalty-coupon-hybrid-saga-sandbox", demo_zh)
+
+    def test_age_verification_zkp_vc_vs_id_upload_compliance_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_regulated_zkp_eligibility_and_jurisdiction_policy
+
+        # 1. Valid W3C ZKP VC predicate + order_nonce -> 200 committed with 0 PII bytes & adult signature locked
+        commit_ok = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.exposed_id_dob_bytes, 0)
+        self.assertTrue(commit_ok.adult_signature_locked)
+
+        # 2. Self-attested DOB / checkbox bypass attempt -> 403 blocked in 14ms
+        self_403 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+            self_attested_only=True,
+        )
+        self.assertFalse(self_403.allowed)
+        self.assertEqual(self_403.http_status, 403)
+        self.assertEqual(self_403.eligibility_lane, "BLOCKED_UNVERIFIED_SELF_ATTESTED_ELIGIBILITY")
+
+        # 3. Raw government ID / prescription photo in agent payload -> 422 blocked in 15ms
+        raw_422 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+            has_raw_id_or_rx_in_payload=True,
+        )
+        self.assertFalse(raw_422.allowed)
+        self.assertEqual(raw_422.http_status, 422)
+        self.assertEqual(raw_422.exposed_id_dob_bytes, 0)
+
+        # 4. Replayed or expired order_nonce proof -> 401 blocked in 16ms
+        replay_401 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+            nonce_matched=False,
+        )
+        self.assertFalse(replay_401.allowed)
+        self.assertEqual(replay_401.http_status, 401)
+        self.assertEqual(replay_401.eligibility_lane, "ZKP_NONCE_REPLAY_OR_EXPIRED_BLOCKED")
+
+        # 5. Web IQ prohibited shipping jurisdiction (Dry County / restricted state) -> 451 blocked in 315ms
+        juris_451 = evaluate_regulated_zkp_eligibility_and_jurisdiction_policy(
+            jurisdiction_prohibited_by_webiq=True,
+        )
+        self.assertFalse(juris_451.allowed)
+        self.assertEqual(juris_451.http_status, 451)
+        self.assertEqual(juris_451.eligibility_lane, "JURISDICTION_SHIPPING_RESTRICTION_BLOCKED")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["regulated_zkp_eligibility_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("regulated-zkp-eligibility-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
