@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg20" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="blue20" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="red20" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+    <linearGradient id="green20" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg20)" rx="16"/>
+
+  <!-- Header -->
+  <rect x="32" y="24" width="1136" height="84" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="52" y="56" font-family="Segoe UI, Inter, sans-serif" font-size="21" font-weight="700" fill="#F8FAFC">
+    Round 18 · AI Agent 结账隐私合规与防泄密架构：双阶地址披露与金库句柄 (ship_tok_...) vs 明文 PII 泄漏与密码学粉碎
+  </text>
+  <text x="52" y="86" font-family="Segoe UI, Inter, sans-serif" font-size="14" fill="#94A3B8">
+    Zero-PII LLM Context (0 bytes) · Coarse Postal-Prefix Quoting (195ms) · Merchant-Bound ship_tok_... (265ms) · GDPR Crypto-Shredding (24ms)
+  </text>
+  <rect x="945" y="38" width="205" height="32" rx="16" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="1047" y="59" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0">
+    0 BYTES PII IN LLM
+  </text>
+
+  <!-- Column 1: Two-Tier Location Disclosure -->
+  <rect x="32" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <rect x="32" y="126" width="364" height="42" rx="12" fill="url(#blue20)"/>
+  <text x="214" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    1. 双阶地理位置披露 (询价 vs 成交履约)
+  </text>
+
+  <rect x="48" y="182" width="332" height="98" rx="8" fill="#172554" stroke="#60A5FA" stroke-width="1"/>
+  <text x="60" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#93C5FD">
+    📍 阶段 A：比价仅传粗粒度邮编前缀 (195 ms)
+  </text>
+  <text x="60" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 仅披露 Country + State + 3位邮编 (US-CA-940)
+  </text>
+  <text x="60" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 足够 10 家候选商户精准试算州税与快递运费分档
+  </text>
+  <text x="60" y="266" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#60A5FA">
+    • 9 家未成交商户拿不到任何门牌号与手机号!
+  </text>
+
+  <rect x="48" y="292" width="332" height="104" rx="8" fill="#064E3B" stroke="#34D399" stroke-width="1.2"/>
+  <text x="60" y="314" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0">
+    🎟️ 阶段 B：成交后签发受众句柄 ship_tok_... (265 ms)
+  </text>
+  <text x="60" y="336" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • 仅在 checkout_committed=True 后向唯一赢家签发
+  </text>
+  <text x="60" y="356" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • 强绑定 caller_merchant_id === token_merchant_id
+  </text>
+  <text x="60" y="378" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#6EE7B7">
+    • 后端 mTLS 解引用物流面单，LLM 上下文仍为 0 PII
+  </text>
+
+  <rect x="48" y="408" width="332" height="90" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="60" y="430" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0">
+    🛃 跨境清关身份证/护照号金库直通 (285 ms)
+  </text>
+  <text x="60" y="452" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 报关证件号由金库直接注入海关网关，彻底绕开 LLM
+  </text>
+  <text x="60" y="472" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • CUSTOMS_ID_VAULT_DIRECT_INJECTED (0 bytes 暴露)
+  </text>
+
+  <!-- Column 2: Prompt-Injection Exfiltration & Premature Resolve Blocks -->
+  <rect x="418" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="418" y="126" width="364" height="42" rx="12" fill="url(#red20)"/>
+  <text x="600" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    2. 防提示词注入外带与防越权解引用
+  </text>
+
+  <rect x="434" y="182" width="332" height="106" rx="8" fill="#450A0A" stroke="#F87171" stroke-width="1.2"/>
+  <text x="446" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5">
+    🚨 出站 DLP 拦截明文 PII 外带 (15 ms · HTTP 403)
+  </text>
+  <text x="446" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 防御恶意商品页隐藏 Prompt Injection 诱导泄密
+  </text>
+  <text x="446" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 扫描工具参数与出站 URL 是否含街道门牌/电话/SSN
+  </text>
+  <text x="446" y="268" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    • BLOCKED_PII_CONTEXT_OR_URL_EXFILTRATION!
+  </text>
+
+  <rect x="434" y="300" width="332" height="104" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1"/>
+  <text x="446" y="322" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5">
+    🛑 拦截未成交或跨商户盗用句柄 (18 ms · HTTP 403)
+  </text>
+  <text x="446" y="344" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 比价商户在 committed=False 时提前请求解引用
+  </text>
+  <text x="446" y="364" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 或商户 A 盗用签发给商户 B 的 ship_tok_live_...
+  </text>
+  <text x="446" y="384" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    • BLOCKED_PREMATURE_OR_CROSS_MERCHANT_RESOLVE
+  </text>
+
+  <rect x="434" y="416" width="332" height="82" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="446" y="438" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCD34D">
+    🛡️ 符号指针隔离 (Symbolic Pointer Isolation)
+  </text>
+  <text x="446" y="460" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FDE68A">
+    • LLM 仅见 "addr_home_default"，被攻破也无密可泄
+  </text>
+  <text x="446" y="480" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 彻底终结比价阶段销售线索黑产倒卖 (Lead-Gen Leak)
+  </text>
+
+  <!-- Column 3: GDPR Art. 17 Crypto-Shredding -->
+  <rect x="804" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="804" y="126" width="364" height="42" rx="12" fill="url(#green20)"/>
+  <text x="986" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    3. GDPR 第 17 条密码学粉碎 (Crypto-Shredding)
+  </text>
+
+  <rect x="820" y="182" width="332" height="106" rx="8" fill="#064E3B" stroke="#34D399" stroke-width="1.2"/>
+  <text x="832" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0">
+    🗑️ 24 ms 销毁单用户密钥 (HTTP 410 Gone)
+  </text>
+  <text x="832" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • 每位买家独立分配 256-bit KMS 数据密钥 (DEK_user)
+  </text>
+  <text x="832" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • 行使“被遗忘权”时仅需销毁该 DEK (O(1) 秒级擦除)
+  </text>
+  <text x="832" y="268" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#6EE7B7">
+    • BLOCKED_GDPR_CRYPTO_SHREDDED_KEY (24 ms)
+  </text>
+
+  <rect x="820" y="300" width="332" height="94" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+  <text x="832" y="322" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#7DD3FC">
+    ⚖️ 兼顾 7 年税务审计账本与 GDPR 擦除权
+  </text>
+  <text x="832" y="344" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • 不可变订单日志仅存 ship_tok_... 与税区 US-CA
+  </text>
+  <text x="832" y="364" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • 无需回溯重写 TB 级历史日志即可 100% 抹除个人身份
+  </text>
+  <text x="832" y="382" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#38BDF8">
+    • 财务金额与税额审计链保持 100% 完整可验
+  </text>
+
+  <rect x="820" y="406" width="332" height="92" rx="8" fill="#0F172A" stroke="#64748B" stroke-width="1"/>
+  <text x="832" y="428" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    📊 Provenance 透明溯源声明
+  </text>
+  <text x="832" y="448" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • GDPR Art.17 / OWASP LLM01: official_doc_snapshot
+  </text>
+  <text x="832" y="466" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 15ms~285ms 延迟: deterministic_offline_simulation
+  </text>
+  <text x="832" y="484" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 外部承运商主机 PDF 面单渲染耗时: not_measured
+  </text>
+
+  <!-- Bottom Summary Banner -->
+  <rect x="32" y="532" width="1136" height="118" rx="12" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+  <text x="52" y="562" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#38BDF8">
+    🎯 架构师一句话选型口诀（3-Minute Takeaway for AI Solution Architects）：
+  </text>
+  <text x="52" y="590" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    1. 严禁明文收货地址、手机号与证件号进入 LLM Prompt (保持 0 bytes)；多商户比价阶段仅传输国家+州+3位邮编前缀 (195ms)；
+  </text>
+  <text x="52" y="614" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    2. 仅在订单锁单成交后向唯一中标商户签发绑定受众的 ship_tok_... 履约句柄 (265ms)，未成交提前解引用或跨商户冒用 18ms 返回 HTTP 403；
+  </text>
+  <text x="52" y="638" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#6EE7B7">
+    3. 出站 DLP 15ms 拦截提示词注入 PII 外带 (HTTP 403)；GDPR 删除请求通过销毁单用户 KMS DEK 在 24ms 内实现密码学粉碎 (HTTP 410 Gone)。
+  </text>
+</svg>

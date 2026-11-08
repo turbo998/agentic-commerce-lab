@@ -1570,6 +1570,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.en.md",
             "docs/idempotency-payload-hash-vs-retry-double-charge-faq.md",
             "docs/idempotency-payload-hash-vs-retry-double-charge-faq.en.md",
+            "docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md",
+            "docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2216,6 +2218,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["idempotency_deduplication_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("idempotency-deduplication-sandbox", demo_zh)
+
+    def test_privacy_pii_vaultless_shipping_token_vs_context_leak_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_privacy_pii_shipping_token_and_erasure_policy
+
+        # 1. Pre-checkout quote shares coarse postal prefix only with 0 bytes raw PII in LLM context
+        quote_ok = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            phase="pre_checkout_quote",
+        )
+        self.assertTrue(quote_ok.allowed)
+        self.assertEqual(quote_ok.http_status, 200)
+        self.assertEqual(quote_ok.raw_pii_bytes_in_llm_context, 0)
+        self.assertEqual(quote_ok.disclosed_scope, "US-CA-940")
+
+        # 2. Committed winner merchant resolves ship_tok_... over mTLS
+        resolve_ok = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            phase="committed_resolve",
+        )
+        self.assertTrue(resolve_ok.allowed)
+        self.assertEqual(resolve_ok.privacy_lane, "VAULT_FULFILLMENT_TOKEN_RESOLVED")
+
+        # 3. Prompt-injected raw PII in LLM arg or URL -> 403 blocked in 15ms
+        dlp_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            raw_pii_in_llm_or_url=True,
+        )
+        self.assertFalse(dlp_403.allowed)
+        self.assertEqual(dlp_403.http_status, 403)
+        self.assertEqual(dlp_403.privacy_lane, "BLOCKED_PII_CONTEXT_OR_URL_EXFILTRATION")
+
+        # 4. Premature uncommitted or cross-merchant resolve -> 403 blocked
+        premature_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            phase="committed_resolve",
+            checkout_committed=False,
+        )
+        self.assertFalse(premature_403.allowed)
+        self.assertEqual(premature_403.http_status, 403)
+
+        cross_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            phase="committed_resolve",
+            token_merchant_id="merch_winner",
+            caller_merchant_id="merch_loser",
+        )
+        self.assertFalse(cross_403.allowed)
+        self.assertEqual(cross_403.http_status, 403)
+
+        # 5. GDPR Art. 17 crypto-shredded per-subject DEK -> 410 Gone
+        gdpr_410 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+            gdpr_erasure_revoked_dek=True,
+        )
+        self.assertFalse(gdpr_410.allowed)
+        self.assertEqual(gdpr_410.http_status, 410)
+        self.assertEqual(gdpr_410.privacy_lane, "BLOCKED_GDPR_CRYPTO_SHREDDED_KEY")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["privacy_pii_shipping_token_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("privacy-pii-shipping-token-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

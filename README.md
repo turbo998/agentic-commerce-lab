@@ -49,6 +49,7 @@
 - **专题 15（MCP 商业工具安全与 OAuth 2.1 受众绑定：`RFC 8707` `aud` 绑定与并集升权 vs “糊涂侍卫”跨服重放与静态密钥淘汰）**：**[《MCP 商业工具安全、OAuth 2.1 受众绑定与渐进式升权架构：资源指示符（`RFC 8707` `aud` 绑定 + `RFC 9207` 精确 `iss` 校验）与 `403 insufficient_scope` 作用域并集升权 vs “糊涂侍卫（Confused Deputy）”令牌重放与静态密钥（2026-11-30 截止）选型与原理解析 FAQ》](docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.md)**
 - **专题 16（多智能体支付失控熔断与供应链召回硬阻断：AP2 金融断路器 vs 有界指数退避重试）**：**[《多智能体支付失控熔断、供应链召回硬阻断与预算速度限制架构：AP2 金融断路器（Velocity Cap + 连续越权锁死 + Web IQ 监管召回绊网 `W09`）vs 有界指数退避重试选型与原理解析 FAQ》](docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.md)**
 - **专题 17（AI Agent 工具调用超时、重试风暴与防重扣幂等架构：意图派生幂等键与 `SHA-256` 载荷指纹 vs 并发锁与改参漂移拦截）**：**[《AI Agent 工具调用超时、重试风暴与防重扣幂等架构：意图派生幂等键与载荷哈希绑定（`Idempotency-Key` + `SHA-256` 参数指纹 + 24h 快照重放）vs 飞行中并发锁（`HTTP 409`）与大模型改参漂移拦截（`HTTP 422`）选型与原理解析 FAQ》](docs/idempotency-payload-hash-vs-retry-double-charge-faq.md)**
+- **专题 18（AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理披露与金库句柄 `ship_tok_...` vs 明文 PII 泄漏与 GDPR 密码学粉碎）**：**[《AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理位置披露与零明文上下文履约令牌（粗粒度税区前缀 `Postal-Prefix` + 隐私金库句柄 `ship_tok_...`）vs 明文 PII 进 Prompt 泄漏与 GDPR 密码学粉碎（Crypto-Shredding）选型与原理解析 FAQ》](docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -83,6 +84,8 @@
 ![2026-11-08 多智能体支付失控熔断、供应链召回硬阻断与预算速度限制架构一图流](assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
 
 ![2026-11-08 AI Agent 工具调用超时、重试风暴与防重扣幂等架构一图流](assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
+
+![2026-11-08 AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构一图流](assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

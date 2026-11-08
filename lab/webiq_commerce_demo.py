@@ -5876,6 +5876,120 @@ def evaluate_idempotency_and_retry_deduplication_policy(
     )
 
 
+@dataclass(frozen=True)
+class PrivacyPiiShippingTokenVerdict:
+    """Round 18 verdict for Two-Tier Geo Disclosure & Vault-Backed ship_tok_... vs Prompt-Injection PII Exfiltration & GDPR Crypto-Shredding."""
+
+    allowed: bool
+    http_status: int
+    privacy_lane: str
+    raw_pii_bytes_in_llm_context: int
+    disclosed_scope: str
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_privacy_pii_shipping_token_and_erasure_policy(
+    *,
+    phase: str = "committed_resolve",
+    raw_pii_in_llm_or_url: bool = False,
+    gdpr_erasure_revoked_dek: bool = False,
+    checkout_committed: bool = True,
+    token_merchant_id: str = "merch_winner",
+    caller_merchant_id: str = "merch_winner",
+    coarse_postal_prefix: str = "US-CA-940",
+) -> PrivacyPiiShippingTokenVerdict:
+    """Evaluate agentic checkout PII privacy: outbound DLP block, GDPR crypto-shredding, coarse geo quoting, and merchant-bound ship_tok_... resolve."""
+
+    # 1. Outbound DLP Firewall: block raw street address, phone, or national ID in LLM tool args or URL query strings
+    if raw_pii_in_llm_or_url:
+        return PrivacyPiiShippingTokenVerdict(
+            False,
+            403,
+            "BLOCKED_PII_CONTEXT_OR_URL_EXFILTRATION",
+            0,
+            "NONE",
+            "outbound_dlp_blocked_raw_pii_in_llm_context_or_url_query_string",
+            15,
+            "Send to a human",
+        )
+
+    # 2. GDPR Art. 17 / CCPA Right-to-Erasure via Per-Subject KMS DEK Crypto-Shredding
+    if gdpr_erasure_revoked_dek:
+        return PrivacyPiiShippingTokenVerdict(
+            False,
+            410,
+            "BLOCKED_GDPR_CRYPTO_SHREDDED_KEY",
+            0,
+            "CRYPTO_SHREDDED",
+            "per_subject_kms_dek_destroyed_under_gdpr_art17_ciphertext_permanently_unreadable",
+            24,
+            "Send to a human",
+        )
+
+    # 3. Tier 1: Pre-Checkout Multi-Merchant Quote Phase -> disclose coarse postal prefix only (0 bytes raw PII)
+    if phase == "pre_checkout_quote":
+        return PrivacyPiiShippingTokenVerdict(
+            True,
+            200,
+            "COARSE_GEO_QUOTE_AUTHORIZED",
+            0,
+            coarse_postal_prefix,
+            "coarse_postal_prefix_shared_for_tax_and_shipping_quote_zero_pii_leaked",
+            195,
+            "Act automatically",
+        )
+
+    # 4. Cross-Border Customs ID direct Vault-to-Customs mTLS injection
+    if phase == "customs_direct_inject":
+        if not checkout_committed:
+            return PrivacyPiiShippingTokenVerdict(
+                False,
+                403,
+                "BLOCKED_PREMATURE_OR_CROSS_MERCHANT_PII_RESOLVE",
+                0,
+                "NONE",
+                "customs_id_vault_injection_requires_committed_checkout",
+                18,
+                "Send to a human",
+            )
+        return PrivacyPiiShippingTokenVerdict(
+            True,
+            200,
+            "CUSTOMS_ID_VAULT_DIRECT_INJECTED",
+            0,
+            "MTLS_CUSTOMS_GATEWAY_ONLY",
+            "passport_or_tax_id_injected_directly_from_vault_to_customs_bypassing_llm",
+            285,
+            "Act automatically",
+        )
+
+    # 5. Tier 2: Vault Fulfillment Token Resolve -> require checkout_committed=True and exact merchant_id match
+    if not checkout_committed or caller_merchant_id != token_merchant_id:
+        return PrivacyPiiShippingTokenVerdict(
+            False,
+            403,
+            "BLOCKED_PREMATURE_OR_CROSS_MERCHANT_PII_RESOLVE",
+            0,
+            "NONE",
+            "ship_tok_resolve_rejected_uncommitted_order_or_merchant_audience_mismatch",
+            18,
+            "Send to a human",
+        )
+
+    return PrivacyPiiShippingTokenVerdict(
+        True,
+        200,
+        "VAULT_FULFILLMENT_TOKEN_RESOLVED",
+        0,
+        f"BOUND_MERCHANT:{token_merchant_id}",
+        "merchant_bound_ship_tok_resolved_over_mtls_zero_pii_in_llm_context",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -7330,6 +7444,46 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "parameter_drift_block_latency_ms": idemp_drift_422.latency_ms,
     }
 
+    pii_quote_ok = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        phase="pre_checkout_quote",
+    )
+    pii_resolve_ok = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        phase="committed_resolve",
+    )
+    pii_dlp_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        raw_pii_in_llm_or_url=True,
+    )
+    pii_premature_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        phase="committed_resolve",
+        checkout_committed=False,
+    )
+    pii_cross_merch_403 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        phase="committed_resolve",
+        token_merchant_id="merch_winner",
+        caller_merchant_id="merch_loser",
+    )
+    pii_gdpr_410 = evaluate_privacy_pii_shipping_token_and_erasure_policy(
+        gdpr_erasure_revoked_dek=True,
+    )
+    privacy_pii_shipping_token_guards = {
+        "all_passed": (
+            pii_quote_ok.allowed
+            and pii_quote_ok.raw_pii_bytes_in_llm_context == 0
+            and pii_resolve_ok.allowed
+            and pii_resolve_ok.privacy_lane == "VAULT_FULFILLMENT_TOKEN_RESOLVED"
+            and not pii_dlp_403.allowed
+            and pii_dlp_403.http_status == 403
+            and not pii_premature_403.allowed
+            and pii_premature_403.http_status == 403
+            and not pii_cross_merch_403.allowed
+            and pii_cross_merch_403.http_status == 403
+            and not pii_gdpr_410.allowed
+            and pii_gdpr_410.http_status == 410
+        ),
+        "coarse_quote_latency_ms": pii_quote_ok.latency_ms,
+        "gdpr_shred_latency_ms": pii_gdpr_410.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -7360,6 +7514,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mcp_oauth_audience_stepup_guards": mcp_oauth_audience_stepup_guards,
         "ap2_circuit_breaker_recall_guards": ap2_circuit_breaker_recall_guards,
         "idempotency_deduplication_guards": idempotency_deduplication_guards,
+        "privacy_pii_shipping_token_guards": privacy_pii_shipping_token_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -10579,6 +10734,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="idemp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Privacy PII Tokenization & GDPR Crypto-Shredding Sandbox (Round 18 FAQ Companion) -->
+      <div class="finops-box" id="privacy-pii-shipping-token-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pii-title">🛡️ AI Agent 结账隐私与防泄密架构：双阶地址披露与金库句柄 (ship_tok_...) vs 提示词注入外带与 GDPR 密码学粉碎决策器 (Round 18 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 交易阶段、PII 隔离策略与 GDPR 密钥状态 (Lifecycle Phase, PII Isolation &amp; GDPR Key Status):</span></label>
+          <select id="pii-select" onchange="updatePrivacyPiiSandbox()">
+            <option value="pii_quote_ok">📍 阶段 A 比价试算：向 10 家候选商户仅披露 US-CA-940 粗粒度邮编前缀 → 精准算税算运费且 0 bytes 明文 PII 暴露! (195ms)</option>
+            <option value="pii_resolve_ok">🎟️ 阶段 B 成交履约：订单已成交且 caller===merch_winner → 金库经 mTLS 解引用 ship_tok_live_... 物流面单 (265ms · LLM 0 PII)</option>
+            <option value="pii_dlp_403">🚨 提示词注入 PII 外带拦截：恶意网页诱导 LLM 在工具参数或 URL 中夹带明文门牌号/手机号 → 出站 DLP 15ms 触发 HTTP 403 硬阻断!</option>
+            <option value="pii_premature_403">🛑 未成交或跨商户盗用句柄：比价商户在 committed=False 时提前请求解引用或跨商户冒用 ship_tok_... → 18ms 触发 HTTP 403 拦截!</option>
+            <option value="pii_gdpr_410">🗑️ GDPR 第 17 条密码学粉碎：用户触发“被遗忘权”销毁个人 256-bit DEK → 24ms 触发 HTTP 410 Gone，历史密文永久不可解且不破坏税务账本!</option>
+            <option value="pii_customs_200">🛃 跨境清关身份证/护照号金库直通：由金库 mTLS 直接注入海关报关网关，彻底绕开大模型与普通商户前端 (285ms · 0 bytes LLM 暴露)</option>
+          </select>
+        </div>
+        <div id="pii-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -11035,6 +11209,7 @@ function renderAll() {{
   updateMcpOAuthStepUpSandbox();
   updateAp2CircuitBreakerSandbox();
   updateIdempotencyDeduplicationSandbox();
+  updatePrivacyPiiSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12098,6 +12273,65 @@ function updateIdempotencyDeduplicationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 超时后 24h 幂等快照零扣款重放 (IDEMPOTENT_CACHED_REPLAY · 15ms · Idempotent-Replayed: true · Act automatically):</strong><br>" +
     "• <strong>0.0% 重复扣款</strong>：首包虽遇客户端超时但已在服务端成交 <code>$240.00</code>；重试请求凭相同 <code>ik_m9_c1</code> 与相同载荷哈希在 <code>15ms</code> 内直接拿回原收据，本次新增扣款 <code>$0.00</code>！" +
+    "</div>";
+}}
+
+function updatePrivacyPiiSandbox() {{
+  var selEl = document.getElementById("pii-select");
+  var outEl = document.getElementById("pii-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "pii_dlp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 403 BLOCKED_PII_CONTEXT_OR_URL_EXFILTRATION (15ms · Send to a human · official_doc_snapshot)：<br>" +
+      "出站 DLP 防火墙检出工具调用参数或 URL 查询字符串中含有明文街道门牌号/手机号（疑似第三方商品页间接提示词注入诱导外带），当场阻断（<code>0 bytes</code> PII 泄露）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pii_premature_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOCKED_PREMATURE_OR_CROSS_MERCHANT_PII_RESOLVE (18ms · Send to a human · synthetic_policy)：<br>" +
+      "拒绝越权解引用！候选商户试图在订单未成交（<code>checkout_committed=False</code>）阶段提前拉取买家街道地址，或跨商户冒用签发给其他商户的 <code>ship_tok_live_...</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pii_gdpr_410") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🗑️ HTTP 410 BLOCKED_GDPR_CRYPTO_SHREDDED_KEY (24ms · Send to a human · official_doc_snapshot)：<br>" +
+      "买家已行使 GDPR 第 17 条“被遗忘权”，其专属 256-bit KMS 数据加密密钥（<code>DEK_user_882</code>）已被物理销毁！所有历史 <code>ship_tok_...</code> 密文永久不可解密，同时保持 7 年财务税额账本完整。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pii_resolve_ok") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🎟️ 成交赢家商户金库句柄解引用通过 (VAULT_FULFILLMENT_TOKEN_RESOLVED · 265ms · Act automatically):</strong><br>" +
+      "• <strong>受众强绑定</strong>：校验 <code>checkout_committed === True</code> 且 <code>caller_merchant === merch_winner</code> 后，经后端 mTLS 签发物流面单载荷，LLM 上下文始终保持 <code>0 bytes</code> 明文 PII！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pii_customs_200") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🛃 跨境清关证件号金库直通注入 (CUSTOMS_ID_VAULT_DIRECT_INJECTED · 285ms · Act automatically):</strong><br>" +
+      "• <strong>旁路零暴露</strong>：买家的清关身份证/护照号由隐私金库通过 mTLS 直接注入海关申报网关，彻底绕开大模型 Prompt 与普通商户前端（<code>0 bytes</code> LLM 暴露）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📍 比价阶段粗粒度邮编前缀试算通过 (COARSE_GEO_QUOTE_AUTHORIZED · 195ms · Act automatically):</strong><br>" +
+    "• <strong>最小化披露</strong>：向 10 家比价商户仅传递非识别粗粒度前缀 <code>US-CA-940</code> 即可精准算出州税与运费，9 家未成交商户拿不到任何街道门牌或手机号（<code>0 bytes</code> PII 暴露）！" +
     "</div>";
 }}
 
