@@ -1604,6 +1604,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.en.md",
             "docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md",
             "docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md",
+            "docs/freight-detention-demurrage-sla-mandate-vs-carrier-surcharge-faq.md",
+            "docs/freight-detention-demurrage-sla-mandate-vs-carrier-surcharge-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -3133,6 +3135,65 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["saas_seat_trueup_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-seat-trueup-sandbox", demo_zh)
+
+    def test_freight_detention_demurrage_sla_mandate_vs_carrier_surcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_freight_detention_demurrage_sla_policy,
+        )
+
+        # 1. Clean 4-day dwell (<= 5-day free time) + $5,800 base freight -> 200 settled
+        commit_ok = evaluate_freight_detention_demurrage_sla_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_freight_cents, 580000)
+
+        # 2. False $4,200 D&D billed inside 5-day free time (dwell=4 <= 5) -> 403 blocked in 12ms
+        free_403 = evaluate_freight_detention_demurrage_sla_policy(
+            container_dwell_days=4,
+            contracted_free_time_days=5,
+            claimed_dd_surcharge_cents=420000,
+        )
+        self.assertFalse(free_403.allowed)
+        self.assertEqual(free_403.http_status, 403)
+        self.assertEqual(
+            free_403.freight_lane, "FREE_TIME_WINDOW_SURCHARGE_FRAUD_BLOCKED"
+        )
+
+        # 3. Unapproved $1,800 Peak Season Surcharge (PSS) -> 422 blocked in 15ms
+        pss_422 = evaluate_freight_detention_demurrage_sla_policy(
+            unapproved_pss_surcharge_cents=180000,
+        )
+        self.assertFalse(pss_422.allowed)
+        self.assertEqual(pss_422.http_status, 422)
+        self.assertEqual(
+            pss_422.freight_lane, "UNAPPROVED_ACCESSORIAL_RATE_CAP_EXCEEDED"
+        )
+
+        # 4. Web IQ confirms terminal gate lockout (FMC OSRA exemption) -> 451 blocked in 310ms
+        fmc_451 = evaluate_freight_detention_demurrage_sla_policy(
+            container_dwell_days=8,
+            contracted_free_time_days=5,
+            claimed_dd_surcharge_cents=240000,
+            webiq_port_closure_carrier_fault=True,
+        )
+        self.assertFalse(fmc_451.allowed)
+        self.assertEqual(fmc_451.http_status, 451)
+
+        # 5. Web IQ confirms 6-day vessel delay unlocking $950 SLA rebate -> 409 Confirm in 315ms
+        sla_409 = evaluate_freight_detention_demurrage_sla_policy(
+            webiq_vessel_delay_rebate_cents=95000,
+        )
+        self.assertFalse(sla_409.allowed)
+        self.assertEqual(sla_409.http_status, 409)
+        self.assertEqual(sla_409.settled_freight_cents, 485000)
+        self.assertEqual(sla_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["freight_dd_sla_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("freight-dd-sla-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
