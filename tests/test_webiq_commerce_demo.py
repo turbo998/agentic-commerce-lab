@@ -1592,6 +1592,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.en.md",
             "docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.md",
             "docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.en.md",
+            "docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.md",
+            "docs/price-drop-watchlist-mandate-vs-cart-recovery-spam-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2800,6 +2802,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["esg_carbon_verified_shipping_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("esg-carbon-verified-shipping-sandbox", demo_zh)
+
+    def test_price_drop_watchlist_mandate_vs_cart_recovery_spam_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_price_drop_watchlist_mandate_policy
+
+        # 1. Genuine price drop ($820 <= $850 limit) with signed mandate -> 200 executed
+        commit_ok = evaluate_price_drop_watchlist_mandate_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.executed_price_cents, 82000)
+
+        # 2. Unsolicited cart-abandonment recovery charge without signed mandate -> 403 blocked in 12ms
+        unsol_403 = evaluate_price_drop_watchlist_mandate_policy(
+            mandate_signed=False,
+        )
+        self.assertFalse(unsol_403.allowed)
+        self.assertEqual(unsol_403.http_status, 403)
+        self.assertEqual(
+            unsol_403.watchlist_lane, "UNSOLICITED_CART_RECOVERY_CHARGE_BLOCKED"
+        )
+
+        # 3. Fake 25%-off sale still above $850 limit ($899) -> 422 blocked in 15ms
+        ceil_422 = evaluate_price_drop_watchlist_mandate_policy(
+            checkout_price_cents=89900,
+        )
+        self.assertFalse(ceil_422.allowed)
+        self.assertEqual(ceil_422.http_status, 422)
+        self.assertEqual(ceil_422.watchlist_lane, "LIMIT_ORDER_TARGET_PRICE_NOT_MET")
+
+        # 4. Web IQ detects fake-MSRP anchor inflation dark pattern -> 451 blocked in 310ms
+        fake_451 = evaluate_price_drop_watchlist_mandate_policy(
+            webiq_fake_msrp_anchor_inflated=True,
+        )
+        self.assertFalse(fake_451.allowed)
+        self.assertEqual(fake_451.http_status, 451)
+
+        # 5. Web IQ discovers stackable $75 manufacturer rebate ($745 net) -> 409 Confirm in 315ms
+        rebate_409 = evaluate_price_drop_watchlist_mandate_policy(
+            extra_rebate_savings_cents=7500,
+        )
+        self.assertFalse(rebate_409.allowed)
+        self.assertEqual(rebate_409.http_status, 409)
+        self.assertEqual(rebate_409.executed_price_cents, 74500)
+        self.assertEqual(rebate_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["price_drop_watchlist_mandate_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("price-drop-watchlist-mandate-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

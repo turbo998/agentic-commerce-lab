@@ -6997,6 +6997,95 @@ def evaluate_esg_carbon_verified_shipping_policy(
     )
 
 
+@dataclass(frozen=True)
+class PriceDropWatchlistMandateVerdict:
+    """Round 29 verdict for Cryptographic Conditional Limit-Order Mandate (90-Day Baseline Price Verification) vs Fake-MSRP Anchor Discounting & Unsolicited Cart-Abandonment Auto-Capture."""
+
+    allowed: bool
+    http_status: int
+    watchlist_lane: str
+    executed_price_cents: int
+    extra_rebate_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_price_drop_watchlist_mandate_policy(
+    *,
+    limit_price_cents: int = 85000,
+    checkout_price_cents: int = 82000,
+    mandate_signed: bool = True,
+    webiq_fake_msrp_anchor_inflated: bool = False,
+    extra_rebate_savings_cents: int = 0,
+) -> PriceDropWatchlistMandateVerdict:
+    """Evaluate buyer-signed conditional limit-order mandate, Web IQ EU Omnibus 30/90-day baseline price dark-pattern check, absolute limit ceiling, and manufacturer rebate stacking."""
+
+    # 1. Unsolicited Cart-Abandonment Recovery Auto-Capture Without Signed Mandate -> HTTP 403
+    if not mandate_signed:
+        return PriceDropWatchlistMandateVerdict(
+            False,
+            403,
+            "UNSOLICITED_CART_RECOVERY_CHARGE_BLOCKED",
+            0,
+            0,
+            "merchant_cart_recovery_webhook_blocked_without_signed_buyer_limit_order_mandate",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Microsoft Web IQ Detects Fake-MSRP Anchor Inflation ("Raise-Then-Discount" Dark Pattern) -> HTTP 451
+    if webiq_fake_msrp_anchor_inflated:
+        return PriceDropWatchlistMandateVerdict(
+            False,
+            451,
+            "FAKE_MSRP_ANCHOR_DARK_PATTERN_BLOCKED",
+            0,
+            0,
+            "webiq_detected_inflated_reference_msrp_violating_eu_omnibus_30d_baseline",
+            310,
+            "Send to a human",
+        )
+
+    # 3. Checkout Price Exceeds Signed Limit Ceiling (e.g. $899 > $850 limit) -> HTTP 422
+    if checkout_price_cents > limit_price_cents:
+        return PriceDropWatchlistMandateVerdict(
+            False,
+            422,
+            "LIMIT_ORDER_TARGET_PRICE_NOT_MET",
+            0,
+            0,
+            "all_in_checkout_price_exceeded_buyer_signed_conditional_limit_price_ceiling",
+            15,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Stackable Manufacturer Rebate Discovered -> HTTP 409 Confirm
+    if extra_rebate_savings_cents > 0:
+        return PriceDropWatchlistMandateVerdict(
+            False,
+            409,
+            "STACKABLE_MANUFACTURER_REBATE_ARBITRAGE_CONFIRM",
+            checkout_price_cents - extra_rebate_savings_cents,
+            extra_rebate_savings_cents,
+            "webiq_found_stackable_manufacturer_rebate_lowering_net_price_below_drop",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Genuine Price Drop Within Signed Limit Ceiling -> Executed Automatically
+    return PriceDropWatchlistMandateVerdict(
+        True,
+        200,
+        "VERIFIED_PRICE_DROP_LIMIT_ORDER_EXECUTED",
+        checkout_price_cents,
+        0,
+        "historical_baseline_and_limit_ceiling_verified_for_instant_sniping_execution",
+        260,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8827,6 +8916,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "air_carbon_cap_block_latency_ms": esg_air_403.latency_ms,
     }
 
+    pdrop_commit_ok = evaluate_price_drop_watchlist_mandate_policy()
+    pdrop_unsol_403 = evaluate_price_drop_watchlist_mandate_policy(
+        mandate_signed=False,
+    )
+    pdrop_ceil_422 = evaluate_price_drop_watchlist_mandate_policy(
+        checkout_price_cents=89900,
+    )
+    pdrop_fake_451 = evaluate_price_drop_watchlist_mandate_policy(
+        webiq_fake_msrp_anchor_inflated=True,
+    )
+    pdrop_rebate_409 = evaluate_price_drop_watchlist_mandate_policy(
+        extra_rebate_savings_cents=7500,
+    )
+    price_drop_watchlist_mandate_guards = {
+        "all_passed": (
+            pdrop_commit_ok.allowed
+            and pdrop_commit_ok.executed_price_cents == 82000
+            and not pdrop_unsol_403.allowed
+            and pdrop_unsol_403.http_status == 403
+            and not pdrop_ceil_422.allowed
+            and pdrop_ceil_422.http_status == 422
+            and not pdrop_fake_451.allowed
+            and pdrop_fake_451.http_status == 451
+            and not pdrop_rebate_409.allowed
+            and pdrop_rebate_409.action_pill == "Confirm"
+        ),
+        "limit_sniping_latency_ms": pdrop_commit_ok.latency_ms,
+        "cart_recovery_block_latency_ms": pdrop_unsol_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8868,6 +8987,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "return_logistics_reverse_escrow_guards": return_logistics_reverse_escrow_guards,
         "b2b_net30_three_way_match_guards": b2b_net30_three_way_match_guards,
         "esg_carbon_verified_shipping_guards": esg_carbon_verified_shipping_guards,
+        "price_drop_watchlist_mandate_guards": price_drop_watchlist_mandate_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -12289,6 +12409,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="esg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Conditional Price-Drop Watchlist Mandate & Anti-Dark-Pattern Sandbox (Round 29 FAQ Companion) -->
+      <div class="finops-box" id="price-drop-watchlist-mandate-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pdrop-title">🎯 AI Agent 降价狙击代购授权与反“先涨后降/弃购偷扣”架构：条件触发限价令牌 (price_drop_mandate_... + 90 天基准价核验) vs 虚标原价伪大促与未授权弃购扣款决策器 (Round 29 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 降价监控触发条件、EU Omnibus 30/90 天历史基准价核验与弃购召回防骚扰场景 (Price-Drop Sniping &amp; Anti-Dark-Pattern Scenario):</span></label>
+          <select id="pdrop-select" onchange="updatePriceDropWatchlistSandbox()">
+            <option value="pdrop_commit_ok">⚡ 真实跌破限价红线 ($820.00 &lt;= $850.00 限价上限，且 90 天历史基准价 $920 核验真实)：260ms 自动秒杀锁单立省 $30! (Act automatically)</option>
+            <option value="pdrop_unsol_403">🛑 商户弃购召回 Bot 未授权强行扣款拦截：仅加购测算运费未签委托书 (mandate_signed=False) → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="pdrop_ceil_422">🚨 伪大促“限时 75 折”高于限价红线拦截：页面吹嘘 25% OFF 但含税实付 $899.00 (&gt; $850.00 签名上限) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="pdrop_fake_451">🛑 Web IQ 检出“先涨后降”暗黑模式：商户连夜将 $920 原价虚标至 $1,200 伪造打折 (违反 EU Omnibus) → 310ms 触发 HTTP 451 阻断!</option>
+            <option value="pdrop_rebate_409">🧑‍⚖️ Web IQ 检出品牌官网可叠加 $75.00 官方返利券 (在 $820 破发价基础上再降 $75 仅需净付 $745.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="pdrop-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12756,6 +12894,7 @@ function renderAll() {{
   updateReturnLogisticsSandbox();
   updateB2BNet30Sandbox();
   updateESGCarbonSandbox();
+  updatePriceDropWatchlistSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14405,6 +14544,56 @@ function updateESGCarbonSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ ISO 14083 低碳多式联运核验通过：绿色履约已锁定 (ESG_CARBON_VERIFIED_FULFILLMENT_COMMITTED · 265ms · Act automatically):</strong><br>" +
     "• <strong>Scope 3 合规且零漂绿损耗</strong>：实测排放 <code>68 kg CO2e &lt;= 150 kg</code> 令牌上限，且已将 GLEC 排放因子哈希写入 EU CSRD 不可篡改审计账本！" +
+    "</div>";
+}}
+
+function updatePriceDropWatchlistSandbox() {{
+  var selEl = document.getElementById("pdrop-select");
+  var outEl = document.getElementById("pdrop-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "pdrop_unsol_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNSOLICITED_CART_RECOVERY_CHARGE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "商户弃购召回插件（Cart-Abandonment Recovery Bot）试图凭加购询价残留会话强行发起扣款，但未出示买家 WebAuthn 签署的条件限价令牌（<code>mandate_signed=False</code>）！已在 <code>12ms</code> 内硬阻断未授权偷扣！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pdrop_ceil_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LIMIT_ORDER_TARGET_PRICE_NOT_MET (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "尽管商户横幅宣称“限时 25% OFF 狂欢”，但网关核算出含税费实付总价为 <code>$899.00</code>，仍高于买家签名绑定的绝对限价上限 <code>limit_price_cents=$850.00</code>（超支 <code>+$49.00</code>），已在 <code>15ms</code> 内拒绝执行！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pdrop_fake_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FAKE_MSRP_ANCHOR_DARK_PATTERN_BLOCKED (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对过去 30/90 天历史成交基准价（<code>$920.00</code>），检出商户在大促前夕将划线原价人为虚标至 <code>$1,200.00</code> 制造虚假折扣（违反欧盟 EU Omnibus 指令第 6a 条），已阻断暗黑模式诱导下单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pdrop_rebate_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 STACKABLE_MANUFACTURER_REBATE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "商品已真实跌至 <code>$820.00 (&lt;= $850.00)</code>，且 Microsoft Web IQ <code>/v3/browse</code> 在品牌官网检出可叠加的 <code>$75.00</code> 官方返利补贴，叠加后净付仅需 <code>$745.00</code>（较限价预算累计立省 <code>$105.00</code>），建议一键确认叠加返利！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 真实跌破限价红线：条件限价代购已秒杀成交 (VERIFIED_PRICE_DROP_LIMIT_ORDER_EXECUTED · 260ms · Act automatically):</strong><br>" +
+    "• <strong>零伪大促套路、零超时踏空</strong>：实付 <code>$820.00 &lt;= $850.00</code> 签名限价上限，且经 Web IQ 核验较 90 天历史基准价（<code>$920.00</code>）真实直降 <code>$100.00</code>，已自动完成锁单并销毁单次限价令牌！" +
     "</div>";
 }}
 
