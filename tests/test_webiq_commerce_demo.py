@@ -1584,6 +1584,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/high-ticket-escrow-delivery-attestation-vs-instant-settlement-faq.en.md",
             "docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.md",
             "docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md",
+            "docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.md",
+            "docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2603,6 +2605,53 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["indirect_prompt_injection_feed_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("indirect-prompt-injection-feed-sandbox", demo_zh)
+
+    def test_multi_agent_shared_budget_allocation_vs_race_spend_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_multi_agent_shared_budget_allocation_policy
+
+        # 1. Clean hierarchical sub-slice + CAS surplus rebalance commit -> 200 ($1,910 committed, $90 surplus)
+        commit_ok = evaluate_multi_agent_shared_budget_allocation_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.committed_total_cents, 191000)
+        self.assertEqual(commit_ok.retained_surplus_cents, 9000)
+
+        # 2. Unpartitioned shared root wallet concurrent race hazard -> 403 blocked in 12ms
+        race_403 = evaluate_multi_agent_shared_budget_allocation_policy(
+            shared_root_wallet_without_slices=True,
+        )
+        self.assertFalse(race_403.allowed)
+        self.assertEqual(race_403.http_status, 403)
+        self.assertEqual(race_403.coalition_lane, "SHARED_ROOT_WALLET_CONCURRENT_RACE_BLOCKED")
+
+        # 3. Stale CAS version double-claim on surplus pool -> 409 blocked in 15ms
+        cas_409 = evaluate_multi_agent_shared_budget_allocation_policy(
+            cas_version_matched=False,
+        )
+        self.assertFalse(cas_409.allowed)
+        self.assertEqual(cas_409.http_status, 409)
+        self.assertEqual(cas_409.coalition_lane, "CAS_BUDGET_VERSION_CONFLICT")
+
+        # 4. Circular wait or >4,000ms negotiation deadlock timebox -> 408 blocked in 17ms
+        deadlock_408 = evaluate_multi_agent_shared_budget_allocation_policy(
+            negotiation_elapsed_ms=5200,
+        )
+        self.assertFalse(deadlock_408.allowed)
+        self.assertEqual(deadlock_408.http_status, 408)
+        self.assertEqual(deadlock_408.coalition_lane, "A2A_NEGOTIATION_DEADLOCK_TIMEOUT")
+
+        # 5. Web IQ cross-category bundle arbitrage ($1,620 bundle vs $1,910 split) -> 409 Confirm in 315ms
+        bundle_409 = evaluate_multi_agent_shared_budget_allocation_policy(
+            webiq_official_bundle_cents=162000,
+        )
+        self.assertFalse(bundle_409.allowed)
+        self.assertEqual(bundle_409.http_status, 409)
+        self.assertEqual(bundle_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["multi_agent_shared_budget_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-agent-shared-budget-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

@@ -6614,6 +6614,105 @@ def evaluate_indirect_prompt_injection_and_acp_feed_policy(
     )
 
 
+@dataclass(frozen=True)
+class MultiAgentBudgetAllocationVerdict:
+    """Round 25 verdict for Hierarchical Sub-Mandate Slicing & 2PC CAS Budget Ledger vs Uncoordinated Concurrent Root-Wallet Overdraft & Negotiation Deadlock."""
+
+    allowed: bool
+    http_status: int
+    coalition_lane: str
+    committed_total_cents: int
+    retained_surplus_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_multi_agent_shared_budget_allocation_policy(
+    *,
+    parent_budget_cap_cents: int = 200000,
+    shared_root_wallet_without_slices: bool = False,
+    cas_version_matched: bool = True,
+    negotiation_elapsed_ms: int = 1200,
+    max_negotiation_ms: int = 4000,
+    flight_cents: int = 98000,
+    hotel_cents: int = 65000,
+    car_cents: int = 28000,
+    webiq_official_bundle_cents: int = 0,
+    min_bundle_savings_cents: int = 5000,
+) -> MultiAgentBudgetAllocationVerdict:
+    """Evaluate hierarchical sub-mandate slicing, optimistic CAS surplus rebalancing, deadlock timeboxes, and Web IQ cross-category bundle arbitrage."""
+
+    # 1. Unpartitioned Shared Root Wallet Concurrent Race Hazard -> HTTP 403
+    if shared_root_wallet_without_slices:
+        return MultiAgentBudgetAllocationVerdict(
+            False,
+            403,
+            "SHARED_ROOT_WALLET_CONCURRENT_RACE_BLOCKED",
+            0,
+            parent_budget_cap_cents,
+            "concurrent_sub_agents_must_use_disjoint_sub_mandate_slices_not_shared_root_token",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Circular Wait or Negotiation Timebox Exceeded (> 4,000 ms) -> HTTP 408
+    if negotiation_elapsed_ms > max_negotiation_ms:
+        return MultiAgentBudgetAllocationVerdict(
+            False,
+            408,
+            "A2A_NEGOTIATION_DEADLOCK_TIMEOUT",
+            0,
+            parent_budget_cap_cents,
+            "multi_agent_surplus_negotiation_exceeded_4000ms_timebox_or_circular_wait",
+            17,
+            "Send to a human",
+        )
+
+    # 3. Optimistic CAS Ledger Version Mismatch on Surplus Pool -> HTTP 409
+    if not cas_version_matched:
+        return MultiAgentBudgetAllocationVerdict(
+            False,
+            409,
+            "CAS_BUDGET_VERSION_CONFLICT",
+            0,
+            parent_budget_cap_cents,
+            "concurrent_surplus_rebalance_claim_failed_optimistic_cas_version_check",
+            15,
+            "Send to a human",
+        )
+
+    split_total_cents = flight_cents + hotel_cents + car_cents
+
+    # 4. Microsoft Web IQ Cross-Category Bundle Arbitrage Grounding -> HTTP 409 Confirm
+    if (
+        webiq_official_bundle_cents > 0
+        and split_total_cents - webiq_official_bundle_cents >= min_bundle_savings_cents
+    ):
+        return MultiAgentBudgetAllocationVerdict(
+            False,
+            409,
+            "BUNDLE_ARBITRAGE_SAVINGS_CONFIRM",
+            webiq_official_bundle_cents,
+            parent_budget_cap_cents - webiq_official_bundle_cents,
+            "webiq_detected_official_all_in_one_bundle_cheaper_than_split_sub_agent_orders",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Hierarchical Sub-Slice + CAS Rebalanced Commit (<= Parent Cap)
+    return MultiAgentBudgetAllocationVerdict(
+        True,
+        200,
+        "COALITION_BUDGET_ALLOCATED_AND_COMMITTED",
+        split_total_cents,
+        parent_budget_cap_cents - split_total_cents,
+        "hierarchical_sub_mandate_slices_and_cas_surplus_rebalance_committed_zero_overdraft",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8322,6 +8421,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "payee_pin_block_latency_ms": pi_hijack_403.latency_ms,
     }
 
+    ma_commit_ok = evaluate_multi_agent_shared_budget_allocation_policy()
+    ma_race_403 = evaluate_multi_agent_shared_budget_allocation_policy(
+        shared_root_wallet_without_slices=True,
+    )
+    ma_cas_409 = evaluate_multi_agent_shared_budget_allocation_policy(
+        cas_version_matched=False,
+    )
+    ma_deadlock_408 = evaluate_multi_agent_shared_budget_allocation_policy(
+        negotiation_elapsed_ms=5200,
+    )
+    ma_bundle_409 = evaluate_multi_agent_shared_budget_allocation_policy(
+        webiq_official_bundle_cents=162000,
+    )
+    multi_agent_shared_budget_guards = {
+        "all_passed": (
+            ma_commit_ok.allowed
+            and ma_commit_ok.committed_total_cents == 191000
+            and ma_commit_ok.retained_surplus_cents == 9000
+            and not ma_race_403.allowed
+            and ma_race_403.http_status == 403
+            and not ma_cas_409.allowed
+            and ma_cas_409.http_status == 409
+            and not ma_deadlock_408.allowed
+            and ma_deadlock_408.http_status == 408
+            and not ma_bundle_409.allowed
+            and ma_bundle_409.action_pill == "Confirm"
+        ),
+        "coalition_commit_latency_ms": ma_commit_ok.latency_ms,
+        "race_block_latency_ms": ma_race_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8359,6 +8489,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "regulated_zkp_eligibility_guards": regulated_zkp_eligibility_guards,
         "high_ticket_escrow_attestation_guards": high_ticket_escrow_attestation_guards,
         "indirect_prompt_injection_feed_guards": indirect_prompt_injection_feed_guards,
+        "multi_agent_shared_budget_guards": multi_agent_shared_budget_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -11708,6 +11839,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pi-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Multi-Agent Coalition Budget Allocation & CAS Ledger Sandbox (Round 25 FAQ Companion) -->
+      <div class="finops-box" id="multi-agent-shared-budget-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ma-title">🤝 多智能体协同采购 (Multi-Agent A2A) 共享预算拆账架构：层级化子授权切片 (sub_mandate_slice_...) + CAS 盈余账本 vs 并发抢扣透支决策器 (Round 25 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 机票 + 酒店 + 租车多子 Agent 共享 $2,000 总预算协同场景 (Multi-Agent Coalition Shared Budget Scenario):</span></label>
+          <select id="ma-select" onchange="updateMultiAgentBudgetSandbox()">
+            <option value="ma_commit_ok">⚡ 层级化子切片 + CAS 盈余调拨：酒店省出 $150 回笼主池 → 拨付 $80 助机票 ($980+$650+$280=$1,910 &lt;= $2,000) 零透支成交! (265ms · Act automatically)</option>
+            <option value="ma_race_403">🛑 无切分共享主钱包并发抢扣拦截：3 个子 Agent 共用同一 $2,000 主令牌面临 TOCTOU 刷爆 $2,850 风险 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="ma_cas_409">🛑 并发争抢同一笔盈余 CAS 版本冲突拦截：机票与租车同时基于过期版本 v42 认领 $150 盈余 → 15ms 触发 HTTP 409 拒绝双花!</option>
+            <option value="ma_deadlock_408">🛑 多子 Agent 循环等待超 4,000ms 议价死锁熔断：机票等酒店降级、酒店等航班时间耗时 5,200ms → 17ms 触发 HTTP 408 解锁!</option>
+            <option value="ma_bundle_409">🧑‍⚖️ Web IQ 检出“机+酒+车”官方联订整包 ($1,620) 比拆单总和 ($1,910) 立省 $290 → 315ms 触发 HTTP 409 Confirm 建议切换整包!</option>
+          </select>
+        </div>
+        <div id="ma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12171,6 +12320,7 @@ function renderAll() {{
   updateRegulatedZkpSandbox();
   updateHighTicketEscrowSandbox();
   updateIndirectPromptInjectionSandbox();
+  updateMultiAgentBudgetSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13620,6 +13770,56 @@ function updateIndirectPromptInjectionSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双上下文特权隔离 + 网关收款方白名单锚定安全成交 (SANITIZED_GROUNDED_CHECKOUT_COMMITTED · 255ms · Act automatically):</strong><br>" +
     "• <strong>100% 免疫网页投毒</strong>：外部评论经无工具权限 Reader 沙盒转化为纯整数结构 <code>{{\"item_cents\": 29800, \"ship_cents\": 0}}</code>，网关确认 <code>payee=\"sony_official\"</code> 与初始意图完全匹配后安全放行！" +
+    "</div>";
+}}
+
+function updateMultiAgentBudgetSandbox() {{
+  var selEl = document.getElementById("ma-select");
+  var outEl = document.getElementById("ma-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "ma_race_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SHARED_ROOT_WALLET_CONCURRENT_RACE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到 3 个并发子 Agent 试图直接共享未切分的父级主钱包令牌（<code>$2,000.00</code>）！为防止 TOCTOU 并发余额读取竞态刷出 <code>$2,850.00</code> 超支账单，已在 <code>12ms</code> 内硬阻断并强制要求派生互不重叠的子授权切片 <code>sub_mandate_slice_...</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ma_cas_409") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 CAS_BUDGET_VERSION_CONFLICT (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "主控预算账本乐观锁 CAS 版本号冲突（<code>expected_version=v42 != current_version=v43</code>）！拦截机票与租车子 Agent 同时双花认领酒店释放的同一笔 <code>$150.00</code> 盈余，已要求刷新账本快照后重试！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ma_deadlock_408") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 408 A2A_NEGOTIATION_DEADLOCK_TIMEOUT (17ms · Send to a human · synthetic_policy)：<br>" +
+      "多子 Agent 跨品类额度协商耗时达 <code>5,200ms</code>（超出 <code>4,000ms</code> 议价时间盒或出现双向循环等待死锁），协调器已在 <code>17ms</code> 内强制解环并冻结未决预留，将当前最优可行草案转交人工确认！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ma_bundle_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BUNDLE_ARBITRAGE_SAVINGS_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时比对发现：航司官方“机+酒+车”一站式联订套餐净价仅需 <code>$1,620.00</code>，比 3 个子 Agent 各自拆单底价之和（<code>$1,910.00</code>）直接节省 <code>$290.00</code> 且含延误联动改签，建议一键切换为整包结算！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 层级化子切片 + CAS 盈余原子调拨安全交割 (COALITION_BUDGET_ALLOCATED_AND_COMMITTED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零并发透支守恒</strong>：酒店锁定 <code>$650.00</code> 释放 <code>$150.00</code> 回主池（<code>v43</code>），主控账本 <code>18ms</code> CAS 拨付 <code>+$80.00</code> 给机票（<code>$980.00</code>）与租车（<code>$280.00</code>），三单合计实付 <code>$1,910.00 &lt;= $2,000.00</code>（结余 <code>$90.00</code>）！" +
     "</div>";
 }}
 

@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 780" width="1280" height="780" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg27" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent27" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <linearGradient id="cardRed27" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A1215"/>
+      <stop offset="100%" stop-color="#1A0B0E"/>
+    </linearGradient>
+    <linearGradient id="cardGreen27" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#09261E"/>
+      <stop offset="100%" stop-color="#061813"/>
+    </linearGradient>
+    <linearGradient id="cardBlue27" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0E223D"/>
+      <stop offset="100%" stop-color="#091526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="780" fill="url(#bg27)"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accent27)"/>
+
+  <!-- Header -->
+  <g transform="translate(40, 26)">
+    <rect x="0" y="0" width="440" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+    <text x="16" y="19" fill="#A7F3D0" font-size="12" font-weight="700" letter-spacing="0.5">ROUND 25 · MULTI-AGENT A2A BUDGET SLICING &amp; CAS LEDGER FAQ</text>
+    <text x="456" y="19" fill="#94A3B8" font-size="12">Provenance: deterministic_offline_simulation · official_doc_snapshot · synthetic_policy (as of 2026-11-08)</text>
+
+    <text x="0" y="62" fill="#F8FAFC" font-size="24" font-weight="800">多智能体协同采购（A2A）共享预算拆账架构：层级化子切片 + CAS 盈余账本 vs 并发抢扣透支</text>
+    <text x="0" y="88" fill="#CBD5E1" font-size="14">Hierarchical Sub-Mandate Slicing (sub_mandate_slice_...) &amp; 2PC CAS Surplus Rebalance vs. Shared Root-Wallet Race Overdraft &amp; Deadlock</text>
+  </g>
+
+  <!-- Left Card: Shared Root Wallet Race Overdraft & Deadlock -->
+  <g transform="translate(40, 132)">
+    <rect x="0" y="0" width="580" height="275" rx="14" fill="url(#cardRed27)" stroke="#EF4444" stroke-width="1.5"/>
+    <rect x="18" y="16" width="290" height="24" rx="6" fill="#7F1D1D"/>
+    <text x="28" y="33" fill="#FECACA" font-size="12" font-weight="700">❌ 传统共享主钱包并发抢扣 (TOCTOU 透支 + 环形死锁)</text>
+
+    <rect x="20" y="54" width="540" height="64" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="76" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 1：3 个并发子 Agent 同时读取 $2,000 主钱包余额 (HTTP 403 · 12ms 阻断)</text>
+    <text x="34" y="96" fill="#E2E8F0" font-size="12">机票($1,100) + 酒店($1,200) + 租车($550) 同时通过 balance &gt;= price 检查 → 实扣 $2,850!</text>
+    <text x="34" y="112" fill="#F87171" font-size="11" font-weight="700">→ 300ms 内击穿 $2,000 差旅总预算红线，恶意/并发超支高达 +$850.00 (+42.5%)!</text>
+
+    <rect x="20" y="128" width="540" height="64" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="150" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 2：无乐观锁 P2P 抢夺盈余与循环等待死锁 (HTTP 409 15ms / HTTP 408 17ms)</text>
+    <text x="34" y="170" fill="#E2E8F0" font-size="12">机票与租车同时基于旧版本 v42 抢夺酒店省下的 $150 盈余；或互等对方先降级陷入死锁</text>
+    <text x="34" y="186" fill="#F87171" font-size="11" font-weight="700">→ 双花承诺导致总额再次越界，或超过 4,000ms 时间盒无限互发消息烧光 Token!</text>
+
+    <rect x="20" y="202" width="540" height="56" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="224" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 3：各自孤立拆单错过官方“机+酒+车”联订套餐大额折扣</text>
+    <text x="34" y="244" fill="#E2E8F0" font-size="12">3 个子 Agent 各自砍到最低单买价 ($980+$650+$280=$1,910)，却比官方 $1,620 联订包多花 $290!</text>
+  </g>
+
+  <!-- Right Card: Hierarchical Sub-Mandate Slice + CAS Surplus Ledger -->
+  <g transform="translate(660, 132)">
+    <rect x="0" y="0" width="580" height="275" rx="14" fill="url(#cardGreen27)" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="18" y="16" width="380" height="24" rx="6" fill="#065F46"/>
+    <text x="28" y="33" fill="#A7F3D0" font-size="12" font-weight="700">✅ 层级化子授权切片 (sub_slice_...) + CAS 盈余账本 + Web IQ 联订</text>
+
+    <rect x="20" y="54" width="540" height="64" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="76" fill="#6EE7B7" font-size="13" font-weight="700">1. 派发前原子切分 + MCC 品类硬绑定 (∑ Slice_i = $2,000 · 0% 并发超支)</text>
+    <text x="34" y="96" fill="#E2E8F0" font-size="12">Flight=$900 (MCC 4511) · Hotel=$800 (MCC 7011) · Car=$300 (MCC 7512)</text>
+    <text x="34" y="112" fill="#34D399" font-size="11" font-weight="700">→ 网关按子令牌独立验额，从数学上根除 TOCTOU 并发超支 (共享主钱包 12ms 返回 HTTP 403)</text>
+
+    <rect x="20" y="128" width="540" height="64" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="150" fill="#6EE7B7" font-size="13" font-weight="700">2. 主控账本乐观锁 CAS 盈余调拨 + 4,000ms 死锁熔断 (18ms 调拨 / 17ms 解锁)</text>
+    <text x="34" y="170" fill="#E2E8F0" font-size="12">酒店实锁 $650 释放 $150 回主池 (v43) → CAS 原子拨付 $80 给机票 ($980, v44)</text>
+    <text x="34" y="186" fill="#34D399" font-size="11" font-weight="700">→ 旧版本并发抢夺 15ms 返 HTTP 409；环形等待超 4,000ms 立即返 HTTP 408 熔断</text>
+
+    <rect x="20" y="202" width="540" height="56" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="224" fill="#6EE7B7" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 跨品类联订套利接地 (315ms HTTP 409 Confirm)</text>
+    <text x="34" y="244" fill="#E2E8F0" font-size="12">检出官方“机+酒+车”联订整包 $1,620 比拆单总和 $1,910 省 $290 → 弹窗建议一键切换整包!</text>
+  </g>
+
+  <!-- Middle Flow Bar -->
+  <g transform="translate(40, 424)">
+    <rect x="0" y="0" width="1200" height="128" rx="14" fill="url(#cardBlue27)" stroke="#38BDF8" stroke-width="1.2"/>
+    <text x="24" y="28" fill="#7DD3FC" font-size="14" font-weight="800">🧭 多智能体共享预算切分、CAS 盈余调拨与 Web IQ 联订对比五步状态机 (Hierarchical Sub-Mandate &amp; CAS Rebalance Pipeline)</text>
+
+    <g transform="translate(24, 42)">
+      <rect x="0" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#EF4444"/>
+      <text x="12" y="22" fill="#FCA5A5" font-size="12" font-weight="700">① 共享主钱包阻断 (12ms)</text>
+      <text x="12" y="42" fill="#CBD5E1" font-size="11">拒绝多 Agent 共用父令牌</text>
+      <text x="12" y="58" fill="#F87171" font-size="10">HTTP 403 RACE_BLOCKED</text>
+
+      <text x="224" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="242" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+      <text x="254" y="22" fill="#7DD3FC" font-size="12" font-weight="700">② 盈余回笼 &amp; CAS 调拨</text>
+      <text x="254" y="42" fill="#CBD5E1" font-size="11">Hotel 退 $150 → Flight +$80</text>
+      <text x="254" y="58" fill="#38BDF8" font-size="10">版本冲突 15ms 返 HTTP 409</text>
+
+      <text x="466" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="484" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#A855F7"/>
+      <text x="496" y="22" fill="#D8B4FE" font-size="12" font-weight="700">③ 4,000ms 死锁熔断器</text>
+      <text x="496" y="42" fill="#CBD5E1" font-size="11">DAG 拓扑防双向循环等待</text>
+      <text x="496" y="58" fill="#C084FC" font-size="10">超时 17ms 返 HTTP 408</text>
+
+      <text x="708" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="726" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+      <text x="738" y="22" fill="#FDE68A" font-size="12" font-weight="700">④ Web IQ 联订套餐比价</text>
+      <text x="738" y="42" fill="#CBD5E1" font-size="11">拆单 $1,910 vs 整包 $1,620</text>
+      <text x="738" y="58" fill="#FBBF24" font-size="10">省 $290 → 315ms 409 Confirm</text>
+
+      <text x="950" y="38" fill="#10B981" font-size="18" font-weight="800">→</text>
+
+      <rect x="968" y="0" width="188" height="68" rx="8" fill="#042F2E" stroke="#10B981"/>
+      <text x="980" y="22" fill="#A7F3D0" font-size="12" font-weight="700">⑤ 协同原子交割 (265ms)</text>
+      <text x="980" y="42" fill="#E2E8F0" font-size="11">实付 $1,910 &lt;= $2,000</text>
+      <text x="980" y="58" fill="#34D399" font-size="10">HTTP 200 $0 透支成交</text>
+    </g>
+  </g>
+
+  <!-- Bottom Benchmark Table -->
+  <g transform="translate(40, 568)">
+    <rect x="0" y="0" width="1200" height="178" rx="14" fill="#0B1120" stroke="#334155" stroke-width="1"/>
+    <text x="24" y="28" fill="#F8FAFC" font-size="14" font-weight="800">📊 架构师定量评测对比矩阵 (Deterministic Simulation &amp; Web IQ Bundle Arbitrage Benchmark · as of 2026-11-08)</text>
+
+    <line x1="20" y1="40" x2="1180" y2="40" stroke="#334155"/>
+    <text x="28" y="58" fill="#94A3B8" font-size="12" font-weight="700">评测场景 (Scenario)</text>
+    <text x="380" y="58" fill="#94A3B8" font-size="12" font-weight="700">共享主钱包无协调基线</text>
+    <text x="690" y="58" fill="#94A3B8" font-size="12" font-weight="700">层级化子切片 + CAS 账本 + Web IQ 网关</text>
+    <text x="1040" y="58" fill="#94A3B8" font-size="12" font-weight="700">实测延迟 / 证据标签</text>
+
+    <line x1="20" y1="68" x2="1180" y2="68" stroke="#1E293B"/>
+    <text x="28" y="88" fill="#E2E8F0" font-size="12">1. 3 个子 Agent 无切分共享 $2,000 主钱包并发扣款</text>
+    <text x="380" y="88" fill="#F87171" font-size="12">❌ TOCTOU 并发刷出 $2,850 (超支 $850)</text>
+    <text x="690" y="88" fill="#34D399" font-size="12" font-weight="700">🛑 HTTP 403 SHARED_ROOT_WALLET_RACE_BLOCKED</text>
+    <text x="1040" y="88" fill="#CBD5E1" font-size="12">12 ms (synthetic)</text>
+
+    <text x="28" y="112" fill="#E2E8F0" font-size="12">2. 并发基于过期版本 v42 争抢酒店释放的 $150 盈余</text>
+    <text x="380" y="112" fill="#F87171" font-size="12">❌ 双花许诺导致总支出突破 $2,000</text>
+    <text x="690" y="112" fill="#34D399" font-size="12" font-weight="700">🛑 HTTP 409 CAS_BUDGET_VERSION_CONFLICT</text>
+    <text x="1040" y="112" fill="#CBD5E1" font-size="12">15 ms (simulation)</text>
+
+    <text x="28" y="136" fill="#E2E8F0" font-size="12">3. 子 Agent 循环等待或议价超 4,000ms + Web IQ 联订比价</text>
+    <text x="380" y="136" fill="#F87171" font-size="12">❌ 死锁烧光 Token / 拆单多花 $290</text>
+    <text x="690" y="136" fill="#FBBF24" font-size="12" font-weight="700">🛑 17ms HTTP 408 死锁熔断 / 🧑‍⚖️ 315ms 409 联订省 $290</text>
+    <text x="1040" y="136" fill="#CBD5E1" font-size="12">17ms / 315ms</text>
+
+    <text x="28" y="160" fill="#E2E8F0" font-size="12">4. 酒店释放 $150 盈余 + CAS 调拨 $80 给机票 ($1,910 &lt;= $2,000)</text>
+    <text x="380" y="160" fill="#F87171" font-size="12">⚠️ 静态切片卡死在机票 $900 失败</text>
+    <text x="690" y="160" fill="#34D399" font-size="12" font-weight="700">⚡ HTTP 200 COALITION_BUDGET_ALLOCATED_COMMITTED</text>
+    <text x="1040" y="160" fill="#CBD5E1" font-size="12">265 ms (simulation)</text>
+  </g>
+</svg>
