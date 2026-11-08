@@ -30,16 +30,20 @@ This repository is a production-grade research and engineering testbed for **Age
 
 ### 1. Agentic Commerce × Microsoft Web IQ 4-Layer Architecture & 2026-11-08 Executive Visual Summary
 
-> 💡 **Flagship AI Solution Architect Guides**:
-> - **Round 1 Deep Dive**: **[Agentic Commerce Payment Rails (Stripe SPT vs. Visa VIC vs. x402) & Web Grounding (Web IQ vs. Exa / Bright Data) Selection FAQ](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**
-> - **Round 2 Deep Dive**: **[B2B Procurement Agent Authorization: Policy-Bound Spend Mandate vs. Legacy HITL Approval Workflow Selection FAQ](docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md)**
-> - **Round 3 Deep Dive**: **[Cross-Border Multi-Currency Agent Settlement: On-Chain Stablecoin (`x402` / MPP Tempo) vs. Card Network Tokens (`Stripe SPT v2` / `Visa VIC`) Selection FAQ](docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**
+> 💡 **Flagship AI Solution Architect Guides (Single-Topic 6-Section FAQ Suite)**:
+> - **Topic 1A (Payment Rails Selection)**: **[Agentic Commerce Payment Rails Selection FAQ: Stripe SPT vs. Visa VIC vs. x402 / MPP Tempo](docs/agentic-payment-rails-spt-vic-x402-selection-faq.en.md)**
+> - **Topic 1B (Web Grounding Selection)**: **[Agentic Commerce Real-Time Web Grounding Selection FAQ: Microsoft Web IQ vs. Exa vs. Bright Data vs. Foundry Bing Grounding](docs/webiq-vs-exa-brightdata-grounding-selection-faq.en.md)** (Overview Hub: [`agentic-payment-rails-and-webiq-grounding-selection-faq.en.md`](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md))
+> - **Topic 2 (B2B Spend Mandate)**: **[B2B Procurement Agent Authorization: Policy-Bound Spend Mandate vs. Legacy HITL Approval Workflow Selection FAQ](docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md)**
+> - **Topic 3 (Cross-Border Settlement)**: **[Cross-Border Multi-Currency Agent Settlement: On-Chain Stablecoin (`x402` / MPP Tempo) vs. Card Network Tokens (`Stripe SPT v2` / `Visa VIC`) Selection FAQ](docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**
+> - **Topic 4 (E-Commerce Agent Identity & WAF)**: **[E-Commerce Anti-Fraud & Verified Agent Identity: RFC 9421 Web Bot Auth / Visa TAP vs. Legacy WAF/CAPTCHA Selection FAQ](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
 ![2026-11-08 B2B Procurement Policy-Bound Spend Mandate vs HITL Visual Summary](assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
 
 ![2026-11-08 Cross-Border Multi-Currency Agent Settlement Visual Summary](assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
+
+![2026-11-08 E-Commerce Agent Identity RFC 9421 Web Bot Auth & Visa TAP vs WAF Visual Summary](assets/svg/06-web-bot-auth-tap-vs-waf-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

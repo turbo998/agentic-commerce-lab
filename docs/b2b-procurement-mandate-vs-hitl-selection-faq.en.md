@@ -2,7 +2,8 @@
 
 > **Audience & Purpose**: Written for **AI Solution Architects**, Enterprise Chief Procurement Officers (CPOs/CIOs), and Financial Internal-Control Architects. This guide answers the core governance question that determines whether an enterprise B2B procurement agent succeeds in production: **When an AI Agent autonomously sources, compares prices, and restocks inventory, when should a deterministic Policy-Bound Spend Mandate auto-settle the transaction with zero human friction, when must it halt and escalate to a Human-in-the-Loop (HITL) step-up approval, and how do we guarantee that even a prompt-injected LLM can never overspend a single cent?**
 >
-> **中文版本**: [B2B 企业采购智能体授权架构：确定性预算策略网关（Policy-Bound Spend Mandate）vs 传统人工审批工作流（HITL）选型与原理解析 FAQ](./b2b-procurement-mandate-vs-hitl-selection-faq.md)
+> **中文版本**: [B2B 企业采购智能体授权架构：确定性预算策略网关（Policy-Bound Spend Mandate）vs 传统人工审批工作流（HITL）选型与原理解析 FAQ](./b2b-procurement-mandate-vs-hitl-selection-faq.md)  
+> **Provenance & As-Of Notice (`2026-11-08`)**: The 3-tier budget thresholds (`<= $2,500` Green Zone, `$2,500–$25,000` Amber Zone, `> $25,000` Red Zone, `30-day` minimum return baseline, `80%` daily velocity cap) are reference enterprise governance guardrails explicitly labeled **`synthetic_policy`** (not statutory or vendor-imposed limits). The `376 ms` green-zone latency and `78.4%` simulated approval-queue reduction come from the sealed local evaluation harness `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (**`deterministic_offline_simulation`**); live third-party ERP (SAP Ariba / Coupa) and live payment rail telemetry are marked **`not_measured`**.
 
 ![B2B Procurement Agent Authorization Architecture: Policy-Bound Spend Mandate vs. HITL Visual Summary](../assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
 

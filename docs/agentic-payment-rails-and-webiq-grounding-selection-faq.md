@@ -1,7 +1,9 @@
 # Agentic Commerce 支付轨道（SPT vs VIC vs x402）与 Web Grounding（Web IQ vs Exa/Bright Data）架构选型及协议原理解析 FAQ
 
-> **文档定位**：面向 AI Solution Architect（AI 解决方案架构师）、电商/零售技术负责人与金融支付架构师的实战选型手册  
-> **参考架构标杆**：对标《AI 智算网络选型指南：InfiniBand vs Ethernet (RoCEv2)》通俗透彻、第一性原理驱动的 FAQ 范式  
+> **文档定位（总览入口 & 单专题解耦导航）**：为严格遵循“单篇 FAQ 仅讲透一个独立核心架构决策”的原则，本页作为兼容总览入口，已将两大核心决策拆分为两篇独立六段式深度指南：
+> - 👉 **专题 1A（支付轨道选型）**：**[《Agentic Commerce 支付轨道选型与原理解析 FAQ：Stripe SPT vs. Visa VIC vs. x402 / MPP Tempo》](agentic-payment-rails-spt-vic-x402-selection-faq.md)**
+> - 👉 **专题 1B（实时网页接地选型）**：**[《Agentic Commerce 实时网页接地选型与原理解析 FAQ：Microsoft Web IQ vs. Exa vs. Bright Data vs. Foundry Bing Grounding》](webiq-vs-exa-brightdata-grounding-selection-faq.md)**
+> - **数据溯源声明（Provenance & As-Of `2026-11-08`）**：官方协议规则（如 34 国 SPT 列表、`2026-11-30` 密钥断代）引自 `research/daily/2026-11-08-sources.json`（`official_doc_snapshot`）；`7.1x` Token 节省与 `$0.000000` vs `54.3%` 截断损耗引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（`deterministic_offline_simulation`）；地区围栏与预算阈值示例标为 `synthetic_policy`；无凭证第三方在线 API 实测标为 `not_measured`。
 > **更新时间**：2026-11-08 | **双语版本**：**[中文版（当前）](agentic-payment-rails-and-webiq-grounding-selection-faq.md)** · **[English Version](agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**  
 > **配套可交互资产**：**[🚀 H5 架构选型与防注入实时沙盒 (`live-demo.html`)](../live-demo.html)** · **[📊 7-Card 4:5 视觉评测报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 

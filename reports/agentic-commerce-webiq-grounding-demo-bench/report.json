@@ -88,6 +88,14 @@
     "aligned_200_forfeited_usd": "0.000000",
     "ny_blocked_reason": "stablecoin_rail_prohibited_in_us_ny"
   },
+  "agent_identity_waf_guards": {
+    "all_passed": true,
+    "verified_fast_lane_latency_ms": 1.8,
+    "spoof_ua_blocked_reason": "missing_rfc9421_signature_spoofed_user_agent_rejected",
+    "tampered_digest_blocked_reason": "rfc9421_content_digest_sha256_mismatch_body_tampered",
+    "replay_blocked_reason": "rfc9421_signature_expired_gt_300s_or_nonce_replay_blocked",
+    "pay_per_crawl_402_reason": "verified_agent_exceeded_free_qps_quota_http_402_micropayment_challenge"
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -3,7 +3,8 @@
 > **文档定位**：面向 AI 解决方案架构师（AI Solution Architect）与跨境电商/SaaS/API 平台技术负责人的架构选型与售前宣讲实战指南  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（先给一针见血的选型结论，再用第一性原理大白话讲透跨境清算机制、汇损陷阱与合规红线，提供客户高频灵魂拷问 Q&A、Mermaid 决策树与时序图、选型矩阵与上线核验清单）  
 > **双语版本**：**[中文版（当前）](cross-border-agent-settlement-x402-vs-card-network-faq.md)** · **[English Version (`cross-border-agent-settlement-x402-vs-card-network-faq.en.md`)](cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**  
-> **配套可交互演示**：**[🚀 H5 跨境双轨结算与整美分对齐实时沙盒 (`../live-demo.html`)](../live-demo.html)** · **[📊 7-Card 4:5 视觉评测报告 (`../benchmark-cards.html`)](../benchmark-cards.html)**
+> **配套可交互演示**：**[🚀 H5 跨境双轨结算与整美分对齐实时沙盒 (`../live-demo.html`)](../live-demo.html)** · **[📊 7-Card 4:5 视觉评测报告 (`../benchmark-cards.html`)](../benchmark-cards.html)**  
+> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：Stripe SPT 支持的 **34 个国家/地区**与 MPP Tempo 整美分向下截断规则引自 `research/daily/2026-11-08-sources.json`（**`official_doc_snapshot`**, `as_of: 2026-11-08`）；`200 单位` `$0.000000` 损耗与未对齐 `54.3%` 损耗引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；文中 `US-NY` 地理围栏、`2.0%` 汇率滑点阈值与 `120 天` 卡争议期参考规则属于本实验室策略网关风控示例（明确标为 **`synthetic_policy`**，不构成法律意见）；无生产凭证的跨国收单行在线实测标为 **`not_measured`**。
 
 ![跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络选型一图流](../assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
 

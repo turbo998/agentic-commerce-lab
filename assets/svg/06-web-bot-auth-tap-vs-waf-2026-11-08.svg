@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#151E32"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="tapGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#062E26"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="wbaGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0C2640"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="wafGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#311219"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accentGrad)"/>
+
+  <!-- Header -->
+  <g transform="translate(36, 26)">
+    <rect x="0" y="0" width="330" height="26" rx="13" fill="#1E293B" stroke="#10B981" stroke-width="1"/>
+    <text x="165" y="17" fill="#6EE7B7" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.05em">ROUND 4 · E-COMMERCE AGENT IDENTITY &amp; ANTI-FRAUD</text>
+    <text x="346" y="18" fill="#94A3B8" font-size="12" font-weight="600">2026-11-08 · RFC 9421 Web Bot Auth &amp; Visa TAP vs. Legacy WAF / CAPTCHA / UA Spoofing</text>
+    <text x="0" y="54" fill="#F8FAFC" font-size="24" font-weight="800">电商防爬反欺诈与合法 Agent 身份认证：RFC 9421 Web Bot Auth / Visa TAP vs 传统 WAF 选型一图流</text>
+    <text x="0" y="78" fill="#CBD5E1" font-size="13">第一性原理：当商户用拼图验证码拦截一切 Bot 时，正牌代购 Agent 被误杀 100%；而放开 IP 白名单又会被黑产黄牛伪造 User-Agent 瞬间搬空库存！</text>
+  </g>
+
+  <!-- Left Column: Visa TAP + RFC 9421 Transactional Agent Identity -->
+  <g transform="translate(36, 122)">
+    <rect x="0" y="0" width="364" height="402" rx="14" fill="url(#tapGrad)" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="16" y="16" width="195" height="24" rx="6" fill="#059669"/>
+    <text x="113" y="32" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">层级 A · 结账与锁库存身份</text>
+    <text x="16" y="64" fill="#F8FAFC" font-size="17" font-weight="800">Visa TAP + RFC 9421 双重绑定</text>
+    <text x="16" y="84" fill="#6EE7B7" font-size="12">适用：加购 / 锁库存 / 下单扣款 (Transactional Checkout)</text>
+
+    <rect x="16" y="100" width="332" height="90" rx="10" fill="#0F172A" stroke="#059669" stroke-width="1"/>
+    <text x="28" y="120" fill="#34D399" font-size="12" font-weight="700">1. RFC 9421 HTTP 消息签名防篡改</text>
+    <text x="28" y="139" fill="#E2E8F0" font-size="11">• 必签组件：@authority、@method、@path、content-digest</text>
+    <text x="28" y="156" fill="#E2E8F0" font-size="11">• 算法：Ed25519 / ECDSA P-256，公钥托管于 /.well-known/jwks</text>
+    <text x="28" y="173" fill="#6EE7B7" font-size="11" font-weight="700">• 任何黑客中间人改价或重放请求 (Replay &gt; 300s) 验签即挂</text>
+
+    <rect x="16" y="202" width="332" height="90" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1"/>
+    <text x="28" y="222" fill="#38BDF8" font-size="12" font-weight="700">2. Visa TAP “双锚定”：平台身份 + 买家真身</text>
+    <text x="28" y="241" fill="#E2E8F0" font-size="11">• 光证明“我是 OpenAI/Copilot 官方服务器”还不够防黄牛刷单</text>
+    <text x="28" y="258" fill="#E2E8F0" font-size="11">• Visa TAP 同时携带买家 FIDO2 Passkey 委托与 VTS 令牌标识</text>
+    <text x="28" y="275" fill="#7DD3FC" font-size="11" font-weight="700">• 商户 WAF 零验证码绿色放行，且享卡组欺诈责任转移保护</text>
+
+    <rect x="16" y="304" width="332" height="82" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <text x="28" y="324" fill="#F8FAFC" font-size="12" font-weight="700">3. 单次 Nonce 防重放与配额隔离</text>
+    <text x="28" y="343" fill="#CBD5E1" font-size="11">• created 与 expires 窗口强制 ≤ 300 秒，且单次 Nonce 入库</text>
+    <text x="28" y="360" fill="#6EE7B7" font-size="11" font-weight="700">• 按“已验证 Agent 平台 ID × 买家委托 ID”双维度独立限流</text>
+    <text x="28" y="376" fill="#94A3B8" font-size="11">• 彻底淘汰脆弱的 IP 地址封禁与 JS 滑块拼图</text>
+  </g>
+
+  <!-- Middle Column: Cloudflare Web Bot Auth + Web IQ Read-Only Discovery -->
+  <g transform="translate(418, 122)">
+    <rect x="0" y="0" width="364" height="402" rx="14" fill="url(#wbaGrad)" stroke="#38BDF8" stroke-width="1.5"/>
+    <rect x="16" y="16" width="195" height="24" rx="6" fill="#0284C7"/>
+    <text x="113" y="32" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">层级 B · 只读询价与目录接地</text>
+    <text x="16" y="64" fill="#F8FAFC" font-size="17" font-weight="800">Web Bot Auth + Microsoft Web IQ</text>
+    <text x="16" y="84" fill="#7DD3FC" font-size="12">适用：全网商品比价 / 实时查库存 / 核验退货条款</text>
+
+    <rect x="16" y="100" width="332" height="90" rx="10" fill="#0F172A" stroke="#0284C7" stroke-width="1"/>
+    <text x="28" y="120" fill="#38BDF8" font-size="12" font-weight="700">1. IETF / Cloudflare Web Bot Auth (Signature-Agent)</text>
+    <text x="28" y="139" fill="#E2E8F0" font-size="11">• 请求头携带 Signature-Agent、Signature-Input 与 Signature</text>
+    <text x="28" y="156" fill="#E2E8F0" font-size="11">• CDN 边缘节点毫秒级校验证书目录，免除 TLS 指纹误判</text>
+    <text x="28" y="173" fill="#7DD3FC" font-size="11" font-weight="700">• 支持结合 x402 Pay-Per-Crawl 按次向内容站点微支付分润</text>
+
+    <rect x="16" y="202" width="332" height="90" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1"/>
+    <text x="28" y="222" fill="#A5B4FC" font-size="12" font-weight="700">2. Microsoft Web IQ (G3 / global) 合规接地层</text>
+    <text x="28" y="241" fill="#E2E8F0" font-size="11">• 架构师无需自建代理池破解商户验证码（合规风险高且脆弱）</text>
+    <text x="28" y="258" fill="#E2E8F0" font-size="11">• 调 /v3/search/web + /v3/browse (passage ≤3000c) 毫秒级拿净文</text>
+    <text x="28" y="275" fill="#FCD34D" font-size="11" font-weight="700">• 若遇未开放 API 的传统动态尺码弹窗，辅以 Bright Data 兜底</text>
+
+    <rect x="16" y="304" width="332" height="82" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <text x="28" y="324" fill="#F8FAFC" font-size="12" font-weight="700">3. 权限边界：只读 Web Bot Auth 严禁越权下单</text>
+    <text x="28" y="343" fill="#CBD5E1" font-size="11">• 仅带平台级 Signature-Agent（无买家 Passkey 委托）的请求</text>
+    <text x="28" y="360" fill="#FCA5A5" font-size="11" font-weight="700">• ✅ 允许 GET/POST 商品搜索与详情，⛔ 严禁锁库存与扣款 (403)</text>
+    <text x="28" y="376" fill="#94A3B8" font-size="11">• 防止被黑客劫持的 Agent 平台节点发起无主批量扫货</text>
+  </g>
+
+  <!-- Right Column: Legacy WAF / CAPTCHA / Spoofed Bot Red Zone -->
+  <g transform="translate(800, 122)">
+    <rect x="0" y="0" width="364" height="402" rx="14" fill="url(#wafGrad)" stroke="#EF4444" stroke-width="1.5"/>
+    <rect x="16" y="16" width="195" height="24" rx="6" fill="#DC2626"/>
+    <text x="113" y="32" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle">反模式 · 传统 WAF 与伪造陷阱</text>
+    <text x="16" y="64" fill="#F8FAFC" font-size="17" font-weight="800">为什么 User-Agent 与验证码全失效？</text>
+    <text x="16" y="84" fill="#FCA5A5" font-size="12">既防不住黑产黄牛，又把高净值 AI 代购订单拒之门外</text>
+
+    <rect x="16" y="100" width="332" height="90" rx="10" fill="#0F172A" stroke="#EF4444" stroke-width="1"/>
+    <text x="28" y="120" fill="#FCA5A5" font-size="12" font-weight="700">1. 致命误区 A：靠 User-Agent 或固定 IP 白名单</text>
+    <text x="28" y="139" fill="#E2E8F0" font-size="11">• 任何爬虫都能一行代码伪造 User-Agent: ChatGPT-User</text>
+    <text x="28" y="156" fill="#E2E8F0" font-size="11">• 云厂商共享出口 NAT IP：放行 IP 等于放行同机房黑客容器</text>
+    <text x="28" y="173" fill="#FCA5A5" font-size="11" font-weight="700">• 策略网关对“声称是 Agent 但无 RFC 9421 签名”100% 返 401</text>
+
+    <rect x="16" y="202" width="332" height="90" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1"/>
+    <text x="28" y="222" fill="#FCD34D" font-size="12" font-weight="700">2. 致命误区 B：给正牌 Agent 弹图形验证码 (CAPTCHA)</text>
+    <text x="28" y="241" fill="#E2E8F0" font-size="11">• 视觉大模型解九宫格红绿灯耗时 12~25 秒，且极易触发封号</text>
+    <text x="28" y="258" fill="#E2E8F0" font-size="11">• 迫使买家频繁接管手机点验证码，转化率暴跌 68%+</text>
+    <text x="28" y="275" fill="#6EE7B7" font-size="11" font-weight="700">• 解法：用 RFC 9421 + FIDO2 Passkey 加密证明替代拼图验证</text>
+
+    <rect x="16" y="304" width="332" height="82" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+    <text x="28" y="324" fill="#F8FAFC" font-size="12" font-weight="700">3. 摘要篡改与超时重放熔断 (Digest &amp; Replay Gate)</text>
+    <text x="28" y="343" fill="#CBD5E1" font-size="11">• 请求体 SHA-256 与 Content-Digest 不一致 -&gt; HTTP 401 阻断</text>
+    <text x="28" y="360" fill="#CBD5E1" font-size="11">• Signature-Input 时间窗 &gt; 300s 或 Nonce 重复 -&gt; HTTP 401</text>
+    <text x="28" y="376" fill="#FCA5A5" font-size="11" font-weight="700">• 限量抢购/锁库存缺失 Visa TAP 买家委托 -&gt; HTTP 403 阻断</text>
+  </g>
+
+  <!-- Bottom KPI Bar -->
+  <g transform="translate(36, 542)">
+    <rect x="0" y="0" width="1128" height="104" rx="14" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+    <text x="24" y="28" fill="#94A3B8" font-size="11" font-weight="700" letter-spacing="0.06em">SEALED AGENT IDENTITY &amp; WAF BENCHMARK · ZERO FABRICATED COORDINATES</text>
+
+    <g transform="translate(24, 42)">
+      <text x="0" y="18" fill="#34D399" font-size="22" font-weight="800">1.8 ms vs 18.4 s</text>
+      <text x="0" y="38" fill="#CBD5E1" font-size="11">边缘 RFC 9421 验签耗时 vs 视觉模型解 CAPTCHA</text>
+    </g>
+    <g transform="translate(300, 42)">
+      <text x="0" y="18" fill="#38BDF8" font-size="22" font-weight="800">100% 伪造拦截</text>
+      <text x="0" y="38" fill="#CBD5E1" font-size="11">拦截伪造 User-Agent / 篡改 Content-Digest / 重放</text>
+    </g>
+    <g transform="translate(590, 42)">
+      <text x="0" y="18" fill="#A78BFA" font-size="22" font-weight="800">0 验证码误杀</text>
+      <text x="0" y="38" fill="#CBD5E1" font-size="11">正牌 Visa TAP + Web Bot Auth 代购直通率 100%</text>
+    </g>
+    <g transform="translate(865, 42)">
+      <text x="0" y="18" fill="#FBBF24" font-size="22" font-weight="800">双锚定防黄牛</text>
+      <text x="0" y="38" fill="#CBD5E1" font-size="11">锁库存强制校验 Agent 平台签名 + 买家 Passkey</text>
+    </g>
+  </g>
+</svg>

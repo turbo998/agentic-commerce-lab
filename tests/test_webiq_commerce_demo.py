@@ -1468,6 +1468,87 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertEqual(red_cap.governance_tier, "red_hard_block")
         self.assertEqual(red_cap.action, "Send to a human")
 
+    def test_agent_identity_web_bot_auth_tap_vs_waf_selection_and_provenance(self) -> None:
+        from pathlib import Path
+        from lab.webiq_commerce_demo import evaluate_agent_identity_and_waf_policy
+
+        # 1. Valid RFC 9421 Ed25519 signature + JWKS keyid + Visa TAP token -> 200 fast lane (1.8ms)
+        ok_tap = evaluate_agent_identity_and_waf_policy(
+            request_channel="commerce_checkout_api",
+            has_rfc9421_signature=True,
+            jwks_keyid_registered=True,
+            content_digest_matches=True,
+            signature_age_seconds=8,
+            nonce_reused=False,
+            visa_tap_token_attached=True,
+        )
+        self.assertTrue(ok_tap.allowed)
+        self.assertEqual(ok_tap.http_status, 200)
+        self.assertEqual(ok_tap.edge_route, "verified_rfc9421_visa_tap_fast_lane")
+        self.assertEqual(ok_tap.action_pill, "Act automatically")
+
+        # 2. Unsigned spoofed User-Agent on API -> 401 rejected
+        spoof = evaluate_agent_identity_and_waf_policy(
+            request_channel="commerce_checkout_api",
+            has_rfc9421_signature=False,
+        )
+        self.assertFalse(spoof.allowed)
+        self.assertEqual(spoof.http_status, 401)
+        self.assertEqual(spoof.action_pill, "Send to a human")
+
+        # 3. Tampered Content-Digest or >300s replay -> 401 rejected
+        tampered = evaluate_agent_identity_and_waf_policy(
+            request_channel="commerce_checkout_api",
+            has_rfc9421_signature=True,
+            content_digest_matches=False,
+        )
+        self.assertFalse(tampered.allowed)
+        self.assertEqual(tampered.http_status, 401)
+
+        replayed = evaluate_agent_identity_and_waf_policy(
+            request_channel="commerce_checkout_api",
+            has_rfc9421_signature=True,
+            signature_age_seconds=420,
+            nonce_reused=True,
+        )
+        self.assertFalse(replayed.allowed)
+        self.assertEqual(replayed.http_status, 401)
+
+        # 4. Verified crawler exceeding free QPS quota without x402 proof -> 402 Payment Required
+        crawl_402 = evaluate_agent_identity_and_waf_policy(
+            request_channel="catalog_price_crawl",
+            has_rfc9421_signature=True,
+            crawl_qps=120,
+            free_qps_quota=50,
+            x402_payment_proof_attached=False,
+        )
+        self.assertFalse(crawl_402.allowed)
+        self.assertEqual(crawl_402.http_status, 402)
+        self.assertEqual(crawl_402.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agent_identity_waf_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("web-bot-auth-selector-sandbox", demo_zh)
+
+        # Verify single-topic split FAQs and explicit provenance tags exist
+        repo_root = Path(__file__).resolve().parent.parent
+        for rel_doc in (
+            "docs/agentic-payment-rails-spt-vic-x402-selection-faq.md",
+            "docs/agentic-payment-rails-spt-vic-x402-selection-faq.en.md",
+            "docs/webiq-vs-exa-brightdata-grounding-selection-faq.md",
+            "docs/webiq-vs-exa-brightdata-grounding-selection-faq.en.md",
+            "docs/b2b-procurement-mandate-vs-hitl-selection-faq.md",
+            "docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md",
+            "docs/cross-border-agent-settlement-x402-vs-card-network-faq.md",
+            "docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md",
+            "docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md",
+            "docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md",
+        ):
+            doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
+            self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
+            self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
 
 if __name__ == "__main__":
     unittest.main()

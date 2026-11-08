@@ -4003,6 +4003,111 @@ def evaluate_cross_border_agent_settlement(
     )
 
 
+@dataclass(frozen=True)
+class AgentBotIdentityVerdict:
+    """Round 4 E-Commerce Anti-Fraud & Agent Identity (RFC 9421 Web Bot Auth / Visa TAP vs. Legacy WAF) verdict."""
+
+    allowed: bool
+    http_status: int
+    edge_route: str
+    reason: str
+    estimated_edge_latency_ms: float
+    action_pill: str
+
+
+def evaluate_agent_identity_and_waf_policy(
+    *,
+    request_channel: str = "commerce_checkout_api",
+    has_rfc9421_signature: bool = True,
+    jwks_keyid_registered: bool = True,
+    content_digest_matches: bool = True,
+    signature_age_seconds: int = 8,
+    nonce_reused: bool = False,
+    visa_tap_token_attached: bool = True,
+    crawl_qps: int = 20,
+    free_qps_quota: int = 50,
+    x402_payment_proof_attached: bool = False,
+) -> AgentBotIdentityVerdict:
+    """Deterministic edge verifier for RFC 9421 Web Bot Auth + Visa TAP vs. Legacy WAF/CAPTCHA (synthetic_policy: 300s replay window)."""
+    if not has_rfc9421_signature:
+        if request_channel == "human_browser_ui":
+            return AgentBotIdentityVerdict(
+                True,
+                200,
+                "legacy_waf_turnstile_human_lane",
+                "unsigned_browser_traffic_routed_to_waf_js_turnstile_lane",
+                45.0,
+                "Confirm",
+            )
+        return AgentBotIdentityVerdict(
+            False,
+            401,
+            "waf_bot_block_or_captcha",
+            "missing_rfc9421_signature_spoofed_user_agent_rejected",
+            18400.0,
+            "Send to a human",
+        )
+
+    if not jwks_keyid_registered:
+        return AgentBotIdentityVerdict(
+            False,
+            401,
+            "edge_rfc9421_verifier",
+            "unregistered_agent_keyid_not_in_trusted_jwks_directory",
+            1.8,
+            "Send to a human",
+        )
+
+    if not content_digest_matches:
+        return AgentBotIdentityVerdict(
+            False,
+            401,
+            "edge_rfc9421_verifier",
+            "rfc9421_content_digest_sha256_mismatch_body_tampered",
+            1.8,
+            "Send to a human",
+        )
+
+    if signature_age_seconds < 0 or signature_age_seconds > 300 or nonce_reused:
+        return AgentBotIdentityVerdict(
+            False,
+            401,
+            "edge_rfc9421_verifier",
+            "rfc9421_signature_expired_gt_300s_or_nonce_replay_blocked",
+            1.8,
+            "Send to a human",
+        )
+
+    if request_channel == "commerce_checkout_api" and not visa_tap_token_attached:
+        return AgentBotIdentityVerdict(
+            False,
+            403,
+            "visa_tap_checkout_gate",
+            "checkout_mutation_requires_visa_tap_payment_token_binding",
+            2.1,
+            "Confirm",
+        )
+
+    if request_channel == "catalog_price_crawl" and crawl_qps > free_qps_quota and not x402_payment_proof_attached:
+        return AgentBotIdentityVerdict(
+            False,
+            402,
+            "cloudflare_pay_per_crawl_402",
+            "verified_agent_exceeded_free_qps_quota_http_402_micropayment_challenge",
+            1.9,
+            "Confirm",
+        )
+
+    return AgentBotIdentityVerdict(
+        True,
+        200,
+        "verified_rfc9421_visa_tap_fast_lane",
+        "rfc9421_ed25519_and_visa_tap_verified_zero_captcha_fast_lane",
+        1.8,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -4715,6 +4820,57 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ny_blocked_reason": cb_api_ny_block.reason,
     }
 
+    bot_tap_ok = evaluate_agent_identity_and_waf_policy(
+        request_channel="commerce_checkout_api",
+        has_rfc9421_signature=True,
+        jwks_keyid_registered=True,
+        content_digest_matches=True,
+        signature_age_seconds=8,
+        nonce_reused=False,
+        visa_tap_token_attached=True,
+    )
+    bot_spoof_ua = evaluate_agent_identity_and_waf_policy(
+        request_channel="commerce_checkout_api",
+        has_rfc9421_signature=False,
+    )
+    bot_tampered_digest = evaluate_agent_identity_and_waf_policy(
+        request_channel="commerce_checkout_api",
+        has_rfc9421_signature=True,
+        content_digest_matches=False,
+    )
+    bot_replay_expired = evaluate_agent_identity_and_waf_policy(
+        request_channel="commerce_checkout_api",
+        has_rfc9421_signature=True,
+        signature_age_seconds=420,
+        nonce_reused=True,
+    )
+    bot_crawl_402 = evaluate_agent_identity_and_waf_policy(
+        request_channel="catalog_price_crawl",
+        has_rfc9421_signature=True,
+        crawl_qps=120,
+        free_qps_quota=50,
+        x402_payment_proof_attached=False,
+    )
+    agent_identity_waf_guards = {
+        "all_passed": (
+            bot_tap_ok.allowed
+            and bot_tap_ok.edge_route == "verified_rfc9421_visa_tap_fast_lane"
+            and not bot_spoof_ua.allowed
+            and bot_spoof_ua.http_status == 401
+            and not bot_tampered_digest.allowed
+            and bot_tampered_digest.http_status == 401
+            and not bot_replay_expired.allowed
+            and bot_replay_expired.http_status == 401
+            and not bot_crawl_402.allowed
+            and bot_crawl_402.http_status == 402
+        ),
+        "verified_fast_lane_latency_ms": bot_tap_ok.estimated_edge_latency_ms,
+        "spoof_ua_blocked_reason": bot_spoof_ua.reason,
+        "tampered_digest_blocked_reason": bot_tampered_digest.reason,
+        "replay_blocked_reason": bot_replay_expired.reason,
+        "pay_per_crawl_402_reason": bot_crawl_402.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -4731,6 +4887,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "architect_selection_guards": architect_selection_guards,
         "b2b_procurement_mandate_guards": b2b_procurement_mandate_guards,
         "cross_border_settlement_guards": cross_border_settlement_guards,
+        "agent_identity_waf_guards": agent_identity_waf_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -7652,6 +7809,39 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cb-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive E-Commerce Anti-Fraud & Agent Identity Selector (Round 4 FAQ Companion) -->
+      <div class="finops-box" id="web-bot-auth-selector-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-wba-selector-title">🤖 电商防爬反欺诈与 Agent 身份认证决策器 (RFC 9421 Web Bot Auth / Visa TAP vs. WAF)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 来访流量类型与密码学签名头 (Traffic Identity &amp; RFC 9421 Signature):</span></label>
+          <select id="wba-sig-select" onchange="updateWebBotAuthSandbox()">
+            <option value="tap_signed_ok">🔐 合法代购 Agent：附带 RFC 9421 Ed25519 签名 + 已注册 JWKS keyid + Visa TAP 令牌</option>
+            <option value="spoof_ua_no_sig">🕷️ 恶意抢购爬虫：伪造 User-Agent='OpenAI-Operator' 但无 RFC 9421 签名 (HTTP 401!)</option>
+            <option value="unknown_keyid">🚫 未知野鸡密钥：携带签名但 keyid 不在 Cloudflare/商户授信 JWKS 目录 (HTTP 401!)</option>
+            <option value="human_browser">👤 普通人类浏览器：无机器签名头 -&gt; 路由至常规 WAF / JS Turnstile 人类通道</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. 报文哈希完整性与防重放窗口 (Content-Digest &amp; 300s Replay Guard):</span></label>
+          <select id="wba-integrity-select" onchange="updateWebBotAuthSandbox()">
+            <option value="digest_fresh_ok">✅ Content-Digest SHA-256 严格匹配 + 时间戳 8s ≤ 300s + Nonce 唯一</option>
+            <option value="tampered_body">🛑 中间人篡改报文：将 qty=1 改为 qty=99 导致 Content-Digest 不匹配 (HTTP 401!)</option>
+            <option value="replay_expired">🛑 签名重放攻击：截获 7 分钟前 (420s &gt; 300s) 的旧签名或重复 Nonce 重放 (HTTP 401!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>3. 业务端点操作配额与 Pay-Per-Crawl 门禁 (Endpoint Quota &amp; x402 Gate):</span></label>
+          <select id="wba-quota-select" onchange="updateWebBotAuthSandbox()">
+            <option value="within_quota_ok">⚡ 免验证码 API 快车道 (1.8ms 边缘验签 · 零 CAPTCHA 阻断)</option>
+            <option value="checkout_no_tap">⚠️ 仅带爬虫签名但未绑定 Visa TAP / Stripe SPT 支付令牌即发起结账扣款 (HTTP 403!)</option>
+            <option value="over_quota_402">💰 高频比价超免额配额 (120 QPS &gt; 50 QPS) -&gt; 触发 HTTP 402 Pay-Per-Crawl 微支付挑战</option>
+          </select>
+        </div>
+        <div id="wba-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -8094,6 +8284,7 @@ function renderAll() {{
   updateArchitectSelectorSandbox();
   updateB2bMandateSandbox();
   updateCrossBorderSandbox();
+  updateWebBotAuthSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8299,6 +8490,72 @@ function updateCrossBorderSandbox() {{
     "<strong>🛡️ 跨境 34 国内卡组令牌核验通过 (stripe_spt_v2_multi_currency · 英国 GB 商户):</strong><br>" +
     "• <strong>Web IQ 含税核价通过</strong>：商品 £180 + 关税/运费 £25 = £205 (<code>$262.40 ≤ $280.00</code>)，汇率滑点 <code>0.6% ≤ 2.0%</code><br>" +
     "• <strong>结算与分账</strong>：已签发单次英镑 <code>spt_...</code>（支持 Stripe Connect 跨国分账 + 120 天拒付保护权）" +
+    "</div>";
+}}
+
+function updateWebBotAuthSandbox() {{
+  var sigEl = document.getElementById("wba-sig-select");
+  var intEl = document.getElementById("wba-integrity-select");
+  var quoEl = document.getElementById("wba-quota-select");
+  var outEl = document.getElementById("wba-selector-readout");
+  if (!sigEl || !intEl || !quoEl || !outEl) return;
+
+  var sig = sigEl.value;
+  var integ = intEl.value;
+  var quo = quoEl.value;
+
+  if (sig === "human_browser") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "👤 常规人类浏览器通道 (legacy_waf_turnstile_human_lane · 45ms · Confirm)：<br>" +
+      "无 RFC 9421 机器签名头，CDN 边缘将其路由至传统 WAF + JS Turnstile / 滑块验证池，保护匿名人类买家前端页面。" +
+      "</div>";
+    return;
+  }}
+
+  if (sig === "spoof_ua_no_sig" || sig === "unknown_keyid") {{
+    var sigErr = sig === "spoof_ua_no_sig"
+      ? "🚫 HTTP 401 missing_rfc9421_signature_spoofed_user_agent_rejected：声称是 AI Agent 但缺失 RFC 9421 密码学签名头，判定为伪造 User-Agent 的黄牛脚本，边缘网关 1.8ms 直接拒止！"
+      : "🚫 HTTP 401 unregistered_agent_keyid_not_in_trusted_jwks_directory：签名 keyid 未在 Cloudflare Web Bot Auth / Visa TAP 授信公钥目录注册，立即阻断！";
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      sigErr + "</div>";
+    return;
+  }}
+
+  if (integ !== "digest_fresh_ok") {{
+    var intErr = integ === "tampered_body"
+      ? "🚫 HTTP 401 rfc9421_content_digest_sha256_mismatch_body_tampered：请求体 JSON 数量/金额被篡改，与签名锁定的 Content-Digest SHA-256 哈希不符，边缘网关立即拦截！"
+      : "🚫 HTTP 401 rfc9421_signature_expired_gt_300s_or_nonce_replay_blocked：签名距今已超 300 秒窗口或 Nonce 已出现在 Redis 去重集中，重放攻击被 100% 阻断！";
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      intErr + "</div>";
+    return;
+  }}
+
+  if (quo === "checkout_no_tap") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ HTTP 403 checkout_mutation_requires_visa_tap_payment_token_binding (Confirm)：<br>" +
+      "仅携带通用爬虫身份签名，未绑定买家硬件 Passkey 授权的 Visa TAP / Stripe SPT 单次支付令牌，禁止直接调用结账扣款 API！" +
+      "</div>";
+    return;
+  }}
+
+  if (quo === "over_quota_402") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "💰 HTTP 402 verified_agent_exceeded_free_qps_quota_http_402_micropayment_challenge (Confirm)：<br>" +
+      "已验真 Agent 超出免费比价配额 (120 QPS &gt; 50 QPS)，CDN 边缘返回 <code>HTTP 402 Payment Required</code>，Agent 可自动附加 x402 / MPP Tempo 微支付回执继续无感调取。" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ RFC 9421 Web Bot Auth + Visa TAP 边缘验真通过 (1.8ms · 零验证码直通 JSON API):</strong><br>" +
+    "• <strong>密码学身份核验</strong>：Ed25519 公钥目录匹配 + <code>Content-Digest</code> 请求体未篡改 + <code>8s ≤ 300s</code> 防重放通过<br>" +
+    "• <strong>商业转化闭环</strong>：已绑定买家 Passkey 授权的 Visa TAP 令牌，跳过图形验证码直连结构化结账快车道 (Act automatically)！" +
     "</div>";
 }}
 

@@ -1,7 +1,9 @@
 # Agentic Commerce Payment Rails (SPT vs. VIC vs. x402) & Web Grounding (Web IQ vs. Exa/Bright Data) Architecture Selection & Protocol FAQ
 
-> **Target Audience**: Practical architecture selection guide for AI Solution Architects, E-Commerce/Retail Engineering Leaders, and Fintech/Payments Architects  
-> **Pedagogical Benchmark**: Modeled after `ib-vs-ethernet-roce-selection-faq.md` — clear, first-principles-driven, zero obscure serial labels, ready for client whiteboarding  
+> **Navigation Hub & Single-Topic Split Notice**: To adhere strictly to the "one core architectural decision per FAQ" standard, this overview hub links directly to two dedicated single-topic 6-section FAQ guides while preserving backwards link compatibility:
+> - 👉 **Topic 1A (Payment Rails Selection)**: **[Agentic Commerce Payment Rails Selection FAQ: Stripe SPT vs. Visa VIC vs. x402 / MPP Tempo](agentic-payment-rails-spt-vic-x402-selection-faq.en.md)**
+> - 👉 **Topic 1B (Web Grounding Selection)**: **[Agentic Commerce Real-Time Web Grounding Selection FAQ: Microsoft Web IQ vs. Exa vs. Bright Data vs. Foundry Bing Grounding](webiq-vs-exa-brightdata-grounding-selection-faq.en.md)**
+> - **Provenance & As-Of Notice (`2026-11-08`)**: Official rules (34 SPT countries, `2026-11-30` MCP key cutoff) cite `research/daily/2026-11-08-sources.json` (`official_doc_snapshot`); `7.1x` token reduction and `$0.000000` vs. `54.3%` truncation cite `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`deterministic_offline_simulation`); budget/geofence guardrails are labeled `synthetic_policy`; uncredentialed live third-party APIs are marked `not_measured`.
 > **Last Updated**: 2026-11-08 | **Bilingual Editions**: **[中文版 (`agentic-payment-rails-and-webiq-grounding-selection-faq.md`)](agentic-payment-rails-and-webiq-grounding-selection-faq.md)** · **[English Version (Current)](agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**  
 > **Companion Interactive Assets**: **[🚀 Interactive H5 Architecture Selector & Live Sandbox (`live-demo.en.html`)](../live-demo.en.html)** · **[📊 7-Card 4:5 Visual Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 

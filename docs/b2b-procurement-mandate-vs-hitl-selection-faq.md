@@ -2,7 +2,8 @@
 
 > **文档定位**：本文面向 **AI Solution Architect（AI 解决方案架构师）**、企业采购数字化负责人（CPO/CIO）与财务内控架构师，聚焦一个最常卡住企业级采购 Agent 落地的核心矛盾：**当企业引入 AI Agent 自动寻源、比价与补货时，究竟应该什么时候让确定性预算策略网关（Policy-Bound Spend Mandate）全自动放行付款，什么时候必须强制挂起并走人类主管阶梯审批（Human-in-the-Loop, HITL）？底层如何做到哪怕大模型被恶意供应商网页提示词注入，也绝对刷不走一分钱超额预算？**
 >
-> **English Version**: [B2B Procurement Agent Authorization Architecture: Policy-Bound Spend Mandate vs. Human-in-the-Loop (HITL) Approval Selection & First-Principles FAQ](./b2b-procurement-mandate-vs-hitl-selection-faq.en.md)
+> **English Version**: [B2B Procurement Agent Authorization Architecture: Policy-Bound Spend Mandate vs. Human-in-the-Loop (HITL) Approval Selection & First-Principles FAQ](./b2b-procurement-mandate-vs-hitl-selection-faq.en.md)  
+> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：本文中的三层预算阈值（绿区 `≤ $2,500`、黄区 `$2,500–$25,000`、红区 `> $25,000`、`30 天`最低退货期、单日部门额度 `80%` 预警）属于企业内控参考策略（明确标为 **`synthetic_policy`**，并非通用法定限额）；`376 ms` 绿区网关耗时与 `78.4%` 模拟工单分流率引自本地确定性评测基线 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；外部 ERP（SAP Ariba / Coupa）与商业支付网生产环境实测标为 **`not_measured`**。
 
 ![B2B 企业采购智能体授权架构：确定性预算策略网关 vs 传统人工审批工作流选型一图流](../assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
 
