@@ -1,6 +1,6 @@
 {
   "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
-  "benchmark_version": "2026-11-05.stage1756",
+  "benchmark_version": "2026-11-08 · Agentic Payment Rails & Web Grounding Selection FAQ",
   "provenance": "deterministic_offline_simulation",
   "independently_reproduced": true,
   "total_scenarios": 12,
@@ -63,6 +63,15 @@
     "stripe_mcp_nov30_cutoff_blocked_reason": "stripe_mcp_post_nov30_2026_rejects_non_agent_key_with_oauth_challenge",
     "affirm_webview_automation_blocked_reason": "affirm_bnpl_forbids_agent_webview_automation_or_uncontrolled_device",
     "spt_forward_pi_requires_action_blocked_reason": "spt_forbids_forwarding_payment_intent_requires_action_to_agent"
+  },
+  "architect_selection_guards": {
+    "all_passed": true,
+    "retail_recommended_rail": "stripe_spt",
+    "retail_recommended_grounding": "webiq",
+    "mpp_200_unit_forfeiture_usd": "0.000000",
+    "mpp_50_unit_blocked_reason": "unaligned_mpp_batch_causes_sub_cent_truncation_forfeiture_align_to_200_units",
+    "foundry_bing_checkout_blocked_reason": "foundry_bing_grounding_hides_raw_passages_unsafe_for_autonomous_payment_digest",
+    "connect_header_without_obo_blocked_reason": "connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header"
   },
   "scenarios": [
     {

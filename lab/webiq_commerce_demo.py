@@ -58,7 +58,7 @@ from lab.workload_arch_bench import audit_mpp_streaming_session
 
 WEBIQ_BASE_URL = "https://api.microsoft.ai"
 WEBIQ_MCP_URL = "https://api.microsoft.ai/v3/mcp"
-DEMO_VERSION = "2026-11-05.stage1756"
+DEMO_VERSION = "2026-11-08 · Agentic Payment Rails & Web Grounding Selection FAQ"
 WEBIQ_ACCOUNT_API_VERSION = "2026-06-01-preview"
 WEBIQ_ACCOUNT_LOCATION = "global"
 WEBIQ_ACCOUNT_KIND = "WebIQ.Grounding"
@@ -3441,6 +3441,235 @@ def validate_stage1756_webiq_rbac_stripe_mcp_and_bnpl_spt(
     )
 
 
+@dataclass(frozen=True)
+class PaymentAndGroundingSelectionVerdict:
+    """Structured AI Solution Architect decision output for Payment Rails × Web Grounding selection."""
+
+    allowed: bool
+    http_status: int
+    reason: str
+    recommended_payment_rail: Literal["stripe_spt", "visa_vic", "x402_usdc", "stripe_mpp_tempo"]
+    recommended_grounding_provider: Literal["webiq", "brightdata", "exa", "foundry_bing_grounding"]
+    estimated_grounding_cost_per_1k_usd: float
+    token_savings_multiplier: str
+    sub_cent_forfeiture_usd: str
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def select_agentic_payment_and_grounding_architecture(
+    *,
+    commerce_scenario: Literal[
+        "retail_checkout",
+        "global_multi_acquirer_checkout",
+        "marketplace_split_checkout",
+        "api_micropayment_per_call",
+        "streaming_token_metering",
+        "conversational_qa_only",
+    ] = "retail_checkout",
+    grounding_need: Literal[
+        "pre_checkout_price_and_policy_verification",
+        "interactive_dom_or_captcha_bypass",
+        "semantic_brand_and_research_discovery",
+        "managed_chat_qa",
+    ] = "pre_checkout_price_and_policy_verification",
+    ticket_size_usd: str = "79.00",
+    connect_charge_mode: Literal[
+        "none",
+        "direct",
+        "destination_no_obo",
+        "destination_with_obo",
+        "separate_charges_no_obo",
+    ] = "none",
+    stripe_account_header_sent: bool = False,
+    mpp_batch_units: int = 200,
+    unit_price_usd: str = "0.000350",
+    us_state: str = "CA",
+    mcp_auth_mode: Literal[
+        "oauth21_rfc9207",
+        "agent_restricted_key",
+        "legacy_secret_key",
+        "untagged_restricted_key",
+    ] = "oauth21_rfc9207",
+    rfc9207_iss_exact_match: bool = True,
+    high_risk_tool_invoked: bool = False,
+    human_confirmed: bool = False,
+) -> PaymentAndGroundingSelectionVerdict:
+    """Select and validate the optimal Agentic Commerce payment rail and Web Grounding architecture.
+
+    Encodes the decision rules from ``docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md``:
+    1. Payment Rail Selection:
+       - Retail / SaaS / Marketplace checkout ($0.50+) -> ``stripe_spt`` (or ``visa_vic`` for multi-acquirer
+         issuer-backed VTS + FIDO2 Passkey + TAP signature flows).
+       - Per-call API / data purchase ($0.0001..$0.10) -> ``x402_usdc``.
+       - Streaming LLM token / search batch metering -> ``stripe_mpp_tempo`` with whole-cent batch alignment
+         (e.g., ``200`` units at ``$0.00035/call`` = ``$0.07`` exact whole cents -> ``$0.000000`` forfeiture).
+    2. Web Grounding Selection:
+       - Pre-checkout price, stock, recall, or return-policy verification -> ``webiq`` (``/v3/search/web``
+         ``$7/1k`` + ``/v3/browse`` passage ``$1/1k``, ``7.1x`` context token reduction, caller-visible JSON).
+       - Interactive DOM selection / CAPTCHA unlocking -> ``brightdata`` (``$1.50/1k``).
+       - Neural semantic brand discovery / long-form research -> ``exa`` (``$5.00/1k``).
+       - Pure conversational Q&A (no autonomous payment execution) -> ``foundry_bing_grounding`` (``$14.00/1k``).
+         Using ``foundry_bing_grounding`` for autonomous payment execution is blocked because raw search
+         passages are hidden from application code and cannot run pre-LLM SHA-256 ``cart_digest`` checks.
+    3. Security & Protocol Boundary Guards:
+       - Stripe MCP post-Nov 30, 2026 cutoff rejects ``sk_live_*`` and untagged ``rk_live_*`` keys (HTTP 401).
+       - MCP OAuth 2.1 enforces RFC 9207 exact string matching on ``iss`` (RFC 3986 §6.2.1).
+       - Stripe Connect Destination / Separate Charges without ``on_behalf_of`` forbid ``Stripe-Account`` header.
+       - High-consequence tools (``create_refund``, Treasury transfers) require human confirmation.
+    """
+    rail_map: dict[str, Literal["stripe_spt", "visa_vic", "x402_usdc", "stripe_mpp_tempo"]] = {
+        "retail_checkout": "stripe_spt",
+        "marketplace_split_checkout": "stripe_spt",
+        "global_multi_acquirer_checkout": "visa_vic",
+        "api_micropayment_per_call": "x402_usdc",
+        "streaming_token_metering": "stripe_mpp_tempo",
+        "conversational_qa_only": "stripe_spt",
+    }
+    grounding_map: dict[str, tuple[Literal["webiq", "brightdata", "exa", "foundry_bing_grounding"], float, str]] = {
+        "pre_checkout_price_and_policy_verification": ("webiq", 8.0, "7.1x"),
+        "interactive_dom_or_captcha_bypass": ("brightdata", 1.5, "1.0x"),
+        "semantic_brand_and_research_discovery": ("exa", 5.0, "2.4x"),
+        "managed_chat_qa": ("foundry_bing_grounding", 14.0, "1.0x"),
+    }
+
+    rail = rail_map.get(commerce_scenario, "stripe_spt")
+    provider, cost_per_1k, tok_mult = grounding_map.get(
+        grounding_need, ("webiq", 8.0, "7.1x")
+    )
+
+    if mcp_auth_mode in ("legacy_secret_key", "untagged_restricted_key"):
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            401,
+            "stripe_mcp_post_nov30_2026_rejects_secret_or_untagged_key_use_oauth_or_agent_rk",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Send to a human",
+        )
+    if mcp_auth_mode == "oauth21_rfc9207" and not rfc9207_iss_exact_match:
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            400,
+            "mcp_oauth21_rfc9207_issuer_exact_string_match_failed",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Send to a human",
+        )
+    if high_risk_tool_invoked and not human_confirmed:
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            403,
+            "high_consequence_refund_or_treasury_tool_requires_human_confirmation",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Confirm",
+        )
+
+    if connect_charge_mode in ("destination_no_obo", "separate_charges_no_obo") and stripe_account_header_sent:
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            400,
+            "connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Send to a human",
+        )
+    if connect_charge_mode == "direct" and not stripe_account_header_sent:
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            400,
+            "connect_direct_charge_requires_stripe_account_header_and_connected_profile",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Send to a human",
+        )
+
+    if grounding_need == "managed_chat_qa" and commerce_scenario != "conversational_qa_only":
+        return PaymentAndGroundingSelectionVerdict(
+            False,
+            422,
+            "foundry_bing_grounding_hides_raw_passages_unsafe_for_autonomous_payment_digest",
+            rail,
+            provider,
+            cost_per_1k,
+            tok_mult,
+            "0.000000",
+            "Send to a human",
+        )
+
+    gross = Decimal(str(unit_price_usd)) * Decimal(max(1, int(mpp_batch_units)))
+    whole_cents = (gross * Decimal("100") // Decimal("1")) / Decimal("100")
+    forfeited = max(Decimal("0.000000"), gross - whole_cents)
+    forfeited_str = f"{forfeited:.6f}"
+
+    if rail in ("x402_usdc", "stripe_mpp_tempo"):
+        if (us_state or "").strip().upper() == "NY":
+            return PaymentAndGroundingSelectionVerdict(
+                False,
+                403,
+                "stablecoin_micropayment_rail_unavailable_in_new_york",
+                rail,
+                provider,
+                cost_per_1k,
+                tok_mult,
+                forfeited_str,
+                "Send to a human",
+            )
+        if rail == "stripe_mpp_tempo" and forfeited > Decimal("0"):
+            return PaymentAndGroundingSelectionVerdict(
+                False,
+                422,
+                "unaligned_mpp_batch_causes_sub_cent_truncation_forfeiture_align_to_200_units",
+                rail,
+                provider,
+                cost_per_1k,
+                tok_mult,
+                forfeited_str,
+                "Confirm",
+            )
+    elif commerce_scenario != "conversational_qa_only":
+        if Decimal(str(ticket_size_usd)) < Decimal("0.50"):
+            return PaymentAndGroundingSelectionVerdict(
+                False,
+                400,
+                "card_rail_unviable_below_0_50_usd_switch_to_x402_or_mpp_tempo",
+                rail,
+                provider,
+                cost_per_1k,
+                tok_mult,
+                "0.000000",
+                "Confirm",
+            )
+
+    return PaymentAndGroundingSelectionVerdict(
+        True,
+        200,
+        f"recommended_{rail}_with_{provider}_grounding_verified",
+        rail,
+        provider,
+        cost_per_1k,
+        tok_mult,
+        forfeited_str,
+        "Act automatically",
+    )
+
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -4010,6 +4239,52 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "spt_forward_pi_requires_action_blocked_reason": s1756_pi_requires_action_leak.reason,
     }
 
+    arch_retail_ok = select_agentic_payment_and_grounding_architecture(
+        commerce_scenario="retail_checkout",
+        grounding_need="pre_checkout_price_and_policy_verification",
+        ticket_size_usd="79.00",
+    )
+    arch_mpp_aligned = select_agentic_payment_and_grounding_architecture(
+        commerce_scenario="streaming_token_metering",
+        grounding_need="pre_checkout_price_and_policy_verification",
+        mpp_batch_units=200,
+        unit_price_usd="0.000350",
+    )
+    arch_mpp_unaligned = select_agentic_payment_and_grounding_architecture(
+        commerce_scenario="streaming_token_metering",
+        grounding_need="pre_checkout_price_and_policy_verification",
+        mpp_batch_units=50,
+        unit_price_usd="0.000350",
+    )
+    arch_bing_checkout_block = select_agentic_payment_and_grounding_architecture(
+        commerce_scenario="retail_checkout",
+        grounding_need="managed_chat_qa",
+    )
+    arch_connect_header_block = select_agentic_payment_and_grounding_architecture(
+        commerce_scenario="marketplace_split_checkout",
+        connect_charge_mode="destination_no_obo",
+        stripe_account_header_sent=True,
+    )
+    architect_selection_guards = {
+        "all_passed": (
+            arch_retail_ok.allowed
+            and arch_retail_ok.recommended_payment_rail == "stripe_spt"
+            and arch_retail_ok.recommended_grounding_provider == "webiq"
+            and arch_mpp_aligned.allowed
+            and arch_mpp_aligned.sub_cent_forfeiture_usd == "0.000000"
+            and not arch_mpp_unaligned.allowed
+            and arch_mpp_unaligned.sub_cent_forfeiture_usd == "0.007500"
+            and not arch_bing_checkout_block.allowed
+            and not arch_connect_header_block.allowed
+        ),
+        "retail_recommended_rail": arch_retail_ok.recommended_payment_rail,
+        "retail_recommended_grounding": arch_retail_ok.recommended_grounding_provider,
+        "mpp_200_unit_forfeiture_usd": arch_mpp_aligned.sub_cent_forfeiture_usd,
+        "mpp_50_unit_blocked_reason": arch_mpp_unaligned.reason,
+        "foundry_bing_checkout_blocked_reason": arch_bing_checkout_block.reason,
+        "connect_header_without_obo_blocked_reason": arch_connect_header_block.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -4023,6 +4298,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stage_1754_guards": stage_1754_guards,
         "stage_1755_guards": stage_1755_guards,
         "stage_1756_guards": stage_1756_guards,
+        "architect_selection_guards": architect_selection_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -6841,6 +7117,43 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="s1755-live-readout" style="margin-top:8px;font-size:12px;line-height:1.45;"></div>
       </div>
 
+      <!-- Interactive Architect Payment Rail & Web Grounding Selector (FAQ Companion) -->
+      <div class="finops-box" id="architect-selector-sandbox" style="margin-top:12px;border-color:#22C55E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-arch-selector-title">🧭 架构师支付轨道与 Web Grounding 选型决策器 (Architect Selection Advisor)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 业务场景与客单价 (Commerce Scenario &amp; Ticket Size):</span></label>
+          <select id="arch-scenario-select" onchange="updateArchitectSelectorSandbox()">
+            <option value="retail_spt">🛍️ B2C 商品代购 / SaaS 订阅 ($79.00 · 推荐 Stripe SPT + ACP/UCP)</option>
+            <option value="global_vic">🌍 跨收单行全球零售代购 ($120.00 · 推荐 Visa VIC VTS + Passkey + TAP)</option>
+            <option value="mpp_200_ok">⚡ 高频搜索/Token 流式按量计费 ($0.00035/次 × 200 单位整美分对齐 · 推荐 Stripe MPP Tempo)</option>
+            <option value="x402_api_ok">🤖 跨组织无账号 API 按次调取 ($0.02/次 · 推荐 x402 Base USDC)</option>
+            <option value="mpp_50_loss">❌ 高频微支付未对齐批次 ($0.00035/次 × 50 单位 = $0.0175 -&gt; 42.9% 截断没收!)</option>
+            <option value="card_micro_fail">❌ 用传统信用卡轨道结算 $0.02 微支付 (低于 $0.50 底线且固定费倒挂!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. 实时网页接地需求 (Web Grounding Requirement):</span></label>
+          <select id="arch-grounding-select" onchange="updateArchitectSelectorSandbox()">
+            <option value="webiq_verify">🛡️ 结账前实时核价 + 防注入 + 召回/退货核验 (推荐 Web IQ /web $7/1k + /browse passage $1/1k)</option>
+            <option value="brightdata_dom">🌐 需点击尺码弹窗 / 验证码穿透 (推荐 Bright Data Browser API / Unlocker $1.50/1k)</option>
+            <option value="exa_semantic">📚 语义找相似品牌 / 行业长文发现 (推荐 Exa Neural Search $5.00/1k)</option>
+            <option value="bing_checkout_trap">❌ 用 Foundry Grounding with Bing Search 直接驱动自动付款 (黑盒无原文摘要 -&gt; 阻断!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>3. 平台分账与 MCP 鉴权安全边界 (Connect &amp; MCP Auth Guard):</span></label>
+          <select id="arch-security-select" onchange="updateArchitectSelectorSandbox()">
+            <option value="auth_clean">✅ MCP OAuth 2.1 (RFC 9207 iss 精确匹配) + 平台代收省略 Stripe-Account 头</option>
+            <option value="connect_hdr_bug">❌ Connect Destination 代收未设 on_behalf_of 却传了 Stripe-Account 请求头 (HTTP 400!)</option>
+            <option value="mcp_sk_cutoff">❌ 2026-11-30 后仍用 sk_live_* 或无 Agent 标签 rk_live_* 调 Stripe MCP (HTTP 401!)</option>
+            <option value="refund_no_human">⚠️ Agent 未经人类点 Confirm 直接发起 create_refund 退款或资金划拨 (HTTP 403!)</option>
+          </select>
+        </div>
+        <div id="arch-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -7280,11 +7593,76 @@ function renderAll() {{
   renderModes();
   renderPipelineAndInspector();
   updateFinOpsCalculator();
+  updateArchitectSelectorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
   updateStage1755Sandbox();
   updateStage1756Sandbox();
+}}
+
+function updateArchitectSelectorSandbox() {{
+  var scEl = document.getElementById("arch-scenario-select");
+  var grEl = document.getElementById("arch-grounding-select");
+  var secEl = document.getElementById("arch-security-select");
+  var outEl = document.getElementById("arch-selector-readout");
+  if (!scEl || !grEl || !secEl || !outEl) return;
+
+  var sc = scEl.value;
+  var gr = grEl.value;
+  var sec = secEl.value;
+
+  if (sec !== "auth_clean") {{
+    var secErr = sec === "connect_hdr_bug"
+      ? "🚫 HTTP 400 connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header：平台代收模式未设置 on_behalf_of 时，必须用平台自己的 profile_... 且严禁传 Stripe-Account 请求头！"
+      : (sec === "mcp_sk_cutoff"
+        ? "🚫 HTTP 401 stripe_mcp_post_nov30_2026_rejects_secret_or_untagged_key：2026-11-30 后 Stripe MCP 全面拦截 sk_live_* 与未打 Agent 标签的 rk_live_*，请升级为 OAuth 2.1 或 Agent 专属受限密钥。"
+        : "⚠️ HTTP 403 high_consequence_refund_or_treasury_tool_requires_human_confirmation：create_refund 与资金划拨工具必须暂停等待人类显式点击 Confirm。");
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      secErr + "</div>";
+    return;
+  }}
+
+  if (gr === "bing_checkout_trap") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 422 foundry_bing_grounding_hides_raw_passages_unsafe_for_autonomous_payment_digest：Foundry Grounding with Bing Search 在云端内部闭环检索，业务代码拿不到网页原文，无法在进 LLM 前剥离提示词注入或计算 cart_digest！仅限纯问答客服使用。" +
+      "</div>";
+    return;
+  }}
+
+  if (sc === "mpp_50_loss" || sc === "card_micro_fail") {{
+    var scErr = sc === "mpp_50_loss"
+      ? "⚠️ HTTP 422 unaligned_mpp_batch_causes_sub_cent_truncation_forfeiture：单价 $0.00035 × 50 次 = $0.0175，按整美分结算会被截断为 $0.01（白白损失 $0.0075 / 42.9%）。请将批次步长设为 200 的整数倍（$0.070000 零损耗）！"
+      : "🚫 HTTP 400 card_rail_unviable_below_0_50_usd：传统卡轨最低消费 $0.50 且每笔收 $0.30 固定费，结算 $0.02 API 调用会导致严重手续费倒挂。请切换至 x402 (USDC) 或 Stripe MPP (Tempo)。";
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      scErr + "</div>";
+    return;
+  }}
+
+  var railAdvice = sc === "retail_spt"
+    ? "<strong>Stripe SPT (<code>spt_...</code>) + ACP/UCP</strong>（单次锁死商户+金额上限+TTL，覆盖 34 国与 Klarna/Affirm 分期）"
+    : (sc === "global_vic"
+      ? "<strong>Visa VIC (VTS Token + CVV2 + FIDO2 Passkey + TAP 签名)</strong>（跨收单行全球卡网直连，发卡行级抗欺诈免责）"
+      : (sc === "mpp_200_ok"
+        ? "<strong>Stripe MPP (Tempo 稳定币流式通道 · 200 单位整美分对齐)</strong>（单次结算 $0.070000，亚美分截断没收 <code>$0.000000</code>）"
+        : "<strong>x402 (HTTP 402 + Base USDC 链上回执)</strong>（零开户跨组织 API 微支付，按次精准扣款）"));
+
+  var groundAdvice = gr === "webiq_verify"
+    ? "<strong>Microsoft Web IQ (<code>G3</code> / <code>global</code>)</strong>：先调 <code>/v3/search/web</code> (<code>passage</code>, $7/1k) 拿 ≤3,000 字干净段落（省 <code>7.1x</code> Token），下单前必调 <code>/v3/browse</code> ($1/1k) 核对实时价格与退货条款"
+    : (gr === "brightdata_dom"
+      ? "<strong>Bright Data Browser API / Web Unlocker ($1.50/1k)</strong>：处理反爬验证码与尺码弹窗交互后，再交由确定性策略网关校验"
+      : "<strong>Exa Neural Search ($5.00/1k) + Web IQ <code>/v3/browse</code> ($1/1k)</strong>：用 Exa 做长尾品牌语义发现，锁定商品 URL 后用 Web IQ 核验实时价格");
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ 架构师推荐选型结论 (Act automatically):</strong><br>" +
+    "• <strong>推荐支付轨道</strong>：" + railAdvice + "<br>" +
+    "• <strong>推荐网页接地层</strong>：" + groundAdvice + "<br>" +
+    "• <strong>安全与合规基线</strong>：MCP OAuth 2.1 (RFC 9207 <code>iss</code> 精确匹配) + 提示词注入隔离 + SQLite <code>cart_digest</code> 原子锁已启用" +
+    "</div>";
 }}
 
 function updateStage1756Sandbox() {{

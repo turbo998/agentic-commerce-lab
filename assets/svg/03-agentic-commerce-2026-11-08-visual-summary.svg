@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bgMain" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="cardPurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="cardEmerald" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.92"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="760" fill="url(#bgMain)" rx="18"/>
+  <rect x="18" y="18" width="1164" height="724" rx="14" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Top Header Banner -->
+  <text x="42" y="54" fill="#38BDF8" font-size="13" font-weight="700" letter-spacing="1.4">AGENTIC COMMERCE LAB · AI SOLUTION ARCHITECT SELECTION GUIDE &amp; FAQ · 2026-11-08</text>
+  <text x="42" y="86" fill="#F8FAFC" font-size="23" font-weight="800">Payment Rails (Stripe SPT vs Visa VIC vs x402/MPP) × Web Grounding (Web IQ vs Exa/Bright Data)</text>
+  <text x="42" y="110" fill="#94A3B8" font-size="13">First-Principles FAQ Architecture Guide · 34 SPT Countries · 7.1x Token Reduction (680 vs 4,800 tok) · 12/12 Guarded Scenarios PASS</text>
+  <rect x="42" y="122" width="1116" height="3" fill="url(#barGrad)" rx="1.5"/>
+
+  <!-- Top 3 Selection Cards -->
+  <!-- Card 1: Payment Rails Selection -->
+  <rect x="42" y="138" width="358" height="210" rx="12" fill="url(#cardBlue)" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="60" y="164" fill="#38BDF8" font-size="12" font-weight="800">Q1 · HOW TO CHOOSE PAYMENT RAILS?</text>
+  <text x="60" y="186" fill="#F8FAFC" font-size="15" font-weight="700">Split by AOV Granularity &amp; Acquiring Model</text>
+  <text x="60" y="208" fill="#E2E8F0" font-size="11.5">• Retail / SaaS / Connect ($5–$5,000+): Choose Stripe SPT</text>
+  <text x="68" y="225" fill="#E2E8F0" font-size="11.5">(spt_... single-use, merchant + cap locked, 34 countries).</text>
+  <text x="60" y="246" fill="#BAE6FD" font-size="11.5">• Cross-Acquirer / Issuer Direct: Choose Visa VIC (VTS +</text>
+  <text x="68" y="263" fill="#BAE6FD" font-size="11.5">CVV2 + FIDO2 Passkey + TAP RFC 9421) or MC Agent Pay.</text>
+  <text x="60" y="284" fill="#FCD34D" font-size="11.5">• API / Data Micropayments ($0.0001–$0.10): Choose x402</text>
+  <text x="68" y="301" fill="#FCD34D" font-size="11.5">(USDC) or Stripe MPP (200-unit whole-cent step = $0 lost).</text>
+  <text x="60" y="324" fill="#FCA5A5" font-size="11.5">• Rule #1: Never expose raw 16-digit PAN or sk_live_ to LLM.</text>
+
+  <!-- Card 2: Web Grounding Selection -->
+  <rect x="421" y="138" width="358" height="210" rx="12" fill="url(#cardPurple)" stroke="#818CF8" stroke-width="1.5"/>
+  <text x="439" y="164" fill="#A5B4FC" font-size="12" font-weight="800">Q2 · HOW TO CHOOSE WEB GROUNDING?</text>
+  <text x="439" y="186" fill="#F8FAFC" font-size="15" font-weight="700">Split by Caller-Code Raw Passage Visibility</text>
+  <text x="439" y="208" fill="#E2E8F0" font-size="11.5">• Pre-Checkout Price/Policy Guard: Choose Microsoft Web IQ</text>
+  <text x="447" y="225" fill="#E2E8F0" font-size="11.5">(/v3/search/web $7/1k + /v3/browse $1/1k passage &lt;=3000c).</text>
+  <text x="439" y="246" fill="#C7D2FE" font-size="11.5">• Caller code sanitizes prompt injection &amp; verifies SHA-256</text>
+  <text x="447" y="263" fill="#C7D2FE" font-size="11.5">price digest BEFORE the LLM sees retrieved web text.</text>
+  <text x="439" y="284" fill="#A7F3D0" font-size="11.5">• Neural Lookalike / Research: Choose Exa ($4–$7/1k).</text>
+  <text x="439" y="303" fill="#FCD34D" font-size="11.5">• Login / Click Variant Modals: Bright Data Browser API.</text>
+  <text x="439" y="323" fill="#94A3B8" font-size="11.5">• Chat Q&amp;A Only (No Payment): Foundry Bing Grounding.</text>
+
+  <!-- Card 3: Enterprise Security & MCP Governance -->
+  <rect x="800" y="138" width="358" height="210" rx="12" fill="url(#cardEmerald)" stroke="#34D399" stroke-width="1.5"/>
+  <text x="818" y="164" fill="#6EE7B7" font-size="12" font-weight="800">Q3 &amp; Q4 · PROTOCOL &amp; MCP SAFETY BOUNDARIES</text>
+  <text x="818" y="186" fill="#F8FAFC" font-size="15" font-weight="700">Connect Splits, 4s Hooks &amp; Nov 30 MCP Cutoff</text>
+  <text x="818" y="208" fill="#E2E8F0" font-size="11.5">• Stripe Connect: Omit Stripe-Account header on Destination</text>
+  <text x="826" y="225" fill="#E2E8F0" font-size="11.5">charges without on_behalf_of; use platform profile_... ID.</text>
+  <text x="818" y="246" fill="#A7F3D0" font-size="11.5">• Asymmetric 4s Hooks: Price timeout falls back to catalog</text>
+  <text x="826" y="263" fill="#A7F3D0" font-size="11.5">feed; finalize_checkout &gt; 4,000ms auto-declines payment.</text>
+  <text x="818" y="284" fill="#FCA5A5" font-size="11.5">• Stripe MCP (Post-Nov 30, 2026): Blocks sk_live_ &amp; untagged</text>
+  <text x="826" y="301" fill="#FCA5A5" font-size="11.5">rk_live_ (401); require OAuth 2.1 (RFC 9207) or Agent rk_live_.</text>
+  <text x="818" y="323" fill="#FCD34D" font-size="11.5">• Affirm BNPL: Human must navigate WebView on own device.</text>
+
+  <!-- Middle 4-Layer Reference Pipeline -->
+  <rect x="42" y="362" width="1116" height="190" rx="12" fill="#0B1120" stroke="#475569" stroke-width="1.2"/>
+  <text x="62" y="388" fill="#38BDF8" font-size="13" font-weight="800">4-LAYER ENTERPRISE AGENTIC COMMERCE PIPELINE (WHY SEARCH &amp; PAYMENT MUST BE DECOUPLED)</text>
+
+  <!-- Box 1 -->
+  <rect x="62" y="404" width="246" height="130" rx="10" fill="#1E293B" stroke="#38BDF8"/>
+  <text x="76" y="426" fill="#38BDF8" font-size="11.5" font-weight="800">1. BUYER MANDATE &amp; INTENT</text>
+  <text x="76" y="447" fill="#F8FAFC" font-size="12.5" font-weight="700">Google AP2 MandateVC</text>
+  <text x="76" y="467" fill="#CBD5E1" font-size="11">• Locks SKU, merchant &amp; $80 cap</text>
+  <text x="76" y="485" fill="#CBD5E1" font-size="11">• Computes SHA-256 cart_digest</text>
+  <text x="76" y="503" fill="#7DD3FC" font-size="11">• Passkey / WebAuthn user proof</text>
+  <text x="76" y="521" fill="#34D399" font-size="11">• Zero raw card data in prompt</text>
+
+  <!-- Arrow 1->2 -->
+  <text x="315" y="472" fill="#64748B" font-size="18" font-weight="800">→</text>
+
+  <!-- Box 2 -->
+  <rect x="336" y="404" width="256" height="130" rx="10" fill="#1E293B" stroke="#818CF8"/>
+  <text x="350" y="426" fill="#A5B4FC" font-size="11.5" font-weight="800">2. READ-ONLY WEB GROUNDING</text>
+  <text x="350" y="447" fill="#F8FAFC" font-size="12.5" font-weight="700">Microsoft Web IQ (G3 / global)</text>
+  <text x="350" y="467" fill="#CBD5E1" font-size="11">• /v3/search/web + /v3/browse passage</text>
+  <text x="350" y="485" fill="#CBD5E1" font-size="11">• 680 tokens/call (7.1x cut, 164ms P95)</text>
+  <text x="350" y="503" fill="#C7D2FE" font-size="11">• Checks liveCrawlSucceeded != false</text>
+  <text x="350" y="521" fill="#FCD34D" font-size="11">• /news &amp; /auto riskLevel recall check</text>
+
+  <!-- Arrow 2->3 -->
+  <text x="599" y="472" fill="#64748B" font-size="18" font-weight="800">→</text>
+
+  <!-- Box 3 -->
+  <rect x="620" y="404" width="250" height="130" rx="10" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="634" y="426" fill="#FBBF24" font-size="11.5" font-weight="800">3. DETERMINISTIC POLICY GATE</text>
+  <text x="634" y="447" fill="#F8FAFC" font-size="12.5" font-weight="700">Pre-LLM Sanitizer &amp; Broker</text>
+  <text x="634" y="467" fill="#CBD5E1" font-size="11">• Quarantines $990 snippet injection</text>
+  <text x="634" y="485" fill="#CBD5E1" font-size="11">• Blocks $79 -&gt; $81 surge price drift</text>
+  <text x="634" y="503" fill="#FDE68A" font-size="11">• Poppy summary ($0) == terms ($15)</text>
+  <text x="634" y="521" fill="#FCA5A5" font-size="11">• Refund/Treasury -&gt; Human Confirm</text>
+
+  <!-- Arrow 3->4 -->
+  <text x="877" y="472" fill="#64748B" font-size="18" font-weight="800">→</text>
+
+  <!-- Box 4 -->
+  <rect x="898" y="404" width="240" height="130" rx="10" fill="#1E293B" stroke="#34D399"/>
+  <text x="912" y="426" fill="#6EE7B7" font-size="11.5" font-weight="800">4. SCOPED TOKEN SETTLEMENT</text>
+  <text x="912" y="447" fill="#F8FAFC" font-size="12.5" font-weight="700">SPT / Visa VIC / x402 &amp; MPP</text>
+  <text x="912" y="467" fill="#CBD5E1" font-size="11">• Single-use spt_live_7900 ($79 cap)</text>
+  <text x="912" y="485" fill="#CBD5E1" font-size="11">• Or Visa VIC VPP Passkey + TAP sig</text>
+  <text x="912" y="503" fill="#A7F3D0" font-size="11">• Or x402 / MPP 200-unit micro-step</text>
+  <text x="912" y="521" fill="#38BDF8" font-size="11">• Emits sealed receipt + traceId</text>
+
+  <!-- Bottom Quantitative Scorecard & Honesty Banner -->
+  <rect x="42" y="566" width="548" height="154" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="62" y="592" fill="#38BDF8" font-size="12.5" font-weight="800">QUANTITATIVE BENCHMARK OUTCOMES (12/12 SCENARIOS PASS)</text>
+  <text x="62" y="616" fill="#E2E8F0" font-size="11.5">• Hidden Prompt Injection Block Rate: 100.0% (12/12 blocked, $79 mandate intact)</text>
+  <text x="62" y="636" fill="#E2E8F0" font-size="11.5">• Web IQ Passage Token Efficiency: 680 tok vs 4,800 tok full-doc (7.1x reduction)</text>
+  <text x="62" y="656" fill="#E2E8F0" font-size="11.5">• Search &amp; Grounding Latency (Sealed Demo): 164 ms P95 passage / 240 ms catalog</text>
+  <text x="62" y="676" fill="#E2E8F0" font-size="11.5">• MPP Tempo 200-Unit Whole-Cent Alignment: $0.000000 forfeited (vs 54.3% loss)</text>
+  <text x="62" y="698" fill="#34D399" font-size="11.5" font-weight="700">✓ Full Regression Suite: 100% PASS (Zero live funds moved, zero credentials leaked)</text>
+
+  <rect x="610" y="566" width="548" height="154" rx="12" fill="#0F172A" stroke="#334155"/>
+  <text x="630" y="592" fill="#FBBF24" font-size="12.5" font-weight="800">WEB IQ COMPETITIVE MATRIX &amp; MEASUREMENT HONESTY</text>
+  <text x="630" y="616" fill="#E2E8F0" font-size="11.5">• Official List Price: Web IQ /web $7/1k, /browse $1/1k · Exa lite $4/1k, auto $7/1k</text>
+  <text x="630" y="636" fill="#E2E8F0" font-size="11.5">• Bright Data Unlocker: $1.50/1k pay-as-you-go (Scale includes 383,000 requests)</text>
+  <text x="630" y="656" fill="#E2E8F0" font-size="11.5">• Tavily: $0.008/credit · Parallel Search: fast $1/1k (default mode is advanced $5/1k!)</text>
+  <text x="630" y="676" fill="#FCA5A5" font-size="11.5">• Honesty Rule: Live keys absent in CI -&gt; latency marked not_measured (never 0ms)</text>
+  <text x="630" y="698" fill="#93C5FD" font-size="11.5" font-weight="700">→ Synced to turbo998/agentic-commerce-lab &amp; turbo998.github.io/workshops/webiq-azure/</text>
+</svg>

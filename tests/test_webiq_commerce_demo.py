@@ -29,6 +29,7 @@ from lab.webiq_commerce_demo import (
     render_webiq_seven_card_html,
     run_grounded_discovery_and_checkout,
     run_webiq_commerce_benchmark_suite,
+    select_agentic_payment_and_grounding_architecture,
     ground_return_policy_passage,
     validate_connect_catalog_import_and_hooks,
     validate_link_spend_request,
@@ -1211,6 +1212,111 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["stage_1756_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("stage1756-sandbox", demo_zh)
+
+    def test_architect_payment_and_grounding_selection_matrix(self) -> None:
+        # 1. Retail checkout + Pre-checkout price & policy verification -> Stripe SPT + Web IQ
+        retail_ok = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="retail_checkout",
+            grounding_need="pre_checkout_price_and_policy_verification",
+            ticket_size_usd="79.00",
+        )
+        self.assertTrue(retail_ok.allowed)
+        self.assertEqual(retail_ok.recommended_payment_rail, "stripe_spt")
+        self.assertEqual(retail_ok.recommended_grounding_provider, "webiq")
+        self.assertEqual(retail_ok.estimated_grounding_cost_per_1k_usd, 8.0)
+        self.assertEqual(retail_ok.token_savings_multiplier, "7.1x")
+
+        # 2. Global multi-acquirer checkout + Interactive DOM bypass -> Visa VIC + Bright Data
+        vic_bd = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="global_multi_acquirer_checkout",
+            grounding_need="interactive_dom_or_captcha_bypass",
+            ticket_size_usd="120.00",
+        )
+        self.assertTrue(vic_bd.allowed)
+        self.assertEqual(vic_bd.recommended_payment_rail, "visa_vic")
+        self.assertEqual(vic_bd.recommended_grounding_provider, "brightdata")
+        self.assertEqual(vic_bd.estimated_grounding_cost_per_1k_usd, 1.5)
+
+        # 3. Per-call API micropayment + Semantic brand discovery -> x402 USDC + Exa
+        x402_exa = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="api_micropayment_per_call",
+            grounding_need="semantic_brand_and_research_discovery",
+            unit_price_usd="0.020000",
+        )
+        self.assertTrue(x402_exa.allowed)
+        self.assertEqual(x402_exa.recommended_payment_rail, "x402_usdc")
+        self.assertEqual(x402_exa.recommended_grounding_provider, "exa")
+
+        # 4. Streaming token metering: 200-unit whole-cent aligned batch ($0.000000 forfeiture) vs 50-unit unaligned
+        mpp_aligned = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="streaming_token_metering",
+            grounding_need="pre_checkout_price_and_policy_verification",
+            mpp_batch_units=200,
+            unit_price_usd="0.000350",
+        )
+        self.assertTrue(mpp_aligned.allowed)
+        self.assertEqual(mpp_aligned.recommended_payment_rail, "stripe_mpp_tempo")
+        self.assertEqual(mpp_aligned.sub_cent_forfeiture_usd, "0.000000")
+
+        mpp_unaligned = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="streaming_token_metering",
+            grounding_need="pre_checkout_price_and_policy_verification",
+            mpp_batch_units=50,
+            unit_price_usd="0.000350",
+        )
+        self.assertFalse(mpp_unaligned.allowed)
+        self.assertEqual(mpp_unaligned.http_status, 422)
+        self.assertEqual(mpp_unaligned.sub_cent_forfeiture_usd, "0.007500")
+        self.assertEqual(
+            mpp_unaligned.reason,
+            "unaligned_mpp_batch_causes_sub_cent_truncation_forfeiture_align_to_200_units",
+        )
+
+        # 5. Foundry Bing Grounding is allowed for conversational Q&A, but blocked for autonomous payment digest
+        bing_qa_ok = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="conversational_qa_only",
+            grounding_need="managed_chat_qa",
+        )
+        self.assertTrue(bing_qa_ok.allowed)
+        self.assertEqual(bing_qa_ok.recommended_grounding_provider, "foundry_bing_grounding")
+
+        bing_checkout_block = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="retail_checkout",
+            grounding_need="managed_chat_qa",
+        )
+        self.assertFalse(bing_checkout_block.allowed)
+        self.assertEqual(bing_checkout_block.http_status, 422)
+        self.assertEqual(
+            bing_checkout_block.reason,
+            "foundry_bing_grounding_hides_raw_passages_unsafe_for_autonomous_payment_digest",
+        )
+
+        # 6. Connect header trap & MCP OAuth 2.1 / Nov 30 cutoff guards
+        connect_hdr_trap = select_agentic_payment_and_grounding_architecture(
+            commerce_scenario="marketplace_split_checkout",
+            connect_charge_mode="destination_no_obo",
+            stripe_account_header_sent=True,
+        )
+        self.assertFalse(connect_hdr_trap.allowed)
+        self.assertEqual(connect_hdr_trap.http_status, 400)
+
+        mcp_cutoff = select_agentic_payment_and_grounding_architecture(
+            mcp_auth_mode="legacy_secret_key",
+        )
+        self.assertFalse(mcp_cutoff.allowed)
+        self.assertEqual(mcp_cutoff.http_status, 401)
+
+        rfc9207_bad = select_agentic_payment_and_grounding_architecture(
+            mcp_auth_mode="oauth21_rfc9207",
+            rfc9207_iss_exact_match=False,
+        )
+        self.assertFalse(rfc9207_bad.allowed)
+        self.assertEqual(rfc9207_bad.http_status, 400)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["architect_selection_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("architect-selector-sandbox", demo_zh)
 
 
 if __name__ == "__main__":

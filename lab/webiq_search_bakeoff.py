@@ -11,7 +11,7 @@ import os
 from typing import Mapping
 
 SCHEMA = "webiq-search-bakeoff/v1"
-VERIFIED_ON = "2026-11-05"
+VERIFIED_ON = "2026-11-08"
 
 SEALED_QUERIES = (
     {
