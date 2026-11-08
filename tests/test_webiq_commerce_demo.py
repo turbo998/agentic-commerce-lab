@@ -1544,10 +1544,81 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md",
             "docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md",
             "docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md",
+            "docs/bnpl-webview-handover-vs-headless-agent-faq.md",
+            "docs/bnpl-webview-handover-vs-headless-agent-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
             self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
+    def test_bnpl_webview_handover_vs_headless_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_bnpl_webview_handover_policy
+
+        # 1. Compliant 0% APR Pay-in-4 in isolated system WebView -> HTTP 202 requires_redirect_handover
+        handover_ok = evaluate_bnpl_webview_handover_policy(
+            payment_rail="klarna_pay_in_4",
+            principal_usd="800.00",
+            total_repayment_usd="800.00",
+            mandate_ceiling_usd="820.00",
+            apr_pct=0.0,
+            max_allowed_apr_pct=0.0,
+            execution_surface="isolated_system_webview",
+        )
+        self.assertTrue(handover_ok.allowed)
+        self.assertEqual(handover_ok.http_status, 202)
+        self.assertEqual(handover_ok.recommended_flow, "controlled_webview_redirect_handover")
+        self.assertEqual(handover_ok.action_pill, "Confirm")
+
+        # 2. Headless browser attempting to auto-sign BNPL loan -> HTTP 403 hard block
+        headless_block = evaluate_bnpl_webview_handover_policy(
+            payment_rail="affirm_installments",
+            execution_surface="headless_browser_automation",
+        )
+        self.assertFalse(headless_block.allowed)
+        self.assertEqual(headless_block.http_status, 403)
+        self.assertEqual(headless_block.recommended_flow, "blocked_headless_bnpl_prohibited")
+        self.assertEqual(headless_block.action_pill, "Send to a human")
+
+        # 3. Hidden 24.99% APR exceeding mandate ceiling or APR cap -> HTTP 403 block
+        apr_trap = evaluate_bnpl_webview_handover_policy(
+            payment_rail="affirm_installments",
+            principal_usd="800.00",
+            total_repayment_usd="912.40",
+            mandate_ceiling_usd="820.00",
+            apr_pct=24.99,
+            max_allowed_apr_pct=0.0,
+            execution_surface="isolated_system_webview",
+        )
+        self.assertFalse(apr_trap.allowed)
+        self.assertEqual(apr_trap.http_status, 403)
+        self.assertEqual(apr_trap.recommended_flow, "blocked_apr_or_total_repayment_exceeds_mandate")
+
+        # 4. Unattended background task -> HTTP 409 recommends SPT v2 fallback
+        unattended = evaluate_bnpl_webview_handover_policy(
+            payment_rail="klarna_pay_in_4",
+            execution_surface="unattended_background_task",
+        )
+        self.assertFalse(unattended.allowed)
+        self.assertEqual(unattended.http_status, 409)
+        self.assertEqual(unattended.recommended_flow, "fallback_to_spt_for_unattended_task")
+
+        # 5. Card token rail (Stripe SPT v2) -> HTTP 200 zero redirect autonomous settlement
+        card_auto = evaluate_bnpl_webview_handover_policy(
+            payment_rail="stripe_spt_v2",
+            principal_usd="450.00",
+            total_repayment_usd="450.00",
+            mandate_ceiling_usd="500.00",
+            execution_surface="unattended_background_task",
+        )
+        self.assertTrue(card_auto.allowed)
+        self.assertEqual(card_auto.http_status, 200)
+        self.assertEqual(card_auto.recommended_flow, "autonomous_card_token_zero_redirect")
+        self.assertEqual(card_auto.action_pill, "Act automatically")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["bnpl_webview_handover_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("bnpl-handover-selector-sandbox", demo_zh)
 
 
 if __name__ == "__main__":

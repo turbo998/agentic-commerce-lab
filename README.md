@@ -36,6 +36,7 @@
 > - **专题 2（B2B 采购策略网关）**：**[《B2B 企业采购智能体授权架构：确定性预算策略网关（Policy-Bound Spend Mandate）vs 传统人工审批工作流选型与原理解析 FAQ》](docs/b2b-procurement-mandate-vs-hitl-selection-faq.md)**
 > - **专题 3（跨境多币种双轨结算）**：**[《跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络（Visa VIC / Stripe SPT v2）选型与原理解析 FAQ》](docs/cross-border-agent-settlement-x402-vs-card-network-faq.md)**
 > - **专题 4（电商防爬与 Agent 身份认证）**：**[《电商防爬反欺诈与合法 Agent 身份认证：RFC 9421 Web Bot Auth / Visa TAP vs 传统 WAF 验证码选型与原理解析 FAQ》](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md)**
+> - **专题 5（BNPL 先买后付受控跳转接管）**：**[《BNPL 先买后付智能体结账架构：受控 WebView 跳转接管（Redirect Handover）vs 全自动令牌代扣（SPT v2 / VIC）选型与原理解析 FAQ》](docs/bnpl-webview-handover-vs-headless-agent-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -44,6 +45,8 @@
 ![2026-11-08 跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络选型一图流](assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
 
 ![2026-11-08 电商防爬反欺诈与合法 Agent 身份认证：RFC 9421 Web Bot Auth / Visa TAP vs WAF 选型一图流](assets/svg/06-web-bot-auth-tap-vs-waf-2026-11-08.svg)
+
+![2026-11-08 BNPL 先买后付智能体结账架构：受控 WebView 跳转接管 vs 全自动令牌代扣选型一图流](assets/svg/07-bnpl-webview-handover-vs-headless-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

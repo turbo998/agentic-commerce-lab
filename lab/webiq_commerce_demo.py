@@ -4108,6 +4108,128 @@ def evaluate_agent_identity_and_waf_policy(
     )
 
 
+@dataclass(frozen=True)
+class BnplHandoverVerdict:
+    """Deterministic Round 5 verdict for BNPL Controlled WebView Handover vs. Autonomous Card Token Rails."""
+
+    allowed: bool
+    http_status: int
+    recommended_flow: Literal[
+        "autonomous_card_token_zero_redirect",
+        "controlled_webview_redirect_handover",
+        "blocked_headless_bnpl_prohibited",
+        "blocked_apr_or_total_repayment_exceeds_mandate",
+        "fallback_to_spt_for_unattended_task",
+    ]
+    reason: str
+    total_repayment_usd: str
+    apr_pct: float
+    estimated_prep_latency_ms: int
+    action_pill: Literal["Act automatically", "Confirm", "Send to a human"]
+    provenance: str = "deterministic_offline_simulation+synthetic_policy"
+
+
+def evaluate_bnpl_webview_handover_policy(
+    *,
+    payment_rail: Literal["stripe_spt_v2", "visa_vic", "klarna_pay_in_4", "affirm_installments"] = "klarna_pay_in_4",
+    principal_usd: str = "800.00",
+    total_repayment_usd: str = "800.00",
+    mandate_ceiling_usd: str = "820.00",
+    apr_pct: float = 0.0,
+    max_allowed_apr_pct: float = 0.0,
+    execution_surface: Literal[
+        "isolated_system_webview",
+        "headless_browser_automation",
+        "unattended_background_task",
+    ] = "isolated_system_webview",
+) -> BnplHandoverVerdict:
+    """Evaluate Round 5 BNPL credit underwriting WebView handover vs. autonomous card token rails.
+
+    Provenance (`as_of: 2026-11-08`):
+    - Stripe ACP `requires_action` / `redirect_to_url` state machine & TILA/CCD2 borrower disclosure rule:
+      `official_doc_snapshot`.
+    - APR caps (`max_allowed_apr_pct`), total repayment ceilings (`mandate_ceiling_usd`), and headless block:
+      `synthetic_policy` evaluated in `deterministic_offline_simulation`.
+    """
+    principal_dec = Decimal(principal_usd)
+    total_dec = Decimal(total_repayment_usd)
+    ceiling_dec = Decimal(mandate_ceiling_usd)
+
+    # 1. Card token rails (Stripe SPT v2 / Visa VIC) spend existing credit lines -> 100% autonomous
+    if payment_rail in ("stripe_spt_v2", "visa_vic"):
+        if total_dec > ceiling_dec:
+            return BnplHandoverVerdict(
+                False,
+                403,
+                "blocked_apr_or_total_repayment_exceeds_mandate",
+                "card_order_total_exceeds_mandate_ceiling",
+                f"{total_dec:.2f}",
+                0.0,
+                35,
+                "Send to a human",
+            )
+        return BnplHandoverVerdict(
+            True,
+            200,
+            "autonomous_card_token_zero_redirect",
+            "existing_card_credit_line_autonomous_token_settlement",
+            f"{principal_dec:.2f}",
+            0.0,
+            482,
+            "Act automatically",
+        )
+
+    # 2. BNPL rails (Affirm / Klarna) originate a new consumer loan contract -> forbid headless auto-signing
+    if execution_surface == "headless_browser_automation":
+        return BnplHandoverVerdict(
+            False,
+            403,
+            "blocked_headless_bnpl_prohibited",
+            "headless_bnpl_prohibited_loan_origination_requires_human_borrower_consent",
+            f"{total_dec:.2f}",
+            float(apr_pct),
+            18,
+            "Send to a human",
+        )
+
+    # 3. Unattended background task (e.g., 3 AM restock snipe) cannot pause for live human BNPL WebView
+    if execution_surface == "unattended_background_task":
+        return BnplHandoverVerdict(
+            False,
+            409,
+            "fallback_to_spt_for_unattended_task",
+            "bnpl_requires_live_user_fallback_to_spt",
+            f"{total_dec:.2f}",
+            float(apr_pct),
+            24,
+            "Confirm",
+        )
+
+    # 4. Web IQ grounded APR & total repayment check before launching WebView handover
+    if float(apr_pct) > float(max_allowed_apr_pct) or total_dec > ceiling_dec:
+        return BnplHandoverVerdict(
+            False,
+            403,
+            "blocked_apr_or_total_repayment_exceeds_mandate",
+            "apr_or_total_repayment_exceeds_mandate",
+            f"{total_dec:.2f}",
+            float(apr_pct),
+            385,
+            "Send to a human",
+        )
+
+    return BnplHandoverVerdict(
+        True,
+        202,
+        "controlled_webview_redirect_handover",
+        "requires_redirect_handover_isolated_system_webview_for_borrower_consent",
+        f"{total_dec:.2f}",
+        float(apr_pct),
+        412,
+        "Confirm",
+    )
+
+
 
 
 
@@ -4871,6 +4993,53 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pay_per_crawl_402_reason": bot_crawl_402.reason,
     }
 
+    bnpl_handover_ok = evaluate_bnpl_webview_handover_policy(
+        payment_rail="klarna_pay_in_4",
+        principal_usd="800.00",
+        total_repayment_usd="800.00",
+        mandate_ceiling_usd="820.00",
+        apr_pct=0.0,
+        max_allowed_apr_pct=0.0,
+        execution_surface="isolated_system_webview",
+    )
+    bnpl_headless_block = evaluate_bnpl_webview_handover_policy(
+        payment_rail="affirm_installments",
+        execution_surface="headless_browser_automation",
+    )
+    bnpl_high_apr_block = evaluate_bnpl_webview_handover_policy(
+        payment_rail="affirm_installments",
+        principal_usd="800.00",
+        total_repayment_usd="912.40",
+        mandate_ceiling_usd="820.00",
+        apr_pct=24.99,
+        max_allowed_apr_pct=0.0,
+        execution_surface="isolated_system_webview",
+    )
+    bnpl_unattended_fallback = evaluate_bnpl_webview_handover_policy(
+        payment_rail="klarna_pay_in_4",
+        principal_usd="450.00",
+        total_repayment_usd="450.00",
+        mandate_ceiling_usd="500.00",
+        execution_surface="unattended_background_task",
+    )
+    bnpl_webview_handover_guards = {
+        "all_passed": (
+            bnpl_handover_ok.allowed
+            and bnpl_handover_ok.http_status == 202
+            and bnpl_handover_ok.recommended_flow == "controlled_webview_redirect_handover"
+            and not bnpl_headless_block.allowed
+            and bnpl_headless_block.http_status == 403
+            and not bnpl_high_apr_block.allowed
+            and bnpl_high_apr_block.http_status == 403
+            and not bnpl_unattended_fallback.allowed
+            and bnpl_unattended_fallback.http_status == 409
+        ),
+        "handover_prep_latency_ms": bnpl_handover_ok.estimated_prep_latency_ms,
+        "headless_blocked_reason": bnpl_headless_block.reason,
+        "high_apr_blocked_reason": bnpl_high_apr_block.reason,
+        "unattended_fallback_reason": bnpl_unattended_fallback.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -4888,6 +5057,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_procurement_mandate_guards": b2b_procurement_mandate_guards,
         "cross_border_settlement_guards": cross_border_settlement_guards,
         "agent_identity_waf_guards": agent_identity_waf_guards,
+        "bnpl_webview_handover_guards": bnpl_webview_handover_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -7842,6 +8012,36 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="wba-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive BNPL Controlled WebView Handover vs Autonomous Token Selector (Round 5 FAQ Companion) -->
+      <div class="finops-box" id="bnpl-handover-selector-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bnpl-selector-title">💳 BNPL 先买后付受控 WebView 跳转接管 vs 全自动令牌决策器 (Round 5 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 支付方式与金融信贷契约属性 (Payment Instrument &amp; Credit Contract Type):</span></label>
+          <select id="bnpl-rail-select" onchange="updateBnplHandoverSandbox()">
+            <option value="klarna_0apr">💳 Klarna / Affirm Pay-in-4 (新发消费信贷合同 · 需 TILA/CCD2 披露与真人签署)</option>
+            <option value="spt_card_auto">⚡ Stripe SPT v2 / Visa VIC 借记或信用卡令牌 (既有授信额度内消费 · 支持零跳转静默扣款)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. Microsoft Web IQ 分期 APR 与含息总还款额核验 (Grounded APR &amp; Total Repayment):</span></label>
+          <select id="bnpl-apr-select" onchange="updateBnplHandoverSandbox()">
+            <option value="apr_0_within_cap">✅ Web IQ /browse 核验：0.0% APR 真免息 · 含税总还款 $800.00 ≤ 预算上限 $820.00</option>
+            <option value="apr_24_trap">🛑 隐性高息分期刺客：表面 $76/月，实为 24.99% APR 含息总还款 $912.40 &gt; $820.00 (HTTP 403!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>3. 端侧执行容器与在场状态 (Execution Surface &amp; Human Presence):</span></label>
+          <select id="bnpl-surface-select" onchange="updateBnplHandoverSandbox()">
+            <option value="isolated_webview">📱 系统隔离安全容器 (iOS ASWebAuth / Android Custom Tab · 真人在场按 FaceID)</option>
+            <option value="headless_bot">🚫 无头浏览器违规代签 (Playwright 自动点击“同意贷款条款” -&gt; HTTP 403 硬阻断!)</option>
+            <option value="unattended_cron">🌙 凌晨 03:00 无人值守补货抢购任务 (人类离线无法签分期 -&gt; HTTP 409 自动引导切 SPT!)</option>
+          </select>
+        </div>
+        <div id="bnpl-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -8285,6 +8485,7 @@ function renderAll() {{
   updateB2bMandateSandbox();
   updateCrossBorderSandbox();
   updateWebBotAuthSandbox();
+  updateBnplHandoverSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8556,6 +8757,69 @@ function updateWebBotAuthSandbox() {{
     "<strong>⚡ RFC 9421 Web Bot Auth + Visa TAP 边缘验真通过 (1.8ms · 零验证码直通 JSON API):</strong><br>" +
     "• <strong>密码学身份核验</strong>：Ed25519 公钥目录匹配 + <code>Content-Digest</code> 请求体未篡改 + <code>8s ≤ 300s</code> 防重放通过<br>" +
     "• <strong>商业转化闭环</strong>：已绑定买家 Passkey 授权的 Visa TAP 令牌，跳过图形验证码直连结构化结账快车道 (Act automatically)！" +
+    "</div>";
+}}
+
+function updateBnplHandoverSandbox() {{
+  var railEl = document.getElementById("bnpl-rail-select");
+  var aprEl = document.getElementById("bnpl-apr-select");
+  var surfEl = document.getElementById("bnpl-surface-select");
+  var outEl = document.getElementById("bnpl-selector-readout");
+  if (!railEl || !aprEl || !surfEl || !outEl) return;
+
+  var rail = railEl.value;
+  var apr = aprEl.value;
+  var surf = surfEl.value;
+
+  if (rail === "spt_card_auto") {{
+    if (apr === "apr_24_trap") {{
+      outEl.innerHTML =
+        "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+        "🚫 HTTP 403 card_order_total_exceeds_mandate_ceiling (synthetic_policy)：订单总价 $912.40 超出买家 Mandate 预算上限 ($820.00)，策略网关直接拦截！" +
+        "</div>";
+      return;
+    }}
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>⚡ 全自动令牌轨道直通 (autonomous_card_token_zero_redirect · 482ms · Act automatically):</strong><br>" +
+      "• <strong>法律属性</strong>：在发卡行已批既有授信额度内消费，无需新签分期贷款合同<br>" +
+      "• <strong>执行效果</strong>：复用买家预先通过 Passkey 签发的 <code>spt_v2_*</code> 预算受限令牌，支持夜间无人值守 100% 后台静默扣款！" +
+      "</div>";
+    return;
+  }}
+
+  if (surf === "headless_bot") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 403 headless_bnpl_prohibited_loan_origination_requires_human_borrower_consent (Send to a human)：<br>" +
+      "BNPL 先买后付在法律上属于新发起消费信贷合同 (TILA Reg Z / EU CCD2)，严禁 AI Agent 使用 Playwright 无头浏览器替用户代签分期协议！网关已在 18ms 内硬阻断。" +
+      "</div>";
+    return;
+  }}
+
+  if (surf === "unattended_cron") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ HTTP 409 bnpl_requires_live_user_fallback_to_spt (Confirm · synthetic_policy)：<br>" +
+      "凌晨无人值守抢购任务中人类买家离线，无法在受控 WebView 中完成实时征信与 FaceID 签字。已自动提示切换为预授权全款 <code>Stripe SPT v2</code> 或 <code>Visa VIC</code> 令牌！" +
+      "</div>";
+    return;
+  }}
+
+  if (apr === "apr_24_trap") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 apr_or_total_repayment_exceeds_mandate (Send to a human · synthetic_policy)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 解析出该分期实际年化利率为 <code>24.99% APR</code>（含息总还款 <code>$912.40 &gt; $820.00</code> 预算上限，且违背 0% APR 约束），在唤起跳转前本地熔断拦截！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📱 HTTP 202 受控系统 WebView 接力准备就绪 (controlled_webview_redirect_handover · 412ms · Confirm):</strong><br>" +
+    "• <strong>Stage 1 (Agent 自动核价)</strong>：Web IQ 已验证 <code>0.0% APR</code> 真免息且 4 期总还款 <code>$800.00 ≤ $820.00</code><br>" +
+    "• <strong>Stage 2 (受控容器接管)</strong>：已生成 ACP <code>next_action.redirect_to_url</code> 并唤起系统隔离容器（Agent 零 DOM/Cookie 权限），人类按一次 FaceID 签署后由签名 Webhook 自动恢复履约追踪！" +
     "</div>";
 }}
 
