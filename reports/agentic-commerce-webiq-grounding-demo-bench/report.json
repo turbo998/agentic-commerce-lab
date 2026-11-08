@@ -120,6 +120,11 @@
     "off_session_renewal_latency_ms": 388,
     "recovered_3ds_latency_ms": 410
   },
+  "catalog_webhook_sla_guards": {
+    "all_passed": true,
+    "finalize_ok_latency_ms": 265,
+    "read_fallback_latency_ms": 4012
+  },
   "scenarios": [
     {
       "id": "W01",

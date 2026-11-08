@@ -1552,10 +1552,82 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.en.md",
             "docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.md",
             "docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.en.md",
+            "docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.md",
+            "docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
             self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
+    def test_catalog_feed_manifest_barrier_and_4s_webhook_sla_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_catalog_feed_and_webhook_sla_policy
+
+        # 1. SFTP shards uploaded without manifest.json barrier -> 409 staged awaiting manifest
+        no_manifest = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="sftp_bulk_ingest",
+            manifest_present=False,
+        )
+        self.assertFalse(no_manifest.allowed)
+        self.assertEqual(no_manifest.http_status, 409)
+        self.assertEqual(no_manifest.lane, "staged_awaiting_manifest_barrier")
+
+        # 2. Connect feed import with mode='replace' on inventory feed -> 400 Bad Request
+        inv_replace = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="connect_feed_import",
+            feed_type="inventory",
+            import_mode="replace",
+        )
+        self.assertFalse(inv_replace.allowed)
+        self.assertEqual(inv_replace.http_status, 400)
+        self.assertEqual(inv_replace.lane, "blocked_non_product_feed_forbids_replace")
+
+        # 3. Read hook > 4,000 ms with fresh upsert feed (120s <= 900s) -> 200 graceful fallback
+        read_fallback = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="product_price_availability",
+            hook_elapsed_ms=4320,
+            feed_age_seconds=120,
+        )
+        self.assertTrue(read_fallback.allowed)
+        self.assertEqual(read_fallback.http_status, 200)
+        self.assertTrue(read_fallback.used_catalog_fallback)
+        self.assertEqual(read_fallback.lane, "fallback_to_fresh_upsert_feed")
+
+        # 4. Read hook > 4,000 ms with stale feed (1800s > 900s) -> 503 Confirm
+        read_stale = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="product_price_availability",
+            hook_elapsed_ms=4320,
+            feed_age_seconds=1800,
+        )
+        self.assertFalse(read_stale.allowed)
+        self.assertEqual(read_stale.http_status, 503)
+        self.assertEqual(read_stale.lane, "blocked_read_hook_timeout_and_stale_catalog_feed")
+
+        # 5. Write hook finalize_checkout > 4,000 ms -> 504 hard decline ($0.00 charged, NEVER falls back to cache)
+        write_timeout = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="finalize_checkout",
+            hook_elapsed_ms=4150,
+        )
+        self.assertFalse(write_timeout.allowed)
+        self.assertEqual(write_timeout.http_status, 504)
+        self.assertEqual(write_timeout.spt_charged_usd, "0.00")
+        self.assertEqual(write_timeout.lane, "hard_decline_finalize_timeout_no_charge")
+
+        # 6. Write hook finalize_checkout <= 4,000 ms with Redis lock -> 200 OK ($79.00 charged)
+        write_ok = evaluate_catalog_feed_and_webhook_sla_policy(
+            stage="finalize_checkout",
+            hook_elapsed_ms=265,
+            inventory_locked=True,
+            order_amount_usd="79.00",
+        )
+        self.assertTrue(write_ok.allowed)
+        self.assertEqual(write_ok.http_status, 200)
+        self.assertEqual(write_ok.spt_charged_usd, "79.00")
+        self.assertEqual(write_ok.lane, "finalize_checkout_confirmed_spt_captured")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["catalog_webhook_sla_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("catalog-webhook-sla-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

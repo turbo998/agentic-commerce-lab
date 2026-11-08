@@ -941,6 +941,25 @@
         <div id="rec-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Catalog Feed SFTP manifest.json Barrier vs 4,000 ms Asymmetric Webhook Fallback Selector (Round 9 FAQ Companion) -->
+      <div class="finops-box" id="catalog-webhook-sla-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cat-sla-title">📦 商品目录同步架构：SFTP manifest.json 原子屏障 + 增量 upsert vs 4,000 ms 非对称 Webhook 降级决策器 (Round 9 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 目录同步阶段与 4,000 ms 非对称 Webhook 状态 (Catalog Stage &amp; 4s SLA Mode):</span></label>
+          <select id="cat-sla-select" onchange="updateCatalogWebhookSlaSandbox()">
+            <option value="finalize_265ms_ok">⚡ 写锁单通过：finalize_checkout 265ms (≤ 4,000ms SLA) · Redis 锁库成功并实扣 $79.00</option>
+            <option value="read_4320ms_fallback">🟢 读超时优雅降级：product_price_availability 4,320ms (&gt; 4s) · 自动回退至新鲜 upsert 目录缓存继续结账</option>
+            <option value="read_4320ms_stale_block">⚠️ 读超时且缓存陈旧：product_price_availability &gt; 4s 且目录快照已陈旧 30 分钟 (&gt; 15m 红线 · 503 拦截)</option>
+            <option value="finalize_4150ms_decline">🛑 写超时硬拒单：finalize_checkout 4,150ms (&gt; 4,000ms SLA) · 严禁回退缓存，当场 504 拒单 ($0.00 扣款!)</option>
+            <option value="sftp_missing_manifest">⏳ SFTP 未传 manifest.json：分片上传中但未见完成屏障文件 (409 暂存等待 · 绝不切换生产索引指针)</option>
+            <option value="inventory_replace_ban">🚫 增量流误用 replace：对 inventory / pricing 增量流使用 mode='replace' 或预签名 URL &gt; 300s (400/403 拒止!)</option>
+          </select>
+        </div>
+        <div id="cat-sla-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1388,6 +1407,7 @@ function renderAll() {
   updateSplitCartSagaSandbox();
   updatePostPurchaseRefundSandbox();
   updateRecurringSptSandbox();
+  updateCatalogWebhookSlaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -1910,6 +1930,67 @@ function updateRecurringSptSandbox() {
     "<strong>🔵 轨道 A：买方钱包主权周期 SPT 离线续费成功 (cadence_spt_off_session_renewed · 388ms · Act automatically):</strong><br>" +
     "• <strong>周期与上限双锁</strong>：<code>usage_limits.recurring_interval='month'</code> + 当期现价 <code>$58.00 ≤ $65.00</code> + 无 <code>setup_future_usage</code><br>" +
     "• <strong>扣款前 Web IQ 哨兵</strong>：<code>/v3/search/news</code> + <code>/v3/auto</code> 确认零安全召回 (<code>FCB=CLOSED</code>)，买家随时可在 Agent Wallet 一键置为 <code>deactivated</code> 断流！" +
+    "</div>";
+}
+
+function updateCatalogWebhookSlaSandbox() {
+  var selEl = document.getElementById("cat-sla-select");
+  var outEl = document.getElementById("cat-sla-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "read_4320ms_fallback") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🟢 读询价超时优雅降级通过 (fallback_to_fresh_upsert_feed · 4,012ms · Act automatically · official_doc_snapshot):</strong><br>" +
+      "• <strong>官方非对称 SLA 规范</strong>：<code>product_price_availability</code> 耗时 <code>4,320ms &gt; 4,000ms</code>，Stripe 自动降级读取最近导入的增量 <code>upsert</code> 目录快照（距今仅 120s ≤ 900s 新鲜度阈值）<br>" +
+      "• <strong>业务连续性</strong>：结账流程不中断，保护大促高峰期的询价转化率！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "read_4320ms_stale_block") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ HTTP 503 blocked_read_hook_timeout_and_stale_catalog_feed (4,015ms · Confirm · synthetic_policy)：<br>" +
+      "<code>product_price_availability</code> 超过 4,000ms，且商户增量 <code>upsert</code> 目录流已断更 30 分钟（<code>1,800s &gt; 900s</code> 新鲜度红线）！联合守卫拒绝使用陈旧价格盲目结账，自动触发 Web IQ <code>/v3/browse</code> 实时复核。" +
+      "</div>";
+    return;
+  }
+
+  if (v === "finalize_4150ms_decline") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 504 hard_decline_finalize_timeout_no_charge (4,005ms · Send to a human · official_doc_snapshot)：<br>" +
+      "<code>v1.delegated_checkout.finalize_checkout</code> 耗时 <code>4,150ms &gt; 4,000ms</code> 硬红线！写锁单阶段<strong>严禁降级使用缓存</strong>，当场硬拒单且实扣金额 <code>$0.00</code>，100% 杜绝扣款成功但 ERP 没生成订单的“吞钱不发货”事故！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sftp_missing_manifest") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⏳ HTTP 409 staged_awaiting_manifest_barrier (12ms · Confirm · official_doc_snapshot)：<br>" +
+      "检测到 SFTP 目录已上传部分 CSV/JSONL 分片，但尚未收到最后上传的 <code>manifest.json</code> 完成屏障文件！解析器强制保持在 Staging 暂存态，绝不切换生产索引指针，防止“半截目录”引发百万商品误下架。" +
+      "</div>";
+    return;
+  }
+
+  if (v === "inventory_replace_ban") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400/403 blocked_non_product_feed_forbids_replace (14ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Stripe Connect Catalog Imports (<code>2026-10-28.preview</code>) 规定仅 <code>product</code> 主流允许 <code>replace</code>；<code>inventory</code>、<code>pricing</code>、<code>promotion</code> 必须使用 <code>upsert</code> 增量模式，且预签名 <code>upload_url</code> 严格在 <strong>300 秒（5 分钟）</strong> 后失效！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 写锁单 Webhook 极速确认并实扣通过 (finalize_checkout_confirmed_spt_captured · 265ms · Act automatically):</strong><br>" +
+    "• <strong>热路径内存锁库</strong>：<code>finalize_checkout</code> 在 Redis 内存层完成库存预占与幂等订单号分配，耗时仅 <code>265ms ≤ 4,000ms</code> SLA<br>" +
+    "• <strong>原子扣款</strong>：确认锁库成功后立即对 <code>spt_...</code> 捕获 <code>$79.00</code>，重型 ERP 拆单与发票归档交由后台队列异步削峰执行！" +
     "</div>";
 }
 

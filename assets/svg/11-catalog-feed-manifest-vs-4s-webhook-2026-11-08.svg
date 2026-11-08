@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg9" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#080D1A"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="cyan9" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="green9" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="amber9" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="red9" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg9)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="18" fill="#0B1325" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <rect x="44" y="36" width="380" height="28" rx="14" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+  <text x="60" y="55" fill="#7DD3FC" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="700">2026-11-08 · ROUND 9 · CATALOG FEED &amp; 4,000ms HOOK SLA</text>
+  <text x="1150" y="55" text-anchor="end" fill="#94A3B8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">Provenance: official_doc_snapshot + synthetic_policy + deterministic_offline_simulation</text>
+
+  <text x="44" y="94" fill="#F8FAFC" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="23" font-weight="800">商品目录摄入与结账实时钩子：SFTP manifest.json 原子屏障 + Upsert 流 vs 4,000ms 非对称降级</text>
+  <text x="44" y="118" fill="#CBD5E1" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="13.5">SFTP manifest.json Atomic Barrier + Incremental Upsert Feed vs. 4,000ms Asymmetric Hooks (product_price_availability vs. finalize_checkout)</text>
+
+  <!-- 3 Architecture Pillars -->
+  <!-- Pillar 1: SFTP Bulk + manifest.json & Incremental Upsert -->
+  <rect x="44" y="138" width="360" height="330" rx="14" fill="#0F1F38" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="44" y="138" width="360" height="38" rx="14" fill="url(#cyan9)"/>
+  <text x="60" y="162" fill="#FFFFFF" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="800">📦 通道 A：SFTP 原子屏障 + 增量 Upsert 流</text>
+
+  <text x="60" y="198" fill="#BAE6FD" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="700">为什么大目录同步必须遵守双轨契约？</text>
+  <text x="60" y="220" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 全量分片上传：先传全部分片文件，最后上传</text>
+  <text x="60" y="238" fill="#7DD3FC" font-family="Consolas, monospace" font-size="12" font-weight="700">  manifest.json (shard_count + sha256)</text>
+  <text x="60" y="258" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 缺 manifest 或哈希不符 → 409 挂起切换，</text>
+  <text x="60" y="276" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  杜绝“半截目录”导致全站误报缺货或串价</text>
+  <text x="60" y="298" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 秒级增量变价/库存：REST API 实时推送</text>
+  <text x="60" y="316" fill="#7DD3FC" font-family="Consolas, monospace" font-size="11.5">  action="upsert" | "delete"</text>
+
+  <rect x="60" y="334" width="328" height="118" rx="10" fill="#091526" stroke="#0284C7" stroke-width="1.2"/>
+  <text x="74" y="356" fill="#38BDF8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.5" font-weight="700">原子屏障状态机 (deterministic_offline_simulation)</text>
+  <text x="74" y="378" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">1. Upload shards 1..N (staged, inactive)</text>
+  <text x="74" y="398" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">2. Upload manifest.json LAST → Verify SHA-256</text>
+  <text x="74" y="418" fill="#6EE7B7" font-family="Consolas, monospace" font-size="11.5">3. Atomic pointer swap (0ms partial-read window)</text>
+  <text x="74" y="438" fill="#94A3B8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="11">无凭证外部商户回退 Web IQ /v3/browse ($1/1k)</text>
+
+  <!-- Pillar 2: Read Hook product_price_availability (4,000ms Fallback) -->
+  <rect x="420" y="138" width="360" height="330" rx="14" fill="#0D231E" stroke="#10B981" stroke-width="2"/>
+  <rect x="420" y="138" width="360" height="38" rx="14" fill="url(#green9)"/>
+  <text x="436" y="162" fill="#FFFFFF" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="800">🟢 钩子 1：product_price_availability (≤4s 优雅降级)</text>
+
+  <text x="436" y="198" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="700">加购与算费阶段（只读核价，保转化率优先）</text>
+  <text x="436" y="220" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 正常路径 (≤4,000 ms)：商户 ERP 实时返回</text>
+  <text x="436" y="238" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  最新价格与可售库存 → 200 OK (310 ms)</text>
+  <text x="436" y="260" fill="#FDE68A" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="700">• 超时路径 (&gt;4,000 ms) 为什么允许降级？</text>
+  <text x="436" y="280" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  此时尚未扣划买家资金！若商户接口偶发抖动</text>
+  <text x="436" y="298" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  (如 4,350 ms)，自动回退读取新鲜 Upsert</text>
+  <text x="436" y="316" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  Catalog Feed 缓存 (TTL ≤ 900s synthetic_policy)</text>
+
+  <rect x="436" y="334" width="328" height="118" rx="10" fill="#071714" stroke="#059669" stroke-width="1.2"/>
+  <text x="450" y="356" fill="#34D399" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.5" font-weight="700">只读询价超时降级条件 (Fallback Guard)</text>
+  <text x="450" y="378" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">• hook_elapsed_ms &gt; 4000 (timeout triggered)</text>
+  <text x="450" y="398" fill="#6EE7B7" font-family="Consolas, monospace" font-size="11.5">• feed_age_seconds ≤ 900 → 200 OK (Fallback)</text>
+  <text x="450" y="418" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11.5">• feed_age_seconds &gt; 900 → 503 Stale Catalog</text>
+  <text x="450" y="438" fill="#94A3B8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="11">防黑五高峰期 ERP 瞬时毛刺导致购物车大面积崩溃</text>
+
+  <!-- Pillar 3: Write Hook finalize_checkout (4,000ms Hard Decline) -->
+  <rect x="796" y="138" width="360" height="330" rx="14" fill="#2A1215" stroke="#EF4444" stroke-width="2"/>
+  <rect x="796" y="138" width="360" height="38" rx="14" fill="url(#red9)"/>
+  <text x="812" y="162" fill="#FFFFFF" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="800">🛑 钩子 2：finalize_checkout (&gt;4s 铁律硬拒单)</text>
+
+  <text x="812" y="198" fill="#FECACA" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="700">最终锁单与扣款阶段（不可逆写操作，零容忍）</text>
+  <text x="812" y="220" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 为什么 finalize_checkout 严禁回退读缓存？</text>
+  <text x="812" y="240" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  此步紧接着 SPT 真实扣款！若超时仍按旧缓存</text>
+  <text x="812" y="258" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  扣钱，商户 OMS 未建单或已超卖，将造成</text>
+  <text x="812" y="276" fill="#FCA5A5" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="700">  “买家已扣款、商户无订单”的严重对账灾难！</text>
+  <text x="812" y="298" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">• 超过 4,000 ms 铁律：立即返回 HTTP 504</text>
+  <text x="812" y="316" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12">  终止 SPT 扣款并释放库存锁 ($0.00 误扣款)</text>
+
+  <rect x="812" y="334" width="328" height="118" rx="10" fill="#180A0C" stroke="#DC2626" stroke-width="1.2"/>
+  <text x="826" y="356" fill="#F87171" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="12.5" font-weight="700">非对称 SLA 铁律对比 (official_doc_snapshot)</text>
+  <text x="826" y="378" fill="#6EE7B7" font-family="Consolas, monospace" font-size="11.5">• product_price_availability &gt;4s → Feed Fallback</text>
+  <text x="826" y="398" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11.5">• finalize_checkout &gt;4s → 504 Hard Decline</text>
+  <text x="826" y="418" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11.5">• SPT Capture Aborted ($0.00 Buyer Charged)</text>
+  <text x="826" y="438" fill="#94A3B8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="11">商户 OMS 真实压测延迟标为 not_measured</text>
+
+  <!-- Bottom Quantitative & Decision Table -->
+  <rect x="44" y="486" width="1112" height="150" rx="14" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+  <text x="64" y="512" fill="#38BDF8" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="800">📊 2026-11-08 确定性沙盒评测：目录摄入与 4,000ms 双钩子非对称容错矩阵 (deterministic_offline_simulation)</text>
+
+  <text x="64" y="538" fill="#94A3B8" font-family="Consolas, monospace" font-size="11.5" font-weight="700">SCENARIO                                       | STAGE / HOOK               | ELAPSED / STATE      | VERDICT &amp; HTTP STATUS                        | SPT CHARGE</text>
+  <line x1="64" y1="545" x2="1136" y2="545" stroke="#334155" stroke-width="1"/>
+
+  <text x="64" y="564" fill="#6EE7B7" font-family="Consolas, monospace" font-size="11.5">1. SFTP shards uploaded WITHOUT manifest.json  | sftp_bulk_ingest           | manifest=False       | 409 Conflict (staged_awaiting_manifest)      | $0.00</text>
+  <text x="64" y="583" fill="#FDE68A" font-family="Consolas, monospace" font-size="11.5">2. Price/Avail hook 4,380ms (&gt;4s, fresh feed)  | product_price_availability | 4,380ms / age=120s   | 200 OK (fallback_to_fresh_upsert_feed)       | $0.00 (Read)</text>
+  <text x="64" y="602" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11.5">3. Finalize checkout 4,190ms (&gt;4s SLA breach)  | finalize_checkout          | 4,190ms (&gt;4,000ms)   | 504 Gateway Timeout (hard_decline_no_charge) | $0.00 (Aborted)</text>
+  <text x="64" y="621" fill="#93C5FD" font-family="Consolas, monospace" font-size="11.5">4. Unindexed external merchant (Web IQ browse) | external_webiq_grounding   | 325ms / passage OK   | 200 OK (webiq_browse_passage_verified)       | Ready ($1/1k)</text>
+</svg>

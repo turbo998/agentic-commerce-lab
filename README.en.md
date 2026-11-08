@@ -40,6 +40,7 @@ This repository is a production-grade research and engineering testbed for **Age
 > - **Topic 6 (Multi-Merchant Split-Cart Saga)**: **[Multi-Merchant Split-Cart Atomic Orchestration: Two-Phase Pre-Auth Hold & Saga Compensation vs. Stripe Connect SPT Marketplace Selection FAQ](docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md)**
 - **Topic 7 (Post-Purchase Return Grounding vs. Refund Gate)**: **[Post-Purchase Reverse Logistics & Treasury Agent Architecture: Autonomous Return-Eligibility Grounding (Web IQ `/v3/browse`) vs. High-Consequence Human Confirmation Gates (Stripe MCP `create_refund` / Treasury) Selection FAQ](docs/post-purchase-return-eligibility-vs-refund-confirmation-faq.en.md)**
 - **Topic 8 (Recurring Subscription & Auto-Replenishment SPT Cadence)**: **[Recurring Subscription & Autonomous Replenishment Agent Architecture: Cadence-Scoped SPT (`usage_limits.recurring_interval` + Web IQ Recall Circuit Breaker) vs. Forbidden `setup_future_usage` Vaulting Selection FAQ](docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.en.md)**
+- **Topic 9 (Catalog Feed Barrier & Asymmetric 4s Webhook SLA)**: **[Real-Time Catalog Synchronization & Inventory Locking Architecture: SFTP `manifest.json` Barrier + Incremental `upsert` Feed vs. Asymmetric 4,000 ms Webhook Fallback Selection FAQ](docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -56,6 +57,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Post-Purchase Reverse Logistics & Treasury Architecture: Web IQ Return Grounding vs Stripe MCP Refund Confirmation Gate Visual Summary](assets/svg/09-post-purchase-return-vs-refund-gate-2026-11-08.svg)
 
 ![2026-11-08 Recurring Subscription & Auto-Replenishment Architecture: Cadence-Scoped SPT + Web IQ Recall FCB vs Forbidden setup_future_usage Visual Summary](assets/svg/10-recurring-replenishment-spt-cadence-2026-11-08.svg)
+
+![2026-11-08 Catalog Synchronization & Inventory Locking Architecture: SFTP manifest.json Barrier + Incremental upsert vs Asymmetric 4,000 ms Webhook Fallback Visual Summary](assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
