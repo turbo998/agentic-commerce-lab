@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg13" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="spt180Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="slotGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#bg13)" rx="16"/>
+
+  <!-- Header -->
+  <rect x="28" y="22" width="1144" height="78" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <rect x="44" y="36" width="184" height="26" rx="6" fill="#f59e0b"/>
+  <text x="136" y="54" fill="#1e1b4b" font-size="12" font-weight="800" text-anchor="middle">ROUND 11 · 180D BOOKING</text>
+  <text x="244" y="54" fill="#f8fafc" font-size="18.5" font-weight="800">服务预约与长周期酒旅智能体：180 天远期 SPT vs 409 档期并发自愈与退改签接地</text>
+  <text x="44" y="82" fill="#94a3b8" font-size="12.5">核心铁律：8~180 天预约选远期 SPT (expires_at &lt;= 180d) · &gt;180 天选两段式定金 · 409 冲突同日 ±15m 自动平移 · Web IQ 存证退改签阶梯</text>
+
+  <!-- Left Column: Booking Horizon Selection -->
+  <rect x="28" y="116" width="558" height="265" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="28" y="116" width="558" height="36" rx="12" fill="url(#spt180Grad)"/>
+  <text x="46" y="139" fill="#ffffff" font-size="14" font-weight="700">1. 预约提前期选型：7 天预授权 vs 180 天远期 SPT vs 两段式定金</text>
+
+  <!-- <=7d & 8-180d -->
+  <rect x="44" y="164" width="254" height="202" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="58" y="186" fill="#6ee7b7" font-size="13" font-weight="700">🛡️ 8 ~ 180 天远期 SPT (黄金方案)</text>
+  <text x="58" y="208" fill="#e2e8f0" font-size="11.5">• 痛点：普通卡预授权 7~30 天自动解冻失效</text>
+  <text x="58" y="228" fill="#e2e8f0" font-size="11.5">• 机制：SPT expires_at 最长支持 180 天</text>
+  <text x="58" y="248" fill="#e2e8f0" font-size="11.5">• 优势：预订日不占压银行短期冻结通道</text>
+  <text x="58" y="268" fill="#fde047" font-size="11.5" font-weight="700">• 履约：到店或进入违约窗口时安全实扣</text>
+  <rect x="58" y="284" width="226" height="68" rx="6" fill="#022c22"/>
+  <text x="70" y="304" fill="#34d399" font-size="11" font-weight="700">沙盒实测 (提前 45 天订房):</text>
+  <text x="70" y="322" fill="#f8fafc" font-size="11">SPT 锁单 $240.00 (320ms · 200 OK)</text>
+  <text x="70" y="340" fill="#a7f3d0" font-size="10.5"><=7天短期到店则选普通 manual 预授权</text>
+
+  <!-- >180d Block -->
+  <rect x="314" y="164" width="256" height="202" rx="8" fill="#1f2937" stroke="#ef4444" stroke-width="1"/>
+  <text x="328" y="186" fill="#fca5a5" font-size="13" font-weight="700">⛔ &gt; 180 天超远期预订红线</text>
+  <text x="328" y="208" fill="#e2e8f0" font-size="11.5">• 协议硬上限：expires_at &gt; 180d (15,552,000s)</text>
+  <text x="328" y="228" fill="#fca5a5" font-size="11.5" font-weight="700">• 网关报错：HTTP 400 spt_expires_at_exceeds</text>
+  <text x="328" y="248" fill="#e2e8f0" font-size="11.5">• 严禁单枚令牌硬撑 9 个月邮轮/婚礼预订</text>
+  <text x="328" y="268" fill="#60a5fa" font-size="11.5" font-weight="700">• 标准解法：两段式定金 + 临期尾款重签</text>
+  <rect x="328" y="284" width="228" height="68" rx="6" fill="#0f172a"/>
+  <text x="340" y="304" fill="#93c5fd" font-size="11" font-weight="700">两段式拆分流程 (Split Deposit):</text>
+  <text x="340" y="322" fill="#e2e8f0" font-size="10.8">Day 0：即时扣取 20% 首付定金 SPT</text>
+  <text x="340" y="340" fill="#34d399" font-size="10.5">到店前 30 天：唤醒买家补签 80% 尾款 SPT</text>
+
+  <!-- Right Column: HTTP 409 Slot Conflict & Web IQ Cancellation Grounding -->
+  <rect x="604" y="116" width="568" height="265" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="604" y="116" width="568" height="36" rx="12" fill="url(#slotGrad)"/>
+  <text x="622" y="139" fill="#1e1b4b" font-size="14" font-weight="800">2. HTTP 409 单库存档期抢占自愈 &amp; Web IQ 退改签阶梯防坑门禁</text>
+
+  <!-- HTTP 409 Box -->
+  <rect x="620" y="164" width="536" height="94" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="636" y="185" fill="#fbbf24" font-size="12.5" font-weight="700">🔄 单库存档期并发被抢 (HTTP 409 slot_unavailable) 三层确定性恢复状态机</text>
+  <text x="636" y="206" fill="#e2e8f0" font-size="11.5">• 铁律 1 (零误扣)：收到 409 当场终止扣款 ($0.00)，绝不允许“档期没抢到、钱却被扣走”</text>
+  <text x="636" y="226" fill="#34d399" font-size="11.5" font-weight="700">• 铁律 2 (同日 ±15m 自动平移)：候选 19:15 偏移 &lt;= 15m 且不涨价 → 换新 Idempotency-Key 自动重锁 (365ms)</text>
+  <text x="636" y="245" fill="#fca5a5" font-size="11">• 铁律 3 (超容差人工确认)：候选偏移 &gt; 15m (如 21:00) 或跨天 → 严禁擅自改期，返回 Confirm 卡片!</text>
+
+  <!-- Web IQ Cancellation Grounding Box -->
+  <rect x="620" y="268" width="536" height="98" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
+  <text x="636" y="289" fill="#60a5fa" font-size="12.5" font-weight="700">🌐 Microsoft Web IQ /v3/browse 退改签阶梯条款接地 (防御霸王全扣与秋后算账)</text>
+  <text x="636" y="310" fill="#e2e8f0" font-size="11.5">• 预订前存证：抓取官网退改规则 (如 &gt;=48h 免费取消 0%，&lt;48h 违约金上限 50%) 锁入交易护栏</text>
+  <text x="636" y="330" fill="#34d399" font-size="11.5">• 免费期退订 (提前 72h)：强制 $0.00 结案并立即将 SPT 置为终态 deactivated，永久收回商户扣款权!</text>
+  <text x="636" y="350" fill="#fca5a5" font-size="11.5" font-weight="700">• 违约期防超扣 (提前 12h)：商户若试图扣 100% ($240 &gt; 50% $120 上限) → HTTP 422 硬拦截!</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="28" y="398" width="1144" height="258" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="48" y="426" fill="#f8fafc" font-size="15" font-weight="800">🧪 服务预约 180 天 SPT、409 档期并发与退改签接地基准实测 (deterministic_offline_simulation · as_of: 2026-11-08)</text>
+
+  <!-- Table Header -->
+  <rect x="44" y="440" width="1112" height="30" rx="6" fill="#1e293b"/>
+  <text x="58" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">评测场景 (Scenario)</text>
+  <text x="390" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">授权与并发恢复路径</text>
+  <text x="640" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">实扣 / 锁定金额</text>
+  <text x="790" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">耗时</text>
+  <text x="875" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">网关裁决与动作标签</text>
+
+  <!-- Row 1 -->
+  <rect x="44" y="476" width="1112" height="30" rx="4" fill="#111827"/>
+  <text x="58" y="496" fill="#f8fafc" font-size="11.5">1. 提前 45 天预订精品酒店 (45d &lt;= 180d 正常锁档)</text>
+  <text x="390" y="496" fill="#34d399" font-size="11.5" font-weight="700">DEFERRED_SPT_180D_LOCKED</text>
+  <text x="640" y="496" fill="#e2e8f0" font-size="11.5">$240.00 (含税锁额)</text>
+  <text x="790" y="496" fill="#34d399" font-size="11.5" font-weight="700">320 ms</text>
+  <text x="875" y="496" fill="#6ee7b7" font-size="11.5">200 OK · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="44" y="510" width="1112" height="30" rx="4" fill="#161f30"/>
+  <text x="58" y="530" fill="#f8fafc" font-size="11.5">2. 周五 19:00 餐厅被抢 (409 候选 19:15 在 ±15m 内)</text>
+  <text x="390" y="530" fill="#60a5fa" font-size="11.5" font-weight="700">AUTO_SHIFTED_WITHIN_15M</text>
+  <text x="640" y="530" fill="#e2e8f0" font-size="11.5">$120.00 (换键重锁)</text>
+  <text x="790" y="530" fill="#60a5fa" font-size="11.5" font-weight="700">365 ms</text>
+  <text x="875" y="530" fill="#93c5fd" font-size="11.5">200 OK · 零重扣无缝平移 19:15</text>
+
+  <!-- Row 3 -->
+  <rect x="44" y="544" width="1112" height="30" rx="4" fill="#111827"/>
+  <text x="58" y="564" fill="#f8fafc" font-size="11.5">3. 入住前 72h 取消 (Web IQ 存证 &gt;=48h 免费退订)</text>
+  <text x="390" y="564" fill="#a78bfa" font-size="11.5" font-weight="700">FREE_CANCEL_SPT_DEACTIVATED</text>
+  <text x="640" y="564" fill="#34d399" font-size="11.5" font-weight="700">$0.00 (注销令牌)</text>
+  <text x="790" y="564" fill="#a78bfa" font-size="11.5" font-weight="700">350 ms</text>
+  <text x="875" y="564" fill="#c4b5fd" font-size="11.5">200 OK · SPT 永久 deactivated</text>
+
+  <!-- Row 4 -->
+  <rect x="44" y="578" width="1112" height="30" rx="4" fill="#161f30"/>
+  <text x="58" y="598" fill="#fde047" font-size="11.5">4. 409 候选档期偏移 120m (&gt; ±15m 容差窗口)</text>
+  <text x="390" y="598" fill="#fbbf24" font-size="11.5" font-weight="700">SLOT_CONFLICT_HUMAN_CONFIRM</text>
+  <text x="640" y="598" fill="#fde047" font-size="11.5">$0.00 (未扣款)</text>
+  <text x="790" y="598" fill="#fbbf24" font-size="11.5" font-weight="700">180 ms</text>
+  <text x="875" y="598" fill="#fde047" font-size="11.5">HTTP 409 · 挂起等待人类 Confirm</text>
+
+  <!-- Row 5 -->
+  <rect x="44" y="612" width="1112" height="30" rx="4" fill="#2a1215"/>
+  <text x="58" y="632" fill="#fecaca" font-size="11.5" font-weight="700">5. 反模式：提前 240d (&gt;180d) 签发单枚 SPT / 违约期超额扣取 100% (&gt;50% 上限)</text>
+  <text x="640" y="632" fill="#fca5a5" font-size="11.5">$0.00 (网关拒止)</text>
+  <text x="790" y="632" fill="#f87171" font-size="11.5" font-weight="700">14–25 ms</text>
+  <text x="875" y="632" fill="#f87171" font-size="11.5" font-weight="700">HTTP 400 超 180d / HTTP 422 超额违约金</text>
+</svg>

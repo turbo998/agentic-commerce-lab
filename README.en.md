@@ -42,6 +42,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 8 (Recurring Subscription & Auto-Replenishment SPT Cadence)**: **[Recurring Subscription & Autonomous Replenishment Agent Architecture: Cadence-Scoped SPT (`usage_limits.recurring_interval` + Web IQ Recall Circuit Breaker) vs. Forbidden `setup_future_usage` Vaulting Selection FAQ](docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.en.md)**
 - **Topic 9 (Catalog Feed Barrier & Asymmetric 4s Webhook SLA)**: **[Real-Time Catalog Synchronization & Inventory Locking Architecture: SFTP `manifest.json` Barrier + Incremental `upsert` Feed vs. Asymmetric 4,000 ms Webhook Fallback Selection FAQ](docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.en.md)**
 - **Topic 10 (Cross-Border Digital Tax: MoR vs. SoR `Stripe Tax` + B2B Reverse-Charge)**: **[Cross-Border Digital Goods & AI Agent Tax Compliance Architecture: Merchant of Record (MoR) vs. Seller of Record (Stripe Tax + Connect OBO / B2B Reverse-Charge VAT) Selection FAQ](docs/digital-tax-vat-mor-vs-seller-of-record-faq.en.md)**
+- **Topic 11 (Service Booking 180-Day SPT Horizon vs. `HTTP 409` Slot-Conflict & Cancellation Grounding)**: **[Service Booking & Long-Horizon Travel Agent Architecture: 180-Day Deferred SPT Mandate Horizon (`expires_at <= 180d`) vs. `HTTP 409` Slot-Conflict Recovery & Tiered Cancellation Grounding Selection FAQ](docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -62,6 +63,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Catalog Synchronization & Inventory Locking Architecture: SFTP manifest.json Barrier + Incremental upsert vs Asymmetric 4,000 ms Webhook Fallback Visual Summary](assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
 
 ![2026-11-08 Cross-Border Digital Goods & AI Agent Tax Compliance Architecture: MoR vs SoR Stripe Tax + B2B Reverse-Charge Visual Summary](assets/svg/12-digital-tax-mor-vs-sor-2026-11-08.svg)
+
+![2026-11-08 Service Booking & Long-Horizon Travel Agent Architecture: 180-Day Deferred SPT vs HTTP 409 Slot-Conflict Recovery Visual Summary](assets/svg/13-service-booking-180d-spt-409-slot-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

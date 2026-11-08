@@ -131,6 +131,12 @@
     "sor_latency_ms": 340,
     "b2b_reverse_charge_latency_ms": 385
   },
+  "service_booking_180d_guards": {
+    "all_passed": true,
+    "lock_180d_latency_ms": 320,
+    "autoshift_409_latency_ms": 365,
+    "free_cancel_latency_ms": 350
+  },
   "scenarios": [
     {
       "id": "W01",

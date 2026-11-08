@@ -1556,6 +1556,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.en.md",
             "docs/digital-tax-vat-mor-vs-seller-of-record-faq.md",
             "docs/digital-tax-vat-mor-vs-seller-of-record-faq.en.md",
+            "docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md",
+            "docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -1723,6 +1725,87 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["digital_tax_compliance_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("digital-tax-mor-sor-sandbox", demo_zh)
+
+    def test_service_booking_180d_spt_and_409_slot_conflict_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_service_booking_180d_spt_and_slot_conflict
+
+        # 1. 45-day hotel booking (<= 180d) -> DEFERRED_SPT_180D_LOCKED ($240.00)
+        bk_ok = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=45,
+            order_amount_cents=24000,
+            spt_max_amount_cents=24000,
+        )
+        self.assertTrue(bk_ok.allowed)
+        self.assertEqual(bk_ok.http_status, 200)
+        self.assertEqual(bk_ok.booking_lane, "DEFERRED_SPT_180D_LOCKED")
+        self.assertEqual(bk_ok.captured_amount_usd, "240.00")
+
+        # 2. HTTP 409 slot conflict with candidate within ±15m same-day tolerance -> auto-shifted 200 OK
+        shift_ok = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=14,
+            order_amount_cents=12000,
+            spt_max_amount_cents=12000,
+            slot_conflict_409=True,
+            candidate_slot_shift_minutes=15,
+            allowed_slot_shift_minutes=15,
+            candidate_same_day=True,
+            candidate_price_cents=12000,
+        )
+        self.assertTrue(shift_ok.allowed)
+        self.assertEqual(shift_ok.http_status, 200)
+        self.assertEqual(shift_ok.booking_lane, "AUTO_SHIFTED_WITHIN_15M_TOLERANCE")
+
+        # 3. HTTP 409 slot conflict with candidate 120m away (> 15m tolerance) -> 409 Confirm ($0.00 charged)
+        shift_hold = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=14,
+            order_amount_cents=12000,
+            spt_max_amount_cents=12000,
+            slot_conflict_409=True,
+            candidate_slot_shift_minutes=120,
+            allowed_slot_shift_minutes=15,
+        )
+        self.assertFalse(shift_hold.allowed)
+        self.assertEqual(shift_hold.http_status, 409)
+        self.assertEqual(shift_hold.captured_amount_usd, "0.00")
+        self.assertEqual(shift_hold.action_pill, "Confirm")
+
+        # 4. Cancellation 72h prior (>= 48h Web IQ grounded free window) -> $0.00 + SPT deactivated
+        free_cancel = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=45,
+            order_amount_cents=24000,
+            cancellation_requested=True,
+            hours_before_arrival=72,
+            grounded_free_cancel_hours=48,
+        )
+        self.assertTrue(free_cancel.allowed)
+        self.assertEqual(free_cancel.spt_status, "deactivated")
+        self.assertEqual(free_cancel.captured_amount_usd, "0.00")
+
+        # 5. Late cancellation overcharge attempt (100% > 50% grounded tier) -> 422 blocked
+        overcharge = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=45,
+            order_amount_cents=24000,
+            cancellation_requested=True,
+            hours_before_arrival=12,
+            grounded_free_cancel_hours=48,
+            grounded_max_penalty_pct=50.0,
+            requested_penalty_pct=100.0,
+        )
+        self.assertFalse(overcharge.allowed)
+        self.assertEqual(overcharge.http_status, 422)
+
+        # 6. >180-day single SPT horizon (240 days) -> 400 blocked
+        over_180d = evaluate_service_booking_180d_spt_and_slot_conflict(
+            booking_horizon_days=240,
+            order_amount_cents=180000,
+        )
+        self.assertFalse(over_180d.allowed)
+        self.assertEqual(over_180d.http_status, 400)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["service_booking_180d_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("service-booking-180d-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

@@ -42,6 +42,7 @@
 - **专题 8（周期性订阅与自动补货令牌架构）**：**[《周期性订阅与自动补货智能体授权架构：SPT 周期限额令牌（`usage_limits.recurring_interval` + Web IQ 召回熔断）vs 传统绑卡 `setup_future_usage` 禁用边界选型与原理解析 FAQ》](docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.md)**
 - **专题 9（商品目录实时同步与非对称 4 秒 Webhook SLA）**：**[《商品目录实时同步与库存锁单架构：SFTP `manifest.json` 原子屏障 + 增量 `upsert` 目录流 vs. 4,000 ms 非对称 Webhook 降级选型与原理解析 FAQ》](docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.md)**
 - **专题 10（跨境数字税务合规：MoR 全托管 vs SoR `Stripe Tax` + B2B 逆向征收）**：**[《跨境数字商品与 AI Agent 税务合规架构：名义商户（Merchant of Record, MoR）vs 记账卖方（Seller of Record, Stripe Tax + Connect OBO / B2B 逆向征收）选型与原理解析 FAQ》](docs/digital-tax-vat-mor-vs-seller-of-record-faq.md)**
+- **专题 11（服务预约与长周期酒旅：180 天远期 SPT vs `409` 档期并发与退改签接地）**：**[《服务预约与长周期酒旅智能体架构：180 天远期 SPT 授权有效期（`expires_at <= 180d`）vs `409 Conflict` 档期并发抢占与退改签阶梯费率（Web IQ Grounding）选型与原理解析 FAQ》](docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -62,6 +63,8 @@
 ![2026-11-08 商品目录实时同步与库存锁单架构：SFTP manifest.json 原子屏障 + 增量 upsert vs 4,000 ms 非对称 Webhook 降级一图流](assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
 
 ![2026-11-08 跨境数字商品与 AI Agent 税务合规架构：MoR 全托管 vs SoR Stripe Tax + B2B 逆向征收一图流](assets/svg/12-digital-tax-mor-vs-sor-2026-11-08.svg)
+
+![2026-11-08 服务预约与长周期酒旅智能体架构：180天远期SPT vs 409档期并发与退改签接地一图流](assets/svg/13-service-booking-180d-spt-409-slot-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

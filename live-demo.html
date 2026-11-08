@@ -979,6 +979,25 @@
         <div id="tax-mor-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Service Booking 180-Day SPT Horizon vs HTTP 409 Slot-Conflict & Web IQ Cancellation Grounding Selector (Round 11 FAQ Companion) -->
+      <div class="finops-box" id="service-booking-180d-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-booking-180d-title">📅 服务预约与酒旅智能体：180 天远期 SPT (expires_at &lt;= 180d) vs 409 档期并发自愈与退改签接地决策器 (Round 11 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 预约提前期、档期并发状态与 Web IQ 退改签阶梯场景 (Booking Horizon &amp; 409 Slot Recovery):</span></label>
+          <select id="booking-180d-select" onchange="updateServiceBooking180dSandbox()">
+            <option value="deferred_45d_ok">🛡️ 提前 45 天预订精品酒店 (45d &lt;= 180d)：签发远期 SPT ($240.00) + Web IQ 存证 48h 免费退改线 (320ms)</option>
+            <option value="slot_409_autoshift_15m">🔄 周五 19:00 餐厅抢座遇 409：候选 19:15 在同日 ±15m 容差内且不涨价 ($120.00) → 换新幂等键自动平移锁档 (365ms)</option>
+            <option value="slot_409_escalate_120m">🙋 抢座遇 409 且最近候选 21:00 (偏移 120m &gt; ±15m 容差)：$0.00 扣款，挂起推送候选卡片等待人类 Confirm (180ms)</option>
+            <option value="free_cancel_72h_deactivated">🟢 入住前 72h 取消 (&gt;= 48h 免费退改窗口)：$0.00 无损退订 + 立即将 SPT 置为 deactivated 永久防偷扣 (350ms)</option>
+            <option value="penalty_overcharge_422">🛑 违约期霸王全扣拦截 (提前 12h &lt; 48h)：商户试图扣 100% ($240 &gt; Web IQ 存证上限 50% $120) → HTTP 422 硬拦截!</option>
+            <option value="horizon_240d_400">🚫 超 180 天单令牌拦截 (提前 240 天订邮轮)：expires_at &gt; 180d 协议上限 → HTTP 400 拒签 (提示切换两段式定金)!</option>
+          </select>
+        </div>
+        <div id="booking-180d-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1428,6 +1447,7 @@ function renderAll() {
   updateRecurringSptSandbox();
   updateCatalogWebhookSlaSandbox();
   updateDigitalTaxSandbox();
+  updateServiceBooking180dSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -2073,6 +2093,68 @@ function updateDigitalTaxSandbox() {
     "<strong>🛡️ 名义商户全托管合规通过 (MOR_MANAGED_TAX · 295ms · Act automatically · official_list_price):</strong><br>" +
     "• <strong>两步转售兜底</strong>：商户在德国无本地 VAT 税号，自动路由至 MoR 名义商户轨道（参考费率 <code>~5.0% + $0.50</code>），由 MoR 平台作为账单法定卖方 100% 承担 19% VAT（<code>$19.00</code>）代扣代缴与欧盟税务稽查责任<br>" +
     "• <strong>SPT 前置锁定</strong>：<code>calculate_order</code> 阶段返回含税总价 <code>$119.00</code>，SPT 限额一次对齐！" +
+    "</div>";
+}
+
+function updateServiceBooking180dSandbox() {
+  var selEl = document.getElementById("booking-180d-select");
+  var outEl = document.getElementById("booking-180d-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "slot_409_autoshift_15m") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔄 HTTP 409 同日 ±15m 容差自动平移成功 (AUTO_SHIFTED_WITHIN_15M_TOLERANCE · 365ms · Act automatically):</strong><br>" +
+      "• <strong>零重复扣款</strong>：原 <code>19:00</code> 档期返回 <code>HTTP 409 slot_unavailable</code>（实扣 <code>$0.00</code>），候选档期 <code>19:15</code> 偏移仅 <code>15m ≤ 15m</code> 买家预设容差且价格 <code>$120.00 ≤ SPT 上限</code><br>" +
+      "• <strong>幂等键轮换</strong>：自动签发全新 <code>Idempotency-Key: ik_slot_1915</code> 完成无缝锁座！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "slot_409_escalate_120m") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🙋 HTTP 409 SLOT_CONFLICT_HUMAN_CONFIRM (180ms · Confirm · synthetic_policy)：<br>" +
+      "目标 <code>19:00</code> 档期已被抢占，且商户返回的最近候选档期为 <code>21:00</code>（偏移 <code>120m &gt; 15m</code> 容差红线）！编排器保证 <code>$0.00</code> 扣款并立即挂起，向用户展示候选时段卡片等待人工确认，严禁 Agent 擅自改期。" +
+      "</div>";
+    return;
+  }
+
+  if (v === "free_cancel_72h_deactivated") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🟢 免费取消期无损退订并注销令牌 (FREE_CANCEL_SPT_DEACTIVATED · 350ms · Act automatically):</strong><br>" +
+      "• <strong>Web IQ 存证核验</strong>：买家在入住前 <code>72 小时</code> 发起退订，满足 Web IQ <code>/v3/browse</code> 存证的 <code>≥ 48h 免费取消</code> 条款（违约金 <code>$0.00</code>）<br>" +
+      "• <strong>密码学断电</strong>：网关立即将该笔预订绑定的 SPT 置为终态 <code>deactivated</code>，永久封死商户秋后误扣通道！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "penalty_overcharge_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 422 penalty_exceeds_grounded_cancellation_tier (25ms · Send to a human)：<br>" +
+      "买家在入住前 12 小时退订，虽处于违约窗口（<code>&lt; 48h</code>），但 Web IQ <code>/v3/browse</code> 存证的官网条款明确规定违约金上限为首晚房费的 <code>50% ($120.00)</code>！商户后台试图强扣 <code>100% ($240.00)</code> 被网关当场拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "horizon_240d_400") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 spt_expires_at_exceeds_180_day_maximum (14ms · Send to a human · official_doc_snapshot)：<br>" +
+      "预订提前期为 <code>240 天 &gt; 180 天 (15,552,000 秒)</code> Stripe SPT v2 协议硬上限！请自动切换为<strong>「两段式定金架构」</strong>：今日实扣 20% 首付定金 SPT + 到店前 30 天唤醒买家补签 80% 尾款 SPT。" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ 180 天远期 SPT 预约锁单成功 (DEFERRED_SPT_180D_LOCKED · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
+    "• <strong>告别预授权过期</strong>：普通信用卡预授权 7~30 天即自动解冻失效；采用 <code>usage_limits.expires_at ≤ 180d</code> 远期 SPT 锁定 45 天后精品酒店房费 <code>$240.00</code><br>" +
+    "• <strong>条款双锚定</strong>：同步绑定 Web IQ <code>/v3/browse</code> 提取的 <code>48h 免费退改线</code> 与 <code>50% 违约金上限</code> 护栏！" +
     "</div>";
 }
 

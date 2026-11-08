@@ -4969,6 +4969,136 @@ def evaluate_digital_tax_mor_vs_sor_policy(
     )
 
 
+@dataclass(frozen=True)
+class ServiceBooking180dVerdict:
+    """Deterministic Round 11 verdict for Service Booking 180-Day SPT Horizon, HTTP 409 Slot-Conflict Auto-Shift, and Web IQ Cancellation Grounding."""
+
+    allowed: bool
+    http_status: int
+    booking_lane: str
+    spt_status: str
+    captured_amount_usd: str
+    verdict_reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_service_booking_180d_spt_and_slot_conflict(
+    *,
+    booking_horizon_days: int = 45,
+    order_amount_cents: int = 24000,
+    spt_max_amount_cents: int = 24000,
+    slot_conflict_409: bool = False,
+    candidate_slot_shift_minutes: int = 0,
+    allowed_slot_shift_minutes: int = 15,
+    candidate_same_day: bool = True,
+    candidate_price_cents: int = 24000,
+    cancellation_requested: bool = False,
+    hours_before_arrival: int = 72,
+    grounded_free_cancel_hours: int = 48,
+    grounded_max_penalty_pct: float = 50.0,
+    requested_penalty_pct: float = 0.0,
+) -> ServiceBooking180dVerdict:
+    """Evaluate 180-day SPT booking horizon limit, HTTP 409 slot-conflict recovery within buyer tolerance, and Web IQ grounded cancellation penalty caps."""
+    horizon = int(booking_horizon_days)
+    order_cents = max(0, int(order_amount_cents))
+    spt_cents = max(0, int(spt_max_amount_cents))
+    amt_str = f"{order_cents / 100.0:.2f}"
+
+    # 1. Hard 180-day SPT expiration ceiling (official_doc_snapshot)
+    if horizon > 180:
+        return ServiceBooking180dVerdict(
+            False,
+            400,
+            "BLOCKED_HORIZON_EXCEEDS_180_DAYS",
+            "rejected_not_minted",
+            "0.00",
+            f"spt_expires_at_exceeds_180_day_maximum_horizon_{horizon}d_route_to_split_deposit",
+            14,
+            "Send to a human",
+        )
+
+    # 2. Cancellation & No-Show penalty evaluation grounded via Web IQ /v3/browse
+    if cancellation_requested:
+        if int(hours_before_arrival) >= int(grounded_free_cancel_hours):
+            return ServiceBooking180dVerdict(
+                True,
+                200,
+                "FREE_CANCEL_SPT_DEACTIVATED",
+                "deactivated",
+                "0.00",
+                "cancelled_within_webiq_grounded_free_window_zero_fee_spt_deactivated",
+                350,
+                "Act automatically",
+            )
+        if float(requested_penalty_pct) > float(grounded_max_penalty_pct):
+            return ServiceBooking180dVerdict(
+                False,
+                422,
+                "BLOCKED_PENALTY_EXCEEDS_GROUNDED_TIER",
+                "active",
+                "0.00",
+                f"penalty_exceeds_grounded_cancellation_tier_{requested_penalty_pct:.1f}pct_gt_{grounded_max_penalty_pct:.1f}pct",
+                25,
+                "Send to a human",
+            )
+        penalty_cents = int(round(order_cents * (float(requested_penalty_pct) / 100.0)))
+        return ServiceBooking180dVerdict(
+            True,
+            200,
+            "LATE_CANCEL_TIERED_PENALTY_CAPTURED",
+            "consumed",
+            f"{penalty_cents / 100.0:.2f}",
+            "late_cancellation_penalty_captured_within_webiq_grounded_cap",
+            345,
+            "Confirm",
+        )
+
+    # 3. Singleton slot contention (HTTP 409 Conflict) recovery
+    if slot_conflict_409:
+        cand_cents = max(0, int(candidate_price_cents))
+        shift_ok = (
+            candidate_same_day
+            and abs(int(candidate_slot_shift_minutes)) <= int(allowed_slot_shift_minutes)
+            and cand_cents <= spt_cents
+        )
+        if shift_ok:
+            return ServiceBooking180dVerdict(
+                True,
+                200,
+                "AUTO_SHIFTED_WITHIN_15M_TOLERANCE",
+                "active",
+                f"{cand_cents / 100.0:.2f}",
+                f"http_409_recovered_via_fresh_idempotency_key_shift_{abs(int(candidate_slot_shift_minutes))}m",
+                365,
+                "Act automatically",
+            )
+        return ServiceBooking180dVerdict(
+            False,
+            409,
+            "SLOT_CONFLICT_HUMAN_CONFIRM",
+            "active_unconsumed",
+            "0.00",
+            "http_409_candidate_slot_outside_buyer_tolerance_or_price_cap_requires_human_confirm",
+            180,
+            "Confirm",
+        )
+
+    # 4. Standard booking lock (<= 7d short pre-auth hold vs 8..180d deferred SPT)
+    lane = "SHORT_PREAUTH_HOLD_7D" if horizon <= 7 else "DEFERRED_SPT_180D_LOCKED"
+    return ServiceBooking180dVerdict(
+        True,
+        200,
+        lane,
+        "active",
+        amt_str,
+        f"booking_locked_for_{horizon}d_horizon_with_webiq_cancellation_guard",
+        280 if horizon <= 7 else 320,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -6059,6 +6189,71 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_reverse_charge_latency_ms": tax_b2b_reverse_ok.latency_ms,
     }
 
+    bk_45d_ok = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=45,
+        order_amount_cents=24000,
+        spt_max_amount_cents=24000,
+    )
+    bk_409_autoshift = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=14,
+        order_amount_cents=12000,
+        spt_max_amount_cents=12000,
+        slot_conflict_409=True,
+        candidate_slot_shift_minutes=15,
+        allowed_slot_shift_minutes=15,
+        candidate_same_day=True,
+        candidate_price_cents=12000,
+    )
+    bk_409_escalate = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=14,
+        order_amount_cents=12000,
+        spt_max_amount_cents=12000,
+        slot_conflict_409=True,
+        candidate_slot_shift_minutes=120,
+        allowed_slot_shift_minutes=15,
+    )
+    bk_free_cancel = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=45,
+        order_amount_cents=24000,
+        cancellation_requested=True,
+        hours_before_arrival=72,
+        grounded_free_cancel_hours=48,
+    )
+    bk_penalty_overcharge = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=45,
+        order_amount_cents=24000,
+        cancellation_requested=True,
+        hours_before_arrival=12,
+        grounded_free_cancel_hours=48,
+        grounded_max_penalty_pct=50.0,
+        requested_penalty_pct=100.0,
+    )
+    bk_240d_block = evaluate_service_booking_180d_spt_and_slot_conflict(
+        booking_horizon_days=240,
+        order_amount_cents=180000,
+    )
+    service_booking_180d_guards = {
+        "all_passed": (
+            bk_45d_ok.allowed
+            and bk_45d_ok.booking_lane == "DEFERRED_SPT_180D_LOCKED"
+            and bk_409_autoshift.allowed
+            and bk_409_autoshift.booking_lane == "AUTO_SHIFTED_WITHIN_15M_TOLERANCE"
+            and not bk_409_escalate.allowed
+            and bk_409_escalate.http_status == 409
+            and bk_409_escalate.captured_amount_usd == "0.00"
+            and bk_free_cancel.allowed
+            and bk_free_cancel.spt_status == "deactivated"
+            and bk_free_cancel.captured_amount_usd == "0.00"
+            and not bk_penalty_overcharge.allowed
+            and bk_penalty_overcharge.http_status == 422
+            and not bk_240d_block.allowed
+            and bk_240d_block.http_status == 400
+        ),
+        "lock_180d_latency_ms": bk_45d_ok.latency_ms,
+        "autoshift_409_latency_ms": bk_409_autoshift.latency_ms,
+        "free_cancel_latency_ms": bk_free_cancel.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -6082,6 +6277,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "recurring_replenishment_guards": recurring_replenishment_guards,
         "catalog_webhook_sla_guards": catalog_webhook_sla_guards,
         "digital_tax_compliance_guards": digital_tax_compliance_guards,
+        "service_booking_180d_guards": service_booking_180d_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -9168,6 +9364,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="tax-mor-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Service Booking 180-Day SPT Horizon vs HTTP 409 Slot-Conflict & Web IQ Cancellation Grounding Selector (Round 11 FAQ Companion) -->
+      <div class="finops-box" id="service-booking-180d-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-booking-180d-title">📅 服务预约与酒旅智能体：180 天远期 SPT (expires_at &lt;= 180d) vs 409 档期并发自愈与退改签接地决策器 (Round 11 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 预约提前期、档期并发状态与 Web IQ 退改签阶梯场景 (Booking Horizon &amp; 409 Slot Recovery):</span></label>
+          <select id="booking-180d-select" onchange="updateServiceBooking180dSandbox()">
+            <option value="deferred_45d_ok">🛡️ 提前 45 天预订精品酒店 (45d &lt;= 180d)：签发远期 SPT ($240.00) + Web IQ 存证 48h 免费退改线 (320ms)</option>
+            <option value="slot_409_autoshift_15m">🔄 周五 19:00 餐厅抢座遇 409：候选 19:15 在同日 ±15m 容差内且不涨价 ($120.00) → 换新幂等键自动平移锁档 (365ms)</option>
+            <option value="slot_409_escalate_120m">🙋 抢座遇 409 且最近候选 21:00 (偏移 120m &gt; ±15m 容差)：$0.00 扣款，挂起推送候选卡片等待人类 Confirm (180ms)</option>
+            <option value="free_cancel_72h_deactivated">🟢 入住前 72h 取消 (&gt;= 48h 免费退改窗口)：$0.00 无损退订 + 立即将 SPT 置为 deactivated 永久防偷扣 (350ms)</option>
+            <option value="penalty_overcharge_422">🛑 违约期霸王全扣拦截 (提前 12h &lt; 48h)：商户试图扣 100% ($240 &gt; Web IQ 存证上限 50% $120) → HTTP 422 硬拦截!</option>
+            <option value="horizon_240d_400">🚫 超 180 天单令牌拦截 (提前 240 天订邮轮)：expires_at &gt; 180d 协议上限 → HTTP 400 拒签 (提示切换两段式定金)!</option>
+          </select>
+        </div>
+        <div id="booking-180d-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -9617,6 +9832,7 @@ function renderAll() {{
   updateRecurringSptSandbox();
   updateCatalogWebhookSlaSandbox();
   updateDigitalTaxSandbox();
+  updateServiceBooking180dSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10262,6 +10478,68 @@ function updateDigitalTaxSandbox() {{
     "<strong>🛡️ 名义商户全托管合规通过 (MOR_MANAGED_TAX · 295ms · Act automatically · official_list_price):</strong><br>" +
     "• <strong>两步转售兜底</strong>：商户在德国无本地 VAT 税号，自动路由至 MoR 名义商户轨道（参考费率 <code>~5.0% + $0.50</code>），由 MoR 平台作为账单法定卖方 100% 承担 19% VAT（<code>$19.00</code>）代扣代缴与欧盟税务稽查责任<br>" +
     "• <strong>SPT 前置锁定</strong>：<code>calculate_order</code> 阶段返回含税总价 <code>$119.00</code>，SPT 限额一次对齐！" +
+    "</div>";
+}}
+
+function updateServiceBooking180dSandbox() {{
+  var selEl = document.getElementById("booking-180d-select");
+  var outEl = document.getElementById("booking-180d-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "slot_409_autoshift_15m") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔄 HTTP 409 同日 ±15m 容差自动平移成功 (AUTO_SHIFTED_WITHIN_15M_TOLERANCE · 365ms · Act automatically):</strong><br>" +
+      "• <strong>零重复扣款</strong>：原 <code>19:00</code> 档期返回 <code>HTTP 409 slot_unavailable</code>（实扣 <code>$0.00</code>），候选档期 <code>19:15</code> 偏移仅 <code>15m ≤ 15m</code> 买家预设容差且价格 <code>$120.00 ≤ SPT 上限</code><br>" +
+      "• <strong>幂等键轮换</strong>：自动签发全新 <code>Idempotency-Key: ik_slot_1915</code> 完成无缝锁座！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "slot_409_escalate_120m") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🙋 HTTP 409 SLOT_CONFLICT_HUMAN_CONFIRM (180ms · Confirm · synthetic_policy)：<br>" +
+      "目标 <code>19:00</code> 档期已被抢占，且商户返回的最近候选档期为 <code>21:00</code>（偏移 <code>120m &gt; 15m</code> 容差红线）！编排器保证 <code>$0.00</code> 扣款并立即挂起，向用户展示候选时段卡片等待人工确认，严禁 Agent 擅自改期。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "free_cancel_72h_deactivated") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🟢 免费取消期无损退订并注销令牌 (FREE_CANCEL_SPT_DEACTIVATED · 350ms · Act automatically):</strong><br>" +
+      "• <strong>Web IQ 存证核验</strong>：买家在入住前 <code>72 小时</code> 发起退订，满足 Web IQ <code>/v3/browse</code> 存证的 <code>≥ 48h 免费取消</code> 条款（违约金 <code>$0.00</code>）<br>" +
+      "• <strong>密码学断电</strong>：网关立即将该笔预订绑定的 SPT 置为终态 <code>deactivated</code>，永久封死商户秋后误扣通道！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "penalty_overcharge_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 422 penalty_exceeds_grounded_cancellation_tier (25ms · Send to a human)：<br>" +
+      "买家在入住前 12 小时退订，虽处于违约窗口（<code>&lt; 48h</code>），但 Web IQ <code>/v3/browse</code> 存证的官网条款明确规定违约金上限为首晚房费的 <code>50% ($120.00)</code>！商户后台试图强扣 <code>100% ($240.00)</code> 被网关当场拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "horizon_240d_400") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 spt_expires_at_exceeds_180_day_maximum (14ms · Send to a human · official_doc_snapshot)：<br>" +
+      "预订提前期为 <code>240 天 &gt; 180 天 (15,552,000 秒)</code> Stripe SPT v2 协议硬上限！请自动切换为<strong>「两段式定金架构」</strong>：今日实扣 20% 首付定金 SPT + 到店前 30 天唤醒买家补签 80% 尾款 SPT。" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ 180 天远期 SPT 预约锁单成功 (DEFERRED_SPT_180D_LOCKED · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
+    "• <strong>告别预授权过期</strong>：普通信用卡预授权 7~30 天即自动解冻失效；采用 <code>usage_limits.expires_at ≤ 180d</code> 远期 SPT 锁定 45 天后精品酒店房费 <code>$240.00</code><br>" +
+    "• <strong>条款双锚定</strong>：同步绑定 Web IQ <code>/v3/browse</code> 提取的 <code>48h 免费退改线</code> 与 <code>50% 违约金上限</code> 护栏！" +
     "</div>";
 }}
 
