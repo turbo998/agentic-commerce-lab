@@ -143,6 +143,12 @@
     "resolve_encrypted_latency_ms": 385,
     "pre_resolve_failover_latency_ms": 360
   },
+  "chargeback_dispute_evidence_guards": {
+    "all_passed": true,
+    "pre_dispute_deflect_latency_ms": 190,
+    "ce30_bundle_latency_ms": 340,
+    "webiq_terms_bundle_latency_ms": 340
+  },
   "scenarios": [
     {
       "id": "W01",
