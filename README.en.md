@@ -64,6 +64,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 30 (Autonomous Warranty Claim & Cryptographic Diagnostic Telemetry Attestation Architecture: Device-Signed Telemetry Mandate `warranty_claim_token_...` + Original Order Serial Binding & Fault Code Verification vs. Spoofed-Serial Warranty Fraud & Manual Paper-Receipt Friction)**: **[Autonomous Warranty Claim & Cryptographic Diagnostic Telemetry Attestation Architecture: Device-Signed Telemetry Mandate (`warranty_claim_token_...` + Original Order Serial Binding & Fault Code Verification) vs. Spoofed-Serial Warranty Fraud & Manual Paper-Receipt Friction Selection FAQ](docs/warranty-claim-telemetry-attestation-vs-serial-fraud-faq.en.md)**
 - **Topic 31 (Autonomous B2B MOQ Syndicate Aggregation & All-or-Nothing Conditional Escrow Mandate Architecture: Threshold-Bound Syndicate Escrow `moq_syndicate_escrow_...` + Zero-Fee TTL Auto-Release vs. Stranded Prepaid Deposits & Lead-Aggregator Markup Fraud)**: **[Autonomous B2B MOQ Syndicate Aggregation & All-or-Nothing Conditional Escrow Mandate Architecture: Threshold-Bound Syndicate Escrow (`moq_syndicate_escrow_...` + Zero-Fee TTL Auto-Release) vs. Stranded Prepaid Deposits & Lead-Aggregator Markup Fraud Selection FAQ](docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.en.md)**
 - **Topic 32 (Autonomous B2B Sealed-Bid Reverse Auction & Cryptographic Commit-Reveal Anti-Collusion Mandate Architecture: Two-Phase Sealed-Bid Commitment `rfq_sealed_bid_commit_...` + Web IQ UBO Anti-Rigging Grounding vs. Plaintext Price Signaling & Sybil Shell-Company Bid Rigging)**: **[Autonomous B2B Sealed-Bid Reverse Auction & Cryptographic Commit-Reveal Anti-Collusion Mandate Architecture: Two-Phase Sealed-Bid Commitment (`rfq_sealed_bid_commit_...` + Web IQ UBO Anti-Rigging Grounding) vs. Plaintext Price Signaling & Sybil Shell-Company Bid Rigging Selection FAQ](docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.en.md)**
+- **Topic 33 (Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Architecture: Pre-Cleared Tariff Lock `customs_ddp_tariff_mandate_...` + 10-Digit HTS/TARIC Verification vs. DDU Surprise Brokerage Shocks & De Minimis Undervaluation Seizures)**: **[Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Architecture: Pre-Cleared Tariff Lock (`customs_ddp_tariff_mandate_...` + 10-Digit HTS/TARIC Verification) vs. DDU Surprise Brokerage Shocks & De Minimis Undervaluation Seizures Selection FAQ](docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -128,6 +129,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Autonomous B2B MOQ Syndicate Aggregation & Conditional Escrow Visual Summary](assets/svg/33-b2b-moq-syndicate-escrow-2026-11-08.svg)
 
 ![2026-11-08 Autonomous B2B Sealed-Bid Reverse Auction & Anti-Collusion Architecture Visual Summary](assets/svg/34-b2b-sealed-bid-reverse-auction-2026-11-08.svg)
+
+![2026-11-08 Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Visual Summary](assets/svg/35-cross-border-customs-hs-tariff-mandate-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -7364,6 +7364,97 @@ def evaluate_b2b_sealed_bid_reverse_auction_policy(
     )
 
 
+@dataclass(frozen=True)
+class CrossBorderCustomsDDPVerdict:
+    """Round 33 verdict for Pre-Cleared DDP Landed-Cost & HS-Code Mandate (1:1 Valuation Parity & 10-Digit HTS Grounding) vs DDU Port Hostage Fees & De Minimis Undervaluation Seizures."""
+
+    allowed: bool
+    http_status: int
+    customs_lane: str
+    settled_landed_cents: int
+    fta_tariff_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cross_border_customs_ddp_tariff_policy(
+    *,
+    commercial_invoice_cents: int = 600000,
+    declared_customs_value_cents: int = 600000,
+    ddp_preclearance_bound: bool = True,
+    total_landed_cost_cents: int = 642000,
+    landed_cost_cap_cents: int = 690000,
+    webiq_hs_classification_valid: bool = True,
+    fta_tariff_savings_cents: int = 0,
+) -> CrossBorderCustomsDDPVerdict:
+    """Evaluate 1:1 commercial invoice vs customs manifest parity, DDP pre-clearance bond & landed-cost cap, Web IQ official 10-digit HTS/TARIC classification check, and FTA origin duty exemption."""
+
+    # 1. Dual-Invoice Undervaluation / Fake De Minimis Split -> HTTP 403
+    if declared_customs_value_cents != commercial_invoice_cents:
+        return CrossBorderCustomsDDPVerdict(
+            False,
+            403,
+            "CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED",
+            0,
+            0,
+            "declared_customs_manifest_value_does_not_match_commercial_invoice_payment",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Missing DDP Pre-Clearance Bond (DDU Exposure) or Landed Cost Cap Exceeded -> HTTP 422
+    if not ddp_preclearance_bound or total_landed_cost_cents > landed_cost_cap_cents:
+        return CrossBorderCustomsDDPVerdict(
+            False,
+            422,
+            "MISSING_DDP_PRECLEARANCE_OR_CAP_EXCEEDED",
+            0,
+            0,
+            "unbonded_ddu_shipment_or_total_landed_cost_exceeds_buyer_ddp_ceiling",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Invalid 10-Digit HS Code or Anti-Dumping Sanction Hit via Web IQ -> HTTP 451
+    if not webiq_hs_classification_valid:
+        return CrossBorderCustomsDDPVerdict(
+            False,
+            451,
+            "INVALID_HS_CODE_OR_ANTIDUMPING_HOLD",
+            0,
+            0,
+            "webiq_detected_misclassified_hs_tariff_code_or_antidumping_duty_restriction",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Preferential Free Trade Agreement (FTA) Origin Duty Exemption -> HTTP 409 Confirm
+    if fta_tariff_savings_cents > 0:
+        return CrossBorderCustomsDDPVerdict(
+            False,
+            409,
+            "PREFERENTIAL_FTA_ORIGIN_TARIFF_SAVINGS_CONFIRM",
+            commercial_invoice_cents,
+            fta_tariff_savings_cents,
+            "webiq_matched_verified_fta_certificate_of_origin_reducing_duty_by_750_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified 1:1 Valuation + Official 10-Digit HS Code + DDP Bond -> Settled
+    return CrossBorderCustomsDDPVerdict(
+        True,
+        200,
+        "VERIFIED_DDP_CUSTOMS_MANDATE_SETTLED",
+        total_landed_cost_cents,
+        0,
+        "valuation_parity_and_10digit_hts_ddp_preclearance_verified_for_green_lane",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -9316,6 +9407,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hash_tamper_block_latency_ms": sbid_hash_403.latency_ms,
     }
 
+    cust_commit_ok = evaluate_cross_border_customs_ddp_tariff_policy()
+    cust_under_403 = evaluate_cross_border_customs_ddp_tariff_policy(
+        declared_customs_value_cents=75000,
+    )
+    cust_ddu_422 = evaluate_cross_border_customs_ddp_tariff_policy(
+        ddp_preclearance_bound=False,
+    )
+    cust_hs_451 = evaluate_cross_border_customs_ddp_tariff_policy(
+        webiq_hs_classification_valid=False,
+    )
+    cust_fta_409 = evaluate_cross_border_customs_ddp_tariff_policy(
+        fta_tariff_savings_cents=75000,
+    )
+    cross_border_customs_ddp_guards = {
+        "all_passed": (
+            cust_commit_ok.allowed
+            and cust_commit_ok.settled_landed_cents == 642000
+            and not cust_under_403.allowed
+            and cust_under_403.http_status == 403
+            and not cust_ddu_422.allowed
+            and cust_ddu_422.http_status == 422
+            and not cust_hs_451.allowed
+            and cust_hs_451.http_status == 451
+            and not cust_fta_409.allowed
+            and cust_fta_409.action_pill == "Confirm"
+        ),
+        "ddp_settlement_latency_ms": cust_commit_ok.latency_ms,
+        "undervaluation_block_latency_ms": cust_under_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -9361,6 +9482,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "warranty_claim_telemetry_guards": warranty_claim_telemetry_guards,
         "b2b_moq_syndicate_escrow_guards": b2b_moq_syndicate_escrow_guards,
         "b2b_sealed_bid_auction_guards": b2b_sealed_bid_auction_guards,
+        "cross_border_customs_ddp_guards": cross_border_customs_ddp_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -12854,6 +12976,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sbid-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cross-Border Customs HS-Code & DDP Landed-Cost Sandbox (Round 33 FAQ Companion) -->
+      <div class="finops-box" id="cross-border-customs-ddp-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cust-title">🚢 跨境贸易海关编码 (HS Code) 与完税交货 (DDP Landed-Cost) 担保授权架构：预清关关税锁定令牌 (customs_ddp_tariff_mandate_...) vs 低报扣关与 DDU 到港补税决策器 (Round 33 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 报关金额 1:1 核对、DDP 预清关担保 ($6,900.00 上限) 与 10 位 HS 税号/FTA 原产地减免场景 (Cross-Border DDP Customs Scenario):</span></label>
+          <select id="cust-select" onchange="updateCrossBorderCustomsSandbox()">
+            <option value="cust_commit_ok">⚡ 发票与报关货值 1:1 吻合 ($6,000.00) + 官方 10 位 HS 编码合规 + DDP 完税总价 $6,420.00 (&lt;= $6,900 上限)：265ms 电子预清关绿通放行! (Act automatically)</option>
+            <option value="cust_under_403">🛑 阴阳发票低报逃税拦截：实际支付 $6,000.00 但卖方私自报关 $750.00 企图钻小额免税 (De Minimis) 空子 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="cust_ddu_422">🚨 缺失 DDP 预清关担保 (DDU 裸发) 拦截：卖方未锁定目的港完税交货担保 (ddp_preclearance_bound=False) → 15ms 触发 HTTP 422 阻断到岸天价滞港费风险!</option>
+            <option value="cust_hs_451">🛑 LLM 乱填 HS 税号 / 反倾销制裁拦截：Web IQ /v3/browse 核对官方 HTS/TARIC 税则检出编码错配或反倾销禁令 → 310ms 触发 HTTP 451 阻断!</option>
+            <option value="cust_fta_409">🧑‍⚖️ Web IQ 检出卖方持有认证自贸协定 (FTA) 原产地证可将关税从 12.5% ($750) 合法减免至 0% (总到岸价降至 $6,000.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cust-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -13325,6 +13465,7 @@ function renderAll() {{
   updateWarrantyClaimSandbox();
   updateB2BMOQSyndicateSandbox();
   updateB2BSealedBidSandbox();
+  updateCrossBorderCustomsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15174,6 +15315,56 @@ function updateB2BSealedBidSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 两阶段盲标哈希 + 独立实控人验真通过：逆向拍卖已自动授标 (VERIFIED_SEALED_BID_AWARD_EXECUTED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零底价泄露、零马甲陪标</strong>：最低有效盲标 <code>$38,200.00 &lt;= $45,000.00</code> 保留底价（直接节省 <code>$6,800.00</code>），SHA-256 承诺原像与 UBO 独立性全部核验通过，已自动签发采购合同并解冻未中标方保证金！" +
+    "</div>";
+}}
+
+function updateCrossBorderCustomsSandbox() {{
+  var selEl = document.getElementById("cust-select");
+  var outEl = document.getElementById("cust-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cust_under_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "跨境清关网关检出卖方提交的海关申报价值（<code>$750.00</code>）与真实商业发票支付金额（<code>$6,000.00</code>）严重不符！已在 <code>12ms</code> 内硬阻断伪造小额免税（De Minimis）低报闯关，杜绝目的港扣货没收与企业税务违规！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cust_ddu_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_DDP_PRECLEARANCE_OR_CAP_EXCEEDED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "当前跨境订单未绑定完税交货预清关担保（<code>ddp_preclearance_bound=False</code>，属于高风险 DDU 裸发）！网关已在 <code>15ms</code> 内拦截放款，防止货物到港后被清关行勒索天价代垫手续费与滞港费！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cust_hs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INVALID_HS_CODE_OR_ANTIDUMPING_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核对目的国官方海关税则库（USITC HTS / EU TARIC），检出申报的 10 位 HS 编码归类错误或命中反倾销附加税禁令，已在 <code>310ms</code> 内阻断错误报关！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cust_fta_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PREFERENTIAL_FTA_ORIGIN_TARIFF_SAVINGS_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出该商品符合自由贸易协定（FTA）原产地规则且卖方持有加密验真的原产地证书，可将进口关税从 <code>12.5% ($750.00)</code> 合法减免至 <code>0%</code>（总到岸价降至 <code>$6,000.00</code>，单笔立省 <code>$750.00</code>），建议一键确认挂载 FTA 原产地证！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 发票报关 1:1 吻合 + 10 位官方税号与 DDP 预清关锁定完成 (VERIFIED_DDP_CUSTOMS_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零目的港补税、零扣关风险</strong>：商业发票与报关额 <code>$6,000.00</code> 完全一致，10 位税号 <code>8504.40.9510</code> 经官方税则库验真无误，已锁定 <code>$6,420.00 &lt;= $6,900.00</code> DDP 完税总到岸价并签发电子预清关舱单！" +
     "</div>";
 }}
 

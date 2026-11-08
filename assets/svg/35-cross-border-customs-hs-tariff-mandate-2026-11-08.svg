@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg35" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#111C35"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent35" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg35)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent35)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="370" height="28" rx="14" fill="#172554" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="221" y="42" fill="#93C5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" text-anchor="middle">ROUND 33 · CROSS-BORDER CUSTOMS &amp; DDP TARIFF ARCHITECTURE</text>
+  <text x="422" y="42" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">Provenance: deterministic_offline_simulation · synthetic_policy · as of 2026-11-08</text>
+
+  <text x="36" y="82" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">跨境贸易海关编码 (HS Code) 与完税交货 (DDP Landed-Cost) 担保授权架构</text>
+  <text x="36" y="108" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="14">Pre-Cleared DDP Tariff Mandate (customs_ddp_tariff_mandate_... + 10-Digit HTS Grounding) vs. DDU Shocks &amp; Undervaluation Seizures</text>
+
+  <!-- Left Card: Legacy Cross-Border Customs Hazards -->
+  <rect x="36" y="128" width="360" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="52" y="144" width="328" height="32" rx="6" fill="#450A0A"/>
+  <text x="216" y="165" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">❌ 传统低报货值闯关与 DDU 到岸补税黑洞</text>
+
+  <rect x="54" y="192" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="214" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">1. 阴阳发票低报逃税扣关 (Undervaluation Fraud)</text>
+  <text x="68" y="236" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 实际支付 $6,000.00，卖方私自报关 $750 钻免税空子</text>
+  <text x="68" y="256" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 海关电子比对支付流水秒级查扣，面临没收与缉私罚款</text>
+  <text x="68" y="274" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：12ms 触发 HTTP 403 硬阻断低报拆单！</text>
+
+  <rect x="54" y="298" width="324" height="92" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="320" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">2. DDU 到港天价补税与滞港费勒索 (DDU Shock)</text>
+  <text x="68" y="342" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 发货未锁 DDP 预清关担保 (ddp_preclearance=False)</text>
+  <text x="68" y="362" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 货物卡在目的港保税仓，被清关行索要高额代垫手续费</text>
+  <text x="68" y="380" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：15ms 触发 HTTP 422 拒绝无担保 DDU 发货！</text>
+
+  <rect x="54" y="404" width="324" height="96" rx="8" fill="#18181B" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="68" y="426" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">3. LLM 乱猜 HS 编码或命中反倾销 (Invalid HS)</text>
+  <text x="68" y="448" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 错填 10 位税则号或出口商命中反倾销惩罚性关税</text>
+  <text x="68" y="468" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• Web IQ /v3/browse 310ms 实时核对 USITC HTS / TARIC</text>
+  <text x="68" y="486" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="600">→ 拦截策略：触发 HTTP 451 阻断错误税号报关！</text>
+
+  <!-- Center Card: Pre-Cleared DDP & HTS Mandate Engine -->
+  <rect x="416" y="128" width="368" height="390" rx="12" fill="#0F172A" stroke="#3B82F6" stroke-width="1.8"/>
+  <rect x="432" y="144" width="336" height="32" rx="6" fill="#172554"/>
+  <text x="600" y="165" fill="#93C5FD" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">🛡️ 预清关关税锁定令牌 (DDP Tariff Mandate)</text>
+
+  <rect x="434" y="192" width="332" height="106" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1"/>
+  <text x="448" y="214" fill="#93C5FD" font-family="Consolas, monospace" font-size="12" font-weight="700">customs_ddp_tariff_mandate_2026_11_08</text>
+  <text x="448" y="236" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">invoice: $6,000 == declared_value: $6,000</text>
+  <text x="448" y="254" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">hs_code: "8504.40.9510" (HTS Verified)</text>
+  <text x="448" y="272" fill="#E2E8F0" font-family="Consolas, monospace" font-size="11.5">ddp_landed: $6,420 &lt;= cap: $6,900.00</text>
+  <text x="448" y="290" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">✓ 发票报关 1:1 吻合 · DDP 包税封顶 · 官方税号验真</text>
+
+  <rect x="434" y="312" width="332" height="90" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="448" y="334" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">💡 Web IQ 自贸协定 (FTA) 原产地免税套利 (315ms)</text>
+  <text x="448" y="354" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 标准最惠国关税 12.5% ($750) vs FTA 原产地证 0%</text>
+  <text x="448" y="374" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12">• Web IQ 检出卖方具备有效 FTA 原产地证立省 $750.00</text>
+  <text x="448" y="392" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">→ 触发 HTTP 409 Confirm 将总到岸价降至 $6,000.00！</text>
+
+  <rect x="434" y="414" width="332" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="448" y="436" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700">⚡ 预清关锁定完成：265ms 绿通放行直达仓库</text>
+  <text x="448" y="456" fill="#ECFDF5" font-family="Segoe UI, Inter, sans-serif" font-size="12">• 10 位 HS 编码合规 + DDP 完税担保锁定 ($6,420.00)</text>
+  <text x="448" y="476" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="11.5" font-weight="700">• HTTP 200 SETTLED · 电子税单自动回写 ERP 三流合一</text>
+
+  <!-- Right Card: Quantitative Benchmark Scorecard -->
+  <rect x="804" y="128" width="360" height="390" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="820" y="144" width="328" height="32" rx="6" fill="#064E3B"/>
+  <text x="984" y="165" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" text-anchor="middle">📊 5 大跨境清关场景实测 (53/53 Passed)</text>
+
+  <rect x="822" y="192" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="212" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">1. 阴阳发票低报逃税 ($750 != $6,000)</text>
+  <text x="834" y="232" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 403 UNDERVALUATION · 12ms · 阻断走私扣关风险</text>
+
+  <rect x="822" y="256" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="276" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">2. 缺失 DDP 担保或超总成本上限 (DDU)</text>
+  <text x="834" y="296" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 422 MISSING_DDP_BOND · 15ms · 拦截到港天价补税</text>
+
+  <rect x="822" y="320" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="340" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">3. 错误 HS 编码 / 反倾销禁令 (valid=False)</text>
+  <text x="834" y="360" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 451 INVALID_HS_CODE · 310ms · 官方税则库拦截</text>
+
+  <rect x="822" y="384" width="324" height="54" rx="6" fill="#1E293B"/>
+  <text x="834" y="404" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">4. Web IQ 自贸协定 FTA 免税 (12.5% → 0%)</text>
+  <text x="834" y="424" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 409 FTA_TARIFF_CONFIRM · 315ms · 立省 $750.00</text>
+
+  <rect x="822" y="448" width="324" height="54" rx="6" fill="#064E3B"/>
+  <text x="834" y="468" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700">5. 10 位税号 + DDP 预清关验真通过 ($6,420)</text>
+  <text x="834" y="488" fill="#D1FAE5" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">HTTP 200 DDP_SETTLED · 265ms · 目的港零附加费通关</text>
+
+  <!-- Bottom Architect Takeaway Bar -->
+  <rect x="36" y="534" width="1128" height="116" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="56" y="562" fill="#93C5FD" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">🎯 架构师核心选型铁律（Architect Golden Rules · Round 33）</text>
+  <text x="56" y="586" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">1. 报关金额与支付发票 1:1 强绑定：严禁任何低报货值拆单（12ms 触发 HTTP 403 硬阻断），并强制锁定 DDP 预清关总到岸上限（15ms 拦截 DDU 敞口）。</text>
+  <text x="56" y="608" fill="#E2E8F0" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">2. 严禁大模型裸猜 HS 税号：必须通过 Microsoft Web IQ /v3/browse 核对目的国官方 HTS/TARIC 税则（310ms），并自动匹配 FTA 原产地证合法省下 $750 关税。</text>
+  <text x="56" y="630" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11.5">Repo: github.com/turbo998/agentic-commerce-lab · Docs: docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.md · Sandbox: #cross-border-customs-ddp-sandbox</text>
+</svg>

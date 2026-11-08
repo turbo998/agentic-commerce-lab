@@ -1600,6 +1600,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/b2b-moq-syndicate-escrow-vs-stranded-deposit-shortfall-faq.en.md",
             "docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.md",
             "docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.en.md",
+            "docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.md",
+            "docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -3019,6 +3021,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["b2b_sealed_bid_auction_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-sealed-bid-auction-sandbox", demo_zh)
+
+    def test_cross_border_customs_hs_tariff_mandate_vs_seizure_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cross_border_customs_ddp_tariff_policy,
+        )
+
+        # 1. Verified 1:1 invoice/declaration ($6,000) + valid HS + DDP $6,420 <= $6,900 -> 200 settled
+        commit_ok = evaluate_cross_border_customs_ddp_tariff_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_landed_cents, 642000)
+
+        # 2. Undervalued customs declaration ($750 != $6,000 invoice) -> 403 blocked in 12ms
+        under_403 = evaluate_cross_border_customs_ddp_tariff_policy(
+            declared_customs_value_cents=75000,
+        )
+        self.assertFalse(under_403.allowed)
+        self.assertEqual(under_403.http_status, 403)
+        self.assertEqual(
+            under_403.customs_lane, "CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED"
+        )
+
+        # 3. Missing DDP pre-clearance bond (unbonded DDU) -> 422 blocked in 15ms
+        ddu_422 = evaluate_cross_border_customs_ddp_tariff_policy(
+            ddp_preclearance_bound=False,
+        )
+        self.assertFalse(ddu_422.allowed)
+        self.assertEqual(ddu_422.http_status, 422)
+        self.assertEqual(
+            ddu_422.customs_lane, "MISSING_DDP_PRECLEARANCE_OR_CAP_EXCEEDED"
+        )
+
+        # 4. Invalid 10-digit HS classification or anti-dumping hit -> 451 blocked in 310ms
+        hs_451 = evaluate_cross_border_customs_ddp_tariff_policy(
+            webiq_hs_classification_valid=False,
+        )
+        self.assertFalse(hs_451.allowed)
+        self.assertEqual(hs_451.http_status, 451)
+
+        # 5. Web IQ verified FTA Certificate of Origin saves $750 duty -> 409 Confirm in 315ms
+        fta_409 = evaluate_cross_border_customs_ddp_tariff_policy(
+            fta_tariff_savings_cents=75000,
+        )
+        self.assertFalse(fta_409.allowed)
+        self.assertEqual(fta_409.http_status, 409)
+        self.assertEqual(fta_409.fta_tariff_savings_cents, 75000)
+        self.assertEqual(fta_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cross_border_customs_ddp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-customs-ddp-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
