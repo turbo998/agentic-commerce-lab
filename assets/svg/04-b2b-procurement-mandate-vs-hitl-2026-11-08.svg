@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accentBlue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bgGrad)"/>
+
+  <!-- Header Banner -->
+  <rect x="36" y="24" width="1128" height="84" rx="14" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="54" y="40" width="230" height="24" rx="6" fill="#065F46"/>
+  <text x="169" y="56" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="700" text-anchor="middle">B2B PROCUREMENT ARCHITECT FAQ</text>
+  <text x="300" y="57" fill="#94A3B8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="600">2026-11-08 · Round 2 Deep Dive · Policy-Bound Spend Mandate vs. Human-in-the-Loop (HITL)</text>
+  <text x="54" y="90" fill="#F8FAFC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="21" font-weight="800">B2B 企业采购智能体授权架构：确定性预算策略网关 vs 传统人工审批工作流选型一图流</text>
+
+  <!-- Left Column: Traditional vs Policy-Bound Architecture Principle -->
+  <rect x="36" y="124" width="552" height="248" rx="14" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="56" y="152" fill="#60A5FA" font-family="Segoe UI, PingFang SC, sans-serif" font-size="15" font-weight="700">1. 第一性原理：为什么必须将“LLM 寻源提议”与“确定性策略裁决”物理隔离？</text>
+
+  <!-- Bad Path -->
+  <rect x="56" y="168" width="512" height="82" rx="10" fill="#1E293B" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="72" y="190" fill="#FCA5A5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">⛔ 传统两极困境：全量人工 OA 拥堵 vs 裸授企业采购卡（严禁）</text>
+  <text x="72" y="212" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 痛点 A（橡皮图章疲劳）：80% 采购单为 &lt;$2,500 尾料，全推给人类主管导致盲目点“全部同意”</text>
+  <text x="72" y="232" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">• 痛点 B（注入越权盗刷）：若把高额度企业卡直接交给 Agent，恶意供应商网页一句话即可诱导超额下单</text>
+
+  <!-- Good Path -->
+  <rect x="56" y="262" width="512" height="94" rx="10" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="72" y="284" fill="#6EE7B7" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">✅ 确定性预算策略网关（Policy-Bound Spend Mandate · 代码级智能保险箱）</text>
+  <text x="72" y="306" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">① Web IQ 进模型前核价：/v3/web + /v3/browse 提取原始 passage，清洗注入并锁定价格与退货期摘要</text>
+  <text x="72" y="326" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12">② 独立策略引擎（非 LLM）：硬校验 供应商白名单 + MCC 类别码 + 单笔/日累计限额 + 历史基准价偏差 ≤5%</text>
+  <text x="72" y="346" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" font-weight="600">③ 按单签发受限令牌：满足绿区条件 &lt;380ms 自动签发 Stripe SPT v2 / 单次虚拟卡；越界自动升级人类 Passkey</text>
+
+  <!-- Right Column: 3-Tier B2B Spend Governance Matrix -->
+  <rect x="608" y="124" width="556" height="248" rx="14" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <text x="628" y="152" fill="#34D399" font-family="Segoe UI, PingFang SC, sans-serif" font-size="15" font-weight="700">2. B2B 采购三层分级授权红线（Green / Amber / Red 路由法则）</text>
+
+  <!-- Tier 1 Green -->
+  <rect x="628" y="166" width="516" height="60" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="644" y="187" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">🟢 绿区直通（Auto-Mandate · 占订单量 ~78%）：0 人工干预 · &lt;380ms 自动结算</text>
+  <text x="644" y="206" fill="#ECFDF5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">条件：合格供应商白名单 + MCC 匹配 + 单笔 ≤$2,500 + Web IQ 核验现价 ≤基准价 +5% + 退货期 ≥30 天</text>
+  <text x="644" y="221" fill="#6EE7B7" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11">动作：策略网关直接签发单次绑定令牌（Stripe SPT v2 `seller_account` 或 VTS 单次虚拟卡）</text>
+
+  <!-- Tier 2 Amber -->
+  <rect x="628" y="234" width="516" height="60" rx="8" fill="#451A03" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="644" y="255" fill="#FDE68A" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">🟡 黄区升权（Step-Up HITL · 占订单量 ~17%）：单级主管 Passkey 确认</text>
+  <text x="644" y="274" fill="#FEF3C7" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">条件：单笔 $2,500–$25,000，或当日部门累计超 80% 阈值，或现货溢价在 +5%～+15% 之间</text>
+  <text x="644" y="289" fill="#FBBF24" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11">动作：返回 MCP `WWW-Authenticate` (`insufficient_scope`)，由部门主管 FIDO2/Passkey 签名PO摘要后放行</text>
+
+  <!-- Tier 3 Red -->
+  <rect x="628" y="302" width="516" height="56" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="644" y="322" fill="#FECACA" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">🔴 红区熔断（Hard Block / Dual-Control · ~5%）：双人会签或立即阻断</text>
+  <text x="644" y="340" fill="#FEE2E2" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">条件：非白名单新供应商、单笔 &gt;$25,000、无退货条款、涉及退款/资金调拨、或检出网页提示词注入</text>
+  <text x="644" y="354" fill="#FCA5A5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11">动作：硬阻断 Agent 自动令牌签发，冻结会话并升级财务 + 法务双控会签或安全审计告警</text>
+
+  <!-- Bottom Full-Width End-to-End Flow & Quantitative Scorecard -->
+  <rect x="36" y="388" width="1128" height="260" rx="14" fill="#0F172A" stroke="#6366F1" stroke-width="1.5"/>
+  <text x="56" y="416" fill="#A5B4FC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="15" font-weight="700">3. 端到端防注入闭环与定量评测基准（Web IQ 实时核价 → 独立策略引擎 → 分级令牌签发）</text>
+
+  <!-- 4 Pipeline Steps -->
+  <rect x="56" y="432" width="256" height="106" rx="10" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="72" y="454" fill="#38BDF8" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">Step 1 · Web IQ 进模型前核价</text>
+  <text x="72" y="476" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• /v3/web + /v3/browse (passage)</text>
+  <text x="72" y="495" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 剥离隐藏提示词注入指令</text>
+  <text x="72" y="514" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 生成单价+退货期 SHA-256 摘要</text>
+
+  <text x="320" y="490" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="20" font-weight="800">→</text>
+
+  <rect x="338" y="432" width="256" height="106" rx="10" fill="#1E293B" stroke="#818CF8" stroke-width="1.2"/>
+  <text x="354" y="454" fill="#A5B4FC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">Step 2 · LLM 生成结构化 PR</text>
+  <text x="354" y="476" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 仅输出采购建议 JSON (PR)</text>
+  <text x="354" y="495" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 零卡号、零支付密钥上下文接触</text>
+  <text x="354" y="514" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 附带 Web IQ 证据引用 URL</text>
+
+  <text x="602" y="490" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="20" font-weight="800">→</text>
+
+  <rect x="620" y="432" width="256" height="106" rx="10" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="636" y="454" fill="#34D399" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">Step 3 · 确定性策略引擎裁决</text>
+  <text x="636" y="476" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 校验 Vendor/MCC/预算余额</text>
+  <text x="636" y="495" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 比对 PR 单价 == Web IQ 核验价</text>
+  <text x="636" y="514" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 路由至 绿区 / 黄区 / 红区</text>
+
+  <text x="884" y="490" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="20" font-weight="800">→</text>
+
+  <rect x="902" y="432" width="242" height="106" rx="10" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="918" y="454" fill="#FBBF24" font-family="Segoe UI, PingFang SC, sans-serif" font-size="13" font-weight="700">Step 4 · 令牌签发或阶梯升权</text>
+  <text x="918" y="476" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 绿区：签发 SPT v2 / 单次 VCN</text>
+  <text x="918" y="495" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 黄区：MCP 403 → Passkey 签名</text>
+  <text x="918" y="514" fill="#E2E8F0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="11.5">• 红区：硬拦截 + 财务/法务会签</text>
+
+  <!-- Bottom KPI Pills -->
+  <rect x="56" y="554" width="260" height="76" rx="10" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="186" y="582" fill="#A7F3D0" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20" font-weight="800" text-anchor="middle">380ms vs 42.5h</text>
+  <text x="186" y="608" fill="#ECFDF5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" text-anchor="middle">绿区尾料采购端到端结算耗时对比</text>
+
+  <rect x="332" y="554" width="260" height="76" rx="10" fill="#1E1B4B" stroke="#6366F1" stroke-width="1"/>
+  <text x="462" y="582" fill="#C7D2FE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20" font-weight="800" text-anchor="middle">-78.4% 审批工单</text>
+  <text x="462" y="608" fill="#E0E7FF" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" text-anchor="middle">消除低价值尾料引发的“橡皮图章疲劳”</text>
+
+  <rect x="608" y="554" width="260" height="76" rx="10" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="738" y="582" fill="#6EE7B7" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20" font-weight="800" text-anchor="middle">0.0% 越权穿透</text>
+  <text x="738" y="608" fill="#ECFDF5" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" text-anchor="middle">超额/非白名单/注入攻击 100% 确定性拦截</text>
+
+  <rect x="884" y="554" width="260" height="76" rx="10" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+  <text x="1014" y="582" fill="#7DD3FC" font-family="Segoe UI, PingFang SC, sans-serif" font-size="20" font-weight="800" text-anchor="middle">4,394+ 回归单测</text>
+  <text x="1014" y="608" fill="#E0F2FE" font-family="Segoe UI, PingFang SC, sans-serif" font-size="12" text-anchor="middle">turbo998/agentic-commerce-lab 100% 通过</text>
+</svg>

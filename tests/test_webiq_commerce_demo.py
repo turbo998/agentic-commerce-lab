@@ -1315,8 +1315,74 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
 
         suite = run_webiq_commerce_benchmark_suite()
         self.assertTrue(suite["architect_selection_guards"]["all_passed"])
+        self.assertTrue(suite["b2b_procurement_mandate_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("architect-selector-sandbox", demo_zh)
+        self.assertIn("b2b-mandate-selector-sandbox", demo_zh)
+
+    def test_b2b_procurement_policy_bound_spend_mandate_vs_hitl_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_b2b_procurement_spend_mandate
+
+        # 1. Green Zone: tail spend <= $2,500, AVL vendor, valid MCC, 30d returns -> auto-mint SPT v2 in 376ms
+        green = evaluate_b2b_procurement_spend_mandate(
+            vendor_in_avl=True,
+            mcc_allowed=True,
+            order_total_usd="1920.00",
+            supplier_rail="marketplace_connect",
+        )
+        self.assertTrue(green.allowed)
+        self.assertEqual(green.http_status, 200)
+        self.assertEqual(green.governance_tier, "green_auto_mandate")
+        self.assertEqual(green.minted_credential_type, "stripe_connect_spt_v2")
+        self.assertEqual(green.action, "Act automatically")
+
+        # 2. Amber Zone unsigned: $4,800 in ($2.5k, $25k] -> 403 + MCP WWW-Authenticate insufficient_scope challenge
+        amber_unsigned = evaluate_b2b_procurement_spend_mandate(
+            vendor_in_avl=True,
+            mcc_allowed=True,
+            order_total_usd="4800.00",
+            supplier_rail="external_card_supplier",
+            manager_passkey_stepup_signed=False,
+        )
+        self.assertFalse(amber_unsigned.allowed)
+        self.assertEqual(amber_unsigned.http_status, 403)
+        self.assertEqual(amber_unsigned.governance_tier, "amber_stepup_hitl")
+        self.assertIn("insufficient_scope", amber_unsigned.www_authenticate_challenge or "")
+        self.assertEqual(amber_unsigned.action, "Confirm")
+
+        # 3. Amber Zone signed with manager FIDO2 Passkey -> 200 + single-use Visa VTS VCN minted
+        amber_signed = evaluate_b2b_procurement_spend_mandate(
+            vendor_in_avl=True,
+            mcc_allowed=True,
+            order_total_usd="4800.00",
+            supplier_rail="external_card_supplier",
+            manager_passkey_stepup_signed=True,
+        )
+        self.assertTrue(amber_signed.allowed)
+        self.assertEqual(amber_signed.http_status, 200)
+        self.assertEqual(amber_signed.minted_credential_type, "visa_vts_single_use_vcn")
+
+        # 4. Red Zone blocks: prompt injection, non-AVL vendor, sub-30d return policy, price mismatch, >$25k cap
+        red_inj = evaluate_b2b_procurement_spend_mandate(prompt_injection_detected=True)
+        self.assertFalse(red_inj.allowed)
+        self.assertEqual(red_inj.governance_tier, "red_hard_block")
+
+        red_avl = evaluate_b2b_procurement_spend_mandate(vendor_in_avl=False)
+        self.assertFalse(red_avl.allowed)
+        self.assertEqual(red_avl.http_status, 403)
+
+        red_ret = evaluate_b2b_procurement_spend_mandate(verified_return_days=7)
+        self.assertFalse(red_ret.allowed)
+        self.assertEqual(red_ret.http_status, 422)
+
+        red_digest = evaluate_b2b_procurement_spend_mandate(webiq_price_digest_matches=False)
+        self.assertFalse(red_digest.allowed)
+        self.assertEqual(red_digest.http_status, 422)
+
+        red_cap = evaluate_b2b_procurement_spend_mandate(order_total_usd="68000.00")
+        self.assertFalse(red_cap.allowed)
+        self.assertEqual(red_cap.governance_tier, "red_hard_block")
+        self.assertEqual(red_cap.action, "Send to a human")
 
 
 if __name__ == "__main__":

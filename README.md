@@ -1,6 +1,6 @@
 # Agentic Commerce（智能体商业）研究与工程实验室
 
-🌐 **Language / 语言切换**: **中文 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📘 架构选型与协议原理解析 FAQ (`docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md`)](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md)** | **[🚀 Web IQ × Agentic Commerce 交互式演示台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 4:5 基准报告 (`benchmark-cards.html`)](benchmark-cards.html)** | **[🗂️ 阶段归档索引 (`docs/stage-archive-index.md`)](docs/stage-archive-index.md)**
+🌐 **Language / 语言切换**: **中文 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📘 支付轨道与接地选型 FAQ (`docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md`)](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md)** | **[🏢 B2B 采购策略网关选型 FAQ (`docs/b2b-procurement-mandate-vs-hitl-selection-faq.md`)](docs/b2b-procurement-mandate-vs-hitl-selection-faq.md)** | **[🚀 Web IQ × Agentic Commerce 交互式演示台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 4:5 基准报告 (`benchmark-cards.html`)](benchmark-cards.html)** | **[🗂️ 阶段归档索引 (`docs/stage-archive-index.md`)](docs/stage-archive-index.md)**
 
 ---
 
@@ -30,9 +30,13 @@
 
 ### 1. Agentic Commerce × Microsoft Web IQ 四层参考架构与 2026-11-08 架构选型一图流总结
 
-> 💡 **AI 解决方案架构师实战必读**：**[《Agentic Commerce 支付轨道（Stripe SPT vs. Visa VIC vs. x402）与 Web Grounding（Web IQ vs. Exa / Bright Data）架构选型及协议原理解析 FAQ》](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md)** —— 3 分钟看懂选型结论、10 分钟彻底理解底层资金流与授权链！
+> 💡 **AI 解决方案架构师实战必读**：
+> - **Round 1 专题**：**[《Agentic Commerce 支付轨道（Stripe SPT vs. Visa VIC vs. x402）与 Web Grounding（Web IQ vs. Exa / Bright Data）架构选型及协议原理解析 FAQ》](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md)**
+> - **Round 2 专题**：**[《B2B 企业采购智能体授权架构：确定性预算策略网关（Policy-Bound Spend Mandate）vs 传统人工审批工作流选型与原理解析 FAQ》](docs/b2b-procurement-mandate-vs-hitl-selection-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
+
+![2026-11-08 B2B 企业采购三层分级策略网关 vs 传统人工审批一图流总结](assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

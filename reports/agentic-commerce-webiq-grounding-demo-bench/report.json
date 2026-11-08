@@ -73,6 +73,13 @@
     "foundry_bing_checkout_blocked_reason": "foundry_bing_grounding_hides_raw_passages_unsafe_for_autonomous_payment_digest",
     "connect_header_without_obo_blocked_reason": "connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header"
   },
+  "b2b_procurement_mandate_guards": {
+    "all_passed": true,
+    "green_latency_ms": 376,
+    "amber_unsigned_reason": "b2b_amber_zone_requires_mcp_stepup_manager_passkey_signature",
+    "amber_signed_credential": "visa_vts_single_use_vcn",
+    "red_blocked_reason": "b2b_red_zone_webiq_prompt_injection_detected_in_supplier_passage"
+  },
   "scenarios": [
     {
       "id": "W01",

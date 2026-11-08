@@ -1,6 +1,6 @@
 # Agentic Commerce Research & Engineering Lab
 
-🌐 **Language / 语言切换**: **[中文 (`README.md`)](README.md)** | **English (Current)** | **[📘 Architecture Selection & Protocol FAQ (`docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md`)](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card 4:5 Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)** | **[🗂️ Stage Archive Index (`docs/stage-archive-index.md`)](docs/stage-archive-index.md)**
+🌐 **Language / 语言切换**: **[中文 (`README.md`)](README.md)** | **English (Current)** | **[📘 Payment & Grounding Selection FAQ (`docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md`)](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)** | **[🏢 B2B Procurement Mandate vs. HITL FAQ (`docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md`)](docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md)** | **[🚀 Interactive H5 Live Demo (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card 4:5 Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)** | **[🗂️ Stage Archive Index (`docs/stage-archive-index.md`)](docs/stage-archive-index.md)**
 
 ---
 
@@ -30,9 +30,13 @@ This repository is a production-grade research and engineering testbed for **Age
 
 ### 1. Agentic Commerce × Microsoft Web IQ 4-Layer Architecture & 2026-11-08 Executive Visual Summary
 
-> 💡 **Flagship AI Solution Architect Guide**: **[Agentic Commerce Payment Rails (Stripe SPT vs. Visa VIC vs. x402) & Web Grounding (Web IQ vs. Exa / Bright Data) Selection FAQ](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)** — Understand the right architecture choice in 3 minutes and master end-to-end payment & grounding flows in 10 minutes!
+> 💡 **Flagship AI Solution Architect Guides**:
+> - **Round 1 Deep Dive**: **[Agentic Commerce Payment Rails (Stripe SPT vs. Visa VIC vs. x402) & Web Grounding (Web IQ vs. Exa / Bright Data) Selection FAQ](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**
+> - **Round 2 Deep Dive**: **[B2B Procurement Agent Authorization: Policy-Bound Spend Mandate vs. Legacy HITL Approval Workflow Selection FAQ](docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
+
+![2026-11-08 B2B Procurement Policy-Bound Spend Mandate vs HITL Visual Summary](assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
