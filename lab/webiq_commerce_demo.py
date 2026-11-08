@@ -5990,6 +5990,120 @@ def evaluate_privacy_pii_shipping_token_and_erasure_policy(
     )
 
 
+@dataclass(frozen=True)
+class InventoryReservationOversellVerdict:
+    """Round 19 verdict for Mandate-Backed 180s Inventory Lease & Manual Pre-Auth 2PC vs Oversell Refund Storms & Cart Hoarding."""
+
+    allowed: bool
+    http_status: int
+    inventory_lane: str
+    lock_acquired: bool
+    captured_amount_cents: int
+    refund_fee_loss_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_inventory_reservation_and_oversell_policy(
+    *,
+    phase: str = "finalize_checkout",
+    has_valid_mandate: bool = True,
+    active_holds_for_buyer: int = 1,
+    max_active_holds_per_buyer: int = 2,
+    available_qty: int = 1,
+    requested_qty: int = 1,
+    lease_expired: bool = False,
+    fencing_token: int = 42,
+    current_committed_token: int = 42,
+    backorder_lead_time_days: int = 0,
+    substitute_sku_offered: bool = False,
+    order_amount_cents: int = 99900,
+) -> InventoryReservationOversellVerdict:
+    """Evaluate high-concurrency agentic checkout inventory leases: quote snapshot, cart-hoarding quota, 180s lease + fencing token, and manual pre-auth void."""
+
+    # 1. Multi-Merchant Quote Phase (calculate_order) -> never lock physical inventory
+    if phase == "calculate_order":
+        return InventoryReservationOversellVerdict(
+            True,
+            200,
+            "NON_BINDING_QUOTE_SNAPSHOT",
+            False,
+            0,
+            0,
+            "quote_phase_returns_availability_snapshot_without_locking_physical_stock",
+            185,
+            "Act automatically",
+        )
+
+    # 2. Anti-Cart-Hoarding / Denial-of-Inventory Guard: require MandateVC and active_holds_for_buyer <= 2
+    if not has_valid_mandate or active_holds_for_buyer > max_active_holds_per_buyer:
+        return InventoryReservationOversellVerdict(
+            False,
+            429,
+            "BLOCKED_CART_HOARDING_QUOTA_EXCEEDED",
+            False,
+            0,
+            0,
+            "inventory_hold_denied_missing_mandate_or_per_buyer_active_hold_quota_exceeded",
+            16,
+            "Send to a human",
+        )
+
+    # 3. Stockout Check: if live stock < requested_qty, inspect backorder / substitute SKU vs hard sold-out
+    if available_qty < requested_qty:
+        if backorder_lead_time_days > 3 or substitute_sku_offered:
+            return InventoryReservationOversellVerdict(
+                False,
+                409,
+                "BACKORDER_OR_SUBSTITUTE_CONFIRM_REQUIRED",
+                False,
+                0,
+                0,
+                "live_stock_depleted_backorder_or_substitute_sku_requires_human_confirm",
+                340,
+                "Confirm",
+            )
+        return InventoryReservationOversellVerdict(
+            False,
+            409,
+            "STOCKOUT_ZERO_CHARGE_ABORT",
+            False,
+            0,
+            0,
+            "atomic_lua_stock_check_returned_zero_aborted_before_payment_capture",
+            14,
+            "Send to a human",
+        )
+
+    # 4. Pre-Capture Lease Expiry & Monotonic Fencing Token Verification -> Void manual pre-auth with $0 fee loss
+    if lease_expired or fencing_token < current_committed_token:
+        return InventoryReservationOversellVerdict(
+            False,
+            409,
+            "INVENTORY_LEASE_EXPIRED_PREAUTH_VOIDED",
+            False,
+            0,
+            0,
+            "inv_hold_180s_lease_expired_or_stale_fencing_token_manual_preauth_voided_zero_fee_loss",
+            24,
+            "Send to a human",
+        )
+
+    # 5. Clean Atomic Hold + Manual Pre-Auth Capture Commit
+    return InventoryReservationOversellVerdict(
+        True,
+        200,
+        "ATOMIC_HOLD_AND_CAPTURE_COMMITTED",
+        True,
+        order_amount_cents,
+        0,
+        "inv_hold_180s_lease_and_fencing_token_verified_manual_preauth_captured_zero_oversell",
+        280,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -7484,6 +7598,48 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "gdpr_shred_latency_ms": pii_gdpr_410.latency_ms,
     }
 
+    inv_quote_ok = evaluate_inventory_reservation_and_oversell_policy(
+        phase="calculate_order",
+    )
+    inv_commit_ok = evaluate_inventory_reservation_and_oversell_policy(
+        phase="finalize_checkout",
+    )
+    inv_hoard_429 = evaluate_inventory_reservation_and_oversell_policy(
+        active_holds_for_buyer=3,
+    )
+    inv_expired_409 = evaluate_inventory_reservation_and_oversell_policy(
+        lease_expired=True,
+        fencing_token=41,
+        current_committed_token=42,
+    )
+    inv_backorder_409 = evaluate_inventory_reservation_and_oversell_policy(
+        available_qty=0,
+        backorder_lead_time_days=14,
+    )
+    inv_stockout_409 = evaluate_inventory_reservation_and_oversell_policy(
+        available_qty=0,
+    )
+    inventory_reservation_oversell_guards = {
+        "all_passed": (
+            inv_quote_ok.allowed
+            and not inv_quote_ok.lock_acquired
+            and inv_commit_ok.allowed
+            and inv_commit_ok.lock_acquired
+            and inv_commit_ok.refund_fee_loss_cents == 0
+            and not inv_hoard_429.allowed
+            and inv_hoard_429.http_status == 429
+            and not inv_expired_409.allowed
+            and inv_expired_409.http_status == 409
+            and inv_expired_409.refund_fee_loss_cents == 0
+            and not inv_backorder_409.allowed
+            and inv_backorder_409.action_pill == "Confirm"
+            and not inv_stockout_409.allowed
+            and inv_stockout_409.http_status == 409
+        ),
+        "atomic_commit_latency_ms": inv_commit_ok.latency_ms,
+        "expired_void_latency_ms": inv_expired_409.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -7515,6 +7671,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ap2_circuit_breaker_recall_guards": ap2_circuit_breaker_recall_guards,
         "idempotency_deduplication_guards": idempotency_deduplication_guards,
         "privacy_pii_shipping_token_guards": privacy_pii_shipping_token_guards,
+        "inventory_reservation_oversell_guards": inventory_reservation_oversell_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -10753,6 +10910,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pii-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Flash-Sale Inventory Lease & Zero-Oversell Sandbox (Round 19 FAQ Companion) -->
+      <div class="finops-box" id="inventory-reservation-oversell-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-inv-title">📦 AI Agent 秒杀抢购、并发锁库与防超卖架构：180s 租约 (inv_hold_...) + manual 预授权双锁 vs 无锁超卖退费与恶意占库决策器 (Round 19 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 并发秒杀阶段、买家锁库配额与 Fencing Token 栅栏状态 (Flash-Sale Phase, Quota &amp; Lease Fencing State):</span></label>
+          <select id="inv-select" onchange="updateInventoryReservationSandbox()">
+            <option value="inv_commit_ok">⚡ 双锁对齐原子成交：MandateVC 有效 + 配额&lt;=2 → 签发 inv_hold_... (180s) + manual 预授权并核验 Fencing Token=42 实扣 $999.00! (280ms · 0 超卖)</option>
+            <option value="inv_quote_ok">📍 比价试算零锁库快照：Agent 并发调用 30 家店铺 calculate_order → 仅返回可用库存快照 (lock_acquired=False · 185ms)，杜绝占库耗尽!</option>
+            <option value="inv_hoard_429">🛑 恶意比价爬虫超额囤货拦截：单买家试图同时锁定第 3 件商品 (active_holds=3 &gt; 2 synthetic_policy) → 16ms 触发 HTTP 429 硬阻断!</option>
+            <option value="inv_expired_409">🔄 180s 租约过期自动冲正预授权：僵尸 Agent 卡顿 195s 后携旧 token=41(&lt;42) 请求出库 → 24ms 触发 HTTP 409 并 Void 预授权 ($0.00 退费手续费损耗!)</option>
+            <option value="inv_backorder_409">🧑‍⚖️ 断货转 14 天延期预售 / 替代型号：Web IQ /v3/browse 检出隐藏预售小字 → 340ms 触发 HTTP 409 Confirm 交人类买家拍板!</option>
+            <option value="inv_stockout_409">🛑 现货彻底售罄零扣款终止：Redis Lua 原子递减返回 0 且无预售 → 14ms 触发 HTTP 409 STOCKOUT_ZERO_CHARGE_ABORT ($0.00 扣款)</option>
+          </select>
+        </div>
+        <div id="inv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -11210,6 +11386,7 @@ function renderAll() {{
   updateAp2CircuitBreakerSandbox();
   updateIdempotencyDeduplicationSandbox();
   updatePrivacyPiiSandbox();
+  updateInventoryReservationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12332,6 +12509,65 @@ function updatePrivacyPiiSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📍 比价阶段粗粒度邮编前缀试算通过 (COARSE_GEO_QUOTE_AUTHORIZED · 195ms · Act automatically):</strong><br>" +
     "• <strong>最小化披露</strong>：向 10 家比价商户仅传递非识别粗粒度前缀 <code>US-CA-940</code> 即可精准算出州税与运费，9 家未成交商户拿不到任何街道门牌或手机号（<code>0 bytes</code> PII 暴露）！" +
+    "</div>";
+}}
+
+function updateInventoryReservationSandbox() {{
+  var selEl = document.getElementById("inv-select");
+  var outEl = document.getElementById("inv-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "inv_hoard_429") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 429 BLOCKED_CART_HOARDING_QUOTA_EXCEEDED (16ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到同一买家主体试图并发锁定第 3 个活跃库存句柄（超过单买家并发锁库上限 <code>max_active_holds=2</code>）或缺少有效 <code>MandateVC</code>，当场拦截以防止比价机器人占库耗尽攻击（Denial-of-Inventory）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "inv_expired_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔄 HTTP 409 INVENTORY_LEASE_EXPIRED_PREAUTH_VOIDED (24ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Agent 锁库租约（<code>180s TTL</code>）已超时回收且栅栏令牌失配（<code>fencing_token 41 &lt; current 42</code>）！网关拒绝出库并立即调用 <code>payment_intents.cancel</code> 冲正未捕获的 <code>manual</code> 预授权——买家实扣 <code>$0.00</code>，商户免遭 <code>2.9% + $0.30</code> 退费手续费损失（<code>$0.00</code> 损耗）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "inv_backorder_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BACKORDER_OR_SUBSTITUTE_CONFIRM_REQUIRED (340ms · Confirm · synthetic_policy)：<br>" +
+      "实时现货已归零！Microsoft Web IQ <code>/v3/browse</code> 检出商户页面提供 <code>14 天</code> 延期预售（超过 <code>3 天</code> 现货阈值）或替代型号，严禁 Agent 静默换货扣款，已路由人类买家显式确认！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "inv_stockout_409") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 STOCKOUT_ZERO_CHARGE_ABORT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "Redis Lua 原子库存递减返回 <code>available_qty=0</code> 且无可用预售，在发起任何支付扣款前安全终止（实扣 <code>$0.00</code>，退费手续费损耗 <code>$0.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "inv_quote_ok") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>📍 比价试算非约束库存快照返回 (NON_BINDING_QUOTE_SNAPSHOT · 185ms · lock_acquired=False · Act automatically):</strong><br>" +
+      "• <strong>抗占库设计</strong>：<code>calculate_order</code> 仅返回当前可售水位与含税运报价，绝不锁死物理库存，允许全网比价 Agent 高并发询价而不会饿死真实买家！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 180s 锁库租约 + manual 预授权双锁原子成交 (ATOMIC_HOLD_AND_CAPTURE_COMMITTED · 280ms · Act automatically):</strong><br>" +
+    "• <strong>0.0% 超卖率</strong>：核验 <code>MandateVC</code> 有效、配额 <code>1&lt;=2</code> 且单调递增栅栏令牌 <code>fencing_token === 42</code> 后，原子提交 WMS 出库并执行 <code>payment_intents.capture</code>（实扣 <code>$999.00</code>，手续费损耗 <code>$0.00</code>）！" +
     "</div>";
 }}
 

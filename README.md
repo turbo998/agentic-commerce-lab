@@ -50,6 +50,7 @@
 - **专题 16（多智能体支付失控熔断与供应链召回硬阻断：AP2 金融断路器 vs 有界指数退避重试）**：**[《多智能体支付失控熔断、供应链召回硬阻断与预算速度限制架构：AP2 金融断路器（Velocity Cap + 连续越权锁死 + Web IQ 监管召回绊网 `W09`）vs 有界指数退避重试选型与原理解析 FAQ》](docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.md)**
 - **专题 17（AI Agent 工具调用超时、重试风暴与防重扣幂等架构：意图派生幂等键与 `SHA-256` 载荷指纹 vs 并发锁与改参漂移拦截）**：**[《AI Agent 工具调用超时、重试风暴与防重扣幂等架构：意图派生幂等键与载荷哈希绑定（`Idempotency-Key` + `SHA-256` 参数指纹 + 24h 快照重放）vs 飞行中并发锁（`HTTP 409`）与大模型改参漂移拦截（`HTTP 422`）选型与原理解析 FAQ》](docs/idempotency-payload-hash-vs-retry-double-charge-faq.md)**
 - **专题 18（AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理披露与金库句柄 `ship_tok_...` vs 明文 PII 泄漏与 GDPR 密码学粉碎）**：**[《AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理位置披露与零明文上下文履约令牌（粗粒度税区前缀 `Postal-Prefix` + 隐私金库句柄 `ship_tok_...`）vs 明文 PII 进 Prompt 泄漏与 GDPR 密码学粉碎（Crypto-Shredding）选型与原理解析 FAQ》](docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md)**
+- **专题 19（AI Agent 秒杀抢购、并发锁库与防超卖架构：180s 短租约 `inv_hold_...` 与 `capture_method=manual` 预授权双锁对齐 vs 无锁超卖退费风暴与恶意占库耗尽攻击）**：**[《AI Agent 秒杀抢购、并发锁库与防超卖架构：有界 TTL 软锁库租约与预授权双锁对齐（`inv_hold_...` 180s TTL + `capture_method=manual` 原子提交）vs 乐观无锁超卖退费风暴与恶意 Agent 占库耗尽攻击（Denial-of-Inventory）选型与原理解析 FAQ》](docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -86,6 +87,8 @@
 ![2026-11-08 AI Agent 工具调用超时、重试风暴与防重扣幂等架构一图流](assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
 
 ![2026-11-08 AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构一图流](assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
+
+![2026-11-08 AI Agent 秒杀抢购、并发锁库与防超卖架构一图流](assets/svg/21-inventory-reservation-ttl-hold-vs-oversell-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

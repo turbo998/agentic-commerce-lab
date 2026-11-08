@@ -175,6 +175,11 @@
     "coarse_quote_latency_ms": 195,
     "gdpr_shred_latency_ms": 24
   },
+  "inventory_reservation_oversell_guards": {
+    "all_passed": true,
+    "atomic_commit_latency_ms": 280,
+    "expired_void_latency_ms": 24
+  },
   "scenarios": [
     {
       "id": "W01",

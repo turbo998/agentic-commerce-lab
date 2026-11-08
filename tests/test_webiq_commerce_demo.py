@@ -1572,6 +1572,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/idempotency-payload-hash-vs-retry-double-charge-faq.en.md",
             "docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md",
             "docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.en.md",
+            "docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.md",
+            "docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2274,6 +2276,67 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["privacy_pii_shipping_token_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("privacy-pii-shipping-token-sandbox", demo_zh)
+
+    def test_inventory_reservation_ttl_hold_vs_oversell_compensation_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_inventory_reservation_and_oversell_policy
+
+        # 1. Quote phase (calculate_order) never locks physical stock
+        quote_ok = evaluate_inventory_reservation_and_oversell_policy(
+            phase="calculate_order",
+        )
+        self.assertTrue(quote_ok.allowed)
+        self.assertFalse(quote_ok.lock_acquired)
+        self.assertEqual(quote_ok.inventory_lane, "NON_BINDING_QUOTE_SNAPSHOT")
+
+        # 2. Valid MandateVC + quota <= 2 + active lease & fencing token -> 200 atomic commit
+        commit_ok = evaluate_inventory_reservation_and_oversell_policy(
+            phase="finalize_checkout",
+        )
+        self.assertTrue(commit_ok.allowed)
+        self.assertTrue(commit_ok.lock_acquired)
+        self.assertEqual(commit_ok.captured_amount_cents, 99900)
+        self.assertEqual(commit_ok.refund_fee_loss_cents, 0)
+
+        # 3. Cart-hoarding bot exceeding per-buyer active hold quota (>2) -> 429 blocked
+        hoard_429 = evaluate_inventory_reservation_and_oversell_policy(
+            active_holds_for_buyer=3,
+        )
+        self.assertFalse(hoard_429.allowed)
+        self.assertEqual(hoard_429.http_status, 429)
+        self.assertEqual(hoard_429.inventory_lane, "BLOCKED_CART_HOARDING_QUOTA_EXCEEDED")
+
+        # 4. Expired 180s lease or stale fencing token -> 409 pre-auth voided with $0 fee loss
+        expired_409 = evaluate_inventory_reservation_and_oversell_policy(
+            lease_expired=True,
+            fencing_token=41,
+            current_committed_token=42,
+        )
+        self.assertFalse(expired_409.allowed)
+        self.assertEqual(expired_409.http_status, 409)
+        self.assertEqual(expired_409.refund_fee_loss_cents, 0)
+        self.assertEqual(expired_409.inventory_lane, "INVENTORY_LEASE_EXPIRED_PREAUTH_VOIDED")
+
+        # 5. Depleted stock with 14-day backorder -> 409 Confirm
+        backorder_409 = evaluate_inventory_reservation_and_oversell_policy(
+            available_qty=0,
+            backorder_lead_time_days=14,
+        )
+        self.assertFalse(backorder_409.allowed)
+        self.assertEqual(backorder_409.http_status, 409)
+        self.assertEqual(backorder_409.action_pill, "Confirm")
+
+        # 6. Hard stockout -> 409 zero-charge abort
+        stockout_409 = evaluate_inventory_reservation_and_oversell_policy(
+            available_qty=0,
+        )
+        self.assertFalse(stockout_409.allowed)
+        self.assertEqual(stockout_409.http_status, 409)
+        self.assertEqual(stockout_409.inventory_lane, "STOCKOUT_ZERO_CHARGE_ABORT")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["inventory_reservation_oversell_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("inventory-reservation-oversell-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

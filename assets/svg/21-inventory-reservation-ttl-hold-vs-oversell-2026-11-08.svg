@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg21" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent21" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg21)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent21)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-08 · ROUND 19 · FLASH-SALE INVENTORY LEASE (inv_hold_... 180s) &amp; MANUAL PRE-AUTH 2PC VS. OVERSELL &amp; CART HOARDING FAQ</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">AI Agent 秒杀锁库与防超卖：180s 租约 + manual 预授权双锁 vs 无锁超卖退费与恶意占库</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: deterministic_offline_simulation + synthetic_policy + official_doc_snapshot · 0.0% Oversell Rate · $0.00 Refund Fee Loss on Expired Void</text>
+
+  <!-- Left Column: Two Fatal Failure Modes -->
+  <rect x="44" y="132" width="356" height="378" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="356" height="36" rx="12" fill="#7F1D1D"/>
+  <text x="62" y="155" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统架构在 Agent 并发抢购下的两大死穴</text>
+
+  <rect x="60" y="182" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="204" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 乐观无锁自动扣款 (automatic -> 后置扣库)</text>
+  <text x="72" y="224" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 25 个 Agent 50ms 并发抢 5 件现货 → 25 笔全扣款</text>
+  <text x="72" y="244" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 被迫退单 20 笔，但已捕获订单退款不退 2.9%+$0.30</text>
+  <text x="72" y="264" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 💥 卖 5 台显卡，先倒贴净亏 $586.00 手续费!</text>
+
+  <rect x="60" y="290" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="312" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 比价即长时锁库 (Denial-of-Inventory 攻击)</text>
+  <text x="72" y="332" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 比价 Agent 并发调用 30 家店铺 calculate_order</text>
+  <text x="72" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 若询价即锁库存 15 分钟 → 1 秒内全店现货被锁光</text>
+  <text x="72" y="372" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 💥 拦截对策：比价 0 锁库 + 单买家配额 &lt;=2 (429 16ms)</text>
+
+  <rect x="60" y="398" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="420" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 假现货与静默转预售 (Silent Backorder Swap)</text>
+  <text x="72" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• JSON-LD 静态写 InStock，正文小字写“预计 4 周发货”</text>
+  <text x="72" y="460" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 断货后商户欲静默替换为翻新替代型号或 14 天预售</text>
+  <text x="72" y="480" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 🧑‍⚖️ Web IQ 实时接地 → HTTP 409 Confirm (340ms)</text>
+
+  <!-- Center Column: 180s Lease + Fencing Token + Manual Pre-Auth 2PC -->
+  <rect x="418" y="132" width="364" height="378" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="418" y="132" width="364" height="36" rx="12" fill="#064E3B"/>
+  <text x="436" y="155" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">✅ 180s 锁库租约 + Fencing Token + manual 2PC</text>
+
+  <rect x="434" y="182" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="204" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Step 1: 比价零锁库 · 锁库严查 MandateVC 与配额</text>
+  <text x="446" y="224" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• calculate_order 仅返回非约束库存快照 (185ms)</text>
+  <text x="446" y="244" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• acquire_hold 校验 MandateVC 且 active_holds &lt;= 2</text>
+  <text x="446" y="264" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• Redis Lua 原子递减签发 inv_hold_... (180s TTL)</text>
+
+  <rect x="434" y="290" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="312" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Step 2: 手工预授权冻结 + 单调递增栅栏校验</text>
+  <text x="446" y="332" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 发起 PaymentIntent (capture_method=manual)</text>
+  <text x="446" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 最终出库前核验 now &lt; expires_at 且 token 匹配</text>
+  <text x="446" y="372" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 校验通过 → WMS 硬提交 + Capture (HTTP 200 · 280ms)</text>
+
+  <rect x="434" y="398" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="420" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Step 3: 租约超时自动 Void 预授权 ($0 手续费损耗)</text>
+  <text x="446" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 若 Agent 推理卡顿 &gt;180s (token 41 &lt; current 42)</text>
+  <text x="446" y="460" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 立即拒绝出库并调用 payment_intents.cancel 冲正</text>
+  <text x="446" y="480" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 🔄 HTTP 409 LEASE_EXPIRED_VOIDED (24ms · $0 损耗)</text>
+
+  <!-- Right Column: Quantitative Scorecard -->
+  <rect x="800" y="132" width="356" height="378" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>
+  <rect x="800" y="132" width="356" height="36" rx="12" fill="#0C4A6E"/>
+  <text x="818" y="155" fill="#BAE6FD" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 并发锁库与防超卖实测计分卡 (Round 19)</text>
+
+  <rect x="816" y="182" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="202" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">双锁对齐原子成交 (Hold + Manual Capture)</text>
+  <text x="828" y="224" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 280ms · 0.0% 超卖 · Act automatically</text>
+
+  <rect x="816" y="250" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="270" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">比价试算非约束快照 (calculate_order)</text>
+  <text x="828" y="292" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 185ms · 0 物理锁库 · Act automatically</text>
+
+  <rect x="816" y="318" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">恶意比价爬虫超额占库 (active_holds &gt; 2)</text>
+  <text x="828" y="360" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 429 · 16ms 硬阻断 · Send to a human</text>
+
+  <rect x="816" y="386" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="406" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">180s 租约过期 / Fencing Token 失配冲正</text>
+  <text x="828" y="428" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 24ms Void 预授权 · $0.00 手续费损耗</text>
+
+  <rect x="816" y="454" width="324" height="44" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="481" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">断货转 14d 预售/换型：HTTP 409 Confirm (340ms)</text>
+
+  <!-- Bottom Bar: Architect Takeaway -->
+  <rect x="44" y="526" width="1112" height="108" rx="12" fill="#090D16" stroke="#334155" stroke-width="1.2"/>
+  <text x="64" y="552" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="800">🎯 架构师核心选型铁律 (Architect Golden Rules for Flash-Sale Inventory Leases &amp; Zero-Oversell):</text>
+  <text x="64" y="576" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">1. 试算与锁库分离：calculate_order 绝不锁物理库存 (185ms)；申请 inv_hold_live_... (180s TTL) 强制要求买家 MandateVC 验签且单买家活跃锁库 &lt;= 2 (超限 16ms 报 429)。</text>
+  <text x="64" y="598" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">2. 先锁库预授权、核验栅栏后再 Capture：采用 capture_method=manual 配合单调递增 fencing_token；若超时 (&gt;180s) 立即 Void 预授权 (24ms 报 409)，避免损失 2.9%+$0.30 收单费。</text>
+  <text x="64" y="620" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 断货换型或预售延期 (&gt;3d) 强制经 Web IQ /v3/browse 实时接地并触发 HTTP 409 Confirm (340ms) · 线下实体仓盘亏标注为 not_measured · 详见 docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.md</text>
+</svg>

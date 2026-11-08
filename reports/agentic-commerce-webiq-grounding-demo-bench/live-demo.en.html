@@ -1131,6 +1131,25 @@
         <div id="pii-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Flash-Sale Inventory Lease & Zero-Oversell Sandbox (Round 19 FAQ Companion) -->
+      <div class="finops-box" id="inventory-reservation-oversell-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-inv-title">📦 AI Agent 秒杀抢购、并发锁库与防超卖架构：180s 租约 (inv_hold_...) + manual 预授权双锁 vs 无锁超卖退费与恶意占库决策器 (Round 19 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 并发秒杀阶段、买家锁库配额与 Fencing Token 栅栏状态 (Flash-Sale Phase, Quota &amp; Lease Fencing State):</span></label>
+          <select id="inv-select" onchange="updateInventoryReservationSandbox()">
+            <option value="inv_commit_ok">⚡ 双锁对齐原子成交：MandateVC 有效 + 配额&lt;=2 → 签发 inv_hold_... (180s) + manual 预授权并核验 Fencing Token=42 实扣 $999.00! (280ms · 0 超卖)</option>
+            <option value="inv_quote_ok">📍 比价试算零锁库快照：Agent 并发调用 30 家店铺 calculate_order → 仅返回可用库存快照 (lock_acquired=False · 185ms)，杜绝占库耗尽!</option>
+            <option value="inv_hoard_429">🛑 恶意比价爬虫超额囤货拦截：单买家试图同时锁定第 3 件商品 (active_holds=3 &gt; 2 synthetic_policy) → 16ms 触发 HTTP 429 硬阻断!</option>
+            <option value="inv_expired_409">🔄 180s 租约过期自动冲正预授权：僵尸 Agent 卡顿 195s 后携旧 token=41(&lt;42) 请求出库 → 24ms 触发 HTTP 409 并 Void 预授权 ($0.00 退费手续费损耗!)</option>
+            <option value="inv_backorder_409">🧑‍⚖️ 断货转 14 天延期预售 / 替代型号：Web IQ /v3/browse 检出隐藏预售小字 → 340ms 触发 HTTP 409 Confirm 交人类买家拍板!</option>
+            <option value="inv_stockout_409">🛑 现货彻底售罄零扣款终止：Redis Lua 原子递减返回 0 且无预售 → 14ms 触发 HTTP 409 STOCKOUT_ZERO_CHARGE_ABORT ($0.00 扣款)</option>
+          </select>
+        </div>
+        <div id="inv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1588,6 +1607,7 @@ function renderAll() {
   updateAp2CircuitBreakerSandbox();
   updateIdempotencyDeduplicationSandbox();
   updatePrivacyPiiSandbox();
+  updateInventoryReservationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -2710,6 +2730,65 @@ function updatePrivacyPiiSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📍 比价阶段粗粒度邮编前缀试算通过 (COARSE_GEO_QUOTE_AUTHORIZED · 195ms · Act automatically):</strong><br>" +
     "• <strong>最小化披露</strong>：向 10 家比价商户仅传递非识别粗粒度前缀 <code>US-CA-940</code> 即可精准算出州税与运费，9 家未成交商户拿不到任何街道门牌或手机号（<code>0 bytes</code> PII 暴露）！" +
+    "</div>";
+}
+
+function updateInventoryReservationSandbox() {
+  var selEl = document.getElementById("inv-select");
+  var outEl = document.getElementById("inv-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "inv_hoard_429") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 429 BLOCKED_CART_HOARDING_QUOTA_EXCEEDED (16ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到同一买家主体试图并发锁定第 3 个活跃库存句柄（超过单买家并发锁库上限 <code>max_active_holds=2</code>）或缺少有效 <code>MandateVC</code>，当场拦截以防止比价机器人占库耗尽攻击（Denial-of-Inventory）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "inv_expired_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔄 HTTP 409 INVENTORY_LEASE_EXPIRED_PREAUTH_VOIDED (24ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Agent 锁库租约（<code>180s TTL</code>）已超时回收且栅栏令牌失配（<code>fencing_token 41 &lt; current 42</code>）！网关拒绝出库并立即调用 <code>payment_intents.cancel</code> 冲正未捕获的 <code>manual</code> 预授权——买家实扣 <code>$0.00</code>，商户免遭 <code>2.9% + $0.30</code> 退费手续费损失（<code>$0.00</code> 损耗）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "inv_backorder_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BACKORDER_OR_SUBSTITUTE_CONFIRM_REQUIRED (340ms · Confirm · synthetic_policy)：<br>" +
+      "实时现货已归零！Microsoft Web IQ <code>/v3/browse</code> 检出商户页面提供 <code>14 天</code> 延期预售（超过 <code>3 天</code> 现货阈值）或替代型号，严禁 Agent 静默换货扣款，已路由人类买家显式确认！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "inv_stockout_409") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 STOCKOUT_ZERO_CHARGE_ABORT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "Redis Lua 原子库存递减返回 <code>available_qty=0</code> 且无可用预售，在发起任何支付扣款前安全终止（实扣 <code>$0.00</code>，退费手续费损耗 <code>$0.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "inv_quote_ok") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>📍 比价试算非约束库存快照返回 (NON_BINDING_QUOTE_SNAPSHOT · 185ms · lock_acquired=False · Act automatically):</strong><br>" +
+      "• <strong>抗占库设计</strong>：<code>calculate_order</code> 仅返回当前可售水位与含税运报价，绝不锁死物理库存，允许全网比价 Agent 高并发询价而不会饿死真实买家！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 180s 锁库租约 + manual 预授权双锁原子成交 (ATOMIC_HOLD_AND_CAPTURE_COMMITTED · 280ms · Act automatically):</strong><br>" +
+    "• <strong>0.0% 超卖率</strong>：核验 <code>MandateVC</code> 有效、配额 <code>1&lt;=2</code> 且单调递增栅栏令牌 <code>fencing_token === 42</code> 后，原子提交 WMS 出库并执行 <code>payment_intents.capture</code>（实扣 <code>$999.00</code>，手续费损耗 <code>$0.00</code>）！" +
     "</div>";
 }
 
