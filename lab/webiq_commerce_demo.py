@@ -6906,6 +6906,97 @@ def evaluate_b2b_net30_three_way_match_policy(
     )
 
 
+@dataclass(frozen=True)
+class ESGCarbonVerifiedShippingVerdict:
+    """Round 28 verdict for Cryptographic Carbon-Verified Mandate (ISO 14083 / GLEC Intensity & Registry Retirement ID) vs Unverified Greenwashing Checkbox Surcharges & Air-Freight Emissions Cap Bypass."""
+
+    allowed: bool
+    http_status: int
+    esg_lane: str
+    committed_co2e_grams: int
+    freight_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_esg_carbon_verified_shipping_policy(
+    *,
+    freight_amount_cents: int = 420000,
+    shipment_co2e_grams: int = 68000,
+    max_co2e_grams: int = 150000,
+    offset_surcharge_cents: int = 0,
+    registry_verified: bool = True,
+    webiq_registry_credit_revoked_or_double_counted: bool = False,
+    low_carbon_route_savings_cents: int = 0,
+) -> ESGCarbonVerifiedShippingVerdict:
+    """Evaluate Web IQ carbon registry double-counting/revocation check, ISO 14083 Scope 3 carbon cap, anti-greenwashing surcharge gate, and consolidated rail/ocean arbitrage."""
+
+    # 1. Microsoft Web IQ Carbon Credit Batch Revoked or Double-Counted -> HTTP 451
+    if webiq_registry_credit_revoked_or_double_counted:
+        return ESGCarbonVerifiedShippingVerdict(
+            False,
+            451,
+            "CARBON_CREDIT_REVOKED_OR_DOUBLE_COUNTED",
+            0,
+            0,
+            "webiq_detected_carbon_offset_batch_revoked_or_already_retired_in_registry",
+            310,
+            "Send to a human",
+        )
+
+    # 2. ISO 14083 / GLEC Scope 3 Carbon Cap Exceeded (e.g. Express Air 420kg > 150kg cap) -> HTTP 403
+    if shipment_co2e_grams > max_co2e_grams:
+        return ESGCarbonVerifiedShippingVerdict(
+            False,
+            403,
+            "SCOPE3_CARBON_CAP_EXCEEDED",
+            0,
+            0,
+            "express_air_freight_exceeded_mandate_iso14083_scope3_carbon_budget_cap",
+            13,
+            "Send to a human",
+        )
+
+    # 3. Unverified Greenwashing Carbon-Neutral Checkbox Surcharge -> HTTP 422
+    if offset_surcharge_cents > 0 and not registry_verified:
+        return ESGCarbonVerifiedShippingVerdict(
+            False,
+            422,
+            "UNVERIFIED_GREENWASHING_OFFSET_SURCHARGE",
+            0,
+            0,
+            "carbon_neutral_checkbox_surcharge_rejected_without_verifiable_registry_retirement_id",
+            16,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Consolidated Low-Carbon Multimodal Arbitrage -> HTTP 409 Confirm
+    if low_carbon_route_savings_cents > 0:
+        return ESGCarbonVerifiedShippingVerdict(
+            False,
+            409,
+            "LOW_CARBON_CONSOLIDATED_ROUTE_ARBITRAGE_CONFIRM",
+            shipment_co2e_grams,
+            low_carbon_route_savings_cents,
+            "webiq_found_consolidated_rail_ocean_route_cutting_co2e_by_83pct_and_saving_freight",
+            315,
+            "Confirm",
+        )
+
+    # 5. Compliant ISO 14083 Low-Carbon Multimodal Fulfillment Committed
+    return ESGCarbonVerifiedShippingVerdict(
+        True,
+        200,
+        "ESG_CARBON_VERIFIED_FULFILLMENT_COMMITTED",
+        shipment_co2e_grams,
+        0,
+        "iso14083_scope3_carbon_cap_and_registry_attestation_verified_for_fulfillment",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8705,6 +8796,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phantom_invoice_block_latency_ms": b2b3w_grn_403.latency_ms,
     }
 
+    esg_commit_ok = evaluate_esg_carbon_verified_shipping_policy()
+    esg_air_403 = evaluate_esg_carbon_verified_shipping_policy(
+        shipment_co2e_grams=420000,
+    )
+    esg_greenwash_422 = evaluate_esg_carbon_verified_shipping_policy(
+        offset_surcharge_cents=14500,
+        registry_verified=False,
+    )
+    esg_revoked_451 = evaluate_esg_carbon_verified_shipping_policy(
+        webiq_registry_credit_revoked_or_double_counted=True,
+    )
+    esg_rail_409 = evaluate_esg_carbon_verified_shipping_policy(
+        low_carbon_route_savings_cents=38000,
+    )
+    esg_carbon_verified_shipping_guards = {
+        "all_passed": (
+            esg_commit_ok.allowed
+            and esg_commit_ok.committed_co2e_grams == 68000
+            and not esg_air_403.allowed
+            and esg_air_403.http_status == 403
+            and not esg_greenwash_422.allowed
+            and esg_greenwash_422.http_status == 422
+            and not esg_revoked_451.allowed
+            and esg_revoked_451.http_status == 451
+            and not esg_rail_409.allowed
+            and esg_rail_409.action_pill == "Confirm"
+        ),
+        "esg_commit_latency_ms": esg_commit_ok.latency_ms,
+        "air_carbon_cap_block_latency_ms": esg_air_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8745,6 +8867,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "multi_agent_shared_budget_guards": multi_agent_shared_budget_guards,
         "return_logistics_reverse_escrow_guards": return_logistics_reverse_escrow_guards,
         "b2b_net30_three_way_match_guards": b2b_net30_three_way_match_guards,
+        "esg_carbon_verified_shipping_guards": esg_carbon_verified_shipping_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -12148,6 +12271,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="b2b3w-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive ESG Scope 3 Carbon Budget & Anti-Greenwashing Sandbox (Round 28 FAQ Companion) -->
+      <div class="finops-box" id="esg-carbon-verified-shipping-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-esg-title">🌱 绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价架构：可核验碳核算凭证 (esg_carbon_mandate_... + ISO 14083 / GLEC 排放因子) vs 空运爆表与无证碳中和附加费决策器 (Round 28 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 物流运输方式碳排 (ISO 14083 kg CO2e)、结账页碳抵消附加费与海铁联运套利场景 (Scope 3 Carbon Gate &amp; Anti-Greenwashing Scenario):</span></label>
+          <select id="esg-select" onchange="updateESGCarbonSandbox()">
+            <option value="esg_commit_ok">⚡ ISO 14083 低碳多式联运核验通过 (68 kg CO2e &lt;= 150 kg 上限，零漂绿附加费)：锁定合规绿色履约并归档 CSRD 审计凭证! (265ms · Act automatically)</option>
+            <option value="esg_air_403">🛑 特快空运击穿 Scope 3 碳预算上限：Agent 选航空急件产生 420 kg CO2e (&gt; 150 kg 令牌上限 2.8 倍) → 13ms 触发 HTTP 403 硬阻断!</option>
+            <option value="esg_greenwash_422">🚨 结账页无证“碳中和勾选框”漂绿附加费拦截：附加 +$145.00 但无 Verra/GS 注销登记号 (registry_verified=False) → 16ms 触发 HTTP 422 剥离拒付!</option>
+            <option value="esg_revoked_451">🛑 Web IQ 检出碳信用批次已被吊销或被他企重复宣告注销 (Double-Counted) → 310ms 触发 HTTP 451 合规一票否决冻结!</option>
+            <option value="esg_rail_409">🧑‍⚖️ Web IQ 检出海铁拼箱低碳双优方案 (碳排由 420kg 降至 68kg 减排 83.8%，且运费立省 $380.00) → 315ms 触发 HTTP 409 Confirm 提请采纳!</option>
+          </select>
+        </div>
+        <div id="esg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12614,6 +12755,7 @@ function renderAll() {{
   updateMultiAgentBudgetSandbox();
   updateReturnLogisticsSandbox();
   updateB2BNet30Sandbox();
+  updateESGCarbonSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14213,6 +14355,56 @@ function updateB2BNet30Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ PO-GRN-Invoice 三单 100% 吻合：Net-30 账期清算已排期 (THREE_WAY_MATCHED_NET30_SCHEDULED · 270ms · Act automatically):</strong><br>" +
     "• <strong>免除 2.9% ($1,305) 卡组手续费</strong>：凭可编程账期令牌 <code>b2b_net_terms_token_live_30d</code> 与三单匹配证明（<code>$45,000.00</code>），已自动锁定第 30 天低成本 ACH 清算！" +
+    "</div>";
+}}
+
+function updateESGCarbonSandbox() {{
+  var selEl = document.getElementById("esg-select");
+  var outEl = document.getElementById("esg-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "esg_air_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SCOPE3_CARBON_CAP_EXCEEDED (13ms · Send to a human · synthetic_policy)：<br>" +
+      "物流 Agent 选择的特快空运方案经 ISO 14083 / GLEC 排放因子核算产生 <code>420,000g (420 kg CO2e)</code>，严重击穿双维授权令牌硬上限 <code>max_co2e_grams=150,000g (150 kg CO2e)</code> 达 <code>2.8 倍</code>！已在 <code>13ms</code> 内硬阻断并要求切换至低碳多式联运！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esg_greenwash_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_GREENWASHING_OFFSET_SURCHARGE (16ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "结账请求包含 <code>+$145.00</code> 的所谓“碳中和抵消附加费”，但未提供任何可验证的 Verra / Gold Standard / Puro.earth 注销序列号签名（<code>registry_verified=False</code>）！已在 <code>16ms</code> 内剥离拒付漂绿附加费！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esg_revoked_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CARBON_CREDIT_REVOKED_OR_DOUBLE_COUNTED (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时直读官方碳信用登记簿公示页，检出供应商引用的碳汇批次已被吊销或已被其他企业宣告注销（Double-Counted），已执行 EU CSRD 合规一票否决！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esg_rail_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LOW_CARBON_CONSOLIDATED_ROUTE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出绿色海铁拼箱方案：不仅将单票碳排放从 <code>420 kg</code> 大幅压降至 <code>68 kg CO2e</code>（减排 <code>83.8%</code>），还比原报价直接节省 <code>$380.00</code> 运费，建议一键批准绿色联运套利！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ISO 14083 低碳多式联运核验通过：绿色履约已锁定 (ESG_CARBON_VERIFIED_FULFILLMENT_COMMITTED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>Scope 3 合规且零漂绿损耗</strong>：实测排放 <code>68 kg CO2e &lt;= 150 kg</code> 令牌上限，且已将 GLEC 排放因子哈希写入 EU CSRD 不可篡改审计账本！" +
     "</div>";
 }}
 

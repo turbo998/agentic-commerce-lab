@@ -59,6 +59,7 @@
 - **专题 25（多智能体协同采购 Multi-Agent A2A 共享预算池拆账与并发防透支架构：层级化子授权切片 `sub_mandate_slice_...` 与两阶段 CAS 盈余账本 vs 多 Agent 共享主钱包并发抢扣透支与议价死锁）**：**[《多智能体协同采购（Multi-Agent A2A Coalition）共享预算池拆账与并发防透支架构：层级化子授权额度切分与两阶段预算预留令牌（Hierarchical Sub-Mandate Slice `sub_mandate_slice_...` + 2PC Budget Reservation）vs 多 Agent 共享主钱包并发抢扣透支与跨品类议价死锁选型与原理解析 FAQ》](docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.md)**
 - **专题 26（AI Agent 逆向物流、RMA 退货承运商揽收核验与防“空包/调包”欺诈架构：双阶逆向托管 `rma_return_escrow_...` + 揽收称重与 WMS 序列号核验 vs 仅凭单号秒退与砖头空包套现）**：**[《AI Agent 逆向物流、RMA 退货承运商揽收核验与防“空包/调包”欺诈架构：加密 RMA 揽收称重/序列号认证令牌（`rma_return_escrow_...` + 承运商揽收称重与入库开箱双阶释放）vs 仅凭单号秒退与砖头空包套现选型与原理解析 FAQ》](docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.md)**
 - **专题 27（B2B 供应链账期授信 Net-30/Net-60 与采购单三单匹配 PO-GRN-Invoice 3-Way Match 架构：可编程应付账款保理令牌 `b2b_net_terms_token_...` + 电子收货单 GRN 核验 vs 信用卡预扣占压现金流与幽灵发票欺诈）**：**[《B2B 供应链账期授信（Net-30/Net-60 Trade Credit）与采购单三单匹配（PO-GRN-Invoice 3-Way Match）架构：可编程应付账款保理令牌（`b2b_net_terms_token_...` + 电子收货单 GRN 行项核验）vs 信用卡预扣占压现金流与幽灵发票欺诈选型与原理解析 FAQ》](docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.md)**
+- **专题 28（绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价 Anti-Greenwashing 架构：可核验碳核算凭证 `esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定 vs 未核验“碳中和”勾选框附加费与高排空运越权）**：**[《绿色低碳采购、Scope 3 碳足迹预算门禁与防“漂绿”溢价（Anti-Greenwashing）架构：可核验碳核算凭证（`esg_carbon_mandate_...` + ISO 14083 / GLEC 排放因子与注销登记号绑定）vs 未核验“碳中和”勾选框附加费与高排空运越权选型与原理解析 FAQ》](docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -113,6 +114,8 @@
 ![2026-11-08 AI Agent 逆向物流、RMA 承运商揽收称重核验与防空包调包欺诈架构一图流](assets/svg/28-return-logistics-reverse-escrow-2026-11-08.svg)
 
 ![2026-11-08 B2B 供应链 Net-30 账期授信、ERP 三单匹配与幽灵发票防御架构一图流](assets/svg/29-b2b-net30-po-three-way-match-2026-11-08.svg)
+
+![2026-11-08 绿色低碳采购、Scope 3 碳足迹预算门禁与防漂绿溢价架构一图流](assets/svg/30-esg-carbon-footprint-verified-shipping-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

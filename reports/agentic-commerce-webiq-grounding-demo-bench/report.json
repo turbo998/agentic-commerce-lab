@@ -220,6 +220,11 @@
     "net30_schedule_latency_ms": 270,
     "phantom_invoice_block_latency_ms": 14
   },
+  "esg_carbon_verified_shipping_guards": {
+    "all_passed": true,
+    "esg_commit_latency_ms": 265,
+    "air_carbon_cap_block_latency_ms": 13
+  },
   "scenarios": [
     {
       "id": "W01",

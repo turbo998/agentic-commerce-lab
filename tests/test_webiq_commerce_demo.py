@@ -1590,6 +1590,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.en.md",
             "docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.md",
             "docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.en.md",
+            "docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.md",
+            "docs/esg-carbon-footprint-verified-shipping-vs-greenwashing-surcharge-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2749,6 +2751,55 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["b2b_net30_three_way_match_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-net30-three-way-match-sandbox", demo_zh)
+
+    def test_esg_carbon_footprint_verified_shipping_vs_greenwashing_surcharge_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_esg_carbon_verified_shipping_policy
+
+        # 1. Compliant low-carbon multimodal shipment (68kg <= 150kg cap) -> 200 committed
+        commit_ok = evaluate_esg_carbon_verified_shipping_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.committed_co2e_grams, 68000)
+
+        # 2. Express Air Freight (420kg > 150kg cap) -> 403 blocked in 13ms
+        air_403 = evaluate_esg_carbon_verified_shipping_policy(
+            shipment_co2e_grams=420000,
+        )
+        self.assertFalse(air_403.allowed)
+        self.assertEqual(air_403.http_status, 403)
+        self.assertEqual(air_403.esg_lane, "SCOPE3_CARBON_CAP_EXCEEDED")
+
+        # 3. Unverified +$145 carbon-neutral checkbox surcharge -> 422 blocked in 16ms
+        greenwash_422 = evaluate_esg_carbon_verified_shipping_policy(
+            offset_surcharge_cents=14500,
+            registry_verified=False,
+        )
+        self.assertFalse(greenwash_422.allowed)
+        self.assertEqual(greenwash_422.http_status, 422)
+        self.assertEqual(
+            greenwash_422.esg_lane, "UNVERIFIED_GREENWASHING_OFFSET_SURCHARGE"
+        )
+
+        # 4. Web IQ detects revoked or double-counted carbon credit batch -> 451 blocked in 310ms
+        revoked_451 = evaluate_esg_carbon_verified_shipping_policy(
+            webiq_registry_credit_revoked_or_double_counted=True,
+        )
+        self.assertFalse(revoked_451.allowed)
+        self.assertEqual(revoked_451.http_status, 451)
+
+        # 5. Web IQ consolidated rail/ocean arbitrage (-83.8% CO2e & saves $380) -> 409 Confirm in 315ms
+        rail_409 = evaluate_esg_carbon_verified_shipping_policy(
+            low_carbon_route_savings_cents=38000,
+        )
+        self.assertFalse(rail_409.allowed)
+        self.assertEqual(rail_409.http_status, 409)
+        self.assertEqual(rail_409.freight_savings_cents, 38000)
+        self.assertEqual(rail_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["esg_carbon_verified_shipping_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("esg-carbon-verified-shipping-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
