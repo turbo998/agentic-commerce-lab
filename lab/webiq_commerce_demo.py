@@ -4230,6 +4230,129 @@ def evaluate_bnpl_webview_handover_policy(
     )
 
 
+@dataclass(frozen=True)
+class SplitCartSagaVerdict:
+    allowed: bool
+    http_status: int
+    recommended_pattern: Literal[
+        "connect_unified_split_transfers",
+        "two_phase_preauth_captured_all",
+        "saga_compensated_preauth_released_zero_loss",
+        "blocked_connect_header_without_obo",
+        "blocked_naive_automatic_capture_on_bundle",
+        "blocked_bundle_total_exceeds_mandate",
+    ]
+    reason: str
+    settled_loss_usd: str
+    held_and_released_usd: str
+    orchestration_latency_ms: int
+    action_pill: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def evaluate_multi_merchant_split_cart_saga(
+    *,
+    topology: Literal["stripe_connect_separate_charges", "cross_merchant_2phase_saga"] = "cross_merchant_2phase_saga",
+    all_or_nothing_bundle: bool = True,
+    capture_method: Literal["manual", "automatic"] = "manual",
+    on_behalf_of_set: bool = False,
+    stripe_account_header_present: bool = False,
+    leg_amounts_usd: tuple[str, ...] = ("620.00", "480.00", "320.00"),
+    bundle_mandate_ceiling_usd: str = "1500.00",
+    failed_leg_index: int | None = None,
+    failed_leg_reason: Literal["slot_unavailable_409", "finalize_hook_timeout_4s"] | None = None,
+) -> SplitCartSagaVerdict:
+    """Evaluate Multi-Merchant Split-Cart Atomic Orchestration (Round 6 FAQ Companion).
+
+    Key rules (official_doc_snapshot + synthetic_policy + deterministic_offline_simulation):
+    - Pattern A (`stripe_connect_separate_charges`): When all sub-merchants belong to one
+      Stripe Connect platform and `on_behalf_of` is unset, passing the `Stripe-Account`
+      header is forbidden (HTTP 400). Otherwise executes 1 unified charge + split transfers.
+    - Pattern B (`cross_merchant_2phase_saga`): When buying an interdependent bundle across
+      independent external merchants (`all_or_nothing_bundle=True`), `capture_method="automatic"`
+      is blocked (HTTP 400) to prevent partial-fulfillment orphan charges.
+    - Phase 0 Web IQ bundle check: if sum(leg_amounts_usd) > bundle_mandate_ceiling_usd -> HTTP 403.
+    - Phase 1 + 2 Saga: if any leg fails (`slot_unavailable_409` or `finalize_hook_timeout_4s`),
+      the coordinator cancels all prior held PaymentIntents with $0.00 settled loss (HTTP 409).
+    """
+    legs_dec = [Decimal(str(x)) for x in leg_amounts_usd]
+    total_dec = sum(legs_dec, Decimal("0.00"))
+    ceiling_dec = Decimal(str(bundle_mandate_ceiling_usd))
+
+    if total_dec > ceiling_dec:
+        return SplitCartSagaVerdict(
+            False,
+            403,
+            "blocked_bundle_total_exceeds_mandate",
+            "bundle_total_exceeds_mandate_ceiling",
+            "0.00",
+            "0.00",
+            22,
+            "Send to a human",
+        )
+
+    if topology == "stripe_connect_separate_charges":
+        if not on_behalf_of_set and stripe_account_header_present:
+            return SplitCartSagaVerdict(
+                False,
+                400,
+                "blocked_connect_header_without_obo",
+                "connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header",
+                "0.00",
+                "0.00",
+                15,
+                "Send to a human",
+            )
+        return SplitCartSagaVerdict(
+            True,
+            200,
+            "connect_unified_split_transfers",
+            "connect_single_charge_and_transfer_group_split_verified",
+            "0.00",
+            "0.00",
+            518,
+            "Act automatically",
+        )
+
+    # Cross-merchant independent stores
+    if all_or_nothing_bundle and capture_method != "manual":
+        return SplitCartSagaVerdict(
+            False,
+            400,
+            "blocked_naive_automatic_capture_on_bundle",
+            "interdependent_bundle_forbids_automatic_capture_use_manual_preauth_hold",
+            "0.00",
+            "0.00",
+            16,
+            "Send to a human",
+        )
+
+    if failed_leg_index is not None:
+        idx = max(0, min(int(failed_leg_index), len(legs_dec)))
+        held_dec = sum(legs_dec[:idx], Decimal("0.00"))
+        fail_code = failed_leg_reason or "slot_unavailable_409"
+        return SplitCartSagaVerdict(
+            False,
+            409,
+            "saga_compensated_preauth_released_zero_loss",
+            f"saga_rolled_back_on_{fail_code}_all_sibling_holds_canceled",
+            "0.00",
+            f"{held_dec:.2f}",
+            445,
+            "Confirm",
+        )
+
+    return SplitCartSagaVerdict(
+        True,
+        200,
+        "two_phase_preauth_captured_all",
+        "all_legs_requires_capture_verified_and_batch_captured_atomically",
+        "0.00",
+        "0.00",
+        642,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -5040,6 +5163,60 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unattended_fallback_reason": bnpl_unattended_fallback.reason,
     }
 
+    saga_connect_ok = evaluate_multi_merchant_split_cart_saga(
+        topology="stripe_connect_separate_charges",
+        on_behalf_of_set=False,
+        stripe_account_header_present=False,
+        leg_amounts_usd=("580.00", "480.00", "320.00"),
+        bundle_mandate_ceiling_usd="1500.00",
+    )
+    saga_connect_header_trap = evaluate_multi_merchant_split_cart_saga(
+        topology="stripe_connect_separate_charges",
+        on_behalf_of_set=False,
+        stripe_account_header_present=True,
+    )
+    saga_2phase_ok = evaluate_multi_merchant_split_cart_saga(
+        topology="cross_merchant_2phase_saga",
+        all_or_nothing_bundle=True,
+        capture_method="manual",
+        leg_amounts_usd=("620.00", "480.00", "320.00"),
+        bundle_mandate_ceiling_usd="1500.00",
+    )
+    saga_rollback_409 = evaluate_multi_merchant_split_cart_saga(
+        topology="cross_merchant_2phase_saga",
+        all_or_nothing_bundle=True,
+        capture_method="manual",
+        leg_amounts_usd=("620.00", "480.00", "320.00"),
+        bundle_mandate_ceiling_usd="1500.00",
+        failed_leg_index=2,
+        failed_leg_reason="slot_unavailable_409",
+    )
+    saga_naive_auto_block = evaluate_multi_merchant_split_cart_saga(
+        topology="cross_merchant_2phase_saga",
+        all_or_nothing_bundle=True,
+        capture_method="automatic",
+    )
+    split_cart_saga_guards = {
+        "all_passed": (
+            saga_connect_ok.allowed
+            and saga_connect_ok.http_status == 200
+            and not saga_connect_header_trap.allowed
+            and saga_connect_header_trap.http_status == 400
+            and saga_2phase_ok.allowed
+            and saga_2phase_ok.http_status == 200
+            and not saga_rollback_409.allowed
+            and saga_rollback_409.http_status == 409
+            and saga_rollback_409.settled_loss_usd == "0.00"
+            and saga_rollback_409.held_and_released_usd == "1100.00"
+            and not saga_naive_auto_block.allowed
+            and saga_naive_auto_block.http_status == 400
+        ),
+        "connect_latency_ms": saga_connect_ok.orchestration_latency_ms,
+        "two_phase_latency_ms": saga_2phase_ok.orchestration_latency_ms,
+        "rollback_released_usd": saga_rollback_409.held_and_released_usd,
+        "rollback_settled_loss_usd": saga_rollback_409.settled_loss_usd,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -5058,6 +5235,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_settlement_guards": cross_border_settlement_guards,
         "agent_identity_waf_guards": agent_identity_waf_guards,
         "bnpl_webview_handover_guards": bnpl_webview_handover_guards,
+        "split_cart_saga_guards": split_cart_saga_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -8042,6 +8220,32 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bnpl-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Multi-Merchant Split-Cart Saga vs Connect Unified Split Selector (Round 6 FAQ Companion) -->
+      <div class="finops-box" id="split-cart-saga-selector-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-saga-selector-title">🔄 跨平台多商户拆单原子编排：两阶段预授权 Saga 补偿 vs Connect 统一分账决策器 (Round 6 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商户拓扑与收单架构 (Merchant Topology &amp; Settlement Architecture):</span></label>
+          <select id="saga-topology-select" onchange="updateSplitCartSagaSandbox()">
+            <option value="cross_2phase_manual">🔄 跨独立站两阶段预授权 + Saga 协调器 (capture_method='manual' · 3 张单商户受限子令牌)</option>
+            <option value="connect_unified_ok">🏛️ 同平台入驻子商户：Stripe Connect SPT 统一收单分账 (Separate Charges · 无 OBO 不传 Stripe-Account 头)</option>
+            <option value="connect_header_trap">🚫 Connect 误用请求头：未设 on_behalf_of 却传了 Stripe-Account 头 (HTTP 400 归属冲突!)</option>
+            <option value="cross_naive_auto">💥 错误反模式：对强依赖组合订单使用 capture_method='automatic' 逐家直接实扣 (HTTP 400 拦截!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. 子商户库存锁与 4,000 ms Webhook 响应状态 (Leg Inventory &amp; 4s Hook Status):</span></label>
+          <select id="saga-leg-status-select" onchange="updateSplitCartSagaSandbox()">
+            <option value="all_legs_ready">✅ 全部 3 家子商户返回 requires_capture ($620+$480+$320 = $1,420 ≤ $1,500 总上限)</option>
+            <option value="leg3_409_oos">🔄 腿 1/2 已冻结 $1,100，但第 3 腿返回 409 slot_unavailable (触发 Saga 秒级 Cancel 解冻!)</option>
+            <option value="leg3_4s_timeout">⏱️ 第 3 腿 finalize_checkout 超过 4,000 ms 硬拒单 (触发 Saga 秒级回滚 · $0.00 实扣损失!)</option>
+            <option value="bundle_over_budget">🛑 Web IQ 阶段 0 核价发现总价涨至 $1,580 &gt; $1,500 组合上限 (零支付调用前熔断!)</option>
+          </select>
+        </div>
+        <div id="saga-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -8486,6 +8690,7 @@ function renderAll() {{
   updateCrossBorderSandbox();
   updateWebBotAuthSandbox();
   updateBnplHandoverSandbox();
+  updateSplitCartSagaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8820,6 +9025,71 @@ function updateBnplHandoverSandbox() {{
     "<strong>📱 HTTP 202 受控系统 WebView 接力准备就绪 (controlled_webview_redirect_handover · 412ms · Confirm):</strong><br>" +
     "• <strong>Stage 1 (Agent 自动核价)</strong>：Web IQ 已验证 <code>0.0% APR</code> 真免息且 4 期总还款 <code>$800.00 ≤ $820.00</code><br>" +
     "• <strong>Stage 2 (受控容器接管)</strong>：已生成 ACP <code>next_action.redirect_to_url</code> 并唤起系统隔离容器（Agent 零 DOM/Cookie 权限），人类按一次 FaceID 签署后由签名 Webhook 自动恢复履约追踪！" +
+    "</div>";
+}}
+
+function updateSplitCartSagaSandbox() {{
+  var topEl = document.getElementById("saga-topology-select");
+  var legEl = document.getElementById("saga-leg-status-select");
+  var outEl = document.getElementById("saga-selector-readout");
+  if (!topEl || !legEl || !outEl) return;
+
+  var top = topEl.value;
+  var leg = legEl.value;
+
+  if (leg === "bundle_over_budget") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 bundle_total_exceeds_mandate_ceiling (Send to a human · synthetic_policy)：<br>" +
+      "阶段 0 Microsoft Web IQ <code>/v3/browse</code> 并发核验发现子商品含税总价涨至 <code>$1,580.00</code>，超出组合总预算上限 (<code>$1,500.00</code>)，在发起任何预授权前直接熔断拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (top === "connect_header_trap") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header (official_doc_snapshot)：<br>" +
+      "在 Stripe Connect 平台代收分账模式（未设置 <code>on_behalf_of</code>）下，平台必须使用自身 <code>profile_...</code> 标识，严禁在 HTTP 请求头传入 <code>Stripe-Account</code>！网关已在 15ms 内拦截。" +
+      "</div>";
+    return;
+  }}
+
+  if (top === "cross_naive_auto") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 interdependent_bundle_forbids_automatic_capture_use_manual_preauth_hold (synthetic_policy)：<br>" +
+      "强依赖组合套餐（机票+酒店+门票 或 机身+镜头）严禁使用 <code>capture_method='automatic'</code> 逐家直接实扣！否则第 3 腿缺货时买家将困在已扣款的半截废单中。已强制拦截并要求改用 <code>capture_method='manual'</code> 两阶段预授权。" +
+      "</div>";
+    return;
+  }}
+
+  if (top === "connect_unified_ok") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🏛️ 同平台 Stripe Connect SPT 统一收单分账通过 (connect_unified_split_transfers · 518ms · Act automatically):</strong><br>" +
+      "• <strong>单一主令牌</strong>：买家仅签发 1 张平台级 <code>spt_...</code>（绑定平台 <code>profile_...</code>，未传 <code>Stripe-Account</code> 头）<br>" +
+      "• <strong>原子清算</strong>：确认 3 家入驻子商户全部锁库后执行 1 笔 <code>PaymentIntent ($1,380.00)</code>，并通过 <code>transfer_group</code> 自动清分至各子商户！" +
+      "</div>";
+    return;
+  }}
+
+  if (leg === "leg3_409_oos" || leg === "leg3_4s_timeout") {{
+    var failLabel = leg === "leg3_409_oos" ? "409 slot_unavailable (门票/镜头售罄)" : "finalize_checkout &gt; 4,000 ms 超时拒单";
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔄 HTTP 409 saga_compensated_preauth_released_zero_loss (445ms · Confirm · $0.00 实扣损失)：<br>" +
+      "• <strong>异常触发</strong>：腿 1 ($620) 与腿 2 ($480) 已完成 <code>manual</code> 预授权冻结，但腿 3 发生 <code>" + failLabel + "</code><br>" +
+      "• <strong>Saga 秒级逆向补偿</strong>：协调器立即对腿 1 和腿 2 调用 <code>POST /v1/payment_intents/{id}/cancel</code>，当场解冻释放 <code>$1,100.00</code> 额度，买家实扣损失 <code>$0.00</code>、商户退款手续费损失 <code>$0.00</code>！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚀 跨独立站两阶段预授权 + 批量实扣成功 (two_phase_preauth_captured_all · 642ms · Act automatically):</strong><br>" +
+    "• <strong>阶段 1 (All Hold)</strong>：3 张单商户受限子令牌 (<code>spt_1/2/3</code>) 并发执行 <code>capture_method='manual'</code>，全部在 4,000ms 内返回 <code>requires_capture</code><br>" +
+    "• <strong>阶段 2 (Batch Capture)</strong>：协调器并发调用 <code>/capture</code> 完成 <code>$1,420.00</code> 原子实扣，100% 消除半截废单风险！" +
     "</div>";
 }}
 

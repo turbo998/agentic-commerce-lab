@@ -877,6 +877,32 @@
         <div id="bnpl-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Multi-Merchant Split-Cart Saga vs Connect Unified Split Selector (Round 6 FAQ Companion) -->
+      <div class="finops-box" id="split-cart-saga-selector-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-saga-selector-title">🔄 跨平台多商户拆单原子编排：两阶段预授权 Saga 补偿 vs Connect 统一分账决策器 (Round 6 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商户拓扑与收单架构 (Merchant Topology &amp; Settlement Architecture):</span></label>
+          <select id="saga-topology-select" onchange="updateSplitCartSagaSandbox()">
+            <option value="cross_2phase_manual">🔄 跨独立站两阶段预授权 + Saga 协调器 (capture_method='manual' · 3 张单商户受限子令牌)</option>
+            <option value="connect_unified_ok">🏛️ 同平台入驻子商户：Stripe Connect SPT 统一收单分账 (Separate Charges · 无 OBO 不传 Stripe-Account 头)</option>
+            <option value="connect_header_trap">🚫 Connect 误用请求头：未设 on_behalf_of 却传了 Stripe-Account 头 (HTTP 400 归属冲突!)</option>
+            <option value="cross_naive_auto">💥 错误反模式：对强依赖组合订单使用 capture_method='automatic' 逐家直接实扣 (HTTP 400 拦截!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. 子商户库存锁与 4,000 ms Webhook 响应状态 (Leg Inventory &amp; 4s Hook Status):</span></label>
+          <select id="saga-leg-status-select" onchange="updateSplitCartSagaSandbox()">
+            <option value="all_legs_ready">✅ 全部 3 家子商户返回 requires_capture ($620+$480+$320 = $1,420 ≤ $1,500 总上限)</option>
+            <option value="leg3_409_oos">🔄 腿 1/2 已冻结 $1,100，但第 3 腿返回 409 slot_unavailable (触发 Saga 秒级 Cancel 解冻!)</option>
+            <option value="leg3_4s_timeout">⏱️ 第 3 腿 finalize_checkout 超过 4,000 ms 硬拒单 (触发 Saga 秒级回滚 · $0.00 实扣损失!)</option>
+            <option value="bundle_over_budget">🛑 Web IQ 阶段 0 核价发现总价涨至 $1,580 &gt; $1,500 组合上限 (零支付调用前熔断!)</option>
+          </select>
+        </div>
+        <div id="saga-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1321,6 +1347,7 @@ function renderAll() {
   updateCrossBorderSandbox();
   updateWebBotAuthSandbox();
   updateBnplHandoverSandbox();
+  updateSplitCartSagaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -1655,6 +1682,71 @@ function updateBnplHandoverSandbox() {
     "<strong>📱 HTTP 202 受控系统 WebView 接力准备就绪 (controlled_webview_redirect_handover · 412ms · Confirm):</strong><br>" +
     "• <strong>Stage 1 (Agent 自动核价)</strong>：Web IQ 已验证 <code>0.0% APR</code> 真免息且 4 期总还款 <code>$800.00 ≤ $820.00</code><br>" +
     "• <strong>Stage 2 (受控容器接管)</strong>：已生成 ACP <code>next_action.redirect_to_url</code> 并唤起系统隔离容器（Agent 零 DOM/Cookie 权限），人类按一次 FaceID 签署后由签名 Webhook 自动恢复履约追踪！" +
+    "</div>";
+}
+
+function updateSplitCartSagaSandbox() {
+  var topEl = document.getElementById("saga-topology-select");
+  var legEl = document.getElementById("saga-leg-status-select");
+  var outEl = document.getElementById("saga-selector-readout");
+  if (!topEl || !legEl || !outEl) return;
+
+  var top = topEl.value;
+  var leg = legEl.value;
+
+  if (leg === "bundle_over_budget") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 bundle_total_exceeds_mandate_ceiling (Send to a human · synthetic_policy)：<br>" +
+      "阶段 0 Microsoft Web IQ <code>/v3/browse</code> 并发核验发现子商品含税总价涨至 <code>$1,580.00</code>，超出组合总预算上限 (<code>$1,500.00</code>)，在发起任何预授权前直接熔断拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (top === "connect_header_trap") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 connect_destination_or_separate_charge_without_obo_forbids_stripe_account_header (official_doc_snapshot)：<br>" +
+      "在 Stripe Connect 平台代收分账模式（未设置 <code>on_behalf_of</code>）下，平台必须使用自身 <code>profile_...</code> 标识，严禁在 HTTP 请求头传入 <code>Stripe-Account</code>！网关已在 15ms 内拦截。" +
+      "</div>";
+    return;
+  }
+
+  if (top === "cross_naive_auto") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 interdependent_bundle_forbids_automatic_capture_use_manual_preauth_hold (synthetic_policy)：<br>" +
+      "强依赖组合套餐（机票+酒店+门票 或 机身+镜头）严禁使用 <code>capture_method='automatic'</code> 逐家直接实扣！否则第 3 腿缺货时买家将困在已扣款的半截废单中。已强制拦截并要求改用 <code>capture_method='manual'</code> 两阶段预授权。" +
+      "</div>";
+    return;
+  }
+
+  if (top === "connect_unified_ok") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🏛️ 同平台 Stripe Connect SPT 统一收单分账通过 (connect_unified_split_transfers · 518ms · Act automatically):</strong><br>" +
+      "• <strong>单一主令牌</strong>：买家仅签发 1 张平台级 <code>spt_...</code>（绑定平台 <code>profile_...</code>，未传 <code>Stripe-Account</code> 头）<br>" +
+      "• <strong>原子清算</strong>：确认 3 家入驻子商户全部锁库后执行 1 笔 <code>PaymentIntent ($1,380.00)</code>，并通过 <code>transfer_group</code> 自动清分至各子商户！" +
+      "</div>";
+    return;
+  }
+
+  if (leg === "leg3_409_oos" || leg === "leg3_4s_timeout") {
+    var failLabel = leg === "leg3_409_oos" ? "409 slot_unavailable (门票/镜头售罄)" : "finalize_checkout &gt; 4,000 ms 超时拒单";
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔄 HTTP 409 saga_compensated_preauth_released_zero_loss (445ms · Confirm · $0.00 实扣损失)：<br>" +
+      "• <strong>异常触发</strong>：腿 1 ($620) 与腿 2 ($480) 已完成 <code>manual</code> 预授权冻结，但腿 3 发生 <code>" + failLabel + "</code><br>" +
+      "• <strong>Saga 秒级逆向补偿</strong>：协调器立即对腿 1 和腿 2 调用 <code>POST /v1/payment_intents/<built-in function id>/cancel</code>，当场解冻释放 <code>$1,100.00</code> 额度，买家实扣损失 <code>$0.00</code>、商户退款手续费损失 <code>$0.00</code>！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚀 跨独立站两阶段预授权 + 批量实扣成功 (two_phase_preauth_captured_all · 642ms · Act automatically):</strong><br>" +
+    "• <strong>阶段 1 (All Hold)</strong>：3 张单商户受限子令牌 (<code>spt_1/2/3</code>) 并发执行 <code>capture_method='manual'</code>，全部在 4,000ms 内返回 <code>requires_capture</code><br>" +
+    "• <strong>阶段 2 (Batch Capture)</strong>：协调器并发调用 <code>/capture</code> 完成 <code>$1,420.00</code> 原子实扣，100% 消除半截废单风险！" +
     "</div>";
 }
 

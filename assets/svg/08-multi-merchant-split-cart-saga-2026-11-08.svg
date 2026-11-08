@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070E1A"/>
+      <stop offset="55%" stop-color="#0E1D34"/>
+      <stop offset="100%" stop-color="#091322"/>
+    </linearGradient>
+    <linearGradient id="sagaGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="connGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="compGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="errGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F87171"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg6)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="14" fill="#111C33" stroke="#2D4A77" stroke-width="1.5"/>
+  <rect x="54" y="40" width="236" height="24" rx="12" fill="#075985"/>
+  <text x="172" y="56" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle">2026-11-08 · ROUND 6 DEEP DIVE</text>
+  <text x="306" y="58" fill="#F8FAFC" font-size="19" font-weight="800">跨平台多商户拆单原子编排：两阶段预授权 Saga 补偿 vs. Stripe Connect 统一分账</text>
+  <text x="54" y="88" fill="#93C5FD" font-size="12.5">Multi-Merchant Split-Cart Atomic Orchestration: 2-Phase Pre-Auth Hold + Saga Rollback vs. Stripe Connect SPT Marketplace</text>
+
+  <!-- Left Card: Pattern A — Stripe Connect SPT Unified Marketplace -->
+  <rect x="36" y="124" width="548" height="236" rx="14" fill="#0A2226" stroke="#10B981" stroke-width="1.8"/>
+  <rect x="36" y="124" width="548" height="36" rx="14" fill="url(#connGrad)"/>
+  <text x="54" y="147" fill="#042F2E" font-size="14" font-weight="800">🏛️ 模式 A：同平台撮合分账（Stripe Connect SPT · Separate Charges）</text>
+  <text x="54" y="182" fill="#A7F3D0" font-size="12.5" font-weight="700">适用边界：所有子商户入驻同一撮合平台（如垂直旅游/B2B 商城）</text>
+  <text x="54" y="206" fill="#E2E8F0" font-size="12">• 单一主令牌：买家只签 1 张绑定平台 profile_... 的共享支付令牌（spt_...）</text>
+  <text x="54" y="228" fill="#E2E8F0" font-size="12">• 平台先锁库存后一笔扣款：子商户全部确认有货后，平台发起 1 笔 PaymentIntent</text>
+  <text x="54" y="250" fill="#E2E8F0" font-size="12">• 自动清分拆账：通过 transfer_group 将资金异步分拨给子商户（acct_A / acct_B）</text>
+  <text x="54" y="272" fill="#FDE68A" font-size="12" font-weight="700">• 请求头防坑铁律（official_doc_snapshot）：未设 on_behalf_of 时严禁传 Stripe-Account 头！</text>
+  <rect x="54" y="294" width="510" height="48" rx="8" fill="#061619" stroke="#059669"/>
+  <text x="68" y="314" fill="#34D399" font-size="12" font-weight="700">沙盒裁决：200 OK · connect_unified_split_transfers（518 ms · Act automatically）</text>
+  <text x="68" y="332" fill="#94A3B8" font-size="11">单笔扣款消除“扣了 A 却买不到 B”的半截订单风险，买家账单清晰统一</text>
+
+  <!-- Right Card: Pattern B — Cross-Platform 2-Phase Pre-Auth Hold + Saga -->
+  <rect x="616" y="124" width="548" height="236" rx="14" fill="#0D1F38" stroke="#38BDF8" stroke-width="1.8"/>
+  <rect x="616" y="124" width="548" height="36" rx="14" fill="url(#sagaGrad)"/>
+  <text x="634" y="147" fill="#082F49" font-size="14" font-weight="800">🔄 模式 B：跨独立站两阶段预授权 + Saga 补偿（2-Phase Hold + Rollback）</text>
+  <text x="634" y="182" fill="#BAE6FD" font-size="12.5" font-weight="700">适用边界：跨多个互不隶属的外部独立商户购买强依赖套餐（机票+酒店+门票）</text>
+  <text x="634" y="206" fill="#E2E8F0" font-size="12">• 子委托拆分：总预算 Mandate ($1,500) 拆为 3 张单商户限定金额的子令牌（spt_1/2/3）</text>
+  <text x="634" y="228" fill="#E2E8F0" font-size="12">• 阶段 1（PRE_AUTH_HOLD）：统一以 capture_method="manual" 冻结额度并锁库存</text>
+  <text x="634" y="250" fill="#E2E8F0" font-size="12">• 阶段 2（CAPTURE_ALL）：仅当全部子单返回 requires_capture 时才批量实扣</text>
+  <text x="634" y="272" fill="#FDE68A" font-size="12" font-weight="700">• 任一子单缺货/超 4s：Saga 协调器秒级 Cancel 释放全部预授权（$0 实扣损失）</text>
+  <rect x="634" y="294" width="510" height="48" rx="8" fill="#081426" stroke="#0284C7"/>
+  <text x="648" y="314" fill="#38BDF8" font-size="12" font-weight="700">沙盒裁决：全齐 200 OK (642ms) ｜ 单腿缺货 409 Saga 秒级回滚释放 ($0.00 损失)</text>
+  <text x="648" y="332" fill="#94A3B8" font-size="11">严禁对强依赖组合订单开启 capture_method="automatic" 盲目逐家直接实扣！</text>
+
+  <!-- Middle Section: Seller 4s Asymmetric Hook SLA & Saga Compensation Flow -->
+  <rect x="36" y="378" width="1128" height="176" rx="14" fill="#101B30" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="406" fill="#F8FAFC" font-size="15" font-weight="800">⚡ 跨平台拆单原子状态机与卖家 4,000 ms 非对称 Webhook 超时防线（First-Principles Saga State Machine）</text>
+
+  <!-- Step 1 -->
+  <rect x="54" y="422" width="256" height="114" rx="10" fill="#0B192C" stroke="#38BDF8"/>
+  <text x="68" y="444" fill="#38BDF8" font-size="12.5" font-weight="800">① Web IQ 并发核价 + 询价降级</text>
+  <text x="68" y="466" fill="#E2E8F0" font-size="11.5">• 并发抓取 A/B/C 商户 passage 核实总价</text>
+  <text x="68" y="486" fill="#E2E8F0" font-size="11.5">• 卖家询价 Hook &gt;4s：自动降级读取</text>
+  <text x="68" y="504" fill="#E2E8F0" font-size="11.5">  Catalog Feed (upsert) 继续流程</text>
+  <text x="68" y="524" fill="#7DD3FC" font-size="11" font-weight="700">总价 ≤ Mandate 上限 ($1,500) 才进阶段 1</text>
+
+  <!-- Step 2 -->
+  <rect x="332" y="422" width="268" height="114" rx="10" fill="#0B192C" stroke="#10B981"/>
+  <text x="346" y="444" fill="#34D399" font-size="12.5" font-weight="800">② 阶段 1：全员 Manual Pre-Auth Hold</text>
+  <text x="346" y="466" fill="#E2E8F0" font-size="11.5">• 向 A/B/C 发起 capture_method="manual"</text>
+  <text x="346" y="486" fill="#E2E8F0" font-size="11.5">• 卖家 finalize_checkout &gt;4s 立即拒单</text>
+  <text x="346" y="504" fill="#E2E8F0" font-size="11.5">• 资金仅冻结信用额度，尚未发生清算</text>
+  <text x="346" y="524" fill="#6EE7B7" font-size="11" font-weight="700">全员 requires_capture → 触发批量 Capture</text>
+
+  <!-- Step 3 -->
+  <rect x="622" y="422" width="262" height="114" rx="10" fill="#23180B" stroke="#F59E0B"/>
+  <text x="636" y="444" fill="#FBBF24" font-size="12.5" font-weight="800">③ 异常分支：Saga 逆向补偿回滚</text>
+  <text x="636" y="466" fill="#E2E8F0" font-size="11.5">• 若商户 C 返回 409 slot_unavailable</text>
+  <text x="636" y="486" fill="#E2E8F0" font-size="11.5">• 协调器立即对 A/B 调用 intents/cancel</text>
+  <text x="636" y="504" fill="#E2E8F0" font-size="11.5">• 秒级解冻 A/B 预授权，零退款手续费</text>
+  <text x="636" y="524" fill="#FDE68A" font-size="11" font-weight="700">409 Conflict · saga_compensated_zero_loss</text>
+
+  <!-- Step 4 -->
+  <rect x="906" y="422" width="240" height="114" rx="10" fill="#2A1215" stroke="#EF4444"/>
+  <text x="920" y="444" fill="#F87171" font-size="12.5" font-weight="800">④ 高危禁区：盲目 Automatic 实扣</text>
+  <text x="920" y="466" fill="#E2E8F0" font-size="11.5">• 强依赖套餐若设 automatic 立即扣款</text>
+  <text x="920" y="486" fill="#E2E8F0" font-size="11.5">• 买到机身却无镜头 → 半截废单卡死</text>
+  <text x="920" y="504" fill="#E2E8F0" font-size="11.5">• Connect 错传 Stripe-Account 报 400</text>
+  <text x="920" y="524" fill="#FCA5A5" font-size="11" font-weight="700">400 Bad Request · 架构门禁直接拦截</text>
+
+  <!-- Footer Provenance -->
+  <rect x="36" y="570" width="1128" height="80" rx="12" fill="#0B1324" stroke="#1E293B" stroke-width="1.2"/>
+  <text x="54" y="596" fill="#38BDF8" font-size="12.5" font-weight="700">📊 数据来源与诚实口径标签（Provenance Ledger · as_of: 2026-11-08）</text>
+  <text x="54" y="618" fill="#CBD5E1" font-size="11.5">• [official_doc_snapshot] Stripe Connect SPT 三种分账模式（Direct/Destination/Separate）、Stripe-Account vs on_behalf_of 规则、4s 非对称 Webhook SLA 与 manual 预授权机制。</text>
+  <text x="54" y="638" fill="#94A3B8" font-size="11.5">• [synthetic_policy + deterministic_offline_simulation] 3 子单强依赖预算拆分与 Saga 回滚延迟（518ms/642ms/445ms）来自 lab/webiq_commerce_demo.py；跨发卡行账单解冻短信通知延迟标为 not_measured。</text>
+</svg>

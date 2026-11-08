@@ -1546,10 +1546,80 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md",
             "docs/bnpl-webview-handover-vs-headless-agent-faq.md",
             "docs/bnpl-webview-handover-vs-headless-agent-faq.en.md",
+            "docs/multi-merchant-split-cart-saga-vs-connect-faq.md",
+            "docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
             self.assertIn("not_measured", doc_text, f"Missing not_measured tag in {rel_doc}")
+
+    def test_multi_merchant_split_cart_saga_vs_connect(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_multi_merchant_split_cart_saga
+
+        # 1. Compliant Connect Separate Charges without OBO and without Stripe-Account header -> 200 OK
+        conn_ok = evaluate_multi_merchant_split_cart_saga(
+            topology="stripe_connect_separate_charges",
+            on_behalf_of_set=False,
+            stripe_account_header_present=False,
+            leg_amounts_usd=("580.00", "480.00", "320.00"),
+            bundle_mandate_ceiling_usd="1500.00",
+        )
+        self.assertTrue(conn_ok.allowed)
+        self.assertEqual(conn_ok.http_status, 200)
+        self.assertEqual(conn_ok.recommended_pattern, "connect_unified_split_transfers")
+
+        # 2. Connect Separate Charges without OBO but passing Stripe-Account header -> 400 Bad Request
+        conn_trap = evaluate_multi_merchant_split_cart_saga(
+            topology="stripe_connect_separate_charges",
+            on_behalf_of_set=False,
+            stripe_account_header_present=True,
+        )
+        self.assertFalse(conn_trap.allowed)
+        self.assertEqual(conn_trap.http_status, 400)
+        self.assertEqual(conn_trap.recommended_pattern, "blocked_connect_header_without_obo")
+
+        # 3. Cross-merchant 2-phase manual pre-auth hold all legs succeed -> 200 OK
+        saga_ok = evaluate_multi_merchant_split_cart_saga(
+            topology="cross_merchant_2phase_saga",
+            all_or_nothing_bundle=True,
+            capture_method="manual",
+            leg_amounts_usd=("620.00", "480.00", "320.00"),
+            bundle_mandate_ceiling_usd="1500.00",
+        )
+        self.assertTrue(saga_ok.allowed)
+        self.assertEqual(saga_ok.http_status, 200)
+        self.assertEqual(saga_ok.recommended_pattern, "two_phase_preauth_captured_all")
+
+        # 4. Cross-merchant Leg 3 fails (409 OOS) -> Saga cancels Legs 1 & 2 ($1,100 released, $0.00 loss)
+        saga_rollback = evaluate_multi_merchant_split_cart_saga(
+            topology="cross_merchant_2phase_saga",
+            all_or_nothing_bundle=True,
+            capture_method="manual",
+            leg_amounts_usd=("620.00", "480.00", "320.00"),
+            bundle_mandate_ceiling_usd="1500.00",
+            failed_leg_index=2,
+            failed_leg_reason="slot_unavailable_409",
+        )
+        self.assertFalse(saga_rollback.allowed)
+        self.assertEqual(saga_rollback.http_status, 409)
+        self.assertEqual(saga_rollback.recommended_pattern, "saga_compensated_preauth_released_zero_loss")
+        self.assertEqual(saga_rollback.held_and_released_usd, "1100.00")
+        self.assertEqual(saga_rollback.settled_loss_usd, "0.00")
+
+        # 5. Naive automatic capture on interdependent bundle -> 400 Bad Request
+        naive_block = evaluate_multi_merchant_split_cart_saga(
+            topology="cross_merchant_2phase_saga",
+            all_or_nothing_bundle=True,
+            capture_method="automatic",
+        )
+        self.assertFalse(naive_block.allowed)
+        self.assertEqual(naive_block.http_status, 400)
+        self.assertEqual(naive_block.recommended_pattern, "blocked_naive_automatic_capture_on_bundle")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["split_cart_saga_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("split-cart-saga-selector-sandbox", demo_zh)
 
     def test_bnpl_webview_handover_vs_headless_agent_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_bnpl_webview_handover_policy

@@ -37,6 +37,7 @@
 > - **专题 3（跨境多币种双轨结算）**：**[《跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络（Visa VIC / Stripe SPT v2）选型与原理解析 FAQ》](docs/cross-border-agent-settlement-x402-vs-card-network-faq.md)**
 > - **专题 4（电商防爬与 Agent 身份认证）**：**[《电商防爬反欺诈与合法 Agent 身份认证：RFC 9421 Web Bot Auth / Visa TAP vs 传统 WAF 验证码选型与原理解析 FAQ》](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md)**
 > - **专题 5（BNPL 先买后付受控跳转接管）**：**[《BNPL 先买后付智能体结账架构：受控 WebView 跳转接管（Redirect Handover）vs 全自动令牌代扣（SPT v2 / VIC）选型与原理解析 FAQ》](docs/bnpl-webview-handover-vs-headless-agent-faq.md)**
+> - **专题 6（跨平台多商户拆单原子编排）**：**[《跨平台多商户拆单原子编排架构：两阶段预授权 Saga 补偿（2-Phase Pre-Auth Hold + Saga）vs 平台撮合统一分账（Stripe Connect SPT）选型与原理解析 FAQ》](docs/multi-merchant-split-cart-saga-vs-connect-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -47,6 +48,8 @@
 ![2026-11-08 电商防爬反欺诈与合法 Agent 身份认证：RFC 9421 Web Bot Auth / Visa TAP vs WAF 选型一图流](assets/svg/06-web-bot-auth-tap-vs-waf-2026-11-08.svg)
 
 ![2026-11-08 BNPL 先买后付智能体结账架构：受控 WebView 跳转接管 vs 全自动令牌代扣选型一图流](assets/svg/07-bnpl-webview-handover-vs-headless-2026-11-08.svg)
+
+![2026-11-08 跨平台多商户拆单原子编排：两阶段预授权 Saga 补偿 vs Stripe Connect 统一分账选型一图流](assets/svg/08-multi-merchant-split-cart-saga-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

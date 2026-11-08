@@ -103,6 +103,13 @@
     "high_apr_blocked_reason": "apr_or_total_repayment_exceeds_mandate",
     "unattended_fallback_reason": "bnpl_requires_live_user_fallback_to_spt"
   },
+  "split_cart_saga_guards": {
+    "all_passed": true,
+    "connect_latency_ms": 518,
+    "two_phase_latency_ms": 642,
+    "rollback_released_usd": "1100.00",
+    "rollback_settled_loss_usd": "0.00"
+  },
   "scenarios": [
     {
       "id": "W01",

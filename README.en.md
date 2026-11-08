@@ -37,6 +37,7 @@ This repository is a production-grade research and engineering testbed for **Age
 > - **Topic 3 (Cross-Border Settlement)**: **[Cross-Border Multi-Currency Agent Settlement: On-Chain Stablecoin (`x402` / MPP Tempo) vs. Card Network Tokens (`Stripe SPT v2` / `Visa VIC`) Selection FAQ](docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**
 > - **Topic 4 (E-Commerce Agent Identity & WAF)**: **[E-Commerce Anti-Fraud & Verified Agent Identity: RFC 9421 Web Bot Auth / Visa TAP vs. Legacy WAF/CAPTCHA Selection FAQ](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md)**
 > - **Topic 5 (BNPL Controlled WebView Handover)**: **[BNPL Agentic Checkout Architecture: Controlled WebView Redirect Handover vs. Autonomous Tokenized Card Rails (`SPT v2` / `VIC`) Selection FAQ](docs/bnpl-webview-handover-vs-headless-agent-faq.en.md)**
+> - **Topic 6 (Multi-Merchant Split-Cart Saga)**: **[Multi-Merchant Split-Cart Atomic Orchestration: Two-Phase Pre-Auth Hold & Saga Compensation vs. Stripe Connect SPT Marketplace Selection FAQ](docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -47,6 +48,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 E-Commerce Agent Identity RFC 9421 Web Bot Auth & Visa TAP vs WAF Visual Summary](assets/svg/06-web-bot-auth-tap-vs-waf-2026-11-08.svg)
 
 ![2026-11-08 BNPL Controlled WebView Redirect Handover vs Autonomous Tokenized Card Rails Visual Summary](assets/svg/07-bnpl-webview-handover-vs-headless-2026-11-08.svg)
+
+![2026-11-08 Multi-Merchant Split-Cart 2-Phase Pre-Auth Hold & Saga vs Stripe Connect Visual Summary](assets/svg/08-multi-merchant-split-cart-saga-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
