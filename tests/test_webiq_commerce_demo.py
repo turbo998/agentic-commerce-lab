@@ -1566,6 +1566,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.en.md",
             "docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.md",
             "docs/mcp-oauth-audience-stepup-vs-confused-deputy-faq.en.md",
+            "docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.md",
+            "docs/ap2-circuit-breaker-recall-tripwire-vs-backoff-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2087,6 +2089,72 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["mcp_oauth_audience_stepup_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("mcp-oauth-audience-stepup-sandbox", demo_zh)
+
+    def test_ap2_circuit_breaker_recall_tripwire_vs_backoff_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_ap2_circuit_breaker_and_recall_policy
+
+        # 1. Normal guarded settlement in CLOSED state
+        closed_ok = evaluate_ap2_circuit_breaker_and_recall_policy()
+        self.assertTrue(closed_ok.allowed)
+        self.assertEqual(closed_ok.http_status, 200)
+        self.assertEqual(closed_ok.circuit_state, "CLOSED")
+
+        # 2. Transient 503 recovered via bounded backoff with identical Idempotency-Key
+        backoff_ok = evaluate_ap2_circuit_breaker_and_recall_policy(
+            downstream_transient_status=503,
+            same_idempotency_key=True,
+            retry_attempt=1,
+        )
+        self.assertTrue(backoff_ok.allowed)
+        self.assertEqual(backoff_ok.breaker_lane, "RECOVERED_VIA_BOUNDED_BACKOFF")
+
+        # 3. Hourly velocity cap breach -> HTTP 429 OPEN + SPT revoked
+        vel_429 = evaluate_ap2_circuit_breaker_and_recall_policy(
+            orders_in_hour=6,
+            max_orders_per_hour=5,
+        )
+        self.assertFalse(vel_429.allowed)
+        self.assertEqual(vel_429.http_status, 429)
+        self.assertEqual(vel_429.circuit_state, "OPEN")
+        self.assertTrue(vel_429.spt_revoked)
+
+        # 4. Consecutive policy failures >= 3 (reasoning loop) -> HTTP 423 OPEN + SPT revoked
+        loop_423 = evaluate_ap2_circuit_breaker_and_recall_policy(
+            consecutive_policy_failures=3,
+            max_consecutive_failures=3,
+        )
+        self.assertFalse(loop_423.allowed)
+        self.assertEqual(loop_423.http_status, 423)
+        self.assertTrue(loop_423.spt_revoked)
+
+        # 5. Web IQ pre-settlement regulatory recall tripwire (W09) -> HTTP 451 OPEN
+        recall_451 = evaluate_ap2_circuit_breaker_and_recall_policy(
+            recall_or_sanction_detected=True,
+        )
+        self.assertFalse(recall_451.allowed)
+        self.assertEqual(recall_451.http_status, 451)
+        self.assertEqual(recall_451.breaker_lane, "BLOCKED_REGULATORY_RECALL_TRIPWIRE")
+
+        # 6. Timer-only auto-reset forbidden -> HTTP 423; FIDO2 human reset -> HTTP 200 CLOSED
+        timer_423 = evaluate_ap2_circuit_breaker_and_recall_policy(
+            breaker_currently_open=True,
+            timer_only_auto_reset_attempted=True,
+            hitl_fido2_reset_verified=False,
+        )
+        self.assertFalse(timer_423.allowed)
+        self.assertEqual(timer_423.http_status, 423)
+
+        fido2_200 = evaluate_ap2_circuit_breaker_and_recall_policy(
+            breaker_currently_open=True,
+            hitl_fido2_reset_verified=True,
+        )
+        self.assertTrue(fido2_200.allowed)
+        self.assertEqual(fido2_200.circuit_state, "CLOSED")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ap2_circuit_breaker_recall_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ap2-circuit-breaker-recall-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

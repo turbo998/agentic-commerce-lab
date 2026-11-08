@@ -160,6 +160,11 @@
     "stepup_union_latency_ms": 365,
     "deputy_block_latency_ms": 18
   },
+  "ap2_circuit_breaker_recall_guards": {
+    "all_passed": true,
+    "backoff_recovery_latency_ms": 410,
+    "recall_tripwire_latency_ms": 28
+  },
   "scenarios": [
     {
       "id": "W01",

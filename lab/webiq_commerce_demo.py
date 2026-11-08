@@ -5620,6 +5620,151 @@ def evaluate_mcp_oauth_audience_and_stepup_policy(
     )
 
 
+@dataclass(frozen=True)
+class Ap2CircuitBreakerRecallVerdict:
+    """Round 16 verdict for AP2 3-State Financial Circuit Breaker (Velocity Cap + Loop Lockout + Web IQ Recall W09) vs Bounded Backoff."""
+
+    allowed: bool
+    http_status: int
+    circuit_state: str
+    breaker_lane: str
+    settled_amount_cents: int
+    spt_revoked: bool
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_ap2_circuit_breaker_and_recall_policy(
+    *,
+    order_amount_cents: int = 18000,
+    orders_in_hour: int = 2,
+    max_orders_per_hour: int = 5,
+    hourly_spend_cents: int = 32000,
+    hourly_spend_cap_cents: int = 100000,
+    consecutive_policy_failures: int = 0,
+    max_consecutive_failures: int = 3,
+    recall_or_sanction_detected: bool = False,
+    downstream_transient_status: int | None = None,
+    same_idempotency_key: bool = True,
+    retry_attempt: int = 0,
+    max_retries: int = 3,
+    breaker_currently_open: bool = False,
+    timer_only_auto_reset_attempted: bool = False,
+    hitl_fido2_reset_verified: bool = False,
+) -> Ap2CircuitBreakerRecallVerdict:
+    """Evaluate AP2 Financial Circuit Breaker: W09 Web IQ recall tripwire, reasoning-loop lockout, velocity cap, FIDO2 reset, and bounded backoff."""
+
+    # 1. Existing OPEN breaker state: forbid timer-only auto-reset; require explicit human FIDO2 Passkey reset
+    if breaker_currently_open:
+        if hitl_fido2_reset_verified:
+            return Ap2CircuitBreakerRecallVerdict(
+                True,
+                200,
+                "CLOSED",
+                "CIRCUIT_RESET_BY_FIDO2",
+                order_amount_cents,
+                False,
+                "ap2_circuit_breaker_reset_via_human_fido2_passkey_signature",
+                350,
+                "Confirm",
+            )
+        return Ap2CircuitBreakerRecallVerdict(
+            False,
+            423,
+            "OPEN",
+            "BLOCKED_TIMER_AUTO_RESET_FORBIDDEN",
+            0,
+            True,
+            "ap2_financial_circuit_breaker_forbids_timer_auto_reset_without_fido2"
+            if timer_only_auto_reset_attempted
+            else "ap2_financial_circuit_breaker_ remains_open_awaiting_fido2",
+            20,
+            "Send to a human",
+        )
+
+    # 2. Pre-Settlement Microsoft Web IQ Regulatory Recall & Sanction Tripwire (W09 invariant -> HTTP 451)
+    if recall_or_sanction_detected:
+        return Ap2CircuitBreakerRecallVerdict(
+            False,
+            451,
+            "OPEN",
+            "BLOCKED_REGULATORY_RECALL_TRIPWIRE",
+            0,
+            True,
+            "webiq_live_browse_detected_cpsc_fda_product_recall_or_sanction_w09",
+            28,
+            "Send to a human",
+        )
+
+    # 3. ReAct Reasoning-Loop / Parameter Brute-Force Lockout (>= 3 consecutive 401/403/422 failures -> HTTP 423 + SPT revoke)
+    if consecutive_policy_failures >= max_consecutive_failures:
+        return Ap2CircuitBreakerRecallVerdict(
+            False,
+            423,
+            "OPEN",
+            "AP2_BREAKER_LOCKED_LOOP_DETECTED",
+            0,
+            True,
+            "consecutive_policy_failures_exceeded_threshold_spt_revoked",
+            25,
+            "Send to a human",
+        )
+
+    # 4. Sliding-Window Velocity Cap Tripwire (hourly order frequency or hourly cumulative spend exceeded -> HTTP 429)
+    if orders_in_hour > max_orders_per_hour or (hourly_spend_cents + order_amount_cents) > hourly_spend_cap_cents:
+        return Ap2CircuitBreakerRecallVerdict(
+            False,
+            429,
+            "OPEN",
+            "AP2_VELOCITY_CIRCUIT_OPEN",
+            0,
+            True,
+            "sliding_window_order_or_spend_velocity_cap_exceeded",
+            22,
+            "Send to a human",
+        )
+
+    # 5. Downstream transient 429/503 failure -> allow bounded full-jitter exponential backoff ONLY if same Idempotency-Key is bound
+    if downstream_transient_status in (429, 503):
+        if not same_idempotency_key or retry_attempt > max_retries:
+            return Ap2CircuitBreakerRecallVerdict(
+                False,
+                409,
+                "OPEN",
+                "BLOCKED_UNSAFE_UNBOUNDED_RETRY",
+                0,
+                False,
+                "transient_retry_rejected_missing_idempotency_key_or_max_retries_exceeded",
+                24,
+                "Send to a human",
+            )
+        return Ap2CircuitBreakerRecallVerdict(
+            True,
+            200,
+            "CLOSED",
+            "RECOVERED_VIA_BOUNDED_BACKOFF",
+            order_amount_cents,
+            False,
+            "transient_downstream_blip_recovered_with_identical_idempotency_key",
+            410,
+            "Act automatically",
+        )
+
+    # 6. Normal guarded settlement in CLOSED state
+    return Ap2CircuitBreakerRecallVerdict(
+        True,
+        200,
+        "CLOSED",
+        "CIRCUIT_CLOSED_AUTHORIZED",
+        order_amount_cents,
+        False,
+        "velocity_and_recall_guards_green_settlement_committed",
+        280,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -6982,6 +7127,55 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "deputy_block_latency_ms": mcp_deputy_401.latency_ms,
     }
 
+    cb_closed_ok = evaluate_ap2_circuit_breaker_and_recall_policy()
+    cb_backoff_ok = evaluate_ap2_circuit_breaker_and_recall_policy(
+        downstream_transient_status=503,
+        same_idempotency_key=True,
+        retry_attempt=1,
+    )
+    cb_velocity_429 = evaluate_ap2_circuit_breaker_and_recall_policy(
+        orders_in_hour=6,
+        max_orders_per_hour=5,
+    )
+    cb_loop_423 = evaluate_ap2_circuit_breaker_and_recall_policy(
+        consecutive_policy_failures=3,
+        max_consecutive_failures=3,
+    )
+    cb_recall_451 = evaluate_ap2_circuit_breaker_and_recall_policy(
+        recall_or_sanction_detected=True,
+    )
+    cb_timer_reset_423 = evaluate_ap2_circuit_breaker_and_recall_policy(
+        breaker_currently_open=True,
+        timer_only_auto_reset_attempted=True,
+        hitl_fido2_reset_verified=False,
+    )
+    cb_fido2_reset_200 = evaluate_ap2_circuit_breaker_and_recall_policy(
+        breaker_currently_open=True,
+        hitl_fido2_reset_verified=True,
+    )
+    ap2_circuit_breaker_recall_guards = {
+        "all_passed": (
+            cb_closed_ok.allowed
+            and cb_closed_ok.circuit_state == "CLOSED"
+            and cb_backoff_ok.allowed
+            and cb_backoff_ok.breaker_lane == "RECOVERED_VIA_BOUNDED_BACKOFF"
+            and not cb_velocity_429.allowed
+            and cb_velocity_429.http_status == 429
+            and cb_velocity_429.spt_revoked
+            and not cb_loop_423.allowed
+            and cb_loop_423.http_status == 423
+            and cb_loop_423.spt_revoked
+            and not cb_recall_451.allowed
+            and cb_recall_451.http_status == 451
+            and not cb_timer_reset_423.allowed
+            and cb_timer_reset_423.http_status == 423
+            and cb_fido2_reset_200.allowed
+            and cb_fido2_reset_200.circuit_state == "CLOSED"
+        ),
+        "backoff_recovery_latency_ms": cb_backoff_ok.latency_ms,
+        "recall_tripwire_latency_ms": cb_recall_451.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -7010,6 +7204,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "chargeback_dispute_evidence_guards": chargeback_dispute_evidence_guards,
         "dynamic_pricing_quote_lock_guards": dynamic_pricing_quote_lock_guards,
         "mcp_oauth_audience_stepup_guards": mcp_oauth_audience_stepup_guards,
+        "ap2_circuit_breaker_recall_guards": ap2_circuit_breaker_recall_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -10191,6 +10386,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mcp-stepup-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive AP2 3-State Financial Circuit Breaker & Web IQ Recall Tripwire Sandbox (Round 16 FAQ Companion) -->
+      <div class="finops-box" id="ap2-circuit-breaker-recall-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ap2-cb-title">⚡ 多智能体支付失控熔断与召回阻断：AP2 金融断路器（Velocity Cap + 死循环锁死 + Web IQ 召回绊网 W09）vs 指数退避决策器 (Round 16 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 交易流速、推理循环状态与 Web IQ 监管召回检测 (Velocity, Reasoning-Loop &amp; W09 Recall Posture):</span></label>
+          <select id="ap2-cb-select" onchange="updateAp2CircuitBreakerSandbox()">
+            <option value="cb_backoff_200">🔄 瞬态 503 安全退避恢复：下游网关瞬态 503 + 严格复用同一 Idempotency-Key (retry=1/3) → 全抖动退避后单次精准成交 $180.00 (410ms)</option>
+            <option value="cb_recall_451">🚨 Web IQ 监管召回绊网 (W09)：结算前 /v3/browse 检出 CPSC/FDA 锂电池起火紧急召回 → 28ms 触发 HTTP 451 硬阻断并冻结 SKU! ($0.00)</option>
+            <option value="cb_loop_423">🔒 ReAct 推理死循环锁死：Agent 连续 3 次因 422/401 金额超限被拒后继续改参试探 → 25ms 触发 HTTP 423 STATE=OPEN 并吊销 SPT! ($0.00)</option>
+            <option value="cb_velocity_429">🛑 小时流速暴增熔断：多 Agent 并发刷单风暴 (1 小时第 6 单 &gt; 5 单/hr 硬顶) → 22ms 触发 HTTP 429 AP2_VELOCITY_CIRCUIT_OPEN! ($0.00)</option>
+            <option value="cb_timer_reset_423">🚫 严禁定时冷却自愈：断路器处于 OPEN 态时仅靠 30s 冷却计时器尝试自动恢复 → 20ms 触发 HTTP 423 拒绝自愈，防止失控 Agent 继续盗刷!</option>
+            <option value="cb_fido2_reset_200">🔐 人类 FIDO2 Passkey 显式复闸：管理员提交 WebAuthn 硬件签名 (hitl_fido2_reset_verified=True) → 状态复位回 CLOSED 并成交 $180.00 (350ms)</option>
+          </select>
+        </div>
+        <div id="ap2-cb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -10645,6 +10859,7 @@ function renderAll() {{
   updateChargebackDisputeSandbox();
   updateDynamicPricingSandbox();
   updateMcpOAuthStepUpSandbox();
+  updateAp2CircuitBreakerSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11590,6 +11805,65 @@ function updateMcpOAuthStepUpSandbox() {{
     "<strong>🟢 OAuth 2.1 受众绑定与并集升权通过 (STEPUP_SCOPE_UNION_AUTHORIZED · 365ms · Act automatically · official_doc_snapshot):</strong><br>" +
     "• <strong>无损并集升权</strong>：将已有作用域与挑战作用域求并集 <code>[\"mcp:tools\", \"commerce:read\", \"commerce:checkout\"]</code>，不丢失基础只读权限<br>" +
     "• <strong>双重密码学绑定</strong>：<code>RFC 8707 aud</code> 焊死结账 MCP 规范化 URI + <code>RFC 9207 iss</code> 逐字符精确匹配通过！" +
+    "</div>";
+}}
+
+function updateAp2CircuitBreakerSandbox() {{
+  var selEl = document.getElementById("ap2-cb-select");
+  var outEl = document.getElementById("ap2-cb-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cb_recall_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 451 BLOCKED_REGULATORY_RECALL_TRIPWIRE (28ms · STATE=OPEN · Send to a human · W09)：<br>" +
+      "结算前调用 Microsoft Web IQ <code>/v3/browse (liveCrawl=\"force\")</code> 检出目标 SKU 命中 CPSC/FDA 紧急安全召回通告！断路器当场拉闸（实扣 <code>$0.00</code>），吊销当前 SPT 并永久冻结该 SKU 的自动补货授权！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cb_loop_423") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🔒 HTTP 423 AP2_BREAKER_LOCKED_LOOP_DETECTED (25ms · STATE=OPEN · Send to a human · synthetic_policy)：<br>" +
+      "检测到 ReAct 推理死循环或提示词注入暴力试探（连续 <code>&gt;= 3</code> 次触发 <code>401/403/422</code> 越权拒绝）！网关立即转入 <code>STATE=OPEN</code> 锁死态并异步销毁活跃 <code>spt_...</code> 令牌（实扣 <code>$0.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cb_velocity_429") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 429 AP2_VELOCITY_CIRCUIT_OPEN (22ms · STATE=OPEN · Send to a human · synthetic_policy)：<br>" +
+      "滑动时间窗检出多 Agent 并发刷单风暴（小时订单频次 <code>6 &gt; 5 单/hr</code> 或累计金额突破 <code>$1,000/hr</code> 硬顶）！断路器秒级切断资金阀门并吊销活跃 SPT（实扣 <code>$0.00</code>）。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cb_timer_reset_423") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 423 BLOCKED_TIMER_AUTO_RESET_FORBIDDEN (20ms · STATE=OPEN · Send to a human)：<br>" +
+      "AP2 金融断路器严禁传统微服务的“30 秒冷却定时自动恢复”！若允许定时自愈，失控的大模型循环将在 30 秒后继续盗刷企业卡；必须等待人类 FIDO2 Passkey 签名才能复闸。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cb_fido2_reset_200") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔐 人类 FIDO2 Passkey 签名显式复闸通过 (CIRCUIT_RESET_BY_FIDO2 · 350ms · STATE=CLOSED · Confirm):</strong><br>" +
+      "• <strong>安全复位</strong>：验证买家/采购管理员 <code>hitl_fido2_reset_verified === True</code> 硬件签名后，清零连续失败计数并恢复受控结算 <code>$180.00</code>！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔄 瞬态 503 有界全抖动指数退避恢复 (RECOVERED_VIA_BOUNDED_BACKOFF · 410ms · STATE=CLOSED · Act automatically):</strong><br>" +
+    "• <strong>零重复扣款恢复</strong>：下游网关返回瞬态 <code>HTTP 503</code>，网关严格复用同一 <code>Idempotency-Key</code> 执行全抖动退避（<code>retry=1/3</code>），单次精准结算 <code>$180.00</code>！" +
     "</div>";
 }}
 

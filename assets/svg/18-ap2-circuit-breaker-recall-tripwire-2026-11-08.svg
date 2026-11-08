@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg18" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="blue18" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="red18" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+    <linearGradient id="green18" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg18)" rx="16"/>
+
+  <!-- Header -->
+  <rect x="32" y="24" width="1136" height="84" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="52" y="56" font-family="Segoe UI, Inter, sans-serif" font-size="21" font-weight="700" fill="#F8FAFC">
+    Round 16 · AP2 金融断路器（Velocity Cap + 死循环锁死 + Web IQ 召回绊网 W09）vs 指数退避重试
+  </text>
+  <text x="52" y="86" font-family="Segoe UI, Inter, sans-serif" font-size="14" fill="#94A3B8">
+    AP2 3-State Financial Circuit Breaker (CLOSED / OPEN / HALF_OPEN_HITL) · ReAct Reasoning-Loop Lockout (423) · Web IQ Recall Guard (451)
+  </text>
+  <rect x="945" y="38" width="205" height="32" rx="16" fill="#3B0764" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="1047" y="59" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="12" font-weight="700" fill="#F3E8FF">
+    ZERO RUNAWAY DRAIN
+  </text>
+
+  <!-- Column 1: Bounded Backoff vs Velocity & Loop Tripwire -->
+  <rect x="32" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#3B82F6" stroke-width="1.5"/>
+  <rect x="32" y="126" width="364" height="42" rx="12" fill="url(#blue18)"/>
+  <text x="214" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    1. 瞬态退避恢复 vs 流速/死循环硬拉闸
+  </text>
+
+  <rect x="48" y="182" width="332" height="92" rx="8" fill="#172554" stroke="#60A5FA" stroke-width="1"/>
+  <text x="60" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#93C5FD">
+    🔄 瞬态 429/503 有界退避 (410 ms · HTTP 200)
+  </text>
+  <text x="60" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 仅限下游网络抖动且绑定同一 Idempotency-Key
+  </text>
+  <text x="60" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#DBEAFE">
+    • 全抖动指数退避 (max_retries=3 · 尊重 Retry-After)
+  </text>
+  <text x="60" y="264" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#60A5FA">
+    • 实扣 $180.00 (0.0% 重复扣款 · Act automatically)
+  </text>
+
+  <rect x="48" y="286" width="332" height="104" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="60" y="308" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5">
+    🔒 ReAct 推理死循环锁死 (25 ms · HTTP 423)
+  </text>
+  <text x="60" y="330" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 连续 &gt;= 3 次 401/403/422 金额超限或篡改试探
+  </text>
+  <text x="60" y="350" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 立即转 STATE=OPEN 并异步吊销活跃 spt_... 令牌
+  </text>
+  <text x="60" y="372" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    • AP2_BREAKER_LOCKED_LOOP_DETECTED ($0.00)
+  </text>
+
+  <rect x="48" y="402" width="332" height="96" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1"/>
+  <text x="60" y="424" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCD34D">
+    🛑 小时流速硬顶熔断 (22 ms · HTTP 429)
+  </text>
+  <text x="60" y="446" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FDE68A">
+    • 拦截多 Agent 并发刷单 (&gt; 5 单/hr 或 &gt; $1,000/hr)
+  </text>
+  <text x="60" y="468" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FDE68A">
+    • synthetic_policy 滑动窗口秒级止损 (实扣 $0.00)
+  </text>
+
+  <!-- Column 2: Web IQ W09 Regulatory Recall Tripwire -->
+  <rect x="418" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="418" y="126" width="364" height="42" rx="12" fill="url(#red18)"/>
+  <text x="600" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    2. Web IQ 监管召回实时绊网 (W09 · HTTP 451)
+  </text>
+
+  <rect x="434" y="182" width="332" height="104" rx="8" fill="#450A0A" stroke="#F87171" stroke-width="1.2"/>
+  <text x="446" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5">
+    🚨 CPSC / FDA 紧急安全召回阻断 (28 ms)
+  </text>
+  <text x="446" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 解决“10 月签长效授权，11 月商品被召回”盲区
+  </text>
+  <text x="446" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#FECACA">
+    • 扣款前强制调用 Web IQ /v3/browse (liveCrawl="force")
+  </text>
+  <text x="446" y="268" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    • HTTP 451 Unavailable For Legal Reasons ($0.00)
+  </text>
+
+  <rect x="434" y="298" width="332" height="98" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="446" y="320" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0">
+    🧾 召回证据哈希固定与 SKU 授权冻结
+  </text>
+  <text x="446" y="342" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 立即冻结该 SKU 的自动补货 Standing Mandate
+  </text>
+  <text x="446" y="362" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#CBD5E1">
+    • 记录权威召回通告 URL 与 SHA-256 证据摘要
+  </text>
+  <text x="446" y="382" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 规避企业采购问题批次商品与法律合规连带责任
+  </text>
+
+  <rect x="434" y="408" width="332" height="90" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="446" y="430" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    🚫 严禁“30 秒冷却定时自动恢复”
+  </text>
+  <text x="446" y="452" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#D1FAE5">
+    • 传统定时 Half-Open 会让失控 Agent 冷却后继续盗刷
+  </text>
+  <text x="446" y="472" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#D1FAE5">
+    • 仅靠 timer_elapsed=True 尝试恢复一律返回 HTTP 423!
+  </text>
+
+  <!-- Column 3: 3-State Machine & FIDO2 Human Reset -->
+  <rect x="804" y="126" width="364" height="388" rx="12" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="804" y="126" width="364" height="42" rx="12" fill="url(#green18)"/>
+  <text x="986" y="152" text-anchor="middle" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">
+    3. 三态机与 FIDO2 Passkey 人工复闸
+  </text>
+
+  <rect x="820" y="182" width="332" height="96" rx="8" fill="#064E3B" stroke="#34D399" stroke-width="1"/>
+  <text x="832" y="204" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0">
+    🟢 STATE = CLOSED (正常受控通行 · 280 ms)
+  </text>
+  <text x="832" y="226" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • orders_in_window &lt;= 5/hr · spend &lt;= $1,000/hr
+  </text>
+  <text x="832" y="246" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#ECFDF5">
+    • consecutive_policy_failures &lt; 3 · recall=False
+  </text>
+  <text x="832" y="266" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#6EE7B7">
+    • Act automatically (deterministic_offline_simulation)
+  </text>
+
+  <rect x="820" y="290" width="332" height="104" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="832" y="312" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#7DD3FC">
+    🔐 STATE = HALF_OPEN_HITL (FIDO2 复闸 · 350 ms)
+  </text>
+  <text x="832" y="334" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • 断路器锁死后必须由人类管理员提交 Passkey 签名
+  </text>
+  <text x="832" y="354" font-family="Segoe UI, Inter, sans-serif" font-size="12" fill="#E0F2FE">
+    • hitl_fido2_reset_verified === True 验签通过
+  </text>
+  <text x="832" y="376" font-family="Segoe UI, Inter, sans-serif" font-size="11" font-weight="700" fill="#38BDF8">
+    • 清零连续错误计数并签发全新受限 SPT 恢复 CLOSED
+  </text>
+
+  <rect x="820" y="406" width="332" height="92" rx="8" fill="#0F172A" stroke="#64748B" stroke-width="1"/>
+  <text x="832" y="428" font-family="Segoe UI, Inter, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    📊 Provenance 透明溯源声明
+  </text>
+  <text x="832" y="448" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 5 单/hr、$1k/hr、3 次死循环锁死: synthetic_policy
+  </text>
+  <text x="832" y="466" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • 22ms~410ms 断路器延迟: deterministic_offline_simulation
+  </text>
+  <text x="832" y="484" font-family="Segoe UI, Inter, sans-serif" font-size="11" fill="#94A3B8">
+    • CPSC/FDA 源站外部推送延迟: not_measured
+  </text>
+
+  <!-- Bottom Summary Banner -->
+  <rect x="32" y="532" width="1136" height="118" rx="12" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
+  <text x="52" y="562" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700" fill="#38BDF8">
+    🎯 架构师一句话选型口诀（3-Minute Takeaway for AI Solution Architects）：
+  </text>
+  <text x="52" y="590" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    1. 遇到下游瞬态 429/503 且流速正常 → 复用同一 Idempotency-Key 执行有界全抖动指数退避 (max_retries=3, 410ms 恢复, 0 重复扣款)；
+  </text>
+  <text x="52" y="614" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#E2E8F0">
+    2. 遇到小时流速越界 (&gt;5单/hr 或 &gt;$1k/hr) 或连续 &gt;=3 次 401/403/422 推理死循环 → 22~25ms 硬拉闸 (STATE=OPEN) 并吊销 SPT，严禁定时自动恢复；
+  </text>
+  <text x="52" y="638" font-family="Segoe UI, Inter, sans-serif" font-size="13" fill="#6EE7B7">
+    3. 结算前调用 Microsoft Web IQ /v3/browse 检出 CPSC/FDA 安全召回 (W09) → 28ms 触发 HTTP 451 阻断并冻结 SKU；拉闸后仅凭人类 FIDO2 签名复闸 (350ms)。
+  </text>
+</svg>
