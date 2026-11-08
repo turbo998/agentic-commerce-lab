@@ -1602,6 +1602,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/b2b-sealed-bid-reverse-auction-vs-price-signaling-collusion-faq.en.md",
             "docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.md",
             "docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.en.md",
+            "docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md",
+            "docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -3075,6 +3077,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["cross_border_customs_ddp_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-customs-ddp-sandbox", demo_zh)
+
+    def test_saas_seat_trueup_telemetry_mandate_vs_shelfware_auto_renewal_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_saas_seat_trueup_telemetry_policy,
+        )
+
+        # 1. Right-sized 320 active seats ($230,400) + 0% uplift + SOC2 clean -> 200 settled
+        commit_ok = evaluate_saas_seat_trueup_telemetry_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_renewal_cents, 23040000)
+        self.assertEqual(commit_ok.shelfware_savings_cents, 12960000)
+
+        # 2. Unpruned 500-seat quote vs 320 active SSO seats (180 zombie seats) -> 403 blocked in 12ms
+        zombie_403 = evaluate_saas_seat_trueup_telemetry_policy(
+            billed_renewal_seats=500,
+            active_sso_30d_seats=320,
+        )
+        self.assertFalse(zombie_403.allowed)
+        self.assertEqual(zombie_403.http_status, 403)
+        self.assertEqual(
+            zombie_403.trueup_lane, "SHELFWARE_ZOMBIE_SEATS_RENEWAL_BLOCKED"
+        )
+
+        # 3. Predatory 12% uplift (1200 bps > 500 bps cap) -> 422 blocked in 15ms
+        uplift_422 = evaluate_saas_seat_trueup_telemetry_policy(
+            annual_uplift_bps=1200,
+        )
+        self.assertFalse(uplift_422.allowed)
+        self.assertEqual(uplift_422.http_status, 422)
+        self.assertEqual(
+            uplift_422.trueup_lane, "EXCESSIVE_RENEWAL_PRICE_UPLIFT_BLOCKED"
+        )
+
+        # 4. Vendor SOC2 compliance hold or tier deprecation via Web IQ -> 451 blocked in 310ms
+        trust_451 = evaluate_saas_seat_trueup_telemetry_policy(
+            webiq_vendor_compliance_clean=False,
+        )
+        self.assertFalse(trust_451.allowed)
+        self.assertEqual(trust_451.http_status, 451)
+
+        # 5. Web IQ discovers public committed-use annual pool saving extra $18,400 -> 409 Confirm in 315ms
+        promo_409 = evaluate_saas_seat_trueup_telemetry_policy(
+            webiq_public_promo_savings_cents=1840000,
+        )
+        self.assertFalse(promo_409.allowed)
+        self.assertEqual(promo_409.http_status, 409)
+        self.assertEqual(promo_409.settled_renewal_cents, 21200000)
+        self.assertEqual(promo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["saas_seat_trueup_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-seat-trueup-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
