@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg22" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent22" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg22)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent22)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-08 · ROUND 20 · MULTI-CURRENCY FX QUOTE LOCK (fx_quote_... 300s) &amp; ISO 4217 GUARD VS. PREDATORY DCC &amp; 100X BUG FAQ</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">跨境多币种 AI Agent 锁汇与计价：300s 锁汇令牌 + 零小数位护栏 vs DCC 暴利加点与 100x 误扣</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: deterministic_offline_simulation + synthetic_policy + official_doc_snapshot · Saves $25.92 vs 650 bps DCC · 0.0% Refund FX Loss</text>
+
+  <!-- Left Column: Three Cross-Currency Traps -->
+  <rect x="44" y="132" width="356" height="378" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="356" height="36" rx="12" fill="#7F1D1D"/>
+  <text x="62" y="155" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 跨境多币种 Agent 结账的三大致命陷阱</text>
+
+  <rect x="60" y="182" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="204" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 零小数位币种 100 倍放大灾难 (JPY/KRW 100x Bug)</text>
+  <text x="72" y="224" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• LLM 习惯按美元 cents 将网页价格乘以 100</text>
+  <text x="72" y="244" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 标价 ¥70,000 JPY (exp=0) 被传成 amount=7000000</text>
+  <text x="72" y="264" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 🚨 14ms 触发 HTTP 422 拦截 (避免多扣 $45,454!)</text>
+
+  <rect x="60" y="290" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="312" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 收单端 DCC 动态货币转换暴利加点 (3.5%~6.5%)</text>
+  <text x="72" y="332" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 结账页默认勾选“直接按美元 $484.10 扣款 (650 bps)”</text>
+  <text x="72" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 较中间价 $454.55 白白被收单行割走 $29.55 汇差</text>
+  <text x="72" y="372" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 🛑 Web IQ 识破 &gt;150 bps → HTTP 403 拒选 DCC (18ms)</text>
+
+  <rect x="60" y="398" width="324" height="96" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="72" y="420" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 跨期退货即期汇率敞口 (Unpinned Refund Drift)</text>
+  <text x="72" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 14 天后退货时汇率贬值 4.2%，按即期汇率少退 $19.24</text>
+  <text x="72" y="460" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 财务账本无法平账，甚至引发卡组少退金额拒付争议</text>
+  <text x="72" y="480" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 🛡️ 强制锚定原单 fx_quote_id 全额退回 (245ms)</text>
+
+  <!-- Center Column: ISO 4217 Guard + Wholesale fx_quote_... 300s Lock -->
+  <rect x="418" y="132" width="364" height="378" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="418" y="132" width="364" height="36" rx="12" fill="#064E3B"/>
+  <text x="436" y="155" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">✅ ISO 4217 指数护栏 + fx_quote_... 300s 锁汇架构</text>
+
+  <rect x="434" y="182" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="204" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Guard 1: ISO 4217 货币最小单位确定性映射</text>
+  <text x="446" y="224" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• JPY/KRW/VND: exp=0 (¥70,000 -&gt; 70000)</text>
+  <text x="446" y="244" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• USD/EUR/GBP: exp=2 ($458.18 -&gt; 45818)</text>
+  <text x="446" y="264" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• KWD/BHD/OMR: exp=3 · 严禁 LLM 自由做乘法!</text>
+
+  <rect x="434" y="290" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="312" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Guard 2: 源币种结算 + 300s 批发锁汇核验 Mandate</text>
+  <text x="446" y="332" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制以商户源币种 (JPY) 计价，拒选商户 DCC</text>
+  <text x="446" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 拉取 fx_quote_live_... (300s TTL, 80 bps 批发加点)</text>
+  <text x="446" y="372" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 折算 $458.18 &lt;= $500 Mandate → 270ms 原子成交!</text>
+
+  <rect x="434" y="398" width="332" height="96" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="446" y="420" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Guard 3: 跨期退货原单锁汇凭证锚定 (Pinned Refund)</text>
+  <text x="446" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 退货退款请求必须携带 pin_original_fx_quote=True</text>
+  <text x="446" y="460" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 拒绝按当日浮动即期汇率折算 (19ms 报 HTTP 409)</text>
+  <text x="446" y="480" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 100% 恢复买家原实付 $458.18 USD (245ms)</text>
+
+  <!-- Right Column: Quantitative Benchmark Scorecard -->
+  <rect x="800" y="132" width="356" height="378" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>
+  <rect x="800" y="132" width="356" height="36" rx="12" fill="#0C4A6E"/>
+  <text x="818" y="155" fill="#BAE6FD" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 跨境多币种锁汇与防 DCC 实测计分卡 (Round 20)</text>
+
+  <rect x="816" y="182" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="202" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">源币种 + 300s 锁汇成交 (80 bps &lt;= 150 bps)</text>
+  <text x="828" y="224" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 270ms · 立省 $25.92 · Act automatically</text>
+
+  <rect x="816" y="250" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="270" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">JPY 零小数位 100x 放大拦截 (70000 -&gt; 7000000)</text>
+  <text x="828" y="292" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms 硬阻断 · 免遭 $45,454 误扣</text>
+
+  <rect x="816" y="318" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">收单端 DCC 暴利加点拦截 (650 bps &gt; 150 bps)</text>
+  <text x="828" y="360" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 18ms 拒选 DCC · Send to a human</text>
+
+  <rect x="816" y="386" width="324" height="58" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="406" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">300s 锁汇过期或汇率跳水超 Mandate 预算</text>
+  <text x="828" y="428" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 22ms 拦截重算 · Confirm</text>
+
+  <rect x="816" y="454" width="324" height="44" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="828" y="481" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">原单 fx_quote_id 锚定全额退款：HTTP 200 (245ms)</text>
+
+  <!-- Bottom Bar: Architect Takeaway -->
+  <rect x="44" y="526" width="1112" height="108" rx="12" fill="#090D16" stroke="#334155" stroke-width="1.2"/>
+  <text x="64" y="552" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="800">🎯 架构师核心选型铁律 (Architect Golden Rules for Multi-Currency FX Quote Locks &amp; Anti-DCC):</text>
+  <text x="64" y="576" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">1. 零小数位指数硬校验：网关按 ISO 4217 字典核对 JPY/KRW (exp=0) 与 USD/EUR (exp=2)，将 LLM 乘 100 的百倍误扣在 14ms 内以 HTTP 422 拦截。</text>
+  <text x="64" y="598" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">2. 拒选 DCC + 300s 批发锁汇：Web IQ 检出结账页 DCC 或加点 &gt;150 bps 立即报 HTTP 403 (18ms)；强制走源币种 + fx_quote_live_... 锁汇核验买家预算 (270ms)。</text>
+  <text x="64" y="620" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 跨期退款强制锚定原单 fx_quote_id (245ms 恢复 100% 本金，未锚定报 409) · 发卡行账单日入账汇率标注为 not_measured · 详见 docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.md</text>
+</svg>

@@ -1574,6 +1574,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.en.md",
             "docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.md",
             "docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.en.md",
+            "docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.md",
+            "docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2337,6 +2339,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["inventory_reservation_oversell_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("inventory-reservation-oversell-sandbox", demo_zh)
+
+    def test_multi_currency_fx_rate_lock_vs_dcc_spread_trap_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_multi_currency_fx_and_dcc_policy
+
+        # 1. Clean JPY local currency + 300s FX quote lock within mandate -> 200
+        commit_ok = evaluate_multi_currency_fx_and_dcc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.dcc_savings_cents, 2592)
+
+        # 2. Zero-decimal currency (JPY) multiplied by 100 -> 422 blocked in 14ms
+        bug_100x = evaluate_multi_currency_fx_and_dcc_policy(
+            presentment_currency="JPY",
+            display_price_major=70000,
+            submitted_amount_minor=7000000,
+        )
+        self.assertFalse(bug_100x.allowed)
+        self.assertEqual(bug_100x.http_status, 422)
+        self.assertEqual(bug_100x.fx_lane, "BLOCKED_ZERO_DECIMAL_100X_MULTIPLIER_BUG")
+
+        # 3. Predatory DCC markup (650 bps > 150 bps) -> 403 blocked
+        dcc_403 = evaluate_multi_currency_fx_and_dcc_policy(
+            dcc_enabled=True,
+            fx_markup_bps=650,
+        )
+        self.assertFalse(dcc_403.allowed)
+        self.assertEqual(dcc_403.http_status, 403)
+        self.assertEqual(dcc_403.fx_lane, "BLOCKED_PREDATORY_DCC_MARKUP_TRAP")
+
+        # 4. Expired 300s FX quote or mandate exceeded -> 409 Confirm
+        expired_409 = evaluate_multi_currency_fx_and_dcc_policy(
+            fx_quote_expired=True,
+        )
+        self.assertFalse(expired_409.allowed)
+        self.assertEqual(expired_409.http_status, 409)
+        self.assertEqual(expired_409.action_pill, "Confirm")
+
+        # 5. Pinned FX quote full refund vs unpinned refund slippage block
+        refund_ok = evaluate_multi_currency_fx_and_dcc_policy(
+            is_refund=True,
+            pin_original_fx_quote=True,
+        )
+        self.assertTrue(refund_ok.allowed)
+        self.assertEqual(refund_ok.fx_lane, "PINNED_FX_RATE_FULL_REFUND_RESTORED")
+
+        refund_409 = evaluate_multi_currency_fx_and_dcc_policy(
+            is_refund=True,
+            pin_original_fx_quote=False,
+        )
+        self.assertFalse(refund_409.allowed)
+        self.assertEqual(refund_409.http_status, 409)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["multi_currency_fx_quote_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-currency-fx-quote-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

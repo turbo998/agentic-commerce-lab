@@ -180,6 +180,11 @@
     "atomic_commit_latency_ms": 280,
     "expired_void_latency_ms": 24
   },
+  "multi_currency_fx_quote_guards": {
+    "all_passed": true,
+    "locked_commit_latency_ms": 270,
+    "zero_decimal_block_latency_ms": 14
+  },
   "scenarios": [
     {
       "id": "W01",

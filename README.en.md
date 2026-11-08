@@ -51,6 +51,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 17 (AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention: Intent-Derived Key & Payload SHA-256 vs. In-Flight Lock & Drift Guard)**: **[AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention Architecture: Intent-Derived Idempotency Key & Payload Hash Binding (`Idempotency-Key` + `SHA-256` Fingerprint + 24h State Replay) vs. In-Flight Lock (`HTTP 409`) & Parameter-Drift Guard (`HTTP 422`) Selection FAQ](docs/idempotency-payload-hash-vs-retry-double-charge-faq.en.md)**
 - **Topic 18 (Agentic Checkout Privacy, Shipping Address Tokenization & Prompt-Injection DLP: Two-Tier Geo Prefix & `ship_tok_...` vs. Raw PII Leak & GDPR Crypto-Shredding)**: **[Agentic Checkout Privacy, Shipping Address Tokenization & Prompt-Injection DLP Architecture: Two-Tier Location Disclosure & Vault-Backed Fulfillment Handle (`Postal-Prefix` + `ship_tok_...`) vs. Raw PII in LLM Context & GDPR Crypto-Shredding Selection FAQ](docs/privacy-pii-vaultless-shipping-token-vs-context-leak-faq.en.md)**
 - **Topic 19 (AI Agent Flash-Sale Concurrency, Inventory Lease & Zero-Oversell: Bounded 180s `inv_hold_...` & `capture_method=manual` 2PC vs. Oversell Refund Storms & Cart Hoarding)**: **[AI Agent Flash-Sale Concurrency, Inventory Lease & Zero-Oversell Architecture: Bounded-TTL Soft Inventory Hold & Manual Pre-Auth Two-Phase Commit (`inv_hold_...` 180s TTL + `capture_method=manual`) vs. Optimistic Lockless Oversell Refund Storms & Denial-of-Inventory Cart Hoarding Selection FAQ](docs/inventory-reservation-ttl-hold-vs-oversell-compensation-faq.en.md)**
+- **Topic 20 (Cross-Border Multi-Currency Pricing, FX Rate Lock & Spread Protection: Bounded 300s `fx_quote_...` & ISO 4217 Zero-Decimal Guard vs. Predatory DCC & Refund FX Slippage)**: **[Cross-Border Multi-Currency AI Agent Pricing, FX Rate Lock & Spread Protection Architecture: Local Presentment Currency Alignment & Bounded FX Quote Token (`fx_quote_...` 300s TTL + ISO 4217 Zero-Decimal Guard) vs. Predatory Dynamic Currency Conversion (DCC `3.5%–6.5%` Markup) & Refund FX Slippage Selection FAQ](docs/multi-currency-fx-rate-lock-vs-dcc-spread-trap-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -89,6 +90,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Agentic Checkout Privacy, Shipping Address Tokenization & Prompt-Injection DLP Visual Summary](assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
 
 ![2026-11-08 AI Agent Flash-Sale Concurrency, Inventory Lease & Zero-Oversell Visual Summary](assets/svg/21-inventory-reservation-ttl-hold-vs-oversell-2026-11-08.svg)
+
+![2026-11-08 Cross-Border Multi-Currency AI Agent Pricing, FX Rate Lock & Anti-DCC Architecture Visual Summary](assets/svg/22-multi-currency-fx-rate-lock-vs-dcc-spread-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
