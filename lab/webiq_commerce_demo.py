@@ -5098,6 +5098,150 @@ def evaluate_service_booking_180d_spt_and_slot_conflict(
     )
 
 
+@dataclass(frozen=True)
+class PciDssSptResolveVerdict:
+    """Round 12 verdict for PCI-DSS scope isolation: Standard PaymentIntent vs External PSP SPT Resolve API."""
+
+    allowed: bool
+    http_status: int
+    consumption_lane: str
+    pci_compliance_tier: str
+    spt_lock_state: str
+    raw_pan_bytes_exposed: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+    *,
+    target_psp: str = "stripe_native",
+    has_pci_aoc: bool = False,
+    api_key_type: str = "rk_live_pi_only",
+    already_resolved_external: bool = False,
+    already_consumed_by_pi: bool = False,
+    encryption_certificate_present: bool = True,
+    encryption_start_index: int = 0,
+    encryption_end_index: int = 64,
+    payload_length_bytes: int = 128,
+    webiq_external_psp_status: str = "operational",
+    webiq_cert_fingerprint_matched: bool = True,
+) -> PciDssSptResolveVerdict:
+    """Evaluate Stripe SPT v2 consumption path: Standard PaymentIntent (SAQ-A) vs External PSP Resolve (PCI AoC + RSA slice wrapping + Mutual-Exclusivity Lock)."""
+
+    # 1. Mutual-exclusivity lock check (official_doc_snapshot: Resolve and PaymentIntent are strictly mutually exclusive)
+    if target_psp == "stripe_native" and already_resolved_external:
+        return PciDssSptResolveVerdict(
+            False,
+            409,
+            "BLOCKED_MUTUAL_EXCLUSIVITY_ALREADY_RESOLVED",
+            "SAQ-A",
+            "RESOLVED_EXTERNAL",
+            0,
+            "spt_already_resolved_for_external_psp_cannot_pass_to_payment_intent",
+            38,
+            "Send to a human",
+        )
+    if target_psp != "stripe_native" and already_consumed_by_pi:
+        return PciDssSptResolveVerdict(
+            False,
+            409,
+            "BLOCKED_MUTUAL_EXCLUSIVITY_ALREADY_CONSUMED_PI",
+            "PCI_LEVEL_1_AOC",
+            "CONSUMED_STRIPE_PI",
+            0,
+            "spt_already_consumed_by_payment_intent_cannot_call_resolve",
+            38,
+            "Send to a human",
+        )
+
+    # 2. Standard Stripe Native PaymentIntent consumption (95% default workload -> SAQ-A, 0 raw PAN bytes)
+    if target_psp == "stripe_native":
+        return PciDssSptResolveVerdict(
+            True,
+            200,
+            "CONSUMED_STRIPE_PI",
+            "SAQ-A",
+            "CONSUMED_STRIPE_PI",
+            0,
+            "standard_payment_intent_spt_consumption_zero_raw_pan_saq_a",
+            320,
+            "Act automatically",
+        )
+
+    # 3. Pre-Resolve Health & Certificate Grounding via Microsoft Web IQ /v3/browse
+    #    If the external PSP is degraded BEFORE calling Resolve (lock still untouched), fail over losslessly to Stripe PaymentIntent!
+    if webiq_external_psp_status != "operational" or not webiq_cert_fingerprint_matched:
+        return PciDssSptResolveVerdict(
+            True,
+            200,
+            "PRE_RESOLVE_FAILOVER_TO_PI",
+            "SAQ-A",
+            "CONSUMED_STRIPE_PI",
+            0,
+            "webiq_detected_external_psp_degraded_or_cert_mismatch_pre_resolve_failover_to_stripe_pi",
+            360,
+            "Act automatically",
+        )
+
+    # 4. External PSP Resolve requires verified PCI-DSS Level 1 AoC and scoped Restricted API Key (rk_live_resolve_only)
+    if not has_pci_aoc or api_key_type != "rk_live_resolve_only":
+        return PciDssSptResolveVerdict(
+            False,
+            403,
+            "BLOCKED_MISSING_PCI_AOC_OR_SCOPED_RK",
+            "UNQUALIFIED_NON_CDE",
+            "UNTOUCHED",
+            0,
+            "pci_aoc_required_for_spt_resolve_and_scoped_rk_live_key_mandatory",
+            42,
+            "Send to a human",
+        )
+
+    # 5. Validate RSA encryption_certificate and encryption_block byte-slice bounds [start_index, end_index]
+    if not encryption_certificate_present:
+        return PciDssSptResolveVerdict(
+            False,
+            422,
+            "BLOCKED_UNWRAPPED_RAW_CREDENTIAL_EXPORT",
+            "PCI_LEVEL_1_AOC",
+            "UNTOUCHED",
+            64,
+            "missing_encryption_certificate_exposes_plaintext_pan_in_proxy_memory",
+            45,
+            "Confirm",
+        )
+    if (
+        encryption_start_index < 0
+        or encryption_end_index <= encryption_start_index
+        or encryption_end_index > payload_length_bytes
+    ):
+        return PciDssSptResolveVerdict(
+            False,
+            400,
+            "BLOCKED_INVALID_ENCRYPTION_BLOCK_SLICE",
+            "PCI_LEVEL_1_AOC",
+            "UNTOUCHED",
+            0,
+            "invalid_encryption_block_slice_bounds_must_satisfy_0_le_start_lt_end_le_len",
+            28,
+            "Send to a human",
+        )
+
+    # 6. Compliant External PSP Resolve with in-boundary RSA encryption_block byte-slice wrapping (0 raw PAN bytes)
+    return PciDssSptResolveVerdict(
+        True,
+        200,
+        "RESOLVED_EXTERNAL_ENCRYPTED",
+        "PCI_LEVEL_1_AOC_ENCRYPTED_TRANSIT",
+        "RESOLVED_EXTERNAL",
+        0,
+        f"spt_resolved_with_rsa_encryption_block_{encryption_start_index}_{encryption_end_index}_for_{target_psp}",
+        385,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -6254,6 +6398,61 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "free_cancel_latency_ms": bk_free_cancel.latency_ms,
     }
 
+    pci_pi_ok = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="stripe_native",
+    )
+    pci_resolve_enc_ok = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="adyen_eu",
+        has_pci_aoc=True,
+        api_key_type="rk_live_resolve_only",
+        encryption_certificate_present=True,
+        encryption_start_index=0,
+        encryption_end_index=64,
+    )
+    pci_no_aoc_403 = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="adyen_eu",
+        has_pci_aoc=False,
+        api_key_type="sk_live_full",
+    )
+    pci_mutex_409 = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="stripe_native",
+        already_resolved_external=True,
+    )
+    pci_pre_resolve_failover = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="worldpay_uk",
+        has_pci_aoc=True,
+        api_key_type="rk_live_resolve_only",
+        webiq_external_psp_status="degraded",
+    )
+    pci_bad_slice_400 = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+        target_psp="adyen_eu",
+        has_pci_aoc=True,
+        api_key_type="rk_live_resolve_only",
+        encryption_start_index=80,
+        encryption_end_index=32,
+    )
+    pci_dss_spt_resolve_guards = {
+        "all_passed": (
+            pci_pi_ok.allowed
+            and pci_pi_ok.consumption_lane == "CONSUMED_STRIPE_PI"
+            and pci_pi_ok.raw_pan_bytes_exposed == 0
+            and pci_resolve_enc_ok.allowed
+            and pci_resolve_enc_ok.consumption_lane == "RESOLVED_EXTERNAL_ENCRYPTED"
+            and pci_resolve_enc_ok.raw_pan_bytes_exposed == 0
+            and not pci_no_aoc_403.allowed
+            and pci_no_aoc_403.http_status == 403
+            and not pci_mutex_409.allowed
+            and pci_mutex_409.http_status == 409
+            and pci_pre_resolve_failover.allowed
+            and pci_pre_resolve_failover.consumption_lane == "PRE_RESOLVE_FAILOVER_TO_PI"
+            and not pci_bad_slice_400.allowed
+            and pci_bad_slice_400.http_status == 400
+        ),
+        "pi_saq_a_latency_ms": pci_pi_ok.latency_ms,
+        "resolve_encrypted_latency_ms": pci_resolve_enc_ok.latency_ms,
+        "pre_resolve_failover_latency_ms": pci_pre_resolve_failover.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -6278,6 +6477,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "catalog_webhook_sla_guards": catalog_webhook_sla_guards,
         "digital_tax_compliance_guards": digital_tax_compliance_guards,
         "service_booking_180d_guards": service_booking_180d_guards,
+        "pci_dss_spt_resolve_guards": pci_dss_spt_resolve_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -9383,6 +9583,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="booking-180d-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive PCI-DSS Scope Isolation & Multi-PSP SPT Resolve vs PaymentIntent Selector (Round 12 FAQ Companion) -->
+      <div class="finops-box" id="pci-dss-spt-resolve-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pci-resolve-title">🔐 PCI-DSS 合规边界与多网关路由：PaymentIntent 免明文消费 (SAQ-A) vs 外部网关 SPT Resolve (PCI AoC + RSA encryption_block 切片加密) 决策器 (Round 12 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 收单路由目标、PCI AoC 资质、RSA 切片加密与互斥锁场景 (Multi-PSP Routing &amp; PCI Scope Gate):</span></label>
+          <select id="pci-resolve-select" onchange="updatePciDssSptResolveSandbox()">
+            <option value="stripe_pi_saq_a">✅ 标准 PaymentIntent 免明文消费 (95% 默认推荐)：全程仅传 spt_... 句柄 → 0 bytes 明文暴露，保持轻量 PCI SAQ-A (320ms)</option>
+            <option value="external_psp_rsa_slice">🔐 持牌多网关路由至 Adyen (PCI Level 1 AoC + rk_live_... + encryption_block[0..64])：Stripe 金库内公钥切片加密 → 0 bytes 明文过境 (385ms)</option>
+            <option value="pre_resolve_webiq_failover">🔄 调用 Resolve 前 Web IQ /v3/browse 检出外部 PSP 降级：趁互斥锁未触发，100% 无损切回 Stripe PaymentIntent 兜底 (360ms)</option>
+            <option value="missing_aoc_or_sk_403">🛑 无 PCI AoC 资质或混用全权限 sk_live_... 强行调用 Resolve：触发 HTTP 403 pci_aoc_required_for_spt_resolve 硬拦截!</option>
+            <option value="mutex_double_charge_409">🛡️ 跨网关防双扣互斥锁：已调用 Resolve 导出给外部 PSP 后，因超时重试又将同一 spt_... 传给 PaymentIntent → HTTP 409 硬拒绝!</option>
+            <option value="bad_slice_bounds_400">🚫 RSA encryption_block 字节切片坐标越界 (start_index=80 &gt;= end_index=32)：触发 HTTP 400 invalid_encryption_block_slice 拦截!</option>
+          </select>
+        </div>
+        <div id="pci-resolve-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -9833,6 +10052,7 @@ function renderAll() {{
   updateCatalogWebhookSlaSandbox();
   updateDigitalTaxSandbox();
   updateServiceBooking180dSandbox();
+  updatePciDssSptResolveSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10540,6 +10760,66 @@ function updateServiceBooking180dSandbox() {{
     "<strong>🛡️ 180 天远期 SPT 预约锁单成功 (DEFERRED_SPT_180D_LOCKED · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
     "• <strong>告别预授权过期</strong>：普通信用卡预授权 7~30 天即自动解冻失效；采用 <code>usage_limits.expires_at ≤ 180d</code> 远期 SPT 锁定 45 天后精品酒店房费 <code>$240.00</code><br>" +
     "• <strong>条款双锚定</strong>：同步绑定 Web IQ <code>/v3/browse</code> 提取的 <code>48h 免费退改线</code> 与 <code>50% 违约金上限</code> 护栏！" +
+    "</div>";
+}}
+
+function updatePciDssSptResolveSandbox() {{
+  var selEl = document.getElementById("pci-resolve-select");
+  var outEl = document.getElementById("pci-resolve-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "external_psp_rsa_slice") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔐 外部 PSP RSA 字节切片加密导出成功 (RESOLVED_EXTERNAL_ENCRYPTED · 385ms · Act automatically · official_doc_snapshot):</strong><br>" +
+      "• <strong>过境零明文</strong>：验证 <code>PCI-DSS Level 1 AoC</code> 与受限密钥 <code>rk_live_resolve_only</code> 通过，Stripe 在金库内用外部 PSP 公钥加密 <code>encryption_block[0..64]</code> 敏感字节（代理内存明文暴露 <code>0 bytes</code>）<br>" +
+      "• <strong>单向互斥加锁</strong>：该 <code>spt_...</code> 状态永久锁定为 <code>RESOLVED_EXTERNAL</code>，杜绝二次传给 PaymentIntent 重扣！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pre_resolve_webiq_failover") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔄 Web IQ 前置检出外部 PSP 故障并无损切回 PaymentIntent (PRE_RESOLVE_FAILOVER_TO_PI · 360ms · Act automatically):</strong><br>" +
+      "• <strong>黄金容灾窗口</strong>：在调用 <code>/resolve</code> <strong>之前</strong>（互斥锁尚未消耗），通过 Microsoft Web IQ <code>/v3/browse</code> 检出外部 PSP 状态为 <code>degraded</code>，路由器立即改调 <code>POST /v1/payment_intents</code> 无损成交！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "missing_aoc_or_sk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 pci_aoc_required_for_spt_resolve (42ms · Send to a human · official_doc_snapshot + synthetic_policy)：<br>" +
+      "调用方未备案有效的 <code>PCI-DSS Level 1 AoC</code> 或企图使用全权限 <code>sk_live_...</code> 密钥调用 <code>/resolve</code>！网关当场阻断敏感 Network Token / Cryptogram 导出，建议改走标准 <code>PaymentIntent</code> (<code>SAQ-A</code>) 通道。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mutex_double_charge_409") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛡️ HTTP 409 spt_already_resolved_for_external_psp (38ms · Send to a human · official_doc_snapshot)：<br>" +
+      "该枚 <code>spt_...</code> 已被调用过 <code>/resolve</code> 导出给外部 PSP！Stripe SPT v2 单向互斥锁严禁将其再次传入 <code>PaymentIntent.create</code>，100% 拦截外部网关超时重试导致的跨网关双重扣款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bad_slice_bounds_400") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 invalid_encryption_block_slice (28ms · Send to a human · official_doc_snapshot)：<br>" +
+      "传入的 RSA 加密切片区间 <code>start_index=80 &gt;= end_index=32</code> 违反 <code>0 ≤ start_index &lt; end_index ≤ payload_length</code> 边界约束，请求在出境前被安全拒绝！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ 标准 PaymentIntent 免明文消费成功 (CONSUMED_STRIPE_PI · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
+    "• <strong>保持最轻量 PCI SAQ-A</strong>：直接调用 <code>POST /v1/payment_intents (shared_payment_granted_token=spt_...)</code>，底层 PAN 与动态密文 100% 留存 Stripe PCI 金库（商户内存暴露 <code>0 bytes</code>）！" +
     "</div>";
 }}
 

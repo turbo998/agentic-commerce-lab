@@ -43,6 +43,7 @@
 - **专题 9（商品目录实时同步与非对称 4 秒 Webhook SLA）**：**[《商品目录实时同步与库存锁单架构：SFTP `manifest.json` 原子屏障 + 增量 `upsert` 目录流 vs. 4,000 ms 非对称 Webhook 降级选型与原理解析 FAQ》](docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.md)**
 - **专题 10（跨境数字税务合规：MoR 全托管 vs SoR `Stripe Tax` + B2B 逆向征收）**：**[《跨境数字商品与 AI Agent 税务合规架构：名义商户（Merchant of Record, MoR）vs 记账卖方（Seller of Record, Stripe Tax + Connect OBO / B2B 逆向征收）选型与原理解析 FAQ》](docs/digital-tax-vat-mor-vs-seller-of-record-faq.md)**
 - **专题 11（服务预约与长周期酒旅：180 天远期 SPT vs `409` 档期并发与退改签接地）**：**[《服务预约与长周期酒旅智能体架构：180 天远期 SPT 授权有效期（`expires_at <= 180d`）vs `409 Conflict` 档期并发抢占与退改签阶梯费率（Web IQ Grounding）选型与原理解析 FAQ》](docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md)**
+- **专题 12（PCI-DSS 合规边界与多网关路由：`PaymentIntent` 免明文消费 vs 外部网关 SPT `Resolve` 接口）**：**[《PCI-DSS 合规边界与多支付网关（Multi-PSP）路由架构：标准 `PaymentIntent` 免明文消费（`SAQ-A`）vs 外部网关 SPT `Resolve` 解密接口（`PCI AoC` + RSA `encryption_block` 字节切片加密与互斥锁）选型与原理解析 FAQ》](docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -65,6 +66,8 @@
 ![2026-11-08 跨境数字商品与 AI Agent 税务合规架构：MoR 全托管 vs SoR Stripe Tax + B2B 逆向征收一图流](assets/svg/12-digital-tax-mor-vs-sor-2026-11-08.svg)
 
 ![2026-11-08 服务预约与长周期酒旅智能体架构：180天远期SPT vs 409档期并发与退改签接地一图流](assets/svg/13-service-booking-180d-spt-409-slot-2026-11-08.svg)
+
+![2026-11-08 PCI-DSS 合规边界与多网关路由：PaymentIntent 免明文消费 vs 外部网关 SPT Resolve 切片加密一图流](assets/svg/14-pci-dss-spt-resolve-aoc-vs-pi-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

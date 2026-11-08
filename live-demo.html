@@ -998,6 +998,25 @@
         <div id="booking-180d-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive PCI-DSS Scope Isolation & Multi-PSP SPT Resolve vs PaymentIntent Selector (Round 12 FAQ Companion) -->
+      <div class="finops-box" id="pci-dss-spt-resolve-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pci-resolve-title">🔐 PCI-DSS 合规边界与多网关路由：PaymentIntent 免明文消费 (SAQ-A) vs 外部网关 SPT Resolve (PCI AoC + RSA encryption_block 切片加密) 决策器 (Round 12 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 收单路由目标、PCI AoC 资质、RSA 切片加密与互斥锁场景 (Multi-PSP Routing &amp; PCI Scope Gate):</span></label>
+          <select id="pci-resolve-select" onchange="updatePciDssSptResolveSandbox()">
+            <option value="stripe_pi_saq_a">✅ 标准 PaymentIntent 免明文消费 (95% 默认推荐)：全程仅传 spt_... 句柄 → 0 bytes 明文暴露，保持轻量 PCI SAQ-A (320ms)</option>
+            <option value="external_psp_rsa_slice">🔐 持牌多网关路由至 Adyen (PCI Level 1 AoC + rk_live_... + encryption_block[0..64])：Stripe 金库内公钥切片加密 → 0 bytes 明文过境 (385ms)</option>
+            <option value="pre_resolve_webiq_failover">🔄 调用 Resolve 前 Web IQ /v3/browse 检出外部 PSP 降级：趁互斥锁未触发，100% 无损切回 Stripe PaymentIntent 兜底 (360ms)</option>
+            <option value="missing_aoc_or_sk_403">🛑 无 PCI AoC 资质或混用全权限 sk_live_... 强行调用 Resolve：触发 HTTP 403 pci_aoc_required_for_spt_resolve 硬拦截!</option>
+            <option value="mutex_double_charge_409">🛡️ 跨网关防双扣互斥锁：已调用 Resolve 导出给外部 PSP 后，因超时重试又将同一 spt_... 传给 PaymentIntent → HTTP 409 硬拒绝!</option>
+            <option value="bad_slice_bounds_400">🚫 RSA encryption_block 字节切片坐标越界 (start_index=80 &gt;= end_index=32)：触发 HTTP 400 invalid_encryption_block_slice 拦截!</option>
+          </select>
+        </div>
+        <div id="pci-resolve-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1448,6 +1467,7 @@ function renderAll() {
   updateCatalogWebhookSlaSandbox();
   updateDigitalTaxSandbox();
   updateServiceBooking180dSandbox();
+  updatePciDssSptResolveSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -2155,6 +2175,66 @@ function updateServiceBooking180dSandbox() {
     "<strong>🛡️ 180 天远期 SPT 预约锁单成功 (DEFERRED_SPT_180D_LOCKED · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
     "• <strong>告别预授权过期</strong>：普通信用卡预授权 7~30 天即自动解冻失效；采用 <code>usage_limits.expires_at ≤ 180d</code> 远期 SPT 锁定 45 天后精品酒店房费 <code>$240.00</code><br>" +
     "• <strong>条款双锚定</strong>：同步绑定 Web IQ <code>/v3/browse</code> 提取的 <code>48h 免费退改线</code> 与 <code>50% 违约金上限</code> 护栏！" +
+    "</div>";
+}
+
+function updatePciDssSptResolveSandbox() {
+  var selEl = document.getElementById("pci-resolve-select");
+  var outEl = document.getElementById("pci-resolve-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "external_psp_rsa_slice") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔐 外部 PSP RSA 字节切片加密导出成功 (RESOLVED_EXTERNAL_ENCRYPTED · 385ms · Act automatically · official_doc_snapshot):</strong><br>" +
+      "• <strong>过境零明文</strong>：验证 <code>PCI-DSS Level 1 AoC</code> 与受限密钥 <code>rk_live_resolve_only</code> 通过，Stripe 在金库内用外部 PSP 公钥加密 <code>encryption_block[0..64]</code> 敏感字节（代理内存明文暴露 <code>0 bytes</code>）<br>" +
+      "• <strong>单向互斥加锁</strong>：该 <code>spt_...</code> 状态永久锁定为 <code>RESOLVED_EXTERNAL</code>，杜绝二次传给 PaymentIntent 重扣！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pre_resolve_webiq_failover") {
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🔄 Web IQ 前置检出外部 PSP 故障并无损切回 PaymentIntent (PRE_RESOLVE_FAILOVER_TO_PI · 360ms · Act automatically):</strong><br>" +
+      "• <strong>黄金容灾窗口</strong>：在调用 <code>/resolve</code> <strong>之前</strong>（互斥锁尚未消耗），通过 Microsoft Web IQ <code>/v3/browse</code> 检出外部 PSP 状态为 <code>degraded</code>，路由器立即改调 <code>POST /v1/payment_intents</code> 无损成交！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "missing_aoc_or_sk_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 pci_aoc_required_for_spt_resolve (42ms · Send to a human · official_doc_snapshot + synthetic_policy)：<br>" +
+      "调用方未备案有效的 <code>PCI-DSS Level 1 AoC</code> 或企图使用全权限 <code>sk_live_...</code> 密钥调用 <code>/resolve</code>！网关当场阻断敏感 Network Token / Cryptogram 导出，建议改走标准 <code>PaymentIntent</code> (<code>SAQ-A</code>) 通道。" +
+      "</div>";
+    return;
+  }
+
+  if (v === "mutex_double_charge_409") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛡️ HTTP 409 spt_already_resolved_for_external_psp (38ms · Send to a human · official_doc_snapshot)：<br>" +
+      "该枚 <code>spt_...</code> 已被调用过 <code>/resolve</code> 导出给外部 PSP！Stripe SPT v2 单向互斥锁严禁将其再次传入 <code>PaymentIntent.create</code>，100% 拦截外部网关超时重试导致的跨网关双重扣款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bad_slice_bounds_400") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 invalid_encryption_block_slice (28ms · Send to a human · official_doc_snapshot)：<br>" +
+      "传入的 RSA 加密切片区间 <code>start_index=80 &gt;= end_index=32</code> 违反 <code>0 ≤ start_index &lt; end_index ≤ payload_length</code> 边界约束，请求在出境前被安全拒绝！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>✅ 标准 PaymentIntent 免明文消费成功 (CONSUMED_STRIPE_PI · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
+    "• <strong>保持最轻量 PCI SAQ-A</strong>：直接调用 <code>POST /v1/payment_intents (shared_payment_granted_token=spt_...)</code>，底层 PAN 与动态密文 100% 留存 Stripe PCI 金库（商户内存暴露 <code>0 bytes</code>）！" +
     "</div>";
 }
 

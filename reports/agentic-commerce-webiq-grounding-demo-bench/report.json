@@ -137,6 +137,12 @@
     "autoshift_409_latency_ms": 365,
     "free_cancel_latency_ms": 350
   },
+  "pci_dss_spt_resolve_guards": {
+    "all_passed": true,
+    "pi_saq_a_latency_ms": 320,
+    "resolve_encrypted_latency_ms": 385,
+    "pre_resolve_failover_latency_ms": 360
+  },
   "scenarios": [
     {
       "id": "W01",

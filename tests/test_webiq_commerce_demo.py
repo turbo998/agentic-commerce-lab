@@ -1558,6 +1558,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/digital-tax-vat-mor-vs-seller-of-record-faq.en.md",
             "docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md",
             "docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md",
+            "docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md",
+            "docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -1806,6 +1808,79 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["service_booking_180d_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("service-booking-180d-sandbox", demo_zh)
+
+    def test_pci_dss_spt_resolve_aoc_vs_payment_intent_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_pci_dss_spt_resolve_vs_payment_intent_policy
+
+        # 1. Standard Stripe Native PaymentIntent consumption -> SAQ-A, 0 raw PAN bytes, 200 OK
+        pi_ok = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="stripe_native",
+        )
+        self.assertTrue(pi_ok.allowed)
+        self.assertEqual(pi_ok.http_status, 200)
+        self.assertEqual(pi_ok.consumption_lane, "CONSUMED_STRIPE_PI")
+        self.assertEqual(pi_ok.pci_compliance_tier, "SAQ-A")
+        self.assertEqual(pi_ok.raw_pan_bytes_exposed, 0)
+
+        # 2. Certified Multi-PSP Resolve with PCI AoC + scoped rk_live_ + RSA encryption_block[0..64] -> 200 OK, 0 raw bytes
+        res_ok = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="adyen_eu",
+            has_pci_aoc=True,
+            api_key_type="rk_live_resolve_only",
+            encryption_certificate_present=True,
+            encryption_start_index=0,
+            encryption_end_index=64,
+        )
+        self.assertTrue(res_ok.allowed)
+        self.assertEqual(res_ok.http_status, 200)
+        self.assertEqual(res_ok.consumption_lane, "RESOLVED_EXTERNAL_ENCRYPTED")
+        self.assertEqual(res_ok.raw_pan_bytes_exposed, 0)
+        self.assertEqual(res_ok.spt_lock_state, "RESOLVED_EXTERNAL")
+
+        # 3. Missing PCI AoC or unscoped sk_live_ key -> 403 Forbidden
+        no_aoc = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="adyen_eu",
+            has_pci_aoc=False,
+            api_key_type="sk_live_full",
+        )
+        self.assertFalse(no_aoc.allowed)
+        self.assertEqual(no_aoc.http_status, 403)
+
+        # 4. Mutual-Exclusivity Lock: calling PaymentIntent after Resolve -> 409 Conflict
+        mutex_pi = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="stripe_native",
+            already_resolved_external=True,
+        )
+        self.assertFalse(mutex_pi.allowed)
+        self.assertEqual(mutex_pi.http_status, 409)
+        self.assertEqual(mutex_pi.consumption_lane, "BLOCKED_MUTUAL_EXCLUSIVITY_ALREADY_RESOLVED")
+
+        # 5. Pre-Resolve Web IQ detects external PSP degraded -> lossless failover to Stripe PaymentIntent (200 OK)
+        failover_ok = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="worldpay_uk",
+            has_pci_aoc=True,
+            api_key_type="rk_live_resolve_only",
+            webiq_external_psp_status="degraded",
+        )
+        self.assertTrue(failover_ok.allowed)
+        self.assertEqual(failover_ok.http_status, 200)
+        self.assertEqual(failover_ok.consumption_lane, "PRE_RESOLVE_FAILOVER_TO_PI")
+
+        # 6. Invalid encryption_block byte-slice bounds -> 400 Bad Request
+        bad_slice = evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
+            target_psp="adyen_eu",
+            has_pci_aoc=True,
+            api_key_type="rk_live_resolve_only",
+            encryption_start_index=80,
+            encryption_end_index=32,
+        )
+        self.assertFalse(bad_slice.allowed)
+        self.assertEqual(bad_slice.http_status, 400)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pci_dss_spt_resolve_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pci-dss-spt-resolve-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

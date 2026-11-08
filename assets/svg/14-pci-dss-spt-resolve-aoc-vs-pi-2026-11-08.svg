@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg14" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent14" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 23px; font-weight: 800; fill: #F8FAFC; }
+      .subtitle { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; fill: #94A3B8; }
+      .badge { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; fill: #6EE7B7; letter-spacing: 0.6px; }
+      .card-title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 700; fill: #F1F5F9; }
+      .body-sm { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: #CBD5E1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #A7F3D0; }
+      .mono-warn { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #FDE68A; }
+      .mono-err { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #FECACA; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 21px; font-weight: 800; }
+      .footer { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; fill: #64748B; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg14)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="5" fill="url(#accent14)" rx="2.5"/>
+
+  <!-- Header -->
+  <rect x="36" y="38" width="290" height="24" rx="12" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="181" y="54" text-anchor="middle" class="badge">ROUND 12 · PCI-DSS &amp; MULTI-PSP ROUTING</text>
+  <text x="36" y="88" class="title">PCI-DSS 合规边界与多网关路由：PaymentIntent (SAQ-A) vs SPT Resolve (PCI AoC + RSA 切片加密)</text>
+  <text x="36" y="110" class="subtitle">Standard PaymentIntent Zero-Raw-PAN Consumption vs. External PSP SPT Resolve API (PCI AoC + RSA encryption_block[0..64] + HTTP 409 Mutual-Exclusivity Lock)</text>
+
+  <!-- Left Column: Two Mutually Exclusive SPT Consumption Tracks -->
+  <rect x="36" y="128" width="555" height="245" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="154" class="card-title">1. SPT v2 两大互斥消费轨道：SAQ-A 免明文 vs PCI AoC 外部路由</text>
+
+  <!-- Track A: Standard PaymentIntent -->
+  <rect x="52" y="166" width="523" height="90" rx="8" fill="#064E3B" fill-opacity="0.35" stroke="#10B981" stroke-width="1.2"/>
+  <text x="66" y="185" class="mono" fill="#6EE7B7">✅ 轨道 A (95% 默认推荐): 标准 PaymentIntent 免明文消费 (PCI-DSS SAQ-A)</text>
+  <text x="66" y="203" class="body-sm">• 调用 POST /v1/payment_intents (shared_payment_granted_token="spt_...")</text>
+  <text x="66" y="220" class="body-sm">• Agent 与商户全程仅接触 spt_... 句柄；底层 PAN/Network Token 100% 留存 Stripe 金库</text>
+  <text x="66" y="238" class="mono" fill="#A7F3D0">内存明文暴露 = 0 bytes | 状态锁定 = CONSUMED_STRIPE_PI | 延迟 = 320 ms</text>
+
+  <!-- Track B: External PSP Resolve -->
+  <rect x="52" y="266" width="523" height="94" rx="8" fill="#1E3A8A" fill-opacity="0.35" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="66" y="285" class="mono" fill="#93C5FD">🔐 轨道 B (多 PSP 路由专用): 外部网关 SPT Resolve 接口 (PCI Level 1 AoC)</text>
+  <text x="66" y="303" class="body-sm">• 调用 POST /v1/shared_payment/granted_tokens/{id}/resolve 路由至 Adyen / Worldpay</text>
+  <text x="66" y="320" class="body-sm">• 准入门禁: 必须备案 PCI-DSS Level 1 AoC + 专用受限密钥 rk_live_... (违者 HTTP 403)</text>
+  <text x="66" y="338" class="mono-warn">传入 encryption_certificate + encryption_block[0..64] -&gt; 0 bytes 明文过境 (385 ms)</text>
+
+  <!-- Right Column: Mutual-Exclusivity Lock & Pre-Resolve Failover -->
+  <rect x="609" y="128" width="555" height="245" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="627" y="154" class="card-title">2. 单向互斥锁 (HTTP 409 防双扣) 与 Web IQ 前置无损容灾</text>
+
+  <rect x="625" y="166" width="523" height="92" rx="8" fill="#450A0A" fill-opacity="0.45" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="639" y="185" class="mono-err">🛡️ 协议层单向互斥锁 (One-Way Mutual-Exclusivity Lock)</text>
+  <text x="639" y="203" class="body-sm">• 严禁对同一枚 spt_... 同时调用 Resolve 与 PaymentIntent (防止外部网关超时重扣):</text>
+  <text x="639" y="220" class="body-sm">  1) 已调 Resolve 后再传给 PaymentIntent -&gt; HTTP 409 spt_already_resolved_for_external_psp</text>
+  <text x="639" y="238" class="mono-err">  2) 已调 PaymentIntent 后再调 Resolve -&gt; HTTP 409 spt_already_consumed_by_payment_intent</text>
+
+  <rect x="625" y="268" width="523" height="92" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="639" y="287" class="mono" fill="#6EE7B7">🔄 唯一合法的跨网关容灾时机：调用 Resolve 之前 (Pre-Resolve Health Gate)</text>
+  <text x="639" y="305" class="body-sm">• 调 Resolve 前先用 Microsoft Web IQ /v3/browse 接地核验外部 PSP 状态页与公钥指纹</text>
+  <text x="639" y="322" class="body-sm">• 若检出 psp_status="degraded" 或证书轮换不匹配 -&gt; 趁互斥锁未触发，直接切回轨道 A!</text>
+  <text x="639" y="340" class="mono" fill="#A7F3D0">无损容灾切换延迟 = 360 ms | 跨网关双重扣款率 = 0.0%</text>
+
+  <!-- Bottom Full-Width Section: RSA encryption_block Byte-Slice Pipeline & KPI Cards -->
+  <rect x="36" y="388" width="1128" height="225" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="414" class="card-title">3. RSA encryption_block 字节切片加密流水线 (0 bytes 明文暴露) 与 5 场景实测指标</text>
+
+  <!-- Pipeline Boxes -->
+  <rect x="54" y="428" width="340" height="86" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="68" y="448" class="mono" fill="#93C5FD">Step 1: CDE 代理发起带公钥切片请求</text>
+  <text x="68" y="466" class="body-sm">Authorization: Bearer rk_live_resolve_only</text>
+  <text x="68" y="483" class="body-sm">encryption_certificate: "-----BEGIN CERT..."</text>
+  <text x="68" y="500" class="mono-warn">encryption_block: {start_index: 0, end_index: 64}</text>
+
+  <rect x="414" y="428" width="365" height="86" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="428" y="448" class="mono" fill="#6EE7B7">Step 2: Stripe PCI 金库内切片非对称加密</text>
+  <text x="428" y="466" class="body-sm">• 校验 PCI AoC 备案与 0 &lt;= start &lt; end &lt;= len</text>
+  <text x="428" y="483" class="body-sm">• 在 Stripe HSM 边界内用外部公钥加密 [0..64] 字节</text>
+  <text x="428" y="500" class="mono" fill="#A7F3D0">返回 Base64 密文块 · 商户内存明文 PAN = 0 bytes</text>
+
+  <rect x="799" y="428" width="347" height="86" rx="8" fill="#0F172A" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="813" y="448" class="mono" fill="#D8B4FE">Step 3: 密封转发外部 PSP 清算 &amp; 互斥锁定</text>
+  <text x="813" y="466" class="body-sm">• 外部 PSP 用自有私钥在 HSM 内解开 [0..64] 密文</text>
+  <text x="813" y="483" class="body-sm">• Stripe 永久锁定 spt_... = RESOLVED_EXTERNAL</text>
+  <text x="813" y="500" class="mono-err">禁止二次回退 PaymentIntent (HTTP 409 拦截)</text>
+
+  <!-- 4 Bottom KPI Pills -->
+  <rect x="54" y="528" width="262" height="68" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="68" y="553" class="kpi-num" fill="#34D399">0 Bytes 明文暴露</text>
+  <text x="68" y="573" class="body-sm">PaymentIntent (SAQ-A, 320 ms)</text>
+  <text x="68" y="588" class="mono" fill="#A7F3D0">encryption_block[0..64] (385 ms)</text>
+
+  <rect x="330" y="528" width="268" height="68" rx="8" fill="#0F172A" stroke="#EF4444" stroke-width="1"/>
+  <text x="344" y="553" class="kpi-num" fill="#F87171">HTTP 403 AoC 门禁</text>
+  <text x="344" y="573" class="body-sm">无 PCI Level 1 AoC 或用 sk_live_...</text>
+  <text x="344" y="588" class="mono-err">100% 拦截非法导出底层卡凭据</text>
+
+  <rect x="612" y="528" width="268" height="68" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="626" y="553" class="kpi-num" fill="#FBBF24">HTTP 409 互斥防双扣</text>
+  <text x="626" y="573" class="body-sm">Resolve 与 PaymentIntent 严格互斥</text>
+  <text x="626" y="588" class="mono-warn">跨网关双重扣款率 = 0.0%</text>
+
+  <rect x="894" y="528" width="252" height="68" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1"/>
+  <text x="908" y="553" class="kpi-num" fill="#60A5FA">360 ms 无损容灾</text>
+  <text x="908" y="573" class="body-sm">Web IQ /v3/browse 前置检出 PSP 降级</text>
+  <text x="908" y="588" class="mono" fill="#93C5FD">未调 Resolve 前直接切回 PI</text>
+
+  <!-- Footer -->
+  <text x="36" y="642" class="footer">Provenance: official_doc_snapshot (Stripe SPT v2 PaymentIntent vs Resolve API, PCI AoC, Mutual-Exclusivity Lock, RSA encryption_block, as_of 2026-11-08) + synthetic_policy + deterministic_offline_simulation | Live External PSP Acquiring = not_measured</text>
+</svg>
