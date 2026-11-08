@@ -1562,6 +1562,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.en.md",
             "docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.md",
             "docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.en.md",
+            "docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.md",
+            "docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -1949,6 +1951,84 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["chargeback_dispute_evidence_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("chargeback-dispute-evidence-sandbox", demo_zh)
+
+    def test_dynamic_pricing_quote_lock_ttl_vs_mandate_drift_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_dynamic_pricing_quote_lock_and_drift_policy
+
+        # 1. Active merchant quote-lock token honors $79.00 even when spot price surges to $89.00
+        quote_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=7900,
+            live_price_cents=8900,
+            has_merchant_quote_lock=True,
+            quote_remaining_ttl_seconds=180,
+        )
+        self.assertTrue(quote_ok.allowed)
+        self.assertEqual(quote_ok.http_status, 200)
+        self.assertEqual(quote_ok.pricing_lane, "COMMITTED_QUOTE_LOCK_HONORED")
+        self.assertEqual(quote_ok.settled_amount_cents, 7900)
+        self.assertEqual(quote_ok.buyer_savings_cents, 1000)
+
+        # 2. Expired merchant quote-lock TTL -> 409 blocked
+        quote_exp = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=7900,
+            live_price_cents=8900,
+            has_merchant_quote_lock=True,
+            quote_remaining_ttl_seconds=-60,
+        )
+        self.assertFalse(quote_exp.allowed)
+        self.assertEqual(quote_exp.http_status, 409)
+        self.assertEqual(quote_exp.pricing_lane, "BLOCKED_QUOTE_LOCK_EXPIRED")
+
+        # 3. Airfare ticks from $500.00 to $508.00 within +3.0% ($515.00) bounded slippage -> 200 OK
+        slip_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=50000,
+            live_price_cents=50800,
+            max_amount_cents=51500,
+            allow_bounded_slippage=True,
+        )
+        self.assertTrue(slip_ok.allowed)
+        self.assertEqual(slip_ok.pricing_lane, "COMMITTED_WITHIN_BOUNDED_SLIPPAGE")
+        self.assertEqual(slip_ok.settled_amount_cents, 50800)
+        self.assertEqual(slip_ok.slippage_applied_cents, 800)
+
+        # 4. Price drops from $500.00 to $485.00 -> captures lower $485.00 and saves $15.00 for buyer
+        drop_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=50000,
+            live_price_cents=48500,
+            max_amount_cents=51500,
+            allow_bounded_slippage=True,
+        )
+        self.assertTrue(drop_ok.allowed)
+        self.assertEqual(drop_ok.pricing_lane, "COMMITTED_PRICE_DROP_SAVINGS_CAPTURED")
+        self.assertEqual(drop_ok.settled_amount_cents, 48500)
+        self.assertEqual(drop_ok.buyer_savings_cents, 1500)
+
+        # 5. Flash-sale rebound ($79.00 -> $81.00) without positive slippage -> 422 blocked (W02)
+        drift_422 = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=7900,
+            live_price_cents=8100,
+            max_amount_cents=7900,
+            allow_bounded_slippage=False,
+        )
+        self.assertFalse(drift_422.allowed)
+        self.assertEqual(drift_422.http_status, 422)
+        self.assertEqual(drift_422.settled_amount_cents, 0)
+
+        # 6. Stale crawl snapshot (liveCrawlSucceeded=False) -> 409 blocked (W03)
+        stale_409 = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+            approved_quote_cents=7900,
+            live_price_cents=7900,
+            max_amount_cents=7900,
+            live_crawl_succeeded=False,
+        )
+        self.assertFalse(stale_409.allowed)
+        self.assertEqual(stale_409.http_status, 409)
+        self.assertEqual(stale_409.pricing_lane, "BLOCKED_STALE_CRAWL_SNAPSHOT")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["dynamic_pricing_quote_lock_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("dynamic-pricing-quote-lock-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

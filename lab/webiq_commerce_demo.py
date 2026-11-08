@@ -5359,6 +5359,132 @@ def evaluate_chargeback_dispute_evidence_and_deflection(
     )
 
 
+@dataclass(frozen=True)
+class DynamicPricingQuoteLockVerdict:
+    """Round 14 verdict for Dynamic Pricing, Flash-Sale Surge & Quote-Lock TTL vs Bounded Slippage & Stale-Cache Guard."""
+
+    allowed: bool
+    http_status: int
+    pricing_lane: str
+    settled_amount_cents: int
+    buyer_savings_cents: int
+    slippage_applied_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+    *,
+    approved_quote_cents: int = 7900,
+    live_price_cents: int = 7900,
+    max_amount_cents: int = 7900,
+    allow_bounded_slippage: bool = False,
+    has_merchant_quote_lock: bool = False,
+    quote_remaining_ttl_seconds: int = 180,
+    live_crawl_succeeded: bool = True,
+) -> DynamicPricingQuoteLockVerdict:
+    """Evaluate dynamic pricing checkout: merchant cryptographic quote-lock TTL, Web IQ crawl freshness, price-drop savings capture, or bounded slippage ceiling."""
+
+    # 1. Partnered merchant cryptographic quote-lock token (quote_id + quote_expires_at TTL)
+    if has_merchant_quote_lock:
+        if quote_remaining_ttl_seconds <= 0:
+            return DynamicPricingQuoteLockVerdict(
+                False,
+                409,
+                "BLOCKED_QUOTE_LOCK_EXPIRED",
+                0,
+                0,
+                0,
+                "quote_lock_expired_requote_required",
+                32,
+                "Confirm",
+            )
+        shielded_surge = max(0, live_price_cents - approved_quote_cents)
+        return DynamicPricingQuoteLockVerdict(
+            True,
+            200,
+            "COMMITTED_QUOTE_LOCK_HONORED",
+            approved_quote_cents,
+            shielded_surge,
+            0,
+            "merchant_signed_quote_id_honored_within_ttl_zero_drift",
+            285,
+            "Act automatically",
+        )
+
+    # 2. Open-web checkout: Mandatory Microsoft Web IQ /v3/browse crawl freshness check (W03 invariant)
+    if not live_crawl_succeeded:
+        return DynamicPricingQuoteLockVerdict(
+            False,
+            409,
+            "BLOCKED_STALE_CRAWL_SNAPSHOT",
+            0,
+            0,
+            0,
+            "stale_grounding_blocked_live_crawl_failed",
+            30,
+            "Confirm",
+        )
+
+    # 3. Price dropped below approved quote -> Asymmetric best-execution captures 100% of buyer savings
+    if live_price_cents < approved_quote_cents:
+        savings = approved_quote_cents - live_price_cents
+        return DynamicPricingQuoteLockVerdict(
+            True,
+            200,
+            "COMMITTED_PRICE_DROP_SAVINGS_CAPTURED",
+            live_price_cents,
+            savings,
+            0,
+            f"captured_live_price_drop_saving_{savings}_cents_for_buyer",
+            320,
+            "Act automatically",
+        )
+
+    # 4. Exact price match (0.0% drift)
+    if live_price_cents == approved_quote_cents:
+        return DynamicPricingQuoteLockVerdict(
+            True,
+            200,
+            "COMMITTED_EXACT_QUOTE_MATCH",
+            approved_quote_cents,
+            0,
+            0,
+            "live_browse_price_matches_mandate_digest_exactly",
+            310,
+            "Act automatically",
+        )
+
+    # 5. Price increased -> Check whether buyer authorized bounded slippage AND live_price_cents <= max_amount_cents
+    if allow_bounded_slippage and live_price_cents <= max_amount_cents:
+        slippage = live_price_cents - approved_quote_cents
+        return DynamicPricingQuoteLockVerdict(
+            True,
+            200,
+            "COMMITTED_WITHIN_BOUNDED_SLIPPAGE",
+            live_price_cents,
+            0,
+            slippage,
+            f"live_price_within_buyer_bounded_slippage_cap_{max_amount_cents}_cents",
+            355,
+            "Act automatically",
+        )
+
+    # 6. Flash-sale rebound or surge exceeding mandate ceiling (W02 invariant) -> Hard-block with $0.00 charged
+    return DynamicPricingQuoteLockVerdict(
+        False,
+        422,
+        "BLOCKED_PRICE_DRIFT_EXCEEDS_MANDATE",
+        0,
+        0,
+        0,
+        "price_drift_exceeds_mandate_cap",
+        34,
+        "Send to a human",
+    )
+
+
 
 
 
@@ -6621,6 +6747,65 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "webiq_terms_bundle_latency_ms": cb_webiq_terms_ok.latency_ms,
     }
 
+    dp_quote_lock_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=7900,
+        live_price_cents=8900,
+        has_merchant_quote_lock=True,
+        quote_remaining_ttl_seconds=180,
+    )
+    dp_quote_expired_409 = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=7900,
+        live_price_cents=8900,
+        has_merchant_quote_lock=True,
+        quote_remaining_ttl_seconds=-60,
+    )
+    dp_slippage_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=50000,
+        live_price_cents=50800,
+        max_amount_cents=51500,
+        allow_bounded_slippage=True,
+    )
+    dp_price_drop_ok = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=50000,
+        live_price_cents=48500,
+        max_amount_cents=51500,
+        allow_bounded_slippage=True,
+    )
+    dp_drift_block_422 = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=7900,
+        live_price_cents=8100,
+        max_amount_cents=7900,
+        allow_bounded_slippage=False,
+    )
+    dp_stale_crawl_409 = evaluate_dynamic_pricing_quote_lock_and_drift_policy(
+        approved_quote_cents=7900,
+        live_price_cents=7900,
+        max_amount_cents=7900,
+        live_crawl_succeeded=False,
+    )
+    dynamic_pricing_quote_lock_guards = {
+        "all_passed": (
+            dp_quote_lock_ok.allowed
+            and dp_quote_lock_ok.pricing_lane == "COMMITTED_QUOTE_LOCK_HONORED"
+            and dp_quote_lock_ok.settled_amount_cents == 7900
+            and not dp_quote_expired_409.allowed
+            and dp_quote_expired_409.http_status == 409
+            and dp_slippage_ok.allowed
+            and dp_slippage_ok.pricing_lane == "COMMITTED_WITHIN_BOUNDED_SLIPPAGE"
+            and dp_slippage_ok.slippage_applied_cents == 800
+            and dp_price_drop_ok.allowed
+            and dp_price_drop_ok.pricing_lane == "COMMITTED_PRICE_DROP_SAVINGS_CAPTURED"
+            and dp_price_drop_ok.buyer_savings_cents == 1500
+            and not dp_drift_block_422.allowed
+            and dp_drift_block_422.http_status == 422
+            and not dp_stale_crawl_409.allowed
+            and dp_stale_crawl_409.http_status == 409
+        ),
+        "quote_lock_latency_ms": dp_quote_lock_ok.latency_ms,
+        "bounded_slippage_latency_ms": dp_slippage_ok.latency_ms,
+        "price_drop_latency_ms": dp_price_drop_ok.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -6647,6 +6832,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "service_booking_180d_guards": service_booking_180d_guards,
         "pci_dss_spt_resolve_guards": pci_dss_spt_resolve_guards,
         "chargeback_dispute_evidence_guards": chargeback_dispute_evidence_guards,
+        "dynamic_pricing_quote_lock_guards": dynamic_pricing_quote_lock_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -9790,6 +9976,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cb-dispute-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Dynamic Pricing, Quote-Lock TTL & Stale-Crawl Drift Sandbox (Round 14 FAQ Companion) -->
+      <div class="finops-box" id="dynamic-pricing-quote-lock-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dyn-price-title">⏱️ 动态定价与秒杀闪购架构：密码学锁价令牌 (quote_id) vs 有界滑点容忍与过期缓存熔断决策器 (Round 14 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商户锁价协议、实时价格浮动与 Web IQ 抓取新鲜度 (Quote-Lock, Price Drift &amp; Freshness):</span></label>
+          <select id="dyn-price-select" onchange="updateDynamicPricingSandbox()">
+            <option value="quote_lock_honored_79">🔒 轨道 A (合作商户锁价令牌)：T0 锁价 $79.00 (TTL 剩余 180s)，T1 大盘涨至 $89.00 → 凭 quote_id 按 $79.00 原子成交 (285ms)</option>
+            <option value="bounded_slippage_508">⚖️ 轨道 B (有界滑点容忍)：机票报价 $500.00，买家设 +3% 上限 ($515.00)，T1 实测微涨至 $508.00 → 自动成交 (355ms)</option>
+            <option value="price_drop_savings_485">🟢 下行让利捕获 (Best Execution)：报价 $500.00，T1 Web IQ 实测限时降价至 $485.00 → 按 $485.00 扣款立省 $15.00! (320ms)</option>
+            <option value="flash_sale_drift_422">🚫 秒杀结束恢复原价拦截 (W02)：耳机报价 $79.00 (标品禁正滑点)，T1 恢复 $81.00 → 触发 HTTP 422 拦截 ($0.00 实扣, 34ms)</option>
+            <option value="stale_crawl_409">🛑 过期缓存快照拦截 (W03)：/v3/browse 返回 HTTP 200 ($79.00) 但 liveCrawlSucceeded=false → 触发 HTTP 409 拒绝旧缓存! (30ms)</option>
+            <option value="quote_expired_409">🙋 锁价令牌超时失效：买家 6 分钟后才确认 (TTL 过期 -60s) → 触发 HTTP 409 挂起 SPT 请求重新询价 (32ms)</option>
+          </select>
+        </div>
+        <div id="dyn-price-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -10242,6 +10447,7 @@ function renderAll() {{
   updateServiceBooking180dSandbox();
   updatePciDssSptResolveSandbox();
   updateChargebackDisputeSandbox();
+  updateDynamicPricingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11068,6 +11274,65 @@ function updateChargebackDisputeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚖️ Visa CE 3.0 + MandateVC 密码学三元组抗辩提交成功 (SUBMITTED_CE30_MANDATE_BUNDLE · 340ms · Act automatically):</strong><br>" +
     "• <strong>粉碎“AI 幻觉乱买”借口</strong>：自动剥离云端 Agent 机房 IP，打包买家 FIDO2 <code>MandateVC</code> 硬件签名 + 穿透匹配 <code>120~365 天内 2 笔无争议历史单</code>（账号 + 设备 ID + 收货地址）+ <code>RFC 9421 / TAP</code> 签名！" +
+    "</div>";
+}}
+
+function updateDynamicPricingSandbox() {{
+  var selEl = document.getElementById("dyn-price-select");
+  var outEl = document.getElementById("dyn-price-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "bounded_slippage_508") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>⚖️ 有界滑点容忍范围内平滑成交 (COMMITTED_WITHIN_BOUNDED_SLIPPAGE · 355ms · Act automatically · synthetic_policy):</strong><br>" +
+      "• <strong>告别微调频繁重签</strong>：Web IQ <code>/v3/browse</code> 核实实时机票价为 <code>$508.00</code>（新鲜抓取），处于买家显式授权的 <code>+3.0% ($515.00)</code> SPT 硬顶以内，自动放行并记录 <code>+$8.00</code> 滑点审计！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "price_drop_savings_485") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🟢 动态降价自动让利捕获 (COMMITTED_PRICE_DROP_SAVINGS_CAPTURED · 320ms · Act automatically):</strong><br>" +
+      "• <strong>非对称最优执行 (Best Execution)</strong>：扣款前 Web IQ 实时核实商品降价至 <code>$485.00 &lt; $500.00</code> 原报价，网关严格按最低实价 <code>$485.00</code> 扣款，自动为买家省下 <code>$15.00</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "flash_sale_drift_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 422 price_drift_exceeds_mandate_cap (34ms · Send to a human · W02 Invariant)：<br>" +
+      "秒杀活动刚结束，Web IQ <code>/v3/browse</code> 检出落地页价格已从授权价 <code>$79.00</code> 涨至 <code>$81.00</code>！因零售标品未开启正滑点且突破 <code>max_amount_cents (7900)</code>，网关当场阻断扣款（实扣 <code>$0.00</code>）。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "stale_crawl_409") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 409 stale_grounding_blocked_live_crawl_failed (30ms · Confirm · W03 Invariant · official_doc_snapshot)：<br>" +
+      "虽然 <code>/v3/browse</code> 返回 <code>HTTP 200 OK</code> 且页面写着 <code>$79.00</code>，但响应体标记 <code>\"liveCrawlSucceeded\": false</code>（源站超时退回陈旧缓存）！网关拒绝信任过期快照，实扣 <code>$0.00</code>。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "quote_expired_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🙋 HTTP 409 quote_lock_expired_requote_required (32ms · Confirm · synthetic_policy)：<br>" +
+      "商户签发的密码学锁价令牌 <code>quote_id</code> 剩余 TTL 为 <code>-60s</code>（已超过 300 秒锁价期），网关立即挂起 SPT 并请求重新询价，严禁按过期锁价或最新未授权浮动价盲目扣款！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔒 合作商户密码学锁价令牌成交 (COMMITTED_QUOTE_LOCK_HONORED · 285ms · Act automatically):</strong><br>" +
+    "• <strong>0.0% 价格漂移</strong>：<code>calculate_order</code> 签发的 <code>quote_id</code> 处于有效 TTL 内（剩余 <code>180s</code>），即便外部大盘已涨至 <code>$89.00</code>，仍严格按锁定价 <code>$79.00</code> 原子清算！" +
     "</div>";
 }}
 

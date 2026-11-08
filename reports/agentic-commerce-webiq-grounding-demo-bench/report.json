@@ -149,6 +149,12 @@
     "ce30_bundle_latency_ms": 340,
     "webiq_terms_bundle_latency_ms": 340
   },
+  "dynamic_pricing_quote_lock_guards": {
+    "all_passed": true,
+    "quote_lock_latency_ms": 285,
+    "bounded_slippage_latency_ms": 355,
+    "price_drop_latency_ms": 320
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -45,6 +45,7 @@
 - **专题 11（服务预约与长周期酒旅：180 天远期 SPT vs `409` 档期并发与退改签接地）**：**[《服务预约与长周期酒旅智能体架构：180 天远期 SPT 授权有效期（`expires_at <= 180d`）vs `409 Conflict` 档期并发抢占与退改签阶梯费率（Web IQ Grounding）选型与原理解析 FAQ》](docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md)**
 - **专题 12（PCI-DSS 合规边界与多网关路由：`PaymentIntent` 免明文消费 vs 外部网关 SPT `Resolve` 接口）**：**[《PCI-DSS 合规边界与多支付网关（Multi-PSP）路由架构：标准 `PaymentIntent` 免明文消费（`SAQ-A`）vs 外部网关 SPT `Resolve` 解密接口（`PCI AoC` + RSA `encryption_block` 字节切片加密与互斥锁）选型与原理解析 FAQ》](docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md)**
 - **专题 13（拒付抗辩与友好欺诈架构：密码学三元组证据包 vs 传统截图申诉与前置小额止损）**：**[《拒付抗辩与“友好欺诈（Friendly Fraud）”智能体架构：密码学三元组证据包（Visa CE 3.0 + FIDO2 `MandateVC` 签名 + Web IQ 条款快照哈希）vs 传统人工截图申诉与前置小额自动止损选型与原理解析 FAQ》](docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.md)**
+- **专题 14（动态定价、航司调价与秒杀闪购架构：密码学锁价令牌 vs 有界滑点容忍与过期缓存价格漂移拦截）**：**[《动态定价、航司调价与秒杀闪购智能体架构：密码学锁价令牌（`quote_id` + `quote_expires_at` TTL）vs 有界滑点容忍授权（Bounded Slippage `max_amount_cents`）与过期缓存价格漂移拦截（`liveCrawlSucceeded=false`）选型与原理解析 FAQ》](docs/dynamic-pricing-quote-lock-ttl-vs-mandate-drift-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -71,6 +72,8 @@
 ![2026-11-08 PCI-DSS 合规边界与多网关路由：PaymentIntent 免明文消费 vs 外部网关 SPT Resolve 切片加密一图流](assets/svg/14-pci-dss-spt-resolve-aoc-vs-pi-2026-11-08.svg)
 
 ![2026-11-08 拒付抗辩与友好欺诈智能体架构：密码学三元组证据包 vs 传统人工截图与前置止损一图流](assets/svg/15-chargeback-dispute-cryptographic-evidence-2026-11-08.svg)
+
+![2026-11-08 动态定价与秒杀闪购智能体架构：密码学锁价令牌 vs 有界滑点容忍与过期缓存拦截一图流](assets/svg/16-dynamic-pricing-quote-lock-vs-drift-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
