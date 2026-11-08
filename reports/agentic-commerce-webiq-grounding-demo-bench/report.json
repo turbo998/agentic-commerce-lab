@@ -80,6 +80,14 @@
     "amber_signed_credential": "visa_vts_single_use_vcn",
     "red_blocked_reason": "b2b_red_zone_webiq_prompt_injection_detected_in_supplier_passage"
   },
+  "cross_border_settlement_guards": {
+    "all_passed": true,
+    "uk_rail": "stripe_spt_v2_multi_currency",
+    "brazil_fallback_rail": "visa_vic_global_token",
+    "physical_usdc_blocked_reason": "physical_goods_require_reversible_card_rail_with_120d_chargeback_protection",
+    "aligned_200_forfeited_usd": "0.000000",
+    "ny_blocked_reason": "stablecoin_rail_prohibited_in_us_ny"
+  },
   "scenarios": [
     {
       "id": "W01",

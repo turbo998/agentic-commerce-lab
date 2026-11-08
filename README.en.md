@@ -33,10 +33,13 @@ This repository is a production-grade research and engineering testbed for **Age
 > 💡 **Flagship AI Solution Architect Guides**:
 > - **Round 1 Deep Dive**: **[Agentic Commerce Payment Rails (Stripe SPT vs. Visa VIC vs. x402) & Web Grounding (Web IQ vs. Exa / Bright Data) Selection FAQ](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**
 > - **Round 2 Deep Dive**: **[B2B Procurement Agent Authorization: Policy-Bound Spend Mandate vs. Legacy HITL Approval Workflow Selection FAQ](docs/b2b-procurement-mandate-vs-hitl-selection-faq.en.md)**
+> - **Round 3 Deep Dive**: **[Cross-Border Multi-Currency Agent Settlement: On-Chain Stablecoin (`x402` / MPP Tempo) vs. Card Network Tokens (`Stripe SPT v2` / `Visa VIC`) Selection FAQ](docs/cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
 ![2026-11-08 B2B Procurement Policy-Bound Spend Mandate vs HITL Visual Summary](assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
+
+![2026-11-08 Cross-Border Multi-Currency Agent Settlement Visual Summary](assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

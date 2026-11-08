@@ -1316,9 +1316,93 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         suite = run_webiq_commerce_benchmark_suite()
         self.assertTrue(suite["architect_selection_guards"]["all_passed"])
         self.assertTrue(suite["b2b_procurement_mandate_guards"]["all_passed"])
+        self.assertTrue(suite["cross_border_settlement_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("architect-selector-sandbox", demo_zh)
         self.assertIn("b2b-mandate-selector-sandbox", demo_zh)
+        self.assertIn("cross-border-selector-sandbox", demo_zh)
+
+    def test_cross_border_multi_currency_agent_settlement_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_cross_border_agent_settlement
+
+        # 1. UK physical goods (inside 34 countries) -> stripe_spt_v2_multi_currency with chargeback protection
+        uk_spt = evaluate_cross_border_agent_settlement(
+            asset_class="physical_goods_or_saas",
+            merchant_country="GB",
+            landed_total_usd="262.40",
+            mandate_ceiling_usd="280.00",
+            fx_slippage_pct=0.6,
+        )
+        self.assertTrue(uk_spt.allowed)
+        self.assertEqual(uk_spt.recommended_rail, "stripe_spt_v2_multi_currency")
+        self.assertTrue(uk_spt.chargeback_protected)
+
+        # 2. Brazil physical goods (outside 34 countries) -> automatic fallback to visa_vic_global_token
+        br_vic = evaluate_cross_border_agent_settlement(
+            asset_class="physical_goods_or_saas",
+            merchant_country="BR",
+            landed_total_usd="180.00",
+            mandate_ceiling_usd="220.00",
+            fx_slippage_pct=0.8,
+        )
+        self.assertTrue(br_vic.allowed)
+        self.assertEqual(br_vic.recommended_rail, "visa_vic_global_token")
+        self.assertTrue(br_vic.chargeback_protected)
+
+        # 3. Physical goods forced onto irreversible onchain_stablecoin -> blocked with HTTP 422
+        phys_usdc = evaluate_cross_border_agent_settlement(
+            asset_class="physical_goods_or_saas",
+            requested_rail="onchain_stablecoin",
+        )
+        self.assertFalse(phys_usdc.allowed)
+        self.assertEqual(phys_usdc.http_status, 422)
+        self.assertEqual(phys_usdc.action, "Send to a human")
+
+        # 4. Landed cost tariff shock or >2.0% FX slippage -> blocked with HTTP 422 Confirm
+        tariff_shock = evaluate_cross_border_agent_settlement(
+            asset_class="physical_goods_or_saas",
+            landed_total_usd="318.00",
+            mandate_ceiling_usd="280.00",
+        )
+        self.assertFalse(tariff_shock.allowed)
+        self.assertEqual(tariff_shock.http_status, 422)
+
+        fx_spike = evaluate_cross_border_agent_settlement(
+            asset_class="physical_goods_or_saas",
+            fx_slippage_pct=3.4,
+        )
+        self.assertFalse(fx_spike.allowed)
+        self.assertEqual(fx_spike.http_status, 422)
+
+        # 5. Metered API: GCD aligned 200 units at $0.000550 -> $0.000000 forfeiture, whereas 80 units -> 422
+        api_ok = evaluate_cross_border_agent_settlement(
+            asset_class="metered_digital_api",
+            unit_price_usd="0.000550",
+            batch_units=200,
+            buyer_us_state="CA",
+        )
+        self.assertTrue(api_ok.allowed)
+        self.assertEqual(api_ok.min_zero_truncation_batch_units, 200)
+        self.assertEqual(api_ok.sub_cent_forfeited_usd, "0.000000")
+
+        api_unaligned = evaluate_cross_border_agent_settlement(
+            asset_class="metered_digital_api",
+            unit_price_usd="0.000550",
+            batch_units=80,
+            buyer_us_state="CA",
+        )
+        self.assertFalse(api_unaligned.allowed)
+        self.assertEqual(api_unaligned.http_status, 422)
+        self.assertEqual(api_unaligned.sub_cent_forfeited_usd, "0.004000")
+
+        api_ny = evaluate_cross_border_agent_settlement(
+            asset_class="metered_digital_api",
+            unit_price_usd="0.000550",
+            batch_units=200,
+            buyer_us_state="NY",
+        )
+        self.assertFalse(api_ny.allowed)
+        self.assertEqual(api_ny.http_status, 403)
 
     def test_b2b_procurement_policy_bound_spend_mandate_vs_hitl_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_b2b_procurement_spend_mandate

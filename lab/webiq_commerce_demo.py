@@ -3835,6 +3835,175 @@ def evaluate_b2b_procurement_spend_mandate(
     )
 
 
+STRIPE_SPT_34_COUNTRIES: frozenset[str] = frozenset({
+    "AT", "AU", "BE", "BG", "CA", "CH", "CY", "CZ", "DE", "DK",
+    "EE", "ES", "FI", "FR", "GB", "GI", "GR", "HR", "HU", "IE",
+    "IT", "JP", "LI", "LT", "LU", "LV", "MT", "MY", "NL", "NO",
+    "NZ", "PL", "PT", "RO", "SE", "SG", "SI", "SK", "TH", "US",
+})
+
+
+@dataclass(frozen=True)
+class CrossBorderSettlementVerdict:
+    """Structured AI Solution Architect decision output for Cross-Border Multi-Currency Agent Settlement."""
+
+    allowed: bool
+    http_status: int
+    recommended_rail: Literal[
+        "stripe_spt_v2_multi_currency",
+        "visa_vic_global_token",
+        "stripe_mpp_tempo_pathusd",
+        "x402_base_usdc",
+        "none",
+    ]
+    reason: str
+    min_zero_truncation_batch_units: int
+    sub_cent_forfeited_usd: str
+    chargeback_protected: bool
+    action: Literal["Act automatically", "Confirm", "Send to a human"]
+
+
+def evaluate_cross_border_agent_settlement(
+    *,
+    asset_class: Literal["physical_goods_or_saas", "metered_digital_api"] = "physical_goods_or_saas",
+    requested_rail: Literal["auto", "card_network", "onchain_stablecoin"] = "auto",
+    merchant_country: str = "GB",
+    buyer_us_state: str | None = None,
+    landed_total_usd: str = "262.40",
+    mandate_ceiling_usd: str = "280.00",
+    fx_slippage_pct: float = 0.6,
+    max_fx_slippage_pct: float = 2.0,
+    unit_price_usd: str = "0.000550",
+    batch_units: int = 200,
+) -> CrossBorderSettlementVerdict:
+    """Evaluate cross-border multi-currency agent settlement across Card Network Tokens vs. x402/MPP Tempo.
+
+    Encodes the architecture rules from ``docs/cross-border-agent-settlement-x402-vs-card-network-faq.md``:
+    1. Physical goods & deferred-fulfillment SaaS require 120-day Chargeback protection:
+       - Explicitly requesting ``onchain_stablecoin`` for physical goods is rejected with HTTP 422
+         ``physical_goods_require_reversible_card_rail`` (0 chargeback recourse on irreversible USDC).
+       - Pre-checkout Web IQ landed cost (item + VAT/duty + shipping) must not exceed ``mandate_ceiling_usd``
+         and FX slippage must not exceed ``max_fx_slippage_pct`` (default 2.0%).
+       - Seller inside Stripe's 34-country matrix -> ``stripe_spt_v2_multi_currency``; seller outside
+         (e.g. BR, KR, IN, AE) -> ``visa_vic_global_token``.
+    2. Metered digital APIs ($0.0001 - $5.00):
+       - Blocked in ``US-NY`` with HTTP 403 ``stablecoin_rail_prohibited_in_us_ny``.
+       - Computes exact GCD whole-cent batch alignment step ``N_min = 10000 // gcd(micro_units, 10000)``
+         and rejects unaligned MPP Tempo batches with HTTP 422 when sub-cent forfeiture > $0.
+    """
+    import math
+
+    micro_units = int(Decimal(str(unit_price_usd)) * Decimal("1000000"))
+    min_step = 10000 // math.gcd(max(1, micro_units), 10000)
+    gross = Decimal(str(unit_price_usd)) * Decimal(max(1, int(batch_units)))
+    whole_cents = (gross * Decimal("100") // Decimal("1")) / Decimal("100")
+    forfeited = max(Decimal("0.000000"), gross - whole_cents)
+    forfeited_str = f"{forfeited:.6f}"
+
+    if asset_class == "physical_goods_or_saas":
+        if requested_rail == "onchain_stablecoin":
+            return CrossBorderSettlementVerdict(
+                False,
+                422,
+                "none",
+                "physical_goods_require_reversible_card_rail_with_120d_chargeback_protection",
+                min_step,
+                "0.000000",
+                False,
+                "Send to a human",
+            )
+        if Decimal(str(landed_total_usd)) > Decimal(str(mandate_ceiling_usd)):
+            return CrossBorderSettlementVerdict(
+                False,
+                422,
+                "none",
+                "cross_border_landed_cost_with_vat_and_duty_exceeds_ap2_mandate_ceiling",
+                min_step,
+                "0.000000",
+                True,
+                "Confirm",
+            )
+        if fx_slippage_pct > max_fx_slippage_pct:
+            return CrossBorderSettlementVerdict(
+                False,
+                422,
+                "none",
+                "cross_border_fx_slippage_exceeds_2pct_safety_band_confirm_lock",
+                min_step,
+                "0.000000",
+                True,
+                "Confirm",
+            )
+        country_code = (merchant_country or "").strip().upper()
+        if country_code in STRIPE_SPT_34_COUNTRIES:
+            return CrossBorderSettlementVerdict(
+                True,
+                200,
+                "stripe_spt_v2_multi_currency",
+                f"cross_border_card_rail_stripe_spt_v2_verified_for_{country_code}",
+                min_step,
+                "0.000000",
+                True,
+                "Act automatically",
+            )
+        return CrossBorderSettlementVerdict(
+            True,
+            200,
+            "visa_vic_global_token",
+            f"cross_border_card_rail_visa_vic_fallback_for_non_spt_country_{country_code}",
+            min_step,
+            "0.000000",
+            True,
+            "Act automatically",
+        )
+
+    # Metered digital API path
+    if requested_rail == "card_network" and Decimal(str(unit_price_usd)) < Decimal("0.50"):
+        return CrossBorderSettlementVerdict(
+            False,
+            400,
+            "none",
+            "cross_border_card_fixed_fee_destroys_sub_dollar_api_unit_economics_use_mpp_tempo",
+            min_step,
+            "0.000000",
+            False,
+            "Confirm",
+        )
+    if (buyer_us_state or "").strip().upper() == "NY":
+        return CrossBorderSettlementVerdict(
+            False,
+            403,
+            "none",
+            "stablecoin_rail_prohibited_in_us_ny",
+            min_step,
+            forfeited_str,
+            False,
+            "Send to a human",
+        )
+    if forfeited > Decimal("0") or (batch_units % min_step != 0):
+        return CrossBorderSettlementVerdict(
+            False,
+            422,
+            "stripe_mpp_tempo_pathusd",
+            f"unaligned_mpp_batch_forfeits_{forfeited_str}_align_to_multiple_of_{min_step}_units",
+            min_step,
+            forfeited_str,
+            False,
+            "Confirm",
+        )
+    return CrossBorderSettlementVerdict(
+        True,
+        200,
+        "stripe_mpp_tempo_pathusd",
+        f"cross_border_mpp_tempo_aligned_{batch_units}_units_zero_truncation_verified",
+        min_step,
+        "0.000000",
+        False,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -4495,6 +4664,57 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "red_blocked_reason": b2b_red_injection.reason,
     }
 
+    cb_uk_spt = evaluate_cross_border_agent_settlement(
+        asset_class="physical_goods_or_saas",
+        merchant_country="GB",
+        landed_total_usd="262.40",
+        mandate_ceiling_usd="280.00",
+        fx_slippage_pct=0.6,
+    )
+    cb_br_vic = evaluate_cross_border_agent_settlement(
+        asset_class="physical_goods_or_saas",
+        merchant_country="BR",
+        landed_total_usd="180.00",
+        mandate_ceiling_usd="220.00",
+        fx_slippage_pct=0.8,
+    )
+    cb_phys_usdc_block = evaluate_cross_border_agent_settlement(
+        asset_class="physical_goods_or_saas",
+        requested_rail="onchain_stablecoin",
+    )
+    cb_api_aligned = evaluate_cross_border_agent_settlement(
+        asset_class="metered_digital_api",
+        unit_price_usd="0.000550",
+        batch_units=200,
+        buyer_us_state="CA",
+    )
+    cb_api_ny_block = evaluate_cross_border_agent_settlement(
+        asset_class="metered_digital_api",
+        unit_price_usd="0.000550",
+        batch_units=200,
+        buyer_us_state="NY",
+    )
+    cross_border_settlement_guards = {
+        "all_passed": (
+            cb_uk_spt.allowed
+            and cb_uk_spt.recommended_rail == "stripe_spt_v2_multi_currency"
+            and cb_br_vic.allowed
+            and cb_br_vic.recommended_rail == "visa_vic_global_token"
+            and not cb_phys_usdc_block.allowed
+            and cb_phys_usdc_block.http_status == 422
+            and cb_api_aligned.allowed
+            and cb_api_aligned.sub_cent_forfeited_usd == "0.000000"
+            and cb_api_aligned.min_zero_truncation_batch_units == 200
+            and not cb_api_ny_block.allowed
+            and cb_api_ny_block.http_status == 403
+        ),
+        "uk_rail": cb_uk_spt.recommended_rail,
+        "brazil_fallback_rail": cb_br_vic.recommended_rail,
+        "physical_usdc_blocked_reason": cb_phys_usdc_block.reason,
+        "aligned_200_forfeited_usd": cb_api_aligned.sub_cent_forfeited_usd,
+        "ny_blocked_reason": cb_api_ny_block.reason,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -4510,6 +4730,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stage_1756_guards": stage_1756_guards,
         "architect_selection_guards": architect_selection_guards,
         "b2b_procurement_mandate_guards": b2b_procurement_mandate_guards,
+        "cross_border_settlement_guards": cross_border_settlement_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -7398,6 +7619,39 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="b2b-mandate-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cross-Border Multi-Currency Settlement & GCD Alignment Selector (Round 3 FAQ Companion) -->
+      <div class="finops-box" id="cross-border-selector-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cb-selector-title">🌍 跨境多币种双轨结算与整美分 GCD 对齐决策器 (x402 / MPP Tempo vs. SPT v2 / Visa VIC)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 跨境交易标的与支付轨道诉求 (Cross-Border Asset Class &amp; Rail):</span></label>
+          <select id="cb-asset-select" onchange="updateCrossBorderSandbox()">
+            <option value="phys_gb_spt">📦 跨境实物/SaaS (英国商户 GB · 位于 Stripe SPT 34 国白名单 · 需 120天拒付权)</option>
+            <option value="phys_br_vic">🌎 跨境实物/机酒 (巴西商户 BR · 34 国外新兴市场 · 自动切 Visa VIC 全局网络)</option>
+            <option value="phys_raw_usdc_bad">❌ 跨境实物商品强行用 x402 链上打 USDC (0 拒付追索权 -&gt; HTTP 422 拦截!)</option>
+            <option value="api_tempo_200_ok">⚡ 跨境高频数据 API ($0.000550/call × 200 次整美分 GCD 对齐 · MPP Tempo T+0)</option>
+            <option value="api_tempo_80_bad">⚠️ 跨境数据 API ($0.000550/call × 80 次未对齐 · 触发 9.1% 亚美分截断损耗!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>2. Web IQ 含税落地价与汇率滑点门禁 (Landed Cost VAT/Duty &amp; FX Guard):</span></label>
+          <select id="cb-fx-select" onchange="updateCrossBorderSandbox()">
+            <option value="landed_ok">✅ Web IQ /browse 核验含 VAT/关税总价 $262.40 ≤ 预算 $280 · 汇率滑点 0.6% ≤ 2.0%</option>
+            <option value="tariff_shock">🛑 结账页隐藏 25% 进口关税与国际运费导致总价 $318 &gt; $280 上限 (AP2 熔断!)</option>
+            <option value="fx_spike">🛑 跨币种实时换汇滑点飙升至 3.4% &gt; 2.0% 安全阈值 (暂停自动放款 Confirm!)</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <label><span>3. 买方/商户司法管辖区合规围栏 (Jurisdiction &amp; Geofence Check):</span></label>
+          <select id="cb-geo-select" onchange="updateCrossBorderSandbox()">
+            <option value="geo_eligible">✅ 合规开放司法管辖区 (SG / GB / EU / US-CA · 允许对应结算轨道)</option>
+            <option value="geo_us_ny">🚫 买方或商户位于美国纽约州 (US-NY · 严禁启用稳定币微支付轨道 HTTP 403!)</option>
+          </select>
+        </div>
+        <div id="cb-selector-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -7839,6 +8093,7 @@ function renderAll() {{
   updateFinOpsCalculator();
   updateArchitectSelectorSandbox();
   updateB2bMandateSandbox();
+  updateCrossBorderSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7967,6 +8222,83 @@ function updateB2bMandateSandbox() {{
     "<strong>🟢 绿区确定性策略网关自动放行 (Green Zone Auto-Mandate · 376ms · 0 人工打扰):</strong><br>" +
     "• <strong>独立策略引擎核验</strong>：AVL 白名单通过 + MCC 5085 匹配 + 单笔 <code>$1,920.00 ≤ $2,500.00</code> + Web IQ 30 天退货期与价格哈希一致<br>" +
     "• <strong>动态受限令牌</strong>：已自动签发 <code>stripe_connect_spt_v2</code>（绑定唯一子商户 <code>seller_account</code>、精确上限 <code>$1,920.00</code>、15 分钟 TTL），消除 78.4% 人工橡皮图章疲劳！" +
+    "</div>";
+}}
+
+function updateCrossBorderSandbox() {{
+  var assetEl = document.getElementById("cb-asset-select");
+  var fxEl = document.getElementById("cb-fx-select");
+  var geoEl = document.getElementById("cb-geo-select");
+  var outEl = document.getElementById("cb-selector-readout");
+  if (!assetEl || !fxEl || !geoEl || !outEl) return;
+
+  var asset = assetEl.value;
+  var fx = fxEl.value;
+  var geo = geoEl.value;
+
+  if (asset === "phys_raw_usdc_bad") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 422 physical_goods_require_reversible_card_rail_with_120d_chargeback_protection：<br>" +
+      "跨境实物商品存在海关扣留、未发货与假货风险，严禁使用不可撤回的链上 USDC 直接打款！已强制阻断并要求走带 120 天拒付保护的卡组令牌网络 (Stripe SPT v2 / Visa VIC)。" +
+      "</div>";
+    return;
+  }}
+
+  if ((asset === "api_tempo_200_ok" || asset === "api_tempo_80_bad") && geo === "geo_us_ny") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 403 stablecoin_rail_prohibited_in_us_ny (Send to a human)：<br>" +
+      "检测到买方或商户位于美国纽约州 (US-NY)，受州虚拟货币合规限制，策略网关已 100% 阻断 x402 / Stripe MPP Tempo 稳定币微支付通道！" +
+      "</div>";
+    return;
+  }}
+
+  if (asset === "api_tempo_80_bad") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ HTTP 422 unaligned_mpp_batch_forfeits_0.004000_align_to_multiple_of_200_units (Confirm)：<br>" +
+      "• 单价 <code>$0.000550</code> × 80 次 = <code>$0.044000</code>，法币入账向下截断为 <code>$0.04</code>，白白蒸发 <code>$0.004000 (9.1%)</code>！<br>" +
+      "• 按最大公约数公式 <code>N_min = 10000 / gcd(550, 10000) = 200</code>，请对齐至 200 次整倍数后再关单结算。" +
+      "</div>";
+    return;
+  }}
+
+  if (asset === "api_tempo_200_ok") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>⚡ 跨境链上微支付核验通过 (stripe_mpp_tempo_pathusd · T+0 秒级清算 · 损耗 $0.000000):</strong><br>" +
+      "• <strong>整美分 GCD 对齐</strong>：<code>200 × $0.000550 = $0.110000</code>（刚好 11 美分，亚美分截断损耗 <code>$0.000000</code>）<br>" +
+      "• <strong>费率优势</strong>：消除传统跨境信用卡 <code>$0.30</code> 固定起步费与 <code>1.5%</code> 换汇点差，综合通道损耗 <code>&lt; 0.1%</code>" +
+      "</div>";
+    return;
+  }}
+
+  if (fx !== "landed_ok") {{
+    var fxMsg = fx === "tariff_shock"
+      ? "🛑 HTTP 422 cross_border_landed_cost_with_vat_and_duty_exceeds_ap2_mandate_ceiling：Web IQ /v3/browse 检出结账页附加 25% 进口关税与运费后总价达 $318.00，超出 AP2 授权上限 ($280.00)，换汇前立即熔断！"
+      : "🛑 HTTP 422 cross_border_fx_slippage_exceeds_2pct_safety_band_confirm_lock：实时跨币种换汇滑点达 3.4%（超出 2.0% 安全红线），已暂停自动放款并转交人工锁汇确认 (Confirm)！";
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      fxMsg + "</div>";
+    return;
+  }}
+
+  if (asset === "phys_br_vic") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🌎 跨境非 34 国自动回退核验通过 (visa_vic_global_token · 巴西 BR 本地收单):</strong><br>" +
+      "• 巴西 (<code>BR</code>) 不在 Stripe SPT 34 国白名单内，路由器已自动切换至发卡行直连 <strong>Visa VIC (VTS 16位令牌 + 动态 CVV2 + RFC 9421 TAP)</strong><br>" +
+      "• 保留完整 <strong>120 天卡组拒付追索权 (Chargeback)</strong> 与 FIDO2 Passkey 欺诈责任转移保护" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ 跨境 34 国内卡组令牌核验通过 (stripe_spt_v2_multi_currency · 英国 GB 商户):</strong><br>" +
+    "• <strong>Web IQ 含税核价通过</strong>：商品 £180 + 关税/运费 £25 = £205 (<code>$262.40 ≤ $280.00</code>)，汇率滑点 <code>0.6% ≤ 2.0%</code><br>" +
+    "• <strong>结算与分账</strong>：已签发单次英镑 <code>spt_...</code>（支持 Stripe Connect 跨国分账 + 120 天拒付保护权）" +
     "</div>";
 }}
 

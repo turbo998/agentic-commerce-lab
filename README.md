@@ -33,10 +33,13 @@
 > 💡 **AI 解决方案架构师实战必读**：
 > - **Round 1 专题**：**[《Agentic Commerce 支付轨道（Stripe SPT vs. Visa VIC vs. x402）与 Web Grounding（Web IQ vs. Exa / Bright Data）架构选型及协议原理解析 FAQ》](docs/agentic-payment-rails-and-webiq-grounding-selection-faq.md)**
 > - **Round 2 专题**：**[《B2B 企业采购智能体授权架构：确定性预算策略网关（Policy-Bound Spend Mandate）vs 传统人工审批工作流选型与原理解析 FAQ》](docs/b2b-procurement-mandate-vs-hitl-selection-faq.md)**
+> - **Round 3 专题**：**[《跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络（Visa VIC / Stripe SPT v2）选型与原理解析 FAQ》](docs/cross-border-agent-settlement-x402-vs-card-network-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
 ![2026-11-08 B2B 企业采购三层分级策略网关 vs 传统人工审批一图流总结](assets/svg/04-b2b-procurement-mandate-vs-hitl-2026-11-08.svg)
+
+![2026-11-08 跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络选型一图流](assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
