@@ -6810,6 +6810,102 @@ def evaluate_return_logistics_reverse_escrow_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BNetTermsThreeWayMatchVerdict:
+    """Round 27 verdict for Programmable Accounts-Payable Trade Credit Tokens + Signed Goods Receipt Note 3-Way Match vs Upfront Corporate Card Capture & Phantom Invoice Fraud."""
+
+    allowed: bool
+    http_status: int
+    ap_lane: str
+    scheduled_payout_cents: int
+    early_pay_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_b2b_net30_three_way_match_policy(
+    *,
+    po_amount_cents: int = 4500000,
+    grn_amount_cents: int = 4500000,
+    invoice_amount_cents: int = 4500000,
+    grn_verified: bool = True,
+    max_tolerance_bps: int = 100,
+    webiq_supplier_sanctioned_or_revoked: bool = False,
+    early_pay_discount_bps: int = 0,
+) -> B2BNetTermsThreeWayMatchVerdict:
+    """Evaluate Web IQ supplier KYB/sanctions check, WMS Goods Receipt Note (GRN) gate, PO-GRN-Invoice 3-way match tolerance, and 2/10 Net 30 dynamic discounting arbitrage."""
+
+    # 1. Microsoft Web IQ Supplier Sanctions or Corporate Registration Revoked -> HTTP 451
+    if webiq_supplier_sanctioned_or_revoked:
+        return B2BNetTermsThreeWayMatchVerdict(
+            False,
+            451,
+            "SUPPLIER_KYB_SANCTION_OR_REVOKED_BLOCKED",
+            0,
+            0,
+            "webiq_detected_supplier_on_sanctions_list_or_corporate_registration_revoked",
+            310,
+            "Send to a human",
+        )
+
+    # 2. Missing Signed Warehouse Goods Receipt Note (Phantom Invoice Fraud) -> HTTP 403
+    if not grn_verified:
+        return B2BNetTermsThreeWayMatchVerdict(
+            False,
+            403,
+            "MISSING_GOODS_RECEIPT_NOTE_PHANTOM_INVOICE",
+            0,
+            0,
+            "invoice_settlement_blocked_without_signed_warehouse_goods_receipt_note",
+            14,
+            "Send to a human",
+        )
+
+    # 3. PO <-> GRN <-> Invoice 3-Way Match Tolerance Exceeded (> 1.0%) -> HTTP 422
+    approved_base_cents = min(po_amount_cents, grn_amount_cents)
+    diff_bps = (abs(invoice_amount_cents - approved_base_cents) * 10000) // max(
+        1, approved_base_cents
+    )
+    if diff_bps > max_tolerance_bps:
+        return B2BNetTermsThreeWayMatchVerdict(
+            False,
+            422,
+            "THREE_WAY_MATCH_PRICE_OR_QTY_DISCREPANCY",
+            0,
+            0,
+            "invoice_amount_exceeded_po_and_grn_three_way_match_1pct_tolerance",
+            17,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 2/10 Net 30 Early-Payment Discount Arbitrage -> HTTP 409 Confirm
+    if early_pay_discount_bps > 0:
+        savings = (invoice_amount_cents * early_pay_discount_bps) // 10000
+        return B2BNetTermsThreeWayMatchVerdict(
+            False,
+            409,
+            "EARLY_PAYMENT_DISCOUNT_ARBITRAGE_CONFIRM",
+            invoice_amount_cents - savings,
+            savings,
+            "webiq_detected_2_10_net_30_early_payment_discount_yielding_36pct_apr",
+            315,
+            "Confirm",
+        )
+
+    # 5. Clean 3-Way Matched Net-30 Scheduled ACH Settlement
+    return B2BNetTermsThreeWayMatchVerdict(
+        True,
+        200,
+        "THREE_WAY_MATCHED_NET30_SCHEDULED",
+        invoice_amount_cents,
+        0,
+        "po_grn_invoice_three_way_matched_and_net30_ach_settlement_scheduled",
+        270,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8579,6 +8675,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "empty_box_block_latency_ms": rma_weight_422.latency_ms,
     }
 
+    b2b3w_commit_ok = evaluate_b2b_net30_three_way_match_policy()
+    b2b3w_grn_403 = evaluate_b2b_net30_three_way_match_policy(
+        grn_verified=False,
+    )
+    b2b3w_pad_422 = evaluate_b2b_net30_three_way_match_policy(
+        invoice_amount_cents=4860000,
+    )
+    b2b3w_kyb_451 = evaluate_b2b_net30_three_way_match_policy(
+        webiq_supplier_sanctioned_or_revoked=True,
+    )
+    b2b3w_disc_409 = evaluate_b2b_net30_three_way_match_policy(
+        early_pay_discount_bps=200,
+    )
+    b2b_net30_three_way_match_guards = {
+        "all_passed": (
+            b2b3w_commit_ok.allowed
+            and b2b3w_commit_ok.scheduled_payout_cents == 4500000
+            and not b2b3w_grn_403.allowed
+            and b2b3w_grn_403.http_status == 403
+            and not b2b3w_pad_422.allowed
+            and b2b3w_pad_422.http_status == 422
+            and not b2b3w_kyb_451.allowed
+            and b2b3w_kyb_451.http_status == 451
+            and not b2b3w_disc_409.allowed
+            and b2b3w_disc_409.action_pill == "Confirm"
+        ),
+        "net30_schedule_latency_ms": b2b3w_commit_ok.latency_ms,
+        "phantom_invoice_block_latency_ms": b2b3w_grn_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8618,6 +8744,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "indirect_prompt_injection_feed_guards": indirect_prompt_injection_feed_guards,
         "multi_agent_shared_budget_guards": multi_agent_shared_budget_guards,
         "return_logistics_reverse_escrow_guards": return_logistics_reverse_escrow_guards,
+        "b2b_net30_three_way_match_guards": b2b_net30_three_way_match_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -12003,6 +12130,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="rma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Net-30 Trade Credit & PO-GRN-Invoice 3-Way Match Sandbox (Round 27 FAQ Companion) -->
+      <div class="finops-box" id="b2b-net30-three-way-match-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-b2b3w-title">🏢 B2B 供应链账期授信与三单匹配架构：可编程 Net-30 保理令牌 (b2b_net_terms_token_...) + PO/GRN/发票核验 vs 刷卡占压与幽灵发票决策器 (Round 27 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. B2B 采购单 (PO)、仓库收货单 (GRN)、供应商发票与司库早付套利场景 (B2B 3-Way Match &amp; Treasury Arbitrage Scenario):</span></label>
+          <select id="b2b3w-select" onchange="updateB2BNet30Sandbox()">
+            <option value="b2b3w_commit_ok">⚡ PO ($45,000) == WMS 收货单 GRN ($45,000) == 发票 ($45,000) 三单 100% 吻合：锁定 Net-30 ACH 划拨，免除 $1,305 卡费! (270ms · Act automatically)</option>
+            <option value="b2b3w_grn_403">🛑 幽灵发票欺诈拦截：货物尚未入库签收 (grn_verified=False) 即收到 $45,000 催款发票 → 14ms 触发 HTTP 403 零资金流出硬阻断!</option>
+            <option value="b2b3w_pad_422">🚨 供应商发票暗中加价/多算数量拦截：PO 与收货单核定 $45,000，发票虚增至 $48,600 (+8% &gt; 1% 容差) → 17ms 触发 HTTP 422 退回重开!</option>
+            <option value="b2b3w_kyb_451">🛑 付款前夕 Web IQ 检出供应商被列入贸易制裁或工商吊销黑名单 → 310ms 触发 HTTP 451 合规一票否决冻结打款!</option>
+            <option value="b2b3w_disc_409">🧑‍⚖️ Web IQ 检出供应商门户 2/10 Net 30 早付折扣条款 (10天内付款享 98 折，等效年化 36.7%) → 315ms 触发 HTTP 409 Confirm 建议付 $44,100 立省 $900!</option>
+          </select>
+        </div>
+        <div id="b2b3w-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12468,6 +12613,7 @@ function renderAll() {{
   updateIndirectPromptInjectionSandbox();
   updateMultiAgentBudgetSandbox();
   updateReturnLogisticsSandbox();
+  updateB2BNet30Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14017,6 +14163,56 @@ function updateReturnLogisticsSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双阶段称重 + WMS 序列号核验通过：全额退款原子释放 (RMA_VERIFIED_REFUND_RELEASED · 275ms · Act automatically):</strong><br>" +
     "• <strong>零空包/零调包资损</strong>：承运商揽收实测 <code>1,835g</code>（偏差 <code>0.8% &lt;= 12%</code>）且退货仓开箱扫码确认 <code>sn_mac_881</code> 完全一致，已向买家原路释放 <code>$1,200.00</code> 全额退款！" +
+    "</div>";
+}}
+
+function updateB2BNet30Sandbox() {{
+  var selEl = document.getElementById("b2b3w-select");
+  var outEl = document.getElementById("b2b3w-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "b2b3w_grn_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MISSING_GOODS_RECEIPT_NOTE_PHANTOM_INVOICE (14ms · Send to a human · synthetic_policy)：<br>" +
+      "应付账款（AP）网关检测到该笔 <code>$45,000.00</code> 发票缺少买方物理仓库 WMS 签发的电子收货单签名（<code>grn_verified=False</code>）！已在 <code>14ms</code> 内硬阻断疑似 BEC 幽灵发票诈骗（零资金流出）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "b2b3w_pad_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 THREE_WAY_MATCH_PRICE_OR_QTY_DISCREPANCY (17ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "PO-GRN-Invoice 三单匹配核验失败！采购单 PO 与仓库实收单 GRN 核定金额均为 <code>$45,000.00</code>，但供应商发票开出 <code>$48,600.00</code>（虚增溢价 <code>+8.0% &gt; ±1.0%</code> 容差），已冻结付款并退回供应商开具红字贷项通知单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "b2b3w_kyb_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUPPLIER_KYB_SANCTION_OR_REVOKED_BLOCKED (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在付款前夕实时复核官方企业注册与贸易管制公示库，检出该供应商已被列入限制实体名单或工商吊销，已执行合规一票否决并冻结应付账款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "b2b3w_disc_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 EARLY_PAYMENT_DISCOUNT_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在供应商结算门户检出 <code>2/10 Net 30</code> 早付现金折扣条款：若在第 10 天提前结清可直接减免 <code>2% ($900.00)</code> 仅付 <code>$44,100.00</code>（折合无风险年化收益率高达 <code>36.73%</code>），建议司库批准早付套利！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PO-GRN-Invoice 三单 100% 吻合：Net-30 账期清算已排期 (THREE_WAY_MATCHED_NET30_SCHEDULED · 270ms · Act automatically):</strong><br>" +
+    "• <strong>免除 2.9% ($1,305) 卡组手续费</strong>：凭可编程账期令牌 <code>b2b_net_terms_token_live_30d</code> 与三单匹配证明（<code>$45,000.00</code>），已自动锁定第 30 天低成本 ACH 清算！" +
     "</div>";
 }}
 

@@ -1588,6 +1588,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.en.md",
             "docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.md",
             "docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.en.md",
+            "docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.md",
+            "docs/b2b-net30-po-three-way-match-vs-upfront-card-capture-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2701,6 +2703,52 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["return_logistics_reverse_escrow_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("return-logistics-reverse-escrow-sandbox", demo_zh)
+
+    def test_b2b_net30_po_three_way_match_vs_upfront_card_capture_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_b2b_net30_three_way_match_policy
+
+        # 1. Clean PO == GRN == Invoice ($45,000) -> 200 Net-30 ACH scheduled
+        commit_ok = evaluate_b2b_net30_three_way_match_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.scheduled_payout_cents, 4500000)
+
+        # 2. Missing signed warehouse Goods Receipt Note (Phantom Invoice) -> 403 blocked in 14ms
+        grn_403 = evaluate_b2b_net30_three_way_match_policy(
+            grn_verified=False,
+        )
+        self.assertFalse(grn_403.allowed)
+        self.assertEqual(grn_403.http_status, 403)
+        self.assertEqual(grn_403.ap_lane, "MISSING_GOODS_RECEIPT_NOTE_PHANTOM_INVOICE")
+
+        # 3. Invoice padded to $48,600 vs $45,000 PO/GRN (+8.0% > 1.0%) -> 422 blocked in 17ms
+        pad_422 = evaluate_b2b_net30_three_way_match_policy(
+            invoice_amount_cents=4860000,
+        )
+        self.assertFalse(pad_422.allowed)
+        self.assertEqual(pad_422.http_status, 422)
+        self.assertEqual(pad_422.ap_lane, "THREE_WAY_MATCH_PRICE_OR_QTY_DISCREPANCY")
+
+        # 4. Web IQ supplier hit sanctions list or KYB revoked -> 451 blocked in 310ms
+        kyb_451 = evaluate_b2b_net30_three_way_match_policy(
+            webiq_supplier_sanctioned_or_revoked=True,
+        )
+        self.assertFalse(kyb_451.allowed)
+        self.assertEqual(kyb_451.http_status, 451)
+
+        # 5. Web IQ 2/10 Net 30 early-payment discount (2% = $900 savings) -> 409 Confirm in 315ms
+        disc_409 = evaluate_b2b_net30_three_way_match_policy(
+            early_pay_discount_bps=200,
+        )
+        self.assertFalse(disc_409.allowed)
+        self.assertEqual(disc_409.http_status, 409)
+        self.assertEqual(disc_409.early_pay_savings_cents, 90000)
+        self.assertEqual(disc_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_net30_three_way_match_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-net30-three-way-match-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

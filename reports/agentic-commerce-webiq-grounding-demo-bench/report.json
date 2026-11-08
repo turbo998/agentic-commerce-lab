@@ -215,6 +215,11 @@
     "rma_release_latency_ms": 275,
     "empty_box_block_latency_ms": 15
   },
+  "b2b_net30_three_way_match_guards": {
+    "all_passed": true,
+    "net30_schedule_latency_ms": 270,
+    "phantom_invoice_block_latency_ms": 14
+  },
   "scenarios": [
     {
       "id": "W01",
