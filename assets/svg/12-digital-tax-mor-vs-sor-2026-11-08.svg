@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg12" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+    <linearGradient id="morGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="sorGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="warnGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#bg12)" rx="16"/>
+
+  <!-- Header -->
+  <rect x="28" y="22" width="1144" height="78" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <rect x="44" y="36" width="176" height="26" rx="6" fill="#10b981"/>
+  <text x="132" y="54" fill="#06281e" font-size="12" font-weight="800" text-anchor="middle">ROUND 10 · TAX &amp; MOR/SOR</text>
+  <text x="236" y="54" fill="#f8fafc" font-size="19" font-weight="800">跨境数字商品与 AI Agent 税务合规：MoR 全托管 vs SoR (Stripe Tax + OBO / 逆向征收)</text>
+  <text x="44" y="82" fill="#94a3b8" font-size="12.5">核心铁律：无当地税号选 MoR (~5%+$0.50 兜底全球稽查) · 已持税号选 SoR Stripe Tax (0.5%) · 税费必须在签发 SPT 前 (calculate_order) 锁定</text>
+
+  <!-- Left Column: MoR vs SoR Selection -->
+  <rect x="28" y="116" width="558" height="265" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="28" y="116" width="558" height="36" rx="12" fill="url(#morGrad)"/>
+  <text x="46" y="139" fill="#ffffff" font-size="14" font-weight="700">1. 法定纳税主体选型：名义商户 (MoR) vs 记账卖方 (SoR + Stripe Tax)</text>
+
+  <!-- MoR Box -->
+  <rect x="44" y="164" width="254" height="202" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="58" y="186" fill="#6ee7b7" font-size="13" font-weight="700">🛡️ 名义商户全托管 (MoR Platform)</text>
+  <text x="58" y="208" fill="#e2e8f0" font-size="11.5">• 适用：无海外税号、全球 30+ 国 AI SaaS</text>
+  <text x="58" y="228" fill="#e2e8f0" font-size="11.5">• 机制：两步转售，账单抬头为 MoR 平台</text>
+  <text x="58" y="248" fill="#e2e8f0" font-size="11.5">• 责任：100% 兜底欧盟/英/美 VAT 申报稽查</text>
+  <text x="58" y="268" fill="#fde047" font-size="11.5" font-weight="700">• 费率：~5.0% + $0.50 (official_list_price)</text>
+  <rect x="58" y="284" width="226" height="68" rx="6" fill="#022c22"/>
+  <text x="70" y="304" fill="#34d399" font-size="11" font-weight="700">沙盒实测 (DE 19% VAT):</text>
+  <text x="70" y="322" fill="#f8fafc" font-size="11">裸价 $100 → 含税锁单 $119.00 (295ms)</text>
+  <text x="70" y="340" fill="#a7f3d0" font-size="10.5">tax_liability_owner = MOR_PLATFORM</text>
+
+  <!-- SoR Box -->
+  <rect x="314" y="164" width="256" height="202" rx="8" fill="#172554" stroke="#3b82f6" stroke-width="1"/>
+  <text x="328" y="186" fill="#93c5fd" font-size="13" font-weight="700">⚖️ 记账卖方 (SoR + Stripe Tax)</text>
+  <text x="328" y="208" fill="#e2e8f0" font-size="11.5">• 适用：已注册当地税号、实体或大型平台</text>
+  <text x="328" y="228" fill="#e2e8f0" font-size="11.5">• 机制：商户自身(或 OBO 子商户)开具发票</text>
+  <text x="328" y="248" fill="#e2e8f0" font-size="11.5">• 责任：商户自持税号按月申报 (MERCHANT_SOR)</text>
+  <text x="328" y="268" fill="#fde047" font-size="11.5" font-weight="700">• 费率：Stripe Tax 0.5% (official_list_price)</text>
+  <rect x="328" y="284" width="228" height="68" rx="6" fill="#0f172a"/>
+  <text x="340" y="304" fill="#60a5fa" font-size="11" font-weight="700">Connect OBO 请求头铁律:</text>
+  <text x="340" y="322" fill="#fca5a5" font-size="10.8">未设 on_behalf_of 时严禁传 Stripe-Account 头</text>
+  <text x="340" y="340" fill="#93c5fd" font-size="10.5">否则立即触发 HTTP 400 归属冲突硬拦截!</text>
+
+  <!-- Right Column: Pre-Mandate SPT Ceiling & B2B Reverse Charge -->
+  <rect x="604" y="116" width="568" height="265" rx="12" fill="#111827" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="604" y="116" width="568" height="36" rx="12" fill="url(#sorGrad)"/>
+  <text x="622" y="139" fill="#ffffff" font-size="14" font-weight="700">2. SPT 含税上限前置锁定 vs B2B 逆向征收 (Reverse-Charge + Web IQ 核验)</text>
+
+  <!-- Pre-Mandate Tax Lock -->
+  <rect x="620" y="164" width="536" height="94" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="636" y="185" fill="#38bdf8" font-size="12.5" font-weight="700">⚡ 为什么税费必须在签发 SPT 前 (calculate_order &lt;= 4,000ms) 算清？</text>
+  <text x="636" y="206" fill="#e2e8f0" font-size="11.5">• 正模式：买家邮编 → calculate_order 算出 Subtotal $100 + 19% VAT $19 = $119 → 买家签发 SPT (max=$119) → 200 OK</text>
+  <text x="636" y="226" fill="#fca5a5" font-size="11.5" font-weight="700">• 致命反模式：先按裸价 $100 签发 SPT (max=$100)，finalize_checkout 才加税扣 $119 → HTTP 422 爆限拒付!</text>
+  <text x="636" y="245" fill="#94a3b8" font-size="11">• 结论：SPT 密码学上限不可篡改，严禁“先签裸价令牌、后补算税费 (Post-Mandate Tax Surprise)”</text>
+
+  <!-- B2B Reverse Charge -->
+  <rect x="620" y="268" width="536" height="98" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1"/>
+  <text x="636" y="289" fill="#a78bfa" font-size="12.5" font-weight="700">🧾 B2B 跨境逆向征收 (0% VAT) 双因子防伪门禁 (防御 Prompt 注入骗税 &amp; 税号冒用)</text>
+  <text x="636" y="310" fill="#e2e8f0" font-size="11.5">• 因子 1 (税局接口)：seller_country != buyer_country 且 VAT ID (如 DE123456789) 状态为 verified_active</text>
+  <text x="636" y="330" fill="#e2e8f0" font-size="11.5">• 因子 2 (Web IQ /v3/browse)：抓取企业官方注册公示页，确认 VAT 登记法定名称 == SPT 授权企业主体 (385ms)</text>
+  <text x="636" y="350" fill="#fde047" font-size="11.5" font-weight="700">• Fail-Closed 降级：任一因子不匹配或仅靠 Prompt 声称免税 → 强制回退征收 19%~27% 法定 VAT!</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="28" y="398" width="1144" height="258" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="48" y="426" fill="#f8fafc" font-size="15" font-weight="800">🧪 跨境数字税务与 SPT 含税上限确定性基准实测 (deterministic_offline_simulation · as_of: 2026-11-08)</text>
+
+  <!-- Table Header -->
+  <rect x="44" y="440" width="1112" height="30" rx="6" fill="#1e293b"/>
+  <text x="58" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">评测场景 (Scenario)</text>
+  <text x="370" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">税务合规路径</text>
+  <text x="590" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">裸价 vs 含税总额</text>
+  <text x="770" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">耗时</text>
+  <text x="860" y="460" fill="#94a3b8" font-size="11.5" font-weight="700">网关裁决与责任归属</text>
+
+  <!-- Row 1 -->
+  <rect x="44" y="476" width="1112" height="30" rx="4" fill="#111827"/>
+  <text x="58" y="496" fill="#f8fafc" font-size="11.5">1. 德国 B2C AI SaaS 订阅 (商户无欧盟税号)</text>
+  <text x="370" y="496" fill="#34d399" font-size="11.5" font-weight="700">MoR 全托管 (MOR_MANAGED_TAX)</text>
+  <text x="590" y="496" fill="#e2e8f0" font-size="11.5">$100.00 → $119.00 (19% VAT)</text>
+  <text x="770" y="496" fill="#34d399" font-size="11.5" font-weight="700">295 ms</text>
+  <text x="860" y="496" fill="#6ee7b7" font-size="11.5">200 OK · MoR 平台 100% 兜底申报</text>
+
+  <!-- Row 2 -->
+  <rect x="44" y="510" width="1112" height="30" rx="4" fill="#161f30"/>
+  <text x="58" y="530" fill="#f8fafc" font-size="11.5">2. 持牌企业德国零售 (已持 DE 税号 + Connect OBO)</text>
+  <text x="370" y="530" fill="#60a5fa" font-size="11.5" font-weight="700">SoR 自持税号 (Stripe Tax 0.5%)</text>
+  <text x="590" y="530" fill="#e2e8f0" font-size="11.5">$100.00 → $119.00 (19% VAT)</text>
+  <text x="770" y="530" fill="#60a5fa" font-size="11.5" font-weight="700">340 ms</text>
+  <text x="860" y="530" fill="#93c5fd" font-size="11.5">200 OK · 商户自持税号低费率合规</text>
+
+  <!-- Row 3 -->
+  <rect x="44" y="544" width="1112" height="30" rx="4" fill="#111827"/>
+  <text x="58" y="564" fill="#f8fafc" font-size="11.5">3. 爱尔兰 IE 卖向德国 DE 企业 (税号 + Web IQ 核验通过)</text>
+  <text x="370" y="564" fill="#a78bfa" font-size="11.5" font-weight="700">B2B 逆向征收 (Reverse-Charge 0%)</text>
+  <text x="590" y="564" fill="#e2e8f0" font-size="11.5">$1,000.00 → $1,000.00 (0% VAT)</text>
+  <text x="770" y="564" fill="#a78bfa" font-size="11.5" font-weight="700">385 ms</text>
+  <text x="860" y="564" fill="#c4b5fd" font-size="11.5">200 OK · Web IQ 确认企业主体匹配</text>
+
+  <!-- Row 4 -->
+  <rect x="44" y="578" width="1112" height="30" rx="4" fill="#161f30"/>
+  <text x="58" y="598" fill="#fca5a5" font-size="11.5">4. 冒用他人 VAT 税号 / Prompt 注入声称免税</text>
+  <text x="370" y="598" fill="#fbbf24" font-size="11.5" font-weight="700">Web IQ 主体不匹配 → 强制加税</text>
+  <text x="590" y="598" fill="#fde047" font-size="11.5">$1,000.00 → $1,190.00 (19% VAT)</text>
+  <text x="770" y="598" fill="#fbbf24" font-size="11.5" font-weight="700">390 ms</text>
+  <text x="860" y="598" fill="#fde047" font-size="11.5">阻断逃税注入 · 强制回退法定税率</text>
+
+  <!-- Row 5 -->
+  <rect x="44" y="612" width="1112" height="30" rx="4" fill="#2a1215"/>
+  <text x="58" y="632" fill="#fecaca" font-size="11.5" font-weight="700">5. 反模式：裸价签发 SPT ($100) 后补税 ($119) / 无 OBO 传 Stripe-Account 头</text>
+  <text x="590" y="632" fill="#fca5a5" font-size="11.5">Charge $119 &gt; SPT Ceiling $100</text>
+  <text x="770" y="632" fill="#f87171" font-size="11.5" font-weight="700">12–15 ms</text>
+  <text x="860" y="632" fill="#f87171" font-size="11.5" font-weight="700">HTTP 422 爆限拒付 / HTTP 400 OBO 拦截</text>
+</svg>

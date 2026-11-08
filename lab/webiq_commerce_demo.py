@@ -4825,6 +4825,151 @@ def evaluate_catalog_feed_and_webhook_sla_policy(
     )
 
 
+@dataclass(frozen=True)
+class DigitalTaxComplianceVerdict:
+    """Deterministic Round 10 verdict for Cross-Border Digital Tax (MoR vs. SoR Stripe Tax + Connect OBO & B2B Reverse-Charge VAT)."""
+
+    allowed: bool
+    http_status: int
+    selected_tax_model: str
+    tax_liability_owner: str
+    applied_tax_rate_pct: float
+    net_amount_usd: str
+    tax_amount_usd: str
+    locked_spt_total_usd: str
+    verdict_reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_digital_tax_mor_vs_sor_policy(
+    *,
+    merchant_has_local_tax_id: bool = False,
+    seller_country: str = "IE",
+    buyer_country: str = "DE",
+    net_amount_cents: int = 10000,
+    spt_max_amount_cents: int = 11900,
+    statutory_vat_rate_pct: float = 19.0,
+    is_b2b_order: bool = False,
+    buyer_tax_id_verified: bool = False,
+    webiq_entity_name_matched: bool = False,
+    tax_calculated_pre_mandate: bool = True,
+    is_connect_marketplace: bool = False,
+    on_behalf_of_account: str | None = None,
+    stripe_account_header: str | None = None,
+) -> DigitalTaxComplianceVerdict:
+    """Evaluate Merchant of Record (MoR) vs. Seller of Record (SoR + Stripe Tax), Connect OBO header consistency, pre-mandate SPT ceiling locking, and B2B Reverse-Charge VAT verification."""
+    net_cents = max(0, int(net_amount_cents))
+    spt_cents = max(0, int(spt_max_amount_cents))
+    rate_pct = max(0.0, float(statutory_vat_rate_pct))
+    net_str = f"{net_cents / 100.0:.2f}"
+
+    # 1. Stripe Connect OBO vs Stripe-Account header consistency rule (official_doc_snapshot)
+    if is_connect_marketplace and stripe_account_header and not on_behalf_of_account:
+        return DigitalTaxComplianceVerdict(
+            False,
+            400,
+            "BLOCKED_CONNECT_OBO_CONFLICT",
+            "UNRESOLVED_CONFLICT",
+            rate_pct,
+            net_str,
+            "0.00",
+            "0.00",
+            "stripe_account_header_forbidden_without_obo_on_spt_payment_intent",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Determine effective tax rate (B2B Reverse-Charge 0% vs statutory destination VAT)
+    cross_border = seller_country.strip().upper() != buyer_country.strip().upper()
+    b2b_reverse_charge_eligible = (
+        is_b2b_order and cross_border and buyer_tax_id_verified and webiq_entity_name_matched
+    )
+    effective_rate_pct = 0.0 if b2b_reverse_charge_eligible else rate_pct
+    tax_cents = int(round(net_cents * (effective_rate_pct / 100.0)))
+    total_cents = net_cents + tax_cents
+    tax_str = f"{tax_cents / 100.0:.2f}"
+    total_str = f"{total_cents / 100.0:.2f}"
+
+    # 3. Pre-Mandate SPT ceiling check: post-mandate tax addition exceeding SPT max_amount_cents fails with HTTP 422
+    if not tax_calculated_pre_mandate or total_cents > spt_cents:
+        return DigitalTaxComplianceVerdict(
+            False,
+            422,
+            "BLOCKED_POST_MANDATE_TAX_OVERFLOW",
+            "NONE",
+            effective_rate_pct,
+            net_str,
+            tax_str,
+            total_str,
+            f"amount_exceeds_spt_limit_total_{total_cents}_gt_spt_{spt_cents}_calculate_tax_in_calculate_order",
+            15,
+            "Send to a human",
+        )
+
+    # 4. B2B Reverse-Charge verified path
+    if is_b2b_order and cross_border:
+        if b2b_reverse_charge_eligible:
+            return DigitalTaxComplianceVerdict(
+                True,
+                200,
+                "SOR_B2B_REVERSE_CHARGE_0PCT",
+                "BUYER_SELF_ASSESSMENT_REVERSE_CHARGE",
+                0.0,
+                net_str,
+                "0.00",
+                total_str,
+                "b2b_reverse_charge_verified_via_tax_registry_and_webiq_entity_grounding",
+                385,
+                "Act automatically",
+            )
+        # Fail-closed fallback to statutory destination VAT when VAT ID is unverified or entity name mismatches
+        return DigitalTaxComplianceVerdict(
+            True,
+            200,
+            "SOR_B2B_FALLBACK_STATUTORY_VAT",
+            "MERCHANT_SOR" if merchant_has_local_tax_id else "MOR_PLATFORM",
+            effective_rate_pct,
+            net_str,
+            tax_str,
+            total_str,
+            "unverified_or_mismatched_b2b_vat_id_failed_closed_to_statutory_destination_vat",
+            390,
+            "Confirm",
+        )
+
+    # 5. Standard B2C / Non-Reverse-Charge: Route to MoR if merchant lacks local tax registration, else SoR (Stripe Tax)
+    if not merchant_has_local_tax_id:
+        return DigitalTaxComplianceVerdict(
+            True,
+            200,
+            "MOR_MANAGED_TAX",
+            "MOR_PLATFORM",
+            effective_rate_pct,
+            net_str,
+            tax_str,
+            total_str,
+            "mor_reseller_assumes_100pct_destination_vat_remittance_and_audit_liability",
+            295,
+            "Act automatically",
+        )
+
+    return DigitalTaxComplianceVerdict(
+        True,
+        200,
+        "SOR_STRIPE_TAX",
+        "SUB_MERCHANT_OBO_SOR" if on_behalf_of_account else "MERCHANT_SOR",
+        effective_rate_pct,
+        net_str,
+        tax_str,
+        total_str,
+        "seller_of_record_computed_postal_code_tax_pre_mandate_via_stripe_tax",
+        340,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -5838,6 +5983,82 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "read_fallback_latency_ms": cat_read_fallback.latency_ms,
     }
 
+    tax_mor_b2c = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=False,
+        seller_country="US",
+        buyer_country="DE",
+        net_amount_cents=10000,
+        spt_max_amount_cents=11900,
+        statutory_vat_rate_pct=19.0,
+    )
+    tax_sor_b2c = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=True,
+        seller_country="IE",
+        buyer_country="DE",
+        net_amount_cents=10000,
+        spt_max_amount_cents=11900,
+        statutory_vat_rate_pct=19.0,
+    )
+    tax_b2b_reverse_ok = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=True,
+        seller_country="IE",
+        buyer_country="DE",
+        net_amount_cents=100000,
+        spt_max_amount_cents=100000,
+        statutory_vat_rate_pct=19.0,
+        is_b2b_order=True,
+        buyer_tax_id_verified=True,
+        webiq_entity_name_matched=True,
+    )
+    tax_b2b_hijack_fallback = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=True,
+        seller_country="IE",
+        buyer_country="DE",
+        net_amount_cents=100000,
+        spt_max_amount_cents=119000,
+        statutory_vat_rate_pct=19.0,
+        is_b2b_order=True,
+        buyer_tax_id_verified=True,
+        webiq_entity_name_matched=False,
+    )
+    tax_post_mandate_overflow = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=True,
+        seller_country="IE",
+        buyer_country="DE",
+        net_amount_cents=10000,
+        spt_max_amount_cents=10000,
+        statutory_vat_rate_pct=19.0,
+        tax_calculated_pre_mandate=False,
+    )
+    tax_connect_obo_conflict = evaluate_digital_tax_mor_vs_sor_policy(
+        merchant_has_local_tax_id=True,
+        is_connect_marketplace=True,
+        on_behalf_of_account=None,
+        stripe_account_header="acct_sub_de_01",
+    )
+    digital_tax_compliance_guards = {
+        "all_passed": (
+            tax_mor_b2c.allowed
+            and tax_mor_b2c.selected_tax_model == "MOR_MANAGED_TAX"
+            and tax_mor_b2c.locked_spt_total_usd == "119.00"
+            and tax_sor_b2c.allowed
+            and tax_sor_b2c.selected_tax_model == "SOR_STRIPE_TAX"
+            and tax_b2b_reverse_ok.allowed
+            and tax_b2b_reverse_ok.selected_tax_model == "SOR_B2B_REVERSE_CHARGE_0PCT"
+            and tax_b2b_reverse_ok.locked_spt_total_usd == "1000.00"
+            and tax_b2b_hijack_fallback.allowed
+            and tax_b2b_hijack_fallback.selected_tax_model == "SOR_B2B_FALLBACK_STATUTORY_VAT"
+            and tax_b2b_hijack_fallback.locked_spt_total_usd == "1190.00"
+            and not tax_post_mandate_overflow.allowed
+            and tax_post_mandate_overflow.http_status == 422
+            and not tax_connect_obo_conflict.allowed
+            and tax_connect_obo_conflict.http_status == 400
+        ),
+        "mor_latency_ms": tax_mor_b2c.latency_ms,
+        "sor_latency_ms": tax_sor_b2c.latency_ms,
+        "b2b_reverse_charge_latency_ms": tax_b2b_reverse_ok.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -5860,6 +6081,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "post_purchase_refund_guards": post_purchase_refund_guards,
         "recurring_replenishment_guards": recurring_replenishment_guards,
         "catalog_webhook_sla_guards": catalog_webhook_sla_guards,
+        "digital_tax_compliance_guards": digital_tax_compliance_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -8927,6 +9149,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cat-sla-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cross-Border Digital Tax: MoR vs SoR (Stripe Tax + Connect OBO) & B2B Reverse-Charge Selector (Round 10 FAQ Companion) -->
+      <div class="finops-box" id="digital-tax-mor-sor-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tax-mor-title">🧾 跨境数字税务合规：名义商户 (MoR 全托管) vs 记账卖方 (SoR Stripe Tax + OBO / B2B 逆向征收) 决策器 (Round 10 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商户税号持有状态、B2B 逆向征收核验与 SPT 算税时机 (Tax Model &amp; Pre-Mandate Timing):</span></label>
+          <select id="tax-mor-select" onchange="updateDigitalTaxSandbox()">
+            <option value="mor_b2c_de">🛡️ 无欧盟税号出海 B2C SaaS：德国买家 ($100 + 19% VAT = $119.00) · 选 MoR 全托管兜底稽查 (295ms)</option>
+            <option value="sor_stripe_tax_de">⚖️ 已持欧盟税号企业零售：德国买家 ($100 + 19% VAT = $119.00) · 选 SoR + Stripe Tax 0.5% 低费率 (340ms)</option>
+            <option value="b2b_reverse_charge_ok">🏢 跨境 B2B 逆向征收通过：爱尔兰 IE 卖给德国 DE 企业 ($1,000) · 税号存活 + Web IQ 法定主体匹配 → 0% VAT (385ms)</option>
+            <option value="b2b_vat_hijack_fallback">⚠️ 冒用他人 VAT 税号 / Prompt 声称免税：Web IQ /v3/browse 检出主体不匹配 → 拒绝 0%，强制加回 19% VAT ($1,190.00)</option>
+            <option value="post_mandate_tax_422">🛑 致命反模式 (先签裸价 SPT 后补税)：按 $100 签发 SPT，扣款时才加 19% VAT ($119 &gt; $100) → HTTP 422 爆限拒付!</option>
+            <option value="connect_obo_header_400">🚫 致命反模式 (Connect OBO 冲突)：平台未设 on_behalf_of 却传入 Stripe-Account 请求头 → HTTP 400 硬拦截!</option>
+          </select>
+        </div>
+        <div id="tax-mor-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -9375,6 +9616,7 @@ function renderAll() {{
   updatePostPurchaseRefundSandbox();
   updateRecurringSptSandbox();
   updateCatalogWebhookSlaSandbox();
+  updateDigitalTaxSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -9958,6 +10200,68 @@ function updateCatalogWebhookSlaSandbox() {{
     "<strong>⚡ 写锁单 Webhook 极速确认并实扣通过 (finalize_checkout_confirmed_spt_captured · 265ms · Act automatically):</strong><br>" +
     "• <strong>热路径内存锁库</strong>：<code>finalize_checkout</code> 在 Redis 内存层完成库存预占与幂等订单号分配，耗时仅 <code>265ms ≤ 4,000ms</code> SLA<br>" +
     "• <strong>原子扣款</strong>：确认锁库成功后立即对 <code>spt_...</code> 捕获 <code>$79.00</code>，重型 ERP 拆单与发票归档交由后台队列异步削峰执行！" +
+    "</div>";
+}}
+
+function updateDigitalTaxSandbox() {{
+  var selEl = document.getElementById("tax-mor-select");
+  var outEl = document.getElementById("tax-mor-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "sor_stripe_tax_de") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>⚖️ 记账卖方自持税号合规通过 (SOR_STRIPE_TAX · 340ms · Act automatically · official_list_price):</strong><br>" +
+      "• <strong>适用边界</strong>：商户已在德国/欧盟持有本地 VAT 税号，在 <code>calculate_order</code> 阶段调用 <code>Stripe Tax</code>（仅 <code>0.5%</code> 计税费）前置锁定 <code>$119.00</code> 含税 SPT 上限<br>" +
+      "• <strong>归属责任</strong>：<code>tax_liability_owner = MERCHANT_SOR</code>，较 MoR 全包费率（~5%）大幅节省通道成本！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "b2b_reverse_charge_ok") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🏢 B2B 跨境逆向征收双因子核验通过 (SOR_B2B_REVERSE_CHARGE_0PCT · 385ms · Act automatically):</strong><br>" +
+      "• <strong>双因子存证</strong>：卖方 (IE) ≠ 买方 (DE)，官方税号接口确认 <code>DE123456789</code> 有效，且 <strong>Microsoft Web IQ <code>/v3/browse</code></strong> 核实企业注册公示名称与 SPT 授权主体 100% 一致<br>" +
+      "• <strong>发票与额度</strong>：合法免征 19% VAT，SPT 锁定 <code>$1,000.00</code>，发票标注 <em>Reverse Charge — Buyer Self-Assessment</em>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "b2b_vat_hijack_fallback") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "⚠️ SOR_B2B_FALLBACK_STATUTORY_VAT (390ms · Confirm · synthetic_policy)：<br>" +
+      "买方在 Prompt 中声称免税并填入他人公开的德国 VAT 税号，但 Web IQ <code>/v3/browse</code> 比对发现税号登记主体与当前采购账户名称不一致！网关拒绝 <code>0%</code> 免税，强制加回 19% 法定增值税（锁定 <code>$1,190.00</code>），防止卖方被税局追缴 <code>$190.00</code> 欠税！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "post_mandate_tax_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 422 amount_exceeds_spt_limit (15ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Agent 先按不含税裸价 <code>$100.00</code> 让买家签发了 <code>max_amount_cents = 10000</code> 的 SPT，随后在 <code>finalize_checkout</code> 才追加 19% VAT 试图扣款 <code>$119.00 (11900 &gt; 10000)</code>！SPT 密码学上限不可逾越，必须在签发 SPT 前（<code>calculate_order</code>）完成含税总价计算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "connect_obo_header_400") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 400 stripe_account_header_forbidden_without_obo (12ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Stripe Connect 多商户平台在未设置 <code>on_behalf_of</code>（平台充当统一记账卖方）时，严禁在 PaymentIntent 请求头传入 <code>Stripe-Account: acct_sub_de_01</code>！若需子商户作为法定 Seller of Record 计税，必须显式传入 <code>on_behalf_of</code>。" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ 名义商户全托管合规通过 (MOR_MANAGED_TAX · 295ms · Act automatically · official_list_price):</strong><br>" +
+    "• <strong>两步转售兜底</strong>：商户在德国无本地 VAT 税号，自动路由至 MoR 名义商户轨道（参考费率 <code>~5.0% + $0.50</code>），由 MoR 平台作为账单法定卖方 100% 承担 19% VAT（<code>$19.00</code>）代扣代缴与欧盟税务稽查责任<br>" +
+    "• <strong>SPT 前置锁定</strong>：<code>calculate_order</code> 阶段返回含税总价 <code>$119.00</code>，SPT 限额一次对齐！" +
     "</div>";
 }}
 

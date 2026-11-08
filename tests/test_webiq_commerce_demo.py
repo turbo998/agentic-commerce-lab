@@ -1554,6 +1554,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/recurring-replenishment-spt-cadence-vs-vaulting-faq.en.md",
             "docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.md",
             "docs/catalog-feed-manifest-barrier-vs-webhook-4s-sla-faq.en.md",
+            "docs/digital-tax-vat-mor-vs-seller-of-record-faq.md",
+            "docs/digital-tax-vat-mor-vs-seller-of-record-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -1628,6 +1630,99 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["catalog_webhook_sla_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("catalog-webhook-sla-sandbox", demo_zh)
+
+    def test_digital_tax_mor_vs_sor_and_b2b_reverse_charge_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_digital_tax_mor_vs_sor_policy
+
+        # 1. Merchant without local EU tax ID -> routes to MOR_MANAGED_TAX ($119.00 locked)
+        mor = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=False,
+            seller_country="US",
+            buyer_country="DE",
+            net_amount_cents=10000,
+            spt_max_amount_cents=11900,
+            statutory_vat_rate_pct=19.0,
+        )
+        self.assertTrue(mor.allowed)
+        self.assertEqual(mor.http_status, 200)
+        self.assertEqual(mor.selected_tax_model, "MOR_MANAGED_TAX")
+        self.assertEqual(mor.tax_liability_owner, "MOR_PLATFORM")
+        self.assertEqual(mor.locked_spt_total_usd, "119.00")
+
+        # 2. Merchant with local EU tax ID -> routes to SOR_STRIPE_TAX ($119.00 locked)
+        sor = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=True,
+            seller_country="IE",
+            buyer_country="DE",
+            net_amount_cents=10000,
+            spt_max_amount_cents=11900,
+            statutory_vat_rate_pct=19.0,
+        )
+        self.assertTrue(sor.allowed)
+        self.assertEqual(sor.selected_tax_model, "SOR_STRIPE_TAX")
+        self.assertEqual(sor.tax_liability_owner, "MERCHANT_SOR")
+
+        # 3. Cross-border B2B with verified VAT ID + Web IQ entity name match -> 0% Reverse-Charge ($1,000.00)
+        b2b_ok = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=True,
+            seller_country="IE",
+            buyer_country="DE",
+            net_amount_cents=100000,
+            spt_max_amount_cents=100000,
+            statutory_vat_rate_pct=19.0,
+            is_b2b_order=True,
+            buyer_tax_id_verified=True,
+            webiq_entity_name_matched=True,
+        )
+        self.assertTrue(b2b_ok.allowed)
+        self.assertEqual(b2b_ok.selected_tax_model, "SOR_B2B_REVERSE_CHARGE_0PCT")
+        self.assertEqual(b2b_ok.applied_tax_rate_pct, 0.0)
+        self.assertEqual(b2b_ok.locked_spt_total_usd, "1000.00")
+
+        # 4. Hijacked VAT ID (Web IQ entity name mismatch) -> fails closed to 19% statutory VAT ($1,190.00)
+        b2b_hijack = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=True,
+            seller_country="IE",
+            buyer_country="DE",
+            net_amount_cents=100000,
+            spt_max_amount_cents=119000,
+            statutory_vat_rate_pct=19.0,
+            is_b2b_order=True,
+            buyer_tax_id_verified=True,
+            webiq_entity_name_matched=False,
+        )
+        self.assertTrue(b2b_hijack.allowed)
+        self.assertEqual(b2b_hijack.selected_tax_model, "SOR_B2B_FALLBACK_STATUTORY_VAT")
+        self.assertEqual(b2b_hijack.applied_tax_rate_pct, 19.0)
+        self.assertEqual(b2b_hijack.locked_spt_total_usd, "1190.00")
+
+        # 5. Post-mandate tax addition exceeding net-price SPT ceiling -> 422 blocked
+        post_tax = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=True,
+            seller_country="IE",
+            buyer_country="DE",
+            net_amount_cents=10000,
+            spt_max_amount_cents=10000,
+            statutory_vat_rate_pct=19.0,
+            tax_calculated_pre_mandate=False,
+        )
+        self.assertFalse(post_tax.allowed)
+        self.assertEqual(post_tax.http_status, 422)
+
+        # 6. Connect Stripe-Account header without on_behalf_of -> 400 blocked
+        obo_conflict = evaluate_digital_tax_mor_vs_sor_policy(
+            merchant_has_local_tax_id=True,
+            is_connect_marketplace=True,
+            on_behalf_of_account=None,
+            stripe_account_header="acct_sub_de_01",
+        )
+        self.assertFalse(obo_conflict.allowed)
+        self.assertEqual(obo_conflict.http_status, 400)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["digital_tax_compliance_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("digital-tax-mor-sor-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
