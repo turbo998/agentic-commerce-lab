@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg15" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent15" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 22.5px; font-weight: 800; fill: #F8FAFC; }
+      .subtitle { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 500; fill: #94A3B8; }
+      .badge { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; font-weight: 700; fill: #93C5FD; letter-spacing: 0.6px; }
+      .card-title { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 700; fill: #F1F5F9; }
+      .body-sm { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: #CBD5E1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #A7F3D0; }
+      .mono-warn { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #FDE68A; }
+      .mono-err { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #FECACA; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 21px; font-weight: 800; }
+      .footer { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 11px; fill: #64748B; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg15)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="5" fill="url(#accent15)" rx="2.5"/>
+
+  <!-- Header -->
+  <rect x="36" y="38" width="330" height="24" rx="12" fill="#1E3A8A" stroke="#3B82F6" stroke-width="1"/>
+  <text x="201" y="54" text-anchor="middle" class="badge">ROUND 13 · FRIENDLY FRAUD &amp; CE 3.0 REPRESENTMENT</text>
+  <text x="36" y="88" class="title">拒付抗辩与友好欺诈架构：密码学三元组证据包 (Visa CE 3.0 + MandateVC + Web IQ) vs 传统截图申诉</text>
+  <text x="36" y="110" class="subtitle">Cryptographic Agentic Evidence Bundle (Visa CE 3.0 + FIDO2 MandateVC + Web IQ terms_sha256) vs. Cloud-IP Trap &amp; Pre-Dispute Auto-Deflection</text>
+
+  <!-- Left Column: Why Legacy Cloud-IP Representment Fails vs 3-Tuple Bundle -->
+  <rect x="36" y="128" width="555" height="245" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="154" class="card-title">1. 为什么传统 IP 申诉必败？云端 Agent 机房 IP 陷阱 vs 穿透绑定</text>
+
+  <rect x="52" y="166" width="523" height="90" rx="8" fill="#450A0A" fill-opacity="0.45" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="66" y="185" class="mono-err">❌ 传统反模式：直接提交 HTTP 源 IP (云端 Agent 机房 IP) 导致 100% 败诉</text>
+  <text x="66" y="203" class="body-sm">• 买家声称 "AI 幻觉乱买 (10.4)"，传统脚本提取 X-Forwarded-For (20.150.x.x 云机房)</text>
+  <text x="66" y="220" class="body-sm">• 发卡行比对买家历史家庭 Wi-Fi / 手机 IP 完全不匹配 -&gt; Visa CE 3.0 校验直接失败</text>
+  <text x="66" y="238" class="mono-err">预检门禁: HTTP 422 cloud_egress_ip_cannot_satisfy_ce30 (严禁提交机房 IP!)</text>
+
+  <rect x="52" y="266" width="523" height="94" rx="8" fill="#064E3B" fill-opacity="0.35" stroke="#10B981" stroke-width="1.2"/>
+  <text x="66" y="285" class="mono" fill="#6EE7B7">✅ 破局方案：身份穿透绑定 + 密码学三元组证据包 (340 ms 自动组装)</text>
+  <text x="66" y="303" class="body-sm">• 证据 ① (防 10.4): 买家 FIDO2 MandateVC 签名 + 穿透绑定账号/设备指纹/地址 (匹配 2 笔历史单)</text>
+  <text x="66" y="320" class="body-sm">• 证据 ② (防篡改): Agent RFC 9421 / Visa TAP 请求签名 + spt_... 令牌授权审计流水</text>
+  <text x="66" y="338" class="mono" fill="#A7F3D0">• 证据 ③ (防 13.7): 结账瞬间 Web IQ /v3/browse 退改条款快照哈希 (terms_sha256)</text>
+
+  <!-- Right Column: Three Economic & Compliance Defense Lanes -->
+  <rect x="609" y="128" width="555" height="245" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="627" y="154" class="card-title">2. 三级争议分流引擎：Pre-Dispute 止损 · ECI 05 转移 · 自动抗辩</text>
+
+  <rect x="625" y="166" width="523" height="60" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="639" y="185" class="mono" fill="#6EE7B7">🟢 轨道 1: Pre-Dispute 小额自动退款止损 (&lt; $25.00 synthetic_policy · 190 ms)</text>
+  <text x="639" y="203" class="body-sm">• 正式拒付堂费高达 $15.00 (official_list_price)；对 $18 争议在 RDR 预警期主动退款</text>
+  <text x="639" y="218" class="mono" fill="#A7F3D0">立省 $15.00 不可退堂费 + 卡组拒付率增长 = 0 bps (守住 0.9% 红线)</text>
+
+  <rect x="625" y="232" width="523" height="60" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="639" y="251" class="mono" fill="#93C5FD">🛡️ 轨道 2: ECI 05 强认证发卡行欺诈责任转移 (高客单价 &gt;= $250 · 260 ms)</text>
+  <text x="639" y="269" class="body-sm">• 签发 SPT/VIC 时完成 3DS 2.2 / EMVCo Payment Passkey 生物识别认证</text>
+  <text x="639" y="284" class="mono" fill="#93C5FD">10.4 无卡欺诈损失依法自动转移至发卡行 (ISSUER_LIABILITY_SHIFT_AUTO_WIN)</text>
+
+  <rect x="625" y="298" width="523" height="62" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="639" y="317" class="mono-warn">⚖️ 轨道 3: CE 3.0 + Web IQ 快照哈希全自动抗辩 (&gt;= $25.00 · 340 ms)</text>
+  <text x="639" y="335" class="body-sm">• 10.4 附 120~365 天 &gt;=2 笔无争议单 + MandateVC；13.7 附 Web IQ terms_sha256</text>
+  <text x="639" y="350" class="mono-warn">缺失 Web IQ 结账条款哈希触发 HTTP 422 拦截 (拒绝无效事后截图)</text>
+
+  <!-- Bottom Full-Width Section: 3-Tuple Evidence Schema & 4 KPI Pills -->
+  <rect x="36" y="388" width="1128" height="225" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <text x="54" y="414" class="card-title">3. 结账瞬间固化的“密码学三元组证据包”结构与 6 场景实测指标</text>
+
+  <!-- 3 Evidence Pillars -->
+  <rect x="54" y="428" width="352" height="86" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="68" y="448" class="mono" fill="#93C5FD">Pillar A: 买家意图与 CE 3.0 历史锚点</text>
+  <text x="68" y="466" class="body-sm">• AP2 MandateVC (FIDO2 Passkey 硬件签名)</text>
+  <text x="68" y="483" class="body-sm">• 穿透绑定: account_id + device_id + address</text>
+  <text x="68" y="500" class="mono" fill="#A7F3D0">匹配 120~365d 内 &gt;=2 笔历史无争议订单</text>
+
+  <rect x="424" y="428" width="352" height="86" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1.2"/>
+  <text x="438" y="448" class="mono" fill="#6EE7B7">Pillar B: Agent 执行完整性与令牌审计</text>
+  <text x="438" y="466" class="body-sm">• RFC 9421 / Visa TAP Ed25519 消息签名</text>
+  <text x="438" y="483" class="body-sm">• Content-Digest 锁定购物车行项无篡改</text>
+  <text x="438" y="500" class="mono" fill="#A7F3D0">绑定 spt_... 授权限额与收单 PaymentIntent</text>
+
+  <rect x="794" y="428" width="352" height="86" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="808" y="448" class="mono-warn">Pillar C: Microsoft Web IQ 条款快照钢印</text>
+  <text x="808" y="466" class="body-sm">• POST /v3/browse (contentFormat="passage")</text>
+  <text x="808" y="483" class="body-sm">• 固化 crawledAt 时间戳 + terms_sha256</text>
+  <text x="808" y="500" class="mono-warn">专治 13.3 货不对板 / 13.7 退改违约金争议</text>
+
+  <!-- 4 Bottom KPI Pills -->
+  <rect x="54" y="528" width="262" height="68" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="68" y="553" class="kpi-num" fill="#34D399">$15.00 堂费立省</text>
+  <text x="68" y="573" class="body-sm">&lt; $25 Pre-Dispute 自动退款 (190 ms)</text>
+  <text x="68" y="588" class="mono" fill="#A7F3D0">0 bps 拒付率增长 · 守住 0.9% 红线</text>
+
+  <rect x="330" y="528" width="268" height="68" rx="8" fill="#0F172A" stroke="#3B82F6" stroke-width="1"/>
+  <text x="344" y="553" class="kpi-num" fill="#60A5FA">340 ms 自动抗辩</text>
+  <text x="344" y="573" class="body-sm">CE 3.0 + MandateVC + Web IQ 哈希</text>
+  <text x="344" y="588" class="mono" fill="#93C5FD">零人工截图 · 毫秒级响应 Webhook</text>
+
+  <rect x="612" y="528" width="268" height="68" rx="8" fill="#0F172A" stroke="#EF4444" stroke-width="1"/>
+  <text x="626" y="553" class="kpi-num" fill="#F87171">HTTP 422 云 IP 拦截</text>
+  <text x="626" y="573" class="body-sm">100% 阻断提交云端 Agent 机房 IP</text>
+  <text x="626" y="588" class="mono-err">强制替换为穿透绑定的买家真实锚点</text>
+
+  <rect x="894" y="528" width="252" height="68" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="908" y="553" class="kpi-num" fill="#FBBF24">ECI 05 责任转移</text>
+  <text x="908" y="573" class="body-sm">Passkey / 3DS 2.2 强认证 (260 ms)</text>
+  <text x="908" y="588" class="mono-warn">10.4 欺诈风险 100% 转交发卡行</text>
+
+  <!-- Footer -->
+  <text x="36" y="642" class="footer">Provenance: official_doc_snapshot (Visa CE 3.0 120-365d rules, 10.4/13.7 reason codes, ECI 05 shift, as_of 2026-11-08) + official_list_price ($15 fee) + synthetic_policy + deterministic_offline_simulation | Issuer Arbitration = not_measured</text>
+</svg>

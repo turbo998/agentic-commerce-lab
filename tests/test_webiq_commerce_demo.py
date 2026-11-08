@@ -1560,6 +1560,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md",
             "docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md",
             "docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.en.md",
+            "docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.md",
+            "docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -1881,6 +1883,72 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["pci_dss_spt_resolve_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pci-dss-spt-resolve-sandbox", demo_zh)
+
+    def test_chargeback_dispute_cryptographic_evidence_vs_manual_representment_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_chargeback_dispute_evidence_and_deflection
+
+        # 1. Pre-dispute small ticket ($18.00 < $25.00) -> auto-refund deflected, saves $15.00 fee, 0 bps ratio impact
+        deflect = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=1800,
+            pre_dispute_window=True,
+        )
+        self.assertTrue(deflect.allowed)
+        self.assertEqual(deflect.http_status, 200)
+        self.assertEqual(deflect.dispute_lane, "PRE_DISPUTE_AUTO_REFUND_DEFLECTED")
+        self.assertEqual(deflect.dispute_fee_saved_usd, "15.00")
+        self.assertEqual(deflect.chargeback_ratio_impact_bps, 0)
+
+        # 2. High-ticket 10.4 fraud with ECI 05 Passkey/3DS shift -> auto-win via issuer liability shift
+        eci05 = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=68000,
+            reason_code="10.4_fraud",
+            has_eci_05_liability_shift=True,
+        )
+        self.assertTrue(eci05.allowed)
+        self.assertEqual(eci05.dispute_lane, "ISSUER_LIABILITY_SHIFT_AUTO_WIN")
+
+        # 3. 10.4 friendly fraud with valid CE 3.0 (2 orders 180d old) + signed MandateVC + cloud IP stripped -> 200 OK
+        ce30_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=42000,
+            reason_code="10.4_fraud",
+            has_eci_05_liability_shift=False,
+            ce30_prior_undisputed_count=2,
+            ce30_history_age_days=180,
+            submitted_ip_is_cloud_agent_egress=False,
+        )
+        self.assertTrue(ce30_ok.allowed)
+        self.assertEqual(ce30_ok.dispute_lane, "SUBMITTED_CE30_MANDATE_BUNDLE")
+
+        # 4. 13.7 cancellation/terms dispute with checkout-time Web IQ terms_sha256 -> 200 OK
+        terms_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=24000,
+            reason_code="13.7_terms_dispute",
+        )
+        self.assertTrue(terms_ok.allowed)
+        self.assertEqual(terms_ok.dispute_lane, "SUBMITTED_WEBIQ_TERMS_SNAPSHOT_BUNDLE")
+
+        # 5. Submitting cloud AI Agent egress IP as buyer IP -> 422 blocked
+        cloud_ip = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=42000,
+            reason_code="10.4_fraud",
+            submitted_ip_is_cloud_agent_egress=True,
+        )
+        self.assertFalse(cloud_ip.allowed)
+        self.assertEqual(cloud_ip.http_status, 422)
+
+        # 6. 13.7 dispute missing checkout-time Web IQ terms_sha256 -> 422 blocked
+        no_hash = evaluate_chargeback_dispute_evidence_and_deflection(
+            dispute_amount_cents=24000,
+            reason_code="13.7_terms_dispute",
+            webiq_terms_snapshot_sha256=None,
+        )
+        self.assertFalse(no_hash.allowed)
+        self.assertEqual(no_hash.http_status, 422)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["chargeback_dispute_evidence_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("chargeback-dispute-evidence-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy

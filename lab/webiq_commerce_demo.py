@@ -5242,6 +5242,123 @@ def evaluate_pci_dss_spt_resolve_vs_payment_intent_policy(
     )
 
 
+@dataclass(frozen=True)
+class ChargebackDisputeEvidenceVerdict:
+    """Round 13 verdict for Friendly Fraud & Chargeback Representment: Cryptographic 3-Tuple Bundle vs Pre-Dispute Deflection."""
+
+    allowed: bool
+    http_status: int
+    dispute_lane: str
+    dispute_fee_saved_usd: str
+    chargeback_ratio_impact_bps: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_chargeback_dispute_evidence_and_deflection(
+    *,
+    dispute_amount_cents: int = 42000,
+    economic_deflection_threshold_cents: int = 2500,
+    pre_dispute_window: bool = False,
+    reason_code: str = "10.4_fraud",
+    has_eci_05_liability_shift: bool = False,
+    submitted_ip_is_cloud_agent_egress: bool = False,
+    mandate_vc_signed: bool = True,
+    ce30_prior_undisputed_count: int = 2,
+    ce30_history_age_days: int = 180,
+    webiq_terms_snapshot_sha256: str | None = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+) -> ChargebackDisputeEvidenceVerdict:
+    """Evaluate Agentic Commerce dispute response: Pre-Dispute small-ticket auto-deflection, ECI 05 liability shift, or 3-tuple cryptographic representment."""
+
+    # 1. Pre-Dispute small-ticket economic auto-deflection (< $25.00 synthetic_policy saves $15.00 official_list_price dispute fee)
+    if pre_dispute_window and dispute_amount_cents < economic_deflection_threshold_cents:
+        return ChargebackDisputeEvidenceVerdict(
+            True,
+            200,
+            "PRE_DISPUTE_AUTO_REFUND_DEFLECTED",
+            "15.00",
+            0,
+            "small_ticket_pre_dispute_auto_refunded_saving_15_usd_fee_and_0_bps_ratio_impact",
+            190,
+            "Act automatically",
+        )
+
+    # 2. ECI 05 3DS 2.2 / EMVCo Payment Passkey Liability Shift on 10.4 Fraud
+    if reason_code == "10.4_fraud" and has_eci_05_liability_shift:
+        return ChargebackDisputeEvidenceVerdict(
+            True,
+            200,
+            "ISSUER_LIABILITY_SHIFT_AUTO_WIN",
+            "0.00",
+            0,
+            "eci_05_passkey_3ds_cryptogram_shifts_10_4_fraud_liability_to_issuer",
+            260,
+            "Act automatically",
+        )
+
+    # 3. Pre-flight check: Never submit cloud AI Agent egress IP as buyer device IP or omit signed MandateVC
+    if submitted_ip_is_cloud_agent_egress or not mandate_vc_signed:
+        return ChargebackDisputeEvidenceVerdict(
+            False,
+            422,
+            "BLOCKED_CLOUD_EGRESS_IP_OR_MISSING_MANDATE",
+            "0.00",
+            0,
+            "cloud_egress_ip_cannot_satisfy_ce30_must_bind_passthrough_buyer_identity_and_mandate_vc",
+            35,
+            "Confirm",
+        )
+
+    # 4. Reason Code 10.4 Friendly Fraud -> Validate Visa CE 3.0 (>= 2 prior undisputed orders aged 120..365 days)
+    if reason_code == "10.4_fraud":
+        if ce30_prior_undisputed_count < 2 or not (120 <= ce30_history_age_days <= 365):
+            return ChargebackDisputeEvidenceVerdict(
+                False,
+                422,
+                "BLOCKED_INSUFFICIENT_CE30_HISTORY_WINDOW",
+                "0.00",
+                0,
+                "visa_ce30_requires_at_least_2_undisputed_transactions_aged_120_to_365_days",
+                38,
+                "Confirm",
+            )
+        return ChargebackDisputeEvidenceVerdict(
+            True,
+            200,
+            "SUBMITTED_CE30_MANDATE_BUNDLE",
+            "0.00",
+            0,
+            "assembled_3_tuple_ce30_fido2_mandate_vc_and_tap_evidence_bundle",
+            340,
+            "Act automatically",
+        )
+
+    # 5. Reason Code 13.1 / 13.3 / 13.7 Fulfillment & Terms Dispute -> Require checkout-time Web IQ terms_sha256 snapshot
+    if not webiq_terms_snapshot_sha256 or not webiq_terms_snapshot_sha256.strip():
+        return ChargebackDisputeEvidenceVerdict(
+            False,
+            422,
+            "BLOCKED_MISSING_WEBIQ_TERMS_SNAPSHOT",
+            "0.00",
+            0,
+            "missing_webiq_terms_snapshot_for_13_7_dispute_post_facto_screenshot_insufficient",
+            32,
+            "Confirm",
+        )
+
+    return ChargebackDisputeEvidenceVerdict(
+        True,
+        200,
+        "SUBMITTED_WEBIQ_TERMS_SNAPSHOT_BUNDLE",
+        "0.00",
+        0,
+        "assembled_webiq_crawled_terms_sha256_mandate_vc_and_delivery_proof_bundle",
+        340,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -6453,6 +6570,57 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pre_resolve_failover_latency_ms": pci_pre_resolve_failover.latency_ms,
     }
 
+    cb_deflect_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=1800,
+        pre_dispute_window=True,
+    )
+    cb_eci05_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=68000,
+        reason_code="10.4_fraud",
+        has_eci_05_liability_shift=True,
+    )
+    cb_ce30_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=42000,
+        reason_code="10.4_fraud",
+        has_eci_05_liability_shift=False,
+        ce30_prior_undisputed_count=2,
+        ce30_history_age_days=180,
+    )
+    cb_webiq_terms_ok = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=24000,
+        reason_code="13.7_terms_dispute",
+    )
+    cb_cloud_ip_422 = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=42000,
+        reason_code="10.4_fraud",
+        submitted_ip_is_cloud_agent_egress=True,
+    )
+    cb_no_webiq_hash_422 = evaluate_chargeback_dispute_evidence_and_deflection(
+        dispute_amount_cents=24000,
+        reason_code="13.7_terms_dispute",
+        webiq_terms_snapshot_sha256=None,
+    )
+    chargeback_dispute_evidence_guards = {
+        "all_passed": (
+            cb_deflect_ok.allowed
+            and cb_deflect_ok.dispute_lane == "PRE_DISPUTE_AUTO_REFUND_DEFLECTED"
+            and cb_deflect_ok.dispute_fee_saved_usd == "15.00"
+            and cb_eci05_ok.allowed
+            and cb_eci05_ok.dispute_lane == "ISSUER_LIABILITY_SHIFT_AUTO_WIN"
+            and cb_ce30_ok.allowed
+            and cb_ce30_ok.dispute_lane == "SUBMITTED_CE30_MANDATE_BUNDLE"
+            and cb_webiq_terms_ok.allowed
+            and cb_webiq_terms_ok.dispute_lane == "SUBMITTED_WEBIQ_TERMS_SNAPSHOT_BUNDLE"
+            and not cb_cloud_ip_422.allowed
+            and cb_cloud_ip_422.http_status == 422
+            and not cb_no_webiq_hash_422.allowed
+            and cb_no_webiq_hash_422.http_status == 422
+        ),
+        "pre_dispute_deflect_latency_ms": cb_deflect_ok.latency_ms,
+        "ce30_bundle_latency_ms": cb_ce30_ok.latency_ms,
+        "webiq_terms_bundle_latency_ms": cb_webiq_terms_ok.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -6478,6 +6646,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "digital_tax_compliance_guards": digital_tax_compliance_guards,
         "service_booking_180d_guards": service_booking_180d_guards,
         "pci_dss_spt_resolve_guards": pci_dss_spt_resolve_guards,
+        "chargeback_dispute_evidence_guards": chargeback_dispute_evidence_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -9602,6 +9771,25 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pci-resolve-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Friendly Fraud & Chargeback Representment Selector (Round 13 FAQ Companion) -->
+      <div class="finops-box" id="chargeback-dispute-evidence-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cb-dispute-title">⚖️ 拒付抗辩与友好欺诈架构：密码学三元组证据包 (Visa CE 3.0 + MandateVC + Web IQ 条款哈希) vs Pre-Dispute 小额止损决策器 (Round 13 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 拒付原因码、金额层级与证据链状态 (Dispute Reason, Ticket Size &amp; Evidence Posture):</span></label>
+          <select id="cb-dispute-select" onchange="updateChargebackDisputeSandbox()">
+            <option value="ce30_mandate_bundle_420">⚖️ $420.00 遇 10.4 友好欺诈 ("AI 幻觉乱买")：剥离云机房 IP + 提交 MandateVC 签名 &amp; 2 笔 120~365d 历史单 (CE 3.0, 340ms)</option>
+            <option value="webiq_terms_bundle_240">📜 $240.00 遇 13.7 退订违约金争议：自动提交结账瞬间 Web IQ /v3/browse 条款快照哈希 (terms_sha256) + MandateVC 签名 (340ms)</option>
+            <option value="pre_dispute_deflect_18">🟢 $18.00 小额订单处于 Pre-Dispute (RDR) 预警窗口 (&lt; $25 阈值)：自动退款化解 → 立省 $15.00 拒付堂费 + 0 bps 拒付率增长 (190ms)</option>
+            <option value="eci05_liability_shift_680">🛡️ $680.00 高价值订单签发 SPT/VIC 时含 ECI 05 Passkey/3DS 强认证：10.4 欺诈责任依法自动转移至发卡行 (260ms)</option>
+            <option value="cloud_ip_trap_422">🛑 传统脚本误将云端 Agent 机房 IP (20.150.x.x) 当作买家 IP 提交 10.4 抗辩：触发 HTTP 422 拦截必败申诉!</option>
+            <option value="missing_webiq_hash_422">🚫 13.7 条款争议仅附事后网页截图 (缺失结账瞬间 Web IQ terms_sha256 哈希)：触发 HTTP 422 拦截转人工复核!</option>
+          </select>
+        </div>
+        <div id="cb-dispute-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -10053,6 +10241,7 @@ function renderAll() {{
   updateDigitalTaxSandbox();
   updateServiceBooking180dSandbox();
   updatePciDssSptResolveSandbox();
+  updateChargebackDisputeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10820,6 +11009,65 @@ function updatePciDssSptResolveSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>✅ 标准 PaymentIntent 免明文消费成功 (CONSUMED_STRIPE_PI · 320ms · Act automatically · official_doc_snapshot):</strong><br>" +
     "• <strong>保持最轻量 PCI SAQ-A</strong>：直接调用 <code>POST /v1/payment_intents (shared_payment_granted_token=spt_...)</code>，底层 PAN 与动态密文 100% 留存 Stripe PCI 金库（商户内存暴露 <code>0 bytes</code>）！" +
+    "</div>";
+}}
+
+function updateChargebackDisputeSandbox() {{
+  var selEl = document.getElementById("cb-dispute-select");
+  var outEl = document.getElementById("cb-dispute-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "webiq_terms_bundle_240") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>📜 Web IQ 结账条款哈希证据包自动提交 (SUBMITTED_WEBIQ_TERMS_SNAPSHOT_BUNDLE · 340ms · Act automatically):</strong><br>" +
+      "• <strong>铁证粉碎 13.7 条款扯皮</strong>：导出结账锁单瞬间由 Microsoft Web IQ <code>/v3/browse</code> 固化的退改政策原文与 <code>terms_sha256</code>（已包含在买家签署的 <code>MandateVC</code> 内），证明下单当刻违约金条款完全透明！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pre_dispute_deflect_18") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🟢 Pre-Dispute 小额预警自动退款止损 (PRE_DISPUTE_AUTO_REFUND_DEFLECTED · 190ms · Act automatically · synthetic_policy):</strong><br>" +
+      "• <strong>FinOps 算清账本</strong>：争议金额 <code>$18.00 &lt; $25.00</code> 经济抗辩线，在升级为正式 Chargeback 前主动退款，立省 <code>$15.00 (official_list_price)</code> 不可退拒付堂费，且卡组拒付率增长为 <code>0 bps</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "eci05_liability_shift_680") {{
+    outEl.innerHTML =
+      "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+      "<strong>🛡️ ECI 05 强认证发卡行欺诈责任转移 (ISSUER_LIABILITY_SHIFT_AUTO_WIN · 260ms · Act automatically · official_doc_snapshot):</strong><br>" +
+      "• <strong>事前免疫</strong>：该笔 <code>$680.00</code> 订单在签发 <code>SPT / VIC</code> 时已完成 FIDO2 Passkey / 3DS 2.2 生物识别强认证（<code>ECI 05</code>），<code>10.4</code> 欺诈损失责任依法自动转移至发卡行！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cloud_ip_trap_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 422 cloud_egress_ip_cannot_satisfy_ce30 (35ms · Confirm · synthetic_policy)：<br>" +
+      "检测到待提交的 <code>10.4</code> 抗辩证据包把云端 AI Agent 容器机房 IP（<code>20.150.x.x</code>）当作买家 IP！若直接交由发卡行比对必因与买家家庭 IP 不符而 100% 败诉，已自动拦截并提示切换为穿透绑定的买家账号、Passkey 设备 ID 与收货地址。" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "missing_webiq_hash_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚫 HTTP 422 missing_webiq_terms_snapshot_for_13_7_dispute (32ms · Confirm · synthetic_policy)：<br>" +
+      "针对 <code>13.7</code> 退改违约金争议，仅凭事后人工截取的当前网页图片缺乏交易时刻哈希证明力！网关已拦截残缺申诉，要求补充结账瞬间的 Web IQ <code>terms_sha256</code> 存证。" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚖️ Visa CE 3.0 + MandateVC 密码学三元组抗辩提交成功 (SUBMITTED_CE30_MANDATE_BUNDLE · 340ms · Act automatically):</strong><br>" +
+    "• <strong>粉碎“AI 幻觉乱买”借口</strong>：自动剥离云端 Agent 机房 IP，打包买家 FIDO2 <code>MandateVC</code> 硬件签名 + 穿透匹配 <code>120~365 天内 2 笔无争议历史单</code>（账号 + 设备 ID + 收货地址）+ <code>RFC 9421 / TAP</code> 签名！" +
     "</div>";
 }}
 

@@ -44,6 +44,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 10 (Cross-Border Digital Tax: MoR vs. SoR `Stripe Tax` + B2B Reverse-Charge)**: **[Cross-Border Digital Goods & AI Agent Tax Compliance Architecture: Merchant of Record (MoR) vs. Seller of Record (Stripe Tax + Connect OBO / B2B Reverse-Charge VAT) Selection FAQ](docs/digital-tax-vat-mor-vs-seller-of-record-faq.en.md)**
 - **Topic 11 (Service Booking 180-Day SPT Horizon vs. `HTTP 409` Slot-Conflict & Cancellation Grounding)**: **[Service Booking & Long-Horizon Travel Agent Architecture: 180-Day Deferred SPT Mandate Horizon (`expires_at <= 180d`) vs. `HTTP 409` Slot-Conflict Recovery & Tiered Cancellation Grounding Selection FAQ](docs/service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md)**
 - **Topic 12 (PCI-DSS Scope Isolation & Multi-PSP Routing: `PaymentIntent` `SAQ-A` vs. External PSP SPT `Resolve` `PCI AoC`)**: **[PCI-DSS Scope Isolation & Multi-PSP Routing Architecture: Standard `PaymentIntent` SPT Consumption (`SAQ-A`) vs. External PSP SPT `Resolve` API (`PCI AoC` + RSA `encryption_block` Byte-Slice Wrapping & Mutual-Exclusivity Lock) Selection FAQ](docs/pci-dss-spt-resolve-aoc-vs-payment-intent-faq.en.md)**
+- **Topic 13 (Friendly Fraud & Chargeback Representment: Cryptographic 3-Tuple Evidence Bundle vs. Pre-Dispute Deflection)**: **[Friendly Fraud & Chargeback Representment Architecture (`10.4` Card-Absent Fraud vs. `13.7` Terms Dispute): Cryptographic Agentic Evidence Bundle (Visa CE 3.0 + FIDO2 `MandateVC` + Web IQ Policy Snapshot Hash) vs. Legacy Screenshot Representment Selection FAQ](docs/chargeback-dispute-cryptographic-evidence-vs-manual-representment-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -68,6 +69,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Service Booking & Long-Horizon Travel Agent Architecture: 180-Day Deferred SPT vs HTTP 409 Slot-Conflict Recovery Visual Summary](assets/svg/13-service-booking-180d-spt-409-slot-2026-11-08.svg)
 
 ![2026-11-08 PCI-DSS Scope Isolation & Multi-PSP Routing: PaymentIntent SAQ-A vs External PSP SPT Resolve Visual Summary](assets/svg/14-pci-dss-spt-resolve-aoc-vs-pi-2026-11-08.svg)
+
+![2026-11-08 Friendly Fraud & Chargeback Representment Architecture: Cryptographic 3-Tuple Bundle vs Pre-Dispute Auto-Deflection Visual Summary](assets/svg/15-chargeback-dispute-cryptographic-evidence-2026-11-08.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
