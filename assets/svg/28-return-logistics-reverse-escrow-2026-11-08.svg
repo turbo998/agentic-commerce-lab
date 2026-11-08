@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 780" width="1280" height="780" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg28" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070B14"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent28" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardRed28" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A1215"/>
+      <stop offset="100%" stop-color="#1A0B0E"/>
+    </linearGradient>
+    <linearGradient id="cardGreen28" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#09261E"/>
+      <stop offset="100%" stop-color="#061813"/>
+    </linearGradient>
+    <linearGradient id="cardBlue28" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0E223D"/>
+      <stop offset="100%" stop-color="#091526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="780" fill="url(#bg28)"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accent28)"/>
+
+  <!-- Header -->
+  <g transform="translate(40, 26)">
+    <rect x="0" y="0" width="450" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+    <text x="16" y="19" fill="#FDE68A" font-size="12" font-weight="700" letter-spacing="0.5">ROUND 26 · REVERSE LOGISTICS, CARRIER WEIGHT &amp; SERIAL RMA ESCROW FAQ</text>
+    <text x="466" y="19" fill="#94A3B8" font-size="12">Provenance: deterministic_offline_simulation · official_doc_snapshot · synthetic_policy (as of 2026-11-08)</text>
+
+    <text x="0" y="62" fill="#F8FAFC" font-size="24" font-weight="800">AI Agent 逆向物流与 RMA 防调包欺诈架构：揽收称重 + 序列号双阶释放 vs 凭单号秒退空包套现</text>
+    <text x="0" y="88" fill="#CBD5E1" font-size="14">Two-Tranche RMA Reverse Escrow (rma_return_escrow_... + Carrier Scale Weight &amp; WMS Serial Match) vs. Refund-on-Label &amp; Empty-Box Abuse</text>
+  </g>
+
+  <!-- Left Card: Legacy Refund-on-Label & Empty-Box / Switcheroo Fraud -->
+  <g transform="translate(40, 132)">
+    <rect x="0" y="0" width="580" height="275" rx="14" fill="url(#cardRed28)" stroke="#EF4444" stroke-width="1.5"/>
+    <rect x="18" y="16" width="320" height="24" rx="6" fill="#7F1D1D"/>
+    <text x="28" y="33" fill="#FECACA" font-size="12" font-weight="700">❌ 传统凭单号/无称重秒退漏洞 (空包套现 + 旧件调包 + 暗扣折旧费)</text>
+
+    <rect x="20" y="54" width="540" height="64" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="76" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 1：仅生成退货电子面单未交件即骗取秒退 (HTTP 403 · 13ms 硬阻断)</text>
+    <text x="34" y="96" fill="#E2E8F0" font-size="12">黑产 Agent 申请退货生成 UPS 单号瞬间触发原路退款，拿到 $1,200 后根本不去寄件</text>
+    <text x="34" y="112" fill="#F87171" font-size="11" font-weight="700">→ 零物理交件成本直接“白嫖商品 + 全额货款”双套现!</text>
+
+    <rect x="20" y="128" width="540" height="64" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="150" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 2：寄 45g 空信封 (FTID) 或等重报废旧机调包 (HTTP 422 · 15ms / 19ms 阻断)</text>
+    <text x="34" y="170" fill="#E2E8F0" font-size="12">寄空塑料袋骗过无称重揽收扫描；或塞入 1,840g 报废同款旧机 (sn_broken_999) 顶替全新机</text>
+    <text x="34" y="186" fill="#F87171" font-size="11" font-weight="700">→ 仓库 3 天后拆出空袋或废铁时资金早已提现，且废品混入正品仓二次发货害人!</text>
+
+    <rect x="20" y="202" width="540" height="56" rx="8" fill="#140A0C" stroke="#7F1D1D"/>
+    <text x="34" y="224" fill="#FCA5A5" font-size="13" font-weight="700">漏洞 3：买家 Agent 盲目退货被暗扣 15% ($180) 拆封折旧费 (Restocking Fee)</text>
+    <text x="34" y="244" fill="#E2E8F0" font-size="12">$1,200 相机拆封退现金被硬扣 $180 仅退 $1,020，而免费换货/储值条款藏在折叠页未感知!</text>
+  </g>
+
+  <!-- Right Card: Two-Tranche RMA Reverse Escrow + Weight & SN Attestation -->
+  <g transform="translate(660, 132)">
+    <rect x="0" y="0" width="580" height="275" rx="14" fill="url(#cardGreen28)" stroke="#10B981" stroke-width="1.5"/>
+    <rect x="18" y="16" width="380" height="24" rx="6" fill="#065F46"/>
+    <text x="28" y="33" fill="#A7F3D0" font-size="12" font-weight="700">✅ 双阶段 RMA 逆向托管 + 承运商称重容差 + WMS 序列号核验</text>
+
+    <rect x="20" y="54" width="540" height="64" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="76" fill="#6EE7B7" font-size="13" font-weight="700">1. 第一关：承运商网点电子秤签名 + ±12% 毛重容差锁 (15ms 拦截空包)</text>
+    <text x="34" y="96" fill="#E2E8F0" font-size="12">强制核验 carrier_drop_sig_live 与 inducted_weight_grams (1,835g vs 出库 1,850g)</text>
+    <text x="34" y="112" fill="#34D399" font-size="11" font-weight="700">→ 未揽收 13ms 返 HTTP 403；45g 空信封 (-97.6% 偏差) 15ms 返 HTTP 422 冻结!</text>
+
+    <rect x="20" y="128" width="540" height="64" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="150" fill="#6EE7B7" font-size="13" font-weight="700">2. 第二关：WMS 退货仓开箱硬件序列号哈希比对 (19ms 拦截买新退旧调包)</text>
+    <text x="34" y="170" fill="#E2E8F0" font-size="12">校验开箱扫码 returned_sn_sha256 == outbound_sn_sha256 ("sn_mac_881")</text>
+    <text x="34" y="186" fill="#34D399" font-size="11" font-weight="700">→ 检出 "sn_broken_999" 调包 19ms 返 HTTP 422 拒付并封存开箱视频 SHA-256!</text>
+
+    <rect x="20" y="202" width="540" height="56" rx="8" fill="#04130E" stroke="#065F46"/>
+    <text x="34" y="224" fill="#6EE7B7" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 拆封折旧费提前接地 (315ms HTTP 409 Confirm)</text>
+    <text x="34" y="244" fill="#E2E8F0" font-size="12">检出 15% ($180) Restocking Fee &gt; 5% 红线 → 弹窗对比净退 $1,020 vs 免扣费 $1,200 换货!</text>
+  </g>
+
+  <!-- Middle Flow Bar -->
+  <g transform="translate(40, 424)">
+    <rect x="0" y="0" width="1200" height="128" rx="14" fill="url(#cardBlue28)" stroke="#38BDF8" stroke-width="1.2"/>
+    <text x="24" y="28" fill="#7DD3FC" font-size="14" font-weight="800">🧭 逆向物流 RMA 双阶段验真与折旧费接地五步流水线 (Two-Tranche RMA Reverse Escrow &amp; Verification Pipeline)</text>
+
+    <g transform="translate(24, 42)">
+      <rect x="0" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+      <text x="12" y="22" fill="#FDE68A" font-size="12" font-weight="700">① Web IQ 折旧费预检</text>
+      <text x="12" y="42" fill="#CBD5E1" font-size="11">检出 15% ($180) 拆封费</text>
+      <text x="12" y="58" fill="#FBBF24" font-size="10">315ms HTTP 409 Confirm</text>
+
+      <text x="224" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="242" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#EF4444"/>
+      <text x="254" y="22" fill="#FCA5A5" font-size="12" font-weight="700">② 物理揽收签名门禁</text>
+      <text x="254" y="42" fill="#CBD5E1" font-size="11">拒绝仅凭电子面单号秒退</text>
+      <text x="254" y="58" fill="#F87171" font-size="10">未揽收 13ms 返 HTTP 403</text>
+
+      <text x="466" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="484" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+      <text x="496" y="22" fill="#7DD3FC" font-size="12" font-weight="700">③ 网点电子秤 ±12% 核验</text>
+      <text x="496" y="42" fill="#CBD5E1" font-size="11">1,835g vs 出库 1,850g</text>
+      <text x="496" y="58" fill="#38BDF8" font-size="10">45g 空包 15ms 返 HTTP 422</text>
+
+      <text x="708" y="38" fill="#38BDF8" font-size="18" font-weight="800">→</text>
+
+      <rect x="726" y="0" width="216" height="68" rx="8" fill="#0F172A" stroke="#A855F7"/>
+      <text x="738" y="22" fill="#D8B4FE" font-size="12" font-weight="700">④ WMS 开箱序列号比对</text>
+      <text x="738" y="42" fill="#CBD5E1" font-size="11">returned_sn == sn_mac_881</text>
+      <text x="738" y="58" fill="#C084FC" font-size="10">旧件调包 19ms 返 HTTP 422</text>
+
+      <text x="950" y="38" fill="#10B981" font-size="18" font-weight="800">→</text>
+
+      <rect x="968" y="0" width="188" height="68" rx="8" fill="#042F2E" stroke="#10B981"/>
+      <text x="980" y="22" fill="#A7F3D0" font-size="12" font-weight="700">⑤ 退款原子释放 (275ms)</text>
+      <text x="980" y="42" fill="#E2E8F0" font-size="11">原路退回 $1,200.00</text>
+      <text x="980" y="58" fill="#34D399" font-size="10">HTTP 200 正品回库</text>
+    </g>
+  </g>
+
+  <!-- Bottom Benchmark Table -->
+  <g transform="translate(40, 568)">
+    <rect x="0" y="0" width="1200" height="178" rx="14" fill="#0B1120" stroke="#334155" stroke-width="1"/>
+    <text x="24" y="28" fill="#F8FAFC" font-size="14" font-weight="800">📊 架构师定量评测对比矩阵 (Deterministic Simulation &amp; Web IQ Restocking Policy Benchmark · as of 2026-11-08)</text>
+
+    <line x1="20" y1="40" x2="1180" y2="40" stroke="#334155"/>
+    <text x="28" y="58" fill="#94A3B8" font-size="12" font-weight="700">评测场景 (Scenario)</text>
+    <text x="380" y="58" fill="#94A3B8" font-size="12" font-weight="700">传统凭单号/无称重秒退基线</text>
+    <text x="690" y="58" fill="#94A3B8" font-size="12" font-weight="700">双阶段 RMA 逆向托管 + 称重/SN + Web IQ 网关</text>
+    <text x="1040" y="58" fill="#94A3B8" font-size="12" font-weight="700">实测延迟 / 证据标签</text>
+
+    <line x1="20" y1="68" x2="1180" y2="68" stroke="#1E293B"/>
+    <text x="28" y="88" fill="#E2E8F0" font-size="12">1. 仅生成退货电子面单未交件扫描请求秒退 ($1,200)</text>
+    <text x="380" y="88" fill="#F87171" font-size="12">❌ 秒退 $1,200.00，黑产不寄件白嫖</text>
+    <text x="690" y="88" fill="#34D399" font-size="12" font-weight="700">🛑 HTTP 403 UNSCANNED_RETURN_LABEL_BLOCKED</text>
+    <text x="1040" y="88" fill="#CBD5E1" font-size="12">13 ms (synthetic)</text>
+
+    <text x="28" y="112" fill="#E2E8F0" font-size="12">2. 寄回 45g 空信封顶替 1,850g 笔记本电脑 (-97.6%)</text>
+    <text x="380" y="112" fill="#F87171" font-size="12">❌ 见 In-Transit 状态即退钱，收空袋</text>
+    <text x="690" y="112" fill="#34D399" font-size="12" font-weight="700">🛑 HTTP 422 RETURN_WEIGHT_MISMATCH_BLOCKED</text>
+    <text x="1040" y="112" fill="#CBD5E1" font-size="12">15 ms (simulation)</text>
+
+    <text x="28" y="136" fill="#E2E8F0" font-size="12">3. 寄回等重报废旧机 (sn_broken_999) + Web IQ 折旧费预检</text>
+    <text x="380" y="136" fill="#F87171" font-size="12">❌ 调包骗退 $1,200 / 买家暗亏 $180</text>
+    <text x="690" y="136" fill="#FBBF24" font-size="12" font-weight="700">🛑 19ms HTTP 422 调包拦截 / 🧑‍⚖️ 315ms 409 折旧预警</text>
+    <text x="1040" y="136" fill="#CBD5E1" font-size="12">19ms / 315ms</text>
+
+    <text x="28" y="160" fill="#E2E8F0" font-size="12">4. 揽收称重吻合 (1,835g) + WMS 开箱序列号一致 (sn_mac_881)</text>
+    <text x="380" y="160" fill="#F87171" font-size="12">⚠️ 人工逐单审核需 5-7 个工作日</text>
+    <text x="690" y="160" fill="#34D399" font-size="12" font-weight="700">⚡ HTTP 200 RMA_VERIFIED_REFUND_RELEASED</text>
+    <text x="1040" y="160" fill="#CBD5E1" font-size="12">275 ms (simulation)</text>
+  </g>
+</svg>

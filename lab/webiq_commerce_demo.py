@@ -6713,6 +6713,103 @@ def evaluate_multi_agent_shared_budget_allocation_policy(
     )
 
 
+@dataclass(frozen=True)
+class ReturnLogisticsReverseEscrowVerdict:
+    """Round 26 verdict for Two-Tranche RMA Reverse Escrow + Carrier Weight & Warehouse Serial Attestation vs Refund-on-Label-Generation & Empty-Box Cash-Out."""
+
+    allowed: bool
+    http_status: int
+    rma_lane: str
+    refunded_buyer_cents: int
+    restocking_deduction_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_return_logistics_reverse_escrow_policy(
+    *,
+    order_amount_cents: int = 120000,
+    carrier_dropoff_scanned: bool = True,
+    outbound_weight_grams: int = 1850,
+    inducted_weight_grams: int = 1835,
+    max_weight_tolerance_bps: int = 1200,
+    outbound_sn_sha256: str = "sn_mac_881",
+    returned_sn_sha256: str = "sn_mac_881",
+    webiq_restocking_fee_bps: int = 0,
+    max_silent_restocking_bps: int = 500,
+) -> ReturnLogisticsReverseEscrowVerdict:
+    """Evaluate carrier drop-off scan gate, scale weight-tolerance anti-empty-box check, WMS serial-number anti-switcheroo check, and Web IQ hidden restocking fee grounding."""
+
+    # 1. Microsoft Web IQ Hidden Opened-Box Restocking Fee Trap (> 5% / 500 bps) -> HTTP 409 Confirm
+    if webiq_restocking_fee_bps > max_silent_restocking_bps:
+        deduction = (order_amount_cents * webiq_restocking_fee_bps) // 10000
+        return ReturnLogisticsReverseEscrowVerdict(
+            False,
+            409,
+            "HIDDEN_RESTOCKING_FEE_LOSS_CONFIRM",
+            order_amount_cents - deduction,
+            deduction,
+            "webiq_detected_hidden_opened_box_restocking_fee_exceeding_5pct_threshold",
+            315,
+            "Confirm",
+        )
+
+    # 2. Unscanned Return Label Instant Refund Attempt -> HTTP 403
+    if not carrier_dropoff_scanned:
+        return ReturnLogisticsReverseEscrowVerdict(
+            False,
+            403,
+            "UNSCANNED_RETURN_LABEL_REFUND_BLOCKED",
+            0,
+            0,
+            "refund_on_label_generation_without_physical_carrier_induction_scan_prohibited",
+            13,
+            "Send to a human",
+        )
+
+    # 3. Carrier Scale Weight-Tolerance Mismatch (Empty-Box / Brick FTID Fraud) -> HTTP 422
+    weight_diff_bps = (abs(inducted_weight_grams - outbound_weight_grams) * 10000) // max(
+        1, outbound_weight_grams
+    )
+    if weight_diff_bps > max_weight_tolerance_bps:
+        return ReturnLogisticsReverseEscrowVerdict(
+            False,
+            422,
+            "RETURN_PACKAGE_WEIGHT_MISMATCH_BLOCKED",
+            0,
+            0,
+            "carrier_scale_inducted_weight_deviated_from_outbound_wms_weight_beyond_12pct",
+            15,
+            "Send to a human",
+        )
+
+    # 4. WMS Warehouse Unboxing Serial-Number Switcheroo -> HTTP 422
+    if returned_sn_sha256 != outbound_sn_sha256:
+        return ReturnLogisticsReverseEscrowVerdict(
+            False,
+            422,
+            "RETURN_SERIAL_SWITCHEROO_DETECTED",
+            0,
+            0,
+            "wms_unboxing_serial_hash_mismatch_detected_broken_unit_switcheroo",
+            19,
+            "Send to a human",
+        )
+
+    # 5. Verified Weight + Matching Serial Number -> Full Refund Released
+    return ReturnLogisticsReverseEscrowVerdict(
+        True,
+        200,
+        "RMA_VERIFIED_REFUND_RELEASED",
+        order_amount_cents,
+        0,
+        "carrier_weight_and_wms_serial_verified_full_refund_released",
+        275,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -8452,6 +8549,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "race_block_latency_ms": ma_race_403.latency_ms,
     }
 
+    rma_commit_ok = evaluate_return_logistics_reverse_escrow_policy()
+    rma_label_403 = evaluate_return_logistics_reverse_escrow_policy(
+        carrier_dropoff_scanned=False,
+    )
+    rma_weight_422 = evaluate_return_logistics_reverse_escrow_policy(
+        inducted_weight_grams=45,
+    )
+    rma_sn_422 = evaluate_return_logistics_reverse_escrow_policy(
+        returned_sn_sha256="sn_broken_999",
+    )
+    rma_fee_409 = evaluate_return_logistics_reverse_escrow_policy(
+        webiq_restocking_fee_bps=1500,
+    )
+    return_logistics_reverse_escrow_guards = {
+        "all_passed": (
+            rma_commit_ok.allowed
+            and rma_commit_ok.refunded_buyer_cents == 120000
+            and not rma_label_403.allowed
+            and rma_label_403.http_status == 403
+            and not rma_weight_422.allowed
+            and rma_weight_422.http_status == 422
+            and not rma_sn_422.allowed
+            and rma_sn_422.http_status == 422
+            and not rma_fee_409.allowed
+            and rma_fee_409.action_pill == "Confirm"
+        ),
+        "rma_release_latency_ms": rma_commit_ok.latency_ms,
+        "empty_box_block_latency_ms": rma_weight_422.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -8490,6 +8617,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "high_ticket_escrow_attestation_guards": high_ticket_escrow_attestation_guards,
         "indirect_prompt_injection_feed_guards": indirect_prompt_injection_feed_guards,
         "multi_agent_shared_budget_guards": multi_agent_shared_budget_guards,
+        "return_logistics_reverse_escrow_guards": return_logistics_reverse_escrow_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -11857,6 +11985,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Return Logistics, Carrier Weight & Serial RMA Reverse Escrow Sandbox (Round 26 FAQ Companion) -->
+      <div class="finops-box" id="return-logistics-reverse-escrow-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rma-title">📦 AI Agent 逆向物流与 RMA 防调包欺诈架构：双阶逆向托管 (rma_return_escrow_...) + 揽收称重/序列号核验 vs 凭单号秒退空包套现决策器 (Round 26 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 售后退货揽收称重、WMS 开箱序列号与拆封折旧费场景 (RMA Return Weight, Serial Match &amp; Restocking Fee Scenario):</span></label>
+          <select id="rma-select" onchange="updateReturnLogisticsSandbox()">
+            <option value="rma_commit_ok">⚡ 承运商称重吻合 (1,835g vs 1,850g) + WMS 开箱序列号匹配 (sn_mac_881)：$1,200.00 全额退款原子释放! (275ms · Act automatically)</option>
+            <option value="rma_label_403">🛑 仅生成退货电子面单未交件扫描请求秒退：拒绝无物理揽收签名白嫖套现 → 13ms 触发 HTTP 403 硬阻断!</option>
+            <option value="rma_weight_422">🚨 寄回 45g 空信封顶替 1,850g 笔记本电脑 (FTID 空包欺诈)：电子秤检出 -97.6% 重量偏差 → 15ms 触发 HTTP 422 冻结退款!</option>
+            <option value="rma_sn_422">🚨 寄回等重报废旧机调包 (Switcheroo)：WMS 开箱扫码检出 sn_broken_999 != sn_mac_881 → 19ms 触发 HTTP 422 拒付并封存视频!</option>
+            <option value="rma_fee_409">🧑‍⚖️ Web IQ 检出已拆封退货暗扣 15% ($180.00) 拆封折旧费 (Restocking Fee) → 315ms 触发 HTTP 409 Confirm 对比净退 $1,020 vs 免扣费换货!</option>
+          </select>
+        </div>
+        <div id="rma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -12321,6 +12467,7 @@ function renderAll() {{
   updateHighTicketEscrowSandbox();
   updateIndirectPromptInjectionSandbox();
   updateMultiAgentBudgetSandbox();
+  updateReturnLogisticsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13820,6 +13967,56 @@ function updateMultiAgentBudgetSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 层级化子切片 + CAS 盈余原子调拨安全交割 (COALITION_BUDGET_ALLOCATED_AND_COMMITTED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零并发透支守恒</strong>：酒店锁定 <code>$650.00</code> 释放 <code>$150.00</code> 回主池（<code>v43</code>），主控账本 <code>18ms</code> CAS 拨付 <code>+$80.00</code> 给机票（<code>$980.00</code>）与租车（<code>$280.00</code>），三单合计实付 <code>$1,910.00 &lt;= $2,000.00</code>（结余 <code>$90.00</code>）！" +
+    "</div>";
+}}
+
+function updateReturnLogisticsSandbox() {{
+  var selEl = document.getElementById("rma-select");
+  var outEl = document.getElementById("rma-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "rma_label_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNSCANNED_RETURN_LABEL_REFUND_BLOCKED (13ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到退货单仅生成了电子运单号但尚未获得承运商物理揽收签名（<code>carrier_dropoff_scanned=False</code>）！已在 <code>13ms</code> 内硬阻断“生成面单即秒退”白嫖套现请求！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_weight_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RETURN_PACKAGE_WEIGHT_MISMATCH_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "承运商网点电子秤揽收实测毛重仅 <code>45g</code>，与出库 WMS 基准毛重 <code>1,850g</code> 偏差高达 <code>-97.6%</code>（远超 <code>±12%</code> 容差）！判定为疑似 FTID 空信封欺诈，已冻结 <code>$1,200.00</code> 退款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_sn_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RETURN_SERIAL_SWITCHEROO_DETECTED (19ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "退货仓（WMS）开箱扫码检出寄回商品序列号哈希 <code>sn_broken_999</code> 与原订单出库序列号 <code>sn_mac_881</code> 不一致（等重报废旧机调包 Switcheroo）！已在 <code>19ms</code> 内拒付退款并封存开箱视频 SHA-256 证据！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_fee_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HIDDEN_RESTOCKING_FEE_LOSS_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在商户售后折叠页检出：已拆封电子产品直接退现金将扣除 <code>15% ($180.00)</code> 拆封折旧费（仅能退回 <code>$1,020.00</code>），而选择同店换货或储值卡可 <code>100%</code> 免除折旧费，已暂停自动退货请买家确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双阶段称重 + WMS 序列号核验通过：全额退款原子释放 (RMA_VERIFIED_REFUND_RELEASED · 275ms · Act automatically):</strong><br>" +
+    "• <strong>零空包/零调包资损</strong>：承运商揽收实测 <code>1,835g</code>（偏差 <code>0.8% &lt;= 12%</code>）且退货仓开箱扫码确认 <code>sn_mac_881</code> 完全一致，已向买家原路释放 <code>$1,200.00</code> 全额退款！" +
     "</div>";
 }}
 

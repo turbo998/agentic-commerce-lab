@@ -1586,6 +1586,8 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
             "docs/indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md",
             "docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.md",
             "docs/multi-agent-shared-budget-allocation-vs-race-spend-faq.en.md",
+            "docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.md",
+            "docs/return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.en.md",
         ):
             doc_text = (repo_root / rel_doc).read_text(encoding="utf-8")
             self.assertIn("synthetic_policy", doc_text, f"Missing synthetic_policy tag in {rel_doc}")
@@ -2652,6 +2654,53 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertTrue(suite["multi_agent_shared_budget_guards"]["all_passed"])
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-agent-shared-budget-sandbox", demo_zh)
+
+    def test_return_logistics_reverse_escrow_vs_refund_before_scan_abuse_selection(self) -> None:
+        from lab.webiq_commerce_demo import evaluate_return_logistics_reverse_escrow_policy
+
+        # 1. Clean carrier weight + WMS serial match -> 200 full refund released ($1,200)
+        commit_ok = evaluate_return_logistics_reverse_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.refunded_buyer_cents, 120000)
+
+        # 2. Unscanned return label instant refund attempt -> 403 blocked in 13ms
+        label_403 = evaluate_return_logistics_reverse_escrow_policy(
+            carrier_dropoff_scanned=False,
+        )
+        self.assertFalse(label_403.allowed)
+        self.assertEqual(label_403.http_status, 403)
+        self.assertEqual(label_403.rma_lane, "UNSCANNED_RETURN_LABEL_REFUND_BLOCKED")
+
+        # 3. 45g empty envelope mailed for 1,850g laptop -> 422 blocked in 15ms
+        weight_422 = evaluate_return_logistics_reverse_escrow_policy(
+            inducted_weight_grams=45,
+        )
+        self.assertFalse(weight_422.allowed)
+        self.assertEqual(weight_422.http_status, 422)
+        self.assertEqual(weight_422.rma_lane, "RETURN_PACKAGE_WEIGHT_MISMATCH_BLOCKED")
+
+        # 4. Weight-matched broken unit switcheroo (serial mismatch) -> 422 blocked in 19ms
+        sn_422 = evaluate_return_logistics_reverse_escrow_policy(
+            returned_sn_sha256="sn_broken_999",
+        )
+        self.assertFalse(sn_422.allowed)
+        self.assertEqual(sn_422.http_status, 422)
+        self.assertEqual(sn_422.rma_lane, "RETURN_SERIAL_SWITCHEROO_DETECTED")
+
+        # 5. Web IQ hidden 15% ($180) opened-box restocking fee -> 409 Confirm in 315ms
+        fee_409 = evaluate_return_logistics_reverse_escrow_policy(
+            webiq_restocking_fee_bps=1500,
+        )
+        self.assertFalse(fee_409.allowed)
+        self.assertEqual(fee_409.http_status, 409)
+        self.assertEqual(fee_409.restocking_deduction_cents, 18000)
+        self.assertEqual(fee_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["return_logistics_reverse_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("return-logistics-reverse-escrow-sandbox", demo_zh)
 
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
