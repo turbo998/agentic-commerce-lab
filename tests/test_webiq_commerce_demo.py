@@ -3416,6 +3416,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("capex-lien-waiver-sandbox", demo_zh)
 
+    def test_healthcare_prior_auth_hsa_split_tender_vs_claim_denial_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_healthcare_prior_auth_hsa_split_tender_policy,
+        )
+
+        # 1. Approved EDI 278 PA ($2,750 payer) + $450 IIAS HSA copay -> 200 settled
+        commit_ok = evaluate_healthcare_prior_auth_hsa_split_tender_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_patient_hsa_cents, 45000)
+        self.assertEqual(commit_ok.payer_adjudicated_cents, 275000)
+
+        # 2. Missing EDI 278 payer Prior Authorization ($3,200 surprise bill risk) -> 403 blocked in 12ms
+        pa_403 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+            edi278_prior_auth_approved=False,
+        )
+        self.assertFalse(pa_403.allowed)
+        self.assertEqual(pa_403.http_status, 403)
+        self.assertEqual(
+            pa_403.healthcare_lane, "MISSING_PAYER_PRIOR_AUTHORIZATION_BLOCKED"
+        )
+
+        # 3. $120 non-medical cosmetic SKU mixed into HSA/FSA tender -> 422 blocked in 15ms
+        iias_422 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+            ineligible_hsa_sku_cents=12000,
+        )
+        self.assertFalse(iias_422.allowed)
+        self.assertEqual(iias_422.http_status, 422)
+        self.assertEqual(
+            iias_422.healthcare_lane, "INELIGIBLE_SKU_ON_HSA_FSA_TENDER_BLOCKED"
+        )
+
+        # 4. Web IQ detects Out-of-Network pharmacy or unmet step therapy -> 451 blocked in 310ms
+        net_451 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+            webiq_formulary_and_network_compliant=False,
+        )
+        self.assertFalse(net_451.allowed)
+        self.assertEqual(net_451.http_status, 451)
+
+        # 5. Web IQ discovers $400 manufacturer Copay Assistance Card ($50 net patient pay) -> 409 Confirm
+        copay_409 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+            copay_assistance_savings_cents=40000,
+        )
+        self.assertFalse(copay_409.allowed)
+        self.assertEqual(copay_409.http_status, 409)
+        self.assertEqual(copay_409.settled_patient_hsa_cents, 5000)
+        self.assertEqual(copay_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["healthcare_prior_auth_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("healthcare-prior-auth-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

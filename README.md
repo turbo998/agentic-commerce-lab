@@ -71,6 +71,7 @@
 - **专题 37（云端 GPU 算力租赁与 Spot 抢占 SLA 对冲 Cloud GPU Compute & Spot Preemption SLA Mandate 架构：DCGM 硬件遥测有效算力证明令牌 `gpu_compute_sla_mandate_...` + Web IQ 跨云状态与错峰底价核验 vs 传统幽灵坏卡空转计费与暴力抢占扣款）**：**[《云端 GPU 算力租赁与 Spot 抢占 SLA 对冲（Cloud GPU Compute & Spot Preemption SLA Mandate）架构：DCGM 硬件遥测有效算力证明令牌（`gpu_compute_sla_mandate_...` + Web IQ 跨云状态与错峰底价核验）vs 传统幽灵坏卡空转计费（Ghost-Node Billing）与暴力抢占扣款选型与原理解析 FAQ》](docs/cloud-gpu-spot-preemption-sla-mandate-vs-ghost-node-billing-faq.md)**
 - **专题 38（零售媒体程序化广告投放与网红带货分佣 Programmatic Retail Media & Influencer Affiliate IVT Clawback Mandate 架构：SIVT 机器人流量剔除与退货期满释放令牌 `ad_attribution_ivt_mandate_...` + Web IQ 品牌安全与直签刊例核验 vs 传统点击农场盗刷与退货骗佣）**：**[《零售媒体程序化广告投放与网红带货分佣（Programmatic Retail Media & Influencer Affiliate IVT Clawback Mandate）架构：SIVT 机器人流量剔除与退货期满释放令牌（`ad_attribution_ivt_mandate_...` + Web IQ 品牌安全与直签刊例核验）vs 传统点击农场盗刷（Click-Farm Drain）与退货骗佣选型与原理解析 FAQ》](docs/retail-media-ad-spend-ivt-clawback-vs-click-farm-drain-faq.md)**
 - **专题 39（B2B 工程基建与数据中心 CapEx 进度款 CapEx Milestone Retainage & Subcontractor Lien-Waiver Mandate 架构：分包商留置权豁免与 10% 质保金扣留令牌 `capex_lien_waiver_mandate_...` + Web IQ 市政验收与甲供材直采核验 vs 传统盲付总包致二次追偿）**：**[《B2B 工程基建与数据中心 CapEx 进度款（CapEx Milestone Retainage & Subcontractor Lien-Waiver Mandate）架构：分包商留置权豁免与 10% 质保金扣留令牌（`capex_lien_waiver_mandate_...` + Web IQ 市政验收与甲供材直采核验）vs 传统盲付总包致二次追偿（Double Payment）选型与原理解析 FAQ》](docs/capex-milestone-retainage-lien-waiver-vs-double-payment-faq.md)**
+- **专题 40（医疗处方药与家用器械 DME 医保预授权及 HSA/FSA 混合分账 Healthcare Prior-Auth & HSA/FSA Split-Tender Mandate 架构：EDI 278 预授权绑定与 IIAS 合规分账令牌 `healthcare_prior_auth_mandate_...` + Web IQ 医保目录与药厂援助卡核验 vs 传统盲刷拒赔天价账单）**：**[《医疗处方药与家用器械（DME）医保预授权及 HSA/FSA 混合分账（Healthcare Prior-Auth & HSA/FSA Split-Tender Mandate）架构：EDI 278 预授权绑定与 IIAS 合规分账令牌（`healthcare_prior_auth_mandate_...` + Web IQ 医保目录与药厂援助卡核验）vs 传统盲刷拒赔天价账单（Surprise Balance Billing）选型与原理解析 FAQ》](docs/healthcare-prior-auth-hsa-split-tender-vs-claim-denial-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -149,6 +150,8 @@
 ![2026-11-09 零售媒体程序化广告投放与网红带货分佣反作弊架构一图流](assets/svg/40-retail-media-ad-spend-ivt-clawback-2026-11-09.svg)
 
 ![2026-11-09 B2B 工程基建与数据中心 CapEx 进度款留置权豁免架构一图流](assets/svg/41-capex-milestone-retainage-lien-waiver-2026-11-09.svg)
+
+![2026-11-09 医疗处方药与家用器械医保预授权及 HSA 分账架构一图流](assets/svg/42-healthcare-prior-auth-hsa-split-tender-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

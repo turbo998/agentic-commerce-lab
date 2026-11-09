@@ -8019,6 +8019,103 @@ def evaluate_capex_milestone_retainage_lien_waiver_policy(
     )
 
 
+@dataclass(frozen=True)
+class HealthcarePriorAuthHSAVerdict:
+    """Round 40 verdict for Healthcare Prior-Authorization & HSA/FSA Split-Tender Mandate (EDI 278 Prior-Auth & IIAS Auto-Substantiation Token + Web IQ Formulary & Copay-Card Grounding) vs Surprise Balance-Billing Claim Denials & IRS HSA Tax Penalties."""
+
+    allowed: bool
+    http_status: int
+    healthcare_lane: str
+    settled_patient_hsa_cents: int
+    payer_adjudicated_cents: int
+    copay_assistance_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+    *,
+    gross_rx_dme_cents: int = 320000,
+    payer_adjudicated_cents: int = 275000,
+    patient_copay_cents: int = 45000,
+    edi278_prior_auth_approved: bool = True,
+    ineligible_hsa_sku_cents: int = 0,
+    webiq_formulary_and_network_compliant: bool = True,
+    copay_assistance_savings_cents: int = 0,
+) -> HealthcarePriorAuthHSAVerdict:
+    """Evaluate X12 EDI 278 payer Prior Authorization, SIGIS IIAS HSA/FSA SKU eligibility isolation, Web IQ in-network formulary step-therapy compliance, and manufacturer Copay Assistance Card offset."""
+
+    # 1. Missing X12 EDI 278 Payer Prior Authorization ($3,200 Surprise Bill Risk) -> HTTP 403
+    if not edi278_prior_auth_approved:
+        return HealthcarePriorAuthHSAVerdict(
+            False,
+            403,
+            "MISSING_PAYER_PRIOR_AUTHORIZATION_BLOCKED",
+            0,
+            0,
+            0,
+            "high_cost_rx_dme_checkout_blocked_without_approved_edi278_prior_authorization",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Non-Medical Ineligible SKU Mixed Into Tax-Advantaged HSA/FSA Tender -> HTTP 422
+    if ineligible_hsa_sku_cents > 0:
+        return HealthcarePriorAuthHSAVerdict(
+            False,
+            422,
+            "INELIGIBLE_SKU_ON_HSA_FSA_TENDER_BLOCKED",
+            0,
+            0,
+            0,
+            "non_iias_cosmetic_or_supplement_sku_rejected_on_hsa_fsa_tax_advantaged_card",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Out-of-Network Pharmacy or Unmet Step-Therapy Formulary Rule via Web IQ -> HTTP 451
+    if not webiq_formulary_and_network_compliant:
+        return HealthcarePriorAuthHSAVerdict(
+            False,
+            451,
+            "OUT_OF_NETWORK_OR_STEP_THERAPY_FORMULARY_HOLD",
+            0,
+            0,
+            0,
+            "webiq_detected_out_of_network_dispensing_pharmacy_or_unmet_step_therapy_rule",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Manufacturer Copay Assistance Card Arbitrage -> HTTP 409 Confirm
+    if copay_assistance_savings_cents > 0:
+        return HealthcarePriorAuthHSAVerdict(
+            False,
+            409,
+            "MANUFACTURER_COPAY_ASSISTANCE_ARBITRAGE_CONFIRM",
+            patient_copay_cents - copay_assistance_savings_cents,
+            payer_adjudicated_cents,
+            copay_assistance_savings_cents,
+            "webiq_found_manufacturer_copay_card_offsetting_400_usd_lowering_patient_pay_to_50_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified EDI 278 Prior-Auth ($2,750 Payer) + $450 IIAS HSA Copay Settled
+    return HealthcarePriorAuthHSAVerdict(
+        True,
+        200,
+        "VERIFIED_PRIOR_AUTH_HSA_SPLIT_SETTLED",
+        patient_copay_cents,
+        payer_adjudicated_cents,
+        0,
+        "edi278_prior_auth_and_sigis_iias_hsa_copay_verified_for_fulfillment",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -10193,6 +10290,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lien_waiver_block_latency_ms": cpx_lien_403.latency_ms,
     }
 
+    hc_commit_ok = evaluate_healthcare_prior_auth_hsa_split_tender_policy()
+    hc_pa_403 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+        edi278_prior_auth_approved=False,
+    )
+    hc_iias_422 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+        ineligible_hsa_sku_cents=12000,
+    )
+    hc_net_451 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+        webiq_formulary_and_network_compliant=False,
+    )
+    hc_copay_409 = evaluate_healthcare_prior_auth_hsa_split_tender_policy(
+        copay_assistance_savings_cents=40000,
+    )
+    healthcare_prior_auth_guards = {
+        "all_passed": (
+            hc_commit_ok.allowed
+            and hc_commit_ok.settled_patient_hsa_cents == 45000
+            and hc_commit_ok.payer_adjudicated_cents == 275000
+            and not hc_pa_403.allowed
+            and hc_pa_403.http_status == 403
+            and not hc_iias_422.allowed
+            and hc_iias_422.http_status == 422
+            and not hc_net_451.allowed
+            and hc_net_451.http_status == 451
+            and not hc_copay_409.allowed
+            and hc_copay_409.action_pill == "Confirm"
+        ),
+        "healthcare_settlement_latency_ms": hc_commit_ok.latency_ms,
+        "prior_auth_block_latency_ms": hc_pa_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -10245,6 +10373,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cloud_gpu_sla_guards": cloud_gpu_sla_guards,
         "retail_media_ivt_guards": retail_media_ivt_guards,
         "capex_lien_waiver_guards": capex_lien_waiver_guards,
+        "healthcare_prior_auth_guards": healthcare_prior_auth_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -13864,6 +13993,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cpx-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Healthcare Prior-Authorization & HSA/FSA Split-Tender Sandbox (Round 40 FAQ Companion) -->
+      <div class="finops-box" id="healthcare-prior-auth-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-hc-title">🩺 医疗处方药/DME 医保预授权与 HSA/FSA 分账架构：EDI 278 与 IIAS 令牌 (healthcare_prior_auth_mandate_...) vs 拒赔天价账单决策器 (Round 40 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. $3,200.00 专科药/呼吸机订单 (保司报销 $2,750 / 患者自付 $450)、EDI 278 预授权、IIAS 医疗目录与 Web IQ 药厂补贴场景 (Healthcare Split-Tender Scenario):</span></label>
+          <select id="hc-select" onchange="updateHealthcarePriorAuthSandbox()">
+            <option value="hc_commit_ok">⚡ EDI 278 预授权已批 ($2,750 保司赔付) + $450 纯 IIAS 医疗商品 HSA 扣款：265ms 精准分账并发货! (Act automatically)</option>
+            <option value="hc_pa_403">🛑 缺失 EDI 278 医保预授权拦截：未拿保司 Prior Auth 试图直接扣款发货 (事后面临 $3,200 全自费拒赔) → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="hc_iias_422">🚨 HSA/FSA 免税卡混刷非医商品拦截：购物车混入 $120.00 普通护肤品试图刷入 HSA 卡 (触发 IRS 20% 罚税) → 15ms 触发 HTTP 422 强制分单!</option>
+            <option value="hc_net_451">🛑 网外药房 / 违反阶梯疗法拦截：Web IQ /v3/browse 检出药房已滑出保司定点网络或未满足首选仿制药要求 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="hc_copay_409">🧑‍⚖️ Web IQ 检出原研药厂官网提供商业保险 Copay 援助卡可直接抵扣 $400.00 (患者净自付从 $450 降至仅 $50.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="hc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -14342,6 +14489,7 @@ function renderAll() {{
   updateCloudGPUSLASandbox();
   updateRetailMediaIVTSandbox();
   updateCapExLienWaiverSandbox();
+  updateHealthcarePriorAuthSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -16541,6 +16689,56 @@ function updateCapExLienWaiverSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 分包留置权豁免签齐 + 10% ($15,000) 保留金锁池：已自动穿透放款 (VERIFIED_CAPEX_MILESTONE_PROGRESS_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零产权留置风险、秒级穿透分账</strong>：全部二级分包商豁免签名与市政验收核验无误，已自动将 <code>$15,000.00 (10%)</code> 锁入竣工质保托管池，并在 265ms 内将 <code>$135,000.00 (90%)</code> 净进度款穿透拆账直付到位！" +
+    "</div>";
+}}
+
+function updateHealthcarePriorAuthSandbox() {{
+  var selEl = document.getElementById("hc-select");
+  var outEl = document.getElementById("hc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "hc_pa_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MISSING_PAYER_PRIOR_AUTHORIZATION_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "医疗分账网关检出该 <code>$3,200.00</code> 专科处方药/DME 尚未取得保司有效的电子预授权批准号（<code>edi278_prior_auth_approved=False</code>）！已在 <code>12ms</code> 内硬阻断预估自付扣款，100% 保护患者免遭发货 30 天后保司拒赔引发的 <code>$3,200.00</code> 惊吓催收账单（Surprise Balance Billing）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hc_iias_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 INELIGIBLE_SKU_ON_HSA_FSA_TENDER_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "SIGIS IIAS 行项校验检出购物车中包含 <code>$120.00</code> 非医疗普通护肤品（<code>ineligible_hsa_sku_cents=12000 &gt; 0</code>）试图刷入免税 HSA/FSA 专户卡！网关已在 <code>15ms</code> 内拦截混刷，规避 IRS 所得税补缴与 20% 税务罚款，并引导双卡拆分支付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hc_net_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OUT_OF_NETWORK_OR_STEP_THERAPY_FORMULARY_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核对保司当季公开药品目录（Formulary）与定点药房名单，检出目标药房已退网（Out-of-Network）或未满足首选阶梯用药（Step Therapy）要求，已在 <code>310ms</code> 内阻断错发！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hc_copay_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MANUFACTURER_COPAY_ASSISTANCE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索原研药厂官方患者援助计划，发现商保患者可叠加原厂 Copay 援助卡（Secondary BIN/PCN）直接抵扣 <code>$400.00</code> 自付额（患者 HSA 实付从 <code>$450.00</code> 骤降至仅需 <code>$50.00</code>），建议一键确认叠加药厂补贴！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ EDI 278 预授权锁定 ($2,750 保司赔付) + IIAS 纯医疗校验通过：已完成 HSA 分账结算 (VERIFIED_PRIOR_AUTH_HSA_SPLIT_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零事后拒赔惊吓、零税务违规</strong>：保司已锁定承担 <code>$2,750.00</code>，患者 HSA 专户卡精准支付 <code>$450.00</code> 合资格医疗自付额（含 <code>$0.00</code> 非医混刷），265ms 完成结算并生成 IRS 免税审计收据！" +
     "</div>";
 }}
 

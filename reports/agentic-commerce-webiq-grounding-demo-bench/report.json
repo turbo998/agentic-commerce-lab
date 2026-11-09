@@ -280,6 +280,11 @@
     "capex_settlement_latency_ms": 265,
     "lien_waiver_block_latency_ms": 12
   },
+  "healthcare_prior_auth_guards": {
+    "all_passed": true,
+    "healthcare_settlement_latency_ms": 265,
+    "prior_auth_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
