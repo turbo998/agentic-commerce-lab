@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg83" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#05131f"/>
+      <stop offset="50%" stop-color="#092438"/>
+      <stop offset="100%" stop-color="#0e3652"/>
+    </linearGradient>
+    <linearGradient id="accent83" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg83)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#081a2b" stroke="#06b6d4" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent83)"/>
+
+  <text x="60" y="72" fill="#67e8f9" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 81 · OFFSHORE WIND SOV CHARTER, DP2 GANGWAY &amp; Hs WAVE-HEIGHT MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">海上风电运维船 SOV 租船、DP2 补偿栈桥与有效波高托管 vs 故障充天气骗日租</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">BIMCO WINDTIME DP2/W2W Gangway Telemetry + Waverider Buoy Hs (&lt;=2.5m) + Off-Hire Split vs. Fake Weather Standby</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121c" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统纸质航海日志 (Deck Log) 全额日租金盲付模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 机械故障伪装恶劣天气 (Fake Weather Standby)：推进器/栈桥液压坏了却写“风浪大”，骗取 100% 日租</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 波浪补偿栈桥 (W2W) 性能缩水：承诺 Hs 3.0m 可搭接登塔，实际 1.8m 就缩回拒送工程师</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 船用轻柴油 (MGO) 发电挪用：船东将全船生活区空调与空转耗油混入租家承担的作业燃油账单</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 沿海贸易权 (Jones Act / 船旗国) 违规：租用无沿海作业资质外籍船被海事局重罚并勒令停工</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101c" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型海上风电场大部件抢修与母船期租资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">风场开发商月付 $420,000 租用 SOV 运维母船，其中 3.5 天因波浪补偿栈桥传感器</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">故障无法搭接风机，船长却在日志中填报“涌浪超限待命”照收 $98,000 日租与燃油费</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 假天气待命拦截率：0% | • Off-Hire 停租核减：0% | • 发电量损失：超 $180,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#092426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 测波浮标 Hs 对账 + DP2/栈桥遥测 + 混合动力托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 激光雷达/测波浮标 Hs 交叉门禁：实测有效波高 Hs &lt;= 2.5m 时拒不搭接一律判定 Off-Hire ($0 日租)</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• DP2 动力定位与 W2W 栈桥故障码：直读船级社 DP2 冗余告警与栈桥 PLC 锁定停租分钟数</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 沿海作业船旗 (Cabotage) 与安全证书：Web IQ 核验海事局禁航区与船级社 DNV/ABS 适航证</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 海上风场内场升压站岸电/电池混动补能：待命期切换风场绿电充电立省 $54,000 柴油费</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#052e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断 Hs 仅 1.7m 却谎报天气待命的栈桥/DP2 机械故障（直接扣回停租日租）；</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">15ms 拦截停租期 MGO 燃油转嫁；Web IQ 海上风场内场充电浮标补能立省 $54,000.00（净付 $366,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 假天气待命拦截：100% | • Off-Hire 燃油扣减：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0d2338" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#06b6d4" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">海上风电工程船租船结算 Agent 绝不能单听船长手写日志！必须绑定【测波浮标 Hs + DP2/栈桥 PLC + 停租扣油】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_offshore_wind_sov_charter_dp2_policy`) · BIMCO WINDTIME &amp; DNV · 2026-11-09</text>
+</svg>

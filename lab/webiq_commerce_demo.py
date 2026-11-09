@@ -11603,6 +11603,91 @@ def evaluate_municipal_snow_plow_avl_salt_policy(
     )
 
 
+@dataclass(frozen=True)
+class OffshoreWindSOVCharterDP2Verdict:
+    allowed: bool
+    http_status: int
+    sov_lane: str
+    settled_sov_cents: int
+    offhire_or_hybrid_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_offshore_wind_sov_charter_dp2_policy(
+    gross_sov_charter_and_bunker_cents: int = 42000000,
+    waverider_hs_and_dp2_gangway_uptime_verified: bool = True,
+    offhire_mgo_fuel_deduction_reconciled: bool = True,
+    webiq_cabotage_and_dnv_dp_trials_clean: bool = True,
+    offshore_charging_buoy_hybrid_savings_cents: int = 0,
+) -> OffshoreWindSOVCharterDP2Verdict:
+    """Evaluate in-field Waverider buoy significant wave height (Hs <= 2.5m) & DP2/W2W gangway PLC fault logs vs breakdown disguised as paid weather standby, Coriolis MGO fuel deduction during Off-Hire windows, Web IQ cabotage (Jones Act) & DNV/ABS annual DP FMEA trial check, and Offshore Substation (OSS) charging buoy hybrid arbitrage."""
+    # 1. Mechanical W2W gangway or DP2 thruster breakdown logged as paid weather standby while Hs <= 2.5m -> HTTP 403
+    if not waverider_hs_and_dp2_gangway_uptime_verified:
+        return OffshoreWindSOVCharterDP2Verdict(
+            False,
+            403,
+            "MECHANICAL_BREAKDOWN_DISGUISED_AS_WEATHER_STANDBY_BLOCKED",
+            0,
+            gross_sov_charter_and_bunker_cents,
+            "sov_charter_blocked_due_to_gangway_or_dp2_fault_logged_as_weather_standby_while_buoy_hs_below_25m",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Uncredited MGO marine diesel burned during Off-Hire repairs or owner deviation -> HTTP 422
+    if not offhire_mgo_fuel_deduction_reconciled:
+        return OffshoreWindSOVCharterDP2Verdict(
+            False,
+            422,
+            "UNCREDITED_OFFHIRE_MGO_BUNKER_CONSUMPTION_BLOCKED",
+            0,
+            gross_sov_charter_and_bunker_cents,
+            "invoice_rejected_due_to_missing_coriolis_mgo_fuel_deduction_during_offhire_window",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects cabotage violation or expired DNV/ABS annual DP FMEA trials -> HTTP 451
+    if not webiq_cabotage_and_dnv_dp_trials_clean:
+        return OffshoreWindSOVCharterDP2Verdict(
+            False,
+            451,
+            "CABOTAGE_BREACH_OR_EXPIRED_DNV_DP2_FMEA_TRIALS_HOLD",
+            0,
+            gross_sov_charter_and_bunker_cents,
+            "webiq_detected_coastal_cabotage_violation_or_expired_imca_m103_annual_dp_fmea_certificate",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Offshore Substation (OSS) Green Charging Buoy Hybrid Arbitrage -> HTTP 409 Confirm
+    if offshore_charging_buoy_hybrid_savings_cents > 0:
+        return OffshoreWindSOVCharterDP2Verdict(
+            False,
+            409,
+            "OFFSHORE_SUBSTATION_CHARGING_BUOY_HYBRID_ARBITRAGE_CONFIRM",
+            gross_sov_charter_and_bunker_cents - offshore_charging_buoy_hybrid_savings_cents,
+            offshore_charging_buoy_hybrid_savings_cents,
+            "webiq_found_oss_offshore_charging_buoy_green_power_tethering_saving_54000_usd_mgo",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Waverider Buoy Hs + DP2/W2W Gangway Uptime + Off-Hire Fuel Carve-Out -> Settled
+    return OffshoreWindSOVCharterDP2Verdict(
+        True,
+        200,
+        "VERIFIED_OFFSHORE_WIND_SOV_CHARTER_SETTLED",
+        gross_sov_charter_and_bunker_cents,
+        0,
+        "waverider_buoy_hs_dp2_gangway_plc_and_offhire_mgo_deduction_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -15008,6 +15093,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ghost_pass_block_latency_ms": snw_gho_403.latency_ms,
     }
 
+    sov_commit_ok = evaluate_offshore_wind_sov_charter_dp2_policy()
+    sov_brk_403 = evaluate_offshore_wind_sov_charter_dp2_policy(
+        waverider_hs_and_dp2_gangway_uptime_verified=False,
+    )
+    sov_mgo_422 = evaluate_offshore_wind_sov_charter_dp2_policy(
+        offhire_mgo_fuel_deduction_reconciled=False,
+    )
+    sov_dnv_451 = evaluate_offshore_wind_sov_charter_dp2_policy(
+        webiq_cabotage_and_dnv_dp_trials_clean=False,
+    )
+    sov_buy_409 = evaluate_offshore_wind_sov_charter_dp2_policy(
+        offshore_charging_buoy_hybrid_savings_cents=5400000,
+    )
+    offshore_sov_guards = {
+        "all_passed": (
+            sov_commit_ok.allowed
+            and sov_commit_ok.settled_sov_cents == 42000000
+            and not sov_brk_403.allowed
+            and sov_brk_403.http_status == 403
+            and not sov_mgo_422.allowed
+            and sov_mgo_422.http_status == 422
+            and not sov_dnv_451.allowed
+            and sov_dnv_451.http_status == 451
+            and not sov_buy_409.allowed
+            and sov_buy_409.action_pill == "Confirm"
+        ),
+        "sov_settlement_latency_ms": sov_commit_ok.latency_ms,
+        "fake_weather_block_latency_ms": sov_brk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -15101,6 +15216,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "subsea_iru_guards": subsea_iru_guards,
         "film_production_guards": film_production_guards,
         "snow_plow_avl_guards": snow_plow_avl_guards,
+        "offshore_sov_guards": offshore_sov_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19458,6 +19574,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="snw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Offshore Wind SOV Charter, DP2 Gangway & Hs Wave-Height Mandate Sandbox (Round 81 FAQ Companion) -->
+      <div class="finops-box" id="offshore-wind-sov-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sov-title">🚢 海上风电运维船 (SOV) 期租、DP2 波浪补偿栈桥与有效波高 (Hs) 架构：测波浮标与停租扣油令牌 (offshore_sov_dp2_mandate_...) vs 假天气待命决策器 (Round 81 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 海上风电 SOV 母船半月度期租与 MGO 燃油请款 ($420,000.00)、风场测波浮标 Hs (&lt;=2.5m)、DP2/W2W 栈桥 PLC 与 Web IQ 海上绿电充电浮标场景 (Offshore SOV Scenario):</span></label>
+          <select id="sov-select" onchange="updateOffshoreSOVSandbox()">
+            <option value="sov_commit_ok">⚡ 测波浮标有效波高 Hs 对账吻合 + DP2/W2W 栈桥零故障 + 停租期 MGO 燃油剔除：21ms 自动结算 $420,000.00! (Act automatically)</option>
+            <option value="sov_brk_403">🛑 机械故障伪装恶劣天气待命 (Breakdown as Weather Standby) 拦截：实测波高仅 1.7m (&lt;=2.5m)，实为栈桥液压故障却企图骗取 $98,000 日租 → 12ms 触发 HTTP 403!</option>
+            <option value="sov_mgo_422">🚨 停租维修期 (Off-Hire) 烧掉的 18 吨 MGO 船用轻柴油未从租家账单剔除拦截：科里奥利流量计检出违规转嫁 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="sov_dnv_451">🛑 违反沿海贸易权 (Cabotage / Jones Act) 或 DNV/ABS 年度 DP2 FMEA 试航证书过期冻结：Web IQ /v3/browse 310ms 触发 HTTP 451!</option>
+            <option value="sov_buy_409">🧑‍⚖️ Web IQ 匹配风场海上升压站 (OSS) 系泊绿电充电浮标夜间补能替代柴油发电立省 $54,000.00 (净付 $366,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sov-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -19977,6 +20111,7 @@ function renderAll() {{
   updateSubseaIRUSandbox();
   updateFilmTVProductionSandbox();
   updateSnowPlowAVLSandbox();
+  updateOffshoreSOVSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -24198,6 +24333,55 @@ function updateSnowPlowAVLSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ J1939 铲刀触地里程核验 + 围栏内绞龙实撒盐量匹配 + NOAA 气象达标：已自动清算 (VERIFIED_SNOW_PLOW_AVL_SALT_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零翘铲空跑刷单、零融雪盐半路私卖</strong>：暴风雪除冰账单已完成米级铲刀与克重核销并永久归档防滑倒司法存证（<code>$68,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateOffshoreSOVSandbox() {{
+  var selEl = document.getElementById("sov-select");
+  var outEl = document.getElementById("sov-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sov_brk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MECHANICAL_BREAKDOWN_DISGUISED_AS_WEATHER_STANDBY_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "风场现场 <code>Datawell 测波浮标</code> 证实当期有效波高仅 <code>Hs = 1.7m</code>（远低于 <code>2.5m</code> 合同登塔上限），而船载 <code>W2W 波浪补偿栈桥 PLC</code> 存在液压伺服故障告警，证明船长将 3.5 天机械停租（Off-Hire）伪装成带薪天气待命（<code>waverider_hs_and_dp2_gangway_uptime_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$420,000.00</code> 账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sov_mgo_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNCREDITED_OFFHIRE_MGO_BUNKER_CONSUMPTION_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "科里奥利燃油质量流量计与停租时间戳对账检出，船东未从租家燃油账单中剔除 <code>Off-Hire 停租维修期间</code> 消耗的 18 吨 MGO 船用轻柴油（<code>offhire_mgo_fuel_deduction_reconciled == False</code>）。网关在 <code>15ms</code> 内当场拒付并要求扣减！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sov_dnv_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CABOTAGE_BREACH_OR_EXPIRED_DNV_DP2_FMEA_TRIALS_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查海事局沿海贸易权（Cabotage / Jones Act）许可与 DNV 船级社证书库，检出该船 IMCA M 103 年度 DP2 冗余故障模式试航（FMEA Trials）已逾期或缺失外籍船沿海作业豁免，立即冻结期租付款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sov_buy_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OFFSHORE_SUBSTATION_CHARGING_BUOY_HYBRID_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 对接海上风电场内部海上升压站（OSS）系泊充电浮标计量账本，确认夜间待命期使用风场自发绿电为母船混合动力电池组补能，可直接抵扣高价船用柴油费立省 <code>$54,000.00</code>（净付降至 <code>$366,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 测波浮标 Hs 对账吻合 + DP2/W2W 栈桥零故障 + 停租燃油净额剥离：已自动清算 (VERIFIED_OFFSHORE_WIND_SOV_CHARTER_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零机械故障骗天气待命、零停租柴油转嫁</strong>：SOV 运维母船半月度期租与燃油账单已完成 BIMCO WINDTIME 遥测核销（<code>$420,000.00</code>）！" +
     "</div>";
 }}
 

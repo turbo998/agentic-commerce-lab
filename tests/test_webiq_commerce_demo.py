@@ -5695,6 +5695,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("snow-plow-avl-salt-sandbox", demo_zh)
 
+    def test_offshore_wind_sov_charter_dp2_wave_height_mandate_vs_breakdown_weather_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_offshore_wind_sov_charter_dp2_policy,
+        )
+
+        # 1. Verified Waverider buoy Hs + DP2/W2W gangway + off-hire fuel carve-out -> 200 OK ($420,000)
+        commit_ok = evaluate_offshore_wind_sov_charter_dp2_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sov_cents, 42000000)
+
+        # 2. Mechanical gangway/DP2 breakdown disguised as weather standby -> 403 blocked in 12ms
+        brk_403 = evaluate_offshore_wind_sov_charter_dp2_policy(
+            waverider_hs_and_dp2_gangway_uptime_verified=False,
+        )
+        self.assertFalse(brk_403.allowed)
+        self.assertEqual(brk_403.http_status, 403)
+        self.assertEqual(
+            brk_403.sov_lane,
+            "MECHANICAL_BREAKDOWN_DISGUISED_AS_WEATHER_STANDBY_BLOCKED",
+        )
+
+        # 3. Uncredited MGO bunker fuel burned during Off-Hire window -> 422 blocked in 15ms
+        mgo_422 = evaluate_offshore_wind_sov_charter_dp2_policy(
+            offhire_mgo_fuel_deduction_reconciled=False,
+        )
+        self.assertFalse(mgo_422.allowed)
+        self.assertEqual(mgo_422.http_status, 422)
+        self.assertEqual(
+            mgo_422.sov_lane,
+            "UNCREDITED_OFFHIRE_MGO_BUNKER_CONSUMPTION_BLOCKED",
+        )
+
+        # 4. Web IQ detects cabotage violation or expired DNV annual DP2 FMEA trials -> 451 blocked in 310ms
+        dnv_451 = evaluate_offshore_wind_sov_charter_dp2_policy(
+            webiq_cabotage_and_dnv_dp_trials_clean=False,
+        )
+        self.assertFalse(dnv_451.allowed)
+        self.assertEqual(dnv_451.http_status, 451)
+
+        # 5. Web IQ discovers OSS charging buoy hybrid green power saving $54,000 ($366,000 net) -> 409 Confirm
+        buy_409 = evaluate_offshore_wind_sov_charter_dp2_policy(
+            offshore_charging_buoy_hybrid_savings_cents=5400000,
+        )
+        self.assertFalse(buy_409.allowed)
+        self.assertEqual(buy_409.http_status, 409)
+        self.assertEqual(buy_409.settled_sov_cents, 36600000)
+        self.assertEqual(buy_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["offshore_sov_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("offshore-wind-sov-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

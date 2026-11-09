@@ -112,6 +112,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 78 (Subsea & Terrestrial Dark-Fiber / 400G Wavelength IRU, Bidirectional OTDR & Diverse-Conduit KMZ Escrow vs. Collapsed-Path Broker Fraud)**: **[Subsea & Terrestrial Dark-Fiber / 400G Wavelength IRU, Bidirectional OTDR & Diverse-Conduit KMZ Escrow vs. Collapsed-Path Broker Fraud: Architecture Selection & First-Principles FAQ](docs/subsea-dark-fiber-iru-otdr-diverse-conduit-mandate-vs-collapsed-path-broker-faq.en.md)**
 - **Topic 79 (Film & TV Production Completion-Bond, Qualified Local Tax-Credit & SAG-AFTRA Lockbox Escrow vs. Unaudited Drawdown Overruns)**: **[Film & TV Production Completion-Bond, Qualified Local Tax-Credit & SAG-AFTRA Lockbox Escrow vs. Unaudited Drawdown Overruns: Architecture Selection & First-Principles FAQ](docs/film-tv-production-completion-bond-tax-credit-mandate-vs-unaudited-drawdown-overrun-faq.en.md)**
 - **Topic 80 (Municipal & Commercial Snow-Plow AVL, Hydraulic Blade-Down & Closed-Loop Salt-Spreader Escrow vs. Ghost-Pass Overbilling)**: **[Municipal & Commercial Snow-Plow AVL, Hydraulic Blade-Down & Closed-Loop Salt-Spreader Escrow vs. Ghost-Pass Overbilling: Architecture Selection & First-Principles FAQ](docs/municipal-snow-plow-avl-blade-down-salt-telemetry-mandate-vs-ghost-pass-overbilling-faq.en.md)**
+- **Topic 81 (Offshore Wind SOV Charter, DP2 Motion-Compensated Gangway & Significant Wave-Height Hs Escrow vs. Breakdown-as-Weather Overbilling)**: **[Offshore Wind SOV Charter, DP2 Motion-Compensated Gangway & Significant Wave-Height ($H_s$) Escrow vs. Breakdown-as-Weather Overbilling: Architecture Selection & First-Principles FAQ](docs/offshore-wind-sov-charter-dp2-wave-height-mandate-vs-breakdown-weather-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -272,6 +273,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-09 Film & TV Production Completion Bond, Tax-Credit & SAG-AFTRA Mandate Visual Summary](assets/svg/81-film-tv-production-completion-bond-tax-credit-2026-11-09.svg)
 
 ![2026-11-09 Municipal & Commercial Snow-Plow AVL, Blade-Down & Salt-Spreader Mandate Visual Summary](assets/svg/82-municipal-snow-plow-avl-blade-down-salt-telemetry-2026-11-09.svg)
+
+![2026-11-09 Offshore Wind SOV Charter, DP2 Gangway & Hs Wave-Height Mandate Visual Summary](assets/svg/83-offshore-wind-sov-charter-dp2-wave-height-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
