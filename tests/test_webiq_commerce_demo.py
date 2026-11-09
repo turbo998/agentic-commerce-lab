@@ -5134,6 +5134,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("chemical-isotank-sandbox", demo_zh)
 
+    def test_automotive_dealership_floorplan_vin_telemetry_mandate_vs_sold_out_of_trust_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_automotive_dealership_floorplan_vin_policy,
+        )
+
+        # 1. CAN-bus VIN on lot + exclusive UCC-1/e-MSO lien + clean NHTSA -> 200 settled ($210,000)
+        commit_ok = evaluate_automotive_dealership_floorplan_vin_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_floorplan_cents, 21000000)
+
+        # 2. Sold-Out-of-Trust (SOT) off-lot float fraud or >250mi demo breach -> 403 blocked in 12ms
+        sot_403 = evaluate_automotive_dealership_floorplan_vin_policy(
+            obd2_uwb_lot_presence_and_odometer_verified=False,
+        )
+        self.assertFalse(sot_403.allowed)
+        self.assertEqual(sot_403.http_status, 403)
+        self.assertEqual(
+            sot_403.floorplan_lane,
+            "SOLD_OUT_OF_TRUST_OR_ODOMETER_DEMO_BREACH_BLOCKED",
+        )
+
+        # 3. Cross-lender Double-Flooring duplicate VIN pledge -> 422 blocked in 15ms
+        dbl_422 = evaluate_automotive_dealership_floorplan_vin_policy(
+            ucc1_nmvtis_single_lien_verified=False,
+        )
+        self.assertFalse(dbl_422.allowed)
+        self.assertEqual(dbl_422.http_status, 422)
+        self.assertEqual(
+            dbl_422.floorplan_lane,
+            "DOUBLE_FLOORING_DUPLICATE_VIN_LIEN_BLOCKED",
+        )
+
+        # 4. Web IQ detects open NHTSA Stop-Sale recall or NMVTIS flood title -> 451 blocked in 310ms
+        nht_451 = evaluate_automotive_dealership_floorplan_vin_policy(
+            webiq_nhtsa_stop_sale_and_title_brand_clean=False,
+        )
+        self.assertFalse(nht_451.allowed)
+        self.assertEqual(nht_451.http_status, 451)
+
+        # 5. Web IQ discovers OEM 30-day in-transit subvention saving $9,600 ($200,400 net) -> 409 Confirm
+        sub_409 = evaluate_automotive_dealership_floorplan_vin_policy(
+            oem_in_transit_subvention_savings_cents=960000,
+        )
+        self.assertFalse(sub_409.allowed)
+        self.assertEqual(sub_409.http_status, 409)
+        self.assertEqual(sub_409.settled_floorplan_cents, 20040000)
+        self.assertEqual(sub_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["auto_floorplan_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("auto-floorplan-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

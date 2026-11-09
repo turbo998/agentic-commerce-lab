@@ -435,6 +435,11 @@
     "isotank_settlement_latency_ms": 265,
     "prior_cargo_block_latency_ms": 12
   },
+  "auto_floorplan_guards": {
+    "all_passed": true,
+    "floorplan_settlement_latency_ms": 265,
+    "sot_fraud_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
