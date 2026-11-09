@@ -3906,6 +3906,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cre-nnn-cam-sandbox", demo_zh)
 
+    def test_commercial_trucking_fuel_card_telematics_j1939_mandate_vs_skimming_siphoning_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_trucking_fuel_telematics_policy,
+        )
+
+        # 1. ELD GPS within 150m + J1939 tank delta matches 250 gal (#2 ULSD) -> 200 settled ($950)
+        commit_ok = evaluate_commercial_trucking_fuel_telematics_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_fuel_cents, 95000)
+
+        # 2. Skimmed card swiped 400 miles away from tractor ELD GPS -> 403 blocked in 12ms
+        gps_403 = evaluate_commercial_trucking_fuel_telematics_policy(
+            gps_pump_proximity_matched=False,
+        )
+        self.assertFalse(gps_403.allowed)
+        self.assertEqual(gps_403.http_status, 403)
+        self.assertEqual(
+            gps_403.fuel_lane, "GPS_PUMP_PROXIMITY_GHOST_FUELING_BLOCKED"
+        )
+
+        # 3. Side-tank siphoning (250 gal billed vs +160 gal in tank) or gas grade -> 422 blocked in 15ms
+        j1939_422 = evaluate_commercial_trucking_fuel_telematics_policy(
+            j1939_tank_delta_and_grade_verified=False,
+        )
+        self.assertFalse(j1939_422.allowed)
+        self.assertEqual(j1939_422.http_status, 422)
+        self.assertEqual(
+            j1939_422.fuel_lane, "J1939_TANK_LEVEL_DELTA_OR_FUEL_GRADE_BREACH"
+        )
+
+        # 4. Web IQ detects water-in-diesel contamination citation at station -> 451 blocked in 310ms
+        qual_451 = evaluate_commercial_trucking_fuel_telematics_policy(
+            webiq_station_fuel_quality_and_ifta_clean=False,
+        )
+        self.assertFalse(qual_451.allowed)
+        self.assertEqual(qual_451.http_status, 451)
+
+        # 5. Web IQ discovers OPIS Cost-Plus + IFTA pre-tax stop saving $135 ($815 net) -> 409 Confirm
+        opis_409 = evaluate_commercial_trucking_fuel_telematics_policy(
+            opis_ifta_corridor_savings_cents=13500,
+        )
+        self.assertFalse(opis_409.allowed)
+        self.assertEqual(opis_409.http_status, 409)
+        self.assertEqual(opis_409.settled_fuel_cents, 81500)
+        self.assertEqual(opis_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["fleet_fuel_telematics_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("fleet-fuel-telematics-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

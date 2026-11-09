@@ -325,6 +325,11 @@
     "cre_settlement_latency_ms": 265,
     "capex_passthrough_block_latency_ms": 12
   },
+  "fleet_fuel_telematics_guards": {
+    "all_passed": true,
+    "fuel_settlement_latency_ms": 265,
+    "ghost_fueling_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -1674,6 +1674,24 @@
         <div id="cre-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Trucking Fuel-Card Telematics & J1939 Tank-Delta Sandbox (Round 49 FAQ Companion) -->
+      <div class="finops-box" id="fleet-fuel-telematics-sandbox" style="margin-top:12px;border-color:#EF4444;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-fl-title">🚛 重卡干线物流油卡车联网与油箱液位核验架构：150m 围栏与 J1939 令牌 (fleet_fuel_telematics_mandate_...) vs 异地盗刷与偷油决策器 (Round 49 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. Class-8 重卡 250加仑柴油加注 ($950.00)、150米 ELD GPS 围栏、SAE J1939 油箱液位增量与 Web IQ 跨州除税净价场景 (Fleet Fuel Telematics Scenario):</span></label>
+          <select id="fl-select" onchange="updateFleetFuelTelematicsSandbox()">
+            <option value="fl_commit_ok">⚡ 车机 GPS 在油枪 150m 围栏内 + 油枪 250 加仑 == J1939 油箱液位增量 (#2 ULSD)：265ms 自动放款 $950.00! (Act automatically)</option>
+            <option value="fl_gps_403">🛑 异地克隆磁条卡盗刷拦截 (Ghost Fueling)：卡车 ELD GPS 停在 400 英里外亚特兰大，克隆卡在迈阿密刷卡 → 12ms 触发 HTTP 403 锁死油枪!</option>
+            <option value="fl_j1939_422">🚨 挂副桶偷油 / 私家车混加汽油拦截：油枪计费 250 加仑但 J1939 油箱仅增加 160 加仑 (90 加仑被偷灌铁桶) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="fl_qual_451">🛑 油站储罐渗水 / 劣质柴油通报拦截：Web IQ /v3/browse 核查州度量衡局通报该站柴油含水超标 (防毁 $15k 喷油嘴) → 310ms 触发 HTTP 451 禁停!</option>
+            <option value="fl_opis_409">🧑‍⚖️ Web IQ 检出前方 8 英里跨州协议站按 OPIS 批发加点 + IFTA 除税净价结算可立省 $135.00 (净油费降至 $815.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="fl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2161,6 +2179,7 @@ function renderAll() {
   updateIoTeSIMRoamingSandbox();
   updateDCTStipendAdherenceSandbox();
   updateCRENNNCAMSandbox();
+  updateFleetFuelTelematicsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -4810,6 +4829,56 @@ function updateCRENNNCAMSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 零 CapEx 转嫁 + BACnet 分表与市政税册 1:1 吻合：已自动完成 NNN CAM 清算 (VERIFIED_NNN_CAM_RECONCILIATION_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零公摊水分、守住 60 天审计期</strong>：GL 明细科目、店内 BACnet 分表读数、5% 可控涨幅封顶及政府实缴房产税全部核对无误，265ms 自动放款 <code>$42,000.00</code>！" +
+    "</div>";
+}
+
+function updateFleetFuelTelematicsSandbox() {
+  var selEl = document.getElementById("fl-select");
+  var outEl = document.getElementById("fl-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "fl_gps_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GPS_PUMP_PROXIMITY_GHOST_FUELING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "车联网油卡网关比对重卡 ELD 实时 GPS 坐标，发现车辆正停在 400 英里外的亚特兰大仓库，而油卡在迈阿密加油站被刷（<code>gps_pump_proximity_matched=False</code>）！已在 <code>12ms</code> 内硬锁死油枪电磁阀并冻结被侧录克隆磁条卡，保住 <code>$950.00</code> 燃油资金！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "fl_j1939_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 J1939_TANK_LEVEL_DELTA_OR_FUEL_GRADE_BREACH (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "油站上报加注 <code>250 加仑 ($950.00)</code>，但重卡 SAE J1939 CAN 总线超声波液位传感器显示双油箱实际仅增加 <code>160 加仑</code>（其余 <code>90 加仑 / $342.00</code> 被偷灌入伴行车辆铁桶）或混入无铅汽油！网关已在 <code>15ms</code> 内拒付异常差额并触发车外摄像头抓拍！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "fl_qual_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CONTAMINATED_DIESEL_ALERT_OR_IFTA_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查州农业与度量衡局抽检公告，检出该服务区因地下储油罐渗水导致柴油乳化超标，已在 <code>310ms</code> 内阻断加注，保护重卡价值 <code>$15,000</code> 的高压共轨喷油系统！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "fl_opis_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OPIS_COST_PLUS_IFTA_CORRIDOR_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 综合计算各州季度 IFTA 燃油税率表与 OPIS 柴油批发基准价，发现前方 8 英里跨州协议油站按 <code>除税净价 + OPIS 批发加点</code> 结算可为 250 加仑加注立省 <code>$135.00</code>（净成本从 <code>$950.00</code> 降至 <code>$815.00</code>），建议一键确认导流！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 150m 电子围栏重合 + J1939 油箱 250 加仑全数进箱：已自动结算 (VERIFIED_J1939_TELEMATICS_FUEL_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>人车油枪三位一体、自动生成 IFTA 税表</strong>：重卡位置与油箱液位增量 100% 吻合，265ms 自动放款 <code>$950.00</code> 并同步记入州际燃油税退税账本！" +
     "</div>";
 }
 
