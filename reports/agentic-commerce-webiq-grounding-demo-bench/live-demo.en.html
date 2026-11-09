@@ -2016,6 +2016,24 @@
         <div id="acmi-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Sports & Athlete NIL Sponsorship Morals Clause & Audience Mandate Sandbox (Round 68 FAQ Companion) -->
+      <div class="finops-box" id="athlete-nil-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-nil-title">🏈 体育赛事与运动员姓名肖像权 (NIL) 代言托管架构：真实受众排他与道德条款令牌 (athlete_nil_sponsorship_mandate_...) vs 一次性预付翻车决策器 (Round 68 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 运动员/电竞选手赛季 NIL 代言里程碑 ($60,000.00)、第一方 OAuth 真实受众排他、NCAA/CSC 在籍备案与 Web IQ 禁赛/群像联签场景 (Athlete NIL Scenario):</span></label>
+          <select id="nil-select" onchange="updateAthleteNILSandbox()">
+            <option value="nil_commit_ok">⚡ 第一方真实人类粉丝 &gt;=85% 且无竞品同框 + NCAA/CSC 备案与在籍出赛达标 + 无禁赛且已标 #ad：265ms 自动放款 $60,000.00! (Act automatically)</option>
+            <option value="nil_bot_403">🛑 48% 刷量僵尸粉或赛后采访穿戴竞品 Logo 拦截：经纪公司买假粉充数或球员直播喝竞品饮料违约 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="nil_ncaa_422">🚨 缺失 NCAA/CSC (&gt;=$600) 合规备案或中途转学弃赛拦截：球员已进 Transfer Portal 转学池或拒绝参加碗赛 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="nil_mor_451">🛑 联赛纪律禁赛/兴奋剂触发道德条款或漏标 FTC #ad 冻结：Web IQ /v3/browse 检出官方禁赛通报或违规隐性广告 → 310ms 触发 HTTP 451!</option>
+            <option value="nil_grp_409">🧑‍⚖️ Web IQ 检出采用球队官方 5 人首发群像联签包 (含伤退自动替补上场条款) 替代单人高溢价散签可立省 $10,800.00 (净付 $49,200.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="nil-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2522,6 +2540,7 @@ function renderAll() {
   updateLegalLEDESUTBMSSandbox();
   updateIndustrialWastewaterSandbox();
   updateAviationACMISandbox();
+  updateAthleteNILSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -6106,6 +6125,55 @@ function updateAviationACMISandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ ACARS OOOI 硬件轮挡分钟 100% 吻合 + AOG 保底已核减 + IOSA/EU261 合规：已自动放款 (VERIFIED_AVIATION_ACMI_OOOI_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零趴窝空租冤枉费、零手写日志水分</strong>：宽体机月度 100 轮挡小时 ACMI 湿租账单已完成精确清算并归档（<code>$450,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAthleteNILSandbox() {
+  var selEl = document.getElementById("nil-select");
+  var outEl = document.getElementById("nil-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "nil_bot_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BOT_FOLLOWER_INFLATION_OR_COMPETITOR_AMBUSH_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "第一方创作者 OAuth API 检出账号粉丝中 <code>48% 为刷量僵尸粉</code>（高于 15% 红线）或计算机视觉巡检发现在赛后电视采访中公然穿戴竞品 Logo（<code>verified_human_audience_and_exclusivity_passed == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$60,000.00</code> 代言费释放！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "nil_ncaa_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_NCAA_CSC_DISCLOSURE_OR_ROSTER_ELIGIBILITY_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "高校 NIL 协议缺失 <code>&gt;= $600</code> 大学体育委员会（CSC / NIL Go）公平市值合规备案回执，或球员已进入转学池（Transfer Portal）/ 宣布放弃参加季后碗赛（<code>ncaa_csc_disclosure_and_active_roster_verified == False</code>）。网关在 <code>15ms</code> 内当场拒付未履约分期款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "nil_mor_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LEAGUE_DISCIPLINARY_MORALS_CLAUSE_OR_FTC_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查联赛官方纪律禁赛公报（NCAA/NFL/WADA/ESIC）与 FTC <code>16 CFR Part 255</code> 商业披露规范，检出代言人被处以禁赛处罚（触发道德条款 Morals Clause）或发帖漏标 <code>#ad</code> 标识，立即冻结托管资金！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "nil_grp_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GROUP_ROSTER_CO_LICENSING_BUNDLE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对球队/球员工会官方群像授权刊例，发现采购 <code>5 人首发阵容群像联签包（自带伤病自动替补条款）</code> 比单人高溢价散签立省 <code>$10,800.00</code>（净支出从 <code>$60,000.00</code> 降至 <code>$49,200.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 第一方真实受众与排他核验通过 + NCAA/CSC 在籍完赛 + 道德/FTC 合规：已自动放款 (VERIFIED_ATHLETE_NIL_MILESTONE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零僵尸粉注水、零转学逃单与竞品背刺</strong>：赛季 NIL 代言里程碑已完成清算并归档 FTC `#ad` 与 CSC 合规档案（<code>$60,000.00</code>）！" +
     "</div>";
 }
 

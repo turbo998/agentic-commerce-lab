@@ -99,6 +99,7 @@
 - **专题 65（企业法务外部律所电子账单 Legal e-Billing LEDES 1998B 与统一任务代码 UTBMS 合规审计 Corporate Legal Outside-Counsel e-Billing LEDES & UTBMS Block-Billing Clawback Mandate 架构：禁止打包混记工时与新律师旁听剔除令牌 `legal_ledes_utbms_mandate_...` + Web IQ 法院卷宗开庭时长核验与 ALSP 电子取证套利 vs 传统按 PDF 模糊总工时盲付）**：**[《企业法务外部律所电子账单（Legal e-Billing `LEDES 1998B / XML`）与统一任务代码（UTBMS）合规审计（Corporate Legal Outside-Counsel e-Billing LEDES & UTBMS Block-Billing Clawback Mandate）架构：禁止打包混记工时（Anti-Block-Billing）与新律师旁听剔除令牌（`legal_ledes_utbms_mandate_...` + Web IQ 法院卷宗开庭时长核验与 ALSP 电子取证套利）vs 传统按 PDF 模糊总工时盲付选型与原理解析 FAQ》](docs/corporate-legal-ebilling-ledes-utbms-mandate-vs-block-billing-padding-faq.md)**
 - **专题 66（工业污水处理与市政排污超标附加费 Industrial Wastewater Treatment & Municipal Sewer COD/Ammonia Telemetry Surcharge Mandate 架构：24 小时流量加权复合采样与冷却蒸发核减令牌 `industrial_wastewater_cod_mandate_...` + Web IQ EPA NPDES 合规与工业共生碳源核验 vs 传统瞬时抓样天价外推与按进水表盲收）**：**[《工业污水处理与市政排污超标附加费（Industrial Wastewater Treatment & Municipal Sewer COD/Ammonia Telemetry Surcharge Mandate）架构：24 小时流量加权复合采样与冷却蒸发核减令牌（`industrial_wastewater_cod_mandate_...` + Web IQ EPA NPDES 合规与工业共生碳源核验）vs 传统瞬时抓样天价外推与按进水表盲收选型与原理解析 FAQ》](docs/industrial-wastewater-cod-ammonia-telemetry-mandate-vs-grab-sample-surcharge-faq.md)**
 - **专题 67（商业航空飞机湿租 ACMI Wet-Lease 轮挡时间 OOOI Block-Hour 与飞机停场 AOG 免责扣减清算 Commercial Airline ACMI Wet-Lease Block-Hour & AOG Tech-Log Mandate 架构：ACARS 自动轮挡遥测与机械故障保底工时豁免令牌 `aviation_acmi_wetlease_mandate_...` + Web IQ IOSA 安全库/EU261 追偿与潮租 AMI 套利核验 vs 传统按固定保底飞行小时盲付在飞机趴窝期间白交租金）**：**[《商业航空飞机湿租（ACMI Wet-Lease）轮挡时间（OOOI Block-Hour）与飞机停场（AOG）免责扣减清算（Commercial Airline ACMI Wet-Lease Block-Hour & AOG Tech-Log Mandate）架构：ACARS 自动轮挡遥测与机械故障保底工时豁免令牌（`aviation_acmi_wetlease_mandate_...` + Web IQ IOSA 安全库/EU261 追偿与潮租 AMI 套利核验）vs 传统按固定保底飞行小时盲付在飞机趴窝期间白交租金选型与原理解析 FAQ》](docs/commercial-airline-acmi-wet-lease-block-hour-mandate-vs-aog-guaranteed-minimum-faq.md)**
+- **专题 68（体育赛事与运动员姓名肖像权代言 Sports & Athlete NIL Sponsorship、道德条款 Morals Clause 与真实粉丝触达托管 Sports & Athlete NIL Sponsorship Morals Clause & Verified-Audience Escrow Mandate 架构：NCAA/CSC 合规披露、在籍出场与视觉排他性令牌 `athlete_nil_sponsorship_mandate_...` + Web IQ 联赛禁赛通报与群像联签核验 vs 传统一次性预付全款遭僵尸粉与转学违约）**：**[《体育赛事与运动员姓名肖像权代言（Sports & Athlete NIL Sponsorship）、道德条款（Morals Clause）与真实粉丝触达托管（Sports & Athlete NIL Sponsorship Morals Clause & Verified-Audience Escrow Mandate）架构：NCAA/CSC 合规披露、在籍出场与视觉排他性令牌（`athlete_nil_sponsorship_mandate_...` + Web IQ 联赛禁赛通报与群像联签核验）vs 传统一次性预付全款遭僵尸粉与转学违约选型与原理解析 FAQ》](docs/sports-athlete-nil-sponsorship-morals-audience-mandate-vs-upfront-payout-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -233,6 +234,8 @@
 ![2026-11-09 工业污水处理与市政排污超标附加费遥测托管架构一图流](assets/svg/68-industrial-wastewater-cod-telemetry-2026-11-09.svg)
 
 ![2026-11-09 商业航空飞机湿租 ACMI 轮挡小时与 AOG 停场扣减架构一图流](assets/svg/69-commercial-airline-acmi-wet-lease-2026-11-09.svg)
+
+![2026-11-09 体育赛事与运动员姓名肖像权 NIL 代言托管架构一图流](assets/svg/70-sports-athlete-nil-sponsorship-escrow-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

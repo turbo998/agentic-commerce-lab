@@ -4966,6 +4966,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aviation-acmi-sandbox", demo_zh)
 
+    def test_sports_athlete_nil_sponsorship_morals_audience_mandate_vs_upfront_payout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_sports_athlete_nil_sponsorship_policy,
+        )
+
+        # 1. Authentic human audience + NCAA/CSC active roster + clean morals/FTC -> 200 settled ($60,000)
+        commit_ok = evaluate_sports_athlete_nil_sponsorship_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_nil_cents, 6000000)
+
+        # 2. 48% bot followers or competitor logo ambush breach -> 403 blocked in 12ms
+        bot_403 = evaluate_sports_athlete_nil_sponsorship_policy(
+            verified_human_audience_and_exclusivity_passed=False,
+        )
+        self.assertFalse(bot_403.allowed)
+        self.assertEqual(bot_403.http_status, 403)
+        self.assertEqual(
+            bot_403.nil_lane,
+            "BOT_FOLLOWER_INFLATION_OR_COMPETITOR_AMBUSH_BLOCKED",
+        )
+
+        # 3. Missing NCAA/CSC disclosure receipt or transfer-portal opt-out -> 422 blocked in 15ms
+        ncaa_422 = evaluate_sports_athlete_nil_sponsorship_policy(
+            ncaa_csc_disclosure_and_active_roster_verified=False,
+        )
+        self.assertFalse(ncaa_422.allowed)
+        self.assertEqual(ncaa_422.http_status, 422)
+        self.assertEqual(
+            ncaa_422.nil_lane,
+            "MISSING_NCAA_CSC_DISCLOSURE_OR_ROSTER_ELIGIBILITY_BLOCKED",
+        )
+
+        # 4. Web IQ detects official league suspension or omitted FTC #ad tag -> 451 blocked in 310ms
+        mor_451 = evaluate_sports_athlete_nil_sponsorship_policy(
+            webiq_morals_clause_and_ftc_disclosure_clean=False,
+        )
+        self.assertFalse(mor_451.allowed)
+        self.assertEqual(mor_451.http_status, 451)
+
+        # 5. Web IQ discovers 5-player group co-licensing bundle saving $10,800 ($49,200 net) -> 409 Confirm
+        grp_409 = evaluate_sports_athlete_nil_sponsorship_policy(
+            group_roster_colicensing_savings_cents=1080000,
+        )
+        self.assertFalse(grp_409.allowed)
+        self.assertEqual(grp_409.http_status, 409)
+        self.assertEqual(grp_409.settled_nil_cents, 4920000)
+        self.assertEqual(grp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["athlete_nil_sponsorship_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("athlete-nil-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
