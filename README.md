@@ -74,6 +74,7 @@
 - **专题 40（医疗处方药与家用器械 DME 医保预授权及 HSA/FSA 混合分账 Healthcare Prior-Auth & HSA/FSA Split-Tender Mandate 架构：EDI 278 预授权绑定与 IIAS 合规分账令牌 `healthcare_prior_auth_mandate_...` + Web IQ 医保目录与药厂援助卡核验 vs 传统盲刷拒赔天价账单）**：**[《医疗处方药与家用器械（DME）医保预授权及 HSA/FSA 混合分账（Healthcare Prior-Auth & HSA/FSA Split-Tender Mandate）架构：EDI 278 预授权绑定与 IIAS 合规分账令牌（`healthcare_prior_auth_mandate_...` + Web IQ 医保目录与药厂援助卡核验）vs 传统盲刷拒赔天价账单（Surprise Balance Billing）选型与原理解析 FAQ》](docs/healthcare-prior-auth-hsa-split-tender-vs-claim-denial-faq.md)**
 - **专题 41（新能源物流车队充电、ISO 15118 即插即充与需量电费封顶 EV Fleet Charging, ISO 15118 Plug-and-Charge & Demand-Charge Cap Mandate 架构：OCPP 2.0.1 计量签名与尖峰削峰令牌 `ev_fleet_energy_mandate_...` + Web IQ 分时电价与 V2G 补贴核验 vs 传统并发快充触发变压器天价需量罚款）**：**[《新能源物流车队充电、ISO 15118 即插即充与需量电费封顶（EV Fleet Charging, ISO 15118 Plug-and-Charge & Demand-Charge Cap Mandate）架构：OCPP 2.0.1 计量签名与尖峰削峰令牌（`ev_fleet_energy_mandate_...` + Web IQ 分时电价与 V2G 补贴核验）vs 传统并发快充触发变压器天价需量罚款（Demand-Charge Spike）选型与原理解析 FAQ》](docs/ev-fleet-iso15118-charging-tariff-mandate-vs-demand-charge-spike-faq.md)**
 - **专题 42（AI 训练语料与商业 SDK 采购版权/开源合规 AI Dataset & Commercial SDK SPDX SBOM & C2PA Royalty Mandate 架构：SPDX 3.0 防传染与 C2PA 版权溯源令牌 `dataset_sbom_royalty_mandate_...` + Web IQ 诉讼巡检与版权直签核验 vs 传统盲买夹带 AGPL/盗版语料染毒）**：**[《AI 训练语料与商业 SDK 采购版权/开源合规（AI Dataset & Commercial SDK SPDX SBOM & C2PA Royalty Mandate）架构：SPDX 3.0 防传染与 C2PA 版权溯源令牌（`dataset_sbom_royalty_mandate_...` + Web IQ 诉讼巡检与版权直签核验）vs 传统盲买夹带 AGPL/盗版语料染毒选型与原理解析 FAQ》](docs/ai-dataset-sdk-spdx-sbom-royalty-mandate-vs-agpl-ip-contamination-faq.md)**
+- **专题 43（大宗农产品寻源、粮仓近红外水分遥测与气象参数险对冲 Agricultural Commodity Moisture Telemetry & Parametric Weather Hedge Mandate 架构：NIR 干物质折算与毒素门禁令牌 `agri_moisture_basis_mandate_...` + Web IQ 零毁林 EUDR 与 NOAA 气象指数核验 vs 传统过磅掺水骗秤与霉变货损）**：**[《大宗农产品寻源、粮仓近红外水分遥测与气象参数险对冲（Agricultural Commodity Moisture Telemetry & Parametric Weather Hedge Mandate）架构：NIR 干物质折算与毒素门禁令牌（`agri_moisture_basis_mandate_...` + Web IQ 零毁林 EUDR 与 NOAA 气象指数核验）vs 传统过磅掺水骗秤（Water-Weight Fraud）与霉变货损选型与原理解析 FAQ》](docs/agri-commodity-moisture-telemetry-parametric-hedge-vs-adulteration-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -158,6 +159,8 @@
 ![2026-11-09 新能源物流车队 ISO 15118 充电与需量封顶架构一图流](assets/svg/43-ev-fleet-iso15118-charging-tariff-2026-11-09.svg)
 
 ![2026-11-09 AI 训练语料与商业 SDK 采购版权及 SPDX SBOM 架构一图流](assets/svg/44-ai-dataset-sdk-spdx-sbom-royalty-2026-11-09.svg)
+
+![2026-11-09 大宗农产品近红外水分遥测与气象参数险对冲架构一图流](assets/svg/45-agri-commodity-moisture-parametric-hedge-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

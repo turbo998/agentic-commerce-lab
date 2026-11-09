@@ -3580,6 +3580,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("dataset-sbom-royalty-sandbox", demo_zh)
 
+    def test_agri_commodity_moisture_telemetry_parametric_hedge_vs_adulteration_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agri_commodity_moisture_parametric_hedge_policy,
+        )
+
+        # 1. Clean 13.8% dry-matter + <5 ppb aflatoxin + EUDR clean -> 200 settled ($64,000)
+        commit_ok = evaluate_agri_commodity_moisture_parametric_hedge_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_commodity_cents, 6400000)
+
+        # 2. Aflatoxin (>20 ppb) or mold spoilage breach -> 403 rejected in 12ms
+        spoil_403 = evaluate_agri_commodity_moisture_parametric_hedge_policy(
+            aflatoxin_or_spoilage_breach=True,
+        )
+        self.assertFalse(spoil_403.allowed)
+        self.assertEqual(spoil_403.http_status, 403)
+        self.assertEqual(
+            spoil_403.agri_lane, "AFLATOXIN_OR_MOISTURE_SPOILAGE_REJECTED"
+        )
+
+        # 3. Wet grain billed at gross weight without shrinkage deduction -> 422 blocked in 15ms
+        wet_422 = evaluate_agri_commodity_moisture_parametric_hedge_policy(
+            moisture_shrinkage_deducted=False,
+        )
+        self.assertFalse(wet_422.allowed)
+        self.assertEqual(wet_422.http_status, 422)
+        self.assertEqual(
+            wet_422.agri_lane, "UNADJUSTED_WATER_WEIGHT_BILLING_BLOCKED"
+        )
+
+        # 4. Web IQ detects EUDR deforestation or phytosanitary quarantine -> 451 blocked in 310ms
+        eudr_451 = evaluate_agri_commodity_moisture_parametric_hedge_policy(
+            webiq_eudr_and_phytosanitary_clean=False,
+        )
+        self.assertFalse(eudr_451.allowed)
+        self.assertEqual(eudr_451.http_status, 451)
+
+        # 5. Web IQ confirms NOAA drought index unlocking $5,200 parametric payout ($58,800 net) -> 409 Confirm
+        noaa_409 = evaluate_agri_commodity_moisture_parametric_hedge_policy(
+            parametric_weather_payout_cents=520000,
+        )
+        self.assertFalse(noaa_409.allowed)
+        self.assertEqual(noaa_409.http_status, 409)
+        self.assertEqual(noaa_409.settled_commodity_cents, 5880000)
+        self.assertEqual(noaa_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agri_moisture_hedge_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agri-moisture-hedge-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
