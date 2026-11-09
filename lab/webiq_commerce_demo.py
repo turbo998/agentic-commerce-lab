@@ -8473,6 +8473,95 @@ def evaluate_event_ticketing_rotating_barcode_policy(
     )
 
 
+@dataclass(frozen=True)
+class CNCMetrologyEscrowVerdict:
+    """Round 45 verdict for On-Demand CNC/3D Manufacturing, CAD Enclave & CMM Metrology Escrow Mandate (Count-Locked G-Code Enclave & Signed QIF Metrology Token + Web IQ AS9100 OASIS & 5-Axis Nesting Grounding) vs Raw STEP CAD Exfiltration & Out-of-Tolerance Scrap Payout."""
+
+    allowed: bool
+    http_status: int
+    cnc_lane: str
+    settled_cnc_cents: int
+    local_nesting_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+    *,
+    batch_cnc_cents: int = 3200000,
+    signed_gcode_enclave_bound: bool = True,
+    cmm_tolerance_and_mtr_verified: bool = True,
+    webiq_as9100_oasis_and_itar_clean: bool = True,
+    local_nesting_savings_cents: int = 0,
+) -> CNCMetrologyEscrowVerdict:
+    """Evaluate count-locked CNC/printer enclave G-code binding, signed CMM QIF dimensional tolerance & 3.1 MTR alloy verification, Web IQ IAQG OASIS AS9100 certification check, and direct local 5-axis pallet nesting arbitrage."""
+
+    # 1. Raw Editable .STEP File Export or Unbound G-Code Counter (Over-Run IP Theft) -> HTTP 403
+    if not signed_gcode_enclave_bound:
+        return CNCMetrologyEscrowVerdict(
+            False,
+            403,
+            "UNENCRYPTED_CAD_EXFILTRATION_OR_OVERRUN_BLOCKED",
+            0,
+            0,
+            "raw_editable_step_cad_or_unbound_gcode_counter_blocked_to_prevent_overrun_cloning",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Out-of-Tolerance CMM Runout (>10 microns) or 6061 Alloy Substitution -> HTTP 422
+    if not cmm_tolerance_and_mtr_verified:
+        return CNCMetrologyEscrowVerdict(
+            False,
+            422,
+            "CMM_GD_AND_T_TOLERANCE_OR_MTR_ALLOY_BREACH",
+            0,
+            0,
+            "escrow_frozen_due_to_cmm_tolerance_deviation_or_missing_3_1_mtr_alloy_certificate",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Suspended AS9100D / ISO 13485 Certificate or Export Control Hit via Web IQ -> HTTP 451
+    if not webiq_as9100_oasis_and_itar_clean:
+        return CNCMetrologyEscrowVerdict(
+            False,
+            451,
+            "REVOKED_AS9100_CERT_OR_EXPORT_CONTROL_HOLD",
+            0,
+            0,
+            "webiq_detected_suspended_as9100_certificate_in_iaqg_oasis_registry",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Direct Local 5-Axis Pallet-Pool Nesting Arbitrage -> HTTP 409 Confirm
+    if local_nesting_savings_cents > 0:
+        return CNCMetrologyEscrowVerdict(
+            False,
+            409,
+            "LOCAL_5AXIS_PALLET_NESTING_ARBITRAGE_CONFIRM",
+            batch_cnc_cents - local_nesting_savings_cents,
+            local_nesting_savings_cents,
+            "webiq_found_accredited_local_5axis_pallet_pool_saving_4600_usd_in_broker_fees",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified 50-Cycle Enclave + 6-Micron CMM QIF & 7075-T6 MTR -> Escrow Released
+    return CNCMetrologyEscrowVerdict(
+        True,
+        200,
+        "VERIFIED_CMM_METROLOGY_ESCROW_SETTLED",
+        batch_cnc_cents,
+        0,
+        "enclave_50cycle_lock_and_signed_cmm_qif_metrology_verified_for_escrow_release",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -10798,6 +10887,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phantom_ticket_block_latency_ms": tkt_pdf_403.latency_ms,
     }
 
+    cnc_commit_ok = evaluate_on_demand_cnc_cmm_metrology_escrow_policy()
+    cnc_cad_403 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+        signed_gcode_enclave_bound=False,
+    )
+    cnc_cmm_422 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+        cmm_tolerance_and_mtr_verified=False,
+    )
+    cnc_oas_451 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+        webiq_as9100_oasis_and_itar_clean=False,
+    )
+    cnc_nest_409 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+        local_nesting_savings_cents=460000,
+    )
+    cnc_metrology_escrow_guards = {
+        "all_passed": (
+            cnc_commit_ok.allowed
+            and cnc_commit_ok.settled_cnc_cents == 3200000
+            and not cnc_cad_403.allowed
+            and cnc_cad_403.http_status == 403
+            and not cnc_cmm_422.allowed
+            and cnc_cmm_422.http_status == 422
+            and not cnc_oas_451.allowed
+            and cnc_oas_451.http_status == 451
+            and not cnc_nest_409.allowed
+            and cnc_nest_409.action_pill == "Confirm"
+        ),
+        "cnc_settlement_latency_ms": cnc_commit_ok.latency_ms,
+        "cad_ip_block_latency_ms": cnc_cad_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -10855,6 +10974,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "dataset_sbom_royalty_guards": dataset_sbom_royalty_guards,
         "agri_moisture_hedge_guards": agri_moisture_hedge_guards,
         "event_ticket_provenance_guards": event_ticket_provenance_guards,
+        "cnc_metrology_escrow_guards": cnc_metrology_escrow_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -14564,6 +14684,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="tkt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive On-Demand CNC/3D Manufacturing, CAD Enclave & CMM Metrology Sandbox (Round 45 FAQ Companion) -->
+      <div class="finops-box" id="cnc-metrology-escrow-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cnc-title">⚙️ 按需 CNC/3D 云制造飞地图纸与三坐标公差托管架构：飞地计次与 CMM 令牌 (cnc_metrology_escrow_mandate_...) vs 明文图纸外泄决策器 (Round 45 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 50件五轴精密结构件 ($32,000.00)、机床安全飞地 G-code 计次锁、CMM 三坐标公差 (&lt;=10μm) 与 Web IQ 航空资质/拼单场景 (CNC Metrology Scenario):</span></label>
+          <select id="cnc-select" onchange="updateCNCMetrologyEscrowSandbox()">
+            <option value="cnc_commit_ok">⚡ 飞地计次锁绑定 50 件 + 签名 CMM 三坐标报告 (6μm &lt;= 10μm) 与 7075-T6 材质单合格：265ms 自动放款 $32,000.00! (Act automatically)</option>
+            <option value="cnc_cad_403">🛑 明文 .STEP 原图外泄 / 无飞地计次锁拦截：试图外发可编辑三维原图或存在代工厂夜班偷打 500 件山寨风险 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="cnc_cmm_422">🚨 轴承孔公差超差 (45μm &gt; 10μm) 或 6061 铝冒充 7075 拦截：缺失合格 CMM QIF 报告与 3.1 材质证明 → 15ms 触发 HTTP 422 冻结货款!</option>
+            <option value="cnc_oas_451">🛑 代工厂 AS9100D / ISO 13485 证书被吊销拦截：Web IQ /v3/browse 核查 IAQG OASIS 官方库发现质量认证失效 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="cnc_nest_409">🧑‍⚖️ Web IQ 检出同城认证五轴柔性线存在夜间空闲托盘拼单，省去平台 25% 转包加价与空运费 $4,600.00 (净付 $27,400.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cnc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -15047,6 +15185,7 @@ function renderAll() {{
   updateDatasetSBOMRoyaltySandbox();
   updateAgriMoistureHedgeSandbox();
   updateEventTicketProvenanceSandbox();
+  updateCNCMetrologyEscrowSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17496,6 +17635,56 @@ function updateEventTicketProvenanceSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 主票务账本原子过户 + 销毁旧码重签 NFC 动态票通过：已自动出票 (VERIFIED_ROTATING_BARCODE_TICKET_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>100% 闸机秒过、零隐藏垃圾费</strong>：卖家旧条码种子已作废，4 张 VIP 专属 15 秒轮换动态票根已直推买方票夹，265ms 完成 <code>$3,600.00</code> 全包价交割！" +
+    "</div>";
+}}
+
+function updateCNCMetrologyEscrowSandbox() {{
+  var selEl = document.getElementById("cnc-select");
+  var outEl = document.getElementById("cnc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cnc_cad_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNENCRYPTED_CAD_EXFILTRATION_OR_OVERRUN_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "云制造安全网关检出请求试图外发未加密的明文 <code>.STEP / .IGES</code> 三维设计原图或未绑定机床安全飞地 50 件计次锁（<code>signed_gcode_enclave_bound=False</code>）！已在 <code>12ms</code> 内硬阻断派单，100% 防止核心机械 IP 泄露及代工厂夜班私自超产 500 件山寨零件！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cnc_cmm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CMM_GD_AND_T_TOLERANCE_OR_MTR_ALLOY_BREACH (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "三坐标测量机（CMM QIF）检出轴承配合孔同轴度偏差达 <code>45 μm (&gt; 10 μm 红线)</code>，或光谱仪检出以廉价 6061 铝材冒充航空级 7075-T6（<code>cmm_tolerance_and_mtr_verified=False</code>）！网关已在 <code>15ms</code> 内冻结 <code>$32,000.00</code> 托管货款并触发返工！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cnc_oas_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 REVOKED_AS9100_CERT_OR_EXPORT_CONTROL_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查 IAQG OASIS 全球航空质量体系注册库，检出目标代工厂的 <code>AS9100D / ISO 13485</code> 证书处于暂停吊销状态，已在 <code>310ms</code> 内吊销飞地刀路密钥！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cnc_nest_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LOCAL_5AXIS_PALLET_NESTING_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索同城认证五轴微工厂公开空闲产能表，发现直连拼入本地五轴夜间托盘池（Pallet Pool Nesting）可省去二道撮合平台加价与异地空运费 <code>$4,600.00</code>（净结算额从 <code>$32,000.00</code> 降至 <code>$27,400.00</code>），建议一键确认直连拼单！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 飞地 50 件计次锁 + CMM 实测 6μm 与 7075-T6 材质合格：已自动释放托管款 (VERIFIED_CMM_METROLOGY_ESCROW_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零图纸泄露、微米级精度兜底</strong>：机床飞地已完成 50 件加工并自动销毁刀路密钥，蔡司 CMM QIF 报告与 EN 10204 3.1 材质单核验无误，265ms 自动放款 <code>$32,000.00</code>！" +
     "</div>";
 }}
 

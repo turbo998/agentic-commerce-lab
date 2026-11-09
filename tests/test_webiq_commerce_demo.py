@@ -3689,6 +3689,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("event-ticket-provenance-sandbox", demo_zh)
 
+    def test_on_demand_cnc_3d_manufacturing_cmm_metrology_escrow_vs_cad_ip_theft_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_on_demand_cnc_cmm_metrology_escrow_policy,
+        )
+
+        # 1. Enclave-bound 50-cycle G-code + verified CMM QIF (6um <= 10um) & 7075-T6 MTR -> 200 settled ($32,000)
+        commit_ok = evaluate_on_demand_cnc_cmm_metrology_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cnc_cents, 3200000)
+
+        # 2. Raw editable .STEP file or unbound G-code counter -> 403 blocked in 12ms
+        cad_403 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+            signed_gcode_enclave_bound=False,
+        )
+        self.assertFalse(cad_403.allowed)
+        self.assertEqual(cad_403.http_status, 403)
+        self.assertEqual(
+            cad_403.cnc_lane, "UNENCRYPTED_CAD_EXFILTRATION_OR_OVERRUN_BLOCKED"
+        )
+
+        # 3. 45um CMM runout breach or 6061 alloy substitution -> 422 blocked in 15ms
+        cmm_422 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+            cmm_tolerance_and_mtr_verified=False,
+        )
+        self.assertFalse(cmm_422.allowed)
+        self.assertEqual(cmm_422.http_status, 422)
+        self.assertEqual(
+            cmm_422.cnc_lane, "CMM_GD_AND_T_TOLERANCE_OR_MTR_ALLOY_BREACH"
+        )
+
+        # 4. Web IQ detects suspended AS9100D certificate in OASIS -> 451 blocked in 310ms
+        oas_451 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+            webiq_as9100_oasis_and_itar_clean=False,
+        )
+        self.assertFalse(oas_451.allowed)
+        self.assertEqual(oas_451.http_status, 451)
+
+        # 5. Web IQ discovers local 5-axis pallet nesting saving $4,600 ($27,400 net) -> 409 Confirm
+        nest_409 = evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
+            local_nesting_savings_cents=460000,
+        )
+        self.assertFalse(nest_409.allowed)
+        self.assertEqual(nest_409.http_status, 409)
+        self.assertEqual(nest_409.settled_cnc_cents, 2740000)
+        self.assertEqual(nest_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cnc_metrology_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cnc-metrology-escrow-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
