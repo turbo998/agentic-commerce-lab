@@ -77,6 +77,7 @@
 - **专题 43（大宗农产品寻源、粮仓近红外水分遥测与气象参数险对冲 Agricultural Commodity Moisture Telemetry & Parametric Weather Hedge Mandate 架构：NIR 干物质折算与毒素门禁令牌 `agri_moisture_basis_mandate_...` + Web IQ 零毁林 EUDR 与 NOAA 气象指数核验 vs 传统过磅掺水骗秤与霉变货损）**：**[《大宗农产品寻源、粮仓近红外水分遥测与气象参数险对冲（Agricultural Commodity Moisture Telemetry & Parametric Weather Hedge Mandate）架构：NIR 干物质折算与毒素门禁令牌（`agri_moisture_basis_mandate_...` + Web IQ 零毁林 EUDR 与 NOAA 气象指数核验）vs 传统过磅掺水骗秤（Water-Weight Fraud）与霉变货损选型与原理解析 FAQ》](docs/agri-commodity-moisture-telemetry-parametric-hedge-vs-adulteration-faq.md)**
 - **专题 44（高稀缺赛事/演出票务与企业商务招待防黄牛空单 Live Event Ticketing, Rotating Barcode & Face-Value Cap Mandate 架构：一手账本过户与动态令牌 `event_ticket_provenance_mandate_...` + Web IQ 场馆座位图与官方余票核验 vs 传统二级市场无票空单与静态 PDF 一票多卖）**：**[《高稀缺赛事/演出票务与企业商务招待防黄牛空单（Live Event Ticketing, Rotating Barcode & Face-Value Cap Mandate）架构：一手账本过户与动态令牌（`event_ticket_provenance_mandate_...` + Web IQ 场馆座位图与官方余票核验）vs 传统二级市场无票空单（Phantom Listing）与静态 PDF 一票多卖选型与原理解析 FAQ》](docs/event-ticketing-rotating-barcode-mandate-vs-phantom-scalper-fraud-faq.md)**
 - **专题 45（按需分布式 CNC 精密机加工与 3D 打印云制造 On-Demand CNC/3D Manufacturing, CAD Enclave & CMM Metrology Escrow Mandate 架构：零明文图纸飞地计次锁与三坐标 CMM 公差验真令牌 `cnc_metrology_escrow_mandate_...` + Web IQ 航空 AS9100 资质与五轴拼单核验 vs 传统群发明文 STEP 图纸遭山寨与超差废品盲付）**：**[《按需分布式 CNC 精密机加工与 3D 打印云制造（On-Demand CNC/3D Manufacturing, CAD Enclave & CMM Metrology Escrow Mandate）架构：零明文图纸飞地计次锁与三坐标（CMM）公差验真令牌（`cnc_metrology_escrow_mandate_...` + Web IQ 航空 AS9100 资质与五轴拼单核验）vs 传统群发明文 STEP 图纸遭山寨与超差废品盲付选型与原理解析 FAQ》](docs/on-demand-cnc-3d-manufacturing-cmm-metrology-escrow-vs-cad-ip-theft-faq.md)**
+- **专题 46（全球出海车联网与智能硬件 IoT eSIM 流量采购 Global IoT eUICC SGP.32 eSIM & BCE Roaming Cap Mandate 架构：GSMA SGP.32 远程切卡与漫游封顶令牌 `iot_esim_roaming_mandate_...` + Web IQ 永久漫游法规与本地批发价核验 vs 传统永久漫游断网与天价流量账单）**：**[《全球出海车联网与智能硬件 IoT eSIM 流量采购（Global IoT eUICC SGP.32 eSIM & BCE Roaming Cap Mandate）架构：GSMA SGP.32 远程切卡与漫游封顶令牌（`iot_esim_roaming_mandate_...` + Web IQ 永久漫游法规与本地批发价核验）vs 传统永久漫游断网（Permanent Roaming Ban）与天价流量账单（Bill Shock）选型与原理解析 FAQ》](docs/iot-esim-sgp32-roaming-cap-mandate-vs-bill-shock-shutdown-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -167,6 +168,8 @@
 ![2026-11-09 高稀缺赛事演出动态票务过户与防黄牛空单架构一图流](assets/svg/46-event-ticketing-rotating-barcode-2026-11-09.svg)
 
 ![2026-11-09 按需 CNC 与 3D 打印云制造飞地图纸与三坐标公差托管架构一图流](assets/svg/47-on-demand-cnc-cmm-metrology-escrow-2026-11-09.svg)
+
+![2026-11-09 全球出海车联网与 IoT eSIM 远程切卡及漫游封顶架构一图流](assets/svg/48-iot-esim-sgp32-roaming-cap-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

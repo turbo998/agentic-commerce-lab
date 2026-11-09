@@ -8562,6 +8562,95 @@ def evaluate_on_demand_cnc_cmm_metrology_escrow_policy(
     )
 
 
+@dataclass(frozen=True)
+class IoTeSIMRoamingCapVerdict:
+    """Round 46 verdict for Global IoT eUICC SGP.32 eSIM & BCE Roaming Cap Mandate (GSMA SGP.32 Profile-Swap & Quota-Cap Token + Web IQ Permanent-Roaming & Local-MNO Grounding) vs Maritime Roaming Bill Shock & Regulatory IMEI Shutdowns."""
+
+    allowed: bool
+    http_status: int
+    iot_lane: str
+    settled_bce_cents: int
+    sgp32_local_profile_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_iot_esim_sgp32_roaming_cap_policy(
+    *,
+    monthly_bce_bill_cents: int = 1450000,
+    roaming_zone_or_quota_breach: bool = False,
+    zombie_inactive_sims_billed: bool = False,
+    webiq_permanent_roaming_compliant: bool = True,
+    sgp32_local_profile_savings_cents: int = 0,
+) -> IoTeSIMRoamingCapVerdict:
+    """Evaluate Zone-4 maritime/satellite PLMN & per-ICCID quota cap, 90-day zero-CDR zombie SIM MRC scrubbing, Web IQ permanent-roaming regulatory ban check, and GSMA SGP.32 local MNO profile arbitrage."""
+
+    # 1. Zone-4 Maritime/Satellite Latch or Runaway OTA Loop Quota Breach -> HTTP 403
+    if roaming_zone_or_quota_breach:
+        return IoTeSIMRoamingCapVerdict(
+            False,
+            403,
+            "RUNAWAY_ROAMING_QUOTA_OR_ZONE_BREACH_BLOCKED",
+            0,
+            0,
+            "zone4_maritime_satellite_roaming_or_ota_loop_quota_breach_pcrf_terminated",
+            12,
+            "Send to a human",
+        )
+
+    # 2. 90-Day Zero-CDR Warehoused/Scrapped Zombie SIMs Billed on BCE Invoice -> HTTP 422
+    if zombie_inactive_sims_billed:
+        return IoTeSIMRoamingCapVerdict(
+            False,
+            422,
+            "ZOMBIE_INACTIVE_SIM_MRC_BILLING_BLOCKED",
+            0,
+            0,
+            "bce_invoice_rejected_due_to_zero_traffic_zombie_sim_mrc_charges",
+            15,
+            "Send to a human",
+        )
+
+    # 3. National Permanent-Roaming Ban (>90d Anatel/BTK/DoT Cutoff) via Web IQ -> HTTP 451
+    if not webiq_permanent_roaming_compliant:
+        return IoTeSIMRoamingCapVerdict(
+            False,
+            451,
+            "PERMANENT_ROAMING_REGULATORY_SHUTDOWN_HOLD",
+            0,
+            0,
+            "webiq_detected_90day_permanent_roaming_ban_requiring_sgp32_localization",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ GSMA SGP.32 Local MNO Profile Swap Arbitrage -> HTTP 409 Confirm
+    if sgp32_local_profile_savings_cents > 0:
+        return IoTeSIMRoamingCapVerdict(
+            False,
+            409,
+            "SGP32_LOCAL_MNO_PROFILE_ARBITRAGE_CONFIRM",
+            monthly_bce_bill_cents - sgp32_local_profile_savings_cents,
+            sgp32_local_profile_savings_cents,
+            "webiq_found_sgp32_local_mno_profile_swap_saving_3400_usd_per_month",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Active ICCIDs & Zone-1/2 Whitelist BCE Settlement
+    return IoTeSIMRoamingCapVerdict(
+        True,
+        200,
+        "VERIFIED_IOT_ESIM_BCE_MANDATE_SETTLED",
+        monthly_bce_bill_cents,
+        0,
+        "active_cdr_iccids_and_zone1_plmn_whitelist_verified_for_bce_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -10917,6 +11006,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cad_ip_block_latency_ms": cnc_cad_403.latency_ms,
     }
 
+    iot_commit_ok = evaluate_iot_esim_sgp32_roaming_cap_policy()
+    iot_roam_403 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+        roaming_zone_or_quota_breach=True,
+    )
+    iot_zomb_422 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+        zombie_inactive_sims_billed=True,
+    )
+    iot_perm_451 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+        webiq_permanent_roaming_compliant=False,
+    )
+    iot_sgp_409 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+        sgp32_local_profile_savings_cents=340000,
+    )
+    iot_esim_roaming_guards = {
+        "all_passed": (
+            iot_commit_ok.allowed
+            and iot_commit_ok.settled_bce_cents == 1450000
+            and not iot_roam_403.allowed
+            and iot_roam_403.http_status == 403
+            and not iot_zomb_422.allowed
+            and iot_zomb_422.http_status == 422
+            and not iot_perm_451.allowed
+            and iot_perm_451.http_status == 451
+            and not iot_sgp_409.allowed
+            and iot_sgp_409.action_pill == "Confirm"
+        ),
+        "iot_settlement_latency_ms": iot_commit_ok.latency_ms,
+        "roaming_shock_block_latency_ms": iot_roam_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -10975,6 +11094,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agri_moisture_hedge_guards": agri_moisture_hedge_guards,
         "event_ticket_provenance_guards": event_ticket_provenance_guards,
         "cnc_metrology_escrow_guards": cnc_metrology_escrow_guards,
+        "iot_esim_roaming_guards": iot_esim_roaming_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -14702,6 +14822,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cnc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Global IoT eUICC SGP.32 eSIM & BCE Roaming Cap Sandbox (Round 46 FAQ Companion) -->
+      <div class="finops-box" id="iot-esim-roaming-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-iot-title">📡 全球出海车联网/IoT eSIM 远程切卡与漫游封顶架构：GSMA SGP.32 与 BCE 令牌 (iot_esim_roaming_mandate_...) vs 天价漫游账单决策器 (Round 46 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 10,000台出海车联网月度 BCE 结算 ($14,500.00)、PLMN 漫游白名单、90天僵尸卡核销与 Web IQ 永久漫游法规/SGP.32 切卡场景 (IoT eSIM Scenario):</span></label>
+          <select id="iot-select" onchange="updateIoTeSIMRoamingSandbox()">
+            <option value="iot_commit_ok">⚡ 万台活跃 ICCID 话单核验无误 + Zone 1/2 陆地漫游白名单受控：265ms 自动结算 $14,500.00! (Act automatically)</option>
+            <option value="iot_roam_403">🛑 海事卫星漫游 ($15/MB) / OTA 死循环天价账单拦截：滚装船误连 Zone 4 海事网飙出 $84,000 → 12ms 触发 HTTP 403 硬断流拒付!</option>
+            <option value="iot_zomb_422">🚨 1,800 张零流量僵尸卡 (Zombie SIM) 月租拦截：账单混入仓库/报废空卡 $2,700 保底月租 → 15ms 触发 HTTP 422 拒付并自动停机!</option>
+            <option value="iot_perm_451">🛑 巴西/土耳其 &gt;90 天永久漫游封杀拦截：Web IQ /v3/browse 检出目的国信管局满 90 天强制拉黑境外漫游卡 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="iot_sgp_409">🧑‍⚖️ Web IQ 检出通过 GSMA SGP.32 空中下载当地一级运营商原生 eSIM Profile 可每月立省 $3,400.00 (净付降至 $11,100.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="iot-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -15186,6 +15324,7 @@ function renderAll() {{
   updateAgriMoistureHedgeSandbox();
   updateEventTicketProvenanceSandbox();
   updateCNCMetrologyEscrowSandbox();
+  updateIoTeSIMRoamingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17685,6 +17824,56 @@ function updateCNCMetrologyEscrowSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 飞地 50 件计次锁 + CMM 实测 6μm 与 7075-T6 材质合格：已自动释放托管款 (VERIFIED_CMM_METROLOGY_ESCROW_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零图纸泄露、微米级精度兜底</strong>：机床飞地已完成 50 件加工并自动销毁刀路密钥，蔡司 CMM QIF 报告与 EN 10204 3.1 材质单核验无误，265ms 自动放款 <code>$32,000.00</code>！" +
+    "</div>";
+}}
+
+function updateIoTeSIMRoamingSandbox() {{
+  var selEl = document.getElementById("iot-select");
+  var outEl = document.getElementById("iot-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "iot_roam_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 RUNAWAY_ROAMING_QUOTA_OR_ZONE_BREACH_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "在线计费网关（OCS）检出滚装船车载终端误连 <code>$15/MB</code> 的 Zone 4 海事卫星漫游网或发生 OTA 固件重传死循环（<code>roaming_zone_or_quota_breach=True</code>）！已在 <code>12ms</code> 内硬阻断 <code>$84,000.00</code> 天价漫游刺客并联动核心网 PCRF 切断异常会话！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iot_zomb_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ZOMBIE_INACTIVE_SIM_MRC_BILLING_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "PGW 话单（CDR）穿透对账发现运营商账单中包含 <code>1,800 张</code> 连续 90 天零流量的库存/报废僵尸 SIM 卡保底月租（<code>$2,700.00</code>）！网关已在 <code>15ms</code> 内拦截空卡收费并自动下发 HLR Suspend 停机保号指令！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iot_perm_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PERMANENT_ROAMING_REGULATORY_SHUTDOWN_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查目的国电信监管局（巴西 Anatel / 土耳其 BTK / 印度 DoT）永久漫游禁令，检出海外驻留已逼近 <code>90 天</code> 全网拉黑断网红线，已在 <code>310ms</code> 内冻结漫游续费并强制启动 SGP.32 本地切卡！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iot_sgp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SGP32_LOCAL_MNO_PROFILE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对当地一级运营商公开物联网批发资费表，发现通过 <code>GSMA SGP.32 eIM</code> 空中切换为本地原生运营商 eSIM Profile 可每月立省 <code>$3,400.00</code>（万台终端月费从 <code>$14,500.00</code> 降至 <code>$11,100.00</code>），建议一键确认 OTA 批量切卡！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 万台活跃 ICCID 话单对账 + 漫游白名单核验通过：已自动结算 BCE 账单 (VERIFIED_IOT_ESIM_BCE_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零僵尸卡浪费、零天价漫游刺客</strong>：全量计费 ICCID 均具备真实 PGW 数据包会话且处于 Zone 1/2 合规陆地网内，265ms 完成 <code>$14,500.00</code> 批发清算！" +
     "</div>";
 }}
 

@@ -310,6 +310,11 @@
     "cnc_settlement_latency_ms": 265,
     "cad_ip_block_latency_ms": 12
   },
+  "iot_esim_roaming_guards": {
+    "all_passed": true,
+    "iot_settlement_latency_ms": 265,
+    "roaming_shock_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

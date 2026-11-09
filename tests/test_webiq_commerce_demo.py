@@ -3743,6 +3743,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cnc-metrology-escrow-sandbox", demo_zh)
 
+    def test_iot_esim_sgp32_roaming_cap_mandate_vs_bill_shock_shutdown_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_iot_esim_sgp32_roaming_cap_policy,
+        )
+
+        # 1. Active CDR ICCIDs + Zone-1/2 PLMN whitelist -> 200 settled ($14,500)
+        commit_ok = evaluate_iot_esim_sgp32_roaming_cap_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_bce_cents, 1450000)
+
+        # 2. Zone-4 maritime satellite latch or runaway OTA loop -> 403 blocked in 12ms
+        roam_403 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+            roaming_zone_or_quota_breach=True,
+        )
+        self.assertFalse(roam_403.allowed)
+        self.assertEqual(roam_403.http_status, 403)
+        self.assertEqual(
+            roam_403.iot_lane, "RUNAWAY_ROAMING_QUOTA_OR_ZONE_BREACH_BLOCKED"
+        )
+
+        # 3. 1,800 zero-traffic zombie SIMs billed ($2,700 MRC) -> 422 blocked in 15ms
+        zomb_422 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+            zombie_inactive_sims_billed=True,
+        )
+        self.assertFalse(zomb_422.allowed)
+        self.assertEqual(zomb_422.http_status, 422)
+        self.assertEqual(
+            zomb_422.iot_lane, "ZOMBIE_INACTIVE_SIM_MRC_BILLING_BLOCKED"
+        )
+
+        # 4. Web IQ detects 90-day permanent-roaming ban (Brazil Anatel / Turkey BTK) -> 451 blocked in 310ms
+        perm_451 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+            webiq_permanent_roaming_compliant=False,
+        )
+        self.assertFalse(perm_451.allowed)
+        self.assertEqual(perm_451.http_status, 451)
+
+        # 5. Web IQ discovers GSMA SGP.32 local MNO profile swap saving $3,400 ($11,100 net) -> 409 Confirm
+        sgp_409 = evaluate_iot_esim_sgp32_roaming_cap_policy(
+            sgp32_local_profile_savings_cents=340000,
+        )
+        self.assertFalse(sgp_409.allowed)
+        self.assertEqual(sgp_409.http_status, 409)
+        self.assertEqual(sgp_409.settled_bce_cents, 1110000)
+        self.assertEqual(sgp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["iot_esim_roaming_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("iot-esim-roaming-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

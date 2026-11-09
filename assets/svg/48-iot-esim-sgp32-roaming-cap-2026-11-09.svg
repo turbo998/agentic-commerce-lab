@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg48" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent48" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg48)"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent48)"/>
+
+  <!-- Header -->
+  <text x="45" y="64" fill="#60A5FA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">
+    ROUND 46 · GLOBAL IOT EUICC SGP.32 ESIM &amp; BCE ROAMING CAP MANDATE (2026-11-09)
+  </text>
+  <text x="45" y="96" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">
+    全球车联网/IoT eSIM 远程切卡与漫游封顶令牌 vs 传统永久漫游断网与天价流量账单
+  </text>
+  <text x="45" y="122" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="14">
+    单卡配额与海事/卫星禁区硬断流 + 90天零流量僵尸卡清退 + Web IQ 永久漫游合规与 SGP.32 切本地卡省 $3,400 ($14.5k 护航)
+  </text>
+
+  <!-- Left Column: Legacy Roaming SIM Bill Shock -->
+  <rect x="45" y="142" width="535" height="365" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="45" y="142" width="535" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="65" y="166" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ❌ 传统单 IMSI 漫游卡与后付费盲扣 ($84,000 天价漫游费 + 整国断网)
+  </text>
+
+  <rect x="65" y="196" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="220" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    1. 固件死循环或误连海事卫星网，触发 $84,000 天价漫游账单
+  </text>
+  <text x="80" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 车载终端 OTA 升级死循环或港口误连 $15/MB 海事卫星漫游网 (Zone 4)
+  </text>
+  <text x="80" y="263" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 传统后付费漫游话单延迟 72 小时才出账，月底直接从企业卡划走 $84,000
+  </text>
+
+  <rect x="65" y="294" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="318" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    2. 1,800 张库存/报废“僵尸 SIM 卡”照常每月白交 $2,700 月租
+  </text>
+  <text x="80" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 设备已退货报废或躺在仓库超 90 天零流量，HLR 状态仍停留在 Active 计费态
+  </text>
+  <text x="80" y="361" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 运营商账单照收 1,800 张空卡保底月租 ($2,700/月)，无人对账常年失血
+  </text>
+
+  <rect x="65" y="392" width="495" height="98" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="80" y="416" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    3. 踩中巴西/土耳其 >90 天永久漫游禁令被集体拉黑，且多付 $3,400 差价
+  </text>
+  <text x="80" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 外国漫游卡在巴西/土耳其/印度驻留超 90 天被当地信管局强制全网封杀断联
+  </text>
+  <text x="80" y="459" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 长期用高价国际漫游流量，不知通过 SGP.32 空中切入本地运营商 Profile 可省 $3,400
+  </text>
+
+  <!-- Right Column: SGP.32 eSIM & BCE Roaming Cap Mandate -->
+  <rect x="605" y="142" width="550" height="365" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="605" y="142" width="550" height="38" rx="12" fill="#064E3B"/>
+  <text x="625" y="166" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ✅ SGP.32 切卡与 BCE 漫游封顶令牌 + Web IQ 信管局网关 (推荐)
+  </text>
+
+  <rect x="625" y="196" width="510" height="84" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="640" y="220" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 1: 单卡流量配额与高危漫游区 (海事/卫星) 硬熔断 (12ms · HTTP 403)
+  </text>
+  <text x="640" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 roaming_zone_or_quota_breach == False（锁死 Zone 1/2 PLMN 白名单）
+  </text>
+  <text x="640" y="263" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 误连海事卫星或 OTA 死循环刷爆流量 → 12ms 拦截 $84,000 天价漫游账单
+  </text>
+
+  <rect x="625" y="294" width="510" height="84" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+  <text x="640" y="318" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 2: CDR 零流量僵尸卡 (Zombie SIM) 月租刚性核销 (15ms · HTTP 422)
+  </text>
+  <text x="640" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 对比核心网 PGW 话单与账单 ICCID 列表，自动挂起 &gt;90 天零流量休眠卡
+  </text>
+  <text x="640" y="361" fill="#BAE6FD" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 夹带 $2,700 僵尸卡保底月租的账单在 15ms 内触发 HTTP 422 拒付
+  </text>
+
+  <rect x="625" y="392" width="510" height="98" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="640" y="416" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 3: Microsoft Web IQ /v3/browse 永久漫游禁令与 SGP.32 切卡 (310/315ms)
+  </text>
+  <text x="640" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 核验各国电信监管局 (Anatel/BTK/DoT) 90天永久漫游禁令 → 310ms 触发 HTTP 451
+  </text>
+  <text x="640" y="459" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 触发 GSMA SGP.32 空中下载本地运营商 Profile 立省 $3,400 ($11,100) → 315ms HTTP 409!
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Bar -->
+  <rect x="45" y="522" width="1110" height="125" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="65" y="548" fill="#60A5FA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    📊 定量基准实测 (deterministic_offline_simulation · 75 Unit Tests Passing · 10,000台出海车联网终端月度结算 $14,500)
+  </text>
+
+  <rect x="65" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EF4444"/>
+  <text x="77" y="584" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">海事漫游/死循环硬熔断</text>
+  <text x="77" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 403 · 12 ms</text>
+  <text x="77" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">拦截 $84,000 天价漫游费</text>
+
+  <rect x="282" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="294" y="584" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">1,800张僵尸卡月租拦截</text>
+  <text x="294" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 422 · 15 ms</text>
+  <text x="294" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">拒付 $2,700 零流量空卡费</text>
+
+  <rect x="499" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EC4899"/>
+  <text x="511" y="584" fill="#F472B6" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">90天永久漫游禁令冻结</text>
+  <text x="511" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 451 · 310 ms</text>
+  <text x="511" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">Web IQ 各国信管局法规穿透</text>
+
+  <rect x="716" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#8B5CF6"/>
+  <text x="728" y="584" fill="#C4B5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">SGP.32 切本地卡确认</text>
+  <text x="728" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 409 · 315 ms</text>
+  <text x="728" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">立省 $3,400 ($11,100)</text>
+
+  <rect x="933" y="562" width="205" height="68" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="945" y="584" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">万台车联网合规自动结算</text>
+  <text x="945" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 200 · 265 ms</text>
+  <text x="945" y="621" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="11">BCE 对账放款 $14,500</text>
+</svg>
