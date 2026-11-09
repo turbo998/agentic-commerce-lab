@@ -5303,6 +5303,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("seed-trait-pcr-sandbox", demo_zh)
 
+    def test_fine_art_auction_provenance_droit_de_suite_mandate_vs_looted_forgery_wire_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_fine_art_auction_provenance_policy,
+        )
+
+        # 1. Verified Catalogue Raisonne + XRF pigment + ALR/UCC-1 clean -> 200 OK ($350,000)
+        commit_ok = evaluate_fine_art_auction_provenance_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_art_cents, 35000000)
+
+        # 2. Anachronistic synthetic pigment forgery or missing Catalogue Raisonne -> 403 blocked in 12ms
+        xrf_403 = evaluate_fine_art_auction_provenance_policy(
+            catalogue_raisonne_and_xrf_pigment_verified=False,
+        )
+        self.assertFalse(xrf_403.allowed)
+        self.assertEqual(xrf_403.http_status, 403)
+        self.assertEqual(
+            xrf_403.art_lane,
+            "ANACHRONISTIC_XRF_PIGMENT_FORGERY_OR_UNCATALOGUED_BLOCKED",
+        )
+
+        # 3. Art Loss Register (ALR) stolen hit or undisclosed UCC-1 art lien -> 422 blocked in 15ms
+        alr_422 = evaluate_fine_art_auction_provenance_policy(
+            alr_interpol_and_ucc1_lien_clear=False,
+        )
+        self.assertFalse(alr_422.allowed)
+        self.assertEqual(alr_422.http_status, 422)
+        self.assertEqual(
+            alr_422.art_lane,
+            "ALR_LOOTED_CLAIM_OR_UNDISCLOSED_UCC1_ART_LIEN_BLOCKED",
+        )
+
+        # 4. Web IQ detects cultural treasure export ban or CITES ivory frame -> 451 blocked in 310ms
+        exp_451 = evaluate_fine_art_auction_provenance_policy(
+            webiq_export_license_and_droit_de_suite_clean=False,
+        )
+        self.assertFalse(exp_451.allowed)
+        self.assertEqual(exp_451.http_status, 451)
+
+        # 5. Web IQ discovers bonded Art Freeport warrant transfer saving $31,000 ($319,000 net) -> 409 Confirm
+        frp_409 = evaluate_fine_art_auction_provenance_policy(
+            freeport_bonded_transfer_tax_savings_cents=3100000,
+        )
+        self.assertFalse(frp_409.allowed)
+        self.assertEqual(frp_409.http_status, 409)
+        self.assertEqual(frp_409.settled_art_cents, 31900000)
+        self.assertEqual(frp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["fine_art_provenance_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("fine-art-provenance-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

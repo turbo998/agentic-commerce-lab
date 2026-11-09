@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg76" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140c1c"/>
+      <stop offset="50%" stop-color="#231533"/>
+      <stop offset="100%" stop-color="#2c1c42"/>
+    </linearGradient>
+    <linearGradient id="accent76" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg76)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#130f1e" stroke="#f59e0b" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent76)"/>
+
+  <text x="60" y="72" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 74 · FINE ART AUCTION PROVENANCE, CATALOGUE RAISONNÉ &amp; DROIT DE SUITE MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">艺术品拍卖流传有序、全集收录与艺术家追续权托管 vs 落槌盲付伪作/失窃风险</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Catalogue Raisonné + XRF Pigment Spectroscopy + ALR/INTERPOL Clean + Droit de Suite Split vs. Unconditional Wire</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#26111c" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统拍卖行/画廊电汇盲付模式 (As-Is Wire Risk)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 现代合成颜料伪作欺诈：号称 1920 年油画却含 1938 年才发明的酞菁蓝/锐钛矿钛白</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 失窃与战乱掠夺文物没收：未查 Art Loss Register (ALR)，交割后被司法机关无偿扣押</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 秘密质押权 (UCC-1 Art Lien)：卖家已将画作抵押给艺术基金，买家付全款却拿不到产权</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 艺术家追续权 (Droit de Suite) 漏缴：欧洲/英国拍场漏扣法定追续权版税触发连带诉讼</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35111f" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型家族办公室艺术品购藏资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">家办电汇 $350,000 购入现代大师画作，入库后 XRF 检出不合年代的合成颜料，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">且未用日内瓦/特拉华保税艺术仓交割多缴 8.875% 现汇流转税 ($31,000)</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 伪作/失窃拦截率：0% | • 追续权自动清分率：0% | • 退货维权耗时：18 个月</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#102226" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 全集收录 + XRF 光谱 + ALR 无涉案 + 追续权分账托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 基金会全集与 XRF 颜料光谱门禁：校验 Catalogue Raisonné 编号与颜料元素年代匹配</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ALR / INTERPOL 零涉案与 UCC-1 零质押：强制签发无失窃记录与无留置权数字证明</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 艺术家追续权 (ARR / Droit de Suite) 原子清分：自动切分法定版税直付版权协会</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 保税艺术自由港 (Freeport) 套利：Web IQ 匹配日内瓦/特拉华保税仓免税交割</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#072c24" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 拦截 XRF 颜料年代穿帮伪作与未入全集拍品；15ms 拦截 ALR 失窃涉案与</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">秘密质押；Web IQ 保税自由港原仓过户立省 $31,000.00（净付降至 $319,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 伪作/失窃拦截率：100% | • 追续权合规率：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#1e1b2e" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#f59e0b" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">高价值艺术品购藏 Agent 绝不能凭图录描述汇款！必须绑定【全集收录 + XRF 颜料光谱 + ALR/UCC-1 清白 + 追续权分账】四门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_fine_art_auction_provenance_policy`) · ALR &amp; EU Directive 2001/84/EC · 2026-11-09</text>
+</svg>

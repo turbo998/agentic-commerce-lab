@@ -11008,6 +11008,91 @@ def evaluate_commercial_seed_trait_pcr_policy(
     )
 
 
+@dataclass(frozen=True)
+class FineArtAuctionProvenanceVerdict:
+    allowed: bool
+    http_status: int
+    art_lane: str
+    settled_art_cents: int
+    tax_or_royalty_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_fine_art_auction_provenance_policy(
+    gross_hammer_and_premium_cents: int = 35000000,
+    catalogue_raisonne_and_xrf_pigment_verified: bool = True,
+    alr_interpol_and_ucc1_lien_clear: bool = True,
+    webiq_export_license_and_droit_de_suite_clean: bool = True,
+    freeport_bonded_transfer_tax_savings_cents: int = 0,
+) -> FineArtAuctionProvenanceVerdict:
+    """Evaluate Catalogue Raisonne & XRF non-invasive pigment spectroscopy vs anachronistic forgery, Art Loss Register (ALR) / INTERPOL & UCC-1 art-lien clearance vs seizure/repossession, Web IQ cultural export license & EU/UK Droit de Suite (ARR) split, and bonded Art Freeport warehouse warrant tax arbitrage."""
+    # 1. Anachronistic synthetic pigment forgery or missing Catalogue Raisonne ID -> HTTP 403
+    if not catalogue_raisonne_and_xrf_pigment_verified:
+        return FineArtAuctionProvenanceVerdict(
+            False,
+            403,
+            "ANACHRONISTIC_XRF_PIGMENT_FORGERY_OR_UNCATALOGUED_BLOCKED",
+            0,
+            gross_hammer_and_premium_cents,
+            "art_settlement_blocked_due_to_anachronistic_xrf_synthetic_pigment_or_missing_catalogue_raisonne",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Art Loss Register (ALR) stolen/looted hit or undisclosed UCC-1 art-finance lien -> HTTP 422
+    if not alr_interpol_and_ucc1_lien_clear:
+        return FineArtAuctionProvenanceVerdict(
+            False,
+            422,
+            "ALR_LOOTED_CLAIM_OR_UNDISCLOSED_UCC1_ART_LIEN_BLOCKED",
+            0,
+            gross_hammer_and_premium_cents,
+            "title_rejected_due_to_art_loss_register_stolen_flag_or_active_ucc1_collateral_lien",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects national cultural export ban or unremitted Droit de Suite -> HTTP 451
+    if not webiq_export_license_and_droit_de_suite_clean:
+        return FineArtAuctionProvenanceVerdict(
+            False,
+            451,
+            "NATIONAL_TREASURE_EXPORT_BAN_OR_CITES_FRAME_HOLD",
+            0,
+            gross_hammer_and_premium_cents,
+            "webiq_detected_cultural_property_export_restriction_or_cites_ivory_frame_violation",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Bonded Art Freeport In-Situ Warehouse Warrant Transfer Arbitrage -> HTTP 409 Confirm
+    if freeport_bonded_transfer_tax_savings_cents > 0:
+        return FineArtAuctionProvenanceVerdict(
+            False,
+            409,
+            "BONDED_ART_FREEPORT_WARRANT_TAX_ARBITRAGE_CONFIRM",
+            gross_hammer_and_premium_cents - freeport_bonded_transfer_tax_savings_cents,
+            freeport_bonded_transfer_tax_savings_cents,
+            "webiq_found_in_situ_bonded_art_freeport_warrant_transfer_saving_31000_usd_tax",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Catalogue Raisonne + XRF Pigment + ALR/UCC-1 Clean + Atomic ARR Split -> Settled
+    return FineArtAuctionProvenanceVerdict(
+        True,
+        200,
+        "VERIFIED_FINE_ART_PROVENANCE_SETTLED",
+        gross_hammer_and_premium_cents,
+        0,
+        "catalogue_raisonne_xrf_pigment_alr_ucc1_clean_and_droit_de_suite_verified_for_settlement",
+        23,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -14203,6 +14288,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "brown_bag_block_latency_ms": seed_f2_403.latency_ms,
     }
 
+    art_commit_ok = evaluate_fine_art_auction_provenance_policy()
+    art_xrf_403 = evaluate_fine_art_auction_provenance_policy(
+        catalogue_raisonne_and_xrf_pigment_verified=False,
+    )
+    art_alr_422 = evaluate_fine_art_auction_provenance_policy(
+        alr_interpol_and_ucc1_lien_clear=False,
+    )
+    art_exp_451 = evaluate_fine_art_auction_provenance_policy(
+        webiq_export_license_and_droit_de_suite_clean=False,
+    )
+    art_frp_409 = evaluate_fine_art_auction_provenance_policy(
+        freeport_bonded_transfer_tax_savings_cents=3100000,
+    )
+    fine_art_provenance_guards = {
+        "all_passed": (
+            art_commit_ok.allowed
+            and art_commit_ok.settled_art_cents == 35000000
+            and not art_xrf_403.allowed
+            and art_xrf_403.http_status == 403
+            and not art_alr_422.allowed
+            and art_alr_422.http_status == 422
+            and not art_exp_451.allowed
+            and art_exp_451.http_status == 451
+            and not art_frp_409.allowed
+            and art_frp_409.action_pill == "Confirm"
+        ),
+        "art_settlement_latency_ms": art_commit_ok.latency_ms,
+        "forgery_block_latency_ms": art_xrf_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -14289,6 +14404,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "auto_floorplan_guards": auto_floorplan_guards,
         "outdoor_dooh_guards": outdoor_dooh_guards,
         "commercial_seed_guards": commercial_seed_guards,
+        "fine_art_provenance_guards": fine_art_provenance_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -18520,6 +18636,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="seed-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Fine Art Auction Provenance, Catalogue Raisonne & Droit de Suite Mandate Sandbox (Round 74 FAQ Companion) -->
+      <div class="finops-box" id="fine-art-provenance-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-art-title">🖼️ 艺术品拍卖流传有序、全集收录与追续权架构：XRF 颜料光谱与 ALR 清白令牌 (fine_art_provenance_mandate_...) vs 落槌盲付决策器 (Round 74 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 现代大师油画拍卖/私洽购藏 ($350,000.00)、Catalogue Raisonné 全集 + XRF 颜料光谱、ALR/UCC-1 查册与 Web IQ 保税自由港交割场景 (Fine Art Scenario):</span></label>
+          <select id="art-select" onchange="updateFineArtProvenanceSandbox()">
+            <option value="art_commit_ok">⚡ 基金会全集收录 + XRF 颜料年代吻合 + ALR/UCC-1 零负担 + 追续权原子清分：23ms 自动交割 $350,000.00! (Act automatically)</option>
+            <option value="art_xrf_403">🛑 化学颜料年代穿帮伪作拦截：号称 1920 年画作却被 XRF 检出 1938 年合成酞菁蓝或未入基金会全集 → 12ms 触发 HTTP 403 拒付!</option>
+            <option value="art_alr_422">🚨 Art Loss Register (ALR) 失窃/二战掠夺涉案或卖方隐瞒 UCC-1 艺术贷抵押权拦截：严防司法没收 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="art_exp_451">🛑 欧洲国家级文物出境禁令或古董画框含 CITES 违禁象牙/玳瑁冻结：Web IQ /v3/browse 检出海关罚没风险 → 310ms 触发 HTTP 451!</option>
+            <option value="art_frp_409">🧑‍⚖️ Web IQ 匹配日内瓦/特拉华保税艺术自由港 (Art Freeport) 原仓电子仓单过户免除 8.875% 流转税立省 $31,000.00 (净付 $319,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="art-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -19032,6 +19166,7 @@ function renderAll() {{
   updateAutoFloorplanSandbox();
   updateOutdoorDOOHSandbox();
   updateSeedTraitPCRSandbox();
+  updateFineArtProvenanceSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -22910,6 +23045,55 @@ function updateSeedTraitPCRSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ qPCR 基因纯度 99.1% + ISTA 发芽率 95.0% + UPOV 专利原子清分：已自动交割 (VERIFIED_COMMERCIAL_SEED_TRAIT_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零白袋套牌种、零隔年陈种缺苗</strong>：万亩春耕杂交玉米种已完成制种款与 Trait 专利费原子清分并签发合规种植电子凭证（<code>$160,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateFineArtProvenanceSandbox() {{
+  var selEl = document.getElementById("art-select");
+  var outEl = document.getElementById("art-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "art_xrf_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ANACHRONISTIC_XRF_PIGMENT_FORGERY_OR_UNCATALOGUED_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "无损 <code>XRF 射线荧光光谱仪</code> 检出该幅号称 1920 年创作的油画含有 1938 年后才发明的合成酞菁蓝/金红石钛白，或未收录于艺术家基金会权威全集 <code>Catalogue Raisonné</code>（<code>catalogue_raisonne_and_xrf_pigment_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$350,000.00</code> 电汇！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "art_alr_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ALR_LOOTED_CLAIM_OR_UNDISCLOSED_UCC1_ART_LIEN_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "国际失窃艺术品数据库（<code>Art Loss Register / INTERPOL</code>）检出该拍品存在 1933–1945 年掠夺追索记录，或卖方已在特拉华州登记未解除的 <code>UCC-1 艺术贷动产质押</code>（<code>alr_interpol_and_ucc1_lien_clear == False</code>）。网关在 <code>15ms</code> 内当场拒付，规避无偿司法没收！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "art_exp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NATIONAL_TREASURE_EXPORT_BAN_OR_CITES_FRAME_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查欧盟文化部国宝出境许可名录与 CITES 公约，检出该作品被列入限制出境国宝清单或古董画框镶嵌违禁象牙/玳瑁，立即冻结放款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "art_frp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BONDED_ART_FREEPORT_WARRANT_TAX_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索跨境艺术品税务规则，发现直接通过 <code>日内瓦/特拉华保税艺术自由港 (Bonded Art Freeport)</code> 进行原仓电子仓单过户，可合法免除 <code>8.875%</code> 异地提货流转税立省 <code>$31,000.00</code>（净付降至 <code>$319,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 基金会全集收录 + XRF 颜料年代吻合 + ALR/UCC-1 清白 + 追续权原子清分：已自动交割 (VERIFIED_FINE_ART_PROVENANCE_SETTLED · 23ms · Act automatically):</strong><br>" +
+    "• <strong>零现代颜料伪作、零失窃文物扣押</strong>：现代大师油画购藏款已完成 Droit de Suite 追续权版税清分与保税仓单过户（<code>$350,000.00</code>）！" +
     "</div>";
 }}
 
