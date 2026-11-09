@@ -345,6 +345,11 @@
     "sync_settlement_latency_ms": 265,
     "half_cleared_sync_block_latency_ms": 12
   },
+  "disaster_relief_aid_guards": {
+    "all_passed": true,
+    "relief_settlement_latency_ms": 265,
+    "sybil_ghost_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -9185,6 +9185,93 @@ def evaluate_media_sync_isrc_iswc_voice_clone_policy(
     )
 
 
+@dataclass(frozen=True)
+class HumanitarianDisasterReliefAidVerdict:
+    allowed: bool
+    http_status: int
+    relief_lane: str
+    settled_relief_cents: int
+    cooperative_bulk_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+    *,
+    relief_tranche_cents: int = 2500000,
+    sybil_ghost_household_detected: bool = False,
+    mcc_essential_relief_whitelist_verified: bool = True,
+    webiq_emergency_anti_gouging_compliant: bool = True,
+    cooperative_bulk_relief_savings_cents: int = 0,
+) -> HumanitarianDisasterReliefAidVerdict:
+    """Evaluate SAR flood-polygon & cross-NGO zero-knowledge household deduplication, essential-MCC whitelist (5411/5912/5211/7011), Web IQ emergency anti-price-gouging statute compliance, and regional relief cooperative bulk-drop arbitrage."""
+
+    # 1. Sybil Ghost Household or Cross-Agency Duplicate Claim Outside SAR Polygon -> HTTP 403
+    if sybil_ghost_household_detected:
+        return HumanitarianDisasterReliefAidVerdict(
+            False,
+            403,
+            "SYBIL_GHOST_BENEFICIARY_OR_POLYGON_MISMATCH_BLOCKED",
+            0,
+            0,
+            "relief_disbursement_blocked_due_to_cross_ngo_zkp_duplicate_or_outside_disaster_polygon",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Prohibited MCC (Gambling 7995 / Liquor 5921) or POS Cash-Back Kickback -> HTTP 422
+    if not mcc_essential_relief_whitelist_verified:
+        return HumanitarianDisasterReliefAidVerdict(
+            False,
+            422,
+            "PROHIBITED_MCC_DIVERSION_OR_CASHBACK_KICKBACK_BLOCKED",
+            0,
+            0,
+            "voucher_redemption_rejected_outside_essential_food_pharmacy_building_material_mccs",
+            15,
+            "Send to a human",
+        )
+
+    # 3. State-of-Emergency Price-Gouging Statute Violation (>+10% Cap) via Web IQ -> HTTP 451
+    if not webiq_emergency_anti_gouging_compliant:
+        return HumanitarianDisasterReliefAidVerdict(
+            False,
+            451,
+            "EMERGENCY_PRICE_GOUGING_STATUTE_VIOLATION_HOLD",
+            0,
+            0,
+            "webiq_detected_merchant_charging_above_emergency_anti_price_gouging_statutory_ceiling",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Regional Relief Cooperative Bulk-Drop Arbitrage -> HTTP 409 Confirm
+    if cooperative_bulk_relief_savings_cents > 0:
+        return HumanitarianDisasterReliefAidVerdict(
+            False,
+            409,
+            "REGIONAL_RELIEF_COOPERATIVE_BULK_ARBITRAGE_CONFIRM",
+            relief_tranche_cents - cooperative_bulk_relief_savings_cents,
+            cooperative_bulk_relief_savings_cents,
+            "webiq_found_regional_relief_cooperative_bulk_kit_saving_4200_usd_for_50_households",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Disaster-Polygon Household + Essential MCC & Fair-Price Compliant -> Settled
+    return HumanitarianDisasterReliefAidVerdict(
+        True,
+        200,
+        "VERIFIED_HUMANITARIAN_MCC_AID_SETTLED",
+        relief_tranche_cents,
+        0,
+        "zkp_unique_household_essential_mcc_and_anti_gouging_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -11750,6 +11837,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "half_cleared_sync_block_latency_ms": syn_iswc_403.latency_ms,
     }
 
+    aid_commit_ok = evaluate_humanitarian_disaster_relief_mcc_aid_policy()
+    aid_sybil_403 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+        sybil_ghost_household_detected=True,
+    )
+    aid_mcc_422 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+        mcc_essential_relief_whitelist_verified=False,
+    )
+    aid_gouge_451 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+        webiq_emergency_anti_gouging_compliant=False,
+    )
+    aid_coop_409 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+        cooperative_bulk_relief_savings_cents=420000,
+    )
+    disaster_relief_aid_guards = {
+        "all_passed": (
+            aid_commit_ok.allowed
+            and aid_commit_ok.settled_relief_cents == 2500000
+            and not aid_sybil_403.allowed
+            and aid_sybil_403.http_status == 403
+            and not aid_mcc_422.allowed
+            and aid_mcc_422.http_status == 422
+            and not aid_gouge_451.allowed
+            and aid_gouge_451.http_status == 451
+            and not aid_coop_409.allowed
+            and aid_coop_409.action_pill == "Confirm"
+        ),
+        "relief_settlement_latency_ms": aid_commit_ok.latency_ms,
+        "sybil_ghost_block_latency_ms": aid_sybil_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -11815,6 +11932,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aviation_mro_traceability_guards": aviation_mro_traceability_guards,
         "black_mass_assay_guards": black_mass_assay_guards,
         "media_sync_voice_guards": media_sync_voice_guards,
+        "disaster_relief_aid_guards": disaster_relief_aid_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -15668,6 +15786,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="syn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Humanitarian Disaster Relief & MCC-Locked Aid Mandate Sandbox (Round 53 FAQ Companion) -->
+      <div class="finops-box" id="disaster-relief-aid-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-aid-title">🛟 应急救灾物资券与政府专项补贴发放架构：零知识查重与 MCC 白名单令牌 (disaster_relief_aid_mandate_...) vs 幽灵人头户与哄抬物价决策器 (Round 53 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 50 户灾后重建救济批次 ($25,000.00)、卫星灾区多边形零知识查重、民生 MCC 白名单与 Web IQ 反哄抬物价/集采场景 (Disaster Relief Scenario):</span></label>
+          <select id="aid-select" onchange="updateDisasterReliefAidSandbox()">
+            <option value="aid_commit_ok">⚡ 卫星灾区多边形 + 跨 NGO 零知识查重唯一 + 民生必需品 MCC (5411/5912/5211) + 灾前平价合规：265ms 秒级核销 $25,000.00! (Act automatically)</option>
+            <option value="aid_sybil_403">🛑 黑产幽灵人头户拦截：非灾区地址伪造受灾申请或跨 3 家公益基金会重复冒领 → 12ms 触发 HTTP 403 硬阻断，100% 守住灾民救命钱!</option>
+            <option value="aid_mcc_422">🚨 违规消费与黄牛套现拦截：试图在线上博彩 (MCC 7995)、烈酒专卖或 6 折返现黄牛 POS 机刷救济卡 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="aid_gouge_451">🛑 灾区奸商趁火打劫涨价冻结：Web IQ /v3/browse 检出五金店将平时 $15 的防水油布卖到 $85 (违反紧急状态 <=+10% 限价令) → 310ms 触发 HTTP 451!</option>
+            <option value="aid_coop_409">🧑‍⚖️ Web IQ 检出区域救灾供销合作社平价大宗直供包可为 50 户家庭节省零售差价 $4,200.00 (净付 $20,800.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="aid-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -16159,6 +16295,7 @@ function renderAll() {{
   updateAviationMROTraceabilitySandbox();
   updateBlackMassAssaySandbox();
   updateMediaSyncVoiceSandbox();
+  updateDisasterReliefAidSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19008,6 +19145,55 @@ function updateMediaSyncVoiceSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 母带 ISRC + 100% 词曲 ISWC + 演员声音分身 VC 核验通过：已原子拆账放款 (VERIFIED_DUAL_SYNC_AND_VOICE_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零下架风险、秒级推送平台白名单</strong>：双权全员份额已按比例直付到位，YouTube Content ID 与 TikTok 广告版权白名单已同步激活（<code>$15,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateDisasterReliefAidSandbox() {{
+  var selEl = document.getElementById("aid-select");
+  var outEl = document.getElementById("aid-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "aid_sybil_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SYBIL_GHOST_BENEFICIARY_OR_POLYGON_MISMATCH_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "跨机构零知识哈希账本检出该申领身份已在其他救援组织领取过同灾种补助，或登记房产不在官方 SAR 卫星受灾多边形内（<code>sybil_ghost_household_detected == True</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$25,000.00</code> 幽灵人头户骗补！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aid_mcc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PROHIBITED_MCC_DIVERSION_OR_CASHBACK_KICKBACK_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "收单终端属于非民生必需品类别（如网络博彩 <code>MCC 7995</code>、烈酒 <code>5921</code> 或黄牛返现套现终端，<code>mcc_essential_relief_whitelist_verified == False</code>）。网关在 <code>15ms</code> 内当场拒付，确保善款 100% 用于食品、药品与房屋修缮！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aid_gouge_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EMERGENCY_PRICE_GOUGING_STATUTE_VIOLATION_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对灾前 30 天公开商超基准价与州政府紧急状态反哄抬物价法（涨幅上限 <code>&lt;= +10%</code>），检出该商户将平时 <code>$15.00</code> 的防雨篷布提价至 <code>$85.00</code>，立即冻结商户结算并移交市场监管！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aid_coop_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 REGIONAL_RELIEF_COOPERATIVE_BULK_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索区域救灾供销合作社目录，发现通过合作社大宗平价直供包统一配发发电机与修缮建材可节省零售溢价 <code>$4,200.00</code>（50 户净支出从 <code>$25,000.00</code> 降至 <code>$20,800.00</code>），建议一键确认切换！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 零知识受灾户查重 + 民生必需品 MCC + 灾前平价核验全绿：已秒级结算救灾专款 (VERIFIED_HUMANITARIAN_MCC_AID_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零冒领、零挪用、零奸商暴利</strong>：50 户受灾家庭修缮物资已完成核销并生成零隐私泄露的阳光审计凭证（<code>$25,000.00</code>）！" +
     "</div>";
 }}
 

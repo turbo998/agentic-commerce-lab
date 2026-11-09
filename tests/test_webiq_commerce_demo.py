@@ -4126,6 +4126,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("media-sync-voice-sandbox", demo_zh)
 
+    def test_humanitarian_disaster_relief_mcc_aid_mandate_vs_ghost_beneficiary_gouging_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_humanitarian_disaster_relief_mcc_aid_policy,
+        )
+
+        # 1. ZKP unique disaster household + essential MCC + fair price -> 200 settled ($25,000)
+        commit_ok = evaluate_humanitarian_disaster_relief_mcc_aid_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_relief_cents, 2500000)
+
+        # 2. Sybil ghost household or cross-NGO duplicate claim -> 403 blocked in 12ms
+        sybil_403 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+            sybil_ghost_household_detected=True,
+        )
+        self.assertFalse(sybil_403.allowed)
+        self.assertEqual(sybil_403.http_status, 403)
+        self.assertEqual(
+            sybil_403.relief_lane,
+            "SYBIL_GHOST_BENEFICIARY_OR_POLYGON_MISMATCH_BLOCKED",
+        )
+
+        # 3. Prohibited gambling/liquor MCC or POS cashback kickback -> 422 blocked in 15ms
+        mcc_422 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+            mcc_essential_relief_whitelist_verified=False,
+        )
+        self.assertFalse(mcc_422.allowed)
+        self.assertEqual(mcc_422.http_status, 422)
+        self.assertEqual(
+            mcc_422.relief_lane,
+            "PROHIBITED_MCC_DIVERSION_OR_CASHBACK_KICKBACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects $85 roof tarp violating emergency anti-gouging cap -> 451 blocked in 310ms
+        gouge_451 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+            webiq_emergency_anti_gouging_compliant=False,
+        )
+        self.assertFalse(gouge_451.allowed)
+        self.assertEqual(gouge_451.http_status, 451)
+
+        # 5. Web IQ discovers regional relief cooperative bulk kit saving $4,200 ($20,800 net) -> 409 Confirm
+        coop_409 = evaluate_humanitarian_disaster_relief_mcc_aid_policy(
+            cooperative_bulk_relief_savings_cents=420000,
+        )
+        self.assertFalse(coop_409.allowed)
+        self.assertEqual(coop_409.http_status, 409)
+        self.assertEqual(coop_409.settled_relief_cents, 2080000)
+        self.assertEqual(coop_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["disaster_relief_aid_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("disaster-relief-aid-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
