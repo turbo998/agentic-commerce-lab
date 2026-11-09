@@ -4574,6 +4574,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("telecom-a2p-sms-sandbox", demo_zh)
 
+    def test_franchise_royalty_pos_net_sales_gift_card_mandate_vs_gross_delivery_overcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_franchise_royalty_pos_giftcard_policy,
+        )
+
+        # 1. Net adjusted POS sales + 1:1 gift-card credit + clean FDD Item 6 -> 200 settled ($28,000)
+        commit_ok = evaluate_franchise_royalty_pos_giftcard_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_royalty_cents, 2800000)
+
+        # 2. Royalty charged on gross 3PD commissions or sales tax -> 403 blocked in 12ms
+        gross_403 = evaluate_franchise_royalty_pos_giftcard_policy(
+            net_adjusted_pos_sales_royalty_verified=False,
+        )
+        self.assertFalse(gross_403.allowed)
+        self.assertEqual(gross_403.http_status, 403)
+        self.assertEqual(
+            gross_403.franchise_lane,
+            "GROSS_3PD_COMMISSION_OR_TAX_ROYALTY_OVERCHARGE_BLOCKED",
+        )
+
+        # 3. Uncredited cross-store corporate gift-card redemptions -> 422 blocked in 15ms
+        gc_422 = evaluate_franchise_royalty_pos_giftcard_policy(
+            gift_card_cross_store_redemption_credited=False,
+        )
+        self.assertFalse(gc_422.allowed)
+        self.assertEqual(gc_422.http_status, 422)
+        self.assertEqual(
+            gc_422.franchise_lane,
+            "UNCREDITED_GIFT_CARD_OR_LOYALTY_REDEMPTION_SWEEP_BLOCKED",
+        )
+
+        # 4. Web IQ detects undisclosed mid-term tech fee absent from FDD Item 6 -> 451 blocked in 310ms
+        fdd_451 = evaluate_franchise_royalty_pos_giftcard_policy(
+            webiq_fdd_item6_and_ad_fund_audit_clean=False,
+        )
+        self.assertFalse(fdd_451.allowed)
+        self.assertEqual(fdd_451.http_status, 451)
+
+        # 5. Web IQ discovers Franchisee Purchasing Co-Op rebate offset saving $4,200 ($23,800 net) -> 409 Confirm
+        coop_409 = evaluate_franchise_royalty_pos_giftcard_policy(
+            franchisee_coop_rebate_offset_cents=420000,
+        )
+        self.assertFalse(coop_409.allowed)
+        self.assertEqual(coop_409.http_status, 409)
+        self.assertEqual(coop_409.settled_royalty_cents, 2380000)
+        self.assertEqual(coop_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["franchise_royalty_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("franchise-royalty-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg63" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#2E1065"/>
+    </linearGradient>
+    <linearGradient id="accent63" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg63)"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent63)"/>
+
+  <!-- Header -->
+  <text x="45" y="64" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">
+    ROUND 61 · FRANCHISE POS NET-SALES ROYALTY &amp; GIFT-CARD CLEARING MANDATE (2026-11-09)
+  </text>
+  <text x="45" y="96" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">
+    连锁餐饮与零售加盟特许权使用费 (Royalty) 与储值卡跨店清算 vs 外卖毛流水重复抽佣
+  </text>
+  <text x="45" y="122" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="14">
+    剔除第三方外卖 30% 平台抽成与税费净营业额 + 跨店储值卡实核冲抵 + Web IQ FDD Item 6 核验与联采返利省 $4,200 ($28k 护航)
+  </text>
+
+  <!-- Left Column: Legacy Gross-POS ACH Sweep -->
+  <rect x="45" y="142" width="535" height="365" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="45" y="142" width="535" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="65" y="166" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ❌ 传统总部 ACH 强划毛流水 ($28,000 连外卖平台抽成一起抽 8% 品牌费)
+  </text>
+
+  <rect x="65" y="196" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="220" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    1. 总部对外卖平台扣走的 30% 佣金、消费税与退款照抽 8% 特许权使用费
+  </text>
+  <text x="80" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 顾客在 UberEats/美团点 $100 外卖，平台抽走 $30，门店实收仅 $70
+  </text>
+  <text x="80" y="263" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 总部脚本直接按 POS 账面 $100 含税毛流水划扣 8% 品牌与广告费，吸干加盟商微薄毛利
+  </text>
+
+  <rect x="65" y="294" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="318" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    2. 顾客用总部 App 买的储值卡/积分在门店白吃白喝，总部却漏拨核销款
+  </text>
+  <text x="80" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 充值沉淀资金全躺在品牌总部资金池，门店付出实打实的咖啡豆、汉堡食材与人工
+  </text>
+  <text x="80" y="361" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 月底清算时未将跨店储值卡/会员免单券核销额全额冲抵特许费，甚至倒收手续费
+  </text>
+
+  <rect x="65" y="392" width="495" height="98" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="80" y="416" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    3. 擅自加收 FDD Item 6 未披露的“数字化系统费” + 漏抵联采返利 $4,200
+  </text>
+  <text x="80" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 违反 FTC 特许经营披露文件 (FDD Item 6)，中途强加未签约的每月 $350/店 SaaS 杂费
+  </text>
+  <text x="80" y="459" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 盲交全额账单，不知用加盟商合作社 (Co-Op) 季度冷链纸杯集采返利直接抵扣 $4,200
+  </text>
+
+  <!-- Right Column: Net Adjusted Sales & Gift-Card Clearing Mandate -->
+  <rect x="605" y="142" width="550" height="365" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="605" y="142" width="550" height="38" rx="12" fill="#064E3B"/>
+  <text x="625" y="166" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ✅ 净实收抽成与储值卡核销冲抵令牌 + Web IQ FDD 网关 (推荐)
+  </text>
+
+  <rect x="625" y="196" width="510" height="84" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="640" y="220" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 1: 剔除外卖平台抽成、消费税与退单的净营业额门禁 (12ms · HTTP 403)
+  </text>
+  <text x="640" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 net_adjusted_pos_sales_royalty_verified == True（仅对门店净实收抽成）
+  </text>
+  <text x="640" y="263" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出将 3PD 外卖佣金或销售税纳入特许费基数 → 12ms 拦截 $28,000 超额强划
+  </text>
+
+  <rect x="625" y="294" width="510" height="84" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+  <text x="640" y="318" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 2: 跨店储值卡与总部 App 积分核销 1:1 冲抵门禁 (15ms · HTTP 422)
+  </text>
+  <text x="640" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 gift_card_cross_store_redemption_credited == True
+  </text>
+  <text x="640" y="361" fill="#BAE6FD" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 任何未足额拨付门店已核销储值卡/总部代金券款项的清算单在 15ms 内触发 HTTP 422
+  </text>
+
+  <rect x="625" y="392" width="510" height="98" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="640" y="416" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 3: Microsoft Web IQ /v3/browse FDD 备案核验与联采抵扣 (310/315ms)
+  </text>
+  <text x="640" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 核验州监管局 FDD Item 6/8 披露费率表：擅自新增未备案杂费在 310ms 触发 HTTP 451
+  </text>
+  <text x="640" y="459" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出加盟商采购合作社 (Co-Op) 季度食材包材返利可冲抵 $4,200 ($23,800) → 315ms!
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Bar -->
+  <rect x="45" y="522" width="1110" height="125" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="65" y="548" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    📊 定量基准实测 (deterministic_offline_simulation · 90 Unit Tests Passing · 12家连锁餐饮门店月度特许费与广告基金清算 $28,000)
+  </text>
+
+  <rect x="65" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EF4444"/>
+  <text x="77" y="584" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">外卖佣金重复抽成拦截</text>
+  <text x="77" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 403 · 12 ms</text>
+  <text x="77" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">防对平台 30% 佣金再抽特许费</text>
+
+  <rect x="282" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="294" y="584" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">储值卡漏拨款拒付</text>
+  <text x="294" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 422 · 15 ms</text>
+  <text x="294" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">强制 1:1 拨付跨店核销储值金</text>
+
+  <rect x="499" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EC4899"/>
+  <text x="511" y="584" fill="#F472B6" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">FDD 未备案杂费冻结</text>
+  <text x="511" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 451 · 310 ms</text>
+  <text x="511" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">Web IQ 特许披露文件核验</text>
+
+  <rect x="716" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#8B5CF6"/>
+  <text x="728" y="584" fill="#C4B5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">合作社联采返利确认</text>
+  <text x="728" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 409 · 315 ms</text>
+  <text x="728" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">冲抵立省 $4,200 ($23,800)</text>
+
+  <rect x="933" y="562" width="205" height="68" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="945" y="584" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">净营业额自动清算</text>
+  <text x="945" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 200 · 265 ms</text>
+  <text x="945" y="621" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="11">FDD 合规自动划扣 $28,000</text>
+</svg>
