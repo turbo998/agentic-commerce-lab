@@ -340,6 +340,11 @@
     "black_mass_settlement_latency_ms": 265,
     "slag_adulteration_block_latency_ms": 12
   },
+  "media_sync_voice_guards": {
+    "all_passed": true,
+    "sync_settlement_latency_ms": 265,
+    "half_cleared_sync_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

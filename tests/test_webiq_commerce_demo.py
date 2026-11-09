@@ -4070,6 +4070,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("black-mass-assay-sandbox", demo_zh)
 
+    def test_media_sync_licensing_isrc_iswc_voice_clone_mandate_vs_copyright_takedown_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_media_sync_isrc_iswc_voice_clone_policy,
+        )
+
+        # 1. 100% Master ISRC + 100% Publishing ISWC + signed Voice VC -> 200 settled ($15,000)
+        commit_ok = evaluate_media_sync_isrc_iswc_voice_clone_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sync_cents, 1500000)
+
+        # 2. Missing 15% co-publisher ISWC split signature -> 403 blocked in 12ms
+        iswc_403 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+            master_isrc_and_100pct_iswc_publishing_cleared=False,
+        )
+        self.assertFalse(iswc_403.allowed)
+        self.assertEqual(iswc_403.http_status, 403)
+        self.assertEqual(
+            iswc_403.sync_lane,
+            "INCOMPLETE_ISWC_PUBLISHING_OR_MASTER_SYNC_CLEARANCE_BLOCKED",
+        )
+
+        # 3. Missing SAG-AFTRA / ELVIS Act actor voice replica VC -> 422 blocked in 15ms
+        vox_422 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+            biometric_voice_consent_and_term_verified=False,
+        )
+        self.assertFalse(vox_422.allowed)
+        self.assertEqual(vox_422.http_status, 422)
+        self.assertEqual(
+            vox_422.sync_lane,
+            "MISSING_SAG_AFTRA_VOICE_REPLICA_CONSENT_OR_TERM_BREACH",
+        )
+
+        # 4. Web IQ detects Songview sample/authorship dispute hold -> 451 blocked in 310ms
+        pro_451 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+            webiq_pro_songview_repertory_clean=False,
+        )
+        self.assertFalse(pro_451.allowed)
+        self.assertEqual(pro_451.http_status, 451)
+
+        # 5. Web IQ discovers One-Stop 200% pre-cleared track saving $3,900 ($11,100 net) -> 409 Confirm
+        one_409 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+            one_stop_catalog_savings_cents=390000,
+        )
+        self.assertFalse(one_409.allowed)
+        self.assertEqual(one_409.http_status, 409)
+        self.assertEqual(one_409.settled_sync_cents, 1110000)
+        self.assertEqual(one_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["media_sync_voice_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("media-sync-voice-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

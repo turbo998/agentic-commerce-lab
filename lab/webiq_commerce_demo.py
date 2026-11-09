@@ -9096,6 +9096,95 @@ def evaluate_battery_black_mass_icp_assay_escrow_policy(
     )
 
 
+@dataclass(frozen=True)
+class MediaSyncVoiceCloneVerdict:
+    """Round 52 verdict for Commercial Media Sync, ISRC/ISWC Dual-Clearance & SAG-AFTRA Voice-Clone Mandate (100% Master/Publishing Split & Biometric Voice Replica Token + Web IQ Songview & One-Stop Catalog Grounding) vs Half-Cleared Sync Takedowns & Unconsented Voice Cloning."""
+
+    allowed: bool
+    http_status: int
+    sync_lane: str
+    settled_sync_cents: int
+    one_stop_catalog_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_media_sync_isrc_iswc_voice_clone_policy(
+    *,
+    campaign_sync_cents: int = 1500000,
+    master_isrc_and_100pct_iswc_publishing_cleared: bool = True,
+    biometric_voice_consent_and_term_verified: bool = True,
+    webiq_pro_songview_repertory_clean: bool = True,
+    one_stop_catalog_savings_cents: int = 0,
+) -> MediaSyncVoiceCloneVerdict:
+    """Evaluate 100% Master ISRC + 100% Publishing ISWC split clearance, SAG-AFTRA / ELVIS Act digital voice-replica consent VC, Web IQ ASCAP/BMI Songview dispute check, and One-Stop 200% pre-cleared catalog arbitrage."""
+
+    # 1. Incomplete ISWC Publishing Split (<100%) or Missing Master Sync Clearance -> HTTP 403
+    if not master_isrc_and_100pct_iswc_publishing_cleared:
+        return MediaSyncVoiceCloneVerdict(
+            False,
+            403,
+            "INCOMPLETE_ISWC_PUBLISHING_OR_MASTER_SYNC_CLEARANCE_BLOCKED",
+            0,
+            0,
+            "commercial_sync_blocked_without_100pct_iswc_publishing_and_master_isrc_signatures",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Missing SAG-AFTRA / ELVIS Act Voice Replica Consent VC or Term Breach -> HTTP 422
+    if not biometric_voice_consent_and_term_verified:
+        return MediaSyncVoiceCloneVerdict(
+            False,
+            422,
+            "MISSING_SAG_AFTRA_VOICE_REPLICA_CONSENT_OR_TERM_BREACH",
+            0,
+            0,
+            "ai_voiceover_rejected_without_script_bound_actor_digital_replica_consent_vc",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Active ASCAP/BMI Songview Sampling or Authorship Dispute Hold via Web IQ -> HTTP 451
+    if not webiq_pro_songview_repertory_clean:
+        return MediaSyncVoiceCloneVerdict(
+            False,
+            451,
+            "PRO_SONGVIEW_OWNERSHIP_DISPUTE_HOLD",
+            0,
+            0,
+            "webiq_detected_active_ascap_bmi_songview_ownership_or_sample_dispute_hold",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ One-Stop (200% Pre-Cleared) Stem Catalog Arbitrage -> HTTP 409 Confirm
+    if one_stop_catalog_savings_cents > 0:
+        return MediaSyncVoiceCloneVerdict(
+            False,
+            409,
+            "ONE_STOP_BUYOUT_STEM_CATALOG_ARBITRAGE_CONFIRM",
+            campaign_sync_cents - one_stop_catalog_savings_cents,
+            one_stop_catalog_savings_cents,
+            "webiq_found_one_stop_200pct_precleared_track_saving_3900_usd_in_clearance_fees",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified 100% Dual ISRC/ISWC Split + Signed Voice Replica VC -> Settled
+    return MediaSyncVoiceCloneVerdict(
+        True,
+        200,
+        "VERIFIED_DUAL_SYNC_AND_VOICE_MANDATE_SETTLED",
+        campaign_sync_cents,
+        0,
+        "dual_isrc_iswc_100pct_splits_and_voice_replica_vc_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -11631,6 +11720,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "slag_adulteration_block_latency_ms": bm_slag_403.latency_ms,
     }
 
+    syn_commit_ok = evaluate_media_sync_isrc_iswc_voice_clone_policy()
+    syn_iswc_403 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+        master_isrc_and_100pct_iswc_publishing_cleared=False,
+    )
+    syn_vox_422 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+        biometric_voice_consent_and_term_verified=False,
+    )
+    syn_pro_451 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+        webiq_pro_songview_repertory_clean=False,
+    )
+    syn_one_409 = evaluate_media_sync_isrc_iswc_voice_clone_policy(
+        one_stop_catalog_savings_cents=390000,
+    )
+    media_sync_voice_guards = {
+        "all_passed": (
+            syn_commit_ok.allowed
+            and syn_commit_ok.settled_sync_cents == 1500000
+            and not syn_iswc_403.allowed
+            and syn_iswc_403.http_status == 403
+            and not syn_vox_422.allowed
+            and syn_vox_422.http_status == 422
+            and not syn_pro_451.allowed
+            and syn_pro_451.http_status == 451
+            and not syn_one_409.allowed
+            and syn_one_409.action_pill == "Confirm"
+        ),
+        "sync_settlement_latency_ms": syn_commit_ok.latency_ms,
+        "half_cleared_sync_block_latency_ms": syn_iswc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -11695,6 +11814,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fleet_fuel_telematics_guards": fleet_fuel_telematics_guards,
         "aviation_mro_traceability_guards": aviation_mro_traceability_guards,
         "black_mass_assay_guards": black_mass_assay_guards,
+        "media_sync_voice_guards": media_sync_voice_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -15530,6 +15650,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Media Sync, ISRC/ISWC Dual-Clearance & SAG-AFTRA Voice-Clone Sandbox (Round 52 FAQ Companion) -->
+      <div class="finops-box" id="media-sync-voice-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-syn-title">🎵 商用广告配乐双权齐备 (ISRC+ISWC) 与 AI 人声克隆授权架构：双权分账与声音分身令牌 (media_sync_voice_mandate_...) vs 广告下架决策器 (Round 52 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 全球商业广告配乐与配音授权 ($15,000.00)、母带 ISRC + 100% 词曲 ISWC 份额、SAG-AFTRA 声音 VC 与 Web IQ Songview/One-Stop 场景 (Media Sync Scenario):</span></label>
+          <select id="syn-select" onchange="updateMediaSyncVoiceSandbox()">
+            <option value="syn_commit_ok">⚡ 母带 ISRC + 100% 词曲 ISWC 出版商全员签齐 + 演员声音分身 VC 验真：265ms 原子拆账放款 $15,000.00 并注册白名单! (Act automatically)</option>
+            <option value="syn_iswc_403">🛑 半套版权拦截：仅付了唱片母带钱，漏拿第 4 位合写词曲作者 (15% ISWC 份额) 签名 → 12ms 触发 HTTP 403 硬阻断，防上线遭禁播索赔!</option>
+            <option value="syn_vox_422">🚨 无证 AI 克隆配音拦截：缺失配音演员本人签署的 SAG-AFTRA / ELVIS 法案数字声音分身授权 VC → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="syn_pro_451">🛑 ASCAP/BMI Songview 权属冻结纠纷拦截：Web IQ /v3/browse 检出该曲目因未清权采样处于版权诉讼冻结期 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="syn_one_409">🧑‍⚖️ Web IQ 检出同曲风 One-Stop (200% 母带+词曲全权合一) 预清分轨曲库可省去多头律师费 $3,900.00 (净付 $11,100.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="syn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -16020,6 +16158,7 @@ function renderAll() {{
   updateFleetFuelTelematicsSandbox();
   updateAviationMROTraceabilitySandbox();
   updateBlackMassAssaySandbox();
+  updateMediaSyncVoiceSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18819,6 +18958,56 @@ function updateBlackMassAssaySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 全批混匀 ICP-MS 品位达标 + 巴塞尔危废与干基净重核验通过：已自动清算 (VERIFIED_ICP_MS_BLACK_MASS_ESCROW_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零阴阳袋欺诈、秒级写入欧盟电池护照</strong>：20 吨三元黑粉 Ni/Co/Li 质谱品位与脱氟标准 100% 达标，265ms 自动放款 <code>$110,000.00</code>！" +
+    "</div>";
+}}
+
+function updateMediaSyncVoiceSandbox() {{
+  var selEl = document.getElementById("syn-select");
+  var outEl = document.getElementById("syn-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "syn_iswc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 INCOMPLETE_ISWC_PUBLISHING_OR_MASTER_SYNC_CLEARANCE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "商用配乐网关检出该曲目虽已获唱片母带（<code>ISRC</code>）授权，但词曲出版（<code>ISWC</code>）仍有 <code>15% 合写出版商份额</code> 未完成电子签名（<code>master_isrc_and_100pct_iswc_publishing_cleared=False</code>）！已在 <code>12ms</code> 内硬阻断 <code>$15,000.00</code> 付款，100% 杜绝全球广告上线当天遭未签约词曲作者发函全网下架并索赔 <code>$150,000</code>！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_vox_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_SAG_AFTRA_VOICE_REPLICA_CONSENT_OR_TERM_BREACH (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "AI 配音音轨缺失配音演员本人针对本品牌与广告脚本签署的 <code>SAG-AFTRA / ELVIS 法案数字声音分身授权 VC</code>！网关已在 <code>15ms</code> 内拦截侵权语音合成结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_pro_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PRO_SONGVIEW_OWNERSHIP_DISPUTE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查 ASCAP/BMI Songview 与 MLC 官方词曲登记库，检出该 ISWC 编号因未清权采样（Uncleared Sample）处于权属冻结诉讼期，已在 <code>310ms</code> 内冻结交易！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_one_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ONE_STOP_BUYOUT_STEM_CATALOG_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索认证商用音乐库，发现声学特征高度匹配的 <code>One-Stop (200% 母带+词曲全权合一)</code> 预清分轨曲目可省去多出版商律师谈判费 <code>$3,900.00</code>（总成本从 <code>$15,000.00</code> 降至 <code>$11,100.00</code>），建议一键确认切换！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 母带 ISRC + 100% 词曲 ISWC + 演员声音分身 VC 核验通过：已原子拆账放款 (VERIFIED_DUAL_SYNC_AND_VOICE_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零下架风险、秒级推送平台白名单</strong>：双权全员份额已按比例直付到位，YouTube Content ID 与 TikTok 广告版权白名单已同步激活（<code>$15,000.00</code>）！" +
     "</div>";
 }}
 
