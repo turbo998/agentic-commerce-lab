@@ -10577,6 +10577,93 @@ def evaluate_sports_athlete_nil_sponsorship_policy(
     )
 
 
+@dataclass(frozen=True)
+class DatacenterColocationPDUPUEVerdict:
+    allowed: bool
+    http_status: int
+    colo_lane: str
+    settled_colo_cents: int
+    ixp_consolidation_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_datacenter_colocation_pdu_pue_policy(
+    *,
+    monthly_colo_cents: int = 11500000,
+    pdu_actual_kwh_vs_breaker_nameplate_verified: bool = True,
+    pue_ceiling_and_active_crossconnect_verified: bool = True,
+    webiq_ashrae_weather_and_utility_tariff_clean: bool = True,
+    ixp_peering_crossconnect_savings_cents: int = 0,
+) -> DatacenterColocationPDUPUEVerdict:
+    """Evaluate ANSI C12.20 intelligent rack-PDU active kWh vs breaker-nameplate commit billing, contractual PUE ceiling (<=1.30) & optical DOM/LLDP active cross-connect check, Web IQ NOAA wet-bulb weather & PUC utility tariff check, and PeeringDB IXP multilateral port consolidation arbitrage."""
+
+    # 1. Breaker-Nameplate Commit or Apparent Power (kVA) Overbilling -> HTTP 403
+    if not pdu_actual_kwh_vs_breaker_nameplate_verified:
+        return DatacenterColocationPDUPUEVerdict(
+            False,
+            403,
+            "BREAKER_NAMEPLATE_OR_PHANTOM_KW_OVERBILLING_BLOCKED",
+            0,
+            0,
+            "colocation_invoice_blocked_for_billing_breaker_nameplate_capacity_instead_of_pdu_active_kwh",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Contractual PUE Cap Breach (1.68 > 1.30) or Dark Zombie Cross-Connects -> HTTP 422
+    if not pue_ceiling_and_active_crossconnect_verified:
+        return DatacenterColocationPDUPUEVerdict(
+            False,
+            422,
+            "CONTRACTUAL_PUE_CAP_BREACH_OR_ZOMBIE_CROSSCONNECT_BLOCKED",
+            0,
+            0,
+            "colo_bill_rejected_for_passing_through_1_68_pue_above_1_30_cap_or_dark_zombie_crossconnects",
+            15,
+            "Send to a human",
+        )
+
+    # 3. False Heatwave PUE Force-Majeure Claim or Utility Rate Markup via Web IQ -> HTTP 451
+    if not webiq_ashrae_weather_and_utility_tariff_clean:
+        return DatacenterColocationPDUPUEVerdict(
+            False,
+            451,
+            "FALSE_HEATWAVE_PUE_EXEMPTION_OR_TARIFF_MARKUP_HOLD",
+            0,
+            0,
+            "webiq_detected_false_heatwave_pue_exemption_during_19c_wet_bulb_month_or_puc_tariff_markup",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ PeeringDB IXP Multilateral Cross-Connect Consolidation Arbitrage -> HTTP 409 Confirm
+    if ixp_peering_crossconnect_savings_cents > 0:
+        return DatacenterColocationPDUPUEVerdict(
+            False,
+            409,
+            "IXP_MULTILATERAL_PEERING_CROSSCONNECT_ARBITRAGE_CONFIRM",
+            monthly_colo_cents - ixp_peering_crossconnect_savings_cents,
+            ixp_peering_crossconnect_savings_cents,
+            "webiq_found_peeringdb_ixp_port_consolidation_eliminating_22_crossconnects_saving_14200_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified ANSI C12.20 PDU Active kWh + Capped <=1.30 PUE + Active Cross-Connects -> Settled
+    return DatacenterColocationPDUPUEVerdict(
+        True,
+        200,
+        "VERIFIED_COLOCATION_PDU_PUE_SETTLED",
+        monthly_colo_cents,
+        0,
+        "pdu_active_kwh_capped_pue_and_active_crossconnects_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -13622,6 +13709,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bot_ambush_block_latency_ms": nil_bot_403.latency_ms,
     }
 
+    colo_commit_ok = evaluate_datacenter_colocation_pdu_pue_policy()
+    colo_brk_403 = evaluate_datacenter_colocation_pdu_pue_policy(
+        pdu_actual_kwh_vs_breaker_nameplate_verified=False,
+    )
+    colo_pue_422 = evaluate_datacenter_colocation_pdu_pue_policy(
+        pue_ceiling_and_active_crossconnect_verified=False,
+    )
+    colo_wx_451 = evaluate_datacenter_colocation_pdu_pue_policy(
+        webiq_ashrae_weather_and_utility_tariff_clean=False,
+    )
+    colo_ixp_409 = evaluate_datacenter_colocation_pdu_pue_policy(
+        ixp_peering_crossconnect_savings_cents=1420000,
+    )
+    datacenter_colo_pue_guards = {
+        "all_passed": (
+            colo_commit_ok.allowed
+            and colo_commit_ok.settled_colo_cents == 11500000
+            and not colo_brk_403.allowed
+            and colo_brk_403.http_status == 403
+            and not colo_pue_422.allowed
+            and colo_pue_422.http_status == 422
+            and not colo_wx_451.allowed
+            and colo_wx_451.http_status == 451
+            and not colo_ixp_409.allowed
+            and colo_ixp_409.action_pill == "Confirm"
+        ),
+        "colo_settlement_latency_ms": colo_commit_ok.latency_ms,
+        "breaker_nameplate_block_latency_ms": colo_brk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -13703,6 +13820,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "industrial_wastewater_guards": industrial_wastewater_guards,
         "aviation_acmi_guards": aviation_acmi_guards,
         "athlete_nil_sponsorship_guards": athlete_nil_sponsorship_guards,
+        "datacenter_colo_pue_guards": datacenter_colo_pue_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -17844,6 +17962,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="nil-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Data Center Colocation PDU kWh, PUE Cap & Cross-Connect Mandate Sandbox (Round 69 FAQ Companion) -->
+      <div class="finops-box" id="datacenter-colo-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-colo-title">🏢 IDC 数据中心机柜托管 (Colocation) 实测电表与 PUE 封顶清算架构：智能 PDU 有功电度与跳线令牌 (datacenter_colo_pue_mandate_...) vs 空开铭牌计费决策器 (Round 69 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 25 机柜高密 IDC 托管与跳线月度账单 ($115,000.00)、ANSI C12.20 智能 PDU 实测 kWh、PUE 封顶 (&lt;=1.30) 与 Web IQ 气象/IXP 场景 (Colocation Scenario):</span></label>
+          <select id="colo-select" onchange="updateDatacenterColoSandbox()">
+            <option value="colo_commit_ok">⚡ 智能 PDU 实测有功电度 (310kW 均值) + 合同 PUE &lt;=1.30 封顶 + 跳线 DOM/LLDP 100% 活光：265ms 自动放款 $115,000.00! (Act automatically)</option>
+            <option value="colo_brk_403">🛑 按 500kW 断路器空开铭牌强收幽灵电费拦截：忽略 NEC 80% 降额与 PDU 实测 310kW 有功负荷，每月多收 $32,000 → 12ms 触发 HTTP 403!</option>
+            <option value="colo_pue_422">🚨 房东冷机老化 PUE 飙至 1.68 转嫁或 18 根拔掉的僵尸跳线照扣费拦截：超出 1.30 PUE 封顶或端口无光信号 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="colo_wx_451">🛑 伪造高温天气豁免 PUE 或市政电价违规加点冻结：Web IQ /v3/browse 核查 NOAA 气象站证实当月湿球温度仅 19°C 未超标 → 310ms 触发 HTTP 451!</option>
+            <option value="colo_ixp_409">🧑‍⚖️ Web IQ 扫描 PeeringDB 发现将 22 根 $350/月双边光纤跳线合并至同机房 IXP 交换中心 100G 端口可月省 $14,200.00 (净付 $100,800.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="colo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -18351,6 +18487,7 @@ function renderAll() {{
   updateIndustrialWastewaterSandbox();
   updateAviationACMISandbox();
   updateAthleteNILSandbox();
+  updateDatacenterColoSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -21984,6 +22121,55 @@ function updateAthleteNILSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 第一方真实受众与排他核验通过 + NCAA/CSC 在籍完赛 + 道德/FTC 合规：已自动放款 (VERIFIED_ATHLETE_NIL_MILESTONE_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零僵尸粉注水、零转学逃单与竞品背刺</strong>：赛季 NIL 代言里程碑已完成清算并归档 FTC `#ad` 与 CSC 合规档案（<code>$60,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateDatacenterColoSandbox() {{
+  var selEl = document.getElementById("colo-select");
+  var outEl = document.getElementById("colo-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "colo_brk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BREAKER_NAMEPLATE_OR_PHANTOM_KW_OVERBILLING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "机柜 <code>ANSI C12.20</code> 智能 PDU 实测 25 个机柜平均有功功率仅 <code>310 kW</code>，但 IDC 房东按 A+B 双路断路器铭牌额定容量（<code>500 kW</code>）强收满额幽灵电费（<code>pdu_actual_kwh_vs_breaker_nameplate_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$115,000.00</code> 账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "colo_pue_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CONTRACTUAL_PUE_CAP_BREACH_OR_ZOMBIE_CROSSCONNECT_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "房东因冷机失修将恶化至 <code>1.68 的实际 PUE</code>（超出合同 <code>&lt;= 1.30</code> 封顶上限）转嫁租户，或对交换机光模块 <code>DOM (RX &lt; -40 dBm)</code> 证实已拔掉的 18 根僵尸跳线继续按 <code>$350/根/月</code> 收费（<code>pue_ceiling_and_active_crossconnect_verified == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "colo_wx_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FALSE_HEATWAVE_PUE_EXEMPTION_OR_TARIFF_MARKUP_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 NOAA 当地气象站湿球温度历史记录与州公用事业委员会（PUC）公开工业电价表，证实当月最高湿球温度仅 <code>19°C</code>（未触发 ASHRAE 极端热浪豁免），立即冻结违规加价！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "colo_ixp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 IXP_MULTILATERAL_PEERING_CROSSCONNECT_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对 PeeringDB 同机房公共互联网交换中心（IXP）成员表，发现将 22 根单独计费的双边物理光纤跳线合并至单一 <code>100G IXP 多边对等互联端口</code> 可月省 <code>$14,200.00</code>（净支出从 <code>$115,000.00</code> 降至 <code>$100,800.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ANSI C12.20 智能 PDU 有功电度吻合 + PUE &lt;=1.30 封顶 + 跳线活光全绿：已自动放款 (VERIFIED_COLOCATION_PDU_PUE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零冗余空开幽灵电费、零僵尸跳线月租</strong>：25 机柜高密托管与交叉连接账单已完成清算并归档 DCIM 能效台账（<code>$115,000.00</code>）！" +
     "</div>";
 }}
 

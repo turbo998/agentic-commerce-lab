@@ -5022,6 +5022,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("athlete-nil-sandbox", demo_zh)
 
+    def test_datacenter_colocation_pdu_kwh_pue_cap_mandate_vs_breaker_commit_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_datacenter_colocation_pdu_pue_policy,
+        )
+
+        # 1. PDU active kWh + <=1.30 PUE cap + active DOM cross-connects -> 200 settled ($115,000)
+        commit_ok = evaluate_datacenter_colocation_pdu_pue_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_colo_cents, 11500000)
+
+        # 2. 500 kW breaker nameplate commit billed instead of 310 kW PDU active kWh -> 403 blocked in 12ms
+        brk_403 = evaluate_datacenter_colocation_pdu_pue_policy(
+            pdu_actual_kwh_vs_breaker_nameplate_verified=False,
+        )
+        self.assertFalse(brk_403.allowed)
+        self.assertEqual(brk_403.http_status, 403)
+        self.assertEqual(
+            brk_403.colo_lane,
+            "BREAKER_NAMEPLATE_OR_PHANTOM_KW_OVERBILLING_BLOCKED",
+        )
+
+        # 3. 1.68 degraded PUE pass-through (>1.30 cap) or 18 dark zombie cross-connects -> 422 blocked in 15ms
+        pue_422 = evaluate_datacenter_colocation_pdu_pue_policy(
+            pue_ceiling_and_active_crossconnect_verified=False,
+        )
+        self.assertFalse(pue_422.allowed)
+        self.assertEqual(pue_422.http_status, 422)
+        self.assertEqual(
+            pue_422.colo_lane,
+            "CONTRACTUAL_PUE_CAP_BREACH_OR_ZOMBIE_CROSSCONNECT_BLOCKED",
+        )
+
+        # 4. Web IQ detects bogus heatwave PUE exemption during 19C wet-bulb month -> 451 blocked in 310ms
+        wx_451 = evaluate_datacenter_colocation_pdu_pue_policy(
+            webiq_ashrae_weather_and_utility_tariff_clean=False,
+        )
+        self.assertFalse(wx_451.allowed)
+        self.assertEqual(wx_451.http_status, 451)
+
+        # 5. Web IQ discovers PeeringDB IXP port consolidation saving $14,200 ($100,800 net) -> 409 Confirm
+        ixp_409 = evaluate_datacenter_colocation_pdu_pue_policy(
+            ixp_peering_crossconnect_savings_cents=1420000,
+        )
+        self.assertFalse(ixp_409.allowed)
+        self.assertEqual(ixp_409.http_status, 409)
+        self.assertEqual(ixp_409.settled_colo_cents, 10080000)
+        self.assertEqual(ixp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["datacenter_colo_pue_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("datacenter-colo-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
