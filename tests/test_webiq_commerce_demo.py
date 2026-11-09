@@ -3960,6 +3960,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("fleet-fuel-telematics-sandbox", demo_zh)
 
+    def test_aviation_mro_faa8130_traceability_mandate_vs_bogus_sup_parts_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aviation_mro_faa8130_traceability_policy,
+        )
+
+        # 1. Cryptographic Part-145 8130-3 + NDT crack-free + FAA UPN clean -> 200 settled ($95,000)
+        commit_ok = evaluate_aviation_mro_faa8130_traceability_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_mro_cents, 9500000)
+
+        # 2. Forged PDF 8130-3 scan or broken Back-to-Birth chain (SUP) -> 403 blocked in 12ms
+        sup_403 = evaluate_aviation_mro_faa8130_traceability_policy(
+            cryptographic_8130_back_to_birth_verified=False,
+        )
+        self.assertFalse(sup_403.allowed)
+        self.assertEqual(sup_403.http_status, 403)
+        self.assertEqual(
+            sup_403.mro_lane, "SUSPECTED_UNAPPROVED_PART_BOGUS_8130_BLOCKED"
+        )
+
+        # 3. Missing signed NDT eddy-current crack proof or cycle shortfall -> 422 blocked in 15ms
+        ndt_422 = evaluate_aviation_mro_faa8130_traceability_policy(
+            ndt_inspection_and_cycles_verified=False,
+        )
+        self.assertFalse(ndt_422.allowed)
+        self.assertEqual(ndt_422.http_status, 422)
+        self.assertEqual(
+            ndt_422.mro_lane,
+            "MISSING_NDT_CRACK_ATTESTATION_OR_CYCLE_SHORTFALL",
+        )
+
+        # 4. Web IQ detects active FAA UPN / EASA SIB bogus-part alert -> 451 blocked in 310ms
+        upn_451 = evaluate_aviation_mro_faa8130_traceability_policy(
+            webiq_faa_upn_and_ad_clean=False,
+        )
+        self.assertFalse(upn_451.allowed)
+        self.assertEqual(upn_451.http_status, 451)
+
+        # 5. Web IQ discovers FAA-approved PMA equivalent saving $18,500 ($76,500 net) -> 409 Confirm
+        pma_409 = evaluate_aviation_mro_faa8130_traceability_policy(
+            faa_pma_equivalent_savings_cents=1850000,
+        )
+        self.assertFalse(pma_409.allowed)
+        self.assertEqual(pma_409.http_status, 409)
+        self.assertEqual(pma_409.settled_mro_cents, 7650000)
+        self.assertEqual(pma_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aviation_mro_traceability_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aviation-mro-traceability-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

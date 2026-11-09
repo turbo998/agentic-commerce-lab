@@ -330,6 +330,11 @@
     "fuel_settlement_latency_ms": 265,
     "ghost_fueling_block_latency_ms": 12
   },
+  "aviation_mro_traceability_guards": {
+    "all_passed": true,
+    "mro_settlement_latency_ms": 265,
+    "bogus_part_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

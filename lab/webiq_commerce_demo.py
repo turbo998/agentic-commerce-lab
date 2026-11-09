@@ -8918,6 +8918,95 @@ def evaluate_commercial_trucking_fuel_telematics_policy(
     )
 
 
+@dataclass(frozen=True)
+class AviationMROTraceabilityVerdict:
+    """Round 50 verdict for Aviation & Gas-Turbine MRO FAA 8130-3 & Back-to-Birth Traceability Mandate (Cryptographic Airworthiness Release & NDT Escrow Token + Web IQ FAA UPN & PMA Grounding) vs Forged Paper 8130-3 Bogus Parts (SUP) Fraud."""
+
+    allowed: bool
+    http_status: int
+    mro_lane: str
+    settled_mro_cents: int
+    faa_pma_equivalent_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_aviation_mro_faa8130_traceability_policy(
+    *,
+    turbine_part_cents: int = 9500000,
+    cryptographic_8130_back_to_birth_verified: bool = True,
+    ndt_inspection_and_cycles_verified: bool = True,
+    webiq_faa_upn_and_ad_clean: bool = True,
+    faa_pma_equivalent_savings_cents: int = 0,
+) -> AviationMROTraceabilityVerdict:
+    """Evaluate cryptographic OEM/Part-145 FAA 8130-3 & Back-to-Birth cycle chain, signed NDT eddy-current crack inspection, Web IQ FAA UPN / EASA SIB bogus-part check, and FAA-approved PMA equivalent arbitrage."""
+
+    # 1. Forged PDF 8130-3 Scan or Broken Back-to-Birth Chain (Suspected Unapproved Part) -> HTTP 403
+    if not cryptographic_8130_back_to_birth_verified:
+        return AviationMROTraceabilityVerdict(
+            False,
+            403,
+            "SUSPECTED_UNAPPROVED_PART_BOGUS_8130_BLOCKED",
+            0,
+            0,
+            "unauthenticated_pdf_8130_or_broken_llp_birth_chain_blocked_as_suspected_unapproved_part",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Missing Signed NDT Eddy-Current Crack Proof or Remaining Cycle Shortfall -> HTTP 422
+    if not ndt_inspection_and_cycles_verified:
+        return AviationMROTraceabilityVerdict(
+            False,
+            422,
+            "MISSING_NDT_CRACK_ATTESTATION_OR_CYCLE_SHORTFALL",
+            0,
+            0,
+            "mro_escrow_frozen_due_to_missing_signed_ndt_crack_report_or_llp_cycle_shortfall",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Active FAA Unapproved Parts Notification (UPN) or EASA SIB Alert via Web IQ -> HTTP 451
+    if not webiq_faa_upn_and_ad_clean:
+        return AviationMROTraceabilityVerdict(
+            False,
+            451,
+            "FAA_UPN_BOGUS_PART_ALERT_OR_AD_HOLD",
+            0,
+            0,
+            "webiq_detected_active_faa_upn_or_easa_sib_unapproved_part_alert_on_batch",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ FAA-Approved PMA Equivalent Arbitrage -> HTTP 409 Confirm
+    if faa_pma_equivalent_savings_cents > 0:
+        return AviationMROTraceabilityVerdict(
+            False,
+            409,
+            "FAA_APPROVED_PMA_EQUIVALENT_ARBITRAGE_CONFIRM",
+            turbine_part_cents - faa_pma_equivalent_savings_cents,
+            faa_pma_equivalent_savings_cents,
+            "webiq_found_faa_approved_pma_equivalent_saving_18500_usd_vs_oem_broker_quote",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Part-145 8130-3 PKI Chain + Signed NDT Crack-Free -> Escrow Released
+    return AviationMROTraceabilityVerdict(
+        True,
+        200,
+        "VERIFIED_AIRWORTHY_8130_MRO_SETTLED",
+        turbine_part_cents,
+        0,
+        "part145_cryptographic_8130_and_ndt_crack_free_verified_for_mro_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -11393,6 +11482,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ghost_fueling_block_latency_ms": fl_gps_403.latency_ms,
     }
 
+    mro_commit_ok = evaluate_aviation_mro_faa8130_traceability_policy()
+    mro_sup_403 = evaluate_aviation_mro_faa8130_traceability_policy(
+        cryptographic_8130_back_to_birth_verified=False,
+    )
+    mro_ndt_422 = evaluate_aviation_mro_faa8130_traceability_policy(
+        ndt_inspection_and_cycles_verified=False,
+    )
+    mro_upn_451 = evaluate_aviation_mro_faa8130_traceability_policy(
+        webiq_faa_upn_and_ad_clean=False,
+    )
+    mro_pma_409 = evaluate_aviation_mro_faa8130_traceability_policy(
+        faa_pma_equivalent_savings_cents=1850000,
+    )
+    aviation_mro_traceability_guards = {
+        "all_passed": (
+            mro_commit_ok.allowed
+            and mro_commit_ok.settled_mro_cents == 9500000
+            and not mro_sup_403.allowed
+            and mro_sup_403.http_status == 403
+            and not mro_ndt_422.allowed
+            and mro_ndt_422.http_status == 422
+            and not mro_upn_451.allowed
+            and mro_upn_451.http_status == 451
+            and not mro_pma_409.allowed
+            and mro_pma_409.action_pill == "Confirm"
+        ),
+        "mro_settlement_latency_ms": mro_commit_ok.latency_ms,
+        "bogus_part_block_latency_ms": mro_sup_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -11455,6 +11574,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "dct_stipend_adherence_guards": dct_stipend_adherence_guards,
         "cre_nnn_cam_guards": cre_nnn_cam_guards,
         "fleet_fuel_telematics_guards": fleet_fuel_telematics_guards,
+        "aviation_mro_traceability_guards": aviation_mro_traceability_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -15254,6 +15374,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="fl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Aviation & Gas-Turbine MRO FAA 8130-3 & Back-to-Birth Traceability Sandbox (Round 50 FAQ Companion) -->
+      <div class="finops-box" id="aviation-mro-traceability-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mro-title">✈️ 航空航材与燃机 MRO 备件适航溯源架构：密码学 8130-3 与 NDT 令牌 (aviation_mro_traceability_mandate_...) vs 黑航材 (SUP) 决策器 (Round 50 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 高压涡轮叶片组件 ($95,000.00)、Part-145 密码学 8130-3 出生链、NDT 涡流探伤与 Web IQ 局方 UPN/PMA 平替场景 (Aviation MRO Scenario):</span></label>
+          <select id="mro-select" onchange="updateAviationMROTraceabilitySandbox()">
+            <option value="mro_commit_ok">⚡ 原厂+Part-145 密码学 8130-3 履历完整闭合 + NDT 零裂纹探伤签名通过：265ms 自动放款 $95,000.00 并写入 eTechLog! (Act automatically)</option>
+            <option value="mro_sup_403">🛑 伪造纸质 8130-3 PDF / 履历断档拦截 (AOG Technics 式黑航材 SUP)：无 Part-145 私钥签名 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="mro_ndt_422">🚨 缺失 NDT 涡流探伤签名 / 时寿件剩余起落循环虚标拦截：未达最低安全循环红线 → 15ms 触发 HTTP 422 冻结托管款!</option>
+            <option value="mro_upn_451">🛑 命中 FAA UPN / EASA SIB 疑似假件通报拦截：Web IQ /v3/browse 检出该批次或经纪商被局方列入黑航材警示名单 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="mro_pma_409">🧑‍⚖️ Web IQ 检出存在经 FAA 正式批准的同效 PMA 适航认证件可立省 $18,500.00 (净采购价降至 $76,500.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="mro-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -15742,6 +15880,7 @@ function renderAll() {{
   updateDCTStipendAdherenceSandbox();
   updateCRENNNCAMSandbox();
   updateFleetFuelTelematicsSandbox();
+  updateAviationMROTraceabilitySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18441,6 +18580,56 @@ function updateFleetFuelTelematicsSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 150m 电子围栏重合 + J1939 油箱 250 加仑全数进箱：已自动结算 (VERIFIED_J1939_TELEMATICS_FUEL_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>人车油枪三位一体、自动生成 IFTA 税表</strong>：重卡位置与油箱液位增量 100% 吻合，265ms 自动放款 <code>$950.00</code> 并同步记入州际燃油税退税账本！" +
+    "</div>";
+}}
+
+function updateAviationMROTraceabilitySandbox() {{
+  var selEl = document.getElementById("mro-select");
+  var outEl = document.getElementById("mro-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "mro_sup_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SUSPECTED_UNAPPROVED_PART_BOGUS_8130_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "适航防伪网关检出卖方提交的 <code>FAA Form 8130-3 / EASA Form 1</code> 仅系无 Part-145 维修站私钥签名的扁平 PDF 扫描件或时寿件（LLP）出生履历断档（<code>cryptographic_8130_back_to_birth_verified=False</code>）！已在 <code>12ms</code> 内硬阻断 <code>$95,000.00</code> 汇款，100% 杜绝 AOG Technics 式“黑航材（SUP）”装机引发全机队停飞！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mro_ndt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_NDT_CRACK_ATTESTATION_OR_CYCLE_SHORTFALL (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "该翻修涡轮部件缺失经认证探伤仪硬件签名的 <code>NDT 涡流/超声波零裂纹证明</code>，或实际剩余安全起落循环低于合同底线（<code>ndt_inspection_and_cycles_verified=False</code>）！网关已在 <code>15ms</code> 内冻结托管资金！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mro_upn_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FAA_UPN_BOGUS_PART_ALERT_OR_AD_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时穿透美国联邦航空局（FAA UPN）与欧洲航空安全局（EASA SIB）疑似非批准件警告名单，检出该序列号批次或经纪商处于局方安全调查期，已在 <code>310ms</code> 内冻结交易并上报总工程师！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mro_pma_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FAA_APPROVED_PMA_EQUIVALENT_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索 FAA PMA 官方批准补充目录，发现该件号存在 100% 适航等效的 <code>FAA-Approved PMA 全新认证件</code>，较经纪商 OEM 现货报价立省 <code>$18,500.00</code>（净结算额从 <code>$95,000.00</code> 降至 <code>$76,500.00</code>），建议机务副总裁一键确认切换！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 原厂+Part-145 密码学 8130-3 链闭合 + NDT 零裂纹验真通过：已自动释放航材款 (VERIFIED_AIRWORTHY_8130_MRO_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零黑航材隐患、秒级写入 eTechLog</strong>：ATA Spec 2000 数字签名、从出生至今起落循环与 NDT 探伤报告全部核验无误，265ms 自动放款 <code>$95,000.00</code>！" +
     "</div>";
 }}
 
