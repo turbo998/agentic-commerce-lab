@@ -89,6 +89,7 @@
 - **专题 55（医院检验科体外诊断试剂 IVD Reagent 批次质控与效期托管 Diagnostic Clinical Lab IVD Reagent Lot-to-Lot QC Calibration Mandate 架构：LIS 仪器西格玛质控 Westgard 1_3s/2_2s 曲线与 UDI 效期令牌 `clinical_ivd_reagent_mandate_...` + Web IQ FDA 召回通报与 GPO 锁批集采核验 vs 传统盲签付款买回临期/失控试剂致全院误诊）**：**[《医院检验科体外诊断试剂（IVD Reagent）批次质控与效期托管（Diagnostic Clinical Lab IVD Reagent Lot-to-Lot QC Calibration Mandate）架构：LIS 仪器西格玛质控（Westgard `1_3s`/`2_2s`）曲线与 UDI 效期令牌（`clinical_ivd_reagent_mandate_...` + Web IQ FDA 召回通报与 GPO 锁批集采核验）vs 传统盲签付款买回临期/失控试剂致全院误诊选型与原理解析 FAQ》](docs/clinical-lab-ivd-reagent-lot-qc-mandate-vs-expired-calibration-failure-faq.md)**
 - **专题 56（企业大型会展 MICE 与酒店团房损耗率 Attrition 及餐饮保底清算 Corporate Offsite & MICE Hotel Room-Block Attrition & Resold-Room Mitigation Mandate 架构：PMS 客房转售冲抵与 AV 场内垄断加价剔除令牌 `mice_hotel_attrition_mandate_...` + Web IQ 实时满房取证与外部 AV 进场核验 vs 传统盲付 80% 空房违约金一房两吃与 26% 隐性行政费）**：**[《企业大型会展（MICE）与酒店团房损耗率（Attrition）及餐饮保底（F&B Minimum）清算（Corporate Offsite & MICE Hotel Room-Block Attrition & Resold-Room Mitigation Mandate）架构：PMS 客房转售冲抵（Mitigation Credit）与 AV 场内垄断加价剔除令牌（`mice_hotel_attrition_mandate_...` + Web IQ 实时满房取证与外部 AV 进场核验）vs 传统盲付 80% 空房违约金（Double-Dipping）与 26% 隐性行政费选型与原理解析 FAQ》](docs/corporate-mice-hotel-room-block-attrition-mandate-vs-double-dip-penalty-faq.md)**
 - **专题 57（半导体晶圆代工 Foundry 与封测 OSAT 已知合格裸片 KGD 良率结算 Semiconductor Wafer Foundry & OSAT Known-Good-Die STDF Wafer-Map Yield Escrow Mandate 架构：ATE 探针台签名 STDF/SEMI E142 晶圆图与 CoWoS 合封良率令牌 `semiconductor_kgd_yield_mandate_...` + Web IQ 3A090 出口合规与 MPW 拼片核验 vs 传统按整张毛晶圆盲付吞下坏片与翻新片）**：**[《半导体晶圆代工（Foundry）与封测（OSAT）已知合格裸片（Known-Good-Die, KGD）良率结算（Semiconductor Wafer Foundry & OSAT Known-Good-Die STDF Wafer-Map Yield Escrow Mandate）架构：ATE 探针台签名 STDF/SEMI E142 晶圆图与 CoWoS 合封良率令牌（`semiconductor_kgd_yield_mandate_...` + Web IQ 3A090 出口合规与 MPW 拼片核验）vs 传统按整张毛晶圆盲付吞下坏片与翻新片选型与原理解析 FAQ》](docs/semiconductor-wafer-foundry-kgd-yield-escrow-mandate-vs-gross-wafer-defect-billing-faq.md)**
+- **专题 58（远洋航运船舶保税燃油 Bunker Fuel 加注、科里奥利质量流量计 Coriolis MFM 防卡布奇诺泡沫欺诈与 MARPOL 0.50% 低硫合规 Maritime Bunker Fuel ISO 8217 Coriolis Mass-Flow & MARPOL 0.50% Sulfur Mandate 架构：电子燃油交付单 eBDN 质量流量签名与催化裂化颗粒 Cat-Fines 托管令牌 `maritime_bunker_fuel_mandate_...` + Web IQ IMO 燃油污染预警与欧盟 FuelEU B30 核验 vs 传统量油尺盲付吞下泡沫短少与拉缸停航）**：**[《远洋航运船舶保税燃油（Bunker Fuel）加注、科里奥利质量流量计（Coriolis MFM）防“卡布奇诺泡沫欺诈”与 MARPOL 0.50% 低硫合规（Maritime Bunker Fuel ISO 8217 Coriolis Mass-Flow & MARPOL 0.50% Sulfur Mandate）架构：电子燃油交付单（eBDN）质量流量签名与催化裂化颗粒（Cat-Fines `Al+Si <= 60 ppm`）托管令牌（`maritime_bunker_fuel_mandate_...` + Web IQ IMO 燃油污染预警与欧盟 FuelEU B30 核验）vs 传统量油尺盲付吞下泡沫短少与拉缸停航选型与原理解析 FAQ》](docs/maritime-bunker-fuel-coriolis-mfm-sulfur-mandate-vs-cappuccino-short-delivery-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -203,6 +204,8 @@
 ![2026-11-09 企业大型会展与酒店团房损耗率清算架构一图流](assets/svg/58-corporate-mice-hotel-attrition-2026-11-09.svg)
 
 ![2026-11-09 半导体晶圆代工与封测已知合格裸片 KGD 良率托管架构一图流](assets/svg/59-semiconductor-wafer-kgd-yield-escrow-2026-11-09.svg)
+
+![2026-11-09 远洋航运船舶保税燃油科里奥利质量流量计与低硫托管架构一图流](assets/svg/60-maritime-bunker-fuel-coriolis-mfm-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -4406,6 +4406,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("semiconductor-kgd-yield-sandbox", demo_zh)
 
+    def test_maritime_bunker_fuel_coriolis_mfm_sulfur_mandate_vs_cappuccino_short_delivery_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_maritime_bunker_fuel_coriolis_mfm_policy,
+        )
+
+        # 1. Sealed Coriolis MFM 500 MT mass + ISO 8217 sulfur/Cat-Fines pass + clean port -> 200 settled ($320,000)
+        commit_ok = evaluate_maritime_bunker_fuel_coriolis_mfm_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_bunker_cents, 32000000)
+
+        # 2. Cappuccino aerated-foam shortfall or missing Coriolis MFM eBDN -> 403 blocked in 12ms
+        foam_403 = evaluate_maritime_bunker_fuel_coriolis_mfm_policy(
+            coriolis_mfm_mass_and_zero_aerated_foam_verified=False,
+        )
+        self.assertFalse(foam_403.allowed)
+        self.assertEqual(foam_403.http_status, 403)
+        self.assertEqual(
+            foam_403.bunker_lane,
+            "CAPPUCCINO_AERATED_FOAM_OR_MISSING_CORIOLIS_MFM_BLOCKED",
+        )
+
+        # 3. Off-spec MARPOL sulfur (>0.50%) or Cat-Fines (>60 ppm) -> 422 blocked in 15ms
+        spec_422 = evaluate_maritime_bunker_fuel_coriolis_mfm_policy(
+            iso8217_sulfur_and_cat_fines_spec_passed=False,
+        )
+        self.assertFalse(spec_422.allowed)
+        self.assertEqual(spec_422.http_status, 422)
+        self.assertEqual(
+            spec_422.bunker_lane,
+            "MARPOL_SULFUR_OR_ISO8217_CAT_FINES_OFF_SPEC_BLOCKED",
+        )
+
+        # 4. Web IQ detects VPS/FOBAS chlorinated-organics port alert -> 451 blocked in 310ms
+        imo_451 = evaluate_maritime_bunker_fuel_coriolis_mfm_policy(
+            webiq_port_bunker_alert_and_barge_license_clean=False,
+        )
+        self.assertFalse(imo_451.allowed)
+        self.assertEqual(imo_451.http_status, 451)
+
+        # 5. Web IQ discovers FuelEU ISCC B30 bio-bunker saving $28,000 ($292,000 net) -> 409 Confirm
+        bio_409 = evaluate_maritime_bunker_fuel_coriolis_mfm_policy(
+            fueleu_bio_bunker_arbitrage_savings_cents=2800000,
+        )
+        self.assertFalse(bio_409.allowed)
+        self.assertEqual(bio_409.http_status, 409)
+        self.assertEqual(bio_409.settled_bunker_cents, 29200000)
+        self.assertEqual(bio_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["maritime_bunker_fuel_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("maritime-bunker-fuel-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
