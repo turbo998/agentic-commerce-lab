@@ -5415,6 +5415,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("mining-offtake-tcrc-sandbox", demo_zh)
 
+    def test_aviation_saf_book_and_claim_corsia_scope3_mandate_vs_greenwashing_surcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aviation_saf_book_and_claim_policy,
+        )
+
+        # 1. Verified RSB/ISCC LEI retirement + ASTM D7566 uplift + clean PoS -> 200 OK ($260,000)
+        commit_ok = evaluate_aviation_saf_book_and_claim_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_saf_cents, 26000000)
+
+        # 2. Scope 3 double-counting or unretired PDF certificate -> 403 blocked in 12ms
+        dup_403 = evaluate_aviation_saf_book_and_claim_policy(
+            rsb_iscc_unique_lei_retirement_verified=False,
+        )
+        self.assertFalse(dup_403.allowed)
+        self.assertEqual(dup_403.http_status, 403)
+        self.assertEqual(
+            dup_403.saf_lane,
+            "SCOPE3_DOUBLE_COUNTING_OR_UNRETIRED_SAF_SERIAL_BLOCKED",
+        )
+
+        # 3. Missing current-vintage ASTM D7566 hydrant uplift receipt or LCA <70% -> 422 blocked in 15ms
+        iou_422 = evaluate_aviation_saf_book_and_claim_policy(
+            astm_d7566_uplift_and_lca_70pct_passed=False,
+        )
+        self.assertFalse(iou_422.allowed)
+        self.assertEqual(iou_422.http_status, 422)
+        self.assertEqual(
+            iou_422.saf_lane,
+            "UNINJECTED_FORWARD_IOU_OR_LOW_LCA_SAF_BLOCKED",
+        )
+
+        # 4. Web IQ detects suspended ISCC certificate or palm-oil PFAD feedstock -> 451 blocked in 310ms
+        plm_451 = evaluate_aviation_saf_book_and_claim_policy(
+            webiq_corsia_feedstock_and_pos_clean=False,
+        )
+        self.assertFalse(plm_451.allowed)
+        self.assertEqual(plm_451.http_status, 451)
+
+        # 5. Web IQ discovers IRA 45Z & LCFS tax-credit pass-through saving $38,000 ($222,000 net) -> 409 Confirm
+        tax_409 = evaluate_aviation_saf_book_and_claim_policy(
+            clean_fuel_tax_credit_passthrough_cents=3800000,
+        )
+        self.assertFalse(tax_409.allowed)
+        self.assertEqual(tax_409.http_status, 409)
+        self.assertEqual(tax_409.settled_saf_cents, 22200000)
+        self.assertEqual(tax_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aviation_saf_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aviation-saf-book-claim-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

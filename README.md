@@ -107,6 +107,7 @@
 - **专题 73（商业种子生物性状授权 Biotech Trait Royalty、ISTA 发芽率与 qPCR 基因纯度智能托管 vs 传统农资白袋套牌种盲采）**：**[《商业种子生物性状授权（Biotech Trait Royalty）、ISTA 发芽率与 qPCR 基因纯度智能托管 vs 传统农资白袋套牌种盲采：架构选型与第一性原理 FAQ》](docs/commercial-seed-biotech-trait-pcr-germination-mandate-vs-brown-bag-piracy-faq.md)**
 - **专题 74（艺术品拍卖流传有序 Provenance、全集收录 Catalogue Raisonné、XRF 颜料光谱与艺术家追续权 Droit de Suite 智能托管 vs 传统落槌盲付）**：**[《艺术品拍卖流传有序（Provenance）、全集收录（Catalogue Raisonné）、XRF 颜料光谱与艺术家追续权（Droit de Suite）智能托管 vs 传统落槌盲付：架构选型与第一性原理 FAQ》](docs/fine-art-auction-provenance-droit-de-suite-mandate-vs-looted-forgery-wire-faq.md)**
 - **专题 75（铜金精矿包销长协 Mining Concentrate Offtake、冶炼加工费 TC/RC、有害杂质罚款与仲裁化验 Umpire Assay 智能托管 vs 传统暂定发票超付）**：**[《铜金精矿包销长协（Mining Concentrate Offtake）、冶炼加工费（TC/RC）、有害杂质罚款与仲裁化验（Umpire Assay）智能托管 vs 传统暂定发票超付：架构选型与第一性原理 FAQ》](docs/mining-concentrate-offtake-tc-rc-umpire-assay-mandate-vs-provisional-overpayment-faq.md)**
+- **专题 76（可持续航空燃料 Aviation SAF Book-and-Claim 证书唯一注销、ASTM D7566 油库注入与 CORSIA Scope 1/3 防双算智能托管 vs 传统绿色机票附加费盲付）**：**[《可持续航空燃料（Aviation SAF）Book-and-Claim 证书唯一注销、ASTM D7566 油库注入与 CORSIA Scope 1/3 防双算智能托管 vs 传统绿色机票附加费盲付：架构选型与第一性原理 FAQ》](docs/aviation-saf-book-and-claim-corsia-scope3-mandate-vs-greenwashing-surcharge-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -257,6 +258,8 @@
 ![2026-11-09 艺术品拍卖流传有序、全集收录与艺术家追续权智能托管架构一图流](assets/svg/76-fine-art-auction-provenance-droit-de-suite-2026-11-09.svg)
 
 ![2026-11-09 铜金精矿包销长协、冶炼加工费 TC/RC 与有害杂质仲裁化验智能托管架构一图流](assets/svg/77-mining-concentrate-offtake-tc-rc-umpire-assay-2026-11-09.svg)
+
+![2026-11-09 可持续航空燃料 SAF 证书注销、掺混质量平衡与防双算智能托管架构一图流](assets/svg/78-aviation-saf-book-and-claim-corsia-scope3-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
