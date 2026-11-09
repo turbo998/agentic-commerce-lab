@@ -4798,6 +4798,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("diamond-gia-kimberley-sandbox", demo_zh)
 
+    def test_corporate_legal_ebilling_ledes_utbms_mandate_vs_block_billing_padding_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_corporate_legal_ebilling_ledes_utbms_policy,
+        )
+
+        # 1. Discrete 0.1h LEDES 1998B + OCG rate card + clean docket -> 200 settled ($92,000)
+        commit_ok = evaluate_corporate_legal_ebilling_ledes_utbms_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_legal_cents, 9200000)
+
+        # 2. 8.5h semicolon block-billing or unapproved OCG rate hike -> 403 blocked in 12ms
+        blk_403 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+            ledes_anti_block_billing_and_rate_cap_passed=False,
+        )
+        self.assertFalse(blk_403.allowed)
+        self.assertEqual(blk_403.http_status, 403)
+        self.assertEqual(
+            blk_403.legal_lane,
+            "BLOCK_BILLING_OR_OCG_RATE_CARD_BREACH_BLOCKED",
+        )
+
+        # 3. Passive associate shadowing or clerical work billed at attorney rate -> 422 blocked in 15ms
+        utb_422 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+            utbms_no_clerical_or_associate_shadowing_verified=False,
+        )
+        self.assertFalse(utb_422.allowed)
+        self.assertEqual(utb_422.http_status, 422)
+        self.assertEqual(
+            utb_422.legal_lane,
+            "CLERICAL_TASK_AT_ATTORNEY_RATE_OR_SHADOWING_BLOCKED",
+        )
+
+        # 4. Web IQ detects 14-min court docket minute entry vs 7.5 hrs billed -> 451 blocked in 310ms
+        doc_451 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+            webiq_court_docket_duration_and_bar_clean=False,
+        )
+        self.assertFalse(doc_451.allowed)
+        self.assertEqual(doc_451.http_status, 451)
+
+        # 5. Web IQ discovers ALSP L140 e-Discovery unbundling saving $21,500 ($70,500 net) -> 409 Confirm
+        alsp_409 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+            alsp_ediscovery_unbundling_savings_cents=2150000,
+        )
+        self.assertFalse(alsp_409.allowed)
+        self.assertEqual(alsp_409.http_status, 409)
+        self.assertEqual(alsp_409.settled_legal_cents, 7050000)
+        self.assertEqual(alsp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["legal_ledes_utbms_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("legal-ledes-utbms-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

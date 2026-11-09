@@ -10229,6 +10229,93 @@ def evaluate_fine_jewelry_gia_diamond_kimberley_policy(
     )
 
 
+@dataclass(frozen=True)
+class CorporateLegalEBillingLEDESVerdict:
+    allowed: bool
+    http_status: int
+    legal_lane: str
+    settled_legal_cents: int
+    alsp_unbundling_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+    *,
+    monthly_legal_cents: int = 9200000,
+    ledes_anti_block_billing_and_rate_cap_passed: bool = True,
+    utbms_no_clerical_or_associate_shadowing_verified: bool = True,
+    webiq_court_docket_duration_and_bar_clean: bool = True,
+    alsp_ediscovery_unbundling_savings_cents: int = 0,
+) -> CorporateLegalEBillingLEDESVerdict:
+    """Evaluate LEDES 1998B 0.1-hour anti-block-billing itemization & Outside Counsel Guidelines (OCG) locked timekeeper rate cap, ABA UTBMS clerical/associate-shadowing exclusion, Web IQ public court docket minute-entry duration check, and ALSP L140 e-Discovery unbundling arbitrage."""
+
+    # 1. Semicolon Block-Billing or Unapproved OCG Rate-Card Increase -> HTTP 403
+    if not ledes_anti_block_billing_and_rate_cap_passed:
+        return CorporateLegalEBillingLEDESVerdict(
+            False,
+            403,
+            "BLOCK_BILLING_OR_OCG_RATE_CARD_BREACH_BLOCKED",
+            0,
+            0,
+            "ledes_invoice_blocked_for_multi_task_block_billing_or_exceeding_locked_ocg_rate_card",
+            12,
+            "Send to a human",
+        )
+
+    # 2. First-Year Associate Shadowing or Clerical Tasks Billed at Attorney Rates -> HTTP 422
+    if not utbms_no_clerical_or_associate_shadowing_verified:
+        return CorporateLegalEBillingLEDESVerdict(
+            False,
+            422,
+            "CLERICAL_TASK_AT_ATTORNEY_RATE_OR_SHADOWING_BLOCKED",
+            0,
+            0,
+            "line_items_rejected_for_passive_associate_shadowing_or_bates_ocr_clerical_billing",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Court Docket Minute-Entry Hearing Duration Discrepancy via Web IQ -> HTTP 451
+    if not webiq_court_docket_duration_and_bar_clean:
+        return CorporateLegalEBillingLEDESVerdict(
+            False,
+            451,
+            "COURT_DOCKET_MINUTE_ENTRY_DURATION_DISCREPANCY_HOLD",
+            0,
+            0,
+            "webiq_detected_court_docket_14min_hearing_minute_entry_vs_7_5hr_billed_appearance",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ ALSP e-Discovery (UTBMS L140) Unbundling Arbitrage -> HTTP 409 Confirm
+    if alsp_ediscovery_unbundling_savings_cents > 0:
+        return CorporateLegalEBillingLEDESVerdict(
+            False,
+            409,
+            "ALSP_EDISCOVERY_L140_UNBUNDLING_ARBITRAGE_CONFIRM",
+            monthly_legal_cents - alsp_ediscovery_unbundling_savings_cents,
+            alsp_ediscovery_unbundling_savings_cents,
+            "webiq_found_certified_alsp_l140_tar_ediscovery_unbundling_saving_21500_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified 0.1h Discrete LEDES 1998B + OCG Compliant + Docket Matched -> Settled
+    return CorporateLegalEBillingLEDESVerdict(
+        True,
+        200,
+        "VERIFIED_LEGAL_LEDES_UTBMS_SETTLED",
+        monthly_legal_cents,
+        0,
+        "discrete_ledes_itemization_and_utbms_ocg_compliance_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -13154,6 +13241,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cloned_cvd_block_latency_ms": dia_cvd_403.latency_ms,
     }
 
+    leg_commit_ok = evaluate_corporate_legal_ebilling_ledes_utbms_policy()
+    leg_blk_403 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+        ledes_anti_block_billing_and_rate_cap_passed=False,
+    )
+    leg_utb_422 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+        utbms_no_clerical_or_associate_shadowing_verified=False,
+    )
+    leg_doc_451 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+        webiq_court_docket_duration_and_bar_clean=False,
+    )
+    leg_alsp_409 = evaluate_corporate_legal_ebilling_ledes_utbms_policy(
+        alsp_ediscovery_unbundling_savings_cents=2150000,
+    )
+    legal_ledes_utbms_guards = {
+        "all_passed": (
+            leg_commit_ok.allowed
+            and leg_commit_ok.settled_legal_cents == 9200000
+            and not leg_blk_403.allowed
+            and leg_blk_403.http_status == 403
+            and not leg_utb_422.allowed
+            and leg_utb_422.http_status == 422
+            and not leg_doc_451.allowed
+            and leg_doc_451.http_status == 451
+            and not leg_alsp_409.allowed
+            and leg_alsp_409.action_pill == "Confirm"
+        ),
+        "legal_settlement_latency_ms": leg_commit_ok.latency_ms,
+        "block_billing_block_latency_ms": leg_blk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -13231,6 +13348,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pharma_pbm_340b_guards": pharma_pbm_340b_guards,
         "industrial_pbth_guards": industrial_pbth_guards,
         "diamond_gia_kimberley_guards": diamond_gia_kimberley_guards,
+        "legal_ledes_utbms_guards": legal_ledes_utbms_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -17300,6 +17418,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dia-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Corporate Legal Outside-Counsel e-Billing LEDES & UTBMS Mandate Sandbox (Round 65 FAQ Companion) -->
+      <div class="finops-box" id="legal-ledes-utbms-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-leg-title">⚖️ 企业法务外部律所电子账单 (LEDES) 与 UTBMS 合规审计架构：反混记工时与 OCG 准则令牌 (legal_ledes_utbms_mandate_...) vs 大锅饭工时决策器 (Round 65 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 外部律所月度诉讼 LEDES 1998B 账单 ($92,000.00)、0.1h 单项工时拆分、UTBMS 编码审核与 Web IQ 法院卷宗/ALSP 分包场景 (Legal e-Billing Scenario):</span></label>
+          <select id="leg-select" onchange="updateLegalLEDESUTBMSSandbox()">
+            <option value="leg_commit_ok">⚡ 0.1 小时颗粒度单项拆分 (无 Block-Billing) + 符合 OCG 锁定费率与 UTBMS 准则 + 庭审时长吻合：265ms 自动放款 $92,000.00! (Act automatically)</option>
+            <option value="leg_blk_403">🛑 打包混记工时 (Block Billing) 或擅自涨价拦截：一行用分号混记 5 件事笼统报 8.5 小时，或突破 OCG 锁定合伙人费率上限 → 12ms 触发 HTTP 403!</option>
+            <option value="leg_utb_422">🚨 初级律师跟班旁听 (Shadowing) 或行政复印高价计费拦截：3 名新律师旁听不发言或用 $680/hr 律师价收贴页码费 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="leg_doc_451">🛑 法院公开笔录开庭时长严重不符冻结：Web IQ /v3/browse 核对法院卷宗 (Minute Entry) 显示听证会仅 14 分钟，账单却报 7.5 小时 → 310ms 触发 HTTP 451!</option>
+            <option value="leg_alsp_409">🧑‍⚖️ Web IQ 检出将 UTBMS L140 海量电子取证阅卷从 $720/hr 律所剥离给认证 ALSP 固定包干可立省 $21,500.00 (净付 $70,500.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="leg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -17803,6 +17939,7 @@ function renderAll() {{
   updatePharmaPBM340BSandbox();
   updateIndustrialPBTHSandbox();
   updateDiamondGIAKimberleySandbox();
+  updateLegalLEDESUTBMSSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -21240,6 +21377,55 @@ function updateDiamondGIAKimberleySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 保税仓 FTIR/PL 天然光谱验真 + 金伯利/G7 矿源完备 + GIA 云端吻合：已自动放款 (VERIFIED_NATURAL_DIAMOND_KIMBERLEY_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零套牌培育钻调包、零海关血钻扣押</strong>：3 克拉 D-VVS1 天然裸钻已完成保税托管清算并签发数字溯源护照（<code>$140,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateLegalLEDESUTBMSSandbox() {{
+  var selEl = document.getElementById("leg-select");
+  var outEl = document.getElementById("leg-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "leg_blk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOCK_BILLING_OR_OCG_RATE_CARD_BREACH_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "LEDES 1998B 解析器检出单行工时用分号混记 5 项独立工作笼统申报 <code>8.5 小时</code>（Block Billing）或合伙人费率突破《外部律师准则（OCG）》锁定上限（<code>ledes_anti_block_billing_and_rate_cap_passed == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$92,000.00</code> 账单并退回重拆！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "leg_utb_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CLERICAL_TASK_AT_ATTORNEY_RATE_OR_SHADOWING_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "UTBMS 任务码审计检出 3 名一年级新律师同时旁听取证不发言（Associate Shadowing 蹭课培训）或将 Bates 贴页码、PDF OCR 等文印杂活按 <code>$680/hr</code> 律师费率计费（<code>utbms_no_clerical_or_associate_shadowing_verified == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "leg_doc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 COURT_DOCKET_MINUTE_ENTRY_DURATION_DISCREPANCY_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查联邦/州法院公开电子卷宗（PACER / CourtListener 庭审分钟笔录），发现该日线上进度听证会实际仅持续 <code>14 分钟</code>，而账单却虚报出庭 <code>7.5 小时</code>，立即冻结结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "leg_alsp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ALSP_EDISCOVERY_L140_UNBUNDLING_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对 ISO 27001 认证替代法律服务商（ALSP）电子取证费率，发现将 <code>UTBMS L140</code> 海量邮件初筛从 <code>$720/hr</code> 律所剥离给 ALSP 按固定包干处理可立省 <code>$21,500.00</code>（月度净支出从 <code>$92,000.00</code> 降至 <code>$70,500.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 0.1 小时单项拆分 LEDES 1998B + OCG 费率与 UTBMS 达标 + 庭审卷宗吻合：已自动放款 (VERIFIED_LEGAL_LEDES_UTBMS_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零打包混记注水、零新律师蹭课转嫁</strong>：外部律所月度诉讼代理账单已完成结构化清算并更新案件预算评分卡（<code>$92,000.00</code>）！" +
     "</div>";
 }}
 

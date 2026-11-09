@@ -96,6 +96,7 @@
 - **专题 62（生物医药厂商业医保返利 PBM Formulary Rebate 与 HRSA 340B 公益药房防双重折扣套利清算 Pharmaceutical PBM Formulary Rebate & HRSA 340B Duplicate-Discount Exclusion Mandate 架构：NCPDP 处方号级去重与弃药冲正剔除令牌 `pharma_pbm_340b_rebate_mandate_...` + Web IQ HRSA OPAIS 药房库与透明 PBM 直通核验 vs 传统按汇总表盲付遭一药双吃倒亏）**：**[《生物医药厂商业医保返利（PBM Formulary Rebate）与 HRSA `340B` 公益药房防“双重折扣套利（Duplicate-Discount Clawback）”清算（Pharmaceutical PBM Formulary Rebate & HRSA 340B Duplicate-Discount Exclusion Mandate）架构：NCPDP 处方号级去重与弃药冲正剔除令牌（`pharma_pbm_340b_rebate_mandate_...` + Web IQ HRSA OPAIS 药房库与透明 PBM 直通核验）vs 传统按汇总表盲付遭一药双吃倒亏选型与原理解析 FAQ》](docs/pharma-pbm-formulary-rebate-340b-duplicate-discount-mandate-vs-double-dip-claim-faq.md)**
 - **专题 63（工业重装设备按产出工时计费 Equipment-as-a-Service / Power-by-the-Hour PBTH 与 ISO 20816 振动遥测可用率对冲 Industrial Equipment Power-by-the-Hour & Vibration-Telemetry Uptime SLA Mandate 架构：OPC-UA 有效负载工时与轴承频谱健康度令牌 `industrial_pbth_uptime_mandate_...` + Web IQ 工控安全通告与厂休错峰大修核验 vs 传统空转照扣钱与假维保签字）**：**[《工业重装设备按产出工时计费（Equipment-as-a-Service / Power-by-the-Hour, PBTH）与 ISO 20816 振动遥测可用率对冲（Industrial Equipment Power-by-the-Hour & Vibration-Telemetry Uptime SLA Mandate）架构：OPC-UA 有效负载工时与轴承频谱健康度令牌（`industrial_pbth_uptime_mandate_...` + Web IQ 工控安全通告与厂休错峰大修核验）vs 传统空转照扣钱与假维保签字选型与原理解析 FAQ》](docs/industrial-equipment-pbth-vibration-telemetry-mandate-vs-fixed-amc-downtime-faq.md)**
 - **专题 64（高定珠宝与裸钻采购 Fine Jewelry & Loose Diamond、GIA 腰棱激光编码验真与金伯利进程防冲突溯源托管 Fine Jewelry & Loose Diamond GIA Laser-Inscription, Kimberley Process & CVD/HPHT Screening Mandate 架构：FTIR/PL 光谱防套牌培育钻与 G7 原产地令牌 `diamond_gia_kimberley_mandate_...` + Web IQ GIA 官网核验与看货商直采核验 vs 传统凭纸质证书盲付买回克隆腰码培育钻）**：**[《高定珠宝与裸钻采购（Fine Jewelry & Loose Diamond）、GIA 腰棱激光编码验真与金伯利进程（Kimberley Process）防冲突溯源托管（Fine Jewelry & Loose Diamond GIA Laser-Inscription, Kimberley Process & CVD/HPHT Screening Mandate）架构：FTIR/PL 光谱防套牌培育钻与 G7 原产地令牌（`diamond_gia_kimberley_mandate_...` + Web IQ GIA 官网核验与看货商直采核验）vs 传统凭纸质证书盲付买回“克隆腰码培育钻”选型与原理解析 FAQ》](docs/fine-jewelry-gia-diamond-kimberley-escrow-mandate-vs-cvd-clone-fraud-faq.md)**
+- **专题 65（企业法务外部律所电子账单 Legal e-Billing LEDES 1998B 与统一任务代码 UTBMS 合规审计 Corporate Legal Outside-Counsel e-Billing LEDES & UTBMS Block-Billing Clawback Mandate 架构：禁止打包混记工时与新律师旁听剔除令牌 `legal_ledes_utbms_mandate_...` + Web IQ 法院卷宗开庭时长核验与 ALSP 电子取证套利 vs 传统按 PDF 模糊总工时盲付）**：**[《企业法务外部律所电子账单（Legal e-Billing `LEDES 1998B / XML`）与统一任务代码（UTBMS）合规审计（Corporate Legal Outside-Counsel e-Billing LEDES & UTBMS Block-Billing Clawback Mandate）架构：禁止打包混记工时（Anti-Block-Billing）与新律师旁听剔除令牌（`legal_ledes_utbms_mandate_...` + Web IQ 法院卷宗开庭时长核验与 ALSP 电子取证套利）vs 传统按 PDF 模糊总工时盲付选型与原理解析 FAQ》](docs/corporate-legal-ebilling-ledes-utbms-mandate-vs-block-billing-padding-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -224,6 +225,8 @@
 ![2026-11-09 工业重装设备按产出工时计费 PBTH 与振动遥测可用率托管架构一图流](assets/svg/65-industrial-equipment-pbth-vibration-sla-2026-11-09.svg)
 
 ![2026-11-09 高定珠宝与裸钻 GIA 腰棱激光验真及金伯利防冲突托管架构一图流](assets/svg/66-fine-jewelry-gia-diamond-kimberley-2026-11-09.svg)
+
+![2026-11-09 企业法务外部律所电子账单 LEDES 与 UTBMS 合规审计架构一图流](assets/svg/67-corporate-legal-ebilling-ledes-utbms-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
