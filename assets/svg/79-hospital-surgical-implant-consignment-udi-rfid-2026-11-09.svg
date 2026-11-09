@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg79" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081526"/>
+      <stop offset="50%" stop-color="#102742"/>
+      <stop offset="100%" stop-color="#173759"/>
+    </linearGradient>
+    <linearGradient id="accent79" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg79)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0b1b30" stroke="#38bdf8" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent79)"/>
+
+  <text x="60" y="72" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 77 · HOSPITAL SURGICAL IMPLANT CONSIGNMENT, UDI/RFID &amp; GPO PRICE-CAP MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">骨科/心内高值耗材寄售、手术室 UDI 植入扫码与集采限价托管 vs 代表手写单盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">FDA GUDID / GS1 UDI EHR Implant Scan + Autoclave Sterilization + GPO/DRG Price Cap vs. Trunk-Stock Rep Sheet</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统跟台代表手写计费单盲付模式 (Rep Charge-Sheet)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 术中掉落污染钻头算医院买单：代表将术中未植入或掉落的 3 枚钛合金螺钉混入账单</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 后备箱货品 (Trunk Stock) 逃避灭菌：临时从代表汽车后备箱拿进手术室，无消毒供应中心记录</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 绕过 GPO/集采限价高开：按目录零售价 $1,800/枚开票，高于医院 GPO 协议上限 $650/枚</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• FDA Class I 召回批次漏网：植入已被 FDA GUDID 标记为聚乙烯内衬早衰召回的人工关节</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#36101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型大型三甲/医疗集团骨科寄售耗材采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">医院月度骨科脊柱与关节寄售耗材请款 $145,000，含 14 枚未入患者病历的虚报</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">椎弓根钉及目录外高价骨水泥 → 医保 DRG/DIP 拒付并亏损 $26,800</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 未植入耗材拦截率：0% | • 集采越线识别率：0% | • 财务对账周期：45 天</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 手术室 UDI 植入绑定 + 灭菌闭环 + GPO 单一病种封顶托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• EHR 患者植入级 UDI 对账：仅对巡回护士扫码写入患者手术护理记录的 UDI-DI/PI 放款</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• CSSD 高温高压生物灭菌门禁：外来器械托盘必须具备满 24h 嗜热脂肪杆菌阴性灭菌回执</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• GPO / 国家带量采购 (VBP) 价格硬顶：任何超出合同目录单价的耗材行项自动削平或 422 退回</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 单台手术封顶包 (Construct Cap Price)：Web IQ 匹配关节/脊柱整台手术封顶打包价</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬拦截无患者 EHR 植入记录的掉落/多报螺钉；15ms 拦截超 GPO 限价与无 CSSD</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">灭菌记录的后备箱耗材；Web IQ 整台手术封顶包套利立省 $26,800.00（净付 $118,200.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 虚报/掉落耗材拦截：100% | • 召回植入物阻断：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0f233a" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">高值医用耗材寄售结算 Agent 绝不能凭跟台代表手写单付款！必须绑定【EHR 植入扫码 + CSSD 灭菌 + GPO 限价】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_hospital_surgical_implant_consignment_policy`) · FDA GUDID &amp; GS1 UDI · 2026-11-09</text>
+</svg>

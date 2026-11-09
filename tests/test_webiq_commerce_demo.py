@@ -5471,6 +5471,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aviation-saf-book-claim-sandbox", demo_zh)
 
+    def test_hospital_surgical_implant_consignment_udi_rfid_mandate_vs_rep_sheet_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hospital_surgical_implant_consignment_policy,
+        )
+
+        # 1. Verified EHR patient implant UDI + CSSD sterilization + GPO cap -> 200 OK ($145,000)
+        commit_ok = evaluate_hospital_surgical_implant_consignment_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_implant_cents, 14500000)
+
+        # 2. Dropped/un-implanted screw on handwritten rep charge sheet -> 403 blocked in 12ms
+        drp_403 = evaluate_hospital_surgical_implant_consignment_policy(
+            ehr_patient_implant_udi_matched=False,
+        )
+        self.assertFalse(drp_403.allowed)
+        self.assertEqual(drp_403.http_status, 403)
+        self.assertEqual(
+            drp_403.implant_lane,
+            "UNIMPLANTED_OR_DROPPED_SCREW_REP_SHEET_BILLING_BLOCKED",
+        )
+
+        # 3. Unsterilized rep trunk stock or GPO price cap breach -> 422 blocked in 15ms
+        trk_422 = evaluate_hospital_surgical_implant_consignment_policy(
+            cssd_autoclave_and_gpo_price_cap_passed=False,
+        )
+        self.assertFalse(trk_422.allowed)
+        self.assertEqual(trk_422.http_status, 422)
+        self.assertEqual(
+            trk_422.implant_lane,
+            "UNSTERILIZED_TRUNK_STOCK_OR_GPO_PRICE_CAP_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects FDA GUDID Class I recalled implant lot -> 451 blocked in 310ms
+        rec_451 = evaluate_hospital_surgical_implant_consignment_policy(
+            webiq_gudid_recall_and_vbp_tier_clean=False,
+        )
+        self.assertFalse(rec_451.allowed)
+        self.assertEqual(rec_451.http_status, 451)
+
+        # 5. Web IQ discovers Case-ID Construct Cap saving $26,800 ($118,200 net) -> 409 Confirm
+        cap_409 = evaluate_hospital_surgical_implant_consignment_policy(
+            construct_cap_case_rate_savings_cents=2680000,
+        )
+        self.assertFalse(cap_409.allowed)
+        self.assertEqual(cap_409.http_status, 409)
+        self.assertEqual(cap_409.settled_implant_cents, 11820000)
+        self.assertEqual(cap_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["surgical_implant_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hospital-implant-consignment-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

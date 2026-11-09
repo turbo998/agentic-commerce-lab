@@ -108,6 +108,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 74 (Fine Art Auction Provenance, Catalogue Raisonné, XRF Pigment Spectroscopy & Droit de Suite Escrow vs. Unconditional Wire Risk)**: **[Fine Art Auction Provenance, Catalogue Raisonné, XRF Pigment Spectroscopy & Droit de Suite Escrow vs. Unconditional Wire Risk: Architecture Selection & First-Principles FAQ](docs/fine-art-auction-provenance-droit-de-suite-mandate-vs-looted-forgery-wire-faq.en.md)**
 - **Topic 75 (Mining Concentrate Offtake, Smelter TC/RC Deduction, Penalty-Element & Umpire Assay Escrow vs. Provisional Invoice Overpayment)**: **[Mining Concentrate Offtake, Smelter TC/RC Deduction, Penalty-Element & Umpire Assay Escrow vs. Provisional Invoice Overpayment: Architecture Selection & First-Principles FAQ](docs/mining-concentrate-offtake-tc-rc-umpire-assay-mandate-vs-provisional-overpayment-faq.en.md)**
 - **Topic 76 (Aviation SAF Book-and-Claim Registry Retirement, ASTM D7566 Uplift & CORSIA Scope 1/3 Escrow vs. Unverified Green-Fare Surcharges)**: **[Aviation SAF Book-and-Claim Registry Retirement, ASTM D7566 Uplift & CORSIA Scope 1/3 Escrow vs. Unverified Green-Fare Surcharges: Architecture Selection & First-Principles FAQ](docs/aviation-saf-book-and-claim-corsia-scope3-mandate-vs-greenwashing-surcharge-faq.en.md)**
+- **Topic 77 (Hospital Surgical Implant Consignment, Point-of-Use UDI/RFID EHR Scan & GPO Price-Cap Escrow vs. Rep Charge-Sheet Overbilling)**: **[Hospital Surgical Implant Consignment, Point-of-Use UDI/RFID EHR Scan & GPO Price-Cap Escrow vs. Rep Charge-Sheet Overbilling: Architecture Selection & First-Principles FAQ](docs/hospital-surgical-implant-consignment-udi-rfid-mandate-vs-rep-sheet-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -260,6 +261,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-09 Mining Concentrate Offtake, Smelter TC/RC & Umpire Assay Mandate Visual Summary](assets/svg/77-mining-concentrate-offtake-tc-rc-umpire-assay-2026-11-09.svg)
 
 ![2026-11-09 Aviation SAF Book-and-Claim, ASTM D7566 & CORSIA Scope 1/3 Mandate Visual Summary](assets/svg/78-aviation-saf-book-and-claim-corsia-scope3-2026-11-09.svg)
+
+![2026-11-09 Hospital Surgical Implant Consignment, UDI/RFID & GPO Price-Cap Mandate Visual Summary](assets/svg/79-hospital-surgical-implant-consignment-udi-rfid-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

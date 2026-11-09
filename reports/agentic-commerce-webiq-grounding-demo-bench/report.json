@@ -465,6 +465,11 @@
     "saf_settlement_latency_ms": 21,
     "double_counting_block_latency_ms": 12
   },
+  "surgical_implant_guards": {
+    "all_passed": true,
+    "implant_settlement_latency_ms": 20,
+    "dropped_screw_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
