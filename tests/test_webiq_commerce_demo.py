@@ -3307,6 +3307,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cloud-gpu-sla-sandbox", demo_zh)
 
+    def test_retail_media_ad_spend_ivt_clawback_vs_click_farm_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_retail_media_ad_spend_ivt_clawback_policy,
+        )
+
+        # 1. Clean 1.8% SIVT (180 <= 500 bps) + 30d return window cleared -> 200 settled ($18,000)
+        commit_ok = evaluate_retail_media_ad_spend_ivt_clawback_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_media_cents, 1800000)
+
+        # 2. Click-farm headless bot spike (42.0% = 4200 bps > 500 bps) -> 403 blocked in 12ms
+        bot_403 = evaluate_retail_media_ad_spend_ivt_clawback_policy(
+            sivt_bot_rate_bps=4200,
+        )
+        self.assertFalse(bot_403.allowed)
+        self.assertEqual(bot_403.http_status, 403)
+        self.assertEqual(
+            bot_403.media_lane, "SIVT_BOT_TRAFFIC_THRESHOLD_BREACH_BLOCKED"
+        )
+
+        # 3. Premature affiliate payout before 30-day return window clears -> 422 blocked in 15ms
+        ret_422 = evaluate_retail_media_ad_spend_ivt_clawback_policy(
+            return_window_cleared=False,
+        )
+        self.assertFalse(ret_422.allowed)
+        self.assertEqual(ret_422.http_status, 422)
+        self.assertEqual(
+            ret_422.media_lane, "AFFILIATE_CLAWBACK_RETURN_WINDOW_PENDING"
+        )
+
+        # 4. Web IQ detects brand-unsafe placement or missing FTC #ad tag -> 451 blocked in 310ms
+        ftc_451 = evaluate_retail_media_ad_spend_ivt_clawback_policy(
+            webiq_brand_safety_and_ftc_compliant=False,
+        )
+        self.assertFalse(ftc_451.allowed)
+        self.assertEqual(ftc_451.http_status, 451)
+
+        # 5. Web IQ discovers direct publisher PMP saving $3,100 ($14,900 net) -> 409 Confirm
+        pmp_409 = evaluate_retail_media_ad_spend_ivt_clawback_policy(
+            direct_pmp_savings_cents=310000,
+        )
+        self.assertFalse(pmp_409.allowed)
+        self.assertEqual(pmp_409.http_status, 409)
+        self.assertEqual(pmp_409.settled_media_cents, 1490000)
+        self.assertEqual(pmp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["retail_media_ivt_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-ivt-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
