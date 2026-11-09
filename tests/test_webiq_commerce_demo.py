@@ -4630,6 +4630,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("franchise-royalty-sandbox", demo_zh)
 
+    def test_pharma_pbm_formulary_rebate_340b_duplicate_discount_mandate_vs_double_dip_claim_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pharma_pbm_340b_rebate_policy,
+        )
+
+        # 1. Zero 340B/Medicaid overlap + B2 reversals purged + clean HRSA OPAIS -> 200 settled ($195,000)
+        commit_ok = evaluate_pharma_pbm_340b_rebate_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rebate_cents, 19500000)
+
+        # 2. HRSA 340B or Medicaid duplicate-discount overlap -> 403 blocked in 12ms
+        dup_403 = evaluate_pharma_pbm_340b_rebate_policy(
+            hrsa_340b_and_medicaid_duplicate_discount_excluded=False,
+        )
+        self.assertFalse(dup_403.allowed)
+        self.assertEqual(dup_403.http_status, 403)
+        self.assertEqual(
+            dup_403.pbm_lane,
+            "HRSA_340B_OR_MEDICAID_DUPLICATE_DISCOUNT_BLOCKED",
+        )
+
+        # 3. Unpurged NCPDP B2 counter abandonment reversals or tier breach -> 422 blocked in 15ms
+        b2_422 = evaluate_pharma_pbm_340b_rebate_policy(
+            ncpdp_b2_reversals_purged_and_tier_verified=False,
+        )
+        self.assertFalse(b2_422.allowed)
+        self.assertEqual(b2_422.http_status, 422)
+        self.assertEqual(
+            b2_422.pbm_lane,
+            "UNPURGED_NCPDP_B2_REVERSAL_OR_TIER_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects terminated HRSA OPAIS contract pharmacy -> 451 blocked in 310ms
+        opais_451 = evaluate_pharma_pbm_340b_rebate_policy(
+            webiq_hrsa_opais_and_formulary_tier_clean=False,
+        )
+        self.assertFalse(opais_451.allowed)
+        self.assertEqual(opais_451.http_status, 451)
+
+        # 5. Web IQ discovers transparent Pass-Through PBM saving $26,500 ($168,500 net) -> 409 Confirm
+        pass_409 = evaluate_pharma_pbm_340b_rebate_policy(
+            transparent_pbm_passthrough_savings_cents=2650000,
+        )
+        self.assertFalse(pass_409.allowed)
+        self.assertEqual(pass_409.http_status, 409)
+        self.assertEqual(pass_409.settled_rebate_cents, 16850000)
+        self.assertEqual(pass_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pharma_pbm_340b_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pharma-pbm-340b-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

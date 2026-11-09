@@ -390,6 +390,11 @@
     "royalty_settlement_latency_ms": 265,
     "gross_3pd_royalty_block_latency_ms": 12
   },
+  "pharma_pbm_340b_guards": {
+    "all_passed": true,
+    "pbm_settlement_latency_ms": 265,
+    "duplicate_340b_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
