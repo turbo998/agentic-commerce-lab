@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg62" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent62" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg62)"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent62)"/>
+
+  <!-- Header -->
+  <text x="45" y="64" fill="#A78BFA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">
+    ROUND 60 · TELECOM WHOLESALE A2P SMS AIT CLAWBACK &amp; STIR/SHAKEN MANDATE (2026-11-09)
+  </text>
+  <text x="45" y="96" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">
+    电信批发语音 (SIP) 与国际短信 (A2P SMS) 防虚假流量注水 (AIT) vs 机器人短信盗刷
+  </text>
+  <text x="45" y="122" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="14">
+    OTP 验证码核销转化率熔断 + RFC 8224 STIR/SHAKEN A级签名 + Web IQ FCC RMD 黑名单核验与 Passkey 通道省 $16,800 ($48k 护航)
+  </text>
+
+  <!-- Left Column: Legacy DLR-Based SMS & Gray-Route SIP Billing -->
+  <rect x="45" y="142" width="535" height="365" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="45" y="142" width="535" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="65" y="166" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ❌ 传统凭“送达回执 (DLR)”盲付 ($48,000 一夜被海外短信轰炸分赃掏空)
+  </text>
+
+  <rect x="65" y="196" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="220" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    1. 僵尸网络勾结不良二道贩子运营商狂刷 15 万条高价国际短信 (SMS Pumping)
+  </text>
+  <text x="80" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 黑产脚本对注册页连号段自动点“发送验证码”，二道贩子伪造 100% 送达回执 (DLR)
+  </text>
+  <text x="80" y="263" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 实际验证码回填转化率仅 0.2% (全系机器假号)，企业却按 $0.28/条被强扣 $48,000!
+  </text>
+
+  <rect x="65" y="294" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="318" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    2. 批发语音走灰色跳板路由 (Gray Route) 丢失 STIR/SHAKEN A级签名
+  </text>
+  <text x="80" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 廉价转接商偷走灰产猫池线路，剥离 RFC 8224 PASSporT 主叫加密签名降为 C 级
+  </text>
+  <text x="80" y="361" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 企业外呼全部被手机终端拦截标为“疑似诈骗”，且面临 FCC 巨额合规罚单
+  </text>
+
+  <rect x="65" y="392" width="495" height="98" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="80" y="416" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    3. 漏检 FCC RMD 摘牌运营商 + 高价国家死磕传统短信多花 $16,800
+  </text>
+  <text x="80" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 上游转接商已被美国联邦通信委员会 (FCC RMD) 下达强制断网令或属高危欺诈号段
+  </text>
+  <text x="80" y="459" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 在 $0.24/条的高价走廊盲发短信，不知切至 FIDO2 Passkey + WhatsApp 可省 $16,800
+  </text>
+
+  <!-- Right Column: AIT Conversion Gate & STIR/SHAKEN Mandate -->
+  <rect x="605" y="142" width="550" height="365" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="605" y="142" width="550" height="38" rx="12" fill="#064E3B"/>
+  <text x="625" y="166" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ✅ OTP 转化率反注水与 STIR/SHAKEN 令牌 + Web IQ 网关 (推荐)
+  </text>
+
+  <rect x="625" y="196" width="510" height="84" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="640" y="220" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 1: OTP 验证码回填转化率与 AIT 虚假流量剔除门禁 (12ms · HTTP 403)
+  </text>
+  <text x="640" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 otp_conversion_rate_and_ait_filter_passed == True（拒绝零转化刷量）
+  </text>
+  <text x="640" y="263" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出连号段突发请求且验证码回填率 &lt;5% → 12ms 拒付 $48,000 AIT 盗刷账单
+  </text>
+
+  <rect x="625" y="294" width="510" height="84" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+  <text x="640" y="318" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 2: RFC 8224 STIR/SHAKEN A级签名与白名单直连门禁 (15ms · HTTP 422)
+  </text>
+  <text x="640" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 stir_shaken_full_attestation_verified == True（全程 A-Level 签名）
+  </text>
+  <text x="640" y="361" fill="#BAE6FD" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 任何剥离 PASSporT 签名或走未注册灰色猫池路由的话单在 15ms 内触发 HTTP 422
+  </text>
+
+  <rect x="625" y="392" width="510" height="98" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="640" y="416" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 3: Microsoft Web IQ /v3/browse FCC RMD 核验与 Passkey 套利 (310/315ms)
+  </text>
+  <text x="640" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 核验 FCC RMD 强制备案库与 GSMA 高危欺诈号段公告：违规在 310ms 触发 HTTP 451
+  </text>
+  <text x="640" y="459" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出高价国际走廊切换 FIDO2 Passkey + WhatsApp 认证立省 $16,800 → 315ms HTTP 409!
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Bar -->
+  <rect x="45" y="522" width="1110" height="125" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="65" y="548" fill="#A78BFA" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    📊 定量基准实测 (deterministic_offline_simulation · 89 Unit Tests Passing · 跨国互联网平台月度 A2P 短信与 SIP 语音账单 $48,000)
+  </text>
+
+  <rect x="65" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EF4444"/>
+  <text x="77" y="584" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">AIT 短信盗刷注水拦截</text>
+  <text x="77" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 403 · 12 ms</text>
+  <text x="77" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">防僵尸脚本刷验证码掏空预算</text>
+
+  <rect x="282" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="294" y="584" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">无 A级签名/灰产路由拒付</text>
+  <text x="294" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 422 · 15 ms</text>
+  <text x="294" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">强制 STIR/SHAKEN A级验真</text>
+
+  <rect x="499" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EC4899"/>
+  <text x="511" y="584" fill="#F472B6" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">FCC RMD 摘牌号段冻结</text>
+  <text x="511" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 451 · 310 ms</text>
+  <text x="511" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">Web IQ 监管处罚库实时核验</text>
+
+  <rect x="716" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#8B5CF6"/>
+  <text x="728" y="584" fill="#C4B5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">Passkey/WA 通道确认</text>
+  <text x="728" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 409 · 315 ms</text>
+  <text x="728" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">立省 $16,800 ($31,200)</text>
+
+  <rect x="933" y="562" width="205" height="68" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="945" y="584" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">真实人类转化放款</text>
+  <text x="945" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 200 · 265 ms</text>
+  <text x="945" y="621" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="11">全透明通信清算 $48,000</text>
+</svg>

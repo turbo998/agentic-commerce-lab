@@ -4518,6 +4518,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cpg-trade-promo-sandbox", demo_zh)
 
+    def test_telecom_wholesale_a2p_sms_ait_clawback_mandate_vs_botnet_toll_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_telecom_wholesale_a2p_sms_ait_policy,
+        )
+
+        # 1. Human OTP conversion >=5% + STIR/SHAKEN A-Level + clean FCC RMD -> 200 settled ($48,000)
+        commit_ok = evaluate_telecom_wholesale_a2p_sms_ait_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_telecom_cents, 4800000)
+
+        # 2. Botnet SMS pumping AIT burst (<5% OTP conversion) -> 403 blocked in 12ms
+        ait_403 = evaluate_telecom_wholesale_a2p_sms_ait_policy(
+            otp_conversion_rate_and_ait_filter_passed=False,
+        )
+        self.assertFalse(ait_403.allowed)
+        self.assertEqual(ait_403.http_status, 403)
+        self.assertEqual(
+            ait_403.telecom_lane,
+            "SMS_PUMPING_AIT_ZERO_CONVERSION_BLOCKED",
+        )
+
+        # 3. Missing STIR/SHAKEN A-Level attestation or gray-route SIM-box hop -> 422 blocked in 15ms
+        stir_422 = evaluate_telecom_wholesale_a2p_sms_ait_policy(
+            stir_shaken_full_attestation_verified=False,
+        )
+        self.assertFalse(stir_422.allowed)
+        self.assertEqual(stir_422.http_status, 422)
+        self.assertEqual(
+            stir_422.telecom_lane,
+            "MISSING_STIR_SHAKEN_ATTESTATION_OR_GRAY_ROUTE_BLOCKED",
+        )
+
+        # 4. Web IQ detects FCC RMD removal order or GSMA IRSF fraud prefix -> 451 blocked in 310ms
+        fcc_451 = evaluate_telecom_wholesale_a2p_sms_ait_policy(
+            webiq_fcc_rmd_and_prefix_reputation_clean=False,
+        )
+        self.assertFalse(fcc_451.allowed)
+        self.assertEqual(fcc_451.http_status, 451)
+
+        # 5. Web IQ discovers FIDO2 Passkey + WhatsApp Auth saving $16,800 ($31,200 net) -> 409 Confirm
+        pk_409 = evaluate_telecom_wholesale_a2p_sms_ait_policy(
+            passkey_whatsapp_channel_savings_cents=1680000,
+        )
+        self.assertFalse(pk_409.allowed)
+        self.assertEqual(pk_409.http_status, 409)
+        self.assertEqual(pk_409.settled_telecom_cents, 3120000)
+        self.assertEqual(pk_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["telecom_a2p_sms_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("telecom-a2p-sms-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
