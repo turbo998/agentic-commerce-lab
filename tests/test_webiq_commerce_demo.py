@@ -4015,6 +4015,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aviation-mro-traceability-sandbox", demo_zh)
 
+    def test_battery_black_mass_icp_assay_escrow_mandate_vs_slag_adulteration_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_battery_black_mass_icp_assay_escrow_policy,
+        )
+
+        # 1. Homogenized ICP-MS grade + dry tare + Basel PIC clean -> 200 settled ($110,000)
+        commit_ok = evaluate_battery_black_mass_icp_assay_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_black_mass_cents, 11000000)
+
+        # 2. Stratified LFP substitution or iron slag adulteration -> 403 blocked in 12ms
+        slag_403 = evaluate_battery_black_mass_icp_assay_escrow_policy(
+            icp_ms_cobalt_nickel_grade_breach=True,
+        )
+        self.assertFalse(slag_403.allowed)
+        self.assertEqual(slag_403.http_status, 403)
+        self.assertEqual(
+            slag_403.assay_lane, "SLAG_ADULTERATION_OR_LFP_SUBSTITUTION_BLOCKED"
+        )
+
+        # 3. Unadjusted 14% moisture tare or >2.5% PVDF fluorine penalty -> 422 blocked in 15ms
+        flr_422 = evaluate_battery_black_mass_icp_assay_escrow_policy(
+            fluorine_or_moisture_penalty_unadjusted=True,
+        )
+        self.assertFalse(flr_422.allowed)
+        self.assertEqual(flr_422.http_status, 422)
+        self.assertEqual(
+            flr_422.assay_lane,
+            "UNADJUSTED_FLUORINE_PENALTY_OR_MOISTURE_TARE_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing Basel Convention hazardous-waste PIC permit -> 451 blocked in 310ms
+        bas_451 = evaluate_battery_black_mass_icp_assay_escrow_policy(
+            webiq_basel_pic_and_battery_passport_valid=False,
+        )
+        self.assertFalse(bas_451.allowed)
+        self.assertEqual(bas_451.http_status, 451)
+
+        # 5. Web IQ discovers toll-refining sulfate swap saving $12,500 ($97,500 net) -> 409 Confirm
+        toll_409 = evaluate_battery_black_mass_icp_assay_escrow_policy(
+            toll_refining_arbitrage_savings_cents=1250000,
+        )
+        self.assertFalse(toll_409.allowed)
+        self.assertEqual(toll_409.http_status, 409)
+        self.assertEqual(toll_409.settled_black_mass_cents, 9750000)
+        self.assertEqual(toll_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["black_mass_assay_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("black-mass-assay-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

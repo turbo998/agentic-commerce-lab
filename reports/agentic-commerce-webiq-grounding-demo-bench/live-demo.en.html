@@ -1710,6 +1710,24 @@
         <div id="mro-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Lithium Battery Black-Mass & Precious-Metal Scrap ICP-MS Assay Escrow Sandbox (Round 51 FAQ Companion) -->
+      <div class="finops-box" id="black-mass-assay-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bm-title">🔋 动力电池黑粉与贵金属回收 ICP-MS 品位托管架构：全批混匀质谱令牌 (black_mass_assay_escrow_mandate_...) vs 阴阳吨袋掺假决策器 (Round 51 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 20吨三元黑粉回收批次 ($110,000.00)、全批混匀 ICP-MS 镍钴锂品位、氟/水分扣减与 Web IQ 巴塞尔危废/来料代工场景 (Black-Mass Assay Scenario):</span></label>
+          <select id="bm-select" onchange="updateBlackMassAssaySandbox()">
+            <option value="bm_commit_ok">⚡ 全批混匀 ICP-MS 实测品位达标 (Ni 28%/Co 6%/Li 4.2%) + 干基净重与巴塞尔 PIC 合规：265ms 自动放款 $110,000.00! (Act automatically)</option>
+            <option value="bm_slag_403">🛑 阴阳吨袋底层掺入零镍钴 LFP 铁锂粉或铜炉渣拦截：表层铺三元粉骗过手持枪，ICP-MS 混匀检出掺假 → 12ms 触发 HTTP 403 硬冻结!</option>
+            <option value="bm_flr_422">🚨 隐瞒 14% 电解液挥发水重 / &gt;2.5% 高氟腐蚀惩罚费 ($9,200) 拦截：未扣干基水重与脱氟费 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="bm_bas_451">🛑 缺失《巴塞尔公约》跨境危废转移 PIC 批文拦截：Web IQ /v3/browse 检出无有效危废进出口许可证 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="bm_toll_409">🧑‍⚖️ Web IQ 检出切换“来料代工返还电池级硫酸盐 (Toll-Refining)”可省去买断折算点差与流转税 $12,500.00 (净付 $97,500.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="bm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2199,6 +2217,7 @@ function renderAll() {
   updateCRENNNCAMSandbox();
   updateFleetFuelTelematicsSandbox();
   updateAviationMROTraceabilitySandbox();
+  updateBlackMassAssaySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -4948,6 +4967,56 @@ function updateAviationMROTraceabilitySandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 原厂+Part-145 密码学 8130-3 链闭合 + NDT 零裂纹验真通过：已自动释放航材款 (VERIFIED_AIRWORTHY_8130_MRO_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零黑航材隐患、秒级写入 eTechLog</strong>：ATA Spec 2000 数字签名、从出生至今起落循环与 NDT 探伤报告全部核验无误，265ms 自动放款 <code>$95,000.00</code>！" +
+    "</div>";
+}
+
+function updateBlackMassAssaySandbox() {
+  var selEl = document.getElementById("bm-select");
+  var outEl = document.getElementById("bm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "bm_slag_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SLAG_ADULTERATION_OR_LFP_SUBSTITUTION_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "全批破袋十字缩分与实验室 ICP-MS 质谱化验检出吨袋下层 90% 被掺入零镍钴的廉价磷酸铁锂（LFP）废粉与铁渣（<code>icp_ms_cobalt_nickel_grade_breach=True</code>）！已在 <code>12ms</code> 内硬冻结 <code>$110,000.00</code> 托管款并启封铅封仲裁盲样（Umpire Sample）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bm_flr_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNADJUSTED_FLUORINE_PENALTY_OR_MOISTURE_TARE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卖方账单未扣除 14% 残留电解液挥发水重与 <code>&gt;2.5% PVDF 高氟除杂惩罚费 ($9,200.00)</code>！网关已在 <code>15ms</code> 内拦截毛重请款，防止高浓度氢氟酸蚀穿湿法冶金反应釜！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bm_bas_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 BASEL_CONVENTION_PIC_HAZARDOUS_WASTE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查《巴塞尔公约》危险废物跨境转移事先知情同意书（PIC）名录，检出该批含电解液黑粉缺失有效进出口环保批文，已在 <code>310ms</code> 内冻结结算以规避非法危废入境刑事风险！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bm_toll_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LME_PAYABLE_METAL_TOLL_REFINING_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对 LME/Fastmarkets 镍钴锂计价系数（Payable %），发现从高溢价现货买断切换为<code>来料代工返还电池级硫酸盐（Toll-Refining Swap）</code>可省去折算点差与双重流转税 <code>$12,500.00</code>（净成本降至 <code>$97,500.00</code>），建议一键确认切换！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全批混匀 ICP-MS 品位达标 + 巴塞尔危废与干基净重核验通过：已自动清算 (VERIFIED_ICP_MS_BLACK_MASS_ESCROW_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零阴阳袋欺诈、秒级写入欧盟电池护照</strong>：20 吨三元黑粉 Ni/Co/Li 质谱品位与脱氟标准 100% 达标，265ms 自动放款 <code>$110,000.00</code>！" +
     "</div>";
 }
 
