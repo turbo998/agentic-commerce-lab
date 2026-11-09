@@ -4742,6 +4742,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("industrial-pbth-sandbox", demo_zh)
 
+    def test_fine_jewelry_gia_diamond_kimberley_escrow_mandate_vs_cvd_clone_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_fine_jewelry_gia_diamond_kimberley_policy,
+        )
+
+        # 1. Bonded FTIR/PL natural + KPC/G7 origin + clean GIA Report Check -> 200 settled ($140,000)
+        commit_ok = evaluate_fine_jewelry_gia_diamond_kimberley_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_diamond_cents, 14000000)
+
+        # 2. Cloned-girdle CVD/HPHT lab-grown synthetic substitution -> 403 blocked in 12ms
+        cvd_403 = evaluate_fine_jewelry_gia_diamond_kimberley_policy(
+            gia_diamondcheck_ftir_natural_verified=False,
+        )
+        self.assertFalse(cvd_403.allowed)
+        self.assertEqual(cvd_403.http_status, 403)
+        self.assertEqual(
+            cvd_403.diamond_lane,
+            "CVD_HPHT_SYNTHETIC_CLONED_GIRDLE_FRAUD_BLOCKED",
+        )
+
+        # 3. Missing Kimberley Process Certificate or G7 >=0.50ct origin proof -> 422 blocked in 15ms
+        kpc_422 = evaluate_fine_jewelry_gia_diamond_kimberley_policy(
+            kimberley_process_and_g7_origin_verified=False,
+        )
+        self.assertFalse(kpc_422.allowed)
+        self.assertEqual(kpc_422.http_status, 422)
+        self.assertEqual(
+            kpc_422.diamond_lane,
+            "MISSING_KIMBERLEY_PROCESS_OR_G7_ORIGIN_TRACEABILITY_BLOCKED",
+        )
+
+        # 4. Web IQ detects JSA stolen-stone alert or post-grading HPHT treatment -> 451 blocked in 310ms
+        gia_451 = evaluate_fine_jewelry_gia_diamond_kimberley_policy(
+            webiq_gia_report_check_and_rapnet_clean=False,
+        )
+        self.assertFalse(gia_451.allowed)
+        self.assertEqual(gia_451.http_status, 451)
+
+        # 5. Web IQ discovers direct Sightholder bourse sourcing saving $19,500 ($120,500 net) -> 409 Confirm
+        sh_409 = evaluate_fine_jewelry_gia_diamond_kimberley_policy(
+            sightholder_direct_bourse_savings_cents=1950000,
+        )
+        self.assertFalse(sh_409.allowed)
+        self.assertEqual(sh_409.http_status, 409)
+        self.assertEqual(sh_409.settled_diamond_cents, 12050000)
+        self.assertEqual(sh_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["diamond_gia_kimberley_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("diamond-gia-kimberley-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

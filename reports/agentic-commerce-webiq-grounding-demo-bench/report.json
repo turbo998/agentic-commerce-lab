@@ -400,6 +400,11 @@
     "pbth_settlement_latency_ms": 265,
     "idle_wallclock_block_latency_ms": 12
   },
+  "diamond_gia_kimberley_guards": {
+    "all_passed": true,
+    "diamond_settlement_latency_ms": 265,
+    "cloned_cvd_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
