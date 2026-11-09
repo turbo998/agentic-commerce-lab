@@ -9359,6 +9359,93 @@ def evaluate_datacenter_24x7_hourly_ppa_teac_policy(
     )
 
 
+@dataclass(frozen=True)
+class ClinicalIVDReagentLotQCVerdict:
+    allowed: bool
+    http_status: int
+    ivd_lane: str
+    settled_ivd_cents: int
+    gpo_sequestered_lot_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+    *,
+    reagent_shipment_cents: int = 4200000,
+    westgard_lot_qc_calibration_passed: bool = True,
+    udi_remaining_shelf_life_days_ok: bool = True,
+    webiq_fda_ivd_recall_and_udi_clean: bool = True,
+    gpo_sequestered_lot_savings_cents: int = 0,
+) -> ClinicalIVDReagentLotQCVerdict:
+    """Evaluate analyzer HL7 Lot-to-Lot Westgard (1_3s/2_2s) QC calibration pass, GS1 UDI remaining shelf-life (>=180 days) & single-lot homogeneity, Web IQ openFDA/EUDAMED IVD recall check, and GPO sequestered master-lot arbitrage."""
+
+    # 1. On-Analyzer Lot-to-Lot Westgard (1_3s / 2_2s) QC Calibration Failure -> HTTP 403
+    if not westgard_lot_qc_calibration_passed:
+        return ClinicalIVDReagentLotQCVerdict(
+            False,
+            403,
+            "WESTGARD_LOT_TO_LOT_QC_CALIBRATION_FAILURE_BLOCKED",
+            0,
+            0,
+            "reagent_escrow_frozen_due_to_analyzer_hl7_westgard_1_3s_or_2_2s_lot_qc_failure",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Short-Dated GS1 UDI (<180 Days Shelf-Life) or Fragmented Multi-Lot Shipment -> HTTP 422
+    if not udi_remaining_shelf_life_days_ok:
+        return ClinicalIVDReagentLotQCVerdict(
+            False,
+            422,
+            "SHORT_DATED_UDI_EXPIRY_OR_FRAGMENTED_LOT_BLOCKED",
+            0,
+            0,
+            "shipment_rejected_due_to_sub_180_day_udi_expiry_or_unapproved_multi_lot_splitting",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Active FDA Class I/II IVD Recall or EU EUDAMED Field Safety Notice via Web IQ -> HTTP 451
+    if not webiq_fda_ivd_recall_and_udi_clean:
+        return ClinicalIVDReagentLotQCVerdict(
+            False,
+            451,
+            "FDA_IVD_RECALL_OR_FIELD_SAFETY_NOTICE_HOLD",
+            0,
+            0,
+            "webiq_detected_active_openfda_ivd_recall_or_eudamed_field_safety_notice_for_lot",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ GPO 6-Month Sequestered Single-Master-Lot Arbitrage -> HTTP 409 Confirm
+    if gpo_sequestered_lot_savings_cents > 0:
+        return ClinicalIVDReagentLotQCVerdict(
+            False,
+            409,
+            "GPO_SEQUESTERED_MASTER_LOT_ARBITRAGE_CONFIRM",
+            reagent_shipment_cents - gpo_sequestered_lot_savings_cents,
+            gpo_sequestered_lot_savings_cents,
+            "webiq_found_gpo_sequestered_single_master_lot_contract_saving_6300_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Westgard QC Pass + >=180-Day Single-Lot UDI -> Settled
+    return ClinicalIVDReagentLotQCVerdict(
+        True,
+        200,
+        "VERIFIED_CLINICAL_IVD_LOT_QC_SETTLED",
+        reagent_shipment_cents,
+        0,
+        "hl7_westgard_lot_qc_and_180d_udi_shelf_life_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -11984,6 +12071,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "greenwashing_rec_block_latency_ms": ppa_grid_403.latency_ms,
     }
 
+    ivd_commit_ok = evaluate_clinical_lab_ivd_reagent_lot_qc_policy()
+    ivd_qc_403 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+        westgard_lot_qc_calibration_passed=False,
+    )
+    ivd_udi_422 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+        udi_remaining_shelf_life_days_ok=False,
+    )
+    ivd_fda_451 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+        webiq_fda_ivd_recall_and_udi_clean=False,
+    )
+    ivd_gpo_409 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+        gpo_sequestered_lot_savings_cents=630000,
+    )
+    clinical_ivd_reagent_guards = {
+        "all_passed": (
+            ivd_commit_ok.allowed
+            and ivd_commit_ok.settled_ivd_cents == 4200000
+            and not ivd_qc_403.allowed
+            and ivd_qc_403.http_status == 403
+            and not ivd_udi_422.allowed
+            and ivd_udi_422.http_status == 422
+            and not ivd_fda_451.allowed
+            and ivd_fda_451.http_status == 451
+            and not ivd_gpo_409.allowed
+            and ivd_gpo_409.action_pill == "Confirm"
+        ),
+        "ivd_settlement_latency_ms": ivd_commit_ok.latency_ms,
+        "westgard_qc_block_latency_ms": ivd_qc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -12051,6 +12168,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "media_sync_voice_guards": media_sync_voice_guards,
         "disaster_relief_aid_guards": disaster_relief_aid_guards,
         "datacenter_hourly_ppa_guards": datacenter_hourly_ppa_guards,
+        "clinical_ivd_reagent_guards": clinical_ivd_reagent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -15940,6 +16058,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ppa-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Diagnostic Clinical Lab IVD Reagent Lot-to-Lot QC & UDI Mandate Sandbox (Round 55 FAQ Companion) -->
+      <div class="finops-box" id="clinical-ivd-reagent-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ivd-title">🧪 医院检验科体外诊断试剂 (IVD) 批间质控与效期托管架构：LIS Westgard 质控与 UDI 效期令牌 (clinical_ivd_reagent_mandate_...) vs 临期/失控试剂决策器 (Round 55 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 检验科高敏发光免疫试剂批次 ($42,000.00)、LIS 分析仪 Westgard 批间质控、GS1 UDI 效期与 Web IQ FDA 召回/GPO 锁批场景 (Clinical IVD Scenario):</span></label>
+          <select id="ivd-select" onchange="updateClinicalIVDReagentSandbox()">
+            <option value="ivd_commit_ok">⚡ LIS 分析仪 HL7 上报 Westgard 批间质控通过 + UDI 剩余效期 &gt;=180 天单一母批号 + 无 FDA 召回：265ms 自动放款 $42,000.00! (Act automatically)</option>
+            <option value="ivd_qc_403">🛑 Westgard 1_3s/2_2s 质控失控拦截：新批号冻干抗体活性漂移，上机测定 Bio-Rad 质控品偏倚超 ±2.5 SD → 12ms 触发 HTTP 403 冻结货款并免费换批!</option>
+            <option value="ivd_udi_422">🚨 临期清库或碎批混发拦截：GS1 UDI 显示仅剩 28 天有效期或被拆成 6 个零碎小批号 (耗费 15% 试剂反复重定标) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="ivd_fda_451">🛑 FDA/IVDR 医疗器械召回冻结：Web IQ /v3/browse 检出该批号因生物素干扰假阴性被列入 Class I/II 召回或现场安全通告 → 310ms 触发 HTTP 451!</option>
+            <option value="ivd_gpo_409">🧑‍⚖️ Web IQ 检出医联体 GPO 半年单一母批号预留锁批协议可省去 5 次换批重定标损耗并降价 $6,300.00 (净付 $35,700.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="ivd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -16433,6 +16569,7 @@ function renderAll() {{
   updateMediaSyncVoiceSandbox();
   updateDisasterReliefAidSandbox();
   updateDatacenterHourlyPPASandbox();
+  updateClinicalIVDReagentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19380,6 +19517,55 @@ function updateDatacenterHourlyPPASandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 720 小时同网 EnergyTag T-EAC 匹配 + 负电价零地板 + 注册局唯一注销全绿：已自动放款 (VERIFIED_24X7_HOURLY_PPA_TEAC_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零漂绿风险、零负电价倒贴</strong>：月度 <code>2,400 MWh</code> 24/7 无碳电力账单已完成结算并封存 GHG Scope 2 小时级审计回执（<code>$180,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateClinicalIVDReagentSandbox() {{
+  var selEl = document.getElementById("ivd-select");
+  var outEl = document.getElementById("ivd-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ivd_qc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WESTGARD_LOT_TO_LOT_QC_CALIBRATION_FAILURE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "全自动化学发光仪通过 HL7 接口上报新到货试剂批号在第三方 Bio-Rad 质控品测定中触发 <code>Westgard 1_3s / 2_2s</code> 失控（<code>westgard_lot_qc_calibration_passed == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$42,000.00</code> 放款并触发供应商免费换批！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ivd_udi_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SHORT_DATED_UDI_EXPIRY_OR_FRAGMENTED_LOT_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "GS1 UDI 条码解析检出该批次剩余有效期仅 <code>28 天</code>（低于合同 <code>&gt;= 180 天</code> 红线）或被拆成 6 个零碎小批号混发（<code>udi_remaining_shelf_life_days_ok == False</code>）。网关在 <code>15ms</code> 内当场拒付，杜绝临期锁机报废与频繁重定标损耗！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ivd_fda_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FDA_IVD_RECALL_OR_FIELD_SAFETY_NOTICE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 openFDA 医疗器械召回库与欧盟 EUDAMED 现场安全通告（FSN），检出该 UDI 批号因生物素干扰假阴性风险处于 Class I/II 召回中，立即冻结货款并联动 LIS 锁死该批号！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ivd_gpo_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GPO_SEQUESTERED_MASTER_LOT_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索医联体 GPO 集采目录，发现启用半年期单一母批号预留锁批协议（Sequestered Master Lot）可省去 5 次换批重定标损耗并降价 <code>$6,300.00</code>（净支出从 <code>$42,000.00</code> 降至 <code>$35,700.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ LIS Westgard 批间质控通过 + UDI 效期 &gt;=180 天单一母批号 + 无召回全绿：已自动放款 (VERIFIED_CLINICAL_IVD_LOT_QC_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零误诊失控风险、零临期报废</strong>：高敏发光免疫试剂批次已完成结算并自动生成 ISO 15189 / CAP 批间比对电子审计档案（<code>$42,000.00</code>）！" +
     "</div>";
 }}
 

@@ -4238,6 +4238,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("datacenter-hourly-ppa-sandbox", demo_zh)
 
+    def test_clinical_lab_ivd_reagent_lot_qc_mandate_vs_expired_calibration_failure_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_clinical_lab_ivd_reagent_lot_qc_policy,
+        )
+
+        # 1. Westgard QC pass + >=180d single-lot UDI + clean FDA status -> 200 settled ($42,000)
+        commit_ok = evaluate_clinical_lab_ivd_reagent_lot_qc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ivd_cents, 4200000)
+
+        # 2. On-analyzer Westgard 1_3s/2_2s QC calibration failure -> 403 blocked in 12ms
+        qc_403 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+            westgard_lot_qc_calibration_passed=False,
+        )
+        self.assertFalse(qc_403.allowed)
+        self.assertEqual(qc_403.http_status, 403)
+        self.assertEqual(
+            qc_403.ivd_lane,
+            "WESTGARD_LOT_TO_LOT_QC_CALIBRATION_FAILURE_BLOCKED",
+        )
+
+        # 3. Short-dated UDI (<180 days) or fragmented multi-lot shipment -> 422 blocked in 15ms
+        udi_422 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+            udi_remaining_shelf_life_days_ok=False,
+        )
+        self.assertFalse(udi_422.allowed)
+        self.assertEqual(udi_422.http_status, 422)
+        self.assertEqual(
+            udi_422.ivd_lane,
+            "SHORT_DATED_UDI_EXPIRY_OR_FRAGMENTED_LOT_BLOCKED",
+        )
+
+        # 4. Web IQ detects FDA Class I/II recall or EUDAMED FSN -> 451 blocked in 310ms
+        fda_451 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+            webiq_fda_ivd_recall_and_udi_clean=False,
+        )
+        self.assertFalse(fda_451.allowed)
+        self.assertEqual(fda_451.http_status, 451)
+
+        # 5. Web IQ discovers GPO 6-month sequestered master lot saving $6,300 ($35,700 net) -> 409 Confirm
+        gpo_409 = evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
+            gpo_sequestered_lot_savings_cents=630000,
+        )
+        self.assertFalse(gpo_409.allowed)
+        self.assertEqual(gpo_409.http_status, 409)
+        self.assertEqual(gpo_409.settled_ivd_cents, 3570000)
+        self.assertEqual(gpo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["clinical_ivd_reagent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("clinical-ivd-reagent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
