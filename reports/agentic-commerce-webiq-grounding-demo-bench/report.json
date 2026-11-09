@@ -365,6 +365,11 @@
     "folio_settlement_latency_ms": 265,
     "attrition_double_dip_block_latency_ms": 12
   },
+  "semiconductor_kgd_yield_guards": {
+    "all_passed": true,
+    "kgd_settlement_latency_ms": 265,
+    "yield_collapse_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

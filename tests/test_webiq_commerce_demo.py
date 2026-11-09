@@ -4350,6 +4350,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("mice-hotel-attrition-sandbox", demo_zh)
 
+    def test_semiconductor_wafer_foundry_kgd_yield_escrow_mandate_vs_gross_wafer_defect_billing_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_wafer_kgd_yield_policy,
+        )
+
+        # 1. >=75% Bin-1 KGD yield + ATE-signed STDFv4/DPAT + clean BIS/ERAI -> 200 settled ($240,000)
+        commit_ok = evaluate_semiconductor_wafer_kgd_yield_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_wafer_cents, 24000000)
+
+        # 2. CP wafer-sort Bin-1 KGD yield crash (<75%) on gross-wafer invoice -> 403 blocked in 12ms
+        yield_403 = evaluate_semiconductor_wafer_kgd_yield_policy(
+            stdf_cp_kgd_yield_floor_met=False,
+        )
+        self.assertFalse(yield_403.allowed)
+        self.assertEqual(yield_403.http_status, 403)
+        self.assertEqual(
+            yield_403.kgd_lane,
+            "PARAMETRIC_WAFER_SORT_KGD_YIELD_COLLAPSE_BLOCKED",
+        )
+
+        # 3. Unsigned CSV wafer map or unscreened DPAT IDDQ leakage outliers -> 422 blocked in 15ms
+        stdf_422 = evaluate_semiconductor_wafer_kgd_yield_policy(
+            ate_signed_stdf_and_pat_outlier_verified=False,
+        )
+        self.assertFalse(stdf_422.allowed)
+        self.assertEqual(stdf_422.http_status, 422)
+        self.assertEqual(
+            stdf_422.kgd_lane,
+            "UNSIGNED_STDF_WAFER_MAP_OR_DPAT_OUTLIER_BLOCKED",
+        )
+
+        # 4. Web IQ detects BIS 3A090 restriction or ERAI laser-remarked counterfeit lot -> 451 blocked in 310ms
+        bis_451 = evaluate_semiconductor_wafer_kgd_yield_policy(
+            webiq_export_fdpr_and_erai_lot_clean=False,
+        )
+        self.assertFalse(bis_451.allowed)
+        self.assertEqual(bis_451.http_status, 451)
+
+        # 5. Web IQ discovers Foundry MPW shuttle reticle-sharing saving $38,000 ($202,000 net) -> 409 Confirm
+        mpw_409 = evaluate_semiconductor_wafer_kgd_yield_policy(
+            mpw_shuttle_reticle_savings_cents=3800000,
+        )
+        self.assertFalse(mpw_409.allowed)
+        self.assertEqual(mpw_409.http_status, 409)
+        self.assertEqual(mpw_409.settled_wafer_cents, 20200000)
+        self.assertEqual(mpw_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["semiconductor_kgd_yield_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("semiconductor-kgd-yield-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
