@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg85" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090c1c"/>
+      <stop offset="50%" stop-color="#141a38"/>
+      <stop offset="100%" stop-color="#1e2752"/>
+    </linearGradient>
+    <linearGradient id="accent85" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg85)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0d1329" stroke="#8b5cf6" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent85)"/>
+
+  <text x="60" y="72" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 83 · EUV/DUV PHOTOMASK RETICLE, KLA DIE-TO-DATABASE &amp; CNT PELLICLE MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">半导体 EUV/DUV 光刻掩膜版、KLA 零重复缺陷与 CNT 防尘膜托管 vs 重复缺陷废片</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">OASIS SHA-256 + KLA Teron Die-to-Database Zero Killer Defect + CD-SEM (&lt;=0.8nm) + EUV CNT Pellicle vs. Scrap Risk</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统光罩厂 NRE 预付盲打模式 (Repeating-Defect Scrap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 单颗光罩缺陷印死全部晶圆：掩膜版上 1 个 15nm 铬斑把 25 片晶圆每一颗裸片同位置短路</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 仅做 Die-to-Die 漏检全版共同错误：若两个并排 Die 都有 OPC 转换错误，互相比较完全查不出</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• CD 关键尺寸与套刻漂移：光罩边缘线宽均匀性 (CDU) 偏差 &gt;1.8nm，导致高良率区间消失</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 光罩厂免责霸王条款：光罩厂只赔重做一片光罩，拒赔因此报废的 $500,000 晶圆流片费</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型 Fabless 芯片设计公司先进节点流片 (Tape-Out) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">AI 芯片团队预付 $380,000 采购全套关键层 EUV/ArFi 光罩，因 Via 层光罩含未检出</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">纳米针孔缺陷导致首轮工程批良率 0%，直接报废晶圆并延误流片窗口 3 个月</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 重复致命缺陷拦截：0% | • 错版 OASIS 拦截：0% | • 延误上市损失：超百万美元</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ Die-to-Database 零缺陷 + AIMS 成像 + 拼版套利托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• KLA Teron Die-to-Database &amp; Zeiss AIMS 门禁：强制与后 OPC 版图比对且空间像零可印出缺陷</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• CD-SEM 线宽均匀性 (&lt;=0.8nm 3σ) 与 CNT 防尘膜：EUV 碳纳米管薄膜透光率 &gt;=90% 合格</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• OASIS/MEBES SHA-256 哈希与 BIS 3A090 核验：Web IQ 核验流片版图修订号与出口合规</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 金属层多项目晶圆/单光罩多层拼版 (MLR) 套利：非关键层合并光罩立省 $58,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断未通过 Die-to-Database / AIMS 曝光仿真的带缺陷光罩入厂；15ms 拦截</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">CD-SEM 失控与防尘膜破损；Web IQ 多层拼版光罩 (MLR) 套利立省 $58,000.00（净付 $322,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 重复致命缺陷拦截：100% | • 首轮流片良率保障：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#131b38" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">先进制程光刻掩膜版采购 Agent 绝不能凭出厂合格证盲付！必须绑定【Die-to-Database + Zeiss AIMS + CD-SEM】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_semiconductor_photomask_reticle_policy`) · SEMI P10 &amp; KLA/Zeiss AIMS · 2026-11-09</text>
+</svg>

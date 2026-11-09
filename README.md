@@ -114,6 +114,7 @@
 - **专题 80（市政与大型商业园区冬季除雪撒布车 Snow-Plow & Salt-Spreader、J1939 铲刀落地遥测与闭环融雪盐计量智能托管 vs 传统 GPS 空跑翘铲虚报）**：**[《市政与大型商业园区冬季除雪撒布车（Snow-Plow & Salt-Spreader）、J1939 铲刀落地遥测与闭环融雪盐计量智能托管 vs 传统 GPS 空跑翘铲虚报：架构选型与第一性原理 FAQ》](docs/municipal-snow-plow-avl-blade-down-salt-telemetry-mandate-vs-ghost-pass-overbilling-faq.md)**
 - **专题 81（海上风电运维母船租船 Offshore Wind SOV / CTV Charter、DP2 波浪补偿栈桥遥测与有效波高 Hs 停租对账智能托管 vs 传统船长日志机械故障充天气待命盲付）**：**[《海上风电运维母船租船（Offshore Wind SOV / CTV Charter）、DP2 波浪补偿栈桥遥测与有效波高（$H_s$）停租对账智能托管 vs 传统船长日志“机械故障充天气待命”盲付：架构选型与第一性原理 FAQ》](docs/offshore-wind-sov-charter-dp2-wave-height-mandate-vs-breakdown-weather-overbilling-faq.md)**
 - **专题 82（二级豪华腕表 Secondary Luxury Watch 无卡度摆轮微距、Witschi 声学摆幅遥测与 Enquirus 失窃查册智能托管 vs 传统拼装/超级克隆表盲付）**：**[《二级豪华腕表（Secondary Luxury Watch）无卡度摆轮微距、Witschi 声学摆幅遥测与 Enquirus 失窃查册智能托管 vs 传统拼装/超级克隆表盲付：架构选型与第一性原理 FAQ》](docs/luxury-watch-horological-witschi-enquirus-mandate-vs-frankenwatch-super-clone-faq.md)**
+- **专题 83（半导体 EUV/DUV 光刻掩膜版 Photomask / Reticle、KLA Die-to-Database 零重复缺陷与 Zeiss AIMS 空间像智能托管 vs 传统流片光罩盲付）**：**[《半导体 EUV/DUV 光刻掩膜版（Photomask / Reticle）、KLA Die-to-Database 零重复缺陷与 Zeiss AIMS 空间像智能托管 vs 传统流片光罩盲付：架构选型与第一性原理 FAQ》](docs/semiconductor-photomask-reticle-kla-defect-pellicle-mandate-vs-repeating-wafer-scrap-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -278,6 +279,8 @@
 ![2026-11-09 海上风电运维船 SOV 租船、DP2 补偿栈桥与有效波高智能托管架构一图流](assets/svg/83-offshore-wind-sov-charter-dp2-wave-height-2026-11-09.svg)
 
 ![2026-11-09 二级豪华腕表 Witschi 校表遥测、无卡度游丝与失窃查册智能托管架构一图流](assets/svg/84-luxury-watch-horological-witschi-enquirus-2026-11-09.svg)
+
+![2026-11-09 半导体 EUV/DUV 光刻掩膜版、KLA 零重复缺陷与 CNT 防尘膜智能托管架构一图流](assets/svg/85-semiconductor-photomask-reticle-kla-pellicle-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

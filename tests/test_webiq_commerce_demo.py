@@ -5807,6 +5807,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("luxury-watch-horological-sandbox", demo_zh)
 
+    def test_semiconductor_photomask_reticle_kla_defect_pellicle_mandate_vs_repeating_wafer_scrap_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_photomask_reticle_policy,
+        )
+
+        # 1. Verified OASIS SHA-256 + KLA D2DB / Zeiss AIMS zero defect + CD-SEM/pellicle -> 200 OK ($380,000)
+        commit_ok = evaluate_semiconductor_photomask_reticle_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_reticle_cents, 38000000)
+
+        # 2. Printable repeating reticle defect or Die-to-Die-only inspection -> 403 blocked in 12ms
+        d2d_403 = evaluate_semiconductor_photomask_reticle_policy(
+            kla_d2db_and_zeiss_aims_zero_defect_verified=False,
+        )
+        self.assertFalse(d2d_403.allowed)
+        self.assertEqual(d2d_403.http_status, 403)
+        self.assertEqual(
+            d2d_403.reticle_lane,
+            "PRINTABLE_REPEATING_RETICLE_DEFECT_OR_DIE_TO_DIE_ONLY_BLOCKED",
+        )
+
+        # 3. CD-SEM uniformity excursion (>0.8nm 3sigma) or CNT pellicle defect -> 422 blocked in 15ms
+        cdu_422 = evaluate_semiconductor_photomask_reticle_policy(
+            cd_sem_uniformity_and_cnt_pellicle_passed=False,
+        )
+        self.assertFalse(cdu_422.allowed)
+        self.assertEqual(cdu_422.http_status, 422)
+        self.assertEqual(
+            cdu_422.reticle_lane,
+            "CD_SEM_UNIFORMITY_EXCURSION_OR_CNT_PELLICLE_DEFECT_BLOCKED",
+        )
+
+        # 4. Web IQ detects foundry PDK mask-rule errata conflict or EAR 3B001 hold -> 451 blocked in 310ms
+        pdk_451 = evaluate_semiconductor_photomask_reticle_policy(
+            webiq_pdk_revision_and_export_control_clean=False,
+        )
+        self.assertFalse(pdk_451.allowed)
+        self.assertEqual(pdk_451.http_status, 451)
+
+        # 5. Web IQ discovers BEOL 4-in-1 Multi-Layer Reticle (MLR) consolidation saving $58,000 ($322,000 net) -> 409 Confirm
+        mlr_409 = evaluate_semiconductor_photomask_reticle_policy(
+            multi_layer_reticle_mlr_consolidation_savings_cents=5800000,
+        )
+        self.assertFalse(mlr_409.allowed)
+        self.assertEqual(mlr_409.http_status, 409)
+        self.assertEqual(mlr_409.settled_reticle_cents, 32200000)
+        self.assertEqual(mlr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["photomask_reticle_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("photomask-reticle-kla-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

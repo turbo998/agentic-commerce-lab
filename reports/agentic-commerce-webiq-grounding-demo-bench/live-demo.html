@@ -2286,6 +2286,24 @@
         <div id="wtc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive EUV/DUV Photomask Reticle, KLA Die-to-Database & CNT Pellicle Mandate Sandbox (Round 83 FAQ Companion) -->
+      <div class="finops-box" id="photomask-reticle-kla-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ret-title">🔬 半导体 EUV/DUV 光刻掩膜版 (Reticle)、KLA Die-to-Database 与 Zeiss AIMS 空间像架构：零重复缺陷与 MLR 拼版令牌 (photomask_reticle_mandate_...) vs 重复缺陷废片决策器 (Round 83 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. AI 芯片先进节点流片光刻掩膜版套组 ($380,000.00)、OASIS SHA-256 哈希、KLA Die-to-Database + Zeiss AIMS 零可印出缺陷与 Web IQ 后道 4-in-1 MLR 拼版场景 (Photomask Reticle Scenario):</span></label>
+          <select id="ret-select" onchange="updatePhotomaskReticleSandbox()">
+            <option value="ret_commit_ok">⚡ Sign-off OASIS SHA-256 匹配 + KLA D2DB 与 Zeiss AIMS 零可印出缺陷 + CD-SEM 0.65nm 3σ + CNT 防尘膜达标：22ms 自动结算 $380,000.00! (Act automatically)</option>
+            <option value="ret_d2d_403">🛑 检出可印出重复致命缺陷 (Printable Killer Defect) 或仅做 Die-to-Die 漏检全版共性 OPC 错误拦截：严防 25 片晶圆全部 0% 良率报废 → 12ms 触发 HTTP 403!</option>
+            <option value="ret_cdu_422">🚨 CD-SEM 线宽均匀性超标 (&gt;0.8nm 3σ) 或 EUV 碳纳米管防尘膜 (CNT Pellicle) 透光率不足 &lt;90% 拦截 → 15ms 触发 HTTP 422 拒收重制!</option>
+            <option value="ret_pdk_451">🛑 晶圆厂 PDK 光罩设计规则勘误表版本冲突或触碰 EAR 3B001/3A090 光罩出口管制冻结：Web IQ /v3/browse 310ms 触发 HTTP 451!</option>
+            <option value="ret_mlr_409">🧑‍⚖️ Web IQ 识别后道粗金属与钝化层可合并为 4-in-1 单光罩多层拼版 (Multi-Layer Reticle, MLR) 削减 6 张光罩立省 $58,000.00 (净付 $322,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ret-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2807,6 +2825,7 @@ function renderAll() {
   updateSnowPlowAVLSandbox();
   updateOffshoreSOVSandbox();
   updateLuxuryWatchSandbox();
+  updatePhotomaskReticleSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7126,6 +7145,55 @@ function updateLuxuryWatchSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 真无卡度砝码摆轮微距 + Witschi 六方位摆幅 292° + Enquirus 零失窃：已自动交割 (VERIFIED_LUXURY_WATCH_HOROLOGICAL_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零真壳假芯拼装、零失窃赃表扣押</strong>：贵金属计时码表已完成开盖声学鉴证并加贴防拆 NFC 封签发运（<code>$85,000.00</code>）！" +
+    "</div>";
+}
+
+function updatePhotomaskReticleSandbox() {
+  var selEl = document.getElementById("ret-select");
+  var outEl = document.getElementById("ret-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ret_d2d_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PRINTABLE_REPEATING_RETICLE_DEFECT_OR_DIE_TO_DIE_ONLY_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "<code>KLA Teron Die-to-Database (D2DB)</code> 与 <code>Zeiss AIMS 空间像曝光仿真</code> 检出光罩存在 15nm 可印出铬斑/相位缺陷，或光罩厂仅执行了无法发现全版共性 OPC 错误的 Die-to-Die 检查（<code>kla_d2db_and_zeiss_aims_zero_defect_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$380,000.00</code> 光罩入厂，避免整批 25 片晶圆 0% 良率报废！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ret_cdu_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CD_SEM_UNIFORMITY_EXCURSION_OR_CNT_PELLICLE_DEFECT_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "贴膜后 <code>CD-SEM 关键尺寸均匀性 (CDU)</code> 劣化至 <code>1.4nm 3σ</code>（突破 <code>0.8nm</code> 门限），或 EUV 碳纳米管防尘薄膜（CNT Pellicle）在 13.5nm 波长下透光率低于 <code>90%</code>（<code>cd_sem_uniformity_and_cnt_pellicle_passed == False</code>）。网关在 <code>15ms</code> 内拒收并退回重制！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ret_pdk_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FOUNDRY_PDK_MASK_RULE_MISMATCH_OR_EAR_3B001_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查晶圆厂最新 PDK Mask-Rule 勘误表与 EAR 3B001/3A090 出口管制清单，检出光罩 OPC 补偿表版次过期或触碰先进相移掩膜跨境许可限制，立即冻结放款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ret_mlr_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BEOL_MULTI_LAYER_RETICLE_MLR_CONSOLIDATION_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 解析晶圆厂后道粗金属与钝化层拼版规则，将 8 层非关键层合并至 2 张 <code>4-in-1 单光罩多层拼版 (Multi-Layer Reticle, MLR)</code> 利用光刻机遮光刀片（REMA）分象限曝光，立省 <code>$58,000.00</code> 制版费（净付降至 <code>$322,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ OASIS SHA-256 签名锁定 + KLA D2DB/Zeiss AIMS 零缺陷 + CNT 防尘膜达标：已自动清算 (VERIFIED_PHOTOMASK_RETICLE_SET_SETTLED · 22ms · Act automatically):</strong><br>" +
+    "• <strong>零重复致命缺陷印坏晶圆、零错发旧版版图</strong>：全套流片光刻掩膜版已通过晶圆厂光罩室入库复检并完成结算（<code>$380,000.00</code>）！" +
     "</div>";
 }
 
