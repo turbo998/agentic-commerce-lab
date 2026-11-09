@@ -440,6 +440,11 @@
     "floorplan_settlement_latency_ms": 265,
     "sot_fraud_block_latency_ms": 12
   },
+  "outdoor_dooh_guards": {
+    "all_passed": true,
+    "dooh_settlement_latency_ms": 19,
+    "dark_screen_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

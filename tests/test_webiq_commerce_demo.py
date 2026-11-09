@@ -5190,6 +5190,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("auto-floorplan-sandbox", demo_zh)
 
+    def test_programmatic_dooh_billboard_proof_of_play_mandate_vs_dark_screen_flat_lease_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_programmatic_dooh_proof_of_play_policy,
+        )
+
+        # 1. Verified 900 plays * $15 * 0.75x footfall = $10,125 settled ($7,875 saved) -> 200 OK
+        commit_ok = evaluate_programmatic_dooh_proof_of_play_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_dooh_cents, 1012500)
+        self.assertEqual(commit_ok.clawback_savings_cents, 787500)
+
+        # 2. Dark screen or dimmed luminance (<3,500 nits) -> 403 blocked in 12ms
+        dark_403 = evaluate_programmatic_dooh_proof_of_play_policy(
+            tpm_framebuffer_and_luminance_verified=False,
+        )
+        self.assertFalse(dark_403.allowed)
+        self.assertEqual(dark_403.http_status, 403)
+        self.assertEqual(
+            dark_403.dooh_lane,
+            "DARK_SCREEN_OR_DIMMED_LUMINANCE_BILLING_BLOCKED",
+        )
+
+        # 3. Unadjusted ghost footfall CPM overbilling -> 422 blocked in 15ms
+        foot_422 = evaluate_programmatic_dooh_proof_of_play_policy(
+            footfall_multiplier_applied=False,
+        )
+        self.assertFalse(foot_422.allowed)
+        self.assertEqual(foot_422.http_status, 422)
+        self.assertEqual(
+            foot_422.dooh_lane,
+            "UNADJUSTED_GHOST_FOOTFALL_CPM_OVERBILLING_BLOCKED",
+        )
+
+        # 4. Web IQ detects municipal scaffolding obstructing sightline -> 451 blocked in 310ms
+        scaf_451 = evaluate_programmatic_dooh_proof_of_play_policy(
+            webiq_sightline_and_permit_clean=False,
+        )
+        self.assertFalse(scaf_451.allowed)
+        self.assertEqual(scaf_451.http_status, 451)
+
+        # 5. Web IQ discovers weather/daypart indoor transit reallocation saving $1,850 ($8,275 net) -> 409 Confirm
+        wea_409 = evaluate_programmatic_dooh_proof_of_play_policy(
+            daypart_weather_reallocation_savings_cents=185000,
+        )
+        self.assertFalse(wea_409.allowed)
+        self.assertEqual(wea_409.http_status, 409)
+        self.assertEqual(wea_409.settled_dooh_cents, 827500)
+        self.assertEqual(wea_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["outdoor_dooh_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("outdoor-dooh-billboard-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

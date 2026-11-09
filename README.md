@@ -103,6 +103,7 @@
 - **专题 69（IDC 数据中心机柜托管 Colocation、支路 PDU 实测有功电表 Branch-Circuit kWh 与合同 PUE 封顶清算 Data Center Colocation Cabinet kW Metering, Contractual PUE Cap & Cross-Connect Mandate 架构：智能 PDU 真实电度与 PUE 冷却损耗封顶令牌 `datacenter_colo_pue_mandate_...` + Web IQ 气象湿球温度豁免与 IXP 交换中心聚合核验 vs 传统按断路器铭牌强收空转电费与老旧空调转嫁）**：**[《IDC 数据中心机柜托管（Colocation）、支路 PDU 实测有功电表（Branch-Circuit kWh）与合同 PUE 封顶清算（Data Center Colocation Cabinet kW Metering, Contractual PUE Cap & Cross-Connect Mandate）架构：智能 PDU 真实电度与 PUE 冷却损耗封顶令牌（`datacenter_colo_pue_mandate_...` + Web IQ 气象湿球温度豁免与 IXP 交换中心聚合核验）vs 传统按断路器铭牌强收空转电费与老旧空调转嫁选型与原理解析 FAQ》](docs/datacenter-colocation-pdu-kwh-pue-cap-mandate-vs-breaker-commit-overbilling-faq.md)**
 - **专题 70（大宗散装化学品 ISO 罐箱 ISO Tank Container 洗罐验真、罐底余液 Heel Residue 冲抵与危化品 ADR/IMDG 合规清算 Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate 架构：EFTCO 电子洗罐证书 e-ECD 与挂壁余料回皮扣减令牌 `chemical_isotank_cleaning_mandate_...` + Web IQ IMDG T-Code 检验库与氮封同品免洗连装核验 vs 传统凭纸质洗罐条盲付遭交叉污染报废）**：**[《大宗散装化学品 ISO 罐箱（ISO Tank Container）洗罐验真、罐底余液（Heel Residue）冲抵与危化品 ADR/IMDG 合规清算（Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate）架构：EFTCO 电子洗罐证书（e-ECD）与挂壁余料回皮扣减令牌（`chemical_isotank_cleaning_mandate_...` + Web IQ IMDG `T-Code` 检验库与氮封同品免洗连装核验）vs 传统凭纸质洗罐条盲付遭交叉污染报废选型与原理解析 FAQ》](docs/bulk-chemical-iso-tank-ecd-cleaning-heel-mandate-vs-cross-contamination-faq.md)**
 - **专题 71（汽车经销商库存融资 Automotive Dealership Floorplan Financing、车架号 VIN OBD-II/UWB 在库核验与合格证释放 Automotive Dealership Floorplan Financing, UWB/OBD-II VIN Lot-Audit & Curtailment Mandate 架构：电子车辆合格证 e-MSO 赎证锁与 OBD-II 里程/围栏遥测令牌 `auto_dealer_floorplan_mandate_...` + Web IQ NHTSA 禁售召回/水泡车核验与主机厂在途贴息套利 vs 传统人工盘库遭卖车不赎证挪用 SOT 与一车多押）**：**[《汽车经销商库存融资（Automotive Dealership Floorplan Financing）、车架号（VIN）OBD-II/UWB 在库核验与合格证释放（Automotive Dealership Floorplan Financing, UWB/OBD-II VIN Lot-Audit & Curtailment Mandate）架构：电子车辆合格证（e-MSO）赎证锁与 OBD-II 里程/围栏遥测令牌（`auto_dealer_floorplan_mandate_...` + Web IQ NHTSA 禁售召回/水泡车核验与主机厂在途贴息套利）vs 传统人工盘库遭“卖车不赎证挪用（SOT）”与一车多押选型与原理解析 FAQ》](docs/automotive-dealership-floorplan-vin-telemetry-mandate-vs-sold-out-of-trust-fraud-faq.md)**
+- **专题 72（程序化户外大屏 Programmatic DOOH Billboard 硬件级上刊证明 Proof-of-Play、光感亮度门禁与实时客流倍率 Footfall Multiplier 智能托管 vs 传统包月盲投黑屏虚报）**：**[《程序化户外大屏（Programmatic DOOH Billboard）硬件级上刊证明（Proof-of-Play）、光感亮度校验与实时客流倍率（Footfall Multiplier）智能托管 vs 传统包月盲投黑屏虚报：架构选型与第一性原理 FAQ》](docs/programmatic-dooh-billboard-proof-of-play-mandate-vs-dark-screen-flat-lease-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -245,6 +246,8 @@
 ![2026-11-09 大宗散装化学品 ISO 罐箱洗罐验真与挂壁余液清算架构一图流](assets/svg/72-bulk-chemical-iso-tank-ecd-cleaning-2026-11-09.svg)
 
 ![2026-11-09 汽车经销商库存融资车架号在库遥测与电子合格证架构一图流](assets/svg/73-automotive-dealership-floorplan-vin-audit-2026-11-09.svg)
+
+![2026-11-09 程序化户外大屏硬件级上刊证明与客流倍率智能托管架构一图流](assets/svg/74-programmatic-dooh-billboard-proof-of-play-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
