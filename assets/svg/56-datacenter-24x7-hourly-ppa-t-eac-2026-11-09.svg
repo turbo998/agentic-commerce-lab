@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg56" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#064E3B"/>
+    </linearGradient>
+    <linearGradient id="accent56" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg56)"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent56)"/>
+
+  <!-- Header -->
+  <text x="45" y="64" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">
+    ROUND 54 · AI DATA CENTER 24/7 HOURLY PPA &amp; GRANULAR T-EAC MANDATE (2026-11-09)
+  </text>
+  <text x="45" y="96" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">
+    AI 数据中心 24/7 小时级绿电直购 (PPA) 与颗粒度绿证 (T-EAC) vs 传统异地年度绿证漂绿
+  </text>
+  <text x="45" y="122" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="14">
+    同电网小时级 EnergyTag T-EAC 匹配 + 负电价 (LMP&lt;$0) 零地板保护 + Web IQ 注册局防重计与储能移峰省 $24,500 ($180k 护航)
+  </text>
+
+  <!-- Left Column: Legacy Annual Unbundled REC & Blind PPA -->
+  <rect x="45" y="142" width="535" height="365" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="45" y="142" width="535" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="65" y="166" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ❌ 传统年度非绑定绿证与盲付 PPA ($180,000 遭“半夜光伏”漂绿与负电价倒贴)
+  </text>
+
+  <rect x="65" y="196" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="220" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    1. 拿千里之外半年前的正午光伏绿证抵消凌晨 2 点火电训练 (漂绿违规)
+  </text>
+  <text x="80" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 经纪商兜售异地电网廉价年度绿证抵消智算中心夜间高碳煤电负荷
+  </text>
+  <text x="80" y="263" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 违反 GHG Protocol Scope 2 小时级匹配与欧盟 RED III 三支柱同网送达铁律
+  </text>
+
+  <rect x="65" y="294" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="318" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    2. 批发市场出现负电价 (-$28/MWh) 时仍按 $75/MWh 固定高价冤枉结算
+  </text>
+  <text x="80" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 午间风光大发导致电网节点边际电价 (LMP) 跌破零，电站本应执行经济限电或零地板
+  </text>
+  <text x="80" y="361" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 传统差价合约未挂载实时 LMP 零地板门禁，导致买方在负电价时段双倍倒贴
+  </text>
+
+  <rect x="65" y="392" width="495" height="98" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="80" y="416" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    3. 存量老旧水电无额外性 (Non-Additional) + 未用储能移峰多花 $24,500
+  </text>
+  <text x="80" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 绿证序列号在州配额池被一证两报，或电站建于 20 年前不具备 36 个月新建额外性
+  </text>
+  <text x="80" y="459" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 晚高峰高价买绿电，不知调用园区 BESS 液冷储能午充晚放可立省 $24,500
+  </text>
+
+  <!-- Right Column: 24/7 Hourly PPA & T-EAC Mandate -->
+  <rect x="605" y="142" width="550" height="365" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="605" y="142" width="550" height="38" rx="12" fill="#064E3B"/>
+  <text x="625" y="166" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ✅ 24/7 同网小时级 T-EAC 与负电价保护令牌 + Web IQ 电网网关 (推荐)
+  </text>
+
+  <rect x="625" y="196" width="510" height="84" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="640" y="220" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 1: 同电网区域 + 同一小时 EnergyTag T-EAC 刚性匹配门禁 (12ms · HTTP 403)
+  </text>
+  <text x="640" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 hourly_same_grid_teac_matched == True（物理同网+小时时间戳对齐）
+  </text>
+  <text x="640" y="263" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出异地电网或跨季节“白天光伏抵消半夜算力” → 12ms 拦截 $180,000 漂绿账单
+  </text>
+
+  <rect x="625" y="294" width="510" height="84" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+  <text x="640" y="318" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 2: 负节点边际电价 (LMP &lt; $0/MWh) 零地板与限电扣减门禁 (15ms · HTTP 422)
+  </text>
+  <text x="640" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 negative_lmp_curtailment_clause_honored == True
+  </text>
+  <text x="640" y="361" fill="#BAE6FD" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 任何在负电价时段拒不执行零地板豁免的结算单在 15ms 内触发 HTTP 422 拒付
+  </text>
+
+  <rect x="625" y="392" width="510" height="98" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="640" y="416" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 3: Microsoft Web IQ /v3/browse 注册局查重与储能套利 (310/315ms)
+  </text>
+  <text x="640" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 核验 M-RETS/PJM-GATS 唯一注销与 36 个月新建额外性：违规在 310ms 触发 HTTP 451
+  </text>
+  <text x="640" y="459" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出 BESS 储能午充晚放时移绿证可省 $24,500 ($155,500) → 315ms 触发 HTTP 409!
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Bar -->
+  <rect x="45" y="522" width="1110" height="125" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="65" y="548" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    📊 定量基准实测 (deterministic_offline_simulation · 83 Unit Tests Passing · 2,400 MWh 智算中心月度绿电 PPA $180,000)
+  </text>
+
+  <rect x="65" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EF4444"/>
+  <text x="77" y="584" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">跨网/跨时段漂绿拦截</text>
+  <text x="77" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 403 · 12 ms</text>
+  <text x="77" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">防异地年度绿证冲抵夜间煤电</text>
+
+  <rect x="282" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="294" y="584" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">负电价未豁免拒付</text>
+  <text x="294" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 422 · 15 ms</text>
+  <text x="294" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">强制执行 LMP&lt;$0 零地板条款</text>
+
+  <rect x="499" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EC4899"/>
+  <text x="511" y="584" fill="#F472B6" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">重复申报/无额外性冻结</text>
+  <text x="511" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 451 · 310 ms</text>
+  <text x="511" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">Web IQ 注册局与投产期核验</text>
+
+  <rect x="716" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#8B5CF6"/>
+  <text x="728" y="584" fill="#C4B5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">BESS 储能移峰确认</text>
+  <text x="728" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 409 · 315 ms</text>
+  <text x="728" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">立省 $24,500 ($155,500)</text>
+
+  <rect x="933" y="562" width="205" height="68" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="945" y="584" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">24/7 小时级绿证放款</text>
+  <text x="945" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 200 · 265 ms</text>
+  <text x="945" y="621" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="11">100% 小时级无碳核销 $180,000</text>
+</svg>

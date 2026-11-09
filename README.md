@@ -85,6 +85,7 @@
 - **专题 51（动力电池黑粉 Black Mass 与贵金属电子废料回收计价 Lithium Battery Black-Mass & Precious-Metal Scrap ICP-MS Assay Escrow Mandate 架构：全批混匀 ICP-MS 品位化验与金属折算系数托管令牌 `black_mass_assay_escrow_mandate_...` + Web IQ 巴塞尔危废许可与 LME 计价核验 vs 传统凭表层枪测盲付遭阴阳吨袋掺假）**：**[《动力电池黑粉（Black Mass）与贵金属电子废料回收计价（Lithium Battery Black-Mass & Precious-Metal Scrap ICP-MS Assay Escrow Mandate）架构：全批混匀 ICP-MS 品位化验与金属折算系数托管令牌（`black_mass_assay_escrow_mandate_...` + Web IQ 巴塞尔危废许可与 LME 计价核验）vs 传统凭表层枪测盲付遭“阴阳吨袋”掺假选型与原理解析 FAQ》](docs/battery-black-mass-icp-assay-escrow-mandate-vs-slag-adulteration-faq.md)**
 - **专题 52（商用音视频配乐同步授权 Sync Licensing 与 AI 克隆人声肖像权分账 Commercial Media Sync, ISRC/ISWC Dual-Clearance & SAG-AFTRA Voice-Clone Mandate 架构：录音母带 ISRC + 100% 词曲出版 ISWC 双权齐备与声音数字分身令牌 `media_sync_voice_mandate_...` + Web IQ 版权池 Songview 与 One-Stop 曲库核验 vs 传统半套版权遭全网下架）**：**[《商用音视频配乐同步授权（Sync Licensing）与 AI 克隆人声肖像权分账（Commercial Media Sync, ISRC/ISWC Dual-Clearance & SAG-AFTRA Voice-Clone Mandate）架构：录音母带（ISRC）+ 100% 词曲出版（ISWC）双权齐备与声音数字分身令牌（`media_sync_voice_mandate_...` + Web IQ 版权池 Songview 与 One-Stop 曲库核验）vs 传统半套版权遭全网下架（Sync Strike）选型与原理解析 FAQ》](docs/media-sync-licensing-isrc-iswc-voice-clone-mandate-vs-copyright-takedown-faq.md)**
 - **专题 53（应急救灾物资券与政府专项补贴发放 Humanitarian Disaster Relief & Government Grant MCC-Locked Aid Mandate 架构：跨机构零知识受灾户查重与民生必需品 MCC 白名单令牌 `disaster_relief_aid_mandate_...` + Web IQ 紧急状态反哄抬物价法与集采直供核验 vs 传统幽灵人头户冒领与奸商暴利收割）**：**[《应急救灾物资券与政府专项补贴发放（Humanitarian Disaster Relief & Government Grant MCC-Locked Aid Mandate）架构：跨机构零知识受灾户查重与民生必需品 MCC 白名单令牌（`disaster_relief_aid_mandate_...` + Web IQ 紧急状态反哄抬物价法与集采直供核验）vs 传统幽灵人头户冒领与奸商暴利收割选型与原理解析 FAQ》](docs/humanitarian-disaster-relief-mcc-aid-mandate-vs-ghost-beneficiary-gouging-faq.md)**
+- **专题 54（AI 数据中心绿电直购 PPA 与 24/7 小时级可再生能源证书 Hourly T-EAC 结算 AI Data Center 24/7 Carbon-Free Energy Hourly PPA & Granular Certificate Mandate 架构：同电网小时级绿证注销与负电价限电条款令牌 `datacenter_hourly_ppa_mandate_...` + Web IQ 电网边际电价与储能移峰核验 vs 传统异地年度绿证“半夜光伏”漂绿与负电价倒贴）**：**[《AI 数据中心绿电直购（PPA）与 24/7 小时级可再生能源证书（Hourly T-EAC / I-REC）结算（AI Data Center 24/7 Carbon-Free Energy Hourly PPA & Granular Certificate Mandate）架构：同电网小时级绿证注销与负电价限电条款令牌（`datacenter_hourly_ppa_mandate_...` + Web IQ 电网边际电价与储能移峰核验）vs 传统异地年度绿证“半夜光伏”漂绿与负电价倒贴选型与原理解析 FAQ》](docs/datacenter-24x7-hourly-ppa-t-eac-mandate-vs-annual-rec-greenwashing-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -191,6 +192,8 @@
 ![2026-11-09 商用广告配乐双权齐备与 AI 人声克隆授权架构一图流](assets/svg/54-media-sync-isrc-iswc-voice-clone-2026-11-09.svg)
 
 ![2026-11-09 应急救灾物资券与政府专项补贴 MCC 隔离架构一图流](assets/svg/55-humanitarian-disaster-relief-mcc-aid-2026-11-09.svg)
+
+![2026-11-09 AI 数据中心 24/7 小时级绿电 PPA 与颗粒度绿证 T-EAC 架构一图流](assets/svg/56-datacenter-24x7-hourly-ppa-t-eac-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

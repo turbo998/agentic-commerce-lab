@@ -4182,6 +4182,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("disaster-relief-aid-sandbox", demo_zh)
 
+    def test_datacenter_24x7_hourly_ppa_t_eac_mandate_vs_annual_rec_greenwashing_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_datacenter_24x7_hourly_ppa_teac_policy,
+        )
+
+        # 1. 100% same-grid hourly T-EACs + negative-LMP zero-floor + clean registry -> 200 settled ($180,000)
+        commit_ok = evaluate_datacenter_24x7_hourly_ppa_teac_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ppa_cents, 18000000)
+
+        # 2. Cross-grid or annual unbundled REC mismatch ("nighttime solar") -> 403 blocked in 12ms
+        grid_403 = evaluate_datacenter_24x7_hourly_ppa_teac_policy(
+            hourly_same_grid_teac_matched=False,
+        )
+        self.assertFalse(grid_403.allowed)
+        self.assertEqual(grid_403.http_status, 403)
+        self.assertEqual(
+            grid_403.ppa_lane,
+            "TEMPORAL_OR_GRID_DELIVERABILITY_MISMATCH_BLOCKED",
+        )
+
+        # 3. Unadjusted billing during negative wholesale LMP (-$28/MWh) hours -> 422 blocked in 15ms
+        lmp_422 = evaluate_datacenter_24x7_hourly_ppa_teac_policy(
+            negative_lmp_curtailment_clause_honored=False,
+        )
+        self.assertFalse(lmp_422.allowed)
+        self.assertEqual(lmp_422.http_status, 422)
+        self.assertEqual(
+            lmp_422.ppa_lane,
+            "NEGATIVE_LMP_ZERO_FLOOR_CLAUSE_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects double-counted M-RETS serial or non-additional legacy hydro -> 451 blocked in 310ms
+        reg_451 = evaluate_datacenter_24x7_hourly_ppa_teac_policy(
+            webiq_rec_registry_and_additionality_clean=False,
+        )
+        self.assertFalse(reg_451.allowed)
+        self.assertEqual(reg_451.http_status, 451)
+
+        # 5. Web IQ discovers BESS solar trough-to-peak time-shift saving $24,500 ($155,500 net) -> 409 Confirm
+        bess_409 = evaluate_datacenter_24x7_hourly_ppa_teac_policy(
+            bess_storage_timeshift_savings_cents=2450000,
+        )
+        self.assertFalse(bess_409.allowed)
+        self.assertEqual(bess_409.http_status, 409)
+        self.assertEqual(bess_409.settled_ppa_cents, 15550000)
+        self.assertEqual(bess_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["datacenter_hourly_ppa_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("datacenter-hourly-ppa-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
