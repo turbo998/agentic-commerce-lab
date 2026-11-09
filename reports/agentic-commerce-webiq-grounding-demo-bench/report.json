@@ -360,6 +360,11 @@
     "ivd_settlement_latency_ms": 265,
     "westgard_qc_block_latency_ms": 12
   },
+  "mice_hotel_attrition_guards": {
+    "all_passed": true,
+    "folio_settlement_latency_ms": 265,
+    "attrition_double_dip_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

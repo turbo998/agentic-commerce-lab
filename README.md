@@ -87,6 +87,7 @@
 - **专题 53（应急救灾物资券与政府专项补贴发放 Humanitarian Disaster Relief & Government Grant MCC-Locked Aid Mandate 架构：跨机构零知识受灾户查重与民生必需品 MCC 白名单令牌 `disaster_relief_aid_mandate_...` + Web IQ 紧急状态反哄抬物价法与集采直供核验 vs 传统幽灵人头户冒领与奸商暴利收割）**：**[《应急救灾物资券与政府专项补贴发放（Humanitarian Disaster Relief & Government Grant MCC-Locked Aid Mandate）架构：跨机构零知识受灾户查重与民生必需品 MCC 白名单令牌（`disaster_relief_aid_mandate_...` + Web IQ 紧急状态反哄抬物价法与集采直供核验）vs 传统幽灵人头户冒领与奸商暴利收割选型与原理解析 FAQ》](docs/humanitarian-disaster-relief-mcc-aid-mandate-vs-ghost-beneficiary-gouging-faq.md)**
 - **专题 54（AI 数据中心绿电直购 PPA 与 24/7 小时级可再生能源证书 Hourly T-EAC 结算 AI Data Center 24/7 Carbon-Free Energy Hourly PPA & Granular Certificate Mandate 架构：同电网小时级绿证注销与负电价限电条款令牌 `datacenter_hourly_ppa_mandate_...` + Web IQ 电网边际电价与储能移峰核验 vs 传统异地年度绿证“半夜光伏”漂绿与负电价倒贴）**：**[《AI 数据中心绿电直购（PPA）与 24/7 小时级可再生能源证书（Hourly T-EAC / I-REC）结算（AI Data Center 24/7 Carbon-Free Energy Hourly PPA & Granular Certificate Mandate）架构：同电网小时级绿证注销与负电价限电条款令牌（`datacenter_hourly_ppa_mandate_...` + Web IQ 电网边际电价与储能移峰核验）vs 传统异地年度绿证“半夜光伏”漂绿与负电价倒贴选型与原理解析 FAQ》](docs/datacenter-24x7-hourly-ppa-t-eac-mandate-vs-annual-rec-greenwashing-faq.md)**
 - **专题 55（医院检验科体外诊断试剂 IVD Reagent 批次质控与效期托管 Diagnostic Clinical Lab IVD Reagent Lot-to-Lot QC Calibration Mandate 架构：LIS 仪器西格玛质控 Westgard 1_3s/2_2s 曲线与 UDI 效期令牌 `clinical_ivd_reagent_mandate_...` + Web IQ FDA 召回通报与 GPO 锁批集采核验 vs 传统盲签付款买回临期/失控试剂致全院误诊）**：**[《医院检验科体外诊断试剂（IVD Reagent）批次质控与效期托管（Diagnostic Clinical Lab IVD Reagent Lot-to-Lot QC Calibration Mandate）架构：LIS 仪器西格玛质控（Westgard `1_3s`/`2_2s`）曲线与 UDI 效期令牌（`clinical_ivd_reagent_mandate_...` + Web IQ FDA 召回通报与 GPO 锁批集采核验）vs 传统盲签付款买回临期/失控试剂致全院误诊选型与原理解析 FAQ》](docs/clinical-lab-ivd-reagent-lot-qc-mandate-vs-expired-calibration-failure-faq.md)**
+- **专题 56（企业大型会展 MICE 与酒店团房损耗率 Attrition 及餐饮保底清算 Corporate Offsite & MICE Hotel Room-Block Attrition & Resold-Room Mitigation Mandate 架构：PMS 客房转售冲抵与 AV 场内垄断加价剔除令牌 `mice_hotel_attrition_mandate_...` + Web IQ 实时满房取证与外部 AV 进场核验 vs 传统盲付 80% 空房违约金一房两吃与 26% 隐性行政费）**：**[《企业大型会展（MICE）与酒店团房损耗率（Attrition）及餐饮保底（F&B Minimum）清算（Corporate Offsite & MICE Hotel Room-Block Attrition & Resold-Room Mitigation Mandate）架构：PMS 客房转售冲抵（Mitigation Credit）与 AV 场内垄断加价剔除令牌（`mice_hotel_attrition_mandate_...` + Web IQ 实时满房取证与外部 AV 进场核验）vs 传统盲付 80% 空房违约金（Double-Dipping）与 26% 隐性行政费选型与原理解析 FAQ》](docs/corporate-mice-hotel-room-block-attrition-mandate-vs-double-dip-penalty-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -197,6 +198,8 @@
 ![2026-11-09 AI 数据中心 24/7 小时级绿电 PPA 与颗粒度绿证 T-EAC 架构一图流](assets/svg/56-datacenter-24x7-hourly-ppa-t-eac-2026-11-09.svg)
 
 ![2026-11-09 医院检验科体外诊断试剂批间质控与效期托管架构一图流](assets/svg/57-clinical-lab-ivd-reagent-lot-qc-2026-11-09.svg)
+
+![2026-11-09 企业大型会展与酒店团房损耗率清算架构一图流](assets/svg/58-corporate-mice-hotel-attrition-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

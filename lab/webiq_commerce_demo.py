@@ -9446,6 +9446,93 @@ def evaluate_clinical_lab_ivd_reagent_lot_qc_policy(
     )
 
 
+@dataclass(frozen=True)
+class CorporateMICEHotelAttritionVerdict:
+    allowed: bool
+    http_status: int
+    mice_lane: str
+    settled_folio_cents: int
+    outside_av_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_corporate_mice_hotel_attrition_policy(
+    *,
+    master_folio_cents: int = 8500000,
+    resold_room_mitigation_credit_applied: bool = True,
+    contracted_av_and_service_fee_cap_honored: bool = True,
+    webiq_hotel_occupancy_and_block_audit_clean: bool = True,
+    outside_av_production_savings_cents: int = 0,
+) -> CorporateMICEHotelAttritionVerdict:
+    """Evaluate hotel room-block attrition resold-room mitigation credit & 30% variable housekeeping cost deduction, BEO contracted AV/service-fee cap, Web IQ event-night sold-out snapshot & outside-block attendee audit, and certified third-party AV production arbitrage."""
+
+    # 1. Unmitigated Room-Block Attrition Double-Dipping -> HTTP 403
+    if not resold_room_mitigation_credit_applied:
+        return CorporateMICEHotelAttritionVerdict(
+            False,
+            403,
+            "UNMITIGATED_ROOM_ATTRITION_DOUBLE_DIP_BLOCKED",
+            0,
+            0,
+            "master_folio_blocked_for_billing_attrition_without_resold_room_mitigation_or_net_cost_deduction",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Uncontracted 26% In-House AV Admin Fee or Compounded Service-Fee Tax -> HTTP 422
+    if not contracted_av_and_service_fee_cap_honored:
+        return CorporateMICEHotelAttritionVerdict(
+            False,
+            422,
+            "UNCONTRACTED_AV_MONOPOLY_OR_COMPOUND_FEE_BLOCKED",
+            0,
+            0,
+            "folio_rejected_due_to_uncontracted_26pct_av_admin_fee_or_tax_on_fee_compounding",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Hotel Sold-Out Inventory Proof or Uncredited Outside-Block OTA Attendees via Web IQ -> HTTP 451
+    if not webiq_hotel_occupancy_and_block_audit_clean:
+        return CorporateMICEHotelAttritionVerdict(
+            False,
+            451,
+            "SOLD_OUT_INVENTORY_OR_OUTSIDE_BLOCK_AUDIT_HOLD",
+            0,
+            0,
+            "webiq_detected_event_night_sold_out_inventory_or_uncredited_ota_attendee_stays",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Certified Outside-AV Production Waiver Arbitrage -> HTTP 409 Confirm
+    if outside_av_production_savings_cents > 0:
+        return CorporateMICEHotelAttritionVerdict(
+            False,
+            409,
+            "CERTIFIED_OUTSIDE_AV_PRODUCTION_ARBITRAGE_CONFIRM",
+            master_folio_cents - outside_av_production_savings_cents,
+            outside_av_production_savings_cents,
+            "webiq_found_certified_outside_av_staging_provider_saving_14500_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Net Room Pick-Up + Resold Mitigation + Capped BEO Fees -> Settled
+    return CorporateMICEHotelAttritionVerdict(
+        True,
+        200,
+        "VERIFIED_MICE_MASTER_FOLIO_SETTLED",
+        master_folio_cents,
+        0,
+        "resold_room_mitigation_and_beo_av_fee_caps_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -12101,6 +12188,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "westgard_qc_block_latency_ms": ivd_qc_403.latency_ms,
     }
 
+    mice_commit_ok = evaluate_corporate_mice_hotel_attrition_policy()
+    mice_dip_403 = evaluate_corporate_mice_hotel_attrition_policy(
+        resold_room_mitigation_credit_applied=False,
+    )
+    mice_av_422 = evaluate_corporate_mice_hotel_attrition_policy(
+        contracted_av_and_service_fee_cap_honored=False,
+    )
+    mice_sold_451 = evaluate_corporate_mice_hotel_attrition_policy(
+        webiq_hotel_occupancy_and_block_audit_clean=False,
+    )
+    mice_out_409 = evaluate_corporate_mice_hotel_attrition_policy(
+        outside_av_production_savings_cents=1450000,
+    )
+    mice_hotel_attrition_guards = {
+        "all_passed": (
+            mice_commit_ok.allowed
+            and mice_commit_ok.settled_folio_cents == 8500000
+            and not mice_dip_403.allowed
+            and mice_dip_403.http_status == 403
+            and not mice_av_422.allowed
+            and mice_av_422.http_status == 422
+            and not mice_sold_451.allowed
+            and mice_sold_451.http_status == 451
+            and not mice_out_409.allowed
+            and mice_out_409.action_pill == "Confirm"
+        ),
+        "folio_settlement_latency_ms": mice_commit_ok.latency_ms,
+        "attrition_double_dip_block_latency_ms": mice_dip_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -12169,6 +12286,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "disaster_relief_aid_guards": disaster_relief_aid_guards,
         "datacenter_hourly_ppa_guards": datacenter_hourly_ppa_guards,
         "clinical_ivd_reagent_guards": clinical_ivd_reagent_guards,
+        "mice_hotel_attrition_guards": mice_hotel_attrition_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -16076,6 +16194,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ivd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Corporate Offsite & MICE Hotel Room-Block Attrition Mandate Sandbox (Round 56 FAQ Companion) -->
+      <div class="finops-box" id="mice-hotel-attrition-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mice-title">🏨 企业大型会展 (MICE) 与酒店团房损耗率 (Attrition) 清算架构：转售冲抵与 AV 杂费封顶令牌 (mice_hotel_attrition_mandate_...) vs 一房两吃违约金决策器 (Round 56 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 300 间夜企业峰会酒店主账单 ($85,000.00)、转售客房减损冲抵、驻场 AV 杂费封顶与 Web IQ 满房快照/外部 AV 场景 (MICE Master Folio Scenario):</span></label>
+          <select id="mice-select" onchange="updateMICEHotelAttritionSandbox()">
+            <option value="mice_commit_ok">⚡ 已冲抵转售散客与团外 OTA 间夜 + 餐饮/AV 服务费严格按主合同封顶：265ms 自动完成主账单清算 $85,000.00! (Act automatically)</option>
+            <option value="mice_dip_403">🛑 “一房两吃”空房违约金拦截：酒店已将未住满团房高价转卖散客，却仍强收 $12,000 空房损耗违约金 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="mice_av_422">🚨 驻场 AV 26% 隐性行政费拦截：擅自加收合同外 26% 会务技术行政管理费、天价吊点费或服务费二次计税 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="mice_sold_451">🛑 会议当晚官网满房或漏算团外嘉宾冻结：Web IQ /v3/browse 证实酒店当晚 100% 满房或漏计 35 位通过携程/Expedia 订房的参会人 → 310ms 触发 HTTP 451!</option>
+            <option value="mice_out_409">🧑‍⚖️ Web IQ 检出启用外部认证舞美 AV 制作商进场替代酒店驻场垄断报价可立省 $14,500.00 (净付 $70,500.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="mice-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -16570,6 +16706,7 @@ function renderAll() {{
   updateDisasterReliefAidSandbox();
   updateDatacenterHourlyPPASandbox();
   updateClinicalIVDReagentSandbox();
+  updateMICEHotelAttritionSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19566,6 +19703,55 @@ function updateClinicalIVDReagentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ LIS Westgard 批间质控通过 + UDI 效期 &gt;=180 天单一母批号 + 无召回全绿：已自动放款 (VERIFIED_CLINICAL_IVD_LOT_QC_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零误诊失控风险、零临期报废</strong>：高敏发光免疫试剂批次已完成结算并自动生成 ISO 15189 / CAP 批间比对电子审计档案（<code>$42,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMICEHotelAttritionSandbox() {{
+  var selEl = document.getElementById("mice-select");
+  var outEl = document.getElementById("mice-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "mice_dip_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNMITIGATED_ROOM_ATTRITION_DOUBLE_DIP_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "主账单审计检出酒店未扣除已转售给散客的客房收入或未剔除 30% 未入住客房边际清洁成本（<code>resold_room_mitigation_credit_applied == False</code>），企图一房两吃强收 <code>$12,000.00</code> 空房违约金。网关在 <code>12ms</code> 内硬阻断 <code>$85,000.00</code> 主账单结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mice_av_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNCONTRACTED_AV_MONOPOLY_OR_COMPOUND_FEE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "驻场音视频（In-House AV）账单擅自叠加合同外 <code>26% Event Technology 行政管理费</code>、垄断吊点接电费或对服务费做二次复利计税（<code>contracted_av_and_service_fee_cap_honored == False</code>）。网关在 <code>15ms</code> 内当场拒付违规加点！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mice_sold_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SOLD_OUT_INVENTORY_OR_OUTSIDE_BLOCK_AUDIT_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 调取会议当晚酒店公开预订页快照证实酒店已 <code>100% 满房 (Sold Out)</code>，且 PSI 名单比对发现 35 位通过携程/Expedia 订房的参会人未计入团房完成量，立即冻结空房违约金行项！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mice_out_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CERTIFIED_OUTSIDE_AV_PRODUCTION_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对同城认证第三方舞美 AV 制作商报价，发现启用合同中的外部 AV 进场免责条款替代酒店驻场垄断设备单可立省 <code>$14,500.00</code>（峰会净支出从 <code>$85,000.00</code> 降至 <code>$70,500.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 转售客房冲抵 + 团外参会名单合并 + BEO 服务费封顶全绿：已自动放款 (VERIFIED_MICE_MASTER_FOLIO_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零一房两吃违约金、零 AV 隐性杂费</strong>：300 间夜企业峰会主账单已完成净额清算并生成 APEX / PCMA 电子审计档案（<code>$85,000.00</code>）！" +
     "</div>";
 }}
 

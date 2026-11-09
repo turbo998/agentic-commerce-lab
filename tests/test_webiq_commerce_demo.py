@@ -4294,6 +4294,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("clinical-ivd-reagent-sandbox", demo_zh)
 
+    def test_corporate_mice_hotel_room_block_attrition_mandate_vs_double_dip_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_corporate_mice_hotel_attrition_policy,
+        )
+
+        # 1. Resold-room mitigation applied + capped BEO fees + clean occupancy audit -> 200 settled ($85,000)
+        commit_ok = evaluate_corporate_mice_hotel_attrition_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_folio_cents, 8500000)
+
+        # 2. Unmitigated room-block attrition double-dipping -> 403 blocked in 12ms
+        dip_403 = evaluate_corporate_mice_hotel_attrition_policy(
+            resold_room_mitigation_credit_applied=False,
+        )
+        self.assertFalse(dip_403.allowed)
+        self.assertEqual(dip_403.http_status, 403)
+        self.assertEqual(
+            dip_403.mice_lane,
+            "UNMITIGATED_ROOM_ATTRITION_DOUBLE_DIP_BLOCKED",
+        )
+
+        # 3. Uncontracted 26% in-house AV admin fee or compounded service fee -> 422 blocked in 15ms
+        av_422 = evaluate_corporate_mice_hotel_attrition_policy(
+            contracted_av_and_service_fee_cap_honored=False,
+        )
+        self.assertFalse(av_422.allowed)
+        self.assertEqual(av_422.http_status, 422)
+        self.assertEqual(
+            av_422.mice_lane,
+            "UNCONTRACTED_AV_MONOPOLY_OR_COMPOUND_FEE_BLOCKED",
+        )
+
+        # 4. Web IQ proves hotel was sold out on event nights or omitted OTA attendees -> 451 blocked in 310ms
+        sold_451 = evaluate_corporate_mice_hotel_attrition_policy(
+            webiq_hotel_occupancy_and_block_audit_clean=False,
+        )
+        self.assertFalse(sold_451.allowed)
+        self.assertEqual(sold_451.http_status, 451)
+
+        # 5. Web IQ discovers certified outside AV production saving $14,500 ($70,500 net) -> 409 Confirm
+        out_409 = evaluate_corporate_mice_hotel_attrition_policy(
+            outside_av_production_savings_cents=1450000,
+        )
+        self.assertFalse(out_409.allowed)
+        self.assertEqual(out_409.http_status, 409)
+        self.assertEqual(out_409.settled_folio_cents, 7050000)
+        self.assertEqual(out_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["mice_hotel_attrition_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("mice-hotel-attrition-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
