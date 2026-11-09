@@ -415,6 +415,11 @@
     "wastewater_settlement_latency_ms": 265,
     "grab_sample_block_latency_ms": 12
   },
+  "aviation_acmi_guards": {
+    "all_passed": true,
+    "acmi_settlement_latency_ms": 265,
+    "aog_mgbh_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

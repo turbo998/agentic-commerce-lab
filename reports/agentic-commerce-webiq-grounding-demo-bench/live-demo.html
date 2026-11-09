@@ -1998,6 +1998,24 @@
         <div id="ww-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Airline ACMI Wet-Lease Block-Hour & AOG Mandate Sandbox (Round 67 FAQ Companion) -->
+      <div class="finops-box" id="aviation-acmi-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-acmi-title">✈️ 商业航空飞机湿租 (ACMI) 轮挡小时与 AOG 停场扣减架构：ACARS OOOI 与保底折减令牌 (aviation_acmi_wetlease_mandate_...) vs 趴窝强收保底费决策器 (Round 67 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 宽体机月度 100 轮挡小时 ACMI 湿租账单 ($450,000.00)、出租方 AOG 保底折减、ACARS OOOI 轮挡对齐与 Web IQ IOSA/潮租场景 (Aviation ACMI Scenario):</span></label>
+          <select id="acmi-select" onchange="updateAviationACMISandbox()">
+            <option value="acmi_commit_ok">⚡ ACARS OOOI 硬件轮挡分钟 100% 对齐 + 已按比例核减 AOG 不可用天数 + IOSA/EU261 合规：265ms 自动放款 $450,000.00! (Act automatically)</option>
+            <option value="acmi_aog_403">🛑 出租方飞机故障趴窝 (AOG 停场 6 天) 仍强收 100h 保底费拦截：实际仅飞 72 小时却未核减保底 MGBH → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="acmi_oooi_422">🚨 手写飞行日志虚报“撤轮挡时间”多收 $83,250 拦截：在廊桥等待空管放行松手刹前提前记滑出，虚增 18.5 小时 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="acmi_iosa_451">🛑 IOSA 安全审计逾期或拒赔欧盟 EU261 延误款冻结：Web IQ /v3/browse 检出湿租方未冲抵因 AOG 导致的 $38,000 旅客法定赔偿 → 310ms 触发 HTTP 451!</option>
+            <option value="acmi_ami_409">🧑‍⚖️ Web IQ 检出切换为潮租 (Damp Lease / AMI 自派本航司客舱乘务员) 省去外籍组五星酒店与驻外津贴可月省 $52,000.00 (净付 $398,000.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="acmi-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2503,6 +2521,7 @@ function renderAll() {
   updateDiamondGIAKimberleySandbox();
   updateLegalLEDESUTBMSSandbox();
   updateIndustrialWastewaterSandbox();
+  updateAviationACMISandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -6038,6 +6057,55 @@ function updateIndustrialWastewaterSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 24h 流量加权复合 COD 核验通过 + 28% 冷却蒸发已核减 + EPA NPDES 合规：已自动放款 (VERIFIED_WASTEWATER_COMPOSITE_TELEMETRY_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零洗罐瞬时抓样冤枉罚单、零水蒸气排污费</strong>：月度工业污水处理账单已完成净额清算并生成 ISO 14046 水足迹审计报告（<code>$54,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAviationACMISandbox() {
+  var selEl = document.getElementById("acmi-select");
+  var outEl = document.getElementById("acmi-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "acmi_aog_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LESSOR_AOG_UNADJUSTED_MGBH_SHORTFALL_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "eTechLog 与运控日志检出湿租方飞机因自家发动机引气活门故障（<code>IATA Delay Code 41</code>）停场（AOG）6 天导致全月仅飞 <code>72 轮挡小时</code>，但账单未按日比例核减 100h 保底工时（<code>aog_lessor_fault_mgbh_reduction_applied == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$450,000.00</code> 霸王保底账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "acmi_oooi_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MANUAL_LOGBOOK_PADDING_OR_ACARS_OOOI_MISMATCH_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "手写飞行日志在舱门未关或停留刹车（Parking Brake）释放前就提前起算 <code>Block-Out</code>，比飞机 <code>ARINC 633 ACARS OOOI</code> 硬件传感器报文虚增了 <code>18.5 小时 ($83,250)</code>（<code>acars_oooi_block_time_reconciled == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "acmi_iosa_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IOSA_SAFETY_SUSPENSION_OR_UNINDEMNIFIED_EU261_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 IATA IOSA 安全注册名录与欧盟 <code>EU 261/2004</code> 延误理赔追偿台账，发现湿租方尚未冲抵因其机械故障引发的 <code>$38,000</code> 旅客法定赔偿与替飞调机费，立即冻结租金结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "acmi_ami_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DAMP_LEASE_AMI_CABIN_CREW_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对全球干湿租运力指数，发现将全套湿租（ACMI）切换为 <code>潮租 (Damp Lease / AMI，由承租航司自派客舱乘务员)</code> 可省去外籍乘务组五星酒店与驻外津贴立省 <code>$52,000.00</code>（月度净支出从 <code>$450,000.00</code> 降至 <code>$398,000.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ACARS OOOI 硬件轮挡分钟 100% 吻合 + AOG 保底已核减 + IOSA/EU261 合规：已自动放款 (VERIFIED_AVIATION_ACMI_OOOI_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零趴窝空租冤枉费、零手写日志水分</strong>：宽体机月度 100 轮挡小时 ACMI 湿租账单已完成精确清算并归档（<code>$450,000.00</code>）！" +
     "</div>";
 }
 

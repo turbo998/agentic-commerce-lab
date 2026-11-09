@@ -4910,6 +4910,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("industrial-wastewater-sandbox", demo_zh)
 
+    def test_commercial_airline_acmi_wet_lease_block_hour_mandate_vs_aog_guaranteed_minimum_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_airline_acmi_wet_lease_policy,
+        )
+
+        # 1. Pro-rata AOG MGBH + ACARS OOOI block hours + clean IOSA/EU261 -> 200 settled ($450,000)
+        commit_ok = evaluate_commercial_airline_acmi_wet_lease_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_acmi_cents, 45000000)
+
+        # 2. Unadjusted MGBH billed during 6-day lessor-fault AOG grounding -> 403 blocked in 12ms
+        aog_403 = evaluate_commercial_airline_acmi_wet_lease_policy(
+            aog_lessor_fault_mgbh_reduction_applied=False,
+        )
+        self.assertFalse(aog_403.allowed)
+        self.assertEqual(aog_403.http_status, 403)
+        self.assertEqual(
+            aog_403.acmi_lane,
+            "LESSOR_AOG_UNADJUSTED_MGBH_SHORTFALL_BLOCKED",
+        )
+
+        # 3. Handwritten pilot logbook padding vs ACARS OOOI telemetry -> 422 blocked in 15ms
+        oooi_422 = evaluate_commercial_airline_acmi_wet_lease_policy(
+            acars_oooi_block_time_reconciled=False,
+        )
+        self.assertFalse(oooi_422.allowed)
+        self.assertEqual(oooi_422.http_status, 422)
+        self.assertEqual(
+            oooi_422.acmi_lane,
+            "MANUAL_LOGBOOK_PADDING_OR_ACARS_OOOI_MISMATCH_BLOCKED",
+        )
+
+        # 4. Web IQ detects lapsed IOSA audit or unindemnified EU261 claims -> 451 blocked in 310ms
+        iosa_451 = evaluate_commercial_airline_acmi_wet_lease_policy(
+            webiq_iosa_registry_and_eu261_indemnity_clean=False,
+        )
+        self.assertFalse(iosa_451.allowed)
+        self.assertEqual(iosa_451.http_status, 451)
+
+        # 5. Web IQ discovers AMI damp-lease cabin-crew conversion saving $52,000 ($398,000 net) -> 409 Confirm
+        ami_409 = evaluate_commercial_airline_acmi_wet_lease_policy(
+            damp_lease_ami_crew_savings_cents=5200000,
+        )
+        self.assertFalse(ami_409.allowed)
+        self.assertEqual(ami_409.http_status, 409)
+        self.assertEqual(ami_409.settled_acmi_cents, 39800000)
+        self.assertEqual(ami_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aviation_acmi_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aviation-acmi-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
