@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg77" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#17110b"/>
+      <stop offset="50%" stop-color="#291d12"/>
+      <stop offset="100%" stop-color="#362415"/>
+    </linearGradient>
+    <linearGradient id="accent77" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg77)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#18130e" stroke="#f97316" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent77)"/>
+
+  <text x="60" y="72" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 75 · MINING CONCENTRATE OFFTAKE, SMELTER TC/RC &amp; UMPIRE ASSAY MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">铜金精矿包销长协、冶炼加工费 TC/RC 与有害杂质仲裁化验托管 vs 暂定发票超付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Dry Metric Ton (DMT) Moisture Deduction + Pay-Metal TC/RC + As/Hg Penalty + Umpire Assay vs. 90% Provisional Wire</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#261214" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统装港提单 90% 暂定发票盲付模式 (Provisional Overpay)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 湿吨当干吨结算：未扣减 9.5% 结晶与表面水分 (H2O)，把几百吨海水当铜精矿买单</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 装港化验品位虚高：卖方自检铜品位报 28.5%（到港实测仅 24.8%），暂定款超付难追回</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 高砷/高汞有害元素拒收：砷 (As) &gt; 0.50% 触犯环保进口红线，整船精矿在目的港被退运</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 作价期 (QP) 逆向选择欺诈：贸易商在铜价暴跌后事后篡改 M+1 / M+3 点价月占便宜</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#361117" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型大宗矿产贸易与冶炼厂采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">冶炼厂凭装港单证预付 $480,000 采购铜精矿，到港发现水分虚低 3%、铜品位</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">虚高 2.4%，且砷含量超 0.35% 未扣杂质罚金 → 终结发票倒挂亏损 $68,500</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 装港品位注水拦截：0% | • 高砷环保退运预警：0% | • 仲裁结算周期：90 天</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0f231d" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 干基吨 DMT + TC/RC 扣减 + 杂质罚金 + 仲裁化验托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 水尺计重与干基吨 (DMT) 强制换算：SGS/AHK 烘箱水分扣减 + TML 适运水分极限门禁</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 计价金属与 TC/RC 扣减公式：自动执行 96.5% 回收率扣减与粗炼/精炼费 ($80/t &amp; 8c/lb)</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 有害元素阶梯罚金与禁运红线：As &gt; 0.20% 自动按每 0.1% 扣罚，As &gt; 0.50% 直接 451 拒收</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 双盲分样与仲裁化验池 (Umpire Assay)：买卖偏差 &gt; 0.3% 自动留存 15% 尾款等仲裁实验室裁决</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e22" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 拦截未扣水分湿吨发票与品位注水；15ms 强制扣除 TC/RC 与高砷杂质罚金；</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">Web IQ 保税混矿配矿套利直接消除高砷罚款并省 $46,000.00（净付 $434,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 暂定款倒挂风险：0% | • 高砷退运拦截率：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#211a14" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#f97316" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">有色金属精矿采购 Agent 绝不能凭装港卖方单方化验付 90%！必须绑定【DMT 干重 + TC/RC 与杂质扣减 + 仲裁化验留存】门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_mining_concentrate_offtake_tcrc_policy`) · LME &amp; IMSBC Code · 2026-11-09</text>
+</svg>

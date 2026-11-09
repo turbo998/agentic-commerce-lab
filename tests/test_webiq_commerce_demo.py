@@ -5359,6 +5359,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("fine-art-provenance-sandbox", demo_zh)
 
+    def test_mining_concentrate_offtake_tc_rc_umpire_assay_mandate_vs_provisional_overpayment_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_mining_concentrate_offtake_tcrc_policy,
+        )
+
+        # 1. Verified DMT moisture deducted + TC/RC & penalties applied + umpire escrow -> 200 OK ($480,000)
+        commit_ok = evaluate_mining_concentrate_offtake_tcrc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_mining_cents, 48000000)
+
+        # 2. Wet-ton billing without H2O deduction or load-port assay inflation -> 403 blocked in 12ms
+        wet_403 = evaluate_mining_concentrate_offtake_tcrc_policy(
+            dmt_moisture_and_umpire_assay_verified=False,
+        )
+        self.assertFalse(wet_403.allowed)
+        self.assertEqual(wet_403.http_status, 403)
+        self.assertEqual(
+            wet_403.mining_lane,
+            "WET_TON_MOISTURE_OR_LOAD_PORT_ASSAY_INFLATION_BLOCKED",
+        )
+
+        # 3. Omitted smelter TC/RC or undeducted arsenic penalty -> 422 blocked in 15ms
+        tcrc_422 = evaluate_mining_concentrate_offtake_tcrc_policy(
+            tcrc_and_penalty_elements_deducted=False,
+        )
+        self.assertFalse(tcrc_422.allowed)
+        self.assertEqual(tcrc_422.http_status, 422)
+        self.assertEqual(
+            tcrc_422.mining_lane,
+            "OMITTED_SMELTER_TCRC_OR_IMPURITY_PENALTY_BLOCKED",
+        )
+
+        # 4. Web IQ detects Arsenic >0.50% customs ban or IMSBC TML breach -> 451 blocked in 310ms
+        ars_451 = evaluate_mining_concentrate_offtake_tcrc_policy(
+            webiq_customs_arsenic_and_imsbc_tml_clean=False,
+        )
+        self.assertFalse(ars_451.allowed)
+        self.assertEqual(ars_451.http_status, 451)
+
+        # 5. Web IQ discovers bonded port 1:2 clean-concentrate blending saving $46,000 ($434,000 net) -> 409 Confirm
+        bld_409 = evaluate_mining_concentrate_offtake_tcrc_policy(
+            bonded_blending_hub_savings_cents=4600000,
+        )
+        self.assertFalse(bld_409.allowed)
+        self.assertEqual(bld_409.http_status, 409)
+        self.assertEqual(bld_409.settled_mining_cents, 43400000)
+        self.assertEqual(bld_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["mining_offtake_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("mining-offtake-tcrc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
