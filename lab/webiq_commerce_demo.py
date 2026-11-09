@@ -10664,6 +10664,93 @@ def evaluate_datacenter_colocation_pdu_pue_policy(
     )
 
 
+@dataclass(frozen=True)
+class BulkChemicalISOTankCleaningVerdict:
+    allowed: bool
+    http_status: int
+    isotank_lane: str
+    settled_isotank_cents: int
+    nitrogen_reload_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+    *,
+    isotank_turn_cents: int = 3800000,
+    eftco_eecd_and_prior_cargo_clean_verified: bool = True,
+    heel_residue_tare_and_disposal_reconciled: bool = True,
+    webiq_imdg_tcode_and_csc_hydro_test_clean: bool = True,
+    dedicated_nitrogen_reload_savings_cents: int = 0,
+) -> BulkChemicalISOTankCleaningVerdict:
+    """Evaluate cryptographic EFTCO e-ECD (valve disassembly E55 & VOC=0) & Prior-3-Cargo whitelist, post-discharge 420kg heel residue tare credit & hazmat manifest, Web IQ 2.5-year CSC hydro test & UN IMDG T-Code check, and dedicated 1.5-bar nitrogen-blanket reload arbitrage."""
+
+    # 1. Prohibited Prior Cargo or Missing EFTCO e-ECD Valve-Wash Proof -> HTTP 403
+    if not eftco_eecd_and_prior_cargo_clean_verified:
+        return BulkChemicalISOTankCleaningVerdict(
+            False,
+            403,
+            "PRIOR_CARGO_CONTAMINATION_OR_MISSING_EFTCO_EECD_BLOCKED",
+            0,
+            0,
+            "isotank_settlement_blocked_due_to_missing_eftco_eecd_or_incompatible_prior_3_cargo_history",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Uncredited 420kg Clinging Heel Residue Tare or Phantom Disposal Fee -> HTTP 422
+    if not heel_residue_tare_and_disposal_reconciled:
+        return BulkChemicalISOTankCleaningVerdict(
+            False,
+            422,
+            "UNCREDITED_TANK_HEEL_RESIDUE_OR_PHANTOM_DISPOSAL_BLOCKED",
+            0,
+            0,
+            "invoice_rejected_for_uncredited_post_discharge_heel_tare_or_unmanifested_disposal_fee",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Expired 2.5-Year CSC Hydrostatic Test or Wrong UN IMDG T-Code via Web IQ -> HTTP 451
+    if not webiq_imdg_tcode_and_csc_hydro_test_clean:
+        return BulkChemicalISOTankCleaningVerdict(
+            False,
+            451,
+            "EXPIRED_CSC_HYDRO_TEST_OR_IMDG_TCODE_VIOLATION_HOLD",
+            0,
+            0,
+            "webiq_detected_expired_2_5yr_csc_hydro_inspection_or_illegal_t11_bottom_outlet_for_t14_cargo",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Dedicated 1.5-Bar Nitrogen-Blanket Reload Arbitrage -> HTTP 409 Confirm
+    if dedicated_nitrogen_reload_savings_cents > 0:
+        return BulkChemicalISOTankCleaningVerdict(
+            False,
+            409,
+            "DEDICATED_NITROGEN_BLANKET_RELOAD_ARBITRAGE_CONFIRM",
+            isotank_turn_cents - dedicated_nitrogen_reload_savings_cents,
+            dedicated_nitrogen_reload_savings_cents,
+            "webiq_found_dedicated_nitrogen_blanket_same_product_reload_saving_5800_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified EFTCO e-ECD + Heel Tare Reconciled + Valid CSC/IMDG -> Settled
+    return BulkChemicalISOTankCleaningVerdict(
+        True,
+        200,
+        "VERIFIED_CHEMICAL_ISOTANK_EECD_SETTLED",
+        isotank_turn_cents,
+        0,
+        "eftco_eecd_heel_tare_and_imdg_tcode_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -13739,6 +13826,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "breaker_nameplate_block_latency_ms": colo_brk_403.latency_ms,
     }
 
+    iso_commit_ok = evaluate_bulk_chemical_isotank_cleaning_heel_policy()
+    iso_eecd_403 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+        eftco_eecd_and_prior_cargo_clean_verified=False,
+    )
+    iso_heel_422 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+        heel_residue_tare_and_disposal_reconciled=False,
+    )
+    iso_imdg_451 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+        webiq_imdg_tcode_and_csc_hydro_test_clean=False,
+    )
+    iso_n2_409 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+        dedicated_nitrogen_reload_savings_cents=580000,
+    )
+    chemical_isotank_guards = {
+        "all_passed": (
+            iso_commit_ok.allowed
+            and iso_commit_ok.settled_isotank_cents == 3800000
+            and not iso_eecd_403.allowed
+            and iso_eecd_403.http_status == 403
+            and not iso_heel_422.allowed
+            and iso_heel_422.http_status == 422
+            and not iso_imdg_451.allowed
+            and iso_imdg_451.http_status == 451
+            and not iso_n2_409.allowed
+            and iso_n2_409.action_pill == "Confirm"
+        ),
+        "isotank_settlement_latency_ms": iso_commit_ok.latency_ms,
+        "prior_cargo_block_latency_ms": iso_eecd_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -13821,6 +13938,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aviation_acmi_guards": aviation_acmi_guards,
         "athlete_nil_sponsorship_guards": athlete_nil_sponsorship_guards,
         "datacenter_colo_pue_guards": datacenter_colo_pue_guards,
+        "chemical_isotank_guards": chemical_isotank_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -17980,6 +18098,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="colo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & IMDG Mandate Sandbox (Round 70 FAQ Companion) -->
+      <div class="finops-box" id="chemical-isotank-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-iso-title">🧪 大宗散装化学品 ISO 罐箱洗罐验真 (e-ECD) 与挂壁余液 (Heel) 清算架构：拆阀洗罐与余液回皮令牌 (chemical_isotank_cleaning_mandate_...) vs 交叉污染决策器 (Round 70 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 24,000 升大宗化学品 ISO 罐箱租洗运结算 ($38,000.00)、EFTCO e-ECD 电子洗罐证、420kg 挂壁余液回皮与 Web IQ IMDG/氮封连装场景 (Chemical ISO-Tank Scenario):</span></label>
+          <select id="iso-select" onchange="updateChemicalISOTankSandbox()">
+            <option value="iso_commit_ok">⚡ EFTCO e-ECD 加密验真 (含 E55 拆阀与 VOC=0) + 420kg 挂壁余液回皮已扣减 + 2.5 年 CSC 水压年检有效：265ms 自动放款 $38,000.00! (Act automatically)</option>
+            <option value="iso_eecd_403">🛑 冷水假洗罐未拆洗底阀或前三次装载含禁运农药拦截：缺失 EFTCO e-ECD 威胁 24 吨高纯试剂交叉污染报废 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="iso_heel_422">🚨 罐底 420kg 挂壁余液 (Heel) 未扣回皮或假危废费拦截：未从货款扣除未卸余料或无危废联单虚收 $2,400 焚烧费 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="iso_imdg_451">🛑 罐箱 2.5 年 CSC 水压年检超期或错用底卸罐 T11 装 T14 剧毒品冻结：Web IQ /v3/browse 核查船级社与 IMDG 危规库报警 → 310ms 触发 HTTP 451!</option>
+            <option value="iso_n2_409">🧑‍⚖️ Web IQ 检出将该罐箱转为 1.5bar 干氮气正压保压同品免洗连装专罐可省去往返洗罐费与余料损耗 $5,800.00 (净付 $32,200.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="iso-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -18488,6 +18624,7 @@ function renderAll() {{
   updateAviationACMISandbox();
   updateAthleteNILSandbox();
   updateDatacenterColoSandbox();
+  updateChemicalISOTankSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -22170,6 +22307,55 @@ function updateDatacenterColoSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ ANSI C12.20 智能 PDU 有功电度吻合 + PUE &lt;=1.30 封顶 + 跳线活光全绿：已自动放款 (VERIFIED_COLOCATION_PDU_PUE_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零冗余空开幽灵电费、零僵尸跳线月租</strong>：25 机柜高密托管与交叉连接账单已完成清算并归档 DCIM 能效台账（<code>$115,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateChemicalISOTankSandbox() {{
+  var selEl = document.getElementById("iso-select");
+  var outEl = document.getElementById("iso-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "iso_eecd_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PRIOR_CARGO_CONTAMINATION_OR_MISSING_EFTCO_EECD_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "洗罐场未提供带 <code>EFTCO E55 底阀拆洗代码与 VOC=0 ppm</code> 签名的电子洗罐证（e-ECD），或罐箱前三次装载记录（Prior-3-Cargo）包含禁用剧毒农药/单体（<code>eftco_eecd_and_prior_cargo_clean_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$38,000.00</code> 结算，防止整罐 24 吨高纯原料交叉污染报废！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iso_heel_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNCREDITED_TANK_HEEL_RESIDUE_OR_PHANTOM_DISPOSAL_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卸货后重空罐回皮地磅检出罐内挂壁残留 <code>420 kg 余液 (Heel)</code> 未从原料结算吨数中核减，或洗罐站在无官方危废电子转移联单的情况下虚收 <code>$2,400</code> 残液焚烧费（<code>heel_residue_tare_and_disposal_reconciled == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iso_imdg_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXPIRED_CSC_HYDRO_TEST_OR_IMDG_TCODE_VIOLATION_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查国际集装箱局（BIC）/ 船级社 2.5 年法定水压年检库与 UN IMDG 便携式罐箱指令表，检出该罐箱水压年检已超期或违规使用底卸罐 <code>T11</code> 装运 <code>T14</code> 级强腐蚀危化品，立即冻结放款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iso_n2_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DEDICATED_NITROGEN_BLANKET_RELOAD_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对区域专罐循环池，发现将该罐箱保持在 <code>1.5 bar 高纯干氮气正压保压</code> 下直接回程连装同种化学品可省去化学洗罐费与 420kg 挂壁余料损耗立省 <code>$5,800.00</code>（净支出从 <code>$38,000.00</code> 降至 <code>$32,200.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ EFTCO e-ECD 电子洗罐证验真 + 420kg 挂壁回皮已核减 + IMDG T-Code 合规：已自动放款 (VERIFIED_CHEMICAL_ISOTANK_EECD_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零前载交叉污染、零挂壁余料双吃</strong>：24,000 升大宗化学品 ISO 罐箱租洗运账单已完成净重清算并归档危货电子运单（<code>$38,000.00</code>）！" +
     "</div>";
 }}
 

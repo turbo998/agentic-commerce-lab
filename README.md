@@ -101,6 +101,7 @@
 - **专题 67（商业航空飞机湿租 ACMI Wet-Lease 轮挡时间 OOOI Block-Hour 与飞机停场 AOG 免责扣减清算 Commercial Airline ACMI Wet-Lease Block-Hour & AOG Tech-Log Mandate 架构：ACARS 自动轮挡遥测与机械故障保底工时豁免令牌 `aviation_acmi_wetlease_mandate_...` + Web IQ IOSA 安全库/EU261 追偿与潮租 AMI 套利核验 vs 传统按固定保底飞行小时盲付在飞机趴窝期间白交租金）**：**[《商业航空飞机湿租（ACMI Wet-Lease）轮挡时间（OOOI Block-Hour）与飞机停场（AOG）免责扣减清算（Commercial Airline ACMI Wet-Lease Block-Hour & AOG Tech-Log Mandate）架构：ACARS 自动轮挡遥测与机械故障保底工时豁免令牌（`aviation_acmi_wetlease_mandate_...` + Web IQ IOSA 安全库/EU261 追偿与潮租 AMI 套利核验）vs 传统按固定保底飞行小时盲付在飞机趴窝期间白交租金选型与原理解析 FAQ》](docs/commercial-airline-acmi-wet-lease-block-hour-mandate-vs-aog-guaranteed-minimum-faq.md)**
 - **专题 68（体育赛事与运动员姓名肖像权代言 Sports & Athlete NIL Sponsorship、道德条款 Morals Clause 与真实粉丝触达托管 Sports & Athlete NIL Sponsorship Morals Clause & Verified-Audience Escrow Mandate 架构：NCAA/CSC 合规披露、在籍出场与视觉排他性令牌 `athlete_nil_sponsorship_mandate_...` + Web IQ 联赛禁赛通报与群像联签核验 vs 传统一次性预付全款遭僵尸粉与转学违约）**：**[《体育赛事与运动员姓名肖像权代言（Sports & Athlete NIL Sponsorship）、道德条款（Morals Clause）与真实粉丝触达托管（Sports & Athlete NIL Sponsorship Morals Clause & Verified-Audience Escrow Mandate）架构：NCAA/CSC 合规披露、在籍出场与视觉排他性令牌（`athlete_nil_sponsorship_mandate_...` + Web IQ 联赛禁赛通报与群像联签核验）vs 传统一次性预付全款遭僵尸粉与转学违约选型与原理解析 FAQ》](docs/sports-athlete-nil-sponsorship-morals-audience-mandate-vs-upfront-payout-faq.md)**
 - **专题 69（IDC 数据中心机柜托管 Colocation、支路 PDU 实测有功电表 Branch-Circuit kWh 与合同 PUE 封顶清算 Data Center Colocation Cabinet kW Metering, Contractual PUE Cap & Cross-Connect Mandate 架构：智能 PDU 真实电度与 PUE 冷却损耗封顶令牌 `datacenter_colo_pue_mandate_...` + Web IQ 气象湿球温度豁免与 IXP 交换中心聚合核验 vs 传统按断路器铭牌强收空转电费与老旧空调转嫁）**：**[《IDC 数据中心机柜托管（Colocation）、支路 PDU 实测有功电表（Branch-Circuit kWh）与合同 PUE 封顶清算（Data Center Colocation Cabinet kW Metering, Contractual PUE Cap & Cross-Connect Mandate）架构：智能 PDU 真实电度与 PUE 冷却损耗封顶令牌（`datacenter_colo_pue_mandate_...` + Web IQ 气象湿球温度豁免与 IXP 交换中心聚合核验）vs 传统按断路器铭牌强收空转电费与老旧空调转嫁选型与原理解析 FAQ》](docs/datacenter-colocation-pdu-kwh-pue-cap-mandate-vs-breaker-commit-overbilling-faq.md)**
+- **专题 70（大宗散装化学品 ISO 罐箱 ISO Tank Container 洗罐验真、罐底余液 Heel Residue 冲抵与危化品 ADR/IMDG 合规清算 Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate 架构：EFTCO 电子洗罐证书 e-ECD 与挂壁余料回皮扣减令牌 `chemical_isotank_cleaning_mandate_...` + Web IQ IMDG T-Code 检验库与氮封同品免洗连装核验 vs 传统凭纸质洗罐条盲付遭交叉污染报废）**：**[《大宗散装化学品 ISO 罐箱（ISO Tank Container）洗罐验真、罐底余液（Heel Residue）冲抵与危化品 ADR/IMDG 合规清算（Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate）架构：EFTCO 电子洗罐证书（e-ECD）与挂壁余料回皮扣减令牌（`chemical_isotank_cleaning_mandate_...` + Web IQ IMDG `T-Code` 检验库与氮封同品免洗连装核验）vs 传统凭纸质洗罐条盲付遭交叉污染报废选型与原理解析 FAQ》](docs/bulk-chemical-iso-tank-ecd-cleaning-heel-mandate-vs-cross-contamination-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -239,6 +240,8 @@
 ![2026-11-09 体育赛事与运动员姓名肖像权 NIL 代言托管架构一图流](assets/svg/70-sports-athlete-nil-sponsorship-escrow-2026-11-09.svg)
 
 ![2026-11-09 IDC 数据中心机柜托管实测电表与 PUE 封顶清算架构一图流](assets/svg/71-datacenter-colocation-pdu-pue-cap-2026-11-09.svg)
+
+![2026-11-09 大宗散装化学品 ISO 罐箱洗罐验真与挂壁余液清算架构一图流](assets/svg/72-bulk-chemical-iso-tank-ecd-cleaning-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

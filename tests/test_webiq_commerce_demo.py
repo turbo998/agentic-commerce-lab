@@ -5078,6 +5078,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("datacenter-colo-sandbox", demo_zh)
 
+    def test_bulk_chemical_iso_tank_ecd_cleaning_heel_mandate_vs_cross_contamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_bulk_chemical_isotank_cleaning_heel_policy,
+        )
+
+        # 1. Signed EFTCO e-ECD + 420kg heel tare credited + valid CSC/IMDG -> 200 settled ($38,000)
+        commit_ok = evaluate_bulk_chemical_isotank_cleaning_heel_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_isotank_cents, 3800000)
+
+        # 2. Prohibited prior cargo or missing EFTCO e-ECD valve-wash proof -> 403 blocked in 12ms
+        eecd_403 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+            eftco_eecd_and_prior_cargo_clean_verified=False,
+        )
+        self.assertFalse(eecd_403.allowed)
+        self.assertEqual(eecd_403.http_status, 403)
+        self.assertEqual(
+            eecd_403.isotank_lane,
+            "PRIOR_CARGO_CONTAMINATION_OR_MISSING_EFTCO_EECD_BLOCKED",
+        )
+
+        # 3. Uncredited 420kg clinging heel tare or unmanifested disposal fee -> 422 blocked in 15ms
+        heel_422 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+            heel_residue_tare_and_disposal_reconciled=False,
+        )
+        self.assertFalse(heel_422.allowed)
+        self.assertEqual(heel_422.http_status, 422)
+        self.assertEqual(
+            heel_422.isotank_lane,
+            "UNCREDITED_TANK_HEEL_RESIDUE_OR_PHANTOM_DISPOSAL_BLOCKED",
+        )
+
+        # 4. Web IQ detects expired 2.5-year CSC hydro test or wrong UN IMDG T-Code -> 451 blocked in 310ms
+        imdg_451 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+            webiq_imdg_tcode_and_csc_hydro_test_clean=False,
+        )
+        self.assertFalse(imdg_451.allowed)
+        self.assertEqual(imdg_451.http_status, 451)
+
+        # 5. Web IQ discovers dedicated 1.5-bar nitrogen-blanket reload saving $5,800 ($32,200 net) -> 409 Confirm
+        n2_409 = evaluate_bulk_chemical_isotank_cleaning_heel_policy(
+            dedicated_nitrogen_reload_savings_cents=580000,
+        )
+        self.assertFalse(n2_409.allowed)
+        self.assertEqual(n2_409.http_status, 409)
+        self.assertEqual(n2_409.settled_isotank_cents, 3220000)
+        self.assertEqual(n2_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["chemical_isotank_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("chemical-isotank-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
