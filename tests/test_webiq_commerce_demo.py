@@ -3797,6 +3797,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("iot-esim-roaming-sandbox", demo_zh)
 
+    def test_clinical_trial_dct_ecoa_adherence_stipend_mandate_vs_duplicate_subject_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_clinical_trial_dct_ecoa_stipend_policy,
+        )
+
+        # 1. Unique ZKP subject + smart-blister eCOA + IRB cap -> 200 settled ($1,200)
+        commit_ok = evaluate_clinical_trial_dct_ecoa_stipend_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_stipend_cents, 120000)
+
+        # 2. Cross-site duplicate subject inside 30-day washout -> 403 blocked in 12ms
+        dup_403 = evaluate_clinical_trial_dct_ecoa_stipend_policy(
+            duplicate_subject_hash_detected=True,
+        )
+        self.assertFalse(dup_403.allowed)
+        self.assertEqual(dup_403.http_status, 403)
+        self.assertEqual(
+            dup_403.dct_lane, "DUPLICATE_TRIAL_SUBJECT_ENROLLMENT_BLOCKED"
+        )
+
+        # 3. Backfilled diary without smart-blister proof or IRB cap breach -> 422 blocked in 15ms
+        ecoa_422 = evaluate_clinical_trial_dct_ecoa_stipend_policy(
+            ecoa_adherence_and_irb_cap_verified=False,
+        )
+        self.assertFalse(ecoa_422.allowed)
+        self.assertEqual(ecoa_422.http_status, 422)
+        self.assertEqual(
+            ecoa_422.dct_lane, "MISSING_ECOA_DOSING_PROOF_OR_IRB_CAP_BREACH"
+        )
+
+        # 4. Web IQ detects FDA Clinical Hold or unconsented V2.0 amendment -> 451 blocked in 310ms
+        hold_451 = evaluate_clinical_trial_dct_ecoa_stipend_policy(
+            webiq_nct_protocol_and_econsent_active=False,
+        )
+        self.assertFalse(hold_451.allowed)
+        self.assertEqual(hold_451.http_status, 451)
+
+        # 5. Web IQ discovers home-phlebotomy + transit voucher saving $240 ($960 net) -> 409 Confirm
+        home_409 = evaluate_clinical_trial_dct_ecoa_stipend_policy(
+            home_phlebotomy_voucher_savings_cents=24000,
+        )
+        self.assertFalse(home_409.allowed)
+        self.assertEqual(home_409.http_status, 409)
+        self.assertEqual(home_409.settled_stipend_cents, 96000)
+        self.assertEqual(home_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["dct_stipend_adherence_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("dct-stipend-adherence-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

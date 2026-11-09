@@ -315,6 +315,11 @@
     "iot_settlement_latency_ms": 265,
     "roaming_shock_block_latency_ms": 12
   },
+  "dct_stipend_adherence_guards": {
+    "all_passed": true,
+    "dct_settlement_latency_ms": 265,
+    "duplicate_subject_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
