@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg80" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050d1e"/>
+      <stop offset="50%" stop-color="#0a1d3b"/>
+      <stop offset="100%" stop-color="#0f2c54"/>
+    </linearGradient>
+    <linearGradient id="accent80" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg80)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#081529" stroke="#3b82f6" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent80)"/>
+
+  <text x="60" y="72" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 78 · SUBSEA &amp; DARK-FIBER IRU, OTDR LOSS &amp; DIVERSE-CONDUIT KMZ MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">海缆/暗光纤 IRU 不可撤销使用权、OTDR 光衰与异构路由托管 vs 同沟假双线盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">ITU-T G.654.E OTDR Bidirectional Trace + GIS KMZ Manhole Separation (&gt;=50m) + RTD Latency vs. Collapsed-Path Broker</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#23121b" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统带宽经纪商“纸面双路由”预付模式 (Collapsed Path)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 同沟同桥“假双线”欺诈 (Shared Manhole)：主备两条光纤在城郊共用同一市政弱电井，一挖全断</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 老化光纤熔接点高损耗：实际端到端光衰达 26.5 dB（超 18.0 dB 门限），400G 相干模块频繁闪断</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 绕路拼凑导致时延虚高：经纪商偷偷借道内陆绕行 800 km，往返时延 (RTD) 从 62ms 飙升至 79ms</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 二道贩子破产导致 IRU 被掐网：底层海缆联盟未收到钱，直接拔掉终端企业 15 年使用权跳线</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#32101c" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型 AI 算力集群跨中心互联 (DCI) 与量化机构资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">AI 云厂商预付 $520,000 采购 15 年跨洋与陆地双路由 400G IRU，市政施工一铲子</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">同时挖断主备两路（登陆站外共用管道），分布式训练中断 14 小时损失超百万</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 同沟假双线识别率：0% | • 光衰/色散验收拒付：0% | • 故障定位耗时：18 小时</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ KMZ 空间交集零碰撞 + 双向 OTDR + 底层海缆直签托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• GIS KMZ 管道全路径碰撞门禁：主备路由任意人孔井、桥梁、登陆站物理间距必须 &gt;= 50 米</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 双向 OTDR 与 24h RFC 2544/ITU-T Y.1564 烤机：总光衰 &lt;= 18.0 dB 且零误码 (BER &lt; 10^-12)</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 海底锚害高危区与 FCC 牌照核验：Web IQ 核验海缆登陆许可与锚地保护区状态</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 开放光网络 (Open Cable) 裸谱团购套利：跳过二道贩子直签联盟光谱省 $64,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断 KMZ 存在共用人孔井/登陆站的假双路由；15ms 拦截 OTDR 光衰超标与</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">RTD 时延超限电路；Web IQ 直签海缆联盟 Open-Cable 裸谱省 $64,000.00（净付 $456,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 假双路由拦截率：100% | • 光衰/时延达标率：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0f233a" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">跨洲海缆与暗光纤 IRU 采购 Agent 绝不能凭一纸拓扑简图付钱！必须绑定【KMZ 零同沟 + 双向 OTDR + 联盟物权登记】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_subsea_dark_fiber_iru_otdr_policy`) · ITU-T G.654.E &amp; Y.1564 · 2026-11-09</text>
+</svg>

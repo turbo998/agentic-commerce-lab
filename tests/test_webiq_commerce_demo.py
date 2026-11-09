@@ -5527,6 +5527,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hospital-implant-consignment-sandbox", demo_zh)
 
+    def test_subsea_dark_fiber_iru_otdr_diverse_conduit_mandate_vs_collapsed_path_broker_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_subsea_dark_fiber_iru_otdr_policy,
+        )
+
+        # 1. Verified KMZ >=50m diversity + bidirectional OTDR <=18dB + consortium NDA -> 200 OK ($520,000)
+        commit_ok = evaluate_subsea_dark_fiber_iru_otdr_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_iru_cents, 52000000)
+
+        # 2. Collapsed-path shared manhole or shared Cable Landing Station (<50m) -> 403 blocked in 12ms
+        kmz_403 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+            kmz_manhole_diversity_50m_verified=False,
+        )
+        self.assertFalse(kmz_403.allowed)
+        self.assertEqual(kmz_403.http_status, 403)
+        self.assertEqual(
+            kmz_403.iru_lane,
+            "COLLAPSED_PATH_SHARED_MANHOLE_OR_CLS_DIVERSITY_FRAUD_BLOCKED",
+        )
+
+        # 3. Bidirectional OTDR span loss >18dB or detour RTD breach -> 422 blocked in 15ms
+        otdr_422 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+            bidirectional_otdr_loss_and_rtd_sla_passed=False,
+        )
+        self.assertFalse(otdr_422.allowed)
+        self.assertEqual(otdr_422.http_status, 422)
+        self.assertEqual(
+            otdr_422.iru_lane,
+            "OTDR_SPAN_LOSS_EXCEEDED_OR_DETOUR_LATENCY_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects active subsea cable fault or missing consortium NDA -> 451 blocked in 310ms
+        nda_451 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+            webiq_cable_fault_and_consortium_nda_clean=False,
+        )
+        self.assertFalse(nda_451.allowed)
+        self.assertEqual(nda_451.http_status, 451)
+
+        # 5. Web IQ discovers direct consortium Open-Cable spectrum IRU saving $64,000 ($456,000 net) -> 409 Confirm
+        opn_409 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+            open_cable_spectrum_direct_savings_cents=6400000,
+        )
+        self.assertFalse(opn_409.allowed)
+        self.assertEqual(opn_409.http_status, 409)
+        self.assertEqual(opn_409.settled_iru_cents, 45600000)
+        self.assertEqual(opn_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["subsea_iru_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("subsea-dark-fiber-iru-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

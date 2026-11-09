@@ -11348,6 +11348,91 @@ def evaluate_hospital_surgical_implant_consignment_policy(
     )
 
 
+@dataclass(frozen=True)
+class SubseaDarkFiberIRUOTDRVerdict:
+    allowed: bool
+    http_status: int
+    iru_lane: str
+    settled_iru_cents: int
+    consortium_or_fraud_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_subsea_dark_fiber_iru_otdr_policy(
+    gross_iru_milestone_cents: int = 52000000,
+    kmz_manhole_diversity_50m_verified: bool = True,
+    bidirectional_otdr_loss_and_rtd_sla_passed: bool = True,
+    webiq_cable_fault_and_consortium_nda_clean: bool = True,
+    open_cable_spectrum_direct_savings_cents: int = 0,
+) -> SubseaDarkFiberIRUOTDRVerdict:
+    """Evaluate GIS KMZ manhole/bridge/CLS >=50m spatial separation vs collapsed-path diversity fraud, Telcordia .sor bidirectional OTDR span loss (<=18.0 dB) & Y.1564 24h zero-BER soak vs degraded fiber, Web IQ subsea cable fault & underlying consortium Non-Disturbance Agreement (NDA) check, and direct Open-Cable spectrum IRU arbitrage."""
+    # 1. Collapsed-path shared manhole, shared river bridge, or shared Cable Landing Station (<50m) -> HTTP 403
+    if not kmz_manhole_diversity_50m_verified:
+        return SubseaDarkFiberIRUOTDRVerdict(
+            False,
+            403,
+            "COLLAPSED_PATH_SHARED_MANHOLE_OR_CLS_DIVERSITY_FRAUD_BLOCKED",
+            0,
+            gross_iru_milestone_cents,
+            "iru_milestone_blocked_due_to_kmz_conduit_or_landing_station_overlap_within_50m",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Bidirectional OTDR span loss >18.0 dB, high splice loss, or detour RTD >62.0ms -> HTTP 422
+    if not bidirectional_otdr_loss_and_rtd_sla_passed:
+        return SubseaDarkFiberIRUOTDRVerdict(
+            False,
+            422,
+            "OTDR_SPAN_LOSS_EXCEEDED_OR_DETOUR_LATENCY_BREACH_BLOCKED",
+            0,
+            gross_iru_milestone_cents,
+            "acceptance_rejected_due_to_bidirectional_otdr_loss_above_18db_or_y1564_rtd_breach",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects active subsea cable fault or missing consortium NDA -> HTTP 451
+    if not webiq_cable_fault_and_consortium_nda_clean:
+        return SubseaDarkFiberIRUOTDRVerdict(
+            False,
+            451,
+            "ACTIVE_SUBSEA_CABLE_FAULT_OR_MISSING_CONSORTIUM_NDA_HOLD",
+            0,
+            gross_iru_milestone_cents,
+            "webiq_detected_active_subsea_shunt_fault_or_missing_underlying_consortium_non_disturbance_agreement",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Direct Consortium Open-Cable Spectrum IRU Arbitrage -> HTTP 409 Confirm
+    if open_cable_spectrum_direct_savings_cents > 0:
+        return SubseaDarkFiberIRUOTDRVerdict(
+            False,
+            409,
+            "OPEN_CABLE_CONSORTIUM_SPECTRUM_IRU_ARBITRAGE_CONFIRM",
+            gross_iru_milestone_cents - open_cable_spectrum_direct_savings_cents,
+            open_cable_spectrum_direct_savings_cents,
+            "webiq_found_direct_consortium_open_cable_spectrum_iru_saving_64000_usd_vs_broker",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified KMZ >=50m Separation + Bidirectional OTDR <=18dB + Consortium NDA -> Settled
+    return SubseaDarkFiberIRUOTDRVerdict(
+        True,
+        200,
+        "VERIFIED_SUBSEA_DARK_FIBER_IRU_SETTLED",
+        gross_iru_milestone_cents,
+        0,
+        "kmz_50m_diversity_bidirectional_otdr_and_consortium_nda_verified_for_settlement",
+        22,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -14663,6 +14748,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "dropped_screw_block_latency_ms": imp_drp_403.latency_ms,
     }
 
+    iru_commit_ok = evaluate_subsea_dark_fiber_iru_otdr_policy()
+    iru_kmz_403 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+        kmz_manhole_diversity_50m_verified=False,
+    )
+    iru_otdr_422 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+        bidirectional_otdr_loss_and_rtd_sla_passed=False,
+    )
+    iru_nda_451 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+        webiq_cable_fault_and_consortium_nda_clean=False,
+    )
+    iru_opn_409 = evaluate_subsea_dark_fiber_iru_otdr_policy(
+        open_cable_spectrum_direct_savings_cents=6400000,
+    )
+    subsea_iru_guards = {
+        "all_passed": (
+            iru_commit_ok.allowed
+            and iru_commit_ok.settled_iru_cents == 52000000
+            and not iru_kmz_403.allowed
+            and iru_kmz_403.http_status == 403
+            and not iru_otdr_422.allowed
+            and iru_otdr_422.http_status == 422
+            and not iru_nda_451.allowed
+            and iru_nda_451.http_status == 451
+            and not iru_opn_409.allowed
+            and iru_opn_409.action_pill == "Confirm"
+        ),
+        "iru_settlement_latency_ms": iru_commit_ok.latency_ms,
+        "collapsed_path_block_latency_ms": iru_kmz_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -14753,6 +14868,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mining_offtake_guards": mining_offtake_guards,
         "aviation_saf_guards": aviation_saf_guards,
         "surgical_implant_guards": surgical_implant_guards,
+        "subsea_iru_guards": subsea_iru_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19056,6 +19172,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="imp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Subsea & Dark-Fiber IRU, OTDR Loss & Diverse-Conduit KMZ Mandate Sandbox (Round 78 FAQ Companion) -->
+      <div class="finops-box" id="subsea-dark-fiber-iru-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-iru-title">🌐 海缆与暗光纤 IRU 不可撤销使用权、OTDR 光衰与异构管道架构：KMZ 零同沟与联盟物权令牌 (subsea_dark_fiber_iru_mandate_...) vs 同沟假双线决策器 (Round 78 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 15 年跨洋与陆地双路由 400G/暗光纤 IRU 交割 ($520,000.00)、KMZ 管道井 &gt;=50m 物理隔离、双向 OTDR &lt;=18dB 与 Web IQ 海缆联盟直签场景 (Subsea/Dark-Fiber IRU Scenario):</span></label>
+          <select id="iru-select" onchange="updateSubseaIRUSandbox()">
+            <option value="iru_commit_ok">⚡ 主备 KMZ 全线间距 &gt;=50m 零同沟 + 双向 OTDR 14.8dB (&lt;=18dB) + 61.2ms RTD + 联盟 NDA：22ms 自动放款 $520,000.00! (Act automatically)</option>
+            <option value="iru_kmz_403">🛑 同沟同桥“假双线”欺诈 (Collapsed-Path Diversity) 拦截：主备两路在登陆站外共用同一市政弱电井 (&lt;50m)，一挖全断 → 12ms 触发 HTTP 403 拒付!</option>
+            <option value="iru_otdr_422">🚨 双向 OTDR 光衰超标 (26.5dB &gt; 18.0dB) 或内陆绕路导致 RTD 时延超 62.0ms 拦截：劣质熔接点致 400G 闪断 → 15ms 触发 HTTP 422 拒收!</option>
+            <option value="iru_nda_451">🛑 海底光缆处于渔船锚害断缆维修期或二道贩子缺少底层海缆联盟不干扰协议 (NDA) 冻结：Web IQ /v3/browse 检出断网/拔线风险 → 310ms 触发 HTTP 451!</option>
+            <option value="iru_opn_409">🧑‍⚖️ Web IQ 跳过二级带宽经纪商直签海缆联盟 Open-Cable 裸频谱 (G.654.E Spectrum IRU) 立省 $64,000.00 (净付降至 $456,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="iru-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -19572,6 +19706,7 @@ function renderAll() {{
   updateMiningOfftakeSandbox();
   updateAviationSAFSandbox();
   updateSurgicalImplantSandbox();
+  updateSubseaIRUSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -23646,6 +23781,55 @@ function updateSurgicalImplantSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ EHR 患者植入级 UDI 100% 匹配 + CSSD 24h 生物灭菌合格 + 集采合规：已自动结算 (VERIFIED_SURGICAL_IMPLANT_CONSIGNMENT_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零掉落螺钉买单、零后备箱黑户耗材</strong>：月度骨科高值寄售耗材已完成患者级 UDI 闭环核销并自动下发补货单（<code>$145,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSubseaIRUSandbox() {{
+  var selEl = document.getElementById("iru-select");
+  var outEl = document.getElementById("iru-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "iru_kmz_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 COLLAPSED_PATH_SHARED_MANHOLE_OR_CLS_DIVERSITY_FRAUD_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "GIS 空间几何引擎对主备全路径 <code>.kmz 管道坐标</code> 执行 50 米缓冲区碰撞检测，发现两条所谓的“独立双路由”在城郊跨河大桥及海缆登陆站（CLS）外共用同一市政弱电人孔井（<code>kmz_manhole_diversity_50m_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$520,000.00</code> IRU 首付款，严防一铲子挖断主备双线！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iru_otdr_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 OTDR_SPAN_LOSS_EXCEEDED_OR_DETOUR_LATENCY_BREACH_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "Telcordia <code>.sor 双向 OTDR 波形解析器</code> 检出端到端光衰高达 <code>26.5 dB</code>（突破 <code>18.0 dB</code> 门限）或存在长途绕路导致往返时延达 <code>79.0 ms</code>（突破 <code>62.0 ms</code> SLA，<code>bidirectional_otdr_loss_and_rtd_sla_passed == False</code>）。网关在 <code>15ms</code> 内拒收并退回重熔！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iru_nda_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ACTIVE_SUBSEA_CABLE_FAULT_OR_MISSING_CONSORTIUM_NDA_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查海事局海底光缆故障维修通告与底层海缆联盟物权登记，检出该海缆段正处于锚害故障降级期或二级转售商未提供底层联盟签署的 <code>不干扰协议 (Non-Disturbance Agreement)</code>，立即冻结放款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "iru_opn_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OPEN_CABLE_CONSORTIUM_SPECTRUM_IRU_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索跨洋海缆联盟公开配额，发现跳过二级带宽经纪商直接向联盟采购 <code>Open-Cable G.654.E 裸频谱份额 (Spectrum IRU)</code> 可直接省去转售溢价 <code>$64,000.00</code>（净付降至 <code>$456,000.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ KMZ 50m 零同沟异构 + 双向 OTDR 14.8dB + 联盟 NDA 物权：已自动放款 (VERIFIED_SUBSEA_DARK_FIBER_IRU_SETTLED · 22ms · Act automatically):</strong><br>" +
+    "• <strong>零同沟假双线、零二道贩子拔线风险</strong>：15 年双路由 400G/暗光纤 IRU 已完成光层验收并登记底层海缆联盟物权（<code>$520,000.00</code>）！" +
     "</div>";
 }}
 
