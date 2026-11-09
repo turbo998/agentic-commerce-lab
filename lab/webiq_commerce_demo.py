@@ -8740,6 +8740,95 @@ def evaluate_clinical_trial_dct_ecoa_stipend_policy(
     )
 
 
+@dataclass(frozen=True)
+class CRETripleNetCAMVerdict:
+    """Round 48 verdict for Commercial Real Estate (CRE) Triple-Net CAM Reconciliation & Submeter Mandate (CapEx-Excluded GL & BACnet Submeter Token + Web IQ County Tax Roll & Utility Rebate Grounding) vs Landlord CapEx Pass-Through & Pro-Rata Utility Overbilling."""
+
+    allowed: bool
+    http_status: int
+    cre_lane: str
+    settled_cam_cents: int
+    utility_rebate_cam_offset_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cre_triple_net_cam_submeter_policy(
+    *,
+    annual_cam_trueup_cents: int = 4200000,
+    capex_improperly_expensed_in_cam: bool = False,
+    submeter_and_controllable_cap_verified: bool = True,
+    webiq_county_tax_roll_matched: bool = True,
+    utility_rebate_cam_offset_cents: int = 0,
+) -> CRETripleNetCAMVerdict:
+    """Evaluate GL line-item CapEx exclusion, BACnet submeter reconciliation & 5% controllable CAM cap, Web IQ County Tax Assessor parcel roll parity, and municipal utility efficiency rebate offset."""
+
+    # 1. Structural CapEx (Roof / Parking Lot) Improperly Expensed in Operating CAM -> HTTP 403
+    if capex_improperly_expensed_in_cam:
+        return CRETripleNetCAMVerdict(
+            False,
+            403,
+            "IMPROPER_CAPEX_PASSTHROUGH_IN_CAM_BLOCKED",
+            0,
+            0,
+            "unamortized_structural_capex_in_operating_cam_pool_blocked_by_lease_exclusion",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Pro-Rata Utility Overbilling Ignoring BACnet Submeter or >5% Controllable Cap -> HTTP 422
+    if not submeter_and_controllable_cap_verified:
+        return CRETripleNetCAMVerdict(
+            False,
+            422,
+            "CONTROLLABLE_CAM_CAP_OR_SUBMETER_MISMATCH_BLOCKED",
+            0,
+            0,
+            "cam_statement_rejected_due_to_submeter_variance_or_5pct_controllable_cap_breach",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Landlord Withheld 18% County Property Tax Appeal Reduction via Web IQ -> HTTP 451
+    if not webiq_county_tax_roll_matched:
+        return CRETripleNetCAMVerdict(
+            False,
+            451,
+            "INFLATED_PROPERTY_TAX_ASSESSMENT_PASSTHROUGH_HOLD",
+            0,
+            0,
+            "webiq_detected_county_tax_appeal_reduction_withheld_from_tenant_nnn_bill",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Municipal Utility Efficiency Rebate CAM Offset -> HTTP 409 Confirm
+    if utility_rebate_cam_offset_cents > 0:
+        return CRETripleNetCAMVerdict(
+            False,
+            409,
+            "UTILITY_EFFICIENCY_REBATE_CAM_OFFSET_CONFIRM",
+            annual_cam_trueup_cents - utility_rebate_cam_offset_cents,
+            utility_rebate_cam_offset_cents,
+            "webiq_found_3800_usd_municipal_utility_rebate_offsetting_tenant_cam_pool",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified CapEx-Free GL + BACnet Submeter & County Tax Roll Matched -> Settled
+    return CRETripleNetCAMVerdict(
+        True,
+        200,
+        "VERIFIED_NNN_CAM_RECONCILIATION_SETTLED",
+        annual_cam_trueup_cents,
+        0,
+        "capex_free_gl_and_bacnet_submeter_verified_for_nnn_cam_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -11155,6 +11244,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "duplicate_subject_block_latency_ms": dct_dup_403.latency_ms,
     }
 
+    cre_commit_ok = evaluate_cre_triple_net_cam_submeter_policy()
+    cre_capex_403 = evaluate_cre_triple_net_cam_submeter_policy(
+        capex_improperly_expensed_in_cam=True,
+    )
+    cre_sub_422 = evaluate_cre_triple_net_cam_submeter_policy(
+        submeter_and_controllable_cap_verified=False,
+    )
+    cre_tax_451 = evaluate_cre_triple_net_cam_submeter_policy(
+        webiq_county_tax_roll_matched=False,
+    )
+    cre_reb_409 = evaluate_cre_triple_net_cam_submeter_policy(
+        utility_rebate_cam_offset_cents=380000,
+    )
+    cre_nnn_cam_guards = {
+        "all_passed": (
+            cre_commit_ok.allowed
+            and cre_commit_ok.settled_cam_cents == 4200000
+            and not cre_capex_403.allowed
+            and cre_capex_403.http_status == 403
+            and not cre_sub_422.allowed
+            and cre_sub_422.http_status == 422
+            and not cre_tax_451.allowed
+            and cre_tax_451.http_status == 451
+            and not cre_reb_409.allowed
+            and cre_reb_409.action_pill == "Confirm"
+        ),
+        "cre_settlement_latency_ms": cre_commit_ok.latency_ms,
+        "capex_passthrough_block_latency_ms": cre_capex_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -11215,6 +11334,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cnc_metrology_escrow_guards": cnc_metrology_escrow_guards,
         "iot_esim_roaming_guards": iot_esim_roaming_guards,
         "dct_stipend_adherence_guards": dct_stipend_adherence_guards,
+        "cre_nnn_cam_guards": cre_nnn_cam_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -14978,6 +15098,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dct-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Real Estate (CRE) Triple-Net CAM Reconciliation & Submeter Sandbox (Round 48 FAQ Companion) -->
+      <div class="finops-box" id="cre-nnn-cam-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cre-title">🏢 商业地产与连锁门店三净租约 (NNN CAM) 物业清算架构：CapEx 剔除与 BACnet 分表令牌 (cre_nnn_cam_mandate_...) vs 大修转嫁决策器 (Round 48 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 连锁旗舰店年度 NNN CAM 物业清算 ($42,000.00)、GL 科目 CapEx 剔除、BACnet 独立分表与 Web IQ 市政税单/节能补贴场景 (CRE NNN CAM Scenario):</span></label>
+          <select id="cre-select" onchange="updateCRENNNCAMSandbox()">
+            <option value="cre_commit_ok">⚡ GL 科目零 CapEx 转嫁 + BACnet 独立分表与 5% 涨幅上限核验通过 + 市政税册吻合：265ms 自动清算 $42,000.00! (Act automatically)</option>
+            <option value="cre_capex_403">🛑 屋顶翻新/停车场重铺 CapEx 转嫁拦截：房东将 $180k 结构大修资本支出混入日常物业费池 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="cre_sub_422">🚨 公摊刺客 / 突破 5% 可控物业费涨幅拦截：忽略店内 BACnet 分表按面积均摊隔壁餐饮水电 (+$6,800 水分) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="cre_tax_451">🛑 房东隐瞒 18% 市政房产税申诉降税结果拦截：Web IQ /v3/browse 核对政府税务册发现房东仍按降税前高价摊派 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="cre_reb_409">🧑‍⚖️ Web IQ 检出大楼已领取供电局 $3,800.00 公共车库 LED/冷机节能改造补贴应予冲减 CAM (净应付降至 $38,200.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cre-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -15464,6 +15602,7 @@ function renderAll() {{
   updateCNCMetrologyEscrowSandbox();
   updateIoTeSIMRoamingSandbox();
   updateDCTStipendAdherenceSandbox();
+  updateCRENNNCAMSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18063,6 +18202,56 @@ function updateDCTStipendAdherenceSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 零知识查重唯一 + 智能药板 eCOA 服药验真通过：已秒级发放隐私补贴 (VERIFIED_DCT_ECOA_STIPEND_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零PHI泄露、100% GCP 合规</strong>：受试者唯一性、智能药板时间戳与新版 eConsent 全部核验通过，265ms 通过双盲脱敏通道发放 <code>$1,200.00</code> 补贴！" +
+    "</div>";
+}}
+
+function updateCRENNNCAMSandbox() {{
+  var selEl = document.getElementById("cre-select");
+  var outEl = document.getElementById("cre-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cre_capex_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 IMPROPER_CAPEX_PASSTHROUGH_IN_CAM_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "租约审计网关扫描总账（GL）明细科目，检出房东将整栋商场屋顶更换与停车场重铺等固定资产资本支出（CapEx）违规混入日常物业维护费池（<code>capex_improperly_expensed_in_cam=True</code>）！已在 <code>12ms</code> 内硬阻断 <code>$42,000.00</code> 账单并自动生成正式《租约审计异议函》！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cre_sub_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CONTROLLABLE_CAM_CAP_OR_SUBMETER_MISMATCH_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "物业公司忽略本门店独立 BACnet 水电冷分表实测读数、按面积粗暴均摊隔壁 24 小时重餐饮高能耗，或可控物业管理费同比暴涨 14% 突破租约 <code>5.0% 年度涨幅上限</code>（多收 <code>$6,800.00</code> 水分）！网关已在 <code>15ms</code> 内拦截公摊刺客！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cre_tax_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INFLATED_PROPERTY_TAX_ASSESSMENT_PASSTHROUGH_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时查询市政税务局（County Tax Assessor）公开地块税册，证实房东已通过税务申诉成功将大楼房产税调低 <code>18%</code>，却向租户隐瞒退税仍按原高价摊派，已在 <code>310ms</code> 内冻结房产税分摊项！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cre_reb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 UTILITY_EFFICIENCY_REBATE_CAM_OFFSET_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查市政公用事业商业楼宇补贴名录，发现该商场已领取 <code>$3,800.00</code> 公共区域 LED 与冷水机节能改造现金返还，按会计准则冲减后本门店净应付从 <code>$42,000.00</code> 降至 <code>$38,200.00</code>，建议一键确认扣除补贴！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 零 CapEx 转嫁 + BACnet 分表与市政税册 1:1 吻合：已自动完成 NNN CAM 清算 (VERIFIED_NNN_CAM_RECONCILIATION_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零公摊水分、守住 60 天审计期</strong>：GL 明细科目、店内 BACnet 分表读数、5% 可控涨幅封顶及政府实缴房产税全部核对无误，265ms 自动放款 <code>$42,000.00</code>！" +
     "</div>";
 }}
 

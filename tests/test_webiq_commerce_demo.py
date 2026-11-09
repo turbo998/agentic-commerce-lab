@@ -3851,6 +3851,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("dct-stipend-adherence-sandbox", demo_zh)
 
+    def test_cre_triple_net_cam_reconciliation_submeter_mandate_vs_landlord_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cre_triple_net_cam_submeter_policy,
+        )
+
+        # 1. CapEx-free GL + BACnet submeter & 5% cap + county tax roll matched -> 200 settled ($42,000)
+        commit_ok = evaluate_cre_triple_net_cam_submeter_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cam_cents, 4200000)
+
+        # 2. Structural roof CapEx improperly expensed in operating CAM -> 403 blocked in 12ms
+        capex_403 = evaluate_cre_triple_net_cam_submeter_policy(
+            capex_improperly_expensed_in_cam=True,
+        )
+        self.assertFalse(capex_403.allowed)
+        self.assertEqual(capex_403.http_status, 403)
+        self.assertEqual(
+            capex_403.cre_lane, "IMPROPER_CAPEX_PASSTHROUGH_IN_CAM_BLOCKED"
+        )
+
+        # 3. Pro-rata utility padding ignoring BACnet submeter or >5% cap -> 422 blocked in 15ms
+        sub_422 = evaluate_cre_triple_net_cam_submeter_policy(
+            submeter_and_controllable_cap_verified=False,
+        )
+        self.assertFalse(sub_422.allowed)
+        self.assertEqual(sub_422.http_status, 422)
+        self.assertEqual(
+            sub_422.cre_lane,
+            "CONTROLLABLE_CAM_CAP_OR_SUBMETER_MISMATCH_BLOCKED",
+        )
+
+        # 4. Web IQ detects withheld 18% county property tax appeal reduction -> 451 blocked in 310ms
+        tax_451 = evaluate_cre_triple_net_cam_submeter_policy(
+            webiq_county_tax_roll_matched=False,
+        )
+        self.assertFalse(tax_451.allowed)
+        self.assertEqual(tax_451.http_status, 451)
+
+        # 5. Web IQ discovers $3,800 municipal utility efficiency rebate ($38,200 net) -> 409 Confirm
+        reb_409 = evaluate_cre_triple_net_cam_submeter_policy(
+            utility_rebate_cam_offset_cents=380000,
+        )
+        self.assertFalse(reb_409.allowed)
+        self.assertEqual(reb_409.http_status, 409)
+        self.assertEqual(reb_409.settled_cam_cents, 3820000)
+        self.assertEqual(reb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cre_nnn_cam_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cre-nnn-cam-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

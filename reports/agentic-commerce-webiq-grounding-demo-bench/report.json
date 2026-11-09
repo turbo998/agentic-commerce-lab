@@ -320,6 +320,11 @@
     "dct_settlement_latency_ms": 265,
     "duplicate_subject_block_latency_ms": 12
   },
+  "cre_nnn_cam_guards": {
+    "all_passed": true,
+    "cre_settlement_latency_ms": 265,
+    "capex_passthrough_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
