@@ -395,6 +395,11 @@
     "pbm_settlement_latency_ms": 265,
     "duplicate_340b_block_latency_ms": 12
   },
+  "industrial_pbth_guards": {
+    "all_passed": true,
+    "pbth_settlement_latency_ms": 265,
+    "idle_wallclock_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

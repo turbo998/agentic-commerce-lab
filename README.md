@@ -94,6 +94,7 @@
 - **专题 60（电信批发语音 SIP Trunking 与国际短信验证码 A2P SMS OTP 防虚假流量注水 AIT 清算 Telecom Wholesale SIP Trunking & A2P SMS AIT Clawback & STIR/SHAKEN Mandate 架构：OTP 转化率熔断与 STIR/SHAKEN A-Level 签名令牌 `telecom_a2p_sms_ait_mandate_...` + Web IQ FCC RMD 监管库与 Passkey/WhatsApp 替代通道核验 vs 传统凭送达回执 DLR 盲付遭僵尸网络盗刷）**：**[《电信批发语音（SIP Trunking）与国际短信验证码（A2P SMS OTP）防“虚假流量注水（Artificially Inflated Traffic, AIT / SMS Pumping）”清算（Telecom Wholesale SIP Trunking & A2P SMS AIT Clawback & STIR/SHAKEN Mandate）架构：OTP 转化率熔断与 STIR/SHAKEN `A-Level` 签名令牌（`telecom_a2p_sms_ait_mandate_...` + Web IQ FCC RMD 监管库与 Passkey/WhatsApp 替代通道核验）vs 传统凭送达回执（DLR）盲付遭僵尸网络盗刷选型与原理解析 FAQ》](docs/telecom-wholesale-a2p-sms-ait-clawback-mandate-vs-botnet-toll-fraud-faq.md)**
 - **专题 61（连锁餐饮与零售加盟特许权使用费 Franchise Royalty、第三方外卖平台抽成剔除与储值卡跨店核销清算 Multi-Brand Restaurant & Retail Franchise POS Net-Sales Royalty & Gift-Card Clearing Mandate 架构：净实收营业额抽成与储值卡核销池划拨令牌 `franchise_royalty_giftcard_mandate_...` + Web IQ FDD Item 6/8 合规与合作社联采返利核验 vs 传统按外卖毛流水强抽特许费与总部截留储值金）**：**[《连锁餐饮与零售加盟特许权使用费（Franchise Royalty）、第三方外卖平台抽成剔除与储值卡跨店核销清算（Multi-Brand Restaurant & Retail Franchise POS Net-Sales Royalty & Gift-Card Clearing Mandate）架构：净实收营业额抽成与储值卡核销池划拨令牌（`franchise_royalty_giftcard_mandate_...` + Web IQ FDD Item 6/8 合规与合作社联采返利核验）vs 传统按外卖毛流水强抽特许费与总部截留储值金选型与原理解析 FAQ》](docs/franchise-royalty-pos-net-sales-gift-card-mandate-vs-gross-delivery-overcharge-faq.md)**
 - **专题 62（生物医药厂商业医保返利 PBM Formulary Rebate 与 HRSA 340B 公益药房防双重折扣套利清算 Pharmaceutical PBM Formulary Rebate & HRSA 340B Duplicate-Discount Exclusion Mandate 架构：NCPDP 处方号级去重与弃药冲正剔除令牌 `pharma_pbm_340b_rebate_mandate_...` + Web IQ HRSA OPAIS 药房库与透明 PBM 直通核验 vs 传统按汇总表盲付遭一药双吃倒亏）**：**[《生物医药厂商业医保返利（PBM Formulary Rebate）与 HRSA `340B` 公益药房防“双重折扣套利（Duplicate-Discount Clawback）”清算（Pharmaceutical PBM Formulary Rebate & HRSA 340B Duplicate-Discount Exclusion Mandate）架构：NCPDP 处方号级去重与弃药冲正剔除令牌（`pharma_pbm_340b_rebate_mandate_...` + Web IQ HRSA OPAIS 药房库与透明 PBM 直通核验）vs 传统按汇总表盲付遭一药双吃倒亏选型与原理解析 FAQ》](docs/pharma-pbm-formulary-rebate-340b-duplicate-discount-mandate-vs-double-dip-claim-faq.md)**
+- **专题 63（工业重装设备按产出工时计费 Equipment-as-a-Service / Power-by-the-Hour PBTH 与 ISO 20816 振动遥测可用率对冲 Industrial Equipment Power-by-the-Hour & Vibration-Telemetry Uptime SLA Mandate 架构：OPC-UA 有效负载工时与轴承频谱健康度令牌 `industrial_pbth_uptime_mandate_...` + Web IQ 工控安全通告与厂休错峰大修核验 vs 传统空转照扣钱与假维保签字）**：**[《工业重装设备按产出工时计费（Equipment-as-a-Service / Power-by-the-Hour, PBTH）与 ISO 20816 振动遥测可用率对冲（Industrial Equipment Power-by-the-Hour & Vibration-Telemetry Uptime SLA Mandate）架构：OPC-UA 有效负载工时与轴承频谱健康度令牌（`industrial_pbth_uptime_mandate_...` + Web IQ 工控安全通告与厂休错峰大修核验）vs 传统空转照扣钱与假维保签字选型与原理解析 FAQ》](docs/industrial-equipment-pbth-vibration-telemetry-mandate-vs-fixed-amc-downtime-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -218,6 +219,8 @@
 ![2026-11-09 连锁餐饮与零售加盟特许权使用费与储值卡跨店清算架构一图流](assets/svg/63-franchise-royalty-pos-gift-card-2026-11-09.svg)
 
 ![2026-11-09 生物医药 PBM 商业返利与 HRSA 340B 防双重折扣套利架构一图流](assets/svg/64-pharma-pbm-rebate-340b-duplicate-discount-2026-11-09.svg)
+
+![2026-11-09 工业重装设备按产出工时计费 PBTH 与振动遥测可用率托管架构一图流](assets/svg/65-industrial-equipment-pbth-vibration-sla-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

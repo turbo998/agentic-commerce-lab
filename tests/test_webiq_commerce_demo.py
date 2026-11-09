@@ -4686,6 +4686,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pharma-pbm-340b-sandbox", demo_zh)
 
+    def test_industrial_equipment_pbth_vibration_telemetry_mandate_vs_fixed_amc_downtime_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_industrial_equipment_pbth_vibration_policy,
+        )
+
+        # 1. OPC-UA productive load hours + ISO 20816 Zone A/B vibration + clean ICS -> 200 settled ($75,000)
+        commit_ok = evaluate_industrial_equipment_pbth_vibration_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pbth_cents, 7500000)
+
+        # 2. Fault-idle wall-clock billing or <99.0% SLA breach -> 403 blocked in 12ms
+        idle_403 = evaluate_industrial_equipment_pbth_vibration_policy(
+            opcua_productive_load_hours_and_sla_met=False,
+        )
+        self.assertFalse(idle_403.allowed)
+        self.assertEqual(idle_403.http_status, 403)
+        self.assertEqual(
+            idle_403.pbth_lane,
+            "UNPLANNED_DOWNTIME_OR_IDLE_WALLCLOCK_BILLING_BLOCKED",
+        )
+
+        # 3. Post-PM ISO 20816 Zone D vibration (7.8 mm/s fake PM sign-off) -> 422 blocked in 15ms
+        vib_422 = evaluate_industrial_equipment_pbth_vibration_policy(
+            iso20816_vibration_and_oil_tribology_passed=False,
+        )
+        self.assertFalse(vib_422.allowed)
+        self.assertEqual(vib_422.http_status, 422)
+        self.assertEqual(
+            vib_422.pbth_lane,
+            "ISO20816_VIBRATION_ZONE_D_OR_FAKE_PM_SIGN_OFF_BLOCKED",
+        )
+
+        # 4. Web IQ detects unpatched CISA ICS-CERT vulnerability or OEM safety recall -> 451 blocked in 310ms
+        ics_451 = evaluate_industrial_equipment_pbth_vibration_policy(
+            webiq_ics_safety_bulletin_and_spares_clean=False,
+        )
+        self.assertFalse(ics_451.allowed)
+        self.assertEqual(ics_451.http_status, 451)
+
+        # 5. Web IQ discovers scheduled-turnaround reman cartridge swap saving $11,200 ($63,800 net) -> 409 Confirm
+        turn_409 = evaluate_industrial_equipment_pbth_vibration_policy(
+            turnaround_window_reman_savings_cents=1120000,
+        )
+        self.assertFalse(turn_409.allowed)
+        self.assertEqual(turn_409.http_status, 409)
+        self.assertEqual(turn_409.settled_pbth_cents, 6380000)
+        self.assertEqual(turn_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["industrial_pbth_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("industrial-pbth-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
