@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+    <linearGradient id="webiqCol" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.88"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="720" fill="url(#bg)" rx="16"/>
+  <rect x="20" y="20" width="1160" height="680" rx="12" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <text x="44" y="56" fill="#38BDF8" font-size="13" font-weight="700" letter-spacing="1.5">2026-11-09 · AI SOLUTION ARCHITECT WEB GROUNDING SELECTION MATRIX</text>
+  <text x="44" y="86" fill="#F8FAFC" font-size="23" font-weight="800">When to Choose Microsoft Web IQ vs. Bright Data vs. Exa vs. Mainstream Search APIs</text>
+  <text x="44" y="110" fill="#94A3B8" font-size="13">Strict Provenance: Uncredentialed vendors marked not_measured (never coerced to 0); official_list_price verified 2026-11-09.</text>
+  <rect x="44" y="122" width="1112" height="3" fill="url(#accent)" rx="1.5"/>
+
+  <!-- Column Headers -->
+  <rect x="44" y="138" width="206" height="44" rx="8" fill="#1E293B" stroke="#334155"/>
+  <text x="58" y="165" fill="#E2E8F0" font-size="13" font-weight="700">SELECTION DIMENSION</text>
+
+  <rect x="258" y="138" width="250" height="44" rx="8" fill="url(#webiqCol)" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="272" y="158" fill="#38BDF8" font-size="13" font-weight="800">Microsoft Web IQ (G3)</text>
+  <text x="272" y="175" fill="#BAE6FD" font-size="11">/v3/search · /v3/browse · /v3/news · /v3/auto · /v3/mcp</text>
+
+  <rect x="516" y="138" width="212" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="530" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Bright Data (Unlocker/Browser)</text>
+  <text x="530" y="175" fill="#94A3B8" font-size="11">SERP API · Web Unlocker · Browser API</text>
+
+  <rect x="736" y="138" width="204" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="750" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Exa (Neural Search API)</text>
+  <text x="750" y="175" fill="#94A3B8" font-size="11">/search (lite/auto/fast/deep) · /contents</text>
+
+  <rect x="948" y="138" width="208" height="44" rx="8" fill="#1E293B" stroke="#475569"/>
+  <text x="962" y="158" fill="#F8FAFC" font-size="13" font-weight="700">Tavily / Parallel / Foundry Bing</text>
+  <text x="962" y="175" fill="#94A3B8" font-size="11">RAG Search &amp; Managed Grounding</text>
+
+  <!-- Row 1: Best-Fit Scenario -->
+  <rect x="44" y="190" width="206" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="216" fill="#38BDF8" font-size="12" font-weight="700">1. Best-Fit Scenario</text>
+  <text x="58" y="235" fill="#94A3B8" font-size="11">When to choose this</text>
+  <text x="58" y="251" fill="#94A3B8" font-size="11">product in production</text>
+
+  <rect x="258" y="190" width="250" height="82" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="212" fill="#F8FAFC" font-size="11" font-weight="700">Pre-Checkout Price &amp; Policy Guard</text>
+  <text x="270" y="230" fill="#E2E8F0" font-size="11">Caller code gets raw passage (&lt;=3000c)</text>
+  <text x="270" y="248" fill="#7DD3FC" font-size="11">before LLM; strips prompt injections</text>
+  <text x="270" y="264" fill="#34D399" font-size="11">&amp; trips recall breaker via riskLevel</text>
+
+  <rect x="516" y="190" width="212" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="212" fill="#E2E8F0" font-size="11" font-weight="700">Interactive Clicks &amp; Anti-Bot</text>
+  <text x="528" y="230" fill="#94A3B8" font-size="11">Clicking size/color modals, login</text>
+  <text x="528" y="248" fill="#94A3B8" font-size="11">flows, CAPTCHA solve, screenshots</text>
+  <text x="528" y="264" fill="#94A3B8" font-size="11">via remote Playwright Browser API</text>
+
+  <rect x="736" y="190" width="204" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="212" fill="#E2E8F0" font-size="11" font-weight="700">Semantic Lookalike Discovery</text>
+  <text x="748" y="230" fill="#94A3B8" font-size="11">Finding similar indie brands,</text>
+  <text x="748" y="248" fill="#94A3B8" font-size="11">research papers, and long-form</text>
+  <text x="748" y="264" fill="#94A3B8" font-size="11">highlights with neural embeddings</text>
+
+  <rect x="948" y="190" width="208" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="212" fill="#E2E8F0" font-size="11" font-weight="700">General RAG &amp; Chat Q&amp;A</text>
+  <text x="960" y="230" fill="#94A3B8" font-size="11">Tavily/Parallel for fast RAG;</text>
+  <text x="960" y="248" fill="#94A3B8" font-size="11">Foundry Bing for managed chat</text>
+  <text x="960" y="264" fill="#94A3B8" font-size="11">(no raw chunks to caller code)</text>
+
+  <!-- Row 2: Raw Passage & Freshness Contract -->
+  <rect x="44" y="280" width="206" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="306" fill="#38BDF8" font-size="12" font-weight="700">2. Passage &amp; Freshness</text>
+  <text x="58" y="325" fill="#94A3B8" font-size="11">Token FinOps, Live Crawl</text>
+  <text x="58" y="341" fill="#94A3B8" font-size="11">&amp; Rate-Limit Semantics</text>
+
+  <rect x="258" y="280" width="250" height="86" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="302" fill="#F8FAFC" font-size="11" font-weight="700">Harrier + DiskANN3 (680 tok, 7.1x cut)</text>
+  <text x="270" y="320" fill="#E2E8F0" font-size="11">Browse passage (query 1..1000c, '...')</text>
+  <text x="270" y="338" fill="#7DD3FC" font-size="11">liveCrawlSucceeded:false + 202 retryAfter</text>
+  <text x="270" y="354" fill="#FCD34D" font-size="11">429 caller cap vs 430 origin throttle</text>
+
+  <rect x="516" y="280" width="212" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="302" fill="#E2E8F0" font-size="11" font-weight="700">100% Live Proxy / Residential</text>
+  <text x="528" y="320" fill="#94A3B8" font-size="11">Returns full HTML/Markdown</text>
+  <text x="528" y="338" fill="#94A3B8" font-size="11">Caller must chunk &amp; sanitize</text>
+  <text x="528" y="354" fill="#94A3B8" font-size="11">Billed only on successful unlock</text>
+
+  <rect x="736" y="280" width="204" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="302" fill="#E2E8F0" font-size="11" font-weight="700">Hybrid Index + Livecrawl Fallback</text>
+  <text x="748" y="320" fill="#94A3B8" font-size="11">contents.highlights or full text</text>
+  <text x="748" y="338" fill="#94A3B8" font-size="11">maxAgeHours freshness control</text>
+  <text x="748" y="354" fill="#94A3B8" font-size="11">No native riskLevel safety tag</text>
+
+  <rect x="948" y="280" width="208" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="302" fill="#E2E8F0" font-size="11" font-weight="700">Credit / Mode Tiered Extraction</text>
+  <text x="960" y="320" fill="#94A3B8" font-size="11">Tavily basic (1 cr) / advanced (2 cr)</text>
+  <text x="960" y="338" fill="#FCA5A5" font-size="11">Parallel default mode is advanced</text>
+  <text x="960" y="354" fill="#FCA5A5" font-size="11">($5/1k); pass mode='fast' for $1/1k</text>
+
+  <!-- Row 3: Enterprise Governance & Auth -->
+  <rect x="44" y="374" width="206" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="400" fill="#38BDF8" font-size="12" font-weight="700">3. Auth &amp; Governance</text>
+  <text x="58" y="419" fill="#94A3B8" font-size="11">RBAC, Entitlements &amp;</text>
+  <text x="58" y="435" fill="#94A3B8" font-size="11">Telemetry Separation</text>
+
+  <rect x="258" y="374" width="250" height="82" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="396" fill="#F8FAFC" font-size="11" font-weight="700">ARM WebIQ.Grounding (G3 / global)</text>
+  <text x="270" y="414" fill="#FCA5A5" font-size="11">Requires Cognitive Services WebIQ User</text>
+  <text x="270" y="432" fill="#E2E8F0" font-size="11">(Owner/Contributor alone -&gt; HTTP 403)</text>
+  <text x="270" y="448" fill="#7DD3FC" font-size="11">clickUrl (human) vs citation (agent)</text>
+
+  <rect x="516" y="374" width="212" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="396" fill="#E2E8F0" font-size="11" font-weight="700">Zone Token / WSS Auth</text>
+  <text x="528" y="414" fill="#94A3B8" font-size="11">Per-zone proxy credentials</text>
+  <text x="528" y="432" fill="#94A3B8" font-size="11">Geo-targeting (country/city/ASN)</text>
+  <text x="528" y="448" fill="#94A3B8" font-size="11">Hosted MCP server available</text>
+
+  <rect x="736" y="374" width="204" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="396" fill="#E2E8F0" font-size="11" font-weight="700">x-api-key Header Auth</text>
+  <text x="748" y="414" fill="#94A3B8" font-size="11">Project-scoped SaaS API keys</text>
+  <text x="748" y="432" fill="#94A3B8" font-size="11">Domain include/exclude lists</text>
+  <text x="748" y="448" fill="#94A3B8" font-size="11">JSON Schema structured output</text>
+
+  <rect x="948" y="374" width="208" height="82" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="396" fill="#E2E8F0" font-size="11" font-weight="700">API Keys / Foundry RBAC</text>
+  <text x="960" y="414" fill="#94A3B8" font-size="11">Tavily tvly-* / Parallel x-api-key</text>
+  <text x="960" y="432" fill="#94A3B8" font-size="11">Foundry Bing uses Azure project</text>
+  <text x="960" y="448" fill="#94A3B8" font-size="11">managed identity &amp; RBAC</text>
+
+  <!-- Row 4: Official List Price & Measurement Honesty -->
+  <rect x="44" y="464" width="206" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="58" y="490" fill="#38BDF8" font-size="12" font-weight="700">4. Official List Price</text>
+  <text x="58" y="509" fill="#94A3B8" font-size="11">&amp; Live Latency Status</text>
+  <text x="58" y="525" fill="#FCD34D" font-size="11">(Verified 2026-11-09)</text>
+
+  <rect x="258" y="464" width="250" height="86" rx="8" fill="url(#webiqCol)" stroke="#0284C7"/>
+  <text x="270" y="486" fill="#34D399" font-size="11.5" font-weight="700">/web &amp; /news: $7/1k · /browse: $1/1k</text>
+  <text x="270" y="504" fill="#E2E8F0" font-size="11">Offline contract: 12/12 PASS (164ms sim)</text>
+  <text x="270" y="522" fill="#FCD34D" font-size="11">Live API key: absent -&gt; not_measured</text>
+  <text x="270" y="538" fill="#94A3B8" font-size="10.5">(Azure G3 provisioned; key unbound)</text>
+
+  <rect x="516" y="464" width="212" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="528" y="486" fill="#34D399" font-size="11.5" font-weight="700">$1.50 / 1k successful requests</text>
+  <text x="528" y="504" fill="#94A3B8" font-size="11">Unlocker Scale: 383k reqs ($499/mo)</text>
+  <text x="528" y="522" fill="#FCD34D" font-size="11">Live API key: absent -&gt; not_measured</text>
+  <text x="528" y="538" fill="#94A3B8" font-size="10.5">(Vendor claim: "under 1s" SERP)</text>
+
+  <rect x="736" y="464" width="204" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="748" y="486" fill="#34D399" font-size="11.5" font-weight="700">lite: $4/1k · auto/fast: $7/1k</text>
+  <text x="748" y="504" fill="#94A3B8" font-size="11">deep: $12–$15/1k · contents: $1/1k</text>
+  <text x="748" y="522" fill="#FCD34D" font-size="11">Live API key: absent -&gt; not_measured</text>
+  <text x="748" y="538" fill="#94A3B8" font-size="10.5">(Vendor claim: ~350ms fast mode)</text>
+
+  <rect x="948" y="464" width="208" height="86" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="960" y="486" fill="#34D399" font-size="11.5" font-weight="700">Tavily $0.008/cr · Parallel $1–$5/1k</text>
+  <text x="960" y="504" fill="#94A3B8" font-size="11">Brave $5/1k · Google $14–$35/1k</text>
+  <text x="960" y="522" fill="#FCD34D" font-size="11">Live API key: absent -&gt; not_measured</text>
+  <text x="960" y="538" fill="#94A3B8" font-size="10.5">(Zero fabricated latency bars)</text>
+
+  <!-- Bottom Architect Routing Summary -->
+  <rect x="44" y="564" width="1112" height="118" rx="10" fill="#0F172A" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="64" y="590" fill="#38BDF8" font-size="13" font-weight="800">AI SOLUTION ARCHITECT GOLDEN ROUTING RULES (3-MINUTE DECISION SUMMARY)</text>
+  <text x="64" y="614" fill="#F8FAFC" font-size="12">1. Unknown SKU URL -&gt; Pre-Checkout Price Lock: Call Web IQ /v3/search/web (passage, $7/1k) -&gt; verify shortlisted URL via /v3/browse ($1/1k).</text>
+  <text x="64" y="636" fill="#F8FAFC" font-size="12">2. Known Merchant Policy URL -&gt; Return Window Check: Call Web IQ /v3/browse (passage + query, $1/1k); pause on HTTP 202 retryAfter.</text>
+  <text x="64" y="658" fill="#F8FAFC" font-size="12">3. Autonomous Replenishment Safety Guard: Call Web IQ /v3/search/news + /v3/auto; trip AP2 breaker on riskLevel='veryHigh'.</text>
+  <text x="64" y="676" fill="#94A3B8" font-size="11.5">4. Complement with Exa ($4–$7/1k) for neural lookalike product discovery, or Bright Data Browser API when interactive DOM clicking/login is required.</text>
+</svg>

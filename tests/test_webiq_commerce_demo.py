@@ -3195,6 +3195,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("freight-dd-sla-sandbox", demo_zh)
 
+    def test_cold_chain_telemetry_escrow_vs_spoilage_dispute_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cold_chain_telemetry_escrow_policy,
+        )
+
+        # 1. Clean 5.4C within 2C-8C + valid hardware signature -> 200 settled ($24,000)
+        commit_ok = evaluate_cold_chain_telemetry_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_escrow_cents, 2400000)
+
+        # 2. Severe transit excursion (18.5C for 240m > 30m limit) -> 403 frozen in 12ms
+        spoil_403 = evaluate_cold_chain_telemetry_escrow_policy(
+            observed_max_temp_c=18.5,
+            excursion_minutes=240,
+        )
+        self.assertFalse(spoil_403.allowed)
+        self.assertEqual(spoil_403.http_status, 403)
+        self.assertEqual(
+            spoil_403.cold_chain_lane, "THERMAL_EXCURSION_SPOILAGE_ESCROW_FROZEN"
+        )
+
+        # 3. Missing hardware NFC/BLE datalogger signature -> 422 blocked in 15ms
+        nosig_422 = evaluate_cold_chain_telemetry_escrow_policy(
+            datalogger_signature_valid=False,
+        )
+        self.assertFalse(nosig_422.allowed)
+        self.assertEqual(nosig_422.http_status, 422)
+        self.assertEqual(
+            nosig_422.cold_chain_lane, "MISSING_SIGNED_IOT_DATALOGGER_ATTESTATION"
+        )
+
+        # 4. Web IQ detects active FDA/EMA lot recall -> 451 blocked in 310ms
+        fda_451 = evaluate_cold_chain_telemetry_escrow_policy(
+            webiq_fda_lot_recall_active=True,
+        )
+        self.assertFalse(fda_451.allowed)
+        self.assertEqual(fda_451.http_status, 451)
+
+        # 5. Minor excursion (9.2C / 25m) within stability budget applies $3,600 concession -> 409 Confirm
+        stab_409 = evaluate_cold_chain_telemetry_escrow_policy(
+            observed_max_temp_c=9.2,
+            excursion_minutes=25,
+            stability_discount_cents=360000,
+        )
+        self.assertFalse(stab_409.allowed)
+        self.assertEqual(stab_409.http_status, 409)
+        self.assertEqual(stab_409.settled_escrow_cents, 2040000)
+        self.assertEqual(stab_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cold_chain_telemetry_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cold-chain-telemetry-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

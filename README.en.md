@@ -67,6 +67,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 33 (Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Architecture: Pre-Cleared Tariff Lock `customs_ddp_tariff_mandate_...` + 10-Digit HTS/TARIC Verification vs. DDU Surprise Brokerage Shocks & De Minimis Undervaluation Seizures)**: **[Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Architecture: Pre-Cleared Tariff Lock (`customs_ddp_tariff_mandate_...` + 10-Digit HTS/TARIC Verification) vs. DDU Surprise Brokerage Shocks & De Minimis Undervaluation Seizures Selection FAQ](docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.en.md)**
 - **Topic 34 (Enterprise SaaS Seat True-Up & Active-Telemetry Mandate Architecture: SSO-Driven De-Provisioning Token `saas_seat_trueup_mandate_...` + Web IQ Public Tier Grounding vs. Silent Auto-Renewal Traps & Zombie Shelfware Waste)**: **[Enterprise SaaS Seat True-Up & Active-Telemetry Mandate Architecture: SSO-Driven De-Provisioning Token (`saas_seat_trueup_mandate_...` + Web IQ Public Tier Grounding) vs. Silent Auto-Renewal Traps & Zombie Shelfware Waste Selection FAQ](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md)**
 - **Topic 35 (Maritime Container Detention & Demurrage D&D & Port SLA Offset Mandate Architecture: eBL Free-Time Telemetry Token `freight_dd_sla_mandate_...` + Web IQ FMC OSRA Exemption Grounding vs. Blind Carrier Surcharge Settlement)**: **[Maritime Container Detention & Demurrage (D&D) & Port SLA Offset Mandate Architecture: eBL Free-Time Telemetry Token (`freight_dd_sla_mandate_...` + Web IQ FMC OSRA Exemption Grounding) vs. Blind Carrier Surcharge Settlement Selection FAQ](docs/freight-detention-demurrage-sla-mandate-vs-carrier-surcharge-faq.en.md)**
+- **Topic 36 (Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate Architecture: Cryptographic Temperature-Curve Release Token `cold_chain_telemetry_mandate_...` + Web IQ Stability & Recall Grounding vs. Blind Delivery-Scan Payout & Thermal Spoilage Disputes)**: **[Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate Architecture: Cryptographic Temperature-Curve Release Token (`cold_chain_telemetry_mandate_...` + Web IQ Stability & Recall Grounding) vs. Blind Delivery-Scan Payout & Thermal Spoilage Disputes Selection FAQ](docs/cold-chain-telemetry-escrow-vs-spoilage-dispute-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -137,6 +138,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-08 Enterprise SaaS Seat True-Up & Active-Telemetry Mandate Visual Summary](assets/svg/36-saas-seat-trueup-telemetry-mandate-2026-11-08.svg)
 
 ![2026-11-08 Maritime Container Detention & Demurrage & Port SLA Offset Visual Summary](assets/svg/37-freight-detention-demurrage-sla-2026-11-08.svg)
+
+![2026-11-09 Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Visual Summary](assets/svg/38-cold-chain-telemetry-escrow-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

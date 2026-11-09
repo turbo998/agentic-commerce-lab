@@ -1386,6 +1386,78 @@
         <div id="sbid-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cross-Border Customs HS-Code & DDP Landed-Cost Sandbox (Round 33 FAQ Companion) -->
+      <div class="finops-box" id="cross-border-customs-ddp-sandbox" style="margin-top:12px;border-color:#3B82F6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cust-title">🚢 跨境贸易海关编码 (HS Code) 与完税交货 (DDP Landed-Cost) 担保授权架构：预清关关税锁定令牌 (customs_ddp_tariff_mandate_...) vs 低报扣关与 DDU 到港补税决策器 (Round 33 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 报关金额 1:1 核对、DDP 预清关担保 ($6,900.00 上限) 与 10 位 HS 税号/FTA 原产地减免场景 (Cross-Border DDP Customs Scenario):</span></label>
+          <select id="cust-select" onchange="updateCrossBorderCustomsSandbox()">
+            <option value="cust_commit_ok">⚡ 发票与报关货值 1:1 吻合 ($6,000.00) + 官方 10 位 HS 编码合规 + DDP 完税总价 $6,420.00 (&lt;= $6,900 上限)：265ms 电子预清关绿通放行! (Act automatically)</option>
+            <option value="cust_under_403">🛑 阴阳发票低报逃税拦截：实际支付 $6,000.00 但卖方私自报关 $750.00 企图钻小额免税 (De Minimis) 空子 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="cust_ddu_422">🚨 缺失 DDP 预清关担保 (DDU 裸发) 拦截：卖方未锁定目的港完税交货担保 (ddp_preclearance_bound=False) → 15ms 触发 HTTP 422 阻断到岸天价滞港费风险!</option>
+            <option value="cust_hs_451">🛑 LLM 乱填 HS 税号 / 反倾销制裁拦截：Web IQ /v3/browse 核对官方 HTS/TARIC 税则检出编码错配或反倾销禁令 → 310ms 触发 HTTP 451 阻断!</option>
+            <option value="cust_fta_409">🧑‍⚖️ Web IQ 检出卖方持有认证自贸协定 (FTA) 原产地证可将关税从 12.5% ($750) 合法减免至 0% (总到岸价降至 $6,000.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cust-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Enterprise SaaS Seat True-Up & Active-Telemetry Sandbox (Round 34 FAQ Companion) -->
+      <div class="finops-box" id="saas-seat-trueup-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-saas-title">💻 企业 SaaS 软件席位续费与活跃度遥测调优 (Autonomous SaaS Seat True-Up)：SSO 活跃席位按需缩容授权令牌 (saas_seat_trueup_mandate_...) vs 僵尸席位浪费决策器 (Round 34 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. Entra ID / Okta 30 天活跃席位遥测 (320 活跃 vs 500 原账单)、年度涨幅上限 (&lt;=5%) 与 Web IQ 公开套餐核验场景 (SaaS Seat True-Up Scenario):</span></label>
+          <select id="saas-select" onchange="updateSaaSSeatTrueUpSandbox()">
+            <option value="saas_commit_ok">⚡ SCIM 已回收 180 个僵尸席位 (320 活跃席位 × $720/年 = $230,400.00) + 0% 涨幅 + SOC2 合规：265ms 自动续费，单笔立省 $129,600.00 (36%)! (Act automatically)</option>
+            <option value="saas_zombie_403">🛑 未缩容僵尸席位原单拦截：供应商按历史 500 席位 ($360,000.00) 请款，但 30 天 SSO 真实活跃仅 320 人 (含 180 个离职/闲置席位) → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="saas_uplift_422">🚨 供应商超合同上限暗中涨价拦截：错过 60 天通知期后账单暗藏 12% (1200 bps &gt; 500 bps / 5% CPI 上限) 霸王涨价 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="saas_trust_451">🛑 供应商安全合规挂起 / 旧套餐阉割拦截：Web IQ /v3/browse 检出供应商 Trust Center SOC2 异常或强制降级核心功能 → 310ms 触发 HTTP 451 合规熔断!</option>
+            <option value="saas_promo_409">🧑‍⚖️ Web IQ 检出供应商官网公开年付承诺池 (Committed-Use Annual Pool) 可为 320 席位额外再省 $18,400.00 (净付降至 $212,000.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="saas-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Maritime Freight Detention & Demurrage (D&D) & Port SLA Offset Sandbox (Round 35 FAQ Companion) -->
+      <div class="finops-box" id="freight-dd-sla-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-frt-title">⚓ 海运集装箱滞箱滞港费 (Detention &amp; Demurrage, D&amp;D) 与港口时效 SLA 对冲授权架构：电子提单 (eBL) 免堆期遥测令牌 (freight_dd_sla_mandate_...) vs 霸王附加费决策器 (Round 35 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 码头 EDI 315 在港天数 (4天 vs 5天合同免堆期)、长协锁价 ($5,800.00) 与 Web IQ 码头关闸/船期延误对冲场景 (Maritime Freight D&amp;D Scenario):</span></label>
+          <select id="frt-select" onchange="updateFreightDDSLASandbox()">
+            <option value="frt_commit_ok">⚡ EDI 315 核实第 4 天已提箱出闸 (&lt;= 5天合同免堆期) + 零违规杂费：265ms 精准结算 $5,800.00 长协运费并自动解锁电子提单 eBL! (Act automatically)</option>
+            <option value="frt_free_403">🛑 免堆期内虚假滞港费拦截：车队第 4 天 (&lt;= 5天免堆期) 已提箱出闸，货代仍索要 $4,200.00 D&amp;D 滞港费 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="frt_pss_422">🚨 未授权旺季附加费 (PSS) 拦截：货代在 $5,800.00 长协锁价外擅自叠加 $1,800.00 合同外旺季费 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="frt_fmc_451">🛑 码头关闸/无还箱约号免责拦截 (FMC OSRA)：Web IQ /v3/browse 核实超期系目的港码头关闸停摆，按 FMC 激励原则船司无权收费 → 310ms 触发 HTTP 451 免责拒付!</option>
+            <option value="frt_sla_409">🧑‍⚖️ Web IQ 核实船舶较长协准班 SLA 晚到 6 天，可自动抵扣 $950.00 延误违约金 (净运费从 $5,800.00 降至 $4,850.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="frt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Sandbox (Round 36 FAQ Companion) -->
+      <div class="finops-box" id="cold-chain-telemetry-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cc-title">❄️ 冷链医药/生鲜温控遥测托管 (Cold-Chain IoT Telemetry Escrow) 架构：硬件签名温度曲线令牌 (cold_chain_telemetry_mandate_...) vs 断链变质盲签决策器 (Round 36 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. NFC/BLE 探头全程温度积分 (2.0°C–8.0°C)、$24,000.00 生物制剂托管批次与 Web IQ 药监召回/稳定性折让场景 (Cold-Chain Telemetry Scenario):</span></label>
+          <select id="cc-select" onchange="updateColdChainTelemetrySandbox()">
+            <option value="cc_commit_ok">⚡ 全程 5.4°C 恒温零超温 + 探头硬件签名与批号合规：265ms 自动释放 $24,000.00 托管货款并签发 GSP 合规入库单! (Act automatically)</option>
+            <option value="cc_spoil_403">🛑 途中关冷机升温至 18.5°C 持续 240m (&gt;30m 红线，到货前复冻掩盖)：12ms 触发 HTTP 403 冻结 $24,000.00 变质货款并自动报案索赔!</option>
+            <option value="cc_nosig_422">🚨 仅凭普通快递妥投扫码 / 无硬件加密签名的 CSV/PDF 温度单：15ms 触发 HTTP 422 硬阻断放款!</option>
+            <option value="cc_fda_451">🛑 FDA / NMPA 批号紧急召回拦截：Web IQ /v3/browse 检出该生物制剂 Lot 批号存在监管召回通报 → 310ms 触发 HTTP 451 监管冻结!</option>
+            <option value="cc_stab_409">🧑‍⚖️ 卸货月台轻微超温 (9.2°C / 25m) 符合 Web IQ 原厂药典稳定性预算，可扣减 15% ($3,600.00) 效期折损 (净付 $20,400.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -1857,6 +1929,10 @@ function renderAll() {
   updateWarrantyClaimSandbox();
   updateB2BMOQSyndicateSandbox();
   updateB2BSealedBidSandbox();
+  updateCrossBorderCustomsSandbox();
+  updateSaaSSeatTrueUpSandbox();
+  updateFreightDDSLASandbox();
+  updateColdChainTelemetrySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -3706,6 +3782,206 @@ function updateB2BSealedBidSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 两阶段盲标哈希 + 独立实控人验真通过：逆向拍卖已自动授标 (VERIFIED_SEALED_BID_AWARD_EXECUTED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零底价泄露、零马甲陪标</strong>：最低有效盲标 <code>$38,200.00 &lt;= $45,000.00</code> 保留底价（直接节省 <code>$6,800.00</code>），SHA-256 承诺原像与 UBO 独立性全部核验通过，已自动签发采购合同并解冻未中标方保证金！" +
+    "</div>";
+}
+
+function updateCrossBorderCustomsSandbox() {
+  var selEl = document.getElementById("cust-select");
+  var outEl = document.getElementById("cust-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cust_under_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "跨境清关网关检出卖方提交的海关申报价值（<code>$750.00</code>）与真实商业发票支付金额（<code>$6,000.00</code>）严重不符！已在 <code>12ms</code> 内硬阻断伪造小额免税（De Minimis）低报闯关，杜绝目的港扣货没收与企业税务违规！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cust_ddu_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_DDP_PRECLEARANCE_OR_CAP_EXCEEDED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "当前跨境订单未绑定完税交货预清关担保（<code>ddp_preclearance_bound=False</code>，属于高风险 DDU 裸发）！网关已在 <code>15ms</code> 内拦截放款，防止货物到港后被清关行勒索天价代垫手续费与滞港费！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cust_hs_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INVALID_HS_CODE_OR_ANTIDUMPING_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核对目的国官方海关税则库（USITC HTS / EU TARIC），检出申报的 10 位 HS 编码归类错误或命中反倾销附加税禁令，已在 <code>310ms</code> 内阻断错误报关！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cust_fta_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PREFERENTIAL_FTA_ORIGIN_TARIFF_SAVINGS_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出该商品符合自由贸易协定（FTA）原产地规则且卖方持有加密验真的原产地证书，可将进口关税从 <code>12.5% ($750.00)</code> 合法减免至 <code>0%</code>（总到岸价降至 <code>$6,000.00</code>，单笔立省 <code>$750.00</code>），建议一键确认挂载 FTA 原产地证！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 发票报关 1:1 吻合 + 10 位官方税号与 DDP 预清关锁定完成 (VERIFIED_DDP_CUSTOMS_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零目的港补税、零扣关风险</strong>：商业发票与报关额 <code>$6,000.00</code> 完全一致，10 位税号 <code>8504.40.9510</code> 经官方税则库验真无误，已锁定 <code>$6,420.00 &lt;= $6,900.00</code> DDP 完税总到岸价并签发电子预清关舱单！" +
+    "</div>";
+}
+
+function updateSaaSSeatTrueUpSandbox() {
+  var selEl = document.getElementById("saas-select");
+  var outEl = document.getElementById("saas-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "saas_zombie_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SHELFWARE_ZOMBIE_SEATS_RENEWAL_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "FinOps 续费网关对账 Microsoft Entra ID / Okta SCIM 过去 30 天活跃日志，发现供应商续费账单（<code>500 席位 = $360,000.00</code>）中包含 <code>180 个</code> 离职或零登录僵尸席位（真实活跃仅 <code>320 席位</code>）！已在 <code>12ms</code> 内硬阻断原单扣款，立省 <code>$129,600.00</code> 僵尸税并自动触发 SCIM 席位回收！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "saas_uplift_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXCESSIVE_RENEWAL_PRICE_UPLIFT_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "供应商续费账单暗藏 <code>12.0% (1200 bps)</code> 年度单价涨幅，超出企业主服务协议（MSA）允许的 <code>5.0% (500 bps)</code> 最大 CPI 涨幅红线！网关已在 <code>15ms</code> 内拦截自动扣款并转交采购专家议价！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "saas_trust_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 VENDOR_TRUST_OR_TIER_DEPRECATION_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时穿透供应商官方 Trust Center 与版本变更公告，检出未闭环的子处理商安全通报或旧套餐核心 API 限流阉割，已在 <code>310ms</code> 内挂起年度续费！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "saas_promo_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PUBLIC_TIER_BENCHMARK_DISCOUNT_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对供应商官网公开定价表，发现切换至公开年付承诺池（Committed-Use Annual Pool）可在已省下 <code>$129,600.00</code> 僵尸席位的基础上，为 <code>320 个</code> 活跃席位额外再省 <code>$18,400.00</code>（总续费额从 <code>$230,400.00</code> 降至 <code>$212,000.00</code>），建议一键确认切换！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ SCIM 僵尸席位清零 + 涨幅与 SOC2 核验通过：已按 320 活跃席位自动续费 (VERIFIED_SAAS_TRUEUP_RENEWAL_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零僵尸席位浪费、零隐性涨价</strong>：已自动剔除 <code>180 个</code> 闲置席位，精准按 <code>320 个</code> 30 天真实活跃席位结算 <code>$230,400.00</code>（相比原 500 席位账单 <code>$360,000.00</code> 直接节省 <code>$129,600.00 / 36%</code>）！" +
+    "</div>";
+}
+
+function updateFreightDDSLASandbox() {
+  var selEl = document.getElementById("frt-select");
+  var outEl = document.getElementById("frt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "frt_free_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FREE_TIME_WINDOW_SURCHARGE_FRAUD_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "海运结算网关核对码头 EDI 315 提箱出闸时间戳，证实集装箱实际在港仅 <code>4 天</code>（未超长协 <code>5 天</code> 免堆期），货代索要的 <code>$4,200.00</code> 滞港费属于免堆期内违规计费！已在 <code>12ms</code> 内硬阻断拒付！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "frt_pss_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAPPROVED_ACCESSORIAL_RATE_CAP_EXCEEDED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "货代账单在长协锁定海运费（<code>$5,800.00</code>）之外擅自加收未授权的 <code>$1,800.00</code> 旺季附加费（PSS）！网关已在 <code>15ms</code> 内拦截超上限杂费！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "frt_fmc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FMC_OSRA_TERMINAL_LOCKOUT_EXEMPTION_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时取证目的港码头官方闸口公告，证实超期日系码头关闸停摆且无提还箱预约号；依据美国联邦海事委员会（FMC OSRA 激励原则），已在 <code>310ms</code> 内免责拒付 <code>$2,400.00</code> 压港费并自动生成抗辩证据包！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "frt_sla_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 VESSEL_SLA_DELAY_REBATE_OFFSET_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核对港口管理局船舶实际靠泊记录（ATA），证实该航次比长协承诺船期晚到 <code>6 天</code>，触发 <code>$950.00</code> 延误违约金抵扣条款（净结算运费从 <code>$5,800.00</code> 降至 <code>$4,850.00</code>），建议一键确认执行抵扣！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ EDI 315 免堆期合规 + 长协运价核验通过：已自动结算并解锁电子提单 (VERIFIED_EBL_FREIGHT_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零虚假滞箱费、秒级放单</strong>：集装箱第 <code>4 天 (&lt;= 5 天免堆期)</code> 合规提箱出闸，已精准放款 <code>$5,800.00</code> 长协基础海运费并原子移交 DCSA 电子提单（eBL）所有权！" +
+    "</div>";
+}
+
+function updateColdChainTelemetrySandbox() {
+  var selEl = document.getElementById("cc-select");
+  var outEl = document.getElementById("cc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cc_spoil_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 THERMAL_EXCURSION_SPOILAGE_ESCROW_FROZEN (12ms · Send to a human · synthetic_policy)：<br>" +
+      "NFC/BLE 硬件温控探头检出干线运输中途冷机关闭 4 小时，箱温飙升至 <code>18.5°C (&gt; 8.0°C 上限)</code> 持续 <code>240 分钟 (&gt; 30m 报废红线)</code>！虽卸货前被复冻至 5°C，网关仍已在 <code>12ms</code> 内硬冻结 <code>$24,000.00</code> 托管货款并自动生成货运险拒收索赔包！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cc_nosig_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_SIGNED_IOT_DATALOGGER_ATTESTATION (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "承运商仅提交普通快递妥投扫码或无硬件芯片 ECDSA 签名的 CSV/PDF 温度表（<code>datalogger_signature_valid=False</code>）！网关已在 <code>15ms</code> 内拦截放款，杜绝手工修图伪造恒温记录！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cc_fda_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FDA_LOT_RECALL_OR_LANE_BLACKOUT_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查 FDA/NMPA 药品安全通报，检出该生物制剂 Lot 批号存在稳定性异常召回（<code>webiq_fda_lot_recall_active=True</code>），已在 <code>310ms</code> 内冻结结算并通知质量受权人（QP）隔离封存！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cc_stab_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MINOR_EXCURSION_STABILITY_BUDGET_DISCOUNT_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "探头显示月台转运短暂升温至 <code>9.2°C</code> 持续 <code>25 分钟</code>；Microsoft Web IQ <code>/v3/browse</code> 核对原厂药典《热稳定性偏移说明书》证实未失活（允许 &lt;=10°C 达 60m），但触发 <code>15% ($3,600.00)</code> 货架期折损赔偿（净结算额降至 <code>$20,400.00</code>），建议 QP 一键确认折价签收！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全程 5.4°C 恒温 + 探头硬件签名与批号合规：已自动释放托管货款 (VERIFIED_COLD_CHAIN_TELEMETRY_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零断链隐患、秒级 GSP 归档</strong>：全程温度锁定在 <code>2.0°C–8.0°C</code>（峰值 <code>5.4°C</code>，<code>0 分钟</code>超温），已在 <code>265ms</code> 内全额释放 <code>$24,000.00</code> 货款并签发 GSP 合规电子入库凭据！" +
     "</div>";
 }
 

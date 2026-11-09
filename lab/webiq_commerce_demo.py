@@ -7644,6 +7644,101 @@ def evaluate_freight_detention_demurrage_sla_policy(
     )
 
 
+@dataclass(frozen=True)
+class ColdChainTelemetryEscrowVerdict:
+    """Round 36 verdict for Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate (Cryptographic Temperature-Curve Release Token + Web IQ Stability & Recall Grounding) vs Blind Delivery-Scan Payout & Thermal Spoilage Disputes."""
+
+    allowed: bool
+    http_status: int
+    cold_chain_lane: str
+    settled_escrow_cents: int
+    stability_concession_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cold_chain_telemetry_escrow_policy(
+    *,
+    batch_escrow_cents: int = 2400000,
+    observed_max_temp_c: float = 5.4,
+    max_allowed_temp_c: float = 8.0,
+    excursion_minutes: int = 0,
+    max_excursion_minutes: int = 30,
+    datalogger_signature_valid: bool = True,
+    webiq_fda_lot_recall_active: bool = False,
+    stability_discount_cents: int = 0,
+) -> ColdChainTelemetryEscrowVerdict:
+    """Evaluate cryptographic NFC/BLE datalogger signature, thermal excursion duration and peak bounds, Web IQ FDA/EMA lot recall check, and pharmacopoeia stability budget shelf-life concession."""
+
+    # 1. Missing Cryptographic NFC/BLE Datalogger Signature (Plain POD / Edited PDF) -> HTTP 422
+    if not datalogger_signature_valid:
+        return ColdChainTelemetryEscrowVerdict(
+            False,
+            422,
+            "MISSING_SIGNED_IOT_DATALOGGER_ATTESTATION",
+            0,
+            0,
+            "escrow_release_blocked_without_hardware_signed_nfc_ble_datalogger_payload",
+            15,
+            "Send to a human",
+        )
+
+    # 2. Severe Thermal Excursion Breach (e.g. 18.5C for 240m > 30m limit) -> HTTP 403
+    if (
+        observed_max_temp_c > max_allowed_temp_c
+        and excursion_minutes > max_excursion_minutes
+    ):
+        return ColdChainTelemetryEscrowVerdict(
+            False,
+            403,
+            "THERMAL_EXCURSION_SPOILAGE_ESCROW_FROZEN",
+            0,
+            0,
+            "severe_mid_transit_thermal_excursion_exceeded_spoilage_threshold_escrow_frozen",
+            12,
+            "Send to a human",
+        )
+
+    # 3. Active FDA / EMA Lot Recall or Lane Blackout Grounded via Web IQ -> HTTP 451
+    if webiq_fda_lot_recall_active:
+        return ColdChainTelemetryEscrowVerdict(
+            False,
+            451,
+            "FDA_LOT_RECALL_OR_LANE_BLACKOUT_HOLD",
+            0,
+            0,
+            "webiq_detected_active_regulatory_lot_recall_on_biologics_batch",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Minor Excursion Within Manufacturer Stability Budget Unlocking Shelf-Life Concession -> HTTP 409 Confirm
+    if stability_discount_cents > 0:
+        return ColdChainTelemetryEscrowVerdict(
+            False,
+            409,
+            "MINOR_EXCURSION_STABILITY_BUDGET_DISCOUNT_CONFIRM",
+            batch_escrow_cents - stability_discount_cents,
+            stability_discount_cents,
+            "webiq_confirmed_minor_excursion_within_stability_monograph_applying_15pct_concession",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Unbroken Cold-Chain Telemetry (2C-8C) -> Escrow Released
+    return ColdChainTelemetryEscrowVerdict(
+        True,
+        200,
+        "VERIFIED_COLD_CHAIN_TELEMETRY_SETTLED",
+        batch_escrow_cents,
+        0,
+        "hardware_signed_thermal_curve_and_lot_compliance_verified_for_escrow_release",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -9693,6 +9788,39 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "free_time_fraud_block_latency_ms": frt_free_403.latency_ms,
     }
 
+    cc_commit_ok = evaluate_cold_chain_telemetry_escrow_policy()
+    cc_spoil_403 = evaluate_cold_chain_telemetry_escrow_policy(
+        observed_max_temp_c=18.5,
+        excursion_minutes=240,
+    )
+    cc_nosig_422 = evaluate_cold_chain_telemetry_escrow_policy(
+        datalogger_signature_valid=False,
+    )
+    cc_fda_451 = evaluate_cold_chain_telemetry_escrow_policy(
+        webiq_fda_lot_recall_active=True,
+    )
+    cc_stab_409 = evaluate_cold_chain_telemetry_escrow_policy(
+        observed_max_temp_c=9.2,
+        excursion_minutes=25,
+        stability_discount_cents=360000,
+    )
+    cold_chain_telemetry_guards = {
+        "all_passed": (
+            cc_commit_ok.allowed
+            and cc_commit_ok.settled_escrow_cents == 2400000
+            and not cc_spoil_403.allowed
+            and cc_spoil_403.http_status == 403
+            and not cc_nosig_422.allowed
+            and cc_nosig_422.http_status == 422
+            and not cc_fda_451.allowed
+            and cc_fda_451.http_status == 451
+            and not cc_stab_409.allowed
+            and cc_stab_409.action_pill == "Confirm"
+        ),
+        "cold_chain_settlement_latency_ms": cc_commit_ok.latency_ms,
+        "spoilage_freeze_latency_ms": cc_spoil_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -9741,6 +9869,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_customs_ddp_guards": cross_border_customs_ddp_guards,
         "saas_seat_trueup_guards": saas_seat_trueup_guards,
         "freight_dd_sla_guards": freight_dd_sla_guards,
+        "cold_chain_telemetry_guards": cold_chain_telemetry_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -13288,6 +13417,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="frt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Sandbox (Round 36 FAQ Companion) -->
+      <div class="finops-box" id="cold-chain-telemetry-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cc-title">❄️ 冷链医药/生鲜温控遥测托管 (Cold-Chain IoT Telemetry Escrow) 架构：硬件签名温度曲线令牌 (cold_chain_telemetry_mandate_...) vs 断链变质盲签决策器 (Round 36 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. NFC/BLE 探头全程温度积分 (2.0°C–8.0°C)、$24,000.00 生物制剂托管批次与 Web IQ 药监召回/稳定性折让场景 (Cold-Chain Telemetry Scenario):</span></label>
+          <select id="cc-select" onchange="updateColdChainTelemetrySandbox()">
+            <option value="cc_commit_ok">⚡ 全程 5.4°C 恒温零超温 + 探头硬件签名与批号合规：265ms 自动释放 $24,000.00 托管货款并签发 GSP 合规入库单! (Act automatically)</option>
+            <option value="cc_spoil_403">🛑 途中关冷机升温至 18.5°C 持续 240m (&gt;30m 红线，到货前复冻掩盖)：12ms 触发 HTTP 403 冻结 $24,000.00 变质货款并自动报案索赔!</option>
+            <option value="cc_nosig_422">🚨 仅凭普通快递妥投扫码 / 无硬件加密签名的 CSV/PDF 温度单：15ms 触发 HTTP 422 硬阻断放款!</option>
+            <option value="cc_fda_451">🛑 FDA / NMPA 批号紧急召回拦截：Web IQ /v3/browse 检出该生物制剂 Lot 批号存在监管召回通报 → 310ms 触发 HTTP 451 监管冻结!</option>
+            <option value="cc_stab_409">🧑‍⚖️ 卸货月台轻微超温 (9.2°C / 25m) 符合 Web IQ 原厂药典稳定性预算，可扣减 15% ($3,600.00) 效期折损 (净付 $20,400.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -13762,6 +13909,7 @@ function renderAll() {{
   updateCrossBorderCustomsSandbox();
   updateSaaSSeatTrueUpSandbox();
   updateFreightDDSLASandbox();
+  updateColdChainTelemetrySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15761,6 +15909,56 @@ function updateFreightDDSLASandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ EDI 315 免堆期合规 + 长协运价核验通过：已自动结算并解锁电子提单 (VERIFIED_EBL_FREIGHT_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零虚假滞箱费、秒级放单</strong>：集装箱第 <code>4 天 (&lt;= 5 天免堆期)</code> 合规提箱出闸，已精准放款 <code>$5,800.00</code> 长协基础海运费并原子移交 DCSA 电子提单（eBL）所有权！" +
+    "</div>";
+}}
+
+function updateColdChainTelemetrySandbox() {{
+  var selEl = document.getElementById("cc-select");
+  var outEl = document.getElementById("cc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "cc_spoil_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 THERMAL_EXCURSION_SPOILAGE_ESCROW_FROZEN (12ms · Send to a human · synthetic_policy)：<br>" +
+      "NFC/BLE 硬件温控探头检出干线运输中途冷机关闭 4 小时，箱温飙升至 <code>18.5°C (&gt; 8.0°C 上限)</code> 持续 <code>240 分钟 (&gt; 30m 报废红线)</code>！虽卸货前被复冻至 5°C，网关仍已在 <code>12ms</code> 内硬冻结 <code>$24,000.00</code> 托管货款并自动生成货运险拒收索赔包！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cc_nosig_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_SIGNED_IOT_DATALOGGER_ATTESTATION (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "承运商仅提交普通快递妥投扫码或无硬件芯片 ECDSA 签名的 CSV/PDF 温度表（<code>datalogger_signature_valid=False</code>）！网关已在 <code>15ms</code> 内拦截放款，杜绝手工修图伪造恒温记录！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cc_fda_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FDA_LOT_RECALL_OR_LANE_BLACKOUT_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查 FDA/NMPA 药品安全通报，检出该生物制剂 Lot 批号存在稳定性异常召回（<code>webiq_fda_lot_recall_active=True</code>），已在 <code>310ms</code> 内冻结结算并通知质量受权人（QP）隔离封存！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cc_stab_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MINOR_EXCURSION_STABILITY_BUDGET_DISCOUNT_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "探头显示月台转运短暂升温至 <code>9.2°C</code> 持续 <code>25 分钟</code>；Microsoft Web IQ <code>/v3/browse</code> 核对原厂药典《热稳定性偏移说明书》证实未失活（允许 &lt;=10°C 达 60m），但触发 <code>15% ($3,600.00)</code> 货架期折损赔偿（净结算额降至 <code>$20,400.00</code>），建议 QP 一键确认折价签收！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全程 5.4°C 恒温 + 探头硬件签名与批号合规：已自动释放托管货款 (VERIFIED_COLD_CHAIN_TELEMETRY_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零断链隐患、秒级 GSP 归档</strong>：全程温度锁定在 <code>2.0°C–8.0°C</code>（峰值 <code>5.4°C</code>，<code>0 分钟</code>超温），已在 <code>265ms</code> 内全额释放 <code>$24,000.00</code> 货款并签发 GSP 合规电子入库凭据！" +
     "</div>";
 }}
 

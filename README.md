@@ -67,6 +67,7 @@
 - **专题 33（跨境贸易海关编码 HS Code 与完税交货 DDP Landed-Cost 担保授权架构：预清关关税锁定令牌 `customs_ddp_tariff_mandate_...` + 10 位税则归类验真 vs 传统到岸未完税 DDU 包裹扣关与低报逃税罚款）**：**[《跨境贸易海关编码（HS Code）与完税交货（DDP Landed-Cost）担保授权架构：预清关关税锁定令牌（`customs_ddp_tariff_mandate_...` + 10 位税则归类验真）vs 传统到岸未完税（DDU）包裹扣关与低报逃税罚款选型与原理解析 FAQ》](docs/cross-border-customs-hs-tariff-mandate-vs-seizure-faq.md)**
 - **专题 34（企业 SaaS 软件席位续费与活跃度遥测调优 Autonomous SaaS Seat True-Up & Active-Telemetry Mandate 架构：SSO 活跃席位按需缩容授权令牌 `saas_seat_trueup_mandate_...` + Web IQ 公开折扣基准核验 vs 传统静默自动续费与僵尸席位预算浪费）**：**[《企业 SaaS 软件席位续费与活跃度遥测调优（Autonomous SaaS Seat True-Up & Active-Telemetry Mandate）架构：SSO 活跃席位按需缩容授权令牌（`saas_seat_trueup_mandate_...` + Web IQ 公开折扣基准核验）vs 传统静默自动续费（Auto-Renewal Trap）与僵尸席位（Shelfware）预算浪费选型与原理解析 FAQ》](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md)**
 - **专题 35（海运集装箱滞箱滞港费 Detention & Demurrage D&D 与港口时效 SLA 对冲授权架构：电子提单 eBL 免堆期遥测扣减令牌 `freight_dd_sla_mandate_...` + Web IQ 船司停航与 FMC 免责核验 vs 传统盲目支付船代附加费账单与恶意压港）**：**[《海运集装箱滞箱滞港费（Detention & Demurrage, D&D）与港口时效 SLA 对冲授权架构：电子提单（eBL）免堆期遥测扣减令牌（`freight_dd_sla_mandate_...` + Web IQ 船司停航与 FMC 免责核验）vs 传统盲目支付船代附加费账单与恶意压港选型与原理解析 FAQ》](docs/freight-detention-demurrage-sla-mandate-vs-carrier-surcharge-faq.md)**
+- **专题 36（冷链医药与高端生鲜温控遥测托管 Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate 架构：硬件签名温度曲线释放令牌 `cold_chain_telemetry_mandate_...` + Web IQ 药典稳定性与召回核验 vs 传统盲目签收付款与断链变质扯皮）**：**[《冷链医药与高端生鲜温控遥测托管（Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate）架构：硬件签名温度曲线释放令牌（`cold_chain_telemetry_mandate_...` + Web IQ 药典稳定性与召回核验）vs 传统盲目签收付款与断链变质扯皮选型与原理解析 FAQ》](docs/cold-chain-telemetry-escrow-vs-spoilage-dispute-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -137,6 +138,8 @@
 ![2026-11-08 企业 SaaS 软件席位续费与活跃度遥测调优架构一图流](assets/svg/36-saas-seat-trueup-telemetry-mandate-2026-11-08.svg)
 
 ![2026-11-08 海运集装箱滞箱滞港费与港口时效 SLA 对冲授权架构一图流](assets/svg/37-freight-detention-demurrage-sla-2026-11-08.svg)
+
+![2026-11-09 冷链医药与高端生鲜温控遥测托管架构一图流](assets/svg/38-cold-chain-telemetry-escrow-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

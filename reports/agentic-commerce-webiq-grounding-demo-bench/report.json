@@ -245,6 +245,26 @@
     "sealed_bid_award_latency_ms": 265,
     "hash_tamper_block_latency_ms": 12
   },
+  "cross_border_customs_ddp_guards": {
+    "all_passed": true,
+    "ddp_settlement_latency_ms": 265,
+    "undervaluation_block_latency_ms": 12
+  },
+  "saas_seat_trueup_guards": {
+    "all_passed": true,
+    "trueup_renewal_latency_ms": 265,
+    "shelfware_block_latency_ms": 12
+  },
+  "freight_dd_sla_guards": {
+    "all_passed": true,
+    "ebl_settlement_latency_ms": 265,
+    "free_time_fraud_block_latency_ms": 12
+  },
+  "cold_chain_telemetry_guards": {
+    "all_passed": true,
+    "cold_chain_settlement_latency_ms": 265,
+    "spoilage_freeze_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
