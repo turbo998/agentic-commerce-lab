@@ -4462,6 +4462,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("maritime-bunker-fuel-sandbox", demo_zh)
 
+    def test_cpg_retail_slotting_endcap_planogram_mandate_vs_phantom_deduction_diversion_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cpg_retail_slotting_planogram_scanback_policy,
+        )
+
+        # 1. >=95% C2PA planogram CV + EDI 852 POS scan-back + live circular price -> 200 settled ($65,000)
+        commit_ok = evaluate_cpg_retail_slotting_planogram_scanback_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_promo_cents, 6500000)
+
+        # 2. Phantom endcap display (210/500 stores unbuilt in backroom) -> 403 blocked in 12ms
+        phan_403 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+            planogram_endcap_cv_compliance_verified=False,
+        )
+        self.assertFalse(phan_403.allowed)
+        self.assertEqual(phan_403.http_status, 403)
+        self.assertEqual(
+            phan_403.promo_lane,
+            "PHANTOM_ENDCAP_DISPLAY_OR_BACKROOM_STOCK_BLOCKED",
+        )
+
+        # 3. Off-invoice forward-buying diversion claim without EDI 852 POS scans -> 422 blocked in 15ms
+        fwd_422 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+            pos_scan_back_vs_forward_buy_verified=False,
+        )
+        self.assertFalse(fwd_422.allowed)
+        self.assertEqual(fwd_422.http_status, 422)
+        self.assertEqual(
+            fwd_422.promo_lane,
+            "FORWARD_BUYING_DIVERSION_OR_MISSING_EDI852_SCAN_BLOCKED",
+        )
+
+        # 4. Web IQ detects retailer kept $4.99 shelf price without passing promo discount -> 451 blocked in 310ms
+        circ_451 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+            webiq_retail_circular_promo_price_live=False,
+        )
+        self.assertFalse(circ_451.allowed)
+        self.assertEqual(circ_451.http_status, 451)
+
+        # 5. Web IQ discovers cross-category co-op endcap split saving $11,500 ($53,500 net) -> 409 Confirm
+        coop_409 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+            coop_cross_category_endcap_savings_cents=1150000,
+        )
+        self.assertFalse(coop_409.allowed)
+        self.assertEqual(coop_409.http_status, 409)
+        self.assertEqual(coop_409.settled_promo_cents, 5350000)
+        self.assertEqual(coop_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cpg_trade_promo_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cpg-trade-promo-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

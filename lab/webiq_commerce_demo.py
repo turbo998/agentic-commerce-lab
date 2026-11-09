@@ -9707,6 +9707,93 @@ def evaluate_maritime_bunker_fuel_coriolis_mfm_policy(
     )
 
 
+@dataclass(frozen=True)
+class CPGRetailTradePromoPlanogramVerdict:
+    allowed: bool
+    http_status: int
+    promo_lane: str
+    settled_promo_cents: int
+    coop_endcap_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cpg_retail_slotting_planogram_scanback_policy(
+    *,
+    trade_promo_cents: int = 6500000,
+    planogram_endcap_cv_compliance_verified: bool = True,
+    pos_scan_back_vs_forward_buy_verified: bool = True,
+    webiq_retail_circular_promo_price_live: bool = True,
+    coop_cross_category_endcap_savings_cents: int = 0,
+) -> CPGRetailTradePromoPlanogramVerdict:
+    """Evaluate C2PA computer-vision store endcap planogram compliance (>=95%), EDI 852 POS consumer scan-back vs off-invoice forward-buying diversion, Web IQ live digital circular & consumer promo price pass-through check, and cross-category co-op endcap arbitrage."""
+
+    # 1. Phantom Endcap Display (<95% Store CV Compliance / Stock Left in Backroom) -> HTTP 403
+    if not planogram_endcap_cv_compliance_verified:
+        return CPGRetailTradePromoPlanogramVerdict(
+            False,
+            403,
+            "PHANTOM_ENDCAP_DISPLAY_OR_BACKROOM_STOCK_BLOCKED",
+            0,
+            0,
+            "trade_deduction_blocked_due_to_unbuilt_store_endcaps_below_95pct_c2pa_planogram_compliance",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Forward-Buying Wholesale Diversion Claim Without EDI 852 POS Consumer Scans -> HTTP 422
+    if not pos_scan_back_vs_forward_buy_verified:
+        return CPGRetailTradePromoPlanogramVerdict(
+            False,
+            422,
+            "FORWARD_BUYING_DIVERSION_OR_MISSING_EDI852_SCAN_BLOCKED",
+            0,
+            0,
+            "promo_billback_rejected_for_off_invoice_forward_buying_without_edi852_pos_register_scans",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Retailer Failed to Pass Through Promo Price to Shoppers or Omitted Digital Circular via Web IQ -> HTTP 451
+    if not webiq_retail_circular_promo_price_live:
+        return CPGRetailTradePromoPlanogramVerdict(
+            False,
+            451,
+            "PROMO_PRICE_NON_PASSTHROUGH_OR_CIRCULAR_OMISSION_HOLD",
+            0,
+            0,
+            "webiq_detected_retailer_maintaining_regular_shelf_price_without_passing_promo_discount_to_consumers",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Cross-Category Co-Op Endcap Split Arbitrage -> HTTP 409 Confirm
+    if coop_cross_category_endcap_savings_cents > 0:
+        return CPGRetailTradePromoPlanogramVerdict(
+            False,
+            409,
+            "CO_OP_CROSS_CATEGORY_ENDCAP_SHARE_ARBITRAGE_CONFIRM",
+            trade_promo_cents - coop_cross_category_endcap_savings_cents,
+            coop_cross_category_endcap_savings_cents,
+            "webiq_found_complementary_brand_coop_endcap_share_saving_11500_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified >=95% C2PA Planogram Vision + EDI 852 POS Scan-Back + Live Promo Price -> Settled
+    return CPGRetailTradePromoPlanogramVerdict(
+        True,
+        200,
+        "VERIFIED_CPG_PLANOGRAM_SCANBACK_SETTLED",
+        trade_promo_cents,
+        0,
+        "c2pa_planogram_cv_and_edi852_pos_scanback_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -12452,6 +12539,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cappuccino_foam_block_latency_ms": bnk_foam_403.latency_ms,
     }
 
+    cpg_commit_ok = evaluate_cpg_retail_slotting_planogram_scanback_policy()
+    cpg_phan_403 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+        planogram_endcap_cv_compliance_verified=False,
+    )
+    cpg_fwd_422 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+        pos_scan_back_vs_forward_buy_verified=False,
+    )
+    cpg_circ_451 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+        webiq_retail_circular_promo_price_live=False,
+    )
+    cpg_coop_409 = evaluate_cpg_retail_slotting_planogram_scanback_policy(
+        coop_cross_category_endcap_savings_cents=1150000,
+    )
+    cpg_trade_promo_guards = {
+        "all_passed": (
+            cpg_commit_ok.allowed
+            and cpg_commit_ok.settled_promo_cents == 6500000
+            and not cpg_phan_403.allowed
+            and cpg_phan_403.http_status == 403
+            and not cpg_fwd_422.allowed
+            and cpg_fwd_422.http_status == 422
+            and not cpg_circ_451.allowed
+            and cpg_circ_451.http_status == 451
+            and not cpg_coop_409.allowed
+            and cpg_coop_409.action_pill == "Confirm"
+        ),
+        "promo_settlement_latency_ms": cpg_commit_ok.latency_ms,
+        "phantom_endcap_block_latency_ms": cpg_phan_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -12523,6 +12640,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mice_hotel_attrition_guards": mice_hotel_attrition_guards,
         "semiconductor_kgd_yield_guards": semiconductor_kgd_yield_guards,
         "maritime_bunker_fuel_guards": maritime_bunker_fuel_guards,
+        "cpg_trade_promo_guards": cpg_trade_promo_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -16484,6 +16602,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bnk-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive CPG Retail Trade-Promotion Slotting, Planogram & POS Scan-Back Mandate Sandbox (Round 59 FAQ Companion) -->
+      <div class="finops-box" id="cpg-trade-promo-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cpg-title">🛒 快消商超陈列费 (Slotting) 与促销返利视觉验真架构：C2PA 陈列图与 EDI 852 实扫令牌 (cpg_trade_promo_planogram_mandate_...) vs 幽灵堆头扣款决策器 (Round 59 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 500 家门店连锁商超季度端架与返利 ($65,000.00)、C2PA 视觉端架陈列图 (&gt;=95%)、EDI 852 收银实扫与 Web IQ 促销海报/联促场景 (CPG Trade-Promo Scenario):</span></label>
+          <select id="cpg-select" onchange="updateCPGTradePromoSandbox()">
+            <option value="cpg_commit_ok">⚡ 500 店 C2PA 端架视觉陈列 &gt;=95% 达标 + EDI 852 收银实扫 1:1 匹配 + 终端 $3.99 促销价生效：265ms 自动放款 $65,000.00! (Act automatically)</option>
+            <option value="cpg_phan_403">🛑 “幽灵端架”货压后仓扣款拦截：210 家门店根本未将促销品摆上黄金端架 (视觉达标率仅 58% &lt; 95%) → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="cpg_fwd_422">🚨 低价压货囤货与跨省串货拦截：商超企图按 10 周仓库囤货进货单 (Forward Buying) 而非收银台实扫量套取返利 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="cpg_circ_451">🛑 独吞让利补贴未降零售价冻结：Web IQ /v3/browse 巡检发现商超线上与门店仍维持 $4.99 原价，未传导 $1.00 厂家补贴 → 310ms 触发 HTTP 451!</option>
+            <option value="cpg_coop_409">🧑‍⚖️ Web IQ 检出与非竞争互补品牌 (薯片+饮料) 联合承包周末赛事主题端架可分摊场租立省 $11,500.00 (净付 $53,500.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="cpg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -16981,6 +17117,7 @@ function renderAll() {{
   updateMICEHotelAttritionSandbox();
   updateSemiconductorKGDYieldSandbox();
   updateMaritimeBunkerFuelSandbox();
+  updateCPGTradePromoSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -20124,6 +20261,55 @@ function updateMaritimeBunkerFuelSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 铅封 Coriolis MFM 真空净质量 500.0 MT + MARPOL 硫/铝硅达标 + 无污染通报全绿：已自动放款 (VERIFIED_MARITIME_BUNKER_MFM_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零泡沫短秤、零主机拉缸隐患</strong>：500 MT 保税 VLSFO 船燃已完成结算并归档 MARPOL Annex VI 电子燃油交付单（eBDN，<code>$320,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCPGTradePromoSandbox() {{
+  var selEl = document.getElementById("cpg-select");
+  var outEl = document.getElementById("cpg-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cpg_phan_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PHANTOM_ENDCAP_DISPLAY_OR_BACKROOM_STOCK_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "C2PA 巡店视觉与货架机器人扫描检出 500 家门店中有 210 家将促销商品压在后仓未摆上黄金端架（视觉陈列达标率仅 <code>58% &lt; 95%</code>，<code>planogram_endcap_cv_compliance_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$65,000.00</code> 幽灵端架扣款并自动生成 EDI 812 拒付抗辩包！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cpg_fwd_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FORWARD_BUYING_DIVERSION_OR_MISSING_EDI852_SCAN_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "商超试图按 10 周大宗仓库压货进货量（Off-Invoice Forward Buying）而非 <code>EDI 852</code> 收银台真实消费者条码扫描量申领特价补贴（<code>pos_scan_back_vs_forward_buy_verified == False</code>）。网关在 <code>15ms</code> 内当场拒付，彻底切断低价囤货倒卖外省串货链条！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cpg_circ_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PROMO_PRICE_NON_PASSTHROUGH_OR_CIRCULAR_OMISSION_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 巡检商超目标邮编区线上到家商城与当周电子 DM 海报（Digital Circular），发现商超截留了厂家 <code>$1.00/件</code> 让利补贴却仍维持 <code>$4.99</code> 原价售卖，立即冻结返利结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cpg_coop_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CO_OP_CROSS_CATEGORY_ENDCAP_SHARE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对商超联合促销刊例，发现与互补非竞争品牌（如薯片+苏打水周末看球主题端架）联合包场分摊陈列费可立省 <code>$11,500.00</code>（净支出从 <code>$65,000.00</code> 降至 <code>$53,500.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ C2PA 端架视觉陈列 &gt;=95% 达标 + EDI 852 收银实扫匹配 + 终端降价传导全绿：已自动放款 (VERIFIED_CPG_PLANOGRAM_SCANBACK_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零幽灵堆头扣款、零压货串货砸盘</strong>：500 家连锁商超季度端架与实扫促销补贴已完成清算并归档单店动销 ROI 账本（<code>$65,000.00</code>）！" +
     "</div>";
 }}
 
