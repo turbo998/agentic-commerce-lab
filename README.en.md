@@ -104,6 +104,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 70 (Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate Architecture: EFTCO `e-ECD` & Retained-Heel Tare Token `chemical_isotank_cleaning_mandate_...` + Web IQ IMDG `T-Code` & Nitrogen-Blanket Reload Grounding vs. Paper Wash Slips & Prior-Cargo Cross-Contamination)**: **[Bulk Chemical ISO-Tank ECD Cleaning, Heel-Residue Credit & ADR/IMDG Mandate Architecture: EFTCO `e-ECD` & Retained-Heel Tare Token (`chemical_isotank_cleaning_mandate_...` + Web IQ IMDG `T-Code` & Nitrogen-Blanket Reload Grounding) vs. Paper Wash Slips & Prior-Cargo Cross-Contamination Selection FAQ](docs/bulk-chemical-iso-tank-ecd-cleaning-heel-mandate-vs-cross-contamination-faq.en.md)**
 - **Topic 71 (Automotive Dealership Floorplan Financing, UWB/OBD-II VIN Lot-Audit & Curtailment Mandate Architecture: CAN-Bus VIN Geo-Fence & `e-MSO` Lien Token `auto_dealer_floorplan_mandate_...` + Web IQ NHTSA Stop-Sale & OEM In-Transit Subvention Grounding vs. Sold-Out-of-Trust Float Fraud & Double-Flooring)**: **[Automotive Dealership Floorplan Financing, UWB/OBD-II VIN Lot-Audit & Curtailment Mandate Architecture: CAN-Bus VIN Geo-Fence & `e-MSO` Lien Token (`auto_dealer_floorplan_mandate_...` + Web IQ NHTSA Stop-Sale & OEM In-Transit Subvention Grounding) vs. Sold-Out-of-Trust Float Fraud & Double-Flooring Selection FAQ](docs/automotive-dealership-floorplan-vin-telemetry-mandate-vs-sold-out-of-trust-fraud-faq.en.md)**
 - **Topic 72 (Programmatic DOOH Billboard Hardware Proof-of-Play, Luminance Sensor Gate & Mobile Footfall Multiplier Escrow vs. Flat-Lease Dark-Screen Overbilling)**: **[Programmatic DOOH Billboard Hardware Proof-of-Play, Luminance Sensor Gate & Mobile Footfall Multiplier Escrow vs. Flat-Lease Dark-Screen Overbilling: Architecture Selection & First-Principles FAQ](docs/programmatic-dooh-billboard-proof-of-play-mandate-vs-dark-screen-flat-lease-faq.en.md)**
+- **Topic 73 (Commercial Seed Biotech Trait Royalty, ISTA Germination & qPCR Genetic-Purity Escrow vs. Brown-Bag F2 Seed Piracy)**: **[Commercial Seed Biotech Trait Royalty, ISTA Germination & qPCR Genetic-Purity Escrow vs. Brown-Bag F2 Seed Piracy: Architecture Selection & First-Principles FAQ](docs/commercial-seed-biotech-trait-pcr-germination-mandate-vs-brown-bag-piracy-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -248,6 +249,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-09 Automotive Dealership Floorplan Financing, OBD-II VIN & e-MSO Mandate Visual Summary](assets/svg/73-automotive-dealership-floorplan-vin-audit-2026-11-09.svg)
 
 ![2026-11-09 Programmatic DOOH Billboard Proof-of-Play & Footfall Mandate Visual Summary](assets/svg/74-programmatic-dooh-billboard-proof-of-play-2026-11-09.svg)
+
+![2026-11-09 Commercial Seed Biotech Trait, ISTA Germination & PCR Purity Mandate Visual Summary](assets/svg/75-commercial-seed-biotech-trait-pcr-germination-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

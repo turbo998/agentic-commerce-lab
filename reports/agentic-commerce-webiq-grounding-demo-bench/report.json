@@ -445,6 +445,11 @@
     "dooh_settlement_latency_ms": 19,
     "dark_screen_block_latency_ms": 12
   },
+  "commercial_seed_guards": {
+    "all_passed": true,
+    "seed_settlement_latency_ms": 21,
+    "brown_bag_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

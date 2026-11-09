@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg75" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071a12"/>
+      <stop offset="50%" stop-color="#0f291e"/>
+      <stop offset="100%" stop-color="#173828"/>
+    </linearGradient>
+    <linearGradient id="accent75" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg75)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0b1914" stroke="#22c55e" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent75)"/>
+
+  <text x="60" y="72" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 73 · COMMERCIAL SEED BIOTECH TRAIT, ISTA GERMINATION &amp; PCR PURITY MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">商业种子生物性状授权、ISTA 发芽率与 PCR 基因纯度托管 vs 白袋套牌种盲采</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">ISTA Orange Certificate (&gt;=92% Germination) + qPCR Trait Event Purity + UPOV Royalty Token vs. Brown-Bag F2 Seed</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#231217" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统农资经销商预付款盲采模式 (Brown-Bag / Stale Lot)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 二代自留种套牌诈骗 (Brown-Bag F2)：用商品粮假冒杂交一代 F1 种子，大田减产 35%</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 隔年陈种发芽率暴跌：高温库房积压陈种发芽率仅 68%（标称 92%），导致缺苗绝收</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 生物性状基因漂移：抗虫/抗除草剂性状纯度仅 74%，喷洒除草剂后连片药害枯死</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 植物新品种权 (UPOV) 连带追偿：采购无授权白袋种导致大型农场被育种专利方重罚</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#311018" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型规模化农场春耕采买资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">万亩农场预付 $160,000 采购抗虫杂交玉米种，混入 20% 隔年陈种（发芽率 72%）</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">且未扣除早鸟预订与空袋回收补贴 → 补种与减产直接损失超 $54,000</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 套牌 F2 种拦截率：0% | • 低发芽率拒付率：0% | • 田间鉴定追责周期：120 天</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0d231a" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ ISTA 橙色证书 + qPCR 基因纯度 + UPOV 专利分润托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• qPCR/SNP 分子指纹门禁：转化体事件纯度 &lt; 98.0% 或检出 F2 分离杂合子立即 403 拒付</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ISTA 国际种子检验橙色证书：发芽率 &lt; 92% 或含水量 &gt; 13.0% 拒绝释放首付款</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• UPOV/PVP 性状授权分账：自动将种子繁育款与生物性状专利费（Trait Fee）原子清分</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 恶性杂草检疫红线：Web IQ 核验农业部植物检疫证书，严防检疫性豚草/菟丝子混入</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e1e" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断 F2 白袋套牌种与低发芽率陈种；Web IQ 发现叠加区域合作社</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">生物包衣统采补贴可省 $22,400.00（净付从 $160,000.00 降至 $137,600.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 套牌种/陈种拦截率：100% | • 专利侵权风险：0% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#132a20" stroke="#334155" stroke-width="1"/>
+  <text x="85" y="541" fill="#eab308" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">规模化农业种子采购 Agent 绝不能凭包装袋标签付钱！必须绑定【qPCR 基因纯度 &gt;=98% + ISTA 发芽率 &gt;=92% + UPOV 专利授权】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_commercial_seed_trait_pcr_policy`) · ISTA &amp; UPOV 1991 · 2026-11-09</text>
+</svg>

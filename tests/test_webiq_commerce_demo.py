@@ -5247,6 +5247,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("outdoor-dooh-billboard-sandbox", demo_zh)
 
+    def test_commercial_seed_biotech_trait_pcr_germination_mandate_vs_brown_bag_piracy_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_seed_trait_pcr_policy,
+        )
+
+        # 1. Verified qPCR F1 purity (>=98%) + ISTA germination (>=92%) + UPOV split -> 200 OK ($160,000)
+        commit_ok = evaluate_commercial_seed_trait_pcr_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_seed_cents, 16000000)
+
+        # 2. Brown-Bag F2 piracy or diluted biotech trait purity -> 403 blocked in 12ms
+        f2_403 = evaluate_commercial_seed_trait_pcr_policy(
+            qpcr_trait_purity_and_upov_license_verified=False,
+        )
+        self.assertFalse(f2_403.allowed)
+        self.assertEqual(f2_403.http_status, 403)
+        self.assertEqual(
+            f2_403.seed_lane,
+            "BROWN_BAG_F2_PIRACY_OR_TRAIT_DILUTION_BLOCKED",
+        )
+
+        # 3. Stale carryover seed with ISTA germination <92% -> 422 blocked in 15ms
+        germ_422 = evaluate_commercial_seed_trait_pcr_policy(
+            ista_germination_and_moisture_passed=False,
+        )
+        self.assertFalse(germ_422.allowed)
+        self.assertEqual(germ_422.http_status, 422)
+        self.assertEqual(
+            germ_422.seed_lane,
+            "STALE_SEED_LOW_ISTA_GERMINATION_OR_MOISTURE_BLOCKED",
+        )
+
+        # 4. Web IQ detects GDD frost-zone mismatch or noxious-weed quarantine -> 451 blocked in 310ms
+        eco_451 = evaluate_commercial_seed_trait_pcr_policy(
+            webiq_ecozone_and_phytosanitary_clean=False,
+        )
+        self.assertFalse(eco_451.allowed)
+        self.assertEqual(eco_451.http_status, 451)
+
+        # 5. Web IQ discovers co-op biological seed-treatment rebate saving $22,400 ($137,600 net) -> 409 Confirm
+        reb_409 = evaluate_commercial_seed_trait_pcr_policy(
+            coop_seed_treatment_rebate_savings_cents=2240000,
+        )
+        self.assertFalse(reb_409.allowed)
+        self.assertEqual(reb_409.http_status, 409)
+        self.assertEqual(reb_409.settled_seed_cents, 13760000)
+        self.assertEqual(reb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["commercial_seed_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("seed-trait-pcr-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

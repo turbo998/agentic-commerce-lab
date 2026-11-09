@@ -10923,6 +10923,91 @@ def evaluate_programmatic_dooh_proof_of_play_policy(
     )
 
 
+@dataclass(frozen=True)
+class CommercialSeedTraitPCRVerdict:
+    allowed: bool
+    http_status: int
+    seed_lane: str
+    settled_seed_cents: int
+    rebate_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_commercial_seed_trait_pcr_policy(
+    gross_seed_order_cents: int = 16000000,
+    qpcr_trait_purity_and_upov_license_verified: bool = True,
+    ista_germination_and_moisture_passed: bool = True,
+    webiq_ecozone_and_phytosanitary_clean: bool = True,
+    coop_seed_treatment_rebate_savings_cents: int = 0,
+) -> CommercialSeedTraitPCRVerdict:
+    """Evaluate qPCR/SNP F1 genetic purity (>=98%) & UPOV trait royalty token vs Brown-Bag F2 piracy, ISTA Orange Certificate germination (>=92%) & moisture (<=13%) vs carryover seed failure, Web IQ GDD maturity zone & noxious-weed quarantine check, and co-op biological seed-treatment rebate arbitrage."""
+    # 1. Brown-Bag F2 piracy or diluted biotech trait purity (<98.0%) -> HTTP 403
+    if not qpcr_trait_purity_and_upov_license_verified:
+        return CommercialSeedTraitPCRVerdict(
+            False,
+            403,
+            "BROWN_BAG_F2_PIRACY_OR_TRAIT_DILUTION_BLOCKED",
+            0,
+            gross_seed_order_cents,
+            "seed_settlement_blocked_due_to_qpcr_f2_segregation_or_unlicensed_upov_trait",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Stale carryover seed lot with ISTA germination <92% or moisture >13% -> HTTP 422
+    if not ista_germination_and_moisture_passed:
+        return CommercialSeedTraitPCRVerdict(
+            False,
+            422,
+            "STALE_SEED_LOW_ISTA_GERMINATION_OR_MOISTURE_BLOCKED",
+            0,
+            gross_seed_order_cents,
+            "lot_rejected_due_to_ista_orange_certificate_germination_below_92_pct_or_high_moisture",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects GDD frost-zone mismatch or noxious-weed quarantine -> HTTP 451
+    if not webiq_ecozone_and_phytosanitary_clean:
+        return CommercialSeedTraitPCRVerdict(
+            False,
+            451,
+            "GDD_ECOZONE_MISMATCH_OR_NOXIOUS_WEED_QUARANTINE_HOLD",
+            0,
+            gross_seed_order_cents,
+            "webiq_detected_unapproved_gdd_frost_zone_or_phytosanitary_noxious_weed_alert",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Regional Co-Op Biological Seed-Treatment Rebate Arbitrage -> HTTP 409 Confirm
+    if coop_seed_treatment_rebate_savings_cents > 0:
+        return CommercialSeedTraitPCRVerdict(
+            False,
+            409,
+            "COOP_BIOLOGICAL_SEED_TREATMENT_REBATE_ARBITRAGE_CONFIRM",
+            gross_seed_order_cents - coop_seed_treatment_rebate_savings_cents,
+            coop_seed_treatment_rebate_savings_cents,
+            "webiq_found_regional_coop_biological_seed_treatment_rebate_saving_22400_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified qPCR F1 Purity + ISTA >=92% Germination + Atomic UPOV Split -> Settled
+    return CommercialSeedTraitPCRVerdict(
+        True,
+        200,
+        "VERIFIED_COMMERCIAL_SEED_TRAIT_SETTLED",
+        gross_seed_order_cents,
+        0,
+        "qpcr_f1_purity_ista_germination_and_upov_royalty_split_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -14088,6 +14173,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "dark_screen_block_latency_ms": dooh_dark_403.latency_ms,
     }
 
+    seed_commit_ok = evaluate_commercial_seed_trait_pcr_policy()
+    seed_f2_403 = evaluate_commercial_seed_trait_pcr_policy(
+        qpcr_trait_purity_and_upov_license_verified=False,
+    )
+    seed_germ_422 = evaluate_commercial_seed_trait_pcr_policy(
+        ista_germination_and_moisture_passed=False,
+    )
+    seed_eco_451 = evaluate_commercial_seed_trait_pcr_policy(
+        webiq_ecozone_and_phytosanitary_clean=False,
+    )
+    seed_reb_409 = evaluate_commercial_seed_trait_pcr_policy(
+        coop_seed_treatment_rebate_savings_cents=2240000,
+    )
+    commercial_seed_guards = {
+        "all_passed": (
+            seed_commit_ok.allowed
+            and seed_commit_ok.settled_seed_cents == 16000000
+            and not seed_f2_403.allowed
+            and seed_f2_403.http_status == 403
+            and not seed_germ_422.allowed
+            and seed_germ_422.http_status == 422
+            and not seed_eco_451.allowed
+            and seed_eco_451.http_status == 451
+            and not seed_reb_409.allowed
+            and seed_reb_409.action_pill == "Confirm"
+        ),
+        "seed_settlement_latency_ms": seed_commit_ok.latency_ms,
+        "brown_bag_block_latency_ms": seed_f2_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -14173,6 +14288,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "chemical_isotank_guards": chemical_isotank_guards,
         "auto_floorplan_guards": auto_floorplan_guards,
         "outdoor_dooh_guards": outdoor_dooh_guards,
+        "commercial_seed_guards": commercial_seed_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -18386,6 +18502,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dooh-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Seed Biotech Trait, ISTA Germination & PCR Purity Mandate Sandbox (Round 73 FAQ Companion) -->
+      <div class="finops-box" id="seed-trait-pcr-sandbox" style="margin-top:12px;border-color:#22C55E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-seed-title">🌽 商业种子生物性状授权、ISTA 发芽率与 qPCR 基因纯度架构：分子指纹与 UPOV 分账令牌 (seed_trait_pcr_mandate_...) vs 白袋套牌种决策器 (Round 73 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 万亩农场春耕杂交抗虫玉米种采购 ($160,000.00)、qPCR 基因纯度 (&gt;=98%)、ISTA 橙色证书发芽率 (&gt;=92%) 与 Web IQ 审定区/检疫核验场景 (Commercial Seed Scenario):</span></label>
+          <select id="seed-select" onchange="updateSeedTraitPCRSandbox()">
+            <option value="seed_commit_ok">⚡ qPCR 基因纯度 99.1% + ISTA 橙色证书发芽率 95.0% + UPOV 专利原子分账：21ms 自动结算 $160,000.00! (Act automatically)</option>
+            <option value="seed_f2_403">🛑 二代商品粮套牌白袋种 (Brown-Bag F2) 或抗除草剂性状纯度不足 (&lt;98%) 拦截：严防大田减产与药害烧苗 → 12ms 触发 HTTP 403 拒付!</option>
+            <option value="seed_germ_422">🚨 高温库房积压隔年陈种拦截：ISTA 四唑染色与标准发芽率仅 72% (&lt;92% 门禁) 或含水量超 13.0% → 15ms 触发 HTTP 422 整批退货!</option>
+            <option value="seed_eco_451">🛑 跨有效积温带 (GDD) 违规引种或检出植物检疫恶性杂草 (豚草/假高粱) 冻结：Web IQ /v3/browse 检出越区晚熟风险 → 310ms 触发 HTTP 451!</option>
+            <option value="seed_reb_409">🧑‍⚖️ Web IQ 检出区域农垦合作社生物菌剂包衣统采补贴可立省 $22,400.00 (净付降至 $137,600.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="seed-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -18897,6 +19031,7 @@ function renderAll() {{
   updateChemicalISOTankSandbox();
   updateAutoFloorplanSandbox();
   updateOutdoorDOOHSandbox();
+  updateSeedTraitPCRSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -22726,6 +22861,55 @@ function updateOutdoorDOOHSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ TPM 帧缓冲上刊证明 + &gt;=3,500 nits 亮度达标 + 0.75x 客流倍率折算：已自动清算 (VERIFIED_DOOH_PROOF_OF_PLAY_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零黑屏盲投、零偷降亮度省电欺诈</strong>：900 次有效上刊已完成 OpenRTB 2.6 秒级结算（实付 <code>$10,125.00</code>，自动挽回 <code>$7,875.00</code>）！" +
+    "</div>";
+}}
+
+function updateSeedTraitPCRSandbox() {{
+  var selEl = document.getElementById("seed-select");
+  var outEl = document.getElementById("seed-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "seed_f2_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BROWN_BAG_F2_PIRACY_OR_TRAIT_DILUTION_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "分子检测实验室 <code>qPCR/SNP 基因芯片</code> 检出该批次混入二代自留商品粮（F2 分离世代）或抗草甘膦转化体纯度低于 <code>98.0%</code>（<code>qpcr_trait_purity_and_upov_license_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$160,000.00</code> 种子款，严防万亩大田减产与药害烧苗！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "seed_germ_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 STALE_SEED_LOW_ISTA_GERMINATION_OR_MOISTURE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "ISTA 橙色国际种子检验证书显示该批隔年陈种四唑活力与标准发芽率仅 <code>72.0%</code>（低于 <code>92.0%</code> 门禁）或水分超 <code>13.0%</code>（<code>ista_germination_and_moisture_passed == False</code>）。网关在 <code>15ms</code> 内拒付并触发整批退换！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "seed_eco_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 GDD_ECOZONE_MISMATCH_OR_NOXIOUS_WEED_QUARANTINE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查农业部品种审定积温带（GDD）公告与植物检疫名录，发现该晚熟品种超出目标农场无霜期积温上限或产地处于豚草检疫封锁区，立即冻结资金！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "seed_reb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 COOP_BIOLOGICAL_SEED_TREATMENT_REBATE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索区域农垦合作社春耕统采目录，发现叠加 <code>生物固氮菌剂包衣统采补贴</code> 与空袋回收计划可直接冲抵 <code>$22,400.00</code>（净付降至 <code>$137,600.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ qPCR 基因纯度 99.1% + ISTA 发芽率 95.0% + UPOV 专利原子清分：已自动交割 (VERIFIED_COMMERCIAL_SEED_TRAIT_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零白袋套牌种、零隔年陈种缺苗</strong>：万亩春耕杂交玉米种已完成制种款与 Trait 专利费原子清分并签发合规种植电子凭证（<code>$160,000.00</code>）！" +
     "</div>";
 }}
 
