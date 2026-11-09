@@ -3526,6 +3526,60 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ev-fleet-energy-sandbox", demo_zh)
 
+    def test_ai_dataset_sdk_spdx_sbom_royalty_mandate_vs_agpl_ip_contamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy,
+        )
+
+        # 1. Clean SPDX 3.0 permissive/commercial + signed C2PA chain -> 200 settled ($28,000)
+        commit_ok = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_royalty_cents, 2800000)
+
+        # 2. Hidden AGPL-3.0 or CC-BY-NC contamination -> 403 blocked in 12ms
+        agpl_403 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+            has_viral_agpl_or_nc_contamination=True,
+        )
+        self.assertFalse(agpl_403.allowed)
+        self.assertEqual(agpl_403.http_status, 403)
+        self.assertEqual(
+            agpl_403.ip_lane, "VIRAL_COPYLEFT_OR_NONCOMMERCIAL_LICENSE_BLOCKED"
+        )
+
+        # 3. Missing signed SPDX 3.0 AI-BOM or C2PA provenance -> 422 blocked in 15ms
+        nosbom_422 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+            signed_spdx_c2pa_provenance_valid=False,
+        )
+        self.assertFalse(nosbom_422.allowed)
+        self.assertEqual(nosbom_422.http_status, 422)
+        self.assertEqual(
+            nosbom_422.ip_lane, "MISSING_SIGNED_SPDX_SBOM_OR_C2PA_PROVENANCE"
+        )
+
+        # 4. Web IQ detects upstream DMCA lawsuit or W3C TDM opt-out -> 451 blocked in 310ms
+        dmca_451 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+            webiq_ip_litigation_and_tdm_clean=False,
+        )
+        self.assertFalse(dmca_451.allowed)
+        self.assertEqual(dmca_451.http_status, 451)
+
+        # 5. Web IQ deduplicates repackaged free Apache-2.0 shards saving $6,400 ($21,600 net) -> 409 Confirm
+        dir_409 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+            direct_rightsholder_savings_cents=640000,
+        )
+        self.assertFalse(dir_409.allowed)
+        self.assertEqual(dir_409.http_status, 409)
+        self.assertEqual(dir_409.settled_royalty_cents, 2160000)
+        self.assertEqual(dir_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["dataset_sbom_royalty_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("dataset-sbom-royalty-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

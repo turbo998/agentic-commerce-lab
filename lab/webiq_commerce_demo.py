@@ -8206,6 +8206,95 @@ def evaluate_ev_fleet_iso15118_charging_tariff_policy(
     )
 
 
+@dataclass(frozen=True)
+class AIDatasetSPDXRoyaltyVerdict:
+    """Round 42 verdict for AI Dataset & Commercial SDK SPDX SBOM & C2PA Royalty Mandate (Copyleft-Free SPDX 3.0 & C2PA Provenance Token + Web IQ DMCA/TDM & Direct-Rightsholder Grounding) vs Viral AGPL/CC-BY-NC Contamination & Broker Markup Fraud."""
+
+    allowed: bool
+    http_status: int
+    ip_lane: str
+    settled_royalty_cents: int
+    direct_rightsholder_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+    *,
+    dataset_license_cents: int = 2800000,
+    has_viral_agpl_or_nc_contamination: bool = False,
+    signed_spdx_c2pa_provenance_valid: bool = True,
+    webiq_ip_litigation_and_tdm_clean: bool = True,
+    direct_rightsholder_savings_cents: int = 0,
+) -> AIDatasetSPDXRoyaltyVerdict:
+    """Evaluate SPDX 3.0 viral copyleft / CC-BY-NC deny-list, signed AI-BOM & C2PA rightsholder provenance, Web IQ DMCA litigation & W3C TDM opt-out status, and direct-rightsholder deduplication arbitrage."""
+
+    # 1. Hidden Viral Copyleft (AGPL-3.0 / SSPL) or Non-Commercial (CC-BY-NC) Contamination -> HTTP 403
+    if has_viral_agpl_or_nc_contamination:
+        return AIDatasetSPDXRoyaltyVerdict(
+            False,
+            403,
+            "VIRAL_COPYLEFT_OR_NONCOMMERCIAL_LICENSE_BLOCKED",
+            0,
+            0,
+            "spdx_scan_detected_viral_agpl_or_cc_by_nc_noncommercial_contamination_blocked",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Missing Cryptographically Signed SPDX 3.0 AI-BOM or C2PA Provenance Manifest -> HTTP 422
+    if not signed_spdx_c2pa_provenance_valid:
+        return AIDatasetSPDXRoyaltyVerdict(
+            False,
+            422,
+            "MISSING_SIGNED_SPDX_SBOM_OR_C2PA_PROVENANCE",
+            0,
+            0,
+            "dataset_settlement_blocked_without_signed_spdx3_aibom_and_c2pa_rightsholder_chain",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Upstream DMCA Copyright Litigation or W3C TDM Opt-Out via Web IQ -> HTTP 451
+    if not webiq_ip_litigation_and_tdm_clean:
+        return AIDatasetSPDXRoyaltyVerdict(
+            False,
+            451,
+            "UPSTREAM_DMCA_LITIGATION_OR_TDM_OPTOUT_HOLD",
+            0,
+            0,
+            "webiq_detected_upstream_dmca_lawsuit_or_w3c_tdm_optout_reservation",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Public-Corpus Deduplication & Direct-Rightsholder Arbitrage -> HTTP 409 Confirm
+    if direct_rightsholder_savings_cents > 0:
+        return AIDatasetSPDXRoyaltyVerdict(
+            False,
+            409,
+            "DIRECT_RIGHTSHOLDER_LICENSING_ARBITRAGE_CONFIRM",
+            dataset_license_cents - direct_rightsholder_savings_cents,
+            direct_rightsholder_savings_cents,
+            "webiq_deduplicated_repackaged_apache2_shards_saving_6400_usd_via_direct_license",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Clean SPDX 3.0 + C2PA Rightsholder Royalty Settled
+    return AIDatasetSPDXRoyaltyVerdict(
+        True,
+        200,
+        "VERIFIED_SPDX_C2PA_ROYALTY_SETTLED",
+        dataset_license_cents,
+        0,
+        "spdx3_permissive_license_and_c2pa_provenance_verified_for_royalty_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -10441,6 +10530,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "demand_spike_block_latency_ms": ev_peak_403.latency_ms,
     }
 
+    ip_commit_ok = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy()
+    ip_agpl_403 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+        has_viral_agpl_or_nc_contamination=True,
+    )
+    ip_nosbom_422 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+        signed_spdx_c2pa_provenance_valid=False,
+    )
+    ip_dmca_451 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+        webiq_ip_litigation_and_tdm_clean=False,
+    )
+    ip_dir_409 = evaluate_ai_dataset_sdk_spdx_sbom_royalty_policy(
+        direct_rightsholder_savings_cents=640000,
+    )
+    dataset_sbom_royalty_guards = {
+        "all_passed": (
+            ip_commit_ok.allowed
+            and ip_commit_ok.settled_royalty_cents == 2800000
+            and not ip_agpl_403.allowed
+            and ip_agpl_403.http_status == 403
+            and not ip_nosbom_422.allowed
+            and ip_nosbom_422.http_status == 422
+            and not ip_dmca_451.allowed
+            and ip_dmca_451.http_status == 451
+            and not ip_dir_409.allowed
+            and ip_dir_409.action_pill == "Confirm"
+        ),
+        "ip_settlement_latency_ms": ip_commit_ok.latency_ms,
+        "agpl_contamination_block_latency_ms": ip_agpl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -10495,6 +10614,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "capex_lien_waiver_guards": capex_lien_waiver_guards,
         "healthcare_prior_auth_guards": healthcare_prior_auth_guards,
         "ev_fleet_energy_guards": ev_fleet_energy_guards,
+        "dataset_sbom_royalty_guards": dataset_sbom_royalty_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -14150,6 +14270,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ev-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive AI Dataset & Commercial SDK SPDX SBOM & C2PA Royalty Sandbox (Round 42 FAQ Companion) -->
+      <div class="finops-box" id="dataset-sbom-royalty-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ip-title">📜 AI 训练语料与商业 SDK 采购版权/开源合规架构：SPDX 3.0 与 C2PA 溯源令牌 (dataset_sbom_royalty_mandate_...) vs AGPL 染毒决策器 (Round 42 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. $28,000.00 商业语料包/SDK 授权、SPDX 3.0 协议扫描、C2PA 版权链与 Web IQ 诉讼/直签套利场景 (Dataset &amp; SDK IP Scenario):</span></label>
+          <select id="ip-select" onchange="updateDatasetSBOMRoyaltySandbox()">
+            <option value="ip_commit_ok">⚡ 100% 清洁商业许可 (无 AGPL/CC-BY-NC) + 签名 SPDX 3.0 AI-BOM 与 C2PA 版权链验真：265ms 自动放款 $28,000.00! (Act automatically)</option>
+            <option value="ip_agpl_403">🛑 AGPL / CC-BY-NC 传染性协议拦截：商业授权包内检出暗藏 AGPL-3.0 代码或 CC-BY-NC 禁商用语料 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="ip_nosbom_422">🚨 缺失签名 SPDX 3.0 AI-BOM 或 C2PA 版权链拦截：数据贩子无法提供原始作者授权签名 (违反 EU AI Act) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="ip_dmca_451">🛑 上游 DMCA 版权诉讼 / TDM 禁训声明拦截：Web IQ /v3/browse 检出源站点声明 tdm-reservation:1 或突变为闭源 SSPL → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="ip_dir_409">🧑‍⚖️ Web IQ 检出数据包 85% 为换皮免费 Apache-2.0 语料，剔除公域部分并直签原出版商可立省 $6,400.00 (净付降至 $21,600.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="ip-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -14630,6 +14768,7 @@ function renderAll() {{
   updateCapExLienWaiverSandbox();
   updateHealthcarePriorAuthSandbox();
   updateEVFleetEnergySandbox();
+  updateDatasetSBOMRoyaltySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -16929,6 +17068,56 @@ function updateEVFleetEnergySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 980 kW 削峰受控 (&lt;=1,200 kW) + ISO 15118 车机与电表验真通过：已自动结算 (VERIFIED_ISO15118_FLEET_ENERGY_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零需量罚款、零盗刷与占位损耗</strong>：全站峰值严格锁定在 <code>980 kW &lt;= 1,200 kW</code> 安全区间，车架号 X.509 证书与 Eichrecht 电量签名核验无误，265ms 自动放款 <code>$4,800.00</code>！" +
+    "</div>";
+}}
+
+function updateDatasetSBOMRoyaltySandbox() {{
+  var selEl = document.getElementById("ip-select");
+  var outEl = document.getElementById("ip-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "ip_agpl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 VIRAL_COPYLEFT_OR_NONCOMMERCIAL_LICENSE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "SPDX 3.0 许可证静态扫描检出该 <code>$28,000.00</code> 商业授权包内暗藏强传染性 <code>AGPL-3.0</code> 组件或禁止商用的 <code>CC-BY-NC-4.0</code> 语料分片！已在 <code>12ms</code> 内硬阻断付款，100% 保护企业自研大模型权重与闭源商业代码免遭开源传染！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ip_nosbom_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_SIGNED_SPDX_SBOM_OR_C2PA_PROVENANCE (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "数据供应商未能提供经密码学签名的 <code>SPDX 3.0 AI-BOM</code> 与 <code>C2PA 原始版权人授权链</code>（<code>signed_spdx_c2pa_provenance_valid=False</code>）！网关已在 <code>15ms</code> 内拒付来路不明的黑盒爬虫语料，严格满足《欧盟 AI 法案》训练数据透明度审计要求！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ip_dmca_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UPSTREAM_DMCA_LITIGATION_OR_TDM_OPTOUT_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时穿透上游代码仓库与出版商 W3C TDMRep 声明，检出源站点已设置 <code>tdm-reservation: 1</code> 禁止 AI 训练或存在未决 DMCA 版权诉讼，已在 <code>310ms</code> 内冻结采购！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ip_dir_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DIRECT_RIGHTSHOLDER_LICENSING_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对公域开源语料索引，发现数据中介售卖的 <code>$28,000.00</code> 语料包中有 85% 属于免费公开的 <code>Apache-2.0 / CC-BY-4.0</code> 学术集；剔除重复公域部分并直接向原始出版商采购独家增量可立省 <code>$6,400.00</code>（净结算额降至 <code>$21,600.00</code>），建议一键确认直签！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ SPDX 3.0 零传染许可 + C2PA 版权链验真通过：已自动释放版税授权款 (VERIFIED_SPDX_C2PA_ROYALTY_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零开源传染、零侵权隐患</strong>：全量分片通过商业许可白名单与 TDM 合规核验，已在 <code>265ms</code> 内全额结算 <code>$28,000.00</code> 并将 AI-BOM 根哈希写入模型注册表！" +
     "</div>";
 }}
 
