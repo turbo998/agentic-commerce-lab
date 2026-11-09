@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg81" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140917"/>
+      <stop offset="50%" stop-color="#28122d"/>
+      <stop offset="100%" stop-color="#38183b"/>
+    </linearGradient>
+    <linearGradient id="accent81" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg81)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#170c1b" stroke="#ec4899" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent81)"/>
+
+  <text x="60" y="72" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 79 · FILM &amp; TV PRODUCTION COMPLETION BOND, TAX-CREDIT &amp; SAG-AFTRA MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">影视流媒体完片担保、属地拍摄退税与工会分润锁箱托管 vs 剧组周度请款超支</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Script-Page Progress &amp; EFC Completion Bond + Qualified Local Spend Tax Credit + SAG-AFTRA/IATSE Lockbox vs. Blind Wire</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#261119" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统剧组周度预算表 (Cash-Flow Schedule) 盲付模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 进度滞后却烧光预算：钱已花掉 75%，实际完成剧本页数与有效镜头仅 42%，资金断裂烂尾</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 异地空壳公司痛失 30% 退税：视效或器材发票开在非退税州/国，政府影视退税资格全额泡汤</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 工会福利金欠缴触发留置权：漏交 IATSE/SAG-AFTRA 养老医保金，工会依法冻结流媒体发行权</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 群演/主演 AI 数字替身未授权：扫描演员面部生成补拍镜头却无工会数字签名，面临停播禁令</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#350f19" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型流媒体平台原创剧集制作拨款资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">平台向承制剧组拨付第 4 期制作款 $320,000，事后审计发现其中 $110,000 流向</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">非属地供应商导致痛失 25% 州政府退税，且拖欠工会福利金触发留置权索赔</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 烂尾超支拦截率：0% | • 非属地退税流失识别：0% | • 发行确权周期：60 天</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0d2322" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 完片担保 EFC + 属地退税 + 工会锁箱智能托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 场记日报与预计完工成本 (EFC) 门禁：核验每日拍摄进度报告 (DPR) 与 10% 预备费红线</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 属地合格支出 (QPE) 地理与税号校验：确保供应商属地注册且符合 25%–40% 影视退税条件</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 工会薪资福利 (P&amp;H) 与 AI 数字替身直付：自动预扣划转工会信托并校验 AI 扫描知情同意书</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 可转让影视退税凭证贴现套利：Web IQ 匹配属地退税保理贴现直接冲抵 $48,000 现金出资</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e26" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬拦截 EFC 突破 110% 完片担保红线或进度造假请款；15ms 拦截非属地无退税</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">支出与工会欠薪；Web IQ 属地退税凭证实时贴现立省 $48,000.00（净出资 $272,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 烂尾超支拦截率：100% | • 工会版权留置风险：0% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#211226" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#ec4899" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">影视剧集与广告制作拨款 Agent 绝不能按固定日历打款！必须绑定【DPR/EFC 完片进度 + QPE 属地退税 + 工会锁箱】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_film_tv_production_completion_bond_policy`) · SAG-AFTRA &amp; Completion Bond · 2026-11-09</text>
+</svg>

@@ -5583,6 +5583,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("subsea-dark-fiber-iru-sandbox", demo_zh)
 
+    def test_film_tv_production_completion_bond_tax_credit_mandate_vs_unaudited_drawdown_overrun_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_film_tv_production_completion_bond_policy,
+        )
+
+        # 1. Verified DPR/OCF progress + EFC within 10% bond + QPE & guild lockbox -> 200 OK ($320,000)
+        commit_ok = evaluate_film_tv_production_completion_bond_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_drawdown_cents, 32000000)
+
+        # 2. Behind-schedule shoot or EFC breaching 10% completion-bond contingency -> 403 blocked in 12ms
+        efc_403 = evaluate_film_tv_production_completion_bond_policy(
+            dpr_script_progress_and_efc_bond_verified=False,
+        )
+        self.assertFalse(efc_403.allowed)
+        self.assertEqual(efc_403.http_status, 403)
+        self.assertEqual(
+            efc_403.production_lane,
+            "EFC_COMPLETION_BOND_OVERRUN_OR_MISSING_DPR_OCF_BLOCKED",
+        )
+
+        # 3. Non-local spend forfeiting QPE tax credit or unpaid guild P&H fringes -> 422 blocked in 15ms
+        qpe_422 = evaluate_film_tv_production_completion_bond_policy(
+            qpe_local_spend_and_guild_fringe_locked=False,
+        )
+        self.assertFalse(qpe_422.allowed)
+        self.assertEqual(qpe_422.http_status, 422)
+        self.assertEqual(
+            qpe_422.production_lane,
+            "DISQUALIFIED_QPE_TAX_CREDIT_SPEND_OR_UNPAID_GUILD_FRINGE_BLOCKED",
+        )
+
+        # 4. Web IQ detects unconsented SAG-AFTRA AI Digital Replica or title defect -> 451 blocked in 310ms
+        sag_451 = evaluate_film_tv_production_completion_bond_policy(
+            webiq_sag_aftra_ai_replica_and_chain_of_title_clean=False,
+        )
+        self.assertFalse(sag_451.allowed)
+        self.assertEqual(sag_451.http_status, 451)
+
+        # 5. Web IQ discovers transferable tax-credit bridge monetization saving $48,000 ($272,000 net) -> 409 Confirm
+        tax_409 = evaluate_film_tv_production_completion_bond_policy(
+            transferable_tax_credit_monetization_savings_cents=4800000,
+        )
+        self.assertFalse(tax_409.allowed)
+        self.assertEqual(tax_409.http_status, 409)
+        self.assertEqual(tax_409.settled_drawdown_cents, 27200000)
+        self.assertEqual(tax_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["film_production_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("film-tv-completion-bond-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -11433,6 +11433,91 @@ def evaluate_subsea_dark_fiber_iru_otdr_policy(
     )
 
 
+@dataclass(frozen=True)
+class FilmTVProductionCompletionBondVerdict:
+    allowed: bool
+    http_status: int
+    production_lane: str
+    settled_drawdown_cents: int
+    tax_credit_or_overrun_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_film_tv_production_completion_bond_policy(
+    gross_weekly_drawdown_cents: int = 32000000,
+    dpr_script_progress_and_efc_bond_verified: bool = True,
+    qpe_local_spend_and_guild_fringe_locked: bool = True,
+    webiq_sag_aftra_ai_replica_and_chain_of_title_clean: bool = True,
+    transferable_tax_credit_monetization_savings_cents: int = 0,
+) -> FilmTVProductionCompletionBondVerdict:
+    """Evaluate Daily Production Report (DPR) script-eighths & OCF vault checksums vs EFC completion-bond overrun, Qualified Production Expenditure (QPE) local tax-credit residency & SAG-AFTRA/IATSE payroll lockbox vs credit loss/guild liens, Web IQ AI Digital-Replica consent rider check, and transferable tax-credit bridge monetization arbitrage."""
+    # 1. Behind-schedule shoot or Estimated Final Cost (EFC) breaching 10% completion-bond contingency -> HTTP 403
+    if not dpr_script_progress_and_efc_bond_verified:
+        return FilmTVProductionCompletionBondVerdict(
+            False,
+            403,
+            "EFC_COMPLETION_BOND_OVERRUN_OR_MISSING_DPR_OCF_BLOCKED",
+            0,
+            gross_weekly_drawdown_cents,
+            "drawdown_blocked_due_to_efc_exceeding_10pct_bond_contingency_or_unverified_ocf_camera_vault",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Out-of-jurisdiction vendor spend forfeiting 25%-40% QPE tax credit or unpaid guild P&H fringes -> HTTP 422
+    if not qpe_local_spend_and_guild_fringe_locked:
+        return FilmTVProductionCompletionBondVerdict(
+            False,
+            422,
+            "DISQUALIFIED_QPE_TAX_CREDIT_SPEND_OR_UNPAID_GUILD_FRINGE_BLOCKED",
+            0,
+            gross_weekly_drawdown_cents,
+            "wire_rejected_due_to_non_local_vendor_disqualifying_tax_credit_or_unescrowed_guild_pension_health",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects unconsented SAG-AFTRA AI Digital Replica scan or E&O title defect -> HTTP 451
+    if not webiq_sag_aftra_ai_replica_and_chain_of_title_clean:
+        return FilmTVProductionCompletionBondVerdict(
+            False,
+            451,
+            "UNCONSENTED_SAG_AFTRA_AI_REPLICA_OR_CHAIN_OF_TITLE_HOLD",
+            0,
+            gross_weekly_drawdown_cents,
+            "webiq_detected_missing_sag_aftra_ai_digital_replica_consent_rider_or_guild_security_lien",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Transferable Production Tax-Credit Bridge Monetization Arbitrage -> HTTP 409 Confirm
+    if transferable_tax_credit_monetization_savings_cents > 0:
+        return FilmTVProductionCompletionBondVerdict(
+            False,
+            409,
+            "TRANSFERABLE_PRODUCTION_TAX_CREDIT_MONETIZATION_ARBITRAGE_CONFIRM",
+            gross_weekly_drawdown_cents - transferable_tax_credit_monetization_savings_cents,
+            transferable_tax_credit_monetization_savings_cents,
+            "webiq_found_transferable_film_tax_credit_bridge_monetization_offsetting_48000_usd_cash",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified DPR/OCF Progress + QPE Tax-Credit Eligible + Guild P&H Lockbox -> Settled
+    return FilmTVProductionCompletionBondVerdict(
+        True,
+        200,
+        "VERIFIED_FILM_TV_PRODUCTION_DRAWDOWN_SETTLED",
+        gross_weekly_drawdown_cents,
+        0,
+        "dpr_ocf_efc_bond_qpe_local_spend_and_guild_lockbox_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -14778,6 +14863,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "collapsed_path_block_latency_ms": iru_kmz_403.latency_ms,
     }
 
+    flm_commit_ok = evaluate_film_tv_production_completion_bond_policy()
+    flm_efc_403 = evaluate_film_tv_production_completion_bond_policy(
+        dpr_script_progress_and_efc_bond_verified=False,
+    )
+    flm_qpe_422 = evaluate_film_tv_production_completion_bond_policy(
+        qpe_local_spend_and_guild_fringe_locked=False,
+    )
+    flm_sag_451 = evaluate_film_tv_production_completion_bond_policy(
+        webiq_sag_aftra_ai_replica_and_chain_of_title_clean=False,
+    )
+    flm_tax_409 = evaluate_film_tv_production_completion_bond_policy(
+        transferable_tax_credit_monetization_savings_cents=4800000,
+    )
+    film_production_guards = {
+        "all_passed": (
+            flm_commit_ok.allowed
+            and flm_commit_ok.settled_drawdown_cents == 32000000
+            and not flm_efc_403.allowed
+            and flm_efc_403.http_status == 403
+            and not flm_qpe_422.allowed
+            and flm_qpe_422.http_status == 422
+            and not flm_sag_451.allowed
+            and flm_sag_451.http_status == 451
+            and not flm_tax_409.allowed
+            and flm_tax_409.action_pill == "Confirm"
+        ),
+        "production_settlement_latency_ms": flm_commit_ok.latency_ms,
+        "efc_overrun_block_latency_ms": flm_efc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -14869,6 +14984,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aviation_saf_guards": aviation_saf_guards,
         "surgical_implant_guards": surgical_implant_guards,
         "subsea_iru_guards": subsea_iru_guards,
+        "film_production_guards": film_production_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19190,6 +19306,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="iru-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Film & TV Production Completion-Bond, Tax-Credit & SAG-AFTRA Mandate Sandbox (Round 79 FAQ Companion) -->
+      <div class="finops-box" id="film-tv-completion-bond-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-flm-title">🎬 影视与流媒体完片担保、属地拍摄退税与工会分润锁箱架构：DPR/EFC 进度与 QPE 退税令牌 (film_tv_bond_mandate_...) vs 周度盲付决策器 (Round 79 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 流媒体剧集第 4 周制作拨款 ($320,000.00)、DPR 场记进度与 OCF 素材入库、QPE 属地退税资格与 Web IQ 演员工会 AI 替身/退税贴现场景 (Film/TV Production Scenario):</span></label>
+          <select id="flm-select" onchange="updateFilmTVProductionSandbox()">
+            <option value="flm_commit_ok">⚡ DPR 剧本页数进度与 OCF 素材校验和匹配 + EFC 在 10% 预备费内 + 属地 QPE 与工会 P&amp;H 锁定：21ms 自动拨付 $320,000.00! (Act automatically)</option>
+            <option value="flm_efc_403">🛑 拍摄进度滞后或预计完工总成本 (EFC) 击穿 110% 完片担保红线拦截：钱烧掉 75% 仅拍完 42% 剧本页数 → 12ms 触发 HTTP 403 冻结!</option>
+            <option value="flm_qpe_422">🚨 非退税属地空壳供应商开票 (丧失 25%-40% 政府退税) 或漏交 IATSE/SAG-AFTRA 工会养老福利金 (P&amp;H) 拦截 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="flm_sag_451">🛑 未获演员 SAG-AFTRA 书面数字签名授权擅自生成 AI 数字替身 (Digital Replica) 补拍镜头或触发工会留置权冻结：Web IQ 310ms 触发 HTTP 451!</option>
+            <option value="flm_tax_409">🧑‍⚖️ Web IQ 对接属地可转让影视退税凭证 (Transferable Tax Credit) 实时保理贴现池当期直接冲抵 $48,000.00 现金出资 (净付 $272,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="flm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -19707,6 +19841,7 @@ function renderAll() {{
   updateAviationSAFSandbox();
   updateSurgicalImplantSandbox();
   updateSubseaIRUSandbox();
+  updateFilmTVProductionSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -23830,6 +23965,55 @@ function updateSubseaIRUSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ KMZ 50m 零同沟异构 + 双向 OTDR 14.8dB + 联盟 NDA 物权：已自动放款 (VERIFIED_SUBSEA_DARK_FIBER_IRU_SETTLED · 22ms · Act automatically):</strong><br>" +
     "• <strong>零同沟假双线、零二道贩子拔线风险</strong>：15 年双路由 400G/暗光纤 IRU 已完成光层验收并登记底层海缆联盟物权（<code>$520,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateFilmTVProductionSandbox() {{
+  var selEl = document.getElementById("flm-select");
+  var outEl = document.getElementById("flm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "flm_efc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 EFC_COMPLETION_BOND_OVERRUN_OR_MISSING_DPR_OCF_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "完片担保引擎比对 <code>数字场记日报 (DPR) / OCF 原始摄影素材库</code> 与成本报告，发现预计完工总成本（EFC）已击穿 <code>110% 完片担保红线</code>（现金消耗 75% 但剧本页数仅拍完 42%，<code>dpr_script_progress_and_efc_bond_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$320,000.00</code> 周度提款并启动完片监理介入！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "flm_qpe_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DISQUALIFIED_QPE_TAX_CREDIT_SPEND_OR_UNPAID_GUILD_FRINGE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "退税与薪资锁箱核验检出承制剧组将器材/视效采购发往非退税属地空壳公司（导致痛失 <code>25%–40% 合格属地支出 QPE 政府退税</code>），或未通过持牌薪资机构足额预扣 <code>SAG-AFTRA / IATSE 工会养老医保金 (P&amp;H)</code>（<code>qpe_local_spend_and_guild_fringe_locked == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "flm_sag_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCONSENTED_SAG_AFTRA_AI_REPLICA_OR_CHAIN_OF_TITLE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查演员工会 SAG-AFTRA 数字替身合规库与版权链（Chain of Title），检出后期团队未经演员书面数字签名授权擅自使用 3D 扫描生成 AI 补拍镜头，面临工会第一顺位发行留置权与禁播令，立即冻结放款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "flm_tax_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TRANSFERABLE_PRODUCTION_TAX_CREDIT_MONETIZATION_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 对接属地电影局认证的可转让影视退税凭证（Transferable Tax Credit）保理贴现池，可将已审计 QPE 退税额度实时变现直接冲抵当周 <code>$48,000.00</code> 现金出资（净拨付降至 <code>$272,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ DPR/OCF 完片进度达标 + 属地 QPE 退税锁定 + 工会 P&amp;H 锁箱清分：已自动拨款 (VERIFIED_FILM_TV_PRODUCTION_DRAWDOWN_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零中途烂尾超支、零工会发行留置风险</strong>：第 4 周剧集制作资金已完成工会福利分流与属地退税备案（<code>$320,000.00</code>）！" +
     "</div>";
 }}
 

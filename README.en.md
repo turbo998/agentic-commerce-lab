@@ -110,6 +110,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 76 (Aviation SAF Book-and-Claim Registry Retirement, ASTM D7566 Uplift & CORSIA Scope 1/3 Escrow vs. Unverified Green-Fare Surcharges)**: **[Aviation SAF Book-and-Claim Registry Retirement, ASTM D7566 Uplift & CORSIA Scope 1/3 Escrow vs. Unverified Green-Fare Surcharges: Architecture Selection & First-Principles FAQ](docs/aviation-saf-book-and-claim-corsia-scope3-mandate-vs-greenwashing-surcharge-faq.en.md)**
 - **Topic 77 (Hospital Surgical Implant Consignment, Point-of-Use UDI/RFID EHR Scan & GPO Price-Cap Escrow vs. Rep Charge-Sheet Overbilling)**: **[Hospital Surgical Implant Consignment, Point-of-Use UDI/RFID EHR Scan & GPO Price-Cap Escrow vs. Rep Charge-Sheet Overbilling: Architecture Selection & First-Principles FAQ](docs/hospital-surgical-implant-consignment-udi-rfid-mandate-vs-rep-sheet-overbilling-faq.en.md)**
 - **Topic 78 (Subsea & Terrestrial Dark-Fiber / 400G Wavelength IRU, Bidirectional OTDR & Diverse-Conduit KMZ Escrow vs. Collapsed-Path Broker Fraud)**: **[Subsea & Terrestrial Dark-Fiber / 400G Wavelength IRU, Bidirectional OTDR & Diverse-Conduit KMZ Escrow vs. Collapsed-Path Broker Fraud: Architecture Selection & First-Principles FAQ](docs/subsea-dark-fiber-iru-otdr-diverse-conduit-mandate-vs-collapsed-path-broker-faq.en.md)**
+- **Topic 79 (Film & TV Production Completion-Bond, Qualified Local Tax-Credit & SAG-AFTRA Lockbox Escrow vs. Unaudited Drawdown Overruns)**: **[Film & TV Production Completion-Bond, Qualified Local Tax-Credit & SAG-AFTRA Lockbox Escrow vs. Unaudited Drawdown Overruns: Architecture Selection & First-Principles FAQ](docs/film-tv-production-completion-bond-tax-credit-mandate-vs-unaudited-drawdown-overrun-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -266,6 +267,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-09 Hospital Surgical Implant Consignment, UDI/RFID & GPO Price-Cap Mandate Visual Summary](assets/svg/79-hospital-surgical-implant-consignment-udi-rfid-2026-11-09.svg)
 
 ![2026-11-09 Subsea & Dark-Fiber IRU, OTDR Loss & Diverse-Conduit KMZ Mandate Visual Summary](assets/svg/80-subsea-dark-fiber-iru-otdr-diverse-conduit-2026-11-09.svg)
+
+![2026-11-09 Film & TV Production Completion Bond, Tax-Credit & SAG-AFTRA Mandate Visual Summary](assets/svg/81-film-tv-production-completion-bond-tax-credit-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
