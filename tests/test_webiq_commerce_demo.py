@@ -3471,6 +3471,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("healthcare-prior-auth-sandbox", demo_zh)
 
+    def test_ev_fleet_iso15118_charging_tariff_mandate_vs_demand_charge_spike_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ev_fleet_iso15118_charging_tariff_policy,
+        )
+
+        # 1. Peak-shaved 980 kW (<= 1,200 kW cap) + ISO 15118 cert -> 200 settled ($4,800)
+        commit_ok = evaluate_ev_fleet_iso15118_charging_tariff_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_energy_cents, 480000)
+
+        # 2. Uncoordinated 3,000 kW spike (> 1,200 kW cap) -> 403 blocked in 12ms
+        peak_403 = evaluate_ev_fleet_iso15118_charging_tariff_policy(
+            depot_peak_load_kw=3000,
+        )
+        self.assertFalse(peak_403.allowed)
+        self.assertEqual(peak_403.http_status, 403)
+        self.assertEqual(
+            peak_403.energy_lane, "PEAK_DEMAND_CHARGE_SPIKE_CAP_EXCEEDED"
+        )
+
+        # 3. $850 overnight idle overstay surcharge or cloned RFID -> 422 blocked in 15ms
+        idle_422 = evaluate_ev_fleet_iso15118_charging_tariff_policy(
+            idle_overstay_surcharge_cents=85000,
+        )
+        self.assertFalse(idle_422.allowed)
+        self.assertEqual(idle_422.http_status, 422)
+        self.assertEqual(
+            idle_422.energy_lane,
+            "UNAUTHENTICATED_RFID_OR_IDLE_OVERSTAY_FEE_BLOCKED",
+        )
+
+        # 4. Web IQ detects ISO grid Flex Alert or expired DC meter calibration -> 451 blocked in 310ms
+        grid_451 = evaluate_ev_fleet_iso15118_charging_tariff_policy(
+            webiq_grid_and_meter_compliant=False,
+        )
+        self.assertFalse(grid_451.allowed)
+        self.assertEqual(grid_451.http_status, 451)
+
+        # 5. Web IQ discovers $1,150 Super-Off-Peak + V2G export savings ($3,650 net) -> 409 Confirm
+        v2g_409 = evaluate_ev_fleet_iso15118_charging_tariff_policy(
+            v2g_offpeak_savings_cents=115000,
+        )
+        self.assertFalse(v2g_409.allowed)
+        self.assertEqual(v2g_409.http_status, 409)
+        self.assertEqual(v2g_409.settled_energy_cents, 365000)
+        self.assertEqual(v2g_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ev_fleet_energy_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ev-fleet-energy-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

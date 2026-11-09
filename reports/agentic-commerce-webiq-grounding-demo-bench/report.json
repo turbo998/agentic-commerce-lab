@@ -285,6 +285,11 @@
     "healthcare_settlement_latency_ms": 265,
     "prior_auth_block_latency_ms": 12
   },
+  "ev_fleet_energy_guards": {
+    "all_passed": true,
+    "ev_settlement_latency_ms": 265,
+    "demand_spike_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
