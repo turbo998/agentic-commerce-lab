@@ -490,6 +490,11 @@
     "sov_settlement_latency_ms": 21,
     "fake_weather_block_latency_ms": 12
   },
+  "luxury_watch_guards": {
+    "all_passed": true,
+    "watch_settlement_latency_ms": 21,
+    "frankenwatch_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg84" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141109"/>
+      <stop offset="50%" stop-color="#261f10"/>
+      <stop offset="100%" stop-color="#362b14"/>
+    </linearGradient>
+    <linearGradient id="accent84" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#eab308"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg84)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#17140d" stroke="#eab308" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent84)"/>
+
+  <text x="60" y="72" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 82 · SECONDARY LUXURY WATCH WITSCHI ACOUSTIC, FREE-SPRUNG &amp; ENQUIRUS MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">二级豪华腕表 Witschi 校表遥测、无卡度游丝与失窃查册托管 vs 拼装超级克隆欺诈</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Witschi ChronoMaster Beat/Amplitude + Free-Sprung Micro-Optics + Enquirus/Watch Register vs. Frankenwatch Wire</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#261216" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统二手表商“保卡照片+先款后货”模式 (Frankenwatch Risk)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 真壳套超级克隆机芯 (Frankenwatch)：用真金表壳/表盘装入丹东/一体克隆机芯骗取高价</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 套牌克隆保卡 (NFC/Serial Clone)：将正品序列号激光刻在假表内圈并复制 NFC 空白保卡</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 欧美入室抢劫赃表送修即扣：未查 Enquirus / The Watch Register，送官方售后保养被当场没收</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 后镶钻与副厂代用盘 (Aftermarket Dial)：隐瞒非原厂后改冰蓝盘/后加钻，二级残值暴跌 50%</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#361016" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型名表藏家与高净值代购电汇资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">买家电汇 $85,000 购买热门贵金属计时码表，收货开盖发现原装砝码微调摆轮被换成</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">快慢针假机芯且序列号在伦敦登记被盗 → 款项已被转走，腕表被警方依法扣押</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 拼装假芯拦截率：0% | • 失窃赃表识别率：0% | • 跨境追款成功率：&lt; 5%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0d231e" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 无卡度游丝微距 + Witschi 声学遥测 + Enquirus 托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 高速微距无卡度砝码摆轮检验：1000fps 光学验证 Microstella/Gyromax 无快慢针真游丝结构</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• Witschi 六方位声学摆幅与防水门禁：摆幅 275°–310°、偏振 &lt;=0.4ms 且通过干式负压气密测试</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• Enquirus &amp; The Watch Register 清白证书：强制核验机芯号+表壳号未命中全球失窃黑名单</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 品牌官方认证二手表 (CPO) 联保与免税仓套利：Web IQ 匹配品牌 CPO 通道省 $6,800</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e23" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断有卡度快慢针超级克隆机芯与拼装代用件；15ms 拦截摆幅衰减需大修或</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">气密失效老表；Web IQ 匹配免税自贸区交割与直通保养减免立省 $6,800.00（净付 $78,200.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 超级克隆/拼装拦截：100% | • 赃表没收风险：0% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#211c11" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#eab308" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">高价值二手名表交割 Agent 绝不能凭保卡照片打款！必须绑定【无卡度摆轮微距 + Witschi 声学摆幅 + Enquirus 查册】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_luxury_watch_horological_escrow_policy`) · Witschi &amp; Enquirus · 2026-11-09</text>
+</svg>

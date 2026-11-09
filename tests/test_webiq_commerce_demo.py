@@ -5751,6 +5751,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("offshore-wind-sov-sandbox", demo_zh)
 
+    def test_luxury_watch_horological_witschi_enquirus_mandate_vs_frankenwatch_super_clone_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_luxury_watch_horological_escrow_policy,
+        )
+
+        # 1. Verified free-sprung balance + Witschi 292 deg amplitude + Enquirus clean -> 200 OK ($85,000)
+        commit_ok = evaluate_luxury_watch_horological_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_watch_cents, 8500000)
+
+        # 2. Frankenwatch super-clone movement or aftermarket dial -> 403 blocked in 12ms
+        frk_403 = evaluate_luxury_watch_horological_escrow_policy(
+            freesprung_balance_and_oem_dial_verified=False,
+        )
+        self.assertFalse(frk_403.allowed)
+        self.assertEqual(frk_403.http_status, 403)
+        self.assertEqual(
+            frk_403.watch_lane,
+            "FRANKENWATCH_SUPER_CLONE_MOVEMENT_OR_AFTERMARKET_DIAL_BLOCKED",
+        )
+
+        # 3. Low Witschi amplitude (<265 deg) or failed dry-vacuum seal -> 422 blocked in 15ms
+        amp_422 = evaluate_luxury_watch_horological_escrow_policy(
+            witschi_six_position_amplitude_and_pressure_passed=False,
+        )
+        self.assertFalse(amp_422.allowed)
+        self.assertEqual(amp_422.http_status, 422)
+        self.assertEqual(
+            amp_422.watch_lane,
+            "LOW_WITSCHI_AMPLITUDE_OR_FAILED_VACUUM_PRESSURE_BLOCKED",
+        )
+
+        # 4. Web IQ detects stolen serial in Enquirus / The Watch Register -> 451 blocked in 310ms
+        enq_451 = evaluate_luxury_watch_horological_escrow_policy(
+            webiq_enquirus_watch_register_clean=False,
+        )
+        self.assertFalse(enq_451.allowed)
+        self.assertEqual(enq_451.http_status, 451)
+
+        # 5. Web IQ discovers bonded vault & OEM overhaul credit saving $6,800 ($78,200 net) -> 409 Confirm
+        cpo_409 = evaluate_luxury_watch_horological_escrow_policy(
+            bonded_cpo_overhaul_credit_savings_cents=680000,
+        )
+        self.assertFalse(cpo_409.allowed)
+        self.assertEqual(cpo_409.http_status, 409)
+        self.assertEqual(cpo_409.settled_watch_cents, 7820000)
+        self.assertEqual(cpo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["luxury_watch_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("luxury-watch-horological-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
