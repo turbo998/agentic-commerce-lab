@@ -11518,6 +11518,91 @@ def evaluate_film_tv_production_completion_bond_policy(
     )
 
 
+@dataclass(frozen=True)
+class MunicipalSnowPlowAVLSaltVerdict:
+    allowed: bool
+    http_status: int
+    snow_lane: str
+    settled_snow_cents: int
+    brine_or_fraud_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_municipal_snow_plow_avl_salt_policy(
+    gross_storm_invoice_cents: int = 6800000,
+    hydraulic_blade_down_and_active_speed_verified: bool = True,
+    closed_loop_auger_salt_tonnage_reconciled: bool = True,
+    webiq_nws_snowfall_and_epa_chloride_clean: bool = True,
+    prewet_brine_anti_icing_savings_cents: int = 0,
+) -> MunicipalSnowPlowAVLSaltVerdict:
+    """Evaluate J1939 hydraulic plow-blade-down sensor & active working speed (5-22 mph) vs blade-up ghost-pass/idling fraud, geofenced closed-loop spreader auger salt mass vs off-site salt diversion, Web IQ NOAA ASOS snowfall trigger & EPA watershed chloride cap check, and 23.3% pre-wet brine anti-icing arbitrage."""
+    # 1. Blade-up ghost-pass driving or >15 min stationary parking-lot heater idling -> HTTP 403
+    if not hydraulic_blade_down_and_active_speed_verified:
+        return MunicipalSnowPlowAVLSaltVerdict(
+            False,
+            403,
+            "BLADE_UP_GHOST_PASS_OR_STATIONARY_IDLING_PADDING_BLOCKED",
+            0,
+            gross_storm_invoice_cents,
+            "snow_payout_blocked_due_to_plow_blade_raised_ghost_pass_or_stationary_idling_hours",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Diverted off-site de-icing salt or manual scale ticket exceeding geofenced auger integral -> HTTP 422
+    if not closed_loop_auger_salt_tonnage_reconciled:
+        return MunicipalSnowPlowAVLSaltVerdict(
+            False,
+            422,
+            "DIVERTED_SALT_TONNAGE_OR_UNRECONCILED_AUGER_PULSE_BLOCKED",
+            0,
+            gross_storm_invoice_cents,
+            "invoice_rejected_due_to_salt_ticket_exceeding_geofenced_closed_loop_auger_tonnage",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects snowfall below contract trigger or EPA watershed chloride breach -> HTTP 451
+    if not webiq_nws_snowfall_and_epa_chloride_clean:
+        return MunicipalSnowPlowAVLSaltVerdict(
+            False,
+            451,
+            "UNTRIGGERED_SNOWFALL_MOBILIZATION_OR_EPA_CHLORIDE_HOLD",
+            0,
+            gross_storm_invoice_cents,
+            "webiq_detected_nws_asos_snowfall_below_trigger_threshold_or_epa_watershed_chloride_violation",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Pavement-Temp 23.3% Pre-Wet Brine Anti-Icing Arbitrage -> HTTP 409 Confirm
+    if prewet_brine_anti_icing_savings_cents > 0:
+        return MunicipalSnowPlowAVLSaltVerdict(
+            False,
+            409,
+            "PREWET_BRINE_ANTI_ICING_30PCT_SALT_REDUCTION_CONFIRM",
+            gross_storm_invoice_cents - prewet_brine_anti_icing_savings_cents,
+            prewet_brine_anti_icing_savings_cents,
+            "webiq_found_23_3_pct_prewet_brine_calibration_cutting_salt_bounce_by_30pct_saving_11400_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Hydraulic Blade-Down + Geofenced Auger Tonnage + NWS/EPA Clean -> Settled
+    return MunicipalSnowPlowAVLSaltVerdict(
+        True,
+        200,
+        "VERIFIED_SNOW_PLOW_AVL_SALT_SETTLED",
+        gross_storm_invoice_cents,
+        0,
+        "j1939_blade_down_geofenced_auger_salt_and_nws_snowfall_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -14893,6 +14978,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "efc_overrun_block_latency_ms": flm_efc_403.latency_ms,
     }
 
+    snw_commit_ok = evaluate_municipal_snow_plow_avl_salt_policy()
+    snw_gho_403 = evaluate_municipal_snow_plow_avl_salt_policy(
+        hydraulic_blade_down_and_active_speed_verified=False,
+    )
+    snw_aug_422 = evaluate_municipal_snow_plow_avl_salt_policy(
+        closed_loop_auger_salt_tonnage_reconciled=False,
+    )
+    snw_nws_451 = evaluate_municipal_snow_plow_avl_salt_policy(
+        webiq_nws_snowfall_and_epa_chloride_clean=False,
+    )
+    snw_brn_409 = evaluate_municipal_snow_plow_avl_salt_policy(
+        prewet_brine_anti_icing_savings_cents=1140000,
+    )
+    snow_plow_avl_guards = {
+        "all_passed": (
+            snw_commit_ok.allowed
+            and snw_commit_ok.settled_snow_cents == 6800000
+            and not snw_gho_403.allowed
+            and snw_gho_403.http_status == 403
+            and not snw_aug_422.allowed
+            and snw_aug_422.http_status == 422
+            and not snw_nws_451.allowed
+            and snw_nws_451.http_status == 451
+            and not snw_brn_409.allowed
+            and snw_brn_409.action_pill == "Confirm"
+        ),
+        "snow_settlement_latency_ms": snw_commit_ok.latency_ms,
+        "ghost_pass_block_latency_ms": snw_gho_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -14985,6 +15100,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "surgical_implant_guards": surgical_implant_guards,
         "subsea_iru_guards": subsea_iru_guards,
         "film_production_guards": film_production_guards,
+        "snow_plow_avl_guards": snow_plow_avl_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19324,6 +19440,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="flm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Municipal & Commercial Snow-Plow AVL, Blade-Down & Salt-Spreader Mandate Sandbox (Round 80 FAQ Companion) -->
+      <div class="finops-box" id="snow-plow-avl-salt-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-snw-title">❄️ 冬季除雪撒布车、J1939 铲刀落地遥测与闭环融雪盐计量架构：铲刀压力与围栏绞龙令牌 (snow_plow_avl_mandate_...) vs 空跑翘铲决策器 (Round 80 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 物流枢纽园区单场暴风雪除冰请款 ($68,000.00)、J1939 液压铲刀触地传感、围栏内闭环绞龙实撒盐量与 Web IQ 气象雪量/预湿盐水场景 (Snow-Plow AVL Scenario):</span></label>
+          <select id="snw-select" onchange="updateSnowPlowAVLSandbox()">
+            <option value="snw_commit_ok">⚡ J1939 液压铲刀触地核验 + 围栏内闭环绞龙实撒吨数匹配 + NOAA 降雪量达标：20ms 自动结算 $68,000.00! (Act automatically)</option>
+            <option value="snw_gho_403">🛑 翘铲空跑刷轨迹 (Blade-Up Ghost Pass) 或停车场原地怠速吹暖风骗工时拦截：铲刀悬空离地 10cm 空跑 32% 里程 → 12ms 触发 HTTP 403 拒付!</option>
+            <option value="snw_aug_422">🚨 融雪盐半路私卖隔壁商场或手写磅单虚报 37 吨拦截：电子围栏内绞龙转速脉冲积分仅 48 吨 (账单报 85 吨) → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="snw_nws_451">🛑 实况降雪未达 2.0 英寸起推阈值擅自出车或饮用水源保护区氯盐撒布超 EPA 上限冻结：Web IQ /v3/browse 310ms 触发 HTTP 451!</option>
+            <option value="snw_brn_409">🧑‍⚖️ Web IQ 结合红外路温启用 23.3% 氯化钠预湿盐水 (Pre-Wet Brine) 减少 30% 颗粒弹跳损耗立省 $11,400.00 (净付 $56,600.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="snw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -19842,6 +19976,7 @@ function renderAll() {{
   updateSurgicalImplantSandbox();
   updateSubseaIRUSandbox();
   updateFilmTVProductionSandbox();
+  updateSnowPlowAVLSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -24014,6 +24149,55 @@ function updateFilmTVProductionSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ DPR/OCF 完片进度达标 + 属地 QPE 退税锁定 + 工会 P&amp;H 锁箱清分：已自动拨款 (VERIFIED_FILM_TV_PRODUCTION_DRAWDOWN_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零中途烂尾超支、零工会发行留置风险</strong>：第 4 周剧集制作资金已完成工会福利分流与属地退税备案（<code>$320,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSnowPlowAVLSandbox() {{
+  var selEl = document.getElementById("snw-select");
+  var outEl = document.getElementById("snw-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "snw_gho_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLADE_UP_GHOST_PASS_OR_STATIONARY_IDLING_PADDING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "车载 <code>SAE J1939 液压铲刀触地压力与倾角传感器</code> 检出除雪车有 32% 的 GPS 轨迹处于“铲刀悬空抬起（Blade-Up Ghost Pass）”高速空跑状态，或在快餐店停车场原地怠速吹暖风超 3 小时（<code>hydraulic_blade_down_and_active_speed_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$68,000.00</code> 账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "snw_aug_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DIVERTED_SALT_TONNAGE_OR_UNRECONCILED_AUGER_PULSE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "撒布机 <code>闭环绞龙转速脉冲积分器</code> 检出在买方园区电子围栏内部实际仅撒布 <code>48 吨</code> 融雪盐，而承包商手写磅单虚报 <code>85 吨</code>（涉嫌将 37 吨融雪盐半路私卖隔壁商业体，<code>closed_loop_auger_salt_tonnage_reconciled == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "snw_nws_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNTRIGGERED_SNOWFALL_MOBILIZATION_OR_EPA_CHLORIDE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查国家气象局 NOAA ASOS 站点实况降雪记录与 EPA 饮用水源保护区氯化物限令，检出当晚降雪仅 <code>0.8 英寸</code>（未达 <code>2.0 英寸</code> 合同起推线）或固体氯化钠抛撒量突破水源地红线，立即冻结付款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "snw_brn_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PREWET_BRINE_ANTI_ICING_30PCT_SALT_REDUCTION_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 匹配交通部 Clear Roads 冬季养护标准与实时红外路温，启用撒布盘 <code>23.3% 氯化钠盐水预湿 (Pre-Wet Brine)</code> 闭环配方可减少 <code>30%</code> 干盐弹跳飞溅浪费，直接立省 <code>$11,400.00</code>（净付降至 <code>$56,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ J1939 铲刀触地里程核验 + 围栏内绞龙实撒盐量匹配 + NOAA 气象达标：已自动清算 (VERIFIED_SNOW_PLOW_AVL_SALT_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零翘铲空跑刷单、零融雪盐半路私卖</strong>：暴风雪除冰账单已完成米级铲刀与克重核销并永久归档防滑倒司法存证（<code>$68,000.00</code>）！" +
     "</div>";
 }}
 

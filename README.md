@@ -111,6 +111,7 @@
 - **专题 77（医院骨科与心内科高值耗材寄售 Surgical Implant Consignment、手术室 UDI/RFID 植入扫码与 GPO/集采限价智能托管 vs 传统跟台代表手写单盲付）**：**[《医院骨科与心内科高值耗材寄售（Surgical Implant Consignment）、手术室 UDI/RFID 植入扫码与 GPO/集采限价智能托管 vs 传统跟台代表手写单盲付：架构选型与第一性原理 FAQ》](docs/hospital-surgical-implant-consignment-udi-rfid-mandate-vs-rep-sheet-overbilling-faq.md)**
 - **专题 78（海缆与跨洲暗光纤不可撤销使用权 Dark-Fiber / 400G Wavelength IRU、双向 OTDR 光衰测试与 KMZ 异构双路由智能托管 vs 传统带宽经纪商同沟假双线盲付）**：**[《海缆与跨洲暗光纤不可撤销使用权（Dark-Fiber / 400G Wavelength IRU）、双向 OTDR 光衰测试与 KMZ 异构双路由智能托管 vs 传统带宽经纪商“同沟假双线”盲付：架构选型与第一性原理 FAQ》](docs/subsea-dark-fiber-iru-otdr-diverse-conduit-mandate-vs-collapsed-path-broker-faq.md)**
 - **专题 79（影视与流媒体制作完片担保 Completion Bond、属地拍摄退税 QPE Tax Credit 与演员工会分润/AI 数字替身锁箱智能托管 vs 传统剧组周度请款超支）**：**[《影视与流媒体制作完片担保（Completion Bond）、属地拍摄退税（QPE Tax Credit）与演员工会分润/AI 数字替身锁箱智能托管 vs 传统剧组周度请款超支：架构选型与第一性原理 FAQ》](docs/film-tv-production-completion-bond-tax-credit-mandate-vs-unaudited-drawdown-overrun-faq.md)**
+- **专题 80（市政与大型商业园区冬季除雪撒布车 Snow-Plow & Salt-Spreader、J1939 铲刀落地遥测与闭环融雪盐计量智能托管 vs 传统 GPS 空跑翘铲虚报）**：**[《市政与大型商业园区冬季除雪撒布车（Snow-Plow & Salt-Spreader）、J1939 铲刀落地遥测与闭环融雪盐计量智能托管 vs 传统 GPS 空跑翘铲虚报：架构选型与第一性原理 FAQ》](docs/municipal-snow-plow-avl-blade-down-salt-telemetry-mandate-vs-ghost-pass-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -269,6 +270,8 @@
 ![2026-11-09 海缆与暗光纤 IRU 不可撤销使用权、OTDR 光衰与异构管道智能托管架构一图流](assets/svg/80-subsea-dark-fiber-iru-otdr-diverse-conduit-2026-11-09.svg)
 
 ![2026-11-09 影视流媒体完片担保、属地拍摄退税与工会分润锁箱智能托管架构一图流](assets/svg/81-film-tv-production-completion-bond-tax-credit-2026-11-09.svg)
+
+![2026-11-09 冬季除雪车铲刀落地遥测、闭环融雪盐计量与防黑冰智能托管架构一图流](assets/svg/82-municipal-snow-plow-avl-blade-down-salt-telemetry-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

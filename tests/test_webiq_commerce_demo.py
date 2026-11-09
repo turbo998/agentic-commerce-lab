@@ -5639,6 +5639,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("film-tv-completion-bond-sandbox", demo_zh)
 
+    def test_municipal_snow_plow_avl_blade_down_salt_telemetry_mandate_vs_ghost_pass_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_municipal_snow_plow_avl_salt_policy,
+        )
+
+        # 1. Verified hydraulic blade-down + geofenced auger salt mass + NWS clean -> 200 OK ($68,000)
+        commit_ok = evaluate_municipal_snow_plow_avl_salt_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_snow_cents, 6800000)
+
+        # 2. Blade-up ghost pass or stationary cab-heater idling -> 403 blocked in 12ms
+        gho_403 = evaluate_municipal_snow_plow_avl_salt_policy(
+            hydraulic_blade_down_and_active_speed_verified=False,
+        )
+        self.assertFalse(gho_403.allowed)
+        self.assertEqual(gho_403.http_status, 403)
+        self.assertEqual(
+            gho_403.snow_lane,
+            "BLADE_UP_GHOST_PASS_OR_STATIONARY_IDLING_PADDING_BLOCKED",
+        )
+
+        # 3. Off-site salt diversion or manual ticket exceeding geofenced auger integral -> 422 blocked in 15ms
+        aug_422 = evaluate_municipal_snow_plow_avl_salt_policy(
+            closed_loop_auger_salt_tonnage_reconciled=False,
+        )
+        self.assertFalse(aug_422.allowed)
+        self.assertEqual(aug_422.http_status, 422)
+        self.assertEqual(
+            aug_422.snow_lane,
+            "DIVERTED_SALT_TONNAGE_OR_UNRECONCILED_AUGER_PULSE_BLOCKED",
+        )
+
+        # 4. Web IQ detects snowfall below trigger or EPA watershed chloride breach -> 451 blocked in 310ms
+        nws_451 = evaluate_municipal_snow_plow_avl_salt_policy(
+            webiq_nws_snowfall_and_epa_chloride_clean=False,
+        )
+        self.assertFalse(nws_451.allowed)
+        self.assertEqual(nws_451.http_status, 451)
+
+        # 5. Web IQ discovers 23.3% pre-wet brine 30% salt reduction saving $11,400 ($56,600 net) -> 409 Confirm
+        brn_409 = evaluate_municipal_snow_plow_avl_salt_policy(
+            prewet_brine_anti_icing_savings_cents=1140000,
+        )
+        self.assertFalse(brn_409.allowed)
+        self.assertEqual(brn_409.http_status, 409)
+        self.assertEqual(brn_409.settled_snow_cents, 5660000)
+        self.assertEqual(brn_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["snow_plow_avl_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("snow-plow-avl-salt-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
