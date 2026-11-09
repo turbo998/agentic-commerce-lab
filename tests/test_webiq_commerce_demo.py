@@ -3634,6 +3634,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agri-moisture-hedge-sandbox", demo_zh)
 
+    def test_event_ticketing_rotating_barcode_mandate_vs_phantom_scalper_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_event_ticketing_rotating_barcode_policy,
+        )
+
+        # 1. Primary-registry seat escrowed + barcode reissued + all-in price -> 200 settled ($3,600)
+        commit_ok = evaluate_event_ticketing_rotating_barcode_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ticket_cents, 360000)
+
+        # 2. Speculative phantom listing or static PDF barcode -> 403 blocked in 12ms
+        pdf_403 = evaluate_event_ticketing_rotating_barcode_policy(
+            primary_registry_seat_escrowed=False,
+        )
+        self.assertFalse(pdf_403.allowed)
+        self.assertEqual(pdf_403.http_status, 403)
+        self.assertEqual(
+            pdf_403.ticket_lane,
+            "SPECULATIVE_PHANTOM_TICKET_OR_STATIC_PDF_BLOCKED",
+        )
+
+        # 3. 38% drip-pricing junk fee or scalper markup breach -> 422 blocked in 15ms
+        junk_422 = evaluate_event_ticketing_rotating_barcode_policy(
+            junk_fee_or_scalper_markup_breach=True,
+        )
+        self.assertFalse(junk_422.allowed)
+        self.assertEqual(junk_422.http_status, 422)
+        self.assertEqual(
+            junk_422.ticket_lane, "SCALPER_PRICE_CAP_OR_FTC_JUNK_FEE_VIOLATION"
+        )
+
+        # 4. Web IQ detects undisclosed obstructed view or postponed event -> 451 blocked in 310ms
+        view_451 = evaluate_event_ticketing_rotating_barcode_policy(
+            webiq_venue_view_and_event_active=False,
+        )
+        self.assertFalse(view_451.allowed)
+        self.assertEqual(view_451.http_status, 451)
+
+        # 5. Web IQ discovers official primary box-office release saving $750 ($2,850 net) -> 409 Confirm
+        box_409 = evaluate_event_ticketing_rotating_barcode_policy(
+            box_office_release_savings_cents=75000,
+        )
+        self.assertFalse(box_409.allowed)
+        self.assertEqual(box_409.http_status, 409)
+        self.assertEqual(box_409.settled_ticket_cents, 285000)
+        self.assertEqual(box_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["event_ticket_provenance_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("event-ticket-provenance-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -8384,6 +8384,95 @@ def evaluate_agri_commodity_moisture_parametric_hedge_policy(
     )
 
 
+@dataclass(frozen=True)
+class EventTicketProvenanceVerdict:
+    """Round 44 verdict for Live Event Ticketing, Rotating Barcode & Face-Value Cap Mandate (Primary-Registry Re-Issuance Token + Web IQ Seating-Chart & Box-Office Grounding) vs Speculative Phantom Listings & Static PDF Multi-Sale Fraud."""
+
+    allowed: bool
+    http_status: int
+    ticket_lane: str
+    settled_ticket_cents: int
+    box_office_release_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_event_ticketing_rotating_barcode_policy(
+    *,
+    vip_ticket_package_cents: int = 360000,
+    primary_registry_seat_escrowed: bool = True,
+    junk_fee_or_scalper_markup_breach: bool = False,
+    webiq_venue_view_and_event_active: bool = True,
+    box_office_release_savings_cents: int = 0,
+) -> EventTicketProvenanceVerdict:
+    """Evaluate primary venue registry seat escrow & atomic TOTP barcode re-issuance, FTC all-in pricing & face-value cap, Web IQ venue obstructed-view map & event schedule, and primary box-office production release arbitrage."""
+
+    # 1. Speculative Phantom Listing or Static PDF Barcode Multi-Sale Risk -> HTTP 403
+    if not primary_registry_seat_escrowed:
+        return EventTicketProvenanceVerdict(
+            False,
+            403,
+            "SPECULATIVE_PHANTOM_TICKET_OR_STATIC_PDF_BLOCKED",
+            0,
+            0,
+            "secondary_ticket_blocked_without_primary_registry_escrow_and_barcode_rotation",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Last-Second 38% Drip-Pricing Junk Fee or Scalper Markup Cap Breach -> HTTP 422
+    if junk_fee_or_scalper_markup_breach:
+        return EventTicketProvenanceVerdict(
+            False,
+            422,
+            "SCALPER_PRICE_CAP_OR_FTC_JUNK_FEE_VIOLATION",
+            0,
+            0,
+            "checkout_drip_pricing_junk_fee_or_scalper_markup_exceeded_face_value_cap",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Undisclosed Obstructed-View Seat or Postponed Event via Web IQ -> HTTP 451
+    if not webiq_venue_view_and_event_active:
+        return EventTicketProvenanceVerdict(
+            False,
+            451,
+            "OBSTRUCTED_VIEW_OR_EVENT_POSTPONEMENT_HOLD",
+            0,
+            0,
+            "webiq_detected_undisclosed_pillar_obstructed_view_or_event_postponement",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Official Primary Box-Office Production Release Arbitrage -> HTTP 409 Confirm
+    if box_office_release_savings_cents > 0:
+        return EventTicketProvenanceVerdict(
+            False,
+            409,
+            "OFFICIAL_BOX_OFFICE_PRODUCTION_RELEASE_CONFIRM",
+            vip_ticket_package_cents - box_office_release_savings_cents,
+            box_office_release_savings_cents,
+            "webiq_found_official_box_office_production_hold_release_saving_750_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Primary-Registry Atomic Transfer & Rotating NFC Pass -> Settled
+    return EventTicketProvenanceVerdict(
+        True,
+        200,
+        "VERIFIED_ROTATING_BARCODE_TICKET_SETTLED",
+        vip_ticket_package_cents,
+        0,
+        "primary_registry_barcode_reissuance_and_all_in_price_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -10679,6 +10768,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aflatoxin_block_latency_ms": agr_spoil_403.latency_ms,
     }
 
+    tkt_commit_ok = evaluate_event_ticketing_rotating_barcode_policy()
+    tkt_pdf_403 = evaluate_event_ticketing_rotating_barcode_policy(
+        primary_registry_seat_escrowed=False,
+    )
+    tkt_junk_422 = evaluate_event_ticketing_rotating_barcode_policy(
+        junk_fee_or_scalper_markup_breach=True,
+    )
+    tkt_view_451 = evaluate_event_ticketing_rotating_barcode_policy(
+        webiq_venue_view_and_event_active=False,
+    )
+    tkt_box_409 = evaluate_event_ticketing_rotating_barcode_policy(
+        box_office_release_savings_cents=75000,
+    )
+    event_ticket_provenance_guards = {
+        "all_passed": (
+            tkt_commit_ok.allowed
+            and tkt_commit_ok.settled_ticket_cents == 360000
+            and not tkt_pdf_403.allowed
+            and tkt_pdf_403.http_status == 403
+            and not tkt_junk_422.allowed
+            and tkt_junk_422.http_status == 422
+            and not tkt_view_451.allowed
+            and tkt_view_451.http_status == 451
+            and not tkt_box_409.allowed
+            and tkt_box_409.action_pill == "Confirm"
+        ),
+        "ticket_settlement_latency_ms": tkt_commit_ok.latency_ms,
+        "phantom_ticket_block_latency_ms": tkt_pdf_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -10735,6 +10854,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ev_fleet_energy_guards": ev_fleet_energy_guards,
         "dataset_sbom_royalty_guards": dataset_sbom_royalty_guards,
         "agri_moisture_hedge_guards": agri_moisture_hedge_guards,
+        "event_ticket_provenance_guards": event_ticket_provenance_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -14426,6 +14546,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="agr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Live Event Ticketing, Rotating Barcode & Face-Value Cap Sandbox (Round 44 FAQ Companion) -->
+      <div class="finops-box" id="event-ticket-provenance-sandbox" style="margin-top:12px;border-color:#F43F5E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tkt-title">🎟️ 高稀缺赛事/演出动态票务过户与防黄牛空单架构：主账本重签令牌 (event_ticket_provenance_mandate_...) vs 静态 PDF 一票多卖决策器 (Round 44 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 4张 VIP 赛事包厢门票 ($3,600.00)、主票务账本 SafeTix 原子过户、FTC 全包价与 Web IQ 视线遮挡/官方余票场景 (Event Ticketing Scenario):</span></label>
+          <select id="tkt-select" onchange="updateEventTicketProvenanceSandbox()">
+            <option value="tkt_commit_ok">⚡ 主票务账本已锁死座位并销毁卖家旧码 (签发买方专属 NFC 动态码) + 全包价合规：265ms 自动结算 $3,600.00! (Act automatically)</option>
+            <option value="tkt_pdf_403">🛑 黄牛无票做空挂单 (Speculative Listing) 或静态 PDF 截图拦截：无法在主账本原子过户重签动态码 → 12ms 触发 HTTP 403 硬阻断!</option>
+            <option value="tkt_junk_422">🚨 结账页暗加 38% 隐藏垃圾费 (Drip Pricing) 或超票面溢价上限拦截：15ms 触发 HTTP 422 拒付违规手续费刺客!</option>
+            <option value="tkt_view_451">🛑 未披露音响塔柱遮挡席 (Obstructed View) 或赛事延期拦截：Web IQ /v3/browse 核对场馆官方座位图检出视线遮挡 → 310ms 触发 HTTP 451 冻结!</option>
+            <option value="tkt_box_409">🧑‍⚖️ Web IQ 检出主办方官方票房刚释放同区域控台预留票仅需 $2,850.00 (较二级市场立省 $750.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="tkt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -14908,6 +15046,7 @@ function renderAll() {{
   updateEVFleetEnergySandbox();
   updateDatasetSBOMRoyaltySandbox();
   updateAgriMoistureHedgeSandbox();
+  updateEventTicketProvenanceSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17307,6 +17446,56 @@ function updateAgriMoistureHedgeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ NIR 13.8% 干重达标 + 零毒素与 EUDR 合规：已自动交割并签发电子仓单 (VERIFIED_DRY_MATTER_COMMODITY_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零掺水猫腻、秒级开闸入库</strong>：400 吨原粮含水率 <code>13.8% &lt;= 14.0%</code>，黄曲霉毒素 <code>&lt; 5 ppb</code>，已在 <code>265ms</code> 内全额结算 <code>$64,000.00</code> 并生成可质押电子标准仓单！" +
+    "</div>";
+}}
+
+function updateEventTicketProvenanceSandbox() {{
+  var selEl = document.getElementById("tkt-select");
+  var outEl = document.getElementById("tkt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "tkt_pdf_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPECULATIVE_PHANTOM_TICKET_OR_STATIC_PDF_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "票务过户网关检出该报价属于黄牛无票做空挂单（Speculative Listing）或仅提供可一票多卖的静态 PDF 二维码（<code>primary_registry_seat_escrowed=False</code>）！已在 <code>12ms</code> 内硬阻断 <code>$3,600.00</code> 付款，100% 杜绝重要客户在体育场闸机口因条码重复被拒入场的社死事故！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tkt_junk_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SCALPER_PRICE_CAP_OR_FTC_JUNK_FEE_VIOLATION (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "二级转售平台在结账最后一秒暗中叠加 <code>38% ($1,000.00) 隐藏服务费</code>（违反 FTC 全包价反垃圾费法规）或突破企业票面溢价上限！网关已在 <code>15ms</code> 内拦截违规扣款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tkt_view_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OBSTRUCTED_VIEW_OR_EVENT_POSTPONEMENT_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核对场馆官网三维座位视线图与主办方公告，检出该席位属于未披露的音响塔柱遮挡区（Obstructed View）或赛事已官宣延期，已在 <code>310ms</code> 内冻结购票！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tkt_box_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OFFICIAL_BOX_OFFICE_PRODUCTION_RELEASE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 监控发现主办方官方票房（Primary Box Office）刚释放同区域舞台控台预留 VIP 席位，原价直购仅需 <code>$2,850.00</code>（较二级转售报价 <code>$3,600.00</code> 单笔立省 <code>$750.00</code>），建议一键确认切回官方票房！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 主票务账本原子过户 + 销毁旧码重签 NFC 动态票通过：已自动出票 (VERIFIED_ROTATING_BARCODE_TICKET_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>100% 闸机秒过、零隐藏垃圾费</strong>：卖家旧条码种子已作废，4 张 VIP 专属 15 秒轮换动态票根已直推买方票夹，265ms 完成 <code>$3,600.00</code> 全包价交割！" +
     "</div>";
 }}
 
