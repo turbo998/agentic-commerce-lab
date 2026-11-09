@@ -275,6 +275,11 @@
     "media_settlement_latency_ms": 265,
     "sivt_bot_block_latency_ms": 12
   },
+  "capex_lien_waiver_guards": {
+    "all_passed": true,
+    "capex_settlement_latency_ms": 265,
+    "lien_waiver_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

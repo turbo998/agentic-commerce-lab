@@ -3361,6 +3361,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-ivt-sandbox", demo_zh)
 
+    def test_capex_milestone_retainage_lien_waiver_vs_double_payment_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_capex_milestone_retainage_lien_waiver_policy,
+        )
+
+        # 1. Signed tier-2 lien waivers + 10% ($15,000) retainage held -> 200 settled ($135,000 net)
+        commit_ok = evaluate_capex_milestone_retainage_lien_waiver_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_progress_cents, 13500000)
+        self.assertEqual(commit_ok.retainage_locked_cents, 1500000)
+
+        # 2. Missing tier-2 subcontractor conditional lien waiver -> 403 blocked in 12ms
+        lien_403 = evaluate_capex_milestone_retainage_lien_waiver_policy(
+            subcontractor_lien_waivers_signed=False,
+        )
+        self.assertFalse(lien_403.allowed)
+        self.assertEqual(lien_403.http_status, 403)
+        self.assertEqual(
+            lien_403.capex_lane, "MISSING_SUBCONTRACTOR_LIEN_WAIVER_BLOCKED"
+        )
+
+        # 3. Omitted 10% statutory retainage holdback (0 bps < 1000 bps) -> 422 blocked in 15ms
+        ret_422 = evaluate_capex_milestone_retainage_lien_waiver_policy(
+            retainage_withheld_bps=0,
+        )
+        self.assertFalse(ret_422.allowed)
+        self.assertEqual(ret_422.http_status, 422)
+        self.assertEqual(
+            ret_422.capex_lane, "STATUTORY_RETAINAGE_HOLDBACK_VIOLATION"
+        )
+
+        # 4. Web IQ detects failed municipal inspection or Stop-Work Order -> 451 blocked in 310ms
+        mun_451 = evaluate_capex_milestone_retainage_lien_waiver_policy(
+            webiq_municipal_permit_inspection_passed=False,
+        )
+        self.assertFalse(mun_451.allowed)
+        self.assertEqual(mun_451.http_status, 451)
+
+        # 5. Web IQ discovers Owner-Direct Purchase (ODP) saving $9,500 ($125,500 net) -> 409 Confirm
+        odp_409 = evaluate_capex_milestone_retainage_lien_waiver_policy(
+            odp_material_savings_cents=950000,
+        )
+        self.assertFalse(odp_409.allowed)
+        self.assertEqual(odp_409.http_status, 409)
+        self.assertEqual(odp_409.settled_progress_cents, 12550000)
+        self.assertEqual(odp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["capex_lien_waiver_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("capex-lien-waiver-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

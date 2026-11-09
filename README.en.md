@@ -70,6 +70,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 36 (Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate Architecture: Cryptographic Temperature-Curve Release Token `cold_chain_telemetry_mandate_...` + Web IQ Stability & Recall Grounding vs. Blind Delivery-Scan Payout & Thermal Spoilage Disputes)**: **[Cold-Chain IoT Telemetry Escrow & Excursion Auto-Claim Mandate Architecture: Cryptographic Temperature-Curve Release Token (`cold_chain_telemetry_mandate_...` + Web IQ Stability & Recall Grounding) vs. Blind Delivery-Scan Payout & Thermal Spoilage Disputes Selection FAQ](docs/cold-chain-telemetry-escrow-vs-spoilage-dispute-faq.en.md)**
 - **Topic 37 (Cloud GPU Compute & Spot Preemption SLA Mandate Architecture: DCGM Goodput Telemetry Token `gpu_compute_sla_mandate_...` + Web IQ Multi-Cloud Status & Off-Peak Grounding vs. Ghost-Node Wall-Clock Billing & Brutal Spot Eviction)**: **[Cloud GPU Compute & Spot Preemption SLA Mandate Architecture: DCGM Goodput Telemetry Token (`gpu_compute_sla_mandate_...` + Web IQ Multi-Cloud Status & Off-Peak Grounding) vs. Ghost-Node Wall-Clock Billing & Brutal Spot Eviction Selection FAQ](docs/cloud-gpu-spot-preemption-sla-mandate-vs-ghost-node-billing-faq.en.md)**
 - **Topic 38 (Programmatic Retail Media & Influencer Affiliate IVT Clawback Mandate Architecture: Clean-Room Attribution & SIVT Filter Token `ad_attribution_ivt_mandate_...` + Web IQ Brand-Safety & Direct-PMP Grounding vs. Click-Farm Bot Drain & Return-After-Commission Fraud)**: **[Programmatic Retail Media & Influencer Affiliate IVT Clawback Mandate Architecture: Clean-Room Attribution & SIVT Filter Token (`ad_attribution_ivt_mandate_...` + Web IQ Brand-Safety & Direct-PMP Grounding) vs. Click-Farm Bot Drain & Return-After-Commission Fraud Selection FAQ](docs/retail-media-ad-spend-ivt-clawback-vs-click-farm-drain-faq.en.md)**
+- **Topic 39 (CapEx Milestone Retainage & Subcontractor Lien-Waiver Mandate Architecture: Conditional Lien-Waiver & 10% Retainage Escrow Token `capex_lien_waiver_mandate_...` + Web IQ Municipal Permit & ODP Material Grounding vs. Blind GC Progress Payout & Mechanic's Lien Double-Payment)**: **[CapEx Milestone Retainage & Subcontractor Lien-Waiver Mandate Architecture: Conditional Lien-Waiver & 10% Retainage Escrow Token (`capex_lien_waiver_mandate_...` + Web IQ Municipal Permit & ODP Material Grounding) vs. Blind GC Progress Payout & Mechanic's Lien Double-Payment Selection FAQ](docs/capex-milestone-retainage-lien-waiver-vs-double-payment-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -146,6 +147,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-09 Cloud GPU Compute & Spot Preemption SLA Mandate Visual Summary](assets/svg/39-cloud-gpu-spot-preemption-sla-2026-11-09.svg)
 
 ![2026-11-09 Programmatic Retail Media & Influencer Affiliate IVT Clawback Visual Summary](assets/svg/40-retail-media-ad-spend-ivt-clawback-2026-11-09.svg)
+
+![2026-11-09 CapEx Milestone Retainage & Subcontractor Lien-Waiver Visual Summary](assets/svg/41-capex-milestone-retainage-lien-waiver-2026-11-09.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
