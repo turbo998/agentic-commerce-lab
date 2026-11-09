@@ -265,6 +265,11 @@
     "cold_chain_settlement_latency_ms": 265,
     "spoilage_freeze_latency_ms": 12
   },
+  "cloud_gpu_sla_guards": {
+    "all_passed": true,
+    "gpu_settlement_latency_ms": 265,
+    "ghost_node_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

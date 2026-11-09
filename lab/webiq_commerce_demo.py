@@ -7739,6 +7739,97 @@ def evaluate_cold_chain_telemetry_escrow_policy(
     )
 
 
+@dataclass(frozen=True)
+class CloudGPUSpotPreemptionVerdict:
+    """Round 37 verdict for Cloud GPU Compute & Spot Preemption SLA Mandate (DCGM Goodput Telemetry Token + Web IQ Multi-Cloud Status & Off-Peak Grounding) vs Ghost-Node Wall-Clock Billing & Brutal Spot Eviction."""
+
+    allowed: bool
+    http_status: int
+    compute_lane: str
+    settled_compute_cents: int
+    offpeak_arbitrage_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cloud_gpu_spot_preemption_sla_policy(
+    *,
+    cluster_batch_cents: int = 1280000,
+    dcgm_xid_healthy: bool = True,
+    effective_mfu_bps: int = 5200,
+    min_contracted_mfu_bps: int = 3500,
+    checkpoint_grace_honored: bool = True,
+    webiq_provider_fabric_healthy: bool = True,
+    offpeak_arbitrage_savings_cents: int = 0,
+) -> CloudGPUSpotPreemptionVerdict:
+    """Evaluate NVIDIA DCGM Xid/ECC health and collective MFU floor, 120-second Spot preemption checkpoint drain window, Web IQ provider fabric Status Page, and cross-region off-peak arbitrage."""
+
+    # 1. Ghost-Node Xid Fault / ECC Error or Stalled NCCL Ring (MFU < 35%) -> HTTP 403
+    if not dcgm_xid_healthy or effective_mfu_bps < min_contracted_mfu_bps:
+        return CloudGPUSpotPreemptionVerdict(
+            False,
+            403,
+            "GHOST_NODE_ECC_XID_FAULT_BILLING_BLOCKED",
+            0,
+            0,
+            "ghost_node_dcgm_xid_fault_or_nccl_deadlock_below_35pct_mfu_floor_blocked",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Brutal Spot Eviction Without 120s Checkpoint Drain Grace Window -> HTTP 422
+    if not checkpoint_grace_honored:
+        return CloudGPUSpotPreemptionVerdict(
+            False,
+            422,
+            "UNGRACEFUL_PREEMPTION_LOST_PROGRESS_WAIVED",
+            0,
+            0,
+            "spot_instance_evicted_without_120s_checkpoint_grace_window_charge_waived",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Active Provider InfiniBand Outage or Unpatched Container CVE via Web IQ -> HTTP 451
+    if not webiq_provider_fabric_healthy:
+        return CloudGPUSpotPreemptionVerdict(
+            False,
+            451,
+            "PROVIDER_FABRIC_OUTAGE_OR_CVE_HOLD",
+            0,
+            0,
+            "webiq_detected_active_infiniband_fabric_degradation_on_provider_status_page",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Cross-Region Off-Peak Compute Arbitrage -> HTTP 409 Confirm
+    if offpeak_arbitrage_savings_cents > 0:
+        return CloudGPUSpotPreemptionVerdict(
+            False,
+            409,
+            "OFFPEAK_REGION_COMPUTE_ARBITRAGE_CONFIRM",
+            cluster_batch_cents - offpeak_arbitrage_savings_cents,
+            offpeak_arbitrage_savings_cents,
+            "webiq_found_identical_64x_h100_offpeak_region_saving_2400_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified Healthy DCGM Goodput & Checkpoint Progress -> Settled
+    return CloudGPUSpotPreemptionVerdict(
+        True,
+        200,
+        "VERIFIED_GPU_GOODPUT_MANDATE_SETTLED",
+        cluster_batch_cents,
+        0,
+        "dcgm_xid_zero_and_52pct_mfu_goodput_verified_for_compute_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -9821,6 +9912,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "spoilage_freeze_latency_ms": cc_spoil_403.latency_ms,
     }
 
+    gpu_commit_ok = evaluate_cloud_gpu_spot_preemption_sla_policy()
+    gpu_ghost_403 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+        dcgm_xid_healthy=False,
+        effective_mfu_bps=0,
+    )
+    gpu_evict_422 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+        checkpoint_grace_honored=False,
+    )
+    gpu_fab_451 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+        webiq_provider_fabric_healthy=False,
+    )
+    gpu_arb_409 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+        offpeak_arbitrage_savings_cents=240000,
+    )
+    cloud_gpu_sla_guards = {
+        "all_passed": (
+            gpu_commit_ok.allowed
+            and gpu_commit_ok.settled_compute_cents == 1280000
+            and not gpu_ghost_403.allowed
+            and gpu_ghost_403.http_status == 403
+            and not gpu_evict_422.allowed
+            and gpu_evict_422.http_status == 422
+            and not gpu_fab_451.allowed
+            and gpu_fab_451.http_status == 451
+            and not gpu_arb_409.allowed
+            and gpu_arb_409.action_pill == "Confirm"
+        ),
+        "gpu_settlement_latency_ms": gpu_commit_ok.latency_ms,
+        "ghost_node_block_latency_ms": gpu_ghost_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -9870,6 +9992,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_seat_trueup_guards": saas_seat_trueup_guards,
         "freight_dd_sla_guards": freight_dd_sla_guards,
         "cold_chain_telemetry_guards": cold_chain_telemetry_guards,
+        "cloud_gpu_sla_guards": cloud_gpu_sla_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -13435,6 +13558,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cloud GPU Compute & Spot Preemption SLA Mandate Sandbox (Round 37 FAQ Companion) -->
+      <div class="finops-box" id="cloud-gpu-sla-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-gpu-title">🖥️ 云端 GPU 算力租赁与 Spot 抢占 SLA 对冲架构：DCGM 遥测证明令牌 (gpu_compute_sla_mandate_...) vs 幽灵坏卡空转计费决策器 (Round 37 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 64×H100 10 小时训练算力批次 ($12,800.00)、NVIDIA DCGM Xid/MFU 遥测与 Web IQ 跨云错峰套利场景 (Cloud GPU SLA Scenario):</span></label>
+          <select id="gpu-select" onchange="updateCloudGPUSLASandbox()">
+            <option value="gpu_commit_ok">⚡ DCGM Xid=0 硬件健康 + 52% MFU (&gt;=35% 底线) + Checkpoint 已落盘：265ms 自动结算 $12,800.00 算力费! (Act automatically)</option>
+            <option value="gpu_ghost_403">🛑 幽灵坏卡空转拦截：单卡发生 Xid 79 掉卡引发 64 卡 NCCL 死锁空转 10 小时 (MFU=0%) → 12ms 触发 HTTP 403 拒付 $12,800.00!</option>
+            <option value="gpu_evict_422">🚨 Spot 暴力断电强杀拦截：算力商回收时未兑现 120s SIGTERM 存盘窗口导致 4 小时进度丢失 → 15ms 触发 HTTP 422 免除受损周期费用!</option>
+            <option value="gpu_fab_451">🛑 机房 IB 网络降级熔断：Web IQ /v3/browse 检出算力商官方 Status 页通报 InfiniBand 交换机丢包维护 → 310ms 触发 HTTP 451 阻断盲目建群!</option>
+            <option value="gpu_arb_409">🧑‍⚖️ Web IQ 检出相邻可用区同规格 64×H100 夜间错峰包可立省 $2,400.00 (净付降至 $10,400.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="gpu-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -13910,6 +14051,7 @@ function renderAll() {{
   updateSaaSSeatTrueUpSandbox();
   updateFreightDDSLASandbox();
   updateColdChainTelemetrySandbox();
+  updateCloudGPUSLASandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15959,6 +16101,56 @@ function updateColdChainTelemetrySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 全程 5.4°C 恒温 + 探头硬件签名与批号合规：已自动释放托管货款 (VERIFIED_COLD_CHAIN_TELEMETRY_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零断链隐患、秒级 GSP 归档</strong>：全程温度锁定在 <code>2.0°C–8.0°C</code>（峰值 <code>5.4°C</code>，<code>0 分钟</code>超温），已在 <code>265ms</code> 内全额释放 <code>$24,000.00</code> 货款并签发 GSP 合规电子入库凭据！" +
+    "</div>";
+}}
+
+function updateCloudGPUSLASandbox() {{
+  var selEl = document.getElementById("gpu-select");
+  var outEl = document.getElementById("gpu-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+
+  if (v === "gpu_ghost_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GHOST_NODE_ECC_XID_FAULT_BILLING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "NVIDIA DCGM 硬件遥测检出集群第 37 号 GPU 发生 <code>Xid 79</code> 掉卡，导致 64 卡 NCCL <code>AllReduce</code> 死锁空转 10 小时（有效算力 <code>MFU = 0 bps &lt; 3500 bps</code> 底线）！虽虚拟机仍显示 Running，网关已在 <code>12ms</code> 内硬阻断 <code>$12,800.00</code> 幽灵空转账单并自动隔离故障节点！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gpu_evict_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNGRACEFUL_PREEMPTION_LOST_PROGRESS_WAIVED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "算力商抢占回收 Spot 实例时未兑现合同承诺的 <code>120 秒 SIGTERM</code> 宽限期（<code>checkpoint_grace_honored=False</code>），直接暴力断电导致最近 4 小时未落盘训练进度作废！网关已在 <code>15ms</code> 内免除该受损周期算力费用！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gpu_fab_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PROVIDER_FABRIC_OUTAGE_OR_CVE_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查算力云官方 Status 页，检出目标可用区正在发生 InfiniBand 脊交换机降级维护或容器逃逸 CVE 告警（<code>webiq_provider_fabric_healthy=False</code>），已在 <code>310ms</code> 内熔断建群指令！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gpu_arb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OFFPEAK_REGION_COMPUTE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对多云公开现货价格表，发现相邻可用区同规格 <code>64×H100 InfiniBand</code> 集群提供夜间错峰预留包，单批次可立省 <code>$2,400.00</code>（总成本从 <code>$12,800.00</code> 降至 <code>$10,400.00</code>），建议 MLOps 架构师一键确认切换！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ DCGM Xid=0 硬件健康 + 52% MFU 有效吞吐验真通过：已自动结算算力费 (VERIFIED_GPU_GOODPUT_MANDATE_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>只为真实有效 FLOPs 与落盘进度买单</strong>：64×H100 集群全程零 Xid/ECC 硬件错误，有效算力利用率 <code>52.0% (&gt;= 35.0% 底线)</code>，Checkpoint 哈希已确认落盘，265ms 自动放款 <code>$12,800.00</code>！" +
     "</div>";
 }}
 

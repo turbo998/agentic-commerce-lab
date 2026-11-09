@@ -3252,6 +3252,61 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cold-chain-telemetry-sandbox", demo_zh)
 
+    def test_cloud_gpu_spot_preemption_sla_mandate_vs_ghost_node_billing_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cloud_gpu_spot_preemption_sla_policy,
+        )
+
+        # 1. Healthy DCGM Xid=0 + 52% MFU (>=35%) + checkpoint grace -> 200 settled ($12,800)
+        commit_ok = evaluate_cloud_gpu_spot_preemption_sla_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_compute_cents, 1280000)
+
+        # 2. Ghost-node Xid 79 fault / 0% MFU NCCL hang -> 403 blocked in 12ms
+        ghost_403 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+            dcgm_xid_healthy=False,
+            effective_mfu_bps=0,
+        )
+        self.assertFalse(ghost_403.allowed)
+        self.assertEqual(ghost_403.http_status, 403)
+        self.assertEqual(
+            ghost_403.compute_lane, "GHOST_NODE_ECC_XID_FAULT_BILLING_BLOCKED"
+        )
+
+        # 3. Brutal Spot eviction without 120s checkpoint drain grace -> 422 waived in 15ms
+        evict_422 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+            checkpoint_grace_honored=False,
+        )
+        self.assertFalse(evict_422.allowed)
+        self.assertEqual(evict_422.http_status, 422)
+        self.assertEqual(
+            evict_422.compute_lane, "UNGRACEFUL_PREEMPTION_LOST_PROGRESS_WAIVED"
+        )
+
+        # 4. Web IQ detects provider InfiniBand fabric outage / CVE -> 451 blocked in 310ms
+        fab_451 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+            webiq_provider_fabric_healthy=False,
+        )
+        self.assertFalse(fab_451.allowed)
+        self.assertEqual(fab_451.http_status, 451)
+
+        # 5. Web IQ discovers adjacent region off-peak block saving $2,400 ($10,400 net) -> 409 Confirm
+        arb_409 = evaluate_cloud_gpu_spot_preemption_sla_policy(
+            offpeak_arbitrage_savings_cents=240000,
+        )
+        self.assertFalse(arb_409.allowed)
+        self.assertEqual(arb_409.http_status, 409)
+        self.assertEqual(arb_409.settled_compute_cents, 1040000)
+        self.assertEqual(arb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cloud_gpu_sla_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cloud-gpu-sla-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
