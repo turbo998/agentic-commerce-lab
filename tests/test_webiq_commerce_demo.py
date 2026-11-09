@@ -4854,6 +4854,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("legal-ledes-utbms-sandbox", demo_zh)
 
+    def test_industrial_wastewater_cod_ammonia_telemetry_mandate_vs_grab_sample_surcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_industrial_wastewater_cod_telemetry_policy,
+        )
+
+        # 1. 24h flow-weighted composite COD + 28% evaporative credit + clean EPA ECHO -> 200 settled ($54,000)
+        commit_ok = evaluate_industrial_wastewater_cod_telemetry_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_wastewater_cents, 5400000)
+
+        # 2. Single 15-min CIP grab-sample spike extrapolated across 30 days -> 403 blocked in 12ms
+        grab_403 = evaluate_industrial_wastewater_cod_telemetry_policy(
+            flow_weighted_composite_cod_and_ph_verified=False,
+        )
+        self.assertFalse(grab_403.allowed)
+        self.assertEqual(grab_403.http_status, 403)
+        self.assertEqual(
+            grab_403.wastewater_lane,
+            "GRAB_SAMPLE_SPIKE_EXTRAPOLATION_OVERBILLING_BLOCKED",
+        )
+
+        # 3. Missing cooling-tower evaporation or product-water submeter credit -> 422 blocked in 15ms
+        evap_422 = evaluate_industrial_wastewater_cod_telemetry_policy(
+            evaporative_cooling_submeter_deduction_applied=False,
+        )
+        self.assertFalse(evap_422.allowed)
+        self.assertEqual(evap_422.http_status, 422)
+        self.assertEqual(
+            evap_422.wastewater_lane,
+            "MISSING_EVAPORATIVE_COOLING_SUBMETER_DEDUCTION_BLOCKED",
+        )
+
+        # 4. Web IQ detects contracted wastewater operator in EPA ECHO SNC status -> 451 blocked in 310ms
+        epa_451 = evaluate_industrial_wastewater_cod_telemetry_policy(
+            webiq_epa_echo_npdes_compliance_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ discovers industrial-symbiosis byproduct carbon saving $8,400 ($45,600 net) -> 409 Confirm
+        sym_409 = evaluate_industrial_wastewater_cod_telemetry_policy(
+            industrial_symbiosis_carbon_savings_cents=840000,
+        )
+        self.assertFalse(sym_409.allowed)
+        self.assertEqual(sym_409.http_status, 409)
+        self.assertEqual(sym_409.settled_wastewater_cents, 4560000)
+        self.assertEqual(sym_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["industrial_wastewater_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("industrial-wastewater-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

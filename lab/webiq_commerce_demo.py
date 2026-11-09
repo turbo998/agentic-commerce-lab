@@ -10316,6 +10316,93 @@ def evaluate_corporate_legal_ebilling_ledes_utbms_policy(
     )
 
 
+@dataclass(frozen=True)
+class IndustrialWastewaterCODTelemetryVerdict:
+    allowed: bool
+    http_status: int
+    wastewater_lane: str
+    settled_wastewater_cents: int
+    symbiosis_carbon_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_industrial_wastewater_cod_telemetry_policy(
+    *,
+    monthly_wastewater_cents: int = 5400000,
+    flow_weighted_composite_cod_and_ph_verified: bool = True,
+    evaporative_cooling_submeter_deduction_applied: bool = True,
+    webiq_epa_echo_npdes_compliance_clean: bool = True,
+    industrial_symbiosis_carbon_savings_cents: int = 0,
+) -> IndustrialWastewaterCODTelemetryVerdict:
+    """Evaluate 24-hour flow-proportionate composite COD/BOD5/ammonia mass load vs single grab-sample spike extrapolation, cooling-tower evaporation & product-water submeter credit, Web IQ EPA ECHO NPDES compliance check, and industrial-symbiosis byproduct carbon-source arbitrage."""
+
+    # 1. Single Grab-Sample Spike Extrapolated Across Monthly Discharge Volume -> HTTP 403
+    if not flow_weighted_composite_cod_and_ph_verified:
+        return IndustrialWastewaterCODTelemetryVerdict(
+            False,
+            403,
+            "GRAB_SAMPLE_SPIKE_EXTRAPOLATION_OVERBILLING_BLOCKED",
+            0,
+            0,
+            "surcharge_blocked_for_extrapolating_single_cip_grab_sample_instead_of_24h_flow_weighted_composite",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Missing Cooling-Tower Evaporation or Product-Water Submeter Deduction -> HTTP 422
+    if not evaporative_cooling_submeter_deduction_applied:
+        return IndustrialWastewaterCODTelemetryVerdict(
+            False,
+            422,
+            "MISSING_EVAPORATIVE_COOLING_SUBMETER_DEDUCTION_BLOCKED",
+            0,
+            0,
+            "sewer_bill_rejected_for_charging_100pct_intake_water_without_evaporative_cooling_credit",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Contracted Wastewater Operator in EPA ECHO Significant Noncompliance (SNC) via Web IQ -> HTTP 451
+    if not webiq_epa_echo_npdes_compliance_clean:
+        return IndustrialWastewaterCODTelemetryVerdict(
+            False,
+            451,
+            "EPA_NPDES_SIGNIFICANT_NONCOMPLIANCE_OR_BYPASS_HOLD",
+            0,
+            0,
+            "webiq_detected_contracted_operator_in_epa_echo_npdes_significant_noncompliance_status",
+            310,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Industrial-Symbiosis Brewery Byproduct Carbon-Source Arbitrage -> HTTP 409 Confirm
+    if industrial_symbiosis_carbon_savings_cents > 0:
+        return IndustrialWastewaterCODTelemetryVerdict(
+            False,
+            409,
+            "INDUSTRIAL_SYMBIOSIS_CARBON_SOURCE_ARBITRAGE_CONFIRM",
+            monthly_wastewater_cents - industrial_symbiosis_carbon_savings_cents,
+            industrial_symbiosis_carbon_savings_cents,
+            "webiq_found_food_grade_brewery_byproduct_carbon_replacing_virgin_methanol_saving_8400_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified 24h Flow-Weighted Composite COD + Evaporative Submeter Credit -> Settled
+    return IndustrialWastewaterCODTelemetryVerdict(
+        True,
+        200,
+        "VERIFIED_WASTEWATER_COMPOSITE_TELEMETRY_SETTLED",
+        monthly_wastewater_cents,
+        0,
+        "flow_weighted_24h_composite_cod_and_evaporative_submeter_credit_verified_for_settlement",
+        265,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -13271,6 +13358,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "block_billing_block_latency_ms": leg_blk_403.latency_ms,
     }
 
+    ww_commit_ok = evaluate_industrial_wastewater_cod_telemetry_policy()
+    ww_grab_403 = evaluate_industrial_wastewater_cod_telemetry_policy(
+        flow_weighted_composite_cod_and_ph_verified=False,
+    )
+    ww_evap_422 = evaluate_industrial_wastewater_cod_telemetry_policy(
+        evaporative_cooling_submeter_deduction_applied=False,
+    )
+    ww_epa_451 = evaluate_industrial_wastewater_cod_telemetry_policy(
+        webiq_epa_echo_npdes_compliance_clean=False,
+    )
+    ww_sym_409 = evaluate_industrial_wastewater_cod_telemetry_policy(
+        industrial_symbiosis_carbon_savings_cents=840000,
+    )
+    industrial_wastewater_guards = {
+        "all_passed": (
+            ww_commit_ok.allowed
+            and ww_commit_ok.settled_wastewater_cents == 5400000
+            and not ww_grab_403.allowed
+            and ww_grab_403.http_status == 403
+            and not ww_evap_422.allowed
+            and ww_evap_422.http_status == 422
+            and not ww_epa_451.allowed
+            and ww_epa_451.http_status == 451
+            and not ww_sym_409.allowed
+            and ww_sym_409.action_pill == "Confirm"
+        ),
+        "wastewater_settlement_latency_ms": ww_commit_ok.latency_ms,
+        "grab_sample_block_latency_ms": ww_grab_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -13349,6 +13466,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "industrial_pbth_guards": industrial_pbth_guards,
         "diamond_gia_kimberley_guards": diamond_gia_kimberley_guards,
         "legal_ledes_utbms_guards": legal_ledes_utbms_guards,
+        "industrial_wastewater_guards": industrial_wastewater_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -17436,6 +17554,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="leg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Industrial Wastewater COD/Ammonia Telemetry & Evaporative Submeter Mandate Sandbox (Round 66 FAQ Companion) -->
+      <div class="finops-box" id="industrial-wastewater-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ww-title">💧 工业污水处理与市政排污超标附加费 (COD/氨氮) 遥测托管架构：24h 流量加权复合采样与蒸发核减令牌 (industrial_wastewater_cod_mandate_...) vs 瞬时抓样外推决策器 (Round 66 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 月度工业污水处理与高浓度附加费账单 ($54,000.00)、铅封 24h 流量加权复合 COD 均值、冷却塔蒸发核减 (28%) 与 Web IQ EPA/共生碳源场景 (Industrial Wastewater Scenario):</span></label>
+          <select id="ww-select" onchange="updateIndustrialWastewaterSandbox()">
+            <option value="ww_commit_ok">⚡ 24h 流量加权复合 COD 均值 (410 mg/L &lt;= 500) + 已核减 28% 冷却塔蒸发水量 + EPA NPDES 合规：265ms 自动放款 $54,000.00! (Act automatically)</option>
+            <option value="ww_grab_403">🛑 15 分钟洗罐瞬时抓样峰值外推全月拦截：水务局拿单次抓样 (COD 2,800mg/L) 乘以全月 4.5 万吨水量虚增 $22,000 附加费 → 12ms 触发 HTTP 403!</option>
+            <option value="ww_evap_422">🚨 未扣除冷却塔蒸发与成品水量拦截：直接按自来水进水总表 100% 盲收下水道排污费，未扣除 28% 蒸发分表读数 → 15ms 触发 HTTP 422 拒付!</option>
+            <option value="ww_epa_451">🛑 委外污水厂 EPA NPDES 严重违规 (SNC) 冻结：Web IQ /v3/browse 检出第三方运营方因偷排被列入 EPA ECHO 严重违规名单 → 310ms 触发 HTTP 451!</option>
+            <option value="ww_sym_409">🧑‍⚖️ Web IQ 检出用园区邻厂合规食品/啤酒副产物废糖蜜替代纯工业甲醇作为反硝化脱氮碳源可月省 $8,400.00 (净付 $45,600.00) → 315ms 触发 HTTP 409 Confirm!</option>
+          </select>
+        </div>
+        <div id="ww-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -17940,6 +18076,7 @@ function renderAll() {{
   updateIndustrialPBTHSandbox();
   updateDiamondGIAKimberleySandbox();
   updateLegalLEDESUTBMSSandbox();
+  updateIndustrialWastewaterSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -21426,6 +21563,55 @@ function updateLegalLEDESUTBMSSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 0.1 小时单项拆分 LEDES 1998B + OCG 费率与 UTBMS 达标 + 庭审卷宗吻合：已自动放款 (VERIFIED_LEGAL_LEDES_UTBMS_SETTLED · 265ms · Act automatically):</strong><br>" +
     "• <strong>零打包混记注水、零新律师蹭课转嫁</strong>：外部律所月度诉讼代理账单已完成结构化清算并更新案件预算评分卡（<code>$92,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateIndustrialWastewaterSandbox() {{
+  var selEl = document.getElementById("ww-select");
+  var outEl = document.getElementById("ww-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ww_grab_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GRAB_SAMPLE_SPIKE_EXTRAPOLATION_OVERBILLING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "排污口铅封 24 小时流量比例复合采样器实测全月加权平均 <code>COD = 410 mg/L</code>（未超 500 mg/L 阈值），但水务账单却拿车间洗罐 15 分钟瞬时抓样峰值（<code>2,800 mg/L</code>）外推全月 4.5 万吨排水量（<code>flow_weighted_composite_cod_and_ph_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$54,000.00</code> 失真账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ww_evap_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MISSING_EVAPORATIVE_COOLING_SUBMETER_DEDUCTION_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "账单直接按自来水进水总表 100% 计收市政排污费，未扣除冷却塔补水/排污分表实测的 <code>28% 蒸发上天水量</code> 与装入产品的成品水量（<code>evaporative_cooling_submeter_deduction_applied == False</code>）。网关在 <code>15ms</code> 内当场拒付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ww_epa_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EPA_NPDES_SIGNIFICANT_NONCOMPLIANCE_OR_BYPASS_HOLD (310ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查美国 EPA ECHO / NPDES 重点排污单位公开监测库，检出受托污水运营方因非法溢流或重金属超标处于严重违规（SNC）状态，立即冻结结算以阻断上游连带环保责任！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ww_sym_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 INDUSTRIAL_SYMBIOSIS_CARBON_SOURCE_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检索区域工业共生（Industrial Symbiosis）副产物交换库，发现采用邻厂合规备案的食品级高 BOD 啤酒/制糖废糖蜜替代纯工业甲醇脱氮药剂可月省 <code>$8,400.00</code>（净支出从 <code>$54,000.00</code> 降至 <code>$45,600.00</code>），建议一键确认！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 24h 流量加权复合 COD 核验通过 + 28% 冷却蒸发已核减 + EPA NPDES 合规：已自动放款 (VERIFIED_WASTEWATER_COMPOSITE_TELEMETRY_SETTLED · 265ms · Act automatically):</strong><br>" +
+    "• <strong>零洗罐瞬时抓样冤枉罚单、零水蒸气排污费</strong>：月度工业污水处理账单已完成净额清算并生成 ISO 14046 水足迹审计报告（<code>$54,000.00</code>）！" +
     "</div>";
 }}
 

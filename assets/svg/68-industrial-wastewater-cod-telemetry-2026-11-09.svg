@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg68" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#064E3B"/>
+    </linearGradient>
+    <linearGradient id="accent68" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg68)"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent68)"/>
+
+  <!-- Header -->
+  <text x="45" y="64" fill="#22D3EE" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">
+    ROUND 66 · INDUSTRIAL WASTEWATER COD/AMMONIA TELEMETRY &amp; EVAPORATION MANDATE (2026-11-09)
+  </text>
+  <text x="45" y="96" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="23" font-weight="800">
+    工业污水处理与市政排污超标附加费 (COD/氨氮) 遥测托管 vs 瞬时抓样天价外推与蒸发盲收
+  </text>
+  <text x="45" y="122" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="14">
+    24h 流量加权复合采样 (防单次抓样尖峰外推) + 冷却塔蒸发水量核减 (28%) + Web IQ EPA 合规与副产物碳源省 $8,400 ($54k 护航)
+  </text>
+
+  <!-- Left Column: Legacy Grab-Sample Extrapolation & 100% Intake Billing -->
+  <rect x="45" y="142" width="535" height="365" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="45" y="142" width="535" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="65" y="166" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ❌ 传统凭“单次瞬时抓样”外推全月与按自来水表 100% 盲收 ($54,000 被冤枉暴罚)
+  </text>
+
+  <rect x="65" y="196" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="220" fill="#F87171" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    1. 恰逢洗罐 15 分钟瞬时抓样 (COD 2,800mg/L)，被外推算作全月 4.5 万吨浓度
+  </text>
+  <text x="80" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 采样员恰好在车间 CIP 冲罐瞬间舀了一瓶水，便认定全月 30 天每天都是高浓度污水
+  </text>
+  <text x="80" y="263" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 实际上在线 24h 流量加权平均 COD 仅 410 mg/L (未超标)，工厂却被冤枉加收 $22,000!
+  </text>
+
+  <rect x="65" y="294" width="495" height="84" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="80" y="318" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    2. 冷却塔蒸发上天的 28% 水蒸气与装进饮料瓶的水，全被收了排污费
+  </text>
+  <text x="80" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 传统按厂区自来水总进水表读数 1:1 计收污水处理费
+  </text>
+  <text x="80" y="361" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 忽略了空调冷却塔与锅炉蒸发掉的 28% 水量根本没有排入市政下水管道
+  </text>
+
+  <rect x="65" y="392" width="495" height="98" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="80" y="416" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    3. 委外污水厂偷排被 EPA 通报连带受罚 + 买纯甲醇脱氮多花 $8,400
+  </text>
+  <text x="80" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 园区第三方污水运营方已被 EPA ECHO 列入严重违规 (SNC)，导致排污企业承担连带环保责任
+  </text>
+  <text x="80" y="459" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 高价采购工业乙酸钠/甲醇投加反硝化碳源，不知用邻厂食品废糖蜜替代可省 $8,400
+  </text>
+
+  <!-- Right Column: 24h Flow-Weighted Composite & Submeter Mandate -->
+  <rect x="605" y="142" width="550" height="365" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="605" y="142" width="550" height="38" rx="12" fill="#064E3B"/>
+  <text x="625" y="166" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="15" font-weight="700">
+    ✅ 24h 流量加权复合采样与蒸发核减令牌 + Web IQ 网关 (推荐)
+  </text>
+
+  <rect x="625" y="196" width="510" height="84" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="640" y="220" fill="#34D399" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 1: 铅封 24h 流量比例自动采样器与在线 COD 门禁 (12ms · HTTP 403)
+  </text>
+  <text x="640" y="242" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 flow_weighted_composite_cod_and_ph_verified == True
+  </text>
+  <text x="640" y="263" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 拒绝用 10 秒瞬时抓样外推全月负荷 → 12ms 拦截 $54,000 失真高浓度附加费账单
+  </text>
+
+  <rect x="625" y="294" width="510" height="84" rx="8" fill="#0F172A" stroke="#38BDF8"/>
+  <text x="640" y="318" fill="#38BDF8" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 2: 冷却塔蒸发/产品带走水量分表核减 (Submeter Credit) 门禁 (15ms · HTTP 422)
+  </text>
+  <text x="640" y="340" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 强制校验 evaporative_cooling_submeter_deduction_applied == True
+  </text>
+  <text x="640" y="361" fill="#BAE6FD" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 未扣除冷却塔补水与明渠巴歇尔槽实测差额的账单在 15ms 内触发 HTTP 422 拒付
+  </text>
+
+  <rect x="625" y="392" width="510" height="98" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="640" y="416" fill="#FBBF24" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    Gate 3: Microsoft Web IQ /v3/browse EPA 合规与共生碳源 (310/315ms)
+  </text>
+  <text x="640" y="438" fill="#CBD5E1" font-family="Segoe UI, Inter, sans-serif" font-size="12.5">
+    • 核验 EPA ECHO / NPDES 排污许可证合规库：委外方严重超标在 310ms 触发 HTTP 451
+  </text>
+  <text x="640" y="459" fill="#FDE68A" font-family="Segoe UI, Inter, sans-serif" font-size="12">
+    • 检出采用园区食品/啤酒厂副产物废糖蜜替代纯甲醇脱氮可省 $8,400 → 315ms HTTP 409!
+  </text>
+
+  <!-- Bottom Quantitative Benchmark Bar -->
+  <rect x="45" y="522" width="1110" height="125" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="65" y="548" fill="#22D3EE" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="700">
+    📊 定量基准实测 (deterministic_offline_simulation · 95 Unit Tests Passing · 生物制造/食品园区月度工业污水处理与排污附加费 $54,000)
+  </text>
+
+  <rect x="65" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EF4444"/>
+  <text x="77" y="584" fill="#FCA5A5" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">瞬时抓样尖峰外推拦截</text>
+  <text x="77" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 403 · 12 ms</text>
+  <text x="77" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">强制 24h 流量加权复合均值</text>
+
+  <rect x="282" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#F59E0B"/>
+  <text x="294" y="584" fill="#FCD34D" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">冷却蒸发未扣减拒付</text>
+  <text x="294" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 422 · 15 ms</text>
+  <text x="294" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">剔除 28% 未入管网蒸发水量</text>
+
+  <rect x="499" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#EC4899"/>
+  <text x="511" y="584" fill="#F472B6" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">NPDES 违规偷排冻结</text>
+  <text x="511" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 451 · 310 ms</text>
+  <text x="511" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">Web IQ EPA ECHO 许可证核验</text>
+
+  <rect x="716" y="562" width="205" height="68" rx="8" fill="#1E293B" stroke="#8B5CF6"/>
+  <text x="728" y="584" fill="#C4B5FD" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">共生副产碳源确认</text>
+  <text x="728" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 409 · 315 ms</text>
+  <text x="728" y="621" fill="#94A3B8" font-family="Segoe UI, Inter, sans-serif" font-size="11">立省 $8,400 ($45,600)</text>
+
+  <rect x="933" y="562" width="205" height="68" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="945" y="584" fill="#6EE7B7" font-family="Segoe UI, Inter, sans-serif" font-size="12.5" font-weight="700">加权达标自动放款</text>
+  <text x="945" y="604" fill="#F8FAFC" font-family="Segoe UI, Inter, sans-serif" font-size="14" font-weight="800">HTTP 200 · 265 ms</text>
+  <text x="945" y="621" fill="#A7F3D0" font-family="Segoe UI, Inter, sans-serif" font-size="11">巴歇尔槽计量归档 $54,000</text>
+</svg>
