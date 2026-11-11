@@ -14833,6 +14833,91 @@ def evaluate_elevator_escalator_mro_policy(
     )
 
 
+@dataclass(frozen=True)
+class AutomatedContainerTerminalStsVerdict:
+    allowed: bool
+    http_status: int
+    terminal_sts_lane: str
+    settled_terminal_sts_cents: int
+    tandem_lift_or_restow_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_automated_container_terminal_sts_policy(
+    gross_terminal_sts_cents: int = 25000000,
+    net_gmph_and_zero_unproductive_restow_verified: bool = True,
+    twistlock_eccentricity_and_ndt_cycle_passed: bool = True,
+    webiq_solas_vgm_and_imdg_segregation_clean: bool = True,
+    tandem_lift_early_departure_bunker_savings_cents: int = 0,
+) -> AutomatedContainerTerminalStsVerdict:
+    """Evaluate Ship-to-Shore (STS) quay crane net Gross Crane Moves Per Hour (GMPH >=32 Moves/h) & BAPLIE exclusion of terminal-induced unproductive restows vs gross counter overbilling, spreader 4-twistlock shear load-pin eccentricity (<=10%) & 100,000-cycle fatigue NDT gate, Web IQ SOLAS Verified Gross Mass (VGM <=+-5%) & IMDG dangerous-goods segregation check, and Tandem-Lift early-departure slow-steaming bunker arbitrage."""
+    # 1. AGV starvation dropping net GMPH < 32 Moves/h or billing terminal-induced unproductive restows -> HTTP 403
+    if not net_gmph_and_zero_unproductive_restow_verified:
+        return AutomatedContainerTerminalStsVerdict(
+            False,
+            403,
+            "CRANE_GMPH_SLA_BREACH_OR_UNPRODUCTIVE_RESTOW_BLOCKED",
+            0,
+            gross_terminal_sts_cents,
+            "container_terminal_invoice_blocked_due_to_net_gmph_below_32_moves_h_or_padded_unproductive_yard_restows",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Spreader 4-twistlock load-pins detect cargo eccentricity > 10% or fatigued twistlock pin (>100k cycles) -> HTTP 422
+    if not twistlock_eccentricity_and_ndt_cycle_passed:
+        return AutomatedContainerTerminalStsVerdict(
+            False,
+            422,
+            "TWISTLOCK_ECCENTRIC_OVERLOAD_OR_FATIGUE_CRACK_BLOCKED",
+            0,
+            gross_terminal_sts_cents,
+            "spreader_hoist_held_at_0_5m_hover_due_to_twistlock_eccentricity_exceeding_10pct_or_overdue_pin_ndt",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects SOLAS VGM weight discrepancy (>5%) or IMDG dangerous-goods bay segregation breach -> HTTP 451
+    if not webiq_solas_vgm_and_imdg_segregation_clean:
+        return AutomatedContainerTerminalStsVerdict(
+            False,
+            451,
+            "SOLAS_VGM_WEIGHT_DISCREPANCY_OR_IMDG_STOWAGE_HOLD",
+            0,
+            gross_terminal_sts_cents,
+            "webiq_detected_undeclared_solas_vgm_overweight_container_or_incompatible_imdg_hazmat_bay_stowage",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Tandem-Lift (2x40ft) Early-Departure Slow-Steaming Bunker Arbitrage -> HTTP 409 Confirm
+    if tandem_lift_early_departure_bunker_savings_cents > 0:
+        return AutomatedContainerTerminalStsVerdict(
+            False,
+            409,
+            "TANDEM_LIFT_EARLY_DEPARTURE_BUNKER_SAVINGS_CONFIRM",
+            gross_terminal_sts_cents - tandem_lift_early_departure_bunker_savings_cents,
+            tandem_lift_early_departure_bunker_savings_cents,
+            "webiq_deployed_tandem_lift_spreaders_to_depart_8h_early_and_slow_steam_saving_40000_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Net GMPH >=32 Moves/h + 4-Twistlock Eccentricity <=10% + SOLAS VGM Clean -> Settled
+    return AutomatedContainerTerminalStsVerdict(
+        True,
+        200,
+        "VERIFIED_CONTAINER_TERMINAL_STS_SETTLED",
+        gross_terminal_sts_cents,
+        0,
+        "net_gmph_twistlock_load_pin_eccentricity_and_solas_vgm_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19378,6 +19463,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phantom_pm_block_latency_ms": elv_pmv_403.latency_ms,
     }
 
+    sts_commit_ok = evaluate_automated_container_terminal_sts_policy()
+    sts_gmp_403 = evaluate_automated_container_terminal_sts_policy(
+        net_gmph_and_zero_unproductive_restow_verified=False,
+    )
+    sts_tws_422 = evaluate_automated_container_terminal_sts_policy(
+        twistlock_eccentricity_and_ndt_cycle_passed=False,
+    )
+    sts_vgm_451 = evaluate_automated_container_terminal_sts_policy(
+        webiq_solas_vgm_and_imdg_segregation_clean=False,
+    )
+    sts_tdm_409 = evaluate_automated_container_terminal_sts_policy(
+        tandem_lift_early_departure_bunker_savings_cents=4000000,
+    )
+    container_sts_guards = {
+        "all_passed": (
+            sts_commit_ok.allowed
+            and sts_commit_ok.settled_terminal_sts_cents == 25000000
+            and not sts_gmp_403.allowed
+            and sts_gmp_403.http_status == 403
+            and not sts_tws_422.allowed
+            and sts_tws_422.http_status == 422
+            and not sts_vgm_451.allowed
+            and sts_vgm_451.http_status == 451
+            and not sts_tdm_409.allowed
+            and sts_tdm_409.action_pill == "Confirm"
+        ),
+        "sts_settlement_latency_ms": sts_commit_ok.latency_ms,
+        "gmph_restow_block_latency_ms": sts_gmp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19509,6 +19624,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "subsea_cp_guards": subsea_cp_guards,
         "swro_desalination_guards": swro_desalination_guards,
         "elevator_mro_guards": elevator_mro_guards,
+        "container_sts_guards": container_sts_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24550,6 +24666,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="elv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Automated Container Terminal STS Crane, Twistlock Eccentricity & Net GMPH Mandate Sandbox (Round 119 FAQ Companion) -->
+      <div class="finops-box" id="automated-container-sts-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sts-title">🚢 自动化集装箱码头岸桥装卸 (STS Crane &amp; AGV)、吊具四旋锁偏载 (&lt;=10%) 与净台时效率 (GMPH &gt;=32) 架构：防坠箱与净吊次令牌 (port_sts_crane_mandate_...) vs 按总吊次盲付决策器 (Round 119 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 24,000 TEU 干线集装箱船自动化码头装卸交割 ($250,000.00)、岸桥净台时效率 (GMPH)、吊具四旋锁测力销偏载与 Web IQ SOLAS VGM/双40尺双箱吊 (Tandem Lift) 慢航省油场景 (Container Terminal STS Scenario):</span></label>
+          <select id="sts-select" onchange="updateAutomatedContainerStsSandbox()">
+            <option value="sts_commit_ok">⚡ 岸桥净台时效率 GMPH = 36 Moves/h (&gt;=32) + 吊具四旋锁偏心率 3.2% (&lt;=10%) + SOLAS VGM 重量吻合：19ms 自动结算 $250,000.00! (Act automatically)</option>
+            <option value="sts_gmp_403">🛑 无人 AGV 车队死锁怠工致岸桥效率跌至 19 Moves/h (&lt; 32 SLA) 延误船期，或把 350 次码头内部堆场倒箱翻捣混入船东账单拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sts_tws_422">🚨 离地 0.5m 悬停检测检出箱内重货移位致左右旋锁偏心率达 26% (&gt; 10% 上限)，或旋锁销超 10 万次疲劳未探伤存在高空断锁坠箱风险拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sts_vgm_451">🛑 吊具实测毛重比托运人申报的 SOLAS VGM 超重 14 吨 (装上甲板第 9 层将导致横摇翻船坠海) 或 IMDG 危化品箱违规邻近混装：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="sts_tdm_409">🧑‍⚖️ Web IQ 调度双40尺四箱并吊吊具 (Tandem Lift) 提前 8 小时完工离泊，使巨轮下一航段降速 1.5 节慢航 (Slow Steaming) 净省燃油与港杂费 $40,000.00 (净付 $210,000.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25107,6 +25241,7 @@ function renderAll() {{
   updateSubseaCathodicProtectionSandbox();
   updateSwroSeawaterDesalinationSandbox();
   updateElevatorEscalatorMroSandbox();
+  updateAutomatedContainerStsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -31190,6 +31325,55 @@ function updateElevatorEscalatorMroSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 轿顶/底坑物理驻留 (&gt;=45min) + 双抱闸微动同步 + ISO 4309 MRT 达标：已自动清算 (VERIFIED_ELEVATOR_ESCALATOR_MRO_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零 5 分钟幽灵打卡、零计步器锁梯敲诈与门锁短接</strong>：超高层电梯与枢纽扶梯全包维保账单已完成结算（<code>$115,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAutomatedContainerStsSandbox() {{
+  var selEl = document.getElementById("sts-select");
+  var outEl = document.getElementById("sts-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sts_gmp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CRANE_GMPH_SLA_BREACH_OR_UNPRODUCTIVE_RESTOW_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "岸桥 PLC 与 <code>EDIFACT BAPLIE 电子船图差分</code> 对账显示，因堆场 AGV 调度拥堵导致净台时效率跌至 <code>GMPH = 19 Moves/h &lt; 32 Moves/h</code>，且码头将自身堆场配载失误造成的 <code>350 次无效翻舱 (Terminal Restows)</code> 混入船东 THC 账单（<code>net_gmph_and_zero_unproductive_restow_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$250,000.00</code> 账单并追索船期延误燃油损失！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sts_tws_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 TWISTLOCK_ECCENTRIC_OVERLOAD_OR_FATIGUE_CRACK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "吊具抓箱离地 0.5m 悬停检测时，<code>四角旋锁独立剪切测力销 (Shear Load-Pins)</code> 检出箱内重型钢卷移位导致左右重心偏心率高达 <code>26.0% &gt; 10.0% 安全上限</code>，或旋锁销 RFID 计数已超 10 万次未做超声探伤（高空起升极易断锁坠箱砸穿船底，<code>twistlock_eccentricity_and_ndt_cycle_passed == False</code>）。网关在 <code>14ms</code> 内锁死起升并退回重整！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sts_vgm_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SOLAS_VGM_WEIGHT_DISCREPANCY_OR_IMDG_STOWAGE_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 比对吊具实测重量与海事局 <code>SOLAS VGM 申报数据库</code> 及 <code>IMDG Code 危险品隔离表</code>，检出该箱实测重 28 吨（比 VGM 申报超重 14 吨，装上甲板第 9 层将严重破坏船舶初稳性高度 GM）或危化品箱违规混装，立即执行安全合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sts_tdm_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TANDEM_LIFT_EARLY_DEPARTURE_BUNKER_SAVINGS_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 协同码头启用 <code>双40尺四箱并吊吊具 (Tandem Lift，48 Moves/h)</code> 使 24,000 TEU 巨轮提前 8 小时离泊，下一洋面航段航速从 20.5 节经济降速至 18.8 节（Slow Steaming），单航次净省船用低硫燃油（VLSFO）与港杂成本 <code>$40,000.00</code>（净付降至 <code>$210,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 岸桥净 GMPH (&gt;=32 Moves/h) + 四旋锁偏载 (&lt;=10%) + SOLAS VGM 达标：已自动清算 (VERIFIED_CONTAINER_TERMINAL_STS_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零无效倒箱混计、零偏载高空断锁坠箱隐患</strong>：自动化集装箱码头靠泊装卸（THC / Stevedoring）账单已完成结算（<code>$250,000.00</code>）！" +
     "</div>";
 }}
 

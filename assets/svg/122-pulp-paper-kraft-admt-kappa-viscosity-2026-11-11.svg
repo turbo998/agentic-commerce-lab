@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg122" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081512"/>
+      <stop offset="50%" stop-color="#112721"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent122" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="cardBg122" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#15322A"/>
+      <stop offset="100%" stop-color="#0A1915"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg122)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent122)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ROUND 120 · BLEACHED KRAFT PULP (BSKP / BEKP) ADMT ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    大宗漂白木浆贸易 (BSKP/BEKP)、风干公吨 (ADMT 90%绝干) 与粘度/白度智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Microwave Bale ADMT (Bone-Dry / 0.90), ISO 5351 Intrinsic Viscosity (&gt;=750 mL/g) &amp; ECF/TCF AOX Guard vs. Wet-Bale Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Gross Wet-Bale & Over-Bleached Fiber Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg122)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按地磅湿重盲付与过漂脆断踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 浆包芯部含水 22% (超 10% 基准) 把水当木浆卖</text>
+    <text x="58" y="224" fill="#CBD5E1">• 按码头地磅湿毛重收走 $205,000 针叶/阔叶浆货款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 烘箱/微波实测绝干纤维仅 78%，每船白花 $2.7万买水分</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 为凑 ISO 90% 高白度过量加氯致纤维链断裂</text>
+    <text x="58" y="294" fill="#CBD5E1">• 纸面白度虽高，但铜乙二胺特性粘度跌破 580 mL/g (&lt;750)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 纤维聚合度崩塌，上高速造纸机每小时断纸停机</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 元素氯漂白产生二噁英 (AOX) 或违反 EUDR 毁林</text>
+    <text x="58" y="364" fill="#CBD5E1">• 冒充 ECF/TCF 无元素氯漂白，可吸附有机卤素 AOX 超标</text>
+    <text x="58" y="382" fill="#CBD5E1">• 导致母婴生活用纸/食品卡纸被欧盟海关查封召回</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$205,000 湿包注水款 + 纸机高频断头停产
+  </text>
+
+  <!-- Center Card: 4-Layer Kraft Pulp Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg122)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ⚡ 微波 ADMT 折算 + 特性粘度 + 湿浆直供托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 穿透微波风干公吨 (ADMT = 绝干/0.90 · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    含水率 &gt; 10% 未按 ISO 638 折算 ADMT 净重或湿包霉变 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 EXCESS_BALE_MOISTURE_UNADJUSTED_ADMT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · ISO 5351 特性粘度 (&gt;=750 mL/g) 与尘埃度 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    过度漂白致特性粘度 &lt; 750 mL/g (抗张撕裂崩塌) 或尘埃超标 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 CELLULOSE_VISCOSITY_DEGRADATION_OR_DIRT_SPECK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ ECF/TCF 零二噁英与 FSC/EUDR (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    有机卤素 AOX &gt; 0.2 kg/t 或缺失 FSC/PEFC 与 EUDR 多边形 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 ELEMENTAL_CHLORINE_AOX_OR_EUDR_FOREST_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 4 · Web IQ 园区管道湿浆直供 + 妥尔油副产 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    免闪急烘干管道泵送湿浆 (Slush Pulp) + 粗妥尔油 (CTO) 抵扣 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $32,800 ($172,200 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $205,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg122)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 120)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• ADMT 净重与粘度 860 mL/g 放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$205,000.00 (ISO 白度 90%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 22% 湿浆包未折算 ADMT 拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截买水冤枉钱：$205,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 过漂致特性粘度崩塌 (&lt;750 mL/g) 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 保护高速纸机免遭断头停机</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 管道湿浆直供与妥尔油抵扣 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$32,800.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  141 / 141 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    只为 90% 绝干长纤维买单，终结湿包注水与过漂断纸
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“地磅湿毛重吨数”或“只看纸面白度”盲付大宗漂白针叶浆/阔叶浆 (BSKP/BEKP) 货款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 全包穿透微波实测风干公吨 ADMT = 绝干重 / 0.90 (11ms 拦 403)；② ISO 5351 铜乙二胺特性粘度 &gt;=750 mL/g 防过漂断链 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 ECF/TCF 可吸附有机卤素 (AOX &lt;=0.2 kg/t) 与 EUDR 多边形 (285ms 拦 451)，并通过林浆纸一体化管道湿浆直供与粗妥尔油 (CTO) 副产立省 $32,800 (295ms)。
+  </text>
+</svg>

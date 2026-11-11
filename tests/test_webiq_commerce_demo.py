@@ -7823,6 +7823,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("elevator-escalator-mro-sandbox", demo_zh)
 
+    def test_automated_container_terminal_sts_spreader_twistlock_gmph_mandate_vs_eccentric_berth_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_automated_container_terminal_sts_policy,
+        )
+
+        # 1. Verified net GMPH >=32 Moves/h + 4-twistlock eccentricity <=10% + SOLAS VGM clean -> 200 OK ($250,000)
+        commit_ok = evaluate_automated_container_terminal_sts_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_terminal_sts_cents, 25000000)
+
+        # 2. AGV starvation dropping net GMPH < 32 or padded unproductive restows -> 403 blocked in 11ms
+        gmp_403 = evaluate_automated_container_terminal_sts_policy(
+            net_gmph_and_zero_unproductive_restow_verified=False,
+        )
+        self.assertFalse(gmp_403.allowed)
+        self.assertEqual(gmp_403.http_status, 403)
+        self.assertEqual(
+            gmp_403.terminal_sts_lane,
+            "CRANE_GMPH_SLA_BREACH_OR_UNPRODUCTIVE_RESTOW_BLOCKED",
+        )
+
+        # 3. Spreader 4-twistlock load-pins detect eccentricity > 10% or fatigued pin -> 422 blocked in 14ms
+        tws_422 = evaluate_automated_container_terminal_sts_policy(
+            twistlock_eccentricity_and_ndt_cycle_passed=False,
+        )
+        self.assertFalse(tws_422.allowed)
+        self.assertEqual(tws_422.http_status, 422)
+        self.assertEqual(
+            tws_422.terminal_sts_lane,
+            "TWISTLOCK_ECCENTRIC_OVERLOAD_OR_FATIGUE_CRACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects SOLAS VGM weight discrepancy (>5%) or IMDG segregation breach -> 451 blocked in 285ms
+        vgm_451 = evaluate_automated_container_terminal_sts_policy(
+            webiq_solas_vgm_and_imdg_segregation_clean=False,
+        )
+        self.assertFalse(vgm_451.allowed)
+        self.assertEqual(vgm_451.http_status, 451)
+
+        # 5. Web IQ deploys Tandem-Lift spreaders to depart 8h early & slow-steam saving $40,000 ($210,000 net) -> 409 Confirm
+        tdm_409 = evaluate_automated_container_terminal_sts_policy(
+            tandem_lift_early_departure_bunker_savings_cents=4000000,
+        )
+        self.assertFalse(tdm_409.allowed)
+        self.assertEqual(tdm_409.http_status, 409)
+        self.assertEqual(tdm_409.settled_terminal_sts_cents, 21000000)
+        self.assertEqual(tdm_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["container_sts_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("automated-container-sts-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
