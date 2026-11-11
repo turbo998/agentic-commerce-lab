@@ -2502,6 +2502,24 @@
         <div id="bls-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Semiconductor Ultrapure Water (UPW), TOC/DO & Boron/Silica Mandate Sandbox (Round 95 FAQ Companion) -->
+      <div class="finops-box" id="semiconductor-upw-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-upw-title">💧 半导体晶圆厂超纯水 (UPW BOO)、POU 在线 TOC/溶解氧与弱电离硼/胶体硅穿漏门禁架构：全痕量与回用令牌 (semiconductor_upw_f63_mandate_...) vs 18.2 MΩ 电阻率盲付决策器 (Round 95 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 12 英寸晶圆厂外包超纯水站月度供水 ($240,000.00)、SEMI F63 机台使用点 (POU) TOC/DO (&lt;=1.0 ppb)、抛光混床硼 (&lt;=15 ppt)/胶体硅穿漏与 Web IQ 78% 梯级回用场景 (Semiconductor UPW Scenario):</span></label>
+          <select id="upw-select" onchange="updateSemiconductorUpwSandbox()">
+            <option value="upw_commit_ok">⚡ POU 端 TOC 0.45ppb / DO 0.6ppb + 20nm 颗粒达标 + 混床间在线硼 6.2ppt (&lt;=15) &amp; 硅 0.18ppb：21ms 自动结算 $240,000.00! (Act automatically)</option>
+            <option value="upw_toc_403">🛑 185nm 脱碳紫外灯或脱气膜衰老导致机台端 (POU) TOC &gt;1.0ppb (碳化浸没式光刻物镜) 或 20nm 纳米颗粒脱落拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="upw_bor_422">🚨 在线电阻率虽满表 18.22 MΩ·cm，但末端抛光混床已饱和穿漏不导电的硼酸 (85 ppt &gt; 15 ppt 引发晶体管 Vth 漂移) 与纳米胶体硅拦截 → 14ms 触发 HTTP 422 强制切柱!</option>
+            <option value="upw_f63_451">🛑 外包商超期服役核级均粒抛光树脂/超滤膜或 TMAH 显影废水排放超标：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="upw_rec_409">🧑‍⚖️ Web IQ 联动湿法机台电导率三通阀将 &lt;5 μS/cm 清洁漂洗尾水直回精处理段 (回收率达 79.5%) 并将 RO 浓水补冷却塔立省 $38,000.00 (净付 $202,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="upw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3035,6 +3053,7 @@ function renderAll() {
   updatePelagicSeafoodTunaSandbox();
   updateIndustrialGasAsuSandbox();
   updateMiningBlastingVodSandbox();
+  updateSemiconductorUpwSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7942,6 +7961,55 @@ function updateMiningBlastingVodSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 孔内光纤爆速 (&gt;=5,200 m/s) + 3D 视觉块度 P80 (&lt;=25cm) + 电子雷管 100% 准爆：已自动清算 (VERIFIED_ROCK_ON_GROUND_MINING_BLAST_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零半爆黄烟、零巨石根底返工</strong>：露天矿山 Rock-on-Ground 台阶深孔爆破账单已完成结算（<code>$155,000.00</code>）！" +
+    "</div>";
+}
+
+function updateSemiconductorUpwSandbox() {
+  var selEl = document.getElementById("upw-select");
+  var outEl = document.getElementById("upw-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "upw_toc_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 POU_TOC_DISSOLVED_OXYGEN_OR_20NM_PARTICLE_EXCURSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "洁净室机台使用点（<code>POU Return Loop</code>）在线分析仪检出总有机碳突破 <code>TOC = 2.8 ppb &gt; 1.0 ppb</code>（193nm 浸没式光刻激光将使有机物碳化沉积在物镜上），或溶解氧/20nm 纳米颗粒计数超标（<code>pou_toc_do_and_20nm_particle_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$240,000.00</code> 月度超纯水账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "upw_bor_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SILENT_BORON_PPT_OR_COLLOIDAL_SILICA_RESIN_BREAKTHROUGH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "虽然总管在线电阻率表仍显示满分 <code>18.22 MΩ·cm</code>，但抛光混床出口 <code>在线 ICP-MS 硼表与比色硅表</code> 捕获到饱和树脂发生色谱置换穿漏：弱电离硼酸飙升至 <code>85 ppt</code>（突破 <code>15 ppt</code> 红线，高温退火将直接毒化晶体管阈值电压 Vth）、胶体硅达 <code>2.4 ppb</code>（<code>boron_ppt_and_colloidal_silica_resin_passed == False</code>）。网关在 <code>14ms</code> 内强制指令切换备用树脂柱并拒付违约水费！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "upw_f63_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OVERDUE_NUCLEAR_RESIN_UV_LAMP_OR_TMAH_WASTEWATER_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 SEMI F63 耗材更换台账与环保在线监测，检出外包水站超期服役核级均粒抛光树脂与 185nm 真空紫外灯管，或四甲基氢氧化铵（TMAH）显影废液处理未达标，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "upw_rec_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CASCADE_RINSE_RECLAIM_AND_RO_BRINE_VALORIZATION_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 协同湿法清洗机台三通分流阀，将电导率 <code>&lt; 5 μS/cm</code> 的清洁漂洗尾水不进废水站直接导回超纯水精处理段（全厂回收率达 <code>79.5%</code>），并将二级 RO 浓水回用于厂务冷却塔补水，单月立省原水与蒸汽造水费 <code>$38,000.00</code>（净付降至 <code>$202,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ SEMI F63 POU 端 TOC/DO (&lt;=1.0 ppb) + 硼 (&lt;=15 ppt) &amp; 硅 (&lt;=0.5 ppb) 零穿漏：已自动清算 (VERIFIED_SEMI_F63_ULTRAPURE_WATER_BOO_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零 18.2MΩ 盲区树脂穿漏、零浸没式物镜碳化</strong>：12 英寸晶圆厂月度超纯水外包服务费已完成结算（<code>$240,000.00</code>）！" +
     "</div>";
 }
 

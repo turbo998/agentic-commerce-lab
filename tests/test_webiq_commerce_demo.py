@@ -6479,6 +6479,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("mining-blasting-vod-sandbox", demo_zh)
 
+    def test_semiconductor_upw_ultrapure_water_toc_boron_nanoparticle_mandate_vs_resin_breakthrough_wafer_scrap_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_upw_ultrapure_water_policy,
+        )
+
+        # 1. Verified POU TOC/DO <=1.0 ppb + Boron <=15 ppt & Silica <=0.5 ppb + 20nm clean -> 200 OK ($240,000)
+        commit_ok = evaluate_semiconductor_upw_ultrapure_water_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_upw_cents, 24000000)
+
+        # 2. Cleanroom POU TOC/DO (>1.0 ppb) or 20nm particle excursion -> 403 blocked in 11ms
+        toc_403 = evaluate_semiconductor_upw_ultrapure_water_policy(
+            pou_toc_do_and_20nm_particle_verified=False,
+        )
+        self.assertFalse(toc_403.allowed)
+        self.assertEqual(toc_403.http_status, 403)
+        self.assertEqual(
+            toc_403.upw_lane,
+            "POU_TOC_DISSOLVED_OXYGEN_OR_20NM_PARTICLE_EXCURSION_BLOCKED",
+        )
+
+        # 3. Silent Boron (>15 ppt) or Colloidal Silica (>0.5 ppb) resin breakthrough behind 18.2 MOhm resistivity -> 422 blocked in 14ms
+        bor_422 = evaluate_semiconductor_upw_ultrapure_water_policy(
+            boron_ppt_and_colloidal_silica_resin_passed=False,
+        )
+        self.assertFalse(bor_422.allowed)
+        self.assertEqual(bor_422.http_status, 422)
+        self.assertEqual(
+            bor_422.upw_lane,
+            "SILENT_BORON_PPT_OR_COLLOIDAL_SILICA_RESIN_BREAKTHROUGH_BLOCKED",
+        )
+
+        # 4. Web IQ detects overdue nuclear-grade resin/185nm UV lamp or TMAH discharge breach -> 451 blocked in 295ms
+        f63_451 = evaluate_semiconductor_upw_ultrapure_water_policy(
+            webiq_semi_f63_consumable_and_wastewater_clean=False,
+        )
+        self.assertFalse(f63_451.allowed)
+        self.assertEqual(f63_451.http_status, 451)
+
+        # 5. Web IQ orchestrates >=78% Cascade Rinse Reclaim & RO brine reuse saving $38,000 ($202,000 net) -> 409 Confirm
+        rec_409 = evaluate_semiconductor_upw_ultrapure_water_policy(
+            cascade_rinse_reclaim_and_ro_brine_savings_cents=3800000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_upw_cents, 20200000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["semiconductor_upw_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("semiconductor-upw-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
