@@ -12708,6 +12708,91 @@ def evaluate_industrial_gas_asu_pipeline_policy(
     )
 
 
+@dataclass(frozen=True)
+class MiningBlastingEmulsionVodVerdict:
+    allowed: bool
+    http_status: int
+    blasting_lane: str
+    settled_blasting_cents: int
+    mine_to_mill_or_vod_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_mining_blasting_emulsion_vod_policy(
+    gross_bench_blast_cents: int = 15500000,
+    in_hole_vod_and_cup_density_detonation_verified: bool = True,
+    lidar_muckpile_p80_and_ppv_vibration_passed: bool = True,
+    webiq_detonator_uid_geofence_and_msha_clean: bool = True,
+    mine_to_mill_sag_power_optimization_savings_cents: int = 0,
+) -> MiningBlastingEmulsionVodVerdict:
+    """Evaluate open-pit mining Rock-on-Ground bulk emulsion in-hole Velocity of Detonation (VOD >=5,200 m/s), cup-density sensitization (1.12-1.18 g/cm3) & zero-NOx fume verification vs under-gassed/wet-hole deflagration per-ton overbilling, shovel 3D LiDAR muckpile fragmentation (P80 <=25 cm, boulders <2%) & triaxial PPV vibration (<=12 mm/s) gate, Web IQ electronic detonator UID two-way continuity & MSHA check, and MWD-guided Mine-to-Mill SAG-mill power optimization arbitrage."""
+    # 1. Under-gassed / water-diluted low-order deflagration (VOD <5,200 m/s, orange NOx fumes) or cavity over-pumping -> HTTP 403
+    if not in_hole_vod_and_cup_density_detonation_verified:
+        return MiningBlastingEmulsionVodVerdict(
+            False,
+            403,
+            "LOW_VOD_DEFLAGRATION_NOX_FUME_OR_CAVITY_OVERPUMP_BLOCKED",
+            0,
+            gross_bench_blast_cents,
+            "blasting_invoice_blocked_due_to_in_hole_vod_below_5200_m_s_orange_nox_deflagration_or_karst_cavity_overpumping",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Oversize boulder muckpile (3D LiDAR P80 >25 cm), unbroken hard toe, or highwall PPV (>12 mm/s) -> HTTP 422
+    if not lidar_muckpile_p80_and_ppv_vibration_passed:
+        return MiningBlastingEmulsionVodVerdict(
+            False,
+            422,
+            "OVERSIZE_BOULDER_P80_BREACH_OR_HIGHWALL_PPV_EXCURSION_BLOCKED",
+            0,
+            gross_bench_blast_cents,
+            "blast_held_due_to_3d_lidar_muckpile_p80_exceeding_25cm_unbroken_toe_or_highwall_ppv_above_12_mm_s",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects unverified electronic detonator UID misfire risk or MSHA/ATF compliance breach -> HTTP 451
+    if not webiq_detonator_uid_geofence_and_msha_clean:
+        return MiningBlastingEmulsionVodVerdict(
+            False,
+            451,
+            "ELECTRONIC_DETONATOR_UID_MISFIRE_OR_MSHA_GEOFENCE_HOLD",
+            0,
+            gross_bench_blast_cents,
+            "webiq_detected_unconfirmed_electronic_detonator_uid_handshake_or_msha_magazine_traceability_breach",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Drill-MWD Adaptive Energy + Mine-to-Mill SAG-Mill Comminution Power Arbitrage -> HTTP 409 Confirm
+    if mine_to_mill_sag_power_optimization_savings_cents > 0:
+        return MiningBlastingEmulsionVodVerdict(
+            False,
+            409,
+            "MINE_TO_MILL_MWD_MICRO_FRACTURE_SAG_POWER_ARBITRAGE_CONFIRM",
+            gross_bench_blast_cents - mine_to_mill_sag_power_optimization_savings_cents,
+            mine_to_mill_sag_power_optimization_savings_cents,
+            "webiq_coupled_drill_mwd_hardness_with_electronic_micro_delays_cutting_sag_mill_kwh_saving_29000_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified In-Hole VOD >=5,200 m/s + 3D LiDAR P80 <=25 cm + PPV <=12 mm/s -> Settled
+    return MiningBlastingEmulsionVodVerdict(
+        True,
+        200,
+        "VERIFIED_ROCK_ON_GROUND_MINING_BLAST_SETTLED",
+        gross_bench_blast_cents,
+        0,
+        "in_hole_vod_3d_lidar_p80_fragmentation_and_detonator_uid_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -16503,6 +16588,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "spc_liquid_block_latency_ms": asu_spc_403.latency_ms,
     }
 
+    bls_commit_ok = evaluate_mining_blasting_emulsion_vod_policy()
+    bls_vod_403 = evaluate_mining_blasting_emulsion_vod_policy(
+        in_hole_vod_and_cup_density_detonation_verified=False,
+    )
+    bls_p80_422 = evaluate_mining_blasting_emulsion_vod_policy(
+        lidar_muckpile_p80_and_ppv_vibration_passed=False,
+    )
+    bls_uid_451 = evaluate_mining_blasting_emulsion_vod_policy(
+        webiq_detonator_uid_geofence_and_msha_clean=False,
+    )
+    bls_m2m_409 = evaluate_mining_blasting_emulsion_vod_policy(
+        mine_to_mill_sag_power_optimization_savings_cents=2900000,
+    )
+    mining_blasting_guards = {
+        "all_passed": (
+            bls_commit_ok.allowed
+            and bls_commit_ok.settled_blasting_cents == 15500000
+            and not bls_vod_403.allowed
+            and bls_vod_403.http_status == 403
+            and not bls_p80_422.allowed
+            and bls_p80_422.http_status == 422
+            and not bls_uid_451.allowed
+            and bls_uid_451.http_status == 451
+            and not bls_m2m_409.allowed
+            and bls_m2m_409.action_pill == "Confirm"
+        ),
+        "blasting_settlement_latency_ms": bls_commit_ok.latency_ms,
+        "low_vod_deflagration_block_latency_ms": bls_vod_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -16609,6 +16724,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cement_scm_guards": cement_scm_guards,
         "pelagic_tuna_guards": pelagic_tuna_guards,
         "industrial_asu_guards": industrial_asu_guards,
+        "mining_blasting_guards": mining_blasting_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -21200,6 +21316,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="asu-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Mining Blasting (Bulk Emulsion), In-Hole VOD & P80 Mandate Sandbox (Round 94 FAQ Companion) -->
+      <div class="finops-box" id="mining-blasting-vod-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bls-title">💥 大型矿山混装乳化炸药爆破 (Rock-on-Ground)、炮孔实测爆速 (VOD &gt;=5,200 m/s) 与三维块度 P80 架构：爆速与块度令牌 (mining_blast_vod_mandate_...) vs 泵送吨数盲付决策器 (Round 94 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 露天矿山主采场深孔台阶混装乳化炸药爆破 ($155,000.00)、孔内光纤爆速 (VOD &gt;=5,200 m/s)、电铲 3D 激光块度 (P80 &lt;=25cm) 与 Web IQ 采选协同 (Mine-to-Mill) 场景 (Mining Blasting Scenario):</span></label>
+          <select id="bls-select" onchange="updateMiningBlastingVodSandbox()">
+            <option value="bls_commit_ok">⚡ 孔内光纤实测爆速 VOD 5,640 m/s (&gt;=5,200) + 零 NOx 黄烟 + 3D 块度 P80 19.8cm (&lt;=25cm) + PPV 8.2mm/s：20ms 自动结算 $155,000.00! (Act automatically)</option>
+            <option value="bls_vod_403">🛑 化学发泡敏化偷工减料或水孔混装不抗水铵油致低速半爆 (VOD 2,850 m/s 冒剧毒橙黄 NO2 浓烟) 或溶洞漏药刷吨数拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="bls_p80_422">🚨 电铲 3D 激光扫描爆堆块度超标 (P80 48cm &gt; 25cm 满地大块巨石与硬根底) 或高边坡峰值振速 PPV &gt;12mm/s 拦截 → 14ms 触发 HTTP 422 扣减返工!</option>
+            <option value="bls_uid_451">🛑 数码电子雷管一芯一码 (UID) 漏检存在盲炮拒爆风险或越出民爆电子围栏：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="bls_m2m_409">🧑‍⚖️ Web IQ 耦合牙轮钻机随钻测量 (MWD) 岩石硬度与毫秒微差碰撞诱导内部微裂纹，使选矿厂半自磨机 (SAG) 吨矿电耗骤降立省 $29,000.00 (净付 $126,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bls-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -21732,6 +21866,7 @@ function renderAll() {{
   updateCementScmFlyAshSandbox();
   updatePelagicSeafoodTunaSandbox();
   updateIndustrialGasAsuSandbox();
+  updateMiningBlastingVodSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -26590,6 +26725,55 @@ function updateIndustrialGasAsuSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 比功率 (&lt;=0.42 kWh/Nm³) + 0°C Nm³ 质量流量 + 5.5N 纯度达标：已自动清算 (VERIFIED_ON_SITE_ASU_PIPELINE_GAS_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零老化电耗转嫁、零跳机后备液气敲诈</strong>：现场深冷空分月度管道供气账单已完成结算（<code>$340,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMiningBlastingVodSandbox() {{
+  var selEl = document.getElementById("bls-select");
+  var outEl = document.getElementById("bls-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "bls_vod_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_VOD_DEFLAGRATION_NOX_FUME_OR_CAVITY_OVERPUMP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "炮孔内埋设的 <code>同轴探针/光纤测速仪 (VOD Recorder)</code> 实测爆轰速度仅为 <code>2,850 m/s</code>（远低于 <code>5,200 m/s</code> 完全爆轰门限），且现场腾起剧毒橙黄色二氧化氮（<code>NO2</code>）半爆浓烟，或混装车往地下喀斯特溶洞无底洞违规狂打 15 吨炸药刷流量计（<code>in_hole_vod_and_cup_density_detonation_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$155,000.00</code> 失效炸药账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bls_p80_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 OVERSIZE_BOULDER_P80_BREACH_OR_HIGHWALL_PPV_EXCURSION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "电铲动臂 <code>3D 激光视觉粒度仪 (WipFrag)</code> 扫描显示爆堆块度高达 <code>P80 = 48.5 cm</code>（突破 <code>25 cm</code> 上限，大块巨石率达 16% 并残留坚硬根底），或三向地震检波器监测到边坡质点峰值振速突破 <code>12 mm/s</code>（<code>lidar_muckpile_p80_and_ppv_vibration_passed == False</code>）。网关在 <code>14ms</code> 内拦截并扣减二次液压破碎锤返工费！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bls_uid_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ELECTRONIC_DETONATOR_UID_MISFIRE_OR_MSHA_GEOFENCE_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查民爆物品数码电子雷管一芯一码（UID）起爆回执与准爆电子围栏，检出 3 发孔底雷管未返回双向授时握手确认存在盲炮拒爆重大安全隐患，立即执行安全冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bls_m2m_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MINE_TO_MILL_MWD_MICRO_FRACTURE_SAG_POWER_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 耦合钻机随钻测量（MWD）硬矿分布与数码电子雷管 <code>3ms 微差应力波碰撞</code>，在矿石内部震出密集微裂纹使下游选矿厂半自磨机（SAG Mill）Bond 功指数下降 15%，单爆区立省磨矿电耗与钢球成本 <code>$29,000.00</code>（净综合支出降至 <code>$126,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 孔内光纤爆速 (&gt;=5,200 m/s) + 3D 视觉块度 P80 (&lt;=25cm) + 电子雷管 100% 准爆：已自动清算 (VERIFIED_ROCK_ON_GROUND_MINING_BLAST_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零半爆黄烟、零巨石根底返工</strong>：露天矿山 Rock-on-Ground 台阶深孔爆破账单已完成结算（<code>$155,000.00</code>）！" +
     "</div>";
 }}
 

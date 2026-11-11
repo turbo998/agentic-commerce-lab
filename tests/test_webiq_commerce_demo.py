@@ -6423,6 +6423,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("industrial-gas-asu-sandbox", demo_zh)
 
+    def test_mining_blasting_emulsion_vod_fragmentation_p80_mandate_vs_wet_hole_misfire_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_mining_blasting_emulsion_vod_policy,
+        )
+
+        # 1. Verified in-hole VOD >=5,200 m/s + 3D LiDAR P80 <=25cm + PPV <=12mm/s -> 200 OK ($155,000)
+        commit_ok = evaluate_mining_blasting_emulsion_vod_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_blasting_cents, 15500000)
+
+        # 2. Low-VOD deflagration (<5,200 m/s, orange NOx fumes) or cavity over-pumping -> 403 blocked in 11ms
+        vod_403 = evaluate_mining_blasting_emulsion_vod_policy(
+            in_hole_vod_and_cup_density_detonation_verified=False,
+        )
+        self.assertFalse(vod_403.allowed)
+        self.assertEqual(vod_403.http_status, 403)
+        self.assertEqual(
+            vod_403.blasting_lane,
+            "LOW_VOD_DEFLAGRATION_NOX_FUME_OR_CAVITY_OVERPUMP_BLOCKED",
+        )
+
+        # 3. Oversize boulder muckpile (P80 >25cm) or highwall PPV excursion -> 422 blocked in 14ms
+        p80_422 = evaluate_mining_blasting_emulsion_vod_policy(
+            lidar_muckpile_p80_and_ppv_vibration_passed=False,
+        )
+        self.assertFalse(p80_422.allowed)
+        self.assertEqual(p80_422.http_status, 422)
+        self.assertEqual(
+            p80_422.blasting_lane,
+            "OVERSIZE_BOULDER_P80_BREACH_OR_HIGHWALL_PPV_EXCURSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects unconfirmed electronic detonator UID misfire risk or MSHA hold -> 451 blocked in 295ms
+        uid_451 = evaluate_mining_blasting_emulsion_vod_policy(
+            webiq_detonator_uid_geofence_and_msha_clean=False,
+        )
+        self.assertFalse(uid_451.allowed)
+        self.assertEqual(uid_451.http_status, 451)
+
+        # 5. Web IQ couples drill MWD with Mine-to-Mill SAG-mill power optimization saving $29,000 ($126,000 net) -> 409 Confirm
+        m2m_409 = evaluate_mining_blasting_emulsion_vod_policy(
+            mine_to_mill_sag_power_optimization_savings_cents=2900000,
+        )
+        self.assertFalse(m2m_409.allowed)
+        self.assertEqual(m2m_409.http_status, 409)
+        self.assertEqual(m2m_409.settled_blasting_cents, 12600000)
+        self.assertEqual(m2m_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["mining_blasting_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("mining-blasting-vod-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

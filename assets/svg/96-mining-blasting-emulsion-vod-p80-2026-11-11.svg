@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg96" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#140d08"/>
+      <stop offset="50%" stop-color="#291a10"/>
+      <stop offset="100%" stop-color="#3d2718"/>
+    </linearGradient>
+    <linearGradient id="accent96" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg96)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#1c120b" stroke="#f97316" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent96)"/>
+
+  <text x="60" y="72" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 94 · MINING BLASTING (BULK EMULSION), IN-HOLE VOD (&gt;=5,200 M/S) &amp; P80 MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">大型矿山混装乳化炸药爆破、炮孔实测爆速 (VOD) 与块度 P80 托管 vs 泵送吨数盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">In-Hole Coaxial VOD (&gt;=5,200 m/s) + 3D LiDAR Muckpile P80 (&lt;=25cm) + PPV Vibration vs. Deflagration/Boulder Fraud</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按混装炸药车螺杆泵吨数盲付模式 (Per-Ton Explosive Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 水孔违规装填廉价不抗水铵油 (ANFO)：炸药遇水溶解失敏半爆，腾起剧毒橙黄色 NO2 浓烟</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 化学发泡敏化偷工减料：乳化基质未充分发泡或压力死压，爆速跌破 2,800m/s 无冲击波碎岩力</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 炸出满地超标大块巨石 (Boulders)：大块率高达 18%，矿方不得不花双倍挖掘机液压锤二次破碎费</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 溶洞/裂隙漏药刷吨数：炮孔打穿地下溶洞，混装车往无底洞狂打 15 吨炸药骗取药量费且诱发飞石</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型大型露天铜矿 / 铁矿台阶深孔爆破 (Bench Blasting) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">矿山采购 Agent 按混装车流量计支付 $155,000 单区爆破火工品账单，因敏化不良致实测</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">爆速仅 3,100 m/s、爆堆 P80 块度超 52cm，造成电铲斗齿断裂与半自磨机 (SAG) 产能腰斩</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 低爆速半爆拦截：0% | • 大块巨石返工扣款：0% | • 选矿破碎电费暴增：+35%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 炮孔光纤爆速 (VOD) + 激光块度 P80 + 采选协同托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 炮孔同轴电缆/光纤实测爆速门禁 (VOD &gt;=5,200 m/s)：铁证核验乳化炸药敏化密度与完全爆轰</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 3D 无人机激光雷达爆堆块度 (P80 &lt;=25cm) 与质点峰值振速 (PPV) 门禁：按合格碎石方量结算</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 数码电子雷管一芯一码溯源与 MSHA/公安民爆合规：Web IQ 核验雷管 UID 与起爆准爆率</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 采选协同 (Mine-to-Mill) 高能微差起爆产生微裂纹降低半自磨机 (SAG) 电耗：立省 $29,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断爆速不达标 (&lt;5,200 m/s) 或冒橙黄 NOx 毒烟的半爆/失敏炸药账单；14ms 拦截爆堆</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">块度 P80 &gt;25cm 及根底拒爆；Web IQ 采选协同微差爆破降低下游磨矿电耗立省 $29,000（净付 $126k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 半爆与水孔失效拦截：100% | • 二次机械破碎率：&lt;1% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#261910" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">矿山爆破采购 Agent 买的是“合格块度的碎石 (Rock-on-Ground)”而非“炸药吨数”！必须绑定【孔内 VOD + P80 块度 + 振速】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_mining_blasting_emulsion_vod_policy`) · ISEE / Mine-to-Mill &amp; MSHA · 2026-11-11</text>
+</svg>

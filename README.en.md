@@ -125,6 +125,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 91 (Low-Carbon Cement SCM Class F Fly Ash / GGBFS Slag, Online LIBS Loss-on-Ignition LOI <=3.0% & XRF Sulfate/Soundness Silo-Interlock Escrow vs. Unburned-Carbon Adulteration)**: **[Low-Carbon Cement SCM (Class F Fly Ash / GGBFS Slag), Online LIBS Loss-on-Ignition ($\text{LOI} \le 3.0\%$) & XRF Sulfate/Soundness Silo-Interlock Escrow vs. Unburned-Carbon Adulteration: Architecture Selection & First-Principles FAQ](docs/cement-scm-fly-ash-loi-libs-sulfate-mandate-vs-high-carbon-adulteration-faq.en.md)**
 - **Topic 92 (Pelagic Tuna & Seafood Procurement, VMS/Electronic-Monitoring EM Anti-IUU Verification, Histamine <=30 ppm & -60C Superfrozen Escrow vs. Paper Logbook Overbilling)**: **[Pelagic Tuna & Seafood Procurement, VMS/Electronic-Monitoring (EM) Anti-IUU Verification, Histamine ($\le 30\text{ ppm}$) & $-60^\circ\text{C}$ Superfrozen Escrow vs. Paper Logbook Overbilling: Architecture Selection & First-Principles FAQ](docs/pelagic-seafood-tuna-iuu-vms-histamine-superfrozen-mandate-vs-fad-bycatch-spoilage-faq.en.md)**
 - **Topic 93 (Industrial Gas On-Site ASU Pipeline Take-or-Pay O2/N2/Ar, Specific-Power Cap <=0.42 kWh/Nm3 & Trip Liquid-Backup Waiver Escrow vs. Pass-Through Overbilling)**: **[Industrial Gas On-Site ASU Pipeline (Take-or-Pay $\text{O}_2/\text{N}_2/\text{Ar}$), Specific-Power Cap ($\le 0.42\text{ kWh/Nm}^3$) & Trip Liquid-Backup Waiver Escrow vs. Pass-Through Overbilling: Architecture Selection & First-Principles FAQ](docs/industrial-gas-asu-pipeline-specific-power-liquid-backup-mandate-vs-take-or-pay-overbilling-faq.en.md)**
+- **Topic 94 (Mining Bulk-Emulsion Blasting Rock-on-Ground, In-Hole Velocity of Detonation VOD >=5,200 m/s & 3D LiDAR Fragmentation P80 <=25 cm Escrow vs. Per-Ton Explosive Overbilling)**: **[Mining Bulk-Emulsion Blasting (Rock-on-Ground), In-Hole Velocity of Detonation ($\text{VOD} \ge 5,200\text{ m/s}$) & 3D LiDAR Fragmentation ($P_{80} \le 25\text{ cm}$) Escrow vs. Per-Ton Explosive Overbilling: Architecture Selection & First-Principles FAQ](docs/mining-blasting-emulsion-vod-fragmentation-p80-mandate-vs-wet-hole-misfire-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -311,6 +312,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Pelagic Tuna/Seafood, VMS/EM Anti-IUU, Histamine & -60C Mandate Visual Summary](assets/svg/94-pelagic-seafood-tuna-iuu-histamine-2026-11-11.svg)
 
 ![2026-11-11 Industrial Gas On-Site ASU Pipeline, Specific Power & Liquid Backup Mandate Visual Summary](assets/svg/95-industrial-gas-asu-pipeline-power-2026-11-11.svg)
+
+![2026-11-11 Mining Blasting (Bulk Emulsion), In-Hole VOD & P80 Mandate Visual Summary](assets/svg/96-mining-blasting-emulsion-vod-p80-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
