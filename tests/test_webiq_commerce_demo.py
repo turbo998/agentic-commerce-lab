@@ -7599,6 +7599,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rail-ballast-tamping-sandbox", demo_zh)
 
+    def test_rng_biomethane_pipeline_injection_siloxane_gc_ims_d3_rin_mandate_vs_turbine_silica_glazing_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_rng_biomethane_pipeline_injection_policy,
+        )
+
+        # 1. Verified GC-IMS siloxanes <=0.1 mg/Nm3 + O2 <=0.2% + authentic D3 RIN -> 200 OK ($195,000)
+        commit_ok = evaluate_rng_biomethane_pipeline_injection_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rng_cents, 19500000)
+
+        # 2. Siloxane breakthrough (>0.1 mg/Nm3) risking turbine/SOFC silica glazing -> 403 blocked in 11ms
+        sil_403 = evaluate_rng_biomethane_pipeline_injection_policy(
+            gc_ims_siloxane_and_wobbe_verified=False,
+        )
+        self.assertFalse(sil_403.allowed)
+        self.assertEqual(sil_403.http_status, 403)
+        self.assertEqual(
+            sil_403.rng_lane,
+            "SILOXANE_BREAKTHROUGH_OR_WOBBE_INDEX_BLOCKED",
+        )
+
+        # 3. Wellfield air intrusion (O2 > 0.2%) or H2S > 4 ppmv triggering Slam-Shut diversion -> 422 blocked in 14ms
+        oxy_422 = evaluate_rng_biomethane_pipeline_injection_policy(
+            paramagnetic_o2_and_h2s_slam_shut_passed=False,
+        )
+        self.assertFalse(oxy_422.allowed)
+        self.assertEqual(oxy_422.http_status, 422)
+        self.assertEqual(
+            oxy_422.rng_lane,
+            "OXYGEN_H2S_CORROSION_SLAM_SHUT_DIVERSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects unverified EPA D3 RIN QAP or fake negative-CI pathway -> 451 blocked in 285ms
+        rin_451 = evaluate_rng_biomethane_pipeline_injection_policy(
+            webiq_epa_d3_rin_qap_and_lcfs_clean=False,
+        )
+        self.assertFalse(rin_451.allowed)
+        self.assertEqual(rin_451.http_status, 451)
+
+        # 5. Web IQ monetizes stripped biogenic CO2 tail-gas for e-methanol synthesis saving $31,200 ($163,800 net) -> 409 Confirm
+        co2_409 = evaluate_rng_biomethane_pipeline_injection_policy(
+            biogenic_co2_methanol_offtake_savings_cents=3120000,
+        )
+        self.assertFalse(co2_409.allowed)
+        self.assertEqual(co2_409.http_status, 409)
+        self.assertEqual(co2_409.settled_rng_cents, 16380000)
+        self.assertEqual(co2_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["rng_biomethane_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rng-biomethane-pipeline-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

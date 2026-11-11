@@ -146,6 +146,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 112 (Precious-Metal Catalyst Pt/Pd/Rh/Ir Refining & Metal-Pool Tolling, Witnessed LOI Fire-Assay <=0.03 wt% Split & CO Chemisorption Dispersion Escrow vs. Wet-Shrinkage Overbilling)**: **[Precious-Metal Catalyst (Pt / Pd / Rh / Ir) Refining & Metal-Pool Tolling, Witnessed LOI Fire-Assay ($\le 0.03\text{ wt\%}$ Split) & CO Chemisorption Dispersion Escrow vs. Wet-Shrinkage Overbilling: Architecture Selection & First-Principles FAQ](docs/precious-metal-catalyst-pt-pd-ir-refining-tolling-fire-assay-mandate-vs-wet-lot-shrinkage-overbilling-faq.en.md)**
 - **Topic 113 (Automated High-Bay Cold-Storage AS/RS -25°C, Desiccant Air-Lock Dew-Point <=-35°C & FEM 9.851 Stacker-Crane Throughput Escrow vs. Ice-Jammed Pallet-Slot Overbilling)**: **[Automated High-Bay Cold-Storage AS/RS ($-25^\circ\text{C}$), Desiccant Air-Lock Dew-Point ($\le -35^\circ\text{C}$) & FEM 9.851 Stacker-Crane Throughput Escrow vs. Ice-Jammed Pallet-Slot Overbilling: Architecture Selection & First-Principles FAQ](docs/automated-cold-storage-asrs-dewpoint-frost-shuttle-throughput-mandate-vs-pallet-slot-freeze-overbilling-faq.en.md)**
 - **Topic 114 (High-Speed & Heavy-Haul Rail Ballast Tamping & Grinding, Post-100k-Ton Track Geometry Car TQI EN 13848 sigma <=1.5mm & Eddy-Current RCF Escrow vs. Pass-Kilometer Overbilling)**: **[High-Speed & Heavy-Haul Rail Ballast Tamping & Grinding, Post-100k-Ton Track Geometry Car TQI (EN 13848 $\sigma \le 1.5\text{ mm}$) & Eddy-Current RCF Escrow vs. Pass-Kilometer Overbilling: Architecture Selection & First-Principles FAQ](docs/rail-ballast-tamping-grinding-track-geometry-tqi-mandate-vs-pass-kilometer-overbilling-faq.en.md)**
+- **Topic 115 (Renewable Natural Gas RNG Biomethane Pipeline Injection, Online GC-IMS Siloxane <=0.1 mg/Nm3 & EPA D3 RIN / LCFS Negative-Carbon Escrow vs. Turbine Silica-Glazing Overbilling)**: **[Renewable Natural Gas (RNG / Biomethane) Pipeline Injection, Online GC-IMS Siloxane ($\le 0.1\text{ mg/Nm}^3$) & EPA D3 RIN / LCFS Negative-Carbon Escrow vs. Turbine Silica-Glazing Overbilling: Architecture Selection & First-Principles FAQ](docs/rng-biomethane-pipeline-injection-siloxane-gc-ims-d3-rin-mandate-vs-turbine-silica-glazing-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -374,6 +375,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Automated Cold-Storage AS/RS (-25°C), Desiccant Dew-Point & Stacker Throughput Mandate Visual Summary](assets/svg/115-automated-cold-storage-asrs-dewpoint-shuttle-2026-11-11.svg)
 
 ![2026-11-11 Rail Ballast Tamping & Grinding, Post-Tonnage TQI & Eddy-Current RCF Mandate Visual Summary](assets/svg/116-rail-ballast-tamping-track-geometry-tqi-2026-11-11.svg)
+
+![2026-11-11 RNG Biomethane Pipeline Injection, GC-IMS Siloxane & EPA D3 RIN Mandate Visual Summary](assets/svg/117-rng-biomethane-pipeline-siloxane-d3-rin-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

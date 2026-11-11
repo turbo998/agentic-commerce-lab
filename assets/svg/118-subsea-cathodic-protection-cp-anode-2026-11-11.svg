@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg118" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041221"/>
+      <stop offset="50%" stop-color="#0A213A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent118" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg118" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#102742"/>
+      <stop offset="100%" stop-color="#071524"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg118)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent118)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 116 · SUBSEA PIPELINE CATHODIC PROTECTION (DNV-RP-B401) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    海底管道与海风导管架阴极保护 (CP)、Ag/AgCl 电位 (-800~-1050mV) 与牺牲阳极智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    DNV-RP-B401 Al-Zn-In Anode Capacity (&gt;=2,000 Ah/kg), ROV Ag/AgCl Drop-Cell Window &amp; HISC Guard vs. Passivated-Anode Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Gross Tonnage & Passivation/Embrittlement Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg118)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按阳极锭毛重盲付与钝化锈穿踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 偷减铟 (In) 掺杂再生废铝致阳极水下“钝化休眠”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 按铸造毛重收走 $185,000 铝锌铟牺牲阳极款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 铟含量 &lt;0.015% 致表面结死氧化铝壳，电容量跌破 900 Ah/kg</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 欠保护 (&gt;-800mV) 锈穿或过保护 (&lt;-1100mV) 氢脆</text>
+    <text x="58" y="294" fill="#CBD5E1">• 欠保护致海管与风电单桩焊缝 3 年点蚀穿孔漏油</text>
+    <text x="58" y="312" fill="#CBD5E1">• 外加电流 ICCP 过负 (&lt;-1,100mV) 析氢致高强螺栓氢致开裂</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 阳极铁芯冷隔缩孔脱落或 HVDC 杂散电流腐蚀</text>
+    <text x="58" y="364" fill="#CBD5E1">• 未做铁芯-铝体接触电阻 (&lt;=0.001 Ω) 与剖切探伤</text>
+    <text x="58" y="382" fill="#CBD5E1">• 打桩锤击瞬间阳极块从钢芯剥落沉底，失去全部阴极保护</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$185,000 钝化废铝款 + 海底管道锈穿氢脆
+  </text>
+
+  <!-- Center Card: 4-Layer Subsea Cathodic Protection Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg118)" stroke="#0EA5E9" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ DNV 电容量测试 + ROV Ag/AgCl + 延寿套利
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · DNV-RP-B401 电化学容量 (&gt;=2,000 Ah/kg · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    4天恒流测试容量 &lt; 2,000 Ah/kg 或铟 In &lt; 0.015% 钝化 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 ANODE_PASSIVATION_OR_LOW_AMP_HOUR_CAPACITY_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · ROV Ag/AgCl 保护电位窗口 (-800~-1050mV · 14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    欠保护 (&gt;-800mV) 或过保护 (&lt;-1,050mV 诱发 HISC 氢脆) →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 UNDERPROTECTION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 铁芯结合探伤与重金属镉禁令 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    含剧毒镉 (Cd) 锌阳极违反 OSPAR 海保公约或铁芯缩孔脱落 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 OSPAR_TOXIC_CADMIUM_ANODE_OR_CORE_DEBOND_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 场强梯度精准吊舱补装替代全换 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    基于 ROV FiGS 场梯度仅在涂层破损段卡箍补装混合阳极橇 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $29,600 ($155,400 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $185,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg118)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 116)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 2,520 Ah/kg 容量与 -920mV 电位放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$185,000.00</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 少加铟 (In) 钝化死阳极批次拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截废铝阳极款：$185,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 欠保护锈蚀或 &lt;-1050mV 氢脆拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 保护双相不锈钢与高强紧固件</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ ROV 场梯度靶向阳极橇补装 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$29,600.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  137 / 137 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 25 年海底结构零腐蚀寿命，杜绝钝化与氢脆
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“铸造铝锭毛重吨数”盲付海底管道与海上风电牺牲阳极 (Sacrificial Anode) 货款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① DNV-RP-B401 恒电流电化学容量 &gt;=2,000 Ah/kg 且铟 In 0.015%-0.04% 防钝化 (11ms 拦 403)；② ROV Ag/AgCl 电位锁定在 [-1,050mV, -800mV] 防氢脆 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 OSPAR 无镉环保合规与钢芯结合面探伤 (285ms 拦 451)，并基于 ROV 电场梯度 (FiGS) 仅在防腐涂层破损点靶向增补阳极橇立省 $29,600 (295ms)。
+  </text>
+</svg>

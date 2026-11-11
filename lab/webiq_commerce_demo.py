@@ -14493,6 +14493,91 @@ def evaluate_rail_ballast_tamping_grinding_policy(
     )
 
 
+@dataclass(frozen=True)
+class RngBiomethanePipelineInjectionVerdict:
+    allowed: bool
+    http_status: int
+    rng_lane: str
+    settled_rng_cents: int
+    bioco2_offtake_or_siloxane_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_rng_biomethane_pipeline_injection_policy(
+    gross_rng_injection_cents: int = 19500000,
+    gc_ims_siloxane_and_wobbe_verified: bool = True,
+    paramagnetic_o2_and_h2s_slam_shut_passed: bool = True,
+    webiq_epa_d3_rin_qap_and_lcfs_clean: bool = True,
+    biogenic_co2_methanol_offtake_savings_cents: int = 0,
+) -> RngBiomethanePipelineInjectionVerdict:
+    """Evaluate inline Gas Chromatography-Ion Mobility Spectrometry (GC-IMS siloxanes <=0.1 mg/Nm3) & Wobbe Index verification vs standard C1-C6 methane-only turbine silica-glazing overbilling, paramagnetic O2 (<=0.2 mol%) & TDLAS H2S (<=4 ppmv) Slam-Shut diversion gate, Web IQ EPA EMTS D3 RIN QAP & CARB LCFS negative-CI pathway check, and liquefied biogenic tail-gas CO2 (Bio-CO2) e-methanol offtake arbitrage."""
+    # 1. Siloxane breakthrough (>0.1 mg/Nm3) causing gas-turbine / SOFC quartz-glass glazing -> HTTP 403
+    if not gc_ims_siloxane_and_wobbe_verified:
+        return RngBiomethanePipelineInjectionVerdict(
+            False,
+            403,
+            "SILOXANE_BREAKTHROUGH_OR_WOBBE_INDEX_BLOCKED",
+            0,
+            gross_rng_injection_cents,
+            "rng_biomethane_injection_blocked_due_to_gc_ims_siloxane_exceeding_0_1_mg_nm3_or_wobbe_index_excursion",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Wellfield vacuum air intrusion (O2 > 0.2 mol%) or H2S > 4 ppmv triggering Slam-Shut diversion -> HTTP 422
+    if not paramagnetic_o2_and_h2s_slam_shut_passed:
+        return RngBiomethanePipelineInjectionVerdict(
+            False,
+            422,
+            "OXYGEN_H2S_CORROSION_SLAM_SHUT_DIVERSION_BLOCKED",
+            0,
+            gross_rng_injection_cents,
+            "rng_interconnect_held_due_to_oxygen_above_0_2_mol_pct_or_h2s_exceeding_4_ppmv_slam_shut_trip",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects unverified EPA D3 RIN QAP audit, fossil blending, or double-counted LCFS CI -> HTTP 451
+    if not webiq_epa_d3_rin_qap_and_lcfs_clean:
+        return RngBiomethanePipelineInjectionVerdict(
+            False,
+            451,
+            "EPA_D3_RIN_QAP_OR_LCFS_PATHWAY_FRAUD_HOLD",
+            0,
+            gross_rng_injection_cents,
+            "webiq_detected_unverified_epa_emts_d3_rin_qap_audit_or_double_counted_carb_lcfs_ci_pathway",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Liquefied Biogenic Tail-Gas CO2 (Bio-CO2) e-Methanol Offtake -> HTTP 409 Confirm
+    if biogenic_co2_methanol_offtake_savings_cents > 0:
+        return RngBiomethanePipelineInjectionVerdict(
+            False,
+            409,
+            "BIOGENIC_CO2_LIQUEFACTION_METHANOL_OFFTAKE_CONFIRM",
+            gross_rng_injection_cents - biogenic_co2_methanol_offtake_savings_cents,
+            biogenic_co2_methanol_offtake_savings_cents,
+            "webiq_monetized_membrane_tailgas_biogenic_co2_for_green_emethanol_offtake_saving_31200_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified GC-IMS Siloxanes <=0.1 mg/Nm3 + O2 <=0.2% + Authentic D3 RIN / LCFS -> Settled
+    return RngBiomethanePipelineInjectionVerdict(
+        True,
+        200,
+        "VERIFIED_RNG_BIOMETHANE_INJECTION_SETTLED",
+        gross_rng_injection_cents,
+        0,
+        "gc_ims_siloxane_paramagnetic_o2_and_epa_d3_rin_qap_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -18918,6 +19003,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "tqi_rebound_block_latency_ms": trm_tqi_403.latency_ms,
     }
 
+    rng_commit_ok = evaluate_rng_biomethane_pipeline_injection_policy()
+    rng_sil_403 = evaluate_rng_biomethane_pipeline_injection_policy(
+        gc_ims_siloxane_and_wobbe_verified=False,
+    )
+    rng_oxy_422 = evaluate_rng_biomethane_pipeline_injection_policy(
+        paramagnetic_o2_and_h2s_slam_shut_passed=False,
+    )
+    rng_rin_451 = evaluate_rng_biomethane_pipeline_injection_policy(
+        webiq_epa_d3_rin_qap_and_lcfs_clean=False,
+    )
+    rng_co2_409 = evaluate_rng_biomethane_pipeline_injection_policy(
+        biogenic_co2_methanol_offtake_savings_cents=3120000,
+    )
+    rng_biomethane_guards = {
+        "all_passed": (
+            rng_commit_ok.allowed
+            and rng_commit_ok.settled_rng_cents == 19500000
+            and not rng_sil_403.allowed
+            and rng_sil_403.http_status == 403
+            and not rng_oxy_422.allowed
+            and rng_oxy_422.http_status == 422
+            and not rng_rin_451.allowed
+            and rng_rin_451.http_status == 451
+            and not rng_co2_409.allowed
+            and rng_co2_409.action_pill == "Confirm"
+        ),
+        "rng_settlement_latency_ms": rng_commit_ok.latency_ms,
+        "siloxane_block_latency_ms": rng_sil_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19045,6 +19160,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "precious_catalyst_guards": precious_catalyst_guards,
         "automated_cold_asrs_guards": automated_cold_asrs_guards,
         "rail_tamping_guards": rail_tamping_guards,
+        "rng_biomethane_guards": rng_biomethane_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24014,6 +24130,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="trm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive RNG Biomethane Pipeline Injection, GC-IMS Siloxane & EPA D3 RIN Mandate Sandbox (Round 115 FAQ Companion) -->
+      <div class="finops-box" id="rng-biomethane-pipeline-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rng-title">🌿 生物天然气 (RNG Biomethane) 并网交割、GC-IMS 硅氧烷 (&lt;=0.1 mg/Nm³) 与负碳 D3 RIN 架构：防燃机结玻与 Slam-Shut 切断令牌 (rng_biomethane_pipeline_mandate_...) vs 仅看甲烷体积盲付决策器 (Round 115 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 可再生生物天然气 (RNG) 高压管网并网与绿色积分交割 ($195,000.00)、在线 GC-IMS 硅氧烷 (Siloxanes)、顺磁氧/H2S 紧急切断与 Web IQ D3 RIN/生物源 CO2 制绿色甲醇场景 (RNG Biomethane Scenario):</span></label>
+          <select id="rng-select" onchange="updateRngBiomethanePipelineSandbox()">
+            <option value="rng_commit_ok">⚡ 在线 GC-IMS 硅氧烷 0.02 mg/Nm³ (&lt;=0.1) + 顺磁氧 0.08% (&lt;=0.2%) + H2S 0.8 ppm + EPA D3 RIN QAP 有效：19ms 自动结算 $195,000.00! (Act automatically)</option>
+            <option value="rng_sil_403">🛑 除硅活性炭吸附床穿透致硅氧烷飙升至 4.5 mg/Nm³ (&gt; 0.1 mg/Nm³，进入燃气轮机/SOFC 燃烧瞬间生成石英玻璃釉抱死叶片) 关阀拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rng_oxy_422">🚨 填埋场抽气井负压漏入空气致氧含量达 1.2% (&gt; 0.2% 上限) 或 H2S &gt; 4 ppmv 诱发高压管道硫酸应力腐蚀开裂：14ms 触发 Slam-Shut 切断阀与 HTTP 422!</option>
+            <option value="rng_rin_451">🛑 缺失 EPA EMTS D3 RIN 第三方 QAP 审计签章、掺混廉价化石天然气洗白或跨州重复申领加州 LCFS 负碳积分：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="rng_co2_409">🧑‍⚖️ Web IQ 将中空纤维膜提纯分离出的 40% 高纯生物源二氧化碳 (Bio-CO2) 深冷液化外销绿色电制甲醇厂并再降 CI 碳强度立省 $31,200.00 (净付 $163,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rng-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -24567,6 +24701,7 @@ function renderAll() {{
   updatePreciousMetalCatalystSandbox();
   updateAutomatedColdAsrsSandbox();
   updateRailBallastTampingSandbox();
+  updateRngBiomethanePipelineSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -30454,6 +30589,55 @@ function updateRailBallastTampingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 过车10万吨后轨检 TQI (&lt;=1.5mm) + 涡流零裂纹 + 零发蓝烧伤达标：已自动清算 (VERIFIED_RAIL_TAMPING_GRINDING_TQI_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零浅插镐记忆性反弹、零野蛮过磨伤轨</strong>：高铁与重载铁路大机道床捣固与钢轨打磨天窗工程款已完成结算（<code>$220,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateRngBiomethanePipelineSandbox() {{
+  var selEl = document.getElementById("rng-select");
+  var outEl = document.getElementById("rng-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "rng_sil_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SILOXANE_BREAKTHROUGH_OR_WOBBE_INDEX_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "高压并网撬 <code>在线气相色谱-离子迁移谱仪 (GC-IMS)</code> 实测显示，除硅活性炭塔发生穿透，挥发性甲基硅氧烷（D4/D5）浓度飙升至 <code>4.5 mg/Nm³ &gt; 0.1 mg/Nm³</code>（一旦进入智算中心燃气轮机或 SOFC 燃料电池，将在 1,200°C 下烧结成石英玻璃釉彻底抱死涡轮叶片，<code>gc_ims_siloxane_and_wobbe_verified == False</code>）。网关在 <code>11ms</code> 内硬关断并网阀并拒付 <code>$195,000.00</code> 账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rng_oxy_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 OXYGEN_H2S_CORROSION_SLAM_SHUT_DIVERSION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "顺磁氧分析仪与激光 TDLAS 检出填埋场负压抽气漏入空气导致氧气高达 <code>1.2 mol% &gt; 0.2 mol%</code> 或硫化氢 <code>H2S &gt; 4 ppmv</code>，在高压钢制管道内极易生成硫酸引发硫化物应力腐蚀开裂（<code>paramagnetic_o2_and_h2s_slam_shut_passed == False</code>）。网关在 <code>14ms</code> 内触发 Slam-Shut 紧急切断阀将气切回不合格缓冲罐并拦截结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rng_rin_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EPA_D3_RIN_QAP_OR_LCFS_PATHWAY_FRAUD_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查美国环保署 <code>EPA EMTS D3 RIN 注册库</code> 与加州 <code>CARB LCFS 负碳强度台账</code>，检出该批次缺失第三方 QAP 审计签章、涉嫌掺混廉价化石天然气洗白或跨州重复申领绿色积分，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rng_co2_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BIOGENIC_CO2_LIQUEFACTION_METHANOL_OFFTAKE_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将沼气膜分离提纯排出的 40% 高浓度 <code>生物源二氧化碳 (Bio-CO2)</code> 接入深冷液化撬块，直接外销给绿色电制甲醇（e-Methanol）合成厂并进一步压低设施 LCFS CI 碳强度得分，单批立省/创收冲抵 <code>$31,200.00</code>（净付降至 <code>$163,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 在线 GC-IMS 硅氧烷 (&lt;=0.1 mg/Nm³) + 顺磁氧 (&lt;=0.2%) + EPA D3 RIN 达标：已自动清算 (VERIFIED_RNG_BIOMETHANE_INJECTION_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零燃机叶片石英结玻隐患、零高氧腐蚀与假绿证</strong>：可再生生物天然气（RNG）高压并网与绿色权益批次已完成结算（<code>$195,000.00</code>）！" +
     "</div>";
 }}
 
