@@ -12878,6 +12878,91 @@ def evaluate_semiconductor_upw_ultrapure_water_policy(
     )
 
 
+@dataclass(frozen=True)
+class AviationDeicingGlycolBrixVerdict:
+    allowed: bool
+    http_status: int
+    deicing_lane: str
+    settled_deicing_cents: int
+    cdp_or_glycol_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_aviation_deicing_glycol_brix_policy(
+    gross_deicing_wave_cents: int = 7400000,
+    nozzle_brix_lout_buffer_and_net_glycol_verified: bool = True,
+    type_iv_viscosity_and_acdm_hot_window_passed: bool = True,
+    webiq_acars_anti_icing_code_and_stormwater_clean: bool = True,
+    cdp_pad_and_glycol_redistillation_savings_cents: int = 0,
+) -> AviationDeicingGlycolBrixVerdict:
+    """Evaluate SAE AMS 1424 Type I / AMS 1428 Type IV aircraft de-icing nozzle-tip inline digital Brix refractometer (LOUT <= OAT - 10C) & neat-glycol Coriolis mass accounting vs watered-down mixed-gallon overbilling, post-nozzle Type IV Brookfield viscosity (>=18,000 mPa-s) & A-CDM TSAT anti-re-spray gate, Web IQ ACARS Anti-Icing Code & stormwater BOD check, and Runway-End Centralized De-Icing Pad (CDP) + spent-glycol re-distillation credit arbitrage."""
+    # 1. Watered-down Type I glycol billed at neat price or freezing point LOUT buffer <10C -> HTTP 403
+    if not nozzle_brix_lout_buffer_and_net_glycol_verified:
+        return AviationDeicingGlycolBrixVerdict(
+            False,
+            403,
+            "OVER_DILUTED_GLYCOL_OR_LOUT_10C_BUFFER_BREACH_BLOCKED",
+            0,
+            gross_deicing_wave_cents,
+            "deicing_invoice_blocked_due_to_nozzle_brix_over_dilution_or_lout_freezing_point_within_10c_of_oat",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Pump shear-degraded Type IV viscosity (<18,000 mPa-s) or premature gate-spray HOT expiry double-billing -> HTTP 422
+    if not type_iv_viscosity_and_acdm_hot_window_passed:
+        return AviationDeicingGlycolBrixVerdict(
+            False,
+            422,
+            "SHEARED_TYPE_IV_VISCOSITY_OR_PREMATURE_HOT_RESPRAY_BLOCKED",
+            0,
+            gross_deicing_wave_cents,
+            "deicing_claim_held_due_to_sheared_type_iv_polymer_viscosity_or_pre_tsat_gate_spray_hot_expiry_respray",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects missing ACARS Anti-Icing Code or unpermitted stormwater BOD discharge fee -> HTTP 451
+    if not webiq_acars_anti_icing_code_and_stormwater_clean:
+        return AviationDeicingGlycolBrixVerdict(
+            False,
+            451,
+            "MISSING_ACARS_ANTI_ICING_CODE_OR_STORMWATER_BOD_HOLD",
+            0,
+            gross_deicing_wave_cents,
+            "webiq_detected_mismatched_acars_anti_icing_timestamp_or_uncredited_stormwater_glycol_runoff_charge",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Runway-End Centralized De-Icing Pad (CDP) + Spent-Glycol Re-Distillation Credit -> HTTP 409 Confirm
+    if cdp_pad_and_glycol_redistillation_savings_cents > 0:
+        return AviationDeicingGlycolBrixVerdict(
+            False,
+            409,
+            "RUNWAY_CDP_PAD_AND_GLYCOL_REDISTILLATION_ARBITRAGE_CONFIRM",
+            gross_deicing_wave_cents - cdp_pad_and_glycol_redistillation_savings_cents,
+            cdp_pad_and_glycol_redistillation_savings_cents,
+            "webiq_routed_fleet_to_runway_end_cdp_with_72pct_spent_glycol_redistillation_rebate_saving_18500_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified Nozzle Brix LOUT <= OAT-10C + Type IV Viscosity >=18,000 mPa-s + On-Time HOT -> Settled
+    return AviationDeicingGlycolBrixVerdict(
+        True,
+        200,
+        "VERIFIED_AVIATION_DEICING_TYPE_I_IV_SETTLED",
+        gross_deicing_wave_cents,
+        0,
+        "nozzle_brix_lout_buffer_type_iv_viscosity_and_acars_hot_window_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -16733,6 +16818,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pou_toc_block_latency_ms": upw_toc_403.latency_ms,
     }
 
+    dei_commit_ok = evaluate_aviation_deicing_glycol_brix_policy()
+    dei_brx_403 = evaluate_aviation_deicing_glycol_brix_policy(
+        nozzle_brix_lout_buffer_and_net_glycol_verified=False,
+    )
+    dei_vis_422 = evaluate_aviation_deicing_glycol_brix_policy(
+        type_iv_viscosity_and_acdm_hot_window_passed=False,
+    )
+    dei_acr_451 = evaluate_aviation_deicing_glycol_brix_policy(
+        webiq_acars_anti_icing_code_and_stormwater_clean=False,
+    )
+    dei_cdp_409 = evaluate_aviation_deicing_glycol_brix_policy(
+        cdp_pad_and_glycol_redistillation_savings_cents=1850000,
+    )
+    aviation_deicing_guards = {
+        "all_passed": (
+            dei_commit_ok.allowed
+            and dei_commit_ok.settled_deicing_cents == 7400000
+            and not dei_brx_403.allowed
+            and dei_brx_403.http_status == 403
+            and not dei_vis_422.allowed
+            and dei_vis_422.http_status == 422
+            and not dei_acr_451.allowed
+            and dei_acr_451.http_status == 451
+            and not dei_cdp_409.allowed
+            and dei_cdp_409.action_pill == "Confirm"
+        ),
+        "deicing_settlement_latency_ms": dei_commit_ok.latency_ms,
+        "diluted_glycol_block_latency_ms": dei_brx_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -16841,6 +16956,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "industrial_asu_guards": industrial_asu_guards,
         "mining_blasting_guards": mining_blasting_guards,
         "semiconductor_upw_guards": semiconductor_upw_guards,
+        "aviation_deicing_guards": aviation_deicing_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -21468,6 +21584,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="upw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Aviation De-Icing (Type I / IV Glycol), Brix Refractometer & Holdover Mandate Sandbox (Round 96 FAQ Companion) -->
+      <div class="finops-box" id="aviation-deicing-brix-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dei-title">❄️ 民航冬季除冰防冰 (SAE Type I / IV)、喷嘴在线折光仪冰点裕度与保持时间 (HOT) 架构：净原液与粘度令牌 (aviation_deicing_brix_mandate_...) vs 兑水虚报决策器 (Round 96 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 暴风雪日宽体机队两步法除防冰结算 ($74,000.00)、喷嘴在线折光仪糖度 (LOUT &lt;= OAT-10°C)、Type IV 布氏粘度 (&gt;=18,000 mPa·s) 与 Web IQ 跑道头集中除冰坪 (CDP) 回收场景 (Aviation De-Icing Scenario):</span></label>
+          <select id="dei-select" onchange="updateAviationDeicingBrixSandbox()">
+            <option value="dei_commit_ok">⚡ 喷嘴实测 Brix 冰点 LOUT -22°C (&lt;= OAT -8°C - 10°C) + Type IV 粘度 24,500 mPa·s + 准时起飞：20ms 自动结算 $74,000.00! (Act automatically)</option>
+            <option value="dei_brx_403">🛑 地面代理将 45/55 稀水按 75/25 高浓度丙二醇原液计费，或冰点裕度不足 10°C 存在机翼二次结成透明冰风险拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="dei_vis_422">🚨 劣质离心泵剪碎 Type IV 高分子链致粘度跌至 4,200 mPa·s (&lt;18,000) 或违背 A-CDM TSAT 在廊桥盲目早喷致排队超时二次重喷拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="dei_acr_451">🛑 缺失 ACARS 四要素电子防冰代码或未抵扣机坪真空回收车抽走的废乙二醇而重复收排污费：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="dei_cdp_409">🧑‍⚖️ Web IQ 调度飞机至跑道头集中除冰坪 (CDP) 喷后 3 分钟直飞并提取 72% 废丙二醇真空精馏再生返利立省 $18,500.00 (净付 $55,500.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dei-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -22002,6 +22136,7 @@ function renderAll() {{
   updateIndustrialGasAsuSandbox();
   updateMiningBlastingVodSandbox();
   updateSemiconductorUpwSandbox();
+  updateAviationDeicingBrixSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -26958,6 +27093,55 @@ function updateSemiconductorUpwSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ SEMI F63 POU 端 TOC/DO (&lt;=1.0 ppb) + 硼 (&lt;=15 ppt) &amp; 硅 (&lt;=0.5 ppb) 零穿漏：已自动清算 (VERIFIED_SEMI_F63_ULTRAPURE_WATER_BOO_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零 18.2MΩ 盲区树脂穿漏、零浸没式物镜碳化</strong>：12 英寸晶圆厂月度超纯水外包服务费已完成结算（<code>$240,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAviationDeicingBrixSandbox() {{
+  var selEl = document.getElementById("dei-select");
+  var outEl = document.getElementById("dei-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "dei_brx_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 OVER_DILUTED_GLYCOL_OR_LOUT_10C_BUFFER_BREACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "除冰车喷枪末端 <code>在线数字折光仪 (Inline Brix Refractometer)</code> 实测喷出 Type I 混合液丙二醇占比仅为 <code>44%</code>（账单却按 <code>75%</code> 高浓度原液收费），且折算最低使用温度（<code>LOUT</code>）未能低于室外温度 <code>10°C</code> 安全裕度（<code>nozzle_brix_lout_buffer_and_net_glycol_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$74,000.00</code> 兑水假账单并向机组 ACARS 发送起飞安全锁！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dei_vis_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SHEARED_TYPE_IV_VISCOSITY_OR_PREMATURE_HOT_RESPRAY_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "喷嘴出口取样检测显示翠绿色 <code>SAE AMS 1428 Type IV 防冰液</code> 因使用未认证离心泵增压导致高分子链被剪切打碎（布氏粘度跌至 <code>4,200 mPa·s &lt; 18,000</code>），或除冰商违背机场 A-CDM 目标起飞窗口在廊桥过早喷洒导致排队超时被迫二次重喷（<code>type_iv_viscosity_and_acdm_hot_window_passed == False</code>）。网关在 <code>14ms</code> 内拒付二次重喷冤枉钱！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dei_acr_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_ACARS_ANTI_ICING_CODE_OR_STORMWATER_BOD_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 ACARS 电子除防冰电报与机场雨水排污台账，检出账单缺失标准 Anti-Icing Code 四要素时间戳或将已由收集车抽走回收的废乙二醇重复计收高额 BOD 排污费，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dei_cdp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 RUNWAY_CDP_PAD_AND_GLYCOL_REDISTILLATION_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将机队调度至紧邻跑道头的 <code>集中除冰坪 (Centralized De-Icing Pad, CDP)</code> 实施慢车热除冰（彻底消除滑行超时重喷），并按机坪收集槽 <code>72% 废乙二醇再精馏提纯量</code> 兑现返利，单波次立省 <code>$18,500.00</code>（净付降至 <code>$55,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 喷嘴在线折光仪 Brix (LOUT &lt;= OAT-10°C) + Type IV 粘度 (&gt;=18,000 mPa·s) 达标：已自动清算 (VERIFIED_AVIATION_DEICING_TYPE_I_IV_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零兑水冒充原液、零超时二次重喷</strong>：冬季宽体机队除冰/防冰作业账单已完成结算（<code>$74,000.00</code>）！" +
     "</div>";
 }}
 

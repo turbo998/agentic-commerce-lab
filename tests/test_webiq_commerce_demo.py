@@ -6535,6 +6535,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("semiconductor-upw-sandbox", demo_zh)
 
+    def test_aviation_deicing_glycol_brix_refractometer_holdover_mandate_vs_diluted_fluid_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aviation_deicing_glycol_brix_policy,
+        )
+
+        # 1. Verified nozzle Brix LOUT <= OAT-10C + Type IV viscosity >=18,000 mPa-s -> 200 OK ($74,000)
+        commit_ok = evaluate_aviation_deicing_glycol_brix_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_deicing_cents, 7400000)
+
+        # 2. Over-diluted glycol billed at neat price or LOUT buffer <10C -> 403 blocked in 11ms
+        brx_403 = evaluate_aviation_deicing_glycol_brix_policy(
+            nozzle_brix_lout_buffer_and_net_glycol_verified=False,
+        )
+        self.assertFalse(brx_403.allowed)
+        self.assertEqual(brx_403.http_status, 403)
+        self.assertEqual(
+            brx_403.deicing_lane,
+            "OVER_DILUTED_GLYCOL_OR_LOUT_10C_BUFFER_BREACH_BLOCKED",
+        )
+
+        # 3. Sheared Type IV viscosity (<18,000 mPa-s) or premature gate-spray HOT expiry re-spray -> 422 blocked in 14ms
+        vis_422 = evaluate_aviation_deicing_glycol_brix_policy(
+            type_iv_viscosity_and_acdm_hot_window_passed=False,
+        )
+        self.assertFalse(vis_422.allowed)
+        self.assertEqual(vis_422.http_status, 422)
+        self.assertEqual(
+            vis_422.deicing_lane,
+            "SHEARED_TYPE_IV_VISCOSITY_OR_PREMATURE_HOT_RESPRAY_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing ACARS Anti-Icing Code or uncredited stormwater BOD charge -> 451 blocked in 295ms
+        acr_451 = evaluate_aviation_deicing_glycol_brix_policy(
+            webiq_acars_anti_icing_code_and_stormwater_clean=False,
+        )
+        self.assertFalse(acr_451.allowed)
+        self.assertEqual(acr_451.http_status, 451)
+
+        # 5. Web IQ routes fleet to Runway-End CDP with 72% spent-glycol re-distillation saving $18,500 ($55,500 net) -> 409 Confirm
+        cdp_409 = evaluate_aviation_deicing_glycol_brix_policy(
+            cdp_pad_and_glycol_redistillation_savings_cents=1850000,
+        )
+        self.assertFalse(cdp_409.allowed)
+        self.assertEqual(cdp_409.http_status, 409)
+        self.assertEqual(cdp_409.settled_deicing_cents, 5550000)
+        self.assertEqual(cdp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aviation_deicing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aviation-deicing-brix-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg98" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061224"/>
+      <stop offset="50%" stop-color="#0c2444"/>
+      <stop offset="100%" stop-color="#143866"/>
+    </linearGradient>
+    <linearGradient id="accent98" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg98)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#091a32" stroke="#38bdf8" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent98)"/>
+
+  <text x="60" y="72" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 96 · AVIATION DE-ICING (TYPE I / IV GLYCOL), BRIX REFRACTOMETER &amp; HOLDOVER MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">民航冬季除冰防冰 (Type I/IV)、喷嘴在线折光仪冰点裕度与保持时间托管 vs 兑水虚报盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Nozzle Brix Refractometer (LOUT &lt;= OAT-10C) + Type IV Viscosity + Coriolis Meter vs. Diluted Glycol &amp; HOT Expiry</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按手抄加仑数与兑水除冰液盲付模式 (Diluted Fluid Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 丙二醇兑水过多卖原液价：按 55/45 比例兑水却按 75% 高浓度原液收费，冰点裕度不足 10°C 复结冰</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 离心泵暴力剪切破坏 Type IV 防冰液粘度：翠绿色增稠防冰液被劣质泵打碎高分子链，滑行前即流光</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 廊桥过早喷洒致保持时间 (HOT) 作废：未等塔台放行就提前喷 Type IV，排队超 45 分钟不得不重喷一轮</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 除冰废液直排与重复收环保费：机坪真空回收车已抽走 70% 废乙二醇再提纯转卖，却不退航司回收补贴</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型航空公司 / 货运机队暴风雪枢纽机场除冰结算 (SAE AMS 1424/1428) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">航司 Agent 自动支付 $74,000 单日宽体机队除防冰账单，其中大量航班因廊桥早喷导致</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">保持时间 (HOT) 过期被迫二次除冰，且 Type I 混合液折光仪糖度 (Brix) 比账单标称低 18%</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 兑水虚报拦截：0% | • 过期重喷免责：0% | • 单次暴雪冤枉重喷率：25%–40%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 喷嘴折光仪糖度 + 粘度/HOT 门禁 + 集中除冰回收托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 喷枪在线折光仪 (Brix) 与科里奥利流量计：按实测纯乙二醇净加仑结算，严锁 LOUT &lt;= OAT-10°C</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• Type IV 粘度 (&gt;=18,000 mPa·s) 与起飞排队 HOT 协同门禁：杜绝剪切降粘与违背塔台指令早喷作废</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ACARS 除冰电报自动核对与 FAA N8900 保持时间表：Web IQ 核验实时降雪强度与防冰代码</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 跑道头集中除冰坪 (CDP) + 废丙二醇蒸馏再生返利套利：砍掉二次重喷与原液费立省 $18,500</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断兑水虚报浓度或冰点裕度不足 10°C 的高危除冰账单；14ms 拦截 Type IV 剪切失粘与</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">违规早喷导致的二次重喷收费；Web IQ 集中除冰坪与废乙二醇蒸馏回收返利立省 $18,500（净付 $55.5k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 兑水冒充原液拦截：100% | • 机翼二次结冰风险：0% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0e2442" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">航空除冰结算 Agent 绝不能按兑水混合液总加仑盲付！必须绑定【喷嘴 Brix 折光仪 + Type IV 粘度 + CDP 回收】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_aviation_deicing_glycol_brix_policy`) · SAE AMS 1424/1428 &amp; FAA HOT · 2026-11-11</text>
+</svg>

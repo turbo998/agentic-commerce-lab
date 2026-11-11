@@ -127,6 +127,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 93 (Industrial Gas On-Site ASU Pipeline Take-or-Pay O2/N2/Ar, Specific-Power Cap <=0.42 kWh/Nm3 & Trip Liquid-Backup Waiver Escrow vs. Pass-Through Overbilling)**: **[Industrial Gas On-Site ASU Pipeline (Take-or-Pay $\text{O}_2/\text{N}_2/\text{Ar}$), Specific-Power Cap ($\le 0.42\text{ kWh/Nm}^3$) & Trip Liquid-Backup Waiver Escrow vs. Pass-Through Overbilling: Architecture Selection & First-Principles FAQ](docs/industrial-gas-asu-pipeline-specific-power-liquid-backup-mandate-vs-take-or-pay-overbilling-faq.en.md)**
 - **Topic 94 (Mining Bulk-Emulsion Blasting Rock-on-Ground, In-Hole Velocity of Detonation VOD >=5,200 m/s & 3D LiDAR Fragmentation P80 <=25 cm Escrow vs. Per-Ton Explosive Overbilling)**: **[Mining Bulk-Emulsion Blasting (Rock-on-Ground), In-Hole Velocity of Detonation ($\text{VOD} \ge 5,200\text{ m/s}$) & 3D LiDAR Fragmentation ($P_{80} \le 25\text{ cm}$) Escrow vs. Per-Ton Explosive Overbilling: Architecture Selection & First-Principles FAQ](docs/mining-blasting-emulsion-vod-fragmentation-p80-mandate-vs-wet-hole-misfire-overbilling-faq.en.md)**
 - **Topic 95 (Semiconductor Ultrapure Water UPW BOO, Point-of-Use TOC/DO <=1.0 ppb & Boron/Colloidal-Silica Resin-Breakthrough Escrow vs. 18.2 MOhm-cm Resistivity-Only Overbilling)**: **[Semiconductor Ultrapure Water (UPW BOO), Point-of-Use TOC/DO ($\le 1.0\text{ ppb}$) & Boron/Colloidal-Silica Resin-Breakthrough Escrow vs. $18.2\text{ M}\Omega\cdot\text{cm}$ Resistivity-Only Overbilling: Architecture Selection & First-Principles FAQ](docs/semiconductor-upw-ultrapure-water-toc-boron-nanoparticle-mandate-vs-resin-breakthrough-wafer-scrap-faq.en.md)**
+- **Topic 96 (Aviation De-Icing & Anti-Icing SAE AMS 1424 Type I / AMS 1428 Type IV, Inline Brix Refractometer 10C LOUT Buffer & Holdover-Time HOT Escrow vs. Diluted-Fluid Overbilling)**: **[Aviation De-Icing & Anti-Icing (SAE AMS 1424 Type I / AMS 1428 Type IV), Inline Brix Refractometer ($10^\circ\text{C}$ LOUT Buffer) & Holdover-Time (HOT) Escrow vs. Diluted-Fluid Overbilling: Architecture Selection & First-Principles FAQ](docs/aviation-deicing-glycol-brix-refractometer-holdover-mandate-vs-diluted-fluid-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -317,6 +318,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Mining Blasting (Bulk Emulsion), In-Hole VOD & P80 Mandate Visual Summary](assets/svg/96-mining-blasting-emulsion-vod-p80-2026-11-11.svg)
 
 ![2026-11-11 Semiconductor Ultrapure Water (UPW), TOC/DO & Boron/Silica Mandate Visual Summary](assets/svg/97-semiconductor-upw-toc-boron-2026-11-11.svg)
+
+![2026-11-11 Aviation De-Icing (Type I / IV Glycol), Brix Refractometer & Holdover Mandate Visual Summary](assets/svg/98-aviation-deicing-glycol-brix-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
