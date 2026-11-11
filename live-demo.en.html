@@ -2844,6 +2844,24 @@
         <div id="asr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Rail Ballast Tamping & Grinding, Post-100k-Ton TQI & Eddy-Current RCF Mandate Sandbox (Round 114 FAQ Companion) -->
+      <div class="finops-box" id="rail-ballast-tamping-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-trm-title">🚆 铁路大机道床捣固与钢轨打磨 (Rail Tamping &amp; Grinding)、过车 10 万吨后轨检车 TQI (&lt;=1.5mm) 与涡流消缺架构：道床持久平顺与零烧伤令牌 (rail_ballast_tamping_mandate_...) vs 按走行公里盲付决策器 (Round 114 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 高铁与重载铁路夜间天窗大机捣固与打磨交割 ($220,000.00)、过车 10 万总重吨后独立轨检车 EN 13848 TQI、阵列涡流 RCF 鱼鳞纹消缺与 Web IQ 轨温防胀轨/精准预防打磨场景 (Rail Tamping &amp; Grinding Scenario):</span></label>
+          <select id="trm-select" onchange="updateRailBallastTampingSandbox()">
+            <option value="trm_commit_ok">⚡ 过车 10 万吨后独立轨检车实测高低标准差 σ = 0.85mm (&lt;=1.5mm) + 涡流 RCF 裂纹清零 + 轨面零发蓝烧伤 + 锁定轨温安全：20ms 自动结算 $220,000.00! (Act automatically)</option>
+            <option value="trm_tqi_403">🛑 捣固镐头浅插未达轨枕底面下 15mm 或省掉动力稳定车 (DGS)，致过车 10 万吨后发生“记忆性反弹沉降” (高低 σ = 2.8mm &gt; 1.5mm) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="trm_rcf_422">🚨 钢轨打磨车砂轮下压力过大将轨头烧成脆性发蓝马氏体白层 (或过度磨削好轨 0.6mm)，或涡流检出 RCF 鱼鳞纹残余 &gt;0.1mm 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="trm_cwr_451">🛑 酷暑轨温突破无缝线路设计锁定轨温 (SFT + 15°C) 违章强行起道拨道诱发“胀轨跑道”风险，或天窗点延误影响首班列车：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="trm_hsg_409">🧑‍⚖️ Web IQ 基于轨检大数据将直线段从盲目慢速重磨切换为 80 km/h 高速预防性打磨 (HSG 仅微磨 0.05mm 延长钢轨寿命) 立省 $35,200.00 (净付 $184,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="trm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3396,6 +3414,7 @@ function renderAll() {
   updateCleanroomFfuUlpaSandbox();
   updatePreciousMetalCatalystSandbox();
   updateAutomatedColdAsrsSandbox();
+  updateRailBallastTampingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -9234,6 +9253,55 @@ function updateAutomatedColdAsrsSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 穿堂露点 (&lt;=-35°C 零结霜) + FEM 9.851 吞吐 (&gt;=45 托/h) + 低氧防火达标：已自动清算 (VERIFIED_AUTOMATED_COLD_ASRS_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零激光测距结霜锁仓、零虚假倒托费敲诈</strong>：-25°C 全自动高架立体冷库月度仓储与出入库账单已完成结算（<code>$145,000.00</code>）！" +
+    "</div>";
+}
+
+function updateRailBallastTampingSandbox() {
+  var selEl = document.getElementById("trm-select");
+  var outEl = document.getElementById("trm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "trm_tqi_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 POST_TONNAGE_TQI_REBOUND_OR_SHALLOW_TAMPING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "累计通过 10 万总重吨列车碾压后，<code>独立综合轨检车 (Track Geometry Car, EN 13848)</code> 复测显示 200m 区段高低不平顺标准差反弹至 <code>σ = 2.8mm &gt; 1.5mm</code>（因捣固车镐头浅插未夹实轨枕底面碎石且漏开 DGS 动力稳定车，发生记忆性回弹沉降，<code>post_tonnage_tqi_and_dgs_stabilization_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$220,000.00</code> 假平顺工程款并勒令免费返工！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "trm_rcf_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RCF_HEAD_CHECK_RESIDUAL_OR_GRIND_BLUING_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "打磨车尾部随车 <code>阵列涡流探伤仪与色度测温相机</code> 检出轨距角滚动接触疲劳（RCF 鱼鳞纹）裂纹残余深度 <code>&gt; 0.1mm</code>，或砂轮下压过猛将轨头表面烧成发蓝的 <code>脆性马氏体白层 (White Etching Layer)</code> 严重折损钢轨寿命（<code>eddy_current_rcf_and_no_bluing_passed == False</code>）。网关在 <code>15ms</code> 内拦截伤轨打磨账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "trm_cwr_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CWR_BUCKLING_RAIL_TEMP_OR_POSSESSION_OVERRUN_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查工务段无缝线路设计锁定轨温（<code>CWR Stress-Free Temperature, SFT</code>）台账与行车调度 CTC 天窗销点电报，检出承包商在轨温超 <code>SFT + 15°C</code> 时违章起道拨道（极易诱发高温胀轨跑道）或天窗延误扒点，立即执行行车安全冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "trm_hsg_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PREDICTIVE_HIGH_SPEED_GRINDING_SCOPE_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 融合历次轨检车与探伤车波形大数据，将“全线 30km 盲目慢速重磨”精准优化为仅对曲线段精细铣磨、直线段切换为 <code>80 km/h 高速预防性打磨 (HSG，微磨 0.05mm)</code>，保护宝贵钢轨母材并单次立省 <code>$35,200.00</code>（净付降至 <code>$184,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 过车10万吨后轨检 TQI (&lt;=1.5mm) + 涡流零裂纹 + 零发蓝烧伤达标：已自动清算 (VERIFIED_RAIL_TAMPING_GRINDING_TQI_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零浅插镐记忆性反弹、零野蛮过磨伤轨</strong>：高铁与重载铁路大机道床捣固与钢轨打磨天窗工程款已完成结算（<code>$220,000.00</code>）！" +
     "</div>";
 }
 

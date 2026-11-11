@@ -7543,6 +7543,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("automated-cold-asrs-sandbox", demo_zh)
 
+    def test_rail_ballast_tamping_grinding_track_geometry_tqi_mandate_vs_pass_kilometer_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_rail_ballast_tamping_grinding_policy,
+        )
+
+        # 1. Verified post-100k-ton EN 13848 TQI <=1.5mm + zero RCF/bluing + CWR SFT safe -> 200 OK ($220,000)
+        commit_ok = evaluate_rail_ballast_tamping_grinding_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rail_tamping_cents, 22000000)
+
+        # 2. Shallow tamping / skipped DGS causing post-tonnage rebound (sigma > 1.5mm) -> 403 blocked in 12ms
+        tqi_403 = evaluate_rail_ballast_tamping_grinding_policy(
+            post_tonnage_tqi_and_dgs_stabilization_verified=False,
+        )
+        self.assertFalse(tqi_403.allowed)
+        self.assertEqual(tqi_403.http_status, 403)
+        self.assertEqual(
+            tqi_403.rail_tamping_lane,
+            "POST_TONNAGE_TQI_REBOUND_OR_SHALLOW_TAMPING_BLOCKED",
+        )
+
+        # 3. Residual RCF cracks (>0.1mm) or martensitic grind bluing -> 422 blocked in 15ms
+        rcf_422 = evaluate_rail_ballast_tamping_grinding_policy(
+            eddy_current_rcf_and_no_bluing_passed=False,
+        )
+        self.assertFalse(rcf_422.allowed)
+        self.assertEqual(rcf_422.http_status, 422)
+        self.assertEqual(
+            rcf_422.rail_tamping_lane,
+            "RCF_HEAD_CHECK_RESIDUAL_OR_GRIND_BLUING_BLOCKED",
+        )
+
+        # 4. Web IQ detects CWR rail temp > SFT + 15°C or possession overrun -> 451 blocked in 285ms
+        cwr_451 = evaluate_rail_ballast_tamping_grinding_policy(
+            webiq_cwr_rail_temp_and_possession_clean=False,
+        )
+        self.assertFalse(cwr_451.allowed)
+        self.assertEqual(cwr_451.http_status, 451)
+
+        # 5. Web IQ switches tangent track to 80 km/h Preventive High-Speed Grinding saving $35,200 ($184,800 net) -> 409 Confirm
+        hsg_409 = evaluate_rail_ballast_tamping_grinding_policy(
+            predictive_high_speed_grinding_savings_cents=3520000,
+        )
+        self.assertFalse(hsg_409.allowed)
+        self.assertEqual(hsg_409.http_status, 409)
+        self.assertEqual(hsg_409.settled_rail_tamping_cents, 18480000)
+        self.assertEqual(hsg_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["rail_tamping_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rail-ballast-tamping-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

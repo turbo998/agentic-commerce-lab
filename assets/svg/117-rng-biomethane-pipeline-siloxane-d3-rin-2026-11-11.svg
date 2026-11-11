@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg117" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061612"/>
+      <stop offset="50%" stop-color="#0D261F"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent117" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="cardBg117" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#123026"/>
+      <stop offset="100%" stop-color="#081813"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg117)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent117)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ROUND 115 · RNG BIOMETHANE PIPELINE INJECTION ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    生物天然气 (RNG) 并网交割、GC-IMS 硅氧烷 (&lt;=0.1 mg/Nm³) 与负碳 RIN 智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Online GC-IMS Siloxane (&lt;=0.1 mg/Nm³), Paramagnetic O2 (&lt;=0.2 mol%) Slam-Shut &amp; EPA D3 RIN / LCFS CI vs. Turbine Silica-Glazing
+  </text>
+
+  <!-- Left Card: Legacy CH4 Volume Only & Silica Glazing Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg117)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看甲烷浓度盲付与燃气轮机结玻踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 填埋场硅氧烷 (D4/D5) 烧结成石英玻璃毁掉燃机</text>
+    <text x="58" y="224" fill="#CBD5E1">• 活性炭床穿透致硅氧烷 4.5 mg/Nm³，收走 $195,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 进燃气轮机燃烧瞬间变成微米二氧化硅玻璃釉抱死涡轮叶片</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 真空抽气漏入氧气 (&gt;0.2%) 与硫化氢腐蚀爆燃</text>
+    <text x="58" y="294" fill="#CBD5E1">• 垃圾井负压抽气漏入空气致 O2 = 1.2% 且 H2S &gt; 4 ppm</text>
+    <text x="58" y="312" fill="#CBD5E1">• 结合水露点超标在高压长输管道内形成硫酸应力腐蚀开裂</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 化石天然气掺混洗白骗取 EPA D3 RIN 与 LCFS 补贴</text>
+    <text x="58" y="364" fill="#CBD5E1">• 虚报牧场牛粪厌氧发酵负碳强度 (CI = -250 gCO2e/MJ)</text>
+    <text x="58" y="382" fill="#CBD5E1">• EPA EMTS 审计发现气源欺诈，买方遭连带撤销绿证并罚款</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$195,000 劣质生物气款 + 燃机大修与绿证作废
+  </text>
+
+  <!-- Center Card: 4-Layer RNG Biomethane Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg117)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ⚡ GC-IMS 硅氧烷 + 顺磁氧切断阀 + 绿醇CO2托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 在线 GC-IMS 硅氧烷 (&lt;=0.1 mg/Nm³ · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    硅氧烷 D4/D5 &gt; 0.1 mg/Nm³ 或沃泊指数偏离热值窗口 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SILOXANE_BREAKTHROUGH_OR_WOBBE_INDEX_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 顺磁氧 (&lt;=0.2 mol%) 与 H2S 紧急切断 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    氧气 &gt; 0.2 mol% 或 H2S &gt; 4 ppmv 立即关断并网阀回流 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 OXYGEN_H2S_CORROSION_SLAM_SHUT_DIVERSION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ EPA D3 RIN QAP 与 LCFS 碳强 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    缺失 EPA RFS QAP 审计签章、掺化石气或双算绿色权益 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 EPA_D3_RIN_QAP_OR_LCFS_PATHWAY_FRAUD_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 4 · Web IQ 提纯尾气生物源 CO2 制绿色甲醇 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    捕集膜分离排出的 99% 生物源 CO2 卖给绿醇/食品级干冰厂 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $31,200 ($163,800 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $195,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg117)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 115)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 零硅氧烷与负碳 D3 RIN 达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$195,000.00 (CH4 98.2%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 硅氧烷穿透 (&gt;0.1 mg/Nm³) 结玻拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 保护下游燃气轮机免遭石英挂釉</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 氧含量 (&gt;0.2%) 或 H2S 超标切断拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 联动 Slam-Shut 阀排往不合格缓冲罐</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 生物源 CO2 捕集副产套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$31,200.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  136 / 136 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住高压燃气管网与燃气轮机安全，变废 CO2 为绿醇金矿
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要仅看“甲烷百分比 (CH4 %)”就接收垃圾填埋场或厌氧发酵厂并网的可再生天然气 (RNG)！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 在线 GC-IMS 挥发性甲基硅氧烷 &lt;=0.1 mg/Nm³ 防燃机结玻且沃泊指数达标 (11ms 拦 403)；② 顺磁氧 &lt;=0.2 mol% 且 H2S &lt;=4 ppmv 硬联锁切断阀 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 EPA EMTS D3 RIN QAP 与 CARB LCFS 负碳强度路径 (285ms 拦 451)，并将沼气提纯分离出的高纯生物源 CO2 液化外销绿色甲醇厂立省 $31,200 (295ms)。
+  </text>
+</svg>
