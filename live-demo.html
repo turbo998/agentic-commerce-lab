@@ -2448,6 +2448,24 @@
         <div id="scm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Pelagic Tuna/Seafood, VMS/EM Anti-IUU, Histamine & -60C Mandate Sandbox (Round 92 FAQ Companion) -->
+      <div class="finops-box" id="pelagic-seafood-tuna-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tun-title">🐟 远洋金枪鱼/海产品捕捞交割 (Pelagic Tuna)、VMS/电子观察员防非法捕捞与组胺/-60°C 架构：GDST 溯源令牌 (pelagic_tuna_iuu_mandate_...) vs 手写日志盲付决策器 (Round 92 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 远洋刺身级大目与黄鳍金枪鱼大宗船货 ($215,000.00)、卫星 VMS/AIS 零断点 + 甲板 EM 摄像头、-60°C 超低温、组胺 (&lt;=30 ppm)/零一氧化碳 (CO) 与 Web IQ 港口直卸冷柜场景 (Pelagic Tuna Scenario):</span></label>
+          <select id="tun-select" onchange="updatePelagicSeafoodTunaSandbox()">
+            <option value="tun_commit_ok">⚡ 全航次 VMS/AIS 零断点 + 甲板 EM 零 FAD 违捕 + 冷舱 -62°C + 组胺 12ppm (&lt;=30) &amp; 零 CO：21ms 自动结算 $215,000.00! (Act automatically)</option>
+            <option value="tun_iuu_403">🛑 渔船关闭 AIS 应答器潜入海洋保护区偷捕 (IUU Dark Vessel) 或在 FAD 禁渔期违规下网拦截：严防欧美海关整柜查扣销毁 → 11ms 触发 HTTP 403!</option>
+            <option value="tun_his_422">🚨 慢速盐水冻结致组胺飙升至 185ppm (&gt;30ppm 引发中毒) 或注射一氧化碳 (CO 毒气) 将腐败褐肉染成鲜艳樱桃红假刺身拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tun_rfmo_451">🛑 捕捞船或转运母船未列入 WCPFC/IATTC 区域渔业白名单或缺失 NOAA SIMP / 欧盟 IUU 捕捞证：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="tun_reefer_409">🧑‍⚖️ Web IQ 规划枢纽港直卸装入 -60°C 双级压缩超低温集装箱 (Superfreezer Container) 替代高价公海冷藏母船过驳立省 $31,000.00 (净付 $184,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tun-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2978,6 +2996,7 @@ function renderAll() {
   updateAviationRotableExchangeSandbox();
   updatePharmaActiveUldSandbox();
   updateCementScmFlyAshSandbox();
+  updatePelagicSeafoodTunaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7738,6 +7757,55 @@ function updateCementScmFlyAshSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 卸灰管在线 LIBS 烧失量 (&lt;=3.0%) + XRF 硫/钙安定性达标：已解锁筒仓蝶阀并清算 (VERIFIED_LOW_CARBON_CEMENT_SCM_SILO_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零黑灰毁仓事故、零后期膨胀开裂隐患</strong>：低碳辅助胶凝材料批次已安全吹入筒仓并完成结算（<code>$118,000.00</code>）！" +
+    "</div>";
+}
+
+function updatePelagicSeafoodTunaSandbox() {
+  var selEl = document.getElementById("tun-select");
+  var outEl = document.getElementById("tun-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "tun_iuu_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DARK_VESSEL_AIS_GAP_OR_FAD_CLOSURE_IUU_POACHING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "卫星 <code>VMS/AIS</code> 轨迹回溯与甲板液压绞纲机 <code>电子观察员 (EM)</code> 视频哈希比对显示，该船在太平洋禁渔区边界存在长达 36 小时的关闭应答器异常消失（<code>Dark Vessel Gap</code>）或在人工集鱼装置（FAD）禁期内违规下网（<code>vms_ais_continuous_and_em_zero_iuu_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$215,000.00</code> 船货款，防止货柜在欧美港口被海关以 IUU 整柜没收！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "tun_his_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SCOMBROID_HISTAMINE_SPIKE_OR_CARBON_MONOXIDE_COLOR_FRAUD_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "到港实验室 <code>ELISA 组胺检测</code> 高达 <code>185 ppm</code>（远超 <code>30 ppm</code> 安全红线，高温烹饪亦无法消除毒素），且顶空气相色谱（GC）检出鱼肉被注入 <code>一氧化碳 (CO 毒气 / Tasteless Smoke)</code> 合成碳氧肌红蛋白伪造鲜红刺身色泽（<code>superfrozen_minus60c_histamine_and_zero_co_passed == False</code>）。网关在 <code>14ms</code> 内拒收销毁！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "tun_rfmo_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 RFMO_VESSEL_DELISTED_OR_NOAA_SIMP_CATCH_CERTIFICATE_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查中西太平洋渔业委员会（WCPFC / IATTC）合法授权白名单与 GDST 1.2 产销监管链，检出涉事公海冷藏转运母船无合法配额授权或缺失欧盟 IUU 捕捞证，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "tun_reefer_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DIRECT_PORT_SUPERFREEZER_CONTAINER_TRANSSHIPMENT_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 规划捕捞船直接在受监管枢纽港靠岸卸入 <code>-60°C 超低温海运集装箱 (Superfreezer Reefer)</code>，彻底省去高风险公海冷藏运输船过驳加价与翻舱温升损耗，单批立省 <code>$31,000.00</code>（净付降至 <code>$184,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ GDST 1.2 VMS/EM 零 IUU + 冷舱 -60°C + 组胺 (&lt;=30 ppm) &amp; 零 CO 达标：已自动清算 (VERIFIED_PELAGIC_TUNA_SUPERFROZEN_CARGO_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零非法捕捞扣关风险、零一氧化碳熏鱼染色假货</strong>：远洋刺身级金枪鱼船货已通过全链溯源与食安核验并完成结算（<code>$215,000.00</code>）！" +
     "</div>";
 }
 

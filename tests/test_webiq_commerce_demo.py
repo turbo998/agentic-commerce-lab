@@ -6311,6 +6311,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cement-scm-fly-ash-sandbox", demo_zh)
 
+    def test_pelagic_seafood_tuna_iuu_vms_histamine_superfrozen_mandate_vs_fad_bycatch_spoilage_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pelagic_seafood_tuna_policy,
+        )
+
+        # 1. Verified continuous VMS/EM + -60C hold + Histamine <=30 ppm & zero CO -> 200 OK ($215,000)
+        commit_ok = evaluate_pelagic_seafood_tuna_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_tuna_cents, 21500000)
+
+        # 2. Dark-vessel AIS shutoff or FAD-closure IUU poaching -> 403 blocked in 11ms
+        iuu_403 = evaluate_pelagic_seafood_tuna_policy(
+            vms_ais_continuous_and_em_zero_iuu_verified=False,
+        )
+        self.assertFalse(iuu_403.allowed)
+        self.assertEqual(iuu_403.http_status, 403)
+        self.assertEqual(
+            iuu_403.tuna_lane,
+            "DARK_VESSEL_AIS_GAP_OR_FAD_CLOSURE_IUU_POACHING_BLOCKED",
+        )
+
+        # 3. Histamine >30 ppm or illegal Carbon Monoxide (CO) cherry-red color fraud -> 422 blocked in 14ms
+        his_422 = evaluate_pelagic_seafood_tuna_policy(
+            superfrozen_minus60c_histamine_and_zero_co_passed=False,
+        )
+        self.assertFalse(his_422.allowed)
+        self.assertEqual(his_422.http_status, 422)
+        self.assertEqual(
+            his_422.tuna_lane,
+            "SCOMBROID_HISTAMINE_SPIKE_OR_CARBON_MONOXIDE_COLOR_FRAUD_BLOCKED",
+        )
+
+        # 4. Web IQ detects delisted RFMO vessel or missing NOAA SIMP / EU IUU catch certificate -> 451 blocked in 295ms
+        rfmo_451 = evaluate_pelagic_seafood_tuna_policy(
+            webiq_rfmo_good_standing_and_simp_clean=False,
+        )
+        self.assertFalse(rfmo_451.allowed)
+        self.assertEqual(rfmo_451.http_status, 451)
+
+        # 5. Web IQ routes via Direct Port -60C Superfreezer Container saving $31,000 ($184,000 net) -> 409 Confirm
+        reefer_409 = evaluate_pelagic_seafood_tuna_policy(
+            direct_port_superfreezer_container_savings_cents=3100000,
+        )
+        self.assertFalse(reefer_409.allowed)
+        self.assertEqual(reefer_409.http_status, 409)
+        self.assertEqual(reefer_409.settled_tuna_cents, 18400000)
+        self.assertEqual(reefer_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pelagic_tuna_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pelagic-seafood-tuna-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
