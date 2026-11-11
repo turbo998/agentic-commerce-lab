@@ -7207,6 +7207,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("airport-ground-handling-sandbox", demo_zh)
 
+    def test_semiconductor_electronic_specialty_gas_nf3_wf6_crds_moisture_heel_mandate_vs_etch_drift_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_esg_specialty_gas_policy,
+        )
+
+        # 1. Verified inline CRDS H2O <=10 ppb + zero HF + heel credited + cylinder valid -> 200 OK ($210,000)
+        commit_ok = evaluate_semiconductor_esg_specialty_gas_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_esg_gas_cents, 21000000)
+
+        # 2. Valve moisture ingress (180 ppb > 10 ppb) forming HF acid hydrolysis -> 403 blocked in 11ms
+        h2o_403 = evaluate_semiconductor_esg_specialty_gas_policy(
+            crds_sub_ppb_moisture_and_hf_verified=False,
+        )
+        self.assertFalse(h2o_403.allowed)
+        self.assertEqual(h2o_403.http_status, 403)
+        self.assertEqual(
+            h2o_403.esg_gas_lane,
+            "SUB_PPB_MOISTURE_OR_ACID_HYDROLYSIS_BREACH_BLOCKED",
+        )
+
+        # 3. Uncredited 12% returned cylinder heel or trace metal particles > 1 ppt -> 422 blocked in 14ms
+        hel_422 = evaluate_semiconductor_esg_specialty_gas_policy(
+            load_cell_heel_credit_and_metal_purity_passed=False,
+        )
+        self.assertFalse(hel_422.allowed)
+        self.assertEqual(hel_422.http_status, 422)
+        self.assertEqual(
+            hel_422.esg_gas_lane,
+            "CYLINDER_HEEL_UNCREDITED_OR_METAL_PARTICLE_BLOCKED",
+        )
+
+        # 4. Web IQ detects expired Y-ton cylinder ultrasonic test or EU F-Gas breach -> 451 blocked in 290ms
+        cyl_451 = evaluate_semiconductor_esg_specialty_gas_policy(
+            webiq_cylinder_hydrotest_and_fgas_clean=False,
+        )
+        self.assertFalse(cyl_451.allowed)
+        self.assertEqual(cyl_451.http_status, 451)
+
+        # 5. Web IQ applies 12% heel rebate + sub-fab exhaust Xe/Kr recovery saving $29,400 ($180,600 net) -> 409 Confirm
+        rec_409 = evaluate_semiconductor_esg_specialty_gas_policy(
+            heel_credit_and_exhaust_xenon_recovery_savings_cents=2940000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_esg_gas_cents, 18060000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["semiconductor_esg_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("semiconductor-esg-gas-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg111" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041524"/>
+      <stop offset="50%" stop-color="#0B253C"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent111" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg111" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#102C46"/>
+      <stop offset="100%" stop-color="#071726"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg111)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent111)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#164E63" stroke="#22D3EE" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ROUND 109 · DISTRICT COOLING &amp; CHILLED-WATER DELTA-T ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    区域供冷与智算中心冷冻水交割、BTU 温差冷量表与防小温差综合征智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    EN 1434 Pt1000 Paired BTU Meter, Supply Temp (&lt;=6.0°C) &amp; Return Delta-T (&gt;=8.0°C) vs. Flow-Only Overbilling &amp; Low-Delta-T Penalties
+  </text>
+
+  <!-- Left Card: Legacy Flow-Only & Low-Delta-T Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg111)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按流量盲付与小温差罚款踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 供水温度漂移至 9.5°C 却按水流立方米收全款</text>
+    <text x="58" y="224" fill="#CBD5E1">• 冷站出水温度从 5.5°C 升至 9.5°C，收走 $135,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 空调盘管丧失除湿能力，GPU 机房被迫开大水泵空转</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 板换结垢/三通旁通致“小温差综合征 (Low-ΔT)”</text>
+    <text x="58" y="294" fill="#CBD5E1">• 供回水温差 ΔT 跌至 3.2°C (&lt; 8.0°C 红线)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 区域能源站每月加收 25% 超额循环流量惩罚附加费</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 冷却塔嗜肺军团菌 (Legionella) 超标与未配对铂电阻</text>
+    <text x="58" y="364" fill="#CBD5E1">• 供回水温度探头存在 0.6°C 零点漂移，凭空虚增 8% 冷量</text>
+    <text x="58" y="382" fill="#CBD5E1">• 敞开式冷却塔军团菌 &gt;1,000 CFU/L 触发疾控停机令</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$135,000 温水空转费 + 小温差巨额罚单
+  </text>
+
+  <!-- Center Card: 4-Layer District Cooling Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg111)" stroke="#06B6D4" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#164E63"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ⚡ Pt1000 配对冷量表 + PICV 稳压 + 蓄冷托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#22D3EE" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">
+    Gate 1 · 供水温度 (&lt;=6.0°C) 与配对 BTU 表 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    供水温度 &gt; 6.0°C 丧失潜热除湿力或按未配对流量计费 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 WARM_SUPPLY_TEMP_OR_UNPAIRED_BTU_DRIFT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 供回水温差 (ΔT &gt;=8.0°C) 与 PICV 阀 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    三通旁通或板换污垢致 ΔT &lt; 8.0°C 诱发小温差罚款 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 LOW_DELTA_T_BYPASS_OR_FOULING_PENALTY_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ ASHRAE 188 军团菌与制冷剂 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    冷却塔军团菌 PCR 超标或离心机高 GWP 制冷剂泄漏 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 LEGIONELLA_BIOCIDE_OR_REFRIGERANT_LEAK_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 夜间谷电冰蓄冷/水蓄冷移峰套利 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    联动 TES 水蓄冷罐与湿球温度免费自然冷却 (Free Cooling) →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $21,600 ($113,400 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $135,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg111)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 109)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 5.5°C 供水与 ΔT 8.8°C 达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$135,000.00 (千冷吨时)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 供水超温 (&gt;6.0°C) 或探头漂移拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拒付无除湿能力的温水账单</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 小温差综合征 (ΔT=3.2°C) 旁通拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 自动调节动态压差平衡阀 PICV</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 谷电冰/水蓄冷 (TES) 移峰套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$21,600.00 (16.0% 削峰)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  130 / 130 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 ΔT &gt;=8°C 温差生命线，终结冷冻水空转电费黑洞
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“冷冻水循环立方米流量”或未做配对校准的温度计给区域供冷站付账！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① EN 1434 激光配对 Pt1000 铂电阻实测供水温度 &lt;=6.0°C (11ms 拦 403)；② 动态平衡电动调节阀 (PICV) 锁死供回水温差 ΔT &gt;=8.0°C 防小温差罚款 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查冷却塔 ASHRAE 188 嗜肺军团菌阴性与制冷剂检漏 (285ms 拦 451)，并耦合夜间谷电冰/水蓄冷 (TES) 与板换免费自然冷却立省 $21,600 (295ms)。
+  </text>
+</svg>

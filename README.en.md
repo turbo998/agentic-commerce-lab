@@ -139,6 +139,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 105 (Industrial Steam-as-a-Service & CHP Offtake, Two-Phase Steam Dryness Fraction x >=0.97 & 40 kHz Ultrasonic Steam-Trap Escrow vs. Wet-Steam Mass Overbilling)**: **[Industrial Steam-as-a-Service & CHP Offtake, Two-Phase Steam Dryness Fraction ($x \ge 0.97$) & 40 kHz Ultrasonic Steam-Trap Escrow vs. Wet-Steam Mass Overbilling: Architecture Selection & First-Principles FAQ](docs/industrial-steam-as-a-service-dryness-fraction-ultrasonic-trap-mandate-vs-wet-steam-mass-overbilling-faq.en.md)**
 - **Topic 106 (Bulk Potash MOP & Phosphate DAP/MAP Fertilizer Offtake, Conveyor LIBS/ICP-OES Nutrient Assay K2O >=60% & EU Cadmium Limit Cd <=20 mg/kg P2O5 Escrow vs. Dolomite-Filler & Caking Overbilling)**: **[Bulk Potash (MOP) & Phosphate (DAP/MAP) Fertilizer Offtake, Conveyor LIBS/ICP-OES Nutrient Assay ($\text{K}_2\text{O} \ge 60\%$) & EU Cadmium Limit ($\text{Cd} \le 20\text{ mg/kg P}_2\text{O}_5$) Escrow vs. Dolomite-Filler & Caking Overbilling: Architecture Selection & First-Principles FAQ](docs/potash-phosphate-fertilizer-k2o-cadmium-caking-mandate-vs-dolomite-filler-overbilling-faq.en.md)**
 - **Topic 107 (Airport Ground Handling IATA SGHA Turnaround, 400Hz GPU/PCA Hookup Telemetry & IATA Delay-Code 31-39 vs 81-89 Attribution Escrow vs. APU Fuel-Burn & Blanket Turnaround Overbilling)**: **[Airport Ground Handling (IATA SGHA Turnaround), 400Hz GPU/PCA Hookup Telemetry & IATA Delay-Code (31–39 vs. 81–89) Attribution Escrow vs. APU Fuel-Burn & Blanket Turnaround Overbilling: Architecture Selection & First-Principles FAQ](docs/airport-ground-handling-sgha-gpu-pca-delay-code-mandate-vs-apu-burn-turnaround-overbilling-faq.en.md)**
+- **Topic 108 (Semiconductor Electronic Specialty Gas ESG 6N NF3/WF6/SiH4, CRDS Sub-ppb Moisture H2O <=10 ppb & BSGS Cylinder Heel Credit Escrow vs. Etch-Drift & Heel Double-Billing)**: **[Semiconductor Electronic Specialty Gas (ESG $6\text{N }\text{NF}_3 / \text{WF}_6 / \text{SiH}_4$), CRDS Sub-ppb Moisture ($\text{H}_2\text{O} \le 10\text{ ppb}$) & BSGS Cylinder Heel Credit Escrow vs. Etch-Drift & Heel Double-Billing: Architecture Selection & First-Principles FAQ](docs/semiconductor-electronic-specialty-gas-nf3-wf6-crds-moisture-heel-mandate-vs-etch-drift-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -353,6 +354,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Bulk Potash & Phosphate Fertilizer Offtake, LIBS Nutrient Assay & EU Cadmium Mandate Visual Summary](assets/svg/108-potash-phosphate-fertilizer-k2o-cadmium-2026-11-11.svg)
 
 ![2026-11-11 Airport Ground Handling (IATA SGHA), 400Hz GPU/PCA & Delay-Code Attribution Mandate Visual Summary](assets/svg/109-airport-ground-handling-sgha-gpu-pca-2026-11-11.svg)
+
+![2026-11-11 Semiconductor Electronic Specialty Gas (6N NF3 / WF6), CRDS Moisture & Cylinder Heel Credit Mandate Visual Summary](assets/svg/110-semiconductor-esg-specialty-gas-crds-heel-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
