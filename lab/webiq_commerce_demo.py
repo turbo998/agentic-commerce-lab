@@ -14918,6 +14918,91 @@ def evaluate_automated_container_terminal_sts_policy(
     )
 
 
+@dataclass(frozen=True)
+class PulpPaperKraftAdmtVerdict:
+    allowed: bool
+    http_status: int
+    pulp_lane: str
+    settled_pulp_cents: int
+    slush_pulp_or_wet_bale_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_pulp_paper_kraft_admt_policy(
+    gross_kraft_pulp_cents: int = 20500000,
+    microwave_admt_dryness_verified: bool = True,
+    ced_intrinsic_viscosity_and_dirt_passed: bool = True,
+    webiq_ecf_aox_and_eudr_polygon_clean: bool = True,
+    slush_pulp_pipeline_and_tall_oil_savings_cents: int = 0,
+) -> PulpPaperKraftAdmtVerdict:
+    """Evaluate through-transmission microwave bale moisture & ISO 638 Air-Dry Metric Ton (ADMT = Bone-Dry Mass / 0.90) adjustment vs unadjusted weighbridge wet-bale overbilling, ISO 5351 cupriethylenediamine (CED) intrinsic viscosity (>=750 mL/g) & TAPPI T213 dirt-speck gate, Web IQ ECF/TCF Adsorbable Organic Halides (AOX <=0.2 kg/t) & EUDR plantation polygon check, and pumped Slush-Pulp pipeline + Crude Tall Oil (CTO) co-product arbitrage."""
+    # 1. Wet-core bales (>10% moisture) billed on unadjusted weighbridge gross weight -> HTTP 403
+    if not microwave_admt_dryness_verified:
+        return PulpPaperKraftAdmtVerdict(
+            False,
+            403,
+            "EXCESS_BALE_MOISTURE_UNADJUSTED_ADMT_BLOCKED",
+            0,
+            gross_kraft_pulp_cents,
+            "kraft_pulp_invoice_blocked_due_to_unadjusted_wet_bale_moisture_or_missing_iso638_admt_conversion",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Over-bleaching degrading cellulose chains (ISO 5351 CED viscosity < 750 mL/g) or high dirt specks -> HTTP 422
+    if not ced_intrinsic_viscosity_and_dirt_passed:
+        return PulpPaperKraftAdmtVerdict(
+            False,
+            422,
+            "CELLULOSE_VISCOSITY_DEGRADATION_OR_DIRT_SPECK_BLOCKED",
+            0,
+            gross_kraft_pulp_cents,
+            "bleached_pulp_lot_held_due_to_over_bleached_ced_viscosity_below_750_ml_g_risking_paper_machine_breaks",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects elemental chlorine AOX breach (>0.2 kg/t) or missing EUDR plantation polygon -> HTTP 451
+    if not webiq_ecf_aox_and_eudr_polygon_clean:
+        return PulpPaperKraftAdmtVerdict(
+            False,
+            451,
+            "ELEMENTAL_CHLORINE_AOX_OR_EUDR_FOREST_HOLD",
+            0,
+            gross_kraft_pulp_cents,
+            "webiq_detected_elemental_chlorine_aox_exceeding_0_2_kg_t_or_missing_eudr_plantation_polygon",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Pumped Slush-Pulp Pipeline (No Dryer Steam) + Black-Liquor Crude Tall Oil (CTO) Credit -> HTTP 409 Confirm
+    if slush_pulp_pipeline_and_tall_oil_savings_cents > 0:
+        return PulpPaperKraftAdmtVerdict(
+            False,
+            409,
+            "SLUSH_PULP_PIPELINE_AND_TALL_OIL_VALORIZATION_CONFIRM",
+            gross_kraft_pulp_cents - slush_pulp_pipeline_and_tall_oil_savings_cents,
+            slush_pulp_pipeline_and_tall_oil_savings_cents,
+            "webiq_switched_to_pumped_slush_pulp_and_credited_crude_tall_oil_byproduct_saving_32800_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Microwave ADMT + CED Viscosity >=750 mL/g + ECF/EUDR Clean -> Settled
+    return PulpPaperKraftAdmtVerdict(
+        True,
+        200,
+        "VERIFIED_KRAFT_PULP_ADMT_SETTLED",
+        gross_kraft_pulp_cents,
+        0,
+        "microwave_admt_net_mass_ced_intrinsic_viscosity_and_ecf_eudr_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19493,6 +19578,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "gmph_restow_block_latency_ms": sts_gmp_403.latency_ms,
     }
 
+    plp_commit_ok = evaluate_pulp_paper_kraft_admt_policy()
+    plp_wet_403 = evaluate_pulp_paper_kraft_admt_policy(
+        microwave_admt_dryness_verified=False,
+    )
+    plp_vis_422 = evaluate_pulp_paper_kraft_admt_policy(
+        ced_intrinsic_viscosity_and_dirt_passed=False,
+    )
+    plp_aox_451 = evaluate_pulp_paper_kraft_admt_policy(
+        webiq_ecf_aox_and_eudr_polygon_clean=False,
+    )
+    plp_sls_409 = evaluate_pulp_paper_kraft_admt_policy(
+        slush_pulp_pipeline_and_tall_oil_savings_cents=3280000,
+    )
+    kraft_pulp_guards = {
+        "all_passed": (
+            plp_commit_ok.allowed
+            and plp_commit_ok.settled_pulp_cents == 20500000
+            and not plp_wet_403.allowed
+            and plp_wet_403.http_status == 403
+            and not plp_vis_422.allowed
+            and plp_vis_422.http_status == 422
+            and not plp_aox_451.allowed
+            and plp_aox_451.http_status == 451
+            and not plp_sls_409.allowed
+            and plp_sls_409.action_pill == "Confirm"
+        ),
+        "pulp_settlement_latency_ms": plp_commit_ok.latency_ms,
+        "wet_bale_block_latency_ms": plp_wet_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19625,6 +19740,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "swro_desalination_guards": swro_desalination_guards,
         "elevator_mro_guards": elevator_mro_guards,
         "container_sts_guards": container_sts_guards,
+        "kraft_pulp_guards": kraft_pulp_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24684,6 +24800,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Bleached Kraft Pulp (BSKP/BEKP), Microwave ADMT & Intrinsic Viscosity Mandate Sandbox (Round 120 FAQ Companion) -->
+      <div class="finops-box" id="kraft-pulp-admt-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-plp-title">🧻 大宗漂白木浆贸易 (Bleached Kraft Pulp BSKP/BEKP)、穿透微波风干公吨 (ADMT 90%绝干) 与特性粘度 (&gt;=750 mL/g) 架构：净干纤维与防断纸令牌 (kraft_pulp_admt_mandate_...) vs 按地磅湿重盲付决策器 (Round 120 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 漂白硫酸盐针叶浆/阔叶浆大宗交割 ($205,000.00)、全包穿透微波折算风干公吨 (ISO 638 ADMT)、铜乙二胺特性粘度 (ISO 5351) 与 Web IQ 管道湿浆直供/妥尔油场景 (Kraft Pulp Scenario):</span></label>
+          <select id="plp-select" onchange="updateKraftPulpAdmtSandbox()">
+            <option value="plp_commit_ok">⚡ 全包穿透微波折算 ADMT (90%绝干) 净重准确 + 铜乙二胺特性粘度 860 mL/g (&gt;=750) + ISO 白度 90% + ECF/EUDR 达标：19ms 自动结算 $205,000.00! (Act automatically)</option>
+            <option value="plp_wet_403">🛑 浆包芯部含水率高达 22% (绝干纤维仅 78% 远低于 90% 基准)，卖方仍按未折算 ADMT 的地磅湿毛重请款 (白花 $2.7万买水) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="plp_vis_422">🚨 浆厂为凑 90% 白度猛加二氧化氯过量强漂，致纤维素链断裂、特性粘度暴跌至 560 mL/g (&lt; 750 mL/g 上高速纸机每小时断纸) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="plp_aox_451">🛑 违规使用元素氯漂白致二噁英/可吸附有机卤素 AOX &gt; 0.2 kg/t 或缺失欧盟 EUDR 人工林零毁林多边形：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="plp_sls_409">🧑‍⚖️ Web IQ 切换林浆纸园区管道高浓湿浆直供 (免烘干防纤维角质化) 并计入黑液粗妥尔油 (CTO 售予生物航煤厂) 副产抵扣立省 $32,800.00 (净付 $172,200.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="plp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25242,6 +25376,7 @@ function renderAll() {{
   updateSwroSeawaterDesalinationSandbox();
   updateElevatorEscalatorMroSandbox();
   updateAutomatedContainerStsSandbox();
+  updateKraftPulpAdmtSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -31374,6 +31509,55 @@ function updateAutomatedContainerStsSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 岸桥净 GMPH (&gt;=32 Moves/h) + 四旋锁偏载 (&lt;=10%) + SOLAS VGM 达标：已自动清算 (VERIFIED_CONTAINER_TERMINAL_STS_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零无效倒箱混计、零偏载高空断锁坠箱隐患</strong>：自动化集装箱码头靠泊装卸（THC / Stevedoring）账单已完成结算（<code>$250,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateKraftPulpAdmtSandbox() {{
+  var selEl = document.getElementById("plp-select");
+  var outEl = document.getElementById("plp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "plp_wet_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 EXCESS_BALE_MOISTURE_UNADJUSTED_ADMT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "拆包上料链 <code>2.45 GHz 穿透式微波谐振测湿仪</code> 实测显示，该批浆包外干内湿，芯部含水率高达 <code>22.0%（绝干纤维仅 78.0% 远低于 90.0% ADMT 国际结算标准）</code>，但卖方仍按未折算的地磅湿毛重全额计费（<code>microwave_admt_dryness_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$205,000.00</code> 湿包注水账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "plp_vis_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CELLULOSE_VISCOSITY_DEGRADATION_OR_DIRT_SPECK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "实验室自动毛细管粘度计（<code>ISO 5351 铜乙二胺 CED 法</code>）实测显示，虽然浆板表面白度达 90%，但因漂白塔过量加氯强漂导致纤维素高分子链严重断裂，特性粘度暴跌至 <code>560 mL/g &lt; 750 mL/g</code>（上 1,800m/min 高速纸机将频繁断纸停机，<code>ced_intrinsic_viscosity_and_dirt_passed == False</code>）。网关在 <code>14ms</code> 内拒收脆断浆批次！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "plp_aox_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ELEMENTAL_CHLORINE_AOX_OR_EUDR_FOREST_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查欧盟 Ecolabel / 食品接触级纸浆台账与 <code>EUDR 人工林 GeoJSON 多边形库</code>，检出该批次可吸附有机卤素 <code>AOX &gt; 0.2 kg/ADMT</code>（涉嫌违规使用元素氯漂白产生二噁英）或缺失零毁林坐标，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "plp_sls_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SLUSH_PULP_PIPELINE_AND_TALL_OIL_VALORIZATION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将园区交割从“烘干成干浆板再水力碎浆”切换为 <code>跨厂界管道高浓湿浆直供 (Pumped Slush Pulp，免除双边蒸汽与碎浆电耗并防止纤维角质化)</code>，同时核算黑液副产 <code>粗妥尔油 (CTO)</code> 外销生物航煤厂收益分成，单批立省 <code>$32,800.00</code>（净付降至 <code>$172,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 穿透微波 ADMT (90%绝干) + 特性粘度 (&gt;=750 mL/g) + ECF/EUDR 达标：已自动清算 (VERIFIED_KRAFT_PULP_ADMT_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零湿心浆包把水当浆卖、零过漂断链断纸隐患</strong>：大宗漂白针叶浆/阔叶浆（BSKP/BEKP）批次已完成结算（<code>$205,000.00</code>）！" +
     "</div>";
 }}
 

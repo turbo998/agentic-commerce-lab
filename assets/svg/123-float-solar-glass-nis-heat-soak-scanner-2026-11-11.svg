@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg123" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051424"/>
+      <stop offset="50%" stop-color="#0B223B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent123" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg123" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112946"/>
+      <stop offset="100%" stop-color="#081526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg123)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent123)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 121 · ARCHITECTURAL &amp; SOLAR GLASS (EN 14179 HST) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    幕墙超白与光伏钢化玻璃交割、均质炉引爆 (NiS 零自爆) 与透光率智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    EN 14179-1 Heat Soak Test (290°C NiS Phase-Change), Sub-mm Laser Scanner &amp; AR Transmittance (&gt;=94.0%) vs. Spontaneous Shatter
+  </text>
+
+  <!-- Left Card: Legacy Area Billing & Spontaneous Shattering Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg123)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按平米面积盲付与摩天楼玻璃自爆踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 省掉 290°C 均质炉热浸 (HST) 致高空“蝴蝶斑自爆”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 钢化厂为省电跳过 6小时均质热浸，收走 $170,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 内部 0.1mm 硫化镍 (NiS) 结石相变膨胀，300米幕墙爆裂下玻璃雨</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 普通普白玻璃冒充低铁超白或 AR 镀膜透光不足</text>
+    <text x="58" y="294" fill="#CBD5E1">• 氧化铁 Fe2O3 &gt; 0.015% 泛绿光，光伏透光率仅 91.2% (&lt;94.0%)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 光伏组件功率永久损失 2.8% 或辊道波形弯曲度 (Roller Wave) 扭曲</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 锡槽粘锡斑点致 Low-E 脱膜或防霉纸失效彩虹斑</text>
+    <text x="58" y="364" fill="#CBD5E1">• 浮法锡面未标记反装或中空玻璃氩气充气率 &lt; 85%</text>
+    <text x="58" y="382" fill="#CBD5E1">• 海运受潮发生碱析“发霉彩虹斑”，整批幕墙报废重做</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$170,000 伪均质玻璃款 + 高空蜘蛛人换玻天价
+  </text>
+
+  <!-- Center Card: 4-Layer Float & Solar Glass Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg123)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ EN 14179 热浸曲线 + 激光结石 + 碎玻璃托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · EN 14179-1 均质炉 290°C 热浸曲线 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    未完成 290°C±10°C 2h 恒温引爆 α-NiS 结石或激光检出气泡 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SKIPPED_HEAT_SOAK_NIS_STONE_OR_BUBBLE_DEFECT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 超白低铁透光率 (&gt;=94.0%) 与平整度 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    Fe2O3 &gt; 0.015% 致透光率 &lt; 94% 或钢化辊道波谷超差 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 LOW_SOLAR_TRANSMITTANCE_OR_ROLLER_WAVE_DISTORTION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ EN 1279 中空氩气与 SGCC 认证 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    中空玻璃氩气浓度 &lt; 90% 或缺失 SGCC/CE 抗风压安全认证 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 IGU_ARGON_LEAKAGE_OR_SGCC_SAFETY_CERT_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 裁切废碎玻璃 (Cullet) 闭环回炉 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    回收加工厂 35% 超白边角碎玻璃回窑降纯碱与天然气能耗 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $27,200 ($142,800 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $170,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg123)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 121)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• HST 热浸满时与 94.4% 透光放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$170,000.00</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 跳过 290°C 均质炉热浸伪造证书拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 杜绝摩天楼高空幕墙自爆雨</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 高铁分泛绿/透光不足或辊道波变形拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 守住光伏组件发电功率与幕墙平整</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 超白碎玻璃 (Cullet) 闭环回炉 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$27,200.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  142 / 142 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住超高层建筑幕墙零自爆底线，变边角碎玻为纯碱金矿
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要仅凭目视表面完好就按“平方米面积”给幕墙钢化玻璃与光伏玻璃放款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① EN 14179-1 均质炉 290°C±10°C 2h 真实热电偶曲线引爆硫化镍 (NiS) 结石且激光扫描零微气泡 (11ms 拦 403)；② 透光率 &gt;=94.0% 且波纹度 &lt;=0.05mm (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查中空玻璃 EN 1279 氩气浓度 (&gt;=90%) 与 SGCC 认证 (285ms 拦 451)，并将深加工裁切超白碎玻璃 (Cullet) 闭环回炉抵扣重质纯碱与燃气费立省 $27,200 (295ms)。
+  </text>
+</svg>

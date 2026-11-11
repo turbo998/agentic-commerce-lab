@@ -7879,6 +7879,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("automated-container-sts-sandbox", demo_zh)
 
+    def test_pulp_paper_kraft_admt_moisture_kappa_viscosity_mandate_vs_wet_bale_degradation_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pulp_paper_kraft_admt_policy,
+        )
+
+        # 1. Verified microwave ADMT + CED viscosity >=750 mL/g + ECF/EUDR clean -> 200 OK ($205,000)
+        commit_ok = evaluate_pulp_paper_kraft_admt_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pulp_cents, 20500000)
+
+        # 2. Wet-core bales (>10% moisture) billed on unadjusted gross weight -> 403 blocked in 11ms
+        wet_403 = evaluate_pulp_paper_kraft_admt_policy(
+            microwave_admt_dryness_verified=False,
+        )
+        self.assertFalse(wet_403.allowed)
+        self.assertEqual(wet_403.http_status, 403)
+        self.assertEqual(
+            wet_403.pulp_lane,
+            "EXCESS_BALE_MOISTURE_UNADJUSTED_ADMT_BLOCKED",
+        )
+
+        # 3. Over-bleaching degrading CED intrinsic viscosity (<750 mL/g) -> 422 blocked in 14ms
+        vis_422 = evaluate_pulp_paper_kraft_admt_policy(
+            ced_intrinsic_viscosity_and_dirt_passed=False,
+        )
+        self.assertFalse(vis_422.allowed)
+        self.assertEqual(vis_422.http_status, 422)
+        self.assertEqual(
+            vis_422.pulp_lane,
+            "CELLULOSE_VISCOSITY_DEGRADATION_OR_DIRT_SPECK_BLOCKED",
+        )
+
+        # 4. Web IQ detects elemental chlorine AOX breach or missing EUDR polygon -> 451 blocked in 285ms
+        aox_451 = evaluate_pulp_paper_kraft_admt_policy(
+            webiq_ecf_aox_and_eudr_polygon_clean=False,
+        )
+        self.assertFalse(aox_451.allowed)
+        self.assertEqual(aox_451.http_status, 451)
+
+        # 5. Web IQ switches to pumped Slush Pulp & credits Crude Tall Oil saving $32,800 ($172,200 net) -> 409 Confirm
+        sls_409 = evaluate_pulp_paper_kraft_admt_policy(
+            slush_pulp_pipeline_and_tall_oil_savings_cents=3280000,
+        )
+        self.assertFalse(sls_409.allowed)
+        self.assertEqual(sls_409.http_status, 409)
+        self.assertEqual(sls_409.settled_pulp_cents, 17220000)
+        self.assertEqual(sls_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["kraft_pulp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("kraft-pulp-admt-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

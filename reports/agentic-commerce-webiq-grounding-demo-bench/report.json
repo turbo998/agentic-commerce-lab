@@ -680,6 +680,11 @@
     "sts_settlement_latency_ms": 19,
     "gmph_restow_block_latency_ms": 11
   },
+  "kraft_pulp_guards": {
+    "all_passed": true,
+    "pulp_settlement_latency_ms": 19,
+    "wet_bale_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

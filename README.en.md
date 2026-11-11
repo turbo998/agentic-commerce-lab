@@ -151,6 +151,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 117 (Seawater Reverse Osmosis SWRO Desalination BOO WPA, Isobaric PX Specific-Energy Cap <=3.0 kWh/m3 & Permeate Boron/LSI Remineralization Escrow vs. Fouling Power Pass-Through Overbilling)**: **[Seawater Reverse Osmosis (SWRO Desalination BOO WPA), Isobaric PX Specific-Energy Cap ($\le 3.0\text{ kWh/m}^3$) & Permeate Boron/LSI Remineralization Escrow vs. Fouling Power Pass-Through Overbilling: Architecture Selection & First-Principles FAQ](docs/swro-seawater-desalination-isobaric-erd-boron-sdi-mandate-vs-fouling-power-passthrough-faq.en.md)**
 - **Topic 118 (High-Rise Elevator & Escalator Full-Maintenance Contracts FMC, ISO 4309 Magnetic Rope Testing MRT LMA <=5% & EN 81-20 Dual-Brake Telemetry Escrow vs. Phantom PM Visits & Counter-Lock Extortion)**: **[High-Rise Elevator & Escalator Full-Maintenance Contracts (FMC), ISO 4309 Magnetic Rope Testing (MRT $\text{LMA} \le 5\%$) & EN 81-20 Dual-Brake Telemetry Escrow vs. Phantom PM Visits & Counter-Lock Extortion: Architecture Selection & First-Principles FAQ](docs/elevator-escalator-traction-rope-mrt-brake-torque-mandate-vs-phantom-pm-visit-overbilling-faq.en.md)**
 - **Topic 119 (Automated Container Terminal STS Quay Crane & AGV Stevedoring, Spreader Twistlock Eccentricity <=10% & Net GMPH >=32 Moves/h Escrow vs. Unproductive-Restow & Berth-Delay Overbilling)**: **[Automated Container Terminal STS Quay Crane & AGV Stevedoring, Spreader Twistlock Eccentricity ($\le 10\%$) & Net GMPH ($\ge 32\text{ Moves/h}$) Escrow vs. Unproductive-Restow & Berth-Delay Overbilling: Architecture Selection & First-Principles FAQ](docs/automated-container-terminal-sts-spreader-twistlock-gmph-mandate-vs-eccentric-berth-overbilling-faq.en.md)**
+- **Topic 120 (Bleached Kraft Pulp BSKP/BEKP Offtake, Microwave Air-Dry Metric Ton ISO 638 ADMT & Intrinsic Viscosity ISO 5351 >=750 mL/g Escrow vs. Wet-Bale & Over-Bleached Fiber Overbilling)**: **[Bleached Kraft Pulp (BSKP / BEKP) Offtake, Microwave Air-Dry Metric Ton (ISO 638 ADMT) & Intrinsic Viscosity (ISO 5351 $\ge 750\text{ mL/g}$) Escrow vs. Wet-Bale & Over-Bleached Fiber Overbilling: Architecture Selection & First-Principles FAQ](docs/pulp-paper-kraft-admt-moisture-kappa-viscosity-mandate-vs-wet-bale-degradation-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -389,6 +390,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 High-Rise Elevator & Escalator MRO, ISO 4309 MRT & Dual-Brake Telemetry Mandate Visual Summary](assets/svg/120-elevator-escalator-mrt-brake-torque-2026-11-11.svg)
 
 ![2026-11-11 Automated Container Terminal STS Crane, Twistlock Eccentricity & Net GMPH Mandate Visual Summary](assets/svg/121-automated-container-terminal-sts-twistlock-2026-11-11.svg)
+
+![2026-11-11 Bleached Kraft Pulp (BSKP/BEKP), Air-Dry Metric Ton (ADMT) & Intrinsic Viscosity Mandate Visual Summary](assets/svg/122-pulp-paper-kraft-admt-kappa-viscosity-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
