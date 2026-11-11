@@ -8327,6 +8327,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("high-speed-ai-pcb-sandbox", demo_zh)
 
+    def test_metallurgical_coking_coal_csr_vitrinite_reflectance_gieseler_mandate_vs_blend_fraud_furnace_choking_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_metallurgical_coking_coal_policy,
+        )
+
+        # 1. Verified unimodal vitrinite Ro + CSR >=65% + Gieseler >=800 ddpm + low alkali -> 200 OK ($340,000)
+        commit_ok = evaluate_metallurgical_coking_coal_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_coking_cents, 34000000)
+
+        # 2. Bimodal vitrinite reflectance blend fraud or CSR < 65% -> 403 blocked in 12ms
+        csr_403 = evaluate_metallurgical_coking_coal_policy(
+            unimodal_vitrinite_ro_and_csr_verified=False,
+        )
+        self.assertFalse(csr_403.allowed)
+        self.assertEqual(csr_403.http_status, 403)
+        self.assertEqual(
+            csr_403.coking_lane,
+            "BIMODAL_VITRINITE_BLEND_FRAUD_OR_LOW_CSR_BLOCKED",
+        )
+
+        # 3. Stockpile oxidation collapsing Gieseler fluidity (<800 ddpm) or wet-quench water -> 422 blocked in 15ms
+        flu_422 = evaluate_metallurgical_coking_coal_policy(
+            gieseler_fluidity_and_dry_basis_passed=False,
+        )
+        self.assertFalse(flu_422.allowed)
+        self.assertEqual(flu_422.http_status, 422)
+        self.assertEqual(
+            flu_422.coking_lane,
+            "OXIDIZED_GIESELER_FLUIDITY_OR_QUENCH_WATER_BLOCKED",
+        )
+
+        # 4. Web IQ detects excess ash alkali (K2O+Na2O > 0.25%) or high phosphorus -> 451 blocked in 290ms
+        alk_451 = evaluate_metallurgical_coking_coal_policy(
+            webiq_alkali_phosphorus_and_origin_clean=False,
+        )
+        self.assertFalse(alk_451.allowed)
+        self.assertEqual(alk_451.http_status, 451)
+
+        # 5. Web IQ applies CDQ dry-quench steam power & COG PSA hydrogen saving $54,400 ($285,600 net) -> 409 Confirm
+        cdq_409 = evaluate_metallurgical_coking_coal_policy(
+            cdq_dry_quench_power_and_cog_hydrogen_savings_cents=5440000,
+        )
+        self.assertFalse(cdq_409.allowed)
+        self.assertEqual(cdq_409.http_status, 409)
+        self.assertEqual(cdq_409.settled_coking_cents, 28560000)
+        self.assertEqual(cdq_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["coking_coal_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("metallurgical-coking-coal-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

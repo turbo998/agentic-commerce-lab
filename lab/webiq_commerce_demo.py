@@ -15598,6 +15598,92 @@ def evaluate_high_speed_ai_pcb_ccl_policy(
     )
 
 
+@dataclass(frozen=True)
+class MetallurgicalCokingCoalVerdict:
+    allowed: bool
+    http_status: int
+    coking_lane: str
+    settled_coking_cents: int
+    cdq_dry_quench_power_and_cog_hydrogen_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_metallurgical_coking_coal_policy(
+    *,
+    gross_coking_coal_cents: int = 34000000,
+    unimodal_vitrinite_ro_and_csr_verified: bool = True,
+    gieseler_fluidity_and_dry_basis_passed: bool = True,
+    webiq_alkali_phosphorus_and_origin_clean: bool = True,
+    cdq_dry_quench_power_and_cog_hydrogen_savings_cents: int = 0,
+) -> MetallurgicalCokingCoalVerdict:
+    # 1. Bimodal Vitrinite Reflectance Blend Fraud or Low Hot Strength (CSR <65% / CRI >24%) -> HTTP 403
+    if not unimodal_vitrinite_ro_and_csr_verified:
+        return MetallurgicalCokingCoalVerdict(
+            False,
+            403,
+            "BIMODAL_VITRINITE_BLEND_FRAUD_OR_LOW_CSR_BLOCKED",
+            0,
+            0,
+            "coking_coal_invoice_blocked_due_to_bimodal_vitrinite_blend_fraud_or_low_csr_strength",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Stockpile Weathering Oxidation (Gieseler Fluidity <800 ddpm) or Unadjusted Quench Water -> HTTP 422
+    if not gieseler_fluidity_and_dry_basis_passed:
+        return MetallurgicalCokingCoalVerdict(
+            False,
+            422,
+            "OXIDIZED_GIESELER_FLUIDITY_OR_QUENCH_WATER_BLOCKED",
+            0,
+            0,
+            "coking_parcel_rejected_for_oxidized_gieseler_fluidity_collapse_or_wet_quench_water_inflation",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Excess Ash Alkalis (K2O+Na2O >0.25%), High Phosphorus or Sanctioned Mine via Web IQ -> HTTP 451
+    if not webiq_alkali_phosphorus_and_origin_clean:
+        return MetallurgicalCokingCoalVerdict(
+            False,
+            451,
+            "ALKALI_PHOSPHORUS_BREACH_OR_MINE_ORIGIN_HOLD",
+            0,
+            0,
+            "webiq_detected_excess_ash_alkali_k2o_na2o_phosphorus_or_sanctioned_mine_origin",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Coke Dry Quenching (CDQ Power) + Coke-Oven Gas (COG) PSA Hydrogen -> HTTP 409 Confirm
+    if cdq_dry_quench_power_and_cog_hydrogen_savings_cents > 0:
+        return MetallurgicalCokingCoalVerdict(
+            False,
+            409,
+            "CDQ_DRY_QUENCH_POWER_AND_COG_HYDROGEN_CONFIRM",
+            gross_coking_coal_cents - cdq_dry_quench_power_and_cog_hydrogen_savings_cents,
+            cdq_dry_quench_power_and_cog_hydrogen_savings_cents,
+            "webiq_applied_cdq_dry_quench_waste_heat_power_and_cog_psa_hydrogen_saving_54400_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Unimodal Vitrinite Ro + CSR >=65% + Gieseler >=800 ddpm + Low Alkali -> Settled
+    return MetallurgicalCokingCoalVerdict(
+        True,
+        200,
+        "VERIFIED_METALLURGICAL_COKING_COAL_SETTLED",
+        gross_coking_coal_cents,
+        0,
+        "unimodal_vitrinite_ro_csr_gieseler_fluidity_dmt_and_alkali_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -20421,6 +20507,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "tdr_backdrill_block_latency_ms": pcb_tdr_403.latency_ms,
     }
 
+    # Round 128 (Metallurgical Coking Coal & Coke Offtake, CSR >=65% & Vitrinite Ro Histogram Mandate)
+    cok_commit_ok = evaluate_metallurgical_coking_coal_policy()
+    cok_csr_403 = evaluate_metallurgical_coking_coal_policy(
+        unimodal_vitrinite_ro_and_csr_verified=False,
+    )
+    cok_flu_422 = evaluate_metallurgical_coking_coal_policy(
+        gieseler_fluidity_and_dry_basis_passed=False,
+    )
+    cok_alk_451 = evaluate_metallurgical_coking_coal_policy(
+        webiq_alkali_phosphorus_and_origin_clean=False,
+    )
+    cok_cdq_409 = evaluate_metallurgical_coking_coal_policy(
+        cdq_dry_quench_power_and_cog_hydrogen_savings_cents=5440000,
+    )
+    coking_coal_guards = {
+        "all_passed": (
+            cok_commit_ok.allowed
+            and cok_commit_ok.settled_coking_cents == 34000000
+            and not cok_csr_403.allowed
+            and cok_csr_403.http_status == 403
+            and not cok_flu_422.allowed
+            and cok_flu_422.http_status == 422
+            and not cok_alk_451.allowed
+            and cok_alk_451.http_status == 451
+            and not cok_cdq_409.allowed
+            and cok_cdq_409.action_pill == "Confirm"
+        ),
+        "coking_settlement_latency_ms": cok_commit_ok.latency_ms,
+        "bimodal_blend_block_latency_ms": cok_csr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20561,6 +20678,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "textile_dyeing_guards": textile_dyeing_guards,
         "flour_milling_guards": flour_milling_guards,
         "high_speed_pcb_guards": high_speed_pcb_guards,
+        "coking_coal_guards": coking_coal_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25764,6 +25882,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pcb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Metallurgical Coking Coal & Blast-Furnace Coke Offtake, CSR & Vitrinite Reflectance Mandate Sandbox (Round 128 FAQ Companion) -->
+      <div class="finops-box" id="metallurgical-coking-coal-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cok-title">🔥 高炉主焦煤与冶金焦炭交割、反应后强度 (CSR &gt;=65%) 与煤岩镜质组反射率 (Ro 单峰) 架构：防混煤掺假与高炉骨架保护令牌 (metallurgical_coking_coal_mandate_...) vs 平均挥发分盲付决策器 (Round 128 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 5,000m³ 高炉主焦煤与冶金焦炭长协交割 ($340,000.00)、ISO 7404 煤岩反射率单峰/ASTM D5341 CSR、吉氏流动度/干基与 Web IQ 碱金属/干熄焦场景 (Coking Coal Scenario):</span></label>
+          <select id="cok-select" onchange="updateMetallurgicalCokingCoalSandbox()">
+            <option value="cok_commit_ok">⚡ 煤岩反射率 Ro 1.24% 单峰 (σ=0.05) + 热态强度 CSR 68.5% (&gt;=65%) + 吉氏流动度 1,650 ddpm + 碱金属 0.16%：20ms 自动结算 $340,000.00! (Act automatically)</option>
+            <option value="cok_csr_403">🛑 贸易商将高挥发分气煤 (36%) 与低挥发分贫瘦煤 (12%) 对半掺混冒充单一主焦煤 (平均挥发分虽为 24%，但煤岩反射率呈双峰断档且焦炭 CSR 跌至 48% &lt; 65% 引发高炉崩料) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="cok_flu_422">🚨 港口长期露天堆存致焦煤氧化风化 (吉氏最大流动度暴跌至 35 ddpm &lt; 800 ddpm 不结焦) 或湿法熄焦故意喷淋废水至 13% 未按干基扣重拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="cok_alk_451">🛑 XRF 检出煤灰钾钠碱金属超标 (K2O+Na2O = 0.38% &gt; 0.25% 在高炉内循环富集侵蚀炭砖穿炉) 或高磷 (&gt;0.04%)/混入受制裁矿源：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="cok_cdq_409">🧑‍⚖️ Web IQ 启用惰性氮气高温干熄焦 (CDQ：焦炭零水分、提升 CSR +4% 并回收红焦余热发电 150kWh/t) 叠加焦炉煤气 (COG) PSA 提纯绿氢喷吹立省 $54,400.00 (净付 $285,600.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cok-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -26330,6 +26466,7 @@ function renderAll() {{
   updateTextileDyeingFinishingSandbox();
   updateFlourMillingBakerySandbox();
   updateHighSpeedAiPcbSandbox();
+  updateMetallurgicalCokingCoalSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -32854,6 +32991,55 @@ function updateHighSpeedAiPcbSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 随板 TDR 阻抗 (±5%) + X-Ray 背钻 (&lt;=6 mil) + Class 3 金相达标：已自动清算 (VERIFIED_HIGH_SPEED_AI_PCB_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零残桩眼图闭合、零回流焊爆板与 CAF 短路</strong>：高速 AI 服务器多层 PCB 与覆铜板批次已完成结算（<code>$230,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMetallurgicalCokingCoalSandbox() {{
+  var selEl = document.getElementById("cok-select");
+  var outEl = document.getElementById("cok-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cok_csr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BIMODAL_VITRINITE_BLEND_FRAUD_OR_LOW_CSR_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "煤检实验室 <code>全自动偏光显微镜 500点镜质组随机反射率直方图 (ISO 7404) 与 ASTM D5341 热态强度</code> 实测显示，该船主焦煤虽然平均挥发分湊到 24%，但反射率直方图呈明显双峰断档（由廉价气煤与贫瘦煤恶意拼凑掺假），炼出焦炭反应后强度暴跌至 <code>CSR = 48.0% &lt; 65.0%</code>（入 5,000m³ 高炉必粉化引发崩料悬料，<code>unimodal_vitrinite_ro_and_csr_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$340,000.00</code> 信用证解付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cok_flu_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 OXIDIZED_GIESELER_FLUIDITY_OR_QUENCH_WATER_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "流变实验室 <code>ASTM D2639 吉氏塑性仪与皮带中子水分仪</code> 检出该批焦煤因在码头长期露天堆存氧化风化，吉氏最大流动度暴跌至 <code>35 ddpm &lt; 800 ddpm</code>（胶质层丧失熔融粘结能力），或湿法熄焦故意狂喷废水使含水达 13% 未按绝干公吨扣减（<code>gieseler_fluidity_and_dry_basis_passed == False</code>）。网关在 <code>15ms</code> 内拦截并拒收风化死煤！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cok_alk_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ALKALI_PHOSPHORUS_BREACH_OR_MINE_ORIGIN_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查装港 <code>XRF 煤灰氧化物成分表与矿产原产地库</code>，检出钾钠碱金属氧化物高达 <code>K2O+Na2O = 0.38% &gt; 0.25%</code>（将在高炉内循环富集催化焦炭粉化并侵蚀炉缸炭砖穿炉）或磷含量 <code>P &gt; 0.040%</code>，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cok_cdq_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CDQ_DRY_QUENCH_POWER_AND_COG_HYDROGEN_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将湿熄焦切换为 <code>惰性氮气循环干法熄焦 (CDQ：实现焦炭零水分、提升 CSR +4% 并回收 1,000°C 红焦余热发电 150 kWh/t)</code>，并耦合焦炉煤气（COG）变压吸附（PSA）提纯绿氢回喷高炉，单批次立省 <code>$54,400.00</code>（净付降至 <code>$285,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 煤岩反射率单峰 (σ&lt;=0.08) + 热态强度 (CSR &gt;=65%) + 吉氏流动度达标：已自动清算 (VERIFIED_METALLURGICAL_COKING_COAL_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零高低阶混煤欺诈、零高炉崩料与熄焦买水</strong>：高炉主焦煤与冶金焦炭长协批次已完成结算（<code>$340,000.00</code>）！" +
     "</div>";
 }}
 
