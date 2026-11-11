@@ -119,6 +119,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 85 (LNG Cargo Custody Transfer, Online Raman/GC Heating-Value MMBtu & Boil-Off Gas BOG Vapor-Return Escrow vs. Volumetric/Ageing Overbilling)**: **[LNG Cargo Custody Transfer, Online Raman/GC Heating-Value (MMBtu Wobbe Index) & Boil-Off Gas (BOG) Vapor-Return Escrow vs. Volumetric/Ageing Overbilling: Architecture Selection & First-Principles FAQ](docs/lng-cargo-custody-transfer-mmbtu-raman-bog-mandate-vs-volumetric-ageing-overbilling-faq.en.md)**
 - **Topic 86 (Rail Freight Carload Demurrage, AAR AEI RFID Telemetry & Constructive-Placement Decoupling Escrow vs. Railcar-Bunching Overbilling)**: **[Rail Freight Carload Demurrage, AAR AEI RFID Telemetry & Constructive-Placement Decoupling Escrow vs. Railcar-Bunching Overbilling: Architecture Selection & First-Principles FAQ](docs/rail-freight-carload-aei-demurrage-constructive-placement-mandate-vs-bunching-surcharge-faq.en.md)**
 - **Topic 87 (Grid-Scale BESS Tolling, POI Usable State-of-Health SOH >=92% & Net AC-AC Round-Trip Efficiency >=86% Escrow vs. Nameplate MWh Overbilling)**: **[Grid-Scale BESS Tolling, POI Usable State-of-Health (SOH $\ge 92\%$) & Net AC-AC Round-Trip Efficiency ($\ge 86\%$) Escrow vs. Nameplate MWh Overbilling: Architecture Selection & First-Principles FAQ](docs/grid-scale-bess-tolling-soh-rte-dispatch-mandate-vs-nameplate-degradation-overbilling-faq.en.md)**
+- **Topic 88 (Municipal Water Non-Revenue Water NRW, DMA Minimum Night Flow MNF Magmeter Telemetry & PRV Critical-Point Pressure Escrow vs. Estimated Leakage Overbilling)**: **[Municipal Water Non-Revenue Water (NRW), DMA Minimum Night Flow (MNF) Magmeter Telemetry & PRV Critical-Point Pressure Escrow vs. Estimated Leakage Overbilling: Architecture Selection & First-Principles FAQ](docs/municipal-water-nrw-dma-minimum-night-flow-mandate-vs-estimated-leakage-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -293,6 +294,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Rail Freight Carload, AEI RFID Telemetry & Constructive Placement Mandate Visual Summary](assets/svg/88-rail-freight-carload-aei-demurrage-2026-11-11.svg)
 
 ![2026-11-11 Grid-Scale BESS Tolling, Usable SOH & AC-AC RTE Dispatch Mandate Visual Summary](assets/svg/89-grid-scale-bess-tolling-soh-rte-2026-11-11.svg)
+
+![2026-11-11 Municipal Water NRW, DMA Minimum Night Flow & PRV Pressure Mandate Visual Summary](assets/svg/90-municipal-water-nrw-dma-night-flow-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

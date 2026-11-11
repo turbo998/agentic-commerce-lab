@@ -12198,6 +12198,91 @@ def evaluate_grid_scale_bess_tolling_policy(
     )
 
 
+@dataclass(frozen=True)
+class MunicipalWaterNrwDmaVerdict:
+    allowed: bool
+    http_status: int
+    water_lane: str
+    settled_nrw_cents: int
+    prv_or_leakage_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_municipal_water_nrw_dma_policy(
+    gross_nrw_contract_cents: int = 16500000,
+    dma_night_flow_mnf_magmeter_reduction_verified: bool = True,
+    critical_point_pressure_and_boundary_valve_passed: bool = True,
+    webiq_awwa_m36_audit_and_chlorine_residual_clean: bool = True,
+    prv_pressure_modulation_and_pump_vfd_savings_cents: int = 0,
+) -> MunicipalWaterNrwDmaVerdict:
+    """Evaluate IWA District Metered Area (DMA) 02:00-04:00 Minimum Night Flow (MNF) bidirectional magmeter reduction vs desktop burst-repair estimate overbilling, Critical-Point minimum hydraulic pressure (>=25 mH2O / 35 psi) & boundary-valve zero-bleed gate against PRV valve-choking manipulation, Web IQ AWWA M36 water audit & terminal free-chlorine residual (>=0.2 mg/L) check, and Closed-Loop PRV pressure modulation + booster pump VFD energy arbitrage."""
+    # 1. Paper per-repair orifice estimate without verified 02:00-04:00 DMA magmeter MNF reduction -> HTTP 403
+    if not dma_night_flow_mnf_magmeter_reduction_verified:
+        return MunicipalWaterNrwDmaVerdict(
+            False,
+            403,
+            "PAPER_LEAK_ESTIMATE_WITHOUT_DMA_MNF_REDUCTION_BLOCKED",
+            0,
+            gross_nrw_contract_cents,
+            "nrw_performance_bonus_blocked_due_to_unchanged_dma_0200_0400_minimum_night_flow_on_inlet_magmeter",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Contractor choked inlet PRV dropping Critical-Point pressure <25 mH2O or boundary valve bleed -> HTTP 422
+    if not critical_point_pressure_and_boundary_valve_passed:
+        return MunicipalWaterNrwDmaVerdict(
+            False,
+            422,
+            "PRV_VALVE_CHOKING_CRITICAL_PRESSURE_STARVATION_BLOCKED",
+            0,
+            gross_nrw_contract_cents,
+            "nrw_claim_rejected_due_to_critical_point_pressure_below_25m_or_unsealed_dma_boundary_valve",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects AWWA M36 apparent-loss discrepancy or terminal free chlorine <0.2 mg/L -> HTTP 451
+    if not webiq_awwa_m36_audit_and_chlorine_residual_clean:
+        return MunicipalWaterNrwDmaVerdict(
+            False,
+            451,
+            "AWWA_M36_AUDIT_DISCREPANCY_OR_CHLORINE_INTRUSION_HOLD",
+            0,
+            gross_nrw_contract_cents,
+            "webiq_detected_terminal_free_chlorine_below_0_2_mg_l_or_negative_pressure_intrusion_risk",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Closed-Loop PRV Excess-Head Modulation + Booster Pump VFD Energy Arbitrage -> HTTP 409 Confirm
+    if prv_pressure_modulation_and_pump_vfd_savings_cents > 0:
+        return MunicipalWaterNrwDmaVerdict(
+            False,
+            409,
+            "CLOSED_LOOP_PRV_AND_PUMP_VFD_ENERGY_ARBITRAGE_CONFIRM",
+            gross_nrw_contract_cents - prv_pressure_modulation_and_pump_vfd_savings_cents,
+            prv_pressure_modulation_and_pump_vfd_savings_cents,
+            "webiq_coupled_favad_night_prv_modulation_with_booster_pump_vfd_saving_28000_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified DMA 02:00-04:00 MNF Magmeter Reduction + Critical-Point >=25 mH2O + Chlorine Clean -> Settled
+    return MunicipalWaterNrwDmaVerdict(
+        True,
+        200,
+        "VERIFIED_MUNICIPAL_WATER_NRW_DMA_SETTLED",
+        gross_nrw_contract_cents,
+        0,
+        "dma_0200_0400_mnf_magmeter_delta_critical_point_pressure_and_awwa_m36_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -15813,6 +15898,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "nameplate_soh_block_latency_ms": bess_soh_403.latency_ms,
     }
 
+    nrw_commit_ok = evaluate_municipal_water_nrw_dma_policy()
+    nrw_mnf_403 = evaluate_municipal_water_nrw_dma_policy(
+        dma_night_flow_mnf_magmeter_reduction_verified=False,
+    )
+    nrw_prv_422 = evaluate_municipal_water_nrw_dma_policy(
+        critical_point_pressure_and_boundary_valve_passed=False,
+    )
+    nrw_chl_451 = evaluate_municipal_water_nrw_dma_policy(
+        webiq_awwa_m36_audit_and_chlorine_residual_clean=False,
+    )
+    nrw_vfd_409 = evaluate_municipal_water_nrw_dma_policy(
+        prv_pressure_modulation_and_pump_vfd_savings_cents=2800000,
+    )
+    water_nrw_guards = {
+        "all_passed": (
+            nrw_commit_ok.allowed
+            and nrw_commit_ok.settled_nrw_cents == 16500000
+            and not nrw_mnf_403.allowed
+            and nrw_mnf_403.http_status == 403
+            and not nrw_prv_422.allowed
+            and nrw_prv_422.http_status == 422
+            and not nrw_chl_451.allowed
+            and nrw_chl_451.http_status == 451
+            and not nrw_vfd_409.allowed
+            and nrw_vfd_409.action_pill == "Confirm"
+        ),
+        "nrw_settlement_latency_ms": nrw_commit_ok.latency_ms,
+        "paper_leak_block_latency_ms": nrw_mnf_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -15913,6 +16028,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lng_custody_guards": lng_custody_guards,
         "rail_carload_guards": rail_carload_guards,
         "grid_bess_guards": grid_bess_guards,
+        "water_nrw_guards": water_nrw_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -20396,6 +20512,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bess-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Municipal Water NRW, DMA Minimum Night Flow & PRV Pressure Mandate Sandbox (Round 88 FAQ Companion) -->
+      <div class="finops-box" id="municipal-water-nrw-sandbox" style="margin-top:12px;border-color:#0284C7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-nrw-title">🚰 市政水务产销差漏损治理 (NRW)、DMA 夜间最小流量 (MNF) 与减压阀临界水压架构：凌晨实测流量令牌 (water_nrw_dma_mandate_...) vs 纸面估算节水决策器 (Round 88 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 市政供水管网季度合同节水管理绩效款 ($165,000.00)、IWA DMA 凌晨 02:00-04:00 夜间最小流量 (MNF) 实测、最不利点水压 (&gt;=25 mH2O) 与 Web IQ 智能 PRV + 泵房 VFD 变频场景 (Municipal Water NRW Scenario):</span></label>
+          <select id="nrw-select" onchange="updateMunicipalWaterNrwSandbox()">
+            <option value="nrw_commit_ok">⚡ DMA 入口 0.2 级电磁流量计凌晨 02:00-04:00 净 MNF 实降 112m³/h + 最不利点水压 28.4m (&gt;=25m) + 余氯 0.35mg/L：20ms 自动结算 $165,000.00! (Act automatically)</option>
+            <option value="nrw_mnf_403">🛑 仅凭修补 45 处漏点的经验公式纸面估算节水 80 万吨，但凌晨 02:00-04:00 DMA 总表 MNF 毫无下降 (“按了葫芦起了瓢”) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="nrw_prv_422">🚨 外包商半夜恶意拧小入口减压阀 (PRV) 刷低漏损数据，导致片区最不利点水压跌至 14m (&lt;25m) 高层断水/消防失压拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="nrw_chl_451">🛑 管网末梢余氯跌破 0.2mg/L 或调压引发瞬态负压地下水虹吸污染风险：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="nrw_vfd_409">🧑‍⚖️ Web IQ 耦合 FAVAD 压力-漏损指数闭环控制夜间智能 PRV 削减过剩水头并联动送水泵站 VFD 变频节电立省 $28,000.00 (净付 $137,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="nrw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -20922,6 +21056,7 @@ function renderAll() {{
   updateLngCargoCustodySandbox();
   updateRailFreightCarloadSandbox();
   updateGridBessTollingSandbox();
+  updateMunicipalWaterNrwSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -25486,6 +25621,55 @@ function updateGridBessTollingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 高压并网点 (POI) 实测可用 SOH (&gt;=92%) + 含厂用电净 AC-AC RTE (&gt;=86%) 达标：已自动清算 (VERIFIED_GRID_SCALE_BESS_TOLLING_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零铭牌缩水溢价、零液冷厂用电隐性转嫁</strong>：100MW/400MWh 独立储能电站月度容量租赁费已完成结算（<code>$280,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMunicipalWaterNrwSandbox() {{
+  var selEl = document.getElementById("nrw-select");
+  var outEl = document.getElementById("nrw-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "nrw_mnf_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PAPER_LEAK_ESTIMATE_WITHOUT_DMA_MNF_REDUCTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检漏承包商虽提交了 45 份单点修漏工单并按经验公式宣称节水 80 万吨，但 <code>IWA 独立计量分区 (DMA)</code> 入口 0.2 级双向电磁流量计在凌晨 <code>02:00–04:00 夜间最小流量 (MNF)</code> 窗口实测净流量毫无下降（旧漏堵住后压力升高顶穿邻近腐朽接头，<code>dma_night_flow_mnf_magmeter_reduction_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$165,000.00</code> 纸面假节水绩效款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nrw_prv_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PRV_VALVE_CHOKING_CRITICAL_PRESSURE_STARVATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "承包商为刷低夜间漏损读数，在半夜人为将入口减压阀（PRV）关小过度，导致管网最高/最远端 <code>最不利点 (Critical Point)</code> 水压跌至 <code>14.2 mH2O</code>（突破 <code>25 mH2O</code> 民生与消防红线，<code>critical_point_pressure_and_boundary_valve_passed == False</code>）。网关在 <code>14ms</code> 内拦截拒付并强制指令开阀恢复水压！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nrw_chl_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 AWWA_M36_AUDIT_DISCREPANCY_OR_CHLORINE_INTRUSION_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 AWWA M36 水量平衡表与在线水质遥测，检出管网末梢游离余氯跌破 <code>0.2 mg/L</code> 卫生下限或阀门快关水锤引发瞬态负压地下水倒灌风险，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nrw_vfd_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CLOSED_LOOP_PRV_AND_PUMP_VFD_ENERGY_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 耦合 FAVAD 压力-漏损指数模型，在确保最不利点水压稳定于 <code>26 mH2O</code> 的前提下闭环下调夜间过剩水头并联动送水泵房 VFD 变频器降频，单季立省水电成本 <code>$28,000.00</code>（净付降至 <code>$137,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ DMA 凌晨 02:00–04:00 净 MNF 实测降幅 + 最不利点水压 (&gt;=25m) 达标：已自动清算 (VERIFIED_MUNICIPAL_WATER_NRW_DMA_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零纸面估算水分、零关阀断水作弊</strong>：市政供水管网漏损治理（NRW）季度绩效款已完成结算（<code>$165,000.00</code>）！" +
     "</div>";
 }}
 

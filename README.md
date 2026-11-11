@@ -119,6 +119,7 @@
 - **专题 85（液化天然气 LNG 船货交割、在线拉曼光谱/气相色谱热值计量 MMBtu Wobbe Index 与蒸发气 BOG 回流扣减智能托管 vs 传统按液位体积 $\text{m}^3$ 盲目结算）**：**[《液化天然气（LNG）船货交割、在线拉曼光谱/气相色谱热值计量（MMBtu Wobbe Index）与蒸发气（BOG）回流扣减智能托管 vs 传统按液位体积（$\text{m}^3$）盲目结算：架构选型与第一性原理 FAQ》](docs/lng-cargo-custody-transfer-mmbtu-raman-bog-mandate-vs-volumetric-ageing-overbilling-faq.md)**
 - **专题 86（铁路干线货运车皮周转 Rail Freight Carload Demurrage、AEI 轨旁射频标签遥测与建设性送达 Constructive Placement 脱钩智能托管 vs 传统货场积压滞留费盲付）**：**[《铁路干线货运车皮周转（Rail Freight Carload Demurrage）、AEI 轨旁射频标签遥测与建设性送达（Constructive Placement）脱钩智能托管 vs 传统货场积压滞留费盲付：架构选型与第一性原理 FAQ》](docs/rail-freight-carload-aei-demurrage-constructive-placement-mandate-vs-bunching-surcharge-faq.md)**
 - **专题 87（电网级独立储能电站容量租赁 Grid-Scale BESS Tolling、并网点实测可用容量 Usable SOH $\ge 92\%$ 与含厂用电往返效率 AC-AC RTE $\ge 86\%$ 智能托管 vs 传统按铭牌兆瓦时固定包租盲付）**：**[《电网级独立储能电站容量租赁（Grid-Scale BESS Tolling）、并网点实测可用容量（Usable SOH $\ge 92\%$）与含厂用电往返效率（AC-AC RTE $\ge 86\%$）智能托管 vs 传统按铭牌兆瓦时固定包租盲付：架构选型与第一性原理 FAQ》](docs/grid-scale-bess-tolling-soh-rte-dispatch-mandate-vs-nameplate-degradation-overbilling-faq.md)**
+- **专题 88（市政与工业水务产销差漏损治理 Municipal Non-Revenue Water NRW、DMA 夜间最小流量 MNF 电磁遥测与减压阀临界水压智能托管 vs 传统按估算节水率盲付）**：**[《市政与工业水务产销差漏损治理（Municipal Non-Revenue Water, NRW）、DMA 夜间最小流量（MNF）电磁遥测与减压阀临界水压智能托管 vs 传统按估算节水率盲付：架构选型与第一性原理 FAQ》](docs/municipal-water-nrw-dma-minimum-night-flow-mandate-vs-estimated-leakage-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -293,6 +294,8 @@
 ![2026-11-11 铁路干线货运车皮周转、AEI 轨旁射频遥测与建设性送达脱钩智能托管架构一图流](assets/svg/88-rail-freight-carload-aei-demurrage-2026-11-11.svg)
 
 ![2026-11-11 电网级独立储能电站容量租赁、实测可用 SOH 与往返效率 (AC-AC RTE) 智能托管架构一图流](assets/svg/89-grid-scale-bess-tolling-soh-rte-2026-11-11.svg)
+
+![2026-11-11 市政水务产销差漏损治理 (NRW)、DMA 夜间最小流量与减压阀临界水压智能托管架构一图流](assets/svg/90-municipal-water-nrw-dma-night-flow-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

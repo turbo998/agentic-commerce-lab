@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg90" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051322"/>
+      <stop offset="50%" stop-color="#0a2540"/>
+      <stop offset="100%" stop-color="#10385e"/>
+    </linearGradient>
+    <linearGradient id="accent90" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg90)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#081a2e" stroke="#0284c7" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent90)"/>
+
+  <text x="60" y="72" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 88 · MUNICIPAL WATER NRW, DMA MINIMUM NIGHT FLOW (MNF) &amp; PRV PRESSURE MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">市政水务产销差漏损治理 (NRW)、DMA 夜间最小流量与减压阀临界水压托管 vs 估算节水盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">IWA DMA 02:00-04:00 MNF Magmeter Delta + Critical-Point Pressure (&gt;=25 mH2O) + AWWA M36 vs. Choked-Valve Fraud</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按理论修漏估算与盲目关阀降压模式 (Estimated NRW Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 纸面公式虚报节水量：修补 1 处暗漏就按经验公式虚报全年节水 50 万吨，实际总表供水量未降</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 恶意关小阀门制造“假节水”：把减压阀 (PRV) 死死拧小使高层用户断水、消防栓失压来刷低漏损率</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 边界阀门内漏串水造假：DMA 分区边界闸阀未关严，邻区自来水倒灌掩盖本区真实爆管漏失</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 夜间超压爆管与水泵电费浪费：凌晨用水低谷管网压力飙升至 65 mH2O，既费电又把旧管网撑爆</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型水务集团 / 大型工业园区管网漏损治理 (NRW EPC) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">水务采购 Agent 按施工队上报的“修漏点个数×估算流量”支付 $165,000 季度绩效款，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">实测凌晨 03:00 夜间最小流量 (MNF) 毫无下降，且因过度降压引发高层停水投诉与负压污染风险</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 纸面假节水拦截：0% | • 恶意关阀停水拦截：0% | • 绩效奖金虚付率：40%–70%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ DMA 凌晨最小流量实测 + 最不利点水压门禁 + 变频套利托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• DMA 凌晨 02:00-04:00 夜间最小流量 (MNF) 门禁：以双向电磁流量计实测净漏损降幅结算</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 最不利点水压 (&gt;=25 mH2O) 与消防水压红线：严防服务商靠恶意关小阀门牺牲水压骗取节水奖</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• AWWA M36 水量平衡与管网末梢余氯 (&gt;=0.2mg/L) 合规：Web IQ 核验防负压倒流与水质安全</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 夜间智能 PRV 调压 + 泵站变频 (VFD) 降耗套利：削减夜间过剩水头电耗与爆管率立省 $28,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断无 DMA 夜间最小流量 (MNF) 实测支撑的纸面估算节水账单；14ms 拦截恶意关阀</text>
+  <text x="660" y="434" fill="#bbf7d0" font-size="13" font-family="Segoe UI, Arial, sans-serif">导致最不利点水压跌破 25 mH2O；Web IQ 夜间 PRV 分时调压+泵站节电协同立省 $28,000（净付 $137k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 纸面假节水拦截：100% | • 管网水压与余氯合规：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0d233a" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">市政水务漏损治理 Agent 绝不能按修漏点个数估算付款！必须绑定【DMA 凌晨 MNF 实测 + 最不利点水压 + 余氯防倒流】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_municipal_water_nrw_dma_policy`) · IWA/AWWA M36 Water Audit · 2026-11-11</text>
+</svg>

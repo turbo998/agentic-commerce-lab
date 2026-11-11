@@ -6087,6 +6087,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("grid-bess-tolling-sandbox", demo_zh)
 
+    def test_municipal_water_nrw_dma_minimum_night_flow_mandate_vs_estimated_leakage_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_municipal_water_nrw_dma_policy,
+        )
+
+        # 1. Verified DMA 02:00-04:00 MNF reduction + Critical-Point pressure >=25m -> 200 OK ($165,000)
+        commit_ok = evaluate_municipal_water_nrw_dma_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_nrw_cents, 16500000)
+
+        # 2. Paper leak estimate without actual DMA magmeter MNF drop -> 403 blocked in 11ms
+        mnf_403 = evaluate_municipal_water_nrw_dma_policy(
+            dma_night_flow_mnf_magmeter_reduction_verified=False,
+        )
+        self.assertFalse(mnf_403.allowed)
+        self.assertEqual(mnf_403.http_status, 403)
+        self.assertEqual(
+            mnf_403.water_lane,
+            "PAPER_LEAK_ESTIMATE_WITHOUT_DMA_MNF_REDUCTION_BLOCKED",
+        )
+
+        # 3. PRV valve-choking dropping Critical-Point pressure <25 mH2O -> 422 blocked in 14ms
+        prv_422 = evaluate_municipal_water_nrw_dma_policy(
+            critical_point_pressure_and_boundary_valve_passed=False,
+        )
+        self.assertFalse(prv_422.allowed)
+        self.assertEqual(prv_422.http_status, 422)
+        self.assertEqual(
+            prv_422.water_lane,
+            "PRV_VALVE_CHOKING_CRITICAL_PRESSURE_STARVATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects AWWA M36 audit discrepancy or terminal free chlorine <0.2 mg/L -> 451 blocked in 295ms
+        chl_451 = evaluate_municipal_water_nrw_dma_policy(
+            webiq_awwa_m36_audit_and_chlorine_residual_clean=False,
+        )
+        self.assertFalse(chl_451.allowed)
+        self.assertEqual(chl_451.http_status, 451)
+
+        # 5. Web IQ couples closed-loop PRV modulation with booster pump VFD saving $28,000 ($137,000 net) -> 409 Confirm
+        vfd_409 = evaluate_municipal_water_nrw_dma_policy(
+            prv_pressure_modulation_and_pump_vfd_savings_cents=2800000,
+        )
+        self.assertFalse(vfd_409.allowed)
+        self.assertEqual(vfd_409.http_status, 409)
+        self.assertEqual(vfd_409.settled_nrw_cents, 13700000)
+        self.assertEqual(vfd_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["water_nrw_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("municipal-water-nrw-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
