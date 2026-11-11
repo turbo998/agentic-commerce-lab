@@ -8271,6 +8271,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("flour-milling-bakery-sandbox", demo_zh)
 
+    def test_high_speed_ai_server_pcb_ccl_tdr_impedance_backdrill_caf_mandate_vs_signal_loss_delamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_high_speed_ai_pcb_ccl_policy,
+        )
+
+        # 1. Verified Coupon TDR +-5% + X-Ray backdrill <=6 mil + Class 3 288C + clean IC -> 200 OK ($230,000)
+        commit_ok = evaluate_high_speed_ai_pcb_ccl_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pcb_cents, 23000000)
+
+        # 2. TDR impedance drift (>+-5%) or X-Ray backdrill stub > 6.0 mil -> 403 blocked in 11ms
+        tdr_403 = evaluate_high_speed_ai_pcb_ccl_policy(
+            tdr_impedance_and_xray_backdrill_stub_verified=False,
+        )
+        self.assertFalse(tdr_403.allowed)
+        self.assertEqual(tdr_403.http_status, 403)
+        self.assertEqual(
+            tdr_403.pcb_lane,
+            "TDR_IMPEDANCE_MISMATCH_OR_BACKDRILL_STUB_BLOCKED",
+        )
+
+        # 3. IPC Class 3 288C thermal delamination or hole-wall copper < 25 um -> 422 blocked in 14ms
+        thm_422 = evaluate_high_speed_ai_pcb_ccl_policy(
+            ipc_class3_thermal_stress_and_plating_passed=False,
+        )
+        self.assertFalse(thm_422.allowed)
+        self.assertEqual(thm_422.http_status, 422)
+        self.assertEqual(
+            thm_422.pcb_lane,
+            "THERMAL_STRESS_DELAMINATION_OR_PLATING_VOID_BLOCKED",
+        )
+
+        # 4. Web IQ detects unapproved CCL glass/resin swap or halide CAF breach -> 451 blocked in 285ms
+        caf_451 = evaluate_high_speed_ai_pcb_ccl_policy(
+            webiq_ccl_lot_and_ionic_caf_cleanliness_clean=False,
+        )
+        self.assertFalse(caf_451.allowed)
+        self.assertEqual(caf_451.http_status, 451)
+
+        # 5. Web IQ applies signal/power hybrid stackup & etchant Cu recovery saving $36,800 ($193,200 net) -> 409 Confirm
+        hyb_409 = evaluate_high_speed_ai_pcb_ccl_policy(
+            hybrid_stackup_and_etchant_copper_savings_cents=3680000,
+        )
+        self.assertFalse(hyb_409.allowed)
+        self.assertEqual(hyb_409.http_status, 409)
+        self.assertEqual(hyb_409.settled_pcb_cents, 19320000)
+        self.assertEqual(hyb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["high_speed_pcb_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("high-speed-ai-pcb-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

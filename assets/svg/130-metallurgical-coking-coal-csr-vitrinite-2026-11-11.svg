@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg130" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181210"/>
+      <stop offset="50%" stop-color="#2D1B14"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent130" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg130" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#291B15"/>
+      <stop offset="100%" stop-color="#140D0A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg130)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent130)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#7C2D12" stroke="#F97316" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ROUND 128 · METALLURGICAL COKING COAL &amp; COKE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    高炉主焦煤与冶金焦炭交割、反应后强度 (CSR &gt;=65%) 与煤岩镜质组反射率智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    ASTM D5341 Coke Strength After Reaction (CSR &gt;=65%), Vitrinite Reflectance Ro Histogram &amp; Gieseler Fluidity vs. Blend-Coal Fraud
+  </text>
+
+  <!-- Left Card: Legacy Volatile-Matter Only & Blend Fraud Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg130)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看挥发分与灰分盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 气煤+贫瘦煤恶意掺配冒充优质单一主焦煤</text>
+    <text x="58" y="224" fill="#CBD5E1">• 加权平均挥发分虽湊到 23%，但煤岩反射率呈双峰断档</text>
+    <text x="58" y="242" fill="#CBD5E1">• 炼出焦炭 CSR 跌至 48% (&lt;65%)，收走 $340,000 货款</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 5,000m³ 大型高炉焦炭粉化导致炉缸冻结悬料</text>
+    <text x="58" y="294" fill="#CBD5E1">• 堆存氧化使吉氏最大流动度 &lt; 50 ddpm (胶质层不熔融)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 高炉下部焦炭骨架崩塌不透气，日损数百万美元铁水</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 钾钠碱金属 (K2O+Na2O &gt;0.25%) 与高磷高硫</text>
+    <text x="58" y="364" fill="#CBD5E1">• 碱金属在高炉内循环富集侵蚀耐火砖并催化焦炭粉化</text>
+    <text x="58" y="382" fill="#CBD5E1">• 熄焦喷淋狂加水至 13% 把重度焦化废水当焦炭卖</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$340,000 掺假主焦煤与高炉崩料停产
+  </text>
+
+  <!-- Center Card: 4-Layer Coking Coal Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg130)" stroke="#F97316" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#7C2D12"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ⚡ 煤岩反射率单峰 + CSR&gt;=65% + 干熄焦 CDQ 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F97316" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDBA74">
+    Gate 1 · 煤岩镜质组单峰分布与 CSR (&gt;=65% · 12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ISO 7404 反射率双峰掺假或小焦炉 CSR &lt; 65%、CRI &gt; 24% →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 BIMODAL_VITRINITE_BLEND_FRAUD_OR_LOW_CSR_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 吉氏流动度 (&gt;=800 ddpm) 与干基扣水 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    氧化风化煤流动度坍塌或湿熄焦注水 &gt; 5% 未按干基折算 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 OXIDIZED_GIESELER_FLUIDITY_OR_QUENCH_WATER_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 碱金属/磷硫限值与矿区溯源 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    K2O+Na2O &gt; 0.25%、磷 P &gt; 0.04% 或混入受制裁矿源 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 ALKALI_PHOSPHORUS_BREACH_OR_MINE_ORIGIN_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 高温干熄焦 (CDQ) 发电 + 焦炉煤气制氢 (300ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    CDQ 干熄焦余热发电 (零水分+提 CSR 4%) 与 COG 焦炉气 PSA 提氢 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $54,400 ($285,600 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 20ms 自动清算 $340,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg130)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 128)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• CSR 68.5% 与单峰煤岩达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：20 ms · 放款：$340,000.00 (CRI 20.5%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 双峰混煤掺假或 CSR &lt; 65% 拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：12 ms · 拦截虚高款：$340,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 风化煤流动度坍塌或熄焦注水拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：15 ms · 强制按干基 MT 结算并拒收风化煤</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 干熄焦 CDQ 余热发电与提氢 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：300 ms · 节省：$54,400.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  149 / 149 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住特大型高炉焦炭热态骨架与零混煤欺诈底线
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDBA74">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要单看“工业分析平均挥发分 (VM)”或“含水毛重”盲付高炉主焦煤与冶金焦炭货款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 煤岩镜质组反射率 Ro 单峰无断档且热态强度 CSR &gt;=65%、CRI &lt;=24% (12ms 拦 403)；② 吉氏流动度 &gt;=800 ddpm 与干基扣水 (15ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查碱金属 (K2O+Na2O &lt;=0.25%) 与磷硫限值 (290ms 拦 451)，并启用 CDQ 干熄焦余热发电与焦炉气制氢立省 $54,400 (300ms)。
+  </text>
+</svg>

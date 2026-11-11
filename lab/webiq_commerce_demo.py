@@ -15513,6 +15513,92 @@ def evaluate_flour_milling_bakery_policy(
     )
 
 
+@dataclass(frozen=True)
+class HighSpeedAiPcbCclVerdict:
+    allowed: bool
+    http_status: int
+    pcb_lane: str
+    settled_pcb_cents: int
+    hybrid_stackup_and_etchant_copper_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_high_speed_ai_pcb_ccl_policy(
+    *,
+    gross_pcb_lot_cents: int = 23000000,
+    tdr_impedance_and_xray_backdrill_stub_verified: bool = True,
+    ipc_class3_thermal_stress_and_plating_passed: bool = True,
+    webiq_ccl_lot_and_ionic_caf_cleanliness_clean: bool = True,
+    hybrid_stackup_and_etchant_copper_savings_cents: int = 0,
+) -> HighSpeedAiPcbCclVerdict:
+    # 1. Coupon TDR Impedance Drift (>+-5%) or 3D X-Ray Backdrill Stub (>6.0 mil) -> HTTP 403
+    if not tdr_impedance_and_xray_backdrill_stub_verified:
+        return HighSpeedAiPcbCclVerdict(
+            False,
+            403,
+            "TDR_IMPEDANCE_MISMATCH_OR_BACKDRILL_STUB_BLOCKED",
+            0,
+            0,
+            "pcb_invoice_blocked_due_to_tdr_impedance_drift_or_excessive_backdrill_via_stub",
+            11,
+            "Send to a human",
+        )
+
+    # 2. IPC-6012 Class 3 288C Thermal Delamination or Thin/Voided Via Copper (<25 um) -> HTTP 422
+    if not ipc_class3_thermal_stress_and_plating_passed:
+        return HighSpeedAiPcbCclVerdict(
+            False,
+            422,
+            "THERMAL_STRESS_DELAMINATION_OR_PLATING_VOID_BLOCKED",
+            0,
+            0,
+            "pcb_lot_rejected_for_solder_float_delamination_or_insufficient_via_copper_plating",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Unapproved CCL Resin/Glass Substitution or Ionic Halide CAF Breach via Web IQ -> HTTP 451
+    if not webiq_ccl_lot_and_ionic_caf_cleanliness_clean:
+        return HighSpeedAiPcbCclVerdict(
+            False,
+            451,
+            "CCL_RESIN_SUBSTITUTION_OR_IONIC_CAF_CONTAMINATION_HOLD",
+            0,
+            0,
+            "webiq_detected_unapproved_ccl_glass_substitution_or_halide_caf_contamination",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Signal/Power Hybrid Stackup + Etchant Electrolytic Copper Recovery -> HTTP 409 Confirm
+    if hybrid_stackup_and_etchant_copper_savings_cents > 0:
+        return HighSpeedAiPcbCclVerdict(
+            False,
+            409,
+            "HYBRID_STACKUP_AND_ETCHANT_COPPER_RECOVERY_CONFIRM",
+            gross_pcb_lot_cents - hybrid_stackup_and_etchant_copper_savings_cents,
+            hybrid_stackup_and_etchant_copper_savings_cents,
+            "webiq_applied_hybrid_ccl_stackup_and_etchant_copper_recovery_saving_36800_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Coupon TDR +-5% + Backdrill <=6 mil + Class 3 288C + Clean IC -> Settled
+    return HighSpeedAiPcbCclVerdict(
+        True,
+        200,
+        "VERIFIED_HIGH_SPEED_AI_PCB_SETTLED",
+        gross_pcb_lot_cents,
+        0,
+        "coupon_tdr_xray_backdrill_ipc_class3_microsection_and_ccl_caf_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -20304,6 +20390,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sprouted_wheat_block_latency_ms": flr_fn_403.latency_ms,
     }
 
+    # Round 127 (High-Speed AI Server PCB & CCL Fabrication, Coupon TDR +-5% & X-Ray Backdrill <=6 mil Mandate)
+    pcb_commit_ok = evaluate_high_speed_ai_pcb_ccl_policy()
+    pcb_tdr_403 = evaluate_high_speed_ai_pcb_ccl_policy(
+        tdr_impedance_and_xray_backdrill_stub_verified=False,
+    )
+    pcb_thm_422 = evaluate_high_speed_ai_pcb_ccl_policy(
+        ipc_class3_thermal_stress_and_plating_passed=False,
+    )
+    pcb_caf_451 = evaluate_high_speed_ai_pcb_ccl_policy(
+        webiq_ccl_lot_and_ionic_caf_cleanliness_clean=False,
+    )
+    pcb_hyb_409 = evaluate_high_speed_ai_pcb_ccl_policy(
+        hybrid_stackup_and_etchant_copper_savings_cents=3680000,
+    )
+    high_speed_pcb_guards = {
+        "all_passed": (
+            pcb_commit_ok.allowed
+            and pcb_commit_ok.settled_pcb_cents == 23000000
+            and not pcb_tdr_403.allowed
+            and pcb_tdr_403.http_status == 403
+            and not pcb_thm_422.allowed
+            and pcb_thm_422.http_status == 422
+            and not pcb_caf_451.allowed
+            and pcb_caf_451.http_status == 451
+            and not pcb_hyb_409.allowed
+            and pcb_hyb_409.action_pill == "Confirm"
+        ),
+        "pcb_settlement_latency_ms": pcb_commit_ok.latency_ms,
+        "tdr_backdrill_block_latency_ms": pcb_tdr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20443,6 +20560,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "salmon_aquaculture_guards": salmon_aquaculture_guards,
         "textile_dyeing_guards": textile_dyeing_guards,
         "flour_milling_guards": flour_milling_guards,
+        "high_speed_pcb_guards": high_speed_pcb_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25628,6 +25746,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="flr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive High-Speed AI Server PCB & CCL Fabrication, TDR Impedance & X-Ray Backdrill Mandate Sandbox (Round 127 FAQ Companion) -->
+      <div class="finops-box" id="high-speed-ai-pcb-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pcb-title">🟩 高速 AI 服务器多层 PCB 与覆铜板交割、TDR 阻抗 (±5%) 与 X-Ray 背钻残桩 (&lt;=6 mil) 架构：112G/224G 眼图保护与防 CAF 令牌 (high_speed_ai_pcb_ccl_mandate_...) vs 飞针通断盲付决策器 (Round 127 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 32层 AI 服务器 UBB/交换机高速 PCB 交割 ($230,000.00)、随板测试条 TDR/S21 与 X-Ray 背钻残桩、IPC Class 3 288°C 金相与 Web IQ 覆铜板/CAF 场景 (High-Speed AI PCB Scenario):</span></label>
+          <select id="pcb-select" onchange="updateHighSpeedAiPcbSandbox()">
+            <option value="pcb_commit_ok">⚡ 随板 TDR 阻抗 85Ω±2.8% + X-Ray 背钻残桩 3.8 mil (&lt;=6.0) + 6次 288°C 零分层 + 孔铜 28 μm + IC 洁净：19ms 自动结算 $230,000.00! (Act automatically)</option>
+            <option value="pcb_tdr_403">🛑 钻刀磨损致背钻残桩长达 14.5 mil (&gt;6.0 mil 四分之一波长谐振闭死 112G PAM4 眼图) 或蚀刻偏差致阻抗偏离 ±11% (直流飞针虽通，贴完 8颗 GPU 必整板报废) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="pcb_thm_422">🚨 IPC-6012 Class 3 六次 288°C 漂锡热冲击检出内层除胶渣不良起泡爆板，或 20:1 高厚径比深孔中心铜厚仅 14 μm (&lt;25 μm 过回流焊必拉裂开路) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="pcb_caf_451">🛑 偷将低介电扁平玻纤布 (NE-Glass / Megatron-8) 换成普通 E-Glass 诱发差分偏斜，或孔壁残留溴/氯离子 (&gt;1.56 μg/cm²) 引发机房 CAF 导电阳极丝短路：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="pcb_hyb_409">🧑‍⚖️ Web IQ 采用信号/电源高低速混合压合叠层 (Hybrid Stackup：仅 SerDes 层用 M8 板材、电源层用高 Tg FR-4) 并结算蚀刻废液电解回收阴极铜立省 $36,800.00 (净付 $193,200.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pcb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -26193,6 +26329,7 @@ function renderAll() {{
   updateSalmonAquacultureRasSandbox();
   updateTextileDyeingFinishingSandbox();
   updateFlourMillingBakerySandbox();
+  updateHighSpeedAiPcbSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -32668,6 +32805,55 @@ function updateFlourMillingBakerySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 降落数值 (FN &gt;=300s) + 粉质稳定 (&gt;=10 min) + DON 毒素 (&lt;=0.75 ppm) 达标：已自动清算 (VERIFIED_FLOUR_MILLING_BAKERY_OFFTAKE_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零穗发芽塌腰粘刀、零润麦兑水买单</strong>：工业制粉与中央烘焙专用粉批次已完成结算（<code>$135,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHighSpeedAiPcbSandbox() {{
+  var selEl = document.getElementById("pcb-select");
+  var outEl = document.getElementById("pcb-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "pcb_tdr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TDR_IMPEDANCE_MISMATCH_OR_BACKDRILL_STUB_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "每拼板随行测试条 <code>高频探针台 TDR/VNA 与 3D X-Ray 背钻检测</code> 显示，虽然直流飞针测试 100% 导通，但因控深背钻钻刀磨损致导通孔残桩长达 <code>Stub = 14.5 mil &gt; 6.0 mil</code>（在 28/56 GHz 下产生强烈谐振凹陷把 112G PAM4 眼图彻底闭死）或差分阻抗偏离 <code>±11% &gt; ±5%</code>（<code>tdr_impedance_and_xray_backdrill_stub_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$230,000.00</code> 账单，防止贴装 8 颗高价 AI GPU 后整板报废！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pcb_thm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 THERMAL_STRESS_DELAMINATION_OR_PLATING_VOID_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "金相实验室 <code>IPC-6012 Class 3 六次 288°C 漂锡热冲击切片与 IST 互连应力测试</code> 检出内层压合除胶渣不良出现分层爆板（Delamination），或 20:1 高厚径比深孔中心铜厚仅 <code>14 μm &lt; 25 μm</code> 存在镀层空洞（过 SMT 无铅回流焊炉必拉裂断路，<code>ipc_class3_thermal_stress_and_plating_passed == False</code>）。网关在 <code>14ms</code> 内拦截并退回重投压合！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pcb_caf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CCL_RESIN_SUBSTITUTION_OR_IONIC_CAF_CONTAMINATION_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查覆铜板原厂 <code>Megatron-8 / NE-Glass 扁平玻纤布与 HVLP3 铜箔批次号</code> 及 <code>IPC-TM-650 离子色谱 (IC) 报告</code>，检出私自降级使用普通玻纤布（诱发玻纤编织偏斜 Skew）或孔壁溴/氯离子残留 <code>&gt; 1.56 μg/cm²</code>（将在数据中心通电后生长导电阳极丝 CAF 微短路起火），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pcb_hyb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HYBRID_STACKUP_AND_ETCHANT_COPPER_RECOVERY_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将 32 层全 M8 叠层优化为 <code>CTE 匹配的信号/电源高低速混压架构 (Hybrid Stackup：仅高速 SerDes 层用 M8、大电流电源层用高 Tg FR-4)</code>，并按 LME 伦铜价抵扣内层蚀刻废液电解回收阴极铜，单批次立省 <code>$36,800.00</code>（净付降至 <code>$193,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 随板 TDR 阻抗 (±5%) + X-Ray 背钻 (&lt;=6 mil) + Class 3 金相达标：已自动清算 (VERIFIED_HIGH_SPEED_AI_PCB_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零残桩眼图闭合、零回流焊爆板与 CAF 短路</strong>：高速 AI 服务器多层 PCB 与覆铜板批次已完成结算（<code>$230,000.00</code>）！" +
     "</div>";
 }}
 

@@ -158,6 +158,7 @@
 - **专题 124（深远海网箱与陆基循环水 RAS 三文鱼养殖饲料与成鱼交割 Salmon Aquaculture Feed & Harvest Offtake、双目 3D 饵料系数 $\text{eFCR} \le 1.15$ 与土臭素/虾青素色度 $\text{Geosmin} \le 10\text{ ng/kg}$ & $\text{SalmoFan} \ge 26$ 智能托管 vs 传统按毛重盲付）**：**[《深远海网箱与陆基循环水（RAS）三文鱼养殖饲料与成鱼交割（Salmon Aquaculture Feed & Harvest Offtake）、双目 3D 饵料系数（$\text{eFCR} \le 1.15$）与土臭素/虾青素色度（$\text{Geosmin} \le 10\text{ ng/kg}$ & $\text{SalmoFan} \ge 26$）智能托管 vs 传统按毛重盲付：架构选型与第一性原理 FAQ》](docs/salmon-aquaculture-ras-3d-biomass-fcr-geosmin-astaxanthin-mandate-vs-feed-waste-muddy-flavor-faq.md)**
 - **专题 125（纺织印染与成衣面料定型代工 Textile Dyeing & Finishing Tolling、全幅在线分光测色仪色差 $\text{CMC(2:1) }\Delta E \le 0.8$ 与水洗缩水率/ZDHC 零偶氮智能托管 vs 传统按出布码数盲付）**：**[《纺织印染与成衣面料定型代工（Textile Dyeing & Finishing Tolling）、全幅在线分光测色仪色差（$\text{CMC(2:1) }\Delta E \le 0.8$）与水洗缩水率/ZDHC 零偶氮智能托管 vs 传统按出布码数盲付：架构选型与第一性原理 FAQ》](docs/textile-dyeing-finishing-spectrophotometer-delta-e-zdhc-mrsl-mandate-vs-shade-lot-shrinkage-overbilling-faq.md)**
 - **专题 126（工业制粉与中央烘焙专用面粉大宗交割 Industrial Flour Milling & Bakery Offtake、粉质仪面团稳定时间 Farinograph Stability $\ge 10.0\text{ min}$ 与降落数值防穗发芽 Falling Number $\ge 300\text{ s}$ / 呕吐毒素智能托管 vs 传统仅看粗蛋白盲付）**：**[《工业制粉与中央烘焙专用面粉大宗交割（Industrial Flour Milling & Bakery Offtake）、粉质仪面团稳定时间（Farinograph Stability $\ge 10.0\text{ min}$）与降落数值防穗发芽（Falling Number $\ge 300\text{ s}$）/ 呕吐毒素智能托管 vs 传统仅看粗蛋白盲付：架构选型与第一性原理 FAQ》](docs/flour-milling-bakery-farinograph-falling-number-don-mycotoxin-mandate-vs-sprouted-wheat-overbilling-faq.md)**
+- **专题 127（高速 AI 服务器多层 PCB 与超低损耗覆铜板制造交割 High-Speed AI Server PCB & Ultra-Low-Loss CCL Fabrication、时域反射阻抗 TDR $\pm 5\%$ 与 X-Ray 背钻残桩 $\text{Stub} \le 6\text{ mil}$ / 防导电阳极丝 CAF 智能托管 vs 传统仅看飞针通断盲付）**：**[《高速 AI 服务器多层 PCB 与超低损耗覆铜板制造交割（High-Speed AI Server PCB & Ultra-Low-Loss CCL Fabrication）、时域反射阻抗（TDR $\pm 5\%$）与 X-Ray 背钻残桩（$\text{Stub} \le 6\text{ mil}$）/ 防导电阳极丝（CAF）智能托管 vs 传统仅看飞针通断盲付：架构选型与第一性原理 FAQ》](docs/high-speed-ai-server-pcb-ccl-tdr-impedance-backdrill-caf-mandate-vs-signal-loss-delamination-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -410,6 +411,8 @@
 ![2026-11-11 纺织印染与面料定型代工、分光测色仪色差 (CMC ΔE<=0.8) 与 ZDHC 零偶氮智能托管架构一图流](assets/svg/127-textile-dyeing-spectrophotometer-delta-e-zdhc-2026-11-11.svg)
 
 ![2026-11-11 工业制粉与烘焙专用粉交割、粉质仪稳定时间 (>=10 min) 与降落数值/呕吐毒素智能托管架构一图流](assets/svg/128-flour-milling-bakery-farinograph-falling-number-2026-11-11.svg)
+
+![2026-11-11 高速 AI 服务器多层 PCB 与覆铜板交割、TDR 阻抗 (±5%) 与背钻残桩/防 CAF 智能托管架构一图流](assets/svg/129-high-speed-ai-pcb-ccl-tdr-backdrill-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
