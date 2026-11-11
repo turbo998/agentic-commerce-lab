@@ -13728,6 +13728,91 @@ def evaluate_industrial_steam_dryness_trap_policy(
     )
 
 
+@dataclass(frozen=True)
+class PotashPhosphateFertilizerVerdict:
+    allowed: bool
+    http_status: int
+    fertilizer_lane: str
+    settled_fertilizer_cents: int
+    bulk_blending_or_filler_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_potash_phosphate_fertilizer_policy(
+    gross_fertilizer_cargo_cents: int = 26000000,
+    libs_icp_nutrient_grade_verified: bool = True,
+    anti_caking_moisture_and_crush_strength_passed: bool = True,
+    webiq_cadmium_cap_and_origin_sanction_clean: bool = True,
+    port_bulk_blending_soil_formula_savings_cents: int = 0,
+) -> PotashPhosphateFertilizerVerdict:
+    """Evaluate discharge-conveyor LIBS / ICP-OES nutrient assay (MOP K2O >=60.0% & DAP water-soluble P2O5 >=41.0%) vs dolomite-filler adulteration & paper-COA overbilling, granule crush strength (>=35 N) & Karl Fischer moisture (<=0.5%) anti-caking gate, Web IQ EU 2019/1009 cadmium limit (Cd <=20 mg/kg P2O5) & origin sanctions check, and port-side automated Bulk-Blending (BB) soil-formula arbitrage."""
+    # 1. Dolomite/gypsum filler adulteration (K2O < 60%) or low water-soluble P2O5 (<41%) -> HTTP 403
+    if not libs_icp_nutrient_grade_verified:
+        return PotashPhosphateFertilizerVerdict(
+            False,
+            403,
+            "NUTRIENT_GRADE_DEFICIT_OR_FILLER_ADULTERATION_BLOCKED",
+            0,
+            gross_fertilizer_cargo_cents,
+            "fertilizer_cargo_blocked_due_to_conveyor_libs_k2o_or_water_soluble_p2o5_deficit_from_dolomite_filler",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Ocean-transit hygroscopic caking (moisture > 0.5%) or low granule crush strength (<35 N) -> HTTP 422
+    if not anti_caking_moisture_and_crush_strength_passed:
+        return PotashPhosphateFertilizerVerdict(
+            False,
+            422,
+            "HYGROSCOPIC_CAKING_OR_GRANULE_CRUSH_FAILURE_BLOCKED",
+            0,
+            gross_fertilizer_cargo_cents,
+            "fertilizer_lot_held_due_to_hold_caking_moisture_above_0_5pct_or_granule_crush_strength_below_35n",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects cadmium Cd > 20 mg/kg P2O5 (EU 2019/1009 breach) or sanctioned potash origin -> HTTP 451
+    if not webiq_cadmium_cap_and_origin_sanction_clean:
+        return PotashPhosphateFertilizerVerdict(
+            False,
+            451,
+            "HEAVY_METAL_CADMIUM_OR_SANCTIONED_ORIGIN_HOLD",
+            0,
+            gross_fertilizer_cargo_cents,
+            "webiq_detected_phosphate_cadmium_exceeding_20_mg_kg_p2o5_or_sanctioned_potash_mine_transshipment",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Port-Side Automated Bulk-Blending (BB) Soil-Formula Arbitrage -> HTTP 409 Confirm
+    if port_bulk_blending_soil_formula_savings_cents > 0:
+        return PotashPhosphateFertilizerVerdict(
+            False,
+            409,
+            "PORT_BULK_BLENDING_SOIL_FORMULA_CONFIRM",
+            gross_fertilizer_cargo_cents - port_bulk_blending_soil_formula_savings_cents,
+            port_bulk_blending_soil_formula_savings_cents,
+            "webiq_routed_bulk_mop_dap_urea_to_port_hopper_bulk_blending_tower_saving_34000_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified LIBS/ICP-OES Nutrient Assay + Crush Strength >=35N + Low Cadmium -> Settled
+    return PotashPhosphateFertilizerVerdict(
+        True,
+        200,
+        "VERIFIED_POTASH_PHOSPHATE_FERTILIZER_SETTLED",
+        gross_fertilizer_cargo_cents,
+        0,
+        "conveyor_libs_nutrient_grade_granule_crush_strength_and_eu_cadmium_cap_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17883,6 +17968,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wet_steam_block_latency_ms": stm_wet_403.latency_ms,
     }
 
+    frt_commit_ok = evaluate_potash_phosphate_fertilizer_policy()
+    frt_grd_403 = evaluate_potash_phosphate_fertilizer_policy(
+        libs_icp_nutrient_grade_verified=False,
+    )
+    frt_cak_422 = evaluate_potash_phosphate_fertilizer_policy(
+        anti_caking_moisture_and_crush_strength_passed=False,
+    )
+    frt_cdm_451 = evaluate_potash_phosphate_fertilizer_policy(
+        webiq_cadmium_cap_and_origin_sanction_clean=False,
+    )
+    frt_bbl_409 = evaluate_potash_phosphate_fertilizer_policy(
+        port_bulk_blending_soil_formula_savings_cents=3400000,
+    )
+    potash_fertilizer_guards = {
+        "all_passed": (
+            frt_commit_ok.allowed
+            and frt_commit_ok.settled_fertilizer_cents == 26000000
+            and not frt_grd_403.allowed
+            and frt_grd_403.http_status == 403
+            and not frt_cak_422.allowed
+            and frt_cak_422.http_status == 422
+            and not frt_cdm_451.allowed
+            and frt_cdm_451.http_status == 451
+            and not frt_bbl_409.allowed
+            and frt_bbl_409.action_pill == "Confirm"
+        ),
+        "fertilizer_settlement_latency_ms": frt_commit_ok.latency_ms,
+        "filler_adulteration_block_latency_ms": frt_grd_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -18001,6 +18116,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "geothermal_egs_guards": geothermal_egs_guards,
         "subsea_cable_guards": subsea_cable_guards,
         "industrial_steam_guards": industrial_steam_guards,
+        "potash_fertilizer_guards": potash_fertilizer_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -22808,6 +22924,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="stm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Bulk Potash & Phosphate Fertilizer, LIBS Nutrient Assay & EU Cadmium Mandate Sandbox (Round 106 FAQ Companion) -->
+      <div class="finops-box" id="potash-phosphate-fertilizer-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-frt-title">🌾 大宗钾肥与磷肥贸易 (Potash MOP &amp; Phosphate DAP)、皮带在线 LIBS 养分品位与欧盟镉限值 (Cd &lt;=20 mg/kg) 架构：有效养分与抗压碎力令牌 (potash_phosphate_fertilizer_mandate_...) vs 凭提单盲付决策器 (Round 106 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 大宗氯化钾 (MOP) 与磷酸二铵 (DAP) 散货到港交割 ($260,000.00)、卸船皮带在线 LIBS/ICP-OES 养分品位、颗粒抗压碎力与 Web IQ 欧盟重金属镉/港口散装 BB 肥场景 (Fertilizer Offtake Scenario):</span></label>
+          <select id="frt-select" onchange="updatePotashPhosphateFertilizerSandbox()">
+            <option value="frt_commit_ok">⚡ 卸港皮带在线 LIBS 实测 K2O = 60.8% (&gt;=60%) + 水溶磷达标 + 颗粒抗压 42N (&gt;=35N) + 镉 8.5 mg/kg (&lt;=20)：20ms 自动结算 $260,000.00! (Act automatically)</option>
+            <option value="frt_grd_403">🛑 掺杂染红白云石石粉致实测 K2O 跌至 55.8% (&lt; 60.0%)，或用枸溶性磷原矿粉冒充水溶性磷 (占比 &lt; 90%) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="frt_cak_422">🚨 漏涂防结块胺油且含水率 1.4% (&gt; 0.5%) 致海运底层散货硬结成块，或颗粒抗压碎力 19N (&lt; 35N) 粉尘率超标拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="frt_cdm_451">🛑 沉积磷矿伴生致癌重金属镉 Cd = 58 mg/kg P2O5 (&gt; 20 mg/kg 违反欧盟 EU 2019/1009) 或混入受制裁矿源钾肥：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="frt_bbl_409">🧑‍⚖️ Web IQ 将散船大颗粒红钾与二铵直连港口散装掺混塔 (Bulk Blending) 按测土配方散混下乡省去袋装溢价立省 $34,000.00 (净付 $226,000.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="frt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -23352,6 +23486,7 @@ function renderAll() {{
   updateGeothermalEgsEnthalpySandbox();
   updateSubseaHvdcCableSandbox();
   updateIndustrialSteamDrynessSandbox();
+  updatePotashPhosphateFertilizerSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -28798,6 +28933,55 @@ function updateIndustrialSteamDrynessSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 在线干度 (x &gt;=0.97) + 40 kHz 疏水阀零漏汽 + 凝结水回水冲抵达标：已自动清算 (VERIFIED_DRY_INDUSTRIAL_STEAM_NET_GJ_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零湿蒸汽把热水当汽卖、零疏水阀常开漏气</strong>：化工园区工业蒸汽月度净吉焦（Net GJ）账单已完成结算（<code>$155,000.00</code>）！" +
+    "</div>";
+}}
+
+function updatePotashPhosphateFertilizerSandbox() {{
+  var selEl = document.getElementById("frt-select");
+  var outEl = document.getElementById("frt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "frt_grd_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 NUTRIENT_GRADE_DEFICIT_OR_FILLER_ADULTERATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "卸船漏斗皮带 <code>在线激光诱导击穿光谱仪 (LIBS) 与自动缩分 ICP-OES</code> 实测显示，该批红钾混入了染红的白云石石粉，有效氧化钾仅 <code>K2O = 55.8% &lt; 60.0%</code>，或磷铵中水溶性磷占比低于 90%（<code>libs_icp_nutrient_grade_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$260,000.00</code> 掺假化肥货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "frt_cak_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HYGROSCOPIC_CAKING_OR_GRANULE_CRUSH_FAILURE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "自动颗粒力学仪检出单粒抗压碎力仅 <code>19 N &lt; 35 N</code> 且游离水分达 <code>1.4% &gt; 0.5%</code>，海运底层散货已发生严重重结晶硬结块且粉尘率 &gt;8%，会卡死气吹式精准施肥机（<code>anti_caking_moisture_and_crush_strength_passed == False</code>）。网关在 <code>14ms</code> 内拦截并拒收结块批次！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "frt_cdm_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HEAVY_METAL_CADMIUM_OR_SANCTIONED_ORIGIN_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 ICP-MS 痕量重金属报告与欧盟肥料法规（<code>Regulation EU 2019/1009</code>），检出磷肥伴生重金属镉高达 <code>Cd = 58 mg/kg P2O5 &gt; 20 mg/kg</code> 或涉及受制裁钾肥矿源转港洗白，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "frt_bbl_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PORT_BULK_BLENDING_SOIL_FORMULA_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 连通灌区土壤遥感测土配方库与港口全自动散装掺混塔（<code>Bulk Blending, BB 肥站</code>），将散船大颗粒红钾（MOP）与二铵（DAP）在卸港漏斗直接按配方散混装罐车直供农场，省去高溢价小袋复混造粒费 <code>$34,000.00</code>（净付降至 <code>$226,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 皮带在线 LIBS 品位 (K2O &gt;=60%) + 颗粒抗压 (&gt;=35N) + 低镉 (Cd &lt;=20 mg/kg) 达标：已自动清算 (VERIFIED_POTASH_PHOSPHATE_FERTILIZER_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零白云石石粉掺假、零海运吸潮硬结块</strong>：大宗进口钾肥与磷肥批次已完成纯有效养分结算（<code>$260,000.00</code>）！" +
     "</div>";
 }}
 

@@ -7095,6 +7095,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("industrial-steam-dryness-sandbox", demo_zh)
 
+    def test_potash_phosphate_fertilizer_k2o_cadmium_caking_mandate_vs_dolomite_filler_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_potash_phosphate_fertilizer_policy,
+        )
+
+        # 1. Verified conveyor LIBS K2O >=60% + water-soluble P2O5 + crush >=35N + Cd <=20 -> 200 OK ($260,000)
+        commit_ok = evaluate_potash_phosphate_fertilizer_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_fertilizer_cents, 26000000)
+
+        # 2. Dolomite filler adulteration (K2O < 60%) or low water-soluble P2O5 -> 403 blocked in 11ms
+        grd_403 = evaluate_potash_phosphate_fertilizer_policy(
+            libs_icp_nutrient_grade_verified=False,
+        )
+        self.assertFalse(grd_403.allowed)
+        self.assertEqual(grd_403.http_status, 403)
+        self.assertEqual(
+            grd_403.fertilizer_lane,
+            "NUTRIENT_GRADE_DEFICIT_OR_FILLER_ADULTERATION_BLOCKED",
+        )
+
+        # 3. Ocean-transit hygroscopic hold caking or granule crush < 35N -> 422 blocked in 14ms
+        cak_422 = evaluate_potash_phosphate_fertilizer_policy(
+            anti_caking_moisture_and_crush_strength_passed=False,
+        )
+        self.assertFalse(cak_422.allowed)
+        self.assertEqual(cak_422.http_status, 422)
+        self.assertEqual(
+            cak_422.fertilizer_lane,
+            "HYGROSCOPIC_CAKING_OR_GRANULE_CRUSH_FAILURE_BLOCKED",
+        )
+
+        # 4. Web IQ detects cadmium Cd > 20 mg/kg P2O5 or sanctioned potash origin -> 451 blocked in 290ms
+        cdm_451 = evaluate_potash_phosphate_fertilizer_policy(
+            webiq_cadmium_cap_and_origin_sanction_clean=False,
+        )
+        self.assertFalse(cdm_451.allowed)
+        self.assertEqual(cdm_451.http_status, 451)
+
+        # 5. Web IQ routes bulk MOP + DAP to port Bulk-Blending tower saving $34,000 ($226,000 net) -> 409 Confirm
+        bbl_409 = evaluate_potash_phosphate_fertilizer_policy(
+            port_bulk_blending_soil_formula_savings_cents=3400000,
+        )
+        self.assertFalse(bbl_409.allowed)
+        self.assertEqual(bbl_409.http_status, 409)
+        self.assertEqual(bbl_409.settled_fertilizer_cents, 22600000)
+        self.assertEqual(bbl_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["potash_fertilizer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("potash-phosphate-fertilizer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

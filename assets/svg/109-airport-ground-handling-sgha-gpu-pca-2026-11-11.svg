@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg109" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061224"/>
+      <stop offset="50%" stop-color="#10213B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent109" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg109" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#132846"/>
+      <stop offset="100%" stop-color="#091526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg109)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent109)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#1E3A8A" stroke="#60A5FA" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DBEAFE" text-anchor="middle">
+    ROUND 107 · AIRPORT GROUND HANDLING (IATA SGHA) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    机场地面代理与过站保障 (IATA SGHA)、400Hz 岸电/桥载空调与延误归因智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    400Hz GPU / PCA Hookup Telemetry (&lt;=3 min Post-Chocks), Turnaround Vision Milestones &amp; Delay Code (31-39) vs. APU Fuel Overbilling
+  </text>
+
+  <!-- Left Card: Legacy SGHA Blanket Billing & APU Burn Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg109)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按架次打包盲付与 APU 烧油踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 桥载电源/空调 (GPU/PCA) 迟接致 APU 狂烧航油</text>
+    <text x="58" y="224" fill="#CBD5E1">• 飞机挡轮挡后 35 分钟未插桥载电源，收走 $92,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 宽体机被迫开 APU 烧掉 600kg 航油并触发机场碳罚单</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 地服装卸迟到却篡改 IATA 延误代码甩锅空管</text>
+    <text x="58" y="294" fill="#CBD5E1">• 行李传送带车与牵引车晚到 28 分钟 (实为 Code 32/35)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 地面代理手填 Code 81 (空管流控) 逃避 SLA 违约扣款</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 缺失 ISAGO 安全认证或廊桥/升降车刮碰蒙皮</text>
+    <text x="58" y="364" fill="#CBD5E1">• 外包地服无 IATA ISAGO 资质或高空车未触发防撞限速</text>
+    <text x="58" y="382" fill="#CBD5E1">• 刮伤碳纤维机身隐瞒不报，引发数百万美元 AOG 停飞</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$92,000 虚报保障费 + APU 航油与延误索赔
+  </text>
+
+  <!-- Center Card: 4-Layer Airport Turnaround Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg109)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#1E3A8A"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#DBEAFE" text-anchor="middle">
+    ⚡ 400Hz 岸电遥测 + 机坪视觉里程碑 + Web IQ 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 400Hz GPU 与 PCA 桥载空调遥测 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    挡轮挡后 &gt;3 min 未供电供冷致 APU 烧油或虚报接电时长 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 GPU_PCA_HOOKUP_FAILURE_OR_APU_FUEL_BURN_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 机坪 AI 视觉时间戳与 IATA Code 31-39 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    装卸车/推出牵引车迟到却伪造 Code 81 空管流控免责 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 RAMP_HANDLING_DELAY_CODE_MISATTRIBUTION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ ISAGO 审计与 GSE 防撞遥测 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    地服缺失 IATA ISAGO 认证或特种车超速接触飞机安全红线 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 ISAGO_SAFETY_AUDIT_OR_GSE_PROXIMITY_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 电动无杆抱轮牵引车 (TaxiBot) 套利 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    调度电动抱轮车关发滑行 + 自动代扣首件行李逾限罚金 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $14,200 ($77,800 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $92,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg109)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 107)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 准点保障与 400Hz 岸电达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$92,000.00</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 桥载电源/空调未接致 APU 烧油拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截虚报账单：$92,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 篡改 IATA 延误代码 (32改81) 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 还原机坪 AI 视觉真实责任方</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 电动抱轮滑行与 SLA 抵扣 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$14,200.00 (15.4% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  128 / 128 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    秒级锁定过站 18 个动作节点，终结地服甩锅与烧油黑洞
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按月度“固定架次打包费”盲付机场地面代理 (SGHA) 账单！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 挡轮挡 (On-Block) 后 &lt;=3 分钟接入 400Hz GPU 与 PCA 桥载空调且 APU 关车 (11ms 拦 403)；② 机坪计算机视觉校验 Code 31-39 地服延误防甩锅 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 IATA ISAGO 安全审计与特种车防撞遥测 (285ms 拦 451)，并联动电动抱轮牵引车 (TaxiBot) 关发滑行与 SLA 自动抵扣立省 $14,200 (295ms)。
+  </text>
+</svg>
