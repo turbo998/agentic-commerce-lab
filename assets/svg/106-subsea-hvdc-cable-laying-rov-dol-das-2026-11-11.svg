@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg106" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051324"/>
+      <stop offset="50%" stop-color="#0C223B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent106" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="50%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg106" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112740"/>
+      <stop offset="100%" stop-color="#081526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg106)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent106)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 104 · SUBSEA HVDC CABLE LAYING &amp; ROV BURIAL ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    海底高压海缆铺设 (Subsea HVDC)、ROV 实测埋深 (&gt;=1.5m) 与光纤弯曲半径智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    ROV TSS-440 Depth-of-Lowering (DoL &gt;=1.5m), Brillouin BOTDR Strain/MBR &amp; AIS Anchor-Drag Guard vs. Shallow-Burial Strike Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Plow-Log & Shallow Exposure Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg106)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统凭犁刀深度日志盲付与拖锚断缆踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 冲埋犁遇硬粘土“跳犁 (Plow Skip)”致海缆裸露</text>
+    <text x="58" y="224" fill="#CBD5E1">• 铺缆船交完进度表收走 $420,000 里程碑款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 实际埋深仅 0.3m 甚至悬空 (Free-Span)，遭拖网/船锚拉断</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 下水张力失控致最小弯曲半径 (MBR) 折损绝缘</text>
+    <text x="58" y="294" fill="#CBD5E1">• 船尾溜槽过弯半径 &lt; 3.5m MBR 或拉应力 &gt; 120 kN</text>
+    <text x="58" y="312" fill="#CBD5E1">• 铅护套微裂纹与 XLPE 绝缘树枝放电，投运半年击穿</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 缺失海底未爆弹 (UXO) 扫测或禁锚区 AIS 航警</text>
+    <text x="58" y="364" fill="#CBD5E1">• 路由穿过二战水雷磁异常区或未发 NtM 航海通告</text>
+    <text x="58" y="382" fill="#CBD5E1">• 海事保险拒赔 (单次海上打捞重接损失 &gt;$18M)</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$420,000 假埋深工程款 + $1,800万断缆抢修
+  </text>
+
+  <!-- Center Card: 4-Layer Subsea Cable Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg106)" stroke="#0EA5E9" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ ROV 电磁测深 + BOTDR 光纤应变 + Web IQ 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · ROV TSS-440 实测埋深 (DoL &gt;=1.5m · 12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    冲埋后 ROV 复测埋深 &lt; 1.5m 或存在海底悬空段 (Free-Span) →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SHALLOW_BURIAL_DEPTH_OR_FREE_SPAN_EXPOSURE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · BOTDR 分布式光纤应变与弯曲半径 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    弯曲半径 &lt; 3.5m MBR、光纤微应变 &gt; 1,500 με 或耐压失败 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 MBR_OVERBEND_STRAIN_OR_HV_SOAK_FAILURE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 海底未爆弹 (UXO) 与 NtM 航警 (295ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    缺失 ALARP 未爆弹清障证书或海事局 NtM 禁锚区通告 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 UXO_CLEARANCE_OR_NTM_PROTECTION_ZONE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 浅埋段精准抛石替代二次租船 (305ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    120m 花岗岩基岩段改用落管船精准抛石保护替代重犁并扣减 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 扣减 $58,000 ($362,000 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 21ms 自动清算 $420,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg106)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 104)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 全线埋深 &gt;=1.5m 与光纤零过弯放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：21 ms · 放款：$420,000.00</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 跳犁浅埋 (&lt;1.5m) 或悬空段拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：12 ms · 拦截虚报款：$420,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• BOTDR 弯曲半径折损/光纤超应变拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：15 ms · 锁定敷设船机械扭折责任</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 基岩段精准抛石 (Rock Dumping) 折让 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：305 ms · 节省：$58,000.00 (13.8% 扣减)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  125 / 125 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    杜绝全球海缆 80% 故障根源：浅埋裸露遭船锚拉断
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要凭铺缆船“冲埋犁滑靴角度传感器日志”就结清海缆敷设与冲埋尾款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 独立 ROV TSS-440 电磁探测与多波束声呐实测埋深 DoL &gt;=1.5m 且零悬空 (12ms 拦 403)；② 布里渊光时域反射仪 (BOTDR) 弯曲半径 &gt;=3.5m MBR 且应变 &lt;=1,500 με (15ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 UXO 未爆弹清障证书与海事局 NtM 禁锚通告 (295ms 拦 451)，并对海底基岩浅埋段自动核算落管船精准抛石 (Rock Placement) 扣减方案 (305ms 省 $58,000)。
+  </text>
+</svg>

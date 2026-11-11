@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg105" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#08131D"/>
+      <stop offset="50%" stop-color="#0F202D"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent105" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg105" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#152535"/>
+      <stop offset="100%" stop-color="#0B1622"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg105)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent105)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="380" height="28" rx="14" fill="#7C2D12" stroke="#F97316" stroke-width="1"/>
+  <text x="230" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ROUND 103 · DEEP GEOTHERMAL &amp; EGS DRILLING ENTHALPY ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    深层地热与增强型地热 (EGS) 钻完井、两相流比焓 (&gt;=1,650 kJ/kg) 与微震交通灯智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    James Lip-Pressure Orifice Enthalpy, Inter-Well Naphthalene Tracer Breakthrough &amp; Seismic TLS (ML &lt;=2.0) vs. Dry-Hole Footage Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Footage & Cold Short-Circuit Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg105)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按钻井米数盲付与水力短流踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 按钻井进尺 (Footage) 盲付打成无产干井</text>
+    <text x="58" y="224" fill="#CBD5E1">• 钻井承包商打够 4,200 米收走 $380,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 井口 30 天流测比焓仅 980 kJ/kg (推不动汽轮机)</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. EGS 单一断层通道冷水热突破 (Short-Circuit)</text>
+    <text x="58" y="294" fill="#CBD5E1">• 回灌冷水未经过微裂隙换热网，36h 直穿生产井</text>
+    <text x="58" y="312" fill="#CBD5E1">• 芳香族磺酸盐示踪剂滞留 &lt; 120h，热储极速冷却报废</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 盲目高压压裂诱发有感微震 (ML &gt; 2.0) 关停</text>
+    <text x="58" y="364" fill="#CBD5E1">• 压裂车超压盲打触发 ML 2.6 微震红灯或硅垢结垢</text>
+    <text x="58" y="382" fill="#CBD5E1">• 监管局吊销采矿许可，千万美元热田项目流产</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$380,000 废井进尺款 + 诱发地震永久关停
+  </text>
+
+  <!-- Center Card: 4-Layer Geothermal Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg105)" stroke="#F97316" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#7C2D12"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ⚡ 两相流比焓 + 示踪滞留 + 微震 TLS 托管引擎
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F97316" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDBA74">
+    Gate 1 · James 唇压孔板比焓 (&gt;=1,650 kJ/kg · 12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    30天放喷测试净发电功率 &lt; 8.0 MWe 或仅按米数请款 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SUB_COMMERCIAL_ENTHALPY_OR_FOOTAGE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 萘磺酸盐示踪剂滞留 (&gt;=120h) 与不凝气 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    井间冷水短流突破 (&lt;120h) 或 NCG (CO2/H2S) &gt; 1.5 wt% →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 THERMAL_SHORT_CIRCUIT_OR_HIGH_NCG_SCALING_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 微震交通灯系统 (TLS ML &lt;=2.0 · 295ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    USGS/局网检出压裂诱发微震 ML &gt; 2.0 触发红灯泄压停泵 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 SEISMIC_TRAFFIC_LIGHT_RED_ZONE_REGULATORY_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 尾水直接锂提取 (DLE) 副产套利 (305ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    75°C 回灌卤水接入 DLE 吸附提锂 (Li+ 180 mg/L) 冲抵成本 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $52,000 ($328,000 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 21ms 自动清算 $380,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg105)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 103)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 井口热焓与产汽达标放款 (200 OK)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：21 ms · 放款：$380,000.00 (8.5 MWe 达标)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 低焓废井/按进尺米数盲请款拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：12 ms · 拦截虚高款：$380,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 井间冷水短流突破 (&lt;120h) 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：15 ms · 强令下入膨胀封隔器堵漏调剖</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 地热卤水直接提锂 DLE 套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：305 ms · 节省：$52,000.00 (13.7% 抵扣)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  124 / 124 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    24/7 零碳地热基荷：按兆瓦热焓结算，杜绝干井亏损
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDBA74">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“钻头打了多少米 (Drilling Footage)”给地热承包商结清尾款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 30天放喷测试比焓 &gt;=1,650 kJ/kg 且净电出力 &gt;=8.0 MWe (12ms 拦 403)；② 萘磺酸盐示踪剂平均滞留时间 &gt;=120h 防冷水短流且 NCG &lt;=1.5 wt% (15ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 实时核查深井微震交通灯系统 (TLS ML &lt;=2.0, 295ms 拦 451)，并将 75°C 回灌卤水直连直接锂提取 (DLE) 副产电池级碳酸锂 (305ms 省 $52,000)。
+  </text>
+</svg>

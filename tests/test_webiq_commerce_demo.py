@@ -6927,6 +6927,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("timber-3d-scaling-sandbox", demo_zh)
 
+    def test_geothermal_egs_drilling_enthalpy_wellhead_seismicity_mandate_vs_footage_short_circuit_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_geothermal_egs_drilling_enthalpy_policy,
+        )
+
+        # 1. Verified 30-day enthalpy >=1,650 kJ/kg + net >=8.0 MWe + tracer >=120h + TLS <=2.0 -> 200 OK ($380,000)
+        commit_ok = evaluate_geothermal_egs_drilling_enthalpy_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_geothermal_cents, 38000000)
+
+        # 2. Footage-only claim on tight hole or enthalpy < 1,650 kJ/kg -> 403 blocked in 12ms
+        ent_403 = evaluate_geothermal_egs_drilling_enthalpy_policy(
+            wellhead_enthalpy_and_mwe_verified=False,
+        )
+        self.assertFalse(ent_403.allowed)
+        self.assertEqual(ent_403.http_status, 403)
+        self.assertEqual(
+            ent_403.geothermal_lane,
+            "SUB_COMMERCIAL_ENTHALPY_OR_FOOTAGE_BLOCKED",
+        )
+
+        # 3. 36h cold-water thermal short-circuit (<120h) or NCG > 1.5 wt% -> 422 blocked in 15ms
+        trc_422 = evaluate_geothermal_egs_drilling_enthalpy_policy(
+            interwell_tracer_residence_and_ncg_passed=False,
+        )
+        self.assertFalse(trc_422.allowed)
+        self.assertEqual(trc_422.http_status, 422)
+        self.assertEqual(
+            trc_422.geothermal_lane,
+            "THERMAL_SHORT_CIRCUIT_OR_HIGH_NCG_SCALING_BLOCKED",
+        )
+
+        # 4. Web IQ detects induced seismicity ML > 2.0 breaching TLS Red Zone -> 451 blocked in 295ms
+        tls_451 = evaluate_geothermal_egs_drilling_enthalpy_policy(
+            webiq_seismic_tls_and_uic_permit_clean=False,
+        )
+        self.assertFalse(tls_451.allowed)
+        self.assertEqual(tls_451.http_status, 451)
+
+        # 5. Web IQ routes 75°C lithium-rich brine to DLE skid saving $52,000 ($328,000 net) -> 409 Confirm
+        dle_409 = evaluate_geothermal_egs_drilling_enthalpy_policy(
+            dle_lithium_brine_valorization_savings_cents=5200000,
+        )
+        self.assertFalse(dle_409.allowed)
+        self.assertEqual(dle_409.http_status, 409)
+        self.assertEqual(dle_409.settled_geothermal_cents, 32800000)
+        self.assertEqual(dle_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["geothermal_egs_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("geothermal-egs-enthalpy-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

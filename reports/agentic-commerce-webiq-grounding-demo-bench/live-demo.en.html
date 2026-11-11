@@ -2646,6 +2646,24 @@
         <div id="tmb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Deep Geothermal & EGS Drilling, Two-Phase Enthalpy & Seismic TLS Mandate Sandbox (Round 103 FAQ Companion) -->
+      <div class="finops-box" id="geothermal-egs-enthalpy-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-geo-title">🌋 深层地热与增强型地热 (Deep Geothermal &amp; EGS) 钻完井、井口两相流比焓 (&gt;=1,650 kJ/kg) 与微震交通灯 (TLS ML &lt;=2.0) 架构：热焓与示踪滞留令牌 (geothermal_egs_mandate_...) vs 按进尺米数盲付决策器 (Round 103 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智算中心 24/7 基荷深层 EGS 地热井组完井交割 ($380,000.00)、30天井口两相流比焓、萘磺酸盐示踪滞留时间与 Web IQ 微震交通灯/尾水直接提锂 (DLE) 场景 (Geothermal EGS Scenario):</span></label>
+          <select id="geo-select" onchange="updateGeothermalEgsEnthalpySandbox()">
+            <option value="geo_commit_ok">⚡ 30天放喷比焓 1,780 kJ/kg (&gt;=1,650) + 净出力 8.5 MWe + 示踪平均滞留 168h (&gt;=120h) + 微震 ML 1.3 (&lt;=2.0)：21ms 自动结算 $380,000.00! (Act automatically)</option>
+            <option value="geo_ent_403">🛑 钻井商仅凭打满 4,200m 进尺请款但未钻遇裂隙 (比焓仅 980 kJ/kg / 净出力 2.1 MWe &lt; 8.0 MWe 低焓干井) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="geo_trc_422">🚨 注入井冷水沿单一断层 36h 直接窜流至生产井 (示踪滞留 &lt; 120h 热突破) 或不凝气 NCG 3.8 wt% (&gt;1.5%) 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="geo_tls_451">🛑 水力压裂诱发有感微震 ML 2.4 (&gt; 2.0 红灯阈值) 触碰矿业局微震交通灯 (TLS) 停工令：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="geo_dle_409">🧑‍⚖️ Web IQ 将 75°C 含锂回灌卤水 (Li+ 210 mg/L) 接入井口直接锂提取 (DLE) 吸附塔副产电池级锂盐立省 $52,000.00 (净付 $328,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="geo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3187,6 +3205,7 @@ function renderAll() {
   updateHeavyRiggingShocklogSandbox();
   updatePowerTransformerSfraSandbox();
   updateTimber3dScalingSandbox();
+  updateGeothermalEgsEnthalpySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8486,6 +8505,55 @@ function updateTimber3dScalingSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 3D 激光去皮净尺 (JAS Under-Bark) + 应力波零心腐 + EUDR 多边形达标：已自动清算 (VERIFIED_3D_LASER_UNDER_BARK_TIMBER_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零树皮充实木水分、零空心烂木蒙混</strong>：大宗进口锯材原木批次已按实测净出材体积完成结算（<code>$175,000.00</code>）！" +
+    "</div>";
+}
+
+function updateGeothermalEgsEnthalpySandbox() {
+  var selEl = document.getElementById("geo-select");
+  var outEl = document.getElementById("geo-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "geo_ent_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SUB_COMMERCIAL_ENTHALPY_OR_FOOTAGE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "生产井口 30 天连续放喷测试（<code>James 唇压孔板与气液分离器</code>）实测显示，虽然钻井深度达到 4,200m，但两相流比焓仅 <code>980 kJ/kg &lt; 1,650 kJ/kg</code>、折算净发电出力仅 <code>2.1 MWe &lt; 8.0 MWe</code>（<code>wellhead_enthalpy_and_mwe_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断仅凭钻井进尺米数请款的 <code>$380,000.00</code> 完井尾款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "geo_trc_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 THERMAL_SHORT_CIRCUIT_OR_HIGH_NCG_SCALING_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "井间 1,5-萘二磺酸盐高温荧光示踪剂检出注入井冷水在 <code>36 小时 &lt; 120 小时</code> 内沿单一主断层直接窜流至生产井（发生严重热突破），或蒸汽中不凝性气体（<code>NCG = 3.8 wt% &gt; 1.5 wt%</code>）超标（<code>interwell_tracer_residence_and_ncg_passed == False</code>）。网关在 <code>15ms</code> 内拦截尾款并强令下入膨胀封隔器堵漏调剖！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "geo_tls_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SEISMIC_TRAFFIC_LIGHT_RED_ZONE_REGULATORY_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 实时核查深井微震检波器台网（<code>Seismic Traffic-Light System, TLS</code>），检出水力压裂诱发有感微震 <code>ML 2.4 &gt; 2.0</code> 触碰红灯停工阈值，立即冻结资金并联动井口开启泄压回流（Bleed-off）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "geo_dle_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DLE_GEOTHERMAL_BRINE_LITHIUM_CO_PRODUCT_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出 75°C 回灌地热卤水中富含锂离子（<code>Li+ = 210 mg/L &gt;= 180 mg/L</code>），自动匹配井口直接锂提取（<code>DLE 铝系吸附撬块</code>）电池级氯化锂包销协议冲抵完井成本，单井立省 <code>$52,000.00</code>（净付降至 <code>$328,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 30天放喷比焓 (&gt;=1,650 kJ/kg) + 示踪滞留 (&gt;=120h) + 微震 TLS (&lt;=2.0) 达标：已自动清算 (VERIFIED_GEOTHERMAL_EGS_ENTHALPY_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零干井进尺盲付、零冷水短流热衰</strong>：智算中心 24/7 基荷深层 EGS 地热井组完井款已完成结算（<code>$380,000.00</code>）！" +
     "</div>";
 }
 
