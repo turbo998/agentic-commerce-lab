@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg100" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061418"/>
+      <stop offset="50%" stop-color="#0c2830"/>
+      <stop offset="100%" stop-color="#123d4a"/>
+    </linearGradient>
+    <linearGradient id="accent100" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg100)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#091d24" stroke="#10b981" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent100)"/>
+
+  <text x="60" y="72" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 98 · DERMS SMART INVERTER (IEEE 2030.5 / 1547), VOLT-VAR &amp; CURTAILMENT MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">分布式光伏与虚拟电厂 (DERMS)、IEEE 1547 无功稳压 (Volt-VAR) 与防逆流托管 vs 过压脱网盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">IEEE 1547 Volt-VAR Reactive Absorption (&lt;=1.05 p.u.) + 4-Quadrant PCC Meter + Dynamic Envelope vs. Overvoltage Trip</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统纯有功满发 (cosφ=1) 致午间过电压脱网与虚报模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 正午阳光最强时反而跳闸停机：未开启 Volt-VAR 吸收感性无功，并网点电压冲破 253V (1.10 p.u.) 脱网</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 逆变器云平台自报电量虚高 6.5%：拿未校准的逆变器内部估算值收电费，忽略箱变与线损</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 负电价时段反送电网倒贴罚款：午间现货电价跌至 -$45/MWh 仍盲目向公共电网倒送有功功率</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 触发配变防逆流保护整站拉闸：周末园区负荷骤降时未动态限功率，导致供电局高压开关跳闸罚款</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型工商业屋顶光伏 EMC 合同能源管理 / 虚拟电厂聚合资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">园区 Agent 按逆变器 App 读数支付 $86,000 月度光伏 PPA 电费，不仅多付 6.8% 线损水分，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">且因逆变器未吸收无功导致正午频繁过压脱网、周末反送电被供电局处以 $15,000 功率因数与越限罚款</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 过压跳闸损失拦截：0% | • 逆变器虚高电量剔除：0% | • 负电价倒贴风险：极高</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ IEEE 1547 无功稳压 + 四象限关口表 + 负电价消纳托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• IEEE 1547 Volt-VAR 四象限无功吸收门禁：正午自动吸收感性无功把电压压在 &lt;=1.05 p.u. 零脱网</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 并网点 (PCC) 0.2S 四象限双向电表结算：剔除逆变器内部自报 +6.5% 水分与升压箱变损耗</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• IEEE 2030.5 动态运行包络 (DOE) 与 PKI 证书核验：Web IQ 核查配电网柔性防逆流限额</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 午间负电价转园区冷水机组预冷/重卡快充 + 无功辅助服务补贴套利：立省 $19,500</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断未开启 Volt-VAR 导致过压跳闸或周末违规反送电的违约账单；14ms 拦截逆变器</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">云平台虚报发电量；Web IQ 午间负电价就地消纳 (空调蓄冷/充电) 与无功补偿立省 $19,500（净付 $66.5k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 正午过压脱网率：0% | • 关口表计量对齐：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0d2630" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">分布式光伏与虚拟电厂 Agent 绝不能按逆变器 App 读数盲付！必须绑定【PCC 四象限电表 + Volt-VAR 稳压 + 防逆流】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_derms_smart_inverter_volt_var_policy`) · IEEE 1547-2018 &amp; IEEE 2030.5 · 2026-11-11</text>
+</svg>

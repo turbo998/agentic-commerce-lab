@@ -6647,6 +6647,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ocean-container-street-turn-sandbox", demo_zh)
 
+    def test_derms_smart_inverter_ieee2030_5_volt_var_curtailment_mandate_vs_overvoltage_trip_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_derms_smart_inverter_volt_var_policy,
+        )
+
+        # 1. Verified IEEE 1547 Volt-VAR + sealed PCC 0.2S meter + utility PF >=0.95 -> 200 OK ($86,000)
+        commit_ok = evaluate_derms_smart_inverter_volt_var_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_derms_cents, 8600000)
+
+        # 2. Unity cos-phi=1 causing midday overvoltage trip or utility low-PF penalty -> 403 blocked in 11ms
+        vvr_403 = evaluate_derms_smart_inverter_volt_var_policy(
+            volt_var_reactive_support_and_pf_verified=False,
+        )
+        self.assertFalse(vvr_403.allowed)
+        self.assertEqual(vvr_403.http_status, 403)
+        self.assertEqual(
+            vvr_403.derms_lane,
+            "UNITY_PF_OVERVOLTAGE_TRIP_OR_UTILITY_PF_PENALTY_BLOCKED",
+        )
+
+        # 3. Inverter-app +6.5% ghost kWh inflation over sealed PCC 0.2S revenue meter -> 422 blocked in 14ms
+        pcc_422 = evaluate_derms_smart_inverter_volt_var_policy(
+            pcc_02s_revenue_meter_net_kwh_passed=False,
+        )
+        self.assertFalse(pcc_422.allowed)
+        self.assertEqual(pcc_422.http_status, 422)
+        self.assertEqual(
+            pcc_422.derms_lane,
+            "INVERTER_APP_GHOST_KWH_TRANSFORMER_LOSS_INFLATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects IEEE 2030.5 DOE export breach or negative-LMP reverse backfeed -> 451 blocked in 295ms
+        doe_451 = evaluate_derms_smart_inverter_volt_var_policy(
+            webiq_ieee2030_5_doe_and_negative_lmp_clean=False,
+        )
+        self.assertFalse(doe_451.allowed)
+        self.assertEqual(doe_451.http_status, 451)
+
+        # 5. Web IQ routes curtailed midday solar to HVAC chiller pre-cooling & EV charging saving $19,500 ($66,500 net) -> 409 Confirm
+        thrm_409 = evaluate_derms_smart_inverter_volt_var_policy(
+            midday_thermal_precool_and_var_credit_savings_cents=1950000,
+        )
+        self.assertFalse(thrm_409.allowed)
+        self.assertEqual(thrm_409.http_status, 409)
+        self.assertEqual(thrm_409.settled_derms_cents, 6650000)
+        self.assertEqual(thrm_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["derms_volt_var_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("derms-smart-inverter-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

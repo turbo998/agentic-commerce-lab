@@ -570,6 +570,11 @@
     "container_settlement_latency_ms": 20,
     "mr_gouging_block_latency_ms": 11
   },
+  "derms_volt_var_guards": {
+    "all_passed": true,
+    "derms_settlement_latency_ms": 20,
+    "overvoltage_pf_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

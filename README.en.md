@@ -129,6 +129,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 95 (Semiconductor Ultrapure Water UPW BOO, Point-of-Use TOC/DO <=1.0 ppb & Boron/Colloidal-Silica Resin-Breakthrough Escrow vs. 18.2 MOhm-cm Resistivity-Only Overbilling)**: **[Semiconductor Ultrapure Water (UPW BOO), Point-of-Use TOC/DO ($\le 1.0\text{ ppb}$) & Boron/Colloidal-Silica Resin-Breakthrough Escrow vs. $18.2\text{ M}\Omega\cdot\text{cm}$ Resistivity-Only Overbilling: Architecture Selection & First-Principles FAQ](docs/semiconductor-upw-ultrapure-water-toc-boron-nanoparticle-mandate-vs-resin-breakthrough-wafer-scrap-faq.en.md)**
 - **Topic 96 (Aviation De-Icing & Anti-Icing SAE AMS 1424 Type I / AMS 1428 Type IV, Inline Brix Refractometer 10C LOUT Buffer & Holdover-Time HOT Escrow vs. Diluted-Fluid Overbilling)**: **[Aviation De-Icing & Anti-Icing (SAE AMS 1424 Type I / AMS 1428 Type IV), Inline Brix Refractometer ($10^\circ\text{C}$ LOUT Buffer) & Holdover-Time (HOT) Escrow vs. Diluted-Fluid Overbilling: Architecture Selection & First-Principles FAQ](docs/aviation-deicing-glycol-brix-refractometer-holdover-mandate-vs-diluted-fluid-overbilling-faq.en.md)**
 - **Topic 97 (Ocean Container Street-Turn Triangulation, Gate-Out/In 3D Vision IICL-6 Damage-Diff & M&R Anti-Gouging Escrow vs. Empty-Repositioning Overbilling)**: **[Ocean Container Street-Turn Triangulation, Gate-Out/In 3D Vision IICL-6 Damage-Diff & M&R Anti-Gouging Escrow vs. Empty-Repositioning Overbilling: Architecture Selection & First-Principles FAQ](docs/ocean-container-street-turn-iicl6-damage-csc-mandate-vs-empty-repositioning-mr-gouging-faq.en.md)**
+- **Topic 98 (DERMS Smart Inverter IEEE 2030.5 / IEEE 1547, Volt-VAR Reactive Support & Dynamic Curtailment Escrow vs. Overvoltage-Trip & Inverter-App Overbilling)**: **[DERMS Smart Inverter (IEEE 2030.5 / IEEE 1547), Volt-VAR Reactive Support & Dynamic Curtailment Escrow vs. Overvoltage-Trip & Inverter-App Overbilling: Architecture Selection & First-Principles FAQ](docs/derms-smart-inverter-ieee2030-5-volt-var-curtailment-mandate-vs-overvoltage-trip-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -323,6 +324,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Aviation De-Icing (Type I / IV Glycol), Brix Refractometer & Holdover Mandate Visual Summary](assets/svg/98-aviation-deicing-glycol-brix-2026-11-11.svg)
 
 ![2026-11-11 Ocean Container Street-Turn, IICL-6 Vision Diff & M&R Anti-Gouging Mandate Visual Summary](assets/svg/99-ocean-container-street-turn-iicl6-2026-11-11.svg)
+
+![2026-11-11 DERMS Smart Inverter (IEEE 2030.5 / 1547), Volt-VAR & Curtailment Mandate Visual Summary](assets/svg/100-derms-smart-inverter-volt-var-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

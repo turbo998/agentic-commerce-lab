@@ -129,6 +129,7 @@
 - **专题 95（半导体晶圆厂超纯水 Semiconductor UPW BOO、POU 在线 TOC/溶解氧与弱电离硼/胶体硅穿漏门禁智能托管 vs 传统仅看 $18.2\text{ M}\Omega\cdot\text{cm}$ 电阻率盲付）**：**[《半导体晶圆厂超纯水（Semiconductor UPW BOO）、POU 在线 TOC/溶解氧与弱电离硼/胶体硅穿漏门禁智能托管 vs 传统仅看 $18.2\text{ M}\Omega\cdot\text{cm}$ 电阻率盲付：架构选型与第一性原理 FAQ》](docs/semiconductor-upw-ultrapure-water-toc-boron-nanoparticle-mandate-vs-resin-breakthrough-wafer-scrap-faq.md)**
 - **专题 96（民航与货运机队冬季航空器除冰/防冰 Aircraft De-Icing SAE Type I / Type IV、喷嘴在线折光仪冰点裕度 Brix LOUT 与保持时间 HOT 智能托管 vs 传统按手抄混合液加仑数盲付）**：**[《民航与货运机队冬季航空器除冰/防冰（Aircraft De-Icing SAE AMS 1424 Type I & AMS 1428 Type IV）、喷嘴在线折光仪冰点裕度（Brix LOUT）与保持时间（HOT）智能托管 vs 传统按手抄混合液加仑数盲付：架构选型与第一性原理 FAQ》](docs/aviation-deicing-glycol-brix-refractometer-holdover-mandate-vs-diluted-fluid-overbilling-faq.md)**
 - **专题 97（海运集装箱内陆套箱重出 Ocean Container Street-Turn、IICL-6 进出闸三维视觉差分验损与修箱防敲诈智能托管 vs 传统堆场旧伤讹诈与双程空跑盲付）**：**[《海运集装箱内陆套箱重出（Ocean Container Street-Turn）、IICL-6 进出闸三维视觉差分验损与修箱防敲诈智能托管 vs 传统堆场旧伤讹诈与双程空跑盲付：架构选型与第一性原理 FAQ》](docs/ocean-container-street-turn-iicl6-damage-csc-mandate-vs-empty-repositioning-mr-gouging-faq.md)**
+- **专题 98（分布式光伏与虚拟电厂 DERMS / IEEE 2030.5 Smart Inverter、Volt-VAR 无功稳压与动态防逆流智能托管 vs 传统正午过压脱网与逆变器虚报盲付）**：**[《分布式光伏与虚拟电厂（DERMS / IEEE 2030.5 Smart Inverter）、Volt-VAR 无功稳压与动态防逆流智能托管 vs 传统正午过压脱网与逆变器虚报盲付：架构选型与第一性原理 FAQ》](docs/derms-smart-inverter-ieee2030-5-volt-var-curtailment-mandate-vs-overvoltage-trip-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -323,6 +324,8 @@
 ![2026-11-11 民航冬季除冰防冰 (Type I/IV)、喷嘴在线折光仪冰点裕度与保持时间智能托管架构一图流](assets/svg/98-aviation-deicing-glycol-brix-2026-11-11.svg)
 
 ![2026-11-11 海运集装箱套箱重出 (Street-Turn)、IICL-6 激光验损与修箱防敲诈智能托管架构一图流](assets/svg/99-ocean-container-street-turn-iicl6-2026-11-11.svg)
+
+![2026-11-11 分布式光伏与虚拟电厂 (DERMS)、IEEE 1547 无功稳压与防逆流智能托管架构一图流](assets/svg/100-derms-smart-inverter-volt-var-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
