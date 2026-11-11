@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg120" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A101E"/>
+      <stop offset="50%" stop-color="#131E35"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent120" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg120" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#172540"/>
+      <stop offset="100%" stop-color="#0B1322"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg120)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent120)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#312E81" stroke="#818CF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0E7FF" text-anchor="middle">
+    ROUND 118 · HIGH-RISE ELEVATOR &amp; ESCALATOR MRO ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    超高层电梯与枢纽扶梯维保 (MRO)、钢丝绳漏磁探伤 (MRT) 与抱闸力矩智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    ISO 4309 Magnetic Rope Testing (LMA &lt;=5%), EN 81-20 Dual-Brake Plunger Micro-Switch &amp; Regenerative Drive vs. Phantom PM Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Phantom PM & Proprietary Lock-In Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg120)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统幽灵签字维保与换绳敲诈踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 5分钟“门口签字走人”幽灵半月保骗取全包费</text>
+    <text x="58" y="224" fill="#CBD5E1">• 维保工在底坑门外贴卡即走，收走 $115,000 维保款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 厅门锁啮合深度 &lt; 7mm 且抱闸铁芯卡涩未清洁致冲顶溜车</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 凭计步器次数强行报废完好曳引钢丝绳/聚氨酯复合带</text>
+    <text x="58" y="294" fill="#CBD5E1">• 原厂固件内置运行满 300万次自动锁死报故障码</text>
+    <text x="58" y="312" fill="#CBD5E1">• 无视钢丝绳内部零断丝实情，强迫业主花天价整梯换绳</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 缺失 ASME A17.1 / EN 81-20 满载下行制动测试</text>
+    <text x="58" y="364" fill="#CBD5E1">• 扶梯附加制动器与梳齿板异物光电联锁被短接屏蔽</text>
+    <text x="58" y="382" fill="#CBD5E1">• 高峰期机场/地铁重载扶梯发生逆行溜梯踩踏惨剧</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$115,000 幽灵维保费 + 溜车冲顶与换绳敲诈
+  </text>
+
+  <!-- Center Card: 4-Layer Elevator & Escalator MRO Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg120)" stroke="#6366F1" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#312E81"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0E7FF" text-anchor="middle">
+    ⚡ ISO 4309 漏磁探伤 + 抱闸微动 + 能量回馈托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#818CF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#C7D2FE">
+    Gate 1 · 轿顶/底坑 UWB 驻留与抱闸间隙 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    未进井道检修模式满 45min 或双抱闸行程微动开关不同步 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 PHANTOM_PM_VISIT_OR_BRAKE_STROKE_ASYMMETRY_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · ISO 4309 曳引绳漏磁探伤 (MRT · 14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    截面积损耗 LMA &gt; 5% 漏检，或对 LMA &lt; 1.5% 好绳强换 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 ROPE_MRT_DEFECT_UNRESOLVED_OR_COUNTER_LOCK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ TSG T7001 / EN 81-20 强检 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    限速器-安全钳联动试验超期或短接厅门回路违章运行 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 GOVERNOR_SAFETY_GEAR_OR_DOOR_JUMPER_BYPASS_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 四象限能量回馈 + 独立维保 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    重载下行势能回馈电网 (省 30% 电) + 免换完好复合钢带 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $18,400 ($96,600 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $115,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg120)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 118)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 真实井道驻留与 MRT 零断丝放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$115,000.00 (LMA 0.8%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 5分钟幽灵打卡或抱闸偏磨拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拒付未进轿顶/底坑假维保</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 计步器强制锁死换好绳敲诈拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 强制按 ISO 4309 漏磁探伤说话</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 四象限势能回馈 + 延寿套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$18,400.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  139 / 139 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住垂直交通乘客人身安全，终结幽灵维保与原厂敲诈
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#C7D2FE">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要凭“纸质半月保签字单”或“主板计步器到期提醒”盲付电梯全包维保与换绳费！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 轿顶/底坑检修开关真实驻留 &gt;=45 min 且双抱闸制动臂气隙/微动开关同步 (11ms 拦 403)；② ISO 4309 钢丝绳漏磁探伤 LMA &lt;=5% (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查限速器-安全钳联动测试与严禁短接门锁回路 (285ms 拦 451)，并结合四象限能量回馈装置与无损探伤免换好钢带立省 $18,400 (295ms)。
+  </text>
+</svg>

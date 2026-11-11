@@ -7711,6 +7711,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("subsea-cathodic-protection-sandbox", demo_zh)
 
+    def test_swro_seawater_desalination_isobaric_erd_boron_sdi_mandate_vs_fouling_power_passthrough_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_swro_seawater_desalination_policy,
+        )
+
+        # 1. Verified normalized SEC <=3.0 kWh/m3 + boron <=0.5 mg/L + balanced LSI -> 200 OK ($230,000)
+        commit_ok = evaluate_swro_seawater_desalination_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_swro_cents, 23000000)
+
+        # 2. Fouled membranes / worn PX rotor spiking SEC > 3.0 kWh/m3 -> 403 blocked in 11ms
+        sec_403 = evaluate_swro_seawater_desalination_policy(
+            isobaric_px_sec_and_sdi_verified=False,
+        )
+        self.assertFalse(sec_403.allowed)
+        self.assertEqual(sec_403.http_status, 403)
+        self.assertEqual(
+            sec_403.swro_lane,
+            "SPECIFIC_ENERGY_CAP_OR_PX_MIXING_BREACH_BLOCKED",
+        )
+
+        # 3. Skipped second-pass NaOH leaving boron > 0.5 mg/L or corrosive negative LSI -> 422 blocked in 14ms
+        brn_422 = evaluate_swro_seawater_desalination_policy(
+            permeate_boron_and_lsi_remineralization_passed=False,
+        )
+        self.assertFalse(brn_422.allowed)
+        self.assertEqual(brn_422.http_status, 422)
+        self.assertEqual(
+            brn_422.swro_lane,
+            "BORON_TOXICITY_OR_CORROSIVE_LSI_WATER_BLOCKED",
+        )
+
+        # 4. Web IQ detects marine outfall salinity plume > +2.0 psu or residual chlorine -> 451 blocked in 285ms
+        out_451 = evaluate_swro_seawater_desalination_policy(
+            webiq_brine_outfall_plume_and_dechlorination_clean=False,
+        )
+        self.assertFalse(out_451.allowed)
+        self.assertEqual(out_451.http_status, 451)
+
+        # 5. Web IQ pipes 70 g/L brine to Chlor-Alkali plant & shifts RO load to off-peak saving $36,800 ($193,200 net) -> 409 Confirm
+        brn_409 = evaluate_swro_seawater_desalination_policy(
+            chlor_alkali_brine_and_tou_storage_savings_cents=3680000,
+        )
+        self.assertFalse(brn_409.allowed)
+        self.assertEqual(brn_409.http_status, 409)
+        self.assertEqual(brn_409.settled_swro_cents, 19320000)
+        self.assertEqual(brn_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["swro_desalination_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("swro-seawater-desalination-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

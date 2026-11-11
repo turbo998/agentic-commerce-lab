@@ -148,6 +148,7 @@
 - **专题 114（高铁与重载铁路大型养路机械道床捣固与钢轨打磨 Rail Ballast Tamping & Grinding、过车 10 万吨后轨检车 TQI EN 13848 $\sigma \le 1.5\text{ mm}$ 与涡流消缺智能托管 vs 传统按走行公里数盲付）**：**[《高铁与重载铁路大型养路机械道床捣固与钢轨打磨（Rail Ballast Tamping & Grinding）、过车 10 万吨后轨检车 TQI（EN 13848 $\sigma \le 1.5\text{ mm}$）与涡流消缺智能托管 vs 传统按走行公里数盲付：架构选型与第一性原理 FAQ》](docs/rail-ballast-tamping-grinding-track-geometry-tqi-mandate-vs-pass-kilometer-overbilling-faq.md)**
 - **专题 115（生物天然气与可再生天然气 RNG / Biomethane 高压管网并网交割、在线 GC-IMS 硅氧烷 $\le 0.1\text{ mg/Nm}^3$ 防燃机结玻与 EPA D3 RIN / LCFS 负碳积分智能托管 vs 传统仅看甲烷流量盲付）**：**[《生物天然气与可再生天然气（RNG / Biomethane）高压管网并网交割、在线 GC-IMS 硅氧烷（$\le 0.1\text{ mg/Nm}^3$）防燃机结玻与 EPA D3 RIN / LCFS 负碳积分智能托管 vs 传统仅看甲烷流量盲付：架构选型与第一性原理 FAQ》](docs/rng-biomethane-pipeline-injection-siloxane-gc-ims-d3-rin-mandate-vs-turbine-silica-glazing-faq.md)**
 - **专题 116（海底油气管道与海上风电导管架阴极保护 Subsea Cathodic Protection DNV-RP-B401、铝锌铟阳极电容量 $\ge 2,000\text{ Ah/kg}$ 与 ROV $\text{Ag/AgCl}$ 电位窗口 $-800\text{ mV}\sim -1,050\text{ mV}$ 智能托管 vs 传统按阳极锭毛重盲付）**：**[《海底油气管道与海上风电导管架阴极保护（Subsea Cathodic Protection, DNV-RP-B401）、铝锌铟阳极电容量（$\ge 2,000\text{ Ah/kg}$）与 ROV $\text{Ag/AgCl}$ 电位窗口（$-800\text{ mV}\sim -1,050\text{ mV}$）智能托管 vs 传统按阳极锭毛重盲付：架构选型与第一性原理 FAQ》](docs/subsea-pipeline-cathodic-protection-ag-agcl-potential-anode-mandate-vs-passivation-embrittlement-faq.md)**
+- **专题 117（海水反渗透淡化厂购水协议 SWRO Desalination BOO Water Purchase Agreement、等压能量回收比能耗封顶 $\text{SEC} \le 3.0\text{ kWh/m}^3$ 与二级脱硼/矿化平衡智能托管 vs 传统电费无上限直通盲付）**：**[《海水反渗透淡化厂购水协议（SWRO Desalination BOO Water Purchase Agreement）、等压能量回收比能耗封顶（$\text{SEC} \le 3.0\text{ kWh/m}^3$）与二级脱硼/矿化平衡智能托管 vs 传统电费无上限直通盲付：架构选型与第一性原理 FAQ》](docs/swro-seawater-desalination-isobaric-erd-boron-sdi-mandate-vs-fouling-power-passthrough-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -380,6 +381,8 @@
 ![2026-11-11 生物天然气 (RNG) 并网交割、GC-IMS 硅氧烷与负碳 RIN 智能托管架构一图流](assets/svg/117-rng-biomethane-pipeline-siloxane-d3-rin-2026-11-11.svg)
 
 ![2026-11-11 海底管道与海风导管架阴极保护 (CP)、Ag/AgCl 电位与牺牲阳极智能托管架构一图流](assets/svg/118-subsea-cathodic-protection-cp-anode-2026-11-11.svg)
+
+![2026-11-11 海水反渗透淡化 (SWRO BOO)、PX 等压比能耗与脱硼智能托管架构一图流](assets/svg/119-swro-seawater-desalination-erd-boron-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

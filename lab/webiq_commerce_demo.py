@@ -14663,6 +14663,91 @@ def evaluate_subsea_cathodic_protection_policy(
     )
 
 
+@dataclass(frozen=True)
+class SwroSeawaterDesalinationVerdict:
+    allowed: bool
+    http_status: int
+    swro_lane: str
+    settled_swro_cents: int
+    brine_valorization_or_sec_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_swro_seawater_desalination_policy(
+    gross_swro_wpa_cents: int = 23000000,
+    isobaric_px_sec_and_sdi_verified: bool = True,
+    permeate_boron_and_lsi_remineralization_passed: bool = True,
+    webiq_brine_outfall_plume_and_dechlorination_clean: bool = True,
+    chlor_alkali_brine_and_tou_storage_savings_cents: int = 0,
+) -> SwroSeawaterDesalinationVerdict:
+    """Evaluate isobaric pressure-exchanger (PX ERD >=96%) normalized Specific Energy Consumption (SEC <=3.0 kWh/m3) & SDI15 (<=3.0) vs uncapped fouling power pass-through overbilling, second-pass high-pH boron rejection (<=0.5 mg/L) & calcite remineralization Langelier Saturation Index (LSI in [-0.2, +0.3]) gate, Web IQ marine brine-outfall salinity plume (Delta-S <=+2.0 psu) check, and 70 g/L brine-to-Chlor-Alkali feedstock + off-peak product reservoir storage arbitrage."""
+    # 1. Membrane fouling or worn PX ceramic rotor spiking normalized SEC > 3.0 kWh/m3 -> HTTP 403
+    if not isobaric_px_sec_and_sdi_verified:
+        return SwroSeawaterDesalinationVerdict(
+            False,
+            403,
+            "SPECIFIC_ENERGY_CAP_OR_PX_MIXING_BREACH_BLOCKED",
+            0,
+            gross_swro_wpa_cents,
+            "swro_desalination_invoice_blocked_due_to_normalized_sec_exceeding_3_0_kwh_m3_or_px_volumetric_mixing",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Skipped second-pass NaOH leaving permeate boron > 0.5 mg/L or corrosive negative LSI (< -0.2) -> HTTP 422
+    if not permeate_boron_and_lsi_remineralization_passed:
+        return SwroSeawaterDesalinationVerdict(
+            False,
+            422,
+            "BORON_TOXICITY_OR_CORROSIVE_LSI_WATER_BLOCKED",
+            0,
+            gross_swro_wpa_cents,
+            "desalinated_permeate_held_due_to_boron_exceeding_0_5_mg_l_or_corrosive_langelier_index_below_minus_0_2",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects marine outfall salinity plume Delta-S > +2.0 psu or residual chlorine -> HTTP 451
+    if not webiq_brine_outfall_plume_and_dechlorination_clean:
+        return SwroSeawaterDesalinationVerdict(
+            False,
+            451,
+            "BRINE_OUTFALL_SALINITY_PLUME_OR_CHLORINE_HOLD",
+            0,
+            gross_swro_wpa_cents,
+            "webiq_detected_seabed_diffuser_salinity_plume_exceeding_2_psu_or_unneutralized_free_chlorine",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 70 g/L Reject Brine to Chlor-Alkali Plant + Off-Peak Reservoir Storage -> HTTP 409 Confirm
+    if chlor_alkali_brine_and_tou_storage_savings_cents > 0:
+        return SwroSeawaterDesalinationVerdict(
+            False,
+            409,
+            "CHLOR_ALKALI_BRINE_VALORIZATION_AND_TOU_CONFIRM",
+            gross_swro_wpa_cents - chlor_alkali_brine_and_tou_storage_savings_cents,
+            chlor_alkali_brine_and_tou_storage_savings_cents,
+            "webiq_piped_70g_l_reject_brine_to_chlor_alkali_plant_and_shifted_ro_load_to_off_peak_saving_36800_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Normalized SEC <=3.0 kWh/m3 + Boron <=0.5 mg/L + Balanced LSI + Outfall Clean -> Settled
+    return SwroSeawaterDesalinationVerdict(
+        True,
+        200,
+        "VERIFIED_SWRO_DESALINATION_WPA_SETTLED",
+        gross_swro_wpa_cents,
+        0,
+        "isobaric_px_sec_permeate_boron_lsi_and_marine_outfall_plume_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19148,6 +19233,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "anode_passivation_block_latency_ms": scp_pas_403.latency_ms,
     }
 
+    swr_commit_ok = evaluate_swro_seawater_desalination_policy()
+    swr_sec_403 = evaluate_swro_seawater_desalination_policy(
+        isobaric_px_sec_and_sdi_verified=False,
+    )
+    swr_brn_422 = evaluate_swro_seawater_desalination_policy(
+        permeate_boron_and_lsi_remineralization_passed=False,
+    )
+    swr_out_451 = evaluate_swro_seawater_desalination_policy(
+        webiq_brine_outfall_plume_and_dechlorination_clean=False,
+    )
+    swr_brn_409 = evaluate_swro_seawater_desalination_policy(
+        chlor_alkali_brine_and_tou_storage_savings_cents=3680000,
+    )
+    swro_desalination_guards = {
+        "all_passed": (
+            swr_commit_ok.allowed
+            and swr_commit_ok.settled_swro_cents == 23000000
+            and not swr_sec_403.allowed
+            and swr_sec_403.http_status == 403
+            and not swr_brn_422.allowed
+            and swr_brn_422.http_status == 422
+            and not swr_out_451.allowed
+            and swr_out_451.http_status == 451
+            and not swr_brn_409.allowed
+            and swr_brn_409.action_pill == "Confirm"
+        ),
+        "swro_settlement_latency_ms": swr_commit_ok.latency_ms,
+        "sec_passthrough_block_latency_ms": swr_sec_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19277,6 +19392,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "rail_tamping_guards": rail_tamping_guards,
         "rng_biomethane_guards": rng_biomethane_guards,
         "subsea_cp_guards": subsea_cp_guards,
+        "swro_desalination_guards": swro_desalination_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24282,6 +24398,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="scp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Seawater Reverse Osmosis (SWRO BOO WPA), Isobaric PX Energy Cap & Boron/LSI Mandate Sandbox (Round 117 FAQ Companion) -->
+      <div class="finops-box" id="swro-seawater-desalination-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-swr-title">🚰 海水反渗透淡化 (SWRO BOO WPA)、PX 等压比能耗封顶 (&lt;=3.0 kWh/m³) 与脱硼/矿化架构：能耗封顶与 LSI 护管令牌 (swro_desalination_wpa_mandate_...) vs 电费无上限直通盲付决策器 (Round 117 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 沿海石化与市政海水反渗透淡化月度购水交割 ($230,000.00)、PX 等压能量回收比能耗 (SEC)、二级高 pH 脱硼/方解石矿化 LSI 与 Web IQ 浓盐水供氯碱化盐场景 (SWRO Desalination Scenario):</span></label>
+          <select id="swr-select" onchange="updateSwroSeawaterDesalinationSandbox()">
+            <option value="swr_commit_ok">⚡ 温盐修正比能耗 SEC = 2.75 kWh/m³ (&lt;=3.0) + 产水硼 0.35 mg/L (&lt;=0.5) + 矿化 LSI = +0.05 + 排海达标：19ms 自动结算 $230,000.00! (Act automatically)</option>
+            <option value="swr_sec_403">🛑 水厂拖延 CIP 化学洗膜或 PX 陶瓷转子磨损串盐致比能耗飙升至 4.3 kWh/m³ (&gt; 3.0 封顶值)，企图按电费直通转嫁 43% 超额电费拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="swr_brn_422">🚨 为省药剂偷停二级高 pH 烧碱致不导电硼酸穿透 (Boron = 1.8 mg/L &gt; 0.5 毒死作物/击穿混床)，或漏投石灰致 LSI = -1.8 溶穿铸铁管拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="swr_out_451">🛑 浓盐水排海扩散器堵塞致 100m 混合区边界盐度增量 ΔS = +4.8 psu (&gt; +2.0 psu 环评上限) 或余氯未脱除：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="swr_brn_409">🧑‍⚖️ Web IQ 将超滤净化的 70 g/L 高浓盐水通过管道直供隔壁氯碱厂化盐桶并利用谷电满发储入 10万m³ 高位水池立省 $36,800.00 (净付 $193,200.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="swr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -24837,6 +24971,7 @@ function renderAll() {{
   updateRailBallastTampingSandbox();
   updateRngBiomethanePipelineSandbox();
   updateSubseaCathodicProtectionSandbox();
+  updateSwroSeawaterDesalinationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -30822,6 +30957,55 @@ function updateSubseaCathodicProtectionSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ DNV 电容量 (&gt;=2,000 Ah/kg) + ROV Ag/AgCl 电位 (-800~-1,050mV) + OSPAR 无镉达标：已自动清算 (VERIFIED_SUBSEA_CATHODIC_PROTECTION_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零阳极水下钝化死重、零过保护析氢脆断 (HISC)</strong>：海底油气管道与海上风电导管架阴极保护工程款已完成结算（<code>$185,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSwroSeawaterDesalinationSandbox() {{
+  var selEl = document.getElementById("swr-select");
+  var outEl = document.getElementById("swr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "swr_sec_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPECIFIC_ENERGY_CAP_OR_PX_MIXING_BREACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "高压反渗透机架电表与 <code>等压能量回收器 (Isobaric PX ERD)</code> 监测显示，因运营商拖延 CIP 洗膜且 PX 转子串盐率超标，吨水比能耗飙升至 <code>SEC = 4.3 kWh/m³ &gt; 3.0 kWh/m³ 合同封顶线</code>（<code>isobaric_px_sec_and_sdi_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$230,000.00</code> 污堵超额电费转嫁账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_brn_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BORON_TOXICITY_OR_CORROSIVE_LSI_WATER_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "在线痕量硼分析仪与后矿化监测仪检出产水硼高达 <code>1.8 mg/L &gt; 0.5 mg/L</code>（因偷停二级高 pH 烧碱投加，不带电硼酸 H3BO3 穿透一级膜且在普通 TDS 电导率表上完全隐形），或漏投方解石致朗格利尔指数 <code>LSI = -1.8 &lt; -0.2</code> 严重溶穿市政铸铁管（<code>permeate_boron_and_lsi_remineralization_passed == False</code>）。网关在 <code>14ms</code> 内关阀拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_out_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 BRINE_OUTFALL_SALINITY_PLUME_OR_CHLORINE_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查海洋排海口 100m 混合区边界 CTD 盐度浮标与余氯台账，检出海底扩散器堵塞导致盐度增量高达 <code>ΔS = +4.8 psu &gt; +2.0 psu 环评红线</code> 或脱氯剂（SBS）断流，立即执行环保合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_brn_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CHLOR_ALKALI_BRINE_VALORIZATION_AND_TOU_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将超滤净化的 <code>70 g/L 洁净高浓盐水</code> 通过园区管廊直供隔壁氯碱厂化盐工序（抵扣原盐采购费），并在午间光伏/夜间深谷电价期满发储入 10 万立方米高位水池，当月立省 <code>$36,800.00</code>（净付降至 <code>$193,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PX 比能耗 (&lt;=3.0 kWh/m³) + 产水硼 (&lt;=0.5 mg/L) + 矿化 LSI 达标：已自动清算 (VERIFIED_SWRO_DESALINATION_WPA_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零污堵电费转嫁、零高硼毒害与黄水蚀管</strong>：海水反渗透淡化（SWRO BOO）月度购水协议账单已完成结算（<code>$230,000.00</code>）！" +
     "</div>";
 }}
 

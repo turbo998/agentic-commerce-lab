@@ -148,6 +148,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 114 (High-Speed & Heavy-Haul Rail Ballast Tamping & Grinding, Post-100k-Ton Track Geometry Car TQI EN 13848 sigma <=1.5mm & Eddy-Current RCF Escrow vs. Pass-Kilometer Overbilling)**: **[High-Speed & Heavy-Haul Rail Ballast Tamping & Grinding, Post-100k-Ton Track Geometry Car TQI (EN 13848 $\sigma \le 1.5\text{ mm}$) & Eddy-Current RCF Escrow vs. Pass-Kilometer Overbilling: Architecture Selection & First-Principles FAQ](docs/rail-ballast-tamping-grinding-track-geometry-tqi-mandate-vs-pass-kilometer-overbilling-faq.en.md)**
 - **Topic 115 (Renewable Natural Gas RNG Biomethane Pipeline Injection, Online GC-IMS Siloxane <=0.1 mg/Nm3 & EPA D3 RIN / LCFS Negative-Carbon Escrow vs. Turbine Silica-Glazing Overbilling)**: **[Renewable Natural Gas (RNG / Biomethane) Pipeline Injection, Online GC-IMS Siloxane ($\le 0.1\text{ mg/Nm}^3$) & EPA D3 RIN / LCFS Negative-Carbon Escrow vs. Turbine Silica-Glazing Overbilling: Architecture Selection & First-Principles FAQ](docs/rng-biomethane-pipeline-injection-siloxane-gc-ims-d3-rin-mandate-vs-turbine-silica-glazing-faq.en.md)**
 - **Topic 116 (Subsea Pipeline & Offshore Jacket Cathodic Protection DNV-RP-B401, Al-Zn-In Anode Capacity >=2,000 Ah/kg & ROV Ag/AgCl Potential Window -800mV to -1050mV Escrow vs. Passivation & Hydrogen-Embrittlement Overbilling)**: **[Subsea Pipeline & Offshore Jacket Cathodic Protection (DNV-RP-B401), Al-Zn-In Anode Capacity ($\ge 2,000\text{ Ah/kg}$) & ROV $\text{Ag/AgCl}$ Potential Window ($-800\text{ mV}$ to $-1,050\text{ mV}$) Escrow vs. Passivation & Hydrogen-Embrittlement Overbilling: Architecture Selection & First-Principles FAQ](docs/subsea-pipeline-cathodic-protection-ag-agcl-potential-anode-mandate-vs-passivation-embrittlement-faq.en.md)**
+- **Topic 117 (Seawater Reverse Osmosis SWRO Desalination BOO WPA, Isobaric PX Specific-Energy Cap <=3.0 kWh/m3 & Permeate Boron/LSI Remineralization Escrow vs. Fouling Power Pass-Through Overbilling)**: **[Seawater Reverse Osmosis (SWRO Desalination BOO WPA), Isobaric PX Specific-Energy Cap ($\le 3.0\text{ kWh/m}^3$) & Permeate Boron/LSI Remineralization Escrow vs. Fouling Power Pass-Through Overbilling: Architecture Selection & First-Principles FAQ](docs/swro-seawater-desalination-isobaric-erd-boron-sdi-mandate-vs-fouling-power-passthrough-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -380,6 +381,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 RNG Biomethane Pipeline Injection, GC-IMS Siloxane & EPA D3 RIN Mandate Visual Summary](assets/svg/117-rng-biomethane-pipeline-siloxane-d3-rin-2026-11-11.svg)
 
 ![2026-11-11 Subsea Pipeline & Jacket Cathodic Protection (CP), Ag/AgCl Potential & Sacrificial Anode Mandate Visual Summary](assets/svg/118-subsea-cathodic-protection-cp-anode-2026-11-11.svg)
+
+![2026-11-11 Seawater Reverse Osmosis (SWRO BOO), Isobaric PX Energy Cap & Boron/LSI Mandate Visual Summary](assets/svg/119-swro-seawater-desalination-erd-boron-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
