@@ -2610,6 +2610,24 @@
         <div id="rig-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Large Power Transformer (LPT), SFRA Winding Fingerprint & DGA Acetylene Mandate Sandbox (Round 101 FAQ Companion) -->
+      <div class="finops-box" id="power-transformer-sfra-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lpt-title">⚡ 智算中心高压主变压器 (LPT 220kV) 交割、SFRA 扫频绕组指纹与 72h 油色谱零乙炔架构：扫频与 DGA 令牌 (power_transformer_sfra_mandate_...) vs 到货盲付决策器 (Round 101 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 百兆瓦 AI 智算中心 220kV/300MVA 主变交割与投运里程碑 ($450,000.00)、到场 vs 出厂 SFRA 扫频响应 (ρ &gt;=0.995)、72h 油色谱零乙炔 (C2H2 = 0.0 ppm) 与 Web IQ 天然酯 FR3 方案 (Large Power Transformer Scenario):</span></label>
+          <select id="lpt-select" onchange="updatePowerTransformerSfraSandbox()">
+            <option value="lpt_commit_ok">⚡ 到场 vs 出厂 SFRA 扫频曲线重合 (ρ 0.998 &gt;=0.995) + 充氮正压 0.03MPa + 72h 试运行 DGA 乙炔 0.0 ppm：21ms 自动结算 $450,000.00! (Act automatically)</option>
+            <option value="lpt_sfr_403">🛑 直流电阻虽正常，但到场 SFRA 扫频高频谐振峰漂移 (ρ 0.912 检出运输重刹致低压铜绕组 4mm 鼓包错位) 拦截：严防合闸短路炸毁 → 11ms 触发 HTTP 403!</option>
+            <option value="lpt_dga_422">🚨 5次全电压冲击与 72h 试运行后 DGA 油色谱检出 1.8 ppm 乙炔 (C2H2 &gt;0 铁证内部高能电弧火花) 或局放 &gt;100 pC 拦截 → 14ms 触发 HTTP 422 停运!</option>
+            <option value="lpt_llec_451">🛑 次级硅钢片导致空载铁损高出保证值 14kW (30年多耗电 360万度) 拒不扣减 IEEE C57.120 资本化罚金 (LLEC)：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="lpt_fr3_409">🧑‍⚖️ Web IQ 选用高燃点天然酯植物绝缘油 (FR3 &gt;350°C) 免除重型水喷雾与防爆墙土建并提升 +15% 动态过载算力容量立省 $62,000.00 (净付 $388,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lpt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3149,6 +3167,7 @@ function renderAll() {
   updateDermsSmartInverterSandbox();
   updateMarineBiobunkerC14Sandbox();
   updateHeavyRiggingShocklogSandbox();
+  updatePowerTransformerSfraSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8350,6 +8369,55 @@ function updateHeavyRiggingShocklogSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 内胆三轴 ShockLog (&lt;=1.5G) + 液氦冷头不断电 (&lt;=4.5 psi) + 气浮均载达标：已自动清算 (VERIFIED_HEAVY_RIGGING_AIR_RIDE_MOVE_IN_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零隐性震损拒保、零液氦蒸发失超</strong>：精密半导体机台 / 超导 MRI 气垫运输与无尘室 Move-In 吊装已完成原厂签字结算（<code>$135,000.00</code>）！" +
+    "</div>";
+}
+
+function updatePowerTransformerSfraSandbox() {
+  var selEl = document.getElementById("lpt-select");
+  var outEl = document.getElementById("lpt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lpt_sfr_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TRANSIT_WINDING_BUCKLING_SFRA_DRIFT_OR_N2_MOISTURE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "虽然常规直流电阻测试看似正常，但卸车前 <code>20Hz–2MHz 扫频响应分析 (SFRA)</code> 显示中高频段谐振峰较出厂 FAT 基准发生显著偏移（互相关系数跌至 <code>ρ = 0.912 &lt; 0.995</code>，证明海陆联运重刹已致内部 40 吨铜绕组发生 4mm 辐向鼓包错位，<code>site_vs_fat_sfra_and_n2_dewpoint_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$450,000.00</code> 到货款，严防带电冲击合闸时匝间短路爆炸！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lpt_dga_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 POST_72H_DGA_ACETYLENE_INTERNAL_ARCING_OR_PD_BREACH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "主变完成 5 次全电压冲击合闸与 72 小时满负荷试运行后，<code>油中溶解气体色谱 (DGA)</code> 检出 <code>1.8 ppm 乙炔 (Acetylene, C2H2 &gt; 0.0 ppm)</code>（证明油箱内部存在 <code>&gt;700°C</code> 高能电弧放电火花），或局部放电突破 <code>100 pC</code>（<code>energization_72h_dga_zero_acetylene_passed == False</code>）。网关在 <code>14ms</code> 内紧急冻结投运尾款并指令拉闸排障！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lpt_llec_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXCESS_CORE_NO_LOAD_LOSS_LLEC_PENALTY_OR_PCB_OIL_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查出厂与交接空载损耗试验及 IEEE C57.120 损耗资本化评估条款（LLEC），检出厂家降级使用次级取向硅钢片致空载铁损超标 <code>14 kW</code>（30 年将多耗电 368 万度），立即冻结货款执行资本化贴现扣罚！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lpt_fr3_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 NATURAL_ESTER_FR3_DELUGE_WAIVER_AND_OVERLOAD_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 依据 NFPA 850 与 IEEE C57.154 规范，将智算中心紧邻变电站主变切换为高燃点可生物降解 <code>天然酯植物绝缘油 (FR3 燃点 &gt;350°C)</code>，直接免除重型水喷雾灭火管网与防爆墙土建并获得 <code>+15% 算力峰值动态过载容量</code>，立省 <code>$62,000.00</code>（净付降至 <code>$388,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 出厂-现场 SFRA 扫频重合 (ρ &gt;=0.995) + 72h 试运行 DGA 零乙炔 (0.0 ppm) 达标：已自动清算 (VERIFIED_LARGE_POWER_TRANSFORMER_LPT_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零绕组运输移位隐患、零内部电弧火花</strong>：220kV/300MVA 智算中心主变压器交割与投运里程碑款已完成结算（<code>$450,000.00</code>）！" +
     "</div>";
 }
 

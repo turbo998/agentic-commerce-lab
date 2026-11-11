@@ -6815,6 +6815,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("heavy-rigging-shocklog-sandbox", demo_zh)
 
+    def test_power_transformer_lpt_sfra_dga_acetylene_impact_mandate_vs_winding_shift_energization_blast_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_power_transformer_lpt_sfra_policy,
+        )
+
+        # 1. Verified site-vs-FAT SFRA rho >=0.995 + 72h DGA C2H2 == 0.0 ppm -> 200 OK ($450,000)
+        commit_ok = evaluate_power_transformer_lpt_sfra_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_lpt_cents, 45000000)
+
+        # 2. Transit winding buckling (SFRA rho <0.995) or nitrogen pressure moisture ingress -> 403 blocked in 11ms
+        sfr_403 = evaluate_power_transformer_lpt_sfra_policy(
+            site_vs_fat_sfra_and_n2_dewpoint_verified=False,
+        )
+        self.assertFalse(sfr_403.allowed)
+        self.assertEqual(sfr_403.http_status, 403)
+        self.assertEqual(
+            sfr_403.lpt_lane,
+            "TRANSIT_WINDING_BUCKLING_SFRA_DRIFT_OR_N2_MOISTURE_BLOCKED",
+        )
+
+        # 3. Post-72h soak DGA detects trace Acetylene (C2H2 >0 ppm) or PD >100 pC -> 422 blocked in 14ms
+        dga_422 = evaluate_power_transformer_lpt_sfra_policy(
+            energization_72h_dga_zero_acetylene_passed=False,
+        )
+        self.assertFalse(dga_422.allowed)
+        self.assertEqual(dga_422.http_status, 422)
+        self.assertEqual(
+            dga_422.lpt_lane,
+            "POST_72H_DGA_ACETYLENE_INTERNAL_ARCING_OR_PD_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects uncompensated IEEE C57.120 excess no-load core loss -> 451 blocked in 295ms
+        llec_451 = evaluate_power_transformer_lpt_sfra_policy(
+            webiq_ieee_c57_loss_capitalization_and_oil_clean=False,
+        )
+        self.assertFalse(llec_451.allowed)
+        self.assertEqual(llec_451.http_status, 451)
+
+        # 5. Web IQ applies Natural Ester FR3 deluge-wall waiver & +15% overload saving $62,000 ($388,000 net) -> 409 Confirm
+        fr3_409 = evaluate_power_transformer_lpt_sfra_policy(
+            natural_ester_fr3_fire_wall_and_overload_savings_cents=6200000,
+        )
+        self.assertFalse(fr3_409.allowed)
+        self.assertEqual(fr3_409.http_status, 409)
+        self.assertEqual(fr3_409.settled_lpt_cents, 38800000)
+        self.assertEqual(fr3_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["power_transformer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("power-transformer-sfra-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

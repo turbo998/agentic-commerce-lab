@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg103" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#141e38"/>
+      <stop offset="100%" stop-color="#1e2d54"/>
+    </linearGradient>
+    <linearGradient id="accent103" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg103)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0d152a" stroke="#f59e0b" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent103)"/>
+
+  <text x="60" y="72" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 101 · LARGE POWER TRANSFORMER (LPT), SFRA WINDING FINGERPRINT &amp; DGA ACETYLENE MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">智算中心高压主变压器 (LPT) 交割、SFRA 扫频绕组指纹与油色谱零乙炔托管 vs 到货盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">FAT-vs-Site SFRA (20Hz-2MHz ρ&gt;=0.995) + 72h DGA (C2H2 = 0.0 ppm) + N2 Dew Point vs. Energization Blast</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统凭工厂出厂试验 (FAT) 到货即付模式 (Winding Shift Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 途中重刹致 200 吨铁芯与铜绕组微错位：常规直流电阻测不出，带电冲击合闸瞬间匝间短路爆炸</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 运输充氮正压泄漏吸潮：微水侵入绝缘纸板，投运后引发高能电弧产生乙炔 (C2H2) 击穿主绝缘</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 次级硅钢片虚高空载铁损 (No-Load Loss)：实测空载损耗高出保证值 12%，30 年多烧百万美元电费</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 矿物油防火间距与喷淋改建昂贵：紧邻智算机房采用普通矿物油变，被迫多花巨资建防爆防火墙</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型百兆瓦 AI 智算中心 220kV 变电站主变 (LPT) 投运资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">基建 Agent 见主变运抵基座即释放 $450,000 到货进度款，因未做现场 SFRA 扫频比对</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">漏检海陆转运造成的低压绕组辐向翘曲，第 3 次冲击合闸时内部电弧炸裂，延误算力投产 14 个月</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 绕组微变形拦截：0% | • 乙炔电弧早筛：0% | • 主变炸毁重造周期：12–18 个月</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 出厂-现场 SFRA 扫频互锁 + 72h 零乙炔 + 天然酯油托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 出厂 FAT vs 到场 SFRA 扫频响应相关性 (&gt;=0.995)：非开盖秒级识破毫米级绕组移位与充氮泄压</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 72h 试运行油中溶解气体乙炔绝对清零 (C2H2 = 0.0 ppm) 与局放 (&lt;=100 pC)：根除带病转正</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• IEEE C57 空载/负载损耗资本化扣罚 (LLEC) 核验：Web IQ 精算硅钢片铁损超标 30 年电费贴现赔偿</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 高燃点天然酯植物绝缘油 (FR3 &gt;300°C) 替代矿物油套利：免水喷雾防爆墙并增容 15% 立省 $62,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断到场 SFRA 扫频曲线偏离出厂基准或充氮正压归零的暗伤主变款；14ms 拦截 72h</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">试运行检出微量乙炔 (C2H2 &gt;0 ppm)；Web IQ 天然酯 FR3 高燃点绝缘油方案立省 $62,000（净付 $388k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 投运冲击爆炸风险：0% | • 空载铁损资本化索赔：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#131f3a" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">高压主变压器 (LPT) 交割 Agent 绝不能凭出厂合格证放款！必须绑定【到场 SFRA 扫频重合 + 72h DGA 零乙炔 + 铁损扣罚】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_power_transformer_lpt_sfra_policy`) · IEC 60076-18 &amp; IEEE C57.104 · 2026-11-11</text>
+</svg>

@@ -132,6 +132,7 @@
 - **专题 98（分布式光伏与虚拟电厂 DERMS / IEEE 2030.5 Smart Inverter、Volt-VAR 无功稳压与动态防逆流智能托管 vs 传统正午过压脱网与逆变器虚报盲付）**：**[《分布式光伏与虚拟电厂（DERMS / IEEE 2030.5 Smart Inverter）、Volt-VAR 无功稳压与动态防逆流智能托管 vs 传统正午过压脱网与逆变器虚报盲付：架构选型与第一性原理 FAQ》](docs/derms-smart-inverter-ieee2030-5-volt-var-curtailment-mandate-vs-overvoltage-trip-overbilling-faq.md)**
 - **专题 99（船用生物燃料加注 Marine Bio-Bunker B24 / B30 FAME & HVO、同位素碳十四 $^{14}\text{C}$ 生物碳验真与氧化安定性 Rancimat 智能托管 vs 传统假地沟油 UCOME 与滤器堵塞盲付）**：**[《船用生物燃料加注（Marine Bio-Bunker B24 / B30 FAME & HVO）、同位素碳十四（$^{14}\text{C}$）生物碳验真与氧化安定性（Rancimat）智能托管 vs 传统假地沟油（UCOME）与滤器堵塞盲付：架构选型与第一性原理 FAQ》](docs/marine-biobunker-b30-iscc-c14-oxidation-stability-mandate-vs-ucome-fraud-filter-clogging-faq.md)**
 - **专题 100（精密半导体机台与超导核磁共振 MRI / Fab Tool 气垫减振运输与无尘室吊装、内胆三轴冲击记录仪 ShockLog $\le 1.5\text{ G}$ 与液氦防失超智能托管 vs 传统看外箱完好盲目签收）**：**[《精密半导体机台与超导核磁共振（MRI / Fab Tool）气垫减振运输与无尘室吊装（Air-Ride & Cleanroom Rigging）、内胆三轴冲击记录仪（ShockLog $\le 1.5\text{ G}$）与液氦防失超智能托管 vs 传统看外箱完好盲目签收：架构选型与第一性原理 FAQ》](docs/heavy-rigging-air-ride-mri-fab-tool-shocklog-g-force-mandate-vs-concealed-transit-damage-faq.md)**
+- **专题 101（智算中心与高压变电站主变压器 Large Power Transformer LPT 交割、到场 SFRA 扫频绕组指纹与 72h 油色谱零乙炔 DGA $\text{C}_2\text{H}_2 = 0$ 智能托管 vs 传统凭出厂试验到货盲付）**：**[《智算中心与高压变电站主变压器（Large Power Transformer, LPT）交割、到场 SFRA 扫频绕组指纹与 72h 油色谱零乙炔（DGA $\text{C}_2\text{H}_2 = 0$）智能托管 vs 传统凭出厂试验到货盲付：架构选型与第一性原理 FAQ》](docs/power-transformer-lpt-sfra-dga-acetylene-impact-mandate-vs-winding-shift-energization-blast-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -332,6 +333,8 @@
 ![2026-11-11 船用生物燃料加注 (B24/B30)、碳十四 (14C) 生物碳验真与氧化安定性智能托管架构一图流](assets/svg/101-marine-biobunker-b30-iscc-c14-2026-11-11.svg)
 
 ![2026-11-11 精密光刻机/核磁共振 (MRI) 气垫运输吊装、三轴冲击记录仪 (<=1.5G) 与防失超智能托管架构一图流](assets/svg/102-heavy-rigging-air-ride-shocklog-2026-11-11.svg)
+
+![2026-11-11 智算中心高压主变压器 (LPT) 交割、SFRA 扫频绕组指纹与油色谱零乙炔智能托管架构一图流](assets/svg/103-power-transformer-lpt-sfra-dga-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
