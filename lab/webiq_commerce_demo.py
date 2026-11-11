@@ -11943,6 +11943,91 @@ def evaluate_satellite_eo_sar_tasking_policy(
     )
 
 
+@dataclass(frozen=True)
+class LngCargoCustodyTransferVerdict:
+    allowed: bool
+    http_status: int
+    lng_lane: str
+    settled_cargo_cents: int
+    cold_energy_or_bog_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_lng_cargo_custody_transfer_policy(
+    gross_cargo_invoice_cents: int = 4200000000,
+    giignl_mmbtu_and_bog_vapor_return_deducted: bool = True,
+    ctms_trim_list_and_wobbe_index_passed: bool = True,
+    webiq_giignl_reference_temp_and_sanctions_clean: bool = True,
+    cryogenic_cold_energy_valorization_savings_cents: int = 0,
+) -> LngCargoCustodyTransferVerdict:
+    """Evaluate GIIGNL net transferred energy formula (V_liq * rho * GHV - E_BOG - E_heel) & displaced shore-to-ship BOG vapor-return deduction vs raw volumetric overbilling, CTMS radar/capacitance trim/list correction & ISO 6976 Wobbe Index/Methane Number gate, Web IQ GIIGNL reference-temperature & AIS dark-STS sanctions check, and -162C cryogenic cold-energy valorization credit arbitrage."""
+    # 1. Raw volumetric m3 billing or missing displaced shore-tank BOG vapor-return energy deduction -> HTTP 403
+    if not giignl_mmbtu_and_bog_vapor_return_deducted:
+        return LngCargoCustodyTransferVerdict(
+            False,
+            403,
+            "VOLUMETRIC_BILLING_OR_MISSING_BOG_VAPOR_RETURN_DEDUCTION_BLOCKED",
+            0,
+            gross_cargo_invoice_cents,
+            "lng_cargo_settlement_blocked_due_to_unadjusted_volumetric_billing_or_omitted_bog_vapor_return_deduction",
+            12,
+            "Send to a human",
+        )
+
+    # 2. CTMS trim/list ballast distortion or out-of-spec Wobbe Index / Methane Number knock hazard -> HTTP 422
+    if not ctms_trim_list_and_wobbe_index_passed:
+        return LngCargoCustodyTransferVerdict(
+            False,
+            422,
+            "CTMS_TRIM_LIST_DISTORTION_OR_WOBBE_INDEX_EXCURSION_BLOCKED",
+            0,
+            gross_cargo_invoice_cents,
+            "cargo_held_due_to_ctms_trim_list_gauge_discrepancy_or_wobbe_index_exceeding_turbine_interchangeability_spec",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects ISO 6976 reference-temperature mismatch or AIS dark-STS transfer -> HTTP 451
+    if not webiq_giignl_reference_temp_and_sanctions_clean:
+        return LngCargoCustodyTransferVerdict(
+            False,
+            451,
+            "ISO6976_REFERENCE_TEMP_MISMATCH_OR_AIS_DARK_STS_HOLD",
+            0,
+            gross_cargo_invoice_cents,
+            "webiq_detected_mismatched_iso6976_reference_temperature_basis_or_sanctioned_ais_dark_sts_transfer",
+            305,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Terminal -162C Cryogenic Cold-Energy Co-Generation Valorization Credit -> HTTP 409 Confirm
+    if cryogenic_cold_energy_valorization_savings_cents > 0:
+        return LngCargoCustodyTransferVerdict(
+            False,
+            409,
+            "TERMINAL_CRYOGENIC_COLD_ENERGY_VALORIZATION_ARBITRAGE_CONFIRM",
+            gross_cargo_invoice_cents - cryogenic_cold_energy_valorization_savings_cents,
+            cryogenic_cold_energy_valorization_savings_cents,
+            "webiq_matched_terminal_cryogenic_cold_energy_air_separation_offtake_saving_680000_usd",
+            315,
+            "Confirm",
+        )
+
+    # 5. Verified GIIGNL Net MMBtu + Online Raman/Dual-GC + BOG Deducted -> Settled
+    return LngCargoCustodyTransferVerdict(
+        True,
+        200,
+        "VERIFIED_GIIGNL_NET_MMBTU_LNG_CARGO_SETTLED",
+        gross_cargo_invoice_cents,
+        0,
+        "giignl_net_mmbtu_online_gc_raman_bog_deduction_and_ctms_verified_for_settlement",
+        23,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -15468,6 +15553,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aoi_cloud_block_latency_ms": sat_cld_403.latency_ms,
     }
 
+    lng_commit_ok = evaluate_lng_cargo_custody_transfer_policy()
+    lng_vol_403 = evaluate_lng_cargo_custody_transfer_policy(
+        giignl_mmbtu_and_bog_vapor_return_deducted=False,
+    )
+    lng_ctms_422 = evaluate_lng_cargo_custody_transfer_policy(
+        ctms_trim_list_and_wobbe_index_passed=False,
+    )
+    lng_ais_451 = evaluate_lng_cargo_custody_transfer_policy(
+        webiq_giignl_reference_temp_and_sanctions_clean=False,
+    )
+    lng_cold_409 = evaluate_lng_cargo_custody_transfer_policy(
+        cryogenic_cold_energy_valorization_savings_cents=68000000,
+    )
+    lng_custody_guards = {
+        "all_passed": (
+            lng_commit_ok.allowed
+            and lng_commit_ok.settled_cargo_cents == 4200000000
+            and not lng_vol_403.allowed
+            and lng_vol_403.http_status == 403
+            and not lng_ctms_422.allowed
+            and lng_ctms_422.http_status == 422
+            and not lng_ais_451.allowed
+            and lng_ais_451.http_status == 451
+            and not lng_cold_409.allowed
+            and lng_cold_409.action_pill == "Confirm"
+        ),
+        "lng_settlement_latency_ms": lng_commit_ok.latency_ms,
+        "volumetric_bog_block_latency_ms": lng_vol_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -15565,6 +15680,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "luxury_watch_guards": luxury_watch_guards,
         "photomask_reticle_guards": photomask_reticle_guards,
         "satellite_eo_sar_guards": satellite_eo_sar_guards,
+        "lng_custody_guards": lng_custody_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19994,6 +20110,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sat-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive LNG Cargo Custody Transfer, MMBtu Raman/GC & BOG Vapor-Return Mandate Sandbox (Round 85 FAQ Companion) -->
+      <div class="finops-box" id="lng-cargo-custody-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lng-title">🚢 液化天然气 (LNG) 船货交割、拉曼/气相色谱热值 (MMBtu) 与蒸发气 (BOG) 回流扣减架构：GIIGNL 净热值令牌 (lng_custody_mmbtu_mandate_...) vs 液位体积盲付决策器 (Round 85 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 17.4 万方现货 LNG 船货到岸交割 ($42,000,000.00)、ISO 6976 在线拉曼/双 GC 热值、岸罐回流蒸发气 (E_BOG) 扣减与 Web IQ -162°C 冷能联产抵扣场景 (LNG Custody Transfer Scenario):</span></label>
+          <select id="lng-select" onchange="updateLngCargoCustodySandbox()">
+            <option value="lng_commit_ok">⚡ GIIGNL 净移交热值 (V_liq × ρ × GHV - E_BOG) + 双 GC 华白数达标 + CTMS 零横倾修正：23ms 自动结算 $42,000,000.00! (Act automatically)</option>
+            <option value="lng_vol_403">🛑 仅按装港提单液位体积 (m³) 计费或漏扣卸船期间岸罐压回船舱的气态蒸发气 (Displaced BOG $480k 热值) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="lng_ctms_422">🚨 船体压载水纵横倾伪造 CTMS 液位差或老化富气华白数/甲烷值越界引发燃机回火爆震风险拦截 → 15ms 触发 HTTP 422 冻结复检!</option>
+            <option value="lng_ais_451">🛑 ISO 6976 燃烧参比温度基准 (15°C vs 0°C) 混用或检出航次 AIS 公海暗船过驳 (Dark STS) 制裁红线：Web IQ /v3/browse 305ms 触发 HTTP 451!</option>
+            <option value="lng_cold_409">🧑‍⚖️ Web IQ 匹配接收站毗邻空分制氧氮与高密算力中心 -162°C 气化冷能联产承购协议抵扣 $680,000.00 (净付 $41,320,000.00) → 315ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lng-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -20517,6 +20651,7 @@ function renderAll() {{
   updateLuxuryWatchSandbox();
   updatePhotomaskReticleSandbox();
   updateSatelliteEoSarSandbox();
+  updateLngCargoCustodySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -24934,6 +25069,55 @@ function updateSatelliteEoSarSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ Target-AOI 净空云掩膜 (&lt;=10%) + Off-Nadir (&lt;=20°) + GCP RPC 正射达标：已自动清算 (VERIFIED_SATELLITE_EO_SAR_SCENE_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零浓云遮挡废片、零大倾角拉花偏移</strong>：30cm 正射 GeoTIFF 遥感影像已通过像素级云掩膜与地面控制点残差核验并完成结算（<code>$145,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateLngCargoCustodySandbox() {{
+  var selEl = document.getElementById("lng-select");
+  var outEl = document.getElementById("lng-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lng_vol_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 VOLUMETRIC_BILLING_OR_MISSING_BOG_VAPOR_RETURN_DEDUCTION_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "卖方账单仅按装船提单液体体积（<code>170,000 m³</code>）计费，未按 <code>GIIGNL 净移交能量公式</code> 扣除卸船期间从买方岸罐经气相返回管线压回卖方船舱的 <code>28,500 MMBtu 气态蒸发气 (Displaced BOG)</code>（<code>giignl_mmbtu_and_bog_vapor_return_deducted == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$42,000,000.00</code> 虚高船单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lng_ctms_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CTMS_TRIM_LIST_DISTORTION_OR_WOBBE_INDEX_EXCURSION_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "船载 <code>CTMS 液位计</code> 关仓读数存在未修正横倾失真，或航行老化（Weathering）导致重烃富集使甲烷值跌破 <code>68</code>、华白数（Wobbe Index）突破燃气轮机防回火上限（<code>ctms_trim_list_and_wobbe_index_passed == False</code>）。网关在 <code>15ms</code> 内冻结信用证并启动第三方商检复测！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lng_ais_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ISO6976_REFERENCE_TEMP_MISMATCH_OR_AIS_DARK_STS_HOLD (305ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查合同 ISO 6976 燃烧热参比温度表与海事 AIS 轨迹，检出卖方混用 <code>0°C/20°C</code> 参比基准虚增 <code>0.18%</code> 热值或航次存在关闭应答器公海暗船过驳（Dark STS），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lng_cold_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TERMINAL_CRYOGENIC_COLD_ENERGY_VALORIZATION_ARBITRAGE_CONFIRM (315ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 匹配接收站毗邻园区工业空分（液氧/液氮制备）与高密智算中心冷却塔承购协议，将 <code>-162°C LNG 气化冷能</code> 梯级回收变现，单船立省 <code>$680,000.00</code> 综合成本（净付降至 <code>$41,320,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ GIIGNL 净热值 (MMBtu) + 在线拉曼/双 GC + 回流 BOG 扣减达标：已自动清算 (VERIFIED_GIIGNL_NET_MMBTU_LNG_CARGO_SETTLED · 23ms · Act automatically):</strong><br>" +
+    "• <strong>零体积水分、零回流气重复计费</strong>：现货 LNG 船货已按实测净移交能量完成结算（<code>$42,000,000.00</code>）！" +
     "</div>";
 }}
 

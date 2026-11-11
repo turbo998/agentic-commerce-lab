@@ -5919,6 +5919,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("satellite-eo-sar-sandbox", demo_zh)
 
+    def test_lng_cargo_custody_transfer_mmbtu_raman_bog_mandate_vs_volumetric_ageing_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_lng_cargo_custody_transfer_policy,
+        )
+
+        # 1. Verified GIIGNL Net MMBtu + BOG Vapor-Return deducted + CTMS/Wobbe OK -> 200 OK ($42,000,000)
+        commit_ok = evaluate_lng_cargo_custody_transfer_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cargo_cents, 4200000000)
+
+        # 2. Raw volumetric m3 billing or omitted displaced shore-vapor BOG deduction -> 403 blocked in 12ms
+        vol_403 = evaluate_lng_cargo_custody_transfer_policy(
+            giignl_mmbtu_and_bog_vapor_return_deducted=False,
+        )
+        self.assertFalse(vol_403.allowed)
+        self.assertEqual(vol_403.http_status, 403)
+        self.assertEqual(
+            vol_403.lng_lane,
+            "VOLUMETRIC_BILLING_OR_MISSING_BOG_VAPOR_RETURN_DEDUCTION_BLOCKED",
+        )
+
+        # 3. CTMS trim/list ballast distortion or Wobbe Index excursion -> 422 blocked in 15ms
+        ctms_422 = evaluate_lng_cargo_custody_transfer_policy(
+            ctms_trim_list_and_wobbe_index_passed=False,
+        )
+        self.assertFalse(ctms_422.allowed)
+        self.assertEqual(ctms_422.http_status, 422)
+        self.assertEqual(
+            ctms_422.lng_lane,
+            "CTMS_TRIM_LIST_DISTORTION_OR_WOBBE_INDEX_EXCURSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects ISO 6976 reference-temperature mismatch or AIS dark-STS transfer -> 451 blocked in 305ms
+        ais_451 = evaluate_lng_cargo_custody_transfer_policy(
+            webiq_giignl_reference_temp_and_sanctions_clean=False,
+        )
+        self.assertFalse(ais_451.allowed)
+        self.assertEqual(ais_451.http_status, 451)
+
+        # 5. Web IQ matches terminal -162C cryogenic cold-energy valorization credit saving $680,000 ($41,320,000 net) -> 409 Confirm
+        cold_409 = evaluate_lng_cargo_custody_transfer_policy(
+            cryogenic_cold_energy_valorization_savings_cents=68000000,
+        )
+        self.assertFalse(cold_409.allowed)
+        self.assertEqual(cold_409.http_status, 409)
+        self.assertEqual(cold_409.settled_cargo_cents, 4132000000)
+        self.assertEqual(cold_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["lng_custody_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("lng-cargo-custody-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

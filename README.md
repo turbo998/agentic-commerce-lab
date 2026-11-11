@@ -116,6 +116,7 @@
 - **专题 82（二级豪华腕表 Secondary Luxury Watch 无卡度摆轮微距、Witschi 声学摆幅遥测与 Enquirus 失窃查册智能托管 vs 传统拼装/超级克隆表盲付）**：**[《二级豪华腕表（Secondary Luxury Watch）无卡度摆轮微距、Witschi 声学摆幅遥测与 Enquirus 失窃查册智能托管 vs 传统拼装/超级克隆表盲付：架构选型与第一性原理 FAQ》](docs/luxury-watch-horological-witschi-enquirus-mandate-vs-frankenwatch-super-clone-faq.md)**
 - **专题 83（半导体 EUV/DUV 光刻掩膜版 Photomask / Reticle、KLA Die-to-Database 零重复缺陷与 Zeiss AIMS 空间像智能托管 vs 传统流片光罩盲付）**：**[《半导体 EUV/DUV 光刻掩膜版（Photomask / Reticle）、KLA Die-to-Database 零重复缺陷与 Zeiss AIMS 空间像智能托管 vs 传统流片光罩盲付：架构选型与第一性原理 FAQ》](docs/semiconductor-photomask-reticle-kla-defect-pellicle-mandate-vs-repeating-wafer-scrap-faq.md)**
 - **专题 84（卫星对地观测遥感影像 Satellite EO / SAR Tasking、目标区净空云量掩膜 AOI Cloud-Cover Mask $\le 10\%$ 与离天底角 RPC 正射配准智能托管 vs 传统按平方公里预付盲采）**：**[《卫星对地观测遥感影像（Satellite EO / SAR Tasking）、目标区净空云量掩膜（AOI Cloud-Cover Mask $\le 10\%$）与离天底角 RPC 正射配准智能托管 vs 传统按平方公里预付盲采：架构选型与第一性原理 FAQ》](docs/satellite-eo-sar-tasking-cloud-cover-rpc-orthorectified-mandate-vs-cloudy-frame-overbilling-faq.md)**
+- **专题 85（液化天然气 LNG 船货交割、在线拉曼光谱/气相色谱热值计量 MMBtu Wobbe Index 与蒸发气 BOG 回流扣减智能托管 vs 传统按液位体积 $\text{m}^3$ 盲目结算）**：**[《液化天然气（LNG）船货交割、在线拉曼光谱/气相色谱热值计量（MMBtu Wobbe Index）与蒸发气（BOG）回流扣减智能托管 vs 传统按液位体积（$\text{m}^3$）盲目结算：架构选型与第一性原理 FAQ》](docs/lng-cargo-custody-transfer-mmbtu-raman-bog-mandate-vs-volumetric-ageing-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -284,6 +285,8 @@
 ![2026-11-09 半导体 EUV/DUV 光刻掩膜版、KLA 零重复缺陷与 CNT 防尘膜智能托管架构一图流](assets/svg/85-semiconductor-photomask-reticle-kla-pellicle-2026-11-09.svg)
 
 ![2026-11-11 卫星对地观测遥感影像、AOI 净空云量掩膜与离天底角 RPC 配准智能托管架构一图流](assets/svg/86-satellite-eo-sar-tasking-cloud-cover-rpc-2026-11-11.svg)
+
+![2026-11-11 液化天然气 (LNG) 船货交割、拉曼/色谱热值与蒸发气 (BOG) 扣减智能托管架构一图流](assets/svg/87-lng-cargo-custody-transfer-mmbtu-bog-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

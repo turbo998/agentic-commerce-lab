@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg87" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06121e"/>
+      <stop offset="50%" stop-color="#0d2238"/>
+      <stop offset="100%" stop-color="#153554"/>
+    </linearGradient>
+    <linearGradient id="accent87" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg87)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#09192b" stroke="#06b6d4" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent87)"/>
+
+  <text x="60" y="72" fill="#67e8f9" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 85 · LNG CARGO CUSTODY TRANSFER, MMBTU RAMAN/GC &amp; BOG VAPOR-RETURN MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">液化天然气 (LNG) 船货交割、拉曼/色谱热值 (MMBtu) 与蒸发气 (BOG) 扣减托管 vs 体积盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">GIIGNL Energy Formula (V_liq × ρ × GHV - E_BOG - E_heel) + Wobbe Index Gate vs. Volumetric/Ageing Overbilling</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按液位体积 (m³) 与装港单据盲付模式 (Volumetric Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 体积相同但总热值缩水：17 万方高氮贫气比富气少上万吉焦能量，按体积付冤枉钱</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 未扣减岸罐回流蒸发气 (BOG Displaced Vapor)：卸货时岸罐顶回船舱的气态天然气被卖方白拿</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 航行老化 (Weathering) 与横倾液位伪造：轻组分甲烷蒸发导致华白数越界，人为打压载水虚增液位</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 冷能白白排海浪费：-162°C 气化潜热直接用海水加热排掉，错失空分/算力中心冷能置换收益</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型燃气电厂 / 城市燃气接收站现货 LNG 船货采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">采购 Agent 凭装港提单体积预付 $42,000,000 现货船款，未扣除卸港气相返回管线回流</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">的蒸发气 (BOG) 热值且船舱多留底液 (Heel)，单船莫名多付 $450,000–$900,000</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• BOG 回流扣减：0% | • 华白数超标拦截：0% | • 单船热值虚增资损：超 $500,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ GIIGNL 净热值公式 + 拉曼/色谱 + BOG 扣减智能托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 在线拉曼光谱 + 双气相色谱 (GC) 门禁：按 ISO 6976 实测密度与高热值 (MMBtu) 结算</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 蒸发气 (BOG) 回流能量与留舱底液 (Heel) 刚性扣减：精确扣除岸罐置换回船舱的气相热值</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• CTMS 雷达/电容液位纵横倾修正与 AIS 暗船筛查：Web IQ 核验 GIIGNL 规范与原产地合规</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 接收站 -162°C 冷能回收 (空分/智算中心液冷) 套利：Web IQ 匹配冷能副产承购立省 $680,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">12ms 硬阻断未扣除回流 BOG 热值或仅按液位体积计费的虚高账单；15ms 拦截 CTMS</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">纵横倾失真与华白数超标；Web IQ 匹配接收站冷能联产承购协议直接抵扣 $680,000.00（净付 $41.32M）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 虚假体积与 BOG 重复计费拦截：100% | • 净能量核算精度：±0.15% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0f233c" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#67e8f9" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">LNG 船货交割 Agent 买的是“净移交热值 (MMBtu)”而非“液体体积 (m³)”！必须绑定【GC/拉曼热值 + BOG 扣减 + CTMS 修正】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_lng_cargo_custody_transfer_policy`) · GIIGNL 6th Ed. &amp; ISO 6976/6578 · 2026-11-11</text>
+</svg>
