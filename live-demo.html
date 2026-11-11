@@ -3060,6 +3060,24 @@
         <div id="tex-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Industrial Flour Milling & Bakery Offtake, Farinograph Stability & Falling Number Mandate Sandbox (Round 126 FAQ Companion) -->
+      <div class="finops-box" id="flour-milling-bakery-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-flr-title">🌾 工业制粉与中央烘焙专用粉交割、粉质仪稳定时间 (&gt;=10 min) 与降落数值 (FN &gt;=300s) 架构：防穗发芽塌腰与零呕吐毒素令牌 (flour_milling_bakery_mandate_...) vs 单看粗蛋白盲付决策器 (Round 126 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 工业烘焙高筋专用小麦粉大宗交割 ($135,000.00)、降落数值 FN/布拉班德粉质稳定时间、14% 水分干基/灰分与 Web IQ 呕吐毒素/气力散装罐车场景 (Flour Milling Scenario):</span></label>
+          <select id="flr-select" onchange="updateFlourMillingBakerySandbox()">
+            <option value="flr_commit_ok">⚡ 降落数值 FN 365s (&gt;=300s) + 粉质稳定 12.5 min (&gt;=10) + 水分 13.6% + 灰分 0.48% + 呕吐毒素 DON 0.22 ppm：19ms 自动结算 $135,000.00! (Act automatically)</option>
+            <option value="flr_fn_403">🛑 掺入雨淋穗发芽小麦 (粗蛋白虽达 13.5%，但 α-淀粉酶超标致降落数值 FN = 165s &lt; 300s，或弱筋麦致稳定时间跌至 4.2 min，吐司出炉全部塌腰粘刀) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="flr_mst_422">🚨 面粉厂过度润麦加水使出厂水分高达 15.6% (&gt;14.0% 把水当面粉卖且易在筒仓结拱发霉) 或混入外层麸皮致灰分 0.72% (&gt;0.55%) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="flr_don_451">🛑 LC-MS/MS 检出梅雨季赤霉病小麦呕吐毒素超标 (DON = 1.85 &gt; 0.75 ppm 高温烘烤不降解) 或违规添加偶氮甲酰胺 (ADA)/过氧化苯甲酰漂白剂：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="flr_slb_409">🧑‍⚖️ Web IQ 将 25kg 纸袋人工拆包切换为食品级铝合金粉罐车气力直吹入仓，并采用真菌木聚糖酶/葡萄糖氧化酶复合酶替代高价进口谷朊粉立省 $21,600.00 (净付 $113,400.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="flr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3624,6 +3642,7 @@ function renderAll() {
   updateBiopharmaCdmoBioreactorSandbox();
   updateSalmonAquacultureRasSandbox();
   updateTextileDyeingFinishingSandbox();
+  updateFlourMillingBakerySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10050,6 +10069,55 @@ function updateTextileDyeingFinishingSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 全幅在线分光 (CMC ΔE &lt;=0.8) + 缩水率 (&lt;=3.0%) + 色牢度 (&gt;=4.0级) 达标：已自动清算 (VERIFIED_TEXTILE_DYEING_TOLLING_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零阴阳片成衣报废、零拉幅虚增码数</strong>：纺织印染与面料定型代工批次已完成结算（<code>$145,000.00</code>）！" +
+    "</div>";
+}
+
+function updateFlourMillingBakerySandbox() {
+  var selEl = document.getElementById("flr-select");
+  var outEl = document.getElementById("flr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "flr_fn_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPROUTED_WHEAT_FALLING_NUMBER_OR_WEAK_GLUTEN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "收货筒仓前 <code>Perten 哈格伯格降落数值仪 (ISO 3093) 与 Brabender 粉质仪 (ISO 5530-1)</code> 实测显示，该批面粉虽粗蛋白达 13.5%，但因掺入雨淋穗发芽小麦致降落数值暴跌至 <code>FN = 165s &lt; 300s</code>（α-淀粉酶活度超标将把面团淀粉切成粘稠糊精，吐司出炉必塌腰粘刀），或面团稳定时间仅 <code>4.2 min &lt; 10.0 min</code>（<code>falling_number_and_farinograph_stability_verified == False</code>）。网关在 <code>11ms</code> 内锁死进仓气力蝶阀并硬阻断 <code>$135,000.00</code> 账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "flr_mst_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXCESS_TEMPERING_MOISTURE_OR_HIGH_BRAN_ASH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "溜管 <code>在线近红外光谱仪 (NIR) 与马弗炉灰分仪</code> 检出出厂面粉因过度润麦水分高达 <code>15.6% &gt; 14.0%</code> 且未按标准干基扣重（把自来水当高筋粉卖并极易在立筒仓内发热结拱发霉），或混入外层麸皮致灰分 <code>0.72% &gt; 0.55% DB</code>（<code>moisture_14pct_dry_basis_and_ash_passed == False</code>）。网关在 <code>14ms</code> 内拦截并强制按 14.0% 干基重算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "flr_don_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DON_VOMITOXIN_OR_BANNED_BLEACHING_AGENT_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查第三方实验室 <code>LC-MS/MS 真菌毒素与清洁标签库</code>，检出该批小麦受赤霉病感染致脱氧雪腐镰刀菌烯醇（呕吐毒素）达 <code>DON = 1.85 ppm &gt; 0.75 ppm</code>，或违规添加偶氮甲酰胺 (ADA)/过氧化苯甲酰增白剂，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "flr_slb_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BULK_PNEUMATIC_SILO_AND_ENZYME_BLEND_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将 25kg 多层纸袋托盘交付切换为 <code>食品级铝合金粉罐车气力直吹入仓 (免除包装费、拆袋人工与挂壁损耗)</code>，并采用 <code>真菌木聚糖酶/葡萄糖氧化酶复合酶制剂</code> 替代昂贵的进口干谷朊粉补强面筋，单批次立省 <code>$21,600.00</code>（净付降至 <code>$113,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 降落数值 (FN &gt;=300s) + 粉质稳定 (&gt;=10 min) + DON 毒素 (&lt;=0.75 ppm) 达标：已自动清算 (VERIFIED_FLOUR_MILLING_BAKERY_OFFTAKE_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零穗发芽塌腰粘刀、零润麦兑水买单</strong>：工业制粉与中央烘焙专用粉批次已完成结算（<code>$135,000.00</code>）！" +
     "</div>";
 }
 

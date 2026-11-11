@@ -8215,6 +8215,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("textile-dyeing-finishing-sandbox", demo_zh)
 
+    def test_flour_milling_bakery_farinograph_falling_number_don_mycotoxin_mandate_vs_sprouted_wheat_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_flour_milling_bakery_policy,
+        )
+
+        # 1. Verified Falling Number >=300s + Farinograph stability >=10 min + 14% moisture + DON <=0.75 ppm -> 200 OK ($135,000)
+        commit_ok = evaluate_flour_milling_bakery_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_flour_cents, 13500000)
+
+        # 2. Sprouted wheat alpha-amylase (FN < 300s) or weak gluten (<10 min) -> 403 blocked in 11ms
+        fn_403 = evaluate_flour_milling_bakery_policy(
+            falling_number_and_farinograph_stability_verified=False,
+        )
+        self.assertFalse(fn_403.allowed)
+        self.assertEqual(fn_403.http_status, 403)
+        self.assertEqual(
+            fn_403.flour_lane,
+            "SPROUTED_WHEAT_FALLING_NUMBER_OR_WEAK_GLUTEN_BLOCKED",
+        )
+
+        # 3. Over-tempered water weight (>14.0% unadjusted) or high bran ash (>0.55%) -> 422 blocked in 14ms
+        mst_422 = evaluate_flour_milling_bakery_policy(
+            moisture_14pct_dry_basis_and_ash_passed=False,
+        )
+        self.assertFalse(mst_422.allowed)
+        self.assertEqual(mst_422.http_status, 422)
+        self.assertEqual(
+            mst_422.flour_lane,
+            "EXCESS_TEMPERING_MOISTURE_OR_HIGH_BRAN_ASH_BLOCKED",
+        )
+
+        # 4. Web IQ detects Fusarium DON vomitoxin (>0.75 ppm) or banned ADA bleach -> 451 blocked in 285ms
+        don_451 = evaluate_flour_milling_bakery_policy(
+            webiq_don_mycotoxin_and_clean_label_clean=False,
+        )
+        self.assertFalse(don_451.allowed)
+        self.assertEqual(don_451.http_status, 451)
+
+        # 5. Web IQ switches to bulk pneumatic tanker & fungal xylanase enzyme blend saving $21,600 ($113,400 net) -> 409 Confirm
+        slb_409 = evaluate_flour_milling_bakery_policy(
+            bulk_pneumatic_silo_and_enzyme_savings_cents=2160000,
+        )
+        self.assertFalse(slb_409.allowed)
+        self.assertEqual(slb_409.http_status, 409)
+        self.assertEqual(slb_409.settled_flour_cents, 11340000)
+        self.assertEqual(slb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["flour_milling_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("flour-milling-bakery-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
