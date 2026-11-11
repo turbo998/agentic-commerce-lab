@@ -2358,6 +2358,24 @@
         <div id="rail-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Grid-Scale BESS Tolling, Usable SOH & AC-AC RTE Mandate Sandbox (Round 87 FAQ Companion) -->
+      <div class="finops-box" id="grid-bess-tolling-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bess-title">🔋 电网级独立储能电站容量租赁 (BESS Tolling)、并网点实测可用容量 (SOH &gt;=92%) 与含厂用电往返效率 (AC-AC RTE &gt;=86%) 架构：实测容量令牌 (bess_tolling_soh_mandate_...) vs 铭牌盲付决策器 (Round 87 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 100MW / 400MWh 电网级独立储能电站月度容量租赁 ($280,000.00)、POI 关口表实测可用 SOH (&gt;=92%)、含液冷厂用电净 AC-AC RTE (&gt;=86%) 与 Web IQ 电能量+旋转备用联合出清场景 (Grid-Scale BESS Tolling Scenario):</span></label>
+          <select id="bess-select" onchange="updateGridBessTollingSandbox()">
+            <option value="bess_commit_ok">⚡ 高压并网点 (POI) 关口表实测可用放电 382MWh (SOH 95.5%) + 含液冷厂用电净 AC-AC RTE 87.4% + AGC 4s 达标：21ms 自动结算 $280,000.00! (Act automatically)</option>
+            <option value="bess_soh_403">🛑 串联簇间木桶效应与电芯衰减导致实测可用容量跌至 318MWh (SOH 79.5% &lt; 92%) 却仍按 100% 铭牌 MWh 收费拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="bess_rte_422">🚨 计入夏季液冷冷水机组 (Aux HVAC) 厂用电后全站净 AC-AC 效率跌破 79% (&lt;86%) 或晚高峰尖峰电价时 PCS 过热限功率 50% 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="bess_efc_451">🛑 高频刷单调度突破电芯原厂质保等效循环上限 (&gt;365 EFC/yr) 面临脱保或缺失 UL 9540A 热失控认证：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="bess_rsv_409">🧑‍⚖️ Web IQ 将平段低价差窗口协同挂牌同步旋转备用 (Synchronized Spinning Reserve) 零物理循环磨损增收冲抵 $42,000.00 (净付 $238,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bess-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2883,6 +2901,7 @@ function renderAll() {
   updateSatelliteEoSarSandbox();
   updateLngCargoCustodySandbox();
   updateRailFreightCarloadSandbox();
+  updateGridBessTollingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7398,6 +7417,55 @@ function updateRailFreightCarloadSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ AAR AEI 轨旁 RFID 进出线核验 + 零扎堆/漏挂罚款 + 私有轨免责：已自动清算 (VERIFIED_RAIL_CARLOAD_FREIGHT_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零建设性送达霸王罚款、零自备车乱收费</strong>：月度铁路大宗车皮运费与专用线交割账单已完成结算（<code>$92,000.00</code>）！" +
+    "</div>";
+}
+
+function updateGridBessTollingSandbox() {
+  var selEl = document.getElementById("bess-select");
+  var outEl = document.getElementById("bess-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "bess_soh_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNADJUSTED_NAMEPLATE_MWH_OR_POI_SOH_SHORTFALL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "高压并网点（<code>POI 0.2S 关口电度表</code>）4 小时满放测试显示因串联电芯簇木桶效应与容量衰减，实测可用放电量仅为 <code>318 MWh</code>（<code>Usable SOH = 79.5% &lt; 92%</code>），但业主仍按 <code>400 MWh</code> 直流铭牌全额计收租金（<code>poi_usable_soh_and_capacity_test_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$280,000.00</code> 虚高铭牌租单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bess_rte_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 NET_AC_AC_RTE_AUX_LOSS_BREACH_OR_PEAK_THERMAL_DERATING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "计入站用变液冷冷水机组（<code>Aux HVAC Chiller</code>）与升压变耗电后，全站净交流往返效率跌至 <code>78.8%</code>（突破 <code>86%</code> 保底线），或晚高峰尖峰电价窗口因电芯温升 <code>&gt;45°C</code> 触发 PCS 限功率 50%（<code>net_ac_ac_rte_including_aux_hvac_passed == False</code>）。网关在 <code>14ms</code> 内拦截并扣减电损与违约赔偿！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bess_efc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OEM_WARRANTY_EFC_OVER_CYCLING_OR_UL9540A_SAFETY_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查电芯原厂质保协议与 UL 9540A 消防台账，检出当前调度指令将使年度累计等效满充满放次数突破 <code>365 EFC/yr</code> 质保红线并触发高额超循环罚金，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "bess_rsv_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CO_OPTIMIZED_SPINNING_RESERVE_STACKING_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 协同优化日前电能量峰谷套利与辅助服务市场，将平段低价差窗口容量挂牌至 <code>同步旋转备用 (Synchronized Spinning Reserve)</code> 零物理循环损耗获取容量补偿，单月冲抵租金 <code>$42,000.00</code>（净付降至 <code>$238,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 高压并网点 (POI) 实测可用 SOH (&gt;=92%) + 含厂用电净 AC-AC RTE (&gt;=86%) 达标：已自动清算 (VERIFIED_GRID_SCALE_BESS_TOLLING_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零铭牌缩水溢价、零液冷厂用电隐性转嫁</strong>：100MW/400MWh 独立储能电站月度容量租赁费已完成结算（<code>$280,000.00</code>）！" +
     "</div>";
 }
 

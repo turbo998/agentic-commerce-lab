@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg89" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061412"/>
+      <stop offset="50%" stop-color="#0d2924"/>
+      <stop offset="100%" stop-color="#143d36"/>
+    </linearGradient>
+    <linearGradient id="accent89" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg89)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#081c19" stroke="#10b981" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent89)"/>
+
+  <text x="60" y="72" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 87 · GRID-SCALE BESS TOLLING, USABLE SOH &amp; AC-AC RTE DISPATCH MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">电网级独立储能电站容量租赁、实测可用 SOH 与往返效率 (AC-AC RTE) 托管 vs 铭牌盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">BMS Usable MWh SOH (&gt;=92%) + AC-AC RTE (&gt;=86% incl. Aux HVAC) + AGC 4s Telemetry vs. Nameplate MWh Overbilling</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按铭牌容量 (Nameplate MWh) 固定包租模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 电芯衰减与木桶效应缩水：铭牌 400MWh 因簇间不均衡实际仅能放出 318MWh，租金照收 100%</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 隐瞒液冷机组辅助耗电 (Aux Load)：只报直流侧 93% 效率，算上空调与升压变实际 AC-AC 跌破 79%</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 晚高峰尖峰电价时过热降功率：电芯温度超 45°C 触发 PCS 强行限功率 50%，错失高价卖电窗口</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 盲目高频调频击穿电芯质保上限：突破每年 365 次等效满充满放 (EFC)，面临原厂质保作废罚款</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型售电公司 / 虚拟电厂 (VPP) 独立储能容量租赁 (Tolling) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">交易 Agent 按 $7.00/kW-month 预付 $280,000 月度储能容量租金，因夏季液冷故障</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">导致晚高峰放电容量缩水 22% 且 AC-AC 损耗电费暴增，单月倒亏 $65,000+</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 衰减容量扣减：0% | • 辅助耗电穿透：0% | • 尖峰掉线罚金：全由承租方背锅</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 实测可用 MWh + 全站 AC-AC 效率 + 多市场叠加以托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 并网点 (POI) 实测可用容量门禁 (SOH &gt;=92%)：按关口表实测 4 小时可放出的净 MWh 折算租金</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 含液冷厂用电的 AC-AC 往返效率 (&gt;=86%) 与 AGC 4s 响应：低于效率保证值由业主赔付损耗电费</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 等效循环次数 (EFC &lt;=365/yr) 与 UL 9540A 消防合规：Web IQ 核验电芯原厂质保边界与电网导则</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 现货峰谷套利 + 备用/调频辅助服务联合出清套利：Web IQ 跨品种协同报价增收抵租 $42,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断按未折减铭牌 MWh 计费的虚高租金单；14ms 拦截扣除液冷厂用电后 AC-AC</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">往返效率不达标 (&lt;86%)；Web IQ 联合优化日前电能量与同步备用市场增收抵扣 $42,000（净付 $238k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 铭牌缩水溢价拦截：100% | • 尖峰可用率保障：&gt;=98% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0d2622" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">电网储能容量租赁 Agent 绝不能按直流铭牌 MWh 盲付！必须绑定【并网点可用 SOH + 含厂用电 AC-AC RTE + AGC 响应】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_grid_scale_bess_tolling_policy`) · FERC Order 841 &amp; IEEE 2030.2 · 2026-11-11</text>
+</svg>

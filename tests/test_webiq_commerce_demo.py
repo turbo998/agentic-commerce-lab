@@ -6031,6 +6031,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rail-freight-carload-sandbox", demo_zh)
 
+    def test_grid_scale_bess_tolling_soh_rte_dispatch_mandate_vs_nameplate_degradation_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_grid_scale_bess_tolling_policy,
+        )
+
+        # 1. Verified POI Usable SOH >=92% + Net AC-AC RTE >=86% incl. Aux HVAC -> 200 OK ($280,000)
+        commit_ok = evaluate_grid_scale_bess_tolling_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_tolling_cents, 28000000)
+
+        # 2. Unadjusted DC nameplate MWh billing despite usable SOH <92% -> 403 blocked in 11ms
+        soh_403 = evaluate_grid_scale_bess_tolling_policy(
+            poi_usable_soh_and_capacity_test_verified=False,
+        )
+        self.assertFalse(soh_403.allowed)
+        self.assertEqual(soh_403.http_status, 403)
+        self.assertEqual(
+            soh_403.bess_lane,
+            "UNADJUSTED_NAMEPLATE_MWH_OR_POI_SOH_SHORTFALL_BLOCKED",
+        )
+
+        # 3. Net AC-AC RTE <86% including Aux HVAC chillers or peak thermal derating -> 422 blocked in 14ms
+        rte_422 = evaluate_grid_scale_bess_tolling_policy(
+            net_ac_ac_rte_including_aux_hvac_passed=False,
+        )
+        self.assertFalse(rte_422.allowed)
+        self.assertEqual(rte_422.http_status, 422)
+        self.assertEqual(
+            rte_422.bess_lane,
+            "NET_AC_AC_RTE_AUX_LOSS_BREACH_OR_PEAK_THERMAL_DERATING_BLOCKED",
+        )
+
+        # 4. Web IQ detects OEM warranty EFC (>365/yr) breach or UL 9540A lapse -> 451 blocked in 295ms
+        efc_451 = evaluate_grid_scale_bess_tolling_policy(
+            webiq_efc_warranty_cap_and_ul9540a_clean=False,
+        )
+        self.assertFalse(efc_451.allowed)
+        self.assertEqual(efc_451.http_status, 451)
+
+        # 5. Web IQ co-optimizes Day-Ahead + Synchronized Spinning Reserve stacking saving $42,000 ($238,000 net) -> 409 Confirm
+        rsv_409 = evaluate_grid_scale_bess_tolling_policy(
+            co_optimized_reserve_stacking_savings_cents=4200000,
+        )
+        self.assertFalse(rsv_409.allowed)
+        self.assertEqual(rsv_409.http_status, 409)
+        self.assertEqual(rsv_409.settled_tolling_cents, 23800000)
+        self.assertEqual(rsv_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["grid_bess_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("grid-bess-tolling-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
