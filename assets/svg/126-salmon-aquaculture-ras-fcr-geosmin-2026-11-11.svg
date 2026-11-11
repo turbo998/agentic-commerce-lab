@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg126" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041524"/>
+      <stop offset="50%" stop-color="#0A263D"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent126" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FB7185"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg126" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#102C46"/>
+      <stop offset="100%" stop-color="#071626"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg126)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent126)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#881337" stroke="#FB7185" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FFE4E6" text-anchor="middle">
+    ROUND 124 · SALMON AQUACULTURE (RAS / OFFSHORE) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    深海与循环水三文鱼养殖交割 (RAS/Offshore)、3D 饵料系数 (eFCR) 与土臭素智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Stereo-Vision Biomass eFCR (&lt;=1.15), Geosmin/MIB Off-Flavor (&lt;=10 ng/kg) &amp; SalmoFan Color (&gt;=26) vs. Uneaten-Feed &amp; Muddy-Fish Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Feed Tonnage & Muddy Off-Flavor Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg126)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按饲料吨数与毛鱼重盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 盲目过量投喂致 18% 高价鱼粮沉底腐烂</text>
+    <text x="58" y="224" fill="#CBD5E1">• 饲料油分渗漏或粉末率高，eFCR 恶化至 1.48，收走 $160,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 残饵沉入网箱底耗氧产硫化氢，诱发鱼群窒息浮头</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 陆基循环水 (RAS) 未暂养脱腥致“土腥味 (Geosmin)”</text>
+    <text x="58" y="294" fill="#CBD5E1">• 生物滤池放线菌产生土臭素 Geosmin &gt; 45 ng/kg (&gt;10 ng/kg)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 或偷减虾青素致鱼肉惨白 (SalmoFan &lt; 22)，刺身商超整批拒收</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 海虱 (Sea Lice) 爆发或饲用鱼粉混入非法捕捞</text>
+    <text x="58" y="364" fill="#CBD5E1">• 成年雌性海虱 &gt; 0.5 只/尾违反挪威/苏格兰强制屠宰红线</text>
+    <text x="58" y="382" fill="#CBD5E1">• 缺失 ASC 水产认证，高端生鲜渠道全线退单</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$160,000 沉底残饵与土腥味成鱼退货款
+  </text>
+
+  <!-- Center Card: 4-Layer Salmon Aquaculture Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg126)" stroke="#FB7185" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#881337"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FFE4E6" text-anchor="middle">
+    ⚡ 水下双目 3D 增重 + 土臭素 GC-MS + 藻油托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#FB7185" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDA4AF">
+    Gate 1 · 水下双目 3D 增重与饵料系数 (eFCR &lt;=1.15 · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    颗粒水中溃散或漏停投饵机致 eFCR &gt; 1.15 / 未绝食排空肠道 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 FEED_CONVERSION_WASTE_OR_UNFASTED_GUT_WEIGHT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 土臭素 (&lt;=10 ng/kg) 与虾青素色度 (&gt;=26 · 14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    RAS 未完成清水脱腥 (Geosmin &gt; 10 ng/kg) 或 SalmoFan &lt; 26 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 GEOSMIN_MUDDY_OFF_FLAVOR_OR_PALE_FLESH_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ ASC 认证与海虱上限 (&lt;=0.2只/尾 · 285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    激光除虱相机检出海虱超标或缺失 ASC / MarinTrust 鱼粉证 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 SEA_LICE_REGULATORY_BREACH_OR_ASC_CERT_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 裂殖壶藻油/黑水虻蛋白替代鱼油 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    微藻 EPA/DHA 替代秘鲁鱼油 + RAS 鱼粪厌氧沼气发电冲抵 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $25,600 ($134,400 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $160,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg126)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 124)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• eFCR 1.08 与色度 28 级达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$160,000.00 (Geosmin 3.2 ng/kg)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 饲料沉底浪费或未绝食肠道增重拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截虚高款：$160,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 土臭素土腥味或鱼肉色泽惨白拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 强制回清水池完成 7天脱腥</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 微藻油 EPA/DHA 与污泥沼气 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$25,600.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  145 / 145 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住高端刺身三文鱼零土腥与低饵料系数生命线
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDA4AF">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“投喂饲料总吨数”或“未停食带肠胃残饵活鱼毛重”盲付三文鱼水产交割款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 水下双目 3D 视觉增重实测经济饵料系数 eFCR &lt;=1.15 且捕捞前停食排空 &gt;=48h (11ms 拦 403)；② 土臭素 Geosmin &lt;=10 ng/kg 且色度 &gt;=26 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 ASC 水产认证与海虱密度 (&lt;=0.2只/尾, 285ms 拦 451)，并采用裂殖壶藻油替代高价秘鲁鱼油叠加 RAS 鱼粪沼气发电立省 $25,600 (295ms)。
+  </text>
+</svg>

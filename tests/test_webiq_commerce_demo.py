@@ -8047,6 +8047,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("tire-rubber-mooney-sandbox", demo_zh)
 
+    def test_biopharma_cdmo_bioreactor_titer_hcp_endotoxin_mandate_vs_slot_reservation_batch_failure_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_biopharma_cdmo_bioreactor_policy,
+        )
+
+        # 1. Verified Raman titer >=5.0 g/L + HCP <=100 ppm + endotoxin <=0.1 EU/mg -> 200 OK ($390,000)
+        commit_ok = evaluate_biopharma_cdmo_bioreactor_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cdmo_cents, 39000000)
+
+        # 2. SUB bag pinhole contamination or DO drift crashing titer < 5.0 g/L -> 403 blocked in 12ms
+        tit_403 = evaluate_biopharma_cdmo_bioreactor_policy(
+            raman_titer_and_sterility_verified=False,
+        )
+        self.assertFalse(tit_403.allowed)
+        self.assertEqual(tit_403.http_status, 403)
+        self.assertEqual(
+            tit_403.cdmo_lane,
+            "LOW_BIOREACTOR_TITER_OR_MYCOPLASMA_CONTAMINATION_BLOCKED",
+        )
+
+        # 3. Over-cycled Protein-A resin leaving HCP > 100 ppm -> 422 blocked in 15ms
+        hcp_422 = evaluate_biopharma_cdmo_bioreactor_policy(
+            protein_a_hcp_endotoxin_and_sec_passed=False,
+        )
+        self.assertFalse(hcp_422.allowed)
+        self.assertEqual(hcp_422.http_status, 422)
+        self.assertEqual(
+            hcp_422.cdmo_lane,
+            "HOST_CELL_PROTEIN_OR_ENDOTOXIN_AGGREGATE_BLOCKED",
+        )
+
+        # 4. Web IQ detects 21 CFR Part 11 audit-trail deletion or active FDA OAI warning -> 451 blocked in 290ms
+        fda_451 = evaluate_biopharma_cdmo_bioreactor_policy(
+            webiq_part11_audit_trail_and_fda_oai_clean=False,
+        )
+        self.assertFalse(fda_451.allowed)
+        self.assertEqual(fda_451.http_status, 451)
+
+        # 5. Web IQ applies N-1 ATF perfusion & 3-column PCC chromatography saving $62,000 ($328,000 net) -> 409 Confirm
+        pcc_409 = evaluate_biopharma_cdmo_bioreactor_policy(
+            n1_perfusion_and_continuous_chromatography_savings_cents=6200000,
+        )
+        self.assertFalse(pcc_409.allowed)
+        self.assertEqual(pcc_409.http_status, 409)
+        self.assertEqual(pcc_409.settled_cdmo_cents, 32800000)
+        self.assertEqual(pcc_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["biopharma_cdmo_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("biopharma-cdmo-bioreactor-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

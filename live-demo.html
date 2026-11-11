@@ -3006,6 +3006,24 @@
         <div id="rub-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Biopharma CDMO Bioreactor Campaign (2,000L SUB), Raman Titer & HCP/Endotoxin Mandate Sandbox (Round 123 FAQ Companion) -->
+      <div class="finops-box" id="biopharma-cdmo-bioreactor-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cdm-title">🧬 生物药 CDMO 单抗发酵代工 (2,000L SUB)、在线拉曼滴度 (&gt;=5.0 g/L) 与宿主细胞蛋白 (HCP &lt;=100 ppm) 架构：合格原液放行与防染菌令牌 (biopharma_cdmo_bioreactor_mandate_...) vs 槽位预订盲付决策器 (Round 123 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 2,000L 一次性生物反应器单抗 cGMP 原液批次交割 ($390,000.00)、在线拉曼分泌滴度、Protein-A 层析后 HCP/内毒素与 Web IQ FDA 21 CFR Part 11/N-1 灌流场景 (Biopharma CDMO Scenario):</span></label>
+          <select id="cdm-select" onchange="updateBiopharmaCdmoBioreactorSandbox()">
+            <option value="cdm_commit_ok">⚡ 在线拉曼收获滴度 6.4 g/L (&gt;=5.0) + 支原体阴性 + HCP 18 ppm (&lt;=100) + 内毒素 0.02 EU/mg + Part 11 完整：21ms 自动结算 $390,000.00! (Act automatically)</option>
+            <option value="cdm_tit_403">🛑 2,000L 一次性反应袋焊缝微漏感染支原体 (或溶氧/补料失误致收获滴度跌至 1.8 g/L &lt; 5.0 g/L)，CDMO 企图按槽位预订条款强收全款拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="cdm_hcp_422">🚨 CDMO 超期混用老旧 Protein-A 亲和填料 (&gt;150 次循环) 致宿主细胞蛋白残留高达 HCP = 420 ppm (&gt; 100 ppm 引发人体免疫风暴) 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="cdm_fda_451">🛑 层析工作站违反 FDA 21 CFR Part 11 手动删除异常杂峰审计追踪，或该 CDMO 厂区刚被 FDA 判定为 OAI 警告信状态：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="cdm_pcc_409">🧑‍⚖️ Web IQ 升级 N-1 种子交替切向流灌流 (缩短主罐占用 4天) 并采用 3柱连续逆流亲和层析 (PCC 省 40% Protein-A 天价填料) 立省 $62,000.00 (净付 $328,000.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cdm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3567,6 +3585,7 @@ function renderAll() {
   updateKraftPulpAdmtSandbox();
   updateFloatSolarGlassSandbox();
   updateTireRubberMooneySandbox();
+  updateBiopharmaCdmoBioreactorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -9846,6 +9865,55 @@ function updateTireRubberMooneySandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 到厂 MDR 焦烧 (ts2 &gt;=4.5m) + 光学分散度 (&gt;=95%) + EUDR/PAH 达标：已自动清算 (VERIFIED_TIRE_RUBBER_MOONEY_MDR_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零在途焦烧死胶堵机、零白炭黑硬团聚爆胎隐患</strong>：新能源车轮胎橡胶与终炼母炼胶批次已完成结算（<code>$190,000.00</code>）！" +
+    "</div>";
+}
+
+function updateBiopharmaCdmoBioreactorSandbox() {
+  var selEl = document.getElementById("cdm-select");
+  var outEl = document.getElementById("cdm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cdm_tit_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_BIOREACTOR_TITER_OR_MYCOPLASMA_CONTAMINATION_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "2,000L 一次性生物反应器 <code>浸入式在线拉曼光谱探头 (In-Situ Raman) 与快速 qPCR</code> 实测显示，因反应袋焊缝针孔微漏感染支原体或夜班补料渗透压失控，第 14 天收获抗体滴度跌至 <code>1.8 g/L &lt; 5.0 g/L</code>（<code>raman_titer_and_sterility_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$390,000.00</code> 槽位账单并触发 CDMO 免费重投批（Free Re-Run）！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cdm_hcp_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HOST_CELL_PROTEIN_OR_ENDOTOXIN_AGGREGATE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "下游纯化 LIMS 检出原液中残留中国仓鼠宿主细胞蛋白高达 <code>HCP = 420 ppm &gt; 100 ppm</code> 或 SEC-HPLC 高分子聚集体 &gt;2.0%（因 CDMO 为省耗材超期使用老化 Protein-A 亲和层析填料，注射进人体将引发严重免疫原性风暴，<code>protein_a_hcp_endotoxin_and_sec_passed == False</code>）。网关在 <code>15ms</code> 内拦截并强令更换新填料重纯化！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cdm_fda_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CFR_PART11_AUDIT_TRAIL_OR_FDA_OAI_WARNING_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查层析工作站 <code>FDA 21 CFR Part 11 电子审计追踪哈希</code> 与 FDA 飞检分类数据库（FEI Inspection Classification），检出操作员手动删除异常积分峰或该厂区刚收到 <code>FDA OAI 警告信</code>（将直接连累新药 BLA 申请被拒），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cdm_pcc_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 N1_PERFUSION_AND_CONTINUOUS_CHROMATOGRAPHY_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将传统批次培养升级为 <code>N-1 种子罐交替切向流高密度灌流 (ATF Perfusion，缩短主罐占用 4 天)</code>，并在下游启用 <code>3柱连续逆流亲和层析 (PCC，节省 40% 天价 Protein-A 填料耗材)</code>，单批次立省 <code>$62,000.00</code>（净付降至 <code>$328,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 在线拉曼滴度 (&gt;=5.0 g/L) + HCP (&lt;=100 ppm) + 内毒素 (&lt;=0.1 EU/mg) 达标：已自动清算 (VERIFIED_BIOPHARMA_CDMO_CAMPAIGN_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零染菌废批白交槽位费、零老化填料杂质残留</strong>：生物药 CDMO 2,000L 单抗 cGMP 原液批次已完成结算（<code>$390,000.00</code>）！" +
     "</div>";
 }
 
