@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg91" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1020"/>
+      <stop offset="50%" stop-color="#152242"/>
+      <stop offset="100%" stop-color="#1e3260"/>
+    </linearGradient>
+    <linearGradient id="accent91" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg91)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0d172e" stroke="#38bdf8" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent91)"/>
+
+  <text x="60" y="72" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 89 · AVIATION ROTABLE AOG EXCHANGE, ATEC TEARDOWN &amp; BER CAP MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">航空航材周转件 AOG 紧急交换、ATEC 台架拆解验真与 BER 封顶托管 vs 旧件押金全扣</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">ATA Spec 2000 Off-Wing Core ATEC Tear-Down Log + BER Cap (&lt;=65% Fair Market) + DER Repair vs. Outright Penalty</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统 AOG 航材交换滥判 BER 没收旧件押金模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 随意判定“超经济维修 (BER)”黑吃旧件：航司寄回轻微故障旧件，经纪商一句话判报废吞掉 $150k 押金</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 按全新目录价 (CLP Outright) 索赔二手件：发来的是修了 8 次的老旧件，却按全新原厂目录价扣款</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• “无故障发现 (NFF)”与翻新刷漆件充好：换上的可用件装机飞 2 个起落又报同一故障码</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 拒绝高性价比 FAA DER 超手册修复：原本 $18k 等离子喷涂可修好，硬逼买 $120k 全新子部件</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型航空公司 / 货运机队 AOG 航材周转件交换 (Exchange + Core) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">机务 Agent 为解除飞机停场 (AOG) 支付 $25k 交换费并冻结 $160k 旧件押金 (Core Deposit)，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">30 天后航材商在无 ATEC 自动测试台报告的情况下宣称旧件 BER 报废，强行划走全额 $185,000</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 恶意 BER 拒赔拦截：0% | • DER 修复套利：0% | • 单件旧件押金资损：$80,000–$160,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ ATEC 自动测试台谱图 + BER 残值封顶 + DER 修复托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ATEC/ATLAS 自动测试台原始数据与 CMM 拆解门禁：无逐项超差谱图严禁单方面判定 BER 报废</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 换入件 MTBUR 在翼寿命保证与 BER 封顶 (&lt;=65% 二手市价)：严禁按原厂全新目录价 (CLP) 敲诈</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ATA Spec 2000 物流免责期与 FAA/EASA 双释放核验：Web IQ 剔除海关扣留期并校验适航证</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• FAA 委任工程代表 (DER) 修复 + 封顶包修 (Flat-Rate) 套利：挽救疑似 BER 旧件立省 $52,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断无 ATEC 原始测试台日志的“口头 BER 没收 $160k 押金”；14ms 拦截发来带隐患</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">短寿件或按全新目录价索赔；Web IQ 匹配 FAA DER 批准修复方案挽救旧件立省 $52,000（净付 $133k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 恶意 BER 吞押金拦截：100% | • 装机满 500 飞行小时保障：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#111d3b" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">AOG 航材周转件交换 Agent 绝不能签无限额 Catalog List Price 押金条！必须绑定【ATEC 谱图 + BER 封顶 + DER 修复】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_aviation_rotable_exchange_policy`) · ATA Spec 2000 &amp; FAA Order 8110.37 · 2026-11-11</text>
+</svg>

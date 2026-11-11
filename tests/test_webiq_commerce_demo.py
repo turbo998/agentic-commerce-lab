@@ -6143,6 +6143,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("municipal-water-nrw-sandbox", demo_zh)
 
+    def test_aviation_rotable_exchange_aog_egt_margin_ber_cap_mandate_vs_outright_core_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aviation_rotable_exchange_policy,
+        )
+
+        # 1. Verified ATEC bench log + Overhauled FMV cap + >=500 FH ACARS reliability -> 200 OK ($185,000)
+        commit_ok = evaluate_aviation_rotable_exchange_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rotable_cents, 18500000)
+
+        # 2. Unsubstantiated BER claim without ATEC bench log or unreturned condemned core -> 403 blocked in 11ms
+        ber_403 = evaluate_aviation_rotable_exchange_policy(
+            atec_bench_log_and_core_title_return_verified=False,
+        )
+        self.assertFalse(ber_403.allowed)
+        self.assertEqual(ber_403.http_status, 403)
+        self.assertEqual(
+            ber_403.rotable_lane,
+            "UNSUBSTANTIATED_BER_CLAIM_OR_CORE_RETENTION_DOUBLE_DIP_BLOCKED",
+        )
+
+        # 3. OEM new Catalog List Price (CLP) overcharge on used unit or incoming DOA rogue unit -> 422 blocked in 14ms
+        clp_422 = evaluate_aviation_rotable_exchange_policy(
+            fmv_ber_cap_and_incoming_lru_mtbur_passed=False,
+        )
+        self.assertFalse(clp_422.allowed)
+        self.assertEqual(clp_422.http_status, 422)
+        self.assertEqual(
+            clp_422.rotable_lane,
+            "OEM_CLP_LIST_PRICE_OVERCHARGE_OR_INCOMING_ROGUE_UNIT_DOA_BLOCKED",
+        )
+
+        # 4. Web IQ detects unlawful late-core fee during customs hold or missing dual-release tag -> 451 blocked in 295ms
+        cst_451 = evaluate_aviation_rotable_exchange_policy(
+            webiq_customs_stop_clock_and_dual_release_clean=False,
+        )
+        self.assertFalse(cst_451.allowed)
+        self.assertEqual(cst_451.http_status, 451)
+
+        # 5. Web IQ matches FAA Form 8110-3 DER repair rescuing core from BER saving $52,000 ($133,000 net) -> 409 Confirm
+        der_409 = evaluate_aviation_rotable_exchange_policy(
+            faa_der_repair_and_flat_rate_exchange_savings_cents=5200000,
+        )
+        self.assertFalse(der_409.allowed)
+        self.assertEqual(der_409.http_status, 409)
+        self.assertEqual(der_409.settled_rotable_cents, 13300000)
+        self.assertEqual(der_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aviation_rotable_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aviation-rotable-exchange-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
