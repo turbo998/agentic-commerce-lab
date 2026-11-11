@@ -7487,6 +7487,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("precious-metal-catalyst-sandbox", demo_zh)
 
+    def test_automated_cold_storage_asrs_dewpoint_frost_shuttle_throughput_mandate_vs_pallet_slot_freeze_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_automated_cold_storage_asrs_policy,
+        )
+
+        # 1. Verified airlock dew-point <=-35°C + FEM 9.851 throughput >=45 pallets/h + O2 <=15% -> 200 OK ($145,000)
+        commit_ok = evaluate_automated_cold_storage_asrs_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cold_asrs_cents, 14500000)
+
+        # 2. Desiccant rotor off raising dew-point > -35°C (frost blindness) -> 403 blocked in 11ms
+        dew_403 = evaluate_automated_cold_storage_asrs_policy(
+            airlock_dewpoint_and_top_rack_temp_verified=False,
+        )
+        self.assertFalse(dew_403.allowed)
+        self.assertEqual(dew_403.http_status, 403)
+        self.assertEqual(
+            dew_403.cold_asrs_lane,
+            "AIRLOCK_DEWPOINT_FROST_OR_THERMAL_STRATIFICATION_BLOCKED",
+        )
+
+        # 3. Stacker-crane throughput < 45 pallets/h or bogus re-palletizing fee -> 422 blocked in 14ms
+        crn_422 = evaluate_automated_cold_storage_asrs_policy(
+            fem9851_dual_command_throughput_and_contour_passed=False,
+        )
+        self.assertFalse(crn_422.allowed)
+        self.assertEqual(crn_422.http_status, 422)
+        self.assertEqual(
+            crn_422.cold_asrs_lane,
+            "STACKER_CRANE_THROUGHPUT_BREACH_OR_PALLET_FEE_BLOCKED",
+        )
+
+        # 4. Web IQ detects offline VdS 3527 hypoxic fire system or ammonia leak -> 451 blocked in 285ms
+        hyp_451 = evaluate_automated_cold_storage_asrs_policy(
+            webiq_hypoxic_fire_and_ammonia_safety_clean=False,
+        )
+        self.assertFalse(hyp_451.allowed)
+        self.assertEqual(hyp_451.http_status, 451)
+
+        # 5. Web IQ dispatches off-peak -29°C Thermal-Flywheel pre-cooling saving $23,200 ($121,800 net) -> 409 Confirm
+        fly_409 = evaluate_automated_cold_storage_asrs_policy(
+            supercooling_thermal_flywheel_dr_savings_cents=2320000,
+        )
+        self.assertFalse(fly_409.allowed)
+        self.assertEqual(fly_409.http_status, 409)
+        self.assertEqual(fly_409.settled_cold_asrs_cents, 12180000)
+        self.assertEqual(fly_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["automated_cold_asrs_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("automated-cold-asrs-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

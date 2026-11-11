@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg116" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A111F"/>
+      <stop offset="50%" stop-color="#141F36"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent116" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg116" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#182640"/>
+      <stop offset="100%" stop-color="#0B1322"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg116)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent116)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ROUND 114 · RAIL BALLAST TAMPING &amp; TRACK GEOMETRY (EN 13848) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    铁路大机道床捣固与钢轨打磨、轨检车 TQI (&lt;=1.5mm) 与涡流消缺智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Post-100k-Gross-Ton EN 13848 Track Quality Index (TQI), Eddy-Current RCF Crack Removal &amp; DGS Stabilization vs. Pass-km Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Per-Kilometer Pass & Shallow-Tamping Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg116)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按大机走行公里盲付与假平顺踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 捣固镐浅插与未开动力稳定致“记忆性回弹沉降”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 天窗点大机跑完 30 公里即收走 $220,000 工程款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 镐头未插至轨枕底面下 15mm，过车 10万吨后高低沉降反弹</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 钢轨打磨车野蛮重磨造成“轨头发蓝烧伤与过磨”</text>
+    <text x="58" y="294" fill="#CBD5E1">• 砂轮下压力过大将轨头表面烧成脆性马氏体白层</text>
+    <text x="58" y="312" fill="#CBD5E1">• 滚动接触疲劳 (RCF) 鱼鳞纹未除净却多磨掉 0.8mm 钢轨寿命</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 突破无缝线路锁定轨温 (+15°C) 强行拨道诱发胀轨</text>
+    <text x="58" y="364" fill="#CBD5E1">• 酷暑轨温超标仍强行起道捣固，道床横向阻力骤降 40%</text>
+    <text x="58" y="382" fill="#CBD5E1">• 极易诱发无缝钢轨受压横向屈曲“胀轨跑道”脱轨事故</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$220,000 假捣固费 + 列车限速与断轨风险
+  </text>
+
+  <!-- Center Card: 4-Layer Rail Tamping & Grinding Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg116)" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#78350F"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ⚡ 10万吨后轨检车 TQI + 涡流探伤 + 高铁铣磨托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 1 · 10万总重吨后 EN 13848 轨检车 TQI (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    过车稳定后高低不平顺 &gt; 1.5mm 或浅插镐/未开 DGS 稳定 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 POST_TONNAGE_TQI_REBOUND_OR_SHALLOW_TAMPING_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 2 · 涡流 RCF 鱼鳞纹消缺与防发蓝过磨 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    RCF 疲劳裂纹残余 &gt; 0.1mm、轨头烧伤或磨削超差 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 RCF_HEAD_CHECK_RESIDUAL_OR_GRIND_BLUING_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 无缝线路锁定轨温 (CWR SFT) (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    轨温超设计锁定轨温 +15°C 违章拨道或侵限慢行未销点 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 CWR_BUCKLING_RAIL_TEMP_OR_POSSESSION_OVERRUN_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 探伤数据驱动精准预防性打磨 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    从全线盲磨切换为曲线段 80km/h 高速预防打磨 + 钢轨铁屑回收 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $35,200 ($184,800 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 20ms 自动清算 $220,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg116)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 114)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 过车稳定后 TQI 达标与零裂纹放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：20 ms · 放款：$220,000.00 (σ = 0.85mm)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 浅插镐假平顺/过车反弹沉降拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：12 ms · 拦截虚报款：$220,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• RCF 鱼鳞纹未除净或轨头烧伤拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：15 ms · 拒付损伤钢轨寿命的野蛮打磨</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 精准预防打磨 + 延长换轨周期 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$35,200.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  135 / 135 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 350km/h 高铁与重载平顺底线，终结天窗混里程
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDE047">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要在大机天窗点刚结束、仅凭捣固车自带弦线小车读数就结清铁路工务维保工程款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 动力稳定车 (DGS) 激振密实 + 累计通过 10万总重吨列车后独立轨检车实测 EN 13848 高低标准差 &lt;=1.5mm (12ms 拦 403)；② 涡流探伤 RCF 裂纹清零且无发蓝烧伤 (15ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查无缝线路设计锁定轨温 (SFT) 防夏季胀轨 (285ms 拦 451)，并将全线盲磨优化为基于轨检大数据的曲线段精准预防性打磨立省 $35,200 (295ms)。
+  </text>
+</svg>

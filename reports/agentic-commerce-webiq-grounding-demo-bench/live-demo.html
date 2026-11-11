@@ -2826,6 +2826,24 @@
         <div id="pgm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Automated High-Bay Cold-Storage AS/RS (-25°C), Desiccant Dew-Point & Stacker Throughput Mandate Sandbox (Round 113 FAQ Companion) -->
+      <div class="finops-box" id="automated-cold-asrs-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-asr-title">🧊 全自动高架立体冷库 (AS/RS -25°C)、转轮除湿防结霜 (&lt;=-35°C露点) 与堆垛机双指令吞吐架构：防结冰与 3D 轮廓令牌 (automated_cold_asrs_mandate_...) vs 按死库位收租决策器 (Round 113 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 38m 全自动高架立体冷库月度结算 ($145,000.00)、气闸穿堂转轮除湿露点、FEM 9.851 堆垛机吞吐与 Web IQ 低氧防火/谷电 -29°C 深度过冷热飞轮场景 (Automated Cold AS/RS Scenario):</span></label>
+          <select id="asr-select" onchange="updateAutomatedColdAsrsSandbox()">
+            <option value="asr_commit_ok">⚡ 穿堂露点 -38.0°C (&lt;=-35°C 零结霜) + 38m 顶层货位 -25.2°C + 堆垛机双指令吞吐 52 托/h (&gt;=45) + 低氧防火 O2 14.3%：19ms 自动结算 $145,000.00! (Act automatically)</option>
+            <option value="asr_dew_403">🛑 冷库方偷关氯化锂转轮除湿机致穿堂露点升至 -12°C (&gt; -35°C)，湿气涌入 -25°C 巷道凝华成霜致激光测距致盲锁死库存拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="asr_crn_422">🚨 货架低温冷缩变形致堆垛机频繁卡托降速 (吞吐跌至 24 托/h &lt; 45 托/h)，冷库方却反诬入库 3D 光幕已合格的木托盘变形强收倒托费拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="asr_hyp_451">🛑 38m 高架库 VdS 3527 低氧制氮防火系统离线 (氧气升至 20.9% 极易因穿梭车锂电短路烧毁整库) 或氨机房泄漏 &gt;25 ppm：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="asr_fly_409">🧑‍⚖️ Web IQ 在夜间谷电时段将万吨冻品过冷至 -29.0°C (Thermal Flywheel 热飞轮) 并在白天 6h 尖峰时段关停主压缩机立省 $23,200.00 (净付 $121,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="asr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3377,6 +3395,7 @@ function renderAll() {
   updateOffshoreWtivJackupSandbox();
   updateCleanroomFfuUlpaSandbox();
   updatePreciousMetalCatalystSandbox();
+  updateAutomatedColdAsrsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -9166,6 +9185,55 @@ function updatePreciousMetalCatalystSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 独立见证 LOI + 火法试金分差 (&lt;=0.03%) + 新剂 CO 分散度 (&gt;=65%) 达标：已自动清算 (VERIFIED_PRECIOUS_METAL_CATALYST_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零烧失率黑箱吃秤、零晶粒烧结失活隐患</strong>：石化与绿氢贵金属催化剂精炼与换装批次已完成结算（<code>$340,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAutomatedColdAsrsSandbox() {
+  var selEl = document.getElementById("asr-select");
+  var outEl = document.getElementById("asr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "asr_dew_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 AIRLOCK_DEWPOINT_FROST_OR_THERMAL_STRATIFICATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "气闸穿堂 <code>冷镜式露点仪与 38m 顶层货位探头</code> 实测显示，冷库方关停氯化锂转轮除湿机导致穿堂露点升至 <code>-12.0°C &gt; -35.0°C</code>（湿热空气涌入 -25°C 巷道直接凝华成霜，导致堆垛机激光测距镜头致盲与天轨打滑锁死全部库存，<code>airlock_dewpoint_and_top_rack_temp_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$145,000.00</code> 死库位租金！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "asr_crn_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 STACKER_CRANE_THROUGHPUT_BREACH_OR_PALLET_FEE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "WCS 仓库控制系统日志显示，高峰出库时段堆垛机双指令吞吐率跌至 <code>24 托/h &lt; 45 托/h (FEM 9.851 违约)</code>，且冷库方对入库已通过 <code>六面 3D 激光光幕轮廓检测</code> 的合格托盘强收 $25/托“人工倒托费”（实为货架 -25°C 冷缩变形未标定，<code>fem9851_dual_command_throughput_and_contour_passed == False</code>）。网关在 <code>14ms</code> 内拦截违规账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "asr_hyp_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HYPOXIC_FIRE_PREVENTION_OR_AMMONIA_SAFETY_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 38m 高架冷库 <code>VdS 3527 / EN 16750 极早期低氧制氮防火系统</code> 与涉氨制冷重大危险源台账，检出库内氧气浓度升至 <code>20.9% &gt; 15.0%</code>（丧失低氧惰化防火保护）或氨气检漏告警，立即执行安全合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "asr_fly_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SUPERCOOLING_THERMAL_FLYWHEEL_DR_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 利用在库万吨冻品巨大的比热容，在夜间深谷电价时段将货体深度过冷至 <code>-29.0°C (Thermal Flywheel 热飞轮)</code>，并在白天 6 小时电网尖峰时段完全关停主压缩机（库温平稳滑行至 -24.5°C），当月立省冷链能源费 <code>$23,200.00</code>（净付降至 <code>$121,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 穿堂露点 (&lt;=-35°C 零结霜) + FEM 9.851 吞吐 (&gt;=45 托/h) + 低氧防火达标：已自动清算 (VERIFIED_AUTOMATED_COLD_ASRS_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零激光测距结霜锁仓、零虚假倒托费敲诈</strong>：-25°C 全自动高架立体冷库月度仓储与出入库账单已完成结算（<code>$145,000.00</code>）！" +
     "</div>";
 }
 

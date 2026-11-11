@@ -144,6 +144,7 @@
 - **专题 110（海上风电自升式风机安装船租船 Offshore Wind WTIV Jack-Up Charter、桩靴预压载防穿刺 Spudcan Preload 与齿条相位差 RPD $\le 0.5^\circ$ 智能托管 vs 传统凭船长日报盲付）**：**[《海上风电自升式风机安装船租船（Offshore Wind WTIV Jack-Up Charter）、桩靴预压载防穿刺（Spudcan Preload）与齿条相位差（RPD $\le 0.5^\circ$）智能托管 vs 传统凭船长日报盲付：架构选型与第一性原理 FAQ》](docs/offshore-wind-wtiv-jackup-spudcan-preload-rpd-mandate-vs-punch-through-standby-overbilling-faq.md)**
 - **专题 111（半导体与生物医药无尘室 ISO 14644-1 Class 3–5 Cleanroom FFU/ULPA 过滤维保、现场气溶胶扫描检漏 $\le 0.01\%$ 与零释硼 PTFE 滤膜智能托管 vs 传统按日历盲目换芯）**：**[《半导体与生物医药无尘室（ISO 14644-1 Class 3–5 Cleanroom）FFU/ULPA 过滤维保、现场气溶胶扫描检漏（$\le 0.01\%$）与零释硼 PTFE 滤膜智能托管 vs 传统按日历盲目换芯：架构选型与第一性原理 FAQ》](docs/cleanroom-ffu-ulpa-iso14644-pao-scan-amc-outgassing-mandate-vs-blind-filter-swap-overbilling-faq.md)**
 - **专题 112（石化重整与绿氢 PEM 电解槽贵金属催化剂 Pt / Pd / Rh / Ir 回收精炼与金属池来料加工 Metal-Pool Tolling、焙烧干基火法试金 Fire-Assay ICP-MS 与 CO 化学吸附分散度智能托管 vs 传统废剂贱卖与黑箱扣损）**：**[《石化重整与绿氢 PEM 电解槽贵金属催化剂（Pt / Pd / Rh / Ir）回收精炼与金属池来料加工（Metal-Pool Tolling）、焙烧干基火法试金（Fire-Assay ICP-MS）与 CO 化学吸附分散度智能托管 vs 传统废剂贱卖与黑箱扣损：架构选型与第一性原理 FAQ》](docs/precious-metal-catalyst-pt-pd-ir-refining-tolling-fire-assay-mandate-vs-wet-lot-shrinkage-overbilling-faq.md)**
+- **专题 113（全自动高架立体冷库 Automated Cold-Storage AS/RS $-25^\circ\text{C}$、转轮除湿穿堂露点 $\le -35^\circ\text{C}$ 防结霜与堆垛机双指令吞吐 FEM 9.851 智能托管 vs 传统按死库位收租）**：**[《全自动高架立体冷库（Automated Cold-Storage AS/RS $-25^\circ\text{C}$）、转轮除湿穿堂露点（$\le -35^\circ\text{C}$）防结霜与堆垛机双指令吞吐（FEM 9.851）智能托管 vs 传统按死库位收租：架构选型与第一性原理 FAQ》](docs/automated-cold-storage-asrs-dewpoint-frost-shuttle-throughput-mandate-vs-pallet-slot-freeze-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -368,6 +369,8 @@
 ![2026-11-11 无尘室 FFU/ULPA 超高效过滤 (ISO 14644)、PAO 检漏与抗硼脱气智能托管架构一图流](assets/svg/113-cleanroom-ffu-ulpa-iso14644-pao-scan-2026-11-11.svg)
 
 ![2026-11-11 石化与绿氢贵金属催化剂 (Pt/Pd/Rh/Ir) 回收精炼、火法试金与金属池来料加工托管架构一图流](assets/svg/114-precious-metal-catalyst-pt-pd-ir-tolling-2026-11-11.svg)
+
+![2026-11-11 高架立体冷库 (AS/RS -25°C)、转轮除湿防结霜与堆垛吞吐智能托管架构一图流](assets/svg/115-automated-cold-storage-asrs-dewpoint-shuttle-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
