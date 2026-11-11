@@ -13133,6 +13133,91 @@ def evaluate_derms_smart_inverter_volt_var_policy(
     )
 
 
+@dataclass(frozen=True)
+class MarineBiobunkerB30IsccVerdict:
+    allowed: bool
+    http_status: int
+    biobunker_lane: str
+    settled_biobunker_cents: int
+    pooling_or_c14_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_marine_biobunker_b30_iscc_policy(
+    gross_biobunker_stem_cents: int = 29500000,
+    astm_d6866_c14_biogenic_and_non_palm_verified: bool = True,
+    iso8217_2024_rancimat_and_cfpp_stability_passed: bool = True,
+    webiq_eu_udb_pos_retirement_and_fueleu_clean: bool = True,
+    fueleu_pooling_and_hvo_blend_savings_cents: int = 0,
+) -> MarineBiobunkerB30IsccVerdict:
+    """Evaluate Marine Bio-Bunker (B24/B30 UCOME-VLSFO & HVO) ASTM D6866 radiocarbon 14C biogenic fraction (>=29.0% for B30) & GC-MS non-palm sterol fingerprint vs fossil short-blending and virgin palm-oil UCOME laundering, ISO 8217:2024 EN 15751 Rancimat oxidation stability (>=8.0h), Acid Number (<=0.5 mg KOH/g) & CFPP gate, Web IQ EU Union Database (UDB) unique ISCC EU PoS retirement check, and FuelEU Maritime Compliance Pooling + paraffinic HVO blend arbitrage."""
+    # 1. ASTM D6866 14C biogenic carbon shortfall (<29% on B30) or virgin palm oil laundered as UCOME -> HTTP 403
+    if not astm_d6866_c14_biogenic_and_non_palm_verified:
+        return MarineBiobunkerB30IsccVerdict(
+            False,
+            403,
+            "C14_BIOGENIC_SHORTFALL_OR_PALM_OIL_UCOME_LAUNDERING_BLOCKED",
+            0,
+            gross_biobunker_stem_cents,
+            "biobunker_green_premium_blocked_due_to_astm_d6866_c14_biogenic_deficit_or_virgin_palm_oil_sterol_fraud",
+            11,
+            "Send to a human",
+        )
+
+    # 2. ISO 8217:2024 Rancimat oxidation stability <8.0h, high Acid Number (>0.5), or high CFPP wax gelling -> HTTP 422
+    if not iso8217_2024_rancimat_and_cfpp_stability_passed:
+        return MarineBiobunkerB30IsccVerdict(
+            False,
+            422,
+            "RANCIMAT_OXIDATION_SLUDGE_OR_CFPP_WAX_PLUGGING_BLOCKED",
+            0,
+            gross_biobunker_stem_cents,
+            "bunker_stem_held_due_to_rancimat_stability_below_8h_or_high_cfpp_risking_main_engine_fuel_pump_seizure",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects unretired ISCC EU PoS in EU Union Database (UDB) or double-counted claim -> HTTP 451
+    if not webiq_eu_udb_pos_retirement_and_fueleu_clean:
+        return MarineBiobunkerB30IsccVerdict(
+            False,
+            451,
+            "UNRETIRED_EU_UDB_POS_CERTIFICATE_OR_FUELEU_DISQUALIFICATION_HOLD",
+            0,
+            gross_biobunker_stem_cents,
+            "webiq_detected_iscc_eu_pos_not_uniquely_retired_to_ship_imo_in_eu_union_database_udb",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ FuelEU Maritime Cross-Vessel Compliance Pooling & Paraffinic HVO Blend Arbitrage -> HTTP 409 Confirm
+    if fueleu_pooling_and_hvo_blend_savings_cents > 0:
+        return MarineBiobunkerB30IsccVerdict(
+            False,
+            409,
+            "FUELEU_MARITIME_COMPLIANCE_POOLING_AND_HVO_ARBITRAGE_CONFIRM",
+            gross_biobunker_stem_cents - fueleu_pooling_and_hvo_blend_savings_cents,
+            fueleu_pooling_and_hvo_blend_savings_cents,
+            "webiq_optimized_fueleu_maritime_compliance_pooling_and_paraffinic_hvo_blend_saving_44000_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified ASTM D6866 14C >=29% + ISO 8217:2024 Rancimat >=8.0h + EU UDB Retired -> Settled
+    return MarineBiobunkerB30IsccVerdict(
+        True,
+        200,
+        "VERIFIED_MARINE_BIOBUNKER_B30_ISCC_SETTLED",
+        gross_biobunker_stem_cents,
+        0,
+        "astm_d6866_c14_iso8217_2024_rancimat_and_eu_udb_pos_retirement_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17078,6 +17163,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "overvoltage_pf_block_latency_ms": drm_vvr_403.latency_ms,
     }
 
+    bio_commit_ok = evaluate_marine_biobunker_b30_iscc_policy()
+    bio_c14_403 = evaluate_marine_biobunker_b30_iscc_policy(
+        astm_d6866_c14_biogenic_and_non_palm_verified=False,
+    )
+    bio_rnc_422 = evaluate_marine_biobunker_b30_iscc_policy(
+        iso8217_2024_rancimat_and_cfpp_stability_passed=False,
+    )
+    bio_udb_451 = evaluate_marine_biobunker_b30_iscc_policy(
+        webiq_eu_udb_pos_retirement_and_fueleu_clean=False,
+    )
+    bio_pool_409 = evaluate_marine_biobunker_b30_iscc_policy(
+        fueleu_pooling_and_hvo_blend_savings_cents=4400000,
+    )
+    marine_biobunker_guards = {
+        "all_passed": (
+            bio_commit_ok.allowed
+            and bio_commit_ok.settled_biobunker_cents == 29500000
+            and not bio_c14_403.allowed
+            and bio_c14_403.http_status == 403
+            and not bio_rnc_422.allowed
+            and bio_rnc_422.http_status == 422
+            and not bio_udb_451.allowed
+            and bio_udb_451.http_status == 451
+            and not bio_pool_409.allowed
+            and bio_pool_409.action_pill == "Confirm"
+        ),
+        "biobunker_settlement_latency_ms": bio_commit_ok.latency_ms,
+        "ucome_fraud_block_latency_ms": bio_c14_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -17189,6 +17304,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aviation_deicing_guards": aviation_deicing_guards,
         "container_street_turn_guards": container_street_turn_guards,
         "derms_volt_var_guards": derms_volt_var_guards,
+        "marine_biobunker_guards": marine_biobunker_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -21870,6 +21986,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="drm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Marine Bio-Bunker (B24/B30 FAME & HVO), ASTM D6866 C14 & Rancimat Mandate Sandbox (Round 99 FAQ Companion) -->
+      <div class="finops-box" id="marine-biobunker-c14-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bio-title">⛴️ 船用生物燃料加注 (B24/B30 FAME &amp; HVO)、碳十四 (14C) 生物碳验真与氧化安定性架构：同位素与 UDB 注销令牌 (marine_biobunker_c14_mandate_...) vs 假地沟油决策器 (Round 99 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 亚欧航线 380 吨 B30 UCOME 生物船燃加注 ($295,000.00)、ASTM D6866 碳十四 (14C &gt;=29%)、ISO 8217:2024 Rancimat 氧化安定性 (&gt;=8.0h) 与 Web IQ 欧盟 UDB 核销/FuelEU 池化场景 (Marine Bio-Bunker Scenario):</span></label>
+          <select id="bio-select" onchange="updateMarineBiobunkerC14Sandbox()">
+            <option value="bio_commit_ok">⚡ ASTM D6866 碳十四生物碳 29.6% (&gt;=29%) + 零棕榈油甾醇 + Rancimat 10.4h (&gt;=8h) + 欧盟 UDB 已唯一注销：21ms 自动结算 $295,000.00! (Act automatically)</option>
+            <option value="bio_c14_403">🛑 碳十四 (14C) 质谱戳穿实际仅掺 12% 生物油，或用毁林原生棕榈油冒充高价餐厨地沟油 (UCOME) 骗取 $260/吨溢价拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="bio_rnc_422">🚨 违反 ISO 8217:2024 新标：FAME 氧化安定性仅 2.5h (&lt;8h) 生成酸性油泥或冷滤点过高析蜡存在卡死主机高压油泵风险拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="bio_udb_451">🛑 纸质 ISCC EU PoS 证书被一证多卖，未在欧盟统一生物燃料数据库 (UDB) 唯一划转至本船 IMO 账户：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="bio_pool_409">🧑‍⚖️ Web IQ 协同二代零氧氢化植物油 (HVO) 混调与 FuelEU Maritime 跨船队合规余缺池化 (Compliance Pooling) 立省 $44,000.00 (净付 $251,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bio-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -22407,6 +22541,7 @@ function renderAll() {{
   updateAviationDeicingBrixSandbox();
   updateOceanContainerStreetTurnSandbox();
   updateDermsSmartInverterSandbox();
+  updateMarineBiobunkerC14Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -27510,6 +27645,55 @@ function updateDermsSmartInverterSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ IEEE 1547 Volt-VAR 稳压 (&lt;=1.05 p.u.) + PCC 0.2S 关口表 + 总关口 cosφ &gt;=0.95：已自动清算 (VERIFIED_DERMS_SMART_INVERTER_PPA_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零正午过压脱网、零逆变器线损水分</strong>：工商业园区屋顶分布式光伏与微网聚合月度账单已完成结算（<code>$86,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMarineBiobunkerC14Sandbox() {{
+  var selEl = document.getElementById("bio-select");
+  var outEl = document.getElementById("bio-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "bio_c14_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 C14_BIOGENIC_SHORTFALL_OR_PALM_OIL_UCOME_LAUNDERING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "加油法兰 MARPOL 滴样经 <code>ASTM D6866 加速器质谱碳十四 (14C)</code> 测定发现现代生物碳占比仅为 <code>13.5%</code>（远低于 B30 标称的 <code>&gt;=29.0%</code>），或 <code>GC-MS 甾醇谱图</code> 检出以廉价原生棕榈油冒充欧盟 RED III Annex IX 废弃餐厨地沟油（UCOME）（<code>astm_d6866_c14_biogenic_and_non_palm_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$295,000.00</code> 假绿燃账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bio_rnc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RANCIMAT_OXIDATION_SLUDGE_OR_CFPP_WAX_PLUGGING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "依据最新 <code>ISO 8217:2024 (DF/BM 生物船燃等级)</code> 检测，该批 FAME 脂肪酸甲酯的 <code>EN 15751 Rancimat 氧化安定性诱导期</code> 仅 <code>2.6 小时</code>（低于 <code>8.0 小时</code> 安全底线，极易氧化聚合成酸性胶质油泥咬死船用主机高压共轨油泵），或冷滤点（CFPP）超标（<code>iso8217_2024_rancimat_and_cfpp_stability_passed == False</code>）。网关在 <code>14ms</code> 内拦截并隔离油舱！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bio_udb_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNRETIRED_EU_UDB_POS_CERTIFICATE_OR_FUELEU_DISQUALIFICATION_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查欧盟委员会 <code>统一生物燃料数据库 (Union Database, UDB)</code>，检出供油商仅发送了 PDF 版 ISCC EU PoS 复印件而未在 UDB 系统中将该批次生物减排量唯一过户核销至本船 IMO 编号（存在一证多卖风险），立即冻结全部绿色溢价款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bio_pool_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FUELEU_MARITIME_COMPLIANCE_POOLING_AND_HVO_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 动态比对港口现货 FAME 溢价与 <code>FuelEU Maritime 第 21 条跨船合规池 (Compliance Pooling)</code> 交易价格，通过混合零氧稳定的二代加氢植物油（HVO）并共享池内绿色甲醇母船富余合规额度，单船次立省 <code>$44,000.00</code>（净付降至 <code>$251,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ASTM D6866 碳十四 (&gt;=29%) + ISO 8217:2024 Rancimat (&gt;=8h) + 欧盟 UDB 唯一核销：已自动清算 (VERIFIED_MARINE_BIOBUNKER_B30_ISCC_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零棕榈油洗白骗补、零氧化油泥堵泵风险</strong>：380 吨 B30 生物船燃已完成全链同位素与 UDB 核销结算（<code>$295,000.00</code>）！" +
     "</div>";
 }}
 

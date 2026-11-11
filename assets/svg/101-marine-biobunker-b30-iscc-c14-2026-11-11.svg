@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg101" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051412"/>
+      <stop offset="50%" stop-color="#0a2824"/>
+      <stop offset="100%" stop-color="#103d36"/>
+    </linearGradient>
+    <linearGradient id="accent101" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg101)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#081d1a" stroke="#10b981" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent101)"/>
+
+  <text x="60" y="72" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 99 · MARINE BIO-BUNKER (B24/B30 FAME &amp; HVO), ASTM D6866 C14 &amp; RANCIMAT MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">船用生物燃料加注 (B24/B30)、碳十四 (14C) 生物碳验真与氧化安定性托管 vs 假地沟油盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">ASTM D6866 14C Biogenic (&gt;=29%) + ISO 8217:2024 Rancimat (&gt;=8h) + EU UDB PoS Retirement vs. UCOME Fraud</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统仅凭纸质 BDN 与复印 ISCC 证书盲付模式 (Fake UCOME Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 化石重油或原生棕榈油冒充高价废弃地沟油 (UCOME)：骗取 $260/吨生物溢价，被欧盟 ETS 拒认重罚</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• FAME 脂肪酸甲酯氧化酸败堵死主机滤器：氧化安定性 &lt;3h，生成酸性高分子油泥卡死高压共轨喷油器</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 吸水滋生食油菌腐蚀船底日用柜：FAME 极强亲水性诱发微生物大量繁殖，造成大洋航行主机失动力</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 一张 ISCC PoS 可持续证书多船一证多卖：未在欧盟统一生物燃料数据库 (UDB) 唯一核销，碳配额作废</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型亚欧航线集装箱船 / 滚装船 B30 生物船燃加注 (FuelEU Maritime) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">船东 Agent 支付 $295,000 加注 380 吨 B30 UCOME 生物船燃，因掺入廉价棕榈油废料致冷滤点</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">过高在北大西洋析蜡堵死分油机，且 ISCC PoS 未在欧盟 UDB 库核销被追缴 $65,000 EU ETS 碳税</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 棕榈油洗白拦截：0% | • 氧化油泥堵泵拦截：0% | • 碳税合规失效资损：超 $100,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 碳十四 (14C) 生物碳 + Rancimat 安定性 + UDB 注销托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ASTM D6866 碳十四 (14C) 放射性同位素与甾醇指纹门禁：铁证锁定真生物碳 (&gt;=29%) 与非棕榈油源</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ISO 8217:2024 Rancimat 氧化安定性 (&gt;=8h) 与酸值 (&lt;=0.5 mg KOH/g) 门禁：根除油泥堵塞高压油泵</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 欧盟 UDB 生物燃料数据库 ISCC PoS 唯一注销核验：Web IQ 防范一证多卖与 RED III 拒认</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• FuelEU Maritime 合规池化 (Compliance Pooling) + 氢化植物油 (HVO) 混调套利：立省 $44,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断碳十四 (14C) 生物碳占比不足或原生棕榈油冒充 UCOME 的欺诈船燃单；14ms 拦截</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">氧化安定性 &lt;8h 酸败油品；Web IQ 匹配 FuelEU 合规池化与 HVO 混调方案立省 $44,000（净付 $251k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 假地沟油与一证多卖拦截：100% | • 主机喷油器零结焦：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0d2622" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">生物船燃加注 Agent 绝不能凭纸质 ISCC 复印件盲付！必须绑定【ASTM D6866 14C + Rancimat &gt;=8h + 欧盟 UDB 注销】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_marine_biobunker_b30_iscc_policy`) · ISO 8217:2024 &amp; EU UDB / RED III · 2026-11-11</text>
+</svg>

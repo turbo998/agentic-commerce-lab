@@ -6703,6 +6703,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("derms-smart-inverter-sandbox", demo_zh)
 
+    def test_marine_biobunker_b30_iscc_c14_oxidation_stability_mandate_vs_ucome_fraud_filter_clogging_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_marine_biobunker_b30_iscc_policy,
+        )
+
+        # 1. Verified ASTM D6866 14C >=29% + ISO 8217:2024 Rancimat >=8h + EU UDB retired -> 200 OK ($295,000)
+        commit_ok = evaluate_marine_biobunker_b30_iscc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_biobunker_cents, 29500000)
+
+        # 2. ASTM D6866 14C biogenic shortfall or virgin palm oil laundered as UCOME -> 403 blocked in 11ms
+        c14_403 = evaluate_marine_biobunker_b30_iscc_policy(
+            astm_d6866_c14_biogenic_and_non_palm_verified=False,
+        )
+        self.assertFalse(c14_403.allowed)
+        self.assertEqual(c14_403.http_status, 403)
+        self.assertEqual(
+            c14_403.biobunker_lane,
+            "C14_BIOGENIC_SHORTFALL_OR_PALM_OIL_UCOME_LAUNDERING_BLOCKED",
+        )
+
+        # 3. ISO 8217:2024 Rancimat <8h oxidation sludge or high CFPP wax gelling -> 422 blocked in 14ms
+        rnc_422 = evaluate_marine_biobunker_b30_iscc_policy(
+            iso8217_2024_rancimat_and_cfpp_stability_passed=False,
+        )
+        self.assertFalse(rnc_422.allowed)
+        self.assertEqual(rnc_422.http_status, 422)
+        self.assertEqual(
+            rnc_422.biobunker_lane,
+            "RANCIMAT_OXIDATION_SLUDGE_OR_CFPP_WAX_PLUGGING_BLOCKED",
+        )
+
+        # 4. Web IQ detects unretired ISCC EU PoS in EU Union Database (UDB) -> 451 blocked in 295ms
+        udb_451 = evaluate_marine_biobunker_b30_iscc_policy(
+            webiq_eu_udb_pos_retirement_and_fueleu_clean=False,
+        )
+        self.assertFalse(udb_451.allowed)
+        self.assertEqual(udb_451.http_status, 451)
+
+        # 5. Web IQ optimizes FuelEU Maritime Compliance Pooling & HVO blend saving $44,000 ($251,000 net) -> 409 Confirm
+        pool_409 = evaluate_marine_biobunker_b30_iscc_policy(
+            fueleu_pooling_and_hvo_blend_savings_cents=4400000,
+        )
+        self.assertFalse(pool_409.allowed)
+        self.assertEqual(pool_409.http_status, 409)
+        self.assertEqual(pool_409.settled_biobunker_cents, 25100000)
+        self.assertEqual(pool_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["marine_biobunker_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marine-biobunker-c14-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
