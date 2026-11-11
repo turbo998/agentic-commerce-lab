@@ -530,6 +530,11 @@
     "rotable_settlement_latency_ms": 21,
     "ber_double_dip_block_latency_ms": 11
   },
+  "pharma_uld_guards": {
+    "all_passed": true,
+    "uld_settlement_latency_ms": 20,
+    "tarmac_unplugged_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

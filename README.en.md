@@ -121,6 +121,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 87 (Grid-Scale BESS Tolling, POI Usable State-of-Health SOH >=92% & Net AC-AC Round-Trip Efficiency >=86% Escrow vs. Nameplate MWh Overbilling)**: **[Grid-Scale BESS Tolling, POI Usable State-of-Health (SOH $\ge 92\%$) & Net AC-AC Round-Trip Efficiency ($\ge 86\%$) Escrow vs. Nameplate MWh Overbilling: Architecture Selection & First-Principles FAQ](docs/grid-scale-bess-tolling-soh-rte-dispatch-mandate-vs-nameplate-degradation-overbilling-faq.en.md)**
 - **Topic 88 (Municipal Water Non-Revenue Water NRW, DMA Minimum Night Flow MNF Magmeter Telemetry & PRV Critical-Point Pressure Escrow vs. Estimated Leakage Overbilling)**: **[Municipal Water Non-Revenue Water (NRW), DMA Minimum Night Flow (MNF) Magmeter Telemetry & PRV Critical-Point Pressure Escrow vs. Estimated Leakage Overbilling: Architecture Selection & First-Principles FAQ](docs/municipal-water-nrw-dma-minimum-night-flow-mandate-vs-estimated-leakage-overbilling-faq.en.md)**
 - **Topic 89 (Aviation Rotable AOG Exchange, ATEC Bench Teardown Verification & Beyond-Economic-Repair BER Fair-Market Cap Escrow vs. Outright Core-Deposit Forfeiture)**: **[Aviation Rotable AOG Exchange, ATEC Bench Teardown Verification & Beyond-Economic-Repair (BER) Fair-Market Cap Escrow vs. Outright Core-Deposit Forfeiture: Architecture Selection & First-Principles FAQ](docs/aviation-rotable-exchange-aog-egt-margin-ber-cap-mandate-vs-outright-core-penalty-faq.en.md)**
+- **Topic 90 (Pharma Active ULD Envirotainer/CSafe, Tarmac Shore-Power Telemetry & Customs Demurrage Stop-Clock Escrow vs. Battery-Drain Excursion Overbilling)**: **[Pharma Active ULD (Envirotainer / CSafe), Tarmac Shore-Power Telemetry & Customs Demurrage Stop-Clock Escrow vs. Battery-Drain Excursion Overbilling: Architecture Selection & First-Principles FAQ](docs/pharma-active-uld-envirotainer-compressor-telemetry-mandate-vs-tarmac-excursion-demurrage-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -299,6 +300,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Municipal Water NRW, DMA Minimum Night Flow & PRV Pressure Mandate Visual Summary](assets/svg/90-municipal-water-nrw-dma-night-flow-2026-11-11.svg)
 
 ![2026-11-11 Aviation Rotable AOG Exchange, ATEC Teardown & BER Cap Mandate Visual Summary](assets/svg/91-aviation-rotable-exchange-aog-ber-2026-11-11.svg)
+
+![2026-11-11 Pharma Active ULD (Envirotainer/CSafe), Tarmac SOC & Demurrage Mandate Visual Summary](assets/svg/92-pharma-active-uld-envirotainer-telemetry-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

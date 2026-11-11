@@ -6199,6 +6199,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aviation-rotable-exchange-sandbox", demo_zh)
 
+    def test_pharma_active_uld_envirotainer_compressor_telemetry_mandate_vs_tarmac_excursion_demurrage_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pharma_active_uld_envirotainer_policy,
+        )
+
+        # 1. Verified origin SOC >=95% + transit shore power + 6-probe 2-8C intact -> 200 OK ($68,000)
+        commit_ok = evaluate_pharma_active_uld_envirotainer_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_uld_cents, 6800000)
+
+        # 2. Uncharged handover or transit GHA left ULD unplugged on tarmac -> 403 blocked in 11ms
+        soc_403 = evaluate_pharma_active_uld_envirotainer_policy(
+            precool_soc_and_tarmac_shore_power_verified=False,
+        )
+        self.assertFalse(soc_403.allowed)
+        self.assertEqual(soc_403.http_status, 403)
+        self.assertEqual(
+            soc_403.uld_lane,
+            "UNPLUGGED_TARMAC_GHA_BATTERY_DRAIN_OR_UNCHARGED_HANDOVER_BLOCKED",
+        )
+
+        # 3. Sub-2.0C protein freeze excursion or unauthorized tarmac door-open -> 422 blocked in 14ms
+        frz_422 = evaluate_pharma_active_uld_envirotainer_policy(
+            six_probe_2_to_8c_no_freeze_and_door_seal_passed=False,
+        )
+        self.assertFalse(frz_422.allowed)
+        self.assertEqual(frz_422.http_status, 422)
+        self.assertEqual(
+            frz_422.uld_lane,
+            "SUB_2C_PROTEIN_FREEZE_EXCURSION_OR_DOOR_SEAL_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects non-CEIV transit handler or unwaived demurrage during FDA/customs hold -> 451 blocked in 295ms
+        ceiv_451 = evaluate_pharma_active_uld_envirotainer_policy(
+            webiq_ceiv_station_and_customs_stop_clock_clean=False,
+        )
+        self.assertFalse(ceiv_451.allowed)
+        self.assertEqual(ceiv_451.http_status, 451)
+
+        # 5. Web IQ matches One-Way Pool return & PCM VIP passive consolidation saving $16,500 ($51,500 net) -> 409 Confirm
+        pool_409 = evaluate_pharma_active_uld_envirotainer_policy(
+            one_way_pool_return_and_pcm_hybrid_savings_cents=1650000,
+        )
+        self.assertFalse(pool_409.allowed)
+        self.assertEqual(pool_409.http_status, 409)
+        self.assertEqual(pool_409.settled_uld_cents, 5150000)
+        self.assertEqual(pool_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pharma_uld_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pharma-active-uld-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

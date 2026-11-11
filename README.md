@@ -121,6 +121,7 @@
 - **专题 87（电网级独立储能电站容量租赁 Grid-Scale BESS Tolling、并网点实测可用容量 Usable SOH $\ge 92\%$ 与含厂用电往返效率 AC-AC RTE $\ge 86\%$ 智能托管 vs 传统按铭牌兆瓦时固定包租盲付）**：**[《电网级独立储能电站容量租赁（Grid-Scale BESS Tolling）、并网点实测可用容量（Usable SOH $\ge 92\%$）与含厂用电往返效率（AC-AC RTE $\ge 86\%$）智能托管 vs 传统按铭牌兆瓦时固定包租盲付：架构选型与第一性原理 FAQ》](docs/grid-scale-bess-tolling-soh-rte-dispatch-mandate-vs-nameplate-degradation-overbilling-faq.md)**
 - **专题 88（市政与工业水务产销差漏损治理 Municipal Non-Revenue Water NRW、DMA 夜间最小流量 MNF 电磁遥测与减压阀临界水压智能托管 vs 传统按估算节水率盲付）**：**[《市政与工业水务产销差漏损治理（Municipal Non-Revenue Water, NRW）、DMA 夜间最小流量（MNF）电磁遥测与减压阀临界水压智能托管 vs 传统按估算节水率盲付：架构选型与第一性原理 FAQ》](docs/municipal-water-nrw-dma-minimum-night-flow-mandate-vs-estimated-leakage-overbilling-faq.md)**
 - **专题 89（航空航材周转件 AOG 紧急交换 Aviation Rotable Exchange、ATEC 自动测试台拆解验真与超经济维修 BER 封顶智能托管 vs 传统按全新目录价没收旧件押金）**：**[《航空航材周转件 AOG 紧急交换（Aviation Rotable Exchange）、ATEC 自动测试台拆解验真与超经济维修（BER）封顶智能托管 vs 传统按全新目录价没收旧件押金：架构选型与第一性原理 FAQ》](docs/aviation-rotable-exchange-aog-egt-margin-ber-cap-mandate-vs-outright-core-penalty-faq.md)**
+- **专题 90（生物医药主动温控航空集装器 Active Pharma ULD、停机坪岸电插拔遥测与海关免滞箱期智能托管 vs 传统地面代理断电甩锅与超期罚金盲付）**：**[《生物医药主动温控航空集装器（Active Pharma ULD · Envirotainer / CSafe）、停机坪岸电插拔遥测与海关免滞箱期智能托管 vs 传统地面代理断电甩锅与超期罚金盲付：架构选型与第一性原理 FAQ》](docs/pharma-active-uld-envirotainer-compressor-telemetry-mandate-vs-tarmac-excursion-demurrage-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -299,6 +300,8 @@
 ![2026-11-11 市政水务产销差漏损治理 (NRW)、DMA 夜间最小流量与减压阀临界水压智能托管架构一图流](assets/svg/90-municipal-water-nrw-dma-night-flow-2026-11-11.svg)
 
 ![2026-11-11 航空航材周转件 AOG 紧急交换、ATEC 台架拆解验真与 BER 封顶智能托管架构一图流](assets/svg/91-aviation-rotable-exchange-aog-ber-2026-11-11.svg)
+
+![2026-11-11 生物医药主动温控航空集装器 (Active ULD)、停机坪岸电遥测与免滞箱智能托管架构一图流](assets/svg/92-pharma-active-uld-envirotainer-telemetry-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

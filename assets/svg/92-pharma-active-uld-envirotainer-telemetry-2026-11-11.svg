@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg92" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07131e"/>
+      <stop offset="50%" stop-color="#0f253a"/>
+      <stop offset="100%" stop-color="#173856"/>
+    </linearGradient>
+    <linearGradient id="accent92" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg92)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0b1a2b" stroke="#06b6d4" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent92)"/>
+
+  <text x="60" y="72" fill="#67e8f9" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 90 · PHARMA ACTIVE ULD (ENVIROTAINER/CSAFE), TARMAC SOC &amp; DEMURRAGE MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">生物医药主动温控航空集装器 (Active ULD)、停机坪岸电遥测与免滞箱托管 vs 断电失温盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Pre-Cool SOC (&gt;=95%) + GHA Shore-Power Plug-In Telemetry + IATA CEIV Stop-Clock vs. Tarmac Battery Drain &amp; Demurrage</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统航空医药冷链集装器租赁盲付模式 (Tarmac Drain Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 交付未满电/未预冷旧箱：起运提箱时电池 SOC 仅 55%，航班一延误直接在机腹里断电失温</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 中转停机坪忘插岸电互踢皮球：地面代理 (GHA) 把箱子晒在 45°C 停机坪 14 小时不插电致整箱报废</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 海关/FDA 抽检扣留强收高额超期租金：因监管查验晚还箱 6 天，被按 $1,200/天强扣滞箱费</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 承担空箱跨洲回运冤枉钱：未接入异地共享还箱池 (Pool Return)，单程付双倍空箱调运费</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型单抗生物制剂 / ADC 靶向药跨洲空运 (RAP e2 / RKN) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">物流 Agent 支付 $68,000 租用 4 台主动温控集装器并支付冷链操作费，因中转站 GHA</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">未插岸电耗尽电池且目的港 FDA 查验被强收 $18,000 滞箱罚金，货主既毁药又赔箱租</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 停机坪断电追责率：0% | • 查验滞箱费豁免：0% | • 单批药品失温敞口：超 $2,000,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 满电预冷门禁 + 岸电插拔遥测归责 + 混装套利智能托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 提箱 SOC (&gt;=95%) 与中转岸电插拔遥测门禁：精确锁定 GHA 超过 2 小时未插岸电的违约责任</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 双压缩机冗余、门磁封签与 MKT (&lt;=5.5°C) 门禁：防止暴力开箱暴晒与局部冷点冻结蛋白质</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• IATA CEIV Pharma 站点资质与海关停表 (Stop-Clock)：Web IQ 自动豁免监管扣留期滞箱费</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 异地就近还箱池 (One-Way Pool) + 相变 PCM 真空绝热箱混装套利：立省 $16,500 租箱与回运费</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断交付未满电/未预冷旧箱或中转地面代理 (GHA) 忘插岸电导致的失温操作费；14ms</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">拦截压缩机单点故障与门磁违拆；Web IQ 异地共享还箱与 PCM 相变方案协同立省 $16,500（净付 $51.5k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 停机坪断电甩锅拦截：100% | • 2-8°C 全程冷链完整率：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0e2238" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#67e8f9" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">航空医药主动温控箱租赁 Agent 绝不能替机场代理背断电黑锅！必须绑定【提箱 SOC + 岸电遥测 + 海关停表】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_pharma_active_uld_envirotainer_policy`) · IATA CEIV Pharma &amp; EU GDP · 2026-11-11</text>
+</svg>
