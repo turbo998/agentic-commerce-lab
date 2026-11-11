@@ -5975,6 +5975,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("lng-cargo-custody-sandbox", demo_zh)
 
+    def test_rail_freight_carload_aei_demurrage_constructive_placement_mandate_vs_bunching_surcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_rail_freight_carload_demurrage_policy,
+        )
+
+        # 1. Verified AEI RFID switch timestamps + zero bunching/missed-switch -> 200 OK ($92,000)
+        commit_ok = evaluate_rail_freight_carload_demurrage_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rail_cents, 9200000)
+
+        # 2. Carrier-induced railcar bunching or missed switch billed as Constructive Placement -> 403 blocked in 11ms
+        bch_403 = evaluate_rail_freight_carload_demurrage_policy(
+            aei_rfid_and_anti_bunching_missed_switch_verified=False,
+        )
+        self.assertFalse(bch_403.allowed)
+        self.assertEqual(bch_403.http_status, 403)
+        self.assertEqual(
+            bch_403.rail_lane,
+            "CARRIER_RAILCAR_BUNCHING_OR_MISSED_SWITCH_DEMURRAGE_BLOCKED",
+        )
+
+        # 3. Private *X railcar billed demurrage on private siding or WIM tare overweight -> 422 blocked in 14ms
+        xcar_422 = evaluate_rail_freight_carload_demurrage_policy(
+            private_siding_x_car_and_wim_tare_weight_passed=False,
+        )
+        self.assertFalse(xcar_422.allowed)
+        self.assertEqual(xcar_422.http_status, 422)
+        self.assertEqual(
+            xcar_422.rail_lane,
+            "PRIVATE_X_CAR_SIDING_CHARGE_OR_WIM_TARE_OVERWEIGHT_BLOCKED",
+        )
+
+        # 4. Web IQ detects STB 49 CFR 1333 embargo breach or FRA hazmat routing violation -> 451 blocked in 295ms
+        stb_451 = evaluate_rail_freight_carload_demurrage_policy(
+            webiq_stb_1333_reciprocity_and_hazmat_clean=False,
+        )
+        self.assertFalse(stb_451.allowed)
+        self.assertEqual(stb_451.http_status, 451)
+
+        # 5. Web IQ applies Private-Car Loaded Mileage Allowance & Block-Swap credit saving $24,500 ($67,500 net) -> 409 Confirm
+        mil_409 = evaluate_rail_freight_carload_demurrage_policy(
+            private_car_mileage_and_block_swap_savings_cents=2450000,
+        )
+        self.assertFalse(mil_409.allowed)
+        self.assertEqual(mil_409.http_status, 409)
+        self.assertEqual(mil_409.settled_rail_cents, 6750000)
+        self.assertEqual(mil_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["rail_carload_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rail-freight-carload-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

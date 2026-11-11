@@ -117,6 +117,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 83 (Semiconductor EUV/DUV Photomask Reticle, KLA Die-to-Database & Zeiss AIMS Escrow vs. Repeating-Defect Wafer Scrap)**: **[Semiconductor EUV/DUV Photomask Reticle, KLA Die-to-Database & Zeiss AIMS Escrow vs. Repeating-Defect Wafer Scrap: Architecture Selection & First-Principles FAQ](docs/semiconductor-photomask-reticle-kla-defect-pellicle-mandate-vs-repeating-wafer-scrap-faq.en.md)**
 - **Topic 84 (Satellite EO/SAR Imagery Tasking, Target-AOI Cloud-Cover Mask <=10% & Off-Nadir RPC Orthorectification Escrow vs. Cloudy-Frame Overbilling)**: **[Satellite EO/SAR Imagery Tasking, Target-AOI Cloud-Cover Mask ($\le 10\%$) & Off-Nadir RPC Orthorectification Escrow vs. Cloudy-Frame Overbilling: Architecture Selection & First-Principles FAQ](docs/satellite-eo-sar-tasking-cloud-cover-rpc-orthorectified-mandate-vs-cloudy-frame-overbilling-faq.en.md)**
 - **Topic 85 (LNG Cargo Custody Transfer, Online Raman/GC Heating-Value MMBtu & Boil-Off Gas BOG Vapor-Return Escrow vs. Volumetric/Ageing Overbilling)**: **[LNG Cargo Custody Transfer, Online Raman/GC Heating-Value (MMBtu Wobbe Index) & Boil-Off Gas (BOG) Vapor-Return Escrow vs. Volumetric/Ageing Overbilling: Architecture Selection & First-Principles FAQ](docs/lng-cargo-custody-transfer-mmbtu-raman-bog-mandate-vs-volumetric-ageing-overbilling-faq.en.md)**
+- **Topic 86 (Rail Freight Carload Demurrage, AAR AEI RFID Telemetry & Constructive-Placement Decoupling Escrow vs. Railcar-Bunching Overbilling)**: **[Rail Freight Carload Demurrage, AAR AEI RFID Telemetry & Constructive-Placement Decoupling Escrow vs. Railcar-Bunching Overbilling: Architecture Selection & First-Principles FAQ](docs/rail-freight-carload-aei-demurrage-constructive-placement-mandate-vs-bunching-surcharge-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -287,6 +288,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Satellite EO/SAR Tasking, AOI Cloud-Cover Mask & RPC Ortho Mandate Visual Summary](assets/svg/86-satellite-eo-sar-tasking-cloud-cover-rpc-2026-11-11.svg)
 
 ![2026-11-11 LNG Cargo Custody Transfer, MMBtu Raman/GC & BOG Vapor-Return Mandate Visual Summary](assets/svg/87-lng-cargo-custody-transfer-mmbtu-bog-2026-11-11.svg)
+
+![2026-11-11 Rail Freight Carload, AEI RFID Telemetry & Constructive Placement Mandate Visual Summary](assets/svg/88-rail-freight-carload-aei-demurrage-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

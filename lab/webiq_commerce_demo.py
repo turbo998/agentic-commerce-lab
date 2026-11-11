@@ -12028,6 +12028,91 @@ def evaluate_lng_cargo_custody_transfer_policy(
     )
 
 
+@dataclass(frozen=True)
+class RailFreightCarloadDemurrageVerdict:
+    allowed: bool
+    http_status: int
+    rail_lane: str
+    settled_rail_cents: int
+    mileage_or_bunching_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_rail_freight_carload_demurrage_policy(
+    gross_rail_invoice_cents: int = 9200000,
+    aei_rfid_and_anti_bunching_missed_switch_verified: bool = True,
+    private_siding_x_car_and_wim_tare_weight_passed: bool = True,
+    webiq_stb_1333_reciprocity_and_hazmat_clean: bool = True,
+    private_car_mileage_and_block_swap_savings_cents: int = 0,
+) -> RailFreightCarloadDemurrageVerdict:
+    """Evaluate AAR AEI wayside RFID switch-in/release timestamps & carrier-induced railcar bunching / missed-switch exclusion vs Constructive Placement (CP) demurrage overbilling, Private-Siding *X-mark railcar exemption & Weigh-in-Motion (WIM) tare verification, Web IQ STB 49 CFR Part 1333 reciprocity & FRA hazmat routing check, and Private-Car Loaded Mileage Allowance & Unit-Train Block-Swap arbitrage."""
+    # 1. Carrier-induced railcar bunching or missed-switch empty pull billed as Constructive Placement demurrage -> HTTP 403
+    if not aei_rfid_and_anti_bunching_missed_switch_verified:
+        return RailFreightCarloadDemurrageVerdict(
+            False,
+            403,
+            "CARRIER_RAILCAR_BUNCHING_OR_MISSED_SWITCH_DEMURRAGE_BLOCKED",
+            0,
+            gross_rail_invoice_cents,
+            "demurrage_blocked_due_to_carrier_transit_bunching_or_missed_switch_after_aei_verified_empty_release",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Private *X-mark railcar billed demurrage on private siding or uncompensated WIM ice/heel tare weight -> HTTP 422
+    if not private_siding_x_car_and_wim_tare_weight_passed:
+        return RailFreightCarloadDemurrageVerdict(
+            False,
+            422,
+            "PRIVATE_X_CAR_SIDING_CHARGE_OR_WIM_TARE_OVERWEIGHT_BLOCKED",
+            0,
+            gross_rail_invoice_cents,
+            "invoice_held_due_to_illegal_demurrage_on_private_x_mark_car_on_private_siding_or_wim_tare_discrepancy",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects STB 49 CFR Part 1333 embargo-period billing breach or FRA hazmat violation -> HTTP 451
+    if not webiq_stb_1333_reciprocity_and_hazmat_clean:
+        return RailFreightCarloadDemurrageVerdict(
+            False,
+            451,
+            "STB_49CFR1333_EMBARGO_BREACH_OR_FRA_HAZMAT_HOLD",
+            0,
+            gross_rail_invoice_cents,
+            "webiq_detected_stb_49_cfr_1333_embargo_reciprocity_violation_or_fra_tih_hazmat_buffer_breach",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Private-Car Loaded Mileage Credit & Unit-Train Block-Swap Arbitrage -> HTTP 409 Confirm
+    if private_car_mileage_and_block_swap_savings_cents > 0:
+        return RailFreightCarloadDemurrageVerdict(
+            False,
+            409,
+            "PRIVATE_CAR_MILEAGE_ALLOWANCE_AND_BLOCK_SWAP_CONFIRM",
+            gross_rail_invoice_cents - private_car_mileage_and_block_swap_savings_cents,
+            private_car_mileage_and_block_swap_savings_cents,
+            "webiq_applied_private_x_car_loaded_mileage_allowance_and_block_swap_tariff_saving_24500_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified AEI RFID Switch Logs + Zero Bunching/Missed-Switch + Private Track Clean -> Settled
+    return RailFreightCarloadDemurrageVerdict(
+        True,
+        200,
+        "VERIFIED_RAIL_CARLOAD_FREIGHT_SETTLED",
+        gross_rail_invoice_cents,
+        0,
+        "aei_rfid_switch_timestamps_anti_bunching_and_private_siding_rules_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -15583,6 +15668,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "volumetric_bog_block_latency_ms": lng_vol_403.latency_ms,
     }
 
+    rail_commit_ok = evaluate_rail_freight_carload_demurrage_policy()
+    rail_bch_403 = evaluate_rail_freight_carload_demurrage_policy(
+        aei_rfid_and_anti_bunching_missed_switch_verified=False,
+    )
+    rail_xcar_422 = evaluate_rail_freight_carload_demurrage_policy(
+        private_siding_x_car_and_wim_tare_weight_passed=False,
+    )
+    rail_stb_451 = evaluate_rail_freight_carload_demurrage_policy(
+        webiq_stb_1333_reciprocity_and_hazmat_clean=False,
+    )
+    rail_mil_409 = evaluate_rail_freight_carload_demurrage_policy(
+        private_car_mileage_and_block_swap_savings_cents=2450000,
+    )
+    rail_carload_guards = {
+        "all_passed": (
+            rail_commit_ok.allowed
+            and rail_commit_ok.settled_rail_cents == 9200000
+            and not rail_bch_403.allowed
+            and rail_bch_403.http_status == 403
+            and not rail_xcar_422.allowed
+            and rail_xcar_422.http_status == 422
+            and not rail_stb_451.allowed
+            and rail_stb_451.http_status == 451
+            and not rail_mil_409.allowed
+            and rail_mil_409.action_pill == "Confirm"
+        ),
+        "rail_settlement_latency_ms": rail_commit_ok.latency_ms,
+        "bunching_demurrage_block_latency_ms": rail_bch_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -15681,6 +15796,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "photomask_reticle_guards": photomask_reticle_guards,
         "satellite_eo_sar_guards": satellite_eo_sar_guards,
         "lng_custody_guards": lng_custody_guards,
+        "rail_carload_guards": rail_carload_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -20128,6 +20244,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lng-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Rail Freight Carload, AEI RFID Telemetry & Constructive Placement Mandate Sandbox (Round 86 FAQ Companion) -->
+      <div class="finops-box" id="rail-freight-carload-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rail-title">🚂 铁路干线货运车皮周转 (Carload Demurrage)、AEI 轨旁射频遥测与建设性送达脱钩架构：扎堆/漏挂豁免令牌 (rail_carload_aei_mandate_...) vs 霸王滞留费决策器 (Round 86 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 一级铁路公司大宗车皮运费与专用线交割 ($92,000.00)、AAR AEI 轨旁 RFID 进出线时间戳、扎堆到达 (Bunching)/漏挂剔除与 Web IQ 自备车里程津贴场景 (Rail Carload Scenario):</span></label>
+          <select id="rail-select" onchange="updateRailFreightCarloadSandbox()">
+            <option value="rail_commit_ok">⚡ 厂门 AEI RFID 进出线时间戳吻合 + 零扎堆/漏挂虚增 + 私有轨 *X 车皮免责：20ms 自动结算 $92,000.00! (Act automatically)</option>
+            <option value="rail_bch_403">🛑 铁路途中积压将 5 天车皮集中在 1 天扎堆送达 (Railcar Bunching) 或调车机车漏挂 (Missed Switch) 强收建设性送达罚款拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rail_xcar_422">🚨 对已推入企业私有专用线的 *X 字头自备车 (GATX/UTLX) 乱收车皮滞留费或轨道衡未扣除残液/冰雪皮重拦截 → 14ms 触发 HTTP 422 冻结冲正!</option>
+            <option value="rail_stb_451">🛑 违反 STB 49 CFR Part 1333 禁运期对等免责法规或触碰 FRA 剧毒危化品 (TIH) 隔离编组红线：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="rail_mil_409">🧑‍⚖️ Web IQ 自动核算 *X 自备罐车干线重车里程津贴 (Loaded Mileage Allowance) 与整列块交换优待冲抵 $24,500.00 (净付 $67,500.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rail-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -20652,6 +20786,7 @@ function renderAll() {{
   updatePhotomaskReticleSandbox();
   updateSatelliteEoSarSandbox();
   updateLngCargoCustodySandbox();
+  updateRailFreightCarloadSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -25118,6 +25253,55 @@ function updateLngCargoCustodySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ GIIGNL 净热值 (MMBtu) + 在线拉曼/双 GC + 回流 BOG 扣减达标：已自动清算 (VERIFIED_GIIGNL_NET_MMBTU_LNG_CARGO_SETTLED · 23ms · Act automatically):</strong><br>" +
     "• <strong>零体积水分、零回流气重复计费</strong>：现货 LNG 船货已按实测净移交能量完成结算（<code>$42,000,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateRailFreightCarloadSandbox() {{
+  var selEl = document.getElementById("rail-select");
+  var outEl = document.getElementById("rail-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "rail_bch_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CARRIER_RAILCAR_BUNCHING_OR_MISSED_SWITCH_DEMURRAGE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "发站 <code>EDI 404</code> 运单证明货主按每日 8 节车皮均匀发车，但铁路编组站途中延误将 5 天共 40 节车皮攒在 1 天集中推至厂门（<code>Railcar Bunching</code>），或厂门 <code>AAR AEI RFID</code> 已确认空车释放但铁路调车机车漏挂（<code>aei_rfid_and_anti_bunching_missed_switch_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$92,000.00</code> 含霸王建设性送达（CP）滞留费的账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rail_xcar_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PRIVATE_X_CAR_SIDING_CHARGE_OR_WIM_TARE_OVERWEIGHT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "铁路公司对已跨过道岔进入企业自建私有专用线的 <code>*X 字头自备罐车 (GATX/UTLX)</code> 违规计收车皮滞留费，或动态轨道衡（WIM）未剔除冬季车体冰雪/底料皮重虚报超载罚金（<code>private_siding_x_car_and_wim_tare_weight_passed == False</code>）。网关在 <code>14ms</code> 内拦截并退回冲正！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rail_stb_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STB_49CFR1333_EMBARGO_BREACH_OR_FRA_HAZMAT_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查美国陆路交通委员会（STB）<code>49 CFR Part 1333</code> 滞留费对等法规与 Tariff 6004 暴风雪禁运通告，检出铁路在官方禁运期内违规计收罚金或违反吸入性剧毒危化品（TIH）隔离编组规范，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rail_mil_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PRIVATE_CAR_MILEAGE_ALLOWANCE_AND_BLOCK_SWAP_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核算企业租赁 <code>*X 自备车</code> 在一级铁路干线跑出的重车里程补贴（Loaded Mileage Allowance）并切换整列块交换（Block-Swap）费率，单月直接冲抵运费 <code>$24,500.00</code>（净付降至 <code>$67,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ AAR AEI 轨旁 RFID 进出线核验 + 零扎堆/漏挂罚款 + 私有轨免责：已自动清算 (VERIFIED_RAIL_CARLOAD_FREIGHT_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零建设性送达霸王罚款、零自备车乱收费</strong>：月度铁路大宗车皮运费与专用线交割账单已完成结算（<code>$92,000.00</code>）！" +
     "</div>";
 }}
 
