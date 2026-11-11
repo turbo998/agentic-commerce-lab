@@ -152,6 +152,7 @@
 - **专题 118（超高层写字楼与枢纽机场电梯/扶梯全包维保 Elevator & Escalator Full-Maintenance Contract FMC、曳引绳漏磁探伤 ISO 4309 MRT 与双抱闸微动遥测智能托管 vs 传统幽灵签字与换绳敲诈）**：**[《超高层写字楼与枢纽机场电梯/扶梯全包维保（Elevator & Escalator Full-Maintenance Contract, FMC）、曳引绳漏磁探伤（ISO 4309 MRT）与双抱闸微动遥测智能托管 vs 传统幽灵签字与换绳敲诈：架构选型与第一性原理 FAQ》](docs/elevator-escalator-traction-rope-mrt-brake-torque-mandate-vs-phantom-pm-visit-overbilling-faq.md)**
 - **专题 119（自动化集装箱码头岸桥装卸 Automated Container Terminal STS Quay Crane & AGV Stevedoring、吊具四旋锁偏载 $\le 10\%$ 与净台时效率 $\text{GMPH} \ge 32\text{ Moves/h}$ 智能托管 vs 传统按总吊次盲付）**：**[《自动化集装箱码头岸桥装卸（Automated Container Terminal STS Quay Crane & AGV Stevedoring）、吊具四旋锁偏载（$\le 10\%$）与净台时效率（$\text{GMPH} \ge 32\text{ Moves/h}$）智能托管 vs 传统按总吊次盲付：架构选型与第一性原理 FAQ》](docs/automated-container-terminal-sts-spreader-twistlock-gmph-mandate-vs-eccentric-berth-overbilling-faq.md)**
 - **专题 120（大宗漂白木浆与造纸贸易 Bleached Kraft Pulp BSKP / BEKP Offtake、风干公吨 ISO 638 ADMT 90% 绝干折算与铜乙二胺特性粘度 ISO 5351 $\ge 750\text{ mL/g}$ 智能托管 vs 传统按地磅湿重与单看白度盲付）**：**[《大宗漂白木浆与造纸贸易（Bleached Kraft Pulp BSKP / BEKP Offtake）、风干公吨（ISO 638 ADMT 90% 绝干折算）与铜乙二胺特性粘度（ISO 5351 $\ge 750\text{ mL/g}$）智能托管 vs 传统按地磅湿重与单看白度盲付：架构选型与第一性原理 FAQ》](docs/pulp-paper-kraft-admt-moisture-kappa-viscosity-mandate-vs-wet-bale-degradation-overbilling-faq.md)**
+- **专题 121（建筑幕墙超白浮法玻璃与光伏钢化玻璃交割 Float & Solar Tempered Glass Offtake、均质炉热浸引爆 EN 14179-1 HST 硫化镍 $\text{NiS}$ 零自爆与镀膜透光率 $\ge 94.0\%$ 智能托管 vs 传统按面积盲付）**：**[《建筑幕墙超白浮法玻璃与光伏钢化玻璃交割（Float & Solar Tempered Glass Offtake）、均质炉热浸引爆（EN 14179-1 HST 硫化镍 $\text{NiS}$ 零自爆）与镀膜透光率（$\ge 94.0\%$）智能托管 vs 传统按面积盲付：架构选型与第一性原理 FAQ》](docs/float-solar-glass-nis-heat-soak-laser-scanner-transmittance-mandate-vs-spontaneous-shatter-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -392,6 +393,8 @@
 ![2026-11-11 自动化集装箱码头岸桥装卸 (STS Crane)、旋锁四销偏载与台时效率智能托管架构一图流](assets/svg/121-automated-container-terminal-sts-twistlock-2026-11-11.svg)
 
 ![2026-11-11 大宗漂白木浆贸易 (BSKP/BEKP)、风干公吨 (ADMT) 与粘度/白度智能托管架构一图流](assets/svg/122-pulp-paper-kraft-admt-kappa-viscosity-2026-11-11.svg)
+
+![2026-11-11 幕墙超白与光伏钢化玻璃交割、均质炉引爆 (NiS 零自爆) 与透光率智能托管架构一图流](assets/svg/123-float-solar-glass-nis-heat-soak-scanner-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

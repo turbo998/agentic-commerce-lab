@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg124" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09111D"/>
+      <stop offset="50%" stop-color="#132033"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent124" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="cardBg124" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#17273E"/>
+      <stop offset="100%" stop-color="#0B1422"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg124)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent124)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ROUND 122 · TIRE &amp; RUBBER (MOONEY / MDR / EUDR) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    轮胎与天然/合成橡胶交割 (TSR-20/SSBR)、门尼粘度/MDR 焦烧与 EUDR 托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    ISO 289 Mooney Viscosity, MDR Scorch Time (ts2 &gt;=4.5 min), Dispergrader Carbon-Black (&gt;=95%) &amp; EUDR Polygon vs. Scorched Compound Scrap
+  </text>
+
+  <!-- Left Card: Legacy Bale Tonnage & Scorch/Wet-Cup-Lump Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg124)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按标胶吨数盲付与早期焦烧报废踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 密炼混炼胶早期焦烧 (Scorch ts2 &lt; 2min) 死在挤出机</text>
+    <text x="58" y="224" fill="#CBD5E1">• 海运高温集装箱致终炼胶提前交联，收走 $190,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 门尼粘度飙升 &gt;85 MU，上胎面挤出机直接卡死整批报废</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 炭黑/白炭黑分散度不足 (&lt;85%) 致高速爆胎</text>
+    <text x="58" y="294" fill="#CBD5E1">• 密炼机偷减混炼时间，硅烷偶联反应不完全存在微米团聚体</text>
+    <text x="58" y="312" fill="#CBD5E1">• EV 重载轮胎滚动阻力大增且胎肩应力集中引发脱层爆胎</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 胶块夹心污水/树皮或触犯欧盟 EUDR 毁林法案</text>
+    <text x="58" y="364" fill="#CBD5E1">• 20号标胶 (TSR-20) 塑性保持率 PRI &lt; 40% 极易老化</text>
+    <text x="58" y="382" fill="#CBD5E1">• 缺失东南亚/西非小农橡胶林 EUDR GeoJSON 多边形遭欧盟扣货</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$190,000 焦烧废胶款 + 挤出机清膛与召回
+  </text>
+
+  <!-- Center Card: 4-Layer Tire & Rubber Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg124)" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#78350F"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ⚡ 门尼粘度/MDR 焦烧 + 分散度 + 裂解炭黑托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 1 · ISO 289 门尼粘度与 MDR 焦烧 (ts2 &gt;=4.5m · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    焦烧时间 ts2 &lt; 4.5 min、门尼超差或 TSR-20 PRI &lt; 50% →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 PREMATURE_SCORCH_OR_MOONEY_VISCOSITY_DRIFT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 2 · 炭黑/白炭黑光学分散度 (&gt;=95% · 14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ISO 11345 切面反射分散度 &lt; 95% 或含 >50μm 硬团聚体 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 CARBON_BLACK_SILICA_POOR_DISPERSION_AGGLOMERATE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ EUDR 橡胶林多边形与 PAH 环保油 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    缺失 EUDR 2023/1115 橡胶园坐标或填充油多环芳烃 (PAH) 超标 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 EUDR_RUBBER_POLYGON_OR_REACH_PAH_OIL_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 湿法母炼胶 + 环保裂解炭黑 (rCB) (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    掺 25% ISCC 认证废胎热裂解炭黑 (rCB) + 液相湿法混炼省电 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $30,400 ($159,600 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $190,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg124)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 122)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 门尼 62 MU 与分散度 97% 放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$190,000.00 (ts2 = 6.2 min)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 混炼胶早期焦烧 (ts2=1.8m) 死胶拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拒付堵死挤出机的提前交联胶</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 炭黑/白炭黑团聚 (&lt;95% 分散) 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 守住 EV 轮胎低滚阻与抗撕裂寿命</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 再生裂解炭黑 (rCB) 闭环套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$30,400.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  143 / 143 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住新能源车轮胎安全底线，终结焦烧死胶与毁林风险
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDE047">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“过磅毛重”或“出厂静态化验单”盲付天然标胶 (TSR-20) 与终炼母炼胶货款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 到厂 ISO 289 门尼粘度与无转子硫化仪 (MDR) 焦烧时间 ts2 &gt;=4.5 min (11ms 拦 403)；② 光学切面炭黑/白炭黑分散度 &gt;=95% (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查欧盟 EUDR 橡胶园多边形与 REACH 环保芳烃油 (PAH &lt;=10 ppm, 285ms 拦 451)，并耦合液相湿法母炼胶与废胎热裂解炭黑 (rCB) 立省 $30,400 (295ms)。
+  </text>
+</svg>

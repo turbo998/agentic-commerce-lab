@@ -7935,6 +7935,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("kraft-pulp-admt-sandbox", demo_zh)
 
+    def test_float_solar_glass_nis_heat_soak_laser_scanner_transmittance_mandate_vs_spontaneous_shatter_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_float_solar_glass_hst_policy,
+        )
+
+        # 1. Verified EN 14179-1 290°C HST + transmittance >=94.0% + roller wave <=0.05mm -> 200 OK ($170,000)
+        commit_ok = evaluate_float_solar_glass_hst_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_glass_cents, 17000000)
+
+        # 2. Skipped or shortchanged 290°C heat-soak cycle leaving un-detonated NiS stones -> 403 blocked in 11ms
+        hst_403 = evaluate_float_solar_glass_hst_policy(
+            en14179_heat_soak_and_laser_stone_verified=False,
+        )
+        self.assertFalse(hst_403.allowed)
+        self.assertEqual(hst_403.http_status, 403)
+        self.assertEqual(
+            hst_403.glass_lane,
+            "SKIPPED_HEAT_SOAK_NIS_STONE_OR_BUBBLE_DEFECT_BLOCKED",
+        )
+
+        # 3. High-iron tint dropping solar transmittance < 94.0% or roller-wave distortion -> 422 blocked in 14ms
+        opt_422 = evaluate_float_solar_glass_hst_policy(
+            ultra_clear_transmittance_and_roller_wave_passed=False,
+        )
+        self.assertFalse(opt_422.allowed)
+        self.assertEqual(opt_422.http_status, 422)
+        self.assertEqual(
+            opt_422.glass_lane,
+            "LOW_SOLAR_TRANSMITTANCE_OR_ROLLER_WAVE_DISTORTION_BLOCKED",
+        )
+
+        # 4. Web IQ detects under-filled IGU argon (<90%) or missing SGCC cert -> 451 blocked in 285ms
+        arg_451 = evaluate_float_solar_glass_hst_policy(
+            webiq_en1279_argon_and_sgcc_safety_clean=False,
+        )
+        self.assertFalse(arg_451.allowed)
+        self.assertEqual(arg_451.http_status, 451)
+
+        # 5. Web IQ returns 35% segregated ultra-clear cullet to float furnace saving $27,200 ($142,800 net) -> 409 Confirm
+        cul_409 = evaluate_float_solar_glass_hst_policy(
+            ultra_clear_cullet_furnace_return_savings_cents=2720000,
+        )
+        self.assertFalse(cul_409.allowed)
+        self.assertEqual(cul_409.http_status, 409)
+        self.assertEqual(cul_409.settled_glass_cents, 14280000)
+        self.assertEqual(cul_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["float_glass_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("float-solar-glass-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -15003,6 +15003,91 @@ def evaluate_pulp_paper_kraft_admt_policy(
     )
 
 
+@dataclass(frozen=True)
+class FloatSolarGlassHstVerdict:
+    allowed: bool
+    http_status: int
+    glass_lane: str
+    settled_glass_cents: int
+    cullet_return_or_hst_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_float_solar_glass_hst_policy(
+    gross_glass_lot_cents: int = 17000000,
+    en14179_heat_soak_and_laser_stone_verified: bool = True,
+    ultra_clear_transmittance_and_roller_wave_passed: bool = True,
+    webiq_en1279_argon_and_sgcc_safety_clean: bool = True,
+    ultra_clear_cullet_furnace_return_savings_cents: int = 0,
+) -> FloatSolarGlassHstVerdict:
+    """Evaluate EN 14179-1 Heat-Soak Test (HST glass-surface thermocouple 290°C+-10°C for >=120 mins eliminating alpha-NiS spontaneous shatter) & sub-mm dark-field laser scanning vs fake paper-stamped HST overbilling, ultra-clear low-iron AR solar transmittance (>=94.0%) & Moire roller-wave flatness (<=0.05 mm/300 mm) gate, Web IQ EN 1279 spark-spectroscopy IGU argon fill (>=90%) & SGCC check, and closed-loop ultra-clear cullet furnace return arbitrage."""
+    # 1. Skipped or shortchanged EN 14179-1 290°C heat-soak cycle leaving un-detonated NiS stones -> HTTP 403
+    if not en14179_heat_soak_and_laser_stone_verified:
+        return FloatSolarGlassHstVerdict(
+            False,
+            403,
+            "SKIPPED_HEAT_SOAK_NIS_STONE_OR_BUBBLE_DEFECT_BLOCKED",
+            0,
+            gross_glass_lot_cents,
+            "tempered_glass_lot_blocked_due_to_missing_en14179_290c_heat_soak_thermocouple_curve_or_laser_nis_stone",
+            11,
+            "Send to a human",
+        )
+
+    # 2. High-iron green tint dropping solar transmittance < 94.0% or roller-wave optical distortion > 0.05mm -> HTTP 422
+    if not ultra_clear_transmittance_and_roller_wave_passed:
+        return FloatSolarGlassHstVerdict(
+            False,
+            422,
+            "LOW_SOLAR_TRANSMITTANCE_OR_ROLLER_WAVE_DISTORTION_BLOCKED",
+            0,
+            gross_glass_lot_cents,
+            "architectural_solar_glass_held_due_to_transmittance_below_94pct_or_excessive_tempering_roller_wave",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects IGU argon fill < 90% (EN 1279 breach) or missing SGCC/CE safety cert -> HTTP 451
+    if not webiq_en1279_argon_and_sgcc_safety_clean:
+        return FloatSolarGlassHstVerdict(
+            False,
+            451,
+            "IGU_ARGON_LEAKAGE_OR_SGCC_SAFETY_CERT_HOLD",
+            0,
+            gross_glass_lot_cents,
+            "webiq_detected_under_filled_igu_argon_cavity_below_90pct_or_missing_sgcc_safety_glazing_certification",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Segregated Ultra-Clear Cullet (35%) Closed-Loop Float Furnace Return -> HTTP 409 Confirm
+    if ultra_clear_cullet_furnace_return_savings_cents > 0:
+        return FloatSolarGlassHstVerdict(
+            False,
+            409,
+            "ULTRA_CLEAR_CULLET_CLOSED_LOOP_FURNACE_CONFIRM",
+            gross_glass_lot_cents - ultra_clear_cullet_furnace_return_savings_cents,
+            ultra_clear_cullet_furnace_return_savings_cents,
+            "webiq_returned_35pct_segregated_ultra_clear_cullet_to_float_furnace_displacing_soda_ash_saving_27200_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified EN 14179-1 290°C HST + Transmittance >=94.0% + Roller Wave <=0.05mm + Argon >=90% -> Settled
+    return FloatSolarGlassHstVerdict(
+        True,
+        200,
+        "VERIFIED_FLOAT_SOLAR_GLASS_HST_SETTLED",
+        gross_glass_lot_cents,
+        0,
+        "en14179_heat_soak_thermocouple_curve_solar_transmittance_and_igu_argon_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19608,6 +19693,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wet_bale_block_latency_ms": plp_wet_403.latency_ms,
     }
 
+    gls_commit_ok = evaluate_float_solar_glass_hst_policy()
+    gls_hst_403 = evaluate_float_solar_glass_hst_policy(
+        en14179_heat_soak_and_laser_stone_verified=False,
+    )
+    gls_opt_422 = evaluate_float_solar_glass_hst_policy(
+        ultra_clear_transmittance_and_roller_wave_passed=False,
+    )
+    gls_arg_451 = evaluate_float_solar_glass_hst_policy(
+        webiq_en1279_argon_and_sgcc_safety_clean=False,
+    )
+    gls_cul_409 = evaluate_float_solar_glass_hst_policy(
+        ultra_clear_cullet_furnace_return_savings_cents=2720000,
+    )
+    float_glass_guards = {
+        "all_passed": (
+            gls_commit_ok.allowed
+            and gls_commit_ok.settled_glass_cents == 17000000
+            and not gls_hst_403.allowed
+            and gls_hst_403.http_status == 403
+            and not gls_opt_422.allowed
+            and gls_opt_422.http_status == 422
+            and not gls_arg_451.allowed
+            and gls_arg_451.http_status == 451
+            and not gls_cul_409.allowed
+            and gls_cul_409.action_pill == "Confirm"
+        ),
+        "glass_settlement_latency_ms": gls_commit_ok.latency_ms,
+        "fake_hst_block_latency_ms": gls_hst_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19741,6 +19856,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "elevator_mro_guards": elevator_mro_guards,
         "container_sts_guards": container_sts_guards,
         "kraft_pulp_guards": kraft_pulp_guards,
+        "float_glass_guards": float_glass_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24818,6 +24934,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="plp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Architectural Float & Solar PV Tempered Glass, EN 14179 HST & AR Transmittance Mandate Sandbox (Round 121 FAQ Companion) -->
+      <div class="finops-box" id="float-solar-glass-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-gls-title">🪟 幕墙超白与光伏钢化玻璃 (Float &amp; Solar Glass)、均质炉引爆 (EN 14179 HST 零自爆) 与透光率 (&gt;=94.0%) 架构：热电偶曲线与平整度令牌 (float_solar_glass_mandate_...) vs 按面积盲付决策器 (Round 121 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 超高层幕墙 Low-E 与双玻光伏钢化玻璃交割 ($170,000.00)、EN 14179-1 均质炉 290°C 热浸引爆曲线、超白 AR 透光率与 Web IQ 中空氩气/超白碎玻璃回窑场景 (Float &amp; Solar Glass Scenario):</span></label>
+          <select id="gls-select" onchange="updateFloatSolarGlassSandbox()">
+            <option value="gls_commit_ok">⚡ 均质炉玻璃表面 290°C 恒温满 125 min (&gt;=120) + 激光零结石 + AR 透光率 94.4% (&gt;=94%) + 中空氩气 93%：19ms 自动结算 $170,000.00! (Act automatically)</option>
+            <option value="gls_hst_403">🛑 深加工厂为省电跳过 6 小时均质炉热浸 (或仅升温至 210°C 未引爆 α-NiS 硫化镍结石，上 300米幕墙后必发蝴蝶斑高空自爆雨) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="gls_opt_422">🚨 用高铁分普通玻璃冒充超白致光伏透光率跌至 91.2% (&lt; 94.0% 永久损失组件功率)，或钢化辊道波纹度 0.14mm (&gt;0.05mm 外立面成哈哈镜) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="gls_arg_451">🛑 高压电火花光谱检出中空玻璃腔体用空气冒充惰性氩气 (浓度仅 62% &lt; 90% 致保温 U值劣化) 或缺失 SGCC 安全认证：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="gls_cul_409">🧑‍⚖️ Web IQ 将深加工裁切产生的 35% 高纯低铁超白碎玻璃 (Cullet) 闭环送回原片窑炉顶替重质纯碱与 10% 天然气能耗立省 $27,200.00 (净付 $142,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="gls-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25377,6 +25511,7 @@ function renderAll() {{
   updateElevatorEscalatorMroSandbox();
   updateAutomatedContainerStsSandbox();
   updateKraftPulpAdmtSandbox();
+  updateFloatSolarGlassSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -31558,6 +31693,55 @@ function updateKraftPulpAdmtSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 穿透微波 ADMT (90%绝干) + 特性粘度 (&gt;=750 mL/g) + ECF/EUDR 达标：已自动清算 (VERIFIED_KRAFT_PULP_ADMT_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零湿心浆包把水当浆卖、零过漂断链断纸隐患</strong>：大宗漂白针叶浆/阔叶浆（BSKP/BEKP）批次已完成结算（<code>$205,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateFloatSolarGlassSandbox() {{
+  var selEl = document.getElementById("gls-select");
+  var outEl = document.getElementById("gls-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "gls_hst_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SKIPPED_HEAT_SOAK_NIS_STONE_OR_BUBBLE_DEFECT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "均质炉（Heat Soak Oven）<code>多点贴片热电偶曲线与冷端亚毫米激光扫描</code> 实测显示，加工厂为省电未完成 <code>EN 14179-1 规定的 290°C±10°C 持续 120 分钟保温</code>（仅升温至 210°C 即出炉盖假章，内部 α-NiS 硫化镍微结石未被提前引爆，装上 300m 幕墙后将引发高空自爆玻璃雨，<code>en14179_heat_soak_and_laser_stone_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$170,000.00</code> 伪均质货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gls_opt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LOW_SOLAR_TRANSMITTANCE_OR_ROLLER_WAVE_DISTORTION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "在线分光光度计与莫尔条纹平整度仪检出氧化铁超标（Fe2O3 &gt; 0.015%）导致光伏 AR 镀膜透射比仅 <code>91.2% &lt; 94.0%</code>，或钢化炉陶瓷辊道变形致辊道波纹度高达 <code>0.14 mm/300mm &gt; 0.05 mm</code>（幕墙反射影像严重扭曲成哈哈镜，<code>ultra_clear_transmittance_and_roller_wave_passed == False</code>）。网关在 <code>14ms</code> 内拒收畸变批次！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gls_arg_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IGU_ARGON_LEAKAGE_OR_SGCC_SAFETY_CERT_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查高压电火花发射光谱（<code>EN 1279 Spark Spectroscopy</code>）中空玻璃气体检测报告与北美 SGCC 安全认证名录，检出中空腔体氩气浓度仅 <code>62% &lt; 90%</code>（用空气冒充惰性气体导致建筑传热系数 U值不达标），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "gls_cul_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ULTRA_CLEAR_CULLET_CLOSED_LOOP_FURNACE_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将深加工厂异形裁切产生的 <code>35% 高纯低铁超白边角碎玻璃 (Ultra-Clear Cullet)</code> 闭环运回上游浮法窑炉投料口，直接置换昂贵的重质纯碱（Na2CO3）并降低 1,600°C 窑炉约 10% 天然气能耗，单批立省 <code>$27,200.00</code>（净付降至 <code>$142,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ EN 14179-1 290°C 均质热浸 + AR 透光率 (&gt;=94.0%) + 镜面平整度达标：已自动清算 (VERIFIED_FLOAT_SOLAR_GLASS_HST_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零高空硫化镍 (NiS) 自爆隐患、零哈哈镜辊道波变形</strong>：超高层幕墙与双玻光伏钢化玻璃批次已完成结算（<code>$170,000.00</code>）！" +
     "</div>";
 }}
 
