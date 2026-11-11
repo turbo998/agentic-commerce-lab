@@ -7039,6 +7039,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("subsea-hvdc-cable-sandbox", demo_zh)
 
+    def test_industrial_steam_as_a_service_dryness_fraction_ultrasonic_trap_mandate_vs_wet_steam_mass_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_industrial_steam_dryness_trap_policy,
+        )
+
+        # 1. Verified steam dryness x >=0.97 + zero trap blow-through + pure condensate -> 200 OK ($155,000)
+        commit_ok = evaluate_industrial_steam_dryness_trap_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_steam_cents, 15500000)
+
+        # 2. Wet steam liquid carryover (x = 0.82 < 0.97) billed as gross mass -> 403 blocked in 11ms
+        wet_403 = evaluate_industrial_steam_dryness_trap_policy(
+            steam_dryness_fraction_and_net_gj_verified=False,
+        )
+        self.assertFalse(wet_403.allowed)
+        self.assertEqual(wet_403.http_status, 403)
+        self.assertEqual(
+            wet_403.steam_lane,
+            "WET_STEAM_LIQUID_CARRYOVER_OVERBILLING_BLOCKED",
+        )
+
+        # 3. 40 kHz failed-open trap blow-through or condensate conductivity > 10 uS/cm -> 422 blocked in 14ms
+        trp_422 = evaluate_industrial_steam_dryness_trap_policy(
+            ultrasonic_trap_and_condensate_purity_passed=False,
+        )
+        self.assertFalse(trp_422.allowed)
+        self.assertEqual(trp_422.http_status, 422)
+        self.assertEqual(
+            trp_422.steam_lane,
+            "STEAM_TRAP_BLOW_THROUGH_OR_CONDENSATE_CONTAMINATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects expired boiler safety cert or fake biomass carbon factor -> 451 blocked in 290ms
+        ets_451 = evaluate_industrial_steam_dryness_trap_policy(
+            webiq_boiler_safety_and_carbon_factor_clean=False,
+        )
+        self.assertFalse(ets_451.allowed)
+        self.assertEqual(ets_451.http_status, 451)
+
+        # 5. Web IQ dispatches MVR compressor to upgrade 0.15 MPa flash steam saving $24,800 ($130,200 net) -> 409 Confirm
+        mvr_409 = evaluate_industrial_steam_dryness_trap_policy(
+            mvr_flash_steam_recompression_savings_cents=2480000,
+        )
+        self.assertFalse(mvr_409.allowed)
+        self.assertEqual(mvr_409.http_status, 409)
+        self.assertEqual(mvr_409.settled_steam_cents, 13020000)
+        self.assertEqual(mvr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["industrial_steam_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("industrial-steam-dryness-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

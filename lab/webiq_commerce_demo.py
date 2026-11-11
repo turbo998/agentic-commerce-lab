@@ -13643,6 +13643,91 @@ def evaluate_subsea_hvdc_cable_laying_policy(
     )
 
 
+@dataclass(frozen=True)
+class IndustrialSteamDrynessTrapVerdict:
+    allowed: bool
+    http_status: int
+    steam_lane: str
+    settled_steam_cents: int
+    mvr_flash_or_wet_steam_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_industrial_steam_dryness_trap_policy(
+    gross_steam_invoice_cents: int = 15500000,
+    steam_dryness_fraction_and_net_gj_verified: bool = True,
+    ultrasonic_trap_and_condensate_purity_passed: bool = True,
+    webiq_boiler_safety_and_carbon_factor_clean: bool = True,
+    mvr_flash_steam_recompression_savings_cents: int = 0,
+) -> IndustrialSteamDrynessTrapVerdict:
+    """Evaluate inline dual-parameter steam dryness fraction (x >=0.97) & net latent-heat GJ billing (minus condensate return enthalpy) vs wet-steam carryover gross-tonnage overbilling, 40 kHz ultrasonic steam-trap blow-through & condensate conductivity (<=10 uS/cm) gate, Web IQ ASME/TSG boiler pressure-safety & Scope-2 CHP fuel carbon factor check, and Mechanical Vapor Recompression (MVR) flash-steam upgrade arbitrage."""
+    # 1. Wet steam liquid carryover (x < 0.97) or billing unadjusted gross mass tons -> HTTP 403
+    if not steam_dryness_fraction_and_net_gj_verified:
+        return IndustrialSteamDrynessTrapVerdict(
+            False,
+            403,
+            "WET_STEAM_LIQUID_CARRYOVER_OVERBILLING_BLOCKED",
+            0,
+            gross_steam_invoice_cents,
+            "industrial_steam_invoice_blocked_due_to_dryness_fraction_below_0_97_or_uncredited_liquid_water_carryover",
+            11,
+            "Send to a human",
+        )
+
+    # 2. 40 kHz acoustic sensor detects failed-open steam-trap blow-through or condensate conductivity > 10 uS/cm -> HTTP 422
+    if not ultrasonic_trap_and_condensate_purity_passed:
+        return IndustrialSteamDrynessTrapVerdict(
+            False,
+            422,
+            "STEAM_TRAP_BLOW_THROUGH_OR_CONDENSATE_CONTAMINATION_BLOCKED",
+            0,
+            gross_steam_invoice_cents,
+            "steam_header_held_due_to_40khz_ultrasonic_failed_open_trap_blow_through_or_condensate_conductivity_breach",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects expired ASME/TSG boiler safety inspection or false biomass carbon factor -> HTTP 451
+    if not webiq_boiler_safety_and_carbon_factor_clean:
+        return IndustrialSteamDrynessTrapVerdict(
+            False,
+            451,
+            "BOILER_PRESSURE_SAFETY_OR_CARBON_FACTOR_HOLD",
+            0,
+            gross_steam_invoice_cents,
+            "webiq_detected_expired_boiler_pressure_vessel_safety_cert_or_misrepresented_chp_biomass_carbon_factor",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Mechanical Vapor Recompression (MVR) Flash-Steam Substitution -> HTTP 409 Confirm
+    if mvr_flash_steam_recompression_savings_cents > 0:
+        return IndustrialSteamDrynessTrapVerdict(
+            False,
+            409,
+            "MVR_FLASH_STEAM_RECOMPRESSION_SAVINGS_CONFIRM",
+            gross_steam_invoice_cents - mvr_flash_steam_recompression_savings_cents,
+            mvr_flash_steam_recompression_savings_cents,
+            "webiq_dispatched_off_peak_mvr_compressor_to_upgrade_0_15mpa_flash_steam_saving_24800_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Dryness x >=0.97 + Zero Trap Blow-Through + Pure Condensate Return -> Settled
+    return IndustrialSteamDrynessTrapVerdict(
+        True,
+        200,
+        "VERIFIED_DRY_INDUSTRIAL_STEAM_NET_GJ_SETTLED",
+        gross_steam_invoice_cents,
+        0,
+        "steam_dryness_fraction_net_gj_ultrasonic_trap_and_carbon_factor_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17768,6 +17853,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "shallow_burial_block_latency_ms": cab_dol_403.latency_ms,
     }
 
+    stm_commit_ok = evaluate_industrial_steam_dryness_trap_policy()
+    stm_wet_403 = evaluate_industrial_steam_dryness_trap_policy(
+        steam_dryness_fraction_and_net_gj_verified=False,
+    )
+    stm_trp_422 = evaluate_industrial_steam_dryness_trap_policy(
+        ultrasonic_trap_and_condensate_purity_passed=False,
+    )
+    stm_ets_451 = evaluate_industrial_steam_dryness_trap_policy(
+        webiq_boiler_safety_and_carbon_factor_clean=False,
+    )
+    stm_mvr_409 = evaluate_industrial_steam_dryness_trap_policy(
+        mvr_flash_steam_recompression_savings_cents=2480000,
+    )
+    industrial_steam_guards = {
+        "all_passed": (
+            stm_commit_ok.allowed
+            and stm_commit_ok.settled_steam_cents == 15500000
+            and not stm_wet_403.allowed
+            and stm_wet_403.http_status == 403
+            and not stm_trp_422.allowed
+            and stm_trp_422.http_status == 422
+            and not stm_ets_451.allowed
+            and stm_ets_451.http_status == 451
+            and not stm_mvr_409.allowed
+            and stm_mvr_409.action_pill == "Confirm"
+        ),
+        "steam_settlement_latency_ms": stm_commit_ok.latency_ms,
+        "wet_steam_block_latency_ms": stm_wet_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -17885,6 +18000,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "timber_scaling_guards": timber_scaling_guards,
         "geothermal_egs_guards": geothermal_egs_guards,
         "subsea_cable_guards": subsea_cable_guards,
+        "industrial_steam_guards": industrial_steam_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -22674,6 +22790,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cab-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Industrial Steam-as-a-Service, Dryness Fraction & Ultrasonic Trap Mandate Sandbox (Round 105 FAQ Companion) -->
+      <div class="finops-box" id="industrial-steam-dryness-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-stm-title">♨️ 化工园区蒸汽外供 (Steam-as-a-Service)、两相流干度分数 (x &gt;=0.97) 与 40 kHz 超声波疏水阀架构：净潜热与回水冲抵令牌 (industrial_steam_dryness_mandate_...) vs 湿蒸汽把水当汽卖决策器 (Round 105 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 化工园区热电联产 (CHP) 工业蒸汽月度交割 ($155,000.00)、在线蒸汽干度分数 (Dryness Fraction x)、40 kHz 疏水阀防直排与 Web IQ MVR 闪蒸乏汽再压缩场景 (Industrial Steam Scenario):</span></label>
+          <select id="stm-select" onchange="updateIndustrialSteamDrynessSandbox()">
+            <option value="stm_commit_ok">⚡ 在线干度分数 x = 0.985 (&gt;=0.97) + 40 kHz 疏水阀零漏汽 + 凝结水回水 4.2 μS/cm + 碳因子达标：19ms 自动结算 $155,000.00! (Act automatically)</option>
+            <option value="stm_wet_403">🛑 管网保温受潮致边界蒸汽干度跌至 x = 0.82 (混入 18% 毫无汽化潜热的液态水且诱发水锤)，热电厂仍按毛吨数计费拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="stm_trp_422">🚨 40 kHz 超声波探头检出疏水阀阀芯卡死常开直排活蒸汽 (&gt;45 dBμV)，或换热器内漏致回水电导率 28 μS/cm (&gt;10) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="stm_ets_451">🛑 供汽锅炉安全阀 ASME/TSG 特种设备定检超期，或燃煤热电厂虚报 100% 生物质零碳蒸汽因子：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="stm_mvr_409">🧑‍⚖️ Web IQ 在谷电窗口启动 MVR (机械蒸汽再压缩机) 将 0.15 MPa 闪蒸乏汽升压至 0.6 MPa 顶替外购新汽立省 $24,800.00 (净付 $130,200.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="stm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -23217,6 +23351,7 @@ function renderAll() {{
   updateTimber3dScalingSandbox();
   updateGeothermalEgsEnthalpySandbox();
   updateSubseaHvdcCableSandbox();
+  updateIndustrialSteamDrynessSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -28614,6 +28749,55 @@ function updateSubseaHvdcCableSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 独立 ROV 实测埋深 (DoL &gt;=1.5m) + BOTDR 零过弯应变 + UXO/NtM 达标：已自动清算 (VERIFIED_SUBSEA_HVDC_CABLE_BURIAL_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零跳犁浅埋拖锚隐患、零溜槽过弯绝缘暗伤</strong>：海上风电送出海缆与跨海 HVDC 冲埋工程款已完成结算（<code>$420,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateIndustrialSteamDrynessSandbox() {{
+  var selEl = document.getElementById("stm-select");
+  var outEl = document.getElementById("stm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "stm_wet_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WET_STEAM_LIQUID_CARRYOVER_OVERBILLING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "园区围墙边界 <code>在线双参数蒸汽干度计</code> 实测显示，送达蒸汽干度分数跌至 <code>x = 0.82 &lt; 0.97</code>（含 18% 无汽化潜热的液态热水且引发管道水锤），但供汽方仍按普通流量计毛吨数全额计费（<code>steam_dryness_fraction_and_net_gj_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$155,000.00</code> 湿汽掺水账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "stm_trp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 STEAM_TRAP_BLOW_THROUGH_OR_CONDENSATE_CONTAMINATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "40 kHz 无线声发射传感器检出 3 号分汽缸疏水阀卡死在常开位直排活蒸汽（<code>声级 62 dBμV &gt; 45 dBμV</code>），或凝结水回水母管电导率飙升至 <code>28 μS/cm &gt; 10 μS/cm</code>（<code>ultrasonic_trap_and_condensate_purity_passed == False</code>）。网关在 <code>14ms</code> 内拦截漏气争议款并联动切换回水排污三通阀！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "stm_ets_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 BOILER_PRESSURE_SAFETY_OR_CARBON_FACTOR_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查特种设备安全监察库（ASME/TSG）与园区热电 CEMS 燃料台账，检出主蒸汽安全阀定检逾期或供汽方将燃煤蒸汽虚报为 100% 生物质零碳蒸汽，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "stm_mvr_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MVR_FLASH_STEAM_RECOMPRESSION_SAVINGS_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在分时谷电窗口自动启动 <code>MVR 机械蒸汽再压缩机</code>，将凝结水闪蒸罐原本排空的 0.15 MPa 低压乏汽升压至 0.6 MPa 顶替外购新汽，当月立省 <code>$24,800.00</code>（净付降至 <code>$130,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 在线干度 (x &gt;=0.97) + 40 kHz 疏水阀零漏汽 + 凝结水回水冲抵达标：已自动清算 (VERIFIED_DRY_INDUSTRIAL_STEAM_NET_GJ_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零湿蒸汽把热水当汽卖、零疏水阀常开漏气</strong>：化工园区工业蒸汽月度净吉焦（Net GJ）账单已完成结算（<code>$155,000.00</code>）！" +
     "</div>";
 }}
 

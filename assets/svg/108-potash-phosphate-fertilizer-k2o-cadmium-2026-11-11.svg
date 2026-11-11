@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg108" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071712"/>
+      <stop offset="50%" stop-color="#10271E"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent108" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="cardBg108" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#143025"/>
+      <stop offset="100%" stop-color="#0A1914"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg108)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent108)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ROUND 106 · POTASH &amp; PHOSPHATE FERTILIZER OFFTAKE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    大宗钾肥与磷肥贸易 (MOP / DAP)、在线 LIBS 养分品位与欧盟镉限值智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Conveyor LIBS/ICP-OES Nutrient Assay (K2O &gt;=60% / Water-Soluble P2O5), Granule Crush Strength &amp; EU Cd (&lt;=20 mg/kg) vs. Filler Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Bill-of-Lading & Caking/Cadmium Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg108)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统凭装港纸质提单盲付与掺假结块踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 掺杂廉价白云石/红粘土拉低有效 K2O/P2O5</text>
+    <text x="58" y="224" fill="#CBD5E1">• 纸质 COA 写氯化钾 K2O = 60.5%，收走 $260,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 卸船实测仅 55.8% 或枸溶性磷冒充水溶性磷肥效打折</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 漏涂防结块胺油致海运吸潮硬结成“水泥块”</text>
+    <text x="58" y="294" fill="#CBD5E1">• 含水率 &gt; 0.5% 且颗粒抗压碎力 &lt; 30 N，粉尘率 &gt; 8%</text>
+    <text x="58" y="312" fill="#CBD5E1">• 散货船舱底结块需挖机破碎，全自动变量施肥机卡死</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 磷矿伴生重金属镉 (Cd &gt; 60 mg/kg) 触犯欧盟红线</text>
+    <text x="58" y="364" fill="#CBD5E1">• 违反欧盟 (EU) 2019/1009 肥料法规或混入制裁钾肥</text>
+    <text x="58" y="382" fill="#CBD5E1">• 目的港海关整船扣押退运，触发巨额租船滞期索赔</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$260,000 掺假低品位款 + 结块破碎与退运
+  </text>
+
+  <!-- Center Card: 4-Layer Fertilizer Assay Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg108)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#D1FAE5" text-anchor="middle">
+    ⚡ 皮带 LIBS 光谱 + 颗粒抗压 + Web IQ 镉限值托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 皮带在线 LIBS/ICP-OES 养分品位 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    MOP K2O &lt; 60.0% 或 DAP 水溶磷 &lt; 41.0% (掺石粉填充剂) →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 NUTRIENT_GRADE_DEFICIT_OR_FILLER_ADULTERATION_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 颗粒抗压碎力 (&gt;=35N) 与防结块水分 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    水分 &gt; 0.5% 致舱底硬结块或 SGN 2-4mm 粒径合格率 &lt; 90% →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 HYGROSCOPIC_CAKING_OR_GRANULE_CRUSH_FAILURE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 欧盟重金属镉 (Cd) 与矿山溯源 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    重金属镉 Cd &gt; 20 mg/kg P2O5 (违反 EU 2019/1009) 或受制裁 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 HEAVY_METAL_CADMIUM_OR_SANCTIONED_ORIGIN_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 4 · Web IQ 港口散粮自动化 BB 掺混套利 (300ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    按土壤测土配方在卸港散装直混 (Bulk Blending) 省袋装溢价 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $34,000 ($226,000 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 20ms 自动清算 $260,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg108)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 106)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 养分品位与低镉达标放款 (200 OK)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：20 ms · 放款：$260,000.00 (K2O 60.8%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 白云石掺假/养分品位虚标拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截劣质化肥款：$260,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 海运吸潮硬结块/抗压碎力不足拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 拒付粉化率超标散货批次</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 卸港散装直混 BB 肥配方套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：300 ms · 节省：$34,000.00 (13.1% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  127 / 127 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    按纯有效养分吨数结算，杜绝石粉掺假与重金属镉污染
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要仅凭装港“水尺计重毛吨数 + 纸质出厂化验单”就放行大宗钾肥/磷肥信用证尾款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 卸船皮带在线 LIBS/ICP-OES 实测 MOP K2O &gt;=60.0% 且 DAP 水溶磷占比 &gt;=90% (11ms 拦 403)；② 颗粒抗压碎力 &gt;=35N 且水分 &lt;=0.5% 零硬结块 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查欧盟 EU 2019/1009 磷肥重金属镉限值 (Cd &lt;=20 mg/kg P2O5) 与矿山原产地制裁名单 (290ms 拦 451)，并联动港区 BB 肥散装直混立省 $34,000 (300ms)。
+  </text>
+</svg>

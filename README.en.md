@@ -136,6 +136,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 102 (Timber & Sawmill Log Procurement, 3D Laser Under-Bark Scaling JAS/Scribner & EUDR Geolocation-Polygon Escrow vs. Bark/Heart-Rot Over-Scaling)**: **[Timber & Sawmill Log Procurement, 3D Laser Under-Bark Scaling (JAS / Scribner) & EUDR Geolocation-Polygon Escrow vs. Bark/Heart-Rot Over-Scaling: Architecture Selection & First-Principles FAQ](docs/timber-sawmill-3d-laser-log-scaling-eudr-polygon-mandate-vs-bark-void-overscaling-faq.en.md)**
 - **Topic 103 (Deep Geothermal & Enhanced Geothermal Systems EGS Drilling, Two-Phase Orifice Specific Enthalpy >=1,650 kJ/kg & Seismic Traffic-Light System TLS ML <=2.0 Escrow vs. Per-Meter Footage & Short-Circuit Overbilling)**: **[Deep Geothermal & Enhanced Geothermal Systems (EGS) Drilling, Two-Phase Orifice Specific Enthalpy ($\ge 1,650\text{ kJ/kg}$) & Seismic Traffic-Light System (TLS $M_L \le 2.0$) Escrow vs. Per-Meter Footage & Short-Circuit Overbilling: Architecture Selection & First-Principles FAQ](docs/geothermal-egs-drilling-enthalpy-wellhead-seismicity-mandate-vs-footage-short-circuit-overbilling-faq.en.md)**
 - **Topic 104 (Subsea HVDC & Offshore Wind Export Cable Laying, ROV TSS-440 Burial Depth DoL >=1.5m & BOTDR Fiber-Strain/Bend-Radius Escrow vs. Shallow-Exposure Anchor-Strike Overbilling)**: **[Subsea HVDC & Offshore Wind Export Cable Laying, ROV TSS-440 Burial Depth ($\text{DoL} \ge 1.5\text{ m}$) & BOTDR Fiber-Strain/Bend-Radius Escrow vs. Shallow-Exposure Anchor-Strike Overbilling: Architecture Selection & First-Principles FAQ](docs/subsea-hvdc-cable-laying-rov-burial-depth-das-strain-mandate-vs-shallow-exposure-anchor-strike-faq.en.md)**
+- **Topic 105 (Industrial Steam-as-a-Service & CHP Offtake, Two-Phase Steam Dryness Fraction x >=0.97 & 40 kHz Ultrasonic Steam-Trap Escrow vs. Wet-Steam Mass Overbilling)**: **[Industrial Steam-as-a-Service & CHP Offtake, Two-Phase Steam Dryness Fraction ($x \ge 0.97$) & 40 kHz Ultrasonic Steam-Trap Escrow vs. Wet-Steam Mass Overbilling: Architecture Selection & First-Principles FAQ](docs/industrial-steam-as-a-service-dryness-fraction-ultrasonic-trap-mandate-vs-wet-steam-mass-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -344,6 +345,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Deep Geothermal & EGS Drilling, Two-Phase Enthalpy & Seismic TLS Mandate Visual Summary](assets/svg/105-geothermal-egs-drilling-enthalpy-seismicity-2026-11-11.svg)
 
 ![2026-11-11 Subsea HVDC Cable Laying, ROV Burial Depth & BOTDR Strain Mandate Visual Summary](assets/svg/106-subsea-hvdc-cable-laying-rov-dol-das-2026-11-11.svg)
+
+![2026-11-11 Industrial Steam-as-a-Service, Dryness Fraction & Ultrasonic Steam-Trap Mandate Visual Summary](assets/svg/107-industrial-steam-dryness-fraction-trap-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
