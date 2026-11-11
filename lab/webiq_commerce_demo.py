@@ -15343,6 +15343,92 @@ def evaluate_salmon_aquaculture_ras_policy(
     )
 
 
+@dataclass(frozen=True)
+class TextileDyeingFinishingVerdict:
+    allowed: bool
+    http_status: int
+    textile_lane: str
+    settled_textile_cents: int
+    supercritical_co2_and_heat_recovery_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_textile_dyeing_finishing_policy(
+    *,
+    gross_textile_tolling_cents: int = 14500000,
+    inline_spectrophotometer_delta_e_verified: bool = True,
+    gsm_shrinkage_and_fastness_passed: bool = True,
+    webiq_zdhc_mrsl_and_oeko_tex_clean: bool = True,
+    supercritical_co2_and_heat_recovery_savings_cents: int = 0,
+) -> TextileDyeingFinishingVerdict:
+    # 1. Full-Width Inline Spectrophotometer Shade Drift (CMC Delta-E >0.8) or Side-Center Shading (>0.4) -> HTTP 403
+    if not inline_spectrophotometer_delta_e_verified:
+        return TextileDyeingFinishingVerdict(
+            False,
+            403,
+            "SHADE_VARIATION_DELTA_E_OR_SIDE_CENTER_SHADING_BLOCKED",
+            0,
+            0,
+            "textile_invoice_blocked_due_to_cmc_delta_e_drift_or_side_to_center_shading",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Stenter Over-Stretching Fake Yardage (ISO 6330 Shrinkage >3.0%) or Poor Fastness (<4.0) -> HTTP 422
+    if not gsm_shrinkage_and_fastness_passed:
+        return TextileDyeingFinishingVerdict(
+            False,
+            422,
+            "EXCESS_FABRIC_SHRINKAGE_OR_POOR_COLOR_FASTNESS_BLOCKED",
+            0,
+            0,
+            "fabric_lot_rejected_for_stenter_over_stretching_shrinkage_or_dye_bleeding",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Banned Carcinogenic Azo Arylamines (>20 ppm) or Revoked OEKO-TEX/ZDHC via Web IQ -> HTTP 451
+    if not webiq_zdhc_mrsl_and_oeko_tex_clean:
+        return TextileDyeingFinishingVerdict(
+            False,
+            451,
+            "ZDHC_MRSL_AZO_DYE_OR_OEKO_TEX_BREACH_HOLD",
+            0,
+            0,
+            "webiq_detected_banned_azo_arylamine_npeo_or_revoked_oeko_tex_certificate",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Supercritical CO2 Waterless Dyeing + MVR Heat Recovery -> HTTP 409 Confirm
+    if supercritical_co2_and_heat_recovery_savings_cents > 0:
+        return TextileDyeingFinishingVerdict(
+            False,
+            409,
+            "SUPERCRITICAL_CO2_DYEING_AND_HEAT_RECOVERY_CONFIRM",
+            gross_textile_tolling_cents - supercritical_co2_and_heat_recovery_savings_cents,
+            supercritical_co2_and_heat_recovery_savings_cents,
+            "webiq_applied_supercritical_co2_waterless_dyeing_and_mvr_heat_recovery_saving_23200_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified CMC Delta-E <=0.8 + GSM Shrinkage <=3.0% + Fastness >=4.0 + ZDHC Clean -> Settled
+    return TextileDyeingFinishingVerdict(
+        True,
+        200,
+        "VERIFIED_TEXTILE_DYEING_TOLLING_SETTLED",
+        gross_textile_tolling_cents,
+        0,
+        "inline_spectrophotometer_delta_e_gsm_shrinkage_fastness_and_zdhc_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -20070,6 +20156,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "efcr_waste_block_latency_ms": sal_fcr_403.latency_ms,
     }
 
+    # Round 125 (Textile Dyeing & Finishing Tolling, Inline Spectrophotometer Delta-E <=0.8 & ZDHC MRSL Mandate)
+    tex_commit_ok = evaluate_textile_dyeing_finishing_policy()
+    tex_shd_403 = evaluate_textile_dyeing_finishing_policy(
+        inline_spectrophotometer_delta_e_verified=False,
+    )
+    tex_shr_422 = evaluate_textile_dyeing_finishing_policy(
+        gsm_shrinkage_and_fastness_passed=False,
+    )
+    tex_azo_451 = evaluate_textile_dyeing_finishing_policy(
+        webiq_zdhc_mrsl_and_oeko_tex_clean=False,
+    )
+    tex_co2_409 = evaluate_textile_dyeing_finishing_policy(
+        supercritical_co2_and_heat_recovery_savings_cents=2320000,
+    )
+    textile_dyeing_guards = {
+        "all_passed": (
+            tex_commit_ok.allowed
+            and tex_commit_ok.settled_textile_cents == 14500000
+            and not tex_shd_403.allowed
+            and tex_shd_403.http_status == 403
+            and not tex_shr_422.allowed
+            and tex_shr_422.http_status == 422
+            and not tex_azo_451.allowed
+            and tex_azo_451.http_status == 451
+            and not tex_co2_409.allowed
+            and tex_co2_409.action_pill == "Confirm"
+        ),
+        "textile_settlement_latency_ms": tex_commit_ok.latency_ms,
+        "shade_drift_block_latency_ms": tex_shd_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20207,6 +20324,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "tire_rubber_guards": tire_rubber_guards,
         "biopharma_cdmo_guards": biopharma_cdmo_guards,
         "salmon_aquaculture_guards": salmon_aquaculture_guards,
+        "textile_dyeing_guards": textile_dyeing_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25356,6 +25474,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sal-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Textile Dyeing & Finishing Tolling, Spectrophotometer Delta-E & ZDHC MRSL Mandate Sandbox (Round 125 FAQ Companion) -->
+      <div class="finops-box" id="textile-dyeing-finishing-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tex-title">🧶 纺织印染与面料定型代工、全幅在线分光测色仪 (CMC ΔE &lt;=0.8) 与 ZDHC 零偶氮架构：零阴阳色与定重预缩令牌 (textile_dyeing_finishing_mandate_...) vs 剪布头与拉长码数盲付决策器 (Round 125 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 运动与快时尚面料印染定型代工交割 ($145,000.00)、全幅分光 CMC ΔE/边中差、β射线克重/水洗缩水率与 Web IQ ZDHC/超临界 CO2 染色场景 (Textile Dyeing Scenario):</span></label>
+          <select id="tex-select" onchange="updateTextileDyeingFinishingSandbox()">
+            <option value="tex_commit_ok">⚡ 全幅分光 CMC ΔE 0.45 (&lt;=0.8) + 边中差 0.18 + 水洗缩水 1.8% (&lt;=3.0%) + 色牢度 4.5级 + ZDHC 合规：19ms 自动结算 $145,000.00! (Act automatically)</option>
+            <option value="tex_shd_403">🛑 染厂仅把前 2米布头调准，整卷中段 800米因喷嘴堵塞出现严重阴阳色差 (CMC ΔE = 2.1 &gt; 0.8 或左中右色差 0.9 &gt; 0.4，裁制成衣后袖口与前胸撞色报废) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="tex_shr_422">🚨 定型机故意关小超喂强行拉长面料 +6% 虚报结算码数，导致消费者首次水洗缩水高达 7.5% (&gt;3.0% 缩成童装) 或皂洗色牢度 &lt; 4.0级掉色串染拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tex_azo_451">🛑 染厂偷偷混用廉价禁用偶氮染料 (还原裂解致癌芳香胺 &gt; 20 ppm 违反欧盟 REACH Annex XVII 与 ZDHC MRSL) 或 OEKO-TEX 证书撤销：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="tex_co2_409">🧑‍⚖️ Web IQ 将涤纶面料切换为超临界 CO2 无水染色 (零水零分散剂、上染率 99%) 并对棉布启用冷轧堆与 MVR 中水热泵回用立省 $23,200.00 (净付 $121,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tex-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25919,6 +26055,7 @@ function renderAll() {{
   updateTireRubberMooneySandbox();
   updateBiopharmaCdmoBioreactorSandbox();
   updateSalmonAquacultureRasSandbox();
+  updateTextileDyeingFinishingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -32296,6 +32433,55 @@ function updateSalmonAquacultureRasSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双目 3D 饵料系数 (eFCR &lt;=1.15) + 土臭素 (&lt;=10 ng/kg) + SalmoFan 色度 (&gt;=26) 达标：已自动清算 (VERIFIED_SALMON_AQUACULTURE_OFFTAKE_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零沉底残饵买单、零泥腥味刺身退货</strong>：深海与循环水三文鱼饲料及成鱼交割已完成结算（<code>$160,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateTextileDyeingFinishingSandbox() {{
+  var selEl = document.getElementById("tex-select");
+  var outEl = document.getElementById("tex-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "tex_shd_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SHADE_VARIATION_DELTA_E_OR_SIDE_CENTER_SHADING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "定型机出口 <code>全幅巡回非接触分光测色仪 (Inline Spectrophotometer)</code> 连续扫描显示，虽然布头 2 米色差合格，但中段 350–780 米处因烘房左右温差与喷嘴堵塞出现严重阴阳色差 <code>CMC(2:1) ΔE = 2.1 &gt; 0.8</code> 且左中右色差 <code>0.9 &gt; 0.4</code>（裁制成衣后袖子与胸片将明显撞色报废，<code>inline_spectrophotometer_delta_e_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$145,000.00</code> 染整费并禁止该卷进入成衣裁床！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tex_shr_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXCESS_FABRIC_SHRINKAGE_OR_POOR_COLOR_FASTNESS_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "在线 <code>β射线克重仪 (GSM Gauge) 与 ISO 6330 缩水率测试</code> 检出染厂为凑码数在拉幅定型机上实施负超喂强行拉长布匹 +6%（实际克重比标准偏低 8%，且下水缩水率高达 <code>7.5% &gt; 3.0%</code>，或耐皂洗色牢度 <code>2.5级 &lt; 4.0级</code>，<code>gsm_shrinkage_and_fastness_passed == False</code>）。网关在 <code>14ms</code> 内拦截虚拉空气码数并退回橡胶毯预缩机重整！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tex_azo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ZDHC_MRSL_AZO_DYE_OR_OEKO_TEX_BREACH_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ZDHC Gateway 化学品清零库</code> 与 <code>OEKO-TEX Standard 100 验真系统</code>，检出该批次混用未认证染料致可裂解致癌偶氮芳香胺 <code>&gt; 20 ppm</code>（违反欧盟 REACH Annex XVII）或含壬基酚聚氧乙烯醚 (NPEO)，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tex_co2_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SUPERCRITICAL_CO2_DYEING_AND_HEAT_RECOVERY_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将涤纶运动面料切换为 <code>超临界二氧化碳无水染色 (Supercritical CO2 Waterless Dyeing，零用水、免分散剂且上染率 99%)</code>，并对棉织物启用低盐冷轧堆与 MVR 印染中水余热回收，单批次立省 <code>$23,200.00</code>（净付降至 <code>$121,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全幅在线分光 (CMC ΔE &lt;=0.8) + 缩水率 (&lt;=3.0%) + 色牢度 (&gt;=4.0级) 达标：已自动清算 (VERIFIED_TEXTILE_DYEING_TOLLING_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零阴阳片成衣报废、零拉幅虚增码数</strong>：纺织印染与面料定型代工批次已完成结算（<code>$145,000.00</code>）！" +
     "</div>";
 }}
 

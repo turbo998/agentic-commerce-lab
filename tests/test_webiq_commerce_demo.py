@@ -8159,6 +8159,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("salmon-aquaculture-ras-sandbox", demo_zh)
 
+    def test_textile_dyeing_finishing_spectrophotometer_delta_e_zdhc_mrsl_mandate_vs_shade_lot_shrinkage_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_textile_dyeing_finishing_policy,
+        )
+
+        # 1. Verified inline CMC Delta-E <=0.8 + GSM shrinkage <=3.0% + fastness >=4.0 + ZDHC clean -> 200 OK ($145,000)
+        commit_ok = evaluate_textile_dyeing_finishing_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_textile_cents, 14500000)
+
+        # 2. Mid-roll shade drift (CMC Delta-E > 0.8) or side-to-center shading -> 403 blocked in 11ms
+        shd_403 = evaluate_textile_dyeing_finishing_policy(
+            inline_spectrophotometer_delta_e_verified=False,
+        )
+        self.assertFalse(shd_403.allowed)
+        self.assertEqual(shd_403.http_status, 403)
+        self.assertEqual(
+            shd_403.textile_lane,
+            "SHADE_VARIATION_DELTA_E_OR_SIDE_CENTER_SHADING_BLOCKED",
+        )
+
+        # 3. Stenter over-stretching inflating yardage & causing shrinkage > 3.0% -> 422 blocked in 14ms
+        shr_422 = evaluate_textile_dyeing_finishing_policy(
+            gsm_shrinkage_and_fastness_passed=False,
+        )
+        self.assertFalse(shr_422.allowed)
+        self.assertEqual(shr_422.http_status, 422)
+        self.assertEqual(
+            shr_422.textile_lane,
+            "EXCESS_FABRIC_SHRINKAGE_OR_POOR_COLOR_FASTNESS_BLOCKED",
+        )
+
+        # 4. Web IQ detects banned carcinogenic azo arylamines (>20 ppm) or revoked OEKO-TEX -> 451 blocked in 285ms
+        azo_451 = evaluate_textile_dyeing_finishing_policy(
+            webiq_zdhc_mrsl_and_oeko_tex_clean=False,
+        )
+        self.assertFalse(azo_451.allowed)
+        self.assertEqual(azo_451.http_status, 451)
+
+        # 5. Web IQ routes to Supercritical CO2 waterless dyeing & MVR heat recovery saving $23,200 ($121,800 net) -> 409 Confirm
+        co2_409 = evaluate_textile_dyeing_finishing_policy(
+            supercritical_co2_and_heat_recovery_savings_cents=2320000,
+        )
+        self.assertFalse(co2_409.allowed)
+        self.assertEqual(co2_409.http_status, 409)
+        self.assertEqual(co2_409.settled_textile_cents, 12180000)
+        self.assertEqual(co2_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["textile_dyeing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("textile-dyeing-finishing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

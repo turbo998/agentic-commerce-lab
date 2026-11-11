@@ -156,6 +156,7 @@
 - **专题 122（汽车轮胎与天然/合成橡胶交割 Tire & Rubber TSR-20 / SSBR Offtake、门尼粘度与无转子硫化仪 ISO 289 Mooney & MDR 焦烧时间 $t_{s2} \ge 4.5\text{ min}$ 及 EUDR 橡胶林多边形智能托管 vs 传统按标胶吨数盲付）**：**[《汽车轮胎与天然/合成橡胶交割（Tire & Rubber TSR-20 / SSBR Offtake）、门尼粘度与无转子硫化仪（ISO 289 Mooney & MDR 焦烧时间 $t_{s2} \ge 4.5\text{ min}$）及 EUDR 橡胶林多边形智能托管 vs 传统按标胶吨数盲付：架构选型与第一性原理 FAQ》](docs/tire-rubber-mooney-viscosity-mdr-cure-eudr-polygon-mandate-vs-scorched-coagulum-overbilling-faq.md)**
 - **专题 123（生物医药 CDMO 单抗与重组蛋白发酵代工 Biopharma CDMO Bioreactor Campaign、在线拉曼滴度 $\ge 5.0\text{ g/L}$ 与宿主细胞蛋白/内毒素 $\text{HCP} \le 100\text{ ppm}$ 智能托管 vs 传统按罐位包月盲付）**：**[《生物医药 CDMO 单抗与重组蛋白发酵代工（Biopharma CDMO Bioreactor Campaign）、在线拉曼滴度（$\ge 5.0\text{ g/L}$）与宿主细胞蛋白/内毒素（$\text{HCP} \le 100\text{ ppm}$）智能托管 vs 传统按罐位包月盲付：架构选型与第一性原理 FAQ》](docs/biopharma-cdmo-bioreactor-titer-hcp-endotoxin-mandate-vs-slot-reservation-batch-failure-faq.md)**
 - **专题 124（深远海网箱与陆基循环水 RAS 三文鱼养殖饲料与成鱼交割 Salmon Aquaculture Feed & Harvest Offtake、双目 3D 饵料系数 $\text{eFCR} \le 1.15$ 与土臭素/虾青素色度 $\text{Geosmin} \le 10\text{ ng/kg}$ & $\text{SalmoFan} \ge 26$ 智能托管 vs 传统按毛重盲付）**：**[《深远海网箱与陆基循环水（RAS）三文鱼养殖饲料与成鱼交割（Salmon Aquaculture Feed & Harvest Offtake）、双目 3D 饵料系数（$\text{eFCR} \le 1.15$）与土臭素/虾青素色度（$\text{Geosmin} \le 10\text{ ng/kg}$ & $\text{SalmoFan} \ge 26$）智能托管 vs 传统按毛重盲付：架构选型与第一性原理 FAQ》](docs/salmon-aquaculture-ras-3d-biomass-fcr-geosmin-astaxanthin-mandate-vs-feed-waste-muddy-flavor-faq.md)**
+- **专题 125（纺织印染与成衣面料定型代工 Textile Dyeing & Finishing Tolling、全幅在线分光测色仪色差 $\text{CMC(2:1) }\Delta E \le 0.8$ 与水洗缩水率/ZDHC 零偶氮智能托管 vs 传统按出布码数盲付）**：**[《纺织印染与成衣面料定型代工（Textile Dyeing & Finishing Tolling）、全幅在线分光测色仪色差（$\text{CMC(2:1) }\Delta E \le 0.8$）与水洗缩水率/ZDHC 零偶氮智能托管 vs 传统按出布码数盲付：架构选型与第一性原理 FAQ》](docs/textile-dyeing-finishing-spectrophotometer-delta-e-zdhc-mrsl-mandate-vs-shade-lot-shrinkage-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -404,6 +405,8 @@
 ![2026-11-11 生物药 CDMO 单抗发酵代工 (2,000L SUB)、滴度与宿主蛋白智能托管架构一图流](assets/svg/125-biopharma-cdmo-bioreactor-titer-hcp-2026-11-11.svg)
 
 ![2026-11-11 深海与循环水三文鱼养殖交割 (RAS/Offshore)、3D 饵料系数与土臭素智能托管架构一图流](assets/svg/126-salmon-aquaculture-ras-fcr-geosmin-2026-11-11.svg)
+
+![2026-11-11 纺织印染与面料定型代工、分光测色仪色差 (CMC ΔE<=0.8) 与 ZDHC 零偶氮智能托管架构一图流](assets/svg/127-textile-dyeing-spectrophotometer-delta-e-zdhc-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

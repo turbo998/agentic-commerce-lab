@@ -705,6 +705,11 @@
     "salmon_settlement_latency_ms": 19,
     "efcr_waste_block_latency_ms": 11
   },
+  "textile_dyeing_guards": {
+    "all_passed": true,
+    "textile_settlement_latency_ms": 19,
+    "shade_drift_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

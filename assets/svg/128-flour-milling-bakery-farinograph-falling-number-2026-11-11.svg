@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg128" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C1408"/>
+      <stop offset="50%" stop-color="#3B250A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent128" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg128" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#31200B"/>
+      <stop offset="100%" stop-color="#171005"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg128)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent128)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ROUND 126 · INDUSTRIAL FLOUR MILLING &amp; BAKERY ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    工业制粉与烘焙专用粉交割、粉质仪稳定时间 (&gt;=10 min) 与降落数值/呕吐毒素智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    Brabender Farinograph Stability (&gt;=10 min), Hagberg Falling Number (&gt;=300s) &amp; DON Mycotoxin (&lt;=0.75 ppm) vs. Sprouted-Wheat Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Protein-Only & Sprouted-Wheat Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg128)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看粗蛋白与毛重盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 掺入穗发芽陈麦致降落数值暴跌 (FN &lt; 180s)</text>
+    <text x="58" y="224" fill="#CBD5E1">• 粗蛋白仍显示 13.5%，但 α-淀粉酶超标把淀粉切成糊精</text>
+    <text x="58" y="242" fill="#CBD5E1">• 中央工厂吐司出炉塌腰、切面粘刀，整日损失 $135,000</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 粉质仪稳定时间不足 (&lt; 4.5 min) 与润麦兑水</text>
+    <text x="58" y="294" fill="#CBD5E1">• 弱筋麦冒充高筋麦，高速搅拌机一打就断筋烂面</text>
+    <text x="58" y="312" fill="#CBD5E1">• 面粉水分加至 15.6% (&gt;14.0%) 把自来水当面粉卖并结块发霉</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 赤霉病呕吐毒素 (DON &gt; 1.8 ppm) 超标召回</text>
+    <text x="58" y="364" fill="#CBD5E1">• 梅雨季赤霉病小麦脱氧雪腐镰刀菌烯醇突破 0.75 ppm 红线</text>
+    <text x="58" y="382" fill="#CBD5E1">• 连锁商超烘焙面包被食药监抽检通报下架</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$135,000 塌腰烂面报废与毒素召回
+  </text>
+
+  <!-- Center Card: 4-Layer Flour Milling Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg128)" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#78350F"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ⚡ 降落数值 FN&gt;=300s + 粉质稳定 + 气力散装托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FCD34D">
+    Gate 1 · 降落数值 (FN &gt;=300s) 与粉质稳定 (&gt;=10m · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    穗发芽致 Falling Number &lt; 300s 或稳定时间 &lt; 10.0 min →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SPROUTED_WHEAT_FALLING_NUMBER_OR_WEAK_GLUTEN_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#FB7185" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDA4AF">
+    Gate 2 · 14.0% 水分折算干基与灰分 (&lt;=0.55% · 14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    过度润麦水分 &gt; 14.0% 未扣重或混麸皮灰分 &gt; 0.55% →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 EXCESS_TEMPERING_MOISTURE_OR_HIGH_BRAN_ASH_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 呕吐毒素 (DON &lt;=0.75 ppm) 核验 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    LC-MS/MS 检出赤霉病呕吐毒素或偶氮甲酰胺漂白剂 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 DON_VOMITOXIN_OR_BANNED_BLEACHING_AGENT_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 食品罐车气力散装 + 麦麸副产冲抵 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    免 25kg 纸袋气力直吹筒仓 + 真菌木聚糖酶替代高价谷朊粉 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $21,600 ($113,400 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $135,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg128)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 126)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 稳定时间 12.5m 与 FN 365s 达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$135,000.00 (DON 0.22 ppm)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 穗发芽 FN &lt; 300s 或弱筋烂面拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截塌腰废粉款：$135,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 润麦超标水分 (&gt;14%) 或高灰分拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 强制按 14.0% 标准干基扣减虚重</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 罐车气力直吹与木聚糖酶配粉 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$21,600.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  147 / 147 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住中央烘焙工厂零塌腰与零真菌毒素红线
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FCD34D">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要单看“凯氏定氮粗蛋白百分比”或“湿润毛重”盲付工业烘焙专用面粉货款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 哈格伯格降落数值 FN &gt;=300s 且布拉班德粉质稳定时间 &gt;=10.0 min (11ms 拦 403)；② 14.0% 水分干基折算且灰分 &lt;=0.55% (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查赤霉病呕吐毒素 DON &lt;=0.75 ppm 与禁用增白剂 (285ms 拦 451)，并切换食品罐车气力直吹与生物酶配粉立省 $21,600 (295ms)。
+  </text>
+</svg>
