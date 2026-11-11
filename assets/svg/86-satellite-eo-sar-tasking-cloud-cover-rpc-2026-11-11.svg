@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg86" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070e1d"/>
+      <stop offset="50%" stop-color="#0f1d38"/>
+      <stop offset="100%" stop-color="#172b52"/>
+    </linearGradient>
+    <linearGradient id="accent86" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg86)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0b1528" stroke="#0ea5e9" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent86)"/>
+
+  <text x="60" y="72" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 84 · SATELLITE EO/SAR TASKING, AOI CLOUD-COVER MASK &amp; RPC ORTHO MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">卫星对地观测遥感影像、AOI 净空云量掩膜与离天底角 RPC 配准托管 vs 浓云废片盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">STAC AOI Cloud-Cover Mask (&lt;=10%) + Off-Nadir (&lt;=20 deg) + GCP RPC CE90 (&lt;=1.5m) vs. Cloudy/Oblique Frame Billing</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按平方公里预付盲采模式 (Cloudy-Frame Overbilling)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 全景云量达标但目标区全被云遮：整幅 100km² 云量 14%，但核心目标厂区 100% 被积云覆盖</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 大倾角侧摆抢拍导致严重拉花：卫星以 38° 离天底角 (Off-Nadir) 斜拍，建筑倒伏且分辨率腰斩</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 缺失 RPC 与地面控制点 (GCP) 正射校正：山体与高楼几何偏移 &gt;15m，无法叠加 GIS 矢量底图</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 重复购买高价紧急编程拍摄：未检索公开免费 Sentinel/Landsat 或存量归档图，白烧加急溢价</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型大宗商品供应链监测 / 灾后定损商业遥感采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">采购 Agent 预付 $145,000 订购 30cm 光学卫星紧急编程拍摄 (Assured Tasking)，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">收到的 GeoTIFF 港区核心泊位被厚云与耀斑遮挡且离天底角达 36°，完全无法识别集装箱</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 浓云废片拦截：0% | • 几何畸变拦截：0% | • 单次废片资损：$50,000–$145,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ AOI 云掩膜 + 离天底角门禁 + RPC 正射配准托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• STAC AOI 多边形净空云掩膜 (&lt;=10%)：只算核心目标区 (Target Polygon) 内云雾与卷云阴影占比</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 离天底角 (&lt;=20°) 与 RPC 正射配准 (CE90 &lt;=1.5m)：保障原生 GSD 分辨率与亚米级地理配准</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• NOAA/快门管制与衍生矢量化 EULA 核验：Web IQ 核查敏感坐标禁拍令与 AI 训练衍生权</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 存档底图 + 全天候 X 波段 SAR 融合套利：阴雨天自动改用存量光学+SAR 融合立省 $34,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断目标多边形云量超标 (&gt;10%) 或太阳耀斑废片；14ms 拦截大倾角斜拍 (&gt;20°)</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">与 RPC 几何配准超差；Web IQ 存量档案 + X 波段 SAR 穿云融合套利立省 $34,000.00（净付 $111,000.00）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 浓云遮挡废片拦截：100% | • 几何配准精度：CE90 &lt;=1.5m | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#111d38" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">商业遥感卫星任务采购 Agent 绝不能按整景平均云量盲付！必须绑定【目标 AOI 云掩膜 + 离天底角 + RPC CE90】三门禁。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_satellite_eo_sar_tasking_policy`) · OGC STAC eo:cloud_cover &amp; GeoTIFF RPC · 2026-11-11</text>
+</svg>

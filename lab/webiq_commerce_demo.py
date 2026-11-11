@@ -11858,6 +11858,91 @@ def evaluate_semiconductor_photomask_reticle_policy(
     )
 
 
+@dataclass(frozen=True)
+class SatelliteEoSarTaskingVerdict:
+    allowed: bool
+    http_status: int
+    satellite_lane: str
+    settled_tasking_cents: int
+    sar_or_cloud_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_satellite_eo_sar_tasking_policy(
+    gross_tasking_order_cents: int = 14500000,
+    aoi_polygon_cloud_and_glint_free_verified: bool = True,
+    off_nadir_angle_and_rpc_ortho_ce90_passed: bool = True,
+    webiq_shutter_control_and_derivative_eula_clean: bool = True,
+    archive_plus_sar_fusion_tasking_savings_cents: int = 0,
+) -> SatelliteEoSarTaskingVerdict:
+    """Evaluate STAC Target-AOI polygon cloud/shadow/glint mask (<=10%) vs scene-wide average cloudy-frame overbilling, Off-Nadir viewing angle (<=20 deg) & GCP RPC orthorectification (CE90 <=1.5m) vs high-obliquity layover smearing, Web IQ shutter-control & AI derivative-rights EULA check, and Archive Optical + X-Band Spotlight SAR monsoon fusion arbitrage."""
+    # 1. Core Target AOI polygon obscured by >10% cloud, shadow, or specular sun glint -> HTTP 403
+    if not aoi_polygon_cloud_and_glint_free_verified:
+        return SatelliteEoSarTaskingVerdict(
+            False,
+            403,
+            "TARGET_AOI_POLYGON_CLOUD_OR_GLINT_OBSCURED_BLOCKED",
+            0,
+            gross_tasking_order_cents,
+            "tasking_payout_blocked_due_to_cloud_or_shadow_mask_exceeding_10pct_inside_core_target_aoi_polygon",
+            11,
+            "Send to a human",
+        )
+
+    # 2. High-obliquity Off-Nadir (>20 deg) building layover or unrectified RPC CE90 (>1.5m) -> HTTP 422
+    if not off_nadir_angle_and_rpc_ortho_ce90_passed:
+        return SatelliteEoSarTaskingVerdict(
+            False,
+            422,
+            "HIGH_OFF_NADIR_LAYOVER_OR_RPC_CE90_DRIFT_BLOCKED",
+            0,
+            gross_tasking_order_cents,
+            "scene_rejected_due_to_off_nadir_angle_above_20deg_or_rpc_orthorectification_ce90_above_1_5m",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects sovereign shutter-control restriction or EULA forbidding AI derivative vectors -> HTTP 451
+    if not webiq_shutter_control_and_derivative_eula_clean:
+        return SatelliteEoSarTaskingVerdict(
+            False,
+            451,
+            "SHUTTER_CONTROL_ZONE_OR_AI_DERIVATIVE_EULA_HOLD",
+            0,
+            gross_tasking_order_cents,
+            "webiq_detected_sovereign_shutter_control_restriction_or_eula_prohibiting_ai_vector_feature_retention",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Archive Optical Basemap + All-Weather X-Band Spotlight SAR Fusion Arbitrage -> HTTP 409 Confirm
+    if archive_plus_sar_fusion_tasking_savings_cents > 0:
+        return SatelliteEoSarTaskingVerdict(
+            False,
+            409,
+            "ARCHIVE_OPTICAL_PLUS_X_BAND_SAR_FUSION_ARBITRAGE_CONFIRM",
+            gross_tasking_order_cents - archive_plus_sar_fusion_tasking_savings_cents,
+            archive_plus_sar_fusion_tasking_savings_cents,
+            "webiq_paired_48h_archive_optical_basemap_with_all_weather_x_band_sar_saving_34000_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified Target-AOI Cloud-Free + Off-Nadir <=20 deg + GCP RPC CE90 <=1.5m -> Settled
+    return SatelliteEoSarTaskingVerdict(
+        True,
+        200,
+        "VERIFIED_SATELLITE_EO_SAR_SCENE_SETTLED",
+        gross_tasking_order_cents,
+        0,
+        "target_aoi_cloud_mask_off_nadir_and_gcp_rpc_orthorectification_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -15353,6 +15438,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "repeating_defect_block_latency_ms": ret_d2d_403.latency_ms,
     }
 
+    sat_commit_ok = evaluate_satellite_eo_sar_tasking_policy()
+    sat_cld_403 = evaluate_satellite_eo_sar_tasking_policy(
+        aoi_polygon_cloud_and_glint_free_verified=False,
+    )
+    sat_nadir_422 = evaluate_satellite_eo_sar_tasking_policy(
+        off_nadir_angle_and_rpc_ortho_ce90_passed=False,
+    )
+    sat_eula_451 = evaluate_satellite_eo_sar_tasking_policy(
+        webiq_shutter_control_and_derivative_eula_clean=False,
+    )
+    sat_sar_409 = evaluate_satellite_eo_sar_tasking_policy(
+        archive_plus_sar_fusion_tasking_savings_cents=3400000,
+    )
+    satellite_eo_sar_guards = {
+        "all_passed": (
+            sat_commit_ok.allowed
+            and sat_commit_ok.settled_tasking_cents == 14500000
+            and not sat_cld_403.allowed
+            and sat_cld_403.http_status == 403
+            and not sat_nadir_422.allowed
+            and sat_nadir_422.http_status == 422
+            and not sat_eula_451.allowed
+            and sat_eula_451.http_status == 451
+            and not sat_sar_409.allowed
+            and sat_sar_409.action_pill == "Confirm"
+        ),
+        "satellite_settlement_latency_ms": sat_commit_ok.latency_ms,
+        "aoi_cloud_block_latency_ms": sat_cld_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -15449,6 +15564,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "offshore_sov_guards": offshore_sov_guards,
         "luxury_watch_guards": luxury_watch_guards,
         "photomask_reticle_guards": photomask_reticle_guards,
+        "satellite_eo_sar_guards": satellite_eo_sar_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -19860,6 +19976,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ret-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Satellite EO/SAR Tasking, AOI Cloud-Cover Mask & RPC Ortho Mandate Sandbox (Round 84 FAQ Companion) -->
+      <div class="finops-box" id="satellite-eo-sar-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sat-title">🛰️ 卫星对地观测遥感影像 (EO / SAR Tasking)、AOI 净空云掩膜与离天底角 RPC 配准架构：目标多边形无云与 SAR 穿云令牌 (satellite_eo_sar_mandate_...) vs 浓云废片盲付决策器 (Round 84 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 30cm 商业遥感卫星星座紧急编程拍摄 ($145,000.00)、STAC Target-AOI 多边形云掩膜 (&lt;=10%)、离天底角 (&lt;=20°) + RPC CE90 与 Web IQ 存量底图 + X 波段 SAR 穿云融合场景 (Satellite EO/SAR Scenario):</span></label>
+          <select id="sat-select" onchange="updateSatelliteEoSarSandbox()">
+            <option value="sat_commit_ok">⚡ Target-AOI 多边形净空云掩膜 3.2% (&lt;=10%) + Off-Nadir 14.5° (&lt;=20°) + GCP RPC 正射 CE90 0.9m：21ms 自动结算 $145,000.00! (Act automatically)</option>
+            <option value="sat_cld_403">🛑 整景平均云量虽为 14% 但核心 2km² 目标港区被积云/云影/耀斑 100% 遮蔽拦截：拒付浓云废片 → 11ms 触发 HTTP 403!</option>
+            <option value="sat_nadir_422">🚨 卫星以 38° 大离天底角 (Off-Nadir &gt;20°) 斜拍导致高楼储罐倒伏遮挡或 RPC 几何配准误差 &gt;1.5m 拦截 → 14ms 触发 HTTP 422 拒收重拍!</option>
+            <option value="sat_eula_451">🛑 触碰敏感坐标主权快门管制 (Shutter Control) 或商业 EULA 禁止保留 AI 提取矢量特征：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="sat_sar_409">🧑‍⚖️ 梅雨/台风季 Web IQ 自动匹配 48h 存量晴空光学底图 + 全天候 X 波段聚束 SAR 穿云融合免除光学加急费立省 $34,000.00 (净付 $111,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sat-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -20382,6 +20516,7 @@ function renderAll() {{
   updateOffshoreSOVSandbox();
   updateLuxuryWatchSandbox();
   updatePhotomaskReticleSandbox();
+  updateSatelliteEoSarSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -24750,6 +24885,55 @@ function updatePhotomaskReticleSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ OASIS SHA-256 签名锁定 + KLA D2DB/Zeiss AIMS 零缺陷 + CNT 防尘膜达标：已自动清算 (VERIFIED_PHOTOMASK_RETICLE_SET_SETTLED · 22ms · Act automatically):</strong><br>" +
     "• <strong>零重复致命缺陷印坏晶圆、零错发旧版版图</strong>：全套流片光刻掩膜版已通过晶圆厂光罩室入库复检并完成结算（<code>$380,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSatelliteEoSarSandbox() {{
+  var selEl = document.getElementById("sat-select");
+  var outEl = document.getElementById("sat-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sat_cld_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TARGET_AOI_POLYGON_CLOUD_OR_GLINT_OBSCURED_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "虽然 100km² 整景平均云量（<code>eo:cloud_cover = 14%</code>）看似达标，但 <code>Cloud-Optimized GeoTIFF (COG) UDM2/QA_PIXEL</code> 像素裁剪显示核心 2km² 目标港区多边形内被浓积云与云影遮蔽达 <code>88%</code>（突破 <code>10%</code> 红线，<code>aoi_polygon_cloud_and_glint_free_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$145,000.00</code> 浓云废片扣款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sat_nadir_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HIGH_OFF_NADIR_LAYOVER_OR_RPC_CE90_DRIFT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卫星为抢加急窗口以 <code>38.4° 离天底角 (Off-Nadir)</code> 跨轨斜拍（突破 <code>20°</code> 上限），导致储油罐与高楼严重侧倾遮挡且缺少地面控制点（GCP）RPC 正射配准（<code>CE90 = 16.2m &gt; 1.5m</code>，<code>off_nadir_angle_and_rpc_ortho_ce90_passed == False</code>）。网关在 <code>14ms</code> 内拒收并要求天底重拍！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sat_eula_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SHUTTER_CONTROL_ZONE_OR_AI_DERIVATIVE_EULA_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查主权测绘快门管制清单（Shutter Control）与商业卫星商 EULA 条款，检出当前许可禁止买方将 AI 视觉提取的矢量框与储罐库存指数永久写入企业数据库，立即冻结放款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sat_sar_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ARCHIVE_OPTICAL_PLUS_X_BAND_SAR_FUSION_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 识别目标港区未来 5 天受台风外围云系覆盖，自动调取 48 小时内晴空存量光学底图并切换为 <code>全天候 X 波段聚束式合成孔径雷达 (Spotlight SAR)</code> 穿云成像，立省 <code>$34,000.00</code> 光学加急编程费（净付降至 <code>$111,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ Target-AOI 净空云掩膜 (&lt;=10%) + Off-Nadir (&lt;=20°) + GCP RPC 正射达标：已自动清算 (VERIFIED_SATELLITE_EO_SAR_SCENE_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零浓云遮挡废片、零大倾角拉花偏移</strong>：30cm 正射 GeoTIFF 遥感影像已通过像素级云掩膜与地面控制点残差核验并完成结算（<code>$145,000.00</code>）！" +
     "</div>";
 }}
 

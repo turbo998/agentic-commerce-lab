@@ -5863,6 +5863,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("photomask-reticle-kla-sandbox", demo_zh)
 
+    def test_satellite_eo_sar_tasking_cloud_cover_rpc_orthorectified_mandate_vs_cloudy_frame_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_satellite_eo_sar_tasking_policy,
+        )
+
+        # 1. Verified Target-AOI cloud mask <=10% + Off-Nadir <=20 deg + GCP RPC CE90 <=1.5m -> 200 OK ($145,000)
+        commit_ok = evaluate_satellite_eo_sar_tasking_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_tasking_cents, 14500000)
+
+        # 2. Core Target AOI polygon obscured by >10% clouds/shadow/glint -> 403 blocked in 11ms
+        cld_403 = evaluate_satellite_eo_sar_tasking_policy(
+            aoi_polygon_cloud_and_glint_free_verified=False,
+        )
+        self.assertFalse(cld_403.allowed)
+        self.assertEqual(cld_403.http_status, 403)
+        self.assertEqual(
+            cld_403.satellite_lane,
+            "TARGET_AOI_POLYGON_CLOUD_OR_GLINT_OBSCURED_BLOCKED",
+        )
+
+        # 3. High Off-Nadir (>20 deg) building layover or RPC CE90 (>1.5m) drift -> 422 blocked in 14ms
+        nadir_422 = evaluate_satellite_eo_sar_tasking_policy(
+            off_nadir_angle_and_rpc_ortho_ce90_passed=False,
+        )
+        self.assertFalse(nadir_422.allowed)
+        self.assertEqual(nadir_422.http_status, 422)
+        self.assertEqual(
+            nadir_422.satellite_lane,
+            "HIGH_OFF_NADIR_LAYOVER_OR_RPC_CE90_DRIFT_BLOCKED",
+        )
+
+        # 4. Web IQ detects sovereign shutter-control restriction or AI derivative EULA breach -> 451 blocked in 295ms
+        eula_451 = evaluate_satellite_eo_sar_tasking_policy(
+            webiq_shutter_control_and_derivative_eula_clean=False,
+        )
+        self.assertFalse(eula_451.allowed)
+        self.assertEqual(eula_451.http_status, 451)
+
+        # 5. Web IQ pairs 48h archive optical basemap with all-weather X-band Spotlight SAR saving $34,000 ($111,000 net) -> 409 Confirm
+        sar_409 = evaluate_satellite_eo_sar_tasking_policy(
+            archive_plus_sar_fusion_tasking_savings_cents=3400000,
+        )
+        self.assertFalse(sar_409.allowed)
+        self.assertEqual(sar_409.http_status, 409)
+        self.assertEqual(sar_409.settled_tasking_cents, 11100000)
+        self.assertEqual(sar_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["satellite_eo_sar_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("satellite-eo-sar-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

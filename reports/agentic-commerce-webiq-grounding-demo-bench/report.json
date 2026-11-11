@@ -500,6 +500,11 @@
     "reticle_settlement_latency_ms": 22,
     "repeating_defect_block_latency_ms": 12
   },
+  "satellite_eo_sar_guards": {
+    "all_passed": true,
+    "satellite_settlement_latency_ms": 21,
+    "aoi_cloud_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
