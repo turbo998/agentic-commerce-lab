@@ -14748,6 +14748,91 @@ def evaluate_swro_seawater_desalination_policy(
     )
 
 
+@dataclass(frozen=True)
+class ElevatorEscalatorMroVerdict:
+    allowed: bool
+    http_status: int
+    elevator_lane: str
+    settled_elevator_cents: int
+    regen_drive_or_mrt_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_elevator_escalator_mro_policy(
+    gross_elevator_mro_cents: int = 11500000,
+    car_top_pit_dwell_and_brake_stroke_verified: bool = True,
+    iso4309_mrt_rope_and_no_counter_extortion_passed: bool = True,
+    webiq_tsg_governor_and_zero_door_jumper_clean: bool = True,
+    regenerative_drive_and_mrt_life_extension_savings_cents: int = 0,
+) -> ElevatorEscalatorMroVerdict:
+    """Evaluate physical car-top/pit inspection-circuit dwell (>=45 mins/unit) & EN 81-20 dual-plunger brake stroke symmetry (<=15 ms) vs 5-minute lobby tap-and-go phantom PM visits, ISO 4309 Magnetic Rope Testing (MRT metallic cross-sectional loss LMA <=5.0%) vs OEM trip-counter belt replacement extortion, Web IQ ASME A17.1 / TSG governor drop-test & zero door-lock jumper bypass check, and 4-quadrant regenerative drive + MRT belt life-extension arbitrage."""
+    # 1. 5-minute lobby tap-and-go phantom PM visit or asymmetrical dragging brake plunger -> HTTP 403
+    if not car_top_pit_dwell_and_brake_stroke_verified:
+        return ElevatorEscalatorMroVerdict(
+            False,
+            403,
+            "PHANTOM_PM_VISIT_OR_BRAKE_STROKE_ASYMMETRY_BLOCKED",
+            0,
+            gross_elevator_mro_cents,
+            "elevator_mro_invoice_blocked_due_to_missing_car_top_pit_inspection_dwell_or_brake_plunger_asymmetry",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Unrepaired wire-rope break (LMA > 5%) or OEM trip-counter lockout extortion on healthy belt (LMA = 0.8%) -> HTTP 422
+    if not iso4309_mrt_rope_and_no_counter_extortion_passed:
+        return ElevatorEscalatorMroVerdict(
+            False,
+            422,
+            "ROPE_MRT_DEFECT_UNRESOLVED_OR_COUNTER_LOCK_BLOCKED",
+            0,
+            gross_elevator_mro_cents,
+            "traction_rope_claim_held_due_to_unaddressed_iso4309_mrt_defect_or_arbitrary_trip_counter_belt_swap",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects active hoistway door-lock jumper bypass or overdue Cat-5 125% load test -> HTTP 451
+    if not webiq_tsg_governor_and_zero_door_jumper_clean:
+        return ElevatorEscalatorMroVerdict(
+            False,
+            451,
+            "GOVERNOR_SAFETY_GEAR_OR_DOOR_JUMPER_BYPASS_HOLD",
+            0,
+            gross_elevator_mro_cents,
+            "webiq_detected_active_hoistway_door_jumper_wire_bypass_or_overdue_cat5_governor_safety_gear_test",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ ISO 4309 MRT Belt Life-Extension + 4-Quadrant Regenerative Drive Power Credit -> HTTP 409 Confirm
+    if regenerative_drive_and_mrt_life_extension_savings_cents > 0:
+        return ElevatorEscalatorMroVerdict(
+            False,
+            409,
+            "REGENERATIVE_DRIVE_AND_MRT_LIFE_EXTENSION_CONFIRM",
+            gross_elevator_mro_cents - regenerative_drive_and_mrt_life_extension_savings_cents,
+            regenerative_drive_and_mrt_life_extension_savings_cents,
+            "webiq_extended_healthy_coated_steel_belt_via_mrt_and_credited_4_quadrant_regen_drive_saving_18400_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Hoistway Dwell >=45m + Dual-Brake Symmetry + ISO 4309 MRT Clean + Zero Jumper -> Settled
+    return ElevatorEscalatorMroVerdict(
+        True,
+        200,
+        "VERIFIED_ELEVATOR_ESCALATOR_MRO_SETTLED",
+        gross_elevator_mro_cents,
+        0,
+        "hoistway_inspection_dwell_dual_brake_symmetry_and_iso4309_mrt_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19263,6 +19348,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sec_passthrough_block_latency_ms": swr_sec_403.latency_ms,
     }
 
+    elv_commit_ok = evaluate_elevator_escalator_mro_policy()
+    elv_pmv_403 = evaluate_elevator_escalator_mro_policy(
+        car_top_pit_dwell_and_brake_stroke_verified=False,
+    )
+    elv_mrt_422 = evaluate_elevator_escalator_mro_policy(
+        iso4309_mrt_rope_and_no_counter_extortion_passed=False,
+    )
+    elv_jmp_451 = evaluate_elevator_escalator_mro_policy(
+        webiq_tsg_governor_and_zero_door_jumper_clean=False,
+    )
+    elv_reg_409 = evaluate_elevator_escalator_mro_policy(
+        regenerative_drive_and_mrt_life_extension_savings_cents=1840000,
+    )
+    elevator_mro_guards = {
+        "all_passed": (
+            elv_commit_ok.allowed
+            and elv_commit_ok.settled_elevator_cents == 11500000
+            and not elv_pmv_403.allowed
+            and elv_pmv_403.http_status == 403
+            and not elv_mrt_422.allowed
+            and elv_mrt_422.http_status == 422
+            and not elv_jmp_451.allowed
+            and elv_jmp_451.http_status == 451
+            and not elv_reg_409.allowed
+            and elv_reg_409.action_pill == "Confirm"
+        ),
+        "elevator_settlement_latency_ms": elv_commit_ok.latency_ms,
+        "phantom_pm_block_latency_ms": elv_pmv_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19393,6 +19508,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "rng_biomethane_guards": rng_biomethane_guards,
         "subsea_cp_guards": subsea_cp_guards,
         "swro_desalination_guards": swro_desalination_guards,
+        "elevator_mro_guards": elevator_mro_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24416,6 +24532,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="swr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive High-Rise Elevator & Escalator MRO, ISO 4309 MRT & Dual-Brake Telemetry Mandate Sandbox (Round 118 FAQ Companion) -->
+      <div class="finops-box" id="elevator-escalator-mro-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-elv-title">🛗 超高层电梯与枢纽扶梯维保 (Elevator &amp; Escalator FMC)、曳引绳漏磁探伤 (ISO 4309 MRT) 与双抱闸微动架构：真进井道与防锁梯令牌 (elevator_escalator_mro_mandate_...) vs 幽灵签字盲付决策器 (Round 118 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 超高层写字楼与机场电梯/扶梯全包维保交割 ($115,000.00)、轿顶/底坑检修驻留、双抱闸微动同步、ISO 4309 钢丝绳漏磁探伤与 Web IQ 势能回馈场景 (Elevator MRO Scenario):</span></label>
+          <select id="elv-select" onchange="updateElevatorEscalatorMroSandbox()">
+            <option value="elv_commit_ok">⚡ 轿顶/底坑物理驻留 52 min (&gt;=45) + 双抱闸同步差 4 ms (&lt;=15ms) + MRT 截面积损耗 LMA = 0.8% (&lt;=5%) + 零短接：19ms 自动结算 $115,000.00! (Act automatically)</option>
+            <option value="elv_pmv_403">🛑 维保工在 1 楼大厅刷 NFC 标签 5 分钟即走 (未触发轿顶检修回路与底坑开关)，或单侧抱闸铁芯卡涩带闸运行拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="elv_mrt_422">🚨 原厂主板计步器满 300 万次自动锁死电梯，无视 ISO 4309 漏磁探伤实测零断丝 (LMA = 0.8% &lt;&lt; 5% 报废线) 强逼天价换复合钢带拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="elv_jmp_451">🛑 维保工排障遗忘拆下铜短接线 (Jumper Wire 短接厅门锁致开门走梯剪切风险) 或 125% 满载下行制动强检超期：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="elv_reg_409">🧑‍⚖️ Web IQ 凭 CNAS 漏磁探伤 (MRT) 延寿认证解锁健康复合钢带并计入四象限变频能量回馈装置 (省 30% 电) 立省 $18,400.00 (净付 $96,600.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="elv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -24972,6 +25106,7 @@ function renderAll() {{
   updateRngBiomethanePipelineSandbox();
   updateSubseaCathodicProtectionSandbox();
   updateSwroSeawaterDesalinationSandbox();
+  updateElevatorEscalatorMroSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -31006,6 +31141,55 @@ function updateSwroSeawaterDesalinationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ PX 比能耗 (&lt;=3.0 kWh/m³) + 产水硼 (&lt;=0.5 mg/L) + 矿化 LSI 达标：已自动清算 (VERIFIED_SWRO_DESALINATION_WPA_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零污堵电费转嫁、零高硼毒害与黄水蚀管</strong>：海水反渗透淡化（SWRO BOO）月度购水协议账单已完成结算（<code>$230,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateElevatorEscalatorMroSandbox() {{
+  var selEl = document.getElementById("elv-select");
+  var outEl = document.getElementById("elv-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "elv_pmv_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PHANTOM_PM_VISIT_OR_BRAKE_STROKE_ASYMMETRY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "非侵入式井道边缘监测盒实测显示，维保工仅在 1 楼大厅刷卡 5 分钟即走（未激活 <code>轿顶检修模式 Car-Top Inspection 与底坑急停开关</code> 完成 &gt;=45min 逐层门锁保养），或曳引机双冗余电磁抱闸微动开关同步差 &gt;15ms 存在带闸摩擦冲顶隐患（<code>car_top_pit_dwell_and_brake_stroke_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$115,000.00</code> 幽灵维保款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "elv_mrt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ROPE_MRT_DEFECT_UNRESOLVED_OR_COUNTER_LOCK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "双通道霍尔 <code>ISO 4309 钢丝绳无损漏磁探伤仪 (MRT)</code> 实测显示，聚氨酯复合钢带内部钢丝零断丝、金属横截面积损耗仅 <code>LMA = 0.8% &lt;&lt; 5.0% 报废线</code>，但维保商利用主板内置 300 万次折弯计步器锁梯强逼业主支付天价换带费（或瞒报真断丝未换，<code>iso4309_mrt_rope_and_no_counter_extortion_passed == False</code>）。网关在 <code>14ms</code> 内拦截换带敲诈账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "elv_jmp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 GOVERNOR_SAFETY_GEAR_OR_DOOR_JUMPER_BYPASS_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查特检院 TSG T7001 / ASME A17.1 强检台账与门区光电/门锁电流相关性，检出维保工排障遗忘拆下 <code>厅门锁违规短接线 (Door Jumper Bypass，极易引发开门走梯致命剪切)</code> 或 125% 满载制动试验超期，立即锁梯停运并冻结资金！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "elv_reg_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 REGENERATIVE_DRIVE_AND_MRT_LIFE_EXTENSION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 凭 CNAS 认证第三方 <code>ISO 4309 漏磁探伤 (MRT)</code> 合格报告合法延长健康复合钢带寿命（免除无谓换带），并结算控制柜 <code>四象限变频能量回馈装置</code> 重载下行并网发电收益，当期立省 <code>$18,400.00</code>（净付降至 <code>$96,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 轿顶/底坑物理驻留 (&gt;=45min) + 双抱闸微动同步 + ISO 4309 MRT 达标：已自动清算 (VERIFIED_ELEVATOR_ESCALATOR_MRO_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零 5 分钟幽灵打卡、零计步器锁梯敲诈与门锁短接</strong>：超高层电梯与枢纽扶梯全包维保账单已完成结算（<code>$115,000.00</code>）！" +
     "</div>";
 }}
 

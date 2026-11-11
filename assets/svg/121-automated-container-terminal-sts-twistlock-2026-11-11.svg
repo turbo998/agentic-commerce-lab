@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg121" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051322"/>
+      <stop offset="50%" stop-color="#0C223B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent121" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg121" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112844"/>
+      <stop offset="100%" stop-color="#081526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg121)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent121)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 119 · AUTOMATED CONTAINER TERMINAL STS CRANE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    自动化集装箱码头岸桥装卸 (STS Crane)、旋锁四销偏载 (&lt;=10%) 与台时效率智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Spreader 4-Twistlock Load-Pin Eccentricity (&lt;=10%), Gross Crane Moves Per Hour (GMPH &gt;=32) &amp; SOLAS VGM vs. Berth Delay Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Per-Box THC & Eccentric/GMPH Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg121)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按箱数盲付 THC 与岸桥降速踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 岸桥与 AGV 调度脱节致 GMPH 跌破 20 自然箱/h</text>
+    <text x="58" y="224" fill="#CBD5E1">• 码头按单箱 THC 装卸费照收 $250,000 全款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 24,000 TEU 巨轮被迫在泊位多停 18h，船东多烧百吨燃油追班</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 吊具四旋锁销 (Twistlock) 疲劳裂纹与严重偏载</text>
+    <text x="58" y="294" fill="#CBD5E1">• 集装箱内货物绑扎移位致左右旋锁载荷偏心 &gt; 25%</text>
+    <text x="58" y="312" fill="#CBD5E1">• 或旋锁销超 10万次吊装未做磁粉探伤，高空断锁坠箱砸穿舱底</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 倒箱翻捣 (Unproductive Restows) 虚增计费吊次</text>
+    <text x="58" y="364" fill="#CBD5E1">• 码头 TOS 配载失误把一摞集装箱反复搬上搬下 400 次</text>
+    <text x="58" y="382" fill="#CBD5E1">• 将无效翻舱吊次算进船东账单，或瞒报 SOLAS VGM 超重箱</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$250,000 装卸账单 + 追班燃油与坠箱巨灾
+  </text>
+
+  <!-- Center Card: 4-Layer STS Crane & AGV Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg121)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ 净台时效率 GMPH + 四旋锁测力销 + 双箱吊托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 岸桥净台时效率 (GMPH &gt;=32 Moves/h · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    实测 GMPH &lt; 32 Moves/h 延误船期或混入无效倒箱翻捣 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 CRANE_GMPH_SLA_BREACH_OR_UNPRODUCTIVE_RESTOW_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 吊具四旋锁测力销偏载 (&lt;=10%) 与探伤 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    四旋锁偏心率 &gt; 10% 或旋锁销超 10万次吊装未换/裂纹 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 TWISTLOCK_ECCENTRIC_OVERLOAD_OR_FATIGUE_CRACK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ SOLAS VGM 与 IMDG 危化隔离 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    实测箱重与 SOLAS VGM 偏差 &gt;5% 或危化品箱贝位隔离违规 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 SOLAS_VGM_WEIGHT_DISCREPANCY_OR_IMDG_STOWAGE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 双40尺双箱吊 (Tandem Lift) 省油套利 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    启用 Tandem 双箱并吊提前 8h 离泊 + 航次降速 1.5节省燃油 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $40,000 ($210,000 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $250,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg121)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 119)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• GMPH 36 Moves/h 与零偏载放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$250,000.00 (偏载 3.2%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 岸桥怠工 (&lt;32 GMPH) 或翻舱计费拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 剔除无效翻捣并扣减延误罚金</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 吊具旋锁偏载 (&gt;10%) 或金属疲劳拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 起升离地 0.5m 立即锁死防坠箱</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 双箱吊提前离泊减速省油 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$40,000.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  140 / 140 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 24,000 TEU 干线班轮准班率，终结翻捣与坠箱风险
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“吊具总动作次数”盲付集装箱码头岸桥装卸费 (THC / Stevedoring)！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 净台时效率 GMPH &gt;=32 Moves/h 且剔除码头原因倒箱翻捣 (11ms 拦 403)；② 吊具四旋锁测力销偏载 &lt;=10% 且旋锁销寿命 &lt;=10万次无裂纹 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 SOLAS VGM 重量吻合度与 IMDG 危化箱隔离距离 (285ms 拦 451)，并启用双40尺双箱吊 (Tandem Lift) 提前 8h 完船实现慢速航行省油 $40,000 (295ms)。
+  </text>
+</svg>

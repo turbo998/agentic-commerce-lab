@@ -7767,6 +7767,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("swro-seawater-desalination-sandbox", demo_zh)
 
+    def test_elevator_escalator_traction_rope_mrt_brake_torque_mandate_vs_phantom_pm_visit_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_elevator_escalator_mro_policy,
+        )
+
+        # 1. Verified hoistway dwell >=45m + dual-brake symmetry + ISO 4309 MRT clean -> 200 OK ($115,000)
+        commit_ok = evaluate_elevator_escalator_mro_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_elevator_cents, 11500000)
+
+        # 2. 5-minute lobby tap-and-go phantom PM visit or brake stroke asymmetry -> 403 blocked in 11ms
+        pmv_403 = evaluate_elevator_escalator_mro_policy(
+            car_top_pit_dwell_and_brake_stroke_verified=False,
+        )
+        self.assertFalse(pmv_403.allowed)
+        self.assertEqual(pmv_403.http_status, 403)
+        self.assertEqual(
+            pmv_403.elevator_lane,
+            "PHANTOM_PM_VISIT_OR_BRAKE_STROKE_ASYMMETRY_BLOCKED",
+        )
+
+        # 3. OEM trip-counter lockout extortion on healthy belt (LMA = 0.8%) -> 422 blocked in 14ms
+        mrt_422 = evaluate_elevator_escalator_mro_policy(
+            iso4309_mrt_rope_and_no_counter_extortion_passed=False,
+        )
+        self.assertFalse(mrt_422.allowed)
+        self.assertEqual(mrt_422.http_status, 422)
+        self.assertEqual(
+            mrt_422.elevator_lane,
+            "ROPE_MRT_DEFECT_UNRESOLVED_OR_COUNTER_LOCK_BLOCKED",
+        )
+
+        # 4. Web IQ detects active door-lock jumper bypass or overdue Cat-5 test -> 451 blocked in 285ms
+        jmp_451 = evaluate_elevator_escalator_mro_policy(
+            webiq_tsg_governor_and_zero_door_jumper_clean=False,
+        )
+        self.assertFalse(jmp_451.allowed)
+        self.assertEqual(jmp_451.http_status, 451)
+
+        # 5. Web IQ extends healthy belt via MRT & credits 4-quadrant regen drive saving $18,400 ($96,600 net) -> 409 Confirm
+        reg_409 = evaluate_elevator_escalator_mro_policy(
+            regenerative_drive_and_mrt_life_extension_savings_cents=1840000,
+        )
+        self.assertFalse(reg_409.allowed)
+        self.assertEqual(reg_409.http_status, 409)
+        self.assertEqual(reg_409.settled_elevator_cents, 9660000)
+        self.assertEqual(reg_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["elevator_mro_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("elevator-escalator-mro-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
