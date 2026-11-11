@@ -15258,6 +15258,92 @@ def evaluate_biopharma_cdmo_bioreactor_policy(
     )
 
 
+@dataclass(frozen=True)
+class SalmonAquacultureRasVerdict:
+    allowed: bool
+    http_status: int
+    salmon_lane: str
+    settled_salmon_cents: int
+    algal_omega3_and_sludge_biogas_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_salmon_aquaculture_ras_policy(
+    *,
+    gross_salmon_offtake_cents: int = 16000000,
+    stereo_3d_efcr_and_fasting_gut_verified: bool = True,
+    gcms_geosmin_and_salmofan_color_passed: bool = True,
+    webiq_sea_lice_and_asc_marintrust_clean: bool = True,
+    algal_omega3_and_sludge_biogas_savings_cents: int = 0,
+) -> SalmonAquacultureRasVerdict:
+    # 1. Underwater Stereo-3D Biomass eFCR (>1.15) or Unfasted Pre-Harvest Gut Content (>0.5%) -> HTTP 403
+    if not stereo_3d_efcr_and_fasting_gut_verified:
+        return SalmonAquacultureRasVerdict(
+            False,
+            403,
+            "FEED_CONVERSION_WASTE_OR_UNFASTED_GUT_WEIGHT_BLOCKED",
+            0,
+            0,
+            "salmon_invoice_blocked_due_to_sinking_pellet_efcr_waste_or_unfasted_gut_weight",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Skipped RAS Depuration Leaving Geosmin/2-MIB (>10 ng/kg) or Pale Flesh (SalmoFan <26) -> HTTP 422
+    if not gcms_geosmin_and_salmofan_color_passed:
+        return SalmonAquacultureRasVerdict(
+            False,
+            422,
+            "GEOSMIN_MUDDY_OFF_FLAVOR_OR_PALE_FLESH_BLOCKED",
+            0,
+            0,
+            "salmon_lot_rejected_for_geosmin_muddy_off_flavor_or_low_astaxanthin_salmofan_color",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Sea-Lice Regulatory Breach (>0.2 Adult Female/Fish) or Missing ASC/MarinTrust via Web IQ -> HTTP 451
+    if not webiq_sea_lice_and_asc_marintrust_clean:
+        return SalmonAquacultureRasVerdict(
+            False,
+            451,
+            "SEA_LICE_REGULATORY_BREACH_OR_ASC_CERT_HOLD",
+            0,
+            0,
+            "webiq_detected_barentswatch_sea_lice_breach_or_revoked_asc_marintrust_certificate",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Schizochytrium Algal EPA/DHA Oil + RAS Fecal-Sludge Biogas CHP -> HTTP 409 Confirm
+    if algal_omega3_and_sludge_biogas_savings_cents > 0:
+        return SalmonAquacultureRasVerdict(
+            False,
+            409,
+            "ALGAL_OMEGA3_FEED_AND_SLUDGE_BIOGAS_CONFIRM",
+            gross_salmon_offtake_cents - algal_omega3_and_sludge_biogas_savings_cents,
+            algal_omega3_and_sludge_biogas_savings_cents,
+            "webiq_applied_schizochytrium_algal_omega3_and_sludge_biogas_chp_saving_25600_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified eFCR <=1.15 + Fasted HOG + Geosmin <=10 ng/kg + SalmoFan >=26 -> Settled
+    return SalmonAquacultureRasVerdict(
+        True,
+        200,
+        "VERIFIED_SALMON_AQUACULTURE_OFFTAKE_SETTLED",
+        gross_salmon_offtake_cents,
+        0,
+        "stereo_3d_efcr_fasted_gut_gcms_geosmin_salmofan_and_asc_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
+
 
 
 
@@ -19953,6 +20039,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "titer_contamination_block_latency_ms": cdm_tit_403.latency_ms,
     }
 
+    # Round 124 (Salmon Aquaculture RAS/Offshore, Stereo-3D eFCR <=1.15 & GC-MS Geosmin <=10 ng/kg Mandate)
+    sal_commit_ok = evaluate_salmon_aquaculture_ras_policy()
+    sal_fcr_403 = evaluate_salmon_aquaculture_ras_policy(
+        stereo_3d_efcr_and_fasting_gut_verified=False,
+    )
+    sal_geo_422 = evaluate_salmon_aquaculture_ras_policy(
+        gcms_geosmin_and_salmofan_color_passed=False,
+    )
+    sal_lic_451 = evaluate_salmon_aquaculture_ras_policy(
+        webiq_sea_lice_and_asc_marintrust_clean=False,
+    )
+    sal_alg_409 = evaluate_salmon_aquaculture_ras_policy(
+        algal_omega3_and_sludge_biogas_savings_cents=2560000,
+    )
+    salmon_aquaculture_guards = {
+        "all_passed": (
+            sal_commit_ok.allowed
+            and sal_commit_ok.settled_salmon_cents == 16000000
+            and not sal_fcr_403.allowed
+            and sal_fcr_403.http_status == 403
+            and not sal_geo_422.allowed
+            and sal_geo_422.http_status == 422
+            and not sal_lic_451.allowed
+            and sal_lic_451.http_status == 451
+            and not sal_alg_409.allowed
+            and sal_alg_409.action_pill == "Confirm"
+        ),
+        "salmon_settlement_latency_ms": sal_commit_ok.latency_ms,
+        "efcr_waste_block_latency_ms": sal_fcr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20089,6 +20206,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "float_glass_guards": float_glass_guards,
         "tire_rubber_guards": tire_rubber_guards,
         "biopharma_cdmo_guards": biopharma_cdmo_guards,
+        "salmon_aquaculture_guards": salmon_aquaculture_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25220,6 +25338,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cdm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Salmon Aquaculture (RAS / Offshore), Stereo-3D eFCR & Geosmin Off-Flavor Mandate Sandbox (Round 124 FAQ Companion) -->
+      <div class="finops-box" id="salmon-aquaculture-ras-sandbox" style="margin-top:12px;border-color:#FB7185;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sal-title">🐟 深海与循环水三文鱼养殖交割 (RAS/Offshore)、双目 3D 饵料系数 (eFCR &lt;=1.15) 与土臭素 (Geosmin &lt;=10 ng/kg) 架构：零土腥刺身与净膛增重令牌 (salmon_aquaculture_ras_mandate_...) vs 按吨买料与毛鱼重盲付决策器 (Round 124 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 大西洋三文鱼膨化饲料与冰鲜成鱼交割 ($160,000.00)、水下 3D 双目 eFCR/停食清肠、顶空 GC-MS 土臭素/罗氏色度与 Web IQ 海虱/微藻油场景 (Salmon Aquaculture Scenario):</span></label>
+          <select id="sal-select" onchange="updateSalmonAquacultureRasSandbox()">
+            <option value="sal_commit_ok">⚡ 水下 3D 实测 eFCR 1.08 (&lt;=1.15) + 停食 48h 净膛 + 土臭素 3.2 ng/kg (&lt;=10) + SalmoFan 色度 28 + 海虱 0.08：19ms 自动结算 $160,000.00! (Act automatically)</option>
+            <option value="sal_fcr_403">🛑 饲料水中粉化沉底致 eFCR 恶化至 1.48 (&gt;1.15 浪费 18% 鱼粮)，或捕捞前未停食把肚里 6% 未消化饲料当三文鱼卖 (引发蛋白酶穿肚腐败) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sal_geo_422">🚨 陆基循环水 (RAS) 跳过 7天清水池脱腥致鱼肉富集土臭素 Geosmin = 45 ng/kg (&gt;10 ng/kg 浓烈泥巴腥臭味)，或偷减虾青素致鱼肉惨白 (SalmoFan = 21 &lt; 26) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sal_lic_451">🛑 挪威 BarentsWatch 检出网箱成年雌性海虱爆发 (0.65 &gt; 0.2 只/尾强制提前屠宰降级鱼) 或饲料鱼粉缺失 ASC / MarinTrust 认证：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="sal_alg_409">🧑‍⚖️ Web IQ 采用发酵裂殖壶藻油 (Algal EPA/DHA) 与黑水虻蛋白替代暴涨的秘鲁鱼油，并利用 RAS 鼓式微滤鱼粪厌氧消化沼气 (Biogas CHP) 发电冲抵电费立省 $25,600.00 (净付 $134,400.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sal-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25782,6 +25918,7 @@ function renderAll() {{
   updateFloatSolarGlassSandbox();
   updateTireRubberMooneySandbox();
   updateBiopharmaCdmoBioreactorSandbox();
+  updateSalmonAquacultureRasSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -32110,6 +32247,55 @@ function updateBiopharmaCdmoBioreactorSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 在线拉曼滴度 (&gt;=5.0 g/L) + HCP (&lt;=100 ppm) + 内毒素 (&lt;=0.1 EU/mg) 达标：已自动清算 (VERIFIED_BIOPHARMA_CDMO_CAMPAIGN_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零染菌废批白交槽位费、零老化填料杂质残留</strong>：生物药 CDMO 2,000L 单抗 cGMP 原液批次已完成结算（<code>$390,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSalmonAquacultureRasSandbox() {{
+  var selEl = document.getElementById("sal-select");
+  var outEl = document.getElementById("sal-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sal_fcr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FEED_CONVERSION_WASTE_OR_UNFASTED_GUT_WEIGHT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "网箱 <code>水下双目立体视觉相机 (3D Stereo Vision) 与残饵追踪声呐</code> 实测显示，饲料颗粒水中耐水性差或漏停投饵机致经济饵料系数恶化至 <code>eFCR = 1.48 &gt; 1.15</code>（18% 鱼粮沉底腐烂），或成鱼捕捞前未停食满 48 小时导致肚内残留 6% 未消化饲料（将在冰鲜运输中诱发蛋白酶自溶穿肚 Belly Burst，<code>stereo_3d_efcr_and_fasting_gut_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$160,000.00</code> 账单并扣除残饵与胃肠虚重！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sal_geo_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GEOSMIN_MUDDY_OFF_FLAVOR_OR_PALE_FLESH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "出池快检 <code>顶空固相微萃取气相色谱 (HS-SPME-GC-MS)</code> 检出陆基循环水 (RAS) 三文鱼肌肉脂肪中土臭素高达 <code>Geosmin = 45 ng/kg &gt; 10 ng/kg</code>（带着浓烈的泥巴发霉腥味，生食刺身必遭全额退货），或高光谱扫描检出罗氏色度 <code>SalmoFan = 21 &lt; 26</code> 鱼肉惨白（<code>gcms_geosmin_and_salmofan_color_passed == False</code>）。网关在 <code>14ms</code> 内拦截并退回独立清水池继续暂养脱腥 7 天！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sal_lic_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SEA_LICE_REGULATORY_BREACH_OR_ASC_CERT_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查挪威渔业局 <code>BarentsWatch 周度海虱遥测通报</code> 与 <code>ASC / MarinTrust 认证库</code>，检出该网箱成年雌性海虱达 <code>0.65 &gt; 0.2 只/尾</code>（属于被勒令紧急屠宰的带伤降级鱼）或饲料鱼粉涉及非法捕捞（IUU），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sal_alg_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ALGAL_OMEGA3_FEED_AND_SLUDGE_BIOGAS_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将高价秘鲁鳀鱼油切换为 <code>发酵裂殖壶藻油 (Schizochytrium Algal EPA/DHA) 与黑水虻蛋白 (实现 FFDR &lt; 1.0 零海洋捕捞溢价)</code>，并将 RAS 微滤机高浓鱼粪残饵送入厌氧罐产沼气发电（Biogas CHP），单批次立省 <code>$25,600.00</code>（净付降至 <code>$134,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双目 3D 饵料系数 (eFCR &lt;=1.15) + 土臭素 (&lt;=10 ng/kg) + SalmoFan 色度 (&gt;=26) 达标：已自动清算 (VERIFIED_SALMON_AQUACULTURE_OFFTAKE_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零沉底残饵买单、零泥腥味刺身退货</strong>：深海与循环水三文鱼饲料及成鱼交割已完成结算（<code>$160,000.00</code>）！" +
     "</div>";
 }}
 

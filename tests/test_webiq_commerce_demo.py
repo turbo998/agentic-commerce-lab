@@ -8103,6 +8103,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("biopharma-cdmo-bioreactor-sandbox", demo_zh)
 
+    def test_salmon_aquaculture_ras_3d_biomass_fcr_geosmin_astaxanthin_mandate_vs_feed_waste_muddy_flavor_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_salmon_aquaculture_ras_policy,
+        )
+
+        # 1. Verified stereo-3D eFCR <=1.15 + fasted HOG + Geosmin <=10 ng/kg + SalmoFan >=26 -> 200 OK ($160,000)
+        commit_ok = evaluate_salmon_aquaculture_ras_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_salmon_cents, 16000000)
+
+        # 2. Pellet sinking waste (eFCR > 1.15) or unfasted gut weight -> 403 blocked in 11ms
+        fcr_403 = evaluate_salmon_aquaculture_ras_policy(
+            stereo_3d_efcr_and_fasting_gut_verified=False,
+        )
+        self.assertFalse(fcr_403.allowed)
+        self.assertEqual(fcr_403.http_status, 403)
+        self.assertEqual(
+            fcr_403.salmon_lane,
+            "FEED_CONVERSION_WASTE_OR_UNFASTED_GUT_WEIGHT_BLOCKED",
+        )
+
+        # 3. Unpurged RAS Geosmin (>10 ng/kg muddy flavor) or pale flesh (SalmoFan <26) -> 422 blocked in 14ms
+        geo_422 = evaluate_salmon_aquaculture_ras_policy(
+            gcms_geosmin_and_salmofan_color_passed=False,
+        )
+        self.assertFalse(geo_422.allowed)
+        self.assertEqual(geo_422.http_status, 422)
+        self.assertEqual(
+            geo_422.salmon_lane,
+            "GEOSMIN_MUDDY_OFF_FLAVOR_OR_PALE_FLESH_BLOCKED",
+        )
+
+        # 4. Web IQ detects BarentsWatch sea-lice breach (>0.2/fish) or missing ASC cert -> 451 blocked in 285ms
+        lic_451 = evaluate_salmon_aquaculture_ras_policy(
+            webiq_sea_lice_and_asc_marintrust_clean=False,
+        )
+        self.assertFalse(lic_451.allowed)
+        self.assertEqual(lic_451.http_status, 451)
+
+        # 5. Web IQ substitutes Schizochytrium algal oil & RAS sludge biogas CHP saving $25,600 ($134,400 net) -> 409 Confirm
+        alg_409 = evaluate_salmon_aquaculture_ras_policy(
+            algal_omega3_and_sludge_biogas_savings_cents=2560000,
+        )
+        self.assertFalse(alg_409.allowed)
+        self.assertEqual(alg_409.http_status, 409)
+        self.assertEqual(alg_409.settled_salmon_cents, 13440000)
+        self.assertEqual(alg_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["salmon_aquaculture_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("salmon-aquaculture-ras-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
