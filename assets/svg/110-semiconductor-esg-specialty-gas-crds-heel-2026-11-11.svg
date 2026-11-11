@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg110" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080D1F"/>
+      <stop offset="50%" stop-color="#121D38"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent110" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A855F7"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg110" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#192342"/>
+      <stop offset="100%" stop-color="#0B1224"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg110)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent110)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#4C1D95" stroke="#C084FC" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F3E8FF" text-anchor="middle">
+    ROUND 108 · SEMICONDUCTOR ELECTRONIC SPECIALTY GAS ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    半导体电子特气 (6N NF3 / WF6 / SiH4)、CRDS 痕量水分 (&lt;=10 ppb) 与钢瓶余气回皮智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Cavity Ring-Down Spectroscopy (CRDS H2O &lt;=10 ppb), BSGS Load-Cell Heel Credit (&gt;=10% Residual) &amp; FTIR HF Guard vs. Etch Drift Scrap
+  </text>
+
+  <!-- Left Card: Legacy Paper COA & Heel Double-Billing Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg110)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统凭纸质 COA 盲付与余气双吃踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 钢瓶阀口微漏湿气生成氢氟酸 (HF) 蚀穿管路</text>
+    <text x="58" y="224" fill="#CBD5E1">• 出厂纸质 COA 写 5.5N 纯度，收走 $210,000 货款</text>
+    <text x="58" y="242" fill="#CBD5E1">• 实测水分 180 ppb &gt; 10 ppb，WF6 水解堵死 3D NAND 通孔</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 10%-15% 保压安全余气 (Heel Gas) 遭无偿吞没</text>
+    <text x="58" y="294" fill="#CBD5E1">• 防倒吸规定剩 120 psi (12% 质量) 必须停用换瓶</text>
+    <text x="58" y="312" fill="#CBD5E1">• 气商收回余气不退费直接补充再卖，两头通吃暴利</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 缺失高 GWP 温室气体 (NF3) 尾气焚烧与内壁钝化</text>
+    <text x="58" y="364" fill="#CBD5E1">• 电抛光内壁粗糙度 Ra &gt; 0.13 μm 释放颗粒铁镍金属</text>
+    <text x="58" y="382" fill="#CBD5E1">• 违反 SEMI C3/F57 标准及欧盟氟化气体 (F-Gas) 法规</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$210,000 特气款 + 12% 余气白送 + 晶圆报废
+  </text>
+
+  <!-- Center Card: 4-Layer ESG Specialty Gas Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg110)" stroke="#A855F7" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#4C1D95"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#F3E8FF" text-anchor="middle">
+    ⚡ CRDS 痕量水分 + BSGS 称重回皮 + Web IQ 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#C084FC" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E9D5FF">
+    Gate 1 · CRDS 光腔衰荡水分 (&lt;=10 ppb · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    吹扫后在线 CRDS 水分 &gt; 10 ppb 或 FTIR 酸度 (HF) 超标 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SUB_PPB_MOISTURE_OR_ACID_HYDROLYSIS_BREACH_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · BSGS 电子秤净消耗量与余气回皮 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    未退还 12% 退瓶保压余气 (Heel Gas) 货款或金属颗粒超标 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 CYLINDER_HEEL_UNCREDITED_OR_METAL_PARTICLE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ DOT/TPED 钢瓶水压定检与 F-Gas (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    Y-Ton 钢瓶 5年定检过期或违反高 GWP 氟化气体配额 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 CYLINDER_HYDROTEST_OR_FGAS_QUOTA_COMPLIANCE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 尾气膜分离回收与余气冲抵 (300ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    扣除 12% 退瓶保压余气并耦合腔室尾气氙/氪纯化回收 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $29,400 ($180,600 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 20ms 自动清算 $210,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg110)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 108)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 6N 纯度与 CRDS 水分达标放款 (200 OK)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：20 ms · 放款：$210,000.00 (H2O 3.2 ppb)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 痕量水分超标 (&gt;10 ppb) 水解腐蚀拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 联锁关断 BSGS 气动隔膜阀</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 吞没 12% 钢瓶余气 (Heel Gas) 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 强制按电子秤净消耗量结算</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 余气回皮 + 稀有气体回收套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：300 ms · 节省：$29,400.00 (14.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  129 / 129 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 3nm/3D NAND 蚀刻良率，终结余气白送黑洞
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#E9D5FF">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“整瓶标称充装重量 + 出厂纸质 COA”盲付半导体高纯电子特气账单！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 气柜吹扫后在线光腔衰荡光谱 (CRDS H2O &lt;=10 ppb) 与 FTIR 零水解酸度 (11ms 拦 403)；② BSGS 高精度称重传感器自动退还 10%-15% 保压余气 (Heel Credit, 14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查 Y-Ton 钢瓶 316L 电抛光定检与 F-Gas 法规配额 (290ms 拦 451)，并叠加余气回皮与蚀刻尾气氖/氪/氙纯化回收立省 $29,400 (300ms)。
+  </text>
+</svg>

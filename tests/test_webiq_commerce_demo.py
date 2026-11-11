@@ -7151,6 +7151,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("potash-phosphate-fertilizer-sandbox", demo_zh)
 
+    def test_airport_ground_handling_sgha_gpu_pca_delay_code_mandate_vs_apu_burn_turnaround_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_airport_ground_handling_sgha_policy,
+        )
+
+        # 1. Verified GPU/PCA hookup <=3 min + honest delay codes + active ISAGO -> 200 OK ($92,000)
+        commit_ok = evaluate_airport_ground_handling_sgha_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sgha_cents, 9200000)
+
+        # 2. Late GPU/PCA hookup forcing APU fuel burn -> 403 blocked in 11ms
+        gpu_403 = evaluate_airport_ground_handling_sgha_policy(
+            gpu_pca_hookup_and_apu_off_verified=False,
+        )
+        self.assertFalse(gpu_403.allowed)
+        self.assertEqual(gpu_403.http_status, 403)
+        self.assertEqual(
+            gpu_403.sgha_lane,
+            "GPU_PCA_HOOKUP_FAILURE_OR_APU_FUEL_BURN_BLOCKED",
+        )
+
+        # 3. Ramp equipment delay (Code 32/35) misattributed to ATC Code 81 -> 422 blocked in 14ms
+        dly_422 = evaluate_airport_ground_handling_sgha_policy(
+            turnaround_vision_delay_code_honest=False,
+        )
+        self.assertFalse(dly_422.allowed)
+        self.assertEqual(dly_422.http_status, 422)
+        self.assertEqual(
+            dly_422.sgha_lane,
+            "RAMP_HANDLING_DELAY_CODE_MISATTRIBUTION_BLOCKED",
+        )
+
+        # 4. Web IQ detects expired IATA ISAGO cert or GSE proximity breach -> 451 blocked in 285ms
+        isg_451 = evaluate_airport_ground_handling_sgha_policy(
+            webiq_isago_audit_and_gse_proximity_clean=False,
+        )
+        self.assertFalse(isg_451.allowed)
+        self.assertEqual(isg_451.http_status, 451)
+
+        # 5. Web IQ applies TaxiBot green-taxi & baggage SLA deduction saving $14,200 ($77,800 net) -> 409 Confirm
+        txb_409 = evaluate_airport_ground_handling_sgha_policy(
+            taxibot_green_taxi_and_sla_deduction_savings_cents=1420000,
+        )
+        self.assertFalse(txb_409.allowed)
+        self.assertEqual(txb_409.http_status, 409)
+        self.assertEqual(txb_409.settled_sgha_cents, 7780000)
+        self.assertEqual(txb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["airport_sgha_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("airport-ground-handling-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

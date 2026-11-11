@@ -13813,6 +13813,91 @@ def evaluate_potash_phosphate_fertilizer_policy(
     )
 
 
+@dataclass(frozen=True)
+class AirportGroundHandlingSghaVerdict:
+    allowed: bool
+    http_status: int
+    sgha_lane: str
+    settled_sgha_cents: int
+    taxibot_or_apu_burn_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_airport_ground_handling_sgha_policy(
+    gross_sgha_invoice_cents: int = 9200000,
+    gpu_pca_hookup_and_apu_off_verified: bool = True,
+    turnaround_vision_delay_code_honest: bool = True,
+    webiq_isago_audit_and_gse_proximity_clean: bool = True,
+    taxibot_green_taxi_and_sla_deduction_savings_cents: int = 0,
+) -> AirportGroundHandlingSghaVerdict:
+    """Evaluate gate 400Hz Ground Power Unit (GPU) & Pre-Conditioned Air (PCA) hookup (<=3 min post-chocks) with ACARS APU-off telemetry vs blanket SGHA turnaround billing & APU fuel waste, apron computer-vision 18-milestone IATA delay-code (Code 31-39 vs Code 81) attribution gate, Web IQ IATA ISAGO safety audit & GSE proximity check, and engines-off TaxiBot dispatch + baggage SLA deduction arbitrage."""
+    # 1. Late GPU/PCA hookup (>3 min post-chocks) forcing APU jet-fuel burn or phantom GPU billing -> HTTP 403
+    if not gpu_pca_hookup_and_apu_off_verified:
+        return AirportGroundHandlingSghaVerdict(
+            False,
+            403,
+            "GPU_PCA_HOOKUP_FAILURE_OR_APU_FUEL_BURN_BLOCKED",
+            0,
+            gross_sgha_invoice_cents,
+            "sgha_turnaround_invoice_blocked_due_to_late_400hz_gpu_pca_hookup_forcing_onboard_apu_fuel_burn",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Apron computer vision detects Code 31-39 ramp equipment delay falsely logged as Code 81 ATC delay -> HTTP 422
+    if not turnaround_vision_delay_code_honest:
+        return AirportGroundHandlingSghaVerdict(
+            False,
+            422,
+            "RAMP_HANDLING_DELAY_CODE_MISATTRIBUTION_BLOCKED",
+            0,
+            gross_sgha_invoice_cents,
+            "turnaround_invoice_held_due_to_apron_vision_proving_ramp_loader_delay_misattributed_to_atc_code_81",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects expired IATA ISAGO safety registration or GSE overspeed near fuselage -> HTTP 451
+    if not webiq_isago_audit_and_gse_proximity_clean:
+        return AirportGroundHandlingSghaVerdict(
+            False,
+            451,
+            "ISAGO_SAFETY_AUDIT_OR_GSE_PROXIMITY_HOLD",
+            0,
+            gross_sgha_invoice_cents,
+            "webiq_detected_expired_iata_isago_station_certification_or_gse_fuselage_proximity_speed_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Engines-Off TaxiBot Dispatch Towing & Baggage SLA Malus Deduction -> HTTP 409 Confirm
+    if taxibot_green_taxi_and_sla_deduction_savings_cents > 0:
+        return AirportGroundHandlingSghaVerdict(
+            False,
+            409,
+            "TAXIBOT_GREEN_TAXI_AND_SLA_DEDUCTION_CONFIRM",
+            gross_sgha_invoice_cents - taxibot_green_taxi_and_sla_deduction_savings_cents,
+            taxibot_green_taxi_and_sla_deduction_savings_cents,
+            "webiq_applied_engines_off_taxibot_dispatch_and_baggage_carousel_sla_deduction_saving_14200_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified 400Hz GPU/PCA Hookup <=3 min + Honest Delay Codes + Active ISAGO -> Settled
+    return AirportGroundHandlingSghaVerdict(
+        True,
+        200,
+        "VERIFIED_AIRPORT_SGHA_TURNAROUND_SETTLED",
+        gross_sgha_invoice_cents,
+        0,
+        "gpu_pca_hookup_apron_vision_delay_attribution_and_isago_safety_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17998,6 +18083,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "filler_adulteration_block_latency_ms": frt_grd_403.latency_ms,
     }
 
+    sgh_commit_ok = evaluate_airport_ground_handling_sgha_policy()
+    sgh_gpu_403 = evaluate_airport_ground_handling_sgha_policy(
+        gpu_pca_hookup_and_apu_off_verified=False,
+    )
+    sgh_dly_422 = evaluate_airport_ground_handling_sgha_policy(
+        turnaround_vision_delay_code_honest=False,
+    )
+    sgh_isg_451 = evaluate_airport_ground_handling_sgha_policy(
+        webiq_isago_audit_and_gse_proximity_clean=False,
+    )
+    sgh_txb_409 = evaluate_airport_ground_handling_sgha_policy(
+        taxibot_green_taxi_and_sla_deduction_savings_cents=1420000,
+    )
+    airport_sgha_guards = {
+        "all_passed": (
+            sgh_commit_ok.allowed
+            and sgh_commit_ok.settled_sgha_cents == 9200000
+            and not sgh_gpu_403.allowed
+            and sgh_gpu_403.http_status == 403
+            and not sgh_dly_422.allowed
+            and sgh_dly_422.http_status == 422
+            and not sgh_isg_451.allowed
+            and sgh_isg_451.http_status == 451
+            and not sgh_txb_409.allowed
+            and sgh_txb_409.action_pill == "Confirm"
+        ),
+        "sgha_settlement_latency_ms": sgh_commit_ok.latency_ms,
+        "apu_burn_block_latency_ms": sgh_gpu_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -18117,6 +18232,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "subsea_cable_guards": subsea_cable_guards,
         "industrial_steam_guards": industrial_steam_guards,
         "potash_fertilizer_guards": potash_fertilizer_guards,
+        "airport_sgha_guards": airport_sgha_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -22942,6 +23058,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="frt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Airport Ground Handling (IATA SGHA), 400Hz GPU/PCA & Delay-Code Attribution Mandate Sandbox (Round 107 FAQ Companion) -->
+      <div class="finops-box" id="airport-ground-handling-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sgh-title">🛫 机场地面代理与过站保障 (IATA SGHA)、400Hz 岸电/桥载空调 (GPU/PCA) 与延误代码归因架构：机坪视觉与 APU 关车令牌 (airport_ground_handling_sgha_mandate_...) vs 按架次打包盲付决策器 (Round 107 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 外站航班地面代理月度结算 ($92,000.00)、廊桥 400Hz 电源/PCA 空调接入时限、机坪 AI 视觉 18 节点延误归因与 Web IQ ISAGO/电动抱轮滑行 (TaxiBot) 场景 (Airport SGHA Scenario):</span></label>
+          <select id="sgh-select" onchange="updateAirportGroundHandlingSandbox()">
+            <option value="sgh_commit_ok">⚡ 挡轮挡后 1.8 min (&lt;=3 min) 接通 400Hz GPU/PCA 且 APU 关车 + 18个机坪节点准点 + ISAGO 认证有效：19ms 自动结算 $92,000.00! (Act automatically)</option>
+            <option value="sgh_gpu_403">🛑 地面人员晚接 400Hz 桥载电源/空调达 35 分钟致宽体机被迫开 APU 狂烧 600kg 航油，却仍照收桥载电源费拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sgh_dly_422">🚨 机坪 AI 视觉证实传送带车与牵引车晚到 25 分钟 (实为地服责任 Code 32/35)，但地服手填 Code 81 (空管流控) 逃避违约金拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sgh_isg_451">🛑 外包地面代理缺失 IATA ISAGO 安全审计资质，或高空配餐车在机翼下超速逼近触发防撞红线：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="sgh_txb_409">🧑‍⚖️ Web IQ 调度电动无杆抱轮牵引车 (TaxiBot) 执行主发动机关闭滑行并自动代扣首件行李逾限 SLA 罚金立省 $14,200.00 (净付 $77,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sgh-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -23487,6 +23621,7 @@ function renderAll() {{
   updateSubseaHvdcCableSandbox();
   updateIndustrialSteamDrynessSandbox();
   updatePotashPhosphateFertilizerSandbox();
+  updateAirportGroundHandlingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -28982,6 +29117,55 @@ function updatePotashPhosphateFertilizerSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 皮带在线 LIBS 品位 (K2O &gt;=60%) + 颗粒抗压 (&gt;=35N) + 低镉 (Cd &lt;=20 mg/kg) 达标：已自动清算 (VERIFIED_POTASH_PHOSPHATE_FERTILIZER_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零白云石石粉掺假、零海运吸潮硬结块</strong>：大宗进口钾肥与磷肥批次已完成纯有效养分结算（<code>$260,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAirportGroundHandlingSandbox() {{
+  var selEl = document.getElementById("sgh-select");
+  var outEl = document.getElementById("sgh-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sgh_gpu_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GPU_PCA_HOOKUP_FAILURE_OR_APU_FUEL_BURN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "廊桥 <code>400Hz 智能电表与机载 ACARS APU 报文</code> 交叉对账显示，飞机挡轮挡（On-Block）后长达 <code>35 分钟 &gt; 3 分钟</code> 未接通桥载电源与预冷空调（PCA），迫使宽体机开启机尾 APU 狂烧 600kg 航空煤油（<code>gpu_pca_hookup_and_apu_off_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$92,000.00</code> 账单并启动 APU 燃油反索赔！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sgh_dly_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RAMP_HANDLING_DELAY_CODE_MISATTRIBUTION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "机坪 <code>Turnaround AI 计算机视觉系统</code> 抓拍证实，行李传送带车与推出牵引车比标准节点晚到 <code>25 分钟</code>（实属 IATA Code 32/35 地服责任），但地面代理在报文中篡改为 <code>Code 81 (空管流控)</code> 企图逃避 SLA 罚款（<code>turnaround_vision_delay_code_honest == False</code>）。网关在 <code>14ms</code> 内拦截甩锅账单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sgh_isg_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ISAGO_SAFETY_AUDIT_OR_GSE_PROXIMITY_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查国际航协 <code>IATA ISAGO 地面运行安全审计名录</code> 与机坪特种车辆（GSE）毫米波防撞遥测，检出外包班组 ISAGO 认证过期或高空配餐车在距离复合材料机身 3 米内超速行驶，立即执行安全合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sgh_txb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TAXIBOT_GREEN_TAXI_AND_SLA_DEDUCTION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动调度 <code>电动无杆抱轮牵引车 (TaxiBot)</code> 执行主发动机关闭状态下推出滑行，并按 SGHA Annex B 扣除首件行李超时到达转盘的 SLA 违约金，单月立省 <code>$14,200.00</code>（净付降至 <code>$77,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 挡轮挡 &lt;=3min 接通 400Hz GPU/PCA + 机坪视觉 18 节点准点 + ISAGO 达标：已自动清算 (VERIFIED_AIRPORT_SGHA_TURNAROUND_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零 APU 冤枉烧油、零延误代码甩锅造假</strong>：外站航班地面代理月度 SGHA 账单已完成结算（<code>$92,000.00</code>）！" +
     "</div>";
 }}
 

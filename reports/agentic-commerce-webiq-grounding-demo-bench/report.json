@@ -615,6 +615,11 @@
     "fertilizer_settlement_latency_ms": 20,
     "filler_adulteration_block_latency_ms": 11
   },
+  "airport_sgha_guards": {
+    "all_passed": true,
+    "sgha_settlement_latency_ms": 19,
+    "apu_burn_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

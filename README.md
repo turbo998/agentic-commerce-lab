@@ -138,6 +138,7 @@
 - **专题 104（海底高压直流海缆与海上风电送出海缆铺设 Subsea HVDC & Export Cable Laying、ROV 电磁实测埋深 $\text{DoL} \ge 1.5\text{ m}$ 与分布式光纤应变/弯曲半径 BOTDR MBR 智能托管 vs 传统凭冲埋犁日志盲付）**：**[《海底高压直流海缆与海上风电送出海缆铺设（Subsea HVDC & Export Cable Laying）、ROV 电磁实测埋深（$\text{DoL} \ge 1.5\text{ m}$）与分布式光纤应变/弯曲半径（BOTDR MBR）智能托管 vs 传统凭冲埋犁日志盲付：架构选型与第一性原理 FAQ》](docs/subsea-hvdc-cable-laying-rov-burial-depth-das-strain-mandate-vs-shallow-exposure-anchor-strike-faq.md)**
 - **专题 105（化工园区与热电联产 CHP 工业蒸汽外供 Industrial Steam-as-a-Service、两相流干度分数 Dryness Fraction $x \ge 0.97$ 与 40 kHz 超声波疏水阀防直排智能托管 vs 传统按蒸汽毛吨数盲付）**：**[《化工园区与热电联产（CHP）工业蒸汽外供（Industrial Steam-as-a-Service）、两相流干度分数（Dryness Fraction $x \ge 0.97$）与 40 kHz 超声波疏水阀防直排智能托管 vs 传统按蒸汽毛吨数盲付：架构选型与第一性原理 FAQ》](docs/industrial-steam-as-a-service-dryness-fraction-ultrasonic-trap-mandate-vs-wet-steam-mass-overbilling-faq.md)**
 - **专题 106（大宗钾肥与磷肥国际贸易 Bulk Potash MOP & Phosphate DAP/MAP Offtake、皮带在线 LIBS/ICP-OES 养分品位与欧盟重金属镉限值 $\text{Cd} \le 20\text{ mg/kg P}_2\text{O}_5$ 智能托管 vs 传统凭提单毛重盲付）**：**[《大宗钾肥与磷肥国际贸易（Bulk Potash MOP & Phosphate DAP/MAP Offtake）、皮带在线 LIBS/ICP-OES 养分品位与欧盟重金属镉限值（$\text{Cd} \le 20\text{ mg/kg P}_2\text{O}_5$）智能托管 vs 传统凭提单毛重盲付：架构选型与第一性原理 FAQ》](docs/potash-phosphate-fertilizer-k2o-cadmium-caking-mandate-vs-dolomite-filler-overbilling-faq.md)**
+- **专题 107（民航机场地面代理与过站保障 IATA SGHA Ground Handling、400Hz 桥载岸电/空调 GPU / PCA 遥测与延误代码 Delay Code 31–39 归因智能托管 vs 传统按架次打包盲付）**：**[《民航机场地面代理与过站保障（IATA SGHA Ground Handling）、400Hz 桥载岸电/空调（GPU / PCA）遥测与延误代码（Delay Code 31–39）归因智能托管 vs 传统按架次打包盲付：架构选型与第一性原理 FAQ》](docs/airport-ground-handling-sgha-gpu-pca-delay-code-mandate-vs-apu-burn-turnaround-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -350,6 +351,8 @@
 ![2026-11-11 化工园区蒸汽外供 (Steam-as-a-Service)、干度分数与疏水阀防直排智能托管架构一图流](assets/svg/107-industrial-steam-dryness-fraction-trap-2026-11-11.svg)
 
 ![2026-11-11 大宗钾肥与磷肥贸易 (MOP / DAP)、在线 LIBS 养分品位与欧盟镉限值智能托管架构一图流](assets/svg/108-potash-phosphate-fertilizer-k2o-cadmium-2026-11-11.svg)
+
+![2026-11-11 机场地面代理与过站保障 (IATA SGHA)、400Hz 岸电/桥载空调与延误归因智能托管架构一图流](assets/svg/109-airport-ground-handling-sgha-gpu-pca-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
