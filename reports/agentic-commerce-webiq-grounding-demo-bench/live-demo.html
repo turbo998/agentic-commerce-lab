@@ -2538,6 +2538,24 @@
         <div id="dei-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Ocean Container Street-Turn, IICL-6 Vision Diff & M&R Mandate Sandbox (Round 97 FAQ Companion) -->
+      <div class="finops-box" id="ocean-container-street-turn-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cnt-title">📦 海运集装箱套箱重出 (Street-Turn)、IICL-6 进出闸三维视觉差分验损与修箱防敲诈架构：点云差分与电子交接令牌 (container_iicl6_mandate_...) vs 霸王修箱费决策器 (Round 97 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 内陆进出口集装箱拖车、堆场修箱 (M&amp;R) 与异地还箱月度结算 ($48,000.00)、Gate-Out/In 3D 视觉差分、IICL-6 (&lt;=25mm 免赔) 与 Web IQ 内陆三角套箱场景 (Container Street-Turn Scenario):</span></label>
+          <select id="cnt-select" onchange="updateOceanContainerStreetTurnSandbox()">
+            <option value="cnt_commit_ok">⚡ Gate-Out/In 3D 点云差分零新增 &gt;25mm 损伤 + 套箱地板含水率 11.2% (&lt;=14%) + 闭门零透光：20ms 自动结算 $48,000.00! (Act automatically)</option>
+            <option value="cnt_mrg_403">🛑 堆场把提箱前已存在的陈年旧凹坑或 IICL-6 免赔范围内的正常磨损 (&lt;=25mm 压痕) 强开 $650 修箱罚单敲诈拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="cnt_flr_422">🚨 待转出口套用的进口拆空箱木地板潮湿含水率超标 (&gt;14% 引发货物霉变) 或箱顶针孔透光漏雨拦截 → 14ms 触发 HTTP 422 禁止套箱!</option>
+            <option value="cnt_fmc_451">🛑 指定堆场爆满关闭空箱预约窗口 (No Return Slot) 却被船司按 $150/天强收超期用箱费 (Per-Diem)：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="cnt_str_409">🧑‍⚖️ Web IQ 撮合 30km 内进口拆空箱签发 DCSA eEIR 直接转邻厂出口装货 (Street-Turn) 免除异地还箱费与双程空跑立省 $14,200.00 (净付 $33,800.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cnt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3073,6 +3091,7 @@ function renderAll() {
   updateMiningBlastingVodSandbox();
   updateSemiconductorUpwSandbox();
   updateAviationDeicingBrixSandbox();
+  updateOceanContainerStreetTurnSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8078,6 +8097,55 @@ function updateAviationDeicingBrixSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 喷嘴在线折光仪 Brix (LOUT &lt;= OAT-10°C) + Type IV 粘度 (&gt;=18,000 mPa·s) 达标：已自动清算 (VERIFIED_AVIATION_DEICING_TYPE_I_IV_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零兑水冒充原液、零超时二次重喷</strong>：冬季宽体机队除冰/防冰作业账单已完成结算（<code>$74,000.00</code>）！" +
+    "</div>";
+}
+
+function updateOceanContainerStreetTurnSandbox() {
+  var selEl = document.getElementById("cnt-select");
+  var outEl = document.getElementById("cnt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cnt_mrg_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PRE_EXISTING_GATE_OUT_DENT_OR_IICL6_WEAR_MR_GOUGING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "进出闸 <code>3D 结构光点云差分</code> 证明堆场索赔的波纹板凹坑在提箱出闸（<code>Gate-Out</code>）时即已存在，或凹陷深度仅 <code>18mm</code> 属于 <code>IICL-6 (&lt;=25mm)</code> 免赔正常磨损范围（<code>gate_out_in_3d_diff_and_iicl6_wear_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$48,000.00</code> 含霸王修箱敲诈的账单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cnt_flr_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DAMP_FLOOR_MOISTURE_OR_ROOF_PINHOLE_LIGHT_LEAK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "待就地转出口套用的进口拆空箱经现场探针检测发现竹木地板含水率高达 <code>21.5%</code>（突破 <code>14%</code> 防霉上限），或闭门暗室检测发现箱顶存在针孔透光漏水（<code>street_turn_floor_moisture_and_csc_plate_passed == False</code>）。网关在 <code>14ms</code> 内禁止套箱并退回堆场！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cnt_fmc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FMC_EMPTY_RETURN_SLOT_LOCKOUT_OR_CEDEX_OVERCHARGE_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查堆场预约门户历史快照与 FMC <code>46 CFR Part 545</code> 滞箱费互惠规则，检出指定还箱堆场因爆满无法提供预约号却向货主强收每日超期用箱费（Per-Diem），立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cnt_str_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 INLAND_STREET_TURN_TRIANGULATION_DROP_OFF_WAIVER_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 调用船司套箱 API 并签发 <code>DCSA eEIR 电子设备交接单</code>，将内陆工厂卸空的 18 个 40HQ 集装箱直接调拨给 12 公里外同船司出口工厂装货（<code>Street-Turn</code>），免除内陆异地还箱费与往返港口双程空驶，单月立省 <code>$14,200.00</code>（净付降至 <code>$33,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ Gate-Out/In 3D 视觉差分零新伤 + IICL-6 核验 + DCSA eEIR 达标：已自动清算 (VERIFIED_OCEAN_CONTAINER_DRAYAGE_AND_MR_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零陈年旧伤被讹、零正常磨损乱收费</strong>：内陆集装箱多式联运与堆场交割月度账单已完成结算（<code>$48,000.00</code>）！" +
     "</div>";
 }
 

@@ -6591,6 +6591,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aviation-deicing-brix-sandbox", demo_zh)
 
+    def test_ocean_container_street_turn_iicl6_damage_csc_mandate_vs_empty_repositioning_mr_gouging_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ocean_container_street_turn_policy,
+        )
+
+        # 1. Verified Gate-Out/In 3D diff + IICL-6 wear immunity + floor moisture <=14% -> 200 OK ($48,000)
+        commit_ok = evaluate_ocean_container_street_turn_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_container_cents, 4800000)
+
+        # 2. Pre-existing Gate-Out dent or sub-25mm IICL-6 wear billed as M&R damage -> 403 blocked in 11ms
+        mrg_403 = evaluate_ocean_container_street_turn_policy(
+            gate_out_in_3d_diff_and_iicl6_wear_verified=False,
+        )
+        self.assertFalse(mrg_403.allowed)
+        self.assertEqual(mrg_403.http_status, 403)
+        self.assertEqual(
+            mrg_403.container_lane,
+            "PRE_EXISTING_GATE_OUT_DENT_OR_IICL6_WEAR_MR_GOUGING_BLOCKED",
+        )
+
+        # 3. Damp wood floor (>14% moisture) or roof pinhole light leak on street-turn -> 422 blocked in 14ms
+        flr_422 = evaluate_ocean_container_street_turn_policy(
+            street_turn_floor_moisture_and_csc_plate_passed=False,
+        )
+        self.assertFalse(flr_422.allowed)
+        self.assertEqual(flr_422.http_status, 422)
+        self.assertEqual(
+            flr_422.container_lane,
+            "DAMP_FLOOR_MOISTURE_OR_ROOF_PINHOLE_LIGHT_LEAK_BLOCKED",
+        )
+
+        # 4. Web IQ detects Per-Diem billed during depot appointment lockout or inflated CEDEX tariff -> 451 blocked in 295ms
+        fmc_451 = evaluate_ocean_container_street_turn_policy(
+            webiq_fmc_return_slot_waiver_and_cedex_clean=False,
+        )
+        self.assertFalse(fmc_451.allowed)
+        self.assertEqual(fmc_451.http_status, 451)
+
+        # 5. Web IQ matches inland Import-to-Export Street-Turn saving $14,200 ($33,800 net) -> 409 Confirm
+        str_409 = evaluate_ocean_container_street_turn_policy(
+            inland_street_turn_triangulation_savings_cents=1420000,
+        )
+        self.assertFalse(str_409.allowed)
+        self.assertEqual(str_409.http_status, 409)
+        self.assertEqual(str_409.settled_container_cents, 3380000)
+        self.assertEqual(str_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["container_street_turn_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ocean-container-street-turn-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

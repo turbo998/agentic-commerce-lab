@@ -565,6 +565,11 @@
     "deicing_settlement_latency_ms": 20,
     "diluted_glycol_block_latency_ms": 11
   },
+  "container_street_turn_guards": {
+    "all_passed": true,
+    "container_settlement_latency_ms": 20,
+    "mr_gouging_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

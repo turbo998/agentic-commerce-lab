@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg99" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111e"/>
+      <stop offset="50%" stop-color="#0e223d"/>
+      <stop offset="100%" stop-color="#17365e"/>
+    </linearGradient>
+    <linearGradient id="accent99" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg99)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0b192e" stroke="#0ea5e9" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent99)"/>
+
+  <text x="60" y="72" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 97 · OCEAN CONTAINER STREET-TURN, IICL-6 VISION DIFF &amp; M&amp;R ANTI-GOUGING MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">海运集装箱套箱重出 (Street-Turn)、IICL-6 激光验损与修箱防敲诈托管 vs 空箱调运盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Gate-Out/In 3D Vision IICL-6 Diff + CSC/Food-Grade Check + Street-Turn Drop-Off Waiver vs. Pre-Existing M&amp;R Gouging</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统还箱修箱敲诈 (M&amp;R Gouging) 与双程空跑模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 提箱不细拍、还箱被讹诈历史旧伤：原本就有的箱壁凹坑与地板划痕，还箱时被堆场强收 $650 修箱费</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 把正常磨损 (Normal Wear &amp; Tear) 当损坏收费：未达 IICL-6 25mm 变形阈值的轻微刮擦全开罚单</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 进口卸空拉回港口、出口再去港口提空箱：两辆集卡在高速上对向拉空箱对冲，白烧双份拖车费</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 堆场拒收空箱骗取超期用箱费 (Per-Diem)：指定堆场爆满不给预约号，船司反咬货主晚还箱按天罚款</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型内陆制造业 / 跨境电商集装箱陆运与堆场交割 (Drayage &amp; Depot) 资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">物流 Agent 自动支付 $48,000 月度内陆异地还箱费 (Drop-off)、拖车与修箱账单，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">其中 $16,000 系堆场将旧伤重复开单及进出口未做本地套箱 (Street-Turn) 造成的双向空驶浪费</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 历史旧伤免责率：0% | • 进出口套箱匹配：0% | • 冤枉修箱与空驶占比：25%–35%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 进出闸 3D 差分验损 + IICL-6 红线 + 本地套箱托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 提箱 (Gate-Out) vs 还箱 (Gate-In) 3D 视觉差分：自动剔除提箱前已存在的历史凹坑与 &lt;25mm 正常磨损</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 套箱交接 CSC 安全牌照、地板含水率 (&lt;=14%) 与异味透光门禁：严防出口装进漏雨/污染废箱</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• FMC 无理拒收空箱免责与 DCSA eEIR 核验：Web IQ 核查堆场无预约号截图自动豁免超期箱租</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 内陆进口重箱卸空就地转出口装货 (Street-Turn Triangulation)：免异地还箱费与空跑立省 $14,200</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断堆场将提箱前历史旧伤或 IICL-6 允许范围内的正常磨损强扣货主的修箱单；14ms 拦截</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">地板潮湿发霉烂箱转出口；Web IQ 内陆进出口就地套箱 (Street-Turn) 免除双程空跑立省 $14,200（净付 $33.8k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 霸王修箱费拦截：100% | • 集卡空驶里程削减：45%+ | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#0f233d" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">集装箱陆运与堆场结算 Agent 绝不能替历史旧伤买单！必须绑定【进出闸 3D 视觉差分 + IICL-6 阈值 + 本地套箱】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_ocean_container_street_turn_policy`) · IICL-6 &amp; DCSA eEIR · 2026-11-11</text>
+</svg>
