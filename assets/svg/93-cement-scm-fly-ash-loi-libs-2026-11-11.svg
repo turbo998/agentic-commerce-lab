@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg93" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="50%" stop-color="#1b2432"/>
+      <stop offset="100%" stop-color="#28364a"/>
+    </linearGradient>
+    <linearGradient id="accent93" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg93)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#111827" stroke="#10b981" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent93)"/>
+
+  <text x="60" y="72" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 91 · LOW-CARBON CEMENT SCM (FLY ASH / GGBFS), LIBS LOI (&lt;=3.0%) &amp; SO3 MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">低碳混凝土掺合料 (粉煤灰/矿粉)、LIBS 烧失量 (LOI &lt;=3%) 与三氧化硫托管 vs 粗灰掺假</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Online LIBS/Microwave LOI (&lt;=3.0%) + XRF SO3 (&lt;=4.0%) &amp; Free-CaO Soundness + ASTM C618 EPD vs. Unburned-Carbon Fraud</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统按罐车地磅毛重与纸质化验单盲付模式 (High-LOI Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 高炭黑劣质原灰充当一级灰：烧失量 (LOI 未燃碳) 高达 9%，像海绵一样吸干混凝土引气剂与减水剂</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 掺入高硫脱硫灰/游离钙导致后期膨胀开裂：浇筑半年后生成钙矾石结晶，把数据中心地基涨裂</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 磨细石粉冒充高活性 S95 矿渣粉：无玻璃体火山灰活性，混凝土 28 天抗压强度暴跌 35%</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 虚假低碳 EPD 证书漂绿：将未分选电厂统灰包装成低碳胶凝材料，无法抵扣基建 Scope 3 隐含碳</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型超大规模智算中心桩基 / 高铁预拌混凝土站大宗掺合料采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">搅拌站 Agent 按地磅吨数支付 $118,000 采购 I 类粉煤灰与 S95 矿粉，因混入高烧失量</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">(LOI 8.4%) 脱硝粗灰导致混凝土含气量归零、冬季冻融剥落，凿除返工损失超 $950,000</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 高碳吸外加剂拦截：0% | • 游离钙安定性拦截：0% | • 返工爆仓风险：极高</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 在线 LIBS 烧失量 + XRF 硫/钙安定性 + 三元低碳配比托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 吹灰管在线 LIBS / 微波烧失量门禁 (LOI &lt;=3.0%)：卸入筒仓前秒级测出未燃碳与氨逃逸残留</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 在线 XRF 三氧化硫 (&lt;=4.0%)、游离氧化钙与 45μm 细度门禁：彻底杜绝脱硫废渣与石粉掺假</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ASTM C618 / EN 450 第三方 EPD 隐含碳核验：Web IQ 核查电厂炉型来源与 Scope 3 减碳量</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 矿粉+粉煤灰三元协同替代 55% 水泥熟料套利：Web IQ 优化胶凝配比与碳税抵免立省 $23,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断烧失量超标 (&gt;3.0%) 的高碳原灰在打入搅拌站筒仓前锁死气动蝶阀；14ms 拦截</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">高硫脱硫灰与石粉掺假；Web IQ 三元熟料替代与低碳 EPD 补贴直接节省 $23,000.00（净付 $95,000）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 污染筒仓事故率：0% | • 28天活性指数：&gt;=95% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#172033" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">低碳胶凝材料采购 Agent 绝不能让劣质粉煤灰打进筒仓才化验！必须绑定【卸灰管在线 LIBS LOI + XRF 硫钙门禁】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_cement_scm_fly_ash_policy`) · ASTM C618 / C989 &amp; EN 450 · 2026-11-11</text>
+</svg>

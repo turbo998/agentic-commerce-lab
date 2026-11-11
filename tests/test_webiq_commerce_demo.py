@@ -6255,6 +6255,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pharma-active-uld-sandbox", demo_zh)
 
+    def test_cement_scm_fly_ash_loi_libs_sulfate_mandate_vs_high_carbon_adulteration_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cement_scm_fly_ash_policy,
+        )
+
+        # 1. Verified pre-blow LIBS LOI <=3.0% + XRF SO3/CaO clean -> 200 OK ($118,000)
+        commit_ok = evaluate_cement_scm_fly_ash_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_scm_cents, 11800000)
+
+        # 2. High unburned carbon (LOI >3.0%) or SCR ammonia slip -> 403 silo valve locked in 11ms
+        loi_403 = evaluate_cement_scm_fly_ash_policy(
+            online_libs_loi_and_ammonia_slip_verified=False,
+        )
+        self.assertFalse(loi_403.allowed)
+        self.assertEqual(loi_403.http_status, 403)
+        self.assertEqual(
+            loi_403.scm_lane,
+            "HIGH_LOI_UNBURNED_CARBON_OR_AMMONIA_SLIP_SILO_VALVE_LOCKED",
+        )
+
+        # 3. Expansive CFB high-SO3/Free-CaO or inert limestone adulteration -> 422 blocked in 14ms
+        xrf_422 = evaluate_cement_scm_fly_ash_policy(
+            xrf_so3_free_cao_and_glass_activity_passed=False,
+        )
+        self.assertFalse(xrf_422.allowed)
+        self.assertEqual(xrf_422.http_status, 422)
+        self.assertEqual(
+            xrf_422.scm_lane,
+            "EXPANSIVE_CFB_SO3_FREE_CAO_OR_LIMESTONE_ADULTERATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects unapproved CFB boiler origin or fake EPD Scope 3 claim -> 451 blocked in 295ms
+        epd_451 = evaluate_cement_scm_fly_ash_policy(
+            webiq_boiler_origin_and_epd_scope3_clean=False,
+        )
+        self.assertFalse(epd_451.allowed)
+        self.assertEqual(epd_451.http_status, 451)
+
+        # 5. Web IQ optimizes 55% ternary slag+ash clinker replacement saving $23,000 ($95,000 net) -> 409 Confirm
+        trn_409 = evaluate_cement_scm_fly_ash_policy(
+            ternary_clinker_substitution_and_epd_savings_cents=2300000,
+        )
+        self.assertFalse(trn_409.allowed)
+        self.assertEqual(trn_409.http_status, 409)
+        self.assertEqual(trn_409.settled_scm_cents, 9500000)
+        self.assertEqual(trn_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cement_scm_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cement-scm-fly-ash-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

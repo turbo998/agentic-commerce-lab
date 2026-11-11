@@ -2430,6 +2430,24 @@
         <div id="uld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Low-Carbon Cement SCM (Fly Ash / GGBFS), LIBS LOI & SO3 Mandate Sandbox (Round 91 FAQ Companion) -->
+      <div class="finops-box" id="cement-scm-fly-ash-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-scm-title">🏗️ 低碳混凝土辅助胶凝材料 (粉煤灰 / S95 矿渣粉)、在线 LIBS 烧失量 (LOI &lt;=3%) 与 XRF 硫/钙安定性架构：筒仓蝶阀互锁令牌 (cement_scm_libs_mandate_...) vs 粗灰掺假决策器 (Round 91 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智算中心大体积基础 I 类粉煤灰与 S95 矿渣粉散装采购 ($118,000.00)、卸灰管在线 LIBS 烧失量 (LOI &lt;=3.0%)、XRF SO3 (&lt;=4.0%)/游离钙与 Web IQ 三元熟料替代场景 (Low-Carbon Cement SCM Scenario):</span></label>
+          <select id="scm-select" onchange="updateCementScmFlyAshSandbox()">
+            <option value="scm_commit_ok">⚡ 卸灰前在线 LIBS 烧失量 LOI 1.8% (&lt;=3.0%) + XRF SO3 2.1% + 45μm 细度 8.5%：20ms 解锁筒仓蝶阀并结算 $118,000.00! (Act automatically)</option>
+            <option value="scm_loi_403">🛑 检出高未燃碳黑粗灰 (LOI 8.4% &gt; 3.0% 吸干引气剂/减水剂) 或脱硝残氨超标：11ms 触发 HTTP 403 硬件锁死筒仓气动蝶阀防止污染 1,000 吨整仓!</option>
+            <option value="scm_xrf_422">🚨 在线 XRF 检出掺入循环流化床高硫脱硫废灰 (SO3 &gt;4.0% / 游离钙膨胀开裂) 或磨细石粉冒充 S95 矿粉拦截 → 14ms 触发 HTTP 422 拒收退车!</option>
+            <option value="scm_epd_451">🛑 灰源并非合规高温煤粉炉或伪造 ISO 14025 EPD Scope 3 隐含碳减排证书：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="scm_trn_409">🧑‍⚖️ Web IQ 耦合 28 天活性指数启用“S95 矿粉 + I 级粉煤灰”三元体系替代 55% 高碳水泥熟料并申领低碳建材补贴立省 $23,000.00 (净付 $95,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="scm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -2959,6 +2977,7 @@ function renderAll() {
   updateMunicipalWaterNrwSandbox();
   updateAviationRotableExchangeSandbox();
   updatePharmaActiveUldSandbox();
+  updateCementScmFlyAshSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -7670,6 +7689,55 @@ function updatePharmaActiveUldSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 提箱 SOC (&gt;=95%) + 中转岸电准时接入 + 6 探头 2.0–8.0°C 零结冰：已自动清算 (VERIFIED_PHARMA_ACTIVE_ULD_COLD_CHAIN_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零停机坪断电甩锅、零药检期霸王滞箱费</strong>：跨洲生物制剂主动温控集装器租赁与操作费已完成结算（<code>$68,000.00</code>）！" +
+    "</div>";
+}
+
+function updateCementScmFlyAshSandbox() {
+  var selEl = document.getElementById("scm-select");
+  var outEl = document.getElementById("scm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "scm_loi_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HIGH_LOI_UNBURNED_CARBON_OR_AMMONIA_SLIP_SILO_VALVE_LOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "罐车卸灰管前端 <code>在线 LIBS / 微波谐振传感器</code> 实测烧失量（未燃多孔炭黑）高达 <code>LOI = 8.4%</code>（远超 <code>3.0%</code> 门限，会瞬间吸干混凝土引气剂与聚羧酸减水剂），或检出高浓度脱硝残氨（<code>online_libs_loi_and_ammonia_slip_verified == False</code>）。网关在 <code>11ms</code> 内硬件锁死筒仓气动蝶阀并拦截 <code>$118,000.00</code> 货款，保住整座 1,000 吨筒仓免受污染！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scm_xrf_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXPANSIVE_CFB_SO3_FREE_CAO_OR_LIMESTONE_ADULTERATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "<code>在线 XRF 荧光光谱仪</code> 检出粉煤灰混入高硫循环流化床脱硫废渣（<code>SO3 = 6.2% &gt; 4.0%</code>、游离氧化钙超标，浇筑半年后将引发延迟钙矾石膨胀撑裂地基），或 S95 矿渣粉中被掺入廉价惰性磨细石灰石粉（<code>xrf_so3_free_cao_and_glass_activity_passed == False</code>）。网关在 <code>14ms</code> 内锁阀拒收退车！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scm_epd_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNAPPROVED_CFB_BOILER_ORIGIN_OR_FAKE_EPD_SCOPE3_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查源头电厂锅检档案与 ISO 14025 EPD 注册库，检出该批粉煤灰并非来自合规高温煤粉炉或虚报 Scope 3 隐含碳减排因子，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scm_trn_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TERNARY_CLINKER_SUBSTITUTION_AND_EPD_CARBON_ARBITRAGE_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 基于实测玻璃体活性启动 <code>S95 矿渣粉 + I 级粉煤灰三元复合胶凝体系</code>，安全替代 <code>55%</code> 高碳波特兰水泥熟料并锁定绿色建材碳补贴，单批立省 <code>$23,000.00</code>（净付降至 <code>$95,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 卸灰管在线 LIBS 烧失量 (&lt;=3.0%) + XRF 硫/钙安定性达标：已解锁筒仓蝶阀并清算 (VERIFIED_LOW_CARBON_CEMENT_SCM_SILO_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零黑灰毁仓事故、零后期膨胀开裂隐患</strong>：低碳辅助胶凝材料批次已安全吹入筒仓并完成结算（<code>$118,000.00</code>）！" +
     "</div>";
 }
 
