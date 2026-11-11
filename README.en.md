@@ -133,6 +133,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 99 (Marine Bio-Bunker B24/B30 FAME & HVO, ASTM D6866 14C Biogenic Verification & ISO 8217:2024 Rancimat Stability Escrow vs. UCOME Fraud & Filter-Clogging Overbilling)**: **[Marine Bio-Bunker (B24 / B30 FAME & HVO), ASTM D6866 $^{14}\text{C}$ Biogenic Verification & ISO 8217:2024 Rancimat Stability Escrow vs. UCOME Fraud & Filter-Clogging Overbilling: Architecture Selection & First-Principles FAQ](docs/marine-biobunker-b30-iscc-c14-oxidation-stability-mandate-vs-ucome-fraud-filter-clogging-faq.en.md)**
 - **Topic 100 (Heavy Rigging & Air-Ride Logistics 300mm Fab Tools & Superconducting MRI, Internal-Frame ShockLog <=1.5G & Cryo Anti-Quench Escrow vs. Clean-Receipt Concealed Damage)**: **[Heavy Rigging & Air-Ride Logistics (300mm Fab Tools & Superconducting MRI), Internal-Frame ShockLog ($\le 1.5\text{ G}$) & Cryo Anti-Quench Escrow vs. Clean-Receipt Concealed Damage: Architecture Selection & First-Principles FAQ](docs/heavy-rigging-air-ride-mri-fab-tool-shocklog-g-force-mandate-vs-concealed-transit-damage-faq.en.md)**
 - **Topic 101 (Large Power Transformer LPT 110kV-500kV Delivery & Energization, Site-vs-FAT SFRA Winding Fingerprint rho >=0.995 & 72h Zero-Acetylene DGA C2H2 = 0.0 ppm Escrow vs. Winding-Shift Blast Overbilling)**: **[Large Power Transformer (LPT 110kV–500kV) Delivery & Energization, Site-vs-FAT SFRA Winding Fingerprint ($\rho \ge 0.995$) & 72h Zero-Acetylene DGA ($\text{C}_2\text{H}_2 = 0.0\text{ ppm}$) Escrow vs. Winding-Shift Blast Overbilling: Architecture Selection & First-Principles FAQ](docs/power-transformer-lpt-sfra-dga-acetylene-impact-mandate-vs-winding-shift-energization-blast-faq.en.md)**
+- **Topic 102 (Timber & Sawmill Log Procurement, 3D Laser Under-Bark Scaling JAS/Scribner & EUDR Geolocation-Polygon Escrow vs. Bark/Heart-Rot Over-Scaling)**: **[Timber & Sawmill Log Procurement, 3D Laser Under-Bark Scaling (JAS / Scribner) & EUDR Geolocation-Polygon Escrow vs. Bark/Heart-Rot Over-Scaling: Architecture Selection & First-Principles FAQ](docs/timber-sawmill-3d-laser-log-scaling-eudr-polygon-mandate-vs-bark-void-overscaling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -335,6 +336,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Heavy Rigging & Air-Ride (MRI / Fab Tool), ShockLog (<=1.5G) & Cryo Mandate Visual Summary](assets/svg/102-heavy-rigging-air-ride-shocklog-2026-11-11.svg)
 
 ![2026-11-11 Large Power Transformer (LPT), SFRA Winding Fingerprint & DGA Acetylene Mandate Visual Summary](assets/svg/103-power-transformer-lpt-sfra-dga-2026-11-11.svg)
+
+![2026-11-11 Timber & Sawmill Logs, 3D Laser Under-Bark Scaling & EUDR Polygon Mandate Visual Summary](assets/svg/104-timber-sawmill-3d-log-scaling-eudr-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

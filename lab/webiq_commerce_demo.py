@@ -13388,6 +13388,91 @@ def evaluate_power_transformer_lpt_sfra_policy(
     )
 
 
+@dataclass(frozen=True)
+class TimberSawmill3dLogScalingVerdict:
+    allowed: bool
+    http_status: int
+    timber_lane: str
+    settled_timber_cents: int
+    curve_sawing_or_bark_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_timber_sawmill_3d_log_scaling_policy(
+    gross_timber_cargo_cents: int = 17500000,
+    laser_under_bark_and_heart_rot_deducted: bool = True,
+    sapstain_blue_stain_and_ispm15_passed: bool = True,
+    webiq_eudr_polygon_and_fsc_coc_clean: bool = True,
+    curve_sawing_yield_and_biomass_pellet_savings_cents: int = 0,
+) -> TimberSawmill3dLogScalingVerdict:
+    """Evaluate post-debarker 3D laser ring-scanner under-bark net JAS/Scribner volume & acoustic ToF internal heart-rot/sweep deduction vs manual caliper over-bark and wet-tonnage over-scaling, hyperspectral sapstain (<=2% blue-stain) & ISPM-15 pine-nematode fumigation gate, Web IQ EU Deforestation Regulation (EUDR 2023/1115 >4ha GeoJSON polygon) & FSC CoC check, and 3D point-cloud guided Curve-Sawing (+8.5% lumber yield) + bark pellet co-product arbitrage."""
+    # 1. Manual caliper over-bark tally or wax-concealed hollow heart-rot / sweep inflation -> HTTP 403
+    if not laser_under_bark_and_heart_rot_deducted:
+        return TimberSawmill3dLogScalingVerdict(
+            False,
+            403,
+            "OVER_BARK_MANUAL_SCALING_OR_HOLLOW_HEART_ROT_INFLATION_BLOCKED",
+            0,
+            gross_timber_cargo_cents,
+            "timber_cargo_blocked_due_to_over_bark_caliper_scaling_or_undeducted_acoustic_heart_rot_cavity",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Hyperspectral end-grain detects >2% fungal blue-stain discoloration or missing ISPM-15 nematode fumigation -> HTTP 422
+    if not sapstain_blue_stain_and_ispm15_passed:
+        return TimberSawmill3dLogScalingVerdict(
+            False,
+            422,
+            "FUNGAL_BLUE_STAIN_DISCOLORATION_OR_PINE_NEMATODE_BREACH_BLOCKED",
+            0,
+            gross_timber_cargo_cents,
+            "sawlog_lot_held_due_to_sapstain_blue_stain_exceeding_2pct_or_missing_ispm15_phytosanitary_fumigation",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects missing EUDR (>4ha 6-decimal GeoJSON polygon) post-2020 zero-deforestation proof -> HTTP 451
+    if not webiq_eudr_polygon_and_fsc_coc_clean:
+        return TimberSawmill3dLogScalingVerdict(
+            False,
+            451,
+            "MISSING_EUDR_GEOJSON_POLYGON_OR_POST_2020_DEFORESTATION_HOLD",
+            0,
+            gross_timber_cargo_cents,
+            "webiq_detected_missing_eudr_traces_nt_harvesting_plot_polygon_or_post_2020_forest_degradation_overlap",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 3D Point-Cloud CNC Curve-Sawing (+8.5% Yield) + Debarked Biomass Pellet Co-Product -> HTTP 409 Confirm
+    if curve_sawing_yield_and_biomass_pellet_savings_cents > 0:
+        return TimberSawmill3dLogScalingVerdict(
+            False,
+            409,
+            "CNC_3D_CURVE_SAWING_AND_BARK_PELLET_VALORIZATION_CONFIRM",
+            gross_timber_cargo_cents - curve_sawing_yield_and_biomass_pellet_savings_cents,
+            curve_sawing_yield_and_biomass_pellet_savings_cents,
+            "webiq_linked_3d_log_scan_to_cnc_curve_sawing_and_enplus_bark_pellet_offtake_saving_27500_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified 3D Laser Under-Bark Net JAS m3 + Zero Heart-Rot + EUDR Polygon Clean -> Settled
+    return TimberSawmill3dLogScalingVerdict(
+        True,
+        200,
+        "VERIFIED_3D_LASER_UNDER_BARK_TIMBER_SETTLED",
+        gross_timber_cargo_cents,
+        0,
+        "laser_under_bark_jas_net_volume_acoustic_soundness_and_eudr_polygon_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17423,6 +17508,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sfra_winding_shift_block_latency_ms": lpt_sfr_403.latency_ms,
     }
 
+    tmb_commit_ok = evaluate_timber_sawmill_3d_log_scaling_policy()
+    tmb_brk_403 = evaluate_timber_sawmill_3d_log_scaling_policy(
+        laser_under_bark_and_heart_rot_deducted=False,
+    )
+    tmb_stn_422 = evaluate_timber_sawmill_3d_log_scaling_policy(
+        sapstain_blue_stain_and_ispm15_passed=False,
+    )
+    tmb_eudr_451 = evaluate_timber_sawmill_3d_log_scaling_policy(
+        webiq_eudr_polygon_and_fsc_coc_clean=False,
+    )
+    tmb_crv_409 = evaluate_timber_sawmill_3d_log_scaling_policy(
+        curve_sawing_yield_and_biomass_pellet_savings_cents=2750000,
+    )
+    timber_scaling_guards = {
+        "all_passed": (
+            tmb_commit_ok.allowed
+            and tmb_commit_ok.settled_timber_cents == 17500000
+            and not tmb_brk_403.allowed
+            and tmb_brk_403.http_status == 403
+            and not tmb_stn_422.allowed
+            and tmb_stn_422.http_status == 422
+            and not tmb_eudr_451.allowed
+            and tmb_eudr_451.http_status == 451
+            and not tmb_crv_409.allowed
+            and tmb_crv_409.action_pill == "Confirm"
+        ),
+        "timber_settlement_latency_ms": tmb_commit_ok.latency_ms,
+        "over_bark_scaling_block_latency_ms": tmb_brk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -17537,6 +17652,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "marine_biobunker_guards": marine_biobunker_guards,
         "heavy_rigging_guards": heavy_rigging_guards,
         "power_transformer_guards": power_transformer_guards,
+        "timber_scaling_guards": timber_scaling_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -22272,6 +22388,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lpt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Timber & Sawmill Logs, 3D Laser Under-Bark Scaling & EUDR Mandate Sandbox (Round 102 FAQ Companion) -->
+      <div class="finops-box" id="timber-3d-scaling-sandbox" style="margin-top:12px;border-color:#22C55E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tmb-title">🪵 大宗原木与锯材贸易 (Timber &amp; Sawlogs)、三维激光去皮扣腐检尺 (JAS Under-Bark) 与 EUDR 零毁林架构：净实木材积与多边形令牌 (timber_3d_jas_mandate_...) vs 树皮空心盲付决策器 (Round 102 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 进口辐射松与北美硬木原木大宗交割 ($175,000.00)、3D 激光去皮净材积 (JAS Under-Bark)、应力波内部心腐扣减与 Web IQ 欧盟 EUDR 零毁林多边形/曲线下锯场景 (Timber Log Scaling Scenario):</span></label>
+          <select id="tmb-select" onchange="updateTimber3dScalingSandbox()">
+            <option value="tmb_commit_ok">⚡ 剥皮后 3D 激光去皮净 JAS 立方米吻合 + 应力波实心无腐 + 蓝变 0.6% (&lt;=2%) + EUDR 多边形达标：20ms 自动结算 $175,000.00! (Act automatically)</option>
+            <option value="tmb_brk_403">🛑 卖方按人工卡尺连着 3cm 厚树皮与 S 型弯曲毛尺计费 (虚增 +16% 体积)，或端头涂蜡掩盖中心真菌心腐空洞拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="tmb_stn_422">🚨 海运闷舱高温导致松木边材大面积真菌青变 (Blue-Stain 18% &gt; 2% 无法做清漆家具) 或缺失 ISPM-15 松材线虫熏蒸拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tmb_eudr_451">🛑 缺失欧盟零毁林法案 (EUDR 2023/1115) &gt;4 公顷伐区 6位小数 GeoJSON 闭合多边形或触碰 2020年后毁林红线：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="tmb_crv_409">🧑‍⚖️ Web IQ 将 3D 激光点云直连数控跑车执行顺弯曲线下锯 (Curve Sawing 提升 +8.5% 实木出材率) 并外卖剥皮树皮生物质颗粒立省 $27,500.00 (净付 $147,500.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tmb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -22812,6 +22946,7 @@ function renderAll() {{
   updateMarineBiobunkerC14Sandbox();
   updateHeavyRiggingShocklogSandbox();
   updatePowerTransformerSfraSandbox();
+  updateTimber3dScalingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -28062,6 +28197,55 @@ function updatePowerTransformerSfraSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 出厂-现场 SFRA 扫频重合 (ρ &gt;=0.995) + 72h 试运行 DGA 零乙炔 (0.0 ppm) 达标：已自动清算 (VERIFIED_LARGE_POWER_TRANSFORMER_LPT_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零绕组运输移位隐患、零内部电弧火花</strong>：220kV/300MVA 智算中心主变压器交割与投运里程碑款已完成结算（<code>$450,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateTimber3dScalingSandbox() {{
+  var selEl = document.getElementById("tmb-select");
+  var outEl = document.getElementById("tmb-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "tmb_brk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 OVER_BARK_MANUAL_SCALING_OR_HOLLOW_HEART_ROT_INFLATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "分选线 <code>3D 激光环扫仪与纵向应力波层析探伤仪</code> 实测显示，卖方纸质码单将 <code>3cm 厚树皮</code> 与 S 型弯曲段计入了原木立方米（虚增 <code>+16.4%</code> 不可用体积），且端头防裂蜡下掩盖了直径 12cm 的内部真菌心腐空洞（<code>laser_under_bark_and_heart_rot_deducted == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$175,000.00</code> 虚高码单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tmb_stn_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FUNGAL_BLUE_STAIN_DISCOLORATION_OR_PINE_NEMATODE_BREACH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "端面高光谱相机检出辐射松边材因船舱高温高湿发生大面积真菌青变（<code>Blue-Stain = 18.5% &gt; 2.0%</code>，完全无法用于浅色高档清漆家具），或缺失 <code>ISPM-15 松材线虫检疫熏蒸合格证</code>（<code>sapstain_blue_stain_and_ispm15_passed == False</code>）。网关在 <code>14ms</code> 内拦截并执行降级/退运！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tmb_eudr_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_EUDR_GEOJSON_POLYGON_OR_POST_2020_DEFORESTATION_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查欧盟 TRACES NT 零毁林法案（<code>EUDR Regulation 2023/1115</code>）尽职调查系统，检出该批原木缺失大于 4 公顷采伐林块的 6 位小数 GeoJSON 闭合多边形坐标或与 2020 年底后毁林图斑重叠，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tmb_crv_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CNC_3D_CURVE_SAWING_AND_BARK_PELLET_VALORIZATION_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 将每根原木的 3D 激光点云直连数控摆动圆锯执行 <code>顺弯曲线下锯 (Curve Sawing)</code>（实木一等板材出材率提升 <code>+8.5%</code>），并将剥除的树皮与锯末制成 <code>ENplus A1 生物质燃料颗粒</code> 外销冲抵，单批立省 <code>$27,500.00</code>（净付降至 <code>$147,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 3D 激光去皮净尺 (JAS Under-Bark) + 应力波零心腐 + EUDR 多边形达标：已自动清算 (VERIFIED_3D_LASER_UNDER_BARK_TIMBER_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零树皮充实木水分、零空心烂木蒙混</strong>：大宗进口锯材原木批次已按实测净出材体积完成结算（<code>$175,000.00</code>）！" +
     "</div>";
 }}
 

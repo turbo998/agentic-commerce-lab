@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg104" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09140c"/>
+      <stop offset="50%" stop-color="#142919"/>
+      <stop offset="100%" stop-color="#1f3e26"/>
+    </linearGradient>
+    <linearGradient id="accent104" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg104)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0d1e12" stroke="#22c55e" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent104)"/>
+
+  <text x="60" y="72" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 102 · TIMBER &amp; SAWMILL LOGS, 3D LASER UNDER-BARK SCALING &amp; EUDR POLYGON MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">大宗原木与锯材贸易、三维激光去皮扣腐检尺 (JAS) 与 EUDR 零毁林托管 vs 树皮空心盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">3D Laser Ring Scanner Under-Bark Net JAS m3 + X-Ray Heart-Rot Deduction + EUDR GeoJSON vs. Over-Bark Scaling</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统手工卡尺含皮检尺与淋水增重盲付模式 (Over-Scaling Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 连着 3cm 厚树皮按实木立方米收费：未扣除树皮体积与弯曲度 (Sweep)，虚增 14%–18% 材积</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 中心心腐木 (Heart-Rot) 与空洞泥沙掺假：表面刷蜡封头掩盖内部空心腐朽，上锯开料一半变废柴</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 淋水泡水按地磅毛重结汇：向原木堆喷水增重 20% 且诱发青变霉菌 (Blue Stain) 导致高档家具材降级</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 触犯欧盟零毁林法案 (EUDR) 整船扣押：缺失伐区 &gt;4 公顷多边形坐标或侵占 2020 后原始林被罚没</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型大型家具制造 / 港口木材加工园区进口辐射松与硬木原木资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">木材采购 Agent 凭装港人工抽检尺码单支付 $175,000 原木款，到厂上三维扫描线后</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">发现扣除厚树皮、S型弯曲与内部心腐后净出材率缩水 19%，且因缺 EUDR 伐区坐标无法出口欧盟</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 树皮与弯曲虚量拦截：0% | • 内部心腐识破：0% | • 单批材积缩水资损：$25,000–$38,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 3D 激光去皮检尺 + 声波心腐扣减 + EUDR 多边形托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 龙门 3D 激光环扫去皮净材积 (JAS Under-Bark) 与声波/X光心腐扣减：只为可出板材的实心净木付款</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• ISPM-15 松材线虫检疫熏蒸与防青变霉菌门禁：拦截活体天牛虫孔与蓝变降级木</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 欧盟 EUDR 伐区 GeoJSON 多边形与 FSC 监管链核验：Web IQ 核查 2020-12-31 后零毁林卫星铁证</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 3D 曲线自适应下锯 (Curve Sawing) 增产 + 剥皮树皮生物质颗粒联产套利：立省 $27,500</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断含树皮毛尺计费或未扣除内部心腐空洞的虚高码单；14ms 拦截蓝变发霉与未熏蒸</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">疫木；Web IQ 3D 曲线下锯优化出材率并变现剥皮生物质燃料颗粒直接节省 $27,500（净付 $147.5k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 树皮与心腐水分剔除：100% | • 实木净出材率提升：+8.5% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#122b1b" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">大宗原木采购 Agent 绝不能按含皮毛尺或湿吨地磅盲付！必须绑定【3D 激光去皮 JAS 净尺 + 心腐扣减 + EUDR】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_timber_sawmill_3d_log_scaling_policy`) · JAS / Scribner &amp; EU EUDR 2023/1115 · 2026-11-11</text>
+</svg>

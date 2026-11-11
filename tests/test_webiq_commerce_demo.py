@@ -6871,6 +6871,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("power-transformer-sfra-sandbox", demo_zh)
 
+    def test_timber_sawmill_3d_laser_log_scaling_eudr_polygon_mandate_vs_bark_void_overscaling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_timber_sawmill_3d_log_scaling_policy,
+        )
+
+        # 1. Verified 3D laser under-bark net JAS volume + zero heart-rot + EUDR polygon -> 200 OK ($175,000)
+        commit_ok = evaluate_timber_sawmill_3d_log_scaling_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_timber_cents, 17500000)
+
+        # 2. Manual caliper over-bark scaling or wax-concealed hollow heart-rot -> 403 blocked in 11ms
+        brk_403 = evaluate_timber_sawmill_3d_log_scaling_policy(
+            laser_under_bark_and_heart_rot_deducted=False,
+        )
+        self.assertFalse(brk_403.allowed)
+        self.assertEqual(brk_403.http_status, 403)
+        self.assertEqual(
+            brk_403.timber_lane,
+            "OVER_BARK_MANUAL_SCALING_OR_HOLLOW_HEART_ROT_INFLATION_BLOCKED",
+        )
+
+        # 3. Fungal blue-stain (>2%) or missing ISPM-15 pine-nematode fumigation -> 422 blocked in 14ms
+        stn_422 = evaluate_timber_sawmill_3d_log_scaling_policy(
+            sapstain_blue_stain_and_ispm15_passed=False,
+        )
+        self.assertFalse(stn_422.allowed)
+        self.assertEqual(stn_422.http_status, 422)
+        self.assertEqual(
+            stn_422.timber_lane,
+            "FUNGAL_BLUE_STAIN_DISCOLORATION_OR_PINE_NEMATODE_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing EUDR >4ha GeoJSON polygon or post-2020 deforestation overlap -> 451 blocked in 295ms
+        eudr_451 = evaluate_timber_sawmill_3d_log_scaling_policy(
+            webiq_eudr_polygon_and_fsc_coc_clean=False,
+        )
+        self.assertFalse(eudr_451.allowed)
+        self.assertEqual(eudr_451.http_status, 451)
+
+        # 5. Web IQ links 3D log scan to CNC Curve-Sawing (+8.5% yield) & bark pellet offtake saving $27,500 ($147,500 net) -> 409 Confirm
+        crv_409 = evaluate_timber_sawmill_3d_log_scaling_policy(
+            curve_sawing_yield_and_biomass_pellet_savings_cents=2750000,
+        )
+        self.assertFalse(crv_409.allowed)
+        self.assertEqual(crv_409.http_status, 409)
+        self.assertEqual(crv_409.settled_timber_cents, 14750000)
+        self.assertEqual(crv_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["timber_scaling_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("timber-3d-scaling-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
