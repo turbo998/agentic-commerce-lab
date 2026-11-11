@@ -7319,6 +7319,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("district-cooling-delta-t-sandbox", demo_zh)
 
+    def test_offshore_wind_wtiv_jackup_spudcan_preload_rpd_mandate_vs_punch_through_standby_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_offshore_wtiv_jackup_charter_policy,
+        )
+
+        # 1. Verified spudcan preload >=110% + RPD <=0.5 deg + honest crane/wind logs -> 200 OK ($480,000)
+        commit_ok = evaluate_offshore_wtiv_jackup_charter_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_wtiv_cents, 48000000)
+
+        # 2. Incomplete spudcan preload holding or leg RPD > 0.5 deg -> 403 blocked in 12ms
+        spd_403 = evaluate_offshore_wtiv_jackup_charter_policy(
+            spudcan_preload_and_rpd_verified=False,
+        )
+        self.assertFalse(spd_403.allowed)
+        self.assertEqual(spd_403.http_status, 403)
+        self.assertEqual(
+            spd_403.wtiv_lane,
+            "SPUDCAN_PRELOAD_SHORTFALL_OR_RPD_SKEW_BLOCKED",
+        )
+
+        # 3. 130m wind <=10 m/s while crane/jacking fault disguised as weather standby -> 422 blocked in 15ms
+        crn_422 = evaluate_offshore_wtiv_jackup_charter_policy(
+            boom_tip_wind_and_crane_plc_honest=False,
+        )
+        self.assertFalse(crn_422.allowed)
+        self.assertEqual(crn_422.http_status, 422)
+        self.assertEqual(
+            crn_422.wtiv_lane,
+            "CRANE_JACKING_BREAKDOWN_DISGUISED_AS_WIND_STANDBY_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing WTG site-specific CPT MWS CoA or footprint overlap -> 451 blocked in 290ms
+        mws_451 = evaluate_offshore_wtiv_jackup_charter_policy(
+            webiq_mws_cpt_and_footprint_clearance_clean=False,
+        )
+        self.assertFalse(mws_451.allowed)
+        self.assertEqual(mws_451.http_status, 451)
+
+        # 5. Web IQ dispatches DP2 Feeder Barge for offshore component transfer saving $64,000 ($416,000 net) -> 409 Confirm
+        fdr_409 = evaluate_offshore_wtiv_jackup_charter_policy(
+            feeder_barge_offshore_transfer_savings_cents=6400000,
+        )
+        self.assertFalse(fdr_409.allowed)
+        self.assertEqual(fdr_409.http_status, 409)
+        self.assertEqual(fdr_409.settled_wtiv_cents, 41600000)
+        self.assertEqual(fdr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["offshore_wtiv_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("offshore-wtiv-jackup-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

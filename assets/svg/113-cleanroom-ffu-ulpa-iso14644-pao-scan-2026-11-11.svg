@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg113" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061421"/>
+      <stop offset="50%" stop-color="#0D243A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent113" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg113" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#122B44"/>
+      <stop offset="100%" stop-color="#081624"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg113)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent113)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#155E75" stroke="#22D3EE" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ROUND 111 · CLEANROOM FFU/ULPA ISO 14644-1 ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    无尘室 FFU/ULPA 超高效过滤 (ISO 14644)、PAO 检漏与抗硼脱气智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    ISO 14644-3 PAO/PSL Scan (&lt;=0.01% Leak), PTFE Zero-Boron Outgassing &amp; EC-Fan DP Curve vs. Blind Filter-Swap Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Blind Swap & Borosilicate Outgassing Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg113)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按期盲目换芯与玻纤释硼踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 液槽果冻胶未对准致边框旁路漏风 (Bypass Leak)</text>
+    <text x="58" y="224" fill="#CBD5E1">• 维保商换完 500 张 U16 滤网收走 $165,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 刀边未插正果冻胶槽致局部穿透率 0.45% (&gt;0.01%) 污染晶圆</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 廉价硼硅玻纤滤纸释放硼酸 (BF3) 意外掺杂硅片</text>
+    <text x="58" y="294" fill="#CBD5E1">• 用普通玻纤冒充低脱气 PTFE 滤膜，遇湿气挥发硼原子</text>
+    <text x="58" y="312" fill="#CBD5E1">• 晶圆表面硼污染 &gt;10^10 atoms/cm2，致 N 型晶体管阈值漂移</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 初阻力仅 110 Pa 未达终阻力却按日历一刀切强拆</text>
+    <text x="58" y="364" fill="#CBD5E1">• 滤芯寿命还剩 60% 就被全数拆毁以赚取耗材暴利</text>
+    <text x="58" y="382" fill="#CBD5E1">• 或无 EU GMP Annex 1 连续粒子在线监测违反药监红线</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$165,000 过度换芯费 + 晶圆硼污染报废
+  </text>
+
+  <!-- Center Card: 4-Layer Cleanroom FFU/ULPA Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg113)" stroke="#22D3EE" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#155E75"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ⚡ PAO/PSL 扫描检漏 + PTFE 零释硼 + 压差托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#22D3EE" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">
+    Gate 1 · ISO 14644-3 逐台扫描检漏 (&lt;=0.01% · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    果冻胶槽旁路穿透率 &gt; 0.01% 或风速均匀度偏差 &gt; 15% →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 GEL_SEAL_BYPASS_LEAK_OR_AIRFLOW_NONUNIFORMITY_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · PTFE 零释硼与 AMC 分子脱气门禁 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    玻纤滤纸释放硼/磷气态污染物 (AMC) 或未满压差强换 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 BORON_AMC_OUTGASSING_OR_PREMATURE_SWAP_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ EU GMP Annex 1 与 UL 900 阻燃 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    无菌灌装 A级区缺失连续粒子监控或缺失 FM 4920 阻燃证 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 EU_GMP_ANNEX1_OR_FM4920_FIRE_RATING_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 按压差按需换芯 + EC 风机调速 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    仅更换压差 &gt;220 Pa 滤芯 + 夜间非生产期 EC 风机降速 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $26,400 ($138,600 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $165,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg113)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 111)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 零漏风与 ISO Class 3 粒子达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$165,000.00 (穿透 0.001%)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 液槽果冻胶刀边旁路漏风拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截未检漏账单：$165,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 玻纤释硼 (AMC) 或未满压差强换拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 杜绝晶圆 P 型硼掺杂污染</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 压差按需换芯 + EC 风机变频 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$26,400.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  132 / 132 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住百级/十级洁净室粒子红线，终结一刀切换芯浪费
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“固定日历周期一刀切更换”或仅看滤芯出厂合格证给无尘室 FFU/ULPA 维保商结账！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 安装后现场 ISO 14644-3 气溶胶扫描检漏穿透率 &lt;=0.01% 且断面风速 0.45 m/s ±15% (11ms 拦 403)；② 晶圆厂强制采用零释硼 PTFE 滤膜且按压差换芯 (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查欧盟 EU GMP Annex 1 与 FM 4920 阻燃认证 (285ms 拦 451)，并执行基于实时压差 (DP &gt;=220 Pa) 精准换芯与 EC 直流无刷风机变频调速立省 $26,400 (295ms)。
+  </text>
+</svg>

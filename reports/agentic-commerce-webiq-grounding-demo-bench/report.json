@@ -630,6 +630,11 @@
     "district_cooling_settlement_latency_ms": 19,
     "warm_supply_block_latency_ms": 11
   },
+  "offshore_wtiv_guards": {
+    "all_passed": true,
+    "wtiv_settlement_latency_ms": 21,
+    "spudcan_preload_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",
