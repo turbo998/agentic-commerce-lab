@@ -6983,6 +6983,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("geothermal-egs-enthalpy-sandbox", demo_zh)
 
+    def test_subsea_hvdc_cable_laying_rov_burial_depth_das_strain_mandate_vs_shallow_exposure_anchor_strike_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_subsea_hvdc_cable_laying_policy,
+        )
+
+        # 1. Verified ROV DoL >=1.5m + zero free-span + BOTDR strain <=1,500 microstrain -> 200 OK ($420,000)
+        commit_ok = evaluate_subsea_hvdc_cable_laying_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_subsea_cable_cents, 42000000)
+
+        # 2. Plow skip leaving DoL < 1.5m or seabed free-span exposure -> 403 blocked in 12ms
+        dol_403 = evaluate_subsea_hvdc_cable_laying_policy(
+            rov_tss440_burial_depth_and_freespan_verified=False,
+        )
+        self.assertFalse(dol_403.allowed)
+        self.assertEqual(dol_403.http_status, 403)
+        self.assertEqual(
+            dol_403.subsea_cable_lane,
+            "SHALLOW_BURIAL_DEPTH_OR_FREE_SPAN_EXPOSURE_BLOCKED",
+        )
+
+        # 3. Stern chute over-bend (<3.5m MBR) or BOTDR strain > 1,500 microstrain -> 422 blocked in 15ms
+        mbr_422 = evaluate_subsea_hvdc_cable_laying_policy(
+            botdr_strain_mbr_and_hv_soak_passed=False,
+        )
+        self.assertFalse(mbr_422.allowed)
+        self.assertEqual(mbr_422.http_status, 422)
+        self.assertEqual(
+            mbr_422.subsea_cable_lane,
+            "MBR_OVERBEND_STRAIN_OR_HV_SOAK_FAILURE_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing UXO ALARP sign-off or unpublished NtM protection zone -> 451 blocked in 295ms
+        uxo_451 = evaluate_subsea_hvdc_cable_laying_policy(
+            webiq_uxo_alarp_and_ntm_chart_clean=False,
+        )
+        self.assertFalse(uxo_451.allowed)
+        self.assertEqual(uxo_451.http_status, 451)
+
+        # 5. Web IQ substitutes Fallpipe Rock Placement over 120m bedrock outcrop deducting $58,000 ($362,000 net) -> 409 Confirm
+        rck_409 = evaluate_subsea_hvdc_cable_laying_policy(
+            rock_placement_berm_deduction_savings_cents=5800000,
+        )
+        self.assertFalse(rck_409.allowed)
+        self.assertEqual(rck_409.http_status, 409)
+        self.assertEqual(rck_409.settled_subsea_cable_cents, 36200000)
+        self.assertEqual(rck_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["subsea_cable_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("subsea-hvdc-cable-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

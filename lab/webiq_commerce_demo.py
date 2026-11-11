@@ -13558,6 +13558,91 @@ def evaluate_geothermal_egs_drilling_enthalpy_policy(
     )
 
 
+@dataclass(frozen=True)
+class SubseaHvdcCableLayingVerdict:
+    allowed: bool
+    http_status: int
+    subsea_cable_lane: str
+    settled_subsea_cable_cents: int
+    rock_berm_or_exposure_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_subsea_hvdc_cable_laying_policy(
+    gross_subsea_cable_milestone_cents: int = 42000000,
+    rov_tss440_burial_depth_and_freespan_verified: bool = True,
+    botdr_strain_mbr_and_hv_soak_passed: bool = True,
+    webiq_uxo_alarp_and_ntm_chart_clean: bool = True,
+    rock_placement_berm_deduction_savings_cents: int = 0,
+) -> SubseaHvdcCableLayingVerdict:
+    """Evaluate independent survey ROV TSS-440 electromagnetic Depth-of-Lowering (DoL >=1.5m) & zero free-span verification vs contractor plow-skid log shallow-burial overbilling, embedded optical fiber Brillouin OTDR (BOTDR <=1,500 microstrain & MBR >=3.5m) & HV soak gate, Web IQ UXO ALARP clearance & hydrographic Notice-to-Mariners (NtM) check, and targeted Fallpipe Rock-Placement berm scope deduction arbitrage."""
+    # 1. Trencher plow skip leaving DoL < 1.5m or exposed seabed free-span -> HTTP 403
+    if not rov_tss440_burial_depth_and_freespan_verified:
+        return SubseaHvdcCableLayingVerdict(
+            False,
+            403,
+            "SHALLOW_BURIAL_DEPTH_OR_FREE_SPAN_EXPOSURE_BLOCKED",
+            0,
+            gross_subsea_cable_milestone_cents,
+            "subsea_cable_milestone_blocked_due_to_rov_tss440_burial_depth_below_1_5m_or_unrectified_seabed_free_span",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Stern chute over-bending (<3.5m MBR), BOTDR strain > 1,500 microstrain, or HV soak test failure -> HTTP 422
+    if not botdr_strain_mbr_and_hv_soak_passed:
+        return SubseaHvdcCableLayingVerdict(
+            False,
+            422,
+            "MBR_OVERBEND_STRAIN_OR_HV_SOAK_FAILURE_BLOCKED",
+            0,
+            gross_subsea_cable_milestone_cents,
+            "subsea_hvdc_cable_held_due_to_botdr_fiber_strain_exceeding_1500_microstrain_or_mbr_overbend_violation",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects missing MWS UXO ALARP certificate or unpublished Notice-to-Mariners (NtM) -> HTTP 451
+    if not webiq_uxo_alarp_and_ntm_chart_clean:
+        return SubseaHvdcCableLayingVerdict(
+            False,
+            451,
+            "UXO_CLEARANCE_OR_NTM_PROTECTION_ZONE_HOLD",
+            0,
+            gross_subsea_cable_milestone_cents,
+            "webiq_detected_missing_uxo_alarp_signoff_or_unissued_hydrographic_notice_to_mariners_protection_zone",
+            295,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Fallpipe Rock-Placement Berm Deduction over Shallow Bedrock Outcrop -> HTTP 409 Confirm
+    if rock_placement_berm_deduction_savings_cents > 0:
+        return SubseaHvdcCableLayingVerdict(
+            False,
+            409,
+            "ROCK_PLACEMENT_BERM_DEDUCTION_CONFIRM",
+            gross_subsea_cable_milestone_cents - rock_placement_berm_deduction_savings_cents,
+            rock_placement_berm_deduction_savings_cents,
+            "webiq_substituted_fallpipe_rock_berm_over_120m_bedrock_outcrop_deducting_58000_usd",
+            305,
+            "Confirm",
+        )
+
+    # 5. Verified ROV DoL >=1.5m + Zero Free-Span + BOTDR Strain <=1,500 microstrain + UXO/NtM Clean -> Settled
+    return SubseaHvdcCableLayingVerdict(
+        True,
+        200,
+        "VERIFIED_SUBSEA_HVDC_CABLE_BURIAL_SETTLED",
+        gross_subsea_cable_milestone_cents,
+        0,
+        "rov_tss440_burial_depth_botdr_fiber_strain_and_uxo_ntm_protection_verified_for_settlement",
+        21,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -17653,6 +17738,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "low_enthalpy_footage_block_latency_ms": geo_ent_403.latency_ms,
     }
 
+    cab_commit_ok = evaluate_subsea_hvdc_cable_laying_policy()
+    cab_dol_403 = evaluate_subsea_hvdc_cable_laying_policy(
+        rov_tss440_burial_depth_and_freespan_verified=False,
+    )
+    cab_mbr_422 = evaluate_subsea_hvdc_cable_laying_policy(
+        botdr_strain_mbr_and_hv_soak_passed=False,
+    )
+    cab_uxo_451 = evaluate_subsea_hvdc_cable_laying_policy(
+        webiq_uxo_alarp_and_ntm_chart_clean=False,
+    )
+    cab_rck_409 = evaluate_subsea_hvdc_cable_laying_policy(
+        rock_placement_berm_deduction_savings_cents=5800000,
+    )
+    subsea_cable_guards = {
+        "all_passed": (
+            cab_commit_ok.allowed
+            and cab_commit_ok.settled_subsea_cable_cents == 42000000
+            and not cab_dol_403.allowed
+            and cab_dol_403.http_status == 403
+            and not cab_mbr_422.allowed
+            and cab_mbr_422.http_status == 422
+            and not cab_uxo_451.allowed
+            and cab_uxo_451.http_status == 451
+            and not cab_rck_409.allowed
+            and cab_rck_409.action_pill == "Confirm"
+        ),
+        "subsea_cable_settlement_latency_ms": cab_commit_ok.latency_ms,
+        "shallow_burial_block_latency_ms": cab_dol_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -17769,6 +17884,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "power_transformer_guards": power_transformer_guards,
         "timber_scaling_guards": timber_scaling_guards,
         "geothermal_egs_guards": geothermal_egs_guards,
+        "subsea_cable_guards": subsea_cable_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -22540,6 +22656,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="geo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Subsea HVDC Cable Laying, ROV Burial Depth & BOTDR Strain Mandate Sandbox (Round 104 FAQ Companion) -->
+      <div class="finops-box" id="subsea-hvdc-cable-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cab-title">🌊 海底高压海缆铺设 (Subsea HVDC &amp; Export Cable)、ROV 电磁实测埋深 (DoL &gt;=1.5m) 与光纤应变 (BOTDR MBR) 架构：埋深与零悬空令牌 (subsea_hvdc_cable_mandate_...) vs 凭犁刀日志盲付决策器 (Round 104 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 海上风电送出海缆与跨海 HVDC 互联敷设冲埋交割 ($420,000.00)、独立 ROV TSS-440 实测埋深、BOTDR 光纤弯曲应变与 Web IQ UXO/落管抛石保护场景 (Subsea HVDC Cable Scenario):</span></label>
+          <select id="cab-select" onchange="updateSubseaHvdcCableSandbox()">
+            <option value="cab_commit_ok">⚡ 独立 ROV 实测全线埋深 DoL 1.8m (&gt;=1.5m) + 零悬空 + BOTDR 应变 620 με (&lt;=1,500) + UXO/NtM 齐全：21ms 自动结算 $420,000.00! (Act automatically)</option>
+            <option value="cab_dol_403">🛑 冲埋犁遇硬粘土发生“跳犁 (Plow Skip)”致实测埋深仅 0.35m (&lt; 1.5m) 或海床沙波段悬空裸露易遭船锚钩断拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="cab_mbr_422">🚨 铺缆船尾溜槽张力失控致过弯半径 2.1m (&lt; 3.5m MBR) 或 BOTDR 光纤拉应变 2,400 με (&gt;1,500) 损伤铅护套拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="cab_uxo_451">🛑 缺失劳合社 MWS 未爆弹 (UXO ALARP) 清障签章或未在海事局发布 NtM 禁锚保护区海图通告：Web IQ /v3/browse 295ms 触发 HTTP 451!</option>
+            <option value="cab_rck_409">🧑‍⚖️ Web IQ 对 120m 海底花岗岩基岩浅埋段 (DoL 0.7m) 自动调度落管抛石船执行碎石覆盖并代扣 $58,000.00 (净付 $362,000.00) → 305ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cab-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -23082,6 +23216,7 @@ function renderAll() {{
   updatePowerTransformerSfraSandbox();
   updateTimber3dScalingSandbox();
   updateGeothermalEgsEnthalpySandbox();
+  updateSubseaHvdcCableSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -28430,6 +28565,55 @@ function updateGeothermalEgsEnthalpySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 30天放喷比焓 (&gt;=1,650 kJ/kg) + 示踪滞留 (&gt;=120h) + 微震 TLS (&lt;=2.0) 达标：已自动清算 (VERIFIED_GEOTHERMAL_EGS_ENTHALPY_SETTLED · 21ms · Act automatically):</strong><br>" +
     "• <strong>零干井进尺盲付、零冷水短流热衰</strong>：智算中心 24/7 基荷深层 EGS 地热井组完井款已完成结算（<code>$380,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSubseaHvdcCableSandbox() {{
+  var selEl = document.getElementById("cab-select");
+  var outEl = document.getElementById("cab-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cab_dol_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SHALLOW_BURIAL_DEPTH_OR_FREE_SPAN_EXPOSURE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "独立调查船 ROV 搭载 <code>TSS-440 双线圈电磁测深仪与多波束声呐</code> 实测显示，冲埋机在硬粘土段发生跳犁，导致海缆实际埋深仅 <code>0.35m &lt; 1.50m</code> 且存在海床悬空段（<code>rov_tss440_burial_depth_and_freespan_verified == False</code>），极易被商船拖锚钩断（单次抢修损失 &gt;$18M）。网关在 <code>12ms</code> 内硬阻断 <code>$420,000.00</code> 冲埋尾款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cab_mbr_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MBR_OVERBEND_STRAIN_OR_HV_SOAK_FAILURE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "海缆内置传感光纤 <code>布里渊光时域反射仪 (BOTDR)</code> 检出 KP 14.2 桩号处因船尾溜槽张力失步发生严重过弯（<code>弯曲半径 2.1m &lt; 3.5m MBR，微应变 2,400 με &gt; 1,500 με</code>），存在铅护套微裂纹与绝缘树枝击穿隐患（<code>botdr_strain_mbr_and_hv_soak_passed == False</code>）。网关在 <code>15ms</code> 内拦截并锁定铺缆船机械损伤责任！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cab_uxo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UXO_CLEARANCE_OR_NTM_PROTECTION_ZONE_HOLD (295ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查劳合社海事担保检验师（MWS）台账与海事局电子海图（ENC）公报，检出路由缺失二战未爆弹（<code>UXO ALARP</code>）清障签章或未发布 <code>Notice to Mariners (NtM) 禁锚保护区通告</code>，立即执行合规冻结以防海事工程险（CAR）拒赔！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cab_rck_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ROCK_PLACEMENT_BERM_DEDUCTION_CONFIRM (305ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 针对 KP 8.4 处 120m 海底花岗岩基岩段（水射流仅能埋至 0.7m），自动匹配在航落管抛石船执行 <code>精准抛石护坦 (Fallpipe Rock Placement)</code> 替代无效复冲，并从冲埋款中自动代扣抛石费 <code>$58,000.00</code>（净付降至 <code>$362,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 独立 ROV 实测埋深 (DoL &gt;=1.5m) + BOTDR 零过弯应变 + UXO/NtM 达标：已自动清算 (VERIFIED_SUBSEA_HVDC_CABLE_BURIAL_SETTLED · 21ms · Act automatically):</strong><br>" +
+    "• <strong>零跳犁浅埋拖锚隐患、零溜槽过弯绝缘暗伤</strong>：海上风电送出海缆与跨海 HVDC 冲埋工程款已完成结算（<code>$420,000.00</code>）！" +
     "</div>";
 }}
 

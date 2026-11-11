@@ -135,6 +135,7 @@
 - **专题 101（智算中心与高压变电站主变压器 Large Power Transformer LPT 交割、到场 SFRA 扫频绕组指纹与 72h 油色谱零乙炔 DGA $\text{C}_2\text{H}_2 = 0$ 智能托管 vs 传统凭出厂试验到货盲付）**：**[《智算中心与高压变电站主变压器（Large Power Transformer, LPT）交割、到场 SFRA 扫频绕组指纹与 72h 油色谱零乙炔（DGA $\text{C}_2\text{H}_2 = 0$）智能托管 vs 传统凭出厂试验到货盲付：架构选型与第一性原理 FAQ》](docs/power-transformer-lpt-sfra-dga-acetylene-impact-mandate-vs-winding-shift-energization-blast-faq.md)**
 - **专题 102（大宗原木与人造板木材贸易 Timber & Sawmill Logs、三维激光去皮扣腐检尺 3D Laser JAS Under-Bark Scaling 与 EUDR 零毁林多边形溯源智能托管 vs 传统手工含皮检尺与空心腐木盲付）**：**[《大宗原木与人造板木材贸易（Timber & Sawmill Logs）、三维激光去皮扣腐检尺（3D Laser JAS Under-Bark Scaling）与 EUDR 零毁林多边形溯源智能托管 vs 传统手工含皮检尺与空心腐木盲付：架构选型与第一性原理 FAQ》](docs/timber-sawmill-3d-laser-log-scaling-eudr-polygon-mandate-vs-bark-void-overscaling-faq.md)**
 - **专题 103（深层地热能与增强型地热系统 Deep Geothermal & EGS 钻完井与蒸汽交割、井口两相流比焓 $\ge 1,650\text{ kJ/kg}$ 与微震交通灯 TLS $M_L \le 2.0$ 智能托管 vs 传统按钻井进尺米数盲付）**：**[《深层地热能与增强型地热系统（Deep Geothermal & EGS）钻完井与蒸汽交割、井口两相流比焓（$\ge 1,650\text{ kJ/kg}$）与微震交通灯（TLS $M_L \le 2.0$）智能托管 vs 传统按钻井进尺米数盲付：架构选型与第一性原理 FAQ》](docs/geothermal-egs-drilling-enthalpy-wellhead-seismicity-mandate-vs-footage-short-circuit-overbilling-faq.md)**
+- **专题 104（海底高压直流海缆与海上风电送出海缆铺设 Subsea HVDC & Export Cable Laying、ROV 电磁实测埋深 $\text{DoL} \ge 1.5\text{ m}$ 与分布式光纤应变/弯曲半径 BOTDR MBR 智能托管 vs 传统凭冲埋犁日志盲付）**：**[《海底高压直流海缆与海上风电送出海缆铺设（Subsea HVDC & Export Cable Laying）、ROV 电磁实测埋深（$\text{DoL} \ge 1.5\text{ m}$）与分布式光纤应变/弯曲半径（BOTDR MBR）智能托管 vs 传统凭冲埋犁日志盲付：架构选型与第一性原理 FAQ》](docs/subsea-hvdc-cable-laying-rov-burial-depth-das-strain-mandate-vs-shallow-exposure-anchor-strike-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -341,6 +342,8 @@
 ![2026-11-11 大宗原木与锯材贸易、三维激光去皮扣腐检尺 (JAS) 与 EUDR 零毁林智能托管架构一图流](assets/svg/104-timber-sawmill-3d-log-scaling-eudr-2026-11-11.svg)
 
 ![2026-11-11 深层地热与增强型地热 (EGS) 钻完井、两相流比焓与微震交通灯智能托管架构一图流](assets/svg/105-geothermal-egs-drilling-enthalpy-seismicity-2026-11-11.svg)
+
+![2026-11-11 海底高压海缆铺设 (Subsea HVDC)、ROV 实测埋深与光纤弯曲半径智能托管架构一图流](assets/svg/106-subsea-hvdc-cable-laying-rov-dol-das-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

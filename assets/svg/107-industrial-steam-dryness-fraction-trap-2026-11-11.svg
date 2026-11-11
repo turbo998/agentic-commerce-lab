@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg107" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09131F"/>
+      <stop offset="50%" stop-color="#132235"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent107" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg107" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#18283E"/>
+      <stop offset="100%" stop-color="#0C1624"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg107)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent107)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#831843" stroke="#F472B6" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FCE7F3" text-anchor="middle">
+    ROUND 105 · INDUSTRIAL STEAM-AS-A-SERVICE DRYNESS ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    化工园区蒸汽外供 (Steam-as-a-Service)、干度分数 (&gt;=0.97) 与疏水阀防直排智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Dual-Vortex Steam Dryness Fraction (x &gt;=0.97), 40 kHz Ultrasonic Trap Blow-Through &amp; Flash-Steam MVR vs. Wet-Steam Mass Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Wet-Steam Mass & Blow-Through Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg107)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按蒸汽吨数盲付与热水充汽踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 湿蒸汽夹带液滴把“热水当蒸汽高价卖”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 管网保温破损致蒸汽干度跌至 x = 0.82 (含18%液态水)</text>
+    <text x="58" y="242" fill="#CBD5E1">• 孔板流量计照收 100% 蒸汽吨费，且引发严重水锤击穿阀门</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 疏水阀卡死常开 (Failed-Open) 直排活蒸汽</text>
+    <text x="58" y="294" fill="#CBD5E1">• 20% 机械疏水阀阀芯磨损常开，活蒸汽直排凝结水沟</text>
+    <text x="58" y="312" fill="#CBD5E1">• 用汽厂每月白交数万美元“漏气幽灵账单”</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 凝结水硬度/铁离子超标污染锅炉给水</text>
+    <text x="58" y="364" fill="#CBD5E1">• 换热器微漏致凝结水电导率 &gt; 10 μS/cm 遭热电厂拒收</text>
+    <text x="58" y="382" fill="#CBD5E1">• 85°C 高温除盐水白白排入下水道，扣除全部回水抵扣款</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$155,000 湿汽虚收账单 + 水锤爆管停产
+  </text>
+
+  <!-- Center Card: 4-Layer Steam Dryness & Trap Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg107)" stroke="#EC4899" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#831843"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCE7F3" text-anchor="middle">
+    ⚡ 蒸汽干度计 + 40kHz 声学疏水阀 + MVR 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F472B6" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F9A8D4">
+    Gate 1 · 双涡街/节流干度计 (Dryness x &gt;=0.97 · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    蒸汽干度 x &lt; 0.97 (夹水 &gt;3%) 或仅按未扣水毛吨数计费 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 WET_STEAM_LIQUID_CARRYOVER_OVERBILLING_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 40 kHz 超声波疏水阀与回水电导率 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    疏水阀常开漏汽 (&gt;45 dBμV) 或凝结水电导率 &gt; 10 μS/cm →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 STEAM_TRAP_BLOW_THROUGH_OR_CONDENSATE_CONTAMINATION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ ASME 特种承压定检与欧盟 ETS (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    锅炉安全阀 ASME/TSG 定检过期或燃煤掺烧虚报生物质零碳 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 BOILER_PRESSURE_SAFETY_OR_CARBON_FACTOR_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 闪蒸乏汽 MVR 机械热压缩套利 (300ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    回收 0.15 MPa 闪蒸乏汽经 MVR 升压至 0.6 MPa 替代新汽 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $24,800 ($130,200 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $155,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg107)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 105)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 干度 x &gt;=0.97 与净热吉焦达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$155,000.00</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 湿蒸汽夹水 (x=0.82) 把水当汽卖拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拦截虚收款：$155,000.00</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 40 kHz 疏水阀常开漏汽/回水污染拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 自动隔离故障疏水阀支路</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 闪蒸乏汽 MVR 升压复刻套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：300 ms · 节省：$24,800.00 (16.0% 节汽)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  126 / 126 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    只为真实汽化潜热买单，终结凝结水充蒸汽黑洞
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#F9A8D4">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按普通涡街/孔板流量计的“湿蒸汽毛吨数 (Gross Mass Tons)”给热电厂付蒸汽款！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 在线干度计实测干度分数 x &gt;=0.97 且按净有效汽化潜热 (GJ) 扣除高温凝结水回水焓值 (11ms 拦 403)；② 40 kHz 超声波疏水阀零常开直排且回水电导率 &lt;=10 μS/cm (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查特种承压设备定检与热电碳排因子 (290ms 拦 451)，并将 0.15 MPa 闪蒸乏汽接入谷电 MVR 机械蒸汽再压缩机替代高价新汽 (300ms 省 $24,800)。
+  </text>
+</svg>
