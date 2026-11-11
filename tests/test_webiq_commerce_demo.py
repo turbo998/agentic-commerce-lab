@@ -7263,6 +7263,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("semiconductor-esg-gas-sandbox", demo_zh)
 
+    def test_district_cooling_chilled_water_btu_low_delta_t_mandate_vs_volumetric_flow_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_district_cooling_chilled_water_policy,
+        )
+
+        # 1. Verified supply <=6.0°C + paired Pt1000 BTU + return Delta-T >=8.0°C -> 200 OK ($135,000)
+        commit_ok = evaluate_district_cooling_chilled_water_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cooling_cents, 13500000)
+
+        # 2. Warm supply (>6.0°C) or unpaired RTD zero-drift -> 403 blocked in 11ms
+        tmp_403 = evaluate_district_cooling_chilled_water_policy(
+            paired_pt1000_and_supply_temp_verified=False,
+        )
+        self.assertFalse(tmp_403.allowed)
+        self.assertEqual(tmp_403.http_status, 403)
+        self.assertEqual(
+            tmp_403.cooling_lane,
+            "WARM_SUPPLY_TEMP_OR_UNPAIRED_BTU_DRIFT_BLOCKED",
+        )
+
+        # 3. 3-way bypass or PHE fouling causing Low-Delta-T Syndrome (<8.0°C) -> 422 blocked in 14ms
+        dlt_422 = evaluate_district_cooling_chilled_water_policy(
+            return_delta_t_and_picv_balance_passed=False,
+        )
+        self.assertFalse(dlt_422.allowed)
+        self.assertEqual(dlt_422.http_status, 422)
+        self.assertEqual(
+            dlt_422.cooling_lane,
+            "LOW_DELTA_T_BYPASS_OR_FOULING_PENALTY_BLOCKED",
+        )
+
+        # 4. Web IQ detects cooling-tower Legionella > 1,000 CFU/L or refrigerant leak -> 451 blocked in 285ms
+        leg_451 = evaluate_district_cooling_chilled_water_policy(
+            webiq_legionella_ashrae188_and_refrigerant_clean=False,
+        )
+        self.assertFalse(leg_451.allowed)
+        self.assertEqual(leg_451.http_status, 451)
+
+        # 5. Web IQ dispatches off-peak TES tank & wet-bulb economizer saving $21,600 ($113,400 net) -> 409 Confirm
+        tes_409 = evaluate_district_cooling_chilled_water_policy(
+            tes_thermal_storage_and_free_cooling_savings_cents=2160000,
+        )
+        self.assertFalse(tes_409.allowed)
+        self.assertEqual(tes_409.http_status, 409)
+        self.assertEqual(tes_409.settled_cooling_cents, 11340000)
+        self.assertEqual(tes_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["district_cooling_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("district-cooling-delta-t-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

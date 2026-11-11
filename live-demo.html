@@ -2754,6 +2754,24 @@
         <div id="esg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive District Cooling & AI Data Center Chilled-Water, Paired BTU & Low-Delta-T Mandate Sandbox (Round 109 FAQ Companion) -->
+      <div class="finops-box" id="district-cooling-delta-t-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dcs-title">❄️ 区域供冷与智算中心冷冻水 (District Cooling &amp; Chilled-Water)、配对 Pt1000 冷量表与防小温差综合征 (ΔT &gt;=8.0°C) 架构：温差与动态平衡阀令牌 (district_cooling_delta_t_mandate_...) vs 按流量盲付决策器 (Round 109 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智算中心与园区集中供冷月度交割 ($135,000.00)、EN 1434 激光配对 Pt1000 供水温度、供回水温差 (ΔT) 与 Web IQ 军团菌/谷电蓄冷 (TES) 移峰场景 (District Cooling Scenario):</span></label>
+          <select id="dcs-select" onchange="updateDistrictCoolingDeltaTSandbox()">
+            <option value="dcs_commit_ok">⚡ 供水温度 5.4°C (&lt;=6.0°C) + 配对 Pt1000 温差 ΔT = 8.8°C (&gt;=8.0°C) + 冷却塔军团菌阴性：19ms 自动结算 $135,000.00! (Act automatically)</option>
+            <option value="dcs_tmp_403">🛑 冷站供水温度漂移至 9.5°C (&gt; 6.0°C 丧失除湿与高密散热力)，或未配对温度计 0.6°C 零点漂移凭空虚增 7.5% 冷量拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="dcs_dlt_422">🚨 末端三通阀旁通或板式换热器结垢致供回水温差跌至 ΔT = 3.2°C (&lt; 8.0°C 诱发 25% 超流量惩罚费) 拦截并闭环调节 PICV 阀 → 14ms 触发 HTTP 422!</option>
+            <option value="dcs_leg_451">🛑 敞开式冷却塔检出嗜肺军团菌 &gt;1,000 CFU/L (违反 ASHRAE 188 标准) 或离心机高 GWP 制冷剂泄漏：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="dcs_tes_409">🧑‍⚖️ Web IQ 在尖峰电价时段调用夜间谷电分层水蓄冷罐 (TES) 放冷并联动过渡季湿球温度板换自然冷却立省 $21,600.00 (净付 $113,400.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dcs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3301,6 +3319,7 @@ function renderAll() {
   updatePotashPhosphateFertilizerSandbox();
   updateAirportGroundHandlingSandbox();
   updateSemiconductorEsgGasSandbox();
+  updateDistrictCoolingDeltaTSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -8894,6 +8913,55 @@ function updateSemiconductorEsgGasSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 在线 CRDS 水分 (&lt;=10 ppb) + 零 HF 水解 + 电子秤净重回皮达标：已自动清算 (VERIFIED_SEMICONDUCTOR_ESG_GAS_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零湿气水解腐蚀晶圆、零退瓶余气白白奉送</strong>：300mm 晶圆厂 6N 超高纯电子特气批次已完成结算（<code>$210,000.00</code>）！" +
+    "</div>";
+}
+
+function updateDistrictCoolingDeltaTSandbox() {
+  var selEl = document.getElementById("dcs-select");
+  var outEl = document.getElementById("dcs-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "dcs_tmp_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WARM_SUPPLY_TEMP_OR_UNPAIRED_BTU_DRIFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "一次侧交割边界 <code>EN 1434 激光配对 Pt1000 超声波冷量表</code> 实测显示，区域冷站供水温度漂移至 <code>9.5°C &gt; 6.0°C</code>（丧失潜热除湿与高密 CDU 散热能力），或供回水探头未做配对校准存在 +0.6°C 零点漂移（<code>paired_pt1000_and_supply_temp_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$135,000.00</code> 温水空转账单并豁免买方超流量责任！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "dcs_dlt_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LOW_DELTA_T_BYPASS_OR_FOULING_PENALTY_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "板换一次侧供回水温差跌至 <code>ΔT = 3.2°C &lt; 8.0°C</code>（因三通阀旁通短路或板式换热器结垢引发“大流量小温差综合征”，将触发 25% 超流量惩罚费，<code>return_delta_t_and_picv_balance_passed == False</code>）。网关在 <code>14ms</code> 内拦截异常流量账单并自动下发指令调节动态压差平衡阀（PICV）锁死温差！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "dcs_leg_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LEGIONELLA_BIOCIDE_OR_REFRIGERANT_LEAK_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查区域供冷站冷却塔月度微生物检测公报（<code>ASHRAE Standard 188</code>）与制冷剂台账，检出嗜肺军团菌 qPCR 计数 <code>&gt; 1,000 CFU/L</code> 或高 GWP 制冷剂泄漏，立即执行公共卫生合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "dcs_tes_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TES_CHILLED_WATER_PEAK_SHAVING_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 在电网尖峰电价时段自动切换园区 <code>夜间谷电分层水蓄冷罐 (TES)</code> 放冷，并结合低温湿球气象窗口启用板换免费自然冷却（Waterside Economizer），单月立省 <code>$21,600.00</code>（净付降至 <code>$113,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 供水 (&lt;=6.0°C) + 配对 Pt1000 温差 (ΔT &gt;=8.0°C) + 军团菌阴性达标：已自动清算 (VERIFIED_DISTRICT_COOLING_BTU_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零温水充冷水、零小温差超流量罚单</strong>：区域集中供冷与智算中心冷冻水月度冷量账单已完成结算（<code>$135,000.00</code>）！" +
     "</div>";
 }
 

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg112" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061222"/>
+      <stop offset="50%" stop-color="#0F213B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent112" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg112" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#152844"/>
+      <stop offset="100%" stop-color="#091526"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg112)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent112)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ROUND 110 · OFFSHORE WIND WTIV JACK-UP SPUDCAN ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    海上风电自升式安装船 (WTIV) 租船、桩靴预压载防穿刺与吊机停租智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    SNAME 5-5A Spudcan Preload Holding (&gt;=110% Max Storm Load), Rack-Phase-Difference (RPD &lt;=0.5°) &amp; Boom-Tip Wind vs. Off-Hire Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Daily Log & Punch-Through/Crane Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg112)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统凭船长日志盲付与桩腿穿刺踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 偷减压载水预压时长致吊装时“桩腿穿刺 (Punch-Through)”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 上硬下软海床未满载压舱持荷 6 小时，收走 $480,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 1,600吨主吊起吊 15MW 叶轮瞬间单腿骤沉 3米致船体倾覆</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 升降齿轮齿条磨损或主吊故障谎称“高空阵风待命”</text>
+    <text x="58" y="294" fill="#CBD5E1">• 桩腿齿条相位差 RPD &gt; 0.5° 卡死或绕桩吊变幅液压漏油</text>
+    <text x="58" y="312" fill="#CBD5E1">• 船东手写 DPR 日志谎称“130米高空风速 &gt; 12 m/s”骗日费</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 拔桩高压冲水伤及海缆或踩入邻近历史桩坑 (Footprint)</text>
+    <text x="58" y="364" fill="#CBD5E1">• 桩靴距既有桩坑边缘 &lt; 1倍直径诱发侧向滑移弯折桩腿</text>
+    <text x="58" y="382" fill="#CBD5E1">• 缺失劳合社 MWS 站位批复 (Location Approval) 致保险拒赔</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$480,000 停租骗保费 + 桩腿穿刺倾覆巨灾
+  </text>
+
+  <!-- Center Card: 4-Layer WTIV Jack-Up Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg112)" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#78350F"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ⚡ 桩靴预压载持荷 + 齿条 RPD + 激光测风托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 1 · SNAME 5-5A 桩靴预压载与 RPD (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    预压载 &lt; 110% 载荷持荷不足或齿条相位差 RPD &gt; 0.5° →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SPUDCAN_PRELOAD_SHORTFALL_OR_RPD_SKEW_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 2 · 吊臂顶端激光测风与主吊 PLC 停租对账 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    轮毂高度风速 &lt;=10 m/s 却将吊机故障谎报为大风待命 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 CRANE_JACKING_BREAKDOWN_DISGUISED_AS_WIND_STANDBY_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ MWS 站位批复与旧桩坑避让 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    缺失机位 CPT 静力触探 MWS 签章或踩入旧桩坑滑移区 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 MWS_SITE_SPECIFIC_CPT_OR_FOOTPRINT_OVERLAP_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 支线转运驳船 (Feeder Barge) 联运套利 (300ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    WTIV 原地驻守吊装、改由甲板驳船出海送料省往返装船天 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $64,000 ($416,000 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 21ms 自动清算 $480,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg112)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 110)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 桩靴预压载稳固与主吊达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：21 ms · 放款：$480,000.00 (RPD 0.12°)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 偷减预压载持荷或齿条 RPD 超差拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：12 ms · 阻断高空吊装桩腿穿刺风险</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 主吊/升降故障伪装高空大风待命拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：15 ms · 自动触发 BIMCO WINDTIME 停租</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 支线送料驳船 (Feeder) 协同套利 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：300 ms · 节省：$64,000.00 (13.3% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  131 / 131 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 15MW+ 海风吊装生命线，终结日费 $24万停租扯皮
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDE047">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要凭船长手写“高空风速超标日报表 (DPR)”盲付日费 $24万的海上风电安装船 (WTIV) 租金！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① SNAME 5-5A 桩靴预压载 &gt;=110% 持荷零沉降且桩腿齿条相位差 RPD &lt;=0.5° (12ms 拦 403)；② 130m 吊臂激光雷达风速与主吊 PLC 停租对账 (15ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查机位 CPT 静力触探 MWS 站位证书与旧桩坑避让距离 (290ms 拦 451)，并调度送料驳船 (Feeder Barge) 顶替主船回港拉货立省 $64,000 (300ms)。
+  </text>
+</svg>
