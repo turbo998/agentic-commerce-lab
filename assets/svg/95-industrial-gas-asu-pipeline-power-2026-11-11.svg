@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg95" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080f1e"/>
+      <stop offset="50%" stop-color="#11203d"/>
+      <stop offset="100%" stop-color="#1a315c"/>
+    </linearGradient>
+    <linearGradient id="accent95" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg95)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0c172c" stroke="#38bdf8" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent95)"/>
+
+  <text x="60" y="72" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 93 · INDUSTRIAL GAS ON-SITE ASU PIPELINE, SPECIFIC POWER &amp; LIQUID BACKUP MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">工业气体现场制气 (On-Site ASU) 管道供气、比功率能耗封顶与液态后备免责托管 vs 照付不议盲付</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Specific Power (&lt;=0.42 kWh/Nm3) + Supplier-Trip Liquid Backup Waiver + 5.5N Purity vs. Pass-Through Overbilling</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统现场制气电费直通与天价后备液气转嫁模式</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 空压机老化低效电费全转嫁买方：空分冷箱结垢使比功率飙升 18%，气体商凭电费直通条款旱涝保收</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 气体商自身跳机却按 5 倍高价收后备液氮费：空分设备故障改用储罐液氮气化，反收天价槽车补液费</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 标况体积 (Nm³ 0°C vs Sm³ 20°C) 偷换概念：未修正温压参比状态虚增 7.3% 计费气量</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 用买方的电偷偷多产液氩/液氧外卖独吞利润：空分塔副产高价商品液氩外销却不给买方分红冲抵</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型钢铁厂 / 煤化工 / 晶圆厂百吨级现场空分 (On-Site ASU) 采购资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">工厂 Agent 自动支付 $340,000 月度管道氧氮基价与电费分摊账单，其中 $55,000 系空分厂</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">主空压机叶轮结垢超耗电及空分跳机期间强收的高价后备液氧/液氮气化附加费</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 空压机超耗电拦截：0% | • 跳机后备液气免责：0% | • 隐性超支占比：15%–25%</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 比功率能耗封顶 + 跳机液气免责 + 副产液氩分成托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 单位制气比功率硬封顶 (&lt;=0.42 kWh/Nm³) 与跳机液气免责：空分厂自身故障气化后备液氮按管道价结算</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 0°C 标况质量流量计温压补偿与 5.5N (99.9995%) 露点门禁：杜绝 20°C 参比体积虚增 7.3% 水分</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 电网限电照付不议 (Take-or-Pay) 顺延提气权：Web IQ 核验不可抗力减免与跨期提气抵扣</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 谷电深冷液化错峰蓄冷 + 外销商品液氩 (LAR) 收益分成套利：冲抵月度气费立省 $49,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断空压机比功率超标转嫁电费及空分跳机期间强收的 5 倍后备液气费；14ms 拦截</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">0°C/20°C 标况体积偷换与纯度不达标；Web IQ 副产液氩分成与谷电液化错峰立省 $49,000（净付 $291k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 霸王后备液气费拦截：100% | • 标况计量精度：±0.2% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#101f3a" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">现场制气 (ASU) 结算 Agent 绝不能签无上限电费直通条款！必须绑定【比功率封顶 + 跳机液气免责 + 副产液氩分成】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_industrial_gas_asu_pipeline_policy`) · ISO 13443 / ASME PTC 10 · 2026-11-11</text>
+</svg>

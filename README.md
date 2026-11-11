@@ -124,6 +124,7 @@
 - **专题 90（生物医药主动温控航空集装器 Active Pharma ULD、停机坪岸电插拔遥测与海关免滞箱期智能托管 vs 传统地面代理断电甩锅与超期罚金盲付）**：**[《生物医药主动温控航空集装器（Active Pharma ULD · Envirotainer / CSafe）、停机坪岸电插拔遥测与海关免滞箱期智能托管 vs 传统地面代理断电甩锅与超期罚金盲付：架构选型与第一性原理 FAQ》](docs/pharma-active-uld-envirotainer-compressor-telemetry-mandate-vs-tarmac-excursion-demurrage-faq.md)**
 - **专题 91（低碳混凝土辅助胶凝材料 Cement SCM 粉煤灰/矿渣粉、在线 LIBS 烧失量 LOI $\le 3.0\%$ 与 XRF 硫/钙安定性智能托管 vs 传统按罐车地磅毛重掺假盲付）**：**[《低碳混凝土辅助胶凝材料（Cement SCM · I 类粉煤灰 / S95 矿渣粉）、在线 LIBS 烧失量（LOI $\le 3.0\%$）与 XRF 硫/钙安定性智能托管 vs 传统按罐车地磅毛重掺假盲付：架构选型与第一性原理 FAQ》](docs/cement-scm-fly-ash-loi-libs-sulfate-mandate-vs-high-carbon-adulteration-faq.md)**
 - **专题 92（深远海金枪鱼与远洋水产采购 Pelagic Tuna / Seafood、VMS/甲板电子观察员 EM 防非法捕捞与组胺/$-60^\circ\text{C}$ 超低温遥测智能托管 vs 传统船长手写日志盲付）**：**[《深远海金枪鱼与远洋水产采购（Pelagic Tuna / Seafood Catch）、VMS/甲板电子观察员（EM）防非法捕捞与组胺/$-60^\circ\text{C}$ 超低温遥测智能托管 vs 传统船长手写日志盲付：架构选型与第一性原理 FAQ》](docs/pelagic-seafood-tuna-iuu-vms-histamine-superfrozen-mandate-vs-fad-bycatch-spoilage-faq.md)**
+- **专题 93（工业气体现场制气 On-Site ASU 管道氧/氮/氩、比功率能耗封顶 $\le 0.42\text{ kWh/Nm}^3$ 与跳机液态后备免责智能托管 vs 传统照付不议与电费直通盲付）**：**[《工业气体现场制气（On-Site ASU 管道氧/氮/氩）、比功率能耗封顶（$\le 0.42\text{ kWh/Nm}^3$）与跳机液态后备免责智能托管 vs 传统照付不议与电费直通盲付：架构选型与第一性原理 FAQ》](docs/industrial-gas-asu-pipeline-specific-power-liquid-backup-mandate-vs-take-or-pay-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -308,6 +309,8 @@
 ![2026-11-11 低碳混凝土掺合料 (粉煤灰/矿粉)、LIBS 烧失量与三氧化硫筒仓蝶阀互锁智能托管架构一图流](assets/svg/93-cement-scm-fly-ash-loi-libs-2026-11-11.svg)
 
 ![2026-11-11 远洋金枪鱼/海产品捕捞交割、VMS/电子观察员防非法捕捞与组胺/-60°C 智能托管架构一图流](assets/svg/94-pelagic-seafood-tuna-iuu-histamine-2026-11-11.svg)
+
+![2026-11-11 工业气体现场制气 (On-Site ASU) 管道供气、比功率能耗封顶与液态后备免责智能托管架构一图流](assets/svg/95-industrial-gas-asu-pipeline-power-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

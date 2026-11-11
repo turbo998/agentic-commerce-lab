@@ -6367,6 +6367,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pelagic-seafood-tuna-sandbox", demo_zh)
 
+    def test_industrial_gas_asu_pipeline_specific_power_liquid_backup_mandate_vs_take_or_pay_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_industrial_gas_asu_pipeline_policy,
+        )
+
+        # 1. Verified Specific Power <=0.42 kWh/Nm3 + 0C Nm3 mass flow + 5.5N purity -> 200 OK ($340,000)
+        commit_ok = evaluate_industrial_gas_asu_pipeline_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_asu_cents, 34000000)
+
+        # 2. Fouled compressor excess kWh or 5x backup liquid surcharge on vendor ASU trip -> 403 blocked in 11ms
+        spc_403 = evaluate_industrial_gas_asu_pipeline_policy(
+            specific_power_cap_and_trip_liquid_waiver_verified=False,
+        )
+        self.assertFalse(spc_403.allowed)
+        self.assertEqual(spc_403.http_status, 403)
+        self.assertEqual(
+            spc_403.asu_lane,
+            "EXCESS_COMPRESSOR_POWER_OR_VENDOR_TRIP_LIQUID_SURCHARGE_BLOCKED",
+        )
+
+        # 3. 20C reference-temperature +7.32% volume inflation or sub-5.5N purity excursion -> 422 blocked in 14ms
+        nm3_422 = evaluate_industrial_gas_asu_pipeline_policy(
+            iso_0c_nm3_mass_flow_and_5n5_purity_passed=False,
+        )
+        self.assertFalse(nm3_422.allowed)
+        self.assertEqual(nm3_422.http_status, 422)
+        self.assertEqual(
+            nm3_422.asu_lane,
+            "REFERENCE_TEMP_20C_VOLUME_INFLATION_OR_PURITY_EXCURSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects unwaived Take-or-Pay during grid curtailment or unmetered piggyback LAR -> 451 blocked in 295ms
+        top_451 = evaluate_industrial_gas_asu_pipeline_policy(
+            webiq_grid_curtailment_rollover_and_piggyback_clean=False,
+        )
+        self.assertFalse(top_451.allowed)
+        self.assertEqual(top_451.http_status, 451)
+
+        # 5. Web IQ applies Merchant LAR co-product share & valley-power liquefaction saving $49,000 ($291,000 net) -> 409 Confirm
+        lar_409 = evaluate_industrial_gas_asu_pipeline_policy(
+            merchant_liquid_argon_and_valley_power_savings_cents=4900000,
+        )
+        self.assertFalse(lar_409.allowed)
+        self.assertEqual(lar_409.http_status, 409)
+        self.assertEqual(lar_409.settled_asu_cents, 29100000)
+        self.assertEqual(lar_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["industrial_asu_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("industrial-gas-asu-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
