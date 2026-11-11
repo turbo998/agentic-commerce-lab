@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg115" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051426"/>
+      <stop offset="50%" stop-color="#0C2440"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent115" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg115" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112A48"/>
+      <stop offset="100%" stop-color="#081628"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg115)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent115)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 113 · AUTOMATED COLD-STORAGE AS/RS (-25°C) ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    高架立体冷库 (AS/RS -25°C)、转轮除湿防结霜 (&lt;=-35°C露点) 与堆垛吞吐智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Desiccant Air-Lock Dew-Point (&lt;=-35°C), FEM 9.851 Dual-Command Cycle Throughput &amp; O2 Hypoxic Fire Guard vs. Ice-Jammed Slot Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Fixed Pallet-Slot & Ice-Jamming Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg115)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按死库位收租与激光测距结霜瘫痪踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 关停转轮除湿机致激光测距结冰瘫痪 (Ice-Jam)</text>
+    <text x="58" y="224" fill="#CBD5E1">• 冷库方为省电关掉穿堂氯化锂转轮除湿，收走 $145,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 湿空气涌入 -25°C 巷道凝华成冰霜，堆垛机光电致盲停摆</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 货架冷缩变形或四向穿梭车掉线卡死出库 SLA</text>
+    <text x="58" y="294" fill="#CBD5E1">• FEM 9.851 双指令出入库吞吐跌破 28 托/小时 (&lt;45 托标准)</text>
+    <text x="58" y="312" fill="#CBD5E1">• 冻品压港超时却反诬货主“木托盘变形”索要人工倒托费</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 缺失低氧防火 (O2 &lt;=15%) 与氨制冷检漏联锁</text>
+    <text x="58" y="364" fill="#CBD5E1">• 38米高架冷库无法装喷淋头，低氧制氮防火系统故障失灵</text>
+    <text x="58" y="382" fill="#CBD5E1">• 或蒸发器融霜期顶层温度升至 -14°C 致冰激凌重结晶变质</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$145,000 死库位租金 + 冻品锁仓断供违约
+  </text>
+
+  <!-- Center Card: 4-Layer Cold-Storage AS/RS Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg115)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ 穿堂露点防霜 + FEM 双指令吞吐 + 过冷蓄能托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 穿堂露点 (&lt;=-35°C) 与顶层核心温度 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    穿堂露点 &gt; -35°C 致轨道/激光结霜或库温 &gt; -22°C →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 AIRLOCK_DEWPOINT_FROST_OR_THERMAL_STRATIFICATION_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · FEM 9.851 堆垛机吞吐与托盘光幕 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    堆垛机/穿梭车吞吐 &lt; 45 托/h 锁死库存或虚收倒托费 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 STACKER_CRANE_THROUGHPUT_BREACH_OR_PALLET_FEE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 低氧防火 (O2 &lt;=15%) 与氨检漏 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    高架库低氧防火系统离线或 NH3/CO2 复叠冷媒泄漏 &gt;25 ppm →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 HYPOXIC_FIRE_PREVENTION_OR_AMMONIA_SAFETY_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 冻品深度过冷 (-29°C) 谷电热飞轮 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    夜间谷电过冷至 -29°C + 白天尖峰停压缩机靠货体蓄冷 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $23,200 ($121,800 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $145,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg115)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 113)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 零结霜与 52 托/h 吞吐达标放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$145,000.00 (露点 -38°C)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 穿堂除湿停机结霜/顶层超温拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拒付冰冻锁仓期间库位租费</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 堆垛机掉线降速或虚收倒托费拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 对齐入库 3D 光幕轮廓合格存证</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ -29°C 深度过冷热飞轮削峰 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$23,200.00 (16.0% 节电)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  134 / 134 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住 -35°C 穿堂露点红线，终结高架冷库结霜瘫痪
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要按“静态包月托盘位数量”盲付 -25°C 全自动高架立体冷库 (AS/RS) 仓储账单！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① 转轮除湿穿堂露点 &lt;=-35°C 防轨道/激光测距结霜且 38m 顶层货位 &lt;=-24°C (11ms 拦 403)；② FEM 9.851 堆垛机双指令吞吐 &gt;=45 托/h (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查低氧防火系统 (O2 &lt;=15%) 与 NH3/CO2 检漏合规 (285ms 拦 451)，并利用冻品热容执行夜间谷电 -29°C 深度过冷移峰立省 $23,200 (295ms)。
+  </text>
+</svg>

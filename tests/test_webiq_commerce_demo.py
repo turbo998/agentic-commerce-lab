@@ -7431,6 +7431,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cleanroom-ffu-ulpa-sandbox", demo_zh)
 
+    def test_precious_metal_catalyst_pt_pd_ir_refining_tolling_fire_assay_mandate_vs_wet_lot_shrinkage_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_precious_metal_catalyst_tolling_policy,
+        )
+
+        # 1. Verified witnessed LOI + Fire-Assay split <=0.03% + CO dispersion >=65% -> 200 OK ($340,000)
+        commit_ok = evaluate_precious_metal_catalyst_tolling_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_catalyst_cents, 34000000)
+
+        # 2. Refiner inflates burn-off LOI shrinkage or assay split > 0.03 wt% -> 403 blocked in 12ms
+        loi_403 = evaluate_precious_metal_catalyst_tolling_policy(
+            witnessed_loi_and_fire_assay_split_verified=False,
+        )
+        self.assertFalse(loi_403.allowed)
+        self.assertEqual(loi_403.http_status, 403)
+        self.assertEqual(
+            loi_403.catalyst_lane,
+            "LOI_SHRINKAGE_INFLATION_OR_ASSAY_SPLIT_BLOCKED",
+        )
+
+        # 3. Sintered fresh catalyst failing CO chemisorption dispersion (<65%) -> 422 blocked in 15ms
+        dsp_422 = evaluate_precious_metal_catalyst_tolling_policy(
+            co_chemisorption_dispersion_and_recovery_passed=False,
+        )
+        self.assertFalse(dsp_422.allowed)
+        self.assertEqual(dsp_422.http_status, 422)
+        self.assertEqual(
+            dsp_422.catalyst_lane,
+            "LOW_METAL_DISPERSION_OR_REFINING_RECOVERY_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing Basel PIC manifest or non-LPPM sponge source -> 451 blocked in 290ms
+        bsl_451 = evaluate_precious_metal_catalyst_tolling_policy(
+            webiq_basel_hazmat_and_lppm_good_delivery_clean=False,
+        )
+        self.assertFalse(bsl_451.allowed)
+        self.assertEqual(bsl_451.http_status, 451)
+
+        # 5. Web IQ executes Loco Zurich PGM Metal-Pool closed-loop transfer saving $56,000 ($284,000 net) -> 409 Confirm
+        pol_409 = evaluate_precious_metal_catalyst_tolling_policy(
+            pgm_metal_pool_closed_loop_tolling_savings_cents=5600000,
+        )
+        self.assertFalse(pol_409.allowed)
+        self.assertEqual(pol_409.http_status, 409)
+        self.assertEqual(pol_409.settled_catalyst_cents, 28400000)
+        self.assertEqual(pol_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["precious_catalyst_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("precious-metal-catalyst-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

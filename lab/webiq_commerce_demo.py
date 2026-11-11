@@ -14238,6 +14238,91 @@ def evaluate_cleanroom_ffu_ulpa_filtration_policy(
     )
 
 
+@dataclass(frozen=True)
+class PreciousMetalCatalystTollingVerdict:
+    allowed: bool
+    http_status: int
+    catalyst_lane: str
+    settled_catalyst_cents: int
+    metal_pool_or_loi_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_precious_metal_catalyst_tolling_policy(
+    gross_catalyst_turnaround_cents: int = 34000000,
+    witnessed_loi_and_fire_assay_split_verified: bool = True,
+    co_chemisorption_dispersion_and_recovery_passed: bool = True,
+    webiq_basel_hazmat_and_lppm_good_delivery_clean: bool = True,
+    pgm_metal_pool_closed_loop_tolling_savings_cents: int = 0,
+) -> PreciousMetalCatalystTollingVerdict:
+    """Evaluate independent surveyor witnessed decoking Loss-on-Ignition (LOI dry weight) & Fire-Assay ICP-MS splitting limit (<=0.03 wt%) vs refiner wet-shrinkage inflation, fresh catalyst ASTM D3908 CO pulse chemisorption dispersion (>=65%) & refining recovery (>=98.5%) gate, Web IQ Basel Convention PIC manifest & LPPM Good Delivery check, and Loco Zurich PGM Metal-Pool closed-loop sponge transfer arbitrage."""
+    # 1. Refiner inflates burn-off LOI shrinkage (stealing troy ounces) or Fire-Assay split > 0.03 wt% -> HTTP 403
+    if not witnessed_loi_and_fire_assay_split_verified:
+        return PreciousMetalCatalystTollingVerdict(
+            False,
+            403,
+            "LOI_SHRINKAGE_INFLATION_OR_ASSAY_SPLIT_BLOCKED",
+            0,
+            gross_catalyst_turnaround_cents,
+            "catalyst_refining_settlement_blocked_due_to_inflated_burnoff_loi_shrinkage_or_assay_split_exceeding_0_03pct",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Sintered fresh catalyst failing CO chemisorption dispersion (<65%) or refining recovery < 98.5% -> HTTP 422
+    if not co_chemisorption_dispersion_and_recovery_passed:
+        return PreciousMetalCatalystTollingVerdict(
+            False,
+            422,
+            "LOW_METAL_DISPERSION_OR_REFINING_RECOVERY_BLOCKED",
+            0,
+            gross_catalyst_turnaround_cents,
+            "catalyst_lot_held_due_to_sintered_co_chemisorption_dispersion_below_65pct_or_sub_98_5pct_recovery",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects missing Basel Convention hazardous-waste PIC permit or non-LPPM sponge origin -> HTTP 451
+    if not webiq_basel_hazmat_and_lppm_good_delivery_clean:
+        return PreciousMetalCatalystTollingVerdict(
+            False,
+            451,
+            "BASEL_HAZARDOUS_CATALYST_OR_LPPM_ORIGIN_HOLD",
+            0,
+            gross_catalyst_turnaround_cents,
+            "webiq_detected_missing_basel_pic_spent_catalyst_manifest_or_non_lppm_good_delivery_sponge_source",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Loco Zurich PGM Metal-Pool Closed-Loop Tolling Transfer -> HTTP 409 Confirm
+    if pgm_metal_pool_closed_loop_tolling_savings_cents > 0:
+        return PreciousMetalCatalystTollingVerdict(
+            False,
+            409,
+            "PGM_METAL_POOL_CLOSED_LOOP_TOLLING_CONFIRM",
+            gross_catalyst_turnaround_cents - pgm_metal_pool_closed_loop_tolling_savings_cents,
+            pgm_metal_pool_closed_loop_tolling_savings_cents,
+            "webiq_transferred_recovered_pt_ir_sponge_via_loco_zurich_metal_pool_saving_56000_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Witnessed LOI/Fire-Assay + CO Dispersion >=65% + LPPM/Basel Clean -> Settled
+    return PreciousMetalCatalystTollingVerdict(
+        True,
+        200,
+        "VERIFIED_PRECIOUS_METAL_CATALYST_SETTLED",
+        gross_catalyst_turnaround_cents,
+        0,
+        "witnessed_loi_fire_assay_co_dispersion_and_lppm_compliance_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -18573,6 +18658,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "gel_seal_leak_block_latency_ms": cln_lek_403.latency_ms,
     }
 
+    pgm_commit_ok = evaluate_precious_metal_catalyst_tolling_policy()
+    pgm_loi_403 = evaluate_precious_metal_catalyst_tolling_policy(
+        witnessed_loi_and_fire_assay_split_verified=False,
+    )
+    pgm_dsp_422 = evaluate_precious_metal_catalyst_tolling_policy(
+        co_chemisorption_dispersion_and_recovery_passed=False,
+    )
+    pgm_bsl_451 = evaluate_precious_metal_catalyst_tolling_policy(
+        webiq_basel_hazmat_and_lppm_good_delivery_clean=False,
+    )
+    pgm_pol_409 = evaluate_precious_metal_catalyst_tolling_policy(
+        pgm_metal_pool_closed_loop_tolling_savings_cents=5600000,
+    )
+    precious_catalyst_guards = {
+        "all_passed": (
+            pgm_commit_ok.allowed
+            and pgm_commit_ok.settled_catalyst_cents == 34000000
+            and not pgm_loi_403.allowed
+            and pgm_loi_403.http_status == 403
+            and not pgm_dsp_422.allowed
+            and pgm_dsp_422.http_status == 422
+            and not pgm_bsl_451.allowed
+            and pgm_bsl_451.http_status == 451
+            and not pgm_pol_409.allowed
+            and pgm_pol_409.action_pill == "Confirm"
+        ),
+        "catalyst_settlement_latency_ms": pgm_commit_ok.latency_ms,
+        "loi_shrinkage_block_latency_ms": pgm_loi_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -18697,6 +18812,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "district_cooling_guards": district_cooling_guards,
         "offshore_wtiv_guards": offshore_wtiv_guards,
         "cleanroom_ffu_guards": cleanroom_ffu_guards,
+        "precious_catalyst_guards": precious_catalyst_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -23612,6 +23728,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cln-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Precious-Metal Catalyst (Pt/Pd/Rh/Ir) Refining, Fire-Assay & Metal-Pool Tolling Mandate Sandbox (Round 112 FAQ Companion) -->
+      <div class="finops-box" id="precious-metal-catalyst-sandbox" style="margin-top:12px;border-color:#FBBF24;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pgm-title">💍 石化与绿氢贵金属催化剂 (Pt/Pd/Rh/Ir) 回收精炼、火法试金 (&lt;=0.03% 分差) 与金属池来料加工架构：干基盎司与分散度令牌 (precious_metal_catalyst_mandate_...) vs 废剂黑箱扣损决策器 (Round 112 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 连续重整与绿氢 PEM 电解槽贵金属催化剂换装与精炼交割 ($340,000.00)、独立见证焙烧 LOI、火法试金分差与 Web IQ LPPM/金属池 (Metal Pool) 闭环来料加工场景 (PGM Catalyst Scenario):</span></label>
+          <select id="pgm-select" onchange="updatePreciousMetalCatalystSandbox()">
+            <option value="pgm_commit_ok">⚡ 独立见证 LOI 吻合 + 买卖火法试金分差 0.015% (&lt;=0.03%) + 新剂 CO 吸附分散度 74% (&gt;=65%) + LPPM 有效：20ms 自动结算 $340,000.00! (Act automatically)</option>
+            <option value="pgm_loi_403">🛑 精炼商在无独立检验员见证下将积碳烧失率 LOI 从 14% 虚报至 28% (暗中蒸发 45 盎司铂/铱)，或火法试金分差 &gt;0.03 wt% 拦截并启封仲裁样 → 12ms 触发 HTTP 403!</option>
+            <option value="pgm_dsp_422">🚨 新催化剂虽然总铂含量够但因高温烧结团聚致 CO 脉冲化学吸附分散度跌至 32% (&lt; 65% 活性腰斩)，或精炼回收率 &lt;98.5% 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="pgm_bsl_451">🛑 含苯/重金属废催化剂跨境运输缺失《巴塞尔公约》事先知情同意书 (PIC)，或混入非 LPPM 认证受制裁海绵铂/钯：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="pgm_pol_409">🧑‍⚖️ Web IQ 通过 Loco Zurich 贵金属重量账户 (Metal Pool) 将废剂提纯海绵铂/铱直接无损划转给新剂工厂抵扣本金立省 $56,000.00 (净付 $284,000.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pgm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -24162,6 +24296,7 @@ function renderAll() {{
   updateDistrictCoolingDeltaTSandbox();
   updateOffshoreWtivJackupSandbox();
   updateCleanroomFfuUlpaSandbox();
+  updatePreciousMetalCatalystSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -29902,6 +30037,55 @@ function updateCleanroomFfuUlpaSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 现场 ISO 14644-3 扫描零漏点 (&lt;=0.01%) + ePTFE 零释硼 + FM 4920 达标：已自动清算 (VERIFIED_CLEANROOM_FFU_ULPA_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零果冻胶边框漏风、零玻纤释硼污染晶圆</strong>：百级/十级无尘室 FFU/ULPA 超高效过滤维保已完成结算（<code>$165,000.00</code>）！" +
+    "</div>";
+}}
+
+function updatePreciousMetalCatalystSandbox() {{
+  var selEl = document.getElementById("pgm-select");
+  var outEl = document.getElementById("pgm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "pgm_loi_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOI_SHRINKAGE_INFLATION_OR_ASSAY_SPLIT_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "第三方独立检验行（AHK/SGS）监磅与旋转缩分对账显示，精炼商单方面将除焦焙烧烧失率（<code>Loss on Ignition, LOI</code>）从实测 14.0% 夸大至 <code>28.0%</code>（企图在干重基数上凭空侵吞 45 金衡盎司铂/铱），或买卖双方锍镍火法试金分差超出 <code>0.03 wt% Splitting Limit</code>（<code>witnessed_loi_and_fire_assay_split_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$340,000.00</code> 结算并自动启封铅封仲裁样（Umpire Sample）！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pgm_dsp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LOW_METAL_DISPERSION_OR_REFINING_RECOVERY_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "新交付催化剂虽通过总铂量 ICP 检测，但 <code>ASTM D3908 一氧化碳 (CO) 脉冲化学吸附仪</code> 实测显示贵金属晶粒因焙烧过热发生严重团聚，活性表面金属分散度仅 <code>32% &lt; 65%</code>（反应活性腰斩），或精炼合同回收率低于 98.5%（<code>co_chemisorption_dispersion_and_recovery_passed == False</code>）。网关在 <code>15ms</code> 内拦截劣质批次！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pgm_bsl_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 BASEL_HAZARDOUS_CATALYST_OR_LPPM_ORIGIN_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查跨境危险废物转移联单与伦敦铂钯市场（<code>LPPM Good Delivery</code>）名录，检出含苯/重金属废催化剂缺失《巴塞尔公约》事先知情同意书（PIC）或补充海绵铂源自非认证冲突矿源，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "pgm_pol_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PGM_METAL_POOL_CLOSED_LOOP_TOLLING_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动联通精炼厂与催化剂厂的 <code>Loco Zurich 贵金属重量池账户 (PGM Metal Pool)</code>，将废剂提纯出的 99.95% 海绵铂/海绵铱按金衡盎司直接账面划转冲抵新剂原料本金（免除卖旧买新双边点差与重复关税），单批立省 <code>$56,000.00</code>（净付降至 <code>$284,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 独立见证 LOI + 火法试金分差 (&lt;=0.03%) + 新剂 CO 分散度 (&gt;=65%) 达标：已自动清算 (VERIFIED_PRECIOUS_METAL_CATALYST_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零烧失率黑箱吃秤、零晶粒烧结失活隐患</strong>：石化与绿氢贵金属催化剂精炼与换装批次已完成结算（<code>$340,000.00</code>）！" +
     "</div>";
 }}
 

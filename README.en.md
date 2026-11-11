@@ -143,6 +143,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 109 (District Cooling & AI Data Center Chilled-Water Offtake, EN 1434 Paired-Pt1000 BTU Metering & Low-Delta-T Syndrome Delta-T >=8.0°C Escrow vs. Volumetric-Flow Overbilling)**: **[District Cooling & AI Data Center Chilled-Water Offtake, EN 1434 Paired-Pt1000 BTU Metering & Low-$\Delta T$ Syndrome ($\Delta T \ge 8.0^\circ\text{C}$) Escrow vs. Volumetric-Flow Overbilling: Architecture Selection & First-Principles FAQ](docs/district-cooling-chilled-water-btu-low-delta-t-mandate-vs-volumetric-flow-overbilling-faq.en.md)**
 - **Topic 110 (Offshore Wind Turbine Installation Vessel WTIV Jack-Up Charter, Spudcan Preload Holding >=110% & Rack-Phase-Difference RPD <=0.5 deg Escrow vs. Punch-Through & Weather-Standby Overbilling)**: **[Offshore Wind Turbine Installation Vessel (WTIV Jack-Up Charter), Spudcan Preload Holding ($\ge 110\%$) & Rack-Phase-Difference ($\text{RPD} \le 0.5^\circ$) Escrow vs. Punch-Through & Weather-Standby Overbilling: Architecture Selection & First-Principles FAQ](docs/offshore-wind-wtiv-jackup-spudcan-preload-rpd-mandate-vs-punch-through-standby-overbilling-faq.en.md)**
 - **Topic 111 (Cleanroom FFU/ULPA Filtration ISO 14644-1 Class 3-5, On-Site Scan Leak Testing <=0.01% & Zero-Boron ePTFE Outgassing Escrow vs. Blind Calendar Filter-Swap Overbilling)**: **[Cleanroom FFU/ULPA Filtration (ISO 14644-1 Class 3–5), On-Site Scan Leak Testing ($\le 0.01\%$) & Zero-Boron ePTFE Outgassing Escrow vs. Blind Calendar Filter-Swap Overbilling: Architecture Selection & First-Principles FAQ](docs/cleanroom-ffu-ulpa-iso14644-pao-scan-amc-outgassing-mandate-vs-blind-filter-swap-overbilling-faq.en.md)**
+- **Topic 112 (Precious-Metal Catalyst Pt/Pd/Rh/Ir Refining & Metal-Pool Tolling, Witnessed LOI Fire-Assay <=0.03 wt% Split & CO Chemisorption Dispersion Escrow vs. Wet-Shrinkage Overbilling)**: **[Precious-Metal Catalyst (Pt / Pd / Rh / Ir) Refining & Metal-Pool Tolling, Witnessed LOI Fire-Assay ($\le 0.03\text{ wt\%}$ Split) & CO Chemisorption Dispersion Escrow vs. Wet-Shrinkage Overbilling: Architecture Selection & First-Principles FAQ](docs/precious-metal-catalyst-pt-pd-ir-refining-tolling-fire-assay-mandate-vs-wet-lot-shrinkage-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -365,6 +366,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Offshore Wind WTIV Jack-Up Charter, Spudcan Preload & Crane Off-Hire Mandate Visual Summary](assets/svg/112-offshore-wind-wtiv-jackup-spudcan-preload-2026-11-11.svg)
 
 ![2026-11-11 Cleanroom FFU/ULPA Filtration (ISO 14644), On-Site Scan Leak & Zero-Boron Outgassing Mandate Visual Summary](assets/svg/113-cleanroom-ffu-ulpa-iso14644-pao-scan-2026-11-11.svg)
+
+![2026-11-11 Precious-Metal Catalyst (Pt/Pd/Rh/Ir) Refining, Fire-Assay & Metal-Pool Tolling Mandate Visual Summary](assets/svg/114-precious-metal-catalyst-pt-pd-ir-tolling-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
