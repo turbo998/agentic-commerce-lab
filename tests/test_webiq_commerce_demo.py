@@ -7655,6 +7655,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rng-biomethane-pipeline-sandbox", demo_zh)
 
+    def test_subsea_pipeline_cathodic_protection_ag_agcl_potential_anode_mandate_vs_passivation_embrittlement_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_subsea_cathodic_protection_policy,
+        )
+
+        # 1. Verified DNV capacity >=2,000 Ah/kg + ROV [-1,050, -800] mV + OSPAR Cd-free -> 200 OK ($185,000)
+        commit_ok = evaluate_subsea_cathodic_protection_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_subsea_cp_cents, 18500000)
+
+        # 2. Low Indium (<0.015%) causing anode passivation (<2,000 Ah/kg) -> 403 blocked in 11ms
+        pas_403 = evaluate_subsea_cathodic_protection_policy(
+            dnv_amp_hour_capacity_and_indium_verified=False,
+        )
+        self.assertFalse(pas_403.allowed)
+        self.assertEqual(pas_403.http_status, 403)
+        self.assertEqual(
+            pas_403.subsea_cp_lane,
+            "ANODE_PASSIVATION_OR_LOW_AMP_HOUR_CAPACITY_BLOCKED",
+        )
+
+        # 3. Underprotection (>-800 mV) or overprotection HISC (<-1,050 mV) -> 422 blocked in 14ms
+        emb_422 = evaluate_subsea_cathodic_protection_policy(
+            rov_ag_agcl_potential_window_passed=False,
+        )
+        self.assertFalse(emb_422.allowed)
+        self.assertEqual(emb_422.http_status, 422)
+        self.assertEqual(
+            emb_422.subsea_cp_lane,
+            "UNDERPROTECTION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED",
+        )
+
+        # 4. Web IQ detects OSPAR toxic cadmium breach or steel-core shrinkage debonding -> 451 blocked in 285ms
+        cad_451 = evaluate_subsea_cathodic_protection_policy(
+            webiq_ospar_cadmium_free_and_core_bond_clean=False,
+        )
+        self.assertFalse(cad_451.allowed)
+        self.assertEqual(cad_451.http_status, 451)
+
+        # 5. Web IQ replaces diver welding with FiGS-targeted ROV clamp-on anode sleds saving $29,600 ($155,400 net) -> 409 Confirm
+        sld_409 = evaluate_subsea_cathodic_protection_policy(
+            rov_targeted_anode_sled_retrofit_savings_cents=2960000,
+        )
+        self.assertFalse(sld_409.allowed)
+        self.assertEqual(sld_409.http_status, 409)
+        self.assertEqual(sld_409.settled_subsea_cp_cents, 15540000)
+        self.assertEqual(sld_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["subsea_cp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("subsea-cathodic-protection-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

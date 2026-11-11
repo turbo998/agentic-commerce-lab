@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg119" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041521"/>
+      <stop offset="50%" stop-color="#0A253A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent119" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg119" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#102C44"/>
+      <stop offset="100%" stop-color="#071624"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg119)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent119)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="390" height="28" rx="14" fill="#155E75" stroke="#22D3EE" stroke-width="1"/>
+  <text x="235" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ROUND 117 · SEAWATER REVERSE OSMOSIS (SWRO) WPA ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    海水反渗透淡化 (SWRO BOO)、PX 等压比能耗 (&lt;=3.0 kWh/m³) 与脱硼智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#94A3B8">
+    Isobaric PX ERD Specific Energy (&lt;=3.0 kWh/m³), Second-Pass Boron (&lt;=0.5 mg/L) &amp; LSI Remineralization vs. Fouling Power Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Power Pass-Through & Boron/Corrosive Water Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg119)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统电费全额直通与高硼/蚀管水踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 膜污堵与 PX 能量回收器内漏电费全转嫁买方</text>
+    <text x="58" y="224" fill="#CBD5E1">• 拖延 CIP 化学洗膜致比能耗升至 4.3 kWh/m³，收走 $230,000</text>
+    <text x="58" y="242" fill="#CBD5E1">• 按“实际电表直通”条款把 43% 超额电费全推给工业园区</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 省掉二级高 pH 脱硼碱液致产水硼超标 (&gt;0.5 mg/L)</text>
+    <text x="58" y="294" fill="#CBD5E1">• 一级反渗透对不带电硼酸 H3BO3 截留率仅 55%</text>
+    <text x="58" y="312" fill="#CBD5E1">• 产水硼 1.8 mg/L 毒死柑橘果园或穿透超纯水混床</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 漏投石灰矿化致 LSI &lt; -1.5 溶穿市政球墨铸铁管</text>
+    <text x="58" y="364" fill="#CBD5E1">• 刚出 RO 膜的纯水极度饥渴缺钙，朗格利尔指数严重负值</text>
+    <text x="58" y="382" fill="#CBD5E1">• 或浓盐水排海口扩散器堵塞致海底高盐死区违反环评</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$230,000 高能耗水费 + 管网黄水腐蚀与毒硼
+  </text>
+
+  <!-- Center Card: 4-Layer SWRO Desalination Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg119)" stroke="#06B6D4" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#155E75"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ⚡ PX 比能耗封顶 + 二级脱硼/LSI + 浓水氯碱托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#22D3EE" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">
+    Gate 1 · PX 等压比能耗封顶 (&lt;=3.0 kWh/m³ · 11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    膜污堵或 PX 转子串盐致比能耗 &gt; 3.0 kWh/m³ 企图转嫁 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SPECIFIC_ENERGY_CAP_OR_PX_MIXING_BREACH_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 产水硼 (&lt;=0.5 mg/L) 与 LSI 矿化平衡 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    产水硼 &gt; 0.5 mg/L 或朗格利尔指数 LSI 不在 [-0.2, +0.3] →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 BORON_TOXICITY_OR_CORROSIVE_LSI_WATER_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#EC4899" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F472B6">
+    Gate 3 · Web IQ 浓盐水扩散排放与取水生态 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    排海混合区盐度超环评 +2 psu 上限或余氯未脱除 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 BRINE_OUTFALL_SALINITY_PLUME_OR_CHLORINE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="445" y="410" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 4 · Web IQ 70g/L 浓盐水直供氯碱厂制烧碱 (295ms)
+  </text>
+  <text x="445" y="428" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#D1FAE5">
+    浓盐水送园区氯碱/提镁厂省化盐成本 + 谷电满发高位水池 →
+  </text>
+  <text x="445" y="446" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#FDE68A">
+    HTTP 409 Confirm · 立省 $36,800 ($193,200 净付)
+  </text>
+  <text x="445" y="465" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" font-weight="700" fill="#A7F3D0">
+    ✅ 200 OK · 19ms 自动清算 $230,000.00
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architecture Wins -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg119)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 定量实测基准与架构师收益 (Round 117)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="823" y="204" font-weight="700" fill="#6EE7B7">• 比能耗 2.75 kWh/m³ 与低硼放款 (200)</text>
+    <text x="823" y="223" fill="#CBD5E1">  延迟：19 ms · 放款：$230,000.00 (Boron 0.35 mg/L)</text>
+
+    <text x="823" y="253" font-weight="700" fill="#FCA5A5">• 膜污堵超额电费 (&gt;3.0 kWh/m³) 拦截 (403)</text>
+    <text x="823" y="272" fill="#CBD5E1">  延迟：11 ms · 拒付未洗膜导致的冤枉电费</text>
+
+    <text x="823" y="302" font-weight="700" fill="#FCA5A5">• 高硼 (&gt;0.5 mg/L) 或腐蚀性负 LSI 拦截 (422)</text>
+    <text x="823" y="321" fill="#CBD5E1">  延迟：14 ms · 强制投加 NaOH 脱硼与方解石矿化</text>
+
+    <text x="823" y="351" font-weight="700" fill="#FDE68A">• Web IQ 浓盐水氯碱共生与谷电制水 (409)</text>
+    <text x="823" y="370" fill="#CBD5E1">  延迟：295 ms · 节省：$36,800.00 (16.0% 降本)</text>
+
+    <text x="823" y="400" font-weight="700" fill="#93C5FD">• 顺序反转零漂移 (0.0 pts) &amp; 单元测试</text>
+    <text x="823" y="419" fill="#CBD5E1">  138 / 138 单元测试 100% 通过 (CSP 自包含)</text>
+  </g>
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    守住沿海石化园区与市政供水生命线，变废卤水为宝
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="88" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="541" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">
+    🏛️ 架构师选型铁律 (Takeaway): 绝对不要在海水淡化 BOO 购水协议 (WPA) 中同意“无上限实际电费 100% 直通转嫁”！
+  </text>
+  <text x="60" y="565" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    必须绑定：① PX 等压能量回收装置效率 &gt;=96% 且吨水比能耗 SEC &lt;=3.0 kWh/m³ 封顶 (11ms 拦 403)；② 二级高 pH 脱硼 &lt;=0.5 mg/L 且矿化后 LSI 处于 [-0.2, +0.3] (14ms 拦 422)；
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#CBD5E1">
+    ③ Web IQ 核查排海口盐度羽流 (&lt;=+2 psu) 合规 (285ms 拦 451)，并将 70 g/L 浓盐水直供园区氯碱/提溴厂叠加夜间绿电满发储水立省 $36,800 (295ms)。
+  </text>
+</svg>
