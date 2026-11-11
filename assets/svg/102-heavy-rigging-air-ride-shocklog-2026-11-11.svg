@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg102" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d1a"/>
+      <stop offset="50%" stop-color="#131c36"/>
+      <stop offset="100%" stop-color="#1e2c54"/>
+    </linearGradient>
+    <linearGradient id="accent102" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg102)"/>
+  <rect x="30" y="25" width="1140" height="580" rx="18" fill="#0d1428" stroke="#6366f1" stroke-width="2" opacity="0.95"/>
+  <rect x="30" y="25" width="1140" height="6" fill="url(#accent102)"/>
+
+  <text x="60" y="72" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5">ROUND 100 · HEAVY RIGGING &amp; AIR-RIDE (MRI / FAB TOOL), SHOCKLOG (&lt;=1.5G) &amp; CRYO MANDATE</text>
+  <text x="60" y="108" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">精密光刻机/核磁共振 (MRI) 气垫运输吊装、三轴冲击记录仪 (&lt;=1.5G) 与防失超托管 vs 隐性震损</text>
+  <text x="60" y="136" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="15">Internal Frame ShockLog (&lt;=1.5G) + Tilt (&lt;=10 deg) + Helium Cold-Head Anti-Quench vs. Clean-Receipt Concealed Damage</text>
+
+  <!-- Left Card -->
+  <rect x="60" y="160" width="525" height="335" rx="12" fill="#25121d" stroke="#ef4444" stroke-width="1.8"/>
+  <text x="85" y="196" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">⛔ 传统看外包装木箱完好即签收盲付模式 (Concealed Shock Trap)</text>
+  <text x="85" y="230" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 外木箱毫发无损、内部光路已被震碎：叉车粗暴卸货产生 6.8G 冲击，30 天后通电校准才发现内伤</text>
+  <text x="85" y="260" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 钢板弹簧普货车冒充全气垫悬挂车 (Air-Ride)：过减速带高频颠振震断激光干涉仪反射镜架</text>
+  <text x="85" y="290" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 超导 MRI 途中断电导致液氦沸腾“失超 (Quench)”：冷头停机使价值 $80,000 的液氦瞬间喷空报废</text>
+  <text x="85" y="320" fill="#fee2e2" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 按每磅 $0.50 重量限额霸王免责赔付：价值 $5,000,000 机台被摔坏，物流商按重量仅赔 $4,000</text>
+  <rect x="85" y="350" width="475" height="120" rx="8" fill="#35101d" stroke="#f87171" stroke-width="1"/>
+  <text x="105" y="382" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">典型晶圆厂机台 Move-In / 三甲医院 3.0T 超导核磁共振吊装资损案例：</text>
+  <text x="105" y="410" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">收货 Agent 见铝合金真空包装箱外观无破损即签收并支付 $135,000 气垫运输与无尘室吊装费，</text>
+  <text x="105" y="434" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="13">原厂工程师拆箱读取内部 ShockLog 发现途中曾遭 5.4G 跌落冲击直接宣布全球保修作废，索赔无门</text>
+  <text x="105" y="456" fill="#f87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 隐性冲击拦截：0% | • 原厂拒保风险：100% | • 单台返厂重校损失：$300,000–$1,200,000</text>
+
+  <!-- Right Card -->
+  <rect x="615" y="160" width="525" height="335" rx="12" fill="#0a2426" stroke="#22c55e" stroke-width="1.8"/>
+  <text x="640" y="196" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700">✅ 内胆三轴 ShockLog (&lt;=1.5G) + 液氦防失超 + 共用龙门架托管</text>
+  <text x="640" y="230" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 机台内胆三轴 MEMS 冲击记录仪 (ShockLog &lt;=1.5G) 与倾角 (&lt;=10°) 门禁：超 G 值秒级锁定责任段</text>
+  <text x="640" y="260" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 超导 MRI 车载水冷压缩机不断电与液氦罐压 (&lt;=4.5 psi) 门禁：14ms 严防液氦沸腾失超与高架地板压塌</text>
+  <text x="640" y="290" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 废除按磅限额赔偿并强制足额重置价一切险：Web IQ 核验超高大件桥梁通行证与足额保单</text>
+  <text x="640" y="320" fill="#dcfce7" font-family="Segoe UI, Arial, sans-serif" font-size="14">• 无尘室气浮搬运垫 (Air-Caster) 多机台拼单吊装 + 循环钢索减振底座套利：立省 $24,000</text>
+  <rect x="640" y="350" width="475" height="120" rx="8" fill="#062e29" stroke="#4ade80" stroke-width="1"/>
+  <text x="660" y="382" fill="#86efac" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">端到端工程与财务收益（Measured / Deterministic）：</text>
+  <text x="660" y="410" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">11ms 硬阻断内胆冲击超 1.5G 或倾斜超 10° 的隐性震损签收与付款；14ms 拦截超导冷头断电</text>
+  <text x="660" y="434" fill="#bbf7d0" font-family="Segoe UI, Arial, sans-serif" font-size="13">与高架华夫板超载；Web IQ 多机台共用无尘室液压龙门架与循环钢索减振底座立省 $24,000（净付 $111k）</text>
+  <text x="660" y="456" fill="#4ade80" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">• 隐性震损拒保率：0% | • 液氦零蒸发完整率：100% | • 验真耗时：&lt; 25ms</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="512" width="1080" height="72" rx="10" fill="#141e3b" stroke="#475569" stroke-width="1"/>
+  <text x="85" y="541" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">架构师核心选型法则：</text>
+  <text x="235" y="541" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14">精密机台与 MRI 搬运 Agent 绝不能看木箱外观完好就签收！必须绑定【内胆 ShockLog &lt;=1.5G + 冷头不断电 + 足额险】。</text>
+  <text x="85" y="567" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Provenance: Deterministic Policy Evaluator (`evaluate_heavy_rigging_air_ride_shocklog_policy`) · SEMI S2/E78 &amp; ASTM D4169 · 2026-11-11</text>
+</svg>

@@ -131,6 +131,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 97 (Ocean Container Street-Turn Triangulation, Gate-Out/In 3D Vision IICL-6 Damage-Diff & M&R Anti-Gouging Escrow vs. Empty-Repositioning Overbilling)**: **[Ocean Container Street-Turn Triangulation, Gate-Out/In 3D Vision IICL-6 Damage-Diff & M&R Anti-Gouging Escrow vs. Empty-Repositioning Overbilling: Architecture Selection & First-Principles FAQ](docs/ocean-container-street-turn-iicl6-damage-csc-mandate-vs-empty-repositioning-mr-gouging-faq.en.md)**
 - **Topic 98 (DERMS Smart Inverter IEEE 2030.5 / IEEE 1547, Volt-VAR Reactive Support & Dynamic Curtailment Escrow vs. Overvoltage-Trip & Inverter-App Overbilling)**: **[DERMS Smart Inverter (IEEE 2030.5 / IEEE 1547), Volt-VAR Reactive Support & Dynamic Curtailment Escrow vs. Overvoltage-Trip & Inverter-App Overbilling: Architecture Selection & First-Principles FAQ](docs/derms-smart-inverter-ieee2030-5-volt-var-curtailment-mandate-vs-overvoltage-trip-overbilling-faq.en.md)**
 - **Topic 99 (Marine Bio-Bunker B24/B30 FAME & HVO, ASTM D6866 14C Biogenic Verification & ISO 8217:2024 Rancimat Stability Escrow vs. UCOME Fraud & Filter-Clogging Overbilling)**: **[Marine Bio-Bunker (B24 / B30 FAME & HVO), ASTM D6866 $^{14}\text{C}$ Biogenic Verification & ISO 8217:2024 Rancimat Stability Escrow vs. UCOME Fraud & Filter-Clogging Overbilling: Architecture Selection & First-Principles FAQ](docs/marine-biobunker-b30-iscc-c14-oxidation-stability-mandate-vs-ucome-fraud-filter-clogging-faq.en.md)**
+- **Topic 100 (Heavy Rigging & Air-Ride Logistics 300mm Fab Tools & Superconducting MRI, Internal-Frame ShockLog <=1.5G & Cryo Anti-Quench Escrow vs. Clean-Receipt Concealed Damage)**: **[Heavy Rigging & Air-Ride Logistics (300mm Fab Tools & Superconducting MRI), Internal-Frame ShockLog ($\le 1.5\text{ G}$) & Cryo Anti-Quench Escrow vs. Clean-Receipt Concealed Damage: Architecture Selection & First-Principles FAQ](docs/heavy-rigging-air-ride-mri-fab-tool-shocklog-g-force-mandate-vs-concealed-transit-damage-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -329,6 +330,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 DERMS Smart Inverter (IEEE 2030.5 / 1547), Volt-VAR & Curtailment Mandate Visual Summary](assets/svg/100-derms-smart-inverter-volt-var-2026-11-11.svg)
 
 ![2026-11-11 Marine Bio-Bunker (B24/B30 FAME & HVO), ASTM D6866 C14 & Rancimat Mandate Visual Summary](assets/svg/101-marine-biobunker-b30-iscc-c14-2026-11-11.svg)
+
+![2026-11-11 Heavy Rigging & Air-Ride (MRI / Fab Tool), ShockLog (<=1.5G) & Cryo Mandate Visual Summary](assets/svg/102-heavy-rigging-air-ride-shocklog-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

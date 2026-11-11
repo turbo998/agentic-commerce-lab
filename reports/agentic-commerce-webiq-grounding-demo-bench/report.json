@@ -580,6 +580,11 @@
     "biobunker_settlement_latency_ms": 21,
     "ucome_fraud_block_latency_ms": 11
   },
+  "heavy_rigging_guards": {
+    "all_passed": true,
+    "rigging_settlement_latency_ms": 20,
+    "concealed_shock_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

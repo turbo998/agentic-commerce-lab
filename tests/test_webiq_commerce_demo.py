@@ -6759,6 +6759,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marine-biobunker-c14-sandbox", demo_zh)
 
+    def test_heavy_rigging_air_ride_mri_fab_tool_shocklog_g_force_mandate_vs_concealed_transit_damage_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_heavy_rigging_air_ride_shocklog_policy,
+        )
+
+        # 1. Verified internal-frame ShockLog <=1.5G + cryo cold-head <=4.5 psi + air-caster load OK -> 200 OK ($135,000)
+        commit_ok = evaluate_heavy_rigging_air_ride_shocklog_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rigging_cents, 13500000)
+
+        # 2. Concealed internal ShockLog >1.5G drop shock despite intact outer crate -> 403 blocked in 11ms
+        shk_403 = evaluate_heavy_rigging_air_ride_shocklog_policy(
+            internal_shocklog_1_5g_and_tilt_verified=False,
+        )
+        self.assertFalse(shk_403.allowed)
+        self.assertEqual(shk_403.http_status, 403)
+        self.assertEqual(
+            shk_403.rigging_lane,
+            "CONCEALED_INTERNAL_SHOCKLOG_EXCURSION_CLEAN_RECEIPT_BLOCKED",
+        )
+
+        # 3. Superconducting MRI cryocooler power loss or cleanroom raised-floor overload -> 422 blocked in 14ms
+        cry_422 = evaluate_heavy_rigging_air_ride_shocklog_policy(
+            cryo_cold_head_and_air_caster_floor_load_passed=False,
+        )
+        self.assertFalse(cry_422.allowed)
+        self.assertEqual(cry_422.http_status, 422)
+        self.assertEqual(
+            cry_422.rigging_lane,
+            "MRI_CRYO_QUENCH_PRESSURE_OR_CLEANROOM_FLOOR_OVERLOAD_BLOCKED",
+        )
+
+        # 4. Web IQ detects unwaived Carmack $0.50/lb liability trap or missing concealed re-calibration rider -> 451 blocked in 295ms
+        ins_451 = evaluate_heavy_rigging_air_ride_shocklog_policy(
+            webiq_all_risk_declared_value_and_permit_clean=False,
+        )
+        self.assertFalse(ins_451.allowed)
+        self.assertEqual(ins_451.http_status, 451)
+
+        # 5. Web IQ batches shared cleanroom gantry & wire-rope skid return saving $24,000 ($111,000 net) -> 409 Confirm
+        gnt_409 = evaluate_heavy_rigging_air_ride_shocklog_policy(
+            shared_cleanroom_gantry_and_skid_return_savings_cents=2400000,
+        )
+        self.assertFalse(gnt_409.allowed)
+        self.assertEqual(gnt_409.http_status, 409)
+        self.assertEqual(gnt_409.settled_rigging_cents, 11100000)
+        self.assertEqual(gnt_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["heavy_rigging_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("heavy-rigging-shocklog-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
