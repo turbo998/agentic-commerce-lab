@@ -153,6 +153,7 @@ This repository is a production-grade research and engineering testbed for **Age
 - **Topic 119 (Automated Container Terminal STS Quay Crane & AGV Stevedoring, Spreader Twistlock Eccentricity <=10% & Net GMPH >=32 Moves/h Escrow vs. Unproductive-Restow & Berth-Delay Overbilling)**: **[Automated Container Terminal STS Quay Crane & AGV Stevedoring, Spreader Twistlock Eccentricity ($\le 10\%$) & Net GMPH ($\ge 32\text{ Moves/h}$) Escrow vs. Unproductive-Restow & Berth-Delay Overbilling: Architecture Selection & First-Principles FAQ](docs/automated-container-terminal-sts-spreader-twistlock-gmph-mandate-vs-eccentric-berth-overbilling-faq.en.md)**
 - **Topic 120 (Bleached Kraft Pulp BSKP/BEKP Offtake, Microwave Air-Dry Metric Ton ISO 638 ADMT & Intrinsic Viscosity ISO 5351 >=750 mL/g Escrow vs. Wet-Bale & Over-Bleached Fiber Overbilling)**: **[Bleached Kraft Pulp (BSKP / BEKP) Offtake, Microwave Air-Dry Metric Ton (ISO 638 ADMT) & Intrinsic Viscosity (ISO 5351 $\ge 750\text{ mL/g}$) Escrow vs. Wet-Bale & Over-Bleached Fiber Overbilling: Architecture Selection & First-Principles FAQ](docs/pulp-paper-kraft-admt-moisture-kappa-viscosity-mandate-vs-wet-bale-degradation-overbilling-faq.en.md)**
 - **Topic 121 (Architectural Float Glass & Solar PV Tempered Glass Offtake, EN 14179-1 Heat-Soak Test NiS Zero Spontaneous Shatter & AR Transmittance >=94.0% Escrow vs. Fake Heat-Soak & Roller-Wave Overbilling)**: **[Architectural Float Glass & Solar PV Tempered Glass Offtake, EN 14179-1 Heat-Soak Test ($\text{NiS}$ Zero Spontaneous Shatter) & AR Transmittance ($\ge 94.0\%$) Escrow vs. Fake Heat-Soak & Roller-Wave Overbilling: Architecture Selection & First-Principles FAQ](docs/float-solar-glass-nis-heat-soak-laser-scanner-transmittance-mandate-vs-spontaneous-shatter-overbilling-faq.en.md)**
+- **Topic 122 (Automotive Tire & Synthetic/Natural Rubber TSR-20/SSBR Offtake, Arrival Mooney Viscosity & MDR Scorch Time ts2 >=4.5 min & EUDR Polygon Escrow vs. Scorched-Compound Overbilling)**: **[Automotive Tire & Synthetic/Natural Rubber (TSR-20 / SSBR) Offtake, Arrival Mooney Viscosity & MDR Scorch Time ($t_{s2} \ge 4.5\text{ min}$) & EUDR Polygon Escrow vs. Scorched-Compound Overbilling: Architecture Selection & First-Principles FAQ](docs/tire-rubber-mooney-viscosity-mdr-cure-eudr-polygon-mandate-vs-scorched-coagulum-overbilling-faq.en.md)**
 
 ![2026-11-08 Agentic Commerce Executive Visual Summary](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -395,6 +396,8 @@ This repository is a production-grade research and engineering testbed for **Age
 ![2026-11-11 Bleached Kraft Pulp (BSKP/BEKP), Air-Dry Metric Ton (ADMT) & Intrinsic Viscosity Mandate Visual Summary](assets/svg/122-pulp-paper-kraft-admt-kappa-viscosity-2026-11-11.svg)
 
 ![2026-11-11 Architectural & Solar Tempered Glass, EN 14179 Heat-Soak & AR Transmittance Mandate Visual Summary](assets/svg/123-float-solar-glass-nis-heat-soak-scanner-2026-11-11.svg)
+
+![2026-11-11 Tire & Rubber (TSR-20 / SSBR), Mooney Viscosity, MDR Scorch & EUDR Mandate Visual Summary](assets/svg/124-tire-rubber-mooney-viscosity-mdr-eudr-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

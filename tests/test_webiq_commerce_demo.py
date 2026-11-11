@@ -7991,6 +7991,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("float-solar-glass-sandbox", demo_zh)
 
+    def test_tire_rubber_mooney_viscosity_mdr_cure_eudr_polygon_mandate_vs_scorched_coagulum_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_tire_rubber_mooney_mdr_policy,
+        )
+
+        # 1. Verified arrival MDR ts2 >=4.5m + Mooney in window + dispersion >=95% -> 200 OK ($190,000)
+        commit_ok = evaluate_tire_rubber_mooney_mdr_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rubber_cents, 19000000)
+
+        # 2. In-transit thermal scorching (ts2 < 4.5 min) or Mooney viscosity spike -> 403 blocked in 11ms
+        scr_403 = evaluate_tire_rubber_mooney_mdr_policy(
+            arrival_mooney_and_mdr_scorch_verified=False,
+        )
+        self.assertFalse(scr_403.allowed)
+        self.assertEqual(scr_403.http_status, 403)
+        self.assertEqual(
+            scr_403.rubber_lane,
+            "PREMATURE_SCORCH_OR_MOONEY_VISCOSITY_DRIFT_BLOCKED",
+        )
+
+        # 3. Shortchanged Banbury mixing leaving dispersion < 95.0% -> 422 blocked in 14ms
+        dsp_422 = evaluate_tire_rubber_mooney_mdr_policy(
+            carbon_black_silica_dispersion_passed=False,
+        )
+        self.assertFalse(dsp_422.allowed)
+        self.assertEqual(dsp_422.http_status, 422)
+        self.assertEqual(
+            dsp_422.rubber_lane,
+            "CARBON_BLACK_SILICA_POOR_DISPERSION_AGGLOMERATE_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing EUDR rubber plantation polygon or REACH PAH > 10 ppm -> 451 blocked in 285ms
+        eud_451 = evaluate_tire_rubber_mooney_mdr_policy(
+            webiq_eudr_rubber_polygon_and_pah_clean=False,
+        )
+        self.assertFalse(eud_451.allowed)
+        self.assertEqual(eud_451.http_status, 451)
+
+        # 5. Web IQ blends 25% ISCC pyrolysis rCB & adopts liquid-phase wet masterbatch saving $30,400 ($159,600 net) -> 409 Confirm
+        rcb_409 = evaluate_tire_rubber_mooney_mdr_policy(
+            recovered_carbon_black_and_wet_masterbatch_savings_cents=3040000,
+        )
+        self.assertFalse(rcb_409.allowed)
+        self.assertEqual(rcb_409.http_status, 409)
+        self.assertEqual(rcb_409.settled_rubber_cents, 15960000)
+        self.assertEqual(rcb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["tire_rubber_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("tire-rubber-mooney-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

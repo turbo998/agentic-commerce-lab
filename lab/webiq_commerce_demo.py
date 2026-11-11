@@ -15088,6 +15088,91 @@ def evaluate_float_solar_glass_hst_policy(
     )
 
 
+@dataclass(frozen=True)
+class TireRubberMooneyMdrVerdict:
+    allowed: bool
+    http_status: int
+    rubber_lane: str
+    settled_rubber_cents: int
+    rcb_wet_mix_or_scorch_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_tire_rubber_mooney_mdr_policy(
+    gross_rubber_lot_cents: int = 19000000,
+    arrival_mooney_and_mdr_scorch_verified: bool = True,
+    carbon_black_silica_dispersion_passed: bool = True,
+    webiq_eudr_rubber_polygon_and_pah_clean: bool = True,
+    recovered_carbon_black_and_wet_masterbatch_savings_cents: int = 0,
+) -> TireRubberMooneyMdrVerdict:
+    """Evaluate arrival-dock ISO 289 Mooney viscosity & ISO 6502 Moving-Die Rheometer (MDR scorch time ts2 >=4.5 min) vs departure-COA transit-scorched dead compound overbilling, ISO 11345 Dispergrader carbon-black / silica dispersion (>=95.0%) gate, Web IQ EUDR 2023/1115 smallholder rubber plantation GeoJSON polygon & REACH 8-PAH (<=10 ppm) extender-oil check, and pyrolysis Recovered Carbon Black (rCB) + liquid-phase wet masterbatch arbitrage."""
+    # 1. In-transit thermal scorching (MDR ts2 < 4.5 min) or Mooney viscosity spike (>85 MU) -> HTTP 403
+    if not arrival_mooney_and_mdr_scorch_verified:
+        return TireRubberMooneyMdrVerdict(
+            False,
+            403,
+            "PREMATURE_SCORCH_OR_MOONEY_VISCOSITY_DRIFT_BLOCKED",
+            0,
+            gross_rubber_lot_cents,
+            "rubber_compound_lot_blocked_due_to_in_transit_thermal_scorch_ts2_below_4_5min_or_mooney_viscosity_spike",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Shortchanged Banbury mixing leaving carbon-black/silica dispersion < 95.0% or >30um agglomerates -> HTTP 422
+    if not carbon_black_silica_dispersion_passed:
+        return TireRubberMooneyMdrVerdict(
+            False,
+            422,
+            "CARBON_BLACK_SILICA_POOR_DISPERSION_AGGLOMERATE_BLOCKED",
+            0,
+            gross_rubber_lot_cents,
+            "tire_compound_held_due_to_iso11345_filler_dispersion_below_95pct_or_undispersed_silica_agglomerates",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Microsoft Web IQ detects missing EUDR smallholder rubber plantation polygon or REACH PAH > 10 ppm -> HTTP 451
+    if not webiq_eudr_rubber_polygon_and_pah_clean:
+        return TireRubberMooneyMdrVerdict(
+            False,
+            451,
+            "EUDR_RUBBER_POLYGON_OR_REACH_PAH_OIL_HOLD",
+            0,
+            gross_rubber_lot_cents,
+            "webiq_detected_missing_eudr_rubber_plantation_geojson_polygon_or_reach_carcinogenic_pah_oil_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 25% Pyrolysis Recovered Carbon Black (rCB) + Liquid-Phase Wet Masterbatch -> HTTP 409 Confirm
+    if recovered_carbon_black_and_wet_masterbatch_savings_cents > 0:
+        return TireRubberMooneyMdrVerdict(
+            False,
+            409,
+            "RECOVERED_CARBON_BLACK_AND_WET_MASTERBATCH_CONFIRM",
+            gross_rubber_lot_cents - recovered_carbon_black_and_wet_masterbatch_savings_cents,
+            recovered_carbon_black_and_wet_masterbatch_savings_cents,
+            "webiq_blended_25pct_iscc_pyrolysis_rcb_and_adopted_liquid_phase_wet_masterbatch_saving_30400_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Arrival MDR ts2 >=4.5m + Mooney in Window + Dispersion >=95% + EUDR/PAH Clean -> Settled
+    return TireRubberMooneyMdrVerdict(
+        True,
+        200,
+        "VERIFIED_TIRE_RUBBER_MOONEY_MDR_SETTLED",
+        gross_rubber_lot_cents,
+        0,
+        "arrival_mooney_mdr_scorch_filler_dispersion_and_eudr_rubber_polygon_verified_for_settlement",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -19723,6 +19808,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fake_hst_block_latency_ms": gls_hst_403.latency_ms,
     }
 
+    rub_commit_ok = evaluate_tire_rubber_mooney_mdr_policy()
+    rub_scr_403 = evaluate_tire_rubber_mooney_mdr_policy(
+        arrival_mooney_and_mdr_scorch_verified=False,
+    )
+    rub_dsp_422 = evaluate_tire_rubber_mooney_mdr_policy(
+        carbon_black_silica_dispersion_passed=False,
+    )
+    rub_eud_451 = evaluate_tire_rubber_mooney_mdr_policy(
+        webiq_eudr_rubber_polygon_and_pah_clean=False,
+    )
+    rub_rcb_409 = evaluate_tire_rubber_mooney_mdr_policy(
+        recovered_carbon_black_and_wet_masterbatch_savings_cents=3040000,
+    )
+    tire_rubber_guards = {
+        "all_passed": (
+            rub_commit_ok.allowed
+            and rub_commit_ok.settled_rubber_cents == 19000000
+            and not rub_scr_403.allowed
+            and rub_scr_403.http_status == 403
+            and not rub_dsp_422.allowed
+            and rub_dsp_422.http_status == 422
+            and not rub_eud_451.allowed
+            and rub_eud_451.http_status == 451
+            and not rub_rcb_409.allowed
+            and rub_rcb_409.action_pill == "Confirm"
+        ),
+        "rubber_settlement_latency_ms": rub_commit_ok.latency_ms,
+        "scorch_block_latency_ms": rub_scr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -19857,6 +19972,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "container_sts_guards": container_sts_guards,
         "kraft_pulp_guards": kraft_pulp_guards,
         "float_glass_guards": float_glass_guards,
+        "tire_rubber_guards": tire_rubber_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -24952,6 +25068,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="gls-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Tire & Synthetic/Natural Rubber (TSR-20/SSBR), Mooney Viscosity, MDR Scorch & EUDR Mandate Sandbox (Round 122 FAQ Companion) -->
+      <div class="finops-box" id="tire-rubber-mooney-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rub-title">🛞 轮胎与天然/合成橡胶交割 (Tire &amp; Rubber TSR-20/SSBR)、门尼粘度/MDR 焦烧 (&gt;=4.5m) 与 EUDR 架构：防早期死胶与分散度令牌 (tire_rubber_mooney_mandate_...) vs 按标胶吨数盲付决策器 (Round 122 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 新能源车轮胎橡胶与终炼母炼胶大宗交割 ($190,000.00)、到厂 ISO 289 门尼粘度/MDR 焦烧时间 (ts2)、炭黑/白炭黑光学分散度与 Web IQ EUDR 橡胶林/再生裂解炭黑 (rCB) 场景 (Tire &amp; Rubber Scenario):</span></label>
+          <select id="rub-select" onchange="updateTireRubberMooneySandbox()">
+            <option value="rub_commit_ok">⚡ 到厂门尼粘度 62 MU + MDR 焦烧时间 ts2 = 6.2 min (&gt;=4.5m) + 炭黑/白炭黑分散度 97.2% (&gt;=95%) + EUDR 多边形有效：19ms 自动结算 $190,000.00! (Act automatically)</option>
+            <option value="rub_scr_403">🛑 终炼混炼胶在 50°C 海运集装箱内受热发生“早期焦烧” (到厂 MDR ts2 = 1.8 min &lt; 4.5 min 门尼飙至 92 MU，上胎面挤出机必堵死机头) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rub_dsp_422">🚨 密炼机偷减硅烷偶联反应时间致 ISO 11345 切面光学分散度跌至 81.0% (&lt; 95.0% 残留 &gt;50μm 白炭黑硬团聚体诱发高速脱层爆胎) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="rub_eud_451">🛑 缺失东南亚/西非小农割胶林块欧盟 EUDR GeoJSON 多边形，或填充芳烃油 8种致癌多环芳烃 (PAH &gt; 10 ppm) 违反 REACH 法规：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="rub_rcb_409">🧑‍⚖️ Web IQ 导入 25% ISCC PLUS 认证废旧轮胎热裂解再生炭黑 (rCB) 并切换产地液相连续湿法母炼胶 (免除干胶三段密炼高电耗) 立省 $30,400.00 (净付 $159,600.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rub-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -25512,6 +25646,7 @@ function renderAll() {{
   updateAutomatedContainerStsSandbox();
   updateKraftPulpAdmtSandbox();
   updateFloatSolarGlassSandbox();
+  updateTireRubberMooneySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -31742,6 +31877,55 @@ function updateFloatSolarGlassSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ EN 14179-1 290°C 均质热浸 + AR 透光率 (&gt;=94.0%) + 镜面平整度达标：已自动清算 (VERIFIED_FLOAT_SOLAR_GLASS_HST_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零高空硫化镍 (NiS) 自爆隐患、零哈哈镜辊道波变形</strong>：超高层幕墙与双玻光伏钢化玻璃批次已完成结算（<code>$170,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateTireRubberMooneySandbox() {{
+  var selEl = document.getElementById("rub-select");
+  var outEl = document.getElementById("rub-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "rub_scr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PREMATURE_SCORCH_OR_MOONEY_VISCOSITY_DRIFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "到厂卸货点 <code>ISO 289 门尼粘度计与 ISO 6502 无转子硫化仪 (MDR)</code> 复测显示，终炼混炼胶因在途高温闷舱发生提前硫交联，剩余焦烧安全时间跌至 <code>ts2 = 1.8 min &lt; 4.5 min</code> 且门尼粘度飙升至 <code>92 MU</code>（一旦投入三复合胎面挤出机将直接在螺杆内硬化抱死，<code>arrival_mooney_and_mdr_scorch_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$190,000.00</code> 焦烧死胶货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rub_dsp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CARBON_BLACK_SILICA_POOR_DISPERSION_AGGLOMERATE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "胶料切面 <code>ISO 11345 光学分散度仪 (Dispergrader) 与 RPA 加工分析仪</code> 检出白炭黑/炭黑分散度仅 <code>81.0% &lt; 95.0%</code>，且存在大量 &gt;50 μm 未偶联硬团聚体（高速行驶时极易引起 EV 轮胎胎肩发热脱层爆胎，<code>carbon_black_silica_dispersion_passed == False</code>）。网关在 <code>14ms</code> 内拒收偷工混炼批次！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rub_eud_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EUDR_RUBBER_POLYGON_OR_REACH_PAH_OIL_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查欧盟 TRACES NT 零毁林系统（<code>EUDR 2023/1115 橡胶品类</code>）与欧盟 REACH 第 50 条多环芳烃台账，检出该批 20 号标胶缺失割胶林块 GeoJSON 闭合多边形或填充油 8-PAH &gt; 10 ppm，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rub_rcb_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 RECOVERED_CARBON_BLACK_AND_WET_MASTERBATCH_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动导入 <code>25% ISCC PLUS 认证废旧轮胎热裂解再生炭黑 (ASTM D8178 rCB)</code> 替代高价原生炭黑 N660，并切换产地鲜胶乳 <code>液相连续湿法母炼胶</code>（省去干法三段密炼巨额电耗），单批立省 <code>$30,400.00</code>（净付降至 <code>$159,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 到厂 MDR 焦烧 (ts2 &gt;=4.5m) + 光学分散度 (&gt;=95%) + EUDR/PAH 达标：已自动清算 (VERIFIED_TIRE_RUBBER_MOONEY_MDR_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零在途焦烧死胶堵机、零白炭黑硬团聚爆胎隐患</strong>：新能源车轮胎橡胶与终炼母炼胶批次已完成结算（<code>$190,000.00</code>）！" +
     "</div>";
 }}
 
