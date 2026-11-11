@@ -142,6 +142,7 @@
 - **专题 108（半导体晶圆厂电子特气 Electronic Specialty Gas ESG $6\text{N }\text{NF}_3 / \text{WF}_6 / \text{SiH}_4$ 供应、光腔衰荡光谱 CRDS $\text{H}_2\text{O} \le 10\text{ ppb}$ 水分门禁与钢瓶余气回皮 Heel Credit 智能托管 vs 传统按整瓶标称重盲付）**：**[《半导体晶圆厂电子特气（Electronic Specialty Gas, ESG $6\text{N }\text{NF}_3 / \text{WF}_6 / \text{SiH}_4$）供应、光腔衰荡光谱（CRDS $\text{H}_2\text{O} \le 10\text{ ppb}$）水分门禁与钢瓶余气回皮（Heel Credit）智能托管 vs 传统按整瓶标称重盲付：架构选型与第一性原理 FAQ》](docs/semiconductor-electronic-specialty-gas-nf3-wf6-crds-moisture-heel-mandate-vs-etch-drift-overbilling-faq.md)**
 - **专题 109（区域集中供冷与 AI 智算中心冷冻水交割 District Cooling & Chilled-Water Offtake、EN 1434 配对冷量表 BTU Meter 与防“大流量小温差综合征 Low-$\Delta T$ Syndrome $\ge 8.0^\circ\text{C}$”智能托管 vs 传统按水流量盲付）**：**[《区域集中供冷与 AI 智算中心冷冻水交割（District Cooling & Chilled-Water Offtake）、EN 1434 配对冷量表（BTU Meter）与防“大流量小温差综合征（Low-$\Delta T$ Syndrome $\ge 8.0^\circ\text{C}$）”智能托管 vs 传统按水流量盲付：架构选型与第一性原理 FAQ》](docs/district-cooling-chilled-water-btu-low-delta-t-mandate-vs-volumetric-flow-overbilling-faq.md)**
 - **专题 110（海上风电自升式风机安装船租船 Offshore Wind WTIV Jack-Up Charter、桩靴预压载防穿刺 Spudcan Preload 与齿条相位差 RPD $\le 0.5^\circ$ 智能托管 vs 传统凭船长日报盲付）**：**[《海上风电自升式风机安装船租船（Offshore Wind WTIV Jack-Up Charter）、桩靴预压载防穿刺（Spudcan Preload）与齿条相位差（RPD $\le 0.5^\circ$）智能托管 vs 传统凭船长日报盲付：架构选型与第一性原理 FAQ》](docs/offshore-wind-wtiv-jackup-spudcan-preload-rpd-mandate-vs-punch-through-standby-overbilling-faq.md)**
+- **专题 111（半导体与生物医药无尘室 ISO 14644-1 Class 3–5 Cleanroom FFU/ULPA 过滤维保、现场气溶胶扫描检漏 $\le 0.01\%$ 与零释硼 PTFE 滤膜智能托管 vs 传统按日历盲目换芯）**：**[《半导体与生物医药无尘室（ISO 14644-1 Class 3–5 Cleanroom）FFU/ULPA 过滤维保、现场气溶胶扫描检漏（$\le 0.01\%$）与零释硼 PTFE 滤膜智能托管 vs 传统按日历盲目换芯：架构选型与第一性原理 FAQ》](docs/cleanroom-ffu-ulpa-iso14644-pao-scan-amc-outgassing-mandate-vs-blind-filter-swap-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -362,6 +363,8 @@
 ![2026-11-11 区域供冷与智算中心冷冻水交割、BTU 温差冷量表与防小温差综合征智能托管架构一图流](assets/svg/111-district-cooling-chilled-water-delta-t-2026-11-11.svg)
 
 ![2026-11-11 海上风电自升式安装船 (WTIV) 租船、桩靴预压载防穿刺与吊机停租智能托管架构一图流](assets/svg/112-offshore-wind-wtiv-jackup-spudcan-preload-2026-11-11.svg)
+
+![2026-11-11 无尘室 FFU/ULPA 超高效过滤 (ISO 14644)、PAO 检漏与抗硼脱气智能托管架构一图流](assets/svg/113-cleanroom-ffu-ulpa-iso14644-pao-scan-2026-11-11.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

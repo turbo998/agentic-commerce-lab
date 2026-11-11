@@ -7375,6 +7375,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("offshore-wtiv-jackup-sandbox", demo_zh)
 
+    def test_cleanroom_ffu_ulpa_iso14644_pao_scan_amc_outgassing_mandate_vs_blind_filter_swap_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cleanroom_ffu_ulpa_filtration_policy,
+        )
+
+        # 1. Verified in-situ ISO 14644-3 scan <=0.01% + zero-boron ePTFE + FM 4920 valid -> 200 OK ($165,000)
+        commit_ok = evaluate_cleanroom_ffu_ulpa_filtration_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cleanroom_cents, 16500000)
+
+        # 2. Unseated silicone gel-seal bypass leak (>0.01% penetration) -> 403 blocked in 11ms
+        lek_403 = evaluate_cleanroom_ffu_ulpa_filtration_policy(
+            iso14644_scan_leak_and_velocity_verified=False,
+        )
+        self.assertFalse(lek_403.allowed)
+        self.assertEqual(lek_403.http_status, 403)
+        self.assertEqual(
+            lek_403.cleanroom_lane,
+            "GEL_SEAL_BYPASS_LEAK_OR_AIRFLOW_NONUNIFORMITY_BLOCKED",
+        )
+
+        # 3. Borosilicate fiberglass boron outgassing or premature calendar swap (<180 Pa) -> 422 blocked in 14ms
+        brn_422 = evaluate_cleanroom_ffu_ulpa_filtration_policy(
+            ptfe_zero_boron_and_terminal_dp_passed=False,
+        )
+        self.assertFalse(brn_422.allowed)
+        self.assertEqual(brn_422.http_status, 422)
+        self.assertEqual(
+            brn_422.cleanroom_lane,
+            "BORON_AMC_OUTGASSING_OR_PREMATURE_SWAP_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing FM 4920 fire rating or EU GMP Annex 1 monitoring gap -> 451 blocked in 285ms
+        gmp_451 = evaluate_cleanroom_ffu_ulpa_filtration_policy(
+            webiq_fm4920_fire_and_gmp_annex1_clean=False,
+        )
+        self.assertFalse(gmp_451.allowed)
+        self.assertEqual(gmp_451.http_status, 451)
+
+        # 5. Web IQ applies DP condition-based swap & EC-fan setback saving $26,400 ($138,600 net) -> 409 Confirm
+        cbd_409 = evaluate_cleanroom_ffu_ulpa_filtration_policy(
+            dp_condition_based_swap_and_ec_fan_savings_cents=2640000,
+        )
+        self.assertFalse(cbd_409.allowed)
+        self.assertEqual(cbd_409.http_status, 409)
+        self.assertEqual(cbd_409.settled_cleanroom_cents, 13860000)
+        self.assertEqual(cbd_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cleanroom_ffu_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cleanroom-ffu-ulpa-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

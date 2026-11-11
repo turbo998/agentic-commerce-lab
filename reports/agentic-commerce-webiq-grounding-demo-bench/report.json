@@ -635,6 +635,11 @@
     "wtiv_settlement_latency_ms": 21,
     "spudcan_preload_block_latency_ms": 12
   },
+  "cleanroom_ffu_guards": {
+    "all_passed": true,
+    "cleanroom_settlement_latency_ms": 19,
+    "gel_seal_leak_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
