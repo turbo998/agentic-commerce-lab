@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg145" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent145" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg145)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent145)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 143 · 电解铝预焙炭阳极与煅后焦交割、CO2/空气反应残余率与钒钠催化门禁架构图</text>
+  <text x="36" y="84" class="sub">Aluminum Smelter Prebaked Carbon Anode Offtake, ISO 12988/12989 Reactivity (&gt;=88% / &gt;=75%), XRF V/Na Gate &amp; Butt Loop vs. Pot Dusting</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按炭块吨重盲付</text>
+  <text x="52" y="166" class="card-h">三大高危物理与电化学漏洞</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 选择性氧化掏空粘结剂引发“掉炭渣”</text>
+  <text x="52" y="216" class="body">焙烧不足使沥青焦活性远高于骨料焦，960°C</text>
+  <text x="52" y="234" class="body">CO2 优先烧断粘结桥，焦粒脱落浮在极距间</text>
+  <text x="52" y="252" class="body">引发局部短路发烧 (985°C)，吨铝多耗电 450kWh。</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 高钒海绵焦与带壳残极钠 10 倍催化烧蚀</text>
+  <text x="52" y="302" class="body">V&gt;180ppm 剧烈催化 550°C 空气氧化烧穿阳极颈部</text>
+  <text x="52" y="320" class="body">掉块；残极未抛丸除冰晶石 (Na&gt;120ppm) 加速崩解。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 铁硅磷溶入铝液降级与残极价值流失</text>
+  <text x="52" y="370" class="body">Fe&gt;350ppm / P&gt;10ppm 污染 Al99.85 电工圆铝杆</text>
+  <text x="52" y="388" class="body">且毒化电流效率；22% 洁净残极被按废炭贱卖。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 2,000 MT Anode Gross Weight Paid</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $950,000 exposed to pot fever &amp; stub burn</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ aluminum_prebaked_anode_mandate</text>
+  <text x="428" y="166" class="card-h">四层硬件遥测与反应性门禁（10ms–290ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: ISO 12988 CO2 &amp; ISO 12989 Air (12ms)</text>
+  <text x="440" y="220" class="body">960°C CO2 残余 &gt;=88.0% (掉渣 &lt;=2.5%) &amp; 550°C</text>
+  <text x="440" y="238" class="body">空气残余 &gt;=75.0% — 生烧/高掉渣批直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: ISO 12980 XRF V/Na/Fe/P &amp; ER (15ms)</text>
+  <text x="440" y="296" class="body">钒 V &lt;=180ppm &amp; 钠 Na &lt;=120ppm &amp; Fe &lt;=350ppm</text>
+  <text x="440" y="314" class="body">&amp; 比电阻 ER &lt;=55 uOhm·m — 催化超标直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ ASI &amp; REACH Low-PAH Pitch (290ms)</text>
+  <text x="440" y="372" class="body">核验 ASI 绩效证书与低苯并[a]芘煤沥青合规</text>
+  <text x="440" y="390" class="body">高毒焦油掺假或环保关停厂直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 22% Clean Butt Loop &amp; Slotted Anode (255ms)</text>
+  <text x="440" y="448" class="body">440 MT 洁净残极闭环回配 + 双开槽降槽压 45mV</text>
+  <text x="440" y="466" class="body">自动核减 $152,000 (-16.0%) 触发 HTTP 409 净付 $798k</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 标准双反应性达标放行</text>
+  <text x="828" y="212" class="body">CO2 91.5% + Air 81.2% + V 95ppm → $950,000.00</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (12ms) · CO2 掉渣超标或生烧</text>
+  <text x="828" y="258" class="body">CO2 残余 79.4% / 掉渣 6.8% → 冻结 $950,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (15ms) · 钒/钠催化元素或比电阻超标</text>
+  <text x="828" y="304" class="body">V=385ppm 或残极带壳 Na=290ppm → 拒付 $950k</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (290ms) · Web IQ 高毒沥青/ASI 吊销</text>
+  <text x="828" y="350" class="body">B[a]P 超标或环保停产黑名单 → 熔断 $950,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (255ms) · 残极回配与双开槽节电</text>
+  <text x="828" y="396" class="body">节省 $152,000 (-16%) → 确认后净付 $798,000.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 255ms · 抗注入 100% · 专线隔离</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 电解铝预焙炭阳极严禁“按吨过磅盲付”：粘结剂优先气化会导致掉炭渣引发极距发烧，而微量钒 (V) 和残留冰晶石钠 (Na) 会催化 10 倍速烧穿阳极颈部。</text>
+  <text x="54" y="584" class="body">• 必须将 ISO 12988/12989 双反应性残余率 (&gt;=88% / &gt;=75%)、ISO 12980 XRF 钒钠门禁 (&lt;=180 / &lt;=120ppm) 与 Web IQ 洁净残极闭环回配绑定为托管令牌谓词。</text>
+</svg>

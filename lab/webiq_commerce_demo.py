@@ -16873,6 +16873,91 @@ def evaluate_hospital_hotel_linen_laundry_policy(
     )
 
 
+@dataclass(frozen=True)
+class AluminumSmelterPrebakedAnodeVerdict:
+    allowed: bool
+    http_status: int
+    prebaked_anode_lane: str
+    settled_prebaked_anode_cents: int
+    anode_butt_energy_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_aluminum_smelter_prebaked_anode_policy(
+    *,
+    gross_prebaked_anode_cents: int = 95000000,
+    co2_and_air_reactivity_residue_verified: bool = True,
+    vanadium_sodium_ash_and_resistivity_passed: bool = True,
+    webiq_asi_pah_and_calciner_compliance_clean: bool = True,
+    clean_anode_butt_recycling_and_slotted_energy_credit_cents: int = 0,
+) -> AluminumSmelterPrebakedAnodeVerdict:
+    # 1. Under-Baked Selective Oxidation (CO2 Residue <88% / Dust >2.5%) or Air Reactivity (<75%) -> HTTP 403
+    if not co2_and_air_reactivity_residue_verified:
+        return AluminumSmelterPrebakedAnodeVerdict(
+            False,
+            403,
+            "CO2_OR_AIR_REACTIVITY_RESIDUE_DEFICIT_DUSTING_BLOCKED",
+            0,
+            0,
+            "prebaked_anode_lot_blocked_due_to_selective_binder_oxidation_dusting_and_pot_fever_risk",
+            12,
+            "Send to a human",
+        )
+
+    # 2. High Vanadium (>180 ppm) / Cryolite Sodium (>120 ppm) Catalytic Burn or High Resistivity -> HTTP 422
+    if not vanadium_sodium_ash_and_resistivity_passed:
+        return AluminumSmelterPrebakedAnodeVerdict(
+            False,
+            422,
+            "VANADIUM_SODIUM_CATALYTIC_IMPURITY_OR_RESISTIVITY_EXCEEDED_BLOCKED",
+            0,
+            0,
+            "anode_core_rejected_for_shot_coke_vanadium_uncleaned_butt_sodium_or_high_resistivity",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Toxic High-PAH Coal-Tar Pitch or Revoked ASI Performance Certificate via Web IQ -> HTTP 451
+    if not webiq_asi_pah_and_calciner_compliance_clean:
+        return AluminumSmelterPrebakedAnodeVerdict(
+            False,
+            451,
+            "TOXIC_PAH_PITCH_OR_ASI_COMPLIANCE_REVOCATION_HOLD",
+            0,
+            0,
+            "webiq_detected_excess_benzo_a_pyrene_pitch_or_revoked_asi_carbon_certification",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 22% Clean Anode-Butt Tolling Return + Dual-Slot -45mV Energy Credit -> HTTP 409 Confirm
+    if clean_anode_butt_recycling_and_slotted_energy_credit_cents > 0:
+        return AluminumSmelterPrebakedAnodeVerdict(
+            False,
+            409,
+            "CLEAN_ANODE_BUTT_RECYCLING_AND_SLOTTED_VOLTAGE_CREDIT_CONFIRM",
+            gross_prebaked_anode_cents - clean_anode_butt_recycling_and_slotted_energy_credit_cents,
+            clean_anode_butt_recycling_and_slotted_energy_credit_cents,
+            "webiq_applied_22pct_clean_anode_butt_return_and_dual_slot_45mv_energy_credit_saving_152000_usd",
+            255,
+            "Confirm",
+        )
+
+    # 5. Verified CO2 >=88% + Air >=75% + V<=180ppm / Na<=120ppm + ASI Compliant -> Settled
+    return AluminumSmelterPrebakedAnodeVerdict(
+        True,
+        200,
+        "VERIFIED_ALUMINUM_PREBAKED_ANODE_SETTLED",
+        gross_prebaked_anode_cents,
+        0,
+        "iso12988_co2_iso12989_air_reactivity_iso12980_xrf_vanadium_sodium_and_asi_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -22162,6 +22247,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "a0_disinfection_block_latency_ms": lin_a0_403.latency_ms,
     }
 
+    # Round 143 (Aluminum Smelter Prebaked Carbon Anode & CPC Offtake, CO2/Air Reactivity & XRF V/Na Mandate)
+    ano_commit_ok = evaluate_aluminum_smelter_prebaked_anode_policy()
+    ano_co2_403 = evaluate_aluminum_smelter_prebaked_anode_policy(
+        co2_and_air_reactivity_residue_verified=False,
+    )
+    ano_vna_422 = evaluate_aluminum_smelter_prebaked_anode_policy(
+        vanadium_sodium_ash_and_resistivity_passed=False,
+    )
+    ano_pah_451 = evaluate_aluminum_smelter_prebaked_anode_policy(
+        webiq_asi_pah_and_calciner_compliance_clean=False,
+    )
+    ano_but_409 = evaluate_aluminum_smelter_prebaked_anode_policy(
+        clean_anode_butt_recycling_and_slotted_energy_credit_cents=15200000,
+    )
+    prebaked_anode_guards = {
+        "all_passed": (
+            ano_commit_ok.allowed
+            and ano_commit_ok.settled_prebaked_anode_cents == 95000000
+            and not ano_co2_403.allowed
+            and ano_co2_403.http_status == 403
+            and not ano_vna_422.allowed
+            and ano_vna_422.http_status == 422
+            and not ano_pah_451.allowed
+            and ano_pah_451.http_status == 451
+            and not ano_but_409.allowed
+            and ano_but_409.action_pill == "Confirm"
+        ),
+        "prebaked_anode_settlement_latency_ms": ano_commit_ok.latency_ms,
+        "reactivity_dusting_block_latency_ms": ano_co2_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22317,6 +22433,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hv_xlpe_cable_guards": hv_xlpe_cable_guards,
         "pharma_vial_guards": pharma_vial_guards,
         "linen_laundry_guards": linen_laundry_guards,
+        "prebaked_anode_guards": prebaked_anode_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27790,6 +27907,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lin-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Aluminum Smelter Prebaked Carbon Anode & CPC Offtake, CO2/Air Reactivity & XRF V/Na Mandate Sandbox (Round 143 FAQ Companion) -->
+      <div class="finops-box" id="aluminum-prebaked-anode-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ano-title">⚡ 电解铝预焙炭阳极与煅后焦交割、CO2/空气反应残余率 (&gt;=88% / &gt;=75%) 与 XRF 钒钠催化门禁架构：防炭渣短路与残极闭环令牌 (aluminum_prebaked_anode_mandate_...) vs 炭块吨重盲付决策器 (Round 143 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 600kA 电解铝预焙炭阳极 2,000 MT 批量交割 ($950,000.00)、ISO 12988/12989 CO2/空气反应残余率、ISO 12980 XRF 钒/钠/比电阻与 Web IQ 洁净残极回配/双开槽节电场景 (Prebaked Carbon Anode Scenario):</span></label>
+          <select id="ano-select" onchange="updateAluminumPrebakedAnodeSandbox()">
+            <option value="ano_commit_ok">⚡ CO2 反应残余 91.5% (掉渣 1.2%) + 空气残余 81.2% + XRF 钒 95ppm / 钠 48ppm + 比电阻 49 uOhm·m：10ms 自动结算 $950,000.00! (Act automatically)</option>
+            <option value="ano_co2_403">🛑 环式炉焙烧终温不足致沥青粘结剂优先气化掏空 (960°C CO2 残余跌至 79.4% &lt; 88%，掉渣率 6.8% &gt; 2.5%，上槽掉黑炭渣引发极距发烧至 985°C 多耗电 450kWh/t Al) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="ano_vna_422">🚨 掺入高硫高钒弹丸焦 (V = 385ppm &gt; 180ppm 催化烧穿阳极钢爪颈部掉块) 或残极未抛丸带入冰晶石钠 (Na = 290ppm &gt; 120ppm) 及 Fe/P 污染电工铝液拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="ano_pah_451">🛑 煤沥青粘结剂检出苯并[a]芘 (B[a]P) 高毒多环芳烃违背 REACH 限值或碳素厂 ASI 绩效证书被吊销：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="ano_but_409">🧑‍⚖️ Web IQ 启用 22% 洁净抛丸残极 (440 MT Anode Butts) 闭环回配冲抵，并叠加纵向双开槽阳极降低气泡电压 45mV (吨铝节电 140kWh) 立省 $152,000.00 (净付 $798,000.00) → 255ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ano-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -28371,6 +28506,7 @@ function renderAll() {{
   updateHvXlpeCableSandbox();
   updatePharmaBorosilicateVialSandbox();
   updateHospitalLinenLaundrySandbox();
+  updateAluminumPrebakedAnodeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -35630,6 +35766,55 @@ function updateHospitalLinenLaundrySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 湿热消毒 (A0 &gt;=600s) + UHF RFID 标准干重 + 布面中性 pH (6.0–7.5) 达标：已自动清算 (VERIFIED_HOSPITAL_LINEN_LAUNDRY_SETTLED · 18ms · Act automatically):</strong><br>" +
     "• <strong>零潮湿注水骗重、零毛霉菌院内感染与强碱红疹</strong>：三甲医院与五星酒店布草洗涤租赁服务已完成结算（<code>$130,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAluminumPrebakedAnodeSandbox() {{
+  var selEl = document.getElementById("ano-select");
+  var outEl = document.getElementById("ano-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ano_co2_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CO2_OR_AIR_REACTIVITY_RESIDUE_DEFICIT_DUSTING_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "碳素实验室 <code>ISO 12988 (960°C CO2) 与 ISO 12989 (550°C 空气) 岩芯反应性测定仪</code> 实测显示，该炉室阳极因焙烧终温不足导致沥青粘结剂焦活性远高于石油焦骨料，CO2 反应残余率跌至 <code>79.4% &lt; 88.0%</code> 且掉渣率高达 <code>6.8% &gt; 2.5%</code>（上槽后粘结桥被优先掏空引发大面积掉黑炭渣、极距发烧至 985°C 且吨铝多耗电 450kWh，<code>co2_and_air_reactivity_residue_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$950,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ano_vna_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 VANADIUM_SODIUM_CATALYTIC_IMPURITY_OR_RESISTIVITY_EXCEEDED_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "阳极岩芯 <code>ISO 12980 XRF 光谱仪与 ISO 11713 比电阻仪</code> 检出钒高达 <code>V = 385 ppm &gt; 180 ppm</code>（掺入劣质高钒弹丸焦，550°C 下剧烈催化空气烧蚀致极爪颈部烧穿掉块），或残极未彻底抛丸带入冰晶石钠 <code>Na = 290 ppm &gt; 120 ppm</code>（<code>vanadium_sodium_ash_and_resistivity_passed == False</code>）。网关在 <code>15ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ano_pah_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TOXIC_PAH_PITCH_OR_ASI_COMPLIANCE_REVOCATION_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 REACH 多环芳烃 (PAH) 通报与 ASI (铝业管理倡议) 绩效标准证书库</code>，检出粘结剂煤沥青苯并[a]芘超标或供应商环保停产造假，立即熔断采购！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ano_but_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CLEAN_ANODE_BUTT_RECYCLING_AND_SLOTTED_VOLTAGE_CREDIT_CONFIRM (255ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动冲抵本厂二级抛丸除壳后的 <code>22% 洁净残极闭环回配 (440 MT Anode Butts)</code>，并核验纵向双开槽阳极降低槽气泡电压 <code>45 mV (吨铝节电 140 kWh)</code>，立省 <code>$152,000.00</code>（净付降至 <code>$798,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ CO2/空气反应残余率 (&gt;=88% / &gt;=75%) + XRF 低钒钠 + 比电阻达标：已自动清算 (VERIFIED_ALUMINUM_PREBAKED_ANODE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零炭渣掉块短路、零极爪烧穿掉极与电工铝液污染</strong>：600kA 电解铝预焙炭阳极批次已完成结算（<code>$950,000.00</code>）！" +
     "</div>";
 }}
 

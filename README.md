@@ -174,6 +174,7 @@
 - **专题 140（110kV–500kV 高压地下交联聚乙烯 XLPE 电力电缆制造与敷设交割 HV/EHV Underground XLPE Power Cable & Premolded Joint Offtake、立塔三层共挤 X 射线偏心度 IEC 60840/62067 $\le 8\%$ & 热延伸 $\le 100\%$ 与变频串联谐振局部放电 $\le 5\text{ pC}$ 严禁直流耐压损伤 / DTS 光纤动态增容智能托管 vs 传统按米数与直流打压盲付）**：**[《110kV–500kV 高压地下交联聚乙烯（XLPE）电力电缆制造与敷设交割（HV/EHV Underground XLPE Power Cable & Premolded Joint Offtake）、立塔三层共挤 X 射线偏心度（IEC 60840/62067 $\le 8\%$ & 热延伸 $\le 100\%$）与变频串联谐振局部放电（$\le 5\text{ pC}$ 严禁直流耐压损伤）/ DTS 光纤动态增容智能托管 vs 传统按米数与直流打压盲付：架构选型与第一性原理 FAQ》](docs/hv-xlpe-underground-cable-ac-resonant-pd-eccentricity-mandate-vs-water-tree-joint-explosion-faq.md)**
 - **专题 141（生物药与注射剂一级中性硼硅玻璃西林瓶及预灌封注射器交割 Pharma Type I Neutral Borosilicate Vial & Prefillable Syringe Offtake、内表面耐水性与防玻璃脱片 USP `<660>` / `<1660>` $\le 0.10\text{ mL}$ 滴定 & 底部零碱金属富集挥发带与偏光退火残余应力 $\le 40\text{ nm/mm}$ / 免洗免灭 RTU 智能托管 vs 传统按瓶数与低硼硅冒充盲付）**：**[《生物药与注射剂一级中性硼硅玻璃西林瓶及预灌封注射器交割（Pharma Type I Neutral Borosilicate Vial & Prefillable Syringe Offtake）、内表面耐水性与防玻璃脱片（USP `<660>` / `<1660>` $\le 0.10\text{ mL}$ 滴定 & 底部零碱金属富集挥发带）与偏光退火残余应力（$\le 40\text{ nm/mm}$）/ 免洗免灭 RTU 智能托管 vs 传统按瓶数与低硼硅冒充盲付：架构选型与第一性原理 FAQ》](docs/pharma-borosilicate-glass-vial-usp660-hydrolytic-delamination-mandate-vs-flake-recall-faq.md)**
 - **专题 142（三甲医院与五星级酒店医用/客房布草洗涤租赁服务 Hospital & Hotel Linen Tunnel-Washer Laundry SLA、湿热消毒值 EN ISO 15883 $A_0 \ge 600\text{ s}$ / 过氧乙酸 $\ge 5\text{-log}$ 杀灭耐药菌与 UHF RFID 芯片清点及布面 $\text{pH } 6.0\text{–}7.5$ 防强碱灼伤皮肤智能托管 vs 传统按笼车过磅湿重盲付）**：**[《三甲医院与五星级酒店医用/客房布草洗涤租赁服务（Hospital & Hotel Linen Tunnel-Washer Laundry SLA）、湿热消毒值（EN ISO 15883 $A_0 \ge 600\text{ s}$ / 过氧乙酸 $\ge 5\text{-log}$ 杀灭耐药菌）与 UHF RFID 芯片清点及布面 $\text{pH}$（$6.0\text{–}7.5$ 防强碱灼伤皮肤）智能托管 vs 传统按笼车过磅湿重盲付：架构选型与第一性原理 FAQ》](docs/hospital-hotel-linen-laundry-rfid-a0-thermal-disinfection-mandate-vs-wet-weight-nosocomial-faq.md)**
+- **专题 143（电解铝预焙炭阳极与煅烧石油焦交割 Aluminum Smelter Prebaked Carbon Anode & Calcined Petroleum Coke Offtake、空气与二氧化碳反应残余率 ISO 12988 / 12989 $\text{CO}_2 \ge 88\%$ & $\text{Air} \ge 75\%$ 防炭渣掉块与 XRF 钒镍钠灰分门禁 $\text{V} \le 180\text{ ppm}$ & $\text{Na} \le 120\text{ ppm}$ / 残极闭环回配智能托管 vs 传统仅按阳极炭块吨重盲付）**：**[《电解铝预焙炭阳极与煅烧石油焦交割（Aluminum Smelter Prebaked Carbon Anode & Calcined Petroleum Coke Offtake）、空气与二氧化碳反应残余率（ISO 12988 / 12989 $\text{CO}_2 \ge 88\%$ & $\text{Air} \ge 75\%$ 防炭渣掉块）与 XRF 钒镍钠灰分门禁（$\text{V} \le 180\text{ ppm}$ & $\text{Na} \le 120\text{ ppm}$）/ 残极闭环回配智能托管 vs 传统仅按阳极炭块吨重盲付：架构选型与第一性原理 FAQ》](docs/aluminum-smelter-prebaked-carbon-anode-co2-air-reactivity-vanadium-mandate-vs-dusting-net-carbon-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -458,6 +459,8 @@
 ![2026-11-12 生物药一级中性硼硅西林瓶交割、耐水性防脱片 (USP 660) 与偏光退火应力智能托管架构一图流](assets/svg/143-pharma-borosilicate-vial-usp660-delamination-2026-11-12.svg)
 
 ![2026-11-12 医院与酒店布草洗涤租赁、湿热消毒 (A0 >=600) 与 UHF RFID 清点智能托管架构一图流](assets/svg/144-hospital-hotel-linen-laundry-rfid-a0-2026-11-12.svg)
+
+![2026-11-12 电解铝预焙炭阳极与煅后焦交割、CO2/空气反应残余率与钒钠催化门禁智能托管架构一图流](assets/svg/145-aluminum-prebaked-anode-reactivity-vanadium-2026-11-12.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

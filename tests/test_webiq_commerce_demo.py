@@ -9167,6 +9167,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hospital-linen-laundry-sandbox", demo_zh)
 
+    def test_aluminum_smelter_prebaked_carbon_anode_co2_air_reactivity_vanadium_mandate_vs_dusting_net_carbon_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aluminum_smelter_prebaked_anode_policy,
+        )
+
+        # 1. Verified ISO 12988/12989 CO2 >=88% & Air >=75% + XRF V<=180ppm/Na<=120ppm -> 200 OK ($950,000)
+        commit_ok = evaluate_aluminum_smelter_prebaked_anode_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_prebaked_anode_cents, 95000000)
+
+        # 2. Under-baked selective binder oxidation (CO2 < 88% / dust > 2.5%) -> 403 blocked in 12ms
+        co2_403 = evaluate_aluminum_smelter_prebaked_anode_policy(
+            co2_and_air_reactivity_residue_verified=False,
+        )
+        self.assertFalse(co2_403.allowed)
+        self.assertEqual(co2_403.http_status, 403)
+        self.assertEqual(
+            co2_403.prebaked_anode_lane,
+            "CO2_OR_AIR_REACTIVITY_RESIDUE_DEFICIT_DUSTING_BLOCKED",
+        )
+
+        # 3. High shot-coke vanadium (>180 ppm) or bath-contaminated butt sodium (>120 ppm) -> 422 blocked in 15ms
+        vna_422 = evaluate_aluminum_smelter_prebaked_anode_policy(
+            vanadium_sodium_ash_and_resistivity_passed=False,
+        )
+        self.assertFalse(vna_422.allowed)
+        self.assertEqual(vna_422.http_status, 422)
+        self.assertEqual(
+            vna_422.prebaked_anode_lane,
+            "VANADIUM_SODIUM_CATALYTIC_IMPURITY_OR_RESISTIVITY_EXCEEDED_BLOCKED",
+        )
+
+        # 4. Web IQ detects excess B[a]P PAH pitch or revoked ASI certification -> 451 blocked in 290ms
+        pah_451 = evaluate_aluminum_smelter_prebaked_anode_policy(
+            webiq_asi_pah_and_calciner_compliance_clean=False,
+        )
+        self.assertFalse(pah_451.allowed)
+        self.assertEqual(pah_451.http_status, 451)
+
+        # 5. Web IQ credits 22% clean anode-butt return & dual-slot -45mV energy saving $152,000 ($798,000 net) -> 409 Confirm
+        but_409 = evaluate_aluminum_smelter_prebaked_anode_policy(
+            clean_anode_butt_recycling_and_slotted_energy_credit_cents=15200000,
+        )
+        self.assertFalse(but_409.allowed)
+        self.assertEqual(but_409.http_status, 409)
+        self.assertEqual(but_409.settled_prebaked_anode_cents, 79800000)
+        self.assertEqual(but_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["prebaked_anode_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aluminum-prebaked-anode-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
