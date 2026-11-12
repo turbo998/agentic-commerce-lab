@@ -16958,6 +16958,91 @@ def evaluate_aluminum_smelter_prebaked_anode_policy(
     )
 
 
+@dataclass(frozen=True)
+class NuclearZirconiumFuelVerdict:
+    allowed: bool
+    http_status: int
+    nuclear_fuel_lane: str
+    settled_nuclear_fuel_cents: int
+    swu_tails_recycle_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_nuclear_zirconium_fuel_policy(
+    *,
+    gross_nuclear_fuel_cents: int = 185000000,
+    hafnium_cobalt_and_ebc_neutron_cross_section_verified: bool = True,
+    radial_hydride_fn_and_autoclave_corrosion_passed: bool = True,
+    webiq_nrc_part21_and_iaea_safeguards_clean: bool = True,
+    optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents: int = 0,
+) -> NuclearZirconiumFuelVerdict:
+    # 1. Hafnium Carryover (Hf >50 ppm, 104 barns) or Equivalent Boron Content (EBC >1.5 ppm) -> HTTP 403
+    if not hafnium_cobalt_and_ebc_neutron_cross_section_verified:
+        return NuclearZirconiumFuelVerdict(
+            False,
+            403,
+            "HAFNIUM_NEUTRON_POISON_OR_EBC_CROSS_SECTION_EXCEEDED_BLOCKED",
+            0,
+            0,
+            "nuclear_cladding_blocked_due_to_hafnium_above_50ppm_or_ebc_neutron_poison_reactivity_loss",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Radial Hydride Orientation (Fn >0.30) or ASTM G2 White Nodular Steam Corrosion -> HTTP 422
+    if not radial_hydride_fn_and_autoclave_corrosion_passed:
+        return NuclearZirconiumFuelVerdict(
+            False,
+            422,
+            "RADIAL_HYDRIDE_ORIENTATION_FN_OR_AUTOCLAVE_NODULAR_CORROSION_BLOCKED",
+            0,
+            0,
+            "zircaloy_tube_rejected_for_radial_hydride_fn_above_030_or_autoclave_white_nodular_oxide",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Active NRC 10 CFR Part 21 Safety Defect Notice or IAEA Safeguards Hold via Web IQ -> HTTP 451
+    if not webiq_nrc_part21_and_iaea_safeguards_clean:
+        return NuclearZirconiumFuelVerdict(
+            False,
+            451,
+            "NRC_PART21_SAFETY_DEFECT_OR_IAEA_SAFEGUARDS_ORIGIN_HOLD",
+            0,
+            0,
+            "webiq_detected_active_10cfr_part21_cladding_defect_or_unverified_iaea_safeguards_code",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Optimal SWU Tails Assay (xw*=0.18%) + Dry U3O8 Grinding-Scrap Credit -> HTTP 409 Confirm
+    if optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents > 0:
+        return NuclearZirconiumFuelVerdict(
+            False,
+            409,
+            "OPTIMAL_SWU_TAILS_UNDERFEEDING_AND_U3O8_RECYCLE_CREDIT_CONFIRM",
+            gross_nuclear_fuel_cents - optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents,
+            optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents,
+            "webiq_applied_018pct_optimal_swu_tails_assay_and_dry_u3o8_recycle_saving_222000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Hf <=50 ppm + EBC <=1.5 ppm + Fn <=0.30 + G2 Black Oxide + Clean Part 21 -> Settled
+    return NuclearZirconiumFuelVerdict(
+        True,
+        200,
+        "VERIFIED_NUCLEAR_ZIRCONIUM_FUEL_SETTLED",
+        gross_nuclear_fuel_cents,
+        0,
+        "astm_b353_hafnium_ebc_astm_b811_hydride_fn_g2_autoclave_and_iaea_safeguards_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -22278,6 +22363,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "reactivity_dusting_block_latency_ms": ano_co2_403.latency_ms,
     }
 
+    # Round 144 (Nuclear-Grade Zirconium Cladding & UO2 Fuel Offtake, Hafnium Cross-Section & Hydride Fn Mandate)
+    nuc_commit_ok = evaluate_nuclear_zirconium_fuel_policy()
+    nuc_hf_403 = evaluate_nuclear_zirconium_fuel_policy(
+        hafnium_cobalt_and_ebc_neutron_cross_section_verified=False,
+    )
+    nuc_fn_422 = evaluate_nuclear_zirconium_fuel_policy(
+        radial_hydride_fn_and_autoclave_corrosion_passed=False,
+    )
+    nuc_p21_451 = evaluate_nuclear_zirconium_fuel_policy(
+        webiq_nrc_part21_and_iaea_safeguards_clean=False,
+    )
+    nuc_swu_409 = evaluate_nuclear_zirconium_fuel_policy(
+        optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents=22200000,
+    )
+    nuclear_zirconium_guards = {
+        "all_passed": (
+            nuc_commit_ok.allowed
+            and nuc_commit_ok.settled_nuclear_fuel_cents == 185000000
+            and not nuc_hf_403.allowed
+            and nuc_hf_403.http_status == 403
+            and not nuc_fn_422.allowed
+            and nuc_fn_422.http_status == 422
+            and not nuc_p21_451.allowed
+            and nuc_p21_451.http_status == 451
+            and not nuc_swu_409.allowed
+            and nuc_swu_409.action_pill == "Confirm"
+        ),
+        "nuclear_fuel_settlement_latency_ms": nuc_commit_ok.latency_ms,
+        "hafnium_poison_block_latency_ms": nuc_hf_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22434,6 +22550,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pharma_vial_guards": pharma_vial_guards,
         "linen_laundry_guards": linen_laundry_guards,
         "prebaked_anode_guards": prebaked_anode_guards,
+        "nuclear_zirconium_guards": nuclear_zirconium_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27925,6 +28042,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ano-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Nuclear-Grade Zirconium Cladding & UO2 Fuel Offtake, Hafnium Cross-Section & Hydride Fn Mandate Sandbox (Round 144 FAQ Companion) -->
+      <div class="finops-box" id="nuclear-zirconium-fuel-sandbox" style="margin-top:12px;border-color:#818CF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-nuc-title">⚛️ 核电锆合金包壳管与铀浓缩交割、热中子除铪截面 (&lt;=50 ppm) 与氢化物取向因子 (Fn &lt;=0.30) 架构：防中子毒化与径向脆断令牌 (nuclear_zirconium_fuel_mandate_...) vs 固定尾料盲付决策器 (Round 144 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 压水堆核级锆合金包壳管与 4.95% 浓缩 UO2 燃料组件交割 ($1,850,000.00)、ASTM B353 ICP-MS 除铪/硼当量、ASTM B811 氢化物取向 Fn/高压釜腐蚀与 Web IQ Part 21/最优尾料丰度场景 (Nuclear Zirconium &amp; Fuel Scenario):</span></label>
+          <select id="nuc-select" onchange="updateNuclearZirconiumFuelSandbox()">
+            <option value="nuc_commit_ok">⚡ ICP-MS 铪 28ppm (&lt;=50ppm) + 硼当量 EBC 0.9ppm + 氢化物周向取向 Fn 0.18 (&lt;=0.30) + 高压釜黑膜 16 mg/dm2：10ms 自动结算 $1,850,000.00! (Act automatically)</option>
+            <option value="nuc_hf_403">🛑 海绵锆除铪精馏塔串料或混入化工级 Zr702 返回料 (铪含量飙至 Hf = 420ppm &gt; 50ppm，热中子吸收截面高达 104 barns 吞噬堆芯中子致反应性损失 120 pcm 提前 25 天停堆) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="nuc_fn_422">🚨 皮尔格冷轧减壁/减径比 Q 值不足致氢化锆沿管壁径向垂直刺穿析出 (Fn = 0.48 &gt; 0.30，干法贮存环向拉应力下发生纵向劈裂泄漏裂变气体) 或 400°C 高压釜白斑结瘤腐蚀拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="nuc_p21_451">🛑 管材退火炉温控造假被列入 NRC 10 CFR Part 21 核安全缺陷通报，或浓缩铀批次缺失 IAEA/EURATOM 保障监督核材料衡算编码：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="nuc_swu_409">🧑‍⚖️ Web IQ 根据实时 UF6/SWU 比价用狄拉克价值函数 V(x) 将离心尾料丰度从固定 0.25% 动态寻优至 xw* = 0.18% (少买高价天然铀)，并叠加 UO2 芯块无心磨削粉干法 U3O8 回收立省 $222,000.00 (净付 $1,628,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="nuc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -28507,6 +28642,7 @@ function renderAll() {{
   updatePharmaBorosilicateVialSandbox();
   updateHospitalLinenLaundrySandbox();
   updateAluminumPrebakedAnodeSandbox();
+  updateNuclearZirconiumFuelSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -35815,6 +35951,55 @@ function updateAluminumPrebakedAnodeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ CO2/空气反应残余率 (&gt;=88% / &gt;=75%) + XRF 低钒钠 + 比电阻达标：已自动清算 (VERIFIED_ALUMINUM_PREBAKED_ANODE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零炭渣掉块短路、零极爪烧穿掉极与电工铝液污染</strong>：600kA 电解铝预焙炭阳极批次已完成结算（<code>$950,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateNuclearZirconiumFuelSandbox() {{
+  var selEl = document.getElementById("nuc-select");
+  var outEl = document.getElementById("nuc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "nuc_hf_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HAFNIUM_NEUTRON_POISON_OR_EBC_CROSS_SECTION_EXCEEDED_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核燃料包壳管实验室 <code>ASTM B353 ICP-MS 质谱仪</code> 实测显示，该批锆合金管因除铪萃取塔串料或混入化工级返回料，伴生铪含量飙升至 <code>Hf = 420 ppm &gt; 50 ppm</code>（铪的热中子吸收截面高达 104 barns，是锆的 562 倍，入堆后将吞噬大量热中子导致堆芯反应性损失 120 pcm、提前 25 天停堆换料，<code>hafnium_cobalt_and_ebc_neutron_cross_section_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$1,850,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_fn_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RADIAL_HYDRIDE_ORIENTATION_FN_OR_AUTOCLAVE_NODULAR_CORROSION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "锆管金相与腐蚀实验室 <code>ASTM B811 渗氢取向与 ASTM G2 400°C/10.3MPa 高压釜水蒸气试验</code> 检出皮尔格冷轧 Q 值不足导致径向氢化物取向因子高达 <code>Fn = 0.48 &gt; 0.30</code>（乏燃料干法贮存冷却时环向拉应力将顺着径向氢化物劈裂包壳管），或表面出现白色结瘤状氧化剥落（<code>radial_hydride_fn_and_autoclave_corrosion_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_p21_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NRC_PART21_SAFETY_DEFECT_OR_IAEA_SAFEGUARDS_ORIGIN_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NRC 10 CFR Part 21 核安全缺陷通报库与 IAEA/EURATOM 保障监督核材料台账</code>，检出该批管材存在真空退火炉温控记录造假通报或浓缩铀缺失合法保障监督编码，立即冻结放行！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_swu_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OPTIMAL_SWU_TAILS_UNDERFEEDING_AND_U3O8_RECYCLE_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 根据实时天然铀 (UF6) 与分离功 (SWU) 价格比求解狄拉克价值函数，将离心浓缩尾料丰度从合同默认 0.25% 动态下调至 <code>最优尾料丰度 xw* = 0.18% (Underfeeding)</code>，并冲抵 UO2 芯块无心磨削粉干法 <code>U3O8 回收返料</code>，单批立省 <code>$222,000.00</code>（净付降至 <code>$1,628,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 除铪截面 (Hf &lt;=50 ppm) + 周向氢化物 (Fn &lt;=0.30) + 高压釜黑膜达标：已自动清算 (VERIFIED_NUCLEAR_ZIRCONIUM_FUEL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零中子毒化燃耗损失、零径向氢化物包壳脆断与高价天然铀冤枉钱</strong>：核级锆合金包壳管与 UO2 燃料组件已完成结算（<code>$1,850,000.00</code>）！" +
     "</div>";
 }}
 

@@ -9223,6 +9223,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aluminum-prebaked-anode-sandbox", demo_zh)
 
+    def test_nuclear_zirconium_cladding_hafnium_hydride_swu_enrichment_mandate_vs_neutron_poison_creep_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_nuclear_zirconium_fuel_policy,
+        )
+
+        # 1. Verified ASTM B353 Hf <=50 ppm + EBC <=1.5 ppm + ASTM B811 Fn <=0.30 -> 200 OK ($1,850,000)
+        commit_ok = evaluate_nuclear_zirconium_fuel_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_nuclear_fuel_cents, 185000000)
+
+        # 2. Hafnium carryover (Hf > 50 ppm, 104 barns) or high EBC poison -> 403 blocked in 11ms
+        hf_403 = evaluate_nuclear_zirconium_fuel_policy(
+            hafnium_cobalt_and_ebc_neutron_cross_section_verified=False,
+        )
+        self.assertFalse(hf_403.allowed)
+        self.assertEqual(hf_403.http_status, 403)
+        self.assertEqual(
+            hf_403.nuclear_fuel_lane,
+            "HAFNIUM_NEUTRON_POISON_OR_EBC_CROSS_SECTION_EXCEEDED_BLOCKED",
+        )
+
+        # 3. Radial hydride orientation (Fn > 0.30) or G2 white nodular steam corrosion -> 422 blocked in 14ms
+        fn_422 = evaluate_nuclear_zirconium_fuel_policy(
+            radial_hydride_fn_and_autoclave_corrosion_passed=False,
+        )
+        self.assertFalse(fn_422.allowed)
+        self.assertEqual(fn_422.http_status, 422)
+        self.assertEqual(
+            fn_422.nuclear_fuel_lane,
+            "RADIAL_HYDRIDE_ORIENTATION_FN_OR_AUTOCLAVE_NODULAR_CORROSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects active NRC 10 CFR Part 21 defect notice or IAEA safeguards hold -> 451 blocked in 280ms
+        p21_451 = evaluate_nuclear_zirconium_fuel_policy(
+            webiq_nrc_part21_and_iaea_safeguards_clean=False,
+        )
+        self.assertFalse(p21_451.allowed)
+        self.assertEqual(p21_451.http_status, 451)
+
+        # 5. Web IQ credits optimal SWU tails (0.18%) & dry U3O8 recycle saving $222,000 ($1,628,000 net) -> 409 Confirm
+        swu_409 = evaluate_nuclear_zirconium_fuel_policy(
+            optimal_swu_tails_assay_and_uo2_scrap_recycle_credit_cents=22200000,
+        )
+        self.assertFalse(swu_409.allowed)
+        self.assertEqual(swu_409.http_status, 409)
+        self.assertEqual(swu_409.settled_nuclear_fuel_cents, 162800000)
+        self.assertEqual(swu_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["nuclear_zirconium_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("nuclear-zirconium-fuel-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

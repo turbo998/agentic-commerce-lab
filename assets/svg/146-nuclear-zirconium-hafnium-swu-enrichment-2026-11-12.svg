@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg146" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent146" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg146)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent146)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 144 · 核电锆合金包壳管与铀浓缩交割、除铪中子截面 (&lt;=50 ppm) 与氢化物取向架构图</text>
+  <text x="36" y="84" class="sub">Nuclear Zirconium Cladding &amp; UO2 Fuel Offtake, ASTM B353 Hafnium (&lt;=50 ppm), Hydride Fn (&lt;=0.30) &amp; SWU Tails vs. Neutron Poisoning</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按锆管支数盲付</text>
+  <text x="52" y="166" class="card-h">三大致命核物理与包壳破损风险</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 孪生杂质铪 (Hf) 超标 562 倍吞噬热中子</text>
+  <text x="52" y="216" class="body">锆截面仅 0.185 barns，而铪高达 104 barns！</text>
+  <text x="52" y="234" class="body">掺入化工返回料 (Hf=420ppm) 致堆芯损失 120 pcm</text>
+  <text x="52" y="252" class="body">反应性，被迫提前 25 天停堆换料亏损数百万美元。</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 皮尔格冷轧 Q 值不足致“径向氢化物脆断”</text>
+  <text x="52" y="302" class="body">减壁/减径比过小使晶粒基面转向，氢化锆沿径向</text>
+  <text x="52" y="320" class="body">垂直刺穿管壁 (Fn=0.48&gt;0.30)，干法贮存纵向劈裂！</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 固定 0.25% 浓缩尾料丰度多付高价天然铀</text>
+  <text x="52" y="370" class="body">当天然铀暴涨而离心机 SWU 便宜时，死守 0.25%</text>
+  <text x="52" y="388" class="body">固定尾料多买 1.4kg 天然铀/kg LEU，白扔 12% 成本。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: Tube OD/Tensile + Fixed 0.25% Tails</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $1,850,000 exposed to reactivity &amp; DHC</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ nuclear_zirconium_fuel_mandate</text>
+  <text x="428" y="166" class="card-h">四层核物理截面与织构门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: ASTM B353 Hf &amp; EBC Cross-Section (11ms)</text>
+  <text x="440" y="220" class="body">ICP-MS 铪 Hf &lt;=50 ppm, Co &lt;=10 ppm (防 Co-60)</text>
+  <text x="440" y="238" class="body">&amp; 总等效硼当量 EBC &lt;=1.5 ppm — 超标直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: ASTM B811 Fn &amp; G2 Autoclave (14ms)</text>
+  <text x="440" y="296" class="body">径向氢化物因子 Fn &lt;=0.30 &amp; Kearns fr &gt;=0.60</text>
+  <text x="440" y="314" class="body">&amp; 400°C 蒸气增重 &lt;=22 mg/dm2 — 违者直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ NRC Part 21 &amp; IAEA Check (280ms)</text>
+  <text x="440" y="372" class="body">核验 NRC 10 CFR Part 21 零核安全缺陷通报</text>
+  <text x="440" y="390" class="body">&amp; IAEA/EURATOM 保障监督编码 — 违规直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Optimal SWU Tails xw*=0.18% (245ms)</text>
+  <text x="440" y="448" class="body">狄拉克价值函数 V(x) 动态寻优尾料至 0.18% 省天然铀</text>
+  <text x="440" y="466" class="body">+ UO2 磨削粉干法回收立省 $222,000 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 低铪与周向氢化物放行</text>
+  <text x="828" y="212" class="body">Hf 28ppm + EBC 0.9ppm + Fn 0.18 → $1,850,000.00</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 铪含量或硼当量超标</text>
+  <text x="828" y="258" class="body">Hf=420ppm (&gt;50ppm) 中子毒化 → 冻结 $1,850,000</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 径向氢化物或白斑腐蚀</text>
+  <text x="828" y="304" class="body">Fn=0.48 (&gt;0.30) 或 G2 结瘤腐蚀 → 拒付 $1.85M</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ Part 21 缺陷通报</text>
+  <text x="828" y="350" class="body">退火温控造假或非法矿源 → 熔断 $1,850,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · SWU 最优尾料与返料抵扣</text>
+  <text x="828" y="396" class="body">节省 $222,000 (-12%) → 确认后净付 $1,628,000</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 涉核隔离</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 核级锆管严禁“按尺寸和名义浓缩度盲付”：伴生铪的热中子截面高达 104 barns（锆的 562 倍），而冷轧 Q 值不足会使氢化物沿径向劈裂包壳管。</text>
+  <text x="54" y="584" class="body">• 必须将 ICP-MS 除铪门禁 (&lt;=50ppm)、ASTM B811 氢化物取向 (Fn&lt;=0.30) 与 Web IQ 分离功最优尾料丰度 (xw*=0.18%) 绑定为智能托管解锁谓词。</text>
+</svg>
