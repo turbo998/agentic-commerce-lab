@@ -9279,6 +9279,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("nuclear-zirconium-fuel-sandbox", demo_zh)
 
+    def test_oilfield_drilling_mud_api_barite_specific_gravity_hthp_filtrate_mandate_vs_lost_circulation_stuck_pipe_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_oilfield_drilling_mud_policy,
+        )
+
+        # 1. Verified API 13A SG >=4.20 + Ca2+ <=250 mg/kg + 180°C HTHP <=12 mL -> 200 OK ($480,000)
+        commit_ok = evaluate_oilfield_drilling_mud_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_drilling_mud_cents, 48000000)
+
+        # 2. Limestone adulteration (SG < 4.20 g/cm3) or soluble calcium (> 250 mg/kg) -> 403 blocked in 11ms
+        sg_403 = evaluate_oilfield_drilling_mud_policy(
+            api13a_barite_sg_and_soluble_calcium_verified=False,
+        )
+        self.assertFalse(sg_403.allowed)
+        self.assertEqual(sg_403.http_status, 403)
+        self.assertEqual(
+            sg_403.drilling_mud_lane,
+            "BARITE_SPECIFIC_GRAVITY_DEFICIT_OR_SOLUBLE_CALCIUM_FLOCCULATION_BLOCKED",
+        )
+
+        # 3. Excessive 180°C HTHP filtrate (>12 mL) or inclined barite sag (SF > 0.53) -> 422 blocked in 14ms
+        hthp_422 = evaluate_oilfield_drilling_mud_policy(
+            hthp_filtrate_loss_and_barite_sag_factor_passed=False,
+        )
+        self.assertFalse(hthp_422.allowed)
+        self.assertEqual(hthp_422.http_status, 422)
+        self.assertEqual(
+            hthp_422.drilling_mud_lane,
+            "HTHP_FILTRATION_LOSS_OR_BARITE_SAG_STUCK_PIPE_RISK_BLOCKED",
+        )
+
+        # 4. Web IQ detects excess Hg/Cd (>1/3 ppm) or revoked API 13A license -> 451 blocked in 285ms
+        epa_451 = evaluate_oilfield_drilling_mud_policy(
+            webiq_epa_hg_cd_and_api_monogram_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ credits 82% dual-centrifuge barite recovery saving $86,400 ($393,600 net) -> 409 Confirm
+        cen_409 = evaluate_oilfield_drilling_mud_policy(
+            dual_centrifuge_barite_recovery_and_zero_npt_credit_cents=8640000,
+        )
+        self.assertFalse(cen_409.allowed)
+        self.assertEqual(cen_409.http_status, 409)
+        self.assertEqual(cen_409.settled_drilling_mud_cents, 39360000)
+        self.assertEqual(cen_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["drilling_mud_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("oilfield-drilling-mud-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

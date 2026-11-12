@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg147" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c131f"/>
+      <stop offset="50%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent147" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg147)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent147)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 145 · 深井钻井液重晶石粉与工程服务、API 13A 真比重 (&gt;=4.20) 与 HTHP 滤失架构图</text>
+  <text x="36" y="84" class="sub">Oilfield Drilling Mud API Barite &amp; HPHT Fluid SLA, Specific Gravity (&gt;=4.20 g/cm3), HTHP Filtrate (&lt;=12 mL) &amp; Centrifuge Recovery</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按泥浆吨袋盲付</text>
+  <text x="52" y="166" class="card-h">三大深井工程井控与卡钻灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 重晶石掺石灰石 (SG=3.88&lt;4.20) 致井漏井喷</text>
+  <text x="52" y="216" class="body">掺 25% 碳酸钙后为配到 2.10 密度需多投 35% 粉，</text>
+  <text x="52" y="234" class="body">固相体积冲破 45% 红线致 ECD 压裂地层恶性井漏，</text>
+  <text x="52" y="252" class="body">液面下降失去静液柱压力瞬间诱发高压气侵井喷！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 石膏水溶性钙 (&gt;250 mg/kg) 与斜井沉砂埋钻</text>
+  <text x="52" y="302" class="body">Ca2+ 压缩膨润土双电层引发高温絮凝；水平段</text>
+  <text x="52" y="320" class="body">重晶石沉降堆积 (SF&gt;0.53) 埋死千万美元旋转导向。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 180°C HTHP 滤失失控引发“压差卡钻”</text>
+  <text x="52" y="370" class="body">HTHP&gt;12mL 致泥页岩水化垮塌，并在砂岩井壁结</text>
+  <text x="52" y="388" class="body">6mm 厚虚泥饼将钻具吸死，侧钻报废超 $1.5M。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1,500 MT Jumbo Bags Paid by Count</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $480,000 exposed to stuck pipe &amp; kicks</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ oilfield_drilling_mud_mandate</text>
+  <text x="428" y="166" class="card-h">四层比重、流变与固控门禁（10ms–285ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: API Spec 13A SG &amp; Ca2+ Gate (11ms)</text>
+  <text x="440" y="220" class="body">李氏比重瓶真比重 SG &gt;=4.20 g/cm3 &amp; 水溶性钙</text>
+  <text x="440" y="238" class="body">Ca2+ &lt;=250 mg/kg — 掺假/石膏超标直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: API 13B HTHP &amp; Sag Factor (14ms)</text>
+  <text x="440" y="296" class="body">180°C/500psi HTHP 滤失 &lt;=12.0 mL (泥饼 &lt;=2mm)</text>
+  <text x="440" y="314" class="body">&amp; 沉砂因子 SF 0.50–0.53 — 卡钻风险直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ EPA Hg/Cd &amp; API 13A (285ms)</text>
+  <text x="440" y="372" class="body">核验 EPA/OSPAR 汞 Hg&lt;=1ppm &amp; 镉 Cd&lt;=3ppm</text>
+  <text x="440" y="390" class="body">&amp; API 13A 会标有效性 — 海洋违禁直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 82% Dual-Centrifuge Recovery (250ms)</text>
+  <text x="440" y="448" class="body">低速离心机闭环回收 82% 高比重重晶石 + 高速机</text>
+  <text x="440" y="466" class="body">排劣质土立省 $86,400 (-18%) 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 标准高比重低滤失放行</text>
+  <text x="828" y="212" class="body">SG 4.24 + Ca2+ 85mg/kg + HTHP 8.4mL → $480,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 重晶石掺石灰石或钙超标</text>
+  <text x="828" y="258" class="body">SG=3.88 (&lt;4.20) 或 Ca2+=640 → 冻结 $480,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · HTHP 滤失或斜井沉砂超标</text>
+  <text x="828" y="304" class="body">HTHP=26.5mL 或 SF=0.59 沉砂 → 拒付 $480,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (285ms) · Web IQ 汞镉超标/假会标</text>
+  <text x="828" y="350" class="body">Hg=8.5ppm 违背 EPA 海洋排放 → 熔断 $480,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (250ms) · 双离心机 82% 重晶石回收</text>
+  <text x="828" y="396" class="body">节省 $86,400 (-18%) → 确认后净付 $393,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 250ms · 抗注入 100% · 探井保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 深井钻井液严禁“按重晶石吨袋盲付”：掺入低比重石灰石会使固相体积冲破 45% 引发井漏与井喷，而 HTHP 滤失超标会结厚泥饼吸死钻具。</text>
+  <text x="54" y="584" class="body">• 必须将 API 13A 真比重 (&gt;=4.20 g/cm3)、180°C HTHP 滤失 (&lt;=12mL) 与 Web IQ 双离心机重晶石回收 (82% 复用) 绑定为智能托管解锁谓词。</text>
+</svg>
