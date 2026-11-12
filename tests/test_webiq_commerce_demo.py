@@ -8999,6 +8999,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("greenhouse-hydroponic-sandbox", demo_zh)
 
+    def test_hv_xlpe_underground_cable_ac_resonant_pd_eccentricity_mandate_vs_water_tree_joint_explosion_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hv_xlpe_power_cable_policy,
+        )
+
+        # 1. Verified VCV X-ray eccentricity <=8% + hot-set <=100% + AC PD <=5 pC -> 200 OK ($395,000)
+        commit_ok = evaluate_hv_xlpe_power_cable_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hv_cable_cents, 39500000)
+
+        # 2. VCV X-ray eccentricity (>8%) or under-crosslinked hot-set (>100%) -> 403 blocked in 12ms
+        ecc_403 = evaluate_hv_xlpe_power_cable_policy(
+            xray_eccentricity_and_hot_set_crosslink_verified=False,
+        )
+        self.assertFalse(ecc_403.allowed)
+        self.assertEqual(ecc_403.http_status, 403)
+        self.assertEqual(
+            ecc_403.hv_cable_lane,
+            "XLPE_INSULATION_ECCENTRICITY_OR_UNDER_CROSSLINK_HOTSET_BLOCKED",
+        )
+
+        # 3. AC resonant partial discharge (>5 pC), DC hipot or high conductor Rdc -> 422 blocked in 15ms
+        pd_422 = evaluate_hv_xlpe_power_cable_policy(
+            ac_resonant_partial_discharge_and_dc_resistance_passed=False,
+        )
+        self.assertFalse(pd_422.allowed)
+        self.assertEqual(pd_422.http_status, 422)
+        self.assertEqual(
+            pd_422.hv_cable_lane,
+            "PARTIAL_DISCHARGE_CORONA_SPIKE_OR_CONDUCTOR_DC_RESISTANCE_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing KEMA PQ certificate or non-super-clean XLPE resin -> 451 blocked in 290ms
+        kem_451 = evaluate_hv_xlpe_power_cable_policy(
+            webiq_kema_pq_and_superclean_resin_clean=False,
+        )
+        self.assertFalse(kem_451.allowed)
+        self.assertEqual(kem_451.http_status, 451)
+
+        # 5. Web IQ activates DTS fiber dynamic ampacity (RTTR) & retired copper tolling saving $63,200 ($331,800 net) -> 409 Confirm
+        dts_409 = evaluate_hv_xlpe_power_cable_policy(
+            dts_dynamic_ampacity_and_copper_tolling_savings_cents=6320000,
+        )
+        self.assertFalse(dts_409.allowed)
+        self.assertEqual(dts_409.http_status, 409)
+        self.assertEqual(dts_409.settled_hv_cable_cents, 33180000)
+        self.assertEqual(dts_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["hv_xlpe_cable_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hv-xlpe-cable-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

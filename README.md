@@ -171,6 +171,7 @@
 - **专题 137（航空发动机风扇盘与起落架 Ti-6Al-4V 钛合金锻坯交割 Aerospace Rotor-Grade Titanium Billet & 0A Sponge Offtake、三次真空熔炼与多区聚焦水浸超声 AMS 4928 / AMS 2631 Class AA $\#2\text{ FBH}$ 零硬 $\alpha$ 氮氧夹杂与 $\beta$ 相变点 $\pm 5^\circ\text{C}$ / 钛屑闭环冷床炉重熔智能托管 vs 传统仅按化学成分与吨重盲付）**：**[《航空发动机风扇盘与起落架 Ti-6Al-4V 钛合金锻坯交割（Aerospace Rotor-Grade Titanium Billet & 0A Sponge Offtake）、三次真空熔炼与多区聚焦水浸超声（AMS 4928 / AMS 2631 Class AA $\#2\text{ FBH}$ 零硬 $\alpha$ 氮氧夹杂）与 $\beta$ 相变点（$\pm 5^\circ\text{C}$）/ 钛屑闭环冷床炉重熔智能托管 vs 传统仅按化学成分与吨重盲付：架构选型与第一性原理 FAQ》](docs/aerospace-titanium-ti64-billet-triple-var-hard-alpha-ut-mandate-vs-inclusion-burst-overbilling-faq.md)**
 - **专题 138（市政自来水厂超滤膜组件与饮用水级聚合氯化铝 PAC 交割 Municipal Drinking Water Ultrafiltration Membrane & Potable PAC Coagulant Offtake、中空纤维膜压力衰减完整性 EPA LT2 $\text{PDT} \le 0.01\text{ bar/min}$ 防断丝漏隐孢子虫与有效氧化铝 $\text{Al}_2\text{O}_3 \ge 10.5\%$ / NSF 60 零废酸重金属智能托管 vs 传统按药液湿重盲付）**：**[《市政自来水厂超滤膜组件与饮用水级聚合氯化铝（PAC）交割（Municipal Drinking Water Ultrafiltration Membrane & Potable PAC Coagulant Offtake）、中空纤维膜压力衰减完整性（EPA LT2 $\text{PDT} \le 0.01\text{ bar/min}$ 防断丝漏隐孢子虫）与有效氧化铝（$\text{Al}_2\text{O}_3 \ge 10.5\%$）/ NSF 60 零废酸重金属智能托管 vs 传统按药液湿重盲付：架构选型与第一性原理 FAQ》](docs/municipal-drinking-water-uf-membrane-pdt-pac-alumina-mandate-vs-broken-fiber-turbidity-faq.md)**
 - **专题 139（现代文洛式玻璃温室无土栽培与垂直农场水肥光交割 Commercial Venlo Greenhouse Hydroponic Fertigation & LED Lighting SLA、冠层日累积光合有效辐射 PAR $\text{DLI} \ge 25\text{ mol/m}^2\text{/d}$ & 光合光子效率 $\text{PPE} \ge 3.2\ \mu\text{mol/J}$ 与岩棉根区回液 $\text{EC}$ / UV 杀菌智能托管 vs 传统按补光电度与化肥吨数盲付）**：**[《现代文洛式玻璃温室无土栽培与垂直农场水肥光交割（Commercial Venlo Greenhouse Hydroponic Fertigation & LED Lighting SLA）、冠层日累积光合有效辐射（PAR $\text{DLI} \ge 25\text{ mol/m}^2\text{/d}$ & 光合光子效率 $\text{PPE} \ge 3.2\ \mu\text{mol/J}$）与岩棉根区回液 $\text{EC}$ / UV 杀菌智能托管 vs 传统按补光电度与化肥吨数盲付：架构选型与第一性原理 FAQ》](docs/commercial-greenhouse-hydroponic-par-dli-drain-ec-uv-mandate-vs-root-rot-tipburn-faq.md)**
+- **专题 140（110kV–500kV 高压地下交联聚乙烯 XLPE 电力电缆制造与敷设交割 HV/EHV Underground XLPE Power Cable & Premolded Joint Offtake、立塔三层共挤 X 射线偏心度 IEC 60840/62067 $\le 8\%$ & 热延伸 $\le 100\%$ 与变频串联谐振局部放电 $\le 5\text{ pC}$ 严禁直流耐压损伤 / DTS 光纤动态增容智能托管 vs 传统按米数与直流打压盲付）**：**[《110kV–500kV 高压地下交联聚乙烯（XLPE）电力电缆制造与敷设交割（HV/EHV Underground XLPE Power Cable & Premolded Joint Offtake）、立塔三层共挤 X 射线偏心度（IEC 60840/62067 $\le 8\%$ & 热延伸 $\le 100\%$）与变频串联谐振局部放电（$\le 5\text{ pC}$ 严禁直流耐压损伤）/ DTS 光纤动态增容智能托管 vs 传统按米数与直流打压盲付：架构选型与第一性原理 FAQ》](docs/hv-xlpe-underground-cable-ac-resonant-pd-eccentricity-mandate-vs-water-tree-joint-explosion-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -449,6 +450,8 @@
 ![2026-11-12 市政自来水厂超滤膜与饮用水级 PAC 交割、压力衰减 (PDT) 与氧化铝品位智能托管架构一图流](assets/svg/140-municipal-water-uf-membrane-pdt-pac-2026-11-12.svg)
 
 ![2026-11-12 玻璃温室无土栽培水肥光交割、日累积光量 (DLI >=25) 与根区 EC/UV 杀菌智能托管架构一图流](assets/svg/141-greenhouse-hydroponic-par-dli-drain-ec-2026-11-12.svg)
+
+![2026-11-12 高压地下 XLPE 电力电缆交割、X 射线偏心度 (<=8%) 与变频谐振局放 (<=5 pC) 智能托管架构一图流](assets/svg/142-hv-xlpe-cable-ac-resonant-pd-eccentricity-2026-11-12.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

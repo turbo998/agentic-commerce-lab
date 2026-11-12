@@ -16618,6 +16618,91 @@ def evaluate_greenhouse_hydroponic_dli_ec_policy(
     )
 
 
+@dataclass(frozen=True)
+class HvXlpePowerCableVerdict:
+    allowed: bool
+    http_status: int
+    hv_cable_lane: str
+    settled_hv_cable_cents: int
+    dts_dynamic_ampacity_and_copper_tolling_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_hv_xlpe_power_cable_policy(
+    *,
+    gross_hv_cable_cents: int = 39500000,
+    xray_eccentricity_and_hot_set_crosslink_verified: bool = True,
+    ac_resonant_partial_discharge_and_dc_resistance_passed: bool = True,
+    webiq_kema_pq_and_superclean_resin_clean: bool = True,
+    dts_dynamic_ampacity_and_copper_tolling_savings_cents: int = 0,
+) -> HvXlpePowerCableVerdict:
+    # 1. VCV X-Ray Eccentricity (>8.0%) or Under-Crosslinked Hot-Set Elongation (>100%) -> HTTP 403
+    if not xray_eccentricity_and_hot_set_crosslink_verified:
+        return HvXlpePowerCableVerdict(
+            False,
+            403,
+            "XLPE_INSULATION_ECCENTRICITY_OR_UNDER_CROSSLINK_HOTSET_BLOCKED",
+            0,
+            0,
+            "hv_xlpe_cable_blocked_due_to_xray_eccentricity_above_8pct_or_under_crosslinked_hotset",
+            12,
+            "Send to a human",
+        )
+
+    # 2. AC Resonant Partial Discharge (>5 pC), Destructive DC Hipot or High Conductor Rdc -> HTTP 422
+    if not ac_resonant_partial_discharge_and_dc_resistance_passed:
+        return HvXlpePowerCableVerdict(
+            False,
+            422,
+            "PARTIAL_DISCHARGE_CORONA_SPIKE_OR_CONDUCTOR_DC_RESISTANCE_BLOCKED",
+            0,
+            0,
+            "cable_or_joint_rejected_for_ac_resonant_partial_discharge_above_5pc_or_high_conductor_rdc",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Missing KEMA PQ Type Certificate or Non-Super-Clean XLPE Resin via Web IQ -> HTTP 451
+    if not webiq_kema_pq_and_superclean_resin_clean:
+        return HvXlpePowerCableVerdict(
+            False,
+            451,
+            "KEMA_PQ_CERT_MISSING_OR_NON_SUPERCLEAN_XLPE_RESIN_HOLD",
+            0,
+            0,
+            "webiq_detected_missing_kema_pq_type_certificate_or_non_superclean_xlpe_resin_lot",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ DTS Fiber Dynamic Ampacity (RTTR) + Retired Grid Copper Tolling -> HTTP 409 Confirm
+    if dts_dynamic_ampacity_and_copper_tolling_savings_cents > 0:
+        return HvXlpePowerCableVerdict(
+            False,
+            409,
+            "DTS_DYNAMIC_AMPACITY_AND_RETIRED_COPPER_TOLLING_CONFIRM",
+            gross_hv_cable_cents - dts_dynamic_ampacity_and_copper_tolling_savings_cents,
+            dts_dynamic_ampacity_and_copper_tolling_savings_cents,
+            "webiq_applied_dts_dynamic_ampacity_rttr_and_retired_copper_tolling_saving_63200_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified VCV X-Ray Eccentricity <=8% + AC Resonant PD <=5 pC + Clean KEMA PQ -> Settled
+    return HvXlpePowerCableVerdict(
+        True,
+        200,
+        "VERIFIED_HV_XLPE_CABLE_SETTLED",
+        gross_hv_cable_cents,
+        0,
+        "vcv_xray_eccentricity_hot_set_ac_resonant_pd_kelvin_rdc_and_kema_pq_verified",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21814,6 +21899,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "canopy_dli_block_latency_ms": ghp_dli_403.latency_ms,
     }
 
+    # Round 140 (HV 220kV Underground XLPE Power Cable & Joint Offtake, X-Ray Eccentricity & AC Resonant PD Mandate)
+    xlp_commit_ok = evaluate_hv_xlpe_power_cable_policy()
+    xlp_ecc_403 = evaluate_hv_xlpe_power_cable_policy(
+        xray_eccentricity_and_hot_set_crosslink_verified=False,
+    )
+    xlp_pd_422 = evaluate_hv_xlpe_power_cable_policy(
+        ac_resonant_partial_discharge_and_dc_resistance_passed=False,
+    )
+    xlp_kem_451 = evaluate_hv_xlpe_power_cable_policy(
+        webiq_kema_pq_and_superclean_resin_clean=False,
+    )
+    xlp_dts_409 = evaluate_hv_xlpe_power_cable_policy(
+        dts_dynamic_ampacity_and_copper_tolling_savings_cents=6320000,
+    )
+    hv_xlpe_cable_guards = {
+        "all_passed": (
+            xlp_commit_ok.allowed
+            and xlp_commit_ok.settled_hv_cable_cents == 39500000
+            and not xlp_ecc_403.allowed
+            and xlp_ecc_403.http_status == 403
+            and not xlp_pd_422.allowed
+            and xlp_pd_422.http_status == 422
+            and not xlp_kem_451.allowed
+            and xlp_kem_451.http_status == 451
+            and not xlp_dts_409.allowed
+            and xlp_dts_409.action_pill == "Confirm"
+        ),
+        "hv_cable_settlement_latency_ms": xlp_commit_ok.latency_ms,
+        "xray_eccentricity_block_latency_ms": xlp_ecc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21966,6 +22082,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "titanium_billet_guards": titanium_billet_guards,
         "municipal_uf_guards": municipal_uf_guards,
         "greenhouse_hydroponic_guards": greenhouse_hydroponic_guards,
+        "hv_xlpe_cable_guards": hv_xlpe_cable_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27385,6 +27502,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ghp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive HV 220kV Underground XLPE Power Cable & Joint Offtake, X-Ray Eccentricity & AC Resonant PD Mandate Sandbox (Round 140 FAQ Companion) -->
+      <div class="finops-box" id="hv-xlpe-cable-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-xlp-title">🔌 高压地下 XLPE 电力电缆交割、立塔 X 射线偏心度 (&lt;=8%) 与变频串联谐振局放 (&lt;=5 pC) 架构：防管廊接头爆炸与偷铜令牌 (hv_xlpe_power_cable_mandate_...) vs 按米数与直流打压盲付决策器 (Round 140 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 220kV 大截面超净 XLPE 高压电缆与预制中间接头交割 ($395,000.00)、IEC 62067 立塔 X 射线偏心度/热延伸、变频谐振交流局放 PD 与 Web IQ KEMA/DTS 光纤增容场景 (HV XLPE Cable Scenario):</span></label>
+          <select id="xlp-select" onchange="updateHvXlpeCableSandbox()">
+            <option value="xlp_commit_ok">⚡ 立塔 X 射线偏心度 4.5% (&lt;=8%) + 热延伸 65% (&lt;=100%) + 变频谐振交流局放 1.8 pC (&lt;=5 pC) + 20°C 直流电阻达标：20ms 自动结算 $395,000.00! (Act automatically)</option>
+            <option value="xlp_ecc_403">🛑 机头流道失温或收线过快导致中段三层共挤偏心度达 16.2% &gt; 8% 且内层欠交联 (热延伸 145% &gt; 100%，夏季 90°C 满载时沉重铜芯将热软化下沉压穿薄壁击穿) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="xlp_pd_422">🚨 预制硅橡胶中间接头剥切留有半导电刀痕毛刺致高频局放飙至 85 pC &gt; 5 pC、违规使用直流耐压注入空间电荷或铜导体截面缩水 3% 致直流电阻超标拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="xlp_kem_451">🛑 用普通中压聚乙烯冒充 Borealis 超净高压交联料 (混入 50μm 焦烧琥珀颗粒诱发电树枝) 或缺失 KEMA 1 年期预鉴定试验 (PQ) 证书：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="xlp_dts_409">🧑‍⚖️ Web IQ 启用电缆内置分布式光纤测温 (DTS RTTR 动态释放 +18% 载流量免挖冗余沟道) 并将电网退役旧高压铜缆纳入闭环重拉来料加工立省 $63,200.00 (净付 $331,800.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="xlp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27963,6 +28098,7 @@ function renderAll() {{
   updateAerospaceTitaniumTi64Sandbox();
   updateMunicipalWaterUfPacSandbox();
   updateGreenhouseHydroponicSandbox();
+  updateHvXlpeCableSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -35075,6 +35211,55 @@ function updateGreenhouseHydroponicSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 冠层量子 DLI (&gt;=25 mol/m²/d) + 岩棉根区 EC (2.8–3.8) + 回液 UV 零病菌达标：已自动清算 (VERIFIED_GREENHOUSE_HYDROPONIC_SETTLED · 18ms · Act automatically):</strong><br>" +
     "• <strong>零光衰虚耗电费、零高盐脐腐病与回液传染拔园</strong>：现代玻璃温室无土栽培水肥与补光服务已完成结算（<code>$145,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHvXlpeCableSandbox() {{
+  var selEl = document.getElementById("xlp-select");
+  var outEl = document.getElementById("xlp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "xlp_ecc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 XLPE_INSULATION_ECCENTRICITY_OR_UNDER_CROSSLINK_HOTSET_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "立式交联塔出口 <code>Sikora X-Ray 8000 在线三维测偏仪与热延伸试验台 (IEC 62067)</code> 实测显示，该盘 220kV 电缆中段三层共挤绝缘偏心度高达 <code>16.2% &gt; 8.0%</code> 且热延伸伸长率 <code>145% &gt; 100%</code>（90°C 满负荷发热时沉重分割铜芯将热软化下沉压穿薄壁引发接地爆炸，<code>xray_eccentricity_and_hot_set_crosslink_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$395,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "xlp_pd_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PARTIAL_DISCHARGE_CORONA_SPIKE_OR_CONDUCTOR_DC_RESISTANCE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "高压试验车 <code>变频串联谐振系统 + Omicron UHF/HFCT 局放仪与开尔文直流电桥</code> 检出预制式中间接头因半导电刀痕毛刺产生 <code>PD = 85 pC &gt; 5 pC</code> 剧烈局部放电、违规采用直流耐压注入空间电荷，或铜导体截面缩水致 20°C 直流电阻超标（<code>ac_resonant_partial_discharge_and_dc_resistance_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "xlp_kem_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 KEMA_PQ_CERT_MISSING_OR_NON_SUPERCLEAN_XLPE_RESIN_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>DNV/KEMA 高压预鉴定试验 (PQ) 证书库与 Borealis 超净交联聚乙烯批次 COA</code>，检出该批电缆冒用普通中压绝缘料混入微米级焦烧杂质或缺失 KEMA PQ 报告，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "xlp_dts_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DTS_DYNAMIC_AMPACITY_AND_RETIRED_COPPER_TOLLING_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动激活电缆内置 <code>分布式光纤测温 (DTS) IEC 60853 实时动态热额定值 (RTTR 释放 +18% 应急输电容量)</code>，并将电网技改拆下的退役旧高压铜缆直接交由电缆厂闭环重拉代工（Copper Tolling），单批立省 <code>$63,200.00</code>（净付降至 <code>$331,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 立塔 X 射线偏心 (&lt;=8%) + 变频谐振局放 (&lt;=5 pC) + 20°C 直流电阻达标：已自动清算 (VERIFIED_HV_XLPE_CABLE_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零管廊中间接头爆炸、零铜芯热下沉与截面缩水</strong>：高压地下 XLPE 电力电缆与预制接头批次已完成结算（<code>$395,000.00</code>）！" +
     "</div>";
 }}
 
