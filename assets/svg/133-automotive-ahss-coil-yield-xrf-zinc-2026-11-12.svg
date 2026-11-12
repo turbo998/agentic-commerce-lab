@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg133" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1320"/>
+      <stop offset="50%" stop-color="#17253B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent133" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardBg133" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#162235"/>
+      <stop offset="100%" stop-color="#0A101A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg133)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent133)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="400" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="240" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 131 · AUTOMOTIVE AHSS &amp; GALVANIZED COIL ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    汽车超高强钢与热镀锌板卷交割、全卷屈服强度与 XRF 锌层智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    Full-Coil Inline IMPOC Yield Uniformity (ΔRp0.2 &lt;= ±35 MPa), XRF Zinc Coating (&gt;=60/60 g/m²) &amp; H2-DRI Green Steel vs. Stamping Split
+  </text>
+
+  <!-- Left Card: Legacy Single-Coupon MTC Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg133)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看炉批质保书与毛重踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 卷尾 30cm 单点样掩盖头尾 40m 屈服跳变拉裂</text>
+    <text x="58" y="224" fill="#CBD5E1">• 头尾未退火透段屈服暴涨 ±95 MPa、延伸率跌破 10%</text>
+    <text x="58" y="242" fill="#CBD5E1">• 2,500T 冲压机 B 柱拉裂或严重回弹，骗走 $275,000</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 气刀偷刮锌层 (&lt;60 g/m²) 与正公差少冲 4% 零件</text>
+    <text x="58" y="294" fill="#CBD5E1">• 双面锌层缩水至 42/42 g/m² 致车身底盘 3 年锈穿</text>
+    <text x="58" y="312" fill="#CBD5E1">• 按正公差过磅实重收钱，同样吨数少冲 4.1% 车门</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 绿钢碳足迹伪造与 35% 纯净冲压废钢被贱卖</text>
+    <text x="58" y="364" fill="#CBD5E1">• 高炉煤基钢伪造 H2-DRI 绿钢 EPD 触发欧盟 CBAM 罚单</text>
+    <text x="58" y="382" fill="#CBD5E1">• 落料 35% 超低碳/AHSS 纯净边角料未闭环直返钢厂</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$275,000 冲压开裂停线与偷锌生锈
+  </text>
+
+  <!-- Center Card: 4-Layer Automotive AHSS Coil Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg133)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ 全卷 IMPOC 磁测 + XRF 锌层 + 废钢闭环托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 全卷 1,500m 在线磁测屈服与切头尾 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    EMG IMPOC 屈服波动 &gt; ±35 MPa 或头尾超差未切除 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 COIL_HEAD_TAIL_YIELD_DRIFT_OR_ELONGATION_SPLIT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · XRF 双面锌层 (&gt;=60/60) 与理论面积 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    镀锌层 &lt; 60 g/m²、O5 表面锌渣或正公差虚增吨重 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 ZINC_COATING_UNDERWEIGHT_OR_SURFACE_DROSS_DEFECT_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 3 · Web IQ 欧盟 CBAM 绿钢与 IATF 核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    H2-DRI 绿钢 EPD 碳足迹造假或 IATF 16949 失效 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 CBAM_GREEN_STEEL_CARBON_FRAUD_OR_IATF16949_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 激光拼焊 (TWB) + 冲压废钢闭环 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    不等厚激光拼焊减重 + 35% 冲压边角料回炉立省 $44,000 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 TAILOR_WELDED_BLANK_AND_PROMPT_SCRAP_CLOSED_LOOP_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_AUTOMOTIVE_AHSS_COIL_SETTLED (19ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg133)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#7DD3FC">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 全卷±18MPa+锌层65/65：19ms 放款 $275k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 头尾屈服跳变±95MPa：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 偷刮锌层或表面锌渣：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 绿钢 EPD 造假违约：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. TWB拼焊+废钢闭环：295ms 省 $44,000 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：IMPOC/XRF 曲线 + CBAM 绿钢 EPD 核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索 DP/QP 超高强钢回弹补偿与氢脆模型</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零拉裂停机：1,500m 全长磁测取代 30cm 单点样</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$231,000.00 (单批立省 $44,000 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 钢厂质保书只测卷尾 30cm 试样，根本掩盖不住 1,500m 钢卷头尾的冷却相变跳变——必须强制 EMG IMPOC 全卷在线磁测曲线与 XRF 锌层签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #automotive-ahss-coil-sandbox · Unit Tests: 152/152 PASS
+  </text>
+</svg>

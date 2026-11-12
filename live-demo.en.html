@@ -3150,6 +3150,24 @@
         <div id="box-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Automotive AHSS & Galvanized Steel Coil Offtake, Full-Coil IMPOC Yield & XRF Zinc Mandate Sandbox (Round 131 FAQ Companion) -->
+      <div class="finops-box" id="automotive-ahss-coil-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ahs-title">🚗 汽车超高强钢与热镀锌板卷交割、全卷 IMPOC 屈服均匀度 (ΔRp0.2 &lt;= ±35 MPa) 与 XRF 锌层架构：防冲压开裂回弹令牌 (automotive_ahss_coil_mandate_...) vs 单点质保书盲付决策器 (Round 131 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 汽车 DP980/QP1180 超高强钢与 O5 热镀锌卷交割 ($275,000.00)、全卷 1,500m 在线磁测屈服强度、XRF 双面锌层克重与 Web IQ CBAM 绿钢/激光拼焊废钢闭环场景 (Automotive AHSS Coil Scenario):</span></label>
+          <select id="ahs-select" onchange="updateAutomotiveAhssCoilSandbox()">
+            <option value="ahs_commit_ok">⚡ 全卷 1,500m 屈服波动 ±18 MPa (&lt;=±35 MPa) + XRF 锌层 65/65 g/m² (&gt;=60/60) + O5 零锌渣 + H2-DRI 绿钢合规：19ms 自动结算 $275,000.00! (Act automatically)</option>
+            <option value="ahs_yld_403">🛑 仅凭卷尾 30cm 试样合格放行，钢卷头尾 40m 未退火透过渡带未切净 (屈服强度飙升 ±95 MPa 且延伸率 &lt;10%，导致 2,500T 冲压机 B 柱拉裂或严重回弹) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ahs_znc_422">🚨 氮气刀偷刮双面热镀锌层至 42/42 g/m² (&lt;60/60 g/m² 致底盘 3 年锈穿)、O5 外板锌渣压印或按正公差实重收费少给 4.1% 冲压面积拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ahs_cbm_451">🛑 用煤基高炉长流程钢伪造氢基直接还原铁 (H2-DRI) 绿钢 EPD 碳足迹声明或热处理 CQI-9 / IATF 16949 证书逾期：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="ahs_twb_409">🧑‍⚖️ Web IQ 启用不等厚激光拼焊板 (Tailor-Welded Blank, TWB) 门环减重方案并将 35% 纯净一类冲压落料新废钢 (Prompt Scrap) 原牌号闭环回炉抵扣立省 $44,000.00 (净付 $231,000.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ahs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3719,6 +3737,7 @@ function renderAll() {
   updateMetallurgicalCokingCoalSandbox();
   updateBatteryLithiumLfpSandbox();
   updateCorrugatedPackagingEctSandbox();
+  updateAutomotiveAhssCoilSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10390,6 +10409,55 @@ function updateCorrugatedPackagingEctSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 边压 ECT (&gt;=44 lb/in) + 空箱抗压 BCT (&gt;=4,500 N) + 可勃吸水 (&lt;=30 g/m²) 达标：已自动清算 (VERIFIED_CORRUGATED_PACKAGING_SETTLED · 18ms · Act automatically):</strong><br>" +
     "• <strong>零掺石粉塌箱倒垛、零冷链返潮烂箱与泡重浪费</strong>：高强瓦楞纸箱与牛卡箱板纸批次已完成结算（<code>$140,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAutomotiveAhssCoilSandbox() {
+  var selEl = document.getElementById("ahs-select");
+  var outEl = document.getElementById("ahs-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ahs_yld_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 COIL_HEAD_TAIL_YIELD_DRIFT_OR_ELONGATION_SPLIT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "退火镀锌线出口 <code>EMG IMPOC 在线脉冲磁噪连续测绘仪 (ISO 6892-1)</code> 实测显示，该卷 DP980 超高强钢虽然卷尾 30cm 单点样合格，但头尾 40m 过渡带未切净，屈服强度剧烈跳变 <code>ΔRp0.2 = ±95 MPa &gt; ±35 MPa</code> 且延伸率跌破 10%（上 2,500T 伺服冲压机必引发 B 柱拉裂或严重回弹，<code>full_coil_impoc_yield_and_elongation_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$275,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ahs_znc_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ZINC_COATING_UNDERWEIGHT_OR_SURFACE_DROSS_DEFECT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "镀锌出口段 <code>在线 XRF 荧光测厚仪与 Parsytec O5 表面视觉仪</code> 检出双面锌层被气刀刮薄至 <code>42/42 g/m² &lt; 60/60 g/m²</code>、存在锌渣压印缺陷，或按正公差实重计费少给 4.1% 有效冲压面积（<code>xrf_zinc_coating_and_theoretical_area_weight_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ahs_cbm_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CBAM_GREEN_STEEL_CARBON_FRAUD_OR_IATF16949_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 CBAM 碳边境调节机制 EPD 数据库与 IATF 16949 质量注册库</code>，检出供应商用煤基高炉钢伪造氢基直接还原铁（H2-DRI 绿钢）低碳证书或特殊过程资质失效，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ahs_twb_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TAILOR_WELDED_BLANK_AND_PROMPT_SCRAP_CLOSED_LOOP_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将一体等厚大板切换为 <code>不等厚激光拼焊板 (Tailor-Welded Blank, TWB)</code>，并将落料车间产生的 35% 纯净一类冲压新废钢（Prompt Stamping Scrap）原牌号闭环直返钢厂抵扣，单批立省 <code>$44,000.00</code>（净付降至 <code>$231,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全卷 1,500m 屈服波动 (&lt;=±35 MPa) + XRF 锌层 (&gt;=60/60 g/m²) + 绿钢 EPD 达标：已自动清算 (VERIFIED_AUTOMOTIVE_AHSS_COIL_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零头尾冲压开裂回弹、零偷锌锈穿与正公差亏米</strong>：汽车超高强钢与 O5 热镀锌板卷批次已完成结算（<code>$275,000.00</code>）！" +
     "</div>";
 }
 

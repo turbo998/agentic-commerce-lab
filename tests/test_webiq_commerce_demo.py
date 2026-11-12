@@ -8495,6 +8495,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corrugated-packaging-ect-sandbox", demo_zh)
 
+    def test_automotive_ahss_galvanized_coil_yield_gauge_xrf_coating_mandate_vs_head_tail_stamping_split_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_automotive_ahss_coil_policy,
+        )
+
+        # 1. Verified full-coil IMPOC yield <=+-35 MPa + XRF zinc >=60/60 + clean CBAM/IATF -> 200 OK ($275,000)
+        commit_ok = evaluate_automotive_ahss_coil_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ahss_coil_cents, 27500000)
+
+        # 2. Uncropped head/tail yield spike (>+-35 MPa) risking stamping split -> 403 blocked in 11ms
+        yld_403 = evaluate_automotive_ahss_coil_policy(
+            full_coil_impoc_yield_and_elongation_verified=False,
+        )
+        self.assertFalse(yld_403.allowed)
+        self.assertEqual(yld_403.http_status, 403)
+        self.assertEqual(
+            yld_403.ahss_coil_lane,
+            "COIL_HEAD_TAIL_YIELD_DRIFT_OR_ELONGATION_SPLIT_BLOCKED",
+        )
+
+        # 3. Skimmed XRF zinc coating (<60/60 g/m2), O5 dross or positive-gauge overbilling -> 422 blocked in 14ms
+        znc_422 = evaluate_automotive_ahss_coil_policy(
+            xrf_zinc_coating_and_theoretical_area_weight_passed=False,
+        )
+        self.assertFalse(znc_422.allowed)
+        self.assertEqual(znc_422.http_status, 422)
+        self.assertEqual(
+            znc_422.ahss_coil_lane,
+            "ZINC_COATING_UNDERWEIGHT_OR_SURFACE_DROSS_DEFECT_BLOCKED",
+        )
+
+        # 4. Web IQ detects fake CBAM H2-DRI green-steel EPD or expired IATF 16949 -> 451 blocked in 285ms
+        cbm_451 = evaluate_automotive_ahss_coil_policy(
+            webiq_cbam_green_steel_and_iatf16949_clean=False,
+        )
+        self.assertFalse(cbm_451.allowed)
+        self.assertEqual(cbm_451.http_status, 451)
+
+        # 5. Web IQ applies Tailor-Welded Blanks (TWB) & closed-loop prompt stamping scrap saving $44,000 ($231,000 net) -> 409 Confirm
+        twb_409 = evaluate_automotive_ahss_coil_policy(
+            tailor_welded_blank_and_prompt_scrap_loop_savings_cents=4400000,
+        )
+        self.assertFalse(twb_409.allowed)
+        self.assertEqual(twb_409.http_status, 409)
+        self.assertEqual(twb_409.settled_ahss_coil_cents, 23100000)
+        self.assertEqual(twb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["automotive_ahss_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("automotive-ahss-coil-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
