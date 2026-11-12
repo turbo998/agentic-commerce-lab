@@ -16533,6 +16533,91 @@ def evaluate_municipal_water_uf_pac_policy(
     )
 
 
+@dataclass(frozen=True)
+class GreenhouseHydroponicDliEcVerdict:
+    allowed: bool
+    http_status: int
+    greenhouse_lane: str
+    settled_greenhouse_cents: int
+    chp_co2_enrichment_and_drain_recycle_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_greenhouse_hydroponic_dli_ec_policy(
+    *,
+    gross_greenhouse_cents: int = 14500000,
+    canopy_par_dli_and_led_ppe_verified: bool = True,
+    root_zone_slab_ec_ph_and_vpd_passed: bool = True,
+    webiq_uv_pathogen_qpcr_and_perchlorate_clean: bool = True,
+    chp_co2_enrichment_and_drain_recycle_savings_cents: int = 0,
+) -> GreenhouseHydroponicDliEcVerdict:
+    # 1. Low Canopy PAR Daily Light Integral (<25 mol/m2/d) or Inefficient LED PPE (<3.2 umol/J) -> HTTP 403
+    if not canopy_par_dli_and_led_ppe_verified:
+        return GreenhouseHydroponicDliEcVerdict(
+            False,
+            403,
+            "LOW_CANOPY_PAR_DLI_OR_INEFFICIENT_LED_PPE_BLOCKED",
+            0,
+            0,
+            "greenhouse_lighting_invoice_blocked_due_to_low_canopy_par_dli_or_inefficient_led_ppe",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Stonewool Slab Salinity Spike (EC >4.5 mS/cm Blossom-End Rot) or pH Emitter Precipitation -> HTTP 422
+    if not root_zone_slab_ec_ph_and_vpd_passed:
+        return GreenhouseHydroponicDliEcVerdict(
+            False,
+            422,
+            "ROOT_ZONE_EC_SALINITY_SPIKE_OR_PH_PRECIPITATION_BLOCKED",
+            0,
+            0,
+            "hydroponic_fertigation_rejected_for_root_zone_ec_salinity_spike_or_ph_dripper_clogging",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Drain-Water Pythium/ToBRFV qPCR Positivity or Perchlorate Residue (>10 ppm) via Web IQ -> HTTP 451
+    if not webiq_uv_pathogen_qpcr_and_perchlorate_clean:
+        return GreenhouseHydroponicDliEcVerdict(
+            False,
+            451,
+            "DRAIN_WATER_PATHOGEN_BREACH_OR_PERCHLORATE_RESIDUE_HOLD",
+            0,
+            0,
+            "webiq_detected_drain_water_pythium_tobrfv_pathogen_or_fertilizer_perchlorate_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ CHP Flue-Gas 1,000 ppm CO2 Enrichment + ISE Closed-Loop Drain Reuse -> HTTP 409 Confirm
+    if chp_co2_enrichment_and_drain_recycle_savings_cents > 0:
+        return GreenhouseHydroponicDliEcVerdict(
+            False,
+            409,
+            "CHP_CO2_ENRICHMENT_AND_CLOSED_LOOP_DRAIN_FERTIGATION_CONFIRM",
+            gross_greenhouse_cents - chp_co2_enrichment_and_drain_recycle_savings_cents,
+            chp_co2_enrichment_and_drain_recycle_savings_cents,
+            "webiq_applied_chp_co2_enrichment_and_closed_loop_ise_drain_fertigation_saving_23200_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Canopy DLI >=25 mol/m2/d + Slab EC 2.8-3.8 mS/cm + Clean UV qPCR -> Settled
+    return GreenhouseHydroponicDliEcVerdict(
+        True,
+        200,
+        "VERIFIED_GREENHOUSE_HYDROPONIC_SETTLED",
+        gross_greenhouse_cents,
+        0,
+        "canopy_par_dli_led_ppe_stonewool_slab_ec_and_uv_pathogen_qpcr_verified",
+        18,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21698,6 +21783,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pdt_decay_block_latency_ms": muf_pdt_403.latency_ms,
     }
 
+    # Round 139 (Commercial Venlo Greenhouse Hydroponic & LED SLA, Canopy DLI & Slab EC/UV Mandate)
+    ghp_commit_ok = evaluate_greenhouse_hydroponic_dli_ec_policy()
+    ghp_dli_403 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+        canopy_par_dli_and_led_ppe_verified=False,
+    )
+    ghp_ec_422 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+        root_zone_slab_ec_ph_and_vpd_passed=False,
+    )
+    ghp_uv_451 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+        webiq_uv_pathogen_qpcr_and_perchlorate_clean=False,
+    )
+    ghp_chp_409 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+        chp_co2_enrichment_and_drain_recycle_savings_cents=2320000,
+    )
+    greenhouse_hydroponic_guards = {
+        "all_passed": (
+            ghp_commit_ok.allowed
+            and ghp_commit_ok.settled_greenhouse_cents == 14500000
+            and not ghp_dli_403.allowed
+            and ghp_dli_403.http_status == 403
+            and not ghp_ec_422.allowed
+            and ghp_ec_422.http_status == 422
+            and not ghp_uv_451.allowed
+            and ghp_uv_451.http_status == 451
+            and not ghp_chp_409.allowed
+            and ghp_chp_409.action_pill == "Confirm"
+        ),
+        "greenhouse_settlement_latency_ms": ghp_commit_ok.latency_ms,
+        "canopy_dli_block_latency_ms": ghp_dli_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21849,6 +21965,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "magnet_wire_guards": magnet_wire_guards,
         "titanium_billet_guards": titanium_billet_guards,
         "municipal_uf_guards": municipal_uf_guards,
+        "greenhouse_hydroponic_guards": greenhouse_hydroponic_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27250,6 +27367,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="muf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Venlo Greenhouse Hydroponic & LED SLA, Canopy DLI & Slab EC/UV Mandate Sandbox (Round 139 FAQ Companion) -->
+      <div class="finops-box" id="greenhouse-hydroponic-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ghp-title">🌱 现代玻璃温室无土栽培水肥光交割、冠层日累积光量 (DLI &gt;=25 mol/m²/d) 与岩棉根区 EC / UV 杀菌架构：防根腐绝收与脐腐病令牌 (greenhouse_hydroponic_dli_ec_mandate_...) vs 按电度与肥袋盲付决策器 (Round 139 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 20 公顷文洛式玻璃温室无土栽培水肥与 LED 补光服务 ($145,000.00)、冠层 PAR 量子 DLI/PPE、岩棉条孔隙水 EC/pH 与 Web IQ 回液 UV 病原体/CHP 碳肥同补场景 (Greenhouse Hydroponic Scenario):</span></label>
+          <select id="ghp-select" onchange="updateGreenhouseHydroponicSandbox()">
+            <option value="ghp_commit_ok">⚡ 冠层量子 DLI 28.4 mol/m²/d (&gt;=25) + 灯效 PPE 3.45 μmol/J (&gt;=3.2) + 岩棉根区 EC 3.2 mS/cm + 回液 UV 零病菌：18ms 自动结算 $145,000.00! (Act automatically)</option>
+            <option value="ghp_dli_403">🛑 补光灯透镜蒙尘光衰或低效灯珠 (PPE = 2.1 μmol/J) 导致冠层实际接收光合光子跌至 DLI = 14.2 mol/m²/d &lt; 25 (电表度数照跑但番茄落花减产 40%) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ghp_ec_422">🚨 仅看配肥罐进水未测岩棉根区，蒸腾浓缩致根区孔隙水飙升至 EC = 6.2 mS/cm &gt; 4.5 (阻碍钙吸收引发满棚脐腐病 BER) 或 pH &gt; 6.8 磷酸钙堵死滴箭拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ghp_uv_451">🛑 回流废液 UV-C 紫外灯管结垢失效 (&lt;100 mJ/cm²) 检出腐霉菌 / ToBRFV 病毒 qPCR 阳性 (24h 即可传染全棚绝收) 或肥料高氯酸盐超标：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="ghp_chp_409">🧑‍⚖️ Web IQ 启用燃气热电联产 (CHP) 净化烟气向温室同补 1,000 ppm CO2 气肥 (光合速率提 30%) 并通过离子选择电极 (ISE) 100% 闭环回收排液营养盐立省 $23,200.00 (净付 $121,800.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ghp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27827,6 +27962,7 @@ function renderAll() {{
   updateEvHairpinMagnetWireSandbox();
   updateAerospaceTitaniumTi64Sandbox();
   updateMunicipalWaterUfPacSandbox();
+  updateGreenhouseHydroponicSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -34890,6 +35026,55 @@ function updateMunicipalWaterUfPacSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 每日 PDT (&lt;=0.01 bar/min) + 有效氧化铝 (Al2O3 &gt;=10.5%) + NSF 60 达标：已自动清算 (VERIFIED_MUNICIPAL_UF_PAC_SETTLED · 18ms · Act automatically):</strong><br>" +
     "• <strong>零断丝漏隐孢子虫、零废酸重金属与兑水假药</strong>：市政自来水厂超滤膜与饮用水级 PAC 批次已完成结算（<code>$180,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateGreenhouseHydroponicSandbox() {{
+  var selEl = document.getElementById("ghp-select");
+  var outEl = document.getElementById("ghp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ghp_dli_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_CANOPY_PAR_DLI_OR_INEFFICIENT_LED_PPE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "温室环控 <code>Apogee 冠层 PAR 光量子传感器阵列与电表</code> 实测显示，因补光 LED 灯珠光衰或采用低光效灯具（<code>PPE = 2.1 μmol/J &lt; 3.2 μmol/J</code>），作物冠层日累积光合有效辐射跌至 <code>DLI = 14.2 mol/m²/d &lt; 25.0 mol/m²/d</code>（电表度数虽满额但光子缩水 40% 导致番茄严重落花减产，<code>canopy_par_dli_and_led_ppe_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$145,000.00</code> 账单结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ghp_ec_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ROOT_ZONE_EC_SALINITY_SPIKE_OR_PH_PRECIPITATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "栽培槽 <code>Grodan GroSens 岩棉根区介电传感器</code> 检出岩棉内部孔隙水电导率已浓缩飙升至 <code>EC_slab = 6.2 mS/cm &gt; 3.8 mS/cm</code>（根系渗透压倒挂阻断 Ca2+ 吸收引发大面积果实脐腐病 BER），或 pH 偏碱导致磷酸钙沉淀堵死滴灌箭（<code>root_zone_slab_ec_ph_and_vpd_passed == False</code>）。网关在 <code>14ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ghp_uv_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DRAIN_WATER_PATHOGEN_BREACH_OR_PERCHLORATE_RESIDUE_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>植保实验室回流废液 qPCR 病原体报告与 GlobalG.A.P. 肥料农残库</code>，检出回液 UV-C 杀菌不足导致腐霉菌（Pythium）/ 番茄褐色皱果病毒（ToBRFV）阳性或高氯酸盐超标，立即切断回液循环并执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ghp_chp_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CHP_CO2_ENRICHMENT_AND_CLOSED_LOOP_DRAIN_FERTIGATION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动启用 <code>燃气热电联产 (CHP) 脱硝尾气向温室补充 1,000 ppm CO2 气肥 (光合速率提升 30%)</code>，并通过离子选择性电极（ISE）将消毒后回流废液 100% 闭环调配回用，单季立省 <code>$23,200.00</code>（净付降至 <code>$121,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 冠层量子 DLI (&gt;=25 mol/m²/d) + 岩棉根区 EC (2.8–3.8) + 回液 UV 零病菌达标：已自动清算 (VERIFIED_GREENHOUSE_HYDROPONIC_SETTLED · 18ms · Act automatically):</strong><br>" +
+    "• <strong>零光衰虚耗电费、零高盐脐腐病与回液传染拔园</strong>：现代玻璃温室无土栽培水肥与补光服务已完成结算（<code>$145,000.00</code>）！" +
     "</div>";
 }}
 

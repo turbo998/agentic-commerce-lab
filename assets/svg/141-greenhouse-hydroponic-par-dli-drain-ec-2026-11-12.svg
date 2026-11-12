@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg141" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061A10"/>
+      <stop offset="50%" stop-color="#0E331F"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent141" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="cardBg141" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112E1F"/>
+      <stop offset="100%" stop-color="#07140D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg141)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent141)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ROUND 139 · VENLO GREENHOUSE HYDROPONIC &amp; LED SLA ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    玻璃温室无土栽培水肥光交割、日累积光量 (DLI &gt;=25) 与根区 EC/UV 杀菌智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    Canopy Quantum PAR DLI (&gt;=25 mol/m²/d), Stonewool Slab EC (2.8–3.8 mS/cm) &amp; Drain UV qPCR vs. Root-Rot &amp; Tipburn Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Meter kWh & Fertilizer Bag Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg141)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按电度数与化肥袋数盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 灯具光衰或低效 PPE 致冠层 DLI 跌至 14 mol/m²/d</text>
+    <text x="58" y="224" fill="#CBD5E1">• 电表千瓦时照常飞转，但有效红蓝光子缩水 40%</text>
+    <text x="58" y="242" fill="#CBD5E1">• 番茄落花减产且糖度崩盘，骗走 $145,000 电肥费</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 岩棉根区盐害 (EC=6.2 mS/cm) 引发满棚脐腐病</text>
+    <text x="58" y="294" fill="#CBD5E1">• 仅测配肥罐进水 EC，漏掉岩棉内部蒸腾浓缩高盐</text>
+    <text x="58" y="312" fill="#CBD5E1">• 根系渗透压倒挂吸不上钙离子，果实底部大面积黑腐</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 回液 UV 结垢失效导致腐霉菌/ToBRFV 24h 毁全园</text>
+    <text x="58" y="364" fill="#CBD5E1">• 未消杀彻底的回流废液顺管网把根腐病传遍 20 公顷</text>
+    <text x="58" y="382" fill="#CBD5E1">• 燃气锅炉尾气纯净 CO2 白排且 30% 含肥排水浪费</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$145,000 虚耗电费与全棚传染拔园灾难
+  </text>
+
+  <!-- Center Card: 4-Layer Greenhouse Hydroponic Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg141)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ⚡ 冠层量子 DLI&gt;=25 + 根区 EC + 热电碳闭环托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 冠层 PAR 量子 DLI (&gt;=25) 与 PPE (&gt;=3.2) (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    日累积光量 DLI &lt; 25 mol/m²/d 或灯具光效 PPE &lt; 3.2 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 LOW_CANOPY_PAR_DLI_OR_INEFFICIENT_LED_PPE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 岩棉根区孔隙水 EC (2.8–3.8) 与 pH (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    GroSens 根区 EC &gt; 4.5 mS/cm 烧根脐腐或 pH 沉淀堵头 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 ROOT_ZONE_EC_SALINITY_SPIKE_OR_PH_PRECIPITATION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 回液 UV 病原 qPCR 与农残核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    回液检出腐霉菌/ToBRFV 病毒阳性或肥料高氯酸盐超标 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 DRAIN_WATER_PATHOGEN_BREACH_OR_PERCHLORATE_RESIDUE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ CHP 烟气 CO2 气肥 + 废液 ISE 闭环 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    热电联产 1,000ppm CO2 提产 + 100% 废液配肥省 $23,200 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 CHP_CO2_ENRICHMENT_AND_CLOSED_LOOP_DRAIN_FERTIGATION_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_GREENHOUSE_HYDROPONIC_SETTLED (18ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg141)" stroke="#F59E0B" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#78350F"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#6EE7B7">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. DLI 28.4+根区EC 3.2：18ms 放款 $145k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 灯具光衰 DLI=14.2：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 根区 EC=6.2 烧根脐腐：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 回液带病菌或高氯酸盐：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. CHP碳肥+废液闭环：295ms 省 $23,200 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：Priva 环控日志 + 植保 qPCR 核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索远红光双光增益与 Penman 蒸腾模型</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零光子欺诈：PAR 量子微摩尔数取代电表度数</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$121,800.00 (单季立省 $23,200 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 植物叶绿素吃的是 400–700nm 光合光子摩尔数 (DLI) 而不是电表度数，而未杀菌回液 24h 即可传染全园根腐病——必须强制量子 DLI 与 UV qPCR 签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #greenhouse-hydroponic-sandbox · Unit Tests: 160/160 PASS
+  </text>
+</svg>

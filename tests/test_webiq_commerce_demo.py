@@ -8943,6 +8943,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("municipal-water-uf-pac-sandbox", demo_zh)
 
+    def test_commercial_greenhouse_hydroponic_par_dli_drain_ec_uv_mandate_vs_root_rot_tipburn_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_greenhouse_hydroponic_dli_ec_policy,
+        )
+
+        # 1. Verified canopy DLI >=25 mol/m2/d + PPE >=3.2 + slab EC 2.8-3.8 + clean UV qPCR -> 200 OK ($145,000)
+        commit_ok = evaluate_greenhouse_hydroponic_dli_ec_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_greenhouse_cents, 14500000)
+
+        # 2. Degraded LEDs dropping canopy DLI (<25 mol/m2/d) or PPE < 3.2 -> 403 blocked in 11ms
+        dli_403 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+            canopy_par_dli_and_led_ppe_verified=False,
+        )
+        self.assertFalse(dli_403.allowed)
+        self.assertEqual(dli_403.http_status, 403)
+        self.assertEqual(
+            dli_403.greenhouse_lane,
+            "LOW_CANOPY_PAR_DLI_OR_INEFFICIENT_LED_PPE_BLOCKED",
+        )
+
+        # 3. Stonewool slab salinity spike (EC > 4.5 mS/cm) or pH emitter clog -> 422 blocked in 14ms
+        ec_422 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+            root_zone_slab_ec_ph_and_vpd_passed=False,
+        )
+        self.assertFalse(ec_422.allowed)
+        self.assertEqual(ec_422.http_status, 422)
+        self.assertEqual(
+            ec_422.greenhouse_lane,
+            "ROOT_ZONE_EC_SALINITY_SPIKE_OR_PH_PRECIPITATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects drain-water Pythium/ToBRFV qPCR positive or perchlorate breach -> 451 blocked in 285ms
+        uv_451 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+            webiq_uv_pathogen_qpcr_and_perchlorate_clean=False,
+        )
+        self.assertFalse(uv_451.allowed)
+        self.assertEqual(uv_451.http_status, 451)
+
+        # 5. Web IQ activates CHP flue-gas 1,000 ppm CO2 enrichment & ISE drain reuse saving $23,200 ($121,800 net) -> 409 Confirm
+        chp_409 = evaluate_greenhouse_hydroponic_dli_ec_policy(
+            chp_co2_enrichment_and_drain_recycle_savings_cents=2320000,
+        )
+        self.assertFalse(chp_409.allowed)
+        self.assertEqual(chp_409.http_status, 409)
+        self.assertEqual(chp_409.settled_greenhouse_cents, 12180000)
+        self.assertEqual(chp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["greenhouse_hydroponic_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("greenhouse-hydroponic-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
