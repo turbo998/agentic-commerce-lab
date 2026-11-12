@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg150" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent150" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg150)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent150)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 148 · 市政排水非开挖紫外光固化 (UV-CIPP)、环向弯曲模量 (&gt;=12GPa) 与激光断面架构图</text>
+  <text x="36" y="84" class="sub">Trenchless Sewer UV-CIPP Rehabilitation SLA, Flexural Modulus (&gt;=12,000 MPa), DSC Cure (Tg&gt;=95°C) &amp; 3D Laser Wrinkle (&lt;=2% ID)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按米数与录像盲付</text>
+  <text x="52" y="166" class="card-h">三大市政地下管网塌管与毒水隐患</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 壁厚减薄 2mm 致抗外压能力暴跌 42% 塌管</text>
+  <text x="52" y="216" class="body">外压屈曲临界压力与壁厚三次方 (t^3) 成正比！</text>
+  <text x="52" y="234" class="body">12mm 玻纤管偷换成 10mm 即损失 42% 刚度，雨季</text>
+  <text x="52" y="252" class="body">地下水位上涨瞬间发生心形内瘪塌管致路面塌陷。</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 紫外灯车超速拖拽致“背面生胶”与苯乙烯死鱼</text>
+  <text x="52" y="302" class="body">为赶天亮前收工把灯车开快 2.5 倍，内表虽硬但外侧</text>
+  <text x="52" y="320" class="body">7mm 未交联 (Tg=58°C)，剧毒苯乙烯单体溶入河道。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 管底大耳朵褶皱 (&gt;2% ID) 挂湿巾淤堵溢流</text>
+  <text x="52" y="370" class="body">普通前置摄像头看不出贴壁高度，35mm 底部纵向</text>
+  <text x="52" y="388" class="body">翅片褶皱 90 天内挂满油脂湿巾导致污水漫溢上街。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 800m Pulled + Standard Forward CCTV</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $360,000 exposed to buckling &amp; styrene</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ trenchless_uv_cipp_mandate</text>
+  <text x="428" y="166" class="card-h">四层弯曲模量、DSC 固化与激光门禁（10ms–285ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: ISO 11296-4 E0, Wall t &amp; DSC (12ms)</text>
+  <text x="440" y="220" class="body">短期弯曲模量 E0 &gt;=12,000 MPa, 壁厚 &gt;=100%设计值</text>
+  <text x="440" y="238" class="body">&amp; DSC 残余放热 &lt;=5 J/g (Tg&gt;=95°C) — 违者 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: 3D Laser Wrinkle &amp; EN 1610 (15ms)</text>
+  <text x="440" y="296" class="body">全管长 3D 激光断面褶皱高度 &lt;=2.0% ID (&lt;=6mm)</text>
+  <text x="440" y="314" class="body">椭圆度 &lt;=5% &amp; 闭水零渗漏 — 超标直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ DIBt 50-Yr Creep &amp; VOC (285ms)</text>
+  <text x="440" y="372" class="body">核验德国 DIBt Z-42.3 50年湿态蠕变折减认证</text>
+  <text x="440" y="390" class="body">&amp; 水体苯乙烯残留 &lt;0.1 mg/L — 违者直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Styrene-Free &amp; Paving Offset (250ms)</text>
+  <text x="440" y="448" class="body">无苯乙烯环保乙烯基树脂 + 机器人支管恢复冲抵</text>
+  <text x="440" y="466" class="body">免开挖沥青破路准备金立省 $50,400 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高模量满固化零褶皱放行</text>
+  <text x="828" y="212" class="body">E0 14.2GPa + t 12.3mm + Tg 104°C → $360,000.00</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (12ms) · 偷减壁厚或灯车超速生胶</text>
+  <text x="828" y="258" class="body">t=9.8mm (-45%刚度) 或 Tg=58°C → 冻结 $360,000</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (15ms) · 3D 激光褶皱超标或渗漏</text>
+  <text x="828" y="304" class="body">管底褶皱 4.5% ID (&gt;2%) 易淤堵 → 拒付 $360,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (285ms) · Web IQ 假 DIBt/苯乙烯污染</text>
+  <text x="828" y="350" class="body">苯乙烯 &gt;25mg/L 毒水或假证书 → 熔断 $360,000</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (250ms) · 免破路准备金冲抵折让</text>
+  <text x="828" y="396" class="body">节省 $50,400 (-14%) → 确认后净付 $309,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 250ms · 抗注入 100% · 管网保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 非开挖 UV-CIPP 严禁“按米数和普通录像盲付”：抗外压屈曲与壁厚立方 (t^3) 成正比，减薄 16% 刚度即腰斩；灯车超速更会导致背面未固化并泄漏剧毒苯乙烯。</text>
+  <text x="54" y="584" class="body">• 必须将短期弯曲模量 (&gt;=12GPa)、DSC 残余放热 (&lt;=5J/g)、3D 激光褶皱 (&lt;=2% ID) 与 DIBt 50年蠕变认证绑定为托管令牌谓词。</text>
+</svg>

@@ -17298,6 +17298,91 @@ def evaluate_high_purity_quartz_crucible_policy(
     )
 
 
+@dataclass(frozen=True)
+class TrenchlessSewerUvCippVerdict:
+    allowed: bool
+    http_status: int
+    uv_cipp_lane: str
+    settled_uv_cipp_cents: int
+    trenchless_paving_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_trenchless_sewer_uv_cipp_policy(
+    *,
+    gross_uv_cipp_cents: int = 36000000,
+    flexural_modulus_wall_thickness_and_dsc_cure_verified: bool = True,
+    laser_profiler_wrinkle_and_hydrostatic_seal_passed: bool = True,
+    webiq_dibt_50yr_creep_and_styrene_free_clean: bool = True,
+    styrene_free_resin_and_trenchless_paving_savings_cents: int = 0,
+) -> TrenchlessSewerUvCippVerdict:
+    # 1. Shaved Wall Thickness (-42% Cubic Buckling Stiffness) or Fast UV Pull Under-Cure (Tg <95°C) -> HTTP 403
+    if not flexural_modulus_wall_thickness_and_dsc_cure_verified:
+        return TrenchlessSewerUvCippVerdict(
+            False,
+            403,
+            "FLEXURAL_MODULUS_WALL_THICKNESS_OR_UV_CURE_DEGREE_DEFICIT_BLOCKED",
+            0,
+            0,
+            "uv_cipp_liner_blocked_due_to_shaved_wall_thickness_low_modulus_or_outer_wall_uncured_resin",
+            12,
+            "Send to a human",
+        )
+
+    # 2. 3D Laser Invert Fin/Wrinkle (>2.0% ID) or EN 1610 Hydrostatic Leakage -> HTTP 422
+    if not laser_profiler_wrinkle_and_hydrostatic_seal_passed:
+        return TrenchlessSewerUvCippVerdict(
+            False,
+            422,
+            "LASER_PROFILER_WRINKLE_FIN_OR_HYDROSTATIC_LEAKAGE_EXCEEDED_BLOCKED",
+            0,
+            0,
+            "rehab_pipe_rejected_for_invert_wrinkle_fin_above_2pct_id_or_hydrostatic_joint_leakage",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Forged DIBt 50-Year Wet-Creep Certificate or Toxic Styrene Monomer Spill (>0.1 mg/L) via Web IQ -> HTTP 451
+    if not webiq_dibt_50yr_creep_and_styrene_free_clean:
+        return TrenchlessSewerUvCippVerdict(
+            False,
+            451,
+            "FORGED_DIBT_CREEP_CERT_OR_AQUATIC_STYRENE_SPILL_HOLD",
+            0,
+            0,
+            "webiq_detected_forged_dibt_50yr_creep_approval_or_toxic_styrene_monomer_water_discharge",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Styrene-Free Vinyl-Ester + Trenchless Paving Reserve Offset -> HTTP 409 Confirm
+    if styrene_free_resin_and_trenchless_paving_savings_cents > 0:
+        return TrenchlessSewerUvCippVerdict(
+            False,
+            409,
+            "STYRENE_FREE_VINYL_ESTER_AND_TRENCHLESS_PAVING_OFFSET_CONFIRM",
+            gross_uv_cipp_cents - styrene_free_resin_and_trenchless_paving_savings_cents,
+            styrene_free_resin_and_trenchless_paving_savings_cents,
+            "webiq_applied_styrene_free_resin_and_trenchless_asphalt_paving_offset_saving_50400_usd",
+            250,
+            "Confirm",
+        )
+
+    # 5. Verified E0 >=12,000 MPa + Full Wall t + DSC Tg >=95°C + 3D Laser <=2% ID + DIBt Clean -> Settled
+    return TrenchlessSewerUvCippVerdict(
+        True,
+        200,
+        "VERIFIED_TRENCHLESS_UV_CIPP_SETTLED",
+        gross_uv_cipp_cents,
+        0,
+        "iso11296_flexural_modulus_cubic_wall_dsc_cure_3d_laser_wrinkle_and_dibt_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -22742,6 +22827,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hydroxyl_sag_block_latency_ms": qtz_oh_403.latency_ms,
     }
 
+    # Round 148 (Trenchless Sewer UV-CIPP Liner Rehabilitation SLA, E0 >=12GPa & DSC Cure Mandate)
+    cip_commit_ok = evaluate_trenchless_sewer_uv_cipp_policy()
+    cip_mod_403 = evaluate_trenchless_sewer_uv_cipp_policy(
+        flexural_modulus_wall_thickness_and_dsc_cure_verified=False,
+    )
+    cip_las_422 = evaluate_trenchless_sewer_uv_cipp_policy(
+        laser_profiler_wrinkle_and_hydrostatic_seal_passed=False,
+    )
+    cip_dib_451 = evaluate_trenchless_sewer_uv_cipp_policy(
+        webiq_dibt_50yr_creep_and_styrene_free_clean=False,
+    )
+    cip_pav_409 = evaluate_trenchless_sewer_uv_cipp_policy(
+        styrene_free_resin_and_trenchless_paving_savings_cents=5040000,
+    )
+    uv_cipp_guards = {
+        "all_passed": (
+            cip_commit_ok.allowed
+            and cip_commit_ok.settled_uv_cipp_cents == 36000000
+            and not cip_mod_403.allowed
+            and cip_mod_403.http_status == 403
+            and not cip_las_422.allowed
+            and cip_las_422.http_status == 422
+            and not cip_dib_451.allowed
+            and cip_dib_451.http_status == 451
+            and not cip_pav_409.allowed
+            and cip_pav_409.action_pill == "Confirm"
+        ),
+        "uv_cipp_settlement_latency_ms": cip_commit_ok.latency_ms,
+        "buckling_cure_block_latency_ms": cip_mod_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22902,6 +23018,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "drilling_mud_guards": drilling_mud_guards,
         "uhmwpe_fiber_guards": uhmwpe_fiber_guards,
         "quartz_crucible_guards": quartz_crucible_guards,
+        "uv_cipp_guards": uv_cipp_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28465,6 +28582,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="qtz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Trenchless Sewer UV-CIPP Liner Rehabilitation SLA, E0 >=12GPa & DSC Cure Mandate Sandbox (Round 148 FAQ Companion) -->
+      <div class="finops-box" id="trenchless-uv-cipp-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cip-title">🚇 市政排水管网非开挖紫外光固化 (UV-CIPP)、环向弯曲模量 (&gt;=12GPa) 与 3D 激光断面 (&lt;=2% ID) 架构：防地下水塌管与背面生胶令牌 (trenchless_uv_cipp_mandate_...) vs 米数录像盲付决策器 (Round 148 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 城市主干道 DN800 污水管非开挖 UV-CIPP 原位内衬修复交割 ($360,000.00)、ISO 11296-4 短期弯曲模量/壁厚立方定律、DSC 残余放热/3D 激光断面褶皱与 Web IQ DIBt 50年蠕变/无苯乙烯场景 (Trenchless UV-CIPP Scenario):</span></label>
+          <select id="cip-select" onchange="updateTrenchlessUvCippSandbox()">
+            <option value="cip_commit_ok">⚡ 短期弯曲模量 E0 14,200 MPa + 实测壁厚 12.3mm + DSC 转化率 98.5% (Tg 104°C) + 3D 激光褶皱 0.8% ID：10ms 自动结算 $360,000.00! (Act automatically)</option>
+            <option value="cip_mod_403">🛑 包工头偷将 12mm 玻纤软管减薄至 9.8mm (抗外压刚度按壁厚三次方 t^3 暴跌 45%，雨季地下水上涨瞬间内瘪塌管) 或赶工把紫外灯车拉快 2.5 倍致外侧 7mm 树脂生胶 (Tg = 58°C &lt; 95°C) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="cip_las_422">🚨 3D 激光断面轮廓仪检出管底存在 35mm 高“大耳朵纵向翅片褶皱” (占管径 4.5% ID &gt; 2.0% ID，普通前置摄像头看不出，90 天内挂满湿巾油脂造成全城污水漫溢) 或闭水渗漏拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="cip_dib_451">🛑 软管供应商伪造德国 DIBt Z-42.3 50年湿态蠕变认证，或紫外欠曝致未交联剧毒苯乙烯单体 (&gt;25 mg/L) 溶入河道引发死鱼环保事故：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="cip_pav_409">🧑‍⚖️ Web IQ 启用无苯乙烯环保乙烯基酯树脂 (零气味免居民疏散) 配合机器人 100% 精准铣削支管，自动冲抵原预算中的破路沥青铣刨与临时调水准备金立省 $50,400.00 (净付 $309,600.00) → 250ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cip-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -29051,6 +29186,7 @@ function renderAll() {{
   updateOilfieldDrillingMudSandbox();
   updateUhmwpeBallisticMooringSandbox();
   updateHighPurityQuartzCrucibleSandbox();
+  updateTrenchlessUvCippSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -36555,6 +36691,55 @@ function updateHighPurityQuartzCrucibleSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 低羟基 (OH- &lt;=30 ppm) + 低碱金属 (&lt;=0.8 ppm) + 透明层零膨胀气泡达标：已自动清算 (VERIFIED_HIGH_PURITY_QUARTZ_CRUCIBLE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1500°C 软化塌埚漏硅、零微气泡炸裂断棱与少子寿命污染</strong>：36 英寸高纯石英坩埚与 IOTA 内层砂批次已完成结算（<code>$540,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateTrenchlessUvCippSandbox() {{
+  var selEl = document.getElementById("cip-select");
+  var outEl = document.getElementById("cip-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cip_mod_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FLEXURAL_MODULUS_WALL_THICKNESS_OR_UV_CURE_DEGREE_DEFICIT_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "井口伴随样块 <code>ISO 11296-4 三点弯曲试验机与 DSC 差示扫描量热仪</code> 实测显示，施工队偷将 12.0mm 软管减薄至 <code>9.8 mm</code>（抗地下水外压屈曲刚度按壁厚三次方 t^3 暴跌 45%），或为赶工把紫外灯车拉速从 0.6 m/min 开到 1.6 m/min 导致外侧 7mm 树脂完全未固化（<code>Tg = 58°C &lt; 95°C, ΔHr = 28 J/g &gt; 5 J/g</code>，<code>flexural_modulus_wall_thickness_and_dsc_cure_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$360,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cip_las_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LASER_PROFILER_WRINKLE_FIN_OR_HYDROSTATIC_LEAKAGE_EXCEEDED_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "管内 <code>3D 激光雷达断面轮廓仪 (Laser Profiler) 与 EN 1610 闭水压降仪</code> 检出管底存在高达 <code>35 mm (4.5% ID &gt; 2.0% ID)</code> 的刀片状纵向翅片褶皱（普通前置 CCTV 摄像头极易漏检，通水后将迅速挂满湿巾油脂造成全线淤堵漫溢，<code>laser_profiler_wrinkle_and_hydrostatic_seal_passed == False</code>）。网关在 <code>15ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cip_dib_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FORGED_DIBT_CREEP_CERT_OR_AQUATIC_STYRENE_SPILL_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>德国建筑技术研究院 (DIBt Z-42.3) 50年湿态蠕变认证库与市政环保排口在线 VOC 通报</code>，查实软管伪造 10,000 小时蠕变证书或未固化苯乙烯单体溶入河道超标（<code>&gt;25 mg/L</code>），立即熔断工程款拨付！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cip_pav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 STYRENE_FREE_VINYL_ESTER_AND_TRENCHLESS_PAVING_OFFSET_CONFIRM (250ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实本标段采用 <code>无苯乙烯环保乙烯基酯树脂与机器人支管自动铣削</code>，免除了传统开挖所需的沥青路面铣刨重铺与临排调水准备金，自动核减 <code>$50,400.00</code>（净付降至 <code>$309,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 短期模量 (&gt;=12GPa) + 足壁厚满固化 (Tg &gt;=95°C) + 3D 激光零褶皱达标：已自动清算 (VERIFIED_TRENCHLESS_UV_CIPP_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零汛期外压失稳塌管、零背面生胶苯乙烯污染与挂污淤堵</strong>：市政主干管网非开挖 UV-CIPP 修复工程已完成结算（<code>$360,000.00</code>）！" +
     "</div>";
 }}
 

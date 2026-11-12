@@ -820,6 +820,11 @@
     "quartz_crucible_settlement_latency_ms": 10,
     "hydroxyl_sag_block_latency_ms": 11
   },
+  "uv_cipp_guards": {
+    "all_passed": true,
+    "uv_cipp_settlement_latency_ms": 10,
+    "buckling_cure_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

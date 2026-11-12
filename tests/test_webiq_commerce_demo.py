@@ -9447,6 +9447,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("high-purity-quartz-crucible-sandbox", demo_zh)
 
+    def test_trenchless_sewer_uv_cipp_flexural_modulus_dsc_cure_mandate_vs_groundwater_buckling_styrene_spill_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_trenchless_sewer_uv_cipp_policy,
+        )
+
+        # 1. Verified ISO 11296-4 E0 >=12,000 MPa + full wall thickness + DSC Tg >=95°C -> 200 OK ($360,000)
+        commit_ok = evaluate_trenchless_sewer_uv_cipp_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_uv_cipp_cents, 36000000)
+
+        # 2. Shaved wall thickness (-45% cubic buckling stiffness) or fast-pull UV under-cure -> 403 blocked in 12ms
+        mod_403 = evaluate_trenchless_sewer_uv_cipp_policy(
+            flexural_modulus_wall_thickness_and_dsc_cure_verified=False,
+        )
+        self.assertFalse(mod_403.allowed)
+        self.assertEqual(mod_403.http_status, 403)
+        self.assertEqual(
+            mod_403.uv_cipp_lane,
+            "FLEXURAL_MODULUS_WALL_THICKNESS_OR_UV_CURE_DEGREE_DEFICIT_BLOCKED",
+        )
+
+        # 3. 3D laser invert fin/wrinkle (>2% ID) or hydrostatic joint leakage -> 422 blocked in 15ms
+        las_422 = evaluate_trenchless_sewer_uv_cipp_policy(
+            laser_profiler_wrinkle_and_hydrostatic_seal_passed=False,
+        )
+        self.assertFalse(las_422.allowed)
+        self.assertEqual(las_422.http_status, 422)
+        self.assertEqual(
+            las_422.uv_cipp_lane,
+            "LASER_PROFILER_WRINKLE_FIN_OR_HYDROSTATIC_LEAKAGE_EXCEEDED_BLOCKED",
+        )
+
+        # 4. Web IQ detects forged DIBt 50-yr creep approval or styrene monomer water spill -> 451 blocked in 285ms
+        dib_451 = evaluate_trenchless_sewer_uv_cipp_policy(
+            webiq_dibt_50yr_creep_and_styrene_free_clean=False,
+        )
+        self.assertFalse(dib_451.allowed)
+        self.assertEqual(dib_451.http_status, 451)
+
+        # 5. Web IQ credits styrene-free vinyl-ester & trenchless paving offset saving $50,400 ($309,600 net) -> 409 Confirm
+        pav_409 = evaluate_trenchless_sewer_uv_cipp_policy(
+            styrene_free_resin_and_trenchless_paving_savings_cents=5040000,
+        )
+        self.assertFalse(pav_409.allowed)
+        self.assertEqual(pav_409.http_status, 409)
+        self.assertEqual(pav_409.settled_uv_cipp_cents, 30960000)
+        self.assertEqual(pav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["uv_cipp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("trenchless-uv-cipp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
