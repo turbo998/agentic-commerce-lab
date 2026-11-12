@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg144" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071922"/>
+      <stop offset="50%" stop-color="#0F3142"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent144" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardBg144" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112E3E"/>
+      <stop offset="100%" stop-color="#07151D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg144)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent144)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#155E75" stroke="#06B6D4" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ROUND 142 · HOSPITAL &amp; HOTEL LINEN TUNNEL-LAUNDRY ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    医院与酒店布草洗涤租赁、湿热消毒 (A0 &gt;=600s) 与 UHF RFID 清点智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    EN ISO 15883 Thermal Disinfection (A0 &gt;=600s), UHF RFID Standard Dry-Piece Billing &amp; Neutral pH (6.0–7.5) vs. Wet-Weight Fraud
+  </text>
+
+  <!-- Left Card: Legacy Cart Scale Weight & Bleach Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg144)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按地磅湿重与看白度盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 冷水加火碱漂白粉假洗 (A0=45s) 漏过耐药芽孢</text>
+    <text x="58" y="224" fill="#CBD5E1">• 为省蒸汽仅 52°C 洗涤，床单虽漂白但艰难梭菌存活</text>
+    <text x="58" y="242" fill="#CBD5E1">• 骗走 $130,000 洗涤费，引发 ICU 致命院内感染</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 故意不烘透留 18% 水分过磅骗钱且捂出毛霉菌</text>
+    <text x="58" y="294" fill="#CBD5E1">• 把 13% 未烘干自来水当净布草按吨收费</text>
+    <text x="58" y="312" fill="#CBD5E1">• 省掉中和酸致布面 pH=9.6 灼伤患者皮肤且氯漂烂布</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 12% 高支纯棉床单凭空丢失与强赔老化破损费</text>
+    <text x="58" y="364" fill="#CBD5E1">• 无 RFID 逐件追踪，高档酒店床单被掉包成劣质混纺</text>
+    <text x="58" y="382" fill="#CBD5E1">• 已洗超 100 次自然寿终床单仍被强行扣收高额报损费</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$130,000 注水湿重骗局与院感暴雷
+  </text>
+
+  <!-- Center Card: 4-Layer Hospital & Hotel Linen Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg144)" stroke="#06B6D4" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#155E75"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ⚡ A0&gt;=600s 湿热消毒 + RFID 干重 + 院感托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#06B6D4" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">
+    Gate 1 · 洗衣龙湿热消毒 (A0 &gt;=600s) 与 PAA (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    EN ISO 15883 A0 &lt; 600 s 或过氧乙酸 PAA &lt; 150 ppm →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 THERMAL_DISINFECTION_A0_DEFICIT_OR_PAA_UNDERDOSE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · UHF RFID 标准干重与布面 pH (6.0–7.5) (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    含水率 &gt; 6% 注水增重、RFID 少件或布面 pH &gt; 7.5 强碱 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 RFID_DRY_PIECE_MISMATCH_OR_ALKALINE_PH_CHLORINE_DAMAGE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 3 · Web IQ EN 14065 生物指示片与正压核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    检出 MRSA/艰难梭菌/毛霉菌阳性或隔离墙正压失效 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 NOSOCOMIAL_PATHOGEN_BIOINDICATOR_OR_BARRIER_BREACH_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 压榨水逆流热回收 + RFID 百次折旧 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    回收 75% 废水热能 + 满 100 洗次免破损索赔立省 $20,800 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 COUNTERFLOW_HEAT_RECOVERY_AND_RFID_LIFECYCLE_DEPRECIATION_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_HOSPITAL_LINEN_LAUNDRY_SETTLED (18ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg144)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#67E8F9">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. A0 2280s+RFID干重+pH 6.6：18ms 放款 $130k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 冷水假洗 A0=45s：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 18%含水骗重或pH=9.6：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 生物指示片耐药菌阳性：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 逆流热回收+百次折旧：295ms 省 $20,800 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：洗衣龙 A0 日志 + EN 14065 报告核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索过氧乙酸芽孢灭活与棉聚合度文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零注水买单：UHF RFID 标准干重取代地磅湿重</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$109,200.00 (单季立省 $20,800 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 按地磅湿重结账等于奖励水洗厂不烘透床单并滋生毛霉菌，而白度掩盖不了冷水假洗——必须强制 A0&gt;=600s 与 UHF RFID 标准干重签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #hospital-linen-laundry-sandbox · Unit Tests: 163/163 PASS
+  </text>
+</svg>

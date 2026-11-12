@@ -9111,6 +9111,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pharma-borosilicate-vial-sandbox", demo_zh)
 
+    def test_hospital_hotel_linen_laundry_rfid_a0_thermal_disinfection_mandate_vs_wet_weight_nosocomial_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hospital_hotel_linen_laundry_policy,
+        )
+
+        # 1. Verified EN ISO 15883 A0 >=600 s + UHF RFID dry weight + pH 6.0-7.5 -> 200 OK ($130,000)
+        commit_ok = evaluate_hospital_hotel_linen_laundry_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_linen_laundry_cents, 13000000)
+
+        # 2. Cold-bleach fake wash (A0 < 600 s) or PAA underdose -> 403 blocked in 11ms
+        a0_403 = evaluate_hospital_hotel_linen_laundry_policy(
+            thermal_disinfection_a0_and_paa_verified=False,
+        )
+        self.assertFalse(a0_403.allowed)
+        self.assertEqual(a0_403.http_status, 403)
+        self.assertEqual(
+            a0_403.linen_laundry_lane,
+            "THERMAL_DISINFECTION_A0_DEFICIT_OR_PAA_UNDERDOSE_BLOCKED",
+        )
+
+        # 3. Damp wet-weight inflation (>6% H2O), RFID shortfall or alkaline pH > 7.5 -> 422 blocked in 14ms
+        rfd_422 = evaluate_hospital_hotel_linen_laundry_policy(
+            rfid_dry_piece_weight_and_neutral_ph_passed=False,
+        )
+        self.assertFalse(rfd_422.allowed)
+        self.assertEqual(rfd_422.http_status, 422)
+        self.assertEqual(
+            rfd_422.linen_laundry_lane,
+            "RFID_DRY_PIECE_MISMATCH_OR_ALKALINE_PH_CHLORINE_DAMAGE_BLOCKED",
+        )
+
+        # 4. Web IQ detects EN 14065 MRSA/Mucorales positivity or barrier breach -> 451 blocked in 285ms
+        bio_451 = evaluate_hospital_hotel_linen_laundry_policy(
+            webiq_en14065_bioindicator_and_barrier_clean=False,
+        )
+        self.assertFalse(bio_451.allowed)
+        self.assertEqual(bio_451.http_status, 451)
+
+        # 5. Web IQ credits counterflow heat recovery & RFID 100-wash depreciation saving $20,800 ($109,200 net) -> 409 Confirm
+        rec_409 = evaluate_hospital_hotel_linen_laundry_policy(
+            counterflow_heat_recovery_and_rfid_depreciation_savings_cents=2080000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_linen_laundry_cents, 10920000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["linen_laundry_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hospital-linen-laundry-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

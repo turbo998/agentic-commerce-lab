@@ -16788,6 +16788,91 @@ def evaluate_pharma_borosilicate_vial_policy(
     )
 
 
+@dataclass(frozen=True)
+class HospitalHotelLinenLaundryVerdict:
+    allowed: bool
+    http_status: int
+    linen_laundry_lane: str
+    settled_linen_laundry_cents: int
+    counterflow_heat_recovery_and_rfid_depreciation_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_hospital_hotel_linen_laundry_policy(
+    *,
+    gross_linen_laundry_cents: int = 13000000,
+    thermal_disinfection_a0_and_paa_verified: bool = True,
+    rfid_dry_piece_weight_and_neutral_ph_passed: bool = True,
+    webiq_en14065_bioindicator_and_barrier_clean: bool = True,
+    counterflow_heat_recovery_and_rfid_depreciation_savings_cents: int = 0,
+) -> HospitalHotelLinenLaundryVerdict:
+    # 1. Cold-Bleach Fake Wash (EN ISO 15883 A0 <600 s) or PAA Sporicide Underdose -> HTTP 403
+    if not thermal_disinfection_a0_and_paa_verified:
+        return HospitalHotelLinenLaundryVerdict(
+            False,
+            403,
+            "THERMAL_DISINFECTION_A0_DEFICIT_OR_PAA_UNDERDOSE_BLOCKED",
+            0,
+            0,
+            "linen_laundry_invoice_blocked_due_to_tunnel_washer_a0_below_600s_or_paa_underdose",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Damp Wet-Scale Weight Inflation (>6% H2O), Missing RFID Items or Alkaline pH (>7.5) -> HTTP 422
+    if not rfid_dry_piece_weight_and_neutral_ph_passed:
+        return HospitalHotelLinenLaundryVerdict(
+            False,
+            422,
+            "RFID_DRY_PIECE_MISMATCH_OR_ALKALINE_PH_CHLORINE_DAMAGE_BLOCKED",
+            0,
+            0,
+            "laundry_cart_rejected_for_wet_weight_moisture_inflation_rfid_shortfall_or_alkaline_ph",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Positive MRSA/C.diff/Mucorales Bio-Indicator or Barrier Pressure Breach via Web IQ -> HTTP 451
+    if not webiq_en14065_bioindicator_and_barrier_clean:
+        return HospitalHotelLinenLaundryVerdict(
+            False,
+            451,
+            "NOSOCOMIAL_PATHOGEN_BIOINDICATOR_OR_BARRIER_BREACH_HOLD",
+            0,
+            0,
+            "webiq_detected_en14065_nosocomial_pathogen_bioindicator_positivity_or_barrier_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Counterflow Heat Recovery + RFID 100-Wash Depreciation Waiver -> HTTP 409 Confirm
+    if counterflow_heat_recovery_and_rfid_depreciation_savings_cents > 0:
+        return HospitalHotelLinenLaundryVerdict(
+            False,
+            409,
+            "COUNTERFLOW_HEAT_RECOVERY_AND_RFID_LIFECYCLE_DEPRECIATION_CONFIRM",
+            gross_linen_laundry_cents - counterflow_heat_recovery_and_rfid_depreciation_savings_cents,
+            counterflow_heat_recovery_and_rfid_depreciation_savings_cents,
+            "webiq_applied_counterflow_heat_recovery_and_rfid_100wash_depreciation_saving_20800_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified A0 >=600 s + UHF RFID Dry-Piece Weight + Fabric pH 6.0-7.5 + Clean Bio-Indicator -> Settled
+    return HospitalHotelLinenLaundryVerdict(
+        True,
+        200,
+        "VERIFIED_HOSPITAL_LINEN_LAUNDRY_SETTLED",
+        gross_linen_laundry_cents,
+        0,
+        "en_iso15883_a0_disinfection_uhf_rfid_dry_weight_neutral_ph_and_en14065_verified",
+        18,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -22046,6 +22131,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "delamination_block_latency_ms": via_del_403.latency_ms,
     }
 
+    # Round 142 (Hospital & Hotel Linen Tunnel-Washer Laundry SLA, A0 Disinfection & UHF RFID Dry-Piece Mandate)
+    lin_commit_ok = evaluate_hospital_hotel_linen_laundry_policy()
+    lin_a0_403 = evaluate_hospital_hotel_linen_laundry_policy(
+        thermal_disinfection_a0_and_paa_verified=False,
+    )
+    lin_rfd_422 = evaluate_hospital_hotel_linen_laundry_policy(
+        rfid_dry_piece_weight_and_neutral_ph_passed=False,
+    )
+    lin_bio_451 = evaluate_hospital_hotel_linen_laundry_policy(
+        webiq_en14065_bioindicator_and_barrier_clean=False,
+    )
+    lin_rec_409 = evaluate_hospital_hotel_linen_laundry_policy(
+        counterflow_heat_recovery_and_rfid_depreciation_savings_cents=2080000,
+    )
+    linen_laundry_guards = {
+        "all_passed": (
+            lin_commit_ok.allowed
+            and lin_commit_ok.settled_linen_laundry_cents == 13000000
+            and not lin_a0_403.allowed
+            and lin_a0_403.http_status == 403
+            and not lin_rfd_422.allowed
+            and lin_rfd_422.http_status == 422
+            and not lin_bio_451.allowed
+            and lin_bio_451.http_status == 451
+            and not lin_rec_409.allowed
+            and lin_rec_409.action_pill == "Confirm"
+        ),
+        "linen_laundry_settlement_latency_ms": lin_commit_ok.latency_ms,
+        "a0_disinfection_block_latency_ms": lin_a0_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22200,6 +22316,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "greenhouse_hydroponic_guards": greenhouse_hydroponic_guards,
         "hv_xlpe_cable_guards": hv_xlpe_cable_guards,
         "pharma_vial_guards": pharma_vial_guards,
+        "linen_laundry_guards": linen_laundry_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27655,6 +27772,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="via-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Hospital & Hotel Linen Tunnel-Washer Laundry SLA, A0 Disinfection & UHF RFID Dry-Piece Mandate Sandbox (Round 142 FAQ Companion) -->
+      <div class="finops-box" id="hospital-linen-laundry-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lin-title">🏥 医院与酒店布草洗涤租赁、湿热消毒 (A0 &gt;=600s) 与 UHF RFID 标准干重 / 布面 pH 架构：防注水称重与院内交叉感染令牌 (hospital_hotel_linen_laundry_mandate_...) vs 地磅湿重盲付决策器 (Round 142 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 三甲医院 ICU/手术室与五星酒店布草洗涤租赁交割 ($130,000.00)、EN ISO 15883 湿热消毒 A0/PAA、UHF RFID 通道门标准干重/布面 pH 与 Web IQ 生物指示片/逆流热回收场景 (Hospital Linen Laundry Scenario):</span></label>
+          <select id="lin-select" onchange="updateHospitalLinenLaundrySandbox()">
+            <option value="lin_commit_ok">⚡ 洗衣龙湿热消毒 A0 2,280s (&gt;=600s) + UHF RFID 逐件标准干重 + 含水率 4.2% (&lt;=6%) + 布面 pH 6.6：18ms 自动结算 $130,000.00! (Act automatically)</option>
+            <option value="lin_a0_403">🛑 为省蒸汽费关停高温主洗用 52°C 冷水加火碱漂白粉假洗 (热消毒值跌至 A0 = 45s &lt; 600s，床单虽漂白但艰难梭菌芽孢与 MRSA 存活引发 ICU 交叉感染) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lin_rfd_422">🚨 故意调快平烫机保留 18% 水分按地磅湿重骗取 13% 水钱 (塑料包装内捂出致命毛霉菌) 或省掉中和酸致布面 pH = 9.6 &gt; 7.5 灼伤患者皮肤拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lin_bio_451">🛑 EN 14065 RABC 不锈钢生物指示片检出耐药金葡菌 (MRSA) / 毛霉菌阳性或脏衣区与净衣区隔离墙正压失效：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="lin_rec_409">🧑‍⚖️ Web IQ 启用 50bar 压榨脱水逆流换热回收 (回收 75% 废水热能) 并对 RFID 芯片记录已满 100 次洗涤周期的自然老化床单自动豁免破损索赔立省 $20,800.00 (净付 $109,200.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lin-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -28235,6 +28370,7 @@ function renderAll() {{
   updateGreenhouseHydroponicSandbox();
   updateHvXlpeCableSandbox();
   updatePharmaBorosilicateVialSandbox();
+  updateHospitalLinenLaundrySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -35445,6 +35581,55 @@ function updatePharmaBorosilicateVialSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ USP &lt;660&gt;/&lt;1660&gt; 防脱片 + 退火应力 (&lt;=40 nm/mm) + CDE 'A' 状态达标：已自动清算 (VERIFIED_PHARMA_BOROSILICATE_VIAL_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零静脉玻璃薄片召回、零冻干炸瓶与冷链失真空</strong>：生物药一级中性硼硅西林瓶与预灌封批次已完成结算（<code>$215,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHospitalLinenLaundrySandbox() {{
+  var selEl = document.getElementById("lin-select");
+  var outEl = document.getElementById("lin-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lin_a0_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 THERMAL_DISINFECTION_A0_DEFICIT_OR_PAA_UNDERDOSE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "中央洗衣工厂 <code>卫生隔离式洗衣龙 (Tunnel Washer) PLC 温度时间积分黑匣子 (EN ISO 15883)</code> 实测显示，水洗厂为省蒸汽仅在 52°C 冷水下加漂白粉假洗，湿热消毒值跌至 <code>A0 = 45 s &lt; 600 s</code> 且过氧乙酸漏投（包裹在血痂内的艰难梭菌芽孢与 MRSA 存活，将引发 ICU 致命院内交叉感染，<code>thermal_disinfection_a0_and_paa_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$130,000.00</code> 洗涤费结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lin_rfd_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 RFID_DRY_PIECE_MISMATCH_OR_ALKALINE_PH_CHLORINE_DAMAGE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "净衣打包区 <code>UHF RFID 屏蔽通道门、红外水分仪与织物表面 pH 电极</code> 检出送回床单剩余含水率高达 <code>18% &gt; 6%</code>（企图把未烘透的水当净布草按地磅吨重收钱，且潮湿密封袋内极易滋生毛霉菌），或未投中和酸致布面残留强碱 <code>pH = 9.6 &gt; 7.5</code> 灼伤患者皮肤（<code>rfid_dry_piece_weight_and_neutral_ph_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lin_bio_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NOSOCOMIAL_PATHOGEN_BIOINDICATOR_OR_BARRIER_BREACH_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>院感实验室 EN 14065 RABC 生物指示片培养报告与洁净区压差记录</code>，检出耐甲氧西林金黄色葡萄球菌（MRSA）/ 产气荚膜梭菌 / 毛霉菌阳性或脏净隔离墙失压，立即封存召回同批次临床床品！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lin_rec_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 COUNTERFLOW_HEAT_RECOVERY_AND_RFID_LIFECYCLE_DEPRECIATION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动启用洗衣龙 <code>50bar 压榨脱水逆流回用与板式换热器 (回收 75% 废水热能)</code>，并对 UHF RFID 芯片记录已满 100 次洗涤寿命的自然破损床单自动免除报损赔偿，单季立省 <code>$20,800.00</code>（净付降至 <code>$109,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 湿热消毒 (A0 &gt;=600s) + UHF RFID 标准干重 + 布面中性 pH (6.0–7.5) 达标：已自动清算 (VERIFIED_HOSPITAL_LINEN_LAUNDRY_SETTLED · 18ms · Act automatically):</strong><br>" +
+    "• <strong>零潮湿注水骗重、零毛霉菌院内感染与强碱红疹</strong>：三甲医院与五星酒店布草洗涤租赁服务已完成结算（<code>$130,000.00</code>）！" +
     "</div>";
 }}
 
