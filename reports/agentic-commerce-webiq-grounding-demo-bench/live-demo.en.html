@@ -3330,6 +3330,24 @@
         <div id="xlp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Pharma Type I Neutral Borosilicate Vial & PFS Offtake, USP <660> Anti-Delamination & Stress Mandate Sandbox (Round 141 FAQ Companion) -->
+      <div class="finops-box" id="pharma-borosilicate-vial-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-via-title">💉 生物药一级中性硼硅西林瓶交割、内表面耐水性防脱片 (USP &lt;660&gt;/&lt;1660&gt;) 与偏光退火应力 (&lt;=40 nm/mm) 架构：防静脉玻璃薄片召回与冻干炸瓶令牌 (pharma_borosilicate_vial_mandate_...) vs 按瓶数盲付决策器 (Round 141 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 5.0 中性硼硅单抗西林瓶与预灌封注射器交割 ($215,000.00)、USP &lt;660&gt;/&lt;1660&gt; 内表面防脱片、ASTM C148 偏光退火应力与 Web IQ 药监局 CDE A 状态/RTU 巢盒场景 (Pharma Borosilicate Vial Scenario):</span></label>
+          <select id="via-select" onchange="updatePharmaBorosilicateVialSandbox()">
+            <option value="via_commit_ok">⚡ 5.0 膨胀系数 + 内表面耐水滴定 0.03 mL (&lt;=0.10 mL) + 退火应力 18 nm/mm (&lt;=40) + CDE 'A' 状态：19ms 自动结算 $215,000.00! (Act automatically)</option>
+            <option value="via_del_403">🛑 用廉价 7.0 低硼硅冒充 5.0 中性硼硅或制瓶火焰高温挥发在瓶跟形成 100nm 富硼钠层 (砸碎颗粒法测不出，但灌入单抗半年后剥落静脉玻璃薄片引发 FDA 一级召回) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="via_str_422">🚨 退火窑网带过快致瓶底残余应力高达 68 nm/mm &gt; 40 nm/mm (在 -55°C 冻干机急冷时连环炸瓶) 或瓶口冠部马鞍形变形致 -80°C 超低温失真空微漏拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="via_cde_451">🛑 国家药监局 CDE 原辅包关联审评状态跌回 'I' (未激活) / FDA DMF 失效或免洗瓶细菌内毒素 &gt; 0.001 EU/mL：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="via_rtu_409">🧑‍⚖️ Web IQ 升级为 RTU 免洗免灭预灭菌巢盒 (省去药厂 WFI 洗瓶与 320°C 隧道烘箱) 并应用内壁疏水阻隔镀膜将昂贵单抗挂壁过量灌装率从 8% 降至 1.5% 立省 $34,400.00 (净付 $180,600.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="via-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3909,6 +3927,7 @@ function renderAll() {
   updateMunicipalWaterUfPacSandbox();
   updateGreenhouseHydroponicSandbox();
   updateHvXlpeCableSandbox();
+  updatePharmaBorosilicateVialSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11070,6 +11089,55 @@ function updateHvXlpeCableSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 立塔 X 射线偏心 (&lt;=8%) + 变频谐振局放 (&lt;=5 pC) + 20°C 直流电阻达标：已自动清算 (VERIFIED_HV_XLPE_CABLE_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零管廊中间接头爆炸、零铜芯热下沉与截面缩水</strong>：高压地下 XLPE 电力电缆与预制接头批次已完成结算（<code>$395,000.00</code>）！" +
+    "</div>";
+}
+
+function updatePharmaBorosilicateVialSandbox() {
+  var selEl = document.getElementById("via-select");
+  var outEl = document.getElementById("via-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "via_del_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 USP660_HYDROLYTIC_EXTRACTABLES_OR_DELAMINATION_RISK_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "药包材相容性实验室 <code>USP &lt;660&gt;/&lt;1660&gt; 整瓶内表面高压釜浸出 ICP-MS 与扫描电镜 (SEM)</code> 实测显示，该批西林瓶或用 7.0 低硼硅冒充 5.0 中性硼硅，或火焰成型在瓶跟形成富硼钠挥发带（灌入柠檬酸缓冲液单抗 6 个月后将剥落肉眼可见玻璃薄片引发 FDA 一级召回，<code>usp660_surface_hydrolytic_and_delamination_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$215,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "via_str_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ANNEALING_BIREFRINGENCE_STRESS_OR_NECK_FINISH_LEAK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "制瓶检验线 <code>ASTM C148 数字偏光应力仪与激光瓶口三维几何相机</code> 检出瓶底退火残余应力高达 <code>68 nm/mm &gt; 40 nm/mm</code>（进 -55°C 冻干机板层急冷将发生连环炸瓶），或瓶口冠部马鞍形变形导致 -80°C 超低温失真空微漏（<code>annealing_birefringence_and_neck_ccit_passed == False</code>）。网关在 <code>14ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "via_cde_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CDE_DMF_ACTIVE_STATUS_LAPSED_OR_ENDOTOXIN_BREACH_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>国家药监局 CDE 原辅包公示平台与 FDA Type III DMF 数据库</code>，检出该包材登记号状态已跌回 'I'（未激活）或细菌内毒素 <code>&gt; 0.001 EU/mL</code>，立即执行 GMP 合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "via_rtu_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 RTU_NEST_TUB_AND_HYDROPHOBIC_OVERFILL_REDUCTION_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将散装瓶升级为 <code>RTU 免洗即用预灭菌巢盒 (免除药厂 WFI 洗瓶与 320°C 隧道烘箱能耗)</code>，并应用 PECVD 内壁疏水防挂壁镀膜将高价单抗过量灌装率（Overfill）从 8% 压降至 1.5%，单批立省 <code>$34,400.00</code>（净付降至 <code>$180,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ USP &lt;660&gt;/&lt;1660&gt; 防脱片 + 退火应力 (&lt;=40 nm/mm) + CDE 'A' 状态达标：已自动清算 (VERIFIED_PHARMA_BOROSILICATE_VIAL_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零静脉玻璃薄片召回、零冻干炸瓶与冷链失真空</strong>：生物药一级中性硼硅西林瓶与预灌封批次已完成结算（<code>$215,000.00</code>）！" +
     "</div>";
 }
 

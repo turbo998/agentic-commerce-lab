@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg143" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061621"/>
+      <stop offset="50%" stop-color="#0B2B40"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent143" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="cardBg143" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E293C"/>
+      <stop offset="100%" stop-color="#06131C"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg143)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent143)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 141 · PHARMA TYPE I BOROSILICATE VIAL &amp; PFS ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    生物药一级中性硼硅西林瓶交割、耐水性防脱片 (USP 660) 与偏光退火应力智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    USP &lt;660&gt;/&lt;1660&gt; Inner-Surface Anti-Delamination (&lt;=0.10 mL), Annealing Stress (&lt;=40 nm/mm) &amp; RTU Nest vs. Glass-Flake Recall
+  </text>
+
+  <!-- Left Card: Legacy Vial Count & Grain Test Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg143)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按瓶数与砸碎颗粒法盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 瓶跟 100nm 富硼钠挥发带引发静脉玻璃脱片召回</text>
+    <text x="58" y="224" fill="#CBD5E1">• 7.0 低硼硅冒充 5.0 或火焰成型高温挥发沉积</text>
+    <text x="58" y="242" fill="#CBD5E1">• 砸碎颗粒法测不出，骗走 $215,000 毁掉千万单抗</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 退火残余应力 (&gt;40 nm/mm) 致 -55°C 冻干机炸瓶</text>
+    <text x="58" y="294" fill="#CBD5E1">• 退火窑网带过快留有拉应力，急冷时整箱连环爆裂</text>
+    <text x="58" y="312" fill="#CBD5E1">• 瓶口冠部马鞍形变形导致 -80°C 超低温失真空微漏</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 散装瓶碰撞微裂纹与 8% 昂贵单抗挂壁过量灌装</text>
+    <text x="58" y="364" fill="#CBD5E1">• 药监局 CDE 登记号掉回 I 状态导致新药审评中断</text>
+    <text x="58" y="382" fill="#CBD5E1">• 亲水内壁挂壁严重，每瓶被迫多灌 8% 高价抗癌原液</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$215,000 脱片劣质瓶与千万美元原液报废
+  </text>
+
+  <!-- Center Card: 4-Layer Pharma Borosilicate Vial Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg143)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ USP 660/1660 防脱片 + 偏光应力 + RTU 托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 内表面耐水 (&lt;=0.10mL) 与防脱片 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    7.0 低硼硅冒充或 USP &lt;1660&gt; 检出瓶跟脱片风险 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 USP660_HYDROLYTIC_EXTRACTABLES_OR_DELAMINATION_RISK_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 偏光退火应力 (&lt;=40 nm/mm) 与 3D 瓶口 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ASTM C148 光程差 &gt; 40 nm/mm 或瓶口法兰失圆微漏 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 ANNEALING_BIREFRINGENCE_STRESS_OR_NECK_FINISH_LEAK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 3 · Web IQ CDE 'A' 状态与 FDA DMF 核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    原辅包登记状态跌回 I 或细菌内毒素 &gt; 0.001 EU/mL →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 CDE_DMF_ACTIVE_STATUS_LAPSED_OR_ENDOTOXIN_BREACH_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ RTU 免洗巢盒 + 疏水防挂壁镀膜 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    免除 WFI 洗烘产线 + 削减 6% 单抗过量灌装立省 $34,400 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 RTU_NEST_TUB_AND_HYDROPHOBIC_OVERFILL_REDUCTION_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_PHARMA_BOROSILICATE_VIAL_SETTLED (19ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg143)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#7DD3FC">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 滴定0.03mL+应力18nm：19ms 放款 $215k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 7.0冒充或瓶跟脱片：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 应力68nm炸瓶或微漏：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. CDE非A状态或内毒素：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. RTU巢盒+防挂壁镀膜：295ms 省 $34,400 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：ICP-MS 浸出比 + CDE/DMF A 状态核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索 PECVD 纳米二氧化硅防蛋白吸附文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零脱片召回：整瓶内表面浸出取代砸碎颗粒滴定</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$180,600.00 (单批立省 $34,400 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 砸碎玻璃测颗粒耐水性会把瓶跟 100nm 厚的火焰挥发脱片层稀释一万倍——必须强制 USP &lt;1660&gt; 整瓶内表面浸出比与偏光应力签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #pharma-borosilicate-vial-sandbox · Unit Tests: 162/162 PASS
+  </text>
+</svg>

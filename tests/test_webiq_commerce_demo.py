@@ -9055,6 +9055,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hv-xlpe-cable-sandbox", demo_zh)
 
+    def test_pharma_borosilicate_glass_vial_usp660_hydrolytic_delamination_mandate_vs_flake_recall_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pharma_borosilicate_vial_policy,
+        )
+
+        # 1. Verified 5.0 COE + USP <660> <=0.10 mL + stress <=40 nm/mm + active CDE A -> 200 OK ($215,000)
+        commit_ok = evaluate_pharma_borosilicate_vial_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pharma_vial_cents, 21500000)
+
+        # 2. 7.0 low-borosilicate fraud or heel delamination risk (USP <1660>) -> 403 blocked in 11ms
+        del_403 = evaluate_pharma_borosilicate_vial_policy(
+            usp660_surface_hydrolytic_and_delamination_verified=False,
+        )
+        self.assertFalse(del_403.allowed)
+        self.assertEqual(del_403.http_status, 403)
+        self.assertEqual(
+            del_403.pharma_vial_lane,
+            "USP660_HYDROLYTIC_EXTRACTABLES_OR_DELAMINATION_RISK_BLOCKED",
+        )
+
+        # 3. Residual annealing stress (>40 nm/mm) or warped neck CCIT leak -> 422 blocked in 14ms
+        str_422 = evaluate_pharma_borosilicate_vial_policy(
+            annealing_birefringence_and_neck_ccit_passed=False,
+        )
+        self.assertFalse(str_422.allowed)
+        self.assertEqual(str_422.http_status, 422)
+        self.assertEqual(
+            str_422.pharma_vial_lane,
+            "ANNEALING_BIREFRINGENCE_STRESS_OR_NECK_FINISH_LEAK_BLOCKED",
+        )
+
+        # 4. Web IQ detects lapsed NMPA CDE 'I' status / FDA DMF or endotoxin breach -> 451 blocked in 285ms
+        cde_451 = evaluate_pharma_borosilicate_vial_policy(
+            webiq_cde_dmf_active_and_endotoxin_clean=False,
+        )
+        self.assertFalse(cde_451.allowed)
+        self.assertEqual(cde_451.http_status, 451)
+
+        # 5. Web IQ upgrades to RTU Nest-and-Tub & hydrophobic overfill reduction saving $34,400 ($180,600 net) -> 409 Confirm
+        rtu_409 = evaluate_pharma_borosilicate_vial_policy(
+            rtu_nest_tub_and_overfill_reduction_savings_cents=3440000,
+        )
+        self.assertFalse(rtu_409.allowed)
+        self.assertEqual(rtu_409.http_status, 409)
+        self.assertEqual(rtu_409.settled_pharma_vial_cents, 18060000)
+        self.assertEqual(rtu_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pharma_vial_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pharma-borosilicate-vial-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
