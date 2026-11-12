@@ -765,6 +765,11 @@
     "magnet_wire_settlement_latency_ms": 20,
     "pdiv_corona_block_latency_ms": 12
   },
+  "titanium_billet_guards": {
+    "all_passed": true,
+    "titanium_billet_settlement_latency_ms": 20,
+    "hard_alpha_ut_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

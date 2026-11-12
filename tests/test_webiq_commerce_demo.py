@@ -8831,6 +8831,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ev-hairpin-magnet-wire-sandbox", demo_zh)
 
+    def test_aerospace_titanium_ti64_billet_triple_var_hard_alpha_ut_mandate_vs_inclusion_burst_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aerospace_titanium_ti64_billet_policy,
+        )
+
+        # 1. Verified Triple-VAR + Class AA immersion UT zero #2 FBH + zero beta fleck -> 200 OK ($440,000)
+        commit_ok = evaluate_aerospace_titanium_ti64_billet_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_titanium_billet_cents, 44000000)
+
+        # 2. Type I hard-alpha (#2 FBH echo) or non-Triple-VAR melt -> 403 blocked in 12ms
+        ut_403 = evaluate_aerospace_titanium_ti64_billet_policy(
+            triple_var_and_multizone_immersion_ut_class_aa_verified=False,
+        )
+        self.assertFalse(ut_403.allowed)
+        self.assertEqual(ut_403.http_status, 403)
+        self.assertEqual(
+            ut_403.titanium_billet_lane,
+            "HARD_ALPHA_INCLUSION_OR_NON_TRIPLE_VAR_MELT_BLOCKED",
+        )
+
+        # 3. Vanadium-rich beta flecks or hydrogen > 80 ppm -> 422 blocked in 15ms
+        bet_422 = evaluate_aerospace_titanium_ti64_billet_policy(
+            zero_beta_fleck_and_beta_transus_hydrogen_passed=False,
+        )
+        self.assertFalse(bet_422.allowed)
+        self.assertEqual(bet_422.http_status, 422)
+        self.assertEqual(
+            bet_422.titanium_billet_lane,
+            "BETA_FLECK_SEGREGATION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED",
+        )
+
+        # 4. Web IQ detects lapsed Nadcap NDT accreditation or sanctioned sponge -> 451 blocked in 290ms
+        nad_451 = evaluate_aerospace_titanium_ti64_billet_policy(
+            webiq_nadcap_ndt_and_sponge_pedigree_clean=False,
+        )
+        self.assertFalse(nad_451.allowed)
+        self.assertEqual(nad_451.http_status, 451)
+
+        # 5. Web IQ routes 80% buy-to-fly CNC TC4 chips into EBCHM/PAM cold-hearth revert saving $70,400 ($369,600 net) -> 409 Confirm
+        rev_409 = evaluate_aerospace_titanium_ti64_billet_policy(
+            buy_to_fly_titanium_chip_hearth_revert_savings_cents=7040000,
+        )
+        self.assertFalse(rev_409.allowed)
+        self.assertEqual(rev_409.http_status, 409)
+        self.assertEqual(rev_409.settled_titanium_billet_cents, 36960000)
+        self.assertEqual(rev_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["titanium_billet_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aerospace-titanium-ti64-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

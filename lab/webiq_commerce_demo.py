@@ -16363,6 +16363,91 @@ def evaluate_ev_hairpin_magnet_wire_policy(
     )
 
 
+@dataclass(frozen=True)
+class AerospaceTitaniumTi64BilletVerdict:
+    allowed: bool
+    http_status: int
+    titanium_billet_lane: str
+    settled_titanium_billet_cents: int
+    buy_to_fly_titanium_chip_hearth_revert_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_aerospace_titanium_ti64_billet_policy(
+    *,
+    gross_titanium_billet_cents: int = 44000000,
+    triple_var_and_multizone_immersion_ut_class_aa_verified: bool = True,
+    zero_beta_fleck_and_beta_transus_hydrogen_passed: bool = True,
+    webiq_nadcap_ndt_and_sponge_pedigree_clean: bool = True,
+    buy_to_fly_titanium_chip_hearth_revert_savings_cents: int = 0,
+) -> AerospaceTitaniumTi64BilletVerdict:
+    # 1. Type I Hard-Alpha Inclusion (#2 FBH Echo) or Non-Triple-VAR Melt -> HTTP 403
+    if not triple_var_and_multizone_immersion_ut_class_aa_verified:
+        return AerospaceTitaniumTi64BilletVerdict(
+            False,
+            403,
+            "HARD_ALPHA_INCLUSION_OR_NON_TRIPLE_VAR_MELT_BLOCKED",
+            0,
+            0,
+            "aerospace_titanium_billet_blocked_due_to_hard_alpha_ut_indication_or_non_triple_var_melt",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Vanadium-Rich Beta Flecks, Uncalibrated Beta-Transus or Hydrogen (>80 ppm) -> HTTP 422
+    if not zero_beta_fleck_and_beta_transus_hydrogen_passed:
+        return AerospaceTitaniumTi64BilletVerdict(
+            False,
+            422,
+            "BETA_FLECK_SEGREGATION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED",
+            0,
+            0,
+            "titanium_billet_rejected_for_beta_fleck_segregation_uncalibrated_transus_or_high_hydrogen",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Lapsed PRI Nadcap NDT Accreditation or Sanctioned Titanium Sponge via Web IQ -> HTTP 451
+    if not webiq_nadcap_ndt_and_sponge_pedigree_clean:
+        return AerospaceTitaniumTi64BilletVerdict(
+            False,
+            451,
+            "NADCAP_NDT_ACCREDITATION_LAPSED_OR_SANCTIONED_SPONGE_HOLD",
+            0,
+            0,
+            "webiq_detected_lapsed_nadcap_ndt_accreditation_or_sanctioned_titanium_sponge_origin",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 80% Buy-to-Fly CNC Chip EBCHM/PAM Cold-Hearth Revert Tolling -> HTTP 409 Confirm
+    if buy_to_fly_titanium_chip_hearth_revert_savings_cents > 0:
+        return AerospaceTitaniumTi64BilletVerdict(
+            False,
+            409,
+            "BUY_TO_FLY_TITANIUM_CHIP_HEARTH_REVERT_TOLLING_CONFIRM",
+            gross_titanium_billet_cents - buy_to_fly_titanium_chip_hearth_revert_savings_cents,
+            buy_to_fly_titanium_chip_hearth_revert_savings_cents,
+            "webiq_applied_80pct_buy_to_fly_cnc_chip_cold_hearth_revert_tolling_saving_70400_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Triple-VAR + Multizone Immersion UT Class AA + Zero Beta-Fleck + Clean Nadcap -> Settled
+    return AerospaceTitaniumTi64BilletVerdict(
+        True,
+        200,
+        "VERIFIED_AEROSPACE_TITANIUM_BILLET_SETTLED",
+        gross_titanium_billet_cents,
+        0,
+        "triple_var_multizone_immersion_ut_class_aa_zero_beta_fleck_and_nadcap_verified",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21466,6 +21551,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pdiv_corona_block_latency_ms": mag_pd_403.latency_ms,
     }
 
+    # Round 137 (Aerospace Ti-6Al-4V Forging Billet & 0A Sponge Offtake, Triple-VAR & Class AA UT Mandate)
+    ti64_commit_ok = evaluate_aerospace_titanium_ti64_billet_policy()
+    ti64_ut_403 = evaluate_aerospace_titanium_ti64_billet_policy(
+        triple_var_and_multizone_immersion_ut_class_aa_verified=False,
+    )
+    ti64_bet_422 = evaluate_aerospace_titanium_ti64_billet_policy(
+        zero_beta_fleck_and_beta_transus_hydrogen_passed=False,
+    )
+    ti64_nad_451 = evaluate_aerospace_titanium_ti64_billet_policy(
+        webiq_nadcap_ndt_and_sponge_pedigree_clean=False,
+    )
+    ti64_rev_409 = evaluate_aerospace_titanium_ti64_billet_policy(
+        buy_to_fly_titanium_chip_hearth_revert_savings_cents=7040000,
+    )
+    titanium_billet_guards = {
+        "all_passed": (
+            ti64_commit_ok.allowed
+            and ti64_commit_ok.settled_titanium_billet_cents == 44000000
+            and not ti64_ut_403.allowed
+            and ti64_ut_403.http_status == 403
+            and not ti64_bet_422.allowed
+            and ti64_bet_422.http_status == 422
+            and not ti64_nad_451.allowed
+            and ti64_nad_451.http_status == 451
+            and not ti64_rev_409.allowed
+            and ti64_rev_409.action_pill == "Confirm"
+        ),
+        "titanium_billet_settlement_latency_ms": ti64_commit_ok.latency_ms,
+        "hard_alpha_ut_block_latency_ms": ti64_ut_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21615,6 +21731,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wind_blade_guards": wind_blade_guards,
         "aseptic_uht_guards": aseptic_uht_guards,
         "magnet_wire_guards": magnet_wire_guards,
+        "titanium_billet_guards": titanium_billet_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26980,6 +27097,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mag-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Aerospace Rotor-Grade Ti-6Al-4V Forging Billet & Sponge Offtake, Triple-VAR & Class AA UT Mandate Sandbox (Round 137 FAQ Companion) -->
+      <div class="finops-box" id="aerospace-titanium-ti64-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ti64-title">✈️ 航空发动机 Ti-6Al-4V 钛合金锻坯交割、三次真空熔炼 (Triple-VAR) 与多区水浸超声 (AMS 2631 Class AA #2 FBH) 架构：防硬 α 氮化夹杂转子爆裂令牌 (aerospace_titanium_ti64_billet_mandate_...) vs 化学成分盲付决策器 (Round 137 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 航空发动机转子级 Ti-6Al-4V 锻坯与 0A 海绵钛交割 ($440,000.00)、Triple-VAR/多区水浸超声 Class AA (#2 FBH)、零 β 斑金相与 Web IQ Nadcap/买飞比钛屑冷床炉重熔场景 (Aerospace Titanium Scenario):</span></label>
+          <select id="ti64-select" onchange="updateAerospaceTitaniumTi64Sandbox()">
+            <option value="ti64_commit_ok">⚡ 三次 VAR 真空熔炼 + 多区水浸超声 Class AA 零 #2 FBH (0.8mm) + 零 β 斑 + 残余氢 35 ppm (&lt;=80) + Nadcap 有效：20ms 自动结算 $440,000.00! (Act automatically)</option>
+            <option value="ti64_ut_403">🛑 缩水为二次熔炼或多区聚焦水浸超声检出 #2 FBH (0.8mm) 高间隙硬 α 氮化钛脆性夹杂 / 高密度钨夹杂 (宏观化学成分虽合格，但高速旋转必引发发动机风扇盘高空炸裂) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="ti64_bet_422">🚨 熔炼电流过大产生富钒偏析“β 亮斑 (Beta Flecks)”、未用金相法实测 β 相变点 Tβ 致模锻过热成魏氏粗晶或氢含量 &gt; 80 ppm 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="ti64_nad_451">🛑 PRI eAuditNet 显示实验室 Nadcap 水浸超声特种认证已暂停逾期或 0A 级海绵钛混入受航空制裁禁运矿源：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="ti64_rev_409">🧑‍⚖️ Web IQ 将航空结构件五轴数控加工切下的 80% 买飞比 (Buy-to-Fly) 纯净 TC4 钛屑经 XRF 除钨后送入等离子/电子束冷床炉 (PAM/EBCHM) 闭环重熔立省 $70,400.00 (净付 $369,600.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ti64-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27555,6 +27690,7 @@ function renderAll() {{
   updateOffshoreWindBladeSandbox();
   updateAsepticDairyUhtSandbox();
   updateEvHairpinMagnetWireSandbox();
+  updateAerospaceTitaniumTi64Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -34520,6 +34656,55 @@ function updateEvHairpinMagnetWireSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 150°C PDIV (&gt;=1,350 Vpk) + 无氧铜 (O2 &lt;=5 ppm) + 导电率 (&gt;=101% IACS) 达标：已自动清算 (VERIFIED_EV_HAIRPIN_MAGNET_WIRE_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零 SiC 电晕击穿烧机、零激光焊氢气孔与油冷溶胀</strong>：800V 扁线电机无氧铜与耐电晕漆包线批次已完成结算（<code>$325,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAerospaceTitaniumTi64Sandbox() {{
+  var selEl = document.getElementById("ti64-select");
+  var outEl = document.getElementById("ti64-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ti64_ut_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HARD_ALPHA_INCLUSION_OR_NON_TRIPLE_VAR_MELT_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "Nadcap 超声实验室 <code>多区动态聚焦水浸超声 C 扫描系统 (AMS 2631 Class AA) 与 VAR 熔炼日志</code> 实测显示，该支直径 250mm 的 Ti-6Al-4V 转子级锻坯中心区检出 <code>#2 FBH (0.8mm) 当量高间隙硬 α 氮化钛脆性夹杂</code> 或未满三次真空重熔（上万转航空发动机必引发风扇盘高空非包容性炸裂，<code>triple_var_and_multizone_immersion_ut_class_aa_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$440,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ti64_bet_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BETA_FLECK_SEGREGATION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "航空金相室 <code>低倍腐蚀切片、金相急冷炉与 LECO 测氢仪</code> 检出棒材存在富钒偏析 <code>β 亮斑 (Beta Flecks)</code>、未逐炉标定相变点 <code>Tβ</code>，或残余氢含量 <code>H &gt; 80 ppm</code>（<code>zero_beta_fleck_and_beta_transus_hydrogen_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ti64_nad_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NADCAP_NDT_ACCREDITATION_LAPSED_OR_SANCTIONED_SPONGE_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>PRI eAuditNet 全球航空特种工艺数据库与海绵钛原产地家谱</code>，检出供应商 Nadcap 水浸超声认证已被暂停或海绵钛涉及受制裁矿源，立即执行适航合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ti64_rev_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BUY_TO_FLY_TITANIUM_CHIP_HEARTH_REVERT_TOLLING_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将五轴数控机加厂高买飞比（10:1）铣削产生的 <code>80% 纯净 TC4 钛屑经脱脂与 XRF 100% 除钨后送入电子束/等离子冷床炉 (EBCHM/PAM) 闭环重熔</code> 抵扣新海绵钛成本，单批立省 <code>$70,400.00</code>（净付降至 <code>$369,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 三次 VAR + 水浸超声 Class AA (0 #2 FBH) + 零 β 斑达标：已自动清算 (VERIFIED_AEROSPACE_TITANIUM_BILLET_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零硬 α 氮化钛转子爆裂、零富钒 β 斑与氢脆</strong>：航空发动机与机身 Ti-6Al-4V 钛合金锻坯已完成结算（<code>$440,000.00</code>）！" +
     "</div>";
 }}
 

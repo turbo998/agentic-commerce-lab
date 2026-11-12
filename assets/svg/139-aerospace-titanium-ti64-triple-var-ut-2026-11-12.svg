@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg139" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B111E"/>
+      <stop offset="50%" stop-color="#1A2639"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent139" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg139" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#162133"/>
+      <stop offset="100%" stop-color="#0A1019"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg139)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent139)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#1E1B4B" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE" text-anchor="middle">
+    ROUND 137 · AEROSPACE TI-6AL-4V BILLET &amp; SPONGE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    航空发动机 Ti-6Al-4V 钛合金锻坯交割、三次真空熔炼与水浸超声 (Class AA) 托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    Triple-VAR Melt Pedigree, AMS 2631 Class AA Multizone Immersion UT (#2 FBH) &amp; Zero Beta-Fleck vs. Hard-Alpha Rotor Burst
+  </text>
+
+  <!-- Left Card: Legacy Chemistry & Contact UT Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg139)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统看化学成分与普通探伤踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 漏检 0.8mm 硬 α 氮化钛脆性夹杂引发转子爆裂</text>
+    <text x="58" y="224" fill="#CBD5E1">• 二次熔炼或漏气形成高熔点硬 α 脆块，化学成分完全正常</text>
+    <text x="58" y="242" fill="#CBD5E1">• 普通平探头杂波大漏检，骗走 $440,000 酿高空断盘</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 富钒偏析“β 斑”与未测准 Tβ 导致模锻粗晶报废</text>
+    <text x="58" y="294" fill="#CBD5E1">• 熔炼电流过大产生富钒亮斑，疲劳寿命暴跌 60%</text>
+    <text x="58" y="312" fill="#CBD5E1">• 凭经验估计相变点 Tβ，一炉起落架大梁过热成魏氏组织</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 10:1 买飞比 (80% 机加纯钛屑) 被当废铁贱卖</text>
+    <text x="58" y="364" fill="#CBD5E1">• $45/kg 买的航空钛坯 80% 被铣成碎屑按 $4/kg 贱卖</text>
+    <text x="58" y="382" fill="#CBD5E1">• 实验室 Nadcap 资质暂停导致整机失去 FAA 适航取证</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$440,000 硬 α 缺陷坯与买飞比巨额损耗
+  </text>
+
+  <!-- Center Card: 4-Layer Aerospace Titanium Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg139)" stroke="#8B5CF6" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#2E1065"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#DDD6FE" text-anchor="middle">
+    ⚡ 三次 VAR + 水浸超声 #2 FBH + 钛屑闭环托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 1 · 三次 VAR 与多区水浸超声 Class AA (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    非三次真空重熔或 AMS 2631 检出 #2 FBH 硬 α / HDI →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 HARD_ALPHA_INCLUSION_OR_NON_TRIPLE_VAR_MELT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 零 β 斑偏析、实测 Tβ 与氢 (&lt;=80 ppm) (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    低倍检出富钒 β 亮斑、未标定 Tβ 或残余氢 &gt; 80 ppm →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 BETA_FLECK_SEGREGATION_OR_HYDROGEN_EMBRITTLEMENT_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ Nadcap 资质与 0A 海绵钛溯源 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    eAuditNet Nadcap NDT 过期或海绵钛涉受限矿源 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 NADCAP_NDT_ACCREDITATION_LAPSED_OR_SANCTIONED_SPONGE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 4 · Web IQ 80% 买飞比钛屑冷床炉重熔 (300ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    五轴铣削纯净 TC4 钛屑 XRF 除钨后 EBCHM 回炉省 $70,400 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 BUY_TO_FLY_TITANIUM_CHIP_HEARTH_REVERT_TOLLING_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_AEROSPACE_TITANIUM_BILLET_SETTLED (20ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg139)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#DDD6FE">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 3次VAR+Class AA零缺陷：20ms 放款 $440k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. #2 FBH 硬 α 氮化夹杂：12ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 富钒 β 斑或氢脆超标：15ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. Nadcap 过期或违禁源：290ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 买飞比钛屑冷床重熔：300ms 省 $70,400 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：多区水浸超声 + eAuditNet Nadcap 核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索冷床炉高密度夹杂沉降与保载疲劳文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零转子炸裂：#2 FBH (0.8mm) 动态聚焦全检</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$369,600.00 (单批立省 $70,400 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#DDD6FE">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 0.8mm 的硬 α 氮化钛夹杂不会改变宏观化学成分却能引爆万转航空发动机转子——必须强制三次 VAR 与 AMS 2631 Class AA 多区水浸超声签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #aerospace-titanium-ti64-sandbox · Unit Tests: 158/158 PASS
+  </text>
+</svg>
