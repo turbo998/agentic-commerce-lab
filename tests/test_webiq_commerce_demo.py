@@ -8719,6 +8719,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("offshore-wind-blade-sandbox", demo_zh)
 
+    def test_aseptic_dairy_beverage_uht_f0_lethality_peroxide_atp_mandate_vs_bloated_pack_spoilage_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_aseptic_dairy_uht_copack_policy,
+        )
+
+        # 1. Verified continuous F0 >=6.0 min + H2O2 <=0.5 ppm + incubated ATP <15 RLU -> 200 OK ($165,000)
+        commit_ok = evaluate_aseptic_dairy_uht_copack_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_aseptic_uht_cents, 16500000)
+
+        # 2. Holding-tube temperature dip (F0 < 6.0 min) or bypassed FDV diversion -> 403 blocked in 11ms
+        f0_403 = evaluate_aseptic_dairy_uht_copack_policy(
+            uht_f0_lethality_and_fdv_interlock_verified=False,
+        )
+        self.assertFalse(f0_403.allowed)
+        self.assertEqual(f0_403.http_status, 403)
+        self.assertEqual(
+            f0_403.aseptic_uht_lane,
+            "UHT_F0_LETHALITY_DROP_OR_FDV_BYPASS_BLOCKED",
+        )
+
+        # 3. Aseptic chamber pressure loss (<+15 Pa) or H2O2 residue > 0.5 ppm -> 422 blocked in 14ms
+        h2o2_422 = evaluate_aseptic_dairy_uht_copack_policy(
+            aseptic_overpressure_peroxide_and_seal_passed=False,
+        )
+        self.assertFalse(h2o2_422.allowed)
+        self.assertEqual(h2o2_422.http_status, 422)
+        self.assertEqual(
+            h2o2_422.aseptic_uht_lane,
+            "ASEPTIC_CHAMBER_PRESSURE_LOSS_OR_PEROXIDE_RESIDUE_BLOCKED",
+        )
+
+        # 4. Web IQ detects 7-day incubated ATP positivity (>=15 RLU) or Aflatoxin M1 breach -> 451 blocked in 285ms
+        atp_451 = evaluate_aseptic_dairy_uht_copack_policy(
+            webiq_atp_sterility_and_aflatoxin_m1_clean=False,
+        )
+        self.assertFalse(atp_451.allowed)
+        self.assertEqual(atp_451.http_status, 451)
+
+        # 5. Web IQ activates 92% UHT regenerative heat exchange & NF CIP caustic recovery saving $26,400 ($138,600 net) -> 409 Confirm
+        reg_409 = evaluate_aseptic_dairy_uht_copack_policy(
+            uht_regenerative_heat_and_cip_caustic_savings_cents=2640000,
+        )
+        self.assertFalse(reg_409.allowed)
+        self.assertEqual(reg_409.http_status, 409)
+        self.assertEqual(reg_409.settled_aseptic_uht_cents, 13860000)
+        self.assertEqual(reg_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["aseptic_uht_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("aseptic-dairy-uht-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

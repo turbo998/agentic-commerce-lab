@@ -16193,6 +16193,91 @@ def evaluate_offshore_wind_composite_blade_policy(
     )
 
 
+@dataclass(frozen=True)
+class AsepticDairyUhtCopackVerdict:
+    allowed: bool
+    http_status: int
+    aseptic_uht_lane: str
+    settled_aseptic_uht_cents: int
+    uht_regenerative_heat_and_cip_caustic_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_aseptic_dairy_uht_copack_policy(
+    *,
+    gross_aseptic_uht_cents: int = 16500000,
+    uht_f0_lethality_and_fdv_interlock_verified: bool = True,
+    aseptic_overpressure_peroxide_and_seal_passed: bool = True,
+    webiq_atp_sterility_and_aflatoxin_m1_clean: bool = True,
+    uht_regenerative_heat_and_cip_caustic_savings_cents: int = 0,
+) -> AsepticDairyUhtCopackVerdict:
+    # 1. Holding-Tube Lethality Drop (F0 <6.0 min) or Un-SIP'd Flow-Diversion Valve Bypass -> HTTP 403
+    if not uht_f0_lethality_and_fdv_interlock_verified:
+        return AsepticDairyUhtCopackVerdict(
+            False,
+            403,
+            "UHT_F0_LETHALITY_DROP_OR_FDV_BYPASS_BLOCKED",
+            0,
+            0,
+            "aseptic_copack_invoice_blocked_due_to_uht_f0_lethality_drop_or_fdv_diversion_bypass",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Aseptic Chamber Pressure Loss (<+15 Pa), H2O2 Residue (>0.5 ppm) or Seal Fault -> HTTP 422
+    if not aseptic_overpressure_peroxide_and_seal_passed:
+        return AsepticDairyUhtCopackVerdict(
+            False,
+            422,
+            "ASEPTIC_CHAMBER_PRESSURE_LOSS_OR_PEROXIDE_RESIDUE_BLOCKED",
+            0,
+            0,
+            "aseptic_lot_rejected_for_chamber_overpressure_drop_h2o2_residue_above_05ppm_or_seal_leak",
+            14,
+            "Send to a human",
+        )
+
+    # 3. 7-Day Incubated ATP Bioluminescence Positive (>=15 RLU) or Aflatoxin M1 Breach via Web IQ -> HTTP 451
+    if not webiq_atp_sterility_and_aflatoxin_m1_clean:
+        return AsepticDairyUhtCopackVerdict(
+            False,
+            451,
+            "ATP_BIOLUMINESCENCE_POSITIVITY_OR_AFLATOXIN_M1_HOLD",
+            0,
+            0,
+            "webiq_detected_incubated_atp_bioluminescence_positivity_or_raw_milk_aflatoxin_m1_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 92% Regenerative UHT Heat Exchange + NF CIP Caustic Recovery -> HTTP 409 Confirm
+    if uht_regenerative_heat_and_cip_caustic_savings_cents > 0:
+        return AsepticDairyUhtCopackVerdict(
+            False,
+            409,
+            "UHT_REGENERATIVE_HEAT_AND_CIP_CAUSTIC_RECOVERY_CONFIRM",
+            gross_aseptic_uht_cents - uht_regenerative_heat_and_cip_caustic_savings_cents,
+            uht_regenerative_heat_and_cip_caustic_savings_cents,
+            "webiq_applied_92pct_uht_regenerative_heat_and_cip_caustic_recovery_saving_26400_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Continuous F0 >=6.0 min + H2O2 <=0.5 ppm + Incubated ATP <15 RLU -> Settled
+    return AsepticDairyUhtCopackVerdict(
+        True,
+        200,
+        "VERIFIED_ASEPTIC_UHT_COPACK_SETTLED",
+        gross_aseptic_uht_cents,
+        0,
+        "continuous_uht_f0_fdv_aseptic_overpressure_peroxide_and_atp_sterility_verified",
+        19,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21234,6 +21319,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "paut_dry_spot_block_latency_ms": bld_ut_403.latency_ms,
     }
 
+    # Round 135 (Aseptic Dairy & Beverage UHT Co-Packing, F0 Lethality & Peroxide/ATP Mandate)
+    uht_commit_ok = evaluate_aseptic_dairy_uht_copack_policy()
+    uht_f0_403 = evaluate_aseptic_dairy_uht_copack_policy(
+        uht_f0_lethality_and_fdv_interlock_verified=False,
+    )
+    uht_h2o2_422 = evaluate_aseptic_dairy_uht_copack_policy(
+        aseptic_overpressure_peroxide_and_seal_passed=False,
+    )
+    uht_atp_451 = evaluate_aseptic_dairy_uht_copack_policy(
+        webiq_atp_sterility_and_aflatoxin_m1_clean=False,
+    )
+    uht_reg_409 = evaluate_aseptic_dairy_uht_copack_policy(
+        uht_regenerative_heat_and_cip_caustic_savings_cents=2640000,
+    )
+    aseptic_uht_guards = {
+        "all_passed": (
+            uht_commit_ok.allowed
+            and uht_commit_ok.settled_aseptic_uht_cents == 16500000
+            and not uht_f0_403.allowed
+            and uht_f0_403.http_status == 403
+            and not uht_h2o2_422.allowed
+            and uht_h2o2_422.http_status == 422
+            and not uht_atp_451.allowed
+            and uht_atp_451.http_status == 451
+            and not uht_reg_409.allowed
+            and uht_reg_409.action_pill == "Confirm"
+        ),
+        "aseptic_uht_settlement_latency_ms": uht_commit_ok.latency_ms,
+        "uht_f0_block_latency_ms": uht_f0_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21381,6 +21497,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "solar_wafer_guards": solar_wafer_guards,
         "cooling_tower_guards": cooling_tower_guards,
         "wind_blade_guards": wind_blade_guards,
+        "aseptic_uht_guards": aseptic_uht_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26710,6 +26827,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Aseptic Dairy & Beverage UHT Co-Packing, F0 Lethality & Peroxide/ATP Mandate Sandbox (Round 135 FAQ Companion) -->
+      <div class="finops-box" id="aseptic-dairy-uht-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-uht-title">🥛 乳制品与无菌饮料 UHT 灌装代工、热致死率 (F0 &gt;=6.0 min) 与双氧水残留 (&lt;=0.5 ppm) / ATP 生物发光架构：防芽孢存活胀包令牌 (aseptic_dairy_uht_copack_mandate_...) vs 按箱数盲付决策器 (Round 135 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 常温牛奶/燕麦拿铁无菌冷灌装与利乐包代工交割 ($165,000.00)、FDA 21 CFR 113 逐秒 F0 致死率/回流阀 FDV、双氧水残留与 Web IQ 保温 ATP 生物发光/热再生场景 (Aseptic UHT Scenario):</span></label>
+          <select id="uht-select" onchange="updateAsepticDairyUhtSandbox()">
+            <option value="uht_commit_ok">⚡ 保持管逐秒 F0 7.4 min (&gt;=6.0 min) + 无菌舱正压 +22 Pa + H2O2 残留 0.12 ppm (&lt;=0.5) + 保温 ATP 4 RLU：19ms 自动结算 $165,000.00! (Act automatically)</option>
+            <option value="uht_f0_403">🛑 蒸汽掉压致保持管瞬时跌至 133.5°C (F0 = 2.4 min &lt; 6.0 min) 且代工厂为省奶液违规屏蔽回流阀 (FDV) 未重新 SIP 继续灌装 (耐热芽孢存活将引爆全国商超集体胀包) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="uht_h2o2_422">🚨 无菌隔离舱正压丢失 (&lt;+15 Pa)、热风刀未吹干致包材双氧水残留超标 (H2O2 = 1.8 ppm &gt; 0.5 ppm 产生刺鼻漂白味) 或超声波横封微漏拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="uht_atp_451">🛑 35°C 保温 7 天加速培养检出 ATP 生物发光微生物荧光阳性 (&gt;=15 RLU 非商业无菌) 或生乳黄曲霉毒素 M1 (&gt;0.05 μg/kg) 超标：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="uht_reg_409">🧑‍⚖️ Web IQ 启用 UHT 列管 92% 热能再生段 (冷热奶逆流换热省 85% 锅炉蒸汽) 耦合纳滤膜 CIP 清洗废碱液回收系统立省 $26,400.00 (净付 $138,600.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="uht-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27283,6 +27418,7 @@ function renderAll() {{
   updateSolarTopconWaferSandbox();
   updateCoolingTowerTreatmentSandbox();
   updateOffshoreWindBladeSandbox();
+  updateAsepticDairyUhtSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -34150,6 +34286,55 @@ function updateOffshoreWindBladeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ PAUT C 扫描零干斑 + DSC 固化度 (Tg &gt;=75°C) + 防雷 (&lt;=20 mΩ) 达标：已自动清算 (VERIFIED_OFFSHORE_WIND_BLADE_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零主梁干纱空中折断、零欠固化蠕变与雷击炸叶</strong>：海上风电 15MW 超大型复合材料叶片已完成结算（<code>$460,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAsepticDairyUhtSandbox() {{
+  var selEl = document.getElementById("uht-select");
+  var outEl = document.getElementById("uht-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "uht_f0_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UHT_F0_LETHALITY_DROP_OR_FDV_BYPASS_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "无菌灌装线 <code>Tetra Pak PlantMaster PLC 电子批记录黑匣子 (FDA 21 CFR 113)</code> 实测显示，UHT 保持管出口温度曾瞬时跌落至 <code>133.5°C &lt; 137.0°C</code>（热致死率 <code>F0 = 2.4 min &lt; 6.0 min</code>），且代工厂违规屏蔽流向切换回流阀（FDV）未执行 90 分钟重做 SIP 即继续灌装（耐热芽孢存活将引爆全国商超集体胀包，<code>uht_f0_lethality_and_fdv_interlock_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$165,000.00</code> 代工费结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uht_h2o2_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ASEPTIC_CHAMBER_PRESSURE_LOSS_OR_PEROXIDE_RESIDUE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "无菌灌装舱 <code>压差变送器、在线过氧化氢光度计与超声波横封监测仪</code> 检出无菌区正压掉至 <code>&lt; +15 Pa</code>、成品双氧水残留高达 <code>H2O2 = 1.8 ppm &gt; 0.5 ppm</code>（氧化乳脂产生刺鼻漂白水味），或横封能量波动存在微漏（<code>aseptic_overpressure_peroxide_and_seal_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uht_atp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ATP_BIOLUMINESCENCE_POSITIVITY_OR_AFLATOXIN_M1_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>LIMS 35°C 保温 7 天 Promicol ATP 生物发光无菌筛查矩阵与生乳毒素报告</code>，检出样品微生物荧光 <code>&gt;= 15 RLU</code>（非商业无菌）或黄曲霉毒素 M1 超标，立即执行整批冻结禁运！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uht_reg_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 UHT_REGENERATIVE_HEAT_AND_CIP_CAUSTIC_RECOVERY_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动启用 <code>UHT 列管式 92% 热量再生段 (利用灭菌后热奶预热冷奶削减 85% 蒸汽耗量)</code> 并耦合纳滤膜（NF）回收 CIP 原位清洗废碱液，单批次立省 <code>$26,400.00</code>（净付降至 <code>$138,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 逐秒 F0 (&gt;=6.0 min) + 双氧水残留 (&lt;=0.5 ppm) + 保温 ATP (&lt;15 RLU) 达标：已自动清算 (VERIFIED_ASEPTIC_UHT_COPACK_SETTLED · 19ms · Act automatically):</strong><br>" +
+    "• <strong>零耐热芽孢商超胀包、零双氧水怪味与横封微漏</strong>：乳制品与无菌饮料 UHT 代工批次已完成结算（<code>$165,000.00</code>）！" +
     "</div>";
 }}
 

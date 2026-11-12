@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg137" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081C15"/>
+      <stop offset="50%" stop-color="#1B4332"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent137" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardBg137" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#132F25"/>
+      <stop offset="100%" stop-color="#081611"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg137)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent137)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ROUND 135 · ASEPTIC DAIRY &amp; BEVERAGE UHT CO-PACKING ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    乳制品与无菌饮料 UHT 灌装代工、热致死率 (F0 &gt;=6.0 min) 与 ATP 生物发光智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    FDA 21 CFR 113 Thermal Lethality (F0 &gt;=6.0 min), Peroxide Residue (&lt;=0.5 ppm) &amp; ATP Bioluminescence vs. Bloated-Pack Recall
+  </text>
+
+  <!-- Left Card: Legacy Case Count & Grab Sample Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg137)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按箱数与抽检几盒盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. UHT 失温 3 秒未切回流阀致芽孢存活集体胀包</text>
+    <text x="58" y="224" fill="#CBD5E1">• 蒸汽掉压致保持管跌至 133.5°C (F0=2.4 &lt; 6.0 min)</text>
+    <text x="58" y="242" fill="#CBD5E1">• 抽检 10 盒漏检率 99.5%，骗走 $165,000 后商超炸包</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 无菌舱掉压二次染菌与双氧水残留 (&gt;0.5 ppm)</text>
+    <text x="58" y="294" fill="#CBD5E1">• 热风刀温度不足致包材 H2O2 残留 1.8 ppm 产生漂白味</text>
+    <text x="58" y="312" fill="#CBD5E1">• 超声波横封能量波动留下微孔，运输途中吸气发霉</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 未满 7 天保温期抢先发货与蒸汽碱液浪费</text>
+    <text x="58" y="364" fill="#CBD5E1">• 未做保温加速培养 ATP 生物发光筛查即放行出库</text>
+    <text x="58" y="382" fill="#CBD5E1">• 缺失 92% 热再生与 CIP 废碱膜回收，能耗居高不下</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$165,000 胀包酸败批次与千万级召回
+  </text>
+
+  <!-- Center Card: 4-Layer Aseptic UHT Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg137)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ⚡ 逐秒 F0&gt;=6.0 + 双氧水&lt;=0.5 + ATP 无菌托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 逐秒 F0 热致死率 (&gt;=6.0m) 与回流阀 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    137°C/4s 保持管 F0 &lt; 6.0 min 或违规旁路 FDV 回流阀 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 UHT_F0_LETHALITY_DROP_OR_FDV_BYPASS_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 无菌舱正压 (&gt;=+15Pa) 与 H2O2 (&lt;=0.5ppm) (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    无菌区掉压、双氧水残留 &gt; 0.5 ppm 或超声横封微漏 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 ASEPTIC_CHAMBER_PRESSURE_LOSS_OR_PEROXIDE_RESIDUE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 保温 7 天 ATP 无菌与毒素核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    35°C 保温 ATP 生物发光 &gt;= 15 RLU 或黄曲霉毒素 M1 超标 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 ATP_BIOLUMINESCENCE_POSITIVITY_OR_AFLATOXIN_M1_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 92% 热再生 + CIP 废碱膜回收 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    冷热奶逆流换热省 85% 蒸汽 + 纳滤回收碱液省 $26,400 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 UHT_REGENERATIVE_HEAT_AND_CIP_CAUSTIC_RECOVERY_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_ASEPTIC_UHT_COPACK_SETTLED (19ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg137)" stroke="#38BDF8" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#6EE7B7">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. F0 7.4+H2O2 0.12+ATP 4：19ms 放款 $165k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. UHT 失温或旁路回流：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 无菌掉压或双氧水高：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 保温 ATP 阳性或毒素：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 热再生+CIP碱回收：295ms 省 $26,400 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：PlantMaster eBR + 保温 ATP 报告核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索 VTIS 蒸汽直喷乳清蛋白变性动力学</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零货架胀包：逐秒 F0 黑匣子取代 10 盒人工抽检</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$138,600.00 (单批立省 $26,400 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 低酸饮料 (pH&gt;4.6) 中千分之一的耐热芽孢逃逸靠出厂抽检 10 盒根本查不出——必须强制 UHT 逐秒 F0&gt;=6.0 与保温 7 天 ATP 生物发光签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #aseptic-dairy-uht-sandbox · Unit Tests: 156/156 PASS
+  </text>
+</svg>
