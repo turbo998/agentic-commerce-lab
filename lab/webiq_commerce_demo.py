@@ -15768,6 +15768,91 @@ def evaluate_battery_lithium_lfp_cathode_policy(
     )
 
 
+@dataclass(frozen=True)
+class CorrugatedPackagingEctBctVerdict:
+    allowed: bool
+    http_status: int
+    corrugated_lane: str
+    settled_corrugated_cents: int
+    box_on_demand_right_sizing_and_occ_loop_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_corrugated_packaging_ect_bct_policy(
+    *,
+    gross_corrugated_lot_cents: int = 14000000,
+    tappi_ect_edge_crush_and_bct_verified: bool = True,
+    iso535_cobb60_water_absorption_and_pin_adhesion_passed: bool = True,
+    webiq_fsc_coc_and_eu_ppwr_pfas_free_clean: bool = True,
+    box_on_demand_right_sizing_and_occ_loop_savings_cents: int = 0,
+) -> CorrugatedPackagingEctBctVerdict:
+    # 1. Filler-Adulterated Liner or Crushed Flutes Dropping ECT (<44 lb/in) or BCT (<4,500 N) -> HTTP 403
+    if not tappi_ect_edge_crush_and_bct_verified:
+        return CorrugatedPackagingEctBctVerdict(
+            False,
+            403,
+            "LOW_ECT_EDGE_CRUSH_OR_BCT_STACK_COLLAPSE_BLOCKED",
+            0,
+            0,
+            "corrugated_box_invoice_blocked_due_to_low_tappi_ect_edge_crush_or_bct_pallet_collapse_risk",
+            11,
+            "Send to a human",
+        )
+
+    # 2. High Cobb60 Water Absorption (>30 g/m2) or Starch Pin-Adhesion Delamination -> HTTP 422
+    if not iso535_cobb60_water_absorption_and_pin_adhesion_passed:
+        return CorrugatedPackagingEctBctVerdict(
+            False,
+            422,
+            "HIGH_COBB_WATER_ABSORPTION_OR_PIN_ADHESION_DELAMINATION_BLOCKED",
+            0,
+            0,
+            "corrugated_lot_rejected_for_high_cobb60_moisture_pickup_or_flute_pin_adhesion_delamination",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Revoked FSC-CoC Certificate or EU PPWR Banned PFAS Coating via Web IQ -> HTTP 451
+    if not webiq_fsc_coc_and_eu_ppwr_pfas_free_clean:
+        return CorrugatedPackagingEctBctVerdict(
+            False,
+            451,
+            "FSC_COC_CERTIFICATE_REVOKED_OR_PPWR_PFAS_BREACH_HOLD",
+            0,
+            0,
+            "webiq_detected_revoked_fsc_chain_of_custody_certificate_or_eu_ppwr_banned_pfas_coating",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Fanfold Box-on-Demand Right-Sizing + Closed-Loop OCC Bales -> HTTP 409 Confirm
+    if box_on_demand_right_sizing_and_occ_loop_savings_cents > 0:
+        return CorrugatedPackagingEctBctVerdict(
+            False,
+            409,
+            "BOX_ON_DEMAND_RIGHT_SIZING_AND_OCC_CLOSED_LOOP_CONFIRM",
+            gross_corrugated_lot_cents - box_on_demand_right_sizing_and_occ_loop_savings_cents,
+            box_on_demand_right_sizing_and_occ_loop_savings_cents,
+            "webiq_applied_fanfold_box_on_demand_right_sizing_and_occ_closed_loop_saving_22400_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified TAPPI ECT >=44 lb/in + BCT >=4,500 N + Cobb60 <=30 g/m2 + Clean FSC/PPWR -> Settled
+    return CorrugatedPackagingEctBctVerdict(
+        True,
+        200,
+        "VERIFIED_CORRUGATED_PACKAGING_SETTLED",
+        gross_corrugated_lot_cents,
+        0,
+        "tappi_ect_bct_iso535_cobb60_pin_adhesion_and_fsc_ppwr_verified_for_settlement",
+        18,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -20654,6 +20739,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "magnetic_impurity_block_latency_ms": lfp_mag_403.latency_ms,
     }
 
+    # Round 130 (Corrugated Packaging & Containerboard Offtake, TAPPI ECT/BCT & ISO 535 Cobb60 Mandate)
+    box_commit_ok = evaluate_corrugated_packaging_ect_bct_policy()
+    box_ect_403 = evaluate_corrugated_packaging_ect_bct_policy(
+        tappi_ect_edge_crush_and_bct_verified=False,
+    )
+    box_cob_422 = evaluate_corrugated_packaging_ect_bct_policy(
+        iso535_cobb60_water_absorption_and_pin_adhesion_passed=False,
+    )
+    box_fsc_451 = evaluate_corrugated_packaging_ect_bct_policy(
+        webiq_fsc_coc_and_eu_ppwr_pfas_free_clean=False,
+    )
+    box_bod_409 = evaluate_corrugated_packaging_ect_bct_policy(
+        box_on_demand_right_sizing_and_occ_loop_savings_cents=2240000,
+    )
+    corrugated_packaging_guards = {
+        "all_passed": (
+            box_commit_ok.allowed
+            and box_commit_ok.settled_corrugated_cents == 14000000
+            and not box_ect_403.allowed
+            and box_ect_403.http_status == 403
+            and not box_cob_422.allowed
+            and box_cob_422.http_status == 422
+            and not box_fsc_451.allowed
+            and box_fsc_451.http_status == 451
+            and not box_bod_409.allowed
+            and box_bod_409.action_pill == "Confirm"
+        ),
+        "corrugated_settlement_latency_ms": box_commit_ok.latency_ms,
+        "ect_bct_block_latency_ms": box_ect_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20796,6 +20912,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "high_speed_pcb_guards": high_speed_pcb_guards,
         "coking_coal_guards": coking_coal_guards,
         "battery_lfp_guards": battery_lfp_guards,
+        "corrugated_packaging_guards": corrugated_packaging_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26035,6 +26152,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lfp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Corrugated Packaging & Containerboard Offtake, ECT/BCT & Cobb60 Moisture Mandate Sandbox (Round 130 FAQ Companion) -->
+      <div class="finops-box" id="corrugated-packaging-ect-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-box-title">📦 电商快消高强瓦楞纸箱与箱板纸交割、边压/空箱抗压 (ECT/BCT) 与可勃吸水性 (Cobb60 &lt;=30 g/m²) 架构：防立体库塌箱与冷链返潮令牌 (corrugated_packaging_ect_bct_mandate_...) vs 克重盲付决策器 (Round 130 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 重型双瓦楞物流纸箱与牛卡纸交割 ($140,000.00)、TAPPI T811 边压 ECT/T804 空箱抗压 BCT、ISO 535 Cobb60 吸水率与 Web IQ FSC/按需裁箱场景 (Corrugated Box Scenario):</span></label>
+          <select id="box-select" onchange="updateCorrugatedPackagingEctSandbox()">
+            <option value="box_commit_ok">⚡ 边压强度 ECT 48 lb/in (&gt;=44) + 空箱抗压 BCT 4,850 N (&gt;=4,500 N) + 可勃吸水 Cobb60 24 g/m² (&lt;=30) + FSC/PPWR 合规：18ms 自动结算 $140,000.00! (Act automatically)</option>
+            <option value="box_ect_403">🛑 二级纸箱厂用多次回用短纤维废纸浆掺 18% 石粉增重冒充原生木浆牛卡 (克重虽达标，但边压跌至 ECT 29 lb/in &lt; 44 且空箱抗压 BCT 2,600 N &lt; 4,500 N 导致 8m 托盘底层压溃倒垛) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="box_cob_422">🚨 偷减 AKD 疏水施胶剂导致面纸 60 秒可勃吸水性飙升 (Cobb60 = 78 g/m² &gt; 30 g/m² 在海运或冷链出库凝露下吸潮强度暴跌 50% 瘫软) 或玉米淀粉胶未糊化脱胶开裂拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="box_fsc_451">🛑 供应商 FSC 森林产销监管链证书 (info.fsc.org) 已被暂停吊销或防油防水涂层检出欧盟 PPWR 法规禁用的 PFAS 全氟化合物：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="box_bod_409">🧑‍⚖️ Web IQ 切换为仓内连续扇形纸板 3D 按需裁切纸箱 (Fanfold Box-on-Demand：消除 40% 箱内空隙与 35% 快递泡重运费) 并回交本厂 OCC 废纸箱闭环打浆立省 $22,400.00 (净付 $117,600.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="box-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -26603,6 +26738,7 @@ function renderAll() {{
   updateHighSpeedAiPcbSandbox();
   updateMetallurgicalCokingCoalSandbox();
   updateBatteryLithiumLfpSandbox();
+  updateCorrugatedPackagingEctSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -33225,6 +33361,55 @@ function updateBatteryLithiumLfpSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ ICP-MS 磁性异物 (&lt;=50 ppb) + 0.1C 比容量 (&gt;=158 mAh/g) + 水分 (&lt;=300 ppm) 达标：已自动清算 (VERIFIED_BATTERY_LITHIUM_LFP_CATHODE_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零金属枝晶微短路自燃、零 HF 酸鼓包与欧盟扣关</strong>：电池级碳酸锂与高压实 LFP 正极批次已完成结算（<code>$380,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCorrugatedPackagingEctSandbox() {{
+  var selEl = document.getElementById("box-select");
+  var outEl = document.getElementById("box-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "box_ect_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_ECT_EDGE_CRUSH_OR_BCT_STACK_COLLAPSE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "包装力学实验室 <code>L&amp;W 垂直边压仪 (TAPPI T811) 与整箱抗压试验机 (TAPPI T804)</code> 实测显示，该批五层瓦楞箱因掺入 18% 廉价石粉冒充原生牛卡或瓦楞辊压溃暗裂，边压强度跌至 <code>ECT = 29 lb/in &lt; 44 lb/in</code>，空箱抗压仅 <code>BCT = 2,600 N &lt; 4,500 N</code>（在 8m 高位托盘堆码下底层纸箱必坍塌倒垛，<code>tappi_ect_edge_crush_and_bct_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$140,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "box_cob_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HIGH_COBB_WATER_ABSORPTION_OR_PIN_ADHESION_DELAMINATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "纸品实验室 <code>ISO 535 可勃吸收性测定仪与针式剥离架</code> 检出该批纸箱面纸 60 秒吸水量高达 <code>Cobb60 = 78 g/m² &gt; 30 g/m²</code>（遇海运集装箱或冷链凝露即吸潮丧失 50% 抗压强度），或淀粉胶未完全糊化导致楞峰粘合剥离强度 <code>&lt; 550 N/m</code>（<code>iso535_cobb60_water_absorption_and_pin_adhesion_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "box_fsc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FSC_COC_CERTIFICATE_REVOKED_OR_PPWR_PFAS_BREACH_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>info.fsc.org 全球森林产销监管链数据库与欧盟 PPWR 包装有害物质名录</code>，检出供应商 FSC-CoC 证书已被暂停吊销或防潮涂层含有禁用 PFAS 全氟化合物，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "box_bod_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BOX_ON_DEMAND_RIGHT_SIZING_AND_OCC_CLOSED_LOOP_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将固定尺寸预制纸箱切换为 <code>仓内连续扇形纸板 3D 按需裁箱 (Fanfold Box-on-Demand：彻底消除箱内 40% 空隙气泡枕与 35% 快递体积重溢价)</code>，并将本仓拆包废纸箱（OCC Grade 11）直接回交造纸厂抵扣原纸款，单批立省 <code>$22,400.00</code>（净付降至 <code>$117,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 边压 ECT (&gt;=44 lb/in) + 空箱抗压 BCT (&gt;=4,500 N) + 可勃吸水 (&lt;=30 g/m²) 达标：已自动清算 (VERIFIED_CORRUGATED_PACKAGING_SETTLED · 18ms · Act automatically):</strong><br>" +
+    "• <strong>零掺石粉塌箱倒垛、零冷链返潮烂箱与泡重浪费</strong>：高强瓦楞纸箱与牛卡箱板纸批次已完成结算（<code>$140,000.00</code>）！" +
     "</div>";
 }}
 

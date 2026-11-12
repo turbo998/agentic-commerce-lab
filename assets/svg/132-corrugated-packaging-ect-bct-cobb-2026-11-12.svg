@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg132" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A140C"/>
+      <stop offset="50%" stop-color="#2D2212"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent132" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="cardBg132" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#292014"/>
+      <stop offset="100%" stop-color="#120E08"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg132)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent132)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="400" height="28" rx="14" fill="#78350F" stroke="#F59E0B" stroke-width="1"/>
+  <text x="240" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ROUND 130 · CORRUGATED PACKAGING ECT/BCT &amp; COBB60 ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    瓦楞纸箱与箱板纸交割、边压/空箱抗压 (ECT/BCT) 与可勃吸水性智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    TAPPI T811 Edge Crush (ECT &gt;=44 lb/in), T804 Box Compression (BCT) &amp; ISO 535 Cobb60 (&lt;=30 g/m²) vs. Stack-Collapse Overbilling
+  </text>
+
+  <!-- Left Card: Legacy GSM Weight Only Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg132)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看克重与层数盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 劣质再生浆掺 18% 石粉凑克重致高位托盘塌箱</text>
+    <text x="58" y="224" fill="#CBD5E1">• 纸箱过秤克重虽够，但边压强度跌至 29 lb/in (&lt;44)</text>
+    <text x="58" y="242" fill="#CBD5E1">• 8m 立体库底层纸箱压溃倒垛，骗走 $140,000 货款</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 偷减施胶剂致 Cobb60 = 78 g/m² 遇海运受潮烂箱</text>
+    <text x="58" y="294" fill="#CBD5E1">• 纸板含水率每升 1% 抗压暴跌 10%，冷链凝露变软泥</text>
+    <text x="58" y="312" fill="#CBD5E1">• 玉米淀粉胶未糊化导致箱体摇盖自动脱胶弹开</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 固定大箱装小货多付 35% 快递体积重与 FSC 违约</text>
+    <text x="58" y="364" fill="#CBD5E1">• 箱内 40% 空隙全靠塑料气泡枕填充且白交泡重运费</text>
+    <text x="58" y="382" fill="#CBD5E1">• 伪造过期 FSC 证书或防水涂层含欧盟禁用 PFAS</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$140,000 塌箱倒垛与海运烂箱索赔
+  </text>
+
+  <!-- Center Card: 4-Layer Corrugated Packaging Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg132)" stroke="#F59E0B" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#78350F"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FEF3C7" text-anchor="middle">
+    ⚡ ECT/BCT 抗压 + Cobb60 防潮 + 按需裁箱托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 1 · 边压 ECT (&gt;=44 lb/in) 与空箱抗压 BCT (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    掺石粉再生纸或瓦楞暗裂致 ECT &lt; 44 或 BCT &lt; 4,500N →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 LOW_ECT_EDGE_CRUSH_OR_BCT_STACK_COLLAPSE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 可勃吸水率 (Cobb60 &lt;=30 g/m²) 与粘合 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ISO 535 Cobb60 &gt; 30 g/m²、水分 &gt; 10% 或剥离脱胶 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 HIGH_COBB_WATER_ABSORPTION_OR_PIN_ADHESION_DELAMINATION_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ FSC 监管链与欧盟 PPWR 无氟核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    info.fsc.org 证书吊销或防潮层检出欧盟禁用 PFAS →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 FSC_COC_CERTIFICATE_REVOKED_OR_PPWR_PFAS_BREACH_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 按需裁箱 (Box-on-Demand) + OCC 闭环 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    Fanfold 零空隙裁箱降泡重 + 本厂 OCC 废纸箱回炉省 $22,400 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 BOX_ON_DEMAND_RIGHT_SIZING_AND_OCC_CLOSED_LOOP_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_CORRUGATED_PACKAGING_SETTLED (18ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg132)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#FDE047">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. ECT 48+BCT 4850+Cobb 24：18ms 放款 $140k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 掺石粉低边压或压溃：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 高吸水性或脱胶开裂：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. FSC 吊销或含 PFAS：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#6EE7B7">5. 按需裁箱+OCC闭环：295ms 省 $22,400 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：L&amp;W 边压报文 + info.fsc.org 监管链核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索高湿温变马基公式蠕变系数模型</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零塌箱倒垛：马基公式 ECT×√(h×Z) 硬校验</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$117,600.00 (单批立省 $22,400 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDE047">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 废纸浆掺 18% 石粉就能伪造出合格克重，但无法伪造垂直边压强度 (ECT) 与可勃疏水性 (Cobb60)——必须用力学试验机签章取代电子秤称重！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #corrugated-packaging-ect-sandbox · Unit Tests: 151/151 PASS
+  </text>
+</svg>

@@ -8439,6 +8439,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("battery-lithium-lfp-sandbox", demo_zh)
 
+    def test_corrugated_packaging_ect_box_compression_cobb_moisture_mandate_vs_recycled_liner_collapse_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_corrugated_packaging_ect_bct_policy,
+        )
+
+        # 1. Verified TAPPI ECT >=44 lb/in + BCT >=4,500 N + Cobb60 <=30 g/m2 + clean FSC -> 200 OK ($140,000)
+        commit_ok = evaluate_corrugated_packaging_ect_bct_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_corrugated_cents, 14000000)
+
+        # 2. Chalk-filler adulterated liner or crushed flutes dropping ECT < 44 lb/in -> 403 blocked in 11ms
+        ect_403 = evaluate_corrugated_packaging_ect_bct_policy(
+            tappi_ect_edge_crush_and_bct_verified=False,
+        )
+        self.assertFalse(ect_403.allowed)
+        self.assertEqual(ect_403.http_status, 403)
+        self.assertEqual(
+            ect_403.corrugated_lane,
+            "LOW_ECT_EDGE_CRUSH_OR_BCT_STACK_COLLAPSE_BLOCKED",
+        )
+
+        # 3. High Cobb60 water absorption (>30 g/m2) or starch pin-adhesion delamination -> 422 blocked in 14ms
+        cob_422 = evaluate_corrugated_packaging_ect_bct_policy(
+            iso535_cobb60_water_absorption_and_pin_adhesion_passed=False,
+        )
+        self.assertFalse(cob_422.allowed)
+        self.assertEqual(cob_422.http_status, 422)
+        self.assertEqual(
+            cob_422.corrugated_lane,
+            "HIGH_COBB_WATER_ABSORPTION_OR_PIN_ADHESION_DELAMINATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects revoked FSC-CoC certificate or EU PPWR banned PFAS -> 451 blocked in 285ms
+        fsc_451 = evaluate_corrugated_packaging_ect_bct_policy(
+            webiq_fsc_coc_and_eu_ppwr_pfas_free_clean=False,
+        )
+        self.assertFalse(fsc_451.allowed)
+        self.assertEqual(fsc_451.http_status, 451)
+
+        # 5. Web IQ switches to Fanfold Box-on-Demand & closed-loop OCC bales saving $22,400 ($117,600 net) -> 409 Confirm
+        bod_409 = evaluate_corrugated_packaging_ect_bct_policy(
+            box_on_demand_right_sizing_and_occ_loop_savings_cents=2240000,
+        )
+        self.assertFalse(bod_409.allowed)
+        self.assertEqual(bod_409.http_status, 409)
+        self.assertEqual(bod_409.settled_corrugated_cents, 11760000)
+        self.assertEqual(bod_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["corrugated_packaging_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corrugated-packaging-ect-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
