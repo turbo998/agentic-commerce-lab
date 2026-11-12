@@ -9503,6 +9503,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("trenchless-uv-cipp-sandbox", demo_zh)
 
+    def test_high_speed_rail_ballastless_track_scc_pce_slump_flow_air_void_mandate_vs_slab_debonding_frost_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hsr_ballastless_scc_policy,
+        )
+
+        # 1. Verified TB/T 3365 slump flow T500 3-7s + MB <=1.0 + ASTM C457 L <=250 um -> 200 OK ($410,000)
+        commit_ok = evaluate_hsr_ballastless_scc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hsr_scc_cents, 41000000)
+
+        # 2. Jobsite water-tempering bleed (T500 < 3.0s) or J-ring bridging (>15mm) -> 403 blocked in 11ms
+        flw_403 = evaluate_hsr_ballastless_scc_policy(
+            slump_flow_t500_and_jring_segregation_verified=False,
+        )
+        self.assertFalse(flw_403.allowed)
+        self.assertEqual(flw_403.http_status, 403)
+        self.assertEqual(
+            flw_403.hsr_scc_lane,
+            "SLUMP_FLOW_T500_RHEOLOGY_OR_JRING_SEGREGATION_BLEEDING_BLOCKED",
+        )
+
+        # 3. Clay MB (>1.0 g/kg), frost air-void spacing (>250 um) or slab uplift (>0.5mm) -> 422 blocked in 14ms
+        air_422 = evaluate_hsr_ballastless_scc_policy(
+            methylene_blue_air_void_spacing_and_uplift_passed=False,
+        )
+        self.assertFalse(air_422.allowed)
+        self.assertEqual(air_422.http_status, 422)
+        self.assertEqual(
+            air_422.hsr_scc_lane,
+            "METHYLENE_BLUE_CLAY_POISONING_OR_AIR_VOID_SPACING_FROST_BLOCKED",
+        )
+
+        # 4. Web IQ detects suspended CRCC PCE cert or Impact-Echo under-slab debonding -> 451 blocked in 280ms
+        crc_451 = evaluate_hsr_ballastless_scc_policy(
+            webiq_crcc_pce_cert_and_ultrasonic_void_clean=False,
+        )
+        self.assertFalse(crc_451.allowed)
+        self.assertEqual(crc_451.http_status, 451)
+
+        # 5. Web IQ credits clay-tolerant phosphate-PCE zero-rework reserve saving $57,400 ($352,600 net) -> 409 Confirm
+        pce_409 = evaluate_hsr_ballastless_scc_policy(
+            clay_tolerant_pce_zero_debonding_rework_credit_cents=5740000,
+        )
+        self.assertFalse(pce_409.allowed)
+        self.assertEqual(pce_409.http_status, 409)
+        self.assertEqual(pce_409.settled_hsr_scc_cents, 35260000)
+        self.assertEqual(pce_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["hsr_scc_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hsr-ballastless-scc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

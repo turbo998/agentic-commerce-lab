@@ -3474,6 +3474,24 @@
         <div id="cip-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive High-Speed Rail Ballastless Track SCC & PCE Offtake, T500 Rheology & Air-Void Spacing Mandate Sandbox (Round 149 FAQ Companion) -->
+      <div class="finops-box" id="hsr-ballastless-scc-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-scc-title">🚄 高铁无砟轨道自密实混凝土 (SCC) 与减水剂、流变 T500 (3–7s) 与气泡间距 (&lt;=250 um) 架构：防板底水囊脱空与高寒冻裂令牌 (hsr_ballastless_scc_mandate_...) vs 方量试块盲付决策器 (Round 149 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 350km/h 高铁 CRTS III 无砟轨道自密实混凝土与聚羧酸减水剂交割 ($410,000.00)、TB/T 3365 扩展度 T500/J环高差、机制砂亚甲蓝 MB/ASTM C457 气泡间距系数与 Web IQ CRCC 认证/超声零空洞场景 (High-Speed Rail SCC Scenario):</span></label>
+          <select id="scc-select" onchange="updateHsrBallastlessSccSandbox()">
+            <option value="scc_commit_ok">⚡ 扩展度 675mm (T500 4.6s) + J环高差 8mm + 亚甲蓝 MB 0.55 g/kg + 气泡间距 185 um + 抬板 0.18mm：10ms 自动结算 $410,000.00! (Act automatically)</option>
+            <option value="scc_flw_403">🛑 罐车司机途中私自加水致塑性粘度暴跌 (T500 = 1.4s &lt; 3.0s 严重泌水离析，粗骨料沉底堵在钢筋网 ΔHJ = 38mm &gt; 15mm，稀浮浆在轨道板下表面收缩成 3mm 脱空水囊引发翻浆冒泥) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="scc_air_422">🚨 机制砂蒙脱土泥粉超标 (MB = 2.1 g/kg &gt; 1.0 插层吞噬聚羧酸侧链)，或消泡过度致硬化气泡间距系数飙至 L = 480 um &gt; 250 um (-30°C 高寒区一年冻融酥裂) 及抬板 1.8mm 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="scc_crc_451">🛑 聚羧酸减水剂母液未获中铁 CRCC 产品认证，或灌注后相控阵超声冲击回波 (Impact-Echo) 扫出轨道板中心存在 &gt;0.05 m2 脱空蜂窝：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="scc_pce_409">🧑‍⚖️ Web IQ 启用抗泥型磷酸酯基团改性 PCE 联合纳米 C-S-H 早强晶核，实现全标段 500 块轨道板一次灌注 100% 零脱空免除环氧注浆与揭板返修准备金立省 $57,400.00 (净付 $352,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="scc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4061,6 +4079,7 @@ function renderAll() {
   updateUhmwpeBallisticMooringSandbox();
   updateHighPurityQuartzCrucibleSandbox();
   updateTrenchlessUvCippSandbox();
+  updateHsrBallastlessSccSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11614,6 +11633,55 @@ function updateTrenchlessUvCippSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 短期模量 (&gt;=12GPa) + 足壁厚满固化 (Tg &gt;=95°C) + 3D 激光零褶皱达标：已自动清算 (VERIFIED_TRENCHLESS_UV_CIPP_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零汛期外压失稳塌管、零背面生胶苯乙烯污染与挂污淤堵</strong>：市政主干管网非开挖 UV-CIPP 修复工程已完成结算（<code>$360,000.00</code>）！" +
+    "</div>";
+}
+
+function updateHsrBallastlessSccSandbox() {
+  var selEl = document.getElementById("scc-select");
+  var outEl = document.getElementById("scc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "scc_flw_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SLUMP_FLOW_T500_RHEOLOGY_OR_JRING_SEGREGATION_BLEEDING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "高铁工地移动试验车 <code>TB/T 3365 坍落扩展度 T500 与 J 环间隙通过仪</code> 实测显示，该车自密实混凝土因途中私自加水导致扩展时间跌至 <code>T500 = 1.4 s &lt; 3.0 s</code> 且 J 环内外高差达 <code>ΔHJ = 38 mm &gt; 15 mm</code>（粗骨料沉底堵在钢筋网处，稀水浮浆上浮至轨道板底面收缩成 3mm 脱空水囊，350km/h 动车经过将引发水力劈裂翻浆，<code>slump_flow_t500_and_jring_segregation_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$410,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scc_air_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 METHYLENE_BLUE_CLAY_POISONING_OR_AIR_VOID_SPACING_FROST_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "拌合站 <code>机制砂亚甲蓝测定仪与 ASTM C457 硬化气孔结构分析仪</code> 检出骨料蒙脱土泥粉高达 <code>MB = 2.1 g/kg &gt; 1.0 g/kg</code>（层间插层吞噬聚羧酸 PEO 侧链），或消泡过度致硬化气泡间距系数达 <code>L = 480 um &gt; 250 um</code>（高寒段 300 次冻融循环必酥裂，<code>methylene_blue_air_void_spacing_and_uplift_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scc_crc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CRCC_PCE_CERT_REVOCATION_OR_ULTRASONIC_SLAB_DEBONDING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>中铁检验认证中心 (CRCC) 减水剂合格名录与相控阵超声冲击回波 (Impact-Echo) 轨道板脱空台账</code>，检出减水剂认证暂停或板底存在 <code>&gt;0.05 m2</code> 蜂窝脱空，立即冻结工程款并下达揭板重灌令！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "scc_pce_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CLAY_TOLERANT_PCE_AND_ZERO_DEBONDING_REWORK_RESERVE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实采用 <code>抗泥型磷酸酯改性聚羧酸 PCE + 纳米 C-S-H 早强晶核</code>，全标段 500 块轨道板经超声扫描实现 100% 零脱空，自动免除预留的揭板与环氧注浆返修准备金立省 <code>$57,400.00</code>（净付降至 <code>$352,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 流变窗口 (T500 3–7s) + 低 MB (&lt;=1.0) + 抗冻气泡间距 (&lt;=250 um) 达标：已自动清算 (VERIFIED_HSR_BALLASTLESS_SCC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零板底泌水脱空、零高寒冻融酥裂与轨道板上浮超限</strong>：350km/h 高铁无砟轨道自密实混凝土与减水剂批次已完成结算（<code>$410,000.00</code>）！" +
     "</div>";
 }
 

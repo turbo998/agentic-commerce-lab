@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg151" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent151" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg151)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent151)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 149 · 高铁无砟轨道自密实混凝土 (SCC) 与减水剂、流变 T500 与气泡间距架构图</text>
+  <text x="36" y="84" class="sub">High-Speed Rail CRTS III Ballastless Track SCC &amp; PCE Offtake, Slump Flow T500 (3-7s), Air-Void Spacing (&lt;=250 um) &amp; Sand MB (&lt;=1.0)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按方量与试块盲付</text>
+  <text x="52" y="166" class="card-h">三大高铁无砟轨道板底脱空与冻裂灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 蒙脱土吞噬减水剂 + 偷加水致“板底脱空”</text>
+  <text x="52" y="216" class="body">机制砂含泥 (MB=2.1&gt;1.0) 插层吞噬聚羧酸侧链，</text>
+  <text x="52" y="234" class="body">司机私自加水致粗骨料沉底堵筋，稀水浮在轨道板</text>
+  <text x="52" y="252" class="body">下表面收缩成 3mm 脱空离缝，350km/h 冲击翻浆！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 消泡过度消灭微气孔 (L&gt;250um) 冬季冻裂</text>
+  <text x="52" y="302" class="body">猛加消泡剂虽消了表面大泡，却使硬化气泡间距飙至</text>
+  <text x="52" y="320" class="body">480um，-30°C 冻融结冰膨胀无处泄压一年即酥裂。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 盲目快灌顶起轨道板 (上浮 &gt;0.5mm) 精调报废</text>
+  <text x="52" y="370" class="body">缺乏四角激光位移联锁，灌注液柱压力将 8 吨重</text>
+  <text x="52" y="388" class="body">轨道板顶起上浮 1.8mm，被迫砸碎揭板重铺 ($15k/块)。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1,000 m3 Volume + 28-Day 45MPa Cube</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $410,000 exposed to slab debonding</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ hsr_ballastless_scc_mandate</text>
+  <text x="428" y="166" class="card-h">四层流变窗口、气泡间距与超声门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: TB/T 3365 Flow, T500 &amp; J-Ring (11ms)</text>
+  <text x="440" y="220" class="body">扩展度 640–700mm, T500 3.0–7.0s &amp; J环内外高差</text>
+  <text x="440" y="238" class="body">&lt;=15mm (零泌水黄圈) — 离析/加水罐车直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: MB Clay, C457 L &amp; Uplift (14ms)</text>
+  <text x="440" y="296" class="body">机制砂亚甲蓝 MB &lt;=1.0 g/kg, 硬化气泡间距系数</text>
+  <text x="440" y="314" class="body">L &lt;=250 um &amp; 激光抬板 &lt;=0.5mm — 超标直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ CRCC &amp; Impact-Echo (280ms)</text>
+  <text x="440" y="372" class="body">核验中铁 CRCC 减水剂认证、总碱量 &lt;=0.6% 与</text>
+  <text x="440" y="390" class="body">相控阵超声冲击回波 0% 空洞 — 违者直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Phosphate-PCE Zero-Rework (245ms)</text>
+  <text x="440" y="448" class="body">抗泥磷酸酯 PCE + 纳米晶核实现 500 块板 100% 零修补</text>
+  <text x="440" y="466" class="body">自动冲抵揭板注浆准备金立省 $57,400 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 流变与抗冻微泡达标放行</text>
+  <text x="828" y="212" class="body">T500 4.6s + MB 0.55 + L 185um → $410,000.00</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 途中加水泌水或 J 环堵筋</text>
+  <text x="828" y="258" class="body">T500=1.4s 泌水或 ΔHJ=38mm → 冻结 $410,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 粘土 MB 或气泡间距超标</text>
+  <text x="828" y="304" class="body">MB=2.1 或 L=480um 冻裂风险 → 拒付 $410,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 无 CRCC/板底空洞</text>
+  <text x="828" y="350" class="body">超声检出板底脱空或假母液 → 熔断 $410,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 抗泥 PCE 零返修准备金冲抵</text>
+  <text x="828" y="396" class="body">节省 $57,400 (-14%) → 确认后净付 $352,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 轨检保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 高铁无砟轨道 SCC 严禁“仅看 28 天抗压试块”：蒙脱土插层吞噬减水剂诱发私自加水会导致板底泌水脱空，而消泡过度会使高寒区充填层一年冻裂。</text>
+  <text x="54" y="584" class="body">• 必须将流变窗口 (T500 3-7s)、亚甲蓝 (MB&lt;=1.0)、气泡间距系数 (L&lt;=250um) 与相控阵超声零脱空绑定为智能托管解锁谓词。</text>
+</svg>
