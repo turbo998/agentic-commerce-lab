@@ -8887,6 +8887,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aerospace-titanium-ti64-sandbox", demo_zh)
 
+    def test_municipal_drinking_water_uf_membrane_pdt_pac_alumina_mandate_vs_broken_fiber_turbidity_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_municipal_water_uf_pac_policy,
+        )
+
+        # 1. Verified EPA LT2 PDT <=0.01 bar/min + active Al2O3 >=10.5% + clean NSF 60 -> 200 OK ($180,000)
+        commit_ok = evaluate_municipal_water_uf_pac_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_municipal_uf_cents, 18000000)
+
+        # 2. Broken UF fibers (PDT > 0.01 bar/min, LRV < 4.0) or high TMP -> 403 blocked in 11ms
+        pdt_403 = evaluate_municipal_water_uf_pac_policy(
+            uf_pressure_decay_lrv4_and_tmp_verified=False,
+        )
+        self.assertFalse(pdt_403.allowed)
+        self.assertEqual(pdt_403.http_status, 403)
+        self.assertEqual(
+            pdt_403.municipal_uf_lane,
+            "UF_MEMBRANE_PRESSURE_DECAY_BREACH_OR_HIGH_TMP_BLOCKED",
+        )
+
+        # 3. Diluted liquid PAC (<10.5% Al2O3) or finished-water residual Al > 0.10 mg/L -> 422 blocked in 14ms
+        pac_422 = evaluate_municipal_water_uf_pac_policy(
+            pac_alumina_grade_and_residual_aluminum_passed=False,
+        )
+        self.assertFalse(pac_422.allowed)
+        self.assertEqual(pac_422.http_status, 422)
+        self.assertEqual(
+            pac_422.municipal_uf_lane,
+            "PAC_ALUMINA_DILUTION_OR_RESIDUAL_ALUMINUM_BLOCKED",
+        )
+
+        # 4. Web IQ detects industrial waste-acid heavy metals (As/Pb/Cd) or revoked NSF 60 -> 451 blocked in 285ms
+        nsf_451 = evaluate_municipal_water_uf_pac_policy(
+            webiq_nsf60_potable_and_heavy_metal_clean=False,
+        )
+        self.assertFalse(nsf_451.allowed)
+        self.assertEqual(nsf_451.http_status, 451)
+
+        # 5. Web IQ activates SCD streaming-current dosing & UF backwash seed recycle saving $28,800 ($151,200 net) -> 409 Confirm
+        scd_409 = evaluate_municipal_water_uf_pac_policy(
+            scd_streaming_current_and_backwash_seed_savings_cents=2880000,
+        )
+        self.assertFalse(scd_409.allowed)
+        self.assertEqual(scd_409.http_status, 409)
+        self.assertEqual(scd_409.settled_municipal_uf_cents, 15120000)
+        self.assertEqual(scd_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["municipal_uf_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("municipal-water-uf-pac-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

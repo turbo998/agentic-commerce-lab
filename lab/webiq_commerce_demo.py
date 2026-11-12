@@ -16448,6 +16448,91 @@ def evaluate_aerospace_titanium_ti64_billet_policy(
     )
 
 
+@dataclass(frozen=True)
+class MunicipalWaterUfPacVerdict:
+    allowed: bool
+    http_status: int
+    municipal_uf_lane: str
+    settled_municipal_uf_cents: int
+    scd_streaming_current_and_backwash_seed_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_municipal_water_uf_pac_policy(
+    *,
+    gross_municipal_uf_cents: int = 18000000,
+    uf_pressure_decay_lrv4_and_tmp_verified: bool = True,
+    pac_alumina_grade_and_residual_aluminum_passed: bool = True,
+    webiq_nsf60_potable_and_heavy_metal_clean: bool = True,
+    scd_streaming_current_and_backwash_seed_savings_cents: int = 0,
+) -> MunicipalWaterUfPacVerdict:
+    # 1. Broken UF Hollow Fibers (EPA LT2 PDT >0.01 bar/min, LRV <4.0) or High TMP -> HTTP 403
+    if not uf_pressure_decay_lrv4_and_tmp_verified:
+        return MunicipalWaterUfPacVerdict(
+            False,
+            403,
+            "UF_MEMBRANE_PRESSURE_DECAY_BREACH_OR_HIGH_TMP_BLOCKED",
+            0,
+            0,
+            "municipal_uf_invoice_blocked_due_to_pressure_decay_broken_fibers_or_irreversible_tmp_fouling",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Diluted Liquid PAC (<10.5% Al2O3) or Finished-Water Residual Aluminum (>0.10 mg/L) -> HTTP 422
+    if not pac_alumina_grade_and_residual_aluminum_passed:
+        return MunicipalWaterUfPacVerdict(
+            False,
+            422,
+            "PAC_ALUMINA_DILUTION_OR_RESIDUAL_ALUMINUM_BLOCKED",
+            0,
+            0,
+            "pac_coagulant_rejected_for_active_alumina_dilution_below_105pct_or_residual_aluminum_carryover",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Industrial Pickling-Acid Heavy Metals (As/Pb/Cd) or Revoked NSF 60 via Web IQ -> HTTP 451
+    if not webiq_nsf60_potable_and_heavy_metal_clean:
+        return MunicipalWaterUfPacVerdict(
+            False,
+            451,
+            "NSF60_HEAVY_METAL_ARSENIC_LEAD_OR_WASTE_ACID_HOLD",
+            0,
+            0,
+            "webiq_detected_pickling_waste_acid_arsenic_lead_cadmium_or_revoked_nsf60_potable_listing",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ SCD Zeta-Potential Closed-Loop Dosing + UF Backwash Seed Recycle -> HTTP 409 Confirm
+    if scd_streaming_current_and_backwash_seed_savings_cents > 0:
+        return MunicipalWaterUfPacVerdict(
+            False,
+            409,
+            "STREAMING_CURRENT_DOSING_AND_BACKWASH_SEED_CONFIRM",
+            gross_municipal_uf_cents - scd_streaming_current_and_backwash_seed_savings_cents,
+            scd_streaming_current_and_backwash_seed_savings_cents,
+            "webiq_applied_scd_streaming_current_dosing_and_uf_backwash_seed_recycle_saving_28800_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified EPA LT2 PDT <=0.01 bar/min + Active Al2O3 >=10.5% + Clean NSF 60 -> Settled
+    return MunicipalWaterUfPacVerdict(
+        True,
+        200,
+        "VERIFIED_MUNICIPAL_UF_PAC_SETTLED",
+        gross_municipal_uf_cents,
+        0,
+        "epa_lt2_pressure_decay_active_alumina_residual_al_and_nsf60_potable_verified",
+        18,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21582,6 +21667,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hard_alpha_ut_block_latency_ms": ti64_ut_403.latency_ms,
     }
 
+    # Round 138 (Municipal Drinking Water UF Membrane & Potable PAC Offtake, EPA LT2 PDT & Al2O3 Mandate)
+    muf_commit_ok = evaluate_municipal_water_uf_pac_policy()
+    muf_pdt_403 = evaluate_municipal_water_uf_pac_policy(
+        uf_pressure_decay_lrv4_and_tmp_verified=False,
+    )
+    muf_pac_422 = evaluate_municipal_water_uf_pac_policy(
+        pac_alumina_grade_and_residual_aluminum_passed=False,
+    )
+    muf_nsf_451 = evaluate_municipal_water_uf_pac_policy(
+        webiq_nsf60_potable_and_heavy_metal_clean=False,
+    )
+    muf_scd_409 = evaluate_municipal_water_uf_pac_policy(
+        scd_streaming_current_and_backwash_seed_savings_cents=2880000,
+    )
+    municipal_uf_guards = {
+        "all_passed": (
+            muf_commit_ok.allowed
+            and muf_commit_ok.settled_municipal_uf_cents == 18000000
+            and not muf_pdt_403.allowed
+            and muf_pdt_403.http_status == 403
+            and not muf_pac_422.allowed
+            and muf_pac_422.http_status == 422
+            and not muf_nsf_451.allowed
+            and muf_nsf_451.http_status == 451
+            and not muf_scd_409.allowed
+            and muf_scd_409.action_pill == "Confirm"
+        ),
+        "municipal_uf_settlement_latency_ms": muf_commit_ok.latency_ms,
+        "pdt_decay_block_latency_ms": muf_pdt_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21732,6 +21848,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aseptic_uht_guards": aseptic_uht_guards,
         "magnet_wire_guards": magnet_wire_guards,
         "titanium_billet_guards": titanium_billet_guards,
+        "municipal_uf_guards": municipal_uf_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27115,6 +27232,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ti64-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Municipal Drinking Water UF Membrane & Potable PAC Coagulant Offtake, EPA LT2 PDT & Al2O3 Mandate Sandbox (Round 138 FAQ Companion) -->
+      <div class="finops-box" id="municipal-water-uf-pac-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-muf-title">🚰 市政自来水厂超滤膜与饮用水级 PAC 交割、压力衰减 (PDT &lt;=0.01 bar/min) 与氧化铝品位 (Al2O3 &gt;=10.5%) 架构：防断丝漏隐孢子虫与废酸兑水令牌 (municipal_water_uf_pac_mandate_...) vs 湿吨盲付决策器 (Round 138 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 市政自来水厂 PVDF 超滤膜组件与饮用水级液态 PAC 交割 ($180,000.00)、EPA LT2 每日压力衰减 PDT/LRV、折百有效 Al2O3 与 Web IQ NSF 60 重金属/SCD 流动电流闭环加药场景 (Municipal UF &amp; PAC Scenario):</span></label>
+          <select id="muf-select" onchange="updateMunicipalWaterUfPacSandbox()">
+            <option value="muf_commit_ok">⚡ 每日压力衰减 PDT 0.004 bar/min (&lt;=0.01, LRV 4.6-log) + 有效氧化铝 Al2O3 11.2% (&gt;=10.5%) + 出水残铝 0.03 mg/L + NSF 60 合规：18ms 自动结算 $180,000.00! (Act automatically)</option>
+            <option value="muf_pdt_403">🛑 次氯酸钠氧化脆化致超滤膜断丝 (压力衰减飙至 PDT = 0.045 bar/min &gt; 0.01，总管浊度虽被万吨清水稀释仍显 0.06 NTU，实则漏过耐氯隐孢子虫) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="muf_pac_422">🚨 槽罐车液态 PAC 掺水 30% 并加食盐伪造波美比重 (有效氧化铝跌至 Al2O3 = 7.2% &lt; 10.5%) 或低温跑矾致出厂水残余铝 &gt; 0.10 mg/L 伤神经拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="muf_nsf_451">🛑 用钢铁酸洗工业废盐酸违规生产假冒饮用水级 PAC 检出砷 (As) / 铅 (Pb) / 镉 (Cd) 重金属超标或 NSF/ANSI 60 涉水批件失效：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="muf_scd_409">🧑‍⚖️ Web IQ 启用混合池流动电流检测仪 (SCD) Zeta 电位零点动态闭环加药 (削减 25% 盲目过量加药) 并将超滤反洗水活性微晶核 100% 回流助凝立省 $28,800.00 (净付 $151,200.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="muf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27691,6 +27826,7 @@ function renderAll() {{
   updateAsepticDairyUhtSandbox();
   updateEvHairpinMagnetWireSandbox();
   updateAerospaceTitaniumTi64Sandbox();
+  updateMunicipalWaterUfPacSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -34705,6 +34841,55 @@ function updateAerospaceTitaniumTi64Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 三次 VAR + 水浸超声 Class AA (0 #2 FBH) + 零 β 斑达标：已自动清算 (VERIFIED_AEROSPACE_TITANIUM_BILLET_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零硬 α 氮化钛转子爆裂、零富钒 β 斑与氢脆</strong>：航空发动机与机身 Ti-6Al-4V 钛合金锻坯已完成结算（<code>$440,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMunicipalWaterUfPacSandbox() {{
+  var selEl = document.getElementById("muf-select");
+  var outEl = document.getElementById("muf-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "muf_pdt_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UF_MEMBRANE_PRESSURE_DECAY_BREACH_OR_HIGH_TMP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "自来水厂超滤车间 <code>EPA LT2 每日自动空气压力衰减测试仪 (PDT)</code> 实测显示，该列 PVDF 中空纤维膜架虽总产水管浊度被万吨清水稀释为 0.06 NTU，但保压衰减率已飙升至 <code>PDT = 0.045 bar/min &gt; 0.010 bar/min</code>（隐孢子虫对数截留率跌破 <code>LRV = 2.4 &lt; 4.0</code>，存在断丝漏虫重大公共卫生风险，<code>uf_pressure_decay_lrv4_and_tmp_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$180,000.00</code> 款项结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "muf_pac_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PAC_ALUMINA_DILUTION_OR_RESIDUAL_ALUMINUM_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卸药站 <code>ICP-OES 氧化铝分析仪与出厂水在线比色铝表</code> 检出槽罐车液态 PAC 掺水稀释并用廉价食盐伪造波美比重，实际有效氧化铝仅 <code>Al2O3 = 7.2% &lt; 10.5%</code>，或盐基度过低跑矾致出厂水残余铝 <code>&gt; 0.10 mg/L</code>（<code>pac_alumina_grade_and_residual_aluminum_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "muf_nsf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NSF60_HEAVY_METAL_ARSENIC_LEAD_OR_WASTE_ACID_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NSF/ANSI 60 涉水卫生批件库与 ICP-MS 痕量重金属报告</code>，检出该批 PAC 由钢铁酸洗工业废盐酸违规生产，砷（As）、铅（Pb）、镉（Cd）超标，立即锁死卸药电动阀并执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "muf_scd_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 STREAMING_CURRENT_DOSING_AND_BACKWASH_SEED_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动联动混合池 <code>流动电流检测仪 (SCD) Zeta 电位零点动态控药 (削减 25% 盲目过量加药)</code>，并将超滤膜气水反冲洗排出的微絮凝水 100% 回流原水井充当助凝晶种，单批立省 <code>$28,800.00</code>（净付降至 <code>$151,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 每日 PDT (&lt;=0.01 bar/min) + 有效氧化铝 (Al2O3 &gt;=10.5%) + NSF 60 达标：已自动清算 (VERIFIED_MUNICIPAL_UF_PAC_SETTLED · 18ms · Act automatically):</strong><br>" +
+    "• <strong>零断丝漏隐孢子虫、零废酸重金属与兑水假药</strong>：市政自来水厂超滤膜与饮用水级 PAC 批次已完成结算（<code>$180,000.00</code>）！" +
     "</div>";
 }}
 

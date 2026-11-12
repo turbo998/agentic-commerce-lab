@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg140" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#041824"/>
+      <stop offset="50%" stop-color="#0A2E46"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent140" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardBg140" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E2A3F"/>
+      <stop offset="100%" stop-color="#06141F"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg140)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent140)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#075985" stroke="#0EA5E9" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 138 · MUNICIPAL UF MEMBRANE &amp; POTABLE PAC ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    市政自来水厂超滤膜与饮用水级 PAC 交割、压力衰减 (PDT) 与氧化铝品位智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    EPA LT2 Pressure Decay (PDT &lt;=0.01 bar/min), Active Alumina (Al2O3 &gt;=10.5%) &amp; NSF 60 vs. Broken-Fiber &amp; Waste-Acid Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Header Turbidity & Wet-Ton Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg140)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统看总管浊度与湿吨过磅踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 断丝漏过耐氯隐孢子虫被万吨清水稀释掩盖</text>
+    <text x="58" y="224" fill="#CBD5E1">• 总管浊度仍显示 0.06 NTU，但 PDT 衰减已达 0.045</text>
+    <text x="58" y="242" fill="#CBD5E1">• 隐孢子虫穿透物理屏障，骗走 $180,000 膜组件款</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 液态 PAC 掺水 30% 并加食盐伪造波美比重</text>
+    <text x="58" y="294" fill="#CBD5E1">• 有效氧化铝从 10.5% 偷降到 7.2%，按湿吨收全价</text>
+    <text x="58" y="312" fill="#CBD5E1">• 盐基度过低跑矾致出厂水残余铝 &gt;0.2 mg/L 伤神经</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 钢铁酸洗废盐酸造假 PAC 致铅/砷重金属超标</text>
+    <text x="58" y="364" fill="#CBD5E1">• 非法混入工业副产废酸，导致饮用水源重金属污染</text>
+    <text x="58" y="382" fill="#CBD5E1">• 人工看矾花常年过量加药 25% 且超滤反洗水直排</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$180,000 断丝漏虫与废酸兑水假药
+  </text>
+
+  <!-- Center Card: 4-Layer Municipal UF & PAC Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg140)" stroke="#0EA5E9" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#075985"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ 每日 PDT&lt;=0.01 + 折百 Al2O3 + SCD 加药托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#0EA5E9" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 每日自动压力衰减 PDT (&lt;=0.01 bar/m) (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    EPA LT2 PDT &gt; 0.010 bar/min (LRV &lt;4.0) 或 TMP &gt; 1.2 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 UF_MEMBRANE_PRESSURE_DECAY_BREACH_OR_HIGH_TMP_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 折百 Al2O3 (&gt;=10.5%) 与残余铝 (&lt;=0.1) (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    液态 PAC 掺水 (&lt;10.5%) 或出厂水残余铝 &gt; 0.10 mg/L →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 PAC_ALUMINA_DILUTION_OR_RESIDUAL_ALUMINUM_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 3 · Web IQ NSF 60 与零废酸重金属核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ICP-MS 检出酸洗废酸砷/铅/镉超标或涉水批件失效 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 NSF60_HEAVY_METAL_ARSENIC_LEAD_OR_WASTE_ACID_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ SCD 流动电流加药 + 反洗晶种回流 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    Zeta 电位零点动态减药 25% + 超滤反洗水助凝省 $28,800 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 STREAMING_CURRENT_DOSING_AND_BACKWASH_SEED_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_MUNICIPAL_UF_PAC_SETTLED (18ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg140)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#7DD3FC">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. PDT 0.004+Al2O3 11.2%：18ms 放款 $180k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 断丝 PDT=0.045 超标：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. PAC 兑水或残余铝高：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 废酸铅砷或无 NSF60：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. SCD加药+反洗回流：295ms 省 $28,800 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：SCADA PDT 曲线 + NSF 60 批件核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索高聚态 Al13 纳米簇低温混凝文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零漏虫风险：每日泡点压降取代被稀释的总管浊度</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$151,200.00 (单批立省 $28,800 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 几根断丝漏出的隐孢子虫会被万吨清水稀释得让总管浊度计毫无察觉——必须强制 EPA LT2 每日压力衰减测试 (PDT) 与折百 Al2O3 签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #municipal-water-uf-pac-sandbox · Unit Tests: 159/159 PASS
+  </text>
+</svg>
