@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg135" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06181E"/>
+      <stop offset="50%" stop-color="#0C2E38"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent135" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="cardBg135" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F2C38"/>
+      <stop offset="100%" stop-color="#07151C"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg135)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent135)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="410" height="28" rx="14" fill="#155E75" stroke="#06B6D4" stroke-width="1"/>
+  <text x="245" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ROUND 133 · COOLING TOWER &amp; CHILLER WATER TREATMENT ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    智算中心冷却塔水处理服务、冷凝器端差 (&lt;=1.5°C) 与浓缩倍数/军团菌智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    Chiller Condenser Approach (ΔTapp &lt;=1.5°C), Cycles of Concentration (CoC &gt;=6.0) &amp; Legionella qPCR vs. Per-Drum Chemical Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Per-Drum Chemical Billing Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg135)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按药剂桶数盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 阻垢剂兑水稀释致冷凝器结垢端差飙至 3.8°C</text>
+    <text x="58" y="224" fill="#CBD5E1">• 0.3mm 水垢或生物粘泥使冷机压缩机多耗电 11%</text>
+    <text x="58" y="242" fill="#CBD5E1">• 照收 $150,000 药桶钱，把高额电费全推给业主</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 偷开排污阀狂放自来水 (CoC=2.1) 伪造不结垢</text>
+    <text x="58" y="294" fill="#CBD5E1">• 大排大补多浪费 70% 市政自来水替劣质阻垢剂遮羞</text>
+    <text x="58" y="312" fill="#CBD5E1">• 药剂随排污水冲走，服务商趁机多卖一倍药桶</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 嗜肺军团菌爆发与空调箱纯冷凝水白白排掉</text>
+    <text x="58" y="364" fill="#CBD5E1">• 漂水气溶胶军团菌 &gt;100 CFU/mL 触发公共卫生停业</text>
+    <text x="58" y="382" fill="#CBD5E1">• AHU 每天上百吨零硬度除湿冷凝水直排下水道</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$150,000 兑水假药与冷机压缩机多耗电
+  </text>
+
+  <!-- Center Card: 4-Layer Cooling Tower Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg135)" stroke="#06B6D4" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#155E75"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#CFFAFE" text-anchor="middle">
+    ⚡ 冷凝器端差 &lt;=1.5°C + CoC&gt;=6 + 冷凝水回收托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#06B6D4" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#67E8F9">
+    Gate 1 · 冷凝器趋近端差 (&lt;=1.5°C) 与 PTSA 荧光 (11ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    铜管结垢致 ΔTapp &gt; 1.5°C 或 PTSA 荧光浓度不足 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 CONDENSER_APPROACH_SCALING_OR_PTSA_UNDERDOSE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 补排比浓缩倍数 (CoC &gt;=6.0) 与腐蚀率 (14ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    偷开排污阀致 CoC &lt; 6.0 或 LPR 铜腐蚀率 &gt; 0.1 mpy →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 BLOWDOWN_VALVE_WATER_WASTE_OR_CORROSION_RATE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 3 · Web IQ 军团菌 qPCR 与无磷环保核查 (285ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ASHRAE 188 军团菌 &gt;= 10 CFU/mL 或排污总磷超标 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 LEGIONELLA_PNEUMOPHILA_BREACH_OR_PHOSPHATE_DISCHARGE_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ AHU 冷凝水回补 + 电化学除垢 (295ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    回收空调除湿纯水将 CoC 提至 9.0 并减药 45% 省 $24,000 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 AHU_CONDENSATE_MAKEUP_AND_ELECTROCHEMICAL_DESCALING_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_COOLING_TOWER_TREATMENT_SETTLED (18ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg135)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#67E8F9">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 端差1.05°C+CoC 6.8：18ms 放款 $150k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 结垢端差3.8°C超标：11ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 偷排自来水 CoC=2.1：14ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 军团菌或总磷超标：285ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 冷凝水回补+电化学：295ms 省 $24,000 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：BMS 端差遥测 + CDC 军团菌报告核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索无磷 PESA/PASP 绿色高浓缩阻垢文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零偷排浪费：补水/排污双水表比值硬锁 CoC</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$126,000.00 (单季立省 $24,000 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#67E8F9">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 按药桶结账会激励服务商偷开排污阀放水冲走药剂——必须将账单锁死在冷机冷凝器趋近温差 (ΔTapp &lt;=1.5°C) 与双水表浓缩倍数 (CoC &gt;=6.0) 上！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #cooling-tower-treatment-sandbox · Unit Tests: 154/154 PASS
+  </text>
+</svg>

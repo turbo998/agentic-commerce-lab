@@ -8607,6 +8607,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("solar-topcon-wafer-sandbox", demo_zh)
 
+    def test_cooling_tower_chiller_condenser_approach_coc_legionella_mandate_vs_chemical_drum_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cooling_tower_chiller_treatment_policy,
+        )
+
+        # 1. Verified condenser approach <=1.5C + PTSA + CoC >=6.0 + clean Legionella qPCR -> 200 OK ($150,000)
+        commit_ok = evaluate_cooling_tower_chiller_treatment_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cooling_tower_cents, 15000000)
+
+        # 2. Diluted chemical drums causing condenser scaling (approach > 1.5C) -> 403 blocked in 11ms
+        app_403 = evaluate_cooling_tower_chiller_treatment_policy(
+            condenser_approach_temp_and_ptsa_verified=False,
+        )
+        self.assertFalse(app_403.allowed)
+        self.assertEqual(app_403.http_status, 403)
+        self.assertEqual(
+            app_403.cooling_tower_lane,
+            "CONDENSER_APPROACH_SCALING_OR_PTSA_UNDERDOSE_BLOCKED",
+        )
+
+        # 3. Secret blowdown dumping (CoC < 6.0) or copper corrosion > 0.1 mpy -> 422 blocked in 14ms
+        coc_422 = evaluate_cooling_tower_chiller_treatment_policy(
+            cycles_of_concentration_and_lpr_corrosion_passed=False,
+        )
+        self.assertFalse(coc_422.allowed)
+        self.assertEqual(coc_422.http_status, 422)
+        self.assertEqual(
+            coc_422.cooling_tower_lane,
+            "BLOWDOWN_VALVE_WATER_WASTE_OR_CORROSION_RATE_BLOCKED",
+        )
+
+        # 4. Web IQ detects ASHRAE 188 Legionella qPCR breach or phosphate violation -> 451 blocked in 285ms
+        leg_451 = evaluate_cooling_tower_chiller_treatment_policy(
+            webiq_legionella_qpcr_and_zero_phosphate_clean=False,
+        )
+        self.assertFalse(leg_451.allowed)
+        self.assertEqual(leg_451.http_status, 451)
+
+        # 5. Web IQ routes AHU dehumidification condensate & electro-descaling saving $24,000 ($126,000 net) -> 409 Confirm
+        ahu_409 = evaluate_cooling_tower_chiller_treatment_policy(
+            ahu_condensate_recovery_and_electrochemical_savings_cents=2400000,
+        )
+        self.assertFalse(ahu_409.allowed)
+        self.assertEqual(ahu_409.http_status, 409)
+        self.assertEqual(ahu_409.settled_cooling_tower_cents, 12600000)
+        self.assertEqual(ahu_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cooling_tower_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cooling-tower-treatment-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

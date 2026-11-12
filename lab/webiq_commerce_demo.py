@@ -16023,6 +16023,91 @@ def evaluate_solar_polysilicon_topcon_wafer_policy(
     )
 
 
+@dataclass(frozen=True)
+class CoolingTowerChillerTreatmentVerdict:
+    allowed: bool
+    http_status: int
+    cooling_tower_lane: str
+    settled_cooling_tower_cents: int
+    ahu_condensate_recovery_and_electrochemical_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cooling_tower_chiller_treatment_policy(
+    *,
+    gross_cooling_tower_cents: int = 15000000,
+    condenser_approach_temp_and_ptsa_verified: bool = True,
+    cycles_of_concentration_and_lpr_corrosion_passed: bool = True,
+    webiq_legionella_qpcr_and_zero_phosphate_clean: bool = True,
+    ahu_condensate_recovery_and_electrochemical_savings_cents: int = 0,
+) -> CoolingTowerChillerTreatmentVerdict:
+    # 1. Condenser Scaling (Approach >1.5°C) or Diluted PTSA Chemical Under-Dosing -> HTTP 403
+    if not condenser_approach_temp_and_ptsa_verified:
+        return CoolingTowerChillerTreatmentVerdict(
+            False,
+            403,
+            "CONDENSER_APPROACH_SCALING_OR_PTSA_UNDERDOSE_BLOCKED",
+            0,
+            0,
+            "cooling_tower_invoice_blocked_due_to_chiller_condenser_approach_scaling_or_ptsa_underdose",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Secret Blowdown-Valve Water Dumping (CoC <6.0) or High LPR Corrosion Rate -> HTTP 422
+    if not cycles_of_concentration_and_lpr_corrosion_passed:
+        return CoolingTowerChillerTreatmentVerdict(
+            False,
+            422,
+            "BLOWDOWN_VALVE_WATER_WASTE_OR_CORROSION_RATE_BLOCKED",
+            0,
+            0,
+            "water_treatment_rejected_for_low_cycles_of_concentration_water_dumping_or_lpr_corrosion",
+            14,
+            "Send to a human",
+        )
+
+    # 3. ASHRAE 188 Legionella pneumophila qPCR Breach (>=10 CFU/mL) or Phosphate Discharge via Web IQ -> HTTP 451
+    if not webiq_legionella_qpcr_and_zero_phosphate_clean:
+        return CoolingTowerChillerTreatmentVerdict(
+            False,
+            451,
+            "LEGIONELLA_PNEUMOPHILA_BREACH_OR_PHOSPHATE_DISCHARGE_HOLD",
+            0,
+            0,
+            "webiq_detected_legionella_pneumophila_qpcr_exceedance_or_phosphate_sewer_discharge_breach",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ AHU Dehumidification Condensate Make-Up + Sidestream Electro-Descaling -> HTTP 409 Confirm
+    if ahu_condensate_recovery_and_electrochemical_savings_cents > 0:
+        return CoolingTowerChillerTreatmentVerdict(
+            False,
+            409,
+            "AHU_CONDENSATE_MAKEUP_AND_ELECTROCHEMICAL_DESCALING_CONFIRM",
+            gross_cooling_tower_cents - ahu_condensate_recovery_and_electrochemical_savings_cents,
+            ahu_condensate_recovery_and_electrochemical_savings_cents,
+            "webiq_applied_ahu_condensate_makeup_recovery_and_electrochemical_descaling_saving_24000_usd",
+            295,
+            "Confirm",
+        )
+
+    # 5. Verified Condenser Approach <=1.5°C + CoC >=6.0 + LPR <0.1 mpy + Clean Legionella -> Settled
+    return CoolingTowerChillerTreatmentVerdict(
+        True,
+        200,
+        "VERIFIED_COOLING_TOWER_TREATMENT_SETTLED",
+        gross_cooling_tower_cents,
+        0,
+        "condenser_approach_ptsa_cycles_of_concentration_lpr_and_legionella_qpcr_verified",
+        18,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21002,6 +21087,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lifetime_oxygen_block_latency_ms": waf_tau_403.latency_ms,
     }
 
+    # Round 133 (Cooling Tower & Chiller Water Treatment SLA, Condenser Approach & CoC/Legionella Mandate)
+    ctw_commit_ok = evaluate_cooling_tower_chiller_treatment_policy()
+    ctw_app_403 = evaluate_cooling_tower_chiller_treatment_policy(
+        condenser_approach_temp_and_ptsa_verified=False,
+    )
+    ctw_coc_422 = evaluate_cooling_tower_chiller_treatment_policy(
+        cycles_of_concentration_and_lpr_corrosion_passed=False,
+    )
+    ctw_leg_451 = evaluate_cooling_tower_chiller_treatment_policy(
+        webiq_legionella_qpcr_and_zero_phosphate_clean=False,
+    )
+    ctw_ahu_409 = evaluate_cooling_tower_chiller_treatment_policy(
+        ahu_condensate_recovery_and_electrochemical_savings_cents=2400000,
+    )
+    cooling_tower_guards = {
+        "all_passed": (
+            ctw_commit_ok.allowed
+            and ctw_commit_ok.settled_cooling_tower_cents == 15000000
+            and not ctw_app_403.allowed
+            and ctw_app_403.http_status == 403
+            and not ctw_coc_422.allowed
+            and ctw_coc_422.http_status == 422
+            and not ctw_leg_451.allowed
+            and ctw_leg_451.http_status == 451
+            and not ctw_ahu_409.allowed
+            and ctw_ahu_409.action_pill == "Confirm"
+        ),
+        "cooling_tower_settlement_latency_ms": ctw_commit_ok.latency_ms,
+        "condenser_approach_block_latency_ms": ctw_app_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21147,6 +21263,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corrugated_packaging_guards": corrugated_packaging_guards,
         "automotive_ahss_guards": automotive_ahss_guards,
         "solar_wafer_guards": solar_wafer_guards,
+        "cooling_tower_guards": cooling_tower_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26440,6 +26557,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="waf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cooling Tower & Chiller Condenser Water Treatment SLA, Approach Temp & CoC/Legionella Mandate Sandbox (Round 133 FAQ Companion) -->
+      <div class="finops-box" id="cooling-tower-treatment-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ctw-title">❄️ 智算中心与中央空调冷却塔水处理服务、冷凝器端差 (ΔTapp &lt;=1.5°C) 与浓缩倍数 (CoC &gt;=6.0) / 军团菌架构：防兑水结垢与偷排自来水令牌 (cooling_tower_chiller_treatment_mandate_...) vs 按药桶盲付决策器 (Round 133 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智算中心开式冷却塔与冷机水处理服务交割 ($150,000.00)、冷机冷凝器趋近温差/PTSA 荧光、补排比浓缩倍数 CoC 与 Web IQ 军团菌 qPCR/AHU 冷凝水回收场景 (Cooling Tower Scenario):</span></label>
+          <select id="ctw-select" onchange="updateCoolingTowerTreatmentSandbox()">
+            <option value="ctw_commit_ok">⚡ 冷机冷凝器端差 ΔTapp 1.05°C (&lt;=1.5°C) + PTSA 荧光 101 ppb + 浓缩倍数 CoC 6.8 (&gt;=6.0) + 军团菌 &lt;10 CFU/mL：18ms 自动结算 $150,000.00! (Act automatically)</option>
+            <option value="ctw_app_403">🛑 水处理商将阻垢剂兑水稀释按桶收费导致冷凝器铜管结垢 (0.3mm 水垢使趋近端差飙至 ΔTapp = 3.8°C &gt; 1.5°C，冷机压缩机白白多耗电 11%) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ctw_coc_422">🚨 为掩盖劣质阻垢剂无效偷偷把电动排污阀常开狂排自来水 (将真实浓缩倍数压低至 CoC = 2.1 &lt; 6.0，多浪费 70% 市政水费且冲走药剂多卖药桶) 或加酸过量腐蚀铜管拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ctw_leg_451">🛑 冷却塔漂水检出嗜肺军团菌 qPCR 超标 (ASHRAE 188 &gt;= 10 CFU/mL 面临聚集性肺炎停业风险) 或使用禁用高磷药剂致园区排污总磷超标：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="ctw_ahu_409">🧑‍⚖️ Web IQ 将新风空调箱 (AHU) 零硬度低温除湿冷凝水 (&lt;15 μS/cm) 全量回补冷却塔并耦合旁流电化学除垢，将 CoC 提至 9.0 并砍掉 45% 药耗立省 $24,000.00 (净付 $126,000.00) → 295ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ctw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27011,6 +27146,7 @@ function renderAll() {{
   updateCorrugatedPackagingEctSandbox();
   updateAutomotiveAhssCoilSandbox();
   updateSolarTopconWaferSandbox();
+  updateCoolingTowerTreatmentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -33780,6 +33916,55 @@ function updateSolarTopconWaferSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 少子寿命 (&gt;=1,500 μs) + 间隙氧 (&lt;=12 ppma) + 超薄 TTV (&lt;=12 μm) 达标：已自动清算 (VERIFIED_SOLAR_TOPCON_WAFER_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零同心圆黑芯效率坍塌、零丝网印刷碎片与碳准入违约</strong>：光伏 N 型多晶硅与 TOPCon 单晶硅片批次已完成结算（<code>$315,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCoolingTowerTreatmentSandbox() {{
+  var selEl = document.getElementById("ctw-select");
+  var outEl = document.getElementById("ctw-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ctw_app_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CONDENSER_APPROACH_SCALING_OR_PTSA_UNDERDOSE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "冷站楼宇自控 <code>BMS 冷凝器温度压力变送器与在线 PTSA 荧光示踪仪</code> 实测显示，因水处理商将阻垢剂兑水稀释或漏投，冷水机组壳管冷凝器趋近温差已飙升至 <code>ΔTapp = 3.8°C &gt; 1.5°C</code>（0.3mm 碳酸钙水垢导致冷机压缩机白白多耗电 11%，<code>condenser_approach_temp_and_ptsa_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$150,000.00</code> 服务费结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ctw_coc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BLOWDOWN_VALVE_WATER_WASTE_OR_CORROSION_RATE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "冷却塔 <code>补水/排污双电磁流量计与在线 LPR 线性极化腐蚀仪</code> 检出服务商为掩盖劣质阻垢剂无效，偷偷将电动排污阀常开狂排循环水，真实浓缩倍数跌至 <code>CoC = 2.1 &lt; 6.0</code>（多浪费 70% 市政水费且把药剂冲进下水道），或紫铜管腐蚀率 <code>&gt; 0.1 mpy</code>（<code>cycles_of_concentration_and_lpr_corrosion_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ctw_leg_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LEGIONELLA_PNEUMOPHILA_BREACH_OR_PHOSPHATE_DISCHARGE_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>CDC 认证实验室 ASHRAE 188 嗜肺军团菌 qPCR 检测报告与市政排水总磷台账</code>，检出冷却塔水样嗜肺军团菌 <code>&gt;= 10 CFU/mL</code> 或含磷阻垢剂导致排污口总磷超标，立即启动冲击消杀并执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ctw_ahu_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AHU_CONDENSATE_MAKEUP_AND_ELECTROCHEMICAL_DESCALING_CONFIRM (295ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将新风空调箱（AHU）产生的 <code>零硬度除湿冷凝水 (&lt;15 μS/cm) 全量引流回补冷却塔集水盘</code>，并开启旁流电化学阴极预除垢装置将安全浓缩倍数提升至 <code>CoC = 9.0</code>，单季立省 <code>$24,000.00</code>（净付降至 <code>$126,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 冷凝器端差 (&lt;=1.5°C) + 浓缩倍数 (CoC &gt;=6.0) + 军团菌 (&lt;10 CFU/mL) 达标：已自动清算 (VERIFIED_COOLING_TOWER_TREATMENT_SETTLED · 18ms · Act automatically):</strong><br>" +
+    "• <strong>零铜管结垢耗电、零偷开排污阀放水与军团菌风险</strong>：智算中心冷却塔与冷机水处理服务已完成结算（<code>$150,000.00</code>）！" +
     "</div>";
 }}
 

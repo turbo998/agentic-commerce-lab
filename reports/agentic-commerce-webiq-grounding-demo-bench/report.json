@@ -745,6 +745,11 @@
     "solar_wafer_settlement_latency_ms": 20,
     "lifetime_oxygen_block_latency_ms": 12
   },
+  "cooling_tower_guards": {
+    "all_passed": true,
+    "cooling_tower_settlement_latency_ms": 18,
+    "condenser_approach_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
