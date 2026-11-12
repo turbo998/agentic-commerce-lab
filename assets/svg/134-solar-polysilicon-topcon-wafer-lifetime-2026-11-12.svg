@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg134" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071526"/>
+      <stop offset="50%" stop-color="#0D2847"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent134" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg134" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#102A45"/>
+      <stop offset="100%" stop-color="#071220"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg134)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent134)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="400" height="28" rx="14" fill="#075985" stroke="#38BDF8" stroke-width="1"/>
+  <text x="240" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ROUND 132 · SOLAR N-TYPE POLYSILICON &amp; TOPCON WAFER ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    光伏 N 型多晶硅与 TOPCon 单晶硅片交割、少子寿命 (&gt;=1,500 μs) 与 TTV 智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    SEMI PV13 Minority-Carrier Lifetime (&gt;=1,500 μs), FTIR Oxygen (&lt;=12 ppma) &amp; TTV (&lt;=12 μm) vs. Oxygen-Ring &amp; Breakage Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Piece Count & Weight Only Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg134)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按硅片张数与吨重盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 少子寿命坍塌 (380 μs) 与高氧烧出“同心圆黑芯”</text>
+    <text x="58" y="224" fill="#CBD5E1">• 掺回炉锅底料或劣质石英坩埚致间隙氧 &gt; 16 ppma</text>
+    <text x="58" y="242" fill="#CBD5E1">• 980°C 硼扩后整片呈黑芯低效，骗走 $315,000 货款</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 130μm 薄片 TTV 超差 (28 μm) 与印刷连环碎片</text>
+    <text x="58" y="294" fill="#CBD5E1">• 金刚线磨损致硅片厚薄不均且暗藏边缘微隐裂</text>
+    <text x="58" y="312" fill="#CBD5E1">• 丝网印刷刮刀下压碎片率飙升 3.5% 并刮烂银浆网版</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 煤电棒状硅碳足迹超标与单晶头尾边皮被贱卖</text>
+    <text x="58" y="364" fill="#CBD5E1">• 综合电耗 55 kWh/kg 无法通过法国 PPE2 低碳准入</text>
+    <text x="58" y="382" fill="#CBD5E1">• 11N 高纯单晶棒头尾与切方边皮料未做闭环回投</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$315,000 同心圆黑芯废片与印刷碎裂
+  </text>
+
+  <!-- Center Card: 4-Layer Solar TOPCon Wafer Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg134)" stroke="#38BDF8" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#075985"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    ⚡ 少子寿命 &gt;=1,500μs + TTV/PL + 颗粒硅闭环托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 1 · 少子寿命 (&gt;=1,500 μs) 与 FTIR 间隙氧 (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    μ-PCD 少子寿命 &lt; 1,500 μs 或间隙氧 [Oi] &gt; 12 ppma →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 LOW_MINORITY_CARRIER_LIFETIME_OR_OXYGEN_RING_DEFECT_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 超薄片 TTV (&lt;=12 μm) 与 PL 零隐裂 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    130μm 硅片 TTV &gt; 12 μm、翘曲 &gt; 30 μm 或 PL 微裂纹 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 WAFER_TTV_WARP_EXCEEDANCE_OR_PL_MICROCRACK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 3 · Web IQ 法国 PPE2 碳足迹与硅源核查 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    CRE PPE2 碳排 &gt; 400 kgCO2/kWp 或石英/硅源溯源断链 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 PPE2_CARBON_FOOTPRINT_BREACH_OR_QUARTZ_TRACEABILITY_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ FBR 颗粒硅 + 头尾边皮闭环代工 (300ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    流化床颗粒硅 CCz 连续拉晶 + 头尾料复投立省 $50,400 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 FBR_GRANULAR_POLYSILICON_AND_INGOT_SCRAP_TOLLING_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_SOLAR_TOPCON_WAFER_SETTLED (20ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg134)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#7DD3FC">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 1850μs+氧9.8+TTV 7.5：20ms 放款 $315k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 少子寿命坍塌或高氧环：12ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. TTV&gt;12μm 或 PL 隐裂：15ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. PPE2 碳超标或断链：290ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. FBR颗粒硅+头尾闭环：300ms 省 $50,400 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#6EE7B7">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：Hennecke 分选报文 + PPE2 碳足迹核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索 MCz 超导磁场控氧与钨丝切片文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零黑芯低效：μ-PCD 少子寿命与 FTIR 氧含量联锁</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$264,600.00 (单批立省 $50,400 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#7DD3FC">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • N 型 TOPCon 硅片的同心圆黑芯与金属复合在硼扩前肉眼完全不可见——必须强制 SEMI PV13 少子寿命 (&gt;=1,500 μs) 与 FTIR 间隙氧 (&lt;=12 ppma) 签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #solar-topcon-wafer-sandbox · Unit Tests: 153/153 PASS
+  </text>
+</svg>

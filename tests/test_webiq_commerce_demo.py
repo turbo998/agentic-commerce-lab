@@ -8551,6 +8551,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("automotive-ahss-coil-sandbox", demo_zh)
 
+    def test_solar_polysilicon_topcon_wafer_minority_carrier_lifetime_ttv_mandate_vs_oxygen_ring_breakage_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_solar_polysilicon_topcon_wafer_policy,
+        )
+
+        # 1. Verified lifetime >=1,500 us + [Oi] <=12 ppma + TTV <=12 um + clean PPE2 -> 200 OK ($315,000)
+        commit_ok = evaluate_solar_polysilicon_topcon_wafer_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_solar_wafer_cents, 31500000)
+
+        # 2. Low minority-carrier lifetime (<1,500 us) or high oxygen ring -> 403 blocked in 12ms
+        tau_403 = evaluate_solar_polysilicon_topcon_wafer_policy(
+            minority_carrier_lifetime_and_ftir_oxygen_verified=False,
+        )
+        self.assertFalse(tau_403.allowed)
+        self.assertEqual(tau_403.http_status, 403)
+        self.assertEqual(
+            tau_403.solar_wafer_lane,
+            "LOW_MINORITY_CARRIER_LIFETIME_OR_OXYGEN_RING_DEFECT_BLOCKED",
+        )
+
+        # 3. Wedge slicing TTV (>12 um) or hidden PL microcracks -> 422 blocked in 15ms
+        ttv_422 = evaluate_solar_polysilicon_topcon_wafer_policy(
+            wafer_ttv_warp_and_pl_microcrack_passed=False,
+        )
+        self.assertFalse(ttv_422.allowed)
+        self.assertEqual(ttv_422.http_status, 422)
+        self.assertEqual(
+            ttv_422.solar_wafer_lane,
+            "WAFER_TTV_WARP_EXCEEDANCE_OR_PL_MICROCRACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects French PPE2 carbon footprint breach or broken quartz lineage -> 451 blocked in 290ms
+        ecs_451 = evaluate_solar_polysilicon_topcon_wafer_policy(
+            webiq_ppe2_carbon_footprint_and_traceability_clean=False,
+        )
+        self.assertFalse(ecs_451.allowed)
+        self.assertEqual(ecs_451.http_status, 451)
+
+        # 5. Web IQ blends FBR granular polysilicon & credits ingot crown/tail tolling saving $50,400 ($264,600 net) -> 409 Confirm
+        fbr_409 = evaluate_solar_polysilicon_topcon_wafer_policy(
+            fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents=5040000,
+        )
+        self.assertFalse(fbr_409.allowed)
+        self.assertEqual(fbr_409.http_status, 409)
+        self.assertEqual(fbr_409.settled_solar_wafer_cents, 26460000)
+        self.assertEqual(fbr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["solar_wafer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("solar-topcon-wafer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

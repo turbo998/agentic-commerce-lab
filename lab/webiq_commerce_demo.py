@@ -15938,6 +15938,91 @@ def evaluate_automotive_ahss_coil_policy(
     )
 
 
+@dataclass(frozen=True)
+class SolarPolysiliconTopconWaferVerdict:
+    allowed: bool
+    http_status: int
+    solar_wafer_lane: str
+    settled_solar_wafer_cents: int
+    fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_solar_polysilicon_topcon_wafer_policy(
+    *,
+    gross_solar_wafer_cents: int = 31500000,
+    minority_carrier_lifetime_and_ftir_oxygen_verified: bool = True,
+    wafer_ttv_warp_and_pl_microcrack_passed: bool = True,
+    webiq_ppe2_carbon_footprint_and_traceability_clean: bool = True,
+    fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents: int = 0,
+) -> SolarPolysiliconTopconWaferVerdict:
+    # 1. Low Minority-Carrier Lifetime (<1,500 us) or High FTIR Oxygen (>12 ppma) Oxygen Ring -> HTTP 403
+    if not minority_carrier_lifetime_and_ftir_oxygen_verified:
+        return SolarPolysiliconTopconWaferVerdict(
+            False,
+            403,
+            "LOW_MINORITY_CARRIER_LIFETIME_OR_OXYGEN_RING_DEFECT_BLOCKED",
+            0,
+            0,
+            "solar_topcon_wafer_blocked_due_to_low_minority_carrier_lifetime_or_high_oxygen_ring_defect",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Ultra-Thin 130um Wafer TTV (>12 um), Warp (>30 um) or PL Microcracks -> HTTP 422
+    if not wafer_ttv_warp_and_pl_microcrack_passed:
+        return SolarPolysiliconTopconWaferVerdict(
+            False,
+            422,
+            "WAFER_TTV_WARP_EXCEEDANCE_OR_PL_MICROCRACK_BLOCKED",
+            0,
+            0,
+            "wafer_lot_rejected_for_excess_ttv_thickness_variation_warp_or_photoluminescence_microcracks",
+            15,
+            "Send to a human",
+        )
+
+    # 3. French CRE PPE2 Carbon Footprint Breach (>400 kgCO2/kWp) or Missing Lineage via Web IQ -> HTTP 451
+    if not webiq_ppe2_carbon_footprint_and_traceability_clean:
+        return SolarPolysiliconTopconWaferVerdict(
+            False,
+            451,
+            "PPE2_CARBON_FOOTPRINT_BREACH_OR_QUARTZ_TRACEABILITY_HOLD",
+            0,
+            0,
+            "webiq_detected_french_ppe2_carbon_footprint_exceedance_or_broken_quartz_silicon_lineage",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ FBR Granular Polysilicon CCz + Ingot Crown/Tail Scrap Tolling -> HTTP 409 Confirm
+    if fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents > 0:
+        return SolarPolysiliconTopconWaferVerdict(
+            False,
+            409,
+            "FBR_GRANULAR_POLYSILICON_AND_INGOT_SCRAP_TOLLING_CONFIRM",
+            gross_solar_wafer_cents - fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents,
+            fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents,
+            "webiq_applied_fbr_granular_polysilicon_ccz_and_ingot_crown_tail_tolling_saving_50400_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Lifetime >=1,500 us + [Oi] <=12 ppma + TTV <=12 um + Clean PPE2 -> Settled
+    return SolarPolysiliconTopconWaferVerdict(
+        True,
+        200,
+        "VERIFIED_SOLAR_TOPCON_WAFER_SETTLED",
+        gross_solar_wafer_cents,
+        0,
+        "semi_pv13_lifetime_ftir_oxygen_capacitive_ttv_pl_and_ppe2_carbon_verified_for_settlement",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -20886,6 +20971,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "yield_drift_block_latency_ms": ahs_yld_403.latency_ms,
     }
 
+    # Round 132 (Solar N-Type Polysilicon & TOPCon Wafer Offtake, Minority-Carrier Lifetime & TTV Mandate)
+    waf_commit_ok = evaluate_solar_polysilicon_topcon_wafer_policy()
+    waf_tau_403 = evaluate_solar_polysilicon_topcon_wafer_policy(
+        minority_carrier_lifetime_and_ftir_oxygen_verified=False,
+    )
+    waf_ttv_422 = evaluate_solar_polysilicon_topcon_wafer_policy(
+        wafer_ttv_warp_and_pl_microcrack_passed=False,
+    )
+    waf_ecs_451 = evaluate_solar_polysilicon_topcon_wafer_policy(
+        webiq_ppe2_carbon_footprint_and_traceability_clean=False,
+    )
+    waf_fbr_409 = evaluate_solar_polysilicon_topcon_wafer_policy(
+        fbr_granular_polysilicon_and_ingot_scrap_tolling_savings_cents=5040000,
+    )
+    solar_wafer_guards = {
+        "all_passed": (
+            waf_commit_ok.allowed
+            and waf_commit_ok.settled_solar_wafer_cents == 31500000
+            and not waf_tau_403.allowed
+            and waf_tau_403.http_status == 403
+            and not waf_ttv_422.allowed
+            and waf_ttv_422.http_status == 422
+            and not waf_ecs_451.allowed
+            and waf_ecs_451.http_status == 451
+            and not waf_fbr_409.allowed
+            and waf_fbr_409.action_pill == "Confirm"
+        ),
+        "solar_wafer_settlement_latency_ms": waf_commit_ok.latency_ms,
+        "lifetime_oxygen_block_latency_ms": waf_tau_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21030,6 +21146,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "battery_lfp_guards": battery_lfp_guards,
         "corrugated_packaging_guards": corrugated_packaging_guards,
         "automotive_ahss_guards": automotive_ahss_guards,
+        "solar_wafer_guards": solar_wafer_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26305,6 +26422,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ahs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Solar N-Type Polysilicon & TOPCon Wafer Offtake, Minority-Carrier Lifetime & TTV Mandate Sandbox (Round 132 FAQ Companion) -->
+      <div class="finops-box" id="solar-topcon-wafer-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-waf-title">☀️ 光伏 N 型多晶硅与 TOPCon 单晶硅片交割、少子寿命 (&gt;=1,500 μs) 与超薄 TTV (&lt;=12 μm) 架构：防同心圆黑芯与印刷碎片令牌 (solar_polysilicon_topcon_wafer_mandate_...) vs 按张数盲付决策器 (Round 132 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 11N 电子级多晶硅与 130μm N 型 TOPCon 单晶硅片交割 ($315,000.00)、SEMI PV13 少子寿命/FTIR 间隙氧、TTV/PL 隐裂与 Web IQ 法国 PPE2 碳足迹/FBR 颗粒硅场景 (Solar TOPCon Wafer Scenario):</span></label>
+          <select id="waf-select" onchange="updateSolarTopconWaferSandbox()">
+            <option value="waf_commit_ok">⚡ μ-PCD 少子寿命 1,850 μs (&gt;=1,500 μs) + FTIR 间隙氧 9.8 ppma (&lt;=12) + TTV 7.5 μm (&lt;=12 μm) + PPE2 低碳合规：20ms 自动结算 $315,000.00! (Act automatically)</option>
+            <option value="waf_tau_403">🛑 拉晶掺入高杂质锅底料或劣质石英坩埚溶氧超标 (少子寿命跌至 380 μs &lt; 1,500 μs 且间隙氧 &gt; 16 ppma，在 980°C 硼扩炉内烧出同心圆黑芯致电池效率暴跌 2.5%) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="waf_ttv_422">🚨 金刚线磨损张力失稳导致 130μm 超薄硅片总厚度变化超差 (TTV = 28 μm &gt; 12 μm 呈楔形) 或光致发光 (PL) 检出微隐裂引发丝网印刷连环碎裂刮网拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="waf_ecs_451">🛑 高煤电西门子棒状硅综合碳足迹超标 (&gt;400 kgCO2/kWp 丧失法国 CRE PPE2 准入) 或高纯石英砂/硅料批次溯源断链：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="waf_fbr_409">🧑‍⚖️ Web IQ 启用硅烷流化床法 (FBR) 低碳颗粒硅 (综合电耗降 74% 支持 CCz 连续拉晶) 并将 11N 单晶头尾边皮料闭环免洗复投代工立省 $50,400.00 (净付 $264,600.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="waf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -26875,6 +27010,7 @@ function renderAll() {{
   updateBatteryLithiumLfpSandbox();
   updateCorrugatedPackagingEctSandbox();
   updateAutomotiveAhssCoilSandbox();
+  updateSolarTopconWaferSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -33595,6 +33731,55 @@ function updateAutomotiveAhssCoilSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 全卷 1,500m 屈服波动 (&lt;=±35 MPa) + XRF 锌层 (&gt;=60/60 g/m²) + 绿钢 EPD 达标：已自动清算 (VERIFIED_AUTOMOTIVE_AHSS_COIL_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零头尾冲压开裂回弹、零偷锌锈穿与正公差亏米</strong>：汽车超高强钢与 O5 热镀锌板卷批次已完成结算（<code>$275,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSolarTopconWaferSandbox() {{
+  var selEl = document.getElementById("waf-select");
+  var outEl = document.getElementById("waf-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "waf_tau_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_MINORITY_CARRIER_LIFETIME_OR_OXYGEN_RING_DEFECT_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "分选实验室 <code>Semilab μ-PCD 微波光电导少子寿命仪 (SEMI PV13) 与傅里叶红外 FTIR</code> 实测显示，该批 N 型单晶硅片因掺入锅底高杂质回炉料或石英坩埚溶氧超标，体少子寿命跌至 <code>τeff = 380 μs &lt; 1,500 μs</code> 且间隙氧 <code>[Oi] = 17.2 ppma &gt; 12.0 ppma</code>（进 980°C 硼扩炉必形成同心圆黑芯致 TOPCon 电池效率暴跌 2.5%，<code>minority_carrier_lifetime_and_ftir_oxygen_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$315,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "waf_ttv_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 WAFER_TTV_WARP_EXCEEDANCE_OR_PL_MICROCRACK_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "切片分选线 <code>Hennecke 非接触电容测厚与光致发光 (PL) 隐裂仪</code> 检出 130μm 超薄硅片总厚度变化高达 <code>TTV = 28.0 μm &gt; 12.0 μm</code> 或暗藏边缘微隐裂（上丝网印刷台将引发 3.5% 连环碎片并刮烂高价银浆网版，<code>wafer_ttv_warp_and_pl_microcrack_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "waf_ecs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PPE2_CARBON_FOOTPRINT_BREACH_OR_QUARTZ_TRACEABILITY_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>法国能源监管委员会 (CRE) PPE2 光伏碳足迹认证库与硅源溯源包</code>，检出该批硅片全生命周期碳排超过 <code>400 kgCO2/kWp</code> 上限或石英砂/硅料批次溯源链缺失，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "waf_fbr_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FBR_GRANULAR_POLYSILICON_AND_INGOT_SCRAP_TOLLING_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将高电耗棒状硅切换为 <code>硅烷流化床法 (FBR) 低碳颗粒硅 CCz 连续拉晶 (综合电耗降 74%)</code>，并将截断切方产生的 11N 单晶头尾边皮料闭环免洗回投代工抵扣，单批立省 <code>$50,400.00</code>（净付降至 <code>$264,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 少子寿命 (&gt;=1,500 μs) + 间隙氧 (&lt;=12 ppma) + 超薄 TTV (&lt;=12 μm) 达标：已自动清算 (VERIFIED_SOLAR_TOPCON_WAFER_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零同心圆黑芯效率坍塌、零丝网印刷碎片与碳准入违约</strong>：光伏 N 型多晶硅与 TOPCon 单晶硅片批次已完成结算（<code>$315,000.00</code>）！" +
     "</div>";
 }}
 
