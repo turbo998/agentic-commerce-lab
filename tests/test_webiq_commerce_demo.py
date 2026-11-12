@@ -9335,6 +9335,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("oilfield-drilling-mud-sandbox", demo_zh)
 
+    def test_uhmwpe_ballistic_mooring_fiber_intrinsic_viscosity_tenacity_creep_mandate_vs_decalin_thermal_rupture_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_uhmwpe_ballistic_mooring_policy,
+        )
+
+        # 1. Verified ASTM D4020 IV >=20 dL/g + Tenacity >=35 cN/dtex + ISO 18692 Creep <=0.02%/d -> 200 OK ($620,000)
+        commit_ok = evaluate_uhmwpe_ballistic_mooring_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_uhmwpe_fiber_cents, 62000000)
+
+        # 2. Low-MW blend (IV < 20 dL/g) or low sonic modulus (< 1,250 cN/dtex) -> 403 blocked in 11ms
+        ten_403 = evaluate_uhmwpe_ballistic_mooring_policy(
+            intrinsic_viscosity_and_sonic_tenacity_verified=False,
+        )
+        self.assertFalse(ten_403.allowed)
+        self.assertEqual(ten_403.http_status, 403)
+        self.assertEqual(
+            ten_403.uhmwpe_fiber_lane,
+            "TENACITY_SONIC_MODULUS_OR_INTRINSIC_VISCOSITY_DEFICIT_BLOCKED",
+        )
+
+        # 3. High 70°C creep rate (>0.02%/d) or residual decalin solvent (>500 ppm) -> 422 blocked in 14ms
+        crp_422 = evaluate_uhmwpe_ballistic_mooring_policy(
+            mooring_creep_rate_and_decalin_residue_passed=False,
+        )
+        self.assertFalse(crp_422.allowed)
+        self.assertEqual(crp_422.http_status, 422)
+        self.assertEqual(
+            crp_422.uhmwpe_fiber_lane,
+            "MOORING_CREEP_RATE_OR_DECALIN_SOLVENT_RESIDUE_EXCEEDED_BLOCKED",
+        )
+
+        # 4. Web IQ detects delisted NIJ CPL model, forged DNV cert or export hold -> 451 blocked in 280ms
+        dnv_451 = evaluate_uhmwpe_ballistic_mooring_policy(
+            webiq_dnv_nij_cert_and_export_control_clean=False,
+        )
+        self.assertFalse(dnv_451.allowed)
+        self.assertEqual(dnv_451.http_status, 451)
+
+        # 5. Web IQ credits 99.6% decalin recovery & retired rope take-back saving $86,800 ($533,200 net) -> 409 Confirm
+        dec_409 = evaluate_uhmwpe_ballistic_mooring_policy(
+            closed_loop_decalin_recovery_and_retired_rope_credit_cents=8680000,
+        )
+        self.assertFalse(dec_409.allowed)
+        self.assertEqual(dec_409.http_status, 409)
+        self.assertEqual(dec_409.settled_uhmwpe_fiber_cents, 53320000)
+        self.assertEqual(dec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["uhmwpe_fiber_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("uhmwpe-ballistic-mooring-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

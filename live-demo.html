@@ -3420,6 +3420,24 @@
         <div id="mud-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive UHMWPE Ballistic UD & Deepwater Mooring Rope Offtake, IV >=20 dL/g & Creep <=0.02%/d Mandate Sandbox (Round 146 FAQ Companion) -->
+      <div class="finops-box" id="uhmwpe-ballistic-mooring-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-uhm-title">🛡️ UHMWPE 防弹无纬布与深海系泊缆交割、特性粘度 (&gt;=20 dL/g) 与抗蠕变 (&lt;=0.02%/d) 架构：防弹道熔穿与系泊断缆令牌 (uhmwpe_ballistic_mooring_mandate_...) vs 旦数盲付决策器 (Round 146 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 特种凝胶纺丝 UHMWPE 防弹 UD 布与深海系泊原丝交割 ($620,000.00)、ASTM D4020 特性粘度/比强度/声速模量、ISO 18692 70°C 蠕变/GC 十氢化萘残留与 Web IQ DNV/NIJ 认证场景 (UHMWPE Ballistic &amp; Mooring Scenario):</span></label>
+          <select id="uhm-select" onchange="updateUhmwpeBallisticMooringSandbox()">
+            <option value="uhm_commit_ok">⚡ 特性粘度 [η] 22.4 dL/g + 比强度 38.2 cN/dtex + 模量 1,380 (声速 11.9 km/s) + 70°C 蠕变 0.011%/d + 残油 180 ppm：10ms 自动结算 $620,000.00! (Act automatically)</option>
+            <option value="uhm_ten_403">🛑 为提螺杆挤出量偷掺 30% 低分子量聚乙烯 ([η] 跌至 14.5 &lt; 20 dL/g，初始模量暴跌至 820 cN/dtex，子弹冲击 20us 内纵波声速不足引发绝热升温超 147°C 熔穿插板或 BFS = 58mm &gt; 44mm) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="uhm_crp_422">🚨 普通无支化均聚丝冒充深海抗蠕变牌号 (70°C/300MPa 稳态蠕变率高达 0.24%/d &gt; 0.02%/d，FPSO 系泊缆 18 个月分子链滑移拉长 8% 崩断) 或十氢化萘残油 2,800 ppm &gt; 500 ppm 致 UD 布鼓包分层拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="uhm_dnv_451">🛑 防弹插板型号未列入美国司法部 NIJ 0101.06 合规产品名录 (CPL)，或深海系泊原丝 DNV-OS-E303 型式认可伪造及两用物项违规转售：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="uhm_dec_409">🧑‍⚖️ Web IQ 启用凝胶纺丝十氢化萘三级真空精馏 99.6% 闭环回用折让，并回购平台退役深海 HMPE 系泊缆进行热解化学循环立省 $86,800.00 (净付 $533,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="uhm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4004,6 +4022,7 @@ function renderAll() {
   updateAluminumPrebakedAnodeSandbox();
   updateNuclearZirconiumFuelSandbox();
   updateOilfieldDrillingMudSandbox();
+  updateUhmwpeBallisticMooringSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11410,6 +11429,55 @@ function updateOilfieldDrillingMudSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ API 13A 真比重 (&gt;=4.20 g/cm3) + 180°C HTHP (&lt;=12 mL) + 防沉砂达标：已自动清算 (VERIFIED_OILFIELD_DRILLING_MUD_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零掺假井漏井喷、零厚泥饼压差卡钻与重晶石浪费</strong>：超深井钻井液重晶石与工程服务已完成结算（<code>$480,000.00</code>）！" +
+    "</div>";
+}
+
+function updateUhmwpeBallisticMooringSandbox() {
+  var selEl = document.getElementById("uhm-select");
+  var outEl = document.getElementById("uhm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "uhm_ten_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TENACITY_SONIC_MODULUS_OR_INTRINSIC_VISCOSITY_DEFICIT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "特种纤维实验室 <code>ASTM D4020 135°C 十氢化萘乌氏粘度计与超声波脉冲模量仪</code> 实测显示，纺丝厂为提产偷掺 30% 低分子量聚乙烯，特性粘度跌至 <code>[η] = 14.5 dL/g &lt; 20.0 dL/g</code> 且初始模量跌至 <code>820 cN/dtex &lt; 1,250 cN/dtex</code>（子弹 850m/s 撞击的 20 微秒内纵波声速不足以动员周边纤维，局部绝热温升突破 147°C 熔穿插板或背凸 BFS 达 58mm，<code>intrinsic_viscosity_and_sonic_tenacity_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$620,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "uhm_crp_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MOORING_CREEP_RATE_OR_DECALIN_SOLVENT_RESIDUE_EXCEEDED_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "海工与复合材料实验室 <code>ISO 18692-2 70°C/300MPa 蠕变台架与 GC-FID 气相色谱仪</code> 检出该批丝为未支化改性的普通均聚丝，稳态蠕变率高达 <code>0.24%/day &gt; 0.02%/day</code>（深海系泊将发生范德华分子链滑移崩断），或萃取不足致十氢化萘残留高达 <code>2,800 ppm &gt; 500 ppm</code> 引发 UD 无纬布鼓包脱胶（<code>mooring_creep_rate_and_decalin_residue_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "uhm_dnv_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DNV_NIJ_CERT_REVOCATION_OR_DUAL_USE_EXPORT_CONTROL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NIJ 0101.06 合规产品名录 (CPL)、DNV-OS-E303 船级社型式认可库与高强纤维两用物项出口管制清单</code>，检出伪造防弹/海工认证或违规转售，立即冻结放行！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "uhm_dec_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CLOSED_LOOP_DECALIN_RECOVERY_AND_RETIRED_ROPE_TAKEBACK_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动核算凝胶纺丝线 <code>99.6% 十氢化萘三级真空精馏闭环回用成本折让</code>，并冲抵回购的退役深水 HMPE 系泊大缆化学循环再生料价值，单批立省 <code>$86,800.00</code>（净付降至 <code>$533,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 特性粘度 ([η] &gt;=20 dL/g) + 声速模量 (&gt;=1,250 cN/dtex) + 抗蠕变 (&lt;=0.02%/d) 达标：已自动清算 (VERIFIED_UHMWPE_BALLISTIC_MOORING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零弹道绝热熔穿、零深海系泊蠕变断缆与残油分层</strong>：UHMWPE 防弹无纬布与深海系泊原丝批次已完成结算（<code>$620,000.00</code>）！" +
     "</div>";
 }
 

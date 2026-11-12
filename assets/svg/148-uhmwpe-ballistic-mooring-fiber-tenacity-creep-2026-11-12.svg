@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg148" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="accent148" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg148)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent148)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 146 · UHMWPE 防弹无纬布与深海系泊缆交割、特性粘度 (&gt;=20 dL/g) 与抗蠕变门禁架构图</text>
+  <text x="36" y="84" class="sub">UHMWPE Ballistic UD &amp; Deepwater Mooring Offtake, Intrinsic Viscosity (&gt;=20 dL/g), Sonic Tenacity (&gt;=35 cN/dtex) &amp; Creep (&lt;=0.02%/d)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按旦数与米数盲付</text>
+  <text x="52" y="166" class="card-h">三大弹道击穿与深海断缆致命隐患</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 掺低分子量料 ([η]&lt;16) 致声速跌落与子弹熔穿</text>
+  <text x="52" y="216" class="body">偷掺低分子树脂虽慢拉强力尚可，但初始模量跌至</text>
+  <text x="52" y="234" class="body">820 cN/dtex，应力波声速不足致 20us 内局部绝热</text>
+  <text x="52" y="252" class="body">升温超 147°C 熔穿插板，或背衬凹陷 BFS&gt;44mm！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 无支化均聚丝深海分子链滑移蠕变断缆</text>
+  <text x="52" y="302" class="body">聚乙烯仅靠微弱范德华力，普通丝在 30% MBL 长期</text>
+  <text x="52" y="320" class="body">张力下蠕变高达 0.24%/d，18 个月拉长 8% 突发崩断。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 十氢化萘/白油萃取残留 (&gt;500 ppm) 脱胶鼓包</text>
+  <text x="52" y="370" class="body">缩短干燥致丝内残留 2,800 ppm 溶剂，压制防弹</text>
+  <text x="52" y="388" class="body">UD 布后缓慢挥发顶起聚氨酯基体，半年即分层失效。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1600D Denier + Slow Quasi-Static Pull</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $620,000 exposed to BFS &amp; creep rupture</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="256" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ uhmwpe_ballistic_mooring_mandate</text>
+  <text x="428" y="166" class="card-h">四层高分子粘度、声速与蠕变门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: ASTM D4020 IV &amp; Sonic Tenacity (11ms)</text>
+  <text x="440" y="220" class="body">135°C 十氢化萘粘度 [η] &gt;=20 dL/g, 比强度 &gt;=35</text>
+  <text x="440" y="238" class="body">&amp; 模量 &gt;=1,250 cN/dtex (声速 &gt;=11.5km/s) → 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: ISO 18692 Creep &amp; GC Decalin (14ms)</text>
+  <text x="440" y="296" class="body">70°C/300MPa 蠕变率 &lt;=0.02%/d, GC 溶剂残留</text>
+  <text x="440" y="314" class="body">&lt;=500 ppm &amp; DSC 结晶度 &gt;=84% — 违者直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ DNV-OS-E303 &amp; NIJ CPL (280ms)</text>
+  <text x="440" y="372" class="body">核验 DNV 深水系泊型式认可与 NIJ 0101.06 CPL</text>
+  <text x="440" y="390" class="body">合规名录及两用物项出口许可 — 违者直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 99.6% Decalin &amp; Rope Loop (245ms)</text>
+  <text x="440" y="448" class="body">十氢化萘三级精馏 99.6% 闭环回用 + 退役海工 HMPE</text>
+  <text x="440" y="466" class="body">系泊缆化学循环回购立省 $86,800 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高粘度高模量低蠕变放行</text>
+  <text x="828" y="212" class="body">[η] 22.4 + 强度 38.2 + 蠕变 0.011%/d → $620,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 分子量或声速模量不足</text>
+  <text x="828" y="258" class="body">[η]=14.5 或比强度 28.5 击穿风险 → 冻结 $620k</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 深海蠕变或十氢化萘残油</text>
+  <text x="828" y="304" class="body">蠕变 0.24%/d 或残油 2,800 ppm → 拒付 $620k</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 假 NIJ/DNV 证书</text>
+  <text x="828" y="350" class="body">未列入 NIJ CPL 或出口管制违规 → 熔断 $620,000</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 溶剂闭环与旧海缆回购</text>
+  <text x="828" y="396" class="body">节省 $86,800 (-14%) → 确认后净付 $533,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 防务保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 特种 UHMWPE 纤维严禁“仅看慢拉强力”：子弹撞击 20 微秒内靠纵波声速 (c=sqrt(E/ρ)) 扩散能量，低模量瞬间绝热熔穿；深海系泊则必须防分子链滑移蠕变。</text>
+  <text x="54" y="584" class="body">• 必须将特性粘度 ([η]&gt;=20 dL/g)、比强度 (&gt;=35 cN/dtex)、70°C 蠕变 (&lt;=0.02%/d) 与十氢化萘残油 (&lt;=500ppm) 绑定为托管令牌谓词。</text>
+</svg>
