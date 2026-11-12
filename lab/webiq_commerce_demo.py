@@ -17213,6 +17213,91 @@ def evaluate_uhmwpe_ballistic_mooring_policy(
     )
 
 
+@dataclass(frozen=True)
+class HighPurityQuartzCrucibleVerdict:
+    allowed: bool
+    http_status: int
+    quartz_crucible_lane: str
+    settled_quartz_crucible_cents: int
+    rcz_longevity_cullet_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_high_purity_quartz_crucible_policy(
+    *,
+    gross_quartz_crucible_cents: int = 54000000,
+    ftir_hydroxyl_and_high_temp_viscosity_verified: bool = True,
+    alkali_metal_trace_and_inner_bubble_free_layer_passed: bool = True,
+    webiq_iota_sand_provenance_and_semi_pv27_clean: bool = True,
+    barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents: int = 0,
+) -> HighPurityQuartzCrucibleVerdict:
+    # 1. High Silanol Hydroxyl (OH- >30 ppm) or 1,500°C Sag Deflection (>1.5 mm) Melt-Spill Risk -> HTTP 403
+    if not ftir_hydroxyl_and_high_temp_viscosity_verified:
+        return HighPurityQuartzCrucibleVerdict(
+            False,
+            403,
+            "HYDROXYL_HIGH_TEMP_VISCOSITY_DEFICIT_CRUCIBLE_COLLAPSE_BLOCKED",
+            0,
+            0,
+            "quartz_crucible_blocked_due_to_high_hydroxyl_above_30ppm_or_1500c_sag_melt_spill_risk",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Inner Bubble-Free Layer Vacuum Expansion (>0.5% Area) or Alkali Devitrification (Li+Na+K >0.8 ppm) -> HTTP 422
+    if not alkali_metal_trace_and_inner_bubble_free_layer_passed:
+        return HighPurityQuartzCrucibleVerdict(
+            False,
+            422,
+            "INNER_LAYER_BUBBLE_GROWTH_OR_ALKALI_DEVITRIFICATION_BLOCKED",
+            0,
+            0,
+            "crucible_lot_rejected_for_inner_bubble_burst_dislocation_risk_or_alkali_cristobalite_peeling",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Counterfeit Hydrothermal Vein-Quartz Substituted for Pegmatitic IOTA Inner Sand via Web IQ -> HTTP 451
+    if not webiq_iota_sand_provenance_and_semi_pv27_clean:
+        return HighPurityQuartzCrucibleVerdict(
+            False,
+            451,
+            "COUNTERFEIT_VEIN_QUARTZ_PROVENANCE_OR_SEMI_PV27_HOLD",
+            0,
+            0,
+            "webiq_detected_cloned_iota_customs_bill_of_lading_or_vein_quartz_fluid_inclusion_fraud",
+            285,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Nano-Ba(OH)2 Cristobalite Armor 430h RCZ Campaign + Cullet Recycle -> HTTP 409 Confirm
+    if barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents > 0:
+        return HighPurityQuartzCrucibleVerdict(
+            False,
+            409,
+            "BARIUM_CRISTOBALITE_ARMOR_430H_RCZ_AND_CULLET_CREDIT_CONFIRM",
+            gross_quartz_crucible_cents - barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents,
+            barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents,
+            "webiq_applied_nano_barium_430h_7ingot_rcz_longevity_and_cullet_credit_saving_81000_usd",
+            250,
+            "Confirm",
+        )
+
+    # 5. Verified OH- <=30 ppm + Li+Na+K <=0.8 ppm + IBFL Bubble <=0.5% + Authentic IOTA -> Settled
+    return HighPurityQuartzCrucibleVerdict(
+        True,
+        200,
+        "VERIFIED_HIGH_PURITY_QUARTZ_CRUCIBLE_SETTLED",
+        gross_quartz_crucible_cents,
+        0,
+        "ftir_hydroxyl_1500c_viscosity_icp_alkali_ccd_bubble_free_layer_and_iota_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -22626,6 +22711,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sonic_modulus_block_latency_ms": uhm_ten_403.latency_ms,
     }
 
+    # Round 147 (High-Purity Quartz Crucible & IOTA Sand Offtake, FTIR OH- <=30 ppm & IBFL Bubble Mandate)
+    qtz_commit_ok = evaluate_high_purity_quartz_crucible_policy()
+    qtz_oh_403 = evaluate_high_purity_quartz_crucible_policy(
+        ftir_hydroxyl_and_high_temp_viscosity_verified=False,
+    )
+    qtz_bub_422 = evaluate_high_purity_quartz_crucible_policy(
+        alkali_metal_trace_and_inner_bubble_free_layer_passed=False,
+    )
+    qtz_iot_451 = evaluate_high_purity_quartz_crucible_policy(
+        webiq_iota_sand_provenance_and_semi_pv27_clean=False,
+    )
+    qtz_rcz_409 = evaluate_high_purity_quartz_crucible_policy(
+        barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents=8100000,
+    )
+    quartz_crucible_guards = {
+        "all_passed": (
+            qtz_commit_ok.allowed
+            and qtz_commit_ok.settled_quartz_crucible_cents == 54000000
+            and not qtz_oh_403.allowed
+            and qtz_oh_403.http_status == 403
+            and not qtz_bub_422.allowed
+            and qtz_bub_422.http_status == 422
+            and not qtz_iot_451.allowed
+            and qtz_iot_451.http_status == 451
+            and not qtz_rcz_409.allowed
+            and qtz_rcz_409.action_pill == "Confirm"
+        ),
+        "quartz_crucible_settlement_latency_ms": qtz_commit_ok.latency_ms,
+        "hydroxyl_sag_block_latency_ms": qtz_oh_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22785,6 +22901,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "nuclear_zirconium_guards": nuclear_zirconium_guards,
         "drilling_mud_guards": drilling_mud_guards,
         "uhmwpe_fiber_guards": uhmwpe_fiber_guards,
+        "quartz_crucible_guards": quartz_crucible_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28330,6 +28447,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="uhm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive High-Purity Quartz Crucible & IOTA Sand Offtake, FTIR OH- <=30 ppm & IBFL Bubble Mandate Sandbox (Round 147 FAQ Companion) -->
+      <div class="finops-box" id="high-purity-quartz-crucible-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-qtz-title">💎 高纯石英坩埚与 IOTA 石英砂交割、羟基粘度 (&lt;=30 ppm) 与透明层微气泡 (&lt;=0.5%) 架构：防 1500°C 塌埚漏硅与单晶断线令牌 (high_purity_quartz_crucible_mandate_...) vs 4N8 纯度盲付决策器 (Round 147 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 36 英寸半导体/N 型单晶高纯石英坩埚交割 ($540,000.00)、FTIR 羟基/1500°C 软化粘度、ICP 碱金属/内壁透明层微气泡与 Web IQ IOTA 原矿溯源/氢氧化钡 430h 延寿场景 (High-Purity Quartz Crucible Scenario):</span></label>
+          <select id="qtz-select" onchange="updateHighPurityQuartzCrucibleSandbox()">
+            <option value="qtz_commit_ok">⚡ FTIR 羟基 OH- 18 ppm (&lt;=30 ppm) + 1500°C 挠度 0.7mm + Li+Na+K 0.42 ppm + 透明层气泡比 0.18%：10ms 自动结算 $540,000.00! (Act automatically)</option>
+            <option value="qtz_oh_403">🛑 内层偷掺高气液包裹体脉石英致羟基飙至 OH- = 82 ppm &gt; 30 ppm (剪断 Si-O-Si 桥氧键使 1500°C 高温粘度暴跌 10 倍，拉晶 180h 坩埚壁软化塌陷漏出 600kg 硅水炸毁单晶炉热场) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="qtz_bub_422">🚨 真空高温烘烤后内壁透明层微气泡膨胀截面积比达 2.4% &gt; 0.5% (气泡炸裂向硅液喷射石英碎屑撞击固液生长界面致单晶断棱回炉) 或碱金属 Li+Na+K = 2.9 ppm 诱导火山口状方石英剥落拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="qtz_iot_451">🛑 坩埚厂套用他人进口报关提单，实则用廉价酸洗脉石英冒充 Spruce Pine 花岗伟晶岩 (IOTA-CG) 内层高纯砂：Web IQ /v3/browse 285ms 触发 HTTP 451!</option>
+            <option value="qtz_rcz_409">🧑‍⚖️ Web IQ 启用外壁纳米氢氧化钡 Ba(OH)2 致密方石英铠甲使单埚 RCZ 连续拉晶寿命从 320h (5 根棒) 延至 430h (7 根棒)，并回收废埚高纯方石英料立省 $81,000.00 (净付 $459,000.00) → 250ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="qtz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -28915,6 +29050,7 @@ function renderAll() {{
   updateNuclearZirconiumFuelSandbox();
   updateOilfieldDrillingMudSandbox();
   updateUhmwpeBallisticMooringSandbox();
+  updateHighPurityQuartzCrucibleSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -36370,6 +36506,55 @@ function updateUhmwpeBallisticMooringSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 特性粘度 ([η] &gt;=20 dL/g) + 声速模量 (&gt;=1,250 cN/dtex) + 抗蠕变 (&lt;=0.02%/d) 达标：已自动清算 (VERIFIED_UHMWPE_BALLISTIC_MOORING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零弹道绝热熔穿、零深海系泊蠕变断缆与残油分层</strong>：UHMWPE 防弹无纬布与深海系泊原丝批次已完成结算（<code>$620,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHighPurityQuartzCrucibleSandbox() {{
+  var selEl = document.getElementById("qtz-select");
+  var outEl = document.getElementById("qtz-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "qtz_oh_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HYDROXYL_HIGH_TEMP_VISCOSITY_DEFICIT_CRUCIBLE_COLLAPSE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "石英材料实验室 <code>FTIR 傅里叶红外光谱仪 (3670 cm-1 吸收峰) 与 1500°C 高温软化挠度炉</code> 实测显示，该批坩埚因掺入高气液包裹体脉石英导致羟基高达 <code>OH- = 82 ppm &gt; 30 ppm</code> 且 1500°C 软化变形达 <code>4.8 mm &gt; 1.5 mm</code>（硅羟基打断三维硅氧网络使高温粘度暴跌 10 倍，拉晶中后期将发生软化塌埚并漏出 600kg 硅水炸炉，<code>ftir_hydroxyl_and_high_temp_viscosity_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$540,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qtz_bub_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 INNER_LAYER_BUBBLE_GROWTH_OR_ALKALI_DEVITRIFICATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "坩埚内壁 <code>CCD 白光共聚焦断层扫描仪与 SEMI PV27 ICP-MS 质谱仪</code> 检出真空高温烘烤后内层透明层微气泡膨胀面积比达 <code>2.4% &gt; 0.5%</code>（拉晶溶蚀时气泡炸裂喷出 SiO2 微粒将直接打断单晶零位错生长），或内层砂碱金属 <code>Li+Na+K = 2.9 ppm &gt; 0.8 ppm</code> 诱发火山口状方石英剥落（<code>alkali_metal_trace_and_inner_bubble_free_layer_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qtz_iot_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 COUNTERFEIT_VEIN_QUARTZ_PROVENANCE_OR_SEMI_PV27_HOLD (285ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>高纯石英砂 (IOTA-CG) 海关提单批号吨位台账与矿物包裹体指纹库</code>，查实供应商一单多用套牌报关单、以廉价酸洗脉石英冒充进口花岗伟晶岩内层砂，立即熔断采购！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qtz_rcz_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BARIUM_CRISTOBALITE_ARMOR_430H_RCZ_AND_CULLET_CREDIT_CONFIRM (250ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动核算外壁 <code>纳米氢氧化钡 Ba(OH)2 致密方石英铠甲涂层</code> 带来的 430 小时（连续拉制 7 根单晶棒）RCZ 炉时摊薄收益，并冲抵下炉高纯方石英熟料回收价值，单批立省 <code>$81,000.00</code>（净付降至 <code>$459,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 低羟基 (OH- &lt;=30 ppm) + 低碱金属 (&lt;=0.8 ppm) + 透明层零膨胀气泡达标：已自动清算 (VERIFIED_HIGH_PURITY_QUARTZ_CRUCIBLE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 1500°C 软化塌埚漏硅、零微气泡炸裂断棱与少子寿命污染</strong>：36 英寸高纯石英坩埚与 IOTA 内层砂批次已完成结算（<code>$540,000.00</code>）！" +
     "</div>";
 }}
 

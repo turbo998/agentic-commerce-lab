@@ -9391,6 +9391,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("uhmwpe-ballistic-mooring-sandbox", demo_zh)
 
+    def test_high_purity_quartz_crucible_sand_hydroxyl_alkali_cristobalite_mandate_vs_bubble_collapse_dislocation_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_high_purity_quartz_crucible_policy,
+        )
+
+        # 1. Verified FTIR OH- <=30 ppm + ICP Li+Na+K <=0.8 ppm + IBFL bubble <=0.5% -> 200 OK ($540,000)
+        commit_ok = evaluate_high_purity_quartz_crucible_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_quartz_crucible_cents, 54000000)
+
+        # 2. High silanol hydroxyl (OH- > 30 ppm) or 1,500°C sag deflection (>1.5 mm) -> 403 blocked in 11ms
+        oh_403 = evaluate_high_purity_quartz_crucible_policy(
+            ftir_hydroxyl_and_high_temp_viscosity_verified=False,
+        )
+        self.assertFalse(oh_403.allowed)
+        self.assertEqual(oh_403.http_status, 403)
+        self.assertEqual(
+            oh_403.quartz_crucible_lane,
+            "HYDROXYL_HIGH_TEMP_VISCOSITY_DEFICIT_CRUCIBLE_COLLAPSE_BLOCKED",
+        )
+
+        # 3. Inner bubble-free layer vacuum expansion (>0.5%) or alkali devitrification -> 422 blocked in 14ms
+        bub_422 = evaluate_high_purity_quartz_crucible_policy(
+            alkali_metal_trace_and_inner_bubble_free_layer_passed=False,
+        )
+        self.assertFalse(bub_422.allowed)
+        self.assertEqual(bub_422.http_status, 422)
+        self.assertEqual(
+            bub_422.quartz_crucible_lane,
+            "INNER_LAYER_BUBBLE_GROWTH_OR_ALKALI_DEVITRIFICATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects counterfeit vein-quartz substituted for IOTA-CG inner sand -> 451 blocked in 285ms
+        iot_451 = evaluate_high_purity_quartz_crucible_policy(
+            webiq_iota_sand_provenance_and_semi_pv27_clean=False,
+        )
+        self.assertFalse(iot_451.allowed)
+        self.assertEqual(iot_451.http_status, 451)
+
+        # 5. Web IQ credits nano-Ba(OH)2 430h RCZ longevity & cullet return saving $81,000 ($459,000 net) -> 409 Confirm
+        rcz_409 = evaluate_high_purity_quartz_crucible_policy(
+            barium_cristobalite_armor_430h_rcz_and_cullet_credit_cents=8100000,
+        )
+        self.assertFalse(rcz_409.allowed)
+        self.assertEqual(rcz_409.http_status, 409)
+        self.assertEqual(rcz_409.settled_quartz_crucible_cents, 45900000)
+        self.assertEqual(rcz_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["quartz_crucible_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("high-purity-quartz-crucible-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg149" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent149" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg149)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent149)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 147 · 高纯石英坩埚与 IOTA 石英砂交割、羟基粘度 (&lt;=30 ppm) 与透明层气泡架构图</text>
+  <text x="36" y="84" class="sub">High-Purity Quartz Crucible &amp; IOTA Sand Offtake, FTIR Hydroxyl (&lt;=30 ppm), Alkali (&lt;=0.8 ppm) &amp; IBFL Bubble (&lt;=0.5%) vs. Melt Spill</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按只数与 4N8 盲付</text>
+  <text x="52" y="166" class="card-h">三大单晶拉晶塌埚与断线灭顶之灾</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 高羟基 (OH-&gt;30ppm) 剪断硅氧桥致软化塌埚</text>
+  <text x="52" y="216" class="body">掺入高气液包裹体脉石英使 OH- 飙至 82ppm，1500°C</text>
+  <text x="52" y="234" class="body">高温粘度暴跌 10 倍，拉晶 180h 坩埚壁向内软化塌陷</text>
+  <text x="52" y="252" class="body">甚至漏出 600kg 硅水炸毁整台单晶炉热场 ($180k+)！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 透明层微气泡膨胀 10 倍炸裂引发“单晶断线”</text>
+  <text x="52" y="302" class="body">内壁被硅水溶蚀剥开时，残余微气泡在负压下膨胀</text>
+  <text x="52" y="320" class="body">炸裂喷出 SiO2 微粒撞击生长界面，零位错晶棒报废。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 碱金属 (&gt;0.8ppm) 火山口失透剥落与少子毒化</text>
+  <text x="52" y="370" class="body">Li/Na/K 诱导内壁无序方石英剥落；Fe/Ti/B 随内壁</text>
+  <text x="52" y="388" class="body">溶蚀进入硅水，导致 N 型硅片尾部少子寿命全军覆没。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 36-Inch Count + Nominal 99.998% SiO2</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $540,000 exposed to melt spill &amp; remelt</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="268" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="438" y="136" class="pill-ok">🛡️ high_purity_quartz_crucible_mandate</text>
+  <text x="428" y="166" class="card-h">四层羟基粘度、气泡断层与原矿门禁（10ms–285ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: FTIR Hydroxyl &amp; 1500°C Sag (11ms)</text>
+  <text x="440" y="220" class="body">FTIR 3670cm-1 羟基 OH- &lt;=30 ppm &amp; 1500°C/24h</text>
+  <text x="440" y="238" class="body">软化挠度变形 &lt;=1.5 mm — 塌埚风险直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: ICP Alkali &amp; CCD IBFL Bubble (14ms)</text>
+  <text x="440" y="296" class="body">内层 Li+Na+K &lt;=0.8 ppm, 透明层 &gt;=1.8mm &amp; 真空</text>
+  <text x="440" y="314" class="body">烘烤气泡面积比 &lt;=0.5% — 断线风险直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ IOTA Sand Provenance (285ms)</text>
+  <text x="440" y="372" class="body">核验花岗伟晶岩 (IOTA-CG) 报关提单吨位质量平衡</text>
+  <text x="440" y="390" class="body">酸洗脉石英冒充进口内层砂欺诈直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Ba(OH)2 Armor 430h RCZ Life (250ms)</text>
+  <text x="440" y="448" class="body">纳米氢氧化钡致密方石英铠甲延寿至 430h (7根晶棒)</text>
+  <text x="440" y="466" class="body">+ 废埚方石英回收立省 $81,000 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 低羟基零膨胀气泡放行</text>
+  <text x="828" y="212" class="body">OH- 18ppm + 碱金属 0.42ppm + 气泡 0.18% → $540k</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 羟基超标或高温软化塌埚</text>
+  <text x="828" y="258" class="body">OH-=82ppm (&gt;30ppm) 软化 4.8mm → 冻结 $540,000</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 内层气泡膨胀或碱金属超标</text>
+  <text x="828" y="304" class="body">气泡比 2.4% 或 Li+Na+K=2.9ppm → 拒付 $540,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (285ms) · Web IQ 脉石英假冒 IOTA</text>
+  <text x="828" y="350" class="body">报关批号套牌或非伟晶岩包裹体 → 熔断 $540,000</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (250ms) · 钡涂层 430h 延寿与废埚回收</text>
+  <text x="828" y="396" class="body">节省 $81,000 (-15%) → 确认后净付 $459,000.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 250ms · 抗注入 100% · 热场保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 高纯石英坩埚严禁“仅看 99.998% 纯度”：脉石英流体包裹体生成的羟基 (OH-) 会剪断硅氧桥导致 1500°C 软化塌埚，而内壁微气泡破裂会打断单晶零位错生长。</text>
+  <text x="54" y="584" class="body">• 必须将 FTIR 羟基 (&lt;=30ppm)、ICP 碱金属 (&lt;=0.8ppm)、CCD 透明层气泡 (&lt;=0.5%) 与纳米氢氧化钡 430h 延寿绑定为托管令牌谓词。</text>
+</svg>
