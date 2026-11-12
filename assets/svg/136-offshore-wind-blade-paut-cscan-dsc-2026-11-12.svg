@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg136" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06141F"/>
+      <stop offset="50%" stop-color="#0E293D"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent136" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="cardBg136" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#112A3E"/>
+      <stop offset="100%" stop-color="#07131D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg136)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent136)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ROUND 134 · OFFSHORE WIND 15MW COMPOSITE BLADE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    海上风电 15MW 复合材料叶片交割、相控阵超声 (PAUT) 与 DSC 固化度智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    IEC 61400-23 PAUT C-Scan Zero Dry-Spot, ISO 11357 DSC Cure (Tg &gt;=75°C) &amp; LPS Continuity (&lt;=20 mΩ) vs. Mid-Air Buckling Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Visual Paint & Coin-Tap Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg136)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统看油漆外观与小锤敲击踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 真空灌注干斑与腹板盲粘断胶引发空中折翼</text>
+    <text x="58" y="224" fill="#CBD5E1">• 50mm 厚碳纤主梁层间干纱与胶缝空鼓小锤敲不出</text>
+    <text x="58" y="242" fill="#CBD5E1">• 骗走 $460,000 后海上折断，租船更换单次亏 $2.5M+</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 抢 24h 模具周转提前开模致环氧欠固化 (Tg 58°C)</text>
+    <text x="58" y="294" fill="#CBD5E1">• 保温时间缩水使固化度仅 86%，夏天暴晒发生蠕变</text>
+    <text x="58" y="312" fill="#CBD5E1">• 三叶静力矩失配 (&gt;0.3%) 引发百米高塔筒剧烈共振</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 防雷引下线虚接 (&gt;500 mΩ) 遭 200kA 雷击炸裂</text>
+    <text x="58" y="364" fill="#CBD5E1">• 合模挤断防雷铜带，雷电瞬间气化内腔水汽劈开叶片</text>
+    <text x="58" y="382" fill="#CBD5E1">• 传统热固树脂无法降解面临高额欧洲退役环保保证金</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$460,000 内伤叶片与 $2.5M 海上换叶灾难
+  </text>
+
+  <!-- Center Card: 4-Layer Offshore Wind Blade Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg136)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ⚡ PAUT 相控阵 C 扫描 + DSC 固化度 + 防雷托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · 龙门 PAUT 三维 C 扫描主梁与胶缝 (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    碳纤主梁存在干纱褶皱或腹板粘接空鼓率 &gt; 1.5% →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 SPAR_CAP_DRY_SPOT_OR_WEB_BONDLINE_VOID_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · DSC 玻璃化温度 (Tg &gt;=75°C) 与质量矩 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    ISO 11357 Tg &lt; 75°C (固化 &lt;96%) 或三叶质量矩 &gt; 0.3% →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 UNDERCURED_RESIN_LOW_TG_OR_MASS_MOMENT_IMBALANCE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 防雷 LPS 导通 (&lt;=20 mΩ) 与 DNV (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    IEC 61400-24 防雷电阻 &gt; 20 mΩ 或缺失 DNV 部件证书 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 LPS_LIGHTNING_CONTINUITY_BREACH_OR_DNV_CERT_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 可回收环氧树脂 + LEP 前缘盾 (300ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    化学解聚回收免退役押金 + 预贴防雨蚀壳立省 $73,600 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 RECYCLABLE_EPOXY_DECOMMISSION_AND_LEP_SHIELD_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_OFFSHORE_WIND_BLADE_SETTLED (20ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg136)" stroke="#38BDF8" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#0C4A6E"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#E0F2FE" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#6EE7B7">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. PAUT零干斑+Tg 79.5°C：20ms 放款 $460k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 主梁干纱或腹板空鼓：12ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 提前脱模欠固化低 Tg：15ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 防雷断路或无 DNV 证：290ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 可回收树脂+LEP装甲：300ms 省 $73,600 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：PAUT C-Scan 图谱 + 防雷/DNV 核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索碳纤维拉挤板褶皱疲劳与雨蚀模型</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零海上折翼：编码器相控阵超声取代小锤敲击</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$386,400.00 (单套立省 $73,600 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 123m 海风叶片内部 50mm 碳纤维主梁的干纱与抢脱模欠固化在涂装后完全隐形——必须强制龙门 PAUT C 扫描与 DSC Tg (&gt;=75°C) 签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #offshore-wind-blade-sandbox · Unit Tests: 155/155 PASS
+  </text>
+</svg>

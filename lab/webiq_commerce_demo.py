@@ -16108,6 +16108,91 @@ def evaluate_cooling_tower_chiller_treatment_policy(
     )
 
 
+@dataclass(frozen=True)
+class OffshoreWindCompositeBladeVerdict:
+    allowed: bool
+    http_status: int
+    wind_blade_lane: str
+    settled_wind_blade_cents: int
+    recyclable_resin_decommission_and_lep_shield_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_offshore_wind_composite_blade_policy(
+    *,
+    gross_wind_blade_cents: int = 46000000,
+    paut_cscan_spar_cap_and_web_bondline_verified: bool = True,
+    dsc_glass_transition_tg_and_mass_moment_passed: bool = True,
+    webiq_lps_lightning_continuity_and_dnv_cert_clean: bool = True,
+    recyclable_resin_decommission_and_lep_shield_savings_cents: int = 0,
+) -> OffshoreWindCompositeBladeVerdict:
+    # 1. Spar-Cap VARTM Dry Spot/Wrinkle or Shear-Web Bondline Void (>1.5%) -> HTTP 403
+    if not paut_cscan_spar_cap_and_web_bondline_verified:
+        return OffshoreWindCompositeBladeVerdict(
+            False,
+            403,
+            "SPAR_CAP_DRY_SPOT_OR_WEB_BONDLINE_VOID_BLOCKED",
+            0,
+            0,
+            "offshore_wind_blade_blocked_due_to_paut_cscan_spar_cap_dry_spot_or_web_bondline_void",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Premature Demolding Under-Cure (DSC Tg <75°C) or 3-Blade Static Moment Imbalance -> HTTP 422
+    if not dsc_glass_transition_tg_and_mass_moment_passed:
+        return OffshoreWindCompositeBladeVerdict(
+            False,
+            422,
+            "UNDERCURED_RESIN_LOW_TG_OR_MASS_MOMENT_IMBALANCE_BLOCKED",
+            0,
+            0,
+            "blade_set_rejected_for_undercured_epoxy_low_dsc_tg_or_rotor_static_moment_imbalance",
+            15,
+            "Send to a human",
+        )
+
+    # 3. IEC 61400-24 LPS Lightning Continuity Breach (>20 mOhm) or Missing DNV Cert via Web IQ -> HTTP 451
+    if not webiq_lps_lightning_continuity_and_dnv_cert_clean:
+        return OffshoreWindCompositeBladeVerdict(
+            False,
+            451,
+            "LPS_LIGHTNING_CONTINUITY_BREACH_OR_DNV_CERT_HOLD",
+            0,
+            0,
+            "webiq_detected_lps_lightning_down_conductor_resistance_breach_or_missing_dnv_certificate",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Cleavable Recyclable Epoxy + Factory Leading-Edge Protection (LEP) -> HTTP 409 Confirm
+    if recyclable_resin_decommission_and_lep_shield_savings_cents > 0:
+        return OffshoreWindCompositeBladeVerdict(
+            False,
+            409,
+            "RECYCLABLE_EPOXY_DECOMMISSION_AND_LEP_SHIELD_CONFIRM",
+            gross_wind_blade_cents - recyclable_resin_decommission_and_lep_shield_savings_cents,
+            recyclable_resin_decommission_and_lep_shield_savings_cents,
+            "webiq_applied_recyclable_epoxy_decommission_waiver_and_factory_lep_shield_saving_73600_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Gantry PAUT C-Scan + DSC Tg >=75°C + LPS <=20 mOhm + Clean DNV -> Settled
+    return OffshoreWindCompositeBladeVerdict(
+        True,
+        200,
+        "VERIFIED_OFFSHORE_WIND_BLADE_SETTLED",
+        gross_wind_blade_cents,
+        0,
+        "paut_cscan_spar_cap_dsc_tg_static_moment_and_lps_lightning_continuity_verified",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -21118,6 +21203,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "condenser_approach_block_latency_ms": ctw_app_403.latency_ms,
     }
 
+    # Round 134 (Offshore Wind 15MW Composite Blade Offtake, PAUT C-Scan & DSC Cure/LPS Mandate)
+    bld_commit_ok = evaluate_offshore_wind_composite_blade_policy()
+    bld_ut_403 = evaluate_offshore_wind_composite_blade_policy(
+        paut_cscan_spar_cap_and_web_bondline_verified=False,
+    )
+    bld_dsc_422 = evaluate_offshore_wind_composite_blade_policy(
+        dsc_glass_transition_tg_and_mass_moment_passed=False,
+    )
+    bld_lps_451 = evaluate_offshore_wind_composite_blade_policy(
+        webiq_lps_lightning_continuity_and_dnv_cert_clean=False,
+    )
+    bld_rec_409 = evaluate_offshore_wind_composite_blade_policy(
+        recyclable_resin_decommission_and_lep_shield_savings_cents=7360000,
+    )
+    wind_blade_guards = {
+        "all_passed": (
+            bld_commit_ok.allowed
+            and bld_commit_ok.settled_wind_blade_cents == 46000000
+            and not bld_ut_403.allowed
+            and bld_ut_403.http_status == 403
+            and not bld_dsc_422.allowed
+            and bld_dsc_422.http_status == 422
+            and not bld_lps_451.allowed
+            and bld_lps_451.http_status == 451
+            and not bld_rec_409.allowed
+            and bld_rec_409.action_pill == "Confirm"
+        ),
+        "wind_blade_settlement_latency_ms": bld_commit_ok.latency_ms,
+        "paut_dry_spot_block_latency_ms": bld_ut_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21264,6 +21380,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "automotive_ahss_guards": automotive_ahss_guards,
         "solar_wafer_guards": solar_wafer_guards,
         "cooling_tower_guards": cooling_tower_guards,
+        "wind_blade_guards": wind_blade_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26575,6 +26692,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ctw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Offshore Wind 15MW Composite Blade Offtake, PAUT C-Scan & DSC Cure/LPS Mandate Sandbox (Round 134 FAQ Companion) -->
+      <div class="finops-box" id="offshore-wind-blade-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bld-title">🌬️ 海上风电 15MW 复合材料叶片交割、相控阵超声 (PAUT C-Scan) 与 DSC 固化度 (Tg &gt;=75°C) / 防雷架构：防空中折翼与雷击炸裂令牌 (offshore_wind_blade_paut_dsc_mandate_...) vs 外观盲付决策器 (Round 134 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 123m 海上风电碳玻纤复合叶片交割 ($460,000.00)、IEC 61400-23 龙门 PAUT C 扫描、ISO 11357 DSC 玻璃化温度 Tg 与 Web IQ 防雷 LPS 导通/可回收树脂场景 (Offshore Wind Blade Scenario):</span></label>
+          <select id="bld-select" onchange="updateOffshoreWindBladeSandbox()">
+            <option value="bld_commit_ok">⚡ 龙门 PAUT C 扫描主梁零干纱 (空鼓 0.4% &lt;=1.5%) + DSC Tg 79.5°C (&gt;=75°C) + 防雷导通 8.5 mΩ (&lt;=20 mΩ)：20ms 自动结算 $460,000.00! (Act automatically)</option>
+            <option value="bld_ut_403">🛑 真空灌注袋漏气致 50mm 碳纤主梁层间留有干斑褶皱 (Dry Spot) 或腹板盲粘结构胶断胶空鼓 (&gt;15mm 人工小锤敲不出，台风下必层间屈曲空中折断) 拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="bld_dsc_422">🚨 为抢 24 小时模具周转提前降温开模导致环氧树脂欠固化 (DSC Tg = 58°C &lt; 75°C 固化度仅 86%，夏天暴晒高弹态蠕变扭曲) 或三叶静力矩失配 (&gt;0.3%) 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="bld_lps_451">🛑 合模挤断防雷引下线铜编织带致导通电阻超标 (IEC 61400-24 LPS &gt; 500 mΩ 遇 200kA 海上雷击必炸裂) 或缺失 DNV-ST-0376 单叶证书：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="bld_rec_409">🧑‍⚖️ Web IQ 升级为化学可解聚回收环氧树脂体系 (100% 回收碳玻纤豁免欧盟退役环保保证金) 并预贴预制 LEP 前缘防雨蚀装甲立省 $73,600.00 (净付 $386,400.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -27147,6 +27282,7 @@ function renderAll() {{
   updateAutomotiveAhssCoilSandbox();
   updateSolarTopconWaferSandbox();
   updateCoolingTowerTreatmentSandbox();
+  updateOffshoreWindBladeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -33965,6 +34101,55 @@ function updateCoolingTowerTreatmentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 冷凝器端差 (&lt;=1.5°C) + 浓缩倍数 (CoC &gt;=6.0) + 军团菌 (&lt;10 CFU/mL) 达标：已自动清算 (VERIFIED_COOLING_TOWER_TREATMENT_SETTLED · 18ms · Act automatically):</strong><br>" +
     "• <strong>零铜管结垢耗电、零偷开排污阀放水与军团菌风险</strong>：智算中心冷却塔与冷机水处理服务已完成结算（<code>$150,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateOffshoreWindBladeSandbox() {{
+  var selEl = document.getElementById("bld-select");
+  var outEl = document.getElementById("bld-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "bld_ut_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPAR_CAP_DRY_SPOT_OR_WEB_BONDLINE_VOID_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "叶片厂龙门 <code>Olympus 64阵元低频相控阵超声三维 C 扫描仪 (IEC 61400-23)</code> 实测显示，该支 123m 海风叶片 50mm 厚碳纤维拉挤主梁内部存在真空灌注未浸润干斑（Dry Spot）或剪切腹板结构胶盲粘空鼓率 <code>&gt; 1.5%</code>（海上台风极限弯矩下必发生层间剪切屈曲折断，<code>paut_cscan_spar_cap_and_web_bondline_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$460,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bld_dsc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNDERCURED_RESIN_LOW_TG_OR_MASS_MOMENT_IMBALANCE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "热分析实验室 <code>ISO 11357 差示扫描量热仪 (DSC) 与三点静平衡秤</code> 检出代工厂为抢 24h 模具周转提前开模，环氧玻璃化转变温度仅 <code>Tg = 58.0°C &lt; 75.0°C</code>（固化度不足 86%，夏日海面暴晒将发生蠕变扭转），或风轮三叶质量矩偏差 <code>&gt; 0.3%</code>（<code>dsc_glass_transition_tg_and_mass_moment_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bld_lps_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LPS_LIGHTNING_CONTINUITY_BREACH_OR_DNV_CERT_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>IEC 61400-24 防雷接闪系统 (LPS) 四线微欧测试报告与 DNV-ST-0376 型式认证库</code>，检出叶尖接闪器至叶根引下线电阻 <code>&gt; 20 mΩ</code>（海上雷暴必引发内腔蒸汽爆炸劈裂叶片）或缺失单叶签注证书，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bld_rec_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 RECYCLABLE_EPOXY_DECOMMISSION_AND_LEP_SHIELD_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将叶片树脂体系升级为 <code>化学可解聚回收环氧树脂 (豁免欧洲海风叶片退役无害化保证金)</code>，并预贴预制聚氨酯前缘防雨蚀装甲（LEP 免除前 8 年海上高空补漆运维），单套立省 <code>$73,600.00</code>（净付降至 <code>$386,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PAUT C 扫描零干斑 + DSC 固化度 (Tg &gt;=75°C) + 防雷 (&lt;=20 mΩ) 达标：已自动清算 (VERIFIED_OFFSHORE_WIND_BLADE_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零主梁干纱空中折断、零欠固化蠕变与雷击炸叶</strong>：海上风电 15MW 超大型复合材料叶片已完成结算（<code>$460,000.00</code>）！" +
     "</div>";
 }}
 

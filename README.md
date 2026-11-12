@@ -165,6 +165,7 @@
 - **专题 131（汽车超高强钢与热镀锌板卷长协交割 Automotive AHSS & Hot-Dip Galvanized Steel Coil Offtake、全卷在线驻波磁矫顽力屈服强度 ISO 6892-1 DP980/QP1180 $\Delta R_{p0.2} \le \pm 35\text{ MPa}$ 防冲压开裂回弹与 XRF 锌层克重 $\ge 60/60\text{ g/m}^2$ / 绿钢 $\text{H}_2\text{-DRI}$ 智能托管 vs 传统仅按“炉批号质保书 + 钢卷毛重”盲付）**：**[《汽车超高强钢与热镀锌板卷长协交割（Automotive AHSS & Hot-Dip Galvanized Steel Coil Offtake）、全卷在线驻波磁矫顽力屈服强度（ISO 6892-1 DP980/QP1180 $\Delta R_{p0.2} \le \pm 35\text{ MPa}$ 防冲压开裂回弹）与 XRF 锌层克重（$\ge 60/60\text{ g/m}^2$）/ 绿钢 $\text{H}_2\text{-DRI}$ 智能托管 vs 传统仅按“炉批号质保书 + 钢卷毛重”盲付：架构选型与第一性原理 FAQ》](docs/automotive-ahss-galvanized-coil-yield-gauge-xrf-coating-mandate-vs-head-tail-stamping-split-faq.md)**
 - **专题 132（光伏 N 型多晶硅致密料与 TOPCon/HJT 单晶硅片长协交割 Solar N-Type Polysilicon & TOPCon/HJT Wafer Offtake、微波光电导少子寿命 SEMI PV13 $\tau_{\text{eff}} \ge 1,500\ \mu\text{s}$ 防同心圆黑芯效率坍塌与金刚线超薄切口厚度变化 $\text{TTV} \le 12\ \mu\text{m}$ / 颗粒硅 FBR 低碳智能托管 vs 传统仅按“硅料吨重与硅片张数”盲付）**：**[《光伏 N 型多晶硅致密料与 TOPCon/HJT 单晶硅片长协交割（Solar N-Type Polysilicon & TOPCon/HJT Wafer Offtake）、微波光电导少子寿命（SEMI PV13 $\tau_{\text{eff}} \ge 1,500\ \mu\text{s}$ 防同心圆黑芯效率坍塌）与金刚线超薄切口厚度变化（$\text{TTV} \le 12\ \mu\text{m}$）/ 颗粒硅 FBR 低碳智能托管 vs 传统仅按“硅料吨重与硅片张数”盲付：架构选型与第一性原理 FAQ》](docs/solar-polysilicon-topcon-wafer-minority-carrier-lifetime-ttv-mandate-vs-oxygen-ring-breakage-faq.md)**
 - **专题 133（智算中心与园区中央空调冷却塔水处理服务 Cooling Tower & Chiller Condenser Water Treatment SLA、冷凝器趋近温差 Condenser Approach $\Delta T_{\text{app}} \le 1.5^\circ\text{C}$ 防碳酸钙结垢电老虎与浓缩倍数 $\text{CoC} \ge 6.0$ / 军团菌 qPCR ASHRAE 188 $< 10\text{ CFU/mL}$ 智能托管 vs 传统按“阻垢杀菌药剂桶数”盲付）**：**[《智算中心与园区中央空调冷却塔水处理服务（Cooling Tower & Chiller Condenser Water Treatment SLA）、冷凝器趋近温差（Condenser Approach $\Delta T_{\text{app}} \le 1.5^\circ\text{C}$ 防碳酸钙结垢电老虎）与浓缩倍数（$\text{CoC} \ge 6.0$）/ 军团菌 qPCR（ASHRAE 188 $< 10\text{ CFU/mL}$）智能托管 vs 传统按“阻垢杀菌药剂桶数”盲付：架构选型与第一性原理 FAQ》](docs/cooling-tower-chiller-condenser-approach-coc-legionella-mandate-vs-chemical-drum-overbilling-faq.md)**
+- **专题 134（海上风电 15MW 超大型碳玻纤复合材料叶片制造交割 Offshore Wind Composite Blade & Carbon-Pultruded Spar Cap Offtake、相控阵超声 C 扫描主梁零干纱 IEC 61400-23 PAUT C-Scan 与差示扫描量热环氧固化度 ISO 11357 DSC $T_g \ge 75^\circ\text{C}$ / 防雷导通 $\le 20\text{ m}\Omega$ 智能托管 vs 传统仅看外观涂装盲付）**：**[《海上风电 15MW 超大型碳玻纤复合材料叶片制造交割（Offshore Wind Composite Blade & Carbon-Pultruded Spar Cap Offtake）、相控阵超声 C 扫描主梁零干纱（IEC 61400-23 PAUT C-Scan）与差示扫描量热环氧固化度（ISO 11357 DSC $T_g \ge 75^\circ\text{C}$）/ 防雷导通（$\le 20\text{ m}\Omega$）智能托管 vs 传统仅看外观涂装盲付：架构选型与第一性原理 FAQ》](docs/offshore-wind-composite-blade-paut-cscan-dsc-cure-lps-mandate-vs-dry-spot-delamination-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -431,6 +432,8 @@
 ![2026-11-12 光伏 N 型多晶硅与 TOPCon 单晶硅片交割、少子寿命 (>=1,500 us) 与 TTV 厚度智能托管架构一图流](assets/svg/134-solar-polysilicon-topcon-wafer-lifetime-2026-11-12.svg)
 
 ![2026-11-12 智算中心冷却塔水处理服务、冷凝器端差 (<=1.5°C) 与浓缩倍数/军团菌智能托管架构一图流](assets/svg/135-cooling-tower-condenser-approach-legionella-2026-11-12.svg)
+
+![2026-11-12 海上风电 15MW 复合材料叶片交割、相控阵超声 (PAUT) 与 DSC 固化度智能托管架构一图流](assets/svg/136-offshore-wind-blade-paut-cscan-dsc-2026-11-12.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

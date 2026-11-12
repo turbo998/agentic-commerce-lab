@@ -750,6 +750,11 @@
     "cooling_tower_settlement_latency_ms": 18,
     "condenser_approach_block_latency_ms": 11
   },
+  "wind_blade_guards": {
+    "all_passed": true,
+    "wind_blade_settlement_latency_ms": 20,
+    "paut_dry_spot_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

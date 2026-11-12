@@ -8663,6 +8663,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cooling-tower-treatment-sandbox", demo_zh)
 
+    def test_offshore_wind_composite_blade_paut_cscan_dsc_cure_lps_mandate_vs_dry_spot_delamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_offshore_wind_composite_blade_policy,
+        )
+
+        # 1. Verified PAUT C-Scan zero dry-spot + DSC Tg >=75C + LPS <=20 mOhm + clean DNV -> 200 OK ($460,000)
+        commit_ok = evaluate_offshore_wind_composite_blade_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_wind_blade_cents, 46000000)
+
+        # 2. Spar-cap VARTM dry spot/wrinkle or shear-web bondline void (>1.5%) -> 403 blocked in 12ms
+        ut_403 = evaluate_offshore_wind_composite_blade_policy(
+            paut_cscan_spar_cap_and_web_bondline_verified=False,
+        )
+        self.assertFalse(ut_403.allowed)
+        self.assertEqual(ut_403.http_status, 403)
+        self.assertEqual(
+            ut_403.wind_blade_lane,
+            "SPAR_CAP_DRY_SPOT_OR_WEB_BONDLINE_VOID_BLOCKED",
+        )
+
+        # 3. Premature demolding under-cure (DSC Tg < 75C) or static moment imbalance -> 422 blocked in 15ms
+        dsc_422 = evaluate_offshore_wind_composite_blade_policy(
+            dsc_glass_transition_tg_and_mass_moment_passed=False,
+        )
+        self.assertFalse(dsc_422.allowed)
+        self.assertEqual(dsc_422.http_status, 422)
+        self.assertEqual(
+            dsc_422.wind_blade_lane,
+            "UNDERCURED_RESIN_LOW_TG_OR_MASS_MOMENT_IMBALANCE_BLOCKED",
+        )
+
+        # 4. Web IQ detects IEC 61400-24 LPS continuity breach (>20 mOhm) or missing DNV cert -> 451 blocked in 290ms
+        lps_451 = evaluate_offshore_wind_composite_blade_policy(
+            webiq_lps_lightning_continuity_and_dnv_cert_clean=False,
+        )
+        self.assertFalse(lps_451.allowed)
+        self.assertEqual(lps_451.http_status, 451)
+
+        # 5. Web IQ upgrades to cleavable recyclable epoxy & factory LEP shield saving $73,600 ($386,400 net) -> 409 Confirm
+        rec_409 = evaluate_offshore_wind_composite_blade_policy(
+            recyclable_resin_decommission_and_lep_shield_savings_cents=7360000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_wind_blade_cents, 38640000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["wind_blade_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("offshore-wind-blade-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
