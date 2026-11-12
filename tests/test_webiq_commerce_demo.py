@@ -8775,6 +8775,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("aseptic-dairy-uht-sandbox", demo_zh)
 
+    def test_ev_hairpin_motor_magnet_wire_iacs_pdiv_corona_mandate_vs_inverter_insulation_breakdown_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ev_hairpin_magnet_wire_policy,
+        )
+
+        # 1. Verified 150C PDIV >=1,350 Vpk + O2 <=5 ppm + >=101.0% IACS + clean UL 1446 -> 200 OK ($325,000)
+        commit_ok = evaluate_ev_hairpin_magnet_wire_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_magnet_wire_cents, 32500000)
+
+        # 2. Thin R-corner enamel dropping 150C PDIV (<1,350 Vpk) or HV spark pinholes -> 403 blocked in 12ms
+        pd_403 = evaluate_ev_hairpin_magnet_wire_policy(
+            high_temp_pdiv_corona_and_zero_pinhole_verified=False,
+        )
+        self.assertFalse(pd_403.allowed)
+        self.assertEqual(pd_403.http_status, 403)
+        self.assertEqual(
+            pd_403.magnet_wire_lane,
+            "LOW_PDIV_CORONA_INCEPTION_OR_CORNER_ENAMEL_PINHOLE_BLOCKED",
+        )
+
+        # 3. High copper oxygen (O2 > 5 ppm) laser-weld porosity or 3D U-bend cracking -> 422 blocked in 15ms
+        oxy_422 = evaluate_ev_hairpin_magnet_wire_policy(
+            ofc_oxygen_ppm_iacs_and_hairpin_bend_passed=False,
+        )
+        self.assertFalse(oxy_422.allowed)
+        self.assertEqual(oxy_422.http_status, 422)
+        self.assertEqual(
+            oxy_422.magnet_wire_lane,
+            "HIGH_COPPER_OXYGEN_LASER_WELD_POROSITY_OR_BEND_CRACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing UL 1446 ATF oil compatibility or Copper Mark breach -> 451 blocked in 290ms
+        ul_451 = evaluate_ev_hairpin_magnet_wire_policy(
+            webiq_ul1446_atf_oil_and_copper_mark_clean=False,
+        )
+        self.assertFalse(ul_451.allowed)
+        self.assertEqual(ul_451.http_status, 451)
+
+        # 5. Web IQ routes 12% hairpin TU1 offcuts to upcast tolling & foamed PI saving $52,000 ($273,000 net) -> 409 Confirm
+        tol_409 = evaluate_ev_hairpin_magnet_wire_policy(
+            hairpin_scrap_copper_tolling_and_foamed_pi_savings_cents=5200000,
+        )
+        self.assertFalse(tol_409.allowed)
+        self.assertEqual(tol_409.http_status, 409)
+        self.assertEqual(tol_409.settled_magnet_wire_cents, 27300000)
+        self.assertEqual(tol_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["magnet_wire_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ev-hairpin-magnet-wire-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

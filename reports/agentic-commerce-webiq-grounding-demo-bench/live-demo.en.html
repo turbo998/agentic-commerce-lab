@@ -3240,6 +3240,24 @@
         <div id="uht-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive 800V EV Hairpin Magnet Wire & OFC Copper Offtake, High-Temp PDIV & Low-O2 Mandate Sandbox (Round 136 FAQ Companion) -->
+      <div class="finops-box" id="ev-hairpin-magnet-wire-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mag-title">⚡ 800V 扁线电机无氧铜与耐电晕漆包线交割、150°C 局部放电 (PDIV &gt;=1,350 Vpk) 与低氧导电率 (O2 &lt;=5 ppm) 架构：防碳化硅电晕击穿与激光焊气孔令牌 (ev_hairpin_magnet_wire_mandate_...) vs 毛重盲付决策器 (Round 136 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 800V SiC 发卡扁线电机 PI/PEEK 漆包铜扁线交割 ($325,000.00)、IEC 60851-5 高温局放 PDIV/零针孔、LECO 铜芯氧含量 O2 与 Web IQ UL 1446 油冷兼容/废铜切头闭环场景 (800V Magnet Wire Scenario):</span></label>
+          <select id="mag-select" onchange="updateEvHairpinMagnetWireSandbox()">
+            <option value="mag_commit_ok">⚡ 150°C 高温 PDIV 1,480 Vpk (&gt;=1,350 Vpk) + 0 火花针孔 + 无氧铜 O2 2.8 ppm (&lt;=5 ppm) + 导电率 101.4% IACS：20ms 自动结算 $325,000.00! (Act automatically)</option>
+            <option value="mag_pd_403">🛑 涂漆模具偏心致扁线四角 R 角漆膜减薄 (&lt;85 μm，150°C PDIV 跌至 880 Vpk &lt; 1,350 Vpk，在 SiC 逆变器 50kV/μs 脉冲下 200h 电晕蚀穿烧毁定子) 或存在高压火花针孔拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="mag_oxy_422">🚨 用低价普通有氧铜杆 (O2 = 280 ppm &gt; 5 ppm) 冒充 TU1 无氧铜导致定子 200 个发卡端头激光焊接时炸出马蜂窝氢气孔虚焊，或 3D 扭头折弯漆膜龟裂剥离拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="mag_ul_451">🛑 缺失直接油冷变速箱油 (ATF) 水解热老化 UL 1446 Class N/R 系统认证或阴极铜缺失 LME Copper Mark 责任采矿溯源：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="mag_tol_409">🧑‍⚖️ Web IQ 将发卡冲制切头产生的 12% 纯净 TU1 无氧铜线头纳入闭环上引连铸来料加工 (Copper Tolling 免除铜基价点价损耗) 并采用微孔发泡低介电 PI (εr=2.3) 立省 $52,000.00 (净付 $273,000.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mag-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3814,6 +3832,7 @@ function renderAll() {
   updateCoolingTowerTreatmentSandbox();
   updateOffshoreWindBladeSandbox();
   updateAsepticDairyUhtSandbox();
+  updateEvHairpinMagnetWireSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -10730,6 +10749,55 @@ function updateAsepticDairyUhtSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 逐秒 F0 (&gt;=6.0 min) + 双氧水残留 (&lt;=0.5 ppm) + 保温 ATP (&lt;15 RLU) 达标：已自动清算 (VERIFIED_ASEPTIC_UHT_COPACK_SETTLED · 19ms · Act automatically):</strong><br>" +
     "• <strong>零耐热芽孢商超胀包、零双氧水怪味与横封微漏</strong>：乳制品与无菌饮料 UHT 代工批次已完成结算（<code>$165,000.00</code>）！" +
+    "</div>";
+}
+
+function updateEvHairpinMagnetWireSandbox() {
+  var selEl = document.getElementById("mag-select");
+  var outEl = document.getElementById("mag-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "mag_pd_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_PDIV_CORONA_INCEPTION_OR_CORNER_ENAMEL_PINHOLE_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "高压绝缘实验室 <code>Schleich 150°C 高频脉冲局放仪 (IEC 60851-5) 与四轴激光 R 角测厚仪</code> 实测显示，该批 800V 漆包扁线虽然工频耐压合格，但四角 R 角漆膜减薄至 82 μm，150°C 下局部放电起始电压跌至 <code>PDIV = 880 Vpk &lt; 1,350 Vpk</code>（在 SiC 逆变器 50kV/μs 脉冲下 200h 即发生电晕蚀穿短路烧机，<code>high_temp_pdiv_corona_and_zero_pinhole_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$325,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "mag_oxy_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HIGH_COPPER_OXYGEN_LASER_WELD_POROSITY_OR_BEND_CRACK_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "理化实验室 <code>LECO 惰性气体熔融红外测氧仪与涡流导电仪</code> 检出铜芯含氧量高达 <code>O2 = 280 ppm &gt; 5 ppm</code>（用普通有氧铜冒充 TU1 无氧铜，导致定子 200 个发卡端头激光焊接时炸出氢气孔虚焊），或 3D 发卡折弯后漆膜开裂（<code>ofc_oxygen_ppm_iacs_and_hairpin_bend_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "mag_ul_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UL1446_INSULATION_SYSTEM_MISMATCH_OR_COPPER_MARK_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UL Product iQ 电机绝缘系统数据库与 LME Copper Mark 注册库</code>，检出该批漆包线未通过直接油冷变速箱油（ATF）水解热老化 UL 1446 认证或铜矿源违约，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "mag_tol_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HAIRPIN_SCRAP_COPPER_TOLLING_AND_FOAMED_PI_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将电驱车间发卡切头产生的 <code>12% 纯净 TU1 无氧铜线头纳入闭环上引连铸来料加工 (Copper Tolling)</code>，并采用微孔发泡低介电常数聚酰亚胺（Foamed PI，εr=2.3）替代高价进口 PEEK，单批立省 <code>$52,000.00</code>（净付降至 <code>$273,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 150°C PDIV (&gt;=1,350 Vpk) + 无氧铜 (O2 &lt;=5 ppm) + 导电率 (&gt;=101% IACS) 达标：已自动清算 (VERIFIED_EV_HAIRPIN_MAGNET_WIRE_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零 SiC 电晕击穿烧机、零激光焊氢气孔与油冷溶胀</strong>：800V 扁线电机无氧铜与耐电晕漆包线批次已完成结算（<code>$325,000.00</code>）！" +
     "</div>";
 }
 

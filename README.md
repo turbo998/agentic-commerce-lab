@@ -167,6 +167,7 @@
 - **专题 133（智算中心与园区中央空调冷却塔水处理服务 Cooling Tower & Chiller Condenser Water Treatment SLA、冷凝器趋近温差 Condenser Approach $\Delta T_{\text{app}} \le 1.5^\circ\text{C}$ 防碳酸钙结垢电老虎与浓缩倍数 $\text{CoC} \ge 6.0$ / 军团菌 qPCR ASHRAE 188 $< 10\text{ CFU/mL}$ 智能托管 vs 传统按“阻垢杀菌药剂桶数”盲付）**：**[《智算中心与园区中央空调冷却塔水处理服务（Cooling Tower & Chiller Condenser Water Treatment SLA）、冷凝器趋近温差（Condenser Approach $\Delta T_{\text{app}} \le 1.5^\circ\text{C}$ 防碳酸钙结垢电老虎）与浓缩倍数（$\text{CoC} \ge 6.0$）/ 军团菌 qPCR（ASHRAE 188 $< 10\text{ CFU/mL}$）智能托管 vs 传统按“阻垢杀菌药剂桶数”盲付：架构选型与第一性原理 FAQ》](docs/cooling-tower-chiller-condenser-approach-coc-legionella-mandate-vs-chemical-drum-overbilling-faq.md)**
 - **专题 134（海上风电 15MW 超大型碳玻纤复合材料叶片制造交割 Offshore Wind Composite Blade & Carbon-Pultruded Spar Cap Offtake、相控阵超声 C 扫描主梁零干纱 IEC 61400-23 PAUT C-Scan 与差示扫描量热环氧固化度 ISO 11357 DSC $T_g \ge 75^\circ\text{C}$ / 防雷导通 $\le 20\text{ m}\Omega$ 智能托管 vs 传统仅看外观涂装盲付）**：**[《海上风电 15MW 超大型碳玻纤复合材料叶片制造交割（Offshore Wind Composite Blade & Carbon-Pultruded Spar Cap Offtake）、相控阵超声 C 扫描主梁零干纱（IEC 61400-23 PAUT C-Scan）与差示扫描量热环氧固化度（ISO 11357 DSC $T_g \ge 75^\circ\text{C}$）/ 防雷导通（$\le 20\text{ m}\Omega$）智能托管 vs 传统仅看外观涂装盲付：架构选型与第一性原理 FAQ》](docs/offshore-wind-composite-blade-paut-cscan-dsc-cure-lps-mandate-vs-dry-spot-delamination-faq.md)**
 - **专题 135（乳制品与无菌饮料 UHT 超高温瞬时灭菌灌装代工 Aseptic Dairy & Plant-Based Beverage UHT Co-Packing Tolling、商业无菌热致死率 FDA 21 CFR 113 $F_0 \ge 6.0\text{ min}$ & $137^\circ\text{C}/4\text{s}$ 回流阀联锁与双氧水残留 $\le 0.5\text{ ppm}$ / ATP 生物发光无菌放行智能托管 vs 传统仅按“下线利乐包/PET 瓶箱数”盲付）**：**[《乳制品与无菌饮料 UHT 超高温瞬时灭菌灌装代工（Aseptic Dairy & Plant-Based Beverage UHT Co-Packing Tolling）、商业无菌热致死率（FDA 21 CFR 113 $F_0 \ge 6.0\text{ min}$ & $137^\circ\text{C}/4\text{s}$ 回流阀联锁）与双氧水残留（$\le 0.5\text{ ppm}$）/ ATP 生物发光无菌放行智能托管 vs 传统仅按“下线利乐包/PET 瓶箱数”盲付：架构选型与第一性原理 FAQ》](docs/aseptic-dairy-beverage-uht-f0-lethality-peroxide-atp-mandate-vs-bloated-pack-spoilage-faq.md)**
+- **专题 136（800V 电驱扁线电机无氧铜杆与耐电晕漆包扁线交割 800V EV Hairpin Motor Oxygen-Free Copper & PEEK/PI Magnet Wire Offtake、局部放电起始电压 IEC 60851-5 $\text{PDIV} \ge 1,350\text{ V}_{\text{pk}}$ 防碳化硅高频脉冲匝间击穿与导电率/低氧 $\ge 101.0\%\text{ IACS}$ & $\text{O}_2 \le 5\text{ ppm}$ 防激光焊接气孔 / 铜米闭环智能托管 vs 传统按铜线过磅毛重盲付）**：**[《800V 电驱扁线电机无氧铜杆与耐电晕漆包扁线交割（800V EV Hairpin Motor Oxygen-Free Copper & PEEK/PI Magnet Wire Offtake）、局部放电起始电压（IEC 60851-5 $\text{PDIV} \ge 1,350\text{ V}_{\text{pk}}$ 防碳化硅高频脉冲匝间击穿）与导电率/低氧（$\ge 101.0\%\text{ IACS}$ & $\text{O}_2 \le 5\text{ ppm}$ 防激光焊接气孔）/ 铜米闭环智能托管 vs 传统按铜线过磅毛重盲付：架构选型与第一性原理 FAQ》](docs/ev-hairpin-motor-magnet-wire-iacs-pdiv-corona-mandate-vs-inverter-insulation-breakdown-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -437,6 +438,8 @@
 ![2026-11-12 海上风电 15MW 复合材料叶片交割、相控阵超声 (PAUT) 与 DSC 固化度智能托管架构一图流](assets/svg/136-offshore-wind-blade-paut-cscan-dsc-2026-11-12.svg)
 
 ![2026-11-12 乳制品与无菌饮料 UHT 灌装代工、热致死率 (F0 >=6.0 min) 与 ATP 生物发光智能托管架构一图流](assets/svg/137-aseptic-dairy-uht-f0-lethality-atp-2026-11-12.svg)
+
+![2026-11-12 800V 扁线电机无氧铜与耐电晕漆包线交割、局部放电 (PDIV >=1,350 Vpk) 与低氧导电率智能托管架构一图流](assets/svg/138-ev-hairpin-magnet-wire-pdiv-iacs-2026-11-12.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

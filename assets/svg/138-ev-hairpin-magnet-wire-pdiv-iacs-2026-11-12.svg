@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg138" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A0F0A"/>
+      <stop offset="50%" stop-color="#2E1A10"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent138" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="cardBg138" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#291810"/>
+      <stop offset="100%" stop-color="#120B07"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg138)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent138)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="420" height="28" rx="14" fill="#7C2D12" stroke="#F97316" stroke-width="1"/>
+  <text x="250" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ROUND 136 · 800V EV HAIRPIN MAGNET WIRE &amp; OFC COPPER ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    800V 扁线电机无氧铜与耐电晕漆包线交割、局部放电 (PDIV &gt;=1,350 Vpk) 智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    IEC 60851-5 High-Temp PDIV (&gt;=1,350 Vpk), Oxygen-Free Copper (O2 &lt;=5 ppm &amp; &gt;=101% IACS) vs. SiC Corona Breakdown Overbilling
+  </text>
+
+  <!-- Left Card: Legacy Scale Weight & 50Hz Hipot Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg138)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统按过磅毛重与工频耐压踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. R 角漆膜减薄致高温 PDIV 跌至 880 Vpk 烧毁定子</text>
+    <text x="58" y="224" fill="#CBD5E1">• 50Hz 工频耐压虽合格，但抗不住 SiC 50kV/μs 脉冲</text>
+    <text x="58" y="242" fill="#CBD5E1">• 电晕放电 200h 蚀穿匝间绝缘，骗走 $325,000 货款</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 高氧铜杆 (O2=280 ppm) 引发 200 个激光焊点气孔</text>
+    <text x="58" y="294" fill="#CBD5E1">• 用普通有氧铜冒充 TU1 无氧铜，激光熔池炸出氢气孔</text>
+    <text x="58" y="312" fill="#CBD5E1">• 3D 发卡扭头折弯时 PI/PEEK 漆膜龟裂遇 ATF 油击穿</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 12% 纯净发卡裸铜切头被贱卖与进口 PEEK 溢价</text>
+    <text x="58" y="364" fill="#CBD5E1">• 冲槽平头切下的高纯无氧铜线头未做闭环上引连铸</text>
+    <text x="58" y="382" fill="#CBD5E1">• 未采用微孔发泡低介电 PI (εr=2.3) 降本提 PDIV</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$325,000 电晕击穿烧机与激光焊虚焊
+  </text>
+
+  <!-- Center Card: 4-Layer 800V Magnet Wire Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg138)" stroke="#F97316" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#7C2D12"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FFEDD5" text-anchor="middle">
+    ⚡ 150°C PDIV&gt;=1350Vpk + O2&lt;=5ppm + 废铜闭环托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#F97316" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDBA74">
+    Gate 1 · 150°C 高温局放 PDIV (&gt;=1,350 Vpk) 与零针孔 (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    R 角漆厚 &lt; 110 μm、PDIV &lt; 1,350 Vpk 或高压火花针孔 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 LOW_PDIV_CORONA_INCEPTION_OR_CORNER_ENAMEL_PINHOLE_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 2 · 无氧铜 O2 (&lt;=5 ppm) 与导电率 (&gt;=101% IACS) (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    LECO 氧含量 &gt; 5 ppm 致激光焊气孔或 3D 折弯脱漆 →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 HIGH_COPPER_OXYGEN_LASER_WELD_POROSITY_OR_BEND_CRACK_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ UL 1446 油冷兼容与 Copper Mark (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    缺失 ATF 变速箱油热老化 UL 1446 认证或铜源违规 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 UL1446_INSULATION_SYSTEM_MISMATCH_OR_COPPER_MARK_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 发卡废铜头闭环连铸 + 发泡 PI (300ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    12% 纯净无氧铜切头回炉 Tolling + 低介电发泡漆省 $52,000 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 HAIRPIN_SCRAP_COPPER_TOLLING_AND_FOAMED_PI_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_EV_HAIRPIN_MAGNET_WIRE_SETTLED (20ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg138)" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#064E3B"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#FDBA74">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. PDIV 1480+O2 2.8ppm：20ms 放款 $325k</text>
+    <text x="825" y="244" fill="#FCA5A5">2. R角薄漆 PDIV=880Vpk：12ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 高氧铜焊孔或折弯裂：15ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 缺 UL 1446 油冷认证：290ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#6EE7B7">5. 废铜闭环+发泡PI：300ms 省 $52,000 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#7DD3FC">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：高温 PDIV 报文 + UL Product iQ 核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索微孔发泡 PI 低介电与蓝光焊铜文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零电晕击穿：帕申定律 R 角厚度与低 εr 双控</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$273,000.00 (单批立省 $52,000 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#FDBA74">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 800V 碳化硅逆变器的 50kV/μs 高频脉冲专打扁线四角薄漆处，而有氧铜会让 200 个激光焊点炸满气孔——必须强制 150°C PDIV 与 O2&lt;=5ppm 签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #ev-hairpin-magnet-wire-sandbox · Unit Tests: 157/157 PASS
+  </text>
+</svg>
