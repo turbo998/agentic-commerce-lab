@@ -8383,6 +8383,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("metallurgical-coking-coal-sandbox", demo_zh)
 
+    def test_battery_grade_lithium_carbonate_lfp_cathode_magnetic_impurity_icp_mandate_vs_dendrite_short_overbilling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_battery_lithium_lfp_cathode_policy,
+        )
+
+        # 1. Verified ICP-MS magnetic <=50 ppb + 0.1C >=158 mAh/g + moisture <=300 ppm + clean DBP -> 200 OK ($380,000)
+        commit_ok = evaluate_battery_lithium_lfp_cathode_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_battery_lfp_cents, 38000000)
+
+        # 2. Magnetic particles (Fe+Cr+Ni+Zn > 50 ppb) or high-Na industrial grade fraud -> 403 blocked in 12ms
+        mag_403 = evaluate_battery_lithium_lfp_cathode_policy(
+            icp_ms_magnetic_impurity_and_purity_verified=False,
+        )
+        self.assertFalse(mag_403.allowed)
+        self.assertEqual(mag_403.http_status, 403)
+        self.assertEqual(
+            mag_403.battery_lfp_lane,
+            "MAGNETIC_PARTICLE_PPB_EXCEEDANCE_OR_SODIUM_IMPURITY_BLOCKED",
+        )
+
+        # 3. Low 0.1C specific capacity (<158 mAh/g) or Karl Fischer moisture > 300 ppm -> 422 blocked in 15ms
+        cap_422 = evaluate_battery_lithium_lfp_cathode_policy(
+            coin_cell_capacity_psd_d50_and_karl_fischer_passed=False,
+        )
+        self.assertFalse(cap_422.allowed)
+        self.assertEqual(cap_422.http_status, 422)
+        self.assertEqual(
+            cap_422.battery_lfp_lane,
+            "LOW_FIRST_CYCLE_CAPACITY_OR_KARL_FISCHER_MOISTURE_BLOCKED",
+        )
+
+        # 4. Web IQ detects missing EU Battery Passport LCA or fake recycled lithium -> 451 blocked in 290ms
+        dbp_451 = evaluate_battery_lithium_lfp_cathode_policy(
+            webiq_eu_battery_passport_and_feoc_traceability_clean=False,
+        )
+        self.assertFalse(dbp_451.allowed)
+        self.assertEqual(dbp_451.http_status, 451)
+
+        # 5. Web IQ applies closed-loop cathode scrap / black-mass tolling saving $60,800 ($319,200 net) -> 409 Confirm
+        tol_409 = evaluate_battery_lithium_lfp_cathode_policy(
+            lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents=6080000,
+        )
+        self.assertFalse(tol_409.allowed)
+        self.assertEqual(tol_409.http_status, 409)
+        self.assertEqual(tol_409.settled_battery_lfp_cents, 31920000)
+        self.assertEqual(tol_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["battery_lfp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("battery-lithium-lfp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

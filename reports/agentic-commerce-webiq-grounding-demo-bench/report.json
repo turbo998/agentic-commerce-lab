@@ -725,6 +725,11 @@
     "coking_settlement_latency_ms": 20,
     "bimodal_blend_block_latency_ms": 12
   },
+  "battery_lfp_guards": {
+    "all_passed": true,
+    "battery_lfp_settlement_latency_ms": 20,
+    "magnetic_impurity_block_latency_ms": 12
+  },
   "scenarios": [
     {
       "id": "W01",

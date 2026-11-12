@@ -15683,6 +15683,91 @@ def evaluate_metallurgical_coking_coal_policy(
     )
 
 
+@dataclass(frozen=True)
+class BatteryLithiumLfpCathodeVerdict:
+    allowed: bool
+    http_status: int
+    battery_lfp_lane: str
+    settled_battery_lfp_cents: int
+    lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents: int
+    reason: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_battery_lithium_lfp_cathode_policy(
+    *,
+    gross_battery_lfp_cents: int = 38000000,
+    icp_ms_magnetic_impurity_and_purity_verified: bool = True,
+    coin_cell_capacity_psd_d50_and_karl_fischer_passed: bool = True,
+    webiq_eu_battery_passport_and_feoc_traceability_clean: bool = True,
+    lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents: int = 0,
+) -> BatteryLithiumLfpCathodeVerdict:
+    # 1. Magnetic Metal Particles (Fe+Cr+Ni+Zn >50 ppb) or High-Na Industrial Grade Fraud -> HTTP 403
+    if not icp_ms_magnetic_impurity_and_purity_verified:
+        return BatteryLithiumLfpCathodeVerdict(
+            False,
+            403,
+            "MAGNETIC_PARTICLE_PPB_EXCEEDANCE_OR_SODIUM_IMPURITY_BLOCKED",
+            0,
+            0,
+            "battery_cathode_invoice_blocked_due_to_icp_ms_magnetic_particles_above_50ppb_or_sodium_impurity",
+            12,
+            "Send to a human",
+        )
+
+    # 2. Low 0.1C Specific Capacity (<158 mAh/g) or Karl Fischer Moisture >300 ppm -> HTTP 422
+    if not coin_cell_capacity_psd_d50_and_karl_fischer_passed:
+        return BatteryLithiumLfpCathodeVerdict(
+            False,
+            422,
+            "LOW_FIRST_CYCLE_CAPACITY_OR_KARL_FISCHER_MOISTURE_BLOCKED",
+            0,
+            0,
+            "cathode_lot_rejected_for_low_coin_cell_specific_capacity_or_karl_fischer_moisture_hf_risk",
+            15,
+            "Send to a human",
+        )
+
+    # 3. Missing EU 2023/1542 Digital Battery Passport LCA or Unverified Recycled Content via Web IQ -> HTTP 451
+    if not webiq_eu_battery_passport_and_feoc_traceability_clean:
+        return BatteryLithiumLfpCathodeVerdict(
+            False,
+            451,
+            "EU_BATTERY_PASSPORT_RECYCLED_CONTENT_OR_FEOC_HOLD",
+            0,
+            0,
+            "webiq_detected_missing_eu_battery_passport_lca_unverified_recycled_lithium_or_restricted_mine",
+            290,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Closed-Loop Cathode Scrap / Black-Mass Tolling + M-1 Formula -> HTTP 409 Confirm
+    if lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents > 0:
+        return BatteryLithiumLfpCathodeVerdict(
+            False,
+            409,
+            "LITHIUM_CARBONATE_INDEX_FORMULA_AND_BLACK_MASS_TOLLING_CONFIRM",
+            gross_battery_lfp_cents - lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents,
+            lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents,
+            "webiq_applied_closed_loop_cathode_scrap_black_mass_tolling_and_m1_index_saving_60800_usd",
+            300,
+            "Confirm",
+        )
+
+    # 5. Verified Magnetic Impurity <=50 ppb + 0.1C >=158 mAh/g + Moisture <=300 ppm + Clean DBP -> Settled
+    return BatteryLithiumLfpCathodeVerdict(
+        True,
+        200,
+        "VERIFIED_BATTERY_LITHIUM_LFP_CATHODE_SETTLED",
+        gross_battery_lfp_cents,
+        0,
+        "icp_ms_magnetic_ppb_coin_cell_capacity_karl_fischer_moisture_and_battery_passport_verified",
+        20,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -20538,6 +20623,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bimodal_blend_block_latency_ms": cok_csr_403.latency_ms,
     }
 
+    # Round 129 (Battery-Grade Lithium Carbonate & LFP Cathode Offtake, Magnetic Impurity <=50 ppb Mandate)
+    lfp_commit_ok = evaluate_battery_lithium_lfp_cathode_policy()
+    lfp_mag_403 = evaluate_battery_lithium_lfp_cathode_policy(
+        icp_ms_magnetic_impurity_and_purity_verified=False,
+    )
+    lfp_cap_422 = evaluate_battery_lithium_lfp_cathode_policy(
+        coin_cell_capacity_psd_d50_and_karl_fischer_passed=False,
+    )
+    lfp_dbp_451 = evaluate_battery_lithium_lfp_cathode_policy(
+        webiq_eu_battery_passport_and_feoc_traceability_clean=False,
+    )
+    lfp_tol_409 = evaluate_battery_lithium_lfp_cathode_policy(
+        lithium_hydroxide_mvr_and_black_mass_tolling_savings_cents=6080000,
+    )
+    battery_lfp_guards = {
+        "all_passed": (
+            lfp_commit_ok.allowed
+            and lfp_commit_ok.settled_battery_lfp_cents == 38000000
+            and not lfp_mag_403.allowed
+            and lfp_mag_403.http_status == 403
+            and not lfp_cap_422.allowed
+            and lfp_cap_422.http_status == 422
+            and not lfp_dbp_451.allowed
+            and lfp_dbp_451.http_status == 451
+            and not lfp_tol_409.allowed
+            and lfp_tol_409.action_pill == "Confirm"
+        ),
+        "battery_lfp_settlement_latency_ms": lfp_commit_ok.latency_ms,
+        "magnetic_impurity_block_latency_ms": lfp_mag_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20679,6 +20795,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "flour_milling_guards": flour_milling_guards,
         "high_speed_pcb_guards": high_speed_pcb_guards,
         "coking_coal_guards": coking_coal_guards,
+        "battery_lfp_guards": battery_lfp_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25900,6 +26017,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cok-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Battery-Grade Lithium Carbonate & LFP Cathode Offtake, Magnetic Impurity & Specific Capacity Mandate Sandbox (Round 129 FAQ Companion) -->
+      <div class="finops-box" id="battery-lithium-lfp-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lfp-title">🔋 动力与储能电池级碳酸锂及 LFP 正极材料交割、ICP-MS 磁性异物 (&lt;=50 ppb) 与比容量/电池护照架构：防枝晶微短路自燃令牌 (battery_lithium_lfp_mandate_...) vs 主含量 99.5% 盲付决策器 (Round 129 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 电池级碳酸锂与高压实 LFP 正极交割 ($380,000.00)、30,000G 磁捕 ICP-MS 磁性异物、扣电 0.1C 比容量/卡尔费休水分与 Web IQ 欧盟电池护照/废极片闭环提锂场景 (Battery LFP Scenario):</span></label>
+          <select id="lfp-select" onchange="updateBatteryLithiumLfpSandbox()">
+            <option value="lfp_commit_ok">⚡ ICP-MS 磁性异物 18 ppb (&lt;=50 ppb) + 扣电 0.1C 比容量 161.2 mAh/g (&gt;=158) + 水分 180 ppm + 欧盟电池护照合规：20ms 自动结算 $380,000.00! (Act automatically)</option>
+            <option value="lfp_mag_403">🛑 烧结辊道磨损或除铁磁棒饱和致游离磁性金属微粒超标 (Fe+Cr+Ni+Zn = 380 ppb &gt; 50 ppb 将在负极析出金属枝晶刺穿 12μm 隔膜引发热失控自燃) 或工业级高钠 (&gt;250 ppm) 冒充电池级拦截 → 12ms 触发 HTTP 403!</option>
+            <option value="lfp_cap_422">🚨 碳包覆烧结不足致 0.1C 首效放电比容量跌至 149 mAh/g (&lt;158 mAh/g) 或吨袋内衬破损吸潮致卡尔费休水分达 850 ppm (&gt;300 ppm 水解 LiPF6 生成强腐蚀 HF 酸胀气) 拦截 → 15ms 触发 HTTP 422!</option>
+            <option value="lfp_dbp_451">🛑 缺失欧盟《新电池法》(EU 2023/1542) 数字电池护照 LCA 碳足迹核算、虚报再生锂比例或混入受限矿源：Web IQ /v3/browse 290ms 触发 HTTP 451!</option>
+            <option value="lfp_tol_409">🧑‍⚖️ Web IQ 启动电芯厂涂布废极片/黑粉闭环湿法提锂来料加工 (Closed-Loop Black-Mass Tolling) 叠加 SMM/Fastmarkets M-1 均价公式折算立省 $60,800.00 (净付 $319,200.00) → 300ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lfp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -26467,6 +26602,7 @@ function renderAll() {{
   updateFlourMillingBakerySandbox();
   updateHighSpeedAiPcbSandbox();
   updateMetallurgicalCokingCoalSandbox();
+  updateBatteryLithiumLfpSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -33040,6 +33176,55 @@ function updateMetallurgicalCokingCoalSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 煤岩反射率单峰 (σ&lt;=0.08) + 热态强度 (CSR &gt;=65%) + 吉氏流动度达标：已自动清算 (VERIFIED_METALLURGICAL_COKING_COAL_SETTLED · 20ms · Act automatically):</strong><br>" +
     "• <strong>零高低阶混煤欺诈、零高炉崩料与熄焦买水</strong>：高炉主焦煤与冶金焦炭长协批次已完成结算（<code>$340,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateBatteryLithiumLfpSandbox() {{
+  var selEl = document.getElementById("lfp-select");
+  var outEl = document.getElementById("lfp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lfp_mag_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MAGNETIC_PARTICLE_PPB_EXCEEDANCE_OR_SODIUM_IMPURITY_BLOCKED (12ms · Send to a human · synthetic_policy)：<br>" +
+      "进料 IQC 实验室 <code>30,000高斯电磁除铁洗脱 + ICP-MS 痕量质谱</code> 实测显示，该批高压实 LFP 正极粉体虽然纸面主含量达标，但游离磁性金属颗粒高达 <code>Fe+Cr+Ni+Zn = 380 ppb &gt; 50 ppb</code>（在 3.65V 充电下将溶解并在负极析出金属枝晶刺穿 12μm 隔膜引发热失控自燃，<code>icp_ms_magnetic_impurity_and_purity_verified == False</code>）。网关在 <code>12ms</code> 内硬阻断 <code>$380,000.00</code> 货款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lfp_cap_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LOW_FIRST_CYCLE_CAPACITY_OR_KARL_FISCHER_MOISTURE_BLOCKED (15ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "电化学实验室 <code>0.1C 扣式半电池测试与卡尔费休库仑水分仪</code> 检出该批正极粉体首周放电比容量跌至 <code>149.0 mAh/g &lt; 158.0 mAh/g</code>，或吨袋铝塑内衬破损吸潮使微量水分升至 <code>850 ppm &gt; 300 ppm</code>（注液后将水解 LiPF6 生成强腐蚀性 HF 酸导致电芯鼓包，<code>coin_cell_capacity_psd_d50_and_karl_fischer_passed == False</code>）。网关在 <code>15ms</code> 内自动拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lfp_dbp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EU_BATTERY_PASSPORT_RECYCLED_CONTENT_OR_FEOC_HOLD (290ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟《新电池法》(EU 2023/1542) 数字电池护照 (DBP) 与矿源溯源注册库</code>，检出该批次缺失经第三方核证的 LCA 碳足迹声明、再生锂回收比例造假或涉及受限冲突矿源，立即执行合规冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lfp_tol_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LITHIUM_CARBONATE_INDEX_FORMULA_AND_BLACK_MASS_TOLLING_CONFIRM (300ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 自动将电芯厂涂布裁切产生的 <code>废极片与黑粉 (Cathode Scrap / Black Mass) 纳入闭环湿法提锂来料加工 (Tolling)</code> 抵扣锂盐主材款，并联动 SMM/Fastmarkets M-1 月均价公式折算，单批次立省 <code>$60,800.00</code>（净付降至 <code>$319,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ICP-MS 磁性异物 (&lt;=50 ppb) + 0.1C 比容量 (&gt;=158 mAh/g) + 水分 (&lt;=300 ppm) 达标：已自动清算 (VERIFIED_BATTERY_LITHIUM_LFP_CATHODE_SETTLED · 20ms · Act automatically):</strong><br>" +
+    "• <strong>零金属枝晶微短路自燃、零 HF 酸鼓包与欧盟扣关</strong>：电池级碳酸锂与高压实 LFP 正极批次已完成结算（<code>$380,000.00</code>）！" +
     "</div>";
 }}
 

@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg131" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06161E"/>
+      <stop offset="50%" stop-color="#0C2A36"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent131" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="cardBg131" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F2937"/>
+      <stop offset="100%" stop-color="#07131A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg131)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent131)"/>
+
+  <!-- Header -->
+  <rect x="40" y="24" width="400" height="28" rx="14" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="240" y="43" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ROUND 129 · BATTERY LITHIUM &amp; LFP CATHODE ESCROW
+  </text>
+  <text x="40" y="84" font-family="Segoe UI, Ubuntu, sans-serif" font-size="25" font-weight="800" fill="#F8FAFC">
+    电池级碳酸锂与 LFP 正极交割、磁性异物 (&lt;=50 ppb) 与比容量/电池护照智能托管
+  </text>
+  <text x="40" y="111" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" fill="#CBD5E1">
+    ICP-MS Magnetic Impurity Gate (Fe+Cr+Ni+Zn &lt;=50 ppb), Coin-Cell Specific Capacity (&gt;=158 mAh/g) &amp; EU Battery Passport vs. Dendrite Short
+  </text>
+
+  <!-- Left Card: Legacy 99.5% Assay Only Failure -->
+  <rect x="40" y="132" width="355" height="360" rx="12" fill="url(#cardBg131)" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="56" y="148" width="323" height="32" rx="6" fill="#450A0A"/>
+  <text x="217" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+    ❌ 传统仅看主含量 99.5% 盲付踩坑
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    <text x="58" y="204" font-weight="700" fill="#F87171">1. 磁性金属异物 (380 ppb &gt; 50 ppb) 刺穿隔膜自燃</text>
+    <text x="58" y="224" fill="#CBD5E1">• 烧结辊道磨损或除铁磁棒饱和漏入微米级游离铁镍颗粒</text>
+    <text x="58" y="242" fill="#CBD5E1">• 在负极析出金属枝晶刺穿 12μm 隔膜，骗走 $380,000</text>
+
+    <text x="58" y="274" font-weight="700" fill="#F87171">2. 碳包覆不均克容量缩水与水分 (&gt;300 ppm) 产 HF</text>
+    <text x="58" y="294" fill="#CBD5E1">• 0.1C 首周比容量跌至 149 mAh/g (&lt;158 mAh/g) 减容</text>
+    <text x="58" y="312" fill="#CBD5E1">• 水分与 LiPF6 电解液反应生成强腐蚀 HF 酸致电芯鼓包</text>
+
+    <text x="58" y="344" font-weight="700" fill="#F87171">3. 欧盟新电池法 (EU 2023/1542) 护照与再生锂违约</text>
+    <text x="58" y="364" fill="#CBD5E1">• 缺失全生命周期 LCA 碳足迹或虚报再生锂回收比例</text>
+    <text x="58" y="382" fill="#CBD5E1">• 涂布废极片被低价贱卖，未做闭环湿法提锂来料加工</text>
+  </g>
+  <rect x="58" y="442" width="319" height="34" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+  <text x="217" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#F87171" text-anchor="middle">
+    风险敞口：$380,000 微短路自燃粉体与欧盟扣关
+  </text>
+
+  <!-- Center Card: 4-Layer Battery Lithium & LFP Mandate Engine -->
+  <rect x="415" y="132" width="370" height="360" rx="12" fill="url(#cardBg131)" stroke="#10B981" stroke-width="2"/>
+  <rect x="431" y="148" width="338" height="32" rx="6" fill="#064E3B"/>
+  <text x="600" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#A7F3D0" text-anchor="middle">
+    ⚡ ICP-MS 磁性异物 + 扣电比容量 + 闭环提锂托管
+  </text>
+
+  <!-- Step 1 -->
+  <rect x="433" y="192" width="334" height="58" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+  <text x="445" y="211" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7">
+    Gate 1 · ICP-MS 磁性异物 (&lt;=50 ppb) 与低钠门禁 (12ms)
+  </text>
+  <text x="445" y="229" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    30,000G 磁捕洗脱 Fe+Cr+Ni+Zn &gt; 50 ppb 或工业级高钠 →
+  </text>
+  <text x="445" y="244" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 403 MAGNETIC_PARTICLE_PPB_EXCEEDANCE_OR_SODIUM_IMPURITY_BLOCKED
+  </text>
+
+  <!-- Step 2 -->
+  <rect x="433" y="258" width="334" height="58" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1"/>
+  <text x="445" y="277" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#FDE047">
+    Gate 2 · 扣电 0.1C 比容量 (&gt;=158) 与卡尔费休水 (15ms)
+  </text>
+  <text x="445" y="295" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    放电比容量 &lt; 158 mAh/g、粒度失配或水分 &gt; 300 ppm →
+  </text>
+  <text x="445" y="310" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 422 LOW_FIRST_CYCLE_CAPACITY_OR_KARL_FISCHER_MOISTURE_BLOCKED
+  </text>
+
+  <!-- Step 3 -->
+  <rect x="433" y="324" width="334" height="58" rx="8" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+  <text x="445" y="343" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#7DD3FC">
+    Gate 3 · Web IQ 欧盟数字电池护照与矿源核查 (290ms)
+  </text>
+  <text x="445" y="361" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    EU 2023/1542 碳足迹缺失、再生锂造假或涉受限矿源 →
+  </text>
+  <text x="445" y="376" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#F87171">
+    HTTP 451 EU_BATTERY_PASSPORT_RECYCLED_CONTENT_OR_FEOC_HOLD
+  </text>
+
+  <!-- Step 4 -->
+  <rect x="433" y="390" width="334" height="86" rx="8" fill="#0F172A" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="445" y="409" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#DDD6FE">
+    Gate 4 · Web IQ 废极片闭环提锂 Tolling + 指数计价 (300ms)
+  </text>
+  <text x="445" y="427" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11.5" fill="#CBD5E1">
+    涂布极片废料湿法提锂回供 + M-1 均价折算立省 $60,800 →
+  </text>
+  <text x="445" y="444" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#FBBF24">
+    HTTP 409 LITHIUM_CARBONATE_INDEX_FORMULA_AND_BLACK_MASS_TOLLING_CONFIRM
+  </text>
+  <text x="445" y="464" font-family="Segoe UI, Ubuntu, sans-serif" font-size="11" font-weight="700" fill="#34D399">
+    HTTP 200 VERIFIED_BATTERY_LITHIUM_LFP_CATHODE_SETTLED (20ms)
+  </text>
+
+  <!-- Right Card: Quantitative Benchmark & Architect Decision Matrix -->
+  <rect x="805" y="132" width="355" height="360" rx="12" fill="url(#cardBg131)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <rect x="821" y="148" width="323" height="32" rx="6" fill="#2E1065"/>
+  <text x="982" y="169" font-family="Segoe UI, Ubuntu, sans-serif" font-size="13" font-weight="700" fill="#DDD6FE" text-anchor="middle">
+    📊 实测基准与选型铁律 (100% 稳健)
+  </text>
+
+  <g font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" fill="#E2E8F0">
+    <text x="825" y="202" font-weight="700" fill="#6EE7B7">• 5 大确定性条线实测 (0.0 pts 逆序漂移)：</text>
+    <text x="825" y="224" fill="#CBD5E1">1. 磁性18ppb+161.2mAh/g：20ms 放款 $380,000</text>
+    <text x="825" y="244" fill="#FCA5A5">2. 磁性异物 380ppb 超标：12ms 拦截 HTTP 403</text>
+    <text x="825" y="264" fill="#FCA5A5">3. 低克容量或水分&gt;300ppm：15ms 拦截 HTTP 422</text>
+    <text x="825" y="284" fill="#FCA5A5">4. 欧盟电池护照违约：290ms 冻结 HTTP 451</text>
+    <text x="825" y="304" fill="#FDE047">5. 废极片闭环提锂：300ms 省 $60,800 (409)</text>
+
+    <line x1="825" y1="322" x2="1140" y2="322" stroke="#334155" stroke-width="1"/>
+
+    <text x="825" y="344" font-weight="700" fill="#DDD6FE">• Web Grounding 选型黄金切分：</text>
+    <text x="825" y="364" fill="#CBD5E1">✓ Web IQ：ICP-MS 磁性异物 + 欧盟电池护照核验</text>
+    <text x="825" y="382" fill="#CBD5E1">✓ Exa：检索高压实四代半 LFP 与 LMFP 掺杂文献</text>
+    <text x="825" y="400" fill="#CBD5E1">✓ 零微短路自燃：30,000G 磁棒捕集与干法氮气保护</text>
+  </g>
+
+  <rect x="823" y="442" width="319" height="34" rx="6" fill="#052E16" stroke="#10B981" stroke-width="1"/>
+  <text x="982" y="463" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12" font-weight="700" fill="#6EE7B7" text-anchor="middle">
+    净结算：$319,200.00 (单批立省 $60,800 · 16.0%)
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="40" y="512" width="1120" height="90" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="540" font-family="Segoe UI, Ubuntu, sans-serif" font-size="14" font-weight="700" fill="#6EE7B7">
+    🏛️ AI 解决方案架构师第一性原理洞察（First-Principles Takeaway）：
+  </text>
+  <text x="60" y="564" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#E2E8F0">
+    • 314Ah 储能电芯的隔膜仅 12μm 厚，十亿分之几百 (&gt;50 ppb) 的游离铁粒就会在负极长出金属枝晶刺穿隔膜引发热失控——必须强制 ICP-MS 磁性异物签章！
+  </text>
+  <text x="60" y="586" font-family="Segoe UI, Ubuntu, sans-serif" font-size="12.5" fill="#94A3B8">
+    • Provenance: deterministic_offline_simulation · Live Demo: #battery-lithium-lfp-sandbox · Unit Tests: 150/150 PASS
+  </text>
+</svg>

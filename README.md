@@ -160,6 +160,7 @@
 - **专题 126（工业制粉与中央烘焙专用面粉大宗交割 Industrial Flour Milling & Bakery Offtake、粉质仪面团稳定时间 Farinograph Stability $\ge 10.0\text{ min}$ 与降落数值防穗发芽 Falling Number $\ge 300\text{ s}$ / 呕吐毒素智能托管 vs 传统仅看粗蛋白盲付）**：**[《工业制粉与中央烘焙专用面粉大宗交割（Industrial Flour Milling & Bakery Offtake）、粉质仪面团稳定时间（Farinograph Stability $\ge 10.0\text{ min}$）与降落数值防穗发芽（Falling Number $\ge 300\text{ s}$）/ 呕吐毒素智能托管 vs 传统仅看粗蛋白盲付：架构选型与第一性原理 FAQ》](docs/flour-milling-bakery-farinograph-falling-number-don-mycotoxin-mandate-vs-sprouted-wheat-overbilling-faq.md)**
 - **专题 127（高速 AI 服务器多层 PCB 与超低损耗覆铜板制造交割 High-Speed AI Server PCB & Ultra-Low-Loss CCL Fabrication、时域反射阻抗 TDR $\pm 5\%$ 与 X-Ray 背钻残桩 $\text{Stub} \le 6\text{ mil}$ / 防导电阳极丝 CAF 智能托管 vs 传统仅看飞针通断盲付）**：**[《高速 AI 服务器多层 PCB 与超低损耗覆铜板制造交割（High-Speed AI Server PCB & Ultra-Low-Loss CCL Fabrication）、时域反射阻抗（TDR $\pm 5\%$）与 X-Ray 背钻残桩（$\text{Stub} \le 6\text{ mil}$）/ 防导电阳极丝（CAF）智能托管 vs 传统仅看飞针通断盲付：架构选型与第一性原理 FAQ》](docs/high-speed-ai-server-pcb-ccl-tdr-impedance-backdrill-caf-mandate-vs-signal-loss-delamination-faq.md)**
 - **专题 128（钢铁高炉主焦煤与冶金焦炭长协交割 Metallurgical Coking Coal & Blast-Furnace Coke Offtake、焦炭反应后强度 ASTM D5341 $\text{CSR} \ge 65\%$ 与煤岩镜质组反射率分布 Vitrinite $R_o$ / 吉氏流动度智能托管 vs 传统仅看挥发分混煤盲付）**：**[《钢铁高炉主焦煤与冶金焦炭长协交割（Metallurgical Coking Coal & Blast-Furnace Coke Offtake）、焦炭反应后强度（ASTM D5341 $\text{CSR} \ge 65\%$）与煤岩镜质组反射率分布（Vitrinite $R_o$）/ 吉氏流动度智能托管 vs 传统仅看挥发分混煤盲付：架构选型与第一性原理 FAQ》](docs/metallurgical-coking-coal-csr-vitrinite-reflectance-gieseler-mandate-vs-blend-fraud-furnace-choking-faq.md)**
+- **专题 129（动力与储能电池级碳酸锂及磷酸铁锂正极材料交割 Battery-Grade Lithium Carbonate & LFP Cathode Material Offtake、ICP-MS 磁性异物门禁 $\text{Fe+Cr+Ni+Zn} \le 50\text{ ppb}$ 防电芯微短路自燃与扣式电池首效比容量 $\ge 158\text{ mAh/g}$ / 欧盟电池护照智能托管 vs 传统仅看主含量 $99.5\%$ 盲付）**：**[《动力与储能电池级碳酸锂及磷酸铁锂正极材料交割（Battery-Grade Lithium Carbonate & LFP Cathode Material Offtake）、ICP-MS 磁性异物门禁（$\text{Fe+Cr+Ni+Zn} \le 50\text{ ppb}$ 防电芯微短路自燃）与扣式电池首效比容量（$\ge 158\text{ mAh/g}$）/ 欧盟电池护照智能托管 vs 传统仅看主含量 $99.5\%$ 盲付：架构选型与第一性原理 FAQ》](docs/battery-grade-lithium-carbonate-lfp-cathode-magnetic-impurity-icp-mandate-vs-dendrite-short-overbilling-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -416,6 +417,8 @@
 ![2026-11-11 高速 AI 服务器多层 PCB 与覆铜板交割、TDR 阻抗 (±5%) 与背钻残桩/防 CAF 智能托管架构一图流](assets/svg/129-high-speed-ai-pcb-ccl-tdr-backdrill-2026-11-11.svg)
 
 ![2026-11-11 高炉主焦煤与冶金焦炭交割、反应后强度 (CSR >=65%) 与煤岩镜质组反射率智能托管架构一图流](assets/svg/130-metallurgical-coking-coal-csr-vitrinite-2026-11-11.svg)
+
+![2026-11-12 动力与储能电池级碳酸锂及磷酸铁锂正极交割、磁性异物 (<=50 ppb) 与比容量智能托管架构一图流](assets/svg/131-battery-grade-lithium-lfp-magnetic-impurity-2026-11-12.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
