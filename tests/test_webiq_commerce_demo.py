@@ -9727,6 +9727,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ndfeb-permanent-magnet-sandbox", demo_zh)
 
+    def test_carbon_fiber_prepreg_weibull_modulus_outtime_porosity_mandate_vs_premature_cure_delamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_carbon_fiber_prepreg_policy,
+        )
+
+        # 1. Verified Weibull m >=22 + ILSS >=85 MPa + Out-Time <=240h -> 200 OK ($540,000)
+        commit_ok = evaluate_carbon_fiber_prepreg_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_carbon_prepreg_cents, 54000000)
+
+        # 2. Low Weibull modulus (m <22) or high C-scan porosity (>0.5%) -> 403 blocked in 11ms
+        wei_403 = evaluate_carbon_fiber_prepreg_policy(
+            tensile_weibull_modulus_and_ilss_porosity_verified=False,
+        )
+        self.assertFalse(wei_403.allowed)
+        self.assertEqual(wei_403.http_status, 403)
+        self.assertEqual(
+            wei_403.carbon_prepreg_lane,
+            "WEIBULL_FILAMENT_SCATTER_OR_INTERLAMINAR_SHEAR_POROSITY_BLOCKED",
+        )
+
+        # 3. Cold-chain Out-Time exceeded (>240h) premature cure or loss of tack -> 422 blocked in 14ms
+        out_422 = evaluate_carbon_fiber_prepreg_policy(
+            freezer_out_time_ttl_and_sizing_epoxy_tack_passed=False,
+        )
+        self.assertFalse(out_422.allowed)
+        self.assertEqual(out_422.http_status, 422)
+        self.assertEqual(
+            out_422.carbon_prepreg_lane,
+            "PREPREG_OUT_TIME_PREMATURE_CURE_OR_SIZING_DEBOND_BLOCKED",
+        )
+
+        # 4. Web IQ detects unapproved NCAMP PCD change or dual-use export violation -> 451 blocked in 280ms
+        pcd_451 = evaluate_carbon_fiber_prepreg_policy(
+            webiq_ncamp_pcd_qualification_and_export_dual_use_clean=False,
+        )
+        self.assertFalse(pcd_451.allowed)
+        self.assertEqual(pcd_451.http_status, 451)
+
+        # 5. Web IQ credits DMSO solvent loop & 18% trim pyrolysis rCF saving $75,600 ($464,400 net) -> 409 Confirm
+        rcf_409 = evaluate_carbon_fiber_prepreg_policy(
+            dmso_solvent_recovery_and_pyrolysis_chopped_tow_credit_cents=7560000,
+        )
+        self.assertFalse(rcf_409.allowed)
+        self.assertEqual(rcf_409.http_status, 409)
+        self.assertEqual(rcf_409.settled_carbon_prepreg_cents, 46440000)
+        self.assertEqual(rcf_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["carbon_prepreg_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("carbon-fiber-prepreg-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

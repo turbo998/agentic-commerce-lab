@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg155" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent155" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg155)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent155)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 153 · 航空与储氢 T800 碳纤维及环氧预浸料、韦伯模量与冷链 Out-Time 架构图</text>
+  <text x="36" y="84" class="sub">T800/T1000 PAN Carbon Fiber &amp; Epoxy Prepreg Offtake, Weibull Modulus (m &gt;=22), ILSS (&gt;=85 MPa) &amp; -18°C Out-Time (&lt;=240 h)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按吨重与均值盲付</text>
+  <text x="52" y="166" class="card-h">三大 70MPa 储氢瓶爆破与自动铺丝失粘灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 原丝皮芯缺陷致低韦伯模量 (m=11) 链式炸裂</text>
+  <text x="52" y="216" class="body">算术平均强度虽达 5.5GPa，但混入 3% 微孔弱丝，</text>
+  <text x="52" y="234" class="body">B 基准许用强度暴跌 31%，70MPa 储氢瓶在 45MPa</text>
+  <text x="52" y="252" class="body">即触发多米诺骨牌式断丝爆炸！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. -18°C 冷链断电致 Out-Time (380h) 预交联失粘</text>
+  <text x="52" y="302" class="body">途中升温再复冻掩盖了不可逆胺-环氧基交联，</text>
+  <text x="52" y="320" class="body">自动铺丝 (AFP) 翘起起皱，热压罐孔隙率飙至 3.2%。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 私改 PCD 上浆剂配方与 18% 裁边废丝焚烧</text>
+  <text x="52" y="370" class="body">违背适航 PCD 锁定规范导致界面剪切 ILSS 跌破</text>
+  <text x="52" y="388" class="body">52MPa；18% 裁床预浸料废边未热解再生白白烧掉。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 15t 12K Weight + Mean 5.5GPa Tensile</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $540,000 exposed to COPV burst &amp; voids</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ carbon_fiber_prepreg_mandate</text>
+  <text x="428" y="166" class="card-h">四层韦伯模量、冷链积分与适航门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Weibull m, ILSS &amp; Porosity (11ms)</text>
+  <text x="440" y="220" class="body">拉伸 &gt;=5.5GPa, 韦伯模量 m &gt;=22, 层间剪切 ILSS</text>
+  <text x="440" y="238" class="body">&gt;=85MPa &amp; C扫描孔隙 &lt;=0.5% — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: -18°C Out-Time &amp; Tack Gate (14ms)</text>
+  <text x="440" y="296" class="body">RFID 阿伦尼乌斯等效室温 Out-Time &lt;=240h, ΔTg0</text>
+  <text x="440" y="314" class="body">&lt;=3°C &amp; 流动度 12–18% — 预交联失粘直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ NCAMP PCD &amp; Export (280ms)</text>
+  <text x="440" y="372" class="body">核验航空 NCAMP/NADCAP 工艺控制文件 (PCD) 零变更</text>
+  <text x="440" y="390" class="body">与两用物项合规许可 — 私改工艺直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: DMSO Loop &amp; Pyrolysis rCF (245ms)</text>
+  <text x="440" y="448" class="body">99.6% DMSO 聚合溶剂精馏回用 + 18% 裁床废边热解</text>
+  <text x="440" y="466" class="body">再生短切碳纤 (rCF) 立省 $75,600 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高韦伯模量与冷链完好放行</text>
+  <text x="828" y="212" class="body">m=26.4 + ILSS 94MPa + Out-Time 42h → $540,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 弱丝离散或层压孔隙超标</text>
+  <text x="828" y="258" class="body">m=11 或 C扫描孔隙率 3.2% → 冻结 $540,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 冷链 Out-Time 超限失粘</text>
+  <text x="828" y="304" class="body">Out-Time=380h 预交联失粘 → 拒付 $540,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 违背适航 PCD 锁定</text>
+  <text x="828" y="350" class="body">私改上浆剂或无 NADCAP 资质 → 熔断 $540,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · DMSO 溶剂与裁边热解再生</text>
+  <text x="828" y="396" class="body">节省 $75,600 (-14%) → 确认后净付 $464,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 铺层保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#06b6d4">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 航空与储氢碳纤维严禁“仅看算术平均强度与到货冰温盲付”：低韦伯模量 (m&lt;15) 会导致储氢瓶早爆，而途中升温复冻会耗尽预浸料 Out-Time。</text>
+  <text x="54" y="584" class="body">• 必须将韦伯模量 (m&gt;=22)、层间剪切 (ILSS&gt;=85MPa)、RFID 冷链 Out-Time (&lt;=240h) 与废丝热解再生绑定为智能托管解锁谓词。</text>
+</svg>
