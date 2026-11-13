@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg174" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent174" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg174)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent174)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 172 · 合成生物学精密发酵百吨反应器、零噬菌体/质粒保留与宿主蛋白 (HCP) 架构图</text>
+  <text x="36" y="84" class="sub">SynBio Precision Fermentation CDMO Offtake, Zero Phage, Functional Titer (&gt;=12 g/L), kLa (&gt;=450 h^-1) &amp; HCP (&lt;=10 ppm)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按吨数与凯氏定氮盲付</text>
+  <text x="52" y="166" class="card-h">三大噬菌体倒罐、丢质粒假蛋白与杂蛋白致敏灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 噬菌体裂解倒罐或丢质粒拿死菌杂蛋白骗定氮</text>
+  <text x="52" y="216" class="body">凯氏定氮只测总氮！感染噬菌体炸成死菌尸水或丢掉</text>
+  <text x="52" y="234" class="body">质粒的摸鱼突变菌疯长不产目标蛋白 (仅 2.8 g/L)，</text>
+  <text x="52" y="252" class="body">死菌碎片照样让凯氏定氮粗蛋白“假合格”！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 大罐 kLa 溶氧不足产乙酸中毒与 HCP 严重过敏</text>
+  <text x="52" y="302" class="body">百吨罐底部缺氧触发溢流代谢狂排乙酸致蛋白变性；</text>
+  <text x="52" y="320" class="body">宿主残留蛋白 HCP=480 ppm 涂抹/注射引发剧烈过敏。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 活体转基因菌 (GMO) 逃逸与高蛋白废菌泥焚烧</text>
+  <text x="52" y="370" class="body">超滤膜微裂漏入存活工程菌触犯 FDA GRAS 红线；</text>
+  <text x="52" y="388" class="body">传统甲醇防爆费高且数十吨废菌泥未酶解回用氮源。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 100-Ton Broth + Kjeldahl Total Nitrogen</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $460,000 exposed to phage crash &amp; HCP</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="290" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ synbio_precision_fermentation_mandate</text>
+  <text x="428" y="166" class="card-h">四层零噬菌体、活性滴度与超低 HCP 门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 0 Phage &amp; Active Titer (11ms)</text>
+  <text x="440" y="220" class="body">qPCR 噬菌体 = 0, 质粒保留 &gt;=98% &amp; 特异 ELISA</text>
+  <text x="440" y="238" class="body">/HPLC 活性蛋白滴度 &gt;=12.0 g/L — 违者直返 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: kLa &gt;=450 &amp; HCP &lt;=10 ppm (14ms)</text>
+  <text x="440" y="296" class="body">溶氧传质 kLa &gt;=450 h^-1, 乙酸 &lt;=1.5 g/L &amp; 宿主</text>
+  <text x="440" y="314" class="body">残留蛋白 HCP &lt;=10 ppm — 缺氧/致敏直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ GRAS &amp; 0-Live-GMO (280ms)</text>
+  <text x="440" y="372" class="body">核验 FDA GRAS / EFSA 备案号与终产品零存活转基因</text>
+  <text x="440" y="390" class="body">工程菌 (0 CFU/10g) — 活体 GMO 泄漏直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Methanol-Free &amp; Peptone (245ms)</text>
+  <text x="440" y="448" class="body">免甲醇自诱导启动子省甲类防爆费 + 高蛋白废菌泥自溶</text>
+  <text x="440" y="466" class="body">酶解回用酵母浸粉替代 60% 氮源立省 $64,400 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零噬菌体与高活性滴度放行</text>
+  <text x="828" y="212" class="body">0 噬菌体 + 滴度 14.8g/L + HCP 3.5ppm → $460,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 噬菌体倒罐或假凯氏定氮</text>
+  <text x="828" y="258" class="body">质粒丢失活性仅 2.8 g/L → 冻结 $460,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 缺氧乙酸中毒或 HCP 致敏</text>
+  <text x="828" y="304" class="body">kLa=110 或 HCP=480 ppm → 拒付 $460,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 活体 GMO 或无批件</text>
+  <text x="828" y="350" class="body">终产品检出存活转基因菌 → 熔断 $460,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 免甲醇诱导与废菌体氮源</text>
+  <text x="828" y="396" class="body">节省 $64,400 (-14%) → 确认后净付 $395,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 菌株保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 精密发酵严禁“仅看凯氏定氮粗蛋白盲付”：噬菌体倒罐死菌尸水与丢质粒杂菌同样含氮，且宿主残留蛋白 (HCP) 超标会诱发严重过敏。</text>
+  <text x="54" y="584" class="body">• 必须将 qPCR 零噬菌体、质粒保留 (&gt;=98%)、活性滴度 (&gt;=12g/L)、kLa (&gt;=450) 与 HCP (&lt;=10ppm) 绑定为智能托管解锁谓词。</text>
+</svg>

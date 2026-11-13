@@ -19368,6 +19368,96 @@ def evaluate_plasma_etch_focus_ring_esc_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 172: SynBio Precision Fermentation, Zero-Phage & HCP Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class SynbioPrecisionFermentationVerdict:
+    allowed: bool
+    http_status: int
+    synbio_fermentation_lane: str
+    settled_synbio_fermentation_cents: int
+    methanol_free_biomass_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_synbio_precision_fermentation_policy(
+    *,
+    gross_synbio_fermentation_cents: int = 46000000,
+    bacteriophage_qpcr_zero_and_plasmid_retention_titer_verified: bool = True,
+    oxygen_mass_transfer_kla_and_host_cell_protein_dna_passed: bool = True,
+    webiq_fda_gras_efsa_novel_food_and_gmo_absence_clean: bool = True,
+    chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents: int = 0,
+) -> SynbioPrecisionFermentationVerdict:
+    # 1. Lytic Bacteriophage Crash or Plasmid-Loss Fake Kjeldahl Nitrogen (Active Titer <12 g/L) -> HTTP 403
+    if not bacteriophage_qpcr_zero_and_plasmid_retention_titer_verified:
+        return SynbioPrecisionFermentationVerdict(
+            False,
+            403,
+            "LYTIC_PHAGE_FERMENTER_CRASH_OR_PLASMID_LOSS_FAKE_KJELDAHL_BLOCKED",
+            0,
+            0,
+            "synbio_batch_blocked_due_to_lytic_bacteriophage_or_plasmid_loss_functional_titer_below_12g_l",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Low Oxygen Mass-Transfer (kLa <450 h^-1) Acetate Acidosis or High Host-Cell Protein (HCP >10 ppm) -> HTTP 422
+    if not oxygen_mass_transfer_kla_and_host_cell_protein_dna_passed:
+        return SynbioPrecisionFermentationVerdict(
+            False,
+            422,
+            "DO_STARVATION_ACETATE_ACIDOSIS_OR_HCP_ENDOTOXIN_IMMUNOGENICITY_BLOCKED",
+            0,
+            0,
+            "fermentation_lot_rejected_for_low_kla_acetate_misfolding_or_hcp_above_10ppm_immunogenicity",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Viable GMO Host-Cell Escape (>0 CFU/10g) or Missing FDA GRAS / EFSA Novel Food Clearance via Web IQ -> HTTP 451
+    if not webiq_fda_gras_efsa_novel_food_and_gmo_absence_clean:
+        return SynbioPrecisionFermentationVerdict(
+            False,
+            451,
+            "LIVE_GMO_CELL_ESCAPE_OR_MISSING_FDA_GRAS_DOSSIER_HOLD",
+            0,
+            0,
+            "webiq_detected_viable_gmo_host_cell_breakthrough_or_missing_fda_gras_efsa_clearance",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Methanol-Free Auto-Induction + Spent-Biomass Peptone Nitrogen Offset -> HTTP 409 Confirm
+    if chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents > 0:
+        return SynbioPrecisionFermentationVerdict(
+            False,
+            409,
+            "METHANOL_FREE_AUTO_INDUCTION_AND_SPENT_BIOMASS_PEPTONE_CONFIRM",
+            gross_synbio_fermentation_cents - chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents,
+            chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents,
+            "webiq_applied_methanol_free_auto_induction_and_spent_biomass_peptone_credit_saving_64400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 0 Phage + Functional Titer >=12 g/L + kLa >=450 h^-1 + HCP <=10 ppm -> Settled
+    return SynbioPrecisionFermentationVerdict(
+        True,
+        200,
+        "VERIFIED_SYNBIO_PRECISION_FERMENTATION_SETTLED",
+        gross_synbio_fermentation_cents,
+        0,
+        "zero_phage_qpcr_plasmid_retention_functional_titer_kla_450_hcp_10ppm_and_gras_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25556,6 +25646,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "yof_porosity_block_latency_ms": esc_por_403.latency_ms,
     }
 
+    # Round 172 (SynBio Precision Fermentation CDMO & Recombinant Protein Offtake, Zero-Phage & HCP Mandate)
+    syn_commit_ok = evaluate_synbio_precision_fermentation_policy()
+    syn_phg_403 = evaluate_synbio_precision_fermentation_policy(
+        bacteriophage_qpcr_zero_and_plasmid_retention_titer_verified=False,
+    )
+    syn_hcp_422 = evaluate_synbio_precision_fermentation_policy(
+        oxygen_mass_transfer_kla_and_host_cell_protein_dna_passed=False,
+    )
+    syn_gmo_451 = evaluate_synbio_precision_fermentation_policy(
+        webiq_fda_gras_efsa_novel_food_and_gmo_absence_clean=False,
+    )
+    syn_pep_409 = evaluate_synbio_precision_fermentation_policy(
+        chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents=6440000,
+    )
+    synbio_fermentation_guards = {
+        "all_passed": (
+            syn_commit_ok.allowed
+            and syn_commit_ok.settled_synbio_fermentation_cents == 46000000
+            and not syn_phg_403.allowed
+            and syn_phg_403.http_status == 403
+            and not syn_hcp_422.allowed
+            and syn_hcp_422.http_status == 422
+            and not syn_gmo_451.allowed
+            and syn_gmo_451.http_status == 451
+            and not syn_pep_409.allowed
+            and syn_pep_409.action_pill == "Confirm"
+        ),
+        "synbio_fermentation_settlement_latency_ms": syn_commit_ok.latency_ms,
+        "phage_plasmid_block_latency_ms": syn_phg_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25740,6 +25861,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "automotive_lidar_guards": automotive_lidar_guards,
         "medical_ct_tube_guards": medical_ct_tube_guards,
         "plasma_etch_esc_guards": plasma_etch_esc_guards,
+        "synbio_fermentation_guards": synbio_fermentation_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31735,6 +31857,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="esc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive SynBio Precision Fermentation, Zero-Phage & HCP Mandate Sandbox (Round 172 FAQ Companion) -->
+      <div class="finops-box" id="synbio-precision-fermentation-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-syn-title">🧫 合成生物学精密发酵百吨反应器、零噬菌体/活性滴度 (&gt;=12g/L) 与宿主蛋白 (HCP &lt;=10ppm) 架构：防噬菌体倒罐与假凯氏定氮令牌 (synbio_precision_fermentation_mandate_...) vs 粗蛋白总氮盲付决策器 (Round 172 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 百吨级精密发酵重组蛋白/HMO 代工交割 ($460,000.00)、qPCR 零噬菌体/质粒保留活性滴度、大罐溶氧 kLa/宿主蛋白 HCP 与 Web IQ 免甲醇自诱导/废菌体氮源场景 (SynBio Precision Fermentation Scenario):</span></label>
+          <select id="syn-select" onchange="updateSynbioPrecisionFermentationSandbox()">
+            <option value="syn_commit_ok">⚡ qPCR 0 噬菌体 + 质粒保留 99.2% + 活性蛋白滴度 14.8 g/L + kLa=520 h^-1 + HCP 3.5 ppm：10ms 自动结算 $460,000.00! (Act automatically)</option>
+            <option value="syn_phg_403">🛑 凯氏定氮粗蛋白总氮合格但感染烈性噬菌体裂解成死菌尸水，或丢掉质粒的野生突变菌疯长不产货 (真实活性蛋白滴度仅 2.8 &lt; 12.0 g/L) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="syn_hcp_422">🚨 百吨罐气液溶氧传质不足 (kLa=110 &lt; 450 h^-1) 触发底部缺氧狂排乙酸致蛋白变性失活，或宿主残留蛋白 HCP=480 &gt; 10 ppm 诱发严重免疫过敏反应拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="syn_gmo_451">🛑 除菌超滤膜微裂导致终产品检出存活的转基因工程菌株 (Viable GMO &gt; 0 CFU/10g) 或缺失 FDA GRAS / EFSA 批件：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="syn_pep_409">🧑‍⚖️ Web IQ 启用免甲醇自诱导启动子省去甲类防爆溢价，并将离心得出的高蛋白废菌泥自溶酶解转化为酵母浸粉/蛋白胨替代 60% 外购氮源立省 $64,400.00 (净付 $395,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="syn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32345,6 +32485,7 @@ function renderAll() {{
   updateAutomotiveLidarTransceiverSandbox();
   updateMedicalCtXrayTubeSandbox();
   updatePlasmaEtchFocusRingEscSandbox();
+  updateSynbioPrecisionFermentationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41025,6 +41166,55 @@ function updatePlasmaEtchFocusRingEscSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 6N β-CVD-SiC + YOF 孔隙 (&lt;=0.5%) + 背面氦漏 (&lt;=0.5sccm) 达标：已自动清算 (VERIFIED_PLASMA_ETCH_CHAMBER_CONSUMABLES_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零氟等离子体掉粉砸片、零边缘鞘层塌陷刻歪与顶针顶碎晶圆</strong>：100 套刻蚀机聚焦环、YOF 盖板与静电吸盘批次已完成结算（<code>$480,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSynbioPrecisionFermentationSandbox() {{
+  var selEl = document.getElementById("syn-select");
+  var outEl = document.getElementById("syn-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "syn_phg_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LYTIC_PHAGE_FERMENTER_CRASH_OR_PLASMID_LOSS_FAKE_KJELDAHL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "生物制造质控中心 <code>qPCR 噬菌体排查与特异亲和 HPLC/圆二色谱 (CD)</code> 实测显示，该批发酵液虽凯氏定氮总氮合格，但检出烈性噬菌体裂解或质粒丢失导致具有三螺旋活性的目标蛋白滴度仅 <code>2.8 g/L &lt; 12.0 g/L</code>（全被死菌杂蛋白碎片充数，<code>bacteriophage_qpcr_zero_and_plasmid_retention_titer_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$460,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_hcp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DO_STARVATION_ACETATE_ACIDOSIS_OR_HCP_ENDOTOXIN_IMMUNOGENICITY_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "发酵遥测与层析实验室检出 <code>百吨罐溶氧传质系数仅 kLa = 110 h^-1 &lt; 450 h^-1（底部缺氧排泄乙酸 &gt;15 g/L 致蛋白变性）或纯化成品宿主细胞残留蛋白高达 HCP = 480 ppm &gt; 10 ppm</code>（<code>oxygen_mass_transfer_kla_and_host_cell_protein_dna_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_gmo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LIVE_GMO_CELL_ESCAPE_OR_MISSING_FDA_GRAS_DOSSIER_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>FDA GRAS / EFSA 新食品原料核准名录与终产品零活体 GMO 检测报告</code>，检出超滤膜微裂漏入存活的转基因工程菌株（&gt;0 CFU/10g），立即冻结货款并启动生物安全隔离！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "syn_pep_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 METHANOL_FREE_AUTO_INDUCTION_AND_SPENT_BIOMASS_PEPTONE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>免甲醇自诱导表达系统（免甲类防爆溢价）+ 高蛋白废菌泥自溶酶解回用酵母浸粉替代 60% 外购氮源</code>，自动冲抵培养基与诱导成本立省 <code>$64,400.00</code>（净付降至 <code>$395,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 0 噬菌体 + 活性滴度 (&gt;=12g/L) + HCP (&lt;=10ppm) 达标：已自动清算 (VERIFIED_SYNBIO_PRECISION_FERMENTATION_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零噬菌体倒罐、零丢质粒死菌充数与宿主蛋白过敏</strong>：百吨级精密发酵重组蛋白/HMO 代工批次已完成结算（<code>$460,000.00</code>）！" +
     "</div>";
 }}
 

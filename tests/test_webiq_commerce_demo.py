@@ -10791,6 +10791,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("plasma-etch-focus-ring-esc-sandbox", demo_zh)
 
+    def test_synbio_precision_fermentation_phage_kla_plasmid_hcp_mandate_vs_lytic_crash_acetate_toxicity_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_synbio_precision_fermentation_policy,
+        )
+
+        # 1. Verified 0 Phage + Functional Titer >=12 g/L + kLa >=450 + HCP <=10 ppm -> 200 OK ($460,000)
+        commit_ok = evaluate_synbio_precision_fermentation_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_synbio_fermentation_cents, 46000000)
+
+        # 2. Lytic phage crash or plasmid-loss fake Kjeldahl nitrogen (active titer <12 g/L) -> 403 blocked in 11ms
+        phg_403 = evaluate_synbio_precision_fermentation_policy(
+            bacteriophage_qpcr_zero_and_plasmid_retention_titer_verified=False,
+        )
+        self.assertFalse(phg_403.allowed)
+        self.assertEqual(phg_403.http_status, 403)
+        self.assertEqual(
+            phg_403.synbio_fermentation_lane,
+            "LYTIC_PHAGE_FERMENTER_CRASH_OR_PLASMID_LOSS_FAKE_KJELDAHL_BLOCKED",
+        )
+
+        # 3. Low kLa (<450 h^-1) acetate acidosis or high Host-Cell Protein (HCP >10 ppm) -> 422 blocked in 14ms
+        hcp_422 = evaluate_synbio_precision_fermentation_policy(
+            oxygen_mass_transfer_kla_and_host_cell_protein_dna_passed=False,
+        )
+        self.assertFalse(hcp_422.allowed)
+        self.assertEqual(hcp_422.http_status, 422)
+        self.assertEqual(
+            hcp_422.synbio_fermentation_lane,
+            "DO_STARVATION_ACETATE_ACIDOSIS_OR_HCP_ENDOTOXIN_IMMUNOGENICITY_BLOCKED",
+        )
+
+        # 4. Web IQ detects viable GMO host-cell escape or missing FDA GRAS clearance -> 451 blocked in 280ms
+        gmo_451 = evaluate_synbio_precision_fermentation_policy(
+            webiq_fda_gras_efsa_novel_food_and_gmo_absence_clean=False,
+        )
+        self.assertFalse(gmo_451.allowed)
+        self.assertEqual(gmo_451.http_status, 451)
+
+        # 5. Web IQ credits methanol-free auto-induction & spent-biomass peptone saving $64,400 ($395,600 net) -> 409 Confirm
+        pep_409 = evaluate_synbio_precision_fermentation_policy(
+            chromatography_resin_cip_reuse_and_spent_biomass_valorization_credit_cents=6440000,
+        )
+        self.assertFalse(pep_409.allowed)
+        self.assertEqual(pep_409.http_status, 409)
+        self.assertEqual(pep_409.settled_synbio_fermentation_cents, 39560000)
+        self.assertEqual(pep_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["synbio_fermentation_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("synbio-precision-fermentation-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
