@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg159" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent159" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg159)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent159)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 157 · 金属 3D 打印 (LPBF) 球形钛/高温合金粉、显微 CT 空心率与氧含量架构图</text>
+  <text x="36" y="84" class="sub">Metal AM Spherical Ti64/IN718 Powder Offtake, Micro-CT Hollow (&lt;=0.5%), Oxygen (&lt;=1,200 ppm) &amp; Hall Flow (&lt;=28 s/50g)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按公斤重与目数盲付</text>
+  <text x="52" y="166" class="card-h">三大火箭叶轮氩气孔炸裂、高氧脆断与卡刀灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 空心粉 (4.8%) 包裹不溶氩气致 HIP 后复胀</text>
+  <text x="52" y="216" class="body">气雾化液滴卷入氩气形成“空心汤圆”，氩在金属中</text>
+  <text x="52" y="234" class="body">零溶解度，HIP 压扁后遇高温重新膨胀 (TIP)，</text>
+  <text x="52" y="252" class="body">使火箭涡轮泵高周疲劳寿命暴跌 80% 试车炸裂！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 卫星粉粘连 (球形度0.81) 致铺粉刮刀拉沟</text>
+  <text x="52" y="302" class="body">糖葫芦状卫星粉互相钩挂使霍尔流速卡死 (&gt;38s)，</text>
+  <text x="52" y="320" class="body">粉床出现疏松条纹，打印件残留尖锐未熔合裂纹。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 掺入回收高氧旧粉 (O2=2,450ppm) 与支撑贱卖</text>
+  <text x="52" y="370" class="body">筛余旧粉间隙氧钉扎钛滑移系，抗拉虚高但延伸率</text>
+  <text x="52" y="388" class="body">跌至 3% 一撞即断；28% 线切割支撑废件未再雾化。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 5t Powder Weight + 15-53um Laser PSD</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $440,000 exposed to TIP fatigue crack</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ metal_am_powder_mandate</text>
+  <text x="428" y="166" class="card-h">四层显微 CT 空心率、氧氮氢与球形度门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Micro-CT Hollow &amp; O/N/H Gate (11ms)</text>
+  <text x="440" y="220" class="body">亚微米 CT 闭合空心粉率 &lt;=0.5%, 间隙氧 O2 &lt;=1,200</text>
+  <text x="440" y="238" class="body">ppm &amp; H2 &lt;=50 ppm — 空心或高氧直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Hall Flow &amp; Sphericity Gate (14ms)</text>
+  <text x="440" y="296" class="body">ASTM B213 霍尔流速 &lt;=28.0 s/50g, 动态图像球形度</text>
+  <text x="440" y="314" class="body">&gt;=0.92 &amp; 卫星粉 &lt;=3% — 铺粉拉沟直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ Virgin Lot &amp; 0-W HDI (280ms)</text>
+  <text x="440" y="372" class="body">核验 NADCAP 母棒至成品粉质量守恒 (零旧粉掺杂)</text>
+  <text x="440" y="390" class="body">与 X 射线零高密度钨夹杂 — 掺旧粉直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: PREP &amp; Support Re-Atomize (245ms)</text>
+  <text x="440" y="448" class="body">PREP 等离子旋转电极零空心粉 + 28% 线切割支撑</text>
+  <text x="440" y="466" class="body">与筛上粗粉真空重熔再雾化立省 $61,600 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 极低空心低氧高球形放行</text>
+  <text x="828" y="212" class="body">空心 0.12% + O2 820ppm + 流速 23.5s → $440,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 空心粉氩气孔或高氧脆化</text>
+  <text x="828" y="258" class="body">空心率 4.8% 或 O2=2,450ppm → 冻结 $440,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 卫星粉粘连或霍尔流速卡滞</text>
+  <text x="828" y="304" class="body">球形度 0.81 或流速 39.5s → 拒付 $440,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 掺回收旧粉或钨异物</text>
+  <text x="828" y="350" class="body">掺 25% 筛余旧粉或检出钨粒 → 熔断 $440,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 支撑废件与粗粉重熔再雾化</text>
+  <text x="828" y="396" class="body">节省 $61,600 (-14%) → 确认后净付 $378,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 切片保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#ec4899">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 金属 3D 打印粉末严禁“仅看粒度分布与抗拉强度盲付”：内部氩气空心粉在 HIP 后会复胀炸裂，而掺入高氧旧粉会使抗拉虚高但一撞即断。</text>
+  <text x="54" y="584" class="body">• 必须将 Micro-CT 空心率 (&lt;=0.5%)、氧含量 (&lt;=1,200ppm)、霍尔流速 (&lt;=28s) 与支撑废件重熔再雾化绑定为智能托管解锁谓词。</text>
+</svg>

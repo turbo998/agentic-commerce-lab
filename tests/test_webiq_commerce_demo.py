@@ -9951,6 +9951,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("semiconductor-cmp-slurry-sandbox", demo_zh)
 
+    def test_metal_am_lpbf_spherical_powder_hollow_satellite_oxygen_hall_flow_mandate_vs_lack_of_fusion_fatigue_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_metal_am_spherical_powder_policy,
+        )
+
+        # 1. Verified Micro-CT hollow <=0.5% + O2 <=1,200ppm + Hall flow <=28s -> 200 OK ($440,000)
+        commit_ok = evaluate_metal_am_spherical_powder_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_am_powder_cents, 44000000)
+
+        # 2. Micro-CT hollow Argon spheres (>0.5%) or interstitial oxygen (>1,200 ppm) -> 403 blocked in 11ms
+        hol_403 = evaluate_metal_am_spherical_powder_policy(
+            micro_ct_hollow_particle_and_oxygen_pickup_verified=False,
+        )
+        self.assertFalse(hol_403.allowed)
+        self.assertEqual(hol_403.http_status, 403)
+        self.assertEqual(
+            hol_403.am_powder_lane,
+            "HOLLOW_GAS_PORE_OR_INTERSTITIAL_OXYGEN_EMBRITTLEMENT_BLOCKED",
+        )
+
+        # 3. Satellite agglomeration (<0.92 sphericity) or stalled Hall flow (>28s) -> 422 blocked in 14ms
+        flw_422 = evaluate_metal_am_spherical_powder_policy(
+            hall_flowability_span_and_satellite_sphericity_passed=False,
+        )
+        self.assertFalse(flw_422.allowed)
+        self.assertEqual(flw_422.http_status, 422)
+        self.assertEqual(
+            flw_422.am_powder_lane,
+            "SATELLITE_AGGLOMERATION_RECOATER_STREAKING_OR_LACK_OF_FUSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects blended recycled sieve powder or tungsten HDI -> 451 blocked in 280ms
+        vir_451 = evaluate_metal_am_spherical_powder_policy(
+            webiq_nadcap_am_virgin_lot_and_tungsten_cross_contam_clean=False,
+        )
+        self.assertFalse(vir_451.allowed)
+        self.assertEqual(vir_451.http_status, 451)
+
+        # 5. Web IQ credits PREP zero-hollow & 28% support/oversize re-atomization saving $61,600 ($378,400 net) -> 409 Confirm
+        rev_409 = evaluate_metal_am_spherical_powder_policy(
+            prep_electrode_revert_and_support_structure_re_atomization_credit_cents=6160000,
+        )
+        self.assertFalse(rev_409.allowed)
+        self.assertEqual(rev_409.http_status, 409)
+        self.assertEqual(rev_409.settled_am_powder_cents, 37840000)
+        self.assertEqual(rev_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["am_powder_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("metal-am-powder-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
