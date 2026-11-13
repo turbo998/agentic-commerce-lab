@@ -9671,6 +9671,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("tbm-tunnel-boring-sandbox", demo_zh)
 
+    def test_ndfeb_permanent_magnet_grain_boundary_diffusion_coercivity_pct_mandate_vs_thermal_demagnetization_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ndfeb_permanent_magnet_policy,
+        )
+
+        # 1. Verified Hcj >=25 kOe + 180C flux loss <=2.0% + PCT <=2.0 mg/cm2 -> 200 OK ($480,000)
+        commit_ok = evaluate_ndfeb_permanent_magnet_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ndfeb_magnet_cents, 48000000)
+
+        # 2. 180C irreversible flux loss (>2.0%) or BH knee collapse (Hk/Hcj <0.92) -> 403 blocked in 11ms
+        flx_403 = evaluate_ndfeb_permanent_magnet_policy(
+            high_temp_coercivity_hcj_and_flux_loss_verified=False,
+        )
+        self.assertFalse(flx_403.allowed)
+        self.assertEqual(flx_403.http_status, 403)
+        self.assertEqual(
+            flx_403.ndfeb_magnet_lane,
+            "THERMAL_DEMAGNETIZATION_HCJ_OR_IRREVERSIBLE_FLUX_LOSS_BLOCKED",
+        )
+
+        # 3. PCT intergranular corrosion pulverization (>2.0 mg/cm2) or coating blister -> 422 blocked in 14ms
+        pct_422 = evaluate_ndfeb_permanent_magnet_policy(
+            pct_autoclave_weight_loss_and_coating_salt_spray_passed=False,
+        )
+        self.assertFalse(pct_422.allowed)
+        self.assertEqual(pct_422.http_status, 422)
+        self.assertEqual(
+            pct_422.ndfeb_magnet_lane,
+            "PCT_INTERGRANULAR_CORROSION_WEIGHT_LOSS_OR_COATING_BLISTER_BLOCKED",
+        )
+
+        # 4. Web IQ detects unlicensed rare-earth quota or fake non-shell GBD profile -> 451 blocked in 280ms
+        qta_451 = evaluate_ndfeb_permanent_magnet_policy(
+            webiq_rare_earth_quota_traceability_and_epma_shell_clean=False,
+        )
+        self.assertFalse(qta_451.allowed)
+        self.assertEqual(qta_451.http_status, 451)
+
+        # 5. Web IQ credits sputtered TbH2 GBD thrifting & 22% wire-saw sludge PrNd saving $67,200 ($412,800 net) -> 409 Confirm
+        gbd_409 = evaluate_ndfeb_permanent_magnet_policy(
+            gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents=6720000,
+        )
+        self.assertFalse(gbd_409.allowed)
+        self.assertEqual(gbd_409.http_status, 409)
+        self.assertEqual(gbd_409.settled_ndfeb_magnet_cents, 41280000)
+        self.assertEqual(gbd_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ndfeb_magnet_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ndfeb-permanent-magnet-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

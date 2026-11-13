@@ -17638,6 +17638,91 @@ def evaluate_tbm_tunnel_boring_policy(
     )
 
 
+@dataclass(frozen=True)
+class NdfebPermanentMagnetVerdict:
+    allowed: bool
+    http_status: int
+    ndfeb_magnet_lane: str
+    settled_ndfeb_magnet_cents: int
+    gbd_thrifting_swarf_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_ndfeb_permanent_magnet_policy(
+    *,
+    gross_ndfeb_magnet_cents: int = 48000000,
+    high_temp_coercivity_hcj_and_flux_loss_verified: bool = True,
+    pct_autoclave_weight_loss_and_coating_salt_spray_passed: bool = True,
+    webiq_rare_earth_quota_traceability_and_epma_shell_clean: bool = True,
+    gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents: int = 0,
+) -> NdfebPermanentMagnetVerdict:
+    # 1. 180C Irreversible Flux Loss (>2.0%) or BH Knee Squareness Collapse (Hk/Hcj <0.92) -> HTTP 403
+    if not high_temp_coercivity_hcj_and_flux_loss_verified:
+        return NdfebPermanentMagnetVerdict(
+            False,
+            403,
+            "THERMAL_DEMAGNETIZATION_HCJ_OR_IRREVERSIBLE_FLUX_LOSS_BLOCKED",
+            0,
+            0,
+            "ndfeb_magnet_lot_blocked_due_to_180c_irreversible_flux_loss_or_bh_knee_squareness_collapse",
+            11,
+            "Send to a human",
+        )
+
+    # 2. PCT Autoclave Intergranular Corrosion Pulverization (>2.0 mg/cm2) or Coating Blister -> HTTP 422
+    if not pct_autoclave_weight_loss_and_coating_salt_spray_passed:
+        return NdfebPermanentMagnetVerdict(
+            False,
+            422,
+            "PCT_INTERGRANULAR_CORROSION_WEIGHT_LOSS_OR_COATING_BLISTER_BLOCKED",
+            0,
+            0,
+            "ndfeb_batch_rejected_for_pct_autoclave_weight_loss_above_2mg_cm2_or_atf_oil_coating_blister",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Unlicensed Rare-Earth Feedstock or Fake Non-Shell GBD Profile via Web IQ -> HTTP 451
+    if not webiq_rare_earth_quota_traceability_and_epma_shell_clean:
+        return NdfebPermanentMagnetVerdict(
+            False,
+            451,
+            "ILLEGAL_RARE_EARTH_ORIGIN_OR_FAKE_GBD_CORE_SHELL_HOLD",
+            0,
+            0,
+            "webiq_detected_unlicensed_rare_earth_quota_or_missing_epma_grain_boundary_diffusion_shell",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Sputtered TbH2 GBD 65% Heavy-RE Thrifting + 22% Wire-Saw Sludge PrNd Offset -> HTTP 409 Confirm
+    if gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents > 0:
+        return NdfebPermanentMagnetVerdict(
+            False,
+            409,
+            "GBD_TERBIUM_THRIFTING_AND_SWARF_SLUDGE_PRND_RECYCLE_CONFIRM",
+            gross_ndfeb_magnet_cents - gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents,
+            gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents,
+            "webiq_applied_tbh2_gbd_terbium_thrifting_and_wire_saw_sludge_prnd_credit_saving_67200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Hcj >=25 kOe + 180C Flux Loss <=2.0% + PCT <=2.0 mg/cm2 + EPMA Shell -> Settled
+    return NdfebPermanentMagnetVerdict(
+        True,
+        200,
+        "VERIFIED_NDFEB_PERMANENT_MAGNET_SETTLED",
+        gross_ndfeb_magnet_cents,
+        0,
+        "iec60404_high_temp_coercivity_squareness_pct_autoclave_and_epma_gbd_shell_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -23206,6 +23291,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sinkhole_overexcavation_block_latency_ms": tbm_prs_403.latency_ms,
     }
 
+    # Round 152 (Sintered NdFeB Permanent Magnet & GBD Offtake, High-Temp Coercivity & PCT Mandate)
+    mag_commit_ok = evaluate_ndfeb_permanent_magnet_policy()
+    mag_flx_403 = evaluate_ndfeb_permanent_magnet_policy(
+        high_temp_coercivity_hcj_and_flux_loss_verified=False,
+    )
+    mag_pct_422 = evaluate_ndfeb_permanent_magnet_policy(
+        pct_autoclave_weight_loss_and_coating_salt_spray_passed=False,
+    )
+    mag_qta_451 = evaluate_ndfeb_permanent_magnet_policy(
+        webiq_rare_earth_quota_traceability_and_epma_shell_clean=False,
+    )
+    mag_gbd_409 = evaluate_ndfeb_permanent_magnet_policy(
+        gbd_heavy_rare_earth_reduction_and_wire_saw_sludge_credit_cents=6720000,
+    )
+    ndfeb_magnet_guards = {
+        "all_passed": (
+            mag_commit_ok.allowed
+            and mag_commit_ok.settled_ndfeb_magnet_cents == 48000000
+            and not mag_flx_403.allowed
+            and mag_flx_403.http_status == 403
+            and not mag_pct_422.allowed
+            and mag_pct_422.http_status == 422
+            and not mag_qta_451.allowed
+            and mag_qta_451.http_status == 451
+            and not mag_gbd_409.allowed
+            and mag_gbd_409.action_pill == "Confirm"
+        ),
+        "ndfeb_magnet_settlement_latency_ms": mag_commit_ok.latency_ms,
+        "thermal_demag_block_latency_ms": mag_flx_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23370,6 +23486,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hsr_scc_guards": hsr_scc_guards,
         "battery_copper_foil_guards": battery_copper_foil_guards,
         "tbm_tunnel_guards": tbm_tunnel_guards,
+        "ndfeb_magnet_guards": ndfeb_magnet_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -29005,6 +29122,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="tbm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Sintered NdFeB Permanent Magnet & GBD Offtake, High-Temp Coercivity & PCT Mandate Sandbox (Round 152 FAQ Companion) -->
+      <div class="finops-box" id="ndfeb-permanent-magnet-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mag-title">🧲 烧结钕铁硼永磁体 (NdFeB) 与晶界扩散、高温矫顽力 (&gt;=25 kOe) 与 PCT 蒸煮 (&lt;=2 mg/cm2) 架构：防电驱 180°C 退磁趴窝与粉化令牌 (ndfeb_magnet_gbd_mandate_...) vs 室温表磁盲付决策器 (Round 152 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 800V 电驱与海上风电 N50EH 晶界扩散钕铁硼磁钢交割 ($480,000.00)、IEC 60404-5 高温内禀矫顽力/180°C 不可逆磁损、PCT 高压蒸煮失重率与 Web IQ 稀土配额/线切割油泥镨钕闭环场景 (Sintered NdFeB Magnet Scenario):</span></label>
+          <select id="mag-select" onchange="updateNdfebPermanentMagnetSandbox()">
+            <option value="mag_commit_ok">⚡ 内禀矫顽力 Hcj 31.5 kOe (方形度 0.95) + 180°C 开路磁损 0.8% + PCT 96h 失重 0.65 mg/cm2 + EPMA 350nm 核壳：10ms 自动结算 $480,000.00! (Act automatically)</option>
+            <option value="mag_flx_403">🛑 磁材厂偷减金属铽 (Tb) 致高温退磁曲线膝点塌陷 (25°C 室温高斯计测表磁正常，但 180°C 大电流弱磁下发生不可逆雪崩退磁丢失 18.0% &gt; 2.0% 磁通，电驱高速失速趴窝) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="mag_pct_422">🚨 烧结真空漏气致晶界富钕相高氧，130°C/96h PCT 高压蒸煮发生微原电池吸氢沿晶粉化 (失重率 = 14.5 mg/cm2 &gt; 2.0 mg/cm2，镀层鼓包剥落卡死 0.8mm 电机气隙) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="mag_qta_451">🛑 供应商无法提供工信部稀土开采/冶炼总量控制指标合规溯源码 (涉黑稀土违规)，或电子探针 (EPMA) 检出未做晶界扩散核壳硬化却按高铽配方虚报：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="mag_gbd_409">🧑‍⚖️ Web IQ 启用磁控溅射 TbH2 晶界扩散工艺削减 65% 重稀土用量并执行多线切割 22% 切缝稀土硅油泥返厂焙烧提取氧化镨钕闭环冲抵，立省 $67,200.00 (净付 $412,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mag-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -29595,6 +29730,7 @@ function renderAll() {{
   updateHsrBallastlessSccSandbox();
   updateBatteryCopperFoilSandbox();
   updateTbmTunnelBoringSandbox();
+  updateNdfebPermanentMagnetSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -37295,6 +37431,55 @@ function updateTbmTunnelBoringSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 出土质量守恒 (98–102%) + 沉降达标 + 双液注浆充盈 (&gt;=1.15) 达标：已自动清算 (VERIFIED_TBM_TUNNEL_BORING_RING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零地面塌陷天坑、零刀盘结泥饼与管片上浮漏水</strong>：100 环盾构隧道掘进与同步注浆批次已完成结算（<code>$520,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateNdfebPermanentMagnetSandbox() {{
+  var selEl = document.getElementById("mag-select");
+  var outEl = document.getElementById("mag-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "mag_flx_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 THERMAL_DEMAGNETIZATION_HCJ_OR_IRREVERSIBLE_FLUX_LOSS_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "磁材检测中心 <code>IEC 60404-5 高温闭路磁测仪与亥姆霍兹线圈</code> 实测显示，该批磁瓦因偷减重稀土金属铽导致退磁曲线方形度跌至 <code>Hk/Hcj = 0.78 &lt; 0.92</code> 且 180°C 开路不可逆磁通损失高达 <code>18.0% &gt; 2.0%</code>（在 800V 电驱高速弱磁与短路冲击下将永久失磁趴窝，<code>high_temp_coercivity_hcj_and_flux_loss_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$480,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mag_pct_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PCT_INTERGRANULAR_CORROSION_WEIGHT_LOSS_OR_COATING_BLISTER_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "老化实验室 <code>HAST/PCT 高压加速老化箱 (130°C, 95% RH, 96h)</code> 检出磁体因晶界富钕相氧化吸氢发生严重沿晶粉化脱落，失重率高达 <code>Δm = 14.5 mg/cm2 &gt; 2.0 mg/cm2</code> 且镀层鼓包（将卡死 0.8mm 电机气隙，<code>pct_autoclave_weight_loss_and_coating_salt_spray_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mag_qta_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ILLEGAL_RARE_EARTH_ORIGIN_OR_FAKE_GBD_CORE_SHELL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>工信部稀土总量控制指标溯源台账与电子探针 (EPMA) 晶界扩散核壳图谱</code>，检出缺失合法稀土矿源配额码或未形成 <code>(Nd,Tb)2Fe14B</code> 晶界硬化壳层，立即冻结货款并锁死违规炉号！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mag_gbd_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GBD_TERBIUM_THRIFTING_AND_SWARF_SLUDGE_PRND_RECYCLE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实采用 <code>磁控溅射 TbH2 晶界扩散削减 65% 重稀土 + 22% 多线切割稀土硅油泥返厂提取氧化镨钕闭环</code>，自动冲抵重稀土溢价与切缝损耗立省 <code>$67,200.00</code>（净付降至 <code>$412,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 高温矫顽力 (Hcj &gt;=25 kOe) + 180°C 磁损 (&lt;=2%) + PCT 抗蚀 (&lt;=2 mg/cm2) 达标：已自动清算 (VERIFIED_NDFEB_PERMANENT_MAGNET_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零电驱高温失磁趴窝、零晶间腐蚀粉化与重稀土浪费</strong>：N50EH 晶界扩散烧结钕铁硼批次已完成结算（<code>$480,000.00</code>）！" +
     "</div>";
 }}
 

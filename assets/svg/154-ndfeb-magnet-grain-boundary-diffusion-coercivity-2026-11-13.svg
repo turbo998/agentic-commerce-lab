@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg154" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent154" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg154)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent154)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 152 · 烧结钕铁硼永磁体 (NdFeB) 与晶界扩散、高温矫顽力与 PCT 抗蚀架构图</text>
+  <text x="36" y="84" class="sub">Sintered NdFeB Permanent Magnet &amp; Grain-Boundary Diffusion (GBD) Offtake, Hcj (&gt;=25 kOe), 180°C Flux Loss (&lt;=2%) &amp; PCT (&lt;=2 mg/cm2)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按毛重与室温表磁盲付</text>
+  <text x="52" y="166" class="card-h">三大电驱高温失磁趴窝与晶间腐蚀粉化灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 偷减重稀土致 180°C 雪崩退磁 (磁损 18%)</text>
+  <text x="52" y="216" class="body">少加金属铽 (Tb) 在 25°C 室温下表磁反而更高，</text>
+  <text x="52" y="234" class="body">但 20,000 rpm 电驱在 180°C 大电流弱磁下膝点塌陷，</text>
+  <text x="52" y="252" class="body">永久丢失 18% 磁通量，电机扭矩腰斩高速失速趴窝！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 富钕相氧化致 PCT 蒸煮粉化 (14.5 mg/cm2)</text>
+  <text x="52" y="302" class="body">烧结高氧致晶界富钕相吸氢膨胀沿晶脱落，镀层鼓包</text>
+  <text x="52" y="320" class="body">直接卡死 0.8mm 定转子气隙 ($8,000/台召回损失)。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 伪造晶界扩散高价报账与 22% 切缝油泥流失</text>
+  <text x="52" y="370" class="body">按传统 4.5% 重稀土计价却未做 GBD 核壳硬化；</text>
+  <text x="52" y="388" class="body">多线切割产生的 22% 富含镨钕硅油泥被白白截留。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 100k Magnet Pieces + 25°C Gaussmeter</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $480,000 exposed to 180°C rotor demag</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ ndfeb_magnet_gbd_mandate</text>
+  <text x="428" y="166" class="card-h">四层高温退磁膝点、PCT 蒸煮与核壳门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Hcj, Hk/Hcj &amp; 180°C Flux Loss (11ms)</text>
+  <text x="440" y="220" class="body">IEC 60404-5 Hcj &gt;=25 kOe, 方形度 Hk/Hcj &gt;=0.92</text>
+  <text x="440" y="238" class="body">&amp; 180°C 开路磁损 &lt;=2.0% — 高温失磁直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: PCT Autoclave &amp; ATF Coating (14ms)</text>
+  <text x="440" y="296" class="body">130°C/96h PCT 失重 &lt;=2.0 mg/cm2, 500h 盐雾 &amp;</text>
+  <text x="440" y="314" class="body">150°C ATF 油浸 5B 零鼓包 — 粉化直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ RE Quota &amp; EPMA Shell (280ms)</text>
+  <text x="440" y="372" class="body">核验工信部稀土合规配额溯源码与 EPMA 电子探针</text>
+  <text x="440" y="390" class="body">300nm 晶界扩散核壳分布 — 黑稀土直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: TbH2 GBD &amp; Swarf PrNd Loop (245ms)</text>
+  <text x="440" y="448" class="body">磁控溅射 TbH2 晶界扩散省 65% 重稀土 + 22% 线切割</text>
+  <text x="440" y="466" class="body">油泥返厂提取氧化镨钕立省 $67,200 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高温低磁损与抗蚀放行</text>
+  <text x="828" y="212" class="body">Hcj 31.5kOe + 磁损 0.8% + PCT 0.65 → $480,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 180°C 雪崩退磁或膝点塌陷</text>
+  <text x="828" y="258" class="body">180°C 磁损 18% 或 Hk/Hcj=0.78 → 冻结 $480,000</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · PCT 晶间粉化或镀层鼓包</text>
+  <text x="828" y="304" class="body">PCT 失重 14.5 mg/cm2 粉化 → 拒付 $480,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 黑稀土或假晶界扩散</text>
+  <text x="828" y="350" class="body">无稀土配额码或非核壳分布 → 熔断 $480,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · GBD 省铽与切缝油泥回收</text>
+  <text x="828" y="396" class="body">节省 $67,200 (-14%) → 确认后净付 $412,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 磁路保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#a855f7">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 烧结钕铁硼严禁“仅看 25°C 室温表磁盲付”：偷减重稀土在室温下剩磁反而偏高，但在 180°C 电驱弱磁下会发生不可逆雪崩退磁。</text>
+  <text x="54" y="584" class="body">• 必须将高温膝点方形度 (Hk/Hcj&gt;=0.92)、180°C 磁损 (&lt;=2%)、PCT 失重 (&lt;=2 mg/cm2) 与晶界扩散/油泥回收绑定为智能托管解锁谓词。</text>
+</svg>
