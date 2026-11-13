@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg156" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent156" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg156)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent156)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 154 · 800V 碳化硅功率模块 (SiC MOSFET)、纳米银声扫与双极性退化架构图</text>
+  <text x="36" y="84" class="sub">800V SiC MOSFET Power Module &amp; Si3N4 AMB Offtake, SAM Sinter Void (&lt;=1.0%), Rth (&lt;=0.12 K/W) &amp; BPD Drift (&lt;=5%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按只数与静态内阻盲付</text>
+  <text x="52" y="166" class="card-h">三大 800V 主驱炸管、内阻暴涨与基板崩裂灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 纳米银烧结空泡 (4.5%) 致 5ms 热失控炸管</text>
+  <text x="52" y="216" class="body">25°C 静态毫欧表测不出芯片底部银烧结大空泡，</text>
+  <text x="52" y="234" class="body">地板油急加速时局部热阻翻倍 (0.24 K/W)，结温</text>
+  <text x="52" y="252" class="body">瞬间飙破 250°C 引爆整桥并联芯片！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 基面位错 (BPD) 堆垛层错扩展致内阻涨 +19%</text>
+  <text x="52" y="302" class="body">能量回收体二极管续流激活外延层 BPD 拉开成高阻</text>
+  <text x="52" y="320" class="body">堆垛层错，车开 3,000km 后内阻暴涨发热烧穿。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 脆性氮化铝 (AlN) 冒充氮化硅 AMB 与银膏流失</text>
+  <text x="52" y="370" class="body">偷用低韧性 AlN DBC 在冷热冲击下脆裂漏防冻液；</text>
+  <text x="52" y="388" class="body">晶锭线切磨掉 40% 碳化硅且擦网废纳米银膏未回收。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 5,000 Modules + 25°C RDS(on) = 2.2mOhm</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $580,000 exposed to inverter blowout</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ sic_power_module_mandate</text>
+  <text x="428" y="166" class="card-h">四层超声空洞、双极性退化与基板门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: SAM Void &amp; JESD51-14 Rth (11ms)</text>
+  <text x="440" y="220" class="body">SAM C-Scan 总空洞 &lt;=1.0%, 单空洞 &lt;=0.3% &amp; 瞬态</text>
+  <text x="440" y="238" class="body">热阻 Rth(j-f) &lt;=0.12 K/W — 空泡过热直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: BPD Drift &amp; 200°C HTGB Gate (14ms)</text>
+  <text x="440" y="296" class="body">体二极管浪涌后 ΔRDS(on) &lt;=5%, 200°C HTGB 零早夭</text>
+  <text x="440" y="314" class="body">&amp; 局部放电 PD &lt;=5 pC — 层错退化直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ AQG 324 &amp; Si3N4 AMB (280ms)</text>
+  <text x="440" y="372" class="body">核验 ECPE AQG 324 5万次功率循环寿命与高韧性</text>
+  <text x="440" y="390" class="body">Si3N4 AMB 氮化硅基板批号 — 假基板直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Laser Spalling &amp; Ag Loop (245ms)</text>
+  <text x="440" y="448" class="body">飞秒激光剥离 (Laser Lift-Off) 省晶锭 + 钢网废纳米</text>
+  <text x="440" y="466" class="body">银膏返厂电解提纯闭环立省 $81,200 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零空泡低热阻与零退化放行</text>
+  <text x="828" y="212" class="body">空洞 0.25% + Rth 0.095 + ΔR 0.6% → $580,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 银烧结空泡或热阻超标拦截</text>
+  <text x="828" y="258" class="body">空洞 4.5% 或 Rth=0.24 K/W → 冻结 $580,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · BPD 双极性退化或栅氧漏电</text>
+  <text x="828" y="304" class="body">ΔRDS(on)=+19% 层错退化 → 拒付 $580,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 偷换 AlN 基板或失格</text>
+  <text x="828" y="350" class="body">脆性 AlN 冒充 Si3N4 AMB → 熔断 $580,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 激光剥离与废银膏闭环冲抵</text>
+  <text x="828" y="396" class="body">节省 $81,200 (-14%) → 确认后净付 $498,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 电驱保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#10b981">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 800V 碳化硅模块严禁“仅看 25°C 静态导通电阻盲付”：底部纳米银空泡会导致大电流瞬态热失控炸管，而外延 BPD 会引发双极性内阻暴涨。</text>
+  <text x="54" y="584" class="body">• 必须将 SAM 声扫空洞 (&lt;=1.0%)、瞬态热阻 (&lt;=0.12 K/W)、BPD 漂移 (&lt;=5%) 与 Si3N4 AMB/废银回收绑定为智能托管解锁谓词。</text>
+</svg>

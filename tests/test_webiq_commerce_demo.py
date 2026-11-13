@@ -9783,6 +9783,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("carbon-fiber-prepreg-sandbox", demo_zh)
 
+    def test_sic_mosfet_power_module_nanosilver_sintering_sam_rth_mandate_vs_bpd_thermal_runaway_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_sic_power_module_policy,
+        )
+
+        # 1. Verified SAM void <=1.0% + Rth <=0.12 K/W + BPD drift <=5% -> 200 OK ($580,000)
+        commit_ok = evaluate_sic_power_module_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sic_module_cents, 58000000)
+
+        # 2. SAM nanosilver sinter void (>1.0%) or transient Rth spike (>0.12 K/W) -> 403 blocked in 11ms
+        sam_403 = evaluate_sic_power_module_policy(
+            sam_silver_sinter_void_and_transient_rth_verified=False,
+        )
+        self.assertFalse(sam_403.allowed)
+        self.assertEqual(sam_403.http_status, 403)
+        self.assertEqual(
+            sam_403.sic_module_lane,
+            "NANOSILVER_SINTER_VOID_OR_TRANSIENT_THERMAL_IMPEDANCE_RTH_BLOCKED",
+        )
+
+        # 3. BPD stacking-fault RDS(on) drift (>5%) or 200C HTGB gate-oxide failure -> 422 blocked in 14ms
+        bpd_422 = evaluate_sic_power_module_policy(
+            bipolar_degradation_bpd_and_gate_oxide_tddb_passed=False,
+        )
+        self.assertFalse(bpd_422.allowed)
+        self.assertEqual(bpd_422.http_status, 422)
+        self.assertEqual(
+            bpd_422.sic_module_lane,
+            "BASAL_PLANE_DISLOCATION_DRIFT_OR_GATE_OXIDE_TDDB_BLOCKED",
+        )
+
+        # 4. Web IQ detects brittle AlN DBC substitution or revoked AQG 324 cert -> 451 blocked in 280ms
+        amb_451 = evaluate_sic_power_module_policy(
+            webiq_aqg324_qualification_and_si3n4_amb_lot_clean=False,
+        )
+        self.assertFalse(amb_451.allowed)
+        self.assertEqual(amb_451.http_status, 451)
+
+        # 5. Web IQ credits laser-spalling wafering & nanosilver paste recycling saving $81,200 ($498,800 net) -> 409 Confirm
+        las_409 = evaluate_sic_power_module_policy(
+            laser_split_boule_and_nanosilver_paste_recycle_credit_cents=8120000,
+        )
+        self.assertFalse(las_409.allowed)
+        self.assertEqual(las_409.http_status, 409)
+        self.assertEqual(las_409.settled_sic_module_cents, 49880000)
+        self.assertEqual(las_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["sic_module_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("sic-power-module-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
