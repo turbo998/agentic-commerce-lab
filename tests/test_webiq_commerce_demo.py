@@ -11295,6 +11295,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("implantable-bci-neural-electrode-sandbox", demo_zh)
 
+    def test_nuclear_smr_triso_fuel_sic_coating_atf_chromium_zircaloy_loca_hydride_mandate_vs_fission_release_zirconium_fire_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_nuclear_triso_atf_cladding_policy,
+        )
+
+        # 1. Verified SiC defect <=1e-5 + 1,200°C ECR <=3% + radial hydride Fn <=0.25 -> 200 OK ($890,000)
+        commit_ok = evaluate_nuclear_triso_atf_cladding_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_nuclear_fuel_cents, 89000000)
+
+        # 2. Burn-leach TRISO SiC defect fraction (>1e-5) or free-uranium contamination -> 403 blocked in 11ms
+        sic_403 = evaluate_nuclear_triso_atf_cladding_policy(
+            triso_sic_defect_fraction_and_free_uranium_sub_1e5_verified=False,
+        )
+        self.assertFalse(sic_403.allowed)
+        self.assertEqual(sic_403.http_status, 403)
+        self.assertEqual(
+            sic_403.nuclear_fuel_lane,
+            "TRISO_SIC_LAYER_DEFECT_FISSION_CESIUM_LEAK_OR_FREE_URANIUM_BLOCKED",
+        )
+
+        # 3. 1,200°C steam LOCA Cr spallation (ECR >3%) or radial hydride Fn (>0.25) -> 422 blocked in 14ms
+        loc_422 = evaluate_nuclear_triso_atf_cladding_policy(
+            atf_cr_coating_1200c_steam_loca_and_hydride_orientation_passed=False,
+        )
+        self.assertFalse(loc_422.allowed)
+        self.assertEqual(loc_422.http_status, 422)
+        self.assertEqual(
+            loc_422.nuclear_fuel_lane,
+            "ZIRCALOY_STEAM_HYDROGEN_DETONATION_OR_RADIAL_HYDRIDE_EMBRITTLEMENT_BLOCKED",
+        )
+
+        # 4. Web IQ detects high-Hafnium chemical zirconium (>50 ppm Hf) or missing NQA-1 -> 451 blocked in 280ms
+        haf_451 = evaluate_nuclear_triso_atf_cladding_policy(
+            webiq_asme_nqa1_hafnium_sub_50ppm_and_10cfr50_appendix_b_clean=False,
+        )
+        self.assertFalse(haf_451.allowed)
+        self.assertEqual(haf_451.http_status, 451)
+
+        # 5. Web IQ credits EBCHR Hafnium-free Zircaloy remelt & MTS offgas scrub saving $124,600 ($765,400 net) -> 409 Confirm
+        ebr_409 = evaluate_nuclear_triso_atf_cladding_policy(
+            eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents=12460000,
+        )
+        self.assertFalse(ebr_409.allowed)
+        self.assertEqual(ebr_409.http_status, 409)
+        self.assertEqual(ebr_409.settled_nuclear_fuel_cents, 76540000)
+        self.assertEqual(ebr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["nuclear_triso_atf_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("nuclear-triso-atf-cladding-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

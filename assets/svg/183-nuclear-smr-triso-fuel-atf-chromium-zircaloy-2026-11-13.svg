@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg183" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent183" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg183)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent183)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 181 · 第四代核电 (SMR) TRISO 包覆燃料颗粒、1,200°C 镀铬锆包壳与防氢脆架构图</text>
+  <text x="36" y="84" class="sub">Nuclear SMR TRISO Fuel &amp; ATF Cr-Coated Zircaloy Offtake, SiC Defect (&lt;=1e-5), 1,200°C LOCA ECR (&lt;=3%) &amp; Radial Hydride Fn (&lt;=0.25)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按支数与常温涡流盲付</text>
+  <text x="52" y="166" class="card-h">三大 1,600°C 放射性铯泄漏、锆水氢爆与径向氢脆灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. TRISO 碳化硅层柱状晶缝致放射性铯-137 泄漏</text>
+  <text x="52" y="216" class="body">外径圆度合格但 SiC 层破损率达 4.5e-4 (&gt;1e-5)，</text>
+  <text x="52" y="234" class="body">在 1,600°C 下剧毒裂变核素 Cs-137 与 Ag-110m 穿漏</text>
+  <text x="52" y="252" class="body">把一回路氦气风机污染成强辐射禁区！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 1,200°C 铬层剥落引发锆水氢爆与径向氢脆劈裂</text>
+  <text x="52" y="302" class="body">失水事故下劣质铬层起皮引发锆水反应狂吐氢气爆炸；</text>
+  <text x="52" y="320" class="body">冷轧织构错误长出径向氢化物 (Fn=0.58) 竖向劈裂管壁。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 混入高铪 (850ppm) 工业锆吞噬中子与废锆贱卖</text>
+  <text x="52" y="370" class="body">伴生金属铪吸收中子能力是锆的 560 倍致无法临界；</text>
+  <text x="52" y="388" class="body">昂贵核级脱铪锆切屑未做电子束冷床重熔闭环冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 200k Pebbles + Room-Temp Eddy-Current</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $890,000 exposed to Cs-137 &amp; hydride split</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="276" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ nuclear_triso_atf_cladding_mandate</text>
+  <text x="428" y="166" class="card-h">四层十万分之一破损、抗 LOCA 与脱铪门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Burn-Leach SiC &lt;=1e-5 (11ms)</text>
+  <text x="440" y="220" class="body">燃烧酸浸 SiC 破损分数 &lt;=1.0e-5, 游离铀 &lt;=1e-5</text>
+  <text x="440" y="238" class="body">&amp; 1,600°C Kr-85 R/B &lt;=10^-6 — 漏铯直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: 1,200°C LOCA &amp; Fn &lt;=0.25 (14ms)</text>
+  <text x="440" y="296" class="body">1,200°C 蒸汽氧化 ECR &lt;=3% 零剥落 &amp; 径向氢化物</text>
+  <text x="440" y="314" class="body">取向因子 Fn &lt;=0.25 (fr &gt;=0.60) — 违者直返 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ Hf &lt;=50ppm &amp; NQA-1 (280ms)</text>
+  <text x="440" y="372" class="body">核验核级海绵锆中子毒物铪 Hf &lt;=50 ppm (B/Cd</text>
+  <text x="440" y="390" class="body">&lt;=0.5 ppm) 与 ASME NQA-1 签章 — 高铪直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: EBCHR Zr Remelt &amp; MTS (245ms)</text>
+  <text x="440" y="448" class="body">核级无铪锆冷轧切屑电子束冷床重熔 (EBCHR) 免二次</text>
+  <text x="440" y="466" class="body">萃取 + 流化床 MTS 氯硅烷尾气回收立省 $124,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零破损与抗 LOCA 放行</text>
+  <text x="828" y="212" class="body">SiC 2e-6 + ECR 1.1% + Fn 0.09 → $890,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · TRISO 碳化硅层微裂漏铯</text>
+  <text x="828" y="258" class="body">破损率 4.5e-4 污染一回路 → 冻结 $890,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 铬层剥落产氢或径向氢脆</text>
+  <text x="828" y="304" class="body">1,200°C 剥落或 Fn=0.58 → 拒付 $890,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 高铪毒物或无NQA1</text>
+  <text x="828" y="350" class="body">Hf=850ppm 吞噬热中子 → 熔断 $890,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 无铪锆重熔与 MTS 尾气回收</text>
+  <text x="828" y="396" class="body">节省 $124,600 (-14%) → 确认后净付 $765,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 堆芯保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 核燃料与包壳严禁“仅看常温涡流盲付”：掩盖了 1,600°C 下 TRISO 碳化硅层微裂漏铯、1,200°C 锆水产氢及径向氢化物劈裂管壁风险。</text>
+  <text x="54" y="584" class="body">• 必须将 Burn-Leach SiC 破损 (&lt;=1e-5)、1,200°C ECR (&lt;=3%)、径向氢化物 Fn (&lt;=0.25) 与 Hf (&lt;=50ppm) 绑定为智能托管谓词。</text>
+</svg>

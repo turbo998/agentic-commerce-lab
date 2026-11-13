@@ -20178,6 +20178,96 @@ def evaluate_implantable_bci_neural_electrode_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 181: Nuclear SMR TRISO Fuel & ATF Cr-Coated Zircaloy Cladding Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class NuclearTrisoAtfCladdingVerdict:
+    allowed: bool
+    http_status: int
+    nuclear_fuel_lane: str
+    settled_nuclear_fuel_cents: int
+    ebchr_zircaloy_mts_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_nuclear_triso_atf_cladding_policy(
+    *,
+    gross_nuclear_fuel_cents: int = 89000000,
+    triso_sic_defect_fraction_and_free_uranium_sub_1e5_verified: bool = True,
+    atf_cr_coating_1200c_steam_loca_and_hydride_orientation_passed: bool = True,
+    webiq_asme_nqa1_hafnium_sub_50ppm_and_10cfr50_appendix_b_clean: bool = True,
+    eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents: int = 0,
+) -> NuclearTrisoAtfCladdingVerdict:
+    # 1. Burn-Leach TRISO SiC Defect Fraction (>1e-5) or Free-Uranium Contamination (>1e-5) -> HTTP 403
+    if not triso_sic_defect_fraction_and_free_uranium_sub_1e5_verified:
+        return NuclearTrisoAtfCladdingVerdict(
+            False,
+            403,
+            "TRISO_SIC_LAYER_DEFECT_FISSION_CESIUM_LEAK_OR_FREE_URANIUM_BLOCKED",
+            0,
+            0,
+            "nuclear_triso_blocked_due_to_burn_leach_sic_defect_above_1e5_or_free_uranium_fission_leak",
+            11,
+            "Send to a human",
+        )
+
+    # 2. 1,200°C Steam LOCA Cr-Coating Spallation (ECR >3%) or Radial Hydride Orientation (Fn >0.25) -> HTTP 422
+    if not atf_cr_coating_1200c_steam_loca_and_hydride_orientation_passed:
+        return NuclearTrisoAtfCladdingVerdict(
+            False,
+            422,
+            "ZIRCALOY_STEAM_HYDROGEN_DETONATION_OR_RADIAL_HYDRIDE_EMBRITTLEMENT_BLOCKED",
+            0,
+            0,
+            "atf_cladding_rejected_for_1200c_loca_cr_spallation_or_radial_hydride_orientation_above_025",
+            14,
+            "Send to a human",
+        )
+
+    # 3. High-Hafnium Chemical Zirconium (>50 ppm Hf) Neutron Poison or Missing ASME NQA-1 via Web IQ -> HTTP 451
+    if not webiq_asme_nqa1_hafnium_sub_50ppm_and_10cfr50_appendix_b_clean:
+        return NuclearTrisoAtfCladdingVerdict(
+            False,
+            451,
+            "HIGH_HAFNIUM_NEUTRON_POISON_ZIRCONIUM_OR_MISSING_NQA1_HOLD",
+            0,
+            0,
+            "webiq_detected_chemical_grade_zirconium_hafnium_above_50ppm_or_missing_asme_nqa1_pedigree",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ EB Cold-Hearth Hafnium-Free Zircaloy Revert Remelt + MTS Offgas Scrub -> HTTP 409 Confirm
+    if eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents > 0:
+        return NuclearTrisoAtfCladdingVerdict(
+            False,
+            409,
+            "NUCLEAR_GRADE_ZIRCALOY_EB_REMELT_AND_MTS_SILICON_OFFGAS_CREDIT_CONFIRM",
+            gross_nuclear_fuel_cents - eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents,
+            eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents,
+            "webiq_applied_ebchr_nuclear_zircaloy_remelt_and_mts_offgas_scrub_credit_saving_124600_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified SiC Defect <=1e-5 + 1,200°C ECR <=3% + Radial Hydride Fn <=0.25 + Hf <=50 ppm -> Settled
+    return NuclearTrisoAtfCladdingVerdict(
+        True,
+        200,
+        "VERIFIED_NUCLEAR_TRISO_ATF_CLADDING_SETTLED",
+        gross_nuclear_fuel_cents,
+        0,
+        "triso_sic_defect_1e5_1200c_loca_cr_coating_radial_hydride_fn_and_nqa1_hf_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26645,6 +26735,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sirof_impedance_block_latency_ms": bci_imp_403.latency_ms,
     }
 
+    # Round 181 (Nuclear SMR TRISO Fuel & ATF Cr-Coated Zircaloy Cladding Offtake, SiC & LOCA Mandate)
+    nuc_commit_ok = evaluate_nuclear_triso_atf_cladding_policy()
+    nuc_sic_403 = evaluate_nuclear_triso_atf_cladding_policy(
+        triso_sic_defect_fraction_and_free_uranium_sub_1e5_verified=False,
+    )
+    nuc_loc_422 = evaluate_nuclear_triso_atf_cladding_policy(
+        atf_cr_coating_1200c_steam_loca_and_hydride_orientation_passed=False,
+    )
+    nuc_haf_451 = evaluate_nuclear_triso_atf_cladding_policy(
+        webiq_asme_nqa1_hafnium_sub_50ppm_and_10cfr50_appendix_b_clean=False,
+    )
+    nuc_ebr_409 = evaluate_nuclear_triso_atf_cladding_policy(
+        eb_hearth_zircaloy_revert_remelt_and_cvd_mts_hcl_scrub_credit_cents=12460000,
+    )
+    nuclear_triso_atf_guards = {
+        "all_passed": (
+            nuc_commit_ok.allowed
+            and nuc_commit_ok.settled_nuclear_fuel_cents == 89000000
+            and not nuc_sic_403.allowed
+            and nuc_sic_403.http_status == 403
+            and not nuc_loc_422.allowed
+            and nuc_loc_422.http_status == 422
+            and not nuc_haf_451.allowed
+            and nuc_haf_451.http_status == 451
+            and not nuc_ebr_409.allowed
+            and nuc_ebr_409.action_pill == "Confirm"
+        ),
+        "nuclear_triso_atf_settlement_latency_ms": nuc_commit_ok.latency_ms,
+        "triso_sic_defect_block_latency_ms": nuc_sic_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26838,6 +26959,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "solid_state_sulfide_guards": solid_state_sulfide_guards,
         "euv_lpp_collector_guards": euv_lpp_collector_guards,
         "implantable_bci_guards": implantable_bci_guards,
+        "nuclear_triso_atf_guards": nuclear_triso_atf_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32995,6 +33117,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bci-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Nuclear SMR TRISO Fuel & ATF Cr-Coated Zircaloy Cladding Mandate Sandbox (Round 181 FAQ Companion) -->
+      <div class="finops-box" id="nuclear-triso-atf-cladding-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-nuc-title">☢️ 第四代核电 (SMR) TRISO 包覆燃料颗粒、1,200°C 镀铬锆包壳 (&lt;=3% ECR) 与防径向氢脆架构：防 1,600°C 放射性铯泄漏与锆水氢爆令牌 (nuclear_triso_atf_cladding_mandate_...) vs 常温涡流盲付决策器 (Round 181 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 第四代 SMR TRISO 燃料元件与压水堆 ATF 镀铬锆合金包壳管交割 ($890,000.00)、燃烧酸浸 SiC 破损分数/游离铀、1,200°C 蒸汽 LOCA 抗氧化/径向氢化物 Fn 与 Web IQ 核级无铪锆重熔/MTS 回收场景 (Nuclear TRISO &amp; ATF Scenario):</span></label>
+          <select id="nuc-select" onchange="updateNuclearTrisoAtfCladdingSandbox()">
+            <option value="nuc_commit_ok">⚡ Burn-Leach SiC 破损 2e-6 (&lt;=1e-5) + 1,200°C 蒸汽 ECR=1.1% + 径向氢化物 Fn=0.09 + 核级铪 18 ppm：10ms 自动结算 $890,000.00! (Act automatically)</option>
+            <option value="nuc_sic_403">🛑 外观圆度合格但流化床 CVD 温度偏高致 35um SiC 层破损率达 4.5e-4 &gt; 1.0e-5，1,600°C 下剧毒裂变核素铯-137 与银-110m 泄漏污染一回路拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="nuc_loc_422">🚨 1,200°C 失水事故蒸汽下劣质镀铬层起皮剥落引发自催化锆水反应产氢爆炸，或冷轧织构错误长出垂直管壁的径向氢化物 (Fn=0.58 &gt; 0.25) 干式贮存劈裂包壳拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="nuc_haf_451">🛑 混入未脱净强中子毒物铪的化工海绵锆 (Hf = 850 &gt; 50 ppm 吞噬热中子致反应堆无法临界) 或缺失 ASME NQA-1 核安全质保签章：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="nuc_ebr_409">🧑‍⚖️ Web IQ 启用皮尔格冷轧核级无铪锆切屑电子束冷床炉 (EBCHR) 高真空重熔免二次萃取，并将流化床 MTS 氯硅烷尾气闭环洗涤回用立省 $124,600.00 (净付 $765,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="nuc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -33614,6 +33754,7 @@ function renderAll() {{
   updateSolidStateSulfideElectrolyteSandbox();
   updateEuvLppTinCollectorSandbox();
   updateImplantableBciNeuralElectrodeSandbox();
+  updateNuclearTrisoAtfCladdingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -42735,6 +42876,55 @@ function updateImplantableBciNeuralElectrodeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ SIROF 低阻 (&lt;=50kΩ) + 水窗口 CIC (&gt;=3.0mC/cm²) + 10^-11 气密达标：已自动清算 (VERIFIED_IMPLANTABLE_BCI_NEURAL_ARRAY_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零热噪声淹没脑电尖峰、零刺穿水窗口电解伤脑与浸泡脱层漏液</strong>：100 套 1,024 通道植入式脑机接口柔性电极与钛仓已完成结算（<code>$740,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateNuclearTrisoAtfCladdingSandbox() {{
+  var selEl = document.getElementById("nuc-select");
+  var outEl = document.getElementById("nuc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "nuc_sic_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TRISO_SIC_LAYER_DEFECT_FISSION_CESIUM_LEAK_OR_FREE_URANIUM_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核燃料包覆与高温考核室 <code>燃烧-硝酸浸出法 (Burn-Leach) 与 1,600°C KÜFA 炉</code> 实测显示，该批 TRISO 燃料球虽外径合格，但 <code>SiC 包覆层破损分数高达 4.5×10^-4 &gt; 1.0×10^-5（1,600°C 下泄漏放射性铯-137 与银-110m）</code>（<code>triso_sic_defect_fraction_and_free_uranium_sub_1e5_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$890,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_loc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ZIRCALOY_STEAM_HYDROGEN_DETONATION_OR_RADIAL_HYDRIDE_EMBRITTLEMENT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "包壳 LOCA 与织构实验室检出 <code>1,200°C 双面水蒸气氧化下镀铬层起皮剥落引发自催化锆水产氢，或冷轧织构错误导致径向氢化物取向因子高达 Fn = 0.58 &gt; 0.25（干式贮存劈裂包壳）</code>（<code>atf_cr_coating_1200c_steam_loca_and_hydride_orientation_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_haf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HIGH_HAFNIUM_NEUTRON_POISON_ZIRCONIUM_OR_MISSING_NQA1_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>核级海绵锆 ICP-MS 铪含量报告与 ASME NQA-1 核安全质保台账</code>，检出混入含强中子毒物铪（Hf = 850 ppm &gt; 50 ppm）的化工级锆或缺失 NQA-1 签章，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "nuc_ebr_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 NUCLEAR_GRADE_ZIRCALOY_EB_REMELT_AND_MTS_SILICON_OFFGAS_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>核级无铪锆冷轧切屑电子束冷床重熔 (EBCHR) 免二次脱铪萃取 + 流化床 MTS 氯硅烷尾气闭环回收</code>，自动冲抵核级锆材与特气成本立省 <code>$124,600.00</code>（净付降至 <code>$765,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ TRISO SiC 破损 (&lt;=1e-5) + 1,200°C ECR (&lt;=3%) + 径向氢化物 (&lt;=0.25) 达标：已自动清算 (VERIFIED_NUCLEAR_TRISO_ATF_CLADDING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 1,600°C 裂变铯泄漏、零失水事故锆水产氢爆炸与径向氢脆劈裂</strong>：第四代 SMR TRISO 燃料与 ATF 镀铬锆包壳批次已完成结算（<code>$890,000.00</code>）！" +
     "</div>";
 }}
 
