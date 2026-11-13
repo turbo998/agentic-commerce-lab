@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg189" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#040B16"/>
+      <stop offset="50%" stop-color="#08172E"/>
+      <stop offset="100%" stop-color="#0E2647"/>
+    </linearGradient>
+    <linearGradient id="accent189" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg189)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0B1324" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent189)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">
+    Round 187 · 万米全海深潜水器 Ti-6Al-4V ELI 耐压球壳、真球度 (&lt;=0.3%R) 防内爆与固体浮力材料门禁
+  </text>
+  <text x="52" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    11,000m Deep-Sea Submersible Hull &amp; Syntactic Foam · Sphericity &lt;= 0.3%R, 140MPa Hydro-Proof &amp; Water Absorption &lt;= 0.8% vs. Tonnage PO ($950,000)
+  </text>
+  <rect x="945" y="44" width="205" height="34" rx="17" fill="#082842" stroke="#0EA5E9" stroke-width="1.5"/>
+  <text x="1047" y="66" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#7DD3FC">
+    140MPa Proof · Abs &lt;= 0.8%
+  </text>
+
+  <!-- Left Column: Physical Failure Risks -->
+  <rect x="48" y="114" width="352" height="445" rx="12" fill="#16111D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#FCA5A5">
+    ❌ 传统按吨位与干重密度盲付三大深渊灾难
+  </text>
+
+  <rect x="64" y="164" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    1. 局部扁平度 (&gt;0.8%R) 引发 2 毫秒超音速内爆
+  </text>
+  <text x="78" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 105mm 电子束焊热变形留下 5mm 局部扁平区，附加弯矩暴增
+  </text>
+  <text x="78" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 普通高氧 TC4 在 2°C 深海断裂韧性腰斩，焊缝锁孔脆断
+  </text>
+  <text x="78" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 115 MPa 外压下触发非弹性突跳失稳，瞬间向内坍塌内爆
+  </text>
+
+  <rect x="64" y="294" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    2. 空心玻璃微珠多米诺压碎吸水坐沉万米海底
+  </text>
+  <text x="78" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 固体浮力块混入低强微珠，在 9,000m 发生连锁压碎级联
+  </text>
+  <text x="78" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 高压海水灌入破裂连通孔，吸水率从 0.5% 飙升至 &gt;10%
+  </text>
+  <text x="78" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 潜水器凭空增重 1.5 吨丧失正浮力，抛载亦无法浮出水面
+  </text>
+
+  <rect x="64" y="424" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="448" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    3. 12 吨粗坯精车 70% ELI 高纯钛屑黑箱溢价
+  </text>
+  <text x="78" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 170mm 厚模锻半球五轴精车至 105mm 产生 8.5 吨洁净钛屑
+  </text>
+  <text x="78" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 超低间隙 ELI 钛屑与浮力块铣削余料未入重熔抵扣台账
+  </text>
+  <text x="78" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 单批多付 $142,500+ 航空级超低间隙钛合金粗坯溢价
+  </text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="114" width="360" height="445" rx="12" fill="#0F1A2E" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="440" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#93C5FD">
+    🛡️ 5-Lane 万米耐压球壳/浮力门禁 (10ms–280ms)
+  </text>
+
+  <rect x="436" y="164" width="328" height="68" rx="8" fill="#09221B" stroke="#10B981"/>
+  <text x="450" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    ⚡ HTTP 200 · Act automatically (10ms)
+  </text>
+  <text x="450" y="206" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#A7F3D0">
+    真球度 0.18%R + 氧 0.09% + 140MPa 外压保压零失稳
+  </text>
+  <text x="450" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#6EE7B7">
+    + 浮力块吸水率 0.42 wt% → 自动结算 $950,000.00
+  </text>
+
+  <rect x="436" y="242" width="328" height="68" rx="8" fill="#2A1215" stroke="#EF4444"/>
+  <text x="450" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F87171">
+    🛑 HTTP 403 · 真球度超差/焊缝气孔硬阻断 (11ms)
+  </text>
+  <text x="450" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FECACA">
+    真球度 &gt; 0.3%R、氧 &gt; 0.12% 或 EBW 气孔 / 140MPa 失稳
+  </text>
+  <text x="450" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FCA5A5">
+    HULL_OUT_OF_SPHERICITY_OR_EBW_DEFECT_IMPLOSION_BLOCKED
+  </text>
+
+  <rect x="436" y="320" width="328" height="68" rx="8" fill="#2A1612" stroke="#F97316"/>
+  <text x="450" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FB923C">
+    🚨 HTTP 422 · 微珠压碎/吸水坐沉拦截 (14ms)
+  </text>
+  <text x="450" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FFEDD5">
+    浮力材料抗压 &lt; 150 MPa 或 115MPa 循环吸水率 &gt; 0.8 wt%
+  </text>
+  <text x="450" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDBA74">
+    SYNTACTIC_FOAM_MICROBALLOON_CRUSH_OR_WATER_INGRESS_BLOCKED
+  </text>
+
+  <rect x="436" y="398" width="328" height="68" rx="8" fill="#251329" stroke="#C084FC"/>
+  <text x="450" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#D8B4FE">
+    🛑 HTTP 451 · 观察窗锥座/船级社证书冻结 (280ms)
+  </text>
+  <text x="450" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#F3E8FF">
+    Web IQ 检出观察窗锥面贴合 &lt; 90% 或缺 DNV/CCS 目击签章
+  </text>
+  <text x="450" y="456" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#E9D5FF">
+    VIEWPORT_CONICAL_SEAT_OR_CLASS_CERT_HOLD
+  </text>
+
+  <rect x="436" y="476" width="328" height="68" rx="8" fill="#29200E" stroke="#F59E0B"/>
+  <text x="450" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FBBF24">
+    🧑‍⚖️ HTTP 409 · 70% ELI 钛屑冷床重熔确认 (245ms)
+  </text>
+  <text x="450" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FEF3C7">
+    8.5 吨五轴精车 ELI 钛屑 EBCHR 重熔 + 浮力块铣削余料回用
+  </text>
+  <text x="450" y="534" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDE68A" font-weight="700">
+    立省 $142,500.00 (15.0%) → 净付 $807,500.00 (Confirm)
+  </text>
+
+  <!-- Right Column: Physics & FinOps Metrics -->
+  <rect x="800" y="114" width="352" height="445" rx="12" fill="#0B1D28" stroke="#10B981" stroke-width="1.5"/>
+  <text x="820" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#6EE7B7">
+    🔬 万米耐压屈曲与浮力微珠物理指标
+  </text>
+
+  <rect x="816" y="164" width="320" height="122" rx="8" fill="#0F2937" stroke="#0EA5E9"/>
+  <text x="830" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#7DD3FC">
+    Ti-6Al-4V ELI 电子束焊球壳 &amp; 140MPa 保压
+  </text>
+  <text x="830" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 全球局部曲率真球度: &lt;= 0.3% R (实测 0.18% R)
+  </text>
+  <text x="830" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 超低间隙氧与韧性: O &lt;= 0.12 wt%, KIC &gt;= 85 MPa·m½
+  </text>
+  <text x="830" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 1.25x 极限静水外压: 140 MPa 高压釜保压零失稳
+  </text>
+  <text x="830" y="270" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#A7F3D0" font-weight="600">
+    • 稳扛 16 万吨马里亚纳海沟总挤压推力，零内爆
+  </text>
+
+  <rect x="816" y="298" width="320" height="118" rx="8" fill="#0F2937" stroke="#3B82F6"/>
+  <text x="830" y="322" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#93C5FD">
+    空心玻璃微珠固体浮力材料 (Syntactic Foam)
+  </text>
+  <text x="830" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 等静压压碎强度: &gt;= 150 MPa (密度 &lt;= 0.68 g/cm³)
+  </text>
+  <text x="830" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 115 MPa 千次循环吸水率: &lt;= 0.8 wt% (实测 0.42%)
+  </text>
+  <text x="830" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#BAE6FD" font-weight="600">
+    • 杜绝微珠多米诺连锁压碎与吸水增重坐沉海底
+  </text>
+
+  <rect x="816" y="428" width="320" height="114" rx="8" fill="#09241C" stroke="#10B981"/>
+  <text x="830" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#34D399">
+    💰 Web IQ ELI 钛屑冷床重熔收益
+  </text>
+  <text x="830" y="474" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 万米载人球壳与固体浮力模块总额: $950,000.00
+  </text>
+  <text x="830" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 70% ELI 钛屑 EBCHR 重熔 + 浮力余料回收: -$142,500.00
+  </text>
+  <text x="830" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    • 净结算金额: $807,500.00 (立省 15.0% 成本)
+  </text>
+
+  <!-- Bottom Banner -->
+  <rect x="48" y="574" width="1104" height="62" rx="10" fill="#0F172A" stroke="#334155"/>
+  <text x="68" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    🔑 架构师铁律：不要让局部扁平超差的耐压壳或高压压碎吸水的浮力块将潜水器葬送在万米海沟！必须绑定 `deep_sea_submersible_hull_mandate_` 令牌，
+  </text>
+  <text x="68" y="622" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" fill="#94A3B8">
+    强审真球度 &lt;=0.3%R、140MPa 外压保压与浮力块 115MPa 吸水率 &lt;=0.8wt%，并用 Web IQ 核算 70% ELI 钛屑 EBCHR 重熔回收。
+  </text>
+</svg>

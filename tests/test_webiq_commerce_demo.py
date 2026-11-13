@@ -11631,6 +11631,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ultrafast-laser-crystal-sandbox", demo_zh)
 
+    def test_deep_sea_submersible_ti64_eli_hull_syntactic_foam_sphericity_implosion_water_absorption_mandate_vs_buckling_sink_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_deep_sea_submersible_hull_foam_policy,
+        )
+
+        # 1. Verified sphericity <=0.3% R + 140 MPa proof + foam absorption <=0.8 wt% -> 200 OK ($950,000)
+        commit_ok = evaluate_deep_sea_submersible_hull_foam_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_submersible_hull_cents, 95000000)
+
+        # 2. Out-of-sphericity (>0.3% R) or EBW defect implosion risk -> 403 blocked in 11ms
+        sph_403 = evaluate_deep_sea_submersible_hull_foam_policy(
+            hull_sphericity_03pct_ebw_paut_and_140mpa_hydro_verified=False,
+        )
+        self.assertFalse(sph_403.allowed)
+        self.assertEqual(sph_403.http_status, 403)
+        self.assertEqual(
+            sph_403.submersible_hull_lane,
+            "HULL_OUT_OF_SPHERICITY_OR_EBW_DEFECT_IMPLOSION_BLOCKED",
+        )
+
+        # 3. Syntactic foam microballoon crush (<150 MPa) or water absorption (>0.8 wt%) -> 422 blocked in 14ms
+        fom_422 = evaluate_deep_sea_submersible_hull_foam_policy(
+            syntactic_foam_150mpa_crush_and_water_absorption_08pct_passed=False,
+        )
+        self.assertFalse(fom_422.allowed)
+        self.assertEqual(fom_422.http_status, 422)
+        self.assertEqual(
+            fom_422.submersible_hull_lane,
+            "SYNTACTIC_FOAM_MICROBALLOON_CRUSH_OR_WATER_INGRESS_BLOCKED",
+        )
+
+        # 4. Web IQ detects viewport conical seat mismatch or missing class witness cert -> 451 blocked in 280ms
+        vpt_451 = evaluate_deep_sea_submersible_hull_foam_policy(
+            webiq_viewport_conical_seat_and_class_society_cert_clean=False,
+        )
+        self.assertFalse(vpt_451.allowed)
+        self.assertEqual(vpt_451.http_status, 451)
+
+        # 5. Web IQ credits 70% ELI titanium swarf EBCHR remelt & foam trim saving $142,500 ($807,500 net) -> 409 Confirm
+        ebr_409 = evaluate_deep_sea_submersible_hull_foam_policy(
+            eli_ti64_swarf_ebchr_remelt_and_syntactic_trim_credit_cents=14250000,
+        )
+        self.assertFalse(ebr_409.allowed)
+        self.assertEqual(ebr_409.http_status, 409)
+        self.assertEqual(ebr_409.settled_submersible_hull_cents, 80750000)
+        self.assertEqual(ebr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["deep_sea_submersible_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("deep-sea-submersible-hull-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
