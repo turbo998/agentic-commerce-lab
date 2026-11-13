@@ -10119,6 +10119,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("humanoid-harmonic-drive-sandbox", demo_zh)
 
+    def test_silicon_photonics_800g_16t_transceiver_tdecq_inp_laser_dld_mandate_vs_link_flap_training_stall_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_silicon_photonics_transceiver_policy,
+        )
+
+        # 1. Verified PAM4 TDECQ <=1.8dB + FEC tail <10 + GR-468 ΔIth <=5% -> 200 OK ($640,000)
+        commit_ok = evaluate_silicon_photonics_transceiver_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_silicon_photonics_cents, 64000000)
+
+        # 2. PAM4 eye closure (TDECQ >1.8 dB) or KP4 FEC burst error link flap -> 403 blocked in 11ms
+        tdq_403 = evaluate_silicon_photonics_transceiver_policy(
+            pam4_tdecq_eye_closure_and_ber_floor_verified=False,
+        )
+        self.assertFalse(tdq_403.allowed)
+        self.assertEqual(tdq_403.http_status, 403)
+        self.assertEqual(
+            tdq_403.silicon_photonics_lane,
+            "PAM4_TDECQ_EYE_CLOSURE_OR_PRE_FEC_BER_LINK_FLAP_BLOCKED",
+        )
+
+        # 3. Unscreened InP laser DLD drift (ΔIth >5%) or FAU coupling shift (>0.3 dB) -> 422 blocked in 14ms
+        dld_422 = evaluate_silicon_photonics_transceiver_policy(
+            gr468_burnin_ith_drift_and_fau_coupling_loss_passed=False,
+        )
+        self.assertFalse(dld_422.allowed)
+        self.assertEqual(dld_422.http_status, 422)
+        self.assertEqual(
+            dld_422.silicon_photonics_lane,
+            "INP_LASER_DARK_LINE_DEFECT_OR_FAU_EPOXY_DRIFT_BLOCKED",
+        )
+
+        # 4. Web IQ detects reflashed counterfeit CMIS EEPROM or buggy A0 DSP -> 451 blocked in 280ms
+        cms_451 = evaluate_silicon_photonics_transceiver_policy(
+            webiq_cmis_eeprom_cryptographic_auth_and_rohs_clean=False,
+        )
+        self.assertFalse(cms_451.allowed)
+        self.assertEqual(cms_451.http_status, 451)
+
+        # 5. Web IQ credits 8W LPO linear-drive & 400G AuSn/InP/Ge trade-in saving $89,600 ($550,400 net) -> 409 Confirm
+        lpo_409 = evaluate_silicon_photonics_transceiver_policy(
+            lpo_linear_drive_dsp_free_and_400g_tradein_gold_credit_cents=8960000,
+        )
+        self.assertFalse(lpo_409.allowed)
+        self.assertEqual(lpo_409.http_status, 409)
+        self.assertEqual(lpo_409.settled_silicon_photonics_cents, 55040000)
+        self.assertEqual(lpo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["silicon_photonics_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("silicon-photonics-transceiver-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

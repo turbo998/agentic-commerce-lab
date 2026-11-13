@@ -3672,6 +3672,24 @@
         <div id="har-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive 800G/1.6T Silicon Photonics Transceiver Offtake, PAM4 TDECQ & GR-468 Burn-In Mandate Sandbox (Round 160 FAQ Companion) -->
+      <div class="finops-box" id="silicon-photonics-transceiver-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sip-title">🔦 AI 智算中心 800G/1.6T 硅光模块、PAM4 眼图 TDECQ (&lt;=1.8 dB) 与 GR-468 激光器老化架构：防万卡训练 Link Flap 闪断与早夭猝死令牌 (silicon_photonics_800g_mandate_...) vs 光功率计盲付决策器 (Round 160 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 1,000 只 800G OSFP 硅光模块交割 ($640,000.00)、IEEE 802.3df PAM4 TDECQ/KP4 FEC 错误桶尾部、Telcordia GR-468 磷化铟激光器老化 ΔIth 与 Web IQ CMIS 5.2 签名/LPO 线性直驱场景 (800G/1.6T Silicon Photonics Scenario):</span></label>
+          <select id="sip-select" onchange="updateSiliconPhotonicsTransceiverSandbox()">
+            <option value="sip_commit_ok">⚡ PAM4 眼图 TDECQ 1.15 dB + 消光比 ER 5.4 dB + KP4 FEC 最大错误桶 Bin 4 + GR-468 老化 ΔIth 1.2%：10ms 自动结算 $640,000.00! (Act automatically)</option>
+            <option value="sip_tdq_403">🛑 手持光功率计测 +2dBm 发光正常但硅光调制器偏置失真致 PAM4 四电平眼图拥挤 (TDECQ = 3.9 dB &gt; 1.8 dB，产生 &gt;15 符号突发误码击穿 KP4 FEC 触发微秒级 Link Flap 闪断卡死万卡 GPU 训练) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sip_dld_422">🚨 白牌厂赶交期偷省 72h 高温老化筛选，外置磷化铟 (InP) 连续波激光器位错攀移成暗线缺陷 DLD (阈值电流暴涨 ΔIth = +24% &gt; 5% 上机两周成批失明) 或 FAU 光纤阵列胶移损耗 +2.5 dB 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sip_cms_451">🛑 供应商刷写篡改 OIF CMIS 5.2 EEPROM 序列号伪装顶级原厂模块 (ECDSA 签名校验失败)，或混用存在丢包硬件 Bug 的早期工程版 A0 步进 7nm DSP 芯片：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="sip_lpo_409">🧑‍⚖️ Web IQ 针对机柜间 &lt;=30m 短距叶脊互连启用 8W LPO 线性直驱可插拔光模块 (砍掉高功耗 7W DSP 芯片省电 50%) 并执行淘汰旧 400G 光模块金锡焊料/锗硅芯片折旧冲抵，立省 $89,600.00 (净付 $550,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sip-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4270,6 +4288,7 @@ function renderAll() {
   updateMetalAmPowderSandbox();
   updateAiDatacenterCoolantSandbox();
   updateHumanoidHarmonicDriveSandbox();
+  updateSiliconPhotonicsTransceiverSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12362,6 +12381,55 @@ function updateHumanoidHarmonicDriveSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ VIM+VAR 纯净钢 (&lt;=8 ppm) + 万小时寿命 + 滞回空程 (&lt;=0.5 arcmin) 达标：已自动清算 (VERIFIED_HUMANOID_HARMONIC_DRIVE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 0.35mm 柔轮疲劳断杯、零换向死区抖动与编码器油污</strong>：2,000 台人形机器人精密谐波减速器批次已完成结算（<code>$470,000.00</code>）！" +
+    "</div>";
+}
+
+function updateSiliconPhotonicsTransceiverSandbox() {
+  var selEl = document.getElementById("sip-select");
+  var outEl = document.getElementById("sip-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sip_tdq_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PAM4_TDECQ_EYE_CLOSURE_OR_PRE_FEC_BER_LINK_FLAP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "光模块声光电测试线 <code>DCA-X 采样示波器与 800G 误码仪 (BERT)</code> 实测显示，该批模块虽平均发光功率正常，但 PAM4 四电平眼图闭合代价恶化至 <code>TDECQ = 3.9 dB &gt; 1.8 dB</code> 且出现突破 KP4 FEC 15 符号极限的突发误码（将在万卡集群中引发 RoCEv2/IB Link Flap 闪断卡死同步 AllReduce 训练，<code>pam4_tdecq_eye_closure_and_ber_floor_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$640,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sip_dld_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 INP_LASER_DARK_LINE_DEFECT_OR_FAU_EPOXY_DRIFT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "可靠性老化房 <code>Telcordia GR-468 85°C 高温加速老化与光纤阵列 (FAU) 温循台</code> 检出外置磷化铟 (InP) 激光器因暗线缺陷 DLD 繁殖导致阈值电流暴涨 <code>ΔIth = +24.0% &gt; 5.0%</code>，或 FAU 紫外胶热漂移损耗增加 <code>2.5 dB &gt; 0.3 dB</code>（<code>gr468_burnin_ith_drift_and_fau_coupling_loss_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sip_cms_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 COUNTERFEIT_REFLASHED_CMIS_EEPROM_OR_DSP_STEPPING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>OIF CMIS 5.2 密码学数字签名库与 5nm/7nm oDSP 量产步进勘误表</code>，检出白牌厂刷写假冒 OUI 序列号或混用存在丢包硬件 Bug 的早期 A0 步进 DSP，立即冻结货款并封锁序列号段！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sip_lpo_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LPO_LINEAR_PLUGGABLE_OPTICS_AND_400G_RECLAIM_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实机柜间 &lt;=30m 短距采用 <code>8W LPO 线性直驱省去高功耗 DSP 芯片 + 升级退役旧 400G 模块金锡/锗磷化铟回收冲抵</code>，自动冲抵芯片溢价与旧件残值立省 <code>$89,600.00</code>（净付降至 <code>$550,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PAM4 眼图 (TDECQ &lt;=1.8 dB) + FEC 零爆桶 + GR-468 老化 (&lt;=5%) 达标：已自动清算 (VERIFIED_SILICON_PHOTONICS_800G_16T_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零万卡训练 Link Flap 闪断、零激光器暗线早夭与假固件欺诈</strong>：1,000 只 800G OSFP 硅光模块批次已完成结算（<code>$640,000.00</code>）！" +
     "</div>";
 }
 

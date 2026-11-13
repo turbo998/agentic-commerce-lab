@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg162" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent162" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg162)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent162)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 160 · AI 智算中心 800G/1.6T 硅光模块、PAM4 眼图 TDECQ 与激光器老化架构图</text>
+  <text x="36" y="84" class="sub">800G/1.6T Silicon Photonics Transceiver Offtake, PAM4 TDECQ (&lt;=1.8 dB), FEC Tail (&lt;10) &amp; GR-468 Burn-In ΔIth (&lt;=5%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按只数与光功率盲付</text>
+  <text x="52" y="166" class="card-h">三大万卡训练闪断卡死、激光器猝死与假模块灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. PAM4 眼图畸变 (TDECQ=3.9dB) 触发万卡闪断</text>
+  <text x="52" y="216" class="body">普通光功率计测 +2dBm 发光正常，但 PAM4 四电平</text>
+  <text x="52" y="234" class="body">非线性拥挤产生 &gt;15 符号突发误码击穿 KP4 FEC，</text>
+  <text x="52" y="252" class="body">微秒级 Link Flap 直接卡死上万张 GPU 同步训练！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 偷省 72h 老化致 InP 激光器暗线缺陷 (DLD) 猝死</text>
+  <text x="52" y="302" class="body">外延位错在注入电流下攀移成暗线黑洞，上机 300h</text>
+  <text x="52" y="320" class="body">阈值电流暴涨 +24% 成批失明；FAU 胶移损耗 +2.5dB。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 刷写假 CMIS 固件与短距滥用 16W 高功耗 DSP</text>
+  <text x="52" y="370" class="body">白牌刷 EEPROM 冒充原厂；机柜间 &lt;30m 短距未用</text>
+  <text x="52" y="388" class="body">8W LPO 线性直驱白费一半电，旧 400G 金锗未回收。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1,000 Modules + +2.0dBm Power Meter</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $640,000 exposed to AllReduce link flaps</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ silicon_photonics_800g_mandate</text>
+  <text x="428" y="166" class="card-h">四层 PAM4 眼图、GR-468 老化与防伪门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: PAM4 TDECQ &amp; KP4 FEC Tail (11ms)</text>
+  <text x="440" y="220" class="body">IEEE 802.3df TDECQ &lt;=1.8 dB, ER &gt;=4.5 dB &amp;</text>
+  <text x="440" y="238" class="body">FEC 最大错误桶 &lt;10 — 眼图闭合闪断直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: GR-468 Burn-In ΔIth &amp; FAU (14ms)</text>
+  <text x="440" y="296" class="body">100% 85°C 高温老化阈值漂移 ΔIth &lt;=5.0%, 金锡空洞</text>
+  <text x="440" y="314" class="body">&lt;=2% &amp; FAU 温循 &lt;=0.3dB — 早夭猝死直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ CMIS 5.2 &amp; DSP Step (280ms)</text>
+  <text x="440" y="372" class="body">核验 OIF CMIS 5.2 EEPROM 密码学签名与 5nm/7nm</text>
+  <text x="440" y="390" class="body">DSP 量产步进勘误表 — 假固件或 A0 版直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 8W LPO &amp; 400G Au/Ge Trade-In (245ms)</text>
+  <text x="440" y="448" class="body">&lt;=30m 短距采用 LPO 线性直驱省 DSP (功耗降 50%) +</text>
+  <text x="440" y="466" class="body">退役 400G 金锡/锗磷化铟折旧冲抵立省 $89,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 清晰眼图与零早夭老化放行</text>
+  <text x="828" y="212" class="body">TDECQ 1.15dB + FEC Bin 4 + ΔIth 1.2% → $640,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · PAM4 眼图闭合或 FEC 爆桶</text>
+  <text x="828" y="258" class="body">TDECQ=3.9dB 触发集群闪断 → 冻结 $640,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · InP 暗线缺陷或 FAU 胶移</text>
+  <text x="828" y="304" class="body">老化 ΔIth=+24% 早夭猝死 → 拒付 $640,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 假 CMIS 或缺陷 DSP</text>
+  <text x="828" y="350" class="body">刷写假 OUI 或 A0 版 DSP → 熔断 $640,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · LPO 线性直驱与旧模块回收</text>
+  <text x="828" y="396" class="body">节省 $89,600 (-14%) → 确认后净付 $550,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 组网保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#6366f1">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 800G/1.6T 硅光模块严禁“仅看光功率计与平均误码率盲付”：TDECQ 超标会产生突破 15 符号的突发误码卡死万卡训练，未老化 InP 激光器会成批猝死。</text>
+  <text x="54" y="584" class="body">• 必须将 PAM4 TDECQ (&lt;=1.8dB)、FEC 最大错误桶 (&lt;10)、GR-468 老化 ΔIth (&lt;=5%) 与 LPO/旧件回收绑定为智能托管解锁谓词。</text>
+</svg>
