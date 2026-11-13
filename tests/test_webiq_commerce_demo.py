@@ -10175,6 +10175,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("silicon-photonics-transceiver-sandbox", demo_zh)
 
+    def test_cowos_hbm_tsv_electroplating_capillary_underfill_void_warpage_mandate_vs_microbump_cracking_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cowos_hbm_packaging_policy,
+        )
+
+        # 1. Verified 0% TSV void + warpage <=80um + Dmax <=1.5um + ULA <=0.001 -> 200 OK ($660,000)
+        commit_ok = evaluate_cowos_hbm_packaging_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cowos_packaging_cents, 66000000)
+
+        # 2. TSV keyhole pinch-off void or interposer warpage (>80 um) -> 403 blocked in 11ms
+        tsv_403 = evaluate_cowos_hbm_packaging_policy(
+            tsv_bottom_up_superfill_and_interposer_warpage_verified=False,
+        )
+        self.assertFalse(tsv_403.allowed)
+        self.assertEqual(tsv_403.http_status, 403)
+        self.assertEqual(
+            tsv_403.cowos_packaging_lane,
+            "TSV_PINCH_OFF_SEAM_VOID_OR_INTERPOSER_WARPAGE_BRIDGING_BLOCKED",
+        )
+
+        # 3. CUF silica filler logjam (Dmax >1.5 um) or bHAST dendrite short -> 422 blocked in 14ms
+        cuf_422 = evaluate_cowos_hbm_packaging_policy(
+            cuf_silica_filler_max_cut_and_bhast_dendrite_passed=False,
+        )
+        self.assertFalse(cuf_422.allowed)
+        self.assertEqual(cuf_422.http_status, 422)
+        self.assertEqual(
+            cuf_422.cowos_packaging_lane,
+            "CUF_FILLER_LOGJAM_DELAMINATION_OR_BHAST_DENDRITE_SHORT_BLOCKED",
+        )
+
+        # 4. Web IQ detects high alpha-particle emission (>0.001 cph/cm2) or thawed CUF -> 451 blocked in 280ms
+        ula_451 = evaluate_cowos_hbm_packaging_policy(
+            webiq_jedec_jesd22_b117_lot_and_radioactive_alpha_clean=False,
+        )
+        self.assertFalse(ula_451.allowed)
+        self.assertEqual(ula_451.http_status, 451)
+
+        # 5. Web IQ credits 300mm glass-carrier 15x laser reuse & MMO anode recoat saving $92,400 ($567,600 net) -> 409 Confirm
+        gls_409 = evaluate_cowos_hbm_packaging_policy(
+            glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents=9240000,
+        )
+        self.assertFalse(gls_409.allowed)
+        self.assertEqual(gls_409.http_status, 409)
+        self.assertEqual(gls_409.settled_cowos_packaging_cents, 56760000)
+        self.assertEqual(gls_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cowos_packaging_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cowos-hbm-packaging-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

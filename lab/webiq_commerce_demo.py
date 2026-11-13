@@ -18403,6 +18403,91 @@ def evaluate_silicon_photonics_transceiver_policy(
     )
 
 
+@dataclass(frozen=True)
+class CowosHbmPackagingVerdict:
+    allowed: bool
+    http_status: int
+    cowos_packaging_lane: str
+    settled_cowos_packaging_cents: int
+    glass_carrier_anode_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_cowos_hbm_packaging_policy(
+    *,
+    gross_cowos_packaging_cents: int = 66000000,
+    tsv_bottom_up_superfill_and_interposer_warpage_verified: bool = True,
+    cuf_silica_filler_max_cut_and_bhast_dendrite_passed: bool = True,
+    webiq_jedec_jesd22_b117_lot_and_radioactive_alpha_clean: bool = True,
+    glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents: int = 0,
+) -> CowosHbmPackagingVerdict:
+    # 1. TSV Keyhole Pinch-Off Void (>0%) / Cu Pumping (>50 nm) or Interposer Warpage (>80 um) -> HTTP 403
+    if not tsv_bottom_up_superfill_and_interposer_warpage_verified:
+        return CowosHbmPackagingVerdict(
+            False,
+            403,
+            "TSV_PINCH_OFF_SEAM_VOID_OR_INTERPOSER_WARPAGE_BRIDGING_BLOCKED",
+            0,
+            0,
+            "cowos_packaging_lot_blocked_due_to_tsv_keyhole_void_cu_pumping_or_interposer_warpage_above_80um",
+            11,
+            "Send to a human",
+        )
+
+    # 2. CUF Silica Filler Logjam (Dmax >1.5 um in 12 um Gap) or bHAST Cu Dendrite Short -> HTTP 422
+    if not cuf_silica_filler_max_cut_and_bhast_dendrite_passed:
+        return CowosHbmPackagingVerdict(
+            False,
+            422,
+            "CUF_FILLER_LOGJAM_DELAMINATION_OR_BHAST_DENDRITE_SHORT_BLOCKED",
+            0,
+            0,
+            "underfill_batch_rejected_for_silica_filler_dmax_above_15um_logjam_or_bhast_halide_dendrite",
+            14,
+            "Send to a human",
+        )
+
+    # 3. High Alpha-Particle Emission (>0.001 cph/cm2 HBM SEU Risk) or -40C Cold-Chain Breach via Web IQ -> HTTP 451
+    if not webiq_jedec_jesd22_b117_lot_and_radioactive_alpha_clean:
+        return CowosHbmPackagingVerdict(
+            False,
+            451,
+            "HIGH_ALPHA_PARTICLE_SOFT_ERROR_OR_EXPIRED_CUF_THIXOTROPY_HOLD",
+            0,
+            0,
+            "webiq_detected_silica_filler_alpha_emission_above_0001_cph_cm2_or_dry_ice_cold_chain_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 300mm Glass-Carrier 15x Laser-Debond Reuse + MMO IrO2/Ta2O5 Anode Recoat Offset -> HTTP 409 Confirm
+    if glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents > 0:
+        return CowosHbmPackagingVerdict(
+            False,
+            409,
+            "GLASS_CARRIER_WAFER_REUSE_AND_INSOLUBLE_ANODE_RECOAT_CONFIRM",
+            gross_cowos_packaging_cents - glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents,
+            glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents,
+            "webiq_applied_300mm_glass_carrier_15x_laser_reuse_and_mmo_anode_recoat_credit_saving_92400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 0% TSV Void + Warpage <=80um + Dmax <=1.5um + ULA <=0.001 cph/cm2 -> Settled
+    return CowosHbmPackagingVerdict(
+        True,
+        200,
+        "VERIFIED_COWOS_HBM_PACKAGING_MATERIALS_SETTLED",
+        gross_cowos_packaging_cents,
+        0,
+        "3d_xray_tsv_superfill_shadow_moire_warpage_cuf_dmax_bhast_and_ula_alpha_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -24250,6 +24335,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "tdecq_link_flap_block_latency_ms": sip_tdq_403.latency_ms,
     }
 
+    # Round 161 (CoWoS/HBM3e TSV Electroplating & Capillary Underfill Offtake, Zero-Void & ULA Mandate)
+    cws_commit_ok = evaluate_cowos_hbm_packaging_policy()
+    cws_tsv_403 = evaluate_cowos_hbm_packaging_policy(
+        tsv_bottom_up_superfill_and_interposer_warpage_verified=False,
+    )
+    cws_cuf_422 = evaluate_cowos_hbm_packaging_policy(
+        cuf_silica_filler_max_cut_and_bhast_dendrite_passed=False,
+    )
+    cws_ula_451 = evaluate_cowos_hbm_packaging_policy(
+        webiq_jedec_jesd22_b117_lot_and_radioactive_alpha_clean=False,
+    )
+    cws_gls_409 = evaluate_cowos_hbm_packaging_policy(
+        glass_carrier_laser_debond_reuse_and_iridium_anode_credit_cents=9240000,
+    )
+    cowos_packaging_guards = {
+        "all_passed": (
+            cws_commit_ok.allowed
+            and cws_commit_ok.settled_cowos_packaging_cents == 66000000
+            and not cws_tsv_403.allowed
+            and cws_tsv_403.http_status == 403
+            and not cws_cuf_422.allowed
+            and cws_cuf_422.http_status == 422
+            and not cws_ula_451.allowed
+            and cws_ula_451.http_status == 451
+            and not cws_gls_409.allowed
+            and cws_gls_409.action_pill == "Confirm"
+        ),
+        "cowos_packaging_settlement_latency_ms": cws_commit_ok.latency_ms,
+        "tsv_warpage_block_latency_ms": cws_tsv_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24423,6 +24539,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "datacenter_coolant_guards": datacenter_coolant_guards,
         "harmonic_drive_guards": harmonic_drive_guards,
         "silicon_photonics_guards": silicon_photonics_guards,
+        "cowos_packaging_guards": cowos_packaging_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30220,6 +30337,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sip-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive CoWoS/HBM3e TSV Electroplating & Capillary Underfill Offtake, Zero-Void & ULA Mandate Sandbox (Round 161 FAQ Companion) -->
+      <div class="finops-box" id="cowos-hbm-packaging-sandbox" style="margin-top:12px;border-color:#F43F5E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cws-title">🧬 CoWoS/HBM3e 先进封装 TSV 电镀液与底部填充胶、零空洞与超低 α (&lt;=0.001) 架构：防 $30k AI 芯片微凸点开裂与 HBM 软错误令牌 (cowos_hbm_packaging_mandate_...) vs 升数胶管盲付决策器 (Round 161 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 500L TSV 电镀添加剂与 3,000 支毛细底部填充胶交割 ($660,000.00)、3D X-Ray TSV 零空洞/260°C 阴影莫尔翘曲、硅微粉 Dmax &lt;=1.5um 截断与 Web IQ 超低 α 射线/玻璃载片 15 次复用场景 (CoWoS/HBM3e Packaging Scenario):</span></label>
+          <select id="cws-select" onchange="updateCowosHbmPackagingSandbox()">
+            <option value="cws_commit_ok">⚡ 3D X-Ray TSV 0% 空洞 (铜泵出 18nm) + 260°C 翘曲 45um + 填料 Dmax 1.1um + 超低 α 0.0004 cph/cm2：10ms 自动结算 $660,000.00! (Act automatically)</option>
+            <option value="cws_tsv_403">🛑 TSV 电镀整平剂失衡致 10:1 盲孔孔口提前封口留下钥匙孔空洞 (400°C 退火铜膨胀泵出顶破 RDL 互连层)，或 3.3x 光罩硅中介层 260°C 回流焊翘曲达 185um &gt; 80um 致微凸点脱焊桥连拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="cws_cuf_422">🚨 毛细底部填充胶 (CUF) 混入 4.2um &gt; 1.5um 粗硅微粉卡死在 12um 微凸点窄缝入口形成砂坝 (芯片中心纯树脂 CTE 暴涨至 65 ppm/K 温循剪断焊点)，或游离氯超标 bHAST 枝晶短路拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="cws_ula_451">🛑 硅微粉填料含痕量天然铀/钍致 α 粒子发射率高达 0.035 &gt; 0.001 cph/cm2 (轰击 HBM3e DRAM 单元引发大模型权重静默翻转 SDC)，或 -40°C 干冰冷链断链致胶水预交联增稠：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="cws_gls_409">🧑‍⚖️ Web IQ 启用 308nm 准分子激光冷解键合使 300mm 光学级玻璃临时载片循环复用 15 次，并对失活的氧化铱/氧化钽 (MMO IrO2/Ta2O5) 钛网不溶阳极执行原厂重涂再生冲抵，立省 $92,400.00 (净付 $567,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cws-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -30819,6 +30954,7 @@ function renderAll() {{
   updateAiDatacenterCoolantSandbox();
   updateHumanoidHarmonicDriveSandbox();
   updateSiliconPhotonicsTransceiverSandbox();
+  updateCowosHbmPackagingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -38960,6 +39096,55 @@ function updateSiliconPhotonicsTransceiverSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ PAM4 眼图 (TDECQ &lt;=1.8 dB) + FEC 零爆桶 + GR-468 老化 (&lt;=5%) 达标：已自动清算 (VERIFIED_SILICON_PHOTONICS_800G_16T_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零万卡训练 Link Flap 闪断、零激光器暗线早夭与假固件欺诈</strong>：1,000 只 800G OSFP 硅光模块批次已完成结算（<code>$640,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCowosHbmPackagingSandbox() {{
+  var selEl = document.getElementById("cws-select");
+  var outEl = document.getElementById("cws-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cws_tsv_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TSV_PINCH_OFF_SEAM_VOID_OR_INTERPOSER_WARPAGE_BRIDGING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "先进封装量测线 <code>3D X-Ray 纳米 CT 与阴影莫尔 (Shadow Moiré) 高温翘曲仪</code> 实测显示，10:1 深宽比 TSV 孔心存在封口钥匙孔空洞（400°C 退火铜泵出高度超标顶裂 RDL）或 260°C 回流焊中介层翘曲高达 <code>185 um &gt; 80 um</code>（将导致 $30k AI+HBM 模块微凸点冷焊开路与桥连，<code>tsv_bottom_up_superfill_and_interposer_warpage_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$660,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cws_cuf_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CUF_FILLER_LOGJAM_DELAMINATION_OR_BHAST_DENDRITE_SHORT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "毛细底部填充胶实验室检出球形硅微粉最大粒径达 <code>Dmax = 4.2 um &gt; 1.5 um</code>（卡死在 12um HBM 微凸点窄缝入口造成中心纯树脂分层剪断焊点），或 96h bHAST 发生电化学铜枝晶短路（<code>cuf_silica_filler_max_cut_and_bhast_dendrite_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cws_ula_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HIGH_ALPHA_PARTICLE_SOFT_ERROR_OR_EXPIRED_CUF_THIXOTROPY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>气体正比计数器超低 α 射线 (ULA) 台账与 -40°C 干冰冷链粘度记录</code>，检出硅微粉 α 发射率高达 <code>0.035 &gt; 0.001 cph/cm2</code>（将轰击 HBM3e 引发大模型软错误翻转）或冷链断链增稠，立即冻结货款并封存问题批号！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "cws_gls_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GLASS_CARRIER_WAFER_REUSE_AND_INSOLUBLE_ANODE_RECOAT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>308nm 准分子激光解键合 300mm 玻璃临时载片 15 次循环复用 + 氧化铱钽 (MMO) 不溶钛阳极网重涂再生</code>，自动冲抵载片与阳极采购费立省 <code>$92,400.00</code>（净付降至 <code>$567,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 3D X-Ray TSV 零空洞 + 翘曲 (&lt;=80 um) + 超低 α (&lt;=0.001) 达标：已自动清算 (VERIFIED_COWOS_HBM_PACKAGING_MATERIALS_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零退火铜泵出裂纹、零 12um 微凸点窄缝架桥与 HBM 软错误翻转</strong>：CoWoS/HBM3e 先进封装电镀液与底部填充胶批次已完成结算（<code>$660,000.00</code>）！" +
     "</div>";
 }}
 
