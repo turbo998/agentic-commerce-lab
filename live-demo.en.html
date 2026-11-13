@@ -4104,6 +4104,24 @@
         <div id="fts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Hydrogen PEMFC Bipolar Plate ICR, Anti-Fenton & Cell-Reversal Mandate Sandbox (Round 184 FAQ Companion) -->
+      <div class="finops-box" id="pemfc-bipolar-plate-mea-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pemfc-title">🚛 氢燃料电池 (PEMFC) 75um 金属双极板、ICR (&lt;=5mΩ·cm²) 防芬顿穿孔与 60min 抗反极架构：防 Fe2+ 自由基蚀膜与缺氢烧堆令牌 (pemfc_bipolar_plate_mea_mandate_...) vs 峰值千瓦盲付决策器 (Round 184 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 50 台 240kW 氢燃料电池双极板与五合一 MEA 交割 ($800,000.00)、极化后接触电阻 ICR/腐蚀电流 Icorr、GDL 疏水角/阳极 IrO2 抗反极时间 CRT 与 Web IQ 铂铱回收/冲压废边场景 (PEMFC Stack Scenario):</span></label>
+          <select id="pemfc-select" onchange="updatePemfcBipolarPlateMeaSandbox()">
+            <option value="pem_commit_ok">⚡ 极化后 ICR=3.8mΩ·cm² + Icorr=0.22uA/cm² + GDL 接触角 151° + 抗反极 CRT=95min 零烧穿：10ms 自动结算 $800,000.00! (Act automatically)</option>
+            <option value="pem_icr_403">🛑 75um 双极板冲压圆角非晶碳涂层针孔致极化后 ICR 飙至 28mΩ·cm² &gt; 5mΩ，或溶出 Fe2+ 催化芬顿反应产生羟基自由基咬穿 12um 质子膜拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="pem_crt_422">🚨 GDL 疏水接触角跌至 128° &lt; 145° 致 2.5A/cm² 爬坡水淹断电，或阳极省掉 IrO2 致冷启动缺氢反极 90 秒内氧化碳载体烧穿电堆拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="pem_hel_451">🛑 双极板冷却腔激光拼焊氦质谱漏率 &gt;1.0e-6 mbar·L/s 致冷却液内漏毒化铂催化剂，或质子膜缺失 CeO2 自由基淬灭剂：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="pem_pti_409">🧑‍⚖️ Web IQ 启用狭缝涂布边角料 98.5% 铂/铱 (Pt/Ir) 湿法精炼回用，并将 75um 316L/钛箔冲裁产生的 35% 骨架废边真空重熔抵扣立省 $112,000.00 (净付 $688,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pemfc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4726,6 +4744,7 @@ function renderAll() {
   updateNuclearTrisoAtfCladdingSandbox();
   updateRfAlscnBawFilterSandbox();
   updateRobot6AxisForceTorqueSensorSandbox();
+  updatePemfcBipolarPlateMeaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13994,6 +14013,55 @@ function updateRobot6AxisForceTorqueSensorSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 6×6 维间串扰 (&lt;=0.8% FS) + 玻璃微熔 (&lt;=0.03% FS) + 500% 过载保护达标：已自动清算 (VERIFIED_6AXIS_FORCE_TORQUE_SENSOR_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零双足行走 ZMP 误判摔倒、零有机胶脱胶蠕变与跳跃落地十字梁屈服</strong>：500 颗人形机器人腕/踝六维力传感器批次已完成结算（<code>$550,000.00</code>）！" +
+    "</div>";
+}
+
+function updatePemfcBipolarPlateMeaSandbox() {
+  var selEl = document.getElementById("pemfc-select");
+  var outEl = document.getElementById("pemfc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "pem_icr_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BIPOLAR_PLATE_ICR_OR_FENTON_IRON_LEACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "电化学恒电位极化与 ICP-MS 浸出实测显示，该批 75um 金属双极板圆角处 PVD 非晶碳涂层存在针孔，<code>极化后界面接触电阻飙至 ICR = 28 mΩ·cm² &gt; 5 mΩ·cm² 且腐蚀电流 Icorr &gt; 0.5 uA/cm² 溶出 Fe2+ 离子</code>（催化芬顿反应生成羟基自由基咬穿 12um 质子交换膜，<code>bipolar_plate_icr_5mohm_and_corrosion_fe_leach_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$800,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pem_crt_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GDL_FLOODING_OR_CELL_REVERSAL_CARBON_BURN_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "高电密极化与反极耐久台检出 <code>气体扩散层 GDL 静态疏水接触角 &lt; 145° 导致 2.5A/cm² 水淹断电，或阳极未掺杂 IrO2 抗反极催化剂导致 -0.2A/cm² 抗反极时间 CRT &lt; 60 min</code>（冷启动缺氢 90 秒内氧化烧穿碳载体，<code>gdl_hydrophobic_angle_145deg_and_cell_reversal_60min_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pem_hel_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 COOLANT_WELD_HELIUM_LEAK_OR_MEMBRANE_CEO2_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>双极板激光拼焊氦质谱检漏图谱与 ePTFE/CeO2 增强膜批次单</code>，检出冷却腔焊缝漏率 &gt;1.0e-6 mbar·L/s 或缺失 CeO2 自由基淬灭剂，立即冻结货款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pem_pti_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PT_IR_CATALYST_RECOVERY_AND_BPP_SCRAP_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>狭缝涂布边角料 98.5% 铂/铱 (Pt/Ir) 湿法精炼回用 + 75um 316L/钛箔冲裁 35% 骨架废边真空重熔</code>，自动冲抵贵金属与特钢损耗立省 <code>$112,000.00</code>（净付降至 <code>$688,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双极板 ICR (&lt;=5mΩ·cm²) + 疏水角 (&gt;=145°) + 抗反极 (&gt;=60min) 达标：已自动清算 (VERIFIED_PEMFC_BIPOLAR_PLATE_MEA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零芬顿自由基咬穿质子膜、零高电密水淹与冷启动缺氢反极烧堆</strong>：50 台 240kW 氢燃料电池电堆双极板与五合一 MEA 批次已完成结算（<code>$800,000.00</code>）！" +
     "</div>";
 }
 

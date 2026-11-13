@@ -11463,6 +11463,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("robot-6axis-ft-sensor-sandbox", demo_zh)
 
+    def test_hydrogen_fuel_cell_pemfc_bipolar_plate_icr_gdl_flooding_reversal_mandate_vs_membrane_poisoning_burnout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pemfc_bipolar_plate_mea_policy,
+        )
+
+        # 1. Verified ICR <=5 mOhm·cm2 + contact angle >=145° + CRT >=60 min -> 200 OK ($800,000)
+        commit_ok = evaluate_pemfc_bipolar_plate_mea_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pemfc_stack_cents, 80000000)
+
+        # 2. High ICR (>5 mOhm·cm2) or Fe2+ leaching Fenton radical attack -> 403 blocked in 11ms
+        icr_403 = evaluate_pemfc_bipolar_plate_mea_policy(
+            bipolar_plate_icr_5mohm_and_corrosion_fe_leach_verified=False,
+        )
+        self.assertFalse(icr_403.allowed)
+        self.assertEqual(icr_403.http_status, 403)
+        self.assertEqual(
+            icr_403.pemfc_stack_lane,
+            "BIPOLAR_PLATE_ICR_OR_FENTON_IRON_LEACH_BLOCKED",
+        )
+
+        # 3. GDL flooding (<145°) or cell-reversal anode carbon burnout (CRT <60 min) -> 422 blocked in 14ms
+        crt_422 = evaluate_pemfc_bipolar_plate_mea_policy(
+            gdl_hydrophobic_angle_145deg_and_cell_reversal_60min_passed=False,
+        )
+        self.assertFalse(crt_422.allowed)
+        self.assertEqual(crt_422.http_status, 422)
+        self.assertEqual(
+            crt_422.pemfc_stack_lane,
+            "GDL_FLOODING_OR_CELL_REVERSAL_CARBON_BURN_BLOCKED",
+        )
+
+        # 4. Web IQ detects coolant laser-weld helium leak or missing CeO2 quencher -> 451 blocked in 280ms
+        hel_451 = evaluate_pemfc_bipolar_plate_mea_policy(
+            webiq_laser_weld_helium_leak_and_ceo2_radical_scavenger_clean=False,
+        )
+        self.assertFalse(hel_451.allowed)
+        self.assertEqual(hel_451.http_status, 451)
+
+        # 5. Web IQ credits 98.5% Pt/Ir slurry refining & 35% stamped foil scrap saving $112,000 ($688,000 net) -> 409 Confirm
+        pti_409 = evaluate_pemfc_bipolar_plate_mea_policy(
+            pt_ir_slurry_refining_and_stamped_foil_scrap_credit_cents=11200000,
+        )
+        self.assertFalse(pti_409.allowed)
+        self.assertEqual(pti_409.http_status, 409)
+        self.assertEqual(pti_409.settled_pemfc_stack_cents, 68800000)
+        self.assertEqual(pti_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pemfc_bipolar_plate_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pemfc-bipolar-plate-mea-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
