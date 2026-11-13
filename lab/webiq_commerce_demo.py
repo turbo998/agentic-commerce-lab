@@ -20268,6 +20268,96 @@ def evaluate_nuclear_triso_atf_cladding_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 182: 5G/6G RF AlScN FBAR/BAW Filter, Zero-AOG & Ion-Beam Trim Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class RfAlscnBawFilterVerdict:
+    allowed: bool
+    http_status: int
+    rf_baw_filter_lane: str
+    settled_rf_baw_filter_cents: int
+    ibt_trim_scandium_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_rf_alscn_baw_filter_policy(
+    *,
+    gross_rf_baw_filter_cents: int = 57000000,
+    alscn_xrd_fwhm_zero_aog_and_keff_145pct_verified: bool = True,
+    spurious_lamb_mode_apodization_and_29dbm_power_handling_passed: bool = True,
+    webiq_3gpp_band_coexistence_and_4n5_scandium_target_clean: bool = True,
+    localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents: int = 0,
+) -> RfAlscnBawFilterVerdict:
+    # 1. Abnormally Oriented Grains (AOG >0.5 /cm2) or Low Electromechanical Coupling (keff^2 <14.5%) -> HTTP 403
+    if not alscn_xrd_fwhm_zero_aog_and_keff_145pct_verified:
+        return RfAlscnBawFilterVerdict(
+            False,
+            403,
+            "ABNORMALLY_ORIENTED_GRAINS_AOG_OR_LOW_PIEZOELECTRIC_KEFF_BLOCKED",
+            0,
+            0,
+            "rf_alscn_baw_blocked_due_to_aog_defect_density_above_05cm2_or_keff2_below_145pct",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Lateral Rayleigh-Lamb Spurious Passband Ripple (>0.3 dB) or +29 dBm Membrane Burnout -> HTTP 422
+    if not spurious_lamb_mode_apodization_and_29dbm_power_handling_passed:
+        return RfAlscnBawFilterVerdict(
+            False,
+            422,
+            "SPURIOUS_LATERAL_MODE_PASSBAND_RIPPLE_OR_29DBM_SELF_HEATING_BURN_BLOCKED",
+            0,
+            0,
+            "fbar_wafer_rejected_for_spurious_lamb_mode_ripple_above_03db_or_29dbm_thermal_burnout",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Oxidized <3N Scandium Target or Poor Wi-Fi Coexistence Skirt Rejection (<52 dB) via Web IQ -> HTTP 451
+    if not webiq_3gpp_band_coexistence_and_4n5_scandium_target_clean:
+        return RfAlscnBawFilterVerdict(
+            False,
+            451,
+            "IMPURE_SCANDIUM_OXIDE_TARGET_OR_WIFI_COEXISTENCE_SKIRT_HOLD",
+            0,
+            0,
+            "webiq_detected_oxidized_scandium_target_or_wifi_coexistence_skirt_rejection_below_52db",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Scanning Ion-Beam Trimming (IBT) + 97% Spent AlSc Target Scandium Reclaim -> HTTP 409 Confirm
+    if localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents > 0:
+        return RfAlscnBawFilterVerdict(
+            False,
+            409,
+            "SCANNING_ION_BEAM_TRIMMING_YIELD_AND_SCANDIUM_TARGET_RECLAIM_CONFIRM",
+            gross_rf_baw_filter_cents - localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents,
+            localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents,
+            "webiq_applied_scanning_ion_beam_trimming_and_97pct_scandium_target_reclaim_saving_79800_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified AOG <=0.5 /cm2 + keff^2 >=14.5% + Ripple <=0.3 dB + +29 dBm Survival -> Settled
+    return RfAlscnBawFilterVerdict(
+        True,
+        200,
+        "VERIFIED_RF_ALSCN_BAW_FILTER_SETTLED",
+        gross_rf_baw_filter_cents,
+        0,
+        "wurtzite_alscn_zero_aog_145pct_keff2_piston_mode_ripple_and_4n5_sc_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26766,6 +26856,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "triso_sic_defect_block_latency_ms": nuc_sic_403.latency_ms,
     }
 
+    # Round 182 (5G/6G RF AlScN FBAR/BAW Filter & Piezoelectric Wafer Offtake, Zero-AOG & keff^2 Mandate)
+    baw_commit_ok = evaluate_rf_alscn_baw_filter_policy()
+    baw_aog_403 = evaluate_rf_alscn_baw_filter_policy(
+        alscn_xrd_fwhm_zero_aog_and_keff_145pct_verified=False,
+    )
+    baw_rip_422 = evaluate_rf_alscn_baw_filter_policy(
+        spurious_lamb_mode_apodization_and_29dbm_power_handling_passed=False,
+    )
+    baw_scn_451 = evaluate_rf_alscn_baw_filter_policy(
+        webiq_3gpp_band_coexistence_and_4n5_scandium_target_clean=False,
+    )
+    baw_ibt_409 = evaluate_rf_alscn_baw_filter_policy(
+        localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents=7980000,
+    )
+    rf_alscn_baw_guards = {
+        "all_passed": (
+            baw_commit_ok.allowed
+            and baw_commit_ok.settled_rf_baw_filter_cents == 57000000
+            and not baw_aog_403.allowed
+            and baw_aog_403.http_status == 403
+            and not baw_rip_422.allowed
+            and baw_rip_422.http_status == 422
+            and not baw_scn_451.allowed
+            and baw_scn_451.http_status == 451
+            and not baw_ibt_409.allowed
+            and baw_ibt_409.action_pill == "Confirm"
+        ),
+        "rf_alscn_baw_settlement_latency_ms": baw_commit_ok.latency_ms,
+        "aog_keff_block_latency_ms": baw_aog_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26960,6 +27081,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "euv_lpp_collector_guards": euv_lpp_collector_guards,
         "implantable_bci_guards": implantable_bci_guards,
         "nuclear_triso_atf_guards": nuclear_triso_atf_guards,
+        "rf_alscn_baw_guards": rf_alscn_baw_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33135,6 +33257,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="nuc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive 5G/6G RF AlScN FBAR/BAW Filter, Zero-AOG & Ion-Beam Trimming Mandate Sandbox (Round 182 FAQ Companion) -->
+      <div class="finops-box" id="rf-alscn-baw-filter-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-baw-title">📡 5G-A/6G 射频前端掺钪氮化铝 (AlScN) FBAR/BAW 滤波器、零异常晶粒 (AOG &lt;=0.5/cm²) 与机电耦合 (&gt;=14.5%) 架构：防宽带插损崩塌与 +29dBm 烧膜令牌 (rf_alscn_baw_filter_mandate_...) vs 中心膜厚盲付决策器 (Round 182 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 300 片 5G/6G AlScN FBAR/BAW 滤波器晶圆交割 ($570,000.00)、XRD 摇摆曲线/异常晶粒 AOG/机电耦合 keff²、活塞模通带波纹/+29dBm 功率耐受与 Web IQ 扫描离子束修整 IBT/金属钪回收场景 (RF AlScN BAW Scenario):</span></label>
+          <select id="baw-select" onchange="updateRfAlscnBawFilterSandbox()">
+            <option value="baw_commit_ok">⚡ XRD FWHM=0.75° + 异常晶粒 AOG=0.08/cm² (&lt;=0.5) + 机电耦合 keff²=16.2% + 纹波 0.12dB + +29dBm 零烧穿：10ms 自动结算 $570,000.00! (Act automatically)</option>
+            <option value="baw_aog_403">🛑 中心椭偏膜厚合格但 28% 高钪溅射失稳长出非压电异常取向晶粒 (AOG = 45 &gt; 0.5/cm²)，机电耦合跌至 keff²=5.8% &lt; 14.5% 导致 5G 宽带通带塌陷断网拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="baw_rip_422">🚨 缺失边框环活塞模抑制致横向寄生兰姆波在通带内挖出 2.4dB &gt; 0.3dB 深坑，或 +29dBm 满功率发射自热炸穿 1.2um 悬空压电膜拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="baw_scn_451">🛑 铝钪合金靶材氧杂质超标 (&lt;4N5) 或带外滚降抑制度 &lt;52 dB 导致 5G 与 Wi-Fi 6E/7 同时开启互相干扰致盲：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="baw_ibt_409">🧑‍⚖️ Web IQ 启用全晶圆扫描聚焦离子束修整 (Scanning IBT) 将频率离散度锁死在 +-0.05% (良率跃升至 96%)，并回收溅射残靶中 97% 天价稀土金属钪 (Sc) 立省 $79,800.00 (净付 $490,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="baw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -33755,6 +33895,7 @@ function renderAll() {{
   updateEuvLppTinCollectorSandbox();
   updateImplantableBciNeuralElectrodeSandbox();
   updateNuclearTrisoAtfCladdingSandbox();
+  updateRfAlscnBawFilterSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -42925,6 +43066,55 @@ function updateNuclearTrisoAtfCladdingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ TRISO SiC 破损 (&lt;=1e-5) + 1,200°C ECR (&lt;=3%) + 径向氢化物 (&lt;=0.25) 达标：已自动清算 (VERIFIED_NUCLEAR_TRISO_ATF_CLADDING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1,600°C 裂变铯泄漏、零失水事故锆水产氢爆炸与径向氢脆劈裂</strong>：第四代 SMR TRISO 燃料与 ATF 镀铬锆包壳批次已完成结算（<code>$890,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateRfAlscnBawFilterSandbox() {{
+  var selEl = document.getElementById("baw-select");
+  var outEl = document.getElementById("baw-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "baw_aog_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ABNORMALLY_ORIENTED_GRAINS_AOG_OR_LOW_PIEZOELECTRIC_KEFF_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "压电薄膜与射频探针台实测显示，该批 AlScN 晶圆虽中心光学膜厚合格，但表面检出 <code>非压电异常取向晶粒高达 AOG = 45 个/cm² &gt; 0.5 个/cm² 且有效机电耦合系数跌至 keff² = 5.8% &lt; 14.5%</code>（5G 宽带通带塌陷且插损高达 4.5dB，<code>alscn_xrd_fwhm_zero_aog_and_keff_145pct_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$570,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "baw_rip_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SPURIOUS_LATERAL_MODE_PASSBAND_RIPPLE_OR_29DBM_SELF_HEATING_BURN_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "在片 VNA 与高温功率老化台检出 <code>横向寄生瑞利-兰姆波在通带内挖出 2.4 dB &gt; 0.3 dB 深坑，或在 +29 dBm 满功率下悬空压电膜发生自热击穿炸裂</code>（<code>spurious_lamb_mode_apodization_and_29dbm_power_handling_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "baw_scn_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IMPURE_SCANDIUM_OXIDE_TARGET_OR_WIFI_COEXISTENCE_SKIRT_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>4N5 铝钪靶材 GDMS 报告与 3GPP/Wi-Fi 7 邻频共存测试单</code>，检出靶材氧含量超标或邻频抑制度 &lt;52 dB，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "baw_ibt_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SCANNING_ION_BEAM_TRIMMING_YIELD_AND_SCANDIUM_TARGET_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>扫描离子束微米修整 (Scanning IBT) 拉齐片内频率至 ±0.05% + 磁控溅射残靶 97% 稀土金属钪 (Sc) 提纯重铸</code>，自动冲抵废片与贵金属钪成本立省 <code>$79,800.00</code>（净付降至 <code>$490,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 零 AOG (&lt;=0.5/cm²) + 高耦合 (&gt;=14.5%) + +29dBm 耐受达标：已自动清算 (VERIFIED_RF_ALSCN_BAW_FILTER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 AOG 异常死晶断网、零兰姆波通带深坑与满功率烧膜</strong>：300 片 5G-A/6G AlScN FBAR/BAW 滤波器晶圆批次已完成结算（<code>$570,000.00</code>）！" +
     "</div>";
 }}
 

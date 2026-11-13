@@ -11351,6 +11351,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("nuclear-triso-atf-cladding-sandbox", demo_zh)
 
+    def test_rf_5g_6g_alscn_fbar_baw_filter_keff_aog_grain_power_handling_mandate_vs_passband_insertion_loss_burnout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_rf_alscn_baw_filter_policy,
+        )
+
+        # 1. Verified AOG <=0.5 /cm2 + keff^2 >=14.5% + ripple <=0.3 dB -> 200 OK ($570,000)
+        commit_ok = evaluate_rf_alscn_baw_filter_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rf_baw_filter_cents, 57000000)
+
+        # 2. Abnormally Oriented Grains (AOG >0.5 /cm2) or low keff^2 (<14.5%) -> 403 blocked in 11ms
+        aog_403 = evaluate_rf_alscn_baw_filter_policy(
+            alscn_xrd_fwhm_zero_aog_and_keff_145pct_verified=False,
+        )
+        self.assertFalse(aog_403.allowed)
+        self.assertEqual(aog_403.http_status, 403)
+        self.assertEqual(
+            aog_403.rf_baw_filter_lane,
+            "ABNORMALLY_ORIENTED_GRAINS_AOG_OR_LOW_PIEZOELECTRIC_KEFF_BLOCKED",
+        )
+
+        # 3. Lateral Lamb-mode passband ripple (>0.3 dB) or +29 dBm membrane burnout -> 422 blocked in 14ms
+        rip_422 = evaluate_rf_alscn_baw_filter_policy(
+            spurious_lamb_mode_apodization_and_29dbm_power_handling_passed=False,
+        )
+        self.assertFalse(rip_422.allowed)
+        self.assertEqual(rip_422.http_status, 422)
+        self.assertEqual(
+            rip_422.rf_baw_filter_lane,
+            "SPURIOUS_LATERAL_MODE_PASSBAND_RIPPLE_OR_29DBM_SELF_HEATING_BURN_BLOCKED",
+        )
+
+        # 4. Web IQ detects oxidized <3N Scandium target or poor Wi-Fi coexistence skirt -> 451 blocked in 280ms
+        scn_451 = evaluate_rf_alscn_baw_filter_policy(
+            webiq_3gpp_band_coexistence_and_4n5_scandium_target_clean=False,
+        )
+        self.assertFalse(scn_451.allowed)
+        self.assertEqual(scn_451.http_status, 451)
+
+        # 5. Web IQ credits scanning Ion-Beam Trimming & 97% Scandium target reclaim saving $79,800 ($490,200 net) -> 409 Confirm
+        ibt_409 = evaluate_rf_alscn_baw_filter_policy(
+            localized_ion_beam_trimming_yield_and_al_sc_target_reclaim_credit_cents=7980000,
+        )
+        self.assertFalse(ibt_409.allowed)
+        self.assertEqual(ibt_409.http_status, 409)
+        self.assertEqual(ibt_409.settled_rf_baw_filter_cents, 49020000)
+        self.assertEqual(ibt_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["rf_alscn_baw_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rf-alscn-baw-filter-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

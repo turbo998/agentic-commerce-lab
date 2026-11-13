@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg184" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent184" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg184)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent184)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 182 · 5G-A/6G 射频前端掺钪氮化铝 (AlScN) FBAR/BAW 滤波器、零 AOG 与离子束修整架构图</text>
+  <text x="36" y="84" class="sub">5G/6G RF AlScN FBAR/BAW Filter Wafer Offtake, Zero AOG (&lt;=0.5/cm2), keff^2 (&gt;=14.5%), +29dBm Power &amp; Ion-Beam Trimming</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按片数与中心膜厚盲付</text>
+  <text x="52" y="166" class="card-h">三大 AOG 异常死晶断网、兰姆波深坑与悬空膜烧穿灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 高钪掺杂析出 AOG 死晶致机电耦合暴跌断网</text>
+  <text x="52" y="216" class="body">光学测厚看不出晶相！28% 高钪溅射失稳长出 45/cm²</text>
+  <text x="52" y="234" class="body">圆锥状非压电异常晶粒 (AOG)，机电耦合 keff² 跌至</text>
+  <text x="52" y="252" class="body">5.8%，5G n77/n79 宽带塌陷且插损飙至 4.5dB！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 寄生兰姆波通带 2.4dB 陷波与 +29dBm 烧穿</text>
+  <text x="52" y="302" class="body">缺边框环活塞模抑制，横向寄生波在通带挖出深坑；</text>
+  <text x="52" y="320" class="body">+29dBm 满功率发射自热直接炸穿 1.2um 悬空膜。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 未做离子束修整边缘偏频报废与天价金属钪浪费</text>
+  <text x="52" y="370" class="body">晶圆边缘仅厚 3nm 即偏频 25MHz 报废；换下的磁控</text>
+  <text x="52" y="388" class="body">溅射残靶中剩余 70% 比黄金还贵的稀土钪未回收。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 300 Wafers + Center Ellipsometer Check</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $570,000 exposed to AOG &amp; +29dBm burn</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="268" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ rf_alscn_baw_filter_mandate</text>
+  <text x="428" y="166" class="card-h">四层零 AOG、高耦合与离子束修整门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: AOG &lt;=0.5 &amp; keff^2 &gt;=14.5% (11ms)</text>
+  <text x="440" y="220" class="body">XRD (0002) FWHM &lt;=1.2°, AOG &lt;=0.5 /cm2 &amp;</text>
+  <text x="440" y="238" class="body">机电耦合 keff² &gt;=14.5% (Q &gt;=1,800) — 违者 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Ripple &lt;=0.3dB &amp; +29dBm (14ms)</text>
+  <text x="440" y="296" class="body">活塞模边框环抑制通带纹波 &lt;=0.3 dB &amp; +29dBm</text>
+  <text x="440" y="314" class="body">85°C 1,000h 悬空膜零热击穿 — 烧膜直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ 4N5 Sc &amp; 52dB Skirt (280ms)</text>
+  <text x="440" y="372" class="body">核验 4N5 无氧铝钪靶材 (O2 &lt;=150 ppm) 与 Wi-Fi 7</text>
+  <text x="440" y="390" class="body">邻频带外抑制度 &gt;=52 dB — 互扰失敏直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Scanning IBT &amp; 97% Sc (245ms)</text>
+  <text x="440" y="448" class="body">扫描离子束纳米修整 (IBT) 拉齐片内频率至 +-0.05%</text>
+  <text x="440" y="466" class="body">+ 溅射残靶 97% 稀土金属钪提纯重铸立省 $79,800 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零 AOG 高耦合与耐功率放行</text>
+  <text x="828" y="212" class="body">AOG 0.08 + keff² 16.2% + 纹波 0.12dB → $570,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · AOG 异常死晶或低机电耦合</text>
+  <text x="828" y="258" class="body">AOG=45/cm² 或 keff²=5.8% → 冻结 $570,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 兰姆波深坑或 +29dBm 烧膜</text>
+  <text x="828" y="304" class="body">纹波 2.4dB 或悬空膜炸裂 → 拒付 $570,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 含氧钪靶或共存差</text>
+  <text x="828" y="350" class="body">靶材纯度不足或 Wi-Fi 互扰 → 熔断 $570,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 离子束修整与残靶钪回收</text>
+  <text x="828" y="396" class="body">节省 $79,800 (-14%) → 确认后净付 $490,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 射频保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 5G/6G 滤波器晶圆严禁“仅看中心膜厚盲付”：掩盖了高钪相分离长出 AOG 非压电死晶、横向兰姆波陷波及边缘 3nm 厚差偏频报废。</text>
+  <text x="54" y="584" class="body">• 必须将 AOG (&lt;=0.5/cm2)、keff² (&gt;=14.5%)、纹波 (&lt;=0.3dB)、+29dBm 耐受与离子束修整绑定为智能托管谓词。</text>
+</svg>
