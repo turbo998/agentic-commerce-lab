@@ -19818,6 +19818,96 @@ def evaluate_swro_desalination_membrane_erd_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 177: LEO Hall-Effect Thruster, LaB6 Cathode & 5.5N Xe/Kr Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class LeoHallThrusterPropellantVerdict:
+    allowed: bool
+    http_status: int
+    hall_thruster_lane: str
+    settled_hall_thruster_cents: int
+    cryopanel_xe_krypton_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_leo_hall_thruster_propellant_policy(
+    *,
+    gross_hall_thruster_cents: int = 61000000,
+    propellant_5n5_water_oxygen_sub_05ppm_and_lab6_work_function_verified: bool = True,
+    magnetic_shielding_bn_erosion_and_breathing_mode_oscillation_passed: bool = True,
+    webiq_eccs_space_qualification_and_dot_3aa_copv_burst_clean: bool = True,
+    cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents: int = 0,
+) -> LeoHallThrusterPropellantVerdict:
+    # 1. Propellant O2/H2O (>0.5 ppmv) Poisoning LaB6 Hollow Cathode into Orbital Flameout -> HTTP 403
+    if not propellant_5n5_water_oxygen_sub_05ppm_and_lab6_work_function_verified:
+        return LeoHallThrusterPropellantVerdict(
+            False,
+            403,
+            "CATHODE_OXYGEN_POISONING_FLAMEOUT_OR_PROPELLANT_CONTAMINATION_BLOCKED",
+            0,
+            0,
+            "hall_thruster_blocked_due_to_propellant_o2_h2o_above_05ppmv_poisoning_lab6_hollow_cathode",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Unshielded BN-SiO2 Channel Sputter Breach (>0.2 um/h) or 20kHz Breathing-Mode Ripple (>15%) -> HTTP 422
+    if not magnetic_shielding_bn_erosion_and_breathing_mode_oscillation_passed:
+        return LeoHallThrusterPropellantVerdict(
+            False,
+            422,
+            "BN_CHANNEL_WALL_SPUTTER_BREACH_OR_BREATHING_MODE_PPU_BURNOUT_BLOCKED",
+            0,
+            0,
+            "hall_thruster_rejected_for_bn_wall_erosion_above_02um_h_or_breathing_ripple_above_15pct",
+            14,
+            "Send to a human",
+        )
+
+    # 3. High-Pressure Vacuum Tank (>2e-5 Torr) Neutral-Ingestion Thrust Inflation via Web IQ -> HTTP 451
+    if not webiq_eccs_space_qualification_and_dot_3aa_copv_burst_clean:
+        return LeoHallThrusterPropellantVerdict(
+            False,
+            451,
+            "UNQUALIFIED_VACUUM_THRUST_STAND_OR_COUNTERFEIT_XENON_LOT_HOLD",
+            0,
+            0,
+            "webiq_detected_high_pressure_vacuum_tank_neutral_ingestion_thrust_inflation_or_copv_fault",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 50K Cryopanel 92% Test-Xenon Recovery + Magnetically Shielded Krypton -> HTTP 409 Confirm
+    if cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents > 0:
+        return LeoHallThrusterPropellantVerdict(
+            False,
+            409,
+            "VACUUM_CHAMBER_CRYOPANEL_XE_RECOVERY_AND_MAGNETICALLY_SHIELDED_KR_CONFIRM",
+            gross_hall_thruster_cents - cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents,
+            cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents,
+            "webiq_applied_50k_cryopanel_92pct_xenon_recovery_and_shielded_krypton_credit_saving_85400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 5.5N O2+H2O <=0.5 ppmv + Shielded BN Erosion <=0.2 um/h + Ripple <=15% -> Settled
+    return LeoHallThrusterPropellantVerdict(
+        True,
+        200,
+        "VERIFIED_LEO_HALL_THRUSTER_PROPELLANT_SETTLED",
+        gross_hall_thruster_cents,
+        0,
+        "5n5_propellant_lab6_cathode_magnetically_shielded_bn_and_high_vacuum_thrust_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26161,6 +26251,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "boron_rejection_block_latency_ms": swr_bor_403.latency_ms,
     }
 
+    # Round 177 (LEO Hall-Effect Thruster, LaB6 Cathode & 5.5N Xe/Kr Propellant Offtake, Purity & Shielding Mandate)
+    het_commit_ok = evaluate_leo_hall_thruster_propellant_policy()
+    het_oxy_403 = evaluate_leo_hall_thruster_propellant_policy(
+        propellant_5n5_water_oxygen_sub_05ppm_and_lab6_work_function_verified=False,
+    )
+    het_rip_422 = evaluate_leo_hall_thruster_propellant_policy(
+        magnetic_shielding_bn_erosion_and_breathing_mode_oscillation_passed=False,
+    )
+    het_vac_451 = evaluate_leo_hall_thruster_propellant_policy(
+        webiq_eccs_space_qualification_and_dot_3aa_copv_burst_clean=False,
+    )
+    het_cry_409 = evaluate_leo_hall_thruster_propellant_policy(
+        cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents=8540000,
+    )
+    leo_hall_thruster_guards = {
+        "all_passed": (
+            het_commit_ok.allowed
+            and het_commit_ok.settled_hall_thruster_cents == 61000000
+            and not het_oxy_403.allowed
+            and het_oxy_403.http_status == 403
+            and not het_rip_422.allowed
+            and het_rip_422.http_status == 422
+            and not het_vac_451.allowed
+            and het_vac_451.http_status == 451
+            and not het_cry_409.allowed
+            and het_cry_409.action_pill == "Confirm"
+        ),
+        "leo_hall_thruster_settlement_latency_ms": het_commit_ok.latency_ms,
+        "cathode_poisoning_block_latency_ms": het_oxy_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26350,6 +26471,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "perovskite_tandem_guards": perovskite_tandem_guards,
         "hvdc_subsea_guards": hvdc_subsea_guards,
         "swro_desalination_guards": swro_desalination_guards,
+        "leo_hall_thruster_guards": leo_hall_thruster_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32435,6 +32557,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="swr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive LEO Satellite Hall-Effect Thruster, LaB6 Cathode & 5.5N Xe/Kr Mandate Sandbox (Round 177 FAQ Companion) -->
+      <div class="finops-box" id="leo-hall-thruster-propellant-sandbox" style="margin-top:12px;border-color:#818CF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-het-title">🛰️ 低轨卫星霍尔电推进器 (HET)、LaB6 阴极防中毒 (&lt;=0.5ppm O2) 与磁屏蔽通道架构：防在轨熄火坠毁与呼吸振荡烧电源令牌 (leo_hall_thruster_propellant_mandate_...) vs 低真空点火盲付决策器 (Round 177 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 50 套低轨卫星霍尔电推进器与 5.5N 氙/氪工质交割 ($610,000.00)、GC-PDHID 痕量水氧/LaB6 空心阴极 2万次冷启动、磁屏蔽 BN-SiO2 刻蚀率/呼吸振荡与 Web IQ 50K 冷板氙回收/氪气替代场景 (LEO Hall Thruster Scenario):</span></label>
+          <select id="het-select" onchange="updateLeoHallThrusterPropellantSandbox()">
+            <option value="het_commit_ok">⚡ 5.5N 工质水氧 0.12 ppmv (&lt;=0.5) + 磁屏蔽刻蚀 0.05 um/h + 呼吸振荡 6.8% + 高真空 1.2e-5 Torr：10ms 自动结算 $610,000.00! (Act automatically)</option>
+            <option value="het_oxy_403">🛑 气瓶压力合格但混入微量水氧 (O2+H2O = 18 &gt; 0.5 ppmv) 在 1,650°C 下把六硼化镧 (LaB6) 空心阴极氧化烧成绝缘体导致卫星入轨点火失败坠毁拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="het_rip_422">🚨 缺失磁屏蔽致 BN-SiO2 陶瓷壁被 300eV 离子快速磨穿露出电磁铁，或 20kHz 捕食者-猎物呼吸模式电流振荡高达 85% (&gt;15%) 震爆星载 PPU 电源开关管拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="het_vac_451">🛑 在抽速不足的劣质真空罐 (8e-4 &gt; 2e-5 Torr) 中利用吞入背景残余气体虚增 12% 推力与比冲：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="het_cry_409">🧑‍⚖️ Web IQ 启用地面大型真空舱 50K 低温冷板再生提纯回收 92% 试车天价氙气，并采用磁屏蔽高电压氪气 (Kr) 工质替代纯氙立省 $85,400.00 (净付 $524,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="het-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -33050,6 +33190,7 @@ function renderAll() {{
   updatePerovskiteTandemPvSandbox();
   updateHvdcSubseaXlpeCableSandbox();
   updateSwroDesalinationMembraneErdSandbox();
+  updateLeoHallThrusterPropellantSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41975,6 +42116,55 @@ function updateSwroDesalinationMembraneErdSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 海水脱盐 (&gt;=99.85%) + 脱硼 (&gt;=93%) + PX 掺混 (&lt;=3%) 达标：已自动清算 (VERIFIED_SWRO_TFC_MEMBRANE_PX_ERD_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零产水硼超标毁坏农田、零余氯氧化穿孔与浓水回窜涨电费</strong>：1,200 支海淡反渗透膜与陶瓷转子 PX 能量回收器已完成结算（<code>$510,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateLeoHallThrusterPropellantSandbox() {{
+  var selEl = document.getElementById("het-select");
+  var outEl = document.getElementById("het-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "het_oxy_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CATHODE_OXYGEN_POISONING_FLAMEOUT_OR_PROPELLANT_CONTAMINATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "宇航特气与空心阴极实验室 <code>GC-PDHID 脉冲放电氦离子化气相色谱</code> 实测显示，该批氙/氪气瓶虽压力达标，但 <code>痕量水氧高达 O2+H2O = 18.0 ppmv &gt; 0.5 ppmv</code>（将 1,650°C LaB6 空心阴极氧化烧瞎导致卫星在轨冷启动熄火，<code>propellant_5n5_water_oxygen_sub_05ppm_and_lab6_work_function_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$610,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "het_rip_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BN_CHANNEL_WALL_SPUTTER_BREACH_OR_BREATHING_MODE_PPU_BURNOUT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "高真空点火试验台检出 <code>BN-SiO2 通道壁溅射刻蚀率 &gt;0.2 μm/h（未实现磁屏蔽）或 20kHz 捕食者-猎物呼吸模式电流振荡高达 ΔId/Id = 85% &gt; 15%（震爆星载 PPU 电源管）</code>（<code>magnetic_shielding_bn_erosion_and_breathing_mode_oscillation_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "het_vac_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNQUALIFIED_VACUUM_THRUST_STAND_OR_COUNTERFEIT_XENON_LOT_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ECSS-E-ST-35-01C 电推进高真空测试记录与 COPV 气瓶爆破台账</code>，检出点火测试舱压高达 8×10^-4 Torr（靠吞入背景残气虚增 12% 假推力），立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "het_cry_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 VACUUM_CHAMBER_CRYOPANEL_XE_RECOVERY_AND_MAGNETICALLY_SHIELDED_KR_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>地面真空舱 50K 低温冷板再生回收 92% 试车氙气 + 磁屏蔽高比冲氪气 (Kr) 工质替代纯氙</code>，自动冲抵试车损耗与稀有气体成本立省 <code>$85,400.00</code>（净付降至 <code>$524,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 5.5N 水氧 (&lt;=0.5ppmv) + 磁屏蔽刻蚀 (&lt;=0.2um/h) + 振荡 (&lt;=15%) 达标：已自动清算 (VERIFIED_LEO_HALL_THRUSTER_PROPELLANT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零在轨 LaB6 空心阴极氧化熄火、零通道磨穿与呼吸振荡烧 PPU</strong>：50 套低轨卫星霍尔电推进器与 5.5N 工质批次已完成结算（<code>$610,000.00</code>）！" +
     "</div>";
 }}
 

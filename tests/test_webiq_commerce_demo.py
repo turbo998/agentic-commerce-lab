@@ -11071,6 +11071,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("swro-desalination-membrane-erd-sandbox", demo_zh)
 
+    def test_leo_satellite_hall_thruster_bn_ceramic_lab6_cathode_xenon_krypton_purity_mandate_vs_cathode_poisoning_sputter_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_leo_hall_thruster_propellant_policy,
+        )
+
+        # 1. Verified 5.5N O2+H2O <=0.5 ppmv + shielded BN erosion <=0.2 um/h + ripple <=15% -> 200 OK ($610,000)
+        commit_ok = evaluate_leo_hall_thruster_propellant_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hall_thruster_cents, 61000000)
+
+        # 2. Propellant O2/H2O (>0.5 ppmv) poisoning LaB6 hollow cathode -> 403 blocked in 11ms
+        oxy_403 = evaluate_leo_hall_thruster_propellant_policy(
+            propellant_5n5_water_oxygen_sub_05ppm_and_lab6_work_function_verified=False,
+        )
+        self.assertFalse(oxy_403.allowed)
+        self.assertEqual(oxy_403.http_status, 403)
+        self.assertEqual(
+            oxy_403.hall_thruster_lane,
+            "CATHODE_OXYGEN_POISONING_FLAMEOUT_OR_PROPELLANT_CONTAMINATION_BLOCKED",
+        )
+
+        # 3. Unshielded BN-SiO2 channel sputter breach or 20kHz breathing-mode ripple (>15%) -> 422 blocked in 14ms
+        rip_422 = evaluate_leo_hall_thruster_propellant_policy(
+            magnetic_shielding_bn_erosion_and_breathing_mode_oscillation_passed=False,
+        )
+        self.assertFalse(rip_422.allowed)
+        self.assertEqual(rip_422.http_status, 422)
+        self.assertEqual(
+            rip_422.hall_thruster_lane,
+            "BN_CHANNEL_WALL_SPUTTER_BREACH_OR_BREATHING_MODE_PPU_BURNOUT_BLOCKED",
+        )
+
+        # 4. Web IQ detects high-pressure vacuum tank (>2e-5 Torr) neutral-ingestion thrust inflation -> 451 blocked in 280ms
+        vac_451 = evaluate_leo_hall_thruster_propellant_policy(
+            webiq_eccs_space_qualification_and_dot_3aa_copv_burst_clean=False,
+        )
+        self.assertFalse(vac_451.allowed)
+        self.assertEqual(vac_451.http_status, 451)
+
+        # 5. Web IQ credits 50K cryopanel 92% Xe recovery & shielded Kr thrifting saving $85,400 ($524,600 net) -> 409 Confirm
+        cry_409 = evaluate_leo_hall_thruster_propellant_policy(
+            cryopanel_xenon_krypton_boiloff_recovery_and_krypton_thrifting_credit_cents=8540000,
+        )
+        self.assertFalse(cry_409.allowed)
+        self.assertEqual(cry_409.http_status, 409)
+        self.assertEqual(cry_409.settled_hall_thruster_cents, 52460000)
+        self.assertEqual(cry_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["leo_hall_thruster_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("leo-hall-thruster-propellant-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

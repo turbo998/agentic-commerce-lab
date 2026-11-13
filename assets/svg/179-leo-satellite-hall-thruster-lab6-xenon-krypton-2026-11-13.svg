@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg179" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent179" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg179)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent179)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 177 · 低轨卫星霍尔电推进器 (HET)、LaB6 阴极防中毒与 5.5N 氙/氪工质架构图</text>
+  <text x="36" y="84" class="sub">LEO Hall-Effect Thruster, BN-SiO2 Channel, LaB6 Cathode &amp; 5.5N Xe/Kr Offtake, O2+H2O (&lt;=0.5 ppmv) &amp; Magnetic Shielding</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按台数与低真空盲付</text>
+  <text x="52" y="166" class="card-h">三大在轨阴极中毒失联、磨穿通道与推力注水灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 工质水氧超标 (18ppm) 毒死 LaB6 空心阴极</text>
+  <text x="52" y="216" class="body">氙/氪气混入微量氧气，在 1,650°C 下把 LaB6 表面</text>
+  <text x="52" y="234" class="body">氧化成绝缘体，热电子发射暴跌 1,000 倍致卫星在轨</text>
+  <text x="52" y="252" class="body">点不着火直接坠入大气层烧毁！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 无磁屏蔽磨穿氮化硼通道与 20kHz 振荡烧 PPU</text>
+  <text x="52" y="302" class="body">300eV 离子轰穿 BN-SiO2 陶瓷壁露出电磁铁短路；</text>
+  <text x="52" y="320" class="body">捕食者-猎物呼吸振荡达 85% 震爆星载 PPU 电源管。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 劣质罐吞入残余气体虚标推力与试车天价氙气排空</text>
+  <text x="52" y="370" class="body">在 8e-4 Torr 低真空罐吸背景气虚增 12% 假比冲；</text>
+  <text x="52" y="388" class="body">地面寿命考核喷掉的天价氙气未用 50K 冷板冷凝回收。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 50 Thrusters + 8e-4 Torr Tank Firing</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $610,000 exposed to orbital flameout</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="290" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ leo_hall_thruster_propellant_mandate</text>
+  <text x="428" y="166" class="card-h">四层 5.5N 纯度、磁屏蔽与高真空门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 5.5N O2+H2O &amp; LaB6 (11ms)</text>
+  <text x="440" y="220" class="body">GC-PDHID O2+H2O &lt;=0.5 ppmv &amp; LaB6 空心阴极</text>
+  <text x="440" y="238" class="body">20,000 次冷启动零中毒 — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Shielded BN &amp; Ripple &lt;=15% (14ms)</text>
+  <text x="440" y="296" class="body">磁屏蔽 BN-SiO2 刻蚀 &lt;=0.2 um/h, 呼吸模式振荡</text>
+  <text x="440" y="314" class="body">ΔId/Id &lt;=15% &amp; 偏角 &lt;=0.3° — 违者直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ &lt;=2e-5 Torr Thrust (280ms)</text>
+  <text x="440" y="372" class="body">核验 ECSS 动态真空 &lt;=2e-5 Torr 零气压外推真实</text>
+  <text x="440" y="390" class="body">比冲与宇航 COPV 气瓶爆破单 — 推力注水直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 50K Cryopanel Xe &amp; Kr (245ms)</text>
+  <text x="440" y="448" class="body">地面真空舱 50K 低温冷板再生回收 92% 试车氙气 + 磁</text>
+  <text x="440" y="466" class="body">屏蔽高比冲氪气 (Kr) 替代天价纯氙立省 $85,400 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零中毒与磁屏蔽放行</text>
+  <text x="828" y="212" class="body">水氧 0.12ppm + 刻蚀 0.05 + 振荡 6.8% → $610,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 工质水氧毒死 LaB6 阴极</text>
+  <text x="828" y="258" class="body">水氧 18ppm 在轨熄火风险 → 冻结 $610,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 腔壁磨穿或呼吸振荡烧电源</text>
+  <text x="828" y="304" class="body">振荡 85% 震爆 PPU 开关管 → 拒付 $610,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 低真空吞残气注水</text>
+  <text x="828" y="350" class="body">8e-4 Torr 虚增 12% 假推力 → 熔断 $610,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 50K 冷板氙回收与氪气替代</text>
+  <text x="828" y="396" class="body">节省 $85,400 (-14%) → 确认后净付 $524,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 轨控保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 卫星霍尔电推进严禁“仅看低真空点火盲付”：微量水氧会毒死 1,650°C LaB6 阴极导致卫星在轨失联，且劣质真空罐吞残气虚标比冲。</text>
+  <text x="54" y="584" class="body">• 必须将 5.5N 水氧 (&lt;=0.5ppmv)、磁屏蔽刻蚀 (&lt;=0.2um/h)、呼吸振荡 (&lt;=15%) 与高真空推力绑定为智能托管谓词。</text>
+</svg>
