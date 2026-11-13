@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg157" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent157" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg157)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent157)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 155 · 绿氢 PEM 电解槽全氟磺酸膜与铱铂膜电极 (CCM)、防爆渗氢与芬顿架构图</text>
+  <text x="36" y="84" class="sub">PEM Water Electrolyzer PFSA Membrane &amp; IrO2/Pt CCM Offtake, 3MPa H2-in-O2 (&lt;=0.4%), Fenton FER (&lt;=0.05) &amp; 2A/cm2 Ecell (&lt;=1.78V)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按面积与标称铱量盲付</text>
+  <text x="52" y="166" class="card-h">三大电解槽氢氧混爆、自由基穿孔与高电耗灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 缺 Pt 消氢层致低负荷氧中氢 (2.6%) 逼近爆炸</text>
+  <text x="52" y="216" class="body">风光波动跌至 10% 负荷时产氧稀释量骤减 10 倍，</text>
+  <text x="52" y="234" class="body">3MPa 高压跨膜渗氢使氧中氢冲上 2.6% (逼近 4%</text>
+  <text x="52" y="252" class="body">LEL 爆炸下限)；无 CeO2 致自由基 2,000h 咬穿针孔！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 钛毡 PTL 未镀铂致 TiO2 钝化 (槽压 2.08V)</text>
+  <text x="52" y="302" class="body">阳极裸钛毡 100h 即生成绝缘二氧化钛膜，2A/cm2</text>
+  <text x="52" y="320" class="body">槽压飙至 2.08V，每制 1kg 绿氢多耗电 8.5 度。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 天价金属铱 ($160/g) 偷工减料与旧膜流失</text>
+  <text x="52" y="370" class="body">按 1.8 mg/cm2 高铱价报账但实涂仅 0.8 mg/cm2；</text>
+  <text x="52" y="388" class="body">退役膜电极中 95% 可回收铱铂未纳入金属池冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 500 m2 CCM Area + Nominal PGM Spec</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $620,000 exposed to LEL trip &amp; TiO2 loss</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ pem_electrolyzer_ccm_mandate</text>
+  <text x="428" y="166" class="card-h">四层差压消氢、芬顿抗蚀与低铱门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 3MPa H2-in-O2 &amp; Fenton FER (11ms)</text>
+  <text x="440" y="220" class="body">10% 低负荷氧中氢 &lt;=0.4 vol% (&lt;10% LEL) &amp; 芬顿</text>
+  <text x="440" y="238" class="body">氟释放 FER &lt;=0.05 ug/cm2/h — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: 2A/cm2 Ecell &amp; Pt-Ti PTL (14ms)</text>
+  <text x="440" y="296" class="body">80°C 2.0 A/cm2 极化槽压 &lt;=1.78 V &amp; 镀铂钛毡</text>
+  <text x="440" y="314" class="body">接触电阻 &lt;=5 mOhm.cm2 — 钝化高阻直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ XRF PGM &amp; PFOA-Free (280ms)</text>
+  <text x="440" y="372" class="body">核验全幅在线 XRF 铱铂面密度分布 (&lt;=+-3%) 与欧盟</text>
+  <text x="440" y="390" class="body">PFOA-Free 氟树脂合规 — 偷减铱量直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: IrO2@TiO2 &amp; PGM Metal-Pool (245ms)</text>
+  <text x="440" y="448" class="body">IrO2@TiO2 核壳催化剂降铱 70% + 退役 CCM 95% 铱铂</text>
+  <text x="440" y="466" class="body">湿法返还金属池冲抵立省 $86,800 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 低渗氢抗自由基低槽压放行</text>
+  <text x="828" y="212" class="body">H2-in-O2 0.18% + FER 0.015 + 1.71V → $620,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 差压氧中氢超标或芬顿穿孔</text>
+  <text x="828" y="258" class="body">H2-in-O2=2.6% 或 FER=0.42 → 冻结 $620,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 槽压过高或钛毡未镀铂钝化</text>
+  <text x="828" y="304" class="body">2A/cm2 槽压 2.08V 电耗爆表 → 拒付 $620,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 偷减铱量或含 PFOA</text>
+  <text x="828" y="350" class="body">XRF 检出少涂 35% 铱或违规 → 熔断 $620,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 核壳省铱与退役金属池冲抵</text>
+  <text x="828" y="396" class="body">节省 $86,800 (-14%) → 确认后净付 $533,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 浆料保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#14b8a6">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 绿氢 PEM 膜电极严禁“按平米面积盲付”：10% 风光低负荷下产氧分母坍塌会使未消氢膜氧中氢逼近 4% 爆炸限，裸钛毡钝化会使电耗飙升 17%。</text>
+  <text x="54" y="584" class="body">• 必须将 3MPa 氧中氢 (&lt;=0.4%)、芬顿氟释放 (&lt;=0.05)、2A/cm2 槽压 (&lt;=1.78V) 与退役铱铂金属池绑定为智能托管解锁谓词。</text>
+</svg>

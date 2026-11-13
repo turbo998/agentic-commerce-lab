@@ -9839,6 +9839,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("sic-power-module-sandbox", demo_zh)
 
+    def test_pem_electrolyzer_pfsa_membrane_iridium_ccm_crossover_fer_mandate_vs_pinhole_detonation_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_pem_electrolyzer_ccm_policy,
+        )
+
+        # 1. Verified 3MPa H2-in-O2 <=0.4% + Fenton FER <=0.05 + 2A/cm2 Ecell <=1.78V -> 200 OK ($620,000)
+        commit_ok = evaluate_pem_electrolyzer_ccm_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_pem_ccm_cents, 62000000)
+
+        # 2. 3MPa turndown H2-in-O2 crossover (>0.4%) or Fenton FER (>0.05) -> 403 blocked in 11ms
+        lel_403 = evaluate_pem_electrolyzer_ccm_policy(
+            h2_crossover_lel_and_fenton_fluoride_emission_verified=False,
+        )
+        self.assertFalse(lel_403.allowed)
+        self.assertEqual(lel_403.http_status, 403)
+        self.assertEqual(
+            lel_403.pem_ccm_lane,
+            "HYDROGEN_CROSSOVER_LEL_TRIP_OR_FLUORIDE_RADICAL_PINHOLE_BLOCKED",
+        )
+
+        # 3. High 2A/cm2 cell voltage (>1.78V) or uncoated Ti-PTL passivation -> 422 blocked in 14ms
+        vol_422 = evaluate_pem_electrolyzer_ccm_policy(
+            polarization_voltage_at_2a_and_ptl_passivation_passed=False,
+        )
+        self.assertFalse(vol_422.allowed)
+        self.assertEqual(vol_422.http_status, 422)
+        self.assertEqual(
+            vol_422.pem_ccm_lane,
+            "HIGH_CELL_OVERPOTENTIAL_OR_TITANIUM_PTL_OXIDE_PASSIVATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects inline XRF Iridium short-weighting or banned PFOA surfactant -> 451 blocked in 280ms
+        xrf_451 = evaluate_pem_electrolyzer_ccm_policy(
+            webiq_eu_pfas_exemption_and_lpma_iridium_origin_clean=False,
+        )
+        self.assertFalse(xrf_451.allowed)
+        self.assertEqual(xrf_451.http_status, 451)
+
+        # 5. Web IQ credits IrO2@TiO2 core-shell thrifting & spent-CCM PGM pool saving $86,800 ($533,200 net) -> 409 Confirm
+        pgm_409 = evaluate_pem_electrolyzer_ccm_policy(
+            core_shell_low_iridium_and_spent_ccm_pgm_toll_credit_cents=8680000,
+        )
+        self.assertFalse(pgm_409.allowed)
+        self.assertEqual(pgm_409.http_status, 409)
+        self.assertEqual(pgm_409.settled_pem_ccm_cents, 53320000)
+        self.assertEqual(pgm_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["pem_ccm_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pem-electrolyzer-ccm-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
