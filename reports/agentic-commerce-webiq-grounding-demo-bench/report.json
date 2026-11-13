@@ -915,6 +915,11 @@
     "hydrogen_copv_settlement_latency_ms": 10,
     "liner_buckling_block_latency_ms": 11
   },
+  "micro_led_guards": {
+    "all_passed": true,
+    "micro_led_settlement_latency_ms": 10,
+    "pl_eqe_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

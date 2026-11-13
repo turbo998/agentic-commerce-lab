@@ -18918,6 +18918,96 @@ def evaluate_hydrogen_type4_copv_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 167: Micro-LED Epi-Wafer, ALD Sidewall EQE & 6N Mass Transfer Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class MicroLedMassTransferVerdict:
+    allowed: bool
+    http_status: int
+    micro_led_lane: str
+    settled_micro_led_cents: int
+    llo_sapphire_tmga_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_micro_led_mass_transfer_policy(
+    *,
+    gross_micro_led_cents: int = 63000000,
+    pl_wavelength_sigma_and_ald_sidewall_eqe_verified: bool = True,
+    six_nines_mass_transfer_yield_and_zero_adjacent_dead_pixels_passed: bool = True,
+    webiq_aec_q102_blue_light_photobleaching_and_rohs_cadmium_free_clean: bool = True,
+    sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents: int = 0,
+) -> MicroLedMassTransferVerdict:
+    # 1. Wafer-Scale PL Wavelength Dispersion (sigma >0.8 nm) or Unpassivated 5um Sidewall SRH Loss (EQE <18%) -> HTTP 403
+    if not pl_wavelength_sigma_and_ald_sidewall_eqe_verified:
+        return MicroLedMassTransferVerdict(
+            False,
+            403,
+            "PL_WAVELENGTH_BIN_DISPERSION_OR_SIDEWALL_SHOCKLEY_READ_HALL_BLOCKED",
+            0,
+            0,
+            "micro_led_epi_blocked_due_to_pl_wavelength_sigma_above_08nm_or_unpassivated_5um_eqe_below_18pct",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Sub-6-Nines Mass-Transfer Yield (<99.9999%) or Unrepairable Primary+Redundant Dual Dead Pixel -> HTTP 422
+    if not six_nines_mass_transfer_yield_and_zero_adjacent_dead_pixels_passed:
+        return MicroLedMassTransferVerdict(
+            False,
+            422,
+            "SUB_6N_MASS_TRANSFER_YIELD_OR_CLUSTERED_DEAD_PIXEL_BLOCKED",
+            0,
+            0,
+            "micro_led_panel_rejected_for_mass_transfer_yield_below_999999pct_or_dual_redundant_dead_pixels",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Toxic Cadmium (CdSe) Quantum-Dot RoHS Violation or AEC-Q102 Thermal Quenching via Web IQ -> HTTP 451
+    if not webiq_aec_q102_blue_light_photobleaching_and_rohs_cadmium_free_clean:
+        return MicroLedMassTransferVerdict(
+            False,
+            451,
+            "CADMIUM_QD_ROHS_VIOLATION_OR_QD_THERMAL_QUENCHING_HOLD",
+            0,
+            0,
+            "webiq_detected_cadmium_qd_above_100ppm_rohs_violation_or_aec_q102_blue_flux_quenching",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ KrF LLO Sapphire 5x CMP Re-Polish Reuse + MOCVD Ga/In Exhaust Recovery -> HTTP 409 Confirm
+    if sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents > 0:
+        return MicroLedMassTransferVerdict(
+            False,
+            409,
+            "SAPPHIRE_SUBSTRATE_LLO_REUSE_AND_MOCVD_TMGA_RECOVERY_CONFIRM",
+            gross_micro_led_cents - sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents,
+            sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents,
+            "webiq_applied_llo_sapphire_5x_cmp_repolish_and_mocvd_tmga_recovery_credit_saving_88200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified PL sigma <=0.8 nm + 5um ALD EQE >=18% + 6N Transfer Yield + 0 Dual Dead Pixels -> Settled
+    return MicroLedMassTransferVerdict(
+        True,
+        200,
+        "VERIFIED_MICRO_LED_EPI_MASS_TRANSFER_SETTLED",
+        gross_micro_led_cents,
+        0,
+        "wafer_scale_pl_sigma_ald_sidewall_eqe_6n_mass_transfer_and_cd_free_qd_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -24951,6 +25041,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "liner_buckling_block_latency_ms": copv_buc_403.latency_ms,
     }
 
+    # Round 167 (Micro-LED Epi-Wafer & Laser Mass-Transfer Offtake, PL Wavelength Sigma, ALD EQE & 6N Yield Mandate)
+    uled_commit_ok = evaluate_micro_led_mass_transfer_policy()
+    uled_eqe_403 = evaluate_micro_led_mass_transfer_policy(
+        pl_wavelength_sigma_and_ald_sidewall_eqe_verified=False,
+    )
+    uled_yld_422 = evaluate_micro_led_mass_transfer_policy(
+        six_nines_mass_transfer_yield_and_zero_adjacent_dead_pixels_passed=False,
+    )
+    uled_rohs_451 = evaluate_micro_led_mass_transfer_policy(
+        webiq_aec_q102_blue_light_photobleaching_and_rohs_cadmium_free_clean=False,
+    )
+    uled_llo_409 = evaluate_micro_led_mass_transfer_policy(
+        sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents=8820000,
+    )
+    micro_led_guards = {
+        "all_passed": (
+            uled_commit_ok.allowed
+            and uled_commit_ok.settled_micro_led_cents == 63000000
+            and not uled_eqe_403.allowed
+            and uled_eqe_403.http_status == 403
+            and not uled_yld_422.allowed
+            and uled_yld_422.http_status == 422
+            and not uled_rohs_451.allowed
+            and uled_rohs_451.http_status == 451
+            and not uled_llo_409.allowed
+            and uled_llo_409.action_pill == "Confirm"
+        ),
+        "micro_led_settlement_latency_ms": uled_commit_ok.latency_ms,
+        "pl_eqe_block_latency_ms": uled_eqe_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25130,6 +25251,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sx_blade_guards": sx_blade_guards,
         "mrna_lnp_guards": mrna_lnp_guards,
         "hydrogen_copv_guards": hydrogen_copv_guards,
+        "micro_led_guards": micro_led_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31035,6 +31157,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="copv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Micro-LED Epi-Wafer, ALD Sidewall EQE & 6N Mass Transfer Mandate Sandbox (Round 167 FAQ Companion) -->
+      <div class="finops-box" id="micro-led-mass-transfer-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-uled-title">🕶️ 车载 AR-HUD 与 AI 眼镜 Micro-LED 外延片、ALD 侧壁钝化 EQE (&gt;=18%) 与 6N 巨量转移 (&gt;=99.9999%) 架构：防侧壁效率悬崖与坏点麻子屏令牌 (micro_led_mass_transfer_mandate_...) vs 单点亮度盲付决策器 (Round 167 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 200 片 Micro-LED 外延与激光巨量转移模组交割 ($630,000.00)、全片 Micro-PL 波长标准差/5um ALD 钝化 EQE、6N 转移良率/零双死点与 Web IQ 无镉 QD/LLO 蓝宝石复用场景 (Micro-LED Mass Transfer Scenario):</span></label>
+          <select id="uled-select" onchange="updateMicroLedMassTransferSandbox()">
+            <option value="uled_commit_ok">⚡ 全片 PL 波长 σ=0.45nm (&lt;=0.8nm) + 5um ALD 钝化 EQE 21.5% + 6N 转移良率 99.99995% 零死点：10ms 自动结算 $630,000.00! (Act automatically)</option>
+            <option value="uled_eqe_403">🛑 晶圆中心亮度合格但边缘温差致波长标准差 σ=3.6nm &gt; 0.8nm (上屏现彩虹阴阳色斑)，或未做 KOH+ALD 氧化铝侧壁钝化致 5um 像素侧壁 SRH 复合掉效 EQE=2.4% &lt; 18% 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="uled_yld_422">🚨 激光巨量转移良率仅 99.9% (3N &lt; 6N) 在 1080P 屏上残留 6,220 颗坏点无法修完，或同一像素主备冗余位同时转移失败 (双坏点 &gt; 0) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="uled_rohs_451">🛑 量子点色转换胶偷用剧毒含镉硒化镉 (CdSe &gt; 100 ppm) 违反欧盟 RoHS 指令或 AEC-Q102 双 85 蓝光激发热猝灭光衰：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="uled_llo_409">🧑‍⚖️ Web IQ 启用 248nm 准分子激光剥离 (LLO) 蓝宝石衬底 CMP 抛光循环 5 次外延复用，并回收 MOCVD 尾气三甲基镓/铟立省 $88,200.00 (净付 $541,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="uled-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -31640,6 +31780,7 @@ function renderAll() {{
   updateSingleCrystalBladeSandbox();
   updateMrnaLnpEncapsulationSandbox();
   updateHydrogenType4CopvSandbox();
+  updateMicroLedMassTransferSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -40075,6 +40216,55 @@ function updateHydrogenType4CopvSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 氢渗透 (&lt;=46 NmL/h/L) + 快放气 0 内瘪 + 316L 高镍抗氢脆达标：已自动清算 (VERIFIED_HYDROGEN_70MPA_TYPE4_COPV_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零快速泄压内胆吸瘪折叠、零 -40°C 瓶口漏氢与马氏体氢脆</strong>：300 只 70MPa IV 型储氢瓶与压缩机批次已完成结算（<code>$590,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMicroLedMassTransferSandbox() {{
+  var selEl = document.getElementById("uled-select");
+  var outEl = document.getElementById("uled-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "uled_eqe_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PL_WAVELENGTH_BIN_DISPERSION_OR_SIDEWALL_SHOCKLEY_READ_HALL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "光电测试中心 <code>全片高速 Micro-PL 扫描与积分球系统</code> 实测显示，该批晶圆波长标准差高达 <code>σ_λ = 3.6 nm &gt; 0.8 nm</code>（转移后呈现彩虹阴阳色斑），或未做 KOH+ALD 氧化铝侧壁钝化导致 5μm 像素外量子效率跌至 <code>EQE = 2.4% &lt; 18.0%</code>（<code>pl_wavelength_sigma_and_ald_sidewall_eqe_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$630,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uled_yld_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SUB_6N_MASS_TRANSFER_YIELD_OR_CLUSTERED_DEAD_PIXEL_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "全屏电致发光（EL）AOI 检出 <code>激光巨量转移良率仅 99.9%（3N &lt; 99.9999% 6N）残留 6,220 颗坏点或同像素主备冗余位同时死点</code>（无法通过冗余熔丝激光修补清零，<code>six_nines_mass_transfer_yield_and_zero_adjacent_dead_pixels_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uled_rohs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CADMIUM_QD_ROHS_VIOLATION_OR_QD_THERMAL_QUENCHING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>SGS 无镉量子点 RoHS 检测报告与车规 AEC-Q102 双 85 老化台账</code>，检出量子点色转换胶违规含镉（Cd &gt; 100 ppm）或高蓝光通量下严重热猝灭光衰，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "uled_llo_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SAPPHIRE_SUBSTRATE_LLO_REUSE_AND_MOCVD_TMGA_RECOVERY_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>248nm 准分子激光剥离 (LLO) 蓝宝石衬底 CMP 抛光 5 次外延复用 + MOCVD 尾气三甲基镓/铟回收</code>，自动冲抵蓝宝石衬底与金属源材料费立省 <code>$88,200.00</code>（净付降至 <code>$541,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 全片 PL 波长 (&lt;=0.8nm) + 5um ALD EQE (&gt;=18%) + 6N 转移达标：已自动清算 (VERIFIED_MICRO_LED_EPI_MASS_TRANSFER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零侧壁非辐射复合效率坍塌、零彩虹阴阳色斑与坏点麻子屏</strong>：200 片 Micro-LED 外延与激光巨量转移模组批次已完成结算（<code>$630,000.00</code>）！" +
     "</div>";
 }}
 

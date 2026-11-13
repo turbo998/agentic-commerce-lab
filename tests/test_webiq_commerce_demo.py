@@ -10511,6 +10511,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hydrogen-type4-copv-sandbox", demo_zh)
 
+    def test_micro_led_epi_wafer_mass_transfer_wavelength_eqe_yield_mandate_vs_sidewall_recombination_dead_pixel_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_micro_led_mass_transfer_policy,
+        )
+
+        # 1. Verified PL sigma <=0.8 nm + 5um ALD EQE >=18% + 6N Yield -> 200 OK ($630,000)
+        commit_ok = evaluate_micro_led_mass_transfer_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_micro_led_cents, 63000000)
+
+        # 2. Wafer-scale PL wavelength dispersion (sigma >0.8 nm) or unpassivated 5um EQE (<18%) -> 403 blocked in 11ms
+        eqe_403 = evaluate_micro_led_mass_transfer_policy(
+            pl_wavelength_sigma_and_ald_sidewall_eqe_verified=False,
+        )
+        self.assertFalse(eqe_403.allowed)
+        self.assertEqual(eqe_403.http_status, 403)
+        self.assertEqual(
+            eqe_403.micro_led_lane,
+            "PL_WAVELENGTH_BIN_DISPERSION_OR_SIDEWALL_SHOCKLEY_READ_HALL_BLOCKED",
+        )
+
+        # 3. Sub-6N mass-transfer yield (<99.9999%) or primary+redundant dual dead pixels -> 422 blocked in 14ms
+        yld_422 = evaluate_micro_led_mass_transfer_policy(
+            six_nines_mass_transfer_yield_and_zero_adjacent_dead_pixels_passed=False,
+        )
+        self.assertFalse(yld_422.allowed)
+        self.assertEqual(yld_422.http_status, 422)
+        self.assertEqual(
+            yld_422.micro_led_lane,
+            "SUB_6N_MASS_TRANSFER_YIELD_OR_CLUSTERED_DEAD_PIXEL_BLOCKED",
+        )
+
+        # 4. Web IQ detects toxic CdSe QD RoHS violation or AEC-Q102 thermal quenching -> 451 blocked in 280ms
+        rohs_451 = evaluate_micro_led_mass_transfer_policy(
+            webiq_aec_q102_blue_light_photobleaching_and_rohs_cadmium_free_clean=False,
+        )
+        self.assertFalse(rohs_451.allowed)
+        self.assertEqual(rohs_451.http_status, 451)
+
+        # 5. Web IQ credits LLO sapphire 5x CMP reuse & MOCVD Ga/In recovery saving $88,200 ($541,800 net) -> 409 Confirm
+        llo_409 = evaluate_micro_led_mass_transfer_policy(
+            sapphire_substrate_llo_repolish_and_trimethylgallium_exhaust_credit_cents=8820000,
+        )
+        self.assertFalse(llo_409.allowed)
+        self.assertEqual(llo_409.http_status, 409)
+        self.assertEqual(llo_409.settled_micro_led_cents, 54180000)
+        self.assertEqual(llo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["micro_led_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("micro-led-mass-transfer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

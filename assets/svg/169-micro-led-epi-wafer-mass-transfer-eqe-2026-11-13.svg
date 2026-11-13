@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg169" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent169" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg169)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent169)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 167 · 车载 AR-HUD / AI 眼镜 Micro-LED 外延片、侧壁钝化 EQE 与 6N 巨量转移架构图</text>
+  <text x="36" y="84" class="sub">Micro-LED Epi-Wafer &amp; Laser Mass Transfer Offtake, PL Wavelength Sigma (&lt;=0.8 nm), ALD EQE (&gt;=18%) &amp; 6N Yield (&gt;=99.9999%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按片数与单点亮度盲付</text>
+  <text x="52" y="166" class="card-h">三大侧壁漏电效率悬崖、彩虹花屏与坏点灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 5um 侧壁刻蚀损伤致 EQE 暴跌 85% 与波长花屏</text>
+  <text x="52" y="216" class="body">微缩至 5um 比表面积暴增 60 倍！未做 ALD 氧化铝</text>
+  <text x="52" y="234" class="body">侧壁钝化时载流子全在侧壁缺陷发热死掉 (EQE 2.4%)；</text>
+  <text x="52" y="252" class="body">托盘温差致全片波长飘移 3.6nm 上屏现彩虹色斑！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 巨量转移 99.9% (3N) 良率仍残留 6,220 颗坏点</text>
+  <text x="52" y="302" class="body">1080P 全彩屏含 622 万颗子像素，99.9% 良率留下</text>
+  <text x="52" y="320" class="body">6,220 个死点无法激光修完，主备双死点直接报废。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 含镉 (CdSe) 量子点触犯 RoHS 与蓝宝石衬底抛弃</text>
+  <text x="52" y="370" class="body">违规含镉色转换胶遭欧盟禁售召回；激光剥离 (LLO)</text>
+  <text x="52" y="388" class="body">后昂贵图形化蓝宝石衬底当废玻璃扔掉浪费 14%。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 200 Wafers + Center-Spot Luminance</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $630,000 exposed to Mura &amp; 6k dead pixels</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="262" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ micro_led_mass_transfer_mandate</text>
+  <text x="428" y="166" class="card-h">四层全片 PL、ALD 钝化与 6N 转移门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Full-Wafer PL &amp; ALD EQE (11ms)</text>
+  <text x="440" y="220" class="body">全片 Micro-PL 波长标准差 σ &lt;=0.8 nm &amp; KOH+ALD</text>
+  <text x="440" y="238" class="body">Al2O3 侧壁钝化 5um EQE &gt;=18% — 花屏/暗屏直返 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: 6N Transfer &amp; 0 Dual-Dead (14ms)</text>
+  <text x="440" y="296" class="body">EL AOI 点亮转移良率 &gt;=99.9999% (6N) &amp; 同像素</text>
+  <text x="440" y="314" class="body">主备冗余连续双坏点 = 0 — 麻子屏直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ Cd-Free QD &amp; AEC-Q102 (280ms)</text>
+  <text x="440" y="372" class="body">核验无镉 InP 量子点 RoHS (Cd &lt;=100 ppm) 与车规</text>
+  <text x="440" y="390" class="body">85°C/85%RH 蓝光激发光维持 &gt;=95% — 违者直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: LLO Sapphire Reuse &amp; Ga/In (245ms)</text>
+  <text x="440" y="448" class="body">准分子激光剥离 (LLO) 蓝宝石衬底 CMP 抛光 5 次复用</text>
+  <text x="440" y="466" class="body">+ MOCVD 尾气三甲基镓/铟回收冲抵立省 $88,200 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 窄波长 + 高 EQE + 6N 放行</text>
+  <text x="828" y="212" class="body">σ=0.45nm + EQE 21.5% + 6N 0坏点 → $630,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 波长花屏或未做侧壁钝化</text>
+  <text x="828" y="258" class="body">σ=3.6nm 或 5um EQE 跌至 2.4% → 冻结 $630,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 转移不足 6N 或主备双死点</text>
+  <text x="828" y="304" class="body">良率 99.9% 残存 6,220 死点 → 拒付 $630,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 含镉量子点或光衰</text>
+  <text x="828" y="350" class="body">CdSe 违反欧盟 RoHS 或热猝灭 → 熔断 $630,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · LLO 蓝宝石复用与镓铟回收</text>
+  <text x="828" y="396" class="body">节省 $88,200 (-14%) → 确认后净付 $541,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 光机保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• Micro-LED 采购严禁“仅看外延片张数与中心单点亮度盲付”：掩盖了 5um 侧壁非辐射复合掉效 85% 与 99.9% 良率残留 6,220 个死点的灾难。</text>
+  <text x="54" y="584" class="body">• 必须将全片 PL 波长 σ (&lt;=0.8nm)、ALD 侧壁钝化 EQE (&gt;=18%)、6N 转移良率与蓝宝石 LLO 复用绑定为智能托管解锁谓词。</text>
+</svg>
