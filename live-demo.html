@@ -4122,6 +4122,24 @@
         <div id="pemfc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Rocket Engine CuCrZr/GRCop-42 Regenerative Cooling Thrust Chamber Mandate Sandbox (Round 185 FAQ Companion) -->
+      <div class="finops-box" id="rocket-regen-thrust-chamber-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rkt-title">🚀 商业火箭液氧甲烷再生冷却推力室 (CuCrZr/GRCop-42)、磨粒流抛光 (Ra &lt;=3.2um) 与防“狗屋效应”架构：防 80MW/m² 绿火烧穿令牌 (rocket_thrust_chamber_mandate_...) vs 常温打水压盲付决策器 (Round 185 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 4 台百吨级液氧甲烷再生冷却推力室与喷注器交割 ($900,000.00)、时效热导率/内流道磨粒流 AFM Ra、360 槽逐道水流量偏差/防狗屋效应棘轮疲劳与 Web IQ 筛余 GRCop-42 球形铜粉复用场景 (Rocket Thrust Chamber Scenario):</span></label>
+          <select id="rkt-select" onchange="updateRocketRegenThrustChamberSandbox()">
+            <option value="rkt_commit_ok">⚡ 热导率 342 W/(m·K) + 磨粒流 Ra=2.1um + 360 槽流量差 1.6% + 600°C 防狗屋 LCF 达标：10ms 自动结算 $900,000.00! (Act automatically)</option>
+            <option value="rkt_lam_403">🛑 时效不足致热导率仅 175 W/(m·K) &lt; 320，或 LPBF 打印悬垂微流道未做磨粒流抛光 (Ra = 22um &gt; 3.2um 且残留死粉) 致喉部喷绿火烧穿拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rkt_dog_422">🚨 360 条冷却槽逐道流量偏差高达 9.2% &gt; 2.5% 或 0.8mm 火侧壁厚偏心，热循环引发棘轮塑性变形致通道拱起呈“狗屋效应 (Doghouse)”撕裂拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="rkt_inj_451">🛑 同轴/针栓喷注器 PDPA 雾化粒径与流量系数 Cd 离散 &gt;1.5% 诱发高频不稳定燃烧，或外层镍基承力套扩散焊分层：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="rkt_pwd_409">🧑‍⚖️ Web IQ 启用打印缸 75% 未烧结 GRCop-42/CuCrZr 球形铜粉惰性筛分与氢气还原脱氧复用，并循环再生碳化硅磨粒流高分子介质立省 $135,000.00 (净付 $765,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rkt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4745,6 +4763,7 @@ function renderAll() {
   updateRfAlscnBawFilterSandbox();
   updateRobot6AxisForceTorqueSensorSandbox();
   updatePemfcBipolarPlateMeaSandbox();
+  updateRocketRegenThrustChamberSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14062,6 +14081,55 @@ function updatePemfcBipolarPlateMeaSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双极板 ICR (&lt;=5mΩ·cm²) + 疏水角 (&gt;=145°) + 抗反极 (&gt;=60min) 达标：已自动清算 (VERIFIED_PEMFC_BIPOLAR_PLATE_MEA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零芬顿自由基咬穿质子膜、零高电密水淹与冷启动缺氢反极烧堆</strong>：50 台 240kW 氢燃料电池电堆双极板与五合一 MEA 批次已完成结算（<code>$800,000.00</code>）！" +
+    "</div>";
+}
+
+function updateRocketRegenThrustChamberSandbox() {
+  var selEl = document.getElementById("rkt-select");
+  var outEl = document.getElementById("rkt-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "rkt_lam_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_THERMAL_CONDUCTIVITY_OR_CHANNEL_ROUGHNESS_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "9MeV 工业 X-CT 与激光闪光导热仪实测显示，该批 3D 打印推力室固溶时效不足导致 <code>热导率仅 175 W/(m·K) &lt; 320 W/(m·K)，或再生冷却微流道未做磨粒流抛光致粗糙度 Ra = 22 um &gt; 3.2 um 残留死粉</code>（点火试车 80 MW/m² 喉部热流瞬间烧化铜壁喷出绿火，<code>hip_density_thermal_conductivity_320w_and_afm_ra_32um_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$900,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "rkt_dog_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CHANNEL_FLOW_MALDISTRIBUTION_OR_DOGHOUSE_CREEP_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "360 槽逐道水力流量标定与高温低周疲劳台检出 <code>单槽水流量偏差高达 9.2% &gt; 2.5% 或 0.8mm 火侧内壁偏心超差，热循环下发生棘轮式鼓包变薄即“狗屋效应 (Doghouse Effect)”纵向撕裂</code>（<code>channel_flow_uniformity_25pct_and_anti_doghouse_lcf_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "rkt_inj_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INJECTOR_ATOMIZATION_CD_OR_JACKET_BOND_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>喷注器激光相位多普勒 PDPA 雾化场报告与外壁承力套超声 C 扫图谱</code>，检出流量系数 Cd 离散 &gt;1.5% 或双金属界面未焊合，立即冻结货款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "rkt_pwd_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GRCOP42_POWDER_RECLAIM_AND_AFM_MEDIA_REUSE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>铺粉缸 75% 未烧结 GRCop-42/CuCrZr 球形铜合金粉惰性筛分脱氧复用 + 磨粒流碳化硅高分子介质再生</code>，自动冲抵高价航空球形铜粉损耗立省 <code>$135,000.00</code>（净付降至 <code>$765,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 热导率 (&gt;=320 W/m·K) + 磨粒流 Ra (&lt;=3.2um) + 防狗屋效应达标：已自动清算 (VERIFIED_ROCKET_REGEN_THRUST_CHAMBER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零喉部绿火烧穿、零内流道残粉堵槽与复用点火狗屋撕裂</strong>：4 台百吨级液氧甲烷再生冷却推力室与喷注器批次已完成结算（<code>$900,000.00</code>）！" +
     "</div>";
 }
 

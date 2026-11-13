@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg187" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090B14"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1F2937"/>
+    </linearGradient>
+    <linearGradient id="accent187" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg187)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0B1324" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent187)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">
+    Round 185 · 商业火箭液氧甲烷再生冷却推力室 (CuCrZr/GRCop-42)、磨粒流抛光与防“狗屋效应”烧穿门禁
+  </text>
+  <text x="52" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    Rocket Engine Regenerative Cooling Thrust Chamber · AFM Channel Ra &lt;= 3.2um, Lambda &gt;= 320 W/m·K &amp; Anti-Doghouse LCF vs. Cold Hydrostatic PO ($900,000)
+  </text>
+  <rect x="955" y="44" width="195" height="34" rx="17" fill="#2E1608" stroke="#F97316" stroke-width="1.5"/>
+  <text x="1052" y="66" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FDBA74">
+    Ra &lt;= 3.2um · Zero Doghouse
+  </text>
+
+  <!-- Left Column: Physical Failure Risks -->
+  <rect x="48" y="114" width="352" height="445" rx="12" fill="#16111D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#FCA5A5">
+    ❌ 传统按台数与常温水压盲付三大炸膛灾难
+  </text>
+
+  <rect x="64" y="164" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    1. 内流道挂渣 (&gt;20um) 与低热导率喷绿火炸膛
+  </text>
+  <text x="78" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • LPBF 打印悬垂流道未做磨粒流抛光，残粉堵流压降暴增
+  </text>
+  <text x="78" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 时效析出不足致热导率仅 175 W/m·K，壁厚温差直接翻倍
+  </text>
+  <text x="78" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 喉部 80 MW/m² 热流在 10 秒内将铜内壁烧化喷出绿火
+  </text>
+
+  <rect x="64" y="294" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    2. 棘轮塑性鼓包与“狗屋效应”二次点火撕裂
+  </text>
+  <text x="78" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 0.8mm 薄内壁在 850K 热膨胀受压屈服与 25MPa 内压下鼓起
+  </text>
+  <text x="78" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 单槽流量偏差 &gt;9% 或壁厚偏心加速局部棘轮变薄 (&lt;0.3mm)
+  </text>
+  <text x="78" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 截面呈狗屋顶状纵向撕裂，高压甲烷直冲燃烧室炸毁发动机
+  </text>
+
+  <rect x="64" y="424" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="448" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    3. 铺粉缸 75% 未烧结 GRCop-42 球形铜粉黑箱
+  </text>
+  <text x="78" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 打印 1.8m 推力室需铺粉 1.2 吨，净成形件仅重 280 kg
+  </text>
+  <text x="78" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 75% 筛余高纯铜铬铌/铜铬锆球形粉未做氢气脱氧复用冲抵
+  </text>
+  <text x="78" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 单批多付 $135,000+ 航空级球形铜合金粉末溢价
+  </text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="114" width="360" height="445" rx="12" fill="#0F1A2E" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="440" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#93C5FD">
+    🛡️ 5-Lane 再生冷却推力室门禁 (10ms–280ms)
+  </text>
+
+  <rect x="436" y="164" width="328" height="68" rx="8" fill="#09221B" stroke="#10B981"/>
+  <text x="450" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    ⚡ HTTP 200 · Act automatically (10ms)
+  </text>
+  <text x="450" y="206" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#A7F3D0">
+    导热 342 W/m·K + AFM Ra=2.1um + 逐槽流量差 1.6%
+  </text>
+  <text x="450" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#6EE7B7">
+    + 600°C 防狗屋 LCF 达标 → 自动结算 $900,000.00
+  </text>
+
+  <rect x="436" y="242" width="328" height="68" rx="8" fill="#2A1215" stroke="#EF4444"/>
+  <text x="450" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F87171">
+    🛑 HTTP 403 · 导热不足/流道挂渣硬阻断 (11ms)
+  </text>
+  <text x="450" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FECACA">
+    热导率 &lt; 320 W/m·K 或内流道 Ra &gt; 3.2um / X-CT 残粉
+  </text>
+  <text x="450" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FCA5A5">
+    LOW_THERMAL_CONDUCTIVITY_OR_CHANNEL_ROUGHNESS_BLOCKED
+  </text>
+
+  <rect x="436" y="320" width="328" height="68" rx="8" fill="#2A1612" stroke="#F97316"/>
+  <text x="450" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FB923C">
+    🚨 HTTP 422 · 偏流/狗屋效应蠕变拦截 (14ms)
+  </text>
+  <text x="450" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FFEDD5">
+    360 槽逐道流量偏差 &gt; +-2.5% 或壁厚偏心致狗屋鼓包撕裂
+  </text>
+  <text x="450" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDBA74">
+    CHANNEL_FLOW_MALDISTRIBUTION_OR_DOGHOUSE_CREEP_BLOCKED
+  </text>
+
+  <rect x="436" y="398" width="328" height="68" rx="8" fill="#251329" stroke="#C084FC"/>
+  <text x="450" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#D8B4FE">
+    🛑 HTTP 451 · 喷注雾化/外壁扩散焊冻结 (280ms)
+  </text>
+  <text x="450" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#F3E8FF">
+    Web IQ 检出喷注器 Cd 离散 &gt; 1.5% 或外承力套扩散焊分层
+  </text>
+  <text x="450" y="456" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#E9D5FF">
+    INJECTOR_ATOMIZATION_CD_OR_JACKET_BOND_HOLD
+  </text>
+
+  <rect x="436" y="476" width="328" height="68" rx="8" fill="#29200E" stroke="#F59E0B"/>
+  <text x="450" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FBBF24">
+    🧑‍⚖️ HTTP 409 · 筛余铜粉脱氧复用确认 (245ms)
+  </text>
+  <text x="450" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FEF3C7">
+    75% 筛余 GRCop-42/CuCrZr 球形粉氢气还原 + AFM 介质再生
+  </text>
+  <text x="450" y="534" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDE68A" font-weight="700">
+    立省 $135,000.00 (15.0%) → 净付 $765,000.00 (Confirm)
+  </text>
+
+  <!-- Right Column: Physics & FinOps Metrics -->
+  <rect x="800" y="114" width="352" height="445" rx="12" fill="#0B1D28" stroke="#10B981" stroke-width="1.5"/>
+  <text x="820" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#6EE7B7">
+    🔬 再生冷却传热与防狗屋物理指标
+  </text>
+
+  <rect x="816" y="164" width="320" height="122" rx="8" fill="#0F2937" stroke="#F97316"/>
+  <text x="830" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#FDBA74">
+    绿光 LPBF 致密化 &amp; 磨粒流 (AFM) 抛光
+  </text>
+  <text x="830" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 固溶时效热导率: Lambda &gt;= 320 W/(m·K) (实测 342)
+  </text>
+  <text x="830" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 内流道双向磨粒流: Ra &lt;= 3.2 um (X-CT 零残粉)
+  </text>
+  <text x="830" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 9 MeV 工业 X-CT 孔隙率: &lt;= 0.05% (HIP 致密)
+  </text>
+  <text x="830" y="270" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#A7F3D0" font-weight="600">
+    • 稳扛喉部 80 MW/m² 极限热流，零绿火铜烧蚀
+  </text>
+
+  <rect x="816" y="298" width="320" height="118" rx="8" fill="#0F2937" stroke="#3B82F6"/>
+  <text x="830" y="322" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#93C5FD">
+    360 槽逐道流量分度 &amp; 防狗屋棘轮疲劳
+  </text>
+  <text x="830" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 逐槽水力流量偏差: &lt;= +-2.5% (实测 +-1.6%)
+  </text>
+  <text x="830" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 0.8mm 火侧壁厚偏心: &lt;= 40 um (超声全场测厚)
+  </text>
+  <text x="830" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#BAE6FD" font-weight="600">
+    • Cr2Nb 强化抗蠕变，50 次复用热试车零狗屋撕裂
+  </text>
+
+  <rect x="816" y="428" width="320" height="114" rx="8" fill="#09241C" stroke="#10B981"/>
+  <text x="830" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#34D399">
+    💰 Web IQ 筛余球形铜粉闭环收益
+  </text>
+  <text x="830" y="474" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 4 台液氧甲烷推力室/喷注器合同总额: $900,000.00
+  </text>
+  <text x="830" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 75% 筛余 GRCop-42 粉脱氧复用 + AFM 再生: -$135,000.00
+  </text>
+  <text x="830" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    • 净结算金额: $765,000.00 (立省 15.0% 成本)
+  </text>
+
+  <!-- Bottom Banner -->
+  <rect x="48" y="574" width="1104" height="62" rx="10" fill="#0F172A" stroke="#334155"/>
+  <text x="68" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    🔑 架构师铁律：不要让常温打水压不漏但内流道挂渣堵粉的推力室在试车台喷绿火炸膛！必须绑定 `rocket_thrust_chamber_mandate_` 令牌，
+  </text>
+  <text x="68" y="622" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" fill="#94A3B8">
+    强审热导率 &gt;=320 W/m·K、内流道 AFM Ra &lt;=3.2um、逐槽流量偏差 &lt;=2.5% 与防狗屋 LCF，并用 Web IQ 核算 75% 筛余 GRCop-42 球形铜粉复用。
+  </text>
+</svg>

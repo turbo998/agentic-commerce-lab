@@ -11519,6 +11519,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pemfc-bipolar-plate-mea-sandbox", demo_zh)
 
+    def test_rocket_engine_gcop42_cucrzr_thrust_chamber_regenerative_cooling_ra_hip_doghouse_mandate_vs_throat_burnthrough_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_rocket_regen_thrust_chamber_policy,
+        )
+
+        # 1. Verified conductivity >=320 W/m·K + AFM Ra <=3.2 um + flow uniformity -> 200 OK ($900,000)
+        commit_ok = evaluate_rocket_regen_thrust_chamber_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_thrust_chamber_cents, 90000000)
+
+        # 2. Low thermal conductivity (<320 W/m·K) or unpolished channel dross (Ra >3.2 um) -> 403 blocked in 11ms
+        lam_403 = evaluate_rocket_regen_thrust_chamber_policy(
+            hip_density_thermal_conductivity_320w_and_afm_ra_32um_verified=False,
+        )
+        self.assertFalse(lam_403.allowed)
+        self.assertEqual(lam_403.http_status, 403)
+        self.assertEqual(
+            lam_403.thrust_chamber_lane,
+            "LOW_THERMAL_CONDUCTIVITY_OR_CHANNEL_ROUGHNESS_BLOCKED",
+        )
+
+        # 3. Per-channel flow maldistribution (>2.5%) or doghouse ratcheting wall split -> 422 blocked in 14ms
+        dog_422 = evaluate_rocket_regen_thrust_chamber_policy(
+            channel_flow_uniformity_25pct_and_anti_doghouse_lcf_passed=False,
+        )
+        self.assertFalse(dog_422.allowed)
+        self.assertEqual(dog_422.http_status, 422)
+        self.assertEqual(
+            dog_422.thrust_chamber_lane,
+            "CHANNEL_FLOW_MALDISTRIBUTION_OR_DOGHOUSE_CREEP_BLOCKED",
+        )
+
+        # 4. Web IQ detects injector PDPA spray skew or structural jacket bond delamination -> 451 blocked in 280ms
+        inj_451 = evaluate_rocket_regen_thrust_chamber_policy(
+            webiq_injector_pdpa_atomization_and_bimetallic_jacket_clean=False,
+        )
+        self.assertFalse(inj_451.allowed)
+        self.assertEqual(inj_451.http_status, 451)
+
+        # 5. Web IQ credits 75% sieved GRCop-42 powder reclaim & AFM media reuse saving $135,000 ($765,000 net) -> 409 Confirm
+        pwd_409 = evaluate_rocket_regen_thrust_chamber_policy(
+            grcop42_cucrzr_sieved_powder_reclaim_and_afm_media_credit_cents=13500000,
+        )
+        self.assertFalse(pwd_409.allowed)
+        self.assertEqual(pwd_409.http_status, 409)
+        self.assertEqual(pwd_409.settled_thrust_chamber_cents, 76500000)
+        self.assertEqual(pwd_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["rocket_thrust_chamber_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rocket-regen-thrust-chamber-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

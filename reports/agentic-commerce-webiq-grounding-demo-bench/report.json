@@ -1000,6 +1000,11 @@
     "pemfc_bipolar_plate_settlement_latency_ms": 10,
     "icr_fenton_block_latency_ms": 11
   },
+  "rocket_thrust_chamber_guards": {
+    "all_passed": true,
+    "rocket_thrust_chamber_settlement_latency_ms": 10,
+    "conductivity_roughness_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
