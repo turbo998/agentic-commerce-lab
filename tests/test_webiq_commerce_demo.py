@@ -10679,6 +10679,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("automotive-lidar-transceiver-sandbox", demo_zh)
 
+    def test_medical_ct_liquid_metal_bearing_xray_tube_czt_detector_afterglow_mandate_vs_anode_seizure_ring_artifact_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_medical_ct_xray_tube_policy,
+        )
+
+        # 1. Verified 30G LMB stability + W-10Re track + 20ms afterglow <=0.01% -> 200 OK ($690,000)
+        commit_ok = evaluate_medical_ct_xray_tube_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ct_xray_tube_cents, 69000000)
+
+        # 2. 30G gantry LMB oxide seizure or low-Rhenium (<9.5%) focal-track crazing -> 403 blocked in 11ms
+        lmb_403 = evaluate_medical_ct_xray_tube_policy(
+            liquid_metal_bearing_30g_stability_and_w_re_focal_track_verified=False,
+        )
+        self.assertFalse(lmb_403.allowed)
+        self.assertEqual(lmb_403.http_status, 403)
+        self.assertEqual(
+            lmb_403.ct_xray_tube_lane,
+            "LIQUID_METAL_BEARING_OXIDE_SEIZURE_OR_TUNGSTEN_TRACK_CRAZING_BLOCKED",
+        )
+
+        # 3. CZT high-flux space-charge polarization or 20ms afterglow (>0.01%) ring artifacts -> 422 blocked in 14ms
+        aft_422 = evaluate_medical_ct_xray_tube_policy(
+            czt_high_flux_depolarization_and_20ms_afterglow_passed=False,
+        )
+        self.assertFalse(aft_422.allowed)
+        self.assertEqual(aft_422.http_status, 422)
+        self.assertEqual(
+            aft_422.ct_xray_tube_lane,
+            "CZT_SPACE_CHARGE_POLARIZATION_OR_SCINTILLATOR_RING_ARTIFACT_BLOCKED",
+        )
+
+        # 4. Web IQ detects counterfeit relabeled ball-bearing tube or IEC 60601 radiation leak -> 451 blocked in 280ms
+        udi_451 = evaluate_medical_ct_xray_tube_policy(
+            webiq_iec60601_leakage_radiation_and_fda_510k_udi_clean=False,
+        )
+        self.assertFalse(udi_451.allowed)
+        self.assertEqual(udi_451.http_status, 451)
+
+        # 5. Web IQ credits OEM housing core reload & W-10Re anode Rhenium reclaim saving $96,600 ($593,400 net) -> 409 Confirm
+        rld_409 = evaluate_medical_ct_xray_tube_policy(
+            tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents=9660000,
+        )
+        self.assertFalse(rld_409.allowed)
+        self.assertEqual(rld_409.http_status, 409)
+        self.assertEqual(rld_409.settled_ct_xray_tube_cents, 59340000)
+        self.assertEqual(rld_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["medical_ct_tube_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("medical-ct-xray-tube-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -19188,6 +19188,96 @@ def evaluate_automotive_lidar_transceiver_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 170: Medical CT Liquid-Metal Bearing X-Ray Tube & CZT Detector Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class MedicalCtXrayTubeVerdict:
+    allowed: bool
+    http_status: int
+    ct_xray_tube_lane: str
+    settled_ct_xray_tube_cents: int
+    core_reload_rhenium_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_medical_ct_xray_tube_policy(
+    *,
+    gross_ct_xray_tube_cents: int = 69000000,
+    liquid_metal_bearing_30g_stability_and_w_re_focal_track_verified: bool = True,
+    czt_high_flux_depolarization_and_20ms_afterglow_passed: bool = True,
+    webiq_iec60601_leakage_radiation_and_fda_510k_udi_clean: bool = True,
+    tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents: int = 0,
+) -> MedicalCtXrayTubeVerdict:
+    # 1. 30G Gantry Liquid-Metal Bearing Oxide Seizure or Low-Rhenium (<9.5%) Focal-Track Crazing -> HTTP 403
+    if not liquid_metal_bearing_30g_stability_and_w_re_focal_track_verified:
+        return MedicalCtXrayTubeVerdict(
+            False,
+            403,
+            "LIQUID_METAL_BEARING_OXIDE_SEIZURE_OR_TUNGSTEN_TRACK_CRAZING_BLOCKED",
+            0,
+            0,
+            "ct_xray_tube_blocked_due_to_30g_gainsn_bearing_contact_or_focal_track_rhenium_below_95pct",
+            11,
+            "Send to a human",
+        )
+
+    # 2. CZT High-Flux Space-Charge Polarization Collapse or 20ms Scintillator Afterglow (>0.01%) Rings -> HTTP 422
+    if not czt_high_flux_depolarization_and_20ms_afterglow_passed:
+        return MedicalCtXrayTubeVerdict(
+            False,
+            422,
+            "CZT_SPACE_CHARGE_POLARIZATION_OR_SCINTILLATOR_RING_ARTIFACT_BLOCKED",
+            0,
+            0,
+            "ct_detector_rejected_for_high_flux_czt_polarization_or_20ms_afterglow_concentric_ring_artifacts",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Counterfeit Relabeled Ball-Bearing Tube or IEC 60601-2-28 Housing Radiation Leak via Web IQ -> HTTP 451
+    if not webiq_iec60601_leakage_radiation_and_fda_510k_udi_clean:
+        return MedicalCtXrayTubeVerdict(
+            False,
+            451,
+            "REFURBISHED_COUNTERFEIT_TUBE_OR_IEC60601_RADIATION_LEAK_HOLD",
+            0,
+            0,
+            "webiq_detected_mismatched_udi_insert_relabeled_tube_or_iec60601_radiation_leakage_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ OEM Lead-Housing Core Reloading + W-10Re Anode Rhenium Reclaim -> HTTP 409 Confirm
+    if tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents > 0:
+        return MedicalCtXrayTubeVerdict(
+            False,
+            409,
+            "LEAD_HOUSING_STATOR_RELOAD_AND_W_RE_ANODE_RECLAIM_CONFIRM",
+            gross_ct_xray_tube_cents - tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents,
+            tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents,
+            "webiq_applied_oem_lead_housing_core_reload_and_w_10re_anode_rhenium_credit_saving_96600_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 30G LMB Stability + W-10Re Track + 0 Polarization + Afterglow <=0.01% -> Settled
+    return MedicalCtXrayTubeVerdict(
+        True,
+        200,
+        "VERIFIED_MEDICAL_CT_TUBE_DETECTOR_SETTLED",
+        gross_ct_xray_tube_cents,
+        0,
+        "30g_liquid_metal_bearing_w_10re_focal_track_czt_depolarization_and_udi_pairing_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25314,6 +25404,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "black_target_range_block_latency_ms": lid_rng_403.latency_ms,
     }
 
+    # Round 170 (Medical CT Liquid-Metal Bearing X-Ray Tube & CZT Detector Offtake, 30G LMB & Afterglow Mandate)
+    ct_commit_ok = evaluate_medical_ct_xray_tube_policy()
+    ct_lmb_403 = evaluate_medical_ct_xray_tube_policy(
+        liquid_metal_bearing_30g_stability_and_w_re_focal_track_verified=False,
+    )
+    ct_aft_422 = evaluate_medical_ct_xray_tube_policy(
+        czt_high_flux_depolarization_and_20ms_afterglow_passed=False,
+    )
+    ct_udi_451 = evaluate_medical_ct_xray_tube_policy(
+        webiq_iec60601_leakage_radiation_and_fda_510k_udi_clean=False,
+    )
+    ct_rld_409 = evaluate_medical_ct_xray_tube_policy(
+        tube_housing_core_reload_and_tungsten_rhenium_target_credit_cents=9660000,
+    )
+    medical_ct_tube_guards = {
+        "all_passed": (
+            ct_commit_ok.allowed
+            and ct_commit_ok.settled_ct_xray_tube_cents == 69000000
+            and not ct_lmb_403.allowed
+            and ct_lmb_403.http_status == 403
+            and not ct_aft_422.allowed
+            and ct_aft_422.http_status == 422
+            and not ct_udi_451.allowed
+            and ct_udi_451.http_status == 451
+            and not ct_rld_409.allowed
+            and ct_rld_409.action_pill == "Confirm"
+        ),
+        "medical_ct_tube_settlement_latency_ms": ct_commit_ok.latency_ms,
+        "lmb_bearing_block_latency_ms": ct_lmb_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25496,6 +25617,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "micro_led_guards": micro_led_guards,
         "hts_rebco_guards": hts_rebco_guards,
         "automotive_lidar_guards": automotive_lidar_guards,
+        "medical_ct_tube_guards": medical_ct_tube_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31455,6 +31577,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lid-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Medical CT Liquid-Metal Bearing X-Ray Tube & CZT Detector Mandate Sandbox (Round 170 FAQ Companion) -->
+      <div class="finops-box" id="medical-ct-xray-tube-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ct-title">🏥 医用超高端螺旋 CT 液态金属轴承球管与光子计数探测器 (CZT)、30G 轴承稳定与 20ms 余辉 (&lt;=0.01%) 架构：防 30G 机架抱死炸管与同心圆环状伪影令牌 (medical_ct_xray_tube_mandate_...) vs 静态通电盲付决策器 (Round 170 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 12 套医用 CT 液态金属轴承球管与光子计数探测器交割 ($690,000.00)、30G 离心轴承零擦碰/钨铼 W-10Re 靶盘、CZT 10^8 通量零极化/20ms 余辉与 Web IQ 原厂 UDI 双码防伪/管套重装场景 (Medical CT Tube Scenario):</span></label>
+          <select id="ct-select" onchange="updateMedicalCtXrayTubeSandbox()">
+            <option value="ct_commit_ok">⚡ 30G 机架液态金属轴承零擦碰 + 靶面铼 Re=10.1% + CZT 零极化 + 20ms 余辉 0.003% 零环伪影：10ms 自动结算 $690,000.00! (Act automatically)</option>
+            <option value="ct_lmb_403">🛑 静态台架通电正常但 GaInSn 液态金属混入氧化镓结渣在 0.25s/圈 (30G) 机架下冲破 15um 油膜抱死炸管，或靶面偷减金属铼 (Re=2.1% &lt; 9.5%) 致 2,400°C 焦轨泥裂剂量暴跌 40% 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ct_aft_422">🚨 碲锌镉 (CZT) 含空穴陷阱在 10^8 cps/mm² 高通量下发生空间电荷极化塌陷黑屏，或闪烁体 20ms 余辉高达 0.35% (&gt;0.01%) 在脑部 CT 正中央印出同心圆年轮伪影导致误诊拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ct_udi_451">🛑 二手翻新商将报废滚珠管芯塞入翻新管套冒充全新液态金属球管 (UDI 管芯号与管套不匹配) 或铅套散射漏射线 &gt;1.0 mGy/h：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ct_rld_409">🧑‍⚖️ Web IQ 启用退役球管完好铅屏蔽管套/高压换热器原厂重装新管芯 (Core Reload) 并提纯回收旧靶盘高纯金属铼 (Re) 与钨钼基材立省 $96,600.00 (净付 $593,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ct-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32063,6 +32203,7 @@ function renderAll() {{
   updateMicroLedMassTransferSandbox();
   updateHtsRebcoTapeSandbox();
   updateAutomotiveLidarTransceiverSandbox();
+  updateMedicalCtXrayTubeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -40645,6 +40786,55 @@ function updateAutomotiveLidarTransceiverSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 10% 黑靶 250m (&gt;=99% POD) + Class 1 安全 + 0 对射鬼影达标：已自动清算 (VERIFIED_AUTOMOTIVE_LIDAR_TRANSCEIVER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零夜间黑车漏检追尾、零视网膜损伤与对射幽灵急刹</strong>：1,000 台车规级激光雷达与收发模组批次已完成结算（<code>$520,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMedicalCtXrayTubeSandbox() {{
+  var selEl = document.getElementById("ct-select");
+  var outEl = document.getElementById("ct-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ct_lmb_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LIQUID_METAL_BEARING_OXIDE_SEIZURE_OR_TUNGSTEN_TRACK_CRAZING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "30G 高速离心机架老化台与 XRF 光谱仪实测显示，该批球管虽静态通电正常，但 <code>GaInSn 液态金属轴承在 30G 旋转下检出氧化镓结渣金属擦碰，或阳极靶面铼含量仅 Re = 2.1% &lt; 9.5% 致焦轨泥裂剂量暴跌 40%</code>（<code>liquid_metal_bearing_30g_stability_and_w_re_focal_track_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$690,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ct_aft_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CZT_SPACE_CHARGE_POLARIZATION_OR_SCINTILLATOR_RING_ARTIFACT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "光子计数与水模伪影实验室检出 <code>CZT 晶体在 10^8 cps/mm² 高通量下发生空间电荷极化塌陷，或闪烁体断光后 20ms 余辉高达 0.35% &gt; 0.01% 在均匀水模中央印出同心圆环状伪影</code>（<code>czt_high_flux_depolarization_and_20ms_afterglow_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ct_udi_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 REFURBISHED_COUNTERFEIT_TUBE_OR_IEC60601_RADIATION_LEAK_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>FDA GUDID / NMPA UDI 原厂管套与真空管芯双码绑定台账及 IEC 60601-2-28 报告</code>，检出以二手翻新滚珠管芯冒充全新液态金属球管或铅套漏射线超标，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ct_rld_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LEAD_HOUSING_STATOR_RELOAD_AND_W_RE_ANODE_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>退役球管完好铅屏蔽管套/定子原厂重装新管芯 (Core Reload) + 旧钨铼 (W-10Re) 靶盘高纯金属铼提纯回用</code>，自动冲抵管套与贵金属铼成本立省 <code>$96,600.00</code>（净付降至 <code>$593,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 30G 轴承零擦碰 + 钨铼 (Re&gt;=9.5%) + 余辉 (&lt;=0.01%) 达标：已自动清算 (VERIFIED_MEDICAL_CT_TUBE_DETECTOR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 30G 机架离心抱死炸管、零焦轨泥裂与同心圆环状伪影误诊</strong>：12 套医用螺旋 CT 液态金属球管与光子计数探测器批次已完成结算（<code>$690,000.00</code>）！" +
     "</div>";
 }}
 

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg172" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent172" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg172)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent172)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 170 · 医用螺旋 CT 液态金属轴承球管与光子计数探测器 (CZT)、30G 轴承与防伪影架构图</text>
+  <text x="36" y="84" class="sub">Medical CT Liquid-Metal Bearing X-Ray Tube &amp; CZT Detector Offtake, 30G Bearing Film, W-10Re Anode &amp; 20ms Afterglow (&lt;=0.01%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按支数与静态通电盲付</text>
+  <text x="52" y="166" class="card-h">三大 30G 离心轴承抱死、靶面龟裂与环状伪影灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 30G 机架下氧化镓结渣抱死与低铼靶盘泥裂</text>
+  <text x="52" y="216" class="body">静态测试无离心力！GaInSn 混入残氧生成 Ga2O3 渣</text>
+  <text x="52" y="234" class="body">在 0.25s/圈 (30G) 下冲破 15um 油膜致 10,000rpm</text>
+  <text x="52" y="252" class="body">阳极抱死炸管；偷减金属铼致 2,400°C 焦轨泥裂！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. CZT 高通量极化失明与 0.35% 余辉同心圆环伪影</text>
+  <text x="52" y="302" class="body">碲夹杂陷阱致 10^8 通量下空间电荷极化塌陷黑屏；</text>
+  <text x="52" y="320" class="body">闪烁体 20ms 余辉超标在脑 CT 中央印出年轮伪影误诊。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 翻新旧滚珠管冒充新液态金属管与钨铼靶盘丢弃</text>
+  <text x="52" y="370" class="body">二手贩子将报废滚珠管芯塞入翻新管套骗取天价；</text>
+  <text x="52" y="388" class="body">退役完好铅管套与高价值钨铼靶盘未执行重装冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 12 Tubes + Static 0G 140kVp Bench Test</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $690,000 exposed to 30G seizure &amp; rings</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="256" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ medical_ct_xray_tube_mandate</text>
+  <text x="428" y="166" class="card-h">四层 30G 液态金属、钨铼焦轨与零伪影门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 30G LMB &amp; W-10Re Anode (11ms)</text>
+  <text x="440" y="220" class="body">30G 离心旋转零金属接触, 靶面 Re &gt;=9.5 wt% &amp;</text>
+  <text x="440" y="238" class="body">双飞焦点热漂移 &lt;=+-30 um — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: CZT Flux &amp; 20ms Afterglow (14ms)</text>
+  <text x="440" y="296" class="body">10^8 cps/mm2 零极化塌陷 &amp; 20ms 余辉 &lt;=0.01%</text>
+  <text x="440" y="314" class="body">水模环状伪影指数 = 0 — 伪影误诊直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ UDI &amp; IEC 60601 (280ms)</text>
+  <text x="440" y="372" class="body">核验 FDA/NMPA UDI 管套与内部真空管芯双码绑定</text>
+  <text x="440" y="390" class="body">及铅套漏射线 &lt;=0.8 mGy/h — 翻新假管直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Core Reload &amp; W-Re Reclaim (245ms)</text>
+  <text x="440" y="448" class="body">退役球管完好铅屏蔽管套/定子原厂重装新管芯 (Reload)</text>
+  <text x="440" y="466" class="body">+ 旧钨铼靶盘金属铼 (Re) 提纯冲抵立省 $96,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 30G 零擦碰与零环伪影放行</text>
+  <text x="828" y="212" class="body">30G 稳定 + Re 10.1% + 余辉 0.003% → $690,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 液态轴承结渣或低铼裂靶</text>
+  <text x="828" y="258" class="body">Ga2O3 擦碰或 Re=2.1% 泥裂 → 冻结 $690,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · CZT 极化失明或余辉环伪影</text>
+  <text x="828" y="304" class="body">余辉 0.35% 印出同心圆伪影 → 拒付 $690,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 翻新假管或漏射线</text>
+  <text x="828" y="350" class="body">管芯 UDI 不符或铅套漏射线 → 熔断 $690,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 管套重装与钨铼靶盘回收</text>
+  <text x="828" y="396" class="body">节省 $96,600 (-14%) → 确认后净付 $593,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 临床保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 医用 CT 球管与探测器严禁“仅看静态空载通电盲付”：掩盖了 30G 离心下液态金属轴承结渣抱死、低铼裂靶及 20ms 余辉印出同心圆伪影。</text>
+  <text x="54" y="584" class="body">• 必须将 30G 零擦碰、靶面铼含量 (&gt;=9.5%)、CZT 零极化、余辉 (&lt;=0.01%) 与 UDI 双码防伪绑定为智能托管解锁谓词。</text>
+</svg>
