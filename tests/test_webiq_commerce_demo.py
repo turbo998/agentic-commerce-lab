@@ -9559,6 +9559,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hsr-ballastless-scc-sandbox", demo_zh)
 
+    def test_lithium_battery_ed_copper_foil_pinhole_elongation_roughness_mandate_vs_calendering_web_break_delamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_lithium_battery_copper_foil_policy,
+        )
+
+        # 1. Verified dual-CCD 0 pinholes + 180C elongation >=6.0% + Matte Rz <=2.0um -> 200 OK ($460,000)
+        commit_ok = evaluate_lithium_battery_copper_foil_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_copper_foil_cents, 46000000)
+
+        # 2. Through-pinholes (>0 /m2) or 180C elongation (<6.0%) web break -> 403 blocked in 11ms
+        pin_403 = evaluate_lithium_battery_copper_foil_policy(
+            zero_pinhole_ccd_and_high_temp_elongation_verified=False,
+        )
+        self.assertFalse(pin_403.allowed)
+        self.assertEqual(pin_403.http_status, 403)
+        self.assertEqual(
+            pin_403.copper_foil_lane,
+            "PINHOLE_SHORT_CIRCUIT_OR_HIGH_TEMP_ELONGATION_WEB_BREAK_BLOCKED",
+        )
+
+        # 3. High matte roughness Rz (>2.0 um) or low dyne tension (<38 mN/m) -> 422 blocked in 14ms
+        rz_422 = evaluate_lithium_battery_copper_foil_policy(
+            matte_roughness_rz_and_chromate_dyne_tension_passed=False,
+        )
+        self.assertFalse(rz_422.allowed)
+        self.assertEqual(rz_422.http_status, 422)
+        self.assertEqual(
+            rz_422.copper_foil_lane,
+            "MATTE_ROUGHNESS_RZ_OR_CHROMATE_DYNE_DELAMINATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects hexavalent chromium Cr(VI) RoHS violation or overdue Ti-drum grinding -> 451 blocked in 280ms
+        cr6_451 = evaluate_lithium_battery_copper_foil_policy(
+            webiq_iatf16949_titanium_drum_and_rohs_cr6_clean=False,
+        )
+        self.assertFalse(cr6_451.allowed)
+        self.assertEqual(cr6_451.http_status, 451)
+
+        # 5. Web IQ credits 4.5um VLP-HTE down-gauging & 12% edge-trim dissolution saving $64,400 ($395,600 net) -> 409 Confirm
+        vlp_409 = evaluate_lithium_battery_copper_foil_policy(
+            composite_pet_pp_copper_foil_and_scrap_trim_credit_cents=6440000,
+        )
+        self.assertFalse(vlp_409.allowed)
+        self.assertEqual(vlp_409.http_status, 409)
+        self.assertEqual(vlp_409.settled_copper_foil_cents, 39560000)
+        self.assertEqual(vlp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["battery_copper_foil_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("battery-copper-foil-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -3492,6 +3492,24 @@
         <div id="scc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Lithium-Ion Battery ED Copper Foil Offtake, Zero-Pinhole CCD & 180C Elongation Mandate Sandbox (Round 150 FAQ Companion) -->
+      <div class="finops-box" id="battery-copper-foil-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cuf-title">🔋 极薄锂电电解铜箔 (4.5–6 um)、CCD 零针孔与 180°C 高温延伸率 (&gt;=6.0%) 架构：防涂布渗浆断带与隔膜微短路令牌 (battery_copper_foil_mandate_...) vs 吨重厚度盲付决策器 (Round 150 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 30 吨极薄锂电电解铜箔交割 ($460,000.00)、在线双面 CCD 零穿透针孔/180°C 高温延伸率、毛面粗糙度 Rz/表面达因值与 Web IQ 车规三价铬/模切边铜溶铜闭环场景 (Battery ED Copper Foil Scenario):</span></label>
+          <select id="cuf-select" onchange="updateBatteryCopperFoilSandbox()">
+            <option value="cuf_commit_ok">⚡ 双面 CCD 0 针孔/m2 + 抗拉 385 MPa + 180°C 延伸率 8.2% + 毛面 Rz 1.35 um + 达因值 42 mN/m：10ms 自动结算 $460,000.00! (Act automatically)</option>
+            <option value="cuf_pin_403">🛑 阴极钛辊微划痕或光亮剂 SPS 失衡留下 8 个/m2 穿透针孔 (涂布黑浆渗穿污染背辊)，或晶粒热软化致 180°C 高温延伸率跌至 2.1% &lt; 6.0% (辊压断带与硅碳负极膨胀撕裂) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="cuf_rz_422">🚨 白光干涉仪检出毛面铜瘤粗糙度高达 Rz = 3.8 um &gt; 2.0 um (冷压后尖锐铜峰刺穿 7um 隔膜引发 K 值自放电)，或表面达因值跌至 29 mN/m &lt; 38 mN/m 致负极缩孔脱粉拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="cuf_cr6_451">🛑 生箔厂违规采用剧毒重铬酸盐六价铬 (Cr6+ &gt; 1,000 ppm) 防氧化钝化违反欧盟电池法 RoHS，或阴极钛辊超期未下线抛光：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="cuf_vlp_409">🧑‍⚖️ Web IQ 启用 4.5um 超薄高延 VLP-HTE 铜箔减重降铜并执行电芯厂 12% 极耳模切无氧紫铜边料返厂溶铜闭环冲抵，立省 $64,400.00 (净付 $395,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cuf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4080,6 +4098,7 @@ function renderAll() {
   updateHighPurityQuartzCrucibleSandbox();
   updateTrenchlessUvCippSandbox();
   updateHsrBallastlessSccSandbox();
+  updateBatteryCopperFoilSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -11682,6 +11701,55 @@ function updateHsrBallastlessSccSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 流变窗口 (T500 3–7s) + 低 MB (&lt;=1.0) + 抗冻气泡间距 (&lt;=250 um) 达标：已自动清算 (VERIFIED_HSR_BALLASTLESS_SCC_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零板底泌水脱空、零高寒冻融酥裂与轨道板上浮超限</strong>：350km/h 高铁无砟轨道自密实混凝土与减水剂批次已完成结算（<code>$410,000.00</code>）！" +
+    "</div>";
+}
+
+function updateBatteryCopperFoilSandbox() {
+  var selEl = document.getElementById("cuf-select");
+  var outEl = document.getElementById("cuf-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "cuf_pin_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PINHOLE_SHORT_CIRCUIT_OR_HIGH_TEMP_ELONGATION_WEB_BREAK_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "锂电铜箔分切线 <code>双面线阵 CCD 透射光学检测与 180°C 高温拉伸试验机</code> 实测显示，该母卷存在 <code>8 个/m2</code> 穿透针孔（高速狭缝涂布时负极浆料将渗穿至背辊）或 180°C 高温延伸率仅 <code>2.1% &lt; 6.0%</code>（在烘道张力与硅碳负极 300% 膨胀下拉断集流体，<code>zero_pinhole_ccd_and_high_temp_elongation_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$460,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cuf_rz_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MATTE_ROUGHNESS_RZ_OR_CHROMATE_DYNE_DELAMINATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "实验室 <code>白光干涉三维轮廓仪与表面张力达因测试</code> 检出毛面铜瘤十点粗糙度达 <code>Rz = 3.8 um &gt; 2.0 um</code>（辊压后刺穿 7um 隔膜致电芯 K 值自放电超标），或表面达因值跌至 <code>29 mN/m &lt; 38 mN/m</code>（涂布缩孔脱粉，<code>matte_roughness_rz_and_chromate_dyne_tension_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cuf_cr6_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IATF16949_FOIL_CERT_OR_HEXAVALENT_CHROMIUM_ROHS_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>IATF 16949 车规认证、阴极钛辊研磨台账与欧盟电池法 RoHS 六价铬报告</code>，检出防氧化层含剧毒 <code>Cr(VI) &gt; 1,000 ppm</code> 或钛辊超期带伤生箔，立即冻结货款并锁死违规机台！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "cuf_vlp_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 COMPOSITE_CURRENT_COLLECTOR_AND_FOIL_TRIM_CLOSED_LOOP_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实采用 <code>4.5um 超薄高延 VLP-HTE 铜箔 + 12% 极耳模切无氧紫铜边料返厂溶铜闭环</code>，自动冲抵铜原料与加工费立省 <code>$64,400.00</code>（净付降至 <code>$395,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双面 CCD 零针孔 + 180°C 延伸率 (&gt;=6.0%) + 毛面 Rz (&lt;=2.0 um) 达标：已自动清算 (VERIFIED_LITHIUM_BATTERY_COPPER_FOIL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零涂布渗浆断带、零隔膜刺穿自放电与负极脱粉</strong>：30 吨极薄锂电电解铜箔批次已完成结算（<code>$460,000.00</code>）！" +
     "</div>";
 }
 
