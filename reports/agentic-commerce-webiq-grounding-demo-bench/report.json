@@ -667,8 +667,8 @@
   },
   "swro_desalination_guards": {
     "all_passed": true,
-    "swro_settlement_latency_ms": 19,
-    "sec_passthrough_block_latency_ms": 11
+    "swro_desalination_settlement_latency_ms": 10,
+    "boron_rejection_block_latency_ms": 11
   },
   "elevator_mro_guards": {
     "all_passed": true,

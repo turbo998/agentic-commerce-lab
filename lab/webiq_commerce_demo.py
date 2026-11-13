@@ -19728,6 +19728,96 @@ def evaluate_hvdc_subsea_xlpe_cable_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 176: SWRO TFC Polyamide Membrane, Boron Rejection & PX ERD Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class SwroDesalinationMembraneErdVerdict:
+    allowed: bool
+    http_status: int
+    swro_membrane_lane: str
+    settled_swro_membrane_cents: int
+    ro_to_uf_upcycling_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_swro_desalination_membrane_erd_policy(
+    *,
+    gross_swro_membrane_cents: int = 51000000,
+    seawater_9985_salt_and_93pct_boron_rejection_verified: bool = True,
+    isobaric_px_erd_965_efficiency_and_3pct_mixing_passed: bool = True,
+    webiq_nsf61_drinking_water_cert_and_duplex_2507_pitting_clean: bool = True,
+    eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents: int = 0,
+) -> SwroDesalinationMembraneErdVerdict:
+    # 1. Low Seawater Boron Rejection (<93%) or Orton Rearrangement Chlorine Polyamide Damage -> HTTP 403
+    if not seawater_9985_salt_and_93pct_boron_rejection_verified:
+        return SwroDesalinationMembraneErdVerdict(
+            False,
+            403,
+            "LOW_BORON_REJECTION_OR_ORTON_CHLORINE_POLYAMIDE_DEGRADATION_BLOCKED",
+            0,
+            0,
+            "swro_membrane_blocked_due_to_seawater_boron_rejection_below_93pct_or_orton_chlorination",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Alumina Rotor PX ERD Brine Volumetric Mixing (>3%) or High Feed-Spacer Pressure Drop -> HTTP 422
+    if not isobaric_px_erd_965_efficiency_and_3pct_mixing_passed:
+        return SwroDesalinationMembraneErdVerdict(
+            False,
+            422,
+            "PX_CERAMIC_ROTOR_OVER_MIXING_OR_GYPSUM_CONCENTRATE_SCALING_BLOCKED",
+            0,
+            0,
+            "isobaric_px_erd_rejected_for_brine_volumetric_mixing_above_3pct_or_efficiency_below_965pct",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Non-NSF/ANSI 61 DMF Solvent Leach or 316L Steel Substituted for SAF 2507 Super-Duplex via Web IQ -> HTTP 451
+    if not webiq_nsf61_drinking_water_cert_and_duplex_2507_pitting_clean:
+        return SwroDesalinationMembraneErdVerdict(
+            False,
+            451,
+            "NON_NSF61_SOLVENT_LEACH_OR_316L_HIGH_PRESSURE_PIPE_PITTING_HOLD",
+            0,
+            0,
+            "webiq_detected_non_nsf61_dmf_leach_or_316l_substituted_for_saf2507_super_duplex_piping",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ End-of-Life RO-to-UF NaOCl Oxidative Upcycling + PX Energy Credit -> HTTP 409 Confirm
+    if eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents > 0:
+        return SwroDesalinationMembraneErdVerdict(
+            False,
+            409,
+            "SPENT_RO_TO_UF_OXIDATIVE_UPCYCLING_AND_ISOBARIC_PX_ENERGY_CREDIT_CONFIRM",
+            gross_swro_membrane_cents - eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents,
+            eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents,
+            "webiq_applied_eol_ro_to_uf_naocl_oxidative_upcycling_and_px_energy_credit_saving_71400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 99.85% Salt + 93% Boron + PX Mixing <=3% + NSF 61 / SAF 2507 -> Settled
+    return SwroDesalinationMembraneErdVerdict(
+        True,
+        200,
+        "VERIFIED_SWRO_TFC_MEMBRANE_PX_ERD_SETTLED",
+        gross_swro_membrane_cents,
+        0,
+        "seawater_9985_salt_93pct_boron_isobaric_px_mixing_and_nsf61_saf2507_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26040,6 +26130,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pea_space_charge_block_latency_ms": hvd_pea_403.latency_ms,
     }
 
+    # Round 176 (SWRO TFC Polyamide Membrane & Isobaric PX ERD Offtake, 93% Boron & PX Mixing Mandate)
+    swr_commit_ok = evaluate_swro_desalination_membrane_erd_policy()
+    swr_bor_403 = evaluate_swro_desalination_membrane_erd_policy(
+        seawater_9985_salt_and_93pct_boron_rejection_verified=False,
+    )
+    swr_pxm_422 = evaluate_swro_desalination_membrane_erd_policy(
+        isobaric_px_erd_965_efficiency_and_3pct_mixing_passed=False,
+    )
+    swr_nsf_451 = evaluate_swro_desalination_membrane_erd_policy(
+        webiq_nsf61_drinking_water_cert_and_duplex_2507_pitting_clean=False,
+    )
+    swr_uf_409 = evaluate_swro_desalination_membrane_erd_policy(
+        eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents=7140000,
+    )
+    swro_desalination_guards = {
+        "all_passed": (
+            swr_commit_ok.allowed
+            and swr_commit_ok.settled_swro_membrane_cents == 51000000
+            and not swr_bor_403.allowed
+            and swr_bor_403.http_status == 403
+            and not swr_pxm_422.allowed
+            and swr_pxm_422.http_status == 422
+            and not swr_nsf_451.allowed
+            and swr_nsf_451.http_status == 451
+            and not swr_uf_409.allowed
+            and swr_uf_409.action_pill == "Confirm"
+        ),
+        "swro_desalination_settlement_latency_ms": swr_commit_ok.latency_ms,
+        "boron_rejection_block_latency_ms": swr_bor_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26228,6 +26349,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "quantum_fridge_guards": quantum_fridge_guards,
         "perovskite_tandem_guards": perovskite_tandem_guards,
         "hvdc_subsea_guards": hvdc_subsea_guards,
+        "swro_desalination_guards": swro_desalination_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32295,6 +32417,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="hvd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive SWRO Desalination TFC Polyamide Membrane, Boron Rejection & PX ERD Mandate Sandbox (Round 176 FAQ Companion) -->
+      <div class="finops-box" id="swro-desalination-membrane-erd-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-swr-title">💧 万吨级海水淡化 (SWRO) 聚酰胺反渗透膜、脱硼率 (&gt;=93%) 与陶瓷转子 PX 能量回收 (&lt;=3% 掺混) 架构：防硼酸穿透毁农田与浓水回窜令牌 (swro_desalination_membrane_erd_mandate_...) vs 苦咸水测试盲付决策器 (Round 176 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 1,200 支海淡反渗透膜与正位移陶瓷转子 PX 能量回收器交割 ($510,000.00)、32,000ppm 海水脱盐率/脱硼率/零氯氧化、PX 能量回收率/浓水掺混率与 Web IQ 退役 RO 改超滤 UF 场景 (SWRO Desalination Scenario):</span></label>
+          <select id="swr-select" onchange="updateSwroDesalinationMembraneErdSandbox()">
+            <option value="swr_commit_ok">⚡ 32,000ppm 脱盐 99.89% (&gt;=99.85%) + 脱硼 94.5% (&gt;=93%) + PX 效率 97.2% + 掺混 1.8%：10ms 自动结算 $510,000.00! (Act automatically)</option>
+            <option value="swr_bor_403">🛑 2,000ppm 苦咸水测试合格但自然海水中不带电硼酸 B(OH)3 穿透致脱硼率仅 68% &lt; 93% (产水硼 1.8 mg/L 毒死果树)，或受游离余氯奥顿重排氧化断链穿孔拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="swr_pxm_422">🚨 氧化铝陶瓷转子 PX 等压能量回收器间隙超差致高压浓盐水向原水回窜掺混率达 9.5% &gt; 3.0%，进水含盐量与渗透压暴涨 0.6 MPa 浪费高压泵电费拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="swr_nsf_451">🛑 聚砜底膜析出 DMF 溶剂未过 NSF/ANSI 61 饮用水认证，或高压浓水管路以普通 316L 冒充 SAF 2507 超级双相钢 (PREN &lt; 42) 点蚀爆管：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="swr_uf_409">🧑‍⚖️ Web IQ 启用退役 RO 膜元件次氯酸钠 (NaOCl) 可控剥离受损聚酰胺表层，露出耐氯介孔聚砜支撑层直接升级改造为预处理超滤 (UF) 膜复用立省 $71,400.00 (净付 $438,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="swr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32909,6 +33049,7 @@ function renderAll() {{
   updateQuantumDilutionRefrigeratorSandbox();
   updatePerovskiteTandemPvSandbox();
   updateHvdcSubseaXlpeCableSandbox();
+  updateSwroDesalinationMembraneErdSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41785,6 +41926,55 @@ function updateHvdcSubseaXlpeCableSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ PEA 空间电荷 (&lt;=10%) + 0 琥珀颗粒 + 软接头偏心 (&lt;=5%) 达标：已自动清算 (VERIFIED_HVDC_525KV_SUBSEA_CABLE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零满载场强反转炸缆、零焦烧琥珀电树与软接头进水击穿</strong>：80 公里 ±525kV 柔直海底电缆与软接头批次已完成结算（<code>$920,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateSwroDesalinationMembraneErdSandbox() {{
+  var selEl = document.getElementById("swr-select");
+  var outEl = document.getElementById("swr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "swr_bor_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LOW_BORON_REJECTION_OR_ORTON_CHLORINE_POLYAMIDE_DEGRADATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "标准海淡高压测试台与 XPS 光谱仪实测显示，该批膜元件虽在低压苦咸水中合格，但在 <code>32,000 mg/L 标准海水下脱硼率仅 68.0% &lt; 93.0%</code>（产水硼超标毁坏农田），或 XPS 检出 <code>Cl 2p 特征峰（聚酰胺发生奥顿重排氯化断链）</code>（<code>seawater_9985_salt_and_93pct_boron_rejection_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$510,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_pxm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PX_CERAMIC_ROTOR_OVER_MIXING_OR_GYPSUM_CONCENTRATE_SCALING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "正位移陶瓷转子 PX 水力台检出 <code>氧化铝转子端面间隙超差导致浓盐水向原水体积掺混率高达 9.5% &gt; 3.0%（抬高进水渗透压 0.6 MPa）或净能量回收效率 &lt;96.5%</code>（<code>isobaric_px_erd_965_efficiency_and_3pct_mixing_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_nsf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NON_NSF61_SOLVENT_LEACH_OR_316L_HIGH_PRESSURE_PIPE_PITTING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NSF/ANSI 61 饮用水安全认证数据库与高压歧管 SAF 2507 超级双相钢材质单</code>，检出 DMF 溶剂析出超标或以普通 316L 钢冒充（PREN &lt; 42），立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "swr_uf_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SPENT_RO_TO_UF_OXIDATIVE_UPCYCLING_AND_ISOBARIC_PX_ENERGY_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>退役 RO 膜次氯酸钠 (NaOCl) 剥离聚酰胺层升级改造为预处理超滤 (UF) 膜复用 + PX 等压节电对冲</code>，自动冲抵超滤膜采购与电费立省 <code>$71,400.00</code>（净付降至 <code>$438,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 海水脱盐 (&gt;=99.85%) + 脱硼 (&gt;=93%) + PX 掺混 (&lt;=3%) 达标：已自动清算 (VERIFIED_SWRO_TFC_MEMBRANE_PX_ERD_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零产水硼超标毁坏农田、零余氯氧化穿孔与浓水回窜涨电费</strong>：1,200 支海淡反渗透膜与陶瓷转子 PX 能量回收器已完成结算（<code>$510,000.00</code>）！" +
     "</div>";
 }}
 

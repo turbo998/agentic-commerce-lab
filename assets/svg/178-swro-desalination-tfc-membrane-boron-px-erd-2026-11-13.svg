@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg178" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent178" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg178)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent178)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 176 · 万吨级海水淡化 (SWRO) 聚酰胺反渗透膜、93% 脱硼率与陶瓷转子 PX 能量回收架构图</text>
+  <text x="36" y="84" class="sub">SWRO TFC Polyamide Membrane &amp; Isobaric PX ERD Offtake, 99.85% Salt, 93% Boron Rejection &amp; PX Volumetric Mixing (&lt;=3%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按支数与苦咸水盲付</text>
+  <text x="52" y="166" class="card-h">三大硼酸穿透毁农田、余氯断链与浓水回窜灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 中性硼酸 B(OH)3 穿透致产水硼超标与余氯穿孔</text>
+  <text x="52" y="216" class="body">电导率表测不出不带电的硼酸！疏松膜在 2,000ppm</text>
+  <text x="52" y="234" class="body">苦咸水合格，但在海水中脱硼仅 68% 毒死灌溉果树；</text>
+  <text x="52" y="252" class="body">微量游离氯引发奥顿重排剪断聚酰胺链彻底漏盐！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. PX 陶瓷转子间隙过大致 9.5% 高浓盐水回窜</text>
+  <text x="52" y="302" class="body">氧化铝转子密封间隙超差使 6MPa 浓盐水大量混入</text>
+  <text x="52" y="320" class="body">原水，进水渗透压暴涨 0.6MPa 白烧上百万高压泵电费。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 316L 高压管点蚀爆管与退役旧膜付费填埋浪费</text>
+  <text x="52" y="370" class="body">以普通 316L 冒充 SAF 2507 超双相钢遭氯离子点蚀；</text>
+  <text x="52" y="388" class="body">退役 RO 膜未用 NaOCl 剥离聚酰胺再生为超滤膜 (UF)。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1,200 Elements + 2,000ppm Brackish Test</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $510,000 exposed to boron &amp; kWh spike</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="290" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ swro_desalination_membrane_erd_mandate</text>
+  <text x="428" y="166" class="card-h">四层高脱硼、零氯损伤与低掺混门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 99.85% Salt &amp; 93% Boron (11ms)</text>
+  <text x="440" y="220" class="body">32,000ppm 海水脱盐 &gt;=99.85%, 脱硼 &gt;=93.0% &amp;</text>
+  <text x="440" y="238" class="body">XPS Cl 2p = 0% 零氯氧化 — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: PX &gt;=96.5% &amp; Mixing &lt;=3% (14ms)</text>
+  <text x="440" y="296" class="body">氧化铝陶瓷 PX 净回收效率 &gt;=96.5% &amp; 浓水体积</text>
+  <text x="440" y="314" class="body">掺混率 &lt;=3.0% — 窜流涨盐直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ NSF 61 &amp; SAF 2507 (280ms)</text>
+  <text x="440" y="372" class="body">核验饮用水 NSF/ANSI 61 认证 (DMF &lt;=1 ppb) 与</text>
+  <text x="440" y="390" class="body">高压管 SAF 2507 超双相钢 (PREN &gt;=42) — 违者 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: RO-to-UF NaOCl Upcycling (245ms)</text>
+  <text x="440" y="448" class="body">退役 RO 膜经受控 NaOCl 剥离聚酰胺表层露出耐氯</text>
+  <text x="440" y="466" class="body">聚砜底膜直接改造为预处理 UF 膜立省 $71,400 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高脱硼与低窜流放行</text>
+  <text x="828" y="212" class="body">脱硼 94.5% + PX 效率 97.2% + 掺混 1.8% → $510,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 脱硼不达标或受余氯氧化</text>
+  <text x="828" y="258" class="body">脱硼 68% 或奥顿重排穿孔 → 冻结 $510,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · PX 陶瓷转子浓水窜流超标</text>
+  <text x="828" y="304" class="body">掺混率 9.5% 抬高进水渗透压 → 拒付 $510,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 无 NSF61 或 316L</text>
+  <text x="828" y="350" class="body">DMF 溶剂析出或管路点蚀风险 → 熔断 $510,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 退役 RO 剥离改 UF 超滤膜</text>
+  <text x="828" y="396" class="body">节省 $71,400 (-14%) → 确认后净付 $438,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 水务保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 海淡膜与能量回收严禁“仅看苦咸水电导率盲付”：电导率测不出不带电的中性硼酸穿透，且 PX 转子窜流会大幅推高进水渗透压电耗。</text>
+  <text x="54" y="584" class="body">• 必须将海水脱盐 (&gt;=99.85%)、脱硼 (&gt;=93%)、PX 掺混 (&lt;=3%) 与退役 RO 氧化再生 UF 膜绑定为智能托管解锁谓词。</text>
+</svg>

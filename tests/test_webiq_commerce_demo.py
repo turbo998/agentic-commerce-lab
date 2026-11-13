@@ -11015,6 +11015,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hvdc-subsea-xlpe-cable-sandbox", demo_zh)
 
+    def test_swro_desalination_tfc_polyamide_membrane_boron_rejection_isobaric_px_erd_mandate_vs_chlorine_oxidation_scaling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_swro_desalination_membrane_erd_policy,
+        )
+
+        # 1. Verified 99.85% salt + 93% boron + PX mixing <=3% -> 200 OK ($510,000)
+        commit_ok = evaluate_swro_desalination_membrane_erd_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_swro_membrane_cents, 51000000)
+
+        # 2. Low seawater boron rejection (<93%) or Orton rearrangement chlorine damage -> 403 blocked in 11ms
+        bor_403 = evaluate_swro_desalination_membrane_erd_policy(
+            seawater_9985_salt_and_93pct_boron_rejection_verified=False,
+        )
+        self.assertFalse(bor_403.allowed)
+        self.assertEqual(bor_403.http_status, 403)
+        self.assertEqual(
+            bor_403.swro_membrane_lane,
+            "LOW_BORON_REJECTION_OR_ORTON_CHLORINE_POLYAMIDE_DEGRADATION_BLOCKED",
+        )
+
+        # 3. Alumina rotor PX ERD brine volumetric mixing (>3%) or low efficiency (<96.5%) -> 422 blocked in 14ms
+        pxm_422 = evaluate_swro_desalination_membrane_erd_policy(
+            isobaric_px_erd_965_efficiency_and_3pct_mixing_passed=False,
+        )
+        self.assertFalse(pxm_422.allowed)
+        self.assertEqual(pxm_422.http_status, 422)
+        self.assertEqual(
+            pxm_422.swro_membrane_lane,
+            "PX_CERAMIC_ROTOR_OVER_MIXING_OR_GYPSUM_CONCENTRATE_SCALING_BLOCKED",
+        )
+
+        # 4. Web IQ detects non-NSF 61 DMF leach or 316L substituted for SAF 2507 -> 451 blocked in 280ms
+        nsf_451 = evaluate_swro_desalination_membrane_erd_policy(
+            webiq_nsf61_drinking_water_cert_and_duplex_2507_pitting_clean=False,
+        )
+        self.assertFalse(nsf_451.allowed)
+        self.assertEqual(nsf_451.http_status, 451)
+
+        # 5. Web IQ credits EOL RO-to-UF NaOCl oxidative upcycling & PX energy saving $71,400 ($438,600 net) -> 409 Confirm
+        uf_409 = evaluate_swro_desalination_membrane_erd_policy(
+            eol_ro_membrane_naocl_upcycling_to_uf_and_px_retrofit_credit_cents=7140000,
+        )
+        self.assertFalse(uf_409.allowed)
+        self.assertEqual(uf_409.http_status, 409)
+        self.assertEqual(uf_409.settled_swro_membrane_cents, 43860000)
+        self.assertEqual(uf_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["swro_desalination_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("swro-desalination-membrane-erd-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
