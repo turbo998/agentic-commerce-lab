@@ -10063,6 +10063,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ai-datacenter-coolant-sandbox", demo_zh)
 
+    def test_humanoid_robot_harmonic_drive_flexspline_fatigue_lost_motion_mandate_vs_cup_fracture_backlash_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_humanoid_harmonic_drive_policy,
+        )
+
+        # 1. Verified VIM+VAR O2 <=8ppm + L10 >=10,000h + Lost Motion <=0.5 arcmin -> 200 OK ($470,000)
+        commit_ok = evaluate_humanoid_harmonic_drive_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_harmonic_drive_cents, 47000000)
+
+        # 2. Non-VAR oxide inclusion (>8ppm O2) or flexspline cup fracture (<10,000h) -> 403 blocked in 11ms
+        fat_403 = evaluate_humanoid_harmonic_drive_policy(
+            flexspline_fatigue_life_and_inclusion_oxygen_verified=False,
+        )
+        self.assertFalse(fat_403.allowed)
+        self.assertEqual(fat_403.http_status, 403)
+        self.assertEqual(
+            fat_403.harmonic_drive_lane,
+            "FLEXSPLINE_ROOT_FATIGUE_CRACK_OR_OXIDE_INCLUSION_BLOCKED",
+        )
+
+        # 3. High hysteresis lost motion (>0.5 arcmin) or transmission error (>30 arcsec) -> 422 blocked in 14ms
+        bak_422 = evaluate_humanoid_harmonic_drive_policy(
+            hysteresis_lost_motion_and_transmission_error_passed=False,
+        )
+        self.assertFalse(bak_422.allowed)
+        self.assertEqual(bak_422.http_status, 422)
+        self.assertEqual(
+            bak_422.harmonic_drive_lane,
+            "HYSTERESIS_LOST_MOTION_BACKLASH_OR_KINEMATIC_RIPPLE_BLOCKED",
+        )
+
+        # 4. Web IQ detects fake VIM+VAR heat cert or grease oil-bleed fouling encoder -> 451 blocked in 280ms
+        var_451 = evaluate_humanoid_harmonic_drive_policy(
+            webiq_vim_var_steel_heat_cert_and_moly_grease_bleed_clean=False,
+        )
+        self.assertFalse(var_451.allowed)
+        self.assertEqual(var_451.http_status, 451)
+
+        # 5. Web IQ credits dual micro-shot peening & crossed-roller bearing reman saving $65,800 ($404,200 net) -> 409 Confirm
+        rem_409 = evaluate_humanoid_harmonic_drive_policy(
+            micro_shot_peening_and_crossed_roller_bearing_reman_credit_cents=6580000,
+        )
+        self.assertFalse(rem_409.allowed)
+        self.assertEqual(rem_409.http_status, 409)
+        self.assertEqual(rem_409.settled_harmonic_drive_cents, 40420000)
+        self.assertEqual(rem_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["harmonic_drive_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("humanoid-harmonic-drive-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

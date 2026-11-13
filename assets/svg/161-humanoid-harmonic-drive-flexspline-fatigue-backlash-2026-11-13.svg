@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg161" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent161" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg161)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent161)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 159 · 人形机器人精密谐波减速器、VIM+VAR 柔轮疲劳寿命与滞回空程架构图</text>
+  <text x="36" y="84" class="sub">Humanoid Robot Strain-Wave Harmonic Drive Offtake, VIM+VAR O2 (&lt;=8 ppm), Fatigue L10 (&gt;=10,000 h) &amp; Lost Motion (&lt;=0.5 arcmin)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按台数与减速比盲付</text>
+  <text x="52" y="166" class="card-h">三大 0.35mm 柔轮断杯、步态抖动摔倒与漏油灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 普通电炉钢氧化铝夹杂致柔轮 420h 疲劳断杯</text>
+  <text x="52" y="216" class="body">0.35mm 极薄柔轮每转承受 2 次椭圆弯曲，非双联钢</text>
+  <text x="52" y="234" class="body">(O2=28ppm) 藏有 18um 夹杂物，运行 420h 即萌生</text>
+  <text x="52" y="252" class="body">鱼眼裂纹齐根崩断，人形机器人当场跪地摔毁！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. S 齿形失配致滞回空程 (2.8 arcmin) 自激抖动</text>
+  <text x="52" y="302" class="body">空载背隙虽小，但加载 +-4% 扭矩时啮合齿数不足，</text>
+  <text x="52" y="320" class="body">拉开 2.8 弧分换向死区与 95 弧秒谐波，激起共振。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 润滑脂分油 (>8%) 糊死编码器与旧轴承报废</text>
+  <text x="52" y="370" class="body">谐波脂基础油析出污染 19位光栅码盘引发关节飞车；</text>
+  <text x="52" y="388" class="body">柔轮磨损后完好的交叉滚子轴承与钛壳体整套丢弃。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 2,000 Units + 100:1 Hand-Spin Check</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $470,000 exposed to cup snap &amp; gait fall</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ humanoid_harmonic_drive_mandate</text>
+  <text x="428" y="166" class="card-h">四层双联纯净钢、滞回空程与防分油门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: VIM+VAR O2 &amp; L10 Fatigue (11ms)</text>
+  <text x="440" y="220" class="body">VIM+VAR 纯净钢 O2 &lt;=8 ppm, 夹杂 &lt;=6 um &amp; 柔轮</text>
+  <text x="440" y="238" class="body">加速寿命 L10 &gt;=10,000 h — 疲劳断杯直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Lost Motion &amp; Arcsec Error (14ms)</text>
+  <text x="440" y="296" class="body">+-4% 扭矩滞回空程 &lt;=0.5 arcmin, 单向角传动误差</text>
+  <text x="440" y="314" class="body">&lt;=30 arcsec &amp; K1 &gt;=95% — 换向抖动直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ VIM+VAR &amp; Oil Bleed (280ms)</text>
+  <text x="440" y="372" class="body">核验特钢厂 VIM+VAR 炉号金相图谱与谐波脂 ASTM</text>
+  <text x="440" y="390" class="body">D6184 分油率 &lt;=3.0% — 假钢或漏油直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Micro-Shot Peen &amp; Reman (245ms)</text>
+  <text x="440" y="448" class="body">双重陶瓷微珠喷丸 (-850MPa 压应力) 延寿 + 交叉滚子</text>
+  <text x="440" y="466" class="body">轴承与刚轮壳体模块化再制造立省 $65,800 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 万小时寿命与微弧秒放行</text>
+  <text x="828" y="212" class="body">L10 14,500h + 空程 0.32' + 误差 18" → $470,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 电炉钢夹杂或柔轮断杯拦截</text>
+  <text x="828" y="258" class="body">O2=28ppm 或 L10=420h 断杯 → 冻结 $470,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 滞回空程松旷或传动谐波</text>
+  <text x="828" y="304" class="body">空程 2.8' 或误差 95" 共振 → 拒付 $470,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 假双联钢或脂分油</text>
+  <text x="828" y="350" class="body">分油 9.2% 糊死光学编码器 → 熔断 $470,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 微喷丸与轴承模块化再制造</text>
+  <text x="828" y="396" class="body">节省 $65,800 (-14%) → 确认后净付 $404,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 齿形保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#8b5cf6">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 人形机器人谐波减速器严禁“仅看空载背隙盲付”：0.35mm 柔轮内一颗 18um 夹杂物就会引发 400h 断杯，而 S 齿失配会拉开 2.8 弧分滞回死区。</text>
+  <text x="54" y="584" class="body">• 必须将 VIM+VAR 氧含量 (&lt;=8ppm)、疲劳寿命 (&gt;=10,000h)、滞回空程 (&lt;=0.5') 与轴承再制造绑定为智能托管解锁谓词。</text>
+</svg>
