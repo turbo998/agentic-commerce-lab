@@ -10903,6 +10903,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("quantum-dilution-refrigerator-sandbox", demo_zh)
 
+    def test_perovskite_silicon_tandem_pv_iv_hysteresis_mppt_damp_heat_wvtr_mandate_vs_flash_test_ion_migration_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_perovskite_tandem_pv_policy,
+        )
+
+        # 1. Verified HI <=1.5% + 300s steady MPPT + Rain Pb2+ <=0.05 mg/L -> 200 OK ($550,000)
+        commit_ok = evaluate_perovskite_tandem_pv_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_perovskite_tandem_cents, 55000000)
+
+        # 2. Halide ion-migration hysteresis (HI >1.5%) or 10ms flash-test Wp inflation -> 403 blocked in 11ms
+        hys_403 = evaluate_perovskite_tandem_pv_policy(
+            iv_hysteresis_index_and_steady_state_mppt_verified=False,
+        )
+        self.assertFalse(hys_403.allowed)
+        self.assertEqual(hys_403.http_status, 403)
+        self.assertEqual(
+            hys_403.perovskite_tandem_lane,
+            "HALIDE_ION_MIGRATION_HYSTERESIS_OR_FLASH_TEST_WP_INFLATION_BLOCKED",
+        )
+
+        # 3. Hoke phase segregation / damp-heat yellowing or hail-rain lead leach (>0.05 mg/L) -> 422 blocked in 14ms
+        wvt_422 = evaluate_perovskite_tandem_pv_policy(
+            iec61215_damp_heat_light_soaking_and_edge_wvtr_passed=False,
+        )
+        self.assertFalse(wvt_422.allowed)
+        self.assertEqual(wvt_422.http_status, 422)
+        self.assertEqual(
+            wvt_422.perovskite_tandem_lane,
+            "PHASE_SEGREGATION_DAMP_HEAT_DEGRADATION_OR_LEAD_LEAKAGE_BLOCKED",
+        )
+
+        # 4. Web IQ detects 1cm2 lab-cell extrapolation or missing lead-sequestration film -> 451 blocked in 280ms
+        tuv_451 = evaluate_perovskite_tandem_pv_policy(
+            webiq_tuv_iec61215_tandem_cert_and_rohs_lead_sequestration_clean=False,
+        )
+        self.assertFalse(tuv_451.allowed)
+        self.assertEqual(tuv_451.http_status, 451)
+
+        # 5. Web IQ credits 99.2% slot-die solvent condensation & 100um thin-HJT wafer saving $77,000 ($473,000 net) -> 409 Confirm
+        slv_409 = evaluate_perovskite_tandem_pv_policy(
+            slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents=7700000,
+        )
+        self.assertFalse(slv_409.allowed)
+        self.assertEqual(slv_409.http_status, 409)
+        self.assertEqual(slv_409.settled_perovskite_tandem_cents, 47300000)
+        self.assertEqual(slv_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["perovskite_tandem_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("perovskite-tandem-pv-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

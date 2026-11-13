@@ -19548,6 +19548,96 @@ def evaluate_quantum_dilution_refrigerator_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 174: Perovskite-Silicon Tandem PV, I-V Hysteresis & Lead-Safe Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class PerovskiteTandemPvVerdict:
+    allowed: bool
+    http_status: int
+    perovskite_tandem_lane: str
+    settled_perovskite_tandem_cents: int
+    solvent_condensation_thin_si_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_perovskite_tandem_pv_policy(
+    *,
+    gross_perovskite_tandem_cents: int = 55000000,
+    iv_hysteresis_index_and_steady_state_mppt_verified: bool = True,
+    iec61215_damp_heat_light_soaking_and_edge_wvtr_passed: bool = True,
+    webiq_tuv_iec61215_tandem_cert_and_rohs_lead_sequestration_clean: bool = True,
+    slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents: int = 0,
+) -> PerovskiteTandemPvVerdict:
+    # 1. Halide Ion-Migration Hysteresis (HI >1.5%) or 10ms Flash-Test Wp Inflation (-18% Steady MPPT) -> HTTP 403
+    if not iv_hysteresis_index_and_steady_state_mppt_verified:
+        return PerovskiteTandemPvVerdict(
+            False,
+            403,
+            "HALIDE_ION_MIGRATION_HYSTERESIS_OR_FLASH_TEST_WP_INFLATION_BLOCKED",
+            0,
+            0,
+            "perovskite_tandem_blocked_due_to_iv_hysteresis_above_15pct_or_steady_state_mppt_drop",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Hoke Halide Phase Segregation, Damp-Heat Yellow PbI2 Decay or Hail-Crack Rain Lead Leach (>0.05 mg/L) -> HTTP 422
+    if not iec61215_damp_heat_light_soaking_and_edge_wvtr_passed:
+        return PerovskiteTandemPvVerdict(
+            False,
+            422,
+            "PHASE_SEGREGATION_DAMP_HEAT_DEGRADATION_OR_LEAD_LEAKAGE_BLOCKED",
+            0,
+            0,
+            "tandem_pv_rejected_for_isos_l2_light_damp_heat_decay_or_rainwater_lead_leach_above_005mg_l",
+            14,
+            "Send to a human",
+        )
+
+    # 3. 1cm2 Lab-Cell Certificate Extrapolated to Commercial Module or Missing Lead-Sequestration Film via Web IQ -> HTTP 451
+    if not webiq_tuv_iec61215_tandem_cert_and_rohs_lead_sequestration_clean:
+        return PerovskiteTandemPvVerdict(
+            False,
+            451,
+            "UNVALIDATED_LAB_CELL_EXTRAPOLATION_OR_UNSEQUESTERED_PB_HOLD",
+            0,
+            0,
+            "webiq_detected_1cm2_lab_cell_extrapolated_to_module_or_missing_phosphonic_lead_trapping_film",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 99.2% Slot-Die Solvent Vapor Condensation + 100um Thin-HJT Silicon Credit -> HTTP 409 Confirm
+    if slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents > 0:
+        return PerovskiteTandemPvVerdict(
+            False,
+            409,
+            "SLOT_DIE_SOLVENT_CONDENSATION_AND_ITO_SUBSTRATE_RECLAIM_CONFIRM",
+            gross_perovskite_tandem_cents - slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents,
+            slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents,
+            "webiq_applied_slot_die_solvent_vapor_condensation_and_100um_hjt_wafer_credit_saving_77000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified HI <=1.5% + 300s Steady MPPT + ISOS-L-2 <=5% + Rain Lead <=0.05 mg/L -> Settled
+    return PerovskiteTandemPvVerdict(
+        True,
+        200,
+        "VERIFIED_PEROVSKITE_SILICON_TANDEM_PV_SETTLED",
+        gross_perovskite_tandem_cents,
+        0,
+        "iv_hysteresis_steady_mppt_isos_l2_edge_wvtr_and_lead_sequestration_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25798,6 +25888,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mxc_cooling_block_latency_ms": qdr_mxc_403.latency_ms,
     }
 
+    # Round 174 (Perovskite-Silicon Tandem PV Module Offtake, I-V Hysteresis, 300s MPPT & Lead-Safe Mandate)
+    psc_commit_ok = evaluate_perovskite_tandem_pv_policy()
+    psc_hys_403 = evaluate_perovskite_tandem_pv_policy(
+        iv_hysteresis_index_and_steady_state_mppt_verified=False,
+    )
+    psc_wvt_422 = evaluate_perovskite_tandem_pv_policy(
+        iec61215_damp_heat_light_soaking_and_edge_wvtr_passed=False,
+    )
+    psc_tuv_451 = evaluate_perovskite_tandem_pv_policy(
+        webiq_tuv_iec61215_tandem_cert_and_rohs_lead_sequestration_clean=False,
+    )
+    psc_slv_409 = evaluate_perovskite_tandem_pv_policy(
+        slot_die_solvent_vapor_recovery_and_tco_glass_delamination_credit_cents=7700000,
+    )
+    perovskite_tandem_guards = {
+        "all_passed": (
+            psc_commit_ok.allowed
+            and psc_commit_ok.settled_perovskite_tandem_cents == 55000000
+            and not psc_hys_403.allowed
+            and psc_hys_403.http_status == 403
+            and not psc_wvt_422.allowed
+            and psc_wvt_422.http_status == 422
+            and not psc_tuv_451.allowed
+            and psc_tuv_451.http_status == 451
+            and not psc_slv_409.allowed
+            and psc_slv_409.action_pill == "Confirm"
+        ),
+        "perovskite_tandem_settlement_latency_ms": psc_commit_ok.latency_ms,
+        "hysteresis_mppt_block_latency_ms": psc_hys_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25984,6 +26105,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "plasma_etch_esc_guards": plasma_etch_esc_guards,
         "synbio_fermentation_guards": synbio_fermentation_guards,
         "quantum_fridge_guards": quantum_fridge_guards,
+        "perovskite_tandem_guards": perovskite_tandem_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32015,6 +32137,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="qdr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Perovskite-Silicon Tandem PV, I-V Hysteresis & Lead-Safe Mandate Sandbox (Round 174 FAQ Companion) -->
+      <div class="finops-box" id="perovskite-tandem-pv-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-psc-title">☀️ 钙钛矿/晶硅叠层光伏组件 (Tandem PV)、正反扫迟滞 (&lt;=1.5%) 与原位固铅阻水架构：防 10ms 闪测虚标瓦数与破损淋雨溶铅令牌 (perovskite_tandem_pv_mandate_...) vs 脉冲闪测盲付决策器 (Round 174 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 5,000 块钙钛矿/异质结晶硅叠层光伏组件交割 ($550,000.00)、IEC 60904 正反扫迟滞指数 HI/300s 稳态 MPPT、双 85 光热老化/破损淋雨固铅与 Web IQ 涂布溶剂回收/100um 薄硅片场景 (Perovskite Tandem PV Scenario):</span></label>
+          <select id="psc-select" onchange="updatePerovskiteTandemPvSandbox()">
+            <option value="psc_commit_ok">⚡ 正反扫迟滞 HI=0.4% (&lt;=1.5%) + 300s 稳态 MPPT 偏差 0.2% + 光热衰减 2.8% + 淋雨铅 0.008 mg/L：10ms 自动结算 $550,000.00! (Act automatically)</option>
+            <option value="psc_hys_403">🛑 10ms 氙灯快速反向闪测借离子极化打出 720Wp 假高分，但卤素空位迁移致正反扫迟滞 HI=14.5% &gt; 1.5%，300s 连续光照稳态 MPPT 真实输出暴跌 18% (仅 590W) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="psc_wvt_422">🚨 强光高温下发生溴/碘相分离 (Hoke Effect) 或边封漏水发黄变成不发电的碘化铅 PbI2，且缺失固铅膜在冰雹破损淋雨时溶出重金属铅 Pb2+ &gt; 0.05 mg/L 污染土壤拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="psc_tuv_451">🛑 拿 1cm² 实验室小片旋涂效率证书冒充 2.4m² 全尺寸量产组件 TÜV IEC 61215 认证或未贴覆原位磷酸基螯合固铅胶膜：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="psc_slv_409">🧑‍⚖️ Web IQ 启用狭缝涂布烘道 99.2% 溶剂蒸汽多级深冷冷凝回收，并将异质结 (HJT) 底电池硅片减薄至 100um 立省 $77,000.00 (净付 $473,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="psc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32627,6 +32767,7 @@ function renderAll() {{
   updatePlasmaEtchFocusRingEscSandbox();
   updateSynbioPrecisionFermentationSandbox();
   updateQuantumDilutionRefrigeratorSandbox();
+  updatePerovskiteTandemPvSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41405,6 +41546,55 @@ function updateQuantumDilutionRefrigeratorSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 满载 10mK (@100mK&gt;=650uW) + 3He 气密 + 红外滤波 (T1&gt;=250us) 达标：已自动清算 (VERIFIED_QUANTUM_DILUTION_FRIDGE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零带载升温停摆、零红外光子准粒子毒化与天价氦-3 泄漏</strong>：超导量子极低温稀释制冷机与低温微波链路已完成结算（<code>$840,000.00</code>）！" +
+    "</div>";
+}}
+
+function updatePerovskiteTandemPvSandbox() {{
+  var selEl = document.getElementById("psc-select");
+  var outEl = document.getElementById("psc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "psc_hys_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HALIDE_ION_MIGRATION_HYSTERESIS_OR_FLASH_TEST_WP_INFLATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "双光源稳态太阳模拟器实测显示，该批组件虽在 10ms 快速反扫闪测中报出 720Wp，但因卤素空位迁移导致 <code>正反扫迟滞指数高达 HI = 14.5% &gt; 1.5%，且 300s 连续稳态 MPPT 真实输出暴跌 18%</code>（<code>iv_hysteresis_index_and_steady_state_mppt_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$550,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psc_wvt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PHASE_SEGREGATION_DAMP_HEAT_DEGRADATION_OR_LEAD_LEAKAGE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "环境老化与固铅检测中心检出 <code>ISOS-L-2 光热湿老化发生溴/碘相分离与黄色 PbI2 分解（衰减 &gt;5.0%），或模拟冰雹破损淋雨滤液可溶性铅析出 Pb2+ &gt; 0.05 mg/L</code>（<code>iec61215_damp_heat_light_soaking_and_edge_wvtr_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psc_tuv_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNVALIDATED_LAB_CELL_EXTRAPOLATION_OR_UNSEQUESTERED_PB_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>TÜV IEC 61215 / UL 61730 全尺寸组件认证库与固铅胶膜 BOM</code>，检出拿 1cm² 实验室小片效率证书冒充 2.4m² 量产组件或缺失磷酸基固铅层，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psc_slv_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SLOT_DIE_SOLVENT_CONDENSATION_AND_ITO_SUBSTRATE_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>狭缝涂布 99.2% 溶剂蒸汽深冷冷凝回收 + 100μm 超薄异质结 (HJT) 底电池减硅协同</code>，自动冲抵溶剂与硅片成本立省 <code>$77,000.00</code>（净付降至 <code>$473,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 迟滞 (&lt;=1.5%) + 300s 稳态 MPPT + 固铅 (&lt;=0.05mg/L) 达标：已自动清算 (VERIFIED_PEROVSKITE_SILICON_TANDEM_PV_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 10ms 闪测虚标瓦数、零湿热发黄分解与破损淋雨铅污染</strong>：5,000 块钙钛矿/晶硅叠层光伏组件批次已完成结算（<code>$550,000.00</code>）！" +
     "</div>";
 }}
 
