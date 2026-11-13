@@ -18148,6 +18148,91 @@ def evaluate_metal_am_spherical_powder_policy(
     )
 
 
+@dataclass(frozen=True)
+class AiDatacenterCoolantVerdict:
+    allowed: bool
+    http_status: int
+    datacenter_coolant_lane: str
+    settled_datacenter_coolant_cents: int
+    zeolite_reclaim_heat_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_ai_datacenter_coolant_policy(
+    *,
+    gross_datacenter_coolant_cents: int = 55000000,
+    dielectric_breakdown_kv_and_hydrofluoric_acid_tan_verified: bool = True,
+    dlc_microchannel_biocide_and_bta_copper_passivation_passed: bool = True,
+    webiq_eu_f_gas_gwp_and_plasticizer_leach_compatibility_clean: bool = True,
+    zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents: int = 0,
+) -> AiDatacenterCoolantVerdict:
+    # 1. Dielectric Breakdown Collapse (<40 kV) or Hydrofluoric Acid HF Hydrolysis (TAN >0.01) -> HTTP 403
+    if not dielectric_breakdown_kv_and_hydrofluoric_acid_tan_verified:
+        return AiDatacenterCoolantVerdict(
+            False,
+            403,
+            "DIELECTRIC_BREAKDOWN_ARC_OR_HYDROFLUORIC_ACID_CORROSION_BLOCKED",
+            0,
+            0,
+            "immersion_coolant_lot_blocked_due_to_breakdown_below_40kv_or_hydrofluoric_acid_tan_above_001",
+            11,
+            "Send to a human",
+        )
+
+    # 2. 100um Skived-Fin Microchannel Biofouling / Cu2O Bridging (Rth >0.035 K/W or ΔP >65 kPa) -> HTTP 422
+    if not dlc_microchannel_biocide_and_bta_copper_passivation_passed:
+        return AiDatacenterCoolantVerdict(
+            False,
+            422,
+            "DLC_SKIVED_FIN_BIOFOULING_OR_GALVANIC_COPPER_CORROSION_BLOCKED",
+            0,
+            0,
+            "dlc_coolant_rejected_for_100um_microchannel_rth_above_0035_kw_or_depleted_bta_biofilm_bridging",
+            14,
+            "Send to a human",
+        )
+
+    # 3. EPDM Phthalate Plasticizer Extraction or Banned High-GWP Perfluorocarbon via Web IQ -> HTTP 451
+    if not webiq_eu_f_gas_gwp_and_plasticizer_leach_compatibility_clean:
+        return AiDatacenterCoolantVerdict(
+            False,
+            451,
+            "HIGH_GWP_PFAS_BAN_OR_EPDM_PLASTICIZER_EXTRACTION_HOLD",
+            0,
+            0,
+            "webiq_detected_epdm_phthalate_plasticizer_extraction_or_banned_high_gwp_fluorocarbon",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 4A Molecular-Sieve Vacuum Reclamation + 60C CDU District-Heating Offset -> HTTP 409 Confirm
+    if zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents > 0:
+        return AiDatacenterCoolantVerdict(
+            False,
+            409,
+            "MOLECULAR_SIEVE_DIELECTRIC_RECLAIM_AND_HEAT_RECOVERY_CONFIRM",
+            gross_datacenter_coolant_cents - zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents,
+            zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents,
+            "webiq_applied_4a_zeolite_dielectric_reclamation_and_cdu_district_heat_credit_saving_77000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified IEC 60156 >=40 kV + TAN <=0.01 + Microchannel Rth <=0.035 K/W + OCP Clean -> Settled
+    return AiDatacenterCoolantVerdict(
+        True,
+        200,
+        "VERIFIED_AI_DATACENTER_LIQUID_COOLANT_SETTLED",
+        gross_datacenter_coolant_cents,
+        0,
+        "iec60156_dielectric_breakdown_karl_fischer_hf_tan_100um_dlc_rth_and_ocp_compatibility_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -23902,6 +23987,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hollow_oxygen_block_latency_ms": amp_hol_403.latency_ms,
     }
 
+    # Round 158 (AI Datacenter Immersion Dielectric Fluid & DLC Cold-Plate Coolant Offtake, Breakdown & HF Mandate)
+    dlc_commit_ok = evaluate_ai_datacenter_coolant_policy()
+    dlc_arc_403 = evaluate_ai_datacenter_coolant_policy(
+        dielectric_breakdown_kv_and_hydrofluoric_acid_tan_verified=False,
+    )
+    dlc_fin_422 = evaluate_ai_datacenter_coolant_policy(
+        dlc_microchannel_biocide_and_bta_copper_passivation_passed=False,
+    )
+    dlc_gwp_451 = evaluate_ai_datacenter_coolant_policy(
+        webiq_eu_f_gas_gwp_and_plasticizer_leach_compatibility_clean=False,
+    )
+    dlc_zeo_409 = evaluate_ai_datacenter_coolant_policy(
+        zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents=7700000,
+    )
+    datacenter_coolant_guards = {
+        "all_passed": (
+            dlc_commit_ok.allowed
+            and dlc_commit_ok.settled_datacenter_coolant_cents == 55000000
+            and not dlc_arc_403.allowed
+            and dlc_arc_403.http_status == 403
+            and not dlc_fin_422.allowed
+            and dlc_fin_422.http_status == 422
+            and not dlc_gwp_451.allowed
+            and dlc_gwp_451.http_status == 451
+            and not dlc_zeo_409.allowed
+            and dlc_zeo_409.action_pill == "Confirm"
+        ),
+        "datacenter_coolant_settlement_latency_ms": dlc_commit_ok.latency_ms,
+        "dielectric_hf_block_latency_ms": dlc_arc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24072,6 +24188,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pem_ccm_guards": pem_ccm_guards,
         "cmp_slurry_guards": cmp_slurry_guards,
         "am_powder_guards": am_powder_guards,
+        "datacenter_coolant_guards": datacenter_coolant_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -29815,6 +29932,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="amp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive AI Datacenter Immersion Dielectric Fluid & DLC Cold-Plate Coolant Offtake, Breakdown & HF Mandate Sandbox (Round 158 FAQ Companion) -->
+      <div class="finops-box" id="ai-datacenter-coolant-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dlc-title">❄️ AI 智算中心浸没氟化液与微通道冷板 (DLC)、介电击穿 (&gt;=40 kV) 与防氢氟酸架构：防 800V 母排拉弧爆燃与微槽堵死降频令牌 (ai_datacenter_coolant_mandate_...) vs 吨数沸点盲付决策器 (Round 158 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 20 吨 AI 智算中心浸没式氟化液与 DLC 微通道冷却液交割 ($550,000.00)、IEC 60156 介电击穿电压/游离氢氟酸 TAN、100um 铲齿铜冷板热阻 Rth 与 Web IQ OCP 相容性/4A 分子筛再生场景 (AI Datacenter Coolant Scenario):</span></label>
+          <select id="dlc-select" onchange="updateAiDatacenterCoolantSandbox()">
+            <option value="dlc_commit_ok">⚡ 介电击穿电压 52 kV + 水分 9 ppm + 酸值 TAN 0.002 + 微通道冷板热阻 Rth 0.026 K/W + 压降 42 kPa：10ms 自动结算 $550,000.00! (Act automatically)</option>
+            <option value="dlc_arc_403">🛑 氟化液混入 85 ppm 水分在 GPU 热点催化下水解脱氟生成剧毒氢氟酸 HF (酸值 TAN = 0.14 &gt; 0.01 蚀穿光模块透镜，介电击穿电压暴跌至 18 kV &lt; 40 kV 引发 800V 服务器母排高压拉弧爆炸) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="dlc_fin_422">🚨 DLC 冷板液 BTA 缓蚀剂耗尽或滋生铜绿假单胞菌生物粘泥，微米级氧化铜颗粒架桥堵死 100um 铲齿铜微通道 (压降飙至 140 kPa &gt; 65 kPa，热阻恶化至 Rth = 0.082 K/W 致万卡集群过热降频) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="dlc_gwp_451">🛑 氟化液萃取溶出 EPDM 软管中的邻苯二甲酸酯增塑剂在芯片表面结成绝缘焦垢，或采用 GWP100 &gt; 2,000 违禁全氟碳违反欧盟 F-Gas 法规：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="dlc_zeo_409">🧑‍⚖️ Web IQ 部署机房端 4A 分子筛+活性氧化铝真空旁路精滤柱实现 92% 服役氟化液在线脱水除酸再生，并耦合 CDU 60°C 回水园区集中供暖售热冲抵立省 $77,000.00 (净付 $473,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dlc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -30411,6 +30546,7 @@ function renderAll() {{
   updatePemElectrolyzerCcmSandbox();
   updateSemiconductorCmpSlurrySandbox();
   updateMetalAmPowderSandbox();
+  updateAiDatacenterCoolantSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -38405,6 +38541,55 @@ function updateMetalAmPowderSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ Micro-CT 空心率 (&lt;=0.5%) + 氧含量 (&lt;=1,200 ppm) + 霍尔流速 (&lt;=28 s) 达标：已自动清算 (VERIFIED_METAL_AM_SPHERICAL_POWDER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零氩气孔热诱导复胀、零高氧脆断与铺粉刮刀拉沟</strong>：5 吨航空级金属 3D 打印球形粉末批次已完成结算（<code>$440,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAiDatacenterCoolantSandbox() {{
+  var selEl = document.getElementById("dlc-select");
+  var outEl = document.getElementById("dlc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "dlc_arc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DIELECTRIC_BREAKDOWN_ARC_OR_HYDROFLUORIC_ACID_CORROSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "智算中心 CDU <code>IEC 60156 在线介电击穿仪与离子色谱/卡尔费休水分仪</code> 实测显示，该批浸没氟化液因水分超标 (85 ppm) 水解生成剧毒氢氟酸 HF 导致酸值升至 <code>TAN = 0.14 mg KOH/g &gt; 0.01</code> 且击穿电压跌至 <code>18 kV &lt; 40 kV</code>（将蚀穿光模块透镜并引发服务器 800V 母排高压拉弧爆炸，<code>dielectric_breakdown_kv_and_hydrofluoric_acid_tan_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$550,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dlc_fin_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DLC_SKIVED_FIN_BIOFOULING_OR_GALVANIC_COPPER_CORROSION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "液冷机柜 <code>100um 铲齿铜微通道冷板压差与热阻遥测仪</code> 检出 BTA 缓蚀剂耗尽析出氧化铜颗粒与生物粘泥架桥堵塞微槽，冷板压降飙至 <code>ΔP = 140 kPa &gt; 65 kPa</code> 且热阻恶化至 <code>Rth = 0.082 K/W &gt; 0.035 K/W</code>（1,200W GPU 将触发过热降频，<code>dlc_microchannel_biocide_and_bta_copper_passivation_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dlc_gwp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HIGH_GWP_PFAS_BAN_OR_EPDM_PLASTICIZER_EXTRACTION_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>OCP 开放计算液冷材料相容性 GC-MS 溶出库与欧盟 F-Gas GWP100 法规清单</code>，检出冷却液溶出 EPDM 软管增塑剂在芯片表面结焦或违背低 GWP 强制红线，立即冻结货款并隔离问题环路！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "dlc_zeo_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MOLECULAR_SIEVE_DIELECTRIC_RECLAIM_AND_HEAT_RECOVERY_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>4A 分子筛+活性氧化铝在线脱水除酸再生 (92% 氟化液回用) + CDU 60°C 回水园区供暖余热回收</code>，自动冲抵新液采购与电费立省 <code>$77,000.00</code>（净付降至 <code>$473,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 击穿电压 (&gt;=40 kV) + 零游离 HF + 微通道热阻 (&lt;=0.035 K/W) 达标：已自动清算 (VERIFIED_AI_DATACENTER_LIQUID_COOLANT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 800V 母排拉弧爆燃、零 100um 微通道堵死降频与增塑剂结焦</strong>：20 吨 AI 智算中心液冷介质批次已完成结算（<code>$550,000.00</code>）！" +
     "</div>";
 }}
 

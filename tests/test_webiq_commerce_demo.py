@@ -10007,6 +10007,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("metal-am-powder-sandbox", demo_zh)
 
+    def test_ai_datacenter_immersion_dlc_coolant_dielectric_breakdown_hf_acid_mandate_vs_microchannel_fouling_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ai_datacenter_coolant_policy,
+        )
+
+        # 1. Verified >=40 kV breakdown + TAN <=0.01 + microchannel Rth <=0.035 K/W -> 200 OK ($550,000)
+        commit_ok = evaluate_ai_datacenter_coolant_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_datacenter_coolant_cents, 55000000)
+
+        # 2. Dielectric breakdown collapse (<40 kV) or HF hydrolysis (TAN >0.01) -> 403 blocked in 11ms
+        arc_403 = evaluate_ai_datacenter_coolant_policy(
+            dielectric_breakdown_kv_and_hydrofluoric_acid_tan_verified=False,
+        )
+        self.assertFalse(arc_403.allowed)
+        self.assertEqual(arc_403.http_status, 403)
+        self.assertEqual(
+            arc_403.datacenter_coolant_lane,
+            "DIELECTRIC_BREAKDOWN_ARC_OR_HYDROFLUORIC_ACID_CORROSION_BLOCKED",
+        )
+
+        # 3. 100um microchannel biofouling / Cu2O bridging (Rth >0.035 K/W) -> 422 blocked in 14ms
+        fin_422 = evaluate_ai_datacenter_coolant_policy(
+            dlc_microchannel_biocide_and_bta_copper_passivation_passed=False,
+        )
+        self.assertFalse(fin_422.allowed)
+        self.assertEqual(fin_422.http_status, 422)
+        self.assertEqual(
+            fin_422.datacenter_coolant_lane,
+            "DLC_SKIVED_FIN_BIOFOULING_OR_GALVANIC_COPPER_CORROSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects EPDM phthalate plasticizer extraction or banned high-GWP fluid -> 451 blocked in 280ms
+        gwp_451 = evaluate_ai_datacenter_coolant_policy(
+            webiq_eu_f_gas_gwp_and_plasticizer_leach_compatibility_clean=False,
+        )
+        self.assertFalse(gwp_451.allowed)
+        self.assertEqual(gwp_451.http_status, 451)
+
+        # 5. Web IQ credits 4A zeolite reclamation & CDU district heat saving $77,000 ($473,000 net) -> 409 Confirm
+        zeo_409 = evaluate_ai_datacenter_coolant_policy(
+            zeolite_vacuum_regeneration_and_cdu_waste_heat_credit_cents=7700000,
+        )
+        self.assertFalse(zeo_409.allowed)
+        self.assertEqual(zeo_409.http_status, 409)
+        self.assertEqual(zeo_409.settled_datacenter_coolant_cents, 47300000)
+        self.assertEqual(zeo_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["datacenter_coolant_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ai-datacenter-coolant-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
