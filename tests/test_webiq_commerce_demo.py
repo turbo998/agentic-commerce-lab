@@ -11127,6 +11127,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("leo-hall-thruster-propellant-sandbox", demo_zh)
 
+    def test_all_solid_state_battery_argyrodite_sulfide_electrolyte_ccd_h2s_mandate_vs_dendrite_short_hydrolysis_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_solid_state_sulfide_electrolyte_policy,
+        )
+
+        # 1. Verified conductivity >=4.5 mS/cm + CCD >=3.5 mA/cm2 + H2S <=0.05 cm3/g -> 200 OK ($660,000)
+        commit_ok = evaluate_solid_state_sulfide_electrolyte_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sulfide_electrolyte_cents, 66000000)
+
+        # 2. Unreacted Li2S low conductivity (<4.5 mS/cm) or grain-boundary dendrite short (CCD <3.5 mA/cm2) -> 403 blocked in 11ms
+        ccd_403 = evaluate_solid_state_sulfide_electrolyte_policy(
+            ionic_conductivity_45ms_and_ccd_35ma_verified=False,
+        )
+        self.assertFalse(ccd_403.allowed)
+        self.assertEqual(ccd_403.http_status, 403)
+        self.assertEqual(
+            ccd_403.sulfide_electrolyte_lane,
+            "UNREACTED_LI2S_LOW_CONDUCTIVITY_OR_GRAIN_BOUNDARY_LITHIUM_DENDRITE_BLOCKED",
+        )
+
+        # 3. Moisture hydrolysis toxic H2S outgassing (>0.05 cm3/g) or high SCL impedance -> 422 blocked in 14ms
+        h2s_422 = evaluate_solid_state_sulfide_electrolyte_policy(
+            moisture_h2s_outgassing_and_li_nb_zr_cathode_coating_passed=False,
+        )
+        self.assertFalse(h2s_422.allowed)
+        self.assertEqual(h2s_422.http_status, 422)
+        self.assertEqual(
+            h2s_422.sulfide_electrolyte_lane,
+            "HYDROLYSIS_TOXIC_H2S_OUTGASSING_OR_SPACE_CHARGE_INTERFACIAL_IMPEDANCE_BLOCKED",
+        )
+
+        # 4. Web IQ detects impure 99% Li2S iron contamination or breached UN 3134 drum dew-point -> 451 blocked in 280ms
+        li2_451 = evaluate_solid_state_sulfide_electrolyte_policy(
+            webiq_un3134_water_reactive_hazmat_and_4n_li2s_precursor_clean=False,
+        )
+        self.assertFalse(li2_451.allowed)
+        self.assertEqual(li2_451.http_status, 451)
+
+        # 5. Web IQ credits 99.3% THF distillation & dry PTFE fibrillation saving $92,400 ($567,600 net) -> 409 Confirm
+        dry_409 = evaluate_solid_state_sulfide_electrolyte_policy(
+            liquid_phase_thf_solvent_distillation_and_dry_ptfe_electrode_credit_cents=9240000,
+        )
+        self.assertFalse(dry_409.allowed)
+        self.assertEqual(dry_409.http_status, 409)
+        self.assertEqual(dry_409.settled_sulfide_electrolyte_cents, 56760000)
+        self.assertEqual(dry_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["solid_state_sulfide_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("solid-state-sulfide-electrolyte-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

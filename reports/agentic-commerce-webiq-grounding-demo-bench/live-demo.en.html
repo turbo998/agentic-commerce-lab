@@ -3996,6 +3996,24 @@
         <div id="het-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive All-Solid-State Battery Sulfide Electrolyte, CCD & H2S Mandate Sandbox (Round 178 FAQ Companion) -->
+      <div class="finops-box" id="solid-state-sulfide-electrolyte-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-assb-title">🔋 全固态电池 (ASSB) 硫银锗矿硫化物电解质、临界电流密度 (CCD &gt;=3.5mA/cm²) 与防剧毒 H2S 水解架构：防晶界内生锂枝晶与空间电荷死墙令牌 (solid_state_sulfide_electrolyte_mandate_...) vs 粒度D50盲付决策器 (Round 178 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 500 公斤 Li6PS5Cl 硫化物固态电解质与干法极片交割 ($660,000.00)、室温离子/电子电导率与对称电池 CCD、痕量水解剧毒 H2S 释放率/LiNbO3 包覆阻抗与 Web IQ 液相溶剂回用/干法 PTFE 场景 (Solid-State Sulfide Scenario):</span></label>
+          <select id="assb-select" onchange="updateSolidStateSulfideElectrolyteSandbox()">
+            <option value="assb_commit_ok">⚡ 离子电导 6.8 mS/cm (&gt;=4.5) + 电子电导 2e-10 S/cm + CCD=4.8 mA/cm² + H2S=0.008 cm³/g：10ms 自动结算 $660,000.00! (Act automatically)</option>
+            <option value="assb_ccd_403">🛑 激光粒度 D50=1.2um 合格但残留未反应 Li2S 致电导仅 0.8 mS/cm，或电子电导超标 (&gt;10^-8 S/cm) 在陶瓷内部孔隙直接长出孤立锂枝晶劈裂短路 (CCD=0.6 &lt; 3.5 mA/cm²) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="assb_h2s_422">🚨 运输或投料受潮发生 PS4³⁻ 不可逆水解冒出剧毒硫化氢气体 (H2S &gt; 0.05 cm³/g) 触发车间毒气报警，或正极未做 LiNbO3 纳米包覆产生 180 Ω·cm² 空间电荷死墙拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="assb_li2_451">🛑 前驱体混用工业级 99% 廉价硫化锂 (含磁性铁杂质 &gt;1 ppm) 或 UN 3134 正压充氩桶内蓝牙露点计升至 &gt;-45°C 受潮：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="assb_dry_409">🧑‍⚖️ Web IQ 启用液相法合成四氢呋喃 (THF) 溶剂 99.3% 分子筛精馏循环回用，并采用零溶剂双螺杆 PTFE 原纤化干法自支撑极片免除 80m 烘道立省 $92,400.00 (净付 $567,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="assb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4612,6 +4630,7 @@ function renderAll() {
   updateHvdcSubseaXlpeCableSandbox();
   updateSwroDesalinationMembraneErdSandbox();
   updateLeoHallThrusterPropellantSandbox();
+  updateSolidStateSulfideElectrolyteSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -13586,6 +13605,55 @@ function updateLeoHallThrusterPropellantSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 5.5N 水氧 (&lt;=0.5ppmv) + 磁屏蔽刻蚀 (&lt;=0.2um/h) + 振荡 (&lt;=15%) 达标：已自动清算 (VERIFIED_LEO_HALL_THRUSTER_PROPELLANT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零在轨 LaB6 空心阴极氧化熄火、零通道磨穿与呼吸振荡烧 PPU</strong>：50 套低轨卫星霍尔电推进器与 5.5N 工质批次已完成结算（<code>$610,000.00</code>）！" +
+    "</div>";
+}
+
+function updateSolidStateSulfideElectrolyteSandbox() {
+  var selEl = document.getElementById("assb-select");
+  var outEl = document.getElementById("assb-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "assb_ccd_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNREACTED_LI2S_LOW_CONDUCTIVITY_OR_GRAIN_BOUNDARY_LITHIUM_DENDRITE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "全固态电化学手套箱实验室 <code>高频 EIS 与 Hebb-Wagner 直流极化台</code> 实测显示，该批粉体虽粒度 D50=1.2μm 合格，但残留未反应 Li2S 致离子电导仅 <code>0.8 mS/cm &lt; 4.5 mS/cm</code>，或电子电导超标致对称电池临界电流密度跌至 <code>CCD = 0.6 mA/cm² &lt; 3.5 mA/cm²</code>（晶界孔隙内生锂枝晶短路，<code>ionic_conductivity_45ms_and_ccd_35ma_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$660,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "assb_h2s_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HYDROLYSIS_TOXIC_H2S_OUTGASSING_OR_SPACE_CHARGE_INTERFACIAL_IMPEDANCE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "露点与拉曼界面表征台检出 <code>粉体受潮水解产生剧毒硫化氢 H2S &gt; 0.05 cm³/g（拉曼出现 P-O/S-H 杂峰）或未包覆 LiNbO3 正极产生高达 180 Ω·cm² 的空间电荷层界面阻抗</code>（<code>moisture_h2s_outgassing_and_li_nb_zr_cathode_coating_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "assb_li2_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INDUSTRIAL_GRADE_LI2S_IRON_IMPURITY_OR_UN3134_DEWPOINT_BREACH_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>4N 硫化锂前驱体 ICP-MS 磁性异物报告与 UN 3134 桶内蓝牙露点记录仪</code>，检出混用含铁工业级 Li2S 或运输途中桶内露点升至 &gt;-45°C，立即冻结货款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "assb_dry_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LIQUID_PHASE_SYNTHESIS_SOLVENT_RECOVERY_AND_DRY_PTFE_FIBRILLATION_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>液相合成四氢呋喃 (THF) 溶剂 99.3% 精馏回用 + 零溶剂双螺杆 PTFE 原纤化干法自支撑极片免烘道</code>，自动冲抵球磨电耗与烘道成本立省 <code>$92,400.00</code>（净付降至 <code>$567,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 离子电导 (&gt;=4.5mS/cm) + CCD (&gt;=3.5mA/cm²) + 零 H2S 水解达标：已自动清算 (VERIFIED_ASSB_SULFIDE_ELECTROLYTE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零晶界内生锂枝晶劈裂短路、零车间剧毒硫化氢泄漏与空间电荷死墙</strong>：500 公斤 Li6PS5Cl 硫化物固态电解质与干法极片已完成结算（<code>$660,000.00</code>）！" +
     "</div>";
 }
 
