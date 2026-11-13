@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg170" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent170" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg170)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent170)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 168 · 可控核聚变与高场 MRI 第二代高温超导 (2G HTS REBCO) 带材、20T 强场与防脱层架构图</text>
+  <text x="36" y="84" class="sub">2G HTS REBCO Coated Conductor Offtake, 20K/20T Critical Current (&gt;=650 A/4mm), 0 Dropout &amp; Transverse Delamination (&gt;=35 MPa)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按公里与77K端头盲付</text>
+  <text x="52" y="166" class="card-h">三大 20T 强场掉流、局部失超炸毁与环氧冷却脱层灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 无 BZO 纳米柱致 20T 掉流 75% 与中段失超热点</text>
+  <text x="52" y="216" class="body">77K 液氮无磁场端头合格，但缺锆酸钡 (BZO) 磁通</text>
+  <text x="52" y="234" class="body">钉扎柱致 20K/20T 强场下 Ic 暴跌至 180A；50km</text>
+  <text x="52" y="252" class="body">中间 1cm 跌落点通电 1 秒即引爆整台聚变磁体失超！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 环氧冷却至 20K 热收缩将超导陶瓷层整层撕脱</text>
+  <text x="52" y="302" class="body">环氧收缩率是金属基带的 5 倍，横向抗剥离 &lt;35 MPa</text>
+  <text x="52" y="320" class="body">时冷却瞬间将 REBCO 层撕裂；高阻接头烧干液氦。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 弱磁性基带掺假与溅射腔室 75% 高纯白银浪费</text>
+  <text x="52" y="370" class="body">以磁性 Ni-W 冒充无磁 Hastelloy C-276 扭曲磁场；</text>
+  <text x="52" y="388" class="body">真空室防着板上 75% 溅射白银与分条废边未冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 50 km Spool + 77K Self-Field End-Cut</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $780,000 exposed to 20T quench &amp; cleavage</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="242" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ hts_rebco_tape_mandate</text>
+  <text x="428" y="166" class="card-h">四层 20T 强场钉扎、零跌落与防脱层门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 20K/20T Ic &amp; 0 Dropout (11ms)</text>
+  <text x="440" y="220" class="body">BZO 钉扎 Ic_min(20K,20T,B||c) &gt;=650 A/4mm &amp;</text>
+  <text x="440" y="238" class="body">全长 TapeStar 局部电流跌落点 = 0 — 违者直返 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Delamination &amp; nΩ Joint (14ms)</text>
+  <text x="440" y="296" class="body">c 轴砧座横向抗剥离 σ_delam &gt;=35 MPa &amp; 搭接焊</text>
+  <text x="440" y="314" class="body">接头电阻 R_joint &lt;=2.0 nΩ — 冷却脱层直返 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ C-276 &amp; Fusion QA (280ms)</text>
+  <text x="440" y="372" class="body">核验无磁 Hastelloy C-276 基带炉批与聚变磁体</text>
+  <text x="440" y="390" class="body">中子辐照 QA 台账 — 磁性基带掺假直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Sputter Ag &amp; 12mm Laser Slit (245ms)</text>
+  <text x="440" y="448" class="body">磁控溅射腔防着板白银 98.5% 电解重铸 + 12mm 母带</text>
+  <text x="440" y="466" class="body">光纤激光无毛刺三切分条冲抵立省 $109,200 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 20T 强场高流与抗脱层放行</text>
+  <text x="828" y="212" class="body">Ic 720A + 0 跌落 + 抗剥离 52MPa → $780,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 20T 强场掉流或中段跌落点</text>
+  <text x="828" y="258" class="body">20T Ic=180A 或含失超死点 → 冻结 $780,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 环氧冷却脱层或高阻接头</text>
+  <text x="828" y="304" class="body">抗剥离 8.5MPa 或接头 45nΩ → 拒付 $780,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 磁性基带或 QA 缺失</text>
+  <text x="828" y="350" class="body">混入磁性 Ni-W 基带扭曲磁场 → 熔断 $780,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 溅射银回收与 12mm 激光分条</text>
+  <text x="828" y="396" class="body">节省 $109,200 (-14%) → 确认后净付 $670,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 磁体保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 高温超导带材严禁“仅看 77K 液氮无磁场端头抽检盲付”：掩盖了缺 BZO 纳米柱在 20T 强场下掉流 75% 及环氧冷却把超导层撕脱的灾难。</text>
+  <text x="54" y="584" class="body">• 必须将 20K/20T 最小临界电流 (&gt;=650A)、全长 0 跌落、横向抗剥离 (&gt;=35MPa) 与纳欧接头绑定为智能托管解锁谓词。</text>
+</svg>

@@ -19008,6 +19008,96 @@ def evaluate_micro_led_mass_transfer_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 168: 2G HTS REBCO Superconducting Tape, 20T Ic & Delamination Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class HtsRebcoTapeVerdict:
+    allowed: bool
+    http_status: int
+    hts_rebco_lane: str
+    settled_hts_rebco_cents: int
+    silver_sputter_laser_slit_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_hts_rebco_tape_policy(
+    *,
+    gross_hts_rebco_cents: int = 78000000,
+    high_field_20k_20t_min_ic_and_zero_dropout_verified: bool = True,
+    transverse_delamination_strength_and_nano_ohm_joint_passed: bool = True,
+    webiq_iter_nuclear_fusion_qa_and_hastelloy_c276_heat_clean: bool = True,
+    sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents: int = 0,
+) -> HtsRebcoTapeVerdict:
+    # 1. Low 20K/20T BZO-Pinned Critical Current (<650 A/4mm) or Continuous TapeStar Ic Dropout -> HTTP 403
+    if not high_field_20k_20t_min_ic_and_zero_dropout_verified:
+        return HtsRebcoTapeVerdict(
+            False,
+            403,
+            "HIGH_FIELD_IC_DROPOUT_OR_MISSING_BZO_PINNING_QUENCH_BLOCKED",
+            0,
+            0,
+            "hts_rebco_spool_blocked_due_to_20k_20t_ic_below_650a_or_tapestar_quench_dropout",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Low c-Axis Transverse Delamination Strength (<35 MPa) or High Lap-Joint Resistance (>2.0 nOhm) -> HTTP 422
+    if not transverse_delamination_strength_and_nano_ohm_joint_passed:
+        return HtsRebcoTapeVerdict(
+            False,
+            422,
+            "EPOXY_THERMAL_CONTRACTION_DELAMINATION_OR_HIGH_JOINT_RESISTANCE_BLOCKED",
+            0,
+            0,
+            "rebco_tape_rejected_for_anvil_delamination_below_35mpa_or_joint_resistance_above_2nohm",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Magnetic Ni-W Substrate Substitution or Missing Fusion Irradiation QA via Web IQ -> HTTP 451
+    if not webiq_iter_nuclear_fusion_qa_and_hastelloy_c276_heat_clean:
+        return HtsRebcoTapeVerdict(
+            False,
+            451,
+            "SUBSTANDARD_SUBSTRATE_OR_RADIATION_SHIELD_QA_HOLD",
+            0,
+            0,
+            "webiq_detected_ferromagnetic_substrate_substituted_for_hastelloy_c276_or_missing_fusion_qa",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 98.5% Sputter-Shield Silver Reclaim + 12mm->3x4mm Fiber-Laser Slitting Credit -> HTTP 409 Confirm
+    if sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents > 0:
+        return HtsRebcoTapeVerdict(
+            False,
+            409,
+            "SILVER_SPUTTER_CHAMBER_RECLAIM_AND_HASTELLOY_SLITTING_CREDIT_CONFIRM",
+            gross_hts_rebco_cents - sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents,
+            sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents,
+            "webiq_applied_985pct_sputter_shield_silver_reclaim_and_12mm_laser_slitting_credit_saving_109200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 20K/20T Ic >=650 A + 0 Dropout + Delamination >=35 MPa + Joint <=2.0 nOhm -> Settled
+    return HtsRebcoTapeVerdict(
+        True,
+        200,
+        "VERIFIED_2G_HTS_REBCO_TAPE_SETTLED",
+        gross_hts_rebco_cents,
+        0,
+        "bzo_pinned_20k_20t_ic_zero_tapestar_dropout_35mpa_delamination_and_hastelloy_c276_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25072,6 +25162,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pl_eqe_block_latency_ms": uled_eqe_403.latency_ms,
     }
 
+    # Round 168 (2G HTS REBCO Coated-Conductor Tape Offtake, 20K/20T Critical Current & Transverse Delamination Mandate)
+    hts_commit_ok = evaluate_hts_rebco_tape_policy()
+    hts_ic_403 = evaluate_hts_rebco_tape_policy(
+        high_field_20k_20t_min_ic_and_zero_dropout_verified=False,
+    )
+    hts_del_422 = evaluate_hts_rebco_tape_policy(
+        transverse_delamination_strength_and_nano_ohm_joint_passed=False,
+    )
+    hts_sub_451 = evaluate_hts_rebco_tape_policy(
+        webiq_iter_nuclear_fusion_qa_and_hastelloy_c276_heat_clean=False,
+    )
+    hts_ag_409 = evaluate_hts_rebco_tape_policy(
+        sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents=10920000,
+    )
+    hts_rebco_guards = {
+        "all_passed": (
+            hts_commit_ok.allowed
+            and hts_commit_ok.settled_hts_rebco_cents == 78000000
+            and not hts_ic_403.allowed
+            and hts_ic_403.http_status == 403
+            and not hts_del_422.allowed
+            and hts_del_422.http_status == 422
+            and not hts_sub_451.allowed
+            and hts_sub_451.http_status == 451
+            and not hts_ag_409.allowed
+            and hts_ag_409.action_pill == "Confirm"
+        ),
+        "hts_rebco_settlement_latency_ms": hts_commit_ok.latency_ms,
+        "high_field_ic_block_latency_ms": hts_ic_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25252,6 +25373,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mrna_lnp_guards": mrna_lnp_guards,
         "hydrogen_copv_guards": hydrogen_copv_guards,
         "micro_led_guards": micro_led_guards,
+        "hts_rebco_guards": hts_rebco_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31175,6 +31297,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="uled-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive 2G HTS REBCO Superconducting Tape, 20T Ic & Transverse Delamination Mandate Sandbox (Round 168 FAQ Companion) -->
+      <div class="finops-box" id="hts-rebco-tape-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-hts-title">🧲 可控核聚变与高场 MRI 第二代高温超导 (2G HTS REBCO) 带材、20K/20T 强场临界电流 (&gt;=650A) 与横向抗脱层 (&gt;=35MPa) 架构：防磁体失超炸毁与环氧冷却脱层令牌 (hts_rebco_tape_mandate_...) vs 77K端头盲付决策器 (Round 168 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 50 公里 2G HTS REBCO 高温超导带材交割 ($780,000.00)、20K/20T 强场钉扎临界电流/全长 TapeStar 零跌落、c 轴横向抗剥离/纳欧接头与 Web IQ 溅射银回收/12mm 激光分条场景 (2G HTS REBCO Scenario):</span></label>
+          <select id="hts-select" onchange="updateHtsRebcoTapeSandbox()">
+            <option value="hts_commit_ok">⚡ 20K/20T 强场 Ic 720A/4mm (&gt;=650A) + 50km 全长 0 跌落 + 横向抗剥离 52MPa + 接头 0.8nΩ：10ms 自动结算 $780,000.00! (Act automatically)</option>
+            <option value="hts_ic_403">🛑 77K 液氮端头无磁场抽检合格，但缺锆酸钡 (BZO) 纳米钉扎柱致 20K/20T 强场下 Ic 暴跌至 180A (&lt;650A) 或中段含 1cm 电流跌落死点通电失超烧毁磁体拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="hts_del_422">🚨 c 轴砧座横向抗剥离强度仅 8.5 MPa (&lt;35 MPa)，磁体环氧浸渍冷却至 20K 时热收缩将超导陶瓷层整层撕脱断路，或搭接焊电阻高达 45 nΩ (&gt;2.0 nΩ) 烧干液氦拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="hts_sub_451">🛑 以带弱磁性的廉价 Ni-W 基带冒充无磁 Hastelloy C-276 扭曲聚变磁场或缺失中子辐照 QA 认证：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="hts_ag_409">🧑‍⚖️ Web IQ 回收磁控溅射腔防着板上 98.5% 高纯白银 (Ag) 电解重铸银靶，并采用 12mm 母带光纤激光无损一分为三 (3x4mm) 分条立省 $109,200.00 (净付 $670,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="hts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -31781,6 +31921,7 @@ function renderAll() {{
   updateMrnaLnpEncapsulationSandbox();
   updateHydrogenType4CopvSandbox();
   updateMicroLedMassTransferSandbox();
+  updateHtsRebcoTapeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -40265,6 +40406,55 @@ function updateMicroLedMassTransferSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 全片 PL 波长 (&lt;=0.8nm) + 5um ALD EQE (&gt;=18%) + 6N 转移达标：已自动清算 (VERIFIED_MICRO_LED_EPI_MASS_TRANSFER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零侧壁非辐射复合效率坍塌、零彩虹阴阳色斑与坏点麻子屏</strong>：200 片 Micro-LED 外延与激光巨量转移模组批次已完成结算（<code>$630,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHtsRebcoTapeSandbox() {{
+  var selEl = document.getElementById("hts-select");
+  var outEl = document.getElementById("hts-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "hts_ic_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HIGH_FIELD_IC_DROPOUT_OR_MISSING_BZO_PINNING_QUENCH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "强磁场超导测试中心 <code>20K/20T 低温高场磁体与全长连续 TapeStar 霍尔扫描仪</code> 实测显示，该批带材虽 77K 无磁场端头合格，但因缺锆酸钡（BZO）纳米钉扎柱致 20K/20T 临界电流跌至 <code>Ic = 180 A &lt; 650 A/4mm</code> 或中段存在局部电流跌落失超死点（<code>high_field_20k_20t_min_ic_and_zero_dropout_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$780,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hts_del_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EPOXY_THERMAL_CONTRACTION_DELAMINATION_OR_HIGH_JOINT_RESISTANCE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "低温力学实验室检出 <code>c 轴砧座横向抗剥离强度仅 σ_delam = 8.5 MPa &lt; 35 MPa（环氧灌封冷却至 20K 时将超导层撕裂脱层）或搭接焊电阻 R_joint = 45 nΩ &gt; 2.0 nΩ</code>（<code>transverse_delamination_strength_and_nano_ohm_joint_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hts_sub_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUBSTANDARD_SUBSTRATE_OR_RADIATION_SHIELD_QA_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>Hastelloy C-276 无磁合金基带炉批证书与聚变级中子辐照 QA 台账</code>，检出以弱磁性 Ni-W 合金冒充无磁 C-276 基带，立即冻结货款并锁死问题卷号！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hts_ag_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SILVER_SPUTTER_CHAMBER_RECLAIM_AND_HASTELLOY_SLITTING_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>磁控溅射腔防着板 98.5% 高纯白银 (Ag) 电解重铸银靶 + 12mm 母带光纤激光无损三切分条</code>，自动冲抵贵金属银靶与分条损耗费立省 <code>$109,200.00</code>（净付降至 <code>$670,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 20K/20T 强场 (&gt;=650A) + 全长 0 跌落 + 抗剥离 (&gt;=35MPa) 达标：已自动清算 (VERIFIED_2G_HTS_REBCO_TAPE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 20T 强场磁通流动失超、零环氧冷却脱层与高阻烧氦</strong>：50 公里 2G HTS REBCO 高温超导带材批次已完成结算（<code>$780,000.00</code>）！" +
     "</div>";
 }}
 

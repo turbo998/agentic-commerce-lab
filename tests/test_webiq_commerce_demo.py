@@ -10567,6 +10567,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("micro-led-mass-transfer-sandbox", demo_zh)
 
+    def test_hts_rebco_superconducting_tape_high_field_ic_delamination_joint_mandate_vs_quench_burnout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hts_rebco_tape_policy,
+        )
+
+        # 1. Verified 20K/20T Ic >=650 A + 0 Dropout + Delamination >=35 MPa -> 200 OK ($780,000)
+        commit_ok = evaluate_hts_rebco_tape_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hts_rebco_cents, 78000000)
+
+        # 2. Low 20K/20T BZO-pinned Ic (<650 A) or continuous TapeStar dropout -> 403 blocked in 11ms
+        ic_403 = evaluate_hts_rebco_tape_policy(
+            high_field_20k_20t_min_ic_and_zero_dropout_verified=False,
+        )
+        self.assertFalse(ic_403.allowed)
+        self.assertEqual(ic_403.http_status, 403)
+        self.assertEqual(
+            ic_403.hts_rebco_lane,
+            "HIGH_FIELD_IC_DROPOUT_OR_MISSING_BZO_PINNING_QUENCH_BLOCKED",
+        )
+
+        # 3. Low c-axis transverse delamination (<35 MPa) or high lap-joint resistance (>2.0 nOhm) -> 422 blocked in 14ms
+        del_422 = evaluate_hts_rebco_tape_policy(
+            transverse_delamination_strength_and_nano_ohm_joint_passed=False,
+        )
+        self.assertFalse(del_422.allowed)
+        self.assertEqual(del_422.http_status, 422)
+        self.assertEqual(
+            del_422.hts_rebco_lane,
+            "EPOXY_THERMAL_CONTRACTION_DELAMINATION_OR_HIGH_JOINT_RESISTANCE_BLOCKED",
+        )
+
+        # 4. Web IQ detects magnetic Ni-W substrate substitution or missing fusion QA -> 451 blocked in 280ms
+        sub_451 = evaluate_hts_rebco_tape_policy(
+            webiq_iter_nuclear_fusion_qa_and_hastelloy_c276_heat_clean=False,
+        )
+        self.assertFalse(sub_451.allowed)
+        self.assertEqual(sub_451.http_status, 451)
+
+        # 5. Web IQ credits 98.5% sputter-shield Ag reclaim & 12mm laser slitting saving $109,200 ($670,800 net) -> 409 Confirm
+        ag_409 = evaluate_hts_rebco_tape_policy(
+            sputtering_silver_target_reclaim_and_corc_cable_scrap_credit_cents=10920000,
+        )
+        self.assertFalse(ag_409.allowed)
+        self.assertEqual(ag_409.http_status, 409)
+        self.assertEqual(ag_409.settled_hts_rebco_cents, 67080000)
+        self.assertEqual(ag_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["hts_rebco_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hts-rebco-tape-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
