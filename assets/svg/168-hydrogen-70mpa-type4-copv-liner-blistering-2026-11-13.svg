@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg168" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent168" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg168)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent168)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 166 · 70MPa 车载 IV 型储氢瓶 (COPV)、快放气防内瘪与 -40°C 高镍抗氢脆架构图</text>
+  <text x="36" y="84" class="sub">70MPa Type IV Hydrogen COPV &amp; Compressor Offtake, Permeation (&lt;=46 NmL/h/L), 0 Blowdown Buckling &amp; 316L Ni (&gt;=12.5%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按只数与静水压盲付</text>
+  <text x="52" y="166" class="card-h">三大快速泄压内胆吸瘪、极寒漏氢与氢脆断阀灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 87.5MPa 快速泄压致塑料内胆起泡与向内吸瘪</text>
+  <text x="52" y="216" class="body">水压测试测不出氢溶解！劣质 HDPE 内胆溶入高压氢</text>
+  <text x="52" y="234" class="body">并积聚在夹层，快放气时夹层 70MPa 氢反推内胆</text>
+  <text x="52" y="252" class="body">像塑料瓶一样向内折叠塌陷撕裂，渗透率超标 3 倍！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. -40°C 预冷快充拉裂瓶口与低镍钢 (10.1%) 氢脆</text>
+  <text x="52" y="302" class="body">-40°C 塑料收缩率是金属 Boss 的 5 倍致密封漏气；</text>
+  <text x="52" y="320" class="body">低镍 316L 钢低温相变为脆性马氏体引发氢脆断口。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 隔膜压缩机漏液压油毒化电堆与湿法缠绕浪费</text>
+  <text x="52" y="370" class="body">单层膜片微裂纹漏油随氢气打入电堆毒死铂催化剂；</text>
+  <text x="52" y="388" class="body">传统湿法胶槽缠绕滑移多耗 10% 昂贵碳纤维。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 300 Vessels + 25°C 105MPa Water Test</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $590,000 exposed to liner collapse &amp; HE</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ hydrogen_type4_copv_mandate</text>
+  <text x="428" y="166" class="card-h">四层快放气防内瘪、极寒温循与高镍门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: H2 Permeation &amp; 0 Buckling (11ms)</text>
+  <text x="440" y="220" class="body">UN GTR 13 氢渗透 &lt;=46 NmL/h/L, 87.5MPa 快放气</text>
+  <text x="440" y="238" class="body">内窥镜 0 起泡内瘪 &amp; 爆破 &gt;=157.5MPa — 违者 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: -40°C Cycle &amp; 316L Ni &gt;=12.5% (14ms)</text>
+  <text x="440" y="296" class="body">-40°C~+85°C 气密循环 &gt;=15,000次 Boss 零漏气 &amp;</text>
+  <text x="440" y="314" class="body">S31603 镍含量 Ni &gt;=12.5 wt% — 低镍氢脆直返 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ ECE R134 &amp; 0-Oil (280ms)</text>
+  <text x="440" y="372" class="body">核验 UN ECE R134 火烧枪击型式认证与三层膜片</text>
+  <text x="440" y="390" class="body">隔膜压缩机油分 &lt;=0.01 mg/m3 — 漏油直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Towpreg &amp; LH2 Cold Energy (245ms)</text>
+  <text x="440" y="448" class="body">干法预浸纱 (Towpreg) 高速缠绕省 10% 碳纤 + 液氢</text>
+  <text x="440" y="466" class="body">气化潜热直供 -40°C 预冷冲抵立省 $82,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 零起泡内瘪与高镍抗脆放行</text>
+  <text x="828" y="212" class="body">渗透 12 + 0 内瘪 + 316L Ni 13.2% → $590,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 快放气内胆吸瘪或高氢渗透</text>
+  <text x="828" y="258" class="body">内胆向内屈曲或渗透 165 → 冻结 $590,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · -40°C 瓶口漏气或低镍氢脆</text>
+  <text x="828" y="304" class="body">Ni=10.1% 马氏体氢脆风险 → 拒付 $590,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 爆破不足或压缩机油</text>
+  <text x="828" y="350" class="body">爆破比 &lt;2.25x 或液压油污染 → 熔断 $590,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · Towpreg 干法与液氢冷能</text>
+  <text x="828" y="396" class="body">节省 $82,600 (-14%) → 确认后净付 $507,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 铺层保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 70MPa IV 型储氢瓶严禁“仅看常温打水压盲付”：水不溶入塑料，掩盖了快放气时高压氢把内胆顶瘪及 -40°C 低镍 316L 马氏体氢脆风险。</text>
+  <text x="54" y="584" class="body">• 必须将快放气 0 起泡内瘪、氢渗透 (&lt;=46)、-40°C 温循、316L 镍含量 (&gt;=12.5%) 与干法缠绕绑定为智能托管解锁谓词。</text>
+</svg>

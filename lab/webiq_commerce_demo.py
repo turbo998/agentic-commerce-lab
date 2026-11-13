@@ -18828,6 +18828,96 @@ def evaluate_mrna_lnp_encapsulation_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 166: 70MPa Type IV Hydrogen COPV, Polymer Liner & Compressor Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class HydrogenType4CopvVerdict:
+    allowed: bool
+    http_status: int
+    copv_vessel_lane: str
+    settled_copv_vessel_cents: int
+    towpreg_lh2_precooling_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_hydrogen_type4_copv_policy(
+    *,
+    gross_copv_vessel_cents: int = 59000000,
+    rapid_decompression_blistering_and_h2_permeation_verified: bool = True,
+    extreme_temp_pressure_cycle_and_316l_boss_ni_passed: bool = True,
+    webiq_iso19881_ece_r134_burst_ratio_and_iso14687_h2_clean: bool = True,
+    towpreg_dry_winding_and_lh2_precooling_jt_credit_cents: int = 0,
+) -> HydrogenType4CopvVerdict:
+    # 1. Rapid-Decompression Liner Buckling/Blistering or High Steady-State H2 Permeation (>46 NmL/h/L) -> HTTP 403
+    if not rapid_decompression_blistering_and_h2_permeation_verified:
+        return HydrogenType4CopvVerdict(
+            False,
+            403,
+            "LINER_RAPID_DECOMPRESSION_BUCKLING_OR_HYDROGEN_PERMEATION_BLOCKED",
+            0,
+            0,
+            "type4_copv_blocked_due_to_875bar_blowdown_liner_buckling_or_permeation_above_46nml_h_l",
+            11,
+            "Send to a human",
+        )
+
+    # 2. -40°C~+85°C Extreme-Temp Boss Seal Leak or Low-Nickel 316L (<12.5 wt% Ni) Martensite Hydrogen Embrittlement -> HTTP 422
+    if not extreme_temp_pressure_cycle_and_316l_boss_ni_passed:
+        return HydrogenType4CopvVerdict(
+            False,
+            422,
+            "BOSS_INTERFACE_FATIGUE_LEAK_OR_316L_NICKEL_HYDROGEN_EMBRITTLEMENT_BLOCKED",
+            0,
+            0,
+            "copv_boss_rejected_for_minus40c_seal_leak_or_low_ni_316l_strain_induced_martensite_embrittlement",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Sub-2.25x Burst Ratio (<157.5 MPa) or Diaphragm Compressor Oil Contamination via Web IQ -> HTTP 451
+    if not webiq_iso19881_ece_r134_burst_ratio_and_iso14687_h2_clean:
+        return HydrogenType4CopvVerdict(
+            False,
+            451,
+            "SUB_225X_BURST_RATIO_OR_COMPRESSOR_OIL_CONTAMINATION_HOLD",
+            0,
+            0,
+            "webiq_detected_ece_r134_burst_ratio_below_225x_or_diaphragm_compressor_hydraulic_oil_leak",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Robotic Dry Towpreg Winding + LH2 Vaporization Cold-Energy Pre-Cooling Offset -> HTTP 409 Confirm
+    if towpreg_dry_winding_and_lh2_precooling_jt_credit_cents > 0:
+        return HydrogenType4CopvVerdict(
+            False,
+            409,
+            "TOWPREG_HIGH_SPEED_WINDING_AND_LH2_COLD_ENERGY_CREDIT_CONFIRM",
+            gross_copv_vessel_cents - towpreg_dry_winding_and_lh2_precooling_jt_credit_cents,
+            towpreg_dry_winding_and_lh2_precooling_jt_credit_cents,
+            "webiq_applied_dry_towpreg_winding_and_lh2_vaporization_precooling_credit_saving_82600_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Permeation <=46 NmL/h/L + 0 Liner Buckling + 316L Ni >=12.5% + Burst >=157.5 MPa -> Settled
+    return HydrogenType4CopvVerdict(
+        True,
+        200,
+        "VERIFIED_HYDROGEN_70MPA_TYPE4_COPV_SETTLED",
+        gross_copv_vessel_cents,
+        0,
+        "un_gtr13_permeation_zero_blowdown_buckling_minus40c_boss_cycle_and_high_ni_316l_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -24830,6 +24920,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ee_pdi_block_latency_ms": lnp_pdi_403.latency_ms,
     }
 
+    # Round 166 (70MPa Type IV Hydrogen COPV, PA6/EVOH Liner & Diaphragm Compressor Offtake, Permeation & Boss Mandate)
+    copv_commit_ok = evaluate_hydrogen_type4_copv_policy()
+    copv_buc_403 = evaluate_hydrogen_type4_copv_policy(
+        rapid_decompression_blistering_and_h2_permeation_verified=False,
+    )
+    copv_bos_422 = evaluate_hydrogen_type4_copv_policy(
+        extreme_temp_pressure_cycle_and_316l_boss_ni_passed=False,
+    )
+    copv_brs_451 = evaluate_hydrogen_type4_copv_policy(
+        webiq_iso19881_ece_r134_burst_ratio_and_iso14687_h2_clean=False,
+    )
+    copv_tow_409 = evaluate_hydrogen_type4_copv_policy(
+        towpreg_dry_winding_and_lh2_precooling_jt_credit_cents=8260000,
+    )
+    hydrogen_copv_guards = {
+        "all_passed": (
+            copv_commit_ok.allowed
+            and copv_commit_ok.settled_copv_vessel_cents == 59000000
+            and not copv_buc_403.allowed
+            and copv_buc_403.http_status == 403
+            and not copv_bos_422.allowed
+            and copv_bos_422.http_status == 422
+            and not copv_brs_451.allowed
+            and copv_brs_451.http_status == 451
+            and not copv_tow_409.allowed
+            and copv_tow_409.action_pill == "Confirm"
+        ),
+        "hydrogen_copv_settlement_latency_ms": copv_commit_ok.latency_ms,
+        "liner_buckling_block_latency_ms": copv_buc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25008,6 +25129,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "photoresist_guards": photoresist_guards,
         "sx_blade_guards": sx_blade_guards,
         "mrna_lnp_guards": mrna_lnp_guards,
+        "hydrogen_copv_guards": hydrogen_copv_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30895,6 +31017,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lnp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive 70MPa Type IV Hydrogen COPV, PA6/EVOH Liner & Diaphragm Compressor Mandate Sandbox (Round 166 FAQ Companion) -->
+      <div class="finops-box" id="hydrogen-type4-copv-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-copv-title">🫧 70MPa 车载 IV 型碳纤维储氢瓶 (COPV) 与隔膜压缩机、快放气零起泡内瘪与高镍 316L (Ni &gt;=12.5%) 架构：防内胆坍塌与氢脆断阀令牌 (hydrogen_type4_copv_mandate_...) vs 静水压盲付决策器 (Round 166 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 300 只 70MPa 车载 IV 型碳纤维储氢瓶与加氢站压缩机交割 ($590,000.00)、UN GTR 13 氢渗透率/87.5MPa 快放气零内瘪、-40°C 瓶口循环/316L 镍当量与 Web IQ Towpreg 干法缠绕/液氢冷能预冷场景 (70MPa Type IV COPV Scenario):</span></label>
+          <select id="copv-select" onchange="updateHydrogenType4CopvSandbox()">
+            <option value="copv_commit_ok">⚡ 氢渗透率 12 NmL/h/L (&lt;=46) + 87.5MPa 快放气 0 起泡内瘪 + -40°C 18,000次零漏 + 316L Ni=13.2%：10ms 自动结算 $590,000.00! (Act automatically)</option>
+            <option value="copv_buc_403">🛑 常温 105MPa 打水压合格但劣质 HDPE 内胆氢渗透率高达 165 NmL/h/L (&gt;46 车库闪爆风险) 且 87.5MPa 快速泄压时夹层高压氢把塑料内胆向内顶瘪折叠撕裂拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="copv_bos_422">🚨 -40°C 极寒预冷快充与 +85°C 高温交变下拉裂金属 Boss 瓶口密封，或高压阀采用低镍 316L (Ni = 10.1% &lt; 12.5%) 低温相变为脆性马氏体引发氢脆断口拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="copv_brs_451">🛑 水压爆破安全系数不足 (&lt;2.25x 即 &lt;157.5 MPa) 或加氢站隔膜压缩机膜片微裂纹漏液压油毒化燃料电池铂催化剂：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="copv_tow_409">🧑‍⚖️ Web IQ 启用干法预浸纱 (Towpreg) 高速缠绕提升纤维转化率省 10% 碳纤，并利用液氢 (LH2) 气化潜热直供 -40°C 免费预冷免除防爆冷水机电费立省 $82,600.00 (净付 $507,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="copv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -31499,6 +31639,7 @@ function renderAll() {{
   updateSemiconductorPhotoresistSandbox();
   updateSingleCrystalBladeSandbox();
   updateMrnaLnpEncapsulationSandbox();
+  updateHydrogenType4CopvSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -39885,6 +40026,55 @@ function updateMrnaLnpEncapsulationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ RiboGreen 包封率 (&gt;=92%) + 窄 PDI (&lt;=0.12) + 零加合物达标：已自动清算 (VERIFIED_MRNA_LNP_ENCAPSULATION_BATCH_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零裸露 mRNA 酶解、零氮氧化物共价加合失活与补体休克</strong>：mRNA-LNP 微流控原液与可电离脂质批次已完成结算（<code>$650,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHydrogenType4CopvSandbox() {{
+  var selEl = document.getElementById("copv-select");
+  var outEl = document.getElementById("copv-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "copv_buc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 LINER_RAPID_DECOMPRESSION_BUCKLING_OR_HYDROGEN_PERMEATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "氢能特检实验室 <code>气相色谱渗透舱与 87.5MPa 快速泄压 3D 激光内窥镜</code> 实测显示，该批气瓶虽通过常温 105MPa 打水压，但稳态氢渗透率高达 <code>165 NmL/(h·L) &gt; 46 NmL/(h·L)</code> 且快速泄压时夹层高压氢将塑料内胆向内顶瘪起泡坍塌（<code>rapid_decompression_blistering_and_h2_permeation_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$590,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "copv_bos_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BOSS_INTERFACE_FATIGUE_LEAK_OR_316L_NICKEL_HYDROGEN_EMBRITTLEMENT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "极寒加注循环台与光谱仪检出 <code>-40°C~+85°C 交变循环瓶口 Boss 氦质谱漏气或阀座 316L 不锈钢镍含量仅 Ni = 10.1% &lt; 12.5%</code>（低温应力下亚稳奥氏体转变为脆性 α'-马氏体引发高压氢脆断阀，<code>extreme_temp_pressure_cycle_and_316l_boss_ni_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "copv_brs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUB_225X_BURST_RATIO_OR_COMPRESSOR_OIL_CONTAMINATION_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UN ECE R134 水压爆破记录与加氢站隔膜压缩机三层膜片油分台账</code>，检出实际爆破压力低于 2.25 倍（&lt;157.5 MPa）或压缩机液压油微渗超标（&gt;0.01 mg/m³），立即冻结货款并锁死问题撬块！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "copv_tow_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TOWPREG_HIGH_SPEED_WINDING_AND_LH2_COLD_ENERGY_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>干法碳纤维预浸纱 (Towpreg) 多轴高速缠绕省 10% 碳纤 + 液氢 (LH2) 气化潜热直供 -40°C 加注预冷</code>，自动冲抵碳纤维冗余与防爆冷水机电费立省 <code>$82,600.00</code>（净付降至 <code>$507,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 氢渗透 (&lt;=46 NmL/h/L) + 快放气 0 内瘪 + 316L 高镍抗氢脆达标：已自动清算 (VERIFIED_HYDROGEN_70MPA_TYPE4_COPV_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零快速泄压内胆吸瘪折叠、零 -40°C 瓶口漏氢与马氏体氢脆</strong>：300 只 70MPa IV 型储氢瓶与压缩机批次已完成结算（<code>$590,000.00</code>）！" +
     "</div>";
 }}
 

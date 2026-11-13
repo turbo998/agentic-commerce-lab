@@ -910,6 +910,11 @@
     "mrna_lnp_settlement_latency_ms": 10,
     "ee_pdi_block_latency_ms": 11
   },
+  "hydrogen_copv_guards": {
+    "all_passed": true,
+    "hydrogen_copv_settlement_latency_ms": 10,
+    "liner_buckling_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

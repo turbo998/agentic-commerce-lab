@@ -10455,6 +10455,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("mrna-lnp-encapsulation-sandbox", demo_zh)
 
+    def test_hydrogen_70mpa_type4_copv_liner_permeation_blistering_boss_mandate_vs_rapid_decompression_collapse_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hydrogen_type4_copv_policy,
+        )
+
+        # 1. Verified Permeation <=46 NmL/h/L + 0 Liner Buckling + 316L Ni >=12.5% -> 200 OK ($590,000)
+        commit_ok = evaluate_hydrogen_type4_copv_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_copv_vessel_cents, 59000000)
+
+        # 2. Rapid-blowdown liner buckling/blistering or high H2 permeation (>46 NmL/h/L) -> 403 blocked in 11ms
+        buc_403 = evaluate_hydrogen_type4_copv_policy(
+            rapid_decompression_blistering_and_h2_permeation_verified=False,
+        )
+        self.assertFalse(buc_403.allowed)
+        self.assertEqual(buc_403.http_status, 403)
+        self.assertEqual(
+            buc_403.copv_vessel_lane,
+            "LINER_RAPID_DECOMPRESSION_BUCKLING_OR_HYDROGEN_PERMEATION_BLOCKED",
+        )
+
+        # 3. -40°C boss seal leak or low-Nickel 316L (<12.5 wt% Ni) martensite HE -> 422 blocked in 14ms
+        bos_422 = evaluate_hydrogen_type4_copv_policy(
+            extreme_temp_pressure_cycle_and_316l_boss_ni_passed=False,
+        )
+        self.assertFalse(bos_422.allowed)
+        self.assertEqual(bos_422.http_status, 422)
+        self.assertEqual(
+            bos_422.copv_vessel_lane,
+            "BOSS_INTERFACE_FATIGUE_LEAK_OR_316L_NICKEL_HYDROGEN_EMBRITTLEMENT_BLOCKED",
+        )
+
+        # 4. Web IQ detects sub-2.25x burst ratio (<157.5 MPa) or compressor oil contamination -> 451 blocked in 280ms
+        brs_451 = evaluate_hydrogen_type4_copv_policy(
+            webiq_iso19881_ece_r134_burst_ratio_and_iso14687_h2_clean=False,
+        )
+        self.assertFalse(brs_451.allowed)
+        self.assertEqual(brs_451.http_status, 451)
+
+        # 5. Web IQ credits Towpreg dry winding & LH2 cold-energy pre-cooling saving $82,600 ($507,400 net) -> 409 Confirm
+        tow_409 = evaluate_hydrogen_type4_copv_policy(
+            towpreg_dry_winding_and_lh2_precooling_jt_credit_cents=8260000,
+        )
+        self.assertFalse(tow_409.allowed)
+        self.assertEqual(tow_409.http_status, 409)
+        self.assertEqual(tow_409.settled_copv_vessel_cents, 50740000)
+        self.assertEqual(tow_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["hydrogen_copv_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hydrogen-type4-copv-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
