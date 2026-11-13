@@ -10847,6 +10847,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("synbio-precision-fermentation-sandbox", demo_zh)
 
+    def test_quantum_dilution_refrigerator_10mk_cooling_power_3he_leak_infrared_filter_mandate_vs_quasiparticle_decoherence_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_quantum_dilution_refrigerator_policy,
+        )
+
+        # 1. Verified Wired 10mK + @100mK >=650 uW + 3He Leak <=1e-10 + T1 >=250 us -> 200 OK ($840,000)
+        commit_ok = evaluate_quantum_dilution_refrigerator_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_quantum_fridge_cents, 84000000)
+
+        # 2. Wired MXC base-temp stall (>10 mK), low @100mK power (<650 uW) or pulse-tube vibration -> 403 blocked in 11ms
+        mxc_403 = evaluate_quantum_dilution_refrigerator_policy(
+            mxc_10mk_base_temp_and_100mk_cooling_power_verified=False,
+        )
+        self.assertFalse(mxc_403.allowed)
+        self.assertEqual(mxc_403.http_status, 403)
+        self.assertEqual(
+            mxc_403.quantum_fridge_lane,
+            "MXC_COOLING_POWER_DEFICIT_OR_PULSE_TUBE_MICROPHONIC_DECOHERENCE_BLOCKED",
+        )
+
+        # 3. 3He isotope leak (>1e-10 mbar*L/s) or IR photon quasiparticle poisoning (T1 <250 us) -> 422 blocked in 14ms
+        he3_422 = evaluate_quantum_dilution_refrigerator_policy(
+            helium3_hermetic_seal_and_infrared_quasiparticle_filter_passed=False,
+        )
+        self.assertFalse(he3_422.allowed)
+        self.assertEqual(he3_422.http_status, 422)
+        self.assertEqual(
+            he3_422.quantum_fridge_lane,
+            "HELIUM3_ISOTOPE_LEAK_OR_IR_PHOTON_QUASIPARTICLE_POISONING_BLOCKED",
+        )
+
+        # 4. Web IQ detects ferromagnetic Nickel-plated SMA connector or adulterated 3He -> 451 blocked in 280ms
+        mag_451 = evaluate_quantum_dilution_refrigerator_policy(
+            webiq_doe_3he_isotope_provenance_and_non_magnetic_sma_clean=False,
+        )
+        self.assertFalse(mag_451.allowed)
+        self.assertEqual(mag_451.http_status, 451)
+
+        # 5. Web IQ credits superconducting flex I/O ribbon & dual cold-trap 3He regen saving $117,600 ($722,400 net) -> 409 Confirm
+        flx_409 = evaluate_quantum_dilution_refrigerator_policy(
+            superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents=11760000,
+        )
+        self.assertFalse(flx_409.allowed)
+        self.assertEqual(flx_409.http_status, 409)
+        self.assertEqual(flx_409.settled_quantum_fridge_cents, 72240000)
+        self.assertEqual(flx_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["quantum_fridge_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("quantum-dilution-refrigerator-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

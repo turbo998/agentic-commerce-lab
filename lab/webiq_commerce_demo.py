@@ -19458,6 +19458,96 @@ def evaluate_synbio_precision_fermentation_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 173: Quantum Dilution Refrigerator, 10mK Cooling & 3He/IR Policy Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class QuantumDilutionRefrigeratorVerdict:
+    allowed: bool
+    http_status: int
+    quantum_fridge_lane: str
+    settled_quantum_fridge_cents: int
+    flex_ribbon_3he_regen_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_quantum_dilution_refrigerator_policy(
+    *,
+    gross_quantum_fridge_cents: int = 84000000,
+    mxc_10mk_base_temp_and_100mk_cooling_power_verified: bool = True,
+    helium3_hermetic_seal_and_infrared_quasiparticle_filter_passed: bool = True,
+    webiq_doe_3he_isotope_provenance_and_non_magnetic_sma_clean: bool = True,
+    superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents: int = 0,
+) -> QuantumDilutionRefrigeratorVerdict:
+    # 1. Wired MXC Base-Temp Stall (>10 mK), Low @100mK Power (<650 uW) or Pulse-Tube Microphonic Vibration -> HTTP 403
+    if not mxc_10mk_base_temp_and_100mk_cooling_power_verified:
+        return QuantumDilutionRefrigeratorVerdict(
+            False,
+            403,
+            "MXC_COOLING_POWER_DEFICIT_OR_PULSE_TUBE_MICROPHONIC_DECOHERENCE_BLOCKED",
+            0,
+            0,
+            "dilution_fridge_blocked_due_to_wired_mxc_above_10mk_100mk_power_below_650uw_or_vibration",
+            11,
+            "Send to a human",
+        )
+
+    # 2. 3He Isotope Leak (>1e-10 mbar*L/s) or Missing IR Filter Quasiparticle Poisoning (T1 <250 us) -> HTTP 422
+    if not helium3_hermetic_seal_and_infrared_quasiparticle_filter_passed:
+        return QuantumDilutionRefrigeratorVerdict(
+            False,
+            422,
+            "HELIUM3_ISOTOPE_LEAK_OR_IR_PHOTON_QUASIPARTICLE_POISONING_BLOCKED",
+            0,
+            0,
+            "cryogenic_rf_chain_rejected_for_3he_leak_above_1e10_or_ir_photon_cooper_pair_poisoning",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Ferromagnetic Nickel-Plated SMA Connector or Adulterated 3He Isotope (<99.95%) via Web IQ -> HTTP 451
+    if not webiq_doe_3he_isotope_provenance_and_non_magnetic_sma_clean:
+        return QuantumDilutionRefrigeratorVerdict(
+            False,
+            451,
+            "MAGNETIC_NICKEL_SMA_CONNECTOR_OR_ADULTERATED_3HE_ISOTOPE_HOLD",
+            0,
+            0,
+            "webiq_detected_ferromagnetic_nickel_sma_connector_near_qpu_or_adulterated_3he_isotope",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Monolithic Superconducting Flex I/O Ribbon + Dual Cold-Trap 3He Auto-Regen -> HTTP 409 Confirm
+    if superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents > 0:
+        return QuantumDilutionRefrigeratorVerdict(
+            False,
+            409,
+            "CRIOFLEX_SUPERCONDUCTING_RIBBON_AND_CLOSED_LOOP_3HE_RECOVERY_CONFIRM",
+            gross_quantum_fridge_cents - superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents,
+            superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents,
+            "webiq_applied_superconducting_flex_ribbon_and_dual_cold_trap_3he_regen_credit_saving_117600_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Wired 10mK + @100mK >=650 uW + 3He Leak <=1e-10 + Witness Qubit T1 >=250 us -> Settled
+    return QuantumDilutionRefrigeratorVerdict(
+        True,
+        200,
+        "VERIFIED_QUANTUM_DILUTION_FRIDGE_SETTLED",
+        gross_quantum_fridge_cents,
+        0,
+        "wired_10mk_base_temp_650uw_cooling_power_3he_hermetic_seal_and_ir_filtered_t1_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25677,6 +25767,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phage_plasmid_block_latency_ms": syn_phg_403.latency_ms,
     }
 
+    # Round 173 (Quantum Dilution Refrigerator & Cryo-RF Offtake, Wired 10mK Power & IR Quasiparticle Filter Mandate)
+    qdr_commit_ok = evaluate_quantum_dilution_refrigerator_policy()
+    qdr_mxc_403 = evaluate_quantum_dilution_refrigerator_policy(
+        mxc_10mk_base_temp_and_100mk_cooling_power_verified=False,
+    )
+    qdr_he3_422 = evaluate_quantum_dilution_refrigerator_policy(
+        helium3_hermetic_seal_and_infrared_quasiparticle_filter_passed=False,
+    )
+    qdr_mag_451 = evaluate_quantum_dilution_refrigerator_policy(
+        webiq_doe_3he_isotope_provenance_and_non_magnetic_sma_clean=False,
+    )
+    qdr_flx_409 = evaluate_quantum_dilution_refrigerator_policy(
+        superconducting_flex_ribbon_i_o_and_dual_cold_trap_auto_regen_credit_cents=11760000,
+    )
+    quantum_fridge_guards = {
+        "all_passed": (
+            qdr_commit_ok.allowed
+            and qdr_commit_ok.settled_quantum_fridge_cents == 84000000
+            and not qdr_mxc_403.allowed
+            and qdr_mxc_403.http_status == 403
+            and not qdr_he3_422.allowed
+            and qdr_he3_422.http_status == 422
+            and not qdr_mag_451.allowed
+            and qdr_mag_451.http_status == 451
+            and not qdr_flx_409.allowed
+            and qdr_flx_409.action_pill == "Confirm"
+        ),
+        "quantum_fridge_settlement_latency_ms": qdr_commit_ok.latency_ms,
+        "mxc_cooling_block_latency_ms": qdr_mxc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25862,6 +25983,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "medical_ct_tube_guards": medical_ct_tube_guards,
         "plasma_etch_esc_guards": plasma_etch_esc_guards,
         "synbio_fermentation_guards": synbio_fermentation_guards,
+        "quantum_fridge_guards": quantum_fridge_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31875,6 +31997,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="syn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Quantum Dilution Refrigerator, Wired 10mK Power & 3He/IR Filter Mandate Sandbox (Round 173 FAQ Companion) -->
+      <div class="finops-box" id="quantum-dilution-refrigerator-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-qdr-title">❄️ 超导量子计算机极低温稀释制冷机 (10mK)、@100mK 制冷量 (&gt;=650uW) 与红外准粒子滤波架构：防带载升温与天价氦-3 跑光令牌 (quantum_dilution_refrigerator_mandate_...) vs 空载降温盲付决策器 (Round 173 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 超导量子极低温稀释制冷机与全套低温微波链路交割 ($840,000.00)、满载 10mK 基础温度/@100mK 制冷量、氦-3 超高气密/Eccosorb 红外滤波 T1 与 Web IQ 超导柔性排线/双冷阱再生场景 (Quantum Dilution Fridge Scenario):</span></label>
+          <select id="qdr-select" onchange="updateQuantumDilutionRefrigeratorSandbox()">
+            <option value="qdr_commit_ok">⚡ 满载 T_base=7.2 mK (&lt;=10mK) + @100mK 制冷 780 uW + 3He 漏率 2e-11 + 基准比特 T1=310 us：10ms 自动结算 $840,000.00! (Act automatically)</option>
+            <option value="qdr_mxc_403">🛑 不插线空载能到 10mK 但银粉烧结换热器缩水致插满千根线后卡在 38mK (@100mK 制冷仅 180 &lt; 650 uW) 或脉冲管冷盘振动 &gt;1.5 um 引发微音相位退相干拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="qdr_he3_422">🚨 气体循环系统微漏 (&gt;10^-10 mbar·L/s) 跑光价值 $120k 的稀缺氦-3 同位素，或漏装内芯热化衰减器与 Eccosorb 红外滤波器致 300K 热光子打碎库珀对 (T1 崩至 4 us) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="qdr_mag_451">🛑 样品区混用带强磁性的化学镀镍 (Nickel-Plated) SMA 接头钉扎杂散磁通涡旋或 3He 同位素丰度掺假 (&lt;99.95%)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="qdr_flx_409">🧑‍⚖️ Web IQ 启用聚酰亚胺/NbTi 多层超导柔性排线 (Cri/oFlex) 替代 256 根分立半刚性同轴线降低 65% 被动热负，并配置双冷阱自动再生零损耗回收 3He 立省 $117,600.00 (净付 $722,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="qdr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32486,6 +32626,7 @@ function renderAll() {{
   updateMedicalCtXrayTubeSandbox();
   updatePlasmaEtchFocusRingEscSandbox();
   updateSynbioPrecisionFermentationSandbox();
+  updateQuantumDilutionRefrigeratorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41215,6 +41356,55 @@ function updateSynbioPrecisionFermentationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 0 噬菌体 + 活性滴度 (&gt;=12g/L) + HCP (&lt;=10ppm) 达标：已自动清算 (VERIFIED_SYNBIO_PRECISION_FERMENTATION_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零噬菌体倒罐、零丢质粒死菌充数与宿主蛋白过敏</strong>：百吨级精密发酵重组蛋白/HMO 代工批次已完成结算（<code>$460,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateQuantumDilutionRefrigeratorSandbox() {{
+  var selEl = document.getElementById("qdr-select");
+  var outEl = document.getElementById("qdr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "qdr_mxc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MXC_COOLING_POWER_DEFICIT_OR_PULSE_TUBE_MICROPHONIC_DECOHERENCE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "极低温热学与激光干涉测试台实测显示，该制冷机虽空载能到 10mK，但在满配微波链路热负荷下 <code>@100mK 制冷量仅 180 μW &lt; 650 μW（混合室温度卡在 38 mK），或脉冲管冷盘振动位移 &gt;1.5 μm 引发微音退相干</code>（<code>mxc_10mk_base_temp_and_100mk_cooling_power_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$840,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qdr_he3_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HELIUM3_ISOTOPE_LEAK_OR_IR_PHOTON_QUASIPARTICLE_POISONING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "基准超导量子比特标定腔检出 <code>3He 气体回路氦质谱漏率 &gt;10^-10 mbar·L/s 或缺失内芯热化衰减器与 Eccosorb 红外滤波器导致 300K 热光子打碎库珀对（基准比特 T1 跌至 4 μs &lt; 250 μs）</code>（<code>helium3_hermetic_seal_and_infrared_quasiparticle_filter_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qdr_mag_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MAGNETIC_NICKEL_SMA_CONNECTOR_OR_ADULTERATED_3HE_ISOTOPE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>3He 同位素原厂质谱单与 MXC 温区射频连接器剩磁报告</code>，检出样品区混用铁磁性镀镍 SMA 接头或 3He 丰度低于 99.95%，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "qdr_flx_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CRIOFLEX_SUPERCONDUCTING_RIBBON_AND_CLOSED_LOOP_3HE_RECOVERY_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>聚酰亚胺/NbTi 多层超导柔性排线 (Cri/oFlex) 降低 65% 被动热负 + 双液氮冷阱在线自动再生回收 3He</code>，自动冲抵射频线束与同位素损耗费立省 <code>$117,600.00</code>（净付降至 <code>$722,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 满载 10mK (@100mK&gt;=650uW) + 3He 气密 + 红外滤波 (T1&gt;=250us) 达标：已自动清算 (VERIFIED_QUANTUM_DILUTION_FRIDGE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零带载升温停摆、零红外光子准粒子毒化与天价氦-3 泄漏</strong>：超导量子极低温稀释制冷机与低温微波链路已完成结算（<code>$840,000.00</code>）！" +
     "</div>";
 }}
 

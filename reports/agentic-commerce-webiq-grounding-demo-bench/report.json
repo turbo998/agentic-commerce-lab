@@ -945,6 +945,11 @@
     "synbio_fermentation_settlement_latency_ms": 10,
     "phage_plasmid_block_latency_ms": 11
   },
+  "quantum_fridge_guards": {
+    "all_passed": true,
+    "quantum_fridge_settlement_latency_ms": 10,
+    "mxc_cooling_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

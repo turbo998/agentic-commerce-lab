@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg175" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent175" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg175)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent175)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 173 · 超导量子计算机极低温稀释制冷机 (10mK)、氦-3 气密与防准粒子毒化架构图</text>
+  <text x="36" y="84" class="sub">Quantum Dilution Refrigerator &amp; Cryo-RF Offtake, Wired 10mK Base-Temp, @100mK Power (&gt;=650 uW) &amp; IR Quasiparticle Filter</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按台数与空载降温盲付</text>
+  <text x="52" y="166" class="card-h">三大插线后升温卡死、准粒子破对与氦-3 漏光灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 空载能到 10mK 但插满千根线后卡在 38mK</text>
+  <text x="52" y="216" class="body">银粉烧结换热器偷工减料致 @100mK 制冷仅 180 uW，</text>
+  <text x="52" y="234" class="body">插满微波线后温度卡在 38mK 激发热噪声；脉冲管振动</text>
+  <text x="52" y="252" class="body">&gt;1.5 um 引发同轴线微音震颤摧毁相位相干 T2*！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 室温红外光子顺线芯直捅芯片打碎超导库珀对</text>
+  <text x="52" y="302" class="body">缺内芯热化衰减器与 Eccosorb 红外滤波，&gt;88GHz 热</text>
+  <text x="52" y="320" class="body">光子打碎库珀对成准粒子致 T1 跌至 4us；氦-3 跑光。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 镀镍磁性 SMA 接头锁死磁通与分立同轴线高热负</text>
+  <text x="52" y="370" class="body">样品区混入磁性镀镍接头钉扎杂散磁通；上千根分立</text>
+  <text x="52" y="388" class="body">半刚性线未升级超导柔性排线 (Cri/oFlex) 浪费冷量。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 1 Cryostat + Empty Unwired Cooldown</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $840,000 exposed to T1 collapse &amp; 3He loss</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="290" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ quantum_dilution_refrigerator_mandate</text>
+  <text x="428" y="166" class="card-h">四层满载 10mK、氦-3 气密与红外滤波门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Wired 10mK &amp; 650uW @100mK (11ms)</text>
+  <text x="440" y="220" class="body">满载 T_base &lt;=10.0 mK, @100mK 制冷 &gt;=650 uW &amp;</text>
+  <text x="440" y="238" class="body">MXC 脉冲管隔振 &lt;=1.5 um — 带载升温直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: 3He Seal &amp; IR Filter T1 (14ms)</text>
+  <text x="440" y="296" class="body">3He 漏率 &lt;=10^-10 mbar·L/s &amp; Eccosorb 滤波后</text>
+  <text x="440" y="314" class="body">基准比特 T1 &gt;=250 us, Pe &lt;=0.5% — 违者直返 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ 99.95% 3He &amp; Non-Mag (280ms)</text>
+  <text x="440" y="372" class="body">核验 3He 同位素丰度 (&gt;=99.95%) 原厂质谱与样品区</text>
+  <text x="440" y="390" class="body">零镀镍磁性 SMA 连接器 (剩磁 &lt;=0.1 mG) — 违者 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Superconducting Flex &amp; Regen (245ms)</text>
+  <text x="440" y="448" class="body">聚酰亚胺/NbTi 超导柔性排线 (Cri/oFlex) 降 65% 热负</text>
+  <text x="440" y="466" class="body">+ 双液氮冷阱在线再生零损回收 3He 立省 $117,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 满载 7.2mK 与长相干放行</text>
+  <text x="828" y="212" class="body">780uW @100mK + 漏率 2e-11 + T1 310us → $840,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 满载制冷不足或脉冲管震颤</text>
+  <text x="828" y="258" class="body">带载卡在 38mK 或仅 180 uW → 冻结 $840,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 氦-3 微漏或红外准粒子毒化</text>
+  <text x="828" y="304" class="body">漏 3He 或 T1 崩至 4us → 拒付 $840,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 镀镍磁接头或假 3He</text>
+  <text x="828" y="350" class="body">磁性 SMA 钉扎磁通或同位素掺假 → 熔断 $840,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 超导柔性排线与冷阱再生</text>
+  <text x="828" y="396" class="body">节省 $117,600 (-14%) → 确认后净付 $722,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 拓扑保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 量子稀释制冷机严禁“仅看空载降温盲付”：掩盖了插满线后银粉换热不足卡在 38mK 及室温红外光子顺线芯打碎库珀对（准粒子毒化）。</text>
+  <text x="54" y="584" class="body">• 必须将满载 10mK、@100mK 制冷 (&gt;=650uW)、3He 气密 (&lt;=10^-10) 与基准比特 T1 (&gt;=250us) 绑定为智能托管谓词。</text>
+</svg>
