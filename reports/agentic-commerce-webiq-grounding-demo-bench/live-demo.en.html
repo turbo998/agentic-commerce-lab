@@ -4140,6 +4140,24 @@
         <div id="rkt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Ultrafast Laser LBO/BBO Nonlinear Crystal PCI Absorption & MRF/IBS Mandate Sandbox (Round 186 FAQ Companion) -->
+      <div class="finops-box" id="ultrafast-laser-crystal-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lbo-title">💎 超快飞秒紫外激光 LBO/BBO 倍频晶体、PCI 体吸收 (&lt;=5ppm/cm) 防灰迹炸晶与 MRF/IBS 架构：防双光子色心与飞秒烧膜令牌 (ultrafast_laser_crystal_mandate_...) vs 分光光度计盲付决策器 (Round 186 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 800 颗超快激光 LBO/BBO 与 Yb:YAG 晶体交割 ($520,000.00)、光热干涉仪 PCI 紫外体吸收/色心灰迹、磁流变抛光 MRF/IBS 膜 LIDT 损伤阈值与 Web IQ 铂金坩埚精炼/单晶切角余料场景 (Ultrafast Laser Crystal Scenario):</span></label>
+          <select id="lbo-select" onchange="updateUltrafastLaserCrystalSandbox()">
+            <option value="lbo_commit_ok">⚡ PCI 355nm 体吸收 2.4ppm/cm (&lt;=5ppm) + MRF/IBS LIDT=18.5 J/cm² + 切割角差 0.01° + 波前 lambda/10：10ms 自动结算 $520,000.00! (Act automatically)</option>
+            <option value="lbo_pci_403">🛑 分光光度计看似透过率 &gt;99.5% 但助熔剂 Mo/Fe 杂质致 @355nm PCI 体吸收高达 38 &gt; 5ppm/cm，双光子激发长出黑线色心灰迹引发热透镜炸晶拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lbo_mrf_422">🚨 传统机械研磨残留 2um 亚表层微裂纹 (SSD) 致飞秒强场打火烧穿膜层 (LIDT &lt; 15 J/cm²)，或相位匹配切割角偏差 &gt;0.02° 致倍频功率腰斩拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lbo_zyg_451">🛑 Zygo 透射波前畸变 &gt;lambda/8 导致紫外光束质量 M² 恶化至 2.4，或 BBO 晶体干燥氮封铝箔袋破损吸潮雾化：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="lbo_ptc_409">🧑‍⚖️ Web IQ 启用高温熔盐助熔剂生长炉 99.5% 铂金 (Pt) 坩埚腐蚀残渣湿法提纯回用，并将单晶毛坯切方剩余的 60% 高纯 LBO/BBO 边角料重结晶立省 $78,000.00 (净付 $442,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lbo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4764,6 +4782,7 @@ function renderAll() {
   updateRobot6AxisForceTorqueSensorSandbox();
   updatePemfcBipolarPlateMeaSandbox();
   updateRocketRegenThrustChamberSandbox();
+  updateUltrafastLaserCrystalSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -14130,6 +14149,55 @@ function updateRocketRegenThrustChamberSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 热导率 (&gt;=320 W/m·K) + 磨粒流 Ra (&lt;=3.2um) + 防狗屋效应达标：已自动清算 (VERIFIED_ROCKET_REGEN_THRUST_CHAMBER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零喉部绿火烧穿、零内流道残粉堵槽与复用点火狗屋撕裂</strong>：4 台百吨级液氧甲烷再生冷却推力室与喷注器批次已完成结算（<code>$900,000.00</code>）！" +
+    "</div>";
+}
+
+function updateUltrafastLaserCrystalSandbox() {
+  var selEl = document.getElementById("lbo-select");
+  var outEl = document.getElementById("lbo-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lbo_pci_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HIGH_PCI_BULK_ABSORPTION_OR_GRAY_TRACKING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "光热公共路径干涉仪 (PCI) 与紫外加速老化台实测显示，该批 LBO/BBO 倍频晶体因助熔剂 Mo/Fe 杂质残留，<code>@355nm 紫外体吸收率高达 38 ppm/cm &gt; 5 ppm/cm 并诱发双光子色心“灰迹效应 (Gray-Tracking)”</code>（局部温升引发剧烈热透镜畸变并在 200h 内炸裂晶体，<code>pci_uv_bulk_absorption_5ppm_and_anti_gray_tracking_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$520,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lbo_mrf_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SUBSURFACE_DAMAGE_LOW_LIDT_OR_ANGLE_MISMATCH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "飞秒损伤阈值与 X 射线衍射测角仪检出 <code>未做磁流变抛光 MRF 留有亚表面微裂纹致 LIDT &lt; 15 J/cm²，或相位匹配切割角偏差 &gt; ±0.02° 导致三倍频转换效率腰斩</code>（<code>mrf_zero_ssd_lidt_15j_and_phase_match_angle_002deg_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lbo_zyg_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WAVEFRONT_DISTORTION_OR_HYGROSCOPIC_SEAL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>Zygo 斐索干涉仪透射波前图谱与 BBO 氮封防潮记录</code>，检出波前畸变 &gt;lambda/8 或防潮密封袋漏气潮解，立即冻结货款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lbo_ptc_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PT_CRUCIBLE_REFINING_AND_CRYSTAL_OFFCUT_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>助熔剂生长炉 99.5% 铂金 (Pt) 坩埚腐蚀残渣湿法提纯 + 单晶毛坯切方剩余 60% 高纯 LBO/BBO 边角料重结晶</code>，自动冲抵贵金属与单晶余料成本立省 <code>$78,000.00</code>（净付降至 <code>$442,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PCI 体吸收 (&lt;=5ppm/cm) + MRF/IBS LIDT (&gt;=15J/cm²) + 切割角 (&lt;=0.02°) 达标：已自动清算 (VERIFIED_ULTRAFAST_LASER_CRYSTAL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零紫外双光子色心灰迹炸晶、零亚表层微裂纹打火与端面潮解</strong>：800 颗超快激光 LBO/BBO 倍频与 Yb:YAG 晶体批次已完成结算（<code>$520,000.00</code>）！" +
     "</div>";
 }
 

@@ -11575,6 +11575,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rocket-regen-thrust-chamber-sandbox", demo_zh)
 
+    def test_ultrafast_laser_lbo_bbo_nonlinear_crystal_pci_absorption_lidt_gray_tracking_mandate_vs_thermal_lensing_fracture_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ultrafast_laser_crystal_policy,
+        )
+
+        # 1. Verified PCI <=5 ppm/cm + MRF/IBS LIDT >=15 J/cm2 + angle <=0.02° -> 200 OK ($520,000)
+        commit_ok = evaluate_ultrafast_laser_crystal_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_laser_crystal_cents, 52000000)
+
+        # 2. High PCI UV bulk absorption (>5 ppm/cm) or color-center gray-tracking -> 403 blocked in 11ms
+        pci_403 = evaluate_ultrafast_laser_crystal_policy(
+            pci_uv_bulk_absorption_5ppm_and_anti_gray_tracking_verified=False,
+        )
+        self.assertFalse(pci_403.allowed)
+        self.assertEqual(pci_403.http_status, 403)
+        self.assertEqual(
+            pci_403.laser_crystal_lane,
+            "HIGH_PCI_BULK_ABSORPTION_OR_GRAY_TRACKING_BLOCKED",
+        )
+
+        # 3. Sub-surface damage low LIDT (<15 J/cm2) or phase-matching angle error (>0.02°) -> 422 blocked in 14ms
+        mrf_422 = evaluate_ultrafast_laser_crystal_policy(
+            mrf_zero_ssd_lidt_15j_and_phase_match_angle_002deg_passed=False,
+        )
+        self.assertFalse(mrf_422.allowed)
+        self.assertEqual(mrf_422.http_status, 422)
+        self.assertEqual(
+            mrf_422.laser_crystal_lane,
+            "SUBSURFACE_DAMAGE_LOW_LIDT_OR_ANGLE_MISMATCH_BLOCKED",
+        )
+
+        # 4. Web IQ detects Zygo wavefront distortion (>lambda/8) or breached moisture seal -> 451 blocked in 280ms
+        zyg_451 = evaluate_ultrafast_laser_crystal_policy(
+            webiq_zygo_wavefront_lambda8_and_hygroscopic_seal_clean=False,
+        )
+        self.assertFalse(zyg_451.allowed)
+        self.assertEqual(zyg_451.http_status, 451)
+
+        # 5. Web IQ credits 99.5% Pt crucible refining & 60% boule offcut reuse saving $78,000 ($442,000 net) -> 409 Confirm
+        ptc_409 = evaluate_ultrafast_laser_crystal_policy(
+            platinum_crucible_refining_and_crystal_boule_offcut_credit_cents=7800000,
+        )
+        self.assertFalse(ptc_409.allowed)
+        self.assertEqual(ptc_409.http_status, 409)
+        self.assertEqual(ptc_409.settled_laser_crystal_cents, 44200000)
+        self.assertEqual(ptc_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ultrafast_laser_crystal_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ultrafast-laser-crystal-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
