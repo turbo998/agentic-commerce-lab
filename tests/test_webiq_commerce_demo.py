@@ -10399,6 +10399,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("single-crystal-blade-sandbox", demo_zh)
 
+    def test_mrna_lnp_microfluidic_encapsulation_ionizable_lipid_noxide_pdi_mandate_vs_adduct_inactivation_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_mrna_lnp_encapsulation_policy,
+        )
+
+        # 1. Verified RiboGreen EE >=92% + PDI <=0.12 + N-Oxide <=0.10% -> 200 OK ($650,000)
+        commit_ok = evaluate_mrna_lnp_encapsulation_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_mrna_lnp_cents, 65000000)
+
+        # 2. Low RiboGreen EE (<92%) or high DLS PDI (>0.12) -> 403 blocked in 11ms
+        pdi_403 = evaluate_mrna_lnp_encapsulation_policy(
+            ribogreen_encapsulation_efficiency_and_dls_pdi_verified=False,
+        )
+        self.assertFalse(pdi_403.allowed)
+        self.assertEqual(pdi_403.http_status, 403)
+        self.assertEqual(
+            pdi_403.mrna_lnp_lane,
+            "UNENCAPSULATED_MRNA_DEGRADATION_OR_HIGH_PDI_LIPOSOME_FUSION_BLOCKED",
+        )
+
+        # 3. Tertiary-amine N-Oxide (>0.10%) covalent mRNA adducts or low CE-LIF integrity (<85%) -> 422 blocked in 14ms
+        nox_422 = evaluate_mrna_lnp_encapsulation_policy(
+            ionizable_lipid_noxide_adduct_and_ce_mrna_integrity_passed=False,
+        )
+        self.assertFalse(nox_422.allowed)
+        self.assertEqual(nox_422.http_status, 422)
+        self.assertEqual(
+            nox_422.mrna_lnp_lane,
+            "TERTIARY_AMINE_NOXIDE_ALDEHYDE_ADDUCT_MRNA_SILENCING_BLOCKED",
+        )
+
+        # 4. Web IQ detects non-GMP RUO lipid substitution or endotoxin breach -> 451 blocked in 280ms
+        dmf_451 = evaluate_mrna_lnp_encapsulation_policy(
+            webiq_fda_dmf_excipient_grade_and_endotoxin_lal_clean=False,
+        )
+        self.assertFalse(dmf_451.allowed)
+        self.assertEqual(dmf_451.http_status, 451)
+
+        # 5. Web IQ credits 50x silicon-glass chip SIP reuse & single-pass TFF saving $91,000 ($559,000 net) -> 409 Confirm
+        sip_409 = evaluate_mrna_lnp_encapsulation_policy(
+            parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents=9100000,
+        )
+        self.assertFalse(sip_409.allowed)
+        self.assertEqual(sip_409.http_status, 409)
+        self.assertEqual(sip_409.settled_mrna_lnp_cents, 55900000)
+        self.assertEqual(sip_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["mrna_lnp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("mrna-lnp-encapsulation-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

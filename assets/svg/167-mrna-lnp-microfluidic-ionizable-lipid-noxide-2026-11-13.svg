@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg167" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent167" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg167)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent167)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 165 · mRNA-LNP 微流控包封与可电离阳离子脂质、包封率与氮氧化物架构图</text>
+  <text x="36" y="84" class="sub">mRNA-LNP Microfluidic Encapsulation &amp; Ionizable Lipid Offtake, RiboGreen EE (&gt;=92%), PDI (&lt;=0.12) &amp; N-Oxide (&lt;=0.10%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按克重与紫外A260盲付</text>
+  <text x="52" y="166" class="card-h">三大共价加合物失活、裸露酶解与过敏休克灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 叔胺氮氧化物 (N-Oxide=0.65%) 共价焊死 mRNA</text>
+  <text x="52" y="216" class="body">可电离脂质叔胺氧化裂解生成活性醛，在 10,000:1</text>
+  <text x="52" y="234" class="body">摩尔比下共价修饰碱基形成脂质-mRNA 加合物，</text>
+  <text x="52" y="252" class="body">核糖体读码卡死，体内蛋白表达归零沦为生理盐水！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 紫外 A260 掩盖破乳 (EE=68%) 与 PDI (0.29) 休克</text>
+  <text x="52" y="302" class="body">NanoDrop 分不清游离与包封 RNA，32% 裸露 mRNA</text>
+  <text x="52" y="320" class="body">入血 10 秒酶解；大脂质体激活补体引发过敏休克。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 科研级 (RUO) 冒充 DMF 药用级与塑料卡盒浪费</text>
+  <text x="52" y="370" class="body">非 GMP 脂质热原超标；每批抛弃溶胀变形的一次性</text>
+  <text x="52" y="388" class="body">塑料微流控卡盒，未用硅-玻璃芯片在线灭菌复用。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 500g Lipid Weight + UV A260 Total RNA</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $650,000 exposed to adduct silencing</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ mrna_lnp_encapsulation_mandate</text>
+  <text x="428" y="166" class="card-h">四层差示包封率、氮氧化物与 DMF 门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: RiboGreen EE &amp; DLS PDI (11ms)</text>
+  <text x="440" y="220" class="body">Triton 破乳差示 RiboGreen 包封率 &gt;=92.0%, 粒径</text>
+  <text x="440" y="238" class="body">60–90nm &amp; PDI &lt;=0.12 — 裸露或聚集直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: LC-CAD N-Oxide &amp; CE-LIF (14ms)</text>
+  <text x="440" y="296" class="body">叔胺氮氧化物 N-Oxide &lt;=0.10%, 共价加合物 &lt;=3%</text>
+  <text x="440" y="314" class="body">&amp; CE-LIF 全长完整性 &gt;=85% — 加合失活直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ FDA DMF &amp; Endotoxin (280ms)</text>
+  <text x="440" y="372" class="body">核验 FDA Type IV DMF 药用辅料激活状态与鲎试剂</text>
+  <text x="440" y="390" class="body">内毒素 LAL &lt;=0.1 EU/mL — RUO 冒充直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 50x Si-Glass Chip &amp; SPTFF (245ms)</text>
+  <text x="440" y="448" class="body">128 通道硅-玻璃微流控芯片 CIP/SIP 50 批次复用 +</text>
+  <text x="440" y="466" class="body">单程切向流超滤省缓冲液冲抵立省 $91,000 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 高包封窄粒径零加合放行</text>
+  <text x="828" y="212" class="body">EE 96.4% + PDI 0.06 + N-Oxide 0.02% → $650,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 包封率不足或大脂质体聚集</text>
+  <text x="828" y="258" class="body">EE=68% 或 PDI=0.29 过敏风险 → 冻结 $650,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 氮氧化物裂解加合焊死 mRNA</text>
+  <text x="828" y="304" class="body">N-Oxide=0.65% 翻译归零 → 拒付 $650,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 科研级冒充或内毒素</text>
+  <text x="828" y="350" class="body">无 FDA DMF 或内毒素超标 → 熔断 $650,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 硅基芯片 50次复用与 SPTFF</text>
+  <text x="828" y="396" class="body">节省 $91,000 (-14%) → 确认后净付 $559,000.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 序列保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#06b6d4">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• mRNA-LNP 严禁“仅看紫外 A260 与常规 HPLC 盲付”：A260 分不清游离与包封 RNA，而 0.2% 叔胺氮氧化物就会生醛共价焊死 mRNA 阻断翻译。</text>
+  <text x="54" y="584" class="body">• 必须将 RiboGreen 包封率 (&gt;=92%)、DLS PDI (&lt;=0.12)、N-Oxide (&lt;=0.1%) 与硅基芯片 SIP 复用绑定为智能托管解锁谓词。</text>
+</svg>

@@ -18743,6 +18743,91 @@ def evaluate_single_crystal_turbine_blade_policy(
     )
 
 
+@dataclass(frozen=True)
+class MrnaLnpEncapsulationVerdict:
+    allowed: bool
+    http_status: int
+    mrna_lnp_lane: str
+    settled_mrna_lnp_cents: int
+    silicon_chip_sptff_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_mrna_lnp_encapsulation_policy(
+    *,
+    gross_mrna_lnp_cents: int = 65000000,
+    ribogreen_encapsulation_efficiency_and_dls_pdi_verified: bool = True,
+    ionizable_lipid_noxide_adduct_and_ce_mrna_integrity_passed: bool = True,
+    webiq_fda_dmf_excipient_grade_and_endotoxin_lal_clean: bool = True,
+    parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents: int = 0,
+) -> MrnaLnpEncapsulationVerdict:
+    # 1. Low RiboGreen Encapsulation Efficiency (<92%) or High DLS Polydispersity (PDI >0.12) -> HTTP 403
+    if not ribogreen_encapsulation_efficiency_and_dls_pdi_verified:
+        return MrnaLnpEncapsulationVerdict(
+            False,
+            403,
+            "UNENCAPSULATED_MRNA_DEGRADATION_OR_HIGH_PDI_LIPOSOME_FUSION_BLOCKED",
+            0,
+            0,
+            "mrna_lnp_lot_blocked_due_to_ribogreen_ee_below_92pct_or_dls_pdi_above_012_carpa_risk",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Tertiary-Amine N-Oxide (>0.10%) Covalent Lipid-mRNA Adducts or Low CE-LIF Integrity (<85%) -> HTTP 422
+    if not ionizable_lipid_noxide_adduct_and_ce_mrna_integrity_passed:
+        return MrnaLnpEncapsulationVerdict(
+            False,
+            422,
+            "TERTIARY_AMINE_NOXIDE_ALDEHYDE_ADDUCT_MRNA_SILENCING_BLOCKED",
+            0,
+            0,
+            "ionizable_lipid_rejected_for_noxide_above_01pct_covalent_mrna_adduct_ribosome_silencing",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Non-GMP Research-Use-Only (RUO) Lipid Substitution or LAL Endotoxin Breach via Web IQ -> HTTP 451
+    if not webiq_fda_dmf_excipient_grade_and_endotoxin_lal_clean:
+        return MrnaLnpEncapsulationVerdict(
+            False,
+            451,
+            "RESEARCH_GRADE_NON_GMP_LIPID_OR_ENDOTOXIN_PYROGEN_HOLD",
+            0,
+            0,
+            "webiq_detected_non_gmp_ruo_lipid_missing_fda_dmf_or_lal_endotoxin_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 128-Ch Silicon-Glass Microfluidic 50x SIP Reuse + Single-Pass TFF Offset -> HTTP 409 Confirm
+    if parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents > 0:
+        return MrnaLnpEncapsulationVerdict(
+            False,
+            409,
+            "SILICON_GLASS_MICROFLUIDIC_REUSE_AND_TFF_BUFFER_SAVING_CONFIRM",
+            gross_mrna_lnp_cents - parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents,
+            parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents,
+            "webiq_applied_128ch_silicon_glass_microfluidic_sip_reuse_and_sptff_credit_saving_91000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified RiboGreen EE >=92% + PDI <=0.12 + N-Oxide <=0.10% + CE-LIF >=85% -> Settled
+    return MrnaLnpEncapsulationVerdict(
+        True,
+        200,
+        "VERIFIED_MRNA_LNP_ENCAPSULATION_BATCH_SETTLED",
+        gross_mrna_lnp_cents,
+        0,
+        "ribogreen_ee_dls_pdi_hplc_cad_noxide_ce_lif_integrity_and_fda_dmf_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -24714,6 +24799,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "laue_rx_block_latency_ms": sxb_lau_403.latency_ms,
     }
 
+    # Round 165 (mRNA-LNP Microfluidic Encapsulation & Ionizable Lipid Offtake, RiboGreen EE & N-Oxide Mandate)
+    lnp_commit_ok = evaluate_mrna_lnp_encapsulation_policy()
+    lnp_pdi_403 = evaluate_mrna_lnp_encapsulation_policy(
+        ribogreen_encapsulation_efficiency_and_dls_pdi_verified=False,
+    )
+    lnp_nox_422 = evaluate_mrna_lnp_encapsulation_policy(
+        ionizable_lipid_noxide_adduct_and_ce_mrna_integrity_passed=False,
+    )
+    lnp_dmf_451 = evaluate_mrna_lnp_encapsulation_policy(
+        webiq_fda_dmf_excipient_grade_and_endotoxin_lal_clean=False,
+    )
+    lnp_sip_409 = evaluate_mrna_lnp_encapsulation_policy(
+        parallel_silicon_microfluidic_array_and_tff_ethanol_credit_cents=9100000,
+    )
+    mrna_lnp_guards = {
+        "all_passed": (
+            lnp_commit_ok.allowed
+            and lnp_commit_ok.settled_mrna_lnp_cents == 65000000
+            and not lnp_pdi_403.allowed
+            and lnp_pdi_403.http_status == 403
+            and not lnp_nox_422.allowed
+            and lnp_nox_422.http_status == 422
+            and not lnp_dmf_451.allowed
+            and lnp_dmf_451.http_status == 451
+            and not lnp_sip_409.allowed
+            and lnp_sip_409.action_pill == "Confirm"
+        ),
+        "mrna_lnp_settlement_latency_ms": lnp_commit_ok.latency_ms,
+        "ee_pdi_block_latency_ms": lnp_pdi_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24891,6 +25007,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ceramic_separator_guards": ceramic_separator_guards,
         "photoresist_guards": photoresist_guards,
         "sx_blade_guards": sx_blade_guards,
+        "mrna_lnp_guards": mrna_lnp_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30760,6 +30877,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sxb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive mRNA-LNP Microfluidic Encapsulation & Ionizable Lipid Offtake, RiboGreen EE & N-Oxide Mandate Sandbox (Round 165 FAQ Companion) -->
+      <div class="finops-box" id="mrna-lnp-encapsulation-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lnp-title">🧬 mRNA-LNP 微流控包封与可电离阳离子脂质、RiboGreen 包封率 (&gt;=92%) 与氮氧化物 (&lt;=0.1%) 架构：防共价加合物失活与补体休克令牌 (mrna_lnp_encapsulation_mandate_...) vs 紫外A260盲付决策器 (Round 165 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. mRNA-LNP 微流控原液包封与 ALC-0315/SM-102 可电离脂质交割 ($650,000.00)、RiboGreen 差示包封率 EE/DLS PDI、LC-CAD 叔胺氮氧化物 N-Oxide/CE-LIF 完整性与 Web IQ FDA DMF/硅基微流控复用场景 (mRNA-LNP Encapsulation Scenario):</span></label>
+          <select id="lnp-select" onchange="updateMrnaLnpEncapsulationSandbox()">
+            <option value="lnp_commit_ok">⚡ RiboGreen 包封率 96.4% + 粒径 74nm (PDI 0.06) + 脂质 N-Oxide 0.02% + CE-LIF 完整性 93.5%：10ms 自动结算 $650,000.00! (Act automatically)</option>
+            <option value="lnp_pdi_403">🛑 紫外 NanoDrop A260 总 RNA 读数正常但微流控脉动致真实包封率跌至 EE = 68% &lt; 92% (32% 裸露 mRNA 入血 10 秒即被 RNase 降解) 且 PDI = 0.29 &gt; 0.12 诱发补体激活过敏休克拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lnp_nox_422">🚨 可电离脂质叔胺氧化生成氮氧化物 N-Oxide = 0.65% &gt; 0.10%，裂解生醛在 10,000:1 摩尔比下将脂质尾巴共价焊死在 mRNA 碱基上 (CE-LIF 完整率跌至 61% &lt; 85%，体内核糖体读码归零) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lnp_dmf_451">🛑 供应商以非 GMP“仅供科研级 (RUO)”阳离子脂质冒充 FDA Type IV DMF 备案药用级辅料，或细菌内毒素鲎试剂检出 &gt;0.2 EU/mL 热原超标：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="lnp_sip_409">🧑‍⚖️ Web IQ 启用 128 通道硅-玻璃刻蚀微流控芯片 (0.5M NaOH 与在线蒸汽灭菌 CIP/SIP 重复使用 50 批次免抛弃塑料卡盒) 并耦合单程 TFF 超滤省缓冲液冲抵，立省 $91,000.00 (净付 $559,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lnp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -31363,6 +31498,7 @@ function renderAll() {{
   updateBatteryCeramicSeparatorSandbox();
   updateSemiconductorPhotoresistSandbox();
   updateSingleCrystalBladeSandbox();
+  updateMrnaLnpEncapsulationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -39700,6 +39836,55 @@ function updateSingleCrystalBladeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ Laue 晶向 (&lt;=8°) + 零再结晶 (RX=0) + 钆示踪中子零残芯达标：已自动清算 (VERIFIED_SINGLE_CRYSTAL_TURBINE_BLADE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1,100°C 晶界蠕变飞断、零蛇形冷气道残芯烧穿与偷减金属铼</strong>：200 支 CMSX-4 / DD6 单晶涡轮叶片批次已完成结算（<code>$720,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateMrnaLnpEncapsulationSandbox() {{
+  var selEl = document.getElementById("lnp-select");
+  var outEl = document.getElementById("lnp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lnp_pdi_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNENCAPSULATED_MRNA_DEGRADATION_OR_HIGH_PDI_LIPOSOME_FUSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "生物药 QC 实验室 <code>Triton X-100 破乳差示 RiboGreen 荧光酶标仪与 DLS 动态光散射仪</code> 实测显示，该批 LNP 原液虽紫外 A260 总量正常，但真实包封率仅 <code>EE = 68.0% &lt; 92.0%</code> 且多分散指数飙至 <code>PDI = 0.29 &gt; 0.12</code>（32% 裸露 mRNA 将被血清 RNase 瞬间酶解且大颗粒诱发 CARPA 过敏休克，<code>ribogreen_encapsulation_efficiency_and_dls_pdi_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$650,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lnp_nox_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 TERTIARY_AMINE_NOXIDE_ALDEHYDE_ADDUCT_MRNA_SILENCING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "质谱与电泳中心 <code>HPLC-CAD 电雾式检测器与 CE-LIF 毛细管电泳仪</code> 检出可电离脂质中叔胺氮氧化物高达 <code>N-Oxide = 0.65% &gt; 0.10%</code> 且全长可翻译 mRNA 完整率跌至 <code>61% &lt; 85%</code>（裂解产生的活性醛已将脂质尾巴共价焊死在 mRNA 碱基上导致核糖体失活，<code>ionizable_lipid_noxide_adduct_and_ce_mrna_integrity_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lnp_dmf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 RESEARCH_GRADE_NON_GMP_LIPID_OR_ENDOTOXIN_PYROGEN_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>FDA Type IV DMF 药用辅料活跃名录与 USP &lt;85&gt; 细菌内毒素台账</code>，检出以非 cGMP 科研级 (RUO) 脂质冒充药用辅料或内毒素超标，立即冻结货款并启动药政偏差调查！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "lnp_sip_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SILICON_GLASS_MICROFLUIDIC_REUSE_AND_TFF_BUFFER_SAVING_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>128 通道硅-玻璃微流控芯片 CIP/SIP 50 批次在线灭菌复用 + 单程切向流超滤 (SPTFF) 省缓冲液</code>，自动冲抵一次性塑料卡盒与透析耗材费立省 <code>$91,000.00</code>（净付降至 <code>$559,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ RiboGreen 包封率 (&gt;=92%) + 窄 PDI (&lt;=0.12) + 零加合物达标：已自动清算 (VERIFIED_MRNA_LNP_ENCAPSULATION_BATCH_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零裸露 mRNA 酶解、零氮氧化物共价加合失活与补体休克</strong>：mRNA-LNP 微流控原液与可电离脂质批次已完成结算（<code>$650,000.00</code>）！" +
     "</div>";
 }}
 
