@@ -10343,6 +10343,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("semiconductor-photoresist-sandbox", demo_zh)
 
+    def test_single_crystal_turbine_blade_laue_orientation_recrystallization_tbc_mandate_vs_creep_rupture_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_single_crystal_turbine_blade_policy,
+        )
+
+        # 1. Verified Laue [001] <=8deg + RX=0um + Gd neutron 0% core -> 200 OK ($720,000)
+        commit_ok = evaluate_single_crystal_turbine_blade_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sx_blade_cents, 72000000)
+
+        # 2. Laue [001] misorientation (>8deg) or surface recrystallization RX (>0um) -> 403 blocked in 11ms
+        lau_403 = evaluate_single_crystal_turbine_blade_policy(
+            laue_crystal_orientation_and_zero_recrystallization_verified=False,
+        )
+        self.assertFalse(lau_403.allowed)
+        self.assertEqual(lau_403.http_status, 403)
+        self.assertEqual(
+            lau_403.sx_blade_lane,
+            "LAUE_MISORIENTATION_FRECKLE_OR_SURFACE_RECRYSTALLIZATION_BLOCKED",
+        )
+
+        # 3. Gadolinium neutron radiography residual ceramic core or cooling blockage -> 422 blocked in 14ms
+        neu_422 = evaluate_single_crystal_turbine_blade_policy(
+            neutron_radiography_core_leach_and_film_cooling_flow_passed=False,
+        )
+        self.assertFalse(neu_422.allowed)
+        self.assertEqual(neu_422.http_status, 422)
+        self.assertEqual(
+            neu_422.sx_blade_lane,
+            "RESIDUAL_CERAMIC_CORE_BLOCKAGE_OR_EBPVD_TBC_SPALLATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects Rhenium under-doping (<2.9%) or unauthorized TIG weld repair -> 451 blocked in 280ms
+        rhe_451 = evaluate_single_crystal_turbine_blade_policy(
+            webiq_nadcap_heat_treat_and_rhenium_ruthenium_assay_clean=False,
+        )
+        self.assertFalse(rhe_451.allowed)
+        self.assertEqual(rhe_451.http_status, 451)
+
+        # 5. Web IQ credits 60% Rhenium sprue vacuum revert saving $100,800 ($619,200 net) -> 409 Confirm
+        rev_409 = evaluate_single_crystal_turbine_blade_policy(
+            sprue_runner_rhenium_revert_and_hip_rejuvenation_credit_cents=10080000,
+        )
+        self.assertFalse(rev_409.allowed)
+        self.assertEqual(rev_409.http_status, 409)
+        self.assertEqual(rev_409.settled_sx_blade_cents, 61920000)
+        self.assertEqual(rev_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["sx_blade_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("single-crystal-blade-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
