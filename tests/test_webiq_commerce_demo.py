@@ -11687,6 +11687,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("deep-sea-submersible-hull-sandbox", demo_zh)
 
+    def test_uhvdc_press_pack_igbt_ntd_fz_silicon_scfm_molybdenum_contact_mandate_vs_cosmic_ray_explosion_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_uhvdc_press_pack_igbt_policy,
+        )
+
+        # 1. Verified NTD variation <=3.5% + Mo coplanarity <=3 um + SCFM >=8,000h -> 200 OK ($860,000)
+        commit_ok = evaluate_uhvdc_press_pack_igbt_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_press_pack_igbt_cents, 86000000)
+
+        # 2. Non-NTD resistivity striation (>3.5%) or cosmic-ray SEB (>100 FIT) -> 403 blocked in 11ms
+        ntd_403 = evaluate_uhvdc_press_pack_igbt_policy(
+            ntd_fz_silicon_resistivity_35pct_and_cosmic_ray_100fit_verified=False,
+        )
+        self.assertFalse(ntd_403.allowed)
+        self.assertEqual(ntd_403.http_status, 403)
+        self.assertEqual(
+            ntd_403.press_pack_igbt_lane,
+            "NON_NTD_RESISTIVITY_STRIATION_OR_COSMIC_RAY_SEB_BLOCKED",
+        )
+
+        # 3. Molybdenum coplanarity skew (>3 um) or SCFM (<8,000h) arc explosion -> 422 blocked in 14ms
+        scf_422 = evaluate_uhvdc_press_pack_igbt_policy(
+            molybdenum_coplanarity_3um_and_scfm_8000h_passed=False,
+        )
+        self.assertFalse(scf_422.allowed)
+        self.assertEqual(scf_422.http_status, 422)
+        self.assertEqual(
+            scf_422.press_pack_igbt_lane,
+            "MOLYBDENUM_UNEVEN_CRUSH_OR_SCFM_ARC_EXPLOSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects 6,000A RBSOA latch-up or missing 40kA explosion containment cert -> 451 blocked in 280ms
+        rbs_451 = evaluate_uhvdc_press_pack_igbt_policy(
+            webiq_rbsoa_2x_current_and_40ka_explosion_containment_clean=False,
+        )
+        self.assertFalse(rbs_451.allowed)
+        self.assertEqual(rbs_451.http_status, 451)
+
+        # 5. Web IQ credits 35% FZ-Si cropping remelt & 40% Molybdenum scrap saving $129,000 ($731,000 net) -> 409 Confirm
+        fzs_409 = evaluate_uhvdc_press_pack_igbt_policy(
+            fz_silicon_cropping_remelt_and_molybdenum_stamping_scrap_credit_cents=12900000,
+        )
+        self.assertFalse(fzs_409.allowed)
+        self.assertEqual(fzs_409.http_status, 409)
+        self.assertEqual(fzs_409.settled_press_pack_igbt_cents, 73100000)
+        self.assertEqual(fzs_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["uhvdc_press_pack_igbt_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("uhvdc-press-pack-igbt-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
