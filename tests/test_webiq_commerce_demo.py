@@ -10287,6 +10287,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("battery-ceramic-separator-sandbox", demo_zh)
 
+    def test_semiconductor_euv_arfi_photoresist_lwr_stochastic_pag_mandate_vs_bridge_defect_wafer_scrap_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_photoresist_policy,
+        )
+
+        # 1. Verified LWR <=1.8nm + ΔEsize <=1.5% + >30nm gel <=10/mL + metal <=0.5ppb -> 200 OK ($680,000)
+        commit_ok = evaluate_semiconductor_photoresist_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_photoresist_cents, 68000000)
+
+        # 2. High LWR (>1.8nm) or dose drift (>1.5%) stochastic nano-bridge -> 403 blocked in 11ms
+        lwr_403 = evaluate_semiconductor_photoresist_policy(
+            cd_sem_lwr_stochastic_bridge_and_esize_verified=False,
+        )
+        self.assertFalse(lwr_403.allowed)
+        self.assertEqual(lwr_403.http_status, 403)
+        self.assertEqual(
+            lwr_403.photoresist_lane,
+            "STOCHASTIC_NANO_BRIDGE_OR_PAG_ACID_BLUR_LWR_BLOCKED",
+        )
+
+        # 3. >30nm micro-gels (>10/mL) or metal contamination (>0.5 ppb) -> 422 blocked in 14ms
+        gel_422 = evaluate_semiconductor_photoresist_policy(
+            lpc_30nm_microbubble_and_sub_ppb_metal_passed=False,
+        )
+        self.assertFalse(gel_422.allowed)
+        self.assertEqual(gel_422.http_status, 422)
+        self.assertEqual(
+            gel_422.photoresist_lane,
+            "NANOGEL_DEFECT_COUNT_OR_SUB_PPB_SODIUM_IRON_CONTAMINATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects banned PFOS PAG or transit thermal excursion -> 451 blocked in 280ms
+        pfo_451 = evaluate_semiconductor_photoresist_policy(
+            webiq_pfos_free_pag_compliance_and_cold_chain_clean=False,
+        )
+        self.assertFalse(pfo_451.allowed)
+        self.assertEqual(pfo_451.http_status, 451)
+
+        # 5. Web IQ credits RRC pre-wet dispense & 5N PGMEA distillation saving $95,200 ($584,800 net) -> 409 Confirm
+        rrc_409 = evaluate_semiconductor_photoresist_policy(
+            pgmea_coater_bowl_solvent_distillation_and_rrc_saving_credit_cents=9520000,
+        )
+        self.assertFalse(rrc_409.allowed)
+        self.assertEqual(rrc_409.http_status, 409)
+        self.assertEqual(rrc_409.settled_photoresist_cents, 58480000)
+        self.assertEqual(rrc_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["photoresist_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("semiconductor-photoresist-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

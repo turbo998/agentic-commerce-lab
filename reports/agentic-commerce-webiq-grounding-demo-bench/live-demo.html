@@ -3726,6 +3726,24 @@
         <div id="sep-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Semiconductor EUV/ArFi Photoresist Offtake, CD-SEM LWR & Sub-ppb Metal Mandate Sandbox (Round 163 FAQ Companion) -->
+      <div class="finops-box" id="semiconductor-photoresist-sandbox" style="margin-top:12px;border-color:#D946EF;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-phr-title">🔬 半导体 EUV/ArFi 光刻胶与显影液、线宽粗糙度 LWR (&lt;=1.8 nm) 与亚 ppb 纯度架构：防随机纳米桥连与接触孔瞎孔令牌 (semiconductor_photoresist_mandate_...) vs 瓶数粘度盲付决策器 (Round 163 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 400 加仑瓶 EUV/ArFi 光刻胶与显影液交割 ($680,000.00)、CD-SEM 线宽粗糙度 LWR/剂量灵敏度漂移 ΔEsize、SEMI C30 &gt;30nm 微凝胶/500ppt 金属与 Web IQ PFOS-Free/RRC 预湿省胶场景 (EUV/ArFi Photoresist Scenario):</span></label>
+          <select id="phr-select" onchange="updateSemiconductorPhotoresistSandbox()">
+            <option value="phr_commit_ok">⚡ CD-SEM 3σ LWR 1.35 nm + 剂量漂移 +0.3% + &gt;30nm 微凝胶 3 个/mL + 单项金属 0.15 ppb：10ms 自动结算 $680,000.00! (Act automatically)</option>
+            <option value="phr_lwr_403">🛑 光致产酸剂 (PAG) 与淬灭剂微观相分离或暗反应致曝光剂量漂移 +8.5% &gt; 1.5% 且线宽粗糙度恶化至 LWR = 4.2 nm &gt; 1.8 nm (14nm 金属层产生数千个随机纳米桥连短路，刻蚀后整批晶圆报废) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="phr_gel_422">🚨 树脂交联产生 &gt;30nm 软微凝胶高达 140 个/mL &gt; 10 个/mL (造成接触孔不开孔瞎孔)，或瓶壁析出 6.5 ppb &gt; 0.5 ppb 钠/铁离子在等离子刻蚀中形成微掩模针锥缺陷拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="phr_pfo_451">🛑 光致产酸剂含斯德哥尔摩公约与欧盟 REACH 禁用的长链全氟辛烷磺酸 (PFOS/PFOA)，或空运中转遭遇 &gt;15°C 冷链断链导致保质期提前归零：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="phr_rrc_409">🧑‍⚖️ Web IQ 启用涂胶显影机 Track RRC 溶剂预湿动态高速滴胶 (单片滴胶从 2.5mL 降至 0.95mL 省胶 60%) 并将洗杯废溶剂精馏提纯至 99.999% (5N 级) PGMEA 循环回用冲抵，立省 $95,200.00 (净付 $584,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="phr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4327,6 +4345,7 @@ function renderAll() {
   updateSiliconPhotonicsTransceiverSandbox();
   updateCowosHbmPackagingSandbox();
   updateBatteryCeramicSeparatorSandbox();
+  updateSemiconductorPhotoresistSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12566,6 +12585,55 @@ function updateBatteryCeramicSeparatorSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 针刺 (&gt;=550 gf) + 150°C 收缩 (&lt;=2%) + Gurley (120–180s) 达标：已自动清算 (VERIFIED_BATTERY_CERAMIC_SEPARATOR_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 150°C 热箱融缩爆燃、零 4C 快充析锂与吸潮 HF 胀气</strong>：200 万 m2 锂电湿法涂覆陶瓷隔膜批次已完成结算（<code>$510,000.00</code>）！" +
+    "</div>";
+}
+
+function updateSemiconductorPhotoresistSandbox() {
+  var selEl = document.getElementById("phr-select");
+  var outEl = document.getElementById("phr-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "phr_lwr_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 STOCHASTIC_NANO_BRIDGE_OR_PAG_ACID_BLUR_LWR_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "光刻量测线 <code>CD-SEM 与电子束缺陷扫描仪 (e-Beam Inspection)</code> 实测显示，该批光刻胶因 PAG 光酸扩散失控导致线宽粗糙度恶化至 <code>3σ LWR = 4.2 nm &gt; 1.8 nm</code> 且曝光灵敏度漂移 <code>ΔEsize = +8.5% &gt; 1.5%</code>（将在 14nm 金属层产生大面积随机纳米桥连短路，<code>cd_sem_lwr_stochastic_bridge_and_esize_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$680,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "phr_gel_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 NANOGEL_DEFECT_COUNT_OR_SUB_PPB_SODIUM_IRON_CONTAMINATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "超纯化学品分析室 <code>SEMI C30 30nm 激光液体粒子计与三重四极杆 ICP-MS</code> 检出软性高分子微凝胶高达 <code>140 个/mL &gt; 10 个/mL</code>（导致接触孔不开孔）或金属杂质达 <code>6.5 ppb &gt; 0.5 ppb</code>（干法刻蚀微掩模缺陷，<code>lpc_30nm_microbubble_and_sub_ppb_metal_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "phr_pfo_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 BANNED_PFOS_PFOA_PAG_OR_TRANSIT_THERMAL_EXCURSION_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 REACH 无长链全氟磺酸 (PFOS-Free) 光酸合规库与 2–8°C 全程冷链积分日志</code>，检出含禁用 PFOS 光致产酸剂或空运中转超温变质，立即冻结货款并销毁失效胶液！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "phr_rrc_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PGMEA_SOLVENT_DISTILLATION_AND_RRC_DISPENSE_SAVING_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Track RRC 溶剂预湿动态滴胶 (单片胶耗从 2.5mL 降至 0.95mL) + 洗杯废溶剂 5N 级 (99.999%) PGMEA 精馏闭环</code>，自动冲抵光刻胶与溶剂采购费立省 <code>$95,200.00</code>（净付降至 <code>$584,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 线宽粗糙度 (&lt;=1.8 nm) + 零随机桥连 + 500ppt 超纯达标：已自动清算 (VERIFIED_SEMICONDUCTOR_PHOTORESIST_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 14nm 随机纳米桥连、零接触孔微凝胶瞎孔与刻蚀针锥</strong>：400 加仑瓶 EUV/ArFi 光刻胶与显影液批次已完成结算（<code>$680,000.00</code>）！" +
     "</div>";
 }
 

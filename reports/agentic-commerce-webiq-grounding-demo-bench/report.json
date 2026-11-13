@@ -895,6 +895,11 @@
     "ceramic_separator_settlement_latency_ms": 10,
     "shrinkage_puncture_block_latency_ms": 11
   },
+  "photoresist_guards": {
+    "all_passed": true,
+    "photoresist_settlement_latency_ms": 10,
+    "lwr_stochastic_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
