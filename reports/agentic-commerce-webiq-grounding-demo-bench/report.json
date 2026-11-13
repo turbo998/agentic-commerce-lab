@@ -835,6 +835,11 @@
     "copper_foil_settlement_latency_ms": 10,
     "pinhole_elongation_block_latency_ms": 11
   },
+  "tbm_tunnel_guards": {
+    "all_passed": true,
+    "tbm_tunnel_settlement_latency_ms": 10,
+    "sinkhole_overexcavation_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

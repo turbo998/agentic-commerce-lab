@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg153" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent153" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#eab308"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg153)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent153)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 151 · 地铁与穿江盾构掘进 (EPB/TBM)、土仓压力守恒与同步注浆充盈率架构图</text>
+  <text x="36" y="84" class="sub">Mechanized TBM Tunnel Boring &amp; Backfill Grouting SLA, Muck Ratio (98–102%), InSAR Settlement (-10..+5mm) &amp; Grout Factor (&gt;=1.15)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按掘进环数盲付</text>
+  <text x="52" y="166" class="card-h">三大城市道路塌陷天坑与隧道错台漏水灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 螺旋机超挖喷涌 (出土119%) 掏出马路天坑</text>
+  <text x="52" y="216" class="body">夜间抢进度超排富水砂层，每环多挖 12m3 土体，</text>
+  <text x="52" y="234" class="body">地表沉降突破 -36mm，几天后引发城市主干道塌陷</text>
+  <text x="52" y="252" class="body">10 米天坑与邻近高铁桥墩倾斜 ($10M+ 抢险损失)！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 偷省同步注浆 (充盈0.82) 致管片上浮错台</text>
+  <text x="52" y="302" class="body">盾尾空隙欠注或单液浆不初凝，40 吨管片受浮力</text>
+  <text x="52" y="320" class="body">上浮 45mm、错台 8.5mm，螺栓剪断涌水涌砂。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 劣质泡沫刀盘结泥饼与假冒 H13 滚刀崩刃</text>
+  <text x="52" y="370" class="body">发泡剂半衰期短致粘土烧结抱死刀盘；非电渣重熔</text>
+  <text x="52" y="388" class="body">假滚刀在江底崩裂毁坏刀座，难降解泡沫渣土外运贵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 100 Rings Installed + Muck Truck Count</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $520,000 exposed to urban sinkholes</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ tbm_tunnel_boring_mandate</text>
+  <text x="428" y="166" class="card-h">四层土压出土守恒、注浆充盈与雷达门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Chamber ΔP, Muck &amp; InSAR (11ms)</text>
+  <text x="440" y="220" class="body">土压波动 &lt;=+-0.02MPa, 皮带秤出土率 98%–102%</text>
+  <text x="440" y="238" class="body">&amp; 地表沉降 [-10,+5]mm — 超挖掏空直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Foam Slump &amp; Grout Factor (14ms)</text>
+  <text x="440" y="296" class="body">改良渣土坍落度 120–180mm (无泥饼), 双液同步注浆</text>
+  <text x="440" y="314" class="body">充盈率 &gt;=1.15 &amp; 错台 &lt;=3mm — 违者直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ 900MHz GPR &amp; ESR Cutter (280ms)</text>
+  <text x="440" y="372" class="body">核验 900MHz 探地雷达壁后 0% 空洞图谱与 19 寸</text>
+  <text x="440" y="390" class="body">ESR H13 滚刀超声探伤 — 拱顶空洞直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: Bio-Foam Aggregate &amp; Reman (245ms)</text>
+  <text x="440" y="448" class="body">OECD 301B 生物降解泡沫弃渣制骨料 + 19 寸滚刀刀毂</text>
+  <text x="440" y="466" class="body">再制造循环自动冲抵立省 $72,800 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 土压守恒与密实注浆放行</text>
+  <text x="828" y="212" class="body">出土 99.6% + 沉降 -3.2mm + 充盈 1.21 → $520,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 超挖掏空或沉降天坑拦截</text>
+  <text x="828" y="258" class="body">出土率 119% 或沉降 -36mm → 冻结 $520,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 结泥饼或注浆欠注错台</text>
+  <text x="828" y="304" class="body">充盈率 0.82 或错台 8.5mm → 拒付 $520,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 雷达空洞或假滚刀</text>
+  <text x="828" y="350" class="body">GPR 扫出拱顶脱空或非 ESR 刀圈 → 熔断 $520,000</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 环保弃渣回用与刀毂再造</text>
+  <text x="828" y="396" class="body">节省 $72,800 (-14%) → 确认后净付 $447,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 管线保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#eab308">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 盾构隧道严禁“按掘进环数盲付”：富水砂层水压会掩盖超挖掏空诱发天坑，而盾尾欠注会导致管片在泥水浮力下上浮错台漏水。</text>
+  <text x="54" y="584" class="body">• 必须将皮带秤出土率 (98–102%)、地表沉降 ([-10,+5]mm)、双液注浆充盈率 (&gt;=1.15) 与 900MHz GPR 零空洞绑定为智能托管解锁谓词。</text>
+</svg>

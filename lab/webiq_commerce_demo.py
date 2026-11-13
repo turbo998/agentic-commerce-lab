@@ -17553,6 +17553,91 @@ def evaluate_lithium_battery_copper_foil_policy(
     )
 
 
+@dataclass(frozen=True)
+class TbmTunnelBoringVerdict:
+    allowed: bool
+    http_status: int
+    tbm_tunnel_lane: str
+    settled_tbm_tunnel_cents: int
+    muck_reuse_cutter_reman_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_tbm_tunnel_boring_policy(
+    *,
+    gross_tbm_tunnel_cents: int = 52000000,
+    earth_pressure_balance_and_surface_settlement_verified: bool = True,
+    foam_conditioning_slump_and_tail_grout_filling_passed: bool = True,
+    webiq_gpr_annulus_void_scan_and_cutter_ring_cert_clean: bool = True,
+    biodegradable_foam_and_remanufactured_cutter_hub_credit_cents: int = 0,
+) -> TbmTunnelBoringVerdict:
+    # 1. Screw-Conveyor Over-Extraction (>102% Muck Ratio) or Surface Sinkhole Settlement (<-10 mm) -> HTTP 403
+    if not earth_pressure_balance_and_surface_settlement_verified:
+        return TbmTunnelBoringVerdict(
+            False,
+            403,
+            "CHAMBER_PRESSURE_IMBALANCE_OR_SURFACE_SETTLEMENT_SINKHOLE_BLOCKED",
+            0,
+            0,
+            "tbm_ring_blocked_due_to_over_excavation_ground_loss_or_surface_settlement_beyond_10mm",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Cutterhead Clay Caking or Under-Grouted Tail Void (<1.15 Filling Factor / >3 mm Stepping) -> HTTP 422
+    if not foam_conditioning_slump_and_tail_grout_filling_passed:
+        return TbmTunnelBoringVerdict(
+            False,
+            422,
+            "CUTTERHEAD_CLAY_CAKING_OR_ANNULUS_GROUT_VOID_STEPPING_BLOCKED",
+            0,
+            0,
+            "tunnel_ring_rejected_for_cutterhead_clay_caking_or_tail_grout_filling_below_115_uplift",
+            14,
+            "Send to a human",
+        )
+
+    # 3. 900MHz GPR Crown Cavity (>0.1 m2) or Counterfeit Non-ESR H13 Disc Cutter Ring via Web IQ -> HTTP 451
+    if not webiq_gpr_annulus_void_scan_and_cutter_ring_cert_clean:
+        return TbmTunnelBoringVerdict(
+            False,
+            451,
+            "GPR_BACKFILL_CAVITY_OR_COUNTERFEIT_H13_DISC_CUTTER_HOLD",
+            0,
+            0,
+            "webiq_detected_900mhz_gpr_crown_annulus_void_or_non_esr_h13_disc_cutter_ring",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ OECD 301B Biodegradable Foam Muck-to-Aggregate + 19-Inch Cutter Hub Reman Offset -> HTTP 409 Confirm
+    if biodegradable_foam_and_remanufactured_cutter_hub_credit_cents > 0:
+        return TbmTunnelBoringVerdict(
+            False,
+            409,
+            "BIODEGRADABLE_FOAM_MUCK_REUSE_AND_CUTTER_REMAN_CREDIT_CONFIRM",
+            gross_tbm_tunnel_cents - biodegradable_foam_and_remanufactured_cutter_hub_credit_cents,
+            biodegradable_foam_and_remanufactured_cutter_hub_credit_cents,
+            "webiq_applied_biodegradable_foam_muck_aggregate_and_cutter_hub_reman_credit_saving_72800_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Chamber ΔP + Muck Ratio 98-102% + Grout >=1.15 + 0% GPR Void -> Settled
+    return TbmTunnelBoringVerdict(
+        True,
+        200,
+        "VERIFIED_TBM_TUNNEL_BORING_RING_SETTLED",
+        gross_tbm_tunnel_cents,
+        0,
+        "epb_chamber_pressure_muck_mass_balance_insar_settlement_two_component_grout_and_gpr_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -23090,6 +23175,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pinhole_elongation_block_latency_ms": cuf_pin_403.latency_ms,
     }
 
+    # Round 151 (Mechanized TBM Tunnel Boring & Backfill Grouting SLA, Mass Balance & Grout Filling Mandate)
+    tbm_commit_ok = evaluate_tbm_tunnel_boring_policy()
+    tbm_prs_403 = evaluate_tbm_tunnel_boring_policy(
+        earth_pressure_balance_and_surface_settlement_verified=False,
+    )
+    tbm_grt_422 = evaluate_tbm_tunnel_boring_policy(
+        foam_conditioning_slump_and_tail_grout_filling_passed=False,
+    )
+    tbm_gpr_451 = evaluate_tbm_tunnel_boring_policy(
+        webiq_gpr_annulus_void_scan_and_cutter_ring_cert_clean=False,
+    )
+    tbm_bio_409 = evaluate_tbm_tunnel_boring_policy(
+        biodegradable_foam_and_remanufactured_cutter_hub_credit_cents=7280000,
+    )
+    tbm_tunnel_guards = {
+        "all_passed": (
+            tbm_commit_ok.allowed
+            and tbm_commit_ok.settled_tbm_tunnel_cents == 52000000
+            and not tbm_prs_403.allowed
+            and tbm_prs_403.http_status == 403
+            and not tbm_grt_422.allowed
+            and tbm_grt_422.http_status == 422
+            and not tbm_gpr_451.allowed
+            and tbm_gpr_451.http_status == 451
+            and not tbm_bio_409.allowed
+            and tbm_bio_409.action_pill == "Confirm"
+        ),
+        "tbm_tunnel_settlement_latency_ms": tbm_commit_ok.latency_ms,
+        "sinkhole_overexcavation_block_latency_ms": tbm_prs_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23253,6 +23369,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "uv_cipp_guards": uv_cipp_guards,
         "hsr_scc_guards": hsr_scc_guards,
         "battery_copper_foil_guards": battery_copper_foil_guards,
+        "tbm_tunnel_guards": tbm_tunnel_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28870,6 +28987,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cuf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Mechanized TBM Tunnel Boring & Backfill Grouting SLA, Mass Balance & Grout Filling Mandate Sandbox (Round 151 FAQ Companion) -->
+      <div class="finops-box" id="tbm-tunnel-boring-sandbox" style="margin-top:12px;border-color:#EAB308;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-tbm-title">🚇 地铁与穿江盾构掘进 (EPB/TBM)、土仓压力守恒与同步注浆充盈率 (&gt;=1.15) 架构：防地面塌陷天坑与管片上浮漏水令牌 (tbm_tunnel_boring_mandate_...) vs 环数盲付决策器 (Round 151 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 100 环盾构隧道掘进与泡沫/双液注浆交割 ($520,000.00)、皮带秤出土率 (98–102%)/InSAR 沉降、渣土改良坍落度/同步注浆充盈率与 Web IQ 900MHz 探地雷达/滚刀再制造场景 (TBM Tunnel Boring Scenario):</span></label>
+          <select id="tbm-select" onchange="updateTbmTunnelBoringSandbox()">
+            <option value="tbm_commit_ok">⚡ 土压波动 +-0.01 MPa + 出土率 99.6% + 地表沉降 -3.2mm + 双液注浆充盈率 1.21 + 错台 1.4mm：10ms 自动结算 $520,000.00! (Act automatically)</option>
+            <option value="tbm_prs_403">🛑 夜间抢进度将螺旋机开大超挖富水砂层 (出土率 = 119% &gt; 102% 掏空地下砂层，地表沉降跌破 Smax = -36mm &lt; -10mm 诱发城市马路 10 米天坑塌陷) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="tbm_grt_422">🚨 劣质发泡剂致刀盘中心粘土烧结成“泥饼”抱死，或偷减盾尾同步注浆水泥量 (充盈系数 = 0.82 &lt; 1.15，40 吨管片受地下水浮力上浮 45mm、错台 8.5mm 剪断螺栓涌水) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tbm_gpr_451">🛑 管片壁后 900MHz 探地雷达 (GPR) 扫出拱顶存在 &gt;0.1 m2 隐蔽空洞，或供应商以普通碳钢冒充电渣重熔 (ESR H13) 19 寸滚刀刀圈致江底崩刃：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="tbm_bio_409">🧑‍⚖️ Web IQ 启用 OECD 301B 全生物降解发泡剂使弃渣直转隧道仰拱混凝土骨料，并执行 19 寸滚刀刀毂/浮动油封原厂再制造循环立省 $72,800.00 (净付 $447,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tbm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -29459,6 +29594,7 @@ function renderAll() {{
   updateTrenchlessUvCippSandbox();
   updateHsrBallastlessSccSandbox();
   updateBatteryCopperFoilSandbox();
+  updateTbmTunnelBoringSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -37110,6 +37246,55 @@ function updateBatteryCopperFoilSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双面 CCD 零针孔 + 180°C 延伸率 (&gt;=6.0%) + 毛面 Rz (&lt;=2.0 um) 达标：已自动清算 (VERIFIED_LITHIUM_BATTERY_COPPER_FOIL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零涂布渗浆断带、零隔膜刺穿自放电与负极脱粉</strong>：30 吨极薄锂电电解铜箔批次已完成结算（<code>$460,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateTbmTunnelBoringSandbox() {{
+  var selEl = document.getElementById("tbm-select");
+  var outEl = document.getElementById("tbm-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "tbm_prs_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CHAMBER_PRESSURE_IMBALANCE_OR_SURFACE_SETTLEMENT_SINKHOLE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "盾构机 PLC <code>电子皮带秤/三维激光出土量双守恒与地表 InSAR 静力水准仪</code> 实测显示，螺旋输送机出土率高达 <code>119% &gt; 102%</code>（严重超挖掏空上方富水砂层）且地表累计沉降达 <code>Smax = -36 mm &lt; -10 mm</code>（随时引发城市道路塌陷天坑，<code>earth_pressure_balance_and_surface_settlement_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$520,000.00</code> 进度款结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tbm_grt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CUTTERHEAD_CLAY_CAKING_OR_ANNULUS_GROUT_VOID_STEPPING_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "盾尾 <code>双液同步注浆流量计与三维激光断面全站仪</code> 检出壁后注浆充盈系数仅 <code>0.82 &lt; 1.15</code>（管片受阿基米德泥水浮力上浮 45mm、环间错台达 <code>8.5 mm &gt; 3.0 mm</code> 导致防水胶条漏水）或泡沫改良失格致刀盘结泥饼（<code>foam_conditioning_slump_and_tail_grout_filling_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tbm_gpr_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 GPR_BACKFILL_CAVITY_OR_COUNTERFEIT_H13_DISC_CUTTER_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>管片壁后 900MHz 探地雷达 (GPR) 扫描图谱与 19 寸滚刀刀圈电渣重熔 (ESR H13) 探伤备案</code>，检出拱顶存在 <code>&gt;0.1 m2</code> 脱空空洞或假冒滚刀刀圈，立即冻结进度款并下达二次补注浆令！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "tbm_bio_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BIODEGRADABLE_FOAM_MUCK_REUSE_AND_CUTTER_REMAN_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实采用 <code>OECD 301B 全生物降解发泡剂弃渣直转隧道仰拱骨料 + 19 寸滚刀刀毂原厂再制造循环</code>，自动冲抵泥浆危废外运与新刀采购费立省 <code>$72,800.00</code>（净付降至 <code>$447,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 出土质量守恒 (98–102%) + 沉降达标 + 双液注浆充盈 (&gt;=1.15) 达标：已自动清算 (VERIFIED_TBM_TUNNEL_BORING_RING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零地面塌陷天坑、零刀盘结泥饼与管片上浮漏水</strong>：100 环盾构隧道掘进与同步注浆批次已完成结算（<code>$520,000.00</code>）！" +
     "</div>";
 }}
 

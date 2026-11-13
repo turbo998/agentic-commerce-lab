@@ -9615,6 +9615,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("battery-copper-foil-sandbox", demo_zh)
 
+    def test_tbm_tunnel_boring_earth_pressure_settlement_grout_mandate_vs_sinkhole_cutterhead_clogging_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_tbm_tunnel_boring_policy,
+        )
+
+        # 1. Verified chamber ΔP + muck ratio 98-102% + grout filling >=1.15 -> 200 OK ($520,000)
+        commit_ok = evaluate_tbm_tunnel_boring_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_tbm_tunnel_cents, 52000000)
+
+        # 2. Screw-conveyor over-extraction (>102%) or surface sinkhole subsidence (<-10mm) -> 403 blocked in 11ms
+        prs_403 = evaluate_tbm_tunnel_boring_policy(
+            earth_pressure_balance_and_surface_settlement_verified=False,
+        )
+        self.assertFalse(prs_403.allowed)
+        self.assertEqual(prs_403.http_status, 403)
+        self.assertEqual(
+            prs_403.tbm_tunnel_lane,
+            "CHAMBER_PRESSURE_IMBALANCE_OR_SURFACE_SETTLEMENT_SINKHOLE_BLOCKED",
+        )
+
+        # 3. Cutterhead clay caking or tail-void grout filling (<1.15) / stepping (>3mm) -> 422 blocked in 14ms
+        grt_422 = evaluate_tbm_tunnel_boring_policy(
+            foam_conditioning_slump_and_tail_grout_filling_passed=False,
+        )
+        self.assertFalse(grt_422.allowed)
+        self.assertEqual(grt_422.http_status, 422)
+        self.assertEqual(
+            grt_422.tbm_tunnel_lane,
+            "CUTTERHEAD_CLAY_CAKING_OR_ANNULUS_GROUT_VOID_STEPPING_BLOCKED",
+        )
+
+        # 4. Web IQ detects 900MHz GPR crown cavity or counterfeit non-ESR H13 disc cutter -> 451 blocked in 280ms
+        gpr_451 = evaluate_tbm_tunnel_boring_policy(
+            webiq_gpr_annulus_void_scan_and_cutter_ring_cert_clean=False,
+        )
+        self.assertFalse(gpr_451.allowed)
+        self.assertEqual(gpr_451.http_status, 451)
+
+        # 5. Web IQ credits biodegradable foam muck-to-aggregate & cutter hub reman saving $72,800 ($447,200 net) -> 409 Confirm
+        bio_409 = evaluate_tbm_tunnel_boring_policy(
+            biodegradable_foam_and_remanufactured_cutter_hub_credit_cents=7280000,
+        )
+        self.assertFalse(bio_409.allowed)
+        self.assertEqual(bio_409.http_status, 409)
+        self.assertEqual(bio_409.settled_tbm_tunnel_cents, 44720000)
+        self.assertEqual(bio_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["tbm_tunnel_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("tbm-tunnel-boring-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
