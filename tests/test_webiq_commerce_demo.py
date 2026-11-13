@@ -11407,6 +11407,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rf-alscn-baw-filter-sandbox", demo_zh)
 
+    def test_humanoid_robot_6axis_force_torque_sensor_crosstalk_overload_creep_mandate_vs_bipedal_fall_zero_drift_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_robot_6axis_force_torque_sensor_policy,
+        )
+
+        # 1. Verified 6-DOF crosstalk <=0.8% FS + MSG creep <=0.03% FS + 500% overload -> 200 OK ($550,000)
+        commit_ok = evaluate_robot_6axis_force_torque_sensor_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ft_sensor_cents, 55000000)
+
+        # 2. Cross-axis crosstalk (>0.8% FS) or thermal zero drift (>0.01% FS/°C) -> 403 blocked in 11ms
+        xtk_403 = evaluate_robot_6axis_force_torque_sensor_policy(
+            crosstalk_matrix_08pct_and_thermal_zero_drift_001pct_verified=False,
+        )
+        self.assertFalse(xtk_403.allowed)
+        self.assertEqual(xtk_403.http_status, 403)
+        self.assertEqual(
+            xtk_403.ft_sensor_lane,
+            "CROSS_AXIS_CROSSTALK_OR_THERMAL_ZERO_DRIFT_BLOCKED",
+        )
+
+        # 3. Organic epoxy glue creep/hysteresis (>0.05% FS) or 500% FS overload yield -> 422 blocked in 14ms
+        crp_422 = evaluate_robot_6axis_force_torque_sensor_policy(
+            micro_fused_silicon_creep_005pct_and_500pct_overload_pin_passed=False,
+        )
+        self.assertFalse(crp_422.allowed)
+        self.assertEqual(crp_422.http_status, 422)
+        self.assertEqual(
+            crp_422.ft_sensor_lane,
+            "EPOXY_CREEP_HYSTERESIS_OR_OVERLOAD_YIELD_BLOCKED",
+        )
+
+        # 4. Web IQ detects low resonant frequency (<2.5 kHz) or improper 17-4PH H900 temper -> 451 blocked in 280ms
+        res_451 = evaluate_robot_6axis_force_torque_sensor_policy(
+            webiq_resonant_frequency_25khz_and_17_4ph_alloy_clean=False,
+        )
+        self.assertFalse(res_451.allowed)
+        self.assertEqual(res_451.http_status, 451)
+
+        # 5. Web IQ credits femtosecond laser bridge trimming & 85% alloy swarf reclaim saving $82,500 ($467,500 net) -> 409 Confirm
+        lsr_409 = evaluate_robot_6axis_force_torque_sensor_policy(
+            laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents=8250000,
+        )
+        self.assertFalse(lsr_409.allowed)
+        self.assertEqual(lsr_409.http_status, 409)
+        self.assertEqual(lsr_409.settled_ft_sensor_cents, 46750000)
+        self.assertEqual(lsr_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["robot_6axis_ft_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("robot-6axis-ft-sensor-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

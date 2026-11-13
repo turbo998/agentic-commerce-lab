@@ -20358,6 +20358,96 @@ def evaluate_rf_alscn_baw_filter_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 183: Humanoid Robot 6-Axis Force/Torque Sensor, 6x6 Crosstalk & Overload Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Robot6AxisForceTorqueSensorVerdict:
+    allowed: bool
+    http_status: int
+    ft_sensor_lane: str
+    settled_ft_sensor_cents: int
+    laser_trim_swarf_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_robot_6axis_force_torque_sensor_policy(
+    *,
+    gross_ft_sensor_cents: int = 55000000,
+    crosstalk_matrix_08pct_and_thermal_zero_drift_001pct_verified: bool = True,
+    micro_fused_silicon_creep_005pct_and_500pct_overload_pin_passed: bool = True,
+    webiq_resonant_frequency_25khz_and_17_4ph_alloy_clean: bool = True,
+    laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents: int = 0,
+) -> Robot6AxisForceTorqueSensorVerdict:
+    # 1. Uncalibrated Cross-Axis Crosstalk (>0.8% FS) or Thermal Zero Drift (>0.01% FS/°C) -> HTTP 403
+    if not crosstalk_matrix_08pct_and_thermal_zero_drift_001pct_verified:
+        return Robot6AxisForceTorqueSensorVerdict(
+            False,
+            403,
+            "CROSS_AXIS_CROSSTALK_OR_THERMAL_ZERO_DRIFT_BLOCKED",
+            0,
+            0,
+            "robot_6axis_ft_sensor_blocked_due_to_cross_axis_crosstalk_above_08pct_or_thermal_drift",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Organic Epoxy Adhesive Creep/Hysteresis (>0.05% FS) or 500% FS Overload Flexure Yield -> HTTP 422
+    if not micro_fused_silicon_creep_005pct_and_500pct_overload_pin_passed:
+        return Robot6AxisForceTorqueSensorVerdict(
+            False,
+            422,
+            "EPOXY_CREEP_HYSTERESIS_OR_OVERLOAD_YIELD_BLOCKED",
+            0,
+            0,
+            "ft_sensor_rejected_for_epoxy_glue_creep_hysteresis_above_005pct_or_500pct_overload_yield",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Low Resonant Frequency (f0 <2.5 kHz) or Improper 17-4PH H900 Temper via Web IQ -> HTTP 451
+    if not webiq_resonant_frequency_25khz_and_17_4ph_alloy_clean:
+        return Robot6AxisForceTorqueSensorVerdict(
+            False,
+            451,
+            "LOW_RESONANT_FREQUENCY_OR_ALLOY_TEMPER_HOLD",
+            0,
+            0,
+            "webiq_detected_resonant_frequency_below_25khz_or_noncompliant_17_4ph_h900_temper",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Femtosecond Laser Bridge Trimming + 85% 17-4PH/Ti Swarf Reclaim -> HTTP 409 Confirm
+    if laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents > 0:
+        return Robot6AxisForceTorqueSensorVerdict(
+            False,
+            409,
+            "LASER_BRIDGE_TRIMMING_AND_ALLOY_SWARF_RECLAIM_CONFIRM",
+            gross_ft_sensor_cents - laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents,
+            laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents,
+            "webiq_applied_femtosecond_laser_bridge_trimming_and_85pct_alloy_swarf_reclaim_saving_82500_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Crosstalk <=0.8% FS + MSG Creep <=0.03% FS + 500% FS Overload Stop -> Settled
+    return Robot6AxisForceTorqueSensorVerdict(
+        True,
+        200,
+        "VERIFIED_6AXIS_FORCE_TORQUE_SENSOR_SETTLED",
+        gross_ft_sensor_cents,
+        0,
+        "6dof_combined_crosstalk_08pct_msg_silicon_creep_500pct_overload_and_25khz_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26887,6 +26977,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "aog_keff_block_latency_ms": baw_aog_403.latency_ms,
     }
 
+    # Round 183 (Humanoid Robot 6-Axis Force/Torque Sensor Offtake, 6x6 Crosstalk & 500% Overload Mandate)
+    fts_commit_ok = evaluate_robot_6axis_force_torque_sensor_policy()
+    fts_xtk_403 = evaluate_robot_6axis_force_torque_sensor_policy(
+        crosstalk_matrix_08pct_and_thermal_zero_drift_001pct_verified=False,
+    )
+    fts_crp_422 = evaluate_robot_6axis_force_torque_sensor_policy(
+        micro_fused_silicon_creep_005pct_and_500pct_overload_pin_passed=False,
+    )
+    fts_res_451 = evaluate_robot_6axis_force_torque_sensor_policy(
+        webiq_resonant_frequency_25khz_and_17_4ph_alloy_clean=False,
+    )
+    fts_lsr_409 = evaluate_robot_6axis_force_torque_sensor_policy(
+        laser_bridge_trimming_and_17_4ph_ti_swarf_reclaim_credit_cents=8250000,
+    )
+    robot_6axis_ft_guards = {
+        "all_passed": (
+            fts_commit_ok.allowed
+            and fts_commit_ok.settled_ft_sensor_cents == 55000000
+            and not fts_xtk_403.allowed
+            and fts_xtk_403.http_status == 403
+            and not fts_crp_422.allowed
+            and fts_crp_422.http_status == 422
+            and not fts_res_451.allowed
+            and fts_res_451.http_status == 451
+            and not fts_lsr_409.allowed
+            and fts_lsr_409.action_pill == "Confirm"
+        ),
+        "robot_6axis_ft_settlement_latency_ms": fts_commit_ok.latency_ms,
+        "crosstalk_drift_block_latency_ms": fts_xtk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27082,6 +27203,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "implantable_bci_guards": implantable_bci_guards,
         "nuclear_triso_atf_guards": nuclear_triso_atf_guards,
         "rf_alscn_baw_guards": rf_alscn_baw_guards,
+        "robot_6axis_ft_guards": robot_6axis_ft_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33275,6 +33397,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="baw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Humanoid Robot 6-Axis Force/Torque Sensor, 6x6 Crosstalk & 500% Overload Mandate Sandbox (Round 183 FAQ Companion) -->
+      <div class="finops-box" id="robot-6axis-ft-sensor-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-fts-title">🤖 人形机器人与灵巧手六维力/力矩传感器 (6-Axis F/T)、6×6 维间解耦串扰 (&lt;=0.8% FS) 与 500% 过载保护架构：防双足失衡摔倒与十字梁屈服令牌 (robot_6axis_ft_sensor_mandate_...) vs 单轴砝码盲付决策器 (Round 183 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 500 颗人形机器人腕/踝六维力传感器交割 ($550,000.00)、6-DOF 联合加载维间串扰/宽温零漂、500°C 玻璃微熔硅片蠕变/500% 过载硬限位与 Web IQ 激光电桥微调/17-4PH 切屑重熔场景 (Robot 6-Axis F/T Scenario):</span></label>
+          <select id="fts-select" onchange="updateRobot6AxisForceTorqueSensorSandbox()">
+            <option value="fts_commit_ok">⚡ 维间串扰 0.42% FS (&lt;=0.8%) + 温漂 0.006%/°C + 玻璃微熔蠕变 0.018% + 500% FS 过载无损：10ms 自动结算 $550,000.00! (Act automatically)</option>
+            <option value="fts_xtk_403">🛑 仅做单向 Fz 砝码标定致复合受力下 Fz-&gt;Mx 维间耦合串扰高达 4.8% &gt; 0.8% FS，叠加谐波电机发热零漂诱发 ZMP 误判把机器人踹翻拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="fts_crp_422">🚨 采用廉价有机环氧胶水贴片致蠕变滞后 &gt;0.25% FS，或缺失 90um 慢走丝过载硬限位销致跳跃落地 300% FS 冲击将十字梁压弯屈服拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="fts_res_451">🛑 一阶固有频率 f0 = 580Hz &lt; 2.5kHz 诱发 1kHz 全身力控环路自激共振，或 17-4PH H900 固溶时效硬度不达标：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="fts_lsr_409">🧑‍⚖️ Web IQ 启用飞秒激光自动微调 (Laser Trimming) 惠斯通电桥零点/温敏电阻免人工配阻，并将五轴掏空的 85% 航空 17-4PH/TC4 切屑真空感应重熔回收立省 $82,500.00 (净付 $467,500.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -33896,6 +34036,7 @@ function renderAll() {{
   updateImplantableBciNeuralElectrodeSandbox();
   updateNuclearTrisoAtfCladdingSandbox();
   updateRfAlscnBawFilterSandbox();
+  updateRobot6AxisForceTorqueSensorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -43115,6 +43256,55 @@ function updateRfAlscnBawFilterSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 零 AOG (&lt;=0.5/cm²) + 高耦合 (&gt;=14.5%) + +29dBm 耐受达标：已自动清算 (VERIFIED_RF_ALSCN_BAW_FILTER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 AOG 异常死晶断网、零兰姆波通带深坑与满功率烧膜</strong>：300 片 5G-A/6G AlScN FBAR/BAW 滤波器晶圆批次已完成结算（<code>$570,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateRobot6AxisForceTorqueSensorSandbox() {{
+  var selEl = document.getElementById("fts-select");
+  var outEl = document.getElementById("fts-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "fts_xtk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CROSS_AXIS_CROSSTALK_OR_THERMAL_ZERO_DRIFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "6-DOF 联合加载标定台与高低温箱实测显示，该批六维力传感器未经过全空间复合力矩标定，<code>Fz 垂直加载对 Mx/My 的维间耦合串扰高达 4.8% FS &gt; 0.8% FS 或关节温升零漂 &gt; 0.01% FS/°C</code>（双足行走时触发 ZMP 零力矩点误判导致整机摔倒，<code>crosstalk_matrix_08pct_and_thermal_zero_drift_001pct_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$550,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "fts_crp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EPOXY_CREEP_HYSTERESIS_OR_OVERLOAD_YIELD_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "疲劳与过载冲击试验台检出 <code>采用有机环氧胶贴片致 30min 蠕变/滞后 &gt; 0.05% FS，或缺失 90um 慢走丝机械硬限位销导致 500% FS 冲击后十字梁发生永久塑性屈服</code>（<code>micro_fused_silicon_creep_005pct_and_500pct_overload_pin_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "fts_res_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LOW_RESONANT_FREQUENCY_OR_ALLOY_TEMPER_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>激光测振一阶固有频率谱与 AMS 5643 17-4PH H900 热处理证书</code>，检出固有频率 &lt;2.5 kHz 易诱发 1kHz 力控共振或弹性体屈服强度不足，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "fts_lsr_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LASER_BRIDGE_TRIMMING_AND_ALLOY_SWARF_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>飞秒激光自动修调惠斯通电桥零点/温补网络 + 五轴车铣掏空的 85% 航空级 17-4PH/TC4 切屑真空感应重熔 (VIM) 回收</code>，自动冲抵人工配阻与特种合金损耗立省 <code>$82,500.00</code>（净付降至 <code>$467,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 6×6 维间串扰 (&lt;=0.8% FS) + 玻璃微熔 (&lt;=0.03% FS) + 500% 过载保护达标：已自动清算 (VERIFIED_6AXIS_FORCE_TORQUE_SENSOR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零双足行走 ZMP 误判摔倒、零有机胶脱胶蠕变与跳跃落地十字梁屈服</strong>：500 颗人形机器人腕/踝六维力传感器批次已完成结算（<code>$550,000.00</code>）！" +
     "</div>";
 }}
 
