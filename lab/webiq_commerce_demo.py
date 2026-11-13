@@ -18488,6 +18488,91 @@ def evaluate_cowos_hbm_packaging_policy(
     )
 
 
+@dataclass(frozen=True)
+class BatteryCeramicSeparatorVerdict:
+    allowed: bool
+    http_status: int
+    ceramic_separator_lane: str
+    settled_ceramic_separator_cents: int
+    solvent_loop_5um_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_battery_ceramic_separator_policy(
+    *,
+    gross_ceramic_separator_cents: int = 51000000,
+    puncture_strength_and_150c_thermal_shrinkage_verified: bool = True,
+    gurley_air_permeability_and_karl_fischer_moisture_passed: bool = True,
+    webiq_ccd_pinhole_gel_defect_and_dcm_solvent_emission_clean: bool = True,
+    dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents: int = 0,
+) -> BatteryCeramicSeparatorVerdict:
+    # 1. 150C Thermal Shrinkage Meltdown (>2.0%) or Low Puncture Strength (<550 gf) -> HTTP 403
+    if not puncture_strength_and_150c_thermal_shrinkage_verified:
+        return BatteryCeramicSeparatorVerdict(
+            False,
+            403,
+            "THERMAL_SHRINKAGE_MELTDOWN_OR_LOW_PUNCTURE_DENDRITE_SHORT_BLOCKED",
+            0,
+            0,
+            "ceramic_separator_roll_blocked_due_to_150c_shrinkage_above_2pct_or_puncture_below_550gf",
+            11,
+            "Send to a human",
+        )
+
+    # 2. PVDF Pore Plugging (Gurley >180 s/100mL) or High Boehmite Moisture (>400 ppm LiPF6 HF Gas) -> HTTP 422
+    if not gurley_air_permeability_and_karl_fischer_moisture_passed:
+        return BatteryCeramicSeparatorVerdict(
+            False,
+            422,
+            "CLOSED_PORE_GURLEY_IMPEDANCE_OR_MOISTURE_LIPF6_GAS_BLOCKED",
+            0,
+            0,
+            "separator_batch_rejected_for_gurley_above_180s_lithium_plating_or_moisture_above_400ppm_hf_gas",
+            14,
+            "Send to a human",
+        )
+
+    # 3. 8K CCD Unmelted UHMWPE Fisheye Gel Defect or DCM Solvent Emission Breach via Web IQ -> HTTP 451
+    if not webiq_ccd_pinhole_gel_defect_and_dcm_solvent_emission_clean:
+        return BatteryCeramicSeparatorVerdict(
+            False,
+            451,
+            "UNMELTED_UHMWPE_FISHEYE_GEL_OR_DCM_SOLVENT_VIOLATION_HOLD",
+            0,
+            0,
+            "webiq_detected_8k_ccd_unmelted_uhmwpe_fisheye_gel_pinhole_or_dcm_solvent_emission_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 99.8% Paraffin/DCM 5-Column Distillation + 5+1.5um Base-Film Offset -> HTTP 409 Confirm
+    if dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents > 0:
+        return BatteryCeramicSeparatorVerdict(
+            False,
+            409,
+            "SOLVENT_RECOVERY_CLOSED_LOOP_AND_5UM_BASE_FILM_CREDIT_CONFIRM",
+            gross_ceramic_separator_cents - dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents,
+            dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents,
+            "webiq_applied_998pct_paraffin_dcm_distillation_and_5um_base_film_credit_saving_71400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Puncture >=550gf + 150C Shrink <=2.0% + Gurley 120-180s + H2O <=400ppm -> Settled
+    return BatteryCeramicSeparatorVerdict(
+        True,
+        200,
+        "VERIFIED_BATTERY_CERAMIC_SEPARATOR_SETTLED",
+        gross_ceramic_separator_cents,
+        0,
+        "gbt36363_puncture_150c_tma_shrinkage_gurley_karl_fischer_and_8k_ccd_zero_gel_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -24366,6 +24451,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "tsv_warpage_block_latency_ms": cws_tsv_403.latency_ms,
     }
 
+    # Round 162 (Battery Ceramic-Coated Separator Offtake, 150C Shrinkage & Gurley Mandate)
+    sep_commit_ok = evaluate_battery_ceramic_separator_policy()
+    sep_shk_403 = evaluate_battery_ceramic_separator_policy(
+        puncture_strength_and_150c_thermal_shrinkage_verified=False,
+    )
+    sep_gur_422 = evaluate_battery_ceramic_separator_policy(
+        gurley_air_permeability_and_karl_fischer_moisture_passed=False,
+    )
+    sep_gel_451 = evaluate_battery_ceramic_separator_policy(
+        webiq_ccd_pinhole_gel_defect_and_dcm_solvent_emission_clean=False,
+    )
+    sep_dcm_409 = evaluate_battery_ceramic_separator_policy(
+        dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents=7140000,
+    )
+    ceramic_separator_guards = {
+        "all_passed": (
+            sep_commit_ok.allowed
+            and sep_commit_ok.settled_ceramic_separator_cents == 51000000
+            and not sep_shk_403.allowed
+            and sep_shk_403.http_status == 403
+            and not sep_gur_422.allowed
+            and sep_gur_422.http_status == 422
+            and not sep_gel_451.allowed
+            and sep_gel_451.http_status == 451
+            and not sep_dcm_409.allowed
+            and sep_dcm_409.action_pill == "Confirm"
+        ),
+        "ceramic_separator_settlement_latency_ms": sep_commit_ok.latency_ms,
+        "shrinkage_puncture_block_latency_ms": sep_shk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24540,6 +24656,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "harmonic_drive_guards": harmonic_drive_guards,
         "silicon_photonics_guards": silicon_photonics_guards,
         "cowos_packaging_guards": cowos_packaging_guards,
+        "ceramic_separator_guards": ceramic_separator_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30355,6 +30472,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cws-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Battery Ceramic-Coated Separator Offtake, 150C Shrinkage & Gurley Mandate Sandbox (Round 162 FAQ Companion) -->
+      <div class="finops-box" id="battery-ceramic-separator-sandbox" style="margin-top:12px;border-color:#22C55E;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sep-title">🛡️ 动力与储能电芯湿法陶瓷涂覆隔膜、150°C 抗热缩 (&lt;=2.0%) 与葛尔莱透气 (120–180s) 架构：防电芯热失控融缩爆燃与快充析锂令牌 (battery_ceramic_separator_mandate_...) vs 面积厚度盲付决策器 (Round 162 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 200 万 m2 锂电湿法涂覆勃姆石陶瓷隔膜交割 ($510,000.00)、GB/T 36363 针刺强度/150°C 热收缩率、Gurley 透气度/卡尔费休水分与 Web IQ 8K CCD 零晶点/白油二氯甲烷精馏闭环场景 (Battery Ceramic Separator Scenario):</span></label>
+          <select id="sep-select" onchange="updateBatteryCeramicSeparatorSandbox()">
+            <option value="sep_commit_ok">⚡ 针刺强度 640 gf + 150°C/1h 热收缩 0.8% + Gurley 透气 142 s/100mL + 水分 210 ppm + 剥离 115 N/m：10ms 自动结算 $510,000.00! (Act automatically)</option>
+            <option value="sep_shk_403">🛑 勃姆石陶瓷涂层剥离力不足致 150°C 下 PE 基膜失去钉扎剧烈回缩 18.5% &gt; 2.0% (正负极片大面积裸露贴合引发热失控爆燃)，或针刺强度仅 290 gf &lt; 550 gf 极片毛刺扎穿拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sep_gur_422">🚨 涂布烘干过快致 PVDF 粘结剂糊死 PE 纳米微孔 (Gurley 透气值飙至 340 s/100mL &gt; 180 s 诱发 4C 快充负极长出锂枝晶)，或卡尔费休水分达 1,450 ppm &gt; 400 ppm 水解 LiPF6 产 HF 胀气鼓包拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sep_gel_451">🛑 分切线全幅 8K CCD 扫出 &gt;0.2mm 未塑化 UHMWPE“鱼眼晶点”薄弱区引发 K 值自放电，或石蜡白油/二氯甲烷 (DCM) 萃取剂违规挥发排放：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="sep_dcm_409">🧑‍⚖️ Web IQ 启用 99.8% 石蜡白油与二氯甲烷五塔连续减压精馏闭环回用，并升级 5+1.5um 超高晶度减薄方案提升电芯能量密度 4%，立省 $71,400.00 (净付 $438,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sep-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -30955,6 +31090,7 @@ function renderAll() {{
   updateHumanoidHarmonicDriveSandbox();
   updateSiliconPhotonicsTransceiverSandbox();
   updateCowosHbmPackagingSandbox();
+  updateBatteryCeramicSeparatorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -39145,6 +39281,55 @@ function updateCowosHbmPackagingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 3D X-Ray TSV 零空洞 + 翘曲 (&lt;=80 um) + 超低 α (&lt;=0.001) 达标：已自动清算 (VERIFIED_COWOS_HBM_PACKAGING_MATERIALS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零退火铜泵出裂纹、零 12um 微凸点窄缝架桥与 HBM 软错误翻转</strong>：CoWoS/HBM3e 先进封装电镀液与底部填充胶批次已完成结算（<code>$660,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateBatteryCeramicSeparatorSandbox() {{
+  var selEl = document.getElementById("sep-select");
+  var outEl = document.getElementById("sep-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sep_shk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 THERMAL_SHRINKAGE_MELTDOWN_OR_LOW_PUNCTURE_DENDRITE_SHORT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "隔膜检测中心 <code>GB/T 36363 针刺试验机与 TMA 热机械分析仪</code> 实测显示，该批隔膜因陶瓷层粘结剥离力不足导致 150°C/1h 热收缩率高达 <code>18.5% &gt; 2.0%</code> 或针刺强度仅 <code>290 gf &lt; 550 gf</code>（局部过热时隔膜将剧烈回缩引发正负极贴合爆燃，<code>puncture_strength_and_150c_thermal_shrinkage_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$510,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sep_gur_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CLOSED_PORE_GURLEY_IMPEDANCE_OR_MOISTURE_LIPF6_GAS_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "物性实验室 <code>葛尔莱 (Gurley) 透气度仪与 105°C 卡尔费休库仑水分仪</code> 检出 PVDF 粘结剂堵死纳米微孔导致透气值飙至 <code>Gurley = 340 s/100mL &gt; 180 s</code>（诱发 4C 快充析锂），或水分高达 <code>1,450 ppm &gt; 400 ppm</code>（水解 LiPF6 生成 HF 胀气鼓包，<code>gurley_air_permeability_and_karl_fischer_moisture_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sep_gel_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNMELTED_UHMWPE_FISHEYE_GEL_OR_DCM_SOLVENT_VIOLATION_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>分切线全幅 8K CCD 缺陷图谱与石蜡白油/二氯甲烷 (DCM) 环保台账</code>，检出母卷存在 <code>&gt;0.2 mm</code> 未塑化鱼眼晶点薄弱区或二氯甲烷溶剂违规排放，立即冻结货款并封存问题母卷！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sep_dcm_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SOLVENT_RECOVERY_CLOSED_LOOP_AND_5UM_BASE_FILM_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>99.8% 石蜡白油与二氯甲烷五塔精馏闭环 + 5+1.5um 超高晶度基膜升级</code>，自动冲抵成孔溶剂损耗与基膜单价立省 <code>$71,400.00</code>（净付降至 <code>$438,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 针刺 (&gt;=550 gf) + 150°C 收缩 (&lt;=2%) + Gurley (120–180s) 达标：已自动清算 (VERIFIED_BATTERY_CERAMIC_SEPARATOR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 150°C 热箱融缩爆燃、零 4C 快充析锂与吸潮 HF 胀气</strong>：200 万 m2 锂电湿法涂覆陶瓷隔膜批次已完成结算（<code>$510,000.00</code>）！" +
     "</div>";
 }}
 

@@ -890,6 +890,11 @@
     "cowos_packaging_settlement_latency_ms": 10,
     "tsv_warpage_block_latency_ms": 11
   },
+  "ceramic_separator_guards": {
+    "all_passed": true,
+    "ceramic_separator_settlement_latency_ms": 10,
+    "shrinkage_puncture_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

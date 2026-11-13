@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg164" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent164" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg164)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent164)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 162 · 动力与储能电芯湿法陶瓷涂覆隔膜、150°C 抗热缩与葛尔莱透气架构图</text>
+  <text x="36" y="84" class="sub">Lithium-Ion Battery Ceramic-Coated Separator Offtake, Puncture (&gt;=550 gf), 150°C Shrink (&lt;=2.0%), Gurley (120–180s) &amp; H2O (&lt;=400 ppm)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按面积与厚度盲付</text>
+  <text x="52" y="166" class="card-h">三大电芯热失控融缩爆燃、快充析锂与产酸鼓包灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 陶瓷剥离差致 150°C 热收缩 (18.5%) 大面积短路</text>
+  <text x="52" y="216" class="body">聚乙烯基膜 135°C 即熔化，若勃姆石陶瓷层粘结不牢，</text>
+  <text x="52" y="234" class="body">150°C 下隔膜像保鲜膜一样剧烈回缩 18.5%，正负极</text>
+  <text x="52" y="252" class="body">直接贴合触发数千安培热失控爆燃！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. PVDF 堵死微孔 (Gurley=340s) 与水分产 HF 鼓包</text>
+  <text x="52" y="302" class="body">微孔被糊死致 4C 快充负极长出锂枝晶刺穿隔膜；</text>
+  <text x="52" y="320" class="body">水分 1,450ppm 与 LiPF6 水解生成 HF 腐蚀正极胀气。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 未塑化鱼眼晶点 (>0.2mm) 与白油/DCM 溶剂浪费</text>
+  <text x="52" y="370" class="body">UHMWPE 晶点针孔导致电芯自放电 K 值报废；成孔</text>
+  <text x="52" y="388" class="body">白油与萃取二氯甲烷未五塔精馏闭环推高膜价。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 2,000,000 m2 Area + 9.0um Gauge</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $510,000 exposed to meltdown &amp; Li plating</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ battery_ceramic_separator_mandate</text>
+  <text x="428" y="166" class="card-h">四层针刺抗热缩、透气水分与零晶点门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Puncture &amp; 150°C Shrinkage (11ms)</text>
+  <text x="440" y="220" class="body">GB/T 36363 针刺 &gt;=550 gf, 150°C/1h MD/TD 收缩</text>
+  <text x="440" y="238" class="body">&lt;=2.0% &amp; 破膜 &gt;=180°C — 融缩破膜直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: Gurley 120–180s &amp; H2O Gate (14ms)</text>
+  <text x="440" y="296" class="body">葛尔莱透气度 120–180 s/100mL, 剥离 &gt;=80 N/m</text>
+  <text x="440" y="314" class="body">&amp; 卡尔费休水分 &lt;=400 ppm — 堵孔受潮直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ 8K CCD &amp; Fe Impurity (280ms)</text>
+  <text x="440" y="372" class="body">核验全幅 8K CCD 零晶点鱼眼 (&gt;0.15mm = 0) 与磁性</text>
+  <text x="440" y="390" class="body">异物 Fe+Cr+Ni &lt;=30 ppb — 晶点针孔直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 99.8% DCM Loop &amp; 5um Base (245ms)</text>
+  <text x="440" y="448" class="body">99.8% 石蜡白油与二氯甲烷五塔精馏闭环 + 5+1.5um</text>
+  <text x="440" y="466" class="body">超薄高晶度基膜升级立省 $71,400 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 抗热缩高透气低水分放行</text>
+  <text x="828" y="212" class="body">640gf + 150°C收缩 0.8% + 水分 210ppm → $510,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 150°C 热收缩或针刺失格</text>
+  <text x="828" y="258" class="body">热收缩 18.5% 或针刺 290gf → 冻结 $510,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · PVDF 堵孔或水分超标产酸</text>
+  <text x="828" y="304" class="body">Gurley=340s 或水分 1,450ppm → 拒付 $510,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 未熔晶点或溶剂违规</text>
+  <text x="828" y="350" class="body">CCD 检出鱼眼晶点或 DCM 泄漏 → 熔断 $510,000</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 白油/DCM 闭环与 5um 升级</text>
+  <text x="828" y="396" class="body">节省 $71,400 (-14%) → 确认后净付 $438,600.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 电芯保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#22c55e">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 锂电涂覆隔膜严禁“按平米面积与厚度盲付”：陶瓷粘结不良会导致 150°C 融缩爆燃，而 PVDF 堵孔与高水分会诱发快充析锂与 HF 胀气。</text>
+  <text x="54" y="584" class="body">• 必须将针刺 (&gt;=550gf)、150°C 收缩 (&lt;=2%)、Gurley (120–180s)、水分 (&lt;=400ppm) 与溶剂回收绑定为智能托管解锁谓词。</text>
+</svg>

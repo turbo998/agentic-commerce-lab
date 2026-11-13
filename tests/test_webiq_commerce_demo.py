@@ -10231,6 +10231,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cowos-hbm-packaging-sandbox", demo_zh)
 
+    def test_battery_ceramic_coated_separator_puncture_thermal_shrinkage_gurley_mandate_vs_meltdown_short_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_battery_ceramic_separator_policy,
+        )
+
+        # 1. Verified puncture >=550gf + 150C shrink <=2.0% + Gurley 120-180s -> 200 OK ($510,000)
+        commit_ok = evaluate_battery_ceramic_separator_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ceramic_separator_cents, 51000000)
+
+        # 2. 150C thermal shrinkage (>2.0%) or low puncture (<550gf) -> 403 blocked in 11ms
+        shk_403 = evaluate_battery_ceramic_separator_policy(
+            puncture_strength_and_150c_thermal_shrinkage_verified=False,
+        )
+        self.assertFalse(shk_403.allowed)
+        self.assertEqual(shk_403.http_status, 403)
+        self.assertEqual(
+            shk_403.ceramic_separator_lane,
+            "THERMAL_SHRINKAGE_MELTDOWN_OR_LOW_PUNCTURE_DENDRITE_SHORT_BLOCKED",
+        )
+
+        # 3. PVDF pore plugging (Gurley >180s) or high moisture (>400ppm) -> 422 blocked in 14ms
+        gur_422 = evaluate_battery_ceramic_separator_policy(
+            gurley_air_permeability_and_karl_fischer_moisture_passed=False,
+        )
+        self.assertFalse(gur_422.allowed)
+        self.assertEqual(gur_422.http_status, 422)
+        self.assertEqual(
+            gur_422.ceramic_separator_lane,
+            "CLOSED_PORE_GURLEY_IMPEDANCE_OR_MOISTURE_LIPF6_GAS_BLOCKED",
+        )
+
+        # 4. Web IQ detects 8K CCD fisheye gel defect or DCM solvent breach -> 451 blocked in 280ms
+        gel_451 = evaluate_battery_ceramic_separator_policy(
+            webiq_ccd_pinhole_gel_defect_and_dcm_solvent_emission_clean=False,
+        )
+        self.assertFalse(gel_451.allowed)
+        self.assertEqual(gel_451.http_status, 451)
+
+        # 5. Web IQ credits 99.8% paraffin/DCM loop & 5um base film saving $71,400 ($438,600 net) -> 409 Confirm
+        dcm_409 = evaluate_battery_ceramic_separator_policy(
+            dcm_paraffin_closed_loop_and_5um_high_strength_base_credit_cents=7140000,
+        )
+        self.assertFalse(dcm_409.allowed)
+        self.assertEqual(dcm_409.http_status, 409)
+        self.assertEqual(dcm_409.settled_ceramic_separator_cents, 43860000)
+        self.assertEqual(dcm_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ceramic_separator_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("battery-ceramic-separator-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
