@@ -9895,6 +9895,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pem-electrolyzer-ccm-sandbox", demo_zh)
 
+    def test_semiconductor_cmp_slurry_pad_lpc_scratch_dishing_mandate_vs_agglomeration_wafer_scrap_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_semiconductor_cmp_slurry_policy,
+        )
+
+        # 1. Verified SPOS >0.5um LPC <=50/mL + |ζ| >=30mV + Cu Dishing <=150A -> 200 OK ($490,000)
+        commit_ok = evaluate_semiconductor_cmp_slurry_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cmp_slurry_cents, 49000000)
+
+        # 2. SPOS large-particle tail (>50/mL) or Zeta collapse (<30mV) nano-scratch -> 403 blocked in 11ms
+        lpc_403 = evaluate_semiconductor_cmp_slurry_policy(
+            spos_large_particle_tail_and_zeta_potential_verified=False,
+        )
+        self.assertFalse(lpc_403.allowed)
+        self.assertEqual(lpc_403.http_status, 403)
+        self.assertEqual(
+            lpc_403.cmp_slurry_lane,
+            "LPC_AGGLOMERATION_TAIL_OR_NANO_SCRATCH_DEFECT_BLOCKED",
+        )
+
+        # 3. Severe Cu dishing (>150A) or high WIWNU (>2.5%) -> 422 blocked in 14ms
+        dsh_422 = evaluate_semiconductor_cmp_slurry_policy(
+            preston_wiwnu_removal_rate_and_cu_dishing_passed=False,
+        )
+        self.assertFalse(dsh_422.allowed)
+        self.assertEqual(dsh_422.http_status, 422)
+        self.assertEqual(
+            dsh_422.cmp_slurry_lane,
+            "WIWNU_REMOVAL_NONUNIFORMITY_OR_COPPER_DISHING_EROSION_BLOCKED",
+        )
+
+        # 4. Web IQ detects water-glass alkali contamination or diamond conditioner grit shedding -> 451 blocked in 280ms
+        nak_451 = evaluate_semiconductor_cmp_slurry_policy(
+            webiq_semi_c79_trace_metal_and_diamond_grit_drop_clean=False,
+        )
+        self.assertFalse(nak_451.allowed)
+        self.assertEqual(nak_451.http_status, 451)
+
+        # 5. Web IQ credits POU ultrafiltration slurry reclaim & CVD conditioner saving $68,600 ($421,400 net) -> 409 Confirm
+        pou_409 = evaluate_semiconductor_cmp_slurry_policy(
+            pou_slurry_reclaim_ultrafiltration_and_cvd_disk_credit_cents=6860000,
+        )
+        self.assertFalse(pou_409.allowed)
+        self.assertEqual(pou_409.http_status, 409)
+        self.assertEqual(pou_409.settled_cmp_slurry_cents, 42140000)
+        self.assertEqual(pou_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cmp_slurry_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("semiconductor-cmp-slurry-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

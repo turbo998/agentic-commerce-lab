@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg158" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent158" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg158)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent158)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 156 · 半导体晶圆 CMP 抛光液与聚氨酯抛光垫、SPOS 大颗粒尾部与铜凹陷架构图</text>
+  <text x="36" y="84" class="sub">Semiconductor CMP Slurry &amp; Polyurethane Pad Offtake, SPOS &gt;0.5um LPC (&lt;=50/mL), Zeta (&gt;=30 mV) &amp; Cu Dishing (&lt;=150 A)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按桶数与均值粒径盲付</text>
+  <text x="52" y="166" class="card-h">三大 300mm 晶圆纳米划伤、铜凹陷与钠污染灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 平均粒径 D50 掩盖微米团聚尾部 (LPC=1,850)</text>
+  <text x="52" y="216" class="body">普通 DLS 激光粒度仪测出 D50=60nm 完全正常，</text>
+  <text x="52" y="234" class="body">但每毫升藏着 1,850 颗 &gt;0.5um 硬团聚颗粒，上机</text>
+  <text x="52" y="252" class="body">60 秒即在 300mm 晶圆犁出上千道纳米划痕报废！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. BTA 缓蚀失衡致铜互连碟形凹陷 (620 A)</text>
+  <text x="52" y="302" class="body">凹槽处 BTA 保护膜被击穿，铜线被掏空 62nm</text>
+  <text x="52" y="320" class="body">引发电迁移烧断；抛光垫釉化致 WIWNU=8.4% 失焦。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 水玻璃高钠 (>50ppb) 冒充 TEOS 法与磨料浪费</text>
+  <text x="52" y="370" class="body">廉价硅酸钠法残留移动钠离子毒化栅氧；60% 未反应</text>
+  <text x="52" y="388" class="body">昂贵高纯氧化铈/硅溶胶未经过超滤回收直接排废。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 200 Drums + DLS Mean D50 = 60nm</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $490,000 exposed to FOUP scratch scrap</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="248" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ semiconductor_cmp_slurry_mandate</text>
+  <text x="428" y="166" class="card-h">四层 SPOS 单颗粒尾部、碟形凹陷与痕量门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: SEMI C79 SPOS LPC &amp; Zeta (11ms)</text>
+  <text x="440" y="220" class="body">单颗粒光学 &gt;0.5um LPC &lt;=50 个/mL, &gt;1.0um = 0</text>
+  <text x="440" y="238" class="body">&amp; Zeta 电位 |ζ| &gt;=30 mV — 团聚尾部直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: WIWNU &amp; Cu Dishing Gate (14ms)</text>
+  <text x="440" y="296" class="body">片内非均匀性 WIWNU &lt;=2.5%, 10um 铜线碟形凹陷</text>
+  <text x="440" y="314" class="body">Dishing &lt;=150 A &amp; 垫硬度 55D — 违者直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ TEOS ICP-MS &amp; Disk (280ms)</text>
+  <text x="440" y="372" class="body">核验正硅酸乙酯 (TEOS) 法 Na/K/Fe &lt;=5 ppb 报告</text>
+  <text x="440" y="390" class="body">与金刚石修整盘抗拔出力 — 高钠掉砂直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: POU Ultrafiltration &amp; CVD (245ms)</text>
+  <text x="440" y="448" class="body">POU 错流超滤回收 60% 氧化铈/硅溶胶 + CVD 微复制</text>
+  <text x="440" y="466" class="body">修整盘使抛光垫延寿 2.2 倍立省 $68,600 触发 HTTP 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 极低尾部与原子级平坦放行</text>
+  <text x="828" y="212" class="body">LPC 14/mL + |ζ| 41mV + Dishing 85A → $490,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · SPOS 大颗粒尾部团聚拦截</text>
+  <text x="828" y="258" class="body">LPC=1,850/mL 纳米划伤风险 → 冻结 $490,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 铜线碟形凹陷或片内不均</text>
+  <text x="828" y="304" class="body">Dishing=620A 或 WIWNU=8.4% → 拒付 $490,000</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 水玻璃高钠或掉砂</text>
+  <text x="828" y="350" class="body">Na+K=85ppb 污染栅氧 → 熔断 $490,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 超滤磨料回收与垫延寿冲抵</text>
+  <text x="828" y="396" class="body">节省 $68,600 (-14%) → 确认后净付 $421,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 制程保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#3b82f6">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 半导体 CMP 抛光液严禁“仅看平均粒径 D50 盲付”：DLS 对百万分之一的 &gt;0.5um 团聚颗粒失明，几百颗大粒子即可划报废整盒晶圆。</text>
+  <text x="54" y="584" class="body">• 必须将 SPOS 单颗粒尾部 (&lt;=50/mL)、Zeta 电位 (&gt;=30mV)、铜凹陷 (&lt;=150A) 与 POU 超滤回用绑定为智能托管解锁谓词。</text>
+</svg>
