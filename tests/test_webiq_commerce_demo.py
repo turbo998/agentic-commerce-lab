@@ -11239,6 +11239,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("euv-lpp-tin-collector-sandbox", demo_zh)
 
+    def test_implantable_bci_neural_electrode_sirof_impedance_charge_injection_hermetic_mandate_vs_water_window_delamination_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_implantable_bci_neural_electrode_policy,
+        )
+
+        # 1. Verified |Z|_1kHz <=50 kOhm + CIC >=3.0 mC/cm2 + a-SiC soak + He <=1e-11 -> 200 OK ($740,000)
+        commit_ok = evaluate_implantable_bci_neural_electrode_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_bci_electrode_cents, 74000000)
+
+        # 2. High 1kHz impedance (>50 kOhm) thermal noise deafness or water-window breach -> 403 blocked in 11ms
+        imp_403 = evaluate_implantable_bci_neural_electrode_policy(
+            one_khz_impedance_50kohm_and_sirof_cic_water_window_verified=False,
+        )
+        self.assertFalse(imp_403.allowed)
+        self.assertEqual(imp_403.http_status, 403)
+        self.assertEqual(
+            imp_403.bci_electrode_lane,
+            "HIGH_1KHZ_IMPEDANCE_NOISE_OR_WATER_WINDOW_ELECTROLYSIS_BUBBLE_BLOCKED",
+        )
+
+        # 3. 67°C PBS soak polymer delamination (<100 MOhm) or feedthrough He leak (>1e-11) -> 422 blocked in 14ms
+        del_422 = evaluate_implantable_bci_neural_electrode_policy(
+            sic_parylene_pbs_accelerated_soak_and_titanium_feedthrough_he_leak_passed=False,
+        )
+        self.assertFalse(del_422.allowed)
+        self.assertEqual(del_422.http_status, 422)
+        self.assertEqual(
+            del_422.bci_electrode_lane,
+            "POLYIMIDE_DELAMINATION_CROSSTALK_OR_FEEDTHROUGH_MOISTURE_SHORT_BLOCKED",
+        )
+
+        # 4. Web IQ detects ISO 10993 cytotoxicity or excess EtO residue (>0.5 ppm) -> 451 blocked in 280ms
+        bio_451 = evaluate_implantable_bci_neural_electrode_policy(
+            webiq_iso10993_chronic_biocompatibility_and_eto_sterilization_clean=False,
+        )
+        self.assertFalse(bio_451.allowed)
+        self.assertEqual(bio_451.http_status, 451)
+
+        # 5. Web IQ credits 8-inch MEMS stepper & 96% lift-off Ir/Pt reclaim saving $103,600 ($636,400 net) -> 409 Confirm
+        irp_409 = evaluate_implantable_bci_neural_electrode_policy(
+            eight_inch_mems_stepper_batch_yield_and_iridium_platinum_target_reclaim_credit_cents=10360000,
+        )
+        self.assertFalse(irp_409.allowed)
+        self.assertEqual(irp_409.http_status, 409)
+        self.assertEqual(irp_409.settled_bci_electrode_cents, 63640000)
+        self.assertEqual(irp_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["implantable_bci_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("implantable-bci-neural-electrode-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

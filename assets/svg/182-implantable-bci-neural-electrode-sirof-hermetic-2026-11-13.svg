@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg182" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent182" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg182)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent182)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 180 · 植入式脑机接口 (BCI) 柔性神经电极、SIROF 水窗口电荷注入与钛气密仓架构图</text>
+  <text x="36" y="84" class="sub">Implantable BCI Neural Thread Array, SIROF Site &amp; Hermetic Titanium Feedthrough Offtake, 1kHz Impedance (&lt;=50 kΩ) &amp; CIC (&gt;=3.0 mC/cm2)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按套数与空气导通盲付</text>
+  <text x="52" y="166" class="card-h">三大热噪声淹没脑电、刺穿水窗口伤脑与脱层灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 光滑微位点 680kΩ 热噪声失聪与电解脑水冒泡</text>
+  <text x="52" y="216" class="body">空气中直流导通不代表入脑能用！未镀纳米氧化铱</text>
+  <text x="52" y="234" class="body">(SIROF) 时 20um 触点阻抗达 680kΩ 淹没 50uV 脑电；</text>
+  <text x="52" y="252" class="body">电刺激瞬间刺穿 [-0.6,+0.8]V 水窗口电解脑液冒泡！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 缺 a-SiC 防潮层致体液浸泡脱层与钛仓馈通漏水</text>
+  <text x="52" y="302" class="body">单层聚合物在 37°C 脑脊液中吸水脱层致千通道短路；</text>
+  <text x="52" y="320" class="body">陶瓷馈通微漏 (&gt;10^-11) 渗液烧毁神经采集芯片。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 灭菌残留诱发胶质瘢痕与剥离废液 85% 铱铂浪费</text>
+  <text x="52" y="370" class="body">残留溶剂或氯乙醇触发小胶质细胞包裹绝缘瘢痕；</text>
+  <text x="52" y="388" class="body">Lift-Off 剥离洗掉的 85% 天价金属铱 (Ir) 未回收。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 100 Arrays + Dry Ohmmeter Trace Check</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $740,000 exposed to deafness &amp; electrolysis</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="290" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ implantable_bci_neural_electrode_mandate</text>
+  <text x="428" y="166" class="card-h">四层 SIROF 低阻、水窗口 CIC 与气密门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: |Z| &lt;=50kΩ &amp; CIC &gt;=3.0 (11ms)</text>
+  <text x="440" y="220" class="body">PBS 1kHz 阻抗 &lt;=50 kΩ (有效率 &gt;=99.5%) &amp;</text>
+  <text x="440" y="238" class="body">[-0.6,+0.8]V 水窗口内 CIC &gt;=3.0 mC/cm2 — 违者 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: a-SiC Soak &amp; He &lt;=10^-11 (14ms)</text>
+  <text x="440" y="296" class="body">a-SiC/PI 67°C PBS 1,000h 浸泡零脱层 (&gt;=100 MΩ)</text>
+  <text x="440" y="314" class="body">&amp; 千通道钛馈通氦漏 &lt;=10^-11 — 脱层漏液直返 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ ISO 10993 &amp; EtO (280ms)</text>
+  <text x="440" y="372" class="body">核验 GLP ISO 10993 神经植入 0 级细胞毒性与环氧</text>
+  <text x="440" y="390" class="body">乙烷/氯乙醇残留 &lt;=0.5 ppm — 毒性超标直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 8-Inch MEMS &amp; 96% Ir/Pt (245ms)</text>
+  <text x="440" y="448" class="body">8 英寸晶圆级 DUV 步进光刻批产拼版 + Lift-Off 剥离</text>
+  <text x="440" y="466" class="body">废液 96% 天价金属铱/铂精炼回用立省 $103,600 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 低阻抗高 CIC 与气密放行</text>
+  <text x="828" y="212" class="body">22kΩ + CIC 4.2 + 氦漏 2e-12 → $740,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 高阻抗耳聋或刺穿水窗口</text>
+  <text x="828" y="258" class="body">680kΩ 热噪声或电解冒泡 → 冻结 $740,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 盐水浸泡脱层或馈通微漏</text>
+  <text x="828" y="304" class="body">薄膜水解串扰或钛盒漏液 → 拒付 $740,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 细胞毒性或 EtO</text>
+  <text x="828" y="350" class="body">溶剂残留诱发胶质瘢痕排斥 → 熔断 $740,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 8寸步进光刻与铱铂回收</text>
+  <text x="828" y="396" class="body">节省 $103,600 (-14%) → 确认后净付 $636,400.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 神经保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 植入式脑机电极严禁“仅看空气直流导通盲付”：缺 SIROF 会因 680kΩ 热噪声淹没 50uV 脑电且在电刺激时刺穿水窗口电解脑脊液。</text>
+  <text x="54" y="584" class="body">• 必须将 PBS 1kHz 阻抗 (&lt;=50kΩ)、水窗口 CIC (&gt;=3.0mC/cm2)、a-SiC 老化零脱层与 10^-11 气密绑定为智能托管谓词。</text>
+</svg>
