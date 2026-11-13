@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg181" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent181" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg181)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent181)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 179 · 极紫外光刻机 (EUV) LPP 50kHz 锡滴发生器、13.5nm CE 与 Mo/Si 收集镜架构图</text>
+  <text x="36" y="84" class="sub">EUV LPP 5.5N Tin Droplet Generator &amp; Mo/Si Collector Mirror Offtake, 50kHz Jitter (&lt;=1.5 um), CE (&gt;=5.5%) &amp; 0 H2 Blisters</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按锡重与新镜反射盲付</text>
+  <text x="52" y="166" class="card-h">三大喷嘴结瘤激光打空、收集镜氢起泡与基底丢弃灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 氧化锡堵 3um 喷嘴致锡滴偏摆与激光放空枪</text>
+  <text x="52" y="216" class="body">锡内含氧生成高熔点 SnO2 堵喷嘴，50kHz 锡滴位置</text>
+  <text x="52" y="234" class="body">偏摆 9.8um，预脉冲把锡饼拍歪致 25kW 主激光打空</text>
+  <text x="52" y="252" class="body">(13.5nm CE 跌至 1.9%)，EUV 光刻机欠曝停摆！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. Mo/Si 收集镜缺 B4C 阻挡层致氢气钻入起泡剥落</text>
+  <text x="52" y="302" class="body">除锡氢离子钻入 50 层钼硅界面聚成高压 H2 气泡，</text>
+  <text x="52" y="320" class="body">几天内把纳米多层膜撑裂剥落，极紫外反射率归零。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 百万美元 ULE 光学镜坯一次性报废与废锡丢弃</text>
+  <text x="52" y="370" class="body">基底中频粗糙度超标引发杂散光 (Flare)；换镜时未做</text>
+  <text x="52" y="388" class="body">ULE 镜坯无损退镀重镀与导流叶片 94% 废锡精馏。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 200 kg Tin + Static Day-1 Reflectivity</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $980,000 exposed to scanner stall &amp; blisters</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="268" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ euv_lpp_tin_collector_mandate</text>
+  <text x="428" y="166" class="card-h">四层亚微米锁相、高 CE 与抗氢起泡门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: Jitter &lt;=1.5um &amp; CE &gt;=5.5% (11ms)</text>
+  <text x="440" y="220" class="body">5.5N 无氧锡 (O2 &lt;=0.5 ppm), 50kHz 锡滴抖动</text>
+  <text x="440" y="238" class="body">3σ &lt;=1.5 um &amp; 13.5nm 带内 CE &gt;=5.5% — 违者 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: R &gt;=68% &amp; 0 H2 Blisters (14ms)</text>
+  <text x="440" y="296" class="body">Ru/B4C 收集镜峰值反射率 &gt;=68.0%, 氢轰击 0 起泡</text>
+  <text x="440" y="314" class="body">&amp; 每 10 GP 衰减 &lt;=1.5% — 起泡剥落直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ 5.5N GDMS &amp; MSFR (280ms)</text>
+  <text x="440" y="372" class="body">核验 5.5N 光刻锡 GDMS 全元素单与 ULE 镜坯中频</text>
+  <text x="440" y="390" class="body">粗糙度 MSFR &lt;=0.12 nm RMS — 焊锡冒充直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: ULE Strip-Recoat &amp; 94% Sn (245ms)</text>
+  <text x="440" y="448" class="body">退役收集镜超光滑 ULE 玻璃基底无损剥离旧膜重镀 Mo/Si</text>
+  <text x="440" y="466" class="body">+ 导流叶片 94% 废锡真空蒸馏回用立省 $137,200 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 亚微米稳流与抗起泡放行</text>
+  <text x="828" y="212" class="body">抖动 0.6um + CE 6.1% + 反射 69.2% → $980,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 喷嘴结瘤偏流或低转换效率</text>
+  <text x="828" y="258" class="body">抖动 9.8um 或 CE=1.9% → 冻结 $980,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 收集镜氢起泡剥落或快黑化</text>
+  <text x="828" y="304" class="body">多层膜起泡或 10GP 掉 18% → 拒付 $980,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 3N 焊锡或粗糙基底</text>
+  <text x="828" y="350" class="body">含铅氧杂质或 MSFR 超标 → 熔断 $980,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 镜坯退镀重镀与废锡精馏</text>
+  <text x="828" y="396" class="body">节省 $137,200 (-14%) → 确认后净付 $842,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 光源保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• EUV 光源耗材严禁“仅看锡重与初始反射率盲付”：氧化锡堵死 3um 喷嘴会导致主激光打空停机，且缺 B4C 阻挡层会使收集镜被氢气撑出气泡。</text>
+  <text x="54" y="584" class="body">• 必须将 50kHz 抖动 (&lt;=1.5um)、13.5nm 带内 CE (&gt;=5.5%)、零氢泡与 ULE 基底退镀重镀绑定为智能托管解锁谓词。</text>
+</svg>

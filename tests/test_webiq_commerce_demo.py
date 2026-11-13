@@ -11183,6 +11183,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("solid-state-sulfide-electrolyte-sandbox", demo_zh)
 
+    def test_euv_lithography_lpp_tin_droplet_generator_mosi_collector_mirror_ce_mandate_vs_sn_debris_blistering_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_euv_lpp_tin_collector_policy,
+        )
+
+        # 1. Verified 50kHz jitter <=1.5 um + in-band CE >=5.5% + reflectivity >=68% -> 200 OK ($980,000)
+        commit_ok = evaluate_euv_lpp_tin_collector_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_euv_collector_cents, 98000000)
+
+        # 2. SnO2 nozzle clog 50kHz droplet jitter (>1.5 um) or low 13.5nm in-band CE (<5.5%) -> 403 blocked in 11ms
+        jit_403 = evaluate_euv_lpp_tin_collector_policy(
+            tin_droplet_50khz_jitter_and_inband_ce_55pct_verified=False,
+        )
+        self.assertFalse(jit_403.allowed)
+        self.assertEqual(jit_403.http_status, 403)
+        self.assertEqual(
+            jit_403.euv_collector_lane,
+            "TIN_DROPLET_NOZZLE_CLOG_JITTER_OR_LOW_INBAND_135NM_CE_BLOCKED",
+        )
+
+        # 3. Mo/Si collector hydrogen blister delamination or fast reflectivity decay (>1.5%/10GP) -> 422 blocked in 14ms
+        bls_422 = evaluate_euv_lpp_tin_collector_policy(
+            mosi_collector_hydrogen_radical_cleaning_and_blister_resistance_passed=False,
+        )
+        self.assertFalse(bls_422.allowed)
+        self.assertEqual(bls_422.http_status, 422)
+        self.assertEqual(
+            bls_422.euv_collector_lane,
+            "COLLECTOR_MIRROR_TIN_DEPOSITION_DARKENING_OR_HYDROGEN_BLISTER_DELAMINATION_BLOCKED",
+        )
+
+        # 4. Web IQ detects 3N solder tin substitution or high ULE substrate MSFR roughness -> 451 blocked in 280ms
+        ule_451 = evaluate_euv_lpp_tin_collector_policy(
+            webiq_gdms_5n5_low_alpha_tin_and_zerodur_figure_error_clean=False,
+        )
+        self.assertFalse(ule_451.allowed)
+        self.assertEqual(ule_451.http_status, 451)
+
+        # 5. Web IQ credits ULE collector strip-recoat & 94% vane tin distillation saving $137,200 ($842,800 net) -> 409 Confirm
+        rec_409 = evaluate_euv_lpp_tin_collector_policy(
+            vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents=13720000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_euv_collector_cents, 84280000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["euv_lpp_collector_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("euv-lpp-tin-collector-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

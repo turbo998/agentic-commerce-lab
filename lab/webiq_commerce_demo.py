@@ -19998,6 +19998,96 @@ def evaluate_solid_state_sulfide_electrolyte_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 179: EUV LPP 5.5N Tin Droplet Generator & Mo/Si Collector Mirror Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class EuvLppTinCollectorVerdict:
+    allowed: bool
+    http_status: int
+    euv_collector_lane: str
+    settled_euv_collector_cents: int
+    ule_recoat_tin_reclaim_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_euv_lpp_tin_collector_policy(
+    *,
+    gross_euv_collector_cents: int = 98000000,
+    tin_droplet_50khz_jitter_and_inband_ce_55pct_verified: bool = True,
+    mosi_collector_hydrogen_radical_cleaning_and_blister_resistance_passed: bool = True,
+    webiq_gdms_5n5_low_alpha_tin_and_zerodur_figure_error_clean: bool = True,
+    vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents: int = 0,
+) -> EuvLppTinCollectorVerdict:
+    # 1. SnO2 Nozzle Clog 50kHz Droplet Jitter (>1.5 um) or Low 13.5nm In-Band CE (<5.5%) -> HTTP 403
+    if not tin_droplet_50khz_jitter_and_inband_ce_55pct_verified:
+        return EuvLppTinCollectorVerdict(
+            False,
+            403,
+            "TIN_DROPLET_NOZZLE_CLOG_JITTER_OR_LOW_INBAND_135NM_CE_BLOCKED",
+            0,
+            0,
+            "euv_lpp_source_blocked_due_to_50khz_droplet_jitter_above_15um_or_inband_ce_below_55pct",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Mo/Si Collector Hydrogen Blister Delamination or Fast Reflectivity Decay (>1.5%/10GP) -> HTTP 422
+    if not mosi_collector_hydrogen_radical_cleaning_and_blister_resistance_passed:
+        return EuvLppTinCollectorVerdict(
+            False,
+            422,
+            "COLLECTOR_MIRROR_TIN_DEPOSITION_DARKENING_OR_HYDROGEN_BLISTER_DELAMINATION_BLOCKED",
+            0,
+            0,
+            "mosi_collector_rejected_for_subsurface_hydrogen_blistering_or_reflectivity_decay_above_15pct",
+            14,
+            "Send to a human",
+        )
+
+    # 3. 3N Solder Tin Substitution or ULE Substrate Mid-Spatial-Frequency Roughness (>0.12 nm) via Web IQ -> HTTP 451
+    if not webiq_gdms_5n5_low_alpha_tin_and_zerodur_figure_error_clean:
+        return EuvLppTinCollectorVerdict(
+            False,
+            451,
+            "IMPURE_TIN_OXIDE_SLUDGE_OR_SUBSTRATE_SLOPE_ERROR_HOLD",
+            0,
+            0,
+            "webiq_detected_impure_solder_tin_oxide_sludge_or_ule_substrate_msfr_roughness_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ ULE Collector Substrate Strip-and-Recoat + 94% Vane-Scrubber Tin Distillation -> HTTP 409 Confirm
+    if vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents > 0:
+        return EuvLppTinCollectorVerdict(
+            False,
+            409,
+            "COLLECTOR_SUBSTRATE_STRIP_RECOAT_AND_5N5_TIN_VANE_RECLAIM_CONFIRM",
+            gross_euv_collector_cents - vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents,
+            vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents,
+            "webiq_applied_ule_collector_substrate_strip_recoat_and_94pct_tin_distillation_credit_saving_137200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 50kHz Jitter <=1.5 um + In-Band CE >=5.5% + Reflectivity >=68% + 0 H2 Blisters -> Settled
+    return EuvLppTinCollectorVerdict(
+        True,
+        200,
+        "VERIFIED_EUV_LPP_TIN_COLLECTOR_SETTLED",
+        gross_euv_collector_cents,
+        0,
+        "5n5_tin_droplet_jitter_135nm_inband_ce_ru_b4c_mosi_collector_and_ule_msfr_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -26403,6 +26493,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ccd_dendrite_block_latency_ms": assb_ccd_403.latency_ms,
     }
 
+    # Round 179 (EUV LPP 5.5N Tin Droplet Generator & Mo/Si Collector Mirror Offtake, CE & Blister Mandate)
+    euv_commit_ok = evaluate_euv_lpp_tin_collector_policy()
+    euv_jit_403 = evaluate_euv_lpp_tin_collector_policy(
+        tin_droplet_50khz_jitter_and_inband_ce_55pct_verified=False,
+    )
+    euv_bls_422 = evaluate_euv_lpp_tin_collector_policy(
+        mosi_collector_hydrogen_radical_cleaning_and_blister_resistance_passed=False,
+    )
+    euv_ule_451 = evaluate_euv_lpp_tin_collector_policy(
+        webiq_gdms_5n5_low_alpha_tin_and_zerodur_figure_error_clean=False,
+    )
+    euv_rec_409 = evaluate_euv_lpp_tin_collector_policy(
+        vane_scrubber_liquid_tin_reclaim_and_collector_mirror_strip_recoat_credit_cents=13720000,
+    )
+    euv_lpp_collector_guards = {
+        "all_passed": (
+            euv_commit_ok.allowed
+            and euv_commit_ok.settled_euv_collector_cents == 98000000
+            and not euv_jit_403.allowed
+            and euv_jit_403.http_status == 403
+            and not euv_bls_422.allowed
+            and euv_bls_422.http_status == 422
+            and not euv_ule_451.allowed
+            and euv_ule_451.http_status == 451
+            and not euv_rec_409.allowed
+            and euv_rec_409.action_pill == "Confirm"
+        ),
+        "euv_lpp_collector_settlement_latency_ms": euv_commit_ok.latency_ms,
+        "droplet_jitter_block_latency_ms": euv_jit_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26594,6 +26715,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "swro_desalination_guards": swro_desalination_guards,
         "leo_hall_thruster_guards": leo_hall_thruster_guards,
         "solid_state_sulfide_guards": solid_state_sulfide_guards,
+        "euv_lpp_collector_guards": euv_lpp_collector_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32715,6 +32837,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="assb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive EUV LPP 5.5N Tin Droplet Generator & Mo/Si Collector Mirror Mandate Sandbox (Round 179 FAQ Companion) -->
+      <div class="finops-box" id="euv-lpp-tin-collector-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-euv-title">🔦 极紫外光刻机 (EUV) LPP 50kHz 锡滴发生器、13.5nm 带内转换效率 (&gt;=5.5%) 与 Mo/Si 收集镜架构：防喷嘴结瘤激光打空与收集镜氢起泡剥落令牌 (euv_lpp_tin_collector_mandate_...) vs 初始反射率盲付决策器 (Round 179 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. EUV 光源 5.5N 液态锡滴发生器与 50 周期 Mo/Si 收集镜交割 ($980,000.00)、50kHz 微米锡滴抖动/13.5nm 带内 CE、Ru/B4C 收集镜抗氢起泡/反射率衰减与 Web IQ ULE 镜坯退镀重镀/废锡精馏场景 (EUV LPP Collector Scenario):</span></label>
+          <select id="euv-select" onchange="updateEuvLppTinCollectorSandbox()">
+            <option value="euv_commit_ok">⚡ 50kHz 锡滴抖动 0.6um (&lt;=1.5um) + 13.5nm 带内 CE=6.1% + 收集镜反射率 69.2% + 0 氢起泡：10ms 自动结算 $980,000.00! (Act automatically)</option>
+            <option value="euv_jit_403">🛑 锡锭残留二氧化锡炉渣堵死 3um 压电喷嘴致 50kHz 锡滴位置抖动达 9.8um &gt; 1.5um，预脉冲拍歪锡饼使 25kW 主激光打空 (13.5nm 带内 CE 跌至 1.9% &lt; 5.5%) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="euv_bls_422">🚨 50 周期 Mo/Si 布拉格收集镜漏镀 B4C 扩散阻挡层或 Ru 顶帽针孔，除锡氢离子钻入界面聚成高压 H2 气泡把多层膜撑裂剥落 (10GP 衰减 &gt;1.5%) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="euv_ule_451">🛑 以 3N 电子焊锡冒充 5.5N 超高纯无氧光刻锡或收集镜 ULE 玻璃基底中频粗糙度超标 (MSFR &gt; 0.12 nm RMS 引发杂散光 Flare)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="euv_rec_409">🧑‍⚖️ Web IQ 启用退役收集镜价值百万美元的超光滑 ULE 玻璃基底无损剥离旧膜重镀 Mo/Si，并将加热导流叶片捕集的 94% 废液态锡真空精馏回用立省 $137,200.00 (净付 $842,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="euv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -33332,6 +33472,7 @@ function renderAll() {{
   updateSwroDesalinationMembraneErdSandbox();
   updateLeoHallThrusterPropellantSandbox();
   updateSolidStateSulfideElectrolyteSandbox();
+  updateEuvLppTinCollectorSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -42355,6 +42496,55 @@ function updateSolidStateSulfideElectrolyteSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 离子电导 (&gt;=4.5mS/cm) + CCD (&gt;=3.5mA/cm²) + 零 H2S 水解达标：已自动清算 (VERIFIED_ASSB_SULFIDE_ELECTROLYTE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零晶界内生锂枝晶劈裂短路、零车间剧毒硫化氢泄漏与空间电荷死墙</strong>：500 公斤 Li6PS5Cl 硫化物固态电解质与干法极片已完成结算（<code>$660,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateEuvLppTinCollectorSandbox() {{
+  var selEl = document.getElementById("euv-select");
+  var outEl = document.getElementById("euv-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "euv_jit_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TIN_DROPLET_NOZZLE_CLOG_JITTER_OR_LOW_INBAND_135NM_CE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "50kHz 锡滴与双脉冲激光试验台实测显示，该批锡材因残留二氧化锡微晶导致 3μm 喷嘴偏流，<code>50kHz 锡滴到达位置抖动高达 3σ = 9.8 μm &gt; 1.5 μm，主激光打空使 13.5nm 带内转换效率跌至 CE = 1.9% &lt; 5.5%</code>（<code>tin_droplet_50khz_jitter_and_inband_ce_55pct_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$980,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "euv_bls_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 COLLECTOR_MIRROR_TIN_DEPOSITION_DARKENING_OR_HYDROGEN_BLISTER_DELAMINATION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "极紫外光学与氢等离子体考核舱检出 <code>Mo/Si 收集镜因缺失 B4C 扩散阻挡层在氢自由基轰击下发生界面 H2 起泡剥落，或每 10 GP 脉冲反射率衰减高达 18% &gt; 1.5%</code>（<code>mosi_collector_hydrogen_radical_cleaning_and_blister_resistance_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "euv_ule_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IMPURE_TIN_OXIDE_SLUDGE_OR_SUBSTRATE_SLOPE_ERROR_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>5.5N 光刻锡 GDMS 全元素质谱单与 PTB 收集镜基底干涉图</code>，检出以 3N 焊锡冒充或 ULE 基底中频粗糙度超标（MSFR &gt; 0.12 nm RMS），立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "euv_rec_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 COLLECTOR_SUBSTRATE_STRIP_RECOAT_AND_5N5_TIN_VANE_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>退役收集镜超光滑 ULE 玻璃基底无损退镀重镀 Mo/Si 多层膜 + 导流叶片 94% 废液态锡真空蒸馏回用</code>，自动冲抵镜坯与高纯锡采购成本立省 <code>$137,200.00</code>（净付降至 <code>$842,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 锡滴抖动 (&lt;=1.5um) + 带内 CE (&gt;=5.5%) + 反射率 (&gt;=68%) 达标：已自动清算 (VERIFIED_EUV_LPP_TIN_COLLECTOR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 3μm 喷嘴结瘤激光打空、零收集镜氢致起泡剥落与锡黑化</strong>：EUV 光源 5.5N 锡滴发生器与 Mo/Si 收集镜批次已完成结算（<code>$980,000.00</code>）！" +
     "</div>";
 }}
 
