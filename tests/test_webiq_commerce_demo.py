@@ -10959,6 +10959,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("perovskite-tandem-pv-sandbox", demo_zh)
 
+    def test_hvdc_525kv_subsea_xlpe_cable_space_charge_amber_particle_lead_sheath_mandate_vs_joint_breakdown_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_hvdc_subsea_xlpe_cable_policy,
+        )
+
+        # 1. Verified PEA distortion <=10% + 0 amber + FJ eccentricity <=5% -> 200 OK ($920,000)
+        commit_ok = evaluate_hvdc_subsea_xlpe_cable_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hvdc_subsea_cents, 92000000)
+
+        # 2. 70°C-gradient PEA space-charge distortion (>10%) or >50um scorch amber particles -> 403 blocked in 11ms
+        pea_403 = evaluate_hvdc_subsea_xlpe_cable_policy(
+            pea_space_charge_field_distortion_and_amber_particle_zero_verified=False,
+        )
+        self.assertFalse(pea_403.allowed)
+        self.assertEqual(pea_403.http_status, 403)
+        self.assertEqual(
+            pea_403.hvdc_subsea_lane,
+            "DC_SPACE_CHARGE_FIELD_INVERSION_OR_SCORCH_AMBER_PARTICLE_BREAKDOWN_BLOCKED",
+        )
+
+        # 3. Factory Flexible Joint (FJ) eccentricity (>5%) or lead-sheath cold-weld seam -> 422 blocked in 14ms
+        fjc_422 = evaluate_hvdc_subsea_xlpe_cable_policy(
+            factory_flexible_joint_concentricity_and_seamless_lead_sheath_passed=False,
+        )
+        self.assertFalse(fjc_422.allowed)
+        self.assertEqual(fjc_422.http_status, 422)
+        self.assertEqual(
+            fjc_422.hvdc_subsea_lane,
+            "FACTORY_JOINT_ECCENTRICITY_OR_LEAD_SHEATH_WATER_TREE_BLOCKED",
+        )
+
+        # 4. Web IQ detects AC-grade XLPE resin substitution or missing CIGRE TB 852 PQ -> 451 blocked in 280ms
+        cig_451 = evaluate_hvdc_subsea_xlpe_cable_policy(
+            webiq_cigre_tb852_type_test_and_borealis_superclean_resin_clean=False,
+        )
+        self.assertFalse(cig_451.allowed)
+        self.assertEqual(cig_451.http_status, 451)
+
+        # 5. Web IQ credits 21-day extended VCV (-2 FJs) & Cu/Pb offcut return saving $128,800 ($791,200 net) -> 409 Confirm
+        vcv_409 = evaluate_hvdc_subsea_xlpe_cable_policy(
+            long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents=12880000,
+        )
+        self.assertFalse(vcv_409.allowed)
+        self.assertEqual(vcv_409.http_status, 409)
+        self.assertEqual(vcv_409.settled_hvdc_subsea_cents, 79120000)
+        self.assertEqual(vcv_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["hvdc_subsea_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hvdc-subsea-xlpe-cable-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

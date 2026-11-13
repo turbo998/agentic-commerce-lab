@@ -19638,6 +19638,96 @@ def evaluate_perovskite_tandem_pv_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 175: +-525kV HVDC Subsea XLPE Cable, Space-Charge & Factory Joint Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class HvdcSubseaXlpeCableVerdict:
+    allowed: bool
+    http_status: int
+    hvdc_subsea_lane: str
+    settled_hvdc_subsea_cents: int
+    vcv_joint_copper_lead_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_hvdc_subsea_xlpe_cable_policy(
+    *,
+    gross_hvdc_subsea_cents: int = 92000000,
+    pea_space_charge_field_distortion_and_amber_particle_zero_verified: bool = True,
+    factory_flexible_joint_concentricity_and_seamless_lead_sheath_passed: bool = True,
+    webiq_cigre_tb852_type_test_and_borealis_superclean_resin_clean: bool = True,
+    long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents: int = 0,
+) -> HvdcSubseaXlpeCableVerdict:
+    # 1. 70°C-Gradient PEA Space-Charge Field Distortion (>10%) or >50um Scorch Amber Particles -> HTTP 403
+    if not pea_space_charge_field_distortion_and_amber_particle_zero_verified:
+        return HvdcSubseaXlpeCableVerdict(
+            False,
+            403,
+            "DC_SPACE_CHARGE_FIELD_INVERSION_OR_SCORCH_AMBER_PARTICLE_BREAKDOWN_BLOCKED",
+            0,
+            0,
+            "hvdc_subsea_cable_blocked_due_to_pea_space_charge_above_10pct_or_scorch_amber_particles",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Factory Flexible Joint (FJ) X-Ray Eccentricity (>5%) or Intermittent Lead-Sheath Cold-Weld Seam -> HTTP 422
+    if not factory_flexible_joint_concentricity_and_seamless_lead_sheath_passed:
+        return HvdcSubseaXlpeCableVerdict(
+            False,
+            422,
+            "FACTORY_JOINT_ECCENTRICITY_OR_LEAD_SHEATH_WATER_TREE_BLOCKED",
+            0,
+            0,
+            "subsea_cable_rejected_for_factory_joint_eccentricity_above_5pct_or_lead_sheath_seam_dross",
+            14,
+            "Send to a human",
+        )
+
+    # 3. AC-Grade XLPE Resin Substitution or Missing CIGRE TB 852 360-Day Prequalification via Web IQ -> HTTP 451
+    if not webiq_cigre_tb852_type_test_and_borealis_superclean_resin_clean:
+        return HvdcSubseaXlpeCableVerdict(
+            False,
+            451,
+            "NON_DC_GRADE_XLPE_RESIN_OR_MISSING_CIGRE_TB852_PQ_HOLD",
+            0,
+            0,
+            "webiq_detected_ac_grade_xlpe_substituted_for_hvdc_superclean_resin_or_missing_cigre_tb852",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 21-Day Extended VCV Extrusion (-2 Factory Joints) + Cu/Pb Offcut Return -> HTTP 409 Confirm
+    if long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents > 0:
+        return HvdcSubseaXlpeCableVerdict(
+            False,
+            409,
+            "EXTENDED_VCV_RUN_FEWER_JOINTS_AND_LEAD_COPPER_OFFCUT_CREDIT_CONFIRM",
+            gross_hvdc_subsea_cents - long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents,
+            long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents,
+            "webiq_applied_21day_extended_vcv_joint_reduction_and_copper_lead_scrap_credit_saving_128800_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified PEA Distortion <=10% + 0 Amber + FJ Eccentricity <=5% + Seamless Lead -> Settled
+    return HvdcSubseaXlpeCableVerdict(
+        True,
+        200,
+        "VERIFIED_HVDC_525KV_SUBSEA_CABLE_SETTLED",
+        gross_hvdc_subsea_cents,
+        0,
+        "70c_pea_space_charge_zero_amber_particles_fj_concentricity_and_cigre_tb852_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25919,6 +26009,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hysteresis_mppt_block_latency_ms": psc_hys_403.latency_ms,
     }
 
+    # Round 175 (+-525kV HVDC Extruded XLPE Subsea Cable & Factory Joint Offtake, PEA Space-Charge & FJ Mandate)
+    hvd_commit_ok = evaluate_hvdc_subsea_xlpe_cable_policy()
+    hvd_pea_403 = evaluate_hvdc_subsea_xlpe_cable_policy(
+        pea_space_charge_field_distortion_and_amber_particle_zero_verified=False,
+    )
+    hvd_fjc_422 = evaluate_hvdc_subsea_xlpe_cable_policy(
+        factory_flexible_joint_concentricity_and_seamless_lead_sheath_passed=False,
+    )
+    hvd_cig_451 = evaluate_hvdc_subsea_xlpe_cable_policy(
+        webiq_cigre_tb852_type_test_and_borealis_superclean_resin_clean=False,
+    )
+    hvd_vcv_409 = evaluate_hvdc_subsea_xlpe_cable_policy(
+        long_campaign_vcv_joint_reduction_and_copper_lead_armor_scrap_credit_cents=12880000,
+    )
+    hvdc_subsea_guards = {
+        "all_passed": (
+            hvd_commit_ok.allowed
+            and hvd_commit_ok.settled_hvdc_subsea_cents == 92000000
+            and not hvd_pea_403.allowed
+            and hvd_pea_403.http_status == 403
+            and not hvd_fjc_422.allowed
+            and hvd_fjc_422.http_status == 422
+            and not hvd_cig_451.allowed
+            and hvd_cig_451.http_status == 451
+            and not hvd_vcv_409.allowed
+            and hvd_vcv_409.action_pill == "Confirm"
+        ),
+        "hvdc_subsea_settlement_latency_ms": hvd_commit_ok.latency_ms,
+        "pea_space_charge_block_latency_ms": hvd_pea_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26106,6 +26227,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "synbio_fermentation_guards": synbio_fermentation_guards,
         "quantum_fridge_guards": quantum_fridge_guards,
         "perovskite_tandem_guards": perovskite_tandem_guards,
+        "hvdc_subsea_guards": hvdc_subsea_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32155,6 +32277,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="psc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive +-525kV HVDC Subsea XLPE Cable, Space-Charge & Factory Joint Mandate Sandbox (Round 175 FAQ Companion) -->
+      <div class="finops-box" id="hvdc-subsea-xlpe-cable-sandbox" style="margin-top:12px;border-color:#0284C7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-hvd-title">🌊 远海风电 ±525kV 柔直海底电缆 (HVDC XLPE)、空间电荷畸变 (&lt;=10%) 与软接头偏心 (&lt;=5%) 架构：防深海场强反转炸缆与铅套进水令牌 (hvdc_subsea_xlpe_cable_mandate_...) vs 交流耐压盲付决策器 (Round 175 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 80 公里 ±525kV 柔直交联聚乙烯海缆与工厂软接头交割 ($920,000.00)、70°C 温差 PEA 空间电荷畸变率/零琥珀焦烧颗粒、软接头 DR 偏心度/连续挤铅护套与 Web IQ 21天超长 VCV/铜铅回收场景 (HVDC Subsea Cable Scenario):</span></label>
+          <select id="hvd-select" onchange="updateHvdcSubseaXlpeCableSandbox()">
+            <option value="hvd_commit_ok">⚡ 70°C 温差 PEA 空间电荷畸变 4.2% (&lt;=10%) + 0 焦烧琥珀点 + 软接头 DR 偏心 1.8% + 连续挤铅：10ms 自动结算 $920,000.00! (Act automatically)</option>
+            <option value="hvd_pea_403">🛑 常温 50Hz 交流耐压合格但未脱净交联副产物致 PEA 空间电荷畸变高达 42% &gt; 10% (满载外层冷绝缘场强反转)，或检出 &gt;50um 焦烧琥珀颗粒诱发深海电树枝炸缆拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="hvd_fjc_422">🚨 工厂软接头 (FJ) 手工恢复硫化偏心度达 14.5% &gt; 5.0% 成为海底定时炸弹，或间歇压铅机存在冷焊氧化夹渣缝在敷设张力下开裂进海水拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="hvd_cig_451">🛑 以普通交流 XLPE 树脂冒充超净直流专用料或缺失 KEMA/CEPRI 360天 CIGRE TB 852 预鉴定试验认证：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="hvd_vcv_409">🧑‍⚖️ Web IQ 核实 21 天不间断立塔连续硫化 (VCV) 单根直出减少 2 个高危工厂软接头，并将裁切无氧铜与精铅护套废料闭环回炉立省 $128,800.00 (净付 $791,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="hvd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32768,6 +32908,7 @@ function renderAll() {{
   updateSynbioPrecisionFermentationSandbox();
   updateQuantumDilutionRefrigeratorSandbox();
   updatePerovskiteTandemPvSandbox();
+  updateHvdcSubseaXlpeCableSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -41595,6 +41736,55 @@ function updatePerovskiteTandemPvSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 迟滞 (&lt;=1.5%) + 300s 稳态 MPPT + 固铅 (&lt;=0.05mg/L) 达标：已自动清算 (VERIFIED_PEROVSKITE_SILICON_TANDEM_PV_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 10ms 闪测虚标瓦数、零湿热发黄分解与破损淋雨铅污染</strong>：5,000 块钙钛矿/晶硅叠层光伏组件批次已完成结算（<code>$550,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateHvdcSubseaXlpeCableSandbox() {{
+  var selEl = document.getElementById("hvd-select");
+  var outEl = document.getElementById("hvd-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "hvd_pea_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DC_SPACE_CHARGE_FIELD_INVERSION_OR_SCORCH_AMBER_PARTICLE_BREAKDOWN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "超高压直流与超净实验室 <code>70°C 温差电声脉冲法 (PEA) 与熔体激光扫描仪</code> 实测显示，该批海缆虽通过 50Hz 交流耐压，但直流空间电荷电场畸变率高达 <code>42% &gt; 10%</code>（满载场强反转），或检出 <code>&gt;50μm 焦烧琥珀颗粒</code>（<code>pea_space_charge_field_distortion_and_amber_particle_zero_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$920,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hvd_fjc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FACTORY_JOINT_ECCENTRICITY_OR_LEAD_SHEATH_WATER_TREE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "海缆软接头与护套探伤线检出 <code>工厂软接头 (FJ) 双视角 X 射线绝缘偏心度达 14.5% &gt; 5.0% 或铅护套存在间歇压铅冷焊氧化夹渣缝</code>（敷设下海将开裂进水，<code>factory_flexible_joint_concentricity_and_seamless_lead_sheath_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hvd_cig_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NON_DC_GRADE_XLPE_RESIN_OR_MISSING_CIGRE_TB852_PQ_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>KEMA/CEPRI CIGRE TB 852 预鉴定试验台账与超净直流树脂批次</code>，检出以普通交流 XLPE 料冒充超净直流料或缺失 360 天热循环 PQ 认证，立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "hvd_vcv_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 EXTENDED_VCV_RUN_FEWER_JOINTS_AND_LEAD_COPPER_OFFCUT_CREDIT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>21 天超长连续立塔硫化 (VCV) 单根直出减少 2 个高危工厂软接头 + 裁切无氧铜与精铅护套废料闭环回炉</code>，自动冲抵接头风险准备金与铜铅原料费立省 <code>$128,800.00</code>（净付降至 <code>$791,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ PEA 空间电荷 (&lt;=10%) + 0 琥珀颗粒 + 软接头偏心 (&lt;=5%) 达标：已自动清算 (VERIFIED_HVDC_525KV_SUBSEA_CABLE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零满载场强反转炸缆、零焦烧琥珀电树与软接头进水击穿</strong>：80 公里 ±525kV 柔直海底电缆与软接头批次已完成结算（<code>$920,000.00</code>）！" +
     "</div>";
 }}
 

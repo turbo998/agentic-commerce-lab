@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg177" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent177" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg177)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent177)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 175 · 远海风电 ±525kV 柔直海底电缆 (HVDC XLPE)、空间电荷与软接头架构图</text>
+  <text x="36" y="84" class="sub">±525kV HVDC Extruded XLPE Subsea Cable &amp; Factory Joint Offtake, PEA Space-Charge (&lt;=10%), 0 Amber &amp; FJ Eccentricity (&lt;=5%)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按公里与交流耐压盲付</text>
+  <text x="52" y="166" class="card-h">三大空间电荷场强反转、琥珀焦烧与软接头炸缆灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 满载温差电场反转与空间电荷倍增 (42%) 炸缆</text>
+  <text x="52" y="216" class="body">50Hz 交流测试测不出直流空间电荷！未脱净交联副产</text>
+  <text x="52" y="234" class="body">物在 ±525kV 下积聚空间电荷，叠加满载外层冷绝缘</text>
+  <text x="52" y="252" class="body">场强反转，在 60um 焦烧琥珀颗粒处引发深海击穿！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 工厂软接头 (FJ) 硫化偏心与铅护套冷焊缝进水</text>
+  <text x="52" y="302" class="body">手工恢复软接头偏心 14.5% 成为全缆最薄弱炸点；</text>
+  <text x="52" y="320" class="body">间歇压铅机停车竹节冷焊缝在敷设张力下开裂进海水。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 普通交流料冒充超净直流料与短周期多打软接头</text>
+  <text x="52" y="370" class="body">混用普通 AC-XLPE 树脂无 CIGRE TB 852 认证；</text>
+  <text x="52" y="388" class="body">频繁堵网停机被迫多打软接头且铜铅废料未冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 80 km Cable + 50Hz AC Hipot Test</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $920,000 exposed to $25M seabed repair</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="268" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ hvdc_subsea_xlpe_cable_mandate</text>
+  <text x="428" y="166" class="card-h">四层 PEA 空间电荷、零焦烧与软接头门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: PEA &lt;=10% &amp; 0 Amber (11ms)</text>
+  <text x="440" y="220" class="body">70°C 温差梯度 PEA 空间电荷电场畸变率 &lt;=10% &amp;</text>
+  <text x="440" y="238" class="body">&gt;50um 焦烧琥珀颗粒 = 0 个/kg — 违者直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: FJ DR &lt;=5% &amp; Seamless Pb (14ms)</text>
+  <text x="440" y="296" class="body">工厂软接头双轴 X 射线偏心度 &lt;=5.0% &amp; 连续无焊缝</text>
+  <text x="440" y="314" class="body">螺旋挤铅机零氧化夹渣 — 偏心/冷焊直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ CIGRE TB 852 &amp; Resin (280ms)</text>
+  <text x="440" y="372" class="body">核验 KEMA/CEPRI 360天 CIGRE TB 852 预鉴定证书</text>
+  <text x="440" y="390" class="body">与超净 DC-XLPE 树脂批号 — 交流料冒充直返 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: 21-Day VCV &amp; Cu/Pb Scrap (245ms)</text>
+  <text x="440" y="448" class="body">21天超长立塔连续硫化 (VCV) 少打 2 个高危软接头</text>
+  <text x="440" y="466" class="body">+ 无氧铜丝与精铅护套废料回炉立省 $128,800 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 低空间电荷与同轴软接头放行</text>
+  <text x="828" y="212" class="body">PEA 4.2% + 0 琥珀点 + 接头偏心 1.8% → $920,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 空间电荷倍增或含琥珀焦烧点</text>
+  <text x="828" y="258" class="body">PEA 畸变 42% 或含焦烧颗粒 → 冻结 $920,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 软接头偏心或铅护套冷焊缝</text>
+  <text x="828" y="304" class="body">偏心 14.5% 或铅套砂眼进水 → 拒付 $920,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 交流料冒充或无认证</text>
+  <text x="828" y="350" class="body">非直流超净树脂或无 TB 852 → 熔断 $920,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 超长 VCV 少接头与铜铅回炉</text>
+  <text x="828" y="396" class="body">节省 $128,800 (-14%) → 确认后净付 $791,200.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 海图保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• ±525kV 柔直海缆严禁“仅看 50Hz 交流耐压盲付”：掩盖了满载温差下外层冷绝缘电场反转、空间电荷倍增及软接头偏心深海炸缆风险。</text>
+  <text x="54" y="584" class="body">• 必须将 70°C 温差 PEA 空间电荷 (&lt;=10%)、0 琥珀颗粒、软接头 DR 偏心 (&lt;=5%) 与连续挤铅绑定为智能托管解锁谓词。</text>
+</svg>
