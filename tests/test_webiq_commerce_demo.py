@@ -10735,6 +10735,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("medical-ct-xray-tube-sandbox", demo_zh)
 
+    def test_semiconductor_plasma_etch_y2o3_cvd_sic_focus_ring_esc_helium_leak_mandate_vs_particle_spallation_edge_drift_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_plasma_etch_focus_ring_esc_policy,
+        )
+
+        # 1. Verified 6N CVD-SiC + YOF porosity <=0.5% + ESC He leak <=0.5 sccm -> 200 OK ($480,000)
+        commit_ok = evaluate_plasma_etch_focus_ring_esc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_etch_chamber_cents, 48000000)
+
+        # 2. Sintered SiC binder erosion or porous Y2O3 (>0.5%) particle spallation -> 403 blocked in 11ms
+        por_403 = evaluate_plasma_etch_focus_ring_esc_policy(
+            yof_coating_porosity_and_cvd_sic_6n_purity_verified=False,
+        )
+        self.assertFalse(por_403.allowed)
+        self.assertEqual(por_403.http_status, 403)
+        self.assertEqual(
+            por_403.etch_chamber_lane,
+            "Y2O3_COATING_FLUORINE_BLISTER_PARTICLE_FALL_OR_SINTERED_SIC_BLOCKED",
+        )
+
+        # 3. Johnsen-Rahbek ESC residual-charge wafer shatter or backside He leak (>0.5 sccm) -> 422 blocked in 14ms
+        hel_422 = evaluate_plasma_etch_focus_ring_esc_policy(
+            aln_johnsen_rahbek_esc_resistivity_and_backside_he_leak_passed=False,
+        )
+        self.assertFalse(hel_422.allowed)
+        self.assertEqual(hel_422.http_status, 422)
+        self.assertEqual(
+            hel_422.etch_chamber_lane,
+            "ESC_JOHNSEN_RAHBEK_DECHUCK_STUCK_OR_BACKSIDE_HELIUM_LEAK_BLOCKED",
+        )
+
+        # 4. Web IQ detects gray-market uncertified kit or transition-metal contamination -> 451 blocked in 280ms
+        met_451 = evaluate_plasma_etch_focus_ring_esc_policy(
+            webiq_semi_f57_trace_metal_and_oem_chamber_qualification_clean=False,
+        )
+        self.assertFalse(met_451.allowed)
+        self.assertEqual(met_451.http_status, 451)
+
+        # 5. Web IQ credits AlN ESC mesa re-lapping & 4x YOF strip-and-recoat saving $67,200 ($412,800 net) -> 409 Confirm
+        rec_409 = evaluate_plasma_etch_focus_ring_esc_policy(
+            esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents=6720000,
+        )
+        self.assertFalse(rec_409.allowed)
+        self.assertEqual(rec_409.http_status, 409)
+        self.assertEqual(rec_409.settled_etch_chamber_cents, 41280000)
+        self.assertEqual(rec_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["plasma_etch_esc_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("plasma-etch-focus-ring-esc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

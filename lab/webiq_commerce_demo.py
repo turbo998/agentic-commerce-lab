@@ -19278,6 +19278,96 @@ def evaluate_medical_ct_xray_tube_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 171: Plasma Etch 6N CVD-SiC Focus Ring, YOF Coating & AlN ESC Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class PlasmaEtchFocusRingEscVerdict:
+    allowed: bool
+    http_status: int
+    etch_chamber_lane: str
+    settled_etch_chamber_cents: int
+    esc_relap_yof_recoat_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_plasma_etch_focus_ring_esc_policy(
+    *,
+    gross_etch_chamber_cents: int = 48000000,
+    yof_coating_porosity_and_cvd_sic_6n_purity_verified: bool = True,
+    aln_johnsen_rahbek_esc_resistivity_and_backside_he_leak_passed: bool = True,
+    webiq_semi_f57_trace_metal_and_oem_chamber_qualification_clean: bool = True,
+    esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents: int = 0,
+) -> PlasmaEtchFocusRingEscVerdict:
+    # 1. Sintered SiC Grain-Boundary Erosion or Porous Y2O3 (>0.5%) Fluorine Blister Particle Fall -> HTTP 403
+    if not yof_coating_porosity_and_cvd_sic_6n_purity_verified:
+        return PlasmaEtchFocusRingEscVerdict(
+            False,
+            403,
+            "Y2O3_COATING_FLUORINE_BLISTER_PARTICLE_FALL_OR_SINTERED_SIC_BLOCKED",
+            0,
+            0,
+            "etch_focus_ring_blocked_due_to_sintered_sic_binder_erosion_or_yof_porosity_above_05pct",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Johnsen-Rahbek ESC Residual-Charge Wafer Shatter or Backside Cooling Helium Leak (>0.5 sccm) -> HTTP 422
+    if not aln_johnsen_rahbek_esc_resistivity_and_backside_he_leak_passed:
+        return PlasmaEtchFocusRingEscVerdict(
+            False,
+            422,
+            "ESC_JOHNSEN_RAHBEK_DECHUCK_STUCK_OR_BACKSIDE_HELIUM_LEAK_BLOCKED",
+            0,
+            0,
+            "aln_esc_rejected_for_johnsen_rahbek_dechuck_wafer_sticking_or_backside_helium_leak_above_05sccm",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Unqualified Gray-Market Chamber Kit or Transition-Metal Contamination (>10 ppb) via Web IQ -> HTTP 451
+    if not webiq_semi_f57_trace_metal_and_oem_chamber_qualification_clean:
+        return PlasmaEtchFocusRingEscVerdict(
+            False,
+            451,
+            "UNQUALIFIED_GREY_MARKET_CHAMBER_KIT_OR_TRANSITION_METAL_HOLD",
+            0,
+            0,
+            "webiq_detected_grey_market_uncertified_chamber_consumable_or_icp_ms_transition_metal_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ AlN ESC Laser Mesa Re-Lapping + 4-Cycle YOF Strip & Recoat -> HTTP 409 Confirm
+    if esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents > 0:
+        return PlasmaEtchFocusRingEscVerdict(
+            False,
+            409,
+            "ESC_DIELECTRIC_RE_LAPPING_AND_QUARTZ_BAFFLE_YOF_RECOAT_CONFIRM",
+            gross_etch_chamber_cents - esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents,
+            esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents,
+            "webiq_applied_aln_esc_laser_mesa_relapping_and_4x_yof_strip_recoat_credit_saving_67200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 6N CVD-SiC + YOF Porosity <=0.5% + De-Chuck <=1s + He Leak <=0.5 sccm -> Settled
+    return PlasmaEtchFocusRingEscVerdict(
+        True,
+        200,
+        "VERIFIED_PLASMA_ETCH_CHAMBER_CONSUMABLES_SETTLED",
+        gross_etch_chamber_cents,
+        0,
+        "6n_cvd_sic_focus_ring_dense_yof_coating_johnsen_rahbek_esc_and_semi_f57_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -25435,6 +25525,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lmb_bearing_block_latency_ms": ct_lmb_403.latency_ms,
     }
 
+    # Round 171 (Plasma Etch 6N CVD-SiC Focus Ring, YOF Coating & AlN ESC Offtake, Porosity & He Leak Mandate)
+    esc_commit_ok = evaluate_plasma_etch_focus_ring_esc_policy()
+    esc_por_403 = evaluate_plasma_etch_focus_ring_esc_policy(
+        yof_coating_porosity_and_cvd_sic_6n_purity_verified=False,
+    )
+    esc_hel_422 = evaluate_plasma_etch_focus_ring_esc_policy(
+        aln_johnsen_rahbek_esc_resistivity_and_backside_he_leak_passed=False,
+    )
+    esc_met_451 = evaluate_plasma_etch_focus_ring_esc_policy(
+        webiq_semi_f57_trace_metal_and_oem_chamber_qualification_clean=False,
+    )
+    esc_rec_409 = evaluate_plasma_etch_focus_ring_esc_policy(
+        esc_ceramic_mesa_reconditioning_and_yof_suspension_strip_recoat_credit_cents=6720000,
+    )
+    plasma_etch_esc_guards = {
+        "all_passed": (
+            esc_commit_ok.allowed
+            and esc_commit_ok.settled_etch_chamber_cents == 48000000
+            and not esc_por_403.allowed
+            and esc_por_403.http_status == 403
+            and not esc_hel_422.allowed
+            and esc_hel_422.http_status == 422
+            and not esc_met_451.allowed
+            and esc_met_451.http_status == 451
+            and not esc_rec_409.allowed
+            and esc_rec_409.action_pill == "Confirm"
+        ),
+        "plasma_etch_esc_settlement_latency_ms": esc_commit_ok.latency_ms,
+        "yof_porosity_block_latency_ms": esc_por_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25618,6 +25739,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hts_rebco_guards": hts_rebco_guards,
         "automotive_lidar_guards": automotive_lidar_guards,
         "medical_ct_tube_guards": medical_ct_tube_guards,
+        "plasma_etch_esc_guards": plasma_etch_esc_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31595,6 +31717,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ct-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Plasma Etch 6N CVD-SiC Focus Ring, YOF Coating & AlN ESC Mandate Sandbox (Round 171 FAQ Companion) -->
+      <div class="finops-box" id="plasma-etch-focus-ring-esc-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-esc-title">💿 半导体刻蚀机 6N CVD-SiC 聚焦环、YOF 耐等离子体涂层 (&lt;=0.5% 孔隙) 与静电吸盘 (ESC) 架构：防掉粉砸片与顶针顶碎晶圆令牌 (plasma_etch_focus_ring_esc_mandate_...) vs 外径尺寸盲付决策器 (Round 171 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 100 套刻蚀机聚焦环、YOF 涂层盖板与 AlN 静电吸盘交割 ($480,000.00)、GDMS 6N CVD-SiC 纯度/YOF 断面孔隙率、J-R 静电吸盘脱吸/背面氦气漏率与 Web IQ 吸盘激光重整/YOF 退镀重喷场景 (Plasma Etch Chamber Scenario):</span></label>
+          <select id="esc-select" onchange="updatePlasmaEtchFocusRingEscSandbox()">
+            <option value="esc_commit_ok">⚡ 6N β-CVD-SiC 零烧结助剂 + SPS YOF 孔隙率 0.18% + ESC 脱吸 0.4s + 背面氦漏 0.12 sccm：10ms 自动结算 $480,000.00! (Act automatically)</option>
+            <option value="esc_por_403">🛑 外径公差合格但以含硼常压烧结 SiC 冒充 6N CVD-SiC 被氟自由基掏空晶界掉颗粒且边缘深孔刻歪，或 Y2O3 涂层孔隙率 4.2% &gt; 0.5% 氟化膨胀 25% 鼓包炸裂掉渣拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="esc_hel_422">🚨 AlN 静电吸盘体电阻率脱离 10^9~10^11 Ω·cm 窗口致关电残余电荷吸死晶圆被顶针当场顶碎，或密封微凸台磨损致背面冷却氦气漏率 4.8 &gt; 0.5 sccm 烧焦光刻胶拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="esc_met_451">🛑 混用非原厂认证灰市翻新件或 ICP-MS 表面铁/镍/铜过渡金属洗脱超标 (&gt;10 ppb) 扩散击穿栅氧：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="esc_rec_409">🧑‍⚖️ Web IQ 启用 AlN 静电吸盘陶瓷面超精密研抛与飞秒激光微凸台 (Mesa) 重刻再生，并将腔室陶瓷盖板执行 4 次化学退镀重喷 YOF 循环复用立省 $67,200.00 (净付 $412,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="esc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -32204,6 +32344,7 @@ function renderAll() {{
   updateHtsRebcoTapeSandbox();
   updateAutomotiveLidarTransceiverSandbox();
   updateMedicalCtXrayTubeSandbox();
+  updatePlasmaEtchFocusRingEscSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -40835,6 +40976,55 @@ function updateMedicalCtXrayTubeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 30G 轴承零擦碰 + 钨铼 (Re&gt;=9.5%) + 余辉 (&lt;=0.01%) 达标：已自动清算 (VERIFIED_MEDICAL_CT_TUBE_DETECTOR_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 30G 机架离心抱死炸管、零焦轨泥裂与同心圆环状伪影误诊</strong>：12 套医用螺旋 CT 液态金属球管与光子计数探测器批次已完成结算（<code>$690,000.00</code>）！" +
+    "</div>";
+}}
+
+function updatePlasmaEtchFocusRingEscSandbox() {{
+  var selEl = document.getElementById("esc-select");
+  var outEl = document.getElementById("esc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "esc_por_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 Y2O3_COATING_FLUORINE_BLISTER_PARTICLE_FALL_OR_SINTERED_SIC_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "半导体陶瓷与涂层实验室 <code>GDMS 辉光放电质谱与断面 SEM</code> 实测显示，该批聚焦环以含硼常压烧结 SiC 冒充 6N β-CVD-SiC（晶界被氟等离子体掏空掉颗粒且边缘深孔刻歪），或 Y2O3 涂层断面孔隙率高达 <code>4.2% &gt; 0.5%</code>（<code>yof_coating_porosity_and_cvd_sic_6n_purity_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$480,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esc_hel_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ESC_JOHNSEN_RAHBEK_DECHUCK_STUCK_OR_BACKSIDE_HELIUM_LEAK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "静电吸盘高低温测试台检出 <code>AlN 吸盘体电阻率脱离 10^9~10^11 Ω·cm 窗口导致关电后残余电荷吸死晶圆被顶针顶碎，或 20 Torr 背面冷却氦气漏率高达 4.8 sccm &gt; 0.5 sccm</code>（<code>aln_johnsen_rahbek_esc_resistivity_and_backside_he_leak_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esc_met_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNQUALIFIED_GREY_MARKET_CHAMBER_KIT_OR_TRANSITION_METAL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>SEMI F57 表面金属 ICP-MS 洗脱报告与原厂机台认证序列号库</code>，检出灰市未认证翻新备件或铁/镍/铜超标（&gt;10 ppb），立即冻结货款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "esc_rec_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ESC_DIELECTRIC_RE_LAPPING_AND_QUARTZ_BAFFLE_YOF_RECOAT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>AlN 静电吸盘陶瓷面飞秒激光微凸台重研抛再生 + 腔室陶瓷盖板 4 次化学退镀重喷 YOF 循环复用</code>，自动冲抵新购备件成本立省 <code>$67,200.00</code>（净付降至 <code>$412,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 6N β-CVD-SiC + YOF 孔隙 (&lt;=0.5%) + 背面氦漏 (&lt;=0.5sccm) 达标：已自动清算 (VERIFIED_PLASMA_ETCH_CHAMBER_CONSUMABLES_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零氟等离子体掉粉砸片、零边缘鞘层塌陷刻歪与顶针顶碎晶圆</strong>：100 套刻蚀机聚焦环、YOF 盖板与静电吸盘批次已完成结算（<code>$480,000.00</code>）！" +
     "</div>";
 }}
 

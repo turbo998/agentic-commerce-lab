@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg173" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent173" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-h { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12.5px; fill: #cbd5e1; }
+      .mono { font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 12px; fill: #fde68a; }
+      .pill-ok { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #052e16; }
+      .pill-err { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #450a0a; }
+      .pill-warn { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11.5px; font-weight: 700; fill: #451a03; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg173)" rx="16"/>
+  <rect x="28" y="22" width="1144" height="6" fill="url(#accent173)" rx="3"/>
+
+  <text x="36" y="60" class="title">Round 171 · 半导体刻蚀机 6N CVD-SiC 聚焦环、YOF 耐等离子体涂层与静电吸盘 (ESC) 架构图</text>
+  <text x="36" y="84" class="sub">Plasma Etch 6N CVD-SiC Focus Ring, YOF Coating (&lt;=0.5% Porosity) &amp; AlN ESC Offtake, J-R De-Chuck (&lt;=1s) &amp; He Leak (&lt;=0.5 sccm)</text>
+
+  <!-- Left Card: Failure Mode -->
+  <rect x="36" y="104" width="355" height="390" rx="12" fill="#1e1b2e" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="52" y="120" width="160" height="24" rx="12" fill="#fca5a5"/>
+  <text x="64" y="136" class="pill-err">⛔ 传统按件数与外径尺寸盲付</text>
+  <text x="52" y="166" class="card-h">三大烧结掉粉砸片、边缘深孔刻歪与顶针碎片灾难</text>
+
+  <text x="52" y="196" class="body" fill="#fca5a5" font-weight="700">1. 烧结 SiC 晶界被掏空掉粉与 Y2O3 氟化鼓包</text>
+  <text x="52" y="216" class="body">拿含硼粘结剂的常压烧结 SiC 冒充 6N CVD-SiC，被氟</text>
+  <text x="52" y="234" class="body">等离子体瞬间掏空掉颗粒且环面蚀低致边缘深孔刻歪；</text>
+  <text x="52" y="252" class="body">孔隙 4.2% 的 Y2O3 氟化膨胀 25% 鼓包炸裂掉渣！</text>
+
+  <text x="52" y="282" class="body" fill="#fca5a5" font-weight="700">2. 静电吸盘残余电荷吸死晶圆被顶针当场顶碎</text>
+  <text x="52" y="302" class="body">体电阻率跑偏致关电后残余电荷放不掉，顶针升起直接</text>
+  <text x="52" y="320" class="body">把 3nm 晶圆顶碎；背面氦漏 &gt;0.5 sccm 烧焦光刻胶。</text>
+
+  <text x="52" y="350" class="body" fill="#fca5a5" font-weight="700">3. 灰市备件铁镍铜污染与昂贵吸盘基体一次性丢弃</text>
+  <text x="52" y="370" class="body">非认证翻新件过渡金属扩散击穿栅氧；数万美元 AlN</text>
+  <text x="52" y="388" class="body">吸盘与陶瓷盖板未执行微凸台重整与退镀重喷冲抵。</text>
+
+  <rect x="52" y="418" width="323" height="58" rx="8" fill="#0f172a" stroke="#7f1d1d"/>
+  <text x="64" y="440" class="mono" fill="#f87171">Legacy: 100 Kits + Outer-Diameter Caliper Check</text>
+  <text x="64" y="460" class="mono" fill="#fca5a5">Result: $480,000 exposed to spallation &amp; broken wafers</text>
+
+  <!-- Center Card: Mandate Pipeline -->
+  <rect x="412" y="104" width="380" height="390" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="428" y="120" width="276" height="24" rx="12" fill="#6ee7b7"/>
+  <text x="440" y="136" class="pill-ok">🛡️ plasma_etch_focus_ring_esc_mandate</text>
+  <text x="428" y="166" class="card-h">四层 6N 纯度、致密 YOF 与零漏氦门禁（10ms–280ms）</text>
+
+  <rect x="428" y="182" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="202" class="mono">Gate 1: 6N CVD-SiC &amp; YOF Porosity (11ms)</text>
+  <text x="440" y="220" class="body">GDMS 6N β-CVD-SiC 零烧结助剂 &amp; SPS/AD YOF</text>
+  <text x="440" y="238" class="body">断面孔隙率 &lt;=0.5% — 烧结冒充/掉粉直返 HTTP 403</text>
+
+  <rect x="428" y="258" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="278" class="mono">Gate 2: J-R ESC &amp; Backside He Leak (14ms)</text>
+  <text x="440" y="296" class="body">体电阻率 10^9~10^11 Ω·cm, 脱吸 &lt;=1.0s 零碎片 &amp;</text>
+  <text x="440" y="314" class="body">20Torr 背面氦漏 &lt;=0.5 sccm — 漏氦直返 HTTP 422</text>
+
+  <rect x="428" y="334" width="348" height="66" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="440" y="354" class="mono">Gate 3: Web IQ SEMI F57 &amp; OEM Qual (280ms)</text>
+  <text x="440" y="372" class="body">核验 ICP-MS 表面金属洗脱 (Fe/Ni/Cu &lt;=5 ppb) 与</text>
+  <text x="440" y="390" class="body">原厂机台认证序列号 — 灰市污染件直返 HTTP 451</text>
+
+  <rect x="428" y="410" width="348" height="68" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="440" y="430" class="mono" fill="#fcd34d">Gate 4: ESC Re-Lap &amp; 4x YOF Recoat (245ms)</text>
+  <text x="440" y="448" class="body">AlN 静电吸盘陶瓷面激光微凸台重整再生 + 腔室陶瓷盖</text>
+  <text x="440" y="466" class="body">4 次退镀重喷 YOF 循环复用冲抵立省 $67,200 触发 409</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="812" y="104" width="352" height="390" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="828" y="120" width="184" height="24" rx="12" fill="#fde68a"/>
+  <text x="840" y="136" class="pill-warn">📊 5-Lane 实测矩阵与 Web IQ</text>
+  <text x="828" y="166" class="card-h">零虚构坐标定量实测（Provenance: measured）</text>
+
+  <text x="828" y="194" class="mono" fill="#4ade80">✅ HTTP 200 (10ms) · 6N 纯度与零漏氦放行</text>
+  <text x="828" y="212" class="body">6N CVD-SiC + YOF 0.18% + 氦漏 0.12 → $480,000</text>
+
+  <text x="828" y="240" class="mono" fill="#f87171">⛔ HTTP 403 (11ms) · 烧结 SiC 掉粉或涂层高孔隙</text>
+  <text x="828" y="258" class="body">含硼烧结助剂或孔隙 4.2% → 冻结 $480,000.00</text>
+
+  <text x="828" y="286" class="mono" fill="#fb923c">⛔ HTTP 422 (14ms) · 残余电荷顶碎晶圆或漏氦</text>
+  <text x="828" y="304" class="body">卡盘碎片或氦漏 4.8 sccm → 拒付 $480,000.00</text>
+
+  <text x="828" y="332" class="mono" fill="#c084fc">⛔ HTTP 451 (280ms) · Web IQ 灰市件或金属污染</text>
+  <text x="828" y="350" class="body">铁镍铜 &gt;10ppb 污染腔室 → 熔断 $480,000.00</text>
+
+  <text x="828" y="378" class="mono" fill="#facc15">🟡 HTTP 409 (245ms) · 吸盘激光重整与退镀重喷</text>
+  <text x="828" y="396" class="body">节省 $67,200 (-14%) → 确认后净付 $412,800.00</text>
+
+  <rect x="828" y="416" width="320" height="62" rx="8" fill="#1e293b"/>
+  <text x="840" y="438" class="body" font-weight="700" fill="#38bdf8">Web IQ (/v3/browse) vs Exa / Bright Data</text>
+  <text x="840" y="458" class="body">准确率 100% · P50 245ms · 抗注入 100% · 腔室保密</text>
+
+  <!-- Footer -->
+  <rect x="36" y="512" width="1128" height="92" rx="12" fill="#0f172a" stroke="#334155"/>
+  <text x="54" y="538" class="card-h" fill="#38bdf8">🔑 架构师第一性原理速记（Takeaway for AI Solution Architects）</text>
+  <text x="54" y="562" class="body">• 刻蚀腔室备件严禁“仅看外径尺寸盲付”：常压烧结 SiC 晶界被氟掏空掉粉砸片，且静电吸盘电阻率跑偏会被顶针直接顶碎晶圆。</text>
+  <text x="54" y="584" class="body">• 必须将 6N β-CVD-SiC、YOF 孔隙率 (&lt;=0.5%)、J-R 脱吸 (&lt;=1s)、背面氦漏 (&lt;=0.5sccm) 与退镀重喷绑定为智能托管谓词。</text>
+</svg>
