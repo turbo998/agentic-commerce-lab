@@ -3834,6 +3834,24 @@
         <div id="hts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Automotive LiDAR 1550nm/VCSEL, 10% Lambertian 250m & Class 1 Eye-Safety Mandate Sandbox (Round 169 FAQ Companion) -->
+      <div class="finops-box" id="automotive-lidar-transceiver-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lid-title">🚘 智驾车载激光雷达 (LiDAR) 1550nm/VCSEL、10% 黑车 250m 检出 (&gt;=99%) 与抗对射鬼影架构：防夜间黑车追尾与幽灵急刹令牌 (automotive_lidar_transceiver_mandate_...) vs 白墙测距盲付决策器 (Round 169 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 1,000 台车载激光雷达与收发模组交割 ($520,000.00)、10% 朗伯黑靶 250m 检出率/IEC 60825-1 Class 1 人眼安全、全温扫描频漂/100klux 对射零鬼影与 Web IQ 六轴主动对准/InGaAs 回收场景 (Automotive LiDAR Scenario):</span></label>
+          <select id="lid-select" onchange="updateAutomotiveLidarTransceiverSandbox()">
+            <option value="lid_commit_ok">⚡ 10% 朗伯黑靶 @250m POD=99.6% (&gt;=99%) + Class 1 安全 + 全温频漂 0.04% + 100klux 对射 0 鬼影：10ms 自动结算 $520,000.00! (Act automatically)</option>
+            <option value="lid_rng_403">🛑 80% 实验室白墙测出 300m 但遇到 10% 反射率抛锚黑车或轮胎缩水至 95m (250m POD=15% &lt; 99% 高速必追尾)，或违规调高 905nm 脉冲能量突破 Class 1 灼伤路人视网膜拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lid_ghs_422">🚨 +105°C 暴晒下硅基 MEMS 振镜谐振频漂失步 (&gt;0.15%) 致点云撕裂，或无伪随机双脉冲编码在 100klux 烈日+对向车激光直射下爆发假墙鬼影触发高速幽灵急刹拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lid_aec_451">🛑 混用消费级扫地机非车规激光管 (未过 AEC-Q102) 或缺失 ISO 26262 ASIL-B 振镜停振 &lt;1us 毫秒级硬件关断锁：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="lid_aa_409">🧑‍⚖️ Web IQ 启用六轴机器人亚微米主动光学校准 (AA) 免人工调焦提升良率，并回收售后返修光机中的高纯铟镓砷 (InGaAs)/铒纤核心组件立省 $72,800.00 (净付 $447,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lid-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -4441,6 +4459,7 @@ function renderAll() {
   updateHydrogenType4CopvSandbox();
   updateMicroLedMassTransferSandbox();
   updateHtsRebcoTapeSandbox();
+  updateAutomotiveLidarTransceiverSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -12974,6 +12993,55 @@ function updateHtsRebcoTapeSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 20K/20T 强场 (&gt;=650A) + 全长 0 跌落 + 抗剥离 (&gt;=35MPa) 达标：已自动清算 (VERIFIED_2G_HTS_REBCO_TAPE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 20T 强场磁通流动失超、零环氧冷却脱层与高阻烧氦</strong>：50 公里 2G HTS REBCO 高温超导带材批次已完成结算（<code>$780,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAutomotiveLidarTransceiverSandbox() {
+  var selEl = document.getElementById("lid-select");
+  var outEl = document.getElementById("lid-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "lid_rng_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TEN_PCT_LAMBERTIAN_RANGE_DEFICIT_OR_IEC60825_RETINAL_HAZARD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "室外标准光学靶场与全孔径激光能量计实测显示，该批雷达虽在 80% 白墙测出 300m，但在 <code>10% 标准朗伯低反黑靶 250m 处点云检出率仅 POD = 15.0% &lt; 99.0%</code>（有效测距缩水至 95m），或超功率发射击穿 IEC 60825-1 Class 1 人眼安全红线（<code>ten_pct_reflectivity_250m_pod_and_iec60825_class1_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$520,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lid_ghs_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MEMS_TORSION_FREQUENCY_DRIFT_OR_SOLAR_CROSSTALK_GHOST_POINT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "车规温箱与太阳光对射暗室检出 <code>+105°C 下 MEMS 振镜谐振频漂高达 0.85% &gt; 0.15% 或在 100klux 烈日+8机对射下爆发虚假鬼影点云</code>（引发高速幽灵急刹，<code>mems_mirror_thermal_freq_drift_and_100klux_crosstalk_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lid_aec_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNQUALIFIED_CONSUMER_LASER_OR_MISSING_ASIL_B_SAFETY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>AEC-Q102 车规光电认证数据库与 ISO 26262 ASIL-B 硬件安全关断证书</code>，检出混用消费级激光管或缺失振镜停振 &lt;1μs 硬件关断保护，立即冻结货款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "lid_aa_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SIX_AXIS_ACTIVE_ALIGNMENT_YIELD_AND_INGAAS_RECLAIM_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>六轴机器人全自动主动光学校准 (AA) + 售后返修光机高纯铟镓砷 (InGaAs)/铒纤核心组件闭环回收</code>，自动冲抵装调与探测器成本立省 <code>$72,800.00</code>（净付降至 <code>$447,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 10% 黑靶 250m (&gt;=99% POD) + Class 1 安全 + 0 对射鬼影达标：已自动清算 (VERIFIED_AUTOMOTIVE_LIDAR_TRANSCEIVER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零夜间黑车漏检追尾、零视网膜损伤与对射幽灵急刹</strong>：1,000 台车规级激光雷达与收发模组批次已完成结算（<code>$520,000.00</code>）！" +
     "</div>";
 }
 

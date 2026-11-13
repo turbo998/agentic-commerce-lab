@@ -10623,6 +10623,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hts-rebco-tape-sandbox", demo_zh)
 
+    def test_automotive_lidar_1550nm_fiber_vcsel_spad_mems_eye_safety_mandate_vs_black_car_blindness_crosstalk_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_automotive_lidar_transceiver_policy,
+        )
+
+        # 1. Verified 10% Lambertian @250m POD >=99% + Class 1 + 0 Ghost Points -> 200 OK ($520,000)
+        commit_ok = evaluate_automotive_lidar_transceiver_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_lidar_transceiver_cents, 52000000)
+
+        # 2. 10% black-target range collapse (<99% POD @250m) or IEC 60825-1 Class 1 retinal hazard -> 403 blocked in 11ms
+        rng_403 = evaluate_automotive_lidar_transceiver_policy(
+            ten_pct_reflectivity_250m_pod_and_iec60825_class1_verified=False,
+        )
+        self.assertFalse(rng_403.allowed)
+        self.assertEqual(rng_403.http_status, 403)
+        self.assertEqual(
+            rng_403.lidar_transceiver_lane,
+            "TEN_PCT_LAMBERTIAN_RANGE_DEFICIT_OR_IEC60825_RETINAL_HAZARD_BLOCKED",
+        )
+
+        # 3. +105°C MEMS torsion frequency drift (>0.15%) or 100klux oncoming LiDAR ghost points -> 422 blocked in 14ms
+        ghs_422 = evaluate_automotive_lidar_transceiver_policy(
+            mems_mirror_thermal_freq_drift_and_100klux_crosstalk_passed=False,
+        )
+        self.assertFalse(ghs_422.allowed)
+        self.assertEqual(ghs_422.http_status, 422)
+        self.assertEqual(
+            ghs_422.lidar_transceiver_lane,
+            "MEMS_TORSION_FREQUENCY_DRIFT_OR_SOLAR_CROSSTALK_GHOST_POINT_BLOCKED",
+        )
+
+        # 4. Web IQ detects consumer non-AEC-Q102 laser diode or missing ASIL-B shutoff -> 451 blocked in 280ms
+        aec_451 = evaluate_automotive_lidar_transceiver_policy(
+            webiq_aec_q102_laser_qualification_and_iso26262_asil_b_clean=False,
+        )
+        self.assertFalse(aec_451.allowed)
+        self.assertEqual(aec_451.http_status, 451)
+
+        # 5. Web IQ credits 6-axis active optical alignment & InGaAs reclaim saving $72,800 ($447,200 net) -> 409 Confirm
+        aa_409 = evaluate_automotive_lidar_transceiver_policy(
+            automated_active_optical_alignment_and_ingaas_apd_reclaim_credit_cents=7280000,
+        )
+        self.assertFalse(aa_409.allowed)
+        self.assertEqual(aa_409.http_status, 409)
+        self.assertEqual(aa_409.settled_lidar_transceiver_cents, 44720000)
+        self.assertEqual(aa_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["automotive_lidar_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("automotive-lidar-transceiver-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

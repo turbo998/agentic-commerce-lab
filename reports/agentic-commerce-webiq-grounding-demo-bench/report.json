@@ -925,6 +925,11 @@
     "hts_rebco_settlement_latency_ms": 10,
     "high_field_ic_block_latency_ms": 11
   },
+  "automotive_lidar_guards": {
+    "all_passed": true,
+    "automotive_lidar_settlement_latency_ms": 10,
+    "black_target_range_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
