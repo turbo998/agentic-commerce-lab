@@ -22068,6 +22068,96 @@ def evaluate_b2b_ers_self_billing_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 202: Agentic Multi-PSP Smart Routing, 8-Digit BIN Local Acquiring & MAC Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticMultiPspSmartRoutingVerdict:
+    allowed: bool
+    http_status: int
+    multi_psp_routing_lane: str
+    settled_psp_batch_cents: int
+    local_acquiring_cascade_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_multi_psp_smart_routing_policy(
+    *,
+    gross_psp_batch_cents: int = 84000000,
+    zero_hard_decline_cat1_or_mac03_retry_verified: bool = True,
+    primary_timeout_0400_reversed_and_rolling_30d_under_15_retries: bool = True,
+    webiq_local_acquiring_license_and_scheme_cryptogram_clean: bool = True,
+    bin_local_acquiring_fee_and_false_decline_recovery_savings_cents: int = 0,
+) -> AgenticMultiPspSmartRoutingVerdict:
+    # 1. Cross-PSP Retry on Visa Category 1 (Stolen/Closed) or Mastercard MAC 03/21 -> HTTP 403
+    if not zero_hard_decline_cat1_or_mac03_retry_verified:
+        return AgenticMultiPspSmartRoutingVerdict(
+            False,
+            403,
+            "HARD_DECLINE_CAT1_OR_MAC03_RETRY_FORBIDDEN",
+            0,
+            0,
+            "multi_psp_cascade_blocked_due_to_visa_cat1_or_mastercard_mac03_21_hard_decline",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Unreversed Primary Timeout (ISO 0400 Missing) or >15 Retries in 30 Days -> HTTP 422
+    if not primary_timeout_0400_reversed_and_rolling_30d_under_15_retries:
+        return AgenticMultiPspSmartRoutingVerdict(
+            False,
+            422,
+            "UNREVERSED_TIMEOUT_CASCADE_OR_15X_CAP_EXCEEDED",
+            0,
+            0,
+            "multi_psp_failover_rejected_for_missing_primary_0400_reversal_or_exceeding_15x_30d_retry_cap",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Unlicensed Local Acquiring Entity or Missing Network Token Cryptogram via Web IQ -> HTTP 451
+    if not webiq_local_acquiring_license_and_scheme_cryptogram_clean:
+        return AgenticMultiPspSmartRoutingVerdict(
+            False,
+            451,
+            "LOCAL_ACQUIRING_LICENSE_OR_SCHEME_RULE_HOLD",
+            0,
+            0,
+            "webiq_detected_unlicensed_local_acquiring_mid_or_missing_network_token_cryptogram",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 8-Digit BIN Local Acquiring (Saves 1.5% Cross-Border Fee) + Smart Cascade -> HTTP 409 Confirm
+    if bin_local_acquiring_fee_and_false_decline_recovery_savings_cents > 0:
+        return AgenticMultiPspSmartRoutingVerdict(
+            False,
+            409,
+            "LOCAL_ACQUIRING_AND_SMART_CASCADE_SAVINGS_CONFIRM",
+            gross_psp_batch_cents - bin_local_acquiring_fee_and_false_decline_recovery_savings_cents,
+            bin_local_acquiring_fee_and_false_decline_recovery_savings_cents,
+            "webiq_aligned_8digit_bin_local_acquiring_and_smart_cascade_saving_50400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 8-Digit BIN Local MID + Zero Hard-Decline Retry + 0400 Reversal Closed -> Settled
+    return AgenticMultiPspSmartRoutingVerdict(
+        True,
+        200,
+        "VERIFIED_MULTI_PSP_SMART_ROUTING_SETTLED",
+        gross_psp_batch_cents,
+        0,
+        "multi_psp_8digit_bin_local_acquiring_mac03_zero_retry_and_0400_reversal_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -29186,6 +29276,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "duplicate_supplier_invoice_block_latency_ms": ers_dup_403.latency_ms,
     }
 
+    # Round 202 (Agentic Multi-PSP Smart Routing, 8-Digit BIN Local Acquiring & MAC Mandate)
+    psp_commit_ok = evaluate_agentic_multi_psp_smart_routing_policy()
+    psp_mac_403 = evaluate_agentic_multi_psp_smart_routing_policy(
+        zero_hard_decline_cat1_or_mac03_retry_verified=False,
+    )
+    psp_rev_422 = evaluate_agentic_multi_psp_smart_routing_policy(
+        primary_timeout_0400_reversed_and_rolling_30d_under_15_retries=False,
+    )
+    psp_lic_451 = evaluate_agentic_multi_psp_smart_routing_policy(
+        webiq_local_acquiring_license_and_scheme_cryptogram_clean=False,
+    )
+    psp_sav_409 = evaluate_agentic_multi_psp_smart_routing_policy(
+        bin_local_acquiring_fee_and_false_decline_recovery_savings_cents=5040000,
+    )
+    agentic_multi_psp_smart_routing_guards = {
+        "all_passed": (
+            psp_commit_ok.allowed
+            and psp_commit_ok.settled_psp_batch_cents == 84000000
+            and not psp_mac_403.allowed
+            and psp_mac_403.http_status == 403
+            and not psp_rev_422.allowed
+            and psp_rev_422.http_status == 422
+            and not psp_lic_451.allowed
+            and psp_lic_451.http_status == 451
+            and not psp_sav_409.allowed
+            and psp_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_multi_psp_smart_routing_settlement_latency_ms": psp_commit_ok.latency_ms,
+        "hard_decline_mac03_retry_block_latency_ms": psp_mac_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29400,6 +29521,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_eucp_ebl_letter_of_credit_guards": b2b_eucp_ebl_letter_of_credit_guards,
         "agentic_bnpl_installment_mdr_guards": agentic_bnpl_installment_mdr_guards,
         "b2b_ers_self_billing_guards": b2b_ers_self_billing_guards,
+        "agentic_multi_psp_smart_routing_guards": agentic_multi_psp_smart_routing_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35935,6 +36057,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ers-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Multi-PSP Smart Routing & Card-Network MAC Gate Sandbox (Round 202 FAQ Companion) -->
+      <div class="finops-box" id="agentic-multi-psp-smart-routing-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-psp-title">🌐 智能体多收单行动态路由 (Multi-PSP Smart Routing) 与卡组织 MAC 零重试：8位 BIN 本地收单与硬拒付熔断令牌 (agentic_multi_psp_smart_routing_mac_mandate_...) vs 暴力跨通道重试重罚与跨境费决策器 (Round 202 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 全球多收单行智能路由批次 ($840,000.00)、8位 BIN 发卡国本地收单 (Local Acquiring)、Visa Cat-1 / Mastercard MAC 03/21 硬拒付零重试与主通道超时 0400 冲正闭环场景 (Agentic Multi-PSP Smart Routing Scenario):</span></label>
+          <select id="psp-select" onchange="updateAgenticMultiPspSmartRoutingSandbox()">
+            <option value="psp_commit_ok">⚡ 8位 BIN 发卡国本地 MID 对齐 + 零硬拒付违规重试 + 主通道超时先 0400 冲正后级联：10ms 94.5% 高通过率清算 $840,000.00! (Act automatically)</option>
+            <option value="psp_mac_403">🛑 发卡行返回 Visa Cat-1 (43 挂失被盗卡) 或 Mastercard MAC 03/21 (用户已撤销授权) 硬拒付，Agent 仍企图切往备选 PSP 循环重试 (面临 $25k/月卡组重罚) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="psp_rev_422">🚨 主收单行返回 ISO 8583 Code 91 超时未确认 0400 冲正即秒切备选收单行重扣 (双倍扣款风险)，或单卡 30 天内重试突破 15 次红线拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="psp_lic_451">🛑 跨境收单实体缺失发卡国本地央行收单牌照，或级联重发时丢失网络令牌加密子 (Network Token Cryptogram)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="psp_sav_409">🧑‍⚖️ Web IQ 启用 8位 BIN 本地收单对齐免除 1.5% 卡组织跨境费，并智能级联挽回软拒付误杀单立省/增收 $50,400.00 (净成本 $789,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="psp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -36575,6 +36715,7 @@ function renderAll() {{
   updateB2bEucpEblLetterOfCreditSandbox();
   updateAgenticBnplInstallmentMdrSandbox();
   updateB2bErsSelfBillingSandbox();
+  updateAgenticMultiPspSmartRoutingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -46725,6 +46866,55 @@ function updateB2bErsSelfBillingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 双边 SBA 有效 + 零重复发票 + 地磅实收净重锚定 + VAT 活跃通过：已自动清算 (VERIFIED_ERS_SELF_BILLING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零供应商开票尾差挂账、零双轨重复付款与 EU VAT Art. 224 税务稽查风险</strong>：B2B 评估收货逆向开票批次已完成自动清算（<code>$680,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticMultiPspSmartRoutingSandbox() {{
+  var selEl = document.getElementById("psp-select");
+  var outEl = document.getElementById("psp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "psp_mac_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 HARD_DECLINE_CAT1_OR_MAC03_RETRY_FORBIDDEN (11ms · Send to a human · synthetic_policy)：<br>" +
+      "卡组织重试合规门禁检出，发卡行已返回 <code>Visa Category 1 永久硬拒付（如 43 挂失被盗卡、14 销户卡）或 Mastercard MAC 03（严禁重试）/ MAC 21（持卡人已撤销代扣），允许重试次数为 0；若跨 PSP 强行重试将触发 $0.10–$0.25/次超额重试费与最高 $25,000/月卡组织重罚</code>（<code>zero_hard_decline_cat1_or_mac03_retry_verified == False</code>）。网关在 <code>11ms</code> 内硬熔断！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psp_rev_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNREVERSED_TIMEOUT_CASCADE_OR_15X_CAP_EXCEEDED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "多通道故障转移状态机检出 <code>主收单行返回 ISO 8583 Code 91 超时状态未知但尚未确认 0400 自动冲正即企图切往备选 PSP 重扣（极易造成双倍扣款），或同一卡号在滚动 30 天内已达 15 次重试上限</code>（<code>primary_timeout_0400_reversed_and_rolling_30d_under_15_retries == False</code>）。网关在 <code>14ms</code> 内阻断！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psp_lic_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LOCAL_ACQUIRING_LICENSE_OR_SCHEME_RULE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>Visa Core Rules 跨境收单规范与当地央行收单牌照要求</code>，检出目标收单 MID 缺失发卡国本地清算资质或级联时丢失 Network Token 加密子，立即冻结路由！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "psp_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LOCAL_ACQUIRING_AND_SMART_CASCADE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>8位 BIN 发卡国本地收单对齐（免除 1.50% 卡组织跨境评估费并将授权通过率从 81% 提升至 94.5%）+ 技术性软拒付安全级联挽回</code>，单批立省/挽回 <code>$50,400.00</code>（净成本降至 <code>$789,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 8位 BIN 本地收单对齐 + 零硬拒付重试 + 0400 冲正闭环通过：已自动清算 (VERIFIED_MULTI_PSP_SMART_ROUTING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 1.5% 跨境卡组罚金、零 MAC 03 违规重试罚款与超时双倍扣款风险</strong>：全球多 PSP 智能路由批次已以 94.5% 本土高通过率完成清算（<code>$840,000.00</code>）！" +
     "</div>";
 }}
 

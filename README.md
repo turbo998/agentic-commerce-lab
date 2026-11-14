@@ -233,6 +233,7 @@
 - **专题 199（B2B 智能体跨境贸易电子信用证 eUCP v2.1 与电子提单 MLETR / DCSA v3.0 eBL 智能交单架构：数字正本物权交割与零不符点 Zero-Discrepancy 预审令牌 `b2b_eucp_ebl_letter_of_credit_mandate_...`、SWIFT `MT700 45A` 货描逐字镜像与 UCP 600 Art. 28 `>=110%` CIF 保额及装船后 `<=21 天` 交单期门禁 / DCSA v3.0 eBL 10 分钟排他控制权转移免除 14 天码头滞港费与零不符点福费廷贴现智能托管 vs 传统纸质提单滞港费与 70% 首交不符点买方跌价弃货）**：**[《B2B 智能体跨境贸易电子信用证（eUCP v2.1）与电子提单（MLETR / DCSA v3.0 eBL）智能交单架构：数字正本物权交割与零不符点（Zero-Discrepancy）预审令牌（`b2b_eucp_ebl_letter_of_credit_mandate_...`）vs 传统纸质提单滞港费（Demurrage）与审单不符点拒付（Discrepancy Rejection）选型与原理解析 FAQ》](docs/b2b-eucp-ebl-electronic-letter-of-credit-mletr-mandate-vs-paper-bl-demurrage-discrepancy-rejection-faq.md)**
 - **专题 200（智能体电商分期付款 BNPL：Klarna / Affirm / Afterpay 与退货重算架构：商户贴息费率 MDR `4%–6%` 毛利门禁与部分退货本息重算令牌 `agentic_bnpl_installment_mdr_refund_mandate_...`、逐单净贡献毛利底线防微利 SKU 免息贴息倒贴与防多码凑单 Bracketing / 逆向物流首扫即刻触发 CFPB Reg Z `Pause_Autopay` 冻结在途代扣与尾部优先 Tail-First 分期抵扣重算智能托管 vs 盲目全品类开放免息吞噬微利与退货后继续扣款客诉）**：**[《智能体电商分期付款（BNPL：Klarna / Affirm / Afterpay）与退货重算架构：商户贴息费率（MDR `4%–6%`）毛利门禁与部分退货本息重算令牌（`agentic_bnpl_installment_mdr_refund_mandate_...`）vs 盲目全品类开放免息分期吞噬微利与退货后继续扣款客诉选型与原理解析 FAQ》](docs/agentic-bnpl-installment-mdr-margin-guard-partial-refund-reamortization-mandate-vs-margin-wipeout-faq.md)**
 - **专题 201（B2B 智能体评估收货结算 ERS / 逆向开票 Self-Billing 与免发票自动清算架构：入库净重地磅签名与欧盟 VAT 第 224 条逆向开票双签令牌 `b2b_ers_self_billing_receipt_settlement_mandate_...`、以买方校准地磅实收净重 GR $\times$ PO 协议价自动生成 Peppol 3.0 逆向税票消灭 32% 尾差挂账 / PO 级 `ERS_EXCLUSIVE` 互斥锁拒收卖方重复发票与 12 个月 SBA 效期及 VIES VAT 活性校验智能托管 vs 传统等供应商开票挂账与双轨重复付款抵扣暴雷）**：**[《B2B 智能体评估收货结算（ERS / 逆向开票 Self-Billing）与免发票自动清算架构：入库净重地磅签名与欧盟 VAT 第 224 条逆向开票双签令牌（`b2b_ers_self_billing_receipt_settlement_mandate_...`）vs 传统供应商开票差异挂账（Invoice Exception）与双轨重复开票抵扣暴雷选型与原理解析 FAQ》](docs/b2b-ers-self-billing-evaluated-receipt-settlement-mandate-vs-supplier-invoice-exception-duplicate-vat-faq.md)**
+- **专题 202（智能体多收单行动态智能路由 Multi-PSP Smart Routing 与卡组织 MAC 硬拒付零重试架构：发卡国本地收单 Local Acquiring 与硬拒付代码 `Cat-1 / MAC 03` 熔断令牌 `agentic_multi_psp_smart_routing_mac_mandate_...`、8 位 BIN 发卡国本地收单对齐免除 1.5% 跨境卡组费并拉升授权通过率至 94.5%+ / Visa Cat-1 与 Mastercard `MAC 03 / 21` 硬拒付零重试熔断及主通道超时 `ISO 8583 0400` 先冲正后级联智能托管 vs 盲目跨通道暴力重试触发 `$25,000/月` 卡组织重罚与超时双倍扣款）**：**[《智能体多收单行动态智能路由（Multi-PSP Smart Routing）与卡组织 MAC 硬拒付零重试架构：发卡国本地收单（Local Acquiring）与硬拒付代码（`Cat-1 / MAC 03`）熔断令牌（`agentic_multi_psp_smart_routing_mac_mandate_...`）vs 盲目跨通道暴力重试触发卡组织重罚与跨境收单高费率选型与原理解析 FAQ》](docs/agentic-multi-psp-smart-routing-local-acquiring-mac-retry-mandate-vs-excessive-retry-fines-crossborder-fee-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -635,6 +636,8 @@
 ![2026-11-14 智能体电商分期付款 (BNPL) 商户贴息毛利门禁、部分退货尾部优先重算与 CFPB Reg Z 合规架构一图流](assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg)
 
 ![2026-11-14 B2B 评估收货结算 (ERS / 逆向开票 Self-Billing)、防双轨重复开票与 EU VAT Art. 224 合规架构一图流](assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg)
+
+![2026-11-14 智能体多收单行动态路由 (Multi-PSP Smart Routing)、本地收单 (Local Acquiring) 与卡组织 MAC 硬拒付零重试架构一图流](assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

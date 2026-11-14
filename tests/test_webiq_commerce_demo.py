@@ -12471,6 +12471,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ers-self-billing-sandbox", demo_zh)
 
+    def test_agentic_multi_psp_smart_routing_local_acquiring_mac_retry_mandate_vs_excessive_retry_fines_crossborder_fee_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_multi_psp_smart_routing_policy,
+        )
+
+        # 1. Verified 8-digit BIN local acquiring + zero hard-decline retry + 0400 reversal -> 200 OK ($840,000)
+        commit_ok = evaluate_agentic_multi_psp_smart_routing_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_psp_batch_cents, 84000000)
+
+        # 2. Cross-PSP retry on Visa Cat-1 or Mastercard MAC 03/21 hard decline -> 403 blocked in 11ms
+        mac_403 = evaluate_agentic_multi_psp_smart_routing_policy(
+            zero_hard_decline_cat1_or_mac03_retry_verified=False,
+        )
+        self.assertFalse(mac_403.allowed)
+        self.assertEqual(mac_403.http_status, 403)
+        self.assertEqual(
+            mac_403.multi_psp_routing_lane,
+            "HARD_DECLINE_CAT1_OR_MAC03_RETRY_FORBIDDEN",
+        )
+
+        # 3. Unreversed primary timeout or >15 retries in 30 days -> 422 blocked in 14ms
+        rev_422 = evaluate_agentic_multi_psp_smart_routing_policy(
+            primary_timeout_0400_reversed_and_rolling_30d_under_15_retries=False,
+        )
+        self.assertFalse(rev_422.allowed)
+        self.assertEqual(rev_422.http_status, 422)
+        self.assertEqual(
+            rev_422.multi_psp_routing_lane,
+            "UNREVERSED_TIMEOUT_CASCADE_OR_15X_CAP_EXCEEDED",
+        )
+
+        # 4. Web IQ detects unlicensed local acquiring MID or missing cryptogram -> 451 blocked in 280ms
+        lic_451 = evaluate_agentic_multi_psp_smart_routing_policy(
+            webiq_local_acquiring_license_and_scheme_cryptogram_clean=False,
+        )
+        self.assertFalse(lic_451.allowed)
+        self.assertEqual(lic_451.http_status, 451)
+
+        # 5. Web IQ enables 8-digit BIN local acquiring & smart cascade saving $50,400 ($789,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_multi_psp_smart_routing_policy(
+            bin_local_acquiring_fee_and_false_decline_recovery_savings_cents=5040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_psp_batch_cents, 78960000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_multi_psp_smart_routing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-multi-psp-smart-routing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

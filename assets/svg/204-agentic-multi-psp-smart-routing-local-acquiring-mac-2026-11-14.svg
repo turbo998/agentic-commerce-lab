@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg204" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="indigo204" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="red204" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg204)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="52" y="40" width="215" height="26" rx="13" fill="url(#indigo204)"/>
+  <text x="159" y="57" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">ROUND 202 · MULTI-PSP &amp; MAC GATE</text>
+  <text x="282" y="58" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="18.5" font-weight="800">智能体多收单行动态路由 (Multi-PSP Smart Routing) 与卡组织 MAC 硬拒付零重试架构</text>
+  <text x="282" y="85" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-size="12.5">8位 BIN 本地收单对齐 + Visa Cat-1 / MC MAC 03 零重试 + 0400 先冲正后级联令牌 (`agentic_multi_psp_smart_routing_mac_mandate_...`) vs 暴力重试重罚</text>
+
+  <!-- Left Card: Anti-Pattern -->
+  <rect x="36" y="124" width="548" height="275" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="54" y="140" width="512" height="32" rx="6" fill="url(#red204)"/>
+  <text x="310" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">❌ 传统反模式：单 MID 跨境收全球卡 + 跨 PSP 暴力重试硬拒付触发重罚</text>
+
+  <text x="56" y="196" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 单一境外 MID 收全球卡白交 1.5% 跨境费且 15% 正常单被误杀：</text>
+  <text x="56" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 用美国收单主体刷英国/日本/巴西本地卡，被加收 1.2%–1.8% 卡组跨境费；</text>
+  <text x="56" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 海外发卡行风控对境外收单行高度敏感，首次授权通过率跌至 81% 以下。</text>
+
+  <text x="56" y="265" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 遇到 Visa Cat-1 / MC MAC 03/21 硬拒付仍跨 PSP 循环重试：</text>
+  <text x="56" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 挂失被盗卡 (43) 或用户已撤回代扣 (MAC 21) 严禁任何重试，跨 PSP 照样被罚 $25k/月！</text>
+
+  <text x="56" y="315" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. 主通道超时 (Code 91) 未完成 0400 冲正即秒切备选 PSP：</text>
+  <text x="56" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 主备通道同时落账成功，导致消费者银行卡被双倍扣款 (200% Double Charge)。</text>
+
+  <rect x="56" y="352" width="508" height="32" rx="6" fill="#450A0A" stroke="#DC2626"/>
+  <text x="310" y="373" fill="#FECACA" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">GATE BLOCKS: HTTP 403 (11ms Cat-1/MAC03 Retry) | HTTP 422 (14ms Unreversed Failover)</text>
+
+  <!-- Right Card: Recommended Architecture -->
+  <rect x="616" y="124" width="548" height="275" rx="12" fill="#0F292A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="634" y="140" width="512" height="32" rx="6" fill="url(#indigo204)"/>
+  <text x="890" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">✅ 推荐架构：8位 BIN 本地收单对齐 + MAC 零重试熔断 + 先冲正后级联网关</text>
+
+  <text x="636" y="196" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 8 位 IIN/BIN 发卡国与本地收单主体 (Local MID) 动态对齐：</text>
+  <text x="636" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 英国卡走英国 MID、日本卡走日本 MID，100% 免除 1.5% 跨境卡组费；</text>
+  <text x="636" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 享受本土交易信任加权与网络令牌 (Network Token)，通过率跃升至 94.5%+！</text>
+
+  <text x="636" y="265" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. Cat-1 / MAC 03/21 硬拒付 11ms 熔断 + 30天 &lt;=15 次滑动窗口：</text>
+  <text x="636" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 硬拒付零重试即刻封锁；超时故障强制先确认 ISO 8583 0400 冲正再级联备选 PSP。</text>
+
+  <text x="636" y="315" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 280ms 规则核验与跨境费套利：</text>
+  <text x="636" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 免除跨境费并挽回高价值误杀订单，单批立省/增收 $50,400.00 (HTTP 409)！</text>
+
+  <rect x="636" y="352" width="508" height="32" rx="6" fill="#064E3B" stroke="#10B981"/>
+  <text x="890" y="373" fill="#A7F3D0" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">SETTLED: HTTP 200 (10ms $840k Batch) | HTTP 409 ($50.4k Local Acquiring Saved)</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="36" y="415" width="1128" height="236" rx="12" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="56" y="444" fill="#818CF8" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800">📊 定量实测矩阵：全球多 PSP 智能路由批次 ($840,000.00) 5 组边界验证 (`evaluate_agentic_multi_psp_smart_routing_policy`)</text>
+
+  <rect x="52" y="458" width="1096" height="28" rx="4" fill="#0F172A"/>
+  <text x="66" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SCENARIO ID</text>
+  <text x="220" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">8-DIGIT BIN LOCAL ACQUIRING / VISA CAT-1 / MC MAC 03 CONDITION</text>
+  <text x="650" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">HTTP &amp; ACTION PILL</text>
+  <text x="875" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">LATENCY</text>
+  <text x="965" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">NET IMPACT</text>
+
+  <!-- Row 1 -->
+  <text x="66" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">psp_commit_ok</text>
+  <text x="220" y="504" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">8位 BIN 本地 MID 对齐 + 零硬拒付重试 + 超时 0400 冲正闭环</text>
+  <text x="650" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">200 · Act automatically</text>
+  <text x="875" y="504" fill="#E2E8F0" font-family="monospace" font-size="12">10ms</text>
+  <text x="965" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">$840,000.00 Settled</text>
+
+  <!-- Row 2 -->
+  <text x="66" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">psp_mac_403</text>
+  <text x="220" y="532" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">命中 Visa Cat-1 (43 被盗卡) 或 MC MAC 03/21 硬拒付仍企图跨 PSP 重试</text>
+  <text x="650" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">403 · Send to a human</text>
+  <text x="875" y="532" fill="#E2E8F0" font-family="monospace" font-size="12">11ms</text>
+  <text x="965" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">Retry Fine Blocked</text>
+
+  <!-- Row 3 -->
+  <text x="66" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">psp_rev_422</text>
+  <text x="220" y="560" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">主 PSP 超时未确认 0400 冲正即切备通道 (双扣) 或超 30天 15次上限</text>
+  <text x="650" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">422 · Send to a human</text>
+  <text x="875" y="560" fill="#E2E8F0" font-family="monospace" font-size="12">14ms</text>
+  <text x="965" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">Double-Charge Blocked</text>
+
+  <!-- Row 4 -->
+  <text x="66" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">psp_lic_451</text>
+  <text x="220" y="588" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ /v3/browse 检出违反当地本地收单牌照要求或缺失网络令牌</text>
+  <text x="650" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">451 · Send to a human</text>
+  <text x="875" y="588" fill="#E2E8F0" font-family="monospace" font-size="12">280ms</text>
+  <text x="965" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">Scheme Rule Hold</text>
+
+  <!-- Row 5 -->
+  <text x="66" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">psp_sav_409</text>
+  <text x="220" y="616" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ 启用 8位 BIN 本地收单免除 1.5% 跨境费并挽回软拒付订单</text>
+  <text x="650" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">409 · Confirm</text>
+  <text x="875" y="616" fill="#E2E8F0" font-family="monospace" font-size="12">245ms</text>
+  <text x="965" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">Saves $50,400.00</text>
+</svg>
