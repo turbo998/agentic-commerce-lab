@@ -5040,6 +5040,24 @@
         <div id="mus-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Fleet Open-Road Tolling (ETC) & Rental Pass-Through Sandbox -->
+      <div class="finops-box" id="agentic-fleet-tolling-etc-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛣️ 智能体车队高速路桥不停车收费 (ETC / Open-Road Tolling) 与租车过路费清分架构 (`agentic_fleet_tolling_etc_wim_axle_rental_passthrough_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 车队路桥 ETC 与租车过路费清分批次 ($390,000.00)、车载 OBU+ELD 时空轨迹互验防套牌盗刷、VIN 核定轴数纠偏与租客 [提车, 还车] 毫秒级切片场景 (Fleet ETC &amp; Rental Toll Scenario):</span></label>
+          <select id="tol-select" onchange="updateAgenticFleetTollingEtcSandbox()">
+            <option value="tol_commit_ok">🛣️ OBU+ELD 轨迹匹配 (≤500m) + VIN 轴数吻合 + [提车, 还车] 闭区间精确 + 零通行日 $0 管理费：10ms 清算 $390,000.00! (Act automatically)</option>
+            <option value="tol_cln_403">🛑 门架 Video OCR 扣费时刻本车 ELD/GPS 显示停在 500 公里外仓库 (套牌黑车盗刷/车牌错识)，或检出伪造 E-ZPass 催缴钓鱼短信链接拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="tol_axl_422">🚨 门架激光将 2 轴厢货误判成 5 轴半挂重卡多收 5 倍过桥费，或按延迟入账日把还车后洗车工/下一任租客的过路费扣在前客卡上拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tol_jnk_451">🛑 租客 7 天租期仅第 1 天过了一次 $1.75 收费桥，系统却对未上高速的其余 6 个“零通行日”强收 $14.99/天管理费 (违反 NY GBL § 399-z)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="tol_sav_409">🧑‍⚖️ Web IQ 启用 ELD 签名轨迹自动申诉剔除套牌/轴数错单并保持 OBU 射频在线免除 45% 视频附加费立省 $31,200.00 (净通行费 $358,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tol-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5714,6 +5732,7 @@ function renderAll() {
   updateAgenticRealEstateTitleEscrowSandbox();
   updateAgenticTaxFreeVatRefundSandbox();
   updateAgenticMusicAigcRoyaltySandbox();
+  updateAgenticFleetTollingEtcSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17479,6 +17498,52 @@ function updateAgenticMusicAigcRoyaltySandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🎵 听歌行为熵防刷流 + ISRC/ISWC 双权解耦 + ≤100% 份额守恒通过：已自动清算 (VERIFIED_MUSIC_AIGC_ROYALTY_DDEX_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 31 秒僵尸号刷流洗空奖池、零漏付词曲作者机械版税侵权重罚与 125% 份额超付</strong>：智能体音乐流媒体与 AIGC 版权分账批次已完成安全清算（<code>$470,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticFleetTollingEtcSandbox() {
+  var sel = document.getElementById("tol-select");
+  var outEl = document.getElementById("tol-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "tol_cln_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CLONED_PLATE_GPS_MISMATCH_OR_TOLL_SMISHING_FRAUD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到门架车牌识别（<code>Video OCR</code>）扣费时刻，本车硬件签名 <code>FMCSA ELD / GPS</code> 轨迹显示停在 500 公里外的仓库（系套牌黑车盗刷或跨州同号车牌误识），或账单源自伪造高速催费钓鱼短信（<code>Toll Smishing</code>）！已在 11ms 内硬拦截并自动生成 GPS 轨迹申诉包。" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_axl_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 AXLE_CLASS_OVERCHARGE_OR_POST_RETURN_TIMESTAMP_LEAK (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到门架激光将 2 轴厢式货车误判为 5 轴重卡收取 5 倍通行费（与 <code>17位 VIN</code> 轴数及挂车耦合传感器不符），或过门架物理时刻 <code>Gantry_Pass_UTC</code> 晚于租客还车时间（错扣下一任租客/洗车工过路费），已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_jnk_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ZERO_TOLL_DAY_JUNK_FEE_OR_UNMAINTAINED_OBU_PENALTY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出租车账单对未发生任何过路费的“零通行日（<code>Zero-Toll Days</code>）”强收每天 <code>$14.99</code> 管理费（违反 <code>NY GBL &sect; 399-z / FTC Junk-Fee</code> 规则），或将车队自身未维护 <code>OBU</code> 电池导致的 45% 视频罚金转嫁给客户，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ELD_GEOHASH_DISPUTE_AND_OBU_TRANSPONDER_DISCOUNT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>ELD 签名轨迹自动申诉剔除套牌/轴数错扣 + 车载 OBU 射频在线锁定最低折扣价（免除 45% Pay-by-Plate 视频附加费）</code>，单批挽回/立省 <code>$31,200.00</code>（净车队路桥通行结算额优化至 <code>$358,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛣️ OBU+ELD 轨迹互验 + VIN 轴数吻合 + 租期毫秒切片通过：已自动清算 (VERIFIED_FLEET_TOLLING_ETC_RENTAL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零套牌重卡盗刷车队账户、零 2 轴误判 5 轴冤枉费与还车后错扣拒付</strong>：智能体车队高速路桥与租车过路费批次已完成安全清算（<code>$390,000.00</code>）！" +
     "</div>";
 }
 

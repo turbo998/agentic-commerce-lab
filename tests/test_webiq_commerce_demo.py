@@ -14409,6 +14409,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-music-aigc-royalty-sandbox", demo_zh)
 
+    def test_agentic_fleet_tolling_etc_wim_axle_rental_passthrough_mandate_vs_plate_cloning_junk_admin_fee_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_fleet_tolling_etc_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. ELD/GPS geohash <=500m + VIN axles matched + rental window exact ($390,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_fleet_tolling_etc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_tolling_batch_cents, 39000000)
+
+        # 2. Cloned license plate (ELD >500m from gantry) or Toll Smishing fraud -> 403 Blocked
+        cln_403 = evaluate_agentic_fleet_tolling_etc_policy(
+            eld_gps_gantry_matched_and_no_smishing_verified=False,
+        )
+        self.assertFalse(cln_403.allowed)
+        self.assertEqual(cln_403.http_status, 403)
+        self.assertEqual(
+            cln_403.decision_code,
+            "CLONED_PLATE_GPS_MISMATCH_OR_TOLL_SMISHING_FRAUD_BLOCKED",
+        )
+
+        # 3. Axle-class overcharge (2-axle billed as 5-axle) or post-return timestamp leak -> 422 Blocked
+        axl_422 = evaluate_agentic_fleet_tolling_etc_policy(
+            vin_axle_class_and_rental_window_cutoff_verified=False,
+        )
+        self.assertFalse(axl_422.allowed)
+        self.assertEqual(axl_422.http_status, 422)
+        self.assertEqual(
+            axl_422.decision_code,
+            "AXLE_CLASS_OVERCHARGE_OR_POST_RETURN_TIMESTAMP_LEAK",
+        )
+
+        # 4. Zero-toll-day $14.99 junk admin fee or unmaintained OBU video penalty shift -> 451 Hold
+        jnk_451 = evaluate_agentic_fleet_tolling_etc_policy(
+            webiq_zero_toll_day_no_fee_and_obu_rate_clean=False,
+        )
+        self.assertFalse(jnk_451.allowed)
+        self.assertEqual(jnk_451.http_status, 451)
+
+        # 5. Web IQ automates ELD disputes & OBU transponder discounts saving $31,200 ($358,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_fleet_tolling_etc_policy(
+            eld_dispute_and_obu_discount_savings_cents=3120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_tolling_batch_cents, 35880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_fleet_tolling_etc_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-fleet-tolling-etc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
