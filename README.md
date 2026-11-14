@@ -225,6 +225,7 @@
 - **专题 191（AI 智能体 API 计量计费与 HTTP `402` 流式微支付 x402 / Stripe MPP Streaming Micropayments 结算架构：单向递增密码学状态通道凭据 Monotonic Voucher State Channel `x402_mpp_voucher_...` 与批量轧差清算、0.3ms 内存 ECDSA 验签与 64 位微美分 `microcents` 定点数账本防 `floor(0.4c)=0` 亚美分拆单白嫖 / 上游 `5xx` 报错零扣费与日终单笔 Rollup 轧差压缩 99.8% 通道费智能托管 vs 传统信用卡 `$0.30` 固定手续费 `-1500%` 倒挂与预充值储值卡沉淀跑路）**：**[《AI 智能体 API 计量计费与 HTTP `402` 流式微支付（x402 / Stripe MPP Streaming Micropayments）结算架构：单向递增密码学状态通道凭据（Monotonic Voucher State Channel `x402_mpp_voucher_...`）与批量轧差清算 vs 传统信用卡 `$0.30` 固定手续费倒挂与预充值储值卡沉淀跑路选型与原理解析 FAQ》](docs/agentic-x402-mpp-streaming-micropayment-channel-netting-mandate-vs-card-fixed-fee-margin-wipeout-faq.md)**
 - **专题 192（跨国企业 B2B 采购智能体关联交易转移定价 Transfer Pricing 与预提所得税 Withholding Tax WHT 合规架构：OECD 独立交易四分位区间 Arm's-Length IQR 与税收协定电子税收居民身份证明 e-TRC `wht_treaty_trc_mandate_...`、源泉代扣分账防 $50\%\text{–}300\%$ 应扣未扣罚款与受益所有人实质反导管测试 / OECD 支柱二 $15\%$ 全球最低税核验与双边税收协定 DTA 减免消除包税还原溢价智能托管 vs 传统跨境盲目包税还原 Gross-Up Overpayment 与反避税双倍补税罚款）**：**[《跨国企业 B2B 采购智能体关联交易转移定价（Transfer Pricing）与预提所得税（Withholding Tax, WHT）合规架构：OECD 独立交易四分位区间（Arm's-Length IQR）与税收协定电子税收居民身份证明（e-TRC `wht_treaty_trc_mandate_...`）vs 传统跨境盲目包税还原（Gross-Up Overpayment）与反避税双倍补税罚款选型与原理解析 FAQ》](docs/b2b-cross-border-withholding-tax-wht-transfer-pricing-trc-mandate-vs-grossup-double-taxation-penalty-faq.md)**
 - **专题 193（B2B 采购智能体供应商准入 KYB 与收款账户变更防诈骗 BEC Defense 架构：清算网收款人户名实时匹配 Confirmation of Payee / Nacha Account Validation `vendor_bank_cop_mandate_...` 与 $50\%$ 股权穿透制裁筛查、法定税号不变性不变量 TIN Invariance 阻断伪造 PDF 改号与 72 小时强制冷却期 + 带外 Passkey / HR 零知识图谱排查员工影子空壳公司与剥离二级倒爷直连 OEM 原厂目录智能托管 vs 传统邮件通知修改收款 IBAN 商业邮件诈骗与皮包商加价）**：**[《B2B 采购智能体供应商准入（KYB）与收款账户变更防诈骗（BEC Defense）架构：清算网收款人户名实时匹配（Confirmation of Payee / Nacha Account Validation `vendor_bank_cop_mandate_...`）与 $50\%$ 股权穿透制裁筛查 vs 传统邮件/PDF 通知修改收款 IBAN（商业邮件诈骗 BEC）与员工影子空壳公司（Shell Vendor Fraud）选型与原理解析 FAQ》](docs/b2b-vendor-onboarding-bank-account-change-bec-fraud-sanctions-mandate-vs-email-iban-hijack-faq.md)**
+- **专题 194（电商与智能体平台多商户分账 Marketplace Split-Settlement 与防“养号爆仓跑路欺诈 Bust-Out Seller Fraud”架构：投递签收托管结合动态滚动风险准备金 Rolling Reserve `marketplace_bustout_reserve_mandate_...` 与最大余数分账守恒、GMV 突增 $Z\text{-Score} > 3.0$ 自动拉升 $25\%\text{–}100\%$ 准备金与快递分拨中心实测过磅重量防 $0.02\text{ kg}$ 空包诈骗 / 最大余数法 Largest Remainder 零美分误差与退货 `reverse_transfer` 逆向追偿穿仓护盾智能托管 vs 传统 `T+1` 即时提现空手套白狼与追偿不能）**：**[《电商与智能体平台多商户分账（Marketplace Split-Settlement）与防“养号爆仓跑路欺诈（Bust-Out Seller Fraud）”架构：投递签收托管结合动态滚动风险准备金（Rolling Reserve `marketplace_bustout_reserve_mandate_...`）与最大余数分账守恒 vs 传统 `T+1` 即时提现空手套白狼与追偿不能（Clawback Insolvency）选型与原理解析 FAQ》](docs/marketplace-split-settlement-bustout-rolling-reserve-delivery-escrow-mandate-vs-t1-payout-clawback-loss-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -611,6 +612,8 @@
 ![2026-11-14 跨国 B2B 采购智能体预提所得税 (WHT)、e-TRC 税收协定减免与 OECD 转移定价四分位门禁架构一图流](assets/svg/194-b2b-cross-border-withholding-tax-transfer-pricing-trc-2026-11-14.svg)
 
 ![2026-11-14 B2B 采购智能体供应商准入 KYB、收款账户变更防 BEC 诈骗与股权穿透制裁门禁架构一图流](assets/svg/195-b2b-vendor-onboarding-bank-change-bec-fraud-2026-11-14.svg)
+
+![2026-11-14 电商与智能体平台多商户分账、动态滚动风险准备金防养号跑路与最大余数守恒架构一图流](assets/svg/196-marketplace-split-settlement-bustout-rolling-reserve-2026-11-14.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

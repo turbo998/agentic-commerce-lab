@@ -12023,6 +12023,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vendor-bec-kyb-sandbox", demo_zh)
 
+    def test_marketplace_split_settlement_bustout_rolling_reserve_delivery_escrow_mandate_vs_t1_payout_clawback_loss_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_marketplace_split_bustout_policy,
+        )
+
+        # 1. Verified 25% rolling reserve + Largest-Remainder penny exact + POD -> 200 OK ($600,000)
+        commit_ok = evaluate_marketplace_split_bustout_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_marketplace_gmv_cents, 60000000)
+
+        # 2. Seller bust-out velocity spike without 25% reserve or premature T+1 payout -> 403 blocked in 11ms
+        bst_403 = evaluate_marketplace_split_bustout_policy(
+            bustout_velocity_reserve_25pct_and_pod_escrow_verified=False,
+        )
+        self.assertFalse(bst_403.allowed)
+        self.assertEqual(bst_403.http_status, 403)
+        self.assertEqual(
+            bst_403.marketplace_split_lane,
+            "SELLER_BUSTOUT_VELOCITY_SPIKE_OR_PREMATURE_PAYOUT_BLOCKED",
+        )
+
+        # 3. Split penny conservation error or uncovered refund clawback -> 422 blocked in 14ms
+        pny_422 = evaluate_marketplace_split_bustout_policy(
+            split_penny_conservation_and_reverse_clawback_passed=False,
+        )
+        self.assertFalse(pny_422.allowed)
+        self.assertEqual(pny_422.http_status, 422)
+        self.assertEqual(
+            pny_422.marketplace_split_lane,
+            "SPLIT_PENNY_CONSERVATION_OR_CLAWBACK_UNCOVERED_BLOCKED",
+        )
+
+        # 4. Web IQ detects 0.02kg empty parcel weight mismatch or spoofed POD -> 451 blocked in 280ms
+        wgt_451 = evaluate_marketplace_split_bustout_policy(
+            webiq_carrier_parcel_weight_and_pod_geohash_clean=False,
+        )
+        self.assertFalse(wgt_451.allowed)
+        self.assertEqual(wgt_451.http_status, 451)
+
+        # 5. Web IQ credits rolling-reserve clawback shield & dispute avoidance saving $90,000 ($510,000 net) -> 409 Confirm
+        rsv_409 = evaluate_marketplace_split_bustout_policy(
+            rolling_reserve_clawback_shield_and_dispute_avoidance_credit_cents=9000000,
+        )
+        self.assertFalse(rsv_409.allowed)
+        self.assertEqual(rsv_409.http_status, 409)
+        self.assertEqual(rsv_409.settled_marketplace_gmv_cents, 51000000)
+        self.assertEqual(rsv_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["marketplace_split_bustout_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marketplace-split-bustout-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

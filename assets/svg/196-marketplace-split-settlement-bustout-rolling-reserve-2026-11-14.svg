@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg196" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060B18"/>
+      <stop offset="50%" stop-color="#0D182E"/>
+      <stop offset="100%" stop-color="#162747"/>
+    </linearGradient>
+    <linearGradient id="accent196" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg196)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0B1324" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent196)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">
+    Round 194 · 平台多商户分账 (Split-Settlement)、动态滚动准备金防“养号爆仓跑路”与最大余数守恒门禁
+  </text>
+  <text x="52" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    Marketplace Split-Settlement &amp; Bust-Out Fraud Defense · 25% Rolling Reserve, Parcel-Weight POD &amp; Largest Remainder vs. T+1 Label Payout ($600,000)
+  </text>
+  <rect x="945" y="44" width="205" height="34" rx="17" fill="#1E143B" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="1047" y="66" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#DDD6FE">
+    25% Reserve · Penny Exact
+  </text>
+
+  <!-- Left Column: Failure Risks -->
+  <rect x="48" y="114" width="352" height="445" rx="12" fill="#16111D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#FCA5A5">
+    ❌ 传统 T+1 填单号提现与浮点分账三大灾难
+  </text>
+
+  <rect x="64" y="164" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    1. 养号爆仓跑路 (Bust-Out) 周一提空 $600,000
+  </text>
+  <text x="78" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 黑产养号 90 天后周末半价狂卖 $600k (交易量突增 60 倍)
+  </text>
+  <text x="78" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 上传假快递单号触发“发货即 T+1 放款”，周一卷款跑路
+  </text>
+  <text x="78" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 买家集体拒付，收单行从平台自有账户强扣 $600k+$90k 罚金
+  </text>
+
+  <rect x="64" y="294" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    2. 浮点拆账差 1 美分挂账与退货追偿穿仓
+  </text>
+  <text x="78" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • $100.00 按 1/3 拆给三家商户，round() 取整合计 $99.99
+  </text>
+  <text x="78" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 差 1 美分导致日终银行清算对账不平，审计全线报错
+  </text>
+  <text x="78" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 子商户提空余额后发生退货，reverse_transfer 失败由平台白贴
+  </text>
+
+  <rect x="64" y="424" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="448" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    3. 0.02kg 空信封冒充 3.5kg 显卡骗取签收放款
+  </text>
+  <text x="78" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 仅查物流轨迹状态“已签收”，不查中转场电子秤实测重量
+  </text>
+  <text x="78" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 骗子寄出 0.02kg 空信封到同城代收点刷出“本人签收”
+  </text>
+  <text x="78" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 单批造成 $90,000+ 子商户穿仓坏账与拒付通道罚款
+  </text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="114" width="360" height="445" rx="12" fill="#0F1A2E" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="440" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#93C5FD">
+    🛡️ 5-Lane 多商户分账与防爆仓门禁 (10ms–280ms)
+  </text>
+
+  <rect x="436" y="164" width="328" height="68" rx="8" fill="#09221B" stroke="#10B981"/>
+  <text x="450" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    ⚡ HTTP 200 · Act automatically (10ms)
+  </text>
+  <text x="450" y="206" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#A7F3D0">
+    25% 滚动准备金锁定 + 最大余数美分守恒 + 过磅妥投
+  </text>
+  <text x="450" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#6EE7B7">
+    + 100% 逆向追偿池覆盖 → 自动分账结算 $600,000.00
+  </text>
+
+  <rect x="436" y="242" width="328" height="68" rx="8" fill="#2A1215" stroke="#EF4444"/>
+  <text x="450" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F87171">
+    🛑 HTTP 403 · 爆单突增/无准备金抢提阻断 (11ms)
+  </text>
+  <text x="450" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FECACA">
+    GMV 突增 Z&gt;3.0 未锁定 25% 滚动准备金或凭单号抢提 T+1
+  </text>
+  <text x="450" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FCA5A5">
+    SELLER_BUSTOUT_VELOCITY_SPIKE_OR_PREMATURE_PAYOUT_BLOCKED
+  </text>
+
+  <rect x="436" y="320" width="328" height="68" rx="8" fill="#2A1612" stroke="#F97316"/>
+  <text x="450" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FB923C">
+    🚨 HTTP 422 · 分账差 1 美分/追偿穿仓拦截 (14ms)
+  </text>
+  <text x="450" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FFEDD5">
+    分账数组之和 != 总美分或退款未绑定 reverse_transfer 兜底
+  </text>
+  <text x="450" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDBA74">
+    SPLIT_PENNY_CONSERVATION_OR_CLAWBACK_UNCOVERED_BLOCKED
+  </text>
+
+  <rect x="436" y="398" width="328" height="68" rx="8" fill="#251329" stroke="#C084FC"/>
+  <text x="450" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#D8B4FE">
+    🛑 HTTP 451 · 0.02kg 空包/假签收冻结 (280ms)
+  </text>
+  <text x="450" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#F3E8FF">
+    Web IQ 检出快递中转场实测包裹重量仅 0.02kg != 3.5kg
+  </text>
+  <text x="450" y="456" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#E9D5FF">
+    EMPTY_PARCEL_WEIGHT_MISMATCH_OR_FAKE_POD_HOLD
+  </text>
+
+  <rect x="436" y="476" width="328" height="68" rx="8" fill="#29200E" stroke="#F59E0B"/>
+  <text x="450" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FBBF24">
+    🧑‍⚖️ HTTP 409 · 滚动准备金穿仓护盾确认 (245ms)
+  </text>
+  <text x="450" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FEF3C7">
+    25% 滚动准备金池 100% 吸收退货拒付 + 免除平台连带坏账
+  </text>
+  <text x="450" y="534" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDE68A" font-weight="700">
+    立省 $90,000.00 (15.0%) → 净风险清算 $510,000.00 (Confirm)
+  </text>
+
+  <!-- Right Column: Physics & FinOps Metrics -->
+  <rect x="800" y="114" width="352" height="445" rx="12" fill="#0B1D28" stroke="#10B981" stroke-width="1.5"/>
+  <text x="820" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#6EE7B7">
+    🔬 分账守恒数学与滚动准备金指标
+  </text>
+
+  <rect x="816" y="164" width="320" height="122" rx="8" fill="#0F2937" stroke="#8B5CF6"/>
+  <text x="830" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#DDD6FE">
+    最大余数法 (Hamilton's Method) 零误差
+  </text>
+  <text x="830" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 守恒定律: Sum(Split_i) + Fee === Total_Cents
+  </text>
+  <text x="830" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 示例: 10000c / 3 -&gt; [3334c, 3333c, 3333c]
+  </text>
+  <text x="830" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 逆向追索: 退款原子绑定 reverse_transfer 扣回
+  </text>
+  <text x="830" y="270" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#A7F3D0" font-weight="600">
+    • 日终百万笔对账 0 美分挂账、0 负余额穿仓
+  </text>
+
+  <rect x="816" y="298" width="320" height="118" rx="8" fill="#0F2937" stroke="#3B82F6"/>
+  <text x="830" y="322" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#93C5FD">
+    Z-Score 突增熔断 &amp; 物流过磅验真 (POD)
+  </text>
+  <text x="830" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 动态准备金: Z &gt; 3.0 自动由 5% 升至 25%~100%
+  </text>
+  <text x="830" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 重量防伪: 中转场实测重 &gt;= 80% SKU 标准毛重
+  </text>
+  <text x="830" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#BAE6FD" font-weight="600">
+    • 彻底粉碎“周末爆单+发空信封+周一提现跑路”
+  </text>
+
+  <rect x="816" y="428" width="320" height="114" rx="8" fill="#09241C" stroke="#10B981"/>
+  <text x="830" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#34D399">
+    💰 Web IQ 穿仓坏账挽回与风控收益
+  </text>
+  <text x="830" y="474" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 平台多商户分账与大促提现批次总额: $600,000.00
+  </text>
+  <text x="830" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 滚动准备金拦截穿仓坏账 + 拒付罚金减免: -$90,000.00
+  </text>
+  <text x="830" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    • 净风险调整清算额: $510,000.00 (立省 15.0%)
+  </text>
+
+  <!-- Bottom Banner -->
+  <rect x="48" y="574" width="1104" height="62" rx="10" fill="#0F172A" stroke="#334155"/>
+  <text x="68" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    🔑 架构师铁律：不要对填了单号但未过磅妥投的突增订单放行 T+1 提现！必须绑定 `marketplace_bustout_reserve_mandate_` 令牌，
+  </text>
+  <text x="68" y="622" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" fill="#94A3B8">
+    强审最大余数法分账美分守恒、Z-Score 动态 25% 滚动准备金与 reverse_transfer 追偿锁，并用 Web IQ 核验快递分拨中心包裹实测重量。
+  </text>
+</svg>
