@@ -16766,6 +16766,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-textile-apparel-cmt-yy-aql-sandbox", demo_zh)
 
+    def test_agentic_veterinary_pet_insurance_soap_bilateral_vs_preexisting_denial_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_veterinary_pet_insurance_soap_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 365d curable reset & bilateral OA check + ISO microchip match + NAIC statute -> 200 OK ($380,000.00)
+        ok_res = evaluate_agentic_veterinary_pet_insurance_soap_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_VETERINARY_PET_INSURANCE_DIRECT_PAY_SETTLED")
+        self.assertEqual(ok_res.settled_veterinary_pet_direct_pay_cents, 38000000)
+
+        # 2. Bad-faith pre-existing denial on cured condition (>365d) or bilateral denial on acute trauma (OA=0) -> 403 Blocked
+        den_403 = evaluate_agentic_veterinary_pet_insurance_soap_policy(
+            curable_365d_lookback_reset_and_bilateral_acute_trauma_coverage_honored=False,
+        )
+        self.assertFalse(den_403.allowed)
+        self.assertEqual(den_403.http_status, 403)
+        self.assertEqual(
+            den_403.decision_code,
+            "UNJUSTIFIED_RETROACTIVE_PREEXISTING_OR_BILATERAL_TRAUMA_DENIAL_BLOCKED",
+        )
+
+        # 3. ISO 11784 microchip mismatch (multi-pet swap) or upcoded Level-1 ER triage & 400% lab markup -> 422 Blocked
+        lab_422 = evaluate_agentic_veterinary_pet_insurance_soap_policy(
+            iso11784_microchip_match_and_er_vitals_inhouse_lab_cap_verified=False,
+        )
+        self.assertFalse(lab_422.allowed)
+        self.assertEqual(lab_422.http_status, 422)
+        self.assertEqual(
+            lab_422.decision_code,
+            "MICROCHIP_IDENTITY_MISMATCH_OR_UPCODED_ER_TRIAGE_AND_INHOUSE_LAB_PADDING",
+        )
+
+        # 4. State NAIC Pet Insurance Model Act (SB 1217) violation or unlicensed veterinarian -> 451 Hold
+        naic_451 = evaluate_agentic_veterinary_pet_insurance_soap_policy(
+            webiq_state_naic_pet_insurance_statute_and_vet_license_clean=False,
+        )
+        self.assertFalse(naic_451.allowed)
+        self.assertEqual(naic_451.http_status, 451)
+
+        # 5. Web IQ automated regional UCR fee benchmark & in-house lab markup cap saving $34,200 ($345,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_veterinary_pet_insurance_soap_policy(
+            automated_vet_ucr_fee_benchmark_and_lab_markup_cap_savings_cents=3420000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_veterinary_pet_direct_pay_cents, 34580000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_veterinary_pet_insurance_soap_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-veterinary-pet-insurance-soap-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
