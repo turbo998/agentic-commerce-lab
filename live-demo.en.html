@@ -5670,6 +5670,24 @@
         <div id="ivf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Defense & Aerospace DFARS/CMMC 2.0, DCAA Timecard & SAE AS6171 Sandbox -->
+      <div class="finops-box" id="b2b-defense-aerospace-dfars-dcaa-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛡️ B2B 国防与航空航天总包采购 (DFARS/CMMC)：SPRS 认证锁、DCAA 工时审计与 AS6171 防伪 (`b2b_defense_aerospace_dfars_252_204_7012_cmmc_dpas_dcaa_timecard_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 航空防务二级分包商月度 CPFF 研发与航电批次 ($870,000.00)、CMMC 2.0 Level 2 认证、DCAA FAR 31.205 禁报科目与 SAE AS6171 场景 (Defense &amp; Aerospace Scenario):</span></label>
+          <select id="dfn-select" onchange="updateB2bDefenseAerospaceDfarsDcaaSandbox()">
+            <option value="dfn_commit_ok">🛡️ CMMC Level 2 (SPRS=110) 有效 + DCAA 签名工时零 FAR 31.205 禁报费 + SAE AS6171 防伪通过：10ms 清算 $870,000.00! (Act automatically)</option>
+            <option value="dfn_cmm_403">🛑 分包商未获 C3PAO CMMC Level 2 认证 (在 SPRS 虚报积分) 或私将 CUI 涉密图纸转包给无资质小厂 (防触发《虚假申报法》3倍重罚) → 11ms 触发 HTTP 403!</option>
+            <option value="dfn_dca_422">🚨 将亏损固定一口价 (FFP) 项目的工程师工时跨合同串入 Cost-Plus 账单，或在间接管理费混入 FAR 31.205 禁报的酒水/游说/头等舱费 → 14ms 触发 HTTP 422!</option>
+            <option value="dfn_eee_451">🛑 停产军规芯片从非授权现货商采购被检出表面打磨涂黑重印 (Blacktopping 商业级冒充 -55°C 宇航级) 或缺 SAE AS6171 报告：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="dfn_sav_409">🧑‍⚖️ Web IQ 自动剥离间接费池中的 FAR 31.205 禁报公关差旅溢价并按最新 DCAA 暂定费率下调重算立省 $69,600.00 (净付 $800,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dfn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6379,6 +6397,7 @@ function renderAll() {
   updateB2bUtilitySolarEpcFlashTestSandbox();
   updateB2bRailcarFleetAarRunningRepairSandbox();
   updateAgenticFertilityIvfCryostorageSandbox();
+  updateB2bDefenseAerospaceDfarsDcaaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19754,6 +19773,52 @@ function updateAgenticFertilityIvfCryostorageSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧬 四阶段 CPT 里程碑与退费托管吻合 + 5+5天 Split-Fill 配药 + -196°C 双路液氮遥测达标：已自动清算 (VERIFIED_FERTILITY_IVF_CRYOSTORAGE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零促排中途取消吞没全款、零养囊第 6 天按颗坐地起价与促排药整箱报废</strong>：智能体辅助生殖与胚胎液氮冷存批次已完成安全清算（<code>$560,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bDefenseAerospaceDfarsDcaaSandbox() {
+  var sel = document.getElementById("dfn-select");
+  var outEl = document.getElementById("dfn-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "dfn_cmm_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CMMC_LEVEL2_SPRS_SCORE_DEFICIENT_OR_UNAUTHORIZED_CUI_FLOWDOWN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经穿透核查联邦 <code>SPRS（供应商绩效风险系统）</code>发现：该二级分包商（<code>CAGE Code</code>）缺失有效的第三方 <code>C3PAO CMMC 2.0 Level 2（NIST SP 800-171 110项控制）</code>认证，或违规将受控非密图纸（<code>CUI / ITAR</code>）外发给无资质下级作坊！为防止触发美国司法部《虚假申报法（<code>31 U.S.C. § 3729 False Claims Act</code>）》三倍惩罚性追责，已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "dfn_dca_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DCAA_TIMECARD_LABOR_CROSS_CHARGING_OR_FAR31205_UNALLOWABLE_COST (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "<code>DCAA Floorcheck</code> 工时与总账审计发现：分包商将亏损固定一口价（<code>FFP</code>）商业项目的工程师工时违规串入实报实销的 <code>Cost-Plus (CPFF) CLIN</code> 工单，或在间接管理费用池（<code>G&amp;A</code>）中混入 <code>FAR 31.205</code> 明令禁止报销的高管酒水、头等舱、游说及罚款支出，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "dfn_eee_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 COUNTERFEIT_BLACKTOPPED_EEE_PART_OR_MISSING_SAE_AS6171_TEST_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 与实验室防伪报告显示：航电模块使用的停产军规 FPGA 采购自非授权独立现货商，经 <code>SAE AS6171</code> 丙酮擦拭、X 射线引线框比对与开盖（<code>Decapsulation</code>）检出表面涂黑翻新（<code>Blacktopping</code>，以 <code>0°C</code> 商业级旧芯片冒充 <code>-55°C</code> 宇航级芯片）或命中 <code>GIDEP</code> 假件预警，已在 280ms 内扣押挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "dfn_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_FAR31205_SCRUB_AND_DCAA_RATE_TRUEUP_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>间接费用池 FAR 31.205 不可报销科目自动剥离 + DCAA 最新核定暂定费率 (Provisional Billing Rate) 下调重算</code>，单批核减违规成本立省 <code>$69,600.00</code>（净结算额优化至 <code>$800,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ CMMC 2.0 Level 2 (SPRS=110) 达标 + DCAA 每日工时零串账与零禁报费 + SAE AS6171 防伪通过：已自动清算 (VERIFIED_DEFENSE_AEROSPACE_DFARS_DCAA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 CUI 图纸泄密触发三倍重罚、零跨合同串工时与打磨翻新假芯片上天</strong>：B2B 国防与航空航天分包批次已完成安全清算（<code>$870,000.00</code>）！" +
     "</div>";
 }
 
