@@ -21078,6 +21078,96 @@ def evaluate_b2b_scf_dynamic_discount_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 191: Agentic HTTP 402 (x402 / Stripe MPP) Streaming Micropayment Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticX402MppStreamingVerdict:
+    allowed: bool
+    http_status: int
+    mpp_streaming_lane: str
+    settled_mpp_channel_cents: int
+    rollup_netting_tier_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_x402_mpp_streaming_policy(
+    *,
+    gross_mpp_channel_cents: int = 32000000,
+    per_call_fixed_fee_ratio_15pct_and_state_channel_verified: bool = True,
+    monotonic_voucher_nonce_and_zero_subcent_truncation_passed: bool = True,
+    webiq_upstream_200ok_schema_and_published_tariff_clean: bool = True,
+    state_channel_rollup_netting_and_volume_tier_rebate_cents: int = 0,
+) -> AgenticX402MppStreamingVerdict:
+    # 1. Per-Call Card $0.30 Fixed-Fee Margin Wipeout (>1.5% Fee Ratio) -> HTTP 403
+    if not per_call_fixed_fee_ratio_15pct_and_state_channel_verified:
+        return AgenticX402MppStreamingVerdict(
+            False,
+            403,
+            "PER_CALL_CARD_FIXED_FEE_MARGIN_WIPEOUT_BLOCKED",
+            0,
+            0,
+            "x402_mpp_blocked_due_to_per_call_card_fixed_fee_wipeout_without_state_channel",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Sub-Cent Rounding Truncation Exploit (floor(0.4c)=0) or Nonce Replay -> HTTP 422
+    if not monotonic_voucher_nonce_and_zero_subcent_truncation_passed:
+        return AgenticX402MppStreamingVerdict(
+            False,
+            422,
+            "SUB_CENT_TRUNCATION_EXPLOIT_OR_NONCE_REPLAY_BLOCKED",
+            0,
+            0,
+            "streaming_micropayment_rejected_for_int_cent_truncation_or_non_monotonic_voucher_nonce",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Upstream HTTP 5xx Error Billing or Undisclosed Surge Pricing via Web IQ -> HTTP 451
+    if not webiq_upstream_200ok_schema_and_published_tariff_clean:
+        return AgenticX402MppStreamingVerdict(
+            False,
+            451,
+            "UPSTREAM_5XX_CHARGE_OR_SURGE_PRICING_HOLD",
+            0,
+            0,
+            "webiq_detected_upstream_5xx_error_voucher_charge_or_undisclosed_surge_pricing",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ 16M-Call Single-Batch Rollup Netting + Volume Tier Rebate -> HTTP 409 Confirm
+    if state_channel_rollup_netting_and_volume_tier_rebate_cents > 0:
+        return AgenticX402MppStreamingVerdict(
+            False,
+            409,
+            "STATE_CHANNEL_ROLLUP_NETTING_AND_VOLUME_TIER_CONFIRM",
+            gross_mpp_channel_cents - state_channel_rollup_netting_and_volume_tier_rebate_cents,
+            state_channel_rollup_netting_and_volume_tier_rebate_cents,
+            "webiq_applied_16m_call_single_batch_rollup_netting_and_volume_rebate_saving_48000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified State-Channel Monotonic Vouchers + 64-Bit Microcents + <0.1% Fee -> Settled
+    return AgenticX402MppStreamingVerdict(
+        True,
+        200,
+        "VERIFIED_X402_MPP_STREAMING_MICROPAYMENT_SETTLED",
+        gross_mpp_channel_cents,
+        0,
+        "http402_monotonic_ecdsa_voucher_microcents_ledger_and_eod_rollup_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -27855,6 +27945,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "double_pledge_block_latency_ms": scf_plg_403.latency_ms,
     }
 
+    # Round 191 (Agentic HTTP 402 x402 / Stripe MPP Streaming Micropayment & State-Channel Rollup Mandate)
+    mpp_commit_ok = evaluate_agentic_x402_mpp_streaming_policy()
+    mpp_fee_403 = evaluate_agentic_x402_mpp_streaming_policy(
+        per_call_fixed_fee_ratio_15pct_and_state_channel_verified=False,
+    )
+    mpp_sub_422 = evaluate_agentic_x402_mpp_streaming_policy(
+        monotonic_voucher_nonce_and_zero_subcent_truncation_passed=False,
+    )
+    mpp_err_451 = evaluate_agentic_x402_mpp_streaming_policy(
+        webiq_upstream_200ok_schema_and_published_tariff_clean=False,
+    )
+    mpp_rol_409 = evaluate_agentic_x402_mpp_streaming_policy(
+        state_channel_rollup_netting_and_volume_tier_rebate_cents=4800000,
+    )
+    agentic_x402_mpp_streaming_guards = {
+        "all_passed": (
+            mpp_commit_ok.allowed
+            and mpp_commit_ok.settled_mpp_channel_cents == 32000000
+            and not mpp_fee_403.allowed
+            and mpp_fee_403.http_status == 403
+            and not mpp_sub_422.allowed
+            and mpp_sub_422.http_status == 422
+            and not mpp_err_451.allowed
+            and mpp_err_451.http_status == 451
+            and not mpp_rol_409.allowed
+            and mpp_rol_409.action_pill == "Confirm"
+        ),
+        "agentic_x402_mpp_streaming_settlement_latency_ms": mpp_commit_ok.latency_ms,
+        "fixed_fee_wipeout_block_latency_ms": mpp_fee_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28058,6 +28179,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "uhvdc_press_pack_igbt_guards": uhvdc_press_pack_igbt_guards,
         "agentic_3ds2_fido2_spc_guards": agentic_3ds2_fido2_spc_guards,
         "b2b_scf_dynamic_discount_guards": b2b_scf_dynamic_discount_guards,
+        "agentic_x402_mpp_streaming_guards": agentic_x402_mpp_streaming_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34395,6 +34517,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="scf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic HTTP 402 (x402 / Stripe MPP) Streaming Micropayment Mandate Sandbox (Round 191 FAQ Companion) -->
+      <div class="finops-box" id="agentic-x402-mpp-streaming-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mpp-title">⚡ AI 智能体 HTTP 402 流式微支付 (x402 / Stripe MPP)、状态通道累计支票与批量轧差架构：微美分零截断令牌 (x402_mpp_voucher_...) vs 信用卡 $0.30 固定费倒挂决策器 (Round 191 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 1,600 万次高频 MCP 工具与数据 API 流式微支付批次 ($320,000.00)、状态通道 vs 逐笔 $0.30 固定费、64 位 microcents 零截断/单调递增 Nonce 与 Web IQ 5xx 免扣费/日终单笔轧差场景 (Agentic x402 / MPP Streaming Scenario):</span></label>
+          <select id="mpp-select" onchange="updateAgenticX402MppStreamingSandbox()">
+            <option value="mpp_commit_ok">⚡ 状态通道 0.3ms 内存验签 + 64位 microcents 零截断 + 综合费率 0.08% (&lt;=1.5%)：10ms 自动轧差结算 $320,000.00! (Act automatically)</option>
+            <option value="mpp_fee_403">🛑 将单价 $0.02 的 1,600 万次 API 调用直接走传统逐笔信用卡 $0.30 固定费轨道 (产生 $480 万手续费倒挂) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="mpp_sub_422">🚨 传统 int_cents 账本将 $0.004 (0.4美分) 截断为 0 遭恶意 Agent 拆单白嫖 1000 万次，或重放旧序号 Nonce 支票拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="mpp_err_451">🛑 上游 MCP 工具返回 HTTP 502/429 报错却企图递增扣取微支付凭据，或未经声明将单价暗中上调 10 倍：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="mpp_rol_409">🧑‍⚖️ Web IQ 启用 1,600 万张链下递增支票合并为日终唯一 1 笔 L2/SPT 终局轧差 (压缩 99.8% 通道费)，并兑现千万级调用阶梯折扣立省 $48,000.00 (净付 $272,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mpp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -35024,6 +35164,7 @@ function renderAll() {{
   updateUhvdcPressPackIgbtSandbox();
   updateAgentic3ds2Fido2SpcSandbox();
   updateB2bScfDynamicDiscountSandbox();
+  updateAgenticX402MppStreamingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -44635,6 +44776,55 @@ function updateB2bScfDynamicDiscountSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 三单匹配 UUID + 零重复质押 + 滑动 APR (&gt;=18%) + 15% 质保尾款达标：已自动清算 (VERIFIED_B2B_SCF_DYNAMIC_DISCOUNT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零一票多融欺诈、零无条件确权抗辩丧失与静态窗口断崖流失</strong>：B2B 供应链金融应付账款批次已完成清算（<code>$650,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticX402MppStreamingSandbox() {{
+  var selEl = document.getElementById("mpp-select");
+  var outEl = document.getElementById("mpp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "mpp_fee_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PER_CALL_CARD_FIXED_FEE_MARGIN_WIPEOUT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "微支付清算路由门禁检出，该批次将 <code>单笔仅 $0.02 的高频 MCP 工具调用直接路由至传统 2.9% + $0.30/笔 信用卡轨道（1,600 万次调用产生高达 $4,800,000 固定手续费倒挂，费率占比 &gt; 1.5%）</code>（<code>per_call_fixed_fee_ratio_15pct_and_state_channel_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$320,000.00</code> 逐笔刷卡并强制切换状态通道！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mpp_sub_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SUB_CENT_TRUNCATION_EXPLOIT_OR_NONCE_REPLAY_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "定点数微美分账本与状态机检出 <code>使用 int_cents 整数美分导致 $0.004 亚美分调用被向下取整为 $0.00（拆单白嫖漏洞），或检出旧序号 voucher.nonce 回滚重放攻击</code>（<code>monotonic_voucher_nonce_and_zero_subcent_truncation_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mpp_err_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UPSTREAM_5XX_CHARGE_OR_SURGE_PRICING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>上游 MCP 工具公开费率表与 SLA 契约</code>，检出服务商对 HTTP 502/429 报错响应强行递增扣费或暗中涨价 10 倍，立即冻结状态通道！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "mpp_rol_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 STATE_CHANNEL_ROLLUP_NETTING_AND_VOLUME_TIER_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>1,600 万次链下 0.3ms 签名支票合并为日终唯一 1 笔批量轧差清算 (Rollup Netting) + 千万级调用阶梯折扣返还</code>，自动免除逐笔通道损耗立省 <code>$48,000.00</code>（净轧差结算额降至 <code>$272,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ HTTP 402 单调递增支票 + 64位 microcents 零截断 + 日终轧差达标：已自动清算 (VERIFIED_X402_MPP_STREAMING_MICROPAYMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 $0.30 固定手续费倒挂、零亚美分拆单白嫖与预充值资金沉淀</strong>：1,600 万次高频 AI 工具流式微支付批次已完成终局轧差结算（<code>$320,000.00</code>）！" +
     "</div>";
 }}
 

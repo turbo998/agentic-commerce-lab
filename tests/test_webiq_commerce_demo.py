@@ -11855,6 +11855,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-scf-dynamic-discount-sandbox", demo_zh)
 
+    def test_agentic_x402_mpp_streaming_micropayment_channel_netting_mandate_vs_card_fixed_fee_margin_wipeout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_x402_mpp_streaming_policy,
+        )
+
+        # 1. Verified state channel + microcents ledger + <=1.5% fee ratio -> 200 OK ($320,000)
+        commit_ok = evaluate_agentic_x402_mpp_streaming_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_mpp_channel_cents, 32000000)
+
+        # 2. Per-call card $0.30 fixed-fee margin wipeout -> 403 blocked in 11ms
+        fee_403 = evaluate_agentic_x402_mpp_streaming_policy(
+            per_call_fixed_fee_ratio_15pct_and_state_channel_verified=False,
+        )
+        self.assertFalse(fee_403.allowed)
+        self.assertEqual(fee_403.http_status, 403)
+        self.assertEqual(
+            fee_403.mpp_streaming_lane,
+            "PER_CALL_CARD_FIXED_FEE_MARGIN_WIPEOUT_BLOCKED",
+        )
+
+        # 3. Sub-cent truncation exploit (floor(0.4c)=0) or voucher nonce replay -> 422 blocked in 14ms
+        sub_422 = evaluate_agentic_x402_mpp_streaming_policy(
+            monotonic_voucher_nonce_and_zero_subcent_truncation_passed=False,
+        )
+        self.assertFalse(sub_422.allowed)
+        self.assertEqual(sub_422.http_status, 422)
+        self.assertEqual(
+            sub_422.mpp_streaming_lane,
+            "SUB_CENT_TRUNCATION_EXPLOIT_OR_NONCE_REPLAY_BLOCKED",
+        )
+
+        # 4. Web IQ detects upstream 5xx error billing or undisclosed surge pricing -> 451 blocked in 280ms
+        err_451 = evaluate_agentic_x402_mpp_streaming_policy(
+            webiq_upstream_200ok_schema_and_published_tariff_clean=False,
+        )
+        self.assertFalse(err_451.allowed)
+        self.assertEqual(err_451.http_status, 451)
+
+        # 5. Web IQ credits 16M-call single-batch rollup netting & volume tier saving $48,000 ($272,000 net) -> 409 Confirm
+        rol_409 = evaluate_agentic_x402_mpp_streaming_policy(
+            state_channel_rollup_netting_and_volume_tier_rebate_cents=4800000,
+        )
+        self.assertFalse(rol_409.allowed)
+        self.assertEqual(rol_409.http_status, 409)
+        self.assertEqual(rol_409.settled_mpp_channel_cents, 27200000)
+        self.assertEqual(rol_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_x402_mpp_streaming_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-x402-mpp-streaming-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

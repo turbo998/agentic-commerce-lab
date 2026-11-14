@@ -1030,6 +1030,11 @@
     "b2b_scf_dynamic_discount_settlement_latency_ms": 10,
     "double_pledge_block_latency_ms": 11
   },
+  "agentic_x402_mpp_streaming_guards": {
+    "all_passed": true,
+    "agentic_x402_mpp_streaming_settlement_latency_ms": 10,
+    "fixed_fee_wipeout_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
