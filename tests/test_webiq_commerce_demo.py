@@ -12583,6 +12583,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-cross-border-ddp-customs-sandbox", demo_zh)
 
+    def test_agentic_gift_card_stored_value_enumeration_aml_mandate_vs_card_draining_triangulation_laundering_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_gift_card_stored_value_policy,
+        )
+
+        # 1. Verified HSM Argon2id + zero tender loop + <=$2,000 FinCEN cap -> 200 OK ($490,000)
+        commit_ok = evaluate_agentic_gift_card_stored_value_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_gift_card_batch_cents, 49000000)
+
+        # 2. Botnet enumeration, GC/BNPL-to-GC loop, or >$2,000 FinCEN cap breach -> 403 blocked in 11ms
+        enm_403 = evaluate_agentic_gift_card_stored_value_policy(
+            hsm_argon2id_pin_zero_loop_and_fincen_2000usd_cap_verified=False,
+        )
+        self.assertFalse(enm_403.allowed)
+        self.assertEqual(enm_403.http_status, 403)
+        self.assertEqual(
+            enm_403.gift_card_aml_lane,
+            "ENUMERATION_OR_LOOP_OR_FINCEN_2000USD_CAP_BLOCKED",
+        )
+
+        # 3. Stolen-card e-GC redeemed 90s later on burner account for liquid goods -> 422 blocked in 14ms
+        tri_422 = evaluate_agentic_gift_card_stored_value_policy(
+            cross_account_triangulation_cooling_off_and_fido2_passed=False,
+        )
+        self.assertFalse(tri_422.allowed)
+        self.assertEqual(tri_422.http_status, 422)
+        self.assertEqual(
+            tri_422.gift_card_aml_lane,
+            "TRIANGULATION_CARD_TO_GIFT_LAUNDERING_HOLD",
+        )
+
+        # 4. Web IQ detects <5-year expiry or illegal dormancy fee under CARD Act -> 451 blocked in 280ms
+        act_451 = evaluate_agentic_gift_card_stored_value_policy(
+            webiq_us_card_act_5yr_expiry_and_escheatment_clean=False,
+        )
+        self.assertFalse(act_451.allowed)
+        self.assertEqual(act_451.http_status, 451)
+
+        # 5. Web IQ credits closed-loop float & anti-drain saving $39,200 ($450,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_gift_card_stored_value_policy(
+            closed_loop_acquiring_fee_and_drain_prevention_savings_cents=3920000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_gift_card_batch_cents, 45080000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_gift_card_stored_value_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-gift-card-stored-value-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

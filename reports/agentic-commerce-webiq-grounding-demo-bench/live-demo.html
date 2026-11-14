@@ -4464,6 +4464,24 @@
         <div id="ddp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Closed-Loop Gift Card, Anti-Enumeration & FinCEN AML Sandbox (Round 204 FAQ Companion) -->
+      <div class="finops-box" id="agentic-gift-card-stored-value-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-gft-title">🎁 智能体闭环礼品卡 (Closed-Loop Gift Card) 与储值防盗刷：HSM Argon2id 防枚举、禁卡买卡与 FinCEN ≤$2,000 令牌 (agentic_gift_card_stored_value_aml_fraud_mandate_...) vs 撞库刷空与三角洗钱决策器 (Round 204 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 闭环礼品卡发卡与核销批次 ($490,000.00)、HSM Pepper Argon2id 卡密防撞库、严禁“礼品卡/BNPL买新卡”及美国 FinCEN 单卡单日 ≤$2,000 限额场景 (Closed-Loop Gift Card &amp; AML Scenario):</span></label>
+          <select id="gft-select" onchange="updateAgenticGiftCardStoredValueSandbox()">
+            <option value="gft_commit_ok">⚡ HSM Argon2id 验密通过 + 零以卡买卡/BNPL买卡 + 单卡单日 ≤$2,000 + 零异地洗钱：10ms 安全清算 $490,000.00! (Act automatically)</option>
+            <option value="gft_enm_403">🛑 黑产机器人批量枚举查余额撞库、企图用旧礼品卡/BNPL购买新礼品卡套现，或单卡单日充值突破美国 FinCEN $2,000 闭环豁免上限拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="gft_tri_422">🚨 被盗信用卡新购大额电子礼品卡后 90 秒内被异地无关小号绑定充值，并立即抢购 iPhone/黄金等高变现商品 (三角套现洗钱) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="gft_act_451">🛑 礼品卡资金有效期设置不足 5 年，或在未满 12 个月静默期即违规扣减休眠管理费 (违反美国联邦 CARD Act / Reg E)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="gft_sav_409">🧑‍⚖️ Web IQ 核实启用闭环储值钱包置换 2.9% 外部信用卡收单费，并结合 HSM 防撞库锁死卡池被盗损失立省 $39,200.00 (净成本 $450,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="gft-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5106,6 +5124,7 @@ function renderAll() {
   updateB2bErsSelfBillingSandbox();
   updateAgenticMultiPspSmartRoutingSandbox();
   updateAgenticCrossBorderDdpCustomsSandbox();
+  updateAgenticGiftCardStoredValueSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15354,6 +15373,55 @@ function updateAgenticCrossBorderDdpCustomsSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 报关价 1:1 支付锚定 + 欧盟 €150 H7 分流 + 美国 10位 HTSUS 通过：已自动预清关 (VERIFIED_CROSS_BORDER_DDP_CUSTOMS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 DDU 门口补税拒收、零 IOSS 双重征税与海关低报扣货风险</strong>：跨境直邮 DDP 清关批次已完成预放行清算（<code>$610,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticGiftCardStoredValueSandbox() {
+  var selEl = document.getElementById("gft-select");
+  var outEl = document.getElementById("gft-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "gft_enm_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ENUMERATION_OR_LOOP_OR_FINCEN_2000USD_CAP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "储值与反洗钱门禁检出 <code>高频卡号序列枚举撞库探测、企图使用现有礼品卡/储值或 BNPL 分期贷款购买新礼品卡（无限套现死循环），或单张闭环卡单日充值突破美国 FinCEN 31 CFR § 1010.100(ww) $2,000.00 免牌照上限</code>（<code>hsm_argon2id_pin_zero_loop_and_fincen_2000usd_cap_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "gft_tri_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 TRIANGULATION_CARD_TO_GIFT_LAUNDERING_HOLD (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "跨号洗钱图谱检出 <code>该电子礼品卡由外部信用卡新购生成后仅 90 秒即被异地无关设备/买手小号绑定，并企图全额兑付高变现 3C 数码或黄金（典型被盗信用卡转礼品卡三角洗钱套现）</code>（<code>cross_account_triangulation_cooling_off_and_fido2_passed == False</code>）。网关在 <code>14ms</code> 内触发冷静期冻结并要求购卡人 FIDO2 强认证！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "gft_act_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CARD_ACT_5YR_EXPIRY_OR_ESCHEATMENT_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>美国联邦 CARD Act (12 CFR § 1005.20 Regulation E) 与各州无人认领财产法 (Escheatment)</code>，检出礼品卡有效期设置不足 5 年或违规扣取休眠管理费，立即冻结发卡批次！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "gft_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CLOSED_LOOP_FLOAT_AND_FRAUD_PREVENTION_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>闭环储值钱包直接结算（置换 2.9% 外部信用卡收单通道费）+ HSM Argon2id 防撞库与三角洗钱拦截</code>，单批立省/止损 <code>$39,200.00</code>（净成本降至 <code>$450,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ HSM Argon2id 验密 + 零卡买卡死循环 + FinCEN ≤$2,000 合规通过：已自动清算 (VERIFIED_GIFT_CARD_STORED_VALUE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零卡密撞库被盗、零盗刷信用卡买卡三角洗钱与无牌照 MSB 风险</strong>：智能体闭环礼品卡与储值批次已完成安全清算（<code>$490,000.00</code>）！" +
     "</div>";
 }
 
