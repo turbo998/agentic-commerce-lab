@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#8B5CF6" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="248" height="26" rx="13" fill="#4C1D95" stroke="#8B5CF6" stroke-width="1"/>
+  <text x="170" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#EDE9FE" text-anchor="middle">2026-11-15 · ROUND 254 · SILICON IP LICENSING</text>
+  <text x="310" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">B2B 半导体硅 IP 核授权 (Silicon IP)：流片掩膜水印锁、晶圆按颗版税审计与 ECCN 架构</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">Foundry Mask-Release Watermark Gate, SEMI E142 Wafer-Out Royalty Audit &amp; BIS ECCN 3E001 vs. Multi-Chip Piracy &amp; 40% Royalty Leakage</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#C4B5FD">Mandate Token: b2b_semiconductor_ip_core_tapeout_royalty_audit_mandate_2026_11_15 · Batch: $880,000.00 · Net Optimized: $809,600.00 (-$70,400.00)</text>
+
+  <!-- Left Column: Legacy Silicon IP Licensing Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“明文发 RTL/GDSII + 自填 Excel 报版税”（四大半导体 IP 黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why Unbound GDSII Deliveries &amp; Self-Reported Sales Sheets Trigger $1.5M+ Piracy &amp; Royalty Evasion</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. “买一偷五”：付一次单项目授权费却私下塞进 5 颗衍生芯片流片</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 芯片设计公司花 $450k 购买仅限 1 颗 SoC 使用的 PCIe/HBM IP 授权，拿到源码后复制进 4 款衍生芯片。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 代工厂制版时无 Mask-Release Token 硅水印核验，IP 厂商白白流失 $1,350,000+ 二次授权费！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. 量产后仅凭买方自报 Excel 销量表结算按颗版税 (瞒报 30%–50%)</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 买方故意将已出货给关联渠道的数百万颗芯片谎称为“在库未售”或虚报晶圆报废率。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 未与代工厂/封测厂 (OSAT) 的实际 Wafer-Out × KGD 出货流交叉对账，长期被逃避巨额版税！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 未通过 Calibre DRC/LVS 物理验证即释放 NRE 款致 $2,000 万流片报废</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 买方 AI 见供应商上传了压缩包即自动释放 NRE 里程碑款，未校验 EDA 物理与时序收敛零违例。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 流片前夜发现硬核内部金属层短路 (LVS Error)，被迫推迟流片窗口并损失千万级掩膜费！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 触犯 BIS EAR ECCN 3E001 先进制程技术出口红线与强开源传染</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 未核验 &lt;=5nm GAA / 高速互连 IP 的 ECCN 3E001 出口许可，或混入 CERN-OHL-S 强传染开源 RTL。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 面临 BIS 全球断供行政令或被迫开源整颗商业 SoC 设计图纸！</text>
+
+  <!-- Right Column: Mask Watermark + Wafer-Out Audit + DRC Escrow Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ 掩膜硅水印锁 + Wafer-Out 版税对账 + DRC 托管 + Web IQ</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">IEEE 1735 Foundry Mask-Release Token, SEMI E142 KGD Royalty Parity &amp; ECCN 3E001 Gate</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. IEEE 1735 硅水印与代工厂 Mask-Release Token 绑定 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 单次授权令牌与代工厂唯一光刻掩膜套号 (Mask-Set ID) 密码学锁死，制版前自动校验版图隐形硅水印。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 任何未授权跨项目盗用流片或剥离水印行为，11ms 硬拦截拒发掩膜放行令 (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. 代工厂 Wafer-Out KGD 交叉版税对账与 DRC/LVS 托管锁 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 强制对齐 (代工厂出货晶圆数 × 单片 Gross Die × OSAT 实测良率)，NRE 款绑定 Calibre DRC/LVS 零违例。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 检出瞒报量产版税颗数或物理验证未通过请款，14ms 立即阻断 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 核验 BIS ECCN 3E001 与开源协议洁净度 (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 穿透核验制程节点与互连带宽是否触碰 BIS EAR ECCN 3E001/3D001 管制红线。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 自动扫描 SPDX 硬件树阻断 CERN-OHL-S 强传染性代码污染，异常立即挂起 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. 企业级多项目流片订阅池与 KGD 版税轧差立省 $70,400 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 将多芯片产品线纳入企业级无限次流片订阅池 (Access Pass) 并按 OSAT KGD 自动清分版税。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $880,000.00 半导体 IP 批次上单批立省/防漏 $70,400.00 (净结算 $809,600.00 · HTTP 409)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#8B5CF6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $880,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_b2b_semiconductor_ip_core_royalty_policy`) + Microsoft Web IQ `/v3/browse` BIS ECCN 3E001 &amp; SPDX Gate</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#C4B5FD">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">sip_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">掩膜令牌与硅水印匹配 + Wafer-Out 版税对齐 + DRC/ECCN 合规 ($880k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_SEMICONDUCTOR_IP_CORE_ROYALTY_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">sip_reu_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">将单项目授权 IP 私自用于未授权衍生芯片流片或缺失代工厂 Mask Token</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 UNAUTHORIZED_MULTI_CHIP_SILICON_IP_REUSE_OR_MISSING_FOUNDRY_MASK_TOKEN_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">sip_roy_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">自报版税销量低于代工厂 Wafer-Out KGD 实绩或 IP 未通过 DRC/LVS 签核</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 UNDERREPORTED_DIE_ROYALTY_VS_FOUNDRY_WAFER_OUT_OR_FAILED_DRC_LVS_MILESTONE</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">sip_ecn_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">触犯 BIS EAR ECCN 3E001 先进制程技术出口红线或混入 CERN-OHL 代码</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 BIS_EAR_ECNN_3E001_TECHNOLOGY_EXPORT_HOLD_OR_VIRAL_CERN_OHL_CONTAMINATION</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">sip_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用多项目流片订阅池与 KGD 自动版税轧差立省 $70,400 ($809.6k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 MULTI_PROJECT_IP_SUBSCRIPTION_AND_ROYALTY_NETTING_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>

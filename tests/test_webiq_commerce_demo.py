@@ -15453,6 +15453,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-healthcare-claims-ncci-sandbox", demo_zh)
 
+    def test_b2b_semiconductor_ip_core_tapeout_royalty_audit_mandate_vs_unauthorized_reuse_underreporting_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_semiconductor_ip_core_royalty_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Matched Mask-Set ID + Wafer-Out KGD parity + DRC/ECCN clean ($880,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_semiconductor_ip_core_royalty_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_silicon_ip_batch_cents, 88000000)
+
+        # 2. Unauthorized multi-chip IP reuse on derivative tape-out or missing Mask-Release Token -> 403 Blocked
+        reu_403 = evaluate_b2b_semiconductor_ip_core_royalty_policy(
+            gdsii_mask_id_matches_single_use_license_and_ip_watermark_verified=False,
+        )
+        self.assertFalse(reu_403.allowed)
+        self.assertEqual(reu_403.http_status, 403)
+        self.assertEqual(
+            reu_403.decision_code,
+            "UNAUTHORIZED_MULTI_CHIP_SILICON_IP_REUSE_OR_MISSING_FOUNDRY_MASK_TOKEN_BLOCKED",
+        )
+
+        # 3. Under-reported die royalty vs. foundry Wafer-Out KGD or failed DRC/LVS milestone -> 422 Blocked
+        roy_422 = evaluate_b2b_semiconductor_ip_core_royalty_policy(
+            foundry_wafer_out_kgd_reconciled_with_royalty_statement_and_drc_lvs_clean=False,
+        )
+        self.assertFalse(roy_422.allowed)
+        self.assertEqual(roy_422.http_status, 422)
+        self.assertEqual(
+            roy_422.decision_code,
+            "UNDERREPORTED_DIE_ROYALTY_VS_FOUNDRY_WAFER_OUT_OR_FAILED_DRC_LVS_MILESTONE",
+        )
+
+        # 4. BIS EAR ECCN 3E001 technology export violation or viral CERN-OHL RTL contamination -> 451 Hold
+        ecn_451 = evaluate_b2b_semiconductor_ip_core_royalty_policy(
+            webiq_ear_ecnn_3e001_technology_transfer_and_open_source_rtl_clean=False,
+        )
+        self.assertFalse(ecn_451.allowed)
+        self.assertEqual(ecn_451.http_status, 451)
+
+        # 5. Web IQ multi-project subscription tier & KGD royalty netting saving $70,400 ($809,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_semiconductor_ip_core_royalty_policy(
+            multi_project_subscription_tier_and_automated_royalty_netting_savings_cents=7040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_silicon_ip_batch_cents, 80960000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_semiconductor_ip_core_royalty_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-semiconductor-ip-core-royalty-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
