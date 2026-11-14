@@ -16082,6 +16082,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-workers-comp-omfs-bill-review-sandbox", demo_zh)
 
+    def test_b2b_foodservice_broadline_deviated_pricing_catch_weight_vs_freight_padding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_foodservice_broadline_deviated_pricing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant manufacturer DPA pass-through + fair Freight-In + GS1-128 case weight & FSMA 204 -> 200 OK ($640,000.00)
+        ok_res = evaluate_b2b_foodservice_broadline_deviated_pricing_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_FOODSERVICE_BROADLINE_DEVIATED_PRICING_SETTLED")
+        self.assertEqual(ok_res.settled_foodservice_broadline_batch_cents, 64000000)
+
+        # 2. Omitted manufacturer DPA deviated price at regional DC or billback rebate double-dipping -> 403 Blocked
+        dpa_403 = evaluate_b2b_foodservice_broadline_deviated_pricing_policy(
+            manufacturer_dpa_deviated_price_applied_across_dcs_and_no_rebate_double_dip=False,
+        )
+        self.assertFalse(dpa_403.allowed)
+        self.assertEqual(dpa_403.http_status, 403)
+        self.assertEqual(
+            dpa_403.decision_code,
+            "OMITTED_MANUFACTURER_DEVIATED_PRICE_OR_REBATE_DOUBLE_DIP_BLOCKED",
+        )
+
+        # 3. Captive logistics Freight-In padding inside Landed Cost or unprotected higher-priced Subbed SKU -> 422 Blocked
+        frt_422 = evaluate_b2b_foodservice_broadline_deviated_pricing_policy(
+            fair_market_freight_in_landed_cost_and_price_protected_sub_sku_verified=False,
+        )
+        self.assertFalse(frt_422.allowed)
+        self.assertEqual(frt_422.http_status, 422)
+        self.assertEqual(
+            frt_422.decision_code,
+            "AFFILIATE_FREIGHT_IN_LANDED_COST_PADDING_OR_UNPROTECTED_SUB_SKU_OVERCHARGE",
+        )
+
+        # 4. Nominal box-weight averaging on variable catch-weight beef or missing FDA FSMA 204 TLC -> 451 Hold
+        wgt_451 = evaluate_b2b_foodservice_broadline_deviated_pricing_policy(
+            webiq_gs1128_case_catch_weight_and_fda_fsma204_tlc_traceability_clean=False,
+        )
+        self.assertFalse(wgt_451.allowed)
+        self.assertEqual(wgt_451.http_status, 451)
+
+        # 5. Web IQ automated multi-DC DPA pass-through & Freight-In audit saving $51,200 ($588,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_foodservice_broadline_deviated_pricing_policy(
+            automated_dpa_passthrough_and_freight_in_audit_savings_cents=5120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_foodservice_broadline_batch_cents, 58880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_foodservice_broadline_deviated_pricing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-foodservice-broadline-deviated-pricing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

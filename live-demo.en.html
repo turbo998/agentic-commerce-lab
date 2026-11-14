@@ -5562,6 +5562,24 @@
         <div id="wcp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Broadline Foodservice Distribution (Cost-Plus), Manufacturer DPA & FSMA 204 Sandbox -->
+      <div class="finops-box" id="b2b-foodservice-broadline-deviated-pricing-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🥩 B2B 连锁餐饮一级食材配送 (Broadline Cost-Plus)：原厂 DPA 偏离底价锁、头程运费去泡沫与 FSMA 204 (`b2b_foodservice_broadline_distributor_deviated_pricing_catch_weight_lumper_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 连锁餐饮周度食材统配批次 ($640,000.00)、食品原厂 DPA 偏离协议底价、Landed Cost 头程运费与 GS1-128 / FSMA 204 场景 (Broadline Foodservice Scenario):</span></label>
+          <select id="fsd-select" onchange="updateB2bFoodserviceBroadlineDeviatedPricingSandbox()">
+            <option value="fsd_commit_ok">🥩 原厂 DPA 偏离底价全国 DC 100% 穿透 + 公允头程运费与平价替代 + GS1-128 实重与 FSMA 204 完备：10ms 清算 $640,000.00! (Act automatically)</option>
+            <option value="fsd_dpa_403">🛑 分销商异地冷库漏挂餐饮总部与泰森谈妥的 $2.10/磅 DPA 协议价 (按 $2.65 公开价收门店钱) 或截留厂家返利两头吃 → 11ms 触发 HTTP 403!</option>
+            <option value="fsd_frt_422">🚨 借关联物流子公司把 $1.80/箱头程运费虚开成 $4.50/箱塞进 Landed Cost 基数，或 $32 薯条缺货时发 $46 自有品牌替代不保价 → 14ms 触发 HTTP 422!</option>
+            <option value="fsd_wgt_451">🛑 冷鲜牛眼肉不扫 GS1-128 AI(310n) 单箱实重条码 (54.2磅按60磅名义箱均重扣款) 或高危生鲜缺 FDA FSMA 204 TLC 溯源码：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="fsd_sav_409">🧑‍⚖️ Web IQ 自动追回跨区冷库漏挂 DPA 差价、剥离内部关联运费加价并重算缺货替代品立省 $51,200.00 (净付 $588,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fsd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6265,6 +6283,7 @@ function renderAll() {
   updateB2bTelecomTowerColocationEpaSandbox();
   updateB2bAutomotiveTier1PpapToolingSandbox();
   updateAgenticWorkersCompOmfsBillReviewSandbox();
+  updateB2bFoodserviceBroadlineDeviatedPricingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19364,6 +19383,52 @@ function updateAgenticWorkersCompOmfsBillReviewSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🩺 州 OMFS 费率达标 + 骨科植入物附原厂发票 + 24次 ODG 理疗锁与 AMA 伤残分摊合规：已自动清算 (VERIFIED_WORKERS_COMP_OMFS_BILL_REVIEW_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零手术钛钉 800% 暴利加价、零 90 次理疗刷单与老年退行病变全额背锅</strong>：智能体工伤保险医疗与伤残补助批次已完成安全清算（<code>$710,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bFoodserviceBroadlineDeviatedPricingSandbox() {
+  var sel = document.getElementById("fsd-select");
+  var outEl = document.getElementById("fsd-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "fsd_dpa_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 OMITTED_MANUFACTURER_DEVIATED_PRICE_OR_REBATE_DOUBLE_DIP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "一级食材分销商（<code>Broadline Distributor</code>）在区域分销中心（<code>DC</code>）给门店开具的 <code>EDI 810</code> 发票中，漏挂连锁餐饮总部与食品生产商直接签署的 <code>DPA（偏离协议价 $2.10/磅）</code>而按 <code>$2.65/磅</code> 公开批发价计费，同时分销商自己向食品厂索取了 <code>$0.55/磅 Billback</code> 差价返利（两头通吃 <code>Double-Dipping</code>）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "fsd_frt_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 AFFILIATE_FREIGHT_IN_LANDED_COST_PADDING_OR_UNPROTECTED_SUB_SKU_OVERCHARGE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "在 <code>Cost-Plus（到岸成本 Landed Cost + $2.40/箱）</code>协议下，分销商通过全资内部货运代理子公司（<code>Captive Freight Broker</code>）将真实 <code>$1.80/箱</code> 的头程干线冷链运费虚开发票抬至 <code>$4.50/箱</code> 塞进成本基数套利，或在合同商品缺货时强发高价自有品牌替代品（<code>Subbed SKU</code>）拒不执行原合同低价保护，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "fsd_wgt_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CATCH_WEIGHT_NOMINAL_AVERAGING_OVERBILL_OR_MISSING_FSMA204_KDE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：整箱变重冷鲜牛排/海鲜未按箱贴 <code>GS1-128 AI (310n)</code> 实际出厂过磅净重（<code>54.2 磅</code>）结算，而是按标称均重 <code>60.0 磅/箱</code>多收 <code>10.7%</code> 空气重量，或高风险食材缺失美国 <code>FDA FSMA 204 食品安全追溯规则</code>强制要求的 <code>TLC 溯源批次码与 KDEs</code>，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "fsd_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_DPA_PASSTHROUGH_AND_FREIGHT_IN_AUDIT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>全国分销中心原厂 DPA 底价强制穿透 + 内部关联头程运费 (Freight-In) 去泡沫与缺货平价替代重算</code>，单批立省 <code>$51,200.00</code>（净结算额优化至 <code>$588,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🥩 原厂 DPA 偏离底价 100% 穿透 + 头程运费公允 + GS1-128 实重与 FSMA 204 完备：已自动清算 (VERIFIED_FOODSERVICE_BROADLINE_DEVIATED_PRICING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零截留厂家返利两头吃、零关联物流虚增到岸成本与名义箱均重短斤少两</strong>：B2B 连锁餐饮一级食材统配批次已完成安全清算（<code>$640,000.00</code>）！" +
     "</div>";
 }
 
