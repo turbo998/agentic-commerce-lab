@@ -12975,6 +12975,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-iap-web-out-sandbox", demo_zh)
 
+    def test_agentic_price_match_post_purchase_guarantee_webiq_gtin_mandate_vs_fake_screenshot_spoof_competitor_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_price_match_guarantee_policy,
+        )
+
+        # 1. Verified whitelisted 1P domain + live GTIN-14 InStock + exact net-paid delta -> 200 OK ($470,000)
+        commit_ok = evaluate_agentic_price_match_guarantee_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_price_match_batch_cents, 47000000)
+
+        # 2. F12 DOM-edited screenshot or spoofed non-whitelisted URL -> 403 blocked in 11ms
+        scr_403 = evaluate_agentic_price_match_guarantee_policy(
+            zero_screenshot_trust_and_whitelisted_1p_domain_verified=False,
+        )
+        self.assertFalse(scr_403.allowed)
+        self.assertEqual(scr_403.http_status, 403)
+        self.assertEqual(
+            scr_403.price_match_lane,
+            "UNVERIFIED_SCREENSHOT_OR_SPOOFED_COMPETITOR_DOMAIN_BLOCKED",
+        )
+
+        # 3. Promo coupon / free-gift double-dip or >30% glitch cap -> 422 blocked in 14ms
+        dip_422 = evaluate_agentic_price_match_guarantee_policy(
+            net_paid_minus_gift_delta_positive_and_within_30pct_cap=False,
+        )
+        self.assertFalse(dip_422.allowed)
+        self.assertEqual(dip_422.http_status, 422)
+        self.assertEqual(
+            dip_422.price_match_lane,
+            "PROMO_GIFT_DOUBLE_DIP_OR_CAP_EXCEEDED_REJECTED",
+        )
+
+        # 4. Web IQ detects refurbished GTIN mismatch, 3P seller, or Out-of-Stock -> 451 blocked in 280ms
+        gtn_451 = evaluate_agentic_price_match_guarantee_policy(
+            webiq_gtin14_new_condition_and_1p_instock_clean=False,
+        )
+        self.assertFalse(gtn_451.allowed)
+        self.assertEqual(gtn_451.http_status, 451)
+
+        # 5. Web IQ blocks screenshot/OOS fraud & converts valid delta to +10% credit saving $37,600 ($432,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_price_match_guarantee_policy(
+            webiq_fraud_block_and_store_credit_retention_savings_cents=3760000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_price_match_batch_cents, 43240000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_price_match_guarantee_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-price-match-guarantee-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
