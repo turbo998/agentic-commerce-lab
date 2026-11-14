@@ -14931,6 +14931,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-freight-broker-double-brokering-sandbox", demo_zh)
 
+    def test_b2b_cloud_finops_committed_use_cud_ri_arbitrage_mandate_vs_zombie_reservation_egress_waste_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_cloud_finops_cud_ri_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 90d P10 baseline + Convertible flex + zero egress inversion + EDP clean ($920,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_cloud_finops_cud_ri_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cloud_finops_batch_cents, 92000000)
+
+        # 2. Peak-sized 3-yr rigid Standard RI overprovisioning or non-convertible SKU lock -> 403 Blocked
+        zmb_403 = evaluate_b2b_cloud_finops_cud_ri_policy(
+            p10_steady_state_waterline_and_convertible_family_flex_verified=False,
+        )
+        self.assertFalse(zmb_403.allowed)
+        self.assertEqual(zmb_403.http_status, 403)
+        self.assertEqual(
+            zmb_403.decision_code,
+            "ZOMBIE_3YR_COMMITMENT_OVERPROVISIONING_OR_NON_CONVERTIBLE_SKU_LOCK_BLOCKED",
+        )
+
+        # 3. Cross-AZ / NAT egress explosion exceeding compute discount or unamortized FOCUS cost -> 422 Blocked
+        egr_422 = evaluate_b2b_cloud_finops_cud_ri_policy(
+            focus_effective_cost_amortization_and_zero_cross_az_egress_verified=False,
+        )
+        self.assertFalse(egr_422.allowed)
+        self.assertEqual(egr_422.http_status, 422)
+        self.assertEqual(
+            egr_422.decision_code,
+            "CROSS_REGION_NAT_EGRESS_EXPLOSION_OR_UNAMORTIZED_UPFRONT_DISTORTION",
+        )
+
+        # 4. Marketplace SKU ineligible for 100% EDP/MACC drawdown or year-end shortfall risk -> 451 Hold
+        edp_451 = evaluate_b2b_cloud_finops_cud_ri_policy(
+            webiq_edp_mac_burn_rate_and_marketplace_private_offer_clean=False,
+        )
+        self.assertFalse(edp_451.allowed)
+        self.assertEqual(edp_451.http_status, 451)
+
+        # 5. Web IQ rolling laddered Convertible SP & EDP/MACC drawdown saving $73,600 ($846,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_cloud_finops_cud_ri_policy(
+            convertible_sp_ladder_and_edp_drawdown_arbitrage_savings_cents=7360000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cloud_finops_batch_cents, 84640000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_cloud_finops_cud_ri_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cloud-finops-cud-ri-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

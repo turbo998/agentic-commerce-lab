@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="248" height="26" rx="13" fill="#064E3B" stroke="#10B981" stroke-width="1"/>
+  <text x="170" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#D1FAE5" text-anchor="middle">2026-11-14 · ROUND 245 · CLOUD FINOPS FOCUS 1.0</text>
+  <text x="310" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">B2B 云财务治理 (Cloud FinOps)：P10 可转换承诺 (CUD/RI)、防跨区流量刺客与 EDP 消纳架构</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">90-Day P10 Convertible SP/RI Gate, FOCUS 1.0 EffectiveCost &amp; EDP/MACC Drawdown vs. Zombie RIs &amp; Cross-AZ Egress Shocks</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#6EE7B7">Mandate Token: b2b_cloud_finops_committed_use_cud_ri_arbitrage_mandate_2026_11_14 · Batch: $920,000.00 · Net Optimized: $846,400.00 (-$73,600.00)</text>
+
+  <!-- Left Column: Legacy Cloud FinOps Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“按波峰买死 3 年 Standard RI + 忽略流量费”（四大云预算黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why Peak-Sized 3-Year Standard RIs &amp; Cross-AZ Placements Trigger $500k Zombie Waste</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. 把短期波峰 (P95) 当基荷买死 3 年 Standard RI 沦为“僵尸预留”</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 听信云控制台基于最近 14 天大促/训练波峰的推荐，全额预付锁死 3 年不可退换的 Standard RI。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 3 个月后业务回落或架构从 H100 升级至 B200，旧 RI 无法跨族转换，白白空转扣款 30 个月！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. 贪图异地算力便宜 10% 却触发 3 倍跨可用区/NAT 流量刺客 (Egress)</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 调度 AI 只比对 GPU/vCPU 单价，将计算节点迁移至异地 Region 或跨可用区挂载存储。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 触发 $0.02–$0.09/GB 的 Cross-AZ 与 NAT Gateway 流量费，省下 $5k 算力费却多交 $25k 流量费！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 误买不计入 AWS EDP / Azure MACC 保底池的 SKU 遭年底差额罚没</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 企业签有千万美元年度保底消费协议 (EDP/MACC)，但 AI 直接在场外或非认证列表采购第三方软件。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 消费额无法冲抵 EDP/MACC 保底进度，导致年底未达标差额 (Shortfall) 被云厂商 100% 罚没！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 按收付实现制 BilledCost 记账导致预付当月成本失真与部门推诿</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 未遵循 FinOps FOCUS 1.0 EffectiveCost 权责发生制摊销，把百万预付款全记在买单部门当月账上。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 其他业务部门免费蹭用低价 RI 额度，导致 AI 单次推理真实毛利核算彻底失真。</text>
+
+  <!-- Right Column: P10 Convertible + FOCUS 1.0 + EDP Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ 90天 P10 可转换锁 + FOCUS 算网防倒挂 + Web IQ EDP 门禁</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">P10 Steady-State Convertible SP Ladder, Cross-AZ Egress Guard &amp; 100% EDP/MACC Drawdown</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. 90天 P10 稳态水位线与 Convertible 跨代弹性锁 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 严格按过去 90 天剔除波峰后的 P10 稳态基荷定容，强制选用可跨芯片/跨实例族转换的 Convertible SP。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 任何按短期波峰超买或锁死 3 年不可转换 Standard SKU 的请求，11ms 硬拦截 (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. 算网一体 Cross-AZ 流量防倒挂与 FOCUS 1.0 摊销锁 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 强制联算 (算力折扣 - Cross-AZ/NAT 流量费) &gt; 0，并按 FOCUS 1.0 EffectiveCost 小时级精准摊销。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 一旦跨区流量费反噬算力折扣或未执行权责摊销，14ms 立即熔断拦截 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 核验 EDP / MACC 100% 消纳抵扣资格 (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 穿透核验云市场 Private Offer 是否具备 100% Azure Benefit Eligible / AWS EDSO 标签。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 拦截不计入企业年度保底池的非标商品，彻底消除年底 Shortfall 违约罚没 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. 按季阶梯滚动 Convertible SP 与保底冲抵立省 $73,600 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 将承诺拆分为按季度滚动的阶梯式 Convertible SP 并 100% 冲抵 EDP/MACC 保底额度。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $920,000.00 云算力与 FinOps 批次上单批立省 $73,600.00 (净结算 $846,400.00 · HTTP 409)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $920,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_b2b_cloud_finops_cud_ri_policy`) + Microsoft Web IQ `/v3/browse` FOCUS 1.0 &amp; EDP/MACC Gate</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">cud_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">90天 P10 基荷 + Convertible 弹性 + 零跨区流量倒挂 + EDP 合规 ($920k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_CLOUD_FINOPS_CUD_RI_ARBITRAGE_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">cud_zmb_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">按短期波峰超买 3 年不可退换 Standard RI 或缺跨代 Convertible 弹性</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 ZOMBIE_3YR_COMMITMENT_OVERPROVISIONING_OR_NON_CONVERTIBLE_SKU_LOCK_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">cud_egr_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">跨区调度触发 Cross-AZ / NAT 流量费吞噬折扣或未按 FOCUS 1.0 摊销</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 CROSS_REGION_NAT_EGRESS_EXPLOSION_OR_UNAMORTIZED_UPFRONT_DISTORTION</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">cud_edp_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">采购项不具备 AWS EDP / Azure MACC 100% 消纳资格或存违约罚没风险</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 CLOUD_EDP_MACC_SHORTFALL_PENALTY_OR_INELIGIBLE_MARKETPLACE_SPEND_HOLD</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">cud_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用阶梯滚动 Convertible SP 与 EDP/MACC 冲抵立省 $73,600 ($846.4k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 CONVERTIBLE_SP_LADDER_AND_EDP_DRAWDOWN_ARBITRAGE_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>
