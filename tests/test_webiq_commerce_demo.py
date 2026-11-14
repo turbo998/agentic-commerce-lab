@@ -12807,6 +12807,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-hospitality-incremental-auth-sandbox", demo_zh)
 
+    def test_agentic_hsa_fsa_sigis_iias_split_tender_lmn_mandate_vs_mixed_cart_decline_irs_20pct_tax_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_hsa_fsa_sigis_iias_policy,
+        )
+
+        # 1. Verified SIGIS UPC / NPI LMN + 2PC dual-tender split + Field 63 IIAS -> 200 OK ($440,000)
+        commit_ok = evaluate_agentic_hsa_fsa_sigis_iias_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hsa_fsa_batch_cents, 44000000)
+
+        # 2. Ineligible SKU or dual-purpose wearable lacking 10-digit NPI LMN -> 403 blocked in 11ms
+        lmn_403 = evaluate_agentic_hsa_fsa_sigis_iias_policy(
+            sigis_upc_eligible_or_dual_purpose_10digit_npi_lmn_verified=False,
+        )
+        self.assertFalse(lmn_403.allowed)
+        self.assertEqual(lmn_403.http_status, 403)
+        self.assertEqual(
+            lmn_403.hsa_fsa_iias_lane,
+            "INELIGIBLE_SKU_OR_MISSING_NPI_LMN_PRESCRIPTION_BLOCKED",
+        )
+
+        # 3. Unsplit mixed cart sent to HSA BIN or failed 2PC rollback -> 422 blocked in 14ms
+        spl_422 = evaluate_agentic_hsa_fsa_sigis_iias_policy(
+            mixed_cart_2pc_dual_tender_split_and_field63_iias_valid=False,
+        )
+        self.assertFalse(spl_422.allowed)
+        self.assertEqual(spl_422.http_status, 422)
+        self.assertEqual(
+            spl_422.hsa_fsa_iias_lane,
+            "MIXED_CART_UNSPLIT_OR_2PC_TENDER_ROLLBACK_FAILED",
+        )
+
+        # 4. Web IQ detects inactive clinician NPI in CMS NPPES or >12m expired LMN -> 451 blocked in 280ms
+        npi_451 = evaluate_agentic_hsa_fsa_sigis_iias_policy(
+            webiq_cms_nppes_npi_active_and_lmn_within_12m_clean=False,
+        )
+        self.assertFalse(npi_451.allowed)
+        self.assertEqual(npi_451.http_status, 451)
+
+        # 5. Web IQ enables SIGIS IIAS auto-substantiation & 2PC split saving $35,200 ($404,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_hsa_fsa_sigis_iias_policy(
+            iias_auto_substantiation_and_split_conversion_savings_cents=3520000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hsa_fsa_batch_cents, 40480000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_hsa_fsa_sigis_iias_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-hsa-fsa-sigis-iias-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

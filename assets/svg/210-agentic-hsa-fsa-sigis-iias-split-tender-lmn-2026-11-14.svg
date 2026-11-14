@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg210" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="green210" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="red210" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg210)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="52" y="40" width="215" height="26" rx="13" fill="url(#green210)"/>
+  <text x="159" y="57" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">ROUND 208 · HSA/FSA SIGIS IIAS</text>
+  <text x="282" y="58" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="18.5" font-weight="800">智能体医疗健康福利卡 (HSA/FSA) SIGIS IIAS 核销与双卡拆单架构</text>
+  <text x="282" y="85" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-size="12.5">SIGIS UPC 白名单 + 双卡 2PC 原子拆单 + 10位 NPI 医生 LMN 处方令牌 (`agentic_hsa_fsa_sigis_iias_split_tender_mandate_...`) vs 混合车拒付与 IRS 20% 罚税</text>
+
+  <!-- Left Card: Anti-Pattern -->
+  <rect x="36" y="124" width="548" height="275" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="54" y="140" width="512" height="32" rx="6" fill="url(#red210)"/>
+  <text x="310" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">❌ 传统反模式：混合购物车整单刷 FSA 100% 拒付 + 伪造无 NPI 假处方暴雷</text>
+
+  <text x="56" y="196" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 混合购物车未拆单整刷 HSA/FSA 遭发卡行 Code 57 秒拒：</text>
+  <text x="56" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• $120 血压计 + $15 普通洗发水混装整单刷 FSA 卡，发卡行 100% 硬拒付；</text>
+  <text x="56" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 缺失 SIGIS IIAS Field 63 医疗字段，导致员工福利卡被冻结要求人工补交纸质小票。</text>
+
+  <text x="56" y="265" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 双重用途商品 (智能戒/理疗仪) 用 AI 伪造无 NPI 假 LMN：</text>
+  <text x="56" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 违反美国国税局 IRC § 213(d)，消费者被追缴 30% 个税 + 20% 法定罚金，商户被除名！</text>
+
+  <text x="56" y="315" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. 拆单无两阶段回滚 (2PC) 导致副卡失败后 HSA 资金悬挂：</text>
+  <text x="56" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 先实扣 FSA 卡再刷个人副卡失败，跨财年退款导致客户年底 FSA 额度过期作废。</text>
+
+  <rect x="56" y="352" width="508" height="32" rx="6" fill="#450A0A" stroke="#DC2626"/>
+  <text x="310" y="373" fill="#FECACA" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">GATE BLOCKS: HTTP 403 (11ms Ineligible/No-NPI-LMN) | HTTP 422 (14ms Unsplit/2PC)</text>
+
+  <!-- Right Card: Recommended Architecture -->
+  <rect x="616" y="124" width="548" height="275" rx="12" fill="#0F292A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="634" y="140" width="512" height="32" rx="6" fill="url(#green210)"/>
+  <text x="890" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">✅ 推荐架构：SIGIS IIAS 免小票核销 + 2PC 双卡拆单 + NPI LMN 网关</text>
+
+  <text x="636" y="196" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. SIGIS UPC 级白名单分流 + 2PC 双支付源原子拆单：</text>
+  <text x="636" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• $120 医疗品自动注入 Field 63 刷 FSA 卡免小票秒过 + $15 日用品刷个人备用卡；</text>
+  <text x="636" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 双卡均拿到 Pre-Auth 后再原子 Capture，副卡失败 14ms 内自动 0400 冲正 FSA！</text>
+
+  <text x="636" y="265" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 双重用途硬件强制绑定 10 位 CMS NPI 持牌医生 LMN (≤12m)：</text>
+  <text x="636" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 验证 ICD-10 疾病诊断与医生 NPI 签名，100% 符合 IRS Publication 502 免税标准。</text>
+
+  <text x="636" y="315" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 280ms NPI 执照核验与转化增收：</text>
+  <text x="636" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 混合购物车通过率从 0% 跃升至 96.4%，单批挽回/增收 $35,200.00 (HTTP 409)！</text>
+
+  <rect x="636" y="352" width="508" height="32" rx="6" fill="#064E3B" stroke="#10B981"/>
+  <text x="890" y="373" fill="#A7F3D0" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">SETTLED: HTTP 200 (10ms $440k IIAS) | HTTP 409 ($35.2k Split Conversion Saved)</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="36" y="415" width="1128" height="236" rx="12" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="56" y="444" fill="#34D399" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800">📊 定量实测矩阵：智能体 HSA/FSA 医疗福利卡批次 ($440,000.00) 5 组边界验证 (`evaluate_agentic_hsa_fsa_sigis_iias_policy`)</text>
+
+  <rect x="52" y="458" width="1096" height="28" rx="4" fill="#0F172A"/>
+  <text x="66" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SCENARIO ID</text>
+  <text x="220" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SIGIS IIAS UPC / 2PC DUAL-TENDER SPLIT / 10-DIGIT NPI LMN</text>
+  <text x="650" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">HTTP &amp; ACTION PILL</text>
+  <text x="875" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">LATENCY</text>
+  <text x="965" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">NET IMPACT</text>
+
+  <!-- Row 1 -->
+  <text x="66" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">hsa_commit_ok</text>
+  <text x="220" y="504" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">SIGIS UPC / 有效 NPI LMN + 双卡 2PC 拆单 + Field 63 IIAS 完整</text>
+  <text x="650" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">200 · Act automatically</text>
+  <text x="875" y="504" fill="#E2E8F0" font-family="monospace" font-size="12">10ms</text>
+  <text x="965" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">$440,000.00 Settled</text>
+
+  <!-- Row 2 -->
+  <text x="66" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">hsa_lmn_403</text>
+  <text x="220" y="532" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">普通日化美妆或缺失 10位 NPI 医生 LMN 的双重用途器械强刷 HSA</text>
+  <text x="650" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">403 · Send to a human</text>
+  <text x="875" y="532" fill="#E2E8F0" font-family="monospace" font-size="12">11ms</text>
+  <text x="965" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">IRS 20% Penalty Blocked</text>
+
+  <!-- Row 3 -->
+  <text x="66" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">hsa_spl_422</text>
+  <text x="220" y="560" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">混合购物车未执行双卡拆单整刷 FSA 或副卡失败未冲正 HSA 预授权</text>
+  <text x="650" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">422 · Send to a human</text>
+  <text x="875" y="560" fill="#E2E8F0" font-family="monospace" font-size="12">14ms</text>
+  <text x="965" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">Cart Decline Blocked</text>
+
+  <!-- Row 4 -->
+  <text x="66" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">hsa_npi_451</text>
+  <text x="220" y="588" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ /v3/browse 检出 CMS NPPES 医生 NPI 已吊销或 LMN 超 12个月</text>
+  <text x="650" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">451 · Send to a human</text>
+  <text x="875" y="588" fill="#E2E8F0" font-family="monospace" font-size="12">280ms</text>
+  <text x="965" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">NPI/LMN Audit Hold</text>
+
+  <!-- Row 5 -->
+  <text x="66" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">hsa_sav_409</text>
+  <text x="220" y="616" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ 启用 SIGIS IIAS 免小票直通与双卡拆单挽回混合车拒付流失</text>
+  <text x="650" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">409 · Confirm</text>
+  <text x="875" y="616" fill="#E2E8F0" font-family="monospace" font-size="12">245ms</text>
+  <text x="965" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">Saves $35,200.00</text>
+</svg>

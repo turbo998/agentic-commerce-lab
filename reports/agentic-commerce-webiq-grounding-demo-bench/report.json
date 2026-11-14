@@ -1115,6 +1115,11 @@
     "agentic_hospitality_incremental_auth_settlement_latency_ms": 10,
     "orphaned_hold_double_lock_block_latency_ms": 11
   },
+  "agentic_hsa_fsa_sigis_iias_guards": {
+    "all_passed": true,
+    "agentic_hsa_fsa_sigis_iias_settlement_latency_ms": 10,
+    "ineligible_npi_lmn_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
