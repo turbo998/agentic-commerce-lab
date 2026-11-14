@@ -26233,6 +26233,91 @@ def evaluate_b2b_auto_oem_dealer_warranty_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticCorporateTreasuryCashSweepDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_treasury_sweep_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_corporate_treasury_sweep_policy(
+    *,
+    mandate_id: str = "agentic_corporate_treasury_cash_sweep_wash_sale_fdic_mandate_2026_11_15",
+    treasury_sweep_batch_cents: int = 95000000,
+    irc_1091_61day_cross_account_wash_sale_free_and_fdic_ics_sliced_verified: bool = True,
+    t_plus_1_settlement_and_7day_ap_payroll_liquidity_floor_verified: bool = True,
+    webiq_sec_rule_2a7_weekly_liquid_assets_ge_50pct_and_bank_tier1_clean: bool = True,
+    treasury_t0_govt_mmf_sweep_and_tax_alpha_harvest_savings_cents: int = 0,
+) -> AgenticCorporateTreasuryCashSweepDecision:
+    """Evaluate cross-custodian IRC § 1091 61-day wash-sale locks & IntraFi ICS FDIC slicing, 7-day T+0 payroll liquidity floors, and SEC Rule 2a-7 weekly liquidity."""
+    if not mandate_id.startswith("agentic_corporate_treasury_cash_sweep_wash_sale_fdic_mandate_"):
+        return AgenticCorporateTreasuryCashSweepDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CORPORATE_TREASURY_CASH_SWEEP_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_treasury_sweep_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not irc_1091_61day_cross_account_wash_sale_free_and_fdic_ics_sliced_verified:
+        return AgenticCorporateTreasuryCashSweepDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="IRC_1091_61DAY_WASH_SALE_VIOLATION_OR_UNINSURED_SINGLE_BANK_CONCENTRATION_BLOCKED",
+            action_pill="Send to a human",
+            settled_treasury_sweep_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not t_plus_1_settlement_and_7day_ap_payroll_liquidity_floor_verified:
+        return AgenticCorporateTreasuryCashSweepDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="ILLIQUID_DURATION_MISMATCH_OR_PAYROLL_ZBA_OVERDRAFT_BREACH",
+            action_pill="Send to a human",
+            settled_treasury_sweep_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_sec_rule_2a7_weekly_liquid_assets_ge_50pct_and_bank_tier1_clean:
+        return AgenticCorporateTreasuryCashSweepDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MMF_WEEKLY_LIQUIDITY_BELOW_50PCT_MANDATORY_FEE_OR_BANK_CAMELS_STRESS_HOLD",
+            action_pill="Send to a human",
+            settled_treasury_sweep_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if treasury_t0_govt_mmf_sweep_and_tax_alpha_harvest_savings_cents > 0:
+        return AgenticCorporateTreasuryCashSweepDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="TREASURY_T0_GOVT_MMF_SWEEP_AND_TAX_ALPHA_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_treasury_sweep_batch_cents=max(
+                0,
+                treasury_sweep_batch_cents - treasury_t0_govt_mmf_sweep_and_tax_alpha_harvest_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticCorporateTreasuryCashSweepDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CORPORATE_TREASURY_CASH_SWEEP_SETTLED",
+        action_pill="Act automatically",
+        settled_treasury_sweep_batch_cents=treasury_sweep_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -34796,6 +34881,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phantom_warranty_uds_dtc_block_latency_ms": war_phn_403.latency_ms,
     }
 
+    trs_commit_ok = evaluate_agentic_corporate_treasury_sweep_policy()
+    trs_wsh_403 = evaluate_agentic_corporate_treasury_sweep_policy(
+        irc_1091_61day_cross_account_wash_sale_free_and_fdic_ics_sliced_verified=False,
+    )
+    trs_liq_422 = evaluate_agentic_corporate_treasury_sweep_policy(
+        t_plus_1_settlement_and_7day_ap_payroll_liquidity_floor_verified=False,
+    )
+    trs_mmf_451 = evaluate_agentic_corporate_treasury_sweep_policy(
+        webiq_sec_rule_2a7_weekly_liquid_assets_ge_50pct_and_bank_tier1_clean=False,
+    )
+    trs_sav_409 = evaluate_agentic_corporate_treasury_sweep_policy(
+        treasury_t0_govt_mmf_sweep_and_tax_alpha_harvest_savings_cents=7600000,
+    )
+    agentic_corporate_treasury_sweep_guards = {
+        "all_passed": (
+            trs_commit_ok.allowed
+            and trs_commit_ok.settled_treasury_sweep_batch_cents == 95000000
+            and not trs_wsh_403.allowed
+            and trs_wsh_403.http_status == 403
+            and not trs_liq_422.allowed
+            and trs_liq_422.http_status == 422
+            and not trs_mmf_451.allowed
+            and trs_mmf_451.http_status == 451
+            and not trs_sav_409.allowed
+            and trs_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_corporate_treasury_sweep_settlement_latency_ms": trs_commit_ok.latency_ms,
+        "irc_1091_wash_sale_fdic_block_latency_ms": trs_wsh_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35058,6 +35173,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_retail_vendor_otif_edi812_guards": b2b_retail_vendor_otif_edi812_guards,
         "b2b_maritime_charterparty_laytime_guards": b2b_maritime_charterparty_laytime_guards,
         "b2b_auto_oem_dealer_warranty_guards": b2b_auto_oem_dealer_warranty_guards,
+        "agentic_corporate_treasury_sweep_guards": agentic_corporate_treasury_sweep_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42457,6 +42573,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="war-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Corporate Treasury Cash-Sweep, FDIC Slicing & IRC 1091 Wash-Sale Sandbox -->
+      <div class="finops-box" id="agentic-corporate-treasury-sweep-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🏦 智能体企业司库现金归集 (Cash-Sweep)、FDIC 跨行分片与 IRC § 1091 防洗售 (`agentic_corporate_treasury_cash_sweep_wash_sale_fdic_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 企业司库现金归集与税损收割批次 ($950,000.00)、跨托管户 61天 CUSIP 洗售互斥锁、FDIC &lt;=$250k 分片与 7日发薪安全垫场景 (Corporate Treasury Scenario):</span></label>
+          <select id="trs-select" onchange="updateAgenticCorporateTreasurySweepSandbox()">
+            <option value="trs_commit_ok">🏦 跨账户零 61天洗售冲突 + IntraFi ICS FDIC 分片合规 + 7日发薪 T+0 安全垫 + Rule 2a-7 达标：10ms 清算 $950,000.00! (Act automatically)</option>
+            <option value="trs_wsh_403">🛑 关联子账户或 DRIP 定投在 [-30d,+30d] 61天窗口内买回同质 CUSIP 触发 IRC § 1091 洗售拒抵，或单一银行留存 &gt;$250k 无保险存款拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="trs_liq_422">🚨 司库 AI 将未来 7 日发薪 (Payroll) 与刚性税款所需资金扫入 T+2 定期资产导致零余额账户 (ZBA) 面临日内透支违约 → 14ms 触发 HTTP 422!</option>
+            <option value="trs_mmf_451">🛑 目标货币基金 SEC Rule 2a-7 周度高流动性资产占比跌破 50% 面临强制赎回费或合作银行 CET1 资本率预警：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="trs_sav_409">🧑‍⚖️ Web IQ 启用闲置活期自动归集 T+0 纯国债货币基金并执行非同质 ETF 免洗售税损收割创造无风险利差与节税 $76,000.00 (净成本 $874,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="trs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -43145,6 +43279,7 @@ function renderAll() {{
   updateB2bRetailVendorOtifEdi812Sandbox();
   updateB2bMaritimeCharterpartyLaytimeSandbox();
   updateB2bAutoOemDealerWarrantySandbox();
+  updateAgenticCorporateTreasurySweepSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -55554,6 +55689,52 @@ function updateB2bAutoOemDealerWarrantySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔧 UDS 0x19/0x22 硬件验真 + 重叠工时去重 + TSB 合规：已自动清算 (VERIFIED_AUTO_OEM_DEALER_WARRANTY_CLAIM_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 4S 店幽灵换件洗件套现、零共享拆装路径双倍报工时与 50% NTF 盲目换件</strong>：B2B 汽车主机厂与经销商售后保修批次已完成安全清算（<code>$610,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticCorporateTreasurySweepSandbox() {{
+  var sel = document.getElementById("trs-select");
+  var outEl = document.getElementById("trs-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "trs_wsh_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 IRC_1091_61DAY_WASH_SALE_VIOLATION_OR_UNINSURED_SINGLE_BANK_CONCENTRATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到同一税号（<code>EIN</code>）下关联子账户或 <code>DRIP</code> 股息再投计划在卖出亏损标的 <code>[-30天, +30天]</code> 共 61 天窗口内买回了实质相同的 <code>CUSIP</code>（触发 <code>IRC § 1091</code> 洗售导致抵税资格作废），或单一银行留存超过 <code>$250,000 FDIC</code> 上限的无保险裸存！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "trs_liq_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ILLIQUID_DURATION_MISMATCH_OR_PAYROLL_ZBA_OVERDRAFT_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "司库现金归集指令侵占了未来 7 个自然日刚性工资单（<code>Payroll</code>）、预提税款与到期应付账款所需的 <code>1.15x T+0 即时可用现金底线</code>，将引发零余额发薪账户（<code>ZBA</code>）日内透支违约，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trs_mmf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MMF_WEEKLY_LIQUIDITY_BELOW_50PCT_MANDATORY_FEE_OR_BANK_CAMELS_STRESS_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>SEC Form N-MFP / Rule 2a-7</code> 每日披露发现目标货币市场基金的周度高流动性资产（<code>Weekly Liquid Assets</code>）跌破 50% 安全线面临赎回费风险，或合作银行 <code>CET1</code> 核心一级资本充足率预警，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trs_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TREASURY_T0_GOVT_MMF_SWEEP_AND_TAX_ALPHA_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>T+0 纯国债货币市场基金自动归集 + 跨指数非同质 ETF 免洗售税损收割</code>，在 100% 保障发薪流动性与主权级信用前提下，单批增厚无风险收益与节税阿尔法 <code>$76,000.00</code>（净资金成本优化至 <code>$874,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏦 跨账户零 61天洗售 + FDIC ICS 分片 + 7日发薪安全垫通过：已自动清算 (VERIFIED_CORPORATE_TREASURY_CASH_SWEEP_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零子账户反向买卖触发 IRS 洗售拒抵、零单家银行超额裸存挤兑风险与发薪透支</strong>：智能体企业司库现金归集批次已完成安全清算（<code>$950,000.00</code>）！" +
     "</div>";
 }}
 

@@ -15221,6 +15221,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-auto-oem-dealer-warranty-sandbox", demo_zh)
 
+    def test_agentic_corporate_treasury_cash_sweep_wash_sale_fdic_mandate_vs_uninsured_deposit_wash_sale_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_corporate_treasury_sweep_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 61d wash-sale clean + FDIC sliced + 7d payroll floor + Rule 2a-7 clean ($950,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_corporate_treasury_sweep_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_treasury_sweep_batch_cents, 95000000)
+
+        # 2. Cross-account IRC 1091 61-day wash-sale collision or >$250k uninsured bank balance -> 403 Blocked
+        wsh_403 = evaluate_agentic_corporate_treasury_sweep_policy(
+            irc_1091_61day_cross_account_wash_sale_free_and_fdic_ics_sliced_verified=False,
+        )
+        self.assertFalse(wsh_403.allowed)
+        self.assertEqual(wsh_403.http_status, 403)
+        self.assertEqual(
+            wsh_403.decision_code,
+            "IRC_1091_61DAY_WASH_SALE_VIOLATION_OR_UNINSURED_SINGLE_BANK_CONCENTRATION_BLOCKED",
+        )
+
+        # 3. Sweeping cash below the 7-day T+0 payroll & critical AP liquidity floor -> 422 Blocked
+        liq_422 = evaluate_agentic_corporate_treasury_sweep_policy(
+            t_plus_1_settlement_and_7day_ap_payroll_liquidity_floor_verified=False,
+        )
+        self.assertFalse(liq_422.allowed)
+        self.assertEqual(liq_422.http_status, 422)
+        self.assertEqual(
+            liq_422.decision_code,
+            "ILLIQUID_DURATION_MISMATCH_OR_PAYROLL_ZBA_OVERDRAFT_BREACH",
+        )
+
+        # 4. Target MMF SEC Rule 2a-7 weekly liquid assets <50% or bank CET1 stress alert -> 451 Hold
+        mmf_451 = evaluate_agentic_corporate_treasury_sweep_policy(
+            webiq_sec_rule_2a7_weekly_liquid_assets_ge_50pct_and_bank_tier1_clean=False,
+        )
+        self.assertFalse(mmf_451.allowed)
+        self.assertEqual(mmf_451.http_status, 451)
+
+        # 5. Web IQ T+0 Government MMF sweep & tax-alpha harvesting saving $76,000 ($874,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_corporate_treasury_sweep_policy(
+            treasury_t0_govt_mmf_sweep_and_tax_alpha_harvest_savings_cents=7600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_treasury_sweep_batch_cents, 87400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_corporate_treasury_sweep_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-corporate-treasury-sweep-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
