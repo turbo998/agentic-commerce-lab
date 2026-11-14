@@ -15854,6 +15854,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cloud-marketplace-private-offer-sandbox", demo_zh)
 
+    def test_agentic_mice_group_hotel_attrition_resale_mitigation_master_folio_vs_double_dip_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_mice_group_hotel_attrition_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant resale mitigation credit + PSI outside-the-block match + 75% net profit & signed BEOs -> 200 OK ($680,000.00)
+        ok_res = evaluate_agentic_mice_group_hotel_attrition_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_MICE_GROUP_HOTEL_MASTER_FOLIO_SETTLED")
+        self.assertEqual(ok_res.settled_mice_master_folio_cents, 68000000)
+
+        # 2. Hotel resold unpicked-up rooms to transient walk-ins yet bills 100% attrition (Double-Dipping) -> 403 Blocked
+        res_403 = evaluate_agentic_mice_group_hotel_attrition_policy(
+            audited_house_occupancy_resale_mitigation_credit_applied_and_no_double_dip_verified=False,
+        )
+        self.assertFalse(res_403.allowed)
+        self.assertEqual(res_403.http_status, 403)
+        self.assertEqual(
+            res_403.decision_code,
+            "ATTRITION_RESALE_MITIGATION_CREDIT_OMITTED_OR_DOUBLE_DIP_BLOCKED",
+        )
+
+        # 3. Uncredited Outside-the-Block OTA attendees or 100% gross room rate + tax penalty instead of 75% net profit -> 422 Blocked
+        out_422 = evaluate_agentic_mice_group_hotel_attrition_policy(
+            outside_block_psi_attendee_rooms_credited_and_75pct_net_profit_formula_verified=False,
+        )
+        self.assertFalse(out_422.allowed)
+        self.assertEqual(out_422.http_status, 422)
+        self.assertEqual(
+            out_422.decision_code,
+            "GROSS_ATTRITION_PENALTY_WITHOUT_PROFIT_OFFSET_OR_UNCREDITED_OUTSIDE_BLOCK_ROOMS",
+        )
+
+        # 4. Unsigned BEO AV rigging surcharges on Master Folio or compounded service-fee sales tax -> 451 Hold
+        beo_451 = evaluate_agentic_mice_group_hotel_attrition_policy(
+            webiq_master_folio_beo_onsite_signatures_and_zero_compounded_service_tax_clean=False,
+        )
+        self.assertFalse(beo_451.allowed)
+        self.assertEqual(beo_451.http_status, 451)
+
+        # 5. Web IQ PSI attendee-to-PMS cross-match & resale mitigation saving $54,400 ($625,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_mice_group_hotel_attrition_policy(
+            guest_list_cross_match_and_resale_mitigation_savings_cents=5440000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_mice_master_folio_cents, 62560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_mice_group_hotel_attrition_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-mice-group-hotel-attrition-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
