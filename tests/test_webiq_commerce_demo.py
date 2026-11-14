@@ -13199,6 +13199,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-age-restricted-mdl-sandbox", demo_zh)
 
+    def test_b2b_construction_aia_g702_retainage_mechanics_lien_waiver_mandate_vs_frontloading_double_lien_loss_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_construction_aia_g702_policy,
+        )
+
+        # 1. Verified Tier-2 lien waivers + Architect G702 cert + retainage held -> 200 OK ($960,000)
+        commit_ok = evaluate_b2b_construction_aia_g702_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_construction_draw_cents, 96000000)
+
+        # 2. Missing Tier-2 subcontractor mechanics lien waiver -> 403 blocked in 11ms
+        lin_403 = evaluate_b2b_construction_aia_g702_policy(
+            tier2_subcontractor_prior_unconditional_and_current_conditional_waivers_verified=False,
+        )
+        self.assertFalse(lin_403.allowed)
+        self.assertEqual(lin_403.http_status, 403)
+        self.assertEqual(
+            lin_403.construction_g702_lane,
+            "MISSING_SUBCONTRACTOR_LIEN_WAIVER_OR_BOND_BLOCKED",
+        )
+
+        # 3. Unapproved Change Order snuck into G703 SOV or missing retainage -> 422 blocked in 14ms
+        sov_422 = evaluate_b2b_construction_aia_g702_policy(
+            architect_g702_signed_retainage_held_and_zero_unapproved_change_orders=False,
+        )
+        self.assertFalse(sov_422.allowed)
+        self.assertEqual(sov_422.http_status, 422)
+        self.assertEqual(
+            sov_422.construction_g702_lane,
+            "UNAPPROVED_CHANGE_ORDER_OR_RETAINAGE_SHORTFALL_REJECTED",
+        )
+
+        # 4. Web IQ detects non-statutory waiver form in CA/TX or retainage cap breach -> 451 blocked in 280ms
+        sta_451 = evaluate_b2b_construction_aia_g702_policy(
+            webiq_statutory_12state_waiver_form_and_retainage_cap_clean=False,
+        )
+        self.assertFalse(sta_451.allowed)
+        self.assertEqual(sta_451.http_status, 451)
+
+        # 5. Web IQ enables Tier-2 split disbursement & equipment discount saving $67,200 ($892,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_construction_aia_g702_policy(
+            direct_tier2_split_disbursement_and_equipment_discount_savings_cents=6720000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_construction_draw_cents, 89280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_construction_aia_g702_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-construction-aia-g702-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

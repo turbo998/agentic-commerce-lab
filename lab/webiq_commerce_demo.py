@@ -23238,6 +23238,96 @@ def evaluate_agentic_age_restricted_mdl_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 215: B2B Construction AIA G702/G703, Lien Waiver & Retainage Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class B2bConstructionAiaG702Verdict:
+    allowed: bool
+    http_status: int
+    construction_g702_lane: str
+    settled_construction_draw_cents: int
+    lien_shield_and_split_payout_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_b2b_construction_aia_g702_policy(
+    *,
+    gross_construction_draw_cents: int = 96000000,
+    tier2_subcontractor_prior_unconditional_and_current_conditional_waivers_verified: bool = True,
+    architect_g702_signed_retainage_held_and_zero_unapproved_change_orders: bool = True,
+    webiq_statutory_12state_waiver_form_and_retainage_cap_clean: bool = True,
+    direct_tier2_split_disbursement_and_equipment_discount_savings_cents: int = 0,
+) -> B2bConstructionAiaG702Verdict:
+    # 1. Missing Tier-2 Subcontractor Mechanics Lien Waiver (200% Double-Pay Lien Risk) -> HTTP 403
+    if not tier2_subcontractor_prior_unconditional_and_current_conditional_waivers_verified:
+        return B2bConstructionAiaG702Verdict(
+            False,
+            403,
+            "MISSING_SUBCONTRACTOR_LIEN_WAIVER_OR_BOND_BLOCKED",
+            0,
+            0,
+            "construction_draw_blocked_due_to_missing_tier2_subcontractor_statutory_mechanics_lien_waiver",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Unapproved Change Order Snuck into G703 SOV, Front-Loading, or Missing Retainage -> HTTP 422
+    if not architect_g702_signed_retainage_held_and_zero_unapproved_change_orders:
+        return B2bConstructionAiaG702Verdict(
+            False,
+            422,
+            "UNAPPROVED_CHANGE_ORDER_OR_RETAINAGE_SHORTFALL_REJECTED",
+            0,
+            0,
+            "aia_g702_draw_rejected_for_unapproved_change_order_sov_frontloading_or_missing_retainage",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Non-Statutory Custom Waiver Form in CA/TX/12-State or Prompt Payment Cap Breach via Web IQ -> HTTP 451
+    if not webiq_statutory_12state_waiver_form_and_retainage_cap_clean:
+        return B2bConstructionAiaG702Verdict(
+            False,
+            451,
+            "STATUTORY_WAIVER_FORM_INVALID_OR_RETAINAGE_CAP_HOLD",
+            0,
+            0,
+            "webiq_detected_non_statutory_lien_waiver_template_in_strict_state_or_retainage_cap_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Direct Tier-2 Split Disbursement & Equipment Early-Pay Discount -> HTTP 409 Confirm
+    if direct_tier2_split_disbursement_and_equipment_discount_savings_cents > 0:
+        return B2bConstructionAiaG702Verdict(
+            False,
+            409,
+            "AIA_G702_SPLIT_DISBURSEMENT_AND_LIEN_SHIELD_CONFIRM",
+            gross_construction_draw_cents - direct_tier2_split_disbursement_and_equipment_discount_savings_cents,
+            direct_tier2_split_disbursement_and_equipment_discount_savings_cents,
+            "webiq_enabled_tier2_split_disbursement_and_statutory_lien_shield_saving_67200_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Tier-2 Lien Waivers + Architect G702 Cert + 5%-10% Retainage Held -> Settled
+    return B2bConstructionAiaG702Verdict(
+        True,
+        200,
+        "VERIFIED_CONSTRUCTION_AIA_G702_PROGRESS_SETTLED",
+        gross_construction_draw_cents,
+        0,
+        "b2b_construction_aia_g702_tier2_lien_waivers_and_retainage_escrow_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -30759,6 +30849,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "checkbox_or_raw_id_pii_block_latency_ms": age_slf_403.latency_ms,
     }
 
+    # Round 215 (B2B Construction AIA G702/G703, Lien Waiver & Retainage Mandate)
+    aia_commit_ok = evaluate_b2b_construction_aia_g702_policy()
+    aia_lin_403 = evaluate_b2b_construction_aia_g702_policy(
+        tier2_subcontractor_prior_unconditional_and_current_conditional_waivers_verified=False,
+    )
+    aia_sov_422 = evaluate_b2b_construction_aia_g702_policy(
+        architect_g702_signed_retainage_held_and_zero_unapproved_change_orders=False,
+    )
+    aia_sta_451 = evaluate_b2b_construction_aia_g702_policy(
+        webiq_statutory_12state_waiver_form_and_retainage_cap_clean=False,
+    )
+    aia_sav_409 = evaluate_b2b_construction_aia_g702_policy(
+        direct_tier2_split_disbursement_and_equipment_discount_savings_cents=6720000,
+    )
+    b2b_construction_aia_g702_guards = {
+        "all_passed": (
+            aia_commit_ok.allowed
+            and aia_commit_ok.settled_construction_draw_cents == 96000000
+            and not aia_lin_403.allowed
+            and aia_lin_403.http_status == 403
+            and not aia_sov_422.allowed
+            and aia_sov_422.http_status == 422
+            and not aia_sta_451.allowed
+            and aia_sta_451.http_status == 451
+            and not aia_sav_409.allowed
+            and aia_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_construction_aia_g702_settlement_latency_ms": aia_commit_ok.latency_ms,
+        "missing_subcontractor_lien_waiver_block_latency_ms": aia_lin_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30986,6 +31107,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_ev_charging_ocpi_guards": agentic_ev_charging_ocpi_guards,
         "agentic_esim_iot_sgp32_roaming_guards": agentic_esim_iot_sgp32_roaming_guards,
         "agentic_age_restricted_mdl_guards": agentic_age_restricted_mdl_guards,
+        "b2b_construction_aia_g702_guards": b2b_construction_aia_g702_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37755,6 +37877,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="age-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Construction AIA G702/G703, Lien Waiver & Retainage Sandbox (Round 215 FAQ Companion) -->
+      <div class="finops-box" id="b2b-construction-aia-g702-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-aia-title">🏗️ B2B 智算中心基建工程进度款 (AIA G702/G703) 与留置权豁免：二级分包穿透豁免书与 5%–10% 质保金令牌 (b2b_construction_aia_g702_retainage_lien_waiver_mandate_...) vs 双倍赔款与烂尾决策器 (Round 215 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. B2B 基建工程 AIA G702 进度款拨付批次 ($960,000.00)、二级分包商穿透留置权豁免书 (Lien Waivers)、独立监理 G702 数字签证与 5%–10% 质保金扣留场景 (Construction AIA G702 &amp; Lien Waiver Scenario):</span></label>
+          <select id="aia-select" onchange="updateB2bConstructionAiaG702Sandbox()">
+            <option value="aia_commit_ok">⚡ 二级分包上期无条件+本期有条件豁免齐备 + 独立监理 G702 签证 + 足额扣留质保金：10ms 安全拨付 $960,000.00! (Act automatically)</option>
+            <option value="aia_lin_403">🛑 未收齐底层机电分包商/变压器供应商的《法定留置权豁免书》即企图向总包打款 (总包挪用将致业主机房被查封并赔付 200% 双份钱) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="aia_sov_422">🚨 总包在 G703 工程量表中混入未经批准的变更单、前重后轻虚报 80% 完工率或漏扣 5%–10% 法定工程质保金 (Retainage) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="aia_sta_451">🛑 在加州/德州等 12 个强制法定格式州使用了自拟免责声明 (在州法院直接被判无效)，或超扣质保金违反加州 SB 61 5% 上限：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="aia_sav_409">🧑‍⚖️ Web IQ 启用总包与二级分包透明分账直付 (100% 根绝不动产留置权诉讼) 并锁定主设备早付直采折扣立省 $67,200.00 (净支出 $892,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="aia-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -38408,6 +38548,7 @@ function renderAll() {{
   updateAgenticEvChargingOcpiSandbox();
   updateAgenticEsimIotSgp32RoamingSandbox();
   updateAgenticAgeRestrictedMdlSandbox();
+  updateB2bConstructionAiaG702Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -49195,6 +49336,55 @@ function updateAgenticAgeRestrictedMdlSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ ISO 18013-5 mDL 零知识验签 + 0字节 PII + 快递 ASR 21+ 锁定通过：已自动清算 (VERIFIED_AGE_RESTRICTED_MDL_ASR_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零未成年钓鱼执法重罚、零身份证原图脱库赔偿与跨州禁运重罪风险</strong>：智能体年龄限制与受控商品批次已完成合规清算（<code>$410,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bConstructionAiaG702Sandbox() {{
+  var selEl = document.getElementById("aia-select");
+  var outEl = document.getElementById("aia-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "aia_lin_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MISSING_SUBCONTRACTOR_LIEN_WAIVER_OR_BOND_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "工程留置权防御门禁检出，第 N 期进度款申请 <code>缺失已备案 Preliminary 20-Day Notice 的二级机电分包商/主设备商签署的《上期无条件留置权豁免书 (Unconditional Waiver)》或《本期有条件豁免书 (Conditional Waiver)》（若直接向总包放款且总包挪用资金，分包商将依法查封业主机房产权迫使业主付双份钱）</code>（<code>tier2_subcontractor_prior_unconditional_and_current_conditional_waivers_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aia_sov_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAPPROVED_CHANGE_ORDER_OR_RETAINAGE_SHORTFALL_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "AIA G702/G703 造价校验器检出 <code>请款单混入了未经业主双签批准的工程变更单 (Unapproved Change Order)、单行 SOV 累计请款超 100% 预算（前重后轻套现），或未按合同足额扣留 5%–10% 法定工程质保金 (Retainage)</code>（<code>architect_g702_signed_retainage_held_and_zero_unapproved_change_orders == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aia_sta_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STATUTORY_WAIVER_FORM_INVALID_OR_RETAINAGE_CAP_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>加州民法典 § 8132–8138 / 德州财产法第 53 章等 12 个强制法定留置权豁免书格式州法典</code>，检出提交的豁免书并非州立法强制标准文本（法庭上直接无效）或质保金比例超出 Prompt Payment Act 法定上限，立即冻结！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "aia_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AIA_G702_SPLIT_DISBURSEMENT_AND_LIEN_SHIELD_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>总包与二级分包透明分账直付（100% 消除不动产二次留置赔付诉讼）+ 核心机电设备早付直采折扣</code>，单批立省/止损 <code>$67,200.00</code>（净进度款支出优化至 <code>$892,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 二级分包法定豁免齐备 + 独立监理 G702 签证 + 质保金托管通过：已自动拨付 (VERIFIED_CONSTRUCTION_AIA_G702_PROGRESS_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零二级分包商查封机房双倍索赔、零 G703 前重后轻套现烂尾与无效豁免书风险</strong>：B2B 基建工程 AIA G702 进度款批次已完成安全清算（<code>$960,000.00</code>）！" +
     "</div>";
 }}
 
