@@ -12079,6 +12079,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marketplace-split-bustout-sandbox", demo_zh)
 
+    def test_agentic_stablecoin_eip3009_depeg_circuit_breaker_kyt_mandate_vs_unlimited_erc20_approve_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_stablecoin_eip3009_policy,
+        )
+
+        # 1. Verified EIP-3009 exact signature + TWAP $0.9998 + L1 finalized KYT clean -> 200 OK ($540,000)
+        commit_ok = evaluate_agentic_stablecoin_eip3009_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_stablecoin_batch_cents, 54000000)
+
+        # 2. Unlimited ERC-20 approve(MAX_UINT256) or invalid EIP-3009 signature -> 403 blocked in 11ms
+        app_403 = evaluate_agentic_stablecoin_eip3009_policy(
+            eip3009_exact_signature_and_zero_unlimited_approve_verified=False,
+        )
+        self.assertFalse(app_403.allowed)
+        self.assertEqual(app_403.http_status, 403)
+        self.assertEqual(
+            app_403.stablecoin_eip3009_lane,
+            "UNLIMITED_ERC20_APPROVE_OR_INVALID_EIP3009_BLOCKED",
+        )
+
+        # 3. Stablecoin TWAP depeg (<$0.9985) tripping circuit breaker to fiat SPT -> 422 blocked in 14ms
+        dpg_422 = evaluate_agentic_stablecoin_eip3009_policy(
+            oracle_twap_peg_corridor_and_fiat_fallback_ready=False,
+        )
+        self.assertFalse(dpg_422.allowed)
+        self.assertEqual(dpg_422.http_status, 422)
+        self.assertEqual(
+            dpg_422.stablecoin_eip3009_lane,
+            "STABLECOIN_DEPEG_CIRCUIT_BREAKER_FIAT_FALLBACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects unfinalized L2 reorg risk or 5-hop KYT sanctions taint -> 451 blocked in 280ms
+        kyt_451 = evaluate_agentic_stablecoin_eip3009_policy(
+            webiq_l1_finality_and_kyt_zero_sanctions_taint_clean=False,
+        )
+        self.assertFalse(kyt_451.allowed)
+        self.assertEqual(kyt_451.http_status, 451)
+
+        # 5. Web IQ credits cross-border FX spread elimination & gasless relayer saving $64,800 ($475,200 net) -> 409 Confirm
+        fxs_409 = evaluate_agentic_stablecoin_eip3009_policy(
+            cross_border_fx_spread_elimination_and_gasless_relayer_credit_cents=6480000,
+        )
+        self.assertFalse(fxs_409.allowed)
+        self.assertEqual(fxs_409.http_status, 409)
+        self.assertEqual(fxs_409.settled_stablecoin_batch_cents, 47520000)
+        self.assertEqual(fxs_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_stablecoin_eip3009_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-stablecoin-eip3009-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
