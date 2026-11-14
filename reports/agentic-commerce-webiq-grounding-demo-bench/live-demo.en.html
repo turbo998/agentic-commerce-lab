@@ -4554,6 +4554,24 @@
         <div id="hsa-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Creator Payout IRS 1099-K/W-8BEN & 24% Backup Withholding Sandbox (Round 209 FAQ Companion) -->
+      <div class="finops-box" id="agentic-creator-payout-1099k-w8ben-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pay-title">💸 智能体创作者经济与全球开发者分账出金 (IRS 1099-K / W-8BEN)：实时 TIN 匹配与 24% 备用预提托管令牌 (agentic_creator_payout_1099k_w8ben_withholding_mandate_...) vs 先打款年底催税表背债决策器 (Round 209 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 全球创作者与开发者分账出金批次 ($550,000.00)、IRS e-Services TIN 实时匹配、IRC § 3406 24% 备用预提托管与 W-8BEN 3年到期锁场景 (Creator Payout 1099-K &amp; W-8BEN Scenario):</span></label>
+          <select id="pay-select" onchange="updateAgenticCreatorPayout1099kW8benSandbox()">
+            <option value="pay_commit_ok">⚡ IRS TIN 实时精确匹配 + W-8BEN 在 3年效期内 + 美国源版税/境外劳务精准切分：10ms 合规出金 $550,000.00! (Act automatically)</option>
+            <option value="pay_tin_403">🛑 创作者未提交 W-9/W-8BEN 或姓名与 9位 TIN 不匹配，出金 Agent 却企图不扣 24% 备用预提直接 100% 裸放款 (导致平台背负连带税债) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="pay_w8b_422">🚨 海外开发者 W-8BEN 已超过第 3 个日历年 12月31日强制过期，或将向美国买家授权 AI 模型的版税收入错误按 0% 境外劳务放行拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="pay_trt_451">🛑 离岸壳公司违规主张双边税收协定 0% 版税率 (违反 LOB 利益限制条款)，或漏报马萨诸塞/佛蒙特州 $600 起征 1099-K：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="pay_sav_409">🧑‍⚖️ Web IQ 自动对 TIN 待核验账户执行 24% 备用预提专户托管 (免除平台自掏腰包赔税与 $310/张罚单) 并合法激活协定减免立省 $44,000.00 (净敞口 $506,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pay-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5201,6 +5219,7 @@ function renderAll() {
   updateAgenticReverseLogisticsRmaSandbox();
   updateAgenticHospitalityIncrementalAuthSandbox();
   updateAgenticHsaFsaSigisIiasSandbox();
+  updateAgenticCreatorPayout1099kW8benSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15694,6 +15713,55 @@ function updateAgenticHsaFsaSigisIiasSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ SIGIS UPC 白名单/有效 NPI LMN + 双卡 2PC 拆单 + Field 63 IIAS 通过：已自动核销清算 (VERIFIED_HSA_FSA_SIGIS_IIAS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零混合购物车 Code 57 整单拒付、零员工补交纸质小票摩擦与 IRS 20% 罚税风险</strong>：智能体医疗健康 HSA/FSA 福利卡批次已完成免小票自动核销（<code>$440,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticCreatorPayout1099kW8benSandbox() {
+  var selEl = document.getElementById("pay-select");
+  var outEl = document.getElementById("pay-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "pay_tin_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNVERIFIED_TIN_OR_MISSING_W8BEN_FULL_PAYOUT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "创作者税务扣缴门禁检出，收款方 <code>尚未提交经 IRS TIN Matching 核实的 W-9 或有效 W-8BEN，且未将 24% 法定备用预提税 (IRC § 3406 Backup Withholding) 锁入税务专户即企图 100% 全额放款（一旦创作者次年失联，平台必须自掏公司本金赔付 24%–30% 欠税 + $310/张错报罚单）</code>（<code>irs_tin_matched_or_24pct_backup_withholding_escrowed == False</code>）。网关在 <code>11ms</code> 内硬阻断裸放款！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pay_w8b_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXPIRED_W8BEN_3YR_OR_US_ROYALTY_MISCLASSIFIED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "跨境预提税定性引擎检出 <code>海外创作者签署的 W-8BEN 已超过第 3 个日历年 12 月 31 日法定到期日，或将向美国境内买家授权 AI 模型/数字资产产生的美国源版税 (IRC § 861 Royalty) 错误按 0% 境外劳务免税放行</code>（<code>w8ben_within_3yr_expiry_and_us_royalty_sourcing_split_valid == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pay_trt_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TREATY_LOB_INVALID_OR_STATE_1099K_THRESHOLD_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>IRS Publication 515 双边税收协定表与各州税务局 (MA/VT/MD/IL) $600 1099-K 低起征点规程</code>，检出收款实体不满足协定 LOB 利益限制条款或触发州级强制预提，立即冻结！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "pay_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BACKUP_WITHHOLDING_ESCROW_AND_TREATY_RELIEF_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>自动 24% 备用预提税专户托管（100% 消除平台连带赔税与 CP2100 B-Notice 罚单）+ IRS Publication 515 有效税收协定版税减免</code>，单批免罚/节税 <code>$44,000.00</code>（净结算敞口优化至 <code>$506,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ IRS TIN 实时匹配 + W-8BEN 3年效期有效 + 版税/劳务切分通过：已自动出金 (VERIFIED_CREATOR_PAYOUT_1099K_W8BEN_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零平台自掏腰包赔付 24% 欠税、零 $310/张错报罚单与 W-8BEN 过期漏扣风险</strong>：全球创作者与开发者分账出金批次已完成合规清算（<code>$550,000.00</code>）！" +
     "</div>";
 }
 

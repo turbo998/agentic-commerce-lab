@@ -12863,6 +12863,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-hsa-fsa-sigis-iias-sandbox", demo_zh)
 
+    def test_agentic_creator_payout_1099k_w8ben_backup_withholding_mandate_vs_unverified_tin_penalty_liability_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_creator_payout_1099k_w8ben_policy,
+        )
+
+        # 1. Verified IRS TIN match + active W-8BEN + exact royalty/service split -> 200 OK ($550,000)
+        commit_ok = evaluate_agentic_creator_payout_1099k_w8ben_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_creator_payout_cents, 55000000)
+
+        # 2. Unverified TIN / missing W-8BEN attempting 100% unwithheld payout -> 403 blocked in 11ms
+        tin_403 = evaluate_agentic_creator_payout_1099k_w8ben_policy(
+            irs_tin_matched_or_24pct_backup_withholding_escrowed=False,
+        )
+        self.assertFalse(tin_403.allowed)
+        self.assertEqual(tin_403.http_status, 403)
+        self.assertEqual(
+            tin_403.creator_payout_lane,
+            "UNVERIFIED_TIN_OR_MISSING_W8BEN_FULL_PAYOUT_BLOCKED",
+        )
+
+        # 3. Expired W-8BEN (>3 calendar years) or US-source royalty misclassified -> 422 blocked in 14ms
+        w8b_422 = evaluate_agentic_creator_payout_1099k_w8ben_policy(
+            w8ben_within_3yr_expiry_and_us_royalty_sourcing_split_valid=False,
+        )
+        self.assertFalse(w8b_422.allowed)
+        self.assertEqual(w8b_422.http_status, 422)
+        self.assertEqual(
+            w8b_422.creator_payout_lane,
+            "EXPIRED_W8BEN_3YR_OR_US_ROYALTY_MISCLASSIFIED",
+        )
+
+        # 4. Web IQ detects invalid treaty LOB claim or missed $600 state 1099-K -> 451 blocked in 280ms
+        trt_451 = evaluate_agentic_creator_payout_1099k_w8ben_policy(
+            webiq_treaty_lob_and_state_600usd_1099k_threshold_clean=False,
+        )
+        self.assertFalse(trt_451.allowed)
+        self.assertEqual(trt_451.http_status, 451)
+
+        # 5. Web IQ enforces 24% backup escrow & treaty relief saving $44,000 ($506,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_creator_payout_1099k_w8ben_policy(
+            backup_escrow_and_treaty_relief_savings_cents=4400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_creator_payout_cents, 50600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_creator_payout_1099k_w8ben_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-creator-payout-1099k-w8ben-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

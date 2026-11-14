@@ -1120,6 +1120,11 @@
     "agentic_hsa_fsa_sigis_iias_settlement_latency_ms": 10,
     "ineligible_npi_lmn_block_latency_ms": 11
   },
+  "agentic_creator_payout_1099k_w8ben_guards": {
+    "all_passed": true,
+    "agentic_creator_payout_1099k_w8ben_settlement_latency_ms": 10,
+    "unverified_tin_payout_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
