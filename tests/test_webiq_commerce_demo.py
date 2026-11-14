@@ -16880,6 +16880,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-hazwaste-rcra-tsdf-sandbox", demo_zh)
 
+    def test_b2b_commercial_print_direct_mail_usps_imb_cwt_vs_postage_diversion_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_print_direct_mail_imb_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant USPS EPS escrow & >=99.5% IMb scans + 80# CWT paper & NCOA + clean Seamless scorecard -> 200 OK ($860,000.00)
+        ok_res = evaluate_b2b_commercial_print_direct_mail_imb_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_PRINT_DIRECT_MAIL_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_print_direct_mail_cents, 86000000)
+
+        # 2. Ghost undermailing (<99.5% IMb induction scans) or postage escrow / commingling rebate diversion -> 403 Blocked
+        imb_403 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+            usps_eps_escrow_and_postalone_imb_scan_rate_995pct_verified=False,
+        )
+        self.assertFalse(imb_403.allowed)
+        self.assertEqual(imb_403.http_status, 403)
+        self.assertEqual(
+            imb_403.decision_code,
+            "USPS_POSTALONE_IMB_UNDERSCAN_OR_POSTAGE_ESCROW_DIVERSION_BLOCKED",
+        )
+
+        # 3. 80# -> 60# basis weight CWT paper downgrade, uncleaned NCOA, or 10% overrun billing -> 422 Blocked
+        cwt_422 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+            tappi_basis_weight_cwt_48mo_ncoa_and_zero_overrun_verified=False,
+        )
+        self.assertFalse(cwt_422.allowed)
+        self.assertEqual(cwt_422.http_status, 422)
+        self.assertEqual(
+            cwt_422.decision_code,
+            "PAPER_BASIS_WEIGHT_CWT_DOWNGRADE_OR_UNAUTHORIZED_OVERRUN_SPOILAGE_BILLING",
+        )
+
+        # 4. USPS Seamless Acceptance error threshold exceeded or missing HIPAA/SOC 2 Type II -> 451 Hold
+        soc_451 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+            webiq_usps_seamless_scorecard_and_soc2_hipaa_compliance_clean=False,
+        )
+        self.assertFalse(soc_451.allowed)
+        self.assertEqual(soc_451.http_status, 451)
+
+        # 5. Web IQ automated SCF Drop-Ship postage pass-through & CWT spoilage cap saving $68,800 ($791,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+            automated_scf_dropship_postage_passthrough_and_cwt_spoilage_cap_savings_cents=6880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_print_direct_mail_cents, 79120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_print_direct_mail_imb_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-print-direct-mail-imb-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -28698,6 +28698,91 @@ def evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bCommercialPrintDirectMailImbDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_commercial_print_direct_mail_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_print_direct_mail_imb_policy(
+    *,
+    mandate_id: str = "b2b_commercial_print_direct_mail_usps_imb_seamless_acceptance_paper_cwt_mandate_2026",
+    usps_eps_escrow_and_postalone_imb_scan_rate_995pct_verified: bool = True,
+    tappi_basis_weight_cwt_48mo_ncoa_and_zero_overrun_verified: bool = True,
+    webiq_usps_seamless_scorecard_and_soc2_hipaa_compliance_clean: bool = True,
+    automated_scf_dropship_postage_passthrough_and_cwt_spoilage_cap_savings_cents: int = 0,
+    commercial_print_direct_mail_cents: int = 86000000,
+) -> B2bCommercialPrintDirectMailImbDecision:
+    """Evaluate B2B Commercial Print & Direct Mail USPS IMb Seamless Acceptance, EPS Escrow & CWT Paper policy."""
+    if not mandate_id.startswith("b2b_commercial_print_direct_mail_usps_imb_seamless_acceptance_paper_cwt_mandate_"):
+        return B2bCommercialPrintDirectMailImbDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_PRINT_DIRECT_MAIL_IMB_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_commercial_print_direct_mail_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not usps_eps_escrow_and_postalone_imb_scan_rate_995pct_verified:
+        return B2bCommercialPrintDirectMailImbDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="USPS_POSTALONE_IMB_UNDERSCAN_OR_POSTAGE_ESCROW_DIVERSION_BLOCKED",
+            action_pill="Send to a human",
+            settled_commercial_print_direct_mail_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not tappi_basis_weight_cwt_48mo_ncoa_and_zero_overrun_verified:
+        return B2bCommercialPrintDirectMailImbDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PAPER_BASIS_WEIGHT_CWT_DOWNGRADE_OR_UNAUTHORIZED_OVERRUN_SPOILAGE_BILLING",
+            action_pill="Send to a human",
+            settled_commercial_print_direct_mail_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_usps_seamless_scorecard_and_soc2_hipaa_compliance_clean:
+        return B2bCommercialPrintDirectMailImbDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="USPS_SEAMLESS_ACCEPTANCE_ERROR_THRESHOLD_OR_HIPAA_SOC2_COMPLIANCE_HOLD",
+            action_pill="Send to a human",
+            settled_commercial_print_direct_mail_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_scf_dropship_postage_passthrough_and_cwt_spoilage_cap_savings_cents > 0:
+        return B2bCommercialPrintDirectMailImbDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SCF_DROPSHIP_POSTAGE_PASSTHROUGH_AND_CWT_SPOILAGE_CAP_CONFIRM",
+            action_pill="Confirm",
+            settled_commercial_print_direct_mail_cents=max(
+                0,
+                commercial_print_direct_mail_cents - automated_scf_dropship_postage_passthrough_and_cwt_spoilage_cap_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bCommercialPrintDirectMailImbDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_PRINT_DIRECT_MAIL_SETTLED",
+        action_pill="Act automatically",
+        settled_commercial_print_direct_mail_cents=commercial_print_direct_mail_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -38131,6 +38216,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "missing_emanifest_or_cod_block_latency_ms": haz_cod_403.latency_ms,
     }
 
+    prt_commit_ok = evaluate_b2b_commercial_print_direct_mail_imb_policy()
+    prt_imb_403 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+        usps_eps_escrow_and_postalone_imb_scan_rate_995pct_verified=False,
+    )
+    prt_cwt_422 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+        tappi_basis_weight_cwt_48mo_ncoa_and_zero_overrun_verified=False,
+    )
+    prt_soc_451 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+        webiq_usps_seamless_scorecard_and_soc2_hipaa_compliance_clean=False,
+    )
+    prt_sav_409 = evaluate_b2b_commercial_print_direct_mail_imb_policy(
+        automated_scf_dropship_postage_passthrough_and_cwt_spoilage_cap_savings_cents=6880000,
+    )
+    b2b_commercial_print_direct_mail_imb_guards = {
+        "all_passed": (
+            prt_commit_ok.allowed
+            and prt_commit_ok.settled_commercial_print_direct_mail_cents == 86000000
+            and not prt_imb_403.allowed
+            and prt_imb_403.http_status == 403
+            and not prt_cwt_422.allowed
+            and prt_cwt_422.http_status == 422
+            and not prt_soc_451.allowed
+            and prt_soc_451.http_status == 451
+            and not prt_sav_409.allowed
+            and prt_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_print_direct_mail_latency_ms": prt_commit_ok.latency_ms,
+        "usps_imb_underscan_or_postage_diversion_block_latency_ms": prt_imb_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38422,6 +38537,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_textile_apparel_cmt_yy_aql_guards": b2b_textile_apparel_cmt_yy_aql_guards,
         "agentic_veterinary_pet_insurance_soap_guards": agentic_veterinary_pet_insurance_soap_guards,
         "b2b_industrial_hazwaste_rcra_tsdf_guards": b2b_industrial_hazwaste_rcra_tsdf_guards,
+        "b2b_commercial_print_direct_mail_imb_guards": b2b_commercial_print_direct_mail_imb_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46343,6 +46459,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="haz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Print & Direct Mail USPS IMb Seamless Acceptance, EPS & CWT Paper Sandbox -->
+      <div class="finops-box" id="b2b-commercial-print-direct-mail-imb-sandbox" style="margin-top:12px;border-color:#60A5FA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">📬 B2B 商业印刷与直邮营销：USPS IMb 进局扫码、EPS 邮资专户托管与 CWT 纸重 (`b2b_commercial_print_direct_mail_usps_imb_seamless_acceptance_paper_cwt_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 200 万封信用卡直邮与目录印刷批次 ($860,000.00)、USPS EPS 邮资托管、PostalOne! IMb 进局扫码与 80# CWT 纸重场景 (Commercial Print &amp; Direct Mail Scenario):</span></label>
+          <select id="prt-select" onchange="updateB2bCommercialPrintDirectMailImbSandbox()">
+            <option value="prt_commit_ok">📬 USPS EPS 邮资直付 + PostalOne! 99.8% IMb 进局扫码 + 80# CWT 纸重与 48月 NCOA 合规：10ms 清算 $860,000.00! (Act automatically)</option>
+            <option value="prt_imb_403">🛑 印厂只印寄 170 万封 (挑出 50 封种子信应付检查) 企图侵吞 30 万封预付邮资 ($81,000)，或截留 SCF/5-Digit 混寄折扣差价 → 11ms 触发 HTTP 403!</option>
+            <option value="prt_cwt_422">🚨 轮转胶印将 80# 铜版纸偷偷降配为 60# 薄纸、未跑 48个月 NCOA 清洗白印死信，或借旧惯例强收 10% 超印费 (Overrun) → 14ms 触发 HTTP 422!</option>
+            <option value="prt_soc_451">🛑 印厂条码重号/漏报触发 USPS Seamless Acceptance 记分卡罚款转嫁，或印刷金融/医疗可变 PII 数据缺失 SOC 2/HIPAA：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="prt_sav_409">🧑‍⚖️ Web IQ 依据 PS Form 3602-R 穿透还原 SCF Drop-Ship 最低净邮资并将轮转调机纸损封顶在 3.0% 立省 $68,800.00 (净付 $791,200.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="prt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -47060,6 +47194,7 @@ function renderAll() {{
   updateB2bTextileApparelCmtYyAqlSandbox();
   updateAgenticVeterinaryPetInsuranceSoapSandbox();
   updateB2bIndustrialHazwasteRcraTsdfSandbox();
+  updateB2bCommercialPrintDirectMailImbSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -60803,6 +60938,52 @@ function updateB2bIndustrialHazwasteRcraTsdfSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>☣️ EPA e-Manifest 终签 + 桶级 CoD 最终销毁证齐全 + BTU 热值与 ECHO 合规：已自动清算 (VERIFIED_INDUSTRIAL_HAZWASTE_RCRA_TSDF_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零中转站积压触发 CERCLA 超级基金追责、零桶底抽水虚报低热值罚金与 $260 虚假救生桶费</strong>：B2B 工业危废处置批次已完成安全清算（<code>$490,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bCommercialPrintDirectMailImbSandbox() {{
+  var sel = document.getElementById("prt-select");
+  var outEl = document.getElementById("prt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "prt_imb_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 USPS_POSTALONE_IMB_UNDERSCAN_OR_POSTAGE_ESCROW_DIVERSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验美国邮政 <code>USPS PostalOne! PS Form 3602-R</code> 与 <code>Informed Visibility (IV-MTR)</code> 首批 <code>IMb</code> 进局扫描流发现：200 万封合同量实际仅进局扫描 <code>170 万封（印厂单独挑出 50 封高管种子信寄出以掩盖少印 30 万封并侵吞 $81,000 邮资）</code>，或违规截留 <code>SCF Drop-Ship / 5-Digit 混寄折扣</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prt_cwt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PAPER_BASIS_WEIGHT_CWT_DOWNGRADE_OR_UNAUTHORIZED_OVERRUN_SPOILAGE_BILLING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卷筒原纸标签（<code>TAPPI T410 Basis Weight</code>）显示印厂将合同约定的 <code>80# Gloss Text (118 GSM)</code> 偷换为低克重 <code>60# 薄纸</code>、印前未执行强制性 <code>48 个月 USPS NCOA 搬家地址清洗</code>，或违反零超印条款强行加收 <code>10% 超印费 (Overrun) 与 8% 调机废纸损耗</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prt_soc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 USPS_SEAMLESS_ACCEPTANCE_ERROR_THRESHOLD_OR_HIPAA_SOC2_COMPLIANCE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：印厂在 <code>USPS Mailer Scorecard</code> 中出现条码重号/未报备信件超标触发邮政全批次罚款，或承印含个人金融/医疗可变数据（<code>PII/PHI</code>）信件却缺失有效的 <code>SOC 2 Type II / HIPAA</code> 安全认证，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SCF_DROPSHIP_POSTAGE_PASSTHROUGH_AND_CWT_SPOILAGE_CAP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>PS Form 3602-R 穿透还原 SCF Drop-Ship ($0.258/封) 净邮资 + 轮转开机纸损封顶 3.0% 并剥离未授权超印费</code>，单批立省 <code>$68,800.00</code>（净结算额优化至 <code>$791,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📬 USPS EPS 邮资直付 + 99.8% IMb 进局扫码 + 80# CWT 纸重与 NCOA 合规：已自动清算 (VERIFIED_COMMERCIAL_PRINT_DIRECT_MAIL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零少印少寄侵吞预付邮资、零截留 SCF 混寄返利与 80# 偷换 60# 薄纸</strong>：B2B 商业印刷与直邮批次已完成安全清算（<code>$860,000.00</code>）！" +
     "</div>";
 }}
 
