@@ -15511,6 +15511,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-semiconductor-ip-core-royalty-sandbox", demo_zh)
 
+    def test_agentic_auto_salvage_auction_nmvtis_title_washing_tow_advance_mandate_vs_curbstoning_storage_extortion_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_auto_salvage_auction_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. NMVTIS brand verified + statutory tow fee + EV BMS isolated ($530,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_auto_salvage_auction_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_auto_salvage_batch_cents, 53000000)
+
+        # 2. Cross-state washed flood/salvage title (Title-Washing) or missing 28 CFR 25 NMVTIS filing -> 403 Blocked
+        wsh_403 = evaluate_agentic_auto_salvage_auction_policy(
+            nmvtis_permanent_salvage_flood_brand_reported_and_no_title_wash_verified=False,
+        )
+        self.assertFalse(wsh_403.allowed)
+        self.assertEqual(wsh_403.http_status, 403)
+        self.assertEqual(
+            wsh_403.decision_code,
+            "CROSS_STATE_TITLE_WASHING_FLOOD_SALVAGE_CONCEALMENT_OR_MISSING_NMVTIS_BLOCKED",
+        )
+
+        # 3. Predatory $4,800 tow-yard storage/tarp extortion or un-quarantined damaged EV -> 422 Blocked
+        tow_422 = evaluate_agentic_auto_salvage_auction_policy(
+            tow_yard_advance_storage_within_statutory_cap_and_ev_bms_isolation_verified=False,
+        )
+        self.assertFalse(tow_422.allowed)
+        self.assertEqual(tow_422.http_status, 422)
+        self.assertEqual(
+            tow_422.decision_code,
+            "PREDATORY_TOW_YARD_STORAGE_ADVANCE_EXTORTION_OR_EV_THERMAL_RUNAWAY_HAZARD",
+        )
+
+        # 4. Unlicensed curbstoner bidding on Parts-Only salvage or missing CBP 72h export notice -> 451 Hold
+        cur_451 = evaluate_agentic_auto_salvage_auction_policy(
+            webiq_licensed_dismantler_bidder_and_cbp_72h_export_itn_clean=False,
+        )
+        self.assertFalse(cur_451.allowed)
+        self.assertEqual(cur_451.http_status, 451)
+
+        # 5. Web IQ FNOL Day-1 direct tow dispatch & Green-Parts harvesting saving $42,400 ($487,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_auto_salvage_auction_policy(
+            first_notice_of_loss_direct_tow_dispatch_and_green_parts_harvest_savings_cents=4240000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_auto_salvage_batch_cents, 48760000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_auto_salvage_auction_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-auto-salvage-auction-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
