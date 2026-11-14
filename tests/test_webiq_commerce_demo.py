@@ -14235,6 +14235,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-semiconductor-foundry-kgd-sandbox", demo_zh)
 
+    def test_agentic_real_estate_title_escrow_closing_wire_respa_trid_mandate_vs_bec_wire_fraud_lien_defect_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_real_estate_title_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Day-1 pinned IOLTA escrow + prior liens paid first + eRecording + TRID/RESPA ($950,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_real_estate_title_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_real_estate_batch_cents, 95000000)
+
+        # 2. BEC closing wire instruction swap via email/PDF -> 403 Blocked
+        bec_403 = evaluate_agentic_real_estate_title_escrow_policy(
+            escrow_account_pinned_and_zero_email_wire_swap=False,
+        )
+        self.assertFalse(bec_403.allowed)
+        self.assertEqual(bec_403.http_status, 403)
+        self.assertEqual(
+            bec_403.decision_code,
+            "BEC_CLOSING_WIRE_INSTRUCTION_SWAP_OR_UNPINNED_ESCROW_BLOCKED",
+        )
+
+        # 3. Prior mortgage/tax lien unpaid or Title Gap defect -> 422 Blocked
+        len_422 = evaluate_agentic_real_estate_title_escrow_policy(
+            prior_mortgage_tax_lien_payoff_and_erecording_verified=False,
+        )
+        self.assertFalse(len_422.allowed)
+        self.assertEqual(len_422.http_status, 422)
+        self.assertEqual(
+            len_422.decision_code,
+            "PRIOR_MORTGAGE_TAX_LIEN_UNPAID_OR_TITLE_GAP_DEFECT",
+        )
+
+        # 4. CFPB TRID <3-business-day CD wait or RESPA Section 8 kickback -> 451 Hold
+        trd_451 = evaluate_agentic_real_estate_title_escrow_policy(
+            webiq_trid_3day_cd_and_respa_sec8_clean=False,
+        )
+        self.assertFalse(trd_451.allowed)
+        self.assertEqual(trd_451.http_status, 451)
+
+        # 5. Web IQ enforces TRID 0%-tolerance cure & eRecording saving $76,000 ($874,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_real_estate_title_escrow_policy(
+            trid_zero_tolerance_cure_and_erecording_savings_cents=7600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_real_estate_batch_cents, 87400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_real_estate_title_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-real-estate-title-escrow-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
