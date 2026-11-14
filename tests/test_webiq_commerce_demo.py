@@ -15105,6 +15105,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-retail-vendor-otif-edi812-sandbox", demo_zh)
 
+    def test_b2b_maritime_charterparty_nor_laytime_demurrage_despatch_mandate_vs_invalid_nor_demurrage_trap_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_maritime_charterparty_laytime_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. AIS arrived + SGS hold pass + WWD rain deducted + IMO clean ($890,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_maritime_charterparty_laytime_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_charterparty_batch_cents, 89000000)
+
+        # 2. Premature NOR outside port limits (OPL) or failed SGS hold cleanliness survey -> 403 Blocked
+        nor_403 = evaluate_b2b_maritime_charterparty_laytime_policy(
+            ais_port_limits_arrived_ship_and_hold_cleanliness_passed_before_nor=False,
+        )
+        self.assertFalse(nor_403.allowed)
+        self.assertEqual(nor_403.http_status, 403)
+        self.assertEqual(
+            nor_403.decision_code,
+            "PREMATURE_INVALID_NOR_OUTSIDE_PORT_LIMITS_OR_FAILED_HOLD_SURVEY_BLOCKED",
+        )
+
+        # 3. Unexcluded WWD SHEX rain/swell stoppages, shifting time billed, or uncredited 50% Despatch -> 422 Blocked
+        wwd_422 = evaluate_b2b_maritime_charterparty_laytime_policy(
+            wwd_shex_rain_swell_deducted_and_once_on_demurrage_exception_verified=False,
+        )
+        self.assertFalse(wwd_422.allowed)
+        self.assertEqual(wwd_422.http_status, 422)
+        self.assertEqual(
+            wwd_422.decision_code,
+            "UNEXCLUDED_RAIN_SWELL_WEATHER_WORKING_DAY_OR_SHIFTING_TIME_OVERCHARGE",
+        )
+
+        # 4. Demurrage claim exceeds BIMCO 30/90d Time-Bar or IMO hits OFAC dark-fleet alert -> 451 Hold
+        bar_451 = evaluate_b2b_maritime_charterparty_laytime_policy(
+            webiq_bimco_time_bar_30d_sof_and_ofac_imo_ais_dark_clean=False,
+        )
+        self.assertFalse(bar_451.allowed)
+        self.assertEqual(bar_451.http_status, 451)
+
+        # 5. Web IQ WWD rain deduction & 50% early-completion Despatch saving $71,200 ($818,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_maritime_charterparty_laytime_policy(
+            despatch_early_completion_credit_and_wwd_rain_deduction_savings_cents=7120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_charterparty_batch_cents, 81880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_maritime_charterparty_laytime_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-maritime-charterparty-laytime-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
