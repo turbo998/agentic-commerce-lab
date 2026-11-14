@@ -5436,6 +5436,24 @@
         <div id="aia-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic PBM Pharmacy Reimbursement, CMS NADAC Cost-Plus & Anti-DIR Clawback Sandbox -->
+      <div class="finops-box" id="agentic-pbm-pharmacy-dir-nadac-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⚕️ 智能体药房福利管理 (PBM)：CMS NADAC 真实进价保底、防事后 DIR 倒扣与防吃差价 (`agentic_pbm_pharmacy_dir_ger_mac_clawback_nadac_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 药房与雇主医保 PBM 处方结算批次 ($620,000.00)、CMS 42 CFR 423.100 销售点终局锁、联邦 NADAC 保底与 Pass-Through 场景 (PBM NADAC Scenario):</span></label>
+          <select id="pbm-select" onchange="updateAgenticPbmPharmacyDirNadacSandbox()">
+            <option value="pbm_commit_ok">⚕️ POS 销售点终局净价零 DIR 倒扣 + 报销高于 CMS NADAC 保底线 + 雇主零差价直通：10ms 清算 $620,000.00! (Act automatically)</option>
+            <option value="pbm_dir_403">🛑 PBM 在发药 180 天后以 GER 折扣率或网络评分为由从 EDI 835 直接倒扣 14% 历史药款 (违反 CMS 42 CFR 423.100 POS 终局净价) → 11ms 触发 HTTP 403!</option>
+            <option value="pbm_mac_422">🚨 仿制药联邦 CMS NADAC 真实进价已涨至 $85/瓶，PBM 却将外部独立药房 MAC 报销锁死在 $42/瓶 (水下亏本报销逼退竞争对手) → 14ms 触发 HTTP 422!</option>
+            <option value="pbm_spd_451">🛑 同一张仿制药处方 PBM 付给药房 $18 却向企业自保医保收 $74 (吃 $56 Spread 差价) 或借海外 GPO 截留返利：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="pbm_sav_409">🧑‍⚖️ Web IQ 剔除高标价高回扣原研药泡沫切换至低净价生物类似药 (Biosimilar) 并执行 NADAC Cost-Plus 直通定价立省 $49,600.00 (净付 $570,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pbm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6132,6 +6150,7 @@ function renderAll() {
   updateAgenticAutoSalvageAuctionSandbox();
   updateB2bPharmaWholesaleChargebackSandbox();
   updateB2bConstructionAiaG702LienWaiverSandbox();
+  updateAgenticPbmPharmacyDirNadacSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18909,6 +18928,52 @@ function updateB2bConstructionAiaG702LienWaiverSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏗️ 全量二级分包留置豁免书闭环 + LiDAR/BIM 物理完工度吻合 + 10% 留置金锁死：已自动清算 (VERIFIED_CONSTRUCTION_AIA_G702_LIEN_WAIVER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零二级分包商查封大楼双倍赔付、零 G703 前期虚报套现烂尾与未竣工留置金流失</strong>：B2B 基建工程 AIA G702/G703 进度款批次已完成安全分账拨付（<code>$740,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticPbmPharmacyDirNadacSandbox() {
+  var sel = document.getElementById("pbm-select");
+  var outEl = document.getElementById("pbm-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pbm_dir_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 RETROACTIVE_POST_POS_DIR_GER_CLAWBACK_VIOLATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到 PBM 在发药 180 天后的 <code>ASC X12N 835 PLB</code> 调整段中，以网络星级或通用名药有效折扣率（<code>DIR / GER / BER</code>）未达标为由，对已完成销售点（<code>POS</code>）终局核定的历史处方发起 <code>14%</code> 追溯性倒扣款（违反 <code>CMS 42 CFR § 423.100</code> 销售点净价终局法规）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "pbm_mac_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNDERWATER_MAC_REIMBURSEMENT_BELOW_NADAC_ACQUISITION_COST (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "PBM 对该 11 位 <code>NDC</code> 仿制药给出的最高允许成本（<code>MAC $42.00/瓶</code>）严重跌破当周联邦 <code>CMS NADAC</code> 全美药房真实批发进货均价（<code>$85.00/瓶</code> + <code>$10.50</code> 调剂费），导致社区药房每发一单即当场血亏 <code>$43.00</code>（水下亏本报销 <code>Underwater MAC</code>），已在 14ms 内阻断并自动触发州法强制 <code>MAC Appeal</code> 补差！" +
+      "</div>";
+    return;
+  }
+  if (v === "pbm_spd_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OPAQUE_PBM_SPREAD_PRICING_OR_UNPASSED_MANUFACTURER_REBATE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 双向穿透对账发现：同一笔处方 PBM 实际仅向药房支付 <code>$18.00</code>，却向企业自保医保基金（<code>ERISA Plan</code>）开具 <code>$74.00</code> 账单暗吃 <code>$56.00 Spread 差价</code>，或借海外关联 <code>Rebate GPO</code> 截留药厂返利（违反 <code>ERISA § 408(b)(2)</code> 受托人透明义务），已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "pbm_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 TRANSPARENT_NADAC_COST_PLUS_AND_BIOSIMILAR_SWITCH_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>联邦 CMS NADAC + $10.50 透明成本加成直通模式 (Pass-Through) + 低净成本生物类似药 (Biosimilar) 替代高标价回扣原研药</code>，单批立省 <code>$49,600.00</code>（净结算额优化至 <code>$570,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚕️ POS 销售点终局净价零倒扣 + 报销高于 CMS NADAC 保底线 + 雇主零吃差价：已自动清算 (VERIFIED_PBM_PHARMACY_DIR_NADAC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 180 天事后 DIR/GER 秋后算账、零水下亏本 MAC 压榨与两头瞒 Spread 吃差价</strong>：智能体 PBM 药房与企业医保处方批次已完成透明清算（<code>$620,000.00</code>）！" +
     "</div>";
 }
 

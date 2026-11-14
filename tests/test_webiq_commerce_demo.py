@@ -15683,6 +15683,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-construction-aia-g702-lien-waiver-sandbox", demo_zh)
 
+    def test_agentic_pbm_pharmacy_dir_ger_mac_clawback_nadac_vs_retroactive_spread_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_pbm_pharmacy_dir_nadac_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant POS finality + reimbursement >= CMS NADAC floor + zero spread pass-through -> 200 OK ($620,000.00)
+        ok_res = evaluate_agentic_pbm_pharmacy_dir_nadac_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PBM_PHARMACY_DIR_NADAC_SETTLED")
+        self.assertEqual(ok_res.settled_pbm_pharmacy_batch_cents, 62000000)
+
+        # 2. Retroactive 180-day post-POS DIR/GER clawback on EDI 835 PLB (violating 42 CFR 423.100) -> 403 Blocked
+        dir_403 = evaluate_agentic_pbm_pharmacy_dir_nadac_policy(
+            cms_42cfr423100_pos_finality_and_zero_retroactive_dir_ger_clawback_verified=False,
+        )
+        self.assertFalse(dir_403.allowed)
+        self.assertEqual(dir_403.http_status, 403)
+        self.assertEqual(
+            dir_403.decision_code,
+            "RETROACTIVE_POST_POS_DIR_GER_CLAWBACK_VIOLATION_BLOCKED",
+        )
+
+        # 3. Underwater MAC reimbursement ($42) below weekly federal CMS NADAC acquisition cost ($85) -> 422 Blocked
+        mac_422 = evaluate_agentic_pbm_pharmacy_dir_nadac_policy(
+            pharmacy_reimbursement_above_weekly_cms_nadac_plus_dispensing_floor_verified=False,
+        )
+        self.assertFalse(mac_422.allowed)
+        self.assertEqual(mac_422.http_status, 422)
+        self.assertEqual(
+            mac_422.decision_code,
+            "UNDERWATER_MAC_REIMBURSEMENT_BELOW_NADAC_ACQUISITION_COST",
+        )
+
+        # 4. Opaque PBM spread pricing ($18 paid vs $74 billed) or retained offshore Rebate GPO rebates -> 451 Hold
+        spd_451 = evaluate_agentic_pbm_pharmacy_dir_nadac_policy(
+            webiq_employer_to_pharmacy_zero_spread_and_100pct_rebate_passthrough_clean=False,
+        )
+        self.assertFalse(spd_451.allowed)
+        self.assertEqual(spd_451.http_status, 451)
+
+        # 5. Web IQ transparent NADAC Cost-Plus & low-net-cost biosimilar switch saving $49,600 ($570,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_pbm_pharmacy_dir_nadac_policy(
+            transparent_nadac_cost_plus_and_biosimilar_switch_savings_cents=4960000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_pbm_pharmacy_batch_cents, 57040000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_pbm_pharmacy_dir_nadac_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-pbm-pharmacy-dir-nadac-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

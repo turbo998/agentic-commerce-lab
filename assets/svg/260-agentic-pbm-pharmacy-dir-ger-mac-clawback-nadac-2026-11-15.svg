@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg260" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent260" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="dangerGrad260" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#450a0a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="safeGrad260" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="760" fill="url(#bg260)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="18" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <rect x="44" y="36" width="430" height="28" rx="14" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
+  <text x="259" y="55" fill="#34d399" font-size="13" font-weight="700" text-anchor="middle">ROUND 258 · AGENTIC PBM, CMS NADAC COST-PLUS &amp; ANTI-DIR CLAWBACK</text>
+  <text x="44" y="96" fill="#f8fafc" font-size="22" font-weight="800">智能体药房福利管理（PBM）、NADAC 成本加成透明议价与防追溯性 DIR/GER 倒扣清算架构</text>
+  <text x="44" y="122" fill="#94a3b8" font-size="14">CMS 42 CFR § 423.100 销售点净价终局锁 + 联邦 NADAC 进货成本保底线 + 零差价 Pass-Through 门禁 vs. 事后倒扣 14% DIR 费、水下亏本报销与吃差价黑箱</text>
+  <rect x="44" y="134" width="1192" height="3" fill="url(#accent260)"/>
+
+  <!-- Left Column: Legacy Risks -->
+  <rect x="44" y="152" width="576" height="420" rx="14" fill="url(#dangerGrad260)" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="68" y="184" fill="#fca5a5" font-size="18" font-weight="700">⛔ 传统黑箱 PBM 两头收割的三大致命陷阱（药房倒闭 &amp; 雇主多付 30%）</text>
+
+  <rect x="64" y="202" width="536" height="106" rx="10" fill="#111827" stroke="#dc2626" stroke-width="1"/>
+  <text x="80" y="226" fill="#f87171" font-size="15" font-weight="700">1. 半年后“秋后算账”的追溯性 DIR / GER 倒扣费（Retroactive Clawback · 403）</text>
+  <text x="80" y="248" fill="#cbd5e1" font-size="13">• 患者发药时 (POS) PBM 报文承诺报销 $100，药房以为能赚 $6 毛利正常发药</text>
+  <text x="80" y="268" fill="#cbd5e1" font-size="13">• 180 天后 PBM 以“GER 折扣率或评分未达标”从 EDI 835 直接倒扣走 $14，每单反亏 $8</text>
+  <text x="80" y="288" fill="#fca5a5" font-size="12" font-weight="600">→ 违反 CMS 42 CFR § 423.100 销售点净价终局原则，导致社区药房现金流突然断裂</text>
+
+  <rect x="64" y="320" width="536" height="106" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="1"/>
+  <text x="80" y="344" fill="#fbbf24" font-size="15" font-weight="700">2. 低于联邦 NADAC 真实进货价的“水下亏本报销”（Underwater MAC · 422）</text>
+  <text x="80" y="366" fill="#cbd5e1" font-size="13">• 仿制药批发进价在联邦 CMS NADAC 基准已涨至 $85/瓶，PBM 却将外部药房 MAC 锁在 $42</text>
+  <text x="80" y="386" fill="#cbd5e1" font-size="13">• 外部药房每发一瓶当场血亏 $43，PBM 却给自家旗下自营邮购药房报销 $95 诱导患者转院</text>
+  <text x="80" y="406" fill="#fde68a" font-size="12" font-weight="600">→ 未绑定当周联邦 CMS NADAC 真实采购均价保底线与州法强制 MAC Appeal 申诉门禁</text>
+
+  <rect x="64" y="438" width="536" height="116" rx="10" fill="#111827" stroke="#ec4899" stroke-width="1"/>
+  <text x="80" y="462" fill="#f472b6" font-size="15" font-weight="700">3. 两头瞒吃差价与海外 GPO 截留药厂返利（Spread Pricing &amp; Rebate Trap · 451）</text>
+  <text x="80" y="484" fill="#cbd5e1" font-size="13">• 同一张仿制药处方 PBM 只付给药房 $18，转头却向企业自保雇主账单收取 $74 (吃 $56 差价)</text>
+  <text x="80" y="504" fill="#cbd5e1" font-size="13">• 通过海外关联 Rebate GPO 截留 40% 药厂返利，逼迫企业雇主背负 ERISA 受托人失职集体诉讼</text>
+  <text x="80" y="528" fill="#fbcfe8" font-size="12" font-weight="600">→ 药房实收与雇主实付账本彻底割裂，且被“高标价高回扣”原研药泡沫绑架</text>
+
+  <!-- Right Column: Agentic Architecture -->
+  <rect x="660" y="152" width="576" height="420" rx="14" fill="url(#safeGrad260)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="684" y="184" fill="#6ee7b7" font-size="18" font-weight="700">✅ 智能体 Web IQ + CMS NADAC + Pass-Through 四重透明清算门禁</text>
+
+  <rect x="680" y="202" width="536" height="84" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="696" y="225" fill="#38bdf8" font-size="14" font-weight="700">Gate 1 · CMS 42 CFR § 423.100 销售点 (POS) 终局净价锁（拦截 403）</text>
+  <text x="696" y="246" fill="#e2e8f0" font-size="13">所有药房价格折让必须在 NCPDP D.0 销售点一次性体现为最低终局净价；实时扫描</text>
+  <text x="696" y="266" fill="#94a3b8" font-size="12">EDI 835 PLB 段，11ms 硬拦截任何事后 180 天追溯性 DIR / GER / BER 倒扣指令</text>
+
+  <rect x="680" y="296" width="536" height="84" rx="10" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="696" y="319" fill="#34d399" font-size="14" font-weight="700">Gate 2 · 联邦 CMS NADAC 真实进价保底与自动 MAC 申诉（拦截 422）</text>
+  <text x="696" y="340" fill="#e2e8f0" font-size="13">Web IQ 按 11 位 NDC 实时比对当周联邦 CMS NADAC 进货均价 + 专业调剂费 ($10.50)，</text>
+  <text x="696" y="360" fill="#94a3b8" font-size="12">一旦 MAC 报销跌破进货成本立即阻断亏本单并自动触发州法强制 MAC Appeal 补差</text>
+
+  <rect x="680" y="390" width="536" height="84" rx="10" fill="#0f172a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="696" y="413" fill="#a78bfa" font-size="14" font-weight="700">Gate 3 · 雇主==药房零差价锁与 100% 药厂返利穿透（拦截 451）</text>
+  <text x="696" y="434" fill="#e2e8f0" font-size="13">逐单密码学比对 Employer Plan Charge == Pharmacy Paid Amount (Zero Spread)，</text>
+  <text x="696" y="454" fill="#94a3b8" font-size="12">并穿透海外 Rebate GPO 强制 100% 归还药厂返利，满足 ERISA § 408(b)(2) 合规</text>
+
+  <rect x="680" y="484" width="536" height="72" rx="10" fill="#0f172a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="696" y="507" fill="#fbbf24" font-size="14" font-weight="700">Gate 4 · 透明 NADAC Cost-Plus 清算 &amp; 生物类似药切换双签（200 / 409）</text>
+  <text x="696" y="528" fill="#e2e8f0" font-size="13">10ms 签发 agentic_pbm_pharmacy_... 令牌；切换低净价生物类似药立省 $49,600 转 409</text>
+
+  <!-- Bottom Benchmark Bar -->
+  <rect x="44" y="588" width="1192" height="132" rx="14" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+  <text x="68" y="616" fill="#34d399" font-size="15" font-weight="700">📊 定量实测基准（lab/webiq_commerce_demo.py · 5 组确定性边界全部通过 · CSP 自包含零外部依赖）</text>
+
+  <rect x="68" y="630" width="220" height="74" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="178" y="652" fill="#6ee7b7" font-size="13" font-weight="700" text-anchor="middle">200 OK · 透明 NADAC 成本加成</text>
+  <text x="178" y="672" fill="#ecfdf5" font-size="12" text-anchor="middle">零 DIR 倒扣 + 零吃差价 ($620k)</text>
+  <text x="178" y="692" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">Pass-Through Settled · 10ms</text>
+
+  <rect x="300" y="630" width="220" height="74" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="410" y="652" fill="#fca5a5" font-size="13" font-weight="700" text-anchor="middle">403 · 追溯性 DIR/GER 倒扣</text>
+  <text x="410" y="672" fill="#fee2e2" font-size="12" text-anchor="middle">违反 42 CFR 423.100 POS 终局</text>
+  <text x="410" y="692" fill="#f87171" font-size="11" font-weight="700" text-anchor="middle">RETROACTIVE_DIR_CLAWBACK</text>
+
+  <rect x="532" y="630" width="220" height="74" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1"/>
+  <text x="642" y="652" fill="#fcd34d" font-size="13" font-weight="700" text-anchor="middle">422 · 水下亏本 MAC 报销</text>
+  <text x="642" y="672" fill="#fef3c7" font-size="12" text-anchor="middle">MAC $42 跌破 NADAC 进价 $85</text>
+  <text x="642" y="692" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">UNDERWATER_MAC_BELOW_NADAC</text>
+
+  <rect x="764" y="630" width="220" height="74" rx="8" fill="#500724" stroke="#ec4899" stroke-width="1"/>
+  <text x="874" y="652" fill="#f9a8d4" font-size="13" font-weight="700" text-anchor="middle">451 · 吃差价与截留返利</text>
+  <text x="874" y="672" fill="#fce7f3" font-size="12" text-anchor="middle">付药房 $18 却收雇主 $74</text>
+  <text x="874" y="692" fill="#f472b6" font-size="11" font-weight="700" text-anchor="middle">OPAQUE_PBM_SPREAD_HOLD</text>
+
+  <rect x="996" y="630" width="216" height="74" rx="8" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="1104" y="652" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">409 · 生物类似药净价优化</text>
+  <text x="1104" y="672" fill="#e0f2fe" font-size="12" text-anchor="middle">立省 $49.6k ($570.4k 净付)</text>
+  <text x="1104" y="692" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">NADAC_BIOSIMILAR_CONFIRM</text>
+</svg>
