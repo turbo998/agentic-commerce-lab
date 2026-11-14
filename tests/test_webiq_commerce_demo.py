@@ -12359,6 +12359,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-eucp-ebl-letter-of-credit-sandbox", demo_zh)
 
+    def test_agentic_bnpl_installment_mdr_margin_guard_partial_refund_reamortization_mandate_vs_margin_wipeout_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_bnpl_installment_mdr_policy,
+        )
+
+        # 1. Verified post-MDR margin floor + carrier scan autopay pause + tail-first exact -> 200 OK ($520,000)
+        commit_ok = evaluate_agentic_bnpl_installment_mdr_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_bnpl_batch_cents, 52000000)
+
+        # 2. Thin-margin SKU subsidized 0% APR loss or bracketing -> 403 blocked in 11ms
+        mdr_403 = evaluate_agentic_bnpl_installment_mdr_policy(
+            post_mdr_net_margin_floor_and_anti_bracketing_verified=False,
+        )
+        self.assertFalse(mdr_403.allowed)
+        self.assertEqual(mdr_403.http_status, 403)
+        self.assertEqual(
+            mdr_403.bnpl_mdr_lane,
+            "BNPL_MDR_MARGIN_EROSE_OR_BRACKETING_BLOCKED",
+        )
+
+        # 3. Active autopay during return transit or non-tail-first schedule drift -> 422 blocked in 14ms
+        ref_422 = evaluate_agentic_bnpl_installment_mdr_policy(
+            carrier_dropoff_autopay_pause_and_tail_first_reamortization_exact=False,
+        )
+        self.assertFalse(ref_422.allowed)
+        self.assertEqual(ref_422.http_status, 422)
+        self.assertEqual(
+            ref_422.bnpl_mdr_lane,
+            "PARTIAL_REFUND_REAMORTIZATION_OR_AUTOPAY_PAUSE_FAILED",
+        )
+
+        # 4. Web IQ detects missing CFPB Reg Z disclosure or state APR cap breach -> 451 blocked in 280ms
+        reg_451 = evaluate_agentic_bnpl_installment_mdr_policy(
+            webiq_cfpb_reg_z_disclosure_and_state_usury_cap_clean=False,
+        )
+        self.assertFalse(reg_451.allowed)
+        self.assertEqual(reg_451.http_status, 451)
+
+        # 5. Web IQ routes thin-margin carts to consumer-APR or A2A saving $23,400 ($496,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_bnpl_installment_mdr_policy(
+            dynamic_mdr_arbitrage_and_a2a_routing_savings_cents=2340000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_bnpl_batch_cents, 49660000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_bnpl_installment_mdr_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-bnpl-installment-mdr-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

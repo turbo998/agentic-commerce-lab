@@ -21888,6 +21888,96 @@ def evaluate_b2b_eucp_ebl_letter_of_credit_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 200: Agentic BNPL Installment MDR Margin Floor & CFPB Reg Z Re-Amortization Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticBnplInstallmentMdrVerdict:
+    allowed: bool
+    http_status: int
+    bnpl_mdr_lane: str
+    settled_bnpl_batch_cents: int
+    bnpl_mdr_arbitrage_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_bnpl_installment_mdr_policy(
+    *,
+    gross_bnpl_batch_cents: int = 52000000,
+    post_mdr_net_margin_floor_and_anti_bracketing_verified: bool = True,
+    carrier_dropoff_autopay_pause_and_tail_first_reamortization_exact: bool = True,
+    webiq_cfpb_reg_z_disclosure_and_state_usury_cap_clean: bool = True,
+    dynamic_mdr_arbitrage_and_a2a_routing_savings_cents: int = 0,
+) -> AgenticBnplInstallmentMdrVerdict:
+    # 1. Thin-Margin SKU Subsidized 0% APR MDR Loss or Multi-Size Bracketing -> HTTP 403
+    if not post_mdr_net_margin_floor_and_anti_bracketing_verified:
+        return AgenticBnplInstallmentMdrVerdict(
+            False,
+            403,
+            "BNPL_MDR_MARGIN_EROSE_OR_BRACKETING_BLOCKED",
+            0,
+            0,
+            "bnpl_checkout_blocked_due_to_negative_post_mdr_margin_or_multi_size_bracketing_abuse",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Active Autopay During Return Transit or Non-Tail-First Schedule Drift -> HTTP 422
+    if not carrier_dropoff_autopay_pause_and_tail_first_reamortization_exact:
+        return AgenticBnplInstallmentMdrVerdict(
+            False,
+            422,
+            "PARTIAL_REFUND_REAMORTIZATION_OR_AUTOPAY_PAUSE_FAILED",
+            0,
+            0,
+            "bnpl_partial_return_rejected_for_missing_carrier_scan_autopay_pause_or_schedule_penny_drift",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Missing CFPB Regulation Z Subpart B Disclosure or State APR Cap Breach via Web IQ -> HTTP 451
+    if not webiq_cfpb_reg_z_disclosure_and_state_usury_cap_clean:
+        return AgenticBnplInstallmentMdrVerdict(
+            False,
+            451,
+            "CFPB_REG_Z_DISCLOSURE_OR_USURY_CAP_HOLD",
+            0,
+            0,
+            "webiq_detected_missing_cfpb_reg_z_bnpl_billing_rights_disclosure_or_state_apr_cap_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Dynamic Consumer-APR / A2A Routing Saving 450 bps MDR -> HTTP 409 Confirm
+    if dynamic_mdr_arbitrage_and_a2a_routing_savings_cents > 0:
+        return AgenticBnplInstallmentMdrVerdict(
+            False,
+            409,
+            "BNPL_DYNAMIC_MDR_ARBITRAGE_SAVINGS_CONFIRM",
+            gross_bnpl_batch_cents - dynamic_mdr_arbitrage_and_a2a_routing_savings_cents,
+            dynamic_mdr_arbitrage_and_a2a_routing_savings_cents,
+            "webiq_routed_thin_margin_carts_to_consumer_apr_and_a2a_saving_23400_usd_mdr",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Post-MDR Margin Floor + Carrier Scan Autopay Pause + Tail-First Exact -> Settled
+    return AgenticBnplInstallmentMdrVerdict(
+        True,
+        200,
+        "VERIFIED_BNPL_MARGIN_AND_REAMORTIZATION_SETTLED",
+        gross_bnpl_batch_cents,
+        0,
+        "bnpl_post_mdr_margin_floor_cfpb_reg_z_autopay_pause_and_tail_first_reamortization_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -28944,6 +29034,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ucp600_discrepancy_block_latency_ms": euc_dsc_403.latency_ms,
     }
 
+    # Round 200 (Agentic BNPL Installment MDR Margin Floor & CFPB Reg Z Re-Amortization Mandate)
+    bnp_commit_ok = evaluate_agentic_bnpl_installment_mdr_policy()
+    bnp_mdr_403 = evaluate_agentic_bnpl_installment_mdr_policy(
+        post_mdr_net_margin_floor_and_anti_bracketing_verified=False,
+    )
+    bnp_ref_422 = evaluate_agentic_bnpl_installment_mdr_policy(
+        carrier_dropoff_autopay_pause_and_tail_first_reamortization_exact=False,
+    )
+    bnp_reg_451 = evaluate_agentic_bnpl_installment_mdr_policy(
+        webiq_cfpb_reg_z_disclosure_and_state_usury_cap_clean=False,
+    )
+    bnp_sav_409 = evaluate_agentic_bnpl_installment_mdr_policy(
+        dynamic_mdr_arbitrage_and_a2a_routing_savings_cents=2340000,
+    )
+    agentic_bnpl_installment_mdr_guards = {
+        "all_passed": (
+            bnp_commit_ok.allowed
+            and bnp_commit_ok.settled_bnpl_batch_cents == 52000000
+            and not bnp_mdr_403.allowed
+            and bnp_mdr_403.http_status == 403
+            and not bnp_ref_422.allowed
+            and bnp_ref_422.http_status == 422
+            and not bnp_reg_451.allowed
+            and bnp_reg_451.http_status == 451
+            and not bnp_sav_409.allowed
+            and bnp_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_bnpl_installment_mdr_settlement_latency_ms": bnp_commit_ok.latency_ms,
+        "bnpl_margin_wipeout_block_latency_ms": bnp_mdr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29156,6 +29277,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_vcn_level3_interchange_guards": b2b_vcn_level3_interchange_guards,
         "agentic_chargeback_ce30_guards": agentic_chargeback_ce30_guards,
         "b2b_eucp_ebl_letter_of_credit_guards": b2b_eucp_ebl_letter_of_credit_guards,
+        "agentic_bnpl_installment_mdr_guards": agentic_bnpl_installment_mdr_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35655,6 +35777,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="euc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic BNPL Installment MDR Margin Floor & CFPB Reg Z Re-Amortization Sandbox (Round 200 FAQ Companion) -->
+      <div class="finops-box" id="agentic-bnpl-installment-mdr-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bnp-title">🛍️ 智能体电商分期付款 (BNPL：Klarna/Affirm) 与退货重算：商户贴息 MDR (4%–6%) 毛利门禁与尾部优先重算令牌 (agentic_bnpl_installment_mdr_refund_mandate_...) vs 微利倒贴与退货误扣决策器 (Round 200 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智能体 BNPL 分期结账与售后退货批次 ($520,000.00)、SKU 净贡献毛利底线、CFPB Reg Z 逆向揽收暂停代扣与尾部优先 (Tail-First) 分期重算场景 (Agentic BNPL MDR &amp; Re-Amortization Scenario):</span></label>
+          <select id="bnp-select" onchange="updateAgenticBnplInstallmentMdrSandbox()">
+            <option value="bnp_commit_ok">⚡ SKU 扣除 MDR 后净毛利 &gt;=8% + 逆向揽收即暂停代扣 + 尾部优先重算美分守恒：10ms 自动清算 $520,000.00! (Act automatically)</option>
+            <option value="bnp_mdr_403">🛑 对 8% 微利 3C 爆款叠加 5% 优惠券后再开放 5.9% MDR 商户贴息免息分期 (单单净亏 -2.9%)，或同款 5 码凑单试穿 (Bracketing) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="bnp_ref_422">🚨 用户退货 $250 包裹快递已揽收在途但未冻结第 14 天自动代扣 (违反 CFPB Reg Z)，或部分退货未从第 4/3 期尾部优先扣减导致差错拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="bnp_reg_451">🛑 收银台缺失美国 CFPB Regulation Z Subpart B 信用卡同权账单争议披露，或分期年化利率突破州级法定上限：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="bnp_sav_409">🧑‍⚖️ Web IQ 将微利与高退货率订单动态分流至消费者付息分期或 0.8% 费率 A2A 直连，直降 450 bps 贴息 MDR 立省 $23,400.00 (净成本 $496,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bnp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -36293,6 +36433,7 @@ function renderAll() {{
   updateB2bVcnLevel3InterchangeSandbox();
   updateAgenticChargebackCe30Sandbox();
   updateB2bEucpEblLetterOfCreditSandbox();
+  updateAgenticBnplInstallmentMdrSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -46345,6 +46486,55 @@ function updateB2bEucpEblLetterOfCreditSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ MT700 45A 逐字镜像 + 110% CIF 保额 + DCSA v3.0 eBL 背书通过：已自动交单承兑 (VERIFIED_EUCP_EBL_ZERO_DISCREPANCY_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零审单不符点拒付、零码头滞港费与行情下跌弃货风险</strong>：跨境大宗信用证交单批次已完成刚性兑付（<code>$920,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticBnplInstallmentMdrSandbox() {{
+  var selEl = document.getElementById("bnp-select");
+  var outEl = document.getElementById("bnp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "bnp_mdr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BNPL_MDR_MARGIN_EROSE_OR_BRACKETING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "BNPL 毛利与反凑单门禁检出，结账 Agent <code>企图对毛利率仅 8% 的微利 SKU 叠加 5% 优惠券后再开启 5.9% 商户贴息扣率 (MDR) 的免息分期（导致每单倒贴净亏 -2.9%），或检出同一 SPU 5 个尺码免息凑单试穿 (Bracketing)</code>（<code>post_mdr_net_margin_floor_and_anti_bracketing_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断并引导切换消费者付息档！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bnp_ref_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PARTIAL_REFUND_REAMORTIZATION_OR_AUTOPAY_PAUSE_FAILED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "售后分期重算状态机检出 <code>退货包裹已由快递首扫揽收在途但未调用 Pause_Autopay 冻结下期自动代扣（违反美国 CFPB Regulation Z 退货保护规程），或部分退货未遵循尾部优先抵扣（先消第 4/3 期）导致本息美分失衡</code>（<code>carrier_dropoff_autopay_pause_and_tail_first_reamortization_exact == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bnp_reg_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CFPB_REG_Z_DISCLOSURE_OR_USURY_CAP_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>美国 CFPB Regulation Z Subpart B 解释性法规与各州消费信贷法定利率上限</code>，检出收银台缺失信用卡同权账单争议披露或 APR 突破上限，立即冻结授信！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "bnp_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 BNPL_DYNAMIC_MDR_ARBITRAGE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>动态净毛利分期路由（微利与高退货订单自动切换至消费者付息分期或 0.8% 费率 A2A 直连返现）</code>，单批置换 450 bps 高额商户贴息 MDR 立省 <code>$23,400.00</code>（净成本降至 <code>$496,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ SKU 净毛利达标 + 逆向揽收暂停代扣 + 尾部优先重算守恒通过：已自动清算 (VERIFIED_BNPL_MARGIN_AND_REAMORTIZATION_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 5.9% MDR 微利倒贴亏损、零退货在途误扣与 CFPB Reg Z 违规</strong>：智能体 BNPL 分期与售后重算批次已完成全额清算（<code>$520,000.00</code>）！" +
     "</div>";
 }}
 
