@@ -12415,6 +12415,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-bnpl-installment-mdr-sandbox", demo_zh)
 
+    def test_b2b_ers_self_billing_evaluated_receipt_settlement_mandate_vs_supplier_invoice_exception_duplicate_vat_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_ers_self_billing_policy,
+        )
+
+        # 1. Verified active SBA + zero duplicate supplier invoice + calibrated net GR -> 200 OK ($680,000)
+        commit_ok = evaluate_b2b_ers_self_billing_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ers_batch_cents, 68000000)
+
+        # 2. Rogue supplier EDI 810 invoice on ERS PO or expired SBA -> 403 blocked in 11ms
+        dup_403 = evaluate_b2b_ers_self_billing_policy(
+            active_sba_agreement_and_zero_duplicate_supplier_invoice_verified=False,
+        )
+        self.assertFalse(dup_403.allowed)
+        self.assertEqual(dup_403.http_status, 403)
+        self.assertEqual(
+            dup_403.ers_self_billing_lane,
+            "DUPLICATE_SUPPLIER_INVOICE_OR_EXPIRED_SBA_BLOCKED",
+        )
+
+        # 3. Dock net weight variance > 2% tolerance or unlinked PO price -> 422 blocked in 14ms
+        wgt_422 = evaluate_b2b_ers_self_billing_policy(
+            calibrated_dock_net_gr_within_tolerance_and_po_price_locked=False,
+        )
+        self.assertFalse(wgt_422.allowed)
+        self.assertEqual(wgt_422.http_status, 422)
+        self.assertEqual(
+            wgt_422.ers_self_billing_lane,
+            "GR_WEIGHT_VARIANCE_OR_PO_PRICE_DRIFT_FAILED",
+        )
+
+        # 4. Web IQ detects deregistered supplier VAT ID or missing Art. 224 legend -> 451 blocked in 280ms
+        vat_451 = evaluate_b2b_ers_self_billing_policy(
+            webiq_supplier_vat_active_and_art224_self_billing_legend_clean=False,
+        )
+        self.assertFalse(vat_451.allowed)
+        self.assertEqual(vat_451.http_status, 451)
+
+        # 5. Web IQ credits zero-touch AP & JIT early-pay discount saving $34,000 ($646,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_ers_self_billing_policy(
+            zero_touch_ap_and_jit_early_pay_discount_savings_cents=3400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ers_batch_cents, 64600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_ers_self_billing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ers-self-billing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

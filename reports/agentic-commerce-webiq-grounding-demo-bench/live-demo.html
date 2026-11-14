@@ -4410,6 +4410,24 @@
         <div id="bnp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B ERS Self-Billing & EU VAT Art. 224 Mandate Sandbox (Round 201 FAQ Companion) -->
+      <div class="finops-box" id="b2b-ers-self-billing-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ers-title">🏭 B2B 评估收货结算 (ERS / 逆向开票 Self-Billing) 与免发票清算：地磅实收净重与 EU VAT Art. 224 双签协议令牌 (b2b_ers_self_billing_receipt_settlement_mandate_...) vs 32% 异常挂账与双倍开票暴雷决策器 (Round 201 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. B2B 评估收货逆向开票结算批次 ($680,000.00)、双边 SBA 逆向开票协议效期、PO 级防卖方重开发票互斥锁与 Web IQ 欧盟 VAT Art. 224 税号活性核验场景 (B2B ERS Self-Billing Scenario):</span></label>
+          <select id="ers-select" onchange="updateB2bErsSelfBillingSandbox()">
+            <option value="ers_commit_ok">⚡ 双边 SBA 协议有效 + 零卖方重复发票 + 地磅实收净重与 PO 单价锁死 + VIES VAT 活跃：10ms 自动逆向开票清算 $680,000.00! (Act automatically)</option>
+            <option value="ers_dup_403">🛑 供应商对已启用 ERS 逆向开票的订单又违规投递一张 EDI 810 正向发票 (造成 200% 双倍付款与重复抵扣)，或双边 SBA 12个月协议已过期拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ers_wgt_422">🚨 仓库校准地磅实收净重与 ASN 发货量偏差超过 2.0% 公差上限 (疑似在途漏装盗损)，或收货单缺失已锁定的框架 PO 单价拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ers_vat_451">🛑 供应商中途注销了欧盟 VIES / 英国 HMRC 增值税号却仍被按 20% 税率代开逆向发票，或票面缺失 Art. 224 法定 SELF-BILLING 标识：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ers_sav_409">🧑‍⚖️ Web IQ 核实启用 Peppol BIS Self-Billing 3.0 免除 32% 发票尾差人工挂账成本，并自动锁定 JIT 准时交货早付折扣立省 $34,000.00 (净支出 $646,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ers-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5049,6 +5067,7 @@ function renderAll() {
   updateAgenticChargebackCe30Sandbox();
   updateB2bEucpEblLetterOfCreditSandbox();
   updateAgenticBnplInstallmentMdrSandbox();
+  updateB2bErsSelfBillingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15150,6 +15169,55 @@ function updateAgenticBnplInstallmentMdrSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ SKU 净毛利达标 + 逆向揽收暂停代扣 + 尾部优先重算守恒通过：已自动清算 (VERIFIED_BNPL_MARGIN_AND_REAMORTIZATION_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 5.9% MDR 微利倒贴亏损、零退货在途误扣与 CFPB Reg Z 违规</strong>：智能体 BNPL 分期与售后重算批次已完成全额清算（<code>$520,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bErsSelfBillingSandbox() {
+  var selEl = document.getElementById("ers-select");
+  var outEl = document.getElementById("ers-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ers_dup_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DUPLICATE_SUPPLIER_INVOICE_OR_EXPIRED_SBA_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "ERS 逆向开票防碰撞门禁检出，针对该采购订单 <code>供应商违规投递了外部 EDI 810 正向发票（若放行将与买方 ERS 逆向发票叠加造成 200% 双倍付款及双倍进项税抵扣处罚），或买卖双边《逆向开票协议 (SBA)》已满 12 个月过期</code>（<code>active_sba_agreement_and_zero_duplicate_supplier_invoice_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ers_wgt_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GR_WEIGHT_VARIANCE_OR_PO_PRICE_DRIFT_FAILED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "收货计量校验器检出 <code>买方校准地磅实收净重 (Verified Net GR) 与供应商 ASN 发货量偏差超过 2.0% 合同途耗上限（疑似漏装或盗损），或收货记录缺失已锁定的框架 PO 单价</code>（<code>calibrated_dock_net_gr_within_tolerance_and_po_price_locked == False</code>）。网关在 <code>14ms</code> 内转交收货差异复核！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ers_vat_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUPPLIER_VAT_DEREGISTERED_OR_ART224_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 VIES / 英国 HMRC 增值税登记库与 EU VAT Directive Art. 224 规范</code>，检出供应商 VAT 税号已注销或逆向税票缺失法定 <code>SELF-BILLING / AUTOFACTURATION</code> 标识，立即冻结代开票！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "ers_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ERS_ZERO_TOUCH_AP_AND_DISCOUNT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Peppol BIS Self-Billing 3.0 入库即开票自动清算（彻底消除 32% 供应商发票尾差挂账人工成本）并自动捕获 JIT 早付现金折扣</code>，单批立省 <code>$34,000.00</code>（净结算支出降至 <code>$646,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 双边 SBA 有效 + 零重复发票 + 地磅实收净重锚定 + VAT 活跃通过：已自动清算 (VERIFIED_ERS_SELF_BILLING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零供应商开票尾差挂账、零双轨重复付款与 EU VAT Art. 224 税务稽查风险</strong>：B2B 评估收货逆向开票批次已完成自动清算（<code>$680,000.00</code>）！" +
     "</div>";
 }
 
