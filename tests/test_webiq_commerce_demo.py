@@ -12247,6 +12247,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vcn-level3-interchange-sandbox", demo_zh)
 
+    def test_agentic_chargeback_ce30_compelling_evidence_ethoca_rdr_mandate_vs_friendly_fraud_vdmp_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_chargeback_ce30_policy,
+        )
+
+        # 1. Verified CE 3.0 2-order 120-365d 2-of-4 match + zero double refund -> 200 OK ($460,000)
+        commit_ok = evaluate_agentic_chargeback_ce30_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_dispute_batch_cents, 46000000)
+
+        # 2. Missing CE 3.0 2-of-4 match on blind $500 pre-arbitration -> 403 blocked in 11ms
+        arb_403 = evaluate_agentic_chargeback_ce30_policy(
+            ce30_two_prior_orders_120_365d_and_2of4_match_verified=False,
+        )
+        self.assertFalse(arb_403.allowed)
+        self.assertEqual(arb_403.http_status, 403)
+        self.assertEqual(
+            arb_403.chargeback_ce30_lane,
+            "UNQUALIFIED_CE30_EVIDENCE_OR_BLIND_ARBITRATION_BLOCKED",
+        )
+
+        # 3. Duplicate standard refund on active chargeback or negative-ROI fight -> 422 blocked in 14ms
+        dbl_422 = evaluate_agentic_chargeback_ce30_policy(
+            rdr_ethoca_pre_dispute_triage_and_no_double_refund_passed=False,
+        )
+        self.assertFalse(dbl_422.allowed)
+        self.assertEqual(dbl_422.http_status, 422)
+        self.assertEqual(
+            dbl_422.chargeback_ce30_lane,
+            "DOUBLE_REFUND_ON_ACTIVE_CHARGEBACK_OR_NEGATIVE_ROI_BLOCKED",
+        )
+
+        # 4. Web IQ detects VDMP dispute ratio approaching 0.90% or invalid CE 3.0 schema -> 451 blocked in 280ms
+        vdm_451 = evaluate_agentic_chargeback_ce30_policy(
+            webiq_vdmp_dispute_ratio_and_order_insight_schema_clean=False,
+        )
+        self.assertFalse(vdm_451.allowed)
+        self.assertEqual(vdm_451.http_status, 451)
+
+        # 5. Web IQ credits CE 3.0 liability-shift win & RDR fee avoidance saving $69,000 ($391,000 net) -> 409 Confirm
+        win_409 = evaluate_agentic_chargeback_ce30_policy(
+            ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents=6900000,
+        )
+        self.assertFalse(win_409.allowed)
+        self.assertEqual(win_409.http_status, 409)
+        self.assertEqual(win_409.settled_dispute_batch_cents, 39100000)
+        self.assertEqual(win_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_chargeback_ce30_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-chargeback-ce30-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -21708,6 +21708,96 @@ def evaluate_b2b_vcn_level3_interchange_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 198: Agentic Chargeback Visa CE 3.0 2-of-4 Match & RDR/Ethoca Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticChargebackCe30Verdict:
+    allowed: bool
+    http_status: int
+    chargeback_ce30_lane: str
+    settled_dispute_batch_cents: int
+    ce30_rdr_recovery_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_chargeback_ce30_policy(
+    *,
+    gross_dispute_batch_cents: int = 46000000,
+    ce30_two_prior_orders_120_365d_and_2of4_match_verified: bool = True,
+    rdr_ethoca_pre_dispute_triage_and_no_double_refund_passed: bool = True,
+    webiq_vdmp_dispute_ratio_and_order_insight_schema_clean: bool = True,
+    ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents: int = 0,
+) -> AgenticChargebackCe30Verdict:
+    # 1. Missing CE 3.0 120-365d 2-Order Match on Blind $500 Pre-Arbitration -> HTTP 403
+    if not ce30_two_prior_orders_120_365d_and_2of4_match_verified:
+        return AgenticChargebackCe30Verdict(
+            False,
+            403,
+            "UNQUALIFIED_CE30_EVIDENCE_OR_BLIND_ARBITRATION_BLOCKED",
+            0,
+            0,
+            "chargeback_representment_blocked_due_to_missing_ce30_120_365d_2of4_match_on_10_4_fraud",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Duplicate Standard Refund on Active Chargeback (Double Loss) or Negative-ROI Fight -> HTTP 422
+    if not rdr_ethoca_pre_dispute_triage_and_no_double_refund_passed:
+        return AgenticChargebackCe30Verdict(
+            False,
+            422,
+            "DOUBLE_REFUND_ON_ACTIVE_CHARGEBACK_OR_NEGATIVE_ROI_BLOCKED",
+            0,
+            0,
+            "dispute_triage_rejected_for_duplicate_refund_on_active_chargeback_or_negative_roi_fight",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Sub-MID VDMP Dispute Ratio Breach (>0.65%/0.90%) or Invalid CE 3.0 Schema via Web IQ -> HTTP 451
+    if not webiq_vdmp_dispute_ratio_and_order_insight_schema_clean:
+        return AgenticChargebackCe30Verdict(
+            False,
+            451,
+            "VDMP_RATIO_THRESHOLD_BREACH_OR_SCHEMA_INVALID_HOLD",
+            0,
+            0,
+            "webiq_detected_vdmp_dispute_ratio_approaching_090pct_or_invalid_order_insight_ce30_schema",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ CE 3.0 100% Liability-Shift Recovery + RDR Fee Avoidance -> HTTP 409 Confirm
+    if ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents > 0:
+        return AgenticChargebackCe30Verdict(
+            False,
+            409,
+            "CE30_LIABILITY_SHIFT_WIN_AND_VDMP_FEE_SAVINGS_CONFIRM",
+            gross_dispute_batch_cents - ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents,
+            ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents,
+            "webiq_applied_visa_ce30_pre_dispute_liability_shift_and_rdr_fee_avoidance_saving_69000_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified CE 3.0 2-Order 2-of-4 Match + Zero Double Refund + 0.18% VDMP Ratio -> Settled
+    return AgenticChargebackCe30Verdict(
+        True,
+        200,
+        "VERIFIED_CHARGEBACK_CE30_DEFENSE_SETTLED",
+        gross_dispute_batch_cents,
+        0,
+        "visa_ce30_120_365d_2of4_match_rdr_triage_zero_double_refund_and_vdmp_018pct_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -28702,6 +28792,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ghost_card_reuse_block_latency_ms": vcn_ghs_403.latency_ms,
     }
 
+    # Round 198 (Agentic Chargeback Visa CE 3.0 2-of-4 Match & RDR/Ethoca Triage Mandate)
+    ce3_commit_ok = evaluate_agentic_chargeback_ce30_policy()
+    ce3_arb_403 = evaluate_agentic_chargeback_ce30_policy(
+        ce30_two_prior_orders_120_365d_and_2of4_match_verified=False,
+    )
+    ce3_dbl_422 = evaluate_agentic_chargeback_ce30_policy(
+        rdr_ethoca_pre_dispute_triage_and_no_double_refund_passed=False,
+    )
+    ce3_vdm_451 = evaluate_agentic_chargeback_ce30_policy(
+        webiq_vdmp_dispute_ratio_and_order_insight_schema_clean=False,
+    )
+    ce3_win_409 = evaluate_agentic_chargeback_ce30_policy(
+        ce30_liability_shift_recovery_and_rdr_fee_avoidance_credit_cents=6900000,
+    )
+    agentic_chargeback_ce30_guards = {
+        "all_passed": (
+            ce3_commit_ok.allowed
+            and ce3_commit_ok.settled_dispute_batch_cents == 46000000
+            and not ce3_arb_403.allowed
+            and ce3_arb_403.http_status == 403
+            and not ce3_dbl_422.allowed
+            and ce3_dbl_422.http_status == 422
+            and not ce3_vdm_451.allowed
+            and ce3_vdm_451.http_status == 451
+            and not ce3_win_409.allowed
+            and ce3_win_409.action_pill == "Confirm"
+        ),
+        "agentic_chargeback_ce30_settlement_latency_ms": ce3_commit_ok.latency_ms,
+        "unqualified_ce30_block_latency_ms": ce3_arb_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28912,6 +29033,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_stablecoin_eip3009_guards": agentic_stablecoin_eip3009_guards,
         "agentic_open_banking_a2a_vrp_guards": agentic_open_banking_a2a_vrp_guards,
         "b2b_vcn_level3_interchange_guards": b2b_vcn_level3_interchange_guards,
+        "agentic_chargeback_ce30_guards": agentic_chargeback_ce30_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35375,6 +35497,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="vcn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Chargeback Visa CE 3.0 2-of-4 Match & RDR/Ethoca Mandate Sandbox (Round 198 FAQ Companion) -->
+      <div class="finops-box" id="agentic-chargeback-ce30-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ce3-title">⚖️ 智能体交易防“熟人恶退 (Friendly Fraud)”：Visa CE 3.0 历史双单 (120–365d) 2-of-4 匹配与 RDR 预拒付令牌 (chargeback_ce30_ethoca_mandate_...) vs 盲目交快递单败诉决策器 (Round 198 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智能体订单争议与防恶退批次 ($460,000.00)、Visa CE 3.0 历史双单 2-of-4 要素匹配、Verifi RDR/Ethoca 预拒付分流/防双倍退款与 Web IQ VDMP 0.9% 拒付率水位监控场景 (Agentic Chargeback CE 3.0 Scenario):</span></label>
+          <select id="ce3-select" onchange="updateAgenticChargebackCe30Sandbox()">
+            <option value="ce3_commit_ok">⚡ Visa CE 3.0 历史双单 (120~365d) 2-of-4 匹配 + 零双倍退款 + VDMP 拒付率 0.18% (&lt;0.65%)：10ms 自动保全结算 $460,000.00! (Act automatically)</option>
+            <option value="ce3_arb_403">🛑 买方谎称“AI 幻觉盗刷”提 10.4 拒付，商户缺失 120~365d 历史双单证据却只拿一张快递单企图强提 $500 二审仲裁 (85% 败诉倒贴罚金) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ce3_dbl_422">🚨 正式拒付单已立卷划扣但客服 Agent 未锁死状态又点一次普通退款 API 造成 200% 双倍赔款，或对 $20 小额无证据单倒贴 $50 争议费硬打官司拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ce3_vdm_451">🛑 收单子 MID 月度拒付笔数占比飙至 0.88% 逼近 Visa VDMP 0.90% 高危罚款红线，或 Order Insight CE 3.0 报文缺失设备指纹哈希：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ce3_win_409">🧑‍⚖️ Web IQ 通过 Order Insight 实时下发 CE 3.0 历史双单指纹触发 100% 法定责任逆转 (驳回大额恶退)，并结合 RDR 预拒付免除争议罚金立省 $69,000.00 (净敞口 $391,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ce3-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -36011,6 +36151,7 @@ function renderAll() {{
   updateAgenticStablecoinEip3009Sandbox();
   updateAgenticOpenBankingA2aVrpSandbox();
   updateB2bVcnLevel3InterchangeSandbox();
+  updateAgenticChargebackCe30Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -45965,6 +46106,55 @@ function updateB2bVcnLevel3InterchangeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 一单一卡即焚 VCN + Level 3 行项目 100% 守恒 + 真实 UNSPSC 达标：已自动清算 (VERIFIED_B2B_VCN_LEVEL3_INTERCHANGE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零静态公卡脱库盗刷、零 Level 1 惩罚性降级与手工贴票烂账</strong>：B2B 商务虚拟卡大宗采购批次已完成最优清算（<code>$750,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticChargebackCe30Sandbox() {{
+  var selEl = document.getElementById("ce3-select");
+  var outEl = document.getElementById("ce3-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ce3_arb_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNQUALIFIED_CE30_EVIDENCE_OR_BLIND_ARBITRATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "争议抗辩门禁检出，针对买方提起的 <code>Reason Code 10.4 无卡欺诈拒付，该订单缺失同一 PAN 在 120~365 天前的 2 笔无争议历史订单 2-of-4 要素匹配（单凭一张快递单在 10.4 理由下败诉率高达 85%，强提二审将倒贴 $500 仲裁费）</code>（<code>ce30_two_prior_orders_120_365d_and_2of4_match_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断盲目仲裁！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ce3_dbl_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DOUBLE_REFUND_ON_ACTIVE_CHARGEBACK_OR_NEGATIVE_ROI_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "退款与争议状态机检出 <code>该订单已处于正式拒付划扣状态 (Active Chargeback) 却企图再次调用普通 create_refund 接口（将导致银行划走拒付款 + 商户重复退款 200% 双倍损失），或对小额无证据单放弃 RDR 预拒付消号</code>（<code>rdr_ethoca_pre_dispute_triage_and_no_double_refund_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ce3_vdm_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 VDMP_RATIO_THRESHOLD_BREACH_OR_SCHEMA_INVALID_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>收单行月度 VDMP/ECM 拒付计数占比与 Visa Order Insight CE 3.0 规范</code>，检出子 MID 拒付率逼近 0.90% 高危红线或证据包缺失设备指纹哈希，立即冻结并收紧 RDR 自动消号阈值！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ce3_win_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CE30_LIABILITY_SHIFT_WIN_AND_VDMP_FEE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Visa CE 3.0 历史双单 2-of-4 指纹匹配触发 100% 预争议责任逆转 + Verifi RDR 小额自动消号免除争议罚金</code>，单批挽回第一方熟人恶退损失立省 <code>$69,000.00</code>（净风险敞口降至 <code>$391,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ Visa CE 3.0 历史双单匹配 + 零双倍退款 + VDMP 0.18% 安全水位达标：已自动清算 (VERIFIED_CHARGEBACK_CE30_DEFENSE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零第一方熟人恶退白嫖、零拒付期重复退款乌龙与 VDMP 超标封号</strong>：智能体订单争议与防恶退批次已完成保全清算（<code>$460,000.00</code>）！" +
     "</div>";
 }}
 
