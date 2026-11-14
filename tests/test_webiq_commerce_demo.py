@@ -14293,6 +14293,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-real-estate-title-escrow-sandbox", demo_zh)
 
+    def test_agentic_tax_free_vat_refund_customs_digital_stamp_mandate_vs_domestic_diversion_clawback_loss_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_tax_free_vat_refund_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. PABLO/DIVA digital stamp + non-prepaid credit clawback hold + threshold & <=90d export ($510,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_tax_free_vat_refund_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_vat_refund_batch_cents, 51000000)
+
+        # 2. Burner prepaid card domestic diversion or forged paper customs stamp -> 403 Blocked
+        div_403 = evaluate_agentic_tax_free_vat_refund_policy(
+            customs_digital_stamp_and_non_prepaid_clawback_verified=False,
+        )
+        self.assertFalse(div_403.allowed)
+        self.assertEqual(div_403.http_status, 403)
+        self.assertEqual(
+            div_403.decision_code,
+            "DOMESTIC_DIVERSION_BURNER_CARD_OR_FORGED_CUSTOMS_STAMP_BLOCKED",
+        )
+
+        # 3. Below same-day store threshold, ineligible service SKU, or >90d export window -> 422 Blocked
+        eli_422 = evaluate_agentic_tax_free_vat_refund_policy(
+            same_day_threshold_sealed_goods_and_90d_export_verified=False,
+        )
+        self.assertFalse(eli_422.allowed)
+        self.assertEqual(eli_422.http_status, 422)
+        self.assertEqual(
+            eli_422.decision_code,
+            "VAT_THRESHOLD_INELIGIBLE_SKU_OR_90DAY_EXPORT_WINDOW_BREACH",
+        )
+
+        # 4. Opaque 40% fee retention or predatory DCC FX markup -> 451 Hold
+        dcc_451 = evaluate_agentic_tax_free_vat_refund_policy(
+            webiq_transparent_fee_and_zero_predatory_dcc_clean=False,
+        )
+        self.assertFalse(dcc_451.allowed)
+        self.assertEqual(dcc_451.http_status, 451)
+
+        # 5. Web IQ enables direct PABLO/DIVA clearing & clawback shield saving $40,800 ($469,200 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_tax_free_vat_refund_policy(
+            direct_digital_customs_and_clawback_shield_savings_cents=4080000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_vat_refund_batch_cents, 46920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_tax_free_vat_refund_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-tax-free-vat-refund-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
