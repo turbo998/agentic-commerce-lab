@@ -13597,6 +13597,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-qsr-grocery-catch-weight-sandbox", demo_zh)
 
+    def test_agentic_loyalty_points_miles_ato_breakage_asc606_mandate_vs_mileage_broker_drain_liability_shock_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_loyalty_points_asc606_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. FIDO2 + >=72h nominee + ASC 606 CPP <=1.25c + original-expiry refund lock ($540,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_loyalty_points_asc606_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_loyalty_batch_cents, 54000000)
+
+        # 2. Newly added nominee <72h (Mileage Broker ATO) or gift-card cashout -> 403 Blocked
+        ato_403 = evaluate_agentic_loyalty_points_asc606_policy(
+            fido2_and_nominee_ge_72h_non_giftcard_verified=False,
+        )
+        self.assertFalse(ato_403.allowed)
+        self.assertEqual(ato_403.http_status, 403)
+        self.assertEqual(
+            ato_403.decision_code,
+            "LOYALTY_ATO_NOMINEE_UNDER_72H_OR_GIFT_CARD_CASHOUT_BLOCKED",
+        )
+
+        # 3. Unfunded 2.5c/pt CPP breaching ASC 606 reserve or refund expiry laundering -> 422 Blocked
+        cpp_422 = evaluate_agentic_loyalty_points_asc606_policy(
+            asc606_cpp_ceiling_and_original_expiry_refund_verified=False,
+        )
+        self.assertFalse(cpp_422.allowed)
+        self.assertEqual(cpp_422.http_status, 422)
+        self.assertEqual(
+            cpp_422.decision_code,
+            "ASC606_CPP_LIABILITY_CEILING_BREACH_OR_EXPIRY_LAUNDERING",
+        )
+
+        # 4. Unlawful forfeiture of cash-purchased points or silent DOT devaluation -> 451 Hold
+        exp_451 = evaluate_agentic_loyalty_points_asc606_policy(
+            webiq_purchased_points_segregated_and_dot_notice_clean=False,
+        )
+        self.assertFalse(exp_451.allowed)
+        self.assertEqual(exp_451.http_status, 451)
+
+        # 5. Web IQ enforces dynamic CPP clamping & 72h nominee lock saving $43,200 ($496,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_loyalty_points_asc606_policy(
+            dynamic_cpp_clamp_and_anti_broker_savings_cents=4320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_loyalty_batch_cents, 49680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_loyalty_points_asc606_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-loyalty-points-asc606-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
