@@ -17222,6 +17222,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-offshore-wind-wtiv-sov-charter-sandbox", demo_zh)
 
+    def test_b2b_chemical_toll_manufacturing_stoichiometric_yield_vs_ksm_diversion_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_chemical_toll_manufacturing_yield_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant stoichiometric molar balance & KF dry-basis + 85% solvent recycle + TSCA/GMP -> 200 OK ($750,000.00)
+        ok_res = evaluate_b2b_chemical_toll_manufacturing_yield_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CHEMICAL_TOLL_MANUFACTURING_SETTLED")
+        self.assertEqual(ok_res.settled_chemical_tolling_cents, 75000000)
+
+        # 2. Unexplained 7.5% molar yield deficit (KSM diversion) or >0.2% Karl Fischer moisture padding -> 403 Blocked
+        yld_403 = evaluate_b2b_chemical_toll_manufacturing_yield_policy(
+            stoichiometric_molar_mass_balance_and_kf_dry_basis_verified=False,
+        )
+        self.assertFalse(yld_403.allowed)
+        self.assertEqual(yld_403.http_status, 403)
+        self.assertEqual(
+            yld_403.decision_code,
+            "STOICHIOMETRIC_MOLAR_YIELD_MASS_BALANCE_DEFICIT_OR_KF_MOISTURE_PADDING_BLOCKED",
+        )
+
+        # 3. Distilled recycled solvent billed as 100% fresh, 4.2% Pd/C loss padding, or phantom boil-out fee -> 422 Blocked
+        slv_422 = evaluate_b2b_chemical_toll_manufacturing_yield_policy(
+            distillation_solvent_recycle_85pct_and_pgm_catalyst_cap_verified=False,
+        )
+        self.assertFalse(slv_422.allowed)
+        self.assertEqual(slv_422.http_status, 422)
+        self.assertEqual(
+            slv_422.decision_code,
+            "UNCREDITED_DISTILLATION_SOLVENT_RECOVERY_OR_PHANTOM_REACTOR_BOILOUT_AND_PGM_LOSS",
+        )
+
+        # 4. Unregistered EPA TSCA / ECHA REACH intermediate or failed ICH Q7 GMP audit -> 451 Hold
+        gmp_451 = evaluate_b2b_chemical_toll_manufacturing_yield_policy(
+            webiq_tsca_reach_registration_and_ich_q7_gmp_standing_clean=False,
+        )
+        self.assertFalse(gmp_451.allowed)
+        self.assertEqual(gmp_451.http_status, 451)
+
+        # 5. Web IQ automated 85% solvent recycle credit & 100% dry-basis assay dedup saving $60,000 ($690,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_chemical_toll_manufacturing_yield_policy(
+            automated_solvent_recycle_credit_and_dry_basis_assay_dedup_savings_cents=6000000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_chemical_tolling_cents, 69000000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_chemical_toll_manufacturing_yield_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-chemical-toll-manufacturing-yield-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
