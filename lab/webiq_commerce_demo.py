@@ -24193,6 +24193,91 @@ def evaluate_agentic_auto_equipment_lease_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bGreenPowerPpaRecDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_green_power_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_green_power_ppa_rec_policy(
+    *,
+    mandate_id: str = "b2b_green_power_ppa_hourly_rec_cdr_retirement_mandate_2026_11_14",
+    green_power_batch_cents: int = 86000000,
+    registry_retired_locked_and_same_grid_24_7_verified: bool = True,
+    vppa_negative_lmp_zero_floor_enforced: bool = True,
+    webiq_re100_15yr_plant_and_csrd_vintage_clean: bool = True,
+    negative_price_floor_clamp_and_registry_savings_cents: int = 0,
+) -> B2bGreenPowerPpaRecDecision:
+    """Evaluate central-registry RETIRED lock, EnergyTag 24/7 same-grid matching, and vPPA $0/MWh negative-LMP floor."""
+    if not mandate_id.startswith("b2b_green_power_ppa_hourly_rec_cdr_retirement_mandate_"):
+        return B2bGreenPowerPpaRecDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_GREEN_POWER_PPA_REC_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_green_power_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not registry_retired_locked_and_same_grid_24_7_verified:
+        return B2bGreenPowerPpaRecDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNRETIRED_REC_DOUBLE_CLAIMING_OR_CROSS_GRID_GREENWASHING_BLOCKED",
+            action_pill="Send to a human",
+            settled_green_power_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not vppa_negative_lmp_zero_floor_enforced:
+        return B2bGreenPowerPpaRecDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="VPPA_NEGATIVE_LMP_FLOOR_MISSING_OVERPAYMENT_BREACH",
+            action_pill="Send to a human",
+            settled_green_power_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_re100_15yr_plant_and_csrd_vintage_clean:
+        return B2bGreenPowerPpaRecDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="RE100_VINTAGE_COMMISSIONING_LIMIT_OR_CSRD_AUDIT_HOLD",
+            action_pill="Send to a human",
+            settled_green_power_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if negative_price_floor_clamp_and_registry_savings_cents > 0:
+        return B2bGreenPowerPpaRecDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="NEGATIVE_PRICE_FLOOR_CLAMP_AND_DIRECT_REGISTRY_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_green_power_batch_cents=max(
+                0,
+                green_power_batch_cents - negative_price_floor_clamp_and_registry_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return B2bGreenPowerPpaRecDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_GREEN_POWER_PPA_HOURLY_REC_SETTLED",
+        action_pill="Act automatically",
+        settled_green_power_batch_cents=green_power_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -32036,6 +32121,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "odometer_rollback_block_latency_ms": lse_odo_403.latency_ms,
     }
 
+    ppa_commit_ok = evaluate_b2b_green_power_ppa_rec_policy()
+    ppa_drt_403 = evaluate_b2b_green_power_ppa_rec_policy(
+        registry_retired_locked_and_same_grid_24_7_verified=False,
+    )
+    ppa_neg_422 = evaluate_b2b_green_power_ppa_rec_policy(
+        vppa_negative_lmp_zero_floor_enforced=False,
+    )
+    ppa_vin_451 = evaluate_b2b_green_power_ppa_rec_policy(
+        webiq_re100_15yr_plant_and_csrd_vintage_clean=False,
+    )
+    ppa_sav_409 = evaluate_b2b_green_power_ppa_rec_policy(
+        negative_price_floor_clamp_and_registry_savings_cents=6880000,
+    )
+    b2b_green_power_ppa_rec_guards = {
+        "all_passed": (
+            ppa_commit_ok.allowed
+            and ppa_commit_ok.settled_green_power_batch_cents == 86000000
+            and not ppa_drt_403.allowed
+            and ppa_drt_403.http_status == 403
+            and not ppa_neg_422.allowed
+            and ppa_neg_422.http_status == 422
+            and not ppa_vin_451.allowed
+            and ppa_vin_451.http_status == 451
+            and not ppa_sav_409.allowed
+            and ppa_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_green_power_ppa_rec_settlement_latency_ms": ppa_commit_ok.latency_ms,
+        "unretired_rec_greenwashing_block_latency_ms": ppa_drt_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32274,6 +32389,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_hazmat_dg_un383_imdg_guards": b2b_hazmat_dg_un383_imdg_guards,
         "agentic_insurance_claim_payout_guards": agentic_insurance_claim_payout_guards,
         "agentic_auto_equipment_lease_guards": agentic_auto_equipment_lease_guards,
+        "b2b_green_power_ppa_rec_guards": b2b_green_power_ppa_rec_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39241,6 +39357,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="lse-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B AI Data-Center Green Power vPPA, 24/7 Hourly REC/GO & $0 Negative-LMP Floor Sandbox -->
+      <div class="finops-box" id="b2b-green-power-ppa-rec-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🌱 B2B 智算中心绿电采购 (vPPA)、24/7 小时级绿证 (REC/GO) 注销与负电价零地板清算架构 (`b2b_green_power_ppa_hourly_rec_cdr_retirement_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 智算中心绿电 vPPA 差价与 24/7 绿证/CDR 结算批次 ($860,000.00)、中央登记处 Status == RETIRED 唯一注销、同电网 1h 时间戳匹配与批发市场负电价 $0/MWh 地板保护场景 (Green Power PPA &amp; 24/7 REC Scenario):</span></label>
+          <select id="ppa-select" onchange="updateB2bGreenPowerPpaRecSandbox()">
+            <option value="ppa_commit_ok">🌱 中央登记处 Status == RETIRED 绑定买方 LEI + 同电网 24/7 小时级对齐 + vPPA 负电价 $0/MWh 地板锁：10ms 清算 $860,000.00! (Act automatically)</option>
+            <option value="ppa_drt_403">🛑 绿证仍处于 ACTIVE 可转卖状态未执行官方登记处注销 (面临一证两卖 Double-Claiming)，或跨非互联电网买异地午间光伏证冲抵半夜煤电算力漂绿拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ppa_neg_422">🚨 现货电力市场跌至 -$42/MWh 负电价时未启用 $0 地板保护，按 $38 - (-$42) = $80/MWh 向发电厂双倍倒贴差价拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ppa_vin_451">🛑 混入投产超过 15 年的老旧水电站或发电年份 (Vintage) 超期的积压旧绿证 (违反 RE100 与欧盟 CSRD ESRS E1 准则)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ppa_sav_409">🧑‍⚖️ Web IQ 自动执行 vPPA 负电价 $0/MWh 地板钳位并直连 M-RETS/AIB 登记处批发注销去中介立省 $68,800.00 (净绿电结算额 $791,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ppa-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -39905,6 +40039,7 @@ function renderAll() {{
   updateB2bHazmatDgUn383ImdgSandbox();
   updateAgenticInsuranceClaimPayoutSandbox();
   updateAgenticAutoEquipmentLeaseSandbox();
+  updateB2bGreenPowerPpaRecSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -51210,6 +51345,52 @@ function updateAgenticAutoEquipmentLeaseSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🚜 四源 ECU 里程一致 + &lt;50mm 正常磨损豁免 + Reg M 残值隔离通过：已自动清算 (VERIFIED_AUTO_EQUIPMENT_LEASE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 $99 调表器逃逸、零 CFPB Reg M 正常划痕乱收费诉讼与拍卖场调表车退一赔三风险</strong>：智能体汽车与重型机械退租批次已完成安全清算（<code>$730,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bGreenPowerPpaRecSandbox() {{
+  var sel = document.getElementById("ppa-select");
+  var outEl = document.getElementById("ppa-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ppa_drt_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNRETIRED_REC_DOUBLE_CLAIMING_OR_CROSS_GRID_GREENWASHING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到绿证/碳汇序列号在官方登记处（<code>M-RETS / AIB / Puro.earth</code>）仍处于 <code>ACTIVE</code> 可流转状态（面临一证两卖 <code>Double-Claiming</code>），或跨非互联电网购买异地午间光伏证冲抵半夜煤电算力！已在 11ms 内硬拦截，规避欧盟 <code>CSRD</code> 与 <code>FTC</code> 反漂绿重罚。" +
+      "</div>";
+    return;
+  }}
+  if (v === "ppa_neg_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 VPPA_NEGATIVE_LMP_FLOOR_MISSING_OVERPAYMENT_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到批发电力市场出现负电价（<code>LMP = -$42.00/MWh</code>）时，虚拟购电协议（<code>vPPA</code>）未执行 <code>Effective_LMP = max($0.00, LMP)</code> 零地板截断，企图按 <code>$38 - (-$42) = $80.00/MWh</code> 向发电厂双倍倒贴差价，已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ppa_vin_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 RE100_VINTAGE_COMMISSIONING_LIMIT_OR_CSRD_AUDIT_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出交割绿证源自投产超过 <code>15 年</code> 的老旧电站或发电年份（<code>Vintage</code>）超出 <code>RE100 / EU CSRD ESRS E1</code> 允许窗口，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ppa_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 NEGATIVE_PRICE_FLOOR_CLAMP_AND_DIRECT_REGISTRY_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>vPPA 负电价 $0.00/MWh 物理地板钳位（彻底砍断风光过剩期双倍倒贴）+ 直连中央登记处 API 批量退役注销免除二道贩子加价</code>，单批立省 <code>$68,800.00</code>（净绿电与碳资产结算额优化至 <code>$791,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌱 登记处 RETIRED 锁 + 24/7 同网小时级对齐 + vPPA $0 负电价地板通过：已自动清算 (VERIFIED_GREEN_POWER_PPA_HOURLY_REC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零一证双报漂绿重罚、零负电价 $80/MWh 倒贴穿仓与 RE100 废证损失</strong>：B2B 智算中心绿电采购与绿证批次已完成安全清算（<code>$860,000.00</code>）！" +
     "</div>";
 }}
 

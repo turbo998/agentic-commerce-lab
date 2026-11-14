@@ -13829,6 +13829,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-auto-equipment-lease-sandbox", demo_zh)
 
+    def test_b2b_green_power_ppa_hourly_rec_cdr_retirement_mandate_vs_double_counting_negative_price_loss_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_green_power_ppa_rec_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Registry RETIRED locked + same-grid 24/7 hourly match + $0 vPPA floor ($860,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_green_power_ppa_rec_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_green_power_batch_cents, 86000000)
+
+        # 2. Unretired ACTIVE certificates (double-claiming risk) or cross-grid greenwashing -> 403 Blocked
+        drt_403 = evaluate_b2b_green_power_ppa_rec_policy(
+            registry_retired_locked_and_same_grid_24_7_verified=False,
+        )
+        self.assertFalse(drt_403.allowed)
+        self.assertEqual(drt_403.http_status, 403)
+        self.assertEqual(
+            drt_403.decision_code,
+            "UNRETIRED_REC_DOUBLE_CLAIMING_OR_CROSS_GRID_GREENWASHING_BLOCKED",
+        )
+
+        # 3. Missing $0/MWh negative-LMP floor on vPPA differential settlement -> 422 Blocked
+        neg_422 = evaluate_b2b_green_power_ppa_rec_policy(
+            vppa_negative_lmp_zero_floor_enforced=False,
+        )
+        self.assertFalse(neg_422.allowed)
+        self.assertEqual(neg_422.http_status, 422)
+        self.assertEqual(
+            neg_422.decision_code,
+            "VPPA_NEGATIVE_LMP_FLOOR_MISSING_OVERPAYMENT_BREACH",
+        )
+
+        # 4. Generator >15y commissioning limit or expired RE100 vintage -> 451 Hold
+        vin_451 = evaluate_b2b_green_power_ppa_rec_policy(
+            webiq_re100_15yr_plant_and_csrd_vintage_clean=False,
+        )
+        self.assertFalse(vin_451.allowed)
+        self.assertEqual(vin_451.http_status, 451)
+
+        # 5. Web IQ enforces $0 negative-LMP floor & direct registry clearing saving $68,800 ($791,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_green_power_ppa_rec_policy(
+            negative_price_floor_clamp_and_registry_savings_cents=6880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_green_power_batch_cents, 79120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_green_power_ppa_rec_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-green-power-ppa-rec-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
