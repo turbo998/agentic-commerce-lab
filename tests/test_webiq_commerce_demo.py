@@ -14583,6 +14583,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-fleet-fuel-ifta-sandbox", demo_zh)
 
+    def test_agentic_luxury_collectible_authentication_escrow_antifake_mandate_vs_superfake_swap_return_scam_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_luxury_collectible_auth_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 2-Hop Auth Hub XRF/movement + NTAG 424 closed + Enquirus/CITES clean ($495,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_luxury_collectible_auth_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_luxury_batch_cents, 49500000)
+
+        # 2. Uninspected P2P payout or Frankenwatch movement/316L alloy mismatch -> 403 Blocked
+        fak_403 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+            auth_hub_xrf_and_movement_inspection_verified=False,
+        )
+        self.assertFalse(fak_403.allowed)
+        self.assertEqual(fak_403.http_status, 403)
+        self.assertEqual(
+            fak_403.decision_code,
+            "SUPERFAKE_MOVEMENT_ALLOY_MISMATCH_OR_UNINSPECTED_PAYOUT_BLOCKED",
+        )
+
+        # 3. RMA return with severed NTAG 424 DNA tamper loop ('O') or fake CMAC swap -> 422 Blocked
+        swp_422 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+            ntag424_dna_tamper_loop_closed_and_cmac_verified=False,
+        )
+        self.assertFalse(swp_422.allowed)
+        self.assertEqual(swp_422.http_status, 422)
+        self.assertEqual(
+            swp_422.decision_code,
+            "NFC_TAMPER_SEAL_BROKEN_OR_RETURN_COUNTERFEIT_SWAP_REJECTED",
+        )
+
+        # 4. Stolen Enquirus serial hit, deactivated PSA cert, or missing CITES permit -> 451 Hold
+        stl_451 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+            webiq_enquirus_stolen_registry_and_cites_clean=False,
+        )
+        self.assertFalse(stl_451.allowed)
+        self.assertEqual(stl_451.http_status, 451)
+
+        # 5. Web IQ Freeport Vault direct custody & anti-swap lock saving $39,600 ($455,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+            freeport_vault_custody_and_anti_swap_savings_cents=3960000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_luxury_batch_cents, 45540000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_luxury_collectible_auth_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-luxury-collectible-auth-escrow-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

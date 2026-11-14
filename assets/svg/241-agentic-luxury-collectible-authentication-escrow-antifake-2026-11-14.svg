@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="236" height="26" rx="13" fill="#78350F" stroke="#FBBF24" stroke-width="1"/>
+  <text x="164" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#FEF3C7" text-anchor="middle">2026-11-14 · ROUND 239 · MCC 5944 / 5999</text>
+  <text x="298" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">Agentic 高奢腕表、潮鞋与收藏品鉴真托管：中转拆机验真、NTAG 424 防掉包锁与 CITES 架构</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">Luxury Watch &amp; Collectible Escrow: 2-Hop XRF/Movement Hub, NXP NTAG 424 DNA Tamper-Loop NFC &amp; Enquirus/CITES Gate vs. Frankenwatches &amp; Return-Swaps</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#FCD34D">Mandate Token: agentic_luxury_collectible_authentication_escrow_antifake_mandate_2026_11_14 · Batch: $495,000.00 · Net Vault Optimized: $455,400.00 (-$39,600.00)</text>
+
+  <!-- Left Column: Legacy P2P & Return-Swap Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“看图直发放款 + 静态防伪扣扫码即退”（四大奢品血亏黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why P2P Photo-Only Payouts &amp; Static Return Tags Trigger $45k Frankenwatch &amp; Return-Swap Losses</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. “真壳假芯（Frankenwatch）”与 CNC 超级复刻表骗走直发全款</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 造假团伙用真表壳/真表盘搭配拆走原厂硅游丝摆轮的假机芯，或拍真表视频寄 $600 复刻表。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 视觉大模型仅看外观照片直接释放 $45,000 托管款，不开盖上校表仪与 XRF 光谱仪 100% 中招！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. 买家“真买假退（Return-Swap）”剥离塑料扣或克隆静态 NFC</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 黑产买走 $18,000 正品潜航者，用热风枪无损取下塑料扣或用 $30 读卡器复制静态 NFC UID。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 将防伪扣套在 $400 高仿表上寄回，仓库扫码触发自动退款，平台瞬间遭遇“钱表两空”！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 误收 Enquirus 全球失窃赃表与 PSA 假盒套牌（Deactivated Cert）</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 未联查 Enquirus / The Watch Register 失窃序列号库，买家送劳力士官方保养时被警方当场扣押。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 造假者盗用真 PSA 10 证书编号封装假宝可梦卡，未查 PSA Cert 作废状态导致高额赔付！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 鳄鱼皮/鸵鸟皮手袋跨境缺失 CITES 濒危许可证遭海关直接罚没</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 爱马仕喜马拉雅鳄鱼皮包跨境寄递未校验 CITES Appendix I/II 原产国出口证，入境即被海关销毁没收。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 频繁双向全额保价空运导致每年 3%–5% 物流保费摩擦与运输途中掉包风险。</text>
+
+  <!-- Right Column: 2-Hop Auth Hub + NTAG 424 DNA Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ 双跳物理拆机鉴真 + NTAG 424 DNA 加密锁 + Web IQ 联防架构</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">2-Hop XRF/Timegrapher Hub Escrow, AES-128 Tamper-Loop NFC &amp; Enquirus/CITES Gate</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. Seller → Auth Hub → Buyer 双跳开盖摆幅与微束 XRF 光谱硬锁 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 强制货品先入鉴真仓：XRF 光谱实测 904L 钢/18K 金配比 + 开盖核对机芯倒角与校表仪偏振 (≤0.4ms)。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 未获鉴定台 HSM 签名或检出真壳假芯 Frankenwatch，11ms 硬拦截 (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. NXP NTAG 424 DNA 导电防拆回路 + AES-128 SUN 动态签名 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 出库穿入含物理导电丝的 NTAG 424 封签，每次碰触用 AES-128 对 [UID+计数器+通断状态] 算 CMAC。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 退货一旦发现导电环曾断开 (0x4F 'O') 或 CMAC 验签失败，14ms 阻断退款防掉包 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 联查 Enquirus 失窃库、PSA 证书与 CITES 许可 (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 穿透核验 Enquirus / Watch Register 失窃状态与 PSA/BGS 证书有效性。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 跨境珍惜皮具强制核验 CITES Appendix I/II 许可证编号，命中风险立即挂起 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. 保税金库直连托管 (Freeport Vault) 与防掉包核减立省 $39,600 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 鉴真后直存免税保税金库流转数字仓单，免除双向高额保价空运并消除掉包损耗。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $495,000.00 奢品批次上立省 $39,600.00 (净结算 $455,400.00 · HTTP 409 Confirm)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#6366F1" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $495,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_agentic_luxury_collectible_auth_escrow_policy`) + Microsoft Web IQ `/v3/browse` Enquirus &amp; CITES Verification</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">lux_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">鉴真仓 XRF/机芯通过 + NTAG 424 防拆环闭合 + Enquirus/CITES 合规 ($495k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_LUXURY_COLLECTIBLE_AUTH_ESCROW_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">lux_fak_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">企图越过鉴真仓直发收款，或检出 316L 假钢与“真壳假芯” Frankenwatch</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 SUPERFAKE_MOVEMENT_ALLOY_MISMATCH_OR_UNINSPECTED_PAYOUT_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">lux_swp_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">买家退货时 NTAG 424 DNA 防拆环已断开 (0x4F) 或 AES-128 CMAC 验签失败</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 NFC_TAMPER_SEAL_BROKEN_OR_RETURN_COUNTERFEIT_SWAP_REJECTED</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">lux_stl_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">序列号命中 Enquirus 失窃库、PSA 证书作废或鳄鱼皮包缺 CITES 进出口证</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 STOLEN_SERIAL_REGISTRY_HIT_OR_CITES_EXOTIC_LEATHER_HOLD</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">lux_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用免税保税金库直连托管 (Vault) 与防掉包核减立省 $39,600 ($455.4k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 AUTHENTICATION_HUB_VAULT_CUSTODY_AND_ANTI_SWAP_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>

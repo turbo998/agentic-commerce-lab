@@ -25298,6 +25298,91 @@ def evaluate_b2b_commercial_fleet_fuel_ifta_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticLuxuryCollectibleAuthEscrowDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_luxury_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_luxury_collectible_auth_escrow_policy(
+    *,
+    mandate_id: str = "agentic_luxury_collectible_authentication_escrow_antifake_mandate_2026_11_14",
+    luxury_batch_cents: int = 49500000,
+    auth_hub_xrf_and_movement_inspection_verified: bool = True,
+    ntag424_dna_tamper_loop_closed_and_cmac_verified: bool = True,
+    webiq_enquirus_stolen_registry_and_cites_clean: bool = True,
+    freeport_vault_custody_and_anti_swap_savings_cents: int = 0,
+) -> AgenticLuxuryCollectibleAuthEscrowDecision:
+    """Evaluate 2-Hop XRF/movement Authentication Hub escrow, NTAG 424 DNA tamper-loop NFC seals, and Enquirus/CITES compliance."""
+    if not mandate_id.startswith("agentic_luxury_collectible_authentication_escrow_antifake_mandate_"):
+        return AgenticLuxuryCollectibleAuthEscrowDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_LUXURY_COLLECTIBLE_AUTH_ESCROW_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_luxury_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not auth_hub_xrf_and_movement_inspection_verified:
+        return AgenticLuxuryCollectibleAuthEscrowDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="SUPERFAKE_MOVEMENT_ALLOY_MISMATCH_OR_UNINSPECTED_PAYOUT_BLOCKED",
+            action_pill="Send to a human",
+            settled_luxury_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not ntag424_dna_tamper_loop_closed_and_cmac_verified:
+        return AgenticLuxuryCollectibleAuthEscrowDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="NFC_TAMPER_SEAL_BROKEN_OR_RETURN_COUNTERFEIT_SWAP_REJECTED",
+            action_pill="Send to a human",
+            settled_luxury_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_enquirus_stolen_registry_and_cites_clean:
+        return AgenticLuxuryCollectibleAuthEscrowDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="STOLEN_SERIAL_REGISTRY_HIT_OR_CITES_EXOTIC_LEATHER_HOLD",
+            action_pill="Send to a human",
+            settled_luxury_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if freeport_vault_custody_and_anti_swap_savings_cents > 0:
+        return AgenticLuxuryCollectibleAuthEscrowDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTHENTICATION_HUB_VAULT_CUSTODY_AND_ANTI_SWAP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_luxury_batch_cents=max(
+                0,
+                luxury_batch_cents - freeport_vault_custody_and_anti_swap_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticLuxuryCollectibleAuthEscrowDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_LUXURY_COLLECTIBLE_AUTH_ESCROW_SETTLED",
+        action_pill="Act automatically",
+        settled_luxury_batch_cents=luxury_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -33531,6 +33616,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "j1939_siphon_skimmer_block_latency_ms": ful_sip_403.latency_ms,
     }
 
+    lux_commit_ok = evaluate_agentic_luxury_collectible_auth_escrow_policy()
+    lux_fak_403 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+        auth_hub_xrf_and_movement_inspection_verified=False,
+    )
+    lux_swp_422 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+        ntag424_dna_tamper_loop_closed_and_cmac_verified=False,
+    )
+    lux_stl_451 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+        webiq_enquirus_stolen_registry_and_cites_clean=False,
+    )
+    lux_sav_409 = evaluate_agentic_luxury_collectible_auth_escrow_policy(
+        freeport_vault_custody_and_anti_swap_savings_cents=3960000,
+    )
+    agentic_luxury_collectible_auth_escrow_guards = {
+        "all_passed": (
+            lux_commit_ok.allowed
+            and lux_commit_ok.settled_luxury_batch_cents == 49500000
+            and not lux_fak_403.allowed
+            and lux_fak_403.http_status == 403
+            and not lux_swp_422.allowed
+            and lux_swp_422.http_status == 422
+            and not lux_stl_451.allowed
+            and lux_stl_451.http_status == 451
+            and not lux_sav_409.allowed
+            and lux_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_luxury_collectible_auth_escrow_settlement_latency_ms": lux_commit_ok.latency_ms,
+        "superfake_frankenwatch_block_latency_ms": lux_fak_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33782,6 +33897,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_fleet_tolling_etc_guards": agentic_fleet_tolling_etc_guards,
         "b2b_precious_battery_scrap_metal_guards": b2b_precious_battery_scrap_metal_guards,
         "b2b_commercial_fleet_fuel_ifta_guards": b2b_commercial_fleet_fuel_ifta_guards,
+        "agentic_luxury_collectible_auth_escrow_guards": agentic_luxury_collectible_auth_escrow_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40983,6 +41099,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ful-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Luxury Watch, Sneaker & Collectible Authentication Escrow Sandbox -->
+      <div class="finops-box" id="agentic-luxury-collectible-auth-escrow-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⌚ Agentic 高奢腕表、潮鞋与收藏品鉴真托管：双跳开盖 XRF 验真、NTAG 424 DNA 防掉包锁与 CITES 架构 (`agentic_luxury_collectible_authentication_escrow_antifake_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 高奢腕表与评级收藏品托管清算批次 ($495,000.00)、鉴真中心开盖机芯/XRF 光谱核验、NXP NTAG 424 DNA 导电防拆环与 Enquirus/CITES 场景 (Luxury Auth Escrow Scenario):</span></label>
+          <select id="lux-select" onchange="updateAgenticLuxuryCollectibleAuthEscrowSandbox()">
+            <option value="lux_commit_ok">⌚ 鉴真仓 XRF 904L/18K + 开盖机芯摆幅通过 + NTAG 424 导电环闭合 + Enquirus/CITES 合规：10ms 清算 $495,000.00! (Act automatically)</option>
+            <option value="lux_fak_403">🛑 卖家企图越过鉴真中心看图直发收款，或开盖/XRF 检出 316L 假金钢与“真壳假芯 (Frankenwatch)”拼装表拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lux_swp_422">🚨 买家退货时 NXP NTAG 424 DNA 导电防拆回路曾被剪断 (0x4F 'O') 或 AES-128 SUN 动态签名伪造 (真买假退掉包 $400 假表) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lux_stl_451">🛑 腕表序列号命中 Enquirus / Watch Register 全球失窃赃表库、PSA 10 评级卡号已被官方作废或鳄鱼皮包缺 CITES 许可证：Web IQ 280ms 触发 HTTP 451!</option>
+            <option value="lux_sav_409">🧑‍⚖️ Web IQ 启用免税保税金库直连托管 (Freeport Vault Custody) 免除双向保价空运并凭 NTAG 424 消除退货掉包立省 $39,600.00 (净结算 $455,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lux-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -41660,6 +41794,7 @@ function renderAll() {{
   updateAgenticFleetTollingEtcSandbox();
   updateB2bPreciousBatteryScrapMetalSandbox();
   updateB2bCommercialFleetFuelIftaSandbox();
+  updateAgenticLuxuryCollectibleAuthEscrowSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -53563,6 +53698,52 @@ function updateB2bCommercialFleetFuelIftaSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⛽ 油站 ≤150m 围栏 + SAE J1939 液位守恒 + Level-3 ULSD/IFTA 通过：已自动清算 (VERIFIED_COMMERCIAL_FLEET_FUEL_IFTA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零隔空递枪偷油卖黄牛、零磁条克隆卡异地盗刷与低税州加油补税亏损</strong>：B2B 商用车队加油卡与 IFTA 燃油税批次已完成安全清算（<code>$440,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticLuxuryCollectibleAuthEscrowSandbox() {{
+  var sel = document.getElementById("lux-select");
+  var outEl = document.getElementById("lux-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lux_fak_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SUPERFAKE_MOVEMENT_ALLOY_MISMATCH_OR_UNINSPECTED_PAYOUT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到高客单价腕表/藏品企图越过中立鉴真中心（<code>Auth Hub</code>）点对点直发请款，或实验室微束 <code>XRF</code> 光谱与开盖校表仪检出 <code>316L</code> 廉价钢与拆换原厂游丝摆轮的“真壳假芯（<code>Frankenwatch</code>）”！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "lux_swp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 NFC_TAMPER_SEAL_BROKEN_OR_RETURN_COUNTERFEIT_SWAP_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "买家退货（RMA）入库扫描检出 <code>ISO 14443-4A NXP NTAG 424 DNA</code> 封签内部物理导电回路寄存器已翻转为断开状态（<code>0x4F 'O' Open</code>），或 <code>AES-128 SUN CMAC</code> 动态签名/机芯序列号不匹配（系剪断防伪环掉包高仿表骗退全款），已在 14ms 内硬阻断自动退款！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lux_stl_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STOLEN_SERIAL_REGISTRY_HIT_OR_CITES_EXOTIC_LEATHER_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出该腕表机芯/表壳序列号命中全球失窃腕表库（<code>Enquirus / The Watch Register</code>）、<code>PSA / BGS</code> 评级证书已被标记为套牌作废，或跨境湾鳄皮/鸵鸟皮手袋缺失《濒危物种公约（<code>CITES Appendix I/II</code>）》进出口许可证，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lux_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTHENTICATION_HUB_VAULT_CUSTODY_AND_ANTI_SWAP_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>鉴真后直存免税保税金库 (Freeport Vault Custody) 流转数字仓单 + NTAG 424 DNA 防掉包锁</code>，免除双向高额保价空运并消除掉包损耗，单批防损/立省 <code>$39,600.00</code>（净结算额优化至 <code>$455,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⌚ 鉴真中心 XRF/开盖机芯核验 + NTAG 424 加密封签 + Enquirus/CITES 通过：已自动清算 (VERIFIED_LUXURY_COLLECTIBLE_AUTH_ESCROW_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零真壳假芯拼装表骗款、零买家退货掉包高仿表与收赃罚没风险</strong>：高奢腕表与评级收藏品托管批次已完成安全清算（<code>$495,000.00</code>）！" +
     "</div>";
 }}
 
