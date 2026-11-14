@@ -5580,6 +5580,24 @@
         <div id="fsd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Semiconductor OSAT Wafer Probe, STDF Test-Time & Consigned Silicon Scrap Sandbox -->
+      <div class="finops-box" id="b2b-semiconductor-osat-stdf-yield-sandbox" style="margin-top:12px;border-color:#A855F7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🔬 B2B 半导体封测委工 (OSAT)：客供硅片原值倒扣锁、STDF 净测试秒数与金线 BOM (`b2b_semiconductor_ate_wafer_probe_osat_assembly_yield_loss_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 半导体委外封测月度 CP/Assembly/FT 批次 ($840,000.00)、SEMI E142 封装良率硅片倒扣、STDF v4 净测试秒数与金线场景 (Semiconductor OSAT Scenario):</span></label>
+          <select id="ost-select" onchange="updateB2bSemiconductorOsatStdfYieldSandbox()">
+            <option value="ost_commit_ok">🔬 封装良率 99.7% (&gt;=99.5% SLA) + ATE 机时匹配 STDF 净测试秒数 + EXEC_VER 哈希与金线合规：10ms 清算 $840,000.00! (Act automatically)</option>
+            <option value="ost_scr_403">🛑 封测厂减薄划片压碎 4 片 $22k 客供晶圆 (或良率跌至 91%) 却拿霸王条款只免 $800 手工费拒赔 $88,000 硅片原值 → 11ms 触发 HTTP 403!</option>
+            <option value="ost_ret_422">🚨 探针卡氧化脏污导致 30% 好芯片首测误判 Bin 2 开路连跑 3 遍重测 (虚增 300% ATE 小时费) 或混入 Handler 卡料停机时间 → 14ms 触发 HTTP 422!</option>
+            <option value="ost_std_451">🛑 夜班私加载删减高温测试向量的旧版程序 (STDF EXEC_VER 哈希不符) 或产线改用铜钯线却按 LBMA 纯金线收附加费：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ost_sav_409">🧑‍⚖️ Web IQ 自动剥离探针卡接触不良重测机时并从账单倒扣 0.8% 超标封装报废客供裸片价值立省 $67,200.00 (净付 $772,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ost-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6284,6 +6302,7 @@ function renderAll() {
   updateB2bAutomotiveTier1PpapToolingSandbox();
   updateAgenticWorkersCompOmfsBillReviewSandbox();
   updateB2bFoodserviceBroadlineDeviatedPricingSandbox();
+  updateB2bSemiconductorOsatStdfYieldSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19429,6 +19448,52 @@ function updateB2bFoodserviceBroadlineDeviatedPricingSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🥩 原厂 DPA 偏离底价 100% 穿透 + 头程运费公允 + GS1-128 实重与 FSMA 204 完备：已自动清算 (VERIFIED_FOODSERVICE_BROADLINE_DEVIATED_PRICING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零截留厂家返利两头吃、零关联物流虚增到岸成本与名义箱均重短斤少两</strong>：B2B 连锁餐饮一级食材统配批次已完成安全清算（<code>$640,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bSemiconductorOsatStdfYieldSandbox() {
+  var sel = document.getElementById("ost-select");
+  var outEl = document.getElementById("ost-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ost_scr_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 OSAT_ASSEMBLY_YIELD_BELOW_THRESHOLD_OR_BROKEN_WAFER_SILICON_VALUE_UNCOMPENSATED_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "委外封测厂（<code>OSAT</code>）在背面减薄/激光划片过程中压碎 <code>4</code> 片客供 4nm 晶圆（或封装良率跌至 <code>91.0% &lt; 99.5% SLA</code>），毁损芯片厂已付给晶圆代工厂价值 <code>$88,000</code> 的合格裸片（<code>KGD</code>），却企图仅免除 <code>$800</code> 封装加工费了事（未执行客供硅片原值赔偿冲抵）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "ost_ret_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ATE_PROBE_CARD_CONTACT_RETEST_INFLATION_OR_IDLE_TESTER_HOUR_OVERBILL (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "解析机台二进制 <code>STDF v4 (PRR/MIR)</code> 日志发现：由于封测厂未按规清洁探针卡（<code>Probe Card Contact Resistance &gt; 1.5 Ω</code>）导致首测大量 <code>Bin 2</code> 假性开路并触发 3 遍重复重测循环（<code>ABAB Retest Loop</code>），或将分选机卡料待机时间计入 <code>$180/h ATE 测试机时账单</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "ost_std_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STDF_TEST_PROGRAM_CHECKSUM_MISMATCH_OR_ASYMMETRIC_LBMA_GOLD_WIRE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：上传批次的 <code>STDF MIR.EXEC_VER</code> 测试程序加密校验和与签核版不符（涉嫌私自跳过高温老化测试向量引发坏片逃逸 <code>Test Escape</code>），或产线已按 <code>ECN</code> 切换为廉价镀钯铜线（<code>CuPd Wire</code>）却仍按 <code>LBMA 99.99% 纯金线</code>收附加费，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "ost_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_STDF_TEST_TIME_AUDIT_AND_SCRAP_SILICON_OFFSET_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>STDF 首次净有效测试秒数核算 (剥离探针接触重测机时) + 超标封装报废客供硅片原值自动倒扣</code>，单批立省/挽回损失 <code>$67,200.00</code>（净结算额优化至 <code>$772,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔬 封装良率 99.7% 达标 + STDF 净测试秒数吻合 + EXEC_VER 程序哈希与键合线 BOM 合规：已自动清算 (VERIFIED_SEMICONDUCTOR_OSAT_STDF_YIELD_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零压碎客供晶圆拒赔硅片原值、零探针脏污 3 倍重测机时费与漏测坏片流出</strong>：B2B 半导体 OSAT 委外封测批次已完成安全清算（<code>$840,000.00</code>）！" +
     "</div>";
 }
 

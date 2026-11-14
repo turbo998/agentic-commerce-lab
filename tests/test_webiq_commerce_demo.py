@@ -16139,6 +16139,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-foodservice-broadline-deviated-pricing-sandbox", demo_zh)
 
+    def test_b2b_semiconductor_osat_stdf_yield_loss_vs_scrap_shift_retest_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_semiconductor_osat_stdf_yield_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 99.7% assembly yield + STDF active test seconds + verified EXEC_VER & wire BOM -> 200 OK ($840,000.00)
+        ok_res = evaluate_b2b_semiconductor_osat_stdf_yield_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_SEMICONDUCTOR_OSAT_STDF_YIELD_SETTLED")
+        self.assertEqual(ok_res.settled_osat_assembly_test_batch_cents, 84000000)
+
+        # 2. OSAT crushes consigned wafers or drops assembly yield <99.5% without silicon cost credit -> 403 Blocked
+        scr_403 = evaluate_b2b_semiconductor_osat_stdf_yield_policy(
+            osat_assembly_yield_above_995pct_or_consigned_silicon_scrap_credited_verified=False,
+        )
+        self.assertFalse(scr_403.allowed)
+        self.assertEqual(scr_403.http_status, 403)
+        self.assertEqual(
+            scr_403.decision_code,
+            "OSAT_ASSEMBLY_YIELD_BELOW_THRESHOLD_OR_BROKEN_WAFER_SILICON_VALUE_UNCOMPENSATED_BLOCKED",
+        )
+
+        # 3. Dirty probe-card Bin 2 contact retest loops (3x ATE hours) or handler idle time billed -> 422 Blocked
+        ret_422 = evaluate_b2b_semiconductor_osat_stdf_yield_policy(
+            ate_tester_hours_match_stdf_active_seconds_and_probe_retest_stripped=False,
+        )
+        self.assertFalse(ret_422.allowed)
+        self.assertEqual(ret_422.http_status, 422)
+        self.assertEqual(
+            ret_422.decision_code,
+            "ATE_PROBE_CARD_CONTACT_RETEST_INFLATION_OR_IDLE_TESTER_HOUR_OVERBILL",
+        )
+
+        # 4. Unapproved STDF EXEC_VER test program checksum or gold wire surcharge billed on CuPd wire -> 451 Hold
+        std_451 = evaluate_b2b_semiconductor_osat_stdf_yield_policy(
+            webiq_stdf_exec_ver_checksum_and_ecn_wire_lbma_surcharge_clean=False,
+        )
+        self.assertFalse(std_451.allowed)
+        self.assertEqual(std_451.http_status, 451)
+
+        # 5. Web IQ automated STDF active-second audit & consigned scrap silicon offset saving $67,200 ($772,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_semiconductor_osat_stdf_yield_policy(
+            automated_stdf_test_time_audit_and_scrap_silicon_offset_savings_cents=6720000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_osat_assembly_test_batch_cents, 77280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_semiconductor_osat_stdf_yield_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-semiconductor-osat-stdf-yield-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
