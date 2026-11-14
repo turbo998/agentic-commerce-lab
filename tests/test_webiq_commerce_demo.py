@@ -17336,6 +17336,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-auto-fni-gap-vsc-refund-sandbox", demo_zh)
 
+    def test_b2b_industrial_laundry_linen_rfid_clean_dry_vs_wet_soiled_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_laundry_linen_rfid_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant clean-dry weight & dynamic cart tare + UHF RFID wash-count depreciation + HLAC/TRSA -> 200 OK ($340,000.00)
+        ok_res = evaluate_b2b_industrial_laundry_linen_rfid_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_LAUNDRY_LINEN_RENTAL_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_laundry_cents, 34000000)
+
+        # 2. Wet-soiled pickup weight billing (+28% moisture) or manipulated stenciled cart tare -> 403 Blocked
+        wet_403 = evaluate_b2b_industrial_laundry_linen_rfid_policy(
+            clean_dry_weight_billing_and_dynamic_empty_cart_tare_verified=False,
+        )
+        self.assertFalse(wet_403.allowed)
+        self.assertEqual(wet_403.http_status, 403)
+        self.assertEqual(
+            wet_403.decision_code,
+            "WET_SOILED_WEIGHT_BILLING_OR_MANIPULATED_CART_TARE_WEIGHT_BLOCKED",
+        )
+
+        # 3. Undepreciated 100% new price charged on 105-wash torn sheet or flat 16% auto-loss surcharge -> 422 Blocked
+        run_422 = evaluate_b2b_industrial_laundry_linen_rfid_policy(
+            uhf_rfid_custody_and_wash_cycle_depreciated_ruin_fee_verified=False,
+        )
+        self.assertFalse(run_422.allowed)
+        self.assertEqual(run_422.http_status, 422)
+        self.assertEqual(
+            run_422.decision_code,
+            "UNDEPRECIATED_NEW_LINEN_RUIN_CHARGE_OR_PHANTOM_FLAT_LOSS_SURCHARGE",
+        )
+
+        # 4. Lapsed HLAC/TRSA Hygienically Clean accreditation or sub-71C thermal disinfection breach -> 451 Hold
+        hlc_451 = evaluate_b2b_industrial_laundry_linen_rfid_policy(
+            webiq_hlac_trsa_hygienically_clean_and_71c_thermal_log_clean=False,
+        )
+        self.assertFalse(hlc_451.allowed)
+        self.assertEqual(hlc_451.http_status, 451)
+
+        # 5. Web IQ automated RFID theoretical dry-weight cap & wash-count depreciation saving $30,600 ($309,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_laundry_linen_rfid_policy(
+            automated_clean_dry_rfid_weight_cap_and_wash_depreciation_savings_cents=3060000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_laundry_cents, 30940000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_laundry_linen_rfid_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-laundry-linen-rfid-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
