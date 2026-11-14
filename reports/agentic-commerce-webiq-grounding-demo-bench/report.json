@@ -1275,6 +1275,11 @@
     "agentic_luxury_collectible_auth_escrow_settlement_latency_ms": 10,
     "superfake_frankenwatch_block_latency_ms": 11
   },
+  "b2b_telecom_sip_stir_shaken_a2p_guards": {
+    "all_passed": true,
+    "b2b_telecom_sip_stir_shaken_a2p_settlement_latency_ms": 10,
+    "irsf_ait_sms_pumping_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

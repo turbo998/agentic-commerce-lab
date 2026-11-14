@@ -14641,6 +14641,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-luxury-collectible-auth-escrow-sandbox", demo_zh)
 
+    def test_b2b_telecom_sip_stir_shaken_a2p_10dlc_irsf_mandate_vs_sms_pumping_irsf_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_telecom_sip_stir_shaken_a2p_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Clean conversion + GSM-7 single-segment + STIR/SHAKEN A & TCR 10DLC ($360,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_telecom_sip_stir_shaken_a2p_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_telecom_batch_cents, 36000000)
+
+        # 2. IRSF premium prefix or /24 prefix OTP conversion < 5% (AIT SMS pumping) -> 403 Blocked
+        pmp_403 = evaluate_b2b_telecom_sip_stir_shaken_a2p_policy(
+            irsf_prefix_and_ait_conversion_rate_verified=False,
+        )
+        self.assertFalse(pmp_403.allowed)
+        self.assertEqual(pmp_403.http_status, 403)
+        self.assertEqual(
+            pmp_403.decision_code,
+            "IRSF_PREMIUM_PREFIX_OR_AIT_SMS_PUMPING_BOT_DRAIN_BLOCKED",
+        )
+
+        # 3. LLM smart quote or emoji triggers 3x UCS-2 segment explosion -> 422 Blocked
+        ucs_422 = evaluate_b2b_telecom_sip_stir_shaken_a2p_policy(
+            gsm7_encoding_single_segment_verified=False,
+        )
+        self.assertFalse(ucs_422.allowed)
+        self.assertEqual(ucs_422.http_status, 422)
+        self.assertEqual(
+            ucs_422.decision_code,
+            "UCS2_EMOJI_SMART_QUOTE_3X_SEGMENT_EXPLOSION_REJECTED",
+        )
+
+        # 4. Missing FCC STIR/SHAKEN Attestation-A or unregistered TCR 10DLC campaign -> 451 Hold
+        fcc_451 = evaluate_b2b_telecom_sip_stir_shaken_a2p_policy(
+            webiq_fcc_stir_shaken_and_tcr_10dlc_clean=False,
+        )
+        self.assertFalse(fcc_451.allowed)
+        self.assertEqual(fcc_451.http_status, 451)
+
+        # 5. Web IQ CAMARA Silent Network Auth & GSM-7 transliteration saving $28,800 ($331,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_telecom_sip_stir_shaken_a2p_policy(
+            silent_network_auth_and_gsm7_transliteration_savings_cents=2880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_telecom_batch_cents, 33120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_telecom_sip_stir_shaken_a2p_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-telecom-sip-stir-shaken-a2p-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

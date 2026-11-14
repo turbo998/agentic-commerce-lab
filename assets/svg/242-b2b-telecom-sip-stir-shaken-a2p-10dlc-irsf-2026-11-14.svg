@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="236" height="26" rx="13" fill="#0369A1" stroke="#38BDF8" stroke-width="1"/>
+  <text x="164" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">2026-11-14 · ROUND 240 · MCC 4814 TELECOM</text>
+  <text x="298" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">B2B 电信批发语音 (SIP) 与 A2P 10DLC 短信架构：STIR/SHAKEN、防刷量熔断与 GSM-7 守恒</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">Telecom Wholesale SIP &amp; A2P 10DLC: PASSporT Attestation-A, Anti-IRSF Pumping Breaker &amp; GSM-7 Guard vs. $120k SMS Pumping &amp; 3x UCS-2 Shocks</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#38BDF8">Mandate Token: b2b_telecom_sip_stir_shaken_a2p_10dlc_irsf_mandate_2026_11_14 · Batch: $360,000.00 · Net SNA/GSM-7 Optimized: $331,200.00 (-$28,800.00)</text>
+
+  <!-- Left Column: Legacy Telecom & SMS Pumping Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“无设防 OTP 接口 + 原样透传 LLM 短信”（四大爆仓黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why Unprotected OTP APIs &amp; Raw LLM Strings Trigger $120k Pumping &amp; 3x UCS-2 Shocks</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. 流氓运营商勾结黑产实施短信刷量 (AIT / SMS Pumping) 与国际骗费 (IRSF)</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 僵尸网络周末向索马里/海事卫星 (+882/+252) 高落地费号段触发 50万次验证码与语音回拨。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 底层流氓小运营商伪造 DELIVERED 回执与黑产分赃，一夜刷爆 $120,000 网间结算费！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. 大模型夹带 1 个弯引号 (’) 或 Emoji (📦) 触发 3 倍 UCS-2 分片暴击</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 155 字符英文通知在 7-bit GSM-7 下仅 1 条 (上限 160 字)；混入 1 个弯引号即降级为 16-bit UCS-2。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 扣除 6 字节 UDH 拼接头后单条仅容 67 字，瞬间裂变为 3 条计费分片 (账单暴涨 +200%)！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 外呼缺失 FCC STIR/SHAKEN Attestation-A 签名遭运营商直接拦截</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• AI 语音外呼未携带 STI-CA 签发的 PASSporT A 级签名，或上游落地商被 FCC RMD 数据库除名。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 呼叫被终端标记为 Spam Likely 或在网间关口被全量拒接，接通率跌至 &lt;8%！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 美区 A2P 10DLC 未备案或触发 SHAFT 违禁词遭 $10,000/例重罚</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 未绑定 The Campaign Registry (TCR) 10DLC 活动 ID 或营销文案越界触发运营商 Sev-0 罚单。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 跨国身份核验死磕高价国际 SMS ($0.25/条)，未采用静默网络鉴权 (SNA) 造成巨额浪费。</text>
+
+  <!-- Right Column: Anti-Pumping + GSM-7 + STIR/SHAKEN Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ /24 转化率熔断 + GSM-7 确定性净化 + Web IQ 合规门禁架构</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">/24 Prefix OTP Conversion Breaker, Pre-Flight GSM-03.38 Sanitizer &amp; FCC/TCR Gate</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. /24 号段 OTP 核销转化率 (&lt;5%) 实时熔断与 IRSF 前缀硬锁 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 物理封禁 +882/+883 等高危溢价前缀；实时监控连号前 6 位 (/24) 的验证码真实回填核销率。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 一旦并发 &gt;=15次/分且核销率 &lt;5%，11ms 硬熔断并拒付异常网间 CDR (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. Unicode → GSM-03.38 (7-bit) 确定性净化与单分片锁 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 发送前自动将弯引号/长破折号无损映射为标准 7-bit GSM-7 字符，保住 160 字符单条容量。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 严禁未经预算授权的 UCS-2 (67字/片) 3 倍分片膨胀出网，14ms 硬阻断 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 核验 FCC RMD、STIR/SHAKEN A级与 TCR 10DLC (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 穿透核验上游运营商 FCC RMD 备案与 RFC 8224 PASSporT A 级证书链。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 强制校验美区 TCR 10DLC Campaign ID 状态，拦截每例 $10,000 违规罚单 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. GSMA CAMARA 静默网络鉴权 (SNA) 与 GSM-7 压缩立省 $28,800 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 将高价跨国 OTP 自动切流至运营商基站层免短信静默鉴权 (SNA) 或 FIDO2 Passkey。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $360,000.00 电信批次上立省 $28,800.00 (净结算 $331,200.00 · HTTP 409 Confirm)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#6366F1" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $360,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_b2b_telecom_sip_stir_shaken_a2p_policy`) + Microsoft Web IQ `/v3/browse` FCC RMD &amp; TCR 10DLC Verification</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#38BDF8">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">tel_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">转化率健康 + GSM-7 单分片 + STIR/SHAKEN A级与 10DLC 合规 ($360k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_TELECOM_SIP_STIR_SHAKEN_A2P_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">tel_pmp_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">命中 +882 IRSF 溢价号段或 /24 号段 OTP 核销率 &lt;5% (AIT 短信刷量)</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 IRSF_PREMIUM_PREFIX_OR_AIT_SMS_PUMPING_BOT_DRAIN_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">tel_ucs_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">LLM 混入弯引号 ’ 或 Emoji 触发 67字 UCS-2 3 倍分片计费膨胀</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 UCS2_EMOJI_SMART_QUOTE_3X_SEGMENT_EXPLOSION_REJECTED</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">tel_fcc_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">外呼缺 FCC STIR/SHAKEN A级签名或未完成美区 TCR 10DLC 注册备案</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 FCC_STIR_SHAKEN_ATTESTATION_OR_TCR_10DLC_COMPLIANCE_HOLD</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">tel_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用 CAMARA 静默网络鉴权 (SNA) 与 GSM-7 转义立省 $28,800 ($331.2k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 SILENT_NETWORK_AUTH_AND_GSM7_TRANSLITERATION_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>

@@ -5112,6 +5112,24 @@
         <div id="lux-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Telecom Wholesale Voice (SIP Trunking) & A2P 10DLC Messaging Sandbox -->
+      <div class="finops-box" id="b2b-telecom-sip-stir-shaken-a2p-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">📞 B2B 电信批发语音 (SIP Trunking) 与 A2P 10DLC 短信清分：STIR/SHAKEN 签名、防刷量熔断与 GSM-7 架构 (`b2b_telecom_sip_stir_shaken_a2p_10dlc_irsf_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 电信批发语音与 A2P 短信结算批次 ($360,000.00)、/24 号段 OTP 核销率熔断、GSM-7 单分片锁与 FCC STIR/SHAKEN 合规场景 (Telecom SIP &amp; A2P Scenario):</span></label>
+          <select id="tel-select" onchange="updateB2bTelecomSipStirShakenA2pSandbox()">
+            <option value="tel_commit_ok">📞 /24 号段 OTP 核销率 ≥5% + 7-bit GSM-7 单分片 + STIR/SHAKEN A级签名与 TCR 10DLC 合规：10ms 清算 $360,000.00! (Act automatically)</option>
+            <option value="tel_pmp_403">🛑 僵尸网络刷往 +882/+252 国际高额分成号段 (IRSF) 或 /24 连号 OTP 核销转化率 &lt;5% (AIT 短信刷量骗取网间结算费) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="tel_ucs_422">🚨 大模型在 155 字符英文通知中夹带 1 个弯引号 (’) 或 Emoji (📦) 导致 GSM-7 降级为 67字 UCS-2 触发 3 倍分片暴击拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="tel_fcc_451">🛑 外呼缺失 FCC STIR/SHAKEN (RFC 8224) Attestation-A 完全签名或美区 A2P 短信未完成 TCR 10DLC 备案：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="tel_sav_409">🧑‍⚖️ Web IQ 启用 GSMA CAMARA 静默网络鉴权 (SNA) 替代高价国际 OTP 并自动执行 GSM-7 无损转义立省 $28,800.00 (净结算 $331,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tel-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5790,6 +5808,7 @@ function renderAll() {
   updateB2bPreciousBatteryScrapMetalSandbox();
   updateB2bCommercialFleetFuelIftaSandbox();
   updateAgenticLuxuryCollectibleAuthEscrowSandbox();
+  updateB2bTelecomSipStirShakenA2pSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17739,6 +17758,52 @@ function updateAgenticLuxuryCollectibleAuthEscrowSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⌚ 鉴真中心 XRF/开盖机芯核验 + NTAG 424 加密封签 + Enquirus/CITES 通过：已自动清算 (VERIFIED_LUXURY_COLLECTIBLE_AUTH_ESCROW_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零真壳假芯拼装表骗款、零买家退货掉包高仿表与收赃罚没风险</strong>：高奢腕表与评级收藏品托管批次已完成安全清算（<code>$495,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bTelecomSipStirShakenA2pSandbox() {
+  var sel = document.getElementById("tel-select");
+  var outEl = document.getElementById("tel-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "tel_pmp_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 IRSF_PREMIUM_PREFIX_OR_AIT_SMS_PUMPING_BOT_DRAIN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到呼叫/短信目标属于 <code>+882 / +883 / +252</code> 国际高额分成骗费号段（<code>IRSF</code>），或同一 <code>/24 (NPA-NXX)</code> 连号段突发 <code>&gt;=15 次/分</code> 验证码请求但实际回填核销率 <code>&lt;5%</code>（系流氓运营商与僵尸网络合谋刷取国际网间结算费 <code>AIT / SMS Pumping</code>）！已在 11ms 内硬熔断。" +
+      "</div>";
+    return;
+  }
+  if (v === "tel_ucs_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UCS2_EMOJI_SMART_QUOTE_3X_SEGMENT_EXPLOSION_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到 AI 生成的 <code>155</code> 字符英文通知中混入非 <code>GSM-03.38</code> 字符（如排版弯引号 <code>’</code> 或 Emoji <code>📦</code>），导致整条短信被迫从 <code>7-bit GSM-7 (160字/条)</code> 降级为 <code>16-bit UCS-2 (扣除 6字节 UDH 后仅 67字/条)</code> 并裂变为 <code>3 条计费分片 (+200% 费用)</code>，已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "tel_fcc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FCC_STIR_SHAKEN_ATTESTATION_OR_TCR_10DLC_COMPLIANCE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出上游批发语音落地商未在 <code>FCC Robocall Mitigation Database (RMD)</code> 备案、外呼缺失 <code>RFC 8224 PASSporT Attestation-A</code> 签名，或美区 <code>A2P 10DLC</code> 营销活动未在 <code>The Campaign Registry (TCR)</code> 激活（面临每例 <code>$10,000</code> 罚款），已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }
+  if (v === "tel_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 SILENT_NETWORK_AUTH_AND_GSM7_TRANSLITERATION_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>GSMA CAMARA 静默网络鉴权 (SNA) 替代高价国际短信 + Unicode 弯标点无损转义至 7-bit GSM-7</code>，消除刷量与 3 倍分片损耗，单批防损/立省 <code>$28,800.00</code>（净结算额优化至 <code>$331,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📞 /24 号段转化率健康 + GSM-7 单分片 + STIR/SHAKEN A级与 10DLC 通过：已自动清算 (VERIFIED_TELECOM_SIP_STIR_SHAKEN_A2P_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零周末被刷爆 12 万美元国际验证码、零弯引号触发 3 倍分片扣费与 FCC 罚单</strong>：B2B 电信批发语音与 A2P 短信批次已完成安全清算（<code>$360,000.00</code>）！" +
     "</div>";
 }
 
