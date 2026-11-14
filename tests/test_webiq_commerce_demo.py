@@ -14815,6 +14815,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-duty-drawback-ftz-tariff-sandbox", demo_zh)
 
+    def test_agentic_specialty_pharmacy_rems_cold_dispense_copay_mandate_vs_unverified_dispense_maximizer_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_specialty_pharmacy_rems_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Valid FDA REMS + <=7d labs + OOP shield + 48h cold-chain ACK ($840,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_specialty_pharmacy_rems_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_specialty_rx_batch_cents, 84000000)
+
+        # 2. Missing FDA REMS ETASU auth code or expired 7-day lab safety value -> 403 Blocked
+        rem_403 = evaluate_agentic_specialty_pharmacy_rems_policy(
+            fda_rems_etass_authorization_and_lab_safety_value_verified=False,
+        )
+        self.assertFalse(rem_403.allowed)
+        self.assertEqual(rem_403.http_status, 403)
+        self.assertEqual(
+            rem_403.decision_code,
+            "FDA_REMS_ETASS_UNVERIFIED_OR_MISSING_LAB_SAFETY_CHECK_BLOCKED",
+        )
+
+        # 3. PBM Copay Maximizer draining assistance or unconfirmed 48h cold-chain ship -> 422 Blocked
+        max_422 = evaluate_agentic_specialty_pharmacy_rems_policy(
+            patient_true_oop_accumulator_shield_and_48h_delivery_confirm_verified=False,
+        )
+        self.assertFalse(max_422.allowed)
+        self.assertEqual(max_422.http_status, 422)
+        self.assertEqual(
+            max_422.decision_code,
+            "PBM_COPAY_MAXIMIZER_ASSISTANCE_DRAIN_OR_UNCONFIRMED_COLD_SHIP_BLOCKED",
+        )
+
+        # 4. Medicare Part D / Medicaid beneficiary (HHS-OIG Anti-Kickback bar) or lapsed URAC -> 451 Hold
+        oig_451 = evaluate_agentic_specialty_pharmacy_rems_policy(
+            webiq_ncpdp_specialty_accreditation_and_oig_antikickback_clean=False,
+        )
+        self.assertFalse(oig_451.allowed)
+        self.assertEqual(oig_451.http_status, 451)
+
+        # 5. Web IQ Direct-to-Patient OOP rebate & zero-abandonment cold lock saving $67,200 ($772,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_specialty_pharmacy_rems_policy(
+            direct_to_patient_oop_rebate_and_zero_abandonment_savings_cents=6720000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_specialty_rx_batch_cents, 77280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_specialty_pharmacy_rems_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-specialty-pharmacy-rems-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

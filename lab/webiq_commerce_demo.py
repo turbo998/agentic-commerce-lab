@@ -25638,6 +25638,91 @@ def evaluate_b2b_duty_drawback_ftz_tariff_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticSpecialtyPharmacyRemsDispenseDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_specialty_rx_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_specialty_pharmacy_rems_policy(
+    *,
+    mandate_id: str = "agentic_specialty_pharmacy_rems_cold_dispense_copay_mandate_2026_11_14",
+    specialty_rx_batch_cents: int = 84000000,
+    fda_rems_etass_authorization_and_lab_safety_value_verified: bool = True,
+    patient_true_oop_accumulator_shield_and_48h_delivery_confirm_verified: bool = True,
+    webiq_ncpdp_specialty_accreditation_and_oig_antikickback_clean: bool = True,
+    direct_to_patient_oop_rebate_and_zero_abandonment_savings_cents: int = 0,
+) -> AgenticSpecialtyPharmacyRemsDispenseDecision:
+    """Evaluate FDA REMS ETASU <=7d lab safety authorizations, anti-Copay-Maximizer OOP shields / 48h cold-chain delivery locks, and HHS-OIG Anti-Kickback compliance."""
+    if not mandate_id.startswith("agentic_specialty_pharmacy_rems_cold_dispense_copay_mandate_"):
+        return AgenticSpecialtyPharmacyRemsDispenseDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_SPECIALTY_PHARMACY_REMS_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_specialty_rx_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not fda_rems_etass_authorization_and_lab_safety_value_verified:
+        return AgenticSpecialtyPharmacyRemsDispenseDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="FDA_REMS_ETASS_UNVERIFIED_OR_MISSING_LAB_SAFETY_CHECK_BLOCKED",
+            action_pill="Send to a human",
+            settled_specialty_rx_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not patient_true_oop_accumulator_shield_and_48h_delivery_confirm_verified:
+        return AgenticSpecialtyPharmacyRemsDispenseDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PBM_COPAY_MAXIMIZER_ASSISTANCE_DRAIN_OR_UNCONFIRMED_COLD_SHIP_BLOCKED",
+            action_pill="Send to a human",
+            settled_specialty_rx_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_ncpdp_specialty_accreditation_and_oig_antikickback_clean:
+        return AgenticSpecialtyPharmacyRemsDispenseDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="OIG_ANTI_KICKBACK_GOVERNMENT_PAYER_OR_URAC_ACCREDITATION_HOLD",
+            action_pill="Send to a human",
+            settled_specialty_rx_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if direct_to_patient_oop_rebate_and_zero_abandonment_savings_cents > 0:
+        return AgenticSpecialtyPharmacyRemsDispenseDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="DIRECT_PATIENT_OOP_REBATE_AND_ZERO_ABANDONMENT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_specialty_rx_batch_cents=max(
+                0,
+                specialty_rx_batch_cents - direct_to_patient_oop_rebate_and_zero_abandonment_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticSpecialtyPharmacyRemsDispenseDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_SPECIALTY_PHARMACY_REMS_DISPENSE_SETTLED",
+        action_pill="Act automatically",
+        settled_specialty_rx_batch_cents=specialty_rx_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -33991,6 +34076,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "duplicate_drawback_7501_block_latency_ms": drw_dup_403.latency_ms,
     }
 
+    rx_commit_ok = evaluate_agentic_specialty_pharmacy_rems_policy()
+    rx_rem_403 = evaluate_agentic_specialty_pharmacy_rems_policy(
+        fda_rems_etass_authorization_and_lab_safety_value_verified=False,
+    )
+    rx_max_422 = evaluate_agentic_specialty_pharmacy_rems_policy(
+        patient_true_oop_accumulator_shield_and_48h_delivery_confirm_verified=False,
+    )
+    rx_oig_451 = evaluate_agentic_specialty_pharmacy_rems_policy(
+        webiq_ncpdp_specialty_accreditation_and_oig_antikickback_clean=False,
+    )
+    rx_sav_409 = evaluate_agentic_specialty_pharmacy_rems_policy(
+        direct_to_patient_oop_rebate_and_zero_abandonment_savings_cents=6720000,
+    )
+    agentic_specialty_pharmacy_rems_guards = {
+        "all_passed": (
+            rx_commit_ok.allowed
+            and rx_commit_ok.settled_specialty_rx_batch_cents == 84000000
+            and not rx_rem_403.allowed
+            and rx_rem_403.http_status == 403
+            and not rx_max_422.allowed
+            and rx_max_422.http_status == 422
+            and not rx_oig_451.allowed
+            and rx_oig_451.http_status == 451
+            and not rx_sav_409.allowed
+            and rx_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_specialty_pharmacy_rems_settlement_latency_ms": rx_commit_ok.latency_ms,
+        "unverified_fda_rems_dispense_block_latency_ms": rx_rem_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34246,6 +34361,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_telecom_sip_stir_shaken_a2p_guards": b2b_telecom_sip_stir_shaken_a2p_guards,
         "b2b_aviation_aog_mro_rotable_guards": b2b_aviation_aog_mro_rotable_guards,
         "b2b_duty_drawback_ftz_tariff_guards": b2b_duty_drawback_ftz_tariff_guards,
+        "agentic_specialty_pharmacy_rems_guards": agentic_specialty_pharmacy_rems_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41519,6 +41635,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="drw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Specialty Pharmacy FDA REMS, Anti-Maximizer & Cold-Chain Sandbox -->
+      <div class="finops-box" id="agentic-specialty-pharmacy-rems-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧬 智能体特药药房 (Specialty Pharmacy)：FDA REMS 风险授权、防 Copay Maximizer 截留与冷链排期 (`agentic_specialty_pharmacy_rems_cold_dispense_copay_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 特药调配与共付援助批次 ($840,000.00)、FDA REMS ETASU 化验单闭环、防 PBM Maximizer 截留与 48h 冷链确认场景 (Specialty Pharmacy Scenario):</span></label>
+          <select id="rx-select" onchange="updateAgenticSpecialtyPharmacyRemsSandbox()">
+            <option value="rx_commit_ok">🧬 FDA REMS ETASU 授权码与 &lt;=7日化验合格 + 防 Maximizer 直退护盾 + 48h 冷链确认：10ms 清算 $840,000.00! (Act automatically)</option>
+            <option value="rx_rem_403">🛑 未获取有效 FDA REMS ETASU 授权码或患者近 7 日血常规 (ANC) / 阴性妊娠化验超期直接违规自动发药 (21 USC 355-1) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rx_max_422">🚨 PBM 共付额最大化器 (Copay Maximizer) 吸干药厂 $15,000 援助上限却不计入患者年度免赔额，或未获患者 48h 居家签收确认盲寄 $25k 生物药 → 14ms 触发 HTTP 422!</option>
+            <option value="rx_oig_451">🛑 受助患者属 Medicare Part D / Medicaid 联邦医保参保人 (触发 HHS-OIG 反回扣法 AKS 红线) 或药房缺 URAC 认证：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="rx_sav_409">🧑‍⚖️ Web IQ 启用患者直退 OOP 护盾 (Direct-to-Patient Rebate) 结合冷链预约零失温弃单优化立省 $67,200.00 (净结算 $772,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rx-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -42200,6 +42334,7 @@ function renderAll() {{
   updateB2bTelecomSipStirShakenA2pSandbox();
   updateB2bAviationAogMroRotableSandbox();
   updateB2bDutyDrawbackFtzTariffSandbox();
+  updateAgenticSpecialtyPharmacyRemsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -54287,6 +54422,52 @@ function updateB2bDutyDrawbackFtzTariffSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🛃 CBP 7501-EEI 唯一绑定 + First-Sale 首层出厂价 + FTZ 倒挂择优通过：已自动清算 (VERIFIED_DUTY_DRAWBACK_FTZ_FIRST_SALE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零一单两退触发 300% 海关重罚、零替中间商加价多交 35% 冤枉税与 99% 退税打水漂</strong>：B2B 跨境退税与 FTZ 保税批次已完成安全清算（<code>$790,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticSpecialtyPharmacyRemsSandbox() {{
+  var sel = document.getElementById("rx-select");
+  var outEl = document.getElementById("rx-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "rx_rem_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FDA_REMS_ETASS_UNVERIFIED_OR_MISSING_LAB_SAFETY_CHECK_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到受 <code>FDA REMS (ETASU)</code> 管制的特药缺失有效的实时调配授权码，或患者过去 7 天内的强制安全化验指标（阴性妊娠报告、中性粒细胞 <code>ANC &gt;= 1,500/μL</code> 或肝功）未完成核验（违反 <code>21 U.S.C. § 355-1</code>）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "rx_max_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PBM_COPAY_MAXIMIZER_ASSISTANCE_DRAIN_OR_UNCONFIRMED_COLD_SHIP_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "识别到商业医保 <code>PBM Copay Maximizer</code> 将特药划为非基本福利（Non-EHB）试图吸干药厂 <code>$15,000</code> 患者援助金且不计入患者个人免赔额（<code>ACA OOP Max = $0</code>），或高价值 <code>2°C–8°C</code> 生物制剂未获患者未来 48 小时居家签收确认即盲目自动发货，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rx_oig_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 OIG_ANTI_KICKBACK_GOVERNMENT_PAYER_OR_URAC_ACCREDITATION_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NCPDP BIN/PCN</code> 发现受助患者为 <code>Medicare Part D / Medicaid</code> 联邦医疗保险参保人（使用商业共付卡违反《联邦反回扣法 <code>42 U.S.C. § 1320a-7b</code>》），或特药药房缺失有效 <code>URAC / ACHC</code> 认证，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rx_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DIRECT_PATIENT_OOP_REBATE_AND_ZERO_ABANDONMENT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>患者实付后直退专户护盾 (Direct-to-Patient OOP Rebate) + 48h 冷链预约零失温弃单锁</code>，彻底绕开 PBM Maximizer 截留并消灭门口暴晒废药，单批防损/立省 <code>$67,200.00</code>（净清算支出优化至 <code>$772,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧬 FDA REMS ETASU 授权与 7日化验合格 + 防 Maximizer 护盾 + 48h 冷链确认通过：已自动清算 (VERIFIED_SPECIALTY_PHARMACY_REMS_DISPENSE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零无证违规发药重罚、零药厂援助金被 PBM 吸干与 $25k 生物药门口失温报废</strong>：智能体特药药房调配与援助批次已完成安全清算（<code>$840,000.00</code>）！" +
     "</div>";
 }}
 
