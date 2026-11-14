@@ -14699,6 +14699,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-telecom-sip-stir-shaken-a2p-sandbox", demo_zh)
 
+    def test_b2b_aviation_aog_mro_8130_traceability_core_escrow_mandate_vs_unapproved_sup_part_core_loss_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_aviation_aog_mro_rotable_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Digital 8130-3 + LLP BtB + non-BER core + FAA UPN clean ($680,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_aviation_aog_mro_rotable_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_aog_mro_batch_cents, 68000000)
+
+        # 2. Forged PDF 8130-3, SUP suspect part, or broken LLP Back-to-Birth log -> 403 Blocked
+        sup_403 = evaluate_b2b_aviation_aog_mro_rotable_policy(
+            faa_8130_3_digital_sig_and_llp_back_to_birth_verified=False,
+        )
+        self.assertFalse(sup_403.allowed)
+        self.assertEqual(sup_403.http_status, 403)
+        self.assertEqual(
+            sup_403.decision_code,
+            "UNAPPROVED_SUSPECT_PART_SUP_OR_FORGED_FAA_8130_3_BLOCKED",
+        )
+
+        # 3. Returned core judged BER scrap on bench teardown or serial swapped -> 422 Blocked
+        ber_422 = evaluate_b2b_aviation_aog_mro_rotable_policy(
+            core_exchange_bench_teardown_non_ber_verified=False,
+        )
+        self.assertFalse(ber_422.allowed)
+        self.assertEqual(ber_422.http_status, 422)
+        self.assertEqual(
+            ber_422.decision_code,
+            "BER_SCRAP_CORE_RETURN_OR_SERIAL_MISMATCH_ESCROW_FORFEITED",
+        )
+
+        # 4. FAA UPN bulletin hit, open AD directive, or non-ASA-100 broker -> 451 Hold
+        upn_451 = evaluate_b2b_aviation_aog_mro_rotable_policy(
+            webiq_faa_upn_ad_and_asa100_clean=False,
+        )
+        self.assertFalse(upn_451.allowed)
+        self.assertEqual(upn_451.http_status, 451)
+
+        # 5. Web IQ on-airport IATP rotable pool share & core escrow saving $54,400 ($625,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_aviation_aog_mro_rotable_policy(
+            iatp_rotable_pool_share_and_core_escrow_savings_cents=5440000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_aog_mro_batch_cents, 62560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_aviation_aog_mro_rotable_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-aviation-aog-mro-rotable-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

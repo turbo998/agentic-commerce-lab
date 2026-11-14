@@ -1280,6 +1280,11 @@
     "b2b_telecom_sip_stir_shaken_a2p_settlement_latency_ms": 10,
     "irsf_ait_sms_pumping_block_latency_ms": 11
   },
+  "b2b_aviation_aog_mro_rotable_guards": {
+    "all_passed": true,
+    "b2b_aviation_aog_mro_rotable_settlement_latency_ms": 10,
+    "sup_forged_8130_3_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
