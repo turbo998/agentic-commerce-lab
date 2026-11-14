@@ -1375,6 +1375,11 @@
     "b2b_oilfield_jib_settlement_latency_ms": 10,
     "afe_overrun_block_latency_ms": 11
   },
+  "b2b_cloud_marketplace_private_offer_guards": {
+    "all_passed": true,
+    "b2b_cloud_marketplace_private_offer_settlement_latency_ms": 10,
+    "macc_edp_drawdown_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

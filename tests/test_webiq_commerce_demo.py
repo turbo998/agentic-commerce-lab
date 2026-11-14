@@ -15797,6 +15797,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-oilfield-joint-interest-billing-sandbox", demo_zh)
 
+    def test_b2b_cloud_marketplace_private_offer_edp_macc_drawdown_mpo_vs_zero_drawdown_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_cloud_marketplace_private_offer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 100% MACC/EDP Benefit-Eligible Plan ID + MPO wholesale floor + idempotent metering -> 200 OK ($800,000.00)
+        ok_res = evaluate_b2b_cloud_marketplace_private_offer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CLOUD_MARKETPLACE_PRIVATE_OFFER_SETTLED")
+        self.assertEqual(ok_res.settled_marketplace_private_offer_cents, 80000000)
+
+        # 2. Non-eligible BYOL/unbadged SKU or exhausted third-party subcap causing 0% MACC/EDP drawdown -> 403 Blocked
+        drw_403 = evaluate_b2b_cloud_marketplace_private_offer_policy(
+            plan_id_100pct_macc_edp_drawdown_eligible_and_subcap_available_verified=False,
+        )
+        self.assertFalse(drw_403.allowed)
+        self.assertEqual(drw_403.http_status, 403)
+        self.assertEqual(
+            drw_403.decision_code,
+            "NON_ELIGIBLE_MARKETPLACE_OFFER_ZERO_MACC_EDP_COMMIT_DRAWDOWN_BLOCKED",
+        )
+
+        # 3. CPPO/MPO channel discount stacking below ISV wholesale floor or double direct+channel commission -> 422 Blocked
+        flr_422 = evaluate_b2b_cloud_marketplace_private_offer_policy(
+            cppo_mpo_isv_wholesale_floor_and_single_cosale_commission_verified=False,
+        )
+        self.assertFalse(flr_422.allowed)
+        self.assertEqual(flr_422.http_status, 422)
+        self.assertEqual(
+            flr_422.decision_code,
+            "CPPO_MPO_WHOLESALE_FLOOR_BREACH_OR_DOUBLE_COSALE_COMMISSION",
+        )
+
+        # 4. Duplicate Marketplace Metering API retry spike or post-expiry +65% public list price cliff -> 451 Hold
+        mtr_451 = evaluate_b2b_cloud_marketplace_private_offer_policy(
+            webiq_idempotent_metering_api_and_no_post_expiry_public_price_cliff_clean=False,
+        )
+        self.assertFalse(mtr_451.allowed)
+        self.assertEqual(mtr_451.http_status, 451)
+
+        # 5. Web IQ expiring MACC/EDP surplus swap & flexible MPO billing schedule saving $64,000 ($736,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_cloud_marketplace_private_offer_policy(
+            expiring_macc_edp_surplus_swap_and_mpo_flexible_schedule_savings_cents=6400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_marketplace_private_offer_cents, 73600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_cloud_marketplace_private_offer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cloud-marketplace-private-offer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
