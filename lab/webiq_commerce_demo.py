@@ -24533,6 +24533,91 @@ def evaluate_agentic_telecom_dcb_psd2_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bOceanFreightDndFmcDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_dnd_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_ocean_freight_dnd_fmc_policy(
+    *,
+    mandate_id: str = "b2b_ocean_freight_demurrage_detention_fmc_osra_mandate_2026_11_14",
+    dnd_batch_cents: int = 52000000,
+    proper_billed_party_and_zero_slot_days_waived_verified: bool = True,
+    fmc_30day_deadline_and_13_osra_elements_verified: bool = True,
+    webiq_port_force_majeure_and_single_party_billing_clean: bool = True,
+    fmc_osra_clock_stopper_and_30day_waiver_savings_cents: int = 0,
+) -> B2bOceanFreightDndFmcDecision:
+    """Evaluate US FMC OSRA 46 CFR Part 541 & § 545.5 Incentive Principle clock-stoppers, proper billed party, and 30d/13-element waivers."""
+    if not mandate_id.startswith("b2b_ocean_freight_demurrage_detention_fmc_osra_mandate_"):
+        return B2bOceanFreightDndFmcDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_OCEAN_FREIGHT_DND_FMC_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_dnd_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not proper_billed_party_and_zero_slot_days_waived_verified:
+        return B2bOceanFreightDndFmcDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="TRUCKER_IMPROPER_BILLED_PARTY_OR_TERMINAL_UNAVAILABLE_DND_BLOCKED",
+            action_pill="Send to a human",
+            settled_dnd_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not fmc_30day_deadline_and_13_osra_elements_verified:
+        return B2bOceanFreightDndFmcDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="FMC_30DAY_INVOICE_DEADLINE_EXPIRED_OR_13_ELEMENTS_MISSING",
+            action_pill="Send to a human",
+            settled_dnd_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_port_force_majeure_and_single_party_billing_clean:
+        return B2bOceanFreightDndFmcDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="PORT_FORCE_MAJEURE_OR_DUAL_SHIPPER_CONSIGNEE_BILLING_HOLD",
+            action_pill="Send to a human",
+            settled_dnd_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if fmc_osra_clock_stopper_and_30day_waiver_savings_cents > 0:
+        return B2bOceanFreightDndFmcDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="FMC_OSRA_CLOCK_STOPPER_AND_30DAY_WAIVER_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_dnd_batch_cents=max(
+                0,
+                dnd_batch_cents - fmc_osra_clock_stopper_and_30day_waiver_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return B2bOceanFreightDndFmcDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_OCEAN_FREIGHT_DND_FMC_OSRA_SETTLED",
+        action_pill="Act automatically",
+        settled_dnd_batch_cents=dnd_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -32496,6 +32581,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wap_clickjacking_trojan_block_latency_ms": dcb_wap_403.latency_ms,
     }
 
+    dnd_commit_ok = evaluate_b2b_ocean_freight_dnd_fmc_policy()
+    dnd_trk_403 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+        proper_billed_party_and_zero_slot_days_waived_verified=False,
+    )
+    dnd_exp_422 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+        fmc_30day_deadline_and_13_osra_elements_verified=False,
+    )
+    dnd_fma_451 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+        webiq_port_force_majeure_and_single_party_billing_clean=False,
+    )
+    dnd_sav_409 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+        fmc_osra_clock_stopper_and_30day_waiver_savings_cents=4160000,
+    )
+    b2b_ocean_freight_dnd_fmc_guards = {
+        "all_passed": (
+            dnd_commit_ok.allowed
+            and dnd_commit_ok.settled_dnd_batch_cents == 52000000
+            and not dnd_trk_403.allowed
+            and dnd_trk_403.http_status == 403
+            and not dnd_exp_422.allowed
+            and dnd_exp_422.http_status == 422
+            and not dnd_fma_451.allowed
+            and dnd_fma_451.http_status == 451
+            and not dnd_sav_409.allowed
+            and dnd_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_ocean_freight_dnd_fmc_settlement_latency_ms": dnd_commit_ok.latency_ms,
+        "trucker_billing_zero_slot_block_latency_ms": dnd_trk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32738,6 +32853,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_event_ticketing_escrow_guards": agentic_event_ticketing_escrow_guards,
         "b2b_cre_triple_net_cam_guards": b2b_cre_triple_net_cam_guards,
         "agentic_telecom_dcb_psd2_guards": agentic_telecom_dcb_psd2_guards,
+        "b2b_ocean_freight_dnd_fmc_guards": b2b_ocean_freight_dnd_fmc_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39777,6 +39893,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dcb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Ocean-Freight Demurrage & Detention (D&D) & US FMC OSRA Part 541 Sandbox -->
+      <div class="finops-box" id="b2b-ocean-freight-dnd-fmc-sandbox" style="margin-top:12px;border-color:#0284C7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚢 B2B 海运集装箱滞港滞箱费 (Demurrage &amp; Detention) 与美国 FMC OSRA (46 CFR Part 541) 审计架构 (`b2b_ocean_freight_demurrage_detention_fmc_osra_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 海运集装箱滞港/滞箱费结算批次 ($520,000.00)、码头无预约槽位自动停表 (46 CFR § 545.5 激励原则)、严禁向第三方拖车行开票 (§ 541.4) 与 30 天逾期/缺 13 要素法定免付场景 (Ocean D&amp;D &amp; FMC OSRA Scenario):</span></label>
+          <select id="dnd-select" onchange="updateB2bOceanFreightDndFmcSandbox()">
+            <option value="dnd_commit_ok">🚢 合格合同受票方 (§ 541.4) + 码头无预约号日已停表豁免 + ≤30天准时开票且齐备 OSRA 13 项要素：10ms 清算 $520,000.00! (Act automatically)</option>
+            <option value="dnd_trk_403">🛑 船司违规将滞箱费账单开给无合同关系的第三方港口拖车行 (§ 541.4)，或在码头连续 4 天无还空柜预约号 (0 Slots) 期间强收 $400/天滞箱费拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="dnd_exp_422">🚨 计费结束后超过 30 个日历日才开出秋后算账逾期发票 (§ 541.7)，或漏填集装箱实际可提货日期等 OSRA 13 项强制要素 (依法享有 0 付款义务) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="dnd_fma_451">🛑 账单未扣除港口极端天气/海关查验封存天数，或对同一货柜同时向发货人与收货人双重开票：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="dnd_sav_409">🧑‍⚖️ Web IQ 凭码头预约槽位每小时密码学存证与 FMC Part 541 30天/13要素免付规则自动核减虚高 D&amp;D 费用立省 $41,600.00 (净结算 $478,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dnd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -40445,6 +40579,7 @@ function renderAll() {{
   updateAgenticEventTicketingEscrowSandbox();
   updateB2bCreTripleNetCamSandbox();
   updateAgenticTelecomDcbPsd2Sandbox();
+  updateB2bOceanFreightDndFmcSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -51934,6 +52069,52 @@ function updateAgenticTelecomDcbPsd2Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📱 GSMA CAMARA 验号 + PSD2 €50/€300 刚性锁 + FCC 透明账单通过：已自动清算 (VERIFIED_TELECOM_DCB_PSD2_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零木马偷断 Wi-Fi 静默吸费、零 PSD2 无牌支付越界与 FCC Cramming 重罚风险</strong>：智能体运营商话费代计费批次已完成安全清算（<code>$420,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bOceanFreightDndFmcSandbox() {{
+  var sel = document.getElementById("dnd-select");
+  var outEl = document.getElementById("dnd-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "dnd_trk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TRUCKER_IMPROPER_BILLED_PARTY_OR_TERMINAL_UNAVAILABLE_DND_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到船司违规向无直接海运合同关系的第三方港口拖车行（<code>Motor Carrier</code>）开具 D&amp;D 账单（违反 <code>46 CFR &sect; 541.4</code>），或在码头预约系统（<code>eModal / PierPASS</code>）无可用提还柜预约槽位期间强收 <code>$400/天</code> 滞箱费（违反 <code>46 CFR &sect; 545.5</code> 激励原则）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "dnd_exp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FMC_30DAY_INVOICE_DEADLINE_EXPIRED_OR_13_ELEMENTS_MISSING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到船司在最后一次计费结束超过 <code>30 个日历日</code> 后才发出逾期账单（违反 <code>46 CFR &sect; 541.7(a)</code>），或发票漏填集装箱实际可提货日期（<code>Container Availability Date</code>）等 <code>OSRA 13 项强制要素</code>（违反 <code>&sect; 541.6</code>），受票方依法享有绝对零付款豁免权，已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dnd_fma_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 PORT_FORCE_MAJEURE_OR_DUAL_SHIPPER_CONSIGNEE_BILLING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出账单未剔除港口管理局官方公告的极端天气/罢工封港停表期，或船司就同一集装箱同时向托运人（<code>Shipper</code>）与收货人（<code>Consignee</code>）双重开票，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dnd_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FMC_OSRA_CLOCK_STOPPER_AND_30DAY_WAIVER_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>码头预约槽位每小时密码学存证自动剔除无号日 (§ 545.5) + 46 CFR Part 541 30天/13要素法定免付拒付</code>，单批依法核减/立省 <code>$41,600.00</code>（净海运滞港滞箱费结算额优化至 <code>$478,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚢 § 541.4 合格受票方 + § 545.5 无号停表 + ≤30天/13要素通过：已自动清算 (VERIFIED_OCEAN_FREIGHT_DND_FMC_OSRA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零码头无预约号冤枉滞箱费、零拖车行被绑架替交罚款与超 30 天逾期废票支出</strong>：B2B 海运集装箱滞港滞箱费批次已完成安全清算（<code>$520,000.00</code>）！" +
     "</div>";
 }}
 

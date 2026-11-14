@@ -14061,6 +14061,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-telecom-dcb-psd2-sandbox", demo_zh)
 
+    def test_b2b_ocean_freight_demurrage_detention_fmc_osra_mandate_vs_port_congestion_trucker_billing_fine_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_ocean_freight_dnd_fmc_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Proper billed party + 0-slot days waived + <=30d & 13 OSRA elements ($520,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_ocean_freight_dnd_fmc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_dnd_batch_cents, 52000000)
+
+        # 2. Improperly billed third-party drayage trucker or 0-slot terminal days billed -> 403 Blocked
+        trk_403 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+            proper_billed_party_and_zero_slot_days_waived_verified=False,
+        )
+        self.assertFalse(trk_403.allowed)
+        self.assertEqual(trk_403.http_status, 403)
+        self.assertEqual(
+            trk_403.decision_code,
+            "TRUCKER_IMPROPER_BILLED_PARTY_OR_TERMINAL_UNAVAILABLE_DND_BLOCKED",
+        )
+
+        # 3. Invoice issued >30 calendar days late or missing 13 OSRA mandatory elements -> 422 Blocked
+        exp_422 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+            fmc_30day_deadline_and_13_osra_elements_verified=False,
+        )
+        self.assertFalse(exp_422.allowed)
+        self.assertEqual(exp_422.http_status, 422)
+        self.assertEqual(
+            exp_422.decision_code,
+            "FMC_30DAY_INVOICE_DEADLINE_EXPIRED_OR_13_ELEMENTS_MISSING",
+        )
+
+        # 4. Unwaived port weather/strike force majeure or dual Shipper+Consignee billing -> 451 Hold
+        fma_451 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+            webiq_port_force_majeure_and_single_party_billing_clean=False,
+        )
+        self.assertFalse(fma_451.allowed)
+        self.assertEqual(fma_451.http_status, 451)
+
+        # 5. Web IQ applies 0-slot clock-stoppers & 30d/13-element statutory waivers saving $41,600 ($478,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_ocean_freight_dnd_fmc_policy(
+            fmc_osra_clock_stopper_and_30day_waiver_savings_cents=4160000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_dnd_batch_cents, 47840000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_ocean_freight_dnd_fmc_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ocean-freight-dnd-fmc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
