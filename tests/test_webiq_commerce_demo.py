@@ -14757,6 +14757,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-aviation-aog-mro-rotable-sandbox", demo_zh)
 
+    def test_b2b_duty_drawback_ftz_inverted_tariff_first_sale_mandate_vs_unrecovered_tariff_double_claim_fine_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_duty_drawback_ftz_tariff_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Unique 7501-EEI lock + First-Sale factory price + FTZ & CBP clean ($790,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_duty_drawback_ftz_tariff_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_customs_drawback_batch_cents, 79000000)
+
+        # 2. Duplicate drawback claim on CBP 7501 line or unlinked AES EEI export -> 403 Blocked
+        dup_403 = evaluate_b2b_duty_drawback_ftz_tariff_policy(
+            ace_import_7501_to_export_eei_vin_lot_unique_lock_verified=False,
+        )
+        self.assertFalse(dup_403.allowed)
+        self.assertEqual(dup_403.http_status, 403)
+        self.assertEqual(
+            dup_403.decision_code,
+            "DUPLICATE_DUTY_DRAWBACK_CLAIM_OR_UNLINKED_7501_EEI_FRAUD_BLOCKED",
+        )
+
+        # 3. Taxed on 35% middleman markup instead of First-Sale or inverted FTZ NPF/PF status -> 422 Blocked
+        fsl_422 = evaluate_b2b_duty_drawback_ftz_tariff_policy(
+            first_sale_factory_tier_arm_length_and_ftz_inverted_election_verified=False,
+        )
+        self.assertFalse(fsl_422.allowed)
+        self.assertEqual(fsl_422.http_status, 422)
+        self.assertEqual(
+            fsl_422.decision_code,
+            "MIDDLEMAN_MARKUP_DUTY_OVERPAYMENT_OR_FTZ_PRIVILEGED_FOREIGN_MISMATCH",
+        )
+
+        # 4. CBP CROSS ruling revocation, >5yr expired entry, or USMCA Art. 2.5 breach -> 451 Hold
+        cbp_451 = evaluate_b2b_duty_drawback_ftz_tariff_policy(
+            webiq_cbp_cross_ruling_and_usmca_article_2_5_lesser_duty_clean=False,
+        )
+        self.assertFalse(cbp_451.allowed)
+        self.assertEqual(cbp_451.http_status, 451)
+
+        # 5. Web IQ FTZ Weekly Entry MPF cap & 99% drawback recovery saving $63,200 ($726,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_duty_drawback_ftz_tariff_policy(
+            ftz_weekly_entry_mpf_cap_and_99pct_drawback_recovery_savings_cents=6320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_customs_drawback_batch_cents, 72680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_duty_drawback_ftz_tariff_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-duty-drawback-ftz-tariff-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

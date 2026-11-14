@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#EC4899" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="248" height="26" rx="13" fill="#831843" stroke="#EC4899" stroke-width="1"/>
+  <text x="170" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#FCE7F3" text-anchor="middle">2026-11-14 · ROUND 243 · SPECIALTY PHARMACY</text>
+  <text x="310" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">智能体特药药房 (Specialty Pharmacy)：FDA REMS 授权、防 Maximizer 截留与冷链排期架构</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">FDA REMS ETASU Lab Gate, Anti-Copay-Maximizer OOP Shield &amp; 48h Cold-Chain Lock vs. Misbranding Fines &amp; $25k Spoiled Biologics</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#F472B6">Mandate Token: agentic_specialty_pharmacy_rems_cold_dispense_copay_mandate_2026_11_14 · Batch: $840,000.00 · Net Optimized: $772,800.00 (-$67,200.00)</text>
+
+  <!-- Left Column: Legacy Specialty Pharmacy Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“到期自动续寄 + 盲刷药厂共付卡”（四大违法与资金黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why Cron Auto-Refills &amp; Unchecked PBM Cobilling Trigger FDA Fines &amp; $25k Biologic Spoilage</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. 未核验 FDA REMS ETASU 授权码与 7 日内化验单直接违规发药</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 高致畸/粒细胞缺乏风险特药必须凭近 7 天阴性妊娠或血常规 (ANC) 换取 REMS 授权码方可调配。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• AI 按普通慢病到期自动续寄，直接违反 21 U.S.C. § 355-1 沦为非法假劣药，面临吊销执照重罚！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. PBM 共付额最大化器 (Copay Maximizer) 吸干药厂 $15,000 患者援助金</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• PBM 将特药划为非基本福利 (Non-EHB)，故意把患者月自付调高至 $2,500 吸干药厂援助卡上限。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 药厂付出的 $15,000 补贴完全不计入患者年度免赔额 (OOP Max = $0)，半年后患者因无力自付断药！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 未确认患者 48h 居家签收盲目寄出 $25,000 冷链生物制剂</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 单支上万美元的 2°C–8°C 单抗/基因药物一旦寄出即不可退回重售；患者出差无人签收放在门口。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 冰排融化后蛋白质在 4 小时内热变性失活，整箱 $25,000 救命药彻底报废！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 误向 Medicare Part D / Medicaid 患者发放商业共付卡触发反回扣法重罪</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 未穿透核查双保 (Dual-Eligible) 患者的联邦医保 BIN/PCN，违规使用药厂商业补贴卡抵扣。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 触犯美国《反回扣法 (AKS 42 U.S.C. § 1320a-7b)》与《虚假申报法》，面临司法部数亿美元罚单！</text>
+
+  <!-- Right Column: REMS + Anti-Maximizer + Cold-Chain Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ FDA REMS 强门禁 + 防 Maximizer 护盾 + 48h 冷链锁 + Web IQ</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">Cryptographic REMS Lab Lock, Direct-to-Patient OOP Rebate &amp; HHS-OIG Compliance</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. NCPDP FDA REMS ETASU 授权码与 &lt;=7 天化验指标硬门禁 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 强制绑定认证处方医生 NPI、患者知情编号、近 7 日合格化验单 (ANC/hCG/LFT) 与 REMS 授权号。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 任何缺失 REMS 授权或化验超期的调配请求，11ms 硬拦截 (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. 防 PBM Maximizer 患者直退护盾与 48h 居家冷链双签锁 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-serif" font-size="12" fill="#E2E8F0">• 识别 Maximizer 计划自动切换为患者本人实付后直退专户 (DTP Rebate)，100% 计入患者免赔额。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 2°C–8°C 生物制剂必须获患者未来 48h 在家签收确认后方才出库，14ms 阻断盲寄 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 筛查联邦医保反回扣法 (AKS) 与 URAC (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 核验 NCPDP BIN/PCN 排除 Medicare Part D / Medicaid / TRICARE 参保人。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 同步核验特药药房 URAC / ACHC 认证活性，违规补贴立即触发合规挂起 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. 患者直退 OOP 护盾与冷链预约零失温弃单立省 $67,200 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 拦截 PBM 隐性截留并实现 100% 预约首派妥投，消除高价生物药失温报废与援助金穿仓。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $840,000.00 特药与援助批次上单批防损/立省 $67,200.00 (净结算 $772,800.00 · HTTP 409)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#EC4899" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $840,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_agentic_specialty_pharmacy_rems_policy`) + Microsoft Web IQ `/v3/browse` HHS-OIG AKS &amp; URAC Gate</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F472B6">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">rx_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">FDA REMS 授权与 7日化验合格 + 防 Maximizer + 48h 冷链确认 ($840k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_SPECIALTY_PHARMACY_REMS_DISPENSE_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">rx_rem_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">缺失 FDA REMS ETASU 授权码或患者近 7 日血象/妊娠化验未完成</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 FDA_REMS_ETASS_UNVERIFIED_OR_MISSING_LAB_SAFETY_CHECK_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">rx_max_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">命中 PBM Copay Maximizer 吸干援助金或未获患者 48h 冷链收货确认</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 PBM_COPAY_MAXIMIZER_ASSISTANCE_DRAIN_OR_UNCONFIRMED_COLD_SHIP_BLOCKED</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">rx_oig_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">患者属 Medicare Part D / Medicaid 触发反回扣法红线或缺 URAC 认证</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 OIG_ANTI_KICKBACK_GOVERNMENT_PAYER_OR_URAC_ACCREDITATION_HOLD</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">rx_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用患者直退 OOP 护盾与冷链预约零弃单立省 $67,200 ($772.8k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 DIRECT_PATIENT_OOP_REBATE_AND_ZERO_ABANDONMENT_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>

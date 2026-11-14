@@ -5148,6 +5148,24 @@
         <div id="aog-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Cross-Border Duty Drawback, FTZ Inverted-Tariff & First-Sale Sandbox -->
+      <div class="finops-box" id="b2b-duty-drawback-ftz-tariff-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛃 B2B 跨境退税 (Duty Drawback)、FTZ 倒挂关税与 First-Sale 首层出厂价 (`b2b_duty_drawback_ftz_inverted_tariff_first_sale_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 跨境关税与 TFTEA 退税批次 ($790,000.00)、7501-EEI 唯一额度锁、First-Sale 一手出厂价/FTZ 倒挂与 CBP CROSS 场景 (Duty Drawback &amp; FTZ Scenario):</span></label>
+          <select id="drw-select" onchange="updateB2bDutyDrawbackFtzTariffSandbox()">
+            <option value="drw_commit_ok">🛃 CBP 7501 与 AES EEI 唯一绑定 + First-Sale 首层出厂价 + FTZ 与 USMCA 合规：10ms 清算 $790,000.00! (Act automatically)</option>
+            <option value="drw_dup_403">🛑 上下游对同一张 CBP Form 7501 报关行项重复申领 99% 退税 (Double-Claiming 触发 19 USC 1593a 300% 罚款) 或缺 AES 离境号拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="drw_fsl_422">🚨 忽略首次销售原则 (First-Sale Rule) 直接按贸易中间商加价 35% 后的发票多交关税或在 FTZ 保税区内选反 NPF/PF 倒挂税率 → 14ms 触发 HTTP 422!</option>
+            <option value="drw_cbp_451">🛑 复出口至加墨违反 USMCA Art. 2.5 孰低规则、超 5 年 TFTEA 追溯期或命中 CBP CROSS 撤销裁定：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="drw_sav_409">🧑‍⚖️ Web IQ 启用 FTZ 每周合并报关 (Weekly Entry) 封顶 $614.35 MPF 处理费并自动追回 99% 出口退税立省 $63,200.00 (净结算 $726,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="drw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5828,6 +5846,7 @@ function renderAll() {
   updateAgenticLuxuryCollectibleAuthEscrowSandbox();
   updateB2bTelecomSipStirShakenA2pSandbox();
   updateB2bAviationAogMroRotableSandbox();
+  updateB2bDutyDrawbackFtzTariffSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17869,6 +17888,52 @@ function updateB2bAviationAogMroRotableSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>✈️ ATA Spec 2000 数字 8130-3 验签 + LLP 履历闭合 + 旧件非 BER 通过：已自动清算 (VERIFIED_AVIATION_AOG_MRO_ROTABLE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零假适航证 SUP 导致机队停飞拆发、零报废旧件骗退 $95k 押金与 AOG 黄牛宰客</strong>：B2B 航空 AOG 航材与工业 MRO 周转件批次已完成安全清算（<code>$680,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bDutyDrawbackFtzTariffSandbox() {
+  var sel = document.getElementById("drw-select");
+  var outEl = document.getElementById("drw-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "drw_dup_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DUPLICATE_DUTY_DRAWBACK_CLAIM_OR_UNLINKED_7501_EEI_FRAUD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到同一笔进口报关单行项（<code>CBP Form 7501 Entry Line</code>）被上下游重复申领 <code>19 U.S.C. § 1313</code> 99% 退税，或缺失退税权独占转让证书（<code>Certificate of Delivery</code>）及 <code>AES EEI ITN</code> 出口离境实绩（违反 <code>19 U.S.C. § 1593a</code> 最高面临 300% 罚款）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "drw_fsl_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MIDDLEMAN_MARKUP_DUTY_OVERPAYMENT_OR_FTZ_PRIVILEGED_FOREIGN_MISMATCH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "报关单忽略《首次销售原则（<code>Nissho Iwai First-Sale Rule</code>）》直接按离岸贸易中间商加价 35% 后的发票申报完税价格，或在对外贸易区（<code>FTZ</code>）倒挂关税场景下选反了 <code>NPF / PF</code> 状态导致多缴高额零件税，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "drw_cbp_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CBP_CROSS_RULING_REVOCATION_OR_USMCA_ART25_DOUBLE_DIP_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出目标 8 位 <code>HTS</code> 税号命中 <code>CBP CROSS</code> 撤销替代退税裁定、超出 <code>TFTEA</code> 5 年追溯窗口，或复出口至加拿大/墨西哥时未执行 <code>USMCA Article 2.5</code> 两国税率孰低扣减规则，已在 280ms 内触发合规挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "drw_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FTZ_WEEKLY_ENTRY_MPF_CAP_AND_99PCT_DRAWBACK_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>FTZ 每周合并报关 (Weekly Entry 封顶 $614.35 MPF 处理费) + 99% TFTEA 出口退税自动追回</code>，消除逐柜重复交费与退税过期流失，单批追回/立省 <code>$63,200.00</code>（净税费支出优化至 <code>$726,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛃 CBP 7501-EEI 唯一绑定 + First-Sale 首层出厂价 + FTZ 倒挂择优通过：已自动清算 (VERIFIED_DUTY_DRAWBACK_FTZ_FIRST_SALE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零一单两退触发 300% 海关重罚、零替中间商加价多交 35% 冤枉税与 99% 退税打水漂</strong>：B2B 跨境退税与 FTZ 保税批次已完成安全清算（<code>$790,000.00</code>）！" +
     "</div>";
 }
 
