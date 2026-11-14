@@ -22968,6 +22968,96 @@ def evaluate_agentic_price_match_guarantee_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 212: Agentic EV Charging ISO 15118, OCMF Metering & $175 AFD 0420 Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticEvChargingOcpiVerdict:
+    allowed: bool
+    http_status: int
+    ev_charging_lane: str
+    settled_ev_charging_batch_cents: int
+    ev_tou_and_mcc5552_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_ev_charging_ocpi_policy(
+    *,
+    gross_ev_charging_batch_cents: int = 38000000,
+    iso15118_emaid_cert_and_instant_0420_175usd_hold_reversal_verified: bool = True,
+    ocmf_hardware_meter_signature_and_capped_idle_fee_valid: bool = True,
+    webiq_tou_tariff_boundary_and_mcc5552_rule_clean: bool = True,
+    off_peak_tou_routing_and_mcc5552_interchange_savings_cents: int = 0,
+) -> AgenticEvChargingOcpiVerdict:
+    # 1. Static QR Sticker Phishing (Quishing) or Unreversed $175 AFD Pre-Auth Hold -> HTTP 403
+    if not iso15118_emaid_cert_and_instant_0420_175usd_hold_reversal_verified:
+        return AgenticEvChargingOcpiVerdict(
+            False,
+            403,
+            "QR_QUISHING_UNTRUSTED_OR_AFD_175USD_HOLD_UNREVERSED_BLOCKED",
+            0,
+            0,
+            "ev_charging_session_blocked_due_to_untrusted_qr_quishing_or_unreversed_175usd_afd_hold",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Unsigned Software-Estimated kWh (Eichrecht Breach) or Uncapped Idle Fee -> HTTP 422
+    if not ocmf_hardware_meter_signature_and_capped_idle_fee_valid:
+        return AgenticEvChargingOcpiVerdict(
+            False,
+            422,
+            "UNSIGNED_OCMF_METER_DRIFT_OR_UNCAPPED_IDLE_FEE_REJECTED",
+            0,
+            0,
+            "ocpi_cdr_rejected_for_missing_ocmf_dc_meter_ecdsa_signature_or_uncapped_idle_fee",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Miscalculated Peak/Off-Peak TOU Boundary or MCC 5552 Violation via Web IQ -> HTTP 451
+    if not webiq_tou_tariff_boundary_and_mcc5552_rule_clean:
+        return AgenticEvChargingOcpiVerdict(
+            False,
+            451,
+            "TOU_TARIFF_BOUNDARY_OR_MCC5552_RULE_HOLD",
+            0,
+            0,
+            "webiq_detected_tou_peak_offpeak_boundary_drift_or_mcc5552_afd_disclosure_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Off-Peak TOU Fleet Routing + MCC 5552 Small-Ticket Interchange -> HTTP 409 Confirm
+    if off_peak_tou_routing_and_mcc5552_interchange_savings_cents > 0:
+        return AgenticEvChargingOcpiVerdict(
+            False,
+            409,
+            "EV_ISO15118_TOU_ARBITRAGE_AND_MCC5552_SAVINGS_CONFIRM",
+            gross_ev_charging_batch_cents - off_peak_tou_routing_and_mcc5552_interchange_savings_cents,
+            off_peak_tou_routing_and_mcc5552_interchange_savings_cents,
+            "webiq_enabled_offpeak_tou_routing_and_mcc5552_interchange_saving_30400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified ISO 15118 EMAID + Instant 0420 $175 Hold Release + Signed OCMF -> Settled
+    return AgenticEvChargingOcpiVerdict(
+        True,
+        200,
+        "VERIFIED_EV_CHARGING_OCPI_ISO15118_SETTLED",
+        gross_ev_charging_batch_cents,
+        0,
+        "ev_charging_iso15118_emaid_ocmf_signed_meter_and_0420_afd_reversal_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -30396,6 +30486,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "f12_screenshot_spoof_block_latency_ms": pmg_scr_403.latency_ms,
     }
 
+    # Round 212 (Agentic EV Charging ISO 15118, OCMF Metering & $175 AFD 0420 Mandate)
+    evc_commit_ok = evaluate_agentic_ev_charging_ocpi_policy()
+    evc_qsh_403 = evaluate_agentic_ev_charging_ocpi_policy(
+        iso15118_emaid_cert_and_instant_0420_175usd_hold_reversal_verified=False,
+    )
+    evc_ocm_422 = evaluate_agentic_ev_charging_ocpi_policy(
+        ocmf_hardware_meter_signature_and_capped_idle_fee_valid=False,
+    )
+    evc_tou_451 = evaluate_agentic_ev_charging_ocpi_policy(
+        webiq_tou_tariff_boundary_and_mcc5552_rule_clean=False,
+    )
+    evc_sav_409 = evaluate_agentic_ev_charging_ocpi_policy(
+        off_peak_tou_routing_and_mcc5552_interchange_savings_cents=3040000,
+    )
+    agentic_ev_charging_ocpi_guards = {
+        "all_passed": (
+            evc_commit_ok.allowed
+            and evc_commit_ok.settled_ev_charging_batch_cents == 38000000
+            and not evc_qsh_403.allowed
+            and evc_qsh_403.http_status == 403
+            and not evc_ocm_422.allowed
+            and evc_ocm_422.http_status == 422
+            and not evc_tou_451.allowed
+            and evc_tou_451.http_status == 451
+            and not evc_sav_409.allowed
+            and evc_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_ev_charging_ocpi_settlement_latency_ms": evc_commit_ok.latency_ms,
+        "qr_quishing_or_unreversed_hold_block_latency_ms": evc_qsh_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30620,6 +30741,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_creator_payout_1099k_w8ben_guards": agentic_creator_payout_1099k_w8ben_guards,
         "agentic_iap_web_out_guards": agentic_iap_web_out_guards,
         "agentic_price_match_guarantee_guards": agentic_price_match_guarantee_guards,
+        "agentic_ev_charging_ocpi_guards": agentic_ev_charging_ocpi_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37335,6 +37457,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pmg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic EV Charging ISO 15118, OCMF Metering & $175 AFD 0420 Sandbox (Round 212 FAQ Companion) -->
+      <div class="finops-box" id="agentic-ev-charging-ocpi-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-evc-title">⚡ 智能体新能源车机充电 (MCC 5552) ISO 15118 即插即充与 OCMF 清算：EMAID 证书防假二维码、电表签名与 $175 预授权 0420 秒解冻令牌 (agentic_ev_charging_ocpi_iso15118_afd_mandate_...) vs 锁卡一周与钓鱼决策器 (Round 212 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 新能源车机充电与漫游结算批次 ($380,000.00)、ISO 15118 EMAID 硬件证书握手、直流电表 OCMF ECDSA 签名与拔枪 $175 预授权 0420 秒冲正场景 (EV Charging ISO 15118 &amp; OCMF Scenario):</span></label>
+          <select id="evc-select" onchange="updateAgenticEvChargingOcpiSandbox()">
+            <option value="evc_commit_ok">⚡ ISO 15118 EMAID 证书握手 + 拔枪 0420 3秒解冻 $175 预授权 + 直流电表 OCMF 硬件签名有效：10ms 清算 $380,000.00! (Act automatically)</option>
+            <option value="evc_qsh_403">🛑 车主扫充电桩外壳被黑产贴纸覆盖的假静态二维码 (Quishing 钓鱼盗刷)，或充 $18.50 电拔枪后未发 0420 冲正导致 $156.50 差额冻结 7 天拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="evc_ocm_422">🚨 OCPI v2.2.1 CDR 详单缺失直流电表芯片 OCMF 硬件签名 (用软件时间×功率估算度数违反德国 Eichrecht 计量法)，或未发满电提醒强扣 $120 占位费拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="evc_tou_451">🛑 跨整点峰谷分时电价 (TOU) 切分缺失电表中间打点读数导致多收尖峰电费，或违反 MCC 5552 实时金额通知规范：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="evc_sav_409">🧑‍⚖️ Web IQ 启用车机智能错峰谷电导航套利 + MCC 5552 小额免密定制交换费率并阻断假二维码钓鱼拒付立省 $30,400.00 (净成本 $349,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="evc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -37985,6 +38125,7 @@ function renderAll() {{
   updateAgenticCreatorPayout1099kW8benSandbox();
   updateAgenticIapWebOutSandbox();
   updateAgenticPriceMatchGuaranteeSandbox();
+  updateAgenticEvChargingOcpiSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -48625,6 +48766,55 @@ function updateAgenticPriceMatchGuaranteeSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 1P 白名单直连 + 14位 GTIN 全新现货 + 实付净额扣赠品核验通过：已自动赔付 (VERIFIED_PRICE_MATCH_GUARANTEE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 F12 篡改截图骗保、零断货翻新机碰瓷与优惠券双倍叠加失血</strong>：智能体买贵必赔与 30 天价保批次已完成安全清算（<code>$470,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticEvChargingOcpiSandbox() {{
+  var selEl = document.getElementById("evc-select");
+  var outEl = document.getElementById("evc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "evc_qsh_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 QR_QUISHING_UNTRUSTED_OR_AFD_175USD_HOLD_UNREVERSED_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "车机补能安全与预授权门禁检出，充电请求 <code>未通过 ISO 15118 充电线 PLC 物理握手（疑似车主扫描了桩体外壳被黑产贴纸覆盖的假二维码 Quishing），或拔枪结单（实消费 $18.50）后未同事务发送 ISO 8583 0420 部分冲正释放 $175.00 预授权中的剩余 $156.50 额度</code>（<code>iso15118_emaid_cert_and_instant_0420_175usd_hold_reversal_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "evc_ocm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSIGNED_OCMF_METER_DRIFT_OR_UNCAPPED_IDLE_FEE_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "法定计量校验器检出 <code>OCPI v2.2.1 CDR 详单缺失认证直流电表芯片生成的 OCMF ECDSA 硬件数字签名（企图用后台软件时间×功率估算度数，违反德国 Eichrecht 与加州 CTEP 法定计量法），或未发送 5 分钟满电宽限提醒即强扣超额占位费</code>（<code>ocmf_hardware_meter_signature_and_capped_idle_fee_valid == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "evc_tou_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TOU_TARIFF_BOUNDARY_OR_MCC5552_RULE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>OCPI v2.2.1 分时电价 (TOU) 规范与 Visa/Mastercard MCC 5552 专有规则</code>，检出跨峰谷整点边界未按电表中间打点读数切分或缺失实时完结通知，立即冻结清算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "evc_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 EV_ISO15118_TOU_ARBITRAGE_AND_MCC5552_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>ISO 15118 车机错峰谷电导航套利 + MCC 5552 小额充电优惠交换费率 + 100% 免疫假二维码钓鱼拒付</code>，单批立省 <code>$30,400.00</code>（净补能成本降至 <code>$349,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ ISO 15118 EMAID 证书 + 直流电表 OCMF 签名 + 拔枪 0420 秒解冻通过：已自动清算 (VERIFIED_EV_CHARGING_OCPI_ISO15118_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零假二维码贴纸钓鱼 (Quishing)、零 $175 预授权锁卡一周客诉与软件估数违规</strong>：智能体新能源车机充电批次已完成秒级清算与解冻（<code>$380,000.00</code>）！" +
     "</div>";
 }}
 

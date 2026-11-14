@@ -1135,6 +1135,11 @@
     "agentic_price_match_guarantee_settlement_latency_ms": 10,
     "f12_screenshot_spoof_block_latency_ms": 11
   },
+  "agentic_ev_charging_ocpi_guards": {
+    "all_passed": true,
+    "agentic_ev_charging_ocpi_settlement_latency_ms": 10,
+    "qr_quishing_or_unreversed_hold_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

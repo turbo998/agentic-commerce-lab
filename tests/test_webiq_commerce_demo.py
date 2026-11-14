@@ -13031,6 +13031,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-price-match-guarantee-sandbox", demo_zh)
 
+    def test_agentic_ev_charging_ocpi_iso15118_afd_preauth_mandate_vs_175usd_hold_lock_qr_quishing_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_ev_charging_ocpi_policy,
+        )
+
+        # 1. Verified ISO 15118 EMAID + instant 0420 $175 hold release + signed OCMF -> 200 OK ($380,000)
+        commit_ok = evaluate_agentic_ev_charging_ocpi_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ev_charging_batch_cents, 38000000)
+
+        # 2. Static QR sticker Quishing or unreversed $175 AFD hold -> 403 blocked in 11ms
+        qsh_403 = evaluate_agentic_ev_charging_ocpi_policy(
+            iso15118_emaid_cert_and_instant_0420_175usd_hold_reversal_verified=False,
+        )
+        self.assertFalse(qsh_403.allowed)
+        self.assertEqual(qsh_403.http_status, 403)
+        self.assertEqual(
+            qsh_403.ev_charging_lane,
+            "QR_QUISHING_UNTRUSTED_OR_AFD_175USD_HOLD_UNREVERSED_BLOCKED",
+        )
+
+        # 3. Unsigned software-estimated kWh (missing OCMF) or uncapped idle fee -> 422 blocked in 14ms
+        ocm_422 = evaluate_agentic_ev_charging_ocpi_policy(
+            ocmf_hardware_meter_signature_and_capped_idle_fee_valid=False,
+        )
+        self.assertFalse(ocm_422.allowed)
+        self.assertEqual(ocm_422.http_status, 422)
+        self.assertEqual(
+            ocm_422.ev_charging_lane,
+            "UNSIGNED_OCMF_METER_DRIFT_OR_UNCAPPED_IDLE_FEE_REJECTED",
+        )
+
+        # 4. Web IQ detects TOU peak/off-peak boundary drift or MCC 5552 breach -> 451 blocked in 280ms
+        tou_451 = evaluate_agentic_ev_charging_ocpi_policy(
+            webiq_tou_tariff_boundary_and_mcc5552_rule_clean=False,
+        )
+        self.assertFalse(tou_451.allowed)
+        self.assertEqual(tou_451.http_status, 451)
+
+        # 5. Web IQ enables off-peak TOU routing & MCC 5552 savings of $30,400 ($349,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_ev_charging_ocpi_policy(
+            off_peak_tou_routing_and_mcc5552_interchange_savings_cents=3040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ev_charging_batch_cents, 34960000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_ev_charging_ocpi_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-ev-charging-ocpi-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
