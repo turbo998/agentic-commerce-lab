@@ -13255,6 +13255,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-construction-aia-g702-sandbox", demo_zh)
 
+    def test_agentic_auction_vickrey_second_price_bid_bond_antishill_mandate_vs_first_price_sniping_default_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_auction_vickrey_bid_bond_policy,
+        )
+
+        # 1. Verified 10% Bid-Bond + disjoint anti-shill + +120s Soft-Close + Vickrey -> 200 OK ($630,000)
+        commit_ok = evaluate_agentic_auction_vickrey_bid_bond_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_auction_batch_cents, 63000000)
+
+        # 2. Unbonded empty-card bid or late retraction Bid Shielding -> 403 blocked in 11ms
+        shd_403 = evaluate_agentic_auction_vickrey_bid_bond_policy(
+            irrevocable_10pct_bid_bond_preauth_and_zero_shielding_verified=False,
+        )
+        self.assertFalse(shd_403.allowed)
+        self.assertEqual(shd_403.http_status, 403)
+        self.assertEqual(
+            shd_403.auction_vickrey_lane,
+            "UNBONDED_PHANTOM_BID_OR_SHIELDING_DEFAULT_BLOCKED",
+        )
+
+        # 3. Seller-linked shill bidding probe or sniping bypass -> 422 blocked in 14ms
+        shl_422 = evaluate_agentic_auction_vickrey_bid_bond_policy(
+            seller_bidder_disjoint_antishill_and_soft_close_120s_valid=False,
+        )
+        self.assertFalse(shl_422.allowed)
+        self.assertEqual(shl_422.http_status, 422)
+        self.assertEqual(
+            shl_422.auction_vickrey_lane,
+            "SELLER_SHILL_BIDDING_OR_SNIPING_BYPASS_REJECTED",
+        )
+
+        # 4. Web IQ detects UCC § 2-328 reserve breach or AML wash-trading spike -> 451 blocked in 280ms
+        ucc_451 = evaluate_agentic_auction_vickrey_bid_bond_policy(
+            webiq_ucc_2328_reserve_disclosure_and_aml_fmv_corridor_clean=False,
+        )
+        self.assertFalse(ucc_451.allowed)
+        self.assertEqual(ucc_451.http_status, 451)
+
+        # 5. Web IQ clears at Vickrey Second-Price saving $50,400 ($579,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_auction_vickrey_bid_bond_policy(
+            vickrey_second_price_surplus_and_default_avoidance_savings_cents=5040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_auction_batch_cents, 57960000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_auction_vickrey_bid_bond_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-auction-vickrey-bid-bond-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
