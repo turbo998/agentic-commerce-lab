@@ -16310,6 +16310,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-utility-solar-epc-flash-test-sandbox", demo_zh)
 
+    def test_b2b_railcar_fleet_aar_running_repair_ric6007_vs_wheel_swap_impact_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_railcar_fleet_aar_running_repair_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Ehms WILD >= 90 kips + $1,950 turned-wheel credit + zero hump-yard shift + RIC 6007 <=105% -> 200 OK ($760,000.00)
+        ok_res = evaluate_b2b_railcar_fleet_aar_running_repair_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_RAILCAR_FLEET_AAR_RUNNING_REPAIR_SETTLED")
+        self.assertEqual(ok_res.settled_railcar_fleet_batch_cents, 76000000)
+
+        # 2. Opportunistic wheelset swap without WILD >= 90 kips or $280 scrap credit fraud on >7/16" rim -> 403 Blocked
+        whl_403 = evaluate_b2b_railcar_fleet_aar_running_repair_policy(
+            ehms_wild_90kips_wheelset_threshold_and_turned_wheel_credit_verified=False,
+        )
+        self.assertFalse(whl_403.allowed)
+        self.assertEqual(whl_403.http_status, 403)
+        self.assertEqual(
+            whl_403.decision_code,
+            "OPPORTUNISTIC_WHEELSET_REPLACEMENT_WITHOUT_WILD_THRESHOLD_OR_SCRAP_CREDIT_BLOCKED",
+        )
+
+        # 3. Railroad hump-yard overspeed coupling (>8G shock) shifted to Car Owner wear (Rule 32 breach) -> 422 Blocked
+        hmp_422 = evaluate_b2b_railcar_fleet_aar_running_repair_policy(
+            zero_hump_yard_overspeed_impact_shifted_to_car_owner_rule32_verified=False,
+        )
+        self.assertFalse(hmp_422.allowed)
+        self.assertEqual(hmp_422.http_status, 422)
+        self.assertEqual(
+            hmp_422.decision_code,
+            "HANDLING_LINE_HUMP_YARD_IMPACT_SHIFTED_TO_CAR_OWNER_DEFECT_CODE",
+        )
+
+        # 4. Excess empty miles >105% (Tariff RIC 6007 penalty) or $28k end-of-lease lining gouge -> 451 Hold
+        ric_451 = evaluate_b2b_railcar_fleet_aar_running_repair_policy(
+            webiq_ric6007_empty_mileage_within_105pct_and_lining_depreciation_clean=False,
+        )
+        self.assertFalse(ric_451.allowed)
+        self.assertEqual(ric_451.http_status, 451)
+
+        # 5. Web IQ automated turned-wheel credit upgrade & Rule 95 clawback saving $60,800 ($699,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_railcar_fleet_aar_running_repair_policy(
+            automated_crb_wheel_credit_upgrade_and_mileage_optimization_savings_cents=6080000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_railcar_fleet_batch_cents, 69920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_railcar_fleet_aar_running_repair_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-railcar-fleet-aar-running-repair-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
