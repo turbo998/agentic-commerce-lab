@@ -13087,6 +13087,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-ev-charging-ocpi-sandbox", demo_zh)
 
+    def test_agentic_esim_iot_sgp32_bce_roaming_quota_mandate_vs_tap_delay_roaming_bill_shock_simbox_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_esim_iot_sgp32_roaming_policy,
+        )
+
+        # 1. Verified EID-IMEI lock + 5G CHF 50MB real-time quota slice + SGP.32/BCE -> 200 OK ($510,000)
+        commit_ok = evaluate_agentic_esim_iot_sgp32_roaming_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_esim_batch_cents, 51000000)
+
+        # 2. SIM extracted into unauthorized 5G router / SIM-Box (IMEI mismatch) -> 403 blocked in 11ms
+        box_403 = evaluate_agentic_esim_iot_sgp32_roaming_policy(
+            eid_to_imei_hardware_lock_and_zero_simbox_extraction_verified=False,
+        )
+        self.assertFalse(box_403.allowed)
+        self.assertEqual(box_403.http_status, 403)
+        self.assertEqual(
+            box_403.esim_roaming_lane,
+            "IMEI_EID_MISMATCH_SIMBOX_THEFT_DETACH_BLOCKED",
+        )
+
+        # 3. Unbounded session relying on 36h delayed TAP files or exhausted 50MB slice -> 422 blocked in 14ms
+        tap_422 = evaluate_agentic_esim_iot_sgp32_roaming_policy(
+            inline_5g_chf_50mb_quota_slice_and_zero_tap_delay_exposure=False,
+        )
+        self.assertFalse(tap_422.allowed)
+        self.assertEqual(tap_422.http_status, 422)
+        self.assertEqual(
+            tap_422.esim_roaming_lane,
+            "UNBOUNDED_TAP_DELAY_OR_QUOTA_SLICE_EXHAUSTED",
+        )
+
+        # 4. Web IQ detects >90-day permanent roaming ban breach -> 451 blocked in 280ms
+        ban_451 = evaluate_agentic_esim_iot_sgp32_roaming_policy(
+            webiq_permanent_roaming_90d_law_and_local_imsi_clean=False,
+        )
+        self.assertFalse(ban_451.allowed)
+        self.assertEqual(ban_451.http_status, 451)
+
+        # 5. Web IQ triggers SGP.32 eIM local profile swap & BCE wholesale saving $40,800 ($469,200 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_esim_iot_sgp32_roaming_policy(
+            sgp32_ota_local_swap_and_bce_wholesale_tier_savings_cents=4080000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_esim_batch_cents, 46920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_esim_iot_sgp32_roaming_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-esim-iot-sgp32-roaming-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

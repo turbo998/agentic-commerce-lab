@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg215" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="blue215" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="red215" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg215)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="52" y="40" width="215" height="26" rx="13" fill="url(#blue215)"/>
+  <text x="159" y="57" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">ROUND 213 · ESIM SGP.32 &amp; 5G CHF</text>
+  <text x="282" y="58" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="18.5" font-weight="800">智能体全球 eSIM 与物联网漫游 (GSMA SGP.32 &amp; BCE) 实时配额清算架构</text>
+  <text x="282" y="85" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-size="12.5">EID-IMEI 硬件锁死 + 5G CHF 50MB 实时切片 + SGP.32 空中切网令牌 (`agentic_esim_iot_sgp32_bce_roaming_mandate_...`) vs 36h TAP 延迟天价盗刷</text>
+
+  <!-- Left Card: Anti-Pattern -->
+  <rect x="36" y="124" width="548" height="275" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="54" y="140" width="512" height="32" rx="6" fill="url(#red215)"/>
+  <text x="310" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">❌ 传统反模式：拔卡插 SIM-Box 狂跑流量 + 36h TAP 话单延迟刷出 $65,000 账单</text>
+
+  <text x="56" y="196" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 物理可拔卡无 IMEI 绑定 + 36 小时 TAP 3.12 离线话单盲区：</text>
+  <text x="56" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 黑产撬开海外 POS/共享单车拔出物联网卡，插进 5G 路由器或 SIM-Box 盗刷；</text>
+  <text x="56" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 拜访地运营商 36 小时后才发来 TAP 账单，单张 $3 月租卡已欠费 $65,000！</text>
+
+  <text x="56" y="265" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 违反巴西/土耳其/印度“90 天永久漫游禁令”致车队集体断网：</text>
+  <text x="56" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 长期用境外 IMSI 驻网超 90 天被当地监管基站拉黑，5 万台无屏设备变砖失联。</text>
+
+  <text x="56" y="315" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. 误将消费级 SGP.22 用于无屏设备 &amp; 散客高价 TAP 逐笔结算：</text>
+  <text x="56" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• SGP.22 强制要求屏幕手点确认无法远程切网；未走 BCE 阶梯包白交高额漫游溢价。</text>
+
+  <rect x="56" y="352" width="508" height="32" rx="6" fill="#450A0A" stroke="#DC2626"/>
+  <text x="310" y="373" fill="#FECACA" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">GATE BLOCKS: HTTP 403 (11ms IMEI-EID SIM-Box) | HTTP 422 (14ms Unbounded TAP)</text>
+
+  <!-- Right Card: Recommended Architecture -->
+  <rect x="616" y="124" width="548" height="275" rx="12" fill="#0F292A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="634" y="140" width="512" height="32" rx="6" fill="url(#blue215)"/>
+  <text x="890" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">✅ 推荐架构：EID-IMEI 信令强锁 + 5G CHF 50MB 实时切片 + SGP.32 eIM 网关</text>
+
+  <text x="636" y="196" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 32位 eUICC EID + 15位设备 IMEI 核心网信令强绑定：</text>
+  <text x="636" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 附着信令实时比对 reported_imei == bound_imei，机卡分离 11ms 即刻踢下网；</text>
+  <text x="636" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 5G CHF N40 / Diameter Gy 按 50MB 切片实时预留，触顶 14ms 断流 (最大敞口 &lt;$0.20)！</text>
+
+  <text x="636" y="265" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. GSMA SGP.32 (eIM) 驻网满 60 天静默空中切入本土运营商：</text>
+  <text x="636" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 无需屏幕交互，云端一键将巴西/土耳其车队切换为本土合规 IMSI 永不断联。</text>
+
+  <text x="636" y="315" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 280ms 法规核验与 BCE 阶梯降费：</text>
+  <text x="636" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 本地 Profile 置换高价漫游并走 GSMA BCE 批发净额结算，单批立省 $40,800.00！</text>
+
+  <rect x="636" y="352" width="508" height="32" rx="6" fill="#064E3B" stroke="#10B981"/>
+  <text x="890" y="373" fill="#A7F3D0" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">SETTLED: HTTP 200 (10ms $510k IoT) | HTTP 409 ($40.8k SGP.32 &amp; BCE Saved)</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="36" y="415" width="1128" height="236" rx="12" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="56" y="444" fill="#60A5FA" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800">📊 定量实测矩阵：全球 eSIM 与物联网漫游批次 ($510,000.00) 5 组边界验证 (`evaluate_agentic_esim_iot_sgp32_roaming_policy`)</text>
+
+  <rect x="52" y="458" width="1096" height="28" rx="4" fill="#0F172A"/>
+  <text x="66" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SCENARIO ID</text>
+  <text x="220" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">EID-IMEI HARDWARE LOCK / 5G CHF 50MB SLICE / SGP.32 &amp; BCE</text>
+  <text x="650" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">HTTP &amp; ACTION PILL</text>
+  <text x="875" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">LATENCY</text>
+  <text x="965" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">NET IMPACT</text>
+
+  <!-- Row 1 -->
+  <text x="66" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">esm_commit_ok</text>
+  <text x="220" y="504" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">EID-IMEI 硬件锁匹配 + 5G CHF 50MB 实时切片 + BCE 阶梯清算</text>
+  <text x="650" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">200 · Act automatically</text>
+  <text x="875" y="504" fill="#E2E8F0" font-family="monospace" font-size="12">10ms</text>
+  <text x="965" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">$510,000.00 Settled</text>
+
+  <!-- Row 2 -->
+  <text x="66" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">esm_box_403</text>
+  <text x="220" y="532" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">信令检出 IMEI 失配 (SIM 卡被拔出插进 5G 路由器或 SIM-Box 盗刷)</text>
+  <text x="650" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">403 · Send to a human</text>
+  <text x="875" y="532" fill="#E2E8F0" font-family="monospace" font-size="12">11ms</text>
+  <text x="965" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">SIM-Box Theft Blocked</text>
+
+  <!-- Row 3 -->
+  <text x="66" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">esm_tap_422</text>
+  <text x="220" y="560" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">未开启 5G CHF 实时配额切片 (盲信 36h 延迟 TAP) 或日配额已耗尽</text>
+  <text x="650" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">422 · Send to a human</text>
+  <text x="875" y="560" fill="#E2E8F0" font-family="monospace" font-size="12">14ms</text>
+  <text x="965" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">Bill-Shock Blocked</text>
+
+  <!-- Row 4 -->
+  <text x="66" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">esm_ban_451</text>
+  <text x="220" y="588" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ /v3/browse 检出巴西/土耳其驻网超 90天触犯永久漫游禁令</text>
+  <text x="650" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">451 · Send to a human</text>
+  <text x="875" y="588" fill="#E2E8F0" font-family="monospace" font-size="12">280ms</text>
+  <text x="965" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">Roaming Ban Hold</text>
+
+  <!-- Row 5 -->
+  <text x="66" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">esm_sav_409</text>
+  <text x="220" y="616" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ 启用 SGP.32 eIM 空中切换本地 Profile 与 BCE 批发阶梯价</text>
+  <text x="650" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">409 · Confirm</text>
+  <text x="875" y="616" fill="#E2E8F0" font-family="monospace" font-size="12">245ms</text>
+  <text x="965" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">Saves $40,800.00</text>
+</svg>
