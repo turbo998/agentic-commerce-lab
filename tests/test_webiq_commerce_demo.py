@@ -13423,6 +13423,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-surge-pricing-anti-gouging-sandbox", demo_zh)
 
+    def test_agentic_airline_ndc_one_order_adm_dot24h_refund_mandate_vs_skiplagging_churning_adm_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_airline_ndc_adm_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Zero skiplagging/churning + US DOT cash refund + exact YQ vs. gov tax split ($690,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_airline_ndc_adm_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_airline_batch_cents, 69000000)
+
+        # 2. Hidden-city skiplagging or >2x PNR churning -> 403 Blocked
+        adm_403 = evaluate_agentic_airline_ndc_adm_policy(
+            zero_skiplagging_and_pnr_churn_le_2_verified=False,
+        )
+        self.assertFalse(adm_403.allowed)
+        self.assertEqual(adm_403.http_status, 403)
+        self.assertEqual(
+            adm_403.decision_code,
+            "SKIPLAGGING_OR_PNR_CHURNING_ADM_VIOLATION_BLOCKED",
+        )
+
+        # 3. Voucher forced on >=3h delayed flight or YQ/government tax miscalculation -> 422 Blocked
+        dot_422 = evaluate_agentic_airline_ndc_adm_policy(
+            dot_cash_refund_and_yq_gov_tax_split_exact=False,
+        )
+        self.assertFalse(dot_422.allowed)
+        self.assertEqual(dot_422.http_status, 422)
+        self.assertEqual(
+            dot_422.decision_code,
+            "DOT_CASH_REFUND_DENIED_OR_YQ_GOVERNMENT_TAX_MISCALCULATION",
+        )
+
+        # 4. Missing IATA Resolution 830d passenger contact SSR -> 451 Hold
+        ssr_451 = evaluate_agentic_airline_ndc_adm_policy(
+            webiq_iata_830d_contact_and_dot_disclosure_clean=False,
+        )
+        self.assertFalse(ssr_451.allowed)
+        self.assertEqual(ssr_451.http_status, 451)
+
+        # 5. Web IQ routes via IATA NDC v21.3 waiving GDS fees & ADMs saving $55,200 ($634,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_airline_ndc_adm_policy(
+            ndc_direct_surcharge_waiver_and_zero_adm_savings_cents=5520000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_airline_batch_cents, 63480000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_airline_ndc_adm_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-airline-ndc-adm-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
