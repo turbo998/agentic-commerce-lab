@@ -29038,6 +29038,91 @@ def evaluate_b2b_plastic_injection_molding_mfi_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticSeniorLivingCcrcPdpmDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_senior_living_ccrc_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_senior_living_ccrc_pdpm_policy(
+    *,
+    mandate_id: str = "agentic_senior_living_ccrc_skilled_nursing_pdpm_adl_entrance_fee_escrow_mandate_2026",
+    segregated_escrow_and_120day_unconditional_vacancy_refund_verified: bool = True,
+    katz_adl_rn_assessment_pbj_hprd_and_mds30_pdpm_verified: bool = True,
+    webiq_state_ccrc_liquid_reserve_and_cms_sff_abuse_clean: bool = True,
+    automated_adl_tier_rollback_and_memory_care_bundle_dedup_savings_cents: int = 0,
+    senior_living_ccrc_cents: int = 68000000,
+) -> AgenticSeniorLivingCcrcPdpmDecision:
+    """Evaluate Agentic Senior Living CCRC Entrance-Fee Escrow, Katz ADL & CMS MDS 3.0 PDPM policy."""
+    if not mandate_id.startswith("agentic_senior_living_ccrc_skilled_nursing_pdpm_adl_entrance_fee_escrow_mandate_"):
+        return AgenticSeniorLivingCcrcPdpmDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_SENIOR_LIVING_CCRC_PDPM_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_senior_living_ccrc_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not segregated_escrow_and_120day_unconditional_vacancy_refund_verified:
+        return AgenticSeniorLivingCcrcPdpmDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="ENTRANCE_FEE_ESCROW_DIVERSION_OR_INDEFINITE_RESALE_CONTINGENCY_BLOCKED",
+            action_pill="Send to a human",
+            settled_senior_living_ccrc_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not katz_adl_rn_assessment_pbj_hprd_and_mds30_pdpm_verified:
+        return AgenticSeniorLivingCcrcPdpmDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNSUBSTANTIATED_ADL_ACUITY_POINT_CREEP_OR_UPCODED_MDS30_PDPM_CLAIM",
+            action_pill="Send to a human",
+            settled_senior_living_ccrc_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_state_ccrc_liquid_reserve_and_cms_sff_abuse_clean:
+        return AgenticSeniorLivingCcrcPdpmDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="CCRC_ACTUARIAL_INSOLVENCY_RESERVE_BREACH_OR_CMS_SFF_ABUSE_CITATION_HOLD",
+            action_pill="Send to a human",
+            settled_senior_living_ccrc_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_adl_tier_rollback_and_memory_care_bundle_dedup_savings_cents > 0:
+        return AgenticSeniorLivingCcrcPdpmDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_ADL_TIER_ROLLBACK_AND_MEMORY_CARE_BUNDLE_DEDUP_CONFIRM",
+            action_pill="Confirm",
+            settled_senior_living_ccrc_cents=max(
+                0,
+                senior_living_ccrc_cents - automated_adl_tier_rollback_and_memory_care_bundle_dedup_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticSeniorLivingCcrcPdpmDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_SENIOR_LIVING_CCRC_PDPM_SETTLED",
+        action_pill="Act automatically",
+        settled_senior_living_ccrc_cents=senior_living_ccrc_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -38591,6 +38676,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unauthorized_regrind_mfi_shift_block_latency_ms": mld_mfi_403.latency_ms,
     }
 
+    ccr_commit_ok = evaluate_agentic_senior_living_ccrc_pdpm_policy()
+    ccr_esc_403 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+        segregated_escrow_and_120day_unconditional_vacancy_refund_verified=False,
+    )
+    ccr_adl_422 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+        katz_adl_rn_assessment_pbj_hprd_and_mds30_pdpm_verified=False,
+    )
+    ccr_sff_451 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+        webiq_state_ccrc_liquid_reserve_and_cms_sff_abuse_clean=False,
+    )
+    ccr_sav_409 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+        automated_adl_tier_rollback_and_memory_care_bundle_dedup_savings_cents=5440000,
+    )
+    agentic_senior_living_ccrc_pdpm_guards = {
+        "all_passed": (
+            ccr_commit_ok.allowed
+            and ccr_commit_ok.settled_senior_living_ccrc_cents == 68000000
+            and not ccr_esc_403.allowed
+            and ccr_esc_403.http_status == 403
+            and not ccr_adl_422.allowed
+            and ccr_adl_422.http_status == 422
+            and not ccr_sff_451.allowed
+            and ccr_sff_451.http_status == 451
+            and not ccr_sav_409.allowed
+            and ccr_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_senior_living_ccrc_latency_ms": ccr_commit_ok.latency_ms,
+        "entrance_fee_escrow_or_resale_trap_block_latency_ms": ccr_esc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38886,6 +39001,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_corporate_relocation_hhg_bvo_guards": agentic_corporate_relocation_hhg_bvo_guards,
         "b2b_elevator_oem_full_maintenance_guards": b2b_elevator_oem_full_maintenance_guards,
         "b2b_plastic_injection_molding_mfi_guards": b2b_plastic_injection_molding_mfi_guards,
+        "agentic_senior_living_ccrc_pdpm_guards": agentic_senior_living_ccrc_pdpm_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46879,6 +46995,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Senior Living CCRC Entrance-Fee Escrow, Katz ADL & CMS PDPM Sandbox -->
+      <div class="finops-box" id="agentic-senior-living-ccrc-pdpm-sandbox" style="margin-top:12px;border-color:#FBBF24;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🏡 智能体高端康养社区 (CCRC) 与护理院：120天退押金托管锁、Katz ADL 与 CMS PDPM (`agentic_senior_living_ccrc_skilled_nursing_pdpm_adl_entrance_fee_escrow_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 康养社区 CCRC 入门费托管与护理院批次 ($680,000.00)、120天无条件退押锁、Katz 6项 ADL/PBJ 工时与 CMS PDPM 场景 (Senior Living CCRC &amp; SNF Scenario):</span></label>
+          <select id="ccr-select" onchange="updateAgenticSeniorLivingCcrcPdpmSandbox()">
+            <option value="ccr_commit_ok">🏡 独立信托托管 (&lt;=120天无条件退还 80% 入门费) + Katz ADL/PBJ 工时对齐 + 精算准备金合规：10ms 清算 $680,000.00! (Act automatically)</option>
+            <option value="ccr_esc_403">🛑 运营商将 $500k 入门费挪用偿还地产开发贷，或暗藏“须等原房间再次卖出新入门费才退款”并在腾退后将房间改月租无限期赖账 → 11ms 触发 HTTP 403!</option>
+            <option value="ccr_adl_422">🚨 护工顺手递水也打勾记分把月费强升 Level-4 (+$2,200/月) 却无 Katz ADL 退化与 PBJ 护工工时增长，或虚报吞咽障碍骗取 CMS PDPM 高档医保 → 14ms 触发 HTTP 422!</option>
+            <option value="ccr_sff_451">🛑 康养社区法定流动准备金低于州保险厅精算红线 (破产违约风险) 或护理院被 CMS 标记 SFF/虐待红手印警告：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="ccr_sav_409">🧑‍⚖️ Web IQ 自动回退无 PBJ 护工工时支撑的虚高 ADL 照护等级并剥离全包失智专区重复计费项立省 $54,400.00 (净付 $625,600.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ccr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -47600,6 +47734,7 @@ function renderAll() {{
   updateAgenticCorporateRelocationHhgBvoSandbox();
   updateB2bElevatorOemFullMaintenanceSandbox();
   updateB2bPlasticInjectionMoldingMfiSandbox();
+  updateAgenticSeniorLivingCcrcPdpmSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -61527,6 +61662,52 @@ function updateB2bPlasticInjectionMoldingMfiSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚙️ 成品 ASTM D1238 熔指偏移 &lt;=+10% + PPAP 32满穴基准周期 + UL/USP 合规：已自动清算 (VERIFIED_PLASTIC_INJECTION_MOLDING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零夜班偷掺 40% 水口粉碎料导致脆裂、零模具堵穴转嫁低效机台费与水口残值侵吞</strong>：B2B 精密注塑代工批次已完成安全清算（<code>$460,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticSeniorLivingCcrcPdpmSandbox() {{
+  var sel = document.getElementById("ccr-select");
+  var outEl = document.getElementById("ccr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ccr_esc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ENTRANCE_FEE_ESCROW_DIVERSION_OR_INDEFINITE_RESALE_CONTINGENCY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经审计 <code>CCRC 持续照料退休社区</code>入住合同与银行托管架构发现：运营商企图将 <code>$500,000 入门押金（承诺 80% 可退还）</code>划入非托管地产开发账户，或暗藏无期限上限的 <code>Resale-Contingent（必须等同一房间再次卖出新入门费才退款，一旦房间改月租则永远不退）</code>霸王条款，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ccr_adl_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUBSTANTIATED_ADL_ACUITY_POINT_CREEP_OR_UPCODED_MDS30_PDPM_CLAIM (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "协助生活区（<code>Assisted Living</code>）在无注册护士（<code>RN</code>）签署的 <code>Katz 6项核心 ADL 功能退化评估</code>且楼层实际护工排班工时（<code>CMS PBJ HPRD</code>）零增长的情况下，单方面通过平板打勾积分将长者月费上调 <code>$2,200/月 (Acuity Point Creep)</code>，或护理院虚报吞咽障碍（<code>SLP</code>）套取高档 <code>CMS PDPM</code> 拨款，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ccr_sff_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CCRC_ACTUARIAL_INSOLVENCY_RESERVE_BREACH_OR_CMS_SFF_ABUSE_CITATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州保险厅/老龄局精算披露与 <code>CMS Care Compare</code> 发现：该康养社区法定流动准备金（<code>Statutory Liquid Reserve</code>）低于破产警戒线，或所属护理院被联邦医保标记为重点监管机构（<code>Special Focus Facility, SFF</code>）/ 存在虐待红手印警告（<code>Abuse Icon</code>），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ccr_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_ADL_TIER_ROLLBACK_AND_MEMORY_CARE_BUNDLE_DEDUP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>回退无 PBJ 护工工时支撑的虚高 ADL 照护等级 + 剥离全包失智专区 (All-Inclusive Memory Care) 重复加收的巡房与护理包费</code>，单批立省 <code>$54,400.00</code>（净结算额优化至 <code>$625,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏡 独立信托 120天无条件退押锁 + Katz ADL/PBJ 工时真实 + 精算准备金与 CMS 合规：已自动清算 (VERIFIED_SENIOR_LIVING_CCRC_PDPM_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零旧房转售/油转租无限期扣押 $400k 遗产本金、零 $2,200/月照护点数乱涨价与 PDPM 医保虚报</strong>：智能体高端康养社区与护理院批次已完成安全清算（<code>$680,000.00</code>）！" +
     "</div>";
 }}
 

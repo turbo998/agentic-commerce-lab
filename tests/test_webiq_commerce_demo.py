@@ -17108,6 +17108,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-plastic-injection-molding-mfi-sandbox", demo_zh)
 
+    def test_agentic_senior_living_ccrc_pdpm_adl_escrow_vs_acuity_creep_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_senior_living_ccrc_pdpm_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant segregated <=120-day escrow + Katz ADL/PBJ HPRD & MDS 3.0 PDPM + clean CCRC reserve -> 200 OK ($680,000.00)
+        ok_res = evaluate_agentic_senior_living_ccrc_pdpm_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_SENIOR_LIVING_CCRC_PDPM_SETTLED")
+        self.assertEqual(ok_res.settled_senior_living_ccrc_cents, 68000000)
+
+        # 2. Unescrowed entrance fee diversion or indefinite resale-contingent / rental-conversion hold -> 403 Blocked
+        esc_403 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+            segregated_escrow_and_120day_unconditional_vacancy_refund_verified=False,
+        )
+        self.assertFalse(esc_403.allowed)
+        self.assertEqual(esc_403.http_status, 403)
+        self.assertEqual(
+            esc_403.decision_code,
+            "ENTRANCE_FEE_ESCROW_DIVERSION_OR_INDEFINITE_RESALE_CONTINGENCY_BLOCKED",
+        )
+
+        # 3. Unsubstantiated $2,200/mo ADL acuity point creep without PBJ staffing or upcoded MDS 3.0 PDPM -> 422 Blocked
+        adl_422 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+            katz_adl_rn_assessment_pbj_hprd_and_mds30_pdpm_verified=False,
+        )
+        self.assertFalse(adl_422.allowed)
+        self.assertEqual(adl_422.http_status, 422)
+        self.assertEqual(
+            adl_422.decision_code,
+            "UNSUBSTANTIATED_ADL_ACUITY_POINT_CREEP_OR_UPCODED_MDS30_PDPM_CLAIM",
+        )
+
+        # 4. CCRC actuarial liquid reserve breach or CMS Special Focus Facility (SFF) / Abuse citation -> 451 Hold
+        sff_451 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+            webiq_state_ccrc_liquid_reserve_and_cms_sff_abuse_clean=False,
+        )
+        self.assertFalse(sff_451.allowed)
+        self.assertEqual(sff_451.http_status, 451)
+
+        # 5. Web IQ automated ADL tier rollback & all-inclusive memory-care bundle dedup saving $54,400 ($625,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_senior_living_ccrc_pdpm_policy(
+            automated_adl_tier_rollback_and_memory_care_bundle_dedup_savings_cents=5440000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_senior_living_ccrc_cents, 62560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_senior_living_ccrc_pdpm_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-senior-living-ccrc-pdpm-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

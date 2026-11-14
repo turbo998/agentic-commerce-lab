@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg285" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent285" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg285)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent285)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-15 · ROUND 283 · AGENTIC SENIOR LIVING CCRC ENTRANCE-FEE ESCROW, ADL ACUITY &amp; CMS PDPM</text>
+  <text x="52" y="92" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">智能体高端康养社区 (CCRC) 与护理院：120天退押金托管锁、Katz ADL 与 CMS PDPM 清算架构</text>
+  <text x="52" y="116" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">独立银行信托托管 + 腾退 &lt;=120天无条件退还 80% 入门费防“油转租”赖账 · Katz ADL + PBJ 护工工时锁防乱涨价 · Web IQ 核验精算准备金</text>
+
+  <!-- Left Card: Legacy Failure Modes -->
+  <rect x="48" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="48" y="136" width="356" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="68" y="160" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统康养社区与护理院三大黑洞 (押金被困 + 涨价 35%)</text>
+
+  <rect x="64" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="210" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. $500k 入门费“待原房间转售才退”与油转租赖账</text>
+  <text x="78" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 承诺退还 80% ($400k)，却规定须等同一房号卖出新入门费</text>
+  <text x="78" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 老人离世后院方将房间改造成“免入门费纯月租公寓”</text>
+  <text x="78" y="272" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 触发条件永不成就，家属苦等 4 年拿不到 $400k 遗产</text>
+
+  <rect x="64" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="326" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 协助生活区照护点数蠕变 (Acuity Point Creep)</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护工顺手递水、提醒吃药都在平板上打勾叠加照护积分</text>
+  <text x="78" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 半年内把照护等级从 Level 1 刷到 Level 4 (+$2,200/月)</text>
+  <text x="78" y="388" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 楼层实际护工配比 (PBJ HPRD) 反而下降，只收钱不加人</text>
+
+  <rect x="64" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="442" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 护理院 MDS 3.0 PDPM 虚高升档与全包区重复收费</text>
+  <text x="78" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 批量勾选吞咽障碍 (SLP) 与重度抑郁套取 $820/天高档医保</text>
+  <text x="78" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 已付 $9,200/月全包失智专区费，仍叠加夜间巡房附加费</text>
+  <text x="78" y="504" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 迅速掏空长者联邦医保免责天数与长护险终身保额</text>
+
+  <!-- Center Card: Agentic Policy Engine -->
+  <rect x="422" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+  <rect x="422" y="136" width="356" height="38" rx="12" fill="#78350F"/>
+  <text x="442" y="160" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">🛡️ 智能体 120天退押锁、Katz ADL 与 PDPM 三道门禁</text>
+
+  <rect x="438" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#B45309"/>
+  <text x="452" y="210" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 1：独立银行信托与 &lt;=120 天无条件退押金锁</text>
+  <text x="452" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 入门费强制入驻独立受托银行专户，严禁挪用还开发贷</text>
+  <text x="452" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 腾退满 120 天或房间改月租即自动解付 80%/90% 本金</text>
+  <text x="452" y="272" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 11ms 触发 HTTP 403 阻断资金池挪用与无限期转售霸王条款</text>
+
+  <rect x="438" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#B45309"/>
+  <text x="452" y="326" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 2：Katz 6项 ADL 评估与 PBJ 护工工时匹配门禁</text>
+  <text x="452" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 照护升档须附 RN 签署的 Katz 6项核心功能退化证明</text>
+  <text x="452" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 同步校验 CMS PBJ 真实护工工时 (HPRD) 与 PDPM 医嘱</text>
+  <text x="452" y="388" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 14ms 触发 HTTP 422 拦截 $2,200/月伪照护升档与医保骗保</text>
+
+  <rect x="438" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#B45309"/>
+  <text x="452" y="442" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 3：Web IQ 州精算准备金与 CMS 虐待红标锁</text>
+  <text x="452" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse 核验州保险厅 CCRC 法定流动准备金率</text>
+  <text x="452" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 穿透核查 CMS Care Compare 是否存在 SFF/虐待红手印警告</text>
+  <text x="452" y="504" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 275ms 触发 HTTP 451 / 240ms HTTP 409 立省 $54,400</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="796" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="796" y="136" width="356" height="38" rx="12" fill="#064E3B"/>
+  <text x="816" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 康养社区与护理院批次 ($680,000) 实测矩阵</text>
+
+  <rect x="812" y="188" width="324" height="60" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="826" y="210" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="826" y="232" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">120天托管锁 + Katz ADL/PDPM 真实 → 清算 $680,000</text>
+
+  <rect x="812" y="258" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="280" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="826" y="302" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">挪用入门费或设无限期转售/油转租赖账条款 → 拦截</text>
+
+  <rect x="812" y="328" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="350" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="826" y="372" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">无护工工时支撑乱涨 $2,200/月或虚报 PDPM → 阻断</text>
+
+  <rect x="812" y="398" width="324" height="60" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="826" y="420" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 (275ms) / 🧑‍⚖️ HTTP 409 (240ms)</text>
+  <text x="826" y="442" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">准备金不足/虐待红标挂起 / 回退伪升档省 $54,400</text>
+
+  <rect x="812" y="468" width="324" height="56" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="826" y="490" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">💡 照护等级回退与失智全包去重后净付：$625,600 (省 8%)</text>
+  <text x="826" y="510" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="11">令牌：agentic_senior_living_ccrc_skilled_nursing_...</text>
+
+  <!-- Footer -->
+  <rect x="48" y="556" width="1104" height="80" rx="10" fill="#020617" stroke="#334155"/>
+  <text x="68" y="582" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">架构师核心选型铁律 (Architect's Golden Rule)：</text>
+  <text x="68" y="604" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. CCRC 可退还入门费必须存入独立受托银行专户，强制约定腾退满 120 天或房间改为月租模式时无条件自动退还 80%/90% 本金。</text>
+  <text x="68" y="624" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 协助生活区照护费升档必须同时满足 RN 签署的 Katz 6项核心 ADL 退化证明与 CMS PBJ 护工直接照护工时 (HPRD) 增长。</text>
+</svg>
