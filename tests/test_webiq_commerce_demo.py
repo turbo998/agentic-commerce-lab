@@ -15163,6 +15163,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-maritime-charterparty-laytime-sandbox", demo_zh)
 
+    def test_b2b_auto_oem_dealer_warranty_flat_rate_dtc_supplier_recovery_mandate_vs_phantom_repair_labor_padding_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_auto_oem_dealer_warranty_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Valid UDS 0x19/0x22 + deduplicated labor + TSB & WPRC clean ($610,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_auto_oem_dealer_warranty_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_oem_warranty_batch_cents, 61000000)
+
+        # 2. Missing UDS 0x19 freeze-frame DTC or unflashed 0x22 replacement part serial -> 403 Blocked
+        phn_403 = evaluate_b2b_auto_oem_dealer_warranty_policy(
+            uds_0x19_freeze_frame_dtc_and_new_part_serial_flash_verified=False,
+        )
+        self.assertFalse(phn_403.allowed)
+        self.assertEqual(phn_403.http_status, 403)
+        self.assertEqual(
+            phn_403.decision_code,
+            "PHANTOM_WARRANTY_REPAIR_WITHOUT_UDS_DTC_OR_UNFLASHED_PART_SERIAL_BLOCKED",
+        )
+
+        # 3. Double-billed standalone labor on shared teardown path or statutory markup breach -> 422 Blocked
+        ovl_422 = evaluate_b2b_auto_oem_dealer_warranty_policy(
+            overlapping_flat_rate_labor_deduped_and_state_statutory_markup_exact=False,
+        )
+        self.assertFalse(ovl_422.allowed)
+        self.assertEqual(ovl_422.http_status, 422)
+        self.assertEqual(
+            ovl_422.decision_code,
+            "OVERLAPPING_LABOR_OPERATION_DOUBLE_BILLING_OR_PARTS_MARKUP_BREACH",
+        )
+
+        # 4. Bypassed mandatory TSB software re-flash for $3,500 hardware swap or missing core -> 451 Hold
+        tsb_451 = evaluate_b2b_auto_oem_dealer_warranty_policy(
+            webiq_nhtsa_tsb_software_update_first_and_warranty_hold_part_returned=False,
+        )
+        self.assertFalse(tsb_451.allowed)
+        self.assertEqual(tsb_451.http_status, 451)
+
+        # 5. Web IQ Tier-1 supplier defect recovery & TSB re-flash saving $48,800 ($561,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_auto_oem_dealer_warranty_policy(
+            tier1_supplier_responsibility_ratio_recovery_and_tsb_savings_cents=4880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_oem_warranty_batch_cents, 56120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_auto_oem_dealer_warranty_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-auto-oem-dealer-warranty-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
