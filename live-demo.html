@@ -4482,6 +4482,24 @@
         <div id="gft-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B SaaS Hybrid Billing Proration, FEFO Waterfall & ASC 606 Sandbox (Round 205 FAQ Companion) -->
+      <div class="finops-box" id="b2b-saas-hybrid-asc606-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sas-title">📊 B2B SaaS 混合计费 (Seat + Usage) 与 ASC 606 收入确认：按秒整数折算、FEFO 瀑布流与独立售价 SSP 分摊令牌 (b2b_saas_hybrid_usage_proration_asc606_mandate_...) vs 降配退现套利与提前确收暴雷决策器 (Round 205 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. B2B SaaS 混合订阅与用量结算批次 ($720,000.00)、64位按秒定点数折算、中途降配仅转 Credit Note、FEFO 额度瀑布流与 ASC 606 独立售价 (SSP) 分摊场景 (B2B SaaS Hybrid Billing &amp; ASC 606 Scenario):</span></label>
+          <select id="sas-select" onchange="updateB2bSaasHybridAsc606Sandbox()">
+            <option value="sas_commit_ok">⚡ 64位按秒折算美分守恒 + 降配转 Credit Note + FEFO 最早过期优先瀑布流 + ASC 606 SSP 分摊：10ms 合规入账 $720,000.00! (Act automatically)</option>
+            <option value="sas_prr_403">🛑 客户升配旗舰版跑批 2 天后立即降配要求原路退回 93% 现金 (白嫖高阶算力并让商户倒贴刷卡费)，或浮点数按天折算出现美分尾差拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sas_rev_422">🚨 额度扣减顺序颠倒 (先扣客户 $5,000 长效付费包却让月底免费赠金过期作废)，或违反 ASC 606 将未消耗完的年度预收款在首日全额确认为当月收入拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sas_ssp_451">🛑 捆绑合同人为将平台席位费设为 $0 以操纵跨财季收入确认时间表，偏离 FASB ASC 606 / IFRS 15 独立售价 (SSP) 合规走廊：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="sas_sav_409">🧑‍⚖️ Web IQ 启用超额水位自动升档阶梯包 (Auto-Tier Commit Rollover) 消除天价 Overage 账单拒付坏账并自动化四大审计分摊，单批立省/保全 $46,800.00 (净成本 $673,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sas-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5125,6 +5143,7 @@ function renderAll() {
   updateAgenticMultiPspSmartRoutingSandbox();
   updateAgenticCrossBorderDdpCustomsSandbox();
   updateAgenticGiftCardStoredValueSandbox();
+  updateB2bSaasHybridAsc606Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15422,6 +15441,55 @@ function updateAgenticGiftCardStoredValueSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ HSM Argon2id 验密 + 零卡买卡死循环 + FinCEN ≤$2,000 合规通过：已自动清算 (VERIFIED_GIFT_CARD_STORED_VALUE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零卡密撞库被盗、零盗刷信用卡买卡三角洗钱与无牌照 MSB 风险</strong>：智能体闭环礼品卡与储值批次已完成安全清算（<code>$490,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bSaasHybridAsc606Sandbox() {
+  var selEl = document.getElementById("sas-select");
+  var outEl = document.getElementById("sas-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sas_prr_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MID_CYCLE_DOWNGRADE_CASH_DRAIN_OR_PRORATION_DRIFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "SaaS 折算与防套利门禁检出，客户 <code>在周期中途升配旗舰版跑完高并发批处理后第 3 天立即降配并要求原路退回信用卡现金（Hit-and-Run 算力套利，必须仅转为不可提现的账单贷项通知单 Credit Note），或检出浮点数折算导致月末分项汇总出现美分尾差</code>（<code>exact_second_integer_proration_and_credit_note_downgrade_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sas_rev_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BUCKET_WATERFALL_INVERSION_OR_PREMATURE_REVREC_FAILED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "用量计量与收入子账本检出 <code>资源包扣减违反 FEFO（最早过期优先）原则先扣减了客户的长效付费预充包而让月底清零赠金白白作废，或违反 FASB ASC 606 将尚未履约消耗的年度预收款在收款首日全额确认为当期营业收入</code>（<code>fefo_bucket_waterfall_and_deferred_revenue_lock_valid == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sas_ssp_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ASC606_SSP_CORRIDOR_OR_AUDIT_TRAIL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>FASB ASC 606 / IASB IFRS 15 五步法独立售价 (SSP) 分摊准则</code>，检出捆绑合同中平台席位与 AI Token 的作价严重偏离历史 SSP 合理走廊（涉嫌跨期操纵收入），立即冻结入账并转交财务长复核！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "sas_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HYBRID_USAGE_COMMIT_ROLLOVER_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>超额用量自动阶梯升档（Auto-Tier Commit Rollover 消除天价 Overage 账单引发的客户拒付冲销）+ ASC 606 SSP 子账本自动分摊</code>，单批立省/保全 <code>$46,800.00</code>（净成本基准优化至 <code>$673,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 64位按秒折算守恒 + 降配转 Credit Note + FEFO 瀑布流 + ASC 606 SSP 通过：已自动入账 (VERIFIED_SAAS_HYBRID_ASC606_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零中途降配退现白嫖、零额度乱序错扣与四大审计重述风险</strong>：B2B SaaS 混合计费与收入确认批次已完成合规清算（<code>$720,000.00</code>）！" +
     "</div>";
 }
 

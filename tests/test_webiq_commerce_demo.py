@@ -12639,6 +12639,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-gift-card-stored-value-sandbox", demo_zh)
 
+    def test_b2b_saas_hybrid_usage_proration_asc606_revenue_recognition_mandate_vs_penny_drift_deferred_revenue_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_saas_hybrid_asc606_policy,
+        )
+
+        # 1. Verified exact-second integer proration + credit-note downgrade + FEFO + ASC 606 -> 200 OK ($720,000)
+        commit_ok = evaluate_b2b_saas_hybrid_asc606_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_saas_batch_cents, 72000000)
+
+        # 2. Hit-and-run mid-cycle downgrade cash refund or float proration drift -> 403 blocked in 11ms
+        prr_403 = evaluate_b2b_saas_hybrid_asc606_policy(
+            exact_second_integer_proration_and_credit_note_downgrade_verified=False,
+        )
+        self.assertFalse(prr_403.allowed)
+        self.assertEqual(prr_403.http_status, 403)
+        self.assertEqual(
+            prr_403.saas_asc606_lane,
+            "MID_CYCLE_DOWNGRADE_CASH_DRAIN_OR_PRORATION_DRIFT_BLOCKED",
+        )
+
+        # 3. Inverted bucket waterfall or premature Day-1 annual RevRec -> 422 blocked in 14ms
+        rev_422 = evaluate_b2b_saas_hybrid_asc606_policy(
+            fefo_bucket_waterfall_and_deferred_revenue_lock_valid=False,
+        )
+        self.assertFalse(rev_422.allowed)
+        self.assertEqual(rev_422.http_status, 422)
+        self.assertEqual(
+            rev_422.saas_asc606_lane,
+            "BUCKET_WATERFALL_INVERSION_OR_PREMATURE_REVREC_FAILED",
+        )
+
+        # 4. Web IQ detects distorted ASC 606 SSP corridor across POBs -> 451 blocked in 280ms
+        ssp_451 = evaluate_b2b_saas_hybrid_asc606_policy(
+            webiq_asc606_ssp_corridor_and_audit_trail_clean=False,
+        )
+        self.assertFalse(ssp_451.allowed)
+        self.assertEqual(ssp_451.http_status, 451)
+
+        # 5. Web IQ enables auto-tier commit rollover & SSP automation saving $46,800 ($673,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_saas_hybrid_asc606_policy(
+            auto_tier_commit_rollover_and_audit_savings_cents=4680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_saas_batch_cents, 67320000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_saas_hybrid_asc606_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-hybrid-asc606-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
