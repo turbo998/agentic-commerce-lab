@@ -29293,6 +29293,91 @@ def evaluate_b2b_chemical_toll_manufacturing_yield_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticAutoFniGapVscRefundDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_auto_fni_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+    *,
+    mandate_id: str = "agentic_auto_fni_gap_vsc_ancillary_refund_dealer_reserve_cap_mandate_2026",
+    early_payoff_prorata_gap_vsc_refund_and_dealer_clawback_verified: bool = True,
+    gap_ltv_80pct_floor_and_dealer_reserve_100bps_no_packing_verified: bool = True,
+    webiq_state_auto_refund_statute_and_ftc_cars_disclosure_clean: bool = True,
+    automated_early_payoff_prorata_refund_and_reserve_cap_savings_cents: int = 0,
+    auto_fni_cents: int = 59000000,
+) -> AgenticAutoFniGapVscRefundDecision:
+    """Evaluate Agentic Auto F&I GAP/VSC Early-Payoff Pro-Rata Refund & Dealer Reserve Cap policy."""
+    if not mandate_id.startswith("agentic_auto_fni_gap_vsc_ancillary_refund_dealer_reserve_cap_mandate_"):
+        return AgenticAutoFniGapVscRefundDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AUTO_FNI_GAP_VSC_REFUND_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_auto_fni_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not early_payoff_prorata_gap_vsc_refund_and_dealer_clawback_verified:
+        return AgenticAutoFniGapVscRefundDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNEARNED_GAP_VSC_PRO_RATA_REFUND_WITHHOLDING_OR_RULE78_PENALTY_BLOCKED",
+            action_pill="Send to a human",
+            settled_auto_fni_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not gap_ltv_80pct_floor_and_dealer_reserve_100bps_no_packing_verified:
+        return AgenticAutoFniGapVscRefundDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="WORTHLESS_LOW_LTV_GAP_WAIVER_OR_PAYMENT_PACKING_AND_EXCESS_DEALER_RESERVE",
+            action_pill="Send to a human",
+            settled_auto_fni_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_state_auto_refund_statute_and_ftc_cars_disclosure_clean:
+        return AgenticAutoFniGapVscRefundDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="STATE_AUTO_FNI_REFUND_STATUTE_OR_FTC_CARS_RULE_DISCLOSURE_VIOLATION_HOLD",
+            action_pill="Send to a human",
+            settled_auto_fni_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_early_payoff_prorata_refund_and_reserve_cap_savings_cents > 0:
+        return AgenticAutoFniGapVscRefundDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_EARLY_PAYOFF_PRO_RATA_REFUND_AND_RESERVE_CAP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_auto_fni_cents=max(
+                0,
+                auto_fni_cents - automated_early_payoff_prorata_refund_and_reserve_cap_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticAutoFniGapVscRefundDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_AUTO_FNI_GAP_VSC_SETTLED",
+        action_pill="Act automatically",
+        settled_auto_fni_cents=auto_fni_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -38936,6 +39021,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "stoichiometric_yield_deficit_block_latency_ms": tol_yld_403.latency_ms,
     }
 
+    fni_commit_ok = evaluate_agentic_auto_fni_gap_vsc_refund_policy()
+    fni_ref_403 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+        early_payoff_prorata_gap_vsc_refund_and_dealer_clawback_verified=False,
+    )
+    fni_pck_422 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+        gap_ltv_80pct_floor_and_dealer_reserve_100bps_no_packing_verified=False,
+    )
+    fni_sta_451 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+        webiq_state_auto_refund_statute_and_ftc_cars_disclosure_clean=False,
+    )
+    fni_sav_409 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+        automated_early_payoff_prorata_refund_and_reserve_cap_savings_cents=4720000,
+    )
+    agentic_auto_fni_gap_vsc_refund_guards = {
+        "all_passed": (
+            fni_commit_ok.allowed
+            and fni_commit_ok.settled_auto_fni_cents == 59000000
+            and not fni_ref_403.allowed
+            and fni_ref_403.http_status == 403
+            and not fni_pck_422.allowed
+            and fni_pck_422.http_status == 422
+            and not fni_sta_451.allowed
+            and fni_sta_451.http_status == 451
+            and not fni_sav_409.allowed
+            and fni_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_auto_fni_settlement_latency_ms": fni_commit_ok.latency_ms,
+        "unearned_gap_vsc_refund_withholding_block_latency_ms": fni_ref_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39234,6 +39349,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_senior_living_ccrc_pdpm_guards": agentic_senior_living_ccrc_pdpm_guards,
         "b2b_offshore_wind_wtiv_sov_charter_guards": b2b_offshore_wind_wtiv_sov_charter_guards,
         "b2b_chemical_toll_manufacturing_yield_guards": b2b_chemical_toll_manufacturing_yield_guards,
+        "agentic_auto_fni_gap_vsc_refund_guards": agentic_auto_fni_gap_vsc_refund_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47281,6 +47397,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="tol-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Auto F&I GAP/VSC Early-Payoff Pro-Rata Refund & Dealer Reserve Cap Sandbox -->
+      <div class="finops-box" id="agentic-auto-fni-gap-vsc-refund-sandbox" style="margin-top:12px;border-color:#60A5FA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚗 智能体汽车金融与保险 (Auto F&amp;I)：提前还贷未赚保费自动退还、反月供塞包与利差封顶 (`agentic_auto_fni_gap_vsc_ancillary_refund_dealer_reserve_cap_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 汽车金融 F&amp;I 放款与提前结清批次 ($590,000.00)、提前结清 Pro-Rata 未赚 VSC/GAP 退保、LTV&gt;=80% 门槛与利差封顶场景 (Auto F&amp;I GAP/VSC Scenario):</span></label>
+          <select id="fni-select" onchange="updateAgenticAutoFniGapVscRefundSandbox()">
+            <option value="fni_commit_ok">🚗 提前结清 Pro-Rata 未赚保费自动冲抵 + LTV&gt;=80% 合理 GAP + 利差加点 &lt;=100 bps 与州消保法合规：10ms 清算 $590,000.00! (Act automatically)</option>
+            <option value="fni_ref_403">🛑 车主在第 30 个月提前卖车/还清 72 期车贷，4S 店与延保商拒不退还剩余 $2,100 未赚 GAP/VSC 保费或违规按 Rule of 78s 克扣 → 11ms 触发 HTTP 403!</option>
+            <option value="fni_pck_422">🚨 对首付 35% (LTV 65% 零负资产风险) 客户强卖 $1,200 废纸 GAP 险、月供塞包 $699 车窗防盗刻字，或暗中加息 250 bps 吃回扣 → 14ms 触发 HTTP 422!</option>
+            <option value="fni_sta_451">🛑 违反加州 AB 2311 / 科罗拉多 HB 1188 强制自动退保法案期限，或缺失裸车 vs 含附加品双月供对比签名：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="fni_sav_409">🧑‍⚖️ Web IQ 自动从经销商月度返利储备池追回 70% 未赚延保佣金并削减超标利差回扣立省 $47,200.00 (净付 $542,800.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fni-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -48005,6 +48139,7 @@ function renderAll() {{
   updateAgenticSeniorLivingCcrcPdpmSandbox();
   updateB2bOffshoreWindWtivSovCharterSandbox();
   updateB2bChemicalTollManufacturingYieldSandbox();
+  updateAgenticAutoFniGapVscRefundSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -62070,6 +62205,52 @@ function updateB2bChemicalTollManufacturingYieldSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧪 成品+母液摩尔质量守恒 + 85% 精馏溶剂抵扣 + 折百干基与贵金属损耗合规：已自动清算 (VERIFIED_CHEMICAL_TOLL_MANUFACTURING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零谎报低收率偷截 7.5% 医药主原料、零回收旧溶剂当 100% 新料收费与 4% 钯碳侵吞</strong>：B2B 精细化工与医药受托加工批次已完成安全清算（<code>$750,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticAutoFniGapVscRefundSandbox() {{
+  var sel = document.getElementById("fni-select");
+  var outEl = document.getElementById("fni-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "fni_ref_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNEARNED_GAP_VSC_PRO_RATA_REFUND_WITHHOLDING_OR_RULE78_PENALTY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经审计车贷提前结清（<code>Early Payoff / Trade-In / Total Loss</code>）台账发现：车主在第 30 个月提前结清 72 期贷款，经销商与延保管理人却未按 <code>Pro-Rata 未到期比例</code>退还剩余 <code>$2,100 未赚 VSC/GAP 保费（含经销商揣进兜里的 70% 未赚佣金）</code>，或违规采用惩罚性 <code>Rule of 78s</code> 公式克扣退款（触发 <code>CFPB UDAAP</code> 执法红线），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fni_pck_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 WORTHLESS_LOW_LTV_GAP_WAIVER_OR_PAYMENT_PACKING_AND_EXCESS_DEALER_RESERVE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "客户首付达 35% 使得贷款价值比（<code>LTV = 65% &lt; 80% 门槛</code>，全损时永远不可能出现负资产差额），4S 店 F&amp;I 经理却通过月供塞包（<code>Payment Packing</code>）强行搭售 <code>$1,200 无效废纸 GAP 险 + $699 车窗防盗刻字</code>，或将银行 <code>5.49% Buy Rate</code> 暗中加息 <code>250 bps</code> 至 <code>7.99%</code> 套取高额利差回扣，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fni_sta_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STATE_AUTO_FNI_REFUND_STATUTE_OR_FTC_CARS_RULE_DISCLOSURE_VIOLATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：该批次违反州强制自动退保法案（如加州 <code>AB 2311</code> / 科罗拉多州 <code>HB 22-1188</code> 规定贷款提前结清必须自动冲抵或限期退付未赚 GAP 保费），或缺失 <code>FTC / CFPB</code> 要求的裸车现金价与双月供独立书面披露签名，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fni_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_EARLY_PAYOFF_PRO_RATA_REFUND_AND_RESERVE_CAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>贷款提前结清自动从经销商储备池 (Dealer Reserve Holdback) 扣回 70% 未赚延保佣金 + 利差加点硬封顶 100 bps</code>，单批立省 <code>$47,200.00</code>（净结算额优化至 <code>$542,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚗 提前结清 Pro-Rata 退保自动执行 + LTV&gt;=80% 合理 GAP + 利差 &lt;=100 bps 合规：已自动清算 (VERIFIED_AUTO_FNI_GAP_VSC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零提前卖车私吞 $2,100 未到期延保/GAP 保费、零向低 LTV 客户强卖废纸 GAP 与 250 bps 暗中加息</strong>：智能体汽车金融与保险批次已完成安全清算（<code>$590,000.00</code>）！" +
     "</div>";
 }}
 

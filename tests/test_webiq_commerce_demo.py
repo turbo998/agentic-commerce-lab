@@ -17279,6 +17279,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-chemical-toll-manufacturing-yield-sandbox", demo_zh)
 
+    def test_agentic_auto_fni_gap_vsc_prorata_refund_vs_payment_packing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_auto_fni_gap_vsc_refund_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant early-payoff pro-rata GAP/VSC refund & dealer clawback + LTV>=80% + <=100bps reserve -> 200 OK ($590,000.00)
+        ok_res = evaluate_agentic_auto_fni_gap_vsc_refund_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AUTO_FNI_GAP_VSC_SETTLED")
+        self.assertEqual(ok_res.settled_auto_fni_cents, 59000000)
+
+        # 2. Withholding unearned GAP/VSC refund upon early loan payoff or applying punitive Rule of 78s -> 403 Blocked
+        ref_403 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+            early_payoff_prorata_gap_vsc_refund_and_dealer_clawback_verified=False,
+        )
+        self.assertFalse(ref_403.allowed)
+        self.assertEqual(ref_403.http_status, 403)
+        self.assertEqual(
+            ref_403.decision_code,
+            "UNEARNED_GAP_VSC_PRO_RATA_REFUND_WITHHOLDING_OR_RULE78_PENALTY_BLOCKED",
+        )
+
+        # 3. Worthless GAP on low-LTV (<80%) loan, $699 VIN etch payment packing, or >100bps dealer reserve -> 422 Blocked
+        pck_422 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+            gap_ltv_80pct_floor_and_dealer_reserve_100bps_no_packing_verified=False,
+        )
+        self.assertFalse(pck_422.allowed)
+        self.assertEqual(pck_422.http_status, 422)
+        self.assertEqual(
+            pck_422.decision_code,
+            "WORTHLESS_LOW_LTV_GAP_WAIVER_OR_PAYMENT_PACKING_AND_EXCESS_DEALER_RESERVE",
+        )
+
+        # 4. State auto refund statute (CA AB 2311 / CO HB 1188) or FTC disclosure violation -> 451 Hold
+        sta_451 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+            webiq_state_auto_refund_statute_and_ftc_cars_disclosure_clean=False,
+        )
+        self.assertFalse(sta_451.allowed)
+        self.assertEqual(sta_451.http_status, 451)
+
+        # 5. Web IQ automated early-payoff pro-rata dealer commission clawback & reserve cap saving $47,200 ($542,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_auto_fni_gap_vsc_refund_policy(
+            automated_early_payoff_prorata_refund_and_reserve_cap_savings_cents=4720000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_auto_fni_cents, 54280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_auto_fni_gap_vsc_refund_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-auto-fni-gap-vsc-refund-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
