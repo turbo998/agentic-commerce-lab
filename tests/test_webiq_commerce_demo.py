@@ -12303,6 +12303,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-chargeback-ce30-sandbox", demo_zh)
 
+    def test_b2b_eucp_ebl_electronic_letter_of_credit_mletr_mandate_vs_paper_bl_demurrage_discrepancy_rejection_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_eucp_ebl_letter_of_credit_policy,
+        )
+
+        # 1. Verified MT700 45A mirror + 110% CIF insurance + <=21d DCSA eBL -> 200 OK ($920,000)
+        commit_ok = evaluate_b2b_eucp_ebl_letter_of_credit_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_lc_batch_cents, 92000000)
+
+        # 2. LLM paraphrased MT700 45A or CIF insurance < 110% -> 403 blocked in 11ms
+        dsc_403 = evaluate_b2b_eucp_ebl_letter_of_credit_policy(
+            mt700_45a_mirror_and_cif_insurance_110pct_verified=False,
+        )
+        self.assertFalse(dsc_403.allowed)
+        self.assertEqual(dsc_403.http_status, 403)
+        self.assertEqual(
+            dsc_403.eucp_ebl_lane,
+            "UCP600_MIRROR_OR_INSURANCE_110PCT_DISCREPANCY_BLOCKED",
+        )
+
+        # 3. Late presentation (>21d post-shipment) or unendorsed DCSA eBL -> 422 blocked in 14ms
+        lat_422 = evaluate_b2b_eucp_ebl_letter_of_credit_policy(
+            presentation_within_21d_and_dcsa_ebl_control_endorsed=False,
+        )
+        self.assertFalse(lat_422.allowed)
+        self.assertEqual(lat_422.http_status, 422)
+        self.assertEqual(
+            lat_422.eucp_ebl_lane,
+            "LATE_PRESENTATION_21D_OR_EBL_CONTROL_INVALID",
+        )
+
+        # 4. Web IQ detects vessel IMO sanctions port call or non-MLETR law -> 451 blocked in 280ms
+        san_451 = evaluate_b2b_eucp_ebl_letter_of_credit_policy(
+            webiq_mletr_jurisdiction_and_vessel_sanctions_clean=False,
+        )
+        self.assertFalse(san_451.allowed)
+        self.assertEqual(san_451.http_status, 451)
+
+        # 5. Web IQ credits DCSA eBL zero-demurrage & forfaiting discount saving $64,400 ($855,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_eucp_ebl_letter_of_credit_policy(
+            ebl_zero_demurrage_and_forfaiting_discount_savings_cents=6440000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_lc_batch_cents, 85560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_eucp_ebl_letter_of_credit_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-eucp-ebl-letter-of-credit-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

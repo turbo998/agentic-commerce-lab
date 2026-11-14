@@ -4374,6 +4374,24 @@
         <div id="ce3-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B eUCP v2.1 Electronic Letter of Credit & DCSA v3.0 eBL Mandate Sandbox (Round 199 FAQ Companion) -->
+      <div class="finops-box" id="b2b-eucp-ebl-letter-of-credit-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-euc-title">🚢 B2B 跨境电子信用证 (eUCP v2.1) 与电子提单 (DCSA v3.0 eBL) 零不符点交单：MT700 45A 逐字镜像与 MLETR 物权背书令牌 (b2b_eucp_ebl_letter_of_credit_mandate_...) vs 纸质提单滞港费与 70% 审单拒付决策器 (Round 199 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 跨境大宗信用证交单批次 ($920,000.00)、SWIFT MT700 45A 货描逐字镜像、UCP 600 Art. 28 ≥110% CIF 保额、装船后 ≤21 天交单期与 DCSA v3.0 eBL 背书核验场景 (B2B eUCP v2.1 &amp; eBL Scenario):</span></label>
+          <select id="euc-select" onchange="updateB2bEucpEblLetterOfCreditSandbox()">
+            <option value="euc_commit_ok">⚡ MT700 45A 货描 100% 镜像 + CIF 保额 110% + 装船后 3 天交单 + DCSA v3.0 eBL 物权背书：10ms 零不符点刚性兑付 $920,000.00! (Act automatically)</option>
+            <option value="euc_dsc_403">🛑 外贸 Agent 用 LLM 将 MT700 45A 货描同义改写，或 CIF 海运保单仅按 100% 发票额投保 (&lt;110% 违反 UCP 600 Art.18c/28f) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="euc_lat_422">🚨 装船后第 24 天才发起交单超出 UCP 600 Art.14(c) 21 天法定上限 (Late Presentation)，或电子提单缺失 Shipped on Board 排他控制权背书拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="euc_san_451">🛑 承运货轮 IMO 编号在近 180 天曾挂靠受制裁港口，或目的港司法管辖区尚未认可 MLETR 电子提单物权：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="euc_sav_409">🧑‍⚖️ Web IQ 核实启用 DCSA v3.0 eBL 10 分钟链上交单免除 14 天码头滞港滞箱费，并解锁零不符点福费廷低息贴现立省 $64,400.00 (净成本 $855,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="euc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5011,6 +5029,7 @@ function renderAll() {
   updateAgenticOpenBankingA2aVrpSandbox();
   updateB2bVcnLevel3InterchangeSandbox();
   updateAgenticChargebackCe30Sandbox();
+  updateB2bEucpEblLetterOfCreditSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15014,6 +15033,55 @@ function updateAgenticChargebackCe30Sandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ Visa CE 3.0 历史双单匹配 + 零双倍退款 + VDMP 0.18% 安全水位达标：已自动清算 (VERIFIED_CHARGEBACK_CE30_DEFENSE_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零第一方熟人恶退白嫖、零拒付期重复退款乌龙与 VDMP 超标封号</strong>：智能体订单争议与防恶退批次已完成保全清算（<code>$460,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bEucpEblLetterOfCreditSandbox() {
+  var selEl = document.getElementById("euc-select");
+  var outEl = document.getElementById("euc-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "euc_dsc_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UCP600_MIRROR_OR_INSURANCE_110PCT_DISCREPANCY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "信用证 AST 预审门禁检出，制单 Agent <code>违反 UCP 600 Art. 18(c) 擅自用 LLM 改写了 SWIFT MT700 Field 45A 货物描述，或提交的 CIF 海运保单投保金额低于发票总额的 110%（违反 UCP 600 Art. 28f ii，一旦交单将直接触发 MT734 拒付并丧失开证行付款担保）</code>（<code>mt700_45a_mirror_and_cif_insurance_110pct_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断带病交单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "euc_lat_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LATE_PRESENTATION_21D_OR_EBL_CONTROL_INVALID (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "交单时效与物权校验器检出 <code>交单日期距提单装船日已超过 21 个日历日（触发 UCP 600 Art. 14c 逾期交单不符点），或 DCSA v3.0 电子提单缺失带日期的 Shipped on Board 批注与排他控制权背书</code>（<code>presentation_within_21d_and_dcsa_ebl_control_endorsed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "euc_san_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MLETR_JURISDICTION_OR_VESSEL_SANCTIONS_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UNCITRAL MLETR / UK ETDA 电子提单采纳国法典与 OFAC/EU 航运制裁名单</code>，检出承运货轮 IMO 存在受制裁港挂靠记录或司法管辖冲突，立即冻结交单！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "euc_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 EUCP_EBL_FAST_NEGOTIATION_DEMURRAGE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>DCSA v3.0 电子提单 10 分钟跨国物权背书（彻底免除 14 天纸质寄单码头滞港滞箱费）+ eUCP v2.1 零不符点福费廷即期低息贴现</code>，单批立省 <code>$64,400.00</code>（净成本优化至 <code>$855,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ MT700 45A 逐字镜像 + 110% CIF 保额 + DCSA v3.0 eBL 背书通过：已自动交单承兑 (VERIFIED_EUCP_EBL_ZERO_DISCREPANCY_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零审单不符点拒付、零码头滞港费与行情下跌弃货风险</strong>：跨境大宗信用证交单批次已完成刚性兑付（<code>$920,000.00</code>）！" +
     "</div>";
 }
 
