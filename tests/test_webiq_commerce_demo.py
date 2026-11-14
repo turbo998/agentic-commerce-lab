@@ -12135,6 +12135,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-stablecoin-eip3009-sandbox", demo_zh)
 
+    def test_agentic_open_banking_a2a_fednow_sepa_instant_vrp_mandate_vs_irreversible_app_fraud_card_fee_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_open_banking_a2a_vrp_policy,
+        )
+
+        # 1. Verified ISO 20022 pain.013 RfP + FAPI 2.0 DPoP VRP + zero screen-scraping -> 200 OK ($480,000)
+        commit_ok = evaluate_agentic_open_banking_a2a_vrp_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_a2a_vrp_cents, 48000000)
+
+        # 2. Unprotected raw pacs.008 push (APP fraud risk) or missing pain.013 RfP -> 403 blocked in 11ms
+        rfp_403 = evaluate_agentic_open_banking_a2a_vrp_policy(
+            iso20022_pain013_rfp_and_escrow_safeguard_verified=False,
+        )
+        self.assertFalse(rfp_403.allowed)
+        self.assertEqual(rfp_403.http_status, 403)
+        self.assertEqual(
+            rfp_403.open_banking_a2a_lane,
+            "UNPROTECTED_RAW_PUSH_APP_FRAUD_OR_MISSING_RFP_BLOCKED",
+        )
+
+        # 3. Screen-scraping bank credentials or VRP periodic cap violation -> 422 blocked in 14ms
+        scr_422 = evaluate_agentic_open_banking_a2a_vrp_policy(
+            fapi2_dpop_vrp_caps_and_zero_screen_scraping_passed=False,
+        )
+        self.assertFalse(scr_422.allowed)
+        self.assertEqual(scr_422.http_status, 422)
+        self.assertEqual(
+            scr_422.open_banking_a2a_lane,
+            "SCREEN_SCRAPING_CREDENTIAL_THEFT_OR_VRP_CAP_BLOCKED",
+        )
+
+        # 4. Web IQ detects revoked Open Banking eIDAS cert or high PSR APP fraud risk -> 451 blocked in 280ms
+        app_451 = evaluate_agentic_open_banking_a2a_vrp_policy(
+            webiq_ob_directory_cert_and_psr_app_fraud_score_clean=False,
+        )
+        self.assertFalse(app_451.allowed)
+        self.assertEqual(app_451.http_status, 451)
+
+        # 5. Web IQ credits 2.9% card interchange elimination & instant discount saving $57,600 ($422,400 net) -> 409 Confirm
+        icf_409 = evaluate_agentic_open_banking_a2a_vrp_policy(
+            a2a_interchange_fee_elimination_and_instant_settlement_discount_cents=5760000,
+        )
+        self.assertFalse(icf_409.allowed)
+        self.assertEqual(icf_409.http_status, 409)
+        self.assertEqual(icf_409.settled_a2a_vrp_cents, 42240000)
+        self.assertEqual(icf_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_open_banking_a2a_vrp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-open-banking-a2a-vrp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
