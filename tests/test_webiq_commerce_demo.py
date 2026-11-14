@@ -16025,6 +16025,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-automotive-tier1-ppap-tooling-sandbox", demo_zh)
 
+    def test_agentic_workers_comp_omfs_implant_bill_review_wpi_vs_upcoding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_workers_comp_omfs_bill_review_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant state OMFS + manufacturer implant invoice (<=Cost+10%) + <=24 PT visits & AMA apportionment -> 200 OK ($710,000.00)
+        ok_res = evaluate_agentic_workers_comp_omfs_bill_review_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_WORKERS_COMP_OMFS_BILL_REVIEW_SETTLED")
+        self.assertEqual(ok_res.settled_workers_comp_batch_cents, 71000000)
+
+        # 2. 800% surgical implant markup without manufacturer purchase invoice or exceeding state OMFS -> 403 Blocked
+        imp_403 = evaluate_agentic_workers_comp_omfs_bill_review_policy(
+            state_omfs_ceiling_and_manufacturer_implant_invoice_cost_plus_10pct_verified=False,
+        )
+        self.assertFalse(imp_403.allowed)
+        self.assertEqual(imp_403.http_status, 403)
+        self.assertEqual(
+            imp_403.decision_code,
+            "OMFS_FEE_SCHEDULE_EXCEEDED_OR_MISSING_MANUFACTURER_IMPLANT_INVOICE_BLOCKED",
+        )
+
+        # 3. 90x passive PT/chiro visits beyond 24-visit ODG cap or $3,200 compounded pain cream -> 422 Blocked
+        odg_422 = evaluate_agentic_workers_comp_omfs_bill_review_policy(
+            cumulative_pt_chiro_visits_within_24_odg_cap_and_no_compounded_cream_verified=False,
+        )
+        self.assertFalse(odg_422.allowed)
+        self.assertEqual(odg_422.http_status, 422)
+        self.assertEqual(
+            odg_422.decision_code,
+            "UNAPPROVED_PT_CHIRO_VISITS_BEYOND_ODG_CAP_OR_COMPOUNDED_CREAM_UPCHARGE",
+        )
+
+        # 4. Inflated arithmetic AMA Guides WPI stacking or omitted pre-existing MRI apportionment -> 451 Hold
+        wpi_451 = evaluate_agentic_workers_comp_omfs_bill_review_policy(
+            webiq_ama_guides_combined_wpi_and_preexisting_apportionment_deducted_clean=False,
+        )
+        self.assertFalse(wpi_451.allowed)
+        self.assertEqual(wpi_451.http_status, 451)
+
+        # 5. Web IQ automated state OMFS repricing & pre-existing WPI apportionment saving $56,800 ($653,200 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_workers_comp_omfs_bill_review_policy(
+            automated_omfs_repricing_and_wpi_apportionment_savings_cents=5680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_workers_comp_batch_cents, 65320000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_workers_comp_omfs_bill_review_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-workers-comp-omfs-bill-review-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

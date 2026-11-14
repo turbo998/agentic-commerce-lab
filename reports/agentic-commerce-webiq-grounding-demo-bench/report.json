@@ -1395,6 +1395,11 @@
     "b2b_automotive_tier1_ppap_settlement_latency_ms": 10,
     "missing_ppap_ucc1_block_latency_ms": 11
   },
+  "agentic_workers_comp_omfs_bill_review_guards": {
+    "all_passed": true,
+    "agentic_workers_comp_omfs_settlement_latency_ms": 10,
+    "implant_invoice_omfs_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
