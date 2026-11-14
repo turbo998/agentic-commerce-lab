@@ -28613,6 +28613,91 @@ def evaluate_agentic_veterinary_pet_insurance_soap_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bIndustrialHazwasteRcraTsdfDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_hazwaste_rcra_tsdf_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+    *,
+    mandate_id: str = "b2b_industrial_hazardous_waste_rcra_emanifest_tsdf_incineration_btu_surcharge_mandate_2026",
+    epa_emanifest_final_tsdf_receipt_and_drum_certificate_of_destruction_verified: bool = True,
+    coliwasa_composite_btu_halogen_assay_and_no_phantom_overpack_verified: bool = True,
+    webiq_tsdf_rcra_part_b_permit_and_epa_echo_compliance_clean: bool = True,
+    automated_fuel_blending_btu_reclassification_and_tare_dedup_savings_cents: int = 0,
+    hazwaste_rcra_tsdf_cents: int = 49000000,
+) -> B2bIndustrialHazwasteRcraTsdfDecision:
+    """Evaluate B2B Industrial Hazardous Waste RCRA e-Manifest, TSDF CoD & BTU/Halogen Surcharge policy."""
+    if not mandate_id.startswith("b2b_industrial_hazardous_waste_rcra_emanifest_tsdf_incineration_btu_surcharge_mandate_"):
+        return B2bIndustrialHazwasteRcraTsdfDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INDUSTRIAL_HAZWASTE_RCRA_TSDF_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_hazwaste_rcra_tsdf_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not epa_emanifest_final_tsdf_receipt_and_drum_certificate_of_destruction_verified:
+        return B2bIndustrialHazwasteRcraTsdfDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="MISSING_EPA_EMANIFEST_FINAL_TSDF_RECEIPT_OR_CERTIFICATE_OF_DESTRUCTION_BLOCKED",
+            action_pill="Send to a human",
+            settled_hazwaste_rcra_tsdf_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not coliwasa_composite_btu_halogen_assay_and_no_phantom_overpack_verified:
+        return B2bIndustrialHazwasteRcraTsdfDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNSUBSTANTIATED_LOW_BTU_HALOGEN_SURCHARGE_OR_PHANTOM_OVERPACK_DRUM_FEE",
+            action_pill="Send to a human",
+            settled_hazwaste_rcra_tsdf_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_tsdf_rcra_part_b_permit_and_epa_echo_compliance_clean:
+        return B2bIndustrialHazwasteRcraTsdfDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="TSDF_RCRA_PART_B_PERMIT_VIOLATION_OR_EPA_ECHO_SIGNIFICANT_NONCOMPLIER_HOLD",
+            action_pill="Send to a human",
+            settled_hazwaste_rcra_tsdf_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_fuel_blending_btu_reclassification_and_tare_dedup_savings_cents > 0:
+        return B2bIndustrialHazwasteRcraTsdfDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_FUEL_BLENDING_BTU_RECLASSIFICATION_AND_TARE_DEDUP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_hazwaste_rcra_tsdf_cents=max(
+                0,
+                hazwaste_rcra_tsdf_cents - automated_fuel_blending_btu_reclassification_and_tare_dedup_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bIndustrialHazwasteRcraTsdfDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INDUSTRIAL_HAZWASTE_RCRA_TSDF_SETTLED",
+        action_pill="Act automatically",
+        settled_hazwaste_rcra_tsdf_cents=hazwaste_rcra_tsdf_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -38016,6 +38101,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unjustified_preexisting_or_bilateral_denial_block_latency_ms": pet_den_403.latency_ms,
     }
 
+    haz_commit_ok = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy()
+    haz_cod_403 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+        epa_emanifest_final_tsdf_receipt_and_drum_certificate_of_destruction_verified=False,
+    )
+    haz_btu_422 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+        coliwasa_composite_btu_halogen_assay_and_no_phantom_overpack_verified=False,
+    )
+    haz_echo_451 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+        webiq_tsdf_rcra_part_b_permit_and_epa_echo_compliance_clean=False,
+    )
+    haz_sav_409 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+        automated_fuel_blending_btu_reclassification_and_tare_dedup_savings_cents=4410000,
+    )
+    b2b_industrial_hazwaste_rcra_tsdf_guards = {
+        "all_passed": (
+            haz_commit_ok.allowed
+            and haz_commit_ok.settled_hazwaste_rcra_tsdf_cents == 49000000
+            and not haz_cod_403.allowed
+            and haz_cod_403.http_status == 403
+            and not haz_btu_422.allowed
+            and haz_btu_422.http_status == 422
+            and not haz_echo_451.allowed
+            and haz_echo_451.http_status == 451
+            and not haz_sav_409.allowed
+            and haz_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_hazwaste_rcra_tsdf_settlement_latency_ms": haz_commit_ok.latency_ms,
+        "missing_emanifest_or_cod_block_latency_ms": haz_cod_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38306,6 +38421,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_hospital_locum_travel_nurse_vms_guards": b2b_hospital_locum_travel_nurse_vms_guards,
         "b2b_textile_apparel_cmt_yy_aql_guards": b2b_textile_apparel_cmt_yy_aql_guards,
         "agentic_veterinary_pet_insurance_soap_guards": agentic_veterinary_pet_insurance_soap_guards,
+        "b2b_industrial_hazwaste_rcra_tsdf_guards": b2b_industrial_hazwaste_rcra_tsdf_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46209,6 +46325,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pet-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Hazardous Waste RCRA e-Manifest, TSDF CoD & BTU Surcharge Sandbox -->
+      <div class="finops-box" id="b2b-industrial-hazwaste-rcra-tsdf-sandbox" style="margin-top:12px;border-color:#FACC15;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">☣️ B2B 工业危废处置 (RCRA TSDF)：EPA e-Manifest 销毁证明 (CoD)、BTU 热值与 CERCLA 防火墙 (`b2b_industrial_hazardous_waste_rcra_emanifest_tsdf_incineration_btu_surcharge_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 季度工业危废 TSDF 处置批次 ($490,000.00)、EPA e-Manifest 桶级销毁证明 (CoD)、Coliwasa 热值 (BTU) 与 ECHO 合规场景 (Industrial HazWaste Scenario):</span></label>
+          <select id="haz-select" onchange="updateB2bIndustrialHazwasteRcraTsdfSandbox()">
+            <option value="haz_commit_ok">☣️ EPA e-Manifest 终签 + 桶级 CoD 销毁证明齐全 + Coliwasa 热值 (&gt;11k BTU) 与 ECHO 绿码：10ms 清算 $490,000.00! (Act automatically)</option>
+            <option value="haz_cod_403">🛑 危废在中转站滞留超 10 天未达末端 TSDF，或未出具绑定桶条码的最终焚烧销毁证明 (CoD，防 CERCLA 终身连带追责) → 11ms 触发 HTTP 403!</option>
+            <option value="haz_btu_422">🚨 承包商故意只抽桶底 15% 水层把高热值溶剂谎报成 3,200 BTU/lb 强收 $380/桶助燃罚金，或无破损证据乱收 $260 救生桶费 → 14ms 触发 HTTP 422!</option>
+            <option value="haz_echo_451">🛑 末端 TSDF 设施在 EPA ECHO 执法库中被列为严重违规者 (Significant Non-Complier) 或超 RCRA Part B 危废代码许可范围：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="haz_sav_409">🧑‍⚖️ Web IQ 依据出厂 Coliwasa 全液位留样将废溶剂重归水泥窑燃料调合 (Fuel Blending) 费率并按净重去皮立省 $44,100.00 (净付 $445,900.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="haz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -46925,6 +47059,7 @@ function renderAll() {{
   updateB2bHospitalLocumTravelNurseVmsSandbox();
   updateB2bTextileApparelCmtYyAqlSandbox();
   updateAgenticVeterinaryPetInsuranceSoapSandbox();
+  updateB2bIndustrialHazwasteRcraTsdfSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -60622,6 +60757,52 @@ function updateAgenticVeterinaryPetInsuranceSoapSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🐾 SOAP 365天治愈重置与双侧外伤核保合规 + 15位微芯片匹配 + NAIC/UCR 费率对齐：已自动直付清算 (VERIFIED_VETERINARY_PET_INSURANCE_DIRECT_PAY_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零借已痊愈偶发小病搞终身拒赔、零双侧连坐冤案与 400% 急诊院内化验宰客</strong>：智能体宠物医疗险与专科医院直付批次已完成安全清算（<code>$380,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bIndustrialHazwasteRcraTsdfSandbox() {{
+  var sel = document.getElementById("haz-select");
+  var outEl = document.getElementById("haz-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "haz_cod_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MISSING_EPA_EMANIFEST_FINAL_TSDF_RECEIPT_OR_CERTIFICATE_OF_DESTRUCTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验美国环保署 <code>EPA RCRAInfo e-Manifest</code> 系统发现：该批危废在中转站（<code>10-Day Transfer Facility</code>）超期滞留或尚未由末端 <code>TSDF</code> 焚烧厂签发桶级最终销毁证明（<code>Certificate of Destruction, CoD</code>），为彻底阻断《超级基金法》（<code>CERCLA</code>）终身连带追责，已在 11ms 内硬拦截放款！" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_btu_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUBSTANTIATED_LOW_BTU_HALOGEN_SURCHARGE_OR_PHANTOM_OVERPACK_DRUM_FEE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "产废工厂出厂全液位复合留样（<code>Coliwasa ASTM D240</code>）证实废溶剂热值达 <code>11,800 BTU/lb</code>（符合水泥窑燃料调合标准），但承包商仅抽取桶底水层谎报 <code>3,200 BTU/lb</code> 强收 <code>$380/桶低热值助燃附加费</code>，或对完好半空桶乱收 55 加仑满桶费与 <code>$260 救生桶 (Overpack)</code> 费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_echo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TSDF_RCRA_PART_B_PERMIT_VIOLATION_OR_EPA_ECHO_SIGNIFICANT_NONCOMPLIER_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>EPA ECHO</code> 执法数据库发现：目标末端 <code>TSDF</code> 设施当前被列为严重违规者（<code>Significant Non-Complier, SNC / HPV</code>），或其 <code>RCRA Part B Permit</code> 许可范围未涵盖本批次 <code>F003/P-listed</code> 危废代码，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_FUEL_BLENDING_BTU_RECLASSIFICATION_AND_TARE_DEDUP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Coliwasa 全液位复合热值 (&gt;8,000 BTU/lb) 自动重归水泥窑燃料调合费率 + 半桶残液按电子秤净重去皮结算</code>，单批立省 <code>$44,100.00</code>（净结算额优化至 <code>$445,900.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>☣️ EPA e-Manifest 终签 + 桶级 CoD 最终销毁证齐全 + BTU 热值与 ECHO 合规：已自动清算 (VERIFIED_INDUSTRIAL_HAZWASTE_RCRA_TSDF_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零中转站积压触发 CERCLA 超级基金追责、零桶底抽水虚报低热值罚金与 $260 虚假救生桶费</strong>：B2B 工业危废处置批次已完成安全清算（<code>$490,000.00</code>）！" +
     "</div>";
 }}
 

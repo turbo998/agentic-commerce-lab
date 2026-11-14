@@ -16823,6 +16823,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-veterinary-pet-insurance-soap-sandbox", demo_zh)
 
+    def test_b2b_industrial_hazwaste_rcra_emanifest_tsdf_btu_vs_cercla_liability_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant EPA e-Manifest final receipt & drum CoD + Coliwasa BTU assay + clean EPA ECHO -> 200 OK ($490,000.00)
+        ok_res = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_HAZWASTE_RCRA_TSDF_SETTLED")
+        self.assertEqual(ok_res.settled_hazwaste_rcra_tsdf_cents, 49000000)
+
+        # 2. Missing final TSDF e-Manifest receipt, >10-day transfer hold, or missing Certificate of Destruction (CoD) -> 403 Blocked
+        cod_403 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+            epa_emanifest_final_tsdf_receipt_and_drum_certificate_of_destruction_verified=False,
+        )
+        self.assertFalse(cod_403.allowed)
+        self.assertEqual(cod_403.http_status, 403)
+        self.assertEqual(
+            cod_403.decision_code,
+            "MISSING_EPA_EMANIFEST_FINAL_TSDF_RECEIPT_OR_CERTIFICATE_OF_DESTRUCTION_BLOCKED",
+        )
+
+        # 3. Bottom-layer water sample low-BTU surcharge fraud or phantom $260 salvage overpack drum fee -> 422 Blocked
+        btu_422 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+            coliwasa_composite_btu_halogen_assay_and_no_phantom_overpack_verified=False,
+        )
+        self.assertFalse(btu_422.allowed)
+        self.assertEqual(btu_422.http_status, 422)
+        self.assertEqual(
+            btu_422.decision_code,
+            "UNSUBSTANTIATED_LOW_BTU_HALOGEN_SURCHARGE_OR_PHANTOM_OVERPACK_DRUM_FEE",
+        )
+
+        # 4. TSDF listed as EPA ECHO Significant Non-Complier (SNC) or RCRA Part B waste-code permit violation -> 451 Hold
+        echo_451 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+            webiq_tsdf_rcra_part_b_permit_and_epa_echo_compliance_clean=False,
+        )
+        self.assertFalse(echo_451.allowed)
+        self.assertEqual(echo_451.http_status, 451)
+
+        # 5. Web IQ automated Fuel Blending BTU reclassification & partial-drum tare dedup saving $44,100 ($445,900 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_hazwaste_rcra_tsdf_policy(
+            automated_fuel_blending_btu_reclassification_and_tare_dedup_savings_cents=4410000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hazwaste_rcra_tsdf_cents, 44590000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_hazwaste_rcra_tsdf_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-hazwaste-rcra-tsdf-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
