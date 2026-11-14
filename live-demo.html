@@ -4914,6 +4914,24 @@
         <div id="cre-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Telecom Direct Carrier Billing (DCB), GSMA CAMARA & PSD2 Art. 3(l) Sandbox -->
+      <div class="finops-box" id="agentic-telecom-dcb-psd2-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">📱 智能体运营商话费代计费 (Direct Carrier Billing DCB) 防切网劫持、欧盟 PSD2 硬顶与防暗扣架构 (`agentic_telecom_dcb_header_enrichment_psd2_cap_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 运营商话费代计费结算批次 ($420,000.00)、GSMA CAMARA 验号防切网木马、欧盟 PSD2 Art. 3(l) 单笔 ≤€50 / 月累 ≤€300 豁免红线与 FCC 防暗扣场景 (Telecom DCB &amp; PSD2 Scenario):</span></label>
+          <select id="dcb-select" onchange="updateAgenticTelecomDcbPsd2Sandbox()">
+            <option value="dcb_commit_ok">📱 GSMA CAMARA 验号 + 端侧前景交互确认 + 单笔 ≤€50 &amp; 月累 ≤€300 + FCC 透明账单与 STOP 退订：10ms 清算 $420,000.00! (Act automatically)</option>
+            <option value="dcb_wap_403">🛑 恶意 APK 凌晨后台偷断 Wi-Fi 强切 4G/5G 并在透明 WebView 自动点击订购 (WAP Clickjacking / Toll Fraud 吸费木马) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="dcb_psd_422">🚨 单笔突破 €50 (或将 €120 订单拆成 3 笔 €40 绕过)、当月累计突破 €300 或违规用话费购买实物商品 (违反欧盟 PSD2 Art. 3(l)) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="dcb_fcc_451">🛑 将第三方增值服务扣费混入“基础通信套餐费”模糊暗塞 (违反美国 FCC 47 CFR § 64.2401 Anti-Cramming) 或缺失一键 STOP 退订：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="dcb_sav_409">🧑‍⚖️ Web IQ 启用 GSMA CAMARA 防木马网关与运营商 OCS 实时话费余额预锁消除高额坏账核减 (Haircut) 立省 $33,600.00 (净结算 $386,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dcb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5581,6 +5599,7 @@ function renderAll() {
   updateB2bGreenPowerPpaRecSandbox();
   updateAgenticEventTicketingEscrowSandbox();
   updateB2bCreTripleNetCamSandbox();
+  updateAgenticTelecomDcbPsd2Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17024,6 +17043,52 @@ function updateB2bCreTripleNetCamSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏢 GL CapEx 剔除 + ≤5% 可控 CAM 封顶 + 净销售 Breakpoint 通过：已自动清算 (VERIFIED_CRE_TRIPLE_NET_CAM_PERCENTAGE_RENT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零房东换屋顶 CapEx 违规转嫁、零 GLA 分母缩水猫腻与含税退货虚高抽成</strong>：B2B 商业地产三净租赁与抽成租金批次已完成安全清算（<code>$590,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticTelecomDcbPsd2Sandbox() {
+  var sel = document.getElementById("dcb-select");
+  var outEl = document.getElementById("dcb-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "dcb_wap_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WAP_CLICKJACKING_WIFI_DROP_OR_SILENT_SMS_TROJAN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到计费前 <code>&lt; 30 秒</code> 内发生非自然“Wi-Fi 瞬断强切 4G/5G 蜂窝网”且处于后台不可见透明 WebView（典型 <code>WAP Clickjacking / Fleeceware</code> 吸费木马特征）！已在 11ms 内硬拦截，防止引发海量投诉导致运营商 100% 罚没冻结结算款。" +
+      "</div>";
+    return;
+  }
+  if (v === "dcb_psd_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PSD2_ART3L_50EUR_300EUR_CAP_OR_PHYSICAL_GOODS_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到单笔金额突破 <code>&le; &euro;50.00</code> 上限（或将 <code>&euro;120</code> 订单拆分为 3 笔 <code>&euro;40</code> 规避监管）、自然月累计突破 <code>&le; &euro;300.00</code>，或企图用话费购买实物商品（违反欧盟 <code>PSD2 Article 3(l)</code> 与 <code>EBA Q&amp;A 2018_4031</code>），已在 14ms 内硬阻断并引导切换持牌银行卡通道！" +
+      "</div>";
+    return;
+  }
+  if (v === "dcb_fcc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FCC_TRUTH_IN_BILLING_CRAMMING_OR_STOP_OPT_OUT_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出话费账单未独立清晰列示第三方商户名称与客服电话（涉嫌 <code>FCC 47 CFR &sect; 64.2401 Cramming</code> 话费暗塞），或未下发含一键 <code>STOP</code> 退订指令的确认回执，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }
+  if (v === "dcb_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 CAMARA_ANTI_TOLL_FRAUD_AND_BAD_DEBT_HAIRCUT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>GSMA Open Gateway CAMARA 验号防木马网关 + 运营商 OCS 在线计费余额实时预锁（将预付费弃卡坏账核减率压降至 &lt;1.5%）</code>，单批挽回/立省 <code>$33,600.00</code>（净话费代计费实收结算额优化至 <code>$386,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📱 GSMA CAMARA 验号 + PSD2 €50/€300 刚性锁 + FCC 透明账单通过：已自动清算 (VERIFIED_TELECOM_DCB_PSD2_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零木马偷断 Wi-Fi 静默吸费、零 PSD2 无牌支付越界与 FCC Cramming 重罚风险</strong>：智能体运营商话费代计费批次已完成安全清算（<code>$420,000.00</code>）！" +
     "</div>";
 }
 

@@ -14003,6 +14003,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cre-triple-net-cam-sandbox", demo_zh)
 
+    def test_agentic_telecom_dcb_carrier_billing_psd2_cap_anti_cramming_mandate_vs_wap_clickjacking_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_telecom_dcb_psd2_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. GSMA CAMARA + zero Wi-Fi drop trojan + PSD2 €50/€300 cap + FCC clean ($420,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_telecom_dcb_psd2_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_dcb_batch_cents, 42000000)
+
+        # 2. WAP clickjacking Wi-Fi drop or silent SMS trojan -> 403 Blocked
+        wap_403 = evaluate_agentic_telecom_dcb_psd2_policy(
+            camara_number_verified_and_zero_wifi_drop_trojan=False,
+        )
+        self.assertFalse(wap_403.allowed)
+        self.assertEqual(wap_403.http_status, 403)
+        self.assertEqual(
+            wap_403.decision_code,
+            "WAP_CLICKJACKING_WIFI_DROP_OR_SILENT_SMS_TROJAN_BLOCKED",
+        )
+
+        # 3. PSD2 Art. 3(l) >€50 tx (or split smurfing), >€300 monthly cap, or physical goods -> 422 Blocked
+        psd_422 = evaluate_agentic_telecom_dcb_psd2_policy(
+            psd2_art3l_50eur_300eur_cap_and_digital_only_verified=False,
+        )
+        self.assertFalse(psd_422.allowed)
+        self.assertEqual(psd_422.http_status, 422)
+        self.assertEqual(
+            psd_422.decision_code,
+            "PSD2_ART3L_50EUR_300EUR_CAP_OR_PHYSICAL_GOODS_BREACH",
+        )
+
+        # 4. FCC 47 CFR § 64.2401 Truth-in-Billing cramming or missing STOP opt-out -> 451 Hold
+        fcc_451 = evaluate_agentic_telecom_dcb_psd2_policy(
+            webiq_fcc_truth_in_billing_and_stop_keyword_clean=False,
+        )
+        self.assertFalse(fcc_451.allowed)
+        self.assertEqual(fcc_451.http_status, 451)
+
+        # 5. Web IQ enables CAMARA anti-toll-fraud & OCS reservation saving $33,600 ($386,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_telecom_dcb_psd2_policy(
+            camara_anti_toll_fraud_and_haircut_savings_cents=3360000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_dcb_batch_cents, 38640000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_telecom_dcb_psd2_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-telecom-dcb-psd2-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
