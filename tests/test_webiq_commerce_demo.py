@@ -13713,6 +13713,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hazmat-dg-un383-imdg-sandbox", demo_zh)
 
+    def test_agentic_insurance_claim_parametric_clue_loss_payee_mandate_vs_ai_deepfake_damage_double_dip_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_insurance_claim_payout_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. C2PA+EDR matched + zero ISO ClaimSearch duplicate + Loss Payee split enforced ($640,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_insurance_claim_payout_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_claim_batch_cents, 64000000)
+
+        # 2. AI deepfake damage photo (0g EDR) or cross-carrier ISO ClaimSearch double-dip -> 403 Blocked
+        dfk_403 = evaluate_agentic_insurance_claim_payout_policy(
+            c2pa_edr_matched_and_zero_iso_duplicate_verified=False,
+        )
+        self.assertFalse(dfk_403.allowed)
+        self.assertEqual(dfk_403.http_status, 403)
+        self.assertEqual(
+            dfk_403.decision_code,
+            "AI_DEEPFAKE_PHOTO_OR_ISO_CLAIMSEARCH_DOUBLE_DIP_BLOCKED",
+        )
+
+        # 3. Bypassing secured bank Loss Payee / Lienholder on financed total loss -> 422 Blocked
+        lpy_422 = evaluate_agentic_insurance_claim_payout_policy(
+            elt_lienholder_loss_payee_split_verified=False,
+        )
+        self.assertFalse(lpy_422.allowed)
+        self.assertEqual(lpy_422.http_status, 422)
+        self.assertEqual(
+            lpy_422.decision_code,
+            "LIENHOLDER_LOSS_PAYEE_BYPASSED_ON_ENCUMBERED_ASSET",
+        )
+
+        # 4. Payee hits OFAC SDN sanctions list or unresolved statutory hospital lien -> 451 Hold
+        ofc_451 = evaluate_agentic_insurance_claim_payout_policy(
+            webiq_ofac_sanctions_and_medical_lien_clean=False,
+        )
+        self.assertFalse(ofc_451.allowed)
+        self.assertEqual(ofc_451.http_status, 451)
+
+        # 5. Web IQ enables C2PA+EDR anti-fraud & DRP direct-repair pricing saving $51,200 ($588,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_insurance_claim_payout_policy(
+            c2pa_edr_fraud_and_drp_direct_savings_cents=5120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_claim_batch_cents, 58880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_insurance_claim_payout_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-insurance-claim-payout-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
