@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg195" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060B18"/>
+      <stop offset="50%" stop-color="#0C172D"/>
+      <stop offset="100%" stop-color="#142646"/>
+    </linearGradient>
+    <linearGradient id="accent195" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg195)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0B1324" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent195)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">
+    Round 193 · B2B 采购智能体供应商准入 (KYB)、收款账户变更防 BEC 诈骗与 50% 股权穿透制裁门禁
+  </text>
+  <text x="52" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    B2B Vendor KYB &amp; Bank-Account-Change BEC Fraud Defense · Clearinghouse VoP/CoP TIN Lock, 72h Cooling &amp; UBO Sanctions vs. Email IBAN Hijack ($780,000)
+  </text>
+  <rect x="945" y="44" width="205" height="34" rx="17" fill="#092922" stroke="#10B981" stroke-width="1.5"/>
+  <text x="1047" y="66" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    VoP/CoP TIN · 72h Lock
+  </text>
+
+  <!-- Left Column: Failure Risks -->
+  <rect x="48" y="114" width="352" height="445" rx="12" fill="#16111D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#FCA5A5">
+    ❌ 传统凭邮件改账号与表层筛查三大灾难
+  </text>
+
+  <rect x="64" y="164" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    1. 商业邮件诈骗 (BEC) 伪造改号函洗劫 $780k
+  </text>
+  <text x="78" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 黑客攻破老供应商邮箱发送《银行账户变更通知 PDF》
+  </text>
+  <text x="78" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • Agent OCR 提取新 IBAN 直接覆盖 ERP 主数据未验税号
+  </text>
+  <text x="78" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • $780,000 货款秒进黑客洗钱骡子户，2 小时转加密货币归零
+  </text>
+
+  <rect x="64" y="294" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    2. 内部员工影子空壳公司 (Shell Vendor) 腐败套现
+  </text>
+  <text x="78" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 内部员工注册同名高仿皮包公司 (家庭住址重合、0 人参保)
+  </text>
+  <text x="78" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 或改号后 5 分钟内绕过冷却期发起紧急大额出款
+  </text>
+  <text x="78" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 利用尾料采购免招标通道输送数百万利益或加价 15%
+  </text>
+
+  <rect x="64" y="424" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="448" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    3. 漏检 OFAC 50% 股权穿透触发次级制裁巨额罚单
+  </text>
+  <text x="78" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 表面供应商不在 SDN 名单，但第三层母公司由被制裁方控股 55%
+  </text>
+  <text x="78" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 依据 OFAC 50% 规则自动视同受制裁实体，严格责任零豁免
+  </text>
+  <text x="78" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 加上二级皮包倒爷加价，单批多亏 $93,600+ 溢价与罚金风险
+  </text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="114" width="360" height="445" rx="12" fill="#0F1A2E" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="440" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#93C5FD">
+    🛡️ 5-Lane 供应商 KYB 与防 BEC 门禁 (10ms–280ms)
+  </text>
+
+  <rect x="436" y="164" width="328" height="68" rx="8" fill="#09221B" stroke="#10B981"/>
+  <text x="450" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    ⚡ HTTP 200 · Act automatically (10ms)
+  </text>
+  <text x="450" y="206" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#A7F3D0">
+    清算网 VoP/CoP 税号匹配 + 72h 冷却 + 零员工关联
+  </text>
+  <text x="450" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#6EE7B7">
+    + 4 层 UBO 穿透零制裁 → 自动安全结算 $780,000.00
+  </text>
+
+  <rect x="436" y="242" width="328" height="68" rx="8" fill="#2A1215" stroke="#EF4444"/>
+  <text x="450" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F87171">
+    🛑 HTTP 403 · 邮件改号/税号不匹配硬阻断 (11ms)
+  </text>
+  <text x="450" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FECACA">
+    企图凭邮件/PDF 改 IBAN 或 VoP/CoP 开户税号 != 原税号
+  </text>
+  <text x="450" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FCA5A5">
+    BEC_EMAIL_IBAN_HIJACK_OR_COP_TIN_MISMATCH_BLOCKED
+  </text>
+
+  <rect x="436" y="320" width="328" height="68" rx="8" fill="#2A1612" stroke="#F97316"/>
+  <text x="450" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FB923C">
+    🚨 HTTP 422 · 未满 72h 冷却/员工关联拦截 (14ms)
+  </text>
+  <text x="450" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FFEDD5">
+    改号未满 72h 强行出款、缺带外 Passkey 或撞库员工地址
+  </text>
+  <text x="450" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDBA74">
+    COOLING_OFF_BYPASS_OR_EMPLOYEE_SHELL_CONFLICT_BLOCKED
+  </text>
+
+  <rect x="436" y="398" width="328" height="68" rx="8" fill="#251329" stroke="#C084FC"/>
+  <text x="450" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#D8B4FE">
+    🛑 HTTP 451 · UBO 50% 制裁/零参保皮包冻结 (280ms)
+  </text>
+  <text x="450" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#F3E8FF">
+    Web IQ 穿透检出三层股东受制裁控股 &gt;=50% 或社保为 0
+  </text>
+  <text x="450" y="456" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#E9D5FF">
+    UBO_SANCTIONS_50PCT_TAINT_OR_ZERO_SOCIAL_SECURITY_HOLD
+  </text>
+
+  <rect x="436" y="476" width="328" height="68" rx="8" fill="#29200E" stroke="#F59E0B"/>
+  <text x="450" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FBBF24">
+    🧑‍⚖️ HTTP 409 · 剥离倒爷直连 OEM 原厂确认 (245ms)
+  </text>
+  <text x="450" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FEF3C7">
+    剔除二级皮包贸易商 12% 倒手加价直连原厂 + 免欺诈保费
+  </text>
+  <text x="450" y="534" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDE68A" font-weight="700">
+    立省 $93,600.00 (12.0%) → 净付 $686,400.00 (Confirm)
+  </text>
+
+  <!-- Right Column: Physics & FinOps Metrics -->
+  <rect x="800" y="114" width="352" height="445" rx="12" fill="#0B1D28" stroke="#10B981" stroke-width="1.5"/>
+  <text x="820" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#6EE7B7">
+    🔬 清算网税号不变量与股权穿透指标
+  </text>
+
+  <rect x="816" y="164" width="320" height="122" rx="8" fill="#0F2937" stroke="#10B981"/>
+  <text x="830" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">
+    清算网 VoP / CoP / Nacha 税号不变性
+  </text>
+  <text x="830" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 铁律: New_IBAN_TIN === Contracted_Vendor_TIN
+  </text>
+  <text x="830" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 变更隔离: 72 小时强制冷却期 + 历史通道 Passkey
+  </text>
+  <text x="830" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 内鬼排查: HR 员工住址/手机/亲属 PSI 零交集
+  </text>
+  <text x="830" y="270" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#A7F3D0" font-weight="600">
+    • 100% 免疫 BEC 邮件改号诈骗与内部影子空壳腐败
+  </text>
+
+  <rect x="816" y="298" width="320" height="118" rx="8" fill="#0F2937" stroke="#3B82F6"/>
+  <text x="830" y="322" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#93C5FD">
+    4 层 UBO 股权穿透 &amp; 原厂目录比价
+  </text>
+  <text x="830" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 制裁穿透: OFAC 50% / EU 25% 累计控制权图谱
+  </text>
+  <text x="830" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 实体经营门槛: 实缴社保参保人数 &gt;= 5 人
+  </text>
+  <text x="830" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#BAE6FD" font-weight="600">
+    • 自动识别零增值皮包倒爷并切换 OEM 原厂直采
+  </text>
+
+  <rect x="816" y="428" width="320" height="114" rx="8" fill="#09241C" stroke="#10B981"/>
+  <text x="830" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#34D399">
+    💰 Web IQ 原厂直采与防诈骗收益
+  </text>
+  <text x="830" y="474" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • B2B 供应商收款变更与尾料采购总额: $780,000.00
+  </text>
+  <text x="830" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 剥离二级倒爷直连 OEM + 免欺诈保费: -$93,600.00
+  </text>
+  <text x="830" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    • 净采购结算额: $686,400.00 (立省 12.0% 成本)
+  </text>
+
+  <!-- Bottom Banner -->
+  <rect x="48" y="574" width="1104" height="62" rx="10" fill="#0F172A" stroke="#334155"/>
+  <text x="68" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    🔑 架构师铁律：严禁让 Agent 凭邮件或 PDF 通知直接修改 ERP 供应商收款银行账号！必须绑定 `b2b_vendor_bec_kyb_mandate_` 令牌，
+  </text>
+  <text x="68" y="622" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" fill="#94A3B8">
+    强审清算网 VoP/CoP 开户税号不变性、72 小时冷却期 + 带外 Passkey 与 HR 关联筛查，并用 Web IQ 穿透 4 层 UBO 股权与原厂目录。
+  </text>
+</svg>

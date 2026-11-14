@@ -11967,6 +11967,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-wht-transfer-pricing-sandbox", demo_zh)
 
+    def test_b2b_vendor_onboarding_bank_account_change_bec_fraud_sanctions_mandate_vs_email_iban_hijack_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_vendor_bec_kyb_policy,
+        )
+
+        # 1. Verified clearinghouse CoP TIN match + 72h cooling + 4-tier UBO clean -> 200 OK ($780,000)
+        commit_ok = evaluate_b2b_vendor_bec_kyb_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_vendor_batch_cents, 78000000)
+
+        # 2. BEC email IBAN hijack or clearinghouse CoP TIN mismatch -> 403 blocked in 11ms
+        bec_403 = evaluate_b2b_vendor_bec_kyb_policy(
+            bank_cop_tin_invariance_and_zero_email_iban_override_verified=False,
+        )
+        self.assertFalse(bec_403.allowed)
+        self.assertEqual(bec_403.http_status, 403)
+        self.assertEqual(
+            bec_403.vendor_kyb_lane,
+            "BEC_EMAIL_IBAN_HIJACK_OR_COP_TIN_MISMATCH_BLOCKED",
+        )
+
+        # 3. 72h cooling-off bypass or employee shell-vendor collision -> 422 blocked in 14ms
+        shl_422 = evaluate_b2b_vendor_bec_kyb_policy(
+            cooling_off_72h_oob_passkey_and_zero_employee_shell_passed=False,
+        )
+        self.assertFalse(shl_422.allowed)
+        self.assertEqual(shl_422.http_status, 422)
+        self.assertEqual(
+            shl_422.vendor_kyb_lane,
+            "COOLING_OFF_BYPASS_OR_EMPLOYEE_SHELL_CONFLICT_BLOCKED",
+        )
+
+        # 4. Web IQ detects tier-3 UBO >=50% OFAC sanctions taint or zero headcount -> 451 blocked in 280ms
+        ubo_451 = evaluate_b2b_vendor_bec_kyb_policy(
+            webiq_ubo_50pct_sanctions_and_social_security_headcount_clean=False,
+        )
+        self.assertFalse(ubo_451.allowed)
+        self.assertEqual(ubo_451.http_status, 451)
+
+        # 5. Web IQ credits OEM direct catalog disintermediation & BEC insurance saving $93,600 ($686,400 net) -> 409 Confirm
+        oem_409 = evaluate_b2b_vendor_bec_kyb_policy(
+            oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents=9360000,
+        )
+        self.assertFalse(oem_409.allowed)
+        self.assertEqual(oem_409.http_status, 409)
+        self.assertEqual(oem_409.settled_vendor_batch_cents, 68640000)
+        self.assertEqual(oem_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_vendor_bec_kyb_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vendor-bec-kyb-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

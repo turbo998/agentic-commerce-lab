@@ -21258,6 +21258,96 @@ def evaluate_b2b_wht_transfer_pricing_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 193: B2B Vendor KYB, Bank-Change BEC Defense & 50% UBO Sanctions Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class B2bVendorBecKybVerdict:
+    allowed: bool
+    http_status: int
+    vendor_kyb_lane: str
+    settled_vendor_batch_cents: int
+    oem_direct_bec_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_b2b_vendor_bec_kyb_policy(
+    *,
+    gross_vendor_batch_cents: int = 78000000,
+    bank_cop_tin_invariance_and_zero_email_iban_override_verified: bool = True,
+    cooling_off_72h_oob_passkey_and_zero_employee_shell_passed: bool = True,
+    webiq_ubo_50pct_sanctions_and_social_security_headcount_clean: bool = True,
+    oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents: int = 0,
+) -> B2bVendorBecKybVerdict:
+    # 1. Email/PDF IBAN Hijack Attempt or Clearinghouse VoP/CoP TIN Mismatch -> HTTP 403
+    if not bank_cop_tin_invariance_and_zero_email_iban_override_verified:
+        return B2bVendorBecKybVerdict(
+            False,
+            403,
+            "BEC_EMAIL_IBAN_HIJACK_OR_COP_TIN_MISMATCH_BLOCKED",
+            0,
+            0,
+            "b2b_vendor_blocked_due_to_email_iban_override_or_clearinghouse_cop_tin_mismatch",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Bank-Change <72h Cooling-Off Bypass or Employee Shell-Vendor Conflict -> HTTP 422
+    if not cooling_off_72h_oob_passkey_and_zero_employee_shell_passed:
+        return B2bVendorBecKybVerdict(
+            False,
+            422,
+            "COOLING_OFF_BYPASS_OR_EMPLOYEE_SHELL_CONFLICT_BLOCKED",
+            0,
+            0,
+            "vendor_payout_rejected_for_72h_cooling_off_bypass_or_employee_address_shell_collision",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Tier-3 UBO >=50% OFAC Sanctions Taint or Zero-Employee Paper Shell via Web IQ -> HTTP 451
+    if not webiq_ubo_50pct_sanctions_and_social_security_headcount_clean:
+        return B2bVendorBecKybVerdict(
+            False,
+            451,
+            "UBO_SANCTIONS_50PCT_TAINT_OR_ZERO_SOCIAL_SECURITY_HOLD",
+            0,
+            0,
+            "webiq_detected_tier3_ubo_50pct_sanctioned_ownership_or_zero_social_security_headcount",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ OEM Direct Catalog Disintermediation + BEC Insurance Rebate -> HTTP 409 Confirm
+    if oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents > 0:
+        return B2bVendorBecKybVerdict(
+            False,
+            409,
+            "OEM_DIRECT_DISINTERMEDIATION_AND_BEC_INSURANCE_CONFIRM",
+            gross_vendor_batch_cents - oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents,
+            oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents,
+            "webiq_applied_oem_direct_catalog_disintermediation_and_bec_rebate_saving_93600_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified VoP/CoP TIN Match + 72h Cooling + Zero HR Collision + 4-Tier UBO Clean -> Settled
+    return B2bVendorBecKybVerdict(
+        True,
+        200,
+        "VERIFIED_B2B_VENDOR_KYB_BEC_SAFE_SETTLED",
+        gross_vendor_batch_cents,
+        0,
+        "clearinghouse_cop_tin_match_72h_oob_passkey_zero_employee_shell_and_ubo_clean_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -28097,6 +28187,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unwithheld_wht_block_latency_ms": wht_trc_403.latency_ms,
     }
 
+    # Round 193 (B2B Vendor KYB, Bank-Change BEC Defense & 50% UBO Sanctions Mandate)
+    kyb_commit_ok = evaluate_b2b_vendor_bec_kyb_policy()
+    kyb_bec_403 = evaluate_b2b_vendor_bec_kyb_policy(
+        bank_cop_tin_invariance_and_zero_email_iban_override_verified=False,
+    )
+    kyb_shl_422 = evaluate_b2b_vendor_bec_kyb_policy(
+        cooling_off_72h_oob_passkey_and_zero_employee_shell_passed=False,
+    )
+    kyb_ubo_451 = evaluate_b2b_vendor_bec_kyb_policy(
+        webiq_ubo_50pct_sanctions_and_social_security_headcount_clean=False,
+    )
+    kyb_oem_409 = evaluate_b2b_vendor_bec_kyb_policy(
+        oem_direct_catalog_disintermediation_and_bec_insurance_credit_cents=9360000,
+    )
+    b2b_vendor_bec_kyb_guards = {
+        "all_passed": (
+            kyb_commit_ok.allowed
+            and kyb_commit_ok.settled_vendor_batch_cents == 78000000
+            and not kyb_bec_403.allowed
+            and kyb_bec_403.http_status == 403
+            and not kyb_shl_422.allowed
+            and kyb_shl_422.http_status == 422
+            and not kyb_ubo_451.allowed
+            and kyb_ubo_451.http_status == 451
+            and not kyb_oem_409.allowed
+            and kyb_oem_409.action_pill == "Confirm"
+        ),
+        "b2b_vendor_bec_kyb_settlement_latency_ms": kyb_commit_ok.latency_ms,
+        "bec_iban_hijack_block_latency_ms": kyb_bec_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28302,6 +28423,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_scf_dynamic_discount_guards": b2b_scf_dynamic_discount_guards,
         "agentic_x402_mpp_streaming_guards": agentic_x402_mpp_streaming_guards,
         "b2b_wht_transfer_pricing_guards": b2b_wht_transfer_pricing_guards,
+        "b2b_vendor_bec_kyb_guards": b2b_vendor_bec_kyb_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34675,6 +34797,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="wht-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Vendor KYB, Bank-Change BEC Defense & 50% UBO Sanctions Mandate Sandbox (Round 193 FAQ Companion) -->
+      <div class="finops-box" id="b2b-vendor-bec-kyb-sandbox" style="margin-top:12px;border-color:#EF4444;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-kyb-title">🛡️ B2B 采购智能体供应商准入 (KYB)、收款账户变更防 BEC 诈骗与 50% 股权穿透架构：清算网 VoP/CoP 税号锁令牌 (vendor_bank_cop_mandate_...) vs 邮件 PDF 改号决策器 (Round 193 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. B2B 供应商收款银行变更与尾料采购批次 ($780,000.00)、清算网 VoP/CoP 开户税号比对/零邮件改号、72h 冷却期/HR 员工关联图谱与 Web IQ 4 层 UBO 制裁穿透/原厂直采场景 (B2B Vendor KYB &amp; BEC Defense Scenario):</span></label>
+          <select id="kyb-select" onchange="updateB2bVendorBecKybSandbox()">
+            <option value="kyb_commit_ok">⚡ 清算网 VoP/CoP 税号 100% 匹配 + 72h 冷却期满 + 零员工关联 + 4 层 UBO 穿透清白：10ms 自动结算 $780,000.00! (Act automatically)</option>
+            <option value="kyb_bec_403">🛑 黑客攻破供应商邮箱发来假《改号函 PDF》企图改写 ERP IBAN，清算网 VoP/CoP 检出新账号开户税号 != 原合同税号 (BEC 诈骗) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="kyb_shl_422">🚨 刚修改收款银行账号 10 分钟即企图绕过 72h 冷却期加急出款，或 HR 图谱检出新供应商注册地址与内部采购员家庭住址重合 (内鬼空壳) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="kyb_ubo_451">🛑 表面供应商不在黑名单，但向上穿透第 3 层离岸母公司由 OFAC SDN 受制裁实体持股 55% (&gt;=50% 规则染毒) 或社保参保为 0：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="kyb_oem_409">🧑‍⚖️ Web IQ 穿透识别二级皮包贸易商 12% 转手加价并自动路由至 OEM 原厂一级授权目录，叠加零 BEC 诈骗保费减免立省 $93,600.00 (净付 $686,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="kyb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -35306,6 +35446,7 @@ function renderAll() {{
   updateB2bScfDynamicDiscountSandbox();
   updateAgenticX402MppStreamingSandbox();
   updateB2bWhtTransferPricingSandbox();
+  updateB2bVendorBecKybSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -45015,6 +45156,55 @@ function updateB2bWhtTransferPricingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ WHT 源泉代扣 + e-TRC 协定验真 + OECD 四分位区间 [Q1, Q3] 达标：已自动清算 (VERIFIED_CROSS_BORDER_WHT_TRANSFER_PRICING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零应扣未扣税务重罚、零包税还原冤枉税与海关/税务反避税双重征税</strong>：跨国 B2B 软件特许权与关联采购批次已完成合规清算（<code>$500,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bVendorBecKybSandbox() {{
+  var selEl = document.getElementById("kyb-select");
+  var outEl = document.getElementById("kyb-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "kyb_bec_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BEC_EMAIL_IBAN_HIJACK_OR_COP_TIN_MISMATCH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "银行清算网收款人核验 (VoP/CoP/Nacha) 与主数据门禁检出，该请求 <code>试图仅凭邮件/PDF 直接修改 ERP 收款账号，或清算网返回新账号法定开户税号 TIN 与原合同供应商税号不匹配（典型 BEC 商业邮件诈骗）</code>（<code>bank_cop_tin_invariance_and_zero_email_iban_override_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$780,000.00</code> 放款并告警 SOC！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "kyb_shl_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 COOLING_OFF_BYPASS_OR_EMPLOYEE_SHELL_CONFLICT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "内控反腐败与冷却锁门禁检出 <code>收款账号变更未满 72 小时强制冷却期、缺失历史通道 Passkey 带外确认，或 HR 零知识图谱检出新供应商注册地址/电话与内部员工重合（疑似内鬼影子空壳公司）</code>（<code>cooling_off_72h_oob_passkey_and_zero_employee_shell_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "kyb_ubo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UBO_SANCTIONS_50PCT_TAINT_OR_ZERO_SOCIAL_SECURITY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 穿透 <code>4 层工商股权树与 OFAC SDN 50% 规则图谱</code>，检出第三层离岸母公司由受制裁实体控股 &gt;=50% 或实缴社保参保人数为 0，立即冻结准入与结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "kyb_oem_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 OEM_DIRECT_DISINTERMEDIATION_AND_BEC_INSURANCE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>剥离零增值二级皮包贸易商直连 OEM 原厂一级授权目录 + 零 BEC 欺诈保费减免</code>，自动消除转手加价立省 <code>$93,600.00</code>（净结算额降至 <code>$686,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 清算网 VoP/CoP 税号匹配 + 72h 冷却 + 4 层 UBO 穿透达标：已自动清算 (VERIFIED_B2B_VENDOR_KYB_BEC_SAFE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 BEC 邮件改号诈骗、零内部员工影子空壳与 OFAC 50% 隐蔽制裁染毒</strong>：B2B 供应商收款变更与尾料采购批次已完成安全结算（<code>$780,000.00</code>）！" +
     "</div>";
 }}
 
