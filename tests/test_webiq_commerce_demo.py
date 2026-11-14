@@ -13887,6 +13887,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-green-power-ppa-rec-sandbox", demo_zh)
 
+    def test_agentic_event_ticketing_rotating_safetix_resale_cap_escrow_mandate_vs_scalper_bot_screenshot_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_event_ticketing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 15s TOTP re-issued + <=1.10x resale cap + Doors_Open+24h escrow + FTC all-in ($450,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_event_ticketing_escrow_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ticketing_batch_cents, 45000000)
+
+        # 2. Static PDF/screenshot upload or BOTS Act scalper bot -> 403 Blocked
+        pdf_403 = evaluate_agentic_event_ticketing_escrow_policy(
+            totp_15s_reissued_and_bots_act_clean=False,
+        )
+        self.assertFalse(pdf_403.allowed)
+        self.assertEqual(pdf_403.http_status, 403)
+        self.assertEqual(
+            pdf_403.decision_code,
+            "STATIC_PDF_SCREENSHOT_TICKET_OR_BOTS_ACT_SCALPER_BLOCKED",
+        )
+
+        # 3. Resale price >1.10x face-value cap or pre-event seller payout -> 422 Blocked
+        cap_422 = evaluate_agentic_event_ticketing_escrow_policy(
+            resale_le_110pct_cap_and_post_event_escrow_verified=False,
+        )
+        self.assertFalse(cap_422.allowed)
+        self.assertEqual(cap_422.http_status, 422)
+        self.assertEqual(
+            cap_422.decision_code,
+            "RESALE_PRICE_CAP_EXCEEDED_OR_PRE_EVENT_PAYOUT_ESCROW_BREACH",
+        )
+
+        # 4. FTC 16 CFR Part 464 drip-pricing junk fee violation -> 451 Hold
+        ftc_451 = evaluate_agentic_event_ticketing_escrow_policy(
+            webiq_ftc_part464_upfront_all_in_price_clean=False,
+        )
+        self.assertFalse(ftc_451.allowed)
+        self.assertEqual(ftc_451.http_status, 451)
+
+        # 5. Web IQ enables barcode re-issuance & face-value exchange saving $36,000 ($414,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_event_ticketing_escrow_policy(
+            barcode_reissuance_and_face_value_savings_cents=3600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ticketing_batch_cents, 41400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_event_ticketing_escrow_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-event-ticketing-escrow-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
