@@ -17165,6 +17165,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-senior-living-ccrc-pdpm-sandbox", demo_zh)
 
+    def test_b2b_offshore_wind_wtiv_sov_charter_wave_hs_vs_weather_downtime_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_offshore_wind_wtiv_sov_charter_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant metocean buoy Hs & zero crane PLC fault + ISO 22192 Coriolis bunker + USCG Jones Act -> 200 OK ($4,200,000.00)
+        ok_res = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_OFFSHORE_WIND_WTIV_SOV_CHARTER_SETTLED")
+        self.assertEqual(ok_res.settled_offshore_wind_charter_cents, 420000000)
+
+        # 2. Crane/jacking/W2W breakdown disguised as paid Waiting on Weather (WOW) -> 403 Blocked
+        wow_403 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+            metocean_buoy_hs_and_zero_crane_dp2_gangway_plc_fault_for_wow_verified=False,
+        )
+        self.assertFalse(wow_403.allowed)
+        self.assertEqual(wow_403.http_status, 403)
+        self.assertEqual(
+            wow_403.decision_code,
+            "FABRICATED_WAITING_ON_WEATHER_DURING_CRANE_DP2_BREAKDOWN_OFFHIRE_BLOCKED",
+        )
+
+        # 3. Manual sounding-tape DP2 MGO bunker claim exceeding Coriolis meter & thruster SFOC curve -> 422 Blocked
+        bnk_422 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+            iso22192_coriolis_bunker_meter_and_thruster_sfoc_curve_verified=False,
+        )
+        self.assertFalse(bnk_422.allowed)
+        self.assertEqual(bnk_422.http_status, 422)
+        self.assertEqual(
+            bnk_422.decision_code,
+            "UNVERIFIED_DP2_BUNKER_CONSUMPTION_OR_EXCESS_SFOC_SOUNDING_DISCREPANCY",
+        )
+
+        # 4. U.S. Jones Act (46 U.S.C. 55102) coastwise violation or expired DNV/ABS DP FMEA class -> 451 Hold
+        jns_451 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+            webiq_uscg_jones_act_coastwise_and_dnv_dp_fmea_class_clean=False,
+        )
+        self.assertFalse(jns_451.allowed)
+        self.assertEqual(jns_451.http_status, 451)
+
+        # 5. Web IQ automated Off-Hire deduction & Coriolis bunker reconciliation saving $336,000 ($3,864,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+            automated_offhire_deduction_and_coriolis_bunker_reconciliation_savings_cents=33600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_offshore_wind_charter_cents, 386400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_offshore_wind_wtiv_sov_charter_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-offshore-wind-wtiv-sov-charter-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

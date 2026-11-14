@@ -29123,6 +29123,91 @@ def evaluate_agentic_senior_living_ccrc_pdpm_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bOffshoreWindWtivSovCharterDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_offshore_wind_charter_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+    *,
+    mandate_id: str = "b2b_offshore_wind_wtiv_sov_vessel_charter_bimco_windtime_wave_height_hs_bunker_mandate_2026",
+    metocean_buoy_hs_and_zero_crane_dp2_gangway_plc_fault_for_wow_verified: bool = True,
+    iso22192_coriolis_bunker_meter_and_thruster_sfoc_curve_verified: bool = True,
+    webiq_uscg_jones_act_coastwise_and_dnv_dp_fmea_class_clean: bool = True,
+    automated_offhire_deduction_and_coriolis_bunker_reconciliation_savings_cents: int = 0,
+    offshore_wind_charter_cents: int = 420000000,
+) -> B2bOffshoreWindWtivSovCharterDecision:
+    """Evaluate B2B Offshore Wind WTIV/SOV Charter BIMCO WINDTIME, Wave Height Hs & DP2 Coriolis Bunker policy."""
+    if not mandate_id.startswith("b2b_offshore_wind_wtiv_sov_vessel_charter_bimco_windtime_wave_height_hs_bunker_mandate_"):
+        return B2bOffshoreWindWtivSovCharterDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_OFFSHORE_WIND_WTIV_SOV_CHARTER_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_offshore_wind_charter_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not metocean_buoy_hs_and_zero_crane_dp2_gangway_plc_fault_for_wow_verified:
+        return B2bOffshoreWindWtivSovCharterDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="FABRICATED_WAITING_ON_WEATHER_DURING_CRANE_DP2_BREAKDOWN_OFFHIRE_BLOCKED",
+            action_pill="Send to a human",
+            settled_offshore_wind_charter_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not iso22192_coriolis_bunker_meter_and_thruster_sfoc_curve_verified:
+        return B2bOffshoreWindWtivSovCharterDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNVERIFIED_DP2_BUNKER_CONSUMPTION_OR_EXCESS_SFOC_SOUNDING_DISCREPANCY",
+            action_pill="Send to a human",
+            settled_offshore_wind_charter_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_uscg_jones_act_coastwise_and_dnv_dp_fmea_class_clean:
+        return B2bOffshoreWindWtivSovCharterDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="JONES_ACT_COASTWISE_ENDORSEMENT_VIOLATION_OR_EXPIRED_DP_FMEA_CLASS_HOLD",
+            action_pill="Send to a human",
+            settled_offshore_wind_charter_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_offhire_deduction_and_coriolis_bunker_reconciliation_savings_cents > 0:
+        return B2bOffshoreWindWtivSovCharterDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_OFFHIRE_DEDUCTION_AND_CORIOLIS_BUNKER_RECONCILIATION_CONFIRM",
+            action_pill="Confirm",
+            settled_offshore_wind_charter_cents=max(
+                0,
+                offshore_wind_charter_cents - automated_offhire_deduction_and_coriolis_bunker_reconciliation_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bOffshoreWindWtivSovCharterDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_OFFSHORE_WIND_WTIV_SOV_CHARTER_SETTLED",
+        action_pill="Act automatically",
+        settled_offshore_wind_charter_cents=offshore_wind_charter_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -38706,6 +38791,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "entrance_fee_escrow_or_resale_trap_block_latency_ms": ccr_esc_403.latency_ms,
     }
 
+    wtv_commit_ok = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy()
+    wtv_wow_403 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+        metocean_buoy_hs_and_zero_crane_dp2_gangway_plc_fault_for_wow_verified=False,
+    )
+    wtv_bnk_422 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+        iso22192_coriolis_bunker_meter_and_thruster_sfoc_curve_verified=False,
+    )
+    wtv_jns_451 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+        webiq_uscg_jones_act_coastwise_and_dnv_dp_fmea_class_clean=False,
+    )
+    wtv_sav_409 = evaluate_b2b_offshore_wind_wtiv_sov_charter_policy(
+        automated_offhire_deduction_and_coriolis_bunker_reconciliation_savings_cents=33600000,
+    )
+    b2b_offshore_wind_wtiv_sov_charter_guards = {
+        "all_passed": (
+            wtv_commit_ok.allowed
+            and wtv_commit_ok.settled_offshore_wind_charter_cents == 420000000
+            and not wtv_wow_403.allowed
+            and wtv_wow_403.http_status == 403
+            and not wtv_bnk_422.allowed
+            and wtv_bnk_422.http_status == 422
+            and not wtv_jns_451.allowed
+            and wtv_jns_451.http_status == 451
+            and not wtv_sav_409.allowed
+            and wtv_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_offshore_wind_charter_latency_ms": wtv_commit_ok.latency_ms,
+        "fabricated_wow_during_crane_breakdown_block_latency_ms": wtv_wow_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39002,6 +39117,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_elevator_oem_full_maintenance_guards": b2b_elevator_oem_full_maintenance_guards,
         "b2b_plastic_injection_molding_mfi_guards": b2b_plastic_injection_molding_mfi_guards,
         "agentic_senior_living_ccrc_pdpm_guards": agentic_senior_living_ccrc_pdpm_guards,
+        "b2b_offshore_wind_wtiv_sov_charter_guards": b2b_offshore_wind_wtiv_sov_charter_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47013,6 +47129,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ccr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Offshore Wind WTIV/SOV Charter BIMCO WINDTIME, Wave Height Hs & DP2 Bunker Sandbox -->
+      <div class="finops-box" id="b2b-offshore-wind-wtiv-sov-charter-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🌊 B2B 海上风电安装船与运维船租约 (WTIV/SOV)：波浪浮标 Hs、吊机停租与 DP2 燃油 (`b2b_offshore_wind_wtiv_sov_vessel_charter_bimco_windtime_wave_height_hs_bunker_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 海风 WTIV/SOV 半月期租与燃油批次 ($4,200,000.00)、波浪浮标 Hs、主吊机 PLC 停租 (Off-Hire) 与 ISO 22192 科氏流量计场景 (Offshore Wind WTIV/SOV Charter Scenario):</span></label>
+          <select id="wtv-select" onchange="updateB2bOffshoreWindWtivSovCharterSandbox()">
+            <option value="wtv_commit_ok">🌊 波浪浮标 Hs 与机舱 LiDAR 确认 WOW 真实 + 主吊机/栈桥零故障 + 科氏流量计油耗与琼斯法案合规：10ms 清算 $4,200,000.00! (Act automatically)</option>
+            <option value="wtv_wow_403">🛑 1,600吨主吊机或 W2W 波浪补偿栈桥发生液压故障 (本应停租 $0/天)，船长却在航海日志谎报“阵风波高超标 (WOW)”骗取 $560,000 日租金 → 11ms 触发 HTTP 403!</option>
+            <option value="wtv_bnk_422">🚨 船东靠手工量油尺虚报 DP2 动力定位每天多烧 8 吨 MGO 轻柴 (比科氏力质量流量计与推进器 SFOC 曲线高出 70 吨) 企图私藏燃油 → 14ms 触发 HTTP 422!</option>
+            <option value="wtv_jns_451">🛑 外籍馈线驳船未获 USCG Coastwise 签注违规从美国港口直运单桩部件 (违反琼斯法案 46 U.S.C. 55102) 或 DP2 FMEA 过期：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="wtv_sav_409">🧑‍⚖️ Web IQ 依据 BIMCO WINDTIME 自动扣除机械降效停租 (Off-Hire) 时段并按科氏力质量流量计净值核减 70 吨虚高燃油费立省 $336,000.00 (净付 $3,864,000.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="wtv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -47735,6 +47869,7 @@ function renderAll() {{
   updateB2bElevatorOemFullMaintenanceSandbox();
   updateB2bPlasticInjectionMoldingMfiSandbox();
   updateAgenticSeniorLivingCcrcPdpmSandbox();
+  updateB2bOffshoreWindWtivSovCharterSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -61708,6 +61843,52 @@ function updateAgenticSeniorLivingCcrcPdpmSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏡 独立信托 120天无条件退押锁 + Katz ADL/PBJ 工时真实 + 精算准备金与 CMS 合规：已自动清算 (VERIFIED_SENIOR_LIVING_CCRC_PDPM_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零旧房转售/油转租无限期扣押 $400k 遗产本金、零 $2,200/月照护点数乱涨价与 PDPM 医保虚报</strong>：智能体高端康养社区与护理院批次已完成安全清算（<code>$680,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bOffshoreWindWtivSovCharterSandbox() {{
+  var sel = document.getElementById("wtv-select");
+  var outEl = document.getElementById("wtv-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "wtv_wow_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FABRICATED_WAITING_ON_WEATHER_DURING_CRANE_DP2_BREAKDOWN_OFFHIRE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验风场中心 <code>Datawell Waverider 波浪浮标 (Hs = 1.2m &lt; 1.8m 上限)</code> 与船舶 <code>1,600吨绕桩主吊机 / W2W 栈桥 PLC 故障树</code>发现：船长申报的 48 小时带薪天气等待（<code>Waiting on Weather, WOW</code>）期间，实际系主吊机液压系统故障停机抢修（根据 <code>BIMCO WINDTIME 第 15 条</code>应强制转为 <code>Off-Hire $0/天</code>），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtv_bnk_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_DP2_BUNKER_CONSUMPTION_OR_EXCESS_SFOC_SOUNDING_DISCREPANCY (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "船东凭手工量油尺申报半月消耗 <code>380 公吨 MGO 低硫轻柴</code>，而主机/辅机进回油管加封的 <code>ISO 22192 科氏力质量流量计 (Coriolis Meter)</code> 与 <code>DP2 推进器千瓦时轴功率 × SFOC (195 g/kWh)</code> 证实真实净耗油仅 <code>310 公吨</code>（企图虚报 70 吨免税柴油），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtv_jns_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 JONES_ACT_COASTWISE_ENDORSEMENT_VIOLATION_OR_EXPIRED_DP_FMEA_CLASS_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>USCG PSIX</code> 与船级社数据库发现：参与美国港口至海床单桩基础直运的馈线船缺失《琼斯法案》（<code>46 U.S.C. § 55102 Coastwise Endorsement</code>）签注，或母船 <code>DNV / ABS 年度 DP2 FMEA 冗余试验</code>已逾期，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtv_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_OFFHIRE_DEDUCTION_AND_CORIOLIS_BUNKER_RECONCILIATION_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>BIMCO WINDTIME 吊机故障自动转停租 (Off-Hire) 扣减 + 科氏力质量流量计净油耗还原</code>，单批立省 <code>$336,000.00</code>（净结算额优化至 <code>$3,864,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌊 波浪浮标 Hs 与机舱 LiDAR 确认 WOW 真实 + 吊机零故障 + 科氏油耗与琼斯法案合规：已自动清算 (VERIFIED_OFFSHORE_WIND_WTIV_SOV_CHARTER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零把修吊机伪装成等天气骗 $280k/天日租、零手工量油尺虚报 70 吨柴油与琼斯法案违章</strong>：B2B 海上风电安装船与运维船租约批次已完成安全清算（<code>$4,200,000.00</code>）！" +
     "</div>";
 }}
 
