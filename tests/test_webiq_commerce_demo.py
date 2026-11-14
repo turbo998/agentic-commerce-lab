@@ -14873,6 +14873,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-specialty-pharmacy-rems-sandbox", demo_zh)
 
+    def test_b2b_freight_broker_anti_double_brokering_detention_lumper_mandate_vs_load_hijack_lumper_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_freight_broker_double_brokering_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Matched ELD-VIN & MC/DOT + on-time geofence + digital lumper ($570,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_freight_broker_double_brokering_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_freight_broker_batch_cents, 57000000)
+
+        # 2. Unauthorized Double-Brokering or Chameleon Carrier ELD-VIN mismatch -> 403 Blocked
+        dbl_403 = evaluate_b2b_freight_broker_double_brokering_policy(
+            mc_dot_eld_vin_matches_tendered_carrier_and_no_rebroker_verified=False,
+        )
+        self.assertFalse(dbl_403.allowed)
+        self.assertEqual(dbl_403.http_status, 403)
+        self.assertEqual(
+            dbl_403.decision_code,
+            "UNAUTHORIZED_DOUBLE_BROKERING_OR_CHAMELEON_CARRIER_ELD_MISMATCH_BLOCKED",
+        )
+
+        # 3. Late arrival billing detention or handwritten cash lumper slip -> 422 Blocked
+        det_422 = evaluate_b2b_freight_broker_double_brokering_policy(
+            edi214_yard_geofence_detention_and_digital_lumper_receipt_verified=False,
+        )
+        self.assertFalse(det_422.allowed)
+        self.assertEqual(det_422.http_status, 422)
+        self.assertEqual(
+            det_422.decision_code,
+            "UNVERIFIED_DOCK_DETENTION_PADDING_OR_HANDWRITTEN_LUMPER_CASH_FRAUD",
+        )
+
+        # 4. Lapsed FMCSA BMC-84 $75k bond or cargo policy unattended-vehicle exclusion -> 451 Hold
+        ins_451 = evaluate_b2b_freight_broker_double_brokering_policy(
+            webiq_fmcsa_bmc84_75k_bond_and_cargo_insurance_active_clean=False,
+        )
+        self.assertFalse(ins_451.allowed)
+        self.assertEqual(ins_451.http_status, 451)
+
+        # 5. Web IQ Drop-and-Hook trailer pool & zero-detention saving $45,600 ($524,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_freight_broker_double_brokering_policy(
+            drop_and_hook_trailer_pool_and_zero_detention_savings_cents=4560000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_freight_broker_batch_cents, 52440000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_freight_broker_double_brokering_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-freight-broker-double-brokering-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
