@@ -16994,6 +16994,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-corporate-relocation-hhg-bvo-sandbox", demo_zh)
 
+    def test_b2b_elevator_oem_full_maintenance_asme_mcp_vs_vandalism_exclusion_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_elevator_oem_full_maintenance_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 3-point hoistway NFC (>=45m) & entrapment SLA + IEEE 519 PQ verified + clean DOB Cat-1/5 -> 200 OK ($540,000.00)
+        ok_res = evaluate_b2b_elevator_oem_full_maintenance_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ELEVATOR_OEM_FULL_MAINTENANCE_SETTLED")
+        self.assertEqual(ok_res.settled_elevator_oem_maintenance_cents, 54000000)
+
+        # 2. 5-minute lobby ghost PM visit (missing pit/car-top NFC) or >30m entrapment callback SLA breach -> 403 Blocked
+        nfc_403 = evaluate_b2b_elevator_oem_full_maintenance_policy(
+            three_point_hoistway_nfc_45min_and_entrapment_sla_30min_verified=False,
+        )
+        self.assertFalse(nfc_403.allowed)
+        self.assertEqual(nfc_403.http_status, 403)
+        self.assertEqual(
+            nfc_403.decision_code,
+            "GHOST_PREVENTIVE_MAINTENANCE_VISIT_OR_ENTRAPMENT_CALLBACK_SLA_BREACH_BLOCKED",
+        )
+
+        # 3. Unsubstantiated $4,200 "vandalism / power surge" exclusion contradicted by IEEE 519 PQ meter -> 422 Blocked
+        van_422 = evaluate_b2b_elevator_oem_full_maintenance_policy(
+            ieee519_pq_waveform_and_cctv_proof_for_vandalism_extras_verified=False,
+        )
+        self.assertFalse(van_422.allowed)
+        self.assertEqual(van_422.http_status, 422)
+        self.assertEqual(
+            van_422.decision_code,
+            "UNSUBSTANTIATED_VANDALISM_POWER_SURGE_EXCLUSION_OR_OBSOLESCENCE_PARTS_GOUGING",
+        )
+
+        # 4. Expired ASME A17.1 Cat-1/Cat-5 load test filing in municipal DOB or unlicensed mechanic -> 451 Hold
+        cat_451 = evaluate_b2b_elevator_oem_full_maintenance_policy(
+            webiq_municipal_dob_cat1_cat5_load_test_and_qei_license_clean=False,
+        )
+        self.assertFalse(cat_451.allowed)
+        self.assertEqual(cat_451.http_status, 451)
+
+        # 5. Web IQ automated missed-MCP proration & bogus vandalism extra strip saving $48,600 ($491,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_elevator_oem_full_maintenance_policy(
+            automated_mcp_visit_proration_and_bogus_vandalism_extra_strip_cents=4860000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_elevator_oem_maintenance_cents, 49140000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_elevator_oem_full_maintenance_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-elevator-oem-full-maintenance-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
