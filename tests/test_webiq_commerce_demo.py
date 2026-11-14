@@ -14119,6 +14119,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ocean-freight-dnd-fmc-sandbox", demo_zh)
 
+    def test_b2b_clinical_trial_patient_stipend_cro_blinded_hipaa_mandate_vs_pii_unblinding_phantom_enrollment_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_clinical_trial_stipend_cro_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 0-Byte Sponsor PII + Central Lab 3-way match + IRB prorated stipend ($610,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_clinical_trial_stipend_cro_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_clinical_batch_cents, 61000000)
+
+        # 2. Sponsor PII unblinding leak or phantom subject with 0 central-lab samples -> 403 Blocked
+        pii_403 = evaluate_b2b_clinical_trial_stipend_cro_policy(
+            sponsor_zero_pii_blinded_and_central_lab_3way_verified=False,
+        )
+        self.assertFalse(pii_403.allowed)
+        self.assertEqual(pii_403.http_status, 403)
+        self.assertEqual(
+            pii_403.decision_code,
+            "SPONSOR_PII_UNBLINDING_LEAK_OR_PHANTOM_SUBJECT_NO_LAB_SAMPLE_BLOCKED",
+        )
+
+        # 3. Coercive completion bonus (FDA 21 CFR § 50.20) or IRB stipend cap breach -> 422 Blocked
+        irb_422 = evaluate_b2b_clinical_trial_stipend_cro_policy(
+            irb_prorated_per_visit_no_coercive_bonus_verified=False,
+        )
+        self.assertFalse(irb_422.allowed)
+        self.assertEqual(irb_422.http_status, 422)
+        self.assertEqual(
+            irb_422.decision_code,
+            "IRB_STIPEND_CAP_BREACH_OR_COERCIVE_COMPLETION_BONUS_LOCK",
+        )
+
+        # 4. Missing CMS Open Payments Sunshine Act NPI log or unblinded 1099-MISC -> 451 Hold
+        sun_451 = evaluate_b2b_clinical_trial_stipend_cro_policy(
+            webiq_sunshine_act_npi_and_blinded_1099_clean=False,
+        )
+        self.assertFalse(sun_451.allowed)
+        self.assertEqual(sun_451.http_status, 451)
+
+        # 5. Web IQ blocks phantom grants via Central Lab 3-way match saving $48,800 ($561,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_clinical_trial_stipend_cro_policy(
+            central_lab_3way_and_retention_savings_cents=4880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_clinical_batch_cents, 56120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_clinical_trial_stipend_cro_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-clinical-trial-stipend-cro-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

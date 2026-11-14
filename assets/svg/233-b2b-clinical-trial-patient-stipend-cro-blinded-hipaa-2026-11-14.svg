@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg233" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B132B"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#134E4A"/>
+    </linearGradient>
+    <linearGradient id="tel233" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="red233" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg233)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="52" y="40" width="215" height="26" rx="13" fill="url(#tel233)"/>
+  <text x="159" y="57" fill="#042F2E" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">ROUND 231 · CLINICAL TRIAL &amp; CRO</text>
+  <text x="282" y="58" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="18.5" font-weight="800">B2B 临床试验受试者双盲去标识化代发、防 CRO 幽灵入组与 IRB 反诱导架构</text>
+  <text x="282" y="85" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-size="12.5">药企侧 0-Byte PII 防破盲 + 中心实验室血样三单匹配令牌 (`b2b_clinical_trial_patient_stipend_cro_blinded_hipaa_mandate_...`)</text>
+
+  <!-- Left Card: Anti-Pattern -->
+  <rect x="36" y="124" width="548" height="275" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="54" y="140" width="512" height="32" rx="6" fill="url(#red233)"/>
+  <text x="310" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">❌ 传统反模式：药企直看患者真名触发破盲与 HIPAA 罚单 + 幽灵受试者骗经费</text>
+
+  <text x="56" y="196" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 药企财务直付患者个人银行卡泄露真名 + 分中心编造幽灵受试者：</text>
+  <text x="56" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 药企 ERP 直接采集患者姓名/SSN，违反 HIPAA 并导致双盲临床试验破盲作废；</text>
+  <text x="56" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 黑心分中心在 EDC 凭空编造 20 个假病人 (无中心实验室血样)，骗走 $50 万入组费！</text>
+
+  <text x="56" y="265" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 将 80% 补贴捆绑在末次访视强迫患者隐瞒严重不良反应 (SAE)：</text>
+  <text x="56" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 违反美国 FDA 21 CFR § 50.20 与伦理委员会 (IRB) 反金钱胁迫诱导准则。</text>
+
+  <text x="56" y="315" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. 漏登美国阳光法案 (Sunshine Act) 主研医生 NPI 或税表泄露病种：</text>
+  <text x="56" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 向研究者医生付款未报 CMS Open Payments，或由肿瘤项目部直发 1099 税表泄露隐私。</text>
+
+  <rect x="56" y="352" width="508" height="32" rx="6" fill="#450A0A" stroke="#DC2626"/>
+  <text x="310" y="373" fill="#FECACA" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">GATE BLOCKS: HTTP 403 (11ms PII Leak/Phantom) | HTTP 422 (14ms IRB Coercive Bonus)</text>
+
+  <!-- Right Card: Recommended Architecture -->
+  <rect x="616" y="124" width="548" height="275" rx="12" fill="#0F292A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="634" y="140" width="512" height="32" rx="6" fill="url(#tel233)"/>
+  <text x="890" y="161" fill="#042F2E" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">✅ 推荐架构：BAA 双盲受托隔离舱 + 中心实验室血样三单匹配 + IRB 按次网关</text>
+
+  <text x="636" y="196" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. 药企侧 0-Byte 患者 PII 隔离 + EDC/中心实验室血样/eCOA 三单匹配：</text>
+  <text x="636" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 药企账本仅见 Subject_UUID，由独立 BAA 受托方以中性名称代发补贴与 1099 税表；</text>
+  <text x="636" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 11ms 强制核验中心实验室真实人类血样条码入库哈希，100% 粉碎幽灵受试者造假！</text>
+
+  <text x="636" y="265" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 按每次完成访视比例秒发 (Prorated) + 锁死 IRB 伦理批件上限：</text>
+  <text x="636" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 严守 FDA 21 CFR § 50.20 零金钱胁迫原则；受试者随访结束 10ms 补贴秒到虚拟卡。</text>
+
+  <text x="636" y="315" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 280ms 阳光法案核验与防损增效：</text>
+  <text x="636" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 拦截假入组骗保并凭即时发放降低 35% 脱落重招成本，单批立省 $48,800.00！</text>
+
+  <rect x="636" y="352" width="508" height="32" rx="6" fill="#064E3B" stroke="#10B981"/>
+  <text x="890" y="373" fill="#A7F3D0" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">SETTLED: HTTP 200 (10ms $610k Trial/CRO) | HTTP 409 ($48.8k Phantom/Dropout Saved)</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="36" y="415" width="1128" height="236" rx="12" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="56" y="444" fill="#38BDF8" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800">📊 定量实测矩阵：B2B 临床试验受试者补贴与 CRO 里程碑批次 ($610,000.00) 5 组边界验证 (`evaluate_b2b_clinical_trial_stipend_cro_policy`)</text>
+
+  <rect x="52" y="458" width="1096" height="28" rx="4" fill="#0F172A"/>
+  <text x="66" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SCENARIO ID</text>
+  <text x="220" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">0-PII BLINDED &amp; CENTRAL LAB 3-WAY / IRB PRORATED CAP / SUNSHINE ACT</text>
+  <text x="650" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">HTTP &amp; ACTION PILL</text>
+  <text x="875" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">LATENCY</text>
+  <text x="965" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">NET IMPACT</text>
+
+  <!-- Row 1 -->
+  <text x="66" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">cln_commit_ok</text>
+  <text x="220" y="504" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">药企 0-Byte PII 双盲隔离 + 中心实验室血样三单闭合 + IRB 按次补贴</text>
+  <text x="650" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">200 · Act automatically</text>
+  <text x="875" y="504" fill="#E2E8F0" font-family="monospace" font-size="12">10ms</text>
+  <text x="965" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">$610,000.00 Settled</text>
+
+  <!-- Row 2 -->
+  <text x="66" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">cln_pii_403</text>
+  <text x="220" y="532" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">向药企暴露受试者真名/SSN 触发破盲，或无中心实验室血样的幽灵受试者</text>
+  <text x="650" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">403 · Send to a human</text>
+  <text x="875" y="532" fill="#E2E8F0" font-family="monospace" font-size="12">11ms</text>
+  <text x="965" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">Unblinding/Phantom Blocked</text>
+
+  <!-- Row 3 -->
+  <text x="66" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">cln_irb_422</text>
+  <text x="220" y="560" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">80% 完赛捆绑奖金强迫隐瞒不良反应，或发放金额突破 IRB 伦理批件</text>
+  <text x="650" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">422 · Send to a human</text>
+  <text x="875" y="560" fill="#E2E8F0" font-family="monospace" font-size="12">14ms</text>
+  <text x="965" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">IRB Coercion Blocked</text>
+
+  <!-- Row 4 -->
+  <text x="66" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">cln_sun_451</text>
+  <text x="220" y="588" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ /v3/browse 检出主研医生报酬未登阳光法案 NPI 或 1099 泄密</text>
+  <text x="650" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">451 · Send to a human</text>
+  <text x="875" y="588" fill="#E2E8F0" font-family="monospace" font-size="12">280ms</text>
+  <text x="965" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">Sunshine/1099 Hold</text>
+
+  <!-- Row 5 -->
+  <text x="66" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">cln_sav_409</text>
+  <text x="220" y="616" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ 启用中心实验室血样三单匹配剔除假入组并降低患者脱落重招费</text>
+  <text x="650" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">409 · Confirm</text>
+  <text x="875" y="616" fill="#E2E8F0" font-family="monospace" font-size="12">245ms</text>
+  <text x="965" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">Saves $48,800.00</text>
+</svg>
