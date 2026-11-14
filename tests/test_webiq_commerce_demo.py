@@ -16595,6 +16595,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-mining-smelter-concentrate-nsr-sandbox", demo_zh)
 
+    def test_agentic_home_warranty_hvac_dispatch_r454b_vs_rust_denial_freon_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_home_warranty_hvac_dispatch_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant zero bad-faith rust denial + Bluetooth uF/LRA telemetry + scale refrigerant & A2L RDS -> 200 OK ($520,000.00)
+        ok_res = evaluate_agentic_home_warranty_hvac_dispatch_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOME_WARRANTY_HVAC_DISPATCH_SETTLED")
+        self.assertEqual(ok_res.settled_hvac_warranty_dispatch_cents, 52000000)
+
+        # 2. Abusive pre-existing cosmetic rust/sediment claim denial without forensic causation -> 403 Blocked
+        rst_403 = evaluate_agentic_home_warranty_hvac_dispatch_policy(
+            zero_abusive_cosmetic_rust_sediment_denial_and_forensic_causation_verified=False,
+        )
+        self.assertFalse(rst_403.allowed)
+        self.assertEqual(rst_403.http_status, 403)
+        self.assertEqual(
+            rst_403.decision_code,
+            "ABUSIVE_PREEXISTING_RUST_SEDIMENT_DENIAL_WITHOUT_FORENSIC_CAUSATION_BLOCKED",
+        )
+
+        # 3. Predatory $1,850 uncovered modification upsell or $145/lb refrigerant gouging -> 422 Blocked
+        ups_422 = evaluate_agentic_home_warranty_hvac_dispatch_policy(
+            zero_uncovered_modification_upsell_and_bluetooth_scale_refrigerant_cap_verified=False,
+        )
+        self.assertFalse(ups_422.allowed)
+        self.assertEqual(ups_422.http_status, 422)
+        self.assertEqual(
+            ups_422.decision_code,
+            "PREDATORY_NON_COVERED_MODIFICATION_UPSELL_OR_REFRIGERANT_CAP_GOUGING",
+        )
+
+        # 4. $18 bad run capacitor misdiagnosed as $2,800 dead compressor or A2L R-454B without UL 60335-2-40 RDS -> 451 Hold
+        a2l_451 = evaluate_agentic_home_warranty_hvac_dispatch_policy(
+            webiq_bluetooth_capacitor_lra_telemetry_and_epa_a2l_r454b_rds_clean=False,
+        )
+        self.assertFalse(a2l_451.allowed)
+        self.assertEqual(a2l_451.http_status, 451)
+
+        # 5. Web IQ Bluetooth telemetry capacitor-first audit & wholesale OEM direct-ship saving $41,600 ($478,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_home_warranty_hvac_dispatch_policy(
+            automated_manifold_telemetry_audit_and_oem_direct_ship_savings_cents=4160000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hvac_warranty_dispatch_cents, 47840000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_home_warranty_hvac_dispatch_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-home-warranty-hvac-dispatch-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
