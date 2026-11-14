@@ -5706,6 +5706,24 @@
         <div id="crg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Mining Concentrate Smelter NSR, TC/RC & Umpire Assay Sandbox -->
+      <div class="finops-box" id="b2b-mining-smelter-concentrate-nsr-sandbox" style="margin-top:12px;border-color:#D97706;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⛏️ B2B 有色金属精矿冶炼结算 (Concentrate NSR)：Splitting Limit 仲裁化验锁、DMT 干吨与 LME QP (`b2b_mining_smelter_concentrate_nsr_tc_rc_deleterious_element_umpire_assay_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 铜/锌精矿海运批次 Final NSR 终结算尾款 ($900,000.00)、SGS/AHK 独立 Umpire 仲裁化验、干公吨 (DMT) TC/RC 与 LME QP 作价期场景 (Mining Concentrate NSR Scenario):</span></label>
+          <select id="nsr-select" onchange="updateB2bMiningSmelterConcentrateNsrSandbox()">
+            <option value="nsr_commit_ok">⛏️ 化验品位经 SGS/AHK 仲裁裁定 + TC/RC 按 DMT 干吨计且含伴生金银 + LME QP 与 TML 合规：10ms 清算 $900,000.00! (Act automatically)</option>
+            <option value="nsr_ump_403">🛑 买卖双方铜品位化验差达 0.75% (突破 0.30% Cu Splitting Limit)，买方未等独立 Umpire 仲裁证书即单边按低品位强行结账 → 11ms 触发 HTTP 403!</option>
+            <option value="nsr_pen_422">🚨 按含 8.5% 水的湿吨 (WMT) 多收 850 吨粗炼费 (TC)、漏付达标伴生黄金 ($180/t)，或在 As=0.17% (&lt;0.20% 免罚线) 乱扣高砷罚金 → 14ms 触发 HTTP 422!</option>
+            <option value="nsr_lme_451">🛑 看清 3 个月铜价跌势后“马后炮”倒签函件把 LME QP 改成最低价月 (Back-Pricing)，或水分 10.8%&gt;TML 9.5% 面临液化翻船：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="nsr_sav_409">🧑‍⚖️ Web IQ 自动执行 Umpire 居中法则追回铜金品位并通过保税仓高低砷批次混配 (Blending) 免除杂质罚款挽回 $72,000.00 (净结 $828,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="nsr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6417,6 +6435,7 @@ function renderAll() {
   updateAgenticFertilityIvfCryostorageSandbox();
   updateB2bDefenseAerospaceDfarsDcaaSandbox();
   updateAgenticCorrugatedPackagingEctSandbox();
+  updateB2bMiningSmelterConcentrateNsrSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19884,6 +19903,52 @@ function updateAgenticCorrugatedPackagingEctSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📦 恒温恒湿 TAPPI ECT&gt;=44 达标 + 原生木浆牛卡配比真实 + 印版去重与 RISI 对称联动：已自动清算 (VERIFIED_CORRUGATED_PACKAGING_ECT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零偷换再生纸致冷库塌箱、零改一行字重收全套刀模印版费与 +18% 强塞尾货</strong>：B2B 瓦楞纸箱与冷链包装批次已完成安全清算（<code>$580,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bMiningSmelterConcentrateNsrSandbox() {
+  var sel = document.getElementById("nsr-select");
+  var outEl = document.getElementById("nsr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "nsr_ump_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ASSAY_VARIANCE_EXCEEDS_SPLITTING_LIMIT_WITHOUT_UMPIRE_LAB_CERTIFICATE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "买卖双方交换的密封铜品位化验结果相差 <code>0.75% Cu（卖方 28.85% vs 买方 28.10%）</code>，严重突破长单合同规定的 <code>0.30% Cu 拆分极差 (Splitting Limit)</code>，冶炼厂买方未等待独立第三方仲裁实验室（<code>SGS / Alfred H Knight AHK / Alex Stewart</code>）签发 <code>Umpire Certificate</code> 即单边按 28.10% 低品位强行结账（单船少付 75 吨纯铜）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "nsr_pen_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DELETERIOUS_ARSENIC_BISMUTH_PENALTY_INFLATION_OR_OMITTED_PAYABLE_GOLD_SILVER_CREDIT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "终结算账单违规按未扣除 <code>8.5% WSMD 水分</code>的含水湿吨（<code>10,000 WMT</code> 而非 <code>9,150 DMT 干公吨</code>）多收 <code>$80/t TC 粗炼加工费</code>，或漏计已超过 <code>1.0 g/DMT</code> 起付线的伴生黄金补贴（<code>$180/DMT</code>），且在实测砷含量 <code>As = 0.17% (&lt; 0.20% 免罚上限)</code> 时违规强扣高砷环保罚金，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "nsr_lme_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 RETROACTIVE_LME_QP_CHERRY_PICKING_OR_IMSBC_TML_LIQUEFACTION_HAZARD_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：买方在提单装船月后拖延 3 个月看清 <code>LME 铜价</code>暴跌走势，事后伪造倒签日期的声明函将作价期（<code>Quotational Period QP</code>）篡改为最低价月（违规 <code>Back-Pricing</code>），或装港精矿水分 <code>10.8%</code> 突破 <code>IMO IMSBC Code 适运水分极限 (TML = 9.5%)</code>，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "nsr_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_UMPIRE_ASSAY_SETTLEMENT_AND_ARSENIC_BLENDING_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>AHK 仲裁化验居中法则 (Middle-of-Three) 追回铜金品位 + 保税仓高低砷批次混配 (Blending 至 As &lt; 0.20% 免罚线)</code>，单船终结算挽回/立省 <code>$72,000.00</code>（净结算尾款优化至 <code>$828,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⛏️ SGS/AHK 仲裁品位锁定 + DMT 干吨与伴生金银准确 + 装船前 LME QP 时间戳合规：已自动清算 (VERIFIED_MINING_SMELTER_CONCENTRATE_NSR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零超极差单边吃品位、零按湿吨多收粗炼费与马后炮篡改 LME 作价月</strong>：B2B 有色金属精矿 NSR 终结算批次已完成安全清算（<code>$900,000.00</code>）！" +
     "</div>";
 }
 

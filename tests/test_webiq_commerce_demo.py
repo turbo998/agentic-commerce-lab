@@ -16538,6 +16538,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-corrugated-packaging-ect-sandbox", demo_zh)
 
+    def test_b2b_mining_smelter_concentrate_nsr_umpire_assay_vs_arsenic_qp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_mining_smelter_concentrate_nsr_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Umpire assay + DMT TC/RC & payable Au/Ag + pre-shipment LME QP & TML -> 200 OK ($900,000.00)
+        ok_res = evaluate_b2b_mining_smelter_concentrate_nsr_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_MINING_SMELTER_CONCENTRATE_NSR_SETTLED")
+        self.assertEqual(ok_res.settled_mining_concentrate_nsr_cents, 90000000)
+
+        # 2. Assay variance > 0.30% Cu Splitting Limit settled unilaterally without Umpire Certificate -> 403 Blocked
+        ump_403 = evaluate_b2b_mining_smelter_concentrate_nsr_policy(
+            assay_within_splitting_limit_or_accredited_umpire_lab_certificate_verified=False,
+        )
+        self.assertFalse(ump_403.allowed)
+        self.assertEqual(ump_403.http_status, 403)
+        self.assertEqual(
+            ump_403.decision_code,
+            "ASSAY_VARIANCE_EXCEEDS_SPLITTING_LIMIT_WITHOUT_UMPIRE_LAB_CERTIFICATE_BLOCKED",
+        )
+
+        # 3. TC billed on wet tons (WMT), omitted payable Au/Ag credit, or sub-threshold arsenic penalty -> 422 Blocked
+        pen_422 = evaluate_b2b_mining_smelter_concentrate_nsr_policy(
+            tc_rc_on_dry_metric_tons_and_payable_gold_silver_arsenic_tiers_verified=False,
+        )
+        self.assertFalse(pen_422.allowed)
+        self.assertEqual(pen_422.http_status, 422)
+        self.assertEqual(
+            pen_422.decision_code,
+            "DELETERIOUS_ARSENIC_BISMUTH_PENALTY_INFLATION_OR_OMITTED_PAYABLE_GOLD_SILVER_CREDIT",
+        )
+
+        # 4. Retroactive LME QP cherry-picking (Back-Pricing) or moisture > IMSBC TML (9.5%) -> 451 Hold
+        lme_451 = evaluate_b2b_mining_smelter_concentrate_nsr_policy(
+            webiq_pre_shipment_lme_qp_timestamp_and_imsbc_tml_moisture_clean=False,
+        )
+        self.assertFalse(lme_451.allowed)
+        self.assertEqual(lme_451.http_status, 451)
+
+        # 5. Web IQ automated Umpire assay recovery & bonded arsenic blending saving $72,000 ($828,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_mining_smelter_concentrate_nsr_policy(
+            automated_umpire_assay_settlement_and_arsenic_blending_savings_cents=7200000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_mining_concentrate_nsr_cents, 82800000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_mining_smelter_concentrate_nsr_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-mining-smelter-concentrate-nsr-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
