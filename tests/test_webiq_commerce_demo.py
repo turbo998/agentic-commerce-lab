@@ -13771,6 +13771,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-insurance-claim-payout-sandbox", demo_zh)
 
+    def test_agentic_auto_equipment_lease_odometer_wear_residual_mandate_vs_mileage_rollback_wear_dispute_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_auto_equipment_lease_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. 4-way ECU odometer parity + <50mm normal wear waived + Reg M residual isolation ($730,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_auto_equipment_lease_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_lease_batch_cents, 73000000)
+
+        # 2. CAN-bus mileage blocker or EEPROM odometer rollback (IPC != ABS/BMS) -> 403 Blocked
+        odo_403 = evaluate_agentic_auto_equipment_lease_policy(
+            multi_ecu_odometer_parity_verified=False,
+        )
+        self.assertFalse(odo_403.allowed)
+        self.assertEqual(odo_403.http_status, 403)
+        self.assertEqual(
+            odo_403.decision_code,
+            "ODOMETER_ROLLBACK_MULTI_ECU_MISMATCH_FRAUD_BLOCKED",
+        )
+
+        # 3. Billing for <50mm normal wear scratches or shifting closed-end residual loss -> 422 Blocked
+        wer_422 = evaluate_agentic_auto_equipment_lease_policy(
+            reg_m_50mm_normal_wear_and_residual_isolated_verified=False,
+        )
+        self.assertFalse(wer_422.allowed)
+        self.assertEqual(wer_422.http_status, 422)
+        self.assertEqual(
+            wer_422.decision_code,
+            "REG_M_NORMAL_WEAR_OVERCHARGE_OR_RESIDUAL_MARKET_SHIFT",
+        )
+
+        # 4. Missing NHTSA 49 CFR Part 580 digital odometer disclosure -> 451 Hold
+        nha_451 = evaluate_agentic_auto_equipment_lease_policy(
+            webiq_nhtsa_part580_digital_odometer_disclosure_clean=False,
+        )
+        self.assertFalse(nha_451.allowed)
+        self.assertEqual(nha_451.http_status, 451)
+
+        # 5. Web IQ enables 4-way ECU mileage recovery & 3D laser wear gating saving $58,400 ($671,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_auto_equipment_lease_policy(
+            multi_ecu_mileage_recovery_and_laser_savings_cents=5840000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_lease_batch_cents, 67160000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_auto_equipment_lease_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-auto-equipment-lease-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

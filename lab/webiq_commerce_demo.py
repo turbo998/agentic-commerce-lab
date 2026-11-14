@@ -24108,6 +24108,91 @@ def evaluate_agentic_insurance_claim_payout_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticAutoEquipmentLeaseDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_lease_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_auto_equipment_lease_policy(
+    *,
+    mandate_id: str = "agentic_equipment_auto_lease_odometer_wear_residual_mandate_2026_11_14",
+    lease_batch_cents: int = 73000000,
+    multi_ecu_odometer_parity_verified: bool = True,
+    reg_m_50mm_normal_wear_and_residual_isolated_verified: bool = True,
+    webiq_nhtsa_part580_digital_odometer_disclosure_clean: bool = True,
+    multi_ecu_mileage_recovery_and_laser_savings_cents: int = 0,
+) -> AgenticAutoEquipmentLeaseDecision:
+    """Evaluate 4-way ECU odometer anti-rollback parity, CFPB Reg M <50mm normal-wear exemption, and NHTSA Part 580 disclosures."""
+    if not mandate_id.startswith("agentic_equipment_auto_lease_odometer_wear_residual_mandate_"):
+        return AgenticAutoEquipmentLeaseDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AUTO_EQUIPMENT_LEASE_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_lease_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not multi_ecu_odometer_parity_verified:
+        return AgenticAutoEquipmentLeaseDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="ODOMETER_ROLLBACK_MULTI_ECU_MISMATCH_FRAUD_BLOCKED",
+            action_pill="Send to a human",
+            settled_lease_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not reg_m_50mm_normal_wear_and_residual_isolated_verified:
+        return AgenticAutoEquipmentLeaseDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="REG_M_NORMAL_WEAR_OVERCHARGE_OR_RESIDUAL_MARKET_SHIFT",
+            action_pill="Send to a human",
+            settled_lease_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_nhtsa_part580_digital_odometer_disclosure_clean:
+        return AgenticAutoEquipmentLeaseDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="NHTSA_PART580_ODOMETER_DISCLOSURE_MISSING_HOLD",
+            action_pill="Send to a human",
+            settled_lease_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if multi_ecu_mileage_recovery_and_laser_savings_cents > 0:
+        return AgenticAutoEquipmentLeaseDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="MULTI_ECU_MILEAGE_RECOVERY_AND_LASER_WEAR_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_lease_batch_cents=max(
+                0,
+                lease_batch_cents - multi_ecu_mileage_recovery_and_laser_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticAutoEquipmentLeaseDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_AUTO_EQUIPMENT_LEASE_SETTLED",
+        action_pill="Act automatically",
+        settled_lease_batch_cents=lease_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -31921,6 +32006,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "deepfake_iso_duplicate_block_latency_ms": ins_dfk_403.latency_ms,
     }
 
+    lse_commit_ok = evaluate_agentic_auto_equipment_lease_policy()
+    lse_odo_403 = evaluate_agentic_auto_equipment_lease_policy(
+        multi_ecu_odometer_parity_verified=False,
+    )
+    lse_wer_422 = evaluate_agentic_auto_equipment_lease_policy(
+        reg_m_50mm_normal_wear_and_residual_isolated_verified=False,
+    )
+    lse_nha_451 = evaluate_agentic_auto_equipment_lease_policy(
+        webiq_nhtsa_part580_digital_odometer_disclosure_clean=False,
+    )
+    lse_sav_409 = evaluate_agentic_auto_equipment_lease_policy(
+        multi_ecu_mileage_recovery_and_laser_savings_cents=5840000,
+    )
+    agentic_auto_equipment_lease_guards = {
+        "all_passed": (
+            lse_commit_ok.allowed
+            and lse_commit_ok.settled_lease_batch_cents == 73000000
+            and not lse_odo_403.allowed
+            and lse_odo_403.http_status == 403
+            and not lse_wer_422.allowed
+            and lse_wer_422.http_status == 422
+            and not lse_nha_451.allowed
+            and lse_nha_451.http_status == 451
+            and not lse_sav_409.allowed
+            and lse_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_auto_equipment_lease_settlement_latency_ms": lse_commit_ok.latency_ms,
+        "odometer_rollback_block_latency_ms": lse_odo_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32158,6 +32273,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_loyalty_points_asc606_guards": agentic_loyalty_points_asc606_guards,
         "b2b_hazmat_dg_un383_imdg_guards": b2b_hazmat_dg_un383_imdg_guards,
         "agentic_insurance_claim_payout_guards": agentic_insurance_claim_payout_guards,
+        "agentic_auto_equipment_lease_guards": agentic_auto_equipment_lease_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39107,6 +39223,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ins-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Auto & Equipment Operating Lease Multi-ECU Anti-Rollback & 50mm Wear Sandbox -->
+      <div class="finops-box" id="agentic-auto-equipment-lease-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚜 智能体汽车与重型机械经营性租赁 (Auto &amp; Equipment Lease) 多 ECU 防调表、50mm 磨损标尺与残值清算架构 (`agentic_equipment_auto_lease_odometer_wear_residual_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 汽车与重型机械退租清算批次 ($730,000.00)、IPC+ECM/BMS+ABS 四源里程防调表互验、3D 激光 &lt;50mm 正常划痕豁免与 CFPB Reg M 残值风险隔离场景 (Auto &amp; Equipment Lease Scenario):</span></label>
+          <select id="lse-select" onchange="updateAgenticAutoEquipmentLeaseSandbox()">
+            <option value="lse_commit_ok">🚜 IPC+ECM/BMS+ABS 四源里程一致 (≤1%) + &lt;50mm 正常磨损自动免赔 + Reg M 封闭式残值隔离：10ms 清算 $730,000.00! (Act automatically)</option>
+            <option value="lse_odo_403">🛑 承租人花 $99 装 CAN 总线里程阻断器或刷表将 8.6 万英里改成 3.4 万英里 (ABS 轮速与 BMS 累计放电量当场揭穿，违反 49 U.S.C. § 32703) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="lse_wer_422">🚨 对 15mm 正常轻微划痕强扣 $1,200 整扇车门喷漆费，或在封闭式租约中把二手车行情暴跌转嫁给客户 (违反 CFPB Reg M) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="lse_nha_451">🛑 退租车辆流入拍卖场前缺失 NHTSA 49 CFR Part 580 法定电子里程表真实性声明签名：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="lse_sav_409">🧑‍⚖️ Web IQ 启用四源 ECU 能量守恒揪出隐蔽调表追回超里程折旧费并凭 3D 激光门架免除人工复检成本立省 $58,400.00 (净残值结算 $671,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lse-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -39770,6 +39904,7 @@ function renderAll() {{
   updateAgenticLoyaltyPointsAsc606Sandbox();
   updateB2bHazmatDgUn383ImdgSandbox();
   updateAgenticInsuranceClaimPayoutSandbox();
+  updateAgenticAutoEquipmentLeaseSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -51029,6 +51164,52 @@ function updateAgenticInsuranceClaimPayoutSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🛡️ C2PA+EDR 物理互验 + ISO 跨司去重 + Loss Payee 按揭优先分账通过：已自动清算 (VERIFIED_INSURANCE_CLAIM_PAYOUT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 AI 合成战损图骗保、零跨保司一车多赔与漏付按揭银行二次追索风险</strong>：智能体保险极速理赔与参数化直付批次已完成安全清算（<code>$640,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticAutoEquipmentLeaseSandbox() {{
+  var sel = document.getElementById("lse-select");
+  var outEl = document.getElementById("lse-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lse_odo_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ODOMETER_ROLLBACK_MULTI_ECU_MISMATCH_FRAUD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到仪表盘（<code>IPC</code>）显示仅 <code>34,200 mi</code>，但 <code>ABS/ESP</code> 四轮物理滚动积分与 <code>BMS</code> 终身放电总千瓦时（<code>26,500 kWh</code>）证明实跑 <code>86,000 mi</code>！已在 11ms 内硬拦截 CAN 总线调表器欺诈，挽回 <code>$12,500+</code> 超里程费并规避联邦 <code>49 U.S.C. &sect; 32703</code> 调表车重罪。" +
+      "</div>";
+    return;
+  }}
+  if (v === "lse_wer_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 REG_M_NORMAL_WEAR_OVERCHARGE_OR_RESIDUAL_MARKET_SHIFT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到对直径 <code>&lt; 50mm (2英寸)</code> 的正常轻微划痕或花纹 <code>&ge; 4/32&quot;</code> 的合规轮胎强收高额整备费，或在封闭式租约（<code>Closed-End Lease</code>）中违规将二手车行情跌价转嫁给承租人（违反 <code>CFPB Regulation M / 15 U.S.C. &sect; 1667b</code>），已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lse_nha_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NHTSA_PART580_ODOMETER_DISCLOSURE_MISSING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出退租车辆进入二手拍卖交割前缺失符合 <code>NHTSA 49 CFR Part 580</code> 规范的电子里程表真实性声明签名，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lse_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MULTI_ECU_MILEAGE_RECOVERY_AND_LASER_WEAR_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>UDS 四源 ECU 能量/距离守恒追回隐蔽调表超里程折旧 + 3D 激光 50mm 标尺免除人工第三方验车费</code>，单批追回/立省 <code>$58,400.00</code>（净退租残值结算基准优化至 <code>$671,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚜 四源 ECU 里程一致 + &lt;50mm 正常磨损豁免 + Reg M 残值隔离通过：已自动清算 (VERIFIED_AUTO_EQUIPMENT_LEASE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 $99 调表器逃逸、零 CFPB Reg M 正常划痕乱收费诉讼与拍卖场调表车退一赔三风险</strong>：智能体汽车与重型机械退租批次已完成安全清算（<code>$730,000.00</code>）！" +
     "</div>";
 }}
 

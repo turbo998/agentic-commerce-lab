@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg227" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B132B"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="ind227" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="red227" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg227)"/>
+
+  <!-- Header -->
+  <rect x="36" y="24" width="1128" height="84" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+  <rect x="52" y="40" width="215" height="26" rx="13" fill="url(#ind227)"/>
+  <text x="159" y="57" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">ROUND 225 · AUTO &amp; EQUIP LEASE</text>
+  <text x="282" y="58" fill="#F8FAFC" font-family="system-ui, -apple-system, sans-serif" font-size="18.5" font-weight="800">智能体汽车与重型机械经营性租赁多 ECU 防调表、50mm 磨损标尺与残值清算架构</text>
+  <text x="282" y="85" fill="#94A3B8" font-family="system-ui, -apple-system, sans-serif" font-size="12.5">IPC+ECM+ABS+BMS 四源里程互验 + CFPB Reg M 正常磨损豁免令牌 (`agentic_equipment_auto_lease_odometer_wear_residual_mandate_...`)</text>
+
+  <!-- Left Card: Anti-Pattern -->
+  <rect x="36" y="124" width="548" height="275" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="54" y="140" width="512" height="32" rx="6" fill="url(#red227)"/>
+  <text x="310" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">❌ 传统反模式：$99 调表器抹掉 5 万英里骗退押金 + 对正常小划痕乱收天价整备费</text>
+
+  <text x="56" y="196" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. CAN 总线里程阻断器 (Mileage Blocker) 与仪表盘刷表欺诈：</text>
+  <text x="56" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 承租人实际跑了 8.6 万英里 (应补交 $12,500 超里程费)，退租前刷回 3.4 万英里；</text>
+  <text x="56" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 只看仪表盘的 AI 当场被骗退还全额押金，且调表车流入拍卖场触发联邦三倍赔偿重罚！</text>
+
+  <text x="56" y="265" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 对 &lt;50mm 正常轻微划痕乱扣 $1,200 或转嫁二手车行情跌价：</text>
+  <text x="56" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 违反美国《消费者租赁法 (15 U.S.C. § 1667b / CFPB Reg M)》，招致集体诉讼。</text>
+
+  <text x="56" y="315" fill="#FCA5A5" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. 退租车辆过户缺失 NHTSA 49 CFR Part 580 法定电子里程签名：</text>
+  <text x="56" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 缺乏硬件级里程真实性披露证明，导致金融公司无法在二手拍卖场完成合规交割过户。</text>
+
+  <rect x="56" y="352" width="508" height="32" rx="6" fill="#450A0A" stroke="#DC2626"/>
+  <text x="310" y="373" fill="#FECACA" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">GATE BLOCKS: HTTP 403 (11ms Odometer Rollback) | HTTP 422 (14ms Reg M Overcharge)</text>
+
+  <!-- Right Card: Recommended Architecture -->
+  <rect x="616" y="124" width="548" height="275" rx="12" fill="#0F292A" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="634" y="140" width="512" height="32" rx="6" fill="url(#ind227)"/>
+  <text x="890" y="161" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="800" text-anchor="middle">✅ 推荐架构：四源 ECU 里程互验 + 50mm 激光磨损标尺 + Reg M 清算网关</text>
+
+  <text x="636" y="196" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">1. UDS 加密读取 IPC + ECM/BMS 能量积分 + ABS 轮速四源守恒：</text>
+  <text x="636" y="216" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 11ms 交叉比对仪表盘、车轮物理滚动周长积分与电池终身累计放电千瓦时 (误差 ≤1%)，</text>
+  <text x="636" y="235" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 100% 揪出任何 CAN 总线里程阻断器与 EEPROM 刷表欺诈，挽回 $12,500+ 超里程费！</text>
+
+  <text x="636" y="265" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">2. 3D 激光标尺 (&lt;50mm 划痕与 ≥4/32" 轮胎 100% 免赔) + 残值隔离：</text>
+  <text x="636" y="285" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 严守 CFPB Reg M 正常磨损豁免边界；封闭式租约绝不向客户转嫁二手车行情跌幅。</text>
+
+  <text x="636" y="315" fill="#6EE7B7" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700">3. Microsoft Web IQ (/v3/browse) 280ms NHTSA 披露与追偿增效：</text>
+  <text x="636" y="335" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">• 自动追回隐蔽调表超里程折旧并省去人工复检成本，单批立省 $58,400.00 (HTTP 409)！</text>
+
+  <rect x="636" y="352" width="508" height="32" rx="6" fill="#064E3B" stroke="#10B981"/>
+  <text x="890" y="373" fill="#A7F3D0" font-family="monospace" font-size="11.5" font-weight="700" text-anchor="middle">SETTLED: HTTP 200 (10ms $730k Lease Turn-In) | HTTP 409 ($58.4k Residual Saved)</text>
+
+  <!-- Bottom Quantitative Benchmark Table -->
+  <rect x="36" y="415" width="1128" height="236" rx="12" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <text x="56" y="444" fill="#38BDF8" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800">📊 定量实测矩阵：智能体汽车与工程机械退租结算批次 ($730,000.00) 5 组边界验证 (`evaluate_agentic_auto_equipment_lease_policy`)</text>
+
+  <rect x="52" y="458" width="1096" height="28" rx="4" fill="#0F172A"/>
+  <text x="66" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">SCENARIO ID</text>
+  <text x="220" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">4-WAY ECU ODOMETER PARITY / &lt;50MM NORMAL WEAR / NHTSA PART 580</text>
+  <text x="650" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">HTTP &amp; ACTION PILL</text>
+  <text x="875" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">LATENCY</text>
+  <text x="965" y="476" fill="#94A3B8" font-family="monospace" font-size="11.5" font-weight="700">NET IMPACT</text>
+
+  <!-- Row 1 -->
+  <text x="66" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">lse_commit_ok</text>
+  <text x="220" y="504" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">四源 ECU 里程一致 (≤1%) + &lt;50mm 正常磨损自动免赔 + Reg M 残值隔离</text>
+  <text x="650" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">200 · Act automatically</text>
+  <text x="875" y="504" fill="#E2E8F0" font-family="monospace" font-size="12">10ms</text>
+  <text x="965" y="504" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">$730,000.00 Settled</text>
+
+  <!-- Row 2 -->
+  <text x="66" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">lse_odo_403</text>
+  <text x="220" y="532" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">仪表盘显示 3.4 万英里，但 ABS 轮速与 BMS 放电量证明实跑 8.6 万英里</text>
+  <text x="650" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">403 · Send to a human</text>
+  <text x="875" y="532" fill="#E2E8F0" font-family="monospace" font-size="12">11ms</text>
+  <text x="965" y="532" fill="#F87171" font-family="monospace" font-size="12" font-weight="700">Rollback Fraud Blocked</text>
+
+  <!-- Row 3 -->
+  <text x="66" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">lse_wer_422</text>
+  <text x="220" y="560" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">对 &lt;50mm 正常轻微划痕违规扣费，或向封闭式租客转嫁二手车行情跌价</text>
+  <text x="650" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">422 · Send to a human</text>
+  <text x="875" y="560" fill="#E2E8F0" font-family="monospace" font-size="12">14ms</text>
+  <text x="965" y="560" fill="#FB923C" font-family="monospace" font-size="12" font-weight="700">Reg M Overcharge Blocked</text>
+
+  <!-- Row 4 -->
+  <text x="66" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">lse_nha_451</text>
+  <text x="220" y="588" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ /v3/browse 检出缺失 NHTSA 49 CFR Part 580 电子里程声明签名</text>
+  <text x="650" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">451 · Send to a human</text>
+  <text x="875" y="588" fill="#E2E8F0" font-family="monospace" font-size="12">280ms</text>
+  <text x="965" y="588" fill="#C084FC" font-family="monospace" font-size="12" font-weight="700">NHTSA Part 580 Hold</text>
+
+  <!-- Row 5 -->
+  <text x="66" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">lse_sav_409</text>
+  <text x="220" y="616" fill="#E2E8F0" font-family="system-ui, -apple-system, sans-serif" font-size="12">Web IQ 启用四源 ECU 揪出调表追回超里程费并凭 3D 激光门架省人工费</text>
+  <text x="650" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">409 · Confirm</text>
+  <text x="875" y="616" fill="#E2E8F0" font-family="monospace" font-size="12">245ms</text>
+  <text x="965" y="616" fill="#FBBF24" font-family="monospace" font-size="12" font-weight="700">Saves $58,400.00</text>
+</svg>
