@@ -1330,6 +1330,11 @@
     "agentic_corporate_treasury_sweep_settlement_latency_ms": 10,
     "irc_1091_wash_sale_fdic_block_latency_ms": 11
   },
+  "b2b_hospital_gpo_tiered_rebate_guards": {
+    "all_passed": true,
+    "b2b_hospital_gpo_tiered_rebate_settlement_latency_ms": 10,
+    "pod_stark_kickback_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",

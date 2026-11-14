@@ -5310,6 +5310,24 @@
         <div id="trs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Hospital GPO Tiered Pricing, 42 CFR Safe-Harbor & Anti-POD Stark Sandbox -->
+      <div class="finops-box" id="b2b-hospital-gpo-tiered-rebate-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🏥 B2B 医院集团采购 (GPO Tiered Pricing)、42 CFR 折扣安全港与防 POD 医生关联交易 (`b2b_hospital_gpo_tiered_rebate_stark_aks_safe_harbor_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 医院耗材与器械采购批次 ($740,000.00)、零 POD 医生持股穿透、42 CFR § 1001.952(h) 成本报告披露与 GLN Tier-4 锁价场景 (Hospital GPO Scenario):</span></label>
+          <select id="gpo-select" onchange="updateB2bHospitalGpoTieredRebateSandbox()">
+            <option value="gpo_commit_ok">🏥 零 POD 医生持股冲突 + 42 CFR 安全港 CMS-2552 透明披露 + 全院 GLN Tier-4 锁价：10ms 清算 $740,000.00! (Act automatically)</option>
+            <option value="gpo_pod_403">🛑 主刀医生私下在耗材代理商持股 (POD 触发 Stark Law 三倍医保诈保重罚) 或接受账外赠送设备未写入 CMS-2552 成本报告拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="gpo_tir_422">🚨 新并购分院/门诊中心 GS1 GLN 未挂入集团 GPO 名录被按 Tier-1 散客原价多收 32%，或违规私买竞品致跌破 80% LOC 阶梯 → 14ms 触发 HTTP 422!</option>
+            <option value="gpo_sun_451">🛑 命中 CMS Open Payments (阳光法案) 未申报利益冲突、HHS-OIG LEIE 医保禁入黑名单或缺 FDA 510(k) 许可：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="gpo_sav_409">🧑‍⚖️ Web IQ 启用全集团跨院区 GLN 阶梯并表锁定最高 Tier-4 折扣并自动回收季度安全港返利立省 $59,200.00 (净结算 $680,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="gpo-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5999,6 +6017,7 @@ function renderAll() {
   updateB2bMaritimeCharterpartyLaytimeSandbox();
   updateB2bAutoOemDealerWarrantySandbox();
   updateAgenticCorporateTreasurySweepSandbox();
+  updateB2bHospitalGpoTieredRebateSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18454,6 +18473,52 @@ function updateAgenticCorporateTreasurySweepSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏦 跨账户零 61天洗售 + FDIC ICS 分片 + 7日发薪安全垫通过：已自动清算 (VERIFIED_CORPORATE_TREASURY_CASH_SWEEP_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零子账户反向买卖触发 IRS 洗售拒抵、零单家银行超额裸存挤兑风险与发薪透支</strong>：智能体企业司库现金归集批次已完成安全清算（<code>$950,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bHospitalGpoTieredRebateSandbox() {
+  var sel = document.getElementById("gpo-select");
+  var outEl = document.getElementById("gpo-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "gpo_pod_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PHYSICIAN_OWNED_DISTRIBUTORSHIP_POD_STARK_VIOLATION_OR_UNREPORTED_REBATE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到请购主刀医生（<code>NPI</code>）在骨科/耗材经销商中持有股权或分红权益（医生持股经销商 <code>POD</code>，违反《斯塔克法 <code>42 U.S.C. § 1395nn</code>》污染整台手术医保报销），或存在未记入 <code>CMS-2552</code> 成本报告的账外免费设备回扣（违反 <code>42 CFR § 1001.952(h)</code>）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "gpo_tir_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GPO_TIER_PRICE_MISMATCH_OFF_CONTRACT_LIST_OVERCHARGE_OR_COMMIT_SHORTFALL (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "下属分院/门诊手术中心的 <code>GS1 GLN</code> 地址码未对齐母集团 <code>GPO Tier-4</code> 战略合同被按 <code>Tier-1</code> 散客目录价多收 32%，或个别科室私买竞品导致集团采购占比跌破 <code>80% LOC（承诺函）</code>阶梯红线，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "gpo_sun_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CMS_SUNSHINE_ACT_CONFLICT_OR_UNAPPROVED_FDA_510K_DEVICE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 查询《阳光法案数据库（<code>CMS Open Payments</code>）》检出未申报的厂商利益输送、供应商命中 <code>HHS-OIG LEIE</code> 联邦医保禁入名单，或器械缺失有效 <code>FDA 510(k) / PMA</code> 批准文号，已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }
+  if (v === "gpo_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 GPO_SYSTEM_WIDE_TIER_AGGREGATION_AND_REBATE_CAPTURE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>全集团跨院区 GLN 阶梯并表锁价 (Tier-4) + 42 CFR 安全港季度返利自动追回</code>，消除新分院掉档高买与返利漏领，单批立省/追回 <code>$59,200.00</code>（净采购结算额优化至 <code>$680,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏥 零 POD 医生持股 + 42 CFR 折扣安全港 + 全院 GLN Tier-4 锁价通过：已自动清算 (VERIFIED_HOSPITAL_GPO_TIERED_REBATE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 POD 自我转介触发三倍医保重罚、零账外送设备回扣违法与分院多付 32% 冤枉钱</strong>：B2B 医院集团 GPO 采购批次已完成安全清算（<code>$740,000.00</code>）！" +
     "</div>";
 }
 

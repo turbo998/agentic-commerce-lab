@@ -15279,6 +15279,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-corporate-treasury-sweep-sandbox", demo_zh)
 
+    def test_b2b_hospital_gpo_tiered_rebate_stark_aks_safe_harbor_mandate_vs_off_contract_overbilling_kickback_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_gpo_tiered_rebate_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Zero POD conflict + 42 CFR safe harbor + GLN Tier-4 locked ($740,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_hospital_gpo_tiered_rebate_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hospital_gpo_batch_cents, 74000000)
+
+        # 2. Surgeon-owned distributorship (POD Stark violation) or unreported off-invoice rebate -> 403 Blocked
+        pod_403 = evaluate_b2b_hospital_gpo_tiered_rebate_policy(
+            zero_physician_owned_distributorship_pod_conflict_and_aks_safe_harbor_verified=False,
+        )
+        self.assertFalse(pod_403.allowed)
+        self.assertEqual(pod_403.http_status, 403)
+        self.assertEqual(
+            pod_403.decision_code,
+            "PHYSICIAN_OWNED_DISTRIBUTORSHIP_POD_STARK_VIOLATION_OR_UNREPORTED_REBATE_BLOCKED",
+        )
+
+        # 3. Satellite clinic GLN billed at +32% list price or LOC <80% commitment shortfall -> 422 Blocked
+        tir_422 = evaluate_b2b_hospital_gpo_tiered_rebate_policy(
+            gpo_gln_hin_roster_tier_price_and_80pct_market_share_commit_verified=False,
+        )
+        self.assertFalse(tir_422.allowed)
+        self.assertEqual(tir_422.http_status, 422)
+        self.assertEqual(
+            tir_422.decision_code,
+            "GPO_TIER_PRICE_MISMATCH_OFF_CONTRACT_LIST_OVERCHARGE_OR_COMMIT_SHORTFALL",
+        )
+
+        # 4. Undisclosed CMS Open Payments conflict, OIG LEIE hit, or missing FDA 510(k) -> 451 Hold
+        sun_451 = evaluate_b2b_hospital_gpo_tiered_rebate_policy(
+            webiq_cms_open_payments_sunshine_act_and_fda_510k_pma_clean=False,
+        )
+        self.assertFalse(sun_451.allowed)
+        self.assertEqual(sun_451.http_status, 451)
+
+        # 5. Web IQ system-wide GLN tier aggregation & rebate capture saving $59,200 ($680,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_gpo_tiered_rebate_policy(
+            gpo_tier_aggregation_and_loc_rebate_capture_savings_cents=5920000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_gpo_batch_cents, 68080000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_gpo_tiered_rebate_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-gpo-tiered-rebate-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
