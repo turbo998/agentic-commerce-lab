@@ -15337,6 +15337,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hospital-gpo-tiered-rebate-sandbox", demo_zh)
 
+    def test_b2b_channel_partner_deal_reg_ship_debit_gray_market_mandate_vs_special_pricing_diversion_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_channel_partner_deal_reg_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. End-user DUNS serial active + exclusive Deal-Reg + FCPA/BIS clean ($810,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_channel_partner_deal_reg_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_channel_rebate_batch_cents, 81000000)
+
+        # 2. Phantom end-user SPA claim or hardware serials diverted to gray market -> 403 Blocked
+        div_403 = evaluate_b2b_channel_partner_deal_reg_policy(
+            end_user_duns_domain_telemetry_and_pos_serial_activation_verified=False,
+        )
+        self.assertFalse(div_403.allowed)
+        self.assertEqual(div_403.http_status, 403)
+        self.assertEqual(
+            div_403.decision_code,
+            "PHANTOM_END_USER_SPECIAL_PRICING_FRAUD_OR_GRAY_MARKET_DIVERSION_BLOCKED",
+        )
+
+        # 3. Duplicate DUNS Deal-Reg collision, stacked-rebate margin breach, or invalid FIFO -> 422 Blocked
+        stk_422 = evaluate_b2b_channel_partner_deal_reg_policy(
+            exclusive_deal_reg_incumbency_and_non_stackable_spiff_cap_verified=False,
+        )
+        self.assertFalse(stk_422.allowed)
+        self.assertEqual(stk_422.http_status, 422)
+        self.assertEqual(
+            stk_422.decision_code,
+            "DUPLICATE_DEAL_REG_MARGIN_STACKING_OR_FIFO_PRICE_PROTECTION_BREACH",
+        )
+
+        # 4. Excessive public-sector/SOE discount spread (DOJ FCPA risk) or BIS Entity List hit -> 451 Hold
+        fcp_451 = evaluate_b2b_channel_partner_deal_reg_policy(
+            webiq_doj_fcpa_soes_margin_cap_and_bis_entity_list_end_user_clean=False,
+        )
+        self.assertFalse(fcp_451.allowed)
+        self.assertEqual(fcp_451.http_status, 451)
+
+        # 5. Web IQ automated POS serial reconciliation & anti-diversion saving $64,800 ($745,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_channel_partner_deal_reg_policy(
+            automated_pos_ship_and_debit_reconciliation_and_anti_diversion_savings_cents=6480000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_channel_rebate_batch_cents, 74520000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_channel_partner_deal_reg_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-channel-partner-deal-reg-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
