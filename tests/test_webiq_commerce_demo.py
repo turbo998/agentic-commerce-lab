@@ -13655,6 +13655,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-loyalty-points-asc606-sandbox", demo_zh)
 
+    def test_b2b_hazmat_dangerous_goods_un383_lithium_soc30_imdg_segregation_mandate_vs_undeclared_hazmat_fine_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hazmat_dg_un383_imdg_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Signed UN 38.3 + CAO freighter lock + SoC <=30% + zero IMDG conflicts ($910,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_hazmat_dg_un383_imdg_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hazmat_batch_cents, 91000000)
+
+        # 2. Undeclared HazMat disguised as general cargo or UN 3480 on passenger aircraft -> 403 Blocked
+        und_403 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+            un383_signed_and_cao_freighter_only_verified=False,
+        )
+        self.assertFalse(und_403.allowed)
+        self.assertEqual(und_403.http_status, 403)
+        self.assertEqual(
+            und_403.decision_code,
+            "UNDECLARED_HAZMAT_OR_PASSENGER_AIRCRAFT_UN3480_VIOLATION_BLOCKED",
+        )
+
+        # 3. Lithium battery SoC >30% or ocean LCL IMDG segregation conflict -> 422 Blocked
+        soc_422 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+            lithium_soc_le_30pct_and_imdg_segregation_verified=False,
+        )
+        self.assertFalse(soc_422.allowed)
+        self.assertEqual(soc_422.http_status, 422)
+        self.assertEqual(
+            soc_422.decision_code,
+            "LITHIUM_SOC_OVER_30PCT_OR_IMDG_SEGREGATION_CONFLICT",
+        )
+
+        # 4. Incomplete 16-section GHS SDS or missing 24h emergency response phone -> 451 Hold
+        sds_451 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+            webiq_ghs_sds_16sec_and_24h_emergency_phone_clean=False,
+        )
+        self.assertFalse(sds_451.allowed)
+        self.assertEqual(sds_451.http_status, 451)
+
+        # 5. Web IQ enables compliant IMDG consolidation & fine avoidance saving $72,800 ($837,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+            hazmat_consolidation_and_fine_avoidance_savings_cents=7280000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hazmat_batch_cents, 83720000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hazmat_dg_un383_imdg_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hazmat-dg-un383-imdg-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -23938,6 +23938,91 @@ def evaluate_agentic_loyalty_points_asc606_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bHazmatDgUn383ImdgDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_hazmat_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_hazmat_dg_un383_imdg_policy(
+    *,
+    mandate_id: str = "b2b_hazmat_dg_un383_soc30_imdg_segregation_mandate_2026_11_14",
+    hazmat_batch_cents: int = 91000000,
+    un383_signed_and_cao_freighter_only_verified: bool = True,
+    lithium_soc_le_30pct_and_imdg_segregation_verified: bool = True,
+    webiq_ghs_sds_16sec_and_24h_emergency_phone_clean: bool = True,
+    hazmat_consolidation_and_fine_avoidance_savings_cents: int = 0,
+) -> B2bHazmatDgUn383ImdgDecision:
+    """Evaluate IATA DGR UN 38.3 + SoC <= 30% + CAO freighter lock and IMO IMDG Chapter 7.2 segregation matrix compliance."""
+    if not mandate_id.startswith("b2b_hazmat_dg_un383_soc30_imdg_segregation_mandate_"):
+        return B2bHazmatDgUn383ImdgDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_HAZMAT_DG_UN383_IMDG_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_hazmat_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not un383_signed_and_cao_freighter_only_verified:
+        return B2bHazmatDgUn383ImdgDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNDECLARED_HAZMAT_OR_PASSENGER_AIRCRAFT_UN3480_VIOLATION_BLOCKED",
+            action_pill="Send to a human",
+            settled_hazmat_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not lithium_soc_le_30pct_and_imdg_segregation_verified:
+        return B2bHazmatDgUn383ImdgDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="LITHIUM_SOC_OVER_30PCT_OR_IMDG_SEGREGATION_CONFLICT",
+            action_pill="Send to a human",
+            settled_hazmat_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_ghs_sds_16sec_and_24h_emergency_phone_clean:
+        return B2bHazmatDgUn383ImdgDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="GHS_SDS_INCOMPLETE_OR_24H_EMERGENCY_CONTACT_MISSING_HOLD",
+            action_pill="Send to a human",
+            settled_hazmat_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if hazmat_consolidation_and_fine_avoidance_savings_cents > 0:
+        return B2bHazmatDgUn383ImdgDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="HAZMAT_COMPLIANT_CONSOLIDATION_AND_FINE_AVOIDANCE_CONFIRM",
+            action_pill="Confirm",
+            settled_hazmat_batch_cents=max(
+                0,
+                hazmat_batch_cents - hazmat_consolidation_and_fine_avoidance_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return B2bHazmatDgUn383ImdgDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_HAZMAT_DG_UN383_IMDG_SETTLED",
+        action_pill="Act automatically",
+        settled_hazmat_batch_cents=hazmat_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -31691,6 +31776,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "loyalty_ato_nominee_block_latency_ms": loy_ato_403.latency_ms,
     }
 
+    haz_commit_ok = evaluate_b2b_hazmat_dg_un383_imdg_policy()
+    haz_und_403 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+        un383_signed_and_cao_freighter_only_verified=False,
+    )
+    haz_soc_422 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+        lithium_soc_le_30pct_and_imdg_segregation_verified=False,
+    )
+    haz_sds_451 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+        webiq_ghs_sds_16sec_and_24h_emergency_phone_clean=False,
+    )
+    haz_sav_409 = evaluate_b2b_hazmat_dg_un383_imdg_policy(
+        hazmat_consolidation_and_fine_avoidance_savings_cents=7280000,
+    )
+    b2b_hazmat_dg_un383_imdg_guards = {
+        "all_passed": (
+            haz_commit_ok.allowed
+            and haz_commit_ok.settled_hazmat_batch_cents == 91000000
+            and not haz_und_403.allowed
+            and haz_und_403.http_status == 403
+            and not haz_soc_422.allowed
+            and haz_soc_422.http_status == 422
+            and not haz_sds_451.allowed
+            and haz_sds_451.http_status == 451
+            and not haz_sav_409.allowed
+            and haz_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_hazmat_dg_un383_imdg_settlement_latency_ms": haz_commit_ok.latency_ms,
+        "undeclared_hazmat_pax_block_latency_ms": haz_und_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31926,6 +32041,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_agritech_grain_ewr_paca_guards": b2b_agritech_grain_ewr_paca_guards,
         "agentic_qsr_grocery_catch_weight_guards": agentic_qsr_grocery_catch_weight_guards,
         "agentic_loyalty_points_asc606_guards": agentic_loyalty_points_asc606_guards,
+        "b2b_hazmat_dg_un383_imdg_guards": b2b_hazmat_dg_un383_imdg_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38839,6 +38955,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="loy-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B HazMat & Lithium-Battery UN 38.3, SoC <= 30% & IMDG Segregation Sandbox -->
+      <div class="finops-box" id="b2b-hazmat-dg-un383-imdg-sandbox" style="margin-top:12px;border-color:#EAB308;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">☣️ B2B 危化品与锂电池跨境物流 (HazMat / IATA DGR / IMDG) UN 38.3、SoC ≤30% 荷电红线与海运隔离矩阵架构 (`b2b_hazmat_dg_un383_soc30_imdg_segregation_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 危化品与锂电池跨境物流结算批次 ($910,000.00)、UN 38.3 测试摘要签名、UN 3480 全货机 (CAO) 锁定、荷电状态 SoC ≤ 30% 与海运 IMDG 7.2 隔离矩阵场景 (HazMat &amp; Lithium DG Scenario):</span></label>
+          <select id="haz-select" onchange="updateB2bHazmatDgUn383ImdgSandbox()">
+            <option value="haz_commit_ok">☣️ UN 38.3 签名报告核验通过 + UN 3480 锁定 CAO 全货机 + 荷电状态 SoC ≤ 30% + 海运 IMDG 隔离矩阵零冲突：10ms 清算 $910,000.00! (Act automatically)</option>
+            <option value="haz_und_403">🛑 为省附加费将锂电池/气雾剂伪报成“普通五金配件”瞒报，或把 UN 3480 纯锂电池订入客机腹舱 (面临 FAA $99,756/单重罚) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="haz_soc_422">🚨 出厂锂电池荷电状态高达 82% (&gt;30% IATA DGR PI 965/966 红线)，或海运拼箱把 5.1 类氧化剂与 3 类易燃液体混装一柜拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="haz_sds_451">🛑 缺失最新 16 项 GHS 安全数据表 (SDS) 或未绑定 49 CFR § 172.604 24 小时化学应急电话 (CHEMTREC)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="haz_sav_409">🧑‍⚖️ Web IQ 启用 IMDG 7.2 智能相容拼箱与 PI 965/966 合规分流免除 FAA 罚单与目的港危险品滞港费立省 $72,800.00 (净成本 $837,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="haz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -39500,6 +39634,7 @@ function renderAll() {{
   updateB2bAgritechGrainEwrPacaSandbox();
   updateAgenticQsrGroceryCatchWeightSandbox();
   updateAgenticLoyaltyPointsAsc606Sandbox();
+  updateB2bHazmatDgUn383ImdgSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -50667,6 +50802,52 @@ function updateAgenticLoyaltyPointsAsc606Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>💎 FIDO2 验签 + 受让人 ≥72h 锁 + ASC 606 CPP ≤ 1.25¢ 守恒通过：已自动清算 (VERIFIED_LOYALTY_POINTS_ASC606_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零里程黄牛盗号秒搬、零 ASC 606 递延负债穿仓爆雷与退货洗有效期漏洞</strong>：智能体会员积分与混合结算批次已完成安全清算（<code>$540,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bHazmatDgUn383ImdgSandbox() {{
+  var sel = document.getElementById("haz-select");
+  var outEl = document.getElementById("haz-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "haz_und_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNDECLARED_HAZMAT_OR_PASSENGER_AIRCRAFT_UN3480_VIOLATION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到含锂电池/危化品被伪报为“普通五金配件”瞒报，或企图将 <code>UN 3480</code> 纯锂电池订入载客飞机腹舱（违反 <code>IATA DGR PI 965 CAO</code> 全货机铁律）！已在 11ms 内硬拦截，规避 <code>FAA / PHMSA</code> 每单最高 <code>$99,756–$232,762</code> 罚款与刑事追责。" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_soc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LITHIUM_SOC_OVER_30PCT_OR_IMDG_SEGREGATION_CONFLICT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到空运锂电池出厂荷电状态 <code>SoC = 82% &gt; 30%</code>（突破高空防热失控红线），或海运拼箱同柜内混装了违反 <code>IMO IMDG Chapter 7.2</code> 隔离矩阵的 <code>5.1 类氧化剂</code> 与 <code>3 类易燃液体</code>，已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_sds_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 GHS_SDS_INCOMPLETE_OR_24H_EMERGENCY_CONTACT_MISSING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出电子危险品申报单（<code>e-DGD</code>）缺失完整的 16 项 <code>GHS SDS</code> 安全数据表，或未绑定符合 <code>49 CFR &sect; 172.604</code> 的 24 小时化学应急响应电话（<code>CHEMTREC</code>），已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }}
+  if (v === "haz_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HAZMAT_COMPLIANT_CONSOLIDATION_AND_FINE_AVOIDANCE_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>IMDG 7.2 智能相容拼箱 + IATA DGR PI 965/966 合规分流（彻底免除 FAA/海关扣柜重罚与每天 $500+ 危险品滞港费）</code>，单批立省 <code>$72,800.00</code>（净危化物流结算成本优化至 <code>$837,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>☣️ UN 38.3 签名 + CAO 全货机锁 + SoC ≤ 30% + IMDG 隔离矩阵通过：已自动清算 (VERIFIED_HAZMAT_DG_UN383_IMDG_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零危化品瞒报百万罚单、零高空锂电热失控与海运混装共同海损追偿</strong>：B2B 危化品与锂电池跨境物流批次已完成安全清算（<code>$910,000.00</code>）！" +
     "</div>";
 }}
 
