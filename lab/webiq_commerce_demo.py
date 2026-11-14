@@ -27678,6 +27678,91 @@ def evaluate_b2b_semiconductor_osat_stdf_yield_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticConcertTourPromoterSettlementDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_concert_tour_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_concert_tour_promoter_settlement_policy(
+    *,
+    mandate_id: str = "agentic_music_live_concert_tour_promoter_settlement_box_office_split_mandate_2026",
+    dynamic_platinum_ticket_upsell_100pct_included_in_gross_box_office_verified: bool = True,
+    house_nut_expenses_backed_by_third_party_net_invoices_and_comp_cap_verified: bool = True,
+    webiq_net_of_tax_merch_soft_hard_split_and_pro_cwa_withholding_clean: bool = True,
+    automated_box_office_split_and_house_nut_audit_savings_cents: int = 0,
+    concert_tour_batch_cents: int = 73000000,
+) -> AgenticConcertTourPromoterSettlementDecision:
+    """Evaluate Agentic Live Concert Tour Promoter Settlement, House Nut Audit & Merch Concession Split policy."""
+    if not mandate_id.startswith("agentic_music_live_concert_tour_promoter_settlement_box_office_split_mandate_"):
+        return AgenticConcertTourPromoterSettlementDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CONCERT_TOUR_PROMOTER_SETTLEMENT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_concert_tour_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not dynamic_platinum_ticket_upsell_100pct_included_in_gross_box_office_verified:
+        return AgenticConcertTourPromoterSettlementDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="DYNAMIC_PLATINUM_TICKET_UPSELL_EXCLUDED_FROM_GROSS_BOX_OFFICE_BLOCKED",
+            action_pill="Send to a human",
+            settled_concert_tour_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not house_nut_expenses_backed_by_third_party_net_invoices_and_comp_cap_verified:
+        return AgenticConcertTourPromoterSettlementDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="HOUSE_NUT_SHOW_EXPENSE_PADDING_OR_UNAUTHORIZED_PROMOTER_COMP_TICKETS",
+            action_pill="Send to a human",
+            settled_concert_tour_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_net_of_tax_merch_soft_hard_split_and_pro_cwa_withholding_clean:
+        return AgenticConcertTourPromoterSettlementDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="VENUE_MERCH_COMMISSION_RATE_BREACH_OR_MISSING_PRO_SETLIST_WITHHOLDING_HOLD",
+            action_pill="Send to a human",
+            settled_concert_tour_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if automated_box_office_split_and_house_nut_audit_savings_cents > 0:
+        return AgenticConcertTourPromoterSettlementDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_BOX_OFFICE_SPLIT_AND_HOUSE_NUT_AUDIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_concert_tour_batch_cents=max(
+                0,
+                concert_tour_batch_cents - automated_box_office_split_and_house_nut_audit_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticConcertTourPromoterSettlementDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CONCERT_TOUR_PROMOTER_SETTLEMENT_SETTLED",
+        action_pill="Act automatically",
+        settled_concert_tour_batch_cents=concert_tour_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -36751,6 +36836,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "uncompensated_wafer_scrap_block_latency_ms": ost_scr_403.latency_ms,
     }
 
+    ctr_commit_ok = evaluate_agentic_concert_tour_promoter_settlement_policy()
+    ctr_plt_403 = evaluate_agentic_concert_tour_promoter_settlement_policy(
+        dynamic_platinum_ticket_upsell_100pct_included_in_gross_box_office_verified=False,
+    )
+    ctr_nut_422 = evaluate_agentic_concert_tour_promoter_settlement_policy(
+        house_nut_expenses_backed_by_third_party_net_invoices_and_comp_cap_verified=False,
+    )
+    ctr_mrc_451 = evaluate_agentic_concert_tour_promoter_settlement_policy(
+        webiq_net_of_tax_merch_soft_hard_split_and_pro_cwa_withholding_clean=False,
+    )
+    ctr_sav_409 = evaluate_agentic_concert_tour_promoter_settlement_policy(
+        automated_box_office_split_and_house_nut_audit_savings_cents=5840000,
+    )
+    agentic_concert_tour_promoter_settlement_guards = {
+        "all_passed": (
+            ctr_commit_ok.allowed
+            and ctr_commit_ok.settled_concert_tour_batch_cents == 73000000
+            and not ctr_plt_403.allowed
+            and ctr_plt_403.http_status == 403
+            and not ctr_nut_422.allowed
+            and ctr_nut_422.http_status == 422
+            and not ctr_mrc_451.allowed
+            and ctr_mrc_451.http_status == 451
+            and not ctr_sav_409.allowed
+            and ctr_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_concert_tour_settlement_latency_ms": ctr_commit_ok.latency_ms,
+        "platinum_upsell_exclusion_block_latency_ms": ctr_plt_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37030,6 +37145,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_workers_comp_omfs_bill_review_guards": agentic_workers_comp_omfs_bill_review_guards,
         "b2b_foodservice_broadline_deviated_pricing_guards": b2b_foodservice_broadline_deviated_pricing_guards,
         "b2b_semiconductor_osat_stdf_yield_guards": b2b_semiconductor_osat_stdf_yield_guards,
+        "agentic_concert_tour_promoter_settlement_guards": agentic_concert_tour_promoter_settlement_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44735,6 +44851,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ost-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Live Concert Tour Promoter Settlement, House Nut & Merch Split Sandbox -->
+      <div class="finops-box" id="agentic-concert-tour-promoter-settlement-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🎤 智能体大型巡演票房分账 (Tour Settlement)：Platinum 动态溢价入池锁、House Nut 发票与周边净额 (`agentic_music_live_concert_tour_promoter_settlement_box_office_split_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 万人体育馆巡演散场夜分账批次 ($730,000.00)、Platinum 动态溢价票入池、House Nut 办演成本发票与 Merch 除税分成场景 (Concert Tour Settlement Scenario):</span></label>
+          <select id="ctr-select" onchange="updateAgenticConcertTourPromoterSettlementSandbox()">
+            <option value="ctr_commit_ok">🎤 Platinum 动态溢价票 100% 入池 + House Nut 第三方发票吻合 + 周边除税 Soft 80/20 与 PRO 合规：10ms 清算 $730,000.00! (Act automatically)</option>
+            <option value="ctr_plt_403">🛑 主办方把前排 2,000 张实售 $450 的官方动态调价票 (Platinum) 按 $120 基础底价报账，私吞 $660,000 溢价不进 85/15 分账池 → 11ms 触发 HTTP 403!</option>
+            <option value="ctr_nut_422">🚨 往场馆成本 (House Nut) 乱塞无外部发票的内部广告费/独吞 15% 媒体返点抬高 Split Point，或滥发 450 张关系户免票 (Comps) → 14ms 触发 HTTP 422!</option>
+            <option value="ctr_mrc_451">🛑 场馆对周边 T 恤与黑胶唱片不扣 8.5% 消费税与 3% 刷卡费强抽 30% 毛流水，或漏提 ASCAP/BMI 表演权与跨州预提税：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ctr_sav_409">🧑‍⚖️ Web IQ 直连票务底层 Audit API 追回漏算动态票溢价、砍掉无票据 House Nut 水分并重算除税周边分成挽回 $58,400.00 (净结算 $671,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ctr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -45440,6 +45574,7 @@ function renderAll() {{
   updateAgenticWorkersCompOmfsBillReviewSandbox();
   updateB2bFoodserviceBroadlineDeviatedPricingSandbox();
   updateB2bSemiconductorOsatStdfYieldSandbox();
+  updateAgenticConcertTourPromoterSettlementSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -58631,6 +58766,52 @@ function updateB2bSemiconductorOsatStdfYieldSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔬 封装良率 99.7% 达标 + STDF 净测试秒数吻合 + EXEC_VER 程序哈希与键合线 BOM 合规：已自动清算 (VERIFIED_SEMICONDUCTOR_OSAT_STDF_YIELD_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零压碎客供晶圆拒赔硅片原值、零探针脏污 3 倍重测机时费与漏测坏片流出</strong>：B2B 半导体 OSAT 委外封测批次已完成安全清算（<code>$840,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticConcertTourPromoterSettlementSandbox() {{
+  var sel = document.getElementById("ctr-select");
+  var outEl = document.getElementById("ctr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ctr_plt_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DYNAMIC_PLATINUM_TICKET_UPSELL_EXCLUDED_FROM_GROSS_BOX_OFFICE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "散场夜票务底层 <code>Audit Manifest API</code> 穿透发现：前排 <code>2,000</code> 张通过官方动态调价（<code>Official Platinum / Dynamic Pricing</code>）按 <code>$450/张</code> 售出的高价门票，在主办方提交的分账结算单中被按 <code>$120</code> 基础票面底价报账，企图将 <code>$660,000</code> 动态溢价截留在 <code>85/15</code> 后端分账池外！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "ctr_nut_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HOUSE_NUT_SHOW_EXPENSE_PADDING_OR_UNAUTHORIZED_PROMOTER_COMP_TICKETS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "演出主办方在场馆保底办演成本（<code>House Nut / Approved Show Expenses</code>）中混入无外部第三方真实发票的内部广告设计加价、隐瞒 <code>15%</code> 媒体代理返点人为抬高分账起付线（<code>Split Point</code>），或突破合同 <code>50 张</code>免票上限滥发 <code>450 张</code>关系户赠票（<code>Promoter Comps</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ctr_mrc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 VENUE_MERCH_COMMISSION_RATE_BREACH_OR_MISSING_PRO_SETLIST_WITHHOLDING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：场馆对巡演周边商品未先扣除 <code>8.5%</code> 销售税与 <code>3%</code> 刷卡手续费、且无视 <code>软货 80/20（衣服）、硬货 90/10（黑胶/海报）</code>合同条款一刀切强抽 <code>30%</code> 含税毛流水，或未按实演曲目单计提 <code>ASCAP/BMI/PRS</code> 表演权费与跨州非居民艺人预提税（<code>IRS CWA</code>），已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ctr_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_BOX_OFFICE_SPLIT_AND_HOUSE_NUT_AUDIT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>票务 Audit API 动态溢价全额入池 + House Nut 第三方净额发票核减与除税周边分档重算</code>，单场挽回/优化分账收益 <code>$58,400.00</code>（净结算成本优化至 <code>$671,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🎤 Platinum 动态溢价 100% 入池 + House Nut 第三方发票吻合 + 周边除税分档合规：已自动清分 (VERIFIED_CONCERT_TOUR_PROMOTER_SETTLEMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零隐瞒动态高价票溢价、零虚报场馆成本抬高 Split Point 与含税周边强抽 30%</strong>：智能体大型巡演散场夜票房与周边分账批次已完成安全清算（<code>$730,000.00</code>）！" +
     "</div>";
 }}
 

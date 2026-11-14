@@ -5598,6 +5598,24 @@
         <div id="ost-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Live Concert Tour Promoter Settlement, House Nut & Merch Split Sandbox -->
+      <div class="finops-box" id="agentic-concert-tour-promoter-settlement-sandbox" style="margin-top:12px;border-color:#EC4899;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🎤 智能体大型巡演票房分账 (Tour Settlement)：Platinum 动态溢价入池锁、House Nut 发票与周边净额 (`agentic_music_live_concert_tour_promoter_settlement_box_office_split_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 万人体育馆巡演散场夜分账批次 ($730,000.00)、Platinum 动态溢价票入池、House Nut 办演成本发票与 Merch 除税分成场景 (Concert Tour Settlement Scenario):</span></label>
+          <select id="ctr-select" onchange="updateAgenticConcertTourPromoterSettlementSandbox()">
+            <option value="ctr_commit_ok">🎤 Platinum 动态溢价票 100% 入池 + House Nut 第三方发票吻合 + 周边除税 Soft 80/20 与 PRO 合规：10ms 清算 $730,000.00! (Act automatically)</option>
+            <option value="ctr_plt_403">🛑 主办方把前排 2,000 张实售 $450 的官方动态调价票 (Platinum) 按 $120 基础底价报账，私吞 $660,000 溢价不进 85/15 分账池 → 11ms 触发 HTTP 403!</option>
+            <option value="ctr_nut_422">🚨 往场馆成本 (House Nut) 乱塞无外部发票的内部广告费/独吞 15% 媒体返点抬高 Split Point，或滥发 450 张关系户免票 (Comps) → 14ms 触发 HTTP 422!</option>
+            <option value="ctr_mrc_451">🛑 场馆对周边 T 恤与黑胶唱片不扣 8.5% 消费税与 3% 刷卡费强抽 30% 毛流水，或漏提 ASCAP/BMI 表演权与跨州预提税：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ctr_sav_409">🧑‍⚖️ Web IQ 直连票务底层 Audit API 追回漏算动态票溢价、砍掉无票据 House Nut 水分并重算除税周边分成挽回 $58,400.00 (净结算 $671,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ctr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6303,6 +6321,7 @@ function renderAll() {
   updateAgenticWorkersCompOmfsBillReviewSandbox();
   updateB2bFoodserviceBroadlineDeviatedPricingSandbox();
   updateB2bSemiconductorOsatStdfYieldSandbox();
+  updateAgenticConcertTourPromoterSettlementSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19494,6 +19513,52 @@ function updateB2bSemiconductorOsatStdfYieldSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔬 封装良率 99.7% 达标 + STDF 净测试秒数吻合 + EXEC_VER 程序哈希与键合线 BOM 合规：已自动清算 (VERIFIED_SEMICONDUCTOR_OSAT_STDF_YIELD_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零压碎客供晶圆拒赔硅片原值、零探针脏污 3 倍重测机时费与漏测坏片流出</strong>：B2B 半导体 OSAT 委外封测批次已完成安全清算（<code>$840,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticConcertTourPromoterSettlementSandbox() {
+  var sel = document.getElementById("ctr-select");
+  var outEl = document.getElementById("ctr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ctr_plt_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DYNAMIC_PLATINUM_TICKET_UPSELL_EXCLUDED_FROM_GROSS_BOX_OFFICE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "散场夜票务底层 <code>Audit Manifest API</code> 穿透发现：前排 <code>2,000</code> 张通过官方动态调价（<code>Official Platinum / Dynamic Pricing</code>）按 <code>$450/张</code> 售出的高价门票，在主办方提交的分账结算单中被按 <code>$120</code> 基础票面底价报账，企图将 <code>$660,000</code> 动态溢价截留在 <code>85/15</code> 后端分账池外！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "ctr_nut_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HOUSE_NUT_SHOW_EXPENSE_PADDING_OR_UNAUTHORIZED_PROMOTER_COMP_TICKETS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "演出主办方在场馆保底办演成本（<code>House Nut / Approved Show Expenses</code>）中混入无外部第三方真实发票的内部广告设计加价、隐瞒 <code>15%</code> 媒体代理返点人为抬高分账起付线（<code>Split Point</code>），或突破合同 <code>50 张</code>免票上限滥发 <code>450 张</code>关系户赠票（<code>Promoter Comps</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "ctr_mrc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 VENUE_MERCH_COMMISSION_RATE_BREACH_OR_MISSING_PRO_SETLIST_WITHHOLDING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：场馆对巡演周边商品未先扣除 <code>8.5%</code> 销售税与 <code>3%</code> 刷卡手续费、且无视 <code>软货 80/20（衣服）、硬货 90/10（黑胶/海报）</code>合同条款一刀切强抽 <code>30%</code> 含税毛流水，或未按实演曲目单计提 <code>ASCAP/BMI/PRS</code> 表演权费与跨州非居民艺人预提税（<code>IRS CWA</code>），已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "ctr_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_BOX_OFFICE_SPLIT_AND_HOUSE_NUT_AUDIT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>票务 Audit API 动态溢价全额入池 + House Nut 第三方净额发票核减与除税周边分档重算</code>，单场挽回/优化分账收益 <code>$58,400.00</code>（净结算成本优化至 <code>$671,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🎤 Platinum 动态溢价 100% 入池 + House Nut 第三方发票吻合 + 周边除税分档合规：已自动清分 (VERIFIED_CONCERT_TOUR_PROMOTER_SETTLEMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零隐瞒动态高价票溢价、零虚报场馆成本抬高 Split Point 与含税周边强抽 30%</strong>：智能体大型巡演散场夜票房与周边分账批次已完成安全清算（<code>$730,000.00</code>）！" +
     "</div>";
 }
 
