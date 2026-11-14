@@ -15569,6 +15569,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-auto-salvage-auction-sandbox", demo_zh)
 
+    def test_b2b_pharma_wholesale_chargeback_edi844_849_dscsa_340b_vs_diversion_duplicate_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_pharma_wholesale_chargeback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant DEA/HIN active on EDI 845 + historical Lot WAC $1,000 + unique DSCSA SGTIN -> 200 OK ($38,000.00)
+        ok_res = evaluate_b2b_pharma_wholesale_chargeback_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PHARMA_WHOLESALE_CHARGEBACK_EDI844_SETTLED")
+        self.assertEqual(ok_res.settled_pharma_chargeback_batch_cents, 3800000)
+
+        # 2. Ineligible clinic or expired hospital GPO/340B membership on invoice date -> 403 Blocked
+        dea_403 = evaluate_b2b_pharma_wholesale_chargeback_policy(
+            dea_hin_contract_roster_and_opais_340b_active_on_invoice_date_verified=False,
+        )
+        self.assertFalse(dea_403.allowed)
+        self.assertEqual(dea_403.http_status, 403)
+        self.assertEqual(
+            dea_403.decision_code,
+            "DEA_HIN_CONTRACT_ROSTER_MISMATCH_OR_CLASS_OF_TRADE_DIVERSION_BLOCKED",
+        )
+
+        # 3. WAC-spike inventory arbitrage (claiming new $1,000 WAC on old $900 lot) or lot balance exhausted -> 422 Blocked
+        wac_422 = evaluate_b2b_pharma_wholesale_chargeback_policy(
+            historical_lot_wac_acquisition_price_and_remaining_lot_balance_verified=False,
+        )
+        self.assertFalse(wac_422.allowed)
+        self.assertEqual(wac_422.http_status, 422)
+        self.assertEqual(
+            wac_422.decision_code,
+            "WAC_SPIKE_INVENTORY_ARBITRAGE_OR_LOT_CHARGEBACK_VOLUME_EXHAUSTED",
+        )
+
+        # 4. Duplicate 340B + State Medicaid rebate (42 U.S.C. 256b) or DSCSA SGTIN serial replay -> 451 Hold
+        dup_451 = evaluate_b2b_pharma_wholesale_chargeback_policy(
+            webiq_dscsa_sgtin_unique_and_zero_340b_medicaid_duplicate_discount_clean=False,
+        )
+        self.assertFalse(dup_451.allowed)
+        self.assertEqual(dup_451.http_status, 451)
+
+        # 5. Web IQ automated EDI 849 historical Lot-WAC recalculation saving $4,600 ($33,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_pharma_wholesale_chargeback_policy(
+            automated_edi849_line_recalculation_and_wac_recovery_savings_cents=460000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_pharma_chargeback_batch_cents, 3340000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_pharma_wholesale_chargeback_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-pharma-wholesale-chargeback-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

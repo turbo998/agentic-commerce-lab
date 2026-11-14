@@ -5400,6 +5400,24 @@
         <div id="slv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Pharma Wholesaler Chargeback EDI 844/849, Lot-WAC & DSCSA/340B Sandbox -->
+      <div class="finops-box" id="b2b-pharma-wholesale-chargeback-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">💊 B2B 医药一级分销商返利对账 (EDI 844/849)：DEA/HIN 医院资格锁、批次历史 WAC 与 DSCSA/340B (`b2b_pharma_wholesale_chargeback_edi844_849_dscsa_340b_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 医药分销商 EDI 844 差价返利批次 ($38,000.00)、DEA/HIN 终端医疗机构名录、历史进货批次 WAC 与 DSCSA SGTIN / 340B 场景 (Pharma Chargeback Scenario):</span></label>
+          <select id="pwc-select" onchange="updateB2bPharmaWholesaleChargebackSandbox()">
+            <option value="pwc_commit_ok">💊 终端医院 DEA/HIN 在 EDI 845 有效期内 + 批次历史 WAC $1,000 对齐 + DSCSA SGTIN 首次核销：10ms 清算 $38,000.00! (Act automatically)</option>
+            <option value="pwc_dea_403">🛑 分销商把药卖给无合同医美诊所却冒用公立医院 DEA/HIN 虚报 EDI 844 合同差价 (或 GPO/340B 会员在发票日前已过期) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="pwc_wac_422">🚨 药厂提价后分销商拿去年按旧 WAC $900 买进的老批次库存冒按新 WAC $1,000 索赔差价 (+$100/支套利)，或超出该批次总发货量 → 14ms 触发 HTTP 422!</option>
+            <option value="pwc_dup_451">🛑 同一盒药前端刚拿 340B 差价回扣后端又被州 Medicaid 索要返利 (违反 42 U.S.C. 256b) 或 DSCSA SGTIN 序列号重放：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="pwc_sav_409">🧑‍⚖️ Web IQ 自动穿透 Lot 原始 EDI 810 发票 WAC 重算 EDI 849 调整行并剔除过期合同溢价防漏/立省 $4,600.00 (净退差价 $33,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pwc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6094,6 +6112,7 @@ function renderAll() {
   updateAgenticHealthcareClaimsNcciSandbox();
   updateB2bSemiconductorIpCoreRoyaltySandbox();
   updateAgenticAutoSalvageAuctionSandbox();
+  updateB2bPharmaWholesaleChargebackSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -18779,6 +18798,52 @@ function updateAgenticAutoSalvageAuctionSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🚗 联邦 NMVTIS 烙印真实 + 市政拖车限价合规 + 事故电车防爆隔离通过：已自动清算 (VERIFIED_AUTO_SALVAGE_AUCTION_NMVTIS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零跨州洗白水泡车欺诈、零黑心拖车场 $4,800 敲诈与拍卖场电车连环爆燃</strong>：智能体全损车残值拍卖与垫付费批次已完成安全清算（<code>$530,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bPharmaWholesaleChargebackSandbox() {
+  var sel = document.getElementById("pwc-select");
+  var outEl = document.getElementById("pwc-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pwc_dea_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DEA_HIN_CONTRACT_ROSTER_MISMATCH_OR_CLASS_OF_TRADE_DIVERSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "分销商在 <code>EDI 844</code> 差价索赔单中申报的终端收货机构 <code>DEA / HIN / HRSA 340B ID</code> 在发票当日不属于有效的 <code>EDI 845</code> 授权合同成员（或把药卖给非会员医美诊所后冒用公立医院编号串货套利）！已在 11ms 内硬拦截并生成 <code>EDI 849</code> 拒付码。" +
+      "</div>";
+    return;
+  }
+  if (v === "pwc_wac_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 WAC_SPIKE_INVENTORY_ARBITRAGE_OR_LOT_CHARGEBACK_VOLUME_EXHAUSTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "分销商在药厂 1 月提价后，拿去年按旧 <code>WAC $900/支</code> 购入的老批次库存（<code>Lot #LOT-2025Q4</code>）冒按新 <code>WAC $1,000/支</code> 索赔差价（每支虚增套利 <code>$100</code>），或该批次累计索赔支数已突破原始 <code>EDI 810</code> 发货总量，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "pwc_dup_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DUPLICATE_340B_MEDICAID_REBATE_OR_DSCSA_SGTIN_SERIAL_REPLAY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核验发现该单盒 <code>DSCSA 2D DataMatrix SGTIN</code> 序列号已被历史 <code>EDI 844</code> 批次核销过，或同一处方单同时命中前端 <code>340B</code> 特惠折扣与后端州 <code>Medicaid MDRP</code> 医保返利（违反 <code>42 U.S.C. § 256b(a)(5)(A)</code> 联邦防双重折扣法），已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "pwc_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_EDI849_LOT_WAC_RECALCULATION_AND_GTN_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>原始批次 EDI 810 历史买入 WAC 自动重算 + EDI 849 行级差价核减</code>，剔除跨期涨价套利与失效合同溢价，单批防漏/立省 <code>$4,600.00</code>（净退贷项凭证优化至 <code>$33,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>💊 终端医院 DEA/HIN 合同有效 + 批次历史 WAC 对齐 + DSCSA SGTIN 无重扣：已自动签发 EDI 849 (VERIFIED_PHARMA_WHOLESALE_CHARGEBACK_EDI844_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零非授权诊所串货套利、零提价期老库存新 WAC 虚报与 340B/Medicaid 双重返利</strong>：B2B 医药分销商 EDI 844 差价返利批次已完成安全核销（<code>$38,000.00</code>）！" +
     "</div>";
 }
 
