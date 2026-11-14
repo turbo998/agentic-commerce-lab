@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg264" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent264" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="dangerGrad264" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#450a0a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="safeGrad264" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="760" fill="url(#bg264)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="18" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <rect x="44" y="36" width="460" height="28" rx="14" fill="#1e293b" stroke="#06b6d4" stroke-width="1"/>
+  <text x="274" y="55" fill="#22d3ee" font-size="13" font-weight="700" text-anchor="middle">ROUND 262 · TELECOM TOWER COLOCATION, TIA-222-H EPA &amp; MLA LEASE</text>
+  <text x="44" y="96" fill="#f8fafc" font-size="22" font-weight="800">B2B 智能体通信铁塔共址租赁（Tower Colocation）、TIA-222-H 天线受风面积（EPA）与调价清算架构</text>
+  <text x="44" y="122" fill="#94a3b8" font-size="14">无人机 3D 数字孪生塔身盘点锁 + MLA 包干风载额度 (Entitlement) 等量换新免加租 + 多租户 1/N 税费分摊 vs. 已拆 3G 幽灵天线连扣五年与额内换 5G 乱加租</text>
+  <rect x="44" y="134" width="1192" height="3" fill="url(#accent264)"/>
+
+  <!-- Left Column: Legacy Risks -->
+  <rect x="44" y="152" width="576" height="420" rx="14" fill="url(#dangerGrad264)" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="68" y="184" fill="#fca5a5" font-size="18" font-weight="700">⛔ 传统通信铁塔租约盲付的三大 OPEX 失血黑洞（年漏损 5%~11%）</text>
+
+  <rect x="64" y="202" width="536" height="106" rx="10" fill="#111827" stroke="#dc2626" stroke-width="1"/>
+  <text x="80" y="226" fill="#f87171" font-size="15" font-weight="700">1. 已拆下塔的 3G/4G “幽灵天线与馈线”连交五年租金（Ghost Gear · 403）</text>
+  <text x="80" y="248" fill="#cbd5e1" font-size="13">• 3G 退网时施工队早已拆走塔上 6 面旧天线与 12 根粗馈线，但漏交竣工销账单 (NOC)</text>
+  <text x="80" y="268" fill="#cbd5e1" font-size="13">• 铁塔公司按台账照扣 $850/站/月，或虚报 ANSI/TIA-222-H EPA 受风面积至 140 平尺</text>
+  <text x="80" y="288" fill="#fca5a5" font-size="12" font-weight="600">→ 账单与塔身物理现实彻底脱节，5,000 座基站每年白扔数千万美元幽灵租金</text>
+
+  <rect x="64" y="320" width="536" height="106" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="1"/>
+  <text x="80" y="344" fill="#fbbf24" font-size="15" font-weight="700">2. 在 MLA 已买断包干风载额度内换 5G 天线却被当新增乱加租（422）</text>
+  <text x="80" y="366" fill="#cbd5e1" font-size="13">• 主协议 (MLA) 基础月租已含 120 sq.ft. EPA 包干额度；换装 5G 天线后总面积仅 104 sq.ft.</text>
+  <text x="80" y="386" fill="#cbd5e1" font-size="13">• 铁塔门户却将额内等量换新 (Entitlement Swap) 当新增挂载每站乱加 $450/月或提前复利涨租</text>
+  <text x="80" y="406" fill="#fde68a" font-size="12" font-weight="600">→ 运营商为自己已经买断的塔身风载空间付了第二遍钱，且被滚入 3% 年度复利</text>
+
+  <rect x="64" y="438" width="536" height="116" rx="10" fill="#111827" stroke="#ec4899" stroke-width="1"/>
+  <text x="80" y="462" fill="#f472b6" font-size="15" font-weight="700">3. 同塔三家租户被各收 100% 房产税涨幅 &amp; 塔身应力超载（300% Tax · 451）</text>
+  <text x="80" y="484" fill="#cbd5e1" font-size="13">• 同一座铁塔挂了 3 家运营商，市政房产税上涨 $6,000 却向每家都收 $6,000 (合计收走 300%)</text>
+  <text x="80" y="504" fill="#cbd5e1" font-size="13">• 塔身 TIA-222-H 结构应力比已达 108% (&gt;100% 超载红线) 却未加固强行挂塔结算</text>
+  <text x="80" y="528" fill="#fbcfe8" font-size="12" font-weight="600">→ 独吞多租户分摊红利，且在台风季埋下倒塔断网重大安全生产隐患</text>
+
+  <!-- Right Column: Agentic Architecture -->
+  <rect x="660" y="152" width="576" height="420" rx="14" fill="url(#safeGrad264)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="684" y="184" fill="#6ee7b7" font-size="18" font-weight="700">✅ 智能体 Web IQ + 无人机 3D 孪生 + TIA-222-H 四重门禁</text>
+
+  <rect x="680" y="202" width="536" height="84" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="696" y="225" fill="#38bdf8" font-size="14" font-weight="700">Gate 1 · 无人机 3D 数字孪生实盘 vs. SLA 计费台账对齐锁（拦截 403）</text>
+  <text x="696" y="246" fill="#e2e8f0" font-size="13">Web IQ 将巡检无人机 3D 激光/倾斜摄影识别出的在塔天线、RRH 与馈线实盘与计费单</text>
+  <text x="696" y="266" fill="#94a3b8" font-size="12">逐一比对；任何已拆下塔的 3G/4G 幽灵设备或虚高 EPA 面积 11ms 硬拦截</text>
+
+  <rect x="680" y="296" width="536" height="84" rx="10" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="696" y="319" fill="#34d399" font-size="14" font-weight="700">Gate 2 · MLA 包干风载池 (EPA Entitlement) 与周年调价锁（拦截 422）</text>
+  <text x="696" y="340" fill="#e2e8f0" font-size="13">实时精算 Total Mounted EPA ≤ MLA Reserved Entitlement (如 104 ≤ 120 sq.ft.)，</text>
+  <text x="696" y="360" fill="#94a3b8" font-size="12">包干额内 5G 换装强制 $0 Amendment 加租，并锁死精确起租周年日 CPI/3% 调价</text>
+
+  <rect x="680" y="390" width="536" height="84" rx="10" fill="#0f172a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="696" y="413" fill="#a78bfa" font-size="14" font-weight="700">Gate 3 · 同塔多租户 1/N 税费分摊与 TIA-222-H 应力安全锁（拦截 451）</text>
+  <text x="696" y="434" fill="#e2e8f0" font-size="13">结合无人机塔身多扇区识别与 FCC ASR 注册库锁定同塔活跃运营商数 N，强制执行</text>
+  <text x="696" y="454" fill="#94a3b8" font-size="12">1/N 房产税/地租分摊，并核验 PE 签章的 TIA-222-H 结构应力比 ≤ 100%</text>
+
+  <rect x="680" y="484" width="536" height="72" rx="10" fill="#0f172a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="696" y="507" fill="#fbbf24" font-size="14" font-weight="700">Gate 4 · 区域租约自动清算 &amp; 幽灵设备批量清退双签（200 / 409）</text>
+  <text x="696" y="528" fill="#e2e8f0" font-size="13">10ms 签发 b2b_telecom_tower_colocation_... 令牌；清退幽灵馈线立省 $61,600 转 409</text>
+
+  <!-- Bottom Benchmark Bar -->
+  <rect x="44" y="588" width="1192" height="132" rx="14" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+  <text x="68" y="616" fill="#22d3ee" font-size="15" font-weight="700">📊 定量实测基准（lab/webiq_commerce_demo.py · 5 组确定性边界全部通过 · CSP 自包含零外部依赖）</text>
+
+  <rect x="68" y="630" width="220" height="74" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="178" y="652" fill="#6ee7b7" font-size="13" font-weight="700" text-anchor="middle">200 OK · 合规铁塔共址清算</text>
+  <text x="178" y="672" fill="#ecfdf5" font-size="12" text-anchor="middle">3D 点云与 EPA 吻合 ($770k)</text>
+  <text x="178" y="692" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">Tower Lease Settled · 10ms</text>
+
+  <rect x="300" y="630" width="220" height="74" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="410" y="652" fill="#fca5a5" font-size="13" font-weight="700" text-anchor="middle">403 · 已拆幽灵天线/EPA 虚高</text>
+  <text x="410" y="672" fill="#fee2e2" font-size="12" text-anchor="middle">3G 退网拆机未销账连扣租金</text>
+  <text x="410" y="692" fill="#f87171" font-size="11" font-weight="700" text-anchor="middle">GHOST_ANTENNA_EPA_BLOCKED</text>
+
+  <rect x="532" y="630" width="220" height="74" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1"/>
+  <text x="642" y="652" fill="#fcd34d" font-size="13" font-weight="700" text-anchor="middle">422 · 包干额内换 5G 乱加租</text>
+  <text x="642" y="672" fill="#fef3c7" font-size="12" text-anchor="middle">未超 120 平尺却收 Amendment 费</text>
+  <text x="642" y="692" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">ENTITLEMENT_SWAP_OVERBILL</text>
+
+  <rect x="764" y="630" width="220" height="74" rx="8" fill="#500724" stroke="#ec4899" stroke-width="1"/>
+  <text x="874" y="652" fill="#f9a8d4" font-size="13" font-weight="700" text-anchor="middle">451 · 300% 重复税费/超载</text>
+  <text x="874" y="672" fill="#fce7f3" font-size="12" text-anchor="middle">三家各收 100% 税或应力 &gt;100%</text>
+  <text x="874" y="692" fill="#f472b6" font-size="11" font-weight="700" text-anchor="middle">UNSHARED_TAX_OVERLOAD_HOLD</text>
+
+  <rect x="996" y="630" width="216" height="74" rx="8" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="1104" y="652" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">409 · 3D 孪生清退+MLA 核减</text>
+  <text x="1104" y="672" fill="#e0f2fe" font-size="12" text-anchor="middle">立省 $61.6k ($708.4k 净付)</text>
+  <text x="1104" y="692" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">DRONE_TWIN_TRUEUP_CONFIRM</text>
+</svg>

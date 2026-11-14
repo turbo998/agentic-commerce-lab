@@ -15911,6 +15911,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-mice-group-hotel-attrition-sandbox", demo_zh)
 
+    def test_b2b_telecom_tower_colocation_epa_wind_load_mla_vs_ghost_antenna_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_telecom_tower_colocation_epa_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant drone 3D digital-twin EPA match + within-MLA 5G swap + 1/3 pro-rata tax & stress <=100% -> 200 OK ($770,000.00)
+        ok_res = evaluate_b2b_telecom_tower_colocation_epa_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_TELECOM_TOWER_COLOCATION_EPA_SETTLED")
+        self.assertEqual(ok_res.settled_tower_colocation_batch_cents, 77000000)
+
+        # 2. Billing for decommissioned 3G/4G ghost antennas/coax or inflated TIA-222-H EPA -> 403 Blocked
+        ghs_403 = evaluate_b2b_telecom_tower_colocation_epa_policy(
+            drone_3d_digital_twin_mounted_epa_matches_billed_inventory_and_no_ghost_gear=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.decision_code,
+            "GHOST_DECOMMISSIONED_ANTENNA_RRH_OR_EPA_MISMATCH_BLOCKED",
+        )
+
+        # 3. In-entitlement 5G antenna swap billed as paid amendment or premature CPI escalator compounding -> 422 Blocked
+        ent_422 = evaluate_b2b_telecom_tower_colocation_epa_policy(
+            within_mla_entitlement_5g_swap_zero_amendment_fee_and_anniversary_escalator_verified=False,
+        )
+        self.assertFalse(ent_422.allowed)
+        self.assertEqual(ent_422.http_status, 422)
+        self.assertEqual(
+            ent_422.decision_code,
+            "ENTITLEMENT_SWAP_BILLED_AS_NEW_AMENDMENT_OR_COMPOUNDED_CPI_ESCALATOR",
+        )
+
+        # 4. 300% unshared multi-tenant property tax pass-through or TIA-222-H stress ratio >100% -> 451 Hold
+        tax_451 = evaluate_b2b_telecom_tower_colocation_epa_policy(
+            webiq_multi_tenant_pro_rata_tax_share_and_tia222h_stress_within_100pct_clean=False,
+        )
+        self.assertFalse(tax_451.allowed)
+        self.assertEqual(tax_451.http_status, 451)
+
+        # 5. Web IQ drone digital-twin ghost gear audit & MLA true-up saving $61,600 ($708,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_telecom_tower_colocation_epa_policy(
+            drone_digital_twin_ghost_gear_audit_and_mla_trueup_savings_cents=6160000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_tower_colocation_batch_cents, 70840000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_telecom_tower_colocation_epa_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-telecom-tower-colocation-epa-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

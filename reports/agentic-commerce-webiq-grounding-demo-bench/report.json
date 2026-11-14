@@ -1385,6 +1385,11 @@
     "agentic_mice_group_hotel_settlement_latency_ms": 10,
     "attrition_resale_double_dip_block_latency_ms": 11
   },
+  "b2b_telecom_tower_colocation_epa_guards": {
+    "all_passed": true,
+    "b2b_telecom_tower_colocation_settlement_latency_ms": 10,
+    "ghost_antenna_epa_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
