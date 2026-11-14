@@ -13539,6 +13539,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-agritech-grain-ewr-paca-sandbox", demo_zh)
 
+    def test_agentic_qsr_grocery_catch_weight_prep_cutoff_commission_cap_mandate_vs_post_prep_cancel_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_qsr_grocery_catch_weight_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. KDS prep cutoff & scale-seal verified + 1x +15% catch-weight capture + <=15% fee cap ($370,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_qsr_grocery_catch_weight_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_qsr_grocery_batch_cents, 37000000)
+
+        # 2. Free cancel after KDS_FIRED or false missing-entree claim on weight-verified sealed bag -> 403 Blocked
+        kds_403 = evaluate_agentic_qsr_grocery_catch_weight_policy(
+            kds_prep_cutoff_and_scale_seal_parity_verified=False,
+        )
+        self.assertFalse(kds_403.allowed)
+        self.assertEqual(kds_403.http_status, 403)
+        self.assertEqual(
+            kds_403.decision_code,
+            "POST_KDS_PREP_FREE_CANCEL_OR_WEIGHT_VERIFIED_MISSING_ITEM_FRAUD_BLOCKED",
+        )
+
+        # 3. Second separate charge for catch-weight delta or over +15% cushion -> 422 Blocked
+        wgt_422 = evaluate_agentic_qsr_grocery_catch_weight_policy(
+            catch_weight_single_root_tid_le_15pct_verified=False,
+        )
+        self.assertFalse(wgt_422.allowed)
+        self.assertEqual(wgt_422.http_status, 422)
+        self.assertEqual(
+            wgt_422.decision_code,
+            "CATCH_WEIGHT_SECOND_CHARGE_OR_OVER_15PCT_CUSHION_BREACH",
+        )
+
+        # 4. Exceeding municipal 15% delivery commission cap or missing FDA allergen disclosure -> 451 Hold
+        cap_451 = evaluate_agentic_qsr_grocery_catch_weight_policy(
+            webiq_municipal_15pct_commission_cap_and_fda_clean=False,
+        )
+        self.assertFalse(cap_451.allowed)
+        self.assertEqual(cap_451.http_status, 451)
+
+        # 5. Web IQ enables 1x +15% catch-weight capture & scale-to-seal fraud defense saving $29,600 ($340,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_qsr_grocery_catch_weight_policy(
+            catch_weight_single_capture_and_seal_savings_cents=2960000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_qsr_grocery_batch_cents, 34040000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_qsr_grocery_catch_weight_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-qsr-grocery-catch-weight-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
