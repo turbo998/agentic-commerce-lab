@@ -16253,6 +16253,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-concert-tour-promoter-settlement-sandbox", demo_zh)
 
+    def test_b2b_utility_solar_epc_flash_test_el_pr_vs_sub_wattage_microcrack_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_utility_solar_epc_flash_test_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant golden-module calibrated STC Pmax >= 600Wp + 0% site EL Class-C cracks + ASTM E2848 PR >= 84.5% -> 200 OK ($790,000.00)
+        ok_res = evaluate_b2b_utility_solar_epc_flash_test_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_UTILITY_SOLAR_EPC_FLASH_TEST_SETTLED")
+        self.assertEqual(ok_res.settled_solar_epc_module_batch_cents, 79000000)
+
+        # 2. Uncalibrated factory flash tester inflating Pmax (+3.5% phantom watts) or container serial swap -> 403 Blocked
+        fls_403 = evaluate_b2b_utility_solar_epc_flash_test_policy(
+            calibrated_serial_stc_pmax_positive_bin_and_no_serial_swap_verified=False,
+        )
+        self.assertFalse(fls_403.allowed)
+        self.assertEqual(fls_403.http_status, 403)
+        self.assertEqual(
+            fls_403.decision_code,
+            "FLASH_TEST_STC_PMAX_BELOW_POSITIVE_BIN_OR_SERIAL_SWAP_BLOCKED",
+        )
+
+        # 3. Post-transit site EL inspection reveals forklift Class-C microcracks or LID+LeTID > 1.0% -> 422 Blocked
+        elm_422 = evaluate_b2b_utility_solar_epc_flash_test_policy(
+            post_transit_site_el_zero_classc_microcracks_and_lid_within_1pct_verified=False,
+        )
+        self.assertFalse(elm_422.allowed)
+        self.assertEqual(elm_422.http_status, 422)
+        self.assertEqual(
+            elm_422.decision_code,
+            "EL_IMAGING_MICROCRACK_DEFECT_OR_EXCESS_LID_LETID_DEGRADATION",
+        )
+
+        # 4. Failed 14-day ASTM E2848 weather-corrected PR test (<84.5%) or missing polysilicon traceability -> 451 Hold
+        prt_451 = evaluate_b2b_utility_solar_epc_flash_test_policy(
+            webiq_astm_e2848_weather_corrected_pr_and_polysilicon_traceability_clean=False,
+        )
+        self.assertFalse(prt_451.allowed)
+        self.assertEqual(prt_451.http_status, 451)
+
+        # 5. Web IQ golden-module wattage true-up & COD delay Liquidated Damages offset saving $63,200 ($726,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_utility_solar_epc_flash_test_policy(
+            automated_flash_test_wattage_trueup_and_delay_ld_offset_savings_cents=6320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_solar_epc_module_batch_cents, 72680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_utility_solar_epc_flash_test_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-utility-solar-epc-flash-test-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

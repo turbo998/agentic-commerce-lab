@@ -5616,6 +5616,24 @@
         <div id="ctr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Utility-Scale Solar EPC & PV Module Supply, Flash-Test Pmax & Site EL Sandbox -->
+      <div class="finops-box" id="b2b-utility-solar-epc-flash-test-sandbox" style="margin-top:12px;border-color:#FACC15;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">☀️ B2B 光伏电站总包与组件采购 (Solar EPC)：NREL 金板校准闪测瓦数锁、到站 EL 隐裂与气象修正 PR (`b2b_renewable_solar_epc_module_flash_test_lid_degradation_milestone_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 集中式光伏组件到货与 EPC 并网 PAC 批次 ($790,000.00)、Fraunhofer/NREL 金板校准 Flash-Test、到站 EL 隐裂与 ASTM E2848 PR 场景 (Utility Solar EPC Scenario):</span></label>
+          <select id="slr-select" onchange="updateB2bUtilitySolarEpcFlashTestSandbox()">
+            <option value="slr_commit_ok">☀️ 逐块序列号经金板校准 Pmax&gt;=600Wp 正公差 + 到站 EL 零隐裂 + 14天 ASTM E2848 PR&gt;=84.5%：10ms 清算 $790,000.00! (Act automatically)</option>
+            <option value="slr_fls_403">🛑 工厂脉冲模拟器未校准虚标 +3.5% 幽灵瓦数 (实测仅 582Wp 负公差板充当 600Wp 发货) 或偷换集装箱序列号条码 → 11ms 触发 HTTP 403!</option>
+            <option value="slr_elm_422">🚨 海运颠簸与叉车卸货震裂内部 130µm 硅片 (到站移动 EL 检出 Class-C 贯穿黑斑隐裂将致 150°C 热斑起火) 或首年 LID&gt;1.0% → 14ms 触发 HTTP 422!</option>
+            <option value="slr_prt_451">🛑 EPC 挑晴天瞬时峰值请款却未通过 14 天 ASTM E2848 辐照温度修正性能比 (PR=78.2%&lt;84.5%) 或缺硅料全链溯源档案：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="slr_sav_409">🧑‍⚖️ Web IQ 按 NREL 标准金板偏差还原真实瓦数并自动冲抵 12 天 COD 延期并网违约金 (Delay LD) 立省 $63,200.00 (净付 $726,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="slr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6322,6 +6340,7 @@ function renderAll() {
   updateB2bFoodserviceBroadlineDeviatedPricingSandbox();
   updateB2bSemiconductorOsatStdfYieldSandbox();
   updateAgenticConcertTourPromoterSettlementSandbox();
+  updateB2bUtilitySolarEpcFlashTestSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -19559,6 +19578,52 @@ function updateAgenticConcertTourPromoterSettlementSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🎤 Platinum 动态溢价 100% 入池 + House Nut 第三方发票吻合 + 周边除税分档合规：已自动清分 (VERIFIED_CONCERT_TOUR_PROMOTER_SETTLEMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零隐瞒动态高价票溢价、零虚报场馆成本抬高 Split Point 与含税周边强抽 30%</strong>：智能体大型巡演散场夜票房与周边分账批次已完成安全清算（<code>$730,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bUtilitySolarEpcFlashTestSandbox() {
+  var sel = document.getElementById("slr-select");
+  var outEl = document.getElementById("slr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "slr_fls_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FLASH_TEST_STC_PMAX_BELOW_POSITIVE_BIN_OR_SERIAL_SWAP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "组件厂上传的集装箱逐块条码 <code>IEC 60904 STC Flash-Test CSV</code> 经与 <code>Fraunhofer ISE / NREL</code> 一级标准金板（<code>Golden Module</code>）校准系数还原后，真实平均功率仅为 <code>582.0 Wp</code>（低于合同 <code>600 Wp 正公差 0~+5W</code> 下限，虚标 <code>+3.5%</code> 幽灵瓦数），或到货集装箱序列号与出厂闪测库不符！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "slr_elm_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EL_IMAGING_MICROCRACK_DEFECT_OR_EXCESS_LID_LETID_DEGRADATION (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "工地现场移动暗室 <code>IEC TS 60904-13 EL（电致发光）</code>抽检发现：海运颠簸与叉车野蛮卸货导致内部 <code>130 µm</code> 硅片出现 <code>Class-C 贯穿性死区暗裂（Microcracks）</code>（并网半年后将形成 <code>150°C</code> 高温热斑烧穿背板），或第三方 <code>PVEL</code> 报告显示首年 <code>LID+LeTID 光衰 &gt; 1.0%</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "slr_prt_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FAILED_ASTM_E2848_WEATHER_CORRECTED_PR_TEST_OR_MISSING_POLYSILICON_TRACEABILITY_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：EPC 总包商申请释放 <code>15% PAC（预验收）</code>尾款，但连续 14 天经斜面总辐射表（<code>POA Pyranometer</code>）与背板温度修正的 <code>ASTM E2848 / IEC 61724 性能比 (PR = 78.2% &lt; 84.5% SLA)</code> 不达标，或组件缺失从石英砂至多晶硅/硅片的全链路溯源档案，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "slr_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_FLASH_TEST_WATTAGE_TRUEUP_AND_DELAY_LD_OFFSET_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>NREL 金板校准有效瓦数 ($/Wp) 精算还原 + 12 天 COD 延期并网违约金 (Delay Liquidated Damages) 自动冲抵</code>，单批立省/挽回 <code>$63,200.00</code>（净结算额优化至 <code>$726,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>☀️ NREL 金板校准正公差瓦数达标 + 到站 EL 零死区隐裂 + ASTM E2848 PR&gt;=84.5% 合规：已自动清算 (VERIFIED_UTILITY_SOLAR_EPC_FLASH_TEST_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零出厂闪测虚标空气瓦数、零海运震裂热斑起火与未过气象修正 PR 盲付尾款</strong>：B2B 光伏电站组件采购与 EPC 并网验收批次已完成安全清算（<code>$790,000.00</code>）！" +
     "</div>";
 }
 
