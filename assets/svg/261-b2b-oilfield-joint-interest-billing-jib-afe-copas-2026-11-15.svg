@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg261" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1c1917"/>
+    </linearGradient>
+    <linearGradient id="accent261" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="dangerGrad261" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#450a0a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="safeGrad261" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="760" fill="url(#bg261)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="18" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <rect x="44" y="36" width="440" height="28" rx="14" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+  <text x="264" y="55" fill="#fbbf24" font-size="13" font-weight="700" text-anchor="middle">ROUND 259 · OILFIELD JIB / COPAS, AFE 10% CAP &amp; ROYALTY DOI</text>
+  <text x="44" y="96" fill="#f8fafc" font-size="22" font-weight="800">B2B 智能体油气上游联合区块作业账单（JIB / COPAS）、钻井 AFE 授权与矿权特许费清算架构</text>
+  <text x="44" y="122" fill="#94a3b8" font-size="14">AAPL JOA AFE 超支 10% 补充投票锁 + COPAS MFI-51 防管理费重复摊派 + 井口 API LACT 计量锁 vs. 钻井超支 40% 强扣、关联钻机溢价与侵占免扣费矿权</text>
+  <rect x="44" y="134" width="1192" height="3" fill="url(#accent261)"/>
+
+  <!-- Left Column: Legacy Risks -->
+  <rect x="44" y="152" width="576" height="420" rx="14" fill="url(#dangerGrad261)" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="68" y="184" fill="#fca5a5" font-size="18" font-weight="700">⛔ 传统油田 JIB 联合账单甩锅参股方的三大黑洞（年均多摊派 6%~12%）</text>
+
+  <rect x="64" y="202" width="536" height="106" rx="10" fill="#111827" stroke="#dc2626" stroke-width="1"/>
+  <text x="80" y="226" fill="#f87171" font-size="15" font-weight="700">1. 钻井超支 40% 却不发补充 AFE 强行摊派（Unapproved AFE Overrun · 403）</text>
+  <text x="80" y="248" fill="#cbd5e1" font-size="13">• 开钻前各方签字批准 $800 万 AFE 预算；按 AAPL JOA 超支 &gt;10% 必须重发补充 AFE 表决</text>
+  <text x="80" y="268" fill="#cbd5e1" font-size="13">• 作业者卡钻事故后直接把 $1,120 万 (+40% 超支) 塞进月度 JIB 账单强扣非作业参股方</text>
+  <text x="80" y="288" fill="#fca5a5" font-size="12" font-weight="600">→ 剥夺非作业参股方 (Non-Op WI) 的法定 Non-Consent 不跟投止损选择权</text>
+
+  <rect x="64" y="320" width="536" height="106" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="1"/>
+  <text x="80" y="344" fill="#fbbf24" font-size="15" font-weight="700">2. COPAS 总部管理费双重摊派与关联钻机高价输送（COPAS Double-Dip · 422）</text>
+  <text x="80" y="366" fill="#cbd5e1" font-size="13">• 作业者已按月收取固定单井管理费 (Overhead)，却又把总部法务/IT 工资塞进直接成本二次收费</text>
+  <text x="80" y="386" fill="#cbd5e1" font-size="13">• 租用作业者母公司旗下自有钻机与压裂砂车队，按高于盆地市场均价 35% 开票向合资井套利</text>
+  <text x="80" y="406" fill="#fde68a" font-size="12" font-weight="600">→ 违反 COPAS Exhibit C &amp; MFI-51 石油会计准则，把合资井变成作业者提款机</text>
+
+  <rect x="64" y="438" width="536" height="116" rx="10" fill="#111827" stroke="#ec4899" stroke-width="1"/>
+  <text x="80" y="462" fill="#f472b6" font-size="15" font-weight="700">3. 违规克扣免扣费矿权主与无 LACT 票据虚报拉水费（Royalty &amp; LACT · 451）</text>
+  <text x="80" y="484" fill="#cbd5e1" font-size="13">• 无视土地租约 Cost-Free Royalty 免扣费条款，暗扣地主 $4.50/桶集输脱水费引发矿权取消诉讼</text>
+  <text x="80" y="504" fill="#cbd5e1" font-size="13">• 月报 400 车采出水拉运处置费 (SWD)，却无井口 API MPMS LACT 科里奥利流量计交接票据</text>
+  <text x="80" y="528" fill="#fbcfe8" font-size="12" font-weight="600">→ 独资井拉水费被混入合资井报销，且连累全体参股方遭遇矿权违约集体诉讼</text>
+
+  <!-- Right Column: Agentic Architecture -->
+  <rect x="660" y="152" width="576" height="420" rx="14" fill="url(#safeGrad261)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="684" y="184" fill="#6ee7b7" font-size="18" font-weight="700">✅ 智能体 Web IQ + AAPL JOA / COPAS + LACT 四重核销门禁</text>
+
+  <rect x="680" y="202" width="536" height="84" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="696" y="225" fill="#38bdf8" font-size="14" font-weight="700">Gate 1 · 单井 AFE 110% 累计水位锁与 8 位小数 DOI 核验（拦截 403）</text>
+  <text x="696" y="246" fill="#e2e8f0" font-size="13">按 API-14 井号实时汇总资本支出，一旦突破已批准 AFE × 110% 且缺失全体签字</text>
+  <text x="696" y="266" fill="#94a3b8" font-size="12">Supplemental AFE 补充投票回执，11ms 自动冻结超支摊派行项</text>
+
+  <rect x="680" y="296" width="536" height="84" rx="10" fill="#0f172a" stroke="#34d399" stroke-width="1"/>
+  <text x="696" y="319" fill="#34d399" font-size="14" font-weight="700">Gate 2 · COPAS MFI-51 科目白名单与盆地油服公允价锁（拦截 422）</text>
+  <text x="696" y="340" fill="#e2e8f0" font-size="13">Web IQ 自动识别并剥离混入直接 LOE 的总部行政/法务/IT 双重摊派，并将作业者</text>
+  <text x="696" y="360" fill="#94a3b8" font-size="12">关联钻机、压裂与砂厂单价强制锚定所在盆地独立第三方市场中位价</text>
+
+  <rect x="680" y="390" width="536" height="84" rx="10" fill="#0f172a" stroke="#a78bfa" stroke-width="1"/>
+  <text x="696" y="413" fill="#a78bfa" font-size="14" font-weight="700">Gate 3 · Cost-Free 矿权零克扣与井口 API LACT 流量计锁（拦截 451）</text>
+  <text x="696" y="434" fill="#e2e8f0" font-size="13">穿透核验地主矿权租约免扣费条款，并要求原油集输与 SWD 采出水拉运账单 100%</text>
+  <text x="696" y="454" fill="#94a3b8" font-size="12">匹配加密签名的井口 API MPMS LACT 流量计交接票据与德州 RRC 产量库</text>
+
+  <rect x="680" y="484" width="536" height="72" rx="10" fill="#0f172a" stroke="#fbbf24" stroke-width="1"/>
+  <text x="696" y="507" fill="#fbbf24" font-size="14" font-weight="700">Gate 4 · 联合账单自动清算 &amp; 原油收益轧差抵扣双签（200 / 409）</text>
+  <text x="696" y="528" fill="#e2e8f0" font-size="13">10ms 签发 b2b_oilfield_joint_interest_billing_... 令牌；收益轧差立省 $68,800 转 409</text>
+
+  <!-- Bottom Benchmark Bar -->
+  <rect x="44" y="588" width="1192" height="132" rx="14" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
+  <text x="68" y="616" fill="#fbbf24" font-size="15" font-weight="700">📊 定量实测基准（lab/webiq_commerce_demo.py · 5 组确定性边界全部通过 · CSP 自包含零外部依赖）</text>
+
+  <rect x="68" y="630" width="220" height="74" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="178" y="652" fill="#6ee7b7" font-size="13" font-weight="700" text-anchor="middle">200 OK · 合规 JIB 联合清算</text>
+  <text x="178" y="672" fill="#ecfdf5" font-size="12" text-anchor="middle">AFE 合规 + COPAS 净额 ($860k)</text>
+  <text x="178" y="692" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">PIDX JIB Settled · 10ms</text>
+
+  <rect x="300" y="630" width="220" height="74" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="410" y="652" fill="#fca5a5" font-size="13" font-weight="700" text-anchor="middle">403 · AFE 超支 &gt;10% 无授权</text>
+  <text x="410" y="672" fill="#fee2e2" font-size="12" text-anchor="middle">钻井超支 40% 缺补充投票单</text>
+  <text x="410" y="692" fill="#f87171" font-size="11" font-weight="700" text-anchor="middle">UNAPPROVED_AFE_OVERRUN</text>
+
+  <rect x="532" y="630" width="220" height="74" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1"/>
+  <text x="642" y="652" fill="#fcd34d" font-size="13" font-weight="700" text-anchor="middle">422 · COPAS 重复摊派/关联溢价</text>
+  <text x="642" y="672" fill="#fef3c7" font-size="12" text-anchor="middle">总部工资双收或自有钻机 +35%</text>
+  <text x="642" y="692" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">COPAS_OVERHEAD_DOUBLE_DIP</text>
+
+  <rect x="764" y="630" width="220" height="74" rx="8" fill="#500724" stroke="#ec4899" stroke-width="1"/>
+  <text x="874" y="652" fill="#f9a8d4" font-size="13" font-weight="700" text-anchor="middle">451 · 矿权乱扣费/缺 LACT 票</text>
+  <text x="874" y="672" fill="#fce7f3" font-size="12" text-anchor="middle">Cost-Free 违约或幽灵拉水车</text>
+  <text x="874" y="692" fill="#f472b6" font-size="11" font-weight="700" text-anchor="middle">ILLEGAL_ROYALTY_DEDUCTION</text>
+
+  <rect x="996" y="630" width="216" height="74" rx="8" fill="#0c4a6e" stroke="#0284c7" stroke-width="1"/>
+  <text x="1104" y="652" fill="#7dd3fc" font-size="13" font-weight="700" text-anchor="middle">409 · COPAS 纠偏+收益轧差</text>
+  <text x="1104" y="672" fill="#e0f2fe" font-size="12" text-anchor="middle">立省 $68.8k ($791.2k 净付)</text>
+  <text x="1104" y="692" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">COPAS_REVENUE_NETTING</text>
+</svg>

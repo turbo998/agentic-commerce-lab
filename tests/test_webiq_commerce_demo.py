@@ -15740,6 +15740,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-pbm-pharmacy-dir-nadac-sandbox", demo_zh)
 
+    def test_b2b_oilfield_joint_interest_billing_jib_afe_copas_vs_overrun_overhead_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_oilfield_joint_interest_billing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant AFE 10% cap + COPAS zero double-dip + API LACT & royalty clean -> 200 OK ($860,000.00)
+        ok_res = evaluate_b2b_oilfield_joint_interest_billing_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_OILFIELD_JOINT_INTEREST_BILLING_SETTLED")
+        self.assertEqual(ok_res.settled_oilfield_jib_batch_cents, 86000000)
+
+        # 2. Unapproved >10% AFE drilling cost overrun billed without Supplemental AFE ballot -> 403 Blocked
+        afe_403 = evaluate_b2b_oilfield_joint_interest_billing_policy(
+            cumulative_well_spend_within_afe_110pct_or_supplemental_afe_ballot_verified=False,
+        )
+        self.assertFalse(afe_403.allowed)
+        self.assertEqual(afe_403.http_status, 403)
+        self.assertEqual(
+            afe_403.decision_code,
+            "UNAPPROVED_AFE_COST_OVERRUN_WITHOUT_SUPPLEMENTAL_AFE_BALLOT_BLOCKED",
+        )
+
+        # 3. COPAS HQ overhead double-dipping or 35% affiliate rig dayrate markup -> 422 Blocked
+        cop_422 = evaluate_b2b_oilfield_joint_interest_billing_policy(
+            copas_mfi51_zero_hq_overhead_double_dip_and_affiliate_rig_benchmark_verified=False,
+        )
+        self.assertFalse(cop_422.allowed)
+        self.assertEqual(cop_422.http_status, 422)
+        self.assertEqual(
+            cop_422.decision_code,
+            "COPAS_OVERHEAD_DOUBLE_DIP_OR_AFFILIATE_RIG_MARKUP_VIOLATION",
+        )
+
+        # 4. Illegal post-production deduction on Cost-Free Royalty or missing API LACT tickets -> 451 Hold
+        roy_451 = evaluate_b2b_oilfield_joint_interest_billing_policy(
+            webiq_cost_free_royalty_zero_deduction_and_api_lact_meter_tickets_clean=False,
+        )
+        self.assertFalse(roy_451.allowed)
+        self.assertEqual(roy_451.http_status, 451)
+
+        # 5. Web IQ automated COPAS cross-well strip & Revenue-to-JIB netting saving $68,800 ($791,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_oilfield_joint_interest_billing_policy(
+            automated_copas_audit_and_revenue_jib_netting_savings_cents=6880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_oilfield_jib_batch_cents, 79120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_oilfield_joint_interest_billing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-oilfield-joint-interest-billing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
