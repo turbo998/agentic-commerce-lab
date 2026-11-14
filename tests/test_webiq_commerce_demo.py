@@ -15047,6 +15047,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-global-eor-contractor-payroll-sandbox", demo_zh)
 
+    def test_b2b_retail_vendor_otif_edi812_chargeback_coop_mdf_mandate_vs_false_otif_deduction_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_retail_vendor_otif_edi812_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Pre-gate AS2 MDN + GS1-128 Grade B + ASC 606 POP + 15 USC 13 clean ($760,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_retail_vendor_otif_edi812_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_retail_vendor_batch_cents, 76000000)
+
+        # 2. False OTIF chargeback on retailer dock delay or bogus Late ASN fine -> 403 Blocked
+        otf_403 = evaluate_b2b_retail_vendor_otif_edi812_policy(
+            edi856_as2_mdn_before_gate_and_retailer_portal_delay_excluded=False,
+        )
+        self.assertFalse(otf_403.allowed)
+        self.assertEqual(otf_403.http_status, 403)
+        self.assertEqual(
+            otf_403.decision_code,
+            "FALSE_OTIF_CHARGEBACK_ON_RETAILER_DOCK_DELAY_OR_LATE_ASN_BLOCKED",
+        )
+
+        # 3. Unsubstantiated Co-Op MDF bill-back or bogus $25/carton barcode fine -> 422 Blocked
+        mdf_422 = evaluate_b2b_retail_vendor_otif_edi812_policy(
+            gs1_128_iso15416_grade_b_vision_and_coop_mdf_proof_of_performance_verified=False,
+        )
+        self.assertFalse(mdf_422.allowed)
+        self.assertEqual(mdf_422.http_status, 422)
+        self.assertEqual(
+            mdf_422.decision_code,
+            "UNVERIFIED_COOP_MDF_BILLBACK_OR_GS1_128_BARCODE_SCAN_DEFECT_BLOCKED",
+        )
+
+        # 4. Discriminatory MDF violating Robinson-Patman Act (15 USC 13) or expired dispute window -> 451 Hold
+        rpa_451 = evaluate_b2b_retail_vendor_otif_edi812_policy(
+            webiq_robinson_patman_15usc13_proportional_mdf_and_30d_dispute_window_clean=False,
+        )
+        self.assertFalse(rpa_451.allowed)
+        self.assertEqual(rpa_451.http_status, 451)
+
+        # 5. Web IQ automated EDI 812 counter-evidence & ASN audit saving $60,800 ($699,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_retail_vendor_otif_edi812_policy(
+            automated_edi812_counter_evidence_and_pre_ship_asn_audit_savings_cents=6080000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_retail_vendor_batch_cents, 69920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_retail_vendor_otif_edi812_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-retail-vendor-otif-edi812-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
