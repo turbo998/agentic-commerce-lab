@@ -16937,6 +16937,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-print-direct-mail-imb-sandbox", demo_zh)
 
+    def test_agentic_corporate_relocation_hhg_tare_bvo_vs_weight_bumping_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_corporate_relocation_hhg_bvo_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant CAT Scale ELD fuel-matched tickets & 7.0 lb/cu.ft. density + GIS clearance + IRS 2005-74 BVO -> 200 OK ($640,000.00)
+        ok_res = evaluate_agentic_corporate_relocation_hhg_bvo_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORPORATE_RELOCATION_HHG_BVO_SETTLED")
+        self.assertEqual(ok_res.settled_corporate_relocation_cents, 64000000)
+
+        # 2. Weight bumping (10.4 lb/cu.ft. density / empty-to-full fuel fraud) or 49 CFR 375.405 hostage load -> 403 Blocked
+        wgt_403 = evaluate_agentic_corporate_relocation_hhg_bvo_policy(
+            cat_scale_eld_fuel_matched_and_cube_density_7lb_no_hostage_verified=False,
+        )
+        self.assertFalse(wgt_403.allowed)
+        self.assertEqual(wgt_403.http_status, 403)
+        self.assertEqual(
+            wgt_403.decision_code,
+            "WEIGHT_BUMPING_DENSITY_ANOMALY_OR_FMCSA_HOSTAGE_LOAD_EXTORTION_BLOCKED",
+        )
+
+        # 3. Unverified $2,400 shuttle / long-carry accessorial or owner-packed (PBO) billed as carrier crating -> 422 Blocked
+        sht_422 = evaluate_agentic_corporate_relocation_hhg_bvo_policy(
+            gis_shuttle_clearance_and_no_pbo_as_carrier_packing_verified=False,
+        )
+        self.assertFalse(sht_422.allowed)
+        self.assertEqual(sht_422.http_status, 422)
+        self.assertEqual(
+            sht_422.decision_code,
+            "UNVERIFIED_SHUTTLE_LONG_CARRY_ACCESSORIAL_OR_PHANTOM_CARRIER_PACKING_FEE",
+        )
+
+        # 4. Rogue unlicensed HHG broker subcontracting or IRS Rev. Rul. 2005-74 BVO tax-shield violation -> 451 Hold
+        bvo_451 = evaluate_agentic_corporate_relocation_hhg_bvo_policy(
+            webiq_fmcsa_hhg_authority_and_irs_2005_74_bvo_tax_shield_clean=False,
+        )
+        self.assertFalse(bvo_451.allowed)
+        self.assertEqual(bvo_451.http_status, 451)
+
+        # 5. Web IQ automated destination reweigh fuel normalization & BVO tax-shield dedup saving $51,200 ($588,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_corporate_relocation_hhg_bvo_policy(
+            automated_reweigh_tare_fuel_normalization_and_bvo_tax_shield_savings_cents=5120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corporate_relocation_cents, 58880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_corporate_relocation_hhg_bvo_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-corporate-relocation-hhg-bvo-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
