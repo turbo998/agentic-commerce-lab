@@ -223,6 +223,7 @@
 - **专题 189（智能体支付强客户认证 SCA 架构：EMV 3-D Secure 2.3.1 结合 W3C 安全支付确认 FIDO2/WebAuthn SPC `spc_fido2_cryptogram_...` 无感阶梯升权、硬件动态链接签名锁死收款方与金额门禁防提示词注入中继盗刷与 `ECI = 05/02` CAVV 100% 发卡行拒付责任转移 Liability Shift / 严禁无头浏览器代填 3DS 弹窗与短信 OTP 转发防银行反爬锁卡 / PSD2 交易风险分析豁免 TRA 与 `3RI` 委托认证直通智能托管 vs 传统短信验证码 SMS OTP 转发劫持与无头浏览器代填 3DS 弹窗封号）**：**[《智能体支付强客户认证（SCA）架构：EMV 3-D Secure 2.3.1 结合 W3C 安全支付确认（FIDO2/WebAuthn SPC `spc_fido2_cryptogram_...`）无感阶梯升权 vs 传统短信验证码（SMS OTP）转发劫持与无头浏览器代填 3DS 弹窗封号选型与原理解析 FAQ》](docs/agentic-3ds2-fido2-spc-biometric-stepup-mandate-vs-sms-otp-scraping-takeover-faq.md)**
 - **专题 190（B2B 智能体供应链金融 SCF 动态贴现与反向保理 Dynamic Discounting & Reverse Factoring 结算架构：三单匹配电子发票哈希锁定与年化套利令牌 `b2b_scf_dynamic_discount_mandate_...`、中登网/UCC-1 动产质押唯一排他锁防一票多融欺诈与按日连续滑动贴现率 Sliding-Scale APR $\ge 18.0\%$ / 85% 早付确权 + 15% 质保尾款留存池防无条件 IPU 切断残次品退货抗辩权 / 税局电子发票红字冲销监控与 ESG 绿电供应商保理返利智能托管 vs 传统 `2/10 Net 30` 第 11 天静态断崖错失与重复保理欺诈）**：**[《B2B 智能体供应链金融（SCF）动态贴现与反向保理（Dynamic Discounting & Reverse Factoring）结算架构：三单匹配电子发票哈希锁定与年化套利令牌（`b2b_scf_dynamic_discount_mandate_...`）vs 传统 `2/10 Net 30` 静态错失与一票多融重复质押欺诈（Double-Pledge Invoice Fraud）选型与原理解析 FAQ》](docs/b2b-supply-chain-finance-dynamic-discounting-reverse-factoring-mandate-vs-double-pledge-invoice-fraud-faq.md)**
 - **专题 191（AI 智能体 API 计量计费与 HTTP `402` 流式微支付 x402 / Stripe MPP Streaming Micropayments 结算架构：单向递增密码学状态通道凭据 Monotonic Voucher State Channel `x402_mpp_voucher_...` 与批量轧差清算、0.3ms 内存 ECDSA 验签与 64 位微美分 `microcents` 定点数账本防 `floor(0.4c)=0` 亚美分拆单白嫖 / 上游 `5xx` 报错零扣费与日终单笔 Rollup 轧差压缩 99.8% 通道费智能托管 vs 传统信用卡 `$0.30` 固定手续费 `-1500%` 倒挂与预充值储值卡沉淀跑路）**：**[《AI 智能体 API 计量计费与 HTTP `402` 流式微支付（x402 / Stripe MPP Streaming Micropayments）结算架构：单向递增密码学状态通道凭据（Monotonic Voucher State Channel `x402_mpp_voucher_...`）与批量轧差清算 vs 传统信用卡 `$0.30` 固定手续费倒挂与预充值储值卡沉淀跑路选型与原理解析 FAQ》](docs/agentic-x402-mpp-streaming-micropayment-channel-netting-mandate-vs-card-fixed-fee-margin-wipeout-faq.md)**
+- **专题 192（跨国企业 B2B 采购智能体关联交易转移定价 Transfer Pricing 与预提所得税 Withholding Tax WHT 合规架构：OECD 独立交易四分位区间 Arm's-Length IQR 与税收协定电子税收居民身份证明 e-TRC `wht_treaty_trc_mandate_...`、源泉代扣分账防 $50\%\text{–}300\%$ 应扣未扣罚款与受益所有人实质反导管测试 / OECD 支柱二 $15\%$ 全球最低税核验与双边税收协定 DTA 减免消除包税还原溢价智能托管 vs 传统跨境盲目包税还原 Gross-Up Overpayment 与反避税双倍补税罚款）**：**[《跨国企业 B2B 采购智能体关联交易转移定价（Transfer Pricing）与预提所得税（Withholding Tax, WHT）合规架构：OECD 独立交易四分位区间（Arm's-Length IQR）与税收协定电子税收居民身份证明（e-TRC `wht_treaty_trc_mandate_...`）vs 传统跨境盲目包税还原（Gross-Up Overpayment）与反避税双倍补税罚款选型与原理解析 FAQ》](docs/b2b-cross-border-withholding-tax-wht-transfer-pricing-trc-mandate-vs-grossup-double-taxation-penalty-faq.md)**
 
 ![2026-11-08 Agentic Commerce 架构选型与协议原理一图流总结](assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -605,6 +606,8 @@
 ![2026-11-14 B2B 智能体供应链金融动态贴现、反向保理确权与防重复质押欺诈架构一图流](assets/svg/192-b2b-supply-chain-finance-dynamic-discounting-factoring-2026-11-14.svg)
 
 ![2026-11-14 AI 智能体 HTTP 402 流式微支付 (x402 / Stripe MPP)、状态通道累计凭据与批量轧差 vs 信用卡固定费倒挂一图流](assets/svg/193-agentic-x402-mpp-streaming-micropayment-netting-2026-11-14.svg)
+
+![2026-11-14 跨国 B2B 采购智能体预提所得税 (WHT)、e-TRC 税收协定减免与 OECD 转移定价四分位门禁架构一图流](assets/svg/194-b2b-cross-border-withholding-tax-transfer-pricing-trc-2026-11-14.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -11911,6 +11911,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-x402-mpp-streaming-sandbox", demo_zh)
 
+    def test_b2b_cross_border_withholding_tax_wht_transfer_pricing_trc_mandate_vs_grossup_double_taxation_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_wht_transfer_pricing_policy,
+        )
+
+        # 1. Verified WHT split + e-TRC + OECD [Q1, Q3] margin -> 200 OK ($500,000)
+        commit_ok = evaluate_b2b_wht_transfer_pricing_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cross_border_b2b_cents, 50000000)
+
+        # 2. Unwithheld cross-border WHT or missing e-TRC -> 403 blocked in 11ms
+        trc_403 = evaluate_b2b_wht_transfer_pricing_policy(
+            wht_source_withholding_and_etrc_beneficial_owner_verified=False,
+        )
+        self.assertFalse(trc_403.allowed)
+        self.assertEqual(trc_403.http_status, 403)
+        self.assertEqual(
+            trc_403.wht_tp_lane,
+            "UNWITHHELD_CROSS_BORDER_WHT_OR_MISSING_ETRC_BLOCKED",
+        )
+
+        # 3. Intercompany margin outside OECD [Q1, Q3] IQR or conduit shell -> 422 blocked in 14ms
+        iqr_422 = evaluate_b2b_wht_transfer_pricing_policy(
+            oecd_arms_length_iqr_and_anti_conduit_substance_passed=False,
+        )
+        self.assertFalse(iqr_422.allowed)
+        self.assertEqual(iqr_422.http_status, 422)
+        self.assertEqual(
+            iqr_422.wht_tp_lane,
+            "TRANSFER_PRICING_IQR_BREACH_OR_CONDUIT_SHELL_BLOCKED",
+        )
+
+        # 4. Web IQ detects OECD Pillar Two UTPR exposure or missing FX tax filing -> 451 blocked in 280ms
+        pil_451 = evaluate_b2b_wht_transfer_pricing_policy(
+            webiq_pillar_two_15pct_etr_and_fx_tax_filing_clean=False,
+        )
+        self.assertFalse(pil_451.allowed)
+        self.assertEqual(pil_451.http_status, 451)
+
+        # 5. Web IQ credits e-TRC DTA treaty rate reduction & gross-up avoidance saving $62,500 ($437,500 net) -> 409 Confirm
+        dta_409 = evaluate_b2b_wht_transfer_pricing_policy(
+            dta_treaty_rate_reduction_and_grossup_avoidance_credit_cents=6250000,
+        )
+        self.assertFalse(dta_409.allowed)
+        self.assertEqual(dta_409.http_status, 409)
+        self.assertEqual(dta_409.settled_cross_border_b2b_cents, 43750000)
+        self.assertEqual(dta_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_wht_transfer_pricing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-wht-transfer-pricing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
