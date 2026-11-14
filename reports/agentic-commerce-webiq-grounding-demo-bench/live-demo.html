@@ -4572,6 +4572,24 @@
         <div id="pay-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Mobile IAP vs. Web-Out Steering & Apple Consumption API Sandbox (Round 210 FAQ Companion) -->
+      <div class="finops-box" id="agentic-iap-web-out-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-iap-title">📱 智能体应用内购 (IAP) 与网页外跳 (Web-Out) 分流及 Apple Consumption API 防白嫖：Web-to-App 3.1.3(b) 与 12h 消费遥测令牌 (agentic_iap_web_out_dma_anti_steering_mandate_...) vs 30% 苹果税与充完秒退决策器 (Round 210 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 移动端智能体订阅与算力充值批次 ($790,000.00)、3.1.3(b) 跨平台 Web-to-App 漏斗、美/欧/日官方 External Link 权限与 Apple CONSUMPTION_REQUEST 12h 遥测抗退款场景 (Mobile IAP &amp; Consumption API Scenario):</span></label>
+          <select id="iap-select" onchange="updateAgenticIapWebOutSandbox()">
+            <option value="iap_commit_ok">⚡ 合规 Web-to-App (3.1.3b) / 官方签名外链 + CONSUMPTION_REQUEST 秒回 FULLY_CONSUMED + REFUND 即刻销权：10ms 清算 $790,000.00! (Act automatically)</option>
+            <option value="iap_str_403">🛑 在非豁免区未获苹果官方 Entitlement 却用热更开关在 App 内私自弹窗跳转第三方 H5 支付 (触犯 Guideline 3.1.1 面临封号下架) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="iap_cns_422">🚨 黑产买 $99.99 算力包 10 分钟跑光 GPU 后向苹果申退，服务端未在 12h 内回传 CONSUMPTION_REQUEST 遥测或退款后未吊销僵尸 VIP 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="iap_ctf_451">🛑 海量免费下载低付费率工具应用盲目签署欧盟 DMA 新条款，导致每年超 100 万次安装被征收 €0.50/次核心技术费 (CTF) 严重亏损倒挂：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="iap_sav_409">🧑‍⚖️ Web IQ 启用 3.1.3(b) Web-to-App 跨端 2.9% 订阅漏斗置换 30% 苹果税，并自动回传 12 维算力消耗证据驳回 88% 黑产恶意退款立省 $63,200.00 (净成本 $726,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="iap-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5220,6 +5238,7 @@ function renderAll() {
   updateAgenticHospitalityIncrementalAuthSandbox();
   updateAgenticHsaFsaSigisIiasSandbox();
   updateAgenticCreatorPayout1099kW8benSandbox();
+  updateAgenticIapWebOutSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15762,6 +15781,55 @@ function updateAgenticCreatorPayout1099kW8benSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ IRS TIN 实时匹配 + W-8BEN 3年效期有效 + 版税/劳务切分通过：已自动出金 (VERIFIED_CREATOR_PAYOUT_1099K_W8BEN_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零平台自掏腰包赔付 24% 欠税、零 $310/张错报罚单与 W-8BEN 过期漏扣风险</strong>：全球创作者与开发者分账出金批次已完成合规清算（<code>$550,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticIapWebOutSandbox() {
+  var selEl = document.getElementById("iap-select");
+  var outEl = document.getElementById("iap-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "iap_str_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNAUTHORIZED_STEERING_WEBVIEW_OR_GUIDELINE_311_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "应用商店合规门禁检出，客户端 <code>在未取得当前 Storefront 官方 StoreKit External Purchase Link Entitlement 签名的非豁免区域，企图通过热更隐藏开关在 App 内部直接弹窗引导用户跳往外部 H5 支付（违反 App Store Guideline 3.1.1，将导致应用立即下架并封禁开发者账号）</code>（<code>compliant_web_to_app_313b_or_signed_external_link_entitlement == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "iap_cns_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CONSUMPTION_TELEMETRY_MISSED_OR_ZOMBIE_ENTITLEMENT_LEAK (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "算力权益与抗退款状态机检出 <code>收到苹果 V2 CONSUMPTION_REQUEST 通知后未在 12 小时内回传 consumptionStatus=FULLY_CONSUMED 遥测证据（将导致苹果默认自动批准黑产 $99.99 算力包全额退款），或收到 REFUND JWS 后未即时吊销会员与剩余 Token</code>（<code>apple_consumption_request_12h_answered_and_refund_jws_revoked == False</code>）。网关在 <code>14ms</code> 内拦截并强制补发遥测！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "iap_ctf_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DMA_CTF_NEGATIVE_UNIT_ECONOMICS_OR_MODAL_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟数字市场法案 (DMA) 苹果替代商业条款与 €0.50 核心技术费 (CTF) 计算公式</code>，检出高免费下载量低 ARPU 应用启用该条款将造成百万欧元级 CTF 净亏损倒挂，立即冻结条款切换！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "iap_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 WEB_OUT_ARBITRAGE_AND_REFUND_DEFENSE_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>3.1.3(b) Web-to-App 跨端 2.9% Stripe 订阅漏斗（0% 苹果抽成）+ 美/欧/日官方签名外链 + 500ms 自动回传 Consumption API 铁证驳回 88% 黑产恶意退单</code>，单批立省/止损 <code>$63,200.00</code>（净成本基准优化至 <code>$726,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 合规 Web-to-App / 官方外链 + Consumption API 遥测秒回通过：已自动清算 (VERIFIED_IAP_WEB_OUT_AND_CONSUMPTION_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 Guideline 3.1.1 违规下架封号、零黑产跑光算力恶意退款白嫖与僵尸 VIP 漏洞</strong>：移动端智能体订阅与算力充值批次已完成安全清算（<code>$790,000.00</code>）！" +
     "</div>";
 }
 

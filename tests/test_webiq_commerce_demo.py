@@ -12919,6 +12919,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-creator-payout-1099k-w8ben-sandbox", demo_zh)
 
+    def test_agentic_iap_web_out_dma_anti_steering_consumption_api_mandate_vs_30pct_appstore_tax_refund_abuse_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_iap_web_out_policy,
+        )
+
+        # 1. Verified compliant Web-to-App / signed external link + <500ms consumption reply -> 200 OK ($790,000)
+        commit_ok = evaluate_agentic_iap_web_out_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_iap_batch_cents, 79000000)
+
+        # 2. Rogue unsigned in-app WebView violating Guideline 3.1.1 -> 403 blocked in 11ms
+        str_403 = evaluate_agentic_iap_web_out_policy(
+            compliant_web_to_app_313b_or_signed_external_link_entitlement=False,
+        )
+        self.assertFalse(str_403.allowed)
+        self.assertEqual(str_403.http_status, 403)
+        self.assertEqual(
+            str_403.iap_web_out_lane,
+            "UNAUTHORIZED_STEERING_WEBVIEW_OR_GUIDELINE_311_BLOCKED",
+        )
+
+        # 3. Missed 12h CONSUMPTION_REQUEST telemetry reply or zombie VIP leak -> 422 blocked in 14ms
+        cns_422 = evaluate_agentic_iap_web_out_policy(
+            apple_consumption_request_12h_answered_and_refund_jws_revoked=False,
+        )
+        self.assertFalse(cns_422.allowed)
+        self.assertEqual(cns_422.http_status, 422)
+        self.assertEqual(
+            cns_422.iap_web_out_lane,
+            "CONSUMPTION_TELEMETRY_MISSED_OR_ZOMBIE_ENTITLEMENT_LEAK",
+        )
+
+        # 4. Web IQ detects negative EU DMA €0.50 CTF unit economics -> 451 blocked in 280ms
+        ctf_451 = evaluate_agentic_iap_web_out_policy(
+            webiq_dma_ctf_unit_economics_and_storefront_modal_clean=False,
+        )
+        self.assertFalse(ctf_451.allowed)
+        self.assertEqual(ctf_451.http_status, 451)
+
+        # 5. Web IQ enables Web-to-App 2.9% funnel & Consumption API defense saving $63,200 ($726,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_iap_web_out_policy(
+            web_out_commission_arbitrage_and_refund_defense_savings_cents=6320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_iap_batch_cents, 72680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_iap_web_out_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-iap-web-out-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
