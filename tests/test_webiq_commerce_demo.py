@@ -13367,6 +13367,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-cold-chain-mkt-dscsa-sandbox", demo_zh)
 
+    def test_agentic_surge_pricing_emergency_anti_gouging_cap_price_lock_mandate_vs_disaster_5x_multiplier_penalty_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_surge_pricing_anti_gouging_policy,
+        )
+
+        # 1. Verified <=1.10x emergency clamp + 300s HMAC price-lock + FTC upfront -> 200 OK ($480,000)
+        commit_ok = evaluate_agentic_surge_pricing_anti_gouging_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_surge_batch_cents, 48000000)
+
+        # 2. Algorithmic 4.5x surge during declared State of Emergency -> 403 blocked in 11ms
+        gou_403 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+            emergency_state_surge_clamped_under_10pct_of_30d_baseline=False,
+        )
+        self.assertFalse(gou_403.allowed)
+        self.assertEqual(gou_403.http_status, 403)
+        self.assertEqual(
+            gou_403.surge_pricing_lane,
+            "EMERGENCY_PRICE_GOUGING_MULTIPLIER_BREACH_BLOCKED",
+        )
+
+        # 3. Mid-checkout price jump ($24 -> $49 on click) or tampered baseline -> 422 blocked in 14ms
+        jmp_422 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+            captured_amount_equals_300s_hmac_price_lock_quote=False,
+        )
+        self.assertFalse(jmp_422.allowed)
+        self.assertEqual(jmp_422.http_status, 422)
+        self.assertEqual(
+            jmp_422.surge_pricing_lane,
+            "MID_CHECKOUT_PRICE_JUMP_OR_BASELINE_MANIPULATION_REJECTED",
+        )
+
+        # 4. Web IQ detects active post-disaster proclamation extension or FTC drip fee -> 451 blocked in 280ms
+        ext_451 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+            webiq_fema_proclamation_extension_and_ftc_upfront_fee_clean=False,
+        )
+        self.assertFalse(ext_451.allowed)
+        self.assertEqual(ext_451.http_status, 451)
+
+        # 5. Web IQ enforces emergency clamp & 300s price lock saving $38,400 ($441,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+            emergency_clamp_fine_avoidance_and_price_lock_savings_cents=3840000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_surge_batch_cents, 44160000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_surge_pricing_anti_gouging_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-surge-pricing-anti-gouging-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

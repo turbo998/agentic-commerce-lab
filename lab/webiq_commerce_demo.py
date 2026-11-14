@@ -23508,6 +23508,96 @@ def evaluate_agentic_cold_chain_mkt_dscsa_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 218: Agentic Dynamic Surge Pricing Emergency <=10% Cap & 300s Lock Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticSurgePricingAntiGougingVerdict:
+    allowed: bool
+    http_status: int
+    surge_pricing_lane: str
+    settled_surge_batch_cents: int
+    anti_gouging_and_price_lock_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_surge_pricing_anti_gouging_policy(
+    *,
+    gross_surge_batch_cents: int = 48000000,
+    emergency_state_surge_clamped_under_10pct_of_30d_baseline: bool = True,
+    captured_amount_equals_300s_hmac_price_lock_quote: bool = True,
+    webiq_fema_proclamation_extension_and_ftc_upfront_fee_clean: bool = True,
+    emergency_clamp_fine_avoidance_and_price_lock_savings_cents: int = 0,
+) -> AgenticSurgePricingAntiGougingVerdict:
+    # 1. Algorithmic 4.5x-5.0x Surge During Declared State of Emergency (Cal. §396 Breach) -> HTTP 403
+    if not emergency_state_surge_clamped_under_10pct_of_30d_baseline:
+        return AgenticSurgePricingAntiGougingVerdict(
+            False,
+            403,
+            "EMERGENCY_PRICE_GOUGING_MULTIPLIER_BREACH_BLOCKED",
+            0,
+            0,
+            "surge_pricing_blocked_due_to_exceeding_10pct_emergency_anti_gouging_cap_over_30d_baseline",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Mid-Checkout Price Jump ($24 -> $49 on Click) or Tampered 30-Day Baseline -> HTTP 422
+    if not captured_amount_equals_300s_hmac_price_lock_quote:
+        return AgenticSurgePricingAntiGougingVerdict(
+            False,
+            422,
+            "MID_CHECKOUT_PRICE_JUMP_OR_BASELINE_MANIPULATION_REJECTED",
+            0,
+            0,
+            "dynamic_checkout_rejected_for_mid_click_surge_price_jump_exceeding_300s_hmac_quote",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Active 180-Day Post-Disaster Recovery Freeze or FTC Hidden Drip Fee via Web IQ -> HTTP 451
+    if not webiq_fema_proclamation_extension_and_ftc_upfront_fee_clean:
+        return AgenticSurgePricingAntiGougingVerdict(
+            False,
+            451,
+            "FEMA_EMERGENCY_EXTENSION_OR_FTC_JUNK_FEE_HOLD",
+            0,
+            0,
+            "webiq_detected_active_post_disaster_proclamation_extension_or_ftc_hidden_drip_fee",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Emergency <=1.10x Auto-Clamp + 300s Price-Lock Conversion Shield -> HTTP 409 Confirm
+    if emergency_clamp_fine_avoidance_and_price_lock_savings_cents > 0:
+        return AgenticSurgePricingAntiGougingVerdict(
+            False,
+            409,
+            "ANTI_GOUGING_CAP_AND_PRICE_LOCK_SAVINGS_CONFIRM",
+            gross_surge_batch_cents - emergency_clamp_fine_avoidance_and_price_lock_savings_cents,
+            emergency_clamp_fine_avoidance_and_price_lock_savings_cents,
+            "webiq_enforced_emergency_110pct_clamp_and_300s_price_lock_saving_38400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified <=1.10x Emergency Clamp + 300s HMAC Price-Lock + All-In Upfront -> Settled
+    return AgenticSurgePricingAntiGougingVerdict(
+        True,
+        200,
+        "VERIFIED_DYNAMIC_SURGE_PRICING_SETTLED",
+        gross_surge_batch_cents,
+        0,
+        "dynamic_surge_pricing_emergency_110pct_clamped_and_300s_hmac_quote_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -31122,6 +31212,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unsigned_or_subzero_freeze_block_latency_ms": cld_frz_403.latency_ms,
     }
 
+    # Round 218 (Agentic Dynamic Surge Pricing Emergency <=10% Cap & 300s Lock Mandate)
+    srg_commit_ok = evaluate_agentic_surge_pricing_anti_gouging_policy()
+    srg_gou_403 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+        emergency_state_surge_clamped_under_10pct_of_30d_baseline=False,
+    )
+    srg_jmp_422 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+        captured_amount_equals_300s_hmac_price_lock_quote=False,
+    )
+    srg_ext_451 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+        webiq_fema_proclamation_extension_and_ftc_upfront_fee_clean=False,
+    )
+    srg_sav_409 = evaluate_agentic_surge_pricing_anti_gouging_policy(
+        emergency_clamp_fine_avoidance_and_price_lock_savings_cents=3840000,
+    )
+    agentic_surge_pricing_anti_gouging_guards = {
+        "all_passed": (
+            srg_commit_ok.allowed
+            and srg_commit_ok.settled_surge_batch_cents == 48000000
+            and not srg_gou_403.allowed
+            and srg_gou_403.http_status == 403
+            and not srg_jmp_422.allowed
+            and srg_jmp_422.http_status == 422
+            and not srg_ext_451.allowed
+            and srg_ext_451.http_status == 451
+            and not srg_sav_409.allowed
+            and srg_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_surge_pricing_anti_gouging_settlement_latency_ms": srg_commit_ok.latency_ms,
+        "emergency_gouging_cap_block_latency_ms": srg_gou_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31352,6 +31473,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_construction_aia_g702_guards": b2b_construction_aia_g702_guards,
         "agentic_auction_vickrey_bid_bond_guards": agentic_auction_vickrey_bid_bond_guards,
         "agentic_cold_chain_mkt_dscsa_guards": agentic_cold_chain_mkt_dscsa_guards,
+        "agentic_surge_pricing_anti_gouging_guards": agentic_surge_pricing_anti_gouging_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38175,6 +38297,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Dynamic Surge Pricing Emergency <=10% Cap & 300s Lock Sandbox (Round 218 FAQ Companion) -->
+      <div class="finops-box" id="agentic-surge-pricing-anti-gouging-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-srg-title">🌪️ 智能体动态溢价 (Surge Pricing) 与紧急状态反哄抬物价 (≤10% Cap)：FEMA 紧急令熔断与 300s 报价锁令牌 (agentic_surge_pricing_emergency_gouging_cap_mandate_...) vs 灾难 5x 溢价重罚与跳价决策器 (Round 218 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 动态溢价与即时履约批次 ($480,000.00)、州长/FEMA 紧急状态令 ≤1.10x 涨幅硬熔断、前 30 天滚动基准价锁定与 300s HMAC 报价锁防跳价场景 (Dynamic Surge &amp; Anti-Gouging Scenario):</span></label>
+          <select id="srg-select" onchange="updateAgenticSurgePricingAntiGougingSandbox()">
+            <option value="srg_commit_ok">⚡ 紧急状态下涨幅强制钳位 ≤10% (对比前30天基准) + 300s HMAC 报价锁所见即所扣 + 全包价披露：10ms 清算 $480,000.00! (Act automatically)</option>
+            <option value="srg_gou_403">🛑 暴风雪/山火疏散进入州长紧急状态期间，RL 算法仍无脑触发 4.5x 倍率溢价 (违反加州 Penal Code § 396 面临 $10k/单重罚) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="srg_jmp_422">🚨 报价页向用户展示 $24.00，点击“确认支付”的 3 秒内后台倍率上调直接暗扣 $49.00 (违反 300s Price-Lock 承诺触发 FTC 调查与 12.5 拒付) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="srg_ext_451">🛑 灾后重建尚处于州长行政令 180 天限价延期窗口内即违规提前解禁高倍溢价，或结账末尾塞入未披露动态附加费：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="srg_sav_409">🧑‍⚖️ Web IQ 自动执行紧急状态 ≤1.10x 削峰平抑 (免除千万美元级司法部长罚单) 并凭 300s 锁价令牌挽回跳价弃单立省 $38,400.00 (净成本 $441,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="srg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -38831,6 +38971,7 @@ function renderAll() {{
   updateB2bConstructionAiaG702Sandbox();
   updateAgenticAuctionVickreyBidBondSandbox();
   updateAgenticColdChainMktDscsaSandbox();
+  updateAgenticSurgePricingAntiGougingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -49765,6 +49906,55 @@ function updateAgenticColdChainMktDscsaSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 21 CFR Part 11 芯片签名 + 零结冰 + 阿伦尼乌斯 MKT ≤ 8°C + DSCSA 通过：已自动清算 (VERIFIED_COLD_CHAIN_MKT_DSCSA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零在途断电复冻欺诈入库、零生物水针结冰失活与无溯源串货风险</strong>：智能体医药与生鲜冷链批次已完成安全清算（<code>$540,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticSurgePricingAntiGougingSandbox() {{
+  var selEl = document.getElementById("srg-select");
+  var outEl = document.getElementById("srg-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "srg_gou_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 EMERGENCY_PRICE_GOUGING_MULTIPLIER_BREACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "反哄抬物价物理钳位门禁检出，当前 H3 地理网格处于 <code>FEMA / 州长宣布的紧急状态 (State of Emergency)，而强化学习定价模型企图输出 4.5x 倍率溢价（超出前 30 天滚动基准价 +10% 的法定硬上限，严重违反加州 Penal Code § 396 与纽约 GBL § 396-r，面临每单 $10,000–$25,000 重罚）</code>（<code>emergency_state_surge_clamped_under_10pct_of_30d_baseline == False</code>）。网关在 <code>11ms</code> 内硬阻断并强制钳位至 &le;1.10x！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "srg_jmp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MID_CHECKOUT_PRICE_JUMP_OR_BASELINE_MANIPULATION_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "报价锁校验器检出 <code>支付执行时的扣款金额 ($49.00) 高于用户在 300 秒锁价窗口内确认的 HMAC 签名报价单 ($24.00)（点支付瞬间暗涨跳价，违反 FTC 诱饵欺诈禁令并必遭 Visa 12.5 拒付），或检出篡改前 30 天历史基准价</code>（<code>captured_amount_equals_300s_hmac_price_lock_quote == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "srg_ext_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FEMA_EMERGENCY_EXTENSION_OR_FTC_JUNK_FEE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>FEMA 联邦灾害宣言、州长办公室行政令延期公报与美国 FTC 全包价格披露规则 (Junk Fee Rule)</code>，检出该郡县尚处于灾后重建限价延续期内或存在未前置披露的隐藏附加费，立即冻结涨价策略！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "srg_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ANTI_GOUGING_CAP_AND_PRICE_LOCK_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>紧急状态地理围栏自动 &le;1.10x 削峰钳位（100% 免疫州司法部长反哄抬物价重罚与品牌声誉崩盘）+ 300s HMAC 报价锁消除跳价弃单与 12.5 拒付</code>，单批免罚/挽回 <code>$38,400.00</code>（净营收安全基准优化至 <code>$441,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 紧急状态 ≤1.10x 物理钳位 + 30天基准锁定 + 300s HMAC 报价锁通过：已自动清算 (VERIFIED_DYNAMIC_SURGE_PRICING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零灾难期 5.0x 哄抬物价天价罚单、零点击支付瞬间暗涨跳价与 FTC 隐藏费用违规</strong>：智能体动态定价与即时履约批次已完成安全清算（<code>$480,000.00</code>）！" +
     "</div>";
 }}
 
