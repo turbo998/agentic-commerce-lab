@@ -5742,6 +5742,240 @@
         <div id="hvc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Hospital Locum Tenens & Travel Nurse VMS, EMR Call-Back & IRS GSA Sandbox -->
+      <div class="finops-box" id="b2b-hospital-locum-travel-nurse-vms-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🏥 B2B 医院外包主治医师与旅行护士派遣 (MSP/VMS)：Nursys 执业锁、EMR 召回对账与 IRS 税籍 (`b2b_hospital_locum_tenens_travel_nurse_msp_vms_credentialing_bill_rate_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 医院月度 Locum 医生与旅行护士 VMS 批次 ($720,000.00)、班次级 Nursys/NPDB/OIG 执业状态、Epic EMR 急诊召回与 IRS GSA 税籍场景 (Hospital VMS Staffing Scenario):</span></label>
+          <select id="vms-select" onchange="updateB2bHospitalLocumTravelNurseVmsSandbox()">
+            <option value="vms_commit_ok">🏥 当班 Nursys/OIG 执照有效 + 急诊召回匹配 Epic EMR 医嘱 + 首周培训 $0 与 IRS 税籍合规：10ms 清算 $720,000.00! (Act automatically)</option>
+            <option value="vms_lic_403">🛑 外包医护在值班当日存在 Nursys 执照暂停/列入 OIG 医保黑名单，或无 ICU/NICU 专科权限被违规跨科顶班 (防医保 DRG 全额拒付) → 11ms 触发 HTTP 403!</option>
+            <option value="vms_emr_422">🚨 临时主治医师在家睡觉虚报周末 3 次深夜急诊召回 ($420/h 保底 4h) 却无门禁与 Epic EMR 医嘱记录，或违规收取首周 16h 入职培训费 → 14ms 触发 HTTP 422!</option>
+            <option value="vms_irs_451">🛑 家住医院 15 英里内的本地护士冒领 $1,800/周免税 GSA 异地房补，或跨中介累计驻院超 12 个月未转全额征税：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="vms_sav_409">🧑‍⚖️ Web IQ 依据门禁与 Epic EMR 日志砍掉幽灵急诊召回工时、自动免除首周 16h 培训费并纠偏伪加班立省 $57,600.00 (净付 $662,400.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="vms-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Apparel CMT/FOB Manufacturing, CAD Marker YY & ISO 2859 AQL 2.5 Sandbox -->
+      <div class="finops-box" id="b2b-textile-apparel-cmt-yy-aql-sandbox" style="margin-top:12px;border-color:#F472B6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">👕 B2B 纺织服装代工 (CMT/FOB)：Lectra/Gerber 混码排料单耗 (YY)、GSM 克重与 AQL 2.5 尾检 (`b2b_textile_apparel_cmt_fob_marker_efficiency_fabric_consumption_yy_aql25_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 100,000 件成衣 FOB/CMT 订单 ($580,000.00)、Lectra/Gerber 混码 CAD 单耗 (YY)、ASTM D3776 克重与 AQL 2.5 尾检场景 (Apparel CMT/FOB Scenario):</span></label>
+          <select id="cmt-select" onchange="updateB2bTextileApparelCmtYyAqlSandbox()">
+            <option value="cmt_commit_ok">👕 混码 CAD 排料率 86.5% (YY=1.42码) + 320 GSM &amp; AQL 2.5 尾检合格 + WRAP/UFLPA 溯源合规：10ms 清算 $580,000.00! (Act automatically)</option>
+            <option value="cmt_aql_403">🛑 大货面料克重从 320 GSM 偷减至 285 GSM (-10.9%)，或 QIMA/SGS ISO 2859 AQL 2.5 尾检判定拒收 (FAILED) → 11ms 触发 HTTP 403!</option>
+            <option value="cmt_yy_422">🚨 工厂按单码低效排料虚报 YY=1.60 码/件 (混码 CAD 仅需 1.42 码) 多吃 18,000 码面料，或裁剪损耗率突破 3.0% 上限 → 14ms 触发 HTTP 422!</option>
+            <option value="cmt_ufl_451">🛑 旺季爆仓私自将缝制外发给无 WRAP 认证的地下黑作坊，或缺失 UFLPA 棉纱同位素/DNA 原产地溯源：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="cmt_sav_409">🧑‍⚖️ Web IQ 解析混码 CAD 排料图 (.mrk) 自动核减虚报的 0.18 码/件吃布量与超额裁剪损耗立省 $46,400.00 (净付 $533,600.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cmt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Agentic Veterinary Pet Insurance & Specialty Vet Direct-Pay, SOAP Timeline & Bilateral CCL Sandbox -->
+      <div class="finops-box" id="agentic-veterinary-pet-insurance-soap-sandbox" style="margin-top:12px;border-color:#34D399;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🐾 智能体宠物医疗险与专科动物医院直付：SOAP 治愈期重置、双侧十字韧带 (TPLO) 与急诊化验 (`agentic_veterinary_pet_insurance_soap_medical_record_bilateral_cruciate_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 专科动物医院月度直付批次 ($380,000.00)、SOAP 365天治愈期重置、双侧 TPLO 外伤核保与 15位 ISO 微芯片场景 (Veterinary Pet Direct-Pay Scenario):</span></label>
+          <select id="pet-select" onchange="updateAgenticVeterinaryPetInsuranceSoapSandbox()">
+            <option value="pet_commit_ok">🐾 SOAP 365天治愈重置与双侧外伤核保合规 + 15位 ISO 微芯片匹配 + NAIC/UCR 费率对齐：10ms 直付清算 $380,000.00! (Act automatically)</option>
+            <option value="pet_den_403">🛑 保司借 2 年前已痊愈满 365 天的幼犬软便/耳炎搞终身既往症拒赔，或对左膝无骨关节炎 (OA=0) 的急性外伤滥用双侧连带免责拒赔 TPLO 手术 → 11ms 触发 HTTP 403!</option>
+            <option value="pet_lab_422">🚨 诊室 ISO 11784 微芯片扫码与投保档案不符 (一犬投保多犬串用骗保)，或生命体征平稳却按 Level-1 濒死急诊 ($380) 与 400% 院内生化加价收费 → 14ms 触发 HTTP 422!</option>
+            <option value="pet_naic_451">🛑 违反州 NAIC 宠物险示范法 (如加州 SB 1217 续保重设等待期/违规转嫁举证责任) 或主刀兽医执照暂停：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="pet_sav_409">🧑‍⚖️ Web IQ 按地区 UCR 80 分位指导价自动核减急诊院内 IDEXX 血检 400% 溢价与非必要 Level-1 分诊升档立省 $34,200.00 (净付 $345,800.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pet-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Industrial Hazardous Waste RCRA e-Manifest, TSDF CoD & BTU Surcharge Sandbox -->
+      <div class="finops-box" id="b2b-industrial-hazwaste-rcra-tsdf-sandbox" style="margin-top:12px;border-color:#FACC15;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">☣️ B2B 工业危废处置 (RCRA TSDF)：EPA e-Manifest 销毁证明 (CoD)、BTU 热值与 CERCLA 防火墙 (`b2b_industrial_hazardous_waste_rcra_emanifest_tsdf_incineration_btu_surcharge_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 季度工业危废 TSDF 处置批次 ($490,000.00)、EPA e-Manifest 桶级销毁证明 (CoD)、Coliwasa 热值 (BTU) 与 ECHO 合规场景 (Industrial HazWaste Scenario):</span></label>
+          <select id="haz-select" onchange="updateB2bIndustrialHazwasteRcraTsdfSandbox()">
+            <option value="haz_commit_ok">☣️ EPA e-Manifest 终签 + 桶级 CoD 销毁证明齐全 + Coliwasa 热值 (&gt;11k BTU) 与 ECHO 绿码：10ms 清算 $490,000.00! (Act automatically)</option>
+            <option value="haz_cod_403">🛑 危废在中转站滞留超 10 天未达末端 TSDF，或未出具绑定桶条码的最终焚烧销毁证明 (CoD，防 CERCLA 终身连带追责) → 11ms 触发 HTTP 403!</option>
+            <option value="haz_btu_422">🚨 承包商故意只抽桶底 15% 水层把高热值溶剂谎报成 3,200 BTU/lb 强收 $380/桶助燃罚金，或无破损证据乱收 $260 救生桶费 → 14ms 触发 HTTP 422!</option>
+            <option value="haz_echo_451">🛑 末端 TSDF 设施在 EPA ECHO 执法库中被列为严重违规者 (Significant Non-Complier) 或超 RCRA Part B 危废代码许可范围：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="haz_sav_409">🧑‍⚖️ Web IQ 依据出厂 Coliwasa 全液位留样将废溶剂重归水泥窑燃料调合 (Fuel Blending) 费率并按净重去皮立省 $44,100.00 (净付 $445,900.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="haz-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Commercial Print & Direct Mail USPS IMb Seamless Acceptance, EPS & CWT Paper Sandbox -->
+      <div class="finops-box" id="b2b-commercial-print-direct-mail-imb-sandbox" style="margin-top:12px;border-color:#60A5FA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">📬 B2B 商业印刷与直邮营销：USPS IMb 进局扫码、EPS 邮资专户托管与 CWT 纸重 (`b2b_commercial_print_direct_mail_usps_imb_seamless_acceptance_paper_cwt_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 200 万封信用卡直邮与目录印刷批次 ($860,000.00)、USPS EPS 邮资托管、PostalOne! IMb 进局扫码与 80# CWT 纸重场景 (Commercial Print &amp; Direct Mail Scenario):</span></label>
+          <select id="prt-select" onchange="updateB2bCommercialPrintDirectMailImbSandbox()">
+            <option value="prt_commit_ok">📬 USPS EPS 邮资直付 + PostalOne! 99.8% IMb 进局扫码 + 80# CWT 纸重与 48月 NCOA 合规：10ms 清算 $860,000.00! (Act automatically)</option>
+            <option value="prt_imb_403">🛑 印厂只印寄 170 万封 (挑出 50 封种子信应付检查) 企图侵吞 30 万封预付邮资 ($81,000)，或截留 SCF/5-Digit 混寄折扣差价 → 11ms 触发 HTTP 403!</option>
+            <option value="prt_cwt_422">🚨 轮转胶印将 80# 铜版纸偷偷降配为 60# 薄纸、未跑 48个月 NCOA 清洗白印死信，或借旧惯例强收 10% 超印费 (Overrun) → 14ms 触发 HTTP 422!</option>
+            <option value="prt_soc_451">🛑 印厂条码重号/漏报触发 USPS Seamless Acceptance 记分卡罚款转嫁，或印刷金融/医疗可变 PII 数据缺失 SOC 2/HIPAA：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="prt_sav_409">🧑‍⚖️ Web IQ 依据 PS Form 3602-R 穿透还原 SCF Drop-Ship 最低净邮资并将轮转调机纸损封顶在 3.0% 立省 $68,800.00 (净付 $791,200.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="prt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Agentic Corporate Relocation RMC, HHG Tare/Gross Weight & BVO Home-Sale Sandbox -->
+      <div class="finops-box" id="agentic-corporate-relocation-hhg-bvo-sandbox" style="margin-top:12px;border-color:#A78BFA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚚 智能体企业高管异地搬迁与安家 (RMC/HHG)：CAT Scale 过磅防压秤、反扣货与 BVO 免税 (`agentic_corporate_relocation_rmc_household_goods_hhg_tare_weight_bvo_home_sale_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 季度高管异地搬迁与 BVO 安家批次 ($640,000.00)、49 CFR 375.509 ELD 双磅单、7.0 lb/cu.ft. 体积密度与 IRS BVO 场景 (Corporate Relocation Scenario):</span></label>
+          <select id="rel-select" onchange="updateAgenticCorporateRelocationHhgBvoSandbox()">
+            <option value="rel_commit_ok">🚚 CAT Scale 满油双磅单 + 7.0 lbs/cu.ft. 体积密度对齐 + GIS 道路与 IRS 2005-74 BVO 免税合规：10ms 清算 $640,000.00! (Act automatically)</option>
+            <option value="rel_wgt_403">🛑 空车抽干油箱、满载加满 300加仑油 (+2,130 lbs) 并塞配重块致折算密度飙升至 10.4 lbs/cu.ft.，或卸货前超 110% 报价扣押家具勒索 → 11ms 触发 HTTP 403!</option>
+            <option value="rel_sht_422">🚨 53尺挂车完全可进出小区却谎称道路太窄勒索 $2,400 Shuttle 小货车接驳费，或把员工自包纸箱 (PBO) 按定制木箱 (CP) 收费 → 14ms 触发 HTTP 422!</option>
+            <option value="rel_bvo_451">🛑 将高管搬家私自转包给无 FMCSA HHG 牌照黑中介，或旧房 BVO 交易缺失双独立 ERC 评估触发 IRS 65% 工资税穿刺：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="rel_sav_409">🧑‍⚖️ Web IQ 触发 49 CFR 375.513 目的地免费复磅扣除油箱压秤水分并剥离合规 BVO 误计的 Tax Gross-Up 立省 $51,200.00 (净付 $588,800.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rel-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Commercial Elevator OEM Full-Maintenance, ASME A17.1 MCP & Callback SLA Sandbox -->
+      <div class="finops-box" id="b2b-elevator-oem-full-maintenance-sandbox" style="margin-top:12px;border-color:#22D3EE;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛗 B2B 商业楼宇电梯全包维保 (OEM)：三点位 NFC 驻留锁、反伪人为破坏免责与 Cat-1/5 年检 (`b2b_elevator_escalator_oem_full_maintenance_asme_a171_mcp_callback_sla_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 120 台商业电梯季度全包维保批次 ($540,000.00)、机房/轿顶/底坑三点位 NFC、IEEE 519 电能表反证与 DOB Cat-1/5 年检场景 (Commercial Elevator OEM Maintenance Scenario):</span></label>
+          <select id="elv-select" onchange="updateB2bElevatorOemFullMaintenanceSandbox()">
+            <option value="elv_commit_ok">🛗 机房/轿顶/底坑三点位 NFC 驻留 &gt;=45min + 困人救援 &lt;=30min + 零伪增项与 Cat-1/5 年检合规：10ms 清算 $540,000.00! (Act automatically)</option>
+            <option value="elv_nfc_403">🛑 技师仅在大堂刷卡 5 分钟签字走人 (未扫轿顶与底坑 NFC、检修慢车时长为 0) 或困人救援超 30 分钟未执行 SLA 扣款 → 11ms 触发 HTTP 403!</option>
+            <option value="elv_van_422">🚨 大楼配电房 IEEE 519 电表证实电压平稳无浪涌且监控无撞门，原厂却把自然老化的门机主板/变频器甩锅“人为破坏或电压波动”另收 $4,200 → 14ms 触发 HTTP 422!</option>
+            <option value="elv_cat_451">🛑 电梯逾期未完成法定 ASME A17.1 Cat-1/Cat-5 125% 满载安全试验触发市政 DOB 违章罚单或派无证人员作业：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="elv_sav_409">🧑‍⚖️ Web IQ 自动按比例核减未达标月度保养费并将伪人为破坏账外增项单强制归入全包免费范围立省 $48,600.00 (净付 $491,400.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="elv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Precision Plastic Injection Molding, Virgin Resin MFI & EUROMAP 77 Active-Cavity Sandbox -->
+      <div class="finops-box" id="b2b-plastic-injection-molding-mfi-sandbox" style="margin-top:12px;border-color:#2DD4BF;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⚙️ B2B 精密注塑代工：ASTM D1238 熔指 (MFI) 防掺回料锁、EUROMAP 77 满穴周期与水口残值 (`b2b_plastic_injection_molding_virgin_resin_regrind_mfi_cavity_pressure_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 200 万件医疗与车规注塑结构件批次 ($460,000.00)、成品 ASTM D1238 熔指 (MFI)、PPAP 32满穴基准周期与水口残值场景 (Plastic Injection Molding Scenario):</span></label>
+          <select id="mld-select" onchange="updateB2bPlasticInjectionMoldingMfiSandbox()">
+            <option value="mld_commit_ok">⚙️ 成品 MFI 熔指偏移 &lt;=+10% (100% 全新粒子) + PPAP 32满穴 15s 周期 + UL 黄卡/USP 合规：10ms 清算 $460,000.00! (Act automatically)</option>
+            <option value="mld_mfi_403">🛑 夜班偷偷往 100% 全新医疗/车规粒子里掺入 40% 多次粉碎水口回料导致成品 MFI 从 10.0 飙升至 14.2 g/10min (+42% 热降解断裂) → 11ms 触发 HTTP 403!</option>
+            <option value="mld_cav_422">🚨 32穴模具因失修堵死 6穴 (仅 26穴生产) 且把 15s 周期调慢至 20s 企图向客户转嫁低效机台工时费，或私吞 25% 冷流道水口废料残值 → 14ms 触发 HTTP 422!</option>
+            <option value="mld_ul_451">🛑 私换无 UL iQ Yellow Card (UL94 V-0) 阻燃认证或无 USP Class VI / FDA DMF 医疗备案的普通工业牌号：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="mld_sav_409">🧑‍⚖️ Web IQ 依据 EUROMAP 77 强制还原 PPAP 32满穴与 15s 基准周期单价并冲抵冷流道工程塑料水口回收残值立省 $36,800.00 (净付 $423,200.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mld-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Agentic Senior Living CCRC Entrance-Fee Escrow, Katz ADL & CMS PDPM Sandbox -->
+      <div class="finops-box" id="agentic-senior-living-ccrc-pdpm-sandbox" style="margin-top:12px;border-color:#FBBF24;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🏡 智能体高端康养社区 (CCRC) 与护理院：120天退押金托管锁、Katz ADL 与 CMS PDPM (`agentic_senior_living_ccrc_skilled_nursing_pdpm_adl_entrance_fee_escrow_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 康养社区 CCRC 入门费托管与护理院批次 ($680,000.00)、120天无条件退押锁、Katz 6项 ADL/PBJ 工时与 CMS PDPM 场景 (Senior Living CCRC &amp; SNF Scenario):</span></label>
+          <select id="ccr-select" onchange="updateAgenticSeniorLivingCcrcPdpmSandbox()">
+            <option value="ccr_commit_ok">🏡 独立信托托管 (&lt;=120天无条件退还 80% 入门费) + Katz ADL/PBJ 工时对齐 + 精算准备金合规：10ms 清算 $680,000.00! (Act automatically)</option>
+            <option value="ccr_esc_403">🛑 运营商将 $500k 入门费挪用偿还地产开发贷，或暗藏“须等原房间再次卖出新入门费才退款”并在腾退后将房间改月租无限期赖账 → 11ms 触发 HTTP 403!</option>
+            <option value="ccr_adl_422">🚨 护工顺手递水也打勾记分把月费强升 Level-4 (+$2,200/月) 却无 Katz ADL 退化与 PBJ 护工工时增长，或虚报吞咽障碍骗取 CMS PDPM 高档医保 → 14ms 触发 HTTP 422!</option>
+            <option value="ccr_sff_451">🛑 康养社区法定流动准备金低于州保险厅精算红线 (破产违约风险) 或护理院被 CMS 标记 SFF/虐待红手印警告：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="ccr_sav_409">🧑‍⚖️ Web IQ 自动回退无 PBJ 护工工时支撑的虚高 ADL 照护等级并剥离全包失智专区重复计费项立省 $54,400.00 (净付 $625,600.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ccr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Offshore Wind WTIV/SOV Charter BIMCO WINDTIME, Wave Height Hs & DP2 Bunker Sandbox -->
+      <div class="finops-box" id="b2b-offshore-wind-wtiv-sov-charter-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🌊 B2B 海上风电安装船与运维船租约 (WTIV/SOV)：波浪浮标 Hs、吊机停租与 DP2 燃油 (`b2b_offshore_wind_wtiv_sov_vessel_charter_bimco_windtime_wave_height_hs_bunker_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 海风 WTIV/SOV 半月期租与燃油批次 ($4,200,000.00)、波浪浮标 Hs、主吊机 PLC 停租 (Off-Hire) 与 ISO 22192 科氏流量计场景 (Offshore Wind WTIV/SOV Charter Scenario):</span></label>
+          <select id="wtv-select" onchange="updateB2bOffshoreWindWtivSovCharterSandbox()">
+            <option value="wtv_commit_ok">🌊 波浪浮标 Hs 与机舱 LiDAR 确认 WOW 真实 + 主吊机/栈桥零故障 + 科氏流量计油耗与琼斯法案合规：10ms 清算 $4,200,000.00! (Act automatically)</option>
+            <option value="wtv_wow_403">🛑 1,600吨主吊机或 W2W 波浪补偿栈桥发生液压故障 (本应停租 $0/天)，船长却在航海日志谎报“阵风波高超标 (WOW)”骗取 $560,000 日租金 → 11ms 触发 HTTP 403!</option>
+            <option value="wtv_bnk_422">🚨 船东靠手工量油尺虚报 DP2 动力定位每天多烧 8 吨 MGO 轻柴 (比科氏力质量流量计与推进器 SFOC 曲线高出 70 吨) 企图私藏燃油 → 14ms 触发 HTTP 422!</option>
+            <option value="wtv_jns_451">🛑 外籍馈线驳船未获 USCG Coastwise 签注违规从美国港口直运单桩部件 (违反琼斯法案 46 U.S.C. 55102) 或 DP2 FMEA 过期：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="wtv_sav_409">🧑‍⚖️ Web IQ 依据 BIMCO WINDTIME 自动扣除机械降效停租 (Off-Hire) 时段并按科氏力质量流量计净值核减 70 吨虚高燃油费立省 $336,000.00 (净付 $3,864,000.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="wtv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Chemical Toll Manufacturing & CDMO Stoichiometric Yield, Solvent Recovery & PGM Sandbox -->
+      <div class="finops-box" id="b2b-chemical-toll-manufacturing-yield-sandbox" style="margin-top:12px;border-color:#34D399;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧪 B2B 精细化工与医药受托加工 (Tolling/CDMO)：摩尔收率守恒、精馏溶剂回收与贵金属催化剂 (`b2b_chemical_toll_manufacturing_custom_synthesis_stoichiometric_yield_solvent_recovery_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 20 釜定制合成战役批次 ($750,000.00)、化学计量摩尔收率守恒、精馏塔 85% 溶剂回收与铂钯催化剂场景 (Chemical Toll Manufacturing Scenario):</span></label>
+          <select id="tol-select" onchange="updateB2bChemicalTollManufacturingYieldSandbox()">
+            <option value="tol_commit_ok">🧪 成品+母液摩尔质量守恒 (收率 92%) + 85% 精馏溶剂抵扣 + 卡尔费休水分 &lt;=0.2% 与 PGM 合规：10ms 清算 $750,000.00! (Act automatically)</option>
+            <option value="tol_yld_403">🛑 代工厂谎报收率仅 84.5% 私吞 7.5% 高价值医药中间体 ($58,000) 却无对应母液副产物，或故意留 3.2% 水分按干品毛重请款 → 11ms 触发 HTTP 403!</option>
+            <option value="tol_slv_422">🚨 连续 20 釜生产中第 2~20 釜已精馏回收 88% THF/乙腈却仍按 100% 新溶剂收费，或虚报 4.2% 钯碳贵金属损耗与同品种洗釜费 → 14ms 触发 HTTP 422!</option>
+            <option value="tol_gmp_451">🛑 中间体缺失 EPA TSCA / ECHA REACH 备案或代工厂未通过 ICH Q7 GMP 审计私自外发：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="tol_sav_409">🧑‍⚖️ Web IQ 自动冲抵第 2~20 釜 85% 精馏回收溶剂差价并按 HPLC + 卡尔费休折百干基净重结算立省 $60,000.00 (净付 $690,000.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="tol-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive Agentic Auto F&I GAP/VSC Early-Payoff Pro-Rata Refund & Dealer Reserve Cap Sandbox -->
+      <div class="finops-box" id="agentic-auto-fni-gap-vsc-refund-sandbox" style="margin-top:12px;border-color:#60A5FA;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚗 智能体汽车金融与保险 (Auto F&amp;I)：提前还贷未赚保费自动退还、反月供塞包与利差封顶 (`agentic_auto_fni_gap_vsc_ancillary_refund_dealer_reserve_cap_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 汽车金融 F&amp;I 放款与提前结清批次 ($590,000.00)、提前结清 Pro-Rata 未赚 VSC/GAP 退保、LTV&gt;=80% 门槛与利差封顶场景 (Auto F&amp;I GAP/VSC Scenario):</span></label>
+          <select id="fni-select" onchange="updateAgenticAutoFniGapVscRefundSandbox()">
+            <option value="fni_commit_ok">🚗 提前结清 Pro-Rata 未赚保费自动冲抵 + LTV&gt;=80% 合理 GAP + 利差加点 &lt;=100 bps 与州消保法合规：10ms 清算 $590,000.00! (Act automatically)</option>
+            <option value="fni_ref_403">🛑 车主在第 30 个月提前卖车/还清 72 期车贷，4S 店与延保商拒不退还剩余 $2,100 未赚 GAP/VSC 保费或违规按 Rule of 78s 克扣 → 11ms 触发 HTTP 403!</option>
+            <option value="fni_pck_422">🚨 对首付 35% (LTV 65% 零负资产风险) 客户强卖 $1,200 废纸 GAP 险、月供塞包 $699 车窗防盗刻字，或暗中加息 250 bps 吃回扣 → 14ms 触发 HTTP 422!</option>
+            <option value="fni_sta_451">🛑 违反加州 AB 2311 / 科罗拉多 HB 1188 强制自动退保法案期限，或缺失裸车 vs 含附加品双月供对比签名：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="fni_sav_409">🧑‍⚖️ Web IQ 自动从经销商月度返利储备池追回 70% 未赚延保佣金并削减超标利差回扣立省 $47,200.00 (净付 $542,800.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fni-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
+      <!-- Interactive B2B Hospital & Hotel Industrial Laundry UHF RFID Piece-Count & Clean-Dry Scale Weight Sandbox -->
+      <div class="finops-box" id="b2b-industrial-laundry-linen-rfid-sandbox" style="margin-top:12px;border-color:#22D3EE;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧺 B2B 医院与酒店工业布草洗涤租赁：UHF RFID 理论干重封顶、洗次折旧与 HLAC 院感 (`b2b_hospital_hotel_industrial_laundry_linen_rental_uhf_rfid_clean_dry_weight_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 医院与酒店集团月度布草洗涤批次 ($340,000.00)、净布干重 (Clean-Dry) 计费、UHF RFID 洗次折旧与 HLAC 院感场景 (Industrial Laundry Linen Rental Scenario):</span></label>
+          <select id="lnn-select" onchange="updateB2bIndustrialLaundryLinenRfidSandbox()">
+            <option value="lnn_commit_ok">🧺 净布干重计费 + 动态笼车去皮 + UHF RFID 洗次折旧 + HLAC/TRSA 院感消杀合规：10ms 清算 $340,000.00! (Act automatically)</option>
+            <option value="lnn_wet_403">🛑 洗涤厂按吸满体液/水渍的回收脏布湿重 (Soiled Weight +28%) 过磅收钱，或 80磅标牌笼车实重 110磅每车白吃 30磅布草费 → 11ms 触发 HTTP 403!</option>
+            <option value="lnn_run_422">🚨 把在隧道压榨机里洗满 105 次自然老化撕裂的旧床单栽赃客户人为损坏按 $18 全新价索赔，或强收 16% 固定比例丢损费 → 14ms 触发 HTTP 422!</option>
+            <option value="lnn_hlc_451">🛑 洗涤厂 HLAC / TRSA Hygienically Clean 医疗院感认证过期或隧道机未达 71°C×25min 血源病原体消杀标准：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="lnn_sav_409">🧑‍⚖️ Web IQ 依据 min(地磅净重, RFID件数×标准干重) 挤出未烘透水汽并按剩余水洗寿命线性折旧丢损费立省 $30,600.00 (净付 $309,400.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lnn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -6455,6 +6689,19 @@ function renderAll() {
   updateAgenticCorrugatedPackagingEctSandbox();
   updateB2bMiningSmelterConcentrateNsrSandbox();
   updateAgenticHomeWarrantyHvacDispatchSandbox();
+  updateB2bHospitalLocumTravelNurseVmsSandbox();
+  updateB2bTextileApparelCmtYyAqlSandbox();
+  updateAgenticVeterinaryPetInsuranceSoapSandbox();
+  updateB2bIndustrialHazwasteRcraTsdfSandbox();
+  updateB2bCommercialPrintDirectMailImbSandbox();
+  updateAgenticCorporateRelocationHhgBvoSandbox();
+  updateB2bElevatorOemFullMaintenanceSandbox();
+  updateB2bPlasticInjectionMoldingMfiSandbox();
+  updateAgenticSeniorLivingCcrcPdpmSandbox();
+  updateB2bOffshoreWindWtivSovCharterSandbox();
+  updateB2bChemicalTollManufacturingYieldSandbox();
+  updateAgenticAutoFniGapVscRefundSandbox();
+  updateB2bIndustrialLaundryLinenRfidSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -20014,6 +20261,604 @@ function updateAgenticHomeWarrantyHvacDispatchSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>❄️ 零借外壳浮锈霸王拒赔 + 蓝牙仪表 (µF/LRA) 诊断真实 + 冷媒电子秤与 A2L RDS 合规：已自动清算 (VERIFIED_HOME_WARRANTY_HVAC_DISPATCH_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零借铁锈拒赔转推 $9.5k 自费单、零 $145/磅天价冷媒敲诈与 $18 电容谎报压缩机报废</strong>：智能体房屋保修与商业暖通派单批次已完成安全清算（<code>$520,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bHospitalLocumTravelNurseVmsSandbox() {
+  var sel = document.getElementById("vms-select");
+  var outEl = document.getElementById("vms-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "vms_lic_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SANCTIONED_NPDB_NURSYS_CREDENTIAL_OR_UNPRIVILEGED_ICU_OR_FLOAT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经穿透核验联邦 <code>NPDB / OIG LEIE</code> 与多州紧凑护士执照库（<code>Nursys e-Notify</code>）发现：该外包医护人员在值班当日存在执照暂停/纪律处分记录，或未取得本院 <code>ICU / NICU / 手术室</code> 临床专科授权即被违规跨科借调顶班（将导致关联 <code>CMS 联邦医保 DRG</code> 住院账单被全额拒付追回）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "vms_emr_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PHANTOM_ON_CALL_CALLBACK_WITHOUT_EMR_LOG_OR_BILLED_ORIENTATION_HOURS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "临时主治医师（<code>Locum Tenens</code>）在周考勤单中申报周末 <code>12 小时</code>深夜急诊待命召回（<code>On-Call Call-Back $420/h 保底费</code>），但院区生物识别门禁与 <code>Epic / Cerner EMR</code> 审计日志显示其当晚根本未进入医院或签署任何现场医嘱，或中介违规将本应免费的 <code>首周 16h 入职培训 (Orientation)</code> 按全额临床费率计费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "vms_irs_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 INVALID_IRS_TAX_HOME_PER_DIEM_STIPEND_OR_EXCEEDED_12_MONTH_RULE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：领取每周 <code>$1,800 IRS GSA 免税住宿餐饮津贴</code>的护士常住地址距离医院仅 <code>15 英里（不满足 &gt; 50 英里异地双重居住支出 Tax-Home 条件）</code>，或通过更换子中介马甲在本院累计工作已突破 <code>IRS Publication 463 规定的 12 个月（365天）上限</code>未转为全额应税工资，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "vms_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_EMR_SHIFT_RECONCILIATION_AND_ORIENTATION_DEDUP_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>门禁 + Epic EMR 医嘱时间戳自动核减无记录急诊召回 + 首周 16~24h 入职培训费强制归零</code>，单批立省 <code>$57,600.00</code>（净结算额优化至 <code>$662,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏥 班次级 Nursys/OIG 执业有效 + Epic EMR 医嘱验证召回 + 首周培训 $0 与 IRS 税籍合规：已自动清算 (VERIFIED_HOSPITAL_LOCUM_TRAVEL_NURSE_VMS_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零吊销执照人员违规顶班、零在家睡觉虚报 $420/h 急诊召回与假旅行护士免税房补暴雷</strong>：B2B 医院外包医护 VMS 批次已完成安全清算（<code>$720,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bTextileApparelCmtYyAqlSandbox() {
+  var sel = document.getElementById("cmt-select");
+  var outEl = document.getElementById("cmt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cmt_aql_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FAILED_AQL_25_FINAL_INSPECTION_OR_FABRIC_GSM_UNDERWEIGHT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验大货面料 <code>ASTM D3776</code> 实验室报告与第三方机构（<code>QIMA / SGS</code>）尾期抽检（<code>FRI</code>）发现：大货卫衣布克重从封样 <code>320 GSM</code> 缩水至 <code>285 GSM (-10.9% 超过 ±3% 红线)</code>，或 <code>ISO 2859-1 AQL 2.5 (Major) / 4.0 (Minor)</code> 检验判定不合格（<code>FAILED</code>），已在 11ms 内硬拦截尾款解付！" +
+      "</div>";
+    return;
+  }
+  if (v === "cmt_yy_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FABRIC_YY_CONSUMPTION_EXCEEDS_CAD_MARKER_OR_EXCESS_WASTAGE_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "成衣厂按单码低效排料（<code>75% 利用率</code>）虚报单件耗布量 <code>YY = 1.60 码/件 + 8% 裁剪损耗</code>，而解析 <code>Lectra / Gerber (.mrk)</code> 混码阶梯排料源文件（<code>86.5% 利用率</code>）证实真实含损单耗仅需 <code>1.42 码/件</code>（10 万件订单企图侵吞 <code>18,000 码</code> 高单价面料），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "cmt_ufl_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNAUTHORIZED_SHADOW_SUBCONTRACTING_OR_UFLPA_ORIGIN_TRACEABILITY_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：工厂因旺季爆仓私自将缝制工序外发给未取得 <code>WRAP / Oeko-Tex Standard 100</code> 认证的地下影子作坊，或缺失棉纱至成衣全链路 <code>UFLPA 同位素/DNA 原产地溯源证书</code>（面临美国海关 CBP WRO 全柜扣押风险），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "cmt_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_CAD_MARKER_YY_OPTIMIZATION_AND_WASTAGE_CAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Lectra/Gerber 混码排料率 (&gt;=84%) 自动挤出 0.18 码/件虚报吃布量 + 裁剪损耗封顶 3.0%</code>，单批立省 <code>$46,400.00</code>（净结算额优化至 <code>$533,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>👕 混码 CAD 单耗对齐 + 320 GSM/AQL 2.5 尾检通过 + WRAP/UFLPA 溯源合规：已自动清算 (VERIFIED_TEXTILE_APPAREL_CMT_FOB_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零虚报 12% 单件耗布量倒卖余布、零克重缩水与私自转包地下黑作坊</strong>：B2B 成衣代工 FOB/CMT 批次已完成安全清算（<code>$580,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticVeterinaryPetInsuranceSoapSandbox() {
+  var sel = document.getElementById("pet-select");
+  var outEl = document.getElementById("pet-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pet_den_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNJUSTIFIED_RETROACTIVE_PREEXISTING_OR_BILATERAL_TRAUMA_DENIAL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经解析兽医 <code>SOAP</code> 电子病历时间轴与正侧位 <code>DICOM X 光片</code>发现：保司企图借距离本次理赔已满 <code>540 天无症状痊愈（超过 NAIC 365天可治愈重置线）</code>的幼犬期偶发肠胃炎拒赔，或对左后腿 <code>OA 骨关节炎评分为 0</code> 的急性外力创伤滥用“双侧十字韧带连带免责”拒赔 <code>$5,800 TPLO 手术</code>，已在 11ms 内驳回恶意拒赔！" +
+      "</div>";
+    return;
+  }
+  if (v === "pet_lab_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 MICROCHIP_IDENTITY_MISMATCH_OR_UPCODED_ER_TRIAGE_AND_INHOUSE_LAB_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "诊室扫码枪读取的 15 位 <code>ISO 11784/11785 RFID 微芯片号</code>与受保宠物档案不符（疑似多宠家庭冒名顶替看病），或动物急诊医院对心率/毛细血管再充盈时间（<code>CRT &lt; 2s</code>）完全平稳的轻症宠物违规按 <code>Level 1 濒死抢救 ($380)</code> 及 <code>400% 院内生化溢价 ($420)</code> 计费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "pet_naic_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STATE_NAIC_PET_INSURANCE_STATUTE_VIOLATION_OR_UNLICENSED_VET_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：保单条款违反州 <code>NAIC Pet Insurance Model Act（如加州 SB 1217 严禁在续保时重新设置疾病等待期或将既往症举证责任转嫁给消费者）</code>，或主刀兽医州立执业执照处于暂停状态，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "pet_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_VET_UCR_FEE_BENCHMARK_AND_LAB_MARKUP_CAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>地区 UCR 80 分位兽医诊疗基准价 + 院内 IDEXX 血液生化试剂加价封顶与急诊分诊降档</code>，单批立省 <code>$34,200.00</code>（净结算额优化至 <code>$345,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🐾 SOAP 365天治愈重置与双侧外伤核保合规 + 15位微芯片匹配 + NAIC/UCR 费率对齐：已自动直付清算 (VERIFIED_VETERINARY_PET_INSURANCE_DIRECT_PAY_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零借已痊愈偶发小病搞终身拒赔、零双侧连坐冤案与 400% 急诊院内化验宰客</strong>：智能体宠物医疗险与专科医院直付批次已完成安全清算（<code>$380,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bIndustrialHazwasteRcraTsdfSandbox() {
+  var sel = document.getElementById("haz-select");
+  var outEl = document.getElementById("haz-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "haz_cod_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 MISSING_EPA_EMANIFEST_FINAL_TSDF_RECEIPT_OR_CERTIFICATE_OF_DESTRUCTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验美国环保署 <code>EPA RCRAInfo e-Manifest</code> 系统发现：该批危废在中转站（<code>10-Day Transfer Facility</code>）超期滞留或尚未由末端 <code>TSDF</code> 焚烧厂签发桶级最终销毁证明（<code>Certificate of Destruction, CoD</code>），为彻底阻断《超级基金法》（<code>CERCLA</code>）终身连带追责，已在 11ms 内硬拦截放款！" +
+      "</div>";
+    return;
+  }
+  if (v === "haz_btu_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUBSTANTIATED_LOW_BTU_HALOGEN_SURCHARGE_OR_PHANTOM_OVERPACK_DRUM_FEE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "产废工厂出厂全液位复合留样（<code>Coliwasa ASTM D240</code>）证实废溶剂热值达 <code>11,800 BTU/lb</code>（符合水泥窑燃料调合标准），但承包商仅抽取桶底水层谎报 <code>3,200 BTU/lb</code> 强收 <code>$380/桶低热值助燃附加费</code>，或对完好半空桶乱收 55 加仑满桶费与 <code>$260 救生桶 (Overpack)</code> 费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "haz_echo_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TSDF_RCRA_PART_B_PERMIT_VIOLATION_OR_EPA_ECHO_SIGNIFICANT_NONCOMPLIER_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>EPA ECHO</code> 执法数据库发现：目标末端 <code>TSDF</code> 设施当前被列为严重违规者（<code>Significant Non-Complier, SNC / HPV</code>），或其 <code>RCRA Part B Permit</code> 许可范围未涵盖本批次 <code>F003/P-listed</code> 危废代码，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "haz_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_FUEL_BLENDING_BTU_RECLASSIFICATION_AND_TARE_DEDUP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>Coliwasa 全液位复合热值 (&gt;8,000 BTU/lb) 自动重归水泥窑燃料调合费率 + 半桶残液按电子秤净重去皮结算</code>，单批立省 <code>$44,100.00</code>（净结算额优化至 <code>$445,900.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>☣️ EPA e-Manifest 终签 + 桶级 CoD 最终销毁证齐全 + BTU 热值与 ECHO 合规：已自动清算 (VERIFIED_INDUSTRIAL_HAZWASTE_RCRA_TSDF_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零中转站积压触发 CERCLA 超级基金追责、零桶底抽水虚报低热值罚金与 $260 虚假救生桶费</strong>：B2B 工业危废处置批次已完成安全清算（<code>$490,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bCommercialPrintDirectMailImbSandbox() {
+  var sel = document.getElementById("prt-select");
+  var outEl = document.getElementById("prt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "prt_imb_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 USPS_POSTALONE_IMB_UNDERSCAN_OR_POSTAGE_ESCROW_DIVERSION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验美国邮政 <code>USPS PostalOne! PS Form 3602-R</code> 与 <code>Informed Visibility (IV-MTR)</code> 首批 <code>IMb</code> 进局扫描流发现：200 万封合同量实际仅进局扫描 <code>170 万封（印厂单独挑出 50 封高管种子信寄出以掩盖少印 30 万封并侵吞 $81,000 邮资）</code>，或违规截留 <code>SCF Drop-Ship / 5-Digit 混寄折扣</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "prt_cwt_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PAPER_BASIS_WEIGHT_CWT_DOWNGRADE_OR_UNAUTHORIZED_OVERRUN_SPOILAGE_BILLING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "卷筒原纸标签（<code>TAPPI T410 Basis Weight</code>）显示印厂将合同约定的 <code>80# Gloss Text (118 GSM)</code> 偷换为低克重 <code>60# 薄纸</code>、印前未执行强制性 <code>48 个月 USPS NCOA 搬家地址清洗</code>，或违反零超印条款强行加收 <code>10% 超印费 (Overrun) 与 8% 调机废纸损耗</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "prt_soc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 USPS_SEAMLESS_ACCEPTANCE_ERROR_THRESHOLD_OR_HIPAA_SOC2_COMPLIANCE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：印厂在 <code>USPS Mailer Scorecard</code> 中出现条码重号/未报备信件超标触发邮政全批次罚款，或承印含个人金融/医疗可变数据（<code>PII/PHI</code>）信件却缺失有效的 <code>SOC 2 Type II / HIPAA</code> 安全认证，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "prt_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SCF_DROPSHIP_POSTAGE_PASSTHROUGH_AND_CWT_SPOILAGE_CAP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>PS Form 3602-R 穿透还原 SCF Drop-Ship ($0.258/封) 净邮资 + 轮转开机纸损封顶 3.0% 并剥离未授权超印费</code>，单批立省 <code>$68,800.00</code>（净结算额优化至 <code>$791,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📬 USPS EPS 邮资直付 + 99.8% IMb 进局扫码 + 80# CWT 纸重与 NCOA 合规：已自动清算 (VERIFIED_COMMERCIAL_PRINT_DIRECT_MAIL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零少印少寄侵吞预付邮资、零截留 SCF 混寄返利与 80# 偷换 60# 薄纸</strong>：B2B 商业印刷与直邮批次已完成安全清算（<code>$860,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticCorporateRelocationHhgBvoSandbox() {
+  var sel = document.getElementById("rel-select");
+  var outEl = document.getElementById("rel-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "rel_wgt_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WEIGHT_BUMPING_DENSITY_ANOMALY_OR_FMCSA_HOSTAGE_LOAD_EXTORTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验卡车 <code>CAN-Bus ELD 燃油箱遥测</code>与装车前 AI 视频体积清单（<code>Cube Sheet</code>）发现：空车皮重（<code>Tare</code>）过磅时油位仅 <code>10%</code> 而满载（<code>Gross</code>）过磅时加满 <code>300 加仑柴油 (+2,130 lbs)</code> 且折算密度高达 <code>10.4 lbs/cu.ft.（远超 7.0 lbs/cu.ft. 标准）</code>，或违反 <code>49 CFR § 375.405</code> 扣押家具勒索超 110% 费用，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "rel_sht_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_SHUTTLE_LONG_CARRY_ACCESSORIAL_OR_PHANTOM_CARRIER_PACKING_FEE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "目的地市政 <code>GIS 道路净空与街景图</code>证实高管新居完全满足 53 英尺半挂车停靠，搬家车队却谎称进不了小区强收 <code>$2,400 Shuttle 小货车二次倒驳费 + $850 远距离推车费</code>，或将员工自行打包纸箱（<code>PBO</code>）冒充全包定制木箱（<code>CP Crating</code>）计费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "rel_bvo_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 ROGUE_HHG_BROKER_SUBCONTRACTING_OR_IRS_BVO_HOME_SALE_TAX_SHIELD_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：承运商违规将高管行李转包给无 <code>FMCSA HHG 专项运营牌照</code>的黑搬家经纪人，或高管旧房 <code>Buyer Value Option (BVO)</code> 收购缺失两份独立 <code>Worldwide ERC</code> 评估报告及两步独立契约交割（违反 <code>IRS Rev. Rul. 2005-74</code> 将引发 65% Tax Gross-Up 税务穿刺），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "rel_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_REWEIGH_TARE_FUEL_NORMALIZATION_AND_BVO_TAX_SHIELD_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>49 CFR § 375.513 目的地免费复磅剔除 4,000 磅燃油/配重压秤水分 + 合规 BVO 卖房费用免计 W-2 Tax Gross-Up</code>，单批立省 <code>$51,200.00</code>（净结算额优化至 <code>$588,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚚 CAT Scale 满油双磅单 + 7.0 lbs/cu.ft. 密度真实 + BVO 卖房免税合规：已自动清算 (VERIFIED_CORPORATE_RELOCATION_HHG_BVO_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零油箱压秤虚增 4,000 磅、零卸货前扣押家具勒索 $2,400 Shuttle 费与 BVO 税务穿刺</strong>：智能体企业高管异地搬迁与安家批次已完成安全清算（<code>$640,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bElevatorOemFullMaintenanceSandbox() {
+  var sel = document.getElementById("elv-select");
+  var outEl = document.getElementById("elv-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "elv_nfc_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GHOST_PREVENTIVE_MAINTENANCE_VISIT_OR_ENTRAPMENT_CALLBACK_SLA_BREACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验井道三点位加密 <code>NFC</code> 与控制柜 <code>CAN-Bus</code> 检修日志发现：维保技师仅在一楼大堂签到 <code>5 分钟</code>即离开（未扫轿顶与底坑 <code>NFC</code> 标签，不满足 <code>ASME A17.1 MCP &gt;= 45 分钟/台</code> 要求），或发生轿厢困人未在 <code>&lt;= 30 分钟</code> 内到场且未扣减 SLA 罚金，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "elv_van_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUBSTANTIATED_VANDALISM_POWER_SURGE_EXCLUSION_OR_OBSOLESCENCE_PARTS_GOUGING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "大楼配电房 <code>IEEE 519 电能质量监测仪</code>证实故障时刻电压谐波完全平稳（无任何浪涌冲击）且轿厢监控无暴力撞门记录，电梯原厂却将自然老化的 <code>VVVF 变频器/门机主板</code>甩锅为“人为破坏或电网波动”开具 <code>$4,200 账外增项单</code>，或谎称 9 年梯龄零件停产（<code>Obsolescence</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "elv_cat_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXPIRED_ASME_A171_CAT1_CAT5_LOAD_TEST_OR_UNLICENSED_ELEVATOR_MECHANIC_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查市政特种设备数据库（<code>DOB NOW / AHJ</code>）发现：大楼存在逾期未完成的 <code>ASME A17.1 Category 1 / Category 5 (125% 满载制动)</code> 法定试验违章罚单，或当值维保人员缺失有效的特种设备作业执照（<code>QEI / CET</code>），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "elv_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_MCP_VISIT_PRORATION_AND_BOGUS_VANDALISM_EXTRA_STRIP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>缺保台份月费按比例核减 + 驳回无电表/监控铁证的“伪人为破坏/伪浪涌”账外配件增项单</code>，单批立省 <code>$48,600.00</code>（净结算额优化至 <code>$491,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛗 机房/轿顶/底坑三点位 NFC 足时 + 零伪人为破坏增项 + Cat-1/5 年检合规：已自动清算 (VERIFIED_ELEVATOR_OEM_FULL_MAINTENANCE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零大堂 5 分钟打卡幽灵保养、零借电压波动/人为磕碰乱收 $4,200 全包主板费与年检违章</strong>：B2B 商业电梯全包维保批次已完成安全清算（<code>$540,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bPlasticInjectionMoldingMfiSandbox() {
+  var sel = document.getElementById("mld-select");
+  var outEl = document.getElementById("mld-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "mld_mfi_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNAUTHORIZED_REGRIND_DOPING_MFI_SHIFT_OR_MISSING_VIRGIN_RESIN_COA_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经比对入库全新树脂 <code>CoA (MFI = 10.0 g/10min)</code> 与成品抽检 <code>ASTM D1238 熔体流动速率</code>发现：成品熔指异常飙升至 <code>14.2 g/10min (+42% 远超 +10% 红线，证实掺入约 40% 多次高温剪切降解的水口粉碎回料 Regrind)</code>，或原厂授权经销商发票吨数小于出货总重，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "mld_cav_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 BLOCKED_CAVITY_CYCLE_TIME_INFLATION_OR_UNCREDITED_RUNNER_SCRAP_SURCHARGE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "注塑机 <code>EUROMAP 77 / RJG</code> 遥测显示：客户出资的 <code>32 穴模具</code>因工厂保养失职被封堵了 <code>6 个穴（仅 26 穴生产）</code>且成型周期从 <code>PPAP 封样的 15.0s 被调慢至 20.0s</code>，注塑厂企图将自身低效机台工时转嫁给客户或侵吞 25% 冷流道工程塑料水口残值，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "mld_ul_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UL94_YELLOW_CARD_OR_USP_CLASS_VI_RESIN_NONCOMPLIANCE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UL iQ Prospector</code> 与 <code>FDA DMF</code> 数据库发现：注塑厂擅自将指定的医疗级/阻燃级粒子降级替换为未取得 <code>UL94 V-0 Yellow Card (@0.8mm)</code> 或缺失 <code>USP Class VI / ISO 10993</code> 生物相容性认证的普通工业牌号，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "mld_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_PPAP_CAVITY_CYCLE_LOCK_AND_RUNNER_SCRAP_CREDIT_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>PPAP 32满穴与 15.0s 基准周期锁定（剔除堵穴慢工时溢价）+ 冷流道工程塑料水口按副牌行情自动冲抵</code>，单批立省 <code>$36,800.00</code>（净结算额优化至 <code>$423,200.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚙️ 成品 ASTM D1238 熔指偏移 &lt;=+10% + PPAP 32满穴基准周期 + UL/USP 合规：已自动清算 (VERIFIED_PLASTIC_INJECTION_MOLDING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零夜班偷掺 40% 水口粉碎料导致脆裂、零模具堵穴转嫁低效机台费与水口残值侵吞</strong>：B2B 精密注塑代工批次已完成安全清算（<code>$460,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticSeniorLivingCcrcPdpmSandbox() {
+  var sel = document.getElementById("ccr-select");
+  var outEl = document.getElementById("ccr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ccr_esc_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ENTRANCE_FEE_ESCROW_DIVERSION_OR_INDEFINITE_RESALE_CONTINGENCY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经审计 <code>CCRC 持续照料退休社区</code>入住合同与银行托管架构发现：运营商企图将 <code>$500,000 入门押金（承诺 80% 可退还）</code>划入非托管地产开发账户，或暗藏无期限上限的 <code>Resale-Contingent（必须等同一房间再次卖出新入门费才退款，一旦房间改月租则永远不退）</code>霸王条款，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "ccr_adl_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUBSTANTIATED_ADL_ACUITY_POINT_CREEP_OR_UPCODED_MDS30_PDPM_CLAIM (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "协助生活区（<code>Assisted Living</code>）在无注册护士（<code>RN</code>）签署的 <code>Katz 6项核心 ADL 功能退化评估</code>且楼层实际护工排班工时（<code>CMS PBJ HPRD</code>）零增长的情况下，单方面通过平板打勾积分将长者月费上调 <code>$2,200/月 (Acuity Point Creep)</code>，或护理院虚报吞咽障碍（<code>SLP</code>）套取高档 <code>CMS PDPM</code> 拨款，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "ccr_sff_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CCRC_ACTUARIAL_INSOLVENCY_RESERVE_BREACH_OR_CMS_SFF_ABUSE_CITATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州保险厅/老龄局精算披露与 <code>CMS Care Compare</code> 发现：该康养社区法定流动准备金（<code>Statutory Liquid Reserve</code>）低于破产警戒线，或所属护理院被联邦医保标记为重点监管机构（<code>Special Focus Facility, SFF</code>）/ 存在虐待红手印警告（<code>Abuse Icon</code>），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "ccr_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_ADL_TIER_ROLLBACK_AND_MEMORY_CARE_BUNDLE_DEDUP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>回退无 PBJ 护工工时支撑的虚高 ADL 照护等级 + 剥离全包失智专区 (All-Inclusive Memory Care) 重复加收的巡房与护理包费</code>，单批立省 <code>$54,400.00</code>（净结算额优化至 <code>$625,600.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏡 独立信托 120天无条件退押锁 + Katz ADL/PBJ 工时真实 + 精算准备金与 CMS 合规：已自动清算 (VERIFIED_SENIOR_LIVING_CCRC_PDPM_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零旧房转售/油转租无限期扣押 $400k 遗产本金、零 $2,200/月照护点数乱涨价与 PDPM 医保虚报</strong>：智能体高端康养社区与护理院批次已完成安全清算（<code>$680,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bOffshoreWindWtivSovCharterSandbox() {
+  var sel = document.getElementById("wtv-select");
+  var outEl = document.getElementById("wtv-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "wtv_wow_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FABRICATED_WAITING_ON_WEATHER_DURING_CRANE_DP2_BREAKDOWN_OFFHIRE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验风场中心 <code>Datawell Waverider 波浪浮标 (Hs = 1.2m &lt; 1.8m 上限)</code> 与船舶 <code>1,600吨绕桩主吊机 / W2W 栈桥 PLC 故障树</code>发现：船长申报的 48 小时带薪天气等待（<code>Waiting on Weather, WOW</code>）期间，实际系主吊机液压系统故障停机抢修（根据 <code>BIMCO WINDTIME 第 15 条</code>应强制转为 <code>Off-Hire $0/天</code>），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "wtv_bnk_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_DP2_BUNKER_CONSUMPTION_OR_EXCESS_SFOC_SOUNDING_DISCREPANCY (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "船东凭手工量油尺申报半月消耗 <code>380 公吨 MGO 低硫轻柴</code>，而主机/辅机进回油管加封的 <code>ISO 22192 科氏力质量流量计 (Coriolis Meter)</code> 与 <code>DP2 推进器千瓦时轴功率 × SFOC (195 g/kWh)</code> 证实真实净耗油仅 <code>310 公吨</code>（企图虚报 70 吨免税柴油），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "wtv_jns_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 JONES_ACT_COASTWISE_ENDORSEMENT_VIOLATION_OR_EXPIRED_DP_FMEA_CLASS_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>USCG PSIX</code> 与船级社数据库发现：参与美国港口至海床单桩基础直运的馈线船缺失《琼斯法案》（<code>46 U.S.C. § 55102 Coastwise Endorsement</code>）签注，或母船 <code>DNV / ABS 年度 DP2 FMEA 冗余试验</code>已逾期，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "wtv_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_OFFHIRE_DEDUCTION_AND_CORIOLIS_BUNKER_RECONCILIATION_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>BIMCO WINDTIME 吊机故障自动转停租 (Off-Hire) 扣减 + 科氏力质量流量计净油耗还原</code>，单批立省 <code>$336,000.00</code>（净结算额优化至 <code>$3,864,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌊 波浪浮标 Hs 与机舱 LiDAR 确认 WOW 真实 + 吊机零故障 + 科氏油耗与琼斯法案合规：已自动清算 (VERIFIED_OFFSHORE_WIND_WTIV_SOV_CHARTER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零把修吊机伪装成等天气骗 $280k/天日租、零手工量油尺虚报 70 吨柴油与琼斯法案违章</strong>：B2B 海上风电安装船与运维船租约批次已完成安全清算（<code>$4,200,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bChemicalTollManufacturingYieldSandbox() {
+  var sel = document.getElementById("tol-select");
+  var outEl = document.getElementById("tol-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "tol_yld_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 STOICHIOMETRIC_MOLAR_YIELD_MASS_BALANCE_DEFICIT_OR_KF_MOISTURE_PADDING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验反应釜中控 <code>HPLC / qNMR</code> 摩尔质量平衡与危废母液罐发现：代工厂申报收率从基准 <code>92.0% 暴跌至 84.5%</code>，但母液与蒸馏残渣中并无对应的 <code>7.5% 副产物摩尔数（证实合格医药中间体被私自装桶截留）</code>，或成品卡尔费休水分（<code>ASTM E203 KF = 3.2% &gt; 0.2%</code>）超标掺水增重，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_slv_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNCREDITED_DISTILLATION_SOLVENT_RECOVERY_OR_PHANTOM_REACTOR_BOILOUT_AND_PGM_LOSS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "精馏塔回流流量计证实连续 20 釜生产中第 2~20 釜已回收套用 <code>88% 的四氢呋喃 (THF) / 乙腈溶剂</code>，代工厂却在全部 20 釜账单上均按 <code>100% 全新桶装溶剂</code>重复收费，或虚报 <code>4.2% 钯碳 (Pd/C) 贵金属催化剂过滤损耗</code>及同品种间虚假洗釜费（<code>Boil-Out</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_gmp_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNREGISTERED_TSCA_REACH_INTERMEDIATE_OR_ICH_Q7_GMP_AUDIT_FAILURE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>EPA TSCA / ECHA REACH</code> 与 <code>FDA ICH Q7 GMP</code> 数据库发现：本批次定制合成中间体未完成法定低吨位豁免（<code>LVE</code>）备案，或代工厂存在未结案的 GMP 审计警告信/私自将反应工序外发给无证化工厂，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "tol_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SOLVENT_RECYCLE_CREDIT_AND_DRY_BASIS_ASSAY_YIELD_DEDUP_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>战役第 2~20 釜 85% 精馏回收溶剂自动冲抵 + ASTM E203 卡尔费休水分与 HPLC 折百干基净重结算</code>，单批立省 <code>$60,000.00</code>（净结算额优化至 <code>$690,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧪 成品+母液摩尔质量守恒 + 85% 精馏溶剂抵扣 + 折百干基与贵金属损耗合规：已自动清算 (VERIFIED_CHEMICAL_TOLL_MANUFACTURING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零谎报低收率偷截 7.5% 医药主原料、零回收旧溶剂当 100% 新料收费与 4% 钯碳侵吞</strong>：B2B 精细化工与医药受托加工批次已完成安全清算（<code>$750,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticAutoFniGapVscRefundSandbox() {
+  var sel = document.getElementById("fni-select");
+  var outEl = document.getElementById("fni-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "fni_ref_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNEARNED_GAP_VSC_PRO_RATA_REFUND_WITHHOLDING_OR_RULE78_PENALTY_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经审计车贷提前结清（<code>Early Payoff / Trade-In / Total Loss</code>）台账发现：车主在第 30 个月提前结清 72 期贷款，经销商与延保管理人却未按 <code>Pro-Rata 未到期比例</code>退还剩余 <code>$2,100 未赚 VSC/GAP 保费（含经销商揣进兜里的 70% 未赚佣金）</code>，或违规采用惩罚性 <code>Rule of 78s</code> 公式克扣退款（触发 <code>CFPB UDAAP</code> 执法红线），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "fni_pck_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 WORTHLESS_LOW_LTV_GAP_WAIVER_OR_PAYMENT_PACKING_AND_EXCESS_DEALER_RESERVE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "客户首付达 35% 使得贷款价值比（<code>LTV = 65% &lt; 80% 门槛</code>，全损时永远不可能出现负资产差额），4S 店 F&amp;I 经理却通过月供塞包（<code>Payment Packing</code>）强行搭售 <code>$1,200 无效废纸 GAP 险 + $699 车窗防盗刻字</code>，或将银行 <code>5.49% Buy Rate</code> 暗中加息 <code>250 bps</code> 至 <code>7.99%</code> 套取高额利差回扣，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "fni_sta_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 STATE_AUTO_FNI_REFUND_STATUTE_OR_FTC_CARS_RULE_DISCLOSURE_VIOLATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：该批次违反州强制自动退保法案（如加州 <code>AB 2311</code> / 科罗拉多州 <code>HB 22-1188</code> 规定贷款提前结清必须自动冲抵或限期退付未赚 GAP 保费），或缺失 <code>FTC / CFPB</code> 要求的裸车现金价与双月供独立书面披露签名，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "fni_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_EARLY_PAYOFF_PRO_RATA_REFUND_AND_RESERVE_CAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>贷款提前结清自动从经销商储备池 (Dealer Reserve Holdback) 扣回 70% 未赚延保佣金 + 利差加点硬封顶 100 bps</code>，单批立省 <code>$47,200.00</code>（净结算额优化至 <code>$542,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚗 提前结清 Pro-Rata 退保自动执行 + LTV&gt;=80% 合理 GAP + 利差 &lt;=100 bps 合规：已自动清算 (VERIFIED_AUTO_FNI_GAP_VSC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零提前卖车私吞 $2,100 未到期延保/GAP 保费、零向低 LTV 客户强卖废纸 GAP 与 250 bps 暗中加息</strong>：智能体汽车金融与保险批次已完成安全清算（<code>$590,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bIndustrialLaundryLinenRfidSandbox() {
+  var sel = document.getElementById("lnn-select");
+  var outEl = document.getElementById("lnn-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lnn_wet_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WET_SOILED_WEIGHT_BILLING_OR_MANIPULATED_CART_TARE_WEIGHT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验月台收货地磅与 <code>EPC Gen2 UHF RFID 龙门架</code>读数发现：洗涤厂违规按回收时吸满汗液、生理盐水与污水的脏布湿重（<code>Soiled Weight，虚增 +28% 水重</code>）计费，或周转笼车喷漆标牌皮重（<code>80 lbs</code>）比空车动态回秤实测重量（<code>110 lbs</code>）少标 <code>30 磅/车</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }
+  if (v === "lnn_run_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNDEPRECIATED_NEW_LINEN_RUIN_CHARGE_OR_PHANTOM_FLAT_LOSS_SURCHARGE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "报废床单缝入的 <code>UHF RFID 芯片</code>显示其累计工业水洗次数已达 <code>105 次（超过 100 次额定寿命，属正常老化撕裂）</code>，洗涤厂却将其按 <code>100% 全新采购价 ($18/条)</code> 作为人为污损（<code>Ruin Charge</code>）向医院/酒店索赔，或强行加收无芯片清单支撑的 <code>16% 固定比例丢损费</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "lnn_hlc_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HLAC_TRSA_HYGIENICALLY_CLEAN_LAPSE_OR_THERMAL_DISINFECTION_BREACH_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>HLAC / TRSA Hygienically Clean Healthcare</code> 名录与隧道式连续洗涤机（<code>CBW</code>）日志发现：该洗涤分厂医疗院感认证已过期，或主洗仓未达到 <code>CDC 规定的 71°C (160°F) 持续 25 分钟热力消杀标准</code>，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }
+  if (v === "lnn_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_CLEAN_DRY_RFID_WEIGHT_CAP_AND_WASH_DEPRECIATION_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>min(地磅净重, UHF RFID件数×标准干重) 自动挤出 15% 微潮未烘透水汽 + 报废/遗失布草按剩余水洗次数线性折旧</code>，单批立省 <code>$30,600.00</code>（净结算额优化至 <code>$309,400.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧺 净布干重计费 + 动态笼车去皮 + UHF RFID 洗次折旧与 HLAC 院感合规：已自动清算 (VERIFIED_INDUSTRIAL_LAUNDRY_LINEN_RENTAL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零按脏布湿重替污水买单、零笼车铁皮吃秤与把洗满 105 次旧床单按新品敲诈</strong>：B2B 医院与酒店工业布草洗涤批次已完成安全清算（<code>$340,000.00</code>）！" +
     "</div>";
 }
 

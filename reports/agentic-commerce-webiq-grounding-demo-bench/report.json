@@ -1450,6 +1450,71 @@
     "agentic_home_warranty_hvac_settlement_latency_ms": 10,
     "abusive_rust_denial_block_latency_ms": 11
   },
+  "b2b_hospital_locum_travel_nurse_vms_guards": {
+    "all_passed": true,
+    "b2b_hospital_vms_staffing_settlement_latency_ms": 10,
+    "sanctioned_nursys_credential_block_latency_ms": 11
+  },
+  "b2b_textile_apparel_cmt_yy_aql_guards": {
+    "all_passed": true,
+    "b2b_apparel_cmt_fob_settlement_latency_ms": 10,
+    "failed_aql25_or_underweight_gsm_block_latency_ms": 11
+  },
+  "agentic_veterinary_pet_insurance_soap_guards": {
+    "all_passed": true,
+    "agentic_veterinary_pet_direct_pay_latency_ms": 10,
+    "unjustified_preexisting_or_bilateral_denial_block_latency_ms": 11
+  },
+  "b2b_industrial_hazwaste_rcra_tsdf_guards": {
+    "all_passed": true,
+    "b2b_hazwaste_rcra_tsdf_settlement_latency_ms": 10,
+    "missing_emanifest_or_cod_block_latency_ms": 11
+  },
+  "b2b_commercial_print_direct_mail_imb_guards": {
+    "all_passed": true,
+    "b2b_commercial_print_direct_mail_latency_ms": 10,
+    "usps_imb_underscan_or_postage_diversion_block_latency_ms": 11
+  },
+  "agentic_corporate_relocation_hhg_bvo_guards": {
+    "all_passed": true,
+    "agentic_corporate_relocation_settlement_latency_ms": 10,
+    "weight_bumping_or_hostage_load_block_latency_ms": 11
+  },
+  "b2b_elevator_oem_full_maintenance_guards": {
+    "all_passed": true,
+    "b2b_elevator_oem_maintenance_latency_ms": 10,
+    "ghost_pm_visit_or_entrapment_sla_block_latency_ms": 11
+  },
+  "b2b_plastic_injection_molding_mfi_guards": {
+    "all_passed": true,
+    "b2b_injection_molding_settlement_latency_ms": 10,
+    "unauthorized_regrind_mfi_shift_block_latency_ms": 11
+  },
+  "agentic_senior_living_ccrc_pdpm_guards": {
+    "all_passed": true,
+    "agentic_senior_living_ccrc_latency_ms": 10,
+    "entrance_fee_escrow_or_resale_trap_block_latency_ms": 11
+  },
+  "b2b_offshore_wind_wtiv_sov_charter_guards": {
+    "all_passed": true,
+    "b2b_offshore_wind_charter_latency_ms": 10,
+    "fabricated_wow_during_crane_breakdown_block_latency_ms": 11
+  },
+  "b2b_chemical_toll_manufacturing_yield_guards": {
+    "all_passed": true,
+    "b2b_chemical_tolling_settlement_latency_ms": 10,
+    "stoichiometric_yield_deficit_block_latency_ms": 11
+  },
+  "agentic_auto_fni_gap_vsc_refund_guards": {
+    "all_passed": true,
+    "agentic_auto_fni_settlement_latency_ms": 10,
+    "unearned_gap_vsc_refund_withholding_block_latency_ms": 11
+  },
+  "b2b_industrial_laundry_linen_rfid_guards": {
+    "all_passed": true,
+    "b2b_industrial_laundry_settlement_latency_ms": 10,
+    "wet_soiled_weight_billing_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
