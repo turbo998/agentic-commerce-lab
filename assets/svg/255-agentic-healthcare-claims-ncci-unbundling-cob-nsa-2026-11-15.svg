@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 820" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="red-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450A0A" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#1F1224" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="green-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#042F2E" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="blue-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.96"/>
+    </linearGradient>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="820" fill="url(#bg-grad)"/>
+
+  <!-- Header Banner -->
+  <rect x="28" y="22" width="1224" height="94" rx="14" fill="#1E293B" stroke="#0EA5E9" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="46" y="38" width="248" height="26" rx="13" fill="#0C4A6E" stroke="#0EA5E9" stroke-width="1"/>
+  <text x="170" y="56" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E0F2FE" text-anchor="middle">2026-11-15 · ROUND 253 · HEALTHCARE CLAIMS NCCI</text>
+  <text x="310" y="57" font-family="Segoe UI, system-ui, sans-serif" font-size="20" font-weight="800" fill="#F8FAFC">智能体医疗与齿科理赔 (EDI 837/835)：CMS NCCI 防拆包、COB 双保协调与 NSA 架构</text>
+  <text x="46" y="86" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" fill="#CBD5E1">CMS NCCI PTP/MUE Anti-Unbundling, COB &lt;=100% Cap &amp; No Surprises Act QPA vs. CPT Unbundling &amp; 160% Dual-Insurance Double-Dip</text>
+  <text x="46" y="106" font-family="Consolas, monospace" font-size="12" fill="#7DD3FC">Mandate Token: agentic_healthcare_claims_ncci_unbundling_cob_nsa_mandate_2026_11_15 · Batch: $690,000.00 · Net Optimized: $634,800.00 (-$55,200.00)</text>
+
+  <!-- Left Column: Legacy Claims Adjudication Traps -->
+  <rect x="28" y="132" width="596" height="398" rx="14" fill="url(#red-card)" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#FCA5A5">❌ 传统“按代码行累加盲赔 + 双保险各自报销”（四大医保基金黑洞）</text>
+  <text x="50" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#FECACA">Why Unbundled CPT Line-Pricing &amp; Uncoordinated COB Trigger 15% Medical-Loss Leakage</text>
+
+  <rect x="48" y="200" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">1. 把一台打包手术拆成 5 个独立代码收费 (CPT Unbundling 虚增 2.5 倍)</text>
+  <text x="64" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 综合手术码 ($2,200) 已包含切开、探查、止血与缝合；不良诊所拆成 5 行独立代码索赔 $5,400。</text>
+  <text x="64" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 甚至单人单日报销拔除 38 颗智齿或切 2 次盲肠 (突破 CMS MUE 解剖学极限) 仍被无脑照付！</text>
+
+  <rect x="48" y="282" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">2. 夫妻双保险未执行福利协调 (COB) 两边各赔 80% 合计套现 160%</text>
+  <text x="64" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 孩子看牙同时向父母两家公司医保报销；次险 AI 未校验主险 EDI 835 EOB 即按原价赔付 80%。</text>
+  <text x="64" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 违反 NAIC 生日法则 (Birthday Rule) 与 100% 费用封顶原则，每单白白多赔 60% 超额利润！</text>
+
+  <rect x="48" y="364" width="556" height="72" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">3. 网内医院的网外麻醉/急诊医生向患者强收天价差额账单 (Balance Billing)</text>
+  <text x="64" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 患者去网内医院做手术，麻醉师却属网外并向患者私下追讨 $8,000 差价 (Surprise Medical Bill)。</text>
+  <text x="64" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 直接违反美国联邦《无意外账单法 (No Surprises Act)》，面临每单最高 $10,000 行政罚款！</text>
+
+  <rect x="48" y="446" width="556" height="68" rx="10" fill="#2A0A10" stroke="#F87171" stroke-width="1"/>
+  <text x="64" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#FCA5A5">4. 无病历化验支撑将普通住院拔高为重症并发症 (MS-DRG Upcoding)</text>
+  <text x="64" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 代账 AI 故意添加无血培养或影像报告支撑的“急性呼吸衰竭/败血症”附加码以套取高倍 DRG 权重。</text>
+  <text x="64" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">• 事后发函向医院追讨多付款项 (Pay-and-Chase) 追回率不足 15%。</text>
+
+  <!-- Right Column: NCCI PTP/MUE + COB Cap + NSA QPA Architecture -->
+  <rect x="648" y="132" width="604" height="398" rx="14" fill="url(#green-card)" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="670" y="164" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="800" fill="#6EE7B7">✅ NCCI 防拆包引擎 + COB 100% 守恒 + NSA QPA 护盾 + Web IQ</text>
+  <text x="670" y="185" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" fill="#A7F3D0">2M+ NCCI PTP Code-Pair Matrix, Birthday-Rule COB Cap &amp; Automated Rebundling</text>
+
+  <rect x="668" y="200" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="222" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">1. CMS NCCI PTP 防拆包互斥锁与 MUE 解剖学上限 (11ms → 403)</text>
+  <text x="684" y="242" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 实时比对 CMS NCCI 200万组手术互斥表，自动剥离无独立器官修饰符的寄生拆包码 (Column 2)。</text>
+  <text x="684" y="260" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 严格执行 MUE 单日解剖学最大次数硬顶，11ms 硬拦截拆包与超生理极限账单 (HTTP 403)！</text>
+
+  <rect x="668" y="282" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="304" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">2. NAIC 生日法则/MSP 主次定序与 COB &lt;=100% 封顶 (14ms → 422)</text>
+  <text x="684" y="324" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 强制核验主险 EDI 835 EOB 结案单，次险赔付封顶于 (核定协议价 - 主险已付)，严禁超 100%。</text>
+  <text x="684" y="342" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 检出主次保险顺位颠倒或 160% 双保重复套利，14ms 立即阻断 (HTTP 422)！</text>
+
+  <rect x="668" y="364" width="564" height="72" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="386" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">3. Microsoft Web IQ 强锁《无意外账单法》QPA 与 DRG 核验 (280ms → 451)</text>
+  <text x="684" y="406" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• /v3/browse 280ms 核验网外急诊与配套科室按合格支付金额 (QPA) 计费，严禁向患者发差额催收单。</text>
+  <text x="684" y="424" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#A7F3D0">• 同步筛查住院 MS-DRG 重症并发症 (MCC) 编码拔高，异常理赔立即挂起 (HTTP 451)！</text>
+
+  <rect x="668" y="446" width="564" height="68" rx="10" fill="#062825" stroke="#34D399" stroke-width="1"/>
+  <text x="684" y="468" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="700" fill="#6EE7B7">4. 拆项自动重打包归并 (Auto-Rebundling) 与 QPA 锁价立省 $55,200 (245ms → 409)</text>
+  <text x="684" y="488" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">• 自动将碎片化子代码折叠归并为标准综合手术包费率并剔除双保水分。</text>
+  <text x="684" y="505" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">• 在 $690,000.00 医疗与齿科理赔批次上单批立省 $55,200.00 (净赔付 $634,800.00 · HTTP 409)！</text>
+
+  <!-- Bottom Quantitative Benchmark Matrix -->
+  <rect x="28" y="544" width="1224" height="252" rx="14" fill="url(#blue-card)" stroke="#0EA5E9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="50" y="574" font-family="Segoe UI, system-ui, sans-serif" font-size="16" font-weight="800" fill="#F8FAFC">🧪 定量实测 5 维拦截矩阵与 Web IQ 竞品选型基准（Batch: $690,000.00 · Zero Fabricated Coordinates）</text>
+  <text x="50" y="594" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#94A3B8">Deterministic Policy Engine (`evaluate_agentic_healthcare_claims_ncci_policy`) + Microsoft Web IQ `/v3/browse` CMS NCCI &amp; No Surprises Act Gate</text>
+
+  <!-- Table Header -->
+  <rect x="48" y="606" width="1184" height="28" rx="6" fill="#1E293B"/>
+  <text x="62" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#7DD3FC">SCENARIO</text>
+  <text x="200" y="625" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" fill="#E2E8F0">注入场景与契约校验条件 (Evaluated Condition)</text>
+  <text x="625" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#93C5FD">HTTP / DECISION_CODE</text>
+  <text x="1035" y="625" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#6EE7B7">LATENCY / ACTION</text>
+
+  <!-- Row 1 -->
+  <rect x="48" y="638" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="656" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#34D399">clm_commit_ok</text>
+  <text x="200" y="656" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#E2E8F0">CMS NCCI PTP/MUE 合规 + COB &lt;=100% 守恒 + NSA QPA 达标 ($690k)</text>
+  <text x="625" y="656" font-family="Consolas, monospace" font-size="11.5" fill="#6EE7B7">200 VERIFIED_HEALTHCARE_CLAIMS_NCCI_COB_NSA_SETTLED</text>
+  <text x="1035" y="656" font-family="Consolas, monospace" font-size="12" fill="#34D399">10ms · Act automatically</text>
+
+  <!-- Row 2 -->
+  <rect x="48" y="667" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="685" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F87171">clm_unb_403</text>
+  <text x="200" y="685" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FCA5A5">违规将综合手术拆分为多个子代码计费 (PTP Unbundling) 或超 MUE 解剖上限</text>
+  <text x="625" y="685" font-family="Consolas, monospace" font-size="11.5" fill="#FCA5A5">403 NCCI_PTP_PROCEDURE_UNBUNDLING_OR_MUE_ANATOMICAL_IMPOSSIBILITY_BLOCKED</text>
+  <text x="1035" y="685" font-family="Consolas, monospace" font-size="12" fill="#F87171">11ms · Send to a human</text>
+
+  <!-- Row 3 -->
+  <rect x="48" y="696" width="1184" height="26" rx="4" fill="#0F172A" opacity="0.75"/>
+  <text x="62" y="714" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FB923C">clm_cob_422</text>
+  <text x="200" y="714" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDBA74">双保险主次顺位颠倒 (违反生日法则) 或主次合计赔付 &gt;100% 协议价 (160% 套利)</text>
+  <text x="625" y="714" font-family="Consolas, monospace" font-size="11.5" fill="#FDBA74">422 COB_DUAL_PAYER_OVER_100PCT_DOUBLE_DIP_OR_WRONG_PRIMARY_PAYER_ORDER</text>
+  <text x="1035" y="714" font-family="Consolas, monospace" font-size="12" fill="#FB923C">14ms · Send to a human</text>
+
+  <!-- Row 4 -->
+  <rect x="48" y="725" width="1184" height="26" rx="4" fill="#1E1B4B" opacity="0.55"/>
+  <text x="62" y="743" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#F43F5E">clm_nsa_451</text>
+  <text x="200" y="743" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDA4AF">网外急诊/麻醉向患者开天价差额账单 (违反 No Surprises Act) 或 DRG 拔高</text>
+  <text x="625" y="743" font-family="Consolas, monospace" font-size="11.5" fill="#FDA4AF">451 NO_SURPRISES_ACT_ILLEGAL_BALANCE_BILLING_OR_UPCODED_DRG_SEVERITY_HOLD</text>
+  <text x="1035" y="743" font-family="Consolas, monospace" font-size="12" fill="#F43F5E">280ms · Send to a human</text>
+
+  <!-- Row 5 -->
+  <rect x="48" y="754" width="1184" height="28" rx="4" fill="#0F172A" opacity="0.85"/>
+  <text x="62" y="773" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#FBBF24">clm_sav_409</text>
+  <text x="200" y="773" font-family="Segoe UI, system-ui, sans-serif" font-size="12" fill="#FDE68A">Web IQ 启用 NCCI 拆项自动重打包与 QPA 锁价立省 $55,200 ($634.8k)</text>
+  <text x="625" y="773" font-family="Consolas, monospace" font-size="11.5" fill="#FDE68A">409 AUTOMATED_NCCI_REBUNDLING_AND_QPA_RATE_SAVINGS_CONFIRM</text>
+  <text x="1035" y="773" font-family="Consolas, monospace" font-size="12" fill="#FBBF24">245ms · Confirm</text>
+</svg>

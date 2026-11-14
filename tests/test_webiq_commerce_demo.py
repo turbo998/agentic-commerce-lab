@@ -15395,6 +15395,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-channel-partner-deal-reg-sandbox", demo_zh)
 
+    def test_agentic_healthcare_claims_ncci_unbundling_cob_nsa_mandate_vs_upcoding_balance_billing_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_healthcare_claims_ncci_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. NCCI PTP/MUE valid + COB <=100% + NSA QPA shield clean ($690,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_healthcare_claims_ncci_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_healthcare_claims_batch_cents, 69000000)
+
+        # 2. Fragmented CPT procedure unbundling (PTP violation) or MUE anatomical breach -> 403 Blocked
+        unb_403 = evaluate_agentic_healthcare_claims_ncci_policy(
+            cms_ncci_ptp_bundled_and_mue_daily_unit_cap_verified=False,
+        )
+        self.assertFalse(unb_403.allowed)
+        self.assertEqual(unb_403.http_status, 403)
+        self.assertEqual(
+            unb_403.decision_code,
+            "NCCI_PTP_PROCEDURE_UNBUNDLING_OR_MUE_ANATOMICAL_IMPOSSIBILITY_BLOCKED",
+        )
+
+        # 3. Dual-insurance COB payout >100% allowed amount (160% double-dip) or wrong primary order -> 422 Blocked
+        cob_422 = evaluate_agentic_healthcare_claims_ncci_policy(
+            cob_primary_secondary_sum_le_100pct_allowed_and_birthday_rule_verified=False,
+        )
+        self.assertFalse(cob_422.allowed)
+        self.assertEqual(cob_422.http_status, 422)
+        self.assertEqual(
+            cob_422.decision_code,
+            "COB_DUAL_PAYER_OVER_100PCT_DOUBLE_DIP_OR_WRONG_PRIMARY_PAYER_ORDER",
+        )
+
+        # 4. Out-of-network surprise balance billing violating No Surprises Act or DRG upcoding -> 451 Hold
+        nsa_451 = evaluate_agentic_healthcare_claims_ncci_policy(
+            webiq_no_surprises_act_qpa_shield_and_zero_balance_billing_clean=False,
+        )
+        self.assertFalse(nsa_451.allowed)
+        self.assertEqual(nsa_451.http_status, 451)
+
+        # 5. Web IQ automated NCCI rebundling & QPA benchmark pricing saving $55,200 ($634,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_healthcare_claims_ncci_policy(
+            automated_ncci_rebundling_and_qpa_in_network_rate_savings_cents=5520000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_healthcare_claims_batch_cents, 63480000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_healthcare_claims_ncci_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-healthcare-claims-ncci-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
