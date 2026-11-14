@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg199" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#060B18"/>
+      <stop offset="50%" stop-color="#0C172E"/>
+      <stop offset="100%" stop-color="#152647"/>
+    </linearGradient>
+    <linearGradient id="accent199" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg199)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0B1324" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent199)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">
+    Round 197 · B2B 单次虚拟采购卡 (Single-Use VCN)、Level 3 行项目增强数据免降级与防静态公卡门禁
+  </text>
+  <text x="52" y="92" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    B2B Single-Use VCN &amp; Level 3 Line-Item Interchange Optimization · UNSPSC Binding &amp; Burn-After-Capture vs. L1 Downgrade &amp; Ghost Card ($750,000)
+  </text>
+  <rect x="945" y="44" width="205" height="34" rx="17" fill="#2A1C08" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="1047" y="66" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FDE68A">
+    Level 3 VCN · -115 bps
+  </text>
+
+  <!-- Left Column: Failure Risks -->
+  <rect x="48" y="114" width="352" height="445" rx="12" fill="#16111D" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#FCA5A5">
+    ❌ 传统静态公卡与 Level 1 裸刷三大灾难
+  </text>
+
+  <rect x="64" y="164" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    1. 静态部门幽灵公卡 (Ghost Card) 脱库与乱扣费
+  </text>
+  <text x="78" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 50 家供应商后台共用同一张 $500k 静态 16 位企业公卡
+  </text>
+  <text x="78" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 任一小商户被黑脱库或擅自翻倍续费即刷爆整张卡额度
+  </text>
+  <text x="78" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 换卡需逐一通知 50 家供应商，导致正常采购全面停摆
+  </text>
+
+  <rect x="64" y="294" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="318" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    2. Level 1 粗粒度刷卡遭 +115 bps 惩罚性降级
+  </text>
+  <text x="78" y="340" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 仅上送总金额未传 Level 3 行项目明细，费率飙至 3.05%
+  </text>
+  <text x="78" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 或行项目加总与总金额差 1 美分被卡网静默作废 L3 资格
+  </text>
+  <text x="78" y="380" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 供应商拒收商务卡或向买方强行加收 3.0% 刷卡附加费
+  </text>
+
+  <rect x="64" y="424" width="320" height="118" rx="8" fill="#231420" stroke="#7F1D1D"/>
+  <text x="78" y="448" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#F87171">
+    3. 伪造 00000000 商编被罚与月底无明细烂账
+  </text>
+  <text x="78" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 为凑 L3 格式硬编码 00000000 假商编或 $0.01 假税额
+  </text>
+  <text x="78" y="490" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FECACA">
+    • 月底对账单无行项目明細，财务需手工核对上千张发票
+  </text>
+  <text x="78" y="510" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#FCA5A5" font-weight="600">
+    • 单批多亏 $82,500+ 刷卡附加费、返佣流失与对账成本
+  </text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="114" width="360" height="445" rx="12" fill="#0F1A2E" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="440" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#93C5FD">
+    🛡️ 5-Lane 单次 VCN 与 Level 3 门禁 (10ms–280ms)
+  </text>
+
+  <rect x="436" y="164" width="328" height="68" rx="8" fill="#09221B" stroke="#10B981"/>
+  <text x="450" y="186" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#34D399">
+    ⚡ HTTP 200 · Act automatically (10ms)
+  </text>
+  <text x="450" y="206" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#A7F3D0">
+    单次定额锁 MID 即焚 VCN + L3 行项目加总 100% 守恒
+  </text>
+  <text x="450" y="222" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#6EE7B7">
+    + 8 位真实 UNSPSC 商编 → 自动最优清算 $750,000.00
+  </text>
+
+  <rect x="436" y="242" width="328" height="68" rx="8" fill="#2A1215" stroke="#EF4444"/>
+  <text x="450" y="264" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F87171">
+    🛑 HTTP 403 · 静态幽灵公卡/敞口卡硬阻断 (11ms)
+  </text>
+  <text x="450" y="284" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FECACA">
+    企图跨供应商复用静态公卡或未锁死单次精确扣款金额
+  </text>
+  <text x="450" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FCA5A5">
+    STATIC_GHOST_CARD_REUSE_OR_UNBOUNDED_VCN_BLOCKED
+  </text>
+
+  <rect x="436" y="320" width="328" height="68" rx="8" fill="#2A1612" stroke="#F97316"/>
+  <text x="450" y="342" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FB923C">
+    🚨 HTTP 422 · L1 降级裸刷/行项目差 1 分拦截 (14ms)
+  </text>
+  <text x="450" y="362" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FFEDD5">
+    缺失 Level 3 行项目明细或 Sum(行项目)+税 != 刷卡总额
+  </text>
+  <text x="450" y="378" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDBA74">
+    LEVEL1_INTERCHANGE_DOWNGRADE_OR_L3_SUM_MISMATCH_BLOCKED
+  </text>
+
+  <rect x="436" y="398" width="328" height="68" rx="8" fill="#251329" stroke="#C084FC"/>
+  <text x="450" y="420" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#D8B4FE">
+    🛑 HTTP 451 · 伪造商编/1美分假税额冻结 (280ms)
+  </text>
+  <text x="450" y="440" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#F3E8FF">
+    Web IQ 检出 00000000 假 UNSPSC 商编或无免税证填假税
+  </text>
+  <text x="450" y="456" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#E9D5FF">
+    SPOOFED_UNSPSC_CODE_OR_FAKE_PENNY_TAX_HOLD
+  </text>
+
+  <rect x="436" y="476" width="328" height="68" rx="8" fill="#29200E" stroke="#F59E0B"/>
+  <text x="450" y="498" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#FBBF24">
+    🧑‍⚖️ HTTP 409 · L3 免附加费与发卡返佣确认 (245ms)
+  </text>
+  <text x="450" y="518" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FEF3C7">
+    L3 大额费率免除 3% 刷卡附加费 + 1.35% 发卡行现金返佣
+  </text>
+  <text x="450" y="534" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" fill="#FDE68A" font-weight="700">
+    立省 $82,500.00 (11.0%) → 净成本 $667,500.00 (Confirm)
+  </text>
+
+  <!-- Right Column: Physics & FinOps Metrics -->
+  <rect x="800" y="114" width="352" height="445" rx="12" fill="#0B1D28" stroke="#10B981" stroke-width="1.5"/>
+  <text x="820" y="146" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#6EE7B7">
+    🔬 单次即焚 VCN 与 Level 3 报文指标
+  </text>
+
+  <rect x="816" y="164" width="320" height="122" rx="8" fill="#0F2937" stroke="#F59E0B"/>
+  <text x="830" y="188" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#FDE68A">
+    单次定额即焚虚拟卡 (Burn-After-Capture VCN)
+  </text>
+  <text x="830" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 额度与次数锁: Exact_Amount_Cents &amp; Max_Uses = 1
+  </text>
+  <text x="830" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 商户绑定: 锁死唯一收单 MID 与允许的 MCC 类目
+  </text>
+  <text x="830" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 自毁机制: 首次清算完成后 10ms 内自动永久注销
+  </text>
+  <text x="830" y="270" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#A7F3D0" font-weight="600">
+    • 100% 免疫供应商脱库盗刷与僵尸订阅超额扣费
+  </text>
+
+  <rect x="816" y="298" width="320" height="118" rx="8" fill="#0F2937" stroke="#3B82F6"/>
+  <text x="830" y="322" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#93C5FD">
+    Level 3 行项目增强数据 (L3 Enhanced Data)
+  </text>
+  <text x="830" y="344" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 必填要素: 8 位 UNSPSC + 数量/单价 + 收发货邮编
+  </text>
+  <text x="830" y="364" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#E2E8F0">
+    • 交换费直降: 从 3.05% (L1) 直降至 1.75% (L3)
+  </text>
+  <text x="830" y="384" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#BAE6FD" font-weight="600">
+    • 直推买方 SAP/Oracle ERP 实现 100% 免贴票勾稽
+  </text>
+
+  <rect x="816" y="428" width="320" height="114" rx="8" fill="#09241C" stroke="#10B981"/>
+  <text x="830" y="452" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#34D399">
+    💰 Web IQ 免附加费与发卡返佣收益
+  </text>
+  <text x="830" y="474" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • B2B 虚拟采购卡大宗结算批次总额: $750,000.00
+  </text>
+  <text x="830" y="494" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#D1FAE5">
+    • 免除 3% 刷卡附加费 + 1.35% 发卡返佣: -$82,500.00
+  </text>
+  <text x="830" y="516" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#6EE7B7">
+    • 净采购资金成本: $667,500.00 (立省 11.0%)
+  </text>
+
+  <!-- Bottom Banner -->
+  <rect x="48" y="574" width="1104" height="62" rx="10" fill="#0F172A" stroke="#334155"/>
+  <text x="68" y="600" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">
+    🔑 架构师铁律：不要让 Agent 复用静态部门公卡或仅传 Level 1 粗粒度数据刷大额商务卡！必须绑定 `b2b_vcn_level3_interchange_mandate_` 令牌，
+  </text>
+  <text x="68" y="622" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" fill="#94A3B8">
+    强审一单一卡即焚 VCN 与 Level 3 行项目加总 100% 守恒，并用 Web IQ 自动映射真实 8 位 UNSPSC 商编以解锁 L3 大额最优交换费率。
+  </text>
+</svg>

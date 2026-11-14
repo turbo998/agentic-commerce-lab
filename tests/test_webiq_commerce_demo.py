@@ -12191,6 +12191,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-open-banking-a2a-vrp-sandbox", demo_zh)
 
+    def test_b2b_virtual_card_vcn_level3_line_item_interchange_mandate_vs_level1_downgrade_ghost_card_leak_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_vcn_level3_interchange_policy,
+        )
+
+        # 1. Verified single-use exact VCN + penny-exact L3 line items + valid UNSPSC -> 200 OK ($750,000)
+        commit_ok = evaluate_b2b_vcn_level3_interchange_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_vcn_batch_cents, 75000000)
+
+        # 2. Static department ghost-card reuse or unbounded VCN limit -> 403 blocked in 11ms
+        ghs_403 = evaluate_b2b_vcn_level3_interchange_policy(
+            single_use_exact_vcn_and_no_static_ghost_card_verified=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.vcn_level3_lane,
+            "STATIC_GHOST_CARD_REUSE_OR_UNBOUNDED_VCN_BLOCKED",
+        )
+
+        # 3. Bare Level 1 clearing (+115 bps downgrade) or 1-cent L3 sum mismatch -> 422 blocked in 14ms
+        l1d_422 = evaluate_b2b_vcn_level3_interchange_policy(
+            level3_line_item_sum_exact_and_unspsc_schema_passed=False,
+        )
+        self.assertFalse(l1d_422.allowed)
+        self.assertEqual(l1d_422.http_status, 422)
+        self.assertEqual(
+            l1d_422.vcn_level3_lane,
+            "LEVEL1_INTERCHANGE_DOWNGRADE_OR_L3_SUM_MISMATCH_BLOCKED",
+        )
+
+        # 4. Web IQ detects spoofed 00000000 UNSPSC code or fake $0.01 tax gaming -> 451 blocked in 280ms
+        uns_451 = evaluate_b2b_vcn_level3_interchange_policy(
+            webiq_unspsc_commodity_code_and_tax_exemption_clean=False,
+        )
+        self.assertFalse(uns_451.allowed)
+        self.assertEqual(uns_451.http_status, 451)
+
+        # 5. Web IQ credits L3 surcharge waiver & 1.35% issuer rebate saving $82,500 ($667,500 net) -> 409 Confirm
+        reb_409 = evaluate_b2b_vcn_level3_interchange_policy(
+            l3_interchange_surcharge_waiver_and_issuer_rebate_credit_cents=8250000,
+        )
+        self.assertFalse(reb_409.allowed)
+        self.assertEqual(reb_409.http_status, 409)
+        self.assertEqual(reb_409.settled_vcn_batch_cents, 66750000)
+        self.assertEqual(reb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_vcn_level3_interchange_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vcn-level3-interchange-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
