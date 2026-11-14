@@ -22428,6 +22428,96 @@ def evaluate_b2b_saas_hybrid_asc606_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 206: Agentic Reverse Logistics RMA, Anti-FTID Weight & IMEI Hash Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticReverseLogisticsRmaVerdict:
+    allowed: bool
+    http_status: int
+    rma_refund_lane: str
+    settled_rma_batch_cents: int
+    rma_exchange_retention_and_fraud_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_reverse_logistics_rma_policy(
+    *,
+    gross_rma_batch_cents: int = 58000000,
+    hub_dws_weight_within_5pct_and_dock_geohash_verified: bool = True,
+    inbound_serial_imei_hash_matches_outbound_verified: bool = True,
+    webiq_consumer_rights_depreciation_and_hazmat_battery_clean: bool = True,
+    instant_exchange_credit_retention_and_ftid_savings_cents: int = 0,
+) -> AgenticReverseLogisticsRmaVerdict:
+    # 1. FTID 20g Empty Envelope to Same-ZIP Cafe or Dry-Ice Weight Anomaly -> HTTP 403
+    if not hub_dws_weight_within_5pct_and_dock_geohash_verified:
+        return AgenticReverseLogisticsRmaVerdict(
+            False,
+            403,
+            "FTID_EMPTY_ENVELOPE_OR_WEIGHT_MISMATCH_BLOCKED",
+            0,
+            0,
+            "rma_instant_refund_blocked_due_to_ftid_dock_geohash_mismatch_or_hub_dws_weight_anomaly",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Outbound vs. Inbound Serial / IMEI Hash Mismatch (Junk Unit / Rocks Swap) -> HTTP 422
+    if not inbound_serial_imei_hash_matches_outbound_verified:
+        return AgenticReverseLogisticsRmaVerdict(
+            False,
+            422,
+            "SERIAL_IMEI_SWAP_OR_COUNTERFEIT_RETURN_REJECTED",
+            0,
+            0,
+            "rma_return_rejected_for_inbound_serial_imei_hash_mismatch_against_outbound_fulfillment",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Missing UN3481 Lithium-Battery Hazmat Label or EU Art. 14 Breach via Web IQ -> HTTP 451
+    if not webiq_consumer_rights_depreciation_and_hazmat_battery_clean:
+        return AgenticReverseLogisticsRmaVerdict(
+            False,
+            451,
+            "CONSUMER_RIGHTS_OR_HAZMAT_BATTERY_RETURN_HOLD",
+            0,
+            0,
+            "webiq_detected_un3481_lithium_battery_air_return_violation_or_eu_art14_depreciation_breach",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ +5% Instant-Exchange Store Credit Retaining 35% Revenue & Stopping FTID -> HTTP 409 Confirm
+    if instant_exchange_credit_retention_and_ftid_savings_cents > 0:
+        return AgenticReverseLogisticsRmaVerdict(
+            False,
+            409,
+            "RMA_INSTANT_EXCHANGE_RETENTION_AND_FRAUD_SAVINGS_CONFIRM",
+            gross_rma_batch_cents - instant_exchange_credit_retention_and_ftid_savings_cents,
+            instant_exchange_credit_retention_and_ftid_savings_cents,
+            "webiq_enabled_instant_exchange_bonus_and_dws_imei_gate_saving_46400_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified Hub DWS Weight <=5% + Dock Geohash + 1:1 IMEI Parity -> Settled
+    return AgenticReverseLogisticsRmaVerdict(
+        True,
+        200,
+        "VERIFIED_RMA_WEIGHT_AND_SERIAL_REFUND_SETTLED",
+        gross_rma_batch_cents,
+        0,
+        "reverse_logistics_rma_hub_dws_weight_dock_geohash_and_1to1_imei_hash_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -29670,6 +29760,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "mid_cycle_downgrade_cash_drain_block_latency_ms": sas_prr_403.latency_ms,
     }
 
+    # Round 206 (Agentic Reverse Logistics RMA, Anti-FTID Weight & IMEI Hash Mandate)
+    rma_commit_ok = evaluate_agentic_reverse_logistics_rma_policy()
+    rma_ftd_403 = evaluate_agentic_reverse_logistics_rma_policy(
+        hub_dws_weight_within_5pct_and_dock_geohash_verified=False,
+    )
+    rma_swp_422 = evaluate_agentic_reverse_logistics_rma_policy(
+        inbound_serial_imei_hash_matches_outbound_verified=False,
+    )
+    rma_bat_451 = evaluate_agentic_reverse_logistics_rma_policy(
+        webiq_consumer_rights_depreciation_and_hazmat_battery_clean=False,
+    )
+    rma_sav_409 = evaluate_agentic_reverse_logistics_rma_policy(
+        instant_exchange_credit_retention_and_ftid_savings_cents=4640000,
+    )
+    agentic_reverse_logistics_rma_guards = {
+        "all_passed": (
+            rma_commit_ok.allowed
+            and rma_commit_ok.settled_rma_batch_cents == 58000000
+            and not rma_ftd_403.allowed
+            and rma_ftd_403.http_status == 403
+            and not rma_swp_422.allowed
+            and rma_swp_422.http_status == 422
+            and not rma_bat_451.allowed
+            and rma_bat_451.http_status == 451
+            and not rma_sav_409.allowed
+            and rma_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_reverse_logistics_rma_settlement_latency_ms": rma_commit_ok.latency_ms,
+        "ftid_empty_envelope_block_latency_ms": rma_ftd_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29888,6 +30009,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_cross_border_ddp_customs_guards": agentic_cross_border_ddp_customs_guards,
         "agentic_gift_card_stored_value_guards": agentic_gift_card_stored_value_guards,
         "b2b_saas_hybrid_asc606_guards": b2b_saas_hybrid_asc606_guards,
+        "agentic_reverse_logistics_rma_guards": agentic_reverse_logistics_rma_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36495,6 +36617,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sas-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Reverse Logistics RMA, Anti-FTID Weight & IMEI Hash Sandbox (Round 206 FAQ Companion) -->
+      <div class="finops-box" id="agentic-reverse-logistics-rma-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rma-title">📦 智能体售后逆向物流 (RMA) 与防“掉包/改址空包 (Box-of-Rocks &amp; FTID)”：分拨中心 DWS 称重 (±5%) 与出入库 IMEI 哈希令牌 (agentic_reverse_logistics_rma_instant_refund_mandate_...) vs 盲目揽收秒退被骗决策器 (Round 206 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 售后逆向物流退货与极速退款批次 ($580,000.00)、快递分拨中心 DWS 激光称重 (±5%)、退货仓月台 Geohash 锁与出入库唯一序列号 (IMEI/SN) 核验场景 (Reverse Logistics RMA &amp; Anti-FTID Scenario):</span></label>
+          <select id="rma-select" onchange="updateAgenticReverseLogisticsRmaSandbox()">
+            <option value="rma_commit_ok">⚡ 分拨中心 DWS 重量偏差 ≤5% + 退货仓月台 Geohash 锁死 + 出入库 IMEI 哈希 1:1 匹配：10ms 安全退款清算 $580,000.00! (Act automatically)</option>
+            <option value="rma_ftd_403">🛑 黑产篡改退货面单可视地址寄 20g 空信封去同邮编快餐店伪造 DELIVERED (FTID 欺诈)，或干冰挥发导致分拨中心称重失配拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="rma_swp_422">🚨 包裹塞入同重量石头或报废旧显卡企图骗过重量检查，仓库入库扫描发现 inbound_imei_hash != outbound_imei_hash (偷梁换柱掉包) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="rma_bat_451">🛑 含破损锂电池退件缺失 UN3481 航空危险品禁运贴标，或折旧损耗扣款超出欧盟消法 2011/83/EU Art. 14 法定比例：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="rma_sav_409">🧑‍⚖️ Web IQ 启用 +5% 即时换货储值金 (Instant Exchange Bonus) 将 35% 退货转化为重购留存，并结合 DWS 称重拦截 FTID 空包立省 $46,400.00 (净成本 $533,600.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -37139,6 +37279,7 @@ function renderAll() {{
   updateAgenticCrossBorderDdpCustomsSandbox();
   updateAgenticGiftCardStoredValueSandbox();
   updateB2bSaasHybridAsc606Sandbox();
+  updateAgenticReverseLogisticsRmaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -47485,6 +47626,55 @@ function updateB2bSaasHybridAsc606Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 64位按秒折算守恒 + 降配转 Credit Note + FEFO 瀑布流 + ASC 606 SSP 通过：已自动入账 (VERIFIED_SAAS_HYBRID_ASC606_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零中途降配退现白嫖、零额度乱序错扣与四大审计重述风险</strong>：B2B SaaS 混合计费与收入确认批次已完成合规清算（<code>$720,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticReverseLogisticsRmaSandbox() {{
+  var selEl = document.getElementById("rma-select");
+  var outEl = document.getElementById("rma-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "rma_ftd_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FTID_EMPTY_ENVELOPE_OR_WEIGHT_MISMATCH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "逆向物流反欺诈门禁检出，该退货运单 <code>在快递分拨中心激光体积称重仪 (Hub DWS) 实测重量仅 20g（与出库毛重 850g 偏差超 ±5% 公差），或实际签收坐标偏离本方退货仓月台 Geohash（典型 FTID 篡改面单寄空信封至同邮编餐厅骗退）</code>（<code>hub_dws_weight_within_5pct_and_dock_geohash_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断极速退款！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_swp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SERIAL_IMEI_SWAP_OR_COUNTERFEIT_RETURN_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "仓库入库序列号校验器检出 <code>退回商品的硬件序列号/IMEI/NFC 芯片哈希与原出库发货记录不匹配（检出买新退旧、山寨模型机掉包或同重量石头充数）</code>（<code>inbound_serial_imei_hash_matches_outbound_verified == False</code>）。网关在 <code>14ms</code> 内拒止退款并自动打包开箱视频与出库序列号日志直通 Visa CE 3.0 抗辩！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_bat_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CONSUMER_RIGHTS_OR_HAZMAT_BATTERY_RETURN_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟消费者权益指令 (2011/83/EU Art. 14) 折旧扣减规程与 IATA UN3481 锂电池退运禁令</code>，检出破损锂电池退件错误分配了航空面单或折旧扣费超限，立即冻结并切换陆运合规面单！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "rma_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 RMA_INSTANT_EXCHANGE_RETENTION_AND_FRAUD_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>揽收即发 +5% 换货奖励储值金（将 35% 退货流失直接转化为换尺码/换新留存）+ 分拨中心 DWS 称重与出入库 IMEI 闭环拦截空包掉包</code>，单批挽回/止损 <code>$46,400.00</code>（净退货成本压降至 <code>$533,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 分拨中心 DWS 重量吻合 + 月台坐标锁定 + 出入库 IMEI 1:1 匹配通过：已自动退款 (VERIFIED_RMA_WEIGHT_AND_SERIAL_REFUND_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 FTID 改址空信封骗款、零石头/旧机掉包资损与锂电池航空违规</strong>：智能体售后逆向物流批次已完成安全清算（<code>$580,000.00</code>）！" +
     "</div>";
 }}
 

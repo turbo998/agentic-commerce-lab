@@ -12695,6 +12695,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-hybrid-asc606-sandbox", demo_zh)
 
+    def test_agentic_reverse_logistics_rma_instant_refund_weight_imei_mandate_vs_box_of_rocks_ftid_return_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_reverse_logistics_rma_policy,
+        )
+
+        # 1. Verified hub DWS weight <=5% + dock geohash + 1:1 IMEI parity -> 200 OK ($580,000)
+        commit_ok = evaluate_agentic_reverse_logistics_rma_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_rma_batch_cents, 58000000)
+
+        # 2. FTID 20g empty envelope to same-ZIP cafe or weight mismatch -> 403 blocked in 11ms
+        ftd_403 = evaluate_agentic_reverse_logistics_rma_policy(
+            hub_dws_weight_within_5pct_and_dock_geohash_verified=False,
+        )
+        self.assertFalse(ftd_403.allowed)
+        self.assertEqual(ftd_403.http_status, 403)
+        self.assertEqual(
+            ftd_403.rma_refund_lane,
+            "FTID_EMPTY_ENVELOPE_OR_WEIGHT_MISMATCH_BLOCKED",
+        )
+
+        # 3. Inbound vs. outbound IMEI/serial hash mismatch (junk unit swap) -> 422 blocked in 14ms
+        swp_422 = evaluate_agentic_reverse_logistics_rma_policy(
+            inbound_serial_imei_hash_matches_outbound_verified=False,
+        )
+        self.assertFalse(swp_422.allowed)
+        self.assertEqual(swp_422.http_status, 422)
+        self.assertEqual(
+            swp_422.rma_refund_lane,
+            "SERIAL_IMEI_SWAP_OR_COUNTERFEIT_RETURN_REJECTED",
+        )
+
+        # 4. Web IQ detects UN3481 lithium-battery air breach or EU Art. 14 hold -> 451 blocked in 280ms
+        bat_451 = evaluate_agentic_reverse_logistics_rma_policy(
+            webiq_consumer_rights_depreciation_and_hazmat_battery_clean=False,
+        )
+        self.assertFalse(bat_451.allowed)
+        self.assertEqual(bat_451.http_status, 451)
+
+        # 5. Web IQ enables Instant Exchange bonus & anti-FTID saving $46,400 ($533,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_reverse_logistics_rma_policy(
+            instant_exchange_credit_retention_and_ftid_savings_cents=4640000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_rma_batch_cents, 53360000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_reverse_logistics_rma_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-reverse-logistics-rma-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
