@@ -14989,6 +14989,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cloud-finops-cud-ri-sandbox", demo_zh)
 
+    def test_b2b_global_eor_contractor_payroll_misclassification_ip_mandate_vs_retroactive_tax_ip_leak_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_global_eor_contractor_payroll_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Valid ABC/EoR + signed country PIIA + funded 13th-month + zero PE ($650,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_global_eor_contractor_payroll_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_global_payroll_batch_cents, 65000000)
+
+        # 2. De facto full-time employee misclassified as contractor (>180d) or Germany AUG breach -> 403 Blocked
+        mis_403 = evaluate_b2b_global_eor_contractor_payroll_policy(
+            abc_test_contractor_autonomy_or_local_eor_entity_verified=False,
+        )
+        self.assertFalse(mis_403.allowed)
+        self.assertEqual(mis_403.http_status, 403)
+        self.assertEqual(
+            mis_403.decision_code,
+            "DE_FACTO_EMPLOYEE_MISCLASSIFICATION_OR_ILLEGAL_LABOR_DISPATCH_BLOCKED",
+        )
+
+        # 3. Missing country-specific present-tense PIIA IP assignment or unfunded 13th-month/FGTS -> 422 Blocked
+        ip_422 = evaluate_b2b_global_eor_contractor_payroll_policy(
+            statutory_13th_month_severance_accrual_and_ip_assignment_verified=False,
+        )
+        self.assertFalse(ip_422.allowed)
+        self.assertEqual(ip_422.http_status, 422)
+        self.assertEqual(
+            ip_422.decision_code,
+            "UNFUNDED_13TH_MONTH_SEVERANCE_SHOCK_OR_UNSIGNED_PIIA_IP_LEAK",
+        )
+
+        # 4. Foreign worker triggers OECD Art. 5 Permanent Establishment (PE) tax or expired visa -> 451 Hold
+        pe_451 = evaluate_b2b_global_eor_contractor_payroll_policy(
+            webiq_oecd_pe_permanent_establishment_and_visa_right_to_work_clean=False,
+        )
+        self.assertFalse(pe_451.allowed)
+        self.assertEqual(pe_451.http_status, 451)
+
+        # 5. Web IQ direct SEPA/Pix local payroll rails & FX netting saving $52,000 ($598,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_global_eor_contractor_payroll_policy(
+            direct_local_payroll_rail_and_fx_batch_netting_savings_cents=5200000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_global_payroll_batch_cents, 59800000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_global_eor_contractor_payroll_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-global-eor-contractor-payroll-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
