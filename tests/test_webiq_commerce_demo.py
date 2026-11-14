@@ -15968,6 +15968,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-telecom-tower-colocation-epa-sandbox", demo_zh)
 
+    def test_b2b_automotive_tier1_ppap_tooling_amortization_lme_vs_zombie_amortization_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_automotive_tier1_ppap_tooling_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Full PPAP Level 3 PSW (Cpk>=1.67) + UCC-1 bailment + IIoT cap & symmetric LME/scrap -> 200 OK ($920,000.00)
+        ok_res = evaluate_b2b_automotive_tier1_ppap_tooling_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AUTOMOTIVE_TIER1_PPAP_TOOLING_SETTLED")
+        self.assertEqual(ok_res.settled_auto_tier1_ppap_batch_cents, 92000000)
+
+        # 2. Missing Full PPAP Level 3 PSW (Interim Cpk<1.67) or unrecorded state UCC-1 tooling bailment -> 403 Blocked
+        psw_403 = evaluate_b2b_automotive_tier1_ppap_tooling_policy(
+            full_ppap_level3_psw_cpk167_and_state_ucc1_tooling_bailment_verified=False,
+        )
+        self.assertFalse(psw_403.allowed)
+        self.assertEqual(psw_403.http_status, 403)
+        self.assertEqual(
+            psw_403.decision_code,
+            "MISSING_PPAP_LEVEL3_PSW_CPK_OR_UCC1_TOOLING_BAILMENT_BLOCKED",
+        )
+
+        # 3. Zombie piece-price tooling amortization past 300k cap or unauthorized night-shift mold strokes -> 422 Blocked
+        amo_422 = evaluate_b2b_automotive_tier1_ppap_tooling_policy(
+            cumulative_amortized_units_within_cap_and_iiot_mold_strokes_matched=False,
+        )
+        self.assertFalse(amo_422.allowed)
+        self.assertEqual(amo_422.http_status, 422)
+        self.assertEqual(
+            amo_422.decision_code,
+            "ZOMBIE_TOOLING_AMORTIZATION_PAST_CAP_OR_UNAUTHORIZED_MOLD_SHARING",
+        )
+
+        # 4. Asymmetric LME/CRU surcharge ratchet or uncredited stamping offal scrap recovery -> 451 Hold
+        lme_451 = evaluate_b2b_automotive_tier1_ppap_tooling_policy(
+            webiq_symmetric_lme_cru_indexation_and_stamping_offal_scrap_credit_clean=False,
+        )
+        self.assertFalse(lme_451.allowed)
+        self.assertEqual(lme_451.http_status, 451)
+
+        # 5. Web IQ automated tooling cap step-down & symmetric LME/scrap true-up saving $73,600 ($846,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_automotive_tier1_ppap_tooling_policy(
+            automated_tooling_cap_stepdown_and_lme_scrap_trueup_savings_cents=7360000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_auto_tier1_ppap_batch_cents, 84640000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_automotive_tier1_ppap_tooling_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-automotive-tier1-ppap-tooling-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

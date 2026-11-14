@@ -1390,6 +1390,11 @@
     "b2b_telecom_tower_colocation_settlement_latency_ms": 10,
     "ghost_antenna_epa_block_latency_ms": 11
   },
+  "b2b_automotive_tier1_ppap_tooling_guards": {
+    "all_passed": true,
+    "b2b_automotive_tier1_ppap_settlement_latency_ms": 10,
+    "missing_ppap_ucc1_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
