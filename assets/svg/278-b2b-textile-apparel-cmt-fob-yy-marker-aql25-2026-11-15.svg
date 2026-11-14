@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg278" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent278" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EC4899"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg278)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent278)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#F472B6" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-15 · ROUND 276 · B2B APPAREL CMT / FOB MANUFACTURING, CAD MARKER YY &amp; AQL 2.5 INSPECTION</text>
+  <text x="52" y="92" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">B2B 纺织服装代工 (CMT/FOB)：Lectra/Gerber 混码排料单耗 (YY)、GSM 克重与 AQL 2.5 验货架构</text>
+  <text x="52" y="116" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">强制解析混码 CAD (.mrk) 锁死排料率 (&gt;=84%) 防虚报 12% 单耗吃布 · ASTM D3776 克重与 AQL 2.5 尾检锁 · Web IQ 穿透核验 WRAP 与 UFLPA 棉源防外发</text>
+
+  <!-- Left Card: Legacy Failure Modes -->
+  <rect x="48" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="48" y="136" width="356" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="68" y="160" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统成衣厂粗放核价三大痛点 (吃水 10%–16%)</text>
+
+  <rect x="64" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="210" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 单码排料虚报单耗 YY + 8% 裁剪损耗吃布</text>
+  <text x="78" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 报价按单码 75% 排料率报 YY=1.60码/件 + 8% 损耗</text>
+  <text x="78" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 实际混码排料率 86.5% 仅耗 1.42码，十万件侵吞 1.8万码</text>
+  <text x="78" y="272" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 省下面料私做“原单尾货”倒卖冲击正价渠道</text>
+
+  <rect x="64" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="326" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 偷减面料克重 (GSM) 与逃避 AQL 2.5 尾检</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 合同 320 GSM 抓绒布大货偷偷降配为 285 GSM (-11%)</text>
+  <text x="78" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 水洗缩水率超标 (-8%)、跳线破洞未过 FRI 尾检</text>
+  <text x="78" y="388" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 凭船公司提单 (B/L) 强催 70% 尾款，退货由品牌买单</text>
+
+  <rect x="64" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="442" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 旺季私自外发黑作坊触发 UFLPA 海关扣货</text>
+  <text x="78" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 认证 A 厂爆仓后私自转包给无消防/无 WRAP 的小作坊</text>
+  <text x="78" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 掺入无同位素/DNA 溯源棉纱，整柜被 CBP 无限期暂扣</text>
+  <text x="78" y="504" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• HTTP 451 级全柜没收与供应链合规信誉崩盘</text>
+
+  <!-- Center Card: Agentic Policy Engine -->
+  <rect x="422" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EC4899" stroke-width="1.5"/>
+  <rect x="422" y="136" width="356" height="38" rx="12" fill="#831843"/>
+  <text x="442" y="160" fill="#FBCFE8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">🛡️ 智能体 CAD 单耗与 AQL 验货三道刚性锁</text>
+
+  <rect x="438" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#9D174D"/>
+  <text x="452" y="210" fill="#F472B6" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 1：ASTM D3776 克重与 AQL 2.5/4.0 尾检锁</text>
+  <text x="452" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制核验大货克重公差 (±3%) 与四分制验布 (&lt;=28分)</text>
+  <text x="452" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 绑定 QIMA/SGS ISO 2859-1 AQL 2.5 尾检加密签名</text>
+  <text x="452" y="272" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 11ms 触发 HTTP 403 阻断偷减克重或尾检拒收订单</text>
+
+  <rect x="438" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#9D174D"/>
+  <text x="452" y="326" fill="#F472B6" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 2：Lectra/Gerber 混码 CAD 排料率单耗锁</text>
+  <text x="452" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 解析 .mrk/.plx 源文件校验混码排料率 (&gt;=84%)</text>
+  <text x="452" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 裁剪铺布损耗率硬封顶 &lt;=3.0%，拒绝手填单码虚高 YY</text>
+  <text x="452" y="388" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 14ms 触发 HTTP 422 拦截 12% 单耗吃布与余布侵占</text>
+
+  <rect x="438" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#9D174D"/>
+  <text x="452" y="442" fill="#F472B6" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 3：Web IQ WRAP 围栏与 UFLPA 棉源溯源锁</text>
+  <text x="452" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse 核验 WRAP/Oeko-Tex 证书与工位</text>
+  <text x="452" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 穿透核查棉纱同位素/DNA 原产地链，防私自影子外发</text>
+  <text x="452" y="504" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 275ms 触发 HTTP 451 / 240ms HTTP 409 立省 $46,400</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="796" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="796" y="136" width="356" height="38" rx="12" fill="#064E3B"/>
+  <text x="816" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 100,000 件成衣批次 ($580,000) 实测矩阵</text>
+
+  <rect x="812" y="188" width="324" height="60" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="826" y="210" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="826" y="232" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">CAD 单耗对齐 + 320 GSM/AQL 2.5 合格 → 清算 $580,000</text>
+
+  <rect x="812" y="258" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="280" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="826" y="302" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">克重缩水至 285 GSM 或 AQL 2.5 拒收 → 拦截 $580,000</text>
+
+  <rect x="812" y="328" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="350" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="826" y="372" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">虚报 YY=1.60码/件 (CAD 1.42码) 或损耗 &gt;3% → 阻断</text>
+
+  <rect x="812" y="398" width="324" height="60" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="826" y="420" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 (275ms) / 🧑‍⚖️ HTTP 409 (240ms)</text>
+  <text x="826" y="442" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">防私自外发 UFLPA 挂起 / 混码 CAD 优化省 $46,400</text>
+
+  <rect x="812" y="468" width="324" height="56" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="826" y="490" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">💡 混码排料核减后净付：$533,600.00 (节省 8.0%)</text>
+  <text x="826" y="510" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="11">令牌：b2b_textile_apparel_cmt_fob_marker_efficiency_...</text>
+
+  <!-- Footer -->
+  <rect x="48" y="556" width="1104" height="80" rx="10" fill="#020617" stroke="#334155"/>
+  <text x="68" y="582" fill="#F472B6" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">架构师核心选型铁律 (Architect's Golden Rule)：</text>
+  <text x="68" y="604" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 凡成衣 FOB/CMT 订单，必须以 Lectra/Gerber 混码排料文件 (.mrk) 计算真实单耗 YY，严禁接受工厂手填单码预估表；铺布损耗封顶 3.0%。</text>
+  <text x="68" y="624" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 尾款释放强制绑定 ASTM D3776 克重 (±3%)、QIMA/SGS ISO 2859-1 AQL 2.5 尾检加密签名及 Web IQ /v3/browse UFLPA/WRAP 原产地核验。</text>
+</svg>

@@ -16709,6 +16709,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hospital-locum-travel-nurse-vms-sandbox", demo_zh)
 
+    def test_b2b_textile_apparel_cmt_yy_marker_aql25_vs_yardage_padding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_textile_apparel_cmt_yy_aql_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant CAD mixed-marker YY + ASTM D3776 GSM & AQL 2.5 pass + clean WRAP/UFLPA origin -> 200 OK ($580,000.00)
+        ok_res = evaluate_b2b_textile_apparel_cmt_yy_aql_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_TEXTILE_APPAREL_CMT_FOB_SETTLED")
+        self.assertEqual(ok_res.settled_apparel_cmt_fob_cents, 58000000)
+
+        # 2. Underweight GSM (285 vs 320 GSM) or failed ISO 2859 AQL 2.5 final random inspection -> 403 Blocked
+        aql_403 = evaluate_b2b_textile_apparel_cmt_yy_aql_policy(
+            astm_d3776_gsm_tolerance_and_iso2859_aql25_final_inspection_passed_verified=False,
+        )
+        self.assertFalse(aql_403.allowed)
+        self.assertEqual(aql_403.http_status, 403)
+        self.assertEqual(
+            aql_403.decision_code,
+            "FAILED_AQL_25_FINAL_INSPECTION_OR_FABRIC_GSM_UNDERWEIGHT_BLOCKED",
+        )
+
+        # 3. Single-size YY padding (1.60 vs 1.42 yd/pc) or cutting wastage > 3.0% cap -> 422 Blocked
+        yy_422 = evaluate_b2b_textile_apparel_cmt_yy_aql_policy(
+            cad_mixed_marker_efficiency_84pct_and_wastage_within_3pct_cap_verified=False,
+        )
+        self.assertFalse(yy_422.allowed)
+        self.assertEqual(yy_422.http_status, 422)
+        self.assertEqual(
+            yy_422.decision_code,
+            "FABRIC_YY_CONSUMPTION_EXCEEDS_CAD_MARKER_OR_EXCESS_WASTAGE_PADDING",
+        )
+
+        # 4. Unauthorized shadow subcontracting or missing UFLPA cotton origin proof -> 451 Hold
+        ufl_451 = evaluate_b2b_textile_apparel_cmt_yy_aql_policy(
+            webiq_wrap_oekotex_facility_and_uflpa_cotton_origin_traceability_clean=False,
+        )
+        self.assertFalse(ufl_451.allowed)
+        self.assertEqual(ufl_451.http_status, 451)
+
+        # 5. Web IQ automated mixed-marker CAD YY optimization & wastage cap saving $46,400 ($533,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_textile_apparel_cmt_yy_aql_policy(
+            automated_cad_marker_yy_optimization_and_wastage_cap_savings_cents=4640000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_apparel_cmt_fob_cents, 53360000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_textile_apparel_cmt_yy_aql_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-textile-apparel-cmt-yy-aql-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
