@@ -16481,6 +16481,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-defense-aerospace-dfars-dcaa-sandbox", demo_zh)
 
+    def test_agentic_corrugated_packaging_ect_risi_plate_die_vs_recycled_swap_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_corrugated_packaging_ect_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant TAPPI T811 ECT >= 44 + virgin kraft + zero duplicate plate/die & symmetric RISI -> 200 OK ($580,000.00)
+        ok_res = evaluate_agentic_corrugated_packaging_ect_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORRUGATED_PACKAGING_ECT_SETTLED")
+        self.assertEqual(ok_res.settled_corrugated_packaging_batch_cents, 58000000)
+
+        # 2. Sub-ECT crush strength or 42# virgin kraft substituted with 33# recycled testliner -> 403 Blocked
+        ect_403 = evaluate_agentic_corrugated_packaging_ect_policy(
+            conditioned_tappi_t811_ect_and_virgin_kraft_basis_weight_verified=False,
+        )
+        self.assertFalse(ect_403.allowed)
+        self.assertEqual(ect_403.http_status, 403)
+        self.assertEqual(
+            ect_403.decision_code,
+            "SUB_ECT_CRUSH_STRENGTH_OR_VIRGIN_KRAFT_SUBSTITUTED_WITH_RECYCLED_LINER_BLOCKED",
+        )
+
+        # 3. Duplicate 4-color flexo plate / rotary die billing on 1-color edit or +18% overrun (>105% cap) -> 422 Blocked
+        plt_422 = evaluate_agentic_corrugated_packaging_ect_policy(
+            zero_duplicate_flexo_plate_rotary_die_and_overrun_within_105pct_verified=False,
+        )
+        self.assertFalse(plt_422.allowed)
+        self.assertEqual(plt_422.http_status, 422)
+        self.assertEqual(
+            plt_422.decision_code,
+            "DUPLICATE_FLEXO_PLATE_ROTARY_DIE_CHARGE_OR_EXCESS_OVERRUN_QUANTITY",
+        )
+
+        # 4. Asymmetric Fastmarkets RISI linerboard ratchet or uncredited OCC #11 die-cut trim scrap -> 451 Hold
+        ris_451 = evaluate_agentic_corrugated_packaging_ect_policy(
+            webiq_symmetric_risi_linerboard_index_and_occ11_trim_scrap_credit_clean=False,
+        )
+        self.assertFalse(ris_451.allowed)
+        self.assertEqual(ris_451.http_status, 451)
+
+        # 5. Web IQ automated RISI downward true-up, OCC #11 scrap credit & plate dedup saving $46,400 ($533,600 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_corrugated_packaging_ect_policy(
+            automated_risi_index_trueup_and_plate_die_dedup_savings_cents=4640000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corrugated_packaging_batch_cents, 53360000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_corrugated_packaging_ect_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-corrugated-packaging-ect-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
