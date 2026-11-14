@@ -12751,6 +12751,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-reverse-logistics-rma-sandbox", demo_zh)
 
+    def test_agentic_hospitality_lodging_car_rental_incremental_auth_reversal_mandate_vs_deposit_hold_delayed_chargeback_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_hospitality_incremental_auth_policy,
+        )
+
+        # 1. Verified root TID capture + instant 0420 deposit reversal + zero damage fine -> 200 OK ($650,000)
+        commit_ok = evaluate_agentic_hospitality_incremental_auth_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_hospitality_batch_cents, 65000000)
+
+        # 2. Unlinked standalone Sale (30d double hold) or >15% overage without incremental auth -> 403 blocked in 11ms
+        lck_403 = evaluate_agentic_hospitality_incremental_auth_policy(
+            root_tid_capture_and_instant_0420_deposit_reversal_verified=False,
+        )
+        self.assertFalse(lck_403.allowed)
+        self.assertEqual(lck_403.http_status, 403)
+        self.assertEqual(
+            lck_403.hospitality_auth_lane,
+            "ORPHANED_HOLD_DOUBLE_LOCK_OR_MISSING_INCREMENTAL_AUTH_BLOCKED",
+        )
+
+        # 3. Unconsented damage/smoking fine capture or multi-night No-Show -> 422 blocked in 14ms
+        dmg_422 = evaluate_agentic_hospitality_incremental_auth_policy(
+            zero_unconsented_damage_smoking_fine_and_1night_noshow_cap_valid=False,
+        )
+        self.assertFalse(dmg_422.allowed)
+        self.assertEqual(dmg_422.http_status, 422)
+        self.assertEqual(
+            dmg_422.hospitality_auth_lane,
+            "PROHIBITED_DAMAGE_FINE_CAPTURE_OR_NOSHOW_OVERCHARGE_REJECTED",
+        )
+
+        # 4. Web IQ detects missing MCC 7011/7512 folio schema or >90d delayed window -> 451 blocked in 280ms
+        fol_451 = evaluate_agentic_hospitality_incremental_auth_policy(
+            webiq_mcc_7011_7512_folio_schema_and_90d_window_clean=False,
+        )
+        self.assertFalse(fol_451.allowed)
+        self.assertEqual(fol_451.http_status, 451)
+
+        # 5. Web IQ enables enhanced folio passthrough & dispute avoidance saving $39,000 ($611,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_hospitality_incremental_auth_policy(
+            enhanced_folio_interchange_and_dispute_avoidance_savings_cents=3900000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospitality_batch_cents, 61100000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_hospitality_incremental_auth_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-hospitality-incremental-auth-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

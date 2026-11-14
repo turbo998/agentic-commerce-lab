@@ -4518,6 +4518,24 @@
         <div id="rma-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Hospitality & Car-Rental Incremental Auth & 0420 Reversal Sandbox (Round 207 FAQ Companion) -->
+      <div class="finops-box" id="agentic-hospitality-incremental-auth-sandbox" style="margin-top:12px;border-color:#0284C7;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-hsp-title">🏨 智能体酒店差旅与租车 (MCC 7011/7512) 增量预授权与押金秒解冻：单根 TID 追加、0420 秒冲正与禁扣战损令牌 (agentic_hospitality_lodging_incremental_auth_mandate_...) vs 双倍锁卡 30 天与必输拒付决策器 (Round 207 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 酒店差旅与租车结算批次 ($650,000.00)、单根 TID 增量预授权 (&gt;+15% 续住)、离店差额 ISO 8583 0420 秒冲正与 Visa 5.9.4 禁扣战损罚款场景 (Hospitality &amp; Car-Rental Incremental Auth Scenario):</span></label>
+          <select id="hsp-select" onchange="updateAgenticHospitalityIncrementalAuthSandbox()">
+            <option value="hsp_commit_ok">⚡ 复用入住原单 TID 捕获 + 同步发送 0420 秒解冻剩余押金 + 零战损违规强扣 + Folio 明细完整：10ms 清算 $650,000.00! (Act automatically)</option>
+            <option value="hsp_lck_403">🛑 退房时未复用原预授权 TID 而是另刷一笔独立新交易 (导致客户卡内 $2,050 双倍冻结 30 天)，或续住超支 &gt;15% 未发增量预授权拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="hsp_dmg_422">🚨 离店后企图直接从原预授权押金里暗扣 $800 租车刮擦维修费或房间吸烟罚款 (违反 Visa 5.9.4 必遭 12.6 拒付秒杀)，或 No-Show 强扣整周房费拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="hsp_fol_451">🛑 结算报文缺失 MCC 7011/7512 必填入住/退房日期与租车协议号，或高速过路费延迟补扣超出 90 天窗口：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="hsp_sav_409">🧑‍⚖️ Web IQ 自动组装旅宿租车增强 Folio 报文免除商业卡交换费降级，并结合 0420 押金秒冲正消除 11.3/12.6 拒付罚单立省 $39,000.00 (净成本 $611,000.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="hsp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5163,6 +5181,7 @@ function renderAll() {
   updateAgenticGiftCardStoredValueSandbox();
   updateB2bSaasHybridAsc606Sandbox();
   updateAgenticReverseLogisticsRmaSandbox();
+  updateAgenticHospitalityIncrementalAuthSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -15558,6 +15577,55 @@ function updateAgenticReverseLogisticsRmaSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 分拨中心 DWS 重量吻合 + 月台坐标锁定 + 出入库 IMEI 1:1 匹配通过：已自动退款 (VERIFIED_RMA_WEIGHT_AND_SERIAL_REFUND_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 FTID 改址空信封骗款、零石头/旧机掉包资损与锂电池航空违规</strong>：智能体售后逆向物流批次已完成安全清算（<code>$580,000.00</code>）！" +
+    "</div>";
+}
+
+function updateAgenticHospitalityIncrementalAuthSandbox() {
+  var selEl = document.getElementById("hsp-select");
+  var outEl = document.getElementById("hsp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "hsp_lck_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ORPHANED_HOLD_DOUBLE_LOCK_OR_MISSING_INCREMENTAL_AUTH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "旅宿租车预授权生命周期门禁检出，结算 Agent <code>退房时未绑定入住时的原始 Transaction Identifier (TID) 而是另起了一笔孤立的新 Sale 扣款（将导致原 $1,200 预授权沦为僵尸冻结锁死客户卡额度 30 天），或客人续住超支逾 +15% 却未先发增量预授权</code>（<code>root_tid_capture_and_instant_0420_deposit_reversal_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "hsp_dmg_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PROHIBITED_DAMAGE_FINE_CAPTURE_OR_NOSHOW_OVERCHARGE_REJECTED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "Folio 账单合规过滤器检出 <code>企图通过原预授权或离店延迟补扣 (Delayed Charge) 直接强扣房间吸烟罚款、地毯损坏或租车刮擦维修免赔额（严重违反 Visa Core Rules 5.9.4.2，持卡人提 12.6/13.5 拒付将 100% 秒败诉），或对未入住 (No-Show) 强扣超过首晚房费+税</code>（<code>zero_unconsented_damage_smoking_fine_and_1night_noshow_cap_valid == False</code>）。网关在 <code>14ms</code> 内剥离违规项并转交独立签字支付流！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "hsp_fol_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FOLIO_RECEIPT_MISSING_OR_90D_DELAYED_WINDOW_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>Visa / Mastercard MCC 7011 (酒店) 与 MCC 7512 (租车) 行业专有清算指南</code>，检出报文缺失必填的入住/退房日期、每日房价明细或延迟过路费补扣已超出 90 天法定时效，立即冻结清算！" +
+      "</div>";
+    return;
+  }
+
+  if (v === "hsp_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 LODGING_INCREMENTAL_AUTH_AND_REVERSAL_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>单根 TID 增量预授权 + 离店 ISO 8583 0420 秒级押金冲正 + MCC 7011/7512 增强 Folio 数据透传（免除商业差旅卡交换费降级并彻底消除 11.3/12.6 拒付败诉罚单）</code>，单批立省 <code>$39,000.00</code>（净结算成本降至 <code>$611,000.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 单根 TID 增量预授权 + 0420 押金秒解冻 + 零战损违规强扣通过：已自动清算 (VERIFIED_HOSPITALITY_INCREMENTAL_AUTH_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 30 天僵尸押金锁卡客诉、零超额强扣罚金与战损延迟扣款必输拒付</strong>：智能体酒店差旅与租车批次已完成秒级清算与解冻（<code>$650,000.00</code>）！" +
     "</div>";
 }
 
