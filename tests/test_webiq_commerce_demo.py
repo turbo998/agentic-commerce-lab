@@ -17051,6 +17051,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-elevator-oem-full-maintenance-sandbox", demo_zh)
 
+    def test_b2b_plastic_injection_molding_virgin_mfi_cavity_vs_regrind_doping_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_plastic_injection_molding_mfi_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ASTM D1238 MFI shift (<=10%) & virgin CoA balance + PPAP full cavities + UL94/USP Class VI -> 200 OK ($460,000.00)
+        ok_res = evaluate_b2b_plastic_injection_molding_mfi_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PLASTIC_INJECTION_MOLDING_SETTLED")
+        self.assertEqual(ok_res.settled_injection_molding_cents, 46000000)
+
+        # 2. Unauthorized regrind doping causing +42% MFI jump or missing virgin resin CoA tonnage -> 403 Blocked
+        mfi_403 = evaluate_b2b_plastic_injection_molding_mfi_policy(
+            astm_d1238_mfi_shift_within_10pct_and_virgin_resin_coa_balance_verified=False,
+        )
+        self.assertFalse(mfi_403.allowed)
+        self.assertEqual(mfi_403.http_status, 403)
+        self.assertEqual(
+            mfi_403.decision_code,
+            "UNAUTHORIZED_REGRIND_DOPING_MFI_SHIFT_OR_MISSING_VIRGIN_RESIN_COA_BLOCKED",
+        )
+
+        # 3. Blocked cavities (26/32) or cycle slowdown billed to buyer or uncredited runner scrap -> 422 Blocked
+        cav_422 = evaluate_b2b_plastic_injection_molding_mfi_policy(
+            ppap_full_cavities_cycle_time_and_runner_scrap_credit_verified=False,
+        )
+        self.assertFalse(cav_422.allowed)
+        self.assertEqual(cav_422.http_status, 422)
+        self.assertEqual(
+            cav_422.decision_code,
+            "BLOCKED_CAVITY_CYCLE_TIME_INFLATION_OR_UNCREDITED_RUNNER_SCRAP_SURCHARGE",
+        )
+
+        # 4. Missing UL94 Yellow Card or USP Class VI / FDA DMF certification -> 451 Hold
+        ul_451 = evaluate_b2b_plastic_injection_molding_mfi_policy(
+            webiq_ul94_yellow_card_and_usp_class_vi_resin_compliance_clean=False,
+        )
+        self.assertFalse(ul_451.allowed)
+        self.assertEqual(ul_451.http_status, 451)
+
+        # 5. Web IQ automated PPAP full-cavity cycle lock & runner scrap credit saving $36,800 ($423,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_plastic_injection_molding_mfi_policy(
+            automated_ppap_cavity_cycle_lock_and_runner_scrap_credit_savings_cents=3680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_injection_molding_cents, 42320000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_plastic_injection_molding_mfi_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-plastic-injection-molding-mfi-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
