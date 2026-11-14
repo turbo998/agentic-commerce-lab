@@ -20898,6 +20898,96 @@ def evaluate_uhvdc_press_pack_igbt_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 189: Agentic 3DS 2.3.1 & W3C FIDO2 SPC Step-Up vs. SMS OTP Relay Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Agentic3ds2Fido2SpcVerdict:
+    allowed: bool
+    http_status: int
+    sca_stepup_lane: str
+    settled_sca_batch_cents: int
+    liability_shift_conversion_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_3ds2_fido2_spc_policy(
+    *,
+    gross_sca_batch_cents: int = 43000000,
+    spc_fido2_dynamic_linking_and_cavv_eci05_verified: bool = True,
+    zero_headless_acs_injection_and_no_sms_otp_relay_passed: bool = True,
+    webiq_psd2_tra_exemption_and_3ds231_schema_clean: bool = True,
+    fido2_delegated_auth_and_chargeback_liability_shift_credit_cents: int = 0,
+) -> Agentic3ds2Fido2SpcVerdict:
+    # 1. W3C SPC Dynamic Linking Amount/Payee Mismatch or Missing CAVV (ECI=07) -> HTTP 403
+    if not spc_fido2_dynamic_linking_and_cavv_eci05_verified:
+        return Agentic3ds2Fido2SpcVerdict(
+            False,
+            403,
+            "SPC_DYNAMIC_LINKING_MISMATCH_OR_MISSING_CAVV_BLOCKED",
+            0,
+            0,
+            "agentic_3ds2_blocked_due_to_spc_dynamic_linking_mismatch_or_unauthenticated_eci07",
+            11,
+            "Send to a human",
+        )
+
+    # 2. Headless Browser ACS Challenge Injection or Plaintext SMS OTP Forwarding -> HTTP 422
+    if not zero_headless_acs_injection_and_no_sms_otp_relay_passed:
+        return Agentic3ds2Fido2SpcVerdict(
+            False,
+            422,
+            "HEADLESS_ACS_CHALLENGE_BOT_OR_SMS_OTP_RELAY_BLOCKED",
+            0,
+            0,
+            "sca_stepup_rejected_for_headless_browser_acs_scraping_or_sms_otp_forwarding",
+            14,
+            "Send to a human",
+        )
+
+    # 3. Deprecated 3DS 2.1 Schema or Breached Acquirer TRA Fraud-Rate Tier via Web IQ -> HTTP 451
+    if not webiq_psd2_tra_exemption_and_3ds231_schema_clean:
+        return Agentic3ds2Fido2SpcVerdict(
+            False,
+            451,
+            "DEPRECATED_3DS_PROTOCOL_OR_TRA_FRAUD_RATIO_HOLD",
+            0,
+            0,
+            "webiq_detected_deprecated_3ds21_fields_or_exceeded_acquirer_tra_fraud_rate_tier",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ FIDO2 Delegated Auth + ECI=05 Chargeback Liability Shift -> HTTP 409 Confirm
+    if fido2_delegated_auth_and_chargeback_liability_shift_credit_cents > 0:
+        return Agentic3ds2Fido2SpcVerdict(
+            False,
+            409,
+            "FIDO2_SPC_DELEGATED_AUTH_AND_LIABILITY_SHIFT_CONFIRM",
+            gross_sca_batch_cents - fido2_delegated_auth_and_chargeback_liability_shift_credit_cents,
+            fido2_delegated_auth_and_chargeback_liability_shift_credit_cents,
+            "webiq_applied_fido2_spc_delegated_auth_and_eci05_liability_shift_saving_64500_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified W3C SPC Dynamic Linking + 3DS 2.3.1 CAVV ECI=05 + Zero OTP Relay -> Settled
+    return Agentic3ds2Fido2SpcVerdict(
+        True,
+        200,
+        "VERIFIED_AGENTIC_3DS2_FIDO2_SPC_SETTLED",
+        gross_sca_batch_cents,
+        0,
+        "w3c_spc_fido2_dynamic_linking_emv_3ds231_cavv_eci05_and_3ri_tra_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -27613,6 +27703,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ntd_cosmic_ray_block_latency_ms": ppi_ntd_403.latency_ms,
     }
 
+    # Round 189 (Agentic Payment EMV 3DS 2.3.1 & W3C FIDO2 SPC Step-Up vs. SMS OTP Forwarding Mandate)
+    sca_commit_ok = evaluate_agentic_3ds2_fido2_spc_policy()
+    sca_spc_403 = evaluate_agentic_3ds2_fido2_spc_policy(
+        spc_fido2_dynamic_linking_and_cavv_eci05_verified=False,
+    )
+    sca_bot_422 = evaluate_agentic_3ds2_fido2_spc_policy(
+        zero_headless_acs_injection_and_no_sms_otp_relay_passed=False,
+    )
+    sca_tra_451 = evaluate_agentic_3ds2_fido2_spc_policy(
+        webiq_psd2_tra_exemption_and_3ds231_schema_clean=False,
+    )
+    sca_shf_409 = evaluate_agentic_3ds2_fido2_spc_policy(
+        fido2_delegated_auth_and_chargeback_liability_shift_credit_cents=6450000,
+    )
+    agentic_3ds2_fido2_spc_guards = {
+        "all_passed": (
+            sca_commit_ok.allowed
+            and sca_commit_ok.settled_sca_batch_cents == 43000000
+            and not sca_spc_403.allowed
+            and sca_spc_403.http_status == 403
+            and not sca_bot_422.allowed
+            and sca_bot_422.http_status == 422
+            and not sca_tra_451.allowed
+            and sca_tra_451.http_status == 451
+            and not sca_shf_409.allowed
+            and sca_shf_409.action_pill == "Confirm"
+        ),
+        "agentic_3ds2_fido2_spc_settlement_latency_ms": sca_commit_ok.latency_ms,
+        "spc_dynamic_linking_block_latency_ms": sca_spc_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27814,6 +27935,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ultrafast_laser_crystal_guards": ultrafast_laser_crystal_guards,
         "deep_sea_submersible_guards": deep_sea_submersible_guards,
         "uhvdc_press_pack_igbt_guards": uhvdc_press_pack_igbt_guards,
+        "agentic_3ds2_fido2_spc_guards": agentic_3ds2_fido2_spc_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34115,6 +34237,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ppi-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Payment EMV 3DS 2.3.1 & W3C FIDO2 SPC Step-Up Mandate Sandbox (Round 189 FAQ Companion) -->
+      <div class="finops-box" id="agentic-3ds2-fido2-spc-sandbox" style="margin-top:12px;border-color:#8B5CF6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-sca-title">🔐 智能体支付强客户认证 (SCA)：EMV 3DS 2.3.1 结合 W3C FIDO2 SPC 安全支付确认 (spc_fido2_cryptogram_...) vs 短信 OTP 转发劫持与无头代填决策器 (Round 189 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 跨境 SCA 强认证结算批次 ($430,000.00)、W3C SPC 硬件动态链接签名/CAVV (ECI=05)、无头浏览器 ACS 反爬/SMS OTP 转发门禁与 Web IQ PSD2 TRA 豁免/拒付责任转移场景 (Agentic 3DS2 / FIDO2 SPC Scenario):</span></label>
+          <select id="sca-select" onchange="updateAgentic3ds2Fido2SpcSandbox()">
+            <option value="sca_commit_ok">⚡ W3C SPC 硬件签名锁死 payee+amount + 3DS 2.3.1 CAVV (ECI=05) + 零无头注入/零 OTP 转发：10ms 自动结算 $430,000.00! (Act automatically)</option>
+            <option value="sca_spc_403">🛑 提示词注入篡改扣款金额致与 SPC 硬件签名不一致，或缺失 CAVV 密文处于 ECI=07 无发卡行拒付责任转移裸奔拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="sca_bot_422">🚨 Agent 违规启动 Playwright 无头浏览器注入银行 3DS 挑战 iframe 触发 ACS 反爬锁卡，或跨会话读取转发用户 6 位短信 OTP 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="sca_tra_451">🛑 跨境路由仍发送已废弃的 3DS 2.1 字段，或收单行欺诈率超标 (&gt;0.13%) 却违规强申 PSD2 TRA 免密豁免遭软拒：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="sca_shf_409">🧑‍⚖️ Web IQ 启用 1.2s FIDO2 委托认证 (Delegated Auth) + 3RI 静默直通替代 35s 短信 OTP 挽回弃单，并获 ECI=05 100% 发卡行拒付责任转移立省 $64,500.00 (净成本 $365,500.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sca-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -34742,6 +34882,7 @@ function renderAll() {{
   updateUltrafastLaserCrystalSandbox();
   updateDeepSeaSubmersibleHullSandbox();
   updateUhvdcPressPackIgbtSandbox();
+  updateAgentic3ds2Fido2SpcSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -44255,6 +44396,55 @@ function updateUhvdcPressPackIgbtSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ NTD 电阻率波动 (&lt;=3.5%) + 钼片共面度 (&lt;=3um) + SCFM (&gt;=8,000h) 达标：已自动清算 (VERIFIED_UHVDC_PRESS_PACK_IGBT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零高海拔宇宙射线单粒子烧毁、零 60kN 压接碎晶与开路电弧炸阀</strong>：600 只 4.5kV/3000A 特高压压接式 IGBT 批次已完成结算（<code>$860,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgentic3ds2Fido2SpcSandbox() {{
+  var selEl = document.getElementById("sca-select");
+  var outEl = document.getElementById("sca-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "sca_spc_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPC_DYNAMIC_LINKING_MISMATCH_OR_MISSING_CAVV_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "W3C 安全支付确认 (SPC) 与 EMV 3DS 网关验签显示，该笔交易 <code>硬件签名锁定的 payeeOrigin/金额与实际扣款请求不匹配（疑似提示词注入中继篡改），或缺失 CAVV 密文处于 ECI=07 无发卡行拒付责任转移裸奔状态</code>（<code>spc_fido2_dynamic_linking_and_cavv_eci05_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断 <code>$430,000.00</code> 结算！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sca_bot_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 HEADLESS_ACS_CHALLENGE_BOT_OR_SMS_OTP_RELAY_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "反自动化与认证安全门禁检出 <code>Agent 试图启动无头浏览器注入发卡行 3DS ACS 挑战 iframe 或跨会话读取转发用户 6 位明文短信 OTP</code>（极易触发发卡行反爬冻结用户实体卡或遭钓鱼盗用，<code>zero_headless_acs_injection_and_no_sms_otp_relay_passed == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sca_tra_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 DEPRECATED_3DS_PROTOCOL_OR_TRA_FRAUD_RATIO_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 PSD2 / 英国 FCA / 日本 EMV 3DS 2.3.1 规范与收单行 TRA 欺诈率台账</code>，检出报文使用已淘汰 3DS 2.1 字段或收单行欺诈率超标违规申请 TRA 豁免，立即冻结路由！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "sca_shf_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 FIDO2_SPC_DELEGATED_AUTH_AND_LIABILITY_SHIFT_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>W3C FIDO2 SPC 1.2s 硬件委托认证 + 3RI 静默直通 + ECI=05/02 100% 发卡行无卡欺诈拒付责任转移 (Liability Shift)</code>，自动挽回短信 OTP 弃单与 Visa 10.4 拒付损失立省 <code>$64,500.00</code>（净风险敞口结算额降至 <code>$365,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ W3C SPC 动态链接签名 + 3DS 2.3.1 CAVV (ECI=05) + 零无头代填达标：已自动清算 (VERIFIED_AGENTIC_3DS2_FIDO2_SPC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零短信 OTP 注入中继盗刷、零无头浏览器触发银行锁卡与 100% 发卡行拒付责任转移</strong>：跨境 SCA 强客户认证结算批次已完成清算（<code>$430,000.00</code>）！" +
     "</div>";
 }}
 

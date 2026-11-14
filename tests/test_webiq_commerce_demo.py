@@ -11743,6 +11743,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("uhvdc-press-pack-igbt-sandbox", demo_zh)
 
+    def test_agentic_3ds2_fido2_spc_biometric_stepup_mandate_vs_sms_otp_scraping_takeover_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_3ds2_fido2_spc_policy,
+        )
+
+        # 1. Verified W3C SPC dynamic linking + 3DS 2.3.1 CAVV ECI=05 -> 200 OK ($430,000)
+        commit_ok = evaluate_agentic_3ds2_fido2_spc_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_sca_batch_cents, 43000000)
+
+        # 2. SPC dynamic linking mismatch or missing CAVV (ECI=07) -> 403 blocked in 11ms
+        spc_403 = evaluate_agentic_3ds2_fido2_spc_policy(
+            spc_fido2_dynamic_linking_and_cavv_eci05_verified=False,
+        )
+        self.assertFalse(spc_403.allowed)
+        self.assertEqual(spc_403.http_status, 403)
+        self.assertEqual(
+            spc_403.sca_stepup_lane,
+            "SPC_DYNAMIC_LINKING_MISMATCH_OR_MISSING_CAVV_BLOCKED",
+        )
+
+        # 3. Headless browser ACS scraping or plaintext SMS OTP forwarding -> 422 blocked in 14ms
+        bot_422 = evaluate_agentic_3ds2_fido2_spc_policy(
+            zero_headless_acs_injection_and_no_sms_otp_relay_passed=False,
+        )
+        self.assertFalse(bot_422.allowed)
+        self.assertEqual(bot_422.http_status, 422)
+        self.assertEqual(
+            bot_422.sca_stepup_lane,
+            "HEADLESS_ACS_CHALLENGE_BOT_OR_SMS_OTP_RELAY_BLOCKED",
+        )
+
+        # 4. Web IQ detects deprecated 3DS 2.1 schema or breached TRA fraud ratio -> 451 blocked in 280ms
+        tra_451 = evaluate_agentic_3ds2_fido2_spc_policy(
+            webiq_psd2_tra_exemption_and_3ds231_schema_clean=False,
+        )
+        self.assertFalse(tra_451.allowed)
+        self.assertEqual(tra_451.http_status, 451)
+
+        # 5. Web IQ credits FIDO2 delegated auth & ECI=05 liability shift saving $64,500 ($365,500 net) -> 409 Confirm
+        shf_409 = evaluate_agentic_3ds2_fido2_spc_policy(
+            fido2_delegated_auth_and_chargeback_liability_shift_credit_cents=6450000,
+        )
+        self.assertFalse(shf_409.allowed)
+        self.assertEqual(shf_409.http_status, 409)
+        self.assertEqual(shf_409.settled_sca_batch_cents, 36550000)
+        self.assertEqual(shf_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_3ds2_fido2_spc_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-3ds2-fido2-spc-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
