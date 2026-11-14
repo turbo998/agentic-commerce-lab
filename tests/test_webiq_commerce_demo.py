@@ -12527,6 +12527,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-multi-psp-smart-routing-sandbox", demo_zh)
 
+    def test_agentic_cross_border_ddp_ioss_type86_htsus_customs_mandate_vs_ddu_delivery_refusal_undervaluation_fine_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_cross_border_ddp_customs_policy,
+        )
+
+        # 1. Verified 1:1 payment-to-customs value + EU €150 IOSS H7 + US 10-digit HTSUS -> 200 OK ($610,000)
+        commit_ok = evaluate_agentic_cross_border_ddp_customs_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_ddp_batch_cents, 61000000)
+
+        # 2. Customs invoice undervaluation or same-day $800 split evasion -> 403 blocked in 11ms
+        val_403 = evaluate_agentic_cross_border_ddp_customs_policy(
+            customs_declared_equals_net_paid_and_zero_split_evasion_verified=False,
+        )
+        self.assertFalse(val_403.allowed)
+        self.assertEqual(val_403.http_status, 403)
+        self.assertEqual(
+            val_403.ddp_customs_lane,
+            "CUSTOMS_UNDERVALUATION_OR_SPLIT_EVASION_BLOCKED",
+        )
+
+        # 3. EU >€150 misrouted to IOSS or missing 10-digit HTSUS -> 422 blocked in 14ms
+        ios_422 = evaluate_agentic_cross_border_ddp_customs_policy(
+            eu_ioss_150eur_encrypted_h7_and_us_10digit_htsus_valid=False,
+        )
+        self.assertFalse(ios_422.allowed)
+        self.assertEqual(ios_422.http_status, 422)
+        self.assertEqual(
+            ios_422.ddp_customs_lane,
+            "IOSS_150EUR_BREACH_OR_MISSING_10DIGIT_HTSUS",
+        )
+
+        # 4. Web IQ detects TARIC antidumping duty or CBP PGA hold -> 451 blocked in 280ms
+        pga_451 = evaluate_agentic_cross_border_ddp_customs_policy(
+            webiq_taric_antidumping_and_cbp_pga_clearance_clean=False,
+        )
+        self.assertFalse(pga_451.allowed)
+        self.assertEqual(pga_451.http_status, 451)
+
+        # 5. Web IQ enables full DDP + IOSS H7 eliminating refusals & fees saving $42,700 ($567,300 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_cross_border_ddp_customs_policy(
+            ddp_ioss_carrier_fee_and_zero_refusal_savings_cents=4270000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ddp_batch_cents, 56730000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_cross_border_ddp_customs_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-cross-border-ddp-customs-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

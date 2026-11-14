@@ -22158,6 +22158,96 @@ def evaluate_agentic_multi_psp_smart_routing_policy(
     )
 
 
+# ---------------------------------------------------------------------------
+# Round 203: Agentic Cross-Border DDP, EU IOSS (<=€150) & US CBP Type 86 Gate
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class AgenticCrossBorderDdpCustomsVerdict:
+    allowed: bool
+    http_status: int
+    ddp_customs_lane: str
+    settled_ddp_batch_cents: int
+    ddp_refusal_and_fee_savings_cents: int
+    reason_code: str
+    latency_ms: int
+    action_pill: str
+
+
+def evaluate_agentic_cross_border_ddp_customs_policy(
+    *,
+    gross_ddp_batch_cents: int = 61000000,
+    customs_declared_equals_net_paid_and_zero_split_evasion_verified: bool = True,
+    eu_ioss_150eur_encrypted_h7_and_us_10digit_htsus_valid: bool = True,
+    webiq_taric_antidumping_and_cbp_pga_clearance_clean: bool = True,
+    ddp_ioss_carrier_fee_and_zero_refusal_savings_cents: int = 0,
+) -> AgenticCrossBorderDdpCustomsVerdict:
+    # 1. Customs Invoice Undervaluation ($200 -> $15) or Same-Day $800 Order-Split Evasion -> HTTP 403
+    if not customs_declared_equals_net_paid_and_zero_split_evasion_verified:
+        return AgenticCrossBorderDdpCustomsVerdict(
+            False,
+            403,
+            "CUSTOMS_UNDERVALUATION_OR_SPLIT_EVASION_BLOCKED",
+            0,
+            0,
+            "cross_border_manifest_blocked_due_to_invoice_undervaluation_or_same_day_800usd_split_evasion",
+            11,
+            "Send to a human",
+        )
+
+    # 2. EU >€150 Misrouted to IOSS (Double VAT), Plain-Text IOSS Label, or Missing 10-Digit HTSUS -> HTTP 422
+    if not eu_ioss_150eur_encrypted_h7_and_us_10digit_htsus_valid:
+        return AgenticCrossBorderDdpCustomsVerdict(
+            False,
+            422,
+            "IOSS_150EUR_BREACH_OR_MISSING_10DIGIT_HTSUS",
+            0,
+            0,
+            "customs_declaration_rejected_for_eu_ioss_over_150eur_or_missing_10digit_htsus_code",
+            14,
+            "Send to a human",
+        )
+
+    # 3. EU TARIC Anti-Dumping Duty or US CBP FDA/FCC PGA Hold via Web IQ -> HTTP 451
+    if not webiq_taric_antidumping_and_cbp_pga_clearance_clean:
+        return AgenticCrossBorderDdpCustomsVerdict(
+            False,
+            451,
+            "TARIC_ANTIDUMPING_OR_CBP_PGA_COMPLIANCE_HOLD",
+            0,
+            0,
+            "webiq_detected_eu_taric_antidumping_duty_or_missing_us_cbp_pga_fda_clearance",
+            280,
+            "Send to a human",
+        )
+
+    # 4. Microsoft Web IQ Full DDP + Encrypted H7 IOSS Eliminating €15 Carrier Fees & 28% Refusals -> HTTP 409 Confirm
+    if ddp_ioss_carrier_fee_and_zero_refusal_savings_cents > 0:
+        return AgenticCrossBorderDdpCustomsVerdict(
+            False,
+            409,
+            "DDP_IOSS_LANDED_COST_AND_ZERO_REFUSAL_SAVINGS_CONFIRM",
+            gross_ddp_batch_cents - ddp_ioss_carrier_fee_and_zero_refusal_savings_cents,
+            ddp_ioss_carrier_fee_and_zero_refusal_savings_cents,
+            "webiq_enabled_ddp_ioss_h7_and_type86_pre_clearance_saving_42700_usd",
+            245,
+            "Confirm",
+        )
+
+    # 5. Verified 1:1 Valuation Lock + Exact €150 IOSS Split + 10-Digit HTSUS -> Settled
+    return AgenticCrossBorderDdpCustomsVerdict(
+        True,
+        200,
+        "VERIFIED_CROSS_BORDER_DDP_CUSTOMS_SETTLED",
+        gross_ddp_batch_cents,
+        0,
+        "cross_border_ddp_1to1_valuation_eu_ioss_h7_and_us_type86_10digit_htsus_verified",
+        10,
+        "Act automatically",
+    )
+
+
 
 
 
@@ -29307,6 +29397,37 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hard_decline_mac03_retry_block_latency_ms": psp_mac_403.latency_ms,
     }
 
+    # Round 203 (Agentic Cross-Border DDP, EU IOSS <=€150 & US CBP Type 86 Mandate)
+    ddp_commit_ok = evaluate_agentic_cross_border_ddp_customs_policy()
+    ddp_val_403 = evaluate_agentic_cross_border_ddp_customs_policy(
+        customs_declared_equals_net_paid_and_zero_split_evasion_verified=False,
+    )
+    ddp_ios_422 = evaluate_agentic_cross_border_ddp_customs_policy(
+        eu_ioss_150eur_encrypted_h7_and_us_10digit_htsus_valid=False,
+    )
+    ddp_pga_451 = evaluate_agentic_cross_border_ddp_customs_policy(
+        webiq_taric_antidumping_and_cbp_pga_clearance_clean=False,
+    )
+    ddp_sav_409 = evaluate_agentic_cross_border_ddp_customs_policy(
+        ddp_ioss_carrier_fee_and_zero_refusal_savings_cents=4270000,
+    )
+    agentic_cross_border_ddp_customs_guards = {
+        "all_passed": (
+            ddp_commit_ok.allowed
+            and ddp_commit_ok.settled_ddp_batch_cents == 61000000
+            and not ddp_val_403.allowed
+            and ddp_val_403.http_status == 403
+            and not ddp_ios_422.allowed
+            and ddp_ios_422.http_status == 422
+            and not ddp_pga_451.allowed
+            and ddp_pga_451.http_status == 451
+            and not ddp_sav_409.allowed
+            and ddp_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_cross_border_ddp_customs_settlement_latency_ms": ddp_commit_ok.latency_ms,
+        "customs_undervaluation_block_latency_ms": ddp_val_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29522,6 +29643,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_bnpl_installment_mdr_guards": agentic_bnpl_installment_mdr_guards,
         "b2b_ers_self_billing_guards": b2b_ers_self_billing_guards,
         "agentic_multi_psp_smart_routing_guards": agentic_multi_psp_smart_routing_guards,
+        "agentic_cross_border_ddp_customs_guards": agentic_cross_border_ddp_customs_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36075,6 +36197,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="psp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Cross-Border DDP, EU IOSS & US CBP Type 86 Customs Sandbox (Round 203 FAQ Companion) -->
+      <div class="finops-box" id="agentic-cross-border-ddp-customs-sandbox" style="margin-top:12px;border-color:#2563EB;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ddp-title">✈️ 智能体跨境直邮完税交货 (DDP) 与数字化清关：欧盟 IOSS (≤€150) 加密 H7 绑定与美国 CBP Type 86 10位 HTSUS 令牌 (agentic_cross_border_ddp_ioss_customs_mandate_...) vs DDU 门口拒收与低报扣关决策器 (Round 203 FAQ Companion)</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 跨境直邮完税交货批次 ($610,000.00)、报关单与支付流水 1:1 金额锚定、欧盟 IOSS €150 净值分流与美国 CBP Type 86 10位 HTSUS 核验场景 (Cross-Border DDP &amp; Customs Scenario):</span></label>
+          <select id="ddp-select" onchange="updateAgenticCrossBorderDdpCustomsSandbox()">
+            <option value="ddp_commit_ok">⚡ 报关价 1:1 锚定支付流水 + 欧盟 €150 IOSS/商业 DDP 精确分流 + 美国 10位 HTSUS 完整：10ms 预清关放行 $610,000.00! (Act automatically)</option>
+            <option value="ddp_val_403">🛑 物流 Agent 企图将 $200 羊绒大衣低报为 $15 聚酯样品逃税，或将 $1,200 订单拆成两单同日发运规避美国 $800 免税上限 (违反 19 U.S.C. § 1592) 拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ddp_ios_422">🚨 欧盟内在货值 &gt;€150.00 订单误挂 IOSS 导致消费者被双重征税，或将 IOSS 税号明文印在纸箱外标签及缺失 10位 HTSUS 编码拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ddp_pga_451">🛑 商品命中欧盟 TARIC 反倾销税/美国 Section 301 附加税未预收，或美妆/太阳镜缺失美国 FDA 产品准入编码：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ddp_sav_409">🧑‍⚖️ Web IQ 启用全链路 DDP 完税交货与 H7 加密 IOSS 直通，免除 €15/单快递代垫费并消除 28% 门口补税拒收弃件立省 $42,700.00 (净成本 $567,300.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ddp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -36716,6 +36856,7 @@ function renderAll() {{
   updateAgenticBnplInstallmentMdrSandbox();
   updateB2bErsSelfBillingSandbox();
   updateAgenticMultiPspSmartRoutingSandbox();
+  updateAgenticCrossBorderDdpCustomsSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -46915,6 +47056,55 @@ function updateAgenticMultiPspSmartRoutingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚡ 8位 BIN 本地收单对齐 + 零硬拒付重试 + 0400 冲正闭环通过：已自动清算 (VERIFIED_MULTI_PSP_SMART_ROUTING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1.5% 跨境卡组罚金、零 MAC 03 违规重试罚款与超时双倍扣款风险</strong>：全球多 PSP 智能路由批次已以 94.5% 本土高通过率完成清算（<code>$840,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticCrossBorderDdpCustomsSandbox() {{
+  var selEl = document.getElementById("ddp-select");
+  var outEl = document.getElementById("ddp-readout");
+  if (!selEl || !outEl) return;
+
+  var v = selEl.value;
+  if (v === "ddp_val_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CUSTOMS_UNDERVALUATION_OR_SPLIT_EVASION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "海关估价与反走私门禁检出，报关 Agent <code>企图将实付 $200 的商品在报关单上低报为 $15 样品（阴阳发票），或将 $1,200 订单拆分为同一收件人同日入境的两个 $600 包裹规避美国 Section 321 $800 免税上限（违反 19 U.S.C. § 1592 海关法，面临整柜没收与 4 倍罚款）</code>（<code>customs_declared_equals_net_paid_and_zero_split_evasion_verified == False</code>）。网关在 <code>11ms</code> 内硬阻断！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ddp_ios_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 IOSS_150EUR_BREACH_OR_MISSING_10DIGIT_HTSUS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "跨境电子报关状态机检出 <code>欧盟包裹商品内在货值超过 €150.00 却仍挂靠 IOSS 通道（将导致边境海关作废 IOSS 并向消费者二次征收关税+VAT），或将 IOSS 税号明文印在纸箱面单上、缺失美国 CBP Type 86 必填的 10 位 HTSUS 税则号</code>（<code>eu_ioss_150eur_encrypted_h7_and_us_10digit_htsus_valid == False</code>）。网关在 <code>14ms</code> 内拦截！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ddp_pga_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FCA5A5;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 TARIC_ANTIDUMPING_OR_CBP_PGA_COMPLIANCE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>欧盟 TARIC 关税库与美国 USITC HTSUS / CBP PGA 合作政府机构准入规程</code>，检出商品涉及反倾销附加税或缺失 FDA/CPSC 准入编号，立即冻结发运！" +
+      "</div>";
+    return;
+  }}
+
+  if (v === "ddp_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 DDP_IOSS_LANDED_COST_AND_ZERO_REFUSAL_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>结账端全链路 DDP 完税交货 + 欧盟 H7 加密 IOSS / 美国 Type 86 航班落地前预清关（免除 €15/单承运商代垫手续费并彻底消除 28% 门口补税拒收退件）</code>，单批立省 <code>$42,700.00</code>（净成本降至 <code>$567,300.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ 报关价 1:1 支付锚定 + 欧盟 €150 H7 分流 + 美国 10位 HTSUS 通过：已自动预清关 (VERIFIED_CROSS_BORDER_DDP_CUSTOMS_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 DDU 门口补税拒收、零 IOSS 双重征税与海关低报扣货风险</strong>：跨境直邮 DDP 清关批次已完成预放行清算（<code>$610,000.00</code>）！" +
     "</div>";
 }}
 
