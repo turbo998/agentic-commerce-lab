@@ -16367,6 +16367,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-railcar-fleet-aar-running-repair-sandbox", demo_zh)
 
+    def test_agentic_fertility_ivf_cryostorage_pgta_vs_cancellation_biopsy_surprise_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_fertility_ivf_cryostorage_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 4-stage CPT milestone + 5+5 Split-Fill Rx + -196C dual-sensor LN2 telemetry -> 200 OK ($560,000.00)
+        ok_res = evaluate_agentic_fertility_ivf_cryostorage_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_FERTILITY_IVF_CRYOSTORAGE_SETTLED")
+        self.assertEqual(ok_res.settled_fertility_ivf_batch_cents, 56000000)
+
+        # 2. Premature Day-5 cycle cancellation retaining 100% full-cycle fee or unescrowed refund pool -> 403 Blocked
+        can_403 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+            stage_prorated_cpt_milestone_and_shared_risk_refund_escrow_verified=False,
+        )
+        self.assertFalse(can_403.allowed)
+        self.assertEqual(can_403.http_status, 403)
+        self.assertEqual(
+            can_403.decision_code,
+            "PREMATURE_IVF_CYCLE_CANCELLATION_FULL_FEE_RETENTION_OR_ESCROW_BREACH_BLOCKED",
+        )
+
+        # 3. Day-6 unbundled $800/embryo PGT-A biopsy surprise or Day-1 bulk 12-day gonadotropin waste -> 422 Blocked
+        pgt_422 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+            capped_pgta_cohort_and_split_fill_gonadotropin_dispensing_verified=False,
+        )
+        self.assertFalse(pgt_422.allowed)
+        self.assertEqual(pgt_422.http_status, 422)
+        self.assertEqual(
+            pgt_422.decision_code,
+            "UNBUNDLED_PER_EMBRYO_PGTA_BIOPSY_SURPRISE_OR_EXCESS_GONADOTROPIN_WASTE",
+        )
+
+        # 4. -196C LN2 dewar dual-sensor telemetry gap or evergreen billing after disposition directive -> 451 Hold
+        ln2_451 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+            webiq_ln2_dewar_dual_sensor_telemetry_and_annual_consent_clean=False,
+        )
+        self.assertFalse(ln2_451.allowed)
+        self.assertEqual(ln2_451.http_status, 451)
+
+        # 5. Web IQ automated 5+5 Split-Fill gonadotropin & 0.25 Smart-Cycle pro-rata saving $44,800 ($515,200 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+            automated_split_fill_gonadotropin_and_smart_cycle_prorata_savings_cents=4480000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_fertility_ivf_batch_cents, 51520000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_fertility_ivf_cryostorage_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-fertility-ivf-cryostorage-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

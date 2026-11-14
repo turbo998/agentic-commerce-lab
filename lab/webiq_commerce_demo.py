@@ -27933,6 +27933,91 @@ def evaluate_b2b_railcar_fleet_aar_running_repair_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticFertilityIvfCryostorageDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_fertility_ivf_batch_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_fertility_ivf_cryostorage_policy(
+    *,
+    mandate_id: str = "agentic_fertility_ivf_cryostorage_pgta_bundled_cycle_refund_mandate_2026",
+    stage_prorated_cpt_milestone_and_shared_risk_refund_escrow_verified: bool = True,
+    capped_pgta_cohort_and_split_fill_gonadotropin_dispensing_verified: bool = True,
+    webiq_ln2_dewar_dual_sensor_telemetry_and_annual_consent_clean: bool = True,
+    automated_split_fill_gonadotropin_and_smart_cycle_prorata_savings_cents: int = 0,
+    fertility_ivf_batch_cents: int = 56000000,
+) -> AgenticFertilityIvfCryostorageDecision:
+    """Evaluate Agentic Fertility IVF Shared-Risk Bundled Refund, Split-Fill Rx & -196C LN2 Cryostorage policy."""
+    if not mandate_id.startswith("agentic_fertility_ivf_cryostorage_pgta_bundled_cycle_refund_mandate_"):
+        return AgenticFertilityIvfCryostorageDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_FERTILITY_IVF_CRYOSTORAGE_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_fertility_ivf_batch_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not stage_prorated_cpt_milestone_and_shared_risk_refund_escrow_verified:
+        return AgenticFertilityIvfCryostorageDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="PREMATURE_IVF_CYCLE_CANCELLATION_FULL_FEE_RETENTION_OR_ESCROW_BREACH_BLOCKED",
+            action_pill="Send to a human",
+            settled_fertility_ivf_batch_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not capped_pgta_cohort_and_split_fill_gonadotropin_dispensing_verified:
+        return AgenticFertilityIvfCryostorageDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNBUNDLED_PER_EMBRYO_PGTA_BIOPSY_SURPRISE_OR_EXCESS_GONADOTROPIN_WASTE",
+            action_pill="Send to a human",
+            settled_fertility_ivf_batch_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_ln2_dewar_dual_sensor_telemetry_and_annual_consent_clean:
+        return AgenticFertilityIvfCryostorageDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="LN2_CRYOSTORAGE_DEWAR_TELEMETRY_GAP_OR_UNCONSENTED_EVERGREEN_BILLING_HOLD",
+            action_pill="Send to a human",
+            settled_fertility_ivf_batch_cents=0,
+            latency_ms=280,
+            provenance="official_doc_snapshot",
+        )
+    if automated_split_fill_gonadotropin_and_smart_cycle_prorata_savings_cents > 0:
+        return AgenticFertilityIvfCryostorageDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SPLIT_FILL_GONADOTROPIN_AND_SMART_CYCLE_PRORATA_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_fertility_ivf_batch_cents=max(
+                0,
+                fertility_ivf_batch_cents - automated_split_fill_gonadotropin_and_smart_cycle_prorata_savings_cents,
+            ),
+            latency_ms=245,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticFertilityIvfCryostorageDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_FERTILITY_IVF_CRYOSTORAGE_SETTLED",
+        action_pill="Act automatically",
+        settled_fertility_ivf_batch_cents=fertility_ivf_batch_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -37096,6 +37181,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "opportunistic_wheel_swap_block_latency_ms": rlc_whl_403.latency_ms,
     }
 
+    ivf_commit_ok = evaluate_agentic_fertility_ivf_cryostorage_policy()
+    ivf_can_403 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+        stage_prorated_cpt_milestone_and_shared_risk_refund_escrow_verified=False,
+    )
+    ivf_pgt_422 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+        capped_pgta_cohort_and_split_fill_gonadotropin_dispensing_verified=False,
+    )
+    ivf_ln2_451 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+        webiq_ln2_dewar_dual_sensor_telemetry_and_annual_consent_clean=False,
+    )
+    ivf_sav_409 = evaluate_agentic_fertility_ivf_cryostorage_policy(
+        automated_split_fill_gonadotropin_and_smart_cycle_prorata_savings_cents=4480000,
+    )
+    agentic_fertility_ivf_cryostorage_guards = {
+        "all_passed": (
+            ivf_commit_ok.allowed
+            and ivf_commit_ok.settled_fertility_ivf_batch_cents == 56000000
+            and not ivf_can_403.allowed
+            and ivf_can_403.http_status == 403
+            and not ivf_pgt_422.allowed
+            and ivf_pgt_422.http_status == 422
+            and not ivf_ln2_451.allowed
+            and ivf_ln2_451.http_status == 451
+            and not ivf_sav_409.allowed
+            and ivf_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_fertility_ivf_settlement_latency_ms": ivf_commit_ok.latency_ms,
+        "premature_cancellation_retention_block_latency_ms": ivf_can_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37378,6 +37493,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_concert_tour_promoter_settlement_guards": agentic_concert_tour_promoter_settlement_guards,
         "b2b_utility_solar_epc_flash_test_guards": b2b_utility_solar_epc_flash_test_guards,
         "b2b_railcar_fleet_aar_running_repair_guards": b2b_railcar_fleet_aar_running_repair_guards,
+        "agentic_fertility_ivf_cryostorage_guards": agentic_fertility_ivf_cryostorage_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -45137,6 +45253,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="rlc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Fertility IVF Shared-Risk Refund, Split-Fill Rx & -196C LN2 Cryostorage Sandbox -->
+      <div class="finops-box" id="agentic-fertility-ivf-cryostorage-sandbox" style="margin-top:12px;border-color:#F472B6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧬 智能体辅助生殖与胚胎冷链托管 (IVF &amp; Cryostorage)：四阶段 CPT 里程碑锁、促排针 Split-Fill 与 -196°C 液氮遥测 (`agentic_fertility_ivf_cryostorage_pgta_bundled_cycle_refund_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 辅助生殖与胚胎液氮存储批次 ($560,000.00)、Smart Cycle 临床阶段折算、促排药 5+5天 Split-Fill 与 -196°C 杜瓦罐双路遥测场景 (Fertility IVF &amp; Cryo Scenario):</span></label>
+          <select id="ivf-select" onchange="updateAgenticFertilityIvfCryostorageSandbox()">
+            <option value="ivf_commit_ok">🧬 四阶段 CPT 里程碑与活产退费托管吻合 + 5+5天 Split-Fill 配药 + -196°C 双路液氮遥测达标：10ms 清算 $560,000.00! (Act automatically)</option>
+            <option value="ivf_can_403">🛑 促排卵第 5 天因卵泡反应不佳取消周期 (未进手术室取卵 CPT 58970)，诊所却强扣 100% 全周期费或挪用未活产包退托管金 → 11ms 触发 HTTP 403!</option>
+            <option value="ivf_pgt_422">🚨 养囊第 6 天趁胚胎急需冷冻时按颗乱收 $800/颗 PGT-A 激光活检加价，或药房首日一次性寄出 12 天满量冷藏促排针致 $4.5k 药报废 → 14ms 触发 HTTP 422!</option>
+            <option value="ivf_ln2_451">🛑 -196°C 胚胎杜瓦罐缺失 CAP 双路温度+液位重量秤遥测，或对已签署转出/终止保存指令的家庭继续自动扣年费：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ivf_sav_409">🧑‍⚖️ Web IQ 启用促排针 5+5 天 Split-Fill 按卵泡进度分批冷链发货并将中途取消周期按 0.25 Smart Cycle 折算立省 $44,800.00 (净付 $515,200.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ivf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -45845,6 +45979,7 @@ function renderAll() {{
   updateAgenticConcertTourPromoterSettlementSandbox();
   updateB2bUtilitySolarEpcFlashTestSandbox();
   updateB2bRailcarFleetAarRunningRepairSandbox();
+  updateAgenticFertilityIvfCryostorageSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -59174,6 +59309,52 @@ function updateB2bRailcarFleetAarRunningRepairSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🚂 轨边 WILD&gt;=90 kips 换轮达标 + $1,950 旧轮车削残值足额回抵 + RIC 6007 空重均衡合规：已自动清算 (VERIFIED_RAILCAR_FLEET_AAR_RUNNING_REPAIR_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零机会主义强换好轮按废铁抵扣、零铁路驼峰调车撞坏甩锅与空驶超 105% 罚款</strong>：B2B 自备铁路货车车队租赁与 AAR 维保批次已完成安全清算（<code>$760,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticFertilityIvfCryostorageSandbox() {{
+  var sel = document.getElementById("ivf-select");
+  var outEl = document.getElementById("ivf-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ivf_can_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PREMATURE_IVF_CYCLE_CANCELLATION_FULL_FEE_RETENTION_OR_ESCROW_BREACH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "患者在促排卵第 5 天因卵泡反应不佳取消周期（尚未执行手术室取卵 <code>CPT 58970</code> 与胚胎实验室 <code>ICSI / 养囊 CPT 89280</code>），生殖中心却企图全额吞没 <code>$22,000</code> 整周期预付款（或扣满 <code>1.0 Smart Cycle</code> 企业福利额度而非按规折算为 <code>0.25 监测档</code>），或未将“未活产包退套餐”本金存入独立破产隔离托管户！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }}
+  if (v === "ivf_pgt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNBUNDLED_PER_EMBRYO_PGTA_BIOPSY_SURPRISE_OR_EXCESS_GONADOTROPIN_WASTE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "囊胚培养第 6 天急需玻璃化冷冻时，诊所违反封顶包干协议临时按颗加收 <code>$450/颗 滋养层激光活检费 (CPT 89290) + $350/颗 NGS 测序费</code>，或专科冷链药房未执行 <code>5+5 天 Split-Fill</code> 分批发货而在首日一次性强发 12 天满量促排卵针剂造成 <code>$4,500</code> 药品报废浪费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ivf_ln2_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LN2_CRYOSTORAGE_DEWAR_TELEMETRY_GAP_OR_UNCONSENTED_EVERGREEN_BILLING_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查发现：存放胚胎的 <code>-196°C</code> 液氮杜瓦罐缺失 <code>CAP 生殖实验室认证</code>强制要求的“双路物理隔离温度计 + 底部液氮重量电子秤”连续在线遥测，或对已签署《胚胎转出/终止保存知情同意书》的家庭继续自动扣收年度保管费，已在 280ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ivf_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SPLIT_FILL_GONADOTROPIN_AND_SMART_CYCLE_PRORATA_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>高值冷藏促排针 5+5 天卵泡触发分批发货 (Split-Fill) + 促排取消周期按 0.25 Smart Cycle 自动折算与 PGT-A 整批封顶</code>，单批立省 <code>$44,800.00</code>（净结算额优化至 <code>$515,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧬 四阶段 CPT 里程碑与退费托管吻合 + 5+5天 Split-Fill 配药 + -196°C 双路液氮遥测达标：已自动清算 (VERIFIED_FERTILITY_IVF_CRYOSTORAGE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零促排中途取消吞没全款、零养囊第 6 天按颗坐地起价与促排药整箱报废</strong>：智能体辅助生殖与胚胎液氮冷存批次已完成安全清算（<code>$560,000.00</code>）！" +
     "</div>";
 }}
 
