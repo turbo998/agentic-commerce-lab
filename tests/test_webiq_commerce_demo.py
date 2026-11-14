@@ -14351,6 +14351,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-tax-free-vat-refund-sandbox", demo_zh)
 
+    def test_agentic_music_aigc_royalty_ddex_isrc_iswc_antifarm_mandate_vs_stream_farming_pool_drain_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_music_aigc_royalty_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Organic skip-time entropy + ISRC/ISWC dual split + <=100% conserved ($470,000.00) -> 200 OK
+        commit_ok = evaluate_agentic_music_aigc_royalty_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_royalty_batch_cents, 47000000)
+
+        # 2. 31-second bot stream-farming cluster or pirated audio fingerprint -> 403 Blocked
+        bot_403 = evaluate_agentic_music_aigc_royalty_policy(
+            organic_skip_entropy_and_fingerprint_clean_verified=False,
+        )
+        self.assertFalse(bot_403.allowed)
+        self.assertEqual(bot_403.http_status, 403)
+        self.assertEqual(
+            bot_403.decision_code,
+            "BOT_31SEC_STREAM_FARMING_OR_AUDIO_FINGERPRINT_PIRACY_BLOCKED",
+        )
+
+        # 3. Omitted ISWC mechanical royalty (17 U.S.C. § 115) or >100% split conflict -> 422 Blocked
+        spn_422 = evaluate_agentic_music_aigc_royalty_policy(
+            isrc_iswc_dual_split_and_le_100pct_conserved_verified=False,
+        )
+        self.assertFalse(spn_422.allowed)
+        self.assertEqual(spn_422.http_status, 422)
+        self.assertEqual(
+            spn_422.decision_code,
+            "ISWC_MECHANICAL_ROYALTY_OMITTED_OR_OVER_100PCT_SPLIT_CONFLICT",
+        )
+
+        # 4. Unauthored pure-AI copyright claim or CRB 37 CFR Part 385 rate breach -> 451 Hold
+        usc_451 = evaluate_agentic_music_aigc_royalty_policy(
+            webiq_usco_human_authorship_and_crb_rate_clean=False,
+        )
+        self.assertFalse(usc_451.allowed)
+        self.assertEqual(usc_451.http_status, 451)
+
+        # 5. Web IQ purifies pool from bot streams & automates DDEX/MLC clearing saving $37,600 ($432,400 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_music_aigc_royalty_policy(
+            anti_farm_pool_purification_and_ddex_savings_cents=3760000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_royalty_batch_cents, 43240000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_music_aigc_royalty_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-music-aigc-royalty-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

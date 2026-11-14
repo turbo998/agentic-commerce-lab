@@ -1250,6 +1250,11 @@
     "agentic_tax_free_vat_refund_settlement_latency_ms": 10,
     "domestic_diversion_forged_stamp_block_latency_ms": 11
   },
+  "agentic_music_aigc_royalty_guards": {
+    "all_passed": true,
+    "agentic_music_aigc_royalty_settlement_latency_ms": 10,
+    "bot_stream_farming_piracy_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
