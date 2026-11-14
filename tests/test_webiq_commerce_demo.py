@@ -13481,6 +13481,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-airline-ndc-adm-sandbox", demo_zh)
 
+    def test_b2b_agritech_grain_ewr_moisture_dockage_paca_trust_mandate_vs_wet_shrink_elevator_insolvency_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_agritech_grain_ewr_paca_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Lien-free USWA EWR + PACA <=30d trust + exact NTEP moisture shrink ($820,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_agritech_grain_ewr_paca_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_agritech_batch_cents, 82000000)
+
+        # 2. Missing central USWA EWR or PACA terms >30 days -> 403 Blocked
+        ewr_403 = evaluate_b2b_agritech_grain_ewr_paca_policy(
+            uswa_ewr_lien_free_and_paca_le_30d_verified=False,
+        )
+        self.assertFalse(ewr_403.allowed)
+        self.assertEqual(ewr_403.http_status, 403)
+        self.assertEqual(
+            ewr_403.decision_code,
+            "UNENCUMBERED_EWR_MISSING_OR_PACA_OVER_30D_TRUST_VOID_BLOCKED",
+        )
+
+        # 3. Unadjusted wet-grain moisture shrink or Aflatoxin >=20 ppb -> 422 Blocked
+        shr_422 = evaluate_b2b_agritech_grain_ewr_paca_policy(
+            ntep_moisture_shrink_and_aflatoxin_safe_verified=False,
+        )
+        self.assertFalse(shr_422.allowed)
+        self.assertEqual(shr_422.http_status, 422)
+        self.assertEqual(
+            shr_422.decision_code,
+            "WET_GRAIN_MOISTURE_SHRINK_UNADJUSTED_OR_AFLATOXIN_EXCEEDED",
+        )
+
+        # 4. Suspended USDA PACA license or unreleased state EFS ag lien -> 451 Hold
+        lic_451 = evaluate_b2b_agritech_grain_ewr_paca_policy(
+            webiq_paca_license_and_state_efs_lien_clean=False,
+        )
+        self.assertFalse(lic_451.allowed)
+        self.assertEqual(lic_451.http_status, 451)
+
+        # 5. Web IQ enforces moisture-shrink deduction & direct EWR clearing saving $65,600 ($754,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_agritech_grain_ewr_paca_policy(
+            moisture_shrink_deduction_and_ewr_direct_savings_cents=6560000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_agritech_batch_cents, 75440000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_agritech_grain_ewr_paca_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-agritech-grain-ewr-paca-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
