@@ -11799,6 +11799,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-3ds2-fido2-spc-sandbox", demo_zh)
 
+    def test_b2b_supply_chain_finance_dynamic_discounting_reverse_factoring_mandate_vs_double_pledge_invoice_fraud_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_scf_dynamic_discount_policy,
+        )
+
+        # 1. Verified 3-way match UUID + zero double-pledge + sliding APR >=18% + 15% holdback -> 200 OK ($650,000)
+        commit_ok = evaluate_b2b_scf_dynamic_discount_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_scf_ap_cents, 65000000)
+
+        # 2. Double-pledge invoice fraud or missing warehouse GRN -> 403 blocked in 11ms
+        plg_403 = evaluate_b2b_scf_dynamic_discount_policy(
+            three_way_match_einvoice_uuid_and_zero_double_pledge_verified=False,
+        )
+        self.assertFalse(plg_403.allowed)
+        self.assertEqual(plg_403.http_status, 403)
+        self.assertEqual(
+            plg_403.scf_discount_lane,
+            "DOUBLE_PLEDGE_INVOICE_FRAUD_OR_UNVERIFIED_GRN_BLOCKED",
+        )
+
+        # 3. Negative treasury carry (APR <18%) or 100% unconditional IPU without 15% holdback -> 422 blocked in 14ms
+        apr_422 = evaluate_b2b_scf_dynamic_discount_policy(
+            sliding_scale_apr_above_hurdle_and_15pct_holdback_passed=False,
+        )
+        self.assertFalse(apr_422.allowed)
+        self.assertEqual(apr_422.http_status, 422)
+        self.assertEqual(
+            apr_422.scf_discount_lane,
+            "NEGATIVE_TREASURY_CARRY_APR_OR_ZERO_HOLDBACK_BLOCKED",
+        )
+
+        # 4. Web IQ detects tax red-letter invoice reversal or supplier insolvency -> 451 blocked in 280ms
+        red_451 = evaluate_b2b_scf_dynamic_discount_policy(
+            webiq_tax_red_letter_lock_and_supplier_solvency_clean=False,
+        )
+        self.assertFalse(red_451.allowed)
+        self.assertEqual(red_451.http_status, 451)
+
+        # 5. Web IQ credits Day-12 sliding dynamic discount & ESG SCF rebate saving $58,500 ($591,500 net) -> 409 Confirm
+        reb_409 = evaluate_b2b_scf_dynamic_discount_policy(
+            sliding_early_pay_discount_and_reverse_factoring_rebate_cents=5850000,
+        )
+        self.assertFalse(reb_409.allowed)
+        self.assertEqual(reb_409.http_status, 409)
+        self.assertEqual(reb_409.settled_scf_ap_cents, 59150000)
+        self.assertEqual(reb_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_scf_dynamic_discount_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-scf-dynamic-discount-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
