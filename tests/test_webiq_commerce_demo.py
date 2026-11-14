@@ -16652,6 +16652,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-home-warranty-hvac-dispatch-sandbox", demo_zh)
 
+    def test_b2b_hospital_locum_travel_nurse_vms_emr_vs_phantom_callback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_locum_travel_nurse_vms_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant shift-date Nursys/NPDB/OIG + EMR-verified call-backs & $0 orientation + IRS tax home -> 200 OK ($720,000.00)
+        ok_res = evaluate_b2b_hospital_locum_travel_nurse_vms_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOSPITAL_LOCUM_TRAVEL_NURSE_VMS_SETTLED")
+        self.assertEqual(ok_res.settled_hospital_vms_staffing_cents, 72000000)
+
+        # 2. Suspended Nursys license, OIG LEIE exclusion, or unprivileged ICU float on shift date -> 403 Blocked
+        lic_403 = evaluate_b2b_hospital_locum_travel_nurse_vms_policy(
+            active_nursys_npdb_oig_credential_and_unit_privilege_on_shift_date_verified=False,
+        )
+        self.assertFalse(lic_403.allowed)
+        self.assertEqual(lic_403.http_status, 403)
+        self.assertEqual(
+            lic_403.decision_code,
+            "SANCTIONED_NPDB_NURSYS_CREDENTIAL_OR_UNPRIVILEGED_ICU_OR_FLOAT_BLOCKED",
+        )
+
+        # 3. Phantom On-Call Call-Back ($420/h) without Epic EMR log or billed hospital orientation hours -> 422 Blocked
+        emr_422 = evaluate_b2b_hospital_locum_travel_nurse_vms_policy(
+            on_call_callback_matches_emr_log_and_zero_billed_orientation_hours_verified=False,
+        )
+        self.assertFalse(emr_422.allowed)
+        self.assertEqual(emr_422.http_status, 422)
+        self.assertEqual(
+            emr_422.decision_code,
+            "PHANTOM_ON_CALL_CALLBACK_WITHOUT_EMR_LOG_OR_BILLED_ORIENTATION_HOURS",
+        )
+
+        # 4. Local nurse (<50 miles) claiming tax-free GSA stipend or tenure >12 months (IRS Pub 463) -> 451 Hold
+        irs_451 = evaluate_b2b_hospital_locum_travel_nurse_vms_policy(
+            webiq_irs_50mile_tax_home_and_within_12month_tenure_stipend_clean=False,
+        )
+        self.assertFalse(irs_451.allowed)
+        self.assertEqual(irs_451.http_status, 451)
+
+        # 5. Web IQ automated Epic EMR shift reconciliation & orientation strip saving $57,600 ($662,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_locum_travel_nurse_vms_policy(
+            automated_emr_shift_reconciliation_and_orientation_dedup_savings_cents=5760000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_vms_staffing_cents, 66240000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_locum_travel_nurse_vms_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-locum-travel-nurse-vms-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
