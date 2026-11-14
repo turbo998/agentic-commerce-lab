@@ -13143,6 +13143,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-esim-iot-sgp32-roaming-sandbox", demo_zh)
 
+    def test_agentic_age_restricted_mdl_iso18013_zkp_adult_signature_mandate_vs_self_attestation_id_leak_fine_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_age_restricted_mdl_policy,
+        )
+
+        # 1. Verified ISO 18013-5 mDL age_over_21 + 0-byte PII + ASR 21+ + Wet state -> 200 OK ($410,000)
+        commit_ok = evaluate_agentic_age_restricted_mdl_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_age_restricted_batch_cents, 41000000)
+
+        # 2. Unverified checkbox self-attestation or storing raw ID JPEGs -> 403 blocked in 11ms
+        slf_403 = evaluate_agentic_age_restricted_mdl_policy(
+            iso18013_mdl_age_over_21_and_zero_raw_id_pii_storage_verified=False,
+        )
+        self.assertFalse(slf_403.allowed)
+        self.assertEqual(slf_403.http_status, 403)
+        self.assertEqual(
+            slf_403.age_restricted_lane,
+            "SELF_ATTESTATION_ILLEGAL_OR_RAW_ID_PII_STORAGE_BLOCKED",
+        )
+
+        # 3. Missing carrier ASR 21+ adult signature or unattended locker/P.O. Box -> 422 blocked in 14ms
+        asr_422 = evaluate_agentic_age_restricted_mdl_policy(
+            carrier_asr21_adult_signature_and_no_locker_pobox_locked=False,
+        )
+        self.assertFalse(asr_422.allowed)
+        self.assertEqual(asr_422.http_status, 422)
+        self.assertEqual(
+            asr_422.age_restricted_lane,
+            "MISSING_CARRIER_ASR21_OR_UNATTENDED_LOCKER_REJECTED",
+        )
+
+        # 4. Web IQ detects prohibited Dry State (UT/MS/DE) or gallonage quota breach -> 451 blocked in 280ms
+        dry_451 = evaluate_agentic_age_restricted_mdl_policy(
+            webiq_wet_state_zip4_permit_and_gallonage_quota_clean=False,
+        )
+        self.assertFalse(dry_451.allowed)
+        self.assertEqual(dry_451.http_status, 451)
+
+        # 5. Web IQ enables 1-tap mDL ZKP saving $32,800 ($377,200 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_age_restricted_mdl_policy(
+            w3c_mdl_conversion_lift_and_ocr_fee_avoidance_savings_cents=3280000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_age_restricted_batch_cents, 37720000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_age_restricted_mdl_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-age-restricted-mdl-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

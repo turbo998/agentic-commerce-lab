@@ -1145,6 +1145,11 @@
     "agentic_esim_iot_sgp32_roaming_settlement_latency_ms": 10,
     "simbox_imei_mismatch_block_latency_ms": 11
   },
+  "agentic_age_restricted_mdl_guards": {
+    "all_passed": true,
+    "agentic_age_restricted_mdl_settlement_latency_ms": 10,
+    "checkbox_or_raw_id_pii_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
