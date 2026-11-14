@@ -15626,6 +15626,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-pharma-wholesale-chargeback-sandbox", demo_zh)
 
+    def test_b2b_construction_aia_g702_g703_retainage_lien_waiver_vs_front_loading_double_lien_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_construction_aia_g702_lien_waiver_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant subcontractor unconditional/conditional lien waivers + LiDAR/BIM match + 10% retainage -> 200 OK ($740,000.00)
+        ok_res = evaluate_b2b_construction_aia_g702_lien_waiver_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CONSTRUCTION_AIA_G702_LIEN_WAIVER_SETTLED")
+        self.assertEqual(ok_res.settled_construction_draw_batch_cents, 74000000)
+
+        # 2. Missing Tier-2 subcontractor unconditional mechanic's lien waiver from prior draw -> 403 Blocked
+        lnw_403 = evaluate_b2b_construction_aia_g702_lien_waiver_policy(
+            all_preliminary_notice_subs_unconditional_and_conditional_lien_waivers_verified=False,
+        )
+        self.assertFalse(lnw_403.allowed)
+        self.assertEqual(lnw_403.http_status, 403)
+        self.assertEqual(
+            lnw_403.decision_code,
+            "SUBCONTRACTOR_UNCONDITIONAL_MECHANIC_LIEN_WAIVER_MISSING_BLOCKED",
+        )
+
+        # 3. Front-loaded AIA G703 SOV progress (65% claimed vs 38% LiDAR) or uninsured off-site gear -> 422 Blocked
+        sov_422 = evaluate_b2b_construction_aia_g702_lien_waiver_policy(
+            lidar_bim_physical_completion_matches_g703_sov_and_offsite_material_insured=False,
+        )
+        self.assertFalse(sov_422.allowed)
+        self.assertEqual(sov_422.http_status, 422)
+        self.assertEqual(
+            sov_422.decision_code,
+            "FRONT_LOADED_G703_SOV_PROGRESS_OR_UNINSURED_OFFSITE_MATERIAL",
+        )
+
+        # 4. Premature 10% retainage release prior to CO/punch-list completion or lapsed surety bond -> 451 Hold
+        ret_451 = evaluate_b2b_construction_aia_g702_lien_waiver_policy(
+            webiq_statutory_retainage_withheld_and_surety_bond_coi_active=False,
+        )
+        self.assertFalse(ret_451.allowed)
+        self.assertEqual(ret_451.http_status, 451)
+
+        # 5. Web IQ LiDAR/BIM SOV true-up & direct sub joint-check settlement saving $59,200 ($680,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_construction_aia_g702_lien_waiver_policy(
+            bim_point_cloud_sov_trueup_and_joint_check_direct_sub_savings_cents=5920000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_construction_draw_batch_cents, 68080000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_construction_aia_g702_lien_waiver_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-construction-aia-g702-lien-waiver-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
