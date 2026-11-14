@@ -14467,6 +14467,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-fleet-tolling-etc-sandbox", demo_zh)
 
+    def test_b2b_precious_battery_scrap_metal_assay_lme_antitheft_mandate_vs_adulterated_black_mass_stolen_cat_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_precious_battery_scrap_metal_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Homogenized ICP-OES/Fire Assay + NMVTIS VIN verified + dry LME formula ($780,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_precious_battery_scrap_metal_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_scrap_batch_cents, 78000000)
+
+        # 2. Handheld surface XRF salting fraud or stolen catalytic converter without VIN -> 403 Blocked
+        slt_403 = evaluate_b2b_precious_battery_scrap_metal_policy(
+            homogenized_icp_oes_and_nmvtis_vin_zero_cash_verified=False,
+        )
+        self.assertFalse(slt_403.allowed)
+        self.assertEqual(slt_403.http_status, 403)
+        self.assertEqual(
+            slt_403.decision_code,
+            "SURFACE_XRF_SALTING_FRAUD_OR_STOLEN_METAL_NO_VIN_BLOCKED",
+        )
+
+        # 3. Unadjusted moisture/impurity penalties or assay splitting limit breach -> 422 Blocked
+        moi_422 = evaluate_b2b_precious_battery_scrap_metal_policy(
+            moisture_impurity_deducted_and_split_limit_verified=False,
+        )
+        self.assertFalse(moi_422.allowed)
+        self.assertEqual(moi_422.http_status, 422)
+        self.assertEqual(
+            moi_422.decision_code,
+            "MOISTURE_IMPURITY_UNADJUSTED_OR_ASSAY_SPLITTING_LIMIT_BREACH",
+        )
+
+        # 4. EU hazardous black mass (19 12 11*) export ban or missing Basel PIC -> 451 Hold
+        bsl_451 = evaluate_b2b_precious_battery_scrap_metal_policy(
+            webiq_eu_19_12_11_black_mass_and_basel_pic_clean=False,
+        )
+        self.assertFalse(bsl_451.allowed)
+        self.assertEqual(bsl_451.http_status, 451)
+
+        # 5. Web IQ enforces 105°C dry moisture deduction & LME payable clearing saving $62,400 ($717,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_precious_battery_scrap_metal_policy(
+            dry_assay_moisture_deduction_and_lme_savings_cents=6240000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_scrap_batch_cents, 71760000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_precious_battery_scrap_metal_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-precious-battery-scrap-metal-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

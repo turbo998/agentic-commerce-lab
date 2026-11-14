@@ -1260,6 +1260,11 @@
     "agentic_fleet_tolling_etc_settlement_latency_ms": 10,
     "cloned_plate_smishing_block_latency_ms": 11
   },
+  "b2b_precious_battery_scrap_metal_guards": {
+    "all_passed": true,
+    "b2b_precious_battery_scrap_metal_settlement_latency_ms": 10,
+    "surface_xrf_salting_stolen_vin_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
