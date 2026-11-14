@@ -5076,6 +5076,24 @@
         <div id="scr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Fleet Fuel Cards (Visa Fleet 2.0 / WEX) & IFTA Tax Sandbox -->
+      <div class="finops-box" id="b2b-commercial-fleet-fuel-ifta-sandbox" style="margin-top:12px;border-color:#0EA5E9;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⛽ B2B 商用车队加油卡 (Fleet Fuel Card) 与智慧油站清分：SAE J1939 油箱液位守恒、150m 地理围栏与 IFTA 燃油税架构 (`b2b_commercial_fleet_fuel_card_j1939_tank_ifta_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商用车队加油卡与 IFTA 跨州燃油税结算批次 ($440,000.00)、本车 ELD 距油站 ≤150m 动态解锁、SAE J1939 油箱液位增量守恒 (±5%) 与 Level-3 公路柴油锁定场景 (Fleet Fuel &amp; IFTA Scenario):</span></label>
+          <select id="ful-select" onchange="updateB2bCommercialFleetFuelIftaSandbox()">
+            <option value="ful_commit_ok">⛽ 本车距油站 ≤150m + SAE J1939 液位增量误差 ≤5% + Level-3 仅含公路 ULSD/DEF + IFTA 跨州税分摊：10ms 清算 $440,000.00! (Act automatically)</option>
+            <option value="ful_sip_403">🛑 内鬼司机刷走 110 加仑但本车 J1939 油箱仅上升 55 加仑 (隔空递枪偷油给旁边黄牛皮卡)，或磁条被侧录在 800 公里外异地盗刷拦截 → 11ms 触发 HTTP 403!</option>
+            <option value="ful_dyed_422">🚨 司机在油站便利店刷油卡购买 $180 彩票香烟套现，或给公路货车违规加注免税农用染色红柴油 (违反 IRS 26 U.S.C. § 6715) 拦截 → 14ms 触发 HTTP 422!</option>
+            <option value="ful_ift_451">🛑 跨州行驶英里数与各州实购含税加仑数未按当季 IFTA 税率矩阵完成分摊申报或漏交州重量距离税 (KYU/NY HUT)：Web IQ /v3/browse 280ms 触发 HTTP 451!</option>
+            <option value="ful_sav_409">🧑‍⚖️ Web IQ 启用按扣除州税后的“净裸油价 (Ex-Tax Price)”智能导航加油并凭 J1939 空余容积锁消除偷油损耗立省 $35,200.00 (净结算 $404,800.00) → 245ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ful-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -5752,6 +5770,7 @@ function renderAll() {
   updateAgenticMusicAigcRoyaltySandbox();
   updateAgenticFleetTollingEtcSandbox();
   updateB2bPreciousBatteryScrapMetalSandbox();
+  updateB2bCommercialFleetFuelIftaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -17609,6 +17628,52 @@ function updateB2bPreciousBatteryScrapMetalSandbox() {
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>♻️ 球磨缩分 ICP-OES 化验闭合 + 17位 VIN 防盗核验 + LME 干基折算通过：已自动清算 (VERIFIED_PRECIOUS_BATTERY_SCRAP_METAL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零吨袋盖帽掺假骗款、零收购被盗三元催化器遭全炉没收与欧盟危废扣船风险</strong>：B2B 动力电池黑粉与贵金属回收批次已完成安全清算（<code>$780,000.00</code>）！" +
+    "</div>";
+}
+
+function updateB2bCommercialFleetFuelIftaSandbox() {
+  var sel = document.getElementById("ful-select");
+  var outEl = document.getElementById("ful-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ful_sip_403") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CLONED_CARD_GEOFENCE_MISMATCH_OR_J1939_TANK_SIPHON_THEFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "检测到加油机上报出油 <code>110.0 gal</code>，但车载 <code>SAE J1939 (PGN 65276)</code> 油箱液位仅上升 <code>55.0 gal</code>（系内鬼司机把油枪递给旁边黄牛车抽油套现 <code>Side-Stepping</code>），或刷卡油站距本车 <code>ELD/GPS</code> 超出 <code>150m</code> 围栏（异地克隆卡盗刷）！已在 11ms 内硬拦截。" +
+      "</div>";
+    return;
+  }
+  if (v === "ful_dyed_422") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 NON_FUEL_MERCHANDISE_LEAK_OR_ILLEGAL_DYED_DIESEL_HIGHWAY_USE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测到 <code>ISO 8583 Level-3 NACS</code> 商品代码混入非油品便利店杂货（香烟/彩票/预付卡套现），或公路重卡违规加注仅供农机使用的免税染色红柴油（违反 <code>IRS 26 U.S.C. &sect; 6715</code> 面临每车 <code>$1,000+</code> 罚款），已在 14ms 内硬阻断！" +
+      "</div>";
+    return;
+  }
+  if (v === "ful_ift_451") {
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 IFTA_QUARTERLY_TAX_APPORTIONMENT_OR_WEIGHT_DISTANCE_HOLD (280ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 检出车队跨州行驶里程（<code>ELD Miles</code>）与各州已缴燃油税加仑数未按当季《国际燃油税协定（<code>IFTA</code>）》58 辖区税率表完成多退少补清分，或漏报州重量距离税（<code>KYU / NY HUT</code>），已在 280ms 内触发合规冻结！" +
+      "</div>";
+    return;
+  }
+  if (v === "ful_sav_409") {
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 IFTA_EX_TAX_SMART_ROUTING_AND_J1939_ANTI_THEFT_SAVINGS_CONFIRM (245ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按扣除可抵扣州税后的净裸油价 (Pump Price - IFTA Tax) 智能导航加油 + SAE J1939 空余容积动态封顶防递枪偷油</code>，单批防损/立省 <code>$35,200.00</code>（净车队燃油采购结算额优化至 <code>$404,800.00</code>）！" +
+      "</div>";
+    return;
+  }
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⛽ 油站 ≤150m 围栏 + SAE J1939 液位守恒 + Level-3 ULSD/IFTA 通过：已自动清算 (VERIFIED_COMMERCIAL_FLEET_FUEL_IFTA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零隔空递枪偷油卖黄牛、零磁条克隆卡异地盗刷与低税州加油补税亏损</strong>：B2B 商用车队加油卡与 IFTA 燃油税批次已完成安全清算（<code>$440,000.00</code>）！" +
     "</div>";
 }
 

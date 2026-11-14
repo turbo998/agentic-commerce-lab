@@ -14525,6 +14525,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-precious-battery-scrap-metal-sandbox", demo_zh)
 
+    def test_b2b_commercial_fleet_fuel_card_j1939_tank_ifta_mandate_vs_fuel_skimming_sidestepping_theft_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_fleet_fuel_ifta_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. <=150m geofence + SAE J1939 tank volume parity + Level-3 ULSD/DEF + IFTA ($440,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_commercial_fleet_fuel_ifta_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_fuel_batch_cents, 44000000)
+
+        # 2. Cloned card outside 150m geofence or J1939 tank siphon theft (Side-Stepping) -> 403 Blocked
+        sip_403 = evaluate_b2b_commercial_fleet_fuel_ifta_policy(
+            geofence_150m_and_j1939_tank_volume_parity_verified=False,
+        )
+        self.assertFalse(sip_403.allowed)
+        self.assertEqual(sip_403.http_status, 403)
+        self.assertEqual(
+            sip_403.decision_code,
+            "CLONED_CARD_GEOFENCE_MISMATCH_OR_J1939_TANK_SIPHON_THEFT_BLOCKED",
+        )
+
+        # 3. Non-fuel C-store merchandise leak or illegal dyed diesel on highway -> 422 Blocked
+        dyed_422 = evaluate_b2b_commercial_fleet_fuel_ifta_policy(
+            level3_nacs_highway_ulsd_def_only_verified=False,
+        )
+        self.assertFalse(dyed_422.allowed)
+        self.assertEqual(dyed_422.http_status, 422)
+        self.assertEqual(
+            dyed_422.decision_code,
+            "NON_FUEL_MERCHANDISE_LEAK_OR_ILLEGAL_DYED_DIESEL_HIGHWAY_USE",
+        )
+
+        # 4. Unapportioned quarterly IFTA tax or missing weight-distance filing -> 451 Hold
+        ift_451 = evaluate_b2b_commercial_fleet_fuel_ifta_policy(
+            webiq_ifta_quarterly_tax_apportionment_clean=False,
+        )
+        self.assertFalse(ift_451.allowed)
+        self.assertEqual(ift_451.http_status, 451)
+
+        # 5. Web IQ enables IFTA Ex-Tax routing & J1939 anti-theft saving $35,200 ($404,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_fleet_fuel_ifta_policy(
+            ifta_ex_tax_routing_and_j1939_anti_theft_savings_cents=3520000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_fuel_batch_cents, 40480000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_fleet_fuel_ifta_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-fleet-fuel-ifta-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
