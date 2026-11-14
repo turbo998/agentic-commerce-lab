@@ -13945,6 +13945,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-event-ticketing-escrow-sandbox", demo_zh)
 
+    def test_b2b_cre_triple_net_cam_reconciliation_percentage_rent_mandate_vs_capex_passthrough_overcharge_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_cre_triple_net_cam_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Zero unamortized CapEx + <=5% controllable CAM cap + GLA locked + net Breakpoint ($590,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_cre_triple_net_cam_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cre_batch_cents, 59000000)
+
+        # 2. Unamortized roof CapEx dumped into OpEx CAM or >5% controllable cap breach -> 403 Blocked
+        cpx_403 = evaluate_b2b_cre_triple_net_cam_policy(
+            unamortized_capex_excluded_and_cam_cap_le_5pct_verified=False,
+        )
+        self.assertFalse(cpx_403.allowed)
+        self.assertEqual(cpx_403.http_status, 403)
+        self.assertEqual(
+            cpx_403.decision_code,
+            "UNAMORTIZED_CAPEX_PASSTHROUGH_OR_CONTROLLABLE_CAM_CAP_BREACH_BLOCKED",
+        )
+
+        # 3. Anchor/vacant sq ft removed from GLA denominator or sales tax/returns in Percentage Rent -> 422 Blocked
+        brk_422 = evaluate_b2b_cre_triple_net_cam_policy(
+            total_gla_denominator_locked_and_net_breakpoint_verified=False,
+        )
+        self.assertFalse(brk_422.allowed)
+        self.assertEqual(brk_422.http_status, 422)
+        self.assertEqual(
+            brk_422.decision_code,
+            "GLA_DENOMINATOR_SHRINK_OR_PERCENTAGE_RENT_TAX_RETURN_OVERCHARGE",
+        )
+
+        # 4. BOMA Z65.1/Z65.5 load-factor inflation or >100% Occupancy Gross-Up -> 451 Hold
+        bom_451 = evaluate_b2b_cre_triple_net_cam_policy(
+            webiq_boma_z65_load_factor_and_gross_up_le_100pct_clean=False,
+        )
+        self.assertFalse(bom_451.allowed)
+        self.assertEqual(bom_451.http_status, 451)
+
+        # 5. Web IQ disallows CapEx & strips taxes/returns before Breakpoint saving $47,200 ($542,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_cre_triple_net_cam_policy(
+            cam_capex_disallowance_and_breakpoint_savings_cents=4720000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cre_batch_cents, 54280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_cre_triple_net_cam_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cre-triple-net-cam-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
