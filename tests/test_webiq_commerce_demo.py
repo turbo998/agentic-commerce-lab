@@ -14177,6 +14177,64 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-clinical-trial-stipend-cro-sandbox", demo_zh)
 
+    def test_b2b_semiconductor_foundry_kgd_yield_wafer_map_e142_mandate_vs_bad_die_overpayment_ghost_shift_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_semiconductor_foundry_kgd_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. ATE HSM-signed SEMI E142 + 1:1 KMS eFuse + WAT/KGD corridor + Bin-1 CoWoS ($960,000.00) -> 200 OK
+        commit_ok = evaluate_b2b_semiconductor_foundry_kgd_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_semiconductor_batch_cents, 96000000)
+
+        # 2. Unsigned/tampered SEMI E142 wafer map or Ghost-Shift overbuild -> 403 Blocked
+        map_403 = evaluate_b2b_semiconductor_foundry_kgd_policy(
+            ate_signed_e142_and_efuse_1to1_parity_verified=False,
+        )
+        self.assertFalse(map_403.allowed)
+        self.assertEqual(map_403.http_status, 403)
+        self.assertEqual(
+            map_403.decision_code,
+            "UNSIGNED_E142_WAFER_MAP_TAMPER_OR_GHOST_SHIFT_OVERBUILD_BLOCKED",
+        )
+
+        # 3. Gross-wafer billing on low-yield excursion lot or unprobed CoWoS/HBM bonding -> 422 Blocked
+        kgd_422 = evaluate_b2b_semiconductor_foundry_kgd_policy(
+            wat_3sigma_kgd_corridor_and_bin1_cowos_verified=False,
+        )
+        self.assertFalse(kgd_422.allowed)
+        self.assertEqual(kgd_422.http_status, 422)
+        self.assertEqual(
+            kgd_422.decision_code,
+            "GROSS_WAFER_BAD_DIE_OVERBILLING_OR_UNPROBED_COWOS_ASSEMBLY",
+        )
+
+        # 4. BIS EAR ECCN 3A090 TPP/density breach or unlocked photomask IP -> 451 Hold
+        bis_451 = evaluate_b2b_semiconductor_foundry_kgd_policy(
+            webiq_bis_3a090_tpp_density_and_photomask_ip_clean=False,
+        )
+        self.assertFalse(bis_451.allowed)
+        self.assertEqual(bis_451.http_status, 451)
+
+        # 5. Web IQ applies KGD yield-corridor deduction & prevents HBM3e scrap saving $76,800 ($883,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_semiconductor_foundry_kgd_policy(
+            kgd_yield_corridor_and_hbm_scrap_savings_cents=7680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_semiconductor_batch_cents, 88320000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_semiconductor_foundry_kgd_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-semiconductor-foundry-kgd-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
