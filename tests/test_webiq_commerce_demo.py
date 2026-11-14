@@ -13311,6 +13311,62 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-auction-vickrey-bid-bond-sandbox", demo_zh)
 
+    def test_agentic_cold_chain_mkt_arrhenius_dscsa_pharma_perishable_mandate_vs_thermal_excursion_spoilage_dispute_selection(
+        self,
+    ) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_cold_chain_mkt_dscsa_policy,
+        )
+
+        # 1. Verified 21 CFR Part 11 ECDSA log + zero freeze + MKT <= 8°C + DSCSA EPCIS -> 200 OK ($540,000)
+        commit_ok = evaluate_agentic_cold_chain_mkt_dscsa_policy()
+        self.assertTrue(commit_ok.allowed)
+        self.assertEqual(commit_ok.http_status, 200)
+        self.assertEqual(commit_ok.settled_cold_chain_batch_cents, 54000000)
+
+        # 2. Unsigned CSV log or <0.0°C sub-zero freeze denaturation -> 403 blocked in 11ms
+        frz_403 = evaluate_agentic_cold_chain_mkt_dscsa_policy(
+            cfr21_part11_hardware_ecdsa_log_and_zero_subzero_freeze_verified=False,
+        )
+        self.assertFalse(frz_403.allowed)
+        self.assertEqual(frz_403.http_status, 403)
+        self.assertEqual(
+            frz_403.cold_chain_mkt_lane,
+            "UNSIGNED_THERMAL_LOG_OR_SUBZERO_FREEZE_DENATURATION_BLOCKED",
+        )
+
+        # 3. Mid-transit heat excursion (Arrhenius MKT > 8°C) masked by re-chilling -> 422 blocked in 14ms
+        mkt_422 = evaluate_agentic_cold_chain_mkt_dscsa_policy(
+            usp_1079_arrhenius_mkt_under_8c_and_no_rechilling_spoilage=False,
+        )
+        self.assertFalse(mkt_422.allowed)
+        self.assertEqual(mkt_422.http_status, 422)
+        self.assertEqual(
+            mkt_422.cold_chain_mkt_lane,
+            "ARRHENIUS_MKT_EXCURSION_OR_RECHILLING_SPOILAGE_REJECTED",
+        )
+
+        # 4. Web IQ detects missing FDA DSCSA EPCIS pedigree or recalled lot -> 451 blocked in 280ms
+        epc_451 = evaluate_agentic_cold_chain_mkt_dscsa_policy(
+            webiq_fda_dscsa_epcis_pedigree_and_zero_lot_recall_clean=False,
+        )
+        self.assertFalse(epc_451.allowed)
+        self.assertEqual(epc_451.http_status, 451)
+
+        # 5. Web IQ triggers parametric cold-chain insurance saving $43,200 ($496,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_cold_chain_mkt_dscsa_policy(
+            parametric_cold_chain_insurance_and_escrow_savings_cents=4320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cold_chain_batch_cents, 49680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_cold_chain_mkt_dscsa_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-cold-chain-mkt-dscsa-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
