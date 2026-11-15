@@ -19559,6 +19559,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-corporate-relocation-hhg-cat-scale-sandbox", demo_zh)
 
+    def test_b2b_heavy_crane_rigging_lmi_superload_permit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_heavy_crane_rigging_lmi_superload_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 3D Lift Plan tonnage + LMI counterweight trailers + NCCCO/PE clean -> 200 OK ($290,000.00)
+        ok_res = evaluate_b2b_heavy_crane_rigging_lmi_superload_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HEAVY_CRANE_RIGGING_SUPERLOAD_SETTLED")
+        self.assertEqual(ok_res.settled_heavy_crane_rigging_cents, 29000000)
+
+        # 2. 350-ton crane billed for 110-ton lift or phantom counterweight semi-trailers -> 403 Blocked
+        ton_403 = evaluate_b2b_heavy_crane_rigging_lmi_superload_policy(
+            lift_plan_tonnage_cap_and_lmi_counterweight_trailers_verified=False,
+        )
+        self.assertFalse(ton_403.allowed)
+        self.assertEqual(ton_403.http_status, 403)
+        self.assertEqual(
+            ton_403.decision_code,
+            "CRANE_TONNAGE_OVERSIZING_OR_PHANTOM_COUNTERWEIGHT_TRAILER_BILLING_BLOCKED",
+        )
+
+        # 3. Wind-out standby day billed at 100% operating rate or 1,200% DOT permit markup -> 422 Blocked
+        wnd_422 = evaluate_b2b_heavy_crane_rigging_lmi_superload_policy(
+            wind_standby_discount_and_passthrough_dot_permit_verified=False,
+        )
+        self.assertFalse(wnd_422.allowed)
+        self.assertEqual(wnd_422.http_status, 422)
+        self.assertEqual(
+            wnd_422.decision_code,
+            "WIND_STANDBY_BILLED_AT_OPERATING_RATE_OR_DOT_PERMIT_MARKUP_PADDING",
+        )
+
+        # 4. Expired NCCCO operator license or unapproved >=75% critical lift -> 451 Hold
+        ncc_451 = evaluate_b2b_heavy_crane_rigging_lmi_superload_policy(
+            webiq_nccco_operator_license_and_pe_critical_lift_clean=False,
+        )
+        self.assertFalse(ncc_451.allowed)
+        self.assertEqual(ncc_451.http_status, 451)
+
+        # 5. Web IQ 3D lift tonnage cap & counterweight trailer scrub saving $43,500 ($246,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_heavy_crane_rigging_lmi_superload_policy(
+            automated_3d_lift_tonnage_and_counterweight_scrub_savings_cents=4350000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_heavy_crane_rigging_cents, 24650000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_heavy_crane_rigging_lmi_superload_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-heavy-crane-rigging-lmi-superload-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
