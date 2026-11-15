@@ -33223,6 +33223,106 @@ def evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BInteriorPlantscapingBiophilicWallDecision:
+    """Deterministic decision output for B2B interior plantscaping, biophilic living walls & holiday decor leasing."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    interior_plantscaping_lane: str
+    settled_interior_plantscaping_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
+    *,
+    mandate_id: str = "b2b_interior_plantscaping_biophilic_wall_free_replacement_planter_cap_mandate_2026",
+    interior_plantscaping_cents: int = 12500000,
+    free_dead_plant_replacement_and_nfc_watering_visit_verified: bool = True,
+    decorative_planter_12mo_buyout_cap_and_zero_faux_watering_verified: bool = True,
+    webiq_epa_indoor_biopesticide_and_living_wall_leak_valve_clean: bool = True,
+    automated_planter_capex_separation_and_free_swap_savings_cents: int = 0,
+) -> B2BInteriorPlantscapingBiophilicWallDecision:
+    """Evaluate B2B interior plantscaping free dead-plant replacement, 12-month planter cap & living-wall settlement."""
+    if not mandate_id.startswith("b2b_interior_plantscaping_biophilic_wall_free_replacement_planter_cap_mandate_"):
+        return B2BInteriorPlantscapingBiophilicWallDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INTERIOR_PLANTSCAPING_BIOPHILIC_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            interior_plantscaping_lane="INVALID_INTERIOR_PLANTSCAPING_BIOPHILIC_MANDATE_PREFIX",
+            settled_interior_plantscaping_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not free_dead_plant_replacement_and_nfc_watering_visit_verified:
+        return B2BInteriorPlantscapingBiophilicWallDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="BILLABLE_DEAD_PLANT_REPLACEMENT_OR_SKIPPED_WATERING_VISIT_BLOCKED",
+            action_pill="Send to a human",
+            interior_plantscaping_lane="BILLABLE_DEAD_PLANT_REPLACEMENT_OR_SKIPPED_WATERING_VISIT_BLOCKED",
+            settled_interior_plantscaping_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not decorative_planter_12mo_buyout_cap_and_zero_faux_watering_verified:
+        return B2BInteriorPlantscapingBiophilicWallDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PERPETUAL_PLANTER_CONTAINER_RENT_OR_FAUX_PLANT_WATERING_MAINTENANCE_PADDING",
+            action_pill="Send to a human",
+            interior_plantscaping_lane="PERPETUAL_PLANTER_CONTAINER_RENT_OR_FAUX_PLANT_WATERING_MAINTENANCE_PADDING",
+            settled_interior_plantscaping_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_epa_indoor_biopesticide_and_living_wall_leak_valve_clean:
+        return B2BInteriorPlantscapingBiophilicWallDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNAPPROVED_INDOOR_EPA_PESTICIDE_OR_LIVING_WALL_IRRIGATION_LEAK_HOLD",
+            action_pill="Send to a human",
+            interior_plantscaping_lane="UNAPPROVED_INDOOR_EPA_PESTICIDE_OR_LIVING_WALL_IRRIGATION_LEAK_HOLD",
+            settled_interior_plantscaping_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_planter_capex_separation_and_free_swap_savings_cents > 0:
+        net_cents = max(
+            0,
+            interior_plantscaping_cents - automated_planter_capex_separation_and_free_swap_savings_cents,
+        )
+        return B2BInteriorPlantscapingBiophilicWallDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_PLANTER_CAPEX_SEPARATION_AND_FREE_SWAP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            interior_plantscaping_lane="AUTOMATED_PLANTER_CAPEX_SEPARATION_AND_FREE_SWAP_SAVINGS_CONFIRM",
+            settled_interior_plantscaping_cents=net_cents,
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BInteriorPlantscapingBiophilicWallDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INTERIOR_PLANTSCAPING_BIOPHILIC_SETTLED",
+        action_pill="Act automatically",
+        interior_plantscaping_lane="VERIFIED_INTERIOR_PLANTSCAPING_BIOPHILIC_SETTLED",
+        settled_interior_plantscaping_cents=interior_plantscaping_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44216,6 +44316,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unreconciled_gate_loop_vend_block_latency_ms": prk_lpr_403.latency_ms,
     }
 
+    plt_commit_ok = evaluate_b2b_interior_plantscaping_biophilic_wall_policy()
+    plt_swp_403 = evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
+        free_dead_plant_replacement_and_nfc_watering_visit_verified=False,
+    )
+    plt_pot_422 = evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
+        decorative_planter_12mo_buyout_cap_and_zero_faux_watering_verified=False,
+    )
+    plt_epa_451 = evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
+        webiq_epa_indoor_biopesticide_and_living_wall_leak_valve_clean=False,
+    )
+    plt_sav_409 = evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
+        automated_planter_capex_separation_and_free_swap_savings_cents=1875000,
+    )
+    b2b_interior_plantscaping_biophilic_wall_guards = {
+        "all_passed": (
+            plt_commit_ok.allowed
+            and plt_commit_ok.settled_interior_plantscaping_cents == 12500000
+            and not plt_swp_403.allowed
+            and plt_swp_403.http_status == 403
+            and not plt_pot_422.allowed
+            and plt_pot_422.http_status == 422
+            and not plt_epa_451.allowed
+            and plt_epa_451.http_status == 451
+            and not plt_sav_409.allowed
+            and plt_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_interior_plantscaping_settlement_latency_ms": plt_commit_ok.latency_ms,
+        "billable_dead_plant_swap_block_latency_ms": plt_swp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44559,6 +44689,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_background_check_dot_drug_screening_guards": agentic_background_check_dot_drug_screening_guards,
         "b2b_highrise_window_washing_bmu_rope_access_guards": b2b_highrise_window_washing_bmu_rope_access_guards,
         "b2b_parking_garage_lpr_parcs_valet_guards": b2b_parking_garage_lpr_parcs_valet_guards,
+        "b2b_interior_plantscaping_biophilic_wall_guards": b2b_interior_plantscaping_biophilic_wall_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53416,6 +53547,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="prk-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Interior Plantscaping & Biophilic Living Wall Sandbox (Round 331) -->
+      <div class="finops-box" id="b2b-interior-plantscaping-biophilic-wall-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-plt-title">🪴 B2B 商业绿植租摆、中庭活体植物墙 (Biophilic Wall) 与节庆美陈清算沙盒 (Round 331 · Ambius / John Mini / WELL v2 / EPA PPLS)</span>
+        </div>
+        <div class="control-row">
+          <label><span>100% 免费保活换苗锁 + 花盆 NFC 按周浇水签到 + 装饰花盆 12 个月折旧归零 + Web IQ EPA 室内药剂核验:</span></label>
+          <select id="plt-select" onchange="updateB2BInteriorPlantscapingBiophilicWallSandbox()">
+            <option value="plt_commit_ok">🪴 花盆 NFC 按周浇水打卡 + 枯黄绿植 $0 免费换新 + 装饰花盆满 12 月免租合规：10ms 清算 $125,000.00! (Act automatically)</option>
+            <option value="plt_swp_403">🛑 养护工连续 3 周未刷 NFC 浇水致 15 盆琴叶榕旱死，服务商却甩锅“员工倒咖啡/关空调”强收 $240/盆换新费 → 11ms 触发 HTTP 403!</option>
+            <option value="plt_pot_422">🚨 对进价 $55 的玻璃钢装饰空花盆按 $24/月连收 60 个月租金 ($1,440)，或对走廊 40 盆塑料仿真花/永生苔藓照收每周浇水费 → 14ms 触发 HTTP 422!</option>
+            <option value="plt_epa_451">🛑 密闭办公层除虫喷洒未获 EPA PPLS 室内许可的高挥发农药或中庭活体植物墙滴灌防漏电磁阀报警：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="plt_sav_409">🧑‍⚖️ Web IQ 自动剥离已满 12 个月回本期的装饰花盆硬件租金、清零枯苗换新收费并剔除仿真花每周浇水费立省 $18,750.00 (净付 $106,250.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="plt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54185,6 +54334,7 @@ function renderAll() {{
   updateAgenticBackgroundCheckDotDrugScreeningSandbox();
   updateB2BHighriseWindowWashingBmuRopeAccessSandbox();
   updateB2BParkingGarageLprParcsValetSandbox();
+  updateB2BInteriorPlantscapingBiophilicWallSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -70320,6 +70470,52 @@ function updateB2BParkingGarageLprParcsValetSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🅿️ 出口地感/LPR 1:1 闭环 + 钥匙柜活跃工时 + PCI P2PE 合规：已自动清算 (VERIFIED_PARKING_GARAGE_LPR_VALET_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零手动抬杆私吞现金、零夜班幽灵泊车员排班与 16% 自保暴利分摊</strong>：B2B 商业停车楼与代客泊车月度批次已完成安全清算（<code>$195,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BInteriorPlantscapingBiophilicWallSandbox() {{
+  var sel = document.getElementById("plt-select");
+  var outEl = document.getElementById("plt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "plt_swp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BILLABLE_DEAD_PLANT_REPLACEMENT_OR_SKIPPED_WATERING_VISIT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对花盆 <code>NFC</code> 浇水打卡与土壤湿度计日志发现：园艺工连续 3 周漏检未浇水导致 15 盆绿植枯萎，服务商却违反 <code>100% 免费保活换新保证 (Guaranteed Replacement SLA)</code> 强收 <code>$240/盆换新费</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "plt_pot_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PERPETUAL_PLANTER_CONTAINER_RENT_OR_FAUX_PLANT_WATERING_MAINTENANCE_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计园区绿植资产台账发现：对进价仅 <code>$55 的玻璃钢装饰空花盆</code> 在满 12 个月回本期后继续按 <code>$24/月永续收租（5年达 $1,440）</code>，并对 40 盆走廊 <code>塑料仿真花与永生苔藓墙</code> 照收每周浇水养护费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "plt_epa_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNAPPROVED_INDOOR_EPA_PESTICIDE_OR_LIVING_WALL_IRRIGATION_LEAK_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查联邦 <code>EPA PPLS</code> 农药标签库与中庭活体植物墙漏水传感器发现：申报除虫药剂未获密闭办公场所免疏散许可或植物墙滴灌电磁切断阀触发渗漏告警，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "plt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_PLANTER_CAPEX_SEPARATION_AND_FREE_SWAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>装饰花盆满 12 个月硬件租金自动归零 + 枯黄植物 100% 强制 $0 免费换新 + 剥离仿真花与永生苔藓每周浇水费</code>，单批立省 <code>$18,750.00</code>（净结算额优化至 <code>$106,250.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🪴 保活免费换苗 + 花盆 12 月买断封顶 + EPA 室内合规：已自动清算 (VERIFIED_INTERIOR_PLANTSCAPING_BIOPHILIC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零枯死植物收费换新、零 $55 空花盆永续收租与塑料假花浇水费</strong>：B2B 商业绿植租摆与活体植物墙批次已完成安全清算（<code>$125,000.00</code>）！" +
     "</div>";
 }}
 
