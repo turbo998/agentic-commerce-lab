@@ -19046,6 +19046,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-biopharma-lab-instrument-iso17025-sandbox", demo_zh)
 
+    def test_agentic_clinical_trial_ctms_edc_visit_lock_vs_screen_fail_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_clinical_trial_ctms_edc_stipend_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant EDC eCRF visit locked + <=2:1 screen-fail cap + zero stipend card fee -> 200 OK ($260,000.00)
+        ok_res = evaluate_agentic_clinical_trial_ctms_edc_stipend_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CLINICAL_TRIAL_CTMS_EDC_SETTLED")
+        self.assertEqual(ok_res.settled_clinical_trial_site_grant_cents, 26000000)
+
+        # 2. Unverified EDC eCRF visit or 14:1 screen-fail farming -> 403 Blocked
+        edc_403 = evaluate_agentic_clinical_trial_ctms_edc_stipend_policy(
+            edc_ecrf_visit_locked_and_screen_fail_cap_verified=False,
+        )
+        self.assertFalse(edc_403.allowed)
+        self.assertEqual(edc_403.http_status, 403)
+        self.assertEqual(
+            edc_403.decision_code,
+            "UNVERIFIED_EDC_ECRF_VISIT_LOCK_OR_EXCESSIVE_SCREEN_FAIL_RATIO_BLOCKED",
+        )
+
+        # 3. Zero-enrollment zombie site monthly retainer or patient stipend card fee erosion -> 422 Blocked
+        zom_422 = evaluate_agentic_clinical_trial_ctms_edc_stipend_policy(
+            active_enrollment_retainer_and_zero_stipend_card_fee_verified=False,
+        )
+        self.assertFalse(zom_422.allowed)
+        self.assertEqual(zom_422.http_status, 422)
+        self.assertEqual(
+            zom_422.decision_code,
+            "ZERO_ENROLLMENT_ZOMBIE_SITE_RETAINER_OR_PATIENT_STIPEND_CARD_FEE_EROSION",
+        )
+
+        # 4. Above-FMV kickback risk or FDA debarred PI / expired IRB -> 451 Hold
+        fmv_451 = evaluate_agentic_clinical_trial_ctms_edc_stipend_policy(
+            webiq_fda_debarment_irb_and_sunshine_fmv_clean=False,
+        )
+        self.assertFalse(fmv_451.allowed)
+        self.assertEqual(fmv_451.http_status, 451)
+
+        # 5. Web IQ screen-fail cap pruning & 15% Database-Lock holdback saving $39,000 ($221,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_clinical_trial_ctms_edc_stipend_policy(
+            automated_screen_fail_cap_and_dblock_holdback_savings_cents=3900000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_clinical_trial_site_grant_cents, 22100000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_clinical_trial_ctms_edc_stipend_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-clinical-trial-ctms-edc-stipend-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
