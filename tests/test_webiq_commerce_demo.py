@@ -20072,6 +20072,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-floor-carpet-mat-rental-sandbox", demo_zh)
 
+    def test_b2b_hvac_air_duct_coil_cleaning_nadca_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant NADCA gravimetric test <=0.075mg/100cm2 + BMS AHU coil Delta-P drop + ASCS clean -> 200 OK ($145,000.00)
+        ok_res = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HVAC_AIR_DUCT_COIL_NADCA_SETTLED")
+        self.assertEqual(ok_res.settled_hvac_air_duct_coil_cents, 14500000)
+
+        # 2. Blow-and-go diffuser wiping scam or unreduced AHU coil Delta-P -> 403 Blocked
+        blw_403 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+            nadca_vacuum_gravimetric_and_ahu_coil_delta_p_verified=False,
+        )
+        self.assertFalse(blw_403.allowed)
+        self.assertEqual(blw_403.http_status, 403)
+        self.assertEqual(
+            blw_403.decision_code,
+            "BLOW_AND_GO_DIFFUSER_ONLY_SCAM_OR_UNREDUCED_AHU_COIL_DELTA_P_BLOCKED",
+        )
+
+        # 3. $14,000 unauthorized duct biocide fogging or self-tested mold scare upsell -> 422 Blocked
+        bio_422 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+            zero_unapproved_biocide_fogging_and_independent_mold_lab_verified=False,
+        )
+        self.assertFalse(bio_422.allowed)
+        self.assertEqual(bio_422.http_status, 422)
+        self.assertEqual(
+            bio_422.decision_code,
+            "UNAUTHORIZED_DUCT_BIOCIDE_FOGGING_UPCODING_OR_SELF_TESTED_MOLD_SCARE_PADDING",
+        )
+
+        # 4. Uncertified NADCA ASCS contractor or illegal fiberglass-liner biocide application -> 451 Hold
+        nad_451 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+            webiq_nadca_ascs_certification_and_epa_liner_rule_clean=False,
+        )
+        self.assertFalse(nad_451.allowed)
+        self.assertEqual(nad_451.http_status, 451)
+
+        # 5. Web IQ biocide fogging strip & coil Delta-P verification saving $21,750 ($123,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+            automated_biocide_fogging_strip_and_coil_delta_p_savings_cents=2175000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hvac_air_duct_coil_cents, 12325000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hvac_air_duct_coil_cleaning_nadca_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hvac-air-duct-coil-cleaning-nadca-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

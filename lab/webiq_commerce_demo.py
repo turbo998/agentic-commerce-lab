@@ -33623,6 +33623,106 @@ def evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BHvacAirDuctCoilCleaningNadcaDecision:
+    """Deterministic decision output for B2B commercial HVAC air duct cleaning (NADCA ACR) & AHU coil restoration."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    hvac_air_duct_coil_lane: str
+    settled_hvac_air_duct_coil_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+    *,
+    mandate_id: str = "b2b_hvac_air_duct_coil_cleaning_nadca_acr_delta_p_endoscope_mandate_2026",
+    hvac_air_duct_coil_cents: int = 14500000,
+    nadca_vacuum_gravimetric_and_ahu_coil_delta_p_verified: bool = True,
+    zero_unapproved_biocide_fogging_and_independent_mold_lab_verified: bool = True,
+    webiq_nadca_ascs_certification_and_epa_liner_rule_clean: bool = True,
+    automated_biocide_fogging_strip_and_coil_delta_p_savings_cents: int = 0,
+) -> B2BHvacAirDuctCoilCleaningNadcaDecision:
+    """Evaluate B2B commercial HVAC air duct NADCA gravimetric test, BMS AHU coil Delta-P & biocide fogging settlement."""
+    if not mandate_id.startswith("b2b_hvac_air_duct_coil_cleaning_nadca_acr_delta_p_endoscope_mandate_"):
+        return B2BHvacAirDuctCoilCleaningNadcaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_HVAC_AIR_DUCT_COIL_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            hvac_air_duct_coil_lane="INVALID_HVAC_AIR_DUCT_COIL_MANDATE_PREFIX",
+            settled_hvac_air_duct_coil_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not nadca_vacuum_gravimetric_and_ahu_coil_delta_p_verified:
+        return B2BHvacAirDuctCoilCleaningNadcaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="BLOW_AND_GO_DIFFUSER_ONLY_SCAM_OR_UNREDUCED_AHU_COIL_DELTA_P_BLOCKED",
+            action_pill="Send to a human",
+            hvac_air_duct_coil_lane="BLOW_AND_GO_DIFFUSER_ONLY_SCAM_OR_UNREDUCED_AHU_COIL_DELTA_P_BLOCKED",
+            settled_hvac_air_duct_coil_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not zero_unapproved_biocide_fogging_and_independent_mold_lab_verified:
+        return B2BHvacAirDuctCoilCleaningNadcaDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNAUTHORIZED_DUCT_BIOCIDE_FOGGING_UPCODING_OR_SELF_TESTED_MOLD_SCARE_PADDING",
+            action_pill="Send to a human",
+            hvac_air_duct_coil_lane="UNAUTHORIZED_DUCT_BIOCIDE_FOGGING_UPCODING_OR_SELF_TESTED_MOLD_SCARE_PADDING",
+            settled_hvac_air_duct_coil_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_nadca_ascs_certification_and_epa_liner_rule_clean:
+        return B2BHvacAirDuctCoilCleaningNadcaDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_NADCA_ASCS_CONTRACTOR_OR_ILLEGAL_FIBERGLASS_LINER_BIOCIDE_HOLD",
+            action_pill="Send to a human",
+            hvac_air_duct_coil_lane="UNCERTIFIED_NADCA_ASCS_CONTRACTOR_OR_ILLEGAL_FIBERGLASS_LINER_BIOCIDE_HOLD",
+            settled_hvac_air_duct_coil_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_biocide_fogging_strip_and_coil_delta_p_savings_cents > 0:
+        net_cents = max(
+            0,
+            hvac_air_duct_coil_cents - automated_biocide_fogging_strip_and_coil_delta_p_savings_cents,
+        )
+        return B2BHvacAirDuctCoilCleaningNadcaDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_BIOCIDE_FOGGING_STRIP_AND_COIL_DELTA_P_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            hvac_air_duct_coil_lane="AUTOMATED_BIOCIDE_FOGGING_STRIP_AND_COIL_DELTA_P_SAVINGS_CONFIRM",
+            settled_hvac_air_duct_coil_cents=net_cents,
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BHvacAirDuctCoilCleaningNadcaDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_HVAC_AIR_DUCT_COIL_NADCA_SETTLED",
+        action_pill="Act automatically",
+        hvac_air_duct_coil_lane="VERIFIED_HVAC_AIR_DUCT_COIL_NADCA_SETTLED",
+        settled_hvac_air_duct_coil_cents=hvac_air_duct_coil_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44736,6 +44836,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ghost_mat_exchange_rfid_block_latency_ms": flr_mat_403.latency_ms,
     }
 
+    dct_commit_ok = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy()
+    dct_blw_403 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+        nadca_vacuum_gravimetric_and_ahu_coil_delta_p_verified=False,
+    )
+    dct_bio_422 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+        zero_unapproved_biocide_fogging_and_independent_mold_lab_verified=False,
+    )
+    dct_nad_451 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+        webiq_nadca_ascs_certification_and_epa_liner_rule_clean=False,
+    )
+    dct_sav_409 = evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
+        automated_biocide_fogging_strip_and_coil_delta_p_savings_cents=2175000,
+    )
+    b2b_hvac_air_duct_coil_cleaning_nadca_guards = {
+        "all_passed": (
+            dct_commit_ok.allowed
+            and dct_commit_ok.settled_hvac_air_duct_coil_cents == 14500000
+            and not dct_blw_403.allowed
+            and dct_blw_403.http_status == 403
+            and not dct_bio_422.allowed
+            and dct_bio_422.http_status == 422
+            and not dct_nad_451.allowed
+            and dct_nad_451.http_status == 451
+            and not dct_sav_409.allowed
+            and dct_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_hvac_air_duct_settlement_latency_ms": dct_commit_ok.latency_ms,
+        "blow_and_go_coil_delta_p_block_latency_ms": dct_blw_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45083,6 +45213,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_retail_shopping_cart_wheellock_mobility_guards": b2b_retail_shopping_cart_wheellock_mobility_guards,
         "b2b_commercial_signage_highmast_lighting_guards": b2b_commercial_signage_highmast_lighting_guards,
         "b2b_commercial_floor_carpet_mat_rental_guards": b2b_commercial_floor_carpet_mat_rental_guards,
+        "b2b_hvac_air_duct_coil_cleaning_nadca_guards": b2b_hvac_air_duct_coil_cleaning_nadca_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54012,6 +54143,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="flr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B HVAC Air Duct Cleaning & AHU Coil Restoration Sandbox (Round 335) -->
+      <div class="finops-box" id="b2b-hvac-air-duct-coil-cleaning-nadca-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dct-title">🌀 B2B 中央空调风管清洗 (NADCA ACR)、AHU 表冷器盘管还原与 IAQ 清算沙盒 (Round 335 · DUCTZ / ServiceMaster / NADCA ASCS)</span>
+        </div>
+        <div class="control-row">
+          <label><span>NADCA 真空滤膜称重 (&lt;=0.075mg/100cm²) + BMS 盘管静压差 Delta-P 回落锁 + 零违规抗菌药雾 + Web IQ ASCS 核验:</span></label>
+          <select id="dct-select" onchange="updateB2BHvacAirDuctCoilCleaningNadcaSandbox()">
+            <option value="dct_commit_ok">🌀 主风管 NADCA 称重 &lt;=0.075mg/100cm² + BMS AHU 盘管压差回落 + NADCA ASCS 持证合规：10ms 清算 $145,000.00! (Act automatically)</option>
+            <option value="dct_blw_403">🛑 只拆洗天花板散流器风口百叶未接 HEPA 负压机清扫主风管 (Blow-and-Go)，或 AHU 表冷器只冲外表面致盘管压差 Delta-P 纹丝未降 → 11ms 触发 HTTP 403!</option>
+            <option value="dct_bio_422">🚨 施工队自拍黑色吸音棉谎称“剧毒黑霉”强推 $14,000 全楼风管化学杀菌喷雾 (Biocide Fogging) 或内衬封固胶加价 → 14ms 触发 HTTP 422!</option>
+            <option value="dct_nad_451">🛑 现场缺失持证 NADCA ASCS 专家督导用硬钢丝刷打烂玻璃棉内衬或向多孔保温风管喷洒违反 EPA 禁令的化学药剂：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="dct_sav_409">🧑‍⚖️ Web IQ 自动 100% 剥离违规捆绑的 $14,000 风管抗菌迷雾消杀与封固胶加价并扣减未达标 VAV 支管水分立省 $21,750.00 (净付 $123,250.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dct-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54785,6 +54934,7 @@ function renderAll() {{
   updateB2BRetailShoppingCartWheellockMobilitySandbox();
   updateB2BCommercialSignageHighmastLightingSandbox();
   updateB2BCommercialFloorCarpetMatRentalSandbox();
+  updateB2BHvacAirDuctCoilCleaningNadcaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -71104,6 +71254,52 @@ function updateB2BCommercialFloorCarpetMatRentalSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧹 地垫 RFID 100% 交替 + BIM 净可行走面积 + NFSI 防滑合规：已自动清算 (VERIFIED_COMMERCIAL_FLOOR_CARPET_MAT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零原地不换地垫空签单、零 BOMA 毛面积注水与 $0.18 喷磨冒充 $4.50 水磨</strong>：B2B 商业地面护理、地毯抽洗与地垫租赁批次已完成安全清算（<code>$150,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BHvacAirDuctCoilCleaningNadcaSandbox() {{
+  var sel = document.getElementById("dct-select");
+  var outEl = document.getElementById("dct-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "dct_blw_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLOW_AND_GO_DIFFUSER_ONLY_SCAM_OR_UNREDUCED_AHU_COIL_DELTA_P_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对主风管 <code>NADCA Vacuum Test</code> 滤膜称重与楼宇 <code>BMS BACnet</code> 压差遥测发现：主风管内壁残尘高达 <code>0.42 mg/100cm²（只洗了天花板散流器百叶未扫主风管）</code>，且 <code>AHU</code> 蒸发器盘管静压差仍停留在 <code>1.12 in. w.g.（内部 6 排翅片未洗透）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dct_bio_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAUTHORIZED_DUCT_BIOCIDE_FOGGING_UPCODING_OR_SELF_TESTED_MOLD_SCARE_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计风管清洗增项单发现：施工队未聘请独立 <code>AIHA-LAP</code> 微生物实验室，自行拿黑色玻璃棉照片谎称“剧毒黑霉”并违规加收 <code>$14,000 全楼风管化学抗菌喷雾 (Biocide Fogging)</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dct_nad_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_NADCA_ASCS_CONTRACTOR_OR_ILLEGAL_FIBERGLASS_LINER_BIOCIDE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NADCA ASCS</code> 认证专家名录与 <code>EPA</code> 暖通药剂禁用规则发现：承包商无持证 <code>ASCS</code> 督导或企图向内部多孔玻璃纤维消音风管喷洒未获 <code>EPA</code> 许可的杀菌剂，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dct_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_BIOCIDE_FOGGING_STRIP_AND_COIL_DELTA_P_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>100% 剥离未经 EPA 管道许可的 $14,000 化学抗菌迷雾与封固胶加价 + 按 NADCA 称重与盘管 Delta-P 达标区段核销</code>，单批立省 <code>$21,750.00</code>（净结算额优化至 <code>$123,250.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌀 NADCA 毫克称重达标 + BMS 盘管压差回落 + ASCS 合规：已自动清算 (VERIFIED_HVAC_AIR_DUCT_COIL_NADCA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零只擦风口百叶骗局、零 $14,000 恐吓式抗菌药雾与假洗表冷器</strong>：B2B 中央空调风管与 AHU 盘管清洗批次已完成安全清算（<code>$145,000.00</code>）！" +
     "</div>";
 }}
 
