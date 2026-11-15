@@ -17450,6 +17450,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-waste-compactor-hauling-sandbox", demo_zh)
 
+    def test_b2b_commercial_pest_control_ipm_nfc_vs_ghost_curb_visit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_pest_control_ipm_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant >=99% interior-lid NFC scan + lethal fumigation CT + EPA FIFRA food-zone clean -> 200 OK ($210,000.00)
+        ok_res = evaluate_b2b_commercial_pest_control_ipm_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_PEST_CONTROL_IPM_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_pest_ipm_cents, 21000000)
+
+        # 2. 6-minute curb-check ghost visit or incomplete interior-lid NFC scan (42%) -> 403 Blocked
+        nfc_403 = evaluate_b2b_commercial_pest_control_ipm_policy(
+            interior_lid_rolling_nfc_99pct_scan_and_site_dwell_verified=False,
+        )
+        self.assertFalse(nfc_403.allowed)
+        self.assertEqual(nfc_403.http_status, 403)
+        self.assertEqual(
+            nfc_403.decision_code,
+            "INCOMPLETE_INTERIOR_NFC_TRAP_SCAN_OR_GHOST_CURB_VISIT_BLOCKED",
+        )
+
+        # 3. $3,200 emergency fogging surcharge on covered pests or sub-lethal fumigation CT leak -> 422 Blocked
+        fum_422 = evaluate_b2b_commercial_pest_control_ipm_policy(
+            zero_covered_pest_callback_fee_and_fumigation_ct_curve_verified=False,
+        )
+        self.assertFalse(fum_422.allowed)
+        self.assertEqual(fum_422.http_status, 422)
+        self.assertEqual(
+            fum_422.decision_code,
+            "UNAUTHORIZED_CALLBACK_FOGGING_SURCHARGE_OR_SUBLETHAL_FUMIGATION_CT_BREACH",
+        )
+
+        # 4. Non-food EPA Reg. No. chemical used in food-prep area or AIB/SQF audit failure -> 451 Hold
+        epa_451 = evaluate_b2b_commercial_pest_control_ipm_policy(
+            webiq_epa_fifra_food_zone_label_and_aib_sqf_audit_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ automated IoT smart-trap routing & callback fee strip saving $18,900 ($191,100 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_pest_control_ipm_policy(
+            automated_iot_smart_trap_routing_and_callback_fee_strip_savings_cents=1890000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_pest_ipm_cents, 19110000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_pest_control_ipm_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-pest-control-ipm-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
