@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg332" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent332" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg332)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent332)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#818CF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">ROUND 330 · B2B COMMERCIAL PARKING GARAGE LPR/PARCS AUDIT &amp; HOSPITAL/HOTEL VALET OPERATIONS</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">商业停车场与代客泊车对账：地感/LPR 1:1 闭环锁、钥匙柜工时锁 vs 手动抬杆吞钱与自保暴利</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Mandate: b2b_parking_garage_lpr_parcs_valet_revenue_share_audit_mandate_2026 · 15.0% Savings ($29,250 / Batch)</text>
+
+  <!-- Left Panel: Legacy Parking & Valet Traps -->
+  <rect x="44" y="132" width="540" height="395" rx="12" fill="#1C1917" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="540" height="38" rx="12" fill="#450A0A"/>
+  <text x="64" y="156" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统停车场与代客泊车外包四大黑洞 (Legacy Parking NOI Leakage: 20%–40%)</text>
+
+  <rect x="62" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="206" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 出口压线圈过车 1,200 辆却只报 980 辆（220 辆现金车被手动抬杆私吞）</text>
+  <text x="76" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">高峰或球赛散场时，收费员收取车主 $25 现金后按“走错路倒出 / 故障免费放行”</text>
+  <text x="76" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">(Manual Gate Override) 手动抬杆，PARCS 软件账面平账但业主每天蒸发 $5,500。</text>
+
+  <rect x="62" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="290" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 医院/酒店代客泊车 (Valet) 深夜零接车却报销 8 名全职泊车员夜班工资</text>
+  <text x="76" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">医院门诊下午 5 点关门后连续 7 小时零取送车，运营商却在实报实销工资单里塞入</text>
+  <text x="76" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">8 名晚班泊车员（或跨项目借调人员）工时，每月向业主多报销 $28,000 人工费。</text>
+
+  <rect x="62" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="374" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 总部 16% 自保责任险暴利分摊 + 私收车主 $3.99 扫码便利费独吞</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">按工资 16% 强收内部自保公司 Garagekeepers 擦碰险（高于真实保费 3 倍）；并在</text>
+  <text x="76" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">扫码付页面向车主强加 $3.99 平台便利费，100% 进运营商子公司腰包不参与分成。</text>
+
+  <rect x="62" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="458" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 无人道闸缴费机缺失 PCI P2PE 硬件加密被装盗刷器或拖欠市政停车税</text>
+  <text x="76" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自助缴费机未使用 PCI SSC P2PE 认证加密读卡头导致访客银行卡被批量侧录，或</text>
+  <text x="76" y="496" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">运营商挪用代收的 20% 市政停车税 (Municipal Parking Tax) 引发税务局查封大楼。</text>
+
+  <!-- Right Panel: Agentic Loop-LPR Parity + Key-Cabinet Architecture -->
+  <rect x="616" y="132" width="540" height="395" rx="12" fill="#0F1E2E" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="616" y="132" width="540" height="38" rx="12" fill="#064E3B"/>
+  <text x="636" y="156" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">✅ 出口地感/LPR 1:1 闭环锁 + 钥匙柜工时锁 + Web IQ PCI 架构</text>
+
+  <rect x="634" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="206" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. A→B 双地感线圈 + LPR 物理出车 1:1 闭环 + 钥匙柜工时锁 (11ms → HTTP 403)</text>
+  <text x="648" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">每辆触发出口 A→B 地感脉冲的车辆必须匹配 PARCS 付款或医院 HIS/酒店 PMS 免单</text>
+  <text x="648" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">码；代客泊车工时强制核对智能钥匙柜取存日志，11ms 封杀手动抬杆吞钱与空岗。</text>
+
+  <rect x="634" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="290" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 第三方真实保费封顶锁 + 严禁私吞 $3.99 扫码便利费门禁 (14ms → HTTP 422)</text>
+  <text x="648" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">剥离运营商 16% 内部自保公司暴利加成，仅认第三方保单实付保费；强制清零或将</text>
+  <text x="648" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">线上扫码便利费 100% 并入业主总营收分成池，14ms 阻断账外截留。</text>
+
+  <rect x="634" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="374" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. Web IQ /v3/browse 核查 PCI SSC P2PE 名录与市政停车税 (275ms → HTTP 451)</text>
+  <text x="648" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">275ms 在线穿透核验道闸自助终端是否列入 PCI SSC Validated P2PE 硬件名录</text>
+  <text x="648" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">及市财政局 Parking Occupancy Tax 月度足额完税回执，守住合规底线。</text>
+
+  <rect x="634" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#D97706"/>
+  <text x="648" y="458" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 自动倒扣无流水抬杆车费并砍除夜班空岗与自保水分 (240ms → HTTP 409)</text>
+  <text x="648" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动按全日最高票价从管理费倒扣 550 次异常抬杆、核减空岗工时并剥离自保加价：</text>
+  <text x="648" y="496" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">基准批次 $195,000.00 → 自动核减 $29,250.00 (15.0%) → 净付 $165,750.00！</text>
+
+  <!-- Bottom Telemetry & Benchmark Bar -->
+  <rect x="44" y="542" width="1112" height="92" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="64" y="568" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 确定性门禁实测 (Deterministic Policy Guards · $195,000.00 Monthly Parking Garage &amp; Valet Batch)</text>
+
+  <rect x="64" y="580" width="205" height="40" rx="6" fill="#064E3B"/>
+  <text x="76" y="598" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 10ms</text>
+  <text x="76" y="614" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11">地感LPR闭环+钥匙柜($195k)</text>
+
+  <rect x="281" y="580" width="205" height="40" rx="6" fill="#450A0A"/>
+  <text x="293" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 11ms</text>
+  <text x="293" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦手动抬杆吞钱与夜班幽灵工时</text>
+
+  <rect x="498" y="580" width="215" height="40" rx="6" fill="#450A0A"/>
+  <text x="510" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms</text>
+  <text x="510" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦16%自保分摊与私收$3.99扫码费</text>
+
+  <rect x="725" y="580" width="205" height="40" rx="6" fill="#3B0764"/>
+  <text x="737" y="598" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 451 · 275ms</text>
+  <text x="737" y="614" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦无PCI P2PE加密与欠缴停车税</text>
+
+  <rect x="942" y="580" width="196" height="40" rx="6" fill="#451A03"/>
+  <text x="954" y="598" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 240ms</text>
+  <text x="954" y="614" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="11">倒扣抬杆+剥自保省$29.25k</text>
+</svg>

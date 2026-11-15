@@ -19787,6 +19787,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-highrise-window-washing-bmu-rope-access-sandbox", demo_zh)
 
+    def test_b2b_parking_garage_lpr_parcs_valet_revenue_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_parking_garage_lpr_parcs_valet_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant directional loop A->B + LPR parity + valet key-box activity + PCI P2PE clean -> 200 OK ($195,000.00)
+        ok_res = evaluate_b2b_parking_garage_lpr_parcs_valet_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PARKING_GARAGE_LPR_VALET_SETTLED")
+        self.assertEqual(ok_res.settled_parking_garage_lpr_valet_cents, 19500000)
+
+        # 2. Unreconciled manual gate-arm vends (>1%) or ghost overnight valet shifts -> 403 Blocked
+        lpr_403 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+            directional_loop_lpr_vend_parity_and_valet_keybox_verified=False,
+        )
+        self.assertFalse(lpr_403.allowed)
+        self.assertEqual(lpr_403.http_status, 403)
+        self.assertEqual(
+            lpr_403.decision_code,
+            "UNRECONCILED_GATE_LOOP_LPR_VEND_SKIMMING_OR_GHOST_VALET_SHIFT_BLOCKED",
+        )
+
+        # 3. 16% captive garagekeepers insurance markup or unshared $3.99 mobile convenience fee -> 422 Blocked
+        ins_422 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+            true_insurance_cost_cap_and_zero_unshared_scan_fee_verified=False,
+        )
+        self.assertFalse(ins_422.allowed)
+        self.assertEqual(ins_422.http_status, 422)
+        self.assertEqual(
+            ins_422.decision_code,
+            "INFLATED_CAPTIVE_GARAGEKEEPERS_INSURANCE_OR_UNSHARED_SCAN_CONVENIENCE_FEE",
+        )
+
+        # 4. Uncertified PCI P2PE payment kiosk or unremitted municipal parking tax -> 451 Hold
+        pci_451 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+            webiq_pci_p2pe_parcs_terminal_and_municipal_parking_tax_clean=False,
+        )
+        self.assertFalse(pci_451.allowed)
+        self.assertEqual(pci_451.http_status, 451)
+
+        # 5. Web IQ gate-vend clawback & captive insurance scrub saving $29,250 ($165,750 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+            automated_gate_vend_clawback_and_captive_insurance_scrub_savings_cents=2925000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_parking_garage_lpr_valet_cents, 16575000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_parking_garage_lpr_parcs_valet_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-parking-garage-lpr-parcs-valet-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -33123,6 +33123,106 @@ def evaluate_b2b_highrise_window_washing_bmu_rope_access_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BParkingGarageLprParcsValetDecision:
+    """Deterministic decision output for B2B commercial parking garage LPR/PARCS revenue audit & hospital/hotel valet."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    parking_garage_lpr_valet_lane: str
+    settled_parking_garage_lpr_valet_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+    *,
+    mandate_id: str = "b2b_parking_garage_lpr_parcs_valet_revenue_share_audit_mandate_2026",
+    parking_garage_lpr_valet_cents: int = 19500000,
+    directional_loop_lpr_vend_parity_and_valet_keybox_verified: bool = True,
+    true_insurance_cost_cap_and_zero_unshared_scan_fee_verified: bool = True,
+    webiq_pci_p2pe_parcs_terminal_and_municipal_parking_tax_clean: bool = True,
+    automated_gate_vend_clawback_and_captive_insurance_scrub_savings_cents: int = 0,
+) -> B2BParkingGarageLprParcsValetDecision:
+    """Evaluate B2B commercial parking garage LPR/PARCS directional loop parity & hospital/hotel valet settlement."""
+    if not mandate_id.startswith("b2b_parking_garage_lpr_parcs_valet_revenue_share_audit_mandate_"):
+        return B2BParkingGarageLprParcsValetDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_PARKING_GARAGE_LPR_VALET_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            parking_garage_lpr_valet_lane="INVALID_PARKING_GARAGE_LPR_VALET_MANDATE_PREFIX",
+            settled_parking_garage_lpr_valet_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not directional_loop_lpr_vend_parity_and_valet_keybox_verified:
+        return B2BParkingGarageLprParcsValetDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNRECONCILED_GATE_LOOP_LPR_VEND_SKIMMING_OR_GHOST_VALET_SHIFT_BLOCKED",
+            action_pill="Send to a human",
+            parking_garage_lpr_valet_lane="UNRECONCILED_GATE_LOOP_LPR_VEND_SKIMMING_OR_GHOST_VALET_SHIFT_BLOCKED",
+            settled_parking_garage_lpr_valet_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not true_insurance_cost_cap_and_zero_unshared_scan_fee_verified:
+        return B2BParkingGarageLprParcsValetDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="INFLATED_CAPTIVE_GARAGEKEEPERS_INSURANCE_OR_UNSHARED_SCAN_CONVENIENCE_FEE",
+            action_pill="Send to a human",
+            parking_garage_lpr_valet_lane="INFLATED_CAPTIVE_GARAGEKEEPERS_INSURANCE_OR_UNSHARED_SCAN_CONVENIENCE_FEE",
+            settled_parking_garage_lpr_valet_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_pci_p2pe_parcs_terminal_and_municipal_parking_tax_clean:
+        return B2BParkingGarageLprParcsValetDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_PCI_P2PE_PARCS_TERMINAL_OR_MUNICIPAL_PARKING_TAX_DEFAULT_HOLD",
+            action_pill="Send to a human",
+            parking_garage_lpr_valet_lane="UNCERTIFIED_PCI_P2PE_PARCS_TERMINAL_OR_MUNICIPAL_PARKING_TAX_DEFAULT_HOLD",
+            settled_parking_garage_lpr_valet_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_gate_vend_clawback_and_captive_insurance_scrub_savings_cents > 0:
+        net_cents = max(
+            0,
+            parking_garage_lpr_valet_cents - automated_gate_vend_clawback_and_captive_insurance_scrub_savings_cents,
+        )
+        return B2BParkingGarageLprParcsValetDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_GATE_VEND_CLAWBACK_AND_CAPTIVE_INSURANCE_SCRUB_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            parking_garage_lpr_valet_lane="AUTOMATED_GATE_VEND_CLAWBACK_AND_CAPTIVE_INSURANCE_SCRUB_SAVINGS_CONFIRM",
+            settled_parking_garage_lpr_valet_cents=net_cents,
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BParkingGarageLprParcsValetDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_PARKING_GARAGE_LPR_VALET_SETTLED",
+        action_pill="Act automatically",
+        parking_garage_lpr_valet_lane="VERIFIED_PARKING_GARAGE_LPR_VALET_SETTLED",
+        settled_parking_garage_lpr_valet_cents=parking_garage_lpr_valet_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44086,6 +44186,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "skipped_facade_drop_block_latency_ms": wdw_drp_403.latency_ms,
     }
 
+    prk_commit_ok = evaluate_b2b_parking_garage_lpr_parcs_valet_policy()
+    prk_lpr_403 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+        directional_loop_lpr_vend_parity_and_valet_keybox_verified=False,
+    )
+    prk_ins_422 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+        true_insurance_cost_cap_and_zero_unshared_scan_fee_verified=False,
+    )
+    prk_pci_451 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+        webiq_pci_p2pe_parcs_terminal_and_municipal_parking_tax_clean=False,
+    )
+    prk_sav_409 = evaluate_b2b_parking_garage_lpr_parcs_valet_policy(
+        automated_gate_vend_clawback_and_captive_insurance_scrub_savings_cents=2925000,
+    )
+    b2b_parking_garage_lpr_parcs_valet_guards = {
+        "all_passed": (
+            prk_commit_ok.allowed
+            and prk_commit_ok.settled_parking_garage_lpr_valet_cents == 19500000
+            and not prk_lpr_403.allowed
+            and prk_lpr_403.http_status == 403
+            and not prk_ins_422.allowed
+            and prk_ins_422.http_status == 422
+            and not prk_pci_451.allowed
+            and prk_pci_451.http_status == 451
+            and not prk_sav_409.allowed
+            and prk_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_parking_garage_settlement_latency_ms": prk_commit_ok.latency_ms,
+        "unreconciled_gate_loop_vend_block_latency_ms": prk_lpr_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44428,6 +44558,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_scaffolding_modular_trailer_guards": b2b_commercial_scaffolding_modular_trailer_guards,
         "agentic_background_check_dot_drug_screening_guards": agentic_background_check_dot_drug_screening_guards,
         "b2b_highrise_window_washing_bmu_rope_access_guards": b2b_highrise_window_washing_bmu_rope_access_guards,
+        "b2b_parking_garage_lpr_parcs_valet_guards": b2b_parking_garage_lpr_parcs_valet_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53267,6 +53398,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="wdw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Parking Garage LPR/PARCS & Valet Sandbox (Round 330) -->
+      <div class="finops-box" id="b2b-parking-garage-lpr-parcs-valet-sandbox" style="margin-top:12px;border-color:#6366F1;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-prk-title">🅿️ B2B 商业停车楼 LPR/PARCS 营收审计与医院/酒店代客泊车 (Valet) 清算沙盒 (Round 330 · LAZ / SP+ Metropolis / Towne Park / PCI P2PE)</span>
+        </div>
+        <div class="control-row">
+          <label><span>出口 A→B 双地感线圈 + LPR 1:1 收款闭环锁 + 代客泊车智能钥匙柜工时锁 + Web IQ PCI P2PE/停车税核验:</span></label>
+          <select id="prk-select" onchange="updateB2BParkingGarageLprParcsValetSandbox()">
+            <option value="prk_commit_ok">🅿️ 出口 A→B 地感脉冲 1:1 匹配 PARCS 收款/真免单 + 钥匙柜工时 + PCI P2PE 合规：10ms 清算 $195,000.00! (Act automatically)</option>
+            <option value="prk_lpr_403">🛑 出口压线圈物理过车 1,200 辆却仅入账 980 辆 (220 辆现金车被按“故障免费抬杆”私吞)，或深夜 7 小时零取车却报销 8 名泊车员工资 → 11ms 触发 HTTP 403!</option>
+            <option value="prk_ins_422">🚨 在业主对账单强摊工资总额 16% 的内部自保公司 Garagekeepers 责任险暴利，或私收车主 $3.99 扫码便利费独吞不参与分成 → 14ms 触发 HTTP 422!</option>
+            <option value="prk_pci_451">🛑 道闸自助缴费终端未列入 PCI SSC Validated P2PE 硬件加密名录或拖欠 20% 市政停车税 (Parking Tax)：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="prk_sav_409">🧑‍⚖️ Web IQ 自动按全日最高票价从管理费倒扣 550 次无流水手动抬杆、砍除夜班空岗泊车员工时并剥离 16% 自保加价立省 $29,250.00 (净付 $165,750.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="prk-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54035,6 +54184,7 @@ function renderAll() {{
   updateB2BCommercialScaffoldingModularTrailerSandbox();
   updateAgenticBackgroundCheckDotDrugScreeningSandbox();
   updateB2BHighriseWindowWashingBmuRopeAccessSandbox();
+  updateB2BParkingGarageLprParcsValetSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -70124,6 +70274,52 @@ function updateB2BHighriseWindowWashingBmuRopeAccessSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏢 屋顶锚点 NFC 满额打卡 + 高度计轨迹 + OSHA 1910.27 合规：已自动清算 (VERIFIED_HIGHRISE_WINDOW_WASHING_BMU_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零背阴面跳道漏擦、零假酸洗抛光升档与高空保单免责</strong>：B2B 超高层玻璃幕墙清洗与擦窗机维保批次已完成安全清算（<code>$155,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BParkingGarageLprParcsValetSandbox() {{
+  var sel = document.getElementById("prk-select");
+  var outEl = document.getElementById("prk-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "prk_lpr_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNRECONCILED_GATE_LOOP_LPR_VEND_SKIMMING_OR_GHOST_VALET_SHIFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "比对出口车道 <code>Loop A→B</code> 硬件过车脉冲、<code>LPR</code> 抓拍与代客泊车智能钥匙柜日志发现：当月有 <code>550 辆车被按“Manual Gate Override”手动抬杆无收款放行</code>，且医院门诊夜班连续 7 小时零取车却报销 8 名泊车员工时，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prk_ins_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 INFLATED_CAPTIVE_GARAGEKEEPERS_INSURANCE_OR_UNSHARED_SCAN_CONVENIENCE_FEE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计停车楼月度收支对账单发现：运营商按工资总额 <code>16% 强摊内部自保公司 Garagekeepers 擦碰责任险（为真实外部保费 3.2 倍）</code>，并在扫码付页面私收车主 <code>$3.99 便利手续费</code> 独吞不与业主分成，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prk_pci_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_PCI_P2PE_PARCS_TERMINAL_OR_MUNICIPAL_PARKING_TAX_DEFAULT_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>PCI SSC Validated P2PE Solutions</code> 名录与市财政局停车税申报系统发现：无人缴费终端缺失 <code>P2PE</code> 硬件端到端加密认证或上月代收的 <code>20% 市政停车税</code> 尚未解缴，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "prk_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_GATE_VEND_CLAWBACK_AND_CAPTIVE_INSURANCE_SCRUB_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按全日最高票价从管理费倒扣 550 次无流水手动抬杆放行 + 凭智能钥匙柜日志砍除夜班幽灵泊车员工时 + 剥离 16% 自保责任险内部加价</code>，单批立省 <code>$29,250.00</code>（净结算额优化至 <code>$165,750.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🅿️ 出口地感/LPR 1:1 闭环 + 钥匙柜活跃工时 + PCI P2PE 合规：已自动清算 (VERIFIED_PARKING_GARAGE_LPR_VALET_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零手动抬杆私吞现金、零夜班幽灵泊车员排班与 16% 自保暴利分摊</strong>：B2B 商业停车楼与代客泊车月度批次已完成安全清算（<code>$195,000.00</code>）！" +
     "</div>";
 }}
 
