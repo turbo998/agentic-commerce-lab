@@ -20015,6 +20015,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-signage-highmast-lighting-sandbox", demo_zh)
 
+    def test_b2b_commercial_floor_carpet_mat_rental_rfid_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_floor_carpet_mat_rental_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant UHF RFID mat rotation + BIM net walkable sq.ft. + NFSI Wet DCOF >=0.42 -> 200 OK ($150,000.00)
+        ok_res = evaluate_b2b_commercial_floor_carpet_mat_rental_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_FLOOR_CARPET_MAT_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_floor_carpet_mat_cents, 15000000)
+
+        # 2. Ghost mat exchange (no RFID tag rotation) or phantom rolling mat inventory -> 403 Blocked
+        mat_403 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+            rfid_mat_rotation_disjoint_and_inventory_count_verified=False,
+        )
+        self.assertFalse(mat_403.allowed)
+        self.assertEqual(mat_403.http_status, 403)
+        self.assertEqual(
+            mat_403.decision_code,
+            "GHOST_MAT_EXCHANGE_NO_RFID_ROTATION_OR_PHANTOM_INVENTORY_COUNT_BLOCKED",
+        )
+
+        # 3. Gross BOMA lease sq.ft. billing (+44% under desks) or spray buffing upcoded to diamond honing -> 422 Blocked
+        sqf_422 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+            bim_net_walkable_sqft_cap_and_stone_honing_telemetry_verified=False,
+        )
+        self.assertFalse(sqf_422.allowed)
+        self.assertEqual(sqf_422.http_status, 422)
+        self.assertEqual(
+            sqf_422.decision_code,
+            "GROSS_BOMA_SQFT_AREA_INFLATION_OR_BURNISHING_UPCODED_TO_DIAMOND_HONING",
+        )
+
+        # 4. Substandard NFSI Wet DCOF (<0.42 slip hazard) or unapproved carpet chemical -> 451 Hold
+        nfs_451 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+            webiq_nfsi_wet_dcof_traction_and_cri_soa_chemical_clean=False,
+        )
+        self.assertFalse(nfs_451.allowed)
+        self.assertEqual(nfs_451.http_status, 451)
+
+        # 5. Web IQ BIM net-walkable sq.ft. cap & RFID mat inventory scrub saving $22,500 ($127,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+            automated_net_walkable_sqft_and_rfid_mat_audit_savings_cents=2250000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_floor_carpet_mat_cents, 12750000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_floor_carpet_mat_rental_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-floor-carpet-mat-rental-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -33523,6 +33523,106 @@ def evaluate_b2b_commercial_signage_highmast_lighting_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialFloorCarpetMatRentalDecision:
+    """Deterministic decision output for B2B commercial floor care, carpet extraction, stone honing & RFID mat rental."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_floor_carpet_mat_lane: str
+    settled_commercial_floor_carpet_mat_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+    *,
+    mandate_id: str = "b2b_commercial_floor_carpet_mat_rental_rfid_net_walkable_sqft_mandate_2026",
+    commercial_floor_carpet_mat_cents: int = 15000000,
+    rfid_mat_rotation_disjoint_and_inventory_count_verified: bool = True,
+    bim_net_walkable_sqft_cap_and_stone_honing_telemetry_verified: bool = True,
+    webiq_nfsi_wet_dcof_traction_and_cri_soa_chemical_clean: bool = True,
+    automated_net_walkable_sqft_and_rfid_mat_audit_savings_cents: int = 0,
+) -> B2BCommercialFloorCarpetMatRentalDecision:
+    """Evaluate B2B commercial floor care, BIM net walkable carpet sq.ft. & UHF RFID mat rotation settlement."""
+    if not mandate_id.startswith("b2b_commercial_floor_carpet_mat_rental_rfid_net_walkable_sqft_mandate_"):
+        return B2BCommercialFloorCarpetMatRentalDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_FLOOR_CARPET_MAT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_floor_carpet_mat_lane="INVALID_COMMERCIAL_FLOOR_CARPET_MAT_MANDATE_PREFIX",
+            settled_commercial_floor_carpet_mat_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not rfid_mat_rotation_disjoint_and_inventory_count_verified:
+        return B2BCommercialFloorCarpetMatRentalDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="GHOST_MAT_EXCHANGE_NO_RFID_ROTATION_OR_PHANTOM_INVENTORY_COUNT_BLOCKED",
+            action_pill="Send to a human",
+            commercial_floor_carpet_mat_lane="GHOST_MAT_EXCHANGE_NO_RFID_ROTATION_OR_PHANTOM_INVENTORY_COUNT_BLOCKED",
+            settled_commercial_floor_carpet_mat_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not bim_net_walkable_sqft_cap_and_stone_honing_telemetry_verified:
+        return B2BCommercialFloorCarpetMatRentalDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="GROSS_BOMA_SQFT_AREA_INFLATION_OR_BURNISHING_UPCODED_TO_DIAMOND_HONING",
+            action_pill="Send to a human",
+            commercial_floor_carpet_mat_lane="GROSS_BOMA_SQFT_AREA_INFLATION_OR_BURNISHING_UPCODED_TO_DIAMOND_HONING",
+            settled_commercial_floor_carpet_mat_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_nfsi_wet_dcof_traction_and_cri_soa_chemical_clean:
+        return B2BCommercialFloorCarpetMatRentalDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="SUBSTANDARD_NFSI_WET_DCOF_SLIP_HAZARD_OR_UNAPPROVED_CRI_SOA_CHEMICAL_HOLD",
+            action_pill="Send to a human",
+            commercial_floor_carpet_mat_lane="SUBSTANDARD_NFSI_WET_DCOF_SLIP_HAZARD_OR_UNAPPROVED_CRI_SOA_CHEMICAL_HOLD",
+            settled_commercial_floor_carpet_mat_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_net_walkable_sqft_and_rfid_mat_audit_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_floor_carpet_mat_cents - automated_net_walkable_sqft_and_rfid_mat_audit_savings_cents,
+        )
+        return B2BCommercialFloorCarpetMatRentalDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_NET_WALKABLE_SQFT_CAP_AND_RFID_MAT_AUDIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_floor_carpet_mat_lane="AUTOMATED_NET_WALKABLE_SQFT_CAP_AND_RFID_MAT_AUDIT_SAVINGS_CONFIRM",
+            settled_commercial_floor_carpet_mat_cents=net_cents,
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialFloorCarpetMatRentalDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_FLOOR_CARPET_MAT_SETTLED",
+        action_pill="Act automatically",
+        commercial_floor_carpet_mat_lane="VERIFIED_COMMERCIAL_FLOOR_CARPET_MAT_SETTLED",
+        settled_commercial_floor_carpet_mat_cents=commercial_floor_carpet_mat_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44606,6 +44706,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "full_sign_upcoding_bucket_block_latency_ms": sgn_drv_403.latency_ms,
     }
 
+    flr_commit_ok = evaluate_b2b_commercial_floor_carpet_mat_rental_policy()
+    flr_mat_403 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+        rfid_mat_rotation_disjoint_and_inventory_count_verified=False,
+    )
+    flr_sqf_422 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+        bim_net_walkable_sqft_cap_and_stone_honing_telemetry_verified=False,
+    )
+    flr_nfs_451 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+        webiq_nfsi_wet_dcof_traction_and_cri_soa_chemical_clean=False,
+    )
+    flr_sav_409 = evaluate_b2b_commercial_floor_carpet_mat_rental_policy(
+        automated_net_walkable_sqft_and_rfid_mat_audit_savings_cents=2250000,
+    )
+    b2b_commercial_floor_carpet_mat_rental_guards = {
+        "all_passed": (
+            flr_commit_ok.allowed
+            and flr_commit_ok.settled_commercial_floor_carpet_mat_cents == 15000000
+            and not flr_mat_403.allowed
+            and flr_mat_403.http_status == 403
+            and not flr_sqf_422.allowed
+            and flr_sqf_422.http_status == 422
+            and not flr_nfs_451.allowed
+            and flr_nfs_451.http_status == 451
+            and not flr_sav_409.allowed
+            and flr_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_floor_mat_settlement_latency_ms": flr_commit_ok.latency_ms,
+        "ghost_mat_exchange_rfid_block_latency_ms": flr_mat_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44952,6 +45082,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_interior_plantscaping_biophilic_wall_guards": b2b_interior_plantscaping_biophilic_wall_guards,
         "b2b_retail_shopping_cart_wheellock_mobility_guards": b2b_retail_shopping_cart_wheellock_mobility_guards,
         "b2b_commercial_signage_highmast_lighting_guards": b2b_commercial_signage_highmast_lighting_guards,
+        "b2b_commercial_floor_carpet_mat_rental_guards": b2b_commercial_floor_carpet_mat_rental_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53863,6 +53994,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sgn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Floor Care, Carpet Extraction & Mat Rental Sandbox (Round 334) -->
+      <div class="finops-box" id="b2b-commercial-floor-carpet-mat-rental-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-flr-title">🧹 B2B 商业地面晶面翻新、地毯深层抽洗与防尘地垫 RFID 换洗清算沙盒 (Round 334 · Cintas / MilliCare / NFSI B101.3)</span>
+        </div>
+        <div class="control-row">
+          <label><span>防尘地垫 UHF RFID 集合互斥交替锁 + CAD/BIM 可行走净面积锁 + 光泽度 GU 校验 + Web IQ NFSI 防滑核验:</span></label>
+          <select id="flr-select" onchange="updateB2BCommercialFloorCarpetMatRentalSandbox()">
+            <option value="flr_commit_ok">🧹 地垫 RFID 100% 交替 (St ∩ St-1 = ∅) + BIM 可行走净面积 + NFSI Wet DCOF &gt;=0.42 合规：10ms 清算 $150,000.00! (Act automatically)</option>
+            <option value="flr_mat_403">🛑 送货司机晴天未换干净地垫直接在店空签单 (在店 RFID 未更新)，或实际仅铺 6 块地垫却按历史虚胖台账收 14 块水洗费 → 11ms 触发 HTTP 403!</option>
+            <option value="flr_sqf_422">🚨 50,000 平尺写字楼只洗了 28,000 平尺过道却按 BOMA 毛租约面积全额收钱 (+44% 办公桌下空气费)，或将 $0.18 喷磨抛光谎报为 $4.50 金刚石水磨翻新 → 14ms 触发 HTTP 422!</option>
+            <option value="flr_nfs_451">🛑 大堂地面封釉蜡湿态动态摩擦系数不达标 (ANSI/NFSI B101.3 Wet DCOF &lt;0.42 易致访客滑倒骨折) 或地毯药剂无 CRI SOA 认证：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="flr_sav_409">🧑‍⚖️ Web IQ 自动将地毯计费面积从 50k 毛面积折算为 28k BIM 可行走净面积、砍除 35% 幽灵地垫库存并切换晴季双周换洗立省 $22,500.00 (净付 $127,500.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="flr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54635,6 +54784,7 @@ function renderAll() {{
   updateB2BInteriorPlantscapingBiophilicWallSandbox();
   updateB2BRetailShoppingCartWheellockMobilitySandbox();
   updateB2BCommercialSignageHighmastLightingSandbox();
+  updateB2BCommercialFloorCarpetMatRentalSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -70908,6 +71058,52 @@ function updateB2BCommercialSignageHighmastLightingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>💡 支路 CT 电源定位 + 零白昼常亮 + UL 48/NEC 600 合规：已自动清算 (VERIFIED_COMMERCIAL_SIGNAGE_HIGHMAST_LIGHTING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 $25 电源故障谎报 $2,800 换整字、零双人重型云梯车注水与路灯白天常亮</strong>：B2B 商业门头招牌与高杆照明维保批次已完成安全清算（<code>$165,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialFloorCarpetMatRentalSandbox() {{
+  var sel = document.getElementById("flr-select");
+  var outEl = document.getElementById("flr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "flr_mat_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GHOST_MAT_EXCHANGE_NO_RFID_ROTATION_OR_PHANTOM_INVENTORY_COUNT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "比对本周与上周大堂防尘地垫 <code>UHF RFID</code> 芯片集合发现：在场 6 块地垫芯片与上周 <code>100% 重合（司机根本未换干净地垫直接空签单）</code>，且账单按历史虚胖台账虚报 <code>14 块地垫水洗费</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "flr_sqf_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GROSS_BOMA_SQFT_AREA_INFLATION_OR_BURNISHING_UPCODED_TO_DIAMOND_HONING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "核验楼宇 <code>CAD / BIM</code> 净地毯图层与光泽度仪日志发现：承包商按 <code>50,000 Gross BOMA Sq.Ft.（含 44% 办公桌柜与墙体）</code> 计收地毯抽洗费，并将 45 分钟 <code>$0.18/平尺高速喷磨</code> 谎报为 <code>$4.50/平尺 6 道金刚石水磨翻新</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "flr_nfs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUBSTANDARD_NFSI_WET_DCOF_SLIP_HAZARD_OR_UNAPPROVED_CRI_SOA_CHEMICAL_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NFSI B101.3 High-Traction Products</code> 与 <code>CRI Seal of Approval</code> 名录发现：大堂所用廉价高光蜡湿态动态摩擦系数仅 <code>0.29 (&lt;0.42 法定防滑安全线)</code>，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "flr_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_NET_WALKABLE_SQFT_CAP_AND_RFID_MAT_AUDIT_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按 CAD/BIM 扣除家具后的 28,000 Net Walkable Sq.Ft. 结算地毯抽洗 + 按实盘 UHF RFID 砍除 35% 幽灵地垫库存 + 晴季切换双周换洗</code>，单批立省 <code>$22,500.00</code>（净结算额优化至 <code>$127,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧹 地垫 RFID 100% 交替 + BIM 净可行走面积 + NFSI 防滑合规：已自动清算 (VERIFIED_COMMERCIAL_FLOOR_CARPET_MAT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零原地不换地垫空签单、零 BOMA 毛面积注水与 $0.18 喷磨冒充 $4.50 水磨</strong>：B2B 商业地面护理、地毯抽洗与地垫租赁批次已完成安全清算（<code>$150,000.00</code>）！" +
     "</div>";
 }}
 

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg336" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent336" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14B8A6"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg336)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent336)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#2DD4BF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">ROUND 334 · B2B COMMERCIAL FLOOR CARE, CARPET EXTRACTION, STONE HONING &amp; RFID WALK-OFF MAT RENTAL</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">商业地面翻新、地毯抽洗与防尘地垫租赁：地垫 RFID 交替锁、BIM 净面积 vs 假换垫与毛面积注水</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Mandate: b2b_commercial_floor_carpet_mat_rental_rfid_net_walkable_sqft_mandate_2026 · 15.0% Savings ($22,500 / Batch)</text>
+
+  <!-- Left Panel: Legacy Floor Care & Mat Rental Traps -->
+  <rect x="44" y="132" width="540" height="395" rx="12" fill="#1C1917" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="540" height="38" rx="12" fill="#450A0A"/>
+  <text x="64" y="156" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统防尘地垫租赁与地面翻新四大黑洞 (Legacy Floor &amp; Mat Leakage: 30%–50%)</text>
+
+  <rect x="62" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="206" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 地垫司机晴天不搬干净垫下车（原地不换垫空签单）+ 35% 幽灵库存块数</text>
+  <text x="76" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">大堂实际仅铺 6 块防尘垫，账单因历史累加一直收 14 块；且司机晴天嫌沉根本不换</text>
+  <text x="76" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">侧门地垫，直接找前台签字走人，照收 100% 水洗费与 18% 配送能源附加费。</text>
+
+  <rect x="62" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="290" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 50,000 平尺写字楼只洗了 28,000 平尺过道，却按 BOMA 毛租约面积收钱</text>
+  <text x="76" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">固定办公桌柜、文件柜、机房、卫生间与墙体占去 44% 面积，保洁队绝不可能拆桌子</text>
+  <text x="76" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">洗底下的地毯，开票却拿租约上的 50,000 Gross Sq.Ft. 乘以单价多收 44% 空气钱。</text>
+
+  <rect x="62" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="374" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 将 $0.18/平尺高速喷磨抛光 (Burnishing) 谎报为 $4.50/平尺 6 道金刚石水磨</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">用高速抛光机喷点亮光剂推 45 分钟，账单却谎称做了整晚“50#–3000# 六道树脂</text>
+  <text x="76" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">金刚石水磨结晶翻新 (Diamond Honing)”或“彻底脱蜡重打 5 层蜡”，单价虚高 20 倍。</text>
+
+  <rect x="62" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="458" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 使用湿态防滑系数不达标 (Wet DCOF &lt;0.42) 劣质高光蜡致顾客滑倒骨折</text>
+  <text x="76" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">未采用 ANSI/NFSI B101.3 认证高牵引力防滑封釉剂，雨天大堂湿滑引发访客摔伤</text>
+  <text x="76" y="496" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">（平均单案理赔 $45,000+），或地毯抽洗残留高碱皂液致 48 小时后整层发臭长霉。</text>
+
+  <!-- Right Panel: Agentic RFID Mat Rotation + BIM Net Walkable Area Architecture -->
+  <rect x="616" y="132" width="540" height="395" rx="12" fill="#0F1E2E" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="616" y="132" width="540" height="38" rx="12" fill="#064E3B"/>
+  <text x="636" y="156" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">✅ 地垫 RFID 集合互斥锁 + BIM 净可行走面积锁 + Web IQ NFSI 架构</text>
+
+  <rect x="634" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="206" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 地垫 UHF RFID 集合互斥锁 (St ∩ St-1 = ∅) + 在场实盘锁 (11ms → HTTP 403)</text>
+  <text x="648" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">强制校验本周在店地垫 RFID 集合与上周集合 100% 互斥（证明旧垫拉走、新洗地垫</text>
+  <text x="648" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">铺上），并按实盘扫码数封顶计费块数，11ms 硬拦截原地不换垫与 35% 幽灵库存。</text>
+
+  <rect x="634" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="290" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. CAD/BIM 可行走净面积锁 (&lt;=62% BOMA) + 光泽度 GU 门禁 (14ms → HTTP 422)</text>
+  <text x="648" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动扣除固定工位桌柜、机房与墙体，仅按 Net Walkable Sq.Ft. 结算地毯抽洗；申报</text>
+  <text x="648" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">$4.50 石材水磨或彻底起蜡须校验机器工时与光泽度 GU 跃升，14ms 拦工艺升档。</text>
+
+  <rect x="634" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="374" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. Web IQ /v3/browse 核查 NFSI Wet DCOF &gt;=0.42 与 CRI SOA (275ms → HTTP 451)</text>
+  <text x="648" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">275ms 在线穿透核验地板封釉剂是否列入 NFSI B101.3 High-Traction 防滑名录</text>
+  <text x="648" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">(Wet DCOF &gt;=0.42 摩擦仪读数) 及地毯药剂 CRI Seal of Approval 认证。</text>
+
+  <rect x="634" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#D97706"/>
+  <text x="648" y="458" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 自动核减毛面积为 BIM 净面积并剔除幽灵地垫库存 (240ms → HTTP 409)</text>
+  <text x="648" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动将 50k 毛面积折算为 28k 可行走净面积、清零幽灵地垫并切换晴季双周换洗：</text>
+  <text x="648" y="496" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">基准批次 $150,000.00 → 自动核减 $22,500.00 (15.0%) → 净付 $127,500.00！</text>
+
+  <!-- Bottom Telemetry & Benchmark Bar -->
+  <rect x="44" y="542" width="1112" height="92" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="64" y="568" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 确定性门禁实测 (Deterministic Policy Guards · $150,000.00 Quarterly Floor Care, Carpet &amp; Mat Rental Batch)</text>
+
+  <rect x="64" y="580" width="205" height="40" rx="6" fill="#064E3B"/>
+  <text x="76" y="598" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 10ms</text>
+  <text x="76" y="614" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11">RFID换垫+BIM净面积($150k)</text>
+
+  <rect x="281" y="580" width="205" height="40" rx="6" fill="#450A0A"/>
+  <text x="293" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 11ms</text>
+  <text x="293" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦原地不换垫与35%幽灵库存</text>
+
+  <rect x="498" y="580" width="215" height="40" rx="6" fill="#450A0A"/>
+  <text x="510" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms</text>
+  <text x="510" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦BOMA毛面积注水与假石材水磨</text>
+
+  <rect x="725" y="580" width="205" height="40" rx="6" fill="#3B0764"/>
+  <text x="737" y="598" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 451 · 275ms</text>
+  <text x="737" y="614" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦DCOF&lt;0.42滑蜡与无CRI认证</text>
+
+  <rect x="942" y="580" width="196" height="40" rx="6" fill="#451A03"/>
+  <text x="954" y="598" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 240ms</text>
+  <text x="954" y="614" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="11">锁净面积+砍幽灵垫省$22.5k</text>
+</svg>
