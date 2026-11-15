@@ -17564,6 +17564,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-rooftop-solar-ppa-nem30-vpp-sandbox", demo_zh)
 
+    def test_b2b_commercial_janitorial_atp_uwb_vs_ghost_crew_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_janitorial_atp_uwb_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant biometric+UWB FTE hours + ATP RLU<=100 + smart dispenser supplies -> 200 OK ($310,000.00)
+        ok_res = evaluate_b2b_commercial_janitorial_atp_uwb_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_JANITORIAL_EVS_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_janitorial_cents, 31000000)
+
+        # 2. 35% night-shift ghost-crew understaffing or unverified floor UWB dwell hours -> 403 Blocked
+        ghs_403 = evaluate_b2b_commercial_janitorial_atp_uwb_policy(
+            biometric_turnstile_and_floor_uwb_fte_hours_verified=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.decision_code,
+            "GHOST_NIGHT_CREW_UNDERSTAFFING_OR_UNVERIFIED_UWB_ZONE_HOURS_BLOCKED",
+        )
+
+        # 3. High-touch ATP swab breach (>100 RLU) or 3x paper/soap consumable padding -> 422 Blocked
+        atp_422 = evaluate_b2b_commercial_janitorial_atp_uwb_policy(
+            atp_rlu_100_swab_and_smart_dispenser_consumables_verified=False,
+        )
+        self.assertFalse(atp_422.allowed)
+        self.assertEqual(atp_422.http_status, 422)
+        self.assertEqual(
+            atp_422.decision_code,
+            "FAILED_ATP_RLU_SWAB_THRESHOLD_OR_CONSUMABLE_PAPER_SOAP_PADDING",
+        )
+
+        # 4. Non-EPA List K/N disinfectant in isolation ward or prevailing wage breach -> 451 Hold
+        epa_451 = evaluate_b2b_commercial_janitorial_atp_uwb_policy(
+            webiq_epa_list_k_n_disinfectant_and_prevailing_wage_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ automated UWB FTE-hour true-up & smart-dispenser consumable cap saving $27,900 ($282,100 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_janitorial_atp_uwb_policy(
+            automated_uwb_fte_hour_trueup_and_dispenser_consumable_savings_cents=2790000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_janitorial_cents, 28210000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_janitorial_atp_uwb_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-janitorial-atp-uwb-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
