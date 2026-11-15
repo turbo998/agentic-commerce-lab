@@ -19673,6 +19673,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-scaffolding-modular-trailer-sandbox", demo_zh)
 
+    def test_agentic_background_check_dot_drug_screening_fcra_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_background_check_dot_drug_screening_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant county alias dedup + unbundled negative drug screen + SAMHSA/FCRA 5-day clock -> 200 OK ($160,000.00)
+        ok_res = evaluate_agentic_background_check_dot_drug_screening_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_BACKGROUND_CHECK_DOT_DRUG_SCREEN_SETTLED")
+        self.assertEqual(ok_res.settled_background_drug_screening_cents, 16000000)
+
+        # 2. Duplicate same-county alias search charges or marked-up courthouse pass-through fee -> 403 Blocked
+        als_403 = evaluate_agentic_background_check_dot_drug_screening_policy(
+            unique_county_alias_dedup_and_statutory_court_fee_verified=False,
+        )
+        self.assertFalse(als_403.allowed)
+        self.assertEqual(als_403.http_status, 403)
+        self.assertEqual(
+            als_403.decision_code,
+            "DUPLICATE_ALIAS_COUNTY_SEARCH_OR_INFLATED_COURTHOUSE_PASSTHROUGH_FEE_BLOCKED",
+        )
+
+        # 3. Negative drug screen billed for GC-MS/MRO or unauthorized clinic chest X-ray up-testing -> 422 Blocked
+        mro_422 = evaluate_agentic_background_check_dot_drug_screening_policy(
+            negative_screen_zero_gcms_mro_and_clinic_cpt_allowlist_verified=False,
+        )
+        self.assertFalse(mro_422.allowed)
+        self.assertEqual(mro_422.http_status, 422)
+        self.assertEqual(
+            mro_422.decision_code,
+            "NEGATIVE_DRUG_SCREEN_BILLED_FOR_GCMS_MRO_OR_UNAUTHORIZED_CLINIC_UPTESTING",
+        )
+
+        # 4. Uncertified SAMHSA toxicology lab or FCRA Pre-Adverse Action <5-day violation -> 451 Hold
+        sam_451 = evaluate_agentic_background_check_dot_drug_screening_policy(
+            webiq_samhsa_certified_lab_and_fcra_5day_adverse_clock_clean=False,
+        )
+        self.assertFalse(sam_451.allowed)
+        self.assertEqual(sam_451.http_status, 451)
+
+        # 5. Web IQ same-county alias consolidation & negative MRO strip saving $24,000 ($136,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_background_check_dot_drug_screening_policy(
+            automated_alias_consolidation_and_negative_mro_strip_savings_cents=2400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_background_drug_screening_cents, 13600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_background_check_dot_drug_screening_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-background-check-dot-drug-screening-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
