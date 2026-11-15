@@ -18875,6 +18875,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-roofing-tpo-ndl-infrared-sandbox", demo_zh)
 
+    def test_agentic_fleet_toll_rfid_j1939_axle_vs_admin_fee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_fleet_toll_rfid_j1939_axle_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant zero admin fee + GPS gantry match + J1939 axle match -> 200 OK ($160,000.00)
+        ok_res = evaluate_agentic_fleet_toll_rfid_j1939_axle_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_FLEET_TOLL_RFID_SETTLED")
+        self.assertEqual(ok_res.settled_fleet_toll_rfid_cents, 16000000)
+
+        # 2. $15/toll rental admin convenience fee or ghost cross-lane read without GPS match -> 403 Blocked
+        adm_403 = evaluate_agentic_fleet_toll_rfid_j1939_axle_policy(
+            zero_admin_convenience_fee_and_gps_gantry_match_verified=False,
+        )
+        self.assertFalse(adm_403.allowed)
+        self.assertEqual(adm_403.http_status, 403)
+        self.assertEqual(
+            adm_403.decision_code,
+            "PREDATORY_TOLL_ADMIN_CONVENIENCE_FEE_OR_GHOST_GANTRY_CROSS_READ_BLOCKED",
+        )
+
+        # 3. 3-axle bobtail billed as 5-axle semi or video-toll penalty on registered fleet plate -> 422 Blocked
+        axl_422 = evaluate_agentic_fleet_toll_rfid_j1939_axle_policy(
+            j1939_axle_class_match_and_registered_plate_etc_parity_verified=False,
+        )
+        self.assertFalse(axl_422.allowed)
+        self.assertEqual(axl_422.http_status, 422)
+        self.assertEqual(
+            axl_422.decision_code,
+            "AXLE_CLASS_OVERBILLING_ON_BOBTAIL_OR_VIDEO_TOLL_PENALTY_ON_REGISTERED_PLATE",
+        )
+
+        # 4. Duplicate tractor-transponder + trailer-plate charge or unverified turnpike tariff -> 451 Hold
+        tar_451 = evaluate_agentic_fleet_toll_rfid_j1939_axle_policy(
+            webiq_toll_authority_tariff_and_no_tractor_trailer_dup_clean=False,
+        )
+        self.assertFalse(tar_451.allowed)
+        self.assertEqual(tar_451.http_status, 451)
+
+        # 5. Web IQ J1939 axle downgrade & IAG transponder parity saving $24,000 ($136,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_fleet_toll_rfid_j1939_axle_policy(
+            automated_j1939_axle_downgrade_and_iag_parity_savings_cents=2400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_fleet_toll_rfid_cents, 13600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_fleet_toll_rfid_j1939_axle_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-fleet-toll-rfid-j1939-axle-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
