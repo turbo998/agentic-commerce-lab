@@ -17849,6 +17849,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-warehouse-forklift-mhe-fleet-sandbox", demo_zh)
 
+    def test_b2b_industrial_uniform_workwear_hris_vs_ghost_employee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_uniform_workwear_rental_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant HRIS active roster + $0 used-stock prep fee + zero waiver + NFPA 2112 clean -> 200 OK ($195,000.00)
+        ok_res = evaluate_b2b_industrial_uniform_workwear_rental_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_UNIFORM_WORKWEAR_RENTAL_SETTLED")
+        self.assertEqual(ok_res.settled_uniform_workwear_rental_cents, 19500000)
+
+        # 2. Terminated ghost employees billed on invoice or >=21-day zero-scan lockers -> 403 Blocked
+        ghs_403 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+            hris_active_roster_and_21day_rfid_scan_verified=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.decision_code,
+            "TERMINATED_GHOST_EMPLOYEE_UNIFORM_BILLING_OR_ZERO_SCAN_LOCKER_BLOCKED",
+        )
+
+        # 3. $35 new-prep fee charged on used stock (RFID wash >0) or 18% damage-waiver padding -> 422 Blocked
+        prp_422 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+            used_stock_zero_prep_fee_and_zero_damage_waiver_verified=False,
+        )
+        self.assertFalse(prp_422.allowed)
+        self.assertEqual(prp_422.http_status, 422)
+        self.assertEqual(
+            prp_422.decision_code,
+            "USED_STOCK_GARMENT_PREP_FEE_FRAUD_OR_UNBUNDLED_DAMAGE_WAIVER_PADDING",
+        )
+
+        # 4. NFPA 2112/70E FR garment exceeding 50-wash arc-flash limit or lapsed UL cert -> 451 Hold
+        arc_451 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+            webiq_nfpa2112_70e_fr_ul_cert_and_50wash_limit_clean=False,
+        )
+        self.assertFalse(arc_451.allowed)
+        self.assertEqual(arc_451.http_status, 451)
+
+        # 5. Web IQ automated HRIS roster purge, 18% waiver strip & RFID depreciation saving $21,450 ($173,550 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+            automated_hris_roster_purge_and_damage_waiver_strip_savings_cents=2145000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_uniform_workwear_rental_cents, 17355000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_uniform_workwear_rental_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-uniform-workwear-rental-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

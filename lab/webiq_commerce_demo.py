@@ -30143,6 +30143,91 @@ def evaluate_b2b_warehouse_forklift_mhe_fleet_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bIndustrialUniformWorkwearRentalDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_uniform_workwear_rental_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_uniform_workwear_rental_policy(
+    *,
+    mandate_id: str = "b2b_industrial_uniform_fr_workwear_rental_hris_roster_rfid_depreciation_mandate_2026",
+    hris_active_roster_and_21day_rfid_scan_verified: bool = True,
+    used_stock_zero_prep_fee_and_zero_damage_waiver_verified: bool = True,
+    webiq_nfpa2112_70e_fr_ul_cert_and_50wash_limit_clean: bool = True,
+    automated_hris_roster_purge_and_damage_waiver_strip_savings_cents: int = 0,
+    uniform_workwear_rental_cents: int = 19500000,
+) -> B2bIndustrialUniformWorkwearRentalDecision:
+    """Evaluate B2B Industrial Uniform & NFPA 2112/70E FR Workwear Rental, HRIS Sync & RFID Depreciation policy."""
+    if not mandate_id.startswith("b2b_industrial_uniform_fr_workwear_rental_hris_roster_rfid_depreciation_mandate_"):
+        return B2bIndustrialUniformWorkwearRentalDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INDUSTRIAL_UNIFORM_WORKWEAR_RENTAL_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_uniform_workwear_rental_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not hris_active_roster_and_21day_rfid_scan_verified:
+        return B2bIndustrialUniformWorkwearRentalDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="TERMINATED_GHOST_EMPLOYEE_UNIFORM_BILLING_OR_ZERO_SCAN_LOCKER_BLOCKED",
+            action_pill="Send to a human",
+            settled_uniform_workwear_rental_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not used_stock_zero_prep_fee_and_zero_damage_waiver_verified:
+        return B2bIndustrialUniformWorkwearRentalDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="USED_STOCK_GARMENT_PREP_FEE_FRAUD_OR_UNBUNDLED_DAMAGE_WAIVER_PADDING",
+            action_pill="Send to a human",
+            settled_uniform_workwear_rental_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_nfpa2112_70e_fr_ul_cert_and_50wash_limit_clean:
+        return B2bIndustrialUniformWorkwearRentalDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="NFPA2112_70E_FR_ARC_RATING_WASH_LIMIT_EXCEEDED_OR_UL_CERT_HOLD",
+            action_pill="Send to a human",
+            settled_uniform_workwear_rental_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_hris_roster_purge_and_damage_waiver_strip_savings_cents > 0:
+        return B2bIndustrialUniformWorkwearRentalDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_HRIS_ROSTER_PURGE_AND_DAMAGE_WAIVER_STRIP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_uniform_workwear_rental_cents=max(
+                0,
+                uniform_workwear_rental_cents - automated_hris_roster_purge_and_damage_waiver_strip_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bIndustrialUniformWorkwearRentalDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INDUSTRIAL_UNIFORM_WORKWEAR_RENTAL_SETTLED",
+        action_pill="Act automatically",
+        settled_uniform_workwear_rental_cents=uniform_workwear_rental_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -40086,6 +40171,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "key_on_idle_hour_overage_block_latency_ms": mhe_idl_403.latency_ms,
     }
 
+    uni_commit_ok = evaluate_b2b_industrial_uniform_workwear_rental_policy()
+    uni_ghs_403 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+        hris_active_roster_and_21day_rfid_scan_verified=False,
+    )
+    uni_prp_422 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+        used_stock_zero_prep_fee_and_zero_damage_waiver_verified=False,
+    )
+    uni_arc_451 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+        webiq_nfpa2112_70e_fr_ul_cert_and_50wash_limit_clean=False,
+    )
+    uni_sav_409 = evaluate_b2b_industrial_uniform_workwear_rental_policy(
+        automated_hris_roster_purge_and_damage_waiver_strip_savings_cents=2145000,
+    )
+    b2b_industrial_uniform_workwear_rental_guards = {
+        "all_passed": (
+            uni_commit_ok.allowed
+            and uni_commit_ok.settled_uniform_workwear_rental_cents == 19500000
+            and not uni_ghs_403.allowed
+            and uni_ghs_403.http_status == 403
+            and not uni_prp_422.allowed
+            and uni_prp_422.http_status == 422
+            and not uni_arc_451.allowed
+            and uni_arc_451.http_status == 451
+            and not uni_sav_409.allowed
+            and uni_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_uniform_workwear_settlement_latency_ms": uni_commit_ok.latency_ms,
+        "terminated_ghost_employee_block_latency_ms": uni_ghs_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40394,6 +40509,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_security_guard_patrol_guards": b2b_commercial_security_guard_patrol_guards,
         "b2b_commercial_fire_safety_nfpa_guards": b2b_commercial_fire_safety_nfpa_guards,
         "b2b_warehouse_forklift_mhe_fleet_guards": b2b_warehouse_forklift_mhe_fleet_guards,
+        "b2b_industrial_uniform_workwear_rental_guards": b2b_industrial_uniform_workwear_rental_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48621,6 +48737,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mhe-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Uniform & NFPA 2112/70E FR Workwear Rental, HRIS Sync & RFID Depreciation Sandbox -->
+      <div class="finops-box" id="b2b-industrial-uniform-workwear-rental-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🦺 B2B 工业工装制服与阻燃特种服 (FR) 租赁：HRIS 离职即停锁、旧衣免准备费与阻燃洗次 (`b2b_industrial_uniform_fr_workwear_rental_hris_roster_rfid_depreciation_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 2,500 名蓝领技工月度工装与阻燃服租赁批次 ($195,000.00)、HRIS 在职名册同步、RFID 旧衣识别与 NFPA 2112 阻燃场景 (Industrial Uniform &amp; FR Workwear Scenario):</span></label>
+          <select id="uni-select" onchange="updateB2bIndustrialUniformWorkwearRentalSandbox()">
+            <option value="uni_commit_ok">🦺 HRIS 在职花名册 100% 匹配 + 二手旧衣 $0 准备费 + 零免责险 + NFPA 2112/70E 阻燃洗次合规：10ms 清算 $195,000.00! (Act automatically)</option>
+            <option value="uni_ghs_403">🛑 租赁商对 165 名已从 Workday/ADP 离职数月的“幽灵员工”或连续 21天零收洗空衣柜照收 11件全额周租 → 11ms 触发 HTTP 403!</option>
+            <option value="uni_prp_422">🚨 给新员工发放前任穿过的二手库存旧工装 (RFID Wash=28) 却按全新定制强收 $35/件 Prep/Emblem 准备费，或捆绑 18% 破损免责险 → 14ms 触发 HTTP 422!</option>
+            <option value="uni_arc_451">🛑 电弧阻燃服 (NFPA 2112 / 70E) 工业水洗已超 50次安全上限导致阻燃化学剂失效仍未免费换新：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="uni_sav_409">🧑‍⚖️ Web IQ 依据 HRIS 离职日期自动清退过渡期空挂、砍除 18% 破损免责险并按 52次水洗折旧遗失件立省 $21,450.00 (净付 $173,550.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="uni-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -49355,6 +49489,7 @@ function renderAll() {{
   updateB2bCommercialSecurityGuardPatrolSandbox();
   updateB2bCommercialFireSafetyNfpaSandbox();
   updateB2bWarehouseForkliftMheFleetSandbox();
+  updateB2bIndustrialUniformWorkwearRentalSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -63880,6 +64015,52 @@ function updateB2bWarehouseForkliftMheFleetSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🚜 CAN-Bus 有效负载工时池化 + &gt;=5G 碰撞铁证 + ANSI B56.1 货叉检测合规：已自动清算 (VERIFIED_WAREHOUSE_FORKLIFT_MHE_FLEET_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零钥匙未拔待机超时罚款、零全包维保甩锅收费与退租掉漆敲诈</strong>：B2B 仓储叉车与物料搬运设备车队批次已完成安全清算（<code>$260,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bIndustrialUniformWorkwearRentalSandbox() {{
+  var sel = document.getElementById("uni-select");
+  var outEl = document.getElementById("uni-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "uni_ghs_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TERMINATED_GHOST_EMPLOYEE_UNIFORM_BILLING_OR_ZERO_SCAN_LOCKER_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经交叉比对企业 <code>HRIS (Workday / ADP) 在职花名册</code>与工装领口 <code>UHF RFID 收洗扫码日志</code>发现：账单仍在对 <code>165 名已离职数月的幽灵员工（或连续 21 天零收洗空衣柜）</code> 全额计收每周 11 件租金，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "uni_prp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 USED_STOCK_GARMENT_PREP_FEE_FRAUD_OR_UNBUNDLED_DAMAGE_WAIVER_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "发给新入职员工的工装 <code>UHF RFID 芯片显示累计已水洗 28 次（属前任退回的存量二手衣）</code>，租赁商却按全新定制强收 <code>$35/件 Prep/Emblem/Makeup 准备费</code>，或捆绑 <code>18% 破损免责险 (Trim Advantage)</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "uni_arc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NFPA2112_70E_FR_ARC_RATING_WASH_LIMIT_EXCEEDED_OR_UL_CERT_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UL Product iQ (NFPA 2112 / NFPA 70E 阻燃防电弧认证)</code> 与 RFID 水洗计数器发现：在役阻燃连体服已超过 <code>50 次最大安全工业水洗寿命</code>（阻燃剂洗脱存在电弧烧伤风险），已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "uni_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_HRIS_ROSTER_PURGE_AND_DAMAGE_WAIVER_STRIP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>HRIS 离职日即刻停租 + 100% 剔除 18% 破损免责险与二手衣准备费 + 遗失件按 52 次洗次线性折旧</code>，单批立省 <code>$21,450.00</code>（净结算额优化至 <code>$173,550.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🦺 HRIS 在职名册匹配 + 二手衣 $0 准备费 + NFPA 2112 阻燃洗次合规：已自动清算 (VERIFIED_INDUSTRIAL_UNIFORM_WORKWEAR_RENTAL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零离职幽灵员工空挂周租、零二手旧衣冒充新衣收准备费与 18% 免责险泡沫</strong>：B2B 工业工装与阻燃特种工作服租赁批次已完成安全清算（<code>$195,000.00</code>）！" +
     "</div>";
 }}
 
