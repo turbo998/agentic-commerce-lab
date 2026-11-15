@@ -18362,6 +18362,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-dmepos-cpap-oxygen-rental-sandbox", demo_zh)
 
+    def test_b2b_heavy_equipment_rental_aemp_offrent_vs_rpp_stacking_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Off-Rent timestamp + COI RPP=$0 + AEMP load hours -> 200 OK ($230,000.00)
+        ok_res = evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HEAVY_EQUIPMENT_RENTAL_SETTLED")
+        self.assertEqual(ok_res.settled_heavy_equipment_rental_cents, 23000000)
+
+        # 2. Billed past Off-Rent call-off timestamp due to lowboy pickup delay -> 403 Blocked
+        off_403 = evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy(
+            offrent_confirmation_timestamp_and_aemp_idle_verified=False,
+        )
+        self.assertFalse(off_403.allowed)
+        self.assertEqual(off_403.http_status, 403)
+        self.assertEqual(
+            off_403.decision_code,
+            "POST_OFFRENT_CALLOFF_GHOST_BILLING_OR_PICKUP_DELAY_CHARGE_BLOCKED",
+        )
+
+        # 3. 16% RPP charged despite active COI or idle hours billed as double-shift -> 422 Blocked
+        rpp_422 = evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy(
+            coi_equipment_floater_rpp_ldw_waiver_and_shift_verified=False,
+        )
+        self.assertFalse(rpp_422.allowed)
+        self.assertEqual(rpp_422.http_status, 422)
+        self.assertEqual(
+            rpp_422.decision_code,
+            "MANDATORY_RPP_LDW_WAIVER_VIOLATION_OR_PHANTOM_DOUBLE_SHIFT_OVERAGE",
+        )
+
+        # 4. Expired ANSI A92.20 aerial lift annual inspection or non-Tier 4 diesel -> 451 Hold
+        ans_451 = evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy(
+            webiq_ansi_a92_annual_inspection_and_epa_tier4_clean=False,
+        )
+        self.assertFalse(ans_451.allowed)
+        self.assertEqual(ans_451.http_status, 451)
+
+        # 5. Web IQ Best-Rate Day/Week/4Wk conversion & RPP waiver saving $34,500 ($195,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_heavy_equipment_rental_aemp_offrent_policy(
+            automated_best_rate_cycle_and_rpp_waiver_savings_cents=3450000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_heavy_equipment_rental_cents, 19550000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_heavy_equipment_rental_aemp_offrent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-heavy-equipment-rental-aemp-offrent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
