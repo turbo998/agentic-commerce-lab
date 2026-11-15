@@ -18533,6 +18533,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-document-archiving-secure-shredding-sandbox", demo_zh)
 
+    def test_b2b_commercial_elevator_escalator_mcp_canopen_vs_obsolescence_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_elevator_escalator_mcp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Car-Top Inspection Mode >=60m + Pit NFC + zero carve-out abuse -> 200 OK ($190,000.00)
+        ok_res = evaluate_b2b_commercial_elevator_escalator_mcp_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ELEVATOR_ESCALATOR_MCP_SETTLED")
+        self.assertEqual(ok_res.settled_elevator_escalator_mcp_cents, 19000000)
+
+        # 2. 8-minute machine-room sign-and-go ghost visit with zero car-top inspection mode -> 403 Blocked
+        gho_403 = evaluate_b2b_commercial_elevator_escalator_mcp_policy(
+            cartop_inspection_mode_hours_and_pit_nfc_verified=False,
+        )
+        self.assertFalse(gho_403.allowed)
+        self.assertEqual(gho_403.http_status, 403)
+        self.assertEqual(
+            gho_403.decision_code,
+            "GHOST_ELEVATOR_MCP_VISIT_OR_MISSING_CARTOP_INSPECTION_MODE_TELEMETRY_BLOCKED",
+        )
+
+        # 3. $28,500 "obsolete drive" carve-out or $980/hr callback overtime for preventable door fault -> 422 Blocked
+        obs_422 = evaluate_b2b_commercial_elevator_escalator_mcp_policy(
+            zero_obsolescence_vandalism_carveout_and_callback_ot_verified=False,
+        )
+        self.assertFalse(obs_422.allowed)
+        self.assertEqual(obs_422.http_status, 422)
+        self.assertEqual(
+            obs_422.decision_code,
+            "OBSOLESCENCE_VANDALISM_CARVEOUT_ABUSE_OR_PREVENTABLE_CALLBACK_OVERTIME_BILLING",
+        )
+
+        # 4. Overdue ASME A17.1 Cat 1 / Cat 5 load test or unlicensed mechanic -> 451 Hold
+        cat_451 = evaluate_b2b_commercial_elevator_escalator_mcp_policy(
+            webiq_asme_a171_cat1_cat5_load_test_and_qei_license_clean=False,
+        )
+        self.assertFalse(cat_451.allowed)
+        self.assertEqual(cat_451.http_status, 451)
+
+        # 5. Web IQ MCP SLA credits & callback overtime waiver saving $28,500 ($161,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_elevator_escalator_mcp_policy(
+            automated_mcp_sla_credit_and_callback_ot_waiver_savings_cents=2850000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_elevator_escalator_mcp_cents, 16150000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_elevator_escalator_mcp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-elevator-escalator-mcp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
