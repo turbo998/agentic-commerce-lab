@@ -17507,6 +17507,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-pest-control-ipm-sandbox", demo_zh)
 
+    def test_agentic_rooftop_solar_ppa_nem30_vpp_dealer_fee_vs_pto_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant zero dealer fee cash parity + LiDAR shade-verified yield + PTO active -> 200 OK ($38,000.00)
+        ok_res = evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ROOFTOP_SOLAR_PPA_NEM30_VPP_SETTLED")
+        self.assertEqual(ok_res.settled_rooftop_solar_vpp_cents, 3800000)
+
+        # 2. 30% ($11,400) hidden loan dealer fee markup or deleted shade trees inflating kWh -> 403 Blocked
+        dlr_403 = evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy(
+            zero_hidden_dealer_fee_cash_parity_and_lidar_shade_yield_verified=False,
+        )
+        self.assertFalse(dlr_403.allowed)
+        self.assertEqual(dlr_403.http_status, 403)
+        self.assertEqual(
+            dlr_403.decision_code,
+            "HIDDEN_SOLAR_LOAN_DEALER_FEE_MARKUP_OR_SHADE_INFLATED_YIELD_BLOCKED",
+        )
+
+        # 3. 3.5% compound PPA escalator, withheld VPP/SREC revenue share or UCC-1 lien trap -> 422 Blocked
+        vpp_422 = evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy(
+            low_escalator_retail_trueup_and_80pct_vpp_srec_share_verified=False,
+        )
+        self.assertFalse(vpp_422.allowed)
+        self.assertEqual(vpp_422.http_status, 422)
+        self.assertEqual(
+            vpp_422.decision_code,
+            "EXCESSIVE_PPA_ESCALATOR_OR_WITHHELD_VPP_SREC_REVENUE_SHARE_BREACH",
+        )
+
+        # 4. Pre-PTO billing activation before utility interconnection approval or CFPB breach -> 451 Hold
+        pto_451 = evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy(
+            webiq_utility_pto_interconnection_and_cfpb_disclosure_clean=False,
+        )
+        self.assertFalse(pto_451.allowed)
+        self.assertEqual(pto_451.http_status, 451)
+
+        # 5. Web IQ automated dealer-fee strip & utility battery/VPP rebate saving $6,840 ($31,160 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_rooftop_solar_ppa_nem30_vpp_policy(
+            automated_dealer_fee_strip_and_utility_vpp_rebate_savings_cents=684000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_rooftop_solar_vpp_cents, 3116000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_rooftop_solar_ppa_nem30_vpp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-rooftop-solar-ppa-nem30-vpp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
