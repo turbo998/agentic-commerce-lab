@@ -19331,6 +19331,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-property-restoration-water-mitigation-sandbox", demo_zh)
 
+    def test_agentic_legal_ediscovery_hosting_denist_court_reporting_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant post-DeNIST net active GB + Email Threading >=50 docs/hr + standard transcript -> 200 OK ($235,000.00)
+        ok_res = evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_LEGAL_EDISCOVERY_HOSTING_SETTLED")
+        self.assertEqual(ok_res.settled_legal_ediscovery_hosting_cents, 23500000)
+
+        # 2. Unculled raw GB billed at $15/GB active hosting rate or dormant matter kept in hot storage -> 403 Blocked
+        raw_403 = evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy(
+            denist_dedup_net_active_gb_and_cold_tiering_verified=False,
+        )
+        self.assertFalse(raw_403.allowed)
+        self.assertEqual(raw_403.http_status, 403)
+        self.assertEqual(
+            raw_403.decision_code,
+            "UNCULLED_RAW_GB_ACTIVE_HOSTING_BLOAT_OR_DORMANT_MATTER_HOT_STORAGE_BLOCKED",
+        )
+
+        # 3. Unthreaded linear document review (<50 docs/hr) or unauthorized +100% expedited transcript -> 422 Blocked
+        rev_422 = evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy(
+            email_threading_tar_pace_and_no_expedited_transcript_verified=False,
+        )
+        self.assertFalse(rev_422.allowed)
+        self.assertEqual(rev_422.http_status, 422)
+        self.assertEqual(
+            rev_422.decision_code,
+            "UNTHREADED_LINEAR_DOCUMENT_REVIEW_PADDING_OR_UNAUTHORIZED_EXPEDITED_TRANSCRIPT_SURCHARGE",
+        )
+
+        # 4. Lapsed ISO 27001 hosting security or unlicensed NCRA/CSR court reporter -> 451 Hold
+        iso_451 = evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy(
+            webiq_iso27001_ediscovery_security_and_ncra_reporter_clean=False,
+        )
+        self.assertFalse(iso_451.allowed)
+        self.assertEqual(iso_451.http_status, 451)
+
+        # 5. Web IQ dormant cold-tier migration & transcript surcharge scrub saving $35,250 ($199,750 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy(
+            automated_cold_storage_tiering_and_transcript_scrub_savings_cents=3525000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_legal_ediscovery_hosting_cents, 19975000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_legal_ediscovery_hosting_court_reporting_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-legal-ediscovery-hosting-court-reporting-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
