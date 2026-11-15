@@ -18818,6 +18818,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-kitchen-refrigeration-hood-fog-sandbox", demo_zh)
 
+    def test_b2b_commercial_roofing_tpo_ndl_warranty_infrared_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant NDL deduplication + ASTM C1153 infrared check + >=20 mils DFT -> 200 OK ($220,000.00)
+        ok_res = evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_ROOFING_NDL_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_roofing_ndl_cents, 22000000)
+
+        # 2. Out-of-pocket leak billing on active 20-year NDL warranty roof or unauthorized patch -> 403 Blocked
+        ndl_403 = evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy(
+            ndl_warranty_deduplication_and_authorized_applicator_verified=False,
+        )
+        self.assertFalse(ndl_403.allowed)
+        self.assertEqual(ndl_403.http_status, 403)
+        self.assertEqual(
+            ndl_403.decision_code,
+            "ACTIVE_NDL_WARRANTY_COVERED_LEAK_BILLED_OR_UNAUTHORIZED_PATCH_VOID_BLOCKED",
+        )
+
+        # 3. Premature full roof tear-off on 3% wet insulation or <20 mils silicone coating -> 422 Blocked
+        irw_422 = evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy(
+            astm_c1153_infrared_wet_ratio_and_coating_dft_mils_verified=False,
+        )
+        self.assertFalse(irw_422.allowed)
+        self.assertEqual(irw_422.http_status, 422)
+        self.assertEqual(
+            irw_422.decision_code,
+            "PREMATURE_FULL_ROOF_TEAROFF_UPCODING_OR_SUB_SPEC_COATING_MIL_THICKNESS",
+        )
+
+        # 4. Unverified NOAA hail claim or illegal deductible rebating -> 451 Hold
+        hal_451 = evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy(
+            webiq_fm_roofnav_4470_and_noaa_hail_swath_clean=False,
+        )
+        self.assertFalse(hal_451.allowed)
+        self.assertEqual(hal_451.http_status, 451)
+
+        # 5. Web IQ $0 NDL claim routing & infrared surgical patch saving $33,000 ($187,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_roofing_tpo_ndl_infrared_policy(
+            automated_ndl_claim_routing_and_infrared_surgical_patch_savings_cents=3300000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_roofing_ndl_cents, 18700000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_roofing_tpo_ndl_infrared_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-roofing-tpo-ndl-infrared-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
