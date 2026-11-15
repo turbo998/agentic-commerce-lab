@@ -17963,6 +17963,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-packaged-cylinder-specialty-gas-sandbox", demo_zh)
 
+    def test_b2b_managed_print_services_mps_snmp_color_pixel_vs_single_pixel_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_managed_print_services_mps_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant SNMP 3-tier color pixel pricing + zero minimum pool + no evergreen + NIST 800-88 -> 200 OK ($165,000.00)
+        ok_res = evaluate_b2b_managed_print_services_mps_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_MANAGED_PRINT_SERVICES_MPS_SETTLED")
+        self.assertEqual(ok_res.settled_managed_print_mps_cents, 16500000)
+
+        # 2. <=2% accent-color pages billed at $0.085 full-color rate or unpooled minimum volume -> 403 Blocked
+        pix_403 = evaluate_b2b_managed_print_services_mps_policy(
+            snmp_three_tier_color_pixel_and_zero_minimum_pool_verified=False,
+        )
+        self.assertFalse(pix_403.allowed)
+        self.assertEqual(pix_403.http_status, 403)
+        self.assertEqual(
+            pix_403.decision_code,
+            "SINGLE_PIXEL_FULL_COLOR_CLICK_OVERCHARGE_OR_UNPOOLED_MINIMUM_VOLUME_BLOCKED",
+        )
+
+        # 3. Post-term Evergreen auto-renewal rollover or toner-free scan / A3 double-click fee -> 422 Blocked
+        evg_422 = evaluate_b2b_managed_print_services_mps_policy(
+            zero_evergreen_rollover_and_free_scan_single_a3_click_verified=False,
+        )
+        self.assertFalse(evg_422.allowed)
+        self.assertEqual(evg_422.http_status, 422)
+        self.assertEqual(
+            evg_422.decision_code,
+            "EVERGREEN_AUTO_RENEWAL_ROLLOVER_OR_SCAN_DOUBLE_CLICK_SURCHARGE_BREACH",
+        )
+
+        # 4. Missing NIST SP 800-88 HDD/SSD sanitization certificate on returned copier or CVE -> 451 Hold
+        hdd_451 = evaluate_b2b_managed_print_services_mps_policy(
+            webiq_nist_800_88_hdd_sanitization_and_cve_firmware_clean=False,
+        )
+        self.assertFalse(hdd_451.allowed)
+        self.assertEqual(hdd_451.http_status, 451)
+
+        # 5. Web IQ automated <=2% accent-color Tier-1 repricing & toner-freight strip saving $19,800 ($145,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_managed_print_services_mps_policy(
+            automated_three_tier_color_repricing_and_toner_freight_savings_cents=1980000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_managed_print_mps_cents, 14520000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_managed_print_services_mps_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-managed-print-services-mps-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

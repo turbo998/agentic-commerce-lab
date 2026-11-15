@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg300" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#3B0764"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent300" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C084FC"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg300)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent300)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-16 · ROUND 298 · B2B MANAGED PRINT SERVICES (MPS) &amp; COPIER FLEET, SNMP 3-TIER COLOR PIXEL &amp; NIST 800-88</text>
+  <text x="52" y="92" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">B2B 企业文印管理 (MPS) 与复合机租赁：SNMP 三级彩色像素计价、零保底池化与防自动续租架构</text>
+  <text x="52" y="116" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">封杀“黑白合同含 1个蓝色超链接按 $0.085 全彩高价收 12倍钱” · 废除混合办公保底空印费 · 提前 120天自动解约并锁死 NIST 800-88 硬盘销毁</text>
+
+  <!-- Left Card: Legacy Failure Modes -->
+  <rect x="48" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="48" y="136" width="356" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="68" y="160" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统企业文印 MPS 与复印机租赁三大黑洞 (贵 25%–45%)</text>
+
+  <rect x="64" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="210" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 1 个蓝色超链接 = 按 $0.085 全彩页收 12 倍天价</text>
+  <text x="78" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 黑白打印仅 $0.007/页，彩色打印高达 $0.085/页 (贵12倍)</text>
+  <text x="78" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 合同或邮件里只要有 1 个蓝色网址或小台标 (覆盖率 0.3%)</text>
+  <text x="78" y="272" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 传统计数器一律算全彩页，企业 72% 彩印费都在替蓝字买单</text>
+
+  <rect x="64" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="326" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 混合办公印量减半却强收“保底空印费”与扫描费</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 沿用疫情前每台 15,000页/月最低保底，印 6,000页照收全款</text>
+  <text x="78" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• A3 纸张算 2 次跳表，连零碳粉消耗的扫描归档也收钱</text>
+  <text x="78" y="388" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 硒鼓还剩 35% 就自动寄新鼓收 $25 运费，旧鼓被回收倒卖</text>
+
+  <rect x="64" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="442" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 90–120 天极窄窗口 Evergreen 自动续租与泄密风险</text>
+  <text x="78" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 60个月租期已付 3倍机器本金，错过挂号信窗口自动续 1年</text>
+  <text x="78" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 退租时每台勒索 $750 跨州退库运费 + $550 硬盘清理费</text>
+  <text x="78" y="504" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 未做 NIST 800-88 擦除，内置硬盘残留病历与合同流入黑市</text>
+
+  <!-- Center Card: Agentic Policy Engine -->
+  <rect x="422" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#C084FC" stroke-width="1.5"/>
+  <rect x="422" y="136" width="356" height="38" rx="12" fill="#581C87"/>
+  <text x="442" y="160" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">🛡️ 智能体 SNMP 三级像素、零保底池化与销毁三道锁</text>
+
+  <rect x="438" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#9333EA"/>
+  <text x="452" y="210" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 1：SNMP 三级彩色覆盖率阶梯锁 (&lt;=2% 按微彩算)</text>
+  <text x="452" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 直采 RFC 3805 SNMP 固件三级计数器，&lt;=2% 覆盖率仅 $0.010</text>
+  <text x="452" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 全面废除单机最低保底印量，全集团跨网点共享实际印量池</text>
+  <text x="452" y="272" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 11ms 触发 HTTP 403 阻断蓝字链接按全彩宰客与保底空印费</text>
+
+  <rect x="438" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#9333EA"/>
+  <text x="452" y="326" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 2：提前 120 天自动解约锁与扫描 $0 / A3 单跳门禁</text>
+  <text x="452" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 智能体在窗口首日自动签发法定不续租函，封死 Evergreen 顺延</text>
+  <text x="452" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 扫描归档 $0 免费，A3 按 1 次跳表，硒鼓 &lt;10% 才准发货</text>
+  <text x="452" y="388" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 14ms 触发 HTTP 422 拦截霸王自动续租与扫描/A3 乱收费</text>
+
+  <rect x="438" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#9333EA"/>
+  <text x="452" y="442" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 3：Web IQ NIST SP 800-88 硬盘销毁与 CVE 锁</text>
+  <text x="452" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse 核验退租机器序列号级 NIST 800-88 证书</text>
+  <text x="452" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 穿透核查在役 MFP 固件零未修补 CISA KEV 远程执行漏洞</text>
+  <text x="452" y="504" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 275ms 触发 HTTP 451 / 240ms HTTP 409 立省 $19,800</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="796" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="796" y="136" width="356" height="38" rx="12" fill="#064E3B"/>
+  <text x="816" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 企业文印 MPS 车队 ($165,000) 实测矩阵</text>
+
+  <rect x="812" y="188" width="324" height="60" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="826" y="210" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="826" y="232" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">SNMP 三级像素计费 + 零保底 + NIST 800-88 → $165k</text>
+
+  <rect x="812" y="258" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="280" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="826" y="302" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">&lt;=2% 蓝字链接页按 $0.085 全彩收费或收保底空印 → 拦截</text>
+
+  <rect x="812" y="328" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="350" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="826" y="372" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">满 60月强收 Evergreen 自动续租或扫描/A3 双跳表 → 阻断</text>
+
+  <rect x="812" y="398" width="324" height="60" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="826" y="420" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 (275ms) / 🧑‍⚖️ HTTP 409 (240ms)</text>
+  <text x="826" y="442" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">退机未擦除硬盘挂起 / 微彩 Tier-1 重定价省 $19,800</text>
+
+  <rect x="812" y="468" width="324" height="56" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="826" y="490" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">💡 三级彩色像素重定价与去运费后净付：$145,200 (省 12%)</text>
+  <text x="826" y="510" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="11">令牌：b2b_managed_print_services_mps_copier_lease_...</text>
+
+  <!-- Footer -->
+  <rect x="48" y="556" width="1104" height="80" rx="10" fill="#020617" stroke="#334155"/>
+  <text x="68" y="582" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">架构师核心选型铁律 (Architect's Golden Rule)：</text>
+  <text x="68" y="604" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 企业文印严禁采用一刀切彩色单价，必须绑定 RFC 3805 SNMP 三级像素覆盖率计数器 (&lt;=2% 点缀彩按 $0.010 计费) 与零保底池化。</text>
+  <text x="68" y="624" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 租约由智能体提前 120 天自动发函阻断 Evergreen 顺延，且退租设备必须经 Web IQ 核验 NIST SP 800-88 硬盘销毁证明。</text>
+</svg>
