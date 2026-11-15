@@ -18305,6 +18305,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-vision-optical-hearing-aid-sandbox", demo_zh)
 
+    def test_agentic_dmepos_cpap_oxygen_13month_cap_vs_autoship_stuffing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_dmepos_cpap_oxygen_rental_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant <=13-month rental cap + >=70% modem adherence + wear-hour resupply -> 200 OK ($175,000.00)
+        ok_res = evaluate_agentic_dmepos_cpap_oxygen_rental_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DMEPOS_CPAP_OXYGEN_RENTAL_SETTLED")
+        self.assertEqual(ok_res.settled_dmepos_cpap_rental_cents, 17500000)
+
+        # 2. Rental billed past 13-month capped-rental limit or benefit-year counter reset -> 403 Blocked
+        cap_403 = evaluate_agentic_dmepos_cpap_oxygen_rental_policy(
+            thirteen_month_capped_rental_limit_and_title_transfer_verified=False,
+        )
+        self.assertFalse(cap_403.allowed)
+        self.assertEqual(cap_403.http_status, 403)
+        self.assertEqual(
+            cap_403.decision_code,
+            "EXCEEDED_13MONTH_CAPPED_RENTAL_LIMIT_OR_DUPLICATE_RESET_CYCLE_BLOCKED",
+        )
+
+        # 3. Non-adherent closet CPAP (<70% nights) billed or robo-call auto-ship resupply stuffing -> 422 Blocked
+        adh_422 = evaluate_agentic_dmepos_cpap_oxygen_rental_policy(
+            cellular_modem_sleep_adherence_and_wear_hour_resupply_verified=False,
+        )
+        self.assertFalse(adh_422.allowed)
+        self.assertEqual(adh_422.http_status, 422)
+        self.assertEqual(
+            adh_422.decision_code,
+            "NON_ADHERENT_CLOSET_CPAP_BILLING_OR_ROBOCALL_AUTOSHIP_RESUPPLY_STUFFING",
+        )
+
+        # 4. FDA Class I recalled PE-PUR foam CPAP lot dispensed or lapsed DMEPOS accreditation -> 451 Hold
+        rec_451 = evaluate_agentic_dmepos_cpap_oxygen_rental_policy(
+            webiq_fda_cpap_foam_recall_and_cms_dme_accreditation_clean=False,
+        )
+        self.assertFalse(rec_451.allowed)
+        self.assertEqual(rec_451.http_status, 451)
+
+        # 5. Web IQ automated 13-month buyout conversion & wear-hour resupply pruning saving $26,250 ($148,750 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_dmepos_cpap_oxygen_rental_policy(
+            automated_13month_buyout_and_wear_hour_resupply_savings_cents=2625000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_dmepos_cpap_rental_cents, 14875000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_dmepos_cpap_oxygen_rental_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-dmepos-cpap-oxygen-rental-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
