@@ -18191,6 +18191,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-funeral-cremation-ftc-gpl-sandbox", demo_zh)
 
+    def test_agentic_self_storage_ecri_rate_lock_vs_90day_hike_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_self_storage_ecri_rate_lock_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 12-month rate lock + calendar-month cycle + $0 captive insurance + climate/lien clean -> 200 OK ($42,000.00)
+        ok_res = evaluate_agentic_self_storage_ecri_rate_lock_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_SELF_STORAGE_MINI_WAREHOUSE_SETTLED")
+        self.assertEqual(ok_res.settled_self_storage_rental_cents, 4200000)
+
+        # 2. Predatory 90-day +85% ECRI bait-and-switch hike or 28-day (13-month/yr) billing cycle -> 403 Blocked
+        ecr_403 = evaluate_agentic_self_storage_ecri_rate_lock_policy(
+            twelve_month_rate_lock_and_calendar_month_cycle_verified=False,
+        )
+        self.assertFalse(ecr_403.allowed)
+        self.assertEqual(ecr_403.http_status, 403)
+        self.assertEqual(
+            ecr_403.decision_code,
+            "PREDATORY_90DAY_ECRI_RATE_HIKE_OR_28DAY_BILLING_CYCLE_BLOCKED",
+        )
+
+        # 3. Forced $28/mo captive tenant protection despite ACORD COI or unprorated move-out -> 422 Blocked
+        ins_422 = evaluate_agentic_self_storage_ecri_rate_lock_policy(
+            acord_coi_captive_insurance_waiver_and_moveout_proration_verified=False,
+        )
+        self.assertFalse(ins_422.allowed)
+        self.assertEqual(ins_422.http_status, 422)
+        self.assertEqual(
+            ins_422.decision_code,
+            "FORCED_CAPTIVE_TENANT_INSURANCE_OR_UNPRORATED_MOVEOUT_MONTH_BREACH",
+        )
+
+        # 4. Illegal cut-lock lien auction notice / SCRA breach or climate-control HVAC failure -> 451 Hold
+        lin_451 = evaluate_agentic_self_storage_ecri_rate_lock_policy(
+            webiq_statutory_lien_notice_scra_and_climate_telemetry_clean=False,
+        )
+        self.assertFalse(lin_451.allowed)
+        self.assertEqual(lin_451.http_status, 451)
+
+        # 5. Web IQ automated live Web Street Rate parity rollback & insurance waiver saving $10,500 ($31,500 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_self_storage_ecri_rate_lock_policy(
+            automated_street_rate_parity_and_insurance_waiver_savings_cents=1050000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_self_storage_rental_cents, 3150000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_self_storage_ecri_rate_lock_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-self-storage-ecri-rate-lock-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
