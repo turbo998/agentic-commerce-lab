@@ -32013,6 +32013,91 @@ def evaluate_agentic_clinical_trial_ctms_edc_stipend_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BHospitalHotelLinenLaundryRfidDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_linen_laundry_rfid_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+    *,
+    mandate_id: str = "b2b_hospital_hotel_linen_laundry_rfid_dry_tare_weight_hlac_hygienic_mandate_2026",
+    clean_dry_outbound_weight_and_rfid_cart_tare_verified: bool = True,
+    zero_auto_ragout_fee_and_rfid_wash_depreciation_verified: bool = True,
+    webiq_hlac_trsa_accreditation_and_aami_pb70_limit_clean: bool = True,
+    automated_clean_dry_tare_and_rfid_depreciation_savings_cents: int = 0,
+    linen_laundry_rfid_cents: int = 18500000,
+) -> B2BHospitalHotelLinenLaundryRfidDecision:
+    """Evaluate B2B Hospital & Hotel Linen Laundry, UHF RFID Depreciation & HLAC Hygienic policy."""
+    if not mandate_id.startswith("b2b_hospital_hotel_linen_laundry_rfid_dry_tare_weight_hlac_hygienic_mandate_"):
+        return B2BHospitalHotelLinenLaundryRfidDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_HOSPITAL_HOTEL_LINEN_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_linen_laundry_rfid_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not clean_dry_outbound_weight_and_rfid_cart_tare_verified:
+        return B2BHospitalHotelLinenLaundryRfidDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WET_SOILED_LINEN_POUNDAGE_BILLING_OR_INFLATED_CART_TARE_WEIGHT_BLOCKED",
+            action_pill="Send to a human",
+            settled_linen_laundry_rfid_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not zero_auto_ragout_fee_and_rfid_wash_depreciation_verified:
+        return B2BHospitalHotelLinenLaundryRfidDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="AUTOMATIC_RAGOUT_SURCHARGE_OR_END_OF_LIFE_RFID_LINEN_BILLED_AT_NEW_COST",
+            action_pill="Send to a human",
+            settled_linen_laundry_rfid_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_hlac_trsa_accreditation_and_aami_pb70_limit_clean:
+        return B2BHospitalHotelLinenLaundryRfidDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="LAPSED_HLAC_TRSA_ACCREDITATION_OR_AAMI_PB70_SURGICAL_GOWN_LIMIT_HOLD",
+            action_pill="Send to a human",
+            settled_linen_laundry_rfid_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_clean_dry_tare_and_rfid_depreciation_savings_cents > 0:
+        return B2BHospitalHotelLinenLaundryRfidDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_CLEAN_DRY_TARE_CONVERSION_AND_RFID_DEPRECIATION_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_linen_laundry_rfid_cents=max(
+                0,
+                linen_laundry_rfid_cents - automated_clean_dry_tare_and_rfid_depreciation_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2BHospitalHotelLinenLaundryRfidDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_HOSPITAL_HOTEL_LINEN_LAUNDRY_SETTLED",
+        action_pill="Act automatically",
+        settled_linen_laundry_rfid_cents=linen_laundry_rfid_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -42616,6 +42701,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unverified_edc_screen_fail_block_latency_ms": ctp_edc_403.latency_ms,
     }
 
+    lin_commit_ok = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy()
+    lin_wet_403 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+        clean_dry_outbound_weight_and_rfid_cart_tare_verified=False,
+    )
+    lin_rag_422 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+        zero_auto_ragout_fee_and_rfid_wash_depreciation_verified=False,
+    )
+    lin_hlc_451 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+        webiq_hlac_trsa_accreditation_and_aami_pb70_limit_clean=False,
+    )
+    lin_sav_409 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+        automated_clean_dry_tare_and_rfid_depreciation_savings_cents=2775000,
+    )
+    b2b_hospital_hotel_linen_laundry_rfid_guards = {
+        "all_passed": (
+            lin_commit_ok.allowed
+            and lin_commit_ok.settled_linen_laundry_rfid_cents == 18500000
+            and not lin_wet_403.allowed
+            and lin_wet_403.http_status == 403
+            and not lin_rag_422.allowed
+            and lin_rag_422.http_status == 422
+            and not lin_hlc_451.allowed
+            and lin_hlc_451.http_status == 451
+            and not lin_sav_409.allowed
+            and lin_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_linen_laundry_settlement_latency_ms": lin_commit_ok.latency_ms,
+        "wet_soiled_cart_tare_block_latency_ms": lin_wet_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42946,6 +43061,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_event_mice_av_rigging_guards": b2b_corporate_event_mice_av_rigging_guards,
         "b2b_biopharma_lab_instrument_iso17025_guards": b2b_biopharma_lab_instrument_iso17025_guards,
         "agentic_clinical_trial_ctms_edc_stipend_guards": agentic_clinical_trial_ctms_edc_stipend_guards,
+        "b2b_hospital_hotel_linen_laundry_rfid_guards": b2b_hospital_hotel_linen_laundry_rfid_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51569,6 +51685,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ctp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Hospital & Hotel Linen Laundry, UHF RFID Depreciation & HLAC Hygienic Sandbox -->
+      <div class="finops-box" id="b2b-hospital-hotel-linen-laundry-rfid-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛏️ B2B 医院与酒店布草洗涤租赁 (HLAC / UHF RFID)：出厂净干重去皮锁、RFID 水洗次数折旧与防 16% 固定损耗费 (`b2b_hospital_hotel_linen_laundry_rfid_dry_tare_weight_hlac_hygienic_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 医疗集团/酒店月度床品、手术铺单与病号服洗涤批次 ($185,000.00)、出厂净干重 (Clean-Dry Lbs)、笼车 RFID 实测皮重与单件水洗次数场景 (Hospital &amp; Hotel Linen Scenario):</span></label>
+          <select id="lin-select" onchange="updateB2BHospitalHotelLinenLaundryRfidSandbox()">
+            <option value="lin_commit_ok">🛏️ 出厂净干重结算 + 笼车 RFID 独立皮重扣除 + 单件水洗寿命折旧 + HLAC 院感合规：10ms 清算 $185,000.00! (Act automatically)</option>
+            <option value="lin_wet_403">🛑 按吸饱血水/消毒液的“进厂脏湿重 (Soiled Weight，重出 25%)”计费，或将实重 88 磅的滚塑大笼车统一按 60 磅默认去皮把塑料当布草收钱 → 11ms 触发 HTTP 403!</option>
+            <option value="lin_rag_422">🚨 每期账单固定强加 16%“自动破损补货费 (Auto-Rag-Out)”，或将已在洗涤厂高温压榨洗满 72 次自然撕裂的旧床单按 $18/条全新原价向医院索赔 → 14ms 触发 HTTP 422!</option>
+            <option value="lin_hlc_451">🛑 洗涤厂 HLAC / TRSA Hygienically Clean 院感认证失效、隧道机杀菌水温未达 160°F×25min 或 AAMI PB70 手术衣超 75 次水洗未报废：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="lin_sav_409">🧑‍⚖️ Web IQ 自动将脏湿过磅重回调为出厂净干去皮重、剔除厂内掉地二次回洗重并清零 16% 固定损耗费立省 $27,750.00 (净付 $157,250.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lin-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -52325,6 +52459,7 @@ function renderAll() {{
   updateB2BCorporateEventMiceAvRiggingSandbox();
   updateB2BBiopharmaLabInstrumentIso17025Sandbox();
   updateAgenticClinicalTrialCtmsEdcStipendSandbox();
+  updateB2BHospitalHotelLinenLaundryRfidSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -67862,6 +67997,52 @@ function updateAgenticClinicalTrialCtmsEdcStipendSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧬 EDC eCRF 访视锁库 + 筛查失败比 &lt;=2:1 + 阳光法案 FMV 合规：已自动清算 (VERIFIED_CLINICAL_TRIAL_CTMS_EDC_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 14:1 恶意刷筛查失败、零 0入组僵尸中心月费与患者交通卡暗扣休眠费</strong>：智能体临床试验中心经费与受试者津贴批次已完成安全清算（<code>$260,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BHospitalHotelLinenLaundryRfidSandbox() {{
+  var sel = document.getElementById("lin-select");
+  var outEl = document.getElementById("lin-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lin_wet_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WET_SOILED_LINEN_POUNDAGE_BILLING_OR_INFLATED_CART_TARE_WEIGHT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对洁净出厂地磅与笼车 <code>UHF RFID</code> 皮重台账发现：洗涤厂违规按吸饱污水的 <code>进厂脏湿重（Soiled Weight，含水虚增 26%）</code> 计费，且将实重 <code>88 lbs</code> 的周转笼车统一按 <code>60 lbs</code> 去皮（每车多算 28 磅塑料重），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lin_rag_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 AUTOMATIC_RAGOUT_SURCHARGE_OR_END_OF_LIFE_RFID_LINEN_BILLED_AT_NEW_COST (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "账单违规叠加 <code>16% 固定自动破损补货费 (Auto-Rag-Out Fee)</code>，并对通道门 <code>EPC Gen2 UHF RFID</code> 记录已水洗 <code>72 次（超过 &gt;=60 次额定寿命折旧归零线）</code> 而在熨平机内自然撕裂的旧床单按全新价索赔，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lin_hlc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 LAPSED_HLAC_TRSA_ACCREDITATION_OR_AAMI_PB70_SURGICAL_GOWN_LIMIT_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>HLAC / TRSA Hygienically Clean Healthcare</code> 认证目录与手术包 RFID 批次发现：该批可复用手术隔离衣累计水洗已达 <code>79 次（突破 ANSI/AAMI PB70 &lt;=75 次液体阻隔红线）</code>，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lin_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_CLEAN_DRY_TARE_CONVERSION_AND_RFID_DEPRECIATION_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按出厂净干重与笼车 RFID 实测皮重结算 + 剥离 16% 固定破损费与厂内二次回洗重量</code>，单批立省 <code>$27,750.00</code>（净结算额优化至 <code>$157,250.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛏️ 出厂净干重 + 笼车 RFID 精准去皮 + 单件水洗折旧 + HLAC 合规：已自动清算 (VERIFIED_HOSPITAL_HOTEL_LINEN_LAUNDRY_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零脏湿污水增重计费、零 85 磅塑料车皮当布草算钱与 16% 固定破损费</strong>：B2B 医院与酒店布草洗涤租赁批次已完成安全清算（<code>$185,000.00</code>）！" +
     "</div>";
 }}
 

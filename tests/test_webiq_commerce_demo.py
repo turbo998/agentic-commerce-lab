@@ -19103,6 +19103,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-clinical-trial-ctms-edc-stipend-sandbox", demo_zh)
 
+    def test_b2b_hospital_hotel_linen_laundry_rfid_dry_tare_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant clean-dry outbound weight + RFID cart tare + zero auto-rag-out -> 200 OK ($185,000.00)
+        ok_res = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOSPITAL_HOTEL_LINEN_LAUNDRY_SETTLED")
+        self.assertEqual(ok_res.settled_linen_laundry_rfid_cents, 18500000)
+
+        # 2. Wet-soiled poundage billing or inflated 60-lb default cart tare -> 403 Blocked
+        wet_403 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+            clean_dry_outbound_weight_and_rfid_cart_tare_verified=False,
+        )
+        self.assertFalse(wet_403.allowed)
+        self.assertEqual(wet_403.http_status, 403)
+        self.assertEqual(
+            wet_403.decision_code,
+            "WET_SOILED_LINEN_POUNDAGE_BILLING_OR_INFLATED_CART_TARE_WEIGHT_BLOCKED",
+        )
+
+        # 3. 16% automatic rag-out surcharge or 72-wash end-of-life sheet billed at new cost -> 422 Blocked
+        rag_422 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+            zero_auto_ragout_fee_and_rfid_wash_depreciation_verified=False,
+        )
+        self.assertFalse(rag_422.allowed)
+        self.assertEqual(rag_422.http_status, 422)
+        self.assertEqual(
+            rag_422.decision_code,
+            "AUTOMATIC_RAGOUT_SURCHARGE_OR_END_OF_LIFE_RFID_LINEN_BILLED_AT_NEW_COST",
+        )
+
+        # 4. Lapsed HLAC/TRSA accreditation or AAMI PB70 surgical gown >75 washes -> 451 Hold
+        hlc_451 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+            webiq_hlac_trsa_accreditation_and_aami_pb70_limit_clean=False,
+        )
+        self.assertFalse(hlc_451.allowed)
+        self.assertEqual(hlc_451.http_status, 451)
+
+        # 5. Web IQ clean-dry tare conversion & RFID depreciation saving $27,750 ($157,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_hotel_linen_laundry_rfid_policy(
+            automated_clean_dry_tare_and_rfid_depreciation_savings_cents=2775000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_linen_laundry_rfid_cents, 15725000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_hotel_linen_laundry_rfid_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-hotel-linen-laundry-rfid-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
