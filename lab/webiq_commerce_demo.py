@@ -30398,6 +30398,91 @@ def evaluate_b2b_managed_print_services_mps_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bCorporateCafeteriaDiningRebateDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_corporate_cafeteria_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+    *,
+    mandate_id: str = "b2b_corporate_cafeteria_dining_micromarket_cost_plus_vda_rebate_badge_attendance_mandate_2026",
+    net_of_gpo_vda_rebate_food_cost_and_fixed_meal_fee_verified: bool = True,
+    badge_in_pos_subsidy_match_and_micromarket_shrinkage_cap_verified: bool = True,
+    webiq_health_department_grade_a_and_fda_allergen_clean: bool = True,
+    automated_gpo_vda_rebate_credit_and_hybrid_attendance_savings_cents: int = 0,
+    corporate_cafeteria_cents: int = 28000000,
+) -> B2bCorporateCafeteriaDiningRebateDecision:
+    """Evaluate B2B Corporate Cafeteria, Pantry & Micro-Market Cost-Plus VDA Rebate & Badge-In policy."""
+    if not mandate_id.startswith("b2b_corporate_cafeteria_dining_micromarket_cost_plus_vda_rebate_badge_attendance_mandate_"):
+        return B2bCorporateCafeteriaDiningRebateDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CORPORATE_CAFETERIA_DINING_REBATE_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_corporate_cafeteria_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not net_of_gpo_vda_rebate_food_cost_and_fixed_meal_fee_verified:
+        return B2bCorporateCafeteriaDiningRebateDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="RETAINED_GPO_VDA_FOOD_REBATE_OR_GROSS_INVOICE_COST_PLUS_MARKUP_BLOCKED",
+            action_pill="Send to a human",
+            settled_corporate_cafeteria_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not badge_in_pos_subsidy_match_and_micromarket_shrinkage_cap_verified:
+        return B2bCorporateCafeteriaDiningRebateDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNVERIFIED_HYBRID_HEADCOUNT_GUARANTEE_OR_EXCESSIVE_MICROMARKET_SHRINKAGE_BREACH",
+            action_pill="Send to a human",
+            settled_corporate_cafeteria_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_health_department_grade_a_and_fda_allergen_clean:
+        return B2bCorporateCafeteriaDiningRebateDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="HEALTH_DEPARTMENT_CRITICAL_FOOD_SAFETY_VIOLATION_OR_ALLERGEN_LABEL_HOLD",
+            action_pill="Send to a human",
+            settled_corporate_cafeteria_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_gpo_vda_rebate_credit_and_hybrid_attendance_savings_cents > 0:
+        return B2bCorporateCafeteriaDiningRebateDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_GPO_VDA_REBATE_CREDIT_AND_HYBRID_ATTENDANCE_TRUEUP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_corporate_cafeteria_cents=max(
+                0,
+                corporate_cafeteria_cents - automated_gpo_vda_rebate_credit_and_hybrid_attendance_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bCorporateCafeteriaDiningRebateDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CORPORATE_CAFETERIA_DINING_SETTLED",
+        action_pill="Act automatically",
+        settled_corporate_cafeteria_cents=corporate_cafeteria_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -40431,6 +40516,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "single_pixel_color_click_block_latency_ms": mps_pix_403.latency_ms,
     }
 
+    caf_commit_ok = evaluate_b2b_corporate_cafeteria_dining_rebate_policy()
+    caf_reb_403 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+        net_of_gpo_vda_rebate_food_cost_and_fixed_meal_fee_verified=False,
+    )
+    caf_hyb_422 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+        badge_in_pos_subsidy_match_and_micromarket_shrinkage_cap_verified=False,
+    )
+    caf_hlt_451 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+        webiq_health_department_grade_a_and_fda_allergen_clean=False,
+    )
+    caf_sav_409 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+        automated_gpo_vda_rebate_credit_and_hybrid_attendance_savings_cents=2800000,
+    )
+    b2b_corporate_cafeteria_dining_rebate_guards = {
+        "all_passed": (
+            caf_commit_ok.allowed
+            and caf_commit_ok.settled_corporate_cafeteria_cents == 28000000
+            and not caf_reb_403.allowed
+            and caf_reb_403.http_status == 403
+            and not caf_hyb_422.allowed
+            and caf_hyb_422.http_status == 422
+            and not caf_hlt_451.allowed
+            and caf_hlt_451.http_status == 451
+            and not caf_sav_409.allowed
+            and caf_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_corporate_cafeteria_settlement_latency_ms": caf_commit_ok.latency_ms,
+        "retained_gpo_vda_rebate_block_latency_ms": caf_reb_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40742,6 +40857,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_uniform_workwear_rental_guards": b2b_industrial_uniform_workwear_rental_guards,
         "b2b_packaged_cylinder_specialty_gas_guards": b2b_packaged_cylinder_specialty_gas_guards,
         "b2b_managed_print_services_mps_guards": b2b_managed_print_services_mps_guards,
+        "b2b_corporate_cafeteria_dining_rebate_guards": b2b_corporate_cafeteria_dining_rebate_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49023,6 +49139,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mps-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Corporate Cafeteria, Pantry & Micro-Market Cost-Plus VDA Rebate & Badge-In Sandbox -->
+      <div class="finops-box" id="b2b-corporate-cafeteria-dining-rebate-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🍱 B2B 企业员工餐厅、茶水间与无人微超：100% 采购返利穿透锁、门禁在岗核销与防空额保底 (`b2b_corporate_cafeteria_dining_micromarket_cost_plus_vda_rebate_badge_attendance_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 5,000 人总部园区月度食堂 P&amp;L 与微超批次 ($280,000.00)、100% GPO/VDA 返利穿透、大楼门禁一卡一餐与微超货损场景 (Corporate Cafeteria &amp; Micro-Market Scenario):</span></label>
+          <select id="caf-select" onchange="updateB2bCorporateCafeteriaDiningRebateSandbox()">
+            <option value="caf_commit_ok">🍱 100% 扣除 GPO/VDA 返利净底价 + 大楼门禁一卡一餐核销 + 微超货损 &lt;=1.5% + 卫生 Grade A 合规：10ms 清算 $280,000.00! (Act automatically)</option>
+            <option value="caf_reb_403">🛑 团餐商在开放账本 Cost-Plus 合同中按分销商毛发票价报销并私吞 14% Foodbuy/Entegra 厂家返利 (VDA)，或按食材花费百分比抽管理费 → 11ms 触发 HTTP 403!</option>
+            <option value="caf_hyb_422">🚨 周五居家办公大楼仅 22% 刷卡出勤却照按 3,000人满员收保底补贴，或将无人微超 12% 未扫码失窃/过期损耗全转嫁雇主 → 14ms 触发 HTTP 422!</option>
+            <option value="caf_hlt_451">🛑 市政卫生局飞检发现后厨冷链/鼠患严重违规或采购批次命中 FDA 过敏原/李斯特菌召回：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="caf_sav_409">🧑‍⚖️ Web IQ 依据 USDA AMS 批发指数追回 14% 表外厂家返利并按大楼实到门禁人数核减周五空班费立省 $28,000.00 (净付 $252,000.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="caf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -49760,6 +49894,7 @@ function renderAll() {{
   updateB2bIndustrialUniformWorkwearRentalSandbox();
   updateB2bPackagedCylinderSpecialtyGasSandbox();
   updateB2bManagedPrintServicesMpsSandbox();
+  updateB2bCorporateCafeteriaDiningRebateSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -64423,6 +64558,52 @@ function updateB2bManagedPrintServicesMpsSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🖨️ SNMP 三级彩色像素计价 + 全网零保底池化 + NIST 800-88 硬盘销毁合规：已自动清算 (VERIFIED_MANAGED_PRINT_SERVICES_MPS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1 个蓝色超链接按全彩宰客、零混合办公保底空印费与 Evergreen 自动高价续租</strong>：B2B 企业文印管理与复合机租赁批次已完成安全清算（<code>$165,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bCorporateCafeteriaDiningRebateSandbox() {{
+  var sel = document.getElementById("caf-select");
+  var outEl = document.getElementById("caf-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "caf_reb_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 RETAINED_GPO_VDA_FOOD_REBATE_OR_GROSS_INVOICE_COST_PLUS_MARKUP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经审计开放账本（<code>Open-Book P&amp;L Cost-Plus</code>）食材发票与 <code>USDA AMS 批发基准价</code>发现：团餐商按未扣返利的毛发票面额向雇主实报实销，背地里通过旗下采购集团（<code>Foodbuy / Entegra</code>）私吞了 <code>14% 表外销量返利 (VDA)</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "caf_hyb_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_HYBRID_HEADCOUNT_GUARANTEE_OR_EXCESSIVE_MICROMARKET_SHRINKAGE_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "混合办公周五大楼门禁实到刷卡仅 <code>750 人 (22% 出勤率)</code>，团餐商却强行按 <code>3,000 人满员收保底补贴</code>，或将无人微超高达 <code>12% 的未扫码拿走与过期报废损耗 (超 &lt;=1.5% 上限)</code> 全数转嫁进雇主亏损补贴账单，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "caf_hlt_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HEALTH_DEPARTMENT_CRITICAL_FOOD_SAFETY_VIOLATION_OR_ALLERGEN_LABEL_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查市政卫生局餐饮检查档案与 <code>FDA 食安召回名录</code>发现：园区食堂存在未闭环的冷链温度失控重大违规，或预包装餐食漏标 <code>FASTER Act 9 大致敏原</code>，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "caf_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_GPO_VDA_REBATE_CREDIT_AND_HYBRID_ATTENDANCE_TRUEUP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>100% 追回 14% GPO/VDA 表外厂家食材返利 + 周一/周五按大楼门禁实到人数弹性核销</code>，单批立省 <code>$28,000.00</code>（净结算额优化至 <code>$252,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🍱 100% 扣返利净底价 + 大楼门禁一卡一餐 + 微超货损 &lt;=1.5% 合规：已自动清算 (VERIFIED_CORPORATE_CAFETERIA_DINING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零私吞 14% 食品厂表外返利、零周五空楼收满员保底与微超失窃甩锅</strong>：B2B 企业员工餐厅与无人微超批次已完成安全清算（<code>$280,000.00</code>）！" +
     "</div>";
 }}
 

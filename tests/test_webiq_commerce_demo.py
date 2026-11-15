@@ -18020,6 +18020,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-managed-print-services-mps-sandbox", demo_zh)
 
+    def test_b2b_corporate_cafeteria_dining_vda_rebate_vs_hybrid_guarantee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_corporate_cafeteria_dining_rebate_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 100% net-of-GPO/VDA rebate cost + badge-in POS match + <=1.5% shrinkage -> 200 OK ($280,000.00)
+        ok_res = evaluate_b2b_corporate_cafeteria_dining_rebate_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORPORATE_CAFETERIA_DINING_SETTLED")
+        self.assertEqual(ok_res.settled_corporate_cafeteria_cents, 28000000)
+
+        # 2. Retained 14% off-invoice GPO/VDA rebates or % management fee on gross spend -> 403 Blocked
+        reb_403 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+            net_of_gpo_vda_rebate_food_cost_and_fixed_meal_fee_verified=False,
+        )
+        self.assertFalse(reb_403.allowed)
+        self.assertEqual(reb_403.http_status, 403)
+        self.assertEqual(
+            reb_403.decision_code,
+            "RETAINED_GPO_VDA_FOOD_REBATE_OR_GROSS_INVOICE_COST_PLUS_MARKUP_BLOCKED",
+        )
+
+        # 3. Full headcount guarantee billed on 22% hybrid Friday or 12% micro-market shrinkage -> 422 Blocked
+        hyb_422 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+            badge_in_pos_subsidy_match_and_micromarket_shrinkage_cap_verified=False,
+        )
+        self.assertFalse(hyb_422.allowed)
+        self.assertEqual(hyb_422.http_status, 422)
+        self.assertEqual(
+            hyb_422.decision_code,
+            "UNVERIFIED_HYBRID_HEADCOUNT_GUARANTEE_OR_EXCESSIVE_MICROMARKET_SHRINKAGE_BREACH",
+        )
+
+        # 4. Critical municipal health-inspection violation or FDA recalled ingredient lot -> 451 Hold
+        hlt_451 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+            webiq_health_department_grade_a_and_fda_allergen_clean=False,
+        )
+        self.assertFalse(hlt_451.allowed)
+        self.assertEqual(hlt_451.http_status, 451)
+
+        # 5. Web IQ automated 14% GPO/VDA rebate credit & hybrid attendance true-up saving $28,000 ($252,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
+            automated_gpo_vda_rebate_credit_and_hybrid_attendance_savings_cents=2800000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corporate_cafeteria_cents, 25200000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_corporate_cafeteria_dining_rebate_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-cafeteria-dining-rebate-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
