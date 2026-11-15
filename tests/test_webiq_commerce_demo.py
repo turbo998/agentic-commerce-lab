@@ -18761,6 +18761,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-standby-generator-ups-battery-nfpa110-sandbox", demo_zh)
 
+    def test_b2b_commercial_kitchen_refrigeration_nfpa96_hood_fog_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant refrigerant <= nameplate oz + rooftop NFC bare-metal + FOG 0% bottom-out -> 200 OK ($145,000.00)
+        ok_res = evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_KITCHEN_REFRIGERATION_HOOD_FOG_SETTLED")
+        self.assertEqual(ok_res.settled_kitchen_refrigeration_hood_fog_cents, 14500000)
+
+        # 2. 25-lb whole-jug refrigerant billed on a 14-oz reach-in cooler -> 403 Blocked
+        ref_403 = evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy(
+            refrigerant_oz_within_nameplate_and_ice_clean_verified=False,
+        )
+        self.assertFalse(ref_403.allowed)
+        self.assertEqual(ref_403.http_status, 403)
+        self.assertEqual(
+            ref_403.decision_code,
+            "REFRIGERANT_CHARGE_EXCEEDS_NAMEPLATE_CAPACITY_OR_WHOLE_JUG_PADDING_BLOCKED",
+        )
+
+        # 3. NFPA 96 rooftop fan/duct skipped or grease trap surface-skimmed -> 422 Blocked
+        fog_422 = evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy(
+            nfpa96_rooftop_hinge_bare_metal_and_fog_bottom_out_verified=False,
+        )
+        self.assertFalse(fog_422.allowed)
+        self.assertEqual(fog_422.http_status, 422)
+        self.assertEqual(
+            fog_422.decision_code,
+            "NFPA96_ROOFTOP_DUCT_SKIPPING_OR_GREASE_TRAP_SKIMMING_DECANT_ABUSE",
+        )
+
+        # 4. Unfiled NFPA 96 fire-marshal portal report or expired FOG/EPA 608 permit -> 451 Hold
+        fir_451 = evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy(
+            webiq_nfpa96_fire_portal_and_fog_epa608_permit_clean=False,
+        )
+        self.assertFalse(fir_451.allowed)
+        self.assertEqual(fir_451.http_status, 451)
+
+        # 5. Web IQ ounce refrigerant re-rating & UCO biofuel rebate offset saving $21,750 ($123,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_kitchen_refrigeration_hood_fog_policy(
+            automated_oz_refrigerant_rerating_and_uco_rebate_savings_cents=2175000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_kitchen_refrigeration_hood_fog_cents, 12325000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_kitchen_refrigeration_hood_fog_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-kitchen-refrigeration-hood-fog-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
