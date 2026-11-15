@@ -18932,6 +18932,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-fleet-toll-rfid-j1939-axle-sandbox", demo_zh)
 
+    def test_b2b_corporate_event_mice_av_rigging_vs_service_charge_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_corporate_event_mice_av_rigging_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 0% hardware service charge + $0 load-in rent + <=2.5x multi-day cap -> 200 OK ($240,000.00)
+        ok_res = evaluate_b2b_corporate_event_mice_av_rigging_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORPORATE_EVENT_MICE_AV_SETTLED")
+        self.assertEqual(ok_res.settled_corporate_event_mice_av_cents, 24000000)
+
+        # 2. 28%++ banquet service charge stacked on AV hardware or load-in day equipment rent -> 403 Blocked
+        srv_403 = evaluate_b2b_corporate_event_mice_av_rigging_policy(
+            zero_hardware_av_service_charge_and_loadin_free_verified=False,
+        )
+        self.assertFalse(srv_403.allowed)
+        self.assertEqual(srv_403.http_status, 403)
+        self.assertEqual(
+            srv_403.decision_code,
+            "HARDWARE_AV_SERVICE_CHARGE_STACKING_OR_LOADIN_DAY_EQUIPMENT_RENT_BLOCKED",
+        )
+
+        # 3. $8,500 outside-AV patch/shadow-labor penalty or 4x uncapped multi-day rate -> 422 Blocked
+        pat_422 = evaluate_b2b_corporate_event_mice_av_rigging_policy(
+            outside_av_patch_waiver_and_multiday_multiplier_cap_verified=False,
+        )
+        self.assertFalse(pat_422.allowed)
+        self.assertEqual(pat_422.http_status, 422)
+        self.assertEqual(
+            pat_422.decision_code,
+            "MONOPOLY_OUTSIDE_AV_LIAISON_PENALTY_OR_UNBUNDLED_MULTI_DAY_RATE_GOUGING",
+        )
+
+        # 4. Unverified ESTA ETCP rigger safety certification or padded IATSE union call -> 451 Hold
+        rig_451 = evaluate_b2b_corporate_event_mice_av_rigging_policy(
+            webiq_etcp_rigger_cert_and_iatse_union_tariff_clean=False,
+        )
+        self.assertFalse(rig_451.allowed)
+        self.assertEqual(rig_451.http_status, 451)
+
+        # 5. Web IQ 28% hardware service fee strip & multi-day cap saving $36,000 ($204,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_corporate_event_mice_av_rigging_policy(
+            automated_hardware_service_fee_strip_and_multiday_cap_savings_cents=3600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corporate_event_mice_av_cents, 20400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_corporate_event_mice_av_rigging_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-event-mice-av-rigging-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
