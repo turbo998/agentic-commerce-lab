@@ -19958,6 +19958,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-retail-shopping-cart-wheellock-mobility-sandbox", demo_zh)
 
+    def test_b2b_commercial_signage_highmast_lighting_ul48_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_signage_highmast_lighting_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant LED driver fault isolation + 1-man van + 0.0A noon current + UL 48 clean -> 200 OK ($165,000.00)
+        ok_res = evaluate_b2b_commercial_signage_highmast_lighting_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SIGNAGE_HIGHMAST_LIGHTING_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_signage_lighting_cents, 16500000)
+
+        # 2. $25 LED driver fault upcoded to $2,800 full sign rebuild or 2-man 65-ft bucket truck padding -> 403 Blocked
+        drv_403 = evaluate_b2b_commercial_signage_highmast_lighting_policy(
+            led_driver_fault_isolation_and_single_bucket_van_verified=False,
+        )
+        self.assertFalse(drv_403.allowed)
+        self.assertEqual(drv_403.http_status, 403)
+        self.assertEqual(
+            drv_403.decision_code,
+            "FULL_SIGN_CABINET_UPCODING_ON_LED_DRIVER_FAULT_OR_TWO_MAN_BUCKET_TRUCK_PADDING_BLOCKED",
+        )
+
+        # 3. Unfixed dayburning photocell at noon or 400% municipal sign permit markup -> 422 Blocked
+        day_422 = evaluate_b2b_commercial_signage_highmast_lighting_policy(
+            zero_dayburning_photocell_and_passthrough_sign_permit_verified=False,
+        )
+        self.assertFalse(day_422.allowed)
+        self.assertEqual(day_422.http_status, 422)
+        self.assertEqual(
+            day_422.decision_code,
+            "DAYBURNING_PHOTOCELL_FAILURE_UNFIXED_OR_MUNICIPAL_SIGN_PERMIT_MARKUP_PADDING",
+        )
+
+        # 4. Unlisted non-UL 48/879 retrofit driver or missing NEC 600.6 disconnect switch -> 451 Hold
+        ul4_451 = evaluate_b2b_commercial_signage_highmast_lighting_policy(
+            webiq_ul48_retrofit_enumber_and_nec600_disconnect_clean=False,
+        )
+        self.assertFalse(ul4_451.allowed)
+        self.assertEqual(ul4_451.http_status, 451)
+
+        # 5. Web IQ 5-yr OEM driver warranty claim & 1-man van re-rating saving $24,750 ($140,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_signage_highmast_lighting_policy(
+            automated_driver_warranty_claim_and_bucket_rate_savings_cents=2475000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_signage_lighting_cents, 14025000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_signage_highmast_lighting_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-signage-highmast-lighting-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
