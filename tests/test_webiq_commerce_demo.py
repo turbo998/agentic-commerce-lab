@@ -18134,6 +18134,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-ambulance-ems-air-transport-sandbox", demo_zh)
 
+    def test_agentic_funeral_cremation_ftc_gpl_unbundling_vs_casket_fee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_funeral_cremation_ftc_gpl_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant itemized FTC GPL + $0 outside-casket fee + signed consent + trust clean -> 200 OK ($14,500.00)
+        ok_res = evaluate_agentic_funeral_cremation_ftc_gpl_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_FUNERAL_CREMATION_FTC_GPL_SETTLED")
+        self.assertEqual(ok_res.settled_funeral_cremation_cents, 1450000)
+
+        # 2. Illegal outside-casket handling fee or FTC 16 CFR 453.4 package-tying penalty -> 403 Blocked
+        csk_403 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+            ftc_itemized_gpl_and_zero_outside_casket_fee_verified=False,
+        )
+        self.assertFalse(csk_403.allowed)
+        self.assertEqual(csk_403.http_status, 403)
+        self.assertEqual(
+            csk_403.decision_code,
+            "ILLEGAL_OUTSIDE_CASKET_HANDLING_FEE_OR_FTC_GPL_PACKAGE_TYING_BLOCKED",
+        )
+
+        # 3. Unauthorized $950 embalming charge or wood-casket coercion on direct cremation -> 422 Blocked
+        emb_422 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+            written_embalming_consent_and_alternative_container_verified=False,
+        )
+        self.assertFalse(emb_422.allowed)
+        self.assertEqual(emb_422.http_status, 422)
+        self.assertEqual(
+            emb_422.decision_code,
+            "UNAUTHORIZED_EMBALMING_CHARGE_OR_DIRECT_CREMATION_CASKET_COERCION_BREACH",
+        )
+
+        # 4. Unlicensed subcontracted crematory or pre-need trust escrow deposit shortfall -> 451 Hold
+        trs_451 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+            webiq_state_crematory_license_and_preneed_bank_trust_clean=False,
+        )
+        self.assertFalse(trs_451.allowed)
+        self.assertEqual(trs_451.http_status, 451)
+
+        # 5. Web IQ automated FTC GPL unbundling & third-party casket parity saving $3,625 ($10,875 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+            automated_ftc_gpl_unbundling_and_casket_parity_savings_cents=362500,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_funeral_cremation_cents, 1087500)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_funeral_cremation_ftc_gpl_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-funeral-cremation-ftc-gpl-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -30568,6 +30568,91 @@ def evaluate_agentic_ambulance_ems_air_transport_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticFuneralCremationFtcGplDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_funeral_cremation_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+    *,
+    mandate_id: str = "agentic_funeral_cremation_cemetery_ftc_gpl_unbundling_preneed_trust_mandate_2026",
+    ftc_itemized_gpl_and_zero_outside_casket_fee_verified: bool = True,
+    written_embalming_consent_and_alternative_container_verified: bool = True,
+    webiq_state_crematory_license_and_preneed_bank_trust_clean: bool = True,
+    automated_ftc_gpl_unbundling_and_casket_parity_savings_cents: int = 0,
+    funeral_cremation_cents: int = 1450000,
+) -> AgenticFuneralCremationFtcGplDecision:
+    """Evaluate Agentic Funeral, Cremation & Pre-Need Trust (FTC 16 CFR Part 453) GPL Unbundling policy."""
+    if not mandate_id.startswith("agentic_funeral_cremation_cemetery_ftc_gpl_unbundling_preneed_trust_mandate_"):
+        return AgenticFuneralCremationFtcGplDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_FUNERAL_CREMATION_FTC_GPL_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_funeral_cremation_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not ftc_itemized_gpl_and_zero_outside_casket_fee_verified:
+        return AgenticFuneralCremationFtcGplDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="ILLEGAL_OUTSIDE_CASKET_HANDLING_FEE_OR_FTC_GPL_PACKAGE_TYING_BLOCKED",
+            action_pill="Send to a human",
+            settled_funeral_cremation_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not written_embalming_consent_and_alternative_container_verified:
+        return AgenticFuneralCremationFtcGplDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNAUTHORIZED_EMBALMING_CHARGE_OR_DIRECT_CREMATION_CASKET_COERCION_BREACH",
+            action_pill="Send to a human",
+            settled_funeral_cremation_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_state_crematory_license_and_preneed_bank_trust_clean:
+        return AgenticFuneralCremationFtcGplDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNLICENSED_CREMATORY_SUBCONTRACT_OR_PRENEED_TRUST_ESCROW_DEFICIT_HOLD",
+            action_pill="Send to a human",
+            settled_funeral_cremation_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_ftc_gpl_unbundling_and_casket_parity_savings_cents > 0:
+        return AgenticFuneralCremationFtcGplDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_FTC_GPL_UNBUNDLING_AND_THIRD_PARTY_CASKET_PARITY_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_funeral_cremation_cents=max(
+                0,
+                funeral_cremation_cents - automated_ftc_gpl_unbundling_and_casket_parity_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticFuneralCremationFtcGplDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_FUNERAL_CREMATION_FTC_GPL_SETTLED",
+        action_pill="Act automatically",
+        settled_funeral_cremation_cents=funeral_cremation_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -40661,6 +40746,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unloaded_deadhead_mileage_block_latency_ms": ems_mil_403.latency_ms,
     }
 
+    fnl_commit_ok = evaluate_agentic_funeral_cremation_ftc_gpl_policy()
+    fnl_csk_403 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+        ftc_itemized_gpl_and_zero_outside_casket_fee_verified=False,
+    )
+    fnl_emb_422 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+        written_embalming_consent_and_alternative_container_verified=False,
+    )
+    fnl_trs_451 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+        webiq_state_crematory_license_and_preneed_bank_trust_clean=False,
+    )
+    fnl_sav_409 = evaluate_agentic_funeral_cremation_ftc_gpl_policy(
+        automated_ftc_gpl_unbundling_and_casket_parity_savings_cents=362500,
+    )
+    agentic_funeral_cremation_ftc_gpl_guards = {
+        "all_passed": (
+            fnl_commit_ok.allowed
+            and fnl_commit_ok.settled_funeral_cremation_cents == 1450000
+            and not fnl_csk_403.allowed
+            and fnl_csk_403.http_status == 403
+            and not fnl_emb_422.allowed
+            and fnl_emb_422.http_status == 422
+            and not fnl_trs_451.allowed
+            and fnl_trs_451.http_status == 451
+            and not fnl_sav_409.allowed
+            and fnl_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_funeral_cremation_settlement_latency_ms": fnl_commit_ok.latency_ms,
+        "outside_casket_handling_fee_block_latency_ms": fnl_csk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40974,6 +41089,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_managed_print_services_mps_guards": b2b_managed_print_services_mps_guards,
         "b2b_corporate_cafeteria_dining_rebate_guards": b2b_corporate_cafeteria_dining_rebate_guards,
         "agentic_ambulance_ems_air_transport_guards": agentic_ambulance_ems_air_transport_guards,
+        "agentic_funeral_cremation_ftc_gpl_guards": agentic_funeral_cremation_ftc_gpl_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49291,6 +49407,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ems-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Funeral, Cremation & Pre-Need Trust (FTC 16 CFR Part 453) GPL Unbundling Sandbox -->
+      <div class="finops-box" id="agentic-funeral-cremation-ftc-gpl-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🕊️ 智能体殡葬服务、火化与生前契约信托：FTC GPL 分项解绑锁、外部购棺零罚款与信托 (`agentic_funeral_cremation_cemetery_ftc_gpl_unbundling_preneed_trust_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 殡葬治丧与生前契约结算单 ($14,500.00)、FTC 16 CFR 453 分项 GPL 解绑、外部购棺 $0 接收费与生前信托场景 (Funeral, Cremation &amp; Pre-Need Trust Scenario):</span></label>
+          <select id="fnl-select" onchange="updateAgenticFuneralCremationFtcGplSandbox()">
+            <option value="fnl_commit_ok">🕊️ FTC 16 CFR 453 分项 GPL 解绑 + 外部棺木 $0 接收费 + 防腐知情授权 + 生前银行信托合规：10ms 清算 $14,500.00! (Act automatically)</option>
+            <option value="fnl_csk_403">🛑 殡仪馆对家属从 Costco/网购的平价棺木违规收取 $1,200 外部棺木搬运接收费，或因不用馆内 $4,900 棺木变相涨价 (违反 16 CFR 453.4) → 11ms 触发 HTTP 403!</option>
+            <option value="fnl_emb_422">🚨 业务员谎称“州法律规定直接火化也必须花 $950 做化学防腐”未获授权强行收费，或隐瞒 $150 环保替代火化盒强卖实木棺 → 14ms 触发 HTTP 422!</option>
+            <option value="fnl_trs_451">🛑 将遗体低价转包给无州级执照的黑火化场，或生前契约 (Pre-Need) 资金被抽走 40% 佣金未足额存入不可撤销银行信托：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="fnl_sav_409">🧑‍⚖️ Web IQ 依据 FTC GPL 分项表自动解绑非必要套餐、切换第三方直配平价棺木并剥离代垫费加价立省 $3,625.00 (净付 $10,875.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fnl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -50030,6 +50164,7 @@ function renderAll() {{
   updateB2bManagedPrintServicesMpsSandbox();
   updateB2bCorporateCafeteriaDiningRebateSandbox();
   updateAgenticAmbulanceEmsAirTransportSandbox();
+  updateAgenticFuneralCremationFtcGplSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -64785,6 +64920,52 @@ function updateAgenticAmbulanceEmsAirTransportSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🚑 NEMSIS 净载客里程 + 真实 ALS2 指征 + NSA 航空禁追偿合规：已自动清算 (VERIFIED_AMBULANCE_EMS_AIR_TRANSPORT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零空驶里程混入患者账单、零挂生理盐水冒充 ALS2 重症抢救与直升机天价追偿</strong>：智能体急救车与航空医疗转运理赔批次已完成安全清算（<code>$215,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticFuneralCremationFtcGplSandbox() {{
+  var sel = document.getElementById("fnl-select");
+  var outEl = document.getElementById("fnl-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "fnl_csk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ILLEGAL_OUTSIDE_CASKET_HANDLING_FEE_OR_FTC_GPL_PACKAGE_TYING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核对联邦《FTC 殡葬规则》（<code>16 CFR § 453.4(b)(1)</code>）与分项价目表（<code>GPL</code>）发现：殡仪馆对家属自购的第三方平价棺木违规加收 <code>$1,200 接收/搬运费</code>，或在直接火化套餐外重复叠加不可拒绝基础服务费，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fnl_emb_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAUTHORIZED_EMBALMING_CHARGE_OR_DIRECT_CREMATION_CASKET_COERCION_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "账单在无家属独立书面授权（或选择短期冷藏/直接火化）下强收 <code>$950 化学防腐费 (违反 16 CFR § 453.5)</code>，或隐瞒 <code>$150 简易火化替代容器 (Alternative Container)</code> 强迫购买 <code>$2,400 实木棺</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fnl_trs_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNLICENSED_CREMATORY_SUBCONTRACT_OR_PRENEED_TRUST_ESCROW_DEFICIT_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州殡葬管理局（<code>California CFB / Texas TFSC</code>）名录与银行托管账户发现：协作火化场执业许可证已暂停，或生前契约（<code>Pre-Need</code>）预付款未按法定比例存入独立受监管银行信托，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fnl_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_FTC_GPL_UNBUNDLING_AND_THIRD_PARTY_CASKET_PARITY_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>FTC GPL 分项解绑 + 第三方直配同款棺木 ($0 接收费) + 讣告/鲜花代垫项目原票直通</code>，单笔立省 <code>$3,625.00</code>（净结算额优化至 <code>$10,875.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🕊️ FTC 16 CFR 453 分项 GPL 解绑 + 外部棺木 $0 罚款 + 生前银行信托合规：已自动清算 (VERIFIED_FUNERAL_CREMATION_FTC_GPL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零外部购棺惩罚费、零欺诈性强制防腐与生前信托资金挪用</strong>：智能体殡葬治丧与生前契约信托批次已完成安全清算（<code>$14,500.00</code>）！" +
     "</div>";
 }}
 
