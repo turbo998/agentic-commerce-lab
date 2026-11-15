@@ -31843,6 +31843,91 @@ def evaluate_b2b_corporate_event_mice_av_rigging_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BBiopharmaLabInstrumentIso17025Decision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_biopharma_lab_instrument_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+    *,
+    mandate_id: str = "b2b_biopharma_lab_instrument_iso17025_calibration_oq_pq_mvs_tiering_mandate_2026",
+    cds_utilization_tier_and_prior_annual_pm_verified: bool = True,
+    usp1058_modular_oq_scope_and_as_found_calibration_verified: bool = True,
+    webiq_a2la_anab_iso17025_scope_and_nist_traceability_clean: bool = True,
+    automated_mvs_tiering_and_modular_oq_savings_cents: int = 0,
+    biopharma_lab_instrument_cents: int = 25000000,
+) -> B2BBiopharmaLabInstrumentIso17025Decision:
+    """Evaluate B2B Biopharma Analytical Lab Instrument Service, ISO/IEC 17025 Calibration & USP <1058> OQ/PQ policy."""
+    if not mandate_id.startswith("b2b_biopharma_lab_instrument_iso17025_calibration_oq_pq_mvs_tiering_mandate_"):
+        return B2BBiopharmaLabInstrumentIso17025Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_BIOPHARMA_LAB_INSTRUMENT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_biopharma_lab_instrument_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not cds_utilization_tier_and_prior_annual_pm_verified:
+        return B2BBiopharmaLabInstrumentIso17025Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="IDLE_INSTRUMENT_OEM_GOLD_RENEWAL_OR_SKIPPED_PRIOR_ANNUAL_PM_BLOCKED",
+            action_pill="Send to a human",
+            settled_biopharma_lab_instrument_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not usp1058_modular_oq_scope_and_as_found_calibration_verified:
+        return B2BBiopharmaLabInstrumentIso17025Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNNECESSARY_FULL_OQ_REQUALIFICATION_UPSELL_OR_MISSING_AS_FOUND_CALIBRATION_DATA",
+            action_pill="Send to a human",
+            settled_biopharma_lab_instrument_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_a2la_anab_iso17025_scope_and_nist_traceability_clean:
+        return B2BBiopharmaLabInstrumentIso17025Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNVERIFIED_ISO17025_ACCREDITATION_SCOPE_OR_BROKEN_NIST_TRACEABILITY_HOLD",
+            action_pill="Send to a human",
+            settled_biopharma_lab_instrument_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_mvs_tiering_and_modular_oq_savings_cents > 0:
+        return B2BBiopharmaLabInstrumentIso17025Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_MVS_TIER_OPTIMIZATION_AND_MODULAR_OQ_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_biopharma_lab_instrument_cents=max(
+                0,
+                biopharma_lab_instrument_cents - automated_mvs_tiering_and_modular_oq_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2BBiopharmaLabInstrumentIso17025Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_BIOPHARMA_LAB_INSTRUMENT_SETTLED",
+        action_pill="Act automatically",
+        settled_biopharma_lab_instrument_cents=biopharma_lab_instrument_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -42386,6 +42471,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hardware_service_charge_stacking_block_latency_ms": avm_srv_403.latency_ms,
     }
 
+    lab_commit_ok = evaluate_b2b_biopharma_lab_instrument_iso17025_policy()
+    lab_idl_403 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+        cds_utilization_tier_and_prior_annual_pm_verified=False,
+    )
+    lab_oqp_422 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+        usp1058_modular_oq_scope_and_as_found_calibration_verified=False,
+    )
+    lab_iso_451 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+        webiq_a2la_anab_iso17025_scope_and_nist_traceability_clean=False,
+    )
+    lab_sav_409 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+        automated_mvs_tiering_and_modular_oq_savings_cents=3750000,
+    )
+    b2b_biopharma_lab_instrument_iso17025_guards = {
+        "all_passed": (
+            lab_commit_ok.allowed
+            and lab_commit_ok.settled_biopharma_lab_instrument_cents == 25000000
+            and not lab_idl_403.allowed
+            and lab_idl_403.http_status == 403
+            and not lab_oqp_422.allowed
+            and lab_oqp_422.http_status == 422
+            and not lab_iso_451.allowed
+            and lab_iso_451.http_status == 451
+            and not lab_sav_409.allowed
+            and lab_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_biopharma_lab_instrument_settlement_latency_ms": lab_commit_ok.latency_ms,
+        "idle_instrument_gold_renewal_block_latency_ms": lab_idl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42714,6 +42829,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_roofing_tpo_ndl_infrared_guards": b2b_commercial_roofing_tpo_ndl_infrared_guards,
         "agentic_fleet_toll_rfid_j1939_axle_guards": agentic_fleet_toll_rfid_j1939_axle_guards,
         "b2b_corporate_event_mice_av_rigging_guards": b2b_corporate_event_mice_av_rigging_guards,
+        "b2b_biopharma_lab_instrument_iso17025_guards": b2b_biopharma_lab_instrument_iso17025_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51301,6 +51417,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="avm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Biopharma Analytical Lab Instrument Service, ISO/IEC 17025 Calibration & USP <1058> OQ/PQ Sandbox -->
+      <div class="finops-box" id="b2b-biopharma-lab-instrument-iso17025-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🔬 B2B 生物医药实验室科学仪器维保与校准 (USP &lt;1058&gt; / ISO 17025)：CDS 进样工时锁、模块化 OQ 去重与防闲置续金牌保 (`b2b_biopharma_lab_instrument_iso17025_calibration_oq_pq_mvs_tiering_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 生物药企研发/QC 季度色谱质谱维保与计量校准批次 ($250,000.00)、Empower/OpenLab 进样工时、USP &lt;1058&gt; 维修确认与 ISO 17025 As-Found 场景 (Biopharma Lab Instrument Scenario):</span></label>
+          <select id="lab-select" onchange="updateB2BBiopharmaLabInstrumentIso17025Sandbox()">
+            <option value="lab_commit_ok">🔬 CDS 进样工时 &gt;=200h + 上年度 PM 完成 + USP &lt;1058&gt; 模块化验证 + ISO 17025 合规：10ms 清算 $250,000.00! (Act automatically)</option>
+            <option value="lab_idl_403">🛑 对全年累计进样不足 50 小时的闲置备用 HPLC 盲目续签 $24,000/台原厂金牌全包合同，或原厂上年度漏做合同规定的年度 PM 保养仍收全款 → 11ms 触发 HTTP 403!</option>
+            <option value="lab_oqp_422">🚨 更换 $400 紫外检测器氘灯或柱塞密封圈被原厂捆绑 $6,500 整机全套 Full OQ 验证，或移液器/天平校准证书缺失 As-Found 调前原始数据 → 14ms 触发 HTTP 422!</option>
+            <option value="lab_iso_451">🛑 校准外包商超出 A2LA / ANAB ISO/IEC 17025 认可量程附表 (CMC) 出具微量移液器证书或 NIST 标准砝码溯源中断：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="lab_sav_409">🧑‍⚖️ Web IQ 自动将成熟过保常规 HPLC/GC 从原厂金牌合同分流至 MVS 多品牌统签契约并将耗材维修回调为模块化验证立省 $37,500.00 (净付 $212,500.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lab-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -52055,6 +52189,7 @@ function renderAll() {{
   updateB2BCommercialRoofingTpoNdlInfraredSandbox();
   updateAgenticFleetTollRfidJ1939AxleSandbox();
   updateB2BCorporateEventMiceAvRiggingSandbox();
+  updateB2BBiopharmaLabInstrumentIso17025Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -67500,6 +67635,52 @@ function updateB2BCorporateEventMiceAvRiggingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🎤 硬件租金 0% 服务费 + 2.5x 周封顶系数 + ESTA ETCP 吊装安全合规：已自动清算 (VERIFIED_CORPORATE_EVENT_MICE_AV_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零硬件 28%++ 服务费抽成、零 $8,500 自带 AV 进场买路钱与装台日收租</strong>：B2B 企业展会与酒店会议 AV 批次已完成安全清算（<code>$240,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BBiopharmaLabInstrumentIso17025Sandbox() {{
+  var sel = document.getElementById("lab-select");
+  var outEl = document.getElementById("lab-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lab_idl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 IDLE_INSTRUMENT_OEM_GOLD_RENEWAL_OR_SKIPPED_PRIOR_ANNUAL_PM_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "读取色谱数据系统（<code>Waters Empower / Agilent OpenLab CDS</code>）发现：申报续签 <code>$24,000/年 原厂金牌全包合同</code> 的 6 台备用气相/液相色谱仪过去 12 个月实际进样运行仅 <code>42 小时（&lt;200h 闲置红线）</code>，或原厂上周期未交付 <code>21 CFR Part 11</code> 签名 PM 报告，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lab_oqp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNNECESSARY_FULL_OQ_REQUALIFICATION_UPSELL_OR_MISSING_AS_FOUND_CALIBRATION_DATA (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "依据美国药典 <code>USP &lt;1058&gt;</code> 维修影响矩阵，更换 <code>$400 紫外氘灯/柱塞密封圈</code> 仅需模块化波长/压力测试，原厂却违规捆绑 <code>$6,500 整机全套 Full OQ</code>；或移液器校准证书缺失 <code>As-Found（调前超差原始数据）</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lab_iso_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNVERIFIED_ISO17025_ACCREDITATION_SCOPE_OR_BROKEN_NIST_TRACEABILITY_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>A2LA / ANAB ISO/IEC 17025</code> 认可范围附表（<code>Scope of Accreditation CMC</code>）发现：该校准商未获批在 <code>0.1–2.0 µL 微量移液器量程</code> 出具带认可徽标报告，存在触发 <code>FDA Form 483</code> 风险，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lab_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_MVS_TIER_OPTIMIZATION_AND_MODULAR_OQ_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将成熟过保常规 HPLC/GC 从原厂金牌合同分流至 MVS 多品牌维保主协议 + 按 USP &lt;1058&gt; 将耗材维修从整机 Full OQ 回调为模块化测试</code>，单批立省 <code>$37,500.00</code>（净结算额优化至 <code>$212,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔬 CDS 进样工时分流 + USP &lt;1058&gt; 模块化验证 + ISO 17025 As-Found 合规：已自动清算 (VERIFIED_BIOPHARMA_LAB_INSTRUMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零闲置吃灰仪器续签原厂金牌保、零换氘灯强绑 $6,500 全套 OQ 与缺调前数据假校准</strong>：B2B 生物医药实验室仪器维保与校准批次已完成安全清算（<code>$250,000.00</code>）！" +
     "</div>";
 }}
 

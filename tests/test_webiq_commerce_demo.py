@@ -18989,6 +18989,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-event-mice-av-rigging-sandbox", demo_zh)
 
+    def test_b2b_biopharma_lab_instrument_iso17025_usp1058_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_biopharma_lab_instrument_iso17025_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant CDS utilization >=200h + prior PM completed + USP <1058> modular OQ + As-Found -> 200 OK ($250,000.00)
+        ok_res = evaluate_b2b_biopharma_lab_instrument_iso17025_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_BIOPHARMA_LAB_INSTRUMENT_SETTLED")
+        self.assertEqual(ok_res.settled_biopharma_lab_instrument_cents, 25000000)
+
+        # 2. Idle instrument (<200h/yr) on OEM Gold renewal or skipped prior-year PM -> 403 Blocked
+        idl_403 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+            cds_utilization_tier_and_prior_annual_pm_verified=False,
+        )
+        self.assertFalse(idl_403.allowed)
+        self.assertEqual(idl_403.http_status, 403)
+        self.assertEqual(
+            idl_403.decision_code,
+            "IDLE_INSTRUMENT_OEM_GOLD_RENEWAL_OR_SKIPPED_PRIOR_ANNUAL_PM_BLOCKED",
+        )
+
+        # 3. $6,500 Full OQ bundled onto $400 UV lamp swap or missing As-Found calibration data -> 422 Blocked
+        oqp_422 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+            usp1058_modular_oq_scope_and_as_found_calibration_verified=False,
+        )
+        self.assertFalse(oqp_422.allowed)
+        self.assertEqual(oqp_422.http_status, 422)
+        self.assertEqual(
+            oqp_422.decision_code,
+            "UNNECESSARY_FULL_OQ_REQUALIFICATION_UPSELL_OR_MISSING_AS_FOUND_CALIBRATION_DATA",
+        )
+
+        # 4. Out-of-scope A2LA/ANAB ISO/IEC 17025 calibration or broken NIST traceability -> 451 Hold
+        iso_451 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+            webiq_a2la_anab_iso17025_scope_and_nist_traceability_clean=False,
+        )
+        self.assertFalse(iso_451.allowed)
+        self.assertEqual(iso_451.http_status, 451)
+
+        # 5. Web IQ MVS tiering & modular OQ conversion saving $37,500 ($212,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_biopharma_lab_instrument_iso17025_policy(
+            automated_mvs_tiering_and_modular_oq_savings_cents=3750000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_biopharma_lab_instrument_cents, 21250000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_biopharma_lab_instrument_iso17025_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-biopharma-lab-instrument-iso17025-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
