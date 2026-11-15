@@ -19388,6 +19388,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-legal-ediscovery-hosting-court-reporting-sandbox", demo_zh)
 
+    def test_b2b_subsurface_utility_nassco_pacp_hydrovac_cipp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant decanted dry-solids tonnage + QL-A RTK photo + PACP defect density -> 200 OK ($215,000.00)
+        ok_res = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_SUBSURFACE_UTILITY_PACP_SETTLED")
+        self.assertEqual(ok_res.settled_subsurface_utility_pacp_cents, 21500000)
+
+        # 2. Hydrant-water-loaded hydro-vac slurry tonnage or unexcavated QL-A pothole billing -> 403 Blocked
+        wat_403 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+            decanted_dry_solids_tonnage_and_qla_pothole_rtk_verified=False,
+        )
+        self.assertFalse(wat_403.allowed)
+        self.assertEqual(wat_403.http_status, 403)
+        self.assertEqual(
+            wat_403.decision_code,
+            "WATER_LOADED_HYDROVAC_SLURRY_TONNAGE_OR_UNEXCAVATED_QLA_POTHOLE_BILLING_BLOCKED",
+        )
+
+        # 3. Single-joint root defect upcoded to $91,000 full-length CIPP liner or thin resin wall -> 422 Blocked
+        cip_422 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+            nassco_pacp_defect_density_and_cipp_wall_thickness_verified=False,
+        )
+        self.assertFalse(cip_422.allowed)
+        self.assertEqual(cip_422.http_status, 422)
+        self.assertEqual(
+            cip_422.decision_code,
+            "LOCALIZED_PIPE_DEFECT_UPCODED_TO_FULL_CIPP_LINER_OR_THIN_RESIN_WALL",
+        )
+
+        # 4. Missing state 811 One-Call dig ticket or expired NASSCO PACP certification -> 451 Hold
+        dig_451 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+            webiq_811_onecall_ticket_and_nassco_certification_clean=False,
+        )
+        self.assertFalse(dig_451.allowed)
+        self.assertEqual(dig_451.http_status, 451)
+
+        # 5. Web IQ sectional point-repair conversion & decanted sludge tonnage saving $32,250 ($182,750 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+            automated_point_repair_conversion_and_sludge_decant_savings_cents=3225000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_subsurface_utility_pacp_cents, 18275000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_subsurface_utility_nassco_pacp_hydrovac_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-subsurface-utility-nassco-pacp-hydrovac-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

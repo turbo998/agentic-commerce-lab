@@ -32438,6 +32438,91 @@ def evaluate_agentic_legal_ediscovery_hosting_court_reporting_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BSubsurfaceUtilityNasscoPacpHydrovacDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_subsurface_utility_pacp_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+    *,
+    mandate_id: str = "b2b_subsurface_utility_locating_nassco_pacp_cctv_hydrovac_cipp_rehab_mandate_2026",
+    decanted_dry_solids_tonnage_and_qla_pothole_rtk_verified: bool = True,
+    nassco_pacp_defect_density_and_cipp_wall_thickness_verified: bool = True,
+    webiq_811_onecall_ticket_and_nassco_certification_clean: bool = True,
+    automated_point_repair_conversion_and_sludge_decant_savings_cents: int = 0,
+    subsurface_utility_pacp_cents: int = 21500000,
+) -> B2BSubsurfaceUtilityNasscoPacpHydrovacDecision:
+    """Evaluate B2B Subsurface Utility SUE, NASSCO PACP Sewer CCTV, Hydro-Excavation & UV-CIPP Rehab policy."""
+    if not mandate_id.startswith("b2b_subsurface_utility_locating_nassco_pacp_cctv_hydrovac_cipp_rehab_mandate_"):
+        return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_SUBSURFACE_UTILITY_PACP_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_subsurface_utility_pacp_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not decanted_dry_solids_tonnage_and_qla_pothole_rtk_verified:
+        return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WATER_LOADED_HYDROVAC_SLURRY_TONNAGE_OR_UNEXCAVATED_QLA_POTHOLE_BILLING_BLOCKED",
+            action_pill="Send to a human",
+            settled_subsurface_utility_pacp_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not nassco_pacp_defect_density_and_cipp_wall_thickness_verified:
+        return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="LOCALIZED_PIPE_DEFECT_UPCODED_TO_FULL_CIPP_LINER_OR_THIN_RESIN_WALL",
+            action_pill="Send to a human",
+            settled_subsurface_utility_pacp_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_811_onecall_ticket_and_nassco_certification_clean:
+        return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MISSING_811_ONECALL_TICKET_OR_EXPIRED_NASSCO_PACP_CERTIFICATION_HOLD",
+            action_pill="Send to a human",
+            settled_subsurface_utility_pacp_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_point_repair_conversion_and_sludge_decant_savings_cents > 0:
+        return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_POINT_REPAIR_CONVERSION_AND_DECANTED_SLUDGE_TONNAGE_CONFIRM",
+            action_pill="Confirm",
+            settled_subsurface_utility_pacp_cents=max(
+                0,
+                subsurface_utility_pacp_cents - automated_point_repair_conversion_and_sludge_decant_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2BSubsurfaceUtilityNasscoPacpHydrovacDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_SUBSURFACE_UTILITY_PACP_SETTLED",
+        action_pill="Act automatically",
+        settled_subsurface_utility_pacp_cents=subsurface_utility_pacp_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -43191,6 +43276,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unculled_raw_gb_hosting_block_latency_ms": edv_raw_403.latency_ms,
     }
 
+    sue_commit_ok = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy()
+    sue_wat_403 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+        decanted_dry_solids_tonnage_and_qla_pothole_rtk_verified=False,
+    )
+    sue_cip_422 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+        nassco_pacp_defect_density_and_cipp_wall_thickness_verified=False,
+    )
+    sue_dig_451 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+        webiq_811_onecall_ticket_and_nassco_certification_clean=False,
+    )
+    sue_sav_409 = evaluate_b2b_subsurface_utility_nassco_pacp_hydrovac_policy(
+        automated_point_repair_conversion_and_sludge_decant_savings_cents=3225000,
+    )
+    b2b_subsurface_utility_nassco_pacp_hydrovac_guards = {
+        "all_passed": (
+            sue_commit_ok.allowed
+            and sue_commit_ok.settled_subsurface_utility_pacp_cents == 21500000
+            and not sue_wat_403.allowed
+            and sue_wat_403.http_status == 403
+            and not sue_cip_422.allowed
+            and sue_cip_422.http_status == 422
+            and not sue_dig_451.allowed
+            and sue_dig_451.http_status == 451
+            and not sue_sav_409.allowed
+            and sue_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_subsurface_utility_settlement_latency_ms": sue_commit_ok.latency_ms,
+        "water_loaded_sludge_qla_block_latency_ms": sue_wat_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43526,6 +43641,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_fleet_maintenance_vmrs_tire_guards": b2b_commercial_fleet_maintenance_vmrs_tire_guards,
         "agentic_property_restoration_water_mitigation_guards": agentic_property_restoration_water_mitigation_guards,
         "agentic_legal_ediscovery_hosting_court_reporting_guards": agentic_legal_ediscovery_hosting_court_reporting_guards,
+        "b2b_subsurface_utility_nassco_pacp_hydrovac_guards": b2b_subsurface_utility_nassco_pacp_hydrovac_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52239,6 +52355,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="edv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Subsurface Utility SUE, NASSCO PACP Sewer CCTV, Hydro-Excavation & UV-CIPP Rehab Sandbox -->
+      <div class="finops-box" id="b2b-subsurface-utility-nassco-pacp-hydrovac-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🕳️ B2B 地下管网探测、清淤与非开挖修复 (ASCE 38-22 / NASSCO PACP)：干泥含固率锁、QL-A 探坑 RTK 照与防整管翻新 (`b2b_subsurface_utility_locating_nassco_pacp_cctv_hydrovac_cipp_rehab_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 工业园区/市政季度地下管线探测、吸污车清淤与 UV-CIPP 修复批次 ($215,000.00)、吸污车脱水含固率、QL-A 探坑管顶 RTK 照片与 PACP 缺陷里程场景 (Subsurface Utility &amp; Sewer Scenario):</span></label>
+          <select id="sue-select" onchange="updateB2BSubsurfaceUtilityNasscoPacpHydrovacSandbox()">
+            <option value="sue_commit_ok">🕳️ 吸污车静置沥水干泥重 + QL-A 探坑管顶 RTK 照 + PACP 缺陷密度 + 811 报备合规：10ms 清算 $215,000.00! (Act automatically)</option>
+            <option value="sue_wat_403">🛑 吸污车在路边消防栓灌入 11 吨自来水冒充 $420/吨高浓度污泥过磅，或仅看旧图纸 (QL-D) 喷漆未挖坑见管顶却按 $1,200/坑收 QL-A 费 → 11ms 触发 HTTP 403!</option>
+            <option value="sue_cip_422">🚨 350 英尺排水管仅 1 处接头有树根入侵 (PACP 缺陷占比 1.7%，只需 $2,200 局部点修) 却强报 $91,000 全管段 UV-CIPP 内衬翻新 → 14ms 触发 HTTP 422!</option>
+            <option value="sue_dig_451">🛑 开挖前未取得州级 811 One-Call 地下管线权属方全员 Clear 回复或评估员 NASSCO PACP 认证编号过期：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="sue_sav_409">🧑‍⚖️ Web IQ 自动将 &lt;15% 局部缺陷从全管段 CIPP 翻新降级为 $2,200 局部点状修复并按 &gt;=35% 含固率剥离吸污罐自来水重量立省 $32,250.00 (净付 $182,750.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sue-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -53000,6 +53134,7 @@ function renderAll() {{
   updateB2BCommercialFleetMaintenanceVmrsTireSandbox();
   updateAgenticPropertyRestorationWaterMitigationSandbox();
   updateAgenticLegalEdiscoveryHostingCourtReportingSandbox();
+  updateB2BSubsurfaceUtilityNasscoPacpHydrovacSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -68767,6 +68902,52 @@ function updateAgenticLegalEdiscoveryHostingCourtReportingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚖️ De-NIST 净提升体积 + TAR 线程归并 &gt;=50封/h + 标准速记合规：已自动清算 (VERIFIED_LEGAL_EDISCOVERY_HOSTING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零原始毛数据收 $15/GB 热存、零人工慢审重复邮件与双倍速记加急捆绑</strong>：智能体法律电子取证与法庭速记批次已完成安全清算（<code>$235,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BSubsurfaceUtilityNasscoPacpHydrovacSandbox() {{
+  var sel = document.getElementById("sue-select");
+  var outEl = document.getElementById("sue-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "sue_wat_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WATER_LOADED_HYDROVAC_SLURRY_TONNAGE_OR_UNEXCAVATED_QLA_POTHOLE_BILLING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对弃土场含固率化验单与 <code>ASCE 38-22</code> 探坑记录发现：吸污车罐内含水率高达 <code>88%（司机在消防栓灌入 11 吨自来水冒充 $420/吨污泥过磅）</code>，且申报的 40 个 <code>QL-A ($1,200/坑)</code> 缺失露出管顶标尺与 <code>RTK-GPS</code> 照片，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sue_cip_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 LOCALIZED_PIPE_DEFECT_UPCODED_TO_FULL_CIPP_LINER_OR_THIN_RESIN_WALL (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "解析管道爬行机器人 <code>NASSCO PACP</code> 数据库发现：350 英尺管段仅在 <code>42.5 ft</code> 处有 1 处接头树根入侵（结构缺陷占比 <code>1.7% &lt; 15% 整管翻新阈值，仅需 $2,200 点状修复</code>），承包商却强报 <code>$91,000 全长 UV-CIPP 内衬</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sue_dig_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_811_ONECALL_TICKET_OR_EXPIRED_NASSCO_PACP_CERTIFICATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州级 <code>811 One-Call Positive Response</code> 平台与 <code>NASSCO</code> 注册库发现：开挖区域高压燃气/光缆权属方尚未标定 <code>Clear</code> 或评估员无有效 <code>NASSCO PACP</code> 认证，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sue_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_POINT_REPAIR_CONVERSION_AND_DECANTED_SLUDGE_TONNAGE_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 &lt;15% 局部 PACP 管网缺陷从整管 CIPP 降级为 $2,200 局部点状修复 + 按 &gt;=35% 干基含固率剥离吸污车游离自来水吨位</code>，单批立省 <code>$32,250.00</code>（净结算额优化至 <code>$182,750.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🕳️ 干泥含固率折算 + QL-A 管顶 RTK 照 + NASSCO PACP 密度合规：已自动清算 (VERIFIED_SUBSURFACE_UTILITY_PACP_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零吸污车灌自来水充污泥、零图纸猜测冒充 $1,200 探坑与局部树根强报 $91k 整管翻新</strong>：B2B 地下管网探测与非开挖修复批次已完成安全清算（<code>$215,000.00</code>）！" +
     "</div>";
 }}
 
