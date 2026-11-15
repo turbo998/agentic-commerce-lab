@@ -17621,6 +17621,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-janitorial-atp-uwb-sandbox", demo_zh)
 
+    def test_agentic_dental_ppo_cdt_radiograph_vs_d4341_upcoding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_dental_ppo_cdt_radiograph_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant AI radiograph CEJ>=2mm bone loss + >=50% cusp loss D2950 + Identalloy/510(k) -> 200 OK ($185,000.00)
+        ok_res = evaluate_agentic_dental_ppo_cdt_radiograph_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DENTAL_PPO_CDT_RADIOGRAPH_CLAIM_SETTLED")
+        self.assertEqual(ok_res.settled_dental_ppo_claim_cents, 18500000)
+
+        # 2. Normal bone height (<2mm) upcoded from $110 D1110 cleaning to $1,200 4-quad D4341 SRP -> 403 Blocked
+        srp_403 = evaluate_agentic_dental_ppo_cdt_radiograph_policy(
+            ai_radiograph_cej_bone_loss_2mm_for_d4341_verified=False,
+        )
+        self.assertFalse(srp_403.allowed)
+        self.assertEqual(srp_403.http_status, 403)
+        self.assertEqual(
+            srp_403.decision_code,
+            "D4341_PERIO_SCALING_UPCODING_WITHOUT_RADIOGRAPHIC_BONE_LOSS_BLOCKED",
+        )
+
+        # 3. Routine cavity liner unbundled as $380 D2950 core or base metal billed as D2790 high-noble -> 422 Blocked
+        cor_422 = evaluate_agentic_dental_ppo_cdt_radiograph_policy(
+            cusp_loss_50pct_d2950_core_and_identalloy_crown_verified=False,
+        )
+        self.assertFalse(cor_422.allowed)
+        self.assertEqual(cor_422.http_status, 422)
+        self.assertEqual(
+            cor_422.decision_code,
+            "UNBUNDLED_D2950_CORE_BUILDUP_OR_PROSTHETIC_ALLOY_DOWNGRADE_BREACH",
+        )
+
+        # 4. Unregistered gray-market prosthetic FDA 510(k) or sanctioned dentist NPI -> 451 Hold
+        fda_451 = evaluate_agentic_dental_ppo_cdt_radiograph_policy(
+            webiq_fda_510k_prosthetic_and_dental_board_license_clean=False,
+        )
+        self.assertFalse(fda_451.allowed)
+        self.assertEqual(fda_451.http_status, 451)
+
+        # 5. Web IQ automated D4341->D1110 repricing & unbundled D2950 strip saving $22,200 ($162,800 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_dental_ppo_cdt_radiograph_policy(
+            automated_cdt_d1110_repricing_and_d2950_unbundling_savings_cents=2220000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_dental_ppo_claim_cents, 16280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_dental_ppo_cdt_radiograph_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-dental-ppo-cdt-radiograph-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
