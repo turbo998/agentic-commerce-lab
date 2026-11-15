@@ -18077,6 +18077,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-cafeteria-dining-rebate-sandbox", demo_zh)
 
+    def test_agentic_ambulance_ems_air_transport_nemsis_mileage_vs_als2_upcoding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_ambulance_ems_air_transport_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant NEMSIS loaded miles + verified ALS2 criteria + bundled oxygen + NSA air clean -> 200 OK ($215,000.00)
+        ok_res = evaluate_agentic_ambulance_ems_air_transport_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AMBULANCE_EMS_AIR_TRANSPORT_SETTLED")
+        self.assertEqual(ok_res.settled_ambulance_ems_claim_cents, 21500000)
+
+        # 2. Unloaded deadhead mileage billed (A0425/A0436) or spoofed pickup ZIP rural bonus -> 403 Blocked
+        mil_403 = evaluate_agentic_ambulance_ems_air_transport_policy(
+            nemsis_loaded_patient_mileage_and_pickup_zip_verified=False,
+        )
+        self.assertFalse(mil_403.allowed)
+        self.assertEqual(mil_403.http_status, 403)
+        self.assertEqual(
+            mil_403.decision_code,
+            "UNLOADED_DEADHEAD_MILEAGE_PADDING_OR_PICKUP_ZIP_RURAL_FRAUD_BLOCKED",
+        )
+
+        # 3. Normal saline upcoded to A0433 (ALS2) or unbundled A0422 oxygen/electrode supplies -> 422 Blocked
+        als_422 = evaluate_agentic_ambulance_ems_air_transport_policy(
+            als2_non_saline_meds_and_bundled_oxygen_supplies_verified=False,
+        )
+        self.assertFalse(als_422.allowed)
+        self.assertEqual(als_422.http_status, 422)
+        self.assertEqual(
+            als_422.decision_code,
+            "ALS2_UPCODING_WITHOUT_3_IV_MEDS_OR_UNBUNDLED_OXYGEN_SUPPLIES_BREACH",
+        )
+
+        # 4. Air ambulance violating No Surprises Act balance-bill ban or unnecessary flight -> 451 Hold
+        nsa_451 = evaluate_agentic_ambulance_ems_air_transport_policy(
+            webiq_no_surprises_act_air_qpa_and_flight_necessity_clean=False,
+        )
+        self.assertFalse(nsa_451.allowed)
+        self.assertEqual(nsa_451.http_status, 451)
+
+        # 5. Web IQ automated loaded-mile cap, ALS2->ALS1/BLS repricing & oxygen strip saving $32,250 ($182,750 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_ambulance_ems_air_transport_policy(
+            automated_loaded_mileage_cap_and_als2_repricing_savings_cents=3225000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ambulance_ems_claim_cents, 18275000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_ambulance_ems_air_transport_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-ambulance-ems-air-transport-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

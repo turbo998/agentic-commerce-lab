@@ -30483,6 +30483,91 @@ def evaluate_b2b_corporate_cafeteria_dining_rebate_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticAmbulanceEmsAirTransportDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_ambulance_ems_claim_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_ambulance_ems_air_transport_policy(
+    *,
+    mandate_id: str = "agentic_ambulance_ems_air_transport_hcpcs_nemsis_loaded_mileage_nsa_mandate_2026",
+    nemsis_loaded_patient_mileage_and_pickup_zip_verified: bool = True,
+    als2_non_saline_meds_and_bundled_oxygen_supplies_verified: bool = True,
+    webiq_no_surprises_act_air_qpa_and_flight_necessity_clean: bool = True,
+    automated_loaded_mileage_cap_and_als2_repricing_savings_cents: int = 0,
+    ambulance_ems_claim_cents: int = 21500000,
+) -> AgenticAmbulanceEmsAirTransportDecision:
+    """Evaluate Agentic Emergency Ground & Air Ambulance (EMS) NEMSIS Loaded Mileage & NSA QPA policy."""
+    if not mandate_id.startswith("agentic_ambulance_ems_air_transport_hcpcs_nemsis_loaded_mileage_nsa_mandate_"):
+        return AgenticAmbulanceEmsAirTransportDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AMBULANCE_EMS_AIR_TRANSPORT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_ambulance_ems_claim_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not nemsis_loaded_patient_mileage_and_pickup_zip_verified:
+        return AgenticAmbulanceEmsAirTransportDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNLOADED_DEADHEAD_MILEAGE_PADDING_OR_PICKUP_ZIP_RURAL_FRAUD_BLOCKED",
+            action_pill="Send to a human",
+            settled_ambulance_ems_claim_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not als2_non_saline_meds_and_bundled_oxygen_supplies_verified:
+        return AgenticAmbulanceEmsAirTransportDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="ALS2_UPCODING_WITHOUT_3_IV_MEDS_OR_UNBUNDLED_OXYGEN_SUPPLIES_BREACH",
+            action_pill="Send to a human",
+            settled_ambulance_ems_claim_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_no_surprises_act_air_qpa_and_flight_necessity_clean:
+        return AgenticAmbulanceEmsAirTransportDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="NO_SURPRISES_ACT_AIR_AMBULANCE_BALANCE_BILL_OR_UNNECESSARY_FLIGHT_HOLD",
+            action_pill="Send to a human",
+            settled_ambulance_ems_claim_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_loaded_mileage_cap_and_als2_repricing_savings_cents > 0:
+        return AgenticAmbulanceEmsAirTransportDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_LOADED_MILEAGE_CAP_AND_ALS2_TO_BLS_REPRICING_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_ambulance_ems_claim_cents=max(
+                0,
+                ambulance_ems_claim_cents - automated_loaded_mileage_cap_and_als2_repricing_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticAmbulanceEmsAirTransportDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_AMBULANCE_EMS_AIR_TRANSPORT_SETTLED",
+        action_pill="Act automatically",
+        settled_ambulance_ems_claim_cents=ambulance_ems_claim_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -40546,6 +40631,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "retained_gpo_vda_rebate_block_latency_ms": caf_reb_403.latency_ms,
     }
 
+    ems_commit_ok = evaluate_agentic_ambulance_ems_air_transport_policy()
+    ems_mil_403 = evaluate_agentic_ambulance_ems_air_transport_policy(
+        nemsis_loaded_patient_mileage_and_pickup_zip_verified=False,
+    )
+    ems_als_422 = evaluate_agentic_ambulance_ems_air_transport_policy(
+        als2_non_saline_meds_and_bundled_oxygen_supplies_verified=False,
+    )
+    ems_nsa_451 = evaluate_agentic_ambulance_ems_air_transport_policy(
+        webiq_no_surprises_act_air_qpa_and_flight_necessity_clean=False,
+    )
+    ems_sav_409 = evaluate_agentic_ambulance_ems_air_transport_policy(
+        automated_loaded_mileage_cap_and_als2_repricing_savings_cents=3225000,
+    )
+    agentic_ambulance_ems_air_transport_guards = {
+        "all_passed": (
+            ems_commit_ok.allowed
+            and ems_commit_ok.settled_ambulance_ems_claim_cents == 21500000
+            and not ems_mil_403.allowed
+            and ems_mil_403.http_status == 403
+            and not ems_als_422.allowed
+            and ems_als_422.http_status == 422
+            and not ems_nsa_451.allowed
+            and ems_nsa_451.http_status == 451
+            and not ems_sav_409.allowed
+            and ems_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_ambulance_ems_settlement_latency_ms": ems_commit_ok.latency_ms,
+        "unloaded_deadhead_mileage_block_latency_ms": ems_mil_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40858,6 +40973,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_packaged_cylinder_specialty_gas_guards": b2b_packaged_cylinder_specialty_gas_guards,
         "b2b_managed_print_services_mps_guards": b2b_managed_print_services_mps_guards,
         "b2b_corporate_cafeteria_dining_rebate_guards": b2b_corporate_cafeteria_dining_rebate_guards,
+        "agentic_ambulance_ems_air_transport_guards": agentic_ambulance_ems_air_transport_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49157,6 +49273,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="caf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Emergency Ground & Air Ambulance (EMS) NEMSIS Loaded Mileage & NSA QPA Sandbox -->
+      <div class="finops-box" id="agentic-ambulance-ems-air-transport-sandbox" style="margin-top:12px;border-color:#EF4444;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🚑 智能体急救车与医疗救援直升机转运理赔：NEMSIS 载客里程锁、ALS2 抢救核验与 NSA (`agentic_ambulance_ems_air_transport_hcpcs_nemsis_loaded_mileage_nsa_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 商业医保月度地面与航空急救理赔批次 ($215,000.00)、NEMSIS 净载客里程、ALS2 (A0433) 抢救指征与《反意外账单法》场景 (Ground &amp; Air Ambulance EMS Scenario):</span></label>
+          <select id="ems-select" onchange="updateAgenticAmbulanceEmsAirTransportSandbox()">
+            <option value="ems_commit_ok">🚑 NEMSIS [eTimes.09-&gt;11] 净载客里程 + 真实 ALS2 抢救指征 + 氧气耗材捆绑 + NSA 航空合规：10ms 清算 $215,000.00! (Act automatically)</option>
+            <option value="ems_mil_403">🛑 救护车队把出库去接人与送完回基地的 30英里空驶 (Unloaded Miles) 算进患者 $28/英里账单，或篡改上车点邮编骗取 +50% 偏远农村加成 → 11ms 触发 HTTP 403!</option>
+            <option value="ems_als_422">🚨 仅给扭伤病人挂 1袋普通生理盐水就将 BLS/ALS1 升码为顶级重症抢救 ALS2 (A0433)，或单独拆解加收 $180 氧气 (A0422) 与电极片费 → 14ms 触发 HTTP 422!</option>
+            <option value="ems_nsa_451">🛑 网络外救援直升机 (A0431) 违反联邦《反意外账单法 (No Surprises Act)》向患者追偿 $48,000 差额或地面 25分钟可达滥派飞机：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="ems_sav_409">🧑‍⚖️ Web IQ 依据 NEMSIS ePCR 自动剔除空驶虚增英里数、清零拆解氧气费并将挂盐水伪 ALS2 重定价为 ALS1/BLS 立省 $32,250.00 (净付 $182,750.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ems-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -49895,6 +50029,7 @@ function renderAll() {{
   updateB2bPackagedCylinderSpecialtyGasSandbox();
   updateB2bManagedPrintServicesMpsSandbox();
   updateB2bCorporateCafeteriaDiningRebateSandbox();
+  updateAgenticAmbulanceEmsAirTransportSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -64604,6 +64739,52 @@ function updateB2bCorporateCafeteriaDiningRebateSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🍱 100% 扣返利净底价 + 大楼门禁一卡一餐 + 微超货损 &lt;=1.5% 合规：已自动清算 (VERIFIED_CORPORATE_CAFETERIA_DINING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零私吞 14% 食品厂表外返利、零周五空楼收满员保底与微超失窃甩锅</strong>：B2B 企业员工餐厅与无人微超批次已完成安全清算（<code>$280,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticAmbulanceEmsAirTransportSandbox() {{
+  var sel = document.getElementById("ems-select");
+  var outEl = document.getElementById("ems-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ems_mil_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNLOADED_DEADHEAD_MILEAGE_PADDING_OR_PICKUP_ZIP_RURAL_FRAUD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核对 <code>NEMSIS v3.5 ePCR [eTimes.09 离场 -&gt; eTimes.11 到院]</code> 车载 GPS / <code>FAA ADS-B</code> 航迹发现：患者实际载客距离仅 <code>6.2 英里</code>，车队却将出车去程与返程空驶混入按 <code>38 英里 ($28/mi)</code> 计费，或篡改上车点邮编骗取 <code>+50% Super-Rural 偏远加成</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ems_als_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ALS2_UPCODING_WITHOUT_3_IV_MEDS_OR_UNBUNDLED_OXYGEN_SUPPLIES_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "院前病历（<code>ePCR</code>）显示转运途中仅输注了 1 袋普通生理盐水（<code>0.9% NaCl 不计入 ALS2 要求的 &gt;=3 次急救推注药，且无气管插管/除颤</code>），车队却强行升码按最贵的 <code>A0433 (ALS2)</code> 报销并单独拆解加收 <code>$180 A0422 氧气费</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ems_nsa_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NO_SURPRISES_ACT_AIR_AMBULANCE_BALANCE_BILL_OR_UNNECESSARY_FLIGHT_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查联邦《反意外账单法》（<code>No Surprises Act, 45 CFR § 149.130</code>）与两院地面导航耗时发现：网络外航空救援直升机（<code>A0431</code>）违法向患者发送 <code>$48,000 差额追偿账单 (Balance Bill)</code>，或地面 25 分钟可达却滥派直升机，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ems_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_LOADED_MILEAGE_CAP_AND_ALS2_TO_BLS_REPRICING_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>NEMSIS 净载客里程封顶剔除空跑 + 挂生理盐水伪 ALS2 自动降级重定价为 ALS1/BLS + 100% 捆绑清零氧气耗材费</code>，单批立省 <code>$32,250.00</code>（净结算额优化至 <code>$182,750.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚑 NEMSIS 净载客里程 + 真实 ALS2 指征 + NSA 航空禁追偿合规：已自动清算 (VERIFIED_AMBULANCE_EMS_AIR_TRANSPORT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零空驶里程混入患者账单、零挂生理盐水冒充 ALS2 重症抢救与直升机天价追偿</strong>：智能体急救车与航空医疗转运理赔批次已完成安全清算（<code>$215,000.00</code>）！" +
     "</div>";
 }}
 
