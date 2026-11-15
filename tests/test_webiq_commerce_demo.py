@@ -18419,6 +18419,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-heavy-equipment-rental-aemp-offrent-sandbox", demo_zh)
 
+    def test_b2b_medical_legal_interpretation_vri_cdr_vs_hold_rounding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_medical_legal_interpretation_vri_cdr_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Leg-B per-second CDR + NBCMI/CCHI/RID credential + XLIFF TM discount -> 200 OK ($155,000.00)
+        ok_res = evaluate_b2b_medical_legal_interpretation_vri_cdr_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_MEDICAL_LEGAL_INTERPRETATION_SETTLED")
+        self.assertEqual(ok_res.settled_interpretation_localization_cents, 15500000)
+
+        # 2. IVR hold time billed or 15-minute minimum call rounding -> 403 Blocked
+        cdr_403 = evaluate_b2b_medical_legal_interpretation_vri_cdr_policy(
+            per_second_interpreter_connect_cdr_and_zero_hold_verified=False,
+        )
+        self.assertFalse(cdr_403.allowed)
+        self.assertEqual(cdr_403.http_status, 403)
+        self.assertEqual(
+            cdr_403.decision_code,
+            "IVR_HOLD_TIME_BILLING_OR_MINIMUM_MINUTE_ROUNDING_PADDING_BLOCKED",
+        )
+
+        # 3. Uncertified generalist tier or MTPE billed as full human TEP -> 422 Blocked
+        mtp_422 = evaluate_b2b_medical_legal_interpretation_vri_cdr_policy(
+            certified_tier_and_xliff_tm_discount_no_mtpe_upcoding_verified=False,
+        )
+        self.assertFalse(mtp_422.allowed)
+        self.assertEqual(mtp_422.http_status, 422)
+        self.assertEqual(
+            mtp_422.decision_code,
+            "UNCERTIFIED_INTERPRETER_TIER_OR_MTPE_BILLED_AS_FULL_HUMAN_TEP_UPCODING",
+        )
+
+        # 4. Unverified NBCMI/CCHI/RID interpreter credential or ACA 1557 breach -> 451 Hold
+        crd_451 = evaluate_b2b_medical_legal_interpretation_vri_cdr_policy(
+            webiq_nbcmi_cchi_rid_credential_and_aca1557_clean=False,
+        )
+        self.assertFalse(crd_451.allowed)
+        self.assertEqual(crd_451.http_status, 451)
+
+        # 5. Web IQ per-second CDR re-rating & XLIFF TM discount saving $23,250 ($131,750 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_medical_legal_interpretation_vri_cdr_policy(
+            automated_per_second_cdr_and_tm_match_discount_savings_cents=2325000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_interpretation_localization_cents, 13175000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_medical_legal_interpretation_vri_cdr_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-medical-legal-interpretation-vri-cdr-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
