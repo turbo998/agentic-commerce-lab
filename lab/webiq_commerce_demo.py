@@ -29888,6 +29888,91 @@ def evaluate_agentic_dental_ppo_cdt_radiograph_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bCommercialSecurityGuardPatrolDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_security_guard_patrol_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_security_guard_patrol_policy(
+    *,
+    mandate_id: str = "b2b_commercial_security_guard_patrol_biometric_post_nfc_tour_bsis_license_mandate_2026",
+    biometric_post_presence_and_tamper_nfc_uwb_tour_verified: bool = True,
+    straight_time_holdover_cap_and_guard_tier_rate_verified: bool = True,
+    webiq_state_bsis_sora_guard_license_and_firearm_permit_clean: bool = True,
+    automated_holdover_overtime_strip_and_ai_tower_hybrid_savings_cents: int = 0,
+    security_guard_patrol_cents: int = 27500000,
+) -> B2bCommercialSecurityGuardPatrolDecision:
+    """Evaluate B2B Contract Manned Security Guard, Tamper NFC Tour & 1.0x Holdover Cap policy."""
+    if not mandate_id.startswith("b2b_commercial_security_guard_patrol_biometric_post_nfc_tour_bsis_license_mandate_"):
+        return B2bCommercialSecurityGuardPatrolDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_SECURITY_GUARD_PATROL_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_security_guard_patrol_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not biometric_post_presence_and_tamper_nfc_uwb_tour_verified:
+        return B2bCommercialSecurityGuardPatrolDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNFILLED_OPEN_POST_GHOST_BILLING_OR_SPOOFED_GUARD_TOUR_CHECKPOINT_BLOCKED",
+            action_pill="Send to a human",
+            settled_security_guard_patrol_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not straight_time_holdover_cap_and_guard_tier_rate_verified:
+        return B2bCommercialSecurityGuardPatrolDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNAUTHORIZED_HOLDOVER_OVERTIME_MARKUP_OR_GUARD_TIER_RATE_PADDING",
+            action_pill="Send to a human",
+            settled_security_guard_patrol_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_state_bsis_sora_guard_license_and_firearm_permit_clean:
+        return B2bCommercialSecurityGuardPatrolDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="EXPIRED_STATE_BSIS_SORA_GUARD_LICENSE_OR_FIREARM_PERMIT_BREACH_HOLD",
+            action_pill="Send to a human",
+            settled_security_guard_patrol_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_holdover_overtime_strip_and_ai_tower_hybrid_savings_cents > 0:
+        return B2bCommercialSecurityGuardPatrolDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_HOLDOVER_OVERTIME_STRIP_AND_REMOTE_TOWER_HYBRID_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_security_guard_patrol_cents=max(
+                0,
+                security_guard_patrol_cents - automated_holdover_overtime_strip_and_ai_tower_hybrid_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bCommercialSecurityGuardPatrolDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_SECURITY_GUARD_PATROL_SETTLED",
+        action_pill="Act automatically",
+        settled_security_guard_patrol_cents=security_guard_patrol_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -39741,6 +39826,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "d4341_perio_upcoding_block_latency_ms": dnt_srp_403.latency_ms,
     }
 
+    sec_commit_ok = evaluate_b2b_commercial_security_guard_patrol_policy()
+    sec_pst_403 = evaluate_b2b_commercial_security_guard_patrol_policy(
+        biometric_post_presence_and_tamper_nfc_uwb_tour_verified=False,
+    )
+    sec_ovt_422 = evaluate_b2b_commercial_security_guard_patrol_policy(
+        straight_time_holdover_cap_and_guard_tier_rate_verified=False,
+    )
+    sec_lic_451 = evaluate_b2b_commercial_security_guard_patrol_policy(
+        webiq_state_bsis_sora_guard_license_and_firearm_permit_clean=False,
+    )
+    sec_sav_409 = evaluate_b2b_commercial_security_guard_patrol_policy(
+        automated_holdover_overtime_strip_and_ai_tower_hybrid_savings_cents=2475000,
+    )
+    b2b_commercial_security_guard_patrol_guards = {
+        "all_passed": (
+            sec_commit_ok.allowed
+            and sec_commit_ok.settled_security_guard_patrol_cents == 27500000
+            and not sec_pst_403.allowed
+            and sec_pst_403.http_status == 403
+            and not sec_ovt_422.allowed
+            and sec_ovt_422.http_status == 422
+            and not sec_lic_451.allowed
+            and sec_lic_451.http_status == 451
+            and not sec_sav_409.allowed
+            and sec_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_security_guard_patrol_settlement_latency_ms": sec_commit_ok.latency_ms,
+        "open_post_ghost_billing_block_latency_ms": sec_pst_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40046,6 +40161,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_rooftop_solar_ppa_nem30_vpp_guards": agentic_rooftop_solar_ppa_nem30_vpp_guards,
         "b2b_commercial_janitorial_atp_uwb_guards": b2b_commercial_janitorial_atp_uwb_guards,
         "agentic_dental_ppo_cdt_radiograph_guards": agentic_dental_ppo_cdt_radiograph_guards,
+        "b2b_commercial_security_guard_patrol_guards": b2b_commercial_security_guard_patrol_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48219,6 +48335,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dnt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Contract Manned Security Guard, Tamper NFC Tour & 1.0x Holdover Cap Sandbox -->
+      <div class="finops-box" id="b2b-commercial-security-guard-patrol-sandbox" style="margin-top:12px;border-color:#818CF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🛡️ B2B 园区与数据中心驻场安保及移动巡逻：活体在岗锁、防拆 NFC 巡更与连班免加班费 (`b2b_commercial_security_guard_patrol_biometric_post_nfc_tour_bsis_license_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 园区与数据中心月度驻场安保批次 ($275,000.00)、岗亭活体在岗、防拆 NFC 巡更与 1.0x 连班封顶场景 (Manned Security Guard &amp; Patrol Scenario):</span></label>
+          <select id="sec-select" onchange="updateB2bCommercialSecurityGuardPatrolSandbox()">
+            <option value="sec_commit_ok">🛡️ 岗亭活体满编在岗 + 防拆 NFC+UWB 巡更 + 1.0x 平价工时 + 州 BSIS/SORA 保安证有效：10ms 清算 $275,000.00! (Act automatically)</option>
+            <option value="sec_pst_403">🛑 夜班偏远岗亭缺人空岗 (Open Post) 却由队长代签字照收 $38/h 满编费，或撬下巡更磁扣粘在值班室桌底刷假巡逻 → 11ms 触发 HTTP 403!</option>
+            <option value="sec_ovt_422">🚨 安保公司因自身缺替班让白班保安连上 16 小时却把 1.5 倍 ($57/h) 连班加班费转嫁给业主，或派初级工冒充 $52 一级岗 → 14ms 触发 HTTP 422!</option>
+            <option value="sec_lic_451">🛑 当班保安的州级保安上岗证 (BSIS Guard Card / NY SORA) 或外露持枪证已过期失效引发拒赔风险：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="sec_sav_409">🧑‍⚖️ Web IQ 自动剥离无业主 Surge Token 的 0.5x 连班加班溢价并启用夜间太阳能 AI 监控哨塔人机混编立省 $24,750.00 (净付 $250,250.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="sec-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -48950,6 +49084,7 @@ function renderAll() {{
   updateAgenticRooftopSolarPpaNem30VppSandbox();
   updateB2bCommercialJanitorialAtpUwbSandbox();
   updateAgenticDentalPpoCdtRadiographSandbox();
+  updateB2bCommercialSecurityGuardPatrolSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -63337,6 +63472,52 @@ function updateAgenticDentalPpoCdtRadiographSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🦷 口腔影像 AI 骨吸收 &gt;=2.0mm + &gt;=50% 牙尖缺损桩核 + Identalloy 义齿合规：已自动清算 (VERIFIED_DENTAL_PPO_CDT_RADIOGRAPH_CLAIM_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零普通洗牙升码 $1,200 深刮、零补牙垫底伪造桩核费与贱金属冒充贵金属冠</strong>：智能体口腔医疗 PPO 与连锁齿科理赔批次已完成安全清算（<code>$185,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bCommercialSecurityGuardPatrolSandbox() {{
+  var sel = document.getElementById("sec-select");
+  var outEl = document.getElementById("sec-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "sec_pst_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNFILLED_OPEN_POST_GHOST_BILLING_OR_SPOOFED_GUARD_TOUR_CHECKPOINT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经核验岗亭活体生物考勤与 <code>防拆 NTAG 424 滚动 NFC + UWB 步态轨迹</code>发现：夜班出现 <code>36 小时未填补空岗 (Open Post)</code> 却照收满编工时费，或巡更芯片防拆导电回路报警（<code>被撬下带回值班室桌底零步数刷卡</code>），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sec_ovt_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAUTHORIZED_HOLDOVER_OVERTIME_MARKUP_OR_GUARD_TIER_RATE_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "安保公司在无业主签发 <code>Surge Dispatch Token</code> 的情况下，将自身缺替班引发的 <code>Holdover 连班双班</code> 按 <code>1.5 倍 ($57/h) 加班费率</code> 转嫁给业主买单，或派 <code>$18/h 初级保安</code> 顶替 <code>$52/h 退伍军警一级岗</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sec_lic_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXPIRED_STATE_BSIS_SORA_GUARD_LICENSE_OR_FIREARM_PERMIT_BREACH_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州保安监管局（<code>California BSIS / NY DOS SORA / Texas TOPS</code>）官方名录发现：排班表中存在个人保安注册证或外露持枪证已过期的无证执勤人员，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "sec_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_HOLDOVER_OVERTIME_STRIP_AND_REMOTE_TOWER_HYBRID_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>供应商内部连班强制还原 1.0x 平价工时 + 夜间外围防线切换太阳能 AI 监控哨塔人机混编</code>，单批立省 <code>$24,750.00</code>（净结算额优化至 <code>$250,250.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛡️ 岗亭活体满岗 + 防拆 NFC+UWB 巡更 + 1.0x 连班封顶与 BSIS 持证合规：已自动清算 (VERIFIED_COMMERCIAL_SECURITY_GUARD_PATROL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零夜班空岗吃空饷、零桌底刷假巡更与缺人连班转嫁 1.5 倍加班费</strong>：B2B 园区与数据中心驻场安保批次已完成安全清算（<code>$275,000.00</code>）！" +
     "</div>";
 }}
 

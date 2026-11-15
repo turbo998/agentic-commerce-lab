@@ -17678,6 +17678,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-dental-ppo-cdt-radiograph-sandbox", demo_zh)
 
+    def test_b2b_commercial_security_guard_patrol_biometric_vs_open_post_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_security_guard_patrol_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant biometric post presence + tamper NFC/UWB tour + 1.0x straight-time + BSIS clean -> 200 OK ($275,000.00)
+        ok_res = evaluate_b2b_commercial_security_guard_patrol_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SECURITY_GUARD_PATROL_SETTLED")
+        self.assertEqual(ok_res.settled_security_guard_patrol_cents, 27500000)
+
+        # 2. Unfilled graveyard open post billed or detached checkpoint tags scanned at desk -> 403 Blocked
+        pst_403 = evaluate_b2b_commercial_security_guard_patrol_policy(
+            biometric_post_presence_and_tamper_nfc_uwb_tour_verified=False,
+        )
+        self.assertFalse(pst_403.allowed)
+        self.assertEqual(pst_403.http_status, 403)
+        self.assertEqual(
+            pst_403.decision_code,
+            "UNFILLED_OPEN_POST_GHOST_BILLING_OR_SPOOFED_GUARD_TOUR_CHECKPOINT_BLOCKED",
+        )
+
+        # 3. Vendor call-off holdover billed at 1.5x overtime or Tier-2 guard billed at Tier-1 rate -> 422 Blocked
+        ovt_422 = evaluate_b2b_commercial_security_guard_patrol_policy(
+            straight_time_holdover_cap_and_guard_tier_rate_verified=False,
+        )
+        self.assertFalse(ovt_422.allowed)
+        self.assertEqual(ovt_422.http_status, 422)
+        self.assertEqual(
+            ovt_422.decision_code,
+            "UNAUTHORIZED_HOLDOVER_OVERTIME_MARKUP_OR_GUARD_TIER_RATE_PADDING",
+        )
+
+        # 4. Expired state BSIS/SORA guard card or lapsed firearm permit -> 451 Hold
+        lic_451 = evaluate_b2b_commercial_security_guard_patrol_policy(
+            webiq_state_bsis_sora_guard_license_and_firearm_permit_clean=False,
+        )
+        self.assertFalse(lic_451.allowed)
+        self.assertEqual(lic_451.http_status, 451)
+
+        # 5. Web IQ automated holdover 0.5x overtime strip & AI surveillance tower hybrid saving $24,750 ($250,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_security_guard_patrol_policy(
+            automated_holdover_overtime_strip_and_ai_tower_hybrid_savings_cents=2475000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_security_guard_patrol_cents, 25025000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_security_guard_patrol_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-security-guard-patrol-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
