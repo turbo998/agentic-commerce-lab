@@ -17735,6 +17735,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-security-guard-patrol-sandbox", demo_zh)
 
+    def test_b2b_commercial_fire_safety_nfpa_facp_log_vs_tag_and_go_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_fire_safety_nfpa_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 100% raw FACP walk-test log + main-drain PSI + authentic repairs + AHJ/NICET -> 200 OK ($230,000.00)
+        ok_res = evaluate_b2b_commercial_fire_safety_nfpa_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_FIRE_SAFETY_NFPA_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_fire_safety_cents, 23000000)
+
+        # 2. Tag-and-go pencil-whipping (<100% FACP address log coverage or missing main-drain PSI) -> 403 Blocked
+        tag_403 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+            raw_facp_100pct_device_walk_test_log_and_main_drain_psi_verified=False,
+        )
+        self.assertFalse(tag_403.allowed)
+        self.assertEqual(tag_403.http_status, 403)
+        self.assertEqual(
+            tag_403.decision_code,
+            "INCOMPLETE_FACP_DEVICE_WALK_TEST_LOG_OR_TAG_AND_GO_INSPECTION_BLOCKED",
+        )
+
+        # 3. Fabricated NFPA 25 sprinkler-head replacement upsell or >15% parts markup -> 422 Blocked
+        def_422 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+            nfpa25_age_rule_deficiency_photo_and_parts_markup_cap_verified=False,
+        )
+        self.assertFalse(def_422.allowed)
+        self.assertEqual(def_422.http_status, 422)
+        self.assertEqual(
+            def_422.decision_code,
+            "FABRICATED_NFPA25_SPRINKLER_DEFICIENCY_OR_EXCESSIVE_REPAIR_PARTS_MARKUP",
+        )
+
+        # 4. Unfiled municipal AHJ Compliance Engine report or expired NICET license -> 451 Hold
+        ahj_451 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+            webiq_ahj_compliance_engine_filing_and_nicet_license_clean=False,
+        )
+        self.assertFalse(ahj_451.allowed)
+        self.assertEqual(ahj_451.http_status, 451)
+
+        # 5. Web IQ automated non-mandatory NFPA 25 deficiency strip & OEM parts cap saving $20,700 ($209,300 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+            automated_nfpa25_false_deficiency_strip_and_oem_parts_savings_cents=2070000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_fire_safety_cents, 20930000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_fire_safety_nfpa_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-fire-safety-nfpa-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

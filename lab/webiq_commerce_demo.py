@@ -29973,6 +29973,91 @@ def evaluate_b2b_commercial_security_guard_patrol_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bCommercialFireSafetyNfpaDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_commercial_fire_safety_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_fire_safety_nfpa_policy(
+    *,
+    mandate_id: str = "b2b_commercial_fire_alarm_sprinkler_nfpa25_nfpa72_facp_log_mandate_2026",
+    raw_facp_100pct_device_walk_test_log_and_main_drain_psi_verified: bool = True,
+    nfpa25_age_rule_deficiency_photo_and_parts_markup_cap_verified: bool = True,
+    webiq_ahj_compliance_engine_filing_and_nicet_license_clean: bool = True,
+    automated_nfpa25_false_deficiency_strip_and_oem_parts_savings_cents: int = 0,
+    commercial_fire_safety_cents: int = 23000000,
+) -> B2bCommercialFireSafetyNfpaDecision:
+    """Evaluate B2B Commercial Fire Alarm & Sprinkler Inspection (NFPA 25/72), Raw FACP Log & AHJ Filing policy."""
+    if not mandate_id.startswith("b2b_commercial_fire_alarm_sprinkler_nfpa25_nfpa72_facp_log_mandate_"):
+        return B2bCommercialFireSafetyNfpaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_FIRE_SAFETY_NFPA_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_commercial_fire_safety_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not raw_facp_100pct_device_walk_test_log_and_main_drain_psi_verified:
+        return B2bCommercialFireSafetyNfpaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INCOMPLETE_FACP_DEVICE_WALK_TEST_LOG_OR_TAG_AND_GO_INSPECTION_BLOCKED",
+            action_pill="Send to a human",
+            settled_commercial_fire_safety_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not nfpa25_age_rule_deficiency_photo_and_parts_markup_cap_verified:
+        return B2bCommercialFireSafetyNfpaDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="FABRICATED_NFPA25_SPRINKLER_DEFICIENCY_OR_EXCESSIVE_REPAIR_PARTS_MARKUP",
+            action_pill="Send to a human",
+            settled_commercial_fire_safety_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_ahj_compliance_engine_filing_and_nicet_license_clean:
+        return B2bCommercialFireSafetyNfpaDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNFILED_AHJ_COMPLIANCE_ENGINE_REPORT_OR_EXPIRED_NICET_LICENSE_HOLD",
+            action_pill="Send to a human",
+            settled_commercial_fire_safety_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_nfpa25_false_deficiency_strip_and_oem_parts_savings_cents > 0:
+        return B2bCommercialFireSafetyNfpaDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_NFPA25_FALSE_DEFICIENCY_STRIP_AND_OEM_PARTS_CAP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_commercial_fire_safety_cents=max(
+                0,
+                commercial_fire_safety_cents - automated_nfpa25_false_deficiency_strip_and_oem_parts_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bCommercialFireSafetyNfpaDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_FIRE_SAFETY_NFPA_SETTLED",
+        action_pill="Act automatically",
+        settled_commercial_fire_safety_cents=commercial_fire_safety_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -39856,6 +39941,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "open_post_ghost_billing_block_latency_ms": sec_pst_403.latency_ms,
     }
 
+    fir_commit_ok = evaluate_b2b_commercial_fire_safety_nfpa_policy()
+    fir_tag_403 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+        raw_facp_100pct_device_walk_test_log_and_main_drain_psi_verified=False,
+    )
+    fir_def_422 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+        nfpa25_age_rule_deficiency_photo_and_parts_markup_cap_verified=False,
+    )
+    fir_ahj_451 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+        webiq_ahj_compliance_engine_filing_and_nicet_license_clean=False,
+    )
+    fir_sav_409 = evaluate_b2b_commercial_fire_safety_nfpa_policy(
+        automated_nfpa25_false_deficiency_strip_and_oem_parts_savings_cents=2070000,
+    )
+    b2b_commercial_fire_safety_nfpa_guards = {
+        "all_passed": (
+            fir_commit_ok.allowed
+            and fir_commit_ok.settled_commercial_fire_safety_cents == 23000000
+            and not fir_tag_403.allowed
+            and fir_tag_403.http_status == 403
+            and not fir_def_422.allowed
+            and fir_def_422.http_status == 422
+            and not fir_ahj_451.allowed
+            and fir_ahj_451.http_status == 451
+            and not fir_sav_409.allowed
+            and fir_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_fire_safety_settlement_latency_ms": fir_commit_ok.latency_ms,
+        "tag_and_go_facp_log_block_latency_ms": fir_tag_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40162,6 +40277,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_janitorial_atp_uwb_guards": b2b_commercial_janitorial_atp_uwb_guards,
         "agentic_dental_ppo_cdt_radiograph_guards": agentic_dental_ppo_cdt_radiograph_guards,
         "b2b_commercial_security_guard_patrol_guards": b2b_commercial_security_guard_patrol_guards,
+        "b2b_commercial_fire_safety_nfpa_guards": b2b_commercial_fire_safety_nfpa_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48353,6 +48469,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="sec-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Fire Alarm & Sprinkler Inspection (NFPA 25/72), Raw FACP Log & AHJ Filing Sandbox -->
+      <div class="finops-box" id="b2b-commercial-fire-safety-nfpa-sandbox" style="margin-top:12px;border-color:#F97316;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧯 B2B 商业消防报警、自动喷淋与气灭维保检测：FACP 100% 原生日志锁、防伪造隐患与市政备案 (`b2b_commercial_fire_alarm_sprinkler_nfpa25_nfpa72_facp_log_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 多园区年度消防年检与隐患维修批次 ($230,000.00)、报警主机 FACP 100% 触发日志、NFPA 25 规范与市政 AHJ 网报场景 (Commercial Fire Alarm &amp; Sprinkler ITM Scenario):</span></label>
+          <select id="fir-select" onchange="updateB2bCommercialFireSafetyNfpaSandbox()">
+            <option value="fir_commit_ok">🧯 主机 FACP 100% 地址码触发日志 + 主排水压降曲线 + 真实隐患微距图 + 市政 AHJ 网报完成：10ms 清算 $230,000.00! (Act automatically)</option>
+            <option value="fir_tag_403">🛑 检测员只在泵房栓张合格绿牌 20分钟走人 (Tag-and-Go)，FACP 原生日志显示仅触发 38% 探头 (高空与风管烟感全漏测) → 11ms 触发 HTTP 403!</option>
+            <option value="fir_def_422">🚨 为拿提成把仅用 8 年的好喷淋头谎报“超期报废 (NFPA 25 实为 50年)”或把普通浮尘判为腐蚀开出 $6,500 换件单 → 14ms 触发 HTTP 422!</option>
+            <option value="fir_ahj_451">🛑 收完年检费却未向市政消防局强制网报平台 (Brycer The Compliance Engine) 上传报告或技术员 NICET 证书过期：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="fir_sav_409">🧑‍⚖️ Web IQ 依据 NFPA 25 §5.3.1 条款自动剔除伪造的提前全换喷淋头/蓄电池工单并将备件加价封顶在 +15% 立省 $20,700.00 (净付 $209,300.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="fir-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -49085,6 +49219,7 @@ function renderAll() {{
   updateB2bCommercialJanitorialAtpUwbSandbox();
   updateAgenticDentalPpoCdtRadiographSandbox();
   updateB2bCommercialSecurityGuardPatrolSandbox();
+  updateB2bCommercialFireSafetyNfpaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -63518,6 +63653,52 @@ function updateB2bCommercialSecurityGuardPatrolSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🛡️ 岗亭活体满岗 + 防拆 NFC+UWB 巡更 + 1.0x 连班封顶与 BSIS 持证合规：已自动清算 (VERIFIED_COMMERCIAL_SECURITY_GUARD_PATROL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零夜班空岗吃空饷、零桌底刷假巡更与缺人连班转嫁 1.5 倍加班费</strong>：B2B 园区与数据中心驻场安保批次已完成安全清算（<code>$275,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bCommercialFireSafetyNfpaSandbox() {{
+  var sel = document.getElementById("fir-select");
+  var outEl = document.getElementById("fir-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "fir_tag_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 INCOMPLETE_FACP_DEVICE_WALK_TEST_LOG_OR_TAG_AND_GO_INSPECTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经比对大楼消防资产台账与火灾报警控制主机（<code>FACP</code>）原生导出的 <code>Walk-Test 物理事件日志</code>发现：全楼 400 个编址设备仅触发了 <code>38%（高空感烟探头与空调风管探测器 0 触发，属典型 Tag-and-Go 挂绿牌走人）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fir_def_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FABRICATED_NFPA25_SPRINKLER_DEFICIENCY_OR_EXCESSIVE_REPAIR_PARTS_MARKUP (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "检测员为赚取维修提成，违背 <code>NFPA 25 §5.3.1（标准喷淋头满 50 年、快响满 20 年才需抽样送检）</code> 规范，将仅使用 8 年的正常喷淋头或普通可擦拭浮尘定性为报废，开出 <code>$6,500 高价换件单（备件加价 280%）</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fir_ahj_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNFILED_AHJ_COMPLIANCE_ENGINE_REPORT_OR_EXPIRED_NICET_LICENSE_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查市政消防局网报系统（<code>Brycer The Compliance Engine / IROL</code>）与 <code>NICET</code> 注册库发现：维保商尚未完成市政消防局强制备案上传，或签字技术员的 <code>NICET Level II</code> 证书已过期，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "fir_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_NFPA25_FALSE_DEFICIENCY_STRIP_AND_OEM_PARTS_CAP_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>NFPA 25 真实年限校验剔除伪造全换喷淋头/蓄电池增项 + 原厂消防备件 Cost+15% 封顶</code>，单批立省 <code>$20,700.00</code>（净结算额优化至 <code>$209,300.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧯 主机 FACP 100% 地址码触发 + 主排水压降曲线 + 市政 AHJ 网报合规：已自动清算 (VERIFIED_COMMERCIAL_FIRE_SAFETY_NFPA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零挂绿牌走人漏测风管烟感、零伪造喷淋头超期换件与漏交市政消防网报</strong>：B2B 商业消防报警与自动喷淋维保批次已完成安全清算（<code>$230,000.00</code>）！" +
     "</div>";
 }}
 

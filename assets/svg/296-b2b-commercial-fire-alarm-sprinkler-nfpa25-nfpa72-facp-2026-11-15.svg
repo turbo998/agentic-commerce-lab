@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg296" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#7F1D1D"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent296" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg296)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent296)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-15 · ROUND 294 · B2B COMMERCIAL FIRE ALARM &amp; SPRINKLER ITM (NFPA 25/72), 100% FACP LOG &amp; AHJ</text>
+  <text x="52" y="92" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">B2B 商业消防报警、自动喷淋与气灭维保检测：FACP 100% 原生日志锁、防伪造隐患与市政备案架构</text>
+  <text x="52" y="116" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">封杀“到泵房栓张合格绿牌 20分钟走人 (Tag-and-Go)” · 阻断把 8年标准喷淋头谎报超期强换 $6,500 · 核验市政消防局 Brycer 网报回执</text>
+
+  <!-- Left Card: Legacy Failure Modes -->
+  <rect x="48" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="48" y="136" width="356" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="68" y="160" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统商业消防年检与维修三大黑洞 (多付 24%–40%)</text>
+
+  <rect x="64" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="210" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. “挂绿牌就走人 (Tag-and-Go)”漏测高空与风管烟感</text>
+  <text x="78" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 仓库高空烟感与空调风管探测器 (Duct Detector) 需爬梯实测</text>
+  <text x="78" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 检测员只在泵房主阀挂张绿牌，复制去年 PDF 报告收 $3,500</text>
+  <text x="78" y="272" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 60% 探头从未触发，真着火时报警失灵、FM Global 拒赔</text>
+
+  <rect x="64" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="326" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 捏造“喷淋头超期/腐蚀”骗取 $6,500 高提成维修单</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• NFPA 25 规定标准喷淋头满 50 年、快响满 20 年才需抽检</text>
+  <text x="78" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 检测员为拿 25% 提成，把 8 年好喷头或普通浮尘判为报废</text>
+  <text x="78" y="388" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 低价年检进场，反手用伪造红色隐患单宰割业主数万美元</text>
+
+  <rect x="64" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="442" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 收钱不交市政消防局 Brycer 网报与无 NICET 证</text>
+  <text x="78" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 维保商收完钱却漏将报告上传至市政消防局强制网报平台</text>
+  <text x="78" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 害业主突然收到消防元帅 $2,500/天逾期未年检行政罚单</text>
+  <text x="78" y="504" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 甚至派无 NICET Level II 认证的学徒工操作数据中心气灭</text>
+
+  <!-- Center Card: Agentic Policy Engine -->
+  <rect x="422" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#F97316" stroke-width="1.5"/>
+  <rect x="422" y="136" width="356" height="38" rx="12" fill="#7C2D12"/>
+  <text x="442" y="160" fill="#FED7AA" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">🛡️ 智能体 FACP 原生日志、NFPA 25 规范与备案三道锁</text>
+
+  <rect x="438" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#C2410C"/>
+  <text x="452" y="210" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 1：主机 FACP 100% 地址码触发日志与排水压降锁</text>
+  <text x="452" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制上传报警主机原生导出的 Walk-Test 机器事件日志</text>
+  <text x="452" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 100% 校验每个 Loop/Address 触发时间戳与主排水压降曲线</text>
+  <text x="452" y="272" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 11ms 触发 HTTP 403 阻断挂牌走人假年检与漏测风管烟感</text>
+
+  <rect x="438" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#C2410C"/>
+  <text x="452" y="326" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 2：NFPA 25 50年/20年规则与微距照片门禁</text>
+  <text x="452" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 严禁对未满 20年(快响)/50年(标准) 的好喷淋头开超期换单</text>
+  <text x="452" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 隐患维修必传微距实拍图与电池内阻截屏，备件加价 &lt;=15%</text>
+  <text x="452" y="388" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 14ms 触发 HTTP 422 拦截伪造隐患增项单与 300% 备件暴利</text>
+
+  <rect x="438" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#C2410C"/>
+  <text x="452" y="442" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 3：Web IQ 市政 AHJ 网报回执与 NICET 证锁</text>
+  <text x="452" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse 核验市政消防局 Brycer/IROL 签收状态</text>
+  <text x="452" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 穿透核查签字工程师 NICET Level II+ 与 UL 召回批次库</text>
+  <text x="452" y="504" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 275ms 触发 HTTP 451 / 240ms HTTP 409 立省 $20,700</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="796" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="796" y="136" width="356" height="38" rx="12" fill="#064E3B"/>
+  <text x="816" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 商业消防检测与维修 ($230,000) 实测矩阵</text>
+
+  <rect x="812" y="188" width="324" height="60" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="826" y="210" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="826" y="232" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">100% FACP 地址触发 + 排水压降 + AHJ 备案 → $230k</text>
+
+  <rect x="812" y="258" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="280" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="826" y="302" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">挂绿牌走人 (FACP 实测率仅 38%) 或抄去年数据 → 拦截</text>
+
+  <rect x="812" y="328" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="350" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="826" y="372" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">8年好喷淋头谎报超期强换或备件加价 280% → 阻断</text>
+
+  <rect x="812" y="398" width="324" height="60" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="826" y="420" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 (275ms) / 🧑‍⚖️ HTTP 409 (240ms)</text>
+  <text x="826" y="442" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">漏交市政 AHJ 网报挂起 / 砍伪造隐患+备件封顶省 $20,700</text>
+
+  <rect x="812" y="468" width="324" height="56" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="826" y="490" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">💡 剔除伪造隐患换件与原厂备件封顶后净付：$209,300 (省 9%)</text>
+  <text x="826" y="510" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="11">令牌：b2b_commercial_fire_alarm_sprinkler_nfpa25_nfpa72_...</text>
+
+  <!-- Footer -->
+  <rect x="48" y="556" width="1104" height="80" rx="10" fill="#020617" stroke="#334155"/>
+  <text x="68" y="582" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">架构师核心选型铁律 (Architect's Golden Rule)：</text>
+  <text x="68" y="604" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 消防年检严禁仅凭 PDF 勾选表结算，必须核对报警主机 FACP 原生导出的 100% 设备地址触发日志与主排水压降曲线。</text>
+  <text x="68" y="624" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 隐患整改单必须符合 NFPA 25 真实年限规则并附微距照片，且尾款须经 Web IQ 核实市政 AHJ 平台备案签收与 NICET 证照。</text>
+</svg>
