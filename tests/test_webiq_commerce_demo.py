@@ -19730,6 +19730,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-background-check-dot-drug-screening-sandbox", demo_zh)
 
+    def test_b2b_highrise_window_washing_bmu_rope_access_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_highrise_window_washing_bmu_rope_access_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant roof-anchor NFC drop count + altimeter descent + OSHA 1910.27/SPRAT clean -> 200 OK ($155,000.00)
+        ok_res = evaluate_b2b_highrise_window_washing_bmu_rope_access_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HIGHRISE_WINDOW_WASHING_BMU_SETTLED")
+        self.assertEqual(ok_res.settled_highrise_window_washing_cents, 15500000)
+
+        # 2. Skipped north-facade vertical drops or 4-minute express rappel -> 403 Blocked
+        drp_403 = evaluate_b2b_highrise_window_washing_bmu_rope_access_policy(
+            roof_anchor_nfc_drop_count_and_altimeter_descent_verified=False,
+        )
+        self.assertFalse(drp_403.allowed)
+        self.assertEqual(drp_403.http_status, 403)
+        self.assertEqual(
+            drp_403.decision_code,
+            "INCOMPLETE_FACADE_VERTICAL_DROP_COVERAGE_OR_SKIPPED_ELEVATION_BILLING_BLOCKED",
+        )
+
+        # 3. Routine wash upcoded to $6.50/sq.ft. hard-water acid restoration -> 422 Blocked
+        acd_422 = evaluate_b2b_highrise_window_washing_bmu_rope_access_policy(
+            standard_wash_rate_and_zero_unapproved_acid_restoration_verified=False,
+        )
+        self.assertFalse(acd_422.allowed)
+        self.assertEqual(acd_422.http_status, 422)
+        self.assertEqual(
+            acd_422.decision_code,
+            "UNAUTHORIZED_HARD_WATER_ACID_RESTORATION_UPCODING_OR_HYDROPHOBIC_COATING_PADDING",
+        )
+
+        # 4. Uncertified OSHA 1910.27 roof tie-back anchors or >30-ft height exclusion COI -> 451 Hold
+        anc_451 = evaluate_b2b_highrise_window_washing_bmu_rope_access_policy(
+            webiq_osha_1910_27_roof_anchor_and_sprat_irata_coi_clean=False,
+        )
+        self.assertFalse(anc_451.allowed)
+        self.assertEqual(anc_451.http_status, 451)
+
+        # 5. Web IQ pro-rata drop reconciliation & acid-wash strip saving $23,250 ($131,750 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_highrise_window_washing_bmu_rope_access_policy(
+            automated_drop_pro_rata_and_acid_wash_strip_savings_cents=2325000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_highrise_window_washing_cents, 13175000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_highrise_window_washing_bmu_rope_access_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-highrise-window-washing-bmu-rope-access-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
