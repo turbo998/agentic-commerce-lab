@@ -19502,6 +19502,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-medical-biohazard-rcra-waste-emanifest-sandbox", demo_zh)
 
+    def test_agentic_corporate_relocation_hhg_cat_scale_density_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_corporate_relocation_hhg_cat_scale_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant CAT Scale fuel parity + <=7.7 lbs/cu.ft. AI density + FMCSA HHG carrier -> 200 OK ($250,000.00)
+        ok_res = evaluate_agentic_corporate_relocation_hhg_cat_scale_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORPORATE_RELOCATION_HHG_SETTLED")
+        self.assertEqual(ok_res.settled_corporate_relocation_hhg_cents, 25000000)
+
+        # 2. Weight-bumping fuel/crew fraud or density >7.7 lbs/cu.ft. -> 403 Blocked
+        wgt_403 = evaluate_agentic_corporate_relocation_hhg_cat_scale_policy(
+            cat_scale_tare_gross_fuel_parity_and_cubic_density_verified=False,
+        )
+        self.assertFalse(wgt_403.allowed)
+        self.assertEqual(wgt_403.http_status, 403)
+        self.assertEqual(
+            wgt_403.decision_code,
+            "WEIGHT_BUMPING_TARE_GROSS_FUEL_MISMATCH_OR_CUBIC_DENSITY_CAP_EXCEEDED_BLOCKED",
+        )
+
+        # 3. Cardboard TV carton billed as $850 wood crate or $1,850 phantom shuttle fee -> 422 Blocked
+        crt_422 = evaluate_agentic_corporate_relocation_hhg_cat_scale_policy(
+            custom_wood_crating_photo_and_shuttle_street_width_verified=False,
+        )
+        self.assertFalse(crt_422.allowed)
+        self.assertEqual(crt_422.http_status, 422)
+        self.assertEqual(
+            crt_422.decision_code,
+            "UNVERIFIED_CUSTOM_WOOD_CRATING_OR_PHANTOM_SHUTTLE_TRUCK_SURCHARGE",
+        )
+
+        # 4. Unlicensed FMCSA HHG broker or hostage-load complaint record -> 451 Hold
+        fmc_451 = evaluate_agentic_corporate_relocation_hhg_cat_scale_policy(
+            webiq_fmcsa_hhg_carrier_authority_and_hostage_record_clean=False,
+        )
+        self.assertFalse(fmc_451.allowed)
+        self.assertEqual(fmc_451.http_status, 451)
+
+        # 5. Web IQ AI density weight cap & Tax Gross-Up recalculation saving $37,500 ($212,500 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_corporate_relocation_hhg_cat_scale_policy(
+            automated_density_weight_cap_and_tax_grossup_savings_cents=3750000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corporate_relocation_hhg_cents, 21250000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_corporate_relocation_hhg_cat_scale_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-corporate-relocation-hhg-cat-scale-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
