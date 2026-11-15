@@ -17792,6 +17792,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-fire-safety-nfpa-sandbox", demo_zh)
 
+    def test_b2b_warehouse_forklift_mhe_canbus_vs_key_on_idle_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_warehouse_forklift_mhe_fleet_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant CAN-Bus active-load hours + fleet pooling + zero bogus abuse bills + ANSI B56.1 -> 200 OK ($260,000.00)
+        ok_res = evaluate_b2b_warehouse_forklift_mhe_fleet_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_WAREHOUSE_FORKLIFT_MHE_FLEET_SETTLED")
+        self.assertEqual(ok_res.settled_forklift_mhe_fleet_cents, 26000000)
+
+        # 2. Key-On stationary idle-hour overage billing (+38%) or unpooled per-truck penalties -> 403 Blocked
+        idl_403 = evaluate_b2b_warehouse_forklift_mhe_fleet_policy(
+            canbus_deadman_active_hours_and_fleet_pooling_verified=False,
+        )
+        self.assertFalse(idl_403.allowed)
+        self.assertEqual(idl_403.http_status, 403)
+        self.assertEqual(
+            idl_403.decision_code,
+            "KEY_ON_IDLE_HOUR_OVERAGE_BILLING_OR_UNPOOLED_FLEET_USAGE_BLOCKED",
+        )
+
+        # 3. Normal load-wheel/seal wear billed as "Operator Abuse" without >=5G impact or paint gouging -> 422 Blocked
+        abs_422 = evaluate_b2b_warehouse_forklift_mhe_fleet_policy(
+            impact_5g_abuse_proof_and_cosmetic_return_waiver_verified=False,
+        )
+        self.assertFalse(abs_422.allowed)
+        self.assertEqual(abs_422.http_status, 422)
+        self.assertEqual(
+            abs_422.decision_code,
+            "UNVERIFIED_OPERATOR_ABUSE_REPAIR_CHARGE_OR_COSMETIC_LEASE_RETURN_GOUGING",
+        )
+
+        # 4. Missing OSHA 1910.178 / ANSI B56.1 fork/chain wear caliper measurements or open recall -> 451 Hold
+        osh_451 = evaluate_b2b_warehouse_forklift_mhe_fleet_policy(
+            webiq_osha_1910_178_fork_chain_wear_and_safety_recall_clean=False,
+        )
+        self.assertFalse(osh_451.allowed)
+        self.assertEqual(osh_451.http_status, 451)
+
+        # 5. Web IQ automated CAN-Bus active-hour pooling & unverified abuse strip saving $23,400 ($236,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_warehouse_forklift_mhe_fleet_policy(
+            automated_canbus_active_hour_pooling_and_abuse_strip_savings_cents=2340000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_forklift_mhe_fleet_cents, 23660000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_warehouse_forklift_mhe_fleet_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-warehouse-forklift-mhe-fleet-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
