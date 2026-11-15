@@ -19160,6 +19160,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hospital-hotel-linen-laundry-rfid-sandbox", demo_zh)
 
+    def test_b2b_loading_dock_leveler_overhead_door_aaadm_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_loading_dock_leveler_overhead_door_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant EEPROM board verification + zero ghost tool fee + dock restraint interlock -> 200 OK ($155,000.00)
+        ok_res = evaluate_b2b_loading_dock_leveler_overhead_door_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_LOADING_DOCK_OVERHEAD_DOOR_SETTLED")
+        self.assertEqual(ok_res.settled_loading_dock_overhead_door_cents, 15500000)
+
+        # 2. Dirty $18 photo-eye upcoded to $2,400 logic board swap or ghost scissor-lift/welder fee -> 403 Blocked
+        brd_403 = evaluate_b2b_loading_dock_leveler_overhead_door_policy(
+            controller_eeprom_swap_and_zero_ghost_tool_fee_verified=False,
+        )
+        self.assertFalse(brd_403.allowed)
+        self.assertEqual(brd_403.http_status, 403)
+        self.assertEqual(
+            brd_403.decision_code,
+            "PHOTOEYE_ALIGNMENT_UPCODED_TO_CONTROLLER_SWAP_OR_GHOST_SCISSOR_WELDER_FEE_BLOCKED",
+        )
+
+        # 3. 10-second walk-by dock PM skipping pit support or trailer restraint interlock -> 422 Blocked
+        rst_422 = evaluate_b2b_loading_dock_leveler_overhead_door_policy(
+            dock_pit_support_duration_and_restraint_interlock_verified=False,
+        )
+        self.assertFalse(rst_422.allowed)
+        self.assertEqual(rst_422.http_status, 422)
+        self.assertEqual(
+            rst_422.decision_code,
+            "LOADING_DOCK_RESTRAINT_INTERLOCK_SKIP_OR_UNVERIFIED_VELOCITY_FUSE_PM",
+        )
+
+        # 4. Unverified AAADM inspector credential or ANSI A156.10 >30 lbf closing force breach -> 451 Hold
+        aaa_451 = evaluate_b2b_loading_dock_leveler_overhead_door_policy(
+            webiq_aaadm_inspector_cert_and_ansi_a15610_force_clean=False,
+        )
+        self.assertFalse(aaa_451.allowed)
+        self.assertEqual(aaa_451.http_status, 451)
+
+        # 5. Web IQ fake board swap downgrade & ghost tool fee strip saving $23,250 ($131,750 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_loading_dock_leveler_overhead_door_policy(
+            automated_board_swap_downgrade_and_ghost_tool_strip_savings_cents=2325000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_loading_dock_overhead_door_cents, 13175000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_loading_dock_leveler_overhead_door_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-loading-dock-leveler-overhead-door-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
