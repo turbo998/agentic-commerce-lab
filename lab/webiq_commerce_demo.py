@@ -33323,6 +33323,106 @@ def evaluate_b2b_interior_plantscaping_biophilic_wall_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BRetailShoppingCartWheellockMobilityDecision:
+    """Deterministic decision output for B2B retail shopping cart retrieval, RF perimeter wheel-locks & ADA mobility carts."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    retail_shopping_cart_lane: str
+    settled_retail_shopping_cart_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+    *,
+    mandate_id: str = "b2b_retail_shopping_cart_perimeter_wheellock_retrieval_mobility_mandate_2026",
+    retail_shopping_cart_cents: int = 14000000,
+    perimeter_exit_log_and_smartwheel_diagnostic_code_verified: bool = True,
+    mobility_battery_load_test_and_antenna_uptime_verified: bool = True,
+    webiq_astm_f2372_child_strap_and_municipal_impound_clean: bool = True,
+    automated_smartwheel_reset_downgrade_and_bounty_scrub_savings_cents: int = 0,
+) -> B2BRetailShoppingCartWheellockMobilityDecision:
+    """Evaluate B2B retail shopping cart retrieval, SmartWheel RF diagnostic & ADA mobility-cart settlement."""
+    if not mandate_id.startswith("b2b_retail_shopping_cart_perimeter_wheellock_retrieval_mobility_mandate_"):
+        return B2BRetailShoppingCartWheellockMobilityDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_RETAIL_SHOPPING_CART_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            retail_shopping_cart_lane="INVALID_RETAIL_SHOPPING_CART_MANDATE_PREFIX",
+            settled_retail_shopping_cart_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not perimeter_exit_log_and_smartwheel_diagnostic_code_verified:
+        return B2BRetailShoppingCartWheellockMobilityDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="BOUNTY_FARMING_CART_RETRIEVAL_FRAUD_OR_SMARTWHEEL_SWAP_UPCODING_BLOCKED",
+            action_pill="Send to a human",
+            retail_shopping_cart_lane="BOUNTY_FARMING_CART_RETRIEVAL_FRAUD_OR_SMARTWHEEL_SWAP_UPCODING_BLOCKED",
+            settled_retail_shopping_cart_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not mobility_battery_load_test_and_antenna_uptime_verified:
+        return B2BRetailShoppingCartWheellockMobilityDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNTESTED_MOBILITY_CART_BATTERY_REPLACEMENT_OR_PERIMETER_ANTENNA_DOWNTIME_PADDING",
+            action_pill="Send to a human",
+            retail_shopping_cart_lane="UNTESTED_MOBILITY_CART_BATTERY_REPLACEMENT_OR_PERIMETER_ANTENNA_DOWNTIME_PADDING",
+            settled_retail_shopping_cart_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_astm_f2372_child_strap_and_municipal_impound_clean:
+        return B2BRetailShoppingCartWheellockMobilityDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MISSING_ASTM_F2372_CHILD_STRAP_INSPECTION_OR_MUNICIPAL_IMPOUND_VIOLATION_HOLD",
+            action_pill="Send to a human",
+            retail_shopping_cart_lane="MISSING_ASTM_F2372_CHILD_STRAP_INSPECTION_OR_MUNICIPAL_IMPOUND_VIOLATION_HOLD",
+            settled_retail_shopping_cart_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_smartwheel_reset_downgrade_and_bounty_scrub_savings_cents > 0:
+        net_cents = max(
+            0,
+            retail_shopping_cart_cents - automated_smartwheel_reset_downgrade_and_bounty_scrub_savings_cents,
+        )
+        return B2BRetailShoppingCartWheellockMobilityDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SMARTWHEEL_RESET_DOWNGRADE_AND_BOUNTY_SCRUB_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            retail_shopping_cart_lane="AUTOMATED_SMARTWHEEL_RESET_DOWNGRADE_AND_BOUNTY_SCRUB_SAVINGS_CONFIRM",
+            settled_retail_shopping_cart_cents=net_cents,
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BRetailShoppingCartWheellockMobilityDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_RETAIL_SHOPPING_CART_FLEET_SETTLED",
+        action_pill="Act automatically",
+        retail_shopping_cart_lane="VERIFIED_RETAIL_SHOPPING_CART_FLEET_SETTLED",
+        settled_retail_shopping_cart_cents=retail_shopping_cart_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44346,6 +44446,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "billable_dead_plant_swap_block_latency_ms": plt_swp_403.latency_ms,
     }
 
+    crt_commit_ok = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy()
+    crt_bnt_403 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+        perimeter_exit_log_and_smartwheel_diagnostic_code_verified=False,
+    )
+    crt_bat_422 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+        mobility_battery_load_test_and_antenna_uptime_verified=False,
+    )
+    crt_ast_451 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+        webiq_astm_f2372_child_strap_and_municipal_impound_clean=False,
+    )
+    crt_sav_409 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+        automated_smartwheel_reset_downgrade_and_bounty_scrub_savings_cents=2100000,
+    )
+    b2b_retail_shopping_cart_wheellock_mobility_guards = {
+        "all_passed": (
+            crt_commit_ok.allowed
+            and crt_commit_ok.settled_retail_shopping_cart_cents == 14000000
+            and not crt_bnt_403.allowed
+            and crt_bnt_403.http_status == 403
+            and not crt_bat_422.allowed
+            and crt_bat_422.http_status == 422
+            and not crt_ast_451.allowed
+            and crt_ast_451.http_status == 451
+            and not crt_sav_409.allowed
+            and crt_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_retail_shopping_cart_settlement_latency_ms": crt_commit_ok.latency_ms,
+        "bounty_farming_smartwheel_block_latency_ms": crt_bnt_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44690,6 +44820,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_highrise_window_washing_bmu_rope_access_guards": b2b_highrise_window_washing_bmu_rope_access_guards,
         "b2b_parking_garage_lpr_parcs_valet_guards": b2b_parking_garage_lpr_parcs_valet_guards,
         "b2b_interior_plantscaping_biophilic_wall_guards": b2b_interior_plantscaping_biophilic_wall_guards,
+        "b2b_retail_shopping_cart_wheellock_mobility_guards": b2b_retail_shopping_cart_wheellock_mobility_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53565,6 +53696,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="plt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Retail Shopping Cart & Wheel-Lock Sandbox (Round 332) -->
+      <div class="finops-box" id="b2b-retail-shopping-cart-wheellock-mobility-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-crt-title">🛒 B2B 连锁商超手推车车队、智能防盗锁轮 (SmartWheel) 与 ADA 电动代步车维保沙盒 (Round 332 · Gatekeeper / Technibilt / ASTM F2372)</span>
+        </div>
+        <div class="control-row">
+          <label><span>边界 RF 出界日志匹配锁 + SmartWheel 硬件故障码 + 代步车电瓶 SOH 测试 + Web IQ ASTM F2372 核验:</span></label>
+          <select id="crt-select" onchange="updateB2BRetailShoppingCartWheellockMobilitySandbox()">
+            <option value="crt_commit_ok">🛒 找回推车匹配营业期出界日志 + SmartWheel 故障码 + 电瓶 SOH 测试 + ASTM F2372 儿童带合规：10ms 清算 $140,000.00! (Act automatically)</option>
+            <option value="crt_bnt_403">🛑 寻车外包队半夜 2 点自己从门店车棚偷拉 60 辆推车白天送回骗 $12/辆赏金，或将 $14 普通后轮/3秒射频复位谎报为 $185 智能锁轮报废 → 11ms 触发 HTTP 403!</option>
+            <option value="crt_bat_422">🚨 店内 ADA 电动购物代步车仅因忘插充电器亏电却被换走 $550 双 AGM 电瓶，或围栏地下天线断路期间照收街区流失推车找回费 → 14ms 触发 HTTP 422!</option>
+            <option value="crt_ast_451">🛑 季度保养漏检破损的 ASTM F2372 儿童座椅安全带卡扣或虚报市政城管局扣车赎回罚单：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="crt_sav_409">🧑‍⚖️ Web IQ 自动将无电路损坏的误锁轮降级为 $0 射频遥控复位、还原 $14 普通脚轮单价并剔除无出界日志找回赏金立省 $21,000.00 (净付 $119,000.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="crt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54335,6 +54484,7 @@ function renderAll() {{
   updateB2BHighriseWindowWashingBmuRopeAccessSandbox();
   updateB2BParkingGarageLprParcsValetSandbox();
   updateB2BInteriorPlantscapingBiophilicWallSandbox();
+  updateB2BRetailShoppingCartWheellockMobilitySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -70516,6 +70666,52 @@ function updateB2BInteriorPlantscapingBiophilicWallSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🪴 保活免费换苗 + 花盆 12 月买断封顶 + EPA 室内合规：已自动清算 (VERIFIED_INTERIOR_PLANTSCAPING_BIOPHILIC_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零枯死植物收费换新、零 $55 空花盆永续收租与塑料假花浇水费</strong>：B2B 商业绿植租摆与活体植物墙批次已完成安全清算（<code>$125,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BRetailShoppingCartWheellockMobilitySandbox() {{
+  var sel = document.getElementById("crt-select");
+  var outEl = document.getElementById("crt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "crt_bnt_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BOUNTY_FARMING_CART_RETRIEVAL_FRAUD_OR_SMARTWHEEL_SWAP_UPCODING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "比对门店边界 <code>2.4GHz / Sub-GHz</code> 基站出界日志与手持诊断器记录发现：申报找回的 60 辆推车系凌晨 2 点从车棚集中偷运（无正常营业越界记录），且将只需 <code>3 秒射频解锁复位 ($0) 或 $14 普通后轮</code> 谎报为 <code>$185 SmartWheel 芯片总成更换</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "crt_bat_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNTESTED_MOBILITY_CART_BATTERY_REPLACEMENT_OR_PERIMETER_ANTENNA_DOWNTIME_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "核验店内 <code>ADA</code> 电动购物代步车电瓶测试单与电子围栏发射机状态发现：维修工未做 <code>12V AGM SOH 负载测试</code> 即更换仅因忘插电亏电的 <code>$550 双电瓶</code>，且在围栏天线断路未修期间照收街区找回费，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "crt_ast_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_ASTM_F2372_CHILD_STRAP_INSPECTION_OR_MUNICIPAL_IMPOUND_VIOLATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ASTM F2372</code> 儿童安全带巡检记录与市政城管局 <code>Abandoned Shopping Cart Impound</code> 条例发现：42 辆购物车缺失合格儿童安全带卡扣或虚报政府扣车罚款，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "crt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SMARTWHEEL_RESET_DOWNGRADE_AND_BOUNTY_SCRUB_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>误锁 SmartWheel 强制降级为 $0 射频遥控复位 + 普通后轮回归 $14 合同价 + 砍除无营业期越界日志的刷单找回赏金</code>，单批立省 <code>$21,000.00</code>（净结算额优化至 <code>$119,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛒 边界 RF 出界日志匹配 + 锁轮诊断码 + ASTM F2372 合规：已自动清算 (VERIFIED_RETAIL_SHOPPING_CART_FLEET_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零寻车队半夜自盗刷赏金、零 $14 普通轮冒充 $185 智能锁轮与盲换代步车电瓶</strong>：B2B 连锁商超购物车与智能锁轮维保批次已完成安全清算（<code>$140,000.00</code>）！" +
     "</div>";
 }}
 

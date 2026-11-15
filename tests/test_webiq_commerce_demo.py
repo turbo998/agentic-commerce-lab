@@ -19901,6 +19901,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-interior-plantscaping-biophilic-wall-sandbox", demo_zh)
 
+    def test_b2b_retail_shopping_cart_wheellock_mobility_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant perimeter exit log + SmartWheel diagnostic code + ASTM F2372 child strap -> 200 OK ($140,000.00)
+        ok_res = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_RETAIL_SHOPPING_CART_FLEET_SETTLED")
+        self.assertEqual(ok_res.settled_retail_shopping_cart_cents, 14000000)
+
+        # 2. Midnight cart-retrieval bounty farming or $14 rear caster upcoded to $185 SmartWheel -> 403 Blocked
+        bnt_403 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+            perimeter_exit_log_and_smartwheel_diagnostic_code_verified=False,
+        )
+        self.assertFalse(bnt_403.allowed)
+        self.assertEqual(bnt_403.http_status, 403)
+        self.assertEqual(
+            bnt_403.decision_code,
+            "BOUNTY_FARMING_CART_RETRIEVAL_FRAUD_OR_SMARTWHEEL_SWAP_UPCODING_BLOCKED",
+        )
+
+        # 3. Untested ADA mobility-cart battery replacement or perimeter antenna downtime bounties -> 422 Blocked
+        bat_422 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+            mobility_battery_load_test_and_antenna_uptime_verified=False,
+        )
+        self.assertFalse(bat_422.allowed)
+        self.assertEqual(bat_422.http_status, 422)
+        self.assertEqual(
+            bat_422.decision_code,
+            "UNTESTED_MOBILITY_CART_BATTERY_REPLACEMENT_OR_PERIMETER_ANTENNA_DOWNTIME_PADDING",
+        )
+
+        # 4. Missing ASTM F2372 child-restraint strap inspection or fake municipal impound fee -> 451 Hold
+        ast_451 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+            webiq_astm_f2372_child_strap_and_municipal_impound_clean=False,
+        )
+        self.assertFalse(ast_451.allowed)
+        self.assertEqual(ast_451.http_status, 451)
+
+        # 5. Web IQ SmartWheel reset downgrade & bounty scrub saving $21,000 ($119,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_retail_shopping_cart_wheellock_mobility_policy(
+            automated_smartwheel_reset_downgrade_and_bounty_scrub_savings_cents=2100000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_retail_shopping_cart_cents, 11900000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_retail_shopping_cart_wheellock_mobility_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-retail-shopping-cart-wheellock-mobility-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
