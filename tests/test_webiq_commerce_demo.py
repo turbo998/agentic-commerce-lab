@@ -18476,6 +18476,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-medical-legal-interpretation-vri-cdr-sandbox", demo_zh)
 
+    def test_b2b_document_archiving_secure_shredding_naid_vs_hostage_fee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_document_archiving_secure_shredding_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant active retention + CoD barcode reconciled + load-cell shred weight -> 200 OK ($130,000.00)
+        ok_res = evaluate_b2b_document_archiving_secure_shredding_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DOCUMENT_ARCHIVING_SHREDDING_SETTLED")
+        self.assertEqual(ok_res.settled_document_archiving_shredding_cents, 13000000)
+
+        # 2. Expired retention zombie cartons or already-shredded CoD ghost boxes billed -> 403 Blocked
+        zom_403 = evaluate_b2b_document_archiving_secure_shredding_policy(
+            retention_schedule_active_and_cod_barcode_reconciled=False,
+        )
+        self.assertFalse(zom_403.allowed)
+        self.assertEqual(zom_403.http_status, 403)
+        self.assertEqual(
+            zom_403.decision_code,
+            "EXPIRED_RETENTION_ZOMBIE_CARTON_RENT_OR_GHOST_DESTROYED_BOX_BILLING_BLOCKED",
+        )
+
+        # 3. $6.50/box permanent withdrawal hostage fee or empty shred console billed as full -> 422 Blocked
+        hos_422 = evaluate_b2b_document_archiving_secure_shredding_policy(
+            permanent_withdrawal_cap_and_loadcell_shred_weight_verified=False,
+        )
+        self.assertFalse(hos_422.allowed)
+        self.assertEqual(hos_422.http_status, 422)
+        self.assertEqual(
+            hos_422.decision_code,
+            "PUNITIVE_PERMANENT_WITHDRAWAL_HOSTAGE_FEE_OR_EMPTY_SHRED_BIN_PADDING",
+        )
+
+        # 4. Lapsed i-SIGMA NAID AAA certification or HIPAA/GLBA particle-size breach -> 451 Hold
+        naid_451 = evaluate_b2b_document_archiving_secure_shredding_policy(
+            webiq_naid_aaa_certification_and_hipaa_glba_clean=False,
+        )
+        self.assertFalse(naid_451.allowed)
+        self.assertEqual(naid_451.http_status, 451)
+
+        # 5. Web IQ retention purge & Scan-on-Demand conversion saving $19,500 ($110,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_document_archiving_secure_shredding_policy(
+            automated_retention_purge_and_scan_on_demand_savings_cents=1950000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_document_archiving_shredding_cents, 11050000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_document_archiving_secure_shredding_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-document-archiving-secure-shredding-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
