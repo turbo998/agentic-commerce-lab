@@ -17393,6 +17393,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-laundry-linen-rfid-sandbox", demo_zh)
 
+    def test_b2b_commercial_waste_compactor_fullness_vs_ghost_haul_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_waste_compactor_hauling_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant >=80% fullness dispatch + actual scale net weight + zero ERF & OCC rebate -> 200 OK ($290,000.00)
+        ok_res = evaluate_b2b_commercial_waste_compactor_hauling_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_WASTE_COMPACTOR_HAULING_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_waste_cents, 29000000)
+
+        # 2. Unscheduled 25%-full compactor ghost haul (1.8t) or 4.5t minimum tonnage padding -> 403 Blocked
+        ghs_403 = evaluate_b2b_commercial_waste_compactor_hauling_policy(
+            compactor_iot_fullness_80pct_token_and_actual_scale_net_weight_verified=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.decision_code,
+            "UNAUTHORIZED_UNDERFULL_COMPACTOR_GHOST_HAUL_OR_MIN_TONNAGE_PADDING_BLOCKED",
+        )
+
+        # 3. Unphotographed $250 contamination penalty or 38% ERF/FRF surcharge padding -> 422 Blocked
+        cnt_422 = evaluate_b2b_commercial_waste_compactor_hauling_policy(
+            hopper_cam_cv_contamination_photo_and_zero_erf_surcharge_verified=False,
+        )
+        self.assertFalse(cnt_422.allowed)
+        self.assertEqual(cnt_422.http_status, 422)
+        self.assertEqual(
+            cnt_422.decision_code,
+            "UNVERIFIED_CONTAMINATION_OVERFILL_PENALTY_OR_EXCESSIVE_ERF_FRF_SURCHARGE",
+        )
+
+        # 4. Unlicensed disposal facility or California SB 1383 organics diversion breach -> 451 Hold
+        org_451 = evaluate_b2b_commercial_waste_compactor_hauling_policy(
+            webiq_municipal_landfill_permit_and_sb1383_organics_diversion_clean=False,
+        )
+        self.assertFalse(org_451.allowed)
+        self.assertEqual(org_451.http_status, 451)
+
+        # 5. Web IQ automated municipal tipping strip & RISI OCC #11 cardboard rebate saving $26,100 ($263,900 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_waste_compactor_hauling_policy(
+            automated_municipal_tipping_strip_and_risi_occ_rebate_savings_cents=2610000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_waste_cents, 26390000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_waste_compactor_hauling_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-waste-compactor-hauling-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
