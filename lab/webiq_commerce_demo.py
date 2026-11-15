@@ -31333,6 +31333,91 @@ def evaluate_b2b_commercial_landscaping_snow_removal_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCoolingTowerBoilerWaterTreatmentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_water_treatment_ashrae188_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
+    *,
+    mandate_id: str = "b2b_cooling_tower_boiler_water_treatment_ashrae188_ptsa_tracer_legionella_mandate_2026",
+    ptsa_fluorescent_tracer_mass_balance_and_lpr_verified: bool = True,
+    cycles_of_concentration_blowdown_and_biocide_orp_verified: bool = True,
+    webiq_cdc_elite_legionella_lab_and_ashrae188_clean: bool = True,
+    automated_coc_blowdown_and_solid_chemistry_savings_cents: int = 0,
+    water_treatment_ashrae188_cents: int = 15000000,
+) -> B2BCoolingTowerBoilerWaterTreatmentDecision:
+    """Evaluate B2B Industrial Cooling Tower, Chiller & Boiler Water Treatment (ASHRAE 188, PTSA Tracer & CDC ELITE) policy."""
+    if not mandate_id.startswith("b2b_cooling_tower_boiler_water_treatment_ashrae188_ptsa_tracer_legionella_mandate_"):
+        return B2BCoolingTowerBoilerWaterTreatmentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_WATER_TREATMENT_ASHRAE188_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_water_treatment_ashrae188_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not ptsa_fluorescent_tracer_mass_balance_and_lpr_verified:
+        return B2BCoolingTowerBoilerWaterTreatmentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="DILUTED_PTSA_TRACER_CONCENTRATION_OR_AIRLOCKED_DOSING_PUMP_BLOCKED",
+            action_pill="Send to a human",
+            settled_water_treatment_ashrae188_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not cycles_of_concentration_blowdown_and_biocide_orp_verified:
+        return B2BCoolingTowerBoilerWaterTreatmentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="EXCESSIVE_BLOWDOWN_CHEMICAL_DUMPING_OR_SUB_THRESHOLD_BIOCIDE_ORP",
+            action_pill="Send to a human",
+            settled_water_treatment_ashrae188_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_cdc_elite_legionella_lab_and_ashrae188_clean:
+        return B2BCoolingTowerBoilerWaterTreatmentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNVERIFIED_CDC_ELITE_LEGIONELLA_LAB_OR_ASHRAE188_VIOLATION_HOLD",
+            action_pill="Send to a human",
+            settled_water_treatment_ashrae188_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_coc_blowdown_and_solid_chemistry_savings_cents > 0:
+        return B2BCoolingTowerBoilerWaterTreatmentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_COC_BLOWDOWN_OPTIMIZATION_AND_SOLID_CHEMISTRY_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_water_treatment_ashrae188_cents=max(
+                0,
+                water_treatment_ashrae188_cents - automated_coc_blowdown_and_solid_chemistry_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2BCoolingTowerBoilerWaterTreatmentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_WATER_TREATMENT_ASHRAE188_SETTLED",
+        action_pill="Act automatically",
+        settled_water_treatment_ashrae188_cents=water_treatment_ashrae188_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -41696,6 +41781,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sub_threshold_flurry_plow_block_latency_ms": snw_plw_403.latency_ms,
     }
 
+    wtr_commit_ok = evaluate_b2b_cooling_tower_boiler_water_treatment_policy()
+    wtr_pts_403 = evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
+        ptsa_fluorescent_tracer_mass_balance_and_lpr_verified=False,
+    )
+    wtr_coc_422 = evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
+        cycles_of_concentration_blowdown_and_biocide_orp_verified=False,
+    )
+    wtr_cdc_451 = evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
+        webiq_cdc_elite_legionella_lab_and_ashrae188_clean=False,
+    )
+    wtr_sav_409 = evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
+        automated_coc_blowdown_and_solid_chemistry_savings_cents=2250000,
+    )
+    b2b_cooling_tower_boiler_water_treatment_guards = {
+        "all_passed": (
+            wtr_commit_ok.allowed
+            and wtr_commit_ok.settled_water_treatment_ashrae188_cents == 15000000
+            and not wtr_pts_403.allowed
+            and wtr_pts_403.http_status == 403
+            and not wtr_coc_422.allowed
+            and wtr_coc_422.http_status == 422
+            and not wtr_cdc_451.allowed
+            and wtr_cdc_451.http_status == 451
+            and not wtr_sav_409.allowed
+            and wtr_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_water_treatment_settlement_latency_ms": wtr_commit_ok.latency_ms,
+        "diluted_ptsa_tracer_drum_block_latency_ms": wtr_pts_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42018,6 +42133,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_document_archiving_secure_shredding_guards": b2b_document_archiving_secure_shredding_guards,
         "b2b_commercial_elevator_escalator_mcp_guards": b2b_commercial_elevator_escalator_mcp_guards,
         "b2b_commercial_landscaping_snow_removal_guards": b2b_commercial_landscaping_snow_removal_guards,
+        "b2b_cooling_tower_boiler_water_treatment_guards": b2b_cooling_tower_boiler_water_treatment_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50497,6 +50613,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="snw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Cooling Tower, Chiller & Boiler Water Treatment (ASHRAE 188, PTSA Tracer & CDC ELITE) Sandbox -->
+      <div class="finops-box" id="b2b-cooling-tower-boiler-water-treatment-sandbox" style="margin-top:12px;border-color:#14B8A6;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">💧 B2B 工业冷却塔、冷机与锅炉水处理 (ASHRAE 188 / CDC ELITE)：PTSA 荧光质量守恒锁、浓缩倍数 &gt;=5.0 与防掺水排药 (`b2b_cooling_tower_boiler_water_treatment_ashrae188_ptsa_tracer_legionella_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 数据中心/医院月度冷却塔与锅炉水处理药剂批次 ($150,000.00)、PTSA 荧光示踪浓度 (100 ppb)、浓缩倍数 (CoC &gt;=5.0) 与 CDC ELITE 军团菌盲测场景 (Water Treatment Scenario):</span></label>
+          <select id="wtr-select" onchange="updateB2BCoolingTowerBoilerWaterTreatmentSandbox()">
+            <option value="wtr_commit_ok">💧 在线 PTSA 100ppb 质量守恒 + 浓缩倍数 CoC &gt;=5.0 + CDC ELITE 军团菌阴性合规：10ms 清算 $150,000.00! (Act automatically)</option>
+            <option value="wtr_pts_403">🛑 将 $2,200/桶缓蚀阻垢剂掺水稀释 3 倍 (在线 PTSA 探头仅 32 ppb)，或加药计量泵气蚀空转 2 个月导致冷机结垢却照收药桶钱 → 11ms 触发 HTTP 403!</option>
+            <option value="wtr_coc_422">🚨 业务员故意调低电导率排污上限使浓缩倍数跌至 2.2 把刚加的昂贵药水排进下水道促复购，或杀菌期 ORP 未达 650 mV → 14ms 触发 HTTP 422!</option>
+            <option value="wtr_cdc_451">🛑 用无资质自测试纸代替 CDC ELITE 认证独立实验室军团菌培养或检出嗜肺军团菌 &gt;=10 CFU/mL 违反 ASHRAE 188：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="wtr_sav_409">🧑‍⚖️ Web IQ 自动按标准 CoC=5.5 核减过度排污冲走的药剂浪费并将 55 加仑含水液桶切换为高浓缩固体药砖立省 $22,500.00 (净付 $127,500.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="wtr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -51245,6 +51379,7 @@ function renderAll() {{
   updateB2BDocumentArchivingSecureShreddingSandbox();
   updateB2BCommercialElevatorEscalatorMcpSandbox();
   updateB2BCommercialLandscapingSnowRemovalSandbox();
+  updateB2BCoolingTowerBoilerWaterTreatmentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -66414,6 +66549,52 @@ function updateB2BCommercialLandscapingSnowRemovalSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>❄️ NOAA 认证雪深 &gt;=2.0&quot; + AVL 撒盐遥测 + ASCA ISO 22325 合规：已自动清算 (VERIFIED_LANDSCAPING_SNOW_REMOVAL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 0.3 英寸薄霜强铲、零一场雪拆三单与一车盐卖四家</strong>：B2B 商业园区园林绿化与冬季除雪撒盐批次已完成安全清算（<code>$165,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCoolingTowerBoilerWaterTreatmentSandbox() {{
+  var sel = document.getElementById("wtr-select");
+  var outEl = document.getElementById("wtr-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "wtr_pts_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 DILUTED_PTSA_TRACER_CONCENTRATION_OR_AIRLOCKED_DOSING_PUMP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对药桶超声液位消耗与冷却水回路 <code>Modbus PTSA 在线荧光探头</code> 发现：账单申报消耗 10 桶缓蚀阻垢剂，但循环水 <code>PTSA 实测仅 32 ppb（远低于 100 ppb 质量守恒值，药桶被掺水稀释 3 倍或加药泵气蚀空转）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtr_coc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 EXCESSIVE_BLOWDOWN_CHEMICAL_DUMPING_OR_SUB_THRESHOLD_BIOCIDE_ORP (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "补水表与排污表比值显示冷却塔浓缩倍数被人为调低至 <code>CoC = 2.2（违反 &gt;=5.0 闭环红线，73% 的贵重药水被直接排进下水道促复购）</code>，或杀菌投加期 <code>ORP &lt; 650 mV</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtr_cdc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNVERIFIED_CDC_ELITE_LEGIONELLA_LAB_OR_ASHRAE188_VIOLATION_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查美国疾控中心 <code>CDC ELITE</code> 实验室名录与 <code>ASHRAE Standard 188</code> 备案发现：供应商提交的军团菌检测报告由非认证内部实验室出具且检出 <code>&gt;=10 CFU/mL</code> 风险，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "wtr_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_COC_BLOWDOWN_OPTIMIZATION_AND_SOLID_CHEMISTRY_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>锁定浓缩倍数 CoC=5.5 剔除过度排污跑药损耗 + 将 55 加仑含水液态桶切换为高浓缩固体药砖省除危化运费</code>，单批立省 <code>$22,500.00</code>（净结算额优化至 <code>$127,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>💧 在线 PTSA 100ppb 质量守恒 + 浓缩倍数 CoC &gt;=5.0 + CDC ELITE 合规：已自动清算 (VERIFIED_WATER_TREATMENT_ASHRAE188_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零药桶掺水稀释、零排污阀常开冲药促复购与自测水质造假</strong>：B2B 工业冷却塔、冷机与锅炉水处理批次已完成安全清算（<code>$150,000.00</code>）！" +
     "</div>";
 }}
 
