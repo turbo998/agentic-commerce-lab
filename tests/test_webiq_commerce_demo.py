@@ -19616,6 +19616,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-heavy-crane-rigging-lmi-superload-sandbox", demo_zh)
 
+    def test_b2b_commercial_scaffolding_modular_trailer_offrent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_scaffolding_modular_trailer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 48h dismantle rent cutoff + curbside counting-rack tally + OSHA/PE clean -> 200 OK ($205,000.00)
+        ok_res = evaluate_b2b_commercial_scaffolding_modular_trailer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SCAFFOLDING_TRAILER_SETTLED")
+        self.assertEqual(ok_res.settled_scaffolding_modular_trailer_cents, 20500000)
+
+        # 2. Post-dismantle call-off rent accrual or unilateral warehouse shortage claim -> 403 Blocked
+        dis_403 = evaluate_b2b_commercial_scaffolding_modular_trailer_policy(
+            dismantle_calloff_48h_rent_cutoff_and_curbside_tally_verified=False,
+        )
+        self.assertFalse(dis_403.allowed)
+        self.assertEqual(dis_403.http_status, 403)
+        self.assertEqual(
+            dis_403.decision_code,
+            "POST_DISMANTLE_CALLOFF_RENT_ACCRUAL_OR_UNILATERAL_WAREHOUSE_SHORTAGE_CLAIM_BLOCKED",
+        )
+
+        # 3. Modular trailer staircase rent exceeding purchase value or 28-day 13-cycle billing -> 422 Blocked
+        trl_422 = evaluate_b2b_commercial_scaffolding_modular_trailer_policy(
+            trailer_accessory_buyout_cap_and_calendar_month_cycle_verified=False,
+        )
+        self.assertFalse(trl_422.allowed)
+        self.assertEqual(trl_422.http_status, 422)
+        self.assertEqual(
+            trl_422.decision_code,
+            "MODULAR_TRAILER_ACCESSORY_RENT_EXCEEDS_PURCHASE_VALUE_OR_28DAY_CYCLE_PADDING",
+        )
+
+        # 4. Missing daily OSHA Green-Tag log or unstamped >125-ft PE design -> 451 Hold
+        osh_451 = evaluate_b2b_commercial_scaffolding_modular_trailer_policy(
+            webiq_osha_scaffold_green_tag_and_125ft_pe_stamp_clean=False,
+        )
+        self.assertFalse(osh_451.allowed)
+        self.assertEqual(osh_451.http_status, 451)
+
+        # 5. Web IQ 48h dismantle rent cutoff, COI waiver & accessory cap saving $30,750 ($174,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_scaffolding_modular_trailer_policy(
+            automated_dismantle_rent_cutoff_and_accessory_cap_savings_cents=3075000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_scaffolding_modular_trailer_cents, 17425000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_scaffolding_modular_trailer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-scaffolding-modular-trailer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
