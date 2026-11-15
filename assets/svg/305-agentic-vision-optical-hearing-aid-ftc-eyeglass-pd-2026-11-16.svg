@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg305" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent305" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg305)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent305)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#22D3EE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-16 · ROUND 303 · AGENTIC VISION CARE, OPTICAL LAB &amp; HEARING-AID CLAIMS (FTC 16 CFR 456 &amp; FDA OTC)</text>
+  <text x="52" y="92" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">智能体视光配镜、隐形眼镜与助听器理赔：处方/瞳距免费释放锁、镀膜去重与解绑清算架构</text>
+  <text x="52" y="116" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">封杀“扣留处方/瞳距 (PD) 或收 $40 测量费阻止网购配镜” · 阻断在天然 100% 防紫外线的聚碳酸酯片上重收 $40 UV 费 · 解绑 $6,500 助听器套餐</text>
+
+  <!-- Left Card: Legacy Failure Modes -->
+  <rect x="48" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="48" y="136" width="356" height="38" rx="12" fill="#7F1D1D"/>
+  <text x="68" y="160" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">❌ 传统眼镜店配镜与助听器三大黑洞 (多花 35%–65%)</text>
+
+  <rect x="64" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="210" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 故意漏写瞳距 (PD) 或收 $40 测量费阻止网购</text>
+  <text x="78" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 电脑验光仪 1秒已测出瞳距，店员却故意不在处方单上写</text>
+  <text x="78" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 患者想拿处方去网上配 $95 眼镜时被勒索 $40 瞳距费</text>
+  <text x="78" y="272" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 违背 FTC 16 CFR Part 456 处方即时无条件免费释放令</text>
+
+  <rect x="64" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="326" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 天然防紫外线镜片重收 $40 UV 费与白牌冒充顶级片</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 聚碳酸酯 (Polycarbonate) 与高折镜片天然 100% 阻隔紫外线</text>
+  <text x="78" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 账单却额外加收 $40 V2755 防紫外线镀膜费 (“给潜艇卖雨伞”)</text>
+  <text x="78" y="388" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 用 $25 白牌渐进片冒充 $350 Tier-4 顶级定制渐进片骗保</text>
+
+  <rect x="64" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="78" y="442" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. $1,100 助听器强行捆绑成 $6,500 终身服务套餐</text>
+  <text x="78" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 顶级数字助听器硬件批发价仅 $1,100，诊所拒不单独销售</text>
+  <text x="78" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强绑 $4,800 未来 3年无限次调试费按 $6,500 整包收费</text>
+  <text x="78" y="504" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 隐瞒 FDA 21 CFR 800.30 合规的 $799 OTC 非处方助听器</text>
+
+  <!-- Center Card: Agentic Policy Engine -->
+  <rect x="422" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#06B6D4" stroke-width="1.5"/>
+  <rect x="422" y="136" width="356" height="38" rx="12" fill="#164E63"/>
+  <text x="442" y="160" fill="#A5F3FC" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">🛡️ 智能体 FTC 处方锁、光学去重与助听器解绑三道锁</text>
+
+  <rect x="438" y="188" width="324" height="104" rx="8" fill="#0F172A" stroke="#0E7490"/>
+  <text x="452" y="210" fill="#22D3EE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 1：FTC 16 CFR 456/315 处方与瞳距 (PD) $0 释放锁</text>
+  <text x="452" y="232" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 验光结束立即将含双目/单眼 PD 的电子处方推入患者钱包</text>
+  <text x="452" y="252" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 严禁收任何 PD 测量费或把在店配镜作为给处方的前置条件</text>
+  <text x="452" y="272" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 11ms 触发 HTTP 403 阻断扣留处方/瞳距与强制贴牌隐形眼镜</text>
+
+  <rect x="438" y="304" width="324" height="104" rx="8" fill="#0F172A" stroke="#0E7490"/>
+  <text x="452" y="326" fill="#22D3EE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 2：聚碳酸酯/高折 $0 UV 物理去重与助听器解绑</text>
+  <text x="452" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 基材为聚碳酸酯/Trivex/高折时，自动将 V2755 UV 费清零</text>
+  <text x="452" y="368" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 助听器强制拆分为 GPO 硬件底价 + 按实际到店次数的验配费</text>
+  <text x="452" y="388" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 14ms 触发 HTTP 422 拦截重复 UV 费与 $6,500 捆绑助听器</text>
+
+  <rect x="438" y="420" width="324" height="104" rx="8" fill="#0F172A" stroke="#0E7490"/>
+  <text x="452" y="442" fill="#22D3EE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">锁 3：Web IQ 镜片激光微刻印防伪与 FDA 800.30 锁</text>
+  <text x="452" y="464" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse 核验镜片激光微刻印与 Tier 1..4 目录</text>
+  <text x="452" y="484" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 核查 FDA 510(k) / OTC 800.30 助听器注册与视光师执照</text>
+  <text x="452" y="504" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600">• 275ms 触发 HTTP 451 / 240ms HTTP 409 立省 $21,000</text>
+
+  <!-- Right Card: Quantitative Benchmark -->
+  <rect x="796" y="136" width="356" height="404" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="796" y="136" width="356" height="38" rx="12" fill="#064E3B"/>
+  <text x="816" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 视光配镜与助听器理赔 ($140,000) 实测矩阵</text>
+
+  <rect x="812" y="188" width="324" height="60" rx="8" fill="#0F172A" stroke="#10B981"/>
+  <text x="826" y="210" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="826" y="232" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">免费交付处方+PD + 零重复UV + 助听器解绑 → $140k</text>
+
+  <rect x="812" y="258" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="280" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="826" y="302" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">扣留处方/隐瞒瞳距 (PD) 或收 $40 瞳距测量费 → 拦截</text>
+
+  <rect x="812" y="328" width="324" height="60" rx="8" fill="#0F172A" stroke="#EF4444"/>
+  <text x="826" y="350" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="826" y="372" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">聚碳酸酯片重收 $40 UV 费或强绑 $6,500 助听器 → 阻断</text>
+
+  <rect x="812" y="398" width="324" height="60" rx="8" fill="#0F172A" stroke="#F59E0B"/>
+  <text x="826" y="420" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 (275ms) / 🧑‍⚖️ HTTP 409 (240ms)</text>
+  <text x="826" y="442" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">白牌片冒充 Tier-4 挂起 / 去重+解绑助听器省 $21,000</text>
+
+  <rect x="812" y="468" width="324" height="56" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="826" y="490" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">💡 光学增项去重与助听器解绑后净付：$119,000 (省 15%)</text>
+  <text x="826" y="510" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="11">令牌：agentic_vision_optical_hearing_aid_ftc_eyeglass_...</text>
+
+  <!-- Footer -->
+  <rect x="48" y="556" width="1104" height="80" rx="10" fill="#020617" stroke="#334155"/>
+  <text x="68" y="582" fill="#22D3EE" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">架构师核心选型铁律 (Architect's Golden Rule)：</text>
+  <text x="68" y="604" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 验光理赔必须强制校验 FTC 16 CFR 456/315 电子处方与双目/单眼瞳距 (PD) $0 免费交付，聚碳酸酯/高折片一律免收 UV 费。</text>
+  <text x="68" y="624" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 渐进片须经 Web IQ 核对激光微刻印防白牌冒充 Tier-4，且助听器强制拆分为 GPO 硬件批发价与按次验配调试费。</text>
+</svg>

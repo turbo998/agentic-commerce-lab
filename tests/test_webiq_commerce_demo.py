@@ -18248,6 +18248,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-self-storage-ecri-rate-lock-sandbox", demo_zh)
 
+    def test_agentic_vision_optical_hearing_aid_ftc_pd_vs_uv_upcoding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_vision_optical_hearing_aid_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant free FTC Rx + PD release + $0 poly UV fee + unbundled hearing aid -> 200 OK ($140,000.00)
+        ok_res = evaluate_agentic_vision_optical_hearing_aid_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_VISION_OPTICAL_HEARING_AID_SETTLED")
+        self.assertEqual(ok_res.settled_vision_hearing_claim_cents, 14000000)
+
+        # 2. FTC 16 CFR 456/315 prescription or Pupillary Distance (PD) withheld / $40 PD fee -> 403 Blocked
+        rxp_403 = evaluate_agentic_vision_optical_hearing_aid_policy(
+            ftc_free_prescription_and_pupillary_distance_release_verified=False,
+        )
+        self.assertFalse(rxp_403.allowed)
+        self.assertEqual(rxp_403.http_status, 403)
+        self.assertEqual(
+            rxp_403.decision_code,
+            "FTC_EYEGLASS_RULE_PRESCRIPTION_OR_PD_WITHHOLDING_FEE_BLOCKED",
+        )
+
+        # 3. Duplicate V2755 UV charge on polycarbonate/high-index lens or $6,500 bundled hearing aid -> 422 Blocked
+        uvc_422 = evaluate_agentic_vision_optical_hearing_aid_policy(
+            polycarbonate_zero_uv_fee_and_unbundled_hearing_aid_verified=False,
+        )
+        self.assertFalse(uvc_422.allowed)
+        self.assertEqual(uvc_422.http_status, 422)
+        self.assertEqual(
+            uvc_422.decision_code,
+            "DUPLICATE_UV_COATING_ON_POLYCARBONATE_OR_BUNDLED_HEARING_AID_MARKUP_BREACH",
+        )
+
+        # 4. White-label progressive substituted for Tier-4 brand or unregistered FDA hearing device -> 451 Hold
+        lsr_451 = evaluate_agentic_vision_optical_hearing_aid_policy(
+            webiq_progressive_laser_code_and_fda_otc_hearing_clean=False,
+        )
+        self.assertFalse(lsr_451.allowed)
+        self.assertEqual(lsr_451.http_status, 451)
+
+        # 5. Web IQ automated lens add-on deduplication & unbundled GPO hearing-aid repricing saving $21,000 ($119,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_vision_optical_hearing_aid_policy(
+            automated_lens_addon_dedup_and_hearing_unbundling_savings_cents=2100000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_vision_hearing_claim_cents, 11900000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_vision_optical_hearing_aid_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-vision-optical-hearing-aid-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
