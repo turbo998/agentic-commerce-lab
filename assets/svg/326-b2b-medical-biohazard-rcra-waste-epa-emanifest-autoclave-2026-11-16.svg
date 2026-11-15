@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg326" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E1B18"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent326" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg326)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent326)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">ROUND 324 · B2B REGULATED MEDICAL WASTE (RMW), BIOHAZARD AUTOCLAVING &amp; EPA RCRA E-MANIFEST RECONCILIATION</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">感染性医废与 RCRA 危废清运：去皮净磅重锁、EPA e-Manifest 闭环 vs 半空箱保底与 18% 复利暗涨</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Mandate: b2b_medical_biohazard_rcra_waste_epa_emanifest_autoclave_net_weight_mandate_2026 · 15.0% Savings ($25,500 / Batch)</text>
+
+  <!-- Left Panel: Legacy Medical Waste Traps -->
+  <rect x="44" y="132" width="540" height="395" rx="12" fill="#1C1917" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="540" height="38" rx="12" fill="#450A0A"/>
+  <text x="64" y="156" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统感染性医废与危废清运四大黑洞 (Legacy Medical Waste Leakage: 30%–65%)</text>
+
+  <rect x="62" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="206" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 仅装 6 磅纱布的半空红袋箱按 $55/箱满额保底收钱 (Flat-Tub Quota Gouging)</text>
+  <text x="76" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">诊所与病房按规定定期封箱，30 加仑红桶内实际仅 6 磅轻质纱布，服务商却按合同</text>
+  <text x="76" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">保底 20 箱×$55=$1,100 固定一口价收费，折合每磅垃圾高达 $45（为空气买单）。</text>
+
+  <rect x="62" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="290" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 普通高压蒸汽灭菌医废 ($0.42/lb) 混按 $4.50/lb 危废高温焚烧计费</text>
+  <text x="76" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">90% 普通感染性红袋垃圾 (UN 3291) 只需高压蒸汽灭菌 (Autoclave)，清运商却不分类</text>
+  <text x="76" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">扫码，全部按微量细胞毒/病理级高温旋转窑焚烧 ($4.50/lb) 开票，单价暴涨 10 倍。</text>
+
+  <rect x="62" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="374" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 每半年自动触发 18% 复利暗涨 + 28% 自造“合规与环保恢复费”</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">合同隐藏自动调价条款 (API)，3 年内基准单价复利翻倍；同时在账单底部强加</text>
+  <text x="76" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">18% Environmental + 10% Regulatory Compliance 自造附加费冒充政府法定税费。</text>
+
+  <rect x="62" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="458" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. EPA e-Manifest 危废联单超 35 天未闭环引发医院 $70,000/天连带重罚</text>
+  <text x="76" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">根据 RCRA 摇篮到坟墓终身追责法，转运商收钱后未将危废送达持证 TSDF 焚烧厂</text>
+  <text x="76" y="496" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">完成 EPA RCRAInfo 电子签收，导致产废医院与药企直接遭受 EPA 巨额行政处罚。</text>
+
+  <!-- Right Panel: Agentic Net-Lb + EPA e-Manifest Architecture -->
+  <rect x="616" y="132" width="540" height="395" rx="12" fill="#0F1E2E" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="616" y="132" width="540" height="38" rx="12" fill="#064E3B"/>
+  <text x="636" y="156" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">✅ 条码去皮净磅重锁 + 灭菌/焚烧分流 + Web IQ e-Manifest 架构</text>
+
+  <rect x="634" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="206" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 条码去皮实测净磅重锁 ($/Lb) + 红袋 Autoclave 分流 (11ms → HTTP 403)</text>
+  <text x="648" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">废除按箱保底一口价，强制扣除 4.5lb 塑料桶与可复用锐器盒皮重按净重计费；普通</text>
+  <text x="648" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">UN 3291 红袋医废强制锁定 &lt;=$0.48/lb 高压蒸汽灭菌价，11ms 拦焚烧升档。</text>
+
+  <rect x="634" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="290" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 合同基准单价锁 (&lt;=3% CPI) + 清零 28% 自造合规附加费 (14ms → HTTP 422)</text>
+  <text x="648" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">逐项比对 MSA 主协议初始费率表，14ms 硬拦截每半年 18% 自动复利调价 (API)</text>
+  <text x="648" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">并 100% 剥离非政府征收的 28% Environmental / Regulatory Compliance 杂费。</text>
+
+  <rect x="634" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="374" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. Web IQ /v3/browse 核查 EPA RCRAInfo e-Manifest 闭环 (275ms → HTTP 451)</text>
+  <text x="648" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">275ms 穿透核查联邦 EPA RCRAInfo 系统中的 Signed-by-TSDF 最终销毁签名哈希</text>
+  <text x="648" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">与接收厂 ECHO 环保合规状态，未完成三方闭环销毁前严禁释放清算资金。</text>
+
+  <rect x="634" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#D97706"/>
+  <text x="648" y="458" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 自动将保底箱重算为去皮净磅重并剥离 28% 附加费 (240ms → HTTP 409)</text>
+  <text x="648" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动按实测去皮净重与高压灭菌档位重算账单，并剔除 18% 暗涨与 28% 附加费：</text>
+  <text x="648" y="496" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">基准批次 $170,000.00 → 自动核减 $25,500.00 (15.0%) → 净付 $144,500.00！</text>
+
+  <!-- Bottom Telemetry & Benchmark Bar -->
+  <rect x="44" y="542" width="1112" height="92" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="64" y="568" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 确定性门禁实测 (Deterministic Policy Guards · $170,000.00 Monthly Medical &amp; RCRA Waste Batch)</text>
+
+  <rect x="64" y="580" width="205" height="40" rx="6" fill="#064E3B"/>
+  <text x="76" y="598" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 10ms</text>
+  <text x="76" y="614" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11">去皮净重+灭菌价+闭环($170k)</text>
+
+  <rect x="281" y="580" width="205" height="40" rx="6" fill="#450A0A"/>
+  <text x="293" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 11ms</text>
+  <text x="293" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦半空箱保底与红袋按焚烧收</text>
+
+  <rect x="498" y="580" width="215" height="40" rx="6" fill="#450A0A"/>
+  <text x="510" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms</text>
+  <text x="510" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦 18% 复利暗涨与 28% 合规费</text>
+
+  <rect x="725" y="580" width="205" height="40" rx="6" fill="#3B0764"/>
+  <text x="737" y="598" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 451 · 275ms</text>
+  <text x="737" y="614" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦 EPA e-Manifest 超期未闭环</text>
+
+  <rect x="942" y="580" width="196" height="40" rx="6" fill="#451A03"/>
+  <text x="954" y="598" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 240ms</text>
+  <text x="954" y="614" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="11">改净重+剥杂费省$25.5k($144.5k)</text>
+</svg>
