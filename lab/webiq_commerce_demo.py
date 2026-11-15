@@ -32268,6 +32268,91 @@ def evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgenticPropertyRestorationWaterMitigationDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_property_restoration_mitigation_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agentic_property_restoration_water_mitigation_policy(
+    *,
+    mandate_id: str = "agentic_property_restoration_water_mitigation_iicrc_s500_psychrometric_xactimate_mandate_2026",
+    iicrc_s500_equipment_ratio_and_dry_standard_cutoff_verified: bool = True,
+    water_category_source_and_zero_single_trade_op_verified: bool = True,
+    webiq_xactimate_price_list_and_iicrc_iep_mold_clean: bool = True,
+    automated_s500_equipment_cap_and_xactimate_op_scrub_savings_cents: int = 0,
+    property_restoration_mitigation_cents: int = 19500000,
+) -> AgenticPropertyRestorationWaterMitigationDecision:
+    """Evaluate Agentic Commercial Property Water/Fire Mitigation, IICRC S500 Drying & Xactimate Scrubbing policy."""
+    if not mandate_id.startswith("agentic_property_restoration_water_mitigation_iicrc_s500_psychrometric_xactimate_mandate_"):
+        return AgenticPropertyRestorationWaterMitigationDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_PROPERTY_RESTORATION_MITIGATION_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_property_restoration_mitigation_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not iicrc_s500_equipment_ratio_and_dry_standard_cutoff_verified:
+        return AgenticPropertyRestorationWaterMitigationDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="IICRC_S500_EQUIPMENT_STUFFING_OR_POST_DRY_STANDARD_RENTAL_PADDING_BLOCKED",
+            action_pill="Send to a human",
+            settled_property_restoration_mitigation_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not water_category_source_and_zero_single_trade_op_verified:
+        return AgenticPropertyRestorationWaterMitigationDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="CATEGORY3_BLACKWATER_UPCODING_OR_SINGLE_TRADE_XACTIMATE_OP_PADDING",
+            action_pill="Send to a human",
+            settled_property_restoration_mitigation_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_xactimate_price_list_and_iicrc_iep_mold_clean:
+        return AgenticPropertyRestorationWaterMitigationDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MANIPULATED_XACTIMATE_UNIT_PRICE_OR_UNVERIFIED_IICRC_IEP_MOLD_PROTOCOL_HOLD",
+            action_pill="Send to a human",
+            settled_property_restoration_mitigation_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_s500_equipment_cap_and_xactimate_op_scrub_savings_cents > 0:
+        return AgenticPropertyRestorationWaterMitigationDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_S500_EQUIPMENT_CAP_AND_XACTIMATE_OP_SCRUB_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_property_restoration_mitigation_cents=max(
+                0,
+                property_restoration_mitigation_cents - automated_s500_equipment_cap_and_xactimate_op_scrub_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return AgenticPropertyRestorationWaterMitigationDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_PROPERTY_RESTORATION_MITIGATION_SETTLED",
+        action_pill="Act automatically",
+        settled_property_restoration_mitigation_cents=property_restoration_mitigation_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -42961,6 +43046,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "off_contract_tire_casing_theft_block_latency_ms": flt_tir_403.latency_ms,
     }
 
+    rst_commit_ok = evaluate_agentic_property_restoration_water_mitigation_policy()
+    rst_eqp_403 = evaluate_agentic_property_restoration_water_mitigation_policy(
+        iicrc_s500_equipment_ratio_and_dry_standard_cutoff_verified=False,
+    )
+    rst_cat_422 = evaluate_agentic_property_restoration_water_mitigation_policy(
+        water_category_source_and_zero_single_trade_op_verified=False,
+    )
+    rst_xac_451 = evaluate_agentic_property_restoration_water_mitigation_policy(
+        webiq_xactimate_price_list_and_iicrc_iep_mold_clean=False,
+    )
+    rst_sav_409 = evaluate_agentic_property_restoration_water_mitigation_policy(
+        automated_s500_equipment_cap_and_xactimate_op_scrub_savings_cents=2925000,
+    )
+    agentic_property_restoration_water_mitigation_guards = {
+        "all_passed": (
+            rst_commit_ok.allowed
+            and rst_commit_ok.settled_property_restoration_mitigation_cents == 19500000
+            and not rst_eqp_403.allowed
+            and rst_eqp_403.http_status == 403
+            and not rst_cat_422.allowed
+            and rst_cat_422.http_status == 422
+            and not rst_xac_451.allowed
+            and rst_xac_451.http_status == 451
+            and not rst_sav_409.allowed
+            and rst_sav_409.action_pill == "Confirm"
+        ),
+        "agentic_property_restoration_settlement_latency_ms": rst_commit_ok.latency_ms,
+        "s500_equipment_stuffing_block_latency_ms": rst_eqp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43294,6 +43409,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_hospital_hotel_linen_laundry_rfid_guards": b2b_hospital_hotel_linen_laundry_rfid_guards,
         "b2b_loading_dock_leveler_overhead_door_guards": b2b_loading_dock_leveler_overhead_door_guards,
         "b2b_commercial_fleet_maintenance_vmrs_tire_guards": b2b_commercial_fleet_maintenance_vmrs_tire_guards,
+        "agentic_property_restoration_water_mitigation_guards": agentic_property_restoration_water_mitigation_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51971,6 +52087,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="flt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agentic Commercial Property Water/Fire Mitigation, IICRC S500 Drying & Xactimate Scrubbing Sandbox -->
+      <div class="finops-box" id="agentic-property-restoration-water-mitigation-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🌊 智能体商业物业水灾/火灾应急除湿与核损 (ANSI/IICRC S500 / Xactimate)：S500 体积配比锁、蓝牙 GPP 达标停机与防黑水强拆 (`agentic_property_restoration_water_mitigation_iicrc_s500_psychrometric_xactimate_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 写字楼/酒店季度水灾应急恢复与 Xactimate 核损批次 ($195,000.00)、IICRC S500 房间体积设备配比、蓝牙湿度探头 (GPP/%MC) 与污染等级场景 (Property Water Mitigation Scenario):</span></label>
+          <select id="rst-select" onchange="updateAgenticPropertyRestorationWaterMitigationSandbox()">
+            <option value="rst_commit_ok">🌊 IICRC S500 台数合规 + 蓝牙探头达 Dry Standard 即停租 + Cat 1 原位烘干 + Xactimate 定额匹配：10ms 清算 $195,000.00! (Act automatically)</option>
+            <option value="rst_eqp_403">🛑 在 500 平尺小房间违反 S500 公式硬塞 18 台鼓风机与 4 台除湿机，或墙面第 3 天已达 &lt;=12% 干标准却故意空转到第 8 天收租金 → 11ms 触发 HTTP 403!</option>
+            <option value="rst_cat_422">🚨 将饮用水管/冷凝水漏水 (Category 1 净水) 虚报为化粪池级 Category 3 黑水把好墙全砸掉 ($68k)，或单工种抽水强加 20% O&amp;P 总包费 → 14ms 触发 HTTP 422!</option>
+            <option value="rst_xac_451">🛑 承包商在 Xactimate 软件里手动将官方区域定额单价改高 25%，或无 AIHA 认证独立环境专家 (IEP) 孢子报告强推 $35,000 治霉工程：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="rst_sav_409">🧑‍⚖️ Web IQ 自动按 IICRC S500 公式砍除超配风机天数并剥离单一除湿工种上的 20% O&amp;P 与净水设备去污费立省 $29,250.00 (净付 $165,750.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rst-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -52730,6 +52864,7 @@ function renderAll() {{
   updateB2BHospitalHotelLinenLaundryRfidSandbox();
   updateB2BLoadingDockLevelerOverheadDoorSandbox();
   updateB2BCommercialFleetMaintenanceVmrsTireSandbox();
+  updateAgenticPropertyRestorationWaterMitigationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -68405,6 +68540,52 @@ function updateB2BCommercialFleetMaintenanceVmrsTireSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🛞 全国轮胎统签价 + DOT 胎壳残值返还 + VMRS &lt;=1.0x SRT 工时合规：已自动清算 (VERIFIED_FLEET_MAINTENANCE_VMRS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零路边换胎散客高价宰客、零私吞 $120 胎体残值与 $650 旧件 Core 押金</strong>：B2B 商业重卡车队维保与道路救援批次已完成安全清算（<code>$205,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgenticPropertyRestorationWaterMitigationSandbox() {{
+  var sel = document.getElementById("rst-select");
+  var outEl = document.getElementById("rst-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "rst_eqp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 IICRC_S500_EQUIPMENT_STUFFING_OR_POST_DRY_STANDARD_RENTAL_PADDING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对房间 <code>LiDAR 三维体积 (3,600 cu.ft.)</code> 与蓝牙湿度计曲线发现：按 <code>ANSI/IICRC S500</code> 公式仅需 <code>6 台风机 + 1 台 LGR 除湿机</code>，承包商却违规塞入 <code>18 台风机 + 4 台除湿机</code>，且在第 3 天石膏板已达 <code>&lt;=12% MC 干标准</code> 后继续空转计费 5 天，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rst_cat_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CATEGORY3_BLACKWATER_UPCODING_OR_SINGLE_TRADE_XACTIMATE_OP_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "物业工单证实水源为洁净消防喷淋/饮用水管漏水（属 <code>Category 1 净水</code>，应原位吹干），估价单却恶意升档为 <code>Category 3 化粪池黑水</code> 强拆全部地毯与石膏板并加收 <code>WTR EQD 设备去污费与单工种 20% O&amp;P</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rst_xac_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MANIPULATED_XACTIMATE_UNIT_PRICE_OR_UNVERIFIED_IICRC_IEP_MOLD_PROTOCOL_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查当月区域 <code>Verisk Xactimate</code> 官方基准价目表与 <code>IICRC / AIHA-LAP</code> 注册库发现：ESX 估价单中除湿机日租单价被手动上调 <code>+25%</code> 且霉菌消杀缺失独立 <code>IEP</code> 孢子报告，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rst_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_S500_EQUIPMENT_CAP_AND_XACTIMATE_OP_SCRUB_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按 IICRC S500 公式封顶设备台数并在达 Dry Standard 当天截断日租 + 剥离单一除湿工种 20% O&amp;P 与 Cat 1 设备去污费</code>，单批立省 <code>$29,250.00</code>（净结算额优化至 <code>$165,750.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌊 IICRC S500 体积配比 + 蓝牙 GPP 达标停租 + Xactimate 定额合规：已自动清算 (VERIFIED_PROPERTY_RESTORATION_MITIGATION_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零小房间暴力塞 18 台风机、零净水谎报黑水强拆与单工种 20% O&amp;P 抽成</strong>：智能体商业物业水灾应急除湿与核损批次已完成安全清算（<code>$195,000.00</code>）！" +
     "</div>";
 }}
 

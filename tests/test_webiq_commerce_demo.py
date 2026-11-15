@@ -19274,6 +19274,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-fleet-maintenance-vmrs-tire-sandbox", demo_zh)
 
+    def test_agentic_property_restoration_water_mitigation_iicrc_s500_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_property_restoration_water_mitigation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant IICRC S500 equipment ratio + Dry Standard cutoff + Cat 1 source verified -> 200 OK ($195,000.00)
+        ok_res = evaluate_agentic_property_restoration_water_mitigation_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PROPERTY_RESTORATION_MITIGATION_SETTLED")
+        self.assertEqual(ok_res.settled_property_restoration_mitigation_cents, 19500000)
+
+        # 2. Equipment stuffing (18 fans in 500 sq ft) or rental billed past Dry Standard -> 403 Blocked
+        eqp_403 = evaluate_agentic_property_restoration_water_mitigation_policy(
+            iicrc_s500_equipment_ratio_and_dry_standard_cutoff_verified=False,
+        )
+        self.assertFalse(eqp_403.allowed)
+        self.assertEqual(eqp_403.http_status, 403)
+        self.assertEqual(
+            eqp_403.decision_code,
+            "IICRC_S500_EQUIPMENT_STUFFING_OR_POST_DRY_STANDARD_RENTAL_PADDING_BLOCKED",
+        )
+
+        # 3. Clean Cat 1 leak upcoded to Cat 3 black-water demolition or single-trade 20% O&P -> 422 Blocked
+        cat_422 = evaluate_agentic_property_restoration_water_mitigation_policy(
+            water_category_source_and_zero_single_trade_op_verified=False,
+        )
+        self.assertFalse(cat_422.allowed)
+        self.assertEqual(cat_422.http_status, 422)
+        self.assertEqual(
+            cat_422.decision_code,
+            "CATEGORY3_BLACKWATER_UPCODING_OR_SINGLE_TRADE_XACTIMATE_OP_PADDING",
+        )
+
+        # 4. Manipulated Xactimate unit price or unverified IEP mold remediation protocol -> 451 Hold
+        xac_451 = evaluate_agentic_property_restoration_water_mitigation_policy(
+            webiq_xactimate_price_list_and_iicrc_iep_mold_clean=False,
+        )
+        self.assertFalse(xac_451.allowed)
+        self.assertEqual(xac_451.http_status, 451)
+
+        # 5. Web IQ S500 equipment cap & Xactimate O&P scrubbing saving $29,250 ($165,750 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_property_restoration_water_mitigation_policy(
+            automated_s500_equipment_cap_and_xactimate_op_scrub_savings_cents=2925000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_property_restoration_mitigation_cents, 16575000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_property_restoration_water_mitigation_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-property-restoration-water-mitigation-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
