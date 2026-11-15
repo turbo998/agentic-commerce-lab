@@ -19217,6 +19217,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-loading-dock-leveler-overhead-door-sandbox", demo_zh)
 
+    def test_b2b_commercial_fleet_maintenance_vmrs_tire_casing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant National Account tire + DOT casing credit + VMRS <=1.0x SRT -> 200 OK ($205,000.00)
+        ok_res = evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_FLEET_MAINTENANCE_VMRS_SETTLED")
+        self.assertEqual(ok_res.settled_fleet_maintenance_vmrs_cents, 20500000)
+
+        # 2. Off-contract $680 retail tire gouging or stolen $120 retread casing credit -> 403 Blocked
+        tir_403 = evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy(
+            national_account_tire_and_retread_casing_credit_verified=False,
+        )
+        self.assertFalse(tir_403.allowed)
+        self.assertEqual(tir_403.http_status, 403)
+        self.assertEqual(
+            tir_403.decision_code,
+            "OFF_CONTRACT_RETAIL_TIRE_GOUGING_OR_MISSING_RETREAD_CASING_CREDIT_BLOCKED",
+        )
+
+        # 3. VMRS labor padding (>1.0x SRT) or roadside call-out triple-dip -> 422 Blocked
+        vmr_422 = evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy(
+            vmrs_flat_rate_labor_cap_and_roadside_gps_miles_verified=False,
+        )
+        self.assertFalse(vmr_422.allowed)
+        self.assertEqual(vmr_422.http_status, 422)
+        self.assertEqual(
+            vmr_422.decision_code,
+            "VMRS_FLAT_RATE_LABOR_INFLATION_OR_ROADSIDE_CALLOUT_TRIPLE_DIP_PADDING",
+        )
+
+        # 4. Unverified $4,800 DPF replacement on cleanable filter or uncredited Reman Core -> 451 Hold
+        dpf_451 = evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy(
+            webiq_j1939_dpf_diagnostic_and_reman_core_credit_clean=False,
+        )
+        self.assertFalse(dpf_451.allowed)
+        self.assertEqual(dpf_451.http_status, 451)
+
+        # 5. Web IQ VMRS labor cap & casing/core credit recovery saving $30,750 ($174,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_fleet_maintenance_vmrs_tire_policy(
+            automated_vmrs_labor_cap_and_casing_core_credit_savings_cents=3075000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_fleet_maintenance_vmrs_cents, 17425000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_fleet_maintenance_vmrs_tire_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-fleet-maintenance-vmrs-tire-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
