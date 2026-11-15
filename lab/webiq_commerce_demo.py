@@ -31418,6 +31418,91 @@ def evaluate_b2b_cooling_tower_boiler_water_treatment_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BStandbyGeneratorUpsBatteryNfpa110Decision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_generator_ups_battery_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+    *,
+    mandate_id: str = "b2b_standby_generator_ups_battery_nfpa110_loadbank_kw_ieee1188_ohmic_mandate_2026",
+    loadbank_active_kw_integral_and_oil_drain_verified: bool = True,
+    ieee1188_single_jar_ohmic_and_astm_d975_fuel_verified: bool = True,
+    webiq_epa_rice_neshap_permit_and_neta_credential_clean: bool = True,
+    automated_single_jar_battery_and_lead_core_credit_savings_cents: int = 0,
+    generator_ups_battery_cents: int = 21000000,
+) -> B2BStandbyGeneratorUpsBatteryNfpa110Decision:
+    """Evaluate B2B Standby Diesel Generator & UPS Battery Maintenance (NFPA 110 § 8.4.2 & IEEE 1188) policy."""
+    if not mandate_id.startswith("b2b_standby_generator_ups_battery_nfpa110_loadbank_kw_ieee1188_ohmic_mandate_"):
+        return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_GENERATOR_UPS_BATTERY_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_generator_ups_battery_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not loadbank_active_kw_integral_and_oil_drain_verified:
+        return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="NO_LOAD_IDLE_WET_STACKING_TEST_OR_PHANTOM_LUBE_OIL_CHANGE_BLOCKED",
+            action_pill="Send to a human",
+            settled_generator_ups_battery_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not ieee1188_single_jar_ohmic_and_astm_d975_fuel_verified:
+        return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="PREMATURE_FULL_STRING_UPS_BATTERY_SWAP_OR_CONTAMINATED_DIESEL_FUEL",
+            action_pill="Send to a human",
+            settled_generator_ups_battery_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_epa_rice_neshap_permit_and_neta_credential_clean:
+        return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="EPA_RICE_NESHAP_EMISSION_PERMIT_BREACH_OR_UNVERIFIED_NETA_TECH_HOLD",
+            action_pill="Send to a human",
+            settled_generator_ups_battery_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_single_jar_battery_and_lead_core_credit_savings_cents > 0:
+        return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SINGLE_JAR_BATTERY_REPLACEMENT_AND_LEAD_CORE_CREDIT_CONFIRM",
+            action_pill="Confirm",
+            settled_generator_ups_battery_cents=max(
+                0,
+                generator_ups_battery_cents - automated_single_jar_battery_and_lead_core_credit_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2BStandbyGeneratorUpsBatteryNfpa110Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_GENERATOR_UPS_BATTERY_MAINTENANCE_SETTLED",
+        action_pill="Act automatically",
+        settled_generator_ups_battery_cents=generator_ups_battery_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -41811,6 +41896,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "diluted_ptsa_tracer_drum_block_latency_ms": wtr_pts_403.latency_ms,
     }
 
+    gen_commit_ok = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy()
+    gen_idl_403 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+        loadbank_active_kw_integral_and_oil_drain_verified=False,
+    )
+    gen_bat_422 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+        ieee1188_single_jar_ohmic_and_astm_d975_fuel_verified=False,
+    )
+    gen_epa_451 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+        webiq_epa_rice_neshap_permit_and_neta_credential_clean=False,
+    )
+    gen_sav_409 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+        automated_single_jar_battery_and_lead_core_credit_savings_cents=3150000,
+    )
+    b2b_standby_generator_ups_battery_nfpa110_guards = {
+        "all_passed": (
+            gen_commit_ok.allowed
+            and gen_commit_ok.settled_generator_ups_battery_cents == 21000000
+            and not gen_idl_403.allowed
+            and gen_idl_403.http_status == 403
+            and not gen_bat_422.allowed
+            and gen_bat_422.http_status == 422
+            and not gen_epa_451.allowed
+            and gen_epa_451.http_status == 451
+            and not gen_sav_409.allowed
+            and gen_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_generator_ups_battery_settlement_latency_ms": gen_commit_ok.latency_ms,
+        "no_load_idle_wet_stacking_block_latency_ms": gen_idl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42134,6 +42249,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_elevator_escalator_mcp_guards": b2b_commercial_elevator_escalator_mcp_guards,
         "b2b_commercial_landscaping_snow_removal_guards": b2b_commercial_landscaping_snow_removal_guards,
         "b2b_cooling_tower_boiler_water_treatment_guards": b2b_cooling_tower_boiler_water_treatment_guards,
+        "b2b_standby_generator_ups_battery_nfpa110_guards": b2b_standby_generator_ups_battery_nfpa110_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50631,6 +50747,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="wtr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Standby Diesel Generator & UPS Battery Maintenance (NFPA 110 § 8.4.2 & IEEE 1188) Sandbox -->
+      <div class="finops-box" id="b2b-standby-generator-ups-battery-nfpa110-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">⚡ B2B 数据中心与医院备用柴发及 UPS 蓄电池维保 (NFPA 110 / IEEE 1188)：带载千瓦时积分锁、单节内阻核验与防整串强换 (`b2b_standby_generator_ups_battery_nfpa110_loadbank_kw_ieee1188_ohmic_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 数据中心/医院季度柴发与 UPS 蓄电池维保批次 ($210,000.00)、NFPA 110 负载箱千瓦时积分、120 加仑换油液位跳变与 IEEE 1188 单节内阻场景 (Generator &amp; UPS Maintenance Scenario):</span></label>
+          <select id="gen-select" onchange="updateB2BStandbyGeneratorUpsBatteryNfpa110Sandbox()">
+            <option value="gen_commit_ok">⚡ 柴发 &gt;=50% 额定 kW×2h 带载积分 + 油底壳 100%→0%→100% 换油 + IEEE 1188 内阻合规：10ms 清算 $210,000.00! (Act automatically)</option>
+            <option value="gen_idl_403">🛑 维保商未接假负载箱只让柴发在 0 kW 空载怠速转 15 分钟造成“湿堆 (Wet Stacking)”却收 $4,800 测试费，或只擦亮滤芯外壳未换 120 加仑旧机油 → 11ms 触发 HTTP 403!</option>
+            <option value="gen_bat_422">🚨 投运仅 2.5 年的 40 节 UPS 电池组中 38 节完好、仅 2 节内阻超标，维保商却恐吓“新旧混用起火”强开 $38,000 整串全换大单 → 14ms 触发 HTTP 422!</option>
+            <option value="gen_epa_451">🛑 柴发非紧急带载测试小时数突破 EPA RICE NESHAP / AQMD 大气排污许可证上限或技师无 NETA/EGSA 认证：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="gen_sav_409">🧑‍⚖️ Web IQ 自动将 $38,000 整串换电池降级为 2 节单体精准更换 ($1,900) 并按 $0.42/lb 扣除废旧铅酸蓄电池再生铅残值立省 $31,500.00 (净付 $178,500.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="gen-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -51380,6 +51514,7 @@ function renderAll() {{
   updateB2BCommercialElevatorEscalatorMcpSandbox();
   updateB2BCommercialLandscapingSnowRemovalSandbox();
   updateB2BCoolingTowerBoilerWaterTreatmentSandbox();
+  updateB2BStandbyGeneratorUpsBatteryNfpa110Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -66595,6 +66730,52 @@ function updateB2BCoolingTowerBoilerWaterTreatmentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>💧 在线 PTSA 100ppb 质量守恒 + 浓缩倍数 CoC &gt;=5.0 + CDC ELITE 合规：已自动清算 (VERIFIED_WATER_TREATMENT_ASHRAE188_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零药桶掺水稀释、零排污阀常开冲药促复购与自测水质造假</strong>：B2B 工业冷却塔、冷机与锅炉水处理批次已完成安全清算（<code>$150,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BStandbyGeneratorUpsBatteryNfpa110Sandbox() {{
+  var sel = document.getElementById("gen-select");
+  var outEl = document.getElementById("gen-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "gen_idl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 NO_LOAD_IDLE_WET_STACKING_TEST_OR_PHANTOM_LUBE_OIL_CHANGE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对柴发控制器 <code>EMCP Modbus kWh</code> 积分与曲轴箱液位发现：年度 <code>$4,800 负载箱测试</code> 期间实际有功功率输出为 <code>0 kW（仅空载打火怠速 15 分钟造成 Wet Stacking 湿堆隐患）</code>，且 120 加仑换油工单无油底壳 <code>0% 排空脉冲</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "gen_bat_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PREMATURE_FULL_STRING_UPS_BATTERY_SWAP_OR_CONTAMINATED_DIESEL_FUEL (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "UPS BMS <code>IEEE 1188</code> 微欧姆内阻矩阵显示：投运仅 2.5 年的 40 节蓄电池组中 38 节内阻健康度 <code>&gt;93%</code>、仅 2 节单体超标，维保商违规捆绑申报 <code>$38,000 整串 40 节全换</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "gen_epa_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EPA_RICE_NESHAP_EMISSION_PERMIT_BREACH_OR_UNVERIFIED_NETA_TECH_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>EPA RICE NESHAP / AQMD</code> 非紧急运行许可证与 <code>NETA / EGSA</code> 认证库发现：该机组本年度非紧急带载测试已接近 <code>50 小时排放红线</code> 或测试员无高压资质，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "gen_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SINGLE_JAR_BATTERY_REPLACEMENT_AND_LEAD_CORE_CREDIT_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按 IEEE 1188 将未到期电池整串强换改写为故障单节精准更换 + 按 $0.42/lb 自动抵扣拆下废旧铅酸蓄电池再生铅残值 (Lead Core Credit)</code>，单批立省 <code>$31,500.00</code>（净结算额优化至 <code>$178,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚡ NFPA 110 带载千瓦时积分 + 油底壳排空换油 + IEEE 1188 单节内阻合规：已自动清算 (VERIFIED_GENERATOR_UPS_BATTERY_MAINTENANCE_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 0kW 空载湿堆假测试、零抹布擦滤芯假换油与坏 2 节强换 40 节蓄电池</strong>：B2B 备用柴发与 UPS 蓄电池维保批次已完成安全清算（<code>$210,000.00</code>）！" +
     "</div>";
 }}
 

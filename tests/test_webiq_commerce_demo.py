@@ -18704,6 +18704,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cooling-tower-boiler-water-treatment-sandbox", demo_zh)
 
+    def test_b2b_standby_generator_ups_battery_nfpa110_ieee1188_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_standby_generator_ups_battery_nfpa110_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant load-bank kWh integral + crankcase drain pulse + IEEE 1188 ohmic check -> 200 OK ($210,000.00)
+        ok_res = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_GENERATOR_UPS_BATTERY_MAINTENANCE_SETTLED")
+        self.assertEqual(ok_res.settled_generator_ups_battery_cents, 21000000)
+
+        # 2. 0kW no-load idle test billed as load-bank test or phantom lube oil change -> 403 Blocked
+        idl_403 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+            loadbank_active_kw_integral_and_oil_drain_verified=False,
+        )
+        self.assertFalse(idl_403.allowed)
+        self.assertEqual(idl_403.http_status, 403)
+        self.assertEqual(
+            idl_403.decision_code,
+            "NO_LOAD_IDLE_WET_STACKING_TEST_OR_PHANTOM_LUBE_OIL_CHANGE_BLOCKED",
+        )
+
+        # 3. Premature 40-jar full-string UPS battery swap for 2 degraded jars -> 422 Blocked
+        bat_422 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+            ieee1188_single_jar_ohmic_and_astm_d975_fuel_verified=False,
+        )
+        self.assertFalse(bat_422.allowed)
+        self.assertEqual(bat_422.http_status, 422)
+        self.assertEqual(
+            bat_422.decision_code,
+            "PREMATURE_FULL_STRING_UPS_BATTERY_SWAP_OR_CONTAMINATED_DIESEL_FUEL",
+        )
+
+        # 4. EPA RICE NESHAP run-hour emission breach or unverified NETA tech -> 451 Hold
+        epa_451 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+            webiq_epa_rice_neshap_permit_and_neta_credential_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ single-jar battery replacement & lead core scrap credit saving $31,500 ($178,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_standby_generator_ups_battery_nfpa110_policy(
+            automated_single_jar_battery_and_lead_core_credit_savings_cents=3150000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_generator_ups_battery_cents, 17850000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_standby_generator_ups_battery_nfpa110_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-standby-generator-ups-battery-nfpa110-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
