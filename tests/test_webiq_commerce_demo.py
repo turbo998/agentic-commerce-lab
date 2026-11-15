@@ -18590,6 +18590,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-elevator-escalator-mcp-sandbox", demo_zh)
 
+    def test_b2b_commercial_landscaping_snow_removal_noaa_avl_vs_salt_padding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_landscaping_snow_removal_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant NOAA >=2.0" snow trigger + AVL salt cap + rain shutoff -> 200 OK ($165,000.00)
+        ok_res = evaluate_b2b_commercial_landscaping_snow_removal_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_LANDSCAPING_SNOW_REMOVAL_SETTLED")
+        self.assertEqual(ok_res.settled_landscaping_snow_removal_cents, 16500000)
+
+        # 2. Sub-threshold 0.3" flurry plow push or 24h storm splitting -> 403 Blocked
+        plw_403 = evaluate_b2b_commercial_landscaping_snow_removal_policy(
+            noaa_certified_snow_depth_trigger_and_no_split_verified=False,
+        )
+        self.assertFalse(plw_403.allowed)
+        self.assertEqual(plw_403.http_status, 403)
+        self.assertEqual(
+            plw_403.decision_code,
+            "SUB_THRESHOLD_SNOW_PLOW_PUSH_OR_STORM_SPLITTING_BRACKET_INFLATION_BLOCKED",
+        )
+
+        # 3. 5x de-icing salt tonnage padding or rain-day irrigation bypass -> 422 Blocked
+        slt_422 = evaluate_b2b_commercial_landscaping_snow_removal_policy(
+            avl_salt_spreader_tonnage_cap_and_rain_shutoff_verified=False,
+        )
+        self.assertFalse(slt_422.allowed)
+        self.assertEqual(slt_422.http_status, 422)
+        self.assertEqual(
+            slt_422.decision_code,
+            "SALT_DEICER_TONNAGE_PADDING_OR_RAIN_DAY_IRRIGATION_BYPASS_ABUSE",
+        )
+
+        # 4. Unverified NOAA storm total or expired ASCA ISO 22325 / pesticide license -> 451 Hold
+        noa_451 = evaluate_b2b_commercial_landscaping_snow_removal_policy(
+            webiq_noaa_storm_report_and_asca_pesticide_license_clean=False,
+        )
+        self.assertFalse(noa_451.allowed)
+        self.assertEqual(noa_451.http_status, 451)
+
+        # 5. Web IQ NOAA bracket re-rating & AVL salt cap saving $24,750 ($140,250 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_landscaping_snow_removal_policy(
+            automated_noaa_bracket_rerating_and_avl_salt_cap_savings_cents=2475000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_landscaping_snow_removal_cents, 14025000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_landscaping_snow_removal_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-landscaping-snow-removal-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
