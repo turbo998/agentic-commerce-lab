@@ -1515,6 +1515,246 @@
     "b2b_industrial_laundry_settlement_latency_ms": 10,
     "wet_soiled_weight_billing_block_latency_ms": 11
   },
+  "b2b_commercial_waste_compactor_hauling_guards": {
+    "all_passed": true,
+    "b2b_commercial_waste_settlement_latency_ms": 10,
+    "underfull_compactor_ghost_haul_block_latency_ms": 11
+  },
+  "b2b_commercial_pest_control_ipm_guards": {
+    "all_passed": true,
+    "b2b_commercial_pest_ipm_settlement_latency_ms": 10,
+    "ghost_curb_visit_nfc_block_latency_ms": 11
+  },
+  "agentic_rooftop_solar_ppa_nem30_vpp_guards": {
+    "all_passed": true,
+    "agentic_rooftop_solar_vpp_settlement_latency_ms": 10,
+    "hidden_dealer_fee_shade_block_latency_ms": 11
+  },
+  "b2b_commercial_janitorial_atp_uwb_guards": {
+    "all_passed": true,
+    "b2b_commercial_janitorial_settlement_latency_ms": 10,
+    "ghost_night_crew_uwb_block_latency_ms": 11
+  },
+  "agentic_dental_ppo_cdt_radiograph_guards": {
+    "all_passed": true,
+    "agentic_dental_ppo_claim_settlement_latency_ms": 10,
+    "d4341_perio_upcoding_block_latency_ms": 11
+  },
+  "b2b_commercial_security_guard_patrol_guards": {
+    "all_passed": true,
+    "b2b_security_guard_patrol_settlement_latency_ms": 10,
+    "open_post_ghost_billing_block_latency_ms": 11
+  },
+  "b2b_commercial_fire_safety_nfpa_guards": {
+    "all_passed": true,
+    "b2b_commercial_fire_safety_settlement_latency_ms": 10,
+    "tag_and_go_facp_log_block_latency_ms": 11
+  },
+  "b2b_warehouse_forklift_mhe_fleet_guards": {
+    "all_passed": true,
+    "b2b_forklift_mhe_fleet_settlement_latency_ms": 10,
+    "key_on_idle_hour_overage_block_latency_ms": 11
+  },
+  "b2b_industrial_uniform_workwear_rental_guards": {
+    "all_passed": true,
+    "b2b_uniform_workwear_settlement_latency_ms": 10,
+    "terminated_ghost_employee_block_latency_ms": 11
+  },
+  "b2b_packaged_cylinder_specialty_gas_guards": {
+    "all_passed": true,
+    "b2b_packaged_cylinder_gas_settlement_latency_ms": 10,
+    "ghost_cylinder_demurrage_block_latency_ms": 11
+  },
+  "b2b_managed_print_services_mps_guards": {
+    "all_passed": true,
+    "b2b_managed_print_mps_settlement_latency_ms": 10,
+    "single_pixel_color_click_block_latency_ms": 11
+  },
+  "b2b_corporate_cafeteria_dining_rebate_guards": {
+    "all_passed": true,
+    "b2b_corporate_cafeteria_settlement_latency_ms": 10,
+    "retained_gpo_vda_rebate_block_latency_ms": 11
+  },
+  "agentic_ambulance_ems_air_transport_guards": {
+    "all_passed": true,
+    "agentic_ambulance_ems_settlement_latency_ms": 10,
+    "unloaded_deadhead_mileage_block_latency_ms": 11
+  },
+  "agentic_funeral_cremation_ftc_gpl_guards": {
+    "all_passed": true,
+    "agentic_funeral_cremation_settlement_latency_ms": 10,
+    "outside_casket_handling_fee_block_latency_ms": 11
+  },
+  "agentic_self_storage_ecri_rate_lock_guards": {
+    "all_passed": true,
+    "agentic_self_storage_settlement_latency_ms": 10,
+    "predatory_90day_ecri_hike_block_latency_ms": 11
+  },
+  "agentic_vision_optical_hearing_aid_guards": {
+    "all_passed": true,
+    "agentic_vision_hearing_settlement_latency_ms": 10,
+    "ftc_prescription_pd_withholding_block_latency_ms": 11
+  },
+  "agentic_dmepos_cpap_oxygen_rental_guards": {
+    "all_passed": true,
+    "agentic_dmepos_cpap_settlement_latency_ms": 10,
+    "exceeded_13month_capped_rental_block_latency_ms": 11
+  },
+  "b2b_heavy_equipment_rental_aemp_offrent_guards": {
+    "all_passed": true,
+    "b2b_heavy_equipment_settlement_latency_ms": 10,
+    "post_offrent_pickup_delay_block_latency_ms": 11
+  },
+  "b2b_medical_legal_interpretation_vri_cdr_guards": {
+    "all_passed": true,
+    "b2b_medical_legal_interpretation_settlement_latency_ms": 10,
+    "ivr_hold_time_rounding_block_latency_ms": 11
+  },
+  "b2b_document_archiving_secure_shredding_guards": {
+    "all_passed": true,
+    "b2b_document_archiving_settlement_latency_ms": 10,
+    "zombie_carton_cod_ghost_block_latency_ms": 11
+  },
+  "b2b_commercial_elevator_escalator_mcp_guards": {
+    "all_passed": true,
+    "b2b_elevator_escalator_mcp_settlement_latency_ms": 10,
+    "ghost_machine_room_visit_block_latency_ms": 11
+  },
+  "b2b_commercial_landscaping_snow_removal_guards": {
+    "all_passed": true,
+    "b2b_landscaping_snow_settlement_latency_ms": 10,
+    "sub_threshold_flurry_plow_block_latency_ms": 11
+  },
+  "b2b_cooling_tower_boiler_water_treatment_guards": {
+    "all_passed": true,
+    "b2b_water_treatment_settlement_latency_ms": 10,
+    "diluted_ptsa_tracer_drum_block_latency_ms": 11
+  },
+  "b2b_standby_generator_ups_battery_nfpa110_guards": {
+    "all_passed": true,
+    "b2b_generator_ups_battery_settlement_latency_ms": 10,
+    "no_load_idle_wet_stacking_block_latency_ms": 11
+  },
+  "b2b_commercial_kitchen_refrigeration_hood_fog_guards": {
+    "all_passed": true,
+    "b2b_kitchen_refrigeration_hood_settlement_latency_ms": 10,
+    "whole_jug_refrigerant_padding_block_latency_ms": 11
+  },
+  "b2b_commercial_roofing_tpo_ndl_infrared_guards": {
+    "all_passed": true,
+    "b2b_commercial_roofing_settlement_latency_ms": 10,
+    "active_ndl_warranty_double_billing_block_latency_ms": 11
+  },
+  "agentic_fleet_toll_rfid_j1939_axle_guards": {
+    "all_passed": true,
+    "agentic_fleet_toll_settlement_latency_ms": 10,
+    "predatory_toll_admin_fee_block_latency_ms": 11
+  },
+  "b2b_corporate_event_mice_av_rigging_guards": {
+    "all_passed": true,
+    "b2b_corporate_event_av_settlement_latency_ms": 10,
+    "hardware_service_charge_stacking_block_latency_ms": 11
+  },
+  "b2b_biopharma_lab_instrument_iso17025_guards": {
+    "all_passed": true,
+    "b2b_biopharma_lab_instrument_settlement_latency_ms": 10,
+    "idle_instrument_gold_renewal_block_latency_ms": 11
+  },
+  "agentic_clinical_trial_ctms_edc_stipend_guards": {
+    "all_passed": true,
+    "agentic_clinical_trial_settlement_latency_ms": 10,
+    "unverified_edc_screen_fail_block_latency_ms": 11
+  },
+  "b2b_hospital_hotel_linen_laundry_rfid_guards": {
+    "all_passed": true,
+    "b2b_linen_laundry_settlement_latency_ms": 10,
+    "wet_soiled_cart_tare_block_latency_ms": 11
+  },
+  "b2b_loading_dock_leveler_overhead_door_guards": {
+    "all_passed": true,
+    "b2b_loading_dock_door_settlement_latency_ms": 10,
+    "photoeye_fake_board_swap_block_latency_ms": 11
+  },
+  "b2b_commercial_fleet_maintenance_vmrs_tire_guards": {
+    "all_passed": true,
+    "b2b_fleet_maintenance_vmrs_settlement_latency_ms": 10,
+    "off_contract_tire_casing_theft_block_latency_ms": 11
+  },
+  "agentic_property_restoration_water_mitigation_guards": {
+    "all_passed": true,
+    "agentic_property_restoration_settlement_latency_ms": 10,
+    "s500_equipment_stuffing_block_latency_ms": 11
+  },
+  "agentic_legal_ediscovery_hosting_court_reporting_guards": {
+    "all_passed": true,
+    "agentic_legal_ediscovery_settlement_latency_ms": 10,
+    "unculled_raw_gb_hosting_block_latency_ms": 11
+  },
+  "b2b_subsurface_utility_nassco_pacp_hydrovac_guards": {
+    "all_passed": true,
+    "b2b_subsurface_utility_settlement_latency_ms": 10,
+    "water_loaded_sludge_qla_block_latency_ms": 11
+  },
+  "b2b_medical_biohazard_rcra_waste_emanifest_guards": {
+    "all_passed": true,
+    "b2b_medical_biohazard_settlement_latency_ms": 10,
+    "flat_tub_quota_incin_block_latency_ms": 11
+  },
+  "agentic_corporate_relocation_hhg_cat_scale_guards": {
+    "all_passed": true,
+    "agentic_corporate_relocation_settlement_latency_ms": 10,
+    "weight_bumping_density_block_latency_ms": 11
+  },
+  "b2b_heavy_crane_rigging_lmi_superload_guards": {
+    "all_passed": true,
+    "b2b_heavy_crane_rigging_settlement_latency_ms": 10,
+    "crane_tonnage_cwt_trailer_block_latency_ms": 11
+  },
+  "b2b_commercial_scaffolding_modular_trailer_guards": {
+    "all_passed": true,
+    "b2b_commercial_scaffolding_settlement_latency_ms": 10,
+    "post_dismantle_calloff_rent_block_latency_ms": 11
+  },
+  "agentic_background_check_dot_drug_screening_guards": {
+    "all_passed": true,
+    "agentic_background_screening_settlement_latency_ms": 10,
+    "duplicate_alias_courthouse_block_latency_ms": 11
+  },
+  "b2b_highrise_window_washing_bmu_rope_access_guards": {
+    "all_passed": true,
+    "b2b_highrise_window_washing_settlement_latency_ms": 10,
+    "skipped_facade_drop_block_latency_ms": 11
+  },
+  "b2b_parking_garage_lpr_parcs_valet_guards": {
+    "all_passed": true,
+    "b2b_parking_garage_settlement_latency_ms": 10,
+    "unreconciled_gate_loop_vend_block_latency_ms": 11
+  },
+  "b2b_interior_plantscaping_biophilic_wall_guards": {
+    "all_passed": true,
+    "b2b_interior_plantscaping_settlement_latency_ms": 10,
+    "billable_dead_plant_swap_block_latency_ms": 11
+  },
+  "b2b_retail_shopping_cart_wheellock_mobility_guards": {
+    "all_passed": true,
+    "b2b_retail_shopping_cart_settlement_latency_ms": 10,
+    "bounty_farming_smartwheel_block_latency_ms": 11
+  },
+  "b2b_commercial_signage_highmast_lighting_guards": {
+    "all_passed": true,
+    "b2b_commercial_signage_settlement_latency_ms": 10,
+    "full_sign_upcoding_bucket_block_latency_ms": 11
+  },
+  "b2b_commercial_floor_carpet_mat_rental_guards": {
+    "all_passed": true,
+    "b2b_commercial_floor_mat_settlement_latency_ms": 10,
+    "ghost_mat_exchange_rfid_block_latency_ms": 11
+  },
+  "b2b_hvac_air_duct_coil_cleaning_nadca_guards": {
+    "all_passed": true,
+    "b2b_hvac_air_duct_settlement_latency_ms": 10,
+    "blow_and_go_coil_delta_p_block_latency_ms": 11
+  },
   "scenarios": [
     {
       "id": "W01",
