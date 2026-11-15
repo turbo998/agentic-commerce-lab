@@ -17906,6 +17906,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-uniform-workwear-rental-sandbox", demo_zh)
 
+    def test_b2b_packaged_cylinder_specialty_gas_rfid_vs_ghost_demurrage_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_packaged_cylinder_specialty_gas_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant dock RFID inventory cap + specialty gas heel credit + zero inert HazMat + DOT/CoA -> 200 OK ($225,000.00)
+        ok_res = evaluate_b2b_packaged_cylinder_specialty_gas_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PACKAGED_CYLINDER_SPECIALTY_GAS_SETTLED")
+        self.assertEqual(ok_res.settled_packaged_cylinder_gas_cents, 22500000)
+
+        # 2. Ghost cylinder perpetual demurrage on returned bottles missed by driver scan -> 403 Blocked
+        ghs_403 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+            dock_rfid_inventory_cap_and_lifetime_rent_limit_verified=False,
+        )
+        self.assertFalse(ghs_403.allowed)
+        self.assertEqual(ghs_403.http_status, 403)
+        self.assertEqual(
+            ghs_403.decision_code,
+            "GHOST_CYLINDER_PERPETUAL_DEMURRAGE_OR_MISSED_RETURN_SCAN_BLOCKED",
+        )
+
+        # 3. Uncredited 15%-20% specialty gas residual heel or bogus $85 inert-gas HazMat fee -> 422 Blocked
+        hel_422 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+            specialty_gas_residual_heel_credit_and_zero_inert_hazmat_verified=False,
+        )
+        self.assertFalse(hel_422.allowed)
+        self.assertEqual(hel_422.http_status, 422)
+        self.assertEqual(
+            hel_422.decision_code,
+            "UNCREDITED_SPECIALTY_GAS_RESIDUAL_HEEL_OR_BOGUS_HAZMAT_FEE_BREACH",
+        )
+
+        # 4. Expired DOT 49 CFR 180.209 hydrostatic cylinder stamp or off-spec 6N e-CoA -> 451 Hold
+        dot_451 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+            webiq_dot_hydrostatic_stamp_and_uhp_6n_coa_clean=False,
+        )
+        self.assertFalse(dot_451.allowed)
+        self.assertEqual(dot_451.http_status, 451)
+
+        # 5. Web IQ automated ghost-cylinder rent purge & residual heel credit saving $22,500 ($202,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+            automated_ghost_cylinder_purge_and_residual_heel_savings_cents=2250000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_packaged_cylinder_gas_cents, 20250000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_packaged_cylinder_specialty_gas_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-packaged-cylinder-specialty-gas-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

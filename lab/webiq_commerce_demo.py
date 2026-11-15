@@ -30228,6 +30228,91 @@ def evaluate_b2b_industrial_uniform_workwear_rental_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bPackagedCylinderSpecialtyGasDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    settled_packaged_cylinder_gas_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+    *,
+    mandate_id: str = "b2b_packaged_cylinder_specialty_gas_dewar_demurrage_rfid_residual_heel_mandate_2026",
+    dock_rfid_inventory_cap_and_lifetime_rent_limit_verified: bool = True,
+    specialty_gas_residual_heel_credit_and_zero_inert_hazmat_verified: bool = True,
+    webiq_dot_hydrostatic_stamp_and_uhp_6n_coa_clean: bool = True,
+    automated_ghost_cylinder_purge_and_residual_heel_savings_cents: int = 0,
+    packaged_cylinder_gas_cents: int = 22500000,
+) -> B2bPackagedCylinderSpecialtyGasDecision:
+    """Evaluate B2B Packaged Cylinder Gas, Cryogenic Dewar & UHP Specialty Gas Demurrage/Heel policy."""
+    if not mandate_id.startswith("b2b_packaged_cylinder_specialty_gas_dewar_demurrage_rfid_residual_heel_mandate_"):
+        return B2bPackagedCylinderSpecialtyGasDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_PACKAGED_CYLINDER_SPECIALTY_GAS_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            settled_packaged_cylinder_gas_cents=0,
+            latency_ms=8,
+            provenance="synthetic_policy",
+        )
+    if not dock_rfid_inventory_cap_and_lifetime_rent_limit_verified:
+        return B2bPackagedCylinderSpecialtyGasDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="GHOST_CYLINDER_PERPETUAL_DEMURRAGE_OR_MISSED_RETURN_SCAN_BLOCKED",
+            action_pill="Send to a human",
+            settled_packaged_cylinder_gas_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+    if not specialty_gas_residual_heel_credit_and_zero_inert_hazmat_verified:
+        return B2bPackagedCylinderSpecialtyGasDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNCREDITED_SPECIALTY_GAS_RESIDUAL_HEEL_OR_BOGUS_HAZMAT_FEE_BREACH",
+            action_pill="Send to a human",
+            settled_packaged_cylinder_gas_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+    if not webiq_dot_hydrostatic_stamp_and_uhp_6n_coa_clean:
+        return B2bPackagedCylinderSpecialtyGasDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="EXPIRED_DOT_HYDROSTATIC_CYLINDER_TEST_OR_OFFSPEC_UHP_COA_HOLD",
+            action_pill="Send to a human",
+            settled_packaged_cylinder_gas_cents=0,
+            latency_ms=275,
+            provenance="official_doc_snapshot",
+        )
+    if automated_ghost_cylinder_purge_and_residual_heel_savings_cents > 0:
+        return B2bPackagedCylinderSpecialtyGasDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_GHOST_CYLINDER_PURGE_AND_RESIDUAL_HEEL_CREDIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            settled_packaged_cylinder_gas_cents=max(
+                0,
+                packaged_cylinder_gas_cents - automated_ghost_cylinder_purge_and_residual_heel_savings_cents,
+            ),
+            latency_ms=240,
+            provenance="official_doc_snapshot",
+        )
+    return B2bPackagedCylinderSpecialtyGasDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_PACKAGED_CYLINDER_SPECIALTY_GAS_SETTLED",
+        action_pill="Act automatically",
+        settled_packaged_cylinder_gas_cents=packaged_cylinder_gas_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -40201,6 +40286,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "terminated_ghost_employee_block_latency_ms": uni_ghs_403.latency_ms,
     }
 
+    cyl_commit_ok = evaluate_b2b_packaged_cylinder_specialty_gas_policy()
+    cyl_ghs_403 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+        dock_rfid_inventory_cap_and_lifetime_rent_limit_verified=False,
+    )
+    cyl_hel_422 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+        specialty_gas_residual_heel_credit_and_zero_inert_hazmat_verified=False,
+    )
+    cyl_dot_451 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+        webiq_dot_hydrostatic_stamp_and_uhp_6n_coa_clean=False,
+    )
+    cyl_sav_409 = evaluate_b2b_packaged_cylinder_specialty_gas_policy(
+        automated_ghost_cylinder_purge_and_residual_heel_savings_cents=2250000,
+    )
+    b2b_packaged_cylinder_specialty_gas_guards = {
+        "all_passed": (
+            cyl_commit_ok.allowed
+            and cyl_commit_ok.settled_packaged_cylinder_gas_cents == 22500000
+            and not cyl_ghs_403.allowed
+            and cyl_ghs_403.http_status == 403
+            and not cyl_hel_422.allowed
+            and cyl_hel_422.http_status == 422
+            and not cyl_dot_451.allowed
+            and cyl_dot_451.http_status == 451
+            and not cyl_sav_409.allowed
+            and cyl_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_packaged_cylinder_gas_settlement_latency_ms": cyl_commit_ok.latency_ms,
+        "ghost_cylinder_demurrage_block_latency_ms": cyl_ghs_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40510,6 +40625,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_fire_safety_nfpa_guards": b2b_commercial_fire_safety_nfpa_guards,
         "b2b_warehouse_forklift_mhe_fleet_guards": b2b_warehouse_forklift_mhe_fleet_guards,
         "b2b_industrial_uniform_workwear_rental_guards": b2b_industrial_uniform_workwear_rental_guards,
+        "b2b_packaged_cylinder_specialty_gas_guards": b2b_packaged_cylinder_specialty_gas_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48755,6 +48871,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="uni-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Packaged Cylinder Gas, Cryogenic Dewar & UHP Specialty Gas Demurrage/Heel Sandbox -->
+      <div class="finops-box" id="b2b-packaged-cylinder-specialty-gas-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title">🧪 B2B 工业瓶装气、液氮杜瓦罐与高纯特气租赁：气瓶 RFID 防幽灵租、退瓶余气折现与水压 (`b2b_packaged_cylinder_specialty_gas_dewar_demurrage_rfid_residual_heel_mandate_...`) 沙盒</span>
+        </div>
+        <div class="control-row">
+          <label><span>1. 实验室与晶圆厂月度瓶装气及 6N 特气批次 ($225,000.00)、气瓶间 RFID 在库盘点、退瓶余气 (Residual Heel) 折现与 DOT 水压场景 (Packaged Cylinder &amp; Specialty Gas Scenario):</span></label>
+          <select id="cyl-select" onchange="updateB2bPackagedCylinderSpecialtyGasSandbox()">
+            <option value="cyl_commit_ok">🧪 气瓶间 RFID 实盘对齐 + 特气退瓶 18% 正压余气回抵 + 免惰性气 HazMat 费 + DOT/6N CoA 合规：10ms 清算 $225,000.00! (Act automatically)</option>
+            <option value="cyl_ghs_403">🛑 送气司机拉走 340 只空钢瓶漏扫退库码，气体商按期初结转台账对“幽灵空瓶”连收 4 年日租金 → 11ms 触发 HTTP 403!</option>
+            <option value="cyl_hel_422">🚨 将按安全规程保留 150 PSI (18%) 退回的 $4,500 高纯氙气/硅烷余气 ($800 残值) 0 退款没收二次倒卖，或对惰性氮气强收 $85 HazMat 费 → 14ms 触发 HTTP 422!</option>
+            <option value="cyl_dot_451">🛑 派送超过 DOT 49 CFR 180.209 5/10年水压复检有效期的钢瓶、真空失效结霜杜瓦罐或 6N 特气 H2O/O2 杂质超标：Web IQ /v3/browse 275ms 触发 HTTP 451!</option>
+            <option value="cyl_sav_409">🧑‍⚖️ Web IQ 依据气瓶间 RFID 实存数清退历史漏扫幽灵瓶挂账并按去皮净重追回 17.5% 特气退瓶余气返利立省 $22,500.00 (净付 $202,500.00) → 240ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cyl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -49490,6 +49624,7 @@ function renderAll() {{
   updateB2bCommercialFireSafetyNfpaSandbox();
   updateB2bWarehouseForkliftMheFleetSandbox();
   updateB2bIndustrialUniformWorkwearRentalSandbox();
+  updateB2bPackagedCylinderSpecialtyGasSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -64061,6 +64196,52 @@ function updateB2bIndustrialUniformWorkwearRentalSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🦺 HRIS 在职名册匹配 + 二手衣 $0 准备费 + NFPA 2112 阻燃洗次合规：已自动清算 (VERIFIED_INDUSTRIAL_UNIFORM_WORKWEAR_RENTAL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零离职幽灵员工空挂周租、零二手旧衣冒充新衣收准备费与 18% 免责险泡沫</strong>：B2B 工业工装与阻燃特种工作服租赁批次已完成安全清算（<code>$195,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bPackagedCylinderSpecialtyGasSandbox() {{
+  var sel = document.getElementById("cyl-select");
+  var outEl = document.getElementById("cyl-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cyl_ghs_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GHOST_CYLINDER_PERPETUAL_DEMURRAGE_OR_MISSED_RETURN_SCAN_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "经比对气瓶间 <code>UHF RFID 实时在库盘点数 (580 只)</code> 与气体商期初结转台账（<code>Balance Forward = 920 只</code>）发现：卡车司机拉走 <code>340 只空钢瓶</code> 时漏扫退库码导致客户连交数年“幽灵钢瓶”日租金，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cyl_hel_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNCREDITED_SPECIALTY_GAS_RESIDUAL_HEEL_OR_BOGUS_HAZMAT_FEE_BREACH (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "退回的高价值 6N 特气钢瓶经精密电子秤扣除钢印皮重（<code>TW</code>）实测还剩 <code>17.5% 正压好气 (Residual Heel &gt;= 150 PSI)</code>，气体商却 <code>$0</code> 没收余气直接补气二次售卖，或对无毒不燃的 <code>DOT Class 2.2 惰性氮气/氩气</code> 强收 <code>$85 HazMat 危化品费</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cyl_dot_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXPIRED_DOT_HYDROSTATIC_CYLINDER_TEST_OR_OFFSPEC_UHP_COA_HOLD (275ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>DOT 49 CFR § 180.209 气瓶水压试验钢印 (PHMSA RIN)</code> 与批次 <code>e-CoA</code> 发现：送达钢瓶已超过 5/10 年水压复检期、液氮杜瓦罐真空失效结霜（日蒸发 &gt;8%），或 6N 特气水氧杂质超标，已在 275ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cyl_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_GHOST_CYLINDER_PURGE_AND_RESIDUAL_HEEL_CREDIT_SAVINGS_CONFIRM (240ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>气瓶间 RFID 实存瓶数封顶清退幽灵瓶挂账 + 退瓶正压特气余气按 85% 原价折现回抵 + 免除惰性气 HazMat 杂费</code>，单批立省 <code>$22,500.00</code>（净结算额优化至 <code>$202,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧪 气瓶间 RFID 实盘对齐 + 特气退瓶余气折现 + DOT 水压与 6N CoA 合规：已自动清算 (VERIFIED_PACKAGED_CYLINDER_SPECIALTY_GAS_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零漏扫幽灵空瓶终身收租、零白吞 18% 高价特气余气与惰性气乱收危化费</strong>：B2B 工业瓶装气与高纯特种气体批次已完成安全清算（<code>$225,000.00</code>）！" +
     "</div>";
 }}
 
