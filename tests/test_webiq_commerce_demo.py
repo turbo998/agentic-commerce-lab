@@ -20357,6 +20357,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-plumbing-backflow-rpz-sandbox", demo_zh)
 
+    def test_b2b_commercial_asphalt_paving_sealcoating_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_asphalt_paving_sealcoating_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant plant weigh tickets + core >=92% Gmm + GIS net sq.ft. + ADA <=2.08% clean -> 200 OK ($158,000.00)
+        ok_res = evaluate_b2b_commercial_asphalt_paving_sealcoating_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_ASPHALT_PAVING_ADA_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_asphalt_paving_cents, 15800000)
+
+        # 2. 1.1-inch thin overlay tonnage shorting or sub-92% nuclear compaction -> 403 Blocked
+        cor_403 = evaluate_b2b_commercial_asphalt_paving_sealcoating_policy(
+            asphalt_core_thickness_tonnage_and_92pct_compaction_verified=False,
+        )
+        self.assertFalse(cor_403.allowed)
+        self.assertEqual(cor_403.http_status, 403)
+        self.assertEqual(
+            cor_403.decision_code,
+            "ASPHALT_CORE_THICKNESS_TONNAGE_SHORTING_OR_SUB92_COMPACTION_BLOCKED",
+        )
+
+        # 3. Gross parcel roof footprint padding or watered-down sealcoat slurry -> 422 Blocked
+        gis_422 = evaluate_b2b_commercial_asphalt_paving_sealcoating_policy(
+            aerial_gis_net_asphalt_sqft_and_sealcoat_baume_verified=False,
+        )
+        self.assertFalse(gis_422.allowed)
+        self.assertEqual(gis_422.http_status, 422)
+        self.assertEqual(
+            gis_422.decision_code,
+            "GROSS_PARCEL_ROOF_FOOTPRINT_PADDING_OR_WATERED_DOWN_SEALCOAT_UPCODING",
+        )
+
+        # 4. Unlicensed paving contractor or ADA Section 502 parking slope > 2.08% -> 451 Hold
+        ada_451 = evaluate_b2b_commercial_asphalt_paving_sealcoating_policy(
+            webiq_state_paving_license_and_ada502_slope_clean=False,
+        )
+        self.assertFalse(ada_451.allowed)
+        self.assertEqual(ada_451.http_status, 451)
+
+        # 5. Web IQ GIS net-asphalt deduction & tonnage true-up saving $23,700 ($134,300 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_asphalt_paving_sealcoating_policy(
+            automated_gis_net_asphalt_sqft_and_tonnage_trueup_savings_cents=2370000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_asphalt_paving_cents, 13430000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_asphalt_paving_sealcoating_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-asphalt-paving-sealcoating-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
