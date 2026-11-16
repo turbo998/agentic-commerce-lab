@@ -21554,6 +21554,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hospital-spd-steam-sterilizer-aami-st79-sandbox", demo_zh)
 
+    def test_b2b_commercial_termite_fumigation_wdo_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_termite_fumigation_wdo_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 4 Gal/10 LF flowmeter & bottle balance + bait-core NFC + Vikane Ct + SPCB -> 200 OK ($118,000.00)
+        ok_res = evaluate_b2b_commercial_termite_fumigation_wdo_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_TERMITE_WDO_FIFRA_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_termite_wdo_cents, 11800000)
+
+        # 2. Watered-down termiticide dilution or <4.0 Gal/10 LF sub-slab injection -> 403 Blocked
+        dil_403 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+            termidor_4gal_per_10lf_flowmeter_and_concentrate_lot_verified=False,
+        )
+        self.assertFalse(dil_403.allowed)
+        self.assertEqual(dil_403.http_status, 403)
+        self.assertEqual(
+            dil_403.decision_code,
+            "WATERED_DOWN_TERMITICIDE_DILUTION_OR_SHORT_GALLON_INJECTION_BLOCKED",
+        )
+
+        # 3. Skipped in-ground Sentricon bait-core NFC scan or under-dosed Vikane Ct curve -> 422 Blocked
+        nfc_422 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+            bait_core_extraction_nfc_and_vikane_fumiscope_ct_verified=False,
+        )
+        self.assertFalse(nfc_422.allowed)
+        self.assertEqual(nfc_422.http_status, 422)
+        self.assertEqual(
+            nfc_422.decision_code,
+            "SKIPPED_IN_GROUND_BAIT_CORE_NFC_SCAN_OR_UNDERDOSED_VIKANE_CT_CURVE",
+        )
+
+        # 4. Unlicensed SPCB WDO applicator or non-EPA registered termiticide -> 451 Hold
+        wdo_451 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+            webiq_spcb_wdo_license_and_epa_fifra_label_clean=False,
+        )
+        self.assertFalse(wdo_451.allowed)
+        self.assertEqual(wdo_451.http_status, 451)
+
+        # 5. Web IQ Termidor gallon reconciliation & NFC bait station saving $19,800 ($98,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+            automated_termidor_gallon_reconciliation_and_nfc_bait_savings_cents=1980000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_termite_wdo_cents, 9820000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_termite_fumigation_wdo_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-termite-fumigation-wdo-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

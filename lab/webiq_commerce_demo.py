@@ -36223,6 +36223,106 @@ def evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialTermiteFumigationWdoDecision:
+    """Deterministic decision output for B2B commercial termite barrier, Sentricon NFC & Vikane fumigation."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_termite_wdo_lane: str
+    settled_commercial_termite_wdo_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+    *,
+    mandate_id: str = "b2b_commercial_termite_fumigation_fifra_termidor_flowmeter_sentricon_mandate_2026",
+    commercial_termite_wdo_cents: int = 11800000,
+    termidor_4gal_per_10lf_flowmeter_and_concentrate_lot_verified: bool = True,
+    bait_core_extraction_nfc_and_vikane_fumiscope_ct_verified: bool = True,
+    webiq_spcb_wdo_license_and_epa_fifra_label_clean: bool = True,
+    automated_termidor_gallon_reconciliation_and_nfc_bait_savings_cents: int = 0,
+) -> B2BCommercialTermiteFumigationWdoDecision:
+    """Evaluate B2B commercial termite 4 Gal/10 LF flowmeter, extracted bait-core NFC & Vikane Ct settlement."""
+    if not mandate_id.startswith("b2b_commercial_termite_fumigation_fifra_termidor_flowmeter_sentricon_mandate_"):
+        return B2BCommercialTermiteFumigationWdoDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_TERMITE_WDO_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_termite_wdo_lane="INVALID_COMMERCIAL_TERMITE_WDO_MANDATE_PREFIX",
+            settled_commercial_termite_wdo_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not termidor_4gal_per_10lf_flowmeter_and_concentrate_lot_verified:
+        return B2BCommercialTermiteFumigationWdoDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WATERED_DOWN_TERMITICIDE_DILUTION_OR_SHORT_GALLON_INJECTION_BLOCKED",
+            action_pill="Send to a human",
+            commercial_termite_wdo_lane="WATERED_DOWN_TERMITICIDE_DILUTION_OR_SHORT_GALLON_INJECTION_BLOCKED",
+            settled_commercial_termite_wdo_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not bait_core_extraction_nfc_and_vikane_fumiscope_ct_verified:
+        return B2BCommercialTermiteFumigationWdoDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="SKIPPED_IN_GROUND_BAIT_CORE_NFC_SCAN_OR_UNDERDOSED_VIKANE_CT_CURVE",
+            action_pill="Send to a human",
+            commercial_termite_wdo_lane="SKIPPED_IN_GROUND_BAIT_CORE_NFC_SCAN_OR_UNDERDOSED_VIKANE_CT_CURVE",
+            settled_commercial_termite_wdo_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_spcb_wdo_license_and_epa_fifra_label_clean:
+        return B2BCommercialTermiteFumigationWdoDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNLICENSED_SPCB_WDO_APPLICATOR_OR_NON_EPA_REGISTERED_TERMITICIDE_HOLD",
+            action_pill="Send to a human",
+            commercial_termite_wdo_lane="UNLICENSED_SPCB_WDO_APPLICATOR_OR_NON_EPA_REGISTERED_TERMITICIDE_HOLD",
+            settled_commercial_termite_wdo_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_termidor_gallon_reconciliation_and_nfc_bait_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_termite_wdo_cents - automated_termidor_gallon_reconciliation_and_nfc_bait_savings_cents,
+        )
+        return B2BCommercialTermiteFumigationWdoDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_TERMIDOR_GALLON_RECONCILIATION_AND_NFC_BAIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_termite_wdo_lane="AUTOMATED_TERMIDOR_GALLON_RECONCILIATION_AND_NFC_BAIT_SAVINGS_CONFIRM",
+            settled_commercial_termite_wdo_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialTermiteFumigationWdoDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_TERMITE_WDO_FIFRA_SETTLED",
+        action_pill="Act automatically",
+        commercial_termite_wdo_lane="VERIFIED_COMMERCIAL_TERMITE_WDO_FIFRA_SETTLED",
+        settled_commercial_termite_wdo_cents=commercial_termite_wdo_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -48116,6 +48216,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "steam_generator_upcoding_block_latency_ms": spd_gen_403.latency_ms,
     }
 
+    trm_commit_ok = evaluate_b2b_commercial_termite_fumigation_wdo_policy()
+    trm_dil_403 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+        termidor_4gal_per_10lf_flowmeter_and_concentrate_lot_verified=False,
+    )
+    trm_nfc_422 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+        bait_core_extraction_nfc_and_vikane_fumiscope_ct_verified=False,
+    )
+    trm_wdo_451 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+        webiq_spcb_wdo_license_and_epa_fifra_label_clean=False,
+    )
+    trm_sav_409 = evaluate_b2b_commercial_termite_fumigation_wdo_policy(
+        automated_termidor_gallon_reconciliation_and_nfc_bait_savings_cents=1980000,
+    )
+    b2b_commercial_termite_fumigation_wdo_guards = {
+        "all_passed": (
+            trm_commit_ok.allowed
+            and trm_commit_ok.settled_commercial_termite_wdo_cents == 11800000
+            and not trm_dil_403.allowed
+            and trm_dil_403.http_status == 403
+            and not trm_nfc_422.allowed
+            and trm_nfc_422.http_status == 422
+            and not trm_wdo_451.allowed
+            and trm_wdo_451.http_status == 451
+            and not trm_sav_409.allowed
+            and trm_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_termite_wdo_settlement_latency_ms": trm_commit_ok.latency_ms,
+        "watered_down_termiticide_block_latency_ms": trm_dil_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48489,6 +48619,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_overhead_bridge_crane_osha1910_guards": b2b_industrial_overhead_bridge_crane_osha1910_guards,
         "b2b_commercial_parking_garage_concrete_restoration_guards": b2b_commercial_parking_garage_concrete_restoration_guards,
         "b2b_hospital_spd_steam_sterilizer_aami_st79_guards": b2b_hospital_spd_steam_sterilizer_aami_st79_guards,
+        "b2b_commercial_termite_fumigation_wdo_guards": b2b_commercial_termite_fumigation_wdo_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57886,6 +58017,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="spd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Subterranean Termite, Sentricon NFC & Vikane Fumigation Sandbox (Round 361) -->
+      <div class="finops-box" id="b2b-commercial-termite-fumigation-wdo-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-trm-title">🐜 B2B 商业地产白蚁防治 (Termidor SC)、4 Gal/10 LF 流量计锁与 Sentricon 拔芯 NFC 清算沙盒 (Round 361 · EPA FIFRA / Vikane)</span>
+        </div>
+        <div class="control-row">
+          <label><span>EPA FIFRA 4.0 Gal/10 LF 流量计与 78oz 原液瓶平衡锁 + 地下饵站拔芯底部 NFC 锁 + Web IQ SPCB WDO 核验:</span></label>
+          <select id="trm-select" onchange="updateB2BCommercialTermiteFumigationWdoSandbox()">
+            <option value="trm_commit_ok">🐜 4.0 Gal/10 LF 流量与原液平衡 + 拔芯 NFC 100% + Vikane Ct + SPCB 合规：10ms 清算 $118,000.00! (Act automatically)</option>
+            <option value="trm_dil_403">🛑 钻孔灌注流量计读数不足 4.0 Gal/10 LF 或 78 oz Termidor SC 氟虫腈原液瓶数少于 3.2 fl.oz./10 LF (掺水稀释偷料) → 11ms 触发 HTTP 403!</option>
+            <option value="trm_nfc_422">🚨 地下 Sentricon 白蚁饵站缺失拔出地下药棒的内部底部 NFC 近场扫描，或帐幕熏蒸 Vikane 硫酰氟 Ct 乘积未达致死阈值 → 14ms 触发 HTTP 422!</option>
+            <option value="trm_wdo_451">🛑 施工人员无州 SPCB Category 7B/7C (木结构害虫/熏蒸) 执照或违规混用非 EPA 建筑白蚁注册农药：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="trm_sav_409">🧑‍⚖️ Web IQ 自动按泥土注射枪真实达标药液加仑数与已拔芯 NFC 扫码饵站桩数核减掺水与幽灵巡检立省 $19,800.00 (净付 $98,200.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="trm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -58685,6 +58834,7 @@ function renderAll() {{
   updateB2BIndustrialOverheadBridgeCraneOsha1910Sandbox();
   updateB2BCommercialParkingGarageConcreteRestorationSandbox();
   updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox();
+  updateB2BCommercialTermiteFumigationWdoSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -76200,6 +76350,52 @@ function updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏥 疏水阀/门封核实 + 保压检漏 &lt;=1.0 mmHg/min + Bowie-Dick &amp; 3x BI 合规：已自动清算 (VERIFIED_HOSPITAL_SPD_STEAM_STERILIZER_ST79_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零卡死个 $95 疏水阀被宰 $19,500 换发生器、零手术湿包与漏做 3 锅 BI 芽孢挑战</strong>：B2B 医院消毒供应中心脉动真空灭菌器维保批次已完成安全清算（<code>$128,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialTermiteFumigationWdoSandbox() {{
+  var sel = document.getElementById("trm-select");
+  var outEl = document.getElementById("trm-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "trm_dil_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WATERED_DOWN_TERMITICIDE_DILUTION_OR_SHORT_GALLON_INJECTION_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对泥土注射枪数字流量计与 <code>78 oz Termidor SC (EPA Reg. No. 7969-210)</code> 原液瓶序列号发现：申报 <code>1,000 线性英尺</code> 化学屏障却仅灌注 <code>160 加仑 (&lt;400 加仑法定定额)</code> 或只开封 1 瓶原液掺水稀释，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trm_nfc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SKIPPED_IN_GROUND_BAIT_CORE_NFC_SCAN_OR_UNDERDOSED_VIKANE_CT_CURVE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计地下 <code>Sentricon</code> 饵站巡检日志与 <code>Fumiscope</code> 熏蒸曲线发现：120 个草坪饵站中 45 个缺失拔出 <code>Recruit HD</code> 药棒的底部 <code>&lt;=2cm NFC</code> 扫码记录，或硫酰氟 <code>Ct (Oz-Hrs/MCF)</code> 未达致死阈值，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trm_wdo_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNLICENSED_SPCB_WDO_APPLICATOR_OR_NON_EPA_REGISTERED_TERMITICIDE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州结构虫害控制委员会（<code>SPCB Category 7B/7C</code>）与 <code>EPA PPLS</code> 数据库发现：操作员无有效木结构白蚁/熏蒸执照或违规使用非注册农药，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trm_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_TERMIDOR_GALLON_RECONCILIATION_AND_NFC_BAIT_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按 EPA FIFRA 4.0 Gal/10 LF 真实注射加仑数核定屏障尺数 + 剔除未拔芯扫描 NFC 的幽灵 Sentricon 饵站年费</code>，单批立省 <code>$19,800.00</code>（净结算额优化至 <code>$98,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🐜 4.0 Gal/10 LF 流量与原液平衡 + 拔芯 NFC 100% + Vikane Ct &amp; SPCB 合规：已自动清算 (VERIFIED_COMMERCIAL_TERMITE_WDO_FIFRA_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 1 瓶药兑满水箱掺水灌注、零草坪饵站不掀盖幽灵年费与欠量熏蒸</strong>：B2B 商业地产白蚁防治与木结构熏蒸批次已完成安全清算（<code>$118,000.00</code>）！" +
     "</div>";
 }}
 
