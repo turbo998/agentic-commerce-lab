@@ -22409,6 +22409,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-steam-deaerator-nace-sp0590-sandbox", demo_zh)
 
+    def test_b2b_commercial_ice_machine_walkin_freezer_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_ice_machine_walkin_freezer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant de-iced coil/gasket + Nickel-Safe descale + ATP <=30 RLU -> 200 OK ($108,000.00)
+        ok_res = evaluate_b2b_commercial_ice_machine_walkin_freezer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_ICE_MACHINE_WALKIN_CFESA_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_ice_walkin_cents, 10800000)
+
+        # 2. $4,800 walk-in compressor upcoding on iced coil ($38 door gasket / $120 defrost switch) -> 403 Blocked
+        cmp_403 = evaluate_b2b_commercial_ice_machine_walkin_freezer_policy(
+            deiced_coil_door_gasket_and_defrost_heater_isolation_verified=False,
+        )
+        self.assertFalse(cmp_403.allowed)
+        self.assertEqual(cmp_403.http_status, 403)
+        self.assertEqual(
+            cmp_403.decision_code,
+            "WALKIN_COMPRESSOR_UPCODING_ON_ICED_COIL_DOOR_GASKET_OR_DEFROST_SWITCH_BLOCKED",
+        )
+
+        # 3. $2,900 ice evaporator upcoding on $45 probe scale or acid-stripped nickel -> 422 Blocked
+        evp_422 = evaluate_b2b_commercial_ice_machine_walkin_freezer_policy(
+            ice_thickness_probe_and_nickel_safe_descaler_verified=False,
+        )
+        self.assertFalse(evp_422.allowed)
+        self.assertEqual(evp_422.http_status, 422)
+        self.assertEqual(
+            evp_422.decision_code,
+            "ICE_EVAPORATOR_GRID_UPCODING_ON_PROBE_SCALE_OR_ACID_STRIPPED_NICKEL",
+        )
+
+        # 4. Failed ice-bin biofilm ATP >30 RLU swab or active 5-year OEM evaporator warranty -> 451 Hold
+        atp_451 = evaluate_b2b_commercial_ice_machine_walkin_freezer_policy(
+            webiq_biofilm_atp_swab_and_5yr_oem_evaporator_warranty_clean=False,
+        )
+        self.assertFalse(atp_451.allowed)
+        self.assertEqual(atp_451.http_status, 451)
+
+        # 5. Web IQ $38 door gasket, $120 defrost kit & $22 Nickel-Safe descale saving $19,600 ($88,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_ice_machine_walkin_freezer_policy(
+            automated_door_gasket_defrost_kit_and_nickel_safe_descale_savings_cents=1960000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_ice_walkin_cents, 8840000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_ice_machine_walkin_freezer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-ice-machine-walkin-freezer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
