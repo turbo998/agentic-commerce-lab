@@ -20300,6 +20300,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-glazing-storefront-igu-sandbox", demo_zh)
 
+    def test_b2b_commercial_plumbing_backflow_rpz_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_plumbing_backflow_rpz_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $45 OEM rubber kit rebuild + >=5.0 PSID + sonde footage + ASSE 5110 clean -> 200 OK ($116,000.00)
+        ok_res = evaluate_b2b_commercial_plumbing_backflow_rpz_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_PLUMBING_BACKFLOW_RPZ_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_plumbing_backflow_cents, 11600000)
+
+        # 2. Unjustified $3,800 full bronze RPZ valve replacement on rubber kit wear -> 403 Blocked
+        rpz_403 = evaluate_b2b_commercial_plumbing_backflow_rpz_policy(
+            rpz_rubber_kit_first_and_post_psid_differential_verified=False,
+        )
+        self.assertFalse(rpz_403.allowed)
+        self.assertEqual(rpz_403.http_status, 403)
+        self.assertEqual(
+            rpz_403.decision_code,
+            "UNJUSTIFIED_FULL_RPZ_VALVE_REPLACEMENT_ON_RUBBER_KIT_WEAR_BLOCKED",
+        )
+
+        # 3. 250-ft hydro-jetting footage padding or $18,000 scare-tactic sewer excavation -> 422 Blocked
+        jet_422 = evaluate_b2b_commercial_plumbing_backflow_rpz_policy(
+            sonde_hydrojet_footage_and_zero_scare_excavation_verified=False,
+        )
+        self.assertFalse(jet_422.allowed)
+        self.assertEqual(jet_422.http_status, 422)
+        self.assertEqual(
+            jet_422.decision_code,
+            "HYDROJET_LINEAR_FOOT_PADDING_OR_UNWARRANTED_SEWER_EXCAVATION_UPCODING",
+        )
+
+        # 4. Uncertified ASSE 5110 backflow tester or expired 12-month gauge calibration -> 451 Hold
+        ass_451 = evaluate_b2b_commercial_plumbing_backflow_rpz_policy(
+            webiq_asse5110_tester_and_gauge_calibration_clean=False,
+        )
+        self.assertFalse(ass_451.allowed)
+        self.assertEqual(ass_451.http_status, 451)
+
+        # 5. Web IQ $45 rubber-kit downgrade & hydro-jet footage cap saving $17,400 ($98,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_plumbing_backflow_rpz_policy(
+            automated_rpz_rubber_kit_downgrade_and_hydrojet_cap_savings_cents=1740000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_plumbing_backflow_cents, 9860000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_plumbing_backflow_rpz_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-plumbing-backflow-rpz-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
