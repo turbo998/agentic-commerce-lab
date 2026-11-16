@@ -20129,6 +20129,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hvac-air-duct-coil-cleaning-nadca-sandbox", demo_zh)
 
+    def test_b2b_commercial_pool_aquatic_facility_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_pool_aquatic_facility_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ORP >=650mV + filter backwash Delta-P drop + PHTA CPO/VGBA clean -> 200 OK ($92,000.00)
+        ok_res = evaluate_b2b_commercial_pool_aquatic_facility_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_POOL_AQUATIC_MAHC_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_pool_aquatic_cents, 9200000)
+
+        # 2. 4-minute splash-and-dash visit or unbackwashed sand filter Delta-P -> 403 Blocked
+        spl_403 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+            mahc_orp_telemetry_and_filter_backwash_delta_p_verified=False,
+        )
+        self.assertFalse(spl_403.allowed)
+        self.assertEqual(spl_403.http_status, 403)
+        self.assertEqual(
+            spl_403.decision_code,
+            "SPLASH_AND_DASH_SHORT_VISIT_OR_UNBACKWASHED_FILTER_DELTA_P_BLOCKED",
+        )
+
+        # 3. CYA chlorine-lock $1,800 algaecide upsell or $2,600 controller swap on $85 probe -> 422 Blocked
+        cya_422 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+            cya_stabilizer_cap_and_orp_probe_downgrade_verified=False,
+        )
+        self.assertFalse(cya_422.allowed)
+        self.assertEqual(cya_422.http_status, 422)
+        self.assertEqual(
+            cya_422.decision_code,
+            "CYA_CHLORINE_LOCK_ALGAECIDE_UPCODING_OR_ORP_CONTROLLER_SWAP_PADDING",
+        )
+
+        # 4. Uncertified PHTA CPO operator or expired 5-year VGBA suction drain cover -> 451 Hold
+        vgb_451 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+            webiq_phta_cpo_certification_and_vgba_drain_cover_clean=False,
+        )
+        self.assertFalse(vgb_451.allowed)
+        self.assertEqual(vgb_451.http_status, 451)
+
+        # 5. Web IQ algaecide strip & ORP probe downgrade saving $13,800 ($78,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+            automated_algaecide_strip_and_orp_probe_downgrade_savings_cents=1380000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_pool_aquatic_cents, 7820000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_pool_aquatic_facility_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-pool-aquatic-facility-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -33723,6 +33723,106 @@ def evaluate_b2b_hvac_air_duct_coil_cleaning_nadca_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialPoolAquaticFacilityDecision:
+    """Deterministic decision output for B2B commercial pool, hotel aquatic facility & spa maintenance (CDC MAHC & VGBA)."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_pool_aquatic_lane: str
+    settled_commercial_pool_aquatic_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_pool_aquatic_facility_policy(
+    *,
+    mandate_id: str = "b2b_commercial_pool_aquatic_facility_mahc_orp_telemetry_vgba_mandate_2026",
+    commercial_pool_aquatic_cents: int = 9200000,
+    mahc_orp_telemetry_and_filter_backwash_delta_p_verified: bool = True,
+    cya_stabilizer_cap_and_orp_probe_downgrade_verified: bool = True,
+    webiq_phta_cpo_certification_and_vgba_drain_cover_clean: bool = True,
+    automated_algaecide_strip_and_orp_probe_downgrade_savings_cents: int = 0,
+) -> B2BCommercialPoolAquaticFacilityDecision:
+    """Evaluate B2B commercial pool & aquatic facility ORP/pH telemetry, filter backwash Delta-P & VGBA drain settlement."""
+    if not mandate_id.startswith("b2b_commercial_pool_aquatic_facility_mahc_orp_telemetry_vgba_mandate_"):
+        return B2BCommercialPoolAquaticFacilityDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_POOL_AQUATIC_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_pool_aquatic_lane="INVALID_COMMERCIAL_POOL_AQUATIC_MANDATE_PREFIX",
+            settled_commercial_pool_aquatic_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not mahc_orp_telemetry_and_filter_backwash_delta_p_verified:
+        return B2BCommercialPoolAquaticFacilityDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="SPLASH_AND_DASH_SHORT_VISIT_OR_UNBACKWASHED_FILTER_DELTA_P_BLOCKED",
+            action_pill="Send to a human",
+            commercial_pool_aquatic_lane="SPLASH_AND_DASH_SHORT_VISIT_OR_UNBACKWASHED_FILTER_DELTA_P_BLOCKED",
+            settled_commercial_pool_aquatic_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not cya_stabilizer_cap_and_orp_probe_downgrade_verified:
+        return B2BCommercialPoolAquaticFacilityDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="CYA_CHLORINE_LOCK_ALGAECIDE_UPCODING_OR_ORP_CONTROLLER_SWAP_PADDING",
+            action_pill="Send to a human",
+            commercial_pool_aquatic_lane="CYA_CHLORINE_LOCK_ALGAECIDE_UPCODING_OR_ORP_CONTROLLER_SWAP_PADDING",
+            settled_commercial_pool_aquatic_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_phta_cpo_certification_and_vgba_drain_cover_clean:
+        return B2BCommercialPoolAquaticFacilityDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_PHTA_CPO_OPERATOR_OR_EXPIRED_VGBA_DRAIN_COVER_HOLD",
+            action_pill="Send to a human",
+            commercial_pool_aquatic_lane="UNCERTIFIED_PHTA_CPO_OPERATOR_OR_EXPIRED_VGBA_DRAIN_COVER_HOLD",
+            settled_commercial_pool_aquatic_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_algaecide_strip_and_orp_probe_downgrade_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_pool_aquatic_cents - automated_algaecide_strip_and_orp_probe_downgrade_savings_cents,
+        )
+        return B2BCommercialPoolAquaticFacilityDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_ALGAECIDE_STRIP_AND_ORP_PROBE_DOWNGRADE_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_pool_aquatic_lane="AUTOMATED_ALGAECIDE_STRIP_AND_ORP_PROBE_DOWNGRADE_SAVINGS_CONFIRM",
+            settled_commercial_pool_aquatic_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialPoolAquaticFacilityDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_POOL_AQUATIC_MAHC_SETTLED",
+        action_pill="Act automatically",
+        commercial_pool_aquatic_lane="VERIFIED_COMMERCIAL_POOL_AQUATIC_MAHC_SETTLED",
+        settled_commercial_pool_aquatic_cents=commercial_pool_aquatic_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -44866,6 +44966,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "blow_and_go_coil_delta_p_block_latency_ms": dct_blw_403.latency_ms,
     }
 
+    pol_commit_ok = evaluate_b2b_commercial_pool_aquatic_facility_policy()
+    pol_spl_403 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+        mahc_orp_telemetry_and_filter_backwash_delta_p_verified=False,
+    )
+    pol_cya_422 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+        cya_stabilizer_cap_and_orp_probe_downgrade_verified=False,
+    )
+    pol_vgb_451 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+        webiq_phta_cpo_certification_and_vgba_drain_cover_clean=False,
+    )
+    pol_sav_409 = evaluate_b2b_commercial_pool_aquatic_facility_policy(
+        automated_algaecide_strip_and_orp_probe_downgrade_savings_cents=1380000,
+    )
+    b2b_commercial_pool_aquatic_facility_guards = {
+        "all_passed": (
+            pol_commit_ok.allowed
+            and pol_commit_ok.settled_commercial_pool_aquatic_cents == 9200000
+            and not pol_spl_403.allowed
+            and pol_spl_403.http_status == 403
+            and not pol_cya_422.allowed
+            and pol_cya_422.http_status == 422
+            and not pol_vgb_451.allowed
+            and pol_vgb_451.http_status == 451
+            and not pol_sav_409.allowed
+            and pol_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_pool_settlement_latency_ms": pol_commit_ok.latency_ms,
+        "splash_and_dash_filter_delta_p_block_latency_ms": pol_spl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45214,6 +45344,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_signage_highmast_lighting_guards": b2b_commercial_signage_highmast_lighting_guards,
         "b2b_commercial_floor_carpet_mat_rental_guards": b2b_commercial_floor_carpet_mat_rental_guards,
         "b2b_hvac_air_duct_coil_cleaning_nadca_guards": b2b_hvac_air_duct_coil_cleaning_nadca_guards,
+        "b2b_commercial_pool_aquatic_facility_guards": b2b_commercial_pool_aquatic_facility_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54161,6 +54292,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dct-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Pool & Resort Aquatic Facility Sandbox (Round 336) -->
+      <div class="finops-box" id="b2b-commercial-pool-aquatic-facility-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pol-title">🏊 B2B 酒店与商业泳池、水疗中心 (CDC MAHC) 水质遥测与 VGBA 清算沙盒 (Round 336 · VivoAquatics / PoolCorp / PHTA CPO)</span>
+        </div>
+        <div class="control-row">
+          <label><span>机房 NFC 驻留 (&gt;=45m) + 砂缸反冲洗压差回落锁 + ORP &gt;=650mV + CYA 防锁氯 + Web IQ CPO/VGBA 核验:</span></label>
+          <select id="pol-select" onchange="updateB2BCommercialPoolAquaticFacilitySandbox()">
+            <option value="pol_commit_ok">🏊 机房 NFC 驻留 &gt;=45m + 砂缸反洗降压 + ORP &gt;=650mV + PHTA CPO 合规：10ms 清算 $92,000.00! (Act automatically)</option>
+            <option value="pol_spl_403">🛑 技师倒两桶漂白水 4 分钟就跑 (Splash-and-Dash)，或石英砂滤缸压差飙升 +12 PSI 未执行反冲洗 → 11ms 触发 HTTP 403!</option>
+            <option value="pol_cya_422">🚨 长期滥投三氯片致氰尿酸超标 (CYA &gt;120ppm) 锁死余氯再强推 $1,800 特种除藻剂，或将 $85 ORP 探头结垢虚报为 $2,600 控制箱报废 → 14ms 触发 HTTP 422!</option>
+            <option value="pol_vgb_451">🛑 巡检技师缺失 PHTA CPO 执照或池底 VGBA 防吸人主排水格栅超 5 年法定寿命未换：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="pol_sav_409">🧑‍⚖️ Web IQ 自动剥离 $1,800 锁氯除藻套餐、将 $2,600 控制柜降级为 $85 ORP 探头耗材并按储药桶超声波液位计核减药剂水分立省 $13,800.00 (净付 $78,200.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pol-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -54935,6 +55084,7 @@ function renderAll() {{
   updateB2BCommercialSignageHighmastLightingSandbox();
   updateB2BCommercialFloorCarpetMatRentalSandbox();
   updateB2BHvacAirDuctCoilCleaningNadcaSandbox();
+  updateB2BCommercialPoolAquaticFacilitySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -71300,6 +71450,52 @@ function updateB2BHvacAirDuctCoilCleaningNadcaSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🌀 NADCA 毫克称重达标 + BMS 盘管压差回落 + ASCS 合规：已自动清算 (VERIFIED_HVAC_AIR_DUCT_COIL_NADCA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零只擦风口百叶骗局、零 $14,000 恐吓式抗菌药雾与假洗表冷器</strong>：B2B 中央空调风管与 AHU 盘管清洗批次已完成安全清算（<code>$145,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialPoolAquaticFacilitySandbox() {{
+  var sel = document.getElementById("pol-select");
+  var outEl = document.getElementById("pol-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pol_spl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SPLASH_AND_DASH_SHORT_VISIT_OR_UNBACKWASHED_FILTER_DELTA_P_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对机房 <code>NFC</code> 门禁与砂缸数字压力遥测发现：技师进场仅 <code>4 分钟</code> 倒完漂白水即离场，且高速石英砂滤缸压差高达 <code>+12 PSI 未执行反冲洗 (Backwash)</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pol_cya_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CYA_CHLORINE_LOCK_ALGAECIDE_UPCODING_OR_ORP_CONTROLLER_SWAP_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计水化学遥测与维修单发现：维保商长期投三氯药片致 <code>CYA = 128 ppm 锁死余氯 (ORP = 530mV)</code> 却强推 <code>$1,800 特种除藻剂</code>，或将 <code>$85 ORP 探头钝化</code> 虚报为 <code>$2,600 BECSys 主控柜换新</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pol_vgb_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_PHTA_CPO_OPERATOR_OR_EXPIRED_VGBA_DRAIN_COVER_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>PHTA CPO</code> 注册泳池运营师名录与 <code>VGBA</code> 排水盖台账发现：技师无有效 <code>CPO</code> 执照或池底防吸人主排水格栅已超 <code>5 年法定寿命</code>，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pol_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_ALGAECIDE_STRIP_AND_ORP_PROBE_DOWNGRADE_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>剥离锁氯衍生的 $1,800 特种除藻剂 + 将 $2,600 控制柜降级为 $85 ORP 探头更换 + 储药桶超声波液位计实耗核销</code>，单批立省 <code>$13,800.00</code>（净结算额优化至 <code>$78,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏊 ORP &gt;=650mV + 砂缸反洗降压 + CPO/VGBA 合规：已自动清算 (VERIFIED_COMMERCIAL_POOL_AQUATIC_MAHC_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 4 分钟倒药快闪、零 CYA 锁氯除藻剂加价与控制柜虚报</strong>：B2B 酒店与商业泳池水疗批次已完成安全清算（<code>$92,000.00</code>）！" +
     "</div>";
 }}
 
