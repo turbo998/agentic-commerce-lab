@@ -22922,6 +22922,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-psa-membrane-nitrogen-generator-sandbox", demo_zh)
 
+    def test_b2b_industrial_paint_spray_booth_rto_oxidizer_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $380 cold-face bake-out/poppet seal + >=100 FPM booth + 25% LEL & >=98% DRE -> 200 OK ($140,000.00)
+        ok_res = evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_PAINT_BOOTH_RTO_OXIDIZER_SETTLED")
+        self.assertEqual(ok_res.settled_paint_booth_rto_cents, 14000000)
+
+        # 2. $28,000 RTO ceramic media replacement upcoding on $380 bake-out or $145 poppet seal -> 403 Blocked
+        cer_403 = evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy(
+            cold_face_thermal_bakeout_and_poppet_valve_seal_verified=False,
+        )
+        self.assertFalse(cer_403.allowed)
+        self.assertEqual(cer_403.http_status, 403)
+        self.assertEqual(
+            cer_403.decision_code,
+            "RTO_CERAMIC_MEDIA_BED_REPLACEMENT_UPCODING_ON_380_DOLLAR_BAKEOUT_POPPET_SEAL_BLOCKED",
+        )
+
+        # 3. Booth face velocity <100 FPM or torn UL 900 overspray arrestor (>0.50 in. w.g.) -> 422 Blocked
+        fpm_422 = evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy(
+            booth_100fpm_face_velocity_and_ul900_arrestor_dp_verified=False,
+        )
+        self.assertFalse(fpm_422.allowed)
+        self.assertEqual(fpm_422.http_status, 422)
+        self.assertEqual(
+            fpm_422.decision_code,
+            "BOOTH_FACE_VELOCITY_BELOW_100FPM_OR_OVERSPRAY_ARRESTOR_BYPASS_NEGLECT",
+        )
+
+        # 4. Failed NFPA 33 <=25% LEL electrostatic gun interlock or EPA Method 25A <98% VOC DRE -> 451 Hold
+        lel_451 = evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy(
+            webiq_nfpa33_25pct_lel_gun_interlock_and_98pct_dre_clean=False,
+        )
+        self.assertFalse(lel_451.allowed)
+        self.assertEqual(lel_451.http_status, 451)
+
+        # 5. Web IQ $380 bake-out + $145 poppet seal & arrestor kit saving $31,500 ($108,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_paint_spray_booth_rto_oxidizer_policy(
+            automated_rto_bakeout_poppet_seal_and_arrestor_savings_cents=3150000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_paint_booth_rto_cents, 10850000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_paint_spray_booth_rto_oxidizer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-paint-spray-booth-rto-oxidizer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
