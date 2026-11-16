@@ -22580,6 +22580,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-datacenter-overhead-busway-busduct-sandbox", demo_zh)
 
+    def test_b2b_commercial_sewage_ejector_grinder_pump_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant >=100MOhm/de-ragging + zero backflow + Lead/Lag + OSHA 4-gas -> 200 OK ($106,000.00)
+        ok_res = evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SEWAGE_EJECTOR_PUMP_PIT_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_sewage_ejector_cents, 10600000)
+
+        # 2. $9,800 submersible sewage pump upcoding on rag-jammed impeller or $55 float switch -> 403 Blocked
+        pmp_403 = evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy(
+            impeller_deragging_megohm_and_float_switch_verified=False,
+        )
+        self.assertFalse(pmp_403.allowed)
+        self.assertEqual(pmp_403.http_status, 403)
+        self.assertEqual(
+            pmp_403.decision_code,
+            "SUBMERSIBLE_SEWAGE_PUMP_UPCODING_ON_RAG_JAMMED_IMPELLER_OR_FLOAT_BLOCKED",
+        )
+
+        # 3. $120 check-valve backflow short-cycling or $3,600 duplex panel upcoding on $85 relay -> 422 Blocked
+        chk_422 = evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy(
+            check_valve_zero_backflow_and_duplex_alternator_verified=False,
+        )
+        self.assertFalse(chk_422.allowed)
+        self.assertEqual(chk_422.http_status, 422)
+        self.assertEqual(
+            chk_422.decision_code,
+            "CHECK_VALVE_BACKFLOW_SHORT_CYCLING_OR_DUPLEX_PANEL_UPCODING_ON_RELAY",
+        )
+
+        # 4. Missing OSHA 1910.146 confined-space 4-gas log or non-explosion-proof pump -> 451 Hold
+        gas_451 = evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy(
+            webiq_osha1910_146_gas_log_and_nfpa820_explosion_proof_clean=False,
+        )
+        self.assertFalse(gas_451.allowed)
+        self.assertEqual(gas_451.http_status, 451)
+
+        # 5. Web IQ impeller de-ragging, $55 float switch & $120 check valve saving $19,200 ($86,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_sewage_ejector_grinder_pump_policy(
+            automated_impeller_deragging_float_switch_and_check_valve_savings_cents=1920000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_sewage_ejector_cents, 8680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_sewage_ejector_grinder_pump_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-sewage-ejector-grinder-pump-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
