@@ -20756,6 +20756,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-switchgear-nfpa70b-arcflash-sandbox", demo_zh)
 
+    def test_b2b_healthcare_medical_gas_nfpa99_lox_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant independent ASSE 6030 verifier + dew point <=+35F + tank DP LOX + NITC/COA clean -> 200 OK ($142,000.00)
+        ok_res = evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HEALTHCARE_MEDICAL_GAS_NFPA99_SETTLED")
+        self.assertEqual(ok_res.settled_healthcare_medical_gas_cents, 14200000)
+
+        # 2. Installer self-verification conflict (EIN match) or medical air dew point > +35F -> 403 Blocked
+        slf_403 = evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy(
+            independent_asse6030_verifier_and_dewpoint_verified=False,
+        )
+        self.assertFalse(slf_403.allowed)
+        self.assertEqual(slf_403.http_status, 403)
+        self.assertEqual(
+            slf_403.decision_code,
+            "SELF_VERIFIED_ASSE6030_CONFLICT_OR_MEDICAL_AIR_DEWPOINT_EXCEEDANCE_BLOCKED",
+        )
+
+        # 3. $14,000 scroll compressor air-end swap upcoding on $280 tip seals or bulk LOX short-drop -> 422 Blocked
+        scr_422 = evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy(
+            scroll_tip_seal_downgrade_and_lox_tank_dp_verified=False,
+        )
+        self.assertFalse(scr_422.allowed)
+        self.assertEqual(scr_422.http_status, 422)
+        self.assertEqual(
+            scr_422.decision_code,
+            "SCROLL_COMPRESSOR_AIREND_SWAP_UPCODING_OR_BULK_LOX_SHORT_DROP_PADDING",
+        )
+
+        # 4. Uncertified NITC ASSE 6030/6040 technician or missing USP >=99.0% oxygen COA -> 451 Hold
+        nit_451 = evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy(
+            webiq_nitc_asse6030_license_and_usp_oxygen_coa_clean=False,
+        )
+        self.assertFalse(nit_451.allowed)
+        self.assertEqual(nit_451.http_status, 451)
+
+        # 5. Web IQ $280 scroll tip-seal downgrade & LOX tank DP true-up saving $21,300 ($120,700 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy(
+            automated_scroll_tip_seal_downgrade_and_lox_dp_trueup_savings_cents=2130000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_healthcare_medical_gas_cents, 12070000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_healthcare_medical_gas_nfpa99_lox_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-healthcare-medical-gas-nfpa99-lox-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
