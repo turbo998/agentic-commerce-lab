@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg374" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0C4A6E"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent374" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg374)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent374)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">ROUND 372 · HOSPITAL 1.5T/3.0T MRI CRYOCOOLER (4K COLDHEAD / ACR), $680 ADSORBER &amp; $4,200 DISPLACER GATE</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">医院超导核磁共振 (MRI) 4K 冷头维保、$680 压缩机吸附罐锁与 $4,200 活塞芯清算架构</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">Siemens / GE / Philips / Sumitomo RDK-408 · &lt;=15,000h 活性炭吸附罐锁 + 3.8–4.5 PSI 零挥发锁 + 99.999% (5N) 高纯氦气 + ACR</text>
+
+  <!-- Left Column: Telemetry & Physics Locks -->
+  <rect x="44" y="132" width="356" height="495" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="64" y="160" fill="#BAE6FD" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🧲 四大超导 MRI 极低温与液氦硬门禁</text>
+
+  <rect x="60" y="176" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="198" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. $680 活性炭吸附罐 (&lt;=15,000h) 责任锁</text>
+  <text x="74" y="218" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 压缩机油蒸气全靠 $680 Adsorber 拦截防进 -269°C 冷头</text>
+  <text x="74" y="236" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 凡因漏换吸附罐致冷头油冻停机挥发液氦由外包全赔</text>
+  <text x="74" y="254" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 11ms 拦截维保失职却向医院索要 $48,000 液氦账单</text>
+
+  <rect x="60" y="290" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="312" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. $4,200 冷头内部活塞芯 (Displacer) 锁</text>
+  <text x="74" y="332" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• RDK-408 冷头不锈钢真空外筒寿命长达 10–15 年</text>
+  <text x="74" y="350" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 25,000h 磨损只需在线抽换 $4,200 蓄冷活塞芯与阀片</text>
+  <text x="74" y="368" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 14ms 阻断把活塞常规磨损高报成 $35,000 换整支冷头</text>
+
+  <rect x="60" y="404" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="426" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 99.999% (5N) 超高纯氦气 COA 防冰堵锁</text>
+  <text x="74" y="446" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 压缩机补压严禁使用 99.9% 含水工业气球氦气</text>
+  <text x="74" y="464" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制核验 5N 级高纯氦气瓶批号 (H2O &lt; 2 ppm)</text>
+  <text x="74" y="482" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 彻底消除 4.2K 二级冷端微量水蒸气结冰卡死</text>
+
+  <rect x="60" y="518" width="324" height="92" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="540" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. Web IQ ACR 缺氧报警 &amp; 失超管核查</text>
+  <text x="74" y="560" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• /v3/browse 核验扫描间 &lt;19.5% O2 缺氧探头校准</text>
+  <text x="74" y="578" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 265ms 拦截室外失超排气管 (Quench Pipe) 积水结冰</text>
+  <text x="74" y="596" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 守护放射科患者与技师免受失超窒息生命威胁</text>
+
+  <!-- Center Column: 5-Lane Deterministic Matrix -->
+  <rect x="416" y="132" width="424" height="495" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="436" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">⚖️ 五路确定性清算决策矩阵 (5-Lane Matrix)</text>
+
+  <!-- Lane 200 -->
+  <rect x="432" y="176" width="392" height="76" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="446" y="198" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="446" y="218" fill="#ECFDF5" font-family="Segoe UI, Arial, sans-serif" font-size="12">VERIFIED_HOSPITAL_MRI_CRYOCOOLER_COLDHEAD_SETTLED</text>
+  <text x="446" y="238" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">$680 吸附罐按时换 + $4,200 活塞芯 + 5N 氦气 + ACR → $148,000.00</text>
+
+  <!-- Lane 403 -->
+  <rect x="432" y="264" width="392" height="76" rx="8" fill="#450A0A" stroke="#EF4444"/>
+  <text x="446" y="286" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="446" y="306" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">LIQUID_HELIUM_BOILOFF_VENDOR_NEGLIGENCE_OR_SKIPPED_680_ADSORBER_BLOCKED</text>
+  <text x="446" y="326" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截漏换 $680 吸附罐致油冻挥发却向医院转嫁 $48k 液氦费 → $0.00</text>
+
+  <!-- Lane 422 -->
+  <rect x="432" y="352" width="392" height="76" rx="8" fill="#450A0A" stroke="#F87171"/>
+  <text x="446" y="374" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="446" y="394" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">WHOLE_COLDHEAD_ASSEMBLY_UPCODING_ON_DISPLACER_OR_IMPURE_HELIUM_ICE_PLUG</text>
+  <text x="446" y="414" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截把 $4,200 活塞芯更换高报 $35,000 换整支冷头或充低纯氦 → $0.00</text>
+
+  <!-- Lane 451 -->
+  <rect x="432" y="440" width="392" height="76" rx="8" fill="#3B0764" stroke="#C084FC"/>
+  <text x="446" y="462" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 451 · Send to a human (265ms)</text>
+  <text x="446" y="482" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">FAILED_MRI_ROOM_OXYGEN_MONITOR_OR_BLOCKED_QUENCH_VENT_PIPE_HOLD</text>
+  <text x="446" y="502" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 挂起机房 &lt;19.5% 缺氧探头失效或室外失超管堵塞 → $0.00</text>
+
+  <!-- Lane 409 -->
+  <rect x="432" y="528" width="392" height="84" rx="8" fill="#451A03" stroke="#F59E0B"/>
+  <text x="446" y="550" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🧑‍⚖️ HTTP 409 · Confirm (230ms)</text>
+  <text x="446" y="570" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">AUTOMATED_COLDHEAD_DISPLACER_REBUILD_AND_ADSORBER_SAVINGS_CONFIRM</text>
+  <text x="446" y="592" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">改用 $4,200 冷头活塞芯再生 + $680 吸附罐更换立省 $32,600 → $115,400.00</text>
+
+  <!-- Right Column: FinOps & Benchmark -->
+  <rect x="856" y="132" width="300" height="495" rx="12" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="876" y="160" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 成本精算与基准对比</text>
+
+  <rect x="872" y="176" width="268" height="145" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="198" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">单批医院超导 MRI 低温维保总额</text>
+  <text x="886" y="226" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">$148,000.00</text>
+  <text x="886" y="252" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 活塞再生 &amp; 零挥发立省：</text>
+  <text x="886" y="278" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">-$32,600.00 (-22.0%)</text>
+  <text x="886" y="304" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">净清算额：$115,400.00</text>
+
+  <rect x="872" y="335" width="268" height="140" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="357" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Web IQ vs. 竞品检索能力</text>
+  <text x="886" y="379" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ: 230ms 直连 Sumitomo</text>
+  <text x="886" y="399" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  RDK-408 序列号库与 5N 氦气 COA</text>
+  <text x="886" y="421" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Bright Data: 缺乏 15,000h 吸附罐</text>
+  <text x="886" y="441" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">  油污染与罐压 PSI 零挥发责任模型</text>
+  <text x="886" y="461" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Exa: 无法做 ACR 失超管强校验</text>
+
+  <rect x="872" y="489" width="268" height="121" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="511" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛠️ 生产核验清单 (Checklist)</text>
+  <text x="886" y="533" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ $680 吸附罐 &lt;=15,000h &amp; 罐压 &lt;=4.5</text>
+  <text x="886" y="553" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ $4,200 活塞芯再生 &amp; 5N 高纯氦气</text>
+  <text x="886" y="573" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ &lt;19.5% 缺氧报警 &amp; 失超管无堵塞</text>
+  <text x="886" y="593" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" font-weight="700">☑ 零虚构坐标 · CSP 自包含沙盒通过</text>
+</svg>

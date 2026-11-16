@@ -22181,6 +22181,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-stretch-wrapper-palletizer-sandbox", demo_zh)
 
+    def test_b2b_hospital_mri_superconducting_cryocooler_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_mri_superconducting_cryocooler_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $680 adsorber hours + $4,200 displacer + 5N helium + ACR clean -> 200 OK ($148,000.00)
+        ok_res = evaluate_b2b_hospital_mri_superconducting_cryocooler_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOSPITAL_MRI_CRYOCOOLER_COLDHEAD_SETTLED")
+        self.assertEqual(ok_res.settled_hospital_mri_cryocooler_cents, 14800000)
+
+        # 2. $48,000 liquid helium boil-off caused by skipped $680 compressor adsorber -> 403 Blocked
+        ads_403 = evaluate_b2b_hospital_mri_superconducting_cryocooler_policy(
+            adsorber_cartridge_hours_and_zero_boiloff_psi_verified=False,
+        )
+        self.assertFalse(ads_403.allowed)
+        self.assertEqual(ads_403.http_status, 403)
+        self.assertEqual(
+            ads_403.decision_code,
+            "LIQUID_HELIUM_BOILOFF_VENDOR_NEGLIGENCE_OR_SKIPPED_680_ADSORBER_BLOCKED",
+        )
+
+        # 3. $35,000 whole-coldhead upcoding on $4,200 displacer or impure <5N helium -> 422 Blocked
+        dsp_422 = evaluate_b2b_hospital_mri_superconducting_cryocooler_policy(
+            displacer_rebuild_isolation_and_5n_helium_purity_verified=False,
+        )
+        self.assertFalse(dsp_422.allowed)
+        self.assertEqual(dsp_422.http_status, 422)
+        self.assertEqual(
+            dsp_422.decision_code,
+            "WHOLE_COLDHEAD_ASSEMBLY_UPCODING_ON_DISPLACER_OR_IMPURE_HELIUM_ICE_PLUG",
+        )
+
+        # 4. Failed MRI room oxygen monitor (<19.5% O2) or blocked quench vent pipe -> 451 Hold
+        acr_451 = evaluate_b2b_hospital_mri_superconducting_cryocooler_policy(
+            webiq_acr_oxygen_monitor_and_quench_pipe_clean=False,
+        )
+        self.assertFalse(acr_451.allowed)
+        self.assertEqual(acr_451.http_status, 451)
+
+        # 5. Web IQ $4,200 displacer rebuild & $680 adsorber saving $32,600 ($115,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_mri_superconducting_cryocooler_policy(
+            automated_coldhead_displacer_rebuild_and_adsorber_savings_cents=3260000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_mri_cryocooler_cents, 11540000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_mri_superconducting_cryocooler_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-mri-superconducting-cryocooler-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
