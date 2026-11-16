@@ -22124,6 +22124,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cnc-metalworking-fluid-mwf-oil-mist-sandbox", demo_zh)
 
+    def test_b2b_industrial_stretch_wrapper_palletizer_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_stretch_wrapper_palletizer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant >=250% pre-stretch + <=260g/pallet net film + dancer sensor + B155.1 -> 200 OK ($129,000.00)
+        ok_res = evaluate_b2b_industrial_stretch_wrapper_palletizer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_STRETCH_WRAPPER_PALLETIZER_SETTLED")
+        self.assertEqual(ok_res.settled_stretch_wrapper_palletizer_cents, 12900000)
+
+        # 2. Un-stretched <250% LLDPE film overconsumption or heavy cardboard core tare scam -> 403 Blocked
+        flm_403 = evaluate_b2b_industrial_stretch_wrapper_palletizer_policy(
+            prestretch_250pct_and_net_film_grams_per_pallet_verified=False,
+        )
+        self.assertFalse(flm_403.allowed)
+        self.assertEqual(flm_403.http_status, 403)
+        self.assertEqual(
+            flm_403.decision_code,
+            "UNSTRETCHED_LLDPE_FILM_OVERCONSUMPTION_OR_HEAVY_CORE_TARE_SCAM_BLOCKED",
+        )
+
+        # 3. $6,800 film-carriage assembly upcoding on $135 dancer-bar sensor fault -> 422 Blocked
+        car_422 = evaluate_b2b_industrial_stretch_wrapper_palletizer_policy(
+            dancer_bar_sensor_isolation_and_roller_degreasing_verified=False,
+        )
+        self.assertFalse(car_422.allowed)
+        self.assertEqual(car_422.http_status, 422)
+        self.assertEqual(
+            car_422.decision_code,
+            "FILM_CARRIAGE_ASSEMBLY_UPCODING_ON_135_DOLLAR_DANCER_BAR_SENSOR",
+        )
+
+        # 4. Bypassed ANSI B155.1 light curtain or low pallet containment force (<12 lbs) -> 451 Hold
+        lct_451 = evaluate_b2b_industrial_stretch_wrapper_palletizer_policy(
+            webiq_ansi_b155_1_light_curtain_and_containment_force_clean=False,
+        )
+        self.assertFalse(lct_451.allowed)
+        self.assertEqual(lct_451.http_status, 451)
+
+        # 5. Web IQ 250% pre-stretch film audit & $135 dancer sensor saving $24,200 ($104,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_stretch_wrapper_palletizer_policy(
+            automated_250pct_prestretch_film_audit_and_dancer_sensor_savings_cents=2420000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_stretch_wrapper_palletizer_cents, 10480000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_stretch_wrapper_palletizer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-stretch-wrapper-palletizer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
