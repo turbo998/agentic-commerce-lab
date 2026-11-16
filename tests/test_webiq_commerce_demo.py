@@ -20870,6 +20870,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-lab-biosafety-cabinet-nsf49-usp797-sandbox", demo_zh)
 
+    def test_b2b_commercial_boiler_asme_csd1_nbic_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Low/High-fire flue-gas O2/CO curve + slow-drain LWCO + NBBI R-Stamp clean -> 200 OK ($138,000.00)
+        ok_res = evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_BOILER_ASME_CSD1_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_boiler_csd1_cents, 13800000)
+
+        # 2. Tune-up without flue-gas analyzer curve or button-only LWCO check -> 403 Blocked
+        flu_403 = evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy(
+            flue_gas_o2_co_curve_and_lwco_slow_drain_verified=False,
+        )
+        self.assertFalse(flu_403.allowed)
+        self.assertEqual(flu_403.http_status, 403)
+        self.assertEqual(
+            flu_403.decision_code,
+            "UNVERIFIED_FLUE_GAS_COMBUSTION_CURVE_OR_SKIPPED_LWCO_SLOW_DRAIN_BLOCKED",
+        )
+
+        # 3. $6,500 RM7800 flame-safeguard swap upcoding on $65 UV scanner or excess O2 fuel waste -> 422 Blocked
+        uv_422 = evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy(
+            uv_flame_scanner_downgrade_and_stack_efficiency_verified=False,
+        )
+        self.assertFalse(uv_422.allowed)
+        self.assertEqual(uv_422.http_status, 422)
+        self.assertEqual(
+            uv_422.decision_code,
+            "FLAME_SAFEGUARD_CONTROLLER_SWAP_UPCODING_OR_EXCESS_STACK_O2_FUEL_WASTE",
+        )
+
+        # 4. Uncertified NBBI R-Stamp pressure-vessel weld or expired boiler permit -> 451 Hold
+        rst_451 = evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy(
+            webiq_nbbi_rstamp_vessel_weld_and_vr_valve_clean=False,
+        )
+        self.assertFalse(rst_451.allowed)
+        self.assertEqual(rst_451.http_status, 451)
+
+        # 5. Web IQ $65 UV flame scanner downgrade & combustion savings $20,700 ($117,300 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy(
+            automated_uv_flame_scanner_downgrade_and_combustion_savings_cents=2070000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_boiler_csd1_cents, 11730000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_boiler_asme_csd1_nbic_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-boiler-asme-csd1-nbic-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
