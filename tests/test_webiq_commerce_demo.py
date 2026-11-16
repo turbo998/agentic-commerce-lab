@@ -21725,6 +21725,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-diesel-ust-ast-fuel-polishing-sandbox", demo_zh)
 
+    def test_b2b_industrial_truck_weighbridge_scale_nist_hb44_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 25,000-lb Class F cart section curve + >=5000MOhm insulation + RSA -> 200 OK ($116,000.00)
+        ok_res = evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_TRUCK_WEIGHBRIDGE_NIST_HB44_SETTLED")
+        self.assertEqual(ok_res.settled_truck_weighbridge_scale_cents, 11600000)
+
+        # 2. Zero-weight pickup-truck phantom calibration missing 25,000-lb Class F cart -> 403 Blocked
+        cal_403 = evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy(
+            class_f_25000lb_weight_cart_section_curve_verified=False,
+        )
+        self.assertFalse(cal_403.allowed)
+        self.assertEqual(cal_403.http_status, 403)
+        self.assertEqual(
+            cal_403.decision_code,
+            "ZERO_WEIGHT_PHANTOM_CALIBRATION_OR_MISSING_25000LB_CLASS_F_CART_BLOCKED",
+        )
+
+        # 3. $4,800 load-cell upcoding on $180 summing card or jammed bumper bolt -> 422 Blocked
+        cel_422 = evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy(
+            load_cell_mv_insulation_and_bumper_bolt_gap_verified=False,
+        )
+        self.assertFalse(cel_422.allowed)
+        self.assertEqual(cel_422.http_status, 422)
+        self.assertEqual(
+            cel_422.decision_code,
+            "LOAD_CELL_REPLACEMENT_UPCODING_ON_SUMMING_CARD_OR_JAMMED_BUMPER_BOLT",
+        )
+
+        # 4. Unregistered Weights & Measures RSA technician or expired Class F weights -> 451 Hold
+        rsa_451 = evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy(
+            webiq_weights_measures_rsa_and_class_f_cert_clean=False,
+        )
+        self.assertFalse(rsa_451.allowed)
+        self.assertEqual(rsa_451.http_status, 451)
+
+        # 5. Web IQ $180 summing board trim & bumper gap cleanout saving $19,400 ($96,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_truck_weighbridge_scale_nist_hb44_policy(
+            automated_summing_board_trim_and_bumper_gap_cleanout_savings_cents=1940000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_truck_weighbridge_scale_cents, 9660000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_truck_weighbridge_scale_nist_hb44_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-truck-weighbridge-scale-nist-hb44-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
