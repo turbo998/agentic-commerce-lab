@@ -34223,6 +34223,106 @@ def evaluate_b2b_commercial_asphalt_paving_sealcoating_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialElevatorCabEscalatorStepDecision:
+    """Deterministic decision output for B2B commercial escalator step-off degreasing, cab remodeling & ASME 2.27.1 intercom."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_elevator_cab_escalator_lane: str
+    settled_commercial_elevator_cab_escalator_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+    *,
+    mandate_id: str = "b2b_commercial_elevator_cab_interior_escalator_step_intercom_mandate_2026",
+    commercial_elevator_cab_escalator_cents: int = 13200000,
+    escalator_step_off_truss_and_cab_5pct_deadweight_verified: bool = True,
+    pooled_intercom_gateway_and_modular_comb_segment_verified: bool = True,
+    webiq_astm_e84_class_a_laminate_and_qei_alteration_clean: bool = True,
+    automated_step_brush_downgrade_and_intercom_pooling_savings_cents: int = 0,
+) -> B2BCommercialElevatorCabEscalatorStepDecision:
+    """Evaluate B2B commercial escalator step-off degreasing, <=5% cab deadweight parity & ASME 2.27.1 intercoms."""
+    if not mandate_id.startswith("b2b_commercial_elevator_cab_interior_escalator_step_intercom_mandate_"):
+        return B2BCommercialElevatorCabEscalatorStepDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_elevator_cab_escalator_lane="INVALID_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_MANDATE_PREFIX",
+            settled_commercial_elevator_cab_escalator_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not escalator_step_off_truss_and_cab_5pct_deadweight_verified:
+        return B2BCommercialElevatorCabEscalatorStepDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="SURFACE_TREAD_BRUSH_SCAM_OR_UNBALANCED_CAB_DEADWEIGHT_OVER_5PCT_BLOCKED",
+            action_pill="Send to a human",
+            commercial_elevator_cab_escalator_lane="SURFACE_TREAD_BRUSH_SCAM_OR_UNBALANCED_CAB_DEADWEIGHT_OVER_5PCT_BLOCKED",
+            settled_commercial_elevator_cab_escalator_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not pooled_intercom_gateway_and_modular_comb_segment_verified:
+        return B2BCommercialElevatorCabEscalatorStepDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PROPRIETARY_CELLULAR_INTERCOM_LOCKIN_OR_FULL_COMB_PLATE_ASSEMBLY_UPCODING",
+            action_pill="Send to a human",
+            commercial_elevator_cab_escalator_lane="PROPRIETARY_CELLULAR_INTERCOM_LOCKIN_OR_FULL_COMB_PLATE_ASSEMBLY_UPCODING",
+            settled_commercial_elevator_cab_escalator_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_astm_e84_class_a_laminate_and_qei_alteration_clean:
+        return B2BCommercialElevatorCabEscalatorStepDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="NON_CLASS_A_FLAMMABLE_CAB_LAMINATE_OR_UNREGISTERED_QEI_ALTERATION_HOLD",
+            action_pill="Send to a human",
+            commercial_elevator_cab_escalator_lane="NON_CLASS_A_FLAMMABLE_CAB_LAMINATE_OR_UNREGISTERED_QEI_ALTERATION_HOLD",
+            settled_commercial_elevator_cab_escalator_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_step_brush_downgrade_and_intercom_pooling_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_elevator_cab_escalator_cents - automated_step_brush_downgrade_and_intercom_pooling_savings_cents,
+        )
+        return B2BCommercialElevatorCabEscalatorStepDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_STEP_BRUSH_DOWNGRADE_AND_INTERCOM_POOLING_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_elevator_cab_escalator_lane="AUTOMATED_STEP_BRUSH_DOWNGRADE_AND_INTERCOM_POOLING_SAVINGS_CONFIRM",
+            settled_commercial_elevator_cab_escalator_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialElevatorCabEscalatorStepDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_SETTLED",
+        action_pill="Act automatically",
+        commercial_elevator_cab_escalator_lane="VERIFIED_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_SETTLED",
+        settled_commercial_elevator_cab_escalator_cents=commercial_elevator_cab_escalator_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -45516,6 +45616,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "core_thickness_tonnage_block_latency_ms": pav_cor_403.latency_ms,
     }
 
+    esc_commit_ok = evaluate_b2b_commercial_elevator_cab_escalator_step_policy()
+    esc_stp_403 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+        escalator_step_off_truss_and_cab_5pct_deadweight_verified=False,
+    )
+    esc_int_422 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+        pooled_intercom_gateway_and_modular_comb_segment_verified=False,
+    )
+    esc_e84_451 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+        webiq_astm_e84_class_a_laminate_and_qei_alteration_clean=False,
+    )
+    esc_sav_409 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+        automated_step_brush_downgrade_and_intercom_pooling_savings_cents=1980000,
+    )
+    b2b_commercial_elevator_cab_escalator_step_guards = {
+        "all_passed": (
+            esc_commit_ok.allowed
+            and esc_commit_ok.settled_commercial_elevator_cab_escalator_cents == 13200000
+            and not esc_stp_403.allowed
+            and esc_stp_403.http_status == 403
+            and not esc_int_422.allowed
+            and esc_int_422.http_status == 422
+            and not esc_e84_451.allowed
+            and esc_e84_451.http_status == 451
+            and not esc_sav_409.allowed
+            and esc_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_escalator_cab_settlement_latency_ms": esc_commit_ok.latency_ms,
+        "surface_brush_deadweight_block_latency_ms": esc_stp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45869,6 +45999,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_glazing_storefront_igu_guards": b2b_commercial_glazing_storefront_igu_guards,
         "b2b_commercial_plumbing_backflow_rpz_guards": b2b_commercial_plumbing_backflow_rpz_guards,
         "b2b_commercial_asphalt_paving_sealcoating_guards": b2b_commercial_asphalt_paving_sealcoating_guards,
+        "b2b_commercial_elevator_cab_escalator_step_guards": b2b_commercial_elevator_cab_escalator_step_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54906,6 +55037,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pav-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Escalator Step-Off Degreasing, Cab Remodel & ASME 2.27.1 Intercom Sandbox (Round 341) -->
+      <div class="finops-box" id="b2b-commercial-elevator-cab-escalator-step-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-esc-title">🛗 B2B 商业扶梯拆梯级除油、轿厢翻新 (&lt;=5% 死重) 与 ASME 2.27.1 音视频急呼清算沙盒 (Round 341 · Kings III / SnapCab / NAESA QEI)</span>
+        </div>
+        <div class="control-row">
+          <label><span>扶梯 100% 拆梯级露底盘桁架锁 + 轿厢 &lt;=5.0% 死重变化锁 + 多梯共线急呼 + Web IQ ASTM E84/QEI 核验:</span></label>
+          <select id="esc-select" onchange="updateB2BCommercialElevatorCabEscalatorStepSandbox()">
+            <option value="esc_commit_ok">🛗 扶梯拆梯级底盘除油 + 轿厢蜂窝铝轻质板 (&lt;=5.0% 增重) + ASTM E84 Class A 合规：10ms 清算 $132,000.00! (Act automatically)</option>
+            <option value="esc_stp_403">🛑 手推滚刷机扫扶梯踏面 45 分钟冒充 $8,500 拆梯级深洗，或轿厢铺重石材致死重增加 &gt;15% 违反 ASME 8.7.2.14 → 11ms 触发 HTTP 403!</option>
+            <option value="esc_int_422">🚨 急呼对讲强捆单梯 $85/月 5 年自动续约霸王套餐，或将 $18 塑料梳齿片断两颗齿虚报为 $3,200 换整块铝合金前沿板 → 14ms 触发 HTTP 422!</option>
+            <option value="esc_e84_451">🛑 轿厢内壁使用无 ASTM E84 / UL 723 Class A (FSI &lt;=25) 证书的易燃木饰面或未做 QEI 改造备案：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="esc_sav_409">🧑‍⚖️ Web IQ 自动将未拆梯级的假深洗从 $8,500 降级为 $450 表面刷洗并切换多梯共线急呼网关 (&lt;=$35/月) 立省 $19,800.00 (净付 $112,200.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="esc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -55685,6 +55834,7 @@ function renderAll() {{
   updateB2BCommercialGlazingStorefrontIguSandbox();
   updateB2BCommercialPlumbingBackflowRpzSandbox();
   updateB2BCommercialAsphaltPavingSealcoatingSandbox();
+  updateB2BCommercialElevatorCabEscalatorStepSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -72280,6 +72430,52 @@ function updateB2BCommercialAsphaltPavingSealcoatingSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🛣️ 拌合站地磅吨位/钻芯达标 + GIS 净沥青面积 + ADA &lt;=2.08% 合规：已自动清算 (VERIFIED_COMMERCIAL_ASPHALT_PAVING_ADA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1.1 英寸薄皮偷料、零大楼屋顶面积注水与无障碍车位超坡</strong>：B2B 商业停车场沥青摊铺与雾封层批次已完成安全清算（<code>$158,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialElevatorCabEscalatorStepSandbox() {{
+  var sel = document.getElementById("esc-select");
+  var outEl = document.getElementById("esc-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "esc_stp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 SURFACE_TREAD_BRUSH_SCAM_OR_UNBALANCED_CAB_DEADWEIGHT_OVER_5PCT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对扶梯底盘视频与轿厢过磅台账发现：服务商未拆下一颗梯级（仅用滚刷机扫踏面 <code>45 分钟</code> 却报 <code>$8,500 拆梯级深洗</code>），或轿厢装潢净增重达 <code>+15%（超 ASME A17.1 8.7.2.14 的 5.0% 红线）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "esc_int_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PROPRIETARY_CELLULAR_INTERCOM_LOCKIN_OR_FULL_COMB_PLATE_ASSEMBLY_UPCODING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计急呼通信合约与扶梯备件单发现：单台电梯被强捆 <code>$85/月 5 年自动续约 4G 套餐</code>，或将 <code>$18 聚碳酸酯分段梳齿片</code> 断齿虚报为 <code>$3,200 换整块铝合金前沿板</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "esc_e84_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NON_CLASS_A_FLAMMABLE_CAB_LAMINATE_OR_UNREGISTERED_QEI_ALTERATION_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UL Product iQ (ASTM E84 / UL 723 Class A)</code> 与 <code>NAESA QEI</code> 名录发现：轿厢内壁板材缺失 <code>FSI &lt;= 25</code> 阻燃认证或超重改造未经持证 <code>QEI</code> 检验员复检，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "esc_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_STEP_BRUSH_DOWNGRADE_AND_INTERCOM_POOLING_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将未拆梯级的表面滚刷从 $8,500 降级为 $450 保洁价 + 切换多梯共线 ASME 2.27.1 音视频急呼网关 (&lt;=$35/月) + $18 分段梳齿片替换</code>，单批立省 <code>$19,800.00</code>（净结算额优化至 <code>$112,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🛗 扶梯拆梯级露桁架除油 + 轿厢 &lt;=5.0% 死重平衡 + Class A 阻燃合规：已自动清算 (VERIFIED_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 45 分钟表面假拆洗、零轿厢超重红牌与 $85/月急呼绑死</strong>：B2B 商业扶梯除油、轿厢翻新与音视频急呼批次已完成安全清算（<code>$132,000.00</code>）！" +
     "</div>";
 }}
 

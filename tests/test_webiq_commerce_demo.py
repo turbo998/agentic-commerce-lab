@@ -20414,6 +20414,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-asphalt-paving-sealcoating-sandbox", demo_zh)
 
+    def test_b2b_commercial_elevator_cab_escalator_step_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_elevator_cab_escalator_step_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 100% step-off truss degreasing + <=5.0% cab weight delta + ASTM E84 Class A clean -> 200 OK ($132,000.00)
+        ok_res = evaluate_b2b_commercial_elevator_cab_escalator_step_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_ELEVATOR_CAB_ESCALATOR_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_elevator_cab_escalator_cents, 13200000)
+
+        # 2. 45-min surface tread brush scam or >5.0% cab deadweight delta -> 403 Blocked
+        stp_403 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+            escalator_step_off_truss_and_cab_5pct_deadweight_verified=False,
+        )
+        self.assertFalse(stp_403.allowed)
+        self.assertEqual(stp_403.http_status, 403)
+        self.assertEqual(
+            stp_403.decision_code,
+            "SURFACE_TREAD_BRUSH_SCAM_OR_UNBALANCED_CAB_DEADWEIGHT_OVER_5PCT_BLOCKED",
+        )
+
+        # 3. $85/mo proprietary cellular intercom lock-in or $3,200 full comb-plate upcoding -> 422 Blocked
+        int_422 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+            pooled_intercom_gateway_and_modular_comb_segment_verified=False,
+        )
+        self.assertFalse(int_422.allowed)
+        self.assertEqual(int_422.http_status, 422)
+        self.assertEqual(
+            int_422.decision_code,
+            "PROPRIETARY_CELLULAR_INTERCOM_LOCKIN_OR_FULL_COMB_PLATE_ASSEMBLY_UPCODING",
+        )
+
+        # 4. Non-Class-A flammable cab laminate or unregistered QEI alteration -> 451 Hold
+        e84_451 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+            webiq_astm_e84_class_a_laminate_and_qei_alteration_clean=False,
+        )
+        self.assertFalse(e84_451.allowed)
+        self.assertEqual(e84_451.http_status, 451)
+
+        # 5. Web IQ surface-brush downgrade & multi-cab intercom pooling saving $19,800 ($112,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_elevator_cab_escalator_step_policy(
+            automated_step_brush_downgrade_and_intercom_pooling_savings_cents=1980000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_elevator_cab_escalator_cents, 11220000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_elevator_cab_escalator_step_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-elevator-cab-escalator-step-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

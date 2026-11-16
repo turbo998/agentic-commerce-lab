@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg343" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent343" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg343)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent343)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#06B6D4" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">ROUND 341 · B2B ESCALATOR STEP-OFF DEGREASING, ELEVATOR CAB REMODEL (&lt;=5% WEIGHT) &amp; ASME 2.27.1 INTERCOM</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">商业扶梯拆梯级除油、轿厢翻新与急呼对讲：桁架暴露锁、5% 死重锁 vs 表面滚刷假拆洗与 $85/月绑死</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Mandate: b2b_commercial_elevator_cab_interior_escalator_step_intercom_mandate_2026 · 15.0% Savings ($19,800 / Batch)</text>
+
+  <!-- Left Panel: Legacy Escalator & Cab Remodel Traps -->
+  <rect x="44" y="132" width="540" height="395" rx="12" fill="#1C1917" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="540" height="38" rx="12" fill="#450A0A"/>
+  <text x="64" y="156" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统商业扶梯除油、轿厢翻新与急呼对讲四大黑洞 (Legacy Leakage: 35%–58%)</text>
+
+  <rect x="62" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="206" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 手推滚刷机扫踏面 45 分钟，却按 $8,500“全拆 100 块梯级深层除油”收费</text>
+  <text x="76" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">半夜拿干式踏板刷洗机在转动的扶梯表面刷 45 分钟，梯级一颗没拆，底盘桁架导轨与</text>
+  <text x="76" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">集油盘里厚达数厘米的易燃黄油棉絮原封未动，却收走 $8,500 全拆超声波大洗费。</text>
+
+  <rect x="62" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="290" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 轿厢装潢乱铺实心大理石致死重增加 &gt;15%，违反 ASME 8.7.2.14 被红牌停梯</text>
+  <text x="76" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">装修队不管电梯 5.0% 空载死重变化红线，直接铺数百斤厚石材，导致轿厢与对重块</text>
+  <text x="76" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">严重失衡溜梯，年检被 QEI 检验员当场贴封条停运，倒贴 $12,000 重配对重与满载测试。</text>
+
+  <rect x="62" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="374" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 音视频急呼对讲收 $85/台/月 + 5 年自动续约，断两根梳齿虚报 $3,200 换整板</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">借口 ASME A17.1 2.27.1 视频对讲升级，强推每台 $4,200 封闭硬件与 $85/月 5 年绑死</text>
+  <text x="76" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">套餐；扶梯黄色塑料梳齿片 ($18) 断两颗齿却谎称必须花 $3,200 换整块铝合金前沿板。</text>
+
+  <rect x="62" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="458" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 轿厢内壁违规使用无 ASTM E84 Class A 阻燃证书的易燃木饰面与普通地毯</text>
+  <text x="76" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">在垂直井道烟囱效应极强的轿厢内贴普通胶合板木皮（火焰蔓延指数 FSI &gt; 100），</text>
+  <text x="76" y="496" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">严重违反 ASME A17.1 2.14.1.2 Class A (FSI &lt;= 25) 铁律，面临消防重罚与全拆返工。</text>
+
+  <!-- Right Panel: Agentic Exposed-Truss Lock + 5% Weight Gate + Web IQ E84/QEI Architecture -->
+  <rect x="616" y="132" width="540" height="395" rx="12" fill="#0F1E2E" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="616" y="132" width="540" height="38" rx="12" fill="#064E3B"/>
+  <text x="636" y="156" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">✅ 扶梯拆梯级桁架锁 + &lt;=5% 轿厢死重锁 + Web IQ E84/QEI 架构</text>
+
+  <rect x="634" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="206" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 100% 拆梯级底盘桁架视频锁 + 轿厢 &lt;=5.0% 死重平衡锁 (11ms → HTTP 403)</text>
+  <text x="648" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">强制核验拆空梯级后的底盘桁架导轨视频与废油泥过磅单；强制称重拆旧与新装蜂窝铝</text>
+  <text x="648" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">板材确保净增重 &lt;= 5.0%，11ms 硬拦截 45 分钟表面假刷与轿厢超重违章。</text>
+
+  <rect x="634" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="290" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 多梯共线开放急呼网关 (&lt;=$35/月) + $18 分段梳齿片降级锁 (14ms → HTTP 422)</text>
+  <text x="648" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">强制采用多轿厢共享 ASME A17.1 2.27.1 音视频/文字网关，将梳齿断齿锁定在 $18</text>
+  <text x="648" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">独立梳齿段更换，14ms 封杀 $85/月 5 年自动续约绑死与 $3,200 前沿板总成虚报。</text>
+
+  <rect x="634" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="374" fill="#06B6D4" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. Web IQ /v3/browse 核查 ASTM E84 Class A 阻燃与 QEI (270ms → HTTP 451)</text>
+  <text x="648" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">270ms 在线穿透核验轿厢板材 UL 723 / ASTM E84 Class A (FSI &lt;=25, SDI &lt;=450)</text>
+  <text x="648" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">防火认证、UL 2017 急呼网关认证及 NAESA QEI 特种设备检验员执业资格。</text>
+
+  <rect x="634" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#D97706"/>
+  <text x="648" y="458" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 自动将未拆梯级降级为 $450 表面刷洗并并机核减急呼月租 (235ms → HTTP 409)</text>
+  <text x="648" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动将未拆梯级的假深洗降回表面保洁价、切换多梯共线急呼并降级梳齿片更换：</text>
+  <text x="648" y="496" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">基准批次 $132,000.00 → 自动核减 $19,800.00 (15.0%) → 净付 $112,200.00！</text>
+
+  <!-- Bottom Telemetry & Benchmark Bar -->
+  <rect x="44" y="542" width="1112" height="92" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="64" y="568" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 确定性门禁实测 (Deterministic Policy Guards · $132,000.00 Annual Escalator Deep-Clean, Cab Remodel &amp; Intercom Batch)</text>
+
+  <rect x="64" y="580" width="205" height="40" rx="6" fill="#064E3B"/>
+  <text x="76" y="598" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 10ms</text>
+  <text x="76" y="614" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11">真拆梯级+&lt;=5%配重($132k)</text>
+
+  <rect x="281" y="580" width="205" height="40" rx="6" fill="#450A0A"/>
+  <text x="293" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 11ms</text>
+  <text x="293" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦45分钟假拆洗与轿厢超重&gt;5%</text>
+
+  <rect x="498" y="580" width="215" height="40" rx="6" fill="#450A0A"/>
+  <text x="510" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms</text>
+  <text x="510" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦$85/月急呼绑死与$3.2k换板</text>
+
+  <rect x="725" y="580" width="205" height="40" rx="6" fill="#3B0764"/>
+  <text x="737" y="598" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 451 · 270ms</text>
+  <text x="737" y="614" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦非Class A易燃饰面与无QEI</text>
+
+  <rect x="942" y="580" width="196" height="40" rx="6" fill="#451A03"/>
+  <text x="954" y="598" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 235ms</text>
+  <text x="954" y="614" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="11">降级表面刷+并机急呼省$19.8k</text>
+</svg>
