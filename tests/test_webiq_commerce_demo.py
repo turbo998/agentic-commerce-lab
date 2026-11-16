@@ -23093,6 +23093,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-cooling-tower-gearbox-fan-sandbox", demo_zh)
 
+    def test_b2b_pharma_cleanroom_lyophilizer_gmp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant helium gasket isolation/zero oil + 10-500 mTorr Baratron/Pirani + SIP F0>=15 -> 200 OK ($130,000.00)
+        ok_res = evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_PHARMA_CLEANROOM_LYOPHILIZER_GMP_SETTLED")
+        self.assertEqual(ok_res.settled_pharma_lyophilizer_gmp_cents, 13000000)
+
+        # 2. $22,000 shelf/condenser coil replacement upcoding on $240 gasket/valve leak -> 403 Blocked
+        shf_403 = evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy(
+            helium_leak_gasket_isolation_and_zero_silicone_oil_verified=False,
+        )
+        self.assertFalse(shf_403.allowed)
+        self.assertEqual(shf_403.http_status, 403)
+        self.assertEqual(
+            shf_403.decision_code,
+            "LYO_SHELF_OR_CONDENSER_COIL_REPLACEMENT_UPCODING_ON_240_DOLLAR_GASKET_PIRANI_BLOCKED",
+        )
+
+        # 3. Uncalibrated Baratron/Pirani vacuum gauges or shelf thermal uniformity >±1.0C -> 422 Blocked
+        bar_422 = evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy(
+            baratron_pirani_mtorr_calibration_and_shelf_1c_uniformity_verified=False,
+        )
+        self.assertFalse(bar_422.allowed)
+        self.assertEqual(bar_422.http_status, 422)
+        self.assertEqual(
+            bar_422.decision_code,
+            "UNCALIBRATED_BARATRON_PIRANI_GAUGE_OR_SHELF_THERMAL_UNIFORMITY_NEGLECT",
+        )
+
+        # 4. Failed EU GMP Annex 1 SIP >=121.1C cold spot or stoppering bellows integrity -> 451 Hold
+        sip_451 = evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy(
+            webiq_gmp_annex1_sip_121c_f0_and_bellows_integrity_clean=False,
+        )
+        self.assertFalse(sip_451.allowed)
+        self.assertEqual(sip_451.http_status, 451)
+
+        # 5. Web IQ $240 helium gasket/valve & Baratron calibration saving $28,500 ($101,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_pharma_cleanroom_lyophilizer_gmp_policy(
+            automated_helium_leak_gasket_and_baratron_calibration_savings_cents=2850000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_pharma_lyophilizer_gmp_cents, 10150000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_pharma_cleanroom_lyophilizer_gmp_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-pharma-cleanroom-lyophilizer-gmp-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
