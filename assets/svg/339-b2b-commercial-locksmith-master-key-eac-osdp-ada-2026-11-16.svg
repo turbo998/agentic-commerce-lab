@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg339" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent339" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg339)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent339)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">ROUND 337 · B2B COMMERCIAL LOCKSMITH, MASTER KEY SYSTEM (MKS), EAC OSDP &amp; ADA DOOR CLOSERS</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">商业总钥匙系统、门禁电锁与闭门器维保：受控键槽锁、电锁电流诊断 vs 电钻毁锁与换整根推杠骗局</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Mandate: b2b_commercial_locksmith_master_key_eac_osdp_ada_closer_mandate_2026 · 15.0% Savings ($16,200 / Batch)</text>
+
+  <!-- Left Panel: Legacy Commercial Locksmith & EAC Traps -->
+  <rect x="44" y="132" width="540" height="395" rx="12" fill="#1C1917" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="44" y="132" width="540" height="38" rx="12" fill="#450A0A"/>
+  <text x="64" y="156" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统商业锁匠与门禁电锁维保四大黑洞 (Legacy Locksmith Leakage: 32%–55%)</text>
+
+  <rect x="62" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="206" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 忘带钥匙被一电钻打烂 $350 原厂受控锁芯换 $15 杂牌锁 (Drill-and-Replace Scam)</text>
+  <text x="76" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">拒不调取物业 SFIC 控制钥匙无损开启，拿电钻 30 秒打烂 $350 Schlage Primus 专利锁芯，</text>
+  <text x="76" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">塞入 $15 杂牌锁芯收 $680，导致该门彻底脱离全楼消防与保安总钥匙 (GMK) 体系。</text>
+
+  <rect x="62" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="290" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 把 $22 过门线断芯或 $28 REX 微动开关故障虚报为 $2,400 换整根电控逃生推杠</text>
+  <text x="76" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">刷卡不开门或常报强行闯入，85% 只是铰链波纹过门线断路或推杠内 REX 开关老化，</text>
+  <text x="76" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">弱电维保商却谎称整套 $2,400 Von Duprin QEL 电控逃生推杠总成烧毁强行换新。</text>
+
+  <rect x="62" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="374" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 无安防总监 LOA 授权私配受控钥匙，且对普通铜钥匙加收 $180“电脑解码费”</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">违反专利键槽授权信 (LOA) 制度私自复制高权限总钥匙，并在账单中对纯机械弹子</text>
+  <text x="76" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">钥匙巧立名目收取 $180/把的所谓“芯片加密编程匹配费”。</text>
+
+  <rect x="62" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#7F1D1D"/>
+  <text x="76" y="458" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 无证黑锁匠在消防逃生门违规加装插销死锁，或闭门器超 ADA 5 lbf 推力上限</text>
+  <text x="76" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">在后门逃生推杠旁加装需拧钥匙的死锁栓违反 NFPA 101 单动作逃生铁律被消防重罚，</text>
+  <text x="76" y="496" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">或液压闭门器调校过重（推力 14 lbf &gt; ADA 5 lbf 上限）招致残障人士公益诉讼。</text>
+
+  <!-- Right Panel: Agentic Keyway Continuity + Solenoid Telemetry + Web IQ Architecture -->
+  <rect x="616" y="132" width="540" height="395" rx="12" fill="#0F1E2E" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="616" y="132" width="540" height="38" rx="12" fill="#064E3B"/>
+  <text x="636" y="156" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">✅ 零破拆受控键槽锁 + 电锁电流诊断锁 + Web IQ ALOA/NFPA 架构</text>
+
+  <rect x="634" y="184" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="206" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 零违规电钻毁锁 + 100% 原厂受控键槽一致性锁 (11ms → HTTP 403)</text>
+  <text x="648" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">强制应急开锁优先采用 SFIC Control Key 或无损开启，新换锁芯必须 100% 匹配大楼</text>
+  <text x="648" y="244" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">GMK 专利键槽与齿深编码，11ms 硬拦截电钻毁锁与五金店杂牌锁芯替换。</text>
+
+  <rect x="634" y="268" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="290" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 电锁负载端电流诊断锁 + 受控钥匙 FIDO2 LOA 签名锁 (14ms → HTTP 422)</text>
+  <text x="648" y="310" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">强制校验锁头直供 24V DC 电流波形，将过门线开路 (0.0A) 与 REX 故障锁定在 $25</text>
+  <text x="648" y="328" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">配件级维修，14ms 封杀 $2,400 整根电控推杠虚报与无 LOA 授权私配受控钥匙。</text>
+
+  <rect x="634" y="352" width="504" height="74" rx="8" fill="#0F172A" stroke="#065F46"/>
+  <text x="648" y="374" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. Web IQ /v3/browse 核查州锁匠牌照、ALOA 与 NFPA 101 (265ms → HTTP 451)</text>
+  <text x="648" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">265ms 在线穿透核验州政府安防锁匠执业牌照、ALOA CRL 证书、UL 10C / UL 305</text>
+  <text x="648" y="412" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">防火逃生认证及闭门器 ADA &lt;=5.0 lbf 推力达标，严防消防封店与无障碍索赔。</text>
+
+  <rect x="634" y="436" width="504" height="74" rx="8" fill="#0F172A" stroke="#D97706"/>
+  <text x="648" y="458" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. 自动将 $2,400 推杠强换降级为换 REX/过门线并剥离假编程费 (230ms → HTTP 409)</text>
+  <text x="648" y="478" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">自动将未烧毁电控推杠降级为 $28 REX 开关/$22 过门线修复并剔除机械钥匙假解码费：</text>
+  <text x="648" y="496" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">基准批次 $108,000.00 → 自动核减 $16,200.00 (15.0%) → 净付 $91,800.00！</text>
+
+  <!-- Bottom Telemetry & Benchmark Bar -->
+  <rect x="44" y="542" width="1112" height="92" rx="12" fill="#020617" stroke="#334155"/>
+  <text x="64" y="568" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">📊 确定性门禁实测 (Deterministic Policy Guards · $108,000.00 Annual Commercial Locksmith, MKS &amp; EAC Batch)</text>
+
+  <rect x="64" y="580" width="205" height="40" rx="6" fill="#064E3B"/>
+  <text x="76" y="598" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 200 · 10ms</text>
+  <text x="76" y="614" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11">受控键槽+电锁合规($108k)</text>
+
+  <rect x="281" y="580" width="205" height="40" rx="6" fill="#450A0A"/>
+  <text x="293" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 403 · 11ms</text>
+  <text x="293" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦电钻毁锁与换杂牌破GMK</text>
+
+  <rect x="498" y="580" width="215" height="40" rx="6" fill="#450A0A"/>
+  <text x="510" y="598" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 422 · 14ms</text>
+  <text x="510" y="614" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦$2.4k假换整杠与无LOA配钥</text>
+
+  <rect x="725" y="580" width="205" height="40" rx="6" fill="#3B0764"/>
+  <text x="737" y="598" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 451 · 265ms</text>
+  <text x="737" y="614" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="11">拦无州锁匠牌照与逃生门死锁</text>
+
+  <rect x="942" y="580" width="196" height="40" rx="6" fill="#451A03"/>
+  <text x="954" y="598" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">HTTP 409 · 230ms</text>
+  <text x="954" y="614" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="11">降级换REX+剥假费省$16.2k</text>
+</svg>

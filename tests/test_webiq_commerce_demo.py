@@ -20186,6 +20186,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-pool-aquatic-facility-sandbox", demo_zh)
 
+    def test_b2b_commercial_locksmith_master_key_eac_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_locksmith_master_key_eac_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant SFIC control-key entry + OEM GMK keyway + solenoid diagnostic + ALOA/NFPA clean -> 200 OK ($108,000.00)
+        ok_res = evaluate_b2b_commercial_locksmith_master_key_eac_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_LOCKSMITH_EAC_OSDP_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_locksmith_eac_cents, 10800000)
+
+        # 2. Drill-and-replace cylinder scam or generic keyway breaking GMK -> 403 Blocked
+        drl_403 = evaluate_b2b_commercial_locksmith_master_key_eac_policy(
+            nondestructive_entry_and_master_keyway_continuity_verified=False,
+        )
+        self.assertFalse(drl_403.allowed)
+        self.assertEqual(drl_403.http_status, 403)
+        self.assertEqual(
+            drl_403.decision_code,
+            "UNAUTHORIZED_CYLINDER_DRILL_DESTRUCTION_OR_MASTER_KEYWAY_BREACH_BLOCKED",
+        )
+
+        # 3. $2,400 full panic-bar swap on $22 cord/$28 REX fault or unapproved key duplication -> 422 Blocked
+        rex_422 = evaluate_b2b_commercial_locksmith_master_key_eac_policy(
+            solenoid_load_diagnostic_and_restricted_key_loa_verified=False,
+        )
+        self.assertFalse(rex_422.allowed)
+        self.assertEqual(rex_422.http_status, 422)
+        self.assertEqual(
+            rex_422.decision_code,
+            "ELECTRIFIED_PANIC_BAR_FULL_SWAP_UPCODING_OR_UNAPPROVED_KEY_DUPLICATION",
+        )
+
+        # 4. Unlicensed locksmith contractor or illegal deadbolt on fire exit (NFPA 101) -> 451 Hold
+        lic_451 = evaluate_b2b_commercial_locksmith_master_key_eac_policy(
+            webiq_state_locksmith_license_and_nfpa101_egress_clean=False,
+        )
+        self.assertFalse(lic_451.allowed)
+        self.assertEqual(lic_451.http_status, 451)
+
+        # 5. Web IQ REX/harness downgrade & fake key-coding strip saving $16,200 ($91,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_locksmith_master_key_eac_policy(
+            automated_rex_harness_downgrade_and_keyway_audit_savings_cents=1620000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_locksmith_eac_cents, 9180000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_locksmith_master_key_eac_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-locksmith-master-key-eac-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
