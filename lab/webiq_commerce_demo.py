@@ -36423,6 +36423,106 @@ def evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialDieselUstAstFuelPolishingDecision:
+    """Deterministic decision output for B2B emergency diesel UST/AST fuel polishing, ATG lock & EPA 40 CFR 280."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    diesel_ust_polishing_lane: str
+    settled_diesel_ust_polishing_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+    *,
+    mandate_id: str = "b2b_commercial_diesel_ust_ast_fuel_polishing_epa_40cfr280_astm_d975_mandate_2026",
+    diesel_ust_polishing_cents: int = 14200000,
+    composite_sample_and_atg_net_fuel_volume_verified: bool = True,
+    three_turnover_polishing_flow_and_karl_fischer_200ppm_verified: bool = True,
+    webiq_icc_u2_tester_and_epa_40cfr280_leak_test_clean: bool = True,
+    automated_water_heel_extraction_and_3x_fuel_polishing_savings_cents: int = 0,
+) -> B2BCommercialDieselUstAstFuelPolishingDecision:
+    """Evaluate B2B emergency diesel UST/AST composite sample, 3x turnover fuel polishing & EPA 40 CFR 280 settlement."""
+    if not mandate_id.startswith("b2b_commercial_diesel_ust_ast_fuel_polishing_epa_40cfr280_astm_d975_mandate_"):
+        return B2BCommercialDieselUstAstFuelPolishingDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_DIESEL_UST_POLISHING_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            diesel_ust_polishing_lane="INVALID_DIESEL_UST_POLISHING_MANDATE_PREFIX",
+            settled_diesel_ust_polishing_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not composite_sample_and_atg_net_fuel_volume_verified:
+        return B2BCommercialDieselUstAstFuelPolishingDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WHOLE_TANK_DIESEL_DUMPING_SCAM_OR_ATG_FUEL_THEFT_SHORTAGE_BLOCKED",
+            action_pill="Send to a human",
+            diesel_ust_polishing_lane="WHOLE_TANK_DIESEL_DUMPING_SCAM_OR_ATG_FUEL_THEFT_SHORTAGE_BLOCKED",
+            settled_diesel_ust_polishing_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not three_turnover_polishing_flow_and_karl_fischer_200ppm_verified:
+        return B2BCommercialDieselUstAstFuelPolishingDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="SHORT_CYCLED_FUEL_POLISHING_TURNOVER_OR_HIGH_KARL_FISCHER_WATER_PPM",
+            action_pill="Send to a human",
+            diesel_ust_polishing_lane="SHORT_CYCLED_FUEL_POLISHING_TURNOVER_OR_HIGH_KARL_FISCHER_WATER_PPM",
+            settled_diesel_ust_polishing_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_icc_u2_tester_and_epa_40cfr280_leak_test_clean:
+        return B2BCommercialDieselUstAstFuelPolishingDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_ICC_U2_UST_TESTER_OR_SKIPPED_EPA_40CFR280_LEAK_TEST_HOLD",
+            action_pill="Send to a human",
+            diesel_ust_polishing_lane="UNCERTIFIED_ICC_U2_UST_TESTER_OR_SKIPPED_EPA_40CFR280_LEAK_TEST_HOLD",
+            settled_diesel_ust_polishing_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_water_heel_extraction_and_3x_fuel_polishing_savings_cents > 0:
+        net_cents = max(
+            0,
+            diesel_ust_polishing_cents - automated_water_heel_extraction_and_3x_fuel_polishing_savings_cents,
+        )
+        return B2BCommercialDieselUstAstFuelPolishingDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_WATER_HEEL_EXTRACTION_AND_3X_FUEL_POLISHING_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            diesel_ust_polishing_lane="AUTOMATED_WATER_HEEL_EXTRACTION_AND_3X_FUEL_POLISHING_SAVINGS_CONFIRM",
+            settled_diesel_ust_polishing_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialDieselUstAstFuelPolishingDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_DIESEL_UST_AST_POLISHING_SETTLED",
+        action_pill="Act automatically",
+        diesel_ust_polishing_lane="VERIFIED_COMMERCIAL_DIESEL_UST_AST_POLISHING_SETTLED",
+        settled_diesel_ust_polishing_cents=diesel_ust_polishing_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -48376,6 +48476,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "infill_tonnage_shortweight_block_latency_ms": trf_inf_403.latency_ms,
     }
 
+    ust_commit_ok = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy()
+    ust_dmp_403 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+        composite_sample_and_atg_net_fuel_volume_verified=False,
+    )
+    ust_pol_422 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+        three_turnover_polishing_flow_and_karl_fischer_200ppm_verified=False,
+    )
+    ust_icc_451 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+        webiq_icc_u2_tester_and_epa_40cfr280_leak_test_clean=False,
+    )
+    ust_sav_409 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+        automated_water_heel_extraction_and_3x_fuel_polishing_savings_cents=3150000,
+    )
+    b2b_commercial_diesel_ust_ast_fuel_polishing_guards = {
+        "all_passed": (
+            ust_commit_ok.allowed
+            and ust_commit_ok.settled_diesel_ust_polishing_cents == 14200000
+            and not ust_dmp_403.allowed
+            and ust_dmp_403.http_status == 403
+            and not ust_pol_422.allowed
+            and ust_pol_422.http_status == 422
+            and not ust_icc_451.allowed
+            and ust_icc_451.http_status == 451
+            and not ust_sav_409.allowed
+            and ust_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_diesel_ust_polishing_settlement_latency_ms": ust_commit_ok.latency_ms,
+        "whole_tank_diesel_dumping_block_latency_ms": ust_dmp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48751,6 +48881,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_hospital_spd_steam_sterilizer_aami_st79_guards": b2b_hospital_spd_steam_sterilizer_aami_st79_guards,
         "b2b_commercial_termite_fumigation_wdo_guards": b2b_commercial_termite_fumigation_wdo_guards,
         "b2b_commercial_stadium_synthetic_turf_bleacher_guards": b2b_commercial_stadium_synthetic_turf_bleacher_guards,
+        "b2b_commercial_diesel_ust_ast_fuel_polishing_guards": b2b_commercial_diesel_ust_ast_fuel_polishing_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58184,6 +58315,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="trf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Data Center & Hospital Emergency Diesel UST/AST Fuel Polishing & EPA 40 CFR 280 Sandbox (Round 363) -->
+      <div class="finops-box" id="b2b-commercial-diesel-ust-ast-fuel-polishing-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-ust-title">⛽ B2B 数据中心与医院应急柴油罐 (UST/AST) 油品抛光、ATG 净油守恒锁与 EPA 40 CFR 280 沙盒 (Round 363 · Veeder-Root / ASTM D975)</span>
+        </div>
+        <div class="control-row">
+          <label><span>上中下三层 ASTM D4057 综合样与 ATG 净油守恒锁 + &gt;=3.0x 罐容周转流量计/水分 &lt;=200ppm + Web IQ ICC U2 核验:</span></label>
+          <select id="ust-select" onchange="updateB2BCommercialDieselUstAstFuelPolishingSandbox()">
+            <option value="ust_commit_ok">⛽ ATG 净油体积守恒 + &gt;=3.0x 全罐周转抛光 + 卡尔费休水分 &lt;=200ppm + ICC U2 合规：10ms 清算 $142,000.00! (Act automatically)</option>
+            <option value="ust_dmp_403">🛑 仅凭罐底 Bacon Bomb 抽出的半杯积水吓唬机房经理“10,000 加仑柴油全部变质报废”骗取 $45,000 换油费并倒卖好油，或抛光后 ATG 纯油短少 → 11ms 触发 HTTP 403!</option>
+            <option value="ust_pol_422">🚨 8,000 加仑储油罐抛光流量计不足 3.0 倍周转量 (同口进出原地打转 30 分钟) 或过滤后卡尔费休水分 &gt;200 ppm → 14ms 触发 HTTP 422!</option>
+            <option value="ust_icc_451">🛑 测试员无 ICC U2 地埋储罐测试执照或漏做 EPA 40 CFR 280 / PEI RP1200 防溢流井静水压与 0.2 GPH 管路测漏：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="ust_sav_409">🧑‍⚖️ Web IQ 自动将 $45,000 整罐弃油换新单降级为抽除罐底 35 加仑水脚加 $2,800 三周转聚结精滤与 Biobor 杀菌立省 $31,500.00 (净付 $110,500.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="ust-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -58985,6 +59134,7 @@ function renderAll() {{
   updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox();
   updateB2BCommercialTermiteFumigationWdoSandbox();
   updateB2BCommercialStadiumSyntheticTurfBleacherSandbox();
+  updateB2BCommercialDieselUstAstFuelPolishingSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -76592,6 +76742,52 @@ function updateB2BCommercialStadiumSyntheticTurfBleacherSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏟️ 20 点位胶粒深度 &gt;=25mm + Gmax &lt;=165g 原始波形 + 杆底驱动 &amp; ASBA 合规：已自动清算 (VERIFIED_COMMERCIAL_STADIUM_TURF_BLEACHER_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零补胶少撒一半、零坏个 $160 杆底驱动器被宰 $4,200 换高空灯与假 Gmax 报告</strong>：B2B 体育场馆人造草坪、灯光与伸缩看台维保批次已完成安全清算（<code>$124,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialDieselUstAstFuelPolishingSandbox() {{
+  var sel = document.getElementById("ust-select");
+  var outEl = document.getElementById("ust-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "ust_dmp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WHOLE_TANK_DIESEL_DUMPING_SCAM_OR_ATG_FUEL_THEFT_SHORTAGE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对上中下三层 <code>ASTM D4057</code> 综合油样与 <code>Veeder-Root TLS-450PLUS ATG</code> 液位计发现：罐内 <code>9,965 加仑</code> 主力柴油 <code>TAN=0.08</code> 完全合格，外包商仅拿罐底 <code>Bacon Bomb</code> 抽出的 <code>35 加仑</code> 水脚骗取 <code>$45,000</code> 整罐弃油换新并企图倒卖好油，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ust_pol_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SHORT_CYCLED_FUEL_POLISHING_TURNOVER_OR_HIGH_KARL_FISCHER_WATER_PPM (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计油品抛光涡轮流量计与实验室复检单发现：<code>8,000 加仑</code> 储罐仅循环 <code>3,200 加仑 (&lt;24,000 加仑 3.0x 周转定额)</code> 属同口浅层打转，或过滤后 <code>ASTM D6304</code> 卡尔费休水分仍 <code>&gt;200 ppm</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ust_icc_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_ICC_U2_UST_TESTER_OR_SKIPPED_EPA_40CFR280_LEAK_TEST_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ICC U2 (Underground Storage Tank System Testing)</code> 证书库与州环保门户发现：测试员无有效资质或未完成 <code>EPA 40 CFR 280 / PEI RP1200</code> 防溢井静水压与 <code>0.2 GPH</code> 管路测漏，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "ust_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_WATER_HEEL_EXTRACTION_AND_3X_FUEL_POLISHING_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>驳回 $45,000 整罐弃油换新单，改用定向抽除罐底 35 加仑游离水脚 + $2,800 三周转聚结精滤与 Biobor JF 杀菌剂养护</code>，单批立省 <code>$31,500.00</code>（净结算额优化至 <code>$110,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⛽ ATG 净油体积守恒 + &gt;=3.0x 全罐周转抛光 + 水分 &lt;=200ppm &amp; ICC U2 合规：已自动清算 (VERIFIED_COMMERCIAL_DIESEL_UST_AST_POLISHING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零半杯底水骗换 $45,000 整罐好油、零 30 分钟原地假过滤与顺手偷油</strong>：B2B 数据中心与医院应急柴油罐油品净化批次已完成安全清算（<code>$142,000.00</code>）！" +
     "</div>";
 }}
 

@@ -21668,6 +21668,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-stadium-synthetic-turf-bleacher-sandbox", demo_zh)
 
+    def test_b2b_commercial_diesel_ust_ast_fuel_polishing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ATG net fuel volume + >=3.0x turnover polishing + KF <=200ppm + ICC U2 -> 200 OK ($142,000.00)
+        ok_res = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_DIESEL_UST_AST_POLISHING_SETTLED")
+        self.assertEqual(ok_res.settled_diesel_ust_polishing_cents, 14200000)
+
+        # 2. $45,000 whole-tank diesel dumping scam on bottom water heel or ATG fuel theft shortage -> 403 Blocked
+        dmp_403 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+            composite_sample_and_atg_net_fuel_volume_verified=False,
+        )
+        self.assertFalse(dmp_403.allowed)
+        self.assertEqual(dmp_403.http_status, 403)
+        self.assertEqual(
+            dmp_403.decision_code,
+            "WHOLE_TANK_DIESEL_DUMPING_SCAM_OR_ATG_FUEL_THEFT_SHORTAGE_BLOCKED",
+        )
+
+        # 3. Short-cycled <3.0x fuel polishing turnover or Karl Fischer water >200 ppm -> 422 Blocked
+        pol_422 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+            three_turnover_polishing_flow_and_karl_fischer_200ppm_verified=False,
+        )
+        self.assertFalse(pol_422.allowed)
+        self.assertEqual(pol_422.http_status, 422)
+        self.assertEqual(
+            pol_422.decision_code,
+            "SHORT_CYCLED_FUEL_POLISHING_TURNOVER_OR_HIGH_KARL_FISCHER_WATER_PPM",
+        )
+
+        # 4. Uncertified ICC U2 UST tester or skipped EPA 40 CFR 280 leak test -> 451 Hold
+        icc_451 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+            webiq_icc_u2_tester_and_epa_40cfr280_leak_test_clean=False,
+        )
+        self.assertFalse(icc_451.allowed)
+        self.assertEqual(icc_451.http_status, 451)
+
+        # 5. Web IQ water-heel extraction & 3x fuel polishing downgrade saving $31,500 ($110,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_diesel_ust_ast_fuel_polishing_policy(
+            automated_water_heel_extraction_and_3x_fuel_polishing_savings_cents=3150000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_diesel_ust_polishing_cents, 11050000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_diesel_ust_ast_fuel_polishing_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-diesel-ust-ast-fuel-polishing-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
