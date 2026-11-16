@@ -21839,6 +21839,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-warehouse-automated-conveyor-sortation-sandbox", demo_zh)
 
+    def test_b2b_ai_datacenter_liquid_cooling_cdu_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant organic acid/inhibitor + 25um strainer delta-P + 0 ppm silicate + TC 9.9 -> 200 OK ($156,000.00)
+        ok_res = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AI_DATACENTER_LIQUID_COOLING_CDU_SETTLED")
+        self.assertEqual(ok_res.settled_ai_liquid_cooling_cdu_cents, 15600000)
+
+        # 2. $28,000 whole-loop PG25 glycol dumping on intact base fluid (<200 ppm organic acids) -> 403 Blocked
+        gly_403 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+            glycol_organic_acid_and_inhibitor_booster_verified=False,
+        )
+        self.assertFalse(gly_403.allowed)
+        self.assertEqual(gly_403.http_status, 403)
+        self.assertEqual(
+            gly_403.decision_code,
+            "WHOLE_LOOP_PG25_GLYCOL_DUMPING_ON_INTACT_BASE_FLUID_BLOCKED",
+        )
+
+        # 3. $14,500 GPU cold-plate upcoding on $65 25um strainer or silicate gel hazard -> 422 Blocked
+        str_422 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+            strainer_25micron_delta_p_and_zero_silicate_verified=False,
+        )
+        self.assertFalse(str_422.allowed)
+        self.assertEqual(str_422.http_status, 422)
+        self.assertEqual(
+            str_422.decision_code,
+            "GPU_COLD_PLATE_UPCODING_ON_65_DOLLAR_STRAINER_OR_SILICATE_GEL_HAZARD",
+        )
+
+        # 4. Unapproved TCS coolant formulation or missing ISO 17025 IC lab report -> 451 Hold
+        lab_451 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+            webiq_oem_coolant_whitelist_and_iso17025_ic_lab_clean=False,
+        )
+        self.assertFalse(lab_451.allowed)
+        self.assertEqual(lab_451.http_status, 451)
+
+        # 5. Web IQ $420 inhibitor booster dosing & $65 25um strainer saving $34,200 ($121,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+            automated_inhibitor_booster_dosing_and_25micron_strainer_savings_cents=3420000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ai_liquid_cooling_cdu_cents, 12180000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_ai_datacenter_liquid_cooling_cdu_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ai-datacenter-liquid-cooling-cdu-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

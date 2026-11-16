@@ -36723,6 +36723,106 @@ def evaluate_b2b_warehouse_automated_conveyor_sortation_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BAiDatacenterLiquidCoolingCduDecision:
+    """Deterministic decision output for B2B AI data center liquid cooling CDU, PG25 inhibitor & $65 strainer."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    ai_liquid_cooling_cdu_lane: str
+    settled_ai_liquid_cooling_cdu_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+    *,
+    mandate_id: str = "b2b_ai_datacenter_liquid_cooling_cdu_ashrae_tc99_pg25_inhibitor_mandate_2026",
+    ai_liquid_cooling_cdu_cents: int = 15600000,
+    glycol_organic_acid_and_inhibitor_booster_verified: bool = True,
+    strainer_25micron_delta_p_and_zero_silicate_verified: bool = True,
+    webiq_oem_coolant_whitelist_and_iso17025_ic_lab_clean: bool = True,
+    automated_inhibitor_booster_dosing_and_25micron_strainer_savings_cents: int = 0,
+) -> B2BAiDatacenterLiquidCoolingCduDecision:
+    """Evaluate B2B AI data center liquid cooling CDU PG25 organic acid/inhibitor, 25um strainer & TC 9.9 settlement."""
+    if not mandate_id.startswith("b2b_ai_datacenter_liquid_cooling_cdu_ashrae_tc99_pg25_inhibitor_mandate_"):
+        return B2BAiDatacenterLiquidCoolingCduDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AI_LIQUID_COOLING_CDU_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            ai_liquid_cooling_cdu_lane="INVALID_AI_LIQUID_COOLING_CDU_MANDATE_PREFIX",
+            settled_ai_liquid_cooling_cdu_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not glycol_organic_acid_and_inhibitor_booster_verified:
+        return B2BAiDatacenterLiquidCoolingCduDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WHOLE_LOOP_PG25_GLYCOL_DUMPING_ON_INTACT_BASE_FLUID_BLOCKED",
+            action_pill="Send to a human",
+            ai_liquid_cooling_cdu_lane="WHOLE_LOOP_PG25_GLYCOL_DUMPING_ON_INTACT_BASE_FLUID_BLOCKED",
+            settled_ai_liquid_cooling_cdu_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not strainer_25micron_delta_p_and_zero_silicate_verified:
+        return B2BAiDatacenterLiquidCoolingCduDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="GPU_COLD_PLATE_UPCODING_ON_65_DOLLAR_STRAINER_OR_SILICATE_GEL_HAZARD",
+            action_pill="Send to a human",
+            ai_liquid_cooling_cdu_lane="GPU_COLD_PLATE_UPCODING_ON_65_DOLLAR_STRAINER_OR_SILICATE_GEL_HAZARD",
+            settled_ai_liquid_cooling_cdu_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_oem_coolant_whitelist_and_iso17025_ic_lab_clean:
+        return B2BAiDatacenterLiquidCoolingCduDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNAPPROVED_TCS_COOLANT_FORMULATION_OR_MISSING_ISO17025_IC_LAB_HOLD",
+            action_pill="Send to a human",
+            ai_liquid_cooling_cdu_lane="UNAPPROVED_TCS_COOLANT_FORMULATION_OR_MISSING_ISO17025_IC_LAB_HOLD",
+            settled_ai_liquid_cooling_cdu_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_inhibitor_booster_dosing_and_25micron_strainer_savings_cents > 0:
+        net_cents = max(
+            0,
+            ai_liquid_cooling_cdu_cents - automated_inhibitor_booster_dosing_and_25micron_strainer_savings_cents,
+        )
+        return B2BAiDatacenterLiquidCoolingCduDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_INHIBITOR_BOOSTER_DOSING_AND_25MICRON_STRAINER_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            ai_liquid_cooling_cdu_lane="AUTOMATED_INHIBITOR_BOOSTER_DOSING_AND_25MICRON_STRAINER_SAVINGS_CONFIRM",
+            settled_ai_liquid_cooling_cdu_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BAiDatacenterLiquidCoolingCduDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_AI_DATACENTER_LIQUID_COOLING_CDU_SETTLED",
+        action_pill="Act automatically",
+        ai_liquid_cooling_cdu_lane="VERIFIED_AI_DATACENTER_LIQUID_COOLING_CDU_SETTLED",
+        settled_ai_liquid_cooling_cdu_cents=ai_liquid_cooling_cdu_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -48766,6 +48866,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "premature_whole_loop_belt_block_latency_ms": cnv_blt_403.latency_ms,
     }
 
+    cdu_commit_ok = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy()
+    cdu_gly_403 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+        glycol_organic_acid_and_inhibitor_booster_verified=False,
+    )
+    cdu_str_422 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+        strainer_25micron_delta_p_and_zero_silicate_verified=False,
+    )
+    cdu_lab_451 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+        webiq_oem_coolant_whitelist_and_iso17025_ic_lab_clean=False,
+    )
+    cdu_sav_409 = evaluate_b2b_ai_datacenter_liquid_cooling_cdu_policy(
+        automated_inhibitor_booster_dosing_and_25micron_strainer_savings_cents=3420000,
+    )
+    b2b_ai_datacenter_liquid_cooling_cdu_guards = {
+        "all_passed": (
+            cdu_commit_ok.allowed
+            and cdu_commit_ok.settled_ai_liquid_cooling_cdu_cents == 15600000
+            and not cdu_gly_403.allowed
+            and cdu_gly_403.http_status == 403
+            and not cdu_str_422.allowed
+            and cdu_str_422.http_status == 422
+            and not cdu_lab_451.allowed
+            and cdu_lab_451.http_status == 451
+            and not cdu_sav_409.allowed
+            and cdu_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_ai_liquid_cooling_cdu_settlement_latency_ms": cdu_commit_ok.latency_ms,
+        "whole_loop_pg25_dumping_block_latency_ms": cdu_gly_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49144,6 +49274,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_diesel_ust_ast_fuel_polishing_guards": b2b_commercial_diesel_ust_ast_fuel_polishing_guards,
         "b2b_industrial_truck_weighbridge_scale_nist_hb44_guards": b2b_industrial_truck_weighbridge_scale_nist_hb44_guards,
         "b2b_warehouse_automated_conveyor_sortation_guards": b2b_warehouse_automated_conveyor_sortation_guards,
+        "b2b_ai_datacenter_liquid_cooling_cdu_guards": b2b_ai_datacenter_liquid_cooling_cdu_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58631,6 +58762,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cnv-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B AI Data Center Liquid Cooling CDU, PG25 Inhibitor & $65 Strainer Sandbox (Round 366) -->
+      <div class="finops-box" id="b2b-ai-datacenter-liquid-cooling-cdu-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cdu-title">🧊 B2B AI 智算中心液冷分配单元 (CDU) 与冷板环路、$420 缓蚀剂补加锁与 $65 滤网隔离沙盒 (Round 366 · Vertiv / CoolIT / NVIDIA NVL72)</span>
+        </div>
+        <div class="control-row">
+          <label><span>有机降解酸 (&lt;200 ppm) 与 $420 缓蚀剂补加锁 + $65 25µm 滤网 ΔP 隔离与零硅酸盐锁 + Web IQ TC 9.9 白名单核验:</span></label>
+          <select id="cdu-select" onchange="updateB2BAiDatacenterLiquidCoolingCduSandbox()">
+            <option value="cdu_commit_ok">🧊 有机酸/缓蚀剂核实 + 25µm 滤网 ΔP 正常 + 零硅酸盐 (0 ppm) + ASHRAE TC 9.9 合规：10ms 清算 $156,000.00! (Act automatically)</option>
+            <option value="cdu_gly_403">🛑 离子色谱证实 PG25 有机降解酸仅 35 ppm (&lt;200 ppm 母液完好)，仅需补加 $420 铜缓蚀剂包却忽悠花 $28,000 抽干倒掉整座机房 3,000 加仑冷却液 → 11ms 触发 HTTP 403!</option>
+            <option value="cdu_str_422">🚨 未清洗机柜分水器入口 $65 的 25µm 不锈钢滤网直接把流量下降虚报成 $14,500 拆换 GPU 微通道冷板，或违规混入含硅酸盐汽车防冻液 → 14ms 触发 HTTP 422!</option>
+            <option value="cdu_lab_451">🛑 冷却液批号未列入 NVIDIA / Vertiv / CoolIT 官方白名单或缺失 ISO 17025 实验室离子色谱与菌落 (&lt;100 CFU/mL) 报告：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="cdu_sav_409">🧑‍⚖️ Web IQ 自动将 $28,000 全环路抽干换液单降级为 $420 甲基苯并三氮唑 (TTA) 缓蚀剂在线补加并将假换冷板降级为 $65 25µm 滤芯更换立省 $34,200.00 (净付 $121,800.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cdu-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -59435,6 +59584,7 @@ function renderAll() {{
   updateB2BCommercialDieselUstAstFuelPolishingSandbox();
   updateB2BIndustrialTruckWeighbridgeScaleNistHb44Sandbox();
   updateB2BWarehouseAutomatedConveyorSortationSandbox();
+  updateB2BAiDatacenterLiquidCoolingCduSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -77180,6 +77330,52 @@ function updateB2BWarehouseAutomatedConveyorSortationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📦 张紧行程核实 + MDR 寄存器核对 + $14 滑靴单换 &amp; ASME B20.1 合规：已自动清算 (VERIFIED_WAREHOUSE_CONVEYOR_SORTATION_ASME_B20_1_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零裂个 $180 钢扣被宰 $32,000 换整条带、零把 $12 小皮带断脱虚报 $850 换电动滚筒</strong>：B2B 智能物流仓自动输送分拣维保批次已完成安全清算（<code>$138,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BAiDatacenterLiquidCoolingCduSandbox() {{
+  var sel = document.getElementById("cdu-select");
+  var outEl = document.getElementById("cdu-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cdu_gly_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WHOLE_LOOP_PG25_GLYCOL_DUMPING_ON_INTACT_BASE_FLUID_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对离子色谱（<code>Ion Chromatography</code>）化验单发现：<code>PG25</code> 丙二醇有机降解酸（<code>Formate + Glycolate</code>）仅 <code>35 ppm (&lt;200 ppm 报废线)</code> 母液完好，仅需注入 <code>$420 TTA 缓蚀补充包</code>，外包商却忽悠抽干 <code>3,000 加仑</code> 好液骗取 <code>$28,000</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cdu_str_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 GPU_COLD_PLATE_UPCODING_ON_65_DOLLAR_STRAINER_OR_SILICATE_GEL_HAZARD (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计 <code>CDU</code> 分段压差与水质报告发现：更换机柜入口 <code>$65 的 25µm 不锈钢滤芯</code> 后流量已恢复 <code>120 LPM</code>，GPU 微通道冷板本体 100% 畅通却被虚报 <code>$14,500</code> 拆机换冷板（或检出违规硅酸盐 <code>Silicate &gt; 0 ppm</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cdu_lab_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNAPPROVED_TCS_COOLANT_FORMULATION_OR_MISSING_ISO17025_IC_LAB_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NVIDIA / Vertiv / CoolIT</code> 官方冷却液白名单与 <code>ISO 17025</code> 实验室名录发现：冷却液批号未获 OEM 认证或缺失离子色谱与异养菌（<code>&lt;100 CFU/mL</code>）报告，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cdu_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_INHIBITOR_BOOSTER_DOSING_AND_25MICRON_STRAINER_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $28,000 全环路 PG25 抽干换液单降级为 $420 甲基苯并三氮唑 (TTA) 缓蚀剂在线补加 + 将 $14,500 换 GPU 冷板降级为 $65 25µm 滤芯更换</code>，单批立省 <code>$34,200.00</code>（净结算额优化至 <code>$121,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧊 有机酸/缓蚀剂核实 + 25µm 滤网 ΔP 正常 + 零硅酸盐 &amp; ASHRAE TC 9.9 合规：已自动清算 (VERIFIED_AI_DATACENTER_LIQUID_COOLING_CDU_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零缓蚀剂微降被骗 $28,000 倒掉整环路好液、零把 $65 滤网堵塞虚报 $14,500 换 GPU 冷板</strong>：B2B AI 智算中心 CDU 与冷板式液冷维保批次已完成安全清算（<code>$156,000.00</code>）！" +
     "</div>";
 }}
 
