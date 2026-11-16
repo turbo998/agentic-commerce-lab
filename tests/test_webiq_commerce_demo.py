@@ -20642,6 +20642,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-solar-pv-om-iec62446-sandbox", demo_zh)
 
+    def test_b2b_commercial_evse_charger_om_ocpp201_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_evse_charger_om_ocpp201_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant NEVI >=97% dispensing uptime + $85 nose kit + EVITP/NTEP clean -> 200 OK ($128,000.00)
+        ok_res = evaluate_b2b_commercial_evse_charger_om_ocpp201_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_EVSE_CHARGER_OCPP201_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_evse_charger_om_cents, 12800000)
+
+        # 2. Ping-only zombie charger uptime or $1,450 E-Stop button twist scam -> 403 Blocked
+        zmb_403 = evaluate_b2b_commercial_evse_charger_om_ocpp201_policy(
+            nevi_true_dispensing_uptime_and_zero_estop_scam_verified=False,
+        )
+        self.assertFalse(zmb_403.allowed)
+        self.assertEqual(zmb_403.http_status, 403)
+        self.assertEqual(
+            zmb_403.decision_code,
+            "PING_ONLY_ZOMBIE_CHARGER_UPTIME_OR_ESTOP_RESET_REPAIR_SCAM_BLOCKED",
+        )
+
+        # 3. $4,800 full liquid-cooled cable swap upcoding on intact coolant loop -> 422 Blocked
+        cbl_422 = evaluate_b2b_commercial_evse_charger_om_ocpp201_policy(
+            intact_coolant_nose_kit_downgrade_and_module_fan_verified=False,
+        )
+        self.assertFalse(cbl_422.allowed)
+        self.assertEqual(cbl_422.http_status, 422)
+        self.assertEqual(
+            cbl_422.decision_code,
+            "FULL_LIQUID_COOLED_CABLE_SWAP_UPCODING_OR_POWER_CABINET_PADDING",
+        )
+
+        # 4. Uncertified EVITP technician or missing NIST HB 44 NTEP metering seal -> 451 Hold
+        evi_451 = evaluate_b2b_commercial_evse_charger_om_ocpp201_policy(
+            webiq_evitp_certification_and_ntep_metering_seal_clean=False,
+        )
+        self.assertFalse(evi_451.allowed)
+        self.assertEqual(evi_451.http_status, 451)
+
+        # 5. Web IQ $85 nose-kit downgrade & sub-97% SLA clawback saving $19,200 ($108,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_evse_charger_om_ocpp201_policy(
+            automated_connector_nose_kit_downgrade_and_sla_clawback_cents=1920000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_evse_charger_om_cents, 10880000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_evse_charger_om_ocpp201_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-evse-charger-om-ocpp201-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
