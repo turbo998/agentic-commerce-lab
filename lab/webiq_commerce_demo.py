@@ -37123,6 +37123,106 @@ def evaluate_b2b_warehouse_motive_forklift_battery_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCncMetalworkingFluidMwfOilMistDecision:
+    """Deterministic decision output for B2B CNC metalworking fluid MWF recycling & ESP oil-mist collector."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    cnc_mwf_oil_mist_lane: str
+    settled_cnc_mwf_oil_mist_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+    *,
+    mandate_id: str = "b2b_cnc_metalworking_fluid_mwf_oil_mist_osha1910_1000_brix_skimmer_mandate_2026",
+    cnc_mwf_oil_mist_cents: int = 13400000,
+    coalescing_tramp_oil_skimming_and_brix_recycling_verified: bool = True,
+    esp_ionizer_wire_ultrasonic_wash_and_di_water_verified: bool = True,
+    webiq_niosh_oil_mist_pel_and_nitrosamine_free_sds_clean: bool = True,
+    automated_coalescing_tramp_oil_recycling_and_esp_wash_savings_cents: int = 0,
+) -> B2BCncMetalworkingFluidMwfOilMistDecision:
+    """Evaluate B2B CNC metalworking fluid tramp-oil skimming, $120 ESP wire/wash & NIOSH 98-102 settlement."""
+    if not mandate_id.startswith("b2b_cnc_metalworking_fluid_mwf_oil_mist_osha1910_1000_brix_skimmer_mandate_"):
+        return B2BCncMetalworkingFluidMwfOilMistDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CNC_MWF_OIL_MIST_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            cnc_mwf_oil_mist_lane="INVALID_CNC_MWF_OIL_MIST_MANDATE_PREFIX",
+            settled_cnc_mwf_oil_mist_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not coalescing_tramp_oil_skimming_and_brix_recycling_verified:
+        return B2BCncMetalworkingFluidMwfOilMistDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WHOLE_SUMP_COOLANT_DUMPING_ON_UNSKIMMED_TRAMP_OIL_BLOCKED",
+            action_pill="Send to a human",
+            cnc_mwf_oil_mist_lane="WHOLE_SUMP_COOLANT_DUMPING_ON_UNSKIMMED_TRAMP_OIL_BLOCKED",
+            settled_cnc_mwf_oil_mist_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not esp_ionizer_wire_ultrasonic_wash_and_di_water_verified:
+        return B2BCncMetalworkingFluidMwfOilMistDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="ESP_COLLECTOR_CELL_UPCODING_ON_120_DOLLAR_IONIZER_WIRE_OR_HARD_WATER_SOAP",
+            action_pill="Send to a human",
+            cnc_mwf_oil_mist_lane="ESP_COLLECTOR_CELL_UPCODING_ON_120_DOLLAR_IONIZER_WIRE_OR_HARD_WATER_SOAP",
+            settled_cnc_mwf_oil_mist_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_niosh_oil_mist_pel_and_nitrosamine_free_sds_clean:
+        return B2BCncMetalworkingFluidMwfOilMistDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="EXCESSIVE_NIOSH_OIL_MIST_EXPOSURE_OR_BANNED_NITROSAMINE_BIOCIDE_HOLD",
+            action_pill="Send to a human",
+            cnc_mwf_oil_mist_lane="EXCESSIVE_NIOSH_OIL_MIST_EXPOSURE_OR_BANNED_NITROSAMINE_BIOCIDE_HOLD",
+            settled_cnc_mwf_oil_mist_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_coalescing_tramp_oil_recycling_and_esp_wash_savings_cents > 0:
+        net_cents = max(
+            0,
+            cnc_mwf_oil_mist_cents - automated_coalescing_tramp_oil_recycling_and_esp_wash_savings_cents,
+        )
+        return B2BCncMetalworkingFluidMwfOilMistDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_COALESCING_TRAMP_OIL_RECYCLING_AND_ESP_WASH_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            cnc_mwf_oil_mist_lane="AUTOMATED_COALESCING_TRAMP_OIL_RECYCLING_AND_ESP_WASH_SAVINGS_CONFIRM",
+            settled_cnc_mwf_oil_mist_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCncMetalworkingFluidMwfOilMistDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CNC_MWF_SUMP_AND_OIL_MIST_OSHA1910_SETTLED",
+        action_pill="Act automatically",
+        cnc_mwf_oil_mist_lane="VERIFIED_CNC_MWF_SUMP_AND_OIL_MIST_OSHA1910_SETTLED",
+        settled_cnc_mwf_oil_mist_cents=cnc_mwf_oil_mist_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -49286,6 +49386,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "whole_battery_pack_condemnation_block_latency_ms": mfb_cel_403.latency_ms,
     }
 
+    mwf_commit_ok = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy()
+    mwf_dmp_403 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+        coalescing_tramp_oil_skimming_and_brix_recycling_verified=False,
+    )
+    mwf_esp_422 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+        esp_ionizer_wire_ultrasonic_wash_and_di_water_verified=False,
+    )
+    mwf_sds_451 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+        webiq_niosh_oil_mist_pel_and_nitrosamine_free_sds_clean=False,
+    )
+    mwf_sav_409 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+        automated_coalescing_tramp_oil_recycling_and_esp_wash_savings_cents=2480000,
+    )
+    b2b_cnc_metalworking_fluid_mwf_oil_mist_guards = {
+        "all_passed": (
+            mwf_commit_ok.allowed
+            and mwf_commit_ok.settled_cnc_mwf_oil_mist_cents == 13400000
+            and not mwf_dmp_403.allowed
+            and mwf_dmp_403.http_status == 403
+            and not mwf_esp_422.allowed
+            and mwf_esp_422.http_status == 422
+            and not mwf_sds_451.allowed
+            and mwf_sds_451.http_status == 451
+            and not mwf_sav_409.allowed
+            and mwf_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_cnc_mwf_oil_mist_settlement_latency_ms": mwf_commit_ok.latency_ms,
+        "whole_sump_coolant_dumping_block_latency_ms": mwf_dmp_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49668,6 +49798,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_plate_heat_exchanger_phe_guards": b2b_industrial_plate_heat_exchanger_phe_guards,
         "b2b_hospital_pneumatic_tube_system_pts_guards": b2b_hospital_pneumatic_tube_system_pts_guards,
         "b2b_warehouse_motive_forklift_battery_guards": b2b_warehouse_motive_forklift_battery_guards,
+        "b2b_cnc_metalworking_fluid_mwf_oil_mist_guards": b2b_cnc_metalworking_fluid_mwf_oil_mist_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59227,6 +59358,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mfb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B CNC Metalworking Fluid (MWF) Recycling & Oil-Mist Collector Sandbox (Round 370) -->
+      <div class="finops-box" id="b2b-cnc-metalworking-fluid-mwf-oil-mist-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mwf-title">⚙️ B2B 机加工车间 CNC 切削液再生循环、导轨浮油撇除锁与 $120 静电油雾机钨丝沙盒 (Round 370 · Blaser / Master Fluid / SmogHog)</span>
+        </div>
+        <div class="control-row">
+          <label><span>导轨浮油离心撇除 (&lt;=0.5%) 与 6-8% Brix 再生锁 + ESP 油雾机 $120 钨丝/超声波洗极板锁 + Web IQ NIOSH 98-102 核验:</span></label>
+          <select id="mwf-select" onchange="updateB2BCncMetalworkingFluidMwfOilMistSandbox()">
+            <option value="mwf_commit_ok">⚙️ 浮油 &lt;=0.5% + 6-8% Brix 软水配液 + ESP 极板超声波洗净 + NIOSH &lt;=0.5 mg/m³ 合规：10ms 清算 $134,000.00! (Act automatically)</option>
+            <option value="mwf_dmp_403">🛑 周末导轨润滑油浮在水箱表面隔氧滋生厌氧菌发臭，外包商跳过 $650 移动离心撇油再生直接忽悠花 $18,000 抽干 40 台机床当危废买新油 → 11ms 触发 HTTP 403!</option>
+            <option value="mwf_esp_422">🚨 将可永久水洗复用的铝合金 ESP 静电集尘极板箱或 1 根 $120 断电离钨丝高报成 $5,200 换新箱，或拿 &gt;200 ppm 硬水配液析出钙皂 → 14ms 触发 HTTP 422!</option>
+            <option value="mwf_sds_451">🛑 车间呼吸带油雾颗粒 &gt;0.5 mg/m³ (NIOSH 98-102) 或违规添加含亚硝胺/游离甲醛的强致敏杀菌剂：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="mwf_sav_409">🧑‍⚖️ Web IQ 自动将 $18,000 全车间弃液换新单降级为 $650 移动聚结离心撇油再生并将 $5,200 换油雾箱降级为 $120 钨丝更换加超声波碱洗立省 $24,800.00 (净付 $109,200.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mwf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -60035,6 +60184,7 @@ function renderAll() {{
   updateB2BIndustrialPlateHeatExchangerPheSandbox();
   updateB2BHospitalPneumaticTubeSystemPtsSandbox();
   updateB2BWarehouseMotiveForkliftBatterySandbox();
+  updateB2BCncMetalworkingFluidMwfOilMistSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -77964,6 +78114,52 @@ function updateB2BWarehouseMotiveForkliftBatterySandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔋 24 节单体矩阵核实 + &gt;=80% Ah 放电积分 + 氢气排风 &amp; 废铅抵扣合规：已自动清算 (VERIFIED_WAREHOUSE_MOTIVE_FORKLIFT_BATTERY_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零坏 1 节 $240 单体被宰 $8,500 换整块电池、零偷倒浓硫酸伪造高比重与私吞废铅残值</strong>：B2B 物流仓叉车牵引蓄电池车队维保批次已完成安全清算（<code>$126,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCncMetalworkingFluidMwfOilMistSandbox() {{
+  var sel = document.getElementById("mwf-select");
+  var outEl = document.getElementById("mwf-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "mwf_dmp_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WHOLE_SUMP_COOLANT_DUMPING_ON_UNSKIMMED_TRAMP_OIL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对移动聚结离心再生车与数字折光仪（<code>Refractometer</code>）数据发现：CNC 水箱发臭纯属表层 <code>4% 导轨浮油 (Tramp Oil)</code> 隔绝氧气，经 <code>$650 离心撇油 (&lt;=0.5%) 与曝气</code> 后底液乳化完好（<code>7.2% Brix, pH 9.1</code>），却强推 <code>$18,000</code> 全车间弃液买新油，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mwf_esp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ESP_COLLECTOR_CELL_UPCODING_ON_120_DOLLAR_IONIZER_WIRE_OR_HARD_WATER_SOAP (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计机床顶部 <code>ESP</code> 静电油雾收集器与配水水质发现：铝合金集尘极板无任何变形，高压报警实为油泥爬电与 <code>1 根 $120 钨丝电离丝断裂</code>（只需超声波碱洗），却被当一次性耗材高报 <code>$5,200</code> 换新箱，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mwf_sds_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 EXCESSIVE_NIOSH_OIL_MIST_EXPOSURE_OR_BANNED_NITROSAMINE_BIOCIDE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NIOSH 98-102</code> 职业健康限值与 <code>GHS / REACH SDS</code> 毒理库发现：车间呼吸带油雾浓度 <code>&gt;0.5 mg/m³</code> 或违规投加含亚硝胺/一类致癌甲醛释放型杀菌剂，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mwf_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_COALESCING_TRAMP_OIL_RECYCLING_AND_ESP_WASH_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $18,000 全车间切削液弃液换新降级为 $650 移动离心撇油过滤再生 + 将 $5,200 换 ESP 油雾极板箱降级为 $120 电离钨丝更换与超声波碱洗</code>，单批立省 <code>$24,800.00</code>（净结算额优化至 <code>$109,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>⚙️ 浮油 &lt;=0.5% + 6-8% Brix 软水配液 + ESP 极板洗净 &amp; NIOSH 合规：已自动清算 (VERIFIED_CNC_MWF_SUMP_AND_OIL_MIST_OSHA1910_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零导轨浮油捂臭水箱被骗 $18,000 全抽干、零把可水洗静电极板当废品高报 $5,200</strong>：B2B 机加工车间 CNC 切削液与油雾净化维保批次已完成安全清算（<code>$134,000.00</code>）！" +
     "</div>";
 }}
 

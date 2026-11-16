@@ -22067,6 +22067,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-warehouse-motive-forklift-battery-sandbox", demo_zh)
 
+    def test_b2b_cnc_metalworking_fluid_mwf_oil_mist_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant tramp oil <=0.5% + 6-8% Brix + ESP wash + NIOSH <=0.5 mg/m3 -> 200 OK ($134,000.00)
+        ok_res = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CNC_MWF_SUMP_AND_OIL_MIST_OSHA1910_SETTLED")
+        self.assertEqual(ok_res.settled_cnc_mwf_oil_mist_cents, 13400000)
+
+        # 2. $18,000 whole-sump coolant dumping on un-skimmed tramp oil -> 403 Blocked
+        dmp_403 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+            coalescing_tramp_oil_skimming_and_brix_recycling_verified=False,
+        )
+        self.assertFalse(dmp_403.allowed)
+        self.assertEqual(dmp_403.http_status, 403)
+        self.assertEqual(
+            dmp_403.decision_code,
+            "WHOLE_SUMP_COOLANT_DUMPING_ON_UNSKIMMED_TRAMP_OIL_BLOCKED",
+        )
+
+        # 3. $5,200 washable ESP collector cell upcoding on $120 ionizer wire or hard water -> 422 Blocked
+        esp_422 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+            esp_ionizer_wire_ultrasonic_wash_and_di_water_verified=False,
+        )
+        self.assertFalse(esp_422.allowed)
+        self.assertEqual(esp_422.http_status, 422)
+        self.assertEqual(
+            esp_422.decision_code,
+            "ESP_COLLECTOR_CELL_UPCODING_ON_120_DOLLAR_IONIZER_WIRE_OR_HARD_WATER_SOAP",
+        )
+
+        # 4. Excessive NIOSH oil-mist exposure >0.5 mg/m3 or banned nitrosamine biocide -> 451 Hold
+        sds_451 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+            webiq_niosh_oil_mist_pel_and_nitrosamine_free_sds_clean=False,
+        )
+        self.assertFalse(sds_451.allowed)
+        self.assertEqual(sds_451.http_status, 451)
+
+        # 5. Web IQ $650 coalescing tramp-oil recycling & $120 ESP wash saving $24,800 ($109,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_cnc_metalworking_fluid_mwf_oil_mist_policy(
+            automated_coalescing_tramp_oil_recycling_and_esp_wash_savings_cents=2480000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cnc_mwf_oil_mist_cents, 10920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_cnc_metalworking_fluid_mwf_oil_mist_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cnc-metalworking-fluid-mwf-oil-mist-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
