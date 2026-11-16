@@ -21326,6 +21326,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-combustible-dust-baghouse-nfpa652-sandbox", demo_zh)
 
+    def test_b2b_industrial_reverse_osmosis_ro_edi_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ASTM D4516 25C normalized flow + post-CIP + vessel profile + AAMI/USP clean -> 200 OK ($144,000.00)
+        ok_res = evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_REVERSE_OSMOSIS_RO_EDI_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_ro_edi_cents, 14400000)
+
+        # 2. Un-normalized winter cold-water permeate drop or skipped $450 CIP cleaning -> 403 Blocked
+        cld_403 = evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy(
+            astm_d4516_25c_normalized_flow_and_cip_verified=False,
+        )
+        self.assertFalse(cld_403.allowed)
+        self.assertEqual(cld_403.http_status, 403)
+        self.assertEqual(
+            cld_403.decision_code,
+            "UNNORMALIZED_COLD_WATER_FLOW_SCAM_OR_SKIPPED_CIP_CLEANING_BLOCKED",
+        )
+
+        # 3. Vendor chlorine oxidation fault or $18 interconnector O-ring leak upcoded to 6-element swap -> 422 Blocked
+        org_422 = evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy(
+            chlorine_free_feed_and_vessel_conductivity_profile_verified=False,
+        )
+        self.assertFalse(org_422.allowed)
+        self.assertEqual(org_422.http_status, 422)
+        self.assertEqual(
+            org_422.decision_code,
+            "CHLORINE_OXIDATION_VENDOR_FAULT_OR_INTERCONNECTOR_ORING_UPCODING",
+        )
+
+        # 4. Unverified AAMI ST108 / USP <1231> LAL endotoxin lab or non-NSF 60 antiscalant -> 451 Hold
+        lal_451 = evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy(
+            webiq_aami_usp1231_lal_and_nsf60_clean=False,
+        )
+        self.assertFalse(lal_451.allowed)
+        self.assertEqual(lal_451.http_status, 451)
+
+        # 5. Web IQ ASTM D4516 CIP downgrade & $18 O-ring repair saving $24,600 ($119,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_reverse_osmosis_ro_edi_policy(
+            automated_astm_d4516_cip_downgrade_and_oring_repair_savings_cents=2460000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_ro_edi_cents, 11940000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_reverse_osmosis_ro_edi_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-reverse-osmosis-ro-edi-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
