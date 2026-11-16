@@ -21269,6 +21269,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-stormwater-bmp-npdes-sandbox", demo_zh)
 
+    def test_b2b_industrial_combustible_dust_baghouse_nfpa652_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 85 PSI pulse header + <10 ohm antistatic + PE/CIH DHA clean -> 200 OK ($136,000.00)
+        ok_res = evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_DUST_BAGHOUSE_NFPA652_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_dust_baghouse_cents, 13600000)
+
+        # 2. Premature $8,500 24-cartridge replacement on $28 torn pulse-valve diaphragm -> 403 Blocked
+        pls_403 = evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy(
+            pulse_header_80psi_and_post_pulse_delta_p_verified=False,
+        )
+        self.assertFalse(pls_403.allowed)
+        self.assertEqual(pls_403.http_status, 403)
+        self.assertEqual(
+            pls_403.decision_code,
+            "PREMATURE_CARTRIDGE_REPLACEMENT_ON_TORN_PULSE_VALVE_DIAPHRAGM_BLOCKED",
+        )
+
+        # 3. Non-grounded filter in combustible dust service or blind baghouse swap without Visolite UV -> 422 Blocked
+        gnd_422 = evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy(
+            antistatic_grounding_under_10ohm_and_visolite_uv_verified=False,
+        )
+        self.assertFalse(gnd_422.allowed)
+        self.assertEqual(gnd_422.http_status, 422)
+        self.assertEqual(
+            gnd_422.decision_code,
+            "NON_GROUNDED_STATIC_FILTER_HAZARD_OR_UNVERIFIED_VISOLITE_BAG_SWAP",
+        )
+
+        # 4. Unstamped NFPA 652 DHA report or missing ASTM E1226 Kst explosion test -> 451 Hold
+        dha_451 = evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy(
+            webiq_pe_cih_dha_and_astm_e1226_kst_clean=False,
+        )
+        self.assertFalse(dha_451.allowed)
+        self.assertEqual(dha_451.http_status, 451)
+
+        # 5. Web IQ $28 pulse-valve diaphragm repair & Visolite spot-swap saving $20,400 ($115,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_combustible_dust_baghouse_nfpa652_policy(
+            automated_pulse_valve_diaphragm_repair_and_visolite_savings_cents=2040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_dust_baghouse_cents, 11560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_combustible_dust_baghouse_nfpa652_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-combustible-dust-baghouse-nfpa652-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
