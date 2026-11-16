@@ -21212,6 +21212,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-lightning-protection-spd-sandbox", demo_zh)
 
+    def test_b2b_commercial_stormwater_bmp_npdes_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_stormwater_bmp_npdes_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Sludge Judge >=15% + decanted silt tonnage + CESSWI/MS4 clean -> 200 OK ($122,000.00)
+        ok_res = evaluate_b2b_commercial_stormwater_bmp_npdes_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_STORMWATER_BMP_NPDES_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_stormwater_bmp_cents, 12200000)
+
+        # 2. Un-decanted rainwater tonnage scam or premature <15% sump cleanout -> 403 Blocked
+        rnw_403 = evaluate_b2b_commercial_stormwater_bmp_npdes_policy(
+            sludge_judge_15pct_threshold_and_decanted_silt_tonnage_verified=False,
+        )
+        self.assertFalse(rnw_403.allowed)
+        self.assertEqual(rnw_403.http_status, 403)
+        self.assertEqual(
+            rnw_403.decision_code,
+            "UNDECANTED_RAINWATER_TONNAGE_SCAM_OR_PREMATURE_SUMP_CLEANOUT_BLOCKED",
+        )
+
+        # 3. $12,000 StormFilter cartridge housing upcoding on $280 media bag or pressure-washed pavers -> 422 Blocked
+        flt_422 = evaluate_b2b_commercial_stormwater_bmp_npdes_policy(
+            stormfilter_media_refill_downgrade_and_vacuum_sweeper_verified=False,
+        )
+        self.assertFalse(flt_422.allowed)
+        self.assertEqual(flt_422.http_status, 422)
+        self.assertEqual(
+            flt_422.decision_code,
+            "STORMFILTER_CARTRIDGE_HOUSING_UPCODING_OR_PERMEABLE_PAVER_JETTING_DAMAGE",
+        )
+
+        # 4. Uncertified EnviroCert CESSWI inspector or unfiled municipal MS4 annual report -> 451 Hold
+        ms4_451 = evaluate_b2b_commercial_stormwater_bmp_npdes_policy(
+            webiq_envirocert_cesswi_inspector_and_ms4_filing_clean=False,
+        )
+        self.assertFalse(ms4_451.allowed)
+        self.assertEqual(ms4_451.http_status, 451)
+
+        # 5. Web IQ rainwater decant deduction & $280 media refill downgrade saving $18,300 ($103,700 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_stormwater_bmp_npdes_policy(
+            automated_rainwater_decant_deduction_and_media_refill_savings_cents=1830000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_stormwater_bmp_cents, 10370000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_stormwater_bmp_npdes_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-stormwater-bmp-npdes-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
