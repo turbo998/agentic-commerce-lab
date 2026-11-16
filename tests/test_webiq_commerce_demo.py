@@ -20813,6 +20813,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-healthcare-medical-gas-nfpa99-lox-sandbox", demo_zh)
 
+    def test_b2b_lab_biosafety_cabinet_nsf49_usp797_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant blower reserve / PAO <=0.01% + ASHRAE 110 SF6 + individual NSF certifier clean -> 200 OK ($134,000.00)
+        ok_res = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_LAB_BIOSAFETY_CABINET_NSF49_USP797_SETTLED")
+        self.assertEqual(ok_res.settled_lab_biosafety_cabinet_cents, 13400000)
+
+        # 2. Premature $3,250 HEPA filter swap when ECM blower reserve (<85% duty) is available -> 403 Blocked
+        hep_403 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+            ecm_blower_reserve_exhausted_or_pao_leak_verified=False,
+        )
+        self.assertFalse(hep_403.allowed)
+        self.assertEqual(hep_403.http_status, 403)
+        self.assertEqual(
+            hep_403.decision_code,
+            "PREMATURE_HEPA_FILTER_SWAP_WITH_AVAILABLE_BLOWER_RESERVE_BLOCKED",
+        )
+
+        # 3. 30-sec anemometer check billed as $650 full ASHRAE 110 SF6 test or $195 agar plate markup -> 422 Blocked
+        sf6_422 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+            ashrae110_sf6_tracer_curve_and_agar_plate_cap_verified=False,
+        )
+        self.assertFalse(sf6_422.allowed)
+        self.assertEqual(sf6_422.http_status, 422)
+        self.assertEqual(
+            sf6_422.decision_code,
+            "FAKE_ASHRAE110_SF6_TRACER_UPCODING_OR_USP797_AGAR_PLATE_PADDING",
+        )
+
+        # 4. Unaccredited individual NSF/ANSI 49 field certifier or expired photometer calibration -> 451 Hold
+        nsf_451 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+            webiq_individual_nsf49_certifier_and_photometer_cal_clean=False,
+        )
+        self.assertFalse(nsf_451.allowed)
+        self.assertEqual(nsf_451.http_status, 451)
+
+        # 5. Web IQ blower speed trim HEPA waiver & $95 face-velocity downgrade saving $20,100 ($113,900 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+            automated_blower_speed_trim_and_face_velocity_downgrade_cents=2010000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_lab_biosafety_cabinet_cents, 11390000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_lab_biosafety_cabinet_nsf49_usp797_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-lab-biosafety-cabinet-nsf49-usp797-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

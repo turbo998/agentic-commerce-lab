@@ -34923,6 +34923,106 @@ def evaluate_b2b_healthcare_medical_gas_nfpa99_lox_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BLabBiosafetyCabinetNsf49Usp797Decision:
+    """Deterministic decision output for B2B lab biosafety cabinet NSF/ANSI 49, USP <797> & ASHRAE 110 fume hood certification."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    lab_biosafety_cabinet_lane: str
+    settled_lab_biosafety_cabinet_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+    *,
+    mandate_id: str = "b2b_lab_biosafety_cabinet_nsf49_usp797_ashrae110_hepa_mandate_2026",
+    lab_biosafety_cabinet_cents: int = 13400000,
+    ecm_blower_reserve_exhausted_or_pao_leak_verified: bool = True,
+    ashrae110_sf6_tracer_curve_and_agar_plate_cap_verified: bool = True,
+    webiq_individual_nsf49_certifier_and_photometer_cal_clean: bool = True,
+    automated_blower_speed_trim_and_face_velocity_downgrade_cents: int = 0,
+) -> B2BLabBiosafetyCabinetNsf49Usp797Decision:
+    """Evaluate B2B lab biosafety cabinet ECM blower reserve, PAO <=0.01% integrity, ASHRAE 110 SF6 & NSF certifier."""
+    if not mandate_id.startswith("b2b_lab_biosafety_cabinet_nsf49_usp797_ashrae110_hepa_mandate_"):
+        return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_LAB_BIOSAFETY_CABINET_NSF49_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            lab_biosafety_cabinet_lane="INVALID_LAB_BIOSAFETY_CABINET_NSF49_MANDATE_PREFIX",
+            settled_lab_biosafety_cabinet_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not ecm_blower_reserve_exhausted_or_pao_leak_verified:
+        return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="PREMATURE_HEPA_FILTER_SWAP_WITH_AVAILABLE_BLOWER_RESERVE_BLOCKED",
+            action_pill="Send to a human",
+            lab_biosafety_cabinet_lane="PREMATURE_HEPA_FILTER_SWAP_WITH_AVAILABLE_BLOWER_RESERVE_BLOCKED",
+            settled_lab_biosafety_cabinet_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not ashrae110_sf6_tracer_curve_and_agar_plate_cap_verified:
+        return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="FAKE_ASHRAE110_SF6_TRACER_UPCODING_OR_USP797_AGAR_PLATE_PADDING",
+            action_pill="Send to a human",
+            lab_biosafety_cabinet_lane="FAKE_ASHRAE110_SF6_TRACER_UPCODING_OR_USP797_AGAR_PLATE_PADDING",
+            settled_lab_biosafety_cabinet_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_individual_nsf49_certifier_and_photometer_cal_clean:
+        return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNACCREDITED_NSF49_FIELD_CERTIFIER_OR_EXPIRED_PHOTOMETER_CALIBRATION_HOLD",
+            action_pill="Send to a human",
+            lab_biosafety_cabinet_lane="UNACCREDITED_NSF49_FIELD_CERTIFIER_OR_EXPIRED_PHOTOMETER_CALIBRATION_HOLD",
+            settled_lab_biosafety_cabinet_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_blower_speed_trim_and_face_velocity_downgrade_cents > 0:
+        net_cents = max(
+            0,
+            lab_biosafety_cabinet_cents - automated_blower_speed_trim_and_face_velocity_downgrade_cents,
+        )
+        return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_BLOWER_SPEED_TRIM_AND_FACE_VELOCITY_DOWNGRADE_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            lab_biosafety_cabinet_lane="AUTOMATED_BLOWER_SPEED_TRIM_AND_FACE_VELOCITY_DOWNGRADE_SAVINGS_CONFIRM",
+            settled_lab_biosafety_cabinet_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BLabBiosafetyCabinetNsf49Usp797Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_LAB_BIOSAFETY_CABINET_NSF49_USP797_SETTLED",
+        action_pill="Act automatically",
+        lab_biosafety_cabinet_lane="VERIFIED_LAB_BIOSAFETY_CABINET_NSF49_USP797_SETTLED",
+        settled_lab_biosafety_cabinet_cents=lab_biosafety_cabinet_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -46426,6 +46526,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "self_verified_6030_dewpoint_block_latency_ms": mgs_slf_403.latency_ms,
     }
 
+    bsc_commit_ok = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy()
+    bsc_hep_403 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+        ecm_blower_reserve_exhausted_or_pao_leak_verified=False,
+    )
+    bsc_sf6_422 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+        ashrae110_sf6_tracer_curve_and_agar_plate_cap_verified=False,
+    )
+    bsc_nsf_451 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+        webiq_individual_nsf49_certifier_and_photometer_cal_clean=False,
+    )
+    bsc_sav_409 = evaluate_b2b_lab_biosafety_cabinet_nsf49_usp797_policy(
+        automated_blower_speed_trim_and_face_velocity_downgrade_cents=2010000,
+    )
+    b2b_lab_biosafety_cabinet_nsf49_usp797_guards = {
+        "all_passed": (
+            bsc_commit_ok.allowed
+            and bsc_commit_ok.settled_lab_biosafety_cabinet_cents == 13400000
+            and not bsc_hep_403.allowed
+            and bsc_hep_403.http_status == 403
+            and not bsc_sf6_422.allowed
+            and bsc_sf6_422.http_status == 422
+            and not bsc_nsf_451.allowed
+            and bsc_nsf_451.http_status == 451
+            and not bsc_sav_409.allowed
+            and bsc_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_lab_biosafety_cabinet_settlement_latency_ms": bsc_commit_ok.latency_ms,
+        "premature_hepa_blower_reserve_block_latency_ms": bsc_hep_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46786,6 +46916,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_evse_charger_om_ocpp201_guards": b2b_commercial_evse_charger_om_ocpp201_guards,
         "b2b_commercial_switchgear_nfpa70b_arcflash_guards": b2b_commercial_switchgear_nfpa70b_arcflash_guards,
         "b2b_healthcare_medical_gas_nfpa99_lox_guards": b2b_healthcare_medical_gas_nfpa99_lox_guards,
+        "b2b_lab_biosafety_cabinet_nsf49_usp797_guards": b2b_lab_biosafety_cabinet_nsf49_usp797_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55949,6 +56080,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mgs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Lab Biosafety Cabinet NSF/ANSI 49, USP <797> & ASHRAE 110 Sandbox (Round 348) -->
+      <div class="finops-box" id="b2b-lab-biosafety-cabinet-nsf49-usp797-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bsc-title">🔬 B2B 医院静配中心与生物实验室安全柜 (NSF/ANSI 49)、通风橱 (ASHRAE 110) 与 HEPA 清算沙盒 (Round 348 · TSS / Steris / CETA)</span>
+        </div>
+        <div class="control-row">
+          <label><span>ECM 风机占空比裕度锁 (&lt;85% 调速免换) + PAO &lt;=0.01% 检漏 + ASHRAE 110 SF6 谱图 + Web IQ 个人 NSF 证号核验:</span></label>
+          <select id="bsc-select" onchange="updateB2BLabBiosafetyCabinetNsf49Usp797Sandbox()">
+            <option value="bsc_commit_ok">🔬 PAO 检漏 &lt;=0.01% + ECM 风机调速达标 + 本人 NSF/CNBT 执照合规：10ms 清算 $134,000.00! (Act automatically)</option>
+            <option value="bsc_hep_403">🛑 生物安全柜 ECM 风机只开到 55% 占空比 (尚有 45% 储备裕度) 且 PAO 零泄漏，却被忽悠花 $3,250 做熏蒸并强换 HEPA 滤网 → 11ms 触发 HTTP 403!</option>
+            <option value="bsc_sf6_422">🚨 拿风速仪在通风橱测 30 秒面风速 ($95) 却按 $650 全套 ASHRAE 110 SF6 示踪气体测试开票，或把 $12 TSA 琼脂皿加价到 $195 → 14ms 触发 HTTP 422!</option>
+            <option value="bsc_nsf_451">🛑 上门贴标技术员本人未持有有效 NSF Field Certifier / CETA CNBT 个人执照或光度计超 12 个月未校准：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="bsc_sav_409">🧑‍⚖️ Web IQ 自动将有风机裕度的 $3,250 换 HEPA 降级为风机调速校准并将无 SF6 通风橱降为 $95 面风速测试立省 $20,100.00 (净付 $113,900.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bsc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -56735,6 +56884,7 @@ function renderAll() {{
   updateB2BCommercialEvseChargerOmOcpp201Sandbox();
   updateB2BCommercialSwitchgearNfpa70bArcflashSandbox();
   updateB2BHealthcareMedicalGasNfpa99LoxSandbox();
+  updateB2BLabBiosafetyCabinetNsf49Usp797Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -73652,6 +73802,52 @@ function updateB2BHealthcareMedicalGasNfpa99LoxSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏥 独立 ASSE 6030 核验 + 露点 &lt;=+35°F + 液氧差压计实收：已自动清算 (VERIFIED_HEALTHCARE_MEDICAL_GAS_NFPA99_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零自检自批利益冲突、零 $14,000 骗换涡旋机头与槽车液氧短卸</strong>：B2B 医院医用气体与大宗液氧批次已完成安全清算（<code>$142,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BLabBiosafetyCabinetNsf49Usp797Sandbox() {{
+  var sel = document.getElementById("bsc-select");
+  var outEl = document.getElementById("bsc-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "bsc_hep_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PREMATURE_HEPA_FILTER_SWAP_WITH_AVAILABLE_BLOWER_RESERVE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对二级生物安全柜主板 <code>ECM</code> 风机占空比与 <code>PAO</code> 光度计日志发现：风机当前仅运行在 <code>55% PWM（远低于 88% 满载极限）</code> 且 <code>PAO 穿透率 &lt;= 0.01%</code>，只需上调风机转速 6% 即可恢复标准风速，严禁强收 <code>$3,250 熏蒸换滤网</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bsc_sf6_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FAKE_ASHRAE110_SF6_TRACER_UPCODING_OR_USP797_AGAR_PLATE_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计化学通风橱测试记录与 <code>USP &lt;797&gt;</code> 采样单发现：未提交 <code>SF6 六氟化硫假人呼吸区 &lt;= 0.05 ppm</code> 曲线却按 <code>$650 全套 ASHRAE 110</code> 收费（实际仅做了 $95 面风速测量），或对 <code>$12 TSA 琼脂皿</code> 加价至 <code>$195/皿</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bsc_nsf_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNACCREDITED_NSF49_FIELD_CERTIFIER_OR_EXPIRED_PHOTOMETER_CALIBRATION_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NSF International Accredited Field Certifiers</code> 个人名录与 <code>CETA CNBT</code> 数据库发现：签字技术员本人未持有有效 <code>NSF</code> 现场认证编号或气溶胶光度计校准已超 365 天，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bsc_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_BLOWER_SPEED_TRIM_AND_FACE_VELOCITY_DOWNGRADE_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>利用 ECM 风机储备裕度调速免除 $3,250 提前换 HEPA 滤网 + 将无 SF6 示踪曲线的通风橱降级为 $95 面风速测试</code>，单批立省 <code>$20,100.00</code>（净结算额优化至 <code>$113,900.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔬 PAO 检漏 &lt;=0.01% + ECM 风机裕度核验 + 本人 NSF 执照合规：已自动清算 (VERIFIED_LAB_BIOSAFETY_CABINET_NSF49_USP797_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 $3,250 提前骗换高效滤网、零假 ASHRAE 110 SF6 测试与无证贴标</strong>：B2B 医院静配中心与生物实验室年检批次已完成安全清算（<code>$134,000.00</code>）！" +
     "</div>";
 }}
 
