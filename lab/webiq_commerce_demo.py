@@ -35123,6 +35123,106 @@ def evaluate_b2b_commercial_boiler_asme_csd1_nbic_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BIndustrialCompressedAirIso8573Decision:
+    """Deterministic decision output for B2B industrial compressed air ISO 8573-1, ultrasonic leak audits & screw air-ends."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    industrial_compressed_air_lane: str
+    settled_industrial_compressed_air_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_compressed_air_iso8573_policy(
+    *,
+    mandate_id: str = "b2b_industrial_compressed_air_iso8573_ultrasonic_leak_airend_mandate_2026",
+    industrial_compressed_air_cents: int = 14400000,
+    acoustic_db_and_weekend_baseline_scfm_drop_verified: bool = True,
+    spm_bearing_pulse_and_zero_loss_drain_verified: bool = True,
+    webiq_nsf_h1_lubricant_and_iso8573_purity_clean: bool = True,
+    automated_separator_thermostat_downgrade_and_scfm_savings_cents: int = 0,
+) -> B2BIndustrialCompressedAirIso8573Decision:
+    """Evaluate B2B industrial compressed air weekend SCFM leak drop, SPM bearing shock pulse & ISO 8573-1 settlement."""
+    if not mandate_id.startswith("b2b_industrial_compressed_air_iso8573_ultrasonic_leak_airend_mandate_"):
+        return B2BIndustrialCompressedAirIso8573Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INDUSTRIAL_COMPRESSED_AIR_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            industrial_compressed_air_lane="INVALID_INDUSTRIAL_COMPRESSED_AIR_MANDATE_PREFIX",
+            settled_industrial_compressed_air_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not acoustic_db_and_weekend_baseline_scfm_drop_verified:
+        return B2BIndustrialCompressedAirIso8573Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNVERIFIED_ULTRASONIC_LEAK_AUDIT_OR_ZERO_BASELINE_SCFM_DROP_BLOCKED",
+            action_pill="Send to a human",
+            industrial_compressed_air_lane="UNVERIFIED_ULTRASONIC_LEAK_AUDIT_OR_ZERO_BASELINE_SCFM_DROP_BLOCKED",
+            settled_industrial_compressed_air_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not spm_bearing_pulse_and_zero_loss_drain_verified:
+        return B2BIndustrialCompressedAirIso8573Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="ROTARY_SCREW_AIREND_OVERHAUL_UPCODING_OR_TIMED_SOLENOID_DRAIN_WASTE",
+            action_pill="Send to a human",
+            industrial_compressed_air_lane="ROTARY_SCREW_AIREND_OVERHAUL_UPCODING_OR_TIMED_SOLENOID_DRAIN_WASTE",
+            settled_industrial_compressed_air_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_nsf_h1_lubricant_and_iso8573_purity_clean:
+        return B2BIndustrialCompressedAirIso8573Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="NON_NSF_H1_FOOD_GRADE_LUBRICANT_OR_ISO8573_OIL_CARRYOVER_HOLD",
+            action_pill="Send to a human",
+            industrial_compressed_air_lane="NON_NSF_H1_FOOD_GRADE_LUBRICANT_OR_ISO8573_OIL_CARRYOVER_HOLD",
+            settled_industrial_compressed_air_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_separator_thermostat_downgrade_and_scfm_savings_cents > 0:
+        net_cents = max(
+            0,
+            industrial_compressed_air_cents - automated_separator_thermostat_downgrade_and_scfm_savings_cents,
+        )
+        return B2BIndustrialCompressedAirIso8573Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SEPARATOR_THERMOSTAT_DOWNGRADE_AND_SCFM_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            industrial_compressed_air_lane="AUTOMATED_SEPARATOR_THERMOSTAT_DOWNGRADE_AND_SCFM_SAVINGS_CONFIRM",
+            settled_industrial_compressed_air_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BIndustrialCompressedAirIso8573Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INDUSTRIAL_COMPRESSED_AIR_ISO8573_SETTLED",
+        action_pill="Act automatically",
+        industrial_compressed_air_lane="VERIFIED_INDUSTRIAL_COMPRESSED_AIR_ISO8573_SETTLED",
+        settled_industrial_compressed_air_cents=industrial_compressed_air_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -46686,6 +46786,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unverified_flue_gas_lwco_block_latency_ms": blr_flu_403.latency_ms,
     }
 
+    air_commit_ok = evaluate_b2b_industrial_compressed_air_iso8573_policy()
+    air_scfm_403 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+        acoustic_db_and_weekend_baseline_scfm_drop_verified=False,
+    )
+    air_spm_422 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+        spm_bearing_pulse_and_zero_loss_drain_verified=False,
+    )
+    air_h1_451 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+        webiq_nsf_h1_lubricant_and_iso8573_purity_clean=False,
+    )
+    air_sav_409 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+        automated_separator_thermostat_downgrade_and_scfm_savings_cents=2160000,
+    )
+    b2b_industrial_compressed_air_iso8573_guards = {
+        "all_passed": (
+            air_commit_ok.allowed
+            and air_commit_ok.settled_industrial_compressed_air_cents == 14400000
+            and not air_scfm_403.allowed
+            and air_scfm_403.http_status == 403
+            and not air_spm_422.allowed
+            and air_spm_422.http_status == 422
+            and not air_h1_451.allowed
+            and air_h1_451.http_status == 451
+            and not air_sav_409.allowed
+            and air_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_industrial_compressed_air_settlement_latency_ms": air_commit_ok.latency_ms,
+        "unverified_scfm_leak_audit_block_latency_ms": air_scfm_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47048,6 +47178,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_healthcare_medical_gas_nfpa99_lox_guards": b2b_healthcare_medical_gas_nfpa99_lox_guards,
         "b2b_lab_biosafety_cabinet_nsf49_usp797_guards": b2b_lab_biosafety_cabinet_nsf49_usp797_guards,
         "b2b_commercial_boiler_asme_csd1_nbic_guards": b2b_commercial_boiler_asme_csd1_nbic_guards,
+        "b2b_industrial_compressed_air_iso8573_guards": b2b_industrial_compressed_air_iso8573_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56247,6 +56378,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="blr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Compressed Air ISO 8573-1, Leak Audit & Screw Air-End Sandbox (Round 350) -->
+      <div class="finops-box" id="b2b-industrial-compressed-air-iso8573-sandbox" style="margin-top:12px;border-color:#06B6D4;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-air-title">💨 B2B 工业螺杆空压机维保、超声波声学查漏与 ISO 8573-1 纯度清算沙盒 (Round 350 · Atlas Copco / Ingersoll Rand / CAGI)</span>
+        </div>
+        <div class="control-row">
+          <label><span>声学成像分贝图 + 周末保压总管 SCFM 下降锁 + 轴承 SPM 冲击脉冲锁 + 零气耗排水 + Web IQ NSF H1 核验:</span></label>
+          <select id="air-select" onchange="updateB2BIndustrialCompressedAirIso8573Sandbox()">
+            <option value="air_commit_ok">💨 声学成像查漏总管 SCFM 真实回落 + SPM &lt;20 dBm 换油分芯 + NSF H1/ISO 8573 合规：10ms 清算 $144,000.00! (Act automatically)</option>
+            <option value="air_scfm_403">🛑 花 $8,500 在车间挂满 80 张漏气纸吊牌却无 Fluke ii900 声学成像分贝图，且周末停产保压总管 SCFM 流量 1 立方没降 → 11ms 触发 HTTP 403!</option>
+            <option value="air_spm_422">🚨 把 $320 油气分离芯堵塞或 $95 温控阀卡死高温跳机虚报为 $16,000 大修螺杆机头，或安装高气耗定时电磁排水阀 → 14ms 触发 HTTP 422!</option>
+            <option value="air_h1_451">🛑 食品/制药车间空压机违规加注非 NSF H1 工业矿物油或终端残油超标 (&gt;0.01 mg/m³ 违反 ISO 8573-1)：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="air_sav_409">🧑‍⚖️ Web IQ 自动将轴承完好的 $16,000 螺杆机头大修降级为更换 $320 油分芯/$95 温控阀并核减未兑现查漏费立省 $21,600.00 (净付 $122,400.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="air-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -57035,6 +57184,7 @@ function renderAll() {{
   updateB2BHealthcareMedicalGasNfpa99LoxSandbox();
   updateB2BLabBiosafetyCabinetNsf49Usp797Sandbox();
   updateB2BCommercialBoilerAsmeCsd1NbicSandbox();
+  updateB2BIndustrialCompressedAirIso8573Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -74044,6 +74194,52 @@ function updateB2BCommercialBoilerAsmeCsd1NbicSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔥 高低火烟气 O2=3.8% + 缓慢排污 LWCO 断火 + NBBI R-Stamp 合规：已自动清算 (VERIFIED_COMMERCIAL_BOILER_ASME_CSD1_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零无表假燃烧调校、零 $6,500 骗换程控箱与无证私焊受压管</strong>：B2B 商业蒸汽与热水锅炉维保批次已完成安全清算（<code>$138,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BIndustrialCompressedAirIso8573Sandbox() {{
+  var sel = document.getElementById("air-select");
+  var outEl = document.getElementById("air-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "air_scfm_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNVERIFIED_ULTRASONIC_LEAK_AUDIT_OR_ZERO_BASELINE_SCFM_DROP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对声学成像图库与空压站主管路热式质量流量计发现：服务商未提交 <code>Fluke ii900</code> 漏点分贝照片，且周末停产保压期总管泄漏基荷仍停留在 <code>280 SCFM（零下降）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "air_spm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ROTARY_SCREW_AIREND_OVERHAUL_UPCODING_OR_TIMED_SOLENOID_DRAIN_WASTE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计螺杆机头轴承 <code>SPM</code> 冲击脉冲与油分压差发现：轴承处于绿区（<code>&lt;20 dBm</code>），高温跳机仅因 <code>$320 油分芯压差超 12 PSID</code> 或 <code>$95 温控阀卡滞</code> 却被虚报为 <code>$16,000 机头大修</code>，或违规安装定时电磁排水阀，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "air_h1_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 NON_NSF_H1_FOOD_GRADE_LUBRICANT_OR_ISO8573_OIL_CARRYOVER_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NSF White Book Category H1</code> 食品级润滑油目录与 <code>ISO 8573-1 Class 1.2.1</code> 报告发现：食品车间违规加注非食品级工业矿物油或终端含油量超 <code>0.01 mg/m³</code>，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "air_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SEPARATOR_THERMOSTAT_DOWNGRADE_AND_SCFM_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将轴承完好的 $16,000 螺杆机头大修降级为更换 $320 油气分离器芯与 $95 温控阀 + 按实测 SCFM 流量降幅核销查漏费</code>，单批立省 <code>$21,600.00</code>（净结算额优化至 <code>$122,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>💨 保压总管 SCFM 真实回落 + SPM &lt;20 dBm + NSF H1/ISO 8573 合规：已自动清算 (VERIFIED_INDUSTRIAL_COMPRESSED_AIR_ISO8573_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零挂纸牌假查漏、零 $16,000 骗修螺杆机头与定时排水跑气</strong>：B2B 工业空压站查漏与螺杆主机维保批次已完成安全清算（<code>$144,000.00</code>）！" +
     "</div>";
 }}
 

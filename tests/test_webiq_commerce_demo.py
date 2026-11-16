@@ -20927,6 +20927,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-boiler-asme-csd1-nbic-sandbox", demo_zh)
 
+    def test_b2b_industrial_compressed_air_iso8573_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_compressed_air_iso8573_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant acoustic dB + weekend SCFM drop + SPM/zero-loss drain + NSF H1/ISO 8573 clean -> 200 OK ($144,000.00)
+        ok_res = evaluate_b2b_industrial_compressed_air_iso8573_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_COMPRESSED_AIR_ISO8573_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_compressed_air_cents, 14400000)
+
+        # 2. Unverified paper-tag leak audit with zero weekend baseline SCFM drop -> 403 Blocked
+        scfm_403 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+            acoustic_db_and_weekend_baseline_scfm_drop_verified=False,
+        )
+        self.assertFalse(scfm_403.allowed)
+        self.assertEqual(scfm_403.http_status, 403)
+        self.assertEqual(
+            scfm_403.decision_code,
+            "UNVERIFIED_ULTRASONIC_LEAK_AUDIT_OR_ZERO_BASELINE_SCFM_DROP_BLOCKED",
+        )
+
+        # 3. $16,000 rotary screw air-end overhaul upcoding on $320 separator/$95 thermostat or timed drains -> 422 Blocked
+        spm_422 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+            spm_bearing_pulse_and_zero_loss_drain_verified=False,
+        )
+        self.assertFalse(spm_422.allowed)
+        self.assertEqual(spm_422.http_status, 422)
+        self.assertEqual(
+            spm_422.decision_code,
+            "ROTARY_SCREW_AIREND_OVERHAUL_UPCODING_OR_TIMED_SOLENOID_DRAIN_WASTE",
+        )
+
+        # 4. Non-NSF-H1 food-grade lubricant or ISO 8573-1 oil carryover exceedance -> 451 Hold
+        h1_451 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+            webiq_nsf_h1_lubricant_and_iso8573_purity_clean=False,
+        )
+        self.assertFalse(h1_451.allowed)
+        self.assertEqual(h1_451.http_status, 451)
+
+        # 5. Web IQ $320 separator/$95 thermostat downgrade & SCFM audit true-up saving $21,600 ($122,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_compressed_air_iso8573_policy(
+            automated_separator_thermostat_downgrade_and_scfm_savings_cents=2160000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_compressed_air_cents, 12240000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_compressed_air_iso8573_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-compressed-air-iso8573-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
