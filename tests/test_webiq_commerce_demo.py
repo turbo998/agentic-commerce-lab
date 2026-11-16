@@ -21098,6 +21098,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-datacenter-clean-agent-nfpa2001-vesda-sandbox", demo_zh)
 
+    def test_b2b_commercial_errcs_bda_public_safety_das_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_errcs_bda_public_safety_das_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 20-grid spectrum logs (99% critical DAQ >=3.0) + isolation + FCC GROL clean -> 200 OK ($126,000.00)
+        ok_res = evaluate_b2b_commercial_errcs_bda_public_safety_das_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_ERRCS_BDA_NFPA1225_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_errcs_bda_cents, 12600000)
+
+        # 2. Fake paper-only 20-grid RF survey without spectrum logs or sub-99% critical DAQ -> 403 Blocked
+        grd_403 = evaluate_b2b_commercial_errcs_bda_public_safety_das_policy(
+            spectrum_20grid_logs_and_99pct_critical_daq_verified=False,
+        )
+        self.assertFalse(grd_403.allowed)
+        self.assertEqual(grd_403.http_status, 403)
+        self.assertEqual(
+            grd_403.decision_code,
+            "FAKE_20GRID_RF_SURVEY_WITHOUT_SPECTRUM_LOGS_OR_SUB99PCT_CRITICAL_DAQ_BLOCKED",
+        )
+
+        # 3. $18,000 BDA head-end amplifier swap upcoding on $95 PolyPhaser surge arrestor -> 422 Blocked
+        arr_422 = evaluate_b2b_commercial_errcs_bda_public_safety_das_policy(
+            polyphaser_arrestor_and_gain_trim_downgrade_verified=False,
+        )
+        self.assertFalse(arr_422.allowed)
+        self.assertEqual(arr_422.http_status, 422)
+        self.assertEqual(
+            arr_422.decision_code,
+            "BDA_HEADEND_AMPLIFIER_SWAP_UPCODING_OR_POLYPHASER_ARRESTOR_BYPASS",
+        )
+
+        # 4. Unlicensed FCC GROL operator or unregistered FCC Part 90 signal booster -> 451 Hold
+        fcc_451 = evaluate_b2b_commercial_errcs_bda_public_safety_das_policy(
+            webiq_fcc_grol_license_and_booster_registration_clean=False,
+        )
+        self.assertFalse(fcc_451.allowed)
+        self.assertEqual(fcc_451.http_status, 451)
+
+        # 5. Web IQ $95 surge arrestor & gain trim downgrade saving $18,900 ($107,100 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_errcs_bda_public_safety_das_policy(
+            automated_surge_arrestor_gain_trim_downgrade_and_rf_savings_cents=1890000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_errcs_bda_cents, 10710000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_errcs_bda_public_safety_das_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-errcs-bda-public-safety-das-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
