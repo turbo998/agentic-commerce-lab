@@ -22979,6 +22979,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-paint-spray-booth-rto-oxidizer-sandbox", demo_zh)
 
+    def test_b2b_industrial_robotic_mig_spot_welding_cell_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant <=12N liner drag + 15-20 L/min nozzle gas & 6.0mm tip dress + <=0.15mm TCP -> 200 OK ($110,000.00)
+        ok_res = evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_ROBOTIC_MIG_SPOT_WELDING_CELL_SETTLED")
+        self.assertEqual(ok_res.settled_robotic_welding_cell_cents, 11000000)
+
+        # 2. $3,800 robotic torch/wire-feeder upcoding on clogged $28 liner or dry reamer -> 403 Blocked
+        trc_403 = evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy(
+            wire_liner_pull_drag_12n_and_reamer_station_verified=False,
+        )
+        self.assertFalse(trc_403.allowed)
+        self.assertEqual(trc_403.http_status, 403)
+        self.assertEqual(
+            trc_403.decision_code,
+            "ROBOTIC_TORCH_OR_WIRE_FEEDER_REPLACEMENT_UPCODING_ON_28_DOLLAR_LINER_DIFFUSER_BLOCKED",
+        )
+
+        # 3. Unverified nozzle shielding gas flow or spot-weld tip-dress current tampering -> 422 Blocked
+        gas_422 = evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy(
+            nozzle_peashooter_gas_flow_and_spot_tip_dress_6mm_verified=False,
+        )
+        self.assertFalse(gas_422.allowed)
+        self.assertEqual(gas_422.http_status, 422)
+        self.assertEqual(
+            gas_422.decision_code,
+            "NOZZLE_SHIELDING_GAS_FLOW_OR_SPOT_WELD_TIP_DRESS_CURRENT_TAMPERING",
+        )
+
+        # 4. Failed AWS D1.1 Bullseye TCP repeatability (>0.15mm) or low coolant flow (<1.2 L/min) -> 451 Hold
+        tcp_451 = evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy(
+            webiq_aws_tcp_bullseye_015mm_and_coolant_flow_clean=False,
+        )
+        self.assertFalse(tcp_451.allowed)
+        self.assertEqual(tcp_451.http_status, 451)
+
+        # 5. Web IQ $28 liner/diffuser kit & tip-dress cutter saving $24,500 ($85,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_robotic_mig_spot_welding_cell_policy(
+            automated_liner_diffuser_reamer_kit_and_tip_dress_savings_cents=2450000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_robotic_welding_cell_cents, 8550000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_robotic_mig_spot_welding_cell_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-robotic-mig-spot-welding-cell-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
