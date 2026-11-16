@@ -22694,6 +22694,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-conveyor-dishmachine-nsf3-sandbox", demo_zh)
 
+    def test_b2b_industrial_ultrasonic_plastic_welder_20khz_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant decoupled impedance Z<=20 ohm + 28Nm stud lapping + ±0.01mm encoder -> 200 OK ($108,000.00)
+        ok_res = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ULTRASONIC_PLASTIC_WELDER_20KHZ_SETTLED")
+        self.assertEqual(ok_res.settled_ultrasonic_plastic_welder_cents, 10800000)
+
+        # 2. $4,800 converter/sonotrode upcoding on $220 stud lapping/torque fault -> 403 Blocked
+        stk_403 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+            decoupled_horn_impedance_sweep_and_stud_lapping_torque_verified=False,
+        )
+        self.assertFalse(stk_403.allowed)
+        self.assertEqual(stk_403.http_status, 403)
+        self.assertEqual(
+            stk_403.decision_code,
+            "CONVERTER_SONOTRODE_REPLACEMENT_UPCODING_ON_220_DOLLAR_STUD_TORQUE_BLOCKED",
+        )
+
+        # 3. Uncalibrated 1um collapse encoder or unauthorized OQ amplitude recipe tampering -> 422 Blocked
+        enc_422 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+            linear_encoder_collapse_calibration_and_locked_oq_recipe_verified=False,
+        )
+        self.assertFalse(enc_422.allowed)
+        self.assertEqual(enc_422.http_status, 422)
+        self.assertEqual(
+            enc_422.decision_code,
+            "UNVERIFIED_WELD_COLLAPSE_ENCODER_OR_AMPLITUDE_RECIPE_TAMPERING",
+        )
+
+        # 4. Failed ±50Hz resonance window (parasitic crack) or ISO 13485 traceability -> 451 Hold
+        res_451 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+            webiq_resonance_window_50hz_and_iso13485_traceability_clean=False,
+        )
+        self.assertFalse(res_451.allowed)
+        self.assertEqual(res_451.http_status, 451)
+
+        # 5. Web IQ $220 stud lapping & $145 nodal ring kit saving $19,800 ($88,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+            automated_stud_lapping_nodal_ring_kit_savings_cents=1980000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ultrasonic_plastic_welder_cents, 8820000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_ultrasonic_plastic_welder_20khz_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-ultrasonic-plastic-welder-20khz-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

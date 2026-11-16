@@ -38223,6 +38223,106 @@ def evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BIndustrialUltrasonicPlasticWelder20khzDecision:
+    """Deterministic decision output for B2B ultrasonic plastic welder, horn impedance & $220 stud torque."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    ultrasonic_plastic_welder_lane: str
+    settled_ultrasonic_plastic_welder_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+    *,
+    mandate_id: str = "b2b_industrial_ultrasonic_plastic_welder_20khz_horn_impedance_mandate_2026",
+    ultrasonic_plastic_welder_cents: int = 10800000,
+    decoupled_horn_impedance_sweep_and_stud_lapping_torque_verified: bool = True,
+    linear_encoder_collapse_calibration_and_locked_oq_recipe_verified: bool = True,
+    webiq_resonance_window_50hz_and_iso13485_traceability_clean: bool = True,
+    automated_stud_lapping_nodal_ring_kit_savings_cents: int = 0,
+) -> B2BIndustrialUltrasonicPlasticWelder20khzDecision:
+    """Evaluate B2B ultrasonic plastic welder 20kHz horn impedance sweep, $220 stud lapping & ISO 13485 settlement."""
+    if not mandate_id.startswith("b2b_industrial_ultrasonic_plastic_welder_20khz_horn_impedance_mandate_"):
+        return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_ULTRASONIC_PLASTIC_WELDER_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            ultrasonic_plastic_welder_lane="INVALID_ULTRASONIC_PLASTIC_WELDER_MANDATE_PREFIX",
+            settled_ultrasonic_plastic_welder_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not decoupled_horn_impedance_sweep_and_stud_lapping_torque_verified:
+        return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="CONVERTER_SONOTRODE_REPLACEMENT_UPCODING_ON_220_DOLLAR_STUD_TORQUE_BLOCKED",
+            action_pill="Send to a human",
+            ultrasonic_plastic_welder_lane="CONVERTER_SONOTRODE_REPLACEMENT_UPCODING_ON_220_DOLLAR_STUD_TORQUE_BLOCKED",
+            settled_ultrasonic_plastic_welder_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not linear_encoder_collapse_calibration_and_locked_oq_recipe_verified:
+        return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNVERIFIED_WELD_COLLAPSE_ENCODER_OR_AMPLITUDE_RECIPE_TAMPERING",
+            action_pill="Send to a human",
+            ultrasonic_plastic_welder_lane="UNVERIFIED_WELD_COLLAPSE_ENCODER_OR_AMPLITUDE_RECIPE_TAMPERING",
+            settled_ultrasonic_plastic_welder_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_resonance_window_50hz_and_iso13485_traceability_clean:
+        return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="FAILED_HORN_PARASITIC_RESONANCE_OR_ISO13485_WELD_ENERGY_HOLD",
+            action_pill="Send to a human",
+            ultrasonic_plastic_welder_lane="FAILED_HORN_PARASITIC_RESONANCE_OR_ISO13485_WELD_ENERGY_HOLD",
+            settled_ultrasonic_plastic_welder_cents=0,
+            latency_ms=262,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_stud_lapping_nodal_ring_kit_savings_cents > 0:
+        net_cents = max(
+            0,
+            ultrasonic_plastic_welder_cents - automated_stud_lapping_nodal_ring_kit_savings_cents,
+        )
+        return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_STUD_LAPPING_NODAL_RING_KIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            ultrasonic_plastic_welder_lane="AUTOMATED_STUD_LAPPING_NODAL_RING_KIT_SAVINGS_CONFIRM",
+            settled_ultrasonic_plastic_welder_cents=net_cents,
+            latency_ms=228,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BIndustrialUltrasonicPlasticWelder20khzDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_ULTRASONIC_PLASTIC_WELDER_20KHZ_SETTLED",
+        action_pill="Act automatically",
+        ultrasonic_plastic_welder_lane="VERIFIED_ULTRASONIC_PLASTIC_WELDER_20KHZ_SETTLED",
+        settled_ultrasonic_plastic_welder_cents=ultrasonic_plastic_welder_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -50716,6 +50816,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "booster_heater_upcoding_block_latency_ms": dsh_bst_403.latency_ms,
     }
 
+    usw_commit_ok = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy()
+    usw_stk_403 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+        decoupled_horn_impedance_sweep_and_stud_lapping_torque_verified=False,
+    )
+    usw_enc_422 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+        linear_encoder_collapse_calibration_and_locked_oq_recipe_verified=False,
+    )
+    usw_res_451 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+        webiq_resonance_window_50hz_and_iso13485_traceability_clean=False,
+    )
+    usw_sav_409 = evaluate_b2b_industrial_ultrasonic_plastic_welder_20khz_policy(
+        automated_stud_lapping_nodal_ring_kit_savings_cents=1980000,
+    )
+    b2b_industrial_ultrasonic_plastic_welder_20khz_guards = {
+        "all_passed": (
+            usw_commit_ok.allowed
+            and usw_commit_ok.settled_ultrasonic_plastic_welder_cents == 10800000
+            and not usw_stk_403.allowed
+            and usw_stk_403.http_status == 403
+            and not usw_enc_422.allowed
+            and usw_enc_422.http_status == 422
+            and not usw_res_451.allowed
+            and usw_res_451.http_status == 451
+            and not usw_sav_409.allowed
+            and usw_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_industrial_ultrasonic_welder_settlement_latency_ms": usw_commit_ok.latency_ms,
+        "converter_sonotrode_upcoding_block_latency_ms": usw_stk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51109,6 +51239,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_datacenter_overhead_busway_busduct_guards": b2b_datacenter_overhead_busway_busduct_guards,
         "b2b_commercial_sewage_ejector_grinder_pump_guards": b2b_commercial_sewage_ejector_grinder_pump_guards,
         "b2b_commercial_conveyor_dishmachine_nsf3_guards": b2b_commercial_conveyor_dishmachine_nsf3_guards,
+        "b2b_industrial_ultrasonic_plastic_welder_20khz_guards": b2b_industrial_ultrasonic_plastic_welder_20khz_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60866,6 +60997,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="dsh-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Ultrasonic Plastic Welder 20kHz, Horn Impedance Sweep & $220 Stud Lapping Sandbox (Round 381) -->
+      <div class="finops-box" id="b2b-industrial-ultrasonic-plastic-welder-20khz-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-usw-title">🔊 B2B 医疗与汽车精密超声波塑焊机、焊头声学阻抗锁与 $220 螺柱研磨沙盒 (Round 381 · Branson / Herrmann 20kHz / ISO 13485)</span>
+        </div>
+        <div class="control-row">
+          <label><span>拆解声学阻抗扫频 (fs/fp &lt;=20Ω) 与 $220 螺柱研磨锁 + 1µm 熔深光栅尺与 OQ 参数锁 + Web IQ ±50Hz 谐振核验:</span></label>
+          <select id="usw-select" onchange="updateB2BIndustrialUltrasonicPlasticWelder20khzSandbox()">
+            <option value="usw_commit_ok">🔊 独立声学阻抗 Z=12Ω + 28Nm 螺柱研磨 + ±0.01mm 熔深与 ISO 13485 合规：10ms 清算 $108,000.00! (Act automatically)</option>
+            <option value="usw_stk_403">🛑 20kHz 焊头与调幅器间 $35 钛螺柱疲劳松动或端面微动氧化报 Overload，外包商却谎称换能器加钛焊头报废强收 $4,800 → 11ms 触发 HTTP 403!</option>
+            <option value="usw_enc_422">🚨 不换 $145 调幅器节点 O 型圈且不做 1µm 光栅尺熔深校准，私自把振幅调到 100% 篡改 OQ 工艺致医疗微流控芯片震裂 → 14ms 触发 HTTP 422!</option>
+            <option value="usw_res_451">🛑 钛焊头疲劳裂纹引起双峰寄生模态谐振偏出 ±50Hz 窗口或压电绝缘 &lt;100 MΩ 违反 ISO 13485：Web IQ /v3/browse 262ms 触发 HTTP 451!</option>
+            <option value="usw_sav_409">🧑‍⚖️ Web IQ 自动将 $4,800 更换换能器与钛焊头总成单降级为 $220 端面十字镜面研磨加 28Nm 钛螺柱与 $145 节点环更换立省 $19,800.00 (净付 $88,200.00) → 228ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="usw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -61685,6 +61834,7 @@ function renderAll() {{
   updateB2BDatacenterOverheadBuswayBusductSandbox();
   updateB2BCommercialSewageEjectorGrinderPumpSandbox();
   updateB2BCommercialConveyorDishmachineNsf3Sandbox();
+  updateB2BIndustrialUltrasonicPlasticWelder20khzSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -80120,6 +80270,52 @@ function updateB2BCommercialConveyorDishmachineNsf3Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🍽️ 20 PSI 终淋水压 + 洗臂畅通/按筐药耗 + 盘面 &gt;=160°F (3,600 HUE) 合规：已自动清算 (VERIFIED_COMMERCIAL_CONVEYOR_DISHMACHINE_NSF3_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 55 PSI 水雾降温被骗 $6,500 换增压器、零堵着洗臂狂抽双倍高价催干剂</strong>：B2B 酒店与医院大型长龙洗碗机维保及药水批次已完成安全清算（<code>$115,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BIndustrialUltrasonicPlasticWelder20khzSandbox() {{
+  var sel = document.getElementById("usw-select");
+  var outEl = document.getElementById("usw-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "usw_stk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CONVERTER_SONOTRODE_REPLACEMENT_UPCODING_ON_220_DOLLAR_STUD_TORQUE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对拆解后声学阻抗分析仪（<code>Horn Impedance Analyzer</code>）扫频曲线发现：换能器与钛焊头独立谐振阻抗仅 <code>12 Ω (&lt;=20 Ω)</code>，发生器报 <code>Overload</code> 纯属 <code>结合端面微动摩擦氧化或 $35 钛螺柱松动</code>，仅需 <code>$220 研磨+28Nm 重锁</code>，却强收 <code>$4,800</code> 换总成，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "usw_enc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_WELD_COLLAPSE_ENCODER_OR_AMPLITUDE_RECIPE_TAMPERING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计 <code>1 µm 光学磁栅尺熔深校准记录</code> 与工艺参数审计日志发现：未更换调幅器内老化的 <code>$145 氟橡胶节点 O 型圈</code>，维保工违规把振幅从 <code>75% 调到 100%</code> 篡改已验证 OQ 窗口，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "usw_res_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 FAILED_HORN_PARASITIC_RESONANCE_OR_ISO13485_WELD_ENERGY_HOLD (262ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ISO 13485</code> 医疗焊接规程与声学频谱发现：焊头谐振频率偏出 <code>19,950 ± 50 Hz</code> 窗口出现寄生模态分叉或压电绝缘 <code>&lt;100 MΩ</code>，已在 262ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "usw_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_STUD_LAPPING_NODAL_RING_KIT_SAVINGS_CONFIRM (228ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $4,800 换能器与钛合金焊头总成更换降级为 $220 结合面十字镜面研磨加 28Nm 钛螺柱更换 + $145 调幅器节点 O 型圈更换</code>，单批立省 <code>$19,800.00</code>（净结算额优化至 <code>$88,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔊 独立声学阻抗 Z=12Ω + 28Nm 螺柱研磨 + ±0.01mm 熔深与 ISO 13485 合规：已自动清算 (VERIFIED_ULTRASONIC_PLASTIC_WELDER_20KHZ_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零螺柱松动被宰 $4,800 换声学栈、零盲调振幅震裂医疗微流道</strong>：B2B 医疗与汽车精密超声波塑焊机维保批次已完成安全清算（<code>$108,000.00</code>）！" +
     "</div>";
 }}
 
