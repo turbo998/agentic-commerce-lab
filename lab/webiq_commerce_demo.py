@@ -36323,6 +36323,106 @@ def evaluate_b2b_commercial_termite_fumigation_wdo_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialStadiumSyntheticTurfBleacherDecision:
+    """Deterministic decision output for B2B stadium synthetic turf Gmax, pole-base LED driver & NFPA 102 bleacher."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    stadium_turf_bleacher_lane: str
+    settled_stadium_turf_bleacher_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+    *,
+    mandate_id: str = "b2b_commercial_stadium_synthetic_turf_astm_f355_gmax_bleacher_nfpa102_mandate_2026",
+    stadium_turf_bleacher_cents: int = 12400000,
+    infill_weigh_ticket_20grid_depth_and_gmax_waveform_verified: bool = True,
+    pole_base_led_driver_isolation_and_nfpa102_bleacher_verified: bool = True,
+    webiq_asba_a2la_tester_and_oem_warranty_clean: bool = True,
+    automated_infill_depth_reconciliation_and_base_led_driver_savings_cents: int = 0,
+) -> B2BCommercialStadiumSyntheticTurfBleacherDecision:
+    """Evaluate B2B stadium synthetic turf 20-grid infill depth/Gmax, pole-base $160 LED driver & NFPA 102 bleacher."""
+    if not mandate_id.startswith("b2b_commercial_stadium_synthetic_turf_astm_f355_gmax_bleacher_nfpa102_mandate_"):
+        return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_STADIUM_TURF_BLEACHER_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            stadium_turf_bleacher_lane="INVALID_STADIUM_TURF_BLEACHER_MANDATE_PREFIX",
+            settled_stadium_turf_bleacher_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not infill_weigh_ticket_20grid_depth_and_gmax_waveform_verified:
+        return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INFILL_TONNAGE_SHORTWEIGHT_OR_UNVERIFIED_ASTM_F1936_GMAX_BLOCKED",
+            action_pill="Send to a human",
+            stadium_turf_bleacher_lane="INFILL_TONNAGE_SHORTWEIGHT_OR_UNVERIFIED_ASTM_F1936_GMAX_BLOCKED",
+            settled_stadium_turf_bleacher_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not pole_base_led_driver_isolation_and_nfpa102_bleacher_verified:
+        return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="SPORTS_LED_LUMINAIRE_UPCODING_OR_SKIPPED_NFPA102_BLEACHER_UNDERSTRUCTURE",
+            action_pill="Send to a human",
+            stadium_turf_bleacher_lane="SPORTS_LED_LUMINAIRE_UPCODING_OR_SKIPPED_NFPA102_BLEACHER_UNDERSTRUCTURE",
+            settled_stadium_turf_bleacher_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_asba_a2la_tester_and_oem_warranty_clean:
+        return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNACCREDITED_TURF_GMAX_TESTER_OR_ACTIVE_OEM_LIGHTING_WARRANTY_HOLD",
+            action_pill="Send to a human",
+            stadium_turf_bleacher_lane="UNACCREDITED_TURF_GMAX_TESTER_OR_ACTIVE_OEM_LIGHTING_WARRANTY_HOLD",
+            settled_stadium_turf_bleacher_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_infill_depth_reconciliation_and_base_led_driver_savings_cents > 0:
+        net_cents = max(
+            0,
+            stadium_turf_bleacher_cents - automated_infill_depth_reconciliation_and_base_led_driver_savings_cents,
+        )
+        return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_INFILL_DEPTH_RECONCILIATION_AND_BASE_LED_DRIVER_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            stadium_turf_bleacher_lane="AUTOMATED_INFILL_DEPTH_RECONCILIATION_AND_BASE_LED_DRIVER_SAVINGS_CONFIRM",
+            settled_stadium_turf_bleacher_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialStadiumSyntheticTurfBleacherDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_STADIUM_TURF_BLEACHER_SETTLED",
+        action_pill="Act automatically",
+        stadium_turf_bleacher_lane="VERIFIED_COMMERCIAL_STADIUM_TURF_BLEACHER_SETTLED",
+        settled_stadium_turf_bleacher_cents=stadium_turf_bleacher_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -48246,6 +48346,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "watered_down_termiticide_block_latency_ms": trm_dil_403.latency_ms,
     }
 
+    trf_commit_ok = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy()
+    trf_inf_403 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+        infill_weigh_ticket_20grid_depth_and_gmax_waveform_verified=False,
+    )
+    trf_led_422 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+        pole_base_led_driver_isolation_and_nfpa102_bleacher_verified=False,
+    )
+    trf_war_451 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+        webiq_asba_a2la_tester_and_oem_warranty_clean=False,
+    )
+    trf_sav_409 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+        automated_infill_depth_reconciliation_and_base_led_driver_savings_cents=2120000,
+    )
+    b2b_commercial_stadium_synthetic_turf_bleacher_guards = {
+        "all_passed": (
+            trf_commit_ok.allowed
+            and trf_commit_ok.settled_stadium_turf_bleacher_cents == 12400000
+            and not trf_inf_403.allowed
+            and trf_inf_403.http_status == 403
+            and not trf_led_422.allowed
+            and trf_led_422.http_status == 422
+            and not trf_war_451.allowed
+            and trf_war_451.http_status == 451
+            and not trf_sav_409.allowed
+            and trf_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_stadium_turf_bleacher_settlement_latency_ms": trf_commit_ok.latency_ms,
+        "infill_tonnage_shortweight_block_latency_ms": trf_inf_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48620,6 +48750,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_parking_garage_concrete_restoration_guards": b2b_commercial_parking_garage_concrete_restoration_guards,
         "b2b_hospital_spd_steam_sterilizer_aami_st79_guards": b2b_hospital_spd_steam_sterilizer_aami_st79_guards,
         "b2b_commercial_termite_fumigation_wdo_guards": b2b_commercial_termite_fumigation_wdo_guards,
+        "b2b_commercial_stadium_synthetic_turf_bleacher_guards": b2b_commercial_stadium_synthetic_turf_bleacher_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58035,6 +58166,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="trm-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Stadium Synthetic Turf Gmax, Pole-Base LED Driver & NFPA 102 Bleacher Sandbox (Round 362) -->
+      <div class="finops-box" id="b2b-commercial-stadium-synthetic-turf-bleacher-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-trf-title">🏟️ B2B 体育场馆人造草坪养护 (ASTM F1936 Gmax)、20 点位胶粒深度锁与杆底 $160 LED 驱动沙盒 (Round 362 · FieldTurf / Musco / Hussey)</span>
+        </div>
+        <div class="control-row">
+          <label><span>吨包地磅单与 20 点位插针深度 (&gt;=25mm) + Gmax &lt;=165g 原始波形锁 + 杆底 $160 驱动箱排查 + Web IQ ASBA/质保核验:</span></label>
+          <select id="trf-select" onchange="updateB2BCommercialStadiumSyntheticTurfBleacherSandbox()">
+            <option value="trf_commit_ok">🏟️ 20 点位胶粒深度 &gt;=25mm + Gmax &lt;=165g 原始波形 + 杆底驱动/看台核实 + ASBA 合规：10ms 清算 $124,000.00! (Act automatically)</option>
+            <option value="trf_inf_403">🛑 账单收 12 吨橡胶颗粒钱却只撒 3 吨 (20 点位插针深度增量不符) 或无 Triax 落锤原始冲击波形伪造 Gmax 脑震荡合格证 → 11ms 触发 HTTP 403!</option>
+            <option value="trf_led_422">🚨 未查离地 3 米杆底电器箱内 $160 恒流 LED 驱动电源直接虚报 $2,400 高空换整灯加蜘蛛车台班，或漏检 NFPA 102 电动伸缩看台底盘焊缝 → 14ms 触发 HTTP 422!</option>
+            <option value="trf_war_451">🛑 检测员无 ASBA CFB-S / A2LA 认证资质或把仍在 Musco / FieldTurf 原厂 10–25 年免维护质保期内的灯具/草坪向业主二次收费：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="trf_sav_409">🧑‍⚖️ Web IQ 自动按 20 点位插针实测胶粒深度核定吨位并将 $2,400 高空换灯单降级为 $160 杆底恒流驱动模块更换立省 $21,200.00 (净付 $102,800.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="trf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -58835,6 +58984,7 @@ function renderAll() {{
   updateB2BCommercialParkingGarageConcreteRestorationSandbox();
   updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox();
   updateB2BCommercialTermiteFumigationWdoSandbox();
+  updateB2BCommercialStadiumSyntheticTurfBleacherSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -76396,6 +76546,52 @@ function updateB2BCommercialTermiteFumigationWdoSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🐜 4.0 Gal/10 LF 流量与原液平衡 + 拔芯 NFC 100% + Vikane Ct &amp; SPCB 合规：已自动清算 (VERIFIED_COMMERCIAL_TERMITE_WDO_FIFRA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 1 瓶药兑满水箱掺水灌注、零草坪饵站不掀盖幽灵年费与欠量熏蒸</strong>：B2B 商业地产白蚁防治与木结构熏蒸批次已完成安全清算（<code>$118,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialStadiumSyntheticTurfBleacherSandbox() {{
+  var sel = document.getElementById("trf-select");
+  var outEl = document.getElementById("trf-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "trf_inf_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 INFILL_TONNAGE_SHORTWEIGHT_OR_UNVERIFIED_ASTM_F1936_GMAX_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对吨包地磅单与 20 点位三爪数字深度规发现：按 <code>2.5 吨/mm</code> 密度计算，账单收 <code>12.5 吨</code> 橡胶颗粒钱但全场平均填充深度仅增加 <code>+1.2mm (实撒 3 吨)</code>，或缺失 <code>Triax</code> 落锤冲击仪原始加速度波形（<code>Gmax &lt;= 165g</code>），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trf_led_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SPORTS_LED_LUMINAIRE_UPCODING_OR_SKIPPED_NFPA102_BLEACHER_UNDERSTRUCTURE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计高杆球场灯与室内伸缩看台工单发现：80 英尺高空 LED 模组完好，实为离地 3 米杆底电器箱内 <code>$160 恒流驱动器</code> 开路却被虚报 <code>$2,400 高空换整灯+$1,800 蜘蛛车</code>，或漏检 <code>NFPA 102 / ICC 300</code> 看台底盘剪叉焊缝，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trf_war_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNACCREDITED_TURF_GMAX_TESTER_OR_ACTIVE_OEM_LIGHTING_WARRANTY_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ASBA CFB-S / A2LA</code> 冲击实验室名录与 <code>Musco / FieldTurf</code> 原厂质保库发现：检测员无有效认证或该高杆照明系统仍在原厂 10–25 年免维护包修期内，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "trf_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_INFILL_DEPTH_RECONCILIATION_AND_BASE_LED_DRIVER_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按 20 点位插针深度增量核减虚报的橡胶颗粒吨位 + 将 $2,400 高空球场整灯更换降级为离地 3 米杆底箱内 $160 IP67 恒流驱动电源更换</code>，单批立省 <code>$21,200.00</code>（净结算额优化至 <code>$102,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏟️ 20 点位胶粒深度 &gt;=25mm + Gmax &lt;=165g 原始波形 + 杆底驱动 &amp; ASBA 合规：已自动清算 (VERIFIED_COMMERCIAL_STADIUM_TURF_BLEACHER_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零补胶少撒一半、零坏个 $160 杆底驱动器被宰 $4,200 换高空灯与假 Gmax 报告</strong>：B2B 体育场馆人造草坪、灯光与伸缩看台维保批次已完成安全清算（<code>$124,000.00</code>）！" +
     "</div>";
 }}
 

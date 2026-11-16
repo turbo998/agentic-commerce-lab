@@ -21611,6 +21611,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-termite-fumigation-wdo-sandbox", demo_zh)
 
+    def test_b2b_commercial_stadium_synthetic_turf_bleacher_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 20-grid infill depth >=25mm + raw Gmax <=165g + base driver/bleacher -> 200 OK ($124,000.00)
+        ok_res = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_STADIUM_TURF_BLEACHER_SETTLED")
+        self.assertEqual(ok_res.settled_stadium_turf_bleacher_cents, 12400000)
+
+        # 2. Short-weighted rubber infill tonnage or unverified ASTM F1936 Gmax report -> 403 Blocked
+        inf_403 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+            infill_weigh_ticket_20grid_depth_and_gmax_waveform_verified=False,
+        )
+        self.assertFalse(inf_403.allowed)
+        self.assertEqual(inf_403.http_status, 403)
+        self.assertEqual(
+            inf_403.decision_code,
+            "INFILL_TONNAGE_SHORTWEIGHT_OR_UNVERIFIED_ASTM_F1936_GMAX_BLOCKED",
+        )
+
+        # 3. $2,400 high-mast LED luminaire upcoding on $160 pole-base driver or skipped NFPA 102 bleacher -> 422 Blocked
+        led_422 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+            pole_base_led_driver_isolation_and_nfpa102_bleacher_verified=False,
+        )
+        self.assertFalse(led_422.allowed)
+        self.assertEqual(led_422.http_status, 422)
+        self.assertEqual(
+            led_422.decision_code,
+            "SPORTS_LED_LUMINAIRE_UPCODING_OR_SKIPPED_NFPA102_BLEACHER_UNDERSTRUCTURE",
+        )
+
+        # 4. Unaccredited turf Gmax tester or active Musco/FieldTurf OEM warranty coverage -> 451 Hold
+        war_451 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+            webiq_asba_a2la_tester_and_oem_warranty_clean=False,
+        )
+        self.assertFalse(war_451.allowed)
+        self.assertEqual(war_451.http_status, 451)
+
+        # 5. Web IQ infill depth reconciliation & $160 pole-base LED driver saving $21,200 ($102,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_stadium_synthetic_turf_bleacher_policy(
+            automated_infill_depth_reconciliation_and_base_led_driver_savings_cents=2120000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_stadium_turf_bleacher_cents, 10280000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_stadium_synthetic_turf_bleacher_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-stadium-synthetic-turf-bleacher-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
