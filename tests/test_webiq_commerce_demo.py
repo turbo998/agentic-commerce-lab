@@ -22295,6 +22295,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-furnace-oven-nfpa86-ams2750-sandbox", demo_zh)
 
+    def test_b2b_datacenter_crac_crah_precision_hvac_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_datacenter_crac_crah_precision_hvac_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $160 steam cylinder/drain + EC fan balance + zero fighting + leak rope -> 200 OK ($124,000.00)
+        ok_res = evaluate_b2b_datacenter_crac_crah_precision_hvac_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DATACENTER_CRAC_CRAH_PRECISION_HVAC_SETTLED")
+        self.assertEqual(ok_res.settled_datacenter_crac_crah_cents, 12400000)
+
+        # 2. $8,500 whole humidifier sub-assembly upcoding on $160 steam cylinder or $95 drain valve -> 403 Blocked
+        hum_403 = evaluate_b2b_datacenter_crac_crah_precision_hvac_policy(
+            electrode_steam_cylinder_and_drain_solenoid_isolation_verified=False,
+        )
+        self.assertFalse(hum_403.allowed)
+        self.assertEqual(hum_403.http_status, 403)
+        self.assertEqual(
+            hum_403.decision_code,
+            "WHOLE_HUMIDIFIER_SUBASSEMBLY_UPCODING_ON_160_DOLLAR_STEAM_CYLINDER_BLOCKED",
+        )
+
+        # 3. $4,600 EC fan array upcoding on dusty impeller or simultaneous humidify/dehumidify fighting -> 422 Blocked
+        ecf_422 = evaluate_b2b_datacenter_crac_crah_precision_hvac_policy(
+            ec_fan_impeller_balance_and_zero_fighting_deadband_verified=False,
+        )
+        self.assertFalse(ecf_422.allowed)
+        self.assertEqual(ecf_422.http_status, 422)
+        self.assertEqual(
+            ecf_422.decision_code,
+            "EC_FAN_ARRAY_UPCODING_OR_SIMULTANEOUS_HUMIDIFY_DEHUMIDIFY_FIGHTING",
+        )
+
+        # 4. Mismatched 0 uS/cm RO water in electrode cylinder or failed underfloor leak rope -> 451 Hold
+        wtr_451 = evaluate_b2b_datacenter_crac_crah_precision_hvac_policy(
+            webiq_water_conductivity_and_underfloor_leak_rope_clean=False,
+        )
+        self.assertFalse(wtr_451.allowed)
+        self.assertEqual(wtr_451.http_status, 451)
+
+        # 5. Web IQ $160 electrode cylinder, $95 drain valve & Teamwork saving $22,800 ($101,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_datacenter_crac_crah_precision_hvac_policy(
+            automated_electrode_cylinder_drain_valve_and_teamwork_savings_cents=2280000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_datacenter_crac_crah_cents, 10120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_datacenter_crac_crah_precision_hvac_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-datacenter-crac-crah-precision-hvac-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
