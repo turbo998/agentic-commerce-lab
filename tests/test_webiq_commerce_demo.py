@@ -20984,6 +20984,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-compressed-air-iso8573-sandbox", demo_zh)
 
+    def test_b2b_commercial_chiller_plant_approach_eddy_current_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant BMS approach <=2.5F + raw Eddy-Current waveform + ASNT/ASHRAE 15 clean -> 200 OK ($164,000.00)
+        ok_res = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_CHILLER_PLANT_ASHRAE15_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_chiller_plant_cents, 16400000)
+
+        # 2. Cosmetic tube-sheet rinse with unreduced condenser approach temperature (>5F) -> 403 Blocked
+        app_403 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+            condenser_approach_temp_drop_and_tube_brush_verified=False,
+        )
+        self.assertFalse(app_403.allowed)
+        self.assertEqual(app_403.http_status, 403)
+        self.assertEqual(
+            app_403.decision_code,
+            "COSMETIC_TUBE_SHEET_RINSE_OR_UNREDUCED_CONDENSER_APPROACH_TEMP_BLOCKED",
+        )
+
+        # 3. Unverified $45k Eddy-Current re-tubing scam or $9,500 oil-pump/VFD upcoding -> 422 Blocked
+        edd_422 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+            raw_eddy_current_waveform_and_oil_filter_downgrade_verified=False,
+        )
+        self.assertFalse(edd_422.allowed)
+        self.assertEqual(edd_422.http_status, 422)
+        self.assertEqual(
+            edd_422.decision_code,
+            "UNVERIFIED_EDDY_CURRENT_RETUBING_SCAM_OR_CHILLER_VFD_PUMP_UPCODING",
+        )
+
+        # 4. Uncertified ASNT Eddy-Current analyst or un-bumped ASHRAE 15 refrigerant monitor -> 451 Hold
+        asn_451 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+            webiq_asnt_eddy_current_analyst_and_ashrae15_clean=False,
+        )
+        self.assertFalse(asn_451.allowed)
+        self.assertEqual(asn_451.http_status, 451)
+
+        # 5. Web IQ $380 oil-filter & $45 tube-plug downgrade saving $24,600 ($139,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+            automated_oil_filter_tube_plug_downgrade_and_approach_savings_cents=2460000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_chiller_plant_cents, 13940000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_chiller_plant_approach_eddy_current_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-chiller-plant-approach-eddy-current-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

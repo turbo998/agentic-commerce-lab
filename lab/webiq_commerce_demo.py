@@ -35223,6 +35223,106 @@ def evaluate_b2b_industrial_compressed_air_iso8573_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialChillerPlantApproachEddyCurrentDecision:
+    """Deterministic decision output for B2B commercial chiller plant condenser approach, Eddy-Current NDT & ASHRAE 15."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_chiller_plant_lane: str
+    settled_commercial_chiller_plant_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+    *,
+    mandate_id: str = "b2b_commercial_chiller_plant_condenser_approach_eddy_current_ashrae15_mandate_2026",
+    commercial_chiller_plant_cents: int = 16400000,
+    condenser_approach_temp_drop_and_tube_brush_verified: bool = True,
+    raw_eddy_current_waveform_and_oil_filter_downgrade_verified: bool = True,
+    webiq_asnt_eddy_current_analyst_and_ashrae15_clean: bool = True,
+    automated_oil_filter_tube_plug_downgrade_and_approach_savings_cents: int = 0,
+) -> B2BCommercialChillerPlantApproachEddyCurrentDecision:
+    """Evaluate B2B commercial chiller plant BMS condenser approach <=2.5F, ASME V Eddy-Current & ASHRAE 15 settlement."""
+    if not mandate_id.startswith("b2b_commercial_chiller_plant_condenser_approach_eddy_current_ashrae15_mandate_"):
+        return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_CHILLER_PLANT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_chiller_plant_lane="INVALID_COMMERCIAL_CHILLER_PLANT_MANDATE_PREFIX",
+            settled_commercial_chiller_plant_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not condenser_approach_temp_drop_and_tube_brush_verified:
+        return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="COSMETIC_TUBE_SHEET_RINSE_OR_UNREDUCED_CONDENSER_APPROACH_TEMP_BLOCKED",
+            action_pill="Send to a human",
+            commercial_chiller_plant_lane="COSMETIC_TUBE_SHEET_RINSE_OR_UNREDUCED_CONDENSER_APPROACH_TEMP_BLOCKED",
+            settled_commercial_chiller_plant_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not raw_eddy_current_waveform_and_oil_filter_downgrade_verified:
+        return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNVERIFIED_EDDY_CURRENT_RETUBING_SCAM_OR_CHILLER_VFD_PUMP_UPCODING",
+            action_pill="Send to a human",
+            commercial_chiller_plant_lane="UNVERIFIED_EDDY_CURRENT_RETUBING_SCAM_OR_CHILLER_VFD_PUMP_UPCODING",
+            settled_commercial_chiller_plant_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_asnt_eddy_current_analyst_and_ashrae15_clean:
+        return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_ASNT_EDDY_CURRENT_ANALYST_OR_UNBUMPED_ASHRAE15_MONITOR_HOLD",
+            action_pill="Send to a human",
+            commercial_chiller_plant_lane="UNCERTIFIED_ASNT_EDDY_CURRENT_ANALYST_OR_UNBUMPED_ASHRAE15_MONITOR_HOLD",
+            settled_commercial_chiller_plant_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_oil_filter_tube_plug_downgrade_and_approach_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_chiller_plant_cents - automated_oil_filter_tube_plug_downgrade_and_approach_savings_cents,
+        )
+        return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_OIL_FILTER_TUBE_PLUG_DOWNGRADE_AND_APPROACH_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_chiller_plant_lane="AUTOMATED_OIL_FILTER_TUBE_PLUG_DOWNGRADE_AND_APPROACH_SAVINGS_CONFIRM",
+            settled_commercial_chiller_plant_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialChillerPlantApproachEddyCurrentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_CHILLER_PLANT_ASHRAE15_SETTLED",
+        action_pill="Act automatically",
+        commercial_chiller_plant_lane="VERIFIED_COMMERCIAL_CHILLER_PLANT_ASHRAE15_SETTLED",
+        settled_commercial_chiller_plant_cents=commercial_chiller_plant_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -46816,6 +46916,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unverified_scfm_leak_audit_block_latency_ms": air_scfm_403.latency_ms,
     }
 
+    chl_commit_ok = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy()
+    chl_app_403 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+        condenser_approach_temp_drop_and_tube_brush_verified=False,
+    )
+    chl_edd_422 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+        raw_eddy_current_waveform_and_oil_filter_downgrade_verified=False,
+    )
+    chl_asn_451 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+        webiq_asnt_eddy_current_analyst_and_ashrae15_clean=False,
+    )
+    chl_sav_409 = evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
+        automated_oil_filter_tube_plug_downgrade_and_approach_savings_cents=2460000,
+    )
+    b2b_commercial_chiller_plant_approach_eddy_current_guards = {
+        "all_passed": (
+            chl_commit_ok.allowed
+            and chl_commit_ok.settled_commercial_chiller_plant_cents == 16400000
+            and not chl_app_403.allowed
+            and chl_app_403.http_status == 403
+            and not chl_edd_422.allowed
+            and chl_edd_422.http_status == 422
+            and not chl_asn_451.allowed
+            and chl_asn_451.http_status == 451
+            and not chl_sav_409.allowed
+            and chl_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_chiller_plant_settlement_latency_ms": chl_commit_ok.latency_ms,
+        "cosmetic_tube_rinse_approach_block_latency_ms": chl_app_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47179,6 +47309,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_lab_biosafety_cabinet_nsf49_usp797_guards": b2b_lab_biosafety_cabinet_nsf49_usp797_guards,
         "b2b_commercial_boiler_asme_csd1_nbic_guards": b2b_commercial_boiler_asme_csd1_nbic_guards,
         "b2b_industrial_compressed_air_iso8573_guards": b2b_industrial_compressed_air_iso8573_guards,
+        "b2b_commercial_chiller_plant_approach_eddy_current_guards": b2b_commercial_chiller_plant_approach_eddy_current_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56396,6 +56527,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="air-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Chiller Plant Condenser Approach & Eddy-Current NDT Sandbox (Round 351) -->
+      <div class="finops-box" id="b2b-commercial-chiller-plant-approach-eddy-current-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-chl-title">❄️ B2B 商业冷水机组通炮清洗、冷凝趋近温差 (&lt;=2.5°F) 与 ASME V 涡流探伤清算沙盒 (Round 351 · Trane / York / ASNT)</span>
+        </div>
+        <div class="control-row">
+          <label><span>BMS 满载冷凝趋近温差回落 (&lt;=2.5°F) + ASME V 多频涡流原始波形 + $380 油滤芯降级锁 + Web IQ ASNT/ASHRAE 15 核验:</span></label>
+          <select id="chl-select" onchange="updateB2BCommercialChillerPlantApproachEddyCurrentSandbox()">
+            <option value="chl_commit_ok">❄️ 通炮后 BMS 冷凝趋近温差 &lt;=2.5°F + ASME V 涡流探伤合规 + ASHRAE 15 标气联锁：10ms 清算 $164,000.00! (Act automatically)</option>
+            <option value="chl_app_403">🛑 拆开水室端盖只拿水枪冲一下管板表面就收 $7,500，未用通炮机捅刷 800 根内管致开机后趋近温差仍高达 6.5°F → 11ms 触发 HTTP 403!</option>
+            <option value="chl_edd_422">🚨 不提供涡流李萨如原始相位文件就拿假 Excel 表吓唬花 $45,000 拔管重穿，或把 $380 油滤芯脏堵虚报为 $9,500 换潜油泵 → 14ms 触发 HTTP 422!</option>
+            <option value="chl_asn_451">🛑 检测人员缺失 ASNT ET Level II/III 无损检测师执照或机房 ASHRAE 15 冷媒泄漏报警器未做标气测试：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="chl_sav_409">🧑‍⚖️ Web IQ 自动将 $9,500 换潜油泵降级为更换 $380 油滤芯并将局部点蚀管改用 $45 锥形铜堵头封堵立省 $24,600.00 (净付 $139,400.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="chl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -57185,6 +57334,7 @@ function renderAll() {{
   updateB2BLabBiosafetyCabinetNsf49Usp797Sandbox();
   updateB2BCommercialBoilerAsmeCsd1NbicSandbox();
   updateB2BIndustrialCompressedAirIso8573Sandbox();
+  updateB2BCommercialChillerPlantApproachEddyCurrentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -74240,6 +74390,52 @@ function updateB2BIndustrialCompressedAirIso8573Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>💨 保压总管 SCFM 真实回落 + SPM &lt;20 dBm + NSF H1/ISO 8573 合规：已自动清算 (VERIFIED_INDUSTRIAL_COMPRESSED_AIR_ISO8573_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零挂纸牌假查漏、零 $16,000 骗修螺杆机头与定时排水跑气</strong>：B2B 工业空压站查漏与螺杆主机维保批次已完成安全清算（<code>$144,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialChillerPlantApproachEddyCurrentSandbox() {{
+  var sel = document.getElementById("chl-select");
+  var outEl = document.getElementById("chl-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "chl_app_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 COSMETIC_TUBE_SHEET_RINSE_OR_UNREDUCED_CONDENSER_APPROACH_TEMP_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对冷机主控板 <code>BACnet</code> 满载遥测发现：通炮清洗后冷凝器趋近温差（<code>Condenser Approach = T_sat - T_leaving</code>）仍停留在 <code>6.5°F（正常应 &lt;= 2.5°F，说明只拿水枪冲了端盖管板表面未刷 800 根铜管内部）</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "chl_edd_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNVERIFIED_EDDY_CURRENT_RETUBING_SCAM_OR_CHILLER_VFD_PUMP_UPCODING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计 <code>ASME Section V</code> 探伤档案与油品光谱发现：服务商未提供多频涡流李萨如原始相位文件却强推 <code>$45,000 拔管重穿</code>，或将 <code>$380 油滤芯堵塞</code> 虚报为 <code>$9,500 换潜油泵/变频模块</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "chl_asn_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_ASNT_EDDY_CURRENT_ANALYST_OR_UNBUMPED_ASHRAE15_MONITOR_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ASNT Certificate Holder Directory (ET Level II/III)</code> 与 <code>ASHRAE 15</code> 规范发现：涡流检测员无有效 <code>ASNT ET</code> 资质或机房冷媒泄漏监测仪未做标气联锁校验，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "chl_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_OIL_FILTER_TUBE_PLUG_DOWNGRADE_AND_APPROACH_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $9,500 潜油泵整换降级为更换 $380 油滤芯 + 局部点蚀铜管采用 $45 锥形黄铜堵头封堵免除拔管重穿</code>，单批立省 <code>$24,600.00</code>（净结算额优化至 <code>$139,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>❄️ 冷凝趋近温差 &lt;=2.5°F + ASME V 涡流波形达标 + ASHRAE 15 合规：已自动清算 (VERIFIED_COMMERCIAL_CHILLER_PLANT_ASHRAE15_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零只冲端盖假通炮、零无波形恐吓换管与 $9,500 假换油泵</strong>：B2B 商业冷水机组通炮与涡流探伤批次已完成安全清算（<code>$164,000.00</code>）！" +
     "</div>";
 }}
 
