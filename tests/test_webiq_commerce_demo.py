@@ -20585,6 +20585,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-painting-ceiling-firestop-sandbox", demo_zh)
 
+    def test_b2b_commercial_solar_pv_om_iec62446_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_solar_pv_om_iec62446_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant DI water TDS <=25 ppm + POA >=600 W/m2 + NABCEP/UL 6703 clean -> 200 OK ($136,000.00)
+        ok_res = evaluate_b2b_commercial_solar_pv_om_iec62446_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SOLAR_PV_OM_IEC62446_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_solar_pv_om_cents, 13600000)
+
+        # 2. Hard tap-water scaling or sub-600 W/m2 cloudy drone thermal scam -> 403 Blocked
+        tds_403 = evaluate_b2b_commercial_solar_pv_om_iec62446_policy(
+            di_water_tds_pr_lift_and_iec62446_600wm2_verified=False,
+        )
+        self.assertFalse(tds_403.allowed)
+        self.assertEqual(tds_403.http_status, 403)
+        self.assertEqual(
+            tds_403.decision_code,
+            "HARD_WATER_TDS_SCALING_OR_SUB600WM2_IEC62446_THERMAL_SCAM_BLOCKED",
+        )
+
+        # 3. $6,800 full string inverter swap upcoding on $22 fuse or unclaimed 10-year OEM RMA -> 422 Blocked
+        inv_422 = evaluate_b2b_commercial_solar_pv_om_iec62446_policy(
+            string_fuse_mc4_isolation_and_10yr_inverter_rma_verified=False,
+        )
+        self.assertFalse(inv_422.allowed)
+        self.assertEqual(inv_422.http_status, 422)
+        self.assertEqual(
+            inv_422.decision_code,
+            "FULL_STRING_INVERTER_SWAP_UPCODING_OR_UNCLAIMED_OEM_RMA_WARRANTY",
+        )
+
+        # 4. Uncertified NABCEP technician or cross-mated non-UL 6703 MC4 connectors -> 451 Hold
+        nab_451 = evaluate_b2b_commercial_solar_pv_om_iec62446_policy(
+            webiq_nabcep_certification_and_ul6703_mc4_match_clean=False,
+        )
+        self.assertFalse(nab_451.allowed)
+        self.assertEqual(nab_451.http_status, 451)
+
+        # 5. Web IQ inverter OEM RMA claim & $22 fuse downgrade saving $20,400 ($115,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_solar_pv_om_iec62446_policy(
+            automated_inverter_rma_claim_and_fuse_downgrade_savings_cents=2040000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_solar_pv_om_cents, 11560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_solar_pv_om_iec62446_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-solar-pv-om-iec62446-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
