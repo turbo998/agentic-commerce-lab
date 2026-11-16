@@ -20528,6 +20528,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-irrigation-sewer-submeter-arborist-sandbox", demo_zh)
 
+    def test_b2b_commercial_painting_ceiling_firestop_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_painting_ceiling_firestop_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ultrasonic DFT >=3.2 mils + net drywall sq.ft. + UL 1479 intumescent clean -> 200 OK ($118,000.00)
+        ok_res = evaluate_b2b_commercial_painting_ceiling_firestop_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_PAINTING_CEILING_UL1479_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_painting_ceiling_firestop_cents, 11800000)
+
+        # 2. 1-coat flat paint DFT shorting or unsubtracted glass-wall sq.ft. padding -> 403 Blocked
+        dft_403 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+            ultrasonic_paint_dft_and_net_drywall_sqft_verified=False,
+        )
+        self.assertFalse(dft_403.allowed)
+        self.assertEqual(dft_403.http_status, 403)
+        self.assertEqual(
+            dft_403.decision_code,
+            "ONE_COAT_FLAT_PAINT_DFT_SHORTING_OR_UNSUBTRACTED_GLAZING_WALL_SQFT_BLOCKED",
+        )
+
+        # 3. Fake $2.50 red latex caulk firestop scam or full ceiling grid tear-out upcoding -> 422 Blocked
+        fst_422 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+            ul1479_intumescent_batch_and_dropin_tile_only_verified=False,
+        )
+        self.assertFalse(fst_422.allowed)
+        self.assertEqual(fst_422.http_status, 422)
+        self.assertEqual(
+            fst_422.decision_code,
+            "FAKE_RED_LATEX_CAULK_FIRESTOP_SCAM_OR_FULL_CEILING_GRID_TEAROUT_UPCODING",
+        )
+
+        # 4. Uncertified FCIA / UL 1479 firestop system or unwired lay-in ceiling fixture -> 451 Hold
+        ul_451 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+            webiq_fcia_ul1479_system_and_c636_fixture_wires_clean=False,
+        )
+        self.assertFalse(ul_451.allowed)
+        self.assertEqual(ul_451.http_status, 451)
+
+        # 5. Web IQ net drywall sq.ft. deduction & drop-in tile-only swap saving $17,700 ($100,300 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+            automated_net_drywall_sqft_and_tile_only_swap_savings_cents=1770000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_painting_ceiling_firestop_cents, 10030000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_painting_ceiling_firestop_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-painting-ceiling-firestop-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

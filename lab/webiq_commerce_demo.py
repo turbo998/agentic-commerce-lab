@@ -34423,6 +34423,106 @@ def evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialPaintingCeilingFirestopDecision:
+    """Deterministic decision output for B2B commercial interior painting (DFT), ACT ceilings & UL 1479 firestopping."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_painting_ceiling_firestop_lane: str
+    settled_commercial_painting_ceiling_firestop_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+    *,
+    mandate_id: str = "b2b_commercial_interior_painting_acoustical_ceiling_ul1479_firestop_mandate_2026",
+    commercial_painting_ceiling_firestop_cents: int = 11800000,
+    ultrasonic_paint_dft_and_net_drywall_sqft_verified: bool = True,
+    ul1479_intumescent_batch_and_dropin_tile_only_verified: bool = True,
+    webiq_fcia_ul1479_system_and_c636_fixture_wires_clean: bool = True,
+    automated_net_drywall_sqft_and_tile_only_swap_savings_cents: int = 0,
+) -> B2BCommercialPaintingCeilingFirestopDecision:
+    """Evaluate B2B commercial interior painting ultrasonic DFT, UL 1479 firestopping & ACT ceiling settlement."""
+    if not mandate_id.startswith("b2b_commercial_interior_painting_acoustical_ceiling_ul1479_firestop_mandate_"):
+        return B2BCommercialPaintingCeilingFirestopDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_PAINTING_CEILING_FIRESTOP_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_painting_ceiling_firestop_lane="INVALID_COMMERCIAL_PAINTING_CEILING_FIRESTOP_MANDATE_PREFIX",
+            settled_commercial_painting_ceiling_firestop_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not ultrasonic_paint_dft_and_net_drywall_sqft_verified:
+        return B2BCommercialPaintingCeilingFirestopDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="ONE_COAT_FLAT_PAINT_DFT_SHORTING_OR_UNSUBTRACTED_GLAZING_WALL_SQFT_BLOCKED",
+            action_pill="Send to a human",
+            commercial_painting_ceiling_firestop_lane="ONE_COAT_FLAT_PAINT_DFT_SHORTING_OR_UNSUBTRACTED_GLAZING_WALL_SQFT_BLOCKED",
+            settled_commercial_painting_ceiling_firestop_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not ul1479_intumescent_batch_and_dropin_tile_only_verified:
+        return B2BCommercialPaintingCeilingFirestopDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="FAKE_RED_LATEX_CAULK_FIRESTOP_SCAM_OR_FULL_CEILING_GRID_TEAROUT_UPCODING",
+            action_pill="Send to a human",
+            commercial_painting_ceiling_firestop_lane="FAKE_RED_LATEX_CAULK_FIRESTOP_SCAM_OR_FULL_CEILING_GRID_TEAROUT_UPCODING",
+            settled_commercial_painting_ceiling_firestop_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_fcia_ul1479_system_and_c636_fixture_wires_clean:
+        return B2BCommercialPaintingCeilingFirestopDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_FCIA_UL1479_FIRESTOP_SYSTEM_OR_UNWIRED_CEILING_FIXTURE_HOLD",
+            action_pill="Send to a human",
+            commercial_painting_ceiling_firestop_lane="UNCERTIFIED_FCIA_UL1479_FIRESTOP_SYSTEM_OR_UNWIRED_CEILING_FIXTURE_HOLD",
+            settled_commercial_painting_ceiling_firestop_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_net_drywall_sqft_and_tile_only_swap_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_painting_ceiling_firestop_cents - automated_net_drywall_sqft_and_tile_only_swap_savings_cents,
+        )
+        return B2BCommercialPaintingCeilingFirestopDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_NET_DRYWALL_SQFT_AND_TILE_ONLY_SWAP_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_painting_ceiling_firestop_lane="AUTOMATED_NET_DRYWALL_SQFT_AND_TILE_ONLY_SWAP_SAVINGS_CONFIRM",
+            settled_commercial_painting_ceiling_firestop_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialPaintingCeilingFirestopDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_PAINTING_CEILING_UL1479_SETTLED",
+        action_pill="Act automatically",
+        commercial_painting_ceiling_firestop_lane="VERIFIED_COMMERCIAL_PAINTING_CEILING_UL1479_SETTLED",
+        settled_commercial_painting_ceiling_firestop_cents=commercial_painting_ceiling_firestop_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -45776,6 +45876,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "rain_freeze_sewer_submeter_block_latency_ms": irr_ran_403.latency_ms,
     }
 
+    pnt_commit_ok = evaluate_b2b_commercial_painting_ceiling_firestop_policy()
+    pnt_dft_403 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+        ultrasonic_paint_dft_and_net_drywall_sqft_verified=False,
+    )
+    pnt_fst_422 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+        ul1479_intumescent_batch_and_dropin_tile_only_verified=False,
+    )
+    pnt_ul_451 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+        webiq_fcia_ul1479_system_and_c636_fixture_wires_clean=False,
+    )
+    pnt_sav_409 = evaluate_b2b_commercial_painting_ceiling_firestop_policy(
+        automated_net_drywall_sqft_and_tile_only_swap_savings_cents=1770000,
+    )
+    b2b_commercial_painting_ceiling_firestop_guards = {
+        "all_passed": (
+            pnt_commit_ok.allowed
+            and pnt_commit_ok.settled_commercial_painting_ceiling_firestop_cents == 11800000
+            and not pnt_dft_403.allowed
+            and pnt_dft_403.http_status == 403
+            and not pnt_fst_422.allowed
+            and pnt_fst_422.http_status == 422
+            and not pnt_ul_451.allowed
+            and pnt_ul_451.http_status == 451
+            and not pnt_sav_409.allowed
+            and pnt_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_commercial_painting_ceiling_settlement_latency_ms": pnt_commit_ok.latency_ms,
+        "one_coat_dft_glass_wall_block_latency_ms": pnt_dft_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46131,6 +46261,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_asphalt_paving_sealcoating_guards": b2b_commercial_asphalt_paving_sealcoating_guards,
         "b2b_commercial_elevator_cab_escalator_step_guards": b2b_commercial_elevator_cab_escalator_step_guards,
         "b2b_commercial_irrigation_sewer_submeter_arborist_guards": b2b_commercial_irrigation_sewer_submeter_arborist_guards,
+        "b2b_commercial_painting_ceiling_firestop_guards": b2b_commercial_painting_ceiling_firestop_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55204,6 +55335,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="irr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Interior Painting, ACT Ceiling & UL 1479 Firestop Sandbox (Round 343) -->
+      <div class="finops-box" id="b2b-commercial-painting-ceiling-firestop-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pnt-title">🎨 B2B 商业室内涂装 (DFT &gt;=3.2 Mils)、矿棉吸音吊顶与 UL 1479 穿墙防火封堵清算沙盒 (Round 343 · CertaPro / Hilti / FCIA)</span>
+        </div>
+        <div class="control-row">
+          <label><span>超声波干膜测厚 (&gt;=3.2 Mils) + BIM 净石膏板面积 + UL 1479 膨胀防火泥批号锁 + Web IQ FCIA/C636 核验:</span></label>
+          <select id="pnt-select" onchange="updateB2BCommercialPaintingCeilingFirestopSandbox()">
+            <option value="pnt_commit_ok">🎨 双遍漆膜 DFT &gt;=3.2 mils + 净墙面扣除玻璃窗 + Hilti UL 1479 膨胀封堵合规：10ms 清算 $118,000.00! (Act automatically)</option>
+            <option value="pnt_dft_403">🛑 合同签两遍耐擦洗蛋壳光漆却只滚一遍兑水粉笔漆 (DFT 仅 1.3 mils)，或把整面落地玻璃隔断算进刷墙面积 → 11ms 触发 HTTP 403!</option>
+            <option value="pnt_fst_422">🚨 吊顶上方拿 $2.50 染色红胶假冒 $65/处 Hilti/3M UL 1479 膨胀防火泥，或为 8 块水渍矿棉板把整屋铝合金龙骨砸掉重装 → 14ms 触发 HTTP 422!</option>
+            <option value="pnt_ul_451">🛑 防火封堵未匹配 UL Product iQ (W-L/C-AJ) 图号，或嵌入式 2x4 LED 灯盘缺失 ASTM C636 独立 12 号防坠吊丝：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="pnt_sav_409">🧑‍⚖️ Web IQ 自动扣除混入计费的玻璃幕墙/门洞面积并将 $9,500 整拆龙骨降级为单换 $1.80 矿棉吸音板立省 $17,700.00 (净付 $100,300.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pnt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -55985,6 +56134,7 @@ function renderAll() {{
   updateB2BCommercialAsphaltPavingSealcoatingSandbox();
   updateB2BCommercialElevatorCabEscalatorStepSandbox();
   updateB2BCommercialIrrigationSewerSubmeterArboristSandbox();
+  updateB2BCommercialPaintingCeilingFirestopSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -72672,6 +72822,52 @@ function updateB2BCommercialIrrigationSewerSubmeterArboristSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🌳 ET 雨天零流量闭锁 + 免排污费分表抵扣 + ISA/A300 合规：已自动清算 (VERIFIED_COMMERCIAL_IRRIGATION_ISA_ARBORIST_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零雨天瞎喷浪费、零 $280 假换整阀与违章砍头毁树</strong>：B2B 商业园区喷灌与乔木养护批次已完成安全清算（<code>$112,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialPaintingCeilingFirestopSandbox() {{
+  var sel = document.getElementById("pnt-select");
+  var outEl = document.getElementById("pnt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pnt_dft_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 ONE_COAT_FLAT_PAINT_DFT_SHORTING_OR_UNSUBTRACTED_GLAZING_WALL_SQFT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对 <code>PosiTector 200</code> 超声波干膜测厚仪与 <code>BIM</code> 墙面模型发现：实测漆膜仅 <code>1.3 mils（低于双遍耐擦洗漆 >=3.2 mils 标准）</code>，或未扣除落地玻璃隔断与门洞面积，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pnt_fst_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FAKE_RED_LATEX_CAULK_FIRESTOP_SCAM_OR_FULL_CEILING_GRID_TEAROUT_UPCODING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计吊顶上方穿墙封堵与天花板工单发现：施工队用 <code>$2.50 普通染色红胶</code> 冒充 <code>$65 Hilti/3M UL 1479 膨胀防火泥（无膨胀炭化反应）</code>，或将单换 8 块矿棉板虚报为 <code>$9,500 整屋拆龙骨</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pnt_ul_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_FCIA_UL1479_FIRESTOP_SYSTEM_OR_UNWIRED_CEILING_FIXTURE_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>UL Product iQ (XHEZ)</code> 穿墙防火图库与 <code>ASTM C636</code> 规范发现：所报 <code>UL System #</code> 不适用于现场 PVC 管径，或嵌入式 <code>2x4 LED</code> 灯具缺失独立 12 号安全吊丝，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pnt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_NET_DRYWALL_SQFT_AND_TILE_ONLY_SWAP_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>扣除玻璃隔断与门洞后的 BIM 净石膏板面积结算 + 将完好 T-Bar 龙骨锁定为单换 $1.80 矿棉吸音板</code>，单批立省 <code>$17,700.00</code>（净结算额优化至 <code>$100,300.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🎨 超声波 DFT &gt;=3.2 Mils + UL 1479 膨胀封堵 + C636 合规：已自动清算 (VERIFIED_COMMERCIAL_PAINTING_CEILING_UL1479_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零一遍薄漆偷料、零 $2.50 假红胶冒充防火泥与假拆吊顶龙骨</strong>：B2B 商业室内涂装、矿棉吊顶与穿墙防火封堵批次已完成安全清算（<code>$118,000.00</code>）！" +
     "</div>";
 }}
 
